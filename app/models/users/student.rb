@@ -148,10 +148,6 @@ module Users
       Presenters::Student.new(self)
     end
 
-    def satisfaction_survey_id
-      ENV['TALLY_STUDENT_SURVEY_ID']
-    end
-
     def has_already_approved_an_application?
       internship_applications.approved.any?
     end

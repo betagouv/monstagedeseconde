@@ -265,7 +265,6 @@ class User < ApplicationRecord
   def send_signature_sms_token ; nil end
   def signatory_role ; nil end
   def obfuscated_phone_number ; nil end
-  def satisfaction_survey_id ; nil end
 
   def already_signed?(internship_agreement_id:); true end
 
@@ -291,10 +290,6 @@ class User < ApplicationRecord
     self.reset_password_sent_at = Time.now.utc
     self.save
     raw
-  end
-
-  def satisfaction_survey
-    Rails.env.production? ? satisfaction_survey_id : ENV['TALLY_STAGING_SURVEY_ID']
   end
 
   private
