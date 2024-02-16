@@ -46,7 +46,7 @@ def prevent_sidekiq_to_run_job_after_seed_loaded
   end
 end
 
-if Rails.env == 'review' || Rails.env.development?
+if true #Rails.env == 'review' || Rails.env.development?
   Dir[File.join(Rails.root, 'db', 'seeds', '*.rb')].sort.each do |seed|
     puts "Loading #{seed}"
     load seed
