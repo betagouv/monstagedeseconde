@@ -2,6 +2,7 @@ def populate_schools
   school_file_name = Rails.env == 'review' ? 'seed-schools-light.csv' : 'seed-schools.csv'
   CSV.foreach(Rails.root.join("db/data_imports/#{school_file_name}"), headers: { col_sep: ',' }).each.with_index do |row, i|
     next if i.zero?
+    next if School.find_by_code_uai(row['Code UAI'])
     school = School.find_or_create_by!(
       code_uai: row['Code UAI'],
       name: row['ETABLISSEMENT'],

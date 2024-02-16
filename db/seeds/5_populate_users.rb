@@ -66,6 +66,8 @@ def populate_users
     with_class_name_for_defaults(Users::Operator.new(email: "#{operator.name.parameterize}@ms3e.fr", password: 'review', operator: operator)).save!
     add_area
   end
+  puts 'Operator.all.map done!'
+  
   with_class_name_for_defaults(Users::Operator.new(email: 'operator@ms3e.fr', password: 'review', operator: Operator.first)).save!
   add_area
 

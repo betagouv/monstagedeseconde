@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 require 'csv'
+require_relative '../test/support/coordinates'
+require 'ffaker'
+require 'active_support/notifications'
 
 def siret
   siret = FFaker::CompanyFR.siret
