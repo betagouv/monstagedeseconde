@@ -6,7 +6,7 @@
     <meta name="description" content="MonStageDeTroisieme permet aux éléves de REP et REP+ de trouver des stages de troisième de qualité près de chez eux.">
     <meta name="author" content="MonStageDeTroisieme">
     <meta name="turbo-visit-control" content="reload">
-    <link rel='canonical' href='https://www.monstagedetroisieme.fr' />
+    <link rel='canonical' href=<%=ENV.fetch('MGF_SITE_URL')%> />
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= action_cable_meta_tag %>
