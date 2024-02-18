@@ -131,16 +131,6 @@ module Teamable
       TeamMemberInvitation.refused_invitation.where(inviter_id: team_id)
     end
 
-    def initializing_current_area
-      create_current_area(
-        name: "Espace de #{presenter.short_name}",
-        employer_type: 'User',
-        employer_id: self.id
-      )
-      save!
-    end
-
-
     # -------------------------------
     private
     # -------------------------------

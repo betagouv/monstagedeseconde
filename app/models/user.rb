@@ -220,7 +220,7 @@ class User < ApplicationRecord
   end
 
   def send_confirmation_instructions
-    return if created_by_teacher || statistician?
+    return if created_by_teacher || statistician? || student?
     super
   end
 
@@ -266,6 +266,7 @@ class User < ApplicationRecord
   def send_signature_sms_token ; nil end
   def signatory_role ; nil end
   def obfuscated_phone_number ; nil end
+  def create_default_internship_offer_area ; nil end
 
   def already_signed?(internship_agreement_id:); true end
 
