@@ -1,22 +1,18 @@
 .fr-header__brand.fr-enlarge-link
   .fr-header__brand-top
-    .fr-header__logo.pl-2
-      p.fr-logo
-        | REPUBLIQUE
+    .fr-header__logo
+      .fr-logo
+        |Intitulé
         br
-        | FRANCAISE
-      = link_to root_path, class: 'd-hide-inline-sm no-visible-focus' do
-        = image_tag asset_pack_path("media/images/logo-mon-stage-3e.svg"),
-                    alt: 'logo de monstagedetroisieme',
+        |officiel
+        = link_to root_path, class: 'd-hide-inline-sm no-visible-focus' do
+        = image_tag asset_pack_path("media/images/logo-education-nationale.svg"),
+                    alt: 'logo de l\'éducation nationale',
                     height: '54px',
                     class: 'ml-5 '
-    .fr-header__navbar
-      button#fr-btn-menu-mobile.fr-btn--menu.fr-btn [
-        aria-controls="modal-833"
-        aria-haspopup="menu"
-        data-fr-opened="false"
-        title="Menu" ]
-        | Menu
-  .fr-header__service.visible-smaller-md
-    p.fr-header__service-title 
-      = link_to "Mon stage de troisieme", root_path, class: 'fr-raw-link text-dark'
+.fr-header__service
+  = link_to root_path, title:"Accueil - Mon stage de Seconde"
+    .fr-header__service-title
+      |1jeune1solution
+  .fr-header__service-tagline
+    |Stages de seconde générale et et technologique

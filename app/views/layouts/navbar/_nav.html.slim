@@ -16,9 +16,9 @@
                       user_presenter.default_internship_offers_path,
                       class: "fr-link text-decoration-none mr-4 #{active}"
           li
-            - if current_user.is_a?(Users::Student)              
+            - if current_user.is_a?(Users::Student)
               = link_to current_user.custom_dashboard_path,
-                        class: "fr-link text-decoration-none mr-4  #{custom_dashboard_controller?(user: current_user) ? 'active' : ''}" do 
+                        class: "fr-link text-decoration-none mr-4  #{custom_dashboard_controller?(user: current_user) ? 'active' : ''}" do
                 = current_user.dashboard_name
                 span.fr-badge.fr-badge--new.fr-badge--no-icon.fr-mx-1v
                   = current_user.presenter.validated_by_employer_applications_count
@@ -73,6 +73,11 @@
               | Admin
 
       - else
+        li
+          - active = current_page?(internship_offers_path) && !request.url.include?('origine=dashboard') ? 'active' : ''
+          = link_to 'Recherche',
+                    user_presenter.default_internship_offers_path,
+                    class: "fr-link text-decoration-none mr-4 #{active}"
         li
           = link_to 'Connexion',
                     new_user_session_path,

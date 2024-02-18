@@ -92,6 +92,7 @@ import './homepage/contract.svg';
 import './homepage/dl_resource.png';
 import './homepage/france.svg';
 import './homepage/dashboard.svg';
+import './homepage/logo-education-nationale.svg';
 
 import './homepage/resources/etablissements.svg';
 import './homepage/resources/parents_eleves.svg';
