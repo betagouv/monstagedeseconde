@@ -1,0 +1,14 @@
+.fr-py-2w
+  .fr-py-4w
+    h3 Les derniers stages mis en ligne
+  .fr-py-4w
+    .fr-tabs
+      ul.fr-tabs__list role="tablist" aria-label="Dernières offres"
+        li role="presentation"
+         = button_to 'Stages de 2de générale et technologique', '', class: 'fr-tabs__tab', role: 'tab', 'aria-selected': 'true', aria_controls: 'last-offers-panel', tabindex:"0"
+      #last-offers-panel.fr-tabs__panel.fr-tabs__panel--active.fr-tabs__panel--selected.bg-white role="tabpanel" aria-labelledby="last-offers-tab" aria-hidden="false" tabindex="0"
+        = render 'pages/home/internship_offers'
+
+  .row.align-items-center.fr-pt-4w
+    .col-12.d-flex.justify-content-center
+      = link_to 'Déposer une offre de stage', new_user_registration_path(as: 'Employer'), class: 'fr-btn fr-mb-4w fr-btn--lg'

@@ -11,24 +11,10 @@
 .container-homepage
   .container-monstage
     = render 'pages/home/howitworks_pro'
-.container-homepage
-  .mx-0.light-grey-background
-    = render 'pages/home/everyone_pro'
-.container-monstage
-  = render 'pages/home/livestorm'
-.container-homepage
-  .container-monstage
-    = render 'pages/home/faq_pro'
 .container-homepage.light-blue-background.fr-py-4w  
-  .container-homepage
-    .container-monstage
-      = render 'pages/home/newsletter'
-.container-home
   .container-monstage
-    = render 'pages/home/resources_pro'
-.container-homepage    
-  .container-monstage.homepage
-    = render 'pages/home/sponsors'
-    = render 'pages/home/partners'
+    .d-none.d-md-block
+      = render 'pages/home/last_offers'
+  .container-monstage
     .d-none.d-md-block
       = render 'pages/home/elevator'

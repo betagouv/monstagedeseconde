@@ -41,6 +41,10 @@ class PagesController < ApplicationController
   def student_landing
     @internship_offers = offers_with_sector.last(3)
   end
+
+  def pro_landing
+    @internship_offers = offers_with_sector.last(3)
+  end
   alias_method :school_management_landing, :student_landing
   alias_method :statistician_landing, :student_landing
 end
