@@ -8,10 +8,6 @@ class PagesController < ApplicationController
                               school_management_landing
                               statistician_landing]
 
-  def statistiques
-    render 'pages/statistiques', layout: 'statistiques'
-  end
-
   def register_to_webinar
     authorize! :subscribe_to_webinar, current_user
     current_user.update(subscribed_to_webinar_at: Time.zone.now)

@@ -176,7 +176,6 @@ Rails.application.routes.draw do
   get '/les-10-commandements-d-une-bonne-offre', to: 'pages#les_10_commandements_d_une_bonne_offre'
   get '/operators', to: 'pages#operators'
   get '/politique-de-confidentialite', to: 'pages#politique_de_confidentialite'
-  get '/statistiques', to: 'pages#statistiques'
   post '/newsletter', to: 'newsletter#subscribe'
   get '/inscription-permanence', to: 'pages#register_to_webinar'
   # TODO
