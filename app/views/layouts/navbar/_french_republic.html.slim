@@ -2,17 +2,18 @@
   .fr-header__brand-top
     .fr-header__logo
       .fr-logo
-        |Intitulé
+        |MINISTèRE 
         br
-        |officiel
-        = link_to root_path, class: 'd-hide-inline-sm no-visible-focus' do
-        = image_tag asset_pack_path("media/images/logo-education-nationale.svg"),
-                    alt: 'logo de l\'éducation nationale',
-                    height: '54px',
-                    class: 'ml-5 '
+        |DE L'éDUCATION
+        br
+        |NATIONALE
+        br
+        |ET DE LA JEUNESSE
+
+     
 .fr-header__service
   = link_to root_path, title:"Accueil - Mon stage de Seconde"
-    .fr-header__service-title
+    .fr-header__service-title.text-dark
       |1jeune1solution
   .fr-header__service-tagline
     |Stages de seconde générale et et technologique
