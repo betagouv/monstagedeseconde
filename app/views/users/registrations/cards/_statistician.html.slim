@@ -6,11 +6,10 @@
       p.fr-text
         | 
             Vous êtes référent d’administration centrale, départementale ou DSDEN. 
-            Vous souhaitez accéder aux statistiques des offres de stage de 
-            votre votre département ou administration.
+            Vous souhaitez accéder aux statistiques des offres de stage de votre
+            département ou administration.
     .fr-card__footer
-      ul.fr-btns-group.fr-btns-group--inline-reverse.fr-btns-group--inline-lg
-        li
-          = link_to "Inscription",
-                    new_user_registration_path(as: 'Statistician'),
-                    class: 'fr-btn fr-btn--secondary'
+      .d-flex.align-items-center.justify-content-start
+        .fr-text--sm.fr-mb-0.text-muted Disponible le 15 avril 2024
+        .fr-px-2w= link_to 'https://forms.sbc37.com/62553f47462f0e1887f81bfe/VQ35E9J0QhCSCxvF8H-mVA/form.html', class: 'fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-notification-3-line' do 
+          | Être notifié à l’ouverture
