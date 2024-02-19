@@ -8,18 +8,6 @@ GIT
       pdf-core (~> 0.9.0)
       ttfunk (~> 1.7)
 
-GIT
-  remote: https://github.com/railsadminteam/rails_admin.git
-  revision: c6a403605658d797aed14f5d02462b9aa50f0df9
-  specs:
-    rails_admin (3.1.2)
-      activemodel-serializers-xml (>= 1.0)
-      csv
-      kaminari (>= 0.14, < 2.0)
-      nested_form (~> 0.3)
-      rails (>= 6.0, < 8)
-      turbo-rails (>= 1.0, < 3)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -392,6 +380,13 @@ GEM
     rails-html-sanitizer (1.6.0)
       loofah (~> 2.21)
       nokogiri (~> 1.14)
+    rails_admin (3.1.2)
+      activemodel-serializers-xml (>= 1.0)
+      csv
+      kaminari (>= 0.14, < 2.0)
+      nested_form (~> 0.3)
+      rails (>= 6.0, < 8)
+      turbo-rails (>= 1.0, < 3)
     rails_admin-i18n (1.20.0)
     rails_admin_aasm (0.3.0)
       aasm
@@ -596,7 +591,7 @@ DEPENDENCIES
   puma
   rails (~> 7.1.2)
   rails-controller-testing
-  rails_admin!
+  rails_admin
   rails_admin-i18n
   rails_admin_aasm
   rake
