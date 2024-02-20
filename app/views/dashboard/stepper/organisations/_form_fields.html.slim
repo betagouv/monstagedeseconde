@@ -51,41 +51,17 @@
           - else
             fieldset.fr-fieldset.fr-my-2w#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
               legend.label
-                | Secteur
+                | Entreprise
               div.fr-fieldset__element
                 div.fr-radio-group
                   = form.radio_button :is_public, true, class: '', required: true, data: { action: 'change->organisation-form#handleClickIsPublic', 'target': 'organisation-form.requiredField' }
-                  = form.label :is_public_true, 'Public', class: 'fr-label'
+                  = form.label :is_public_true, 'Publique', class: 'fr-label'
               div.fr-fieldset__element
                 div.fr-radio-group
                   = form.radio_button :is_public, false, class: '', required: true, data: { action: 'change->organisation-form#handleClickIsPublic', 'target': 'organisation-form.requiredField' }
-                  = form.label :is_public_false, 'Privé', class: 'fr-label'
+                  = form.label :is_public_false, 'Privée', class: 'fr-label'
 
               div.fr-messages-group#radio-hint-messages aria-live="assertive"
-
-          div [class="form-group form-group-select-group fr-my-2w #{resource.is_public.nil? ? 'd-none' : ''}"
-               data-organisation-form-target="groupBlock"]
-            - if current_user.ministry_statistician?
-              - if current_user.groups.count > 1
-                = form.label :group_id , class: 'fr-label', for: 'group_id' do
-                  = "Ministère associé"
-                = form.select :group_id,
-                              options_for_select(current_user.presenter.ministry_groups_select),
-                              { include_blank: false},
-                              {class: 'fr-select'}
-              - else
-                = form.hidden_field :group_id, value: current_user.groups.first.id
-            - else
-              = form.label :group_id,
-                          "Groupe ou Institution de tutelle (optionnel)",
-                          data: {:"organisation-form-target" => 'groupLabel'},
-                          class: 'fr-label'
-
-              = form.select :group_id,
-                            options_for_select(options_for_groups, resource.group.try(:id)),
-                            { prompt: '-- Indépendant --' },
-                            class: "fr-select",
-                            data: {:"organisation-form-target" => 'selectGroupName'}
 
   .row.bloc-tooggle class="#{'d-none' unless request.path_info.include?('modification')}"
     .col-md-6
