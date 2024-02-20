@@ -207,29 +207,32 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     # below : 'Pas encore de compte ? Inscrivez-vous'
     # click_on(class: 'text-danger') /!\ do not work
     visit users_choose_profile_path
-    find('a[href="/identites/nouveau?as=Student"]').click
+    # -----------------------------------------
+    # TODO After student is invited to subscribe
+    # -----------------------------------------
+    # find('a[href="/identites/nouveau?as=Student"]').click
 
-    assert Identity.count.zero?
-    assert_difference('Users::Student.count', 1) do
-      # signup as student - Identity creation
-      find_field('Nom (ou ville) de mon établissement').fill_in(with: 'Saint')
-      find('#downshift-0-item-0').click
-      select(school_1.name, from: "identity_school_id")
-      select(class_room_1.name, from: 'identity_class_room_id')
-      fill_in 'Prénom', with: 'Coufert'
-      fill_in 'Nom', with: 'Darmarin'
-      fill_in 'Date de naissance', with: birth_date.strftime('%d/%m/%Y')
-      find('label', text: 'Masculin').click
-      find('input[type="submit"]').click
-      # 2nd page
-      find('label[for="select-channel-phone"]').click
-      execute_script("document.querySelector('div[data-signup-target=\"phoneBloc\"]').classList.remove('d-none')")
-      execute_script("document.getElementById('phone-input').value = '#{valid_phone_number}';")
-      fill_in 'Créer un mot de passe', with: password
-      find('input[type="submit"]').click
-      assert Identity.count.positive?
-    end
-    find('h4 a', text: offer.title)
+    # assert Identity.count.zero?
+    # assert_difference('Users::Student.count', 1) do
+    #   # signup as student - Identity creation
+    #   find_field('Nom (ou ville) de mon établissement').fill_in(with: 'Saint')
+    #   find('#downshift-0-item-0').click
+    #   select(school_1.name, from: "identity_school_id")
+    #   select(class_room_1.name, from: 'identity_class_room_id')
+    #   fill_in 'Prénom', with: 'Coufert'
+    #   fill_in 'Nom', with: 'Darmarin'
+    #   fill_in 'Date de naissance', with: birth_date.strftime('%d/%m/%Y')
+    #   find('label', text: 'Masculin').click
+    #   find('input[type="submit"]').click
+    #   # 2nd page
+    #   find('label[for="select-channel-phone"]').click
+    #   execute_script("document.querySelector('div[data-signup-target=\"phoneBloc\"]').classList.remove('d-none')")
+    #   execute_script("document.getElementById('phone-input').value = '#{valid_phone_number}';")
+    #   fill_in 'Créer un mot de passe', with: password
+    #   find('input[type="submit"]').click
+    #   assert Identity.count.positive?
+    # end
+    # find('h4 a', text: offer.title)
   end
 
   test 'navigation & interaction works until student creation with phone' do

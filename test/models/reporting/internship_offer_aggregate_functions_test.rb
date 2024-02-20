@@ -116,19 +116,23 @@ module Reporting
     end
 
     test 'computes internship_offer total_female_approved_applications_count' do
+      student_male_1 = create(:student, :male)
+      student_male_2 = create(:student, :male)
+      student_male_3 = create(:student, :male)
+      student_female = create(:student, :female)
       travel_to Date.new(2019, 9, 1) do
         create(:weekly_internship_application, :approved,
               internship_offer: @internship_offer_agri_1,
-              student: create(:student, :male))
+              student: student_male_1)
         create(:weekly_internship_application, :approved,
               internship_offer: @internship_offer_agri_1,
-              student: create(:student, :female))
+              student: student_female)
         create(:weekly_internship_application, :approved,
               internship_offer: @internship_offer_agri_2,
-              student: create(:student, :male))
+              student: student_male_2)
         create(:weekly_internship_application, :approved,
               internship_offer: @internship_offer_wood,
-              student: create(:student, :male))
+              student: student_male_3)
 
         agri_stats, wood_stats = Reporting::InternshipOffer.dimension_by_sector
 

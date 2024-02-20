@@ -5,9 +5,11 @@ module InternshipApplicationCountersHooks
   class WeeklyFramedTest < ActiveSupport::TestCase
     setup do
       @week = Week.find_by(number: 1, year: 2019)
+      student = create(:student, :male)
       @internship_offer = create(:weekly_internship_offer, weeks: [@week])
       @internship_application = build(:weekly_internship_application, week: @week,
-                                                                      internship_offer: @internship_offer)
+                                                                      internship_offer: @internship_offer,
+                                                                      student: student)
     end
 
     test '.update_internship_offer_counters tracks internship_offer.total_applications_count' do
