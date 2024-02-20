@@ -32,7 +32,7 @@ class WithTeamTest < ApplicationSystemTestCase
             invitation_email: employer_3.email
     sign_in(employer_3)
     visit employer_3.after_sign_in_path
-    assert_difference('AreaNotification.count', 5) do
+    assert_difference -> { AreaNotification.count }, 5 do
       click_button 'Oui'
     end
   end
