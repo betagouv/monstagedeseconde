@@ -35,7 +35,6 @@ class User < ApplicationRecord
     admin_officer: 'admin_officer',
     other: 'other'
   }
-  # attribute :role, :string, default: 'other'
 
   validates :first_name, :last_name,
             presence: true

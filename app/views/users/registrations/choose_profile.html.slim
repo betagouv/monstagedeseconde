@@ -1,9 +1,9 @@
 header.header-account.subscription
   h1.h2.fr-my-3w Inscription
   p
-    = link_to "Vous avez déjà un compte", new_user_session_path, class: 'fr-link blue-france fr-raw-link'
+    = link_to "Vous avez déjà un compte ?", new_user_session_path, class: 'fr-link blue-france fr-raw-link'
 .d-none.d-md-block
-  .three_cards.d-flex.flex-fill.flex-row
+  .three_cards.d-flex.flex-fill.flex-row.align-items-stretch
     = render 'users/registrations/cards/student'
     = render 'users/registrations/cards/professional'
     = render 'users/registrations/cards/education'

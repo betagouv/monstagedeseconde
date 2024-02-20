@@ -10,7 +10,7 @@
                     height: '47px',
                     'aria-hidden': "true"
       h3.text-grey-50.my-4
-        | Déposez vos offres
+        | Déposez vos offres de stage
       p.mt-3.fr-text.mb-lg-5.mb-md-5.mb-sm-4.mb-3
         | Vous pouvez facilement déposer une offre, la modifier, et la dupliquer.
 
@@ -34,9 +34,11 @@
                   height: '47px',
                   'aria-hidden': "true"
       h3.text-grey-50.my-4
-        | Remplissez la convention
+        | Remplissez la 
+        br
+        | convention
       p.mt-3.fr-text.mb-lg-5.mb-md-5.mb-sm-4.mb-3
         | Vous pourrez remplir la convention en ligne, qui sera transmise à l’établissement.
 .row.align-items-center.fr-pb-4w
   .col-12.d-flex.justify-content-center
-    = link_to 'Déposer une offre de stage', new_user_registration_path(as: 'Employer'), class: 'fr-btn fr-mb-4w fr-btn--lg'
+    = link_to 'Déposer une offre de stage', new_user_registration_path(as: 'Employer'), class: 'fr-btn fr-btn--md fr-mb-4w fr-btn--lg'

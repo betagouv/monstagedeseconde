@@ -115,6 +115,7 @@ export default function SirenInput({
                 bloc.classList.remove('d-none');
               });
             document.getElementById("organisation_employer_name").value = selection.uniteLegale.denominationUniteLegale;
+            const is_public = selection.is_public;
             const zipcode = selection.adresseEtablissement.codePostalEtablissement;
             const city = selection.adresseEtablissement.libelleCommuneEtablissement;
             const street = `${selection.adresseEtablissement.numeroVoieEtablissement} ${selection.adresseEtablissement.typeVoieEtablissement} ${selection.adresseEtablissement.libelleVoieEtablissement} `;
@@ -124,6 +125,9 @@ export default function SirenInput({
             document.getElementById("organisation_city").value = city;
             document.getElementById("organisation_zipcode").value = zipcode;
             document.getElementById("organisation_siret").value = selection.siret;
+            //  -update organisation_is_public_false
+            document.getElementById("organisation_is_public_true").checked = is_public;
+            document.getElementById("organisation_is_public_false").checked = !is_public;
             searchCoordinatesByAddress(fullAddress);
             setSelectedCompany({
               name: selection.uniteLegale.denominationUniteLegale,

@@ -22,7 +22,7 @@ main#content[role="main"
                           id: "login-1760",
                           url: session_path(resource_name)) do |f|
                 h1.fr-h4.fr-mb-n1w
-                  | Connexion à monstagedetroisième.fr
+                  | Connexion à Mon stage de seconde
                 = f.hidden_field :targeted_offer_id,
                                   value: params.dig(:user, :targeted_offer_id)
                 = render "layouts/form_errors",
@@ -35,7 +35,7 @@ main#content[role="main"
                       legend#credentials-legend.fr-fieldset__legend
                       .fr-fieldset__element
                         = render "users/select_channel",
-                                  label: "Choisissez votre méthode de connexion",
+                                  label: "",
                                   form: f,
                                   error_status: error_status,
                                   resource: resource,

@@ -12,11 +12,12 @@ class WithTeamTest < ApplicationSystemTestCase
             invitation_email: employer_2.email
     sign_in(employer_2)
     visit employer_2.after_sign_in_path
-    click_button 'Oui'
-    assert_equal 2, all('span.fr-badge.fr-badge--no-icon.fr-badge--success', text: "INSCRIT").count
-    assert_equal 2, employer_1.team.team_size
-    assert_equal 2, employer_2.team.team_size
-    assert_equal 4 , AreaNotification.count
+    assert_difference('AreaNotification.count', 4) do
+      click_button 'Oui'
+      assert_equal 2, all('span.fr-badge.fr-badge--no-icon.fr-badge--success', text: "INSCRIT").count
+      assert_equal 2, employer_1.team.team_size
+      assert_equal 2, employer_2.team.team_size
+    end
   end
 
   test 'adding an extra collegue make area_notifications count ok' do
