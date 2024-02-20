@@ -35,8 +35,6 @@ module OrganisationFormFiller
 
     fill_in "Rechercher votre société/administration dans l’annuaire des entreprises", with: '90943224700015'
     find("div.search-in-sirene ul[role='listbox'] li[role='option']").click
-    find('label', text: 'Public').click if is_public  # Default is private
-    select group.name, from: 'organisation_group_id' if group
 
     find('#organisation_employer_description_rich_text', visible: false).set("Une entreprise super cool ")
     fill_in 'Site web (optionnel)', with: 'https://beta.gouv.fr/'
