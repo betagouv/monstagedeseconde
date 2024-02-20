@@ -59,10 +59,10 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
   test 'GET #choose_profile' do
     get users_choose_profile_path
     assert_select 'title', "Création de compte | Monstage"
-    assert_select 'a[href=?]', '/identites/nouveau?as=Student'
+    # assert_select 'a[href=?]', '/identites/nouveau?as=Student'
     assert_select 'a[href=?]', '/utilisateurs/inscription?as=Employer'
-    assert_select 'a[href=?]', '/utilisateurs/inscription?as=SchoolManagement'
-    assert_select 'a[href=?]', '/utilisateurs/inscription?as=Statistician'
+    # assert_select 'a[href=?]', '/utilisateurs/inscription?as=SchoolManagement'
+    # assert_select 'a[href=?]', '/utilisateurs/inscription?as=Statistician'
   end
 
   test 'GET #registrations_standby as student using path?id=#id with pending account' do

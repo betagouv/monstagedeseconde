@@ -125,7 +125,6 @@ module Builders
       params = {
         max_candidates: hosting_info.max_candidates,
         max_students_per_group: hosting_info.max_students_per_group,
-        school_id: hosting_info.school_id,
         type: 'InternshipOffers::WeeklyFramed'
       }
       params[:week_ids] = hosting_info.week_ids
