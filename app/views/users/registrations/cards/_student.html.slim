@@ -2,14 +2,18 @@
   .fr-card__body
     .fr-card__content
       h3.fr-h4
-        | Élève de seconde générale et technologique
+        | Élève de seconde 
+        br
+        | générale 
+        br
+        |et technologique
       p.fr-text
         | Postulez et suivez vos candidatures pour trouver un stage.
     .fr-card__footer
       .fr-text--sm.text-muted Disponible le 15 avril 2024
-      .d-flex.align-items-center.justify-content-center
-        = link_to 'https://forms.sbc37.com/62553f47462f0e1887f81bfe/VQ35E9J0QhCSCxvF8H-mVA/form.html', class: 'fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-notification-3-line' do 
-          | Être notifié à l’ouverture
+      ul.fr-btns-group
+        li
+            = link_to "Être notifié à l’ouverture", 'https://forms.sbc37.com/62553f47462f0e1887f81bfe/VQ35E9J0QhCSCxvF8H-mVA/form.html', class: 'fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-notification-3-line'
         
   .fr-card__header
     .fr-ml-4w.fr-mt-5w

@@ -6,8 +6,9 @@
       p.fr-text
         | Faites découvrir vos métiers. Déposez des offres de stages pour un ou plusieurs élèves.
     .fr-card__footer
-      .fr-text--sm.text-muted Inscritption ouverte
-      .d-flex.align-items-center.justify-content-center
+      .fr-text--sm.text-muted Inscription ouverte
+      ul.fr-btns-group
+        li
           = link_to "Inscription",
                     new_user_registration_path(as: 'Employer'),
                     class: 'fr-btn fr-btn--secondary'
