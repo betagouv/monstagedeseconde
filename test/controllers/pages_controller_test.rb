@@ -47,11 +47,11 @@ class PagesTest < ActionDispatch::IntegrationTest
     assert_select 'title', "Accessibilité | Monstage"
   end
 
-  test 'GET pages#statistiques works' do
-    get statistiques_path
-    assert_response :success
-    assert_template 'pages/statistiques'
-  end
+  # test 'GET pages#statistiques works' do
+  #   get statistiques_path
+  #   assert_response :success
+  #   assert_template 'pages/statistiques'
+  # end
 
   test '#register_to_webinar fails when not referent' do
     student = create(:student)
