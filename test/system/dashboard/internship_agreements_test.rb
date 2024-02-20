@@ -172,7 +172,7 @@ module Dashboard
       employer, internship_offer = create_employer_and_offer
       internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
       internship_agreement = create(:internship_agreement, internship_application: internship_application, aasm_state: :started_by_school_manager)
-      sign_in(employer)
+      sign_in(internship_offer.employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
         find('div.actions', text: "La convention est dans les mains du chef d'établissement.")
