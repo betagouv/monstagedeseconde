@@ -77,8 +77,8 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
   # ------- Accept/refuse
     # ------- Accept
   test "invitation accepted" do
-    employer_1 = create(:employer)
-    employer_2 = create(:employer)
+    employer_1 = create(:employer, first_name: 'Jules', last_name: 'Verne')
+    employer_2 = create(:employer, first_name: 'Hector', last_name: 'Malot')
     team_member_invitation = create(:team_member_invitation,
                          inviter: employer_1,
                          member: employer_2,
@@ -86,9 +86,10 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
     sign_in employer_2
     get new_dashboard_team_member_invitation_path
     assert_response :success
-    assert_difference "TeamMemberInvitation.count", 1 do
+    # assert_no_difference "TeamMemberInvitation.count" do
+    assert_changes "TeamMemberInvitation.count", from:1 , to: 2 do
       patch join_dashboard_team_member_invitation_path( id: team_member_invitation.id),
-            params: { id: team_member_invitation.id, commit: "Oui" }
+                                                        params: { id: team_member_invitation.id, commit: "Oui" }
     end
     assert_redirected_to dashboard_team_member_invitations_path
     assert_equal team_member_invitation.reload.aasm_state, "accepted_invitation"
@@ -119,8 +120,8 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'when two employers of different teams invite each other, ignored invitation is deleted' do
-    employer_1 = create(:employer)
-    employer_2 = create(:employer)
+    employer_1 = create(:employer, first_name: 'Jules', last_name: 'Verne')
+    employer_2 = create(:employer, first_name: 'Hector', last_name: 'Malot')
     team_member_1 = create(:team_member_invitation,
                            inviter: employer_1,
                            member: employer_2,
@@ -134,7 +135,7 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_no_difference "TeamMemberInvitation.count" do
       patch join_dashboard_team_member_invitation_path(id: team_member_1.id),
-            params: { id: team_member_1.id, commit: "Oui" }
+                                                       params: { id: team_member_1.id, commit: "Oui" }
     end
     assert_redirected_to dashboard_team_member_invitations_path
     assert_equal team_member_1.reload.aasm_state, "accepted_invitation"
