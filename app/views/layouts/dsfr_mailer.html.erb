@@ -137,31 +137,24 @@
             <table role="presentation" class="main"
                    style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background: #ffffff; border: 1px solid grey; "
                    width="100%">
+              <col style="width:100%">
               <tbody>
                 <!-- START MAIN CONTENT AREA -->
                 <tr>
                   <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 0" valign="top" class='container'>
                     <table role="presentation" border="0" width='100%' border-collapse="collapse">
-                      <tr style="width: 100%">
-                        <td style="padding: 0" >
-                          <table role="presentation" class="logo standard" border-collapse="collapse" mso-table-lspace='0pt' mso-table-rspace='0pt' bgcolor="#E0E6E8" style="width: 100%">
+                      <tr>
+                        <td height="75px" style="padding: 26px 26px 0 26px">
+                          <table role="presentation" border="0" mso-table-lspace='0pt' mso-table-rspace='0pt' width="100%">
                             <tbody>
+                              <tr style="height: 74px">
+                                <td style="font-family: sans-serif; padding:0 10px 0 0 ; vertical-align: middle ">
+                                  <%= image_tag(attachments['header-email.png'].url, height: "74px", alt: 'Logo education nationale et 1 jeune 1 solution') %>
+                                </td>
+                              </tr>
                               <tr>
-                                <td background="#{image_url}" height="65" style="padding: 0">
-                                  <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="standard" height="50px" border-collapse="collapse" mso-table-lspace='0pt' mso-table-rspace='0pt'>
-                                    <tbody>
-                                      <tr style="height: 45px">
-                                        <td style="font-family: sans-serif; padding:0 20px 0 20px;margin-bottom: 0; vertical-align=top">
-                                          <%= image_tag(attachments['logo-mon-stage-3e-bleu-short.svg'].url, height: 35, width: 64, alt: 'Logo monstagedetroisieme.fr') %>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td style="font-family: sans-serif; padding:20px 20px 20px 20px;text-align: left; width:100%; vertical-align: top; color: #000091; font-family: Helvetica; font-size: 32px; font-style: normal; font-weight: 700; line-height: normal;">
-                                          <%= yield(:title) %>
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
+                                <td style="font-family: sans-serif; padding:20px 20px 20px 20px;text-align: left; width:100%; vertical-align: top; color: #000091; font-family: Helvetica; font-size: 32px; font-style: normal; font-weight: 700; line-height: normal;">
+                                  <%= yield(:title) %>
                                 </td>
                               </tr>
                             </tbody>
@@ -169,7 +162,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 28px 44px" valign="top" class='container'>
+                        <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 0 44px 28px 44px" valign="top" class='container'>
                           <%= yield %>
                         </td>
                       </tr>
@@ -177,52 +170,22 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 0" valign="top" class='container'>
-                    <table role="presentation" class="main"
-                            style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background: #ffffff;"
-                            width="100%">
-                      <tr bgcolor='#F5F5FD' style="line-height:40px; margin-bottom: 25px" >
-                        <td style="font-family: sans-serif; font-size: 14px; padding-left: 20px ; vertical-align: middle;line-height:40px;">
-                          Suivez-nous sur les réseaux
-                        </td>
-                        <td style="font-family: sans-serif; font-size: 14px; line-height:40px;" width='6%'>
-                          <a href="https://www.tweeter.com/monstagede3eme" style="text-decoration: none;">
-                            <%= image_tag(attachments['tweeter.png'].url, height: 18, width: 18, alt: 'Logo tweeter', style:"vertical-align: middle;padding-left: 3px")%>
-                          </a>
-                        </td>
-                        <td style="font-family: sans-serif; font-size: 14px;  line-height:40px;" width='6%'>
-                          <a href="https://www.instagram.com/monstagede3eme" style="text-decoration: none;">
-                            <%= image_tag(attachments['insta.png'].url, height: 18, width: 18, alt: 'Logo Instagram', style:"vertical-align: middle;padding-left: 3px")%>
-                          </a>
-                        </td>
-                        <td style="font-family: sans-serif; font-size: 14px; line-height:40px; padding-right: 20px ;" width='6%'>
-                          <a href="https://www.linkedin.com/company/mon-stage-de-3e" style="text-decoration: none;">
-                            <%= image_tag(attachments['linked_in.png'].url, height: 18, width: 18, alt: 'Logo linked_in', style:"vertical-align: middle;padding-left: 3px")%>
-                          </a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 0" valign="top" >
-                    <table role="presentation" class="main"
-                            style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background: #ffffff"
-                            width="100%">
-                      <tr>
-                        <td style="font-family: sans-serif; font-size: 14px; line-height:131px; vertical-align: middle" width='40%'>
-                          <%= image_tag(attachments['rf.png'].url, height: 81, width: 90, alt: 'Logo République Française', style:"vertical-align: middle;padding-left: 16px")%>
-                        </td>
-                        <td style="font-family: sans-serif; font-size: 12px; height: 131px;" width='60%'>
-                          <div style="display: block; vertical-align: middle;text-align:right; padding-right:25px">
-                            monstagedetroisieme.fr est un service fourni par
-                            <br>
-                            <a href='https://incubateur.anct.gouv.fr/'>l'Incubateur des Territoires de l'A.N.C.T</a>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                      </tr>
+                  <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding: 26px 26px 26px 26px" valign="top" >
+                    <table role="presentation" border="0" mso-table-lspace='0pt' mso-table-rspace='0pt' width="100%">
+                      <tbody>
+                        <tr style="height: 74px">
+                          <td style="font-family: sans-serif; padding:0 10px 0 0 ; vertical-align: middle">
+                            <%= image_tag(attachments['logo-education-nationale.svg'].url, height: "74px", alt: 'Logo education nationale') %>
+                          </td>
+                          <td style="font-family: helvetica; padding:0; text-align: right" >
+                            <p style="line-height: 10px; vertical-align: top; border: margin-top: 0 ; font-size:12px">
+                              Mon Stage de Seconde est un service fourni par
+                              <br/>
+                              la Direction du Numérique pour l’Éducation (DNE).
+                            </p>
+                          </td>
+                        </tr>
+                      </tbody>
                     </table>
                   </td>
                 </tr>
