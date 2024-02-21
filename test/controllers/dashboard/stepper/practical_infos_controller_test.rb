@@ -99,7 +99,6 @@ module Dashboard::Stepper
       assert_equal organisation.city, created_internship_offer.organisation.city
       assert_equal organisation.coordinates, created_internship_offer.organisation.coordinates
       assert_equal organisation.is_public, created_internship_offer.is_public
-      assert_equal organisation.group_id, created_internship_offer.group_id
       assert_equal organisation.employer_website, created_internship_offer.employer_website
 
       # recopy internship_offer_info

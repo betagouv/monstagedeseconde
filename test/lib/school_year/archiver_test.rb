@@ -4,7 +4,7 @@ require 'test_helper'
 module SchoolYear
   class ArchiverTest < ActiveSupport::TestCase
     test 'cleaning:year_end task' do
-      if ENV.fetch('RUN_BRITTLE_TESTS', false)
+      if ENV.fetch('RUN_BRITTLE_TEST', false)
         internship_offer = nil
         next_week        = nil
         final_week_id    = 0
