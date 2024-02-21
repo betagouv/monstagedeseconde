@@ -1,5 +1,8 @@
 #!/bin/bash
 set -x
+set -a
+source .env
+set +a
 
 SSH_PRIV=~/.ssh/clevercloud-monstage
 if [ ! -f "$SSH_PRIV" ]; then
@@ -7,4 +10,4 @@ if [ ! -f "$SSH_PRIV" ]; then
   exit 1;
 fi;
 
-ssh -t ssh@sshgateway-clevercloud-customers.services.clever-cloud.com app_cb8fb836-b0c7-43e1-ba2e-130a73626fa6
+ssh -t ssh@sshgateway-clevercloud-customers.services.clever-cloud.com $CLEVER_APP_PROD_ID
