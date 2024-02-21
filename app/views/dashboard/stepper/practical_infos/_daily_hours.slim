@@ -7,7 +7,7 @@ div.fr-my-2w data-controller="daily-hours"
                   data: {action: "change->daily-hours#handleToggleWeeklyPlanning"},
                   disabled: disabled
     = label_tag 'weekly_planning',
-                'Les horaires sont les mêmes toute la semaine',
+                'Les horaires sont les mêmes sur toute la période de stage',
                  class: 'fr-label'
   #weekly-planning[class="mt-3 fr-my-2w #{'d-none' if form.object.daily_planning?}"]
     .row
@@ -18,7 +18,7 @@ div.fr-my-2w data-controller="daily-hours"
                       class: "fr-select",
                       disabled: disabled,
                       data: { :'daily-hours-target' => "weeklyHoursStart", action: "change->daily-hours#weeklyStartChange" },
-                      aria: { label: "Selectionner une heure de debut de stage pour tous les jours de la semaine" }, id: "#{form.object_name}_weekly_hours_start" }
+                      aria: { label: "Selectionner une heure de debut de stage pour tous les jours de la période de stage" }, id: "#{form.object_name}_weekly_hours_start" }
 
       .col-1 style="display: flex;align-items: center;justify-content: center;"
         | à
@@ -29,7 +29,7 @@ div.fr-my-2w data-controller="daily-hours"
                       class: "fr-select",
                       disabled: disabled || !select_weekly_end(form.object),
                       data: { :'daily-hours-target' => "weeklyHoursEnd", action: "change->daily-hours#weeklyEndChange" },
-                      aria: { label: "Selectionner une heure de debut de stage pour tous les jours de la semaine" }, id: "#{form.object_name}_weekly_hours_end" }
+                      aria: { label: "Selectionner une heure de debut de stage pour tous les jours de la période de stage" }, id: "#{form.object_name}_weekly_hours_end" }
 
 
 
