@@ -328,10 +328,10 @@ $sortLinkOffset: 15px;
   display: flex;
 }
 .dashboard-container-child{
-  flex: 1 1 auto;
+  flex: 5 1 auto;
 }
 .dashboard-container-child:first-child{
-  flex: 1 1 $sidemenu-width;
+  flex: 2 1;
   min-width: $sidemenu-width;
 }
 
