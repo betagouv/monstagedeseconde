@@ -1,8 +1,6 @@
 #!/bin/bash
 set -x
-set -a
-source .env
-set +a
+
 target='staging'
 git remote -vvv | grep $target | grep 'clever'
 
@@ -15,7 +13,7 @@ fi
 
 SSH_PRIV=~/.ssh/clevercloud-monstage
 if [ ! -f "$SSH_PRIV" ]; then
-  echo "missing private key to push, check kdbx for content"
+  echo "missing private key to push"
   exit 1;
 fi;
 
