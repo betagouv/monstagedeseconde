@@ -99,7 +99,6 @@ module Dashboard::InternshipOffers
         weeks = [Week.find_by(number: 3, year: 2020)]
         school = create(:school, :with_school_manager, weeks: weeks)
         employer, internship_offer = create_employer_and_offer
-        internship_offer.update(weeks: weeks)
         assert_equal 1, school.school_internship_weeks.count
         student = create(:student, school: school)
         other_student = create(:student, school: school)
@@ -118,7 +117,6 @@ module Dashboard::InternshipOffers
         visit internship_offers_path
         click_on internship_offer.title
         first(:link, 'Postuler').click
-        select('Semaine du 13 janvier au 19 janvier')
         fill_in 'Numéro de portable élève ou parent',	with: "0600060606"
         click_on 'Valider'
         assert_equal 2, InternshipApplication.count
