@@ -65,13 +65,11 @@ FactoryBot.define do
     end
 
     trait :weekly_internship_offer do
-      weeks { [Week.selectable_from_now_until_end_of_school_year.first]}
       description { 'Lorem ipsum dolor weekly_internship_offer' }
       remaining_seats_count { max_candidates }
     end
 
     trait :api_internship_offer do
-      weeks { [Week.selectable_from_now_until_end_of_school_year.first] }
       permalink { 'https://google.fr' }
       description { 'Lorem ipsum dolor api' }
       sequence(:remote_id) { |n| n }
@@ -80,15 +78,12 @@ FactoryBot.define do
     end
 
     trait :last_year_weekly_internship_offer do
-      weeks { [Week.of_previous_school_year.first] }
     end
 
     trait :weekly_internship_offer_by_statistician do
-      weeks { [Week.selectable_from_now_until_end_of_school_year.first] }
     end
 
     trait :troisieme_generale_internship_offer do
-      weeks { [Week.selectable_from_now_until_end_of_school_year.first] }
     end
 
     trait :discarded do

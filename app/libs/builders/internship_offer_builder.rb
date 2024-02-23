@@ -25,6 +25,9 @@ module Builders
                                  .perform_later(internship_offer_id: internship_offer.id)
         callback.on_success.try(:call, internship_offer)
       rescue ActiveRecord::RecordInvalid => e
+        puts e 
+        puts e 
+        puts e 
         callback.on_failure.try(:call, e.record)
       end
 
@@ -33,7 +36,7 @@ module Builders
       yield callback if block_given?
       authorize :create, model
       preprocess_organisation(params)
-      create_params = preprocess_api_params(params, **{fallback_weeks: true})
+      create_params = preprocess_api_params(params)
       internship_offer = model.create!(create_params)
       internship_offer.update(
         aasm_state: 'published',
@@ -52,7 +55,7 @@ module Builders
     def update(instance:, params:)
       yield callback if block_given?
       authorize :update, instance
-      instance.attributes = preprocess_api_params(params, fallback_weeks: false)
+      instance.attributes = preprocess_api_params(params)
       instance = deal_with_max_candidates_change(params: params, instance: instance)
       if from_api?
         instance.reset_publish_states
@@ -90,12 +93,11 @@ module Builders
       @callback = InternshipOfferCallback.new
     end
 
-    def preprocess_api_params(params, fallback_weeks:)
+    def preprocess_api_params(params)
       return params unless from_api?
 
       opts = { params: params,
-               user: user,
-               fallback_weeks: fallback_weeks }
+               user: user}
 
       Dto::ApiParamsAdapter.new(**opts)
                            .sanitize
@@ -125,10 +127,9 @@ module Builders
       params = {
         max_candidates: hosting_info.max_candidates,
         max_students_per_group: hosting_info.max_students_per_group,
-        school_id: hosting_info.school_id,
-        type: 'InternshipOffers::WeeklyFramed'
+        type: 'InternshipOffers::WeeklyFramed',
+        period: hosting_info.period
       }
-      params[:week_ids] = hosting_info.week_ids
       params
     end
 
@@ -202,7 +203,6 @@ module Builders
 
     def deal_with_former_applications(instance: )
       previous_week_ids_with_applications(instance: instance).each do |week_id|
-        next if instance.week_ids.include?(week_id)
 
         instance.internship_applications
                 .where(week_id: week_id)

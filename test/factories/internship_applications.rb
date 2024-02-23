@@ -89,7 +89,6 @@ FactoryBot.define do
 
     trait :weekly do
       internship_offer { weekly_internship_offer_helper }
-      week { internship_offer.weeks.first }
     end
 
     factory :weekly_internship_application, traits: [:weekly],

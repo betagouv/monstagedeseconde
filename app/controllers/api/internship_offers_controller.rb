@@ -7,7 +7,7 @@ module Api
     def search
       render_not_authorized and return unless current_api_user.operator.api_full_access
 
-      @internship_offers = finder.all.includes([:sector, :employer, :school]).order(id: :desc)
+      @internship_offers = finder.all.includes([:sector, :employer]).order(id: :desc)
       
       formatted_internship_offers = format_internship_offers(@internship_offers)
       data = {
@@ -80,8 +80,7 @@ module Api
               :handicap_accessible,
               :lunch_break,
               daily_hours: {},
-              coordinates: {},
-              weeks: []
+              coordinates: {}
             )
     end
 
@@ -105,8 +104,7 @@ module Api
               :lunch_break,
               :handicap_accessible,
               daily_hours: {},
-              coordinates: {},
-              weeks: []
+              coordinates: {}
             )
     end
 

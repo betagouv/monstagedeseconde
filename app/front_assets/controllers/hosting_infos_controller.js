@@ -5,9 +5,6 @@ import { showElement, hideElement } from '../utils/dom';
 export default class extends Controller {
   static targets = [
     'type',
-    'weeksContainer',
-    'studentsMaxGroupGroup',
-    'studentsMaxGroupInput',
     'maxCandidatesInput',
     'wholeYear',
     'collectiveButton',

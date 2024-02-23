@@ -19,13 +19,11 @@ module Dashboard::InternshipOffers
       travel_to(Date.new(2019, 3, 1)) do
         school = create(:school)
         employer = create(:employer)
-        weeks = [next_week]
         internship_offer = build(:weekly_internship_offer, employer: employer)
         sign_in(internship_offer.employer)
         params = internship_offer
                   .attributes
                   .merge('type' => InternshipOffers::WeeklyFramed.name,
-                         'week_ids' => weeks.map(&:id),
                          'coordinates' => { latitude: 1, longitude: 1 },
                          'school_id' => school.id,
                          'description_rich_text' => '<div>description</div>',
@@ -39,9 +37,6 @@ module Dashboard::InternshipOffers
         created_internship_offer = InternshipOffer.last
         assert_equal InternshipOffers::WeeklyFramed.name, created_internship_offer.type
         assert_equal employer, created_internship_offer.employer
-        assert_equal school, created_internship_offer.school
-        assert_equal weeks.map(&:id), created_internship_offer.week_ids
-        assert_equal weeks.size, created_internship_offer.internship_offer_weeks_count
         assert_equal params['max_candidates'], created_internship_offer.max_candidates
         assert_equal params['max_candidates'], created_internship_offer.remaining_seats_count
         assert_redirected_to internship_offer_path(created_internship_offer, stepper: true)
@@ -52,14 +47,12 @@ module Dashboard::InternshipOffers
       travel_to(Date.new(2020, 9, 1)) do
         school = create(:school)
         employer = create(:ministry_statistician)
-        weeks = Week.selectable_from_now_until_end_of_school_year
         internship_offer = build(:weekly_internship_offer, employer: employer)
         sign_in(internship_offer.employer)
         params = internship_offer
                   .attributes
                   .merge('type' => InternshipOffers::WeeklyFramed.name,
                           'group' => employer.ministries.first,
-                          'week_ids' => weeks.map(&:id),
                           'coordinates' => { latitude: 1, longitude: 1 },
                           'school_id' => school.id,
                           'description_rich_text' => '<div>description</div>',
@@ -72,9 +65,6 @@ module Dashboard::InternshipOffers
         created_internship_offer = InternshipOffer.last
         assert_equal InternshipOffers::WeeklyFramed.name, created_internship_offer.type
         assert_equal employer, created_internship_offer.employer
-        assert_equal school, created_internship_offer.school
-        assert_equal weeks.map(&:id), created_internship_offer.week_ids
-        assert_equal weeks.size, created_internship_offer.internship_offer_weeks_count
         assert_equal params['max_candidates'], created_internship_offer.max_candidates
         assert_redirected_to internship_offer_path(created_internship_offer, stepper: true)
       end

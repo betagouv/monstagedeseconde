@@ -148,8 +148,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     # not displayed
     offer_paris_3 = create(
       :weekly_internship_offer,
-      title: 'Infirmier',
-      week_ids: [1, 2, 3]
+      title: 'Infirmier'
     )
     offer_bordeaux_1 = create(
       :weekly_internship_offer,
@@ -166,7 +165,6 @@ class IndexTest < ActionDispatch::IntegrationTest
 
     get internship_offers_path(
       keyword: 'avocat',
-      week_ids: offer_paris_1.week_ids,
       format: :json
     )
 
@@ -193,7 +191,7 @@ class IndexTest < ActionDispatch::IntegrationTest
 
     assert_equal 1, InternshipOffers::WeeklyFramed.count
 
-    weeks = internship_offer_without_application.weeks
+    weeks = Week.selectable_from_now_until_end_of_school_year.first(2)
     school = create(:school, weeks: weeks)
     class_room = create(:class_room,  school: school)
     student = create(:student, school: school, class_room: class_room)
@@ -201,15 +199,13 @@ class IndexTest < ActionDispatch::IntegrationTest
       :weekly_internship_offer,
       max_candidates: 2,
       max_students_per_group: 2,
-      title: 'offer with_application',
-      weeks: weeks)
+      title: 'offer with_application')
 
     internship_application = create(
       :internship_application,
       internship_offer: internship_offer_with_application,
       aasm_state: 'approved',
-      student: student,
-      week: weeks.first)
+      student: student)
 
     assert_equal 2, InternshipOffers::WeeklyFramed.count
     assert_equal 1, InternshipApplication.count
@@ -306,20 +302,14 @@ class IndexTest < ActionDispatch::IntegrationTest
                                class_room: create(:class_room,
                                                   school: school))
     internship_offer = create(:weekly_internship_offer,
-                              max_candidates: max_candidates,
-                              weeks: [week]
-                              )
+                              max_candidates: max_candidates)
     internship_application = create(:internship_application,
-                                    internship_offer: internship_offer,
-                                    week: week)
-
+                                    internship_offer: internship_offer, aasm_state: 'approved')
 
     sign_in(student)
     InternshipOffer.stub :nearby, InternshipOffer.all do
-      InternshipOffer.stub :by_weeks, InternshipOffer.all do
-        get internship_offers_path, params: { format: :json }
-        assert_json_absence_of(json_response, internship_offer)
-      end
+      get internship_offers_path, params: { format: :json }
+      assert_json_absence_of(json_response, internship_offer)
     end
   end
 
@@ -328,11 +318,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     max_candidates = 2
     internship_offer = create(:weekly_internship_offer,
                               max_candidates: max_candidates,
-                              max_students_per_group: max_candidates,
-                              internship_offer_weeks: [
-                                build(:internship_offer_week, blocked_applications_count: max_candidates - 1,
-                                                              week: Week.first)
-                              ])
+                              max_students_per_group: max_candidates)
     sign_in(create(:student))
     InternshipOffer.stub :nearby, InternshipOffer.all do
       InternshipOffer.stub :by_weeks, InternshipOffer.all do
@@ -342,77 +328,6 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index as student finds internship_offers available with one week that is not available' do
-    max_candidates = 2
-    internship_weeks = [Week.first, Week.last]
-    school = create(:school, weeks: internship_weeks)
-    blocked_internship_week = build(:internship_offer_week, blocked_applications_count: max_candidates - 1,
-                                                            week: internship_weeks[0])
-    not_blocked_internship_week = build(:internship_offer_week, blocked_applications_count: 0,
-                                                                week: internship_weeks[1])
-    internship_offer = create(:weekly_internship_offer, max_candidates: max_candidates,
-                                                        internship_offer_weeks: [blocked_internship_week,
-                                                                                 not_blocked_internship_week])
-    sign_in(create(:student, school: school))
-    
-    InternshipOffer.stub :nearby, InternshipOffer.all do
-      get internship_offers_path, params: { format: :json }
-      assert_json_presence_of(json_response, internship_offer)
-    end
-  end
-
-  test 'GET #index as student ignores internship_offers not blocked on different week that is not available' do
-    max_candidates = 2
-    travel_to(Date.new(2019, 3, 1)) do
-      internship_weeks = [
-        Week.selectable_from_now_until_end_of_school_year.second,
-        Week.selectable_from_now_until_end_of_school_year.last
-      ]
-      internship_offer = create(:weekly_internship_offer,
-                                max_candidates: max_candidates, weeks: internship_weeks)
-      blocked_internship_week = create(:weekly_internship_application,
-                                       internship_offer: internship_offer,
-                                       aasm_state: :approved,
-                                       week: internship_weeks[0])
-      # blocked_internship_week.signed!
-      not_blocked_internship_week = create(:weekly_internship_application,
-                                           internship_offer: internship_offer,
-                                           aasm_state: :submitted,
-                                           week: internship_weeks[1])
-
-      sign_in(create(:student))
-
-      get internship_offers_path(week_ids: internship_weeks.map(&:id),
-                                 params: { format: :json })
-      assert_json_presence_of(json_response, internship_offer)
-
-      get internship_offers_path(week_ids: [internship_weeks[1].id],
-                                 params: { format: :json })
-      assert_json_presence_of(json_response, internship_offer)
-    end
-  end
-
-  test 'GET #index as student finds internship_offers blocked on other weeks' do
-    max_candidates = 2
-    internship_weeks = [Week.first, Week.last]
-    school = create(:school, weeks: [internship_weeks[1]])
-    blocked_internship_week = build(:internship_offer_week, blocked_applications_count: max_candidates - 1,
-                                                            week: internship_weeks[0])
-
-    not_blocked_internship_week = build(:internship_offer_week, blocked_applications_count: 0,
-                                                                week: internship_weeks[1])
-    internship_offer = create(:weekly_internship_offer, published_at: Time.now, max_candidates: max_candidates,
-                                                        internship_offer_weeks: [blocked_internship_week,
-                                                                                 not_blocked_internship_week])
-    
-
-    sign_in(create(:student, school: school))
-
-    InternshipOffer.stub :nearby, InternshipOffer.all do
-      get internship_offers_path, params: { format: :json }
-      assert_json_presence_of(json_response, internship_offer)
-    end
-  end
 
   test 'GET #index as student with page, returns paginated content' do
     # Api offers are ordered by creation date, so we can't test pagination with cities
@@ -490,10 +405,8 @@ class IndexTest < ActionDispatch::IntegrationTest
       school_at_paris = create(:school, :at_paris)
       student = create(:student, school: school_at_paris)
       internship_offer_at_paris = create(:weekly_internship_offer,
-                                        weeks: [week],
                                         coordinates: Coordinates.paris)
       internship_offer_at_bordeaux = create(:weekly_internship_offer,
-                                            weeks: [week],
                                             coordinates: Coordinates.bordeaux)
 
       InternshipOffer.stub :by_weeks, InternshipOffer.all do
@@ -513,8 +426,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     week = Week.find_by(year: 2019, number: 10)
     school_at_bordeaux = create(:school, :at_bordeaux)
     student = create(:student, school: school_at_bordeaux)
-    create(:weekly_internship_offer, weeks: [week],
-                                     coordinates: Coordinates.paris)
+    create(:weekly_internship_offer, coordinates: Coordinates.paris)
 
     InternshipOffer.stub :by_weeks, InternshipOffer.all do
       sign_in(student)
@@ -533,64 +445,13 @@ class IndexTest < ActionDispatch::IntegrationTest
       school = create(:school, weeks: [week])
       student = create(:student, school: school,
                                 class_room: create(:class_room, school: school))
-      offer_overlaping_school_weeks = create(:weekly_internship_offer,
-                                            weeks: [week])
-      offer_not_overlaping_school_weeks = create(:weekly_internship_offer,
-                                                weeks: [Week.find_by(
-                                                  year: 2019, number: 11
-                                                )])
+      offer_overlaping_school_weeks = create(:weekly_internship_offer)
+      offer_not_overlaping_school_weeks = create(:weekly_internship_offer)
       sign_in(student)
       InternshipOffer.stub :nearby, InternshipOffer.all do
         get internship_offers_path, params: { format: :json }
         assert_json_presence_of(json_response, offer_overlaping_school_weeks)
         assert_json_presence_of(json_response, offer_not_overlaping_school_weeks)
-      end
-    end
-  end
-
-  test 'GET #index as student filtering by weeks shows all offers' do
-    travel_to(Date.new(2019, 12, 1)) do
-      week = Week.find_by(year: 2020, number: 10)
-      school = create(:school, weeks: [week])
-      student = create(:student, school: school,
-                                class_room: create(:class_room, school: school))
-      offer_overlaping_school_weeks = create(:weekly_internship_offer,
-                                            weeks: [week])
-
-      refute offer_overlaping_school_weeks.shown_as_masked?
-      offer_not_overlaping_school_weeks = create(:weekly_internship_offer,
-                                                weeks: [Week.find_by(
-                                                  year: 2020, number: 11
-                                                )])
-      sign_in(student)
-      InternshipOffer.stub :nearby, InternshipOffer.all do
-        get internship_offers_path(week_ids: school.week_ids, format: :json)
-
-        assert_json_presence_of(json_response, offer_overlaping_school_weeks)
-        assert_json_absence_of(json_response, offer_not_overlaping_school_weeks)
-      end
-    end
-  end
-
-  test 'GET #index as student ' \
-       'ignores internship_offer restricted to school' \
-       'finds internship_offer limited to current student school ' \
-       'finds all internship_offers not limited' do
-    student = create(:student, school: create(:school))
-    sign_in(student)
-
-    internship_limited_to_another_school = create(:weekly_internship_offer,
-                                                  school: create(:school))
-    internship_limited_to_student_school = create(:weekly_internship_offer,
-                                                  school: student.school)
-    internship_not_restricted_to_school = create(:weekly_internship_offer)
-
-    InternshipOffer.stub :nearby, InternshipOffer.all do
-      InternshipOffer.stub :by_weeks, InternshipOffer.all do
-        get internship_offers_path, params: { format: :json }
-        assert_json_presence_of(json_response, internship_not_restricted_to_school)
-        assert_json_presence_of(json_response, internship_limited_to_student_school)
-        assert_json_absence_of(json_response, internship_limited_to_another_school)
       end
     end
   end

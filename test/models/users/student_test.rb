@@ -58,62 +58,15 @@ module Users
       assert_equal main_teacher.id, student.main_teacher.id
     end
 
-    test "#school_and_offer_common_weeks when school has weeks" do
-      travel_to Date.new(2020, 9, 1) do
-        school_with_weeks = create(:school, :with_school_manager, weeks: Week.selectable_on_school_year.first(2))
-        student = create(:student, school: school_with_weeks)
-        assert_equal 2, student.school.weeks.count
-        internship_offer = create(:weekly_internship_offer, weeks: [Week.selectable_on_school_year.first])
-        misfitting_offer = create(:weekly_internship_offer, weeks: [Week.selectable_on_school_year.first(3).last])
-
-        assert_equal [school_with_weeks.weeks.first], student.school_and_offer_common_weeks(internship_offer)
-        assert_equal [], student.school_and_offer_common_weeks(misfitting_offer)
-      end
-    end
-
-    test "#school_and_offer_common_weeks when school has no week" do
-      travel_to Date.new(2020, 9, 1) do
-        school_without_weeks = create(:school)
-        student = create(:student, school: school_without_weeks)
-        internship_offer = create(:weekly_internship_offer, weeks: [Week.selectable_on_school_year.first])
-
-        assert  student.school_and_offer_common_weeks(internship_offer).empty?
-      end
-    end
-
-    test "#available_offers" do
-      travel_to Date.new(2020, 9, 1) do
-        weeks_till_end = Week.selectable_from_now_until_end_of_school_year
-        school         = create(:school, :with_school_manager, weeks: [weeks_till_end.first])
-        student        = create(:student, school: school)
-        assert_equal 0 , student.available_offers.to_a.count
-        create(:weekly_internship_offer, weeks:  weeks_till_end.last(2))
-        # since no fit
-        assert_equal 0 , student.available_offers.to_a.count
-        # with one to fit
-        internship_offer = create(:weekly_internship_offer, weeks:  weeks_till_end.first(2))
-        assert_equal 1 , student.available_offers.to_a.count
-        create(:weekly_internship_offer, coordinates: Coordinates.bordeaux, weeks: weeks_till_end.first(2))
-        # still 1 since bordeaux won't fit
-        assert_equal 1 , student.available_offers.to_a.count
-        # and back to 0 if student has already applied
-        create(:internship_application,
-               student: student,
-               internship_offer: internship_offer,
-               week: weeks_till_end.second)
-        assert_equal 0 , student.available_offers.to_a.count
-      end
-    end
-
     test "#has_offers_to_apply_to?" do
       travel_to Date.new(2020, 9, 1) do
         weeks_till_end = Week.selectable_from_now_until_end_of_school_year
         school         = create(:school, :with_school_manager, weeks: [weeks_till_end.first])
         student        = create(:student, school: school)
         refute student.has_offers_to_apply_to?
-        create(:weekly_internship_offer, weeks:  weeks_till_end.last(2))
+        create(:weekly_internship_offer, coordinates: Coordinates.bordeaux)
         refute student.has_offers_to_apply_to?
-        create(:weekly_internship_offer, weeks:  weeks_till_end.first(2))
+        create(:weekly_internship_offer, coordinates: Coordinates.paris)
         assert student.has_offers_to_apply_to?
       end
     end

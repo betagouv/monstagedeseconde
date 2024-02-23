@@ -7,7 +7,7 @@ module InternshipOffers
     after_initialize :init
     before_create :reverse_academy_by_zipcode
 
-    attr_accessor :republish, :skip_enough_weeks_validation
+    attr_accessor :republish
 
     validates :street,
               :city,
@@ -23,7 +23,6 @@ module InternshipOffers
                               less_than_or_equal_to: :max_candidates,
                               message: "Le nombre maximal d'élèves par groupe ne peut pas dépasser le nombre maximal d'élèves attendus dans l'année" }
 
-    validate :enough_weeks, unless: :skip_enough_weeks_validation
     validate :schedules_check
 
     after_initialize :init
@@ -33,13 +32,7 @@ module InternshipOffers
     # fullfilled scope isolates those offers that have reached max_candidates
     #---------------------
     scope :fulfilled, lambda {
-      offers_ar      = InternshipOffer.arel_table
-      offer_weeks_ar = InternshipOfferWeek.arel_table
-
-      joins(:internship_offer_weeks)
-        .select([offer_weeks_ar[:blocked_applications_count].sum, offers_ar[:id],offers_ar[:max_candidates]])
-        .group(offers_ar[:id])
-        .having(offer_weeks_ar[:blocked_applications_count].sum.gteq(offers_ar[:max_candidates]))
+      joins(:stats).where('internship_offer_stats.remaining_seats_count < 1')
     }
 
     scope :uncompleted_with_max_candidates, lambda {
@@ -67,10 +60,6 @@ module InternshipOffers
 
     def visible
       published? ? "oui" : "non"
-    end
-
-    def skip_enough_weeks_validation
-      @skip_enough_weeks_validation ||= false
     end
 
     def supplied_applications

@@ -96,7 +96,7 @@ module Users
           internship_offer: internship_offer
         ).map(&:week)
          .uniq
-         .sort_by(&:id) & internship_offer.weeks
+         .sort_by(&:id)
     end
 
     def main_teacher

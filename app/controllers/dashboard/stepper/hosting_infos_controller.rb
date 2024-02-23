@@ -12,7 +12,6 @@ module Dashboard::Stepper
       @hosting_info = HostingInfo.new
       @organisation = Organisation.find(params[:organisation_id])
       @internship_offer_info = InternshipOfferInfo.find(params[:internship_offer_info_id])
-      @available_weeks = Week.selectable_from_now_until_end_of_school_year
     end
 
     # process step 3
@@ -30,14 +29,11 @@ module Dashboard::Stepper
         ))
       else
         @organisation = Organisation.find(params[:organisation_id])
-        @available_weeks = Week.selectable_from_now_until_end_of_school_year
-        
         render :new, status: :bad_request
       end
 
     rescue ActiveRecord::RecordInvalid
       @organisation = Organisation.find(params[:organisation_id])
-      @available_weeks = Week.selectable_from_now_until_end_of_school_year
       render :new, status: :bad_request
     end
 
@@ -46,7 +42,6 @@ module Dashboard::Stepper
       @hosting_info = HostingInfo.find(params[:id])
       @organisation = Organisation.find(params[:organisation_id])
       authorize! :edit, @hosting_info
-      @available_weeks = Week.selectable_from_now_until_end_of_school_year
     end
 
     # process update following a back to step 3 (info was created, it's updated)
@@ -62,7 +57,6 @@ module Dashboard::Stepper
         )
       else
         @organisation = Organisation.find(params[:organisation_id])
-        @available_weeks = Week.selectable_from_now_until_end_of_school_year
         render :new, status: :bad_request
       end
     end
@@ -72,11 +66,10 @@ module Dashboard::Stepper
     def hosting_info_params
       params.require(:hosting_info)
             .permit(
-              :school_id,
               :employer_id,
               :max_candidates,
               :max_students_per_group,
-              week_ids: []
+              :period
               )
     end
   end

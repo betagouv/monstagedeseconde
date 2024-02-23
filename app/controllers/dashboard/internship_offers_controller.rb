@@ -13,7 +13,7 @@ module Dashboard
         @internship_offer_areas = current_user.internship_offer_areas
       end
       authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
-      @internship_offers = finder.all.includes([:internship_offer_weeks])
+      @internship_offers = finder.all
       order_param = order_direction.nil? ? :published_at : {order_column => order_direction}
       @internship_offers = @internship_offers.order(order_param)
       if params[:search].present?
@@ -40,29 +40,26 @@ module Dashboard
         end
         on.failure do |failed_internship_offer|
           @internship_offer = failed_internship_offer || InternshipOffer.new
-          @available_weeks = Week.selectable_from_now_until_end_of_school_year
           render :new, status: :bad_request
         end
       end
     rescue ActionController::ParameterMissing
       @internship_offer = InternshipOffer.new
-      @available_weeks = Week.selectable_from_now_until_end_of_school_year
       render :new, status: :bad_request
     end
 
     def edit
       authorize! :update, @internship_offer
       @republish = true
-      @available_weeks = Week.selectable_from_now_until_end_of_school_year
     end
 
     def republish
       anchor = "max_candidates_fields"
       warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places et des semaines de stage"
 
-      if @internship_offer.remaining_seats_count.zero? && @internship_offer.has_weeks_in_the_future?
+      if @internship_offer.remaining_seats_count.zero?
         warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places de stage"
-      elsif (@internship_offer.remaining_seats_count > 0) && !@internship_offer.has_weeks_in_the_future?
+      elsif (@internship_offer.remaining_seats_count > 0)
         anchor = "weeks_container"
         warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des semaines de stage"
       end
@@ -89,7 +86,6 @@ module Dashboard
         respond_to do |format|
           format.html do
             @internship_offer = failed_internship_offer
-            @available_weeks = failed_internship_offer.available_weeks_when_editing
             render :edit, status: :bad_request
           end
         end
@@ -97,7 +93,6 @@ module Dashboard
       rescue ActionController::ParameterMissing
         respond_to do |format|
           format.html do
-            @available_weeks = @internship_offer.available_weeks_when_editing
             render :edit, status: :bad_request
           end
         end
@@ -155,7 +150,6 @@ module Dashboard
         @internship_offer = internship_offer.duplicate
       end
 
-      @available_weeks = Week.selectable_from_now_until_next_school_year
     end
 
     private
@@ -222,9 +216,9 @@ module Dashboard
                     :tutor_email, :employer_website, :employer_name, :street,
                     :zipcode, :city, :department, :region, :academy, :renewed,
                     :is_public, :group_id, :published_at, :republish, :type,
-                    :employer_id, :employer_type, :school_id, :verb, :user_update,
+                    :employer_id, :employer_type, :verb, :user_update,
                     :employer_description_rich_text, :siret, :employer_manual_enter,
-                    :contact_phone, :lunch_break, :aasm_state, coordinates: {}, week_ids: [],
+                    :contact_phone, :lunch_break, :aasm_state, coordinates: {},
                     daily_hours: {}, weekly_hours:[],
                     organisation_attributes: [
                       :id,

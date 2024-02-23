@@ -84,8 +84,7 @@ module Dashboard
       end
 
       def filter_by_week_or_application_date(internship_offer, params_order)
-        includings = %i[ week
-                         internship_offer
+        includings = %i[ internship_offer
                          rich_text_motivation
                          internship_agreement
                          rich_text_rejected_message
@@ -100,7 +99,6 @@ module Dashboard
                                                                       .not_drafted
         if params_order == ORDER_WITH_INTERNSHIP_DATE
           internship_applications.order(
-            'week_id ASC',
             'internship_applications.updated_at ASC'
           )
         else

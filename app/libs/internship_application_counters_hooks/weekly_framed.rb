@@ -3,11 +3,9 @@
 module InternshipApplicationCountersHooks
   class WeeklyFramed < InternshipApplicationCountersHook
     delegate :internship_offer, to: :internship_application
-    delegate :week, to: :internship_application
 
     # BEWARE: order matters
     def update_all_counters
-      update_internship_offer_week_counters
       update_internship_offer_stats
       update_favorites
       true
@@ -36,21 +34,6 @@ module InternshipApplicationCountersHooks
     # Note: if a week is associated to an application that reaches the aasm_state of :approved,
     # and if that week in not listed in internship_offer_weeks,
     # then next counter could appear as bugged (see commit ad80245), but it is not
-
-    def update_internship_offer_week_counters
-      internship_offer_week = InternshipOfferWeek.find_by(
-        internship_offer_id: internship_offer.id,
-        week_id: week.id
-      )
-      return unless internship_offer_week
-
-      internship_offer_week.update(
-        blocked_applications_count: week.internship_applications
-                                        .merge(InternshipApplication.approved)
-                                        .where(internship_offer_id: internship_offer.id)
-                                        .count
-      )
-    end
 
     private
 

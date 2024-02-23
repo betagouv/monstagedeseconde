@@ -89,7 +89,6 @@ module Dashboard::Stepper
         end
       else
         @organisation = Organisation.find(params[:organisation_id])
-        @available_weeks = Week.selectable_from_now_until_end_of_school_year
         render :new, status: :bad_request
       end
     end

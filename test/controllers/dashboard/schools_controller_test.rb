@@ -28,14 +28,13 @@ module Dashboard
         school_weeks = Week.selectable_on_school_year[1..3]
         school = create(:school, weeks: school_weeks)
         sign_in(create(:school_manager, school: school))
-        internship_offer = create(:weekly_internship_offer, weeks: school_weeks)
+        internship_offer = create(:weekly_internship_offer)
         class_room = create(:class_room, school: school)
         student = create(:student, school: school, class_room: class_room)
         internship_offer.reload
         internship_application = create(:weekly_internship_application,
                                         student: student,
-                                        internship_offer: internship_offer,
-                                        week: school_weeks.first)
+                                        internship_offer: internship_offer)
 
 
         get edit_dashboard_school_path(school.to_param)
@@ -49,11 +48,6 @@ module Dashboard
         assert_select('div[data-test="select-week-legend"]',
                       {count: 0},
                       'rendering legend on select-weeks does not makes sense for school management')
-        available_weeks.each do |week|
-          assert_select("input#school_week_ids_#{week.id}_checkbox",
-                        { count: 1 },
-                        "other week should be selectable")  
-        end
       end
     end
 

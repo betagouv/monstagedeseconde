@@ -2,25 +2,14 @@
 
 div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass}"]
   .row
-    .col-md-12.order-md-1.order-2
-      
-      / - TODO if edit_mode && resource.missing_weeks_info?
-      /   #weeks_container.fr-mb-2w
-      /     .fr-alert.fr-alert--info
-      /       h3.fr-alert__title Ajoutez des semaines aux précédentes
-      /       p Plus aucune semaine n'est disponible pour cette offre de stage. Ajoutez-en ci-dessous pour pouvoir republier votre offre.
-      .form-group
-        = render partial: "weeks/checkbox_inputs",
-                          locals: {current_weeks: @available_weeks,
-                                  form: form,
-                                  render_employer_components: true,
-                                  label: "Date du stage" }
+    .col-md-12
+      .fr-text--md.font-weight-bold Stage
   .row
     .col-md-6
       .fr-form-group
-        .fr-label
+        .fr-label.fr-py-2w
           = "Ce stage est"
-        .fr-radio-group
+        .fr-radio-group.fr-py-1w
           = radio_button_tag :internship_type,
                               true,
                               resource.new_record? && resource.errors.empty? && params[:duplicate_id].blank? ? true : resource.is_individual?,
@@ -29,7 +18,7 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                                       action: "change->hosting-infos#toggleInternshipmaxStudentsPerGroup" }
           = label_tag :internship_type_true, 'Individuel, un seul élève par stage'
               
-        .fr-radio-group        
+        .fr-radio-group.fr-py-1w    
           = radio_button_tag :internship_type,
                               false,
                               resource.new_record? && resource.errors.empty? && params[:duplicate_id].blank? ? false : !resource.is_individual?,
@@ -80,23 +69,42 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
       
       = form.hidden_field :type, data: { :"hosting-infos-target" => "type" }
 
-        
-      // TODO A vérifier si utile
-      .form-group 
-        = react_component("ReservedSchoolInput",
-                          props: { label:"Ville ou nom de l'établissement pour lequel le stage est reservé",
-                                    required: false,
-                                    resourceName: form.object_name,
-                                    selectClassRoom: false,
-                                    existingSchool: resource.school.as_json})
+  .row 
+    .col-md-6
+      / radio button for period
+      .fr-form-group
+        .fr-label.fr-py-2w
+          = "Vous souhaitez proposer un stage pour"
+        .fr-radio-group.fr-py-1w
+          = form.radio_button :period,
+                              :full_time,
+                              id: 'period_full_time'
+                              
+          = form.label :period, '2 semaines - du 17 au 28 juin', for: 'period_full_time'
+              
+        .fr-radio-group.fr-py-1w
+          = form.radio_button :period,
+                              :week_1,
+                              id: 'period_week_1'
 
-        
+          = form.label :period, '1 semaine - du 17 au 21 juin', for: 'period_week_1'
 
-        - if submit_button
-          .fr-mt-2w 
-            = link_to edit_dashboard_stepper_internship_offer_info_path(params[:internship_offer_info_id],
-                                                                organisation_id: params[:organisation_id]),
-                        class: 'fr-btn fr-mr-2w fr-btn--secondary' do
-              = 'Précédent'
-            = button_tag :submit, class: 'fr-btn' do
-              = 'Suivant'
+        .fr-radio-group.fr-py-1w
+          = form.radio_button :period,
+                              :week_2,
+                              id: 'period_week_2'
+
+          = form.label :period, '1 semaine - du 24 au 28 juin', for: 'period_week_2'    
+    .col-md-6.order-md-1.order-2
+      .fr-alert.fr-alert--warning
+        h3.fr-alert__title Informations
+        p Les élèves de seconde doivent effectuer un stage de deux semaines, du 17 juin au 28 juin 2024. Malgré cela, vous pouvez déposer une offre de stage pour une semaine si votre organisation ne vous permet pas de les accueillir deux semaines consécutives.
+
+  - if submit_button
+    .fr-mt-2w 
+      = link_to edit_dashboard_stepper_internship_offer_info_path(params[:internship_offer_info_id],
+                                                          organisation_id: params[:organisation_id]),
+                  class: 'fr-btn fr-mr-2w fr-btn--secondary' do
+        = 'Précédent'
+      = button_tag :submit, class: 'fr-btn' do
+        = 'Suivant'

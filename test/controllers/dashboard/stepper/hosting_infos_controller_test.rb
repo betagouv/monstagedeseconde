@@ -23,13 +23,6 @@ module Dashboard::Stepper
         get new_dashboard_stepper_hosting_info_path(organisation_id: organisation.id, internship_offer_info_id: internship_offer_info.id)
 
         assert_response :success
-        available_weeks = Week.selectable_from_now_until_end_of_school_year
-        asserted_input_count = 0
-        available_weeks.each do |week|
-          assert_select "input#hosting_info_week_ids_#{week.id}_checkbox"
-          asserted_input_count += 1
-        end
-        assert asserted_input_count.positive?
       end
     end
 
@@ -50,7 +43,6 @@ module Dashboard::Stepper
     test 'POST create redirects to new tutor' do
       employer = create(:employer)
       sign_in(employer)
-      weeks = [weeks(:week_2019_1), weeks(:week_2019_2)]
       organisation = create(:organisation, employer: employer)
       internship_offer_info = create(:internship_offer_info)
       assert_difference('HostingInfo.count') do
@@ -58,14 +50,12 @@ module Dashboard::Stepper
           dashboard_stepper_hosting_infos_path(organisation_id: organisation.id, internship_offer_info_id: internship_offer_info.id),
           params: {
             hosting_info: {
-              'week_ids' => weeks.map(&:id),
               'max_candidates' => '2',
               'max_students_per_group' => '1'
             },
           })
       end
       created_hosting_info = HostingInfo.last
-      assert_equal weeks.map(&:id), created_hosting_info.week_ids
       assert_equal 2, created_hosting_info.max_candidates
       assert_equal 1, created_hosting_info.max_students_per_group
       assert_redirected_to new_dashboard_stepper_practical_info_path(
@@ -78,7 +68,6 @@ module Dashboard::Stepper
     test 'when statistician POST create redirects to new practical info' do
       statistician = create(:statistician)
       sign_in(statistician)
-      weeks = [weeks(:week_2019_1), weeks(:week_2019_2)]
       organisation = create(:organisation, employer: statistician)
       internship_offer_info = create(:internship_offer_info)
       assert_difference('HostingInfo.count') do
@@ -86,14 +75,12 @@ module Dashboard::Stepper
           dashboard_stepper_hosting_infos_path(organisation_id: organisation.id, internship_offer_info_id: internship_offer_info.id),
           params: {
             hosting_info: {
-              'week_ids' => weeks.map(&:id),
               'max_candidates' => '2',
               'max_students_per_group' => '1'
             },
           })
       end
       created_hosting_info = HostingInfo.last
-      assert_equal weeks.map(&:id), created_hosting_info.week_ids
       assert_equal 2, created_hosting_info.max_candidates
       assert_equal 1, created_hosting_info.max_students_per_group
       assert_redirected_to new_dashboard_stepper_practical_info_path(
@@ -108,19 +95,16 @@ module Dashboard::Stepper
       employer = create(:employer)
       sign_in(employer)
       sector = create(:sector)
-      weeks = [weeks(:week_2019_1)]
       organisation = create(:organisation, employer: employer)
       internship_offer_info = create(:internship_offer_info)
       post(
         dashboard_stepper_hosting_infos_path(organisation_id: organisation.id, internship_offer_info_id: internship_offer_info.id),
         params: {
           hosting_info: {
-            max_candidates: 3,
             max_students_per_group: 2,
           }
         })
         assert_response :bad_request
-        assert_select '#hosting_info_max_candidates[value="3"]'
         assert_select '#internship_type_true[checked]', count: 0
         assert_select '#internship_type_false[checked]', count: 1
     end

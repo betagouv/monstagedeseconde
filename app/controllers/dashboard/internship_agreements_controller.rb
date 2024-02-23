@@ -52,7 +52,6 @@ module Dashboard
       end
     rescue ActionController::ParameterMissing => e
       @internship_agreement = InternshipAgreement.find(params[:id])
-      @available_weeks = Week.selectable_on_school_year_when_editing
       render :edit
     end
 
