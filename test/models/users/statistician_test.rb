@@ -6,7 +6,7 @@ module Users
   class StatisticianTest < ActiveSupport::TestCase
     test 'creation fails' do
       statistician = Users::PrefectureStatistician.new(email: 'chef@etablissement.com',
-                                             password: 'tototo',
+                                             password: 'tototo1Max!!',
                                              first_name: 'Chef',
                                              last_name: 'Departement',
                                              accept_terms: true)
@@ -17,7 +17,7 @@ module Users
 
     test 'creation succeed' do
       statistician = Users::PrefectureStatistician.new(email: 'test@free.fr',
-                                             password: 'tototo',
+                                             password: 'tototo1Max!!',
                                              first_name: 'Chef',
                                              last_name: 'Departement',
                                              department: '75',

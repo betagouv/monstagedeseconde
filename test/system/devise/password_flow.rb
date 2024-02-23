@@ -25,8 +25,8 @@ class PasswordFlowTest < ApplicationSystemTestCase
     token = user.send_reset_password_instructions
     assert_changes -> { user.reload.reset_password_token } do
       visit edit_user_password_path(reset_password_token: token)
-      fill_in('Nouveau mot de passe', with: 'okokok')
-      fill_in('Confirmez votre nouveau mot de passe', with: 'okokok')
+      fill_in('Nouveau mot de passe', with: 'okokok1Max!!')
+      fill_in('Confirmez votre nouveau mot de passe', with: 'okokok1Max!!')
       click_on('Changer mon mot de passe')
     end
     success_message = find('#alert-text').text
@@ -49,8 +49,8 @@ class PasswordFlowTest < ApplicationSystemTestCase
     user.reload
     execute_script("document.getElementById('phone-input').value = '#{phone}';")
     fill_in 'Code de confirmation', with: user.phone_token
-    fill_in('Nouveau mot de passe', with: 'okokok')
-    fill_in('Confirmez votre nouveau mot de passe', with: 'okokok')
+    fill_in('Nouveau mot de passe', with: 'okokok1Max!!')
+    fill_in('Confirmez votre nouveau mot de passe', with: 'okokok1Max!!')
     click_on 'Valider'
 
     success_message = find('#alert-text').text

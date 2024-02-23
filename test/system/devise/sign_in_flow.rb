@@ -101,7 +101,7 @@ class SignInFlowTest < ApplicationSystemTestCase
 
   test 'POST session with crappy data does not redirect to user' do
     email = 'fourcade.m@gmail.com'
-    pwd = 'okokok'
+    pwd = 'okokok1Max!!'
     student = create(:student, email: 'tartanpion@gmail.com', phone: '', password: pwd, confirmed_at: nil)
     visit new_user_session_path
     find('label', text: 'Email').click

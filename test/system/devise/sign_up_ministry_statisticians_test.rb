@@ -19,7 +19,7 @@ class SignUpMinistryStatisticiansTest < ApplicationSystemTestCase
       execute_script(" document.getElementById('new_user').action = '/utilisateurs?as=MinistryStatistician';")
       select("Ministère de la Justice", from: "Choisissez le ministère correspondant")
       fill_in 'Adresse électronique', with: email
-      fill_in 'Créer un mot de passe', with: 'kikoololletest'
+      fill_in 'Créer un mot de passe', with: 'kikoololletest1Max!!'
       execute_script("document.getElementById('user_accept_terms').checked = true;")
       click_on "Valider"
     end

@@ -13,7 +13,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       first_name: 'James',
       last_name: 'Ref',
       email: 'test@free.fr',
-      password: 'password',
+      password: 'password1Maxx!!',
       department: '75',
       type: 'Users::PrefectureStatistician',
       accept_terms: true
@@ -29,7 +29,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       first_name: 'James',
       last_name: 'Ref',
       email: 'test@free.fr',
-      password: 'password',
+      password: 'password1MAx!!',
       type: 'Users::MinistryStatistician',
       accept_terms: true
     }
@@ -45,7 +45,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       last_name: 'Ref',
       email: 'test@free.fr',
       department: '75',
-      password: 'password',
+      password: 'password1Maxx!',
       type: 'Users::EducationStatistician',
       accept_terms: true
     }
