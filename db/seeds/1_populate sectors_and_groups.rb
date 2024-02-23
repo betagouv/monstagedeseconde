@@ -1,5 +1,11 @@
 def populate_sectors
   {
+    "Journalisme" => "821075d7-cfcf-4f01-bd6f-689dc0c0dd15",
+    "Logistique et transport" => "5ef46dbd-7884-4f0a-a3a5-9e74dea5cca2",
+    "Papiers Cartons" => "de7ff4a5-7857-400f-91f6-0c503698ef6d",
+    "Bien-être" => "577d47fb-2651-477b-b555-3f85a7d37474",
+    "Fonction publique" => "f329c1e8-30db-48b4-babb-52e2c90d7287",
+    "Conseil et audit" => "9bb7b34c-caaf-413f-8c67-6f7a65ec6d56",
     "Mode" => "b7564ac4-e184-41c4-a7a9-57233a9d244a",
     "Banque et assurance" => "6a8f813b-c338-4d4f-a4cd-99a28748b57d",
     "Audiovisuel" => "4b6427b1-b289-486d-b7ea-f33134995a99",
@@ -29,7 +35,7 @@ def populate_sectors
     "Jeu vidéo" => "be4bab4d-09ed-4205-bca1-1047da0500f8",
     "Commerce et distribution" => "ae267ff2-76d5-460a-9a41-3b820c392149",
     "Marketing, publicité" => "811621f0-e2d1-4c32-a406-5b45979d7c6d",
-    "Médical" => "1aae3b41-1394-4109-83cf-17214e1aefdd",
+    "Santé" => "1aae3b41-1394-4109-83cf-17214e1aefdd",
     "Métiers d'art" => "82738129-au8h-8297-827h-oaieurjeh872",
     "Paramédical" => "89946839-8e18-4087-b48d-e6ee5f7d8480",
     "Social" => "d5a7ec0f-5f9c-44cb-add0-66465b4e7d3c",
@@ -42,7 +48,10 @@ def populate_sectors
     "Art et design" => "c1f72076-43fb-44ae-a811-d55eccf15c08",
     "Artisanat d'art" => "1ce60ecc-273d-4c73-9b1a-2f5ee14e1bc6",
     "Arts du spectacle" => "055b7580-c979-480f-a026-e94c8b8dc46e",
-    "Culture et patrimoine" => "c76e6364-7257-473c-89aa-c951141810ce"
+    "Culture et patrimoine" => "c76e6364-7257-473c-89aa-c951141810ce",
+    "Industrie, ingénierie industrielle" => "14d24150-86cd-4b66-95f0-7f94cf56b5cb",
+    "Immobilier, transactions immobilières" => "de7930b7-104f-44df-8e49-08eca31ec9e6",
+    "Services postaux" => "156f75da-37ee-41f8-ade4-94ea23acf715"
   }.map do |sector_name, sector_uuid|
     Sector.create!(name: sector_name, uuid: sector_uuid)
   end
