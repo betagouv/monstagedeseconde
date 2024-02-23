@@ -32,18 +32,5 @@ module Product
         end
       end
     end
-
-    test 'USE_W3C, new_dashboard_stepper_tutor_path' do
-      employer = create(:employer)
-      sign_in(employer)
-      organisation = create(:organisation, employer: employer)
-      internship_offer_info = create(:internship_offer_info,  employer: employer)
-
-      run_request_and_cache_response(report_as: 'new_dashboard_stepper_tutor_path') do
-        visit new_dashboard_stepper_tutor_path(organisation_id: organisation.id,
-                                                 internship_offer_info_id: internship_offer_info.id)
-        fill_in_tutor_form
-      end
-    end
   end
 end

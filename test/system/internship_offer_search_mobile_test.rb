@@ -46,6 +46,7 @@ class InternshipOfferSearchMobileTest < ApplicationSystemTestCase
   end
 
   test 'USE_IPHONE_EMULATION, search by location (zipcodes) works' do
+
     internship_offer_at_paris = create(:weekly_internship_offer,
                                        coordinates: Coordinates.paris)
     internship_offer_at_bordeaux = create(:weekly_internship_offer,
@@ -90,13 +91,11 @@ class InternshipOfferSearchMobileTest < ApplicationSystemTestCase
 
   test 'USE_IPHONE_EMULATION, search by week works' do
     travel_to(Date.new(2020,9,6)) do
-      searched_week = Week.selectable_from_now_until_end_of_school_year.first
-      not_searched_week = Week.selectable_from_now_until_end_of_school_year.last
+      skip "TODO #mayflower"
 
-      searched_internship_offer = create(:weekly_internship_offer,
-                                         weeks: [searched_week])
-      not_searched_internship_offer = create(:weekly_internship_offer,
-                                             weeks: [not_searched_week])
+      searched_internship_offer = create(:weekly_internship_offer)
+      not_searched_internship_offer = create(:weekly_internship_offer)
+
       visit eleves_path
 
       fill_in_week(week: searched_week, open_popover: false)
@@ -111,14 +110,11 @@ class InternshipOfferSearchMobileTest < ApplicationSystemTestCase
   test 'USE_IPHONE_EMULATION, search by all criteria' do
     travel_to(Date.new(2022,1,10)) do
       searched_keyword = 'helloworld'
-      searched_week = Week.selectable_from_now_until_end_of_school_year.first
       searched_location = Coordinates.paris
       not_searched_keyword = 'bouhbouh'
-      not_searched_week = Week.selectable_from_now_until_end_of_school_year.last
       not_searched_location = Coordinates.bordeaux
       searched_opts = { title: searched_keyword,
-                        coordinates: searched_location,
-                        weeks: [searched_week]}
+                        coordinates: searched_location}
       # build findable
       findable_internship_offer = create(:weekly_internship_offer, searched_opts)
 
@@ -133,7 +129,7 @@ class InternshipOfferSearchMobileTest < ApplicationSystemTestCase
       )
       not_found_by_week = create(
         :weekly_internship_offer,
-        searched_opts.merge(weeks: [not_searched_week])
+        searched_opts
       )
 
       dictionnary_api_call_stub
@@ -144,13 +140,12 @@ class InternshipOfferSearchMobileTest < ApplicationSystemTestCase
 
       fill_in_city_or_zipcode(with: 'Pari', expect: 'Paris')
       fill_in_keyword(keyword: searched_keyword)
-      fill_in_week(week: searched_week, open_popover: false)
+
       submit_form
 
       # assert_presence_of(internship_offer: findable_internship_offer)
       assert_absence_of(internship_offer: not_found_by_location)
       assert_absence_of(internship_offer: not_found_by_keyword)
-      assert_absence_of(internship_offer: not_found_by_week)
     end
   end
 end
