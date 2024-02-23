@@ -8,8 +8,13 @@
     li
       button id="tabpanel-cgu-agents-button" class="fr-tabs__tab" tabindex="1" role="tab" aria-selected="true" aria-controls="tabpanel-cgu-agents"
         Label Agents
-      
+    li
+      button id="tabpanel-api-button" class="fr-tabs__tab" tabindex="1" role="tab" aria-selected="true" aria-controls="tabpanel-api"
+        Label Api
+
   #tabpanel-cgu-usagers class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-usagers" tabindex="0"
     = render 'pages/cgu_usagers'
   #tabpanel-cgu-agents class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-agents" tabindex="1"
     = render 'pages/cgu_agents'
+  #tabpanel-api class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-agents" tabindex="1"
+    = render 'pages/api'

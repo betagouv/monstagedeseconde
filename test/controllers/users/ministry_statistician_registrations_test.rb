@@ -8,7 +8,7 @@ class MinistryStatiticianRegistrationsTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select 'input', value: 'MinistryStatistician', hidden: 'hidden'
-    assert_select 'title', "Inscription | Monstage"
+    assert_select 'title', "Inscription | Stages de 2de"
 
     assert_select 'label', /Prénom/
     assert_select 'label', /Nom/

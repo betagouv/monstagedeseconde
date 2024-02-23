@@ -1,17 +1,14 @@
-.fr-card
+.fr-card.fr-my-2w
   .fr-card__body
     .fr-card__content
       h3.fr-h4
-        | Entreprise,<br/>Administration,<br/>Partenaire
+        | Entreprise, administration, partenaire
       p.fr-text
         | Faites découvrir vos métiers. Déposez des offres de stages pour un ou plusieurs élèves.
     .fr-card__footer
-      .fr-text--sm.text-muted Inscription ouverte
-      ul.fr-btns-group
-        li
-          = link_to "Inscription",
-                    new_user_registration_path(as: 'Employer'),
-                    class: 'fr-btn fr-btn--secondary'
+      .d-flex.align-items-center.justify-content-start
+        .fr-px-2w= link_to "Inscription", new_user_registration_path(as: 'Employer'), class: 'fr-btn fr-btn--secondary'
+        .fr-text--sm.fr-mb-0.text-muted Inscrption ouverte
   .fr-card__header
     .fr-ml-4w.fr-mt-5w
-      .fr-badge.fr-badge--new.fr-badge--no-icon professionnel
+      .fr-badge.fr-badge--new.fr-badge--no-icon Professionnel

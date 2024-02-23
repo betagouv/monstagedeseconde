@@ -40,7 +40,7 @@ module Dashboard
         get edit_dashboard_school_path(school.to_param)
 
         assert_response :success
-        assert_select 'title', 'Semaines de stage | Monstage'
+        assert_select 'title', 'Semaines de stage | Stages de 2de'
         assert_select 'form[action=?]', dashboard_school_path(school)
         assert_select('label[for="all_year_long"]',
                       {count: 0},

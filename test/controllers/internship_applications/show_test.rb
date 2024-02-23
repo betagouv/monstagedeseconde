@@ -13,7 +13,7 @@ module InternshipApplications
       get internship_offer_internship_application_path(internship_offer,
                                                        internship_application)
       assert_response :success
-      assert_select 'title', 'Ma candidature | Monstage'
+      assert_select 'title', 'Ma candidature | Stages de 2de'
 
       assert_select "form[action=\"#{internship_offer_internship_application_path(internship_offer, internship_application, transition: :submit!)}\"]"
       assert_select "#submit_application_form[method='post'] input[name='_method'][value='patch']"
