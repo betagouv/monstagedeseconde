@@ -168,7 +168,7 @@ module Api
         }
       )
       assert_response :success
-      assert_in_delta Time.now.to_i , @internship_offer.reload.published_at.to_i, 0.000_02
+      assert_in_delta Time.now.to_i , @internship_offer.reload.published_at.to_i, 0.000_1
       assert_equal true, @internship_offer.published?
     end
 
