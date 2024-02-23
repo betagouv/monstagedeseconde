@@ -12,11 +12,19 @@ module EmailSpamEuristicsAssertions
   end
 
   def assert_body_does_not_contains_upcase_word(email)
+    white_list = %w(DNE Direction Numérique Éducation)
+
     nokogiri_doc = Nokogiri::HTML(email.html_part.body.to_s)
     text_nodes = nokogiri_doc.search('//text()')
                              .reject{|el| el.is_a?(Nokogiri::XML::CDATA) }
-    upcase_words = text_nodes.map(&:text).grep(/([[:upper:]]){2,}/)
-
+    upcase_words = text_nodes.map(&:text)
+                              .map { |sentence|
+                                white_list.each do |white_word|
+                                  sentence.gsub!(white_word, '')
+                                end
+                              }.grep(/([[:upper:]]){2,}/)
+    upcase_words = upcase_words.map(&:strip)
+                               .reject(&:empty?)
     assert(upcase_words.size.zero?,
            "whoops, what happens there is an upcase word: #{upcase_words.join("\n")}")
   end

@@ -15,7 +15,7 @@ fi
 
 SSH_PRIV=~/.ssh/clevercloud-monstage
 if [ ! -f "$SSH_PRIV" ]; then
-  echo "missing private key to push, check kdbx for content"
+  echo "missing private key to push"
   exit 1;
 fi;
 

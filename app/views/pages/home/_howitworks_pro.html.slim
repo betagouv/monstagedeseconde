@@ -1,10 +1,10 @@
 .row.fr-my-3w.fr-py-4w
-  .col-12 
-    h3.h1 Comment ça marche ?
+  .col-12
+    h3.h1.fr-px-1w Comment ça marche ?
 
 .row.align-items-start.fr-my-4w
   .col-md-4.col-sm-12.d-flex.align-items-stretch
-    .fr-px-2w
+    .fr-px-1w
       = image_tag asset_pack_path('media/images/homepage/01.svg'),
                     alt: "Premièrement",
                     height: '47px',
@@ -16,9 +16,9 @@
 
   / 2
   .col-md-4.col-sm-12.d-flex.align-items-stretch
-    .fr-px-2w
+    .fr-px-1w
       = image_tag asset_pack_path('media/images/homepage/02.svg'),
-                  alt: "Premièrement",
+                  alt: "Deuxièmement",
                   height: '47px',
                   'aria-hidden': "true"
       h3.text-grey-50.my-4
@@ -28,9 +28,9 @@
       
   / 3
   .col-md-4.col-sm-12.d-flex.align-items-stretch
-    .fr-px-2w
+    .fr-px-1w
       = image_tag asset_pack_path('media/images/homepage/03.svg'),
-                  alt: "Premièrement",
+                  alt: "Troisièmement",
                   height: '47px',
                   'aria-hidden': "true"
       h3.text-grey-50.my-4
@@ -41,4 +41,4 @@
         | Vous pourrez remplir la convention en ligne, qui sera transmise à l’établissement.
 .row.align-items-center.fr-pb-4w
   .col-12.d-flex.justify-content-center
-    = link_to 'Déposer une offre de stage', new_user_registration_path(as: 'Employer'), class: 'fr-btn fr-btn--md fr-mb-4w fr-btn--lg'
+    = link_to 'Déposer une offre de stage', new_user_registration_path(as: 'Employer'), class: 'fr-btn fr-btn--md fr-mb-4w fr-btn--md'
