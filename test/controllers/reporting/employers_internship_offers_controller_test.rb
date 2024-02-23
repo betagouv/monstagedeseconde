@@ -152,7 +152,7 @@ module Reporting
 
       get reporting_dashboards_path
       assert_response :success
-      assert_select 'title', "Statistiques - Tableau de bord | Monstage"
+      assert_select 'title', "Statistiques - Tableau de bord | Stages de 2de"
     end
 
 
