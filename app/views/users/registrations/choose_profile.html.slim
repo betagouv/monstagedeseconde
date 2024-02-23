@@ -3,15 +3,15 @@ header.header-account.subscription
   p
     = link_to "Vous avez déjà un compte ?", new_user_session_path, class: 'fr-link blue-france fr-raw-link'
 .d-none.d-md-block
+  .one_card.fr-mt-3w.d-none.d-sm-block
+    = render 'users/registrations/cards/professional'
   .three_cards.d-flex.flex-fill.flex-row.align-items-stretch
     = render 'users/registrations/cards/student'
-    = render 'users/registrations/cards/professional'
     = render 'users/registrations/cards/education'
-  .one_card.fr-mt-3w.d-none.d-sm-block
     = render 'users/registrations/cards/statistician'
 .d-block.d-md-none
   .cards-column.flex-column
-    = render 'users/registrations/cards/student'
     = render 'users/registrations/cards/professional'
+    = render 'users/registrations/cards/student'
     = render 'users/registrations/cards/education'
     = render 'users/registrations/cards/statistician'
