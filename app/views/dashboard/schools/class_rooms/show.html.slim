@@ -11,11 +11,12 @@ h1.h2.mb-4
 .fr-tabs.mb-5
   ul.fr-tabs__list aria-label=("school-tab") role="tablist" 
       
-    li role="presentation" 
+    li
       button#classes.fr-tabs__tab> aria-controls="classes-panel" aria-selected="true" role="tab" tabindex="0"
         | Classes
-        - if badge_counter.student_without_class_room_count.size.positive?
-          = " (#{badge_counter.student_without_class_room_count})"
+        /  TODO Fix the badge counter #mayflower
+        / - if badge_counter.student_without_class_room_count.size.positive?
+        /   = " (#{badge_counter.student_without_class_room_count})"
     li
       = link_to dashboard_school_path(@school) do
         button#users.fr-tabs__tab aria-controls="users-panel" aria-selected="false" role="tab" tabindex="1"  Personnels

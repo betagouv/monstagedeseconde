@@ -542,7 +542,8 @@ CREATE TABLE public.hosting_infos (
     max_students_per_group integer DEFAULT 1 NOT NULL,
     remaining_seats_count integer DEFAULT 0,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    period integer DEFAULT 0 NOT NULL
 );
 
 
@@ -1091,7 +1092,8 @@ CREATE TABLE public.internship_offers (
     internship_offer_area_id bigint,
     lunch_break text,
     contact_phone character varying(20),
-    handicap_accessible boolean DEFAULT false
+    handicap_accessible boolean DEFAULT false,
+    period integer DEFAULT 0 NOT NULL
 );
 
 
@@ -2531,6 +2533,13 @@ CREATE INDEX index_hosting_info_weeks_on_week_id ON public.hosting_info_weeks US
 
 
 --
+-- Name: index_hosting_infos_on_period; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_hosting_infos_on_period ON public.hosting_infos USING btree (period);
+
+
+--
 -- Name: index_identities_on_class_room_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2773,6 +2782,13 @@ CREATE INDEX index_internship_offers_on_internship_offer_info_id ON public.inter
 --
 
 CREATE INDEX index_internship_offers_on_organisation_id ON public.internship_offers USING btree (organisation_id);
+
+
+--
+-- Name: index_internship_offers_on_period; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offers_on_period ON public.internship_offers USING btree (period);
 
 
 --
@@ -3418,6 +3434,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240221143107'),
 ('20240216100020'),
 ('20240205142849'),
 ('20240125102153'),

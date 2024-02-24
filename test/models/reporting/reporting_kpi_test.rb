@@ -14,19 +14,16 @@ class ReportingKpiTest < ActiveSupport::TestCase
         :with_private_employer_group,
         :unpublished,
         max_candidates: 3,
-        weeks: three_next_weeks
       )
 
       internship_offer = create(
         :weekly_internship_offer, #public by default
         max_candidates: 2,
-        weeks: two_next_weeeks
       )
       internship_offer = create(
         :weekly_internship_offer,
         :with_private_employer_group,
         max_candidates: 3,
-        weeks: three_next_weeks
       )
 
       expected = {

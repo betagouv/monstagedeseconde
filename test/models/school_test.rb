@@ -48,17 +48,6 @@ class SchoolTest < ActiveSupport::TestCase
     assert create(:school, weeks: Week.selectable_on_school_year).has_weeks_on_current_year?
   end
 
-  test 'destroy nullilfy internship_offers.shcool_id' do
-    school = create(:school)
-    internship_offer = create(:weekly_internship_offer, school: school)
-
-    assert_changes -> { internship_offer.reload.school.blank? },
-                   from: false,
-                   to: true do
-      school.destroy
-    end
-  end
-
   test 'has_staff with only manager' do
     school = create(:school, :with_school_manager)
     refute school.has_staff?

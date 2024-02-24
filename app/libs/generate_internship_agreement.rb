@@ -179,8 +179,8 @@ class GenerateInternshipAgreement < Prawn::Document
     label_form("Aux conditions suivantes : ")
     label_form("D - Dates et lieux")
     @pdf.move_down 5
-    from = "Du #{internship_application.week.beginning_of_week_with_year_long}"
-    to = "Au #{internship_application.week.friday_of_week_with_years_long}"
+    from = "Du #{internship_application.internship_offer.first_date} "
+    to = "Au #{internship_application.internship_offer.last_date} "
     @pdf.table([[from, to], [{content: "Soit un nombre de jours de : 5", colspan: 2}]])
     @pdf.move_down 10
     @pdf.text "Les horaires de présence de l’élève sont fixés à : "

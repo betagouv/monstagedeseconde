@@ -15,23 +15,26 @@
             = "A postulé "
           span.font-weight-bold
             = " le #{localize(internship_application.created_at, format: "%d %B")}"
-    - if internship_application.respond_to?(:week)
-      .row.no-gutters.mt-3
-        .col-10.grey-on-grey
-          span.fr-fi-calendar-line.fr-fi--sm
-          span.mx-2= "Pour la semaine"
-          strong= "#{internship_application.week.short_select_text_method}"
+    
+    .row.no-gutters.mt-3
+      .col-10.grey-on-grey
+        span.fr-fi-calendar-line.fr-fi--sm
+        span.mx-2= "Pour la semaine"
+        strong= "#{internship_application.internship_offer.period}"
     .row.no-gutters
       .col-10
           h3.h6.mt-3 Motivations
     .row.no-gutters
       .col-10
         - if internship_application.submitted?
-          div class="mb-3 reboot-trix-content" data-internship-application-index-target='motivation'= internship_application.motivation.to_s
+          div class="mb-3 reboot-trix-content" data-internship-application-index-target='motivation'
+            = internship_application.motivation.to_s
         - elsif internship_application.rejected?
-          div class="mb-3 reboot-trix-content text-truncate-max-height-50 d-none" data-internship-application-index-target='motivation'= internship_application.motivation.to_s
+          div class="mb-3 reboot-trix-content text-truncate-max-height-50 d-none" data-internship-application-index-target='motivation'
+            = internship_application.motivation.to_s
         - else
-          div class="mb-3 reboot-trix-content text-truncate-max-height-50"        data-internship-application-index-target='motivation'= internship_application.motivation.to_s
+          div class="mb-3 reboot-trix-content text-truncate-max-height-50"        data-internship-application-index-target='motivation'
+            = internship_application.motivation.to_s
 
     .row.no-gutters
       .col-10

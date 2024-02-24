@@ -19,7 +19,7 @@ class SchoolManagerMailer < ApplicationMailer
     @entreprise            = "#{entreprise} #{@internship_offer.employer_name}"
     @prez_stud             = student.presenter
     @school_manager        = student.school&.school_manager
-    @week                  = internship_application.week
+    @week                  = internship_application.internship_offer.period
     @url = dashboard_internship_agreements_url(
       id: internship_agreement.id,
       mtm_campaign: 'SchoolManager - Convention To Fill In'

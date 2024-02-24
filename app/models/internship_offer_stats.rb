@@ -12,7 +12,6 @@ class InternshipOfferStats < ApplicationRecord
 
   def recalculate
     update(
-      blocked_weeks_count: blocked_weeks,
       total_applications_count: total_applications,
       total_male_applications_count: total_male_applications,
       total_female_applications_count: total_female_applications,
@@ -26,16 +25,6 @@ class InternshipOfferStats < ApplicationRecord
   end
   
   private
-  #---------------------------------------
-  # blocked_weeks_count
-  # counts the number of weeks with any positive number of approved applications
-  # in each week for a given internship offer
-  #---------------------------------------
-  def blocked_weeks
-    internship_offer.internship_offer_weeks
-                     .where('internship_offer_weeks.blocked_applications_count > 0')
-                     .count
-  end
 
   def total_applications
     internship_offer.internship_applications
@@ -98,7 +87,7 @@ class InternshipOfferStats < ApplicationRecord
   end
 
   def remaining_seats
-    reserved_places = internship_offer.internship_offer_weeks&.sum(:blocked_applications_count)
+    reserved_places = internship_offer.internship_applications.approved.count
     internship_offer.max_candidates - reserved_places
   end
 

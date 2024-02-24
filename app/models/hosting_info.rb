@@ -11,15 +11,6 @@ class HostingInfo < ApplicationRecord
   # Relation
   belongs_to :internship_offer, optional: true
 
-  validates :weeks, presence: true
-  validate :enough_weeks
-
-  has_many :hosting_info_weeks, dependent: :destroy,
-                                           foreign_key: :hosting_info_id,
-                                           inverse_of: :hosting_info
-
-  has_many :weeks, through: :hosting_info_weeks
-
   def from_api?; false end
   def is_fully_editable?; true end
 end

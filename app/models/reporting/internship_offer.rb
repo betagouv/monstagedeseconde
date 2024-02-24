@@ -12,10 +12,7 @@ module Reporting
     belongs_to :sector
     # belongs_to :organisation
     belongs_to :group, optional: true
-    belongs_to :school, optional: true
     belongs_to :employer, polymorphic: true, optional: true
-    has_many :internship_offer_weeks
-    has_many :weeks, through: :internship_offer_weeks
     has_many :internship_applications
     has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy
     has_one :internship_offer_stats, dependent: :destroy
