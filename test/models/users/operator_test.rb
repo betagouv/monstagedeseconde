@@ -8,7 +8,7 @@ module Users
       user_operator = Users::Operator.create(first_name: 'Martin',
                                              last_name: 'Fourcade',
                                              email: 'hello@ho.bye',
-                                             password: 'okokok',
+                                             password: 'okokok1Max!!',
                                              operator_id: operator.id,
                                              accept_terms: true)
       assert_equal operator, user_operator.operator

@@ -43,7 +43,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'POST session not confirmed render warning with icon' do
-    pwd = 'okokok'
+    pwd = 'okokok1Max!!'
     student = create(:student, password: pwd, confirmed_at: nil)
     post user_session_path(params: { user: { channel: 'email',
                                              email: student.email,
@@ -54,7 +54,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'POST session with phone' do
-    pwd = 'okokok'
+    pwd = 'okokok1Max!!'
     phone = '+330637607756'
     student = create(:student, email: nil, phone: phone, password: pwd, confirmed_at: 2.days.ago)
     post user_session_path(params: { user: { channel: 'phone',
@@ -66,7 +66,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'POST session with email' do
-    pwd = 'okokok'
+    pwd = 'okokok1Max!!'
     email = 'fourcade.m@gmail.com'
     student = create(:student, email: email, phone: nil, password: pwd, confirmed_at: 2.days.ago)
     post user_session_path(params: { user: { channel: 'email',
@@ -78,7 +78,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'POST session as EMPLOYER with email and check after sign in path when pending applications' do
-    pwd = 'okokok'
+    pwd = 'okokok1Max!!'
     email = 'employer@corp.com'
     employer = create(:employer, email: email, phone: nil, password: pwd, confirmed_at: 2.days.ago)
     internship_offer = create(:weekly_internship_offer, employer: employer)
@@ -92,7 +92,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'POST session as EMPLOYER with email and check after sign in path when no pending applications' do
-    pwd = 'okokok'
+    pwd = 'okokok1Max!!'
     email = 'employer@corp.com'
     employer = create(:employer, email: email, phone: nil, password: pwd, confirmed_at: 2.days.ago)
 
@@ -104,7 +104,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as Student with a pending internship_application' do
-      student = create(:student, password: 'okokok')
+      student = create(:student, password: 'okokok1Max!!')
       internship_offer = create(:weekly_internship_offer)
       internship_application = create(:weekly_internship_application, :validated_by_employer,
             student: student,
@@ -112,7 +112,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
       post user_session_path(params: { user: { channel: 'email',
                                                email: student.email,
-                                               password: 'okokok' } })
+                                               password: 'okokok1Max!!' } })
       
                                                follow_redirect!
       assert_response :success

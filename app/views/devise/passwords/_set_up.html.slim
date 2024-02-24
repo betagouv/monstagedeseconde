@@ -40,7 +40,10 @@ hr
             = 'Créer un mot de passe'
           = f.password_field :password, class: 'fr-input',
             required: true, data: { action: 'input->password#checkForm',
+                                    pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_])[A-Za-z\d@$!%*?&_]{12,}$',
                                     :'password-target' => 'requiredField passwordInput' }
+          .fr-message.fr-message--info
+            |12 caractères minimum, 1 minuscule, 1 majuscule, 1 caractère spécial, 1 chiffre.
 
     .row
       .col-md-12.col-xs-12

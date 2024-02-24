@@ -364,7 +364,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     sign_in(employer)
     user_params = {
       current_password: employer.password,
-      password: 'passw0rd',
+      password: 'passw0rd1Max!',
       confirmation_password: 'passw0rd',
     }
     patch account_password_path, params: { user: user_params }
