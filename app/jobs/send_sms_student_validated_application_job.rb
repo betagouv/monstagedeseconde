@@ -12,7 +12,7 @@ class SendSmsStudentValidatedApplicationJob < ApplicationJob
       message = "Votre candidature pour le stage " \
                 "de #{internship_application.internship_offer.title} " \
                 "a été acceptée. Vous pouvez maintenant la confirmer " \
-                "sur MonStageDeTroisieme : #{url}"
+                "sur Mon stage de Seconde : #{url}"
 
       if ENV.fetch('NO_SMS', false)
         sms_message = "sms [internship_application_id = #{internship_application.id}] " \

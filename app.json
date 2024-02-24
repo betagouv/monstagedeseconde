@@ -1,9 +1,9 @@
 {
   "name": "Monstage",
   "description": "Help students to find quality internships",
-  "website": "https://www.monstagedetroisieme.fr/",
+  "website": "https://stagedeseconde.1jeune1solution.gouv.fr/",
 
-  "repository": "https://github.com/betagouv/monstage",
+  "repository": "https://github.com/betagouv/monstagedeseconde",
 
   "stack": "heroku-20",
   "buildpacks": [{
@@ -35,7 +35,7 @@
         "WEB_CONCURRENCY": 1,
         "CONVENTION_ENABLED": true,
         "YARN_PRODUCTION": false,
-        "WEBINAR_URL": "https://webinar.monstagedetroisieme.fr"
+        "WEBINAR_URL": "https://webinar.stagedeseconde.1jeune1solution.gouv.fr/"
       },
       "addons": [
         {

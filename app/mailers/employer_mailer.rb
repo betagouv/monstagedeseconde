@@ -193,7 +193,7 @@ class EmployerMailer < ApplicationMailer
     @hello    = "#{@employer.presenter.formal_name},"
     @header   = 'Votre compte sera supprimé dans 14 jours : '
     @content  = "nous avons effectivement constaté que votre participation " \
-                "à la plateforme monstagedetroisieme.fr " \
+                "à la plateforme stagedeseconde.1jeune1solution.gouv.fr " \
                 "est très faible depuis deux ans.<br/> " \
                 "La suppression de votre compte n'est naturellement pas notre souhait, " \
                 "car votre participation " \
@@ -201,7 +201,7 @@ class EmployerMailer < ApplicationMailer
                 "à la vie active".html_safe
     @extra_content = "Si vous souhaitez conserver votre compte, " \
                      "connectez-vous dès maintenant."
-    @greetings = 'L\'équipe Monstage'
+    @greetings = 'L\'équipe Mon stage de seconde'
     @cta_label = 'Se connecter'
     @url       = new_user_session_url
     send_email( to: @employer.email, subject: subject )
@@ -217,11 +217,11 @@ class EmployerMailer < ApplicationMailer
     @title       = "Finalisez la publication de votre offre de stage."
     @bonjour     = "Bonjour #{@employer.presenter.full_name},"
     @paragraph_1 = "Nous avons remarqué que votre offre de stage intitulée #{internship_offer.title} " \
-                   "a été initiée sur Monstagedetroisieme.fr, mais reste enregistrée " \
+                   "a été initiée sur Mon stage de seconde, mais reste enregistrée " \
                    "en tant que brouillon."
     @paragraph_2 = "Pour publier votre offre, suivez ces étapes simples :"
     @paragraph3_items = [
-      "Connectez-vous à votre compte sur Monstagedetroisieme.fr.",
+      "Connectez-vous à votre compte sur stagedeseconde.1jeune1solution.gouv.fr.",
       "Rendez-vous dans la section « Mes offres ».",
       "Sélectionnez l'offre \"#{internship_offer.title}\"",
       "Vérifiez les informations de l'offre et cliquez sur « Publier » pour la rendre visible aux élèves."

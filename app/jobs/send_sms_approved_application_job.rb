@@ -5,7 +5,7 @@ class SendSmsApprovedApplicationJob < ApplicationJob
 
   def perform(phone)
     content = "Votre candidature à un stage a été acceptée. Connectez-vous à" \
-              " monstagedetroisieme.fr et contactez l'employeur pour " \
+              " stagedeseconde.1jeune1solution.gouv.fr et contactez l'employeur pour " \
               "signer votre convention de stage."
 
     Services::SmsSender.new(phone_number: phone, content: content)
