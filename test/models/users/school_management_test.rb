@@ -34,7 +34,7 @@ module Users
       school_manager = Users::SchoolManagement.new(
         role: :school_manager,
         email: "jean-pierre@#{school.email_domain_name}",
-        password: 'tototo',
+        password: 'tototo1Max!!',
         first_name: 'Chef',
         last_name: 'Etablissement',
         phone: '+330602030405',

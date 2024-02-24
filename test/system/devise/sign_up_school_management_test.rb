@@ -46,6 +46,7 @@ class SignUpSchoolManagersTest < ApplicationSystemTestCase
     class_room_2 = create(:class_room, name: '3e B', school: school_2)
     existing_email = 'fourcade.m@gmail.com'
     another_email = 'another@free.fr'
+    valid_password = "okokok1Max!!"
 
     # go to signup as teacher
     visit new_user_registration_path(as: 'SchoolManagement')
@@ -60,7 +61,7 @@ class SignUpSchoolManagersTest < ApplicationSystemTestCase
       fill_in 'Prénom', with: 'Martin'
       find("input[name='user[last_name]']").fill_in with: 'Fourcade'
       fill_in 'Adresse électronique', with: existing_email
-      fill_in 'Créer un mot de passe', with: 'kikoololletest'
+      fill_in 'Créer un mot de passe', with: valid_password
       execute_script("document.getElementById('user_accept_terms').checked = true;")
       click_on "Valider"
     end
@@ -77,7 +78,7 @@ class SignUpSchoolManagersTest < ApplicationSystemTestCase
       select school_1.name, from: "user_school_id"
       select(class_room_1.name, from: 'user_class_room_id')
       fill_in 'Adresse électronique', with: "another@#{school_1.email_domain_name}"
-      fill_in 'Créer un mot de passe', with: 'kikoololletest'
+      fill_in 'Créer un mot de passe', with: valid_password
       execute_script("document.getElementById('user_accept_terms').checked = true;")
       click_on "Valider"
     end

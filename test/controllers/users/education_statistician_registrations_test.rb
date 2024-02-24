@@ -23,7 +23,7 @@ class EducationStatisticianRegistrationsTest < ActionDispatch::IntegrationTest
       post user_registration_path(params: { user: { email: email,
                                                     first_name: 'Jean',
                                                     last_name: 'Ref',
-                                                    password: 'okokok',
+                                                    password: 'okokok1Max!!',
                                                     type: 'Users::EducationStatistician',
                                                     accept_terms: '1' } })
     end
@@ -35,7 +35,7 @@ class EducationStatisticianRegistrationsTest < ActionDispatch::IntegrationTest
       post user_registration_path(params: { user: { email: email,
                                                     first_name: 'Jean',
                                                     last_name: 'Ref',
-                                                    password: 'okokok',
+                                                    password: 'okokok1Max!!',
                                                     department: '75',
                                                     type: 'Users::EducationStatistician',
                                                     accept_terms: '1' } })

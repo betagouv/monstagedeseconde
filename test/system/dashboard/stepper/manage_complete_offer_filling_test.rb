@@ -76,7 +76,7 @@ class ManageCompleteOfferFillingTest < ApplicationSystemTestCase
   end
 
   test 'unconnected employer accesses her idle offer through email url (cta) and logging' do
-    password = '45po78M;$'
+    password = '45po78M;$pass'
     employer = create(:employer, password: password)
     internship_offer = create(:weekly_internship_offer, employer: employer)
     travel_to(Date.new(2020, 3, 1)) do

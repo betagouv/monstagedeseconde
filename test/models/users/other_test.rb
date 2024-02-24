@@ -23,7 +23,7 @@ module Users
       other = Users::SchoolManagement.new(
         role: :other,
         email: "jeanne@#{school.email_domain_name}",
-        password: 'tototo',
+        password: 'tototo1Max!!',
         first_name: 'Jeanne',
         last_name: 'CPE',
         school: school,

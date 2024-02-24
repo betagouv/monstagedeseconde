@@ -7,7 +7,7 @@ class EmailUpdateFlowTest < ApplicationSystemTestCase
   # include ::EmailSpamEuristicsAssertions
 
   test 'student updates her email' do
-    password  = 'kikoolol'
+    password  = 'kikoolol1Max!!'
     email     = 'fourcade.m@gmail.com'
     alt_email = 'another_email@free.fr'
     user = create(:student, email: email,
