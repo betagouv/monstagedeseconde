@@ -1,20 +1,22 @@
-Pour diffuser des offres sur la plateforme "[mon stage de 3e](https://www.monstagedetroisieme.fr/)", une API sera mise à disposition pour :
+Pour diffuser des offres sur la plateforme [Mon stage de seconde](https://stagedeseconde.1jeune1solution.gouv.fr/), une API est mise à disposition pour :
 
 * les associations
 * les collectivités
 * les ministères
+* les partenaires
 
 Il s'agit d'une API REST qui permet les opérations suivantes :
-- Ajouter une offre de stage sur Mon stage de 3e
-- Modifier une offre de stage sur Mon stage de 3e
-- Supprimer une offre de stage sur Mon stage de 3e
+- Ajouter une offre de stage sur Mon stage de seconde
+- Modifier une offre de stage sur Mon stage de seconde
+- Supprimer une offre de stage sur Mon stage de seconde
+- Récupérer ses offres de stage postées sur Mon stage de seconde
+- Rechercher des offres de stage sur Mon stage de seconde
 
 # Table des matières
 - [Environnements](#environnements)
 - [Authentification](#authentification)
 - [Structures de données et référentiels](#structures-de-données-et-référentiels)
   - [Offres de stage](#offres-de-stage)
-  - [Semaines](#semaines)
   - [Secteurs d'activité](#secteurs-dactivité)
 - [Gestion d'erreurs](#gestion-derreurs)
 - [Endpoints](#endpoints)
@@ -26,14 +28,14 @@ Il s'agit d'une API REST qui permet les opérations suivantes :
 
 # Environnements
 L'api est disponible sur ```/api``` sur les environnements de pré production et de production. Soit les ```baseURL``` suivantes
-  * En pré production : https://v2-test.monstagedetroisieme.fr/api
-  * En production : https://www.monstagedetroisieme.fr/api
+  * En pré production : https://stagedeseconde.recette.1jeune1solution.gouv.fr/api
+  * En production : https://stagedeseconde.1jeune1solution.gouv.fr/api
 
 # Authentification
 
 *Les APIs sont ouvertes uniquement aux acteurs concernés.*
 
-**Merci d'effectuer une demande par mail** ([support](mailto:maxime.pierrot@monstagedetroisieme.fr)) pour créer un compte API.
+**Merci d'effectuer une demande par mail** ([support](mailto:monstagedeseconde-support@education.gouv.fr)) pour créer un compte API.
 
 Une fois le compte créé, le token d'API pourra être récupéré via notre interface web. Il est différent selon l'environnement de pré production ou production.
 
@@ -43,21 +45,23 @@ Ce token devra être présent à chaque requête.
 
 ### Comment récuperer mon token d'authentification
 
-[Se connecter](https://www.monstagedetroisieme.fr/utilisateurs/connexion) avec votre compte opérateur
+[Se connecter](https://stagedeseconde.1jeune1solution.gouv.fr/utilisateurs/connexion) avec votre compte opérateur
 
 ![](screenshots/login.png)
 
-Depuis la page [Mon profil](https://www.monstagedetroisieme.fr/mon-compte), se rendre sur la page API
+Depuis la page [Mon profil](https://stagedeseconde.1jeune1solution.gouv.fr/mon-compte), se rendre sur la page API
+
 ![](screenshots/logged.png)
 
-Depuis la page [API](https://www.monstagedetroisieme.fr/mon-compte/api), récupérer le token
+Depuis la page [API](https://stagedeseconde.1jeune1solution.gouv.fr/mon-compte/api), récupérer le token
+
 ![](screenshots/api.png)
 
 # Structures de données et référentiels
 
 ## Offres de stage
 
-Les offres de stages décrits ci-dessous décrivent les offres réservées aux classes de **troisieme**, anciennement nommées troisieme générale
+Les offres de stages décrits ci-dessous décrivent les offres réservées aux classes de seconde générales et technologiques.
 
 ```
 {
@@ -75,7 +79,7 @@ Les offres de stages décrits ci-dessous décrivent les offres réservées aux c
     city : Nom de la ville où se déroule le stage
 
     sector_uuid : Identifiant unique du secteurs, voir référentiel *(1)
-    weeks : Liste des semaines pendant lequel celui ci est accessible voir référentiel *(2)
+    period: Durée du stage (voir ci-dessous)
 
     remote_id: l'identifiant unique du coté operateur|collectivité|association
     permalink: lien de redirection pour renvoyer sur le site unique du coté operateur|collectivité|association
@@ -85,85 +89,75 @@ Les offres de stages décrits ci-dessous décrivent les offres réservées aux c
   }
 }
 ```
+### <a name="ref-period"></a>
+## Période de stage
 
-
-### <a name="ref-weeks"></a>
-## Semaines
-Les stages se faisant sur des cycles hebdomadaires de travail (du lundi au vendredi), cette information est codifiée selon la [norme ISO 8601 ](https://fr.wikipedia.org/wiki/Num%C3%A9rotation_ISO_des_semaines).
-
-Exemple : 2019-W35 correspondant à :
-* L'année : 2019
-* Le numéro de semaine : 35, du 26 août au 1er septembre
-
-Exemple de ce que nous attendons dans nos API :
-
-```
-internship_offer.weeks: ["2019-W1", "2019-W3", "2019-W5"]
-```
+L'API attend en paramètre obligatoire la durée du stage qui peut être :
+* Plein temps - du 17 au 24 juin 2024 : **0**,
+* Semaine 1 - du 17 au 21 juin 2024 : **1**,
+* Semaine 2 - du 24 au 28 juin 2024 : **2**
 
 ### <a name="ref-sectors"></a>
 ## Secteurs d'activité
 
 L'API attend en paramètre obligatoire un secteur d'activité associé à une offre. Voici la *liste* ainsi que leurs **identifiants uniques**.
 
-* *Journalisme*: **821075d7-cfcf-4f01-bd6f-689dc0c0dd15**,
-* *Logistique et transport*: **5ef46dbd-7884-4f0a-a3a5-9e74dea5cca2**,
-* *Papiers Cartons*: **de7ff4a5-7857-400f-91f6-0c503698ef6d**,
-* *Bien-être*: **577d47fb-2651-477b-b555-3f85a7d37474**,
-* *Fonction publique*: **f329c1e8-30db-48b4-babb-52e2c90d7287**,
-* *Conseil et audit*: **9bb7b34c-caaf-413f-8c67-6f7a65ec6d56**,
-* *Mode*: **b7564ac4-e184-41c4-a7a9-57233a9d244a**,
-* *Banque et assurance*: **6a8f813b-c338-4d4f-a4cd-99a28748b57d**,
-* *Audiovisuel*: **4b6427b1-b289-486d-b7ea-f33134995a99**,
-* *Communication*: **63d73fd3-9ca6-4838-95aa-9901896be99c**,
-* *Édition, librairie, bibliothèque*: **27c1d368-0846-4038-903f-d63b989e0fe4**,
-* *Traduction, interprétation*: **1123edde-0d77-498a-85c5-2ab3d81b3cd8**,
-* *Bâtiment et travaux publics (BTP)*: **ab69287d-273a-4626-b645-d98f567b22ba**,
-* *Comptabilité, gestion, ressources humaines*: **bfb24e1c-aebc-4451-bb4b-569ab71a814d**,
-* *Droit et justice*: **1711c7c8-89dc-48dd-9ae9-22bde1bd281b**,
-* *Enseignement*: **76f3a155-e592-4bb9-8512-358a7d9db313**,
-* *Recherche*: **c5db692a-2a17-403c-8151-1b3cd7dc48ba**,
-* *Énergie*: **af7e191a-7065-403e-844d-197e7e1e8bdb**,
-* *Environnement*: **1bbc6281-805e-4045-b85b-65a1479a865d**,
-* *Logistique et transport*: **19ccd244-5fac-4ad9-8513-7488d0980f4c**,
-* *Hôtellerie, restauration*: **92e5ad0c-6e30-43a4-8158-818236d01390**,
-* *Tourisme*: **dd9d626b-735a-4139-87b8-8c67990b97ba**,
-* *Agroéquipement*: **0b91687a-f3cc-4cd1-bfb5-b9f03994b1bd**,
-* *Automobile*: **f3733e9c-f33c-4c33-9903-baf9c8e2d2fb**,
-* *Construction aéronautique, ferroviaire et navale*: **ee0e9e5c-f19e-4be8-9399-2cff4f4e5ca5**,
-* *Électronique*: **1ce6aa62-6d91-41e5-9135-ce97e7c94a46**,
-* *Industrie alimentaire*: **95776212-ddd1-466e-ba5b-089f4e2f11ac**,
-* *Industrie chimique*: **4974df57-0111-492d-ab60-3bfdad10733d**,
-* *Maintenance*: **0f51b2d6-91da-4543-a0aa-d49a7be3d249**,
-* *Mécanique*: **4ee8bd54-7b5b-4ae9-9603-78f303d5aea8**,
-* *Verre, béton, céramique*: **463578f1-b371-4466-a13f-b0e99f783391**,
-* *Informatique et réseaux*: **bfd92448-5eae-4d99-ae2c-67fffc8fec69**,
-* *Jeu vidéo*: **be4bab4d-09ed-4205-bca1-1047da0500f8**,
-* *Commerce et distribution*: **ae267ff2-76d5-460a-9a41-3b820c392149**,
-* *Marketing, publicité*: **811621f0-e2d1-4c32-a406-5b45979d7c6d**,
-* *Santé*: **1aae3b41-1394-4109-83cf-17214e1aefdd**,
-* *Métiers d'art*: **82738129-au8h-8297-827h-oaieurjeh872**,
-* *Paramédical*: **89946839-8e18-4087-b48d-e6ee5f7d8480**,
-* *Social*: **d5a7ec0f-5f9c-44cb-add0-66465b4e7d3c**,
-* *Sport*: **01d06ada-55be-4ebf-8ad2-2666e7a7f521**,
-* *Agriculture*: **76de34d3-b524-456d-bc91-92e133cdab2b**,
-* *Filiere bois*: **aa658f28-a9ac-4a29-976f-a528c994f37a**,
-* *Architecture, urbanisme et paysage*: **1ee1b11c-97ca-4b7e-a6fb-afe404f24954**,
-* *Armée - Défense*: **4c0e0937-d7af-4b1c-998c-c1b1d628e3a3**,
-* *Sécurité*: **ec4ce411-f8fd-4690-b51f-3290ffd069e0**,
-* *Art et design*: **c1f72076-43fb-44ae-a811-d55eccf15c08**,
-* *Artisanat d'art*: **1ce60ecc-273d-4c73-9b1a-2f5ee14e1bc6**,
-* *Arts du spectacle*: **055b7580-c979-480f-a026-e94c8b8dc46e**,
-* *Culture et patrimoine*: **c76e6364-7257-473c-89aa-c951141810ce**,
-* *Industrie, ingénierie industrielle*: **14d24150-86cd-4b66-95f0-7f94cf56b5cb**,
-* *Immobilier, transactions immobilières*: **de7930b7-104f-44df-8e49-08eca31ec9e6**,
-* *Services postaux*: **156f75da-37ee-41f8-ade4-94ea23acf715**"
-
+* *Agroéquipement*: **s1**,
+* *Architecture, urbanisme et paysage*: **s2**,
+* *Armée - Défense*: **s3**,
+* *Art et design*: **s4**,
+* *Artisanat d'art*: **s5**,
+* *Arts du spectacle*: **s6**,
+* *Audiovisuel*: **s7**,
+* *Automobile*: **s8**,
+* *Banque et assurance*: **s9**,
+* *Bâtiment et travaux publics (BTP)*: **s10**,
+* *Bien-être*: **s11**,
+* *Commerce et distribution*: **s12**,
+* *Communication*: **s13**,
+* *Comptabilité, gestion, ressources humaines*: **s14**,
+* *Conseil et audit*: **s15**,
+* *Construction aéronautique, ferroviaire et navale*: **s16**,
+* *Culture et patrimoine*: **s17**,
+* *Droit et justice*: **s18**,
+* *Édition, librairie, bibliothèque*: **s19**,
+* *Électronique*: **s20**,
+* *Énergie*: **s21**,
+* *Enseignement*: **s22**,
+* *Environnement*: **s23**,
+* *Filiere bois*: **s24**,
+* *Fonction publique*: **s25**,
+* *Hôtellerie, restauration*: **s26**,
+* *Immobilier, transactions immobilières*: **s27**,
+* *Industrie alimentaire*: **s28**,
+* *Industrie chimique*: **s29**,
+* *Industrie, ingénierie industrielle*: **s30**,
+* *Informatique et réseaux*: **s31**,
+* *Jeu vidéo*: **s32**,
+* *Journalisme*: **s33**,
+* *Logistique et transport*: **s34**,
+* *Logistique et transport*: **s35**,
+* *Maintenance*: **s36**,
+* *Marketing, publicité*: **s37**,
+* *Mécanique*: **s38**,
+* *Métiers d'art*: **s39**,
+* *Mode*: **s40**,
+* *Papiers Cartons*: **s41**,
+* *Paramédical*: **s42**,
+* *Recherche*: **s43**,
+* *Santé*: **s44**,
+* *Sécurité*: **s45**,
+* *Services postaux*: **s46**,
+* *Social*: **s47**,
+* *Sport*: **s48**,
+* *Tourisme*: **s49**,
+* *Traduction, interprétation*: **s50**,
+* *Verre, béton, céramique*: **s51**
 
 Exemple de ce que nous attendons donc un uuid dans nos API :
 
 ```
-internship_offer.sector_uuid: "c76e6364-7257-473c-89aa-c951141810ce"
+internship_offer.sector_uuid: "s33"
 ```
 
 ### <a name="ref-daily-hours"></a>
@@ -217,7 +211,7 @@ En plus de ses erreurs transverses, les erreurs spécifiques à un appel seront 
 * **internship_offer.zipcode** *(string, required)*
 * **internship_offer.city** *(string, required)*
 * **internship_offer.sector_uuid** *(integer, required)*
-* **internship_offer.weeks** (array[datatype:week(year, week_number), datatype:week(year, week_number), ...], optional) : si ce champ n'est pas rempli, le stage sera automatiquement disponible toute l'année
+* **internship_offer.period** *(integer, required)*
 * **internship_offer.lunch_break** *(string, optional)*: le de la pause déjeuner
 * **internship_offer.daily_hours** *(object, optional)*: Les horaires de chaque jour. ex: {"lundi": ['9:00', '16:00], "mardi": ['9:00', '16:00], "mercredi": ['9:00', '16:00], "jeudi": ['9:00', '16:00], "vendredi": ['9:00', '16:00]}
 * **remote_id** *(string, required)*: l'identifiant unique du coté operateur|collectivité|association
@@ -234,7 +228,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
      -H "Accept: application/json" \
      -H "Content-type: application/json" \
      -X POST \
-     -d '{"internship_offer": {"title":"title","description":"description","employer_website":"http://google.fr","street":"Tour Effeil","zipcode":"75002","city":"Paris","employer_name":"employer_name", "weeks":["2021-W16","2021-W18"],"employer_description":"employer_description","remote_id":"test_2","permalink":"https://www.google.fr","sector_uuid": "1ce60ecc-273d-4c73-9b1a-2f5ee14e1bc6", "coordinates":{"latitude":1.0,"longitude":1.0}}}' \
+     -d '{"internship_offer": {"title":"title","description":"description","employer_website":"http://google.fr","street":"Tour Effeil","zipcode":"75002","city":"Paris","employer_name":"employer_name", "employer_description":"employer_description","remote_id":"test_2","permalink":"https://www.google.fr","sector_uuid": "1ce60ecc-273d-4c73-9b1a-2f5ee14e1bc6", "coordinates":{"latitude":1.0,"longitude":1.0}}}' \
      -vvv \
      $ENV/api/internship_offers
 ```
@@ -286,7 +280,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 * **internship_offer.zipcode** *(string)*
 * **internship_offer.city** *(string)*
 * **internship_offer.sector_uuid** *(integer)*
-* **internship_offer.weeks** (array[datatype:week(year, week_number), datatype:week(year, week_number), ...], optional) : si ce champs n'est pas rempli, le stage sera automatiquement disponible toute l'année
+* **internship_offer.period** *(integer)*
 * **permalink** *(url)*
 * **max_candidates** *(integer)*
 * **is_public** *(boolean, optional)*: true|false
@@ -338,14 +332,14 @@ curl -H "Authorization: Bearer foobarbaz" \
 
 # Premiers pas et exemples
 
-Pour éprouver nos APIs, nous utilisons des [scripts shell](https://github.com/betagouv/monstage/tree/master/doc/requests/internship_offers/).
+Pour éprouver nos APIs, nous utilisons des [scripts shell](https://github.com/betagouv/monstagedeseconde/tree/master/doc/requests/internship_offers/).
 
 
 C'est un moyen simple pour tester votre token et nos APIs.
 
 ``` bash
-git clone https://github.com/betagouv/monstage.git
-cd monstage
+git clone https://github.com/betagouv/monstagedeseconde.git
+cd monstagedeseconde
 cd doc
 cp env.sample env.sh
 ```
@@ -357,8 +351,8 @@ set -x
 
 # usage: rename env.sample env.sh
 
-MONSTAGEDETROISIEME_ENV=https://v2-test.monstagedetroisieme.fr/api
-MONSTAGEDETROISIEME_TOKEN=foobarbaz
+MONSTAGEDESECONDE_ENV=https://stagedeseconde.1jeune1solution.gouv.fr/api
+MONSTAGEDESECONDE_TOKEN=foobarbaz
 ```
 
 
