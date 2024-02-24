@@ -8,16 +8,6 @@ class ReportingInternshipOfferTest < ActiveSupport::TestCase
     assert_equal 3, Reporting::InternshipOffer.count
   end
 
-  test 'scopes that select offers depending on years' do
-    offer_2018 = create(:weekly_internship_offer, weeks: [Week.find_by(year: 2019, number: 1)])
-    offer_2020 = create(:weekly_internship_offer, weeks: [Week.find_by(year: 2021, number: 1)])
-
-    assert_equal 1, Reporting::InternshipOffer.during_year(school_year: SchoolYear::Floating.new_by_year(year: 2018))
-                                              .count
-    assert_equal 0, Reporting::InternshipOffer.during_year(school_year: SchoolYear::Floating.new_by_year(year: 2019))
-                                              .count
-  end
-
   test '.dimension_by_sector group by sector_name' do
     sector_a = create(:sector, name: 'Agriculture')
     sector_b = create(:sector, name: 'Filière bois')
@@ -36,17 +26,14 @@ class ReportingInternshipOfferTest < ActiveSupport::TestCase
     sector_a = create(:sector, name: 'Agriculture')
     sector_b = create(:sector, name: 'Filière bois')
     create(:weekly_internship_offer,
-           weeks: [Week.first],
            sector: sector_a,
            max_candidates: 3,
            max_students_per_group: 3)
     create(:weekly_internship_offer,
-           weeks: [Week.first, Week.last],
            sector: sector_a,
            max_candidates: 1,
            max_students_per_group: 1)
     create(:weekly_internship_offer,
-           weeks: [Week.first, Week.last],
            sector: sector_b,
            max_candidates: 10,
            max_students_per_group: 10)

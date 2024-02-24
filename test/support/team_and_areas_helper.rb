@@ -35,7 +35,6 @@ module TeamAndAreasHelper
     employer = create(:employer)
     offer = create(:weekly_internship_offer,
                    employer: employer,
-                   weeks: Week.selectable_from_now_until_end_of_school_year,
                    internship_offer_area_id: employer.current_area_id)
     [employer, offer]
   end

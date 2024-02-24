@@ -16,16 +16,14 @@ class AbilityTest < ActiveSupport::TestCase
   test 'Student' do
     travel_to Date.new(2020, 9, 1) do
       internship_offer = create(:weekly_internship_offer)
-      assert internship_offer.weeks.any?
-      school = create(:school, weeks: [internship_offer.weeks.last])
+      school = create(:school, week_ids: Week.selectable_from_now_until_end_of_school_year.first.id)
       class_room = create(:class_room, school: school)
       assert_equal 1, school.weeks.count
       student = create(:student, class_room: class_room , school: school)
       ability = Ability.new(student)
       internship_application = create(:weekly_internship_application,
                                       student: student,
-                                      internship_offer: internship_offer,
-                                      week: internship_offer.weeks.first)
+                                      internship_offer: internship_offer)
 
       assert(ability.can?(:look_for_offers, student), 'students should be able to look for offers')
       assert(ability.can?(:read, InternshipOffer.new),

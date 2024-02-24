@@ -12,7 +12,6 @@ module Dashboard::Stepper
 
       @internship_offer_info = InternshipOfferInfo.new
       @organisation = Organisation.find(params[:organisation_id])
-      @available_weeks = Week.selectable_from_now_until_end_of_school_year
     end
 
     # process step 2
@@ -29,7 +28,6 @@ module Dashboard::Stepper
       ))
     rescue ActiveRecord::RecordInvalid
       @organisation = Organisation.find(params[:organisation_id])
-      @available_weeks = Week.selectable_from_now_until_end_of_school_year
       render :new, status: :bad_request
     end
 
@@ -37,7 +35,6 @@ module Dashboard::Stepper
     def edit
       authorize! :edit, @internship_offer_info
       @organisation = Organisation.find(params[:organisation_id])
-      @available_weeks = Week.selectable_on_school_year_when_editing
     end
 
     # process update following a back to step 2 (info was created, it's updated)
@@ -51,7 +48,6 @@ module Dashboard::Stepper
         )
       else
         @organisation = Organisation.find(params[:organisation_id])
-        @available_weeks = Week.selectable_on_school_year_when_editing
         render :new, status: :bad_request
       end
     end

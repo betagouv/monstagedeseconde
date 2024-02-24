@@ -88,33 +88,8 @@ module Api
                    'bad description error '
     end
 
-    test 'PATCH #update as operator fails with invalid week format' do
-      faulty_week =  '2020-Wsem9-23'
-      faulty_weeks = ['2020-W8', faulty_week]
-
-      documents_as(endpoint: :'internship_offers/update', state: :unprocessable_entity_bad_data) do
-        patch api_internship_offer_path(
-          id: @internship_offer.remote_id,
-          params: {
-            token: "Bearer #{@operator.api_token}",
-            internship_offer: {
-              weeks: faulty_weeks,
-            }
-          }
-        )
-      end
-      assert_response :unprocessable_entity
-      assert_equal 'BAD_ARGUMENT', json_code
-      assert_equal "bad week format: #{faulty_week}, expecting ISO 8601 format", json_error
-    end
-
     test 'PATCH #update as operator works to internship_offers' do
       new_title = 'hellow'
-      week_instances = [weeks(:week_2019_1), weeks(:week_2019_2)]
-      week_params = [
-        "#{week_instances.first.year}-W#{week_instances.first.number}",
-        "#{week_instances.last.year}-W#{week_instances.last.number}"
-      ]
 
       documents_as(endpoint: :'internship_offers/update', state: :ok) do
         patch api_internship_offer_path(
@@ -123,7 +98,6 @@ module Api
             token: "Bearer #{@operator.api_token}",
             internship_offer: {
               title: new_title,
-              weeks: week_params,
               max_candidates: 2,
               published_at: nil,
               is_public: true,
@@ -134,9 +108,6 @@ module Api
       end
       assert_response :success
       assert_equal new_title, @internship_offer.reload.title
-      week_instances.map do |week_instance|
-        assert_includes @internship_offer.reload.weeks.map(&:id), week_instance.id
-      end
       assert_equal 2, @internship_offer.max_candidates
       assert_equal JSON.parse(@internship_offer.to_json), json_response
       assert @internship_offer.reload.is_public
@@ -170,22 +141,6 @@ module Api
       assert_response :success
       assert_in_delta Time.now.to_i , @internship_offer.reload.published_at.to_i, 0.000_1
       assert_equal true, @internship_offer.published?
-    end
-
-    test 'PATCH #update as operator does not change weeks with default' do
-      travel_to(2.months.from_now) do
-        assert_no_changes -> { @internship_offer.reload.weeks.count } do
-          patch api_internship_offer_path(
-            id: @internship_offer.remote_id,
-            params: {
-              token: "Bearer #{@operator.api_token}",
-              internship_offer: {
-                published_at: nil
-              }
-            }
-          )
-        end
-      end
     end
   end
 end

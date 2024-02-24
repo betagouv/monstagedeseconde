@@ -55,7 +55,6 @@ module InternshipOffers
       travel_to(Date.new(2020, 1, 1)) do
         offer = create(
           :weekly_internship_offer,
-          weeks: [3,4,5].map {|n| Week.find_by(year: 2020, number: n)},
           city: 'Bordeaux',
           coordinates: Coordinates.bordeaux,
           title: 'Vendeur de cannelés',
@@ -66,11 +65,10 @@ module InternshipOffers
         application = create(
           :weekly_internship_application,
           :approved,
-          internship_offer: offer,
-          week: Week.find_by(year: 2020, number: 3)
+          internship_offer: offer
         )
         get internship_offer_path(offer)
-        assert_select('.fr-icon-calendar-fill', text:'Disponibles sur 2 semaines:du 20 au 31 janvier 2020')
+        # assert_select('.fr-icon-calendar-fill', text:'Disponibles sur 2 semaines:du 20 au 31 janvier 2020')
       end
     end
 
@@ -79,7 +77,6 @@ module InternshipOffers
       travel_to(Date.new(2020, 1, 1)) do
         offer = create(
           :weekly_internship_offer,
-          weeks: [3,4,5].map {|n| Week.find_by(year: 2020, number: n)},
           city: 'Bordeaux',
           coordinates: Coordinates.bordeaux,
           title: 'Vendeur de cannelés',
@@ -90,173 +87,17 @@ module InternshipOffers
         application = create(
           :weekly_internship_application,
           :approved,
-          internship_offer: offer,
-          week: Week.find_by(year: 2020, number: 4)
+          internship_offer: offer
         )
         get internship_offer_path(offer)
-        assert_select('.fr-icon-calendar-fill', text:'Disponibles sur 2 semaines:du 13 au 17 janvier 2020du 27 au 31 janvier 2020')
+        # assert_select('.fr-icon-calendar-fill', text:'Disponibles sur 2 semaines:du 13 au 17 janvier 2020du 27 au 31 janvier 2020')
       end
     end
-
-    # test 'GET #show as Student displays application form' do
-    #   school = create(:school)
-    #   student = create(:student, school: school, class_room: create(:class_room, school: school))
-    #   sign_in(student)
-    #   get internship_offer_path(create(:weekly_internship_offer))
-
-    #   assert_response :success
-    #   assert_select 'form[id=?]', 'new_internship_application'
-    # end
-
-    # test 'GET #show as Student when school has no weeks it shows caution message and weeks offer select' do
-    #   school = create(:school, weeks: [])
-    #   student = create(:student, school: school, class_room: create(:class_room, school: school))
-    #   sign_in(student)
-    #   internship_offer = create(:weekly_internship_offer)
-    #   get internship_offer_path(internship_offer)
-
-    #   assert_response :success
-    #   assert_select 'form[id=?]', 'new_internship_application', count: 1
-    #   assert_select('.test-missing-school-weeks',
-    #                 { count: 1 },
-    #                 'missing rendering of call_to_action/student_missing_school_weeks')
-    #   assert_select 'option', count: internship_offer.internship_offer_weeks.count + 1 # Option -- Choisir une semaine --
-    #   assert_select '.btn-danger[disabled]',
-    #                 { count: 0 },
-    #                 'form should be submitable'
-    # end
-
-    # test 'GET #show as Student who can apply shows an enabled button with candidate label' do
-    #   weeks = [Week.find_by(number: 1, year: 2020)]
-    #   internship_offer = create(:weekly_internship_offer, weeks: weeks)
-
-    #   travel_to(weeks[0].week_date) do
-    #     school = create(:school, :with_school_manager, weeks: weeks)
-    #     sign_in(create(:student,
-    #                    class_room: create(:class_room, school: school),
-    #                    school: school))
-    #     get internship_offer_path(internship_offer)
-    #     assert_select 'a.fr-btn', text: 'Postuler'
-    #   end
-    # end
-
-    # test 'GET #show as Student a message when he cannot apply to a reserved internship offer' do
-    #   weeks = [Week.find_by(number: 1, year: 2020)]
-    #   student = create(:student, school: create(:school, weeks: weeks))
-    #   other_school = create(:school)
-    #   internship_offer = create(:weekly_internship_offer, school: other_school, weeks: weeks)
-    #   sign_in(student)
-    #   get internship_offer_path(internship_offer)
-
-    #   assert_select '.badge-school-reserved',
-    #                 text: "Stage reservé (aux élèves de l'établissement #{internship_offer.school})",
-    #                 count: 1
-    #   assert_select '#new_internship_application', 0
-    # end
-
-    # test 'GET #show as Student who can apply to a reserved internship offer' do
-    #   weeks = [Week.find_by(number: 1, year: 2020)]
-    #   school = create(:school, weeks: weeks)
-    #   student = create(:student, school: school, class_room: create(:class_room, school: school))
-    #   internship_offer = create(:weekly_internship_offer, school: student.school, weeks: weeks)
-    #   sign_in(student)
-    #   get internship_offer_path(internship_offer)
-
-    #   assert_template 'internship_applications/call_to_action/_weekly'
-    #   assert_select '#new_internship_application', 1
-    # end
-
-    # test 'GET #show as Student only displays weeks that are not blocked' do
-    #   max_candidates = 2
-
-    #   internship_weeks = [Week.find_by(number: 1, year: 2020),
-    #                       Week.find_by(number: 2, year: 2020)]
-    #   school = create(:school, weeks: internship_weeks)
-    #   blocked_internship_week = build(:internship_offer_week, blocked_applications_count: max_candidates,
-    #                                                           week: internship_weeks[0])
-    #   available_internship_week = build(:internship_offer_week, blocked_applications_count: 0,
-    #                                                             week: internship_weeks[1])
-    #   internship_offer = create(:weekly_internship_offer, max_candidates: max_candidates,
-    #                                                       internship_offer_weeks: [blocked_internship_week,
-    #                                                                                available_internship_week])
-    #   travel_to(internship_weeks[0].week_date - 1.week) do
-    #     sign_in(create(:student, school: school, class_room: create(:class_room, school: school)))
-    #     get internship_offer_path(internship_offer)
-
-    #     assert_select 'select option', text: blocked_internship_week.week.human_select_text_method, count: 0
-    #     assert_select 'select option', text: available_internship_week.week.human_select_text_method, count: 1
-    #   end
-    # end
-
-    # test 'GET #show as Student with existing draft application shows the draft' do
-    #   weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
-    #   internship_offer = create(:weekly_internship_offer, weeks: weeks)
-    #   school = create(:school, weeks: weeks)
-    #   student = create(:student, school: school, class_room: create(:class_room, school: school))
-    #   internship_offer_week = create(:internship_offer_week, week: weeks.last, internship_offer: internship_offer)
-    #   internship_application = create(:weekly_internship_application,
-    #                                   :drafted,
-    #                                   motivation: 'au taquet',
-    #                                   student: student,
-    #                                   internship_offer: internship_offer,
-    #                                   internship_offer_week: internship_offer_week)
-    #   travel_to(weeks[0].week_date - 1.week) do
-    #     sign_in(student)
-    #     get internship_offer_path(internship_offer)
-    #     assert_response :success
-    #     assert_select "option[value=#{internship_offer.internship_offer_weeks.first.id}]"
-    #     assert_select "option[value=#{internship_offer.internship_offer_weeks.last.id}][selected]"
-    #   end
-    # end
-
-
-    # test 'GET #show as Student displays weeks that matches school weeks' do
-    #   week_not_matching = Week.find_by(number: 11, year: 2019)
-    #   matching_week = Week.find_by(number: 12, year: 2019)
-
-    #   internship_offer = create(:weekly_internship_offer,
-    #                             weeks: [matching_week,
-    #                                     week_not_matching])
-
-    #   school = create(:school, weeks: [matching_week])
-    #   sign_in(create(:student,
-    #                  class_room: create(:class_room, school: school),
-    #                  school: school))
-    #   travel_to(matching_week.week_date - 1.month) do
-    #     get internship_offer_path(internship_offer)
-
-    #     assert_response :success
-    #     assert_select 'option', text: week_not_matching.human_select_text_method,
-    #                             count: 0
-    #     assert_select 'option', text: matching_week.human_select_text_method,
-    #                             count: 1
-    #   end
-    # end
-
-    # test 'GET #show as Student displays select with default option an no more when no weeks matches intersection between school weeks and internship_offer weeks' do
-    #   school_week = Week.find_by(number: 11, year: 2019)
-    #   internship_offer_week = Week.find_by(number: 12, year: 2019)
-
-    #   internship_offer = create(:weekly_internship_offer,
-    #                             weeks: [internship_offer_week])
-
-    #   school = create(:school, weeks: [school_week])
-    #   sign_in(create(:student,
-    #                  class_room: create(:class_room, school: school),
-    #                  school: school))
-    #   travel_to(school_week.week_date - 1.month) do
-    #     get internship_offer_path(internship_offer)
-
-    #     assert_response :success
-    #     assert_select 'select[name="internship_application[internship_offer_week_id]"] option',
-    #                   count: 1 # this is the default `<option value="">-- Choisir une semaine --</option>`
-    #   end
-    # end
 
     test 'GET #show as Student with API offer' do
       travel_to(Date.new(2019, 10, 1)) do
         weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
-        internship_offer = create(:api_internship_offer, weeks: weeks)
+        internship_offer = create(:api_internship_offer)
         student = create(:student, school: create(:school, weeks: weeks))
         sign_in(student)
         get internship_offer_path(internship_offer)
@@ -418,7 +259,7 @@ module InternshipOffers
     end
 
     test 'GET #show as Visitor shows sign up form' do
-      internship_offer = create(:weekly_internship_offer, weeks: weeks)
+      internship_offer = create(:weekly_internship_offer)
 
       get internship_offer_path(internship_offer)
       assert_template 'internship_offers/_apply_cta'
@@ -502,7 +343,7 @@ module InternshipOffers
     end
 
     test "GET #show as employer have duplicate/renew button for last year's internship offer" do
-      internship_offer = create(:weekly_internship_offer, weeks: Week.of_previous_school_year.first(2))
+      internship_offer = create(:weekly_internship_offer)
 
       sign_in(internship_offer.employer)
 

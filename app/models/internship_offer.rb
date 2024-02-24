@@ -41,10 +41,6 @@ class InternshipOffer < ApplicationRecord
   has_many :favorites
   has_many :users, through: :favorites
   has_many :users_internship_offers_histories, dependent: :destroy
-  has_many :internship_offer_weeks, dependent: :destroy,
-                                    foreign_key: :internship_offer_id,
-                                    inverse_of: :internship_offer
-  has_many :weeks, through: :internship_offer_weeks
   has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy
 
   accepts_nested_attributes_for :organisation, allow_destroy: true
@@ -96,7 +92,6 @@ class InternshipOffer < ApplicationRecord
               message: 'Le numéro de téléphone doit contenir des caractères chiffrés uniquement' },
     on: :create
 
-  validates :weeks, presence: true
   validate :check_missing_seats_or_weeks, if: :user_update?, on: :update
 
   # Scopes
@@ -170,21 +165,12 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :fulfilled, lambda {
-    applications_ar = InternshipApplication.arel_table
-    offers_ar       = InternshipOffer.arel_table
-
-    joins(internship_offer_weeks: :internship_applications)
-      .where(applications_ar[:aasm_state].in(%w[approved signed]))
-      .select([offers_ar[:id], applications_ar[:id].count.as('applications_count'), offers_ar[:max_candidates], offers_ar[:max_students_per_group]])
-      .group(offers_ar[:id])
-      .having(applications_ar[:id].count.gteq(offers_ar[:max_candidates]))
+    #max_candidates == approved_applications_count
+    joins(:stats).where('internship_offer_stats.remaining_seats_count < 1')
   }
 
   scope :uncompleted, lambda {
-    offers_ar       = InternshipOffer.arel_table
-    full_offers_ids = InternshipOffers::WeeklyFramed.fulfilled.pluck(:id)
-
-    where(offers_ar[:id].not_in(full_offers_ids))
+    joins(:stats).where('internship_offer_stats.remaining_seats_count > 0')
   }
 
   # Retourner toutes les offres qui ont au moins une semaine de libre ???
@@ -284,31 +270,28 @@ class InternshipOffer < ApplicationRecord
   end
 
   def has_spots_left?
-    InternshipOfferWeek.where(internship_offer_id: id)
-                       .where('internship_offer_weeks.blocked_applications_count < ?', max_students_per_group)
-                       .count
-                       .positive?
+    max_candidates > internship_applications.approved.count
   end
 
   def is_fully_editable?
     internship_applications.empty?
   end
 
-  def next_year_week_ids
-    weeks.to_a
-          .intersection(Week.selectable_on_next_school_year.to_a)
-          .map(&:id)
-  end
-
   #
   # callbacks
   #
   def sync_first_and_last_date
-    ordered_weeks = weeks.sort { |a, b| [a.year, a.number] <=> [b.year, b.number] }
-    first_week = ordered_weeks.first
-    last_week = ordered_weeks.last
-    self.first_date = first_week.week_date.beginning_of_week
-    self.last_date = last_week.week_date.end_of_week
+    case period
+    when 0 # full_time
+      self.first_date = Date.new(2024,6,17)
+      self.last_date = Date.new(2024,6,28)  
+    when 1 # week_1
+      self.first_date = Date.new(2024,6,17)
+      self.last_date = Date.new(2024,6,21)
+    when 2 # week_2
+      self.first_date = Date.new(2024,6,24)
+      self.last_date = Date.new(2024,6,28)
+    end
   end
 
   #
@@ -321,12 +304,9 @@ class InternshipOffer < ApplicationRecord
   end
 
   def split_in_two
-    original_week_ids = week_ids
     print '.'
-    return nil if next_year_week_ids.empty?
 
     internship_offer = duplicate
-    internship_offer.week_ids = next_year_week_ids
     internship_offer.remaining_seats_count = max_candidates
     internship_offer.employer = employer
     if internship_offer.valid?
@@ -335,7 +315,6 @@ class InternshipOffer < ApplicationRecord
       raise StandardError.new "##{internship_offer.errors.full_messages} - on #{internship_offer.errors.full_messages}"
     end
 
-    self.week_ids = original_week_ids - next_year_week_ids
     self.hidden_duplicate = true
     self.split!
     save!
@@ -358,10 +337,6 @@ class InternshipOffer < ApplicationRecord
 
   def from_api?
     permalink.present?
-  end
-
-  def has_weeks_in_the_future?
-    weeks.map { |w| w.week_date > Time.now}.any?
   end
 
   def reserved_to_school?
@@ -516,7 +491,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def requires_updates?
-    may_need_update? && (!has_weeks_in_the_future? || no_remaining_seat_anymore?)
+    may_need_update? && no_remaining_seat_anymore?
   end
 
   def available_weeks
@@ -536,7 +511,7 @@ class InternshipOffer < ApplicationRecord
   def requires_update_at_toggle_time?
     return false if published?
 
-    !has_weeks_in_the_future? || no_remaining_seat_anymore?
+    no_remaining_seat_anymore?
   end
 
   def available_weeks_when_editing

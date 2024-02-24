@@ -269,7 +269,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
 
   test 'transition from submited to approved create internship_agreement for student in troisieme_generale.class_room' do
     internship_offer = create(:weekly_internship_offer)
-    school = create(:school, :with_school_manager, weeks: internship_offer.weeks)
+    school = create(:school, :with_school_manager)
     class_room = create(:class_room,  school: school)
     student = create(:student, class_room: class_room)
     internship_application = create(:weekly_internship_application, :validated_by_employer, student: student)

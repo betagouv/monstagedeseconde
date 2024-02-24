@@ -67,18 +67,11 @@ module Api
     test 'POST #create as operator post duplicate remote_id' do
       operator = create(:user_operator, api_token: SecureRandom.uuid)
       existing_internship_offer = create(:api_internship_offer, employer: operator)
-      week_instances = [weeks(:week_2019_1), weeks(:week_2019_2)]
-      week_params = [
-        "#{week_instances.first.year}-W#{week_instances.first.number}",
-        "#{week_instances.last.year}-W#{week_instances.last.number}"
-      ]
       sector = create(:sector, uuid: SecureRandom.uuid)
       internship_offer_params = existing_internship_offer.attributes
                                                          .except(:sector,
-                                                                 :weeks,
                                                                  :coordinates)
                                                          .merge(sector_uuid: sector.uuid,
-                                                                weeks: week_params,
                                                                 coordinates: { latitude: 1, longitude: 1 })
       
       geocoder_response = {
@@ -104,8 +97,6 @@ module Api
 
     test 'POST #create as operator works to internship_offers' do
       operator = create(:user_operator, api_token: SecureRandom.uuid)
-      week_instances = Week.selectable_from_now_until_end_of_school_year.last(2)
-      week_instances += Week.selectable_on_specific_school_year(school_year: SchoolYear::Floating.new(date: Date.new(2026, 1, 1))).last(2)
       sector = create(:sector, uuid: SecureRandom.uuid)
       title = 'title'
       description = 'description'
@@ -118,10 +109,6 @@ module Api
       city = 'Paris'
       siret = FFaker::CompanyFR.siret
       sector_uuid = sector.uuid
-      week_params = [
-        "#{week_instances.first.year}-W#{week_instances.first.number}",
-        "#{week_instances.last.year}-W#{week_instances.last.number}"
-      ]
       remote_id = 'test'
       permalink = 'https://www.google.fr'
       daily_hours = {"lundi": ["9:00","17:00"], "mardi": ["9:00","17:00"], "mercredi": ["9:00","17:00"], "jeudi": ["9:00","17:00"], "vendredi": ["9:00","17:00"]}
@@ -142,7 +129,6 @@ module Api
                 zipcode: zipcode,
                 city: city,
                 sector_uuid: sector_uuid,
-                weeks: week_params,
                 remote_id: remote_id,
                 permalink: permalink,
                 max_candidates: 2,
@@ -169,9 +155,6 @@ module Api
       assert_equal city, internship_offer.city
 
       assert_equal sector, internship_offer.sector
-      week_instances.to_a.map do |week_instance|
-        # assert_includes internship_offer.weeks.map(&:id), week_instance.id
-      end
       assert_equal remote_id, internship_offer.remote_id
       assert_equal permalink, internship_offer.permalink
       assert_equal 2, internship_offer.max_candidates
@@ -191,7 +174,6 @@ module Api
 
     test 'POST #create when missing coordinates works to create internship_offers' do
       operator = create(:user_operator, api_token: SecureRandom.uuid)
-      week_instances = [weeks(:week_2019_1), weeks(:week_2019_2)]
       sector = create(:sector, uuid: SecureRandom.uuid)
       title = 'title'
       description = 'description'
@@ -204,10 +186,6 @@ module Api
       city = 'Paris'
       siret = FFaker::CompanyFR.siret
       sector_uuid = sector.uuid
-      week_params = [
-        "#{week_instances.first.year}-W#{week_instances.first.number}",
-        "#{week_instances.last.year}-W#{week_instances.last.number}"
-      ]
       remote_id = 'test'
       permalink = 'https://www.google.fr'
       
@@ -237,7 +215,6 @@ module Api
                 zipcode: zipcode,
                 city: city,
                 sector_uuid: sector_uuid,
-                weeks: week_params,
                 remote_id: remote_id,
                 permalink: permalink,
                 max_candidates: 2,
@@ -273,10 +250,6 @@ module Api
       city = 'Paris'
       siret = FFaker::CompanyFR.siret
       sector_uuid = sector.uuid
-      week_params = [
-        "#{week_instances.first.year}-W#{week_instances.first.number}",
-        "#{week_instances.last.year}-W#{week_instances.last.number}"
-      ]
       remote_id = 'test'
       permalink = 'https://www.google.fr'
       assert_difference('InternshipOffer.count', 1) do
@@ -296,7 +269,6 @@ module Api
                 zipcode: zipcode,
                 city: city,
                 sector_uuid: sector_uuid,
-                weeks: week_params,
                 remote_id: remote_id,
                 permalink: permalink
               }
@@ -309,81 +281,6 @@ module Api
       internship_offer = InternshipOffers::Api.first
       assert_equal 1, internship_offer.max_candidates
       assert_equal 1, internship_offer.remaining_seats_count
-    end
-
-    test 'POST #create as operator with no weeks params use all selectable week from now until end of school year' do
-      operator = create(:user_operator, api_token: SecureRandom.uuid)
-      sector = create(:sector, uuid: SecureRandom.uuid)
-
-      travel_to(Date.new(2019, 3, 1)) do
-        assert_difference('InternshipOffer.count', 1) do
-          post api_internship_offers_path(
-            params: {
-              token: "Bearer #{operator.api_token}",
-              internship_offer: {
-                title: 'title',
-                description: 'description',
-                employer_name: 'employer_name',
-                employer_description: 'employer_description',
-                employer_website: 'http://employer_website.com',
-                siret: FFaker::CompanyFR.siret,
-                coordinates: { latitude: 1, longitude: 1 },
-                street: 'street',
-                zipcode: '60580',
-                city: 'Coye la forêt',
-                sector_uuid: sector.uuid,
-                remote_id: 'remote_id',
-                permalink: 'http://google.fr/permalink',
-              }
-            }
-          )
-          assert_response :created
-        end
-
-        internship_offer = InternshipOffers::Api.first
-        week_ids = internship_offer.weeks.map(&:id)
-        Week.selectable_from_now_until_end_of_school_year.each do |week|
-          assert week_ids.include?(week.id)
-        end
-      end
-    end
-
-    test 'POST #create as operator with badly formed weeks params raises a not_found error' do
-      operator = create(:user_operator, api_token: SecureRandom.uuid)
-      sector = create(:sector, uuid: SecureRandom.uuid)
-      faulty_week =  '2020-Wsem9-23'
-      faulty_weeks = ['2020-W8', faulty_week]
-
-      travel_to(Date.new(2019, 3, 1)) do
-        assert_difference('InternshipOffer.count', 0) do
-          documents_as(endpoint: :'internship_offers/create', state: :unprocessable_entity_bad_data) do
-            post api_internship_offers_path(
-              params: {
-                token: "Bearer #{operator.api_token}",
-                internship_offer: {
-                  title: 'title',
-                  description: 'description',
-                  weeks: faulty_weeks,
-                  employer_name: 'employer_name',
-                  employer_description: 'employer_description',
-                  employer_website: 'http://employer_website.com',
-                  siret: FFaker::CompanyFR.siret,
-                  coordinates: { latitude: 1, longitude: 1 },
-                  street: 'street',
-                  zipcode: '60580',
-                  city: 'Coye la forêt',
-                  sector_uuid: sector.uuid,
-                  remote_id: 'remote_id',
-                  permalink: 'http://google.fr/permalink'
-                }
-              }
-            )
-          end
-          assert_response :unprocessable_entity
-          assert_equal 'BAD_ARGUMENT', json_code
-          assert_equal "bad week format: #{faulty_week}, expecting ISO 8601 format", json_error
-        end
-      end
     end
 
     test 'POST #create as operator with empty street creates the internship offer' do
@@ -553,11 +450,6 @@ module Api
 
     test 'POST #create as operator with not enough weeks does not fail' do
       operator = create(:user_operator, api_token: SecureRandom.uuid)
-      week_instances = [weeks(:week_2019_1), weeks(:week_2019_2)]
-      week_params = [
-        "#{week_instances.first.year}-W#{week_instances.first.number}",
-        "#{week_instances.last.year}-W#{week_instances.last.number}"
-      ]
       sector = create(:sector, uuid: SecureRandom.uuid)
       geocoder_response = {
         status: 200,
@@ -580,7 +472,6 @@ module Api
                 siret: FFaker::CompanyFR.siret,
                 coordinates: { latitude: 148, longitude: 14 },
                 zipcode: '75007',
-                weeks: week_params, # 2 weeks
                 city: 'Paris',
                 sector_uuid: sector.uuid,
                 remote_id: 'remote_id',
@@ -594,7 +485,6 @@ module Api
 
         assert_response :created
         internship_offer = InternshipOffers::Api.first
-        assert_equal 2, internship_offer.weeks.count
         assert_equal 3, internship_offer.remaining_seats_count
         assert_equal 1, internship_offer.max_students_per_group
       end

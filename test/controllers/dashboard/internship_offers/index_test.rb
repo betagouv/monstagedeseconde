@@ -176,10 +176,7 @@ module Dashboard::InternshipOffers
       internship_offer_in_the_past = create(
         :weekly_internship_offer,
         employer: employer,
-        internship_offer_area_id: employer.current_area_id,
-        weeks: [Week.where(number: two_weeks_ago.to_date.cweek == 53 ? 1 : two_weeks_ago.to_date.cweek,
-                           year: two_weeks_ago.year)
-                    .first]
+        internship_offer_area_id: employer.current_area_id
       )
       sign_in(employer)
 
@@ -211,7 +208,6 @@ module Dashboard::InternshipOffers
       travel_to(Date.new(2019, 9, 1)) do
         
         internship_offer_1 = create(:weekly_internship_offer,
-                                    weeks: Week.selectable_from_now_until_end_of_school_year.first(2),
                                     max_candidates: 2,
                                     remaining_seats_count: 2,
                                     max_students_per_group: 2,
@@ -271,14 +267,12 @@ module Dashboard::InternshipOffers
                                             employer: employer,
                                             internship_offer_area_id: employer.current_area_id,
                                             max_candidates: 10,
-                                            max_students_per_group: 5,
-                                            weeks: Week.selectable_from_now_until_end_of_school_year.first(10))
+                                            max_students_per_group: 5)
         kept_internship_offer = create(:weekly_internship_offer,
                                       employer: employer,
                                       internship_offer_area_id: employer.current_area_id,
                                       max_candidates: 10,
-                                      max_students_per_group: 5,
-                                      weeks: Week.selectable_from_now_until_end_of_school_year.first(10))
+                                      max_students_per_group: 5)
         create(:weekly_internship_application, :submitted,
               internship_offer: discarded_internship_offer)
         2.times do

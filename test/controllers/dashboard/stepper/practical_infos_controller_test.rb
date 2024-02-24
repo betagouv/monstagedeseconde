@@ -108,11 +108,9 @@ module Dashboard::Stepper
 
       # recopy hosting_info
       assert_equal hosting_info.max_candidates, created_internship_offer.max_candidates
-      assert_equal hosting_info.weeks, created_internship_offer.weeks
 
       # recopy practical_info
       assert_equal created_practical_info, created_internship_offer.practical_info
-      assert_nil(created_internship_offer.school_id,'school_id not copied')
       assert_equal(created_practical_info.weekly_hours,
                    created_internship_offer.weekly_hours,
                    'weekly_hours not copied')

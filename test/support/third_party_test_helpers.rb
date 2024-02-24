@@ -24,4 +24,16 @@ module ThirdPartyTestHelpers
         }).
       to_return(status: 200, body: "", headers: {})
   end
+
+  def google_storage_stub
+    stub_request(:get, "https://storage.googleapis.com/chrome-for-testing-public/121.0.6167.184/mac-arm64/chromedriver-mac-arm64.zip").
+    with(
+      headers: {
+            'Accept'=>'*/*',
+            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Host'=>'storage.googleapis.com',
+            'User-Agent'=>'Ruby'
+      }).
+    to_return(status: 200, body: "", headers: {})
+  end
 end

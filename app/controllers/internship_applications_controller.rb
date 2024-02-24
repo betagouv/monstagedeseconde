@@ -69,8 +69,7 @@ class InternshipApplicationsController < ApplicationController
     @suggested_offers = Finders::InternshipOfferConsumer.new(
       params: {
         latitude: @internship_application.student.school.coordinates.latitude,
-        longitude: @internship_application.student.school.coordinates.longitude,
-        week_ids: [@internship_application.week_id]
+        longitude: @internship_application.student.school.coordinates.longitude
       },
       user: current_user_or_visitor
     ).all

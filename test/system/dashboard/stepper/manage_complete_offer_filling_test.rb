@@ -35,8 +35,7 @@ class ManageCompleteOfferFillingTest < ApplicationSystemTestCase
         # 2
         sleep 0.3
         find('legend', text: 'Offre de stage')
-        fill_in_internship_offer_info_form(sector: sector,
-                                           weeks: available_weeks)
+        fill_in_internship_offer_info_form(sector: sector)
 
         click_on "Suivant"
         find('legend', text: 'Informations sur le tuteur')

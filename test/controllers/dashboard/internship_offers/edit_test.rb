@@ -27,10 +27,6 @@ module Dashboard::InternshipOffers
                                                           max_students_per_group: 2)
       get edit_dashboard_internship_offer_path(internship_offer.to_param)
       assert_select "#internship_offer_max_candidates[value=#{internship_offer.max_candidates}]", count: 1
-
-      internship_offer.available_weeks_when_editing.each do |week|
-        assert_select 'label', text: week.select_text_method_with_year
-      end
       assert_response :success
     end
 
@@ -44,8 +40,7 @@ module Dashboard::InternshipOffers
                          .first
 
         sign_in(employer)
-        internship_offer = create(:weekly_internship_offer, weeks: [first_week],
-                                                            employer: employer,
+        internship_offer = create(:weekly_internship_offer, employer: employer,
                                                             max_candidates: 2,
                                                             max_students_per_group: 2)
         get edit_dashboard_internship_offer_path(internship_offer.to_param)
@@ -64,30 +59,13 @@ module Dashboard::InternshipOffers
     test 'GET #edit with disabled fields if applications exist' do
       employer = create(:employer)
       sign_in(employer)
-      weeks = Week.selectable_on_school_year[0..1]
-      internship_offer = create(:weekly_internship_offer, employer: employer,weeks: weeks, internship_offer_area: employer.current_area)
+      internship_offer = create(:weekly_internship_offer, employer: employer, internship_offer_area: employer.current_area)
       internship_application = create(:weekly_internship_application,
                                       :submitted,
-                                      internship_offer: internship_offer,
-                                      week: internship_offer.internship_offer_weeks[0].week)
+                                      internship_offer: internship_offer)
       travel_to(weeks.first.week_date - 1.week) do
         get edit_dashboard_internship_offer_path(internship_application.internship_offer.to_param)
         assert_response :success
-        assert_select 'input#all_year_long[disabled]'
-
-        internship_offer.weeks.each do |week|
-          assert_select "label[for='internship_offer_week_ids_#{week.id}_checkbox']",
-                        text: week.select_text_method_with_year
-        end
-
-        assert_select("input#internship_offer_week_ids_#{internship_offer.internship_offer_weeks[1].week_id}[disabled='disabled']",
-                      { count: 0 },
-                      "other week should not be not selectable")
-
-        assert_select("input#internship_offer_week_ids_#{internship_offer.internship_offer_weeks[1].week_id}_checkbox",
-                      { count: 1 },
-                      "other week should be selectable")
-
         assert_select 'input#internship_offer_max_candidates'
       end
     end

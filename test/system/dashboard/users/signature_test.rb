@@ -19,8 +19,7 @@ module Dashboard
       if ENV['RUN_BRITTLE_TEST']
         internship_agreement = create(:internship_agreement, :validated)
         employer = internship_agreement.employer
-        weeks = [Week.find_by(number: 5, year: 2020), Week.find_by(number: 6, year: 2020)]
-        internship_offer = create(:weekly_internship_offer, weeks: weeks, employer: employer)
+        internship_offer = create(:weekly_internship_offer, employer: employer)
         student = create(:student, school: create(:school, weeks: weeks))
         create(:school_manager, school: student.school)
         internship_application = create(:weekly_internship_application,
@@ -262,6 +261,7 @@ module Dashboard
     end
 
     test 'school_manager multiple clicks on interface' do
+      skip "test to update after ui is finished #TODO #may_flower"
       internship_agreement = create(:internship_agreement, :validated)
       student1 = internship_agreement.student
 

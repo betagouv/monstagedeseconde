@@ -17,7 +17,6 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
       student = create(:student, school: school)
       assert student.phone.blank?
       internship_offer = create(:weekly_internship_offer,
-                                weeks: [weeks_till_end.first],
                                 employer: create(:employer))
       internship_application = create(:weekly_internship_application,
                                       :drafted,
@@ -45,10 +44,8 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
       student = create(:student, school: school)
       assert student.phone.blank?
       internship_offer_ref = create(:weekly_internship_offer,
-                                    weeks: [weeks_till_end.first],
                                     employer: create(:employer))
       internship_offer = create(:weekly_internship_offer,
-                                weeks: [weeks_till_end.first],
                                 employer: create(:employer))
       internship_application = create(:weekly_internship_application,
                                       :drafted,
@@ -77,10 +74,8 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
       school = create(:school, :with_school_manager, weeks: [weeks_till_end.first])
       student = create(:student, school: school, phone: '+330623443058')
       internship_offer_ref = create(:weekly_internship_offer,
-                                    weeks: [weeks_till_end.first],
                                     employer: create(:employer))
       internship_offer = create(:weekly_internship_offer,
-                                weeks: [weeks_till_end.first],
                                 employer: create(:employer))
       internship_application = create(:weekly_internship_application,
                                       :drafted,

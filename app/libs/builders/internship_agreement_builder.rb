@@ -60,7 +60,7 @@ module Builders
 
     def preprocess_internship_application_params(internship_application)
       {
-        date_range: internship_application.week.short_select_text_method
+        date_range: "Du #{internship_application.internship_offer.first_date.strftime( "%d/%m/%Y")} au #{internship_application.internship_offer.last_date.strftime( "%d/%m/%Y")}"
       }
     end
 
