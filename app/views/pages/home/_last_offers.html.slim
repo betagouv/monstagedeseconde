@@ -4,7 +4,7 @@
   .fr-py-4w
     .fr-tabs
       ul.fr-tabs__list role="tablist" aria-label="Dernières offres"
-        li role="presentation"
+        li
          = button_to 'Stages de 2de générale et technologique', '', class: 'fr-tabs__tab', role: 'tab', 'aria-selected': 'true', aria_controls: 'last-offers-panel', tabindex:"0"
       #last-offers-panel.fr-tabs__panel.fr-tabs__panel--active.fr-tabs__panel--selected.bg-white role="tabpanel" aria-labelledby="last-offers-tab" aria-hidden="false" tabindex="0"
         = render 'pages/home/internship_offers'
