@@ -22,10 +22,6 @@ class ManageInternshipOfferInfosTest < ApplicationSystemTestCase
         # Individual internship
         find('label[for="internship_type_true"]').click
         fill_in("hosting_info_max_candidates", with: 1)
-        find('.test-school-reserved').click
-        fill_in('Ville ou nom de l\'établissement pour lequel le stage est reservé', with: 'Pari')
-        all('.autocomplete-school-results .list-group-item-action').first.click
-        select(school_name, from: 'Collège')
         click_on "Suivant"
         find('span', text: 'Étape 4 sur 5')
         find('h2', text: 'Informations pratiques')

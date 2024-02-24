@@ -72,7 +72,6 @@ module Dashboard::Stepper
     def hosting_info_params
       params.require(:hosting_info)
             .permit(
-              :school_id,
               :employer_id,
               :max_candidates,
               :max_students_per_group,
