@@ -77,9 +77,6 @@ FactoryBot.define do
       internship_offer_area { employer.current_area }
     end
 
-    trait :last_year_weekly_internship_offer do
-    end
-
     trait :weekly_internship_offer_by_statistician do
     end
 
@@ -115,9 +112,7 @@ FactoryBot.define do
     factory :weekly_internship_offer, traits: [:weekly_internship_offer,  :published],
                                       class: 'InternshipOffers::WeeklyFramed',
                                       parent: :internship_offer
-    factory :last_year_weekly_internship_offer, traits: [:last_year_weekly_internship_offer],
-                                                class: 'InternshipOffers::WeeklyFramed',
-                                                parent: :internship_offer
+    
     factory :weekly_internship_offer_by_statistician, traits: [:weekly_internship_offer_by_statistician],
                                       class: 'InternshipOffers::WeeklyFramed',
                                       parent: :internship_offer

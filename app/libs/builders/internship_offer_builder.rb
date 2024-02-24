@@ -25,9 +25,6 @@ module Builders
                                  .perform_later(internship_offer_id: internship_offer.id)
         callback.on_success.try(:call, internship_offer)
       rescue ActiveRecord::RecordInvalid => e
-        puts e 
-        puts e 
-        puts e 
         callback.on_failure.try(:call, e.record)
       end
 
