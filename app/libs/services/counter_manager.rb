@@ -59,11 +59,5 @@ module Services
       end
       ok
     end
-
-    def self.reset_internship_offer_weeks_counter
-      InternshipOffers::WeeklyFramed.kept.find_each do |internship_offer|
-        InternshipOffers::WeeklyFramed.reset_counters(internship_offer.id, :internship_offer_weeks)
-      end
-    end
   end
 end
