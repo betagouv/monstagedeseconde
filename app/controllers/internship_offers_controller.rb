@@ -75,7 +75,7 @@ class InternshipOffersController < ApplicationController
       :city,
       :radius,
       :keyword,
-      week_ids: []
+      :period
     )
   end
 
@@ -114,8 +114,8 @@ class InternshipOffersController < ApplicationController
         :longitude,
         :radius,
         :keyword,
-        sector_ids: [],
-        week_ids: []
+        :period,
+        sector_ids: []
       ),
       user: current_user_or_visitor
     )
