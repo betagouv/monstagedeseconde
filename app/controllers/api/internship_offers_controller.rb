@@ -99,6 +99,7 @@ module Api
               :sector_uuid,
               :max_candidates,
               :max_students_per_group,
+              :period,
               :published_at,
               :is_public,
               :lunch_break,
@@ -115,6 +116,7 @@ module Api
         :longitude,
         :radius,
         :keyword,
+        :period,
         week_ids: []
       )
     end
@@ -132,6 +134,7 @@ module Api
           id: internship_offer.id,
           title: internship_offer.title,
           description: internship_offer.description.to_s,
+          pediod: internship_offer.period,
           employer_name: internship_offer.employer_name,
           url: internship_offer_url(internship_offer, query_params.merge({utm_source: current_api_user.operator.name})),
           city: internship_offer.city.capitalize,
