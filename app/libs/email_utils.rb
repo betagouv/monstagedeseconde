@@ -1,6 +1,6 @@
 module EmailUtils
   def self.env_host
-    ENV.fetch('HOST') { 'https://stagedeseconde.1jeune1solution.gouv.fr/' }
+    ENV.fetch('HOST') { 'https://stagedeseconde.1jeune1solution.gouv.fr' }
   end
 
   def self.domain
