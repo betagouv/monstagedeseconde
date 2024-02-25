@@ -88,7 +88,7 @@ class StudentMailer < ApplicationMailer
     @token = token
 
     mail(to: @student.email,
-         subject: "Votre inscription sur MonStageDeTroisieme.fr")
+         subject: "Votre inscription sur stagedeseconde.1jeune1solution.gouv.fr")
   end
 
   def internship_application_validated_by_employer_email(internship_application:)
@@ -168,7 +168,7 @@ class StudentMailer < ApplicationMailer
   def reminder_without_application_email(student: )
     @subject   = "Faites votre première candidature !"
     @student   = student
-    @message   = "Vous n'avez pas encore postulé sur MonStagedeTroisieme.fr ? " \
+    @message   = "Vous n'avez pas encore postulé sur Mon stage de seconde ? " \
                  "Faites une recherche en indiquant le métier qui vous intéresse, " \
                  "le lieu et la semaine de votre stage, puis proposez votre " \
                   "candidature à plusieurs entreprises."

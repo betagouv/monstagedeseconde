@@ -24,7 +24,7 @@ class UserMailerTest < ActionMailer::TestCase
         email.deliver_now
       end
     end
-    assert_equal "Export des offres de monstagedetroisieme", email.subject
+    assert_equal "Export des offres de Mon stage de seconde", email.subject
     refute_email_spammyness(email)
   end
 
@@ -38,7 +38,7 @@ class UserMailerTest < ActionMailer::TestCase
         email.deliver_now
       end
     end
-    assert_equal "Export des offres de monstagedetroisieme", email.subject
+    assert_equal "Export des offres de Mon stage de seconde", email.subject
     refute_email_spammyness(email)
   end
   test '.export_offers user god with departement param' do
@@ -51,7 +51,7 @@ class UserMailerTest < ActionMailer::TestCase
         email.deliver_now
       end
     end
-    assert_equal "Export des offres de monstagedetroisieme", email.subject
+    assert_equal "Export des offres de Mon stage de seconde", email.subject
     refute_email_spammyness(email)
   end
 end

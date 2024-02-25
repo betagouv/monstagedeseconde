@@ -23,7 +23,7 @@ class InvitationMailer < ApplicationMailer
     mail(
       from: @from,
       to: @to,
-      subject: "Invitation à rejoindre monstagedetroisieme.fr"
+      subject: "Invitation à rejoindre Mon stage de seconde"
     )
   end
 end

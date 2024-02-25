@@ -29,7 +29,7 @@ module Dashboard
       when :already_in_team
         flash = { warning: 'Ce collaborateur fait déjà partie de l\'équipe' }
       when :in_another_team
-        flash = { alert: 'Ce collaborateur fait déjà partie d’une équipe sur mon stage de troisième. Il ne pourra pas rejoindre votre équipe' }
+        flash = { alert: 'Ce collaborateur fait déjà partie d’une équipe sur mon stage de seconde. Il ne pourra pas rejoindre votre équipe' }
       else
         render(:new, status: :bad_request) and return
       end

@@ -90,16 +90,16 @@ As a public french service, we try to keep most data hosted by french service pr
 ### Tooling
 * Infra management
 * Mail: [tipimail](https://app.tipimail.com)
-* Monit [monit](monit.monstagedetroisieme.fr) : website up/down (pingdom like)
+* Monit [monit](monit.monstagedeseconde.fr) : website up/down (pingdom like)
 
 # Build: test, dev
 
 ## documentation (browse with github, having README.md at root of each folder)
 
-* [controllers](https://github.com/betagouv/monstage/tree/master/app/controllers)
-* [models](https://github.com/betagouv/monstage/tree/master/app/models)
-* [mailers](https://github.com/betagouv/monstage/tree/master/app/mailers)
-* [api](https://github.com/betagouv/monstage/tree/master/doc)
+* [controllers](https://github.com/betagouv/monstagedeseconde/tree/master/app/controllers)
+* [models](https://github.com/betagouv/monstagedeseconde/tree/master/app/models)
+* [mailers](https://github.com/betagouv/monstagedeseconde/tree/master/app/mailers)
+* [api](https://github.com/betagouv/monstagedeseconde/tree/master/doc)
 
 
 

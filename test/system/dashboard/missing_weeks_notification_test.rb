@@ -13,7 +13,7 @@ class MissingWeeksNotificationTest < ApplicationSystemTestCase
   #   refute_selector "a[data-test-id='#{internship_offer.id}']"
   # end
 
-  test 'student troisieme try to apply to an offer while school manager has not open any internship week' do
+  test 'student try to apply to an offer while school manager has not open any internship week' do
     skip "test to update after ui is finished #TODO #may_flower"
     travel_to(Date.new(2019, 3, 1)) do
       internship_offer = create(:weekly_internship_offer)

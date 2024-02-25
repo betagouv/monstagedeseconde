@@ -23,7 +23,7 @@ class UserMailer < ApplicationMailer
                             locals: { offers: offers,
                                       presenter_for_dimension: Presenters::Reporting::DimensionByOffer }
     attachments[attachment_name] = {mime_type: Mime[:xlsx], content: xlsx}
-    mail(to: recipient_email, subject: "Export des offres de monstagedetroisieme")
+    mail(to: recipient_email, subject: "Export des offres de Mon stage de seconde")
   end
 
   private
