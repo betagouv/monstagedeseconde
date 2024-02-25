@@ -23,19 +23,19 @@ class EmailUtilsTest < ActiveSupport::TestCase
     end
 
     ENV['HOST'] = "https://stagedeseconde.recette.1jeune1solution.gouv.fr"
-    assert_equal  "1jeune1solution.gouv.fr", EmailUtils.domain
+    assert_equal  "gouv.fr", EmailUtils.domain
 
     ENV['HOST'] = "https://stagedeseconde.1jeune1solution.gouv.fr"
-    assert_equal  "1jeune1solution.gouv.fr", EmailUtils.domain
+    assert_equal  "gouv.fr", EmailUtils.domain
 
     ENV['HOST'] = nil
-    assert_equal  "1jeune1solution.gouv.fr", EmailUtils.domain
+    assert_equal  "gouv.fr", EmailUtils.domain
 
     ENV['HOST'] = local_host
   end
 
   test '.formatted_email' do
-    assert_equal "Mon Stage de 3e <support@monstagedetroisieme.fr>",
+    assert_equal "Mon Stage de 2de <support@monstagedetroisieme.fr>",
                  EmailUtils.formatted_email("support@monstagedetroisieme.fr")
   end
 end
