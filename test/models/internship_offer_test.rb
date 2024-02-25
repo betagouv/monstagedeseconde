@@ -79,4 +79,11 @@ class InternshipOfferTest < ActiveSupport::TestCase
     assert offer.internship_offer_area_id.present?
     assert_equal employer.current_area_id, offer.internship_offer_area_id
   end
+
+  test 'with period equals to 1' do
+    internship_offer = create(:weekly_internship_offer, :week_1)
+    assert_equal 1, InternshipOffer.week_1.count
+    assert internship_offer.week_1?
+    assert_equal 1, internship_offer.period
+  end
 end

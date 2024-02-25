@@ -17,13 +17,25 @@ module StepperProxy
                                 greater_than: 0,
                                 less_than_or_equal_to: :max_candidates ,
                                 message: "Le nombre maximal d'élèves par groupe ne peut pas dépasser le nombre maximal d'élèves attendus dans l'année" }
-      
+
       enum period: {
-        0 => 'full_time',
-        1 => 'week_1',
-        2 => 'week_2'
+        full_time: 0,
+        week_1: 1,
+        week_2: 2
       }
+
       attribute :period, :integer, default: 0
+
+      
+
+      def period_label
+        InternshipOffer::PERIOD_LABELS.values[period]
+      end
+
+      def self.period_collection
+        InternshipOffer::PERIOD_LABELS.values
+                                      .each_with_index { |value, index| [value, index] }
+      end
 
       def is_individual?
         max_students_per_group == 1

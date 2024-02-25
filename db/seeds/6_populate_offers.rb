@@ -1,7 +1,6 @@
 def populate_internship_offers
   current_school_year = SchoolYear::Current.new.beginning_of_period
   # 3eme_generale: public sector
-  weeks = Week.selectable_on_school_year
   # 1
   InternshipOffers::WeeklyFramed.create!(
     employer: Users::Employer.first,
@@ -9,9 +8,7 @@ def populate_internship_offers
     siret: siret,
     max_candidates: 5,
     max_students_per_group: 5,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_paqte.first,
     is_public: false,
@@ -30,7 +27,6 @@ def populate_internship_offers
     employer_name: Group.is_paqte.first.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
-  weeks = [].concat(Week.selectable_on_school_year[0..1], Week.selectable_on_school_year[3..5])
   # 2
   InternshipOffers::WeeklyFramed.create!(
     employer: Users::Employer.first,
@@ -38,9 +34,7 @@ def populate_internship_offers
     siret: siret,
     max_candidates: 5,
     max_students_per_group: 5,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_paqte.first,
     is_public: false,
@@ -61,7 +55,6 @@ def populate_internship_offers
   )
 
     # 3eme generale public
-  weeks =  Week.selectable_on_school_year
   # 3
   InternshipOffers::WeeklyFramed.create!(
     max_candidates: 5,
@@ -69,9 +62,7 @@ def populate_internship_offers
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
     siret: siret,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.second,
     group: Group.is_public.last,
     is_public: true,
@@ -98,9 +89,7 @@ def populate_internship_offers
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
     siret: siret,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
@@ -121,13 +110,12 @@ def populate_internship_offers
   )
   # dépubliée
   # 5
+  period = [0, 1, 2].sample
   InternshipOffers::WeeklyFramed.create!(
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
     siret: siret,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
@@ -156,9 +144,7 @@ def populate_internship_offers
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
     siret: siret,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
@@ -184,9 +170,7 @@ def populate_internship_offers
     employer: Users::Employer.first,
     contact_phone: '+33637607757',
     siret: siret,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
@@ -212,9 +196,7 @@ def populate_internship_offers
     employer: Users::Operator.first,
     contact_phone: '+33637607756',
     siret: siret,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
@@ -242,9 +224,7 @@ def populate_internship_offers
     employer: Users::Operator.first,
     contact_phone: '+33637607756',
     siret: siret,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_public.first,
     is_public: false,
@@ -279,9 +259,7 @@ MULTI_LINE
     max_students_per_group: 5,
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
@@ -312,9 +290,7 @@ MULTI_LINE
     contact_phone: '+33637607756',
     max_candidates: 5,
     max_students_per_group: 5,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
@@ -360,9 +336,7 @@ MULTI_LINE
     max_students_per_group: 5,
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
@@ -387,9 +361,7 @@ MULTI_LINE
     siret: siret,
     max_candidates: 2,
     max_students_per_group: 2,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.fourth,
     group: Group.is_paqte.second,
     is_public: false,
@@ -416,9 +388,7 @@ MULTI_LINE
     siret: "88339868700011",
     max_candidates: 1,
     max_students_per_group: 1,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.second,
     group: nil,
     is_public: false,
@@ -443,9 +413,7 @@ MULTI_LINE
     employer: Users::Operator.first,
     contact_phone: '+33637607756',
     siret: siret,
-    weeks: weeks,
-    first_date: weeks.first.beginning_of_week,
-    last_date: weeks.last.beginning_of_week,
+    period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_public.first,
     is_public: false,

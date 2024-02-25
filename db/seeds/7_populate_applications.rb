@@ -10,7 +10,6 @@ def populate_applications
         student: students.first,
         motivation: 'Au taquet',
         internship_offer: offer,
-        week: offer.internship_offer_weeks.sample.week,
         student_phone: "060606#{(1000..9999).to_a.sample}",
         student_email: 'paul@gmail.com'
       )
@@ -21,7 +20,6 @@ def populate_applications
         student: students.first,
         motivation: 'Au taquet',
         internship_offer: offer,
-        week: offer.internship_offer_weeks.sample.week,
         student_phone: "060606#{(1000..9999).to_a.sample}",
         student_email: 'paul@gmail.com'
       )
@@ -38,7 +36,6 @@ def populate_applications
     student: students.second,
     motivation: 'Au taquet',
     internship_offer: offers.first,
-    week: offers.first.internship_offer_weeks.first.week,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
   )
@@ -52,7 +49,6 @@ def populate_applications
     student: students.second,
     motivation: 'Parce que ma société n\'a pas d\'encadrant cette semaine là',
     internship_offer: offers.second,
-    week: offers.first.internship_offer_weeks.first.week,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
   )
@@ -66,7 +62,6 @@ def populate_applications
     student: students.third,
     motivation: 'Au taquet',
     internship_offer: offers.third,
-    week: offers.first.internship_offer_weeks.second.week,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
   )
@@ -79,7 +74,6 @@ def populate_applications
     student: students.third,
     motivation: 'Au taquet',
     internship_offer: offers.fourth,
-    week: offers.second.internship_offer_weeks.second.week,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
   )
@@ -93,7 +87,6 @@ def populate_applications
     student: students.fourth,
     motivation: 'Au taquet',
     internship_offer: offers.fourth,
-    week: offers.first.internship_offer_weeks.third.week,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
   )
@@ -104,7 +97,6 @@ def populate_applications
     student: students.fourth,
     motivation: 'Assez moyennement motivé pour ce stage',
     internship_offer: offers.fifth,
-    week: offers.fifth.internship_offer_weeks.third.week,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
   )
@@ -115,7 +107,6 @@ def populate_applications
     student: students.fourth,
     motivation: 'motivé moyennement pour ce stage, je vous préviens',
     internship_offer: offers[6],
-    week: offers[6].internship_offer_weeks.second.week,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
   )
@@ -126,7 +117,6 @@ def populate_applications
     student: students.fourth,
     motivation: 'motivé moyennement pour ce stage, je vous préviens',
     internship_offer: offers[0],
-    week: offers[0].internship_offer_weeks.last.week
   )
   InternshipApplications::WeeklyFramed.create!(
     aasm_state: :validated_by_employer,
@@ -136,34 +126,13 @@ def populate_applications
     student: students.fourth,
     motivation: 'Très motivé pour ce stage, je vous préviens',
     internship_offer: offers[5],
-    week: offers[5].internship_offer_weeks.last(2).first.week
   )
   #-----------------
   # 5th student [offers.third approved]
   #-----------------
-   InternshipApplications::WeeklyFramed.create!(
-    aasm_state: :approved,
-    submitted_at: 29.days.ago,
-    examined_at: 23.days.ago,
-    approved_at: 20.days.ago,
-    student: students[4],
-    motivation: 'Très motivé pour ce stage, je vous préviens',
-    internship_offer: offers.third,
-    week: offers.third.internship_offer_weeks.last(2).first.week
-  )
   #-----------------
   # 6th student [offers.seventh approved]
   #-----------------
-   InternshipApplications::WeeklyFramed.create!(
-    aasm_state: :approved,
-    submitted_at: 29.days.ago,
-    examined_at: 23.days.ago,
-    approved_at: 20.days.ago,
-    student: students[5],
-    motivation: 'Très moyennement motivé pour ce stage, je vous préviens',
-    internship_offer: offers[6],
-    week: offers[6].internship_offer_weeks.last(4).first.week
-  )
   #-----------------
   # 7th student [offers[4] approved]
   #-----------------
@@ -175,7 +144,6 @@ def populate_applications
     student: students[6],
     motivation: 'Très motivé pour ce stage, je vous préviens',
     internship_offer: offers[4],
-    week: offers[4].internship_offer_weeks.last(2).first.week
   )
   #-----------------
   # 8th student [offers[5] approved]
@@ -188,7 +156,6 @@ def populate_applications
     student: students[7],
     motivation: 'Très motivé pour ce stage, je vous préviens',
     internship_offer: offers[5],
-    week: offers[5].internship_offer_weeks.last.week
   )
 end
 
@@ -222,45 +189,6 @@ def populate_agreements
   agreement_3.aasm_state = :validated
   agreement_3.save!
 
-  agreement_4 = Builders::InternshipAgreementBuilder.new(user: troisieme_applications_offers[4].internship_offer.employer)
-                                                    .new_from_application(troisieme_applications_offers[4])
-  agreement_4.school_manager_accept_terms = true
-  agreement_4.employer_accept_terms = true
-
-  agreement_4.aasm_state = :signatures_started
-  agreement_4.save!
-
-  agreement_5 = Builders::InternshipAgreementBuilder.new(user: troisieme_applications_offers[5].internship_offer.employer)
-                                                    .new_from_application(troisieme_applications_offers[5])
-  agreement_5.school_manager_accept_terms = true
-  agreement_5.employer_accept_terms = true
-  agreement_5.aasm_state = :signed_by_all
-  agreement_5.save!
-
-  Signature.new(
-    internship_agreement_id: agreement_4.id,
-    user_id: agreement_4.school_manager.id,
-    signatory_role: 'school_manager',
-    signatory_ip: FFaker::Internet.ip_v4_address,
-    signature_phone_number: agreement_4.school_manager.phone,
-    signature_date: 1.day.ago
-  ).save!
-  Signature.new(
-    signatory_ip: FFaker::Internet.ip_v4_address,
-    internship_agreement_id: agreement_5.id,
-    user_id: agreement_5.school_manager.id,
-    signature_phone_number: agreement_5.school_manager.phone,
-    signatory_role: 'school_manager',
-    signature_date: 1.day.ago
-  ).save!
-  Signature.new(
-    signatory_ip: FFaker::Internet.ip_v4_address,
-    internship_agreement_id: agreement_5.id,
-    user_id: agreement_5.employer.id,
-    signature_phone_number: agreement_5.employer.phone,
-    signatory_role: 'employer',
-    signature_date: 1.day.ago
-  ).save!
 end
 
 call_method_with_metrics_tracking([

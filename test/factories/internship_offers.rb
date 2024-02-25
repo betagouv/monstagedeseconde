@@ -54,6 +54,24 @@ FactoryBot.define do
       aasm_state { 'published' }
     end
 
+    trait :week_1 do
+      period { 1 }
+      first_date { Date.new(2024, 6, 17) }
+      last_date { Date.new(2024, 6, 21) }
+    end
+
+    trait :week_2 do
+      period { 2 }
+      first_date { Date.new(2024, 6, 24) }
+      last_date { Date.new(2024, 6, 28) }
+    end
+
+    trait :full_time do
+      period { 0 }
+      first_date { Date.new(2024, 6, 17) }
+      last_date { Date.new(2024, 6, 28) }
+    end
+
     trait :draft do
       published_at { nil }
       aasm_state { 'drafted' }
