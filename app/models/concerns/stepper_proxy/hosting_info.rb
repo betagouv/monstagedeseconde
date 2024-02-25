@@ -26,18 +26,15 @@ module StepperProxy
 
       attribute :period, :integer, default: 0
 
-      PERIOD_LABELS = {
-        full_time: "2 semaines - du 17 au 28 juin 2024",
-        week_1: "1 semaine - du 17 au 21 juin 2024",
-        week_2: "1 semaine - du 24 au 28 juin 2024"
-      }
+      
 
       def period_label
-        PERIOD_LABELS.values[period]
+        InternshipOffer::PERIOD_LABELS.values[period]
       end
 
       def self.period_collection
-        PERIOD_LABELS.values.each_with_index.map { |value, index| [value, index] }
+        InternshipOffer::PERIOD_LABELS.values
+                                      .each_with_index { |value, index| [value, index] }
       end
 
       def is_individual?

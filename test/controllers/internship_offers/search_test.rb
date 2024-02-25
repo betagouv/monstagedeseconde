@@ -7,6 +7,6 @@ class SearchTest < ActionDispatch::IntegrationTest
     get search_internship_offers_path
 
     assert_response :success
-    assert_select 'label', text: 'Dates de stage'
+    assert_select 'button span.mr-2', text: 'Trouver un stage'
   end
 end
