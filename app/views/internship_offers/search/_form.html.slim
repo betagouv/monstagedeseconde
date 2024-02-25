@@ -31,7 +31,9 @@ div [class="test-search-container #{has_white_bg ? 'search-container py-2' : ''}
         = form.select :period,
                       HostingInfo.period_collection,
                       { include_blank: "Toutes les périodes" },
-                      class: "fr-select"
+                      class: "fr-select",
+                      title: "Recherche par période",
+                      :'aria-label' => "Recherche par période"
 
       / = render partial: "internship_offers/search/weeks",
       /          locals: { f: form,
