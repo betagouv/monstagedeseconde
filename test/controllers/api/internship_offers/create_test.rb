@@ -100,7 +100,6 @@ module Api
       sector = create(:sector, uuid: SecureRandom.uuid)
       title = 'title'
       description = 'description'
-      period = 0 # full_time
       employer_name = 'employer_name'
       employer_description = 'employer_description'
       employer_website = 'http://google.fr'
@@ -121,7 +120,6 @@ module Api
               internship_offer: {
                 title: title,
                 description: description,
-                period: period,
                 employer_name: employer_name,
                 employer_description: employer_description,
                 employer_website: employer_website,
@@ -171,6 +169,7 @@ module Api
       assert_equal daily_hours[:jeudi], internship_offer.daily_hours["jeudi"]
       assert_equal daily_hours[:vendredi], internship_offer.daily_hours["vendredi"]
       assert_equal "Repas sur place", internship_offer.lunch_break
+      assert_equal 0, internship_offer.period # default value
 
       assert_equal JSON.parse(internship_offer.to_json), json_response
     end
@@ -289,6 +288,7 @@ module Api
       internship_offer = InternshipOffers::Api.first
       assert_equal 1, internship_offer.max_candidates
       assert_equal 1, internship_offer.remaining_seats_count
+      assert_equal 2, internship_offer.period
     end
 
     test 'POST #create as operator with empty street creates the internship offer' do

@@ -79,6 +79,7 @@ module Api
               :is_public,
               :handicap_accessible,
               :lunch_break,
+              :period,
               daily_hours: {},
               coordinates: {}
             )
