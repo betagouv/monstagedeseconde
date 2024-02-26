@@ -6,10 +6,6 @@ module Dashboard::InternshipOffers
   class CreateTest < ActionDispatch::IntegrationTest
     include Devise::Test::IntegrationHelpers
 
-    def next_week
-      @next_week ||= Week.selectable_from_now_until_end_of_school_year.first
-    end
-
     test 'POST #create (duplicate)  as visitor redirects to internship_offers' do
       post dashboard_internship_offers_path(params: {})
       assert_redirected_to user_session_path
