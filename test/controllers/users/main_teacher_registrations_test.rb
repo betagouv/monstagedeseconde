@@ -32,7 +32,7 @@ class MainTeacherRegistrationsTest < ActionDispatch::IntegrationTest
   test 'POST #create with all params create MainTeacher' do
     school = create(:school)
     school_manager = create(:school_manager, school: school)
-    class_room = create(:class_room, name: '3e A', school: school)
+    class_room = create(:class_room, name: '2de A', school: school)
     assert_difference('Users::SchoolManagement.main_teacher.count', 1) do
       post user_registration_path(params: { user: { email: "teacher@#{school.email_domain_name}",
                                                     password: 'okokok1Max!!',
@@ -53,7 +53,7 @@ class MainTeacherRegistrationsTest < ActionDispatch::IntegrationTest
     school = create(:school)
     school_manager = create(:school_manager, school: school)
     create(:invitation, email: email, user_id: school_manager.id)
-    class_room = create(:class_room, name: '3e A', school: school)
+    class_room = create(:class_room, name: '2de A', school: school)
     assert_equal 1, Invitation.count
     assert_difference('Users::SchoolManagement.main_teacher.count', 1) do
       post user_registration_path(params: { user: { email: email,
