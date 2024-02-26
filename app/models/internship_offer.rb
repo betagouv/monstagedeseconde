@@ -291,7 +291,7 @@ class InternshipOffer < ApplicationRecord
     case period
     when 0 # full_time
       self.first_date = Date.new(2024,6,17)
-      self.last_date = Date.new(2024,6,28)  
+      self.last_date = Date.new(2024,6,28)
     when 1 # week_1
       self.first_date = Date.new(2024,6,17)
       self.last_date = Date.new(2024,6,21)
@@ -492,7 +492,7 @@ class InternshipOffer < ApplicationRecord
       Favorite.where(internship_offer_id: id).destroy_all
     end
   end
-  
+
   def no_remaining_seat_anymore?
     remaining_seats_count.zero?
   end
@@ -550,7 +550,7 @@ class InternshipOffer < ApplicationRecord
   def update_stats
     stats.recalculate
   end
-  
+
   # TODO Rename
   def missing_weeks_info?
     internship_offer_weeks.map(&:week_id).all? do |week_id|
@@ -580,7 +580,7 @@ class InternshipOffer < ApplicationRecord
   def user_update?
     user_update == "true"
   end
-  
+
   protected
 
   def make_sure_area_is_set
