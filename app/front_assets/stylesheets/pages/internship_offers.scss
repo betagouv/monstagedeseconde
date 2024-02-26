@@ -178,6 +178,14 @@ $sortLinkOffset: 15px;
 
 .container-downshift{position: relative;}
 
+.card-title-std-height{
+  height: 3.5rem;
+}
+@include media-breakpoint-up(sm) {
+  .img-card-maxima{
+    height: 170px;
+  }
+}
 // custom dimension table for dashboard/internship_offers#index
 @include media-breakpoint-up(sm) {
   .table-dashboard-internship-offers {

@@ -27,10 +27,9 @@ class InternshipOffersController < ApplicationController
         @internship_offers_all_without_page_array = @internship_offers_all_without_page.to_a
         @internship_offers_array = @internship_offers.to_a
 
-        formatted_internship_offers = format_internship_offers(@internship_offers)
         @params = query_params
         data = {
-          internshipOffers: formatted_internship_offers,
+          internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
           seats: calculate_seats,
           isSuggestion: @is_suggestion
@@ -167,7 +166,7 @@ class InternshipOffersController < ApplicationController
     internship_offers.map { |internship_offer|
       {
         id: internship_offer.id,
-        title: internship_offer.title.truncate(35),
+        title: internship_offer.title.truncate(44),
         description: internship_offer.description.to_s,
         employer_name: internship_offer.employer_name,
         link: internship_offer_path(internship_offer, query_params),

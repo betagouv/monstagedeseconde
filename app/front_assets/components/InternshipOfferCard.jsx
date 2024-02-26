@@ -51,44 +51,41 @@ const InternshipOfferCard = ({
         <div className="fr-card__body">
           <div className="fr-card__content">
             <h4 className="fr-card__title">
-              <a href={internshipOffer.link} 
-                className="row-link text-dark" 
+              <a href={internshipOffer.link}
+                className="row-link text-dark"
                 onClick={(e) => { e.stopPropagation() }}
-              >
+              ><div className="card-title-std-height">
                 {internshipOffer.title}
+              </div>
               </a>
             </h4>
             <div className="fr-card__detail">
-              <div className="mr-auto">{internshipOffer.employer_name}</div>
+              <div className="mr-auto d-flex align-items-center">
+                <span className="fr-icon-arrow-right-line fr-icon--sm fr-mb-0"></span>
+                <span className="fr-text fr-px-1w fr-mb-3w fr-mt-2w">Du {internshipOffer.date_start} au {internshipOffer.date_end}</span>
+              </div>
               { internshipOffer.logged_in && internshipOffer.can_manage_favorite &&
-                <div
-                  className={`heart-${isFavorite ? 'full' : 'empty'}`}
-                  onClick={(e) => {
-                    if (isFavorite) {
-                      removeFavorite(internshipOffer.id)
-                    } else {
-                      addFavorite(internshipOffer.id)
-                    }
-                  }
-                  }
+                <div className={`heart-${isFavorite ? 'full' : 'empty'}`}
+                  onClick={(e) => { (isFavorite) ? removeFavorite(internshipOffer.id) : addFavorite(internshipOffer.id)}}
                 ></div>
               }
             </div>
             <div className="fr-card__desc">
-              <p className="blue-france">{ internshipOffer.city }</p>
-              <div className="blue-france fr-text--bold my-2">
-                Du {internshipOffer.date_start} au {internshipOffer.date_end}
-              </div>
+              <div className="mr-auto blue-france fr-mb-6w">{internshipOffer.employer_name}</div>
             </div>
+
           </div>
         </div>
         <div className="fr-card__header">
           <div className="fr-card__img">
-            <img className="fr-responsive-img" src={internshipOffer.image} alt="secteur" />
+            <img className="fr-responsive-img img-card-maxima" src={internshipOffer.image} alt="secteur" width="310"/>
           </div>
           <ul className="fr-badges-group">
             <li>
-              <div className="fr-tag">{internshipOffer.sector}</div>
+              <div className="fr-badge fr-badge--warning fr-badge--no-icon">{internshipOffer.sector}</div>
+            </li>
+            <li>
+              <div className="fr-badge fr-badge--warning fr-badge--no-icon">{internshipOffer.city}</div>
             </li>
           </ul>
         </div>
