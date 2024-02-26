@@ -17,6 +17,9 @@ def geo_point_factory_array(coordinates_as_array)
 end
 
 def with_class_name_for_defaults(object)
+  user = User.find_by_email(object.email) || User.find_by_phone(object.phone)
+  return user if user.present?
+
   object.first_name ||= FFaker::NameFR.first_name
   object.last_name ||= "#{FFaker::NameFR.last_name}-#{Presenters::UserManagementRole.new(user: object).role}"
   object.accept_terms = true
@@ -58,5 +61,4 @@ if true #Rails.env == 'review' || Rails.env.development?
   School.update_all(updated_at: Time.now)
   prevent_sidekiq_to_run_job_after_seed_loaded
   Services::CounterManager.reset_internship_offer_counters
-  Services::CounterManager.reset_internship_offer_weeks_counter
 end

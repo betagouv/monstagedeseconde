@@ -27,7 +27,7 @@ module Triggered
     def send_sms_to_student(student)
       content =  "Pas de réponse à votre candidature ? Les employeurs peuvent être lents" \
                  " à répondre. Continuez à postuler pour maximiser vos chances de trouver" \
-                 " le stage idéal sur Monstagedetroisieme.fr."
+                 " le stage idéal sur stagedeseconde.1jeune1solution.gouv.fr"
       SendSmsJob.new.perform(user: student, message: content)
     end
   end

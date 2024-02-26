@@ -30,8 +30,8 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   test 'navigation & interaction works until student creation' do
     school_1 = create(:school, name: 'Etablissement Test 1', city: 'Saint-Martin', zipcode: '77515')
     school_2 = create(:school, name: 'Etablissement Test 2', city: 'Saint-Parfait', zipcode: '51577')
-    class_room_1 = create(:class_room, name: '3e A', school: school_1)
-    class_room_2 = create(:class_room, name: '3e B', school: school_2)
+    class_room_1 = create(:class_room, name: '2de A', school: school_1)
+    class_room_2 = create(:class_room, name: '2de B', school: school_2)
     existing_email = 'fourcade.m@gmail.com'
     birth_date = 14.years.ago
     student = create(:student, email: existing_email)
@@ -65,7 +65,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
   test 'select other class room' do
     school_1 = create(:school, name: 'Etablissement Test 1', city: 'Saint-Martin', zipcode: '77515')
-    class_room_0 = create(:class_room, name: '3e A', school: school_1)
+    class_room_0 = create(:class_room, name: '2de A', school: school_1)
     existing_email = 'fourcade.m@gmail.com'
     student = create(:student, email: existing_email)
 
@@ -86,7 +86,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
       school_1 = create(:school, name: 'Etablissement Test 1',
                                 city: 'Saint-Martin', zipcode: '77515')
-      class_room_1 = create(:class_room, name: '3e A', school: school_1)
+      class_room_1 = create(:class_room, name: '2de A', school: school_1)
       birth_date = 14.years.ago
       email = 'yetanother@gmail.com'
       password = 'kikoololletest'
@@ -129,7 +129,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     password = 'kikoololletest'
     school_1 = create(:school, name: 'Etablissement Test 1',
                                city: 'Saint-Martin', zipcode: '77515')
-    class_room_1 = create(:class_room, name: '3e A', school: school_1)
+    class_room_1 = create(:class_room, name: '2de A', school: school_1)
     student = create(:student, school: school_1, class_room: class_room_1,
                                password: password)
     offer = create(:weekly_internship_offer)
@@ -170,7 +170,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
       school_1 = create(:school, name: 'Etablissement Test 1',
                                 city: 'Saint-Martin', zipcode: '77515',
                                 weeks: weeks )
-      class_room_1 = create(:class_room, name: '3e A', school: school_1)
+      class_room_1 = create(:class_room, name: '2de A', school: school_1)
       student = create(:student, :registered_with_phone, school: school_1,
                                                         class_room: class_room_1, password: password)
       offer = create(:weekly_internship_offer, weeks: weeks)
@@ -194,7 +194,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   test 'Student with phone subscription with former internship_offer choice leads to offer page' do
     school_1 = create(:school, name: 'Etablissement Test 1',
                                city: 'Saint-Martin', zipcode: '77515')
-    class_room_1 = create(:class_room, name: '3e A', school: school_1)
+    class_room_1 = create(:class_room, name: '2de A', school: school_1)
     birth_date = 14.years.ago
     password = 'kikoololletest'
     valid_phone_number = '+330637607756'
@@ -243,8 +243,8 @@ class SignUpStudentsTest < ApplicationSystemTestCase
                                city: 'Saint-Martin', zipcode: '77515')
       school_2 = create(:school, name: 'Etablissement Test 2',
                                 city: 'Saint-Parfait', zipcode: '51577')
-      class_room_1 = create(:class_room, name: '3e A', school: school_1)
-      create(:class_room, name: '3e B', school: school_2)
+      class_room_1 = create(:class_room, name: '2de A', school: school_1)
+      create(:class_room, name: '2de B', school: school_2)
       existing_phone = '+330600110011'
       birth_date = Date.new(2009, 1, 1)
       student = create(:student, phone: existing_phone)

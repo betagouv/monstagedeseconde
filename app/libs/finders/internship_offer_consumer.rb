@@ -21,7 +21,7 @@ module Finders
       student_query = kept_published_future_offers_query.ignore_already_applied(user: user) # Whatever application status !!!
       return student_query if user.school.nil? || user.school.weeks.empty?
 
-      school_week_ids  = user.school.weeks.map(&:id)
+      # school_week_ids  = user.school.weeks.map(&:id)
       school_latitude  = user.school.coordinates&.latitude
       school_longitude = user.school.coordinates&.longitude
       return student_query if school_latitude.nil? || school_longitude.nil?

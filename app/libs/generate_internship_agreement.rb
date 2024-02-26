@@ -64,7 +64,7 @@ class GenerateInternshipAgreement < Prawn::Document
   def title
     title = "Convention type dématérialisée relative à l’organisation d’une " \
             "séquence d’observation en milieu professionnel des élèves des " \
-            "classes de quatrième et de troisième"
+            "classes de seconde"
     @pdf.move_down 20
     @pdf.text title, :size => 20, :align => :center, :color => "10008F"
     @pdf.move_down 20

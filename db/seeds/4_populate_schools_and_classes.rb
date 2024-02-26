@@ -17,9 +17,9 @@ end
 def populate_class_rooms
   school = find_default_school_during_test
 
-  ClassRoom.create(name: '3e A', school: school)
-  ClassRoom.create(name: '3e B', school: school)
-  ClassRoom.create(name: '3e C', school: school)
+  ClassRoom.create(name: '2de A', school: school)
+  ClassRoom.create(name: '2de B', school: school)
+  ClassRoom.create(name: '2de C', school: school)
 end
 
 def find_default_school_during_test

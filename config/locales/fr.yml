@@ -20,7 +20,7 @@ fr:
     passwords:
       update: 'Mot de passe mis à jour.'
     sms:
-      welcome_student: "Bienvenue sur Mon Stage de 3e ! Faites votre première recherche et 2 candidatures ! Cliquez ici pour commencer : %{shrinked_url}"
+      welcome_student: "Bienvenue sur Mon Stage de 2de ! Faites votre première recherche et 2 candidatures ! Cliquez ici pour commencer : %{shrinked_url}"
   activerecord:
     models:
       area_notification:
@@ -640,7 +640,7 @@ fr:
         internship_application:
           attributes:
             user_id:
-              duplicate: "Vous êtes déjà candidat pour cette offre sur une semaine différente"
+              duplicate: "Vous êtes déjà candidat pour cette offre"
             internship_offer:
               has_no_spots_left: "Cette offre est complète"
             internship_offer_week:

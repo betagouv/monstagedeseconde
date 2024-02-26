@@ -24,7 +24,7 @@ paths:
       security:
         - bearerAuth: []
       description: |
-        Les offres retournées sont celles qui ont été déposées par le partenaire de monstagedetroisieme.fr
+        Les offres retournées sont celles qui ont été déposées par le partenaire de Mon stage de seconde.fr
       responses:
         '200':
           description: Offre de stage créée
