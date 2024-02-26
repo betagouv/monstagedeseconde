@@ -3,6 +3,6 @@
 FactoryBot.define do
   factory :class_room do
     school
-    name { '3e A' }
+    name { '2de A' }
   end
 end

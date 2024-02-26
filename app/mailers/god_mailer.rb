@@ -16,7 +16,7 @@ class GodMailer < ApplicationMailer
 
     mail(
       to: ENV['TEAM_EMAIL'],
-      subject: "Monitoring monstagede3e : kpi du #{@human_date}"
+      subject: "Monitoring MS2GT : kpi du #{@human_date}"
     )
   end
 
@@ -36,7 +36,7 @@ class GodMailer < ApplicationMailer
 
     mail(
       to: ENV['TEAM_EMAIL'],
-      subject: "Monitoring monstagede3e : Candidatures non répondues au #{@human_date}"
+      subject: "Monitoring MS2GT : Candidatures non répondues au #{@human_date}"
     )
   end
 
@@ -56,7 +56,7 @@ class GodMailer < ApplicationMailer
 
     mail(
       to: ENV['TEAM_EMAIL'],
-      subject: "Monitoring monstagede3e : Candidatures expirées depuis 15 jours au #{@human_date}"
+      subject: "Monitoring MS2GT : Candidatures expirées depuis 15 jours au #{@human_date}"
     )
   end
 
