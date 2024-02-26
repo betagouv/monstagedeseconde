@@ -29,17 +29,12 @@ div [class="test-search-container #{has_white_bg ? 'search-container py-2' : ''}
 
       .form-group.mb-md-0.col-12.col-md.fr-ml-2w
         = form.select :period,
-                      HostingInfo.period_collection,
+                      options_for_select(HostingInfo.period_collection, params[:period]),
                       { include_blank: "Toutes les périodes" },
                       class: "fr-select",
                       title: "Recherche par période",
                       :'aria-label' => "Recherche par période"
 
-      / = render partial: "internship_offers/search/weeks",
-      /          locals: { f: form,
-      /                    render_as_partial: render_as_partial,
-      /                    default_values: default_values,
-      /                    white_bg: has_white_bg }
       - if params[:filter].in? ['past','unpublished']
         = render partial: "dashboard/internship_offers/school_years_filter",
                  locals: { white_bg: has_white_bg }
