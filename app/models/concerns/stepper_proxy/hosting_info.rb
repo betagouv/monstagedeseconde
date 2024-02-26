@@ -34,7 +34,8 @@ module StepperProxy
 
       def self.period_collection
         InternshipOffer::PERIOD_LABELS.values
-                                      .each_with_index { |value, index| [value, index] }
+                                      .each_with_index
+                                      .map { |value, index| [value, index] }
       end
 
       def is_individual?
