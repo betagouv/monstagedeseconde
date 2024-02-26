@@ -26,16 +26,14 @@ module StepperProxy
 
       attribute :period, :integer, default: 0
 
-      
-
       def period_label
         InternshipOffer::PERIOD_LABELS.values[period]
       end
 
       def self.period_collection
-        InternshipOffer::PERIOD_LABELS.values
-                                      .each_with_index
-                                      .map { |value, index| [value, index] }
+        InternshipOffer::PERIOD_LABELS.values.each.with_index(0).map do |value, index| 
+          [value, index]
+        end
       end
 
       def is_individual?
