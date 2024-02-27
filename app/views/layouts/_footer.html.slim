@@ -27,7 +27,9 @@ footer#footer.fr-footer role="contentinfo" data-controller='footer'
       ul.fr-footer__bottom-list.fr-py-2w
 
         li.fr-footer__bottom-item
-          span.fr-text--sm Accessibilité : non conforme
+          = link_to "Accessibilité : non conforme",
+                    accessibilite_path,
+                    class: 'rf-footer__top-link'
         li.fr-footer__bottom-item
           = link_to "Mentions légales",
                     mentions_legales_path,

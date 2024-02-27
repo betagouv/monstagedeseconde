@@ -42,8 +42,8 @@ class SignUpSchoolManagersTest < ApplicationSystemTestCase
     school_1 = create(:school, name: 'Etablissement Test 1', city: 'Saint-Martin', zipcode: '77515')
     create(:school_manager, school: school_1)
     school_2 = create(:school, name: 'Etablissement Test 2', city: 'Saint-Parfait', zipcode: '77555')
-    class_room_1 = create(:class_room, name: '3e A', school: school_1)
-    class_room_2 = create(:class_room, name: '3e B', school: school_2)
+    class_room_1 = create(:class_room, name: '2de A', school: school_1)
+    class_room_2 = create(:class_room, name: '2de B', school: school_2)
     existing_email = 'fourcade.m@gmail.com'
     another_email = 'another@free.fr'
     valid_password = "okokok1Max!!"

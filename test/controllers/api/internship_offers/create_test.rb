@@ -147,6 +147,7 @@ module Api
       assert_equal description, internship_offer.description
       assert_equal employer_name, internship_offer.employer_name
       assert_equal employer_description, internship_offer.employer_description
+      assert_equal 0, internship_offer.period
       assert_equal employer_website, internship_offer.employer_website
       assert_equal coordinates, latitude: internship_offer.coordinates.latitude,
                                 longitude: internship_offer.coordinates.longitude
@@ -168,6 +169,7 @@ module Api
       assert_equal daily_hours[:jeudi], internship_offer.daily_hours["jeudi"]
       assert_equal daily_hours[:vendredi], internship_offer.daily_hours["vendredi"]
       assert_equal "Repas sur place", internship_offer.lunch_break
+      assert_equal 0, internship_offer.period # default value
 
       assert_equal JSON.parse(internship_offer.to_json), json_response
     end
@@ -177,6 +179,7 @@ module Api
       sector = create(:sector, uuid: SecureRandom.uuid)
       title = 'title'
       description = 'description'
+      period = 1 # week 1
       coordinates = { latitude: 48.8602244, longitude: 2.333 }
       employer_name = 'employer_name'
       employer_description = 'employer_description'
@@ -209,6 +212,7 @@ module Api
                 description: description,
                 employer_name: employer_name,
                 employer_description: employer_description,
+                period: period,
                 employer_website: employer_website,
                 siret: siret,
                 street: street,
@@ -229,6 +233,7 @@ module Api
       internship_offer = InternshipOffers::Api.first
       assert_equal title, internship_offer.title
       assert_equal false, internship_offer.is_public
+      assert_equal 1, internship_offer.period
       assert_equal coordinates[:latitude], internship_offer.coordinates.latitude
       assert_equal coordinates[:longitude], internship_offer.coordinates.longitude
       assert_equal JSON.parse(internship_offer.to_json), json_response
@@ -241,6 +246,7 @@ module Api
       sector = create(:sector, uuid: SecureRandom.uuid)
       title = 'title'
       description = 'description'
+      period = 2 # week 2
       employer_name = 'employer_name'
       employer_description = 'employer_description'
       employer_website = 'http://google.fr'
@@ -262,6 +268,7 @@ module Api
                 description: description,
                 employer_name: employer_name,
                 employer_description: employer_description,
+                period: period,
                 employer_website: employer_website,
                 siret: siret,
                 'coordinates' => coordinates,
@@ -281,6 +288,7 @@ module Api
       internship_offer = InternshipOffers::Api.first
       assert_equal 1, internship_offer.max_candidates
       assert_equal 1, internship_offer.remaining_seats_count
+      assert_equal 2, internship_offer.period
     end
 
     test 'POST #create as operator with empty street creates the internship offer' do
@@ -303,6 +311,7 @@ module Api
                 internship_offer: {
                   title: 'title',
                   description: 'description',
+                  pediod: 0,
                   employer_name: 'Ministere',
                   employer_description: 'employer_description',
                   employer_website: 'http://employer_website.com',
@@ -346,6 +355,7 @@ module Api
                   description: 'description',
                   employer_name: 'Ministere',
                   employer_description: 'employer_description',
+                  pediod: 0,
                   employer_website: 'http://employer_website.com',
                   coordinates: { latitude: 48.8566383, longitude: 2.3211761 },
                   street: '',
@@ -387,6 +397,7 @@ module Api
                 internship_offer: {
                   title: 'title',
                   description: 'description',
+                  pediod: 0,
                   employer_name: 'Ministere',
                   employer_description: 'employer_description',
                   employer_website: 'http://employer_website.com',
@@ -427,6 +438,7 @@ module Api
                 internship_offer: {
                   title: 'title',
                   description: 'description',
+                  pediod: 0,
                   employer_name: 'Ministere',
                   employer_description: 'employer_description',
                   employer_website: 'http://employer_website.com',
@@ -468,6 +480,7 @@ module Api
                 description: 'description',
                 employer_name: 'Ministere',
                 employer_description: 'employer_description',
+                pediod: 0,
                 employer_website: 'http://employer_website.com',
                 siret: FFaker::CompanyFR.siret,
                 coordinates: { latitude: 148, longitude: 14 },

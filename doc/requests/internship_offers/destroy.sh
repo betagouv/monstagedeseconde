@@ -8,8 +8,8 @@ fi
 source 'env.sh'
 
 
-curl -H "Authorization: Bearer ${MONSTAGEDETROISIEME_TOKEN}" \
+curl -H "Authorization: Bearer ${MONSTAGEDESECONDE_TOKEN}" \
      -H "Accept: application/json" \
      -X DELETE \
      -vvv \
-     ${MONSTAGEDETROISIEME_ENV}/api/internship_offers/test
+     ${MONSTAGEDESECONDE_ENV}/api/internship_offers/test
