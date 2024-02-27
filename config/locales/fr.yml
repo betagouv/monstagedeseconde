@@ -158,6 +158,8 @@ fr:
         city: Ville
         coordinates: Coordonnées GPS
         siren: Code Siren
+      hosting_info:
+        period: Période de stage
       operator: &operator_fields
         name: Nom
         target_count: Objectif annuel
@@ -378,6 +380,7 @@ fr:
         contact_name: Nom du contact
         contact_email: Courriel du contact
         contact_phone: Téléphone du contact
+        period: Période de stage
         organisation:
           group: Groupe ou institution de tutelle
       internship_offers/weekly_framed:
@@ -565,6 +568,9 @@ fr:
             description:
               blank: "Missing description"
               too_long: "Description too long, allowed up 500 chars"
+            period:
+              blank: "La période de stage est obligatoire"
+              invalid: "La période de stage est invalide"
             employer_name:
               blank: "Missing employer_name"
             coordinates:
