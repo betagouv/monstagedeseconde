@@ -24,7 +24,12 @@ export default class extends Controller {
     'phoneSuffix',
     'schoolPhoneBloc',
     'departmentSelect',
-    'ministrySelect'
+    'ministrySelect',
+    'length',
+    'uppercase',
+    'lowercase',
+    'special',
+    'number'
   ];
 
   static values = {
@@ -33,7 +38,6 @@ export default class extends Controller {
 
   initialize() {
     (localStorage.getItem('channel') === 'phone') ? this.checkPhone() : this.checkEmail();
-    
   }
 
   // on change email address, ensure user is shown academia address requirement when neeeded
@@ -147,21 +151,13 @@ export default class extends Controller {
 
 
   checkPassword() {
-    const passwordHintElement = this.passwordHintTarget;
-    const passwordGroupElement = this.passwordGroupTarget;
-    const passwordInputTargetElement = this.passwordInputTarget;
-    const $hint = $(passwordHintElement);
-    const $passwordGroup = $(passwordGroupElement);
-    if (passwordInputTargetElement.value.length === 0) {
-      $hint.attr('class', 'text-muted');
-      passwordHintElement.innerText = '(6 caractères au moins)';
-    } else if (passwordInputTargetElement.value.length < 6) {
-      $hint.attr('class', 'fr-message fr-message--error');
-      passwordHintElement.innerText = 'Ce mot de passe est trop court, veuillez corriger.';
-    } else {
-      $hint.attr('class', 'd-none');
-      $passwordGroup.attr('class', 'fr-password fr-input-group fr-input-group--valid');
-    }
+    const password = this.passwordInputTarget.value;
+
+    this.lengthTarget.style.color = password.length >= 12 ? "green" : "red"
+    this.uppercaseTarget.style.color = /[A-Z]/.test(password) ? "green" : "red"
+    this.lowercaseTarget.style.color = /[a-z]/.test(password) ? "green" : "red"
+    this.numberTarget.style.color = /[0-9]/.test(password) ? "green" : "red"
+    this.specialTarget.style.color = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password) ? "green" : "red"
   }
 
   checkChannel() {

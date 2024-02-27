@@ -180,10 +180,15 @@
                                          class: "fr-password__input fr-input fr-password__input fr-input #{error_tag.present? ? 'fr-input--error' : ''}",
                                          required: true,
                                          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_])[A-Za-z\d@$!%*?&_]{12,}$',
-                                         data: { action: "change->signup#checkPassword", :"signup-target" => "passwordInput" }
+                                         data: { action: "signup#checkPassword", :"signup-target" => "passwordInput" }
                       #password-input-messages.fr-messages-group aria-live="assertive"
-                        p#password-input-message-info.fr-message.fr-message--info
-                          |12 caractères minimum, 1 minuscule, 1 majuscule, 1 caractère spécial, 1 chiffre.
+                        ul.fr-pl-0
+                          li.fr-message.fr-message--info data-signup-target="length" 12 caractères
+                          li.fr-message.fr-message--info data-signup-target="lowercase" 1 minuscule
+                          li.fr-message.fr-message--info data-signup-target="uppercase" 1 majuscule 
+                          li.fr-message.fr-message--info data-signup-target="number" 1 chiffre
+                          li.fr-message.fr-message--info data-signup-target="special" 1 caractère spécial
+
                       = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :password) if errors.present?
                     #user_password-messages.fr-messages-group[aria-live="assertive"]
 
