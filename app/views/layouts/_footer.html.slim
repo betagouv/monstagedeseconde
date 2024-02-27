@@ -10,11 +10,10 @@ footer#footer.fr-footer role="contentinfo" data-controller='footer'
         br
         |ET DE LA JEUNESSE
       .fr-footer__content
-        - link = link_to "Incubateur des Territoires de l'ANCT",'https://incubateur.anct.gouv.fr/',
-                        target: '_blank',
-                        class: 'fr-text--sm'
         p.fr-footer__content-desc = "Mon stage de seconde générale et technologique est un service fourni par la Direction du Numérique pour l’Éducation (DNE)."
         ul.fr-footer__content-list
+          li.fr-footer__content-item
+            a.fr-footer__content-link target="_blank" href="http://education.gouv.fr/" education.gouv.fr 
           li.fr-footer__content-item
             a.fr-footer__content-link target="_blank" href="https://legifrance.gouv.fr" legifrance.gouv.fr 
           li.fr-footer__content-item
