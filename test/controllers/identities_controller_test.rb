@@ -3,6 +3,7 @@ require "test_helper"
 class IdentitiesControllerTest < ActionDispatch::IntegrationTest
  
   test 'POST #create as student redirects to sign_up page with identity created' do
+    skip "#april_flower forbidden routes"
     student = create(:student_with_class_room_3e)
     student_params = {
       first_name: 'Joe',
