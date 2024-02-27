@@ -35,7 +35,7 @@ L'api est disponible sur ```/api``` sur les environnements de pré production et
 
 *Les APIs sont ouvertes uniquement aux acteurs concernés.*
 
-**Merci d'effectuer une demande par mail** ([support](mailto:monstagedeseconde-support@education.gouv.fr)) pour créer un compte API.
+**Merci d'effectuer une demande par mail** ([support](mailto:maxime.pierrot@beta.gouv.fr)) pour créer un compte API.
 
 Une fois le compte créé, le token d'API pourra être récupéré via notre interface web. Il est différent selon l'environnement de pré production ou production.
 
