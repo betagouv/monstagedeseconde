@@ -10,11 +10,11 @@
             = link_to 'Accueil',
                       root_path,
                       class: "fr-link text-decoration-none mr-4 #{active}"
-          li
-            - active = current_page?(internship_offers_path) && !request.url.include?('origine=dashboard') ? 'active' : ''
-            = link_to 'Recherche',
-                      user_presenter.default_internship_offers_path,
-                      class: "fr-link text-decoration-none mr-4 #{active}"
+          / li
+          /   - active = current_page?(internship_offers_path) && !request.url.include?('origine=dashboard') ? 'active' : ''
+          /   = link_to 'Recherche',
+          /             user_presenter.default_internship_offers_path,
+          /             class: "fr-link text-decoration-none mr-4 #{active}"
           li
             - if current_user.is_a?(Users::Student)
               = link_to current_user.custom_dashboard_path,
@@ -75,9 +75,9 @@
       - else
         li
           - active = current_page?(internship_offers_path) && !request.url.include?('origine=dashboard') ? 'active' : ''
-          = link_to 'Recherche',
-                    user_presenter.default_internship_offers_path,
-                    class: "fr-link text-decoration-none mr-4 #{active}"
+          / = link_to 'Recherche',
+          /           user_presenter.default_internship_offers_path,
+          /           class: "fr-link text-decoration-none mr-4 #{active}"
         li
           = link_to 'Connexion',
                     new_user_session_path,
