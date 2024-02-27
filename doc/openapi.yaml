@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  title: API pour la création d'offres de stage sur monstagedetroisieme.fr
+  title: API pour la création d'offres de stage sur https://stagedeseconde.1jeune1solution.gouv.fr/
   description: API pour la création d'offres de stages à destination des élèves de
-    collège en REP ou REP+
+    seconde générale et technologique
   contact:
     email: etienne.weil@monstagedetroisieme.fr
   version: 1.0.0
@@ -13,7 +13,7 @@ security:
 - bearerAuth: []
 tags:
 - name: developers
-  description: Operations accessibles aux développeurs disposant d'une clé API
+  description: Operations accessibles aux développeurs disposant d'une clé API. Celle-ci peut être fournie sur demande à l'adresse email xxxxxxxx
 paths:
   /internship_offers:
     get:
@@ -227,7 +227,7 @@ paths:
       tags:
       - developers
       summary: Récupère la liste des secteurs économiques
-      description: "Secteur économique. [https://github.com/betagouv/monstage/blob/staging/doc/README.md](https://github.com/betagouv/monstage/blob/staging/doc/README.md)"
+      description: "Secteur économique. [https://github.com/betagouv/monstagedeseconde/blob/staging/doc/README.md#secteurs-dactivité](https://github.com/betagouv/monstagedeseconde/blob/staging/doc/README.md#secteurs-dactivité)"
       operationId: sectors
       responses:
         "200":
@@ -259,7 +259,7 @@ components:
       - sector_id
       - street
       - title
-      - weeks
+      - period
       type: object
       properties:
         description:
@@ -325,15 +325,11 @@ components:
           example:
             latitude: 1
             longitude: 1
-        weeks:
-          type: array
-          description: Semaines de stage proposées
-          example:
-          - 2020-W16
-          - 2020-W17
-          items:
-            type: string
-            description: Semaine de stage
+        period:
+          type: integer
+          enum: [0,1,2]
+          description: Semaines de stage proposées où 0 => 2 semaines - du 17 au 28 juin 2024; 1 => 1 semaine - du 17 au 21 juin 2024; 2 => 1 semaine - du 24 au 28 juin 2024
+          example: 1
         permalink:
           type: string
           description: Site de l'employeur
@@ -352,9 +348,7 @@ components:
           $ref: '#/components/schemas/Sector'
       description: offre de stage
       example:
-        weeks:
-        - 2020-W16
-        - 2020-W17
+        period: 0
         city: Paris
         remote_id: 123
         coordinates:
@@ -474,7 +468,7 @@ components:
           example: DUPLICATE_WEEKY_FRAMED
         error:
           type: string
-          example: weeky_framed with this remote_id (123) already exists.
+          example: period with this remote_id (123) already exists.
         status:
           type: string
           example: conflict
