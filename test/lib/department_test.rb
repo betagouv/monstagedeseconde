@@ -4,7 +4,7 @@ require 'test_helper'
 
 class DepartmentTest < ActiveSupport::TestCase
   test 'number of departments (with synonyms)' do
-    assert_equal 105, Department::MAP.keys.size
+    assert_equal 110, Department::MAP.keys.size
   end
 
   test '.to_select only include uniq results' do
@@ -13,6 +13,6 @@ class DepartmentTest < ActiveSupport::TestCase
 
   test '.to_select is sorted by alnum' do
     assert_equal '01 - Ain', Department.to_select.first[0]
-    assert_equal '976 - Mayotte', Department.to_select.last[0]
+    assert_equal '989 - Île de Clipperton', Department.to_select.last[0]
   end
 end
