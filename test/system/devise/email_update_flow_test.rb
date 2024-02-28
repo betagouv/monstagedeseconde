@@ -18,7 +18,7 @@ class EmailUpdateFlowTest < ApplicationSystemTestCase
 
     assert_changes -> { user.reload.unconfirmed_email } do
       visit account_path
-      fill_in('Adresse électronique (ex : mon@exemple.fr)', with: alt_email)
+      fill_in('Adresse électronique (ex : mon@domaine.fr)', with: alt_email)
       click_on('Enregistrer mon CV')
       success_message = find('#alert-text').text
       expected_message = "Compte mis à jour avec succès. Un courriel a été envoyé " \

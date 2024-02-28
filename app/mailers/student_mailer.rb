@@ -6,8 +6,8 @@ class StudentMailer < ApplicationMailer
     @student        = student
     @shrinked_url   = shrinked_url
     @student_image  = 'boy_girl.svg'
-    subject         = "Bienvenue sur Mon stage de 3e"
-    @welcome_phrase = "Bienvenue sur <br/>Mon stage de 3e".html_safe
+    subject         = "Bienvenue sur Mon stage de 2de"
+    @welcome_phrase = "Bienvenue sur <br/>Mon stage de 2de".html_safe
     @header_title = "Vous vous êtes inscrit sur le site, mais vous ne<br/>savez pas trop " \
                     "comment trouver un stage ?".html_safe
     @sub_title_1 = "Vous avez une idée de ce qui vous intéresse ?"

@@ -29,7 +29,7 @@ main#content[role="main"
                   = f.email_field :email,
                         class: "fr-input",
                         value: resource.email.blank? ? params[:email] : resource.email,
-                        placeholder: "ex: nom@exemple.fr",
+                        placeholder: "ex: nom@domaine.fr",
                         autofocus: params[:email].blank? ,
                         :'aria-describedby' => "user_email",
                         type: "email",

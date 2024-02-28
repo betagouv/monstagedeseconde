@@ -19,8 +19,7 @@ p “Utilisateur” : désigne toute Partenaire qui, en acceptant les présentes
 h2 Article 4 - Accès à l’API
 p L’accès à l’API nécessite la demande auprès de l’équipe de la Plateforme via l’adresse e-mail suivante :
 span
-  = mail_to ENV['API_EMAIL_CONTACT'], ENV['API_EMAIL_CONTACT'], subject: "Demande d'accès à l'API de Mon stage de seconde"
-            
+  = mail_to 'maxime.pierrot@monstagedetroisieme.fr', 'maxime.pierrot@monstagedetroisieme.fr', subject: "Demande d'accès à l'API de Mon stage de seconde"
 
 p L’Utilisateur reçoit une clé d’accès à l’API sécurisée et unique lorsque la demande est validée par l’équipe de la Plateforme. Cet accès est conditionné à l’acceptation des présentes CGU.
 

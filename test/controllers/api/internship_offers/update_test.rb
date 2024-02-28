@@ -88,6 +88,24 @@ module Api
                    'bad description error '
     end
 
+    test 'PATCH #update as operator fails with invalid period respond with :bad_request' do
+      documents_as(endpoint: :'internship_offers/update', state: :bad_request) do
+        patch api_internship_offer_path(
+          id: @internship_offer.remote_id,
+          params: {
+            token: "Bearer #{@operator.api_token}",
+            internship_offer: {
+              period: 12
+            }
+          }
+        )
+      end
+      assert_response :bad_request
+      assert_equal 'VALIDATION_ERROR', json_response['code']
+      puts json_error
+      assert_equal ["n'est pas inclus(e) dans la liste"], json_error['period']
+    end
+
     test 'PATCH #update as operator works to internship_offers' do
       new_title = 'hellow'
 
@@ -101,7 +119,8 @@ module Api
               max_candidates: 2,
               published_at: nil,
               is_public: true,
-              handicap_accessible: true
+              handicap_accessible: true,
+              period: 2
             }
           }
         )
@@ -112,6 +131,7 @@ module Api
       assert_equal JSON.parse(@internship_offer.to_json), json_response
       assert @internship_offer.reload.is_public
       assert @internship_offer.reload.handicap_accessible
+      assert_equal 2, @internship_offer.period
     end
 
     test 'PATCH #update as operator unpublish/republish internship_offers' do

@@ -9,11 +9,11 @@ source 'env.sh'
 
 INPUT_FILE="input/internship_offers/update.json"
 
-curl -H "Authorization: Bearer ${MONSTAGEDETROISIEME_TOKEN}" \
+curl -H "Authorization: Bearer ${MONSTAGEDESECONDE_TOKEN}" \
      -H "Accept: application/json" \
      -H "Content-type: application/json" \
      -X PATCH \
      -d @$INPUT_FILE \
      -vvv \
-     ${MONSTAGEDETROISIEME_ENV}/api/internship_offers/test
+     ${MONSTAGEDESECONDE_ENV}/api/internship_offers/test
 
