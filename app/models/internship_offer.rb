@@ -353,6 +353,7 @@ class InternshipOffer < ApplicationRecord
 
   def init
     self.max_candidates ||= 1
+    self.school_year = SchoolYear::Current::new.year_in_june
   end
 
   def already_applied_by_student?(student)

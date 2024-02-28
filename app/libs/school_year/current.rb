@@ -29,6 +29,8 @@ module SchoolYear
       end
     end
 
+    def year_in_june; end_of_period.year end
+
     private
 
     def initialize
