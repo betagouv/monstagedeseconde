@@ -51,7 +51,7 @@ module InternshipOffers
       end
     end
 
-    test 'GET #show with applications from other students reduces the number of available weeks' do
+    test 'GET #show with applications from other students' do
       travel_to(Date.new(2020, 1, 1)) do
         offer = create(
           :weekly_internship_offer,
@@ -68,8 +68,8 @@ module InternshipOffers
           internship_offer: offer
         )
         get internship_offer_path(offer)
+        assert_select('button[disabled=disabled]', text: 'Postuler')
         assert_select('.period-label-test', text: '2 semaines - du 17 au 28 juin 2024')
-        # assert_select('.fr-icon-calendar-fill', text:'Disponibles sur 2 semaines:du 20 au 31 janvier 2020')
       end
     end
 
@@ -252,6 +252,7 @@ module InternshipOffers
       assert_template 'internship_offers/_apply_cta'
       assert_select('a[href=?]',
                     internship_offers_path(forwarded_params))
+      assert_select('button[disabled=disabled]', text: 'Postuler')
     end
 
     test 'GET #show as Visitor - canonical links works' do
@@ -328,6 +329,7 @@ module InternshipOffers
       sign_in(internship_offer.employer)
       get internship_offer_path(internship_offer)
       assert_response :success
+      assert_select('button[disabled=disabled]', text: 'Postuler')
     end
 
     test 'GET #show as Student when internship_offer is unpublished shall redirect to' do
