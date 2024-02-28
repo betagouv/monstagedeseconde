@@ -69,6 +69,7 @@ module InternshipOffers
         )
         get internship_offer_path(offer)
         assert_select('button[disabled=disabled]', text: 'Postuler')
+        assert_select('.period-label-test', text: '2 semaines - du 17 au 28 juin 2024')
       end
     end
 
@@ -81,7 +82,8 @@ module InternshipOffers
           coordinates: Coordinates.bordeaux,
           title: 'Vendeur de cannelés',
           max_candidates: 3,
-          max_students_per_group: 1
+          max_students_per_group: 1,
+          period: 1 # week_1
         )
         employer = InternshipOffer.last.employer
         application = create(
@@ -90,7 +92,25 @@ module InternshipOffers
           internship_offer: offer
         )
         get internship_offer_path(offer)
-        # assert_select('.fr-icon-calendar-fill', text:'Disponibles sur 2 semaines:du 13 au 17 janvier 2020du 27 au 31 janvier 2020')
+        assert_select('.period-label-test', text: '1 semaine - du 17 au 21 juin 2024')
+      end
+    end
+
+    test 'GET #show with period 2' do
+      travel_to(Date.new(2020, 1, 1)) do
+        offer = create(
+          :weekly_internship_offer,
+          city: 'Bordeaux',
+          coordinates: Coordinates.bordeaux,
+          title: 'Vendeur de cannelés',
+          max_candidates: 3,
+          max_students_per_group: 1,
+          period: 2 # week_
+        )
+        employer = InternshipOffer.last.employer
+        
+        get internship_offer_path(offer)
+        assert_select('.period-label-test', text: '1 semaine - du 24 au 28 juin 2024')
       end
     end
 
