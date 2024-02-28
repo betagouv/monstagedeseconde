@@ -17,8 +17,8 @@ def geo_point_factory_array(coordinates_as_array)
 end
 
 def with_class_name_for_defaults(object)
-  user = User.find_by_email(object.email) || User.find_by_phone(object.phone)
-  return user if user.present?
+  # user = User.find_by_email(object.email) || User.find_by_phone(object.phone)
+  # return user if user.present?
 
   object.first_name ||= FFaker::NameFR.first_name
   object.last_name ||= "#{FFaker::NameFR.last_name}-#{Presenters::UserManagementRole.new(user: object).role}"
