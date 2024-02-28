@@ -100,7 +100,8 @@ class InternshipOffer < ApplicationRecord
     on: :create
 
   validate :check_missing_seats_or_weeks, if: :user_update?, on: :update
-
+  validates :period, inclusion: { in: [0, 1, 2] }
+  
   # Scopes
 
   # public.config_search_keyword config is
