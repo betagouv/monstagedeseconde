@@ -7,7 +7,9 @@ namespace :employers do
   task :pending_internship_applications_reminder, [] => [:environment] do |args|
     PrettyConsole.say_in_green 'Starting employers:pending_internship_applications_reminder'
     employers = Users::Employer.kept.select do |employer|
-      employer.internship_applications.pending_for_employers.present? || employer.internship_applications.examined.present?
+      # september_flower transfer might comme back at some point6
+      # employer.internship_applications.pending_for_employers.present? || employer.internship_applications.examined.present?
+      employer.internship_applications.pending_for_employers.present?
     end
 
     PrettyConsole.say_in_red "Found #{employers.count} employers with pending internship applications"

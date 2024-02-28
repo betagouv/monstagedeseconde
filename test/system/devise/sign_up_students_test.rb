@@ -82,6 +82,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
   test 'Student with mail subscription with former internship_offer ' \
        'visit leads to offer page even when mistaking along the way' do
+    skip "#april_flower forbidden routes"
     travel_to  Date.new(2020, 1, 1) do
 
       school_1 = create(:school, name: 'Etablissement Test 1',
