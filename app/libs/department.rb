@@ -101,6 +101,11 @@ class Department
     '973' => 'Guyane',
     '974' => 'La Réunion',
     '976' => 'Mayotte',
+    '984' => 'Terres australes et antarctiques françaises',
+    '986' => 'Wallis-et-Futuna',
+    '987' => 'Polynésie française',
+    '988' => 'Nouvelle-Calédonie',
+    '989' => 'Île de Clipperton',
     '2B' => 'Haute-Corse',
     '2A' => 'Corse-du-Sud',
     '202' => 'Haute-Corse',
@@ -134,6 +139,8 @@ end
 
   # edge case for [971->978]
   def self.departement_identified_by_3_chars?(zipcode:)
-    zipcode.starts_with?('97') || zipcode.starts_with?('20')
+    zipcode.starts_with?('97') || 
+    zipcode.starts_with?('98') || 
+    zipcode.starts_with?('20')
   end
 end

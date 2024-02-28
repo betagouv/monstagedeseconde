@@ -13,7 +13,7 @@ def populate_applications
       student_phone: "060606#{(1000..9999).to_a.sample}",
       student_email: 'paul@gmail.com'
     )
-    applications.save! if application.valid?
+    application.save! if application.valid?
   end
   #-----------------
   # 2nd student [1 approved, 1 canceled_by_employer]
