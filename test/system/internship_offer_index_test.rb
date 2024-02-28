@@ -44,12 +44,11 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
       visit internship_offers_path
       find("li a.fr-link", text: 'Recherche').click
       within(".fr-test-internship-offers-container") do
-        assert_selector('.fr-card__desc p.blue-france', text: 'Paris', count: InternshipOffer::PAGE_SIZE, wait: 5)
+        assert_selector('ul.fr-badges-group li .fr-badge.fr-badge--warning.fr-badge--no-icon', text: 'PARIS', count: InternshipOffer::PAGE_SIZE, wait: 5)
       end
-
       click_link 'Page suivante'
       within(".fr-test-internship-offers-container") do
-        assert_selector('.fr-card__desc p.blue-france', text: 'Chatillon', count: 2, wait: 2)
+        assert_selector('ul.fr-badges-group li .fr-badge.fr-badge--warning.fr-badge--no-icon', text: 'CHATILLON', count: 2, wait: 2)
       end
     end
   end
@@ -66,7 +65,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
       # there are no offers in Paris
       find 'h6', text: "Aucune offre trouvée..."
       within(".fr-test-internship-offers-container") do
-        assert_selector('.fr-card__desc p.blue-france', text: 'Montmorency', count: 2, wait: 2)
+        assert_selector('ul.fr-badges-group li .fr-badge.fr-badge--warning.fr-badge--no-icon', text: 'MONTMORENCY', count: 2, wait: 2)
       end
     end
   end

@@ -31,7 +31,7 @@
         .col-12
           .form-group
             = form.label :email, class: 'fr-label', for: 'user_email_1' do
-              = 'Adresse électronique (ex : mon@exemple.fr)'
+              = 'Adresse électronique (ex : mon@domaine.fr)'
               = form.rg2a_required_content_tag
 
             - if current_user.unconfirmed_email.nil?
