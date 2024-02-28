@@ -179,7 +179,7 @@
                                          autocomplete: "new-password",
                                          class: "fr-password__input fr-input fr-password__input fr-input #{error_tag.present? ? 'fr-input--error' : ''}",
                                          required: true,
-                                         pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=])[A-Za-z\d!@#$%^&*()_+\-=]{12,}$',
+                                         pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]{12,}$',
                                          data: { action: "signup#checkPassword", :"signup-target" => "passwordInput" }
                       #password-input-messages.fr-messages-group aria-live="assertive"
                         ul.fr-pl-0
