@@ -43,7 +43,7 @@ gem "redis", "~> 4.0"
 gem "aws-sdk-s3", require: false
 
 # admin
-gem 'rails_admin'
+gem 'rails_admin', '~> 3.0'
 gem 'rails_admin-i18n'
 gem 'rails_admin_aasm'
 
@@ -79,7 +79,7 @@ gem 'bootsnap', require: false
 gem 'dalli'
 
 group :development, :test do
-  gem "dotenv-rails", require: "dotenv/rails-now"
+  gem "dotenv-rails", require: "dotenv/load"
   gem "debug"
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console 
   gem "byebug", platforms: %i[mri mingw x64_mingw]
