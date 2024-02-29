@@ -141,6 +141,7 @@ def populate_internship_offers
   InternshipOffers::WeeklyFramed.create!(
     max_candidates: 7,
     max_students_per_group: 7,
+    school_year: 2023,
     employer: Users::Employer.first,
     contact_phone: '+33637607757',
     siret: siret,
@@ -190,6 +191,7 @@ def populate_internship_offers
     contact_phone: '+33637607756',
     siret: siret,
     period: [0, 1, 2].sample,
+    school_year: 2023,
     sector: Sector.first,
     group: Group.is_public.first,
     is_public: false,
@@ -293,6 +295,7 @@ MULTI_LINE
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
+    school_year: 2023,
     title: 'Découverte du travail de trader',
     description_rich_text: multiline_description,
     employer_description_rich_text: 'Le métier de trader consiste à optimiser les ressources de la banque Oyonnax Corp. en spéculant sur des valeurs mobilières',

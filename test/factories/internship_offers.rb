@@ -20,6 +20,7 @@ FactoryBot.define do
     tutor_phone { '0123456789' }
     tutor_email { 'eric@dubois.fr' }
     tutor_role { 'comptable' }
+    school_year { SchoolYear::Current::new.year_in_june}
     is_public { true }
     group { create(:group, is_public: true) }
     internship_offer_area { create(:area, employer_id: employer.id, employer_type: 'User') }
