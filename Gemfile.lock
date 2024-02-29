@@ -604,7 +604,7 @@ DEPENDENCIES
   puma
   rails (~> 7.1.2)
   rails-controller-testing
-  rails_admin
+  rails_admin (~> 3.0)
   rails_admin-i18n
   rails_admin_aasm
   rake
@@ -630,7 +630,7 @@ DEPENDENCIES
   webpacker
 
 RUBY VERSION
-   ruby 3.2.1p31
+   ruby 3.2.3p157
 
 BUNDLED WITH
    2.5.4
