@@ -11,6 +11,6 @@ class SyncProductionDatabasesJob < ApplicationJob
     system("pg_restore --verbose --clean --no-acl --no-owner -d '#{ENV['COPY_DATABASE_URI']}' ms2e.dump")
 
     Rails.logger.info("End")
-    system("rm ms3e.dump")
+    system("rm ms2de.dump")
   end
 end

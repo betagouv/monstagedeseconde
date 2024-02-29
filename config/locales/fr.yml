@@ -36,8 +36,8 @@ fr:
         one: Espace
         other: Espaces
       internship_offers/weekly_framed:
-        one: Offre pour la 3eme
-        other: Offres pour la 3eme
+        one: Offre pour la 2de
+        other: Offres pour la 2de
       internship_offers/api:
         one: Offre API
         other: Offres API

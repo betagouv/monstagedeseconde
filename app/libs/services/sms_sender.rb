@@ -74,7 +74,7 @@ module Services
       @phone_number = phone_number 
       @campaign_name = campaign_name
       @content = content
-      @sender_name = 'MonStage3e' # Max length: 16 chars
+      @sender_name = 'MonStage2de' # Max length: 16 chars
       @user = ENV['LINK_MOBILITY_USER']
       @pass = ENV['LINK_MOBILITY_SECRET']
     end

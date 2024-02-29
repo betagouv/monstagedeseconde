@@ -125,7 +125,7 @@ class EmployerMailer < ApplicationMailer
     send_email(
       to: email,
       cc: @employer.email,
-      subject: "Transfert d'une candidature à un stage de 3e"
+      subject: "Transfert d'une candidature à un stage de 2de"
     )
   end
 
