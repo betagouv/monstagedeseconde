@@ -1,0 +1,28 @@
+doctype html
+html lang="fr"
+  head
+    meta charset="utf-8"
+    meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    meta name="description" content="Mon stage de seconde permet aux éléves de seconde générale et technologique de trouver des stages près de chez eux."
+    meta name="author" content="Mon stage de seconde"
+    meta name="turbo-visit-control" content="reload"
+    link rel='canonical' href=ENV.fetch('MGF_SITE_URL')
+    = csrf_meta_tags
+    = csp_meta_tag
+    = action_cable_meta_tag
+    title
+      = page_title
+    = favicon_link_tag asset_pack_path('media/images/favicon.png')
+    = stylesheet_pack_tag "application.css", 'data-turbo-track': "reload", media: "all"
+    = javascript_pack_tag "application.js", 'data-turbo-track': "reload", defer: true
+    / = render 'layouts/crisp'
+  
+  body class=(env_class_name + " " + body_class_name)
+    a name="top" id="top"
+    .content.fr-pb-0 data-controller='rg2a'
+      = render "layouts/flash"
+      div role="main"
+        = yield
+    div
+      = render 'layouts/footer'
+      = render partial: "layouts/analytics"
