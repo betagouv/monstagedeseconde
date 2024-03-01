@@ -2,7 +2,9 @@
 
 module InternshipApplicationCountersHooks
   class WeeklyFramed < InternshipApplicationCountersHook
+    # Delegations
     delegate :internship_offer, to: :internship_application
+    delegate :stats, to: :internship_offer
 
     # BEWARE: order matters
     def update_all_counters
@@ -16,7 +18,7 @@ module InternshipApplicationCountersHooks
     end
 
     def update_internship_offer_stats
-      @internship_application.internship_offer.recalculate
+      @internship_application.internship_offer.stats.recalculate
     end
 
     # PERF: can be optimized with one query
