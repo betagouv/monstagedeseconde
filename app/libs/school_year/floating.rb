@@ -8,8 +8,8 @@ module SchoolYear
       september_first = Date.new(current_year, 9, 1)
       previous_september_first = Date.new(current_year - 1, 9, 1)
       case current_month
-      when january_to_may
-        return september_first if last_week_of_may?
+      when january_to_june
+        return september_first if first_week_of_july?
 
         previous_september_first
       when june_to_december then september_first
@@ -23,8 +23,8 @@ module SchoolYear
 
     def end_of_period
       case current_month
-      when january_to_may
-        return shift_day(year: current_year + 1) if last_week_of_may?
+      when january_to_june
+        return shift_day(year: current_year + 1) if first_week_of_july?
 
         shift_day(year: current_year)
       when june_to_december

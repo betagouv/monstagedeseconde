@@ -116,10 +116,10 @@ class Week < ApplicationRecord
 
   scope :weeks_of_school_year, lambda { |school_year:|
     first_week_of_september = Date.new(school_year, 9, 1).cweek
-    last_day_of_may_week    = Date.new(school_year + 1, 5, 31).cweek
+    first_day_of_july_week  = Date.new(school_year + 1, SchoolYear::Base::MONTH_OF_YEAR_SHIFT, SchoolYear::Base::MONTH_OF_YEAR_SHIFT).cweek
 
     where('number >= ?', first_week_of_september).where( year: school_year)
-     .or(where('number <= ?', last_day_of_may_week).where( year: school_year + 1))
+     .or(where('number <= ?', first_day_of_july_week).where( year: school_year + 1))
   }
 
   scope :available_for_student, lambda { |user:|

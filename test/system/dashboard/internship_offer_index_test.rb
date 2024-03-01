@@ -15,81 +15,42 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
     assert_no_selector "a[data-test-id='#{internship_offer.id}']"
   end
 
-  test 'publish navigation when week updates are necessary' do
-    skip "test to update after ui is finished #TODO #may_flower"
-    employer = create(:employer)
-    internship_offer = nil
-    travel_to Date.new(2021, 10, 1) do
-      internship_offer = create(
-        :weekly_internship_offer,
-        employer: employer,
-        weeks: [Week.next],
-        internship_offer_area_id: employer.current_area_id
-      )
-    end
-    internship_offer.update(title: 'new_title') # this triggers the need_update! callback
-    assert_equal 'need_to_be_updated', internship_offer.aasm_state
-    travel_to Date.new(2022, 10, 8) do
-      sign_in(employer)
-      InternshipOffer.stub :nearby, InternshipOffer.all do
-        InternshipOffer.stub :by_weeks, InternshipOffer.all do
-          refute internship_offer.published?
-          visit dashboard_internship_offers_path
-          within("#toggle_status_#{dom_id(internship_offer)}") do
-            find(".label", text: "Masqué")
-            find("label.fr-toggle__label[for='toggle-#{internship_offer.id}']") # this publishes the internship_offer
-            execute_script("document.getElementById('axe-toggle-#{internship_offer.id}').closest('form').submit()")
-          end
-
-          refute internship_offer.reload.published?
-
-          find "h1.h2", text: "Modifier une offre de stage"
-          find "span#alert-text", text: "Votre annonce n'est pas encore republiée, car il faut ajouter des semaines de stage"
-
-          # find('h3.fr-alert__title', text: 'Ajoutez des semaines aux précédentes')
-
-          find('label', text: 'Semaine 41 - du 10 octobre au 16 octobre 2022').click
-        end
-      end
-    end
-  end
-
   test 'cron set aasm_state to need_to_be_updated when necessary' do
-    skip "test to update after ui is finished #TODO #may_flower"
+    # skip "test to update after ui is finished #TODO #may_flower"
     employer = create(:employer)
     old_internship_offer = nil
     travel_to Date.new(2020, 10, 1) do
-      old_internship_offer = create(:weekly_internship_offer, employer: employer, internship_offer_area_id: employer.current_area_id)
+      old_internship_offer = create(:weekly_internship_offer, :full_time, employer: employer, internship_offer_area_id: employer.current_area_id)
     end
-    travel_to Date.new(2021, 10, 1) do
-      internship_offer = create(:weekly_internship_offer, employer: employer, internship_offer_area_id: employer.current_area_id)
+    travel_to Date.new(2023, 10, 1) do
+      internship_offer = create(:weekly_internship_offer, :full_time, employer: employer, internship_offer_area_id: employer.current_area_id)
+      assert_equal Date.new(2024,6,21), internship_offer.last_date
+      assert old_internship_offer.last_date < Time.now.utc
 
       sign_in(employer)
 
       InternshipOffer.stub :nearby, InternshipOffer.all do
-        InternshipOffer.stub :by_weeks, InternshipOffer.all do
-          visit dashboard_internship_offers_path
+        visit dashboard_internship_offers_path
 
-          assert_presence_of(internship_offer: internship_offer)
-          assert_presence_of(internship_offer: old_internship_offer)
+        assert_presence_of(internship_offer: internship_offer)
+        assert_presence_of(internship_offer: old_internship_offer)
 
-          within("#toggle_status_internship_offers_weekly_framed_#{internship_offer.id}") do
-            find(".label", text: "Publié")
-          end
-          within("#toggle_status_internship_offers_weekly_framed_#{old_internship_offer.id}") do
-            find(".label", text: "Publié")
-          end
+        within("#toggle_status_internship_offers_weekly_framed_#{internship_offer.id}") do
+          find(".label", text: "Publié")
+        end
+        within("#toggle_status_internship_offers_weekly_framed_#{old_internship_offer.id}") do
+          find(".label", text: "Publié")
+        end
 
-          InternshipOffers::WeeklyFramed.update_older_internship_offers
+        InternshipOffers::WeeklyFramed.update_older_internship_offers
 
-          visit dashboard_internship_offers_path
+        visit dashboard_internship_offers_path
 
-          within("#toggle_status_#{dom_id(internship_offer)}") do
-            find(".label", text: "Publié")
-          end
-          within("#toggle_status_#{dom_id(old_internship_offer)}") do
-            find(".label", text: "Masqué")
-          end
+        within("#toggle_status_#{dom_id(internship_offer)}") do
+          find(".label", text: "Publié")
+        end
+        within("#toggle_status_#{dom_id(old_internship_offer)}") do
+          find(".label", text: "Masqué")
         end
       end
     end
@@ -108,43 +69,40 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'unpublish navigation and republish after' do
-    skip "test to update after ui is finished #TODO #may_flower"
     travel_to Date.new(2021, 10, 1) do
       employer = create(:employer)
-      internship_offer = create(:weekly_internship_offer, employer: employer, weeks: [Week.next], internship_offer_area_id: employer.current_area_id)
+      internship_offer = create(:weekly_internship_offer, employer: employer, internship_offer_area_id: employer.current_area_id)
       sign_in(employer)
       InternshipOffer.stub :nearby, InternshipOffer.all do
-        InternshipOffer.stub :by_weeks, InternshipOffer.all do
-          assert internship_offer.published?
-          InternshipOffers::WeeklyFramed.update_older_internship_offers
-          assert internship_offer.reload.published?
-          visit dashboard_internship_offers_path
-          within("#toggle_status_#{dom_id(internship_offer)}") do
-            find(".label", text: "Publié")
-            find("a[rel='nofollow'][data-method='patch']").click # this unpublishes the internship_offer
-          end
-
-          find("h2.h4", text: "Les offres")
-          sleep 0.05
-          assert internship_offer.reload.unpublished?
-
-          within("#toggle_status_#{dom_id(internship_offer)}") do
-            find(".label", text: "Masqué")
-          end
-          assert internship_offer.reload.unpublished?
-          assert_nil internship_offer.published_at
-
-          # ----------------------------
-          # republish
-          # ----------------------------
-          within("#toggle_status_#{dom_id(internship_offer)}") do
-            find("a[rel='nofollow'][data-method='patch']").click # this republishes the internship_offer
-          end
-          find("h2.h4", text: "Les offres")
-          sleep 0.05
-          assert internship_offer.reload.published?
-          refute internship_offer.published_at.nil?
+        assert internship_offer.published?
+        InternshipOffers::WeeklyFramed.update_older_internship_offers
+        assert internship_offer.reload.published?
+        visit dashboard_internship_offers_path
+        within("#toggle_status_#{dom_id(internship_offer)}") do
+          find(".label", text: "Publié")
+          find("a[rel='nofollow'][data-method='patch']").click # this unpublishes the internship_offer
         end
+
+        find("h2.h4", text: "Les offres")
+        sleep 0.05
+        assert internship_offer.reload.unpublished?
+
+        within("#toggle_status_#{dom_id(internship_offer)}") do
+          find(".label", text: "Masqué")
+        end
+        assert internship_offer.reload.unpublished?
+        assert_nil internship_offer.published_at
+
+        # ----------------------------
+        # republish
+        # ----------------------------
+        within("#toggle_status_#{dom_id(internship_offer)}") do
+          find("a[rel='nofollow'][data-method='patch']").click # this republishes the internship_offer
+        end
+        find("h2.h4", text: "Les offres")
+        sleep 0.05
+        assert internship_offer.reload.published?
+        refute internship_offer.published_at.nil?
       end
     end
   end

@@ -289,16 +289,19 @@ class InternshipOffer < ApplicationRecord
   # callbacks
   #
   def sync_first_and_last_date
+    current_school_year = SchoolYear::Current.new
     case period
     when 0 # full_time
-      self.first_date = Date.new(2024,6,17)
-      self.last_date = Date.new(2024,6,28)
+      # third week of june
+      self.first_date = current_school_year.first_week_internship_monday
+      self.last_date  = current_school_year.first_week_internship_friday
     when 1 # week_1
-      self.first_date = Date.new(2024,6,17)
-      self.last_date = Date.new(2024,6,21)
+      self.first_date = current_school_year.second_week_internship_monday
+      self.last_date  = current_school_year.second_week_internship_friday
     when 2 # week_2
-      self.first_date = Date.new(2024,6,24)
-      self.last_date = Date.new(2024,6,28)
+      self.first_date = current_school_year.first_week_internship_monday
+      self.last_date  = current_school_year.second_week_internship_friday
+    when 2 # week_2
     end
   end
 

@@ -3,22 +3,22 @@
 module SchoolYear
   class Base
     YEAR_START          = 2019
-    MONTH_OF_YEAR_SHIFT = 5
-    DAY_OF_YEAR_SHIFT   = 31
+    MONTH_OF_YEAR_SHIFT = 7
+    DAY_OF_YEAR_SHIFT   = 1
     SEPTEMBER = 9
     FIRST = 1
 
     def strict_beginning_of_period
       case current_month
-      when january_to_may
+      when january_to_june
         Date.new(current_year - 1, 9, 1)
       when june_to_december
         Date.new(current_year, 9, 1)
       end
     end
 
-    def january_to_may
-      1..MONTH_OF_YEAR_SHIFT
+    def january_to_june
+      1...MONTH_OF_YEAR_SHIFT
     end
 
     def june_to_august
@@ -41,10 +41,6 @@ module SchoolYear
       SchoolYear::Floating.new_by_year(year: end_of_period.year)
     end
 
-    def january_to_may
-      1..MONTH_OF_YEAR_SHIFT
-    end
-
     def june_to_december
       6..12
     end
@@ -61,7 +57,7 @@ module SchoolYear
       date.month
     end
 
-    def last_week_of_may?
+    def first_week_of_july?
       last_day_of_may = Date.new(current_year, MONTH_OF_YEAR_SHIFT, DAY_OF_YEAR_SHIFT)
       date.between?(last_day_of_may.beginning_of_week, last_day_of_may.end_of_week)
     end

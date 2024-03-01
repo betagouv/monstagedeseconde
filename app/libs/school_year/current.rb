@@ -9,8 +9,8 @@ module SchoolYear
       previous_september_first = Date.new(current_year - 1, SEPTEMBER, FIRST)
 
       case current_month
-      when january_to_may then
-        return september_first if last_week_of_may?
+      when january_to_june then
+        return september_first if first_week_of_july?
 
         previous_september_first
       when june_to_december then september_first
@@ -21,15 +21,25 @@ module SchoolYear
       year_end_date = Date.new(current_year, MONTH_OF_YEAR_SHIFT, DAY_OF_YEAR_SHIFT)
       next_year_end_date = Date.new(current_year + 1, MONTH_OF_YEAR_SHIFT, DAY_OF_YEAR_SHIFT)
       case current_month
-      when january_to_may then
-        return next_year_end_date if last_week_of_may?
+      when january_to_june then
+        return next_year_end_date if first_week_of_july?
 
         year_end_date
       when june_to_december then next_year_end_date
       end
     end
 
-    def year_in_june; end_of_period.year end
+    def first_week_internship_monday
+      third_week_day_start = Date.new(year_in_june, 6, 1)
+                                 .end_of_week
+                                 .days_since(15.days)
+
+    end
+
+    def first_week_internship_friday = first_week_internship_monday.days_since(4.days)
+    def second_week_internship_monday = first_week_internship_monday.days_since(7.days)
+    def second_week_internship_friday = second_week_internship_monday.days_since(4.days)
+    def year_in_june = end_of_period.year
 
     private
 
