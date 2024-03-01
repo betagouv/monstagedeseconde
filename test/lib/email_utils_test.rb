@@ -35,7 +35,7 @@ class EmailUtilsTest < ActiveSupport::TestCase
   end
 
   test '.formatted_email' do
-    assert_equal "Mon Stage de 2de <support@monstagedetroisieme.fr>",
-                 EmailUtils.formatted_email("support@monstagedetroisieme.fr")
+    assert_equal "Mon Stage de 2de <contact@stagedeseconde.education.gouv.fr>",
+                 EmailUtils.formatted_email("contact@stagedeseconde.education.gouv.fr")
   end
 end
