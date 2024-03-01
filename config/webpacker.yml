@@ -34,6 +34,7 @@ default: &default
     - .woff
     - .woff2
     - .avif
+    - .webp
 
   extensions:
     - .jsx
@@ -52,6 +53,7 @@ default: &default
     - .jpg
     - .erb
     - .avif
+    - .webp
 
 development:
   <<: *default
