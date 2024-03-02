@@ -8,7 +8,7 @@ header.bg-cover-image-homepage.container-xl.px-0
             br
             | pour les élèves de seconde générale et technologique.
         .d-flex.flex-row
-          .fr-my-4w.blue-france.sub-hero.fr-mr-4w
+          .fr-mt-4w.blue-france.sub-hero.fr-mr-4w
             .sub-hero-text
               |
                 Les élèves de classe de seconde générale et technologique scolarisés dans
@@ -21,9 +21,9 @@ header.bg-cover-image-homepage.container-xl.px-0
                         new_user_registration_path(as: 'Employer'),
                         class: 'fr-btn fr-btn--md fr-mb-2w'
 
-          .fr-mr-2w.ml-auto.fr-mb-0.show-stamp-logo
-            = image_tag asset_pack_path('media/images/homepage/hero-side-comment.png'),
+          .fr-mr-2w.ml-auto.fr-mb-0.show-stamp-logo.d-none.d-md-block
+            = image_tag asset_pack_path('media/images/homepage/hero-side-stamp.png'),
                         alt: 'Logo stade de 2de générale et technologique',
-                        class: 'stamp-logo'
+                        class: 'stamp-logo fr-mb-2w'
 
         
