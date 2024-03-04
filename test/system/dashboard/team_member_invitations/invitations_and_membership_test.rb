@@ -122,7 +122,7 @@ module Dashboard::TeamMemberInvitations
       operator_1 = create(:user_operator)
       sign_in(operator_1)
       operator_2 = create(:user_operator)
-      visit dashboard_internship_agreements_path
+      visit account_path
       click_link 'équipe'.capitalize
       find('a', text: "Inviter un membre de l'équipe").click
       fill_in 'team_member_invitation[invitation_email]', with: operator_2.email
@@ -226,7 +226,7 @@ module Dashboard::TeamMemberInvitations
       statistician_1 = create(:statistician)
       sign_in(statistician_1)
       statistician_2 = create(:statistician)
-      visit dashboard_internship_agreements_path
+      visit account_path
       click_link 'équipe'.capitalize
       find('a', text: "Inviter un membre de l'équipe").click
       fill_in 'team_member_invitation[invitation_email]', with: statistician_2.email
