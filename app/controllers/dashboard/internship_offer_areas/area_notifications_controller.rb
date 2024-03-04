@@ -54,10 +54,10 @@ module Dashboard
 
       private
 
-      def area_notification_params
-        params.require(:area_notification)
-              .permit(:user_id, :internship_offer_area_id, :notify)
-      end
+      # def area_notification_params
+      #   params.require(:area_notification)
+      #         .permit(:user_id, :internship_offer_area_id, :notify)
+      # end
 
       def fetch_area_notification
         @area_notification = AreaNotification.find(params[:id])

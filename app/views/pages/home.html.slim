@@ -3,14 +3,17 @@
 .fr-container
   = render 'pages/home/top_nav'
 .container-homepage
-  .mx-0.light-grey-background
+  .mx-0.light-grey-background 
     = render 'pages/home/hero_pro'
-.container-homepage.light-blue-background
+.container-homepage.light-blue-background.fr-px-2w
   .container-monstage
     = render 'pages/home/sub_hero_pro'
-.container-homepage
+.container-homepage.fr-px-2w
   .container-monstage
     = render 'pages/home/howitworks_pro'
+.container-homepage.fr-px-2w
+  .container-monstage
+    = render 'pages/home/resources_pro'
   .container-monstage
     .d-none.d-md-block
       = render 'pages/home/elevator'

@@ -8,7 +8,7 @@ module EmailUtils
   end
 
   def self.from
-    "notification@monstagedetroisieme.fr"
+    "contact@stagedeseconde.education.gouv.fr"
   end
 
   def self.formatted_from
@@ -16,7 +16,7 @@ module EmailUtils
   end
 
   def self.reply_to
-    "ne-pas-repondre@monstagedetroisieme.fr"
+    "contact@stagedeseconde.education.gouv.fr"
   end
 
   def self.formatted_reply_to
