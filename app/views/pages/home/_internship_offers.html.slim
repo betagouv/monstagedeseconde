@@ -1,5 +1,10 @@
 / strech the cards to the full width of the container
 .row.d-flex.justify-content-center
-  - @internship_offers.each do |offer|
-    .col-md-4.col-xs-12.d-flex.align-items-stretch
-      = render 'internship_offers/card', internship_offer: offer
+  - if @internship_offers.nil? || @internship_offers.empty?
+    .col-md-4.col-xs-12
+      p.text-center
+        | Aucune offre de stage pour le moment
+  - else
+    - @internship_offers.each do |offer|
+      .col-md-4.col-xs-12.d-flex.align-items-stretch
+        = render 'internship_offers/card', internship_offer: offer
