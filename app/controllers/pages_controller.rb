@@ -44,6 +44,9 @@ class PagesController < ApplicationController
   private
 
   def last_three_offers
-    @internship_offers = offers_with_sector.last(3)
+    @internship_offers = []
+    if offers_with_sector.count > 2
+      @internship_offers = offers_with_sector.last(3)
+    end
   end
 end
