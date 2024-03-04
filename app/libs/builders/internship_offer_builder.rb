@@ -178,9 +178,9 @@ module Builders
       instance
     end
 
-    def type_will_change?(params: , instance: )
-      params[:type] && params[:type] != instance.type
-    end
+    # def type_will_change?(params: , instance: )
+    #   params[:type] && params[:type] != instance.type
+    # end
 
     def max_candidates_will_change?(params: , instance: )
       params[:max_candidates] && params[:max_candidates] != instance.max_candidates

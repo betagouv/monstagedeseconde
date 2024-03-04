@@ -45,10 +45,6 @@ a:hover {
   }
 }
 
-.light-grey-background {
-  background-color: $grey-975;
-}
-
 .light-blue-background {
   background-color: #F5F5FF;
 }
@@ -57,15 +53,32 @@ a:hover {
   max-width: 1200px;
   margin: auto;
   position: relative;
-}
-.bg-cover-image-homepage {
-  background-color: $blue;
-}
-@media (768px <=width <=1138px) {
-  .fr-tile-left-top-img .fr-tile__img {
-    display: none;
+  .sub-hero{
+    color: $blue-france;
+    .sub-hero-text{
+      font-size: 1.125rem;
+    }
+  }
+  .stamp-logo{
+    margin-top: 4rem;
+    height: 182px;
+    max-width: 269px;
   }
 }
+.container-monstage-fluid-hero{
+  background-image: url('../images/homepage/backgrd-header.webp');
+  background-position: center center;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media (768px <=width <=1138px) {
+  .fr-tile-left-top-img .fr-tile__img {
+    display: block;
+  }
+}
+
 
 @media(1024px <= width <= 1218px){
   .container-homepage .fr-card .fr-card__content {
@@ -443,10 +456,10 @@ img.covering {
   opacity: 0.5 !important;
 }
 
-.fr-btns-group:where(:not(.fr-btns-group--sm):not(.fr-btns-group--lg)):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class^=fr-icon-], 
-.fr-btns-group:where(:not(.fr-btns-group--sm):not(.fr-btns-group--lg)):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class*=" fr-icon-"], 
-.fr-btns-group:where(:not(.fr-btns-group--sm):not(.fr-btns-group--lg)):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class^=fr-fi-], 
+.fr-btns-group:where(:not(.fr-btns-group--sm):not(.fr-btns-group--lg)):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class^=fr-icon-],
+.fr-btns-group:where(:not(.fr-btns-group--sm):not(.fr-btns-group--lg)):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class*=" fr-icon-"],
+.fr-btns-group:where(:not(.fr-btns-group--sm):not(.fr-btns-group--lg)):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class^=fr-fi-],
 .fr-btns-group:where(:not(.fr-btns-group--sm):not(.fr-btns-group--lg)):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class*=" fr-fi-"] {
-    max-width: none; 
-    justify-content: center; 
+    max-width: none;
+    justify-content: center;
 }
