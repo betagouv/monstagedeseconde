@@ -77,7 +77,7 @@ module InternshipOffers
         offer.update_columns(
           aasm_state: 'need_to_be_updated',
           published_at: nil
-          )
+        )
       end
     end
 

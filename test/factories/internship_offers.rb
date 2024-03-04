@@ -57,20 +57,21 @@ FactoryBot.define do
 
     trait :week_1 do
       period { 1 }
-      first_date { Date.new(2024, 6, 17) }
-      last_date { Date.new(2024, 6, 21) }
+      #TODO: use SchoolYear::Current::new to update
+      first_date { SchoolYear::Current.new.first_week_internship_monday }
+      last_date { SchoolYear::Current.new.first_week_internship_friday }
     end
 
     trait :week_2 do
       period { 2 }
-      first_date { Date.new(2024, 6, 24) }
-      last_date { Date.new(2024, 6, 28) }
+      first_date { SchoolYear::Current.new.second_week_internship_monday}
+      last_date { SchoolYear::Current.new.second_week_internship_friday }
     end
 
     trait :full_time do
       period { 0 }
-      first_date { Date.new(2024, 6, 17) }
-      last_date { Date.new(2024, 6, 28) }
+      first_date {SchoolYear::Current.new.first_week_internship_monday}
+      last_date { SchoolYear::Current.new.second_week_internship_friday}
     end
 
     trait :draft do
@@ -124,15 +125,15 @@ FactoryBot.define do
     #  create(:internship_offer_stats, internship_offer: internship_offer)
     #end
 
-    factory :api_internship_offer, traits: [:api_internship_offer],
+    factory :api_internship_offer, traits: [:api_internship_offer, :full_time],
                                    class: 'InternshipOffers::Api',
                                    parent: :weekly_internship_offer
 
-    factory :weekly_internship_offer, traits: [:weekly_internship_offer,  :published],
+    factory :weekly_internship_offer, traits: [:weekly_internship_offer,  :published, :full_time],
                                       class: 'InternshipOffers::WeeklyFramed',
                                       parent: :internship_offer
     
-    factory :weekly_internship_offer_by_statistician, traits: [:weekly_internship_offer_by_statistician],
+    factory :weekly_internship_offer_by_statistician, traits: [:weekly_internship_offer_by_statistician, :full_time],
                                       class: 'InternshipOffers::WeeklyFramed',
                                       parent: :internship_offer
 
