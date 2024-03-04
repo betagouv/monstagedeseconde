@@ -99,10 +99,6 @@ import './homepage/resources/parents_eleves.svg';
 import './homepage/resources/professionnels.svg';
 import './homepage/resources/referents.svg';
 
-import './homepage/social_networks/insta.svg';
-import './homepage/social_networks/twitter.svg';
-import './homepage/social_networks/linked_in.svg';
-
 import './homepage/hero-illustration.svg';
 import './homepage/opportunities-illustration.svg';
 import './homepage/ms3e-big-badge.svg';
@@ -122,8 +118,8 @@ import './homepage/partenaires/Logo-un-stage-et-apres.jpg';
 import './homepage/partenaires/Logo-viens-voir-mon-taf.jpg';
 import './homepage/partenaires/Logo-my-future.jpg';
 
-import './homepage/sponsors/logo-anct.svg';
-import './homepage/sponsors/logo-anct.png';
+// import './homepage/sponsors/logo-anct.svg';
+// import './homepage/sponsors/logo-anct.png';
 import './homepage/sponsors/logo-ministere-education-nationale.svg';
 import './homepage/sponsors/logo-ministere-de-la-transition-ecologique.svg';
 

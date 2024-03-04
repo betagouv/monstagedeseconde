@@ -13,7 +13,7 @@ import { endpoints } from '../utils/api';
 import { isMobile } from '../utils/responsive';
 import FlashMessage from './FlashMessage';
 
-const center = [48.866669, 2.33333]; // ANCT
+const center = [48.866669, 2.33333];
 
 const pointerIcon = new L.Icon({
   iconUrl: activeMarker,

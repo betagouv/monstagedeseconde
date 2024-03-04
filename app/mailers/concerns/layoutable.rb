@@ -10,14 +10,10 @@ module Layoutable
     before_action :set_logo_attachment
     def set_logo_attachment
       attachments.inline['logo.png'] = File.read("#{Rails.root}/public/assets/logo.png")
-      attachments.inline['logo-mon-stage-3e-bleu-short.svg'] = File.read("#{Rails.root}/public/assets/logo-mon-stage-3e-bleu-short.svg")
 
       attachments.inline['logo-education-nationale.svg'] = File.read("#{Rails.root}/public/assets/logo-education-nationale.svg")
       attachments.inline['header-email.png'] = File.read("#{Rails.root}/public/assets/emails/header-email.png")
-      attachments.inline['tweeter.png'] = File.read("#{Rails.root}/public/assets/tweeter.png")
-      attachments.inline['insta.png'] = File.read("#{Rails.root}/public/assets/insta.png")
-      attachments.inline['linked_in.png'] = File.read("#{Rails.root}/public/assets/linked_in.png")
-      attachments.inline['rf.png'] = File.read("#{Rails.root}/public/assets/rf.png")
+      # attachments.inline['rf.png'] = File.read("#{Rails.root}/public/assets/rf.png")
     end
 
     # for consistent email formatting accross email reader,
