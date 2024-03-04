@@ -230,7 +230,7 @@ class EmployerMailer < ApplicationMailer
     @paragraph_4 = "Si l'offre n'est plus d'actualité ou si vous avez changé d'avis, " \
                    "vous pouvez la supprimer depuis l’étape 4."
     @paragraph_5 = "Nous sommes à votre disposition pour toute aide ou question. " \
-                   "N'hésitez pas à nous contacter sur support@monstagedetroisieme.fr"
+                   "N'hésitez pas à nous contacter sur contact@stagedeseconde.education.gouv.fr"
 
     send_email( to: @employer.email, subject: subject )
   end

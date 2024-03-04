@@ -15,7 +15,7 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                               resource.new_record? && resource.errors.empty? && params[:duplicate_id].blank? ? true : resource.is_individual?,
                               class: '',
                               data: { :'hosting-infos-target' => 'individualButton',
-                                      action: "change->hosting-infos#toggleInternshipmaxStudentsPerGroup" }
+                                      action: "change->hosting-infos#toggleInternshipmaxCandidates" }
           = label_tag :internship_type_true, 'Individuel, un seul élève par stage'
               
         .fr-radio-group.fr-py-1w    
@@ -24,29 +24,15 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                               resource.new_record? && resource.errors.empty? && params[:duplicate_id].blank? ? false : !resource.is_individual?,
                               class: '',
                               data: { :'hosting-infos-target' => 'collectiveButton',
-                                      action: "change->hosting-infos#toggleInternshipmaxStudentsPerGroup" }
+                                      action: "change->hosting-infos#toggleInternshipmaxCandidates" }
           = label_tag :internship_type_false, 'Collectif, plusieurs élèves par stage'
-
-      div class="form-group form-group-select-max-students-per-group #{resource.is_individual? ? 'd-none' : ''}" data-hosting-infos-target='studentsMaxGroupGroup'
-        = form.label :max_students_per_group do
-          = 'Nombre maximal d\'élèves par groupe'
-          = form.rg2a_required_content_tag
-          small.form-text.text-muted Renseignez ici l'effectif maximal de votre groupe d'élèves
-        = form.number_field :max_students_per_group,
-                            value: resource.max_students_per_group,
-                            min: 1,
-                            max: InternshipOffer::MAX_CANDIDATES_HIGHEST,
-                            step: 1,
-                            class: 'fr-input col-lg-6',
-                            disabled: false,
-                            data: { :"hosting-infos-target" => "studentsMaxGroupInput",
-                                    action: "change->hosting-infos#handleMaxCandidatesPerGroupChanges"}    
+    
     .col-md-6
       .fr-alert.fr-alert--info
         h3.fr-alert__title Conseil
         p L'accueil de plusieurs élèves en même temps peut avoir un caractère rassurant pour eux. Et cela ne demande pas plus de préparation.
 
-  .row
+  .row data-hosting-infos-target='studentsMaxCandidatesGroup'
     .col-md-6.order-md-1.order-2
       .form-group.form-group-select-max-candidates
         = form.label :max_candidates, class: 'fr-label' do
@@ -67,7 +53,7 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                             data: { :"hosting-infos-target" => 'maxCandidatesInput',
                                     action: "change->hosting-infos#handleMaxCandidatesChanges"}
       
-      = form.hidden_field :type, data: { :"hosting-infos-target" => "type" }
+      = form.hidden_field :type, value: resource.type, data: { :"hosting-infos-target" => "type" } unless resource.is_a?(HostingInfo)
 
   .row 
     .col-md-6

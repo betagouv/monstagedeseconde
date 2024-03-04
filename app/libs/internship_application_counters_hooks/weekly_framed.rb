@@ -2,7 +2,9 @@
 
 module InternshipApplicationCountersHooks
   class WeeklyFramed < InternshipApplicationCountersHook
+    # Delegations
     delegate :internship_offer, to: :internship_application
+    delegate :stats, to: :internship_offer
 
     # BEWARE: order matters
     def update_all_counters
