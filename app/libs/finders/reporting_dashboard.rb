@@ -13,9 +13,9 @@ module Finders
     end
 
     
-    # def operator_count_by_type(type)
-    #   operator_base_query.map { |o| o.realized_count.dig(params[:school_year].to_s, type).to_i || 0 }.sum
-    # end
+    def operator_count_by_type(type)
+      operator_base_query.map { |o| o.realized_count.dig(params[:school_year].to_s, type).to_i || 0 }.sum
+    end
 
     def operator_count_onsite
       @operator_count_onsite ||= operator_base_query

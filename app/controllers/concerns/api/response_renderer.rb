@@ -62,9 +62,9 @@ module Api
         render_success(status: :ok, object: updated_ar_object)
       end
 
-      # def render_no_content
-      #   head :no_content
-      # end
+      def render_no_content
+        head :no_content
+      end
     end
   end
 end

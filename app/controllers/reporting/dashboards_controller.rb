@@ -15,12 +15,12 @@ module Reporting
     private
 
     # inspired by : https://github.com/rails/rails/blob/75ac626c4e21129d8296d4206a1960563cc3d4aa/actionpack/lib/action_controller/metal/redirecting.rb#L90
-    # def redirect_back_with_anchor_to_stats
-    #   redirect_url = [ request.headers["Referer"], current_user.custom_dashboard_path].compact.first
-    #   uri = URI.parse(redirect_url)
-    #   uri.fragment = "operator-stats"
-    #   uri.to_s
-    # end
+    def redirect_back_with_anchor_to_stats
+      redirect_url = [ request.headers["Referer"], current_user.custom_dashboard_path].compact.first
+      uri = URI.parse(redirect_url)
+      uri.fragment = "operator-stats"
+      uri.to_s
+    end
 
     def internship_offers_finder
       @internship_offers_finder ||= Finders::ReportingInternshipOffer.new(params: reporting_cross_view_params)
