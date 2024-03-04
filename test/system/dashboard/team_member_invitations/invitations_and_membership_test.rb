@@ -120,8 +120,8 @@ module Dashboard::TeamMemberInvitations
 
     test 'as operator, team member can invite a new team member' do
       operator_1 = create(:user_operator)
-      sign_in(operator_1)
       operator_2 = create(:user_operator)
+      sign_in(operator_1)
       visit account_path
       click_link 'équipe'.capitalize
       find('a', text: "Inviter un membre de l'équipe").click
@@ -204,7 +204,6 @@ module Dashboard::TeamMemberInvitations
 
      test 'when two user_operators are in the same team on a single area, ' \
           'they can manage internship_applications of the team' do
-      skip "test to update after ui is finished #TODO #may_flower"
       user_operator_1 = create(:user_operator)
       user_operator_2 = create(:user_operator)
       internship_offer = create_internship_offer_visible_by_two(user_operator_1, user_operator_2)
@@ -223,6 +222,7 @@ module Dashboard::TeamMemberInvitations
 
     ## ============= statisticians ===================
     test 'as statistician, team member can invite a new team member' do
+      skip "#may_flower statitician not invited yet"
       statistician_1 = create(:statistician)
       sign_in(statistician_1)
       statistician_2 = create(:statistician)

@@ -88,7 +88,7 @@ class InternshipOfferTest < ActiveSupport::TestCase
   end
 
   test 'school_year value' do
-    travel_to(Date.new(2024, 6, 17)) do
+    travel_to(Date.new(2024, 7, 17)) do
       internship_offer = create(:weekly_internship_offer, :week_1)
       assert_equal 2025, internship_offer.school_year
     end

@@ -15,43 +15,48 @@ class UserMailerTest < ActionMailer::TestCase
     refute_email_spammyness(email)
   end
 
-  test '.export_offers ministry_statistician' do
-    ministry_statistician = create(:ministry_statistician)
+  # TODO reporting is no longer used
 
-    email = UserMailer.export_offers(ministry_statistician, {})
-    assert_nothing_raised do
-      Timeout::timeout(5) do
-        email.deliver_now
-      end
-    end
-    assert_equal "Export des offres de Mon stage de seconde", email.subject
-    refute_email_spammyness(email)
-  end
+  # test '.export_offers ministry_statistician' do
+  #   ministry_statistician = create(:ministry_statistician)
 
-  test '.export_offers user god' do
-    skip "failing test on CI but passing locally" if ENV.fetch('CI') == 'true'
-    god = create(:god)
+  #   email = UserMailer.export_offers(ministry_statistician, {})
+  #   assert_nothing_raised do
+  #     Timeout::timeout(5) do
+  #       email.deliver_now
+  #     end
+  #   end
+  #   assert_equal "Export des offres de Mon stage de seconde", email.subject
+  #   refute_email_spammyness(email)
+  # end
 
-    email = UserMailer.export_offers(god, {})
-    assert_nothing_raised do
-      Timeout::timeout(10) do
-        email.deliver_now
-      end
-    end
-    assert_equal "Export des offres de Mon stage de seconde", email.subject
-    refute_email_spammyness(email)
-  end
-  test '.export_offers user god with departement param' do
-    skip "failing test on CI but passing locally" if ENV.fetch('CI') == 'true'
-    god = create(:god)
+  
 
-    email = UserMailer.export_offers(god, {department: 'Oise'})
-    assert_nothing_raised do
-      Timeout::timeout(10) do
-        email.deliver_now
-      end
-    end
-    assert_equal "Export des offres de Mon stage de seconde", email.subject
-    refute_email_spammyness(email)
-  end
+  # test '.export_offers user god' do
+  #   skip "failing test on CI but passing locally" if ENV.fetch('CI') == 'true'
+  #   god = create(:god)
+
+  #   email = UserMailer.export_offers(god, {})
+  #   assert_nothing_raised do
+  #     Timeout::timeout(10) do
+  #       email.deliver_now
+  #     end
+  #   end
+  #   assert_equal "Export des offres de Mon stage de seconde", email.subject
+  #   refute_email_spammyness(email)
+  # end
+
+  # test '.export_offers user god with departement param' do
+  #   skip "failing test on CI but passing locally" if ENV.fetch('CI') == 'true'
+  #   god = create(:god)
+
+  #   email = UserMailer.export_offers(god, { department: 'Oise' })
+  #   assert_nothing_raised do
+  #     Timeout::timeout(10) do
+  #       email.deliver_now
+  #     end
+  #   end
+  #   assert_equal "Export des offres de Mon stage de seconde", email.subject
+  #   refute_email_spammyness(email)
+  # end
 end

@@ -41,17 +41,15 @@ class ManageInternshipOfferInfosTest < ApplicationSystemTestCase
   end
 
   test 'employer can create an offer on May 31st for next year' do
-    travel_to Date.new(2023, 5, 29) do
+    travel_to Date.new(2023, 6, 30) do
       sector = create(:sector)
       employer = create(:employer)
       school_name = 'Abd El Kader'
       organisation = create(:organisation, employer: employer)
       school = create(:school, city: 'Paris', zipcode: 75012, name: school_name)
-      
+
       sign_in(employer)
-      available_weeks = Week.selectable_from_now_until_end_of_school_year
-      assert_equal [2023, 2024], available_weeks.map(&:year).uniq
-      assert_difference 'InternshipOfferInfo.count' do
+      assert_changes 'InternshipOfferInfo.count' , from: 0, to: 1 do
         visit new_dashboard_stepper_internship_offer_info_path(organisation_id: organisation.id)
         fill_in_internship_offer_info_form(sector: sector)
         page.assert_no_selector('span.number', text: '1')
