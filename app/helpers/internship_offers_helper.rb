@@ -19,12 +19,27 @@ module InternshipOffersHelper
     return listable_internship_offer_path(object, anchor: 'internship-application-form')
   end
 
-  # def internship_offer_application_html_opts(object, opts)
-  #   opts = opts.merge({title: 'Voir l\'offre en détail'})
-  #   opts = opts.merge({title: 'Voir l\'offre en détail (nouvelle fenêtre)', target: '_blank', rel: 'external noopener noreferrer'}) if object.from_api?
-  #   opts
-  # end
+  def internship_offer_application_html_opts(object, opts)
+    opts = opts.merge({title: 'Voir l\'offre en détail'})
+    opts = opts.merge({title: 'Voir l\'offre en détail (nouvelle fenêtre)', target: '_blank', rel: 'external noopener noreferrer'}) if object.from_api?
+    opts
+  end
 
+  def options_for_groups
+    Group.all.map do |group|
+      [
+        group.name,
+        group.id,
+        {
+          'data-organisation-form-target' => if group.is_public?
+                                              'groupNamePublic'
+                                             else
+                                               'groupNamePrivate'
+                                             end
+        }
+      ]
+    end
+  end
 
   def operator_name(internship_offer)
     internship_offer.employer.operator.name
@@ -64,11 +79,21 @@ module InternshipOffersHelper
     internship_offer_path(default_params.merge(forwardable_params))
   end
 
+  def select_weekly_start(internship_offer)
+    internship_offer.weekly_planning? ? internship_offer.weekly_hours.try(:first) || '09:00' : '--'
+  end
 
   def select_weekly_end(internship_offer)
     internship_offer.weekly_planning? ? internship_offer.weekly_hours.try(:last) || '17:00' : '--'
   end
 
+  def select_daily_start(internship_offer, day)
+    internship_offer.daily_hours.blank? ? '' : internship_offer.daily_hours&.fetch(day, '09:00')
+  end
+
+  def select_daily_end(internship_offer, day)
+    internship_offer.daily_hours.blank? ? '' : internship_offer.daily_hours&.fetch(day, '17:00')
+  end
 
   def truncate_description(internship_offer)
     description = internship_offer.description_rich_text.to_s.present? ? internship_offer.description_rich_text.to_plain_text : internship_offer.description

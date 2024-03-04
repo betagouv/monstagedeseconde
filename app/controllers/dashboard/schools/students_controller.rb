@@ -27,9 +27,9 @@ module Dashboard
 
       private
 
-      # def students_params
-      #   params.require(:student).permit(:class_room_id)
-      # end
+      def students_params
+        params.require(:student).permit(:class_room_id)
+      end
     end
   end
 end

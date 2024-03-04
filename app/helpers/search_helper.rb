@@ -1,17 +1,45 @@
 module SearchHelper
-  # def years_from_list_months_search
-  #   return Date.today.year if list_months_for_search.blank?
+  def years_from_list_months_search
+    return Date.today.year if list_months_for_search.blank?
     
-  #   list_months = list_months_for_search.values.flatten
-  #   year_start  = list_months.first.year
-  #   year_end    = list_months.last.year
-  #   year_start == year_end ? year_start : "#{year_start} - #{year_start + 1}"
-  # end
+    list_months = list_months_for_search.values.flatten
+    year_start  = list_months.first.year
+    year_end    = list_months.last.year
+    year_start == year_end ? year_start : "#{year_start} - #{year_start + 1}"
+  end
+
+  def search_first_month?(month_i)
+    month_i == list_months_for_search.keys.first
+  end
+
+  def search_last_month?(month_i)
+    month_i == 5
+  end
 
   def next_month(month_i)
     month_list = list_months_for_search.keys
     month_index = month_list.find_index(month_i)
     month_list[month_index + 1]
+  end
+
+  def previous_month(month_i)
+    month_list = list_months_for_search.keys
+    month_index = month_list.find_index(month_i)
+    month_list[month_index - 1]
+  end
+
+  def month_in_text(month_i, opts)
+    month_date = Date.new(Date.today.year, month_i, 1)
+    I18n.localize(month_date, **opts).capitalize
+  end
+
+  def current_month_for_search
+    default_month = list_months_for_search.keys.first
+    list_months_include_current_month = list_months_for_search.keys
+                                                      .include?(Date.today.month)
+    list_months_include_current_month ?
+      Date.today.month :
+      default_month
   end
 
   def search_button_label
