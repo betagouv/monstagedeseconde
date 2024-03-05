@@ -56,7 +56,7 @@ class GenerateInternshipAgreement < Prawn::Document
 
   def header
     y_position = @pdf.cursor
-    @pdf.image "#{Rails.root}/public/assets/logo.png", at: [0, y_position], width: 50
+    # @pdf.image "#{Rails.root}/public/assets/logo.png", at: [0, y_position], width: 50
     @pdf.move_down 5
     @pdf.move_down 30
   end

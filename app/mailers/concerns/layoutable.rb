@@ -9,8 +9,6 @@ module Layoutable
     # email attachements for inline image
     before_action :set_logo_attachment
     def set_logo_attachment
-      attachments.inline['logo.png'] = File.read("#{Rails.root}/public/assets/logo.png")
-
       attachments.inline['logo-education-nationale.svg'] = File.read("#{Rails.root}/public/assets/logo-education-nationale.svg")
       attachments.inline['header-email.png'] = File.read("#{Rails.root}/public/assets/emails/header-email.png")
       # attachments.inline['rf.png'] = File.read("#{Rails.root}/public/assets/rf.png")
