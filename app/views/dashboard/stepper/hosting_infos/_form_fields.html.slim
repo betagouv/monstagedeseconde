@@ -17,8 +17,8 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                               data: { :'hosting-infos-target' => 'individualButton',
                                       action: "change->hosting-infos#toggleInternshipmaxCandidates" }
           = label_tag :internship_type_true, 'Individuel, un seul élève par stage'
-              
-        .fr-radio-group.fr-py-1w    
+
+        .fr-radio-group.fr-py-1w
           = radio_button_tag :internship_type,
                               false,
                               resource.new_record? && resource.errors.empty? && params[:duplicate_id].blank? ? false : !resource.is_individual?,
@@ -26,7 +26,7 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                               data: { :'hosting-infos-target' => 'collectiveButton',
                                       action: "change->hosting-infos#toggleInternshipmaxCandidates" }
           = label_tag :internship_type_false, 'Collectif, plusieurs élèves par stage'
-    
+
     .col-md-6
       .fr-alert.fr-alert--info
         h3.fr-alert__title Conseil
@@ -52,10 +52,10 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                             min: resource.is_a?(InternshipOffer) ? (resource.internship_applications.try(:approved).try(:count) || 0) : 0,
                             data: { :"hosting-infos-target" => 'maxCandidatesInput',
                                     action: "change->hosting-infos#handleMaxCandidatesChanges"}
-      
+
       = form.hidden_field :type, value: resource.type, data: { :"hosting-infos-target" => "type" } unless resource.is_a?(HostingInfo)
 
-  .row 
+  .row
     .col-md-6
       / radio button for period
       .fr-form-group
@@ -64,30 +64,34 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
         .fr-radio-group.fr-py-1w
           = form.radio_button :period,
                               :full_time,
-                              id: 'period_full_time'
-                              
+                              id: 'period_full_time',
+                              checked: resource.full_time? || resource.new_record?
+
           = form.label :period, '2 semaines - du 17 au 28 juin', for: 'period_full_time'
-              
+
         .fr-radio-group.fr-py-1w
           = form.radio_button :period,
                               :week_1,
-                              id: 'period_week_1'
+                              id: 'period_week_1',
+                              checked: resource.week_1?
 
           = form.label :period, '1 semaine - du 17 au 21 juin', for: 'period_week_1'
 
         .fr-radio-group.fr-py-1w
           = form.radio_button :period,
                               :week_2,
-                              id: 'period_week_2'
+                              id: 'period_week_2',
+                              checked: resource.week_2?
 
-          = form.label :period, '1 semaine - du 24 au 28 juin', for: 'period_week_2'    
+
+          = form.label :period, '1 semaine - du 24 au 28 juin', for: 'period_week_2'
     .col-md-6.order-md-1.order-2
       .fr-alert.fr-alert--warning
         h3.fr-alert__title Informations
         p Les élèves de seconde doivent effectuer un stage de deux semaines, du 17 juin au 28 juin 2024. Malgré cela, vous pouvez déposer une offre de stage pour une semaine si votre organisation ne vous permet pas de les accueillir deux semaines consécutives.
 
   - if submit_button
-    .fr-mt-2w 
+    .fr-mt-2w
       = link_to edit_dashboard_stepper_internship_offer_info_path(params[:internship_offer_info_id],
                                                           organisation_id: params[:organisation_id]),
                   class: 'fr-btn fr-mr-2w fr-btn--secondary' do
