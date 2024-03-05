@@ -99,7 +99,7 @@ class InternshipOffer < ApplicationRecord
               message: 'Le numéro de téléphone doit contenir des caractères chiffrés uniquement' },
     on: :create
 
-  validate :check_missing_seats_or_weeks, if: :user_update?, on: :update
+  validate :check_missing_seats, if: :user_update?, on: :update
   validates :period, inclusion: { in: [0, 1, 2] }
   
   # Scopes
@@ -556,30 +556,17 @@ class InternshipOffer < ApplicationRecord
     stats.recalculate
   end
 
-  # TODO Rename
-  def missing_weeks_info?
-    internship_offer_weeks.map(&:week_id).all? do |week_id|
-      week_id < Week.current.id.to_i + 1
-    end
-  end
-
-  def missing_weeks_in_the_future
-    if missing_weeks_info?
-      errors.add(weeks_class, 'Vous devez sélectionner au moins une semaine dans le futur')
-    end
-  end
-
   def check_for_missing_seats
     if no_remaining_seat_anymore?
       errors.add(:max_candidates, 'Augmentez Le nombre de places disponibles pour accueillir des élèves')
     end
   end
 
-  def check_missing_seats_or_weeks
+  def check_missing_seats
     return false if published_at.nil? # different from published? since published? checks the database and the former state of the object
     return false if republish.nil?
 
-    missing_weeks_in_the_future && check_for_missing_seats
+    check_for_missing_seats
   end
 
   def user_update?
