@@ -198,7 +198,6 @@ class IndexTest < ActionDispatch::IntegrationTest
     internship_offer_with_application = create(
       :weekly_internship_offer,
       max_candidates: 2,
-      max_students_per_group: 2,
       title: 'offer with_application')
 
     internship_application = create(
@@ -317,8 +316,7 @@ class IndexTest < ActionDispatch::IntegrationTest
        'as less than blocked_applications_count as max_candidates number' do
     max_candidates = 2
     internship_offer = create(:weekly_internship_offer,
-                              max_candidates: max_candidates,
-                              max_students_per_group: max_candidates)
+                              max_candidates: max_candidates)
     sign_in(create(:student))
     InternshipOffer.stub :nearby, InternshipOffer.all do
       InternshipOffer.stub :by_weeks, InternshipOffer.all do

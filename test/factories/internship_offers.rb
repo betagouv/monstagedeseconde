@@ -13,7 +13,6 @@ FactoryBot.define do
     description { 'Lorem ipsum dolor' }
     contact_phone { '+330612345678' }
     max_candidates { 1 }
-    max_students_per_group { 1 }
     blocked_weeks_count { 0 }
     sector { create(:sector) }
     tutor_name { 'Eric Dubois' }

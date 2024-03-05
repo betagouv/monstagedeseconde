@@ -24,7 +24,7 @@ class MissingWeeksNotificationTest < ApplicationSystemTestCase
       message_no_week = "Attention, votre établissement n'a pas encore renseigné ses dates de stage."
       explanation = "Attention, vérifiez bien que les dates de stage proposées dans l'annonce correspondent " \
                     "à vos dates de stage. Votre chef d'établissement n'a en effet pas renseigné " \
-                    "les semaines de stage de votre établissement." \
+                    "les semaines de stage de votre établissement."
 
       school_message = "Etablissement mis à jour avec succès"
 

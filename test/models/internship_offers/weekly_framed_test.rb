@@ -25,41 +25,10 @@ module InternshipsOffers
       assert_not_empty internship_offer.errors[:coordinates]
     end
 
-    test 'max_students_per_group' do
-      internship_offer = build(:weekly_internship_offer,
-                               max_candidates: 2,
-                               max_students_per_group: 1)
-      assert internship_offer.valid?
-
-      internship_offer = build(:weekly_internship_offer,
-                               max_candidates: 2,
-                               max_students_per_group: 2)
-      assert internship_offer.valid?
-
-      internship_offer = build(:weekly_internship_offer,
-                               max_candidates: 2,
-                               max_students_per_group: 3)
-      refute internship_offer.valid?
-    end
-
-    test 'group size is lower than max_candidates' do
-      internship_offer = build(:weekly_internship_offer,
-                                max_candidates: 2,
-                                max_students_per_group: 3)
-      refute internship_offer.valid?
-      error_message = "Effectif max. d'un groupe d'élèves " \
-                      "Le nombre maximal d'élèves par groupe ne peut pas" \
-                      " dépasser le nombre maximal d'élèves " \
-                      "attendus dans l'année"
-      assert_equal error_message,
-                   internship_offer.errors.full_messages.first
-    end
-
     test 'fulfilled internship_offers' do
       travel_to Date.new(2019,9,1) do
         internship_offer = create(:weekly_internship_offer,
-                                  max_candidates: 2,
-                                  max_students_per_group: 1)
+                                  max_candidates: 2)
         assert_equal 0, InternshipOffers::WeeklyFramed.fulfilled.to_a.count
         create(:weekly_internship_application,
               :approved,
@@ -80,8 +49,7 @@ module InternshipsOffers
       travel_to Date.new(2019,9,1) do
         weeks = Week.selectable_from_now_until_end_of_school_year.first(5).last(3)
         internship_offer = create(:weekly_internship_offer,
-                                  max_candidates: 2,
-                                  max_students_per_group: 1)
+                                  max_candidates: 2)
         assert_equal 1, InternshipOffers::WeeklyFramed.uncompleted.count
         create(:weekly_internship_application,
               :approved,
@@ -102,7 +70,6 @@ module InternshipsOffers
       travel_to Date.new(2020, 1, 1) do
         internship_offer = create(:weekly_internship_offer,
                                   max_candidates: 2,
-                                  max_students_per_group: 2,
                                   published_at: nil)
 
         assert_equal 1, InternshipOffers::WeeklyFramed.uncompleted.to_a.count
@@ -201,8 +168,7 @@ module InternshipsOffers
         first_week_of_next_year = Week.find_by(year: Week.current.year + 1, number: Week.current.number)
         internship_offer = create(
           :weekly_internship_offer,
-          max_candidates: 10,
-          max_students_per_group: 10
+          max_candidates: 10
         )
         assert_equal 10, internship_offer.max_candidates
         assert_equal 10, internship_offer.remaining_seats_count

@@ -65,7 +65,6 @@ module Dashboard::Stepper
               :employer_id,
               :description_rich_text,
               :max_candidates,
-              :max_students_per_group,
               :siret,
               week_ids: []
               )
