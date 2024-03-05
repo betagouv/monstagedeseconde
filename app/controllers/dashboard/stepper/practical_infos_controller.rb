@@ -78,14 +78,13 @@ module Dashboard::Stepper
       authorize! :update, @practical_info
 
       if @practical_info.update(practical_info_params)
-        internship_offer_builder.create_from_stepper(**builder_params) do |on|
-          on.success do |created_internship_offer|
-            redirect_to(internship_offer_path(created_internship_offer, origine: 'dashboard'),
+        internship_offer = InternshipOffer.find_by(practical_info_id: @practical_info.id)
+        if internship_offer.present?
+          internship_offer.update(practical_info_params)
+          redirect_to(internship_offer_path(internship_offer, origine: 'dashboard'),
                         flash: { success: 'Votre offre de stage est prête à être publiée.' })
-          end
-          on.failure do |failed_internship_offer|
-            render :new, status: :bad_request
-          end
+        else
+          redirect_to root_path, flash: { error: 'Erreur lors de la mise à jour de l\'offre de stage' }
         end
       else
         @organisation = Organisation.find(params[:organisation_id])
