@@ -27,14 +27,13 @@ class InternshipOfferNearbyableTest < ActiveSupport::TestCase
   end
 
   test 'scope :with_distance_from' do
-    skip "failing test on CI but passing locally" if ENV.fetch('CI') == 'true'
     result = InternshipOffer.with_distance_from(
       latitude: @coordinates_paris[:latitude],
       longitude: @coordinates_paris[:longitude]
     ).to_a
     assert_equal 6, result.count
-    assert_equal [@offer_paris, @offer_chatillon, @offer_bordeaux, @offer_pithiviers, @offer_verneuil, @offer_melun],
-                result.to_a
+    assert_equal [@offer_paris, @offer_chatillon, @offer_bordeaux, @offer_pithiviers, @offer_verneuil, @offer_melun].map(&:id),
+                result.map(&:id)
   end
 
   test 'scope :nearby_and_ordered' do
