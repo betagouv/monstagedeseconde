@@ -12,6 +12,7 @@
               class: "fr-label",
               for: id
       = label
+      = f.rg2a_required_content_tag if required
     - unless hint.blank?
       .text-muted.fr-mb-4v = hint
     = f.send(field_type, field, class: "fr-input #{ hint.blank? ? "" : 'fr-mt-n2v'}",
@@ -28,6 +29,7 @@
               class: 'fr-label',
               for: id
       = label
+      = f.rg2a_required_content_tag if required
     - unless hint.blank?
       .text-muted = hint
     = f.send(field_type, field,
@@ -47,6 +49,7 @@
               class:"fr-label",
               for: id
       = label
+      = f.rg2a_required_content_tag if required
     - unless hint.blank?
       .text-muted = hint
     = f.send(field_type, field,
