@@ -23,7 +23,6 @@ namespace :cleaning do
                                                    .where('last_date <= ?', trigger_date)
                                                    .pluck(:employer_id)
                                                    .uniq
-      raise 'empty employer list upnormal' if employer_ids.empty?
       filtered_ids = employer_ids.select do |id|
         InternshipOffers::WeeklyFramed.kept
                                       .where(employer_id: id)
