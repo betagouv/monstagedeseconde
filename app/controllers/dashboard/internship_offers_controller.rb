@@ -118,7 +118,7 @@ module Dashboard
       if @internship_offer.requires_updates?
         republish
       else
-        @internship_offer.publish!
+        @internship_offer.publish! unless @internship_offer.published?
         redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
                     flash: { success: 'Votre annonce a bien été publiée' }
       end
