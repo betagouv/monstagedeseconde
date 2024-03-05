@@ -489,8 +489,7 @@ module Api
                 sector_uuid: sector.uuid,
                 remote_id: 'remote_id',
                 permalink: 'http://google.fr/permalink',
-                max_candidates: 3,
-                max_students_per_group: 1
+                max_candidates: 3
               }
             }
           )
@@ -499,7 +498,6 @@ module Api
         assert_response :created
         internship_offer = InternshipOffers::Api.first
         assert_equal 3, internship_offer.remaining_seats_count
-        assert_equal 1, internship_offer.max_students_per_group
       end
     end
   end

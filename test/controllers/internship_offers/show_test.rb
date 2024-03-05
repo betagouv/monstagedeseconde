@@ -58,8 +58,7 @@ module InternshipOffers
           city: 'Bordeaux',
           coordinates: Coordinates.bordeaux,
           title: 'Vendeur de cannelés',
-          max_candidates: 3,
-          max_students_per_group: 1
+          max_candidates: 3
         )
         employer = InternshipOffer.last.employer
         application = create(
@@ -82,7 +81,6 @@ module InternshipOffers
           coordinates: Coordinates.bordeaux,
           title: 'Vendeur de cannelés',
           max_candidates: 3,
-          max_students_per_group: 1,
           period: 1 # week_1
         )
         employer = InternshipOffer.last.employer
@@ -104,7 +102,6 @@ module InternshipOffers
           coordinates: Coordinates.bordeaux,
           title: 'Vendeur de cannelés',
           max_candidates: 3,
-          max_students_per_group: 1,
           period: 2 # week_
         )
         employer = InternshipOffer.last.employer

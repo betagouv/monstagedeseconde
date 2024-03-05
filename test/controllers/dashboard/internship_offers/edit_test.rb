@@ -23,8 +23,7 @@ module Dashboard::InternshipOffers
       employer = create(:employer)
       sign_in(employer)
       internship_offer = create(:weekly_internship_offer, employer: employer,
-                                                          max_candidates: 2,
-                                                          max_students_per_group: 2)
+                                                          max_candidates: 2)
       get edit_dashboard_internship_offer_path(internship_offer.to_param)
       assert_select "#internship_offer_max_candidates[value=#{internship_offer.max_candidates}]", count: 1
       assert_response :success
@@ -41,8 +40,7 @@ module Dashboard::InternshipOffers
 
         sign_in(employer)
         internship_offer = create(:weekly_internship_offer, employer: employer,
-                                                            max_candidates: 2,
-                                                            max_students_per_group: 2)
+                                                            max_candidates: 2)
         get edit_dashboard_internship_offer_path(internship_offer.to_param)
         assert_response :success
       end

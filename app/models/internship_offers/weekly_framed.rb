@@ -17,11 +17,6 @@ module InternshipOffers
               numericality: { only_integer: true,
                               greater_than: 0,
                               less_than_or_equal_to: MAX_CANDIDATES_HIGHEST }
-    validates :max_students_per_group,
-              numericality: { only_integer: true,
-                              greater_than: 0,
-                              less_than_or_equal_to: :max_candidates,
-                              message: "Le nombre maximal d'élèves par groupe ne peut pas dépasser le nombre maximal d'élèves attendus dans l'année" }
 
     validate :schedules_check
 

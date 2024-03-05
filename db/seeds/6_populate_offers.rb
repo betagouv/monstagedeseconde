@@ -7,7 +7,6 @@ def populate_internship_offers
     contact_phone: '+33637607756',
     siret: siret,
     max_candidates: 5,
-    max_students_per_group: 5,
     period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_paqte.first,
@@ -30,7 +29,6 @@ def populate_internship_offers
     contact_phone: '+33637607756',
     siret: siret,
     max_candidates: 5,
-    max_students_per_group: 5,
     period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_paqte.first,
@@ -50,7 +48,6 @@ def populate_internship_offers
   # 3
   InternshipOffers::WeeklyFramed.create!(
     max_candidates: 5,
-    max_students_per_group: 5,
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
     siret: siret,
@@ -73,7 +70,6 @@ def populate_internship_offers
   # 4
   InternshipOffers::WeeklyFramed.create!(
     max_candidates: 6,
-    max_students_per_group: 6,
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
     siret: siret,
@@ -113,7 +109,6 @@ def populate_internship_offers
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Du temps pour moi',
     max_candidates: 7,
-    max_students_per_group: 7,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
 
@@ -140,7 +135,6 @@ def populate_internship_offers
   # 7
   InternshipOffers::WeeklyFramed.create!(
     max_candidates: 7,
-    max_students_per_group: 7,
     school_year: 2023,
     employer: Users::Employer.first,
     contact_phone: '+33637607757',
@@ -221,7 +215,6 @@ def populate_internship_offers
 MULTI_LINE
   InternshipOffers::WeeklyFramed.create!(
     max_candidates: 5,
-    max_students_per_group: 5,
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
     period: [0, 1, 2].sample,
@@ -250,7 +243,6 @@ MULTI_LINE
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
     max_candidates: 5,
-    max_students_per_group: 5,
     period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_private.first,
@@ -288,7 +280,6 @@ MULTI_LINE
 
   InternshipOffers::WeeklyFramed.create!(
     max_candidates: 5,
-    max_students_per_group: 5,
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
     period: [0, 1, 2].sample,
@@ -317,7 +308,6 @@ MULTI_LINE
     contact_phone: '+33627607756',
     siret: siret,
     max_candidates: 2,
-    max_students_per_group: 2,
     period: [0, 1, 2].sample,
     sector: Sector.fourth,
     group: Group.is_paqte.second,
@@ -341,7 +331,6 @@ MULTI_LINE
     contact_phone: '+33637607156',
     siret: "88339868700011",
     max_candidates: 1,
-    max_students_per_group: 1,
     period: [0, 1, 2].sample,
     sector: Sector.second,
     group: nil,

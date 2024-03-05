@@ -210,13 +210,11 @@ module Dashboard::InternshipOffers
         internship_offer_1 = create(:weekly_internship_offer,
                                     max_candidates: 2,
                                     remaining_seats_count: 2,
-                                    max_students_per_group: 2,
                                     internship_offer_area_id: employer.current_area_id,
                                     employer: employer)
         internship_offer_2 = create(:weekly_internship_offer,
                                     max_candidates: 1,
                                     remaining_seats_count: 1,
-                                    max_students_per_group: 1,
                                     internship_offer_area_id: employer.current_area_id,
                                     employer: employer)
         sign_in(employer)
@@ -266,13 +264,11 @@ module Dashboard::InternshipOffers
                                             :discarded, 
                                             employer: employer,
                                             internship_offer_area_id: employer.current_area_id,
-                                            max_candidates: 10,
-                                            max_students_per_group: 5)
+                                            max_candidates: 10)
         kept_internship_offer = create(:weekly_internship_offer,
                                       employer: employer,
                                       internship_offer_area_id: employer.current_area_id,
-                                      max_candidates: 10,
-                                      max_students_per_group: 5)
+                                      max_candidates: 10)
         create(:weekly_internship_application, :submitted,
               internship_offer: discarded_internship_offer)
         2.times do

@@ -27,7 +27,6 @@ module Reporting
         :with_private_employer_group,
         group: paqte_group,
         max_candidates: 10,
-        max_students_per_group: 10,
         zipcode: 60580
       ) # 10 paqte(private) Oise
       private_internship_offer_no_group = create(
@@ -35,7 +34,6 @@ module Reporting
         is_public: false,
         group: nil,
         max_candidates: 20,
-        max_students_per_group: 20,
         zipcode: 60580
       ) # 20 private Oise
       sign_in(statistician)
@@ -137,7 +135,6 @@ module Reporting
         :with_private_employer_group,
         group: paqte_group,
         max_candidates: 10,
-        max_students_per_group: 10,
         zipcode: 60580
       ) # 10 paqte(private) Oise
       private_internship_offer_no_group = create(
@@ -145,7 +142,6 @@ module Reporting
         is_public: false,
         group: nil,
         max_candidates: 20,
-        max_students_per_group: 20,
         zipcode: 60580
       ) # 20 private Oise
       sign_in(ministry_statistician)
@@ -176,7 +172,6 @@ module Reporting
         :weekly_internship_offer,
         :with_private_employer_group,
         max_candidates: 10,
-        max_students_per_group: 10,
         zipcode: 75001
       )
       private_internship_offer_no_group = create(
@@ -184,7 +179,6 @@ module Reporting
         is_public: false,
         group: nil,
         max_candidates: 20,
-        max_students_per_group: 20,
         zipcode: 60580
       )
       sign_in(statistician)

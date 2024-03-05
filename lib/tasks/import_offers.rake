@@ -222,7 +222,6 @@ task :import_offers_in_4_steps, [:csv_uri] => :environment do |t, args|
     
 
     max_candidates = row[15] || 1
-    max_students_per_group = row[16] || 1
     weeks = row[17].split(',').map { |w| Week.find_by(number: w.to_i, year: Date.current.year) }
     weekly_hours = [row[18], row[19]]
     lunch_break = row[20]
@@ -263,7 +262,6 @@ task :import_offers_in_4_steps, [:csv_uri] => :environment do |t, args|
           hosting_info = HostingInfo.new(
             weeks: weeks,
             max_candidates: max_candidates,
-            max_students_per_group: max_students_per_group,
             employer: employer
           )
 

@@ -71,7 +71,6 @@ module Reporting
         :weekly_internship_offer,
         :troisieme_generale_internship_offer,
         max_candidates: 10,
-        max_students_per_group: 10,
         group: nil,
         is_public: false
       )
@@ -81,7 +80,6 @@ module Reporting
         :weekly_internship_offer,
         :troisieme_generale_internship_offer,
         max_candidates: 20,
-        max_students_per_group: 20,
         group: private_group,
         is_public: false
       )

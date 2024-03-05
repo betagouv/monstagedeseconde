@@ -105,7 +105,6 @@ module Dashboard::InternshipOffers
     test 'PATCH #update as employer owning internship_offer ' \
          'updates internship_offer and fails due to too many accepted internships' do
       travel_to(Date.new(2019,9,1)) do
-        current_week = Week.current
         internship_offer = create(
           :weekly_internship_offer, max_candidates: 3)
         create(:weekly_internship_application,
@@ -120,7 +119,7 @@ module Dashboard::InternshipOffers
               params: { internship_offer: {
                 max_candidates: 1
               } })
-        error_message = "Nbr. max de candidats accueillis sur l'année : Impossible de réduire le " \
+        error_message = "Nbr. max de candidats accueillis sur le stage : Impossible de réduire le " \
                         "nombre de places de cette offre de stage car vous avez déjà accepté " \
                         "plus de candidats que vous n'allez leur offrir de places."
         assert_response :bad_request
@@ -170,8 +169,7 @@ module Dashboard::InternshipOffers
         employer = create(:employer)
         internship_offer = create(:weekly_internship_offer,
                                   employer: employer,
-                                  max_candidates: 1,
-                                  max_students_per_group: 1)
+                                  max_candidates: 1)
         internship_application = create(:weekly_internship_application,
                                         :submitted,
                                         internship_offer: internship_offer)
@@ -203,8 +201,7 @@ module Dashboard::InternshipOffers
         employer = create(:employer)
         internship_offer = create(:weekly_internship_offer,
                                   employer: employer,
-                                  max_candidates: 1,
-                                  max_students_per_group: 1)
+                                  max_candidates: 1)
         internship_application = create(:weekly_internship_application,
                                         :submitted,
                                         internship_offer: internship_offer)
@@ -231,8 +228,7 @@ module Dashboard::InternshipOffers
         employer = create(:employer)
         internship_offer = create(:weekly_internship_offer,
                                   employer: employer,
-                                  max_candidates: 1,
-                                  max_students_per_group: 1)
+                                  max_candidates: 1)
         internship_application = create(:weekly_internship_application,
                                         :submitted,
                                         internship_offer: internship_offer)

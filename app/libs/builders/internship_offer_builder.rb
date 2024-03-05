@@ -123,7 +123,6 @@ module Builders
     def preprocess_hosting_info_to_params(hosting_info)
       params = {
         max_candidates: hosting_info.max_candidates,
-        max_students_per_group: hosting_info.max_students_per_group,
         type: 'InternshipOffers::WeeklyFramed',
         period: hosting_info.period
       }
