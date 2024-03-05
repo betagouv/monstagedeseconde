@@ -21,6 +21,8 @@ Il s'agit d'une API REST qui permet les opérations suivantes :
 - [Gestion d'erreurs](#gestion-derreurs)
 - [Endpoints](#endpoints)
   - [Création d'une offre](#ref-create-internship-offer)
+  - [Récupérer mes offres](#ref-index-internship-offer)
+  - [Recheche d'offres](#ref-search-internship-offer)
   - [Modification d'une offre](#ref-modify-internship-offer)
   - [Suppression d'une offre](#ref-destroy-internship-offer)
 - [Premiers pas et exemples](#premiers-pas-et-exemples)
@@ -35,7 +37,7 @@ L'api est disponible sur ```/api``` sur les environnements de pré production et
 
 *Les APIs sont ouvertes uniquement aux acteurs concernés.*
 
-**Merci d'effectuer une demande par mail** ([support](mailto:maxime.pierrot@beta.gouv.fr)) pour créer un compte API.
+**Merci d'effectuer une demande par mail** ([support](mailto:contact@stagedeseconde.education.gouv.fr)) pour créer un compte API.
 
 Une fois le compte créé, le token d'API pourra être récupéré via notre interface web. Il est différent selon l'environnement de pré production ou production.
 
@@ -56,6 +58,10 @@ Depuis la page [Mon profil](https://stagedeseconde.1jeune1solution.gouv.fr/mon-c
 Depuis la page [API](https://stagedeseconde.1jeune1solution.gouv.fr/mon-compte/api), récupérer le token
 
 ![](screenshots/api.png)
+
+### Swagger ### 
+
+Pour tester l'API et comprendre son fonctionnement un [swagger](https://app-e29a97fc-5386-434f-bf9d-8f813c68f838.cleverapps.io/docs/) est disponible.
 
 # Structures de données et référentiels
 
@@ -211,7 +217,7 @@ En plus de ses erreurs transverses, les erreurs spécifiques à un appel seront 
 * **internship_offer.city** *(string, required)*
 * **internship_offer.sector_uuid** *(integer, required)*
 * **internship_offer.period** *(integer, required)*
-* **internship_offer.lunch_break** *(string, optional)*: le de la pause déjeuner
+* **internship_offer.lunch_break** *(string, optional)*: le détail de la pause déjeuner
 * **internship_offer.daily_hours** *(object, optional)*: Les horaires de chaque jour. ex: {"lundi": ['9:00', '16:00], "mardi": ['9:00', '16:00], "mercredi": ['9:00', '16:00], "jeudi": ['9:00', '16:00], "vendredi": ['9:00', '16:00]}
 * **remote_id** *(string, required)*: l'identifiant unique du coté operateur|collectivité|association
 * **permalink** *(url, required)*
@@ -257,6 +263,37 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 ### Erreurs
 
 - 409, Conflict. Une offre avec le même ```remote_id``` existe déjà
+
+### <a name="ref-search-internship-offer"></a>
+## Recherche d'offres
+
+**url** : ```#{baseURL}/internship_offers/search```
+
+**method** : GET
+
+*Paramètres d'url**
+
+* **latitude** *(float, optional)* : 1
+* **longitude** *(float, optional)* : 1
+* **radius** *(integer, optional)* : le rayon de recherche en mètres
+* **keyword** *(string, optional)* : les mot-clés à rechercher dans le titre et la description des offres
+
+### Exemple curl
+
+``` bash
+curl -H "Authorization: Bearer $API_TOKEN" \
+     -H "Accept: application/json" \
+     -H "Content-type: application/json" \
+     -X PATCH \
+     -d '{"latitude": 44.8624,
+          "longitude": -0.5848,
+          "radius": 10000,
+          "keyword": "avocat"
+          }'
+     -vvv \
+     $ENV/api/internship_offers/search
+```
+
 
 ### <a name="ref-modify-internship-offer"></a>
 ## Modification d'une offre
