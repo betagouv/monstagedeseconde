@@ -167,8 +167,7 @@ fr:
         title: Intitulé
         description: Description
         sector: Secteur
-        max_candidates: Nbr. max de candidats accueillis sur l'année
-        max_students_per_group: Effectif max. d'un groupe d'élèves
+        max_candidates: Nbr. max de candidats accueillis sur le stage
         sector_id: Secteurs professionnels
         daily_hours: Horaires journaliers
         daily_lunch_break: Pause déjeuner par jour
@@ -328,7 +327,7 @@ fr:
         internship_offer_weeks: Semaines ouvertes aux stages
         human_is_public: Public/Privé
         human_max_candidates: Nombre max d'élèves accueillis sur l'année
-        human_max_students_per_group: Stage individuel / collectif
+        human_max_candidates_string: Stage individuel / collectif
         employer: Employeur
         internship_offer_weeks_count: Nombre de semaines
         created_at: "Crée le"

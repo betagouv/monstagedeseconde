@@ -130,9 +130,8 @@ module InternshipApplications
     # create internship application as student with class_room and check that counter are updated
     test 'POST #create internship application as student with greater max_candidates than hosting_info' do
       internship_offer = create(:weekly_internship_offer,
-        max_candidates: 3,
-        max_students_per_group: 1)
-      internship_offer.hosting_info.update(max_candidates: 3, max_students_per_group: 1)
+        max_candidates: 3)
+      internship_offer.hosting_info.update(max_candidates: 3)
 
       school = create(:school, weeks: Week.selectable_from_now_until_end_of_school_year.first(2))
       class_room = create(:class_room, school: school)

@@ -118,7 +118,7 @@ module Dashboard
       if @internship_offer.requires_updates?
         republish
       else
-        @internship_offer.publish!
+        @internship_offer.publish! unless @internship_offer.published?
         redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
                     flash: { success: 'Votre annonce a bien été publiée' }
       end
@@ -212,7 +212,7 @@ module Dashboard
     def internship_offer_params
       params.require(:internship_offer)
             .permit(:title, :description_rich_text, :sector_id, :max_candidates,
-                    :max_students_per_group, :tutor_name, :tutor_phone, :tutor_role,
+                    :tutor_name, :tutor_phone, :tutor_role,
                     :tutor_email, :employer_website, :employer_name, :street,
                     :zipcode, :city, :department, :region, :academy, :renewed,
                     :is_public, :group_id, :published_at, :republish, :type,

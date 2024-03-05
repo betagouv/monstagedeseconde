@@ -12,11 +12,6 @@ module StepperProxy
                 numericality: { only_integer: true,
                                 greater_than: 0,
                                 less_than_or_equal_to: InternshipOffer::MAX_CANDIDATES_HIGHEST }
-      validates :max_students_per_group,
-                numericality: { only_integer: true,
-                                greater_than: 0,
-                                less_than_or_equal_to: :max_candidates ,
-                                message: "Le nombre maximal d'élèves par groupe ne peut pas dépasser le nombre maximal d'élèves attendus dans l'année" }
 
       enum period: {
         full_time: 0,
@@ -37,12 +32,11 @@ module StepperProxy
       end
 
       def is_individual?
-        max_students_per_group == 1
+        max_candidates == 1
       end
 
       def init
         self.max_candidates ||= 1
-        self.max_students_per_group ||= 1
       end
     end
   end

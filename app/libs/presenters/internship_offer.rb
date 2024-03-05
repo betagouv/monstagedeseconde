@@ -60,15 +60,6 @@ module Presenters
 
     attr_reader :internship_offer
 
-    def free_weeks
-      week_ids = InternshipOfferWeek.joins(:internship_offer)
-                                    .where(internship_offer: internship_offer)
-                                    .where.not(blocked_applications_count: internship_offer.max_students_per_group)
-                                    .where(week_id: Week.selectable_on_school_year.ids.to_a)
-                                    .pluck(:week_id)
-      Week.where(id: week_ids)
-    end
-
     def initialize(internship_offer)
       @internship_offer = internship_offer
     end

@@ -14,7 +14,6 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   # end
 
   test 'Employer can edit internship offer' do
-    skip "test to update after ui is finished #TODO #may_flower"
     travel_to(Date.new(2019, 3, 1)) do
       employer = create(:employer)
       internship_offer = create(:weekly_internship_offer, employer: employer)
@@ -31,7 +30,6 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   end
 
   test 'Employer can edit an unpublished internship offer and have it published' do
-    skip "test to update after ui is finished #TODO #may_flower"
     travel_to(Date.new(2019, 3, 1)) do
       employer = create(:employer)
       internship_offer = create(:weekly_internship_offer, employer: employer)
@@ -50,22 +48,6 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
     end
   end
 
-  test 'Employer can see which week is chosen by nearby schools on edit' do
-    skip "test to update after ui is finished #TODO #may_flower"
-    employer = create(:employer)
-    sign_in(employer)
-    travel_to(Date.new(2019, 3, 1)) do
-      week_with_school = Week.find_by(number: 10, year: Date.today.year)
-      week_without_school = Week.find_by(number: 11, year: Date.today.year)
-      create(:school, weeks: [week_with_school])
-      internship_offer = create(:weekly_internship_offer, employer: employer, weeks: [week_with_school])
-
-      visit edit_dashboard_internship_offer_path(internship_offer)
-      find(".bg-success-20[data-week-id='#{week_with_school.id}']")
-      find(".bg-dark-70[data-week-id='#{week_without_school.id}']")
-    end
-  end
-
   test 'Employer can discard internship_offer' do
     employer = create(:employer)
     internship_offer = create(:weekly_internship_offer, employer: employer)
@@ -80,13 +62,10 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   end
 
   test 'Employer can change max candidates parameter back and forth' do
-    skip "test to update after ui is finished #TODO #may_flower"
     travel_to(Date.new(2022, 1, 10)) do
       employer = create(:employer)
-      weeks = Week.selectable_from_now_until_end_of_school_year.last(4)
       internship_offer = create(:weekly_internship_offer,
                                 employer: employer,
-                                weeks: weeks,
                                 internship_offer_area_id: employer.current_area_id)
       assert_equal 1, internship_offer.max_candidates
       sign_in(employer)
@@ -95,17 +74,16 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
 
       find(".test-edit-button").click
       find('label[for="internship_type_false"]').click # max_candidates can be set to many now
+      execute_script("document.getElementById('internship_offer_max_candidates').removeAttribute('d-none')")
+
+      find('label[for="internship_type_false"]').click # max_candidates can be set to many now
       within('.form-group-select-max-candidates') do
-        fill_in('Nombre total d\'élèves que vous souhaitez accueillir sur l\'année scolaire', with: 4)
+        fill_in('Nombre total d\'élèves que vous souhaitez accueillir sur la période de stage', with: 4)
       end
-      execute_script("document.getElementById('internship_offer_max_students_per_group').value = '2';")
       click_button('Publier l\'offre')
       assert_equal 4,
                   internship_offer.reload.max_candidates,
                   'faulty max_candidates'
-      assert_equal 2,
-                  internship_offer.max_students_per_group,
-                  'faulty max_students_per_group'
 
       visit dashboard_internship_offers_path(internship_offer: internship_offer)
       page.find("a[data-test-id=\"#{internship_offer.id}\"]").click
@@ -113,7 +91,6 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
       find('label[for="internship_type_true"]').click # max_candidates is now set to 1
       click_button('Publier l\'offre')
       assert_equal 1, internship_offer.reload.max_candidates
-      assert_equal 1, internship_offer.reload.max_students_per_group
     end
   end
 

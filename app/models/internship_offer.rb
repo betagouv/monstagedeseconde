@@ -159,10 +159,6 @@ class InternshipOffer < ApplicationRecord
     where('last_date > :now', now: Time.now)
   }
 
-  scope :filter_when_max_candidtes_reached, lambda {
-    all
-  }
-
   scope :weekly_framed, lambda {
     where(type: [InternshipOffers::WeeklyFramed.name,
                  InternshipOffers::Api.name])
@@ -174,24 +170,17 @@ class InternshipOffer < ApplicationRecord
 
   scope :fulfilled, lambda {
     #max_candidates == approved_applications_count
-    joins(:stats).where('internship_offer_stats.remaining_seats_count < 1')
+    at_stats = InternshipOfferStats.arel_table
+    joins(:stats).where(at_stats[:remaining_seats_count].eq(0))
   }
 
   scope :uncompleted, lambda {
-    joins(:stats).where('internship_offer_stats.remaining_seats_count > 0')
+    at_stats = InternshipOfferStats.arel_table
+    joins(:stats).where(at_stats[:remaining_seats_count].gt(0))
   }
 
-  # Retourner toutes les offres qui ont au moins une semaine de libre ???
-  scope :filter_when_max_candidtes_reached, lambda {
-    offer_weeks_ar = InternshipOfferWeek.arel_table
-    offers_ar      = InternshipOffer.arel_table
-
-    joins(:internship_offer_weeks)
-      .select(offers_ar[Arel.star], offers_ar[:id].count)
-      .left_joins(:internship_applications)
-      .where(offer_weeks_ar[:blocked_applications_count].lt(offers_ar[:max_students_per_group]))
-      .where(offers_ar[:id].not_in(InternshipOffers::WeeklyFramed.fulfilled.pluck(:id)))
-      .group(offers_ar[:id])
+  scope :filter_when_max_candidates_reached, lambda {
+    uncompleted
   }
 
   scope :specific_school_year, lambda { |school_year:|
@@ -385,7 +374,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def duplicate
-    white_list = %w[type title sector_id max_candidates max_students_per_group
+    white_list = %w[type title sector_id max_candidates
                     tutor_name tutor_phone tutor_email tutor_role employer_website
                     employer_name street zipcode city department region academy
                     is_public group school_id coordinates first_date last_date

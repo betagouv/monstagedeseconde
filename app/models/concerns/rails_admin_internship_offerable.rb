@@ -50,7 +50,6 @@ module RailsAdminInternshipOfferable
         field :description
         field :sector
         field :max_candidates
-        field :max_students_per_group
         field :tutor_name
         field :tutor_phone
         field :tutor_email
@@ -72,7 +71,6 @@ module RailsAdminInternshipOfferable
         field :description
         field :group
         field :max_candidates
-        field :max_students_per_group
         field :total_applications_count
         field :employer_name
         field :tutor_name

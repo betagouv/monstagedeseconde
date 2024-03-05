@@ -7,9 +7,9 @@ module Reporting
       travel_to Date.new(2019, 9, 1) do
         @sector_agri = create(:sector, name: 'Agriculture')
         @sector_wood = create(:sector, name: 'Filière bois')
-        @internship_offer_agri_1 = create(:weekly_internship_offer, sector: @sector_agri, max_candidates: 5, max_students_per_group: 5)
-        @internship_offer_agri_2 = create(:weekly_internship_offer, sector: @sector_agri, max_candidates: 5, max_students_per_group: 5)
-        @internship_offer_wood = create(:weekly_internship_offer, sector: @sector_wood, max_candidates: 10, max_students_per_group: 10)
+        @internship_offer_agri_1 = create(:weekly_internship_offer, sector: @sector_agri, max_candidates: 5)
+        @internship_offer_agri_2 = create(:weekly_internship_offer, sector: @sector_agri, max_candidates: 5)
+        @internship_offer_wood = create(:weekly_internship_offer, sector: @sector_wood, max_candidates: 10)
       end
     end
 

@@ -36,7 +36,6 @@ module InternshipOffers
         field :remote_id
         field :permalink
         field :max_candidates
-        field :max_students_per_group
         field :is_public
       end
 
@@ -46,7 +45,6 @@ module InternshipOffers
         field :zipcode
         field :city
         field :max_candidates
-        field :max_students_per_group
         field :total_applications_count
         field :approved_applications_count
         field :rejected_applications_count
@@ -68,21 +66,24 @@ module InternshipOffers
     }
 
     scope :fulfilled, lambda {
-      applications_ar = InternshipApplication.arel_table
-      offers_ar       = InternshipOffer.arel_table
-
-      joins(:internship_applications)
-        .where(applications_ar[:aasm_state].in(%w[approved signed]))
-        .select([offers_ar[:id], applications_ar[:id].count.as('applications_count'), offers_ar[:max_candidates], offers_ar[:max_students_per_group]])
-        .group(offers_ar[:id])
-        .having(applications_ar[:id].count.gteq(offers_ar[:max_candidates]))
+      none
     }
+    #   applications_ar = InternshipApplication.arel_table
+    #   offers_ar       = InternshipOffer.arel_table
+
+    #   joins(:internship_applications)
+    #     .where(applications_ar[:aasm_state].in(%w[approved signed]))
+    #     .select([offers_ar[:id], applications_ar[:id].count.as('applications_count'), offers_ar[:max_candidates], offers_ar[:max_students_per_group]])
+    #     .group(offers_ar[:id])
+    #     .having(applications_ar[:id].count.gteq(offers_ar[:max_candidates]))
+    # }
 
     scope :uncompleted_with_max_candidates, lambda {
-      offers_ar       = InternshipOffer.arel_table
-      full_offers_ids = InternshipOffers::Api.fulfilled.ids
+      all
+      # offers_ar       = InternshipOffer.arel_table
+      # full_offers_ids = InternshipOffers::Api.fulfilled.ids
 
-      where(offers_ar[:id].not_in(full_offers_ids))
+      # where(offers_ar[:id].not_in(full_offers_ids))
     }
 
     def init
@@ -116,7 +117,6 @@ module InternshipOffers
                  permalink
                  sector_uuid
                  max_candidates
-                 max_students_per_group
                  published_at
                 is_public],
         methods: [:formatted_coordinates]

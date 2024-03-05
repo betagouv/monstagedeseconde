@@ -27,16 +27,13 @@ class ReportingInternshipOfferTest < ActiveSupport::TestCase
     sector_b = create(:sector, name: 'Filière bois')
     create(:weekly_internship_offer,
            sector: sector_a,
-           max_candidates: 3,
-           max_students_per_group: 3)
+           max_candidates: 3)
     create(:weekly_internship_offer,
            sector: sector_a,
-           max_candidates: 1,
-           max_students_per_group: 1)
+           max_candidates: 1)
     create(:weekly_internship_offer,
            sector: sector_b,
-           max_candidates: 10,
-           max_students_per_group: 10)
+           max_candidates: 10)
 
     results = Reporting::InternshipOffer.dimension_by_sector
     first_sectored_report = results[0]

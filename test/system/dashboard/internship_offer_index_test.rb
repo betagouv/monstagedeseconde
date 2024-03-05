@@ -16,7 +16,6 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'cron set aasm_state to need_to_be_updated when necessary' do
-    # skip "test to update after ui is finished #TODO #may_flower"
     employer = create(:employer)
     old_internship_offer = nil
     travel_to Date.new(2020, 10, 1) do
@@ -108,14 +107,11 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'publish navigation when drafted and no updates are necessary' do
-    skip "test to update after ui is finished #TODO #may_flower"
     travel_to Date.new(2021, 10, 1) do
       employer = create(:employer)
-      within_2_weeks = Week.find_by(id: Week.current.id + 2)
       internship_offer = create(
         :weekly_internship_offer,
         employer: employer,
-        weeks: [within_2_weeks],
         internship_offer_area_id: employer.current_area_id
       )
       internship_offer.update_columns(published_at: nil, updated_at: Time.now - 1.day, aasm_state: 'drafted')
@@ -141,41 +137,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
     end
   end
 
-  test 'publish navigation when drafted and week updates are necessary' do
-    skip "test to update after ui is finished #TODO #may_flower"
-    employer = create(:employer)
-    internship_offer = nil
-    travel_to Date.new(2021, 10, 1) do
-      internship_offer = create(:weekly_internship_offer, employer: employer, weeks: [Week.next], internship_offer_area_id: employer.current_area_id)
-      internship_offer.need_update!
-    end
-    travel_to Date.new(2022, 10, 8) do
-      sign_in(employer)
-      InternshipOffer.stub :nearby, InternshipOffer.all do
-        InternshipOffer.stub :by_weeks, InternshipOffer.all do
-          refute internship_offer.published?
-          visit dashboard_internship_offers_path
-          within("#toggle_status_#{dom_id(internship_offer)}") do
-            find(".label", text: "Masqué")
-            find("label.fr-toggle__label[for='toggle-#{internship_offer.id}']") # this publishes the internship_offer
-            execute_script("document.getElementById('axe-toggle-#{internship_offer.id}').closest('form').submit()")
-          end
-
-          refute internship_offer.reload.published?
-
-          find "h1.h2", text: "Modifier une offre de stage"
-          find "span#alert-text", text: "Votre annonce n'est pas encore republiée, car il faut ajouter des semaines de stage"
-
-          # find('h3.fr-alert__title', text: 'Ajoutez des semaines aux précédentes')
-
-          find('label', text: 'Semaine 41 - du 10 octobre au 16 octobre 2022').click
-        end
-      end
-    end
-  end
-
   test 'publish navigation when max_candidates updates are necessary' do
-    skip "test to update after ui is finished #TODO #may_flower"
     employer = create(:employer)
     internship_offer = nil
     travel_to Date.new(2021, 10, 1) do
@@ -185,7 +147,6 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
         :weekly_internship_offer,
         max_candidates: 1,
         employer: employer,
-        weeks: [within_2_weeks, within_1_year],
         internship_offer_area_id: employer.current_area_id
       )
       create(:weekly_internship_application,

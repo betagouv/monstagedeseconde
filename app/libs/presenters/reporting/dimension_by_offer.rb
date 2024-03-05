@@ -6,7 +6,7 @@ module Presenters
     class DimensionByOffer < BaseDimension
       ATTRS = %i[description
                  human_max_candidates
-                 human_max_students_per_group
+                 human_max_candidates_string
                  published_at
                  discarded_at
                  department
@@ -41,8 +41,8 @@ module Presenters
         instance.max_candidates
       end
 
-      def human_max_students_per_group
-        instance.max_students_per_group == 1 ? 'Individuel' : " Collectif"
+      def human_max_candidates_string
+        instance.max_candidates == 1 ? 'Individuel' : " Collectif"
       end
 
       def human_is_public

@@ -72,7 +72,6 @@ module Dashboard::InternshipOffers
              internship_offer: {
                title: 'hello',
                is_public: false,
-               group: 'Accenture',
                max_candidates: 2,
              }
            })
@@ -95,8 +94,6 @@ module Dashboard::InternshipOffers
                     count: 0 # "ensure user select kind of group"
       assert_select '.form-group-select-group.d-none', count: 0
 
-      assert_select '#internship_type_true[checked]', count: 1
-      assert_select '#internship_type_false[checked]', count: 0
       assert_select '.form-group-select-max-candidates.d-none', count: 0
     end
   end

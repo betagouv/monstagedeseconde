@@ -17,20 +17,16 @@ module Reporting
       @internship_offer_agri_0 = create(:weekly_internship_offer,
                                         sector: @sector_agri,
                                         max_candidates: 1,
-                                        discarded_at: Date.today,
-                                        max_students_per_group: 1)
+                                        discarded_at: Date.today)
       @internship_offer_agri_1 = create(:weekly_internship_offer,
                                         sector: @sector_agri,
-                                        max_candidates: 1,
-                                        max_students_per_group: 1)
+                                        max_candidates: 1)
       @internship_offer_agri_2 = create(:weekly_internship_offer,
                                         sector: @sector_agri,
-                                        max_candidates: 1,
-                                        max_students_per_group: 1)
+                                        max_candidates: 1)
       @internship_offer_wood = create(:weekly_internship_offer,
                                       sector: @sector_wood,
-                                      max_candidates: 10,
-                                      max_students_per_group: 10)
+                                      max_candidates: 10)
       create(:weekly_internship_application,
              :submitted,
              internship_offer: @internship_offer_agri_1,
