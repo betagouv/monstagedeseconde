@@ -18,7 +18,7 @@ def student_maker (school: ,class_room: )
 end
 
 def password_value
-  'review1Max!!'
+  ENV['DEFAULT_PASSWORD']
 end
 
 def populate_users
