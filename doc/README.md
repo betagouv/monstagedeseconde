@@ -284,7 +284,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 curl -H "Authorization: Bearer $API_TOKEN" \
      -H "Accept: application/json" \
      -H "Content-type: application/json" \
-     -X PATCH \
+     -X GET \
      -d '{"latitude": 44.8624,
           "longitude": -0.5848,
           "radius": 10000,
