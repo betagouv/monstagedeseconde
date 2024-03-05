@@ -37,12 +37,6 @@ module Services
           rejected_applications_count: 0
         )
 
-        if internship_offer.is_a?(InternshipOffers::WeeklyFramed)
-          res &&= internship_offer.internship_offer_weeks
-                                  .map { |iow| iow.update(blocked_applications_count: 0)}
-                                  .all? { |update_result| !!update_result }
-        end
-
         internship_offer.internship_applications
                         .each do |internship_application|
           res &&= internship_application.update_all_counters

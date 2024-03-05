@@ -45,9 +45,9 @@ module Finders
       params[:radius]
     end
 
-    def school_year_param
-       return params[:school_year].to_i if check_param?(:school_year)
-    end
+    # def school_year_param
+    #    return params[:school_year].to_i if check_param?(:school_year)
+    # end
 
     def use_params(param_key)
       params[param_key].presence
@@ -69,7 +69,7 @@ module Finders
       ].each do |sym_key|
         query = self.send("#{sym_key}_query", query) if use_params(sym_key)
       end
-      query = school_year_query(query) if school_year_param
+      # query = school_year_query(query) if school_year_param
       query = hide_duplicated_offers_query(query) unless user.god?
       query = nearby_query(query) if coordinate_params
       query
@@ -83,9 +83,9 @@ module Finders
       query.where(sector_id: use_params(:sector_ids))
     end
 
-    def school_year_query(query)
-      query.merge(InternshipOffer.specific_school_year(school_year: school_year_param))
-    end
+    # def school_year_query(query)
+    #   query.merge(InternshipOffer.specific_school_year(school_year: school_year_param))
+    # end
 
     def keyword_query(query)
       query.merge(InternshipOffer.search_by_keyword(use_params(:keyword)).group(:rank))

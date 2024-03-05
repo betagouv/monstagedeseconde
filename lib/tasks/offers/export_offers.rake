@@ -13,19 +13,18 @@ namespace :offers do
     CSV.open("tmp/export_week_activity.csv", "w",force_quotes: true, quote_char: '"', col_sep: ",") do |csv|
       csv << [].concat(targeted_fields, ['environment'])
 
-      fetch_weeks.each do |week|
+      InternshipOffer.periods.values.each do |period|
         weekly_framed = InternshipOffers::WeeklyFramed.kept
                                                       .published
-                                                      .joins(:internship_offer_weeks)
-                                                      .where({internship_offer_weeks: {week_id: week.id}})
+                                                      .where(period: period)
         api = InternshipOffers::Api.kept
                                    .published
-                                   .joins(:internship_offer_weeks)
-                                   .where(internship_offer_weeks: { week_id: week.id })
+                                   .where(period: period)
         seats = weekly_framed.pluck(:max_candidates)
         api_seats = api.pluck(:max_candidates)
-        applications = InternshipApplications::WeeklyFramed.joins(:internship_offer_week)
-                                                           .where(internship_offer_week: {week_id: week.id})
+        # TODO : add applications count
+        # applications = InternshipApplications::WeeklyFramed.joins(:internship_offer_week)
+        #                                                    .where(internship_offer_week: {week_id: week.id})
         schools = School.joins(:school_internship_weeks).where(school_internship_weeks: {week_id: week.id})
         offers = weekly_framed.count + api.count
         ratio = schools.count.zero? ? 'NA' : offers/schools.count
@@ -33,7 +32,7 @@ namespace :offers do
                 "#{week.beginning_of_week} - #{week.end_of_week}",
                 offers,
                 seats.sum + api_seats.sum,
-                applications.count,
+                # applications.count,
                 schools.count,
                 ratio,
                 'production']
@@ -42,7 +41,4 @@ namespace :offers do
     PrettyConsole.say_in_green 'task is finished'
   end
 
-  def fetch_weeks
-    Week.selectable_for_school_year(school_year: SchoolYear::Current.new)
-  end
 end

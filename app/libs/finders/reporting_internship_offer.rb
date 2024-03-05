@@ -83,10 +83,6 @@ module Finders
       params.key?(:group)
     end
 
-    def groups_param?
-      params.key?(:groups)
-    end
-
     def ministries_param?
       params.key?(:ministries)
     end

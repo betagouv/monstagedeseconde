@@ -183,21 +183,23 @@ class InternshipOffer < ApplicationRecord
     uncompleted
   }
 
-  scope :specific_school_year, lambda { |school_year:|
-    week_ids = Week.weeks_of_school_year(school_year: school_year).pluck(:id)
+  # scope :specific_school_year, lambda { |school_year:|
+  #   week_ids = Week.weeks_of_school_year(school_year: school_year).pluck(:id)
 
-    joins(:internship_offer_weeks)
-      .where('internship_offer_weeks.week_id in (?)', week_ids)
-  }
+  #   joins(:internship_offer_weeks)
+  #     .where('internship_offer_weeks.week_id in (?)', week_ids)
+  # }
 
   scope :shown_to_employer, lambda {
     where(hidden_duplicate: false)
   }
 
   scope :with_weeks_next_year, lambda {
-    joins(:internship_offer_weeks).where(
-      internship_offer_weeks: { week_id:  Week.selectable_on_next_school_year }
-    ).distinct
+    next_year = SchoolYear::Current.new
+                                   .next_year
+                                   .end_of_period
+                                   .year
+    where(school_year: next_year)
   }
 
   aasm do
@@ -245,26 +247,18 @@ class InternshipOffer < ApplicationRecord
   end
 
   # Methods
-  def having_weeks_over_several_school_years?
-    next_year_first_date = SchoolYear::Current.new
-                                              .next_year
-                                              .beginning_of_period
-    last_date > next_year_first_date
-  end
-
   def weeks_count
-    internship_offer_weeks.count
+    full_time? ? 2 : 1
   end
 
   def first_monday
-    I18n.l internship_offer_weeks.first.week.week_date,
-            format: Week::WEEK_DATE_FORMAT
+    presenter.first_monday
   end
 
-  def last_monday
-    I18n.l internship_offer_weeks.last.week.week_date,
-            format: Week::WEEK_DATE_FORMAT
-  end
+  # def last_monday
+  #   I18n.l internship_offer_weeks.last.week.week_date,
+  #           format: Week::WEEK_DATE_FORMAT
+  # end
 
   def has_spots_left?
     max_candidates > internship_applications.approved.count
@@ -337,10 +331,6 @@ class InternshipOffer < ApplicationRecord
 
   def from_api?
     permalink.present?
-  end
-
-  def reserved_to_school?
-    school.present?
   end
 
   def init
@@ -458,9 +448,9 @@ class InternshipOffer < ApplicationRecord
     end
   end
 
-  def with_applications?
-    self.internship_applications.count.positive?
-  end
+  # def with_applications?
+  #   self.internship_applications.count.positive?
+  # end
 
   def weekly_planning?
     weekly_hours.any?(&:present?)
@@ -495,29 +485,24 @@ class InternshipOffer < ApplicationRecord
     may_need_update? && no_remaining_seat_anymore?
   end
 
-  def available_weeks
-    return Week.selectable_from_now_until_end_of_school_year unless respond_to?(:weeks)
-    return Week.selectable_from_now_until_end_of_school_year unless persisted?
-    if weeks&.first.nil?
-      return Week.selectable_for_school_year(
-        school_year: SchoolYear::Floating.new(date: Date.today)
-      )
-    end
+  # def available_weeks
+  #   return Week.selectable_from_now_until_end_of_school_year unless respond_to?(:weeks)
+  #   return Week.selectable_from_now_until_end_of_school_year unless persisted?
+  #   if weeks&.first.nil?
+  #     return Week.selectable_for_school_year(
+  #       school_year: SchoolYear::Floating.new(date: Date.today)
+  #     )
+  #   end
 
-    school_year = SchoolYear::Floating.new(date: weeks.first.week_date)
+  #   school_year = SchoolYear::Floating.new(date: weeks.first.week_date)
 
-    Week.selectable_on_specific_school_year(school_year: school_year)
-  end
+  #   Week.selectable_on_specific_school_year(school_year: school_year)
+  # end
 
   def requires_update_at_toggle_time?
     return false if published?
 
     no_remaining_seat_anymore?
-  end
-
-  def available_weeks_when_editing
-    return nil unless persisted? && respond_to?(:weeks)
-    Week.selectable_from_now_until_end_of_school_year
   end
 
   def approved_applications_current_school_year

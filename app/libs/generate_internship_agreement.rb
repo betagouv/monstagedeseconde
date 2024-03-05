@@ -582,10 +582,10 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.move_down 5
   end
 
-  def field_form(string, html: false)
-    html ? html_formating(string) : @pdf.text(string)
-    @pdf.move_down 10
-  end
+  # def field_form(string, html: false)
+  #   html ? html_formating(string) : @pdf.text(string)
+  #   @pdf.move_down 10
+  # end
 
   def html_formating(string)
     @pdf.styled_text string

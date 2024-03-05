@@ -340,8 +340,8 @@ fr:
           one: Semaine de stage
           other: Semaines de stage
         weeks_count: Nbr. de semaines proposées
-        first_monday: Premier lundi de stage
-        last_monday: Dernier lundi de stage
+        # first_monday: Premier lundi de stage
+        # last_monday: Dernier lundi de stage
         first_date: Premier jour
         last_date: Dernier jour
         daterange: Plage de disponibilité
@@ -648,10 +648,6 @@ fr:
               duplicate: "Vous êtes déjà candidat pour cette offre"
             internship_offer:
               has_no_spots_left: "Cette offre est complète"
-            internship_offer_week:
-              has_no_spots_left: "Impossible de postuler car l'offre est complète pour cette semaine"
-            week:
-              has_no_spots_left: "Impossible de postuler car l'offre est complète pour cette semaine"
             motivation:
               blank: Veuillez renseigner vos motivations
             student:
