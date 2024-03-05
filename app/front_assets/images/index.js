@@ -1,5 +1,4 @@
 import './favicon.png';
-import './logo-mon-stage-3e.svg';
 import './danger_sign_blue.svg';
 import './notice_people.svg';
 import './search-no-result.svg';
