@@ -8,7 +8,7 @@ header.bg-cover-image-homepage.container-xl.px-0
             br
             | pour les élèves de seconde générale et technologique.
         .d-flex.flex-row
-          .fr-mt-4w.blue-france.sub-hero.fr-mr-4w
+          .fr-mt-4w.blue-france.sub-hero
             .sub-hero-text
               |
                 Les élèves de classe de seconde générale et technologique scolarisés dans
@@ -16,14 +16,20 @@ header.bg-cover-image-homepage.container-xl.px-0
                 du ministère chargé de l'agriculture ainsi que dans les établissements d'enseignement
                 privé sous contrat sont concernés par l'instauration d'une séquence
                 d'observation obligatoire en milieu professionnel.
-            .fr-my-4w
+            .fr-mt-4w
               = link_to 'Déposer une offre de stage',
                         new_user_registration_path(as: 'Employer'),
-                        class: 'fr-btn fr-btn--md fr-mb-2w'
+                        class: 'fr-btn fr-btn--md fr-mb-1w'
+            .fr-mt-1w.fr-mb-4w.header-cartel.fr-px-6v.fr-py-1w
+              p.blue-france
+                strong
+                  = link_to "Vous êtes en 2de générale ou technologique et vous cherchez un stage ?",
+                            "https://forms.sbc33.com/62553f47462f0e1887f81bfe/VQ35E9J0QhCSCxvF8H-mVA/form.html",
+                            target: '_blank',
+                            class: 'fr-raw-link'
+              p.default-grey L'ouverture du service est prévue le 25 mars.
 
           .fr-mr-2w.ml-auto.fr-mb-0.show-stamp-logo.d-none.d-md-block
             = image_tag asset_pack_path('media/images/homepage/hero-side-stamp.png'),
                         alt: 'Logo stade de 2de générale et technologique',
-                        class: 'stamp-logo fr-mb-2w'
-
-        
+                        class: 'stamp-logo fr-mb-2w fr-ml-4w'
