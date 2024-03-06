@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-target='staging'
+target='review'
 git remote -vvv | grep $target | grep 'clever'
 
 if [ ! $? -eq 0 ]; then
@@ -17,5 +17,5 @@ if [ ! -f "$SSH_PRIV" ]; then
   exit 1;
 fi;
 
-git push $target master:master
+git push $target staging:master
 
