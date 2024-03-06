@@ -12,6 +12,12 @@ class PagesTest < ActionDispatch::IntegrationTest
     assert_select 'title', "Accueil | Stages de 2de"
   end
 
+  test 'GET home when maintenance mode is on' do
+    ENV['MAINTENANCE_MODE'] = 'true'
+    get root_path
+    assert_redirected_to '/maintenance.html'
+  end
+
   test '10_commandements_d_une_bonne_offre' do
     get les_10_commandements_d_une_bonne_offre_path
     assert_response :success
