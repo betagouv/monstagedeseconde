@@ -217,7 +217,7 @@ module Dashboard
                     :zipcode, :city, :department, :region, :academy, :renewed,
                     :is_public, :group_id, :published_at, :republish, :type,
                     :employer_id, :employer_type, :verb, :user_update,
-                    :employer_description_rich_text, :siret, :employer_manual_enter,
+                    :employer_description_rich_text, :siret, :employer_manual_enter, :period,
                     :contact_phone, :lunch_break, :aasm_state, coordinates: {},
                     daily_hours: {}, weekly_hours:[],
                     organisation_attributes: [
