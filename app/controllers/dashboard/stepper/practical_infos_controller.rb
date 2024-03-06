@@ -80,9 +80,23 @@ module Dashboard::Stepper
       if @practical_info.update(practical_info_params)
         internship_offer = InternshipOffer.find_by(practical_info_id: @practical_info.id)
         if internship_offer.present?
-          internship_offer.update(practical_info_params)
-          redirect_to(internship_offer_path(internship_offer, origine: 'dashboard'),
+          # update internship_offer from builder
+          internship_offer_builder.update_from_stepper(internship_offer,
+                                                        organisation: Organisation.find(params[:organisation_id]),
+                                                        internship_offer_info: InternshipOfferInfo.find(params[:internship_offer_info_id]),
+                                                        hosting_info: HostingInfo.find(params[:hosting_info_id]),
+                                                        practical_info: @practical_info) do |on|
+            on.success do |created_internship_offer|
+              redirect_to(internship_offer_path(internship_offer, origine: 'dashboard'),
                         flash: { success: 'Votre offre de stage est prête à être publiée.' })
+            end
+            on.failure do |failed_internship_offer|
+              @organisation = Organisation.find(params[:organisation_id])
+              render :edit, status: :bad_request
+            end
+          end                            
+
+
         else
           redirect_to root_path, flash: { error: 'Erreur lors de la mise à jour de l\'offre de stage' }
         end
@@ -135,6 +149,11 @@ module Dashboard::Stepper
 
     def clean_params
       params[:practical_info][:street] = [params[:practical_info][:street], params[:practical_info][:street_complement]].compact_blank.join(' - ') if params[:practical_info]
+    end
+
+    def internship_offer_builder
+      @builder ||= Builders::InternshipOfferBuilder.new(user: current_user,
+                                                        context: :web)
     end
   end
 end
