@@ -73,6 +73,28 @@ a:hover {
   background-size: cover;
 }
 
+.header-cartel{
+  p {
+    margin-bottom: 0;
+  }
+  display: inline-block;
+  border: 1px solid var(--light-background-action-high-blue-france, #000091);
+  background: #FFF;
+  box-shadow: 1px 1px 0px 0px #000091, 2px 2px 0px 0px #000091, 3px 3px 0px 0px #000091, 4px 4px 0px 0px #000091;
+}
+.default-grey{
+  color:  $grey-200;
+}
+
+@media (max-width: 450px) {
+  .header-cartel{
+    p {
+      margin-bottom: 0;
+      font-size: 0.85rem;
+    }
+  }
+}
+
 @media (768px <=width <=1138px) {
   .fr-tile-left-top-img .fr-tile__img {
     display: block;
