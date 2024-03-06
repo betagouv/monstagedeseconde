@@ -37,7 +37,6 @@ class StudentMailer < ApplicationMailer
     super
     attachments.inline['securite.svg'] = File.read("#{Rails.root}/public/assets/securite.svg")
     attachments.inline['question_mark.svg'] = File.read("#{Rails.root}/public/assets/question_mark.svg")
-    attachments.inline['logo-mon-stage-3e-blanc-short.svg'] = File.read("#{Rails.root}/public/assets/logo-mon-stage-3e-blanc-short.svg")
     attachments.inline['boy_girl.svg'] = File.read("#{Rails.root}/public/assets/boy_girl.svg")
   end
 

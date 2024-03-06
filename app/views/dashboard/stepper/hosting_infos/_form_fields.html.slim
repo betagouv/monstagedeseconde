@@ -30,7 +30,7 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
     .col-md-6
       .fr-alert.fr-alert--info
         h3.fr-alert__title Conseil
-        p L'accueil de plusieurs élèves en même temps peut avoir un caractère rassurant pour eux. Et cela ne demande pas plus de préparation.
+        p L'accueil de plusieurs élèves en même temps peut avoir un caractère rassurant pour eux. Cela ne demande pas plus de préparation pour l’entité accueillante.
 
   .row data-hosting-infos-target='studentsMaxCandidatesGroup'
     .col-md-6.order-md-1.order-2
@@ -63,15 +63,14 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
           = "Vous souhaitez proposer un stage pour"
         .fr-radio-group.fr-py-1w
           = form.radio_button :period,
-                              :full_time,
+                              0,
                               id: 'period_full_time',
                               checked: resource.full_time? || resource.new_record?
 
           = form.label :period, '2 semaines - du 17 au 28 juin', for: 'period_full_time'
-
         .fr-radio-group.fr-py-1w
           = form.radio_button :period,
-                              :week_1,
+                              1,
                               id: 'period_week_1',
                               checked: resource.week_1?
 
@@ -79,21 +78,24 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
 
         .fr-radio-group.fr-py-1w
           = form.radio_button :period,
-                              :week_2,
+                              2,
                               id: 'period_week_2',
                               checked: resource.week_2?
 
 
           = form.label :period, '1 semaine - du 24 au 28 juin', for: 'period_week_2'
+
     .col-md-6.order-md-1.order-2
       .fr-alert.fr-alert--warning
         h3.fr-alert__title Informations
-        p Les élèves de seconde doivent effectuer un stage de deux semaines, du 17 juin au 28 juin 2024. Malgré cela, vous pouvez déposer une offre de stage pour une semaine si votre organisation ne vous permet pas de les accueillir deux semaines consécutives.
+        p Les élèves de seconde doivent effectuer un stage obligatoire de deux semaines, du 17 juin au 28 juin 2024. Vous pouvez proposer un stage soit sur toute la période, soit sur la première semaine, soit sur la deuxième semaine.
 
   - if submit_button
     .fr-mt-2w
       = link_to edit_dashboard_stepper_internship_offer_info_path(params[:internship_offer_info_id],
-                                                          organisation_id: params[:organisation_id]),
+                                                          organisation_id: params[:organisation_id],
+                                                          hosting_info_id: params[:id],
+                                                          practical_info_id: params[:practical_info_id]),
                   class: 'fr-btn fr-mr-2w fr-btn--secondary' do
         = 'Précédent'
       = button_tag :submit, class: 'fr-btn' do
