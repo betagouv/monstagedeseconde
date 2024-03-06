@@ -66,7 +66,7 @@ div [data-controller='internship-offer-infos'  data-internship-offer-infos-base-
         .fr-my-2w
           = link_to 'Précédent',
                     edit_dashboard_stepper_organisation_path(params[:organisation_id],
-                                                            internship_offer_info_id: params[:internship_offer_info_id],
+                                                            internship_offer_info_id: params[:id],
                                                             hosting_info_id: params[:hosting_info_id],
                                                             practical_info_id: params[:practical_info_id]),
                     class: 'fr-btn fr-mr-2w fr-btn--secondary'
