@@ -234,9 +234,7 @@ module InternshipOffers
     # Visitor
     #
     test 'GET #show as Visitor show breadcrumb with link to previous page' do
-      # TODO skip april flower
-      # skip
-      skip 'skip april flower'
+      skip "Breadcrumb is not displayed anymore #may_flower #april_flower"
       internship_offer = create(:weekly_internship_offer)
       forwarded_params = { latitude: Coordinates.paris[:lat],
                            longitude: Coordinates.paris[:lon],

@@ -131,12 +131,6 @@ class InternshipApplication < ApplicationRecord
     ).default_order
   }
 
-  scope :with_date_index, ->(internship_offer:){
-    joins(internship_offer_week: :internship_offer)
-    .where('internship_offers.id = ?', internship_offer.id)
-    .where.not('internship_applications.aasm_state = ?', 'drafted')
-    .includes(:student, :internship_offer)
-  }
 
   scope :through_teacher, ->(teacher:) {
     joins(student: :class_room).where('users.class_room_id = ?', teacher.class_room_id)
@@ -456,9 +450,9 @@ class InternshipApplication < ApplicationRecord
     student.gender == 'f'
   end
 
-  def application_via_school_manager?
-    internship_offer&.school_id
-  end
+  # def application_via_school_manager?
+  #   internship_offer&.school_id
+  # end
 
   def max_dunning_letter_count_reached?
     dunning_letter_count >= 1

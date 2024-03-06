@@ -9,10 +9,6 @@ module Dashboard::InternshipOffers
       res = (current_week.id..(current_week.id + 3)).to_a
     end
 
-    def next_weeks_objects
-      Week.where(id: next_weeks_ids)
-    end
-
     test 'PATCH #update as visitor redirects to user_session_path' do
       travel_to(Date.new(2019,9,1)) do
         internship_offer = create(:weekly_internship_offer)

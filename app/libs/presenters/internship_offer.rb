@@ -4,16 +4,17 @@ module Presenters
   class InternshipOffer
 
     def weeks_boundaries
-      "Du #{I18n.localize(internship_offer.first_date, format: :human_mm_dd_yyyy)}" \
-      " au #{I18n.localize(internship_offer.last_date, format: :human_mm_dd_yyyy)}"
+      "Du #{first_monday} au #{last_friday}"
     end
 
-    def weeks_summary
-      free_weeks = InternshipOfferWeek.free_weeks_on_school_year( internship_offer: internship_offer )
-      { weeks_count: free_weeks.size,
-        weeks_list: Presenters::WeekList.new(weeks: free_weeks)
-      }
+    def first_monday
+      I18n.localize(internship_offer.first_date, format: :human_mm_dd_yyyy)
     end
+
+    def last_friday
+      I18n.localize(internship_offer.last_date, format: :human_mm_dd_yyyy)
+    end
+
 
     def address
       "#{internship_offer.street}, #{internship_offer.zipcode} #{internship_offer.city}"

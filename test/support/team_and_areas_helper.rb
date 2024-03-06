@@ -47,7 +47,7 @@ module TeamAndAreasHelper
     [user_operator, offer]
   end
 
-  def random_string
-    ('a'..'z').to_a.shuffle[0, 8].join
-  end
+  # def random_string
+  #   ('a'..'z').to_a.shuffle[0, 8].join
+  # end
 end

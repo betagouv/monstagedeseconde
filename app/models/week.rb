@@ -4,12 +4,8 @@
 class Week < ApplicationRecord
   include FormatableWeek
   WORKING_WEEK_DURATION = 5
-  has_many :internship_offer_weeks, dependent: :destroy,
-                                    foreign_key: :week_id
   has_many :internship_applications, dependent: :destroy,
                                     foreign_key: :week_id
-
-  has_many :internship_offers, through: :internship_offer_weeks
 
   has_many :school_internship_weeks, dependent: :destroy
   has_many :schools, through: :school_internship_weeks
@@ -95,9 +91,9 @@ class Week < ApplicationRecord
     weeks_of_school_year(school_year: school_year.strict_beginning_of_period.year)
   }
 
-  scope :selectable_on_specific_school_year, lambda { |school_year:|
-    weeks_of_school_year(school_year: school_year.beginning_of_period.year)
-  }
+  # scope :selectable_on_specific_school_year, lambda { |school_year:|
+  #   weeks_of_school_year(school_year: school_year.beginning_of_period.year)
+  # }
 
   scope :selectable_on_school_year, lambda {
     school_year = SchoolYear::Current.new
