@@ -5,3 +5,16 @@
 .staging {
   border-top: 3px solid rgba($red, .5);
 }
+
+.staging .fr-header__body,
+.development .fr-header__body {
+  background-color: rgba($yellow, .5);
+}
+
+.review .fr-header__body {
+  background-color: rgba($pink, .5);
+}
+
+.recette .fr-header__body {
+  background-color: rgba($orange, .5);
+}
