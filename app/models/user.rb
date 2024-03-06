@@ -256,6 +256,7 @@ class User < ApplicationRecord
   def employer_like? ; false end
   def has_already_approved_an_application? ; false end
   def can_sign?(internship_agreement); false end
+  def email_required? ; false end
   def needs_to_see_modal? ; false end
   def has_offers_to_apply_to? ; false end
 

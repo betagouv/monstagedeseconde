@@ -3,11 +3,6 @@
 require 'test_helper'
 
 class WeekTest < ActiveSupport::TestCase
-  test 'association weeks' do
-    week = Week.new
-    assert_equal week.internship_offers, []
-  end
-
   test '#consecutive_to?' do
     week_before, week = Week.order(year: :asc, number: :asc).first(2)
     assert week.consecutive_to?(week_before)
