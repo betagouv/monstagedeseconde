@@ -28,7 +28,7 @@
 .row.mt-3
   .col-6.fr-select-group--disabled
     = form.label :school, class: 'fr-label' do
-      | Collège
+      | Lycée
       = form.rg2a_required_content_tag
     = form.select :school, [current_user.school.name, current_user.school_id], {}, { class: "fr-select", disabled: true }
 
