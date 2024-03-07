@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   helper Turbo::StreamsHelper if Rails.env.test?
 
   before_action :check_school_requested
+  before_action :check_for_maintenance
 
   default_form_builder Rg2aFormBuilder
 
@@ -28,6 +29,10 @@ class ApplicationController < ActionController::Base
   helper_method :user_presenter, :current_user_or_visitor
   def user_presenter
     @user_presenter ||= Presenters::User.new(current_user_or_visitor)
+  end
+
+  def check_for_maintenance
+    redirect_to '/maintenance.html' if ENV['MAINTENANCE_MODE'] == 'true'
   end
 
   private

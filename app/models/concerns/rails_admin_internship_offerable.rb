@@ -63,7 +63,6 @@ module RailsAdminInternshipOfferable
         field :published_at
         field :school
         field :first_monday
-        field :last_monday
       end
 
       export do

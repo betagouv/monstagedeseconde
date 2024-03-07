@@ -17,8 +17,5 @@ module Reporting
           .group('weeks.id')
     }
 
-    scope :internship_offer_weeks, lambda {
-      Week.selectable_on_school_year.select('count(internship_offer_id) as internship_offers_count_per_week, weeks.id, weeks.number, weeks.year').left_joins(:internship_offer_weeks).group('weeks.id').order(:id)
-    }
   end
 end

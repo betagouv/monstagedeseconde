@@ -51,9 +51,9 @@ class Team
     team_members.count
   end
 
-  def self.user_from_team_member(team_member)
-    User.find_by(id: team_member.member_id)
-  end
+  # def self.user_from_team_member(team_member)
+  #   User.find_by(id: team_member.member_id)
+  # end
 
   def id_in_team?(user_id)
     team_members.pluck(:member_id).include?(user_id)

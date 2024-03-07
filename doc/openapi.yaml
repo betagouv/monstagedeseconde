@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  title: API pour la création d'offres de stage sur monstagedetroisieme.fr
+  title: API pour la création d'offres de stage sur https://stagedeseconde.1jeune1solution.gouv.fr/
   description: API pour la création d'offres de stages à destination des élèves de
-    collège en REP ou REP+
+    seconde générale et technologique
   contact:
     email: etienne.weil@monstagedetroisieme.fr
   version: 1.0.0
@@ -13,50 +13,46 @@ security:
 - bearerAuth: []
 tags:
 - name: developers
-  description: Operations accessibles aux développeurs disposant d'une clé API
+  description: Operations accessibles aux développeurs disposant d'une clé API. Celle-ci
+    peut être fournie sur demande à l'adresse email xxxxxxxx
 paths:
   /internship_offers:
     get:
       tags:
-        - developers
+      - developers
       summary: liste (index) les offres déposées
-      operationId: internship_offers_index
-      security:
-        - bearerAuth: []
       description: |
         Les offres retournées sont celles qui ont été déposées par le partenaire de Mon stage de seconde.fr
+      operationId: internship_offers_index
       responses:
-        '200':
+        "200":
           description: Offre de stage créée
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternshipOffers'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
+        "401":
+          description: l'authentification a échoué
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+        "404":
           description: Un argument de la requête fait échouer la requête.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: "NOT_FOUND"
-                  error:
-                    type: string
-                    example: "can't find internship_offer with this remote_id"
-                  status:
-                    type: string
-                    example: "not_found"
+                $ref: '#/components/schemas/inline_response_404_1'
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Developers
     post:
       tags:
       - developers
       summary: ajoute une offre de stage d'un partenaire aux offres proposées en propre
-        par les équipes monstagedetroisieme.fr
+        par les équipes Mon stage de seconde
       description: |
-        Les offres de stages décrits ci-dessous décrivent les offres réservées aux classes de **troisiemeen REP  ou REP+**, anciennement nommées troisieme générale
+        Les offres de stages décrits ci-dessous décrivent les offres réservées aux classes de **seconde générale et technologique**
       operationId: internship_offers
       requestBody:
         $ref: '#/components/requestBodies/InternshipOffer'
@@ -112,7 +108,7 @@ paths:
       tags:
       - developers
       summary: Supprime une offre de stage d'un partenaire des offres proposées sur
-        le site monstagedetroisieme.fr
+        le site https://stagedeseconde.1jeune1solution.gouv.fr/
       description: |
         Suppression des offres
       operationId: internship_offers_delete
@@ -165,7 +161,7 @@ paths:
       tags:
       - developers
       summary: met à jour une offre de stage d'un partenaire aux offres proposées
-        en propre par les équipes monstagedetroisieme.fr
+        en propre par les équipes Mon stage de seconde
       description: |
         Mise à jour des offres . Possibilité de désactiver son offre en passant le paramètre published_at à null
       operationId: internship_offers_updatte
@@ -222,12 +218,57 @@ paths:
       security:
       - bearerAuth: []
       x-swagger-router-controller: Developers
+  /internship_offers/search:
+    get:
+      tags:
+        - developers
+      summary: Recherche des offres de stage
+      description: Recherche des offres de stage déposées par le partenaire.
+
+      parameters:
+        - in: query
+          name: latitude
+          schema:
+            type: number
+          required: false
+          example: 48.8566
+        - in: query
+          name: longitude
+          schema:
+            type: number
+          required: false
+          example: 2.3522
+        - in: query
+          name: radius
+          schema:
+            type: integer
+          required: false
+          example: 40000
+        - in: query
+          name: keyword
+          schema:
+            type: string
+          required: false
+          example: "Game designer"
+
+      responses:
+        '200':
+          description: Offres de stages du partenaire
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternshipOffers'
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Developers
   /sectors:
     get:
       tags:
       - developers
       summary: Récupère la liste des secteurs économiques
-      description: "Secteur économique. [https://github.com/betagouv/monstage/blob/staging/doc/README.md](https://github.com/betagouv/monstage/blob/staging/doc/README.md)"
+      description: "Secteur économique. Voir la liste complète ici : [https://github.com/betagouv/monstagedeseconde/blob/staging/doc/README.md#secteurs-dactivité\
+        ](https://github.com/betagouv/monstagedeseconde/blob/staging/doc/README.md#secteurs-dactivité\
+        )"
       operationId: sectors
       responses:
         "200":
@@ -255,13 +296,17 @@ components:
       - employer_name
       - is_public
       - max_candidates
+      - period
       - remote_id
-      - sector_id
+      - sector_uuid
       - street
       - title
-      - weeks
       type: object
       properties:
+        remote_id:
+          type: string
+          description: Identifiant de l'offre de stage chez le partenaire
+          example: A156548-H
         description:
           maxLength: 500
           type: string
@@ -288,52 +333,24 @@ components:
         employer_website:
           type: string
           example: http://www.acnee-corporation.fr
-        remote_id:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: Identifiant de l'offre de stage chez le partenaire
-          example: 123
         lunch_break:
           type: string
           description: Horaires de pause déjeuner
           example: 12h-14h
         daily_hours:
-          type: object
-          description: Horaires de travail
-          example:
-            lundi:
-            - 9:00
-            - 18:00
-            mardi:
-            - 9:00
-            - 18:00
-            mercredi:
-            - 9:00
-            - 18:00
-            jeudi:
-            - 9:00
-            - 18:00
-            vendredi:
-            - 9:00
-            - 18:00
+          $ref: '#/components/schemas/InternshipOffer_daily_hours'
         coordinates:
-          type: object
-          description: Coordonnées géographiques du lieu de stage
-          example:
-            latitude: 1
-            longitude: 1
-        weeks:
-          type: array
-          description: Semaines de stage proposées
-          example:
-          - 2020-W16
-          - 2020-W17
-          items:
-            type: string
-            description: Semaine de stage
+          $ref: '#/components/schemas/InternshipOffer_coordinates'
+        period:
+          type: integer
+          description: Semaines de stage proposées où 0 => 2 semaines - du 17 au 28
+            juin 2024; 1 => 1 semaine - du 17 au 21 juin 2024; 2 => 1 semaine - du
+            24 au 28 juin 2024
+          example: 1
+          enum:
+          - 0
+          - 1
+          - 2
         permalink:
           type: string
           description: Site de l'employeur
@@ -348,19 +365,17 @@ components:
           description: "true si l'offre de stage est issue d'une administration publique,\
             \ false si elle est issue d'une entreprise privée"
           example: true
-        sector_id:
+        sector_uuid:
           $ref: '#/components/schemas/Sector'
       description: offre de stage
       example:
-        weeks:
-        - 2020-W16
-        - 2020-W17
+        remote_id: A123-12
+        period: 0
         city: Paris
-        remote_id: 123
         coordinates:
-          latitude: 1
-          longitude: 1
-        description: description
+          latitude: 48.866667
+          longitude: 2.333333
+        description: Stage sur le thème de la logistique et de la supply chain
         employer_description: "Créateur de lotions, de parfums et de produits cosmé\
           tiques, embaumeur"
         employer_name: BNP Paribas
@@ -369,29 +384,52 @@ components:
         zipcode: "75001"
         max_candidates: 1
         employer_website: http://www.acnee-corporation.fr
-        sector_id:
-          sector_uuid: b7564ac4-e184-41c4-a7a9-57233a9d244a
+        sector_uuid:
+          sector_uuid: s20
           name: Mode
           id: 1
         street: 16 rue de la paix
         is_public: true
         permalink: http://www.stagechezemployeur.fr
         daily_hours:
-          lundi:
-          - 9:00
-          - 18:00
-          mardi:
-          - 9:00
-          - 18:00
-          mercredi:
-          - 9:00
-          - 18:00
-          jeudi:
-          - 9:00
-          - 18:00
-          vendredi:
-          - 9:00
-          - 18:00
+          type: object
+          description: Horaires de stage
+          properties:
+            lundi:
+              type: array
+              items:
+                type: string
+              example:
+              - "9:00"
+              - "18:00"
+            mardi:
+              type: array
+              items:
+                type: string
+              example:
+              - "9:00"
+              - "18:00"
+            mercredi:
+              type: array
+              items:
+                type: string
+              example:
+              - "9:00"
+              - "18:00"
+            jeudi:
+              type: array
+              items:
+                type: string
+              example:
+              - "9:00"
+              - "18:00"
+            vendredi:
+              type: array
+              items:
+                type: string
+              example:
+              - "9:00"
+              - "18:00"
     InternshipOfferPatch:
       allOf:
       - type: object
@@ -409,13 +447,12 @@ components:
         sector_uuid:
           type: string
           format: uuid
-          example: b7564ac4-e184-41c4-a7a9-57233a9d244a
         name:
           type: string
           example: Mode
       description: Secteur économique.
       example:
-        sector_uuid: b7564ac4-e184-41c4-a7a9-57233a9d244a
+        sector_uuid: s20
         name: Mode
         id: 1
     inline_response_401:
@@ -474,7 +511,7 @@ components:
           example: DUPLICATE_WEEKY_FRAMED
         error:
           type: string
-          example: weeky_framed with this remote_id (123) already exists.
+          example: period with this remote_id ("A123-2") already exists.
         status:
           type: string
           example: conflict
@@ -490,6 +527,67 @@ components:
         status:
           type: string
           example: unprocessable_entity
+    inline_response_404_1:
+      type: object
+      properties:
+        code:
+          type: string
+          example: NOT_FOUND
+        error:
+          type: string
+          example: can't find internship_offer with this remote_id
+        status:
+          type: string
+          example: not_found
+    InternshipOffer_coordinates:
+      type: object
+      properties:
+        latitude:
+          type: number
+          example: 48.866667
+        longitude:
+          type: number
+          example: 2.333333
+      description: Coordonnées géographiques du lieu de stage
+    InternshipOffer_daily_hours:
+      type: object
+      properties:
+        lundi:
+          type: array
+          example:
+          - "9:00"
+          - "18:00"
+          items:
+            type: string
+        mardi:
+          type: array
+          example:
+          - "9:00"
+          - "18:00"
+          items:
+            type: string
+        mercredi:
+          type: array
+          example:
+          - "9:00"
+          - "18:00"
+          items:
+            type: string
+        jeudi:
+          type: array
+          example:
+          - "9:00"
+          - "18:00"
+          items:
+            type: string
+        vendredi:
+          type: array
+          example:
+          - "9:00"
+          - "18:00"
+          items:
+            type: string
+      description: Horaires de stage
   responses:
     Unauthorized:
       description: l'authentification a échoué

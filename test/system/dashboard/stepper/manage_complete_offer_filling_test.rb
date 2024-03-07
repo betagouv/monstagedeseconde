@@ -16,7 +16,6 @@ class ManageCompleteOfferFillingTest < ApplicationSystemTestCase
       employer              = create(:employer)
       group                 = create(:group, name: 'hello', is_public: true)
       sector                = create(:sector)
-      available_weeks = [Week.find_by(number: 10, year: 2019), Week.find_by(number: 11, year: 2019)]
       travel_to(Date.new(2019, 3, 1)) do
         sign_in(employer)
         visit employer.custom_dashboard_path
