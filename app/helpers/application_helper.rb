@@ -3,7 +3,8 @@
 module ApplicationHelper
   def env_class_name
     return 'development' if Rails.env.development?
-    return 'staging' if Rails.env.staging? || Rails.env.review? || request.host.include?('recette')
+    return 'review' if Rails.env.staging? || Rails.env.review? 
+    return 'staging' if request.host.include?('recette')
 
     ''
   end
