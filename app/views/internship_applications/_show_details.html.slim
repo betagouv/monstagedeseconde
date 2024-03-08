@@ -1,20 +1,12 @@
 / - if can? :show, internship_application
-h6 Votre candidature
-.row.bg-dark-light.mt-3
+.fr-h3.blue-france Votre candidature
+.row.bg-dark-light.fr-mt-4w.fr-px-2w
   .col-12
-    h6.text-dark Motivation
+    h6.fr-py-2w.text-dark Motivation
     .reboot-trix-content= internship_application.motivation.to_s
 
-    - unless is_resume_empty?(internship_application)
-      - if has_resume_other?(internship_application)
-        h6.text-dark.mb-1.mt-4 Activités extra-scolaires
-        .reboot-trix-content= internship_application.student.resume_other.to_s
-
-      - if has_resume_languages?(internship_application)
-        h6.text-dark.mb-1.mt-4 Langues vivantes
-        .reboot-trix-content= internship_application.student.resume_languages.to_s
-
-h6.fr-mt-2w Votre identité
-.row
+.fr-h6.fr-mt-2w.fr-px-2w.blue-france Votre identité
+.row.fr-px-2w
   .col-12.mb-3
-    = render partial: "internship_applications/student_details", locals: {internship_application: internship_application}
+    = render partial: "internship_applications/student_details",
+             locals: {internship_application: internship_application}

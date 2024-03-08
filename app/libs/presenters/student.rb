@@ -61,14 +61,6 @@ module Presenters
       url_helpers.dashboard_students_internship_applications_path(student_id: user.id)
     end
 
-    def applicable_weeks(internship_offer)
-      if school.has_weeks_on_current_year?
-        user.school_and_offer_common_weeks(internship_offer)
-      else
-        internship_offer.weeks.in_the_future
-      end
-    end
-
     def validated_by_employer_applications_count
       student.internship_applications.validated_by_employer.count
     end
