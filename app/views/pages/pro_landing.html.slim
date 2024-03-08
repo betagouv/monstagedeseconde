@@ -2,19 +2,17 @@
   = render 'layouts/navbar', home_nav_bar: true
 .fr-container
   = render 'pages/home/top_nav'
-.container-homepage
-  .mx-0.light-grey-background
-    = render 'pages/home/hero_pro'
-.container-homepage.light-blue-background
+.container-monstage-fluid-hero.mx-0
+  = render 'pages/home/hero_pro'
+.container-homepage.light-blue-background.fr-px-2w
   .container-monstage
     = render 'pages/home/sub_hero_pro'
-.container-homepage
+.container-homepage.fr-px-2w
   .container-monstage
     = render 'pages/home/howitworks_pro'
+.container-homepage.fr-px-2w
+  .container-monstage
+    = render 'pages/home/faq_pro'
   .container-monstage
     .d-none.d-md-block
       = render 'pages/home/elevator'
-/ .container-homepage.light-blue-background.fr-py-4w  
-/   .container-monstage
-/     .d-none.d-md-block
-/       = render 'pages/home/last_offers'

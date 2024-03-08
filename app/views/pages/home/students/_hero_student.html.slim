@@ -1,5 +1,5 @@
 header.container-xl.px-0
-  .d-block.d-sm-none
+  - if browser.device.mobile?
     / smart phone display
     .container-monstage.container-xl.homepage.px-0
       .row.fr-mt-4w.mx-0
@@ -14,7 +14,7 @@ header.container-xl.px-0
                             url: internship_offers_path,
                             default_values: params,
                             form_id: :mobile_internship_offers_index_search_form }
-  .d-none.d-sm-block
+  - else
     / desktop display
     .container-monstage.container-xl.homepage
       .row
