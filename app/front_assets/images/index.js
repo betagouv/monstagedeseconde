@@ -116,6 +116,9 @@ import './homepage/accueillir-un-stagiaire.svg';
 import './homepage/link-step-1-2.svg';
 import './homepage/link-step-2-3.svg';
 
+import  './homepage/students/ms2e-stamp-medium.png'
+import  './homepage/students/spin-vector.svg'
+
 import './homepage/partenaires/Logo-jobirl.jpg';
 import './homepage/partenaires/Logo-le-reseau.jpg';
 import './homepage/partenaires/Logo-les-entreprises-pour-la-cite.jpg';

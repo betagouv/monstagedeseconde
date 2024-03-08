@@ -1,0 +1,10 @@
+.fr-pt-2w
+  .fr-py-4w.text-sm-center.text-md-left
+    h3.blue-france Les derniers stages mis en ligne
+  .fr-py-4w
+    = render 'pages/home/internship_offers'
+.row.align-items-center.fr-py-2w
+  .col-12.d-flex.justify-content-center
+    = link_to 'Rechercher un stage de 2de',
+              internship_offers_path,
+              class: 'fr-btn fr-btn--md fr-mb-4w'
