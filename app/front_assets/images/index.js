@@ -93,6 +93,7 @@ import './homepage/france.svg';
 import './homepage/dashboard.svg';
 import './homepage/logo-education-nationale.svg';
 import './homepage/backgrd-header.webp';
+import './homepage/backgrd-header.png';
 import './homepage/hero-side-stamp.png';
 
 import './homepage/resources/etablissements.svg';
