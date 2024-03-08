@@ -2,6 +2,7 @@ import './favicon.png';
 import './favicons/favicon-development.png';
 import './favicons/favicon-staging.png';
 import './favicons/favicon-recette.png';
+import './favicons/favicon-review.png';
 import './favicons/favicon-heroku.png';
 import './danger_sign_blue.svg';
 import './notice_people.svg';
