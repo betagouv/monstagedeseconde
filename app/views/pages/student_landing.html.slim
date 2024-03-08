@@ -2,27 +2,36 @@
   = render 'layouts/navbar', home_nav_bar: true
 .fr-container
   = render 'pages/home/top_nav'
-.container-homepage
+.container-monstage-fluid-hero
   .mx-0.light-grey-background
-    = render 'pages/home/hero_student'
+    = render 'pages/home/students/hero_student'
 .container-homepage
   .container-monstage
-    = render 'pages/home/howitworks'
-.container-homepage
+    = render 'pages/home/students/howitworks'
+.grey-container-fluid
+  .container-monstage
+    = render 'pages/home/students/last_offers'
+/ .container-homepage
   .mx-0.light-grey-background
     = render 'pages/home/everyone_reverse'
-.container-monstage
+/ .container-monstage
   .mx-0.fr-my-3w
-    = render 'pages/home/internship_offers'  
-.container-homepage.light-blue-background
+    = render 'pages/home/internship_offers'
+/ .container-homepage.light-blue-background
   .container-monstage
     = render 'pages/home/rep_schools'
-.fr-container
+/ .fr-container
   = render 'pages/home/video'
+/ .container-home
+  .container-monstage
+    = render 'pages/home/students/resources_student'
 .container-home
   .container-monstage
-    = render 'pages/home/resources_student'
-.container-homepage    
+    = render 'pages/home/students/faq'
+.grey-container-fluid.fr-py-8w
+  .container-monstage
+    = render 'pages/home/students/plateformes_partenaires'
+/ .container-homepage
   .container-monstage.homepage
     = render 'pages/home/sponsors'
     = render 'pages/home/partners'
