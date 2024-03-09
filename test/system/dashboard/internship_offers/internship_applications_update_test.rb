@@ -16,22 +16,6 @@ module Dashboard::InternshipOffers
       find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--warning', text: "LU")
     end
 
-    test 'employer can set to examine status an internship_application' do
-      skip "test to update after ui is finished #TODO #may_flower"
-      employer, internship_offer = create_employer_and_offer
-      internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
-      sign_in(employer)
-      visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
-      click_on 'Etudier'
-      text = find("#internship_application_examined_message").text
-      find("#internship_application_examined_message").click.set("#{text} (test)")
-      click_button 'Confirmer'
-      assert internship_application.reload.examined?
-      find("h2.h4", text: "Les candidatures")
-      find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--info', text: "à l'étude".upcase)
-      find('span#alert-text', text: "Candidature mise à jour.")
-    end
-
     test 'employer can reject an internship_application' do
       employer, internship_offer = create_employer_and_offer
       internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)

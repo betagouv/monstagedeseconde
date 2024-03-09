@@ -49,7 +49,7 @@ module Presenters
           states_hash[:canceled]
         when "rejected", "expired_by_student", "canceled_by_employer"
           states_hash[:rejected]
-        when "submitted", "read_by_employer", "examined", "transfered"
+        when "submitted", "read_by_employer", "transfered"
           states_hash[:waiting]
         when "validated_by_employer"
           states_hash[:validated]

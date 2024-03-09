@@ -63,17 +63,6 @@ class StudentMailer < ApplicationMailer
          subject: "Une de vos candidatures a été annulée")
   end
 
-  def internship_application_examined_email(internship_application:)
-    @internship_application = internship_application
-    @student = internship_application.student
-    @internship_offer = internship_application.internship_offer
-    @prez_offer = @internship_offer.presenter
-    @prez_student = @student.presenter
-
-    send_email(to: @student.email,
-               subject: "Votre candidature est en cours d'examen")
-  end
-
   def internship_application_requested_confirmation_email(internship_application:)
     @internship_application = internship_application
 

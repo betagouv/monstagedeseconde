@@ -8,7 +8,7 @@ module Finders
     end
 
     def pending_internship_applications_actions_count
-      pending_states = %i[read_by_employer submitted examined]
+      pending_states = %i[read_by_employer submitted]
       internship_offer_ids = user.internship_offers&.kept&.ids
       return 0 if internship_offer_ids.blank?
 
