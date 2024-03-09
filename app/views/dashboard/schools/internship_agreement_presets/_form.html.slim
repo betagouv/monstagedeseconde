@@ -1,12 +1,6 @@
 
 
 = form_with(model: internship_agreement_preset, url: dashboard_school_internship_agreement_preset_path(school, internship_agreement_preset), data: {:"test-id" => 'internship_agreement_preset_form'}, class: 'py-3') do |f|
-  .row.pt-3
-    .col-12
-      .form-group
-        = render partial: "inputs/date_input", locals: { form: f, container_class_name: "input-group", attribute_name: :school_delegation_to_sign_delivered_at, attribute_label: 'Date de délégation' }
-        small.form-text.text-muted Date de décision du conseil d'administration de l'établissement donnant le droit au chef d'établissement de signer les conventions
-
   .row 
     .col-12
       .form-group.form-group-tooltip

@@ -114,7 +114,6 @@ class Ability
       edit_school_representative_phone
       edit_school_representative_email
       edit_school_representative_role
-      edit_school_delegation_to_sign_delivered_at
       edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
@@ -168,7 +167,6 @@ class Ability
       edit_school_representative_phone
       edit_school_representative_email
       edit_school_representative_role
-      edit_school_delegation_to_sign_delivered_at
       edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone

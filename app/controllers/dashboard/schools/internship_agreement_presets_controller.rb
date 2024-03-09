@@ -29,8 +29,7 @@ module Dashboard
         params.require(:internship_agreement_preset)
               .permit(:legal_terms_rich_text,
                       :complementary_terms_rich_text,
-                      :troisieme_generale_activity_rating_rich_text,
-                      :school_delegation_to_sign_delivered_at)
+                      :troisieme_generale_activity_rating_rich_text)
       end
     end
   end

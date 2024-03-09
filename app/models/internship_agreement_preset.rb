@@ -11,8 +11,6 @@ class InternshipAgreementPreset < ApplicationRecord
   has_rich_text :complementary_terms_rich_text
   has_rich_text :troisieme_generale_activity_rating_rich_text
 
-  before_save :replicate_school_delegation_to_sign_delivered_at_to_internship_agreements
-
   LEGAL_TERMS = %Q(
     <div><strong>Article 1</strong> - La présente convention a pour objet la mise en œuvre d’une séquence d’observation en milieu professionnel, au bénéfice de l’élève de l’établissement d’enseignement (ou des élèves) désigné(s) en annexe.
     </div>
@@ -58,10 +56,6 @@ class InternshipAgreementPreset < ApplicationRecord
   TROISIEME_GENERALE_ACTIVITY_RATING_RICH_TEXT = %Q(
     <div>Capacité d'écoute, capacité à retenir les informations...</div>
   )
-
-  def filled?
-    school_delegation_to_sign_delivered_at.present?
-  end
 
   private
   def replicate_school_delegation_to_sign_delivered_at_to_internship_agreements
