@@ -2,9 +2,6 @@
 - if current_user
   - content_for(:page_title, "#{t(".page_title", name: @internship_application.student.presenter.full_name)} | Monstage")
   - presenter = @internship_application.presenter(current_user)
-  = render 'layouts/breadcrumb',
-            links: [ [current_user.presenter.dashboard_name_link, current_user.dashboard_name],
-                    ['', @internship_application.internship_offer.title]]
 
   - if current_user.student?
     .sticky-top.white-header
@@ -43,7 +40,7 @@
               subtitle: ""
 
   - elsif current_user.employer_like?
-    .fr-mb-5w
+    .fr-mt-5w
         = link_to dashboard_candidatures_path(current_user.id),
                   class: 'fr-mt-8w ' do
           span.fr-icon-arrow-left-line.fr-btn--icon-left.fr-raw-link
@@ -88,7 +85,7 @@
     .grey-container-application.with-grey-background
       h2.h4.fr-mb-4w = @internship_application.student.presenter.full_name
       p.fr-icon-calendar-line.fr-btn--icon-left
-        ="Semaine <strong>#{@internship_application.internship_offer.period}</strong>".html_safe
+        ="Période : <strong>#{@internship_application.internship_offer.period_label}</strong>".html_safe
       - unless @internship_application.motivation.to_s.blank?
         h3.h5 Motivations
         p = @internship_application.motivation.to_s
