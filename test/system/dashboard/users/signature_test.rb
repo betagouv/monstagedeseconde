@@ -239,7 +239,7 @@ module Dashboard
 
           assert_equal signature.school_manager.phone, signature.signature_phone_number
 
-          find('h1', text: 'Editer, imprimer et bientôt signer les conventions dématérialisées')
+          find('h1', text: 'Éditer, imprimer et signez vos conventions dématérialisées')
           first_label = all('a.fr-btn.disabled')[0].text
           assert_equal 'Déjà signée', first_label
           second_label = all('a.fr-btn.disabled')[1].text
