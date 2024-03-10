@@ -1,0 +1,24 @@
+- onisep = [{name: 'Onisep', url: 'https://www.onisep.fr/', logo: 'onisep.png'}]
+.row
+  .col-12.col-sm-6.col-md-4.col-lg-3
+    .logo-card.fr-my-3w
+      .header
+        = image_tag asset_pack_path('media/images/homepage/partenaires/onisep.png'),
+                                    alt: "Logo Onisep"
+      .body
+        = link_to "Onisep",
+                  'https://www.onisep.fr/',
+                  target: "_blank",
+                  class: 'fr-raw-link'
+.d-flex.align-content-start.flex-wrap
+  - regions_list.each do |region|
+    .logo-card.fr-mb-3w
+      .header
+        = image_tag asset_pack_path("media/images/homepage/partenaires/#{region[:logo]}"),
+                                    alt: region[:alt]
+      .body
+        = link_to region[:name],
+                  'https://www.onisep.fr/',
+                  target: "_blank",
+                  class: 'fr-raw-link'
+                  
