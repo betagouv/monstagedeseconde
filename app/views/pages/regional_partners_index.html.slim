@@ -1,0 +1,23 @@
+
+.container-homepage
+  = render 'layouts/navbar', home_nav_bar: true
+.fr-container
+  = render 'pages/home/top_nav'
+.fr-container
+  = render 'layouts/breadcrumb',
+        links: [['', "Ressources utiles"]]
+.container-homepage.fr-px-2w
+  .container-monstage
+    = render 'pages/home/pros/api_section'
+.grey-container-fluid
+  .container-monstage.light-blue-background
+    = render 'pages/home/pros/partners_header'
+.container-homepage.fr-px-2w
+  .container-monstage
+    = render 'pages/home/pros/partners_logos'
+.grey-container-fluid
+  .container-monstage.light-blue-background
+    = render 'pages/home/pros/involved_partners_logos'
+.container-monstage
+  .d-none.d-md-block
+    = render 'pages/home/elevator'
