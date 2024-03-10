@@ -21,6 +21,7 @@ module Product
         operators_path
         politique_de_confidentialite_path
         professionnels_path
+        partenaires_regionaux_path
         referents_path
         root_path
       ].map do |page_path|
