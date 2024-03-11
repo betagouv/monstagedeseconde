@@ -16,7 +16,7 @@ class ImportQpvProche < ActiveRecord::Migration[5.2]
           kind: :qpv_proche,
           visible: false
         )
-        school.name = "Collège #{school.name}" unless school.name.start_with?(/coll.ge/i)
+        school.name = "Lycée #{school.name}" unless school.name.start_with?(/coll.ge/i)
         school.name = school.name.strip.split(' ').map(&:capitalize).join(' ')
         school.city = school.city.strip.split(' ').map(&:capitalize).join(' ')
 
