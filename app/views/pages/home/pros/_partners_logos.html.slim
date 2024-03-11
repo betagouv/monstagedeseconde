@@ -1,4 +1,3 @@
-- onisep = [{name: 'Onisep', url: 'https://www.onisep.fr/', logo: 'onisep.png'}]
 .row
   .col-12.col-sm-6.col-md-4.col-lg-3
     .logo-card.fr-my-3w
@@ -18,7 +17,7 @@
                                     alt: region[:alt]
       .body
         = link_to region[:name],
-                  'https://www.onisep.fr/',
+                  region[:url],
                   target: "_blank",
                   class: 'fr-raw-link'
                   
