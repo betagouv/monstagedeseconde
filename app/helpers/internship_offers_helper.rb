@@ -74,8 +74,4 @@ module InternshipOffersHelper
     description = internship_offer.description_rich_text.to_s.present? ? internship_offer.description_rich_text.to_plain_text : internship_offer.description
     description.truncate(280, separator: ' ')
   end
-
-  def periods_to_select
-    [["Du 17 au 28 juin 2024",0], ["Du 17 au 21 juin 2024",1], ["Du 24 au 28 juin 2024",2]]
-  end
 end
