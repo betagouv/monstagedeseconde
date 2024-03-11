@@ -1,9 +1,0 @@
-.fr-mx-2w.py-5.pt-2
-  h2.h1 Nos associations partenaires
-.pt-2
-  .row
-    - partners_map_logo.each do |partner|
-      = render partial: "pages/home/partner_link",
-                locals: { partner_url: partner[:url],
-                          partner_css: partner[:css],
-                          partner_height: partner[:height] }

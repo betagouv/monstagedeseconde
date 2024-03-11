@@ -3,10 +3,11 @@
 class PagesController < ApplicationController
   WEBINAR_URL = ENV.fetch('WEBINAR_URL').freeze
   layout 'homepage', only: %i[home
-                              student_landing
                               pro_landing
+                              regional_partners_index
                               school_management_landing
-                              statistician_landing]
+                              statistician_landing
+                              student_landing]
 
   # before_action :last_three_offers, only: %i[home pro_landing student_landing school_management_landing]
 
