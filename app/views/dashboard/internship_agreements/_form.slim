@@ -52,14 +52,6 @@ tbody.internship-agreement
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
                  locals: { field: :school_representative_full_name, form: form, text_label: label, hint: hint, title: title, content: content, filled_by: filled_by}
-      .row.mt-0
-        - label = "Le chef d'établissement a été nommé apte à signer les conventions par le conseil d'administration de l'établissement en date du :"
-        - hint = "en qualité de chef d’établissement"
-        - title = "Note destinée au chef d'établissement :"
-        - content = "Date du conseil d'administration"
-        - filled_by = ["le chef d'établissement"]
-        = render partial: 'dashboard/internship_agreements/date_field_element',
-                 locals: { field: :school_delegation_to_sign_delivered_at, form: form, text_label: label, hint: hint, title: title, content: content, filled_by: filled_by }
 
       .row.mt-0
         .col-7
