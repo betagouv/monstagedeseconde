@@ -45,6 +45,44 @@ a:hover {
     background-color: #F5F5FF;
 }
 
+.d-flex.ccm {
+  .ccm-card {
+    max-width: 310px;
+    min-width: 310px;
+    margin-top: 48px;
+  }
+  .separator {
+    max-width: 80px;
+    margin: 50px 20px;
+  }
+}
+
+.logo-card{
+  width: 270px;
+  margin-right: 24px;
+  border: 1px solid $light-grey;
+  .header{
+    img{
+      max-width: 268px;
+    }
+  }
+  .body{
+    font-weight: bold;
+    height: 112px;
+    font-size: 18px;
+    text-align: left;
+    padding: 24px;
+  }
+}
+.involved_partner_logo{
+  text-align: center  ;
+  img{
+    max-height: 120px;
+    width: 146px;
+  }
+
+}
+
 .container-monstage {
     max-width: 1200px;
     margin: auto;
