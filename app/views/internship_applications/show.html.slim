@@ -10,7 +10,9 @@
     .col-4.d-none.d-sm-block
       .fr-h3.blue-france Rappel du stage
       .fr-mt-3w
-        = render 'internship_offers/card', internship_offer: @internship_offer
+        = render 'internship_offers/card', 
+                 internship_offer: @internship_offer,
+                 clickable: false
 
     .col-12.col-sm-8
       = render "internship_applications/show_details",
