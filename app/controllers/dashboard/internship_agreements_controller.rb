@@ -117,7 +117,6 @@ module Dashboard
               :date_range,
               :doc_date,
               :schedule_rich_text,
-              :complementary_terms_rich_text,
               :activity_scope_rich_text,
               :activity_preparation_rich_text,
               :activity_learnings_rich_text,

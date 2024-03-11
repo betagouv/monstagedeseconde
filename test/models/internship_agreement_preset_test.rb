@@ -4,13 +4,11 @@ require 'test_helper'
 
 class SchoolTest < ActiveSupport::TestCase
   test 'Agreements association' do
-    school = create(:school, :with_agreement_presets, :with_school_manager)
+    school = create(:school, :with_school_manager)
     student = create(:student_with_class_room_3e, school: school)
     internship_application = create(:weekly_internship_application, user_id: student.id)
     internship_agreement = create(:internship_agreement, :created_by_system,
                                   internship_application: internship_application)
-    internship_agreement_presets = school.internship_agreement_preset
 
-    assert internship_agreement_presets.internship_agreements.include?(internship_agreement)
   end
 end

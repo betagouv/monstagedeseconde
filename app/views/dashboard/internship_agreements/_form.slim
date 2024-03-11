@@ -165,23 +165,6 @@ tbody.internship-agreement
 
       .row.mt-0
         .col-7
-          .h6 role="heading" aria-level="3" B - Annexe complémentaire
-        .col-3.offset-2.pt-3
-      .row.mt-0
-        - label = "Conditions liées au financement du stage de " \
-                  "l'élève par l'établissement"
-        - title = "Note destinée au chef d'établissement et à l'entreprise"
-        - if current_user.school_manager?
-          - content = "Toutes les modalités pratiques du stage. Vous avez la possibilité d'enregistrer un modèle pour tous vos élèves sur #{link_to 'votre page établissement', edit_dashboard_school_internship_agreement_preset_path(resource.internship_application.student.school, resource.internship_application.student.school.internship_agreement_preset), class: 'text-white'}."
-        - else
-          - content = "Toutes les modalités pratiques du stage."
-
-        - filled_by = ["le chef d'établissement", "l'entreprise"]
-        = render partial: 'dashboard/internship_agreements/trix_form_element',
-                 locals: { field: :complementary_terms_rich_text, form: form, text_label: label, title: title, content: content , filled_by: filled_by}
-
-      .row.mt-0
-        .col-7
           p= "Fait à #{resource.internship_application.student.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."
 
       .row

@@ -28,7 +28,6 @@ FactoryBot.define do
     tutor_email { FFaker::Internet.email }
     date_range { "du 10/10/2020 au 15/10/2020" }
     activity_scope_rich_text { '<div>Accueil clients</div>'}
-    complementary_terms_rich_text { '<div>Ticket resto</div>'}
     activity_preparation_rich_text { '<div>Appel téléphonique</div>'}
     aasm_state { 'draft' }
     weekly_hours { ['9:00', '17:00'] }
