@@ -9,7 +9,7 @@ module InternshipApplications
 
     test 'POST #create internship application as student' do
       internship_offer = create(:weekly_internship_offer)
-      school = create(:school, weeks: [Week.selectable_from_now_until_end_of_school_year.first])
+      school = create(:school)
       student = create(:student, school: school, class_room: create(:class_room, school: school))
       sign_in(student)
       valid_params = {
@@ -19,11 +19,6 @@ module InternshipApplications
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
           type: InternshipApplications::WeeklyFramed.name,
-          student_attributes: {
-            id: student.id,
-            resume_other: 'resume_other',
-            resume_languages: 'resume_languages'
-          },
           student_email: student.email,
           student_phone: '0600119988'
         }
@@ -42,8 +37,6 @@ module InternshipApplications
       assert_equal student.id, created_internship_application.student.id
 
       student = student.reload
-      assert_equal 'resume_other', student.resume_other.to_plain_text
-      assert_equal 'resume_languages', student.resume_languages.to_plain_text
       assert_equal '0600119988', created_internship_application.student_phone
       assert_equal student.email, created_internship_application.student_email
     end
@@ -51,7 +44,7 @@ module InternshipApplications
     test 'POST #create internship application as student to offer posted by statistician' do
       internship_offer = create(:weekly_internship_offer)
       internship_offer.update(employer_id: create(:statistician).id)
-      school = create(:school, weeks: [Week.selectable_from_now_until_end_of_school_year.first])
+      school = create(:school)
       student = create(:student, school: school, class_room: create(:class_room, school: school))
       sign_in(student)
       valid_params = {
@@ -63,8 +56,6 @@ module InternshipApplications
           type: InternshipApplications::WeeklyFramed.name,
           student_attributes: {
             phone: '+330656565400',
-            resume_other: 'resume_other',
-            resume_languages: 'resume_languages'
           }
         }
       }
@@ -83,11 +74,7 @@ module InternshipApplications
 
       student = student.reload
       assert_equal '+330656565400', student.phone
-      assert_equal 'resume_other', student.resume_other.to_plain_text
-      assert_equal 'resume_languages', student.resume_languages.to_plain_text
     end
-
-
 
     test 'POST #create internship application as student without class_room' do
       internship_offer = create(:weekly_internship_offer)
@@ -102,9 +89,7 @@ module InternshipApplications
           internship_offer_type: InternshipOffer.name,
           type: InternshipApplications::WeeklyFramed.name,
           student_attributes: {
-            phone: '+330656565400',
-            resume_other: 'resume_other',
-            resume_languages: 'resume_languages'
+            phone: '+330656565400'
           }
         }
       }
@@ -123,8 +108,6 @@ module InternshipApplications
 
       student = student.reload
       assert_equal '+330656565400', student.phone
-      assert_equal 'resume_other', student.resume_other.to_plain_text
-      assert_equal 'resume_languages', student.resume_languages.to_plain_text
     end
 
     # create internship application as student with class_room and check that counter are updated
@@ -154,10 +137,7 @@ module InternshipApplications
           internship_offer_type: InternshipOffer.name,
           type: InternshipApplications::WeeklyFramed.name,
           student_attributes: {
-            phone: '+330656565400',
-            resume_educational_background: 'resume_educational_background',
-            resume_other: 'resume_other',
-            resume_languages: 'resume_languages'
+            phone: '+330656565400'
           }
         }
       }
@@ -236,9 +216,8 @@ module InternshipApplications
     end
 
     test 'POST #create internship application as student with duplicate contact email' do
-    skip "test to update after ui is finished #TODO #may_flower"
       internship_offer = create(:weekly_internship_offer)
-      school = create(:school, weeks: Week.selectable_from_now_until_end_of_school_year.first(2))
+      school = create(:school)
       student = create(:student, school: school, phone: '+330600110011', email: nil, class_room: create(:class_room, school: school))
       student_2 = create(:student)
       sign_in(student)
