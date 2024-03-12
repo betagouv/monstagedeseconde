@@ -4,9 +4,6 @@ class IdentitiesController < ApplicationController
   end
 
   def create
-    #april_flower forbidden routes
-    redirect_to root_path and return
-    #april_flower forbidden routes
     @identity = Identity.new(identity_params)
     if @identity.save
       redirect_to(

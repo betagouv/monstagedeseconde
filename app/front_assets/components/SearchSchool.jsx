@@ -115,7 +115,7 @@ export default function SearchSchool({
   }
 
   const renderAutocompleteInput = () => {
-    const search_label = 'Adresse ou ville de mon établissement REP ou REP+'
+    const search_label = 'Adresse ou ville de mon lycée'
     return (
       <Downshift
         initialInputValue={city}
@@ -264,7 +264,7 @@ export default function SearchSchool({
                 {autocompleteNoResult && (
                   <li className="list-group-item list-group-item-info small">
                     Aucun résultat pour votre recherche. Assurez-vous que l’établissement renseigné
-                    est un établissement REP ou REP+.
+                    est un lycée général ou technologique.
                   </li>
                 )}
               </ul>
