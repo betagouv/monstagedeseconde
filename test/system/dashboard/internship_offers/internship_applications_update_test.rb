@@ -39,7 +39,7 @@ module Dashboard::InternshipOffers
       visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
       click_on 'Refuser'
       find("#internship_application_rejected_message").click.set("(test ata test)")
-      click_button 'Confirmer'
+      find('#refuser-button').click
       assert internship_application.reload.rejected?
       find("h2.h4", text: "Les candidatures")
       find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--error', text: "REFUSÉ")
@@ -54,7 +54,7 @@ module Dashboard::InternshipOffers
       sign_in(employer)
       visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
       click_on 'Accepter'
-      click_button 'Confirmer'
+      find('#accepter-button').click
       assert internship_application.reload.validated_by_employer?
       find("h2.h4", text: "Les candidatures")
       find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--info', text: "en attente de réponse".upcase)
@@ -108,7 +108,7 @@ module Dashboard::InternshipOffers
 
         visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
         click_on 'Accepter'
-        click_button 'Confirmer'
+        find('#accepter-button').click
         assert internship_application.reload.validated_by_employer?
         find("h2.h4", text: "Les candidatures")
         find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--info', text: "en attente de réponse".upcase)
@@ -143,7 +143,7 @@ module Dashboard::InternshipOffers
         sign_in(employer_2)
         visit dashboard_internship_offer_internship_application_path(internship_offer_2, internship_application_2)
         click_on 'Accepter'
-        click_button 'Confirmer'
+        find('#accepter-button').click
         assert internship_application_2.reload.validated_by_employer?
         find("h2.h4", text: "Les candidatures")
         find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--info', text: "en attente de réponse".upcase)
