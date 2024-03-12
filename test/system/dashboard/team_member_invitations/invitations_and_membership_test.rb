@@ -97,7 +97,7 @@ module Dashboard::TeamMemberInvitations
       find('p.fr-badge--info', text: "nouveau".upcase)
       find('a[title="Répondre à la candidature"]', text: "Répondre").click
       click_button("Accepter")
-      click_button("Accepter")
+      find('#accepter-button').click
       find('p.fr-badge--info', text: "en attente de réponse".upcase)
     end
 
@@ -214,7 +214,7 @@ module Dashboard::TeamMemberInvitations
       find('p.fr-badge--info', text: "nouveau".upcase)
       find('a[title="Répondre à la candidature"]', text: "Répondre").click
       click_button("Accepter")
-      click_button("Accepter")
+      find('#accepter-button').click
       click_link("Candidatures")
       click_button("Acceptées")
       find('p.fr-badge--info', text: "en attente de réponse".upcase)
@@ -317,7 +317,7 @@ module Dashboard::TeamMemberInvitations
       find('p.fr-badge--info', text: "nouveau".upcase)
       find('a[title="Répondre à la candidature"]', text: "Répondre").click
       click_button("Accepter")
-      click_button("Accepter")
+      find('#accepter-button').click
       click_link("Candidatures")
       click_button("Acceptées")
       find('p.fr-badge--info', text: "en attente de réponse".upcase)
