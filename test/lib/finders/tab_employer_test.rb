@@ -34,8 +34,7 @@ module Finders
                              .pending_internship_applications_actions_count
       # 1 for :read_by_employer,
       # 1 for :submitted,
-      # 1 for :examined
-      assert_equal 3, tab_value
+      assert_equal 2, tab_value
     end
 
     test '.pending_agreements_actions_count with 1 signature by employer' do
