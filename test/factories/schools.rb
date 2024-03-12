@@ -4,7 +4,7 @@ require_relative '../support/coordinates'
 
 FactoryBot.define do
   factory :school do
-    name { 'Collège evariste Gallois' }
+    name { 'Lycée evariste Gallois' }
     coordinates { Coordinates.paris }
     city { 'Paris' }
     zipcode { '75015' }
@@ -45,7 +45,7 @@ FactoryBot.define do
   end
 
   factory :api_school, class: Api::School do
-    name { 'Collège evariste Gallois' }
+    name { 'Lycée evariste Gallois' }
     city { 'Paris' }
     coordinates { Coordinates.paris }
     zipcode { '75015' }

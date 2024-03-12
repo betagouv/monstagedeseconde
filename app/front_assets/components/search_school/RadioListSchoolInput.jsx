@@ -20,7 +20,7 @@ function RadioListSchoolInput({
         
         <div className="custom-label-container">
           <label className='fr-label' htmlFor={`${resourceName}_school_name`}>
-            Collège
+            Lycée
             <abbr title="(obligatoire)" aria-hidden="true">
               *
             </abbr>
@@ -37,7 +37,7 @@ function RadioListSchoolInput({
       {isAlreadySelected && (
         <div className="custom-label-container">
           <label className='fr-label' htmlFor={`${resourceName}_school_name`}>
-            Collège
+          Lycée
             <abbr title="(obligatoire)" aria-hidden="true">
               *
             </abbr>
