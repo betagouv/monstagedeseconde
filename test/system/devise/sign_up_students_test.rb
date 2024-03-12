@@ -44,7 +44,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     assert_difference('Users::Student.count', 0) do
       find("label[for='select-channel-email']",).click
       fill_in 'Adresse électronique', with: existing_email
-      fill_in 'Créer un mot de passe', with: 'kikoololletest'
+      fill_in 'Créer un mot de passe', with: 'Kikoololletest123!!'
       click_on "Valider"
       find('.fr-alert.fr-alert--error', text: 'Courriel : Un compte est déjà associé à cet email')
       assert_equal existing_email, find('#user_email').value
@@ -54,7 +54,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     assert_difference('Users::Student.count', 1) do
       find('label', text: 'Par email').click
       fill_in 'Adresse électronique', with: 'another@email.com'
-      fill_in 'Créer un mot de passe', with: 'kikoololletest'
+      fill_in 'Créer un mot de passe', with: 'Kikoololletest123!!'
       click_on "Valider"
     end
     # students are confirmed by default and redirected to search page after signup
@@ -73,7 +73,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     visit new_identity_path(as: 'Student')
 
     # fails to find a class_room though there's an anonymized one
-    find_field('Nom (ou ville) de mon établissement').fill_in(with: 'Saint')
+    find_field('Nom (ou ville) de mon lycée').fill_in(with: 'Saint')
     find('#downshift-0-item-0').click
     # find("label[for=\"select-school-#{school_1.id}\"]").click
     select school_1.name, from: "identity_school_id"
