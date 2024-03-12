@@ -469,6 +469,33 @@ module Dashboard
           assert_text "Votre profil pourrait intéresser le département des ventes"
         end
       end
+
+      test "student can apply twice if he's got one week internship only" do
+        student = create(:student)
+        internship_offer_1 = create(:weekly_internship_offer, :week_1)
+        internship_offer_2 = create(:weekly_internship_offer, :week_2)
+        internship_application = create(:weekly_internship_application, :approved, student: student, internship_offer: internship_offer_1)
+        sign_in(student)
+        visit dashboard_internship_offers_path
+        click_link "Candidatures"
+        click_link "Rechercher un autre stage"
+        click_link internship_offer_2.title
+        all('a', text:'Postuler').first.click
+        find('h1.h6', text: 'Votre candidature')
+      end
+
+      test "student cannot apply twice on the same week internship" do
+        student = create(:student)
+        internship_offer_1 = create(:weekly_internship_offer, :week_1)
+        internship_offer_2 = create(:weekly_internship_offer, :week_1)
+        internship_application = create(:weekly_internship_application, :approved, student: student, internship_offer: internship_offer_1)
+        sign_in(student)
+        visit dashboard_internship_offers_path
+        click_link "Candidatures"
+        click_link "Rechercher un autre stage"
+        click_link internship_offer_2.title
+        all("p.fr-badge.fr-badge--warning", text: "Stage déjà validé sur cette semaine".upcase, count: 2)
+      end
     end
   end
 end
