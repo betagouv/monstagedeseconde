@@ -41,7 +41,7 @@
                 li
                   = f.submit class: 'fr-btn fr-icon-checkbox-line fr-px-1w',
                              disabled: !!rich_text,
-                             value: "Confirmer",
+                             value: modal_opener_label || "Confirmer",
                              id: "#{modal_opener_label.downcase}-button",
                              data: {  "internship-agreement-field-target": modal_opener_label != 'Accepter' ? 'submit' : '' }
                 li

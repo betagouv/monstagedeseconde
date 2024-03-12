@@ -108,7 +108,7 @@ namespace :schools do
       end
       if search_street_by_name_school.present?
         # Final search by school name
-        places = Geocoder.search("Collège #{school.name} #{school.city} #{school.zipcode}")
+        places = Geocoder.search("Lycée #{school.name} #{school.city} #{school.zipcode}")
         search_result = after_search(places: places, school: school, search_method: 'search by name , city and zipcode failed ')
         search_result[:counter_ok].zero? ? ko_by_name_search += 1 : ok_by_name_search +=1
       end
@@ -189,7 +189,7 @@ namespace :schools do
     # 7 TYPE_DETABLISSEMENT
     # 8 EP
     # 9 circonscription
-    # 10 contact collège ou circonscription
+    # 10 contact lycée ou circonscription
 
     data_file_path = Rails.root.join('db/data_imports/liste-des-rep-et-rep-rentree-2022.csv')
     listed_schools = {}
@@ -227,7 +227,7 @@ namespace :schools do
     PrettyConsole.say_in_red("Missing schools in db count: #{missing_schools.count}")
 
     missing_schools.each do |school|
-      search_string = "Collège #{school[:name]} #{school[:city]} FRANCE"
+      search_string = "Lycée #{school[:name]} #{school[:city]} FRANCE"
 
       geocoder_data = Geocoder.search(search_string).first
       if geocoder_data.blank? || geocoder_data&.data&.key?('error')
@@ -266,7 +266,7 @@ namespace :schools do
     PrettyConsole.say_in_red("No result count: #{no_result_by_geocoder.count}")
     unless no_result_by_geocoder.empty?
       puts '===== + = no result by geocoder = + ========='
-      puts no_result_by_geocoder.map { |school| "| Collège #{school[:name]} - #{school[:city]} - #{school[:code_uai] } FRANCE |\\n" }
+      puts no_result_by_geocoder.map { |school| "| Lycée #{school[:name]} - #{school[:city]} - #{school[:code_uai] } FRANCE |\\n" }
       puts '===== + = + = + ========='
       puts ''
     end

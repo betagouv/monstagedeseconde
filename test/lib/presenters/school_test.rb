@@ -10,9 +10,9 @@ module Presenters
     end
 
     test '#agreement_address' do
-      assert_equal "Collège evariste Gallois - Paris - 75015", School.new(@school).select_text_method
-      assert_equal "Collège evariste Gallois - Paris - 75015", School.new(@school).agreement_address
-      assert_equal "Collège evariste Gallois - Paris - 75015", School.new(@school_2).agreement_address
+      assert_equal "Lycée evariste Gallois - Paris - 75015", School.new(@school).select_text_method
+      assert_equal "Lycée evariste Gallois - Paris - 75015", School.new(@school).agreement_address
+      assert_equal "Lycée evariste Gallois - Paris - 75015", School.new(@school_2).agreement_address
     end
   end
 end

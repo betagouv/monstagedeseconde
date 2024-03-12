@@ -3,7 +3,6 @@
 FactoryBot.define do
   factory :operator do
     sequence(:name) { |n| "operator-#{n}" }
-    logo { 'Logo-jobirl.jpg' }
     api_full_access { false }
     target_count { 0 }
     realized_count { { 

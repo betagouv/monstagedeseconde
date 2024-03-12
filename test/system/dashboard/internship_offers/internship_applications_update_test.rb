@@ -54,7 +54,7 @@ module Dashboard::InternshipOffers
       sign_in(employer)
       visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
       click_on 'Accepter'
-      click_button 'Confirmer'
+      find('#accepter-button').click
       assert internship_application.reload.validated_by_employer?
       find("h2.h4", text: "Les candidatures")
       find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--info', text: "en attente de réponse".upcase)

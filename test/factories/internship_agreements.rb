@@ -5,7 +5,7 @@ FactoryBot.define do
     school_representative_full_name { internship_application.student.school.school_manager&.presenter&.full_name }
     school_representative_phone { FFaker::PhoneNumberFR.mobile_phone_number }
     school_representative_email { FFaker::Internet.email }
-    school_representative_role { 'Principal de collège' }
+    school_representative_role { 'Principal de lycée' }
     student_school { internship_application.student.school.name }
     student_address { "#{FFaker::Address.street_address} #{internship_application.student.school.zipcode} #{internship_application.student.school.city}" }
     student_refering_teacher_full_name { FFaker::NameFR.name }
