@@ -33,9 +33,6 @@ fr:
         page_title: "Classes du %{name}"
       information:
         page_title: 'Informations relatives aux conventions'
-      internship_agreement_presets:
-        edit:
-          page_title: "Modifier les informations relatives aux conventions"
       internship_applications:
         index:
           page_title: "Conventions de stage"

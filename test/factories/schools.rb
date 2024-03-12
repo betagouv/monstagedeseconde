@@ -31,17 +31,6 @@ FactoryBot.define do
     trait :with_weeks do
       weeks { Week.selectable_on_school_year[0..1] }
     end
-
-    trait :with_agreement_presets do
-      internship_agreement_preset { build(:internship_agreement_preset,
-                                           school_delegation_to_sign_delivered_at: 2.years.ago)}
-    end
-
-    trait :with_agreement_presets_missing_date do
-      internship_agreement_preset { build(:internship_agreement_preset,
-                                           school_delegation_to_sign_delivered_at: nil)}
-      weeks { [Week.selectable_from_now_until_end_of_school_year.first] }
-    end
   end
 
   factory :api_school, class: Api::School do

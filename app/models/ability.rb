@@ -106,7 +106,6 @@ class Ability
       create
       edit
       edit_activity_rating_rich_text
-      edit_complementary_terms_rich_text
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
       edit_main_teacher_full_name
@@ -114,7 +113,6 @@ class Ability
       edit_school_representative_phone
       edit_school_representative_email
       edit_school_representative_role
-      edit_school_delegation_to_sign_delivered_at
       edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
@@ -133,9 +131,6 @@ class Ability
       update
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
-    end
-    can %i[edit update], InternshipAgreementPreset do |internship_agreement_preset|
-      internship_agreement_preset.school_id == user.school_id
     end
     can :create, Signature  do |signature|
       signature.internship_agreement.student.school == user.school
@@ -160,7 +155,6 @@ class Ability
       edit
       sign_internship_agreements
       edit_activity_rating_rich_text
-      edit_complementary_terms_rich_text
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
       edit_main_teacher_full_name
@@ -168,7 +162,6 @@ class Ability
       edit_school_representative_phone
       edit_school_representative_email
       edit_school_representative_role
-      edit_school_delegation_to_sign_delivered_at
       edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
@@ -187,9 +180,6 @@ class Ability
       update
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
-    end
-    can %i[edit update], InternshipAgreementPreset do |internship_agreement_preset|
-      internship_agreement_preset.school_id == user.school_id
     end
     can :create, Signature do |signature|
       signature.internship_agreement.school_manager == user.id
@@ -249,7 +239,6 @@ class Ability
       edit_activity_scope_rich_text
       edit_activity_preparation_rich_text
       edit_activity_learnings_rich_text
-      edit_complementary_terms_rich_text
       edit_date_range
       edit_organisation_representative_full_name
       edit_siret

@@ -11,7 +11,6 @@ class School < ApplicationRecord
   has_many :internship_offers, dependent: :nullify
   has_many :internship_applications, through: :students
   has_many :internship_agreements, through: :internship_applications
-  has_one :internship_agreement_preset
 
   has_rich_text :agreement_conditions_rich_text
 
@@ -180,8 +179,6 @@ class School < ApplicationRecord
     weeks.selectable_on_school_year.exists?
   end
 
-  after_create :create_internship_agreement_preset!,
-               if: lambda { |s| s.internship_agreement_preset.blank? }
 
   def has_staff?
     users.where("role = 'teacher' or role = 'main_teacher' or role = 'other'")

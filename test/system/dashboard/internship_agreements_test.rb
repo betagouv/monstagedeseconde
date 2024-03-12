@@ -74,8 +74,8 @@ module Dashboard
       select('08:00', from:'internship_agreement_weekly_hours_start')
       select('16:00', from:'internship_agreement_weekly_hours_end')
       fill_in('Pause déjeuner', with: "un repas à la cantine d'entreprise")
-      click_button('Envoyer la convention')
-      find('h1 span.fr-fi-arrow-right-line.fr-fi--lg', text: "Envoyer la convention")
+      click_button('Valider la convention')
+      find('h1 span.fr-fi-arrow-right-line.fr-fi--lg', text: "Valider la convention")
     end
 
     test 'employer reads internship agreement table with correct indications / daily hours - status: started_by_employer' do
@@ -106,9 +106,9 @@ module Dashboard
       select('16:00', from:'internship_agreement_daily_hours_vendredi_end')
       text_area = first(:css,"textarea[name='internship_agreement[lunch_break]']").native.send_keys('un repas à la cantine bien chaud')
       # samedi is avoided on purpose
-      click_button('Envoyer la convention')
-      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Envoyer la convention")
-      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Envoyer la convention").click
+      click_button('Valider la convention')
+      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Valider la convention")
+      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Valider la convention").click
       # find('h1', text: "truc", wait: 3.seconds)
       # assert_in_delta internship_agreement.updated_at, Time.now, 1
       find("span#alert-text", text: "La convention a été envoyée au chef d'établissement.")
@@ -149,9 +149,9 @@ module Dashboard
       text_area = first(:css,"textarea[name='internship_agreement[lunch_break]']").native.send_keys('un repas à la cantine bien chaud')
       # Missing lunch break indications on friday
       # samedi is avoided on purpose
-      click_button('Envoyer la convention')
-      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Envoyer la convention")
-      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Envoyer la convention").click
+      click_button('Valider la convention')
+      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Valider la convention")
+      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Valider la convention").click
       alert_text = all(".fr-alert.fr-alert--error").first.text
       assert_equal alert_text, "Planning hebdomadaire : Veuillez compléter les horaires et repas de la semaine de stage"
     end
@@ -267,8 +267,6 @@ module Dashboard
       within('td[data-head="Statut"]') do
         find('div.actions', text: "Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.")
       end
-      text = "Le chef d'établissement a été nommé apte à signer les conventions par le conseil d'administration de l'établissement en date du"
-      fill_in text, with: "12/02/2015"
       click_button('Valider la convention')
       find('h1 span.fr-fi-arrow-right-line.fr-fi--lg', text: "Valider la convention")
       click_button('Je valide la convention')
@@ -364,8 +362,6 @@ module Dashboard
       within('td[data-head="Statut"]') do
         find('div.actions', text: "Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.")
       end
-      text = "Le chef d'établissement a été nommé apte à signer les conventions par le conseil d'administration de l'établissement en date du"
-      fill_in text, with: "12/02/2015"
       click_button('Valider la convention')
       find('h1 span.fr-fi-arrow-right-line.fr-fi--lg', text: "Valider la convention")
       click_button('Je valide la convention')
