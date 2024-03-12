@@ -490,7 +490,21 @@ class InternshipApplication < ApplicationRecord
   end
 
   def cancel_all_pending_applications
-    student.internship_applications.where(aasm_state: InternshipApplication::PENDING_STATES).each do |application|
+    applications_to_cancel = student.internship_applications
+                                    .where(aasm_state: InternshipApplication::PENDING_STATES)
+    case internship_offer.period
+    when 1
+      applications_to_cancel = applications_to_cancel.select do |application|
+        offer = application.internship_offer
+        offer.week_1? || offer.full_time?
+      end
+    when 2
+      applications_to_cancel = applications_to_cancel.select do |application|
+        offer = application.internship_offer
+        offer.week_2? || offer.full_time?
+      end
+    end
+    applications_to_cancel.each do |application|
       application.cancel_by_student_confirmation! unless application == self
     end
   end
