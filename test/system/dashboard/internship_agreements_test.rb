@@ -577,7 +577,7 @@ module Dashboard
         click_link("Contacter l'établissement")
         find('h1.fr-h3.fr-mt-4w.blue-france', text: "Contact établissement scolaire")
         find 'h2.fr-h5.fr-mt-4w.blue-france', text: "Coordonnées de l'établissement"
-        find 'p strong', text: "Collège evariste Gallois"
+        find 'p strong', text: "Lycée evariste Gallois"
         find 'p', text: "1 rue de la paix 75000 Paris"
         assert page.has_text?('1 rue de la paix 75000 Paris', count: 1)
         assert page.has_text?("01 01 01 01 01", count: 1)

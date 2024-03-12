@@ -66,7 +66,7 @@ class School < ApplicationRecord
   end
 
   def agreement_address
-    "Collège #{name} - #{city}, #{zipcode}"
+    "Lycée #{name} - #{city}, #{zipcode}"
   end
   
   rails_admin do

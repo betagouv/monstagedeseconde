@@ -1,4 +1,9 @@
 import './favicon.png';
+import './favicons/favicon-development.png';
+import './favicons/favicon-staging.png';
+import './favicons/favicon-recette.png';
+import './favicons/favicon-review.png';
+import './favicons/favicon-heroku.png';
 import './danger_sign_blue.svg';
 import './notice_people.svg';
 import './search-no-result.svg';
@@ -93,6 +98,7 @@ import './homepage/france.svg';
 import './homepage/dashboard.svg';
 import './homepage/logo-education-nationale.svg';
 import './homepage/backgrd-header.webp';
+import './homepage/backgrd-header.png';
 import './homepage/hero-side-stamp.png';
 
 import './homepage/resources/etablissements.svg';
