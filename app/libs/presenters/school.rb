@@ -6,15 +6,15 @@ module Presenters
     alias_method :agreement_address, :select_text_method
 
     def school_name
-      return school.name if school.name.match(/^\s*Collège.*/)
+      return school.name if school.name.match(/^\s*Lycée.*/)
 
-      "Collège #{school.name}"
+      "Lycée #{school.name}"
     end
 
     def school_name_in_sentence
-      return school.name if school.name.match(/^\s*Collège.*/)
+      return school.name if school.name.match(/^\s*Lycée.*/)
 
-      "collège #{school.name}"
+      "lycée #{school.name}"
     end
 
     def address

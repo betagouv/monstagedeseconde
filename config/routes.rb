@@ -100,7 +100,6 @@ Rails.application.routes.draw do
         resources :invitations, only: %i[new create index destroy], module: 'schools'
         get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
         resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
-        resources :internship_agreement_presets, only: %i[edit update],  module: 'schools'
 
         resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy], module: 'schools' do
           resources :students, path: 'eleves', only: %i[update index new create], module: 'class_rooms'
@@ -183,6 +182,7 @@ Rails.application.routes.draw do
   get '/register_to_webinar', to: 'pages#register_to_webinar'
   get '/eleves', to: 'pages#student_landing'
   get '/professionnels', to: 'pages#pro_landing'
+  get '/partenaires_regionaux', to: 'pages#regional_partners_index'
   get '/equipe-pedagogique', to: 'pages#school_management_landing'
   get '/referents', to: 'pages#statistician_landing'
 

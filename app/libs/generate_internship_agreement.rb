@@ -255,13 +255,6 @@ class GenerateInternshipAgreement < Prawn::Document
            ", L. 4153-5, Vu le code de l’éducation, notamment ses articles. " \
            "D. 331-1 D. 331-3, D. 331-6, D. 331-8, D. 331-9, D. 332 14 et"
     @pdf.text text
-    text = "Vu la délibération du conseil d’administration du collège en date du " \
-           "#{dotting @internship_agreement.school_delegation_to_sign_delivered_at } " \
-           " approuvant la convention-type dématérialisée et autorisant le chef " \
-           "d’établissement à conclure au nom de l’établissement toute " \
-           "convention relative à la séquence en milieu professionnel conforme " \
-           "à la convention-type."
-    @pdf.text text
     @pdf.move_down 20
     label_form "Les parties à la présente convention susmentionnées s’engagent" \
                "  au respect des dispositions suivantes :"

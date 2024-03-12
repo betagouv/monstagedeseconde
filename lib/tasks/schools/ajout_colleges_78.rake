@@ -18,7 +18,7 @@ namespace :schools do
          school = School.find_by(code_uai: code_uai)
 
          if school.present?
-            puts "Le collège #{school.name} existe déjà"
+            puts "Le lycée #{school.name} existe déjà"
          else
             address = "#{street} #{zipcode} #{city}"
             coordinates = Geocoder.search(address).first.try(:coordinates)
@@ -35,7 +35,7 @@ namespace :schools do
                   coordinates: {latitude: coordinates[0], longitude: coordinates[1]}
                )
 
-               puts "Collège ajouté #{code_uai}"
+               puts "Lycée ajouté #{code_uai}"
             else
                puts "ERROR : coordonnées GPS non trouvées pour l'adresse " + address
             end

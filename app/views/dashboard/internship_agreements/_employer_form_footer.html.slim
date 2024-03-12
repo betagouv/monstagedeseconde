@@ -16,13 +16,13 @@
                        id: 'send_agreement',
                       :'aria-controls' => 'validation-modal' do
             i.fas.fa-check
-            | Envoyer la convention
+            | Valider la convention
 
   = render "dashboard/internship_agreements/validation_modal",
            form: form,
-           title: 'Envoyer la convention',
+           title: 'Valider la convention',
            action: 'completeByEmployer',
-           button: 'Envoyer la convention',
+           button: 'Valider la convention',
            content: "En envoyant votre convention, vous ne pourrez plus " \
                     "modifier les informations. La convention sera envoyée au " \
                     "chef d’établissement qui pourra valider définitivement " \
