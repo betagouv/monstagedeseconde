@@ -58,7 +58,7 @@ module Product
     end
 
     test 'index as school_manager see progress' do
-      school = create(:school, :with_agreement_presets, :with_school_manager)
+      school = create(:school, :with_school_manager)
       class_room = create(:class_room,  school: school)
 
       internship_application_1 = create(:weekly_internship_application,

@@ -126,6 +126,8 @@ class User < ApplicationRecord
   end
 
   def anonymize(send_email: true)
+    #TODO
+    # return if anonymized && !discarded_at.nil?
     # Remove all personal information
     email_for_job = email.dup
 
