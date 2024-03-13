@@ -8,16 +8,16 @@ module Dashboard
 
       test 'student can browse his internship_applications' do
         skip "test to update after ui is finished #TODO #may_flower"
-        school = create(:school, :with_school_manager , :with_weeks)
+        school = create(:school, :with_school_manager )
         student = create(:student, school: school)
         internship_applications = {
-          drafted: create(:weekly_internship_application, :drafted, internship_offer: create(:weekly_internship_offer, weeks: school.weeks), student: student),
-          submitted: create(:weekly_internship_application, :submitted, internship_offer: create(:weekly_internship_offer, weeks: school.weeks), student: student),
-          approved: create(:weekly_internship_application, :approved, internship_offer: create(:weekly_internship_offer, weeks: school.weeks), student: student),
-          rejected: create(:weekly_internship_application, :rejected, internship_offer: create(:weekly_internship_offer, weeks: school.weeks), student: student),
-          canceled_by_student_confirmation: create(:weekly_internship_application, :canceled_by_student_confirmation, internship_offer: create(:weekly_internship_offer, weeks: school.weeks), student: student),
-          validated_by_employer: create(:weekly_internship_application, :validated_by_employer, internship_offer: create(:weekly_internship_offer, weeks: school.weeks), student: student),
-          canceled_by_student: create(:weekly_internship_application, :canceled_by_student, internship_offer: create(:weekly_internship_offer, weeks: school.weeks), student: student)
+          drafted: create(:weekly_internship_application, :drafted, internship_offer: create(:weekly_internship_offer), student: student),
+          submitted: create(:weekly_internship_application, :submitted, internship_offer: create(:weekly_internship_offer), student: student),
+          approved: create(:weekly_internship_application, :approved, internship_offer: create(:weekly_internship_offer), student: student),
+          rejected: create(:weekly_internship_application, :rejected, internship_offer: create(:weekly_internship_offer), student: student),
+          canceled_by_student_confirmation: create(:weekly_internship_application, :canceled_by_student_confirmation, internship_offer: create(:weekly_internship_offer), student: student),
+          validated_by_employer: create(:weekly_internship_application, :validated_by_employer, internship_offer: create(:weekly_internship_offer), student: student),
+          canceled_by_student: create(:weekly_internship_application, :canceled_by_student, internship_offer: create(:weekly_internship_offer), student: student)
         }
         sign_in(student)
         visit '/'
@@ -74,11 +74,11 @@ module Dashboard
         skip "test to update after ui is finished #TODO #may_flower"
         school = nil
         travel_to Date.new(2020, 1, 1) do
-          school = create(:school, :with_school_manager, :with_weeks)
+          school = create(:school, :with_school_manager)
         end
         travel_to Date.new(2021, 1, 1) do
           student = create(:student, school: school)
-          internship_offer = create(:weekly_internship_offer, weeks: [Week.find_by(number: 5, year: 2021)])
+          internship_offer = create(:weekly_internship_offer)
           sign_in(student)
           visit internship_offer_path(internship_offer)
           find('h1', text: internship_offer.title)
@@ -93,8 +93,8 @@ module Dashboard
       test 'GET #show as Student with existing draft application shows the draft' do
         if ENV['RUN_BRITTLE_TEST']
           weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
-          internship_offer      = create(:weekly_internship_offer, weeks: weeks)
-          school                = create(:school, weeks: weeks)
+          internship_offer      = create(:weekly_internship_offer)
+          school                = create(:school)
           student               = create(:student, school: school, class_room: create(:class_room, school: school))
           internship_application = create(:weekly_internship_application,
                                           :drafted,
@@ -120,7 +120,7 @@ module Dashboard
         skip "test to update after ui is finished #TODO #may_flower"
         travel_to Date.new(2019,12,1) do
           weeks = [Week.find_by(number: 1, year: 2020)]
-          school = create(:school, weeks: weeks)
+          school = create(:school)
           student = create(:student,
                           school: school,
                           class_room: create( :class_room,
@@ -171,7 +171,7 @@ module Dashboard
         skip "test to update after ui is finished #TODO #may_flower"
         travel_to Date.new(2023,2,1) do
           weeks = Week.selectable_from_now_until_end_of_school_year
-          school = create(:school, weeks: weeks)
+          school = create(:school)
           student = create(:student,
                           school: school,
                           class_room: create( :class_room,
@@ -224,7 +224,7 @@ module Dashboard
       test 'submitted internship_application can be canceled by student' do
         skip "test to update after ui is finished #TODO #may_flower"
         weeks = [Week.find_by(number: 1, year: 2020)]
-        school = create(:school, weeks: weeks)
+        school = create(:school)
         student = create(:student,
                         school: school,
                         class_room: create(:class_room, school: school)
@@ -256,7 +256,6 @@ module Dashboard
       test 'submitted internship_application can be resent by the student' do
         skip "test to update after ui is finished #TODO #may_flower"
         weeks = [Week.find_by(number: 1, year: 2020)]
-        school = create(:school, weeks: weeks)
         student = create(:student,
                          school: school,
                          class_room: create(:class_room, school: school)
@@ -286,7 +285,7 @@ module Dashboard
       test "confirmed internship_application can lead student to the employer's contact parameters" do
         skip "test to update after ui is finished #TODO #may_flower"
         weeks = [Week.find_by(number: 1, year: 2020)]
-        school = create(:school, weeks: weeks)
+        school = create(:school)
         student = create(:student,
                         school: school,
                         class_room: create(:class_room, school: school)
@@ -312,7 +311,7 @@ module Dashboard
       test "when confirmed an internship_application a student cannot apply a drafted application anymore" do
         skip "test to update after ui is finished #TODO #may_flower"
         weeks = [Week.find_by(number: 1, year: 2020),Week.find_by(number: 2, year: 2020)]
-        school = create(:school, weeks: weeks)
+        school = create(:school)
         student = create(:student,
                         school: school,
                         class_room: create(:class_room, school: school)
@@ -346,7 +345,7 @@ module Dashboard
         skip "test to update after ui is finished #TODO #may_flower"
         travel_to Date.new(2019, 10, 1) do
           weeks = [Week.find_by(number: 1, year: 2020),Week.find_by(number: 2, year: 2020)]
-          school = create(:school, weeks: weeks)
+          school = create(:school)
           student = create(:student,
                     school: school,
                     class_room: create(:class_room, school: school)
@@ -377,7 +376,7 @@ module Dashboard
         skip "test to update after ui is finished #TODO #may_flower"
         travel_to Date.new(2019, 10, 1) do
           weeks = [Week.find_by(number: 1, year: 2020),Week.find_by(number: 2, year: 2020)]
-          school = create(:school, weeks: weeks)
+          school = create(:school)
           student = create(:student,
                     school: school,
                     class_room: create(:class_room, school: school)
@@ -409,7 +408,7 @@ module Dashboard
         travel_to Date.new(2019, 10, 1) do
           employer = create(:employer)
           weeks = [Week.find_by(number: 1, year: 2020),Week.find_by(number: 2, year: 2020)]
-          school = create(:school, weeks: weeks)
+          school = create(:school)
           student = create(:student,
                     school: school,
                     class_room: create(:class_room, school: school))
@@ -441,7 +440,7 @@ module Dashboard
         skip "test to update after ui is finished #TODO #may_flower"
         travel_to Date.new(2019, 10, 1) do
           weeks = [Week.find_by(number: 1, year: 2020),Week.find_by(number: 2, year: 2020)]
-          school = create(:school, weeks: weeks)
+          school = create(:school)
           student = create(:student,
                     school: school,
                     class_room: create(:class_room, school: school))

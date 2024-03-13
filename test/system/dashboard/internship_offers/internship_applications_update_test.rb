@@ -98,9 +98,8 @@ module Dashboard::InternshipOffers
     test 'employer cannot validate an internship_application twice for different students' do
       travel_to Date.new(2020, 1, 1) do
         weeks = [Week.find_by(number: 3, year: 2020)]
-        school = create(:school, :with_school_manager, weeks: weeks)
+        school = create(:school, :with_school_manager)
         employer, internship_offer = create_employer_and_offer
-        assert_equal 1, school.school_internship_weeks.count
         student = create(:student, school: school)
         other_student = create(:student, school: school)
         internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer, student: student)
@@ -132,8 +131,7 @@ module Dashboard::InternshipOffers
 
     test "other employer can see rejection from student confirmation to another employer's internship_offer" do
       travel_to Date.new(2020, 1, 1) do
-        weeks = [Week.find_by(number: 3, year: 2020)]
-        school = create(:school, :with_school_manager, weeks: weeks)
+        school = create(:school, :with_school_manager)
         employer_1, internship_offer_1 = create_employer_and_offer
         employer_2, internship_offer_2 = create_employer_and_offer
         student = create(:student, school: school)

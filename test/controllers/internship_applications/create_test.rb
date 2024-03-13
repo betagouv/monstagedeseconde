@@ -78,7 +78,7 @@ module InternshipApplications
 
     test 'POST #create internship application as student without class_room' do
       internship_offer = create(:weekly_internship_offer)
-      school = create(:school, weeks: [Week.selectable_from_now_until_end_of_school_year.first])
+      school = create(:school)
       student = create(:student, school: school)
       sign_in(student)
       valid_params = {
@@ -116,7 +116,7 @@ module InternshipApplications
         max_candidates: 3)
       internship_offer.hosting_info.update(max_candidates: 3)
 
-      school = create(:school, weeks: Week.selectable_from_now_until_end_of_school_year.first(2))
+      school = create(:school)
       class_room = create(:class_room, school: school)
       student_1 = create(:student, school: school, class_room: class_room)
       student_2 = create(:student, school: school, class_room: class_room)
@@ -153,7 +153,7 @@ module InternshipApplications
 
     test 'POST #create internship application as student with empty phone in profile' do
       internship_offer = create(:weekly_internship_offer)
-      school = create(:school, weeks: Week.selectable_from_now_until_end_of_school_year.first(2))
+      school = create(:school)
       student = create(:student, school: school, phone: nil, email: 'marc@ms3e.fr', class_room: create(:class_room, school: school))
       sign_in(student)
       valid_params = {
@@ -185,7 +185,7 @@ module InternshipApplications
   
     test 'POST #create internship application as student with empty email in profile' do
       internship_offer = create(:weekly_internship_offer)
-      school = create(:school, weeks: [Week.selectable_from_now_until_end_of_school_year.first])
+      school = create(:school)
       student = create(:student, school: school, phone: '+330600110011', email: nil, class_room: create(:class_room, school: school))
       sign_in(student)
       valid_params = {
@@ -240,7 +240,7 @@ module InternshipApplications
 
     test 'POST #create internship application as student with duplicate contact phone' do
       internship_offer = create(:weekly_internship_offer)
-      school = create(:school, weeks: [Week.selectable_from_now_until_end_of_school_year.first])
+      school = create(:school)
       student = create(:student, school: school, phone: '+330600110011', class_room: create(:class_room, school: school))
       student_2 = create(:student, phone: '+330600110022')
       sign_in(student)

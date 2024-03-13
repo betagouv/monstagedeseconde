@@ -9,7 +9,7 @@ module Finders
     end
 
     def fetch_all
-      base_query.includes(:users, :weeks)
+      base_query.includes(:users)
                 .order(:name)
     end
 

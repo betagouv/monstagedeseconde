@@ -5,7 +5,7 @@ module Dashboard
     include Devise::Test::IntegrationHelpers
 
     test 'factory' do
-      school = create(:school, :with_weeks, :with_school_manager)
+      school = create(:school, :with_school_manager)
       invitation = create(:invitation, user_id: school.school_manager.id)
       assert_equal 1, Invitation.all.count
     end

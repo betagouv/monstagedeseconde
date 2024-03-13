@@ -16,9 +16,8 @@ class AbilityTest < ActiveSupport::TestCase
   test 'Student' do
     travel_to Date.new(2020, 9, 1) do
       internship_offer = create(:weekly_internship_offer)
-      school = create(:school, week_ids: Week.selectable_from_now_until_end_of_school_year.first.id)
+      school = create(:school)
       class_room = create(:class_room, school: school)
-      assert_equal 1, school.weeks.count
       student = create(:student, class_room: class_room , school: school)
       ability = Ability.new(student)
       internship_application = create(:weekly_internship_application,

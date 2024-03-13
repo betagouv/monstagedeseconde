@@ -60,17 +60,7 @@ class User < ApplicationRecord
   def channel ; :email end
 
   def default_search_options
-    opts = {}
-
-    opts = opts.merge(school.default_search_options) if has_relationship?(:school)
-    if has_relationship?(:class_room) || self.is_a?(Users::SchoolManagement)
-      week_ids = school.weeks
-                       .where(id: Week.selectable_on_school_year.pluck(:id))
-                       .pluck(:id)
-                       .map(&:to_s)
-      opts = opts.merge(week_ids: week_ids) if week_ids.size.positive?
-    end
-    opts
+    has_relationship?(:school) ? school.default_search_options : {}
   end
 
   def has_relationship?(relationship)

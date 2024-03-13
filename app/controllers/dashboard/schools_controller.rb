@@ -64,7 +64,7 @@ module Dashboard
     end
 
     def parsed_visible_param
-      ActiveRecord::Type::Boolean.new.deserialize(params[:visible])
+      ActiveRecord::Type::Boolean.new.deserialize(params[:visible])tt
     end
 
     def parsed_kind_param
@@ -80,12 +80,12 @@ module Dashboard
                                      :name,
                                      :visible,
                                      :agreement_conditions_rich_text,
-                                     coordinates: {},
-                                     week_ids: [])
+                                     :period,
+                                     coordinates: {})
     end
 
     def school_manager_internship_weeks_params
-      params.require(:school).permit(:agreement_conditions_rich_text, week_ids: [])
+      params.require(:school).permit(:agreement_conditions_rich_text)
     end
   end
 end
