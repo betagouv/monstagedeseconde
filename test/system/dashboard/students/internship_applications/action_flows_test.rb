@@ -436,39 +436,6 @@ module Dashboard
           assert_text "Le tuteur est malade"
         end
       end
-
-      test "examined motives are explicit for students when employer rejects internship_application" do
-        skip "test to update after ui is finished #TODO #may_flower"
-        travel_to Date.new(2019, 10, 1) do
-          weeks = [Week.find_by(number: 1, year: 2020),Week.find_by(number: 2, year: 2020)]
-          school = create(:school, weeks: weeks)
-          student = create(:student,
-                    school: school,
-                    class_room: create(:class_room, school: school))
-          employer, internship_offer = create_employer_and_offer
-          internship_offer.weeks = weeks
-          internship_application = create( :weekly_internship_application,
-                                           :submitted,
-                                           internship_offer: internship_offer,
-                                           student: student)
-
-          sign_in(employer)
-          visit dashboard_internship_offers_path
-          click_link "Candidatures"
-          click_link "Répondre"
-          click_button "Etudier"
-          selector = "#internship_application_examined_message"
-          find(selector).native.send_keys('Votre profil pourrait intéresser le département des ventes')
-          click_button "Confirmer"
-          assert_equal "examined", internship_application.reload.aasm_state
-          sign_out(internship_offer.employer)
-
-          sign_in(student)
-          visit dashboard_students_internship_applications_path(student_id: student.id)
-          click_link "Voir"
-          assert_text "Votre profil pourrait intéresser le département des ventes"
-        end
-      end
     end
   end
 end

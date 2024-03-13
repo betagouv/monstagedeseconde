@@ -172,10 +172,9 @@ class EmployerMailer < ApplicationMailer
   end
 
   # every monday and thursday at 8:00
-  def pending_internship_applications_reminder_email(employer:, pending_application_ids:, examined_application_ids:)
+  def pending_internship_applications_reminder_email(employer:, pending_application_ids:)
     @employer = employer
     @pending_application_ids = pending_application_ids
-    @examined_application_ids = examined_application_ids
     @url = dashboard_internship_offers_url(
       mtm_campaign: 'Offreur - Candidatures en attente'
     ).html_safe
