@@ -64,7 +64,7 @@ module Dashboard
     end
 
     def parsed_visible_param
-      ActiveRecord::Type::Boolean.new.deserialize(params[:visible])tt
+      ActiveRecord::Type::Boolean.new.deserialize(params[:visible])
     end
 
     def parsed_kind_param
