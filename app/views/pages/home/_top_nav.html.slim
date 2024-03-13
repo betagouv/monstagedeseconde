@@ -1,18 +1,16 @@
-.d-none.d-md-block.fr-px-2w          
+.d-none.d-md-block.fr-px-2w
   nav.fr-nav id="header-navigation" role="navigation" aria-label="Menu principal"
     ul.fr-nav__list
       li.fr-nav__item
-        / eleves_path,
         = link_to 'Élèves',
-                  "#",
-                  class: 'fr-nav__link fadded'
-                  / aria: { current: (current_page?(eleves_path) || current_page?(root_path) ? 'page' : nil) }
+                  eleves_path,
+                  class: 'fr-nav__link',
+                  aria: { current: (current_page?(eleves_path) || current_page?(root_path) ? 'page' : nil) }
       li.fr-nav__item
-        / professionnels_path
         = link_to 'Professionnels',
                   '#',
                   class: 'fr-nav__link',
-                  aria: { current: (current_page?(professionnels_path) || current_page?(partenaires_regionaux_path) || current_page?(root_path) ? 'page' : nil) }
+                  aria: { current: (current_page?(professionnels_path) || current_page?(root_path) ? 'page' : nil) }
         / = link_to 'Professionnels', professionnels_path, class: 'fr-nav__link', aria: { current: (current_page?(professionnels_path) || current_page?(root_path) ? 'page' : nil) }
       li.fr-nav__item
         span.fr-nav__link.fadded Équipes pédagogiques
