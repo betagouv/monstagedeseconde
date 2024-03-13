@@ -120,4 +120,35 @@ namespace :data_migrations do
     puts "#{error_lines.size} errors"
     puts "Done with creating schools(lycées)"
   end
+
+  desc 'create operator and user_operator and return api_token'
+  task create_operator_and_user: :environment do
+    operator_name = ENV['OPERATOR_NAME']
+    operator_logo = ENV['OPERATOR_LOGO']
+    operator_website = ENV['OPERATOR_WEBSITE']
+    [operator_name, operator_logo, operator_website].each {|attr| attr = nil if attr.blank?}
+    user_operator_first_name = ENV['OPERATOR_FIRST_NAME']
+    user_operator_last_name = ENV['OPERATOR_LAST_NAME']
+    user_operator_email = ENV['OPERATOR_EMAIL']
+    user_operator_password = ENV['OPERATOR_PASSWORD']
+
+    operator = Operator.find_or_create_by!( name: operator_name ) do |operator|
+      operator.logo = operator_logo
+      operator.website = operator_website
+    end
+
+    user_operator = Users::Operator.find_or_create_by(email: user_operator_email) do |user_operator|
+      user_operator.first_name = user_operator_first_name
+      user_operator.last_name = user_operator_last_name
+      user_operator.email = user_operator_email
+      user_operator.password = ENV['OPERATOR_PASSWORD']
+      user_operator.accept_terms = true
+      user_operator.confirmed_at = Time.now
+      user_operator.operator = operator
+    end
+    puts "Operator and user_operator created"
+    puts "Operator api_token: #{user_operator.api_token}"
+    puts "---------------------------------"
+    puts " "
+  end
 end
