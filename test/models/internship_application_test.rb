@@ -25,8 +25,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     create(:weekly_internship_application, :submitted,
                                            submitted_at: 8.days.ago,
                                            pending_reminder_sent_at: nil) # +1
-    create(:weekly_internship_application, :examined,
-                                           submitted_at: 15.days.ago,
+    create(:weekly_internship_application, submitted_at: 15.days.ago,
                                            pending_reminder_sent_at: nil) # +1
     create(:weekly_internship_application, :approved,
                                            approved_at: 10.days.ago,
@@ -411,7 +410,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test '::PENDING_STATES' do
-    assert_equal %w[submitted read_by_employer examined transfered validated_by_employer],
+    assert_equal %w[submitted read_by_employer transfered validated_by_employer],
                  InternshipApplication::PENDING_STATES
   end
 
@@ -430,7 +429,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
         internship_application_2 = create(:weekly_internship_application, :validated_by_employer) #n°1 in the list by status
       end
       travel_to Time.zone.local(2020, 1, 1, 14, 0, 0) do
-        internship_application_3 = create(:weekly_internship_application, :examined) #n°4 in the list by created_at
+        internship_application_3 = create(:weekly_internship_application) #n°4 in the list by created_at
       end
       travel_to Time.zone.local(2020, 1, 1, 15, 0, 0) do
         internship_application_4 = create(:weekly_internship_application, :read_by_employer) #n°5 in the list by created_at

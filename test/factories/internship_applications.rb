@@ -23,13 +23,6 @@ FactoryBot.define do
       read_at { 2.days.ago }
     end
 
-    trait :examined do
-      aasm_state { :examined }
-      submitted_at { 15.days.ago }
-      examined_at { 2.days.ago }
-      access_token { SecureRandom.hex(10) }
-    end
-
     trait :expired do
       aasm_state { :expired }
       submitted_at { 19.days.ago }

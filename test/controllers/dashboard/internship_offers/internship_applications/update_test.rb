@@ -405,42 +405,6 @@ module InternshipOffers::InternshipApplications
       assert internship_application.approved?
     end
 
-    test 'patch #update employer examining a student application' do
-      freeze_time do
-        t_now = Time.zone.now
-        internship_offer = create(:weekly_internship_offer)
-        assert internship_offer.valid?
-        internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
-        sign_in(internship_offer.employer)
-
-        patch dashboard_internship_offer_internship_application_path(internship_offer,
-                                                          internship_application,
-                                                          transition: :examine!)
-        assert_response :redirect
-        assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :examine!)
-        assert_equal t_now, internship_application.reload.examined_at
-      end
-    end
-
-    test 'patch #update not sign in employer examining a student application with token' do
-      freeze_time do
-        t_now = Time.zone.now
-        internship_offer = create(:weekly_internship_offer)
-        assert internship_offer.valid?
-        internship_application = create(:weekly_internship_application, :examined, internship_offer: internship_offer)
-        
-
-        patch dashboard_internship_offer_internship_application_path(internship_offer,
-                                                          internship_application,
-                                                          transition: :approve!,
-                                                          token: internship_application.access_token)
-        assert_response :redirect
-        assert_redirected_to root_path
-        internship_application.reload
-        assert_equal 'examined', internship_application.aasm_state
-      end
-    end
-
     test 'PATCH when application is approved #update with cancel_by_employer! delete agreement' do
       internship_application = create(:weekly_internship_application, :approved)
       assert internship_application.internship_agreement
