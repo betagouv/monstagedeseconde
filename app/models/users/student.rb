@@ -157,7 +157,6 @@ module Users
       related_approved_offers_periods = internship_applications.approved
                                                                .map(&:internship_offer)
                                                                .pluck(:period)
-                                                               .uniq
       case internship_offer.period
       when 0
         !internship_applications.approved.any?
