@@ -25,7 +25,8 @@ const Map = ({ internshipOffer }) => {
       <div className="col-12 map-container-offer">
         <MapContainer center={[internshipOffer.lat, internshipOffer.lon]} zoom={13} scrollWheelZoom={false}>
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+            url="https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png"
+            attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributeurs'
           />
           <MarkerClusterGroup>
             <Marker

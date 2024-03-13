@@ -57,7 +57,7 @@ const InternshipOfferResults = ({ count, sectors, params }) => {
         internshipOffer.lon,
       ]);
       map.fitBounds(bounds);
-      L.tileLayer.provider('CartoDB.Positron').addTo(map);
+      L.tileLayer.provider('OpenStreetMap.Mapnik').addTo(map);
     }
 
     setNewDataFetched(false);
@@ -249,7 +249,8 @@ const InternshipOfferResults = ({ count, sectors, params }) => {
           <div className="">
             <MapContainer center={center} zoom={13} scrollWheelZoom={false}>
               <TileLayer
-                url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                url="https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png"
+                attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributeurs'
               />
               <MarkerClusterGroup>
                 {
