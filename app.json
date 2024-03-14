@@ -14,7 +14,7 @@
 
   "environments": {
 
-    "review": {
+    "review_heroku": {
       "formation": {
         "web": {
           "quantity": 1,
@@ -29,8 +29,8 @@
         "postdeploy": "bundle exec bin/rails db:schema:load db:migrate db:seed infra:notify_deployed"
       },
       "env": {
-        "RAILS_ENV": "review",
-        "RAKE_ENV": "review",
+        "RAILS_ENV": "review_heroku",
+        "RAKE_ENV": "review_heroku",
         "RAILS_MAX_THREADS": 6,
         "WEB_CONCURRENCY": 1,
         "CONVENTION_ENABLED": true,
