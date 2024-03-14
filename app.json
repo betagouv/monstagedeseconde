@@ -14,7 +14,7 @@
 
   "environments": {
 
-    "review": {
+    "review_heroku": {
       "formation": {
         "web": {
           "quantity": 1,
@@ -42,11 +42,7 @@
           "plan": "heroku-postgresql:mini",
           "options": {
             "version": "12",
-            "extensions": 
-              "public.pg_trgm, 
-              public.postgis, 
-              public.unaccent, 
-              public.geography"
+            "extensions": "public.pg_trgm, public.postgis, public.unaccent, public.geography"
           }
         },
         {
