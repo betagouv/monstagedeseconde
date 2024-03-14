@@ -6,11 +6,17 @@ class InternshipOfferNearbyableTest < ActiveSupport::TestCase
 
   def setup
     @coordinates_paris      = Coordinates.paris
+    create(:department)
     @coordinates_verneuil   = Coordinates.verneuil
+    create(:department, code: '78', name: 'Yvelines')
     @coordinates_chatillon  = Coordinates.chatillon
+    create(:department, code: '92', name: 'Hauts-de-Seine')
     @coordinates_bordeaux   = Coordinates.bordeaux
+    create(:department, code: '33', name: 'Gironde')
     @coordinates_pithiviers = Coordinates.pithiviers
+    create(:department, code: '45', name: 'Loiret')
     @coordinates_melun      = Coordinates.melun
+    create(:department, code: '77', name: 'Seine-et-Marne')
 
     @offer_paris      = create(:weekly_internship_offer, coordinates: @coordinates_paris, city: 'Paris')
     @offer_chatillon  = create(:weekly_internship_offer, coordinates: @coordinates_chatillon, city: 'Chatillon')

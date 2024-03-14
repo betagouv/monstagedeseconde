@@ -25,6 +25,7 @@ class SchoolsControllerTest < ActionDispatch::IntegrationTest
   test 'POST #create as god redirects to admin' do
     god = create(:god)
     sign_in(god)
+    create(:department)
     
     school_params = {
       name: 'Victor Hugo',

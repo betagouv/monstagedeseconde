@@ -45,6 +45,10 @@ FactoryBot.define do
     weekly_hours { [] }
     lunch_break { "12:00-13:00" }
 
+    before(:create) do |internship_offer|
+      Department.create(code: '75', name: 'Paris')
+    end
+
     trait :drafted do
       aasm_state { :drafted }
     end
@@ -86,6 +90,9 @@ FactoryBot.define do
     trait :weekly_internship_offer do
       description { 'Lorem ipsum dolor weekly_internship_offer' }
       remaining_seats_count { max_candidates }
+      before(:create) do |internship_offer|
+        Department.create(code: '75', name: 'Paris')
+      end
     end
 
     trait :api_internship_offer do

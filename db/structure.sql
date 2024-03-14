@@ -428,6 +428,48 @@ ALTER SEQUENCE public.class_rooms_id_seq OWNED BY public.class_rooms.id;
 
 
 --
+-- Name: departments; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.departments (
+    id bigint NOT NULL,
+    code character varying,
+    name character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: departments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.departments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: departments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.departments_id_seq OWNED BY public.departments.id;
+
+
+--
+-- Name: departments_operators; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.departments_operators (
+    department_id bigint NOT NULL,
+    operator_id bigint NOT NULL
+);
+
+
+--
 -- Name: favorites; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1830,6 +1872,13 @@ ALTER TABLE ONLY public.class_rooms ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: departments id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.departments ALTER COLUMN id SET DEFAULT nextval('public.departments_id_seq'::regclass);
+
+
+--
 -- Name: favorites id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2114,6 +2163,14 @@ ALTER TABLE ONLY public.area_notifications
 
 ALTER TABLE ONLY public.class_rooms
     ADD CONSTRAINT class_rooms_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: departments departments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.departments
+    ADD CONSTRAINT departments_pkey PRIMARY KEY (id);
 
 
 --
@@ -2449,6 +2506,20 @@ CREATE INDEX index_area_notifications_on_user_id ON public.area_notifications US
 --
 
 CREATE INDEX index_class_rooms_on_school_id ON public.class_rooms USING btree (school_id);
+
+
+--
+-- Name: index_departments_operators_on_department_id_and_operator_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_departments_operators_on_department_id_and_operator_id ON public.departments_operators USING btree (department_id, operator_id);
+
+
+--
+-- Name: index_departments_operators_on_operator_id_and_department_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_departments_operators_on_operator_id_and_department_id ON public.departments_operators USING btree (operator_id, department_id);
 
 
 --
@@ -3381,6 +3452,8 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240314133947'),
+('20240314133856'),
 ('20240311153638'),
 ('20240228155130'),
 ('20240221143107'),
