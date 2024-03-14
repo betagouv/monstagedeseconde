@@ -19,6 +19,7 @@ def populate_internship_offers
     zipcode: '37000',
     city: 'Tours',
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude]},
+    handicap_accessible: [true, false].sample,
     employer_name: Group.is_paqte.first.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
@@ -41,6 +42,7 @@ def populate_internship_offers
     zipcode: '78480',
     city: 'Verneuil-sur-Seine',
     coordinates: { latitude: Coordinates.verneuil[:latitude], longitude: Coordinates.verneuil[:longitude] },
+    handicap_accessible: [true, false].sample,
     employer_name: Group.is_paqte.first.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
@@ -63,6 +65,7 @@ def populate_internship_offers
     zipcode: '75012',
     city: 'paris',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
+    handicap_accessible: [true, false].sample,
     employer_name: Group.is_public.last.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
@@ -85,6 +88,7 @@ def populate_internship_offers
     zipcode: '75015',
     city: 'paris',
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
+    handicap_accessible: [true, false].sample,
     employer_name: 'Du temps pour moi',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
@@ -107,6 +111,7 @@ def populate_internship_offers
     zipcode: '75015',
     city: 'paris',
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
+    handicap_accessible: [true, false].sample,
     employer_name: 'Du temps pour moi',
     max_candidates: 7,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
@@ -129,6 +134,7 @@ def populate_internship_offers
     zipcode: '75015',
     city: 'paris',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
+    handicap_accessible: [true, false].sample,
     employer_name: 'Editegis',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
@@ -150,6 +156,7 @@ def populate_internship_offers
     zipcode: '37000',
     city: 'Tours',
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude]},
+    handicap_accessible: [true, false].sample,
     employer_name: 'Education Nationale',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
@@ -175,6 +182,7 @@ def populate_internship_offers
     remote_id: FFaker::Guid.guid,
     permalink: 'https://www.google.fr',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
+    handicap_accessible: [true, false].sample,
     employer_name: 'IBM',
     internship_offer_area_id: area_id
   )
@@ -203,6 +211,7 @@ def populate_internship_offers
     remote_id: FFaker::Guid.guid,
     permalink: 'https://www.google.fr',
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
+    handicap_accessible: [true, false].sample,
     employer_name: 'Ministère de l\'Education Nationale',
     internship_offer_area_id: area_id
   )
@@ -229,6 +238,7 @@ MULTI_LINE
     zipcode: '95160',
     city: 'Montmorency',
     coordinates: { latitude: Coordinates.montmorency[:latitude], longitude: Coordinates.montmorency[:longitude] },
+    handicap_accessible: [true, false].sample,
     employer_name: 'Douanes Assistance Corp.',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
@@ -254,6 +264,7 @@ MULTI_LINE
     zipcode: '78480',
     city: 'Verneuil-sur-Seine',
     coordinates: { latitude: Coordinates.verneuil[:latitude], longitude: Coordinates.verneuil[:longitude] },
+    handicap_accessible: [true, false].sample,
     employer_name: 'MetaBoutShop',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
@@ -298,6 +309,7 @@ MULTI_LINE
     zipcode: '75015',
     city: 'paris',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
+    handicap_accessible: [true, false].sample,
     employer_name: 'Oyonnax Corp.',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
@@ -320,6 +332,7 @@ MULTI_LINE
     zipcode: '33000',
     city: 'Bordeaux',
     coordinates: { latitude: Coordinates.bordeaux[:latitude], longitude: Coordinates.bordeaux[:longitude]},
+    handicap_accessible: [true, false].sample,
     employer_name: Group.is_paqte.second.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
@@ -343,6 +356,7 @@ MULTI_LINE
     zipcode: '37000',
     city: 'Tours',
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude]},
+    handicap_accessible: [true, false].sample,
     employer_name: Group.is_paqte.second.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
   )
@@ -367,6 +381,7 @@ MULTI_LINE
     remote_id: FFaker::Guid.guid,
     permalink: 'https://www.google.fr',
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
+    handicap_accessible: [true, false].sample,
     employer_name: 'Ministère de l\'Education Nationale',
     internship_offer_area_id: area_id
   )

@@ -5,6 +5,9 @@
   .col-12
     h1.h3.text-dark role="heading" aria-level="1"
       = internship_offer.title
+    - if internship_offer.handicap_accessible
+      p.fr-badge.fr-badge--new.fr-badge--no-icon.fr-mt-1w
+        | Entreprise accueillant des élèves en situation de handicap
 
 .row.fr-pt-3w
   .col-12
