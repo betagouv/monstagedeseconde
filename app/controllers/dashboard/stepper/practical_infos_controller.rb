@@ -19,7 +19,8 @@ module Dashboard::Stepper
           latitude: @organisation.coordinates&.latitude,
           longitude: @organisation.coordinates&.longitude
         },
-        contact_phone: current_user.try(:phone)
+        contact_phone: current_user.try(:phone),
+        handicap_accessible: false
       )
       @hosting_info = HostingInfo.find(params[:hosting_info_id])
       @internship_offer_info = InternshipOfferInfo.find(params[:internship_offer_info_id])
@@ -119,6 +120,7 @@ module Dashboard::Stepper
               :employer_id,
               :lunch_break,
               :contact_phone,
+              :handicap_accessible,
               weekly_hours: [],
               daily_hours: {},
               coordinates: {}

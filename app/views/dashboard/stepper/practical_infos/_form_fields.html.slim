@@ -23,17 +23,32 @@ div data-controller='practical-info-form' data-action="input->practical-info-for
                                 currentLatitude: resource.coordinates.try(:lat).try(:to_f),
                                 currentLongitude: resource.coordinates.try(:lon).try(:to_f),
                                 currentFullAddress: resource.formatted_autocomplete_address})
-        .form-group
-          = render partial: "dashboard/stepper/practical_infos/daily_hours",
-                   locals: { form: form, disabled: false }
+      fieldset#radio-hint.fr-fieldset.fr-my-2w aria-labelledby="radio-hint-legend radio-hint-messages"
+        legend.fr-fieldset__legend--regular.fr-fieldset__legend id="radio-hint-legend"
+            | Mon entreprise est prête à accueillir des élèves en situation de handicap
+        .fr-fieldset__element
+            .fr-radio-group
+              = form.radio_button :handicap_accessible, "true"
+              label.fr-label for="handicap_accessible_true"
+                | Oui
+        .fr-fieldset__element
+          .fr-radio-group
+              = form.radio_button :handicap_accessible, "false"
+              label.fr-label for="handicap_accessible_false"
+                | Non
+        #radio-hint-messages.fr-messages-group aria-live="assertive"
 
-        - if submit_button
-          .fr-mt-3w
-            = link_to 'Précédent',
-                      edit_dashboard_stepper_hosting_info_path(params[:hosting_info_id], organisation_id: params[:organisation_id], internship_offer_info_id: params[:internship_offer_info_id], practical_info_id: params[:id]),
-                      class: 'fr-btn fr-mr-2w fr-btn--secondary'
-            = button_tag :submit,
-                         class: 'fr-btn',
-                         disabled: false,
-                         data: {:'practical-info-form-target' => 'submitButton'} do
-              = "Suivant "
+      .form-group
+        = render partial: "dashboard/stepper/practical_infos/daily_hours",
+                  locals: { form: form, disabled: false }
+
+      - if submit_button
+        .fr-mt-3w
+          = link_to 'Précédent',
+                    edit_dashboard_stepper_hosting_info_path(params[:hosting_info_id], organisation_id: params[:organisation_id], internship_offer_info_id: params[:internship_offer_info_id], practical_info_id: params[:id]),
+                    class: 'fr-btn fr-mr-2w fr-btn--secondary'
+          = button_tag :submit,
+                        class: 'fr-btn',
+                        disabled: false,
+                        data: {:'practical-info-form-target' => 'submitButton'} do
+            = "Suivant "

@@ -1264,7 +1264,8 @@ CREATE TABLE public.practical_infos (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     lunch_break text,
-    contact_phone character varying(20)
+    contact_phone character varying(20),
+    handicap_accessible boolean DEFAULT false NOT NULL
 );
 
 
@@ -3381,6 +3382,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240314101300'),
 ('20240311153638'),
 ('20240228155130'),
 ('20240221143107'),

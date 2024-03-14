@@ -9,5 +9,6 @@ module PracticalInfoFormFiller
       select('16:30')
     end
     fill_in ('Pause déjeuner'), with: "12:00-13:00 avec l'équipe"
+    execute_script("document.getElementById('practical_info_handicap_accessible_true').checked = true;") # check the checkbox
   end
 end

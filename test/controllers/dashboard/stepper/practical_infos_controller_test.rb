@@ -89,6 +89,7 @@ module Dashboard::Stepper
       assert_equal ['09:00', '14:00'], created_practical_info.daily_hours["mercredi"]
       assert_equal ['10:00', '15:00'], created_practical_info.daily_hours["jeudi"]
       assert_equal ['11:00', '16:00'], created_practical_info.daily_hours["vendredi"]
+      refute created_practical_info.handicap_accessible
       
       assert_redirected_to internship_offer_path(created_internship_offer, origine: 'dashboard', stepper: true)
 
@@ -121,6 +122,7 @@ module Dashboard::Stepper
       assert_equal created_practical_info.zipcode, created_internship_offer.zipcode
       assert_equal created_practical_info.city, created_internship_offer.city
       assert_equal created_practical_info.coordinates, created_internship_offer.coordinates
+      assert_equal created_practical_info.handicap_accessible, created_internship_offer.handicap_accessible
     end
 
     test 'POST create when already created redirects to internship offer' do

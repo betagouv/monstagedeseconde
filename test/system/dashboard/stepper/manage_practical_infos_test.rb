@@ -24,6 +24,7 @@ class ManagePracticalInfosTest < ApplicationSystemTestCase
       assert_equal '75001', PracticalInfo.last.zipcode
       assert_equal 'Paris', PracticalInfo.last.city
       assert_equal ["08:00", "16:30"], PracticalInfo.last.weekly_hours
+      assert PracticalInfo.last.handicap_accessible
       click_on "Publier"
       assert_equal 1, InternshipOffer.count
       assert_equal '+330623665555', InternshipOffer.last.contact_phone
@@ -31,6 +32,7 @@ class ManagePracticalInfosTest < ApplicationSystemTestCase
       assert_equal '75001', InternshipOffer.last.zipcode
       assert_equal 'Paris', InternshipOffer.last.city
       assert_equal ["08:00", "16:30"], InternshipOffer.last.weekly_hours
+      assert InternshipOffer.last.handicap_accessible
     end
   end
 

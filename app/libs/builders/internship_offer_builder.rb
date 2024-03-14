@@ -156,6 +156,7 @@ module Builders
         city: practical_info.city,
         coordinates: practical_info.coordinates,
         contact_phone: practical_info.contact_phone,
+        handicap_accessible: practical_info.handicap_accessible
       }
     end
 
