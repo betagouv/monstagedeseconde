@@ -24,17 +24,18 @@ div data-controller='practical-info-form' data-action="input->practical-info-for
                                 currentLongitude: resource.coordinates.try(:lon).try(:to_f),
                                 currentFullAddress: resource.formatted_autocomplete_address})
       fieldset#radio-handicap-hint.fr-fieldset.fr-my-2w aria-labelledby="radio-handicap-hint-legend"
-        legend.fr-fieldset__legend--regular.fr-fieldset__legend id="radio-handicap-hint-legend"
-            | Mon entreprise est prête à accueillir des élèves en situation de handicap
+        legend#radio-handicap-hint-legend.fr-fieldset__legend--regular.fr-fieldset__legend
+          | Mon entreprise est prête à accueillir des élèves en situation de handicap
+        - klass = form.object.class.name == "PracticalInfo" ? "practical_info" : "internship_offer"
         .fr-fieldset__element
             .fr-radio-group
               = form.radio_button :handicap_accessible, "true"
-              label.fr-label for="handicap_accessible_true"
+              label.fr-label for="#{klass}_handicap_accessible_true"
                 | Oui
         .fr-fieldset__element
           .fr-radio-group
               = form.radio_button :handicap_accessible, "false"
-              label.fr-label for="handicap_accessible_false"
+              label.fr-label for="#{klass}_handicap_accessible_false"
                 | Non
 
       .form-group
