@@ -91,7 +91,7 @@ module Presenters
         create(:weekly_internship_application, :read_by_employer, student: student)
         assert_equal({ color: 'info', label: 'en attente de réponse' },
                      StudentStats.new(student: student.reload).applications_best_status)
-        create(:weekly_internship_application, :examined, student: student)
+        create(:weekly_internship_application, student: student)
         assert_equal({ color: 'info', label: 'en attente de réponse' },
                      StudentStats.new(student: student.reload).applications_best_status)
         create(:weekly_internship_application, :validated_by_employer, student: student)

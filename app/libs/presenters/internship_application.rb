@@ -9,12 +9,10 @@ module Presenters
     delegate :period, to: :internship_offer
     delegate :canceled_by_employer_message, to: :internship_application
     delegate :rejected_message, to: :internship_application
-    delegate :examined_message, to: :internship_application
 
     def expires_in
       start = internship_application.updated_at
       finish = start + ::InternshipApplication::EXPIRATION_DURATION
-      finish += internship_application.examined_at.nil? ? 0 : ::InternshipApplication::EXTENDED_DURATION
       distance_of_time_in_words_to_now(finish, include_days: true)
     end
 
@@ -57,13 +55,6 @@ module Presenters
         action_level = reader.student? ? 'tertiary' : 'primary'
         { label: label,
           badge: badge,
-          actions: [action_path.merge(label: action_label, level: action_level)]
-        }
-      when "examined"
-        action_label = reader.student? ? 'Voir' : 'Répondre'
-        action_level = reader.student? ? 'tertiary' : 'primary'
-        { label: 'à l\'étude',
-          badge: 'info',
           actions: [action_path.merge(label: action_label, level: action_level)]
         }
 
@@ -155,13 +146,13 @@ module Presenters
            color: 'primary',
            level: 'primary'}]
 
-      when "submitted", "examined"
+      when "submitted"
          [{ label: 'Renvoyer la demande',
             color: 'primary',
             level: 'primary',
           } ]
 
-      when "transfered", "examined"
+      when "transfered"
          [{ label: 'Renvoyer la demande',
             color: 'primary',
             level: 'primary',
@@ -194,10 +185,6 @@ module Presenters
       end
     end
 
-    def ok_for_examine?
-      current_state_in_list?(ok_for_examine_states)
-    end
-
     def ok_for_transfer?
       current_state_in_list?(ok_for_transfer_states)
     end
@@ -220,18 +207,15 @@ module Presenters
       count = 0
       count += 1 if internship_application.canceled_by_employer_message?
       count += 1 if internship_application.rejected_message?
-      count += 1 if internship_application.examined_message?
       count
     end
 
     def employer_explanations
       motives = []
-      examined_motive = { meth: :examined_message, label: 'Mise à l\'étude par  l\'entreprise' }
       canceled_motive = { meth: :canceled_by_employer_message, label: 'Annulation par l\'entreprise' }
       rejected_motive = { meth: :rejected_message, label: 'Refus par l\'entreprise' }
 
-      motives << examined_motive if internship_application.examined_message?
-      motives << examined_motive if internship_application.canceled_by_employer_message?
+      motives << canceled_motive if internship_application.canceled_by_employer_message?
       motives << rejected_motive if internship_application.rejected_message?
 
       motives.map do |motive|
@@ -242,7 +226,6 @@ module Presenters
       # explanations << internship_application.canceled_by_employer_message if internship_application.canceled_by_employer?
       # "#{internship_application.canceled_by_employer_message.to_s}" \
       # "#{internship_application.rejected_message.to_s}" \
-      # "#{internship_application.examined_message.to_s}".html_safe
     end
 
     attr_reader :internship_application,
@@ -281,26 +264,21 @@ module Presenters
     def current_state_in_list?(state_array)
       state_array.include?(internship_application.aasm_state)
     end
-    
-    def ok_for_examine_states
-      %w[submitted read_by_employer]
-    end
 
     def ok_for_transfer_states
-      %w[submitted read_by_employer examined]
+      %w[submitted read_by_employer]
     end
 
     def ok_for_reject_states
       %w[submitted
         read_by_employer
-        examined
         transfered
         validated_by_employer
         approved]
     end
 
     def ok_for_employer_validation_states
-      %w[submitted examined transfered read_by_employer]
+      %w[submitted transfered read_by_employer]
     end
   end
 end

@@ -115,9 +115,8 @@ def populate_applications
   application.save! if application.valid?
 
   application = InternshipApplications::WeeklyFramed.new(
-    aasm_state: :examined,
+    aasm_state: :validated_by_employer,
     submitted_at: 29.days.ago,
-    examined_at: 23.days.ago,
     student: students.fourth,
     motivation: 'motivé moyennement pour ce stage, je vous préviens',
     internship_offer: offers[0],
@@ -127,7 +126,6 @@ def populate_applications
   application = InternshipApplications::WeeklyFramed.new(
     aasm_state: :validated_by_employer,
     submitted_at: 29.days.ago,
-    examined_at: 23.days.ago,
     validated_by_employer_at: 20.days.ago,
     student: students.fourth,
     motivation: 'Très motivé pour ce stage, je vous préviens',
@@ -147,7 +145,6 @@ def populate_applications
   application = InternshipApplications::WeeklyFramed.new(
     aasm_state: :approved,
     submitted_at: 23.days.ago,
-    examined_at: 21.days.ago,
     approved_at: 18.days.ago,
     student: students[6],
     motivation: 'Très motivé pour ce stage, je vous préviens',
@@ -161,7 +158,6 @@ def populate_applications
   application = InternshipApplications::WeeklyFramed.new(
     aasm_state: :approved,
     submitted_at: 23.days.ago,
-    examined_at: 21.days.ago,
     approved_at: 18.days.ago,
     student: students[7],
     motivation: 'Très motivé pour ce stage, je vous préviens',

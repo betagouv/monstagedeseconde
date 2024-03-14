@@ -84,7 +84,6 @@ class Ability
     can(:cancel, InternshipApplication) do |internship_application|
       ok_canceling = %w[ submitted
                          read_by_employer
-                         examined
                          validated_by_employer
                          approved
                          convention_signed]
