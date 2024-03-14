@@ -23,7 +23,7 @@ div data-controller='practical-info-form' data-action="input->practical-info-for
                                 currentLatitude: resource.coordinates.try(:lat).try(:to_f),
                                 currentLongitude: resource.coordinates.try(:lon).try(:to_f),
                                 currentFullAddress: resource.formatted_autocomplete_address})
-      fieldset#radio-handicap-hint.fr-fieldset.fr-my-2w aria-labelledby="radio-handicap-hint-legend radio-handicap-hint-messages"
+      fieldset#radio-handicap-hint.fr-fieldset.fr-my-2w aria-labelledby="radio-handicap-hint-legend"
         legend.fr-fieldset__legend--regular.fr-fieldset__legend id="radio-handicap-hint-legend"
             | Mon entreprise est prête à accueillir des élèves en situation de handicap
         .fr-fieldset__element
@@ -36,7 +36,6 @@ div data-controller='practical-info-form' data-action="input->practical-info-for
               = form.radio_button :handicap_accessible, "false"
               label.fr-label for="handicap_accessible_false"
                 | Non
-        #radio-handicap-hint-messages.fr-messages-group aria-live="assertive"
 
       .form-group
         = render partial: "dashboard/stepper/practical_infos/daily_hours",
