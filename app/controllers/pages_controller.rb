@@ -9,6 +9,7 @@ class PagesController < ApplicationController
                               statistician_landing
                               student_landing]
 
+  before_action :last_three_offers, only: %i[home student_landing]
   # before_action :last_three_offers, only: %i[home pro_landing student_landing school_management_landing]
 
   def register_to_webinar
