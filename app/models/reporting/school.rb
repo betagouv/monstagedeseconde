@@ -3,7 +3,7 @@
 module Reporting
   # wrap reporting for School
   class School < ApplicationRecord
-    include FindableWeek
+    # include FindableWeek
     include SchoolUsersAssociations
 
     def readonly?
@@ -11,8 +11,6 @@ module Reporting
     end
     PAGE_SIZE = 100
 
-    has_many :school_internship_weeks
-    has_many :weeks, through: :school_internship_weeks
     has_many :class_rooms
 
     has_many :internship_applications, through: :students do
@@ -37,10 +35,6 @@ module Reporting
     }
 
     scope :with_manager_simply, lambda { joins(:school_manager) }
-
-    scope :in_the_future, lambda {
-      more_recent_than(week: ::Week.current)
-    }
 
     scope :by_subscribed_school, ->(subscribed_school:)  {
       case subscribed_school.to_s
@@ -92,6 +86,7 @@ module Reporting
     end
 
     private
+
     def students_not_anonymized
       users.select(&:student?)
            .reject(&:anonymized)

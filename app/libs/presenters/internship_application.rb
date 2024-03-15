@@ -6,6 +6,7 @@ module Presenters
     delegate :internship_offer, to: :internship_application
     delegate :title, to: :internship_offer, prefix: true
     delegate :employer_name, to: :internship_offer
+    delegate :period, to: :internship_offer
     delegate :canceled_by_employer_message, to: :internship_application
     delegate :rejected_message, to: :internship_application
 
@@ -21,6 +22,7 @@ module Presenters
                             .address
     end
 
+    # TODO remove following method since delegated
     def internship_offer_title
       internship_application.internship_offer.title
     end
@@ -30,7 +32,7 @@ module Presenters
       case internship_application.aasm_state
       when "drafted"
         student_has_found = internship_application.student
-                                                  .has_already_approved_an_application?
+                                                  .with_2_weeks_internships_approved?
         label = student_has_found ? 'Voir' : 'Finaliser ma candidature'
         level = student_has_found ? 'tertiary' : 'primary'
         
@@ -118,7 +120,7 @@ module Presenters
       return "" if internship_application.aasm_state.nil?
 
       student_has_found = internship_application.student
-                                                .has_already_approved_an_application?
+                                                .with_2_weeks_internships_approved?
       student_has_found ? actions_when_student_has_found : actions_when_student_has_not_found
     end
 

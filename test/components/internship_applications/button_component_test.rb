@@ -8,7 +8,7 @@ module InternshipApplications
 
     test "when internship_agreement exists, render edit link" do
       employer = create(:employer)
-      school = create(:school, :with_school_manager, :with_weeks)
+      school = create(:school, :with_school_manager)
       student = create(:student, :troisieme_generale, school: school)
       internship_offer = create(:weekly_internship_offer)
       internship_application = create(:weekly_internship_application,
@@ -25,7 +25,7 @@ module InternshipApplications
 
     test "when internship_agreement render progress when i signed" do
       employer = create(:employer)
-      school = create(:school, :with_school_manager, :with_weeks)
+      school = create(:school, :with_school_manager)
       student = create(:student, :troisieme_generale, school: school)
       internship_offer = create(:weekly_internship_offer)
       internship_application = create(:weekly_internship_application,
@@ -45,7 +45,7 @@ module InternshipApplications
 
     test "when internship_agreement render print link when eveeryone has signed" do
       employer = create(:employer)
-      school = create(:school, :with_school_manager, :with_weeks)
+      school = create(:school, :with_school_manager)
       student = create(:student, :troisieme_generale, school: school)
       internship_offer = create(:weekly_internship_offer)
       internship_application = create(:weekly_internship_application,

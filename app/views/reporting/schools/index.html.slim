@@ -2,15 +2,15 @@
   = render partial: 'reporting/navigation'
   .row
     .col-12
-      .fr-tabs 
+      .fr-tabs
         = render partial: 'reporting/tabs'
 
-        #offers-panel.fr-tabs__panel.fr-tabs__panel--selected aria-labelledby="tabpanel-404" role="tabpanel" tabindex="0" 
+        #offers-panel.fr-tabs__panel.fr-tabs__panel--selected aria-labelledby="tabpanel-404" role="tabpanel" tabindex="0"
 
           div.rounded[data-controller='statistics']
             = render partial: 'reporting/filters',
                     locals: {view_tab: :schools}
-              
+
           .row.mt-3
             .col-12.fr-table.fr-table-blue.fr-table--white.wrapper-scroll-y.table-scrollbar
               table.table-scrollable

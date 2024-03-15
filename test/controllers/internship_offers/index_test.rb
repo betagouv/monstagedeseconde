@@ -191,8 +191,7 @@ class IndexTest < ActionDispatch::IntegrationTest
 
     assert_equal 1, InternshipOffers::WeeklyFramed.count
 
-    weeks = Week.selectable_from_now_until_end_of_school_year.first(2)
-    school = create(:school, weeks: weeks)
+    school = create(:school)
     class_room = create(:class_room,  school: school)
     student = create(:student, school: school, class_room: class_room)
     internship_offer_with_application = create(
@@ -284,7 +283,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     # Visitor
     get internship_offers_path
     # Student
-    school = create(:school, weeks: [])
+    school = create(:school)
     student = create(:student, school: school)
     sign_in(student)
     get internship_offers_path
@@ -440,7 +439,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   test 'GET #index as student not filtering by weeks shows all offers' do
     travel_to(Date.new(2019, 3, 1)) do
       week = Week.find_by(year: 2019, number: 10)
-      school = create(:school, weeks: [week])
+      school = create(:school)
       student = create(:student, school: school,
                                 class_room: create(:class_room, school: school))
       offer_overlaping_school_weeks = create(:weekly_internship_offer)

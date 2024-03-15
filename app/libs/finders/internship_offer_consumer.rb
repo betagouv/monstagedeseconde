@@ -19,9 +19,8 @@ module Finders
 
     def available_offers(max_distance: MAX_RADIUS_SEARCH_DISTANCE)
       student_query = kept_published_future_offers_query.ignore_already_applied(user: user) # Whatever application status !!!
-      return student_query if user.school.nil? || user.school.weeks.empty?
+      return student_query if user.school.nil?
 
-      # school_week_ids  = user.school.weeks.map(&:id)
       school_latitude  = user.school.coordinates&.latitude
       school_longitude = user.school.coordinates&.longitude
       return student_query if school_latitude.nil? || school_longitude.nil?

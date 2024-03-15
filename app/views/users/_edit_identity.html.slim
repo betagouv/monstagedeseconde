@@ -107,7 +107,7 @@
             .fr-grid-row
               .fr-col-3
                 .fr-select-group
-                  - prefixes = ["+33", "+594", "+689", "+596", "+687"]
+                  - prefixes = ["+33", "+594", "+262", "+689", "+596", "+687"]
                   = f.select :phone_prefix,
                               options_for_select(prefixes.map { |k| [k, k] },current_user.phone_prefix),
                               { include_blank: false  },

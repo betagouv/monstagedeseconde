@@ -106,6 +106,31 @@ module InternshipApplications
         assert_equal 1, InternshipApplication.expirable.count
       end
     end
-  end
 
+    test 'approving applications let some applications be canceled by student, when validated is one week long' do
+      student = create(:student)
+      internship_offer_1 = create(:weekly_internship_offer, :week_1)
+      internship_offer_2 = create(:weekly_internship_offer, :week_2)
+      internship_offer_3 = create(:weekly_internship_offer, :full_time)
+      create(:weekly_internship_application, :validated_by_employer, student: student, internship_offer: internship_offer_1)
+      internship_application = create(:weekly_internship_application, :validated_by_employer, student: student, internship_offer: internship_offer_2)
+      create(:weekly_internship_application, :validated_by_employer, student: student, internship_offer: internship_offer_3)
+      assert_changes -> { InternshipApplication.canceled_by_student_confirmation.count}, from: 0, to: 1 do
+        internship_application.approve!
+      end
+    end
+
+    test 'approving applications let some applications be canceled by student, when validated is two week long' do
+      student = create(:student)
+      internship_offer_1 = create(:weekly_internship_offer, :week_1)
+      internship_offer_2 = create(:weekly_internship_offer, :week_2)
+      internship_offer_3 = create(:weekly_internship_offer, :full_time)
+      create(:weekly_internship_application, :validated_by_employer, student: student, internship_offer: internship_offer_1)
+      create(:weekly_internship_application, :validated_by_employer, student: student, internship_offer: internship_offer_2)
+      internship_application = create(:weekly_internship_application, :validated_by_employer, student: student, internship_offer: internship_offer_3)
+      assert_changes -> { InternshipApplication.canceled_by_student_confirmation.count}, from: 0, to: 2 do
+        internship_application.approve!
+      end
+    end
+  end
 end
