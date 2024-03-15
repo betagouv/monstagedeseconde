@@ -52,7 +52,7 @@ module InternshipOffers
     end
 
     test 'GET #show with applications from other students' do
-      travel_to(Date.new(2020, 1, 1)) do
+      travel_to(Date.new(2024, 1, 1)) do
         offer = create(
           :weekly_internship_offer,
           city: 'Bordeaux',
@@ -67,7 +67,8 @@ module InternshipOffers
           internship_offer: offer
         )
         get internship_offer_path(offer)
-        assert_select('button[disabled=disabled]', text: 'Postuler')
+        assert_select('button', text: 'Postuler', count: 0)
+
         assert_select('.period-label-test', text: '2 semaines - du 17 au 28 juin 2024')
       end
     end
@@ -220,22 +221,20 @@ module InternshipOffers
     # Visitor
     #
     test 'GET #show as Visitor show breadcrumb with link to previous page' do
-      skip "Breadcrumb is not displayed anymore #may_flower #april_flower"
-      internship_offer = create(:weekly_internship_offer)
+      skip "forward parameters expected or not ? PO answering soon"
+      internship_offer = create(:weekly_internship_offer, :full_time)
       forwarded_params = { latitude: Coordinates.paris[:lat],
                            longitude: Coordinates.paris[:lon],
                            radius: 60_000,
                            city: 'Mantes-la-Jolie',
                            keyword: 'Boucher+ecarisseur',
-                           page: 5,
-                           filter: 'past' }
+                           page: 5 }
 
       get internship_offer_path({ id: internship_offer.id }.merge(forwarded_params))
       assert_response :success
       assert_template 'layouts/_breadcrumb'
       assert_template 'internship_offers/_apply_cta'
-      assert_select('a[href=?]',
-                    internship_offers_path(forwarded_params))
+      assert_select('a[href=?]', internship_offers_path(forwarded_params))
       assert_select('button[disabled=disabled]', text: 'Postuler')
     end
 

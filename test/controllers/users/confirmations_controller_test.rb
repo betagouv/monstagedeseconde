@@ -19,7 +19,6 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'CREATE#user_confirmation by phone with wrong phone' do
-  skip "test to update after ui is finished #TODO #may_flower"
     student = create(:student, phone: '+330600110011',
                                email: nil,
                                confirmed_at: nil)
