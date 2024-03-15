@@ -39,10 +39,6 @@ module Presenters
       container
     end
 
-    def student_compatible_week_list(student)
-      self.class.new(weeks: weeks & student.school.weeks)
-    end
-
     def to_s
       weeks.map(&:long_select_text_method)
            .join("\n")

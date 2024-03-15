@@ -115,7 +115,7 @@ module InternshipOffers
       travel_to(Date.new(2019, 10, 1)) do
         weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
         internship_offer = create(:api_internship_offer)
-        student = create(:student, school: create(:school, weeks: weeks))
+        student = create(:student, school: create(:school))
         sign_in(student)
         get internship_offer_path(internship_offer)
         assert_response :success
@@ -141,19 +141,16 @@ module InternshipOffers
       current = create(:weekly_internship_offer, title: 'current')
       next_in_page = create(:weekly_internship_offer, title: 'next')
       next_out = create(:weekly_internship_offer, title: 'next_out')
-      student = create(:student, school: create(:school, :with_weeks))
+      student = create(:student, school: create(:school))
 
       InternshipOffer.stub :nearby, InternshipOffer.all do
-        InternshipOffer.stub :by_weeks, InternshipOffer.all do
-          # Users::Student.stub :school_and_offer_common_weeks, InternshipOffer.all do
-          sign_in(student)
-          get internship_offer_path(current)
+        sign_in(student)
+        get internship_offer_path(current)
 
-          assert_response :success
-          assert_select 'a[href=?]', internship_offer_path(previous_in_page)
-          assert_select 'a[href=?]', internship_offer_path(next_in_page)
-          # end
-        end
+        assert_response :success
+        assert_select 'a[href=?]', internship_offer_path(previous_in_page)
+        assert_select 'a[href=?]', internship_offer_path(next_in_page)
+        # end
       end
     end
 
@@ -218,17 +215,6 @@ module InternshipOffers
         end
       end
     end
-
-    # test 'GET #show as Student when school.weeks is empty show alert form' do
-    #   internship_offer = create(:weekly_internship_offer)
-    #   school = create(:school)
-    #   student = create(:student, school: school, class_room: create(:class_room, school: school))
-
-    #   sign_in(student)
-
-    #   get internship_offer_path(internship_offer)
-    #   assert_template 'internship_applications/call_to_action/_weekly'
-    # end
 
     #
     # Visitor

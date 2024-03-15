@@ -10,7 +10,7 @@ class InternshipApplication < ApplicationRecord
   EXPIRATION_DURATION = 15.days
   EXTENDED_DURATION = 15.days
   MAGIC_LINK_EXPIRATION_DELAY = 5.days
-  RECEIVED_STATES = %w[submitted read_by_employer examined expired transfered]
+  RECEIVED_STATES = %w[submitted read_by_employer expired transfered]
   PENDING_STATES = RECEIVED_STATES + %w[validated_by_employer] - %w[expired]
   REJECTED_STATES = %w[rejected canceled_by_employer canceled_by_student canceled_by_student_confirmation]
   APPROVED_STATES = %w[approved validated_by_employer]
@@ -25,7 +25,6 @@ class InternshipApplication < ApplicationRecord
     submitted
     read_by_employer
     transfered
-    examined
     validated_by_employer
     approved ]
 
@@ -48,7 +47,6 @@ class InternshipApplication < ApplicationRecord
 
   has_rich_text :approved_message
   has_rich_text :rejected_message
-  has_rich_text :examined_message
   has_rich_text :canceled_by_employer_message
   has_rich_text :canceled_by_student_message
   has_rich_text :motivation
@@ -67,7 +65,7 @@ class InternshipApplication < ApplicationRecord
 
   # reminders after 7 days, 14 days and none afterwards
   scope :remindable, lambda {
-    passed_sumitted = examined.where(submitted_at: 16.days.ago..7.days.ago)
+    passed_sumitted = where(submitted_at: 16.days.ago..7.days.ago)
                               .where(canceled_at: nil)
                               .or(submitted.where(submitted_at: 16.days.ago..7.days.ago)
                                            .where(canceled_at: nil))
@@ -84,7 +82,6 @@ class InternshipApplication < ApplicationRecord
     simple_duration = InternshipApplication::EXPIRATION_DURATION
     extended_duration = simple_duration + InternshipApplication::EXTENDED_DURATION
     expiration_not_extended_states.where('submitted_at < :date', date: simple_duration.ago)
-      .or(examined.where('submitted_at < :date', date: extended_duration.ago))
   }
 
   scope :filtering_discarded_students, lambda {
@@ -104,7 +101,6 @@ class InternshipApplication < ApplicationRecord
         WHEN aasm_state = 'approved' THEN 2
         WHEN aasm_state = 'submitted' THEN 3
         WHEN aasm_state = 'rejected' THEN 4
-        WHEN aasm_state = 'examined' THEN 5
         ELSE 0
       END as orderable_aasm_state
     ))
@@ -177,7 +173,6 @@ class InternshipApplication < ApplicationRecord
     state :drafted, initial: true
     state :submitted,
           :read_by_employer,
-          :examined,
           :transfered,
           :validated_by_employer,
           :approved,
@@ -207,19 +202,8 @@ class InternshipApplication < ApplicationRecord
       }
     end
 
-    event :examine do
-      transitions from: %i[submitted read_by_employer],
-                  to: :examined,
-                  after: proc { |*_args|
-        update!("examined_at": Time.now.utc)
-        deliver_later_with_additional_delay do
-          StudentMailer.internship_application_examined_email(internship_application: self)
-        end
-      }
-    end
-
     event :transfer do
-      transitions from: %i[submitted read_by_employer examined],
+      transitions from: %i[submitted read_by_employer],
                   to: :transfered,
                   after: proc { |*_args|
                     update!("transfered_at": Time.now.utc)
@@ -229,7 +213,6 @@ class InternshipApplication < ApplicationRecord
     event :employer_validate do
       from_states = %i[read_by_employer
                        submitted
-                       examined
                        transfered
                        cancel_by_employer
                        rejected]
@@ -256,7 +239,6 @@ class InternshipApplication < ApplicationRecord
     event :cancel_by_student_confirmation do
       from_states = %i[submitted
                        read_by_employer
-                       examined
                        transfered
                        validated_by_employer ]
       transitions from: from_states,
@@ -272,7 +254,6 @@ class InternshipApplication < ApplicationRecord
     event :reject do
       from_states = %i[read_by_employer
                        submitted
-                       examined
                        transfered
                        validated_by_employer ]
       transitions from: from_states,
@@ -291,7 +272,6 @@ class InternshipApplication < ApplicationRecord
       from_states = %i[drafted
                        submitted
                        read_by_employer
-                       examined
                        transfered
                        validated_by_employer
                        approved ]
@@ -311,7 +291,6 @@ class InternshipApplication < ApplicationRecord
     event :cancel_by_student do
       from_states = %i[submitted
                        read_by_employer
-                       examined
                        validated_by_employer
                        approved]
       transitions from: from_states,
@@ -328,7 +307,7 @@ class InternshipApplication < ApplicationRecord
     end
 
     event :expire do
-      transitions from: %i[submitted  read_by_employer examined validated_by_employer],
+      transitions from: %i[submitted  read_by_employer validated_by_employer],
                   to: :expired,
                   after: proc { |*_args|
         update!(expired_at: Time.now.utc)
@@ -336,7 +315,7 @@ class InternshipApplication < ApplicationRecord
     end
 
     event :expire_by_student do
-      transitions from: %i[validated_by_employer read_by_employer examined submitted drafted],
+      transitions from: %i[validated_by_employer read_by_employer submitted drafted],
                   to: :expired_by_student,
                   after: proc { |*_args|
         update!(expired_at: Time.now.utc)
@@ -388,7 +367,7 @@ class InternshipApplication < ApplicationRecord
   end
 
   def self.with_employer_explanations_states
-    %w[rejected canceled_by_employer examined]
+    %w[rejected canceled_by_employer]
   end
 
   def after_employer_validation_notifications
@@ -490,7 +469,21 @@ class InternshipApplication < ApplicationRecord
   end
 
   def cancel_all_pending_applications
-    student.internship_applications.where(aasm_state: InternshipApplication::PENDING_STATES).each do |application|
+    applications_to_cancel = student.internship_applications
+                                    .where(aasm_state: InternshipApplication::PENDING_STATES)
+    case internship_offer.period
+    when 1
+      applications_to_cancel = applications_to_cancel.select do |application|
+        offer = application.internship_offer
+        offer.week_1? || offer.full_time?
+      end
+    when 2
+      applications_to_cancel = applications_to_cancel.select do |application|
+        offer = application.internship_offer
+        offer.week_2? || offer.full_time?
+      end
+    end
+    applications_to_cancel.each do |application|
       application.cancel_by_student_confirmation! unless application == self
     end
   end
@@ -545,7 +538,7 @@ class InternshipApplication < ApplicationRecord
   end
 
   def employer_aware_states
-    %w[read_by_employer examined validated_by_employer]
+    %w[read_by_employer validated_by_employer]
   end
 
   def check_contact_uniqueness

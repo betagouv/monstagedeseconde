@@ -7,8 +7,6 @@ class Week < ApplicationRecord
   has_many :internship_applications, dependent: :destroy,
                                     foreign_key: :week_id
 
-  has_many :school_internship_weeks, dependent: :destroy
-  has_many :schools, through: :school_internship_weeks
 
   scope :from_date_to_date, lambda { |from:, to:|
     query = from_date_for_current_year(from: from)
@@ -116,10 +114,6 @@ class Week < ApplicationRecord
 
     where('number >= ?', first_week_of_september).where( year: school_year)
      .or(where('number <= ?', first_day_of_july_week).where( year: school_year + 1))
-  }
-
-  scope :available_for_student, lambda { |user:|
-    where(id: user.school.weeks)
   }
 
   WEEK_DATE_FORMAT = '%d/%m/%Y'

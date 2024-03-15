@@ -10,10 +10,6 @@
     = render "dashboard/internship_offers/internship_applications/actions/transfer",
               internship_application: @internship_application,
               opened_modal: false
-  - if prez.ok_for_examine? && with_options
-    = render "dashboard/internship_offers/internship_applications/actions/examine",
-              internship_application: @internship_application,
-              opened_modal: false
   - if prez.ok_for_employer_validation?
     = render "dashboard/internship_offers/internship_applications/actions/approve",
               internship_application: @internship_application,

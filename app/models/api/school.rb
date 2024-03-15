@@ -6,8 +6,6 @@ module Api
     include PgSearch::Model
 
     has_many :class_rooms, dependent: :destroy
-    has_many :school_internship_weeks, dependent: :destroy
-    has_many :weeks, through: :school_internship_weeks
 
     pg_search_scope :search_by_name_and_city,
                     against: {

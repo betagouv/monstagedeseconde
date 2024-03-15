@@ -39,10 +39,10 @@
                   .fr-fieldset__element
                     .fr-input-group.fr-mb-2v
                       label.fr-label for="user_school_city"
-                        | Ville ou collège
+                        | Ville ou lycée
                       = react_component("SearchSchool",
                                         props: { classes: "col-12",
-                                                  label: 'Nom (ou ville) de mon établissement REP ou REP+',
+                                                  label: 'Nom (ou ville) de mon lycée',
                                                   required: true,
                                                   resourceName: :user,
                                                   selectClassRoom: can?(:choose_class_room, resource),
@@ -82,16 +82,6 @@
                                             data: { action: "change->signup#onMinistryTypeChange" }
                           label.fr-label[for="user_statistician_ministry_type"]
                             | Administration centrale
-                      .fr-fieldset__element
-                        .fr-radio-group
-                          = f.radio_button :statistician_type,
-                                            "PrefectureStatistician",
-                                            id: 'user_statistician_department_type',
-                                            class: "fr-radio__input",
-                                            required: true,
-                                            data: { action: "change->signup#onMinistryTypeChange" }
-                          label.fr-label[for="user_statistician_department_type"]
-                            | Départemental
                       .fr-fieldset__element
                         .fr-radio-group
                           = f.radio_button :statistician_type,

@@ -37,7 +37,7 @@ module Services
     end
 
     def second_try
-      @searched_school_name = "Collège #{searched_school_name}"
+      @searched_school_name = "Lycée #{searched_school_name}"
       fetch_data
     end
 
@@ -50,7 +50,7 @@ module Services
       params = { keywords: searched_school_name,
                  department: department, # 2 figures
                  status: 'All',
-                 establishment: '2' } # 2 is for collège
+                 establishment: '2' } # 2 is for lycée
       url = URI "#{DIRECTORY_BASE_URL}?#{params.to_query}"
 
       https = Net::HTTP.new(url.host, url.port)

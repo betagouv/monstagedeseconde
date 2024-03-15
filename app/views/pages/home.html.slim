@@ -3,23 +3,22 @@
 .fr-container
   = render 'pages/home/top_nav'
 .container-monstage-fluid-hero.mx-0
-  = render 'pages/home/hero_pro'
+  = render 'pages/home/pros/hero_pro'
 .container-homepage.light-blue-background.fr-px-2w
   .container-monstage
-    = render 'pages/home/sub_hero_pro'
+    = render 'pages/home/pros/sub_hero_pro'
 .container-homepage.fr-px-2w
   .container-monstage
     = render 'pages/home/howitworks_pro'
+.container-homepage.light-blue-background.fr-px-2w
+  .container-monstage
+    = render 'pages/home/pros/pro_events'
 .container-homepage.fr-px-2w
   .container-monstage
-    = render 'pages/home/faq_pro'
+    = render 'pages/home/pros/faq_pro'
+.container-homepage.light-blue-background.fr-px-2w
+  .container-monstage
+    = render 'pages/home/pros/usefull_resources'
   .container-monstage
     .d-none.d-md-block
       = render 'pages/home/elevator'
-/ .container-homepage.fr-px-2w
-/   .container-monstage
-/     = render 'pages/home/resources_pro'
-/ .container-homepage.light-blue-background.fr-py-4w  
-/   .container-monstage
-/     .d-none.d-md-block
-/       = render 'pages/home/last_offers'

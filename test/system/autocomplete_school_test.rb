@@ -7,7 +7,7 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
   setup do
     @default_school_name = 'Pasteur'
     @default_school_city = 'Mantes-la-Jolie'
-    @default_school = create(:school, :with_school_manager, :with_weeks, name: @default_school_name,
+    @default_school = create(:school, :with_school_manager, name: @default_school_name,
                                                             city: @default_school_city)
     @next_school_city = 'Paris'
     @next_school_name = 'Charlemagne'
@@ -23,7 +23,7 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
       click_on 'Mon établissement'
     end
 
-    assert_equal(find_field('Nom (ou ville) de mon établissement').value,
+    assert_equal(find_field('Nom (ou ville) de mon lycée').value,
                  @default_school_city,
                  "can't find default school.city")
     assert_equal(find(:css, '#user_school_name').value,
@@ -45,9 +45,9 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
       within(".fr-tabs") do
         click_on 'Mon établissement'
       end
-      fill_in('Nom (ou ville) de mon établissement', with: @next_school_city[0..3])
+      fill_in('Nom (ou ville) de mon lycée', with: @next_school_city[0..3])
       all('.autocomplete-school-results .list-group-item-action').first.click
-      assert_equal find_field('Nom (ou ville) de mon établissement').value,
+      assert_equal find_field('Nom (ou ville) de mon lycée').value,
                    @next_school_city,
                    "can't find next school.city"
 
@@ -91,7 +91,7 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
                  all('#user_class_room_name').size,
                  'expected class room input not present')
 
-    fill_in('Nom (ou ville) de mon établissement', with: @next_school_city[0..3])
+    fill_in('Nom (ou ville) de mon lycée', with: @next_school_city[0..3])
     all('.autocomplete-school-results .list-group-item-action').first.click
     select @next_school.name, from: "user_school_id"
     select(next_class_room.name, from: 'user_class_room_id')

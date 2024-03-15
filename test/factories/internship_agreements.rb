@@ -5,7 +5,7 @@ FactoryBot.define do
     school_representative_full_name { internship_application.student.school.school_manager&.presenter&.full_name }
     school_representative_phone { FFaker::PhoneNumberFR.mobile_phone_number }
     school_representative_email { FFaker::Internet.email }
-    school_representative_role { 'Principal de collège' }
+    school_representative_role { 'Principal de lycée' }
     student_school { internship_application.student.school.name }
     student_address { "#{FFaker::Address.street_address} #{internship_application.student.school.zipcode} #{internship_application.student.school.city}" }
     student_refering_teacher_full_name { FFaker::NameFR.name }
@@ -28,7 +28,6 @@ FactoryBot.define do
     tutor_email { FFaker::Internet.email }
     date_range { "du 10/10/2020 au 15/10/2020" }
     activity_scope_rich_text { '<div>Accueil clients</div>'}
-    complementary_terms_rich_text { '<div>Ticket resto</div>'}
     activity_preparation_rich_text { '<div>Appel téléphonique</div>'}
     aasm_state { 'draft' }
     weekly_hours { ['9:00', '17:00'] }
