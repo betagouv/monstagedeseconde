@@ -123,6 +123,7 @@ class School < ApplicationRecord
       field :city
       field :department
       field :class_rooms
+      field :internship_offers
       field :school_manager
     end
 
