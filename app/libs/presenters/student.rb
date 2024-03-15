@@ -50,7 +50,7 @@ module Presenters
     def student
       user
     end
-    
+
     def sing_feminine(word)
       return "#{word}e" if user.gender == 'f'
 
@@ -61,9 +61,16 @@ module Presenters
       url_helpers.dashboard_students_internship_applications_path(student_id: user.id)
     end
 
-
     def validated_by_employer_applications_count
       student.internship_applications.validated_by_employer.count
+    end
+
+    def forbidden_application_reason
+      if student.with_2_weeks_internships_approved?
+        "Vous avez déjà validé un stage pour les deux semaines"
+      else
+        "Stage déjà validé sur cette semaine"
+      end
     end
 
     private

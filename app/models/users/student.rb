@@ -129,8 +129,33 @@ module Users
       Presenters::Student.new(self)
     end
 
-    def has_already_approved_an_application?
-      internship_applications.approved.any?
+    def with_2_weeks_internships_approved?
+      return false if internship_applications.empty? || internship_applications.approved.empty?
+
+      internship_applications.approved
+                             .map(&:internship_offer)
+                             .pluck(:period)
+                             .uniq
+                             .in?([[0], [1,2]])
+    end
+
+    def other_approved_applications_compatible?(internship_offer:)
+      return false if internship_offer.nil?
+      return true if internship_applications.empty? || internship_applications.approved.empty?
+
+      related_approved_offers_periods = internship_applications.approved
+                                                               .map(&:internship_offer)
+                                                               .pluck(:period)
+      case internship_offer.period
+      when 0
+        !internship_applications.approved.any?
+      when 1
+        related_approved_offers_periods == [2]
+      when 2
+        related_approved_offers_periods == [1]
+      else
+        false
+      end
     end
 
     def log_search_history(search_params)
@@ -160,7 +185,7 @@ module Users
                      .deliver_later
       end
     end
-    
+
     def set_reminders
       SendReminderToStudentsWithoutApplicationJob.set(wait: 3.day).perform_later(id)
     end

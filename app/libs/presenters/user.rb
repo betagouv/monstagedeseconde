@@ -9,6 +9,8 @@ module Presenters
     delegate :default_search_options, to: :user
     delegate :email, to: :user
 
+    def forbidden_application_reason ; nil end
+
     def initials
       "#{user.first_name[0].capitalize}.#{user.last_name[0].capitalize}."
     end
