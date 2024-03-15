@@ -65,7 +65,7 @@ module Dashboard
       end
 
       test 'GET users#index as SchoolManagement contains key navigations links' do
-        school = create(:school, :with_school_manager,:with_weeks)
+        school = create(:school, :with_school_manager)
         sign_in(school.school_manager)
 
         get dashboard_school_users_path(school)

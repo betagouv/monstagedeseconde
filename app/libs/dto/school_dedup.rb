@@ -4,7 +4,6 @@ module Dto
   class SchoolDedup
     def migrate_all
       migrate_users if school.users.count.positive?
-      migrate_weeks if school.weeks.count.positive?
       migrate_class_rooms if school.class_rooms.count.positive?
       migrate_internship_offers if InternshipOffer.where(school_id: school.id).count.positive?
       real.save!
@@ -22,10 +21,6 @@ module Dto
 
     def migrate_users
       school.users.update_all(school_id: real.id)
-    end
-
-    def migrate_weeks
-      real.weeks = school.weeks
     end
 
     def migrate_class_rooms

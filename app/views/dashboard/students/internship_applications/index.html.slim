@@ -38,7 +38,7 @@
               p L’entreprise a validé votre stage, c’est à vous de confirmer que vous choisissez ce stage et que vous allez y aller.
       = render partial: "dashboard/students/internship_applications/student_internship_application",
               collection: @internship_applications
-    - if current_user.student? && !current_user.has_already_approved_an_application?
+    - unless current_user.with_2_weeks_internships_approved?
       .row
         .col-12
           = link_to "Rechercher un autre stage",

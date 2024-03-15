@@ -17,7 +17,7 @@ class MissingWeeksNotificationTest < ApplicationSystemTestCase
     skip "test to update after ui is finished #TODO #may_flower"
     travel_to(Date.new(2019, 3, 1)) do
       internship_offer = create(:weekly_internship_offer)
-      school = create(:school, :with_school_manager, weeks: [])
+      school = create(:school, :with_school_manager)
       school_manager = school.school_manager
       class_room = create(:class_room, school: school)
       student = create(:student, school: school, class_room: class_room)

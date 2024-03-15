@@ -41,11 +41,11 @@
         {
           "plan": "heroku-postgresql:mini",
           "options": {
-            "version": "12",
-            "extensions": 
-              "public.pg_trgm, 
-              public.postgis, 
-              public.unaccent, 
+            "version": "15",
+            "extensions":
+              "public.pg_trgm,
+              public.postgis,
+              public.unaccent,
               public.geography"
           }
         },

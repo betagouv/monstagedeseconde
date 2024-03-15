@@ -60,17 +60,7 @@ class User < ApplicationRecord
   def channel ; :email end
 
   def default_search_options
-    opts = {}
-
-    opts = opts.merge(school.default_search_options) if has_relationship?(:school)
-    if has_relationship?(:class_room) || self.is_a?(Users::SchoolManagement)
-      week_ids = school.weeks
-                       .where(id: Week.selectable_on_school_year.pluck(:id))
-                       .pluck(:id)
-                       .map(&:to_s)
-      opts = opts.merge(week_ids: week_ids) if week_ids.size.positive?
-    end
-    opts
+    has_relationship?(:school) ? school.default_search_options : {}
   end
 
   def has_relationship?(relationship)
@@ -256,11 +246,11 @@ class User < ApplicationRecord
   def school_management? ; false end
   def god? ; false end
   def employer_like? ; false end
-  def has_already_approved_an_application? ; false end
   def can_sign?(internship_agreement); false end
   def email_required? ; false end
   def needs_to_see_modal? ; false end
   def has_offers_to_apply_to? ; false end
+  def with_2_weeks_internships_approved? ; false end
 
   def fetch_current_area_notification; nil end
   def create_signature_phone_token ; nil end

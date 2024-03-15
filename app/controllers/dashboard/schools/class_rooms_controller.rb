@@ -7,7 +7,6 @@ module Dashboard
 
       def index
         authorize! :index, ClassRoom
-        set_empty_weeks_modal_visibility
       end
 
       def show
@@ -67,15 +66,6 @@ module Dashboard
               .permit(:name)
       end
 
-      def set_empty_weeks_modal_visibility
-        @modal_visibility = false
-        return if @school.has_weeks_on_current_year?
-
-        if user_session['empty_weeks_modal_shown'].blank?
-          user_session['empty_weeks_modal_shown'] = true
-          @modal_visibility = true
-        end
-      end
     end
   end
 end
