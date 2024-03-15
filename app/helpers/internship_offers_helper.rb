@@ -42,7 +42,7 @@ module InternshipOffersHelper
       :school_year,
       :order,
       :direction,
-      week_ids: [],
+      :period
     )
   end
 
