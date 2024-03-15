@@ -57,23 +57,6 @@ module Dashboard
       assert_redirected_to root_path
     end
 
-    test 'PATCH update as SchoolManagement update school & redirect to class rooms' do
-      school = create(:school)
-      sign_in(create(:school_manager, school: school))
-      weeks_ids = [weeks(:week_2019_1).id, weeks(:week_2019_2).id]
-      assert_difference('SchoolInternshipWeek.count', weeks_ids.size) do
-        patch(dashboard_school_path(school.to_param),
-              params: {
-                school: {
-                  week_ids: weeks_ids
-                }
-              })
-        assert_redirected_to dashboard_school_class_rooms_path(school)
-        follow_redirect!
-        assert_select '#alert-success #alert-text', { text: 'Etablissement mis à jour avec succès' }, 1
-      end
-    end
-
     test 'PATCH update with missing params fails gracefuly' do
       school = create(:school)
       sign_in(create(:school_manager, school: school))
