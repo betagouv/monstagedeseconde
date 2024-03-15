@@ -16,7 +16,7 @@ jobs: # a collection of steps
           PGUSER: monstage_test
           RAILS_ENV: test
           HOST: https://www.example.fr
-      - image: image: cimg/postgres:15.6-postgis # database image with support of current dir
+      - image: cimg/postgres:15.6-postgis # database image with support of current dir
         environment: # environment variables for database
           POSTGRES_DB: monstage_test
           POSTGRES_USER: monstage_test
@@ -144,6 +144,7 @@ jobs: # a collection of steps
       - run:
           name: Deploy staging to Clever Cloud
           command: |
+            set -x
             ssh-keyscan push-n3-par-clevercloud-customers.services.clever-cloud.com >>  ~/.ssh/known_hosts
             git remote add clever git+ssh://git@push-n3-par-clevercloud-customers.services.clever-cloud.com/$CLEVER_APP_ID.git
             git push -u clever review:master -f
