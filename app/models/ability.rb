@@ -75,7 +75,7 @@ class Ability
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
     can :apply, InternshipOffer do |internship_offer|
-      student_can_apply?(student: user, internship_offer: internship_offer)
+      user.other_approved_applications_compatible?(internship_offer: internship_offer)
     end
     can %i[submit_internship_application update show internship_application_edit],
         InternshipApplication do |internship_application|
@@ -504,9 +504,5 @@ class Ability
 
     school_year_start = SchoolYear::Current.new.beginning_of_period
     internship_offer.last_date > school_year_start
-  end
-
-  def student_can_apply?(internship_offer:, student:)
-    !student.has_already_approved_an_application?
   end
 end
