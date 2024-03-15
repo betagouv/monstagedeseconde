@@ -31,7 +31,6 @@ class SchoolsController < ApplicationController
             :name,
             :kind,
             :visible,
-            coordinates: {},
-            week_ids: [])
+            coordinates: {})
   end
 end

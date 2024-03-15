@@ -9,9 +9,9 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
   test 'student not in class room can not ask for week' do
     skip "test to update after ui is finished #TODO #may_flower"
     weeks = Week.selectable_from_now_until_end_of_school_year.to_a.first(2)
-    school = create(:school, weeks: [])
+    school = create(:school)
     student = create(:student, school: school, class_room: create(:class_room, school: school))
-    internship_offer = create(:weekly_internship_offer, weeks: weeks)
+    internship_offer = create(:weekly_internship_offer)
 
     sign_in(student)
     visit internship_offer_path(internship_offer)
@@ -22,7 +22,7 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
   test 'student can submit application when school has not choosen any week yet' do
     skip "test to update after ui is finished #TODO #may_flower"
     weeks = Week.selectable_from_now_until_end_of_school_year.to_a.first(2)
-    school = create(:school, weeks: [])
+    school = create(:school)
     student = create(:student, school: school, class_room: create(:class_room, school: school))
     internship_offer = create(:weekly_internship_offer, weeks: weeks)
 
@@ -36,7 +36,7 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
   test 'student with no class_room can submit an application when school have not choosen week' do
     if ENV['RUN_BRITTLE_TEST']
       weeks = Week.selectable_from_now_until_end_of_school_year.to_a.first(2)
-      school = create(:school, weeks: [])
+      school = create(:school)
       student = create(:student, school: school)
       internship_offer = create(:weekly_internship_offer, weeks: weeks)
 
@@ -72,7 +72,7 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
     weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
     travel_to(Date.new(2019, 9, 1)) do
     internship_offer = create(:weekly_internship_offer, weeks: weeks)
-    school           = create(:school,:with_school_manager, weeks: [])
+    school           = create(:school,:with_school_manager)
     student          = create(:student, school: school)
     assert_equal 1, internship_offer.remaining_seats_count
       sign_in(student)

@@ -4,7 +4,7 @@ class NavbarTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do
-    @school = create(:school, :with_school_manager, :with_weeks)
+    @school = create(:school, :with_school_manager)
   end
 
   test 'visitor navbar' do
