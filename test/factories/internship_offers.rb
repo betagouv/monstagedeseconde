@@ -27,6 +27,7 @@ FactoryBot.define do
     street { '1 rue du poulet' }
     zipcode { '75001' }
     city { 'Paris' }
+    department { create(:department, code: '75', name: 'Paris') }
     employer_name { 'Octo' }
     coordinates { Coordinates.paris }
     siret { '11122233300000' }

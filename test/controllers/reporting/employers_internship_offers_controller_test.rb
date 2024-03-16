@@ -14,6 +14,8 @@ module Reporting
          'when department params match his departement_name' do
       statistician = create(:statistician) # Oise is the department
       paqte_group = create(:group, is_paqte: true)
+      create(:department, code: '60', name: 'Oise')
+      create(:department, code: '75', name: 'Paris')
       public_internship_offer = create(
         :weekly_internship_offer, # public internship by default
         zipcode: 75012 # Paris
@@ -121,6 +123,8 @@ module Reporting
     test 'get index as MinistryStatistician'  do
       ministry_statistician = create(:ministry_statistician) # Oise is the department
       paqte_group = create(:group, is_paqte: true)
+      create(:department, code: '60', name: 'Oise')
+      create(:department, code: '75', name: 'Paris')
       public_internship_offer = create(
         :weekly_internship_offer, # public internship by default
         zipcode: 75012 # Paris
@@ -164,6 +168,7 @@ module Reporting
          'when department params does match his department and ' \
          'it filters results by department' do
       statistician = create(:statistician) #Oise
+      create(:department, code: '60', name: 'Oise')
       public_internship_offer = create(
         :weekly_internship_offer,
         zipcode: 60580
