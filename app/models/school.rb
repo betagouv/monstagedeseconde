@@ -180,8 +180,6 @@ class School < ApplicationRecord
     weeks.selectable_on_school_year.exists?
   end
 
-  after_create :create_internship_agreement_preset!,
-               if: lambda { |s| s.internship_agreement_preset.blank? }
 
   def has_staff?
     users.where("role = 'teacher' or role = 'main_teacher' or role = 'other'")

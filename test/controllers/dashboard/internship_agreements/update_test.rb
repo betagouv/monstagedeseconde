@@ -119,7 +119,9 @@ module Dashboard::InternshipAgreements
       params = {
         'internship_agreement' => {
           school_representative_full_name: new_school_representative_full_name,
-          school_manager_event: 'start_by_school_manager'
+          school_manager_event: 'start_by_school_manager',
+          delegation_date: Date.today,
+          legal_status: 'Public'
         }
       }
       sign_in(school_manager)
@@ -130,6 +132,8 @@ module Dashboard::InternshipAgreements
       assert_equal(new_school_representative_full_name,
                    internship_agreement.reload.school_representative_full_name,
                    'can\'t update internship_agreement school representative full name')
+      assert_equal('Public', internship_agreement.reload.legal_status, 'can\'t update internship_agreement legal status')
+      assert_equal(Date.today, internship_agreement.reload.delegation_date, 'can\'t update internship_agreement delegation date')
     end
 
     test 'PATCH #update as school manager owning students updates internship_agreement with missing school_manager_event' do

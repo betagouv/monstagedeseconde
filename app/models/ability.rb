@@ -115,6 +115,8 @@ class Ability
       edit_school_representative_email
       edit_school_representative_role
       edit_school_delegation_to_sign_delivered_at
+      edit_delegation_date
+      edit_legal_status
       edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
@@ -133,9 +135,6 @@ class Ability
       update
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
-    end
-    can %i[edit update], InternshipAgreementPreset do |internship_agreement_preset|
-      internship_agreement_preset.school_id == user.school_id
     end
     can :create, Signature  do |signature|
       signature.internship_agreement.student.school == user.school
@@ -168,6 +167,8 @@ class Ability
       edit_school_representative_phone
       edit_school_representative_email
       edit_school_representative_role
+      edit_delegation_date
+      edit_legal_status
       edit_school_delegation_to_sign_delivered_at
       edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
@@ -187,9 +188,6 @@ class Ability
       update
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
-    end
-    can %i[edit update], InternshipAgreementPreset do |internship_agreement_preset|
-      internship_agreement_preset.school_id == user.school_id
     end
     can :create, Signature do |signature|
       signature.internship_agreement.school_manager == user.id
@@ -247,6 +245,10 @@ class Ability
       edit_tutor_email
       edit_tutor_role
       edit_activity_scope_rich_text
+      edit_skills_observe_rich_text
+      edit_skills_communicate_rich_text
+      edit_skills_understand_rich_text
+      edit_skills_motivation_rich_text
       edit_activity_preparation_rich_text
       edit_activity_learnings_rich_text
       edit_complementary_terms_rich_text
