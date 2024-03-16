@@ -428,6 +428,48 @@ ALTER SEQUENCE public.class_rooms_id_seq OWNED BY public.class_rooms.id;
 
 
 --
+-- Name: departments; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.departments (
+    id bigint NOT NULL,
+    code character varying,
+    name character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: departments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.departments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: departments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.departments_id_seq OWNED BY public.departments.id;
+
+
+--
+-- Name: departments_operators; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.departments_operators (
+    department_id bigint NOT NULL,
+    operator_id bigint NOT NULL
+);
+
+
+--
 -- Name: favorites; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -684,7 +726,9 @@ CREATE TABLE public.internship_agreements (
     school_representative_email character varying(100),
     discarded_at timestamp(6) without time zone,
     lunch_break text,
-    organisation_representative_email character varying
+    organisation_representative_email character varying,
+    legal_status character varying,
+    delegation_date date
 );
 
 
@@ -1381,7 +1425,9 @@ CREATE TABLE public.schools (
     internship_agreement_online boolean DEFAULT false,
     fetched_school_phone character varying(20),
     fetched_school_address character varying(300),
-    fetched_school_email character varying(100)
+    fetched_school_email character varying(100),
+    legal_status character varying,
+    delegation_date date
 );
 
 
@@ -1693,7 +1739,8 @@ CREATE TABLE public.users (
     created_by_teacher boolean DEFAULT false,
     survey_answered boolean DEFAULT false,
     current_area_id bigint,
-    statistician_validation boolean DEFAULT false
+    statistician_validation boolean DEFAULT false,
+    hubspot_id character varying
 );
 
 
@@ -1859,6 +1906,13 @@ ALTER TABLE ONLY public.area_notifications ALTER COLUMN id SET DEFAULT nextval('
 --
 
 ALTER TABLE ONLY public.class_rooms ALTER COLUMN id SET DEFAULT nextval('public.class_rooms_id_seq'::regclass);
+
+
+--
+-- Name: departments id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.departments ALTER COLUMN id SET DEFAULT nextval('public.departments_id_seq'::regclass);
 
 
 --
@@ -2153,6 +2207,14 @@ ALTER TABLE ONLY public.area_notifications
 
 ALTER TABLE ONLY public.class_rooms
     ADD CONSTRAINT class_rooms_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: departments departments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.departments
+    ADD CONSTRAINT departments_pkey PRIMARY KEY (id);
 
 
 --
@@ -2496,6 +2558,20 @@ CREATE INDEX index_area_notifications_on_user_id ON public.area_notifications US
 --
 
 CREATE INDEX index_class_rooms_on_school_id ON public.class_rooms USING btree (school_id);
+
+
+--
+-- Name: index_departments_operators_on_department_id_and_operator_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_departments_operators_on_department_id_and_operator_id ON public.departments_operators USING btree (department_id, operator_id);
+
+
+--
+-- Name: index_departments_operators_on_operator_id_and_department_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_departments_operators_on_operator_id_and_department_id ON public.departments_operators USING btree (operator_id, department_id);
 
 
 --
@@ -3435,6 +3511,13 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240316135712'),
+('20240315100413'),
+('20240315090504'),
+('20240314133947'),
+('20240314133856'),
+('20240312165403'),
+('20240311153638'),
 ('20240228155130'),
 ('20240221143107'),
 ('20240216100020'),
