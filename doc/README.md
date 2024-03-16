@@ -46,6 +46,8 @@ L'authentification se fait par token via le header HTTP : ```Authorization: Bear
 
 Ce token devra être présent à chaque requête.
 
+L'utilisation est limitée à 100 appels par minute, au-delà une erreur 429 est renvoyée.
+
 ### Comment récuperer mon token d'authentification
 
 [Se connecter](https://stagedeseconde.1jeune1solution.gouv.fr/utilisateurs/connexion) avec votre compte opérateur

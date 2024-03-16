@@ -7,7 +7,6 @@ module Dashboard
       include TeamAndAreasHelper
 
       test 'student can browse his internship_applications' do
-        skip "test to update after ui is finished #TODO #may_flower"
         school = create(:school, :with_school_manager )
         student = create(:student, school: school)
         internship_applications = {
@@ -51,7 +50,6 @@ module Dashboard
       end
 
       test 'student can submit an application from his applications dashboard' do
-        skip "test to update after ui is finished #TODO #may_flower"
         school = create(:school, :with_school_manager)
         student = create(:student, school: school)
         internship_application = create(:weekly_internship_application, :drafted, student: student)
@@ -68,26 +66,6 @@ module Dashboard
         end
         find '.fr-badge.fr-badge--info', text: "SANS RÉPONSE DE L'ENTREPRISE"
         find "a#show_link_#{internship_application.id}", text: "Voir"
-      end
-
-      test 'student can submit an application for any week, when a week has been registered last year' do
-        skip "test to update after ui is finished #TODO #may_flower"
-        school = nil
-        travel_to Date.new(2020, 1, 1) do
-          school = create(:school, :with_school_manager)
-        end
-        travel_to Date.new(2021, 1, 1) do
-          student = create(:student, school: school)
-          internship_offer = create(:weekly_internship_offer)
-          sign_in(student)
-          visit internship_offer_path(internship_offer)
-          find('h1', text: internship_offer.title)
-          # FIND the link to the internship_applkication
-          within("##{dom_id(internship_offer)}-postuler-test") do
-            click_link 'Postuler'
-          end
-          select 'Semaine du 1 février au 7 février', from: 'internship_application_week_id'
-        end
       end
 
       test 'GET #show as Student with existing draft application shows the draft' do
@@ -117,16 +95,14 @@ module Dashboard
       end
 
       test 'student can draft, submit, and cancel(by_student) internship_applications' do
-        skip "test to update after ui is finished #TODO #may_flower"
         travel_to Date.new(2019,12,1) do
-          weeks = [Week.find_by(number: 1, year: 2020)]
           school = create(:school)
           student = create(:student,
                           school: school,
                           class_room: create( :class_room,
                                               school: school)
                           )
-          internship_offer = create(:weekly_internship_offer, weeks: weeks)
+          internship_offer = create(:weekly_internship_offer)
 
           sign_in(student)
           visit internship_offer_path(internship_offer)
@@ -135,8 +111,6 @@ module Dashboard
           first(:link, 'Postuler').click
 
           # fill in application form
-          human_first_week_label = weeks.first.human_select_text_method
-          select human_first_week_label, from: 'internship_application_week_id', wait: 3
           find('#internship_application_motivation', wait: 3).native.send_keys('Je suis au taquet')
           refute page.has_selector?('.nav-link-icon-with-label-success') # green element on screen
           fill_in("Adresse électronique (email)", with: 'parents@gmail.com')
@@ -168,9 +142,7 @@ module Dashboard
       end
 
       test 'student can update her internship_application' do
-        skip "test to update after ui is finished #TODO #may_flower"
         travel_to Date.new(2023,2,1) do
-          weeks = Week.selectable_from_now_until_end_of_school_year
           school = create(:school)
           student = create(:student,
                           school: school,
@@ -193,11 +165,7 @@ module Dashboard
           find('h1.h3', text: 'Ma candidature')
 
           # fill in application form
-          human_first_week_label = weeks.third.human_select_text_method
-          select human_first_week_label, from: 'internship_application_week_id', wait: 3
           find('#internship_application_motivation').native.send_keys('et ')
-          find('#internship_application_student_attributes_resume_other').native.send_keys("et puis j'ai fait plein de trucs")
-          find('#internship_application_student_attributes_resume_languages').native.send_keys("je parle couramment espagnol")
           fill_in("Adresse électronique (email)", with: 'parents@gmail.com')
           fill_in("Numéro de portable élève ou resposable légal", with: '0611223344')
           assert_no_changes lambda {
@@ -210,8 +178,6 @@ module Dashboard
           end
           application =  student.internship_applications.last
           assert_equal 'et Suis hyper motivé', application.motivation.body.to_plain_text
-          assert_equal "et puis j'ai fait plein de trucs", application.student.resume_other.body.to_plain_text
-          assert_equal "je parle couramment espagnol", application.student.resume_languages.body.to_plain_text
 
           click_link 'Modifier'
 
@@ -222,14 +188,12 @@ module Dashboard
       end
 
       test 'submitted internship_application can be canceled by student' do
-        skip "test to update after ui is finished #TODO #may_flower"
-        weeks = [Week.find_by(number: 1, year: 2020)]
         school = create(:school)
         student = create(:student,
                         school: school,
                         class_room: create(:class_room, school: school)
                         )
-        internship_offer = create(:weekly_internship_offer, weeks: weeks)
+        internship_offer = create(:weekly_internship_offer, :week_1)
         internship_application = create( :weekly_internship_application,
                                         :submitted,
                                         internship_offer: internship_offer,
@@ -249,18 +213,17 @@ module Dashboard
           }, from: 0, to: 1 do
           selector = "#internship_application_canceled_by_student_message"
           find(selector).native.send_keys('Je ne suis plus disponible')
-          click_button 'Confirmer'
+          click_button "Confirmer l'annulation"
         end
       end
 
       test 'submitted internship_application can be resent by the student' do
-        skip "test to update after ui is finished #TODO #may_flower"
-        weeks = [Week.find_by(number: 1, year: 2020)]
+        school= create(:school)
         student = create(:student,
                          school: school,
                          class_room: create(:class_room, school: school)
                         )
-        internship_offer = create(:weekly_internship_offer, weeks: weeks)
+        internship_offer = create(:weekly_internship_offer)
         internship_application = create( :weekly_internship_application,
                                         :submitted,
                                         internship_offer: internship_offer,
@@ -283,14 +246,12 @@ module Dashboard
       end
 
       test "confirmed internship_application can lead student to the employer's contact parameters" do
-        skip "test to update after ui is finished #TODO #may_flower"
-        weeks = [Week.find_by(number: 1, year: 2020)]
         school = create(:school)
         student = create(:student,
                         school: school,
                         class_room: create(:class_room, school: school)
                         )
-        internship_offer = create(:weekly_internship_offer, weeks: weeks)
+        internship_offer = create(:weekly_internship_offer)
         internship_application = create( :weekly_internship_application,
                                         :approved,
                                         internship_offer: internship_offer,
@@ -309,23 +270,19 @@ module Dashboard
       end
 
       test "when confirmed an internship_application a student cannot apply a drafted application anymore" do
-        skip "test to update after ui is finished #TODO #may_flower"
-        weeks = [Week.find_by(number: 1, year: 2020),Week.find_by(number: 2, year: 2020)]
         school = create(:school)
         student = create(:student,
                         school: school,
                         class_room: create(:class_room, school: school)
                         )
-        internship_offer_1 = create(:weekly_internship_offer, weeks: weeks)
-        internship_offer_2 = create(:weekly_internship_offer, weeks: weeks)
+        internship_offer_1 = create(:weekly_internship_offer, :week_1)
+        internship_offer_2 = create(:weekly_internship_offer, :week_2)
         approved_application_1 = create( :weekly_internship_application,
                                         :drafted,
-                                        week: weeks.first,
                                         internship_offer: internship_offer_1,
                                         student: student)
         approved_application_2 = create( :weekly_internship_application,
                                         :drafted,
-                                        week: weeks.second,
                                         internship_offer: internship_offer_2,
                                         student: student)
 
@@ -337,20 +294,18 @@ module Dashboard
 
         approved_application_2.update_column(:aasm_state, 'approved')
         visit dashboard_students_internship_applications_path(student_id: student.id)
-        click_link("Voir")
+        click_link("Contacter l'employeur")
         assert_select "input[type='submit'][value='Envoyer la demande']", count: 0
       end
 
       test "quick decision process with canceling" do
-        skip "test to update after ui is finished #TODO #may_flower"
         travel_to Date.new(2019, 10, 1) do
-          weeks = [Week.find_by(number: 1, year: 2020),Week.find_by(number: 2, year: 2020)]
           school = create(:school)
           student = create(:student,
                     school: school,
                     class_room: create(:class_room, school: school)
                   )
-          internship_offer = create(:weekly_internship_offer, weeks: weeks)
+          internship_offer = create(:weekly_internship_offer)
           internship_application = create( :weekly_internship_application,
                                           :validated_by_employer,
                                           internship_offer: internship_offer,
@@ -373,15 +328,13 @@ module Dashboard
       end
 
       test "quick decision process with approving" do
-        skip "test to update after ui is finished #TODO #may_flower"
         travel_to Date.new(2019, 10, 1) do
-          weeks = [Week.find_by(number: 1, year: 2020),Week.find_by(number: 2, year: 2020)]
           school = create(:school)
           student = create(:student,
                     school: school,
                     class_room: create(:class_room, school: school)
                   )
-          internship_offer = create(:weekly_internship_offer, weeks: weeks)
+          internship_offer = create(:weekly_internship_offer)
           internship_application = create( :weekly_internship_application,
                                           :validated_by_employer,
                                           internship_offer: internship_offer,
@@ -404,15 +357,13 @@ module Dashboard
       end
 
       test "reasons for rejection are explicit for students when employer rejects internship_application" do
-        skip "test to update after ui is finished #TODO #may_flower"
         travel_to Date.new(2019, 10, 1) do
           employer = create(:employer)
-          weeks = [Week.find_by(number: 1, year: 2020),Week.find_by(number: 2, year: 2020)]
           school = create(:school)
           student = create(:student,
                     school: school,
                     class_room: create(:class_room, school: school))
-          internship_offer = create(:weekly_internship_offer, weeks: weeks, internship_offer_area: employer.current_area, employer: employer)
+          internship_offer = create(:weekly_internship_offer, internship_offer_area: employer.current_area, employer: employer)
           internship_application = create( :weekly_internship_application,
                                            :submitted,
                                            internship_offer: internship_offer,
@@ -425,7 +376,9 @@ module Dashboard
           click_button "Refuser"
           selector = "#internship_application_rejected_message"
           find(selector).native.send_keys('Le tuteur est malade')
-          click_button "Confirmer"
+          within('.fr-modal__footer') do
+            click_button "Refuser"
+          end
           assert_equal "rejected", internship_application.reload.aasm_state
           sign_out(internship_offer.employer)
 
@@ -433,39 +386,6 @@ module Dashboard
           visit dashboard_students_internship_applications_path(student_id: student.id)
           click_link "Voir"
           assert_text "Le tuteur est malade"
-        end
-      end
-
-      test "examined motives are explicit for students when employer rejects internship_application" do
-        skip "test to update after ui is finished #TODO #may_flower"
-        travel_to Date.new(2019, 10, 1) do
-          weeks = [Week.find_by(number: 1, year: 2020),Week.find_by(number: 2, year: 2020)]
-          school = create(:school, weeks: weeks)
-          student = create(:student,
-                    school: school,
-                    class_room: create(:class_room, school: school))
-          employer, internship_offer = create_employer_and_offer
-          internship_offer.weeks = weeks
-          internship_application = create( :weekly_internship_application,
-                                           :submitted,
-                                           internship_offer: internship_offer,
-                                           student: student)
-
-          sign_in(employer)
-          visit dashboard_internship_offers_path
-          click_link "Candidatures"
-          click_link "Répondre"
-          click_button "Etudier"
-          selector = "#internship_application_examined_message"
-          find(selector).native.send_keys('Votre profil pourrait intéresser le département des ventes')
-          click_button "Confirmer"
-          assert_equal "examined", internship_application.reload.aasm_state
-          sign_out(internship_offer.employer)
-
-          sign_in(student)
-          visit dashboard_students_internship_applications_path(student_id: student.id)
-          click_link "Voir"
-          assert_text "Votre profil pourrait intéresser le département des ventes"
         end
       end
 

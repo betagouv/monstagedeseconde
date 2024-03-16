@@ -85,37 +85,15 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
     assert_card_presence_of(internship_offer: not_searched_internship_offer)
   end
 
-  test 'search by week works' do
-    skip "test to update after ui is finished #TODO #may_flower"
-    travel_to(Date.new(2022, 9, 6)) do
-      searched_week = Week.selectable_from_now_until_end_of_school_year.first
-      not_searched_week = Week.selectable_from_now_until_end_of_school_year.last
-
-      searched_internship_offer = create(:weekly_internship_offer,
-                                         weeks: [searched_week])
-      not_searched_internship_offer = create(:weekly_internship_offer,
-                                             weeks: [not_searched_week])
-      visit internship_offers_path
-      fill_in_week(week: searched_week, open_popover: true)
-      submit_form
-      assert_card_presence_of(internship_offer: searched_internship_offer)
-      assert_absence_of(internship_offer: not_searched_internship_offer)
-      # TODO: ensure weeks navigation and months navigation
-    end
-  end
-
   test 'search by all criteria' do
-    skip "test to update after ui is finished #TODO #may_flower"
     travel_to(Date.new(2022, 1, 6)) do
       searched_keyword = 'helloworld'
-      searched_week = Week.selectable_from_now_until_end_of_school_year.first
       searched_location = Coordinates.paris
       not_searched_keyword = 'bouhbouh'
-      not_searched_week = Week.selectable_from_now_until_end_of_school_year.last
       not_searched_location = Coordinates.bordeaux
       searched_opts = { title: searched_keyword,
                         coordinates: searched_location,
-                        weeks: [searched_week]}
+                        period: 1}
       # build findable
       findable_internship_offer = create(:weekly_internship_offer, searched_opts)
 
@@ -129,8 +107,7 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
         searched_opts.merge(title: not_searched_keyword)
       )
       not_found_by_week = create(
-        :weekly_internship_offer,
-        searched_opts.merge(weeks: [not_searched_week])
+        :weekly_internship_offer, :week_2
       )
 
       dictionnary_api_call_stub
@@ -141,7 +118,7 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
 
       fill_in_city_or_zipcode(with: 'Pari', expect: 'Paris')
       fill_in_keyword(keyword: searched_keyword)
-      fill_in_week(week: searched_week, open_popover: true)
+      select("1 semaine - du 17 au 21 juin 2024")
       submit_form
 
       assert_card_presence_of(internship_offer: findable_internship_offer)

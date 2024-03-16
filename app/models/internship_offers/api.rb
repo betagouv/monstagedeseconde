@@ -3,6 +3,8 @@
 module InternshipOffers
   class Api < InternshipOffer
 
+    MAX_CALLS_PER_MINUTE = 100
+
     rails_admin do
       weight 13
       navigation_label "Offres"

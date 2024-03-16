@@ -194,7 +194,7 @@ export default function SearchSchool({
                         Object.keys(autocompleteCitySuggestions || {}).length > 0 ? '' : 'd-none'
                       }`}
                     >
-                      Ville(s)
+                      Communes(s)
                     </li>
                     {Object.keys(autocompleteCitySuggestions || {}).map((currentCity, index) => (
                       <li

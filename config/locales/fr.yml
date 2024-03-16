@@ -504,7 +504,7 @@ fr:
             street:
               blank: "Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage"
             city:
-              blank: "Veuillez renseigner la ville l'employeur"
+              blank: "Veuillez renseigner la commune l'employeur"
             public:
               inclusion: "Veuillez choisir une institution de tutelle pour cette offre de stage"
         partner:
