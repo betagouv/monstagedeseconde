@@ -105,12 +105,22 @@ a:hover {
 }
 
 .everyone .container-monstage .stamp-logo {
-    height: 122px;
-    max-width: 193px;
+    img{
+        height: 122px;
+        width: 193px;
+    }
     display: block;
-    margin-top: 50%;
+    margin-top: 37%;
 }
+
 .fr-card h3.std-height {
+
+    height: 5.5rem;
+}
+.fr-card.without-arrow::before, .fr-card.without-arrow::after{
+    display: none;
+}
+p.fr-card__desc.std-height {
     height: 5.5rem;
 }
 
