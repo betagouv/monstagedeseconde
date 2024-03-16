@@ -124,7 +124,7 @@ class InternshipOffersController < ApplicationController
     # TODO refacto : difficult to understand
     priorities = [
       [:latitude, :longitude, :radius], #1
-      [:week_ids], #2
+      [:period], #2
       [:keyword] #3
     ]
 

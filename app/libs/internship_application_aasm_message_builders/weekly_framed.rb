@@ -25,10 +25,6 @@ module InternshipApplicationAasmMessageBuilders
       HTML
     end
 
-    def on_examined_message
-      ''
-    end
-
     def on_canceled_by_student_message
       ""
     end

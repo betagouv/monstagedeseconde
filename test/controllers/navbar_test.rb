@@ -4,7 +4,7 @@ class NavbarTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do
-    @school = create(:school, :with_school_manager, :with_weeks)
+    @school = create(:school, :with_school_manager)
   end
 
   test 'visitor navbar' do
@@ -101,7 +101,7 @@ class NavbarTest < ActionDispatch::IntegrationTest
     #   student.presenter.default_internship_offers_path
     # )
     assert_select('li a.fr-link.text-decoration-none.active', count: 1)
-    assert_select('li a.fr-link.text-decoration-none.active', text: "#{student.dashboard_name}0", count: 1)
+    assert_select('li a.fr-link.text-decoration-none.active', text: "#{student.dashboard_name}", count: 1)
     assert_select("li a.fr-link.mr-4", text: 'Accueil', count: 1)
     # assert_select("li a.fr-link.mr-4", text: 'Recherche', count: 1)
     assert_select("li a.fr-link.mr-4", text: 'Mon profil', count: 1)

@@ -24,7 +24,7 @@ module Dashboard
       #
 
       test 'GET class_rooms#show as SchoolManagement with weeks declared contains key navigations links' do
-        school = create(:school, :with_school_manager, :with_weeks)
+        school = create(:school, :with_school_manager)
         class_room = create(:class_room, school: school)
         main_teacher = create(:main_teacher, school: school, class_room: class_room)
         sign_in(main_teacher)
@@ -32,7 +32,6 @@ module Dashboard
         get dashboard_school_class_room_students_path(school, class_room)
         assert_response :success
         assert_select "li a[href=?]", dashboard_school_class_rooms_path(school) , count: 1
-        assert_select "li a[href=?]", edit_dashboard_school_path(school), count: 1
         assert_select "li a[href=?]", dashboard_school_users_path(school), count: 1
         assert_select "li a[href=?]", dashboard_internship_agreements_path, count: 1
         assert_select "li a[href=?]", dashboard_school_information_path(school), count: 1
@@ -43,7 +42,7 @@ module Dashboard
       end
 
       test 'GET class_rooms#show as SchoolManagement can remove student from school' do
-        school = create(:school, :with_school_manager, :with_weeks)
+        school = create(:school, :with_school_manager)
         class_room = create(:class_room, school: school)
         main_teacher = create(:main_teacher, school: school, class_room: class_room)
         student = create(:student, class_room: class_room, school: school, confirmed_at: 2.days.ago)

@@ -184,5 +184,21 @@ module Api
         assert_equal offer_3.id, json_response['internshipOffers'][0]['id']
       end
     end
+
+    test 'GET #search returns too many requests after max calls limit' do
+      user = create(:user_operator, :fully_authorized)
+      (InternshipOffers::Api::MAX_CALLS_PER_MINUTE + 1).times do
+        get search_api_internship_offers_path(
+          params: {
+            token: "Bearer #{user.api_token}"
+          }
+        )
+      end
+
+      documents_as(endpoint: :'internship_offers/search', state: :too_many_requests) do
+        assert_response :too_many_requests
+        assert_equal 'Trop de requêtes - Limite d\'utilisation de l\'API dépassée.', json_error
+      end
+    end
   end
 end

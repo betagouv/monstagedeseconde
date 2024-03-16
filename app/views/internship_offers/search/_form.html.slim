@@ -28,10 +28,11 @@ div [class="test-search-container #{has_white_bg ? 'search-container py-2' : ''}
                                    whiteBg: has_white_bg } )
 
       .form-group.mb-md-0.col-12.col-md.fr-ml-2w
+        = form.label :period, "Période", class: "fr-label d-md-none font-weight-lighter"
         = form.select :period,
                       options_for_select(HostingInfo.period_collection, params[:period]),
                       { include_blank: "Toutes les périodes" },
-                      class: "fr-select",
+                      class: "fr-select almost-fitting",
                       title: "Recherche par période",
                       :'aria-label' => "Recherche par période"
 
@@ -53,7 +54,7 @@ div [class="test-search-container #{has_white_bg ? 'search-container py-2' : ''}
             data-search-popover-target="searchSubmitContainer"]
           ul.fr-btns-group.w-100
             li.w-100
-              = form.button class: 'fr-btn fr-ml-3w fr-mt-8w',
+              = form.button class: 'fr-btn fr-ml-3w fr-my-2w',
                             style: "width: 90%; padding: 0 15% 0 15% ",
                             name: nil,
                             id: 'test-mobile-submit-search' do
@@ -65,8 +66,3 @@ div [class="test-search-container #{has_white_bg ? 'search-container py-2' : ''}
                         style: "width: 94%; padding: 0 15% 0 27% ",
                         id: 'test-mobile-submit-search' do
             span.mr-2 = "Trouver un stage"
-    .row
-      .col.mb-2
-
-  .mt-5.d-block.d-md-none
-

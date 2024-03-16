@@ -12,7 +12,7 @@ module Dashboard::Users
       employer.update(phone: '+330602030405')
       sign_in(employer)
 
-      post reset_phone_number_dashboard_user_path( id: employer.id),
+      post reset_phone_number_dashboard_user_path(id: employer.id),
            params: {}
 
       assert_redirected_to dashboard_internship_agreements_path(opened_modal: true)

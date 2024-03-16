@@ -36,7 +36,7 @@ function RenderSchoolSelectInput({
       {isWaitingCitySelection && (
         <div className="fr-mt-2w">
           <label className='fr-label' htmlFor={`${resourceName}_school_name`}>
-          Lycée
+            Lycée
           </label>
           <input
             value=""
@@ -51,7 +51,7 @@ function RenderSchoolSelectInput({
       {isAlreadySelected && (
         <div className="">
           <label className='fr-label' htmlFor={`${resourceName}_school_name`}>
-          Lycée
+            Lycée
           </label>
           <input
             readOnly

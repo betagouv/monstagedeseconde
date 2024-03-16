@@ -118,13 +118,13 @@ $line-height: 4px;
 .internship-application-status {
   display: block;
   max-width: 583px;
-  height: 244px;
+  min-height: 280px;
   border: 1px solid $grey-disabled;
-  padding: 40px 32px;
+  padding: 32px;
   margin-bottom: 20px;
   .internship-application-location{
     color: $grey-425;
-    margin-top: 12px;
+    margin-top: 4px;
     margin-bottom: 16px;
   }
   .internship-offer-title{}

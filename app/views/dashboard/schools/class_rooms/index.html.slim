@@ -64,8 +64,3 @@
               = render partial: "class_rooms/class_room",
                       collection: Array(class_rooms),
                       locals: { school: @school, cols: cols }
-
-
-- if current_user.is_a?(Users::SchoolManagement) && !current_user.school.has_weeks_on_current_year? && @modal_visibility
-  = render partial: 'dashboard/schools/notice_school_manager',
-            locals: { school: current_user.school }

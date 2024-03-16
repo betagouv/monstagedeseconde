@@ -17,9 +17,7 @@ module Api
       render_success(
         object: School.nearby(latitude: params[:latitude], longitude: params[:longitude], radius: 60_000),
         status: 200,
-        json_options: {
-          methods: %i[weeks]
-        }
+        json_options: { }
       )
     end
 
