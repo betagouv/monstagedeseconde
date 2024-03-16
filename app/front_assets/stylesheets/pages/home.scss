@@ -83,6 +83,10 @@ a:hover {
 
 }
 
+.red-border {
+    border: 2px solid red;
+}
+
 .container-monstage {
     max-width: 1200px;
     margin: auto;
@@ -99,6 +103,17 @@ a:hover {
         max-width: 269px;
     }
 }
+
+.everyone .container-monstage .stamp-logo {
+    height: 122px;
+    max-width: 193px;
+    display: block;
+    margin-top: 50%;
+}
+.fr-card h3.std-height {
+    height: 5.5rem;
+}
+
 .container-monstage-fluid-hero {
     background-image: url('../images/homepage/backgrd-header.png');
     background-position: center center;
