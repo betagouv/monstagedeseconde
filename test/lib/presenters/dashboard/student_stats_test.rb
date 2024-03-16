@@ -24,6 +24,7 @@ module Presenters
       end
 
       test '.internship_location' do
+        create(:department, code: '60', name: 'Oise')
         internship_offer = create(:weekly_internship_offer, street: '7 rue du puits',
                                                            city: 'Coye la foret',
                                                            zipcode: '60580')
