@@ -258,7 +258,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
       # fails to create student with existing email
       assert_difference('Users::Student.count', 0) do
-        find_field('Nom (ou ville) de mon établissement').fill_in(with: 'Saint')
+        find_field('Nom (ou commune) de mon établissement').fill_in(with: 'Saint')
         find('#downshift-0-item-0').click
         select school_1.name, from: "identity_school_id"
         select(class_room_1.name, from: 'identity_class_room_id')

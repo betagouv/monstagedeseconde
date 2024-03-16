@@ -130,7 +130,7 @@ fr:
         kind: Classification
         human_kind: Classification
         zipcode: Code postal
-        city: Ville
+        city: Commune
         visible: Activé?
         department: Département
         class_rooms: Classes
@@ -155,7 +155,7 @@ fr:
         group: Groupe ou institution
         street: Adresse du lieu de stage
         zipcode: Code postal
-        city: Ville
+        city: Commune
         coordinates: Coordonnées GPS
         siren: Code Siren
       hosting_info:

@@ -200,7 +200,7 @@ export default function AddressInput({
         <div className="col-sm-12">
           <div className="form-group">
             <label htmlFor={`${resourceName}_city`}>
-              Ville
+              Commune
               <abbr title="(obligatoire)" aria-hidden="true">
                 *
               </abbr>
