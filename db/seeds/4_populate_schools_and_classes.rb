@@ -78,10 +78,6 @@ def populate_school_weeks
   # used to test matching between internship_offers.weeks and existing school_weeks
   other_schools = School.nearby(latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude], radius: 60_000).limit(4)
                         .where.not(id: school.id)
-  other_schools.each.with_index do |another_school, i|
-    another_school.update!(weeks: weeks)
-  end
-  missing_school_manager_school.update!(weeks: weeks)
 end
 
 call_method_with_metrics_tracking([
