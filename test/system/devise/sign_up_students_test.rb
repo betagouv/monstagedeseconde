@@ -73,7 +73,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     visit new_identity_path(as: 'Student')
 
     # fails to find a class_room though there's an anonymized one
-    find_field('Nom (ou ville) de mon lycée').fill_in(with: 'Saint')
+    find_field('Ville ou lycée').fill_in(with: 'Saint')
     find('#downshift-0-item-0').click
     # find("label[for=\"select-school-#{school_1.id}\"]").click
     select school_1.name, from: "identity_school_id"
@@ -82,7 +82,6 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
   test 'Student with mail subscription with former internship_offer ' \
        'visit leads to offer page even when mistaking along the way' do
-    skip "#april_flower forbidden routes"
     travel_to  Date.new(2020, 1, 1) do
 
       school_1 = create(:school, name: 'Etablissement Test 1',
@@ -90,40 +89,39 @@ class SignUpStudentsTest < ApplicationSystemTestCase
       class_room_1 = create(:class_room, name: '2de A', school: school_1)
       birth_date = 14.years.ago
       email = 'yetanother@gmail.com'
-      password = 'kikoololletest'
+      password = 'kikoololT4!letest'
       offer = create(:weekly_internship_offer)
 
       visit internship_offer_path(offer)
-      # TODO April flower
-      # first(:link, 'Postuler').click
-      # find('a.fr-btn--secondary', text: "Créer un compte").click
+      first(:link, 'Postuler').click
+      find('a.fr-btn--secondary', text: "Créer un compte").click
 
-      # # mistaking with password confirmation
-      # assert_difference('Users::Student.count', 0) do
-      #   sleep 0.3
-      #   find_field('Nom (ou ville) de mon établissement').fill_in(with: 'Saint')
-      #   find('#downshift-0-item-0').click
-      #   fill_in 'Prénom', with: 'Martine'
-      #   fill_in 'Nom', with: 'Fourcadex'
-      #   select school_1.name, from: "identity_school_id"
-      #   fill_in 'Date de naissance', with: birth_date.strftime('%d/%m/%Y')
-      #   find('label', text: 'Féminin').click
+      # mistaking with password confirmation
+      assert_difference('Users::Student.count', 0) do
+        sleep 0.3
+        find_field('Ville ou lycée').fill_in(with: 'Saint')
+        find('#downshift-0-item-0').click
+        fill_in 'Prénom', with: 'Martine'
+        fill_in 'Nom', with: 'Fourcadex'
+        select school_1.name, from: "identity_school_id"
+        fill_in 'Date de naissance', with: birth_date.strftime('%d/%m/%Y')
+        find('label', text: 'Féminin').click
 
-      #   click_on "Valider"
-      # end
+        click_on "Valider"
+      end
 
       # real signup as student
-      # assert_difference('Users::Student.count', 1) do
-      #   fill_in 'Adresse électronique', with: email, wait: 4
-      #   fill_in 'Créer un mot de passe', with: password, wait: 4
-      #   sleep 0.2
-      #   find("input[type='submit']").click
-      # end
+      assert_difference('Users::Student.count', 1) do
+        fill_in 'Adresse électronique', with: email, wait: 4
+        fill_in 'Créer un mot de passe', with: password, wait: 4
+        sleep 0.2
+        find("input[type='submit']").click
+      end
 
-      # created_student = Users::Student.find_by(email: email)
+      created_student = Users::Student.find_by(email: email)
 
-      # # confirmation mail under the hood
-      # assert created_student.confirmed?
+      # confirmation mail under the hood
+      assert created_student.confirmed?
     end
   end
 
@@ -166,17 +164,16 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   end
 
   test 'Student registered with phone logs in after visiting an internship_offer and lands on offer page' do
-    skip "test to update after ui is finished #TODO #may_flower"
     travel_to Date.new(2020, 1, 1) do
-      password = 'kikoololletest'
-      weeks = Week.selectable_from_now_until_end_of_school_year.last(2)
+      password = 'kik2olollTtest!'
       school_1 = create(:school, name: 'Etablissement Test 1',
-                                city: 'Saint-Martin', zipcode: '77515',
-                                weeks: weeks )
+                                 city: 'Gagny', 
+                                 zipcode: '93220')
       class_room_1 = create(:class_room, name: '2de A', school: school_1)
       student = create(:student, :registered_with_phone, school: school_1,
-                                                        class_room: class_room_1, password: password)
-      offer = create(:weekly_internship_offer, weeks: weeks)
+                                                        class_room: class_room_1,
+                                                        password: password)
+      offer = create(:weekly_internship_offer)
 
       visit internship_offer_path(offer.id)
 
@@ -241,7 +238,6 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   end
 
   test 'navigation & interaction works until student creation with phone' do
-    skip "test to update after ui is finished #TODO #may_flower"
     travel_to Date.new(2020, 1, 1) do
       school_1 = create(:school, name: 'Etablissement Test 1',
                                city: 'Saint-Martin', zipcode: '77515')
@@ -258,7 +254,9 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
       # fails to create student with existing email
       assert_difference('Users::Student.count', 0) do
-        find_field('Nom (ou ville) de mon établissement').fill_in(with: 'Saint')
+        within(".autocomplete-school-container") do
+          fill_in('Ville ou lycée', with: 'Saint')
+        end
         find('#downshift-0-item-0').click
         select school_1.name, from: "identity_school_id"
         select(class_room_1.name, from: 'identity_class_room_id')
@@ -270,7 +268,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
         find('label', text: 'Par téléphone').click
         execute_script("document.getElementById('phone-input').value = '#{existing_phone}';")
-        fill_in 'Créer un mot de passe', with: 'kikoololletest'
+        fill_in 'Créer un mot de passe', with: 'kikoololl4T!etest'
         safe_submit
       end
 

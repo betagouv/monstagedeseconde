@@ -260,13 +260,12 @@ module Dashboard
     end
 
     test 'school_manager multiple clicks on interface' do
-      skip "test to update after ui is finished #TODO #may_flower"
       internship_agreement = create(:internship_agreement, :validated)
       student1 = internship_agreement.student
 
       school_manager = internship_agreement.school_manager
-      weeks = [Week.find_by(number: 5, year: 2020), Week.find_by(number: 6, year: 2020)]
-      internship_offer = create(:weekly_internship_offer, weeks: weeks)
+      # weeks = [Week.find_by(number: 5, year: 2020), Week.find_by(number: 6, year: 2020)]
+      internship_offer = create(:weekly_internship_offer)
       school = school_manager.school
       student2 = create(:student, school: school, class_room: create(:class_room, school: school))
       internship_application = create(:weekly_internship_application,
