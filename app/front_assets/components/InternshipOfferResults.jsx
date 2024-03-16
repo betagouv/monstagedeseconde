@@ -158,7 +158,10 @@ const InternshipOfferResults = ({ count, sectors, params }) => {
                     </div>
                   ) : (
                     <h2 className="h2 mb-0" id="internship-offers-count">
-                      <div className="strong">{internshipOffersSeats} Offre{internshipOffersSeats > 1 ? 's' : ''} de stage</div>
+                      {/* #June_flower <div className="strong">{internshipOffersSeats} Offre{internshipOffersSeats > 1 ? 's' : ''} de stage</div> */}
+                      <div className="strong">
+                        {(internshipOffersSeats > 0) ? 'Les offres de stages' : '0 offre de stage'}
+                      </div>
                     </h2>
                   )
                 }

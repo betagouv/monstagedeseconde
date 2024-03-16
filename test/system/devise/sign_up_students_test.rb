@@ -59,7 +59,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     end
     # students are confirmed by default and redirected to search page after signup
     assert Users::Student.last.confirmed?
-    find("h2 .strong", text: "0 Offre de stage")
+    find("h2 .strong", text: "0 offre de stage")
     assert_select '#alert-text', count: 0
   end
 
@@ -73,7 +73,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     visit new_identity_path(as: 'Student')
 
     # fails to find a class_room though there's an anonymized one
-    find_field('Nom (ou ville) de mon lycée').fill_in(with: 'Saint')
+    find_field('Établissement ou commune').fill_in(with: 'Saint')
     find('#downshift-0-item-0').click
     # find("label[for=\"select-school-#{school_1.id}\"]").click
     select school_1.name, from: "identity_school_id"
