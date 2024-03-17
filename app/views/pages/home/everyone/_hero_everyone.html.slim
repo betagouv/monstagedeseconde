@@ -1,0 +1,18 @@
+header.bg-cover-image-homepage.container-xl.px-0.everyone
+  .container-monstage.container-xl.homepage
+    .row.fr-px-2w
+      .col-lg-12.col-md-12.px-0
+        .fr-pt-6w
+          h1.fr-h1.blue-france
+            | Un stage du 17 au 28 juin 2024,
+            br
+            | pour les élèves de seconde générale et technologique.
+        .d-flex.flex-row.fr-pb-6w.fr-mt-3w
+          .blue-france.sub-hero
+            .sub-hero-text
+              = render 'pages/home/everyone/hero_everyone_cards'
+
+          .fr-ml-2w.ml-auto.fr-mb-0.show-stamp-logo.d-none.d-md-block
+            = image_tag asset_pack_path('media/images/homepage/hero-side-stamp.png'),
+                        alt: 'Logo stade de 2de générale et technologique',
+                        class: 'stamp-logo fr-px-2w'
