@@ -18,7 +18,7 @@ module Dashboard
         authorize! :manage_school_students, current_user.school
 
         @class_room = @school.class_rooms.find(params.require(:class_room_id))
-        @student = Users::Student.new
+        @student = ::Users::Student.new
         @students = @class_room.students.kept
                                .order(:created_at)
       end
@@ -26,7 +26,7 @@ module Dashboard
       def create
         authorize! :manage_school_students, current_user.school
         @class_room = @school.class_rooms.find(params.require(:class_room_id))
-        @student = Users::Student.new(formatted_student_params)
+        @student = ::Users::Student.new(formatted_student_params)
         if @student.save
           notify_student
           redirect_to new_dashboard_school_class_room_student_path(@class_room.school, @class_room), notice: 'Elève créé !'
