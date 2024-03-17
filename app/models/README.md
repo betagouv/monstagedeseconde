@@ -20,16 +20,6 @@ User & Roles are based on device + cancancan + STI for each kind of roles, see:
 
 # key concepts in our domain
 
-## date (week) matching :
-* matching `entities` are `offers/students`. Constraint are :
-	* [offer](https://github.com/betagouv/monstage/tree/master/app/models/internship_offer.rb) : an `offer` can be available on 1-n `week`(s)
-	* [student](https://github.com/betagouv/monstage/tree/master/app/models/users/student.rb) : a `student` is able to apply to an `offer` depending on its `school` opened `week`(s) (again, 1-n week(s)).
-	* date range(s): date ranges may not be contiguous (so we can have to match on non continuons list of week.)
-
-* solution: a reference [weeks](https://github.com/betagouv/monstage/tree/master/app/models/week.rb) table which is a serie of week as "datetime.iso8601(0) format".
-	* `internship_offer_weeks` is the join model between `offers` & `weeks`
-	* `school_internship_weeks` is the join model bettwen `schools` & available school `weeks`
-
 ## geolocation / geo matching :
 * context: matching entities are `offers`/`users`. Geo constraints are defined by :
 	* an `offer` is geolocable

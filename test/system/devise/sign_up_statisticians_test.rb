@@ -13,13 +13,12 @@ class SignUpStatisticiansTest < ApplicationSystemTestCase
 
     visit new_user_registration_path(as: 'Statistician')
 
-    assert_difference('Users::PrefectureStatistician.count', 1) do
+    assert_difference('Users::EducationStatistician.count', 1) do
       fill_in 'Prénom', with: 'Martin'
       fill_in 'Nom', with: 'Fourcade'
-      execute_script("document.getElementById('user_statistician_department_type').checked=true;")
+      execute_script("document.getElementById('user_statistician_education').checked=true;")
       execute_script("document.getElementById('statistician-department').classList.remove('d-none');")
-      execute_script("document.getElementById('new_user').action = '/utilisateurs?as=PrefectureStatistician';")
-      # choose 'Départemental'
+      execute_script("document.getElementById('new_user').action = '/utilisateurs?as=EducationStatistician';")
       select('75', from: "user_department")
       fill_in 'Adresse électronique', with: good_email
       fill_in 'Créer un mot de passe', with: valid_password
@@ -28,7 +27,7 @@ class SignUpStatisticiansTest < ApplicationSystemTestCase
     end
 
     # check created statistician has valid info
-    created_statistician = Users::PrefectureStatistician.find_by(email: good_email)
+    created_statistician = Users::EducationStatistician.find_by(email: good_email)
     assert_equal 'Martin', created_statistician.first_name
     assert_equal 'Fourcade', created_statistician.last_name
     assert_equal false, created_statistician.agreement_signatorable

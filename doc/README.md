@@ -16,6 +16,7 @@ Il s'agit d'une API REST qui permet les opérations suivantes :
 - [Environnements](#environnements)
 - [Authentification](#authentification)
 - [Structures de données et référentiels](#structures-de-données-et-référentiels)
+  - [Swagger](#swagger)
   - [Offres de stage](#offres-de-stage)
   - [Secteurs d'activité](#secteurs-dactivité)
 - [Gestion d'erreurs](#gestion-derreurs)
@@ -45,6 +46,8 @@ L'authentification se fait par token via le header HTTP : ```Authorization: Bear
 
 Ce token devra être présent à chaque requête.
 
+L'utilisation est limitée à 100 appels par minute, au-delà une erreur 429 est renvoyée.
+
 ### Comment récuperer mon token d'authentification
 
 [Se connecter](https://stagedeseconde.1jeune1solution.gouv.fr/utilisateurs/connexion) avec votre compte opérateur
@@ -59,11 +62,13 @@ Depuis la page [API](https://stagedeseconde.1jeune1solution.gouv.fr/mon-compte/a
 
 ![](screenshots/api.png)
 
-### Swagger ### 
 
-Pour tester l'API et comprendre son fonctionnement un [swagger](https://app-e29a97fc-5386-434f-bf9d-8f813c68f838.cleverapps.io/docs/) est disponible.
+
 
 # Structures de données et référentiels
+
+## Swagger
+Pour tester l'API et comprendre son fonctionnement un [swagger](https://app-e29a97fc-5386-434f-bf9d-8f813c68f838.cleverapps.io/docs/) est disponible.
 
 ## Offres de stage
 
@@ -82,7 +87,7 @@ Les offres de stages décrits ci-dessous décrivent les offres réservées aux c
     coordinates : Coordonnées géographique du lieu du stage
     street : Nom de la rue ou se déroule le stage
     zipcode  : Code postal ou se déroule le stage
-    city : Nom de la ville où se déroule le stage
+    city : Nom de la commune où se déroule le stage
 
     sector_uuid : Identifiant unique du secteurs, voir référentiel *(1)
     period: Durée du stage (voir ci-dessous)

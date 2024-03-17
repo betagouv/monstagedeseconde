@@ -1,8 +1,6 @@
 tr.test-school-count
   td= render partial: 'reporting/schools/table/td/name',
                                    locals: { school: school }
-  td= render partial: 'reporting/schools/table/td/weeks',
-                                   locals: { weeks: school.weeks }
   td= school.total_student_with_confirmation_count
   td= render partial: 'reporting/schools/table/td/school_manager',
                                    locals: { has_school_manager: school.school_manager? }

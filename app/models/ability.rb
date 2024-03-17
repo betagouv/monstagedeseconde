@@ -75,7 +75,7 @@ class Ability
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
     can :apply, InternshipOffer do |internship_offer|
-      student_can_apply?(student: user, internship_offer: internship_offer)
+      user.other_approved_applications_compatible?(internship_offer: internship_offer)
     end
     can %i[submit_internship_application update show internship_application_edit],
         InternshipApplication do |internship_application|
@@ -112,6 +112,8 @@ class Ability
       edit_school_representative_phone
       edit_school_representative_email
       edit_school_representative_role
+      edit_delegation_date
+      edit_legal_status
       edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
@@ -161,6 +163,8 @@ class Ability
       edit_school_representative_phone
       edit_school_representative_email
       edit_school_representative_role
+      edit_delegation_date
+      edit_legal_status
       edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
@@ -236,6 +240,10 @@ class Ability
       edit_tutor_email
       edit_tutor_role
       edit_activity_scope_rich_text
+      edit_skills_observe_rich_text
+      edit_skills_communicate_rich_text
+      edit_skills_understand_rich_text
+      edit_skills_motivation_rich_text
       edit_activity_preparation_rich_text
       edit_activity_learnings_rich_text
       edit_date_range
@@ -504,9 +512,5 @@ class Ability
 
     school_year_start = SchoolYear::Current.new.beginning_of_period
     internship_offer.last_date > school_year_start
-  end
-
-  def student_can_apply?(internship_offer:, student:)
-    !student.has_already_approved_an_application?
   end
 end

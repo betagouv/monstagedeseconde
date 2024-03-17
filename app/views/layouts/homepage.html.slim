@@ -18,7 +18,6 @@ html lang="fr"
     = favicon_link_tag asset_pack_path('media/images/favicons/favicon-heroku.png') if Rails.env.review?
     = stylesheet_pack_tag "application.css", 'data-turbo-track': "reload", media: "all"
     = javascript_pack_tag "application.js", 'data-turbo-track': "reload", defer: true
-    / = render 'layouts/crisp'
   
   body class=(env_class_name + " " + body_class_name)
     a name="top" id="top"

@@ -130,7 +130,6 @@ module Reporting
 
     test 'GET #index.xlsx as statistician success ' \
          'when department params match his departement_name' do
-      skip "#may_flower failing test because exports are not working"
       god = create(:god)
       create(:weekly_internship_offer)
       create(:api_internship_offer)

@@ -74,18 +74,10 @@ end
 # used for application
 def populate_school_weeks
   school = find_default_school_during_test
-  weeks = Week.where(year: SchoolYear::Current.new.end_of_period.year.to_i, number: [29, 30])
-  # used for application
-  school.weeks = weeks
-  school.save!
 
   # used to test matching between internship_offers.weeks and existing school_weeks
   other_schools = School.nearby(latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude], radius: 60_000).limit(4)
                         .where.not(id: school.id)
-  other_schools.each.with_index do |another_school, i|
-    another_school.update!(weeks: weeks)
-  end
-  missing_school_manager_school.update!(weeks: weeks)
 end
 
 call_method_with_metrics_tracking([

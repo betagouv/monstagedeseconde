@@ -25,7 +25,7 @@
               aasm_target: :cancel_by_student!,
               aasm_notifier: aasm_notifier,
               modal_id: "cancel-by-student-internship-application-#{@internship_application.id}",
-              modal_opener_label: "Annuler",
+              modal_opener_label: "Confirmer l'annulation",
               message: "Une fois la candidature annulée, un email de notification va être envoyé à l'employeur avec le motif de l'annulation",
               rich_text: true,
               subtitle: "Motif de l'annulation"
@@ -85,7 +85,7 @@
     .grey-container-application.with-grey-background
       h2.h4.fr-mb-4w = @internship_application.student.presenter.full_name
       p.fr-icon-calendar-line.fr-btn--icon-left
-        ="Période : <strong>#{@internship_application.internship_offer.period_label}</strong>".html_safe
+        = "Période : <strong>#{@internship_application.internship_offer.period_label}</strong>".html_safe
       - unless @internship_application.motivation.to_s.blank?
         h3.h5 Motivations
         p = @internship_application.motivation.to_s

@@ -32,18 +32,8 @@ module Presenters
                    main_teacher.presenter.default_internship_offers_path
     end
 
-   test '.default_internship_offers_path with school_manager having a school with weeks does not prefilter by weeks' do
-      weeks =  [Week.selectable_from_now_until_end_of_school_year.first]
-      school = create(:school, weeks: weeks)
-      school_manager = create(:school_manager, school: school)
-      class_room = create(:class_room,  school: school_manager.school)
-
-      url_options = school_manager.default_search_options
-      assert url_options.key?(:week_ids), 'missing weeks params'
-    end
-
     test '.default_internship_offers_path includes expected params' do
-      school = create(:school, weeks: Week.selectable_from_now_until_end_of_school_year[1..2])
+      school = create(:school)
       school_manager = create(:school_manager, school: school)
       class_room = create(:class_room,  school: school)
       student = create(:student, school: school, class_room: class_room)
@@ -53,7 +43,6 @@ module Presenters
       assert_equal [school.coordinates.lat.to_s], params["latitude"]
       assert_equal [school.coordinates.lon.to_s], params["longitude"]
       assert_equal [Nearbyable::DEFAULT_NEARBY_RADIUS_IN_METER.to_s], params["radius"]
-      assert_equal school.week_ids.map(&:to_s), params["week_ids[]"]
     end
 
     test '#civil_name' do

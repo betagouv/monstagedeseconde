@@ -35,10 +35,6 @@ FactoryBot.define do
     trait :with_school_manager do
       school_manager { build(:school_manager) }
     end
-
-    trait :with_weeks do
-      weeks { Week.selectable_on_school_year[0..1] }
-    end
   end
 
   factory :api_school, class: Api::School do

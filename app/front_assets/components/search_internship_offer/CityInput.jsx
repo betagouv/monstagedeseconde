@@ -141,7 +141,7 @@ function CityInput({
         }) => (
           <div>
             <label {...getLabelProps({ className: `almost-fitting ${(whiteBg) ? 'fr-label' : 'font-weight-lighter'}`, htmlFor: "input-search-by-city-or-zipcode" })}>
-                   Ville ou code postal
+                   Commune ou code postal
             </label>
             <div
               id="test-input-location-container"

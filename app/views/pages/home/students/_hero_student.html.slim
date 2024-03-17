@@ -16,34 +16,36 @@ header.container-xl.px-0
                             form_id: :mobile_internship_offers_index_search_form }
   - else
     / desktop display
-    .container-monstage.container-xl.homepage
+    .container-monstage.container-xl.homepage.visible
       .row
         .col-lg-12.col-md-12.px-0
           .d-flex.flex-row
             .blue-france.sub-hero
-              .fr-h6.fr-mt-6w.fr-mb-1w.blue-france
+              .fr-h6.fr-mt-4w.fr-mb-1w.blue-france
                 | Élèves de 2de générale et technologique,
               .div
                 h1.fr-h1.blue-france
                   | Trouvez ici un stage de qualité
 
             .fr-mr-2w.ml-auto.fr-mb-1w.show-stamp-logo.d-none.d-md-block
-              = image_tag asset_pack_path('media/images/homepage/students/ms2e-stamp-medium.png'),
+              = image_tag asset_pack_path('media/images/homepage/everyone/ms2e-stamp-medium.png'),
                           alt: 'Logo stade de 2de générale et technologique',
                           class: 'stamp-logo-medium fr-mt-5w fr-ml-4w'
 
-        .row.no-gutters.fr-p-2w.fr-mb-6w.white-search-frame.d-none.d-sm-block
-          .col-12
-            = render partial: "internship_offers/search/form",
-                     locals: { render_as_partial: true,
-                               url: internship_offers_path,
-                               default_values: user_presenter.default_search_options,
-                               form_id: :home_search_form }
-          .actions.d-stick.d-md-none.p-2.fitting
-            = link_to internship_offers_path(current_user_or_visitor.default_search_options),
-                      class: 'fr-btn fr-icon-search-line fr-btn--icon-right fr-px-11w',
-                      data: { :"test-id" => 'mobile-search-button' }
-              = "Rechercher un stage"
+      .row.no-gutters.fr-p-2w.fr-mb-4w.white-search-frame.d-none.d-sm-block
+        .col-12
+          = render partial: "internship_offers/search/form",
+                    locals: { render_as_partial: true,
+                              url: internship_offers_path,
+                              default_values: user_presenter.default_search_options,
+                              form_id: :home_search_form }
+        .actions.d-stick.d-md-none.p-2.fitting
+          = link_to internship_offers_path(current_user_or_visitor.default_search_options),
+                    class: 'fr-btn fr-icon-search-line fr-btn--icon-right fr-px-11w',
+                    data: { :"test-id" => 'mobile-search-button' }
+            = "Rechercher un stage"
+      .row
+        .col-12.fr-mt-2w
 
 
 

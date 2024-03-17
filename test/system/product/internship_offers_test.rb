@@ -8,7 +8,6 @@ module Product
     include Devise::Test::IntegrationHelpers
 
     test 'USE_W3C, internship_offers_path' do
-      skip "test to update after ui is finished #TODO #may_flower"
       %i[employer
          student
          school_manager].each do |role|
@@ -20,7 +19,6 @@ module Product
     end
 
     test 'USE_W3C, internship_offer_path' do
-      skip "test to update after ui is finished #TODO #may_flower"
       %i[employer student].each do |role|
         run_request_and_cache_response(report_as: "internship_offer_path_#{role}") do
           sign_in(create(role))

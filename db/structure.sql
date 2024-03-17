@@ -694,7 +694,9 @@ CREATE TABLE public.internship_agreements (
     school_representative_email character varying(100),
     discarded_at timestamp(6) without time zone,
     lunch_break text,
-    organisation_representative_email character varying
+    organisation_representative_email character varying,
+    legal_status character varying,
+    delegation_date date
 );
 
 
@@ -1339,38 +1341,6 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: school_internship_weeks; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.school_internship_weeks (
-    id bigint NOT NULL,
-    school_id bigint,
-    week_id bigint,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: school_internship_weeks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.school_internship_weeks_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: school_internship_weeks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.school_internship_weeks_id_seq OWNED BY public.school_internship_weeks.id;
-
-
---
 -- Name: schools; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1391,7 +1361,9 @@ CREATE TABLE public.schools (
     internship_agreement_online boolean DEFAULT false,
     fetched_school_phone character varying(20),
     fetched_school_address character varying(300),
-    fetched_school_email character varying(100)
+    fetched_school_email character varying(100),
+    legal_status character varying,
+    delegation_date date
 );
 
 
@@ -2019,13 +1991,6 @@ ALTER TABLE ONLY public.practical_infos ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
--- Name: school_internship_weeks id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.school_internship_weeks ALTER COLUMN id SET DEFAULT nextval('public.school_internship_weeks_id_seq'::regclass);
-
-
---
 -- Name: schools id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2339,14 +2304,6 @@ ALTER TABLE ONLY public.practical_infos
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
-
-
---
--- Name: school_internship_weeks school_internship_weeks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.school_internship_weeks
-    ADD CONSTRAINT school_internship_weeks_pkey PRIMARY KEY (id);
 
 
 --
@@ -2908,20 +2865,6 @@ CREATE INDEX index_practical_infos_on_coordinates ON public.practical_infos USIN
 
 
 --
--- Name: index_school_internship_weeks_on_school_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_school_internship_weeks_on_school_id ON public.school_internship_weeks USING btree (school_id);
-
-
---
--- Name: index_school_internship_weeks_on_week_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_school_internship_weeks_on_week_id ON public.school_internship_weeks USING btree (week_id);
-
-
---
 -- Name: index_schools_on_city_tsv; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3126,14 +3069,6 @@ ALTER TABLE ONLY public.internship_applications
 
 
 --
--- Name: school_internship_weeks fk_rails_07f908dbef; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.school_internship_weeks
-    ADD CONSTRAINT fk_rails_07f908dbef FOREIGN KEY (week_id) REFERENCES public.weeks(id);
-
-
---
 -- Name: hosting_info_weeks fk_rails_0ab0d03d1c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3251,14 +3186,6 @@ ALTER TABLE ONLY public.identities
 
 ALTER TABLE ONLY public.internship_offer_weeks
     ADD CONSTRAINT fk_rails_5b8648c95e FOREIGN KEY (week_id) REFERENCES public.weeks(id);
-
-
---
--- Name: school_internship_weeks fk_rails_61db9e054c; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.school_internship_weeks
-    ADD CONSTRAINT fk_rails_61db9e054c FOREIGN KEY (school_id) REFERENCES public.schools(id);
 
 
 --
@@ -3452,8 +3379,11 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240315100413'),
+('20240315090504'),
 ('20240314133947'),
 ('20240314133856'),
+('20240312165403'),
 ('20240311153638'),
 ('20240228155130'),
 ('20240221143107'),

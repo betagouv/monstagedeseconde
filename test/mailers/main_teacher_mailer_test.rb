@@ -6,7 +6,7 @@ class MainTeacherMailerTest < ActionMailer::TestCase
   include EmailSpamEuristicsAssertions
 
   test '#internship_application_approved_with_no_agreement_email' do
-    school = create(:school, :with_school_manager, :with_weeks)
+    school = create(:school, :with_school_manager)
     student = create(:student_with_class_room_3e, school: school)
     internship_offer = create(:weekly_internship_offer)
     internship_application = create(:weekly_internship_application,
@@ -27,7 +27,7 @@ class MainTeacherMailerTest < ActionMailer::TestCase
   end
 
   test '#internship_application_approved_with_no_agreement_email sent to all main_teachers' do
-    school = create(:school, :with_school_manager, :with_weeks)
+    school = create(:school, :with_school_manager)
     student = create(:student_with_class_room_3e, school: school)
     internship_offer = create(:weekly_internship_offer)
     internship_application = create(:weekly_internship_application,

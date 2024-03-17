@@ -13,12 +13,16 @@
 
     - else
       / disabled button
-      = button_to 'Postuler', '', class: 'fr-btn fr-btn--icon-left fr-icon-edit-fill', disabled: true
+      div
+        = button_to 'Postuler', '', class: 'fr-btn fr-btn--icon-left fr-icon-edit-fill', disabled: true
+        br
+        - reason = current_user.presenter.forbidden_application_reason
+        - unless reason.nil?
+          p.fr-badge.fr-badge--warning.fr-mt-1w
+            = reason
 
   - else
-    / disabled button
-    = button_to 'Postuler', '', class: 'fr-btn fr-btn--icon-left fr-icon-edit-fill', disabled: true
-    / = render "internship_applications/call_to_action/visitor", internship_offer: internship_offer
+    = render "internship_applications/call_to_action/visitor", internship_offer: internship_offer
 
   .fr-mx-5w
     - if(user_signed_in? && can?(:create, Favorite))
@@ -28,6 +32,6 @@
                                                     is_favorite: is_favorite,
                                                     isDisabled: !can?(:create, Favorite) }})
 
-- if current_user.try(:has_already_approved_an_application?)
+- if current_user.try(:with_2_weeks_internships_approved?)
   p.fr-mx-1w.fr-mt-1w.fr-badge.fr-badge--warning
-    = "Vous avez déjà validé un stage"
+    = "Vous avez déjà validé vos deux semaines de stage"

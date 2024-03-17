@@ -5,13 +5,12 @@ module Dashboard
     include Devise::Test::IntegrationHelpers
 
     test 'factory' do
-      school = create(:school, :with_weeks, :with_school_manager)
+      school = create(:school, :with_school_manager)
       invitation = create(:invitation, user_id: school.school_manager.id)
       assert_equal 1, Invitation.all.count
     end
 
     test 'school manager can invite one of his teacher' do
-      skip "test to update after ui is finished #TODO #may_flower"
       school = create(:school)
       school_manager = create(:school_manager, school: school)
       invitation = create(:invitation, user_id: school_manager.id)

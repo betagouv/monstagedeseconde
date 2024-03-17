@@ -5,8 +5,7 @@ wb.add_worksheet(name: 'Offres') do |sheet|
   sheet.add_row(
     [].concat(
       [presenter_for_dimension.dimension_name],
-      presenter_for_dimension.metrics.map { |metric_name| InternshipOffer.human_attribute_name(metric_name) },
-      presenter_for_dimension == Presenters::Reporting::DimensionByOffer && max_weeks.to_i > 0 ? (1..max_weeks).map { |i| "Semaine #{i}" } : []
+      presenter_for_dimension.metrics.map { |metric_name| InternshipOffer.human_attribute_name(metric_name) }
     )
   )
 

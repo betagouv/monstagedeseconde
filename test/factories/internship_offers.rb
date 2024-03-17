@@ -9,7 +9,7 @@ FactoryBot.define do
     hosting_info { create(:hosting_info, employer: employer) }
     practical_info { create(:practical_info, employer: employer) }
 
-    sequence(:title) { |n| "Stage de 3è - #{n}" }
+    sequence(:title) { |n| "Stage de 2de - #{n}" }
     description { 'Lorem ipsum dolor' }
     contact_phone { '+330612345678' }
     max_candidates { 1 }
