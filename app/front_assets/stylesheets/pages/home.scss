@@ -91,6 +91,7 @@ a:hover {
     max-width: 1200px;
     margin: auto;
     position: relative;
+
     .sub-hero {
         color: $blue-france;
         .sub-hero-text {
@@ -99,16 +100,15 @@ a:hover {
     }
     .stamp-logo {
         margin-top: 4rem;
-        height: 182px;
         max-width: 269px;
+
     }
 }
 
 .everyone, .school-management  {
     .container-monstage .stamp-logo {
         img{
-            height: 122px;
-            width: 193px;
+           width: 193px;
         }
         display: block;
         margin-top: 37%;
