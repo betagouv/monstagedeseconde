@@ -4,7 +4,7 @@ module Users
   class EducationStatistician < Statistician
     include StatisticianDepartmentable
 
-    METABASE_DASHBOARD_ID = 8
+    METABASE_DASHBOARD_ID = 30
 
     def education_statistician? ; true end
 
