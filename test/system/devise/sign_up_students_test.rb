@@ -170,6 +170,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   test 'Student registered with phone logs in after visiting an internship_offer and lands on offer page' do
     travel_to Date.new(2020, 1, 1) do
       password = 'kik2olollTtest!'
+      create(:department, name: 'Seine-Saint-Denis', code: '93')
       school_1 = create(:school, name: 'Etablissement Test 1',
                                  city: 'Gagny', 
                                  zipcode: '93220')
@@ -244,6 +245,8 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
   test 'navigation & interaction works until student creation with phone' do
     travel_to Date.new(2020, 1, 1) do
+      create(:department, name: 'Seine-et-Marne', code: '77')
+      create(:department, name: 'Marne', code: '51')
       school_1 = create(:school, name: 'Etablissement Test 1',
                                city: 'Saint-Martin', zipcode: '77515')
       school_2 = create(:school, name: 'Etablissement Test 2',
