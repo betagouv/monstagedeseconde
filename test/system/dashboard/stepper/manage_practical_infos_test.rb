@@ -11,6 +11,7 @@ class ManagePracticalInfosTest < ApplicationSystemTestCase
       organisation          = create(:organisation, employer: employer)
       internship_offer_info = create(:internship_offer_info, employer: employer)
       hosting_info          = create(:hosting_info, employer: employer)
+      create(:department, code: '75', name: 'Paris')
       sign_in(employer)
       visit new_dashboard_stepper_practical_info_path(organisation_id: organisation.id, internship_offer_info_id: internship_offer_info.id, hosting_info_id: hosting_info.id)
       find('span', text: 'Étape 4 sur 5')
@@ -24,7 +25,7 @@ class ManagePracticalInfosTest < ApplicationSystemTestCase
       assert_equal '75001', PracticalInfo.last.zipcode
       assert_equal 'Paris', PracticalInfo.last.city
       assert_equal ["08:00", "16:30"], PracticalInfo.last.weekly_hours
-      click_on "Suivant"
+      click_on "Publier"
       assert_equal 1, InternshipOffer.count
       assert_equal '+330623665555', InternshipOffer.last.contact_phone
       assert_equal '1 rue du poulet', InternshipOffer.last.street
