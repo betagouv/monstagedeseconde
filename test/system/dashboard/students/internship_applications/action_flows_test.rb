@@ -114,7 +114,7 @@ module Dashboard
           find('#internship_application_motivation', wait: 3).native.send_keys('Je suis au taquet')
           refute page.has_selector?('.nav-link-icon-with-label-success') # green element on screen
           fill_in("Adresse électronique (email)", with: 'parents@gmail.com')
-          fill_in("Numéro de portable élève ou resposable légal", with: '0611223344')
+          fill_in("Numéro de portable élève ou responsable légal", with: '0611223344')
           assert_changes lambda {
                           student.internship_applications
                                   .where(aasm_state: :drafted)
@@ -167,7 +167,7 @@ module Dashboard
           # fill in application form
           find('#internship_application_motivation').native.send_keys('et ')
           fill_in("Adresse électronique (email)", with: 'parents@gmail.com')
-          fill_in("Numéro de portable élève ou resposable légal", with: '0611223344')
+          fill_in("Numéro de portable élève ou responsable légal", with: '0611223344')
           assert_no_changes lambda {
                           student.internship_applications
                                   .where(aasm_state: :drafted)
