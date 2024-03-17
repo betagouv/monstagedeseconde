@@ -6,14 +6,6 @@ class StudentMailerPreview < ActionMailer::Preview
     )
   end
 
-  def internship_application_examined_email
-    internship_application = InternshipApplication.examined.first
-    internship_application.examined_message =  '<strong>Bonjour !</strong><br/>Nous sommes désireux de vous accueillir, et nous cherchons activement le tuteur qui pourra vous encadrer durant cette semaine'
-    StudentMailer.internship_application_examined_email(
-      internship_application: internship_application
-    )
-  end
-
   def internship_application_approved_email
     internship_application = InternshipApplication.approved.first
     internship_application.approved_message =  '<strong>Bravo ! Vraiment ! </strong><br/>Vous étiez nombreux à le vouloir, ce stage'

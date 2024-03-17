@@ -12,8 +12,7 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
     internship_application = nil
     student = nil
     travel_to Time.zone.local(2020, 1, 1, 12, 0, 0) do
-      weeks_till_end = Week.selectable_from_now_until_end_of_school_year
-      school = create(:school, :with_school_manager, weeks: [weeks_till_end.first])
+      school = create(:school, :with_school_manager)
       student = create(:student, school: school)
       assert student.phone.blank?
       internship_offer = create(:weekly_internship_offer,
@@ -40,7 +39,7 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
     student = nil
     travel_to Time.zone.local(2020, 1, 1, 12, 0, 0) do
       weeks_till_end = Week.selectable_from_now_until_end_of_school_year
-      school = create(:school, :with_school_manager, weeks: [weeks_till_end.first])
+      school = create(:school, :with_school_manager)
       student = create(:student, school: school)
       assert student.phone.blank?
       internship_offer_ref = create(:weekly_internship_offer,
@@ -71,7 +70,7 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
     student = nil
     travel_to Time.zone.local(2020, 1, 1, 12, 0, 0) do
       weeks_till_end = Week.selectable_from_now_until_end_of_school_year
-      school = create(:school, :with_school_manager, weeks: [weeks_till_end.first])
+      school = create(:school, :with_school_manager)
       student = create(:student, school: school, phone: '+330623443058')
       internship_offer_ref = create(:weekly_internship_offer,
                                     employer: create(:employer))

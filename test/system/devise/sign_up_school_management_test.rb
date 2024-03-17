@@ -14,7 +14,7 @@ class SignUpSchoolManagersTest < ApplicationSystemTestCase
 
     # fails to create school_manager with existing email
     assert_difference('Users::SchoolManagement.school_manager.count', 0) do
-      find_field('Nom (ou ville) de mon établissement').fill_in(with: 'Saint')
+      find_field('Ville ou lycée').fill_in(with: 'Saint')
       find('#downshift-0-item-0').click
       select school_1.name, from: "user_school_id"
       select "Chef d'établissement", from: 'user_role'
@@ -53,7 +53,7 @@ class SignUpSchoolManagersTest < ApplicationSystemTestCase
 
     # fails to create teacher with existing email
     assert_difference('Users::SchoolManagement.teacher.count', 0) do
-      find_field('Nom (ou ville) de mon établissement').fill_in(with: 'Saint')
+      find_field('Ville ou lycée').fill_in(with: 'Saint')
       find('#downshift-0-item-1').click
       select school_2.name, from: "user_school_id"
       select 'Professeur', from: 'user_role'
@@ -68,12 +68,12 @@ class SignUpSchoolManagersTest < ApplicationSystemTestCase
 
     # ensure failure reset form as expected
     assert_equal school_2.city,
-                 find_field('Nom (ou ville) de mon établissement').value,
+                 find_field('Ville ou lycée').value,
                  're-select of city after failure fails'
 
     # create teacher
     assert_difference('Users::SchoolManagement.teacher.count', 1) do
-      find_field('Nom (ou ville) de mon établissement').fill_in(with: 'Saint')
+      find_field('Ville ou lycée').fill_in(with: 'Saint')
       find('#downshift-0-item-0').click
       select school_1.name, from: "user_school_id"
       select(class_room_1.name, from: 'user_class_room_id')

@@ -5,9 +5,8 @@ table
     td style='background-color: #f6f6f6; margin-top:24px; padding: 24px;'
       p style=head_cyclop_styles
         = @internship_application.student.presenter.full_name
-      - week = @internship_application.internship_offer.period
       p style=p_cyclop_styles({color: '#000091'})
-        ="Semaine <strong>#{week}</strong>".html_safe
+        ="<strong>#{@internship_application.internship_offer.period_label}</strong>".html_safe
       - unless @internship_application.motivation.to_s.blank?
       p style=p_cyclop_styles({color: '#000091'})
         <strong> Motivations </strong>

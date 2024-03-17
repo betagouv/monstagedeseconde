@@ -55,9 +55,16 @@ main#content[role="main"
                                          autocomplete: "new-password",
                                          class: "fr-password__input fr-input fr-password__input fr-input #{error_tag.present? ? 'fr-input--error' : ''}",
                                          required: true,
-                                         data: { action: "change->signup#checkPassword", :"signup-target" => "passwordInput" }
+                                         pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]{12,}$',
+                                         data: { action: "signup#checkPassword", :"signup-target" => "passwordInput" }
                       = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :password)
-                    #user_password-messages.fr-messages-group[aria-live="assertive"]
+                    #password-input-messages.fr-messages-group aria-live="assertive"
+                      ul.fr-pl-0
+                        li.fr-message.fr-message--info data-signup-target="length" 12 caractères
+                        li.fr-message.fr-message--info data-signup-target="lowercase" 1 minuscule
+                        li.fr-message.fr-message--info data-signup-target="uppercase" 1 majuscule 
+                        li.fr-message.fr-message--info data-signup-target="number" 1 chiffre
+                        li.fr-message.fr-message--info data-signup-target="special" 1 caractère spécial
 
                     .fr-password__checkbox.fr-checkbox-group.fr-checkbox-group--sm
                       input[aria-label="Afficher le mot de passe"

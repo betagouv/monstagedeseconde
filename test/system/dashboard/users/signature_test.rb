@@ -20,7 +20,6 @@ module Dashboard
         internship_agreement = create(:internship_agreement, :validated)
         employer = internship_agreement.employer
         internship_offer = create(:weekly_internship_offer, employer: employer)
-        student = create(:student, school: create(:school, weeks: weeks))
         create(:school_manager, school: student.school)
         internship_application = create(:weekly_internship_application,
                                         :approved,
@@ -106,7 +105,7 @@ module Dashboard
         employer = create(:statistician, agreement_signatorable: true)
         weeks = [Week.find_by(number: 5, year: 2020), Week.find_by(number: 6, year: 2020)]
         internship_offer = create(:weekly_internship_offer, weeks: weeks, employer: employer)
-        student = create(:student, school: create(:school, weeks: weeks))
+        student = create(:student, school: create(:school))
         create(:school_manager, school: student.school)
         internship_application = create(:weekly_internship_application,
                                         :approved,
@@ -239,7 +238,7 @@ module Dashboard
 
           assert_equal signature.school_manager.phone, signature.signature_phone_number
 
-          find('h1', text: 'Editer, imprimer et bientôt signer les conventions dématérialisées')
+          find('h1', text: 'Éditer, imprimer et signez vos conventions dématérialisées')
           first_label = all('a.fr-btn.disabled')[0].text
           assert_equal 'Déjà signée', first_label
           second_label = all('a.fr-btn.disabled')[1].text
@@ -261,13 +260,12 @@ module Dashboard
     end
 
     test 'school_manager multiple clicks on interface' do
-      skip "test to update after ui is finished #TODO #may_flower"
       internship_agreement = create(:internship_agreement, :validated)
       student1 = internship_agreement.student
 
       school_manager = internship_agreement.school_manager
-      weeks = [Week.find_by(number: 5, year: 2020), Week.find_by(number: 6, year: 2020)]
-      internship_offer = create(:weekly_internship_offer, weeks: weeks)
+      # weeks = [Week.find_by(number: 5, year: 2020), Week.find_by(number: 6, year: 2020)]
+      internship_offer = create(:weekly_internship_offer)
       school = school_manager.school
       student2 = create(:student, school: school, class_room: create(:class_room, school: school))
       internship_application = create(:weekly_internship_application,

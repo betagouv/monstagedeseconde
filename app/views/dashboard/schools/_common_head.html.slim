@@ -32,16 +32,6 @@ h1.h2.mb-4
           tabindex="1"]
           | Personnels
 
-    li
-      - path = edit_dashboard_school_path(@school)
-      = link_to path do
-        button#weeks.fr-tabs__tab [
-          aria-controls="weeks-panel"
-          aria-selected="#{current_page?(path)}"
-          role="tab"
-          tabindex="2"]
-          | Semaines
-
     - if current_user.respond_to?(:school) && can?(:read, InternshipAgreement)
       li
         - path = dashboard_internship_agreements_path
@@ -65,6 +55,6 @@ h1.h2.mb-4
               aria-selected="#{current_page?(path)}"
               role="tab"
               tabindex="4"]
-              | Gérer mon établissement
+              | Informations supplémentaires
   = yield
 = render partial: 'dashboard/internship_agreements/signature/modal_dialog'

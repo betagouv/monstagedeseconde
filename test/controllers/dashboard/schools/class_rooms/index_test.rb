@@ -35,7 +35,7 @@ module Dashboard
       end
 
       test 'GET class_rooms#index as SchoolManagement shows link to manage school' do
-        school = create(:school , :with_school_manager, :with_weeks)
+        school = create(:school , :with_school_manager)
 
         sign_in(school.school_manager)
         get dashboard_school_class_rooms_path(school)
@@ -44,25 +44,9 @@ module Dashboard
                       { count: 1 },
                       'missing link to manage school users'
         assert_select 'li a[href=?]',
-                      edit_dashboard_school_path(school),
-                      { count: 1 },
-                      'missing or extra link to manage school weeks'
-        assert_select 'li a[href=?]',
                       dashboard_school_path(school),
                       { count: 1 },
                       'missing or extra link to manage school weeks'
-      end
-
-      test 'GET class_rooms#index as SchoolManagement shows UX critical alert-info' do
-        school = create(:school)
-        school_manager = create(:school_manager, school: school)
-
-        sign_in(school_manager)
-        get school_manager.custom_dashboard_path
-        follow_redirect!
-
-        assert_select 'dialog#notice-school-manager-empty-weeks p',
-                      text: "Afin de permettre à vos élèves d'effectuer leurs recherches de stage, vous devez renseigner les semaines de stage auxquelles ils peuvent postuler."
       end
 
       test 'GET class_rooms#index contains key navigations links to manage school classroom' do

@@ -13,7 +13,7 @@
     - if current_user.respond_to?(:school)
       = react_component("SearchSchool", props: { classes: 'col-12 fr-input',
                                                  required: true,
-                                                 label: 'Nom (ou ville) de mon établissement REP ou REP+',
+                                                 label: 'Ville ou lycée',
                                                  resourceName: :user,
                                                  selectClassRoom: @current_user.try(:school) && @current_user.school.class_rooms.any? && can?(:change, @current_user.school.class_rooms.first) ? true : false,
                                                  existingSchool: @current_user.try(:school).try(:as_json),

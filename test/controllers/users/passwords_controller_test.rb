@@ -34,7 +34,6 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'PUT update by phone' do
-    skip "test to update after ui is finished #TODO #may_flower"
     student = create(:student, email: nil, phone: '+330637607756')
     student.create_phone_token
     params = { phone: student.phone, phone_token: student.phone_token, password: 'newpassword' }

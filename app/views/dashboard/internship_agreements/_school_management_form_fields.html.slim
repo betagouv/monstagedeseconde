@@ -17,6 +17,23 @@ tbody.internship-agreement
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
                  locals: { field: :school_representative_full_name, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
+      
+      .row.mt-0
+        - label = "Statut de l’établissement"
+        - title = "Statut de l'établissement :"
+        - collection = ["Public", "Privé sous contrat", "Privé hors contrat"]
+        - filled_by = ["le chef d'établissement"]
+        - prompt = "Sélectionner le statut de l'établissement"
+        = render partial: 'dashboard/internship_agreements/select_field_element',
+                 locals: { field: :legal_status, form: form, text_label: label, title: title, collection: collection, filled_by: filled_by, disabled: disabled, value: resource.legal_status, prompt: prompt }
+      .row.mt-0
+        - label = "Date de délégation de signature"
+        - title = "Date de délégation de signature :"
+        - filled_by = ["le chef d'établissement"]
+        - prompt = "Sélectionner le statut de l'établissement"
+        = render partial: 'dashboard/internship_agreements/date_field_element',
+                 locals: { field: :delegation_date, form: form, text_label: label, title: title, filled_by: filled_by, disabled: disabled, value: resource.school.delegation_date, prompt: prompt }
+      
 
       .row.mt-0
         - label = "Courriel du chef d'établissement ou de son représentant"
@@ -65,22 +82,6 @@ tbody.internship-agreement
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
                  locals: { field: :student_refering_teacher_phone, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
-
-      .row.mt-0
-        - label = "Le chef d'établissement a été nommé apte à signer les conventions par le conseil d'administration de l'établissement en date du"
-        - title = "Note au chef d'établissement :"
-        - content = "Date du conseil d'administration"
-        - filled_by = ["le chef d'établissement"]
-        = render partial: 'dashboard/internship_agreements/date_field_element',
-                 locals: { field: :school_delegation_to_sign_delivered_at, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
-
-      / .row.mt-0
-      /   - label = "Articles"
-      /   - title = "Note au chef d'établissement"
-      /   - content = "Les articles sont modifiables selon vos spécificités locales."
-      /   - filled_by = ["le chef d'établissement"]
-      /   = render partial: 'dashboard/internship_agreements/trix_form_element',
-      /            locals: { field: :legal_terms_rich_text, form: form, title: title, content: content, text_label: label, filled_by: filled_by, disabled: disabled }
 
       .row.mt-0
         - label = "Nom de l’élève ou des élèves concerné(s)"
@@ -183,14 +184,6 @@ tbody.internship-agreement
       = form.submit 'Submit', class: 'd-none', id: 'submit'
 
       - unless disabled
-        / .row.mt-0
-        /   - label = "Conditions liées au financement du stage de l'élève par l'établissement"
-        /   - title = "Note au chef d'établissement"
-        /   - content = "Toutes les modalités pratiques du stage. Vous avez la possibilité d'enregistrer un modèle pour tous vos élèves sur #{link_to 'votre page établissement', edit_dashboard_school_internship_agreement_preset_path(resource.internship_application.student.school, resource.internship_application.student.school.internship_agreement_preset), class: 'text-white'}."
-        /   - filled_by = ["le chef d'établissement"]
-        /   = render partial: 'dashboard/internship_agreements/trix_form_element',
-        /           locals: { field: :complementary_terms_rich_text, form: form, text_label: label, title: title, content: content , filled_by: filled_by, disabled: disabled }
-
         .row.mt-0
           .col-7
             p= "Fait à #{resource.internship_application.student.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."

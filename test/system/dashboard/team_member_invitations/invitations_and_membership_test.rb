@@ -97,7 +97,7 @@ module Dashboard::TeamMemberInvitations
       find('p.fr-badge--info', text: "nouveau".upcase)
       find('a[title="Répondre à la candidature"]', text: "Répondre").click
       click_button("Accepter")
-      click_button("Confirmer")
+      find('#accepter-button').click
       find('p.fr-badge--info', text: "en attente de réponse".upcase)
     end
 
@@ -214,7 +214,7 @@ module Dashboard::TeamMemberInvitations
       find('p.fr-badge--info', text: "nouveau".upcase)
       find('a[title="Répondre à la candidature"]', text: "Répondre").click
       click_button("Accepter")
-      click_button("Confirmer")
+      find('#accepter-button').click
       click_link("Candidatures")
       click_button("Acceptées")
       find('p.fr-badge--info', text: "en attente de réponse".upcase)
@@ -222,7 +222,6 @@ module Dashboard::TeamMemberInvitations
 
     ## ============= statisticians ===================
     test 'as statistician, team member can invite a new team member' do
-      skip "#may_flower statitician not invited yet"
       statistician_1 = create(:statistician)
       sign_in(statistician_1)
       statistician_2 = create(:statistician)
@@ -317,7 +316,7 @@ module Dashboard::TeamMemberInvitations
       find('p.fr-badge--info', text: "nouveau".upcase)
       find('a[title="Répondre à la candidature"]', text: "Répondre").click
       click_button("Accepter")
-      click_button("Confirmer")
+      find('#accepter-button').click
       click_link("Candidatures")
       click_button("Acceptées")
       find('p.fr-badge--info', text: "en attente de réponse".upcase)

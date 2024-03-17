@@ -117,16 +117,42 @@ import './homepage/accueillir-un-stagiaire.svg';
 import './homepage/link-step-1-2.svg';
 import './homepage/link-step-2-3.svg';
 
-import './homepage/partenaires/Logo-jobirl.jpg';
-import './homepage/partenaires/Logo-le-reseau.jpg';
-import './homepage/partenaires/Logo-les-entreprises-pour-la-cite.jpg';
-import './homepage/partenaires/Logo-tous-en-stage.jpg';
-import './homepage/partenaires/Logo-un-stage-et-apres.jpg';
-import './homepage/partenaires/Logo-viens-voir-mon-taf.jpg';
-import './homepage/partenaires/Logo-my-future.jpg';
+import  './homepage/students/ms2e-stamp-medium.png'
+import  './homepage/students/spin-vector.svg'
 
-// import './homepage/sponsors/logo-anct.svg';
-// import './homepage/sponsors/logo-anct.png';
+import './homepage/partenaires/involved_companies/airbus.png'
+import './homepage/partenaires/involved_companies/bnp.png'
+import './homepage/partenaires/involved_companies/bouygues.png'
+import './homepage/partenaires/involved_companies/bpce.png'
+import './homepage/partenaires/involved_companies/carrefour.png'
+import './homepage/partenaires/involved_companies/creditmutuel.png'
+import './homepage/partenaires/involved_companies/decathlon.png'
+import './homepage/partenaires/involved_companies/disneyland.png'
+import './homepage/partenaires/involved_companies/intermarche.png'
+import './homepage/partenaires/involved_companies/laposte.png'
+import './homepage/partenaires/involved_companies/loreal.png'
+import './homepage/partenaires/involved_companies/safran.png'
+import './homepage/partenaires/auvergne.png'
+import './homepage/partenaires/bourgogne.png'
+import './homepage/partenaires/bretagne.png'
+import './homepage/partenaires/centrevaldeloire.png'
+import './homepage/partenaires/corse.png'
+import './homepage/partenaires/grandest.png'
+import './homepage/partenaires/guadeloupe.png'
+import './homepage/partenaires/guyane.png'
+import './homepage/partenaires/hautsdefrance.png'
+import './homepage/partenaires/iledefrance.png'
+import './homepage/partenaires/martinique.png'
+import './homepage/partenaires/mayotte.png'
+import './homepage/partenaires/normandie.png'
+import './homepage/partenaires/nouvelleaquitaine.png'
+import './homepage/partenaires/occitanie.png'
+import './homepage/partenaires/onisep.png'
+import './homepage/partenaires/paysdeloire.png'
+import './homepage/partenaires/paca.png'
+import './homepage/partenaires/reunion.png'
+
+
 import './homepage/sponsors/logo-ministere-education-nationale.svg';
 import './homepage/sponsors/logo-ministere-de-la-transition-ecologique.svg';
 

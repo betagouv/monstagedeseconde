@@ -16,7 +16,7 @@ jobs: # a collection of steps
           PGUSER: monstage_test
           RAILS_ENV: test
           HOST: https://www.example.fr
-      - image: circleci/postgres:12.0-alpine-postgis # database image with support of current dir
+      - image: cimg/postgres:15.6-postgis # database image with support of current dir
         environment: # environment variables for database
           POSTGRES_DB: monstage_test
           POSTGRES_USER: monstage_test
@@ -140,10 +140,11 @@ jobs: # a collection of steps
       - add_ssh_keys:
           fingerprints:
             - "64:44:1e:17:fb:00:ae:75:15:ba:d2:cb:ad:c2:95:ee"
-            - "SHA256:KzLBjXhbXKcWzzE8tHmU0/BAEz5OzIaIbXYCuUy6MGA"
+            - "SHA256:Vf+oSncwt0iZXjJXZuowchMvKTQqLZfwDOXrFfuMmsc"
       - run:
           name: Deploy staging to Clever Cloud
           command: |
+            set -x
             ssh-keyscan push-n3-par-clevercloud-customers.services.clever-cloud.com >>  ~/.ssh/known_hosts
             git remote add clever git+ssh://git@push-n3-par-clevercloud-customers.services.clever-cloud.com/$CLEVER_APP_ID.git
             git push -u clever review:master -f

@@ -16,22 +16,6 @@ module Dashboard::InternshipOffers
       find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--warning', text: "LU")
     end
 
-    test 'employer can set to examine status an internship_application' do
-      skip "test to update after ui is finished #TODO #may_flower"
-      employer, internship_offer = create_employer_and_offer
-      internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
-      sign_in(employer)
-      visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
-      click_on 'Etudier'
-      text = find("#internship_application_examined_message").text
-      find("#internship_application_examined_message").click.set("#{text} (test)")
-      click_button 'Confirmer'
-      assert internship_application.reload.examined?
-      find("h2.h4", text: "Les candidatures")
-      find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--info', text: "à l'étude".upcase)
-      find('span#alert-text', text: "Candidature mise à jour.")
-    end
-
     test 'employer can reject an internship_application' do
       employer, internship_offer = create_employer_and_offer
       internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
@@ -39,7 +23,7 @@ module Dashboard::InternshipOffers
       visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
       click_on 'Refuser'
       find("#internship_application_rejected_message").click.set("(test ata test)")
-      click_button 'Confirmer'
+      find('#refuser-button').click
       assert internship_application.reload.rejected?
       find("h2.h4", text: "Les candidatures")
       find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--error', text: "REFUSÉ")
@@ -54,7 +38,7 @@ module Dashboard::InternshipOffers
       sign_in(employer)
       visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
       click_on 'Accepter'
-      click_button 'Confirmer'
+      find('#accepter-button').click
       assert internship_application.reload.validated_by_employer?
       find("h2.h4", text: "Les candidatures")
       find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--info', text: "en attente de réponse".upcase)
@@ -98,9 +82,8 @@ module Dashboard::InternshipOffers
     test 'employer cannot validate an internship_application twice for different students' do
       travel_to Date.new(2020, 1, 1) do
         weeks = [Week.find_by(number: 3, year: 2020)]
-        school = create(:school, :with_school_manager, weeks: weeks)
+        school = create(:school, :with_school_manager)
         employer, internship_offer = create_employer_and_offer
-        assert_equal 1, school.school_internship_weeks.count
         student = create(:student, school: school)
         other_student = create(:student, school: school)
         internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer, student: student)
@@ -108,7 +91,7 @@ module Dashboard::InternshipOffers
 
         visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
         click_on 'Accepter'
-        click_button 'Confirmer'
+        find('#accepter-button').click
         assert internship_application.reload.validated_by_employer?
         find("h2.h4", text: "Les candidatures")
         find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--info', text: "en attente de réponse".upcase)
@@ -132,8 +115,7 @@ module Dashboard::InternshipOffers
 
     test "other employer can see rejection from student confirmation to another employer's internship_offer" do
       travel_to Date.new(2020, 1, 1) do
-        weeks = [Week.find_by(number: 3, year: 2020)]
-        school = create(:school, :with_school_manager, weeks: weeks)
+        school = create(:school, :with_school_manager)
         employer_1, internship_offer_1 = create_employer_and_offer
         employer_2, internship_offer_2 = create_employer_and_offer
         student = create(:student, school: school)
@@ -143,7 +125,7 @@ module Dashboard::InternshipOffers
         sign_in(employer_2)
         visit dashboard_internship_offer_internship_application_path(internship_offer_2, internship_application_2)
         click_on 'Accepter'
-        click_button 'Confirmer'
+        find('#accepter-button').click
         assert internship_application_2.reload.validated_by_employer?
         find("h2.h4", text: "Les candidatures")
         find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--info', text: "en attente de réponse".upcase)
