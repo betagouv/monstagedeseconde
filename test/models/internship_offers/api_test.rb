@@ -20,6 +20,8 @@ module InternshipOffers
         sector: create(:sector),
         permalink: 'https://google.fr'
       }
+
+      create(:department, code: '60', name: 'Oise')
     end
 
     test 'duplicate remote id same employer invalid instance' do

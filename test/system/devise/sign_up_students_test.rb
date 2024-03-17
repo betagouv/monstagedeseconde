@@ -28,6 +28,8 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
 
   test 'navigation & interaction works until student creation' do
+    create(:department, name: 'Seine-et-Marne', code: '77')
+    create(:department, name: 'Marne', code: '51')
     school_1 = create(:school, name: 'Etablissement Test 1', city: 'Saint-Martin', zipcode: '77515')
     school_2 = create(:school, name: 'Etablissement Test 2', city: 'Saint-Parfait', zipcode: '51577')
     class_room_1 = create(:class_room, name: '2de A', school: school_1)
@@ -64,6 +66,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   end
 
   test 'select other class room' do
+    create(:department, name: 'Seine-et-Marne', code: '77')
     school_1 = create(:school, name: 'Etablissement Test 1', city: 'Saint-Martin', zipcode: '77515')
     class_room_0 = create(:class_room, name: '2de A', school: school_1)
     existing_email = 'fourcade.m@gmail.com'
@@ -83,7 +86,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   test 'Student with mail subscription with former internship_offer ' \
        'visit leads to offer page even when mistaking along the way' do
     travel_to  Date.new(2020, 1, 1) do
-
+      create(:department, name: 'Seine-et-Marne', code: '77')
       school_1 = create(:school, name: 'Etablissement Test 1',
                                 city: 'Saint-Martin', zipcode: '77515')
       class_room_1 = create(:class_room, name: '2de A', school: school_1)
@@ -127,6 +130,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
   test 'Student with account and former internship offer visit lands on offer page after login' do
     password = 'kikoololletest'
+    create(:department, name: 'Seine-et-Marne', code: '77')
     school_1 = create(:school, name: 'Etablissement Test 1',
                                city: 'Saint-Martin', zipcode: '77515')
     class_room_1 = create(:class_room, name: '2de A', school: school_1)
@@ -166,6 +170,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   test 'Student registered with phone logs in after visiting an internship_offer and lands on offer page' do
     travel_to Date.new(2020, 1, 1) do
       password = 'kik2olollTtest!'
+      create(:department, name: 'Seine-Saint-Denis', code: '93')
       school_1 = create(:school, name: 'Etablissement Test 1',
                                  city: 'Gagny', 
                                  zipcode: '93220')
@@ -192,6 +197,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   end
 
   test 'Student with phone subscription with former internship_offer choice leads to offer page' do
+    create(:department, name: 'Seine-et-Marne', code: '77')
     school_1 = create(:school, name: 'Etablissement Test 1',
                                city: 'Saint-Martin', zipcode: '77515')
     class_room_1 = create(:class_room, name: '2de A', school: school_1)
@@ -239,6 +245,8 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
   test 'navigation & interaction works until student creation with phone' do
     travel_to Date.new(2020, 1, 1) do
+      create(:department, name: 'Seine-et-Marne', code: '77')
+      create(:department, name: 'Marne', code: '51')
       school_1 = create(:school, name: 'Etablissement Test 1',
                                city: 'Saint-Martin', zipcode: '77515')
       school_2 = create(:school, name: 'Etablissement Test 2',

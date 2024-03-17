@@ -5,6 +5,9 @@ require 'test_helper'
 class InternshipOfferTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
+  setup do
+    create(:department)
+  end
   test 'factory is valid' do
     assert build(:weekly_internship_offer).valid?
   end

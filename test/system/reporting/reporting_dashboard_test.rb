@@ -8,22 +8,23 @@ class ReportingDashboardTest < ApplicationSystemTestCase
     @sector_wood = create(:sector, name: 'Filière bois')
     @group1 = create(:group, name: 'group1', is_public: true)
     @group2 = create(:group, name: 'group2', is_public: true)
+    create(:department, code: '60', name: 'Oise')
     @department = @statistician.department_name # Oise
     @school = create(
       :school,
       :with_school_manager,
-      zipcode: 60_000 # Oise
+      zipcode: 60000 # Oise
     )
   end
 
   test 'Offers deleted are displayed' do
     travel_to(Date.new(2020, 9, 3)) do
       3.times { create(:weekly_internship_offer,
-                       zipcode: 60_000,
+                       zipcode: 60000,
                        group: @group1)
       }
       create(:weekly_internship_offer,
-                       zipcode: 60_000,
+                       zipcode: 60000,
                        group: @group1).discard!
       sign_in(@statistician)
       visit reporting_dashboards_path(department: @department, school_year: 2020)

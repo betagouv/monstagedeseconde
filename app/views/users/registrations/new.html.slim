@@ -99,7 +99,7 @@
                             / select field department
                             label.fr-label[for="user_department"]
                               |Choisissez votre département
-                            = f.select :department, options_for_select(Department::MAP.map { |code, name| ["#{code} - #{name}", code] }, resource.department), { prompt: "Départements" }, { class: "fr-select", required: false, data: { "signup-target": 'departmentSelect'  } }
+                            = f.select :department, options_for_select(Department.all.map { |code, name| ["#{code} - #{name}", code] }, resource.department), { prompt: "Départements" }, { class: "fr-select", required: false, data: { "signup-target": 'departmentSelect'  } }
 
                       .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-ministry
                         .row

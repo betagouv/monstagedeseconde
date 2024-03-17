@@ -49,6 +49,7 @@ module Dashboard::Stepper
       organisation = create(:organisation, employer: employer)
       internship_offer_info = create(:internship_offer_info, employer: employer)
       hosting_info = create(:hosting_info, employer: employer)
+      create(:department)
       
       assert_difference('InternshipOffer.count', 1) do
         assert_difference('PracticalInfo.count', 1) do
@@ -129,7 +130,7 @@ module Dashboard::Stepper
       organisation = create(:organisation, employer: employer)
       internship_offer_info = create(:internship_offer_info, employer: employer)
       hosting_info = create(:hosting_info, employer: employer)
-      
+      create(:department)
       # first time
       assert_enqueued_jobs 1, only: DraftedInternshipOfferJob do
         assert_difference('InternshipOffer.count', 1) do

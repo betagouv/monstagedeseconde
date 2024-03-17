@@ -184,6 +184,7 @@ class AbilityTest < ActiveSupport::TestCase
 
   test 'Education Statistician' do
     statistician = create(:education_statistician)
+    create(:department, code: '60', name: 'Oise')
     ability = Ability.new(statistician)
 
     assert(ability.can?(:supply_offers, statistician), 'statistician are to be able to supply offers')

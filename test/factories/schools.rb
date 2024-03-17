@@ -9,6 +9,11 @@ FactoryBot.define do
     city { 'Paris' }
     zipcode { '75015' }
     code_uai { '075' + rand(100_000).to_s.rjust(5, '0') }
+    department { 'Paris' }
+    before(:create) do |school|
+      Department.create(code: '75', name: 'Paris')
+    end
+
     trait :at_paris do
       city { 'Paris' }
       name { 'Parisian school' }
@@ -21,7 +26,10 @@ FactoryBot.define do
       name { 'bordeaux school' }
       department { 'Gironde' }
       coordinates { Coordinates.bordeaux }
-      zipcode { '30072' }
+      zipcode { '33072' }
+      before(:create) do |school|
+        Department.create(code: '33', name: 'Gironde')
+      end
     end
 
     trait :with_school_manager do

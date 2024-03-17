@@ -96,14 +96,16 @@ module Dashboard::InternshipOffers
     test 'GET #index as operator not departement-constraint returns internship offer not considering location constraint' do
       operator = create(:operator)
       user_operator = create(:user_operator, operator: operator, department: nil)
+      create(:department, code: '60', name: 'Oise')
+      create(:department, code: '95', name: 'Val-d\'Oise')
       included_internship_offer = create(:weekly_internship_offer,
                                         internship_offer_area_id: user_operator.current_area_id,
                                         employer: user_operator,
-                                        zipcode: 60_580)
+                                        zipcode: 60580)
       excluded_internship_offer = create(:weekly_internship_offer,
                                          internship_offer_area_id: user_operator.current_area_id,
                                          employer: user_operator,
-                                         zipcode: 95_270)
+                                         zipcode: 95270)
       sign_in(user_operator)
       get dashboard_internship_offers_path
       assert_response :success
