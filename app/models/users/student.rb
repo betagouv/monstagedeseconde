@@ -172,10 +172,11 @@ module Users
     end
 
     def welcome_new_student
+      url_options = default_search_options.merge(host: ENV.fetch('HOST'))
       target_url = Rails.application
                         .routes
                         .url_helpers
-                        .internship_offers_url(default_search_options, host: ENV.fetch('HOST'))
+                        .internship_offers_url(**url_options)
       shrinked_url = UrlShrinker.short_url( url: target_url, user_id: id )
       if phone.present?
         message = I18n.t('devise.sms.welcome_student', shrinked_url: shrinked_url)

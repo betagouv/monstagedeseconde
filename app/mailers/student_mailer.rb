@@ -35,9 +35,9 @@ class StudentMailer < ApplicationMailer
 
   def set_logo_attachment
     super
-    attachments.inline['securite.svg'] = File.read("#{Rails.root}/public/assets/securite.svg")
+    attachments.inline['securite.svg']      = File.read("#{Rails.root}/public/assets/securite.svg")
     attachments.inline['question_mark.svg'] = File.read("#{Rails.root}/public/assets/question_mark.svg")
-    attachments.inline['boy_girl.svg'] = File.read("#{Rails.root}/public/assets/boy_girl.svg")
+    attachments.inline['boy_girl.svg']      = File.read("#{Rails.root}/public/assets/boy_girl.svg")
   end
 
   def internship_application_approved_email(internship_application:)
