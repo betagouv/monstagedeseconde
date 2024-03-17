@@ -39,6 +39,7 @@ class SignUpSchoolManagersTest < ApplicationSystemTestCase
   end
 
   test 'navigation & interaction works until teacher creation' do
+    create(:department, code: '77', name: 'Paris')
     school_1 = create(:school, name: 'Etablissement Test 1', city: 'Saint-Martin', zipcode: '77515')
     create(:school_manager, school: school_1)
     school_2 = create(:school, name: 'Etablissement Test 2', city: 'Saint-Parfait', zipcode: '77555')

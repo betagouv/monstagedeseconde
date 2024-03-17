@@ -8,6 +8,7 @@ class SignUpStatisticiansTest < ApplicationSystemTestCase
     bad_email = 'lol@lol.fr'
     good_email = 'kikoolol@gmail.com'
     valid_password = 'kikoololletest1Max!!'
+    create(:department, code: '75', name: 'Paris')
 
     visit new_user_registration_path(as: 'Statistician')
 

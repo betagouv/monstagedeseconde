@@ -9,10 +9,11 @@ class ReportingDashboardTest < ApplicationSystemTestCase
     @group1 = create(:group, name: 'group1', is_public: true)
     @group2 = create(:group, name: 'group2', is_public: true)
     @department = @statistician.department_name # Oise
+    create(:department, name: @department, code: 60)
     @school = create(
       :school,
       :with_school_manager,
-      zipcode: 60_000 # Oise
+      zipcode: 60000 # Oise
     )
   end
 
