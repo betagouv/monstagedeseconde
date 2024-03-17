@@ -56,7 +56,7 @@ module Dashboard
         student_params.merge(
           school_id: @class_room.school_id, 
           class_room_id: @class_room.id,
-          password: Devise.friendly_token.first(8),
+          password: make_password,
           created_by_teacher: true,
         )
       end
@@ -74,6 +74,13 @@ module Dashboard
         end
       end
 
+      def make_password
+        numbers = (0..9).to_a.sample(3)
+        capitals = ("A".."Z").to_a.sample(3)
+        letters = ("a".."z").to_a.sample(8)
+        specials = ["!","&","+","_","ç"].sample(2)
+        (numbers + capitals + letters + specials).shuffle.join
+      end
     end
   end
 end
