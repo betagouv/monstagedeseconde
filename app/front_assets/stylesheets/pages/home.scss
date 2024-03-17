@@ -104,13 +104,15 @@ a:hover {
     }
 }
 
-.everyone .container-monstage .stamp-logo {
-    img{
-        height: 122px;
-        width: 193px;
+.everyone, .school-management  {
+    .container-monstage .stamp-logo {
+        img{
+            height: 122px;
+            width: 193px;
+        }
+        display: block;
+        margin-top: 37%;
     }
-    display: block;
-    margin-top: 37%;
 }
 
 .fr-card h3.std-height {
@@ -136,7 +138,7 @@ p.fr-card__desc.std-height {
       margin-left: 0;
       margin-right: 32px;
       width: 100%;
-      padding-bottom: 24px 0;
+      padding-bottom: 24px;
     }
     .white-search-frame.mobile {
         padding-top: 24px;

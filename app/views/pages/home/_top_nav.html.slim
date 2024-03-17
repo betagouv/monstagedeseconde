@@ -17,6 +17,9 @@
                   class: 'fr-nav__link',
                   aria: { current: (current_page?(professionnels_path) ? 'page' : nil) }
       li.fr-nav__item
-        span.fr-nav__link.fadded Équipes pédagogiques
+        = link_to 'Équipes pédagogiques',
+                  equipe_pedagogique_path,
+                  class: 'fr-nav__link',
+                  aria: { current: (current_page?(equipe_pedagogique_path) ? 'page' : nil) }
       li.fr-nav__item
         span.fr-nav__link.fadded Référents administratifs
