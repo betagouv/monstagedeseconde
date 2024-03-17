@@ -11,7 +11,8 @@ module Dashboard
       create(:student, school: school, class_room: class_room)
 
       sign_in(teacher)
-      visit dashboard_school_class_room_students_path(school, class_room)
+      visit dashboard_school_class_rooms_path(school)
+      find("a.small.fr-raw-link.fr-tag.fr-tag--sm").click
       click_link('Ajouter des élèves à cette classe')
       fill_in "Prénom de l'élève", with: 'Martin'
       fill_in "Nom de l'élève", with: 'Dupont'
