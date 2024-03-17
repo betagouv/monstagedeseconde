@@ -44,7 +44,7 @@
                     field: :student_phone,
                     object: f.object,
                     value: f.object.student_phone || f.object.student.phone&.gsub!('+33', ''),
-                    label: "Numéro de portable élève ou resposable légal",
+                    label: "Numéro de portable élève ou responsable légal",
                     required: true,
                     pattern: '0[67][0-9]{8}',
                     hint: "Numéro commençant par 06 ou 07 uniquement",

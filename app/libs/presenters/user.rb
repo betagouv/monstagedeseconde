@@ -111,7 +111,7 @@ module Presenters
         title = "Se créer un compte en tant que gestionnaire d'établissement scolaire"
         subtitle = "Vous souhaitez que vos élèves trouvent un stage " \
         "de qualité. Cet outil vous permettra d'accéder à un tableau " \
-        "de suivi de vos élèves tout au long de leur recherche de leur stage." 
+        "de suivi de vos élèves tout au long de leur recherche de stage." 
       end
       {
         title: title,
