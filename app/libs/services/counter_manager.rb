@@ -15,9 +15,6 @@ module Services
         total_female_approved_applications_count: 0,
         rejected_applications_count: 0
       )
-      InternshipOfferWeek.update_all(
-        blocked_applications_count: 0
-      )
       InternshipApplication.all.map(&:update_all_counters)
     end
 
