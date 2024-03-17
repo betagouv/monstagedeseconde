@@ -3,7 +3,7 @@
 module Users
   class MinistryStatistician < Statistician
 
-    METABASE_DASHBOARD_ID = 10
+    METABASE_DASHBOARD_ID = 29
 
     has_many :user_groups,
              foreign_key: :user_id,
