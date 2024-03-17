@@ -111,7 +111,8 @@ a:hover {
       margin-left: 0;
       margin-right: 32px;
       width: 100%;
-      padding-bottom: 24px 0;
+      padding-bottom: 24px;
+      margin-bottom: 24px;
     }
     .white-search-frame.mobile {
         padding-top: 24px;
@@ -145,7 +146,9 @@ a:hover {
 .red-frame {
     border: 2px solid red;
 }
-
+.visible{
+    overflow: visible;
+}
 .header-cartel {
     p {
         margin-bottom: 0;
