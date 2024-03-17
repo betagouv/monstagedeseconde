@@ -22,6 +22,14 @@ class InternshipAgreement < ApplicationRecord
   has_rich_text :activity_learnings_rich_text
   has_rich_text :activity_rating_rich_text
 
+  has_rich_text :skills_observe_rich_text
+  has_rich_text :skills_communicate_rich_text
+  has_rich_text :skills_understand_rich_text
+  has_rich_text :skills_motivation_rich_text
+
+  # beware, complementary_terms_rich_text/lega_terms_rich_text are recopy from school.internship_agreement_presets.*
+  #         it must stay a recopy and not a direct link (must live separatery)
+
   attr_accessor :enforce_school_manager_validations,
                 :enforce_employer_validations,
                 :enforce_main_teacher_validations,

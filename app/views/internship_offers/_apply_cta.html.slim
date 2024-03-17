@@ -22,9 +22,7 @@
             = reason
 
   - else
-    / disabled button
-    = button_to 'Postuler', '', class: 'fr-btn fr-btn--icon-left fr-icon-edit-fill', disabled: true
-    / = render "internship_applications/call_to_action/visitor", internship_offer: internship_offer
+    = render "internship_applications/call_to_action/visitor", internship_offer: internship_offer
 
   .fr-mx-5w
     - if(user_signed_in? && can?(:create, Favorite))

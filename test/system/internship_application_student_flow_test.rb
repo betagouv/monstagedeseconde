@@ -7,8 +7,6 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
   include ThirdPartyTestHelpers
 
   test 'student not in class room can not ask for week' do
-    skip "test to update after ui is finished #TODO #may_flower"
-    weeks = Week.selectable_from_now_until_end_of_school_year.to_a.first(2)
     school = create(:school)
     student = create(:student, school: school, class_room: create(:class_room, school: school))
     internship_offer = create(:weekly_internship_offer)
@@ -17,20 +15,6 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
     visit internship_offer_path(internship_offer)
     page.find 'a', text: 'Mon profil'
     assert_select 'a', text: 'Je postule', count: 0
-  end
-
-  test 'student can submit application when school has not choosen any week yet' do
-    skip "test to update after ui is finished #TODO #may_flower"
-    weeks = Week.selectable_from_now_until_end_of_school_year.to_a.first(2)
-    school = create(:school)
-    student = create(:student, school: school, class_room: create(:class_room, school: school))
-    internship_offer = create(:weekly_internship_offer, weeks: weeks)
-
-    sign_in(student)
-    visit new_internship_offer_internship_application_path(internship_offer_id: internship_offer.id)
-    page.find('.test-missing-school-weeks', visible: true)
-
-    click_on 'Valider'
   end
 
   test 'student with no class_room can submit an application when school have not choosen week' do
@@ -66,37 +50,7 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
     end
   end
 
-  test 'student with no class_room can submit an application when school has not choosen week' do
-    skip "test to update after ui is finished #TODO #may_flower"
-    # Pay attention when merging this very test: it's here to stay
-    weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
-    travel_to(Date.new(2019, 9, 1)) do
-    internship_offer = create(:weekly_internship_offer, weeks: weeks)
-    school           = create(:school,:with_school_manager)
-    student          = create(:student, school: school)
-    assert_equal 1, internship_offer.remaining_seats_count
-      sign_in(student)
-      visit internship_offer_path(internship_offer)
-
-      all('a', text: 'Postuler').first.click
-      # check for phone fields
-      page.find "input[name='internship_application[student_phone]']", visible: true
-      fill_in("Numéro de portable élève ou parent", with: '0611223344')
-      # check for email fields
-      page.find "input[name='internship_application[student_email]']", visible: true
-      fill_in("Adresse électronique (email)", with: 'parents@gmail.com')
-      select weeks.first.human_select_text_method, from: 'internship_application_week_id'
-      page.find("input[type='submit'][value='Valider']").click
-      assert page.has_selector?(".fr-card__title a[href='/offres-de-stage/#{internship_offer.id}']", count: 1)
-      click_button('Envoyer')
-      page.find('h4', text: "Félicitations, c'est ici que vous retrouvez toutes vos candidatures.")
-    end
-  end
-
-  
-
   test 'student can receive a SMS when employer accepts her application' do
-    skip "#may_flower: test to update after ui is finished"
     school = create(:school)
     student = create(:student,
                      school: school,

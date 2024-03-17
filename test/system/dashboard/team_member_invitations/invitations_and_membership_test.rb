@@ -222,7 +222,6 @@ module Dashboard::TeamMemberInvitations
 
     ## ============= statisticians ===================
     test 'as statistician, team member can invite a new team member' do
-      skip "#may_flower statitician not invited yet"
       statistician_1 = create(:statistician)
       sign_in(statistician_1)
       statistician_2 = create(:statistician)
