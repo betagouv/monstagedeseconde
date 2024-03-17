@@ -12,3 +12,4 @@ class SchoolTest < ActiveSupport::TestCase
 
   end
 end
+

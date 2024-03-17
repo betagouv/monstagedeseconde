@@ -39,10 +39,10 @@
                   .fr-fieldset__element
                     .fr-input-group.fr-mb-2v
                       label.fr-label for="user_school_city"
-                        | Ville ou lycée
+                        | Établissement ou commune
                       = react_component("SearchSchool",
                                         props: { classes: "col-12",
-                                                  label: 'Nom (ou ville) de mon lycée',
+                                                  label: 'Établissement ou commune',
                                                   required: true,
                                                   resourceName: :user,
                                                   selectClassRoom: can?(:choose_class_room, resource),

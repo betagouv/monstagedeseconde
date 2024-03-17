@@ -1,0 +1,20 @@
+/ select field element
+- edit_enable = can?("edit_#{field}".to_sym, form.object)
+
+- hint ||= ''
+- title ||= ''
+- content ||= ''
+- limit ||= nil
+- required = required.nil?
+- collection = collection || []
+- prompt = prompt || 'Sélectionner'
+- value = value || ''
+- disabled ||= false
+
+.col-12.pt-3
+  .form-group.form-group-tooltip
+    = form.label field do
+      span.mb-2.fr-label= text_label
+      = form.rg2a_required_content_tag if required
+
+    = form.select field, options_for_select(collection, form.object.try(field)), {prompt: prompt}, {class: "fr-select", required: required, disabled: disabled }

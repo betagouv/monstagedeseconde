@@ -83,10 +83,15 @@ a:hover {
 
 }
 
+.red-border {
+    border: 2px solid red;
+}
+
 .container-monstage {
     max-width: 1200px;
     margin: auto;
     position: relative;
+
     .sub-hero {
         color: $blue-france;
         .sub-hero-text {
@@ -95,10 +100,32 @@ a:hover {
     }
     .stamp-logo {
         margin-top: 4rem;
-        height: 182px;
         max-width: 269px;
+
     }
 }
+
+.everyone, .school-management  {
+    .container-monstage .stamp-logo {
+        img{
+           width: 193px;
+        }
+        display: block;
+        margin-top: 37%;
+    }
+}
+
+.fr-card h3.std-height {
+
+    height: 5.5rem;
+}
+.fr-card.without-arrow::before, .fr-card.without-arrow::after{
+    display: none;
+}
+p.fr-card__desc.std-height {
+    height: 5.5rem;
+}
+
 .container-monstage-fluid-hero {
     background-image: url('../images/homepage/backgrd-header.png');
     background-position: center center;
@@ -111,7 +138,8 @@ a:hover {
       margin-left: 0;
       margin-right: 32px;
       width: 100%;
-      padding-bottom: 24px 0;
+      padding-bottom: 24px;
+      margin-bottom: 24px;
     }
     .white-search-frame.mobile {
         padding-top: 24px;
@@ -145,7 +173,9 @@ a:hover {
 .red-frame {
     border: 2px solid red;
 }
-
+.visible{
+    overflow: visible;
+}
 .header-cartel {
     p {
         margin-bottom: 0;

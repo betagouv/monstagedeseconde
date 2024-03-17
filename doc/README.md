@@ -87,7 +87,7 @@ Les offres de stages décrits ci-dessous décrivent les offres réservées aux c
     coordinates : Coordonnées géographique du lieu du stage
     street : Nom de la rue ou se déroule le stage
     zipcode  : Code postal ou se déroule le stage
-    city : Nom de la ville où se déroule le stage
+    city : Nom de la commune où se déroule le stage
 
     sector_uuid : Identifiant unique du secteurs, voir référentiel *(1)
     period: Durée du stage (voir ci-dessous)

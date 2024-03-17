@@ -21,7 +21,6 @@ module Reporting
     end
 
     test 'get index as god works' do
-      skip "#may_flower reporting to be mended"
       god = create(:god)
       sign_in(god)
       operator_1 = create(:operator, name: 'operator 1')

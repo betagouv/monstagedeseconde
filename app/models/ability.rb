@@ -112,6 +112,8 @@ class Ability
       edit_school_representative_phone
       edit_school_representative_email
       edit_school_representative_role
+      edit_delegation_date
+      edit_legal_status
       edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
@@ -161,6 +163,8 @@ class Ability
       edit_school_representative_phone
       edit_school_representative_email
       edit_school_representative_role
+      edit_delegation_date
+      edit_legal_status
       edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
@@ -236,6 +240,10 @@ class Ability
       edit_tutor_email
       edit_tutor_role
       edit_activity_scope_rich_text
+      edit_skills_observe_rich_text
+      edit_skills_communicate_rich_text
+      edit_skills_understand_rich_text
+      edit_skills_motivation_rich_text
       edit_activity_preparation_rich_text
       edit_activity_learnings_rich_text
       edit_date_range

@@ -2,23 +2,14 @@
   = render 'layouts/navbar', home_nav_bar: true
 .fr-container
   = render 'pages/home/top_nav'
-.container-monstage-fluid-hero.mx-0
-  = render 'pages/home/pros/hero_pro'
-.container-homepage.light-blue-background.fr-px-2w
+.container-monstage-fluid-hero
+  = render 'pages/home/everyone/hero_everyone'
+.container-homepage
   .container-monstage
-    = render 'pages/home/pros/sub_hero_pro'
-.container-homepage.fr-px-2w
+    = render 'pages/home/everyone/everyone_faq'
+.container-homepage
   .container-monstage
-    = render 'pages/home/howitworks_pro'
-.container-homepage.light-blue-background.fr-px-2w
-  .container-monstage
-    = render 'pages/home/pros/pro_events'
-.container-homepage.fr-px-2w
-  .container-monstage
-    = render 'pages/home/pros/faq_pro'
-.container-homepage.light-blue-background.fr-px-2w
-  .container-monstage
-    = render 'pages/home/pros/usefull_resources'
+    = render 'pages/home/everyone/everyone_resources'
   .container-monstage
     .d-none.d-md-block
       = render 'pages/home/elevator'

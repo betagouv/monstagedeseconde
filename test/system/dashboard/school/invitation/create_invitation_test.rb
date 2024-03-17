@@ -11,7 +11,6 @@ module Dashboard
     end
 
     test 'school manager can invite one of his teacher' do
-      skip "test to update after ui is finished #TODO #may_flower"
       school = create(:school)
       school_manager = create(:school_manager, school: school)
       invitation = create(:invitation, user_id: school_manager.id)

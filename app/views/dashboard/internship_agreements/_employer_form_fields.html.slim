@@ -79,17 +79,53 @@ tbody.internship-agreement
                      locals: { form: form, disabled: disabled }
 
       .row.mt-0
-        - label = "Objectifs assignés à la séquence d’observation en milieu professionnel"
-        - title = "Note au chef d'entreprise"
-        - content = "Objectifs du stage"
+        - label = "Activités prévues durant la séquence d’observation en milieu professionnel"
+        - title = "Activités prévues"
+        - content = "Activités prévues"
         - filled_by = ["l'entreprise"]
         = render partial: 'dashboard/internship_agreements/trix_form_element',
                  locals: { field: :activity_scope_rich_text, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
+      
+      .row.mt-0
+        .fr-text-md.fr-my-2w.h4 Compétences visées
+
+      .row.mt-0
+        - label = "Observer"
+        - title = "Observer"
+        - hint = "Capacité de l’élève à décrire l’environnement professionnel qui l’accueille"
+        - content = "Vous pouvez préciser en quoi les activités proposées permettent de développer la compétence indiquée."
+        - filled_by = ["l'entreprise"]
+        = render partial: 'dashboard/internship_agreements/trix_form_element',
+                 locals: { field: :skills_observe_rich_text, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled, hint: hint, required: false }
+      .row.mt-0
+        - label = "Communiquer"
+        - title = "Communiquer"
+        - hint = "Savoir-être, posture de l’élève lorsqu’il s’adresse à ses interlocuteurs, les interroge ou leur fait des propositions"
+        - content = "Vous pouvez préciser en quoi les activités proposées permettent de développer la compétence indiquée."
+        - filled_by = ["l'entreprise"]
+        = render partial: 'dashboard/internship_agreements/trix_form_element',
+                 locals: { field: :skills_communicate_rich_text, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled, hint: hint, required: false }
+      .row.mt-0
+        - label = "Comprendre"
+        - title = "Comprendre"
+        - hint = "Esprit de curiosité manifesté par l’élève, capacité à analyser les enjeux du métiers, les relations entre les acteurs, les différentes phases de production, etc."
+        - content = "Vous pouvez préciser en quoi les activités proposées permettent de développer la compétence indiquée."
+        - filled_by = ["l'entreprise"]
+        = render partial: 'dashboard/internship_agreements/trix_form_element',
+                 locals: { field: :skills_understand_rich_text, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled, hint: hint, required: false }
+      .row.mt-0
+        - label = "S’impliquer"
+        - title = "S’impliquer"
+        - hint = "Faire preuve de motivation, se proposer pour participer à certaines démarches"
+        - content = "Vous pouvez préciser en quoi les activités proposées permettent de développer la compétence indiquée."
+        - filled_by = ["l'entreprise"]
+        = render partial: 'dashboard/internship_agreements/trix_form_element',
+                 locals: { field: :skills_motivation_rich_text, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled, hint: hint, required: false }
 
       = form.submit 'Submit', class: 'd-none', id: 'employer-submit'
 
       - unless disabled
-        .row.mt-0
+        .row.fr-my-2w
           .col-7
             p= "Fait à #{resource.internship_application.student.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."
 

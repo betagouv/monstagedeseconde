@@ -46,6 +46,11 @@ module Presenters
       end.flatten
     end
 
+    def school_type
+      # TODO : add a school_type column in the school table
+      "Public"
+    end
+
     private
 
     def fetch_details

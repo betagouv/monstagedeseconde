@@ -115,7 +115,7 @@ export default function SearchSchool({
   }
 
   const renderAutocompleteInput = () => {
-    const search_label = 'Adresse ou ville de mon lycée'
+    const search_label = 'Adresse ou commune de mon lycée'
     return (
       <Downshift
         initialInputValue={city}
@@ -194,7 +194,7 @@ export default function SearchSchool({
                         Object.keys(autocompleteCitySuggestions || {}).length > 0 ? '' : 'd-none'
                       }`}
                     >
-                      Ville(s)
+                      Communes(s)
                     </li>
                     {Object.keys(autocompleteCitySuggestions || {}).map((currentCity, index) => (
                       <li

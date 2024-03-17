@@ -70,12 +70,6 @@ module Users
       params[:user] = merge_identity(params) if params.dig(:user, :identity_token)
       # students only
       clean_phone_param
-      # april_flower forbidden routes
-      if params[:type].in?([Users::Student.name, Users::Statistician.name])
-        resource.delete if resource.persisted?
-        redirect_to root_path and return
-      end
-      # april_flower forbidden routes end
       super do |resource|
         clean_invitation(resource)
         resource.targeted_offer_id ||= params && params.dig(:user, :targeted_offer_id)
