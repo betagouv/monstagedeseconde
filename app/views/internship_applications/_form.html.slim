@@ -23,7 +23,7 @@
       = f.label :motivation, class: 'fr-label', for: 'internship_application_motivation', 'data-controller' => "rich-text-label", 'data-rich-text-label-for-value' => "internship_application_motivation", 'data-rich-text-label-enable-value' => ""
         | Pourquoi ce stage me motive 
         = f.rg2a_required_content_tag
-        small.form-text.text-muted Relisez-vous pour éviter les fautes d'orthographe et utilisez une formule de politesse pour conclure.
+        small.form-text.text-muted Relisez-vous pour éviter les fautes.
       = f.rich_text_area :motivation, class: "fr-input col-12", required: true, rows: 5
 
     .row.fr-my-2w
@@ -44,7 +44,7 @@
                     field: :student_phone,
                     object: f.object,
                     value: f.object.student_phone || f.object.student.phone&.gsub!('+33', ''),
-                    label: "Numéro de portable élève ou parent",
+                    label: "Numéro de portable élève ou responsable légal",
                     required: true,
                     pattern: '0[67][0-9]{8}',
                     hint: "Numéro commençant par 06 ou 07 uniquement",

@@ -101,7 +101,7 @@ module Dashboard::InternshipOffers
         visit internship_offers_path
         click_on internship_offer.title
         first(:link, 'Postuler').click
-        fill_in 'Numéro de portable élève ou parent',	with: "0600060606"
+        fill_in 'Numéro de portable élève ou responsable légal',	with: "0600060606"
         click_on 'Valider'
         assert_equal 2, InternshipApplication.count
         other_internship_application = InternshipApplication.last

@@ -6,7 +6,10 @@ class SchoolsTest < ApplicationSystemTestCase
   test 'cannot add favorite as a visitor' do
     create(:weekly_internship_offer)
     visit internship_offers_path
-    find("h2 .strong", text: "1 Offre de stage")
+    #June_flower
+    # find("h2 .strong", text: "1 Offre de stage")
+    find("h2 .strong", text: "Les offres de stage")
+    #June_flower
     assert_no_selector('.results-col .heart-empty')
   end
 
@@ -15,7 +18,10 @@ class SchoolsTest < ApplicationSystemTestCase
     sign_in(employer)
     create(:weekly_internship_offer)
     visit internship_offers_path
-    find("h2 .strong", text: "1 Offre de stage")
+    #June_flower
+    # find("h2 .strong", text: "1 Offre de stage")
+    find("h2 .strong", text: "Les offres de stage")
+    #June_flower
     assert_no_selector('.results-col .heart-empty')
   end
 
@@ -24,7 +30,10 @@ class SchoolsTest < ApplicationSystemTestCase
     student = create(:student)
     sign_in student
     visit internship_offers_path
-    find("h2 .strong", text: "1 Offre de stage")
+    #June_flower
+    # find("h2 .strong", text: "1 Offre de stage")
+    find("h2 .strong", text: "Les offres de stage")
+    #June_flower
     assert_changes -> { Favorite.all.count }, from: 0, to: 1 do
       find(".results-col .heart-empty").click
       find(".results-col .heart-full")

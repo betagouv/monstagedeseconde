@@ -94,7 +94,7 @@ tbody.internship-agreement
       .row.mt-0
         - label = "Adresse personnelle complète de l'élève"
         - title = "Note au chef d'établissement :"
-        - content = "Adresse, code postal, ville et pays de l'élève"
+        - content = "Adresse, code postal, commune et pays de l'élève"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
                  locals: { field: :student_address, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled }
