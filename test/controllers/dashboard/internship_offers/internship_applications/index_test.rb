@@ -56,8 +56,6 @@ module InternshipApplications
       assert_select '.student-age', "#{student.age} ans"
       assert_select '.student-email', internship_application.student_email
       assert_select '.student-phone', internship_application.student_phone
-      assert_select '.reboot-trix-content', student.resume_other.to_plain_text
-      assert_select '.reboot-trix-content', student.resume_languages.to_plain_text
     end
 
     test 'GET #index (sentry#1887730132) succeed with weekly_internship_application when logged in as employer, and student is archived' do

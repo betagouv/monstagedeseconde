@@ -5,6 +5,7 @@ class Sector < ApplicationRecord
   before_create :set_uuid
 
   MAPPING_COVER = {
+    "Agriculture" => "agriculture.svg",
     "Agroéquipement" => "agriculture.svg",
     "Architecture, urbanisme et paysage" => "architecture.svg",
     "Armée - Défense" => "armee.svg",

@@ -1675,7 +1675,8 @@ CREATE TABLE public.users (
     created_by_teacher boolean DEFAULT false,
     survey_answered boolean DEFAULT false,
     current_area_id bigint,
-    statistician_validation boolean DEFAULT false
+    statistician_validation boolean DEFAULT false,
+    hubspot_id character varying
 );
 
 
@@ -3379,6 +3380,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240316135712'),
 ('20240315100413'),
 ('20240315090504'),
 ('20240314133947'),

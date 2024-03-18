@@ -1,18 +1,22 @@
+- clickable = true if clickable.nil?
 .fr-card.fr-enlarge-link data-test-id="#{internship_offer.id}"
   .fr-card__body
     .fr-card__content
       h4.fr-card__title
-        = link_to internship_offer.title, internship_offer_path(internship_offer), class: "row-link text-dark"
-         
+        - if clickable
+          = link_to internship_offer.title,
+          internship_offer_path(internship_offer),
+          class: "row-link text-dark"
+        - else
+          = link_to internship_offer.title,
+          "#",
+          class: "row-link text-dark"
       .fr-card__detail.fr-my-3w
         .mr-auto.d-flex.align-items-center
           span.fr-icon-arrow-right-line.fr-icon--sm.fr-mb-0
-            
-          span.fr-text.fr-px-1w Du 17 au 28 juin 2024 
-        
+          span.fr-text.fr-px-1w = internship_offer.period_label
       .fr-card__desc
         .fr-pt-4w= internship_offer.employer_name
-      
   .fr-card__header
     .fr-card__img
       = image_tag asset_pack_path("media/images/sectors/#{internship_offer.sector.cover}"), class: 'fr-responsive-img', alt: 'secteur'

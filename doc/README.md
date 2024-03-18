@@ -113,6 +113,7 @@ L'API attend en paramètre obligatoire la durée du stage qui peut être :
 
 L'API attend en paramètre obligatoire un secteur d'activité associé à une offre. Voici la *liste* ainsi que leurs **identifiants uniques**.
 
+* *Agriculture*: **s51**,
 * *Agroéquipement*: **s1**,
 * *Architecture, urbanisme et paysage*: **s2**,
 * *Armée - Défense*: **s3**,

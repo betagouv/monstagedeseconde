@@ -14,6 +14,7 @@ export default function SirenInput({
   const [siret, setSiret] = useState(currentSiret || '');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState(null);
+  const [debouncedSiret, setDebouncedSiret] = useState(siret);
 
   const inputChange = (event) => {
     setSelectedCompany(null);
@@ -91,6 +92,16 @@ export default function SirenInput({
   }
 
   useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedSiret(siret);
+    }, 1000); // Délai de 1 seconde
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [siret]);
+
+  useEffect(() => {
     document.getElementById('siren-error').classList.add('d-none');
 
     const cleanSiret = siret.replace(/\s/g, '');
@@ -102,7 +113,7 @@ export default function SirenInput({
     } else if (siret.length > 2) { // a text;
       searchCompanyByName(siret);
     }
-  }, [siret]);
+  }, [debouncedSiret]);
 
 
   return (
