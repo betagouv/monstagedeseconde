@@ -19,11 +19,15 @@ class AbilityTest < ActiveSupport::TestCase
       school = create(:school)
       class_room = create(:class_room, school: school)
       student = create(:student, class_room: class_room , school: school)
+      other_student = create(:student, class_room: class_room , school: school)
       ability = Ability.new(student)
       internship_application = create(:weekly_internship_application,
                                       student: student,
                                       internship_offer: internship_offer)
-
+      validated_internship_application = create(:weekly_internship_application,
+                                                :validated_by_employer,
+                                                student: other_student,
+                                                internship_offer: internship_offer)
       assert(ability.can?(:look_for_offers, student), 'students should be able to look for offers')
       assert(ability.can?(:read, InternshipOffer.new),
             'students should be able to consult internship offers')
@@ -45,6 +49,11 @@ class AbilityTest < ActiveSupport::TestCase
       assert(ability.cannot?(:dashboard_show, create(:weekly_internship_application)))
       assert(ability.cannot?(:index, Acl::InternshipOfferDashboard.new(user: student)),
             'employers should be able to index InternshipOfferDashboard')
+      refute(ability.can?(:read_employer_data, internship_application),
+            "student shall not read employer data unless internship_application is validated")
+      ability = Ability.new(other_student)
+      assert(ability.can?(:read_employer_data, validated_internship_application),
+            "student shall read employer data when internship_application is validated")
 
       student_2 = create(:student) # with no class_room, no school
       ability = Ability.new(student_2)
@@ -184,6 +193,7 @@ class AbilityTest < ActiveSupport::TestCase
 
   test 'Education Statistician' do
     statistician = create(:education_statistician)
+    create(:department, code: '60', name: 'Oise')
     create(:department, code: '60', name: 'Oise')
     ability = Ability.new(statistician)
 
@@ -345,7 +355,6 @@ class AbilityTest < ActiveSupport::TestCase
       edit_school_representative_phone
       edit_school_representative_email
       edit_school_representative_role
-      edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
       edit_student_address
@@ -464,10 +473,9 @@ class AbilityTest < ActiveSupport::TestCase
     student = create(:student, school: school)
     internship_application = create(:weekly_internship_application, student: student)
     internship_agreement = create(:internship_agreement, internship_application: internship_application)
-       
     admin_officer = create(:admin_officer, school: school)
     ability = Ability.new(admin_officer)
-   
+
     assert(ability.can?(:manage_school_students, admin_officer.school))
     assert(ability.cannot?(:manage_school_students, another_school))
     assert(ability.can?(:index, ClassRoom))
@@ -483,8 +491,8 @@ class AbilityTest < ActiveSupport::TestCase
     school = create(:school, :with_school_manager)
     class_room = create(:class_room, school: school)
     another_school = create(:school)
-    class_room_2 = create(:class_room, school: another_school) 
-    
+    class_room_2 = create(:class_room, school: another_school)
+
     cpe = create(:cpe, school: school)
     ability = Ability.new(cpe)
 
