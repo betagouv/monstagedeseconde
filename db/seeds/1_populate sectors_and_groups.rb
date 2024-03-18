@@ -52,6 +52,7 @@ def populate_sectors
     "Tourisme" => "s48",
     "Traduction, interprétation" => "s49",
     "Verre, béton, céramique" => "s50",
+    "Agriculture" => "s51"
   }.map do |sector_name, sector_uuid|
     next if Sector.find_by(name: sector_name)
 

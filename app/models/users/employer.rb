@@ -39,5 +39,10 @@ module Users
     def presenter
       Presenters::Employer.new(self)
     end
+
+    def after_confirmation
+      super
+      UpdateHubspotContactJob.perform_later(self.id)
+    end
   end
 end

@@ -6,40 +6,27 @@
   .col-10
     .row
       .col-12.mb-3
-        h3.h6
-          i.fa-fw.fas.fa-user
-          | Informations sur l'élève
         table
           tbody
             tr
-              td.fr-pr-2w.fr-pb-3w
+              td.fr-pr-2w.fr-pb-4w
                 h6.mb-0.text-dark Elève
                 .student-name= student_presenter.name
-              td.fr-pr-2w.fr-pb-3w
+              td.fr-pr-2w.fr-pb-4w
                 h6.mb-0.text-dark Âge
                 .student-age= "#{student_presenter.age}"
             tr
-              td.fr-pr-2w.fr-pb-3w
+              td.fr-pr-2w.fr-pb-4w
                 h6.mb-0.text-dark Email
                 .student-email= "#{internship_application.student_email || 'Non communiqué'}"
               td.fr-pr-2w.fr-pb-3w
                 h6.mb-0.text-dark Téléphone élève ou responsable légal
                 .student-phone= "#{internship_application.student_phone || 'Non communiqué'}"
             tr
-              td.fr-pr-2w.fr-pb-3w
+              td.fr-pr-2w.fr-pb-4w
                 h6.mb-0.text-dark Etablissement
                 .school-name= student_presenter.school_name
               td.fr-pr-2w.fr-pb-3w
                 h6.mb-0.text-dark Commune
                 .school-city= student_presenter.school_city
-    .row
-      .col-md-4.col-sm-8.col-xs-12
-        - if resume_languages.present?
-          h3.h6.mt-3 Langues
-          .reboot-trix-content = resume_languages
-
-      .col-md-4.col-sm-8.col-xs-12
-        - if resume_other.present?
-          h3.h6 Activités extra-scolaires
-          .reboot-trix-content = resume_other
 
