@@ -268,8 +268,8 @@ module Dashboard
 
         click_link "Contacter l'employeur"
 
-        within('.fr-callout') do
-          find("h3.fr-callout__title", text: "Contact de l'employeur")
+        within('.fr-callout.test-data-employer') do
+          find("h3.fr-callout__title", text: "Contact en entreprise")
           find('ul li.test-employer-name', text: internship_offer.employer.presenter.formal_name)
           find('ul li.test-employer-email', text: internship_offer.employer.email)
         end
