@@ -14,7 +14,7 @@ security:
 tags:
 - name: developers
   description: Operations accessibles aux développeurs disposant d'une clé API. Celle-ci
-    peut être fournie sur demande à l'adresse email xxxxxxxx
+    peut être fournie sur demande à l'adresse email contact @ stagedeseconde.education.gouv.fr
 paths:
   /internship_offers:
     get:
@@ -539,6 +539,18 @@ components:
         status:
           type: string
           example: not_found
+    inline_response_429:
+      type: object
+      properties:
+        code:
+          type: string
+          example: TOO_MANY_REQUESTS
+        error:
+          type: string
+          example: request limit exceeded (100 per minutes)
+        status:
+          type: string
+          example: too_many_requests
     InternshipOffer_coordinates:
       type: object
       properties:
