@@ -5,6 +5,7 @@ module Presenters
   module Reporting
     class DimensionByOffer < BaseDimension
       ATTRS = %i[description
+                 period
                  human_max_candidates
                  human_max_candidates_string
                  published_at
@@ -14,6 +15,7 @@ module Presenters
                  permalink].freeze
       METHODS = %i[group_name
                    human_is_public
+                   human_period
                    sector_name
                    contact_name
                    contact_email
@@ -39,6 +41,10 @@ module Presenters
 
       def human_max_candidates
         instance.max_candidates
+      end
+
+      def human_period
+        instance.period_label
       end
 
       def human_max_candidates_string
@@ -97,13 +103,13 @@ module Presenters
         instance.published_at
       end
 
-      def weeks_list
-        return [] unless instance.respond_to?(:weeks)
+      # def weeks_list
+      #   return [] unless instance.respond_to?(:weeks)
 
-        instance.weeks.each_with_index.map do |week, i|
-          "Du #{week.beginning_of_week} au #{week.end_of_week}"
-        end
-      end
+      #   instance.weeks.each_with_index.map do |week, i|
+      #     "Du #{week.beginning_of_week} au #{week.end_of_week}"
+      #   end
+      # end
 
       def submitted_applications_count
         instance.stats.submitted_applications_count
