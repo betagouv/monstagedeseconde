@@ -2,35 +2,16 @@
   = render 'layouts/navbar', home_nav_bar: true
 .fr-container
   = render 'pages/home/top_nav'
-.container-homepage
-  .mx-0
-    = render 'pages/home/hero_statistician'
+.container-monstage-fluid-hero.mx-0
+  = render 'pages/home/statisticians/hero_statistician'
 .container-homepage.fr-py-3w
   .container-monstage
-    = render 'pages/home/howitworks_statistician'
-.container-homepage.fr-py-3w
-  .container-monstage
-    = render 'pages/home/dashboard_statistician'
-.container-homepage
-  .container-monstage
-    = render 'pages/home/statistician_access'
-.container-monstage
-  = render 'pages/home/livestorm'
+    = render 'pages/home/statisticians/howitworks_statistician'
 .container-homepage.fr-py-4w  
   .container-homepage
     .container-monstage
-      = render 'pages/home/faq_statistician'
-.container-homepage
-  .container-monstage
-    = render 'pages/home/dispositif'
+      = render 'pages/home/statisticians/faq_statistician'
 .container-home.fr-py-3w
   .container-monstage
-    = render 'pages/home/resources'      
-.container-home.light-blue-background.fr-py-4w
-  .container-monstage
-    = render 'pages/home/newsletter'      
-.container-homepage    
-  .container-monstage.homepage
-    = render 'pages/home/sponsors'
-    .d-none.d-md-block
-      = render 'pages/home/elevator'
+    = render 'pages/home/statisticians/resources_statistician'      
+    = render 'pages/home/elevator'
