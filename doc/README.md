@@ -194,6 +194,7 @@ Sur chaque requête, on pourra avoir les erreurs suivantes :
 - 401, Unauthorized : Token invalide
 - 403, Forbidden : Pas le droit d'effectuer cette requête. Exemple : Modification d'une offre qui ne vous appartient pas
 - 422, Unprocessable Entity. Payload incorrect (impossible de traiter la requête car le format ne correspond pas). Ou la donnée n'est pas valide
+- 429, Too Many Requests, le nombre d'appels a dépassé 100 par minute
 
 - 500, Internal Server Error : Service indisponible
 
