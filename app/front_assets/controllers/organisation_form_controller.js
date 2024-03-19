@@ -8,9 +8,7 @@ export default class extends Controller {
     'groupLabel',
     'groupNamePublic',
     'groupNamePrivate',
-    'selectGroupName',
-    'requiredField',
-    'submitButton'
+    'requiredField'
   ];
 
   validateForm(event) {
@@ -22,37 +20,35 @@ export default class extends Controller {
   }
 
   handleClickIsPublic(event) {
-    const { value } = event.target;
-    showElement($(this.groupBlockTarget));
-    if (event.target.value === 'true') {
-      $(this.groupLabelTarget).html(`
-        Institution de tutelle
-        <abbr title="(obligatoire)" aria-hidden="true">*</abbr>
-      `);
-      $(this.selectGroupNameTarget).prop('required', true);
-    } else {
-      $(this.groupLabelTarget).text('Groupe (optionnel)');
-      $(this.selectGroupNameTarget).prop('required', false);
-    }
-    this.toggleGroupNames(value === 'true');
+    // const { value } = event.target;
+    // showElement($(this.groupBlockTarget));
+    // if (event.target.value === 'true') {
+    //   $(this.groupLabelTarget).html(`
+    //     Institution de tutelle
+    //     <abbr title="(obligatoire)" aria-hidden="true">*</abbr>
+    //   `);
+    // } else {
+    //   $(this.groupLabelTarget).text('Groupe (optionnel)');
+    // }
+    // this.toggleGroupNames(value === 'true');
   }
 
   toggleGroupNames(isPublic) {
-    if (isPublic) {
-      $(this.selectGroupNameTarget)
-        .find('option')
-        .first()
-        .text('-- Veuillez sélectionner une institution de tutelle --');
-      $(this.groupNamePublicTargets).show();
-      $(this.groupNamePrivateTargets).hide();
-    } else {
-      $(this.selectGroupNameTarget)
-        .find('option')
-        .first()
-        .text('-- Indépendant --');
-      $(this.groupNamePublicTargets).hide();
-      $(this.groupNamePrivateTargets).show();
-    }
+    // if (isPublic) {
+    //   $(this.selectGroupNameTarget)
+    //     .find('option')
+    //     .first()
+    //     .text('-- Veuillez sélectionner une institution de tutelle --');
+    //   $(this.groupNamePublicTargets).show();
+    //   $(this.groupNamePrivateTargets).hide();
+    // } else {
+    //   $(this.selectGroupNameTarget)
+    //     .find('option')
+    //     .first()
+    //     .text('-- Indépendant --');
+    //   $(this.groupNamePublicTargets).hide();
+    //   $(this.groupNamePrivateTargets).show();
+    // }
   }
 
   checkForm() {
@@ -75,7 +71,7 @@ export default class extends Controller {
   connect() {
     // this.element.addEventListener('submit', this.validateForm, false);
     setTimeout( () => {
-      this.toggleGroupNames(false);
+      // this.toggleGroupNames(false);
       this.checkForm();
     }, 100);
   }
