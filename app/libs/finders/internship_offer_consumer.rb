@@ -34,6 +34,7 @@ module Finders
 
     def light_kept_published_future_offers_query
       InternshipOffer.kept
+                     .joins(:stats, :sector)
                      .published
                      .with_seats
                      .in_the_future
