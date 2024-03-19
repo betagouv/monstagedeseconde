@@ -22,7 +22,7 @@ paths:
       - developers
       summary: liste (index) les offres déposées
       description: |
-        Les offres retournées sont celles qui ont été déposées par le partenaire de Mon stage de seconde.fr
+        Les offres retournées représentent l'ensemble des offres du site https://stagedeseconde.1jeune1solution.gouv.fr/ .
       operationId: internship_offers_index
       responses:
         "200":
