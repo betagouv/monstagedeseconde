@@ -44,11 +44,7 @@
         span.fr-icon-arrow-left-line.fr-btn--icon-left.fr-raw-link
           | retour
 - if current_user.student?
-  - if internship_application.approved?
-    = render "dashboard/students/internship_applications/contact_details",
-              internship_offer: internship_offer,
-              internship_application: internship_application
-  - elsif presenter.with_employer_explanation?
+  - if presenter.with_employer_explanation?
     = render "dashboard/students/internship_applications/employer_explanation",
               internship_offer: internship_offer,
               internship_application: internship_application
