@@ -131,7 +131,7 @@ const InternshipOfferResults = ({ count, sectors, params }) => {
     setNotify(true);
     setNotificationMessage(message);
   };
-  
+
   const hideNotification = () => {
     setNotify(false);
   };
@@ -139,10 +139,10 @@ const InternshipOfferResults = ({ count, sectors, params }) => {
   return (
     <div className="results-container no-x-scroll">
       { notify ? (
-        <FlashMessage 
+        <FlashMessage
           message={notificationMessage}
           display={notify}
-          hideNotification={hideNotification} 
+          hideNotification={hideNotification}
         />
       ) : '' }
       <div className="row mx-0 fr-px-2w no-x-scroll">
@@ -158,12 +158,13 @@ const InternshipOfferResults = ({ count, sectors, params }) => {
                     </div>
                   ) : (
                     <h2 className="h2 mb-0" id="internship-offers-count">
-                      {/* #June_flower <div className="strong">{internshipOffersSeats} Offre{internshipOffersSeats > 1 ? 's' : ''} de stage</div> */}
                       <div className="strong">
-                        {(internshipOffersSeats > 0) ? 'Les offres de stages' : '0 offre de stage'}
+                        Les offres de stage
                       </div>
-                    </h2>
-                  )
+                    </h2>)
+                }
+                { !isLoading && (internshipOffersSeats == 0) &&
+                  (<p>Aucune offre répondant à vos critères n’est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
                 }
               </div>
               {
@@ -202,10 +203,9 @@ const InternshipOfferResults = ({ count, sectors, params }) => {
                       {
                         isSuggestion ? (
                           <div className='col'>
-                            <h6>Aucune offre trouvée... </h6>
-                            { 
+                            {
                               internshipOffers.length > 0 ? (
-                                <div> 
+                                <div>
                                   <div className='search-no-result fr-mt-2w fr-mb-4w'></div>
                                   <div className='row'>
                                     {

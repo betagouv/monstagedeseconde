@@ -64,7 +64,6 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
       sign_in(student)
       visit internship_offers_path(latitude: 48.8589, longitude: 2.347, city:"paris", radius:5_000)
       # there are no offers in Paris
-      find 'h6', text: "Aucune offre trouvée..."
       within(".fr-test-internship-offers-container") do
         assert_selector('ul.fr-badges-group li .fr-badge.fr-badge--warning.fr-badge--no-icon', text: 'MONTMORENCY', count: 2, wait: 2)
       end

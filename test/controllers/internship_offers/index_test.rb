@@ -54,30 +54,31 @@ class IndexTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'GET #index with wrong keyword as Visitor returns no results' do
-    create_offers
-    get internship_offers_path(keyword: 'avocat', format: :json)
+  test 'GET #index with wrong keyword as Visitor returns 5 last offers' do
+    # create_offers
+    5.times { create(:weekly_internship_offer) }
+    get internship_offers_path(keyword: 'avcocat', format: :json)
     assert_response :success
-    assert_empty json_response['internshipOffers']
+    5.times { |i| assert_json_presence_of(json_response, InternshipOffer.all[i])}
     assert_equal 0, UsersSearchHistory.count
   end
 
-  test 'GET #index with wrong keyword as Student returns no results' do
+  test 'GET #index with wrong keyword as Student returns suggestions' do
     create_offers
     sign_in(create(:student))
     get internship_offers_path(keyword: 'avocat', format: :json)
     assert_response :success
-    assert_empty json_response['internshipOffers']
+    refute_empty json_response['internshipOffers']
     assert_equal 1, UsersSearchHistory.count
     assert_equal 'avocat', UsersSearchHistory.last.keywords
     assert_equal 0, UsersSearchHistory.last.results_count
   end
 
-  test 'GET #index with wrong coordinates as Visitor returns no results' do
+  test 'GET #index with wrong coordinates as Visitor returns suggestions' do
     create_offers
     get internship_offers_path(latitude: 4.8378, longitude: -0.579512, format: :json)
     assert_response :success
-    assert_empty json_response['internshipOffers']
+    refute_empty json_response['internshipOffers']
   end
 
   test 'GET #index ignore default radius in suggestions' do
@@ -85,15 +86,20 @@ class IndexTest < ActionDispatch::IntegrationTest
       :weekly_internship_offer,
       title: 'Vendeur'
     )
+    5.times { create(:weekly_internship_offer, title: 'prof de dessin') }
 
     get internship_offers_path(
       keyword: 'avocat',
       radius: Nearbyable::DEFAULT_NEARBY_RADIUS_IN_METER,
+      longitude: Coordinates.bordeaux[:longitude],
+      latitude: Coordinates.bordeaux[:latitude],
       format: :json)
 
     assert_response :success
-    assert_empty json_response['internshipOffers']
-    assert_absence_of(internship_offer: offer_paris_1)
+    assert_json_absence_of(json_response, offer_paris_1)
+    InternshipOffer.last(5).each do |offer|
+      assert_json_presence_of(json_response, offer)
+    end
   end
 
   test 'GET #index with wrong keyword and Paris location as Visitor returns no results' do
@@ -408,7 +414,7 @@ class IndexTest < ActionDispatch::IntegrationTest
 
       InternshipOffer.stub :by_weeks, InternshipOffer.all do
         sign_in(student)
-      
+
         get internship_offers_path(latitude: Coordinates.bordeaux[:latitude],
                                    longitude: Coordinates.bordeaux[:longitude],
                                     format: :json)
