@@ -27,8 +27,8 @@ tbody.internship-agreement
         = render partial: 'dashboard/internship_agreements/select_field_element',
                  locals: { field: :legal_status, form: form, text_label: label, title: title, collection: collection, filled_by: filled_by, disabled: disabled, value: resource.legal_status, prompt: prompt }
       .row.mt-0
-        - label = "Date de délégation de signature"
-        - title = "Date de délégation de signature :"
+        - label = "Date de délibération du Conseil d’administration approuvant la convention-type"
+        - title = "Date de délibération du Conseil d’administration approuvant la convention-type :"
         - filled_by = ["le chef d'établissement"]
         - prompt = "Sélectionner le statut de l'établissement"
         = render partial: 'dashboard/internship_agreements/date_field_element',
