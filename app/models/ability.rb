@@ -81,6 +81,10 @@ class Ability
         InternshipApplication do |internship_application|
       internship_application.student.id == user.id
     end
+    can(:read_employer_data, InternshipApplication) do |internship_application|
+      internship_application.student.id == user.id &&
+        (internship_application.approved? || internship_application.validated_by_employer?)
+    end 
     can(:cancel, InternshipApplication) do |internship_application|
       ok_canceling = %w[ submitted
                          read_by_employer

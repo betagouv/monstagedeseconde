@@ -24,7 +24,7 @@ module Presenters
     end
 
     def formal_name
-      "#{gender_text} #{user.first_name.try(:capitalize)} #{user.last_name.try(:capitalize)}"
+      "#{gender_text} #{user.first_name.try(:capitalize)} #{user.last_name.try(:capitalize)}".strip
     end
 
     def full_name_camel_case

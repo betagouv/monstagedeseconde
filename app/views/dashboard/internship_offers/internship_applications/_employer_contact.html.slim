@@ -1,0 +1,17 @@
+- internship_offer = internship_application.internship_offer
+.row
+  .col-sm-8.col-lg-12
+    .fr-callout.test-data-employer
+      h3.h5.fr-callout__title Contact en entreprise
+      p.fr-callout__text
+        ul
+          li.test-employer-name
+            = "votre responsable dans l'entreprise : "
+            strong = internship_offer.employer.presenter.formal_name
+          li.test-employer-email
+            = "son adresse email : "
+            strong = internship_offer.employer.email
+      = mail_to(@internship_offer.employer.email,
+              'Lui écrire',
+              subject: "[Stagiaire #{internship_application.student.presenter.short_civil_full_name}] - prise de contact",
+              class: 'fr-btn fr-btn--sm fr-mt-2w')

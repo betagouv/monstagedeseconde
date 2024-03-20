@@ -44,11 +44,7 @@
         span.fr-icon-arrow-left-line.fr-btn--icon-left.fr-raw-link
           | retour
 - if current_user.student?
-  - if internship_application.approved?
-    = render "dashboard/students/internship_applications/contact_details",
-              internship_offer: internship_offer,
-              internship_application: internship_application
-  - elsif presenter.with_employer_explanation?
+  - if presenter.with_employer_explanation?
     = render "dashboard/students/internship_applications/employer_explanation",
               internship_offer: internship_offer,
               internship_application: internship_application
@@ -57,13 +53,16 @@
     .col-12
       h1.h3.fr-mb-7v L'offre de stage
   .container-monstage-application
-    .grey-container-application.with-grey-background
+    div class="grey-container-application with-grey-background fr-mb-2w #{if can?(:read_employer_data, internship_application) then 'fr-mb-4w' }"
       .row
         .col-sm-8.col-lg-12
           .fr-px-1w
             = render "internship_offers/show_details",
                       internship_offer: internship_offer,
                       hidden_parts: true
+    - if can?(:read_employer_data, internship_application)
+      = render 'dashboard/internship_offers/internship_applications/employer_contact',
+               internship_application: internship_application
 .row
   .col-12
     h2.h3.fr-mt-4w.fr-mb-2w

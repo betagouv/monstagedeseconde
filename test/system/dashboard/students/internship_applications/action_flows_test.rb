@@ -42,6 +42,12 @@ module Dashboard
         assert_changes ->{internship_application.reload.aasm_state},
                       from: "validated_by_employer",
                       to: "approved" do
+          employer = internship_application.internship_offer.employer
+          within('.fr-callout') do
+            find("h3.h5.fr-callout__title", text: "Contact en entreprise")
+            assert_equal employer.presenter.formal_name, find('ul li.test-employer-name strong').text
+            assert_equal employer.email, find('ul li.test-employer-email strong').text
+          end
           click_button('Choisir ce stage')
           click_button('Confirmer')
         end
@@ -262,8 +268,8 @@ module Dashboard
 
         click_link "Contacter l'employeur"
 
-        within('.fr-callout') do
-          find("h3.fr-callout__title", text: "Contact de l'employeur")
+        within('.fr-callout.test-data-employer') do
+          find("h3.fr-callout__title", text: "Contact en entreprise")
           find('ul li.test-employer-name', text: internship_offer.employer.presenter.formal_name)
           find('ul li.test-employer-email', text: internship_offer.employer.email)
         end
