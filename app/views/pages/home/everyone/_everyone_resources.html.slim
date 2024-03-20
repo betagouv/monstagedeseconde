@@ -6,22 +6,22 @@
           | Ressources utiles
     .row.fr-pb-2w
       - base_url = "https://cellar-fr-north-hds-c1.services.clever-cloud.com/monstagedeseconde-public/"
+      / = render partial: "pages/home/resource_card",
+      /          locals: { badge: "PDF",
+      /                    link_title: "Guide d'utilisation<br>Mon stage de seconde".html_safe,
+      /                    file: "#{base_url}Guide_utilisation-Mon_stage_de_seconde.pdf",
+      /                    target: '_blank' }
+      / = render partial: "pages/home/resource_card",
+      /          locals: { badge: "PDF",
+      /                    link_title: "Carnet de bord du stagiaire",
+      /                    file: "#{base_url}Carnet_de_bord_du_stagiaire.pdf",
+      /                    target: '_blank' }
       = render partial: "pages/home/resource_card",
                locals: { badge: "PDF",
-                         link_title: "Guide d'utilisation<br>Mon stage de seconde".html_safe,
-                         file: "#{base_url}Guide_utilisation-Mon_stage_de_seconde.pdf",
-                         target: '_blank' }
-      = render partial: "pages/home/resource_card",
-               locals: { badge: "PDF",
-                         link_title: "Carnet de bord du stagiaire",
-                         file: "#{base_url}Carnet_de_bord_du_stagiaire.pdf",
-                         target: '_blank' }
-      = render partial: "pages/home/resource_card",
-               locals: { badge: "PDF",
-                         link_title: "Calendrier d'une semaine de stage à remplir",
+                         link_title: "Calendrier de stage à remplir",
                          file: "#{base_url}Calendrier_une_semaine_de_stage_a_remplir.pdf",
                          target: '_blank' }
       = render partial: "pages/home/resource_card",
                locals: { badge: "Dossier",
                          link_title: "Kit de communication",
-                         file: "#{base_url}Kit_de_communication_leger_Mon_stage_de_seconde.zip"}
+                         file: "https://cellar-fr-north-hds-c1.services.clever-cloud.com/monstagedeseconde-public/Kit_de_communication-Mon_stage_de_seconde.zip"}

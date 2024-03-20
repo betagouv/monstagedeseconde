@@ -5,15 +5,16 @@
 
 .d-flex.fr-mt-2w.fr-mt-2w.flex-wrap.ccm
   / 1
-  .fr-px-2w.ccm-card
-    = image_tag asset_pack_path('media/images/homepage/01.svg'),
-                  alt: "Premièrement",
-                  height: '47px',
-                  'aria-hidden': "true"
-    h3.text-grey-50.my-4
-      | Créez votre compte en quelques clics
-    p.mt-3.fr-text.mb-lg-5.mb-md-5.mb-sm-4.mb-3
-      | Votre compte vous permettra de suivre l’avancée votre recherche de stage.
+  = link_to new_user_registration_path(as: 'Student'), style: "background-image: none;" do
+    .fr-px-2w.ccm-card
+      = image_tag asset_pack_path('media/images/homepage/01.svg'),
+                    alt: "Premièrement",
+                    height: '47px',
+                    'aria-hidden': "true"
+      h3.text-grey-50.my-4
+        | Créez votre compte en quelques clics
+      p.mt-3.fr-text.mb-lg-5.mb-md-5.mb-sm-4.mb-3
+        | Votre compte vous permettra de suivre l’avancée votre recherche de stage.
   .d-lg-block.d-none.align-items-center.separator
     = image_tag asset_pack_path('media/images/homepage/students/spin-vector.svg'),
                 alt: "image de transition",

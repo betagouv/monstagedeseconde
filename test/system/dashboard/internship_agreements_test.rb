@@ -267,7 +267,7 @@ module Dashboard
       within('td[data-head="Statut"]') do
         find('div.actions', text: "Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.")
       end
-      fill_in "Date de délégation de signature", with: '10/10/2020'
+      fill_in "Date de délibération du Conseil d’administration approuvant la convention-type", with: '10/10/2020'
       select('Privé sous contrat', from: "Statut de l’établissement")
       click_button('Valider la convention')
       find('h1 span.fr-fi-arrow-right-line.fr-fi--lg', text: "Valider la convention")
@@ -364,7 +364,7 @@ module Dashboard
       within('td[data-head="Statut"]') do
         find('div.actions', text: "Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.")
       end
-      fill_in "Date de délégation de signature", with: '10/10/2020'
+      fill_in "Date de délibération du Conseil d’administration approuvant la convention-type", with: '10/10/2020'
       select('Privé hors contrat', from: "Statut de l’établissement")
       click_button('Valider la convention')
       find('h1 span.fr-fi-arrow-right-line.fr-fi--lg', text: "Valider la convention")
