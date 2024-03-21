@@ -13,12 +13,18 @@ class Department < ApplicationRecord
   has_many :operators, through: :departments_operators
 
   def self.lookup_by_zipcode(zipcode:)
-    Department.find_by(code: key_for_lookup(zipcode: zipcode)).try(:name)
+    code = key_for_lookup(zipcode: zipcode)
+    Department.find_by(code: code)
+              .try(:name)
   end
 
   def self.key_for_lookup(zipcode:)
     if corsica?(zipcode: zipcode)
-      CorsicaZipcode.find_by(zipcode: zipcode).try(:department_code) || '2A'
+      if zipcode.starts_with?('200') || zipcode.starts_with?('201')
+        '2A'
+      else
+        '2B'
+      end
     elsif departement_identified_by_3_chars?(zipcode: zipcode)
       zipcode[0..2]
     else
