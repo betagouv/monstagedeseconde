@@ -1,5 +1,6 @@
 # Seeds the database with the list of departments in France
 require 'rake'
+require 'pretty_console'
 
 def populate_departments 
   {
@@ -112,4 +113,36 @@ def populate_departments
   end
 end
 
-call_method_with_metrics_tracking([:populate_departments])
+def populate_corsica_zipcodes
+  import 'csv'
+  col_hash= { zipcode: 22, city: 21, department: 18, insee_code: 5, department_code: 17 }
+  error_lines = []
+  file_location = Rails.root.join('db/data_imports/code-postal-code-insee-2015-corsica.csv')
+  CSV.foreach(file_location, headers: { col_sep: ',' }).each.with_index(0) do |row, line_nr|
+    next if line_nr == 0
+
+    cells = row.to_s.split(',')
+
+    zipcode = cells[col_hash[:zipcode]]
+    city = cells[col_hash[:city]]
+    department = cells[col_hash[:department]]
+    insee_code = cells[col_hash[:insee_code]]
+    department_code = cells[col_hash[:department_code]]
+
+    if CorsicaZipcode.find_by(zipcode: zipcode)
+      PrettyConsole.print_in_red '.'
+    else
+      CorsicaZipcode.create!(
+        zipcode: zipcode,
+        city: city,
+        department: department,
+        insee_code: insee_code,
+        department_code: department_code
+      )
+      PrettyConsole._in_green "."
+    end
+  end
+  PrettyConsole.say_in_yellow "Done with creating Corsica zipcode reference table"
+end
+
+call_method_with_metrics_tracking(%i[populate_departments populate_corsica_zipcodes])

@@ -17,7 +17,9 @@ class Department < ApplicationRecord
   end
 
   def self.key_for_lookup(zipcode:)
-    if departement_identified_by_3_chars?(zipcode: zipcode)
+    if corsica?(zipcode: zipcode)
+      CorsicaZipcode.find_by(zipcode: zipcode).try(:department_code) || '2A'
+    elsif departement_identified_by_3_chars?(zipcode: zipcode)
       zipcode[0..2]
     else
       zipcode[0..1]
@@ -35,10 +37,13 @@ class Department < ApplicationRecord
         .sort
   end
 
+  def self.corsica?(zipcode:)
+    zipcode.starts_with?('20')
+  end
+
   # edge case for [971->978]
   def self.departement_identified_by_3_chars?(zipcode:)
-    zipcode.starts_with?('97') || 
-    zipcode.starts_with?('98') || 
-    zipcode.starts_with?('20')
+    zipcode.starts_with?('97') ||
+    zipcode.starts_with?('98')
   end
 end

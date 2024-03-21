@@ -1,0 +1,2 @@
+class CorsicaZipcode < ApplicationRecord
+end
