@@ -347,17 +347,11 @@ class InternshipApplication < ApplicationRecord
       internship_application: self,
       main_teacher: main_teacher
     }
-    school_manager_presence = student&.school&.school_manager&.present?
-    if type == "InternshipApplications::WeeklyFramed" && school_manager_presence
-      create_agreement if employer.agreement_signatorable?
-      if main_teacher.present?
-        deliver_later_with_additional_delay do
-          MainTeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
-        end
-      end
-    elsif main_teacher.present?
+
+    create_agreement if employer.agreement_signatorable?
+    if main_teacher.present?
       deliver_later_with_additional_delay do
-        MainTeacherMailer.internship_application_approved_with_no_agreement_email(**arg_hash)
+        MainTeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
       end
     end
   end
@@ -531,7 +525,7 @@ class InternshipApplication < ApplicationRecord
   end
 
   def internship_agreement_creation_allowed?
-    return false unless student.school&.school_manager&.email
+    # return false unless student.school&.school_manager&.email
     return false unless internship_offer.employer.employer_like?
 
     true
