@@ -74,7 +74,7 @@ namespace :data_migrations do
     error_lines = []
     file_location_production = Rails.root.join('db/data_imports/annuaire_lycees.csv')
     file_location_review = Rails.root.join('db/data_imports/annuaire_lycees_light.csv')
-    file_location = Rails.env.in?(%w[review ]) ? file_location_review : file_location_production
+    file_location = Rails.env.in?(%w[review development]) ? file_location_review : file_location_production
     CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
       next if line_nr.zero?
 
