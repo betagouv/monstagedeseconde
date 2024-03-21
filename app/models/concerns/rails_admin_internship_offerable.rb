@@ -61,8 +61,8 @@ module RailsAdminInternshipOfferable
         field :group
         field :employer_description
         field :published_at
-        field :school
-        field :first_monday
+        # field :school
+        # field :first_monday
       end
 
       export do
