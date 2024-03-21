@@ -1,4 +1,5 @@
 import 'csv'
+require 'pretty_console'
 def populate_schools
   col_hash= { uai: 0, nom_etablissement: 2, adresse: 3, code_postal: 4, commune: 5, position: 6 }
   error_lines = []
@@ -54,11 +55,30 @@ def populate_schools
 end
 
 def populate_class_rooms
-  school = find_default_school_during_test
+  col_hash= { academie: 0, code_uai: 1, :'id_etab_sco-net' => 2, class_room_name: 3, class_size: 4 }
+  error_lines = []
+  file_location = Rails.root.join('db/data_imports/noms_de_classes.csv')
+  CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
+    # with_index(2) : 2 is the offset to keep track of line number, taking into account the header
+    next if line_nr.zero?
 
-  ClassRoom.create(name: '2de A', school: school)
-  ClassRoom.create(name: '2de B', school: school)
-  ClassRoom.create(name: '2de C', school: school)
+    cells = row.to_s.split(';')
+
+    code_uai = cells[col_hash[:code_uai]]
+    school = School.find_by(code_uai: code_uai)
+    unless school.nil?
+      print "#{school.name} - #{school.code_uai} missing data" if cells[col_hash[:class_room_name]].blank?
+      class_room_name_new = false
+      class_room = ClassRoom.find_or_create_by(name: cells[col_hash[:class_room_name]], school: school) do |class_room|
+        class_room.class_size = cells[col_hash[:class_size]]
+        class_room.name = cells[col_hash[:class_room_name]]
+        class_room.school_id = school.id
+        class_room_name_new = true
+      end
+    end
+  end
+  puts ''
+  PrettyConsole.say_in_yellow "Done with creating class_rooms"
 end
 
 def find_default_school_during_test

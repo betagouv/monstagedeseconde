@@ -404,7 +404,8 @@ CREATE TABLE public.class_rooms (
     name character varying,
     school_id bigint,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    class_size integer
 );
 
 
@@ -3380,6 +3381,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240320170403'),
 ('20240316135712'),
 ('20240315100413'),
 ('20240315090504'),

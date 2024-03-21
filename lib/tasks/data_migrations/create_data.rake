@@ -1,3 +1,4 @@
+require 'pretty_console'
 namespace :data_migrations do
   desc 'create sectors'
   task add_sectors: :environment do
@@ -73,7 +74,7 @@ namespace :data_migrations do
     error_lines = []
     file_location_production = Rails.root.join('db/data_imports/annuaire_lycees.csv')
     file_location_review = Rails.root.join('db/data_imports/annuaire_lycees_light.csv')
-    file_location = Rails.env.in?(%w[review development]) ? file_location_review : file_location_production
+    file_location = Rails.env.in?(%w[review ]) ? file_location_review : file_location_production
     CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
       next if line_nr.zero?
 
@@ -110,7 +111,7 @@ namespace :data_migrations do
         school.save
         print "."
       else
-        error_lines << [line_nr , school.name, school.errors.full_messages.join(", ")]
+        error_lines << ["Ligne #{line_nr}" , school.name, school.errors.full_messages.join(", ")]
         print "o"
       end
     end
@@ -118,6 +119,45 @@ namespace :data_migrations do
       puts "Error #{line}"
     end
     puts "#{error_lines.size} errors"
-    puts "Done with creating schools(lycées)"
+    PrettyConsole.say_in_yellow  "Done with creating schools(lycées)"
+  end
+
+  desc 'create class_rooms from csv file'
+  task provide_with_class_rooms: :environment do
+    import 'csv'
+    # ACADEMIE	CODE_RNE (UAI)	ID_ETAB_SCONET (ETAB_UAJ_Id)	DIVISION (CLASSE)	EFFECTIF DECLARE
+    # Aix-Marseille	0134252B	1188	2ND09	35
+    # their index are
+    col_hash= { academie: 0, code_uai: 1, :'id_etab_sco-net' => 2, class_room_name: 3, class_size: 4 }
+    error_lines = []
+    file_location = Rails.root.join('db/data_imports/noms_de_classes.csv')
+    CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
+      # with_index(2) : 2 is the offset to keep track of line number, taking into account the header
+      next if line_nr.zero?
+
+      cells = row.to_s.split(';')
+
+      code_uai = cells[col_hash[:code_uai]]
+      school = School.find_by(code_uai: code_uai)
+      unless school.nil?
+        print "#{school.name} - #{school.code_uai} missing data" if cells[col_hash[:class_room_name]].blank?
+        class_room_name_new = false
+        class_room = ClassRoom.find_or_create_by(name: cells[col_hash[:class_room_name]], school: school) do |class_room|
+          class_room.class_size = cells[col_hash[:class_size]]
+          class_room.name = cells[col_hash[:class_room_name]]
+          class_room.school_id = school.id
+          class_room_name_new = true
+        end
+        class_room_name_new ? PrettyConsole.print_in_green('.') : PrettyConsole.print_in_red('.')
+      end
+    end
+    school_without_class_rooms = School.where
+                                       .not(id: ClassRoom.pluck(:school_id))
+    puts ''
+    PrettyConsole.say_in_yellow "There are #{school_without_class_rooms.count} schools without class rooms"
+    school_without_class_rooms.each do |school|
+      puts "#{school.code_uai} - #{school.name}"
+    end
+    PrettyConsole.say_in_yellow "Done with creating class_rooms"
   end
 end
