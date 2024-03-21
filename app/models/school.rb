@@ -34,7 +34,7 @@ class School < ApplicationRecord
                                             .pluck(:school_id))
   }
 
-
+  # TODO : the following scopes are not used in the codebase
   scope :from_departments_with_len, lambda { |department_str_array:, string_size: |
     zip_codes_as_str = Arel::Nodes::NamedFunction.new('CAST', [Arel.sql("schools.zipcode as varchar(255)")] )
     first_chars = Arel::Nodes::NamedFunction.new('LEFT', [zip_codes_as_str, string_size] )
