@@ -429,39 +429,6 @@ ALTER SEQUENCE public.class_rooms_id_seq OWNED BY public.class_rooms.id;
 
 
 --
--- Name: corsica_zipcodes; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.corsica_zipcodes (
-    id bigint NOT NULL,
-    zipcode character varying(5) NOT NULL,
-    city character varying(255),
-    department character varying(255),
-    insee_code character varying(5) NOT NULL,
-    department_code character varying(2) NOT NULL
-);
-
-
---
--- Name: corsica_zipcodes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.corsica_zipcodes_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: corsica_zipcodes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.corsica_zipcodes_id_seq OWNED BY public.corsica_zipcodes.id;
-
-
---
 -- Name: departments; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1879,13 +1846,6 @@ ALTER TABLE ONLY public.class_rooms ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- Name: corsica_zipcodes id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.corsica_zipcodes ALTER COLUMN id SET DEFAULT nextval('public.corsica_zipcodes_id_seq'::regclass);
-
-
---
 -- Name: departments id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2170,14 +2130,6 @@ ALTER TABLE ONLY public.area_notifications
 
 ALTER TABLE ONLY public.class_rooms
     ADD CONSTRAINT class_rooms_pkey PRIMARY KEY (id);
-
-
---
--- Name: corsica_zipcodes corsica_zipcodes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.corsica_zipcodes
-    ADD CONSTRAINT corsica_zipcodes_pkey PRIMARY KEY (id);
 
 
 --
@@ -2513,13 +2465,6 @@ CREATE INDEX index_area_notifications_on_user_id ON public.area_notifications US
 --
 
 CREATE INDEX index_class_rooms_on_school_id ON public.class_rooms USING btree (school_id);
-
-
---
--- Name: index_corsica_zipcodes_on_zipcode; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_corsica_zipcodes_on_zipcode ON public.corsica_zipcodes USING btree (zipcode);
 
 
 --
@@ -3436,8 +3381,6 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20240321105046'),
-('20240321104540'),
 ('20240320170403'),
 ('20240316135712'),
 ('20240315100413'),

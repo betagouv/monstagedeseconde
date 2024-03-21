@@ -1,6 +1,4 @@
-# Seeds the database with the list of departments in France
-require 'rake'
-require 'pretty_console'
+
 
 def populate_departments 
   {
@@ -113,5 +111,4 @@ def populate_departments
   end
 end
 
-
-call_method_with_metrics_tracking(%i[populate_departments])
+call_method_with_metrics_tracking([:populate_departments])
