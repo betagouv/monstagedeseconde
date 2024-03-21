@@ -74,7 +74,7 @@ namespace :data_migrations do
     error_lines = []
     file_location_production = Rails.root.join('db/data_imports/annuaire_lycees.csv')
     file_location_review = Rails.root.join('db/data_imports/annuaire_lycees_light.csv')
-    file_location = Rails.env.in?(%w[review development]) ? file_location_review : file_location_production
+    file_location = Rails.env.in?(%w[review ]) ? file_location_review : file_location_production
     CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
       next if line_nr.zero?
 
@@ -159,51 +159,5 @@ namespace :data_migrations do
       puts "#{school.code_uai} - #{school.name}"
     end
     PrettyConsole.say_in_yellow "Done with creating class_rooms"
-  end
-
-  desc 'create corsica zipcodes department association reference table from csv file'
-  task populate_corsica_zipcodes: :environment do
-    import 'csv'
-    # their index are
-    # insee_com - 5 : 2B107
-    # code_dept - 17 : 2B-2A
-    # code postal - 22
-    # nom_dept - 18 : Corse-du-Sud
-    # nom_commune - 21 : Ajaccio
-    col_hash= { zipcode: 22, city: 21, department: 18, insee_code: 5, department_code: 17 }
-    error_lines = []
-    file_location = Rails.root.join('db/data_imports/code-postal-code-insee-2015-corsica.csv')
-    line_counter = 0
-    counter = 0
-    CSV.foreach(file_location, headers: { col_sep: ',' }).each.with_index(0) do |row, line_nr|
-      next if line_nr == 0
-      line_counter += 1
-
-      cells = row.to_s.split(',')
-
-      zipcode = cells[col_hash[:zipcode]]
-      city = cells[col_hash[:city]]
-      department = cells[col_hash[:department]]
-      insee_code = cells[col_hash[:insee_code]]
-      department_code = cells[col_hash[:department_code]]
-
-      if CorsicaZipcode.find_by(zipcode: zipcode)
-        PrettyConsole.print_in_red '.'
-      else
-        CorsicaZipcode.create!(
-          zipcode: zipcode,
-          city: city,
-          department: department,
-          insee_code: insee_code,
-          department_code: department_code
-        )
-        counter +=1
-        PrettyConsole.puts_in_green "."
-      end
-    end
-    puts ""
-    PrettyConsole.puts_in_green "There are #{line_counter} lines "
-    PrettyConsole.puts_in_green "There are #{counter} records created"
-    PrettyConsole.say_in_yellow "Done with creating Corsica zipcode reference table"
   end
 end
