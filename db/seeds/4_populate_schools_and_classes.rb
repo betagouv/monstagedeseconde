@@ -95,9 +95,9 @@ def update_schools_with_public_private_info
     school = School.find_by(code_uai: uai)
     next if school.nil?
 
-    is_public = cells[col_hash[:public_private]] == "Public"
-    contract_code = cells[col_hash[:contract_code]]
-    contract_label = cells[col_hash[:contract_label]]
+    is_public = cells[col_hash[:public_private]].gsub("\n", '') == "Public"
+    contract_code = cells[col_hash[:contract_code]].gsub("\n", '')
+    contract_label = cells[col_hash[:contract_label]].gsub("\n", '')
 
     school_params = {
       is_public: is_public,
