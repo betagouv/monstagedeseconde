@@ -73,8 +73,8 @@ namespace :data_migrations do
     col_hash= { uai: 0, nom_etablissement: 2, adresse: 3, code_postal: 4, commune: 5, position: 6 }
     error_lines = []
     file_location_production = Rails.root.join('db/data_imports/annuaire_lycees.csv')
-    file_location_review = Rails.root.join('db/data_imports/annuaire_lycees_light.csv')
-    file_location = Rails.env.in?(%w[review ]) ? file_location_review : file_location_production
+    file_location_review = Rails.root.join('db/data_imports/light_files/annuaire_lycees_light.csv')
+    file_location = Rails.env.in?(%w[development review ]) ? file_location_review : file_location_production
     CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
       next if line_nr.zero?
 
@@ -138,6 +138,7 @@ namespace :data_migrations do
       cells = row.to_s.split(';')
 
       code_uai = cells[col_hash[:code_uai]]
+      next if code_uai.nil?
       school = School.find_by(code_uai: code_uai)
       unless school.nil?
         print "#{school.name} - #{school.code_uai} missing data" if cells[col_hash[:class_room_name]].blank?
