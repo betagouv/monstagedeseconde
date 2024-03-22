@@ -1,5 +1,4 @@
-# Seeds the database with the list of departments in France
-require 'rake'
+
 
 def populate_departments 
   {

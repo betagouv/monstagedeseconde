@@ -1,25 +1,32 @@
 - content_for(:canonical_url, params[:page] ? internship_offers_url(page: params[:page]) : internship_offers_url)
 
-- content_for(:custom_header) do
-  .position-sticky.sticky-top.wrapper-sticky-with-offset.search-bar.d-none.d-sm-block
-    .container-monstage
-      .row
-        .col-12
-          .fr-py-2w
-            = render partial: "internship_offers/search/form",
-                              locals: { render_as_partial: true,
-                                        url: internship_offers_path,
-                                        default_values: params,
-                                        form_id: :desktop_internship_offers_index_search_form }
+- if ENV['SERVICE_OPENING_DATE'] && Time.zone.now > ENV['SERVICE_OPENING_DATE'].to_time
+  - content_for(:custom_header) do
+    .position-sticky.sticky-top.wrapper-sticky-with-offset.search-bar.d-none.d-sm-block
+      .container-monstage
+        .row
+          .col-12
+            .fr-py-2w
+              = render partial: "internship_offers/search/form",
+                                locals: { render_as_partial: true,
+                                          url: internship_offers_path,
+                                          default_values: params,
+                                          form_id: :desktop_internship_offers_index_search_form }
 
-.actions.d-flex.d-stick.d-md-none.py-2
-  = link_to search_internship_offers_path(params.permit(:city, :latitude, :longitude, :radius, :keyword, week_ids: [])),
-            class: 'fr-btn btn-block-mobile',
-            title: "Lancer la recherche",
-            data: { :"test-id" => 'mobile-search-button' }
-    = search_button_label
+  .actions.d-flex.d-stick.d-md-none.py-2
+    = link_to search_internship_offers_path(params.permit(:city, :latitude, :longitude, :radius, :keyword, week_ids: [])),
+              class: 'fr-btn btn-block-mobile',
+              title: "Lancer la recherche",
+              data: { :"test-id" => 'mobile-search-button' }
+      = search_button_label
 
-.fr-test-internship-offers-container
-  = react_component("InternshipOfferResults",
-                    props: { sectors: @sectors.to_a,
-                             params: @params})
+  .fr-test-internship-offers-container
+    = react_component("InternshipOfferResults",
+                      props: { sectors: @sectors.to_a,
+                              params: @params})
+  
+- else 
+  .fr-my-3w
+    .container style="min-height: 50vh;"
+      h1.fr-my-3w Encore un peu de patience...
+      p.fr-my-3w Les offres de stage seront consultables à partir du lundi 25 mars à 14h.

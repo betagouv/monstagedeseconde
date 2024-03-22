@@ -1,0 +1,177 @@
+uai;type_etab;nom_etablissement;adresse;code_postal;commune;position;voie_generale;voie_techno;voie_pro;etab_mere;nbeleves;voie_gt;rentree_scolaire;nombre_d_eleves;2ndes_gt;_merge;nbeleves_est;2des_est
+9830484J;Lycée;Lycée agricole Michel Rocard;;98825.0;Pouembout;;0.0;1.0;1.0;;;True;;;;left_only;646.0;146.0
+0820559M;Lycée;Lycée général, technologique et professionnel agricole de Montauban;1915 route de Bordeaux;82000.0;Montauban;44.03232875150177, 1.3154221508373432;1.0;1.0;1.0;;;True;;;;left_only;646.0;207.0
+0331863W;Lycée;Lycée agro-viticole de Libourne-Montagne;36 route de Goujon;33570.0;Montagne;44.955755420863824, -0.17659978378679578;1.0;1.0;1.0;;;True;;;;left_only;646.0;207.0
+0311262D;Lycée;Lycée général et technologique agricole de Toulouse-Auzeville;2 route de Narbonne;31326.0;Castanet-Tolosan;43.53342406567168, 1.4861994549358315;1.0;1.0;0.0;;;True;;;;left_only;646.0;207.0
+7200009X;Lycée;Lycée Giocante de Casabianca;Vallée du Fango;20293.0;Bastia;42.703259744755094, 9.443753999224715;1.0;1.0;0.0;;1185.0;True;2022.0;1185.0;410.0;both;1185.0;410.0
+0383072H;Lycée;Lycée polyvalent privé Saint-Marc;rue Vernay;38312.0;Nivolas-Vermelle;45.56465144484297, 5.306408439026458;1.0;1.0;1.0;;1388.0;True;2022.0;1262.0;457.0;both;1262.0;457.0
+0350774B;Lycée;Lycée Saint-Sauveur;16 place Saint Sauveur;35603.0;Redon;47.64991448594527, -2.083469402656444;1.0;1.0;0.0;;852.0;True;2022.0;852.0;255.0;both;852.0;255.0
+0440166S;Lycée;Lycée Notre-Dame de Toutes Aides;12 rue des Epinettes;44319.0;Nantes;47.22836530022264, -1.519516261723193;1.0;0.0;0.0;;596.0;True;2022.0;596.0;245.0;both;596.0;245.0
+0350029S;Lycée;Lycée Joliot Curie;144 boulevard de Vitré;35703.0;Rennes;48.125687227428486, -1.6481306020702366;1.0;1.0;0.0;;776.0;True;2022.0;776.0;189.0;both;776.0;189.0
+0331488N;Lycée;Lycée privé Saint-Elme;50 boulevard Deganne;33120.0;Arcachon;44.65537882486955, -1.15258186496156;1.0;0.0;0.0;;381.0;True;2022.0;381.0;145.0;both;381.0;145.0
+0610006A;Lycée;Lycée polyvalent Mézeray Gabriel;6 place Robert Dugué;61200.0;Argentan;48.74472330166484, -0.014840183970246753;1.0;1.0;1.0;;912.0;True;2022.0;614.0;237.0;both;614.0;237.0
+0610790C;Lycée;Lycée agricole public de Sées;Rue du 11 Novembre 1918;61500.0;Sées;48.593143071747384, 0.17154993744153474;0.0;1.0;1.0;;;True;;;;left_only;646.0;146.0
+0290159R;Lycée;Lycée Saint-Sébastien - Les 2 Rives;4 rue H de Guébriant;29208.0;Landerneau;48.45169323544028, -4.257799739722499;1.0;1.0;0.0;;507.0;True;2022.0;507.0;206.0;both;507.0;206.0
+0781884Z;Lycée;Lycée Condorcet;Allée Condorcet;78520.0;Limay;48.986012883327085, 1.7509844529392136;1.0;1.0;1.0;;1276.0;True;2022.0;952.0;357.0;both;952.0;357.0
+0331636Z;Lycée;Lycée Jean Moulin;1 boulevard François Mauriac;33210.0;Langon;44.54751300648586, -0.2561600379585702;1.0;1.0;0.0;;1159.0;True;2022.0;1159.0;485.0;both;1159.0;485.0
+0762169V;Lycée;Lycée Pablo Neruda;Chemin des Bruyères;76204.0;Dieppe;49.90644781690003, 1.0676345211466627;1.0;1.0;0.0;;430.0;True;2022.0;430.0;174.0;both;430.0;174.0
+0220060W;Lycée;Lycée Eugène Freyssinet;32 rue Mansart;22023.0;Saint-Brieuc;48.52046434528333, -2.7796699849649467;1.0;1.0;0.0;;765.0;True;2022.0;765.0;256.0;both;765.0;256.0
+0271108H;Lycée;Lycée professionnel agricole Gilbert Martin;3 rue Pierre Corneille;27110.0;Le Neubourg;49.14702806520667, 0.9069691309130625;0.0;1.0;1.0;;;True;;;;left_only;646.0;146.0
+0640125N;Lycée;Lycée privé Saint-Joseph;Avenue des Abbés Dupont;64800.0;Nay;43.17211388978859, -0.2663560516437694;1.0;0.0;0.0;;271.0;True;2022.0;271.0;111.0;both;271.0;111.0
+0190624A;Lycée;Lycée agricole Edgard Pisani;Cézarin;19460.0;Naves;45.31290559667389, 1.7678801328303324;0.0;1.0;1.0;;;True;;;;left_only;646.0;146.0
+0350783L;Lycée;Lycée Saint-Martin - quartier Sainte-Geneviève;14 D rue Ginguené;35044.0;Rennes;48.099055736554845, -1.6854604057056215;1.0;1.0;0.0;;404.0;True;2022.0;404.0;151.0;both;404.0;151.0
+0470662P;Lycée;Lycée agricole Armand Fallières;Route de Francescas;47600.0;Nérac;44.121126321393966, 0.3587790249147675;0.0;1.0;1.0;;;True;;;;left_only;646.0;146.0
+0220102S;Lycée;Lycée Saint-Joseph - Bossuet;4 rue de la Bienfaisance;22304.0;Lannion;48.72874868839299, -3.4561094497874234;1.0;1.0;0.0;;595.0;True;2022.0;595.0;196.0;both;595.0;196.0
+0350005R;Lycée;Lycée technologique et SEP hôtelier Yvon Bourges;33 rue des Ecoles;35803.0;Dinard;48.625013434415614, -2.0576197264393032;0.0;1.0;1.0;;482.0;True;2022.0;160.0;0.0;both;160.0;-14.0
+0590063Y;Lycée;Lycée Albert Châtelet;357 rue Marceline;59500.0;Douai;50.37386901137226, 3.0855501786094375;1.0;0.0;0.0;;930.0;True;2022.0;930.0;345.0;both;930.0;345.0
+0070064G;Lycée;Lycée polyvalent privé Jules Froment;3 rue Albert Seibel;7201.0;Aubenas;44.61628422087675, 4.3882996031694;1.0;1.0;1.0;;651.0;True;2022.0;651.0;213.0;both;651.0;213.0
+0690533E;Lycée;Lycée de la Trinité;31 rue de Sèze;69006.0;Lyon;45.768222924397485, 4.846630066427805;1.0;0.0;0.0;;516.0;True;2022.0;516.0;222.0;both;516.0;222.0
+0731392S;Lycée;Lycée général et technologique du Granier;185 avenue Joseph Fontanet;73492.0;La Ravoire;45.551177399017064, 5.968510590296778;1.0;1.0;0.0;;1296.0;True;2022.0;1296.0;414.0;both;1296.0;414.0
+0560117Y;Lycée;Lycée Saint-Paul;12 allée Gabriel Deshayes;56000.0;Vannes;47.650064152608465, -2.7628701863388803;1.0;1.0;0.0;;1657.0;True;2022.0;1657.0;502.0;both;1657.0;502.0
+0060020P;Lycée;Lycée Amiral de Grasse;20 avenue Sainte Lorette;6130.0;Grasse;43.651222670056335, 6.921730428601611;1.0;1.0;0.0;;1038.0;True;2022.0;1038.0;374.0;both;1038.0;374.0
+0440062D;Lycée;Lycée Jean Perrin;20 rue du Château de Rezé;44400.0;Rezé;47.18244185811753, -1.5605797575650464;1.0;1.0;0.0;;1029.0;True;2022.0;1029.0;360.0;both;1029.0;360.0
+0260023J;Lycée;Lycée polyvalent du Dauphiné;38 boulevard Rémy Roure;26103.0;Romans-sur-Isère;45.05003306959538, 5.040003853018236;1.0;1.0;1.0;;1176.0;True;2022.0;801.0;268.0;both;801.0;268.0
+0600001A;Lycée;Lycée Félix Faure;31 boulevard de l'Assaut;60000.0;Beauvais;49.435699134977575, 2.090029544325317;1.0;1.0;0.0;;1248.0;True;2022.0;1248.0;444.0;both;1248.0;444.0
+0420976H;Lycée;Lycée La Salle - Saint Louis - Sainte Barbe;22 rue Désiré Claude;42100.0;Saint-Etienne;45.42889871375952, 4.388912608255523;1.0;1.0;0.0;;205.0;True;2022.0;205.0;67.0;both;205.0;67.0
+0690521S;Lycée;Lycée Sainte-Marie (annexe du lycée de Lyon);Chemin du Couvent;38293.0;La Verpillière;45.7655827022523, 4.826669652146657;1.0;1.0;0.0;;1911.0;True;2022.0;1911.0;681.0;both;1911.0;681.0
+0690519P;Lycée;Lycée Notre-Dame des Minimes;65 rue des Aqueducs;69005.0;Lyon;45.75951658683211, 4.789340438644235;1.0;1.0;0.0;;569.0;True;2022.0;569.0;221.0;both;569.0;221.0
+0831109E;Lycée;Lycée agricole La Provence Verte;Chemin du Prugnon;83470.0;Saint-Maximin-la-Sainte-Baume;43.457372929629194, 5.861019161399687;0.0;1.0;1.0;;;True;;;;left_only;646.0;146.0
+0801479Y;Lycée;Lycée Saint-Rémi;13 rue Firmin Leroux;80000.0;Amiens;49.89384246381353, 2.298264099390701;0.0;1.0;0.0;;395.0;True;2022.0;395.0;73.0;both;395.0;73.0
+0772244W;Lycée;Lycée professionnel Antonin Carême;27 avenue de l'Europe;77176.0;Savigny-le-Temple;48.59529887019934, 2.5776695792323916;0.0;1.0;1.0;;659.0;True;2022.0;38.0;0.0;both;38.0;-54.0
+0770943G;Lycée;Lycée professionnel Benjamin Franklin;Rue de la Forêt;77012.0;La Rochette;48.509356431963035, 2.663440553923961;0.0;1.0;1.0;;554.0;True;2022.0;38.0;0.0;both;38.0;-54.0
+0311334G;Lycée;Lycée polyvalent Edmond Rostand;2 boulevard Charles de Gaulle;31110.0;Bagnères-de-Luchon;42.7921570492819, 0.5986195406197539;1.0;0.0;0.0;;283.0;True;2022.0;215.0;84.0;both;215.0;84.0
+0772153X;Lycée;Lycée polyvalent Jean Rose - secteur hôtellerie restauration;12 rue de la Visitation;77100.0;Meaux;48.963587083679414, 2.879744147846858;0.0;1.0;1.0;;276.0;True;;;;left_only;276.0;24.0
+9760270P;Lycée;Lycée polyvalent de la Cité du Nord;;97630.0;M tsamboro;-12.716007120482116, 45.05090668135863;1.0;1.0;0.0;;1945.0;True;2022.0;1618.0;604.0;both;1618.0;604.0
+7200011Z;Lycée;Lycée professionnel Fred Scamaroni;Montesoro - rue de la 4e DMM;20600.0;Bastia;42.67021483899681, 9.44038139280805;0.0;1.0;1.0;;671.0;True;2022.0;21.0;0.0;both;21.0;-60.0
+0560200N;Lycée;Lycée Notre-Dame le Ménimur;71 rue de Metz;56000.0;Vannes;47.66677947566332, -2.7621515843022157;1.0;1.0;1.0;;1179.0;True;2022.0;825.0;275.0;both;825.0;275.0
+0420044V;Lycée;Lycée Simone Weil;63 avenue Albert Raimond;42272.0;Saint-Priest-en-Jarez;45.475966761883434, 4.367870573522323;1.0;1.0;0.0;;764.0;True;2022.0;764.0;276.0;both;764.0;276.0
+0221033D;Lycée;Lycée La Ville Davy;51 rue de la Corderie;22120.0;Quessoy;48.42536715078022, -2.660995031763903;1.0;1.0;1.0;;;True;;;;left_only;646.0;207.0
+0753268V;Lycée;Lycée polyvalent Jean Lurçat - Site Gobelins;48 avenue des Gobelins;75013.0;Paris;48.83420799456895, 2.353337607800063;0.0;1.0;0.0;;468.0;True;2022.0;271.0;0.0;both;271.0;23.0
+0260765R;Lycée;Lycée d'enseignement général et technologique agricole Le Valentin;Avenue de Lyon;26500.0;Bourg-lès-Valence;44.95897030643331, 4.894880338264217;1.0;1.0;0.0;;;True;;;;left_only;646.0;207.0
+0940113M;Lycée;Lycée polyvalent Langevin Wallon;126 avenue Roger Salengro;94500.0;Champigny-sur-Marne;48.816826741365325, 2.498317131240832;1.0;1.0;0.0;;869.0;True;2022.0;539.0;169.0;both;539.0;169.0
+0932118X;Lycée;Lycée polyvalent Jean Moulin;2 avenue Charles De Gaulle;93150.0;Le Blanc-Mesnil;48.94360563734647, 2.468681946930074;0.0;1.0;1.0;;968.0;True;2022.0;275.0;112.0;both;275.0;112.0
+0772296C;Lycée;Lycée polyvalent de la Mare Carrée;Rue de la Mare Carrée;77550.0;Moissy-Cramayel;48.633430133097335, 2.5760495792498603;1.0;1.0;1.0;;1346.0;True;2022.0;1162.0;351.0;both;1162.0;351.0
+0941930M;Lycée;Lycée polyvalent Johannes Gutenberg;16 rue de Saussure;94044.0;Créteil;48.76974261722545, 2.4711703520991506;1.0;1.0;1.0;;1133.0;True;2022.0;886.0;236.0;both;886.0;236.0
+0090013R;Lycée;Lycée polyvalent de Mirepoix;route de Limoux;9500.0;Mirepoix;43.085896897923064, 1.8827606136997626;1.0;1.0;1.0;;457.0;True;2022.0;373.0;131.0;both;373.0;131.0
+0550072E;Lycée;Lycée des métiers Alfred Kastler;1 rue de Münnerstadt;55700.0;Stenay;49.48640760051944, 5.198129436091281;1.0;1.0;1.0;;356.0;True;2022.0;245.0;100.0;both;245.0;100.0
+0771336J;Lycée;Lycée polyvalent les Pannevelles;Route de Chalautre la Petite;77481.0;Provins;48.550737843247305, 3.302437989116911;1.0;1.0;1.0;;937.0;True;2022.0;410.0;137.0;both;410.0;137.0
+0640137B;Lycée;Lycée privé Saint-Joseph;650 rue Hiribehere;64480.0;Ustaritz;43.401972936430504, -1.4581126952981336;1.0;1.0;0.0;;246.0;True;2022.0;246.0;74.0;both;246.0;74.0
+0940129E;Lycée;Lycée polyvalent Jean Macé;34 rue Jules Ferry;94407.0;Vitry-sur-Seine;48.80173033946394, 2.4004245248126694;1.0;1.0;1.0;;1536.0;True;2022.0;1097.0;336.0;both;1097.0;336.0
+9720479N;Lycée;Lycée polyvalent adventiste Rama;Monésie;97228.0;Sainte-Luce;14.48935261615213, -60.953459851255424;1.0;1.0;1.0;;354.0;True;2022.0;300.0;100.0;both;300.0;100.0
+0770938B;Lycée;Lycée polyvalent André Malraux;Avenue du Lycée;77130.0;Montereau-Fault-Yonne;48.3940334599328, 2.959274568126143;1.0;1.0;1.0;;1396.0;True;2022.0;988.0;380.0;both;988.0;380.0
+0772342C;Lycée;Lycée polyvalent Clément Ader;76 rue Georges Clemenceau;77220.0;Tournan-en-Brie;48.74289262798635, 2.749278337472371;1.0;1.0;1.0;;1237.0;True;2022.0;720.0;244.0;both;720.0;244.0
+0930119Z;Lycée;Lycée polyvalent Eugène Delacroix;4 rue du Docteur Schweitzer;93700.0;Drancy;48.92500721472923, 2.457936453412501;1.0;1.0;1.0;;1872.0;True;2022.0;1324.0;495.0;both;1324.0;495.0
+0480022N;Lycée;Lycée privé polyvalent Saint Pierre - Saint Paul;1 rue du Collège;48300.0;Langogne;44.72467162783508, 3.8528698813451245;1.0;1.0;1.0;;329.0;True;2022.0;154.0;54.0;both;154.0;54.0
+0750656F;Lycée;Lycée Lavoisier;17 rue Henri Barbusse;75005.0;Paris;48.84235506126977, 2.3392948133354463;1.0;0.0;0.0;;591.0;True;2022.0;591.0;213.0;both;591.0;213.0
+0932117W;Lycée;Lycée polyvalent Lucie Aubrac;51 rue Victor Hugo;93500.0;Pantin;48.89395126138246, 2.408073793087787;1.0;1.0;1.0;;691.0;True;2022.0;345.0;100.0;both;345.0;100.0
+0931584S;Lycée;Lycée polyvalent Jean Rostand;8 rue Pierre Audat;93420.0;Villepinte;48.96013097773987, 2.5465449256491284;1.0;1.0;1.0;;1358.0;True;2022.0;1291.0;385.0;both;1291.0;385.0
+0754530S;Lycée;Lycée polyvalent Martin Nadaud;23 rue de la Bidassoa;75020.0;Paris;48.8661902056673, 2.3935769740693646;0.0;1.0;1.0;;424.0;True;2022.0;167.0;0.0;both;167.0;-12.0
+0751708Z;Lycée;Lycée polyvalent Louis Armand;321 rue Lecourbe;75015.0;Paris;48.8372023151473, 2.2852784745012107;1.0;1.0;1.0;;686.0;True;2022.0;384.0;73.0;both;384.0;73.0
+0754030Y;Lycée;Lycée privé polyvalent Albert de Mun;2 rue d'Olivet;75007.0;Paris;48.8497226239239, 2.319715372444925;0.0;1.0;1.0;;794.0;True;2022.0;446.0;125.0;both;446.0;125.0
+0940585A;Lycée;Lycée polyvalent François Mansart;25 avenue de la Banque;94100.0;Saint-Maur-des-Fossés;48.790607475928766, 2.497342821197465;1.0;1.0;1.0;;624.0;True;2022.0;461.0;158.0;both;461.0;158.0
+0810103X;Lycée;Lycée général et technologique privé Notre-Dame;Avenue d'Hauterive;81101.0;Castres;43.59998209519716, 2.244022821692817;1.0;1.0;0.0;;286.0;True;2022.0;286.0;93.0;both;286.0;93.0
+9830003L;Lycée;Lycée polyvalent Jules Garnier (SEGT);Avenue James Cook;98849.0;Nouméa;;1.0;1.0;1.0;;1143.0;True;2022.0;708.0;248.0;both;708.0;248.0
+0693786R;Lycée;Lycée polyvalent Jehanne de France;6 rue de la Fraternelle;69009.0;Lyon;45.76931901780905, 4.803600472461577;0.0;1.0;1.0;;282.0;True;2022.0;56.0;0.0;both;56.0;-48.0
+0420008F;Lycée;Lycée polyvalent Jérémie de la Rue;Route de Saint-Bonnet;42190.0;Charlieu;46.16975983274846, 4.1714295732686235;1.0;0.0;1.0;;472.0;True;2022.0;361.0;128.0;both;361.0;128.0
+0460010L;Lycée;Lycée général et technologique Champollion;13 avenue Fernand Pezet;46106.0;Figeac;44.60889878968034, 2.0274603130997293;1.0;1.0;0.0;;562.0;True;2022.0;562.0;173.0;both;562.0;173.0
+0691644M;Lycée;Lycée polyvalent Louis Armand;507 avenue du Beaujolais;69651.0;Villefranche-sur-Saône;45.999190836392486, 4.705849561137374;1.0;1.0;1.0;;1769.0;True;2022.0;1429.0;493.0;both;1429.0;493.0
+0390029V;Lycée;Lycée polyvalent des métiers du bois;Rue de Strasbourg;39330.0;Mouchard;46.971145237574255, 5.796519803149464;0.0;1.0;1.0;;154.0;True;;;;left_only;154.0;-16.0
+0480023P;Lycée;Lycée privé polyvalent Saint-Joseph;1 avenue Theophile Roussel;48100.0;Marvejols;44.5551442757866, 3.2893901542015596;1.0;1.0;1.0;;256.0;True;2022.0;141.0;36.0;both;141.0;36.0
+0342091N;Lycée;Lycée polyvalent Marc Bloch;Avenue Georges Frêche;34410.0;Sérignan;43.263181338005914, 3.2845805466735265;1.0;1.0;1.0;;1295.0;True;2022.0;1125.0;349.0;both;1125.0;349.0
+0310024H;Lycée;Lycée polyvalent Pierre d'Aragon;14 avenue Henri Peyrusse;31605.0;Muret;43.454272292437864, 1.3306893943397458;1.0;1.0;1.0;;1579.0;True;2022.0;1295.0;425.0;both;1295.0;425.0
+0130050J;Lycée;Lycée polyvalent Denis Diderot;23 boulevard Laveran;13388.0;Marseille;43.32545465620047, 5.414180374228703;1.0;1.0;1.0;;1084.0;True;2022.0;786.0;209.0;both;786.0;209.0
+0480025S;Lycée;Lycée privé polyvalent Notre-Dame;Quartier Fontanilles;48000.0;Mende;44.52134271055398, 3.511940491671458;1.0;1.0;1.0;;374.0;True;2022.0;227.0;73.0;both;227.0;73.0
+0340040J;Lycée;Lycée polyvalent Jules Guesde;110 avenue de Lodève;34060.0;Montpellier;43.61171607580439, 3.847970077404897;1.0;1.0;1.0;;2110.0;True;2022.0;1939.0;675.0;both;1939.0;675.0
+0592929N;Lycée;Lycée Sainte-Thérèse;4 place Guillemin;59362.0;Avesnes-sur-Helpe;50.122452447452424, 3.933050076860702;1.0;1.0;0.0;;133.0;True;2022.0;133.0;42.0;both;133.0;42.0
+0301778V;Lycée;Lycée polyvalent Jacques Prévert;1 place Lucie Aubrac;30380.0;Saint-Christol-lès-Alès;44.093163025396876, 4.082622611024222;1.0;1.0;1.0;;1054.0;True;2022.0;734.0;272.0;both;734.0;272.0
+0900030U;Lycée;Lycée général et technologique privé Sainte-Marie;40 faubourg des Ancêtres;90006.0;Belfort;47.64051843890259, 6.857547537826508;1.0;1.0;0.0;;570.0;True;2022.0;570.0;215.0;both;570.0;215.0
+0390070P;Lycée;Lycée général et technologique privé Sainte Marie;84 rue Saint Désiré;39000.0;Lons-le-Saunier;46.67091361326531, 5.548819400522589;1.0;0.0;0.0;;129.0;True;2022.0;129.0;44.0;both;129.0;44.0
+0390091M;Lycée;Lycée général et technologique privé Jeanne d'Arc;10 rue du Sauget;39303.0;Champagnole;46.7457476765003, 5.905519967247963;0.0;1.0;0.0;;60.0;True;2022.0;60.0;16.0;both;60.0;16.0
+0250010A;Lycée;Lycée général et technologique Louis Pergaud;91-93 boulevard Léon Blum;25022.0;Besançon;47.264557933036464, 6.042339373613688;1.0;1.0;0.0;;1669.0;True;2022.0;1669.0;511.0;both;1669.0;511.0
+0700009E;Lycée;Lycée polyvalent Augustin Cournot;Rue du lycée;70104.0;Gray;47.44505140944856, 5.588386600034317;1.0;1.0;1.0;;684.0;True;2022.0;625.0;193.0;both;625.0;193.0
+0390042J;Lycée;Lycée général Victor Considerant;Route d'Ornans;39110.0;Salins-les-Bains;46.94943321948755, 5.881089485557706;1.0;0.0;0.0;;280.0;True;2022.0;280.0;122.0;both;280.0;122.0
+0251028G;Lycée;Lycée général et technologique privé Saint-Jean;1 rue de l'Espérance;25000.0;Besançon;47.25894161568235, 6.020494640160017;1.0;1.0;0.0;;823.0;True;2022.0;823.0;272.0;both;823.0;272.0
+0251024C;Lycée;Lycée général et technologique privé Les Augustins;1 rue du faubourg Saint-Etienne;25300.0;Pontarlier;46.90218105614256, 6.359130233544658;1.0;0.0;0.0;;356.0;True;2022.0;356.0;139.0;both;356.0;139.0
+0480680D;Lycée;Lycée privé polyvalent Sacré-Coeur;43 avenue de la Gare;48200.0;Saint-Chély-d'Apcher;44.7991656846329, 3.2737598906289898;1.0;1.0;1.0;;412.0;True;2022.0;110.0;14.0;both;110.0;14.0
+0593106F;Lycée;Lycée Sainte-Odile;244 avenue de Dunkerque;59130.0;Lambersart;50.63813267153524, 3.0268505735742863;1.0;0.0;0.0;;459.0;True;2022.0;459.0;178.0;both;459.0;178.0
+0251263M;Lycée;Lycée d'enseignement général, technologique et professionnel agricole de Dannemarie Granvelle;2 rue des Chanets;25410.0;Dannemarie-sur-Crète;47.200786302542056, 5.870700388528962;1.0;1.0;1.0;;;True;;;;left_only;646.0;207.0
+0680066C;Lycée;Lycée polyvalent Jean Mermoz;53 rue du docteur Marcel Hurst;68300.0;Saint-Louis;47.57740971528521, 7.555610485879823;1.0;1.0;1.0;;2052.0;True;2022.0;1572.0;607.0;both;1572.0;607.0
+0672677W;Lycée;Lycée polyvalent Marguerite Yourcenar;12 rue Victor Schoelcher;67152.0;Erstein;48.422914770218675, 7.652175861090923;1.0;1.0;1.0;;914.0;True;2022.0;840.0;303.0;both;840.0;303.0
+0331499A;Lycée;Lycée privé Notre-Dame;13 rue Castéja;33000.0;Bordeaux;44.84264141599289, -0.5820680837615095;1.0;0.0;0.0;;165.0;True;2022.0;165.0;69.0;both;165.0;69.0
+0750699C;Lycée;Lycée Janson de Sailly;106 rue de la Pompe;75016.0;Paris;48.86556113280372, 2.2794516898235146;1.0;1.0;0.0;;1102.0;True;2022.0;1102.0;351.0;both;1102.0;351.0
+0761715B;Lycée;Lycée privé Jean-Baptiste de La Salle;84 rue Saint-Gervais;76000.0;Rouen;49.44817744163795, 1.0844296112036793;1.0;0.0;0.0;;657.0;True;2022.0;657.0;231.0;both;657.0;231.0
+0141275K;Lycée;Lycée Paul Cornu;9 rue Paul Cornu;14107.0;Lisieux;49.16267073430605, 0.218879791451229;1.0;1.0;1.0;;774.0;True;2022.0;251.0;97.0;both;251.0;97.0
+0750690T;Lycée;Lycée François Villon;10-16 avenue Marc Sangnier;75014.0;Paris;48.826222298748995, 2.3058203184226214;1.0;1.0;0.0;;387.0;True;2022.0;387.0;82.0;both;387.0;82.0
+0750679F;Lycée;Lycée Paul Valéry;38 boulevard Soult;75012.0;Paris;48.83984177110137, 2.4091788098407485;1.0;1.0;0.0;;624.0;True;2022.0;624.0;137.0;both;624.0;137.0
+0510068X;Lycée;Lycée polyvalent des métiers Stéphane Hessel;8 rue Godart Roger;51200.0;Epernay;49.039429174246436, 3.9652005806935606;1.0;1.0;1.0;;1825.0;True;2022.0;1402.0;474.0;both;1402.0;474.0
+0940580V;Lycée;Lycée de Cachan;63 avenue du Président Wilson;94235.0;Cachan;48.78867682535173, 2.324774506773462;1.0;1.0;1.0;;1582.0;True;2022.0;1402.0;409.0;both;1402.0;409.0
+0060729K;Lycée;Lycée Stanislas;25 avenue Bieckert;6008.0;Nice;43.70671210111826, 7.271970385719138;1.0;0.0;0.0;;389.0;True;2022.0;389.0;144.0;both;389.0;144.0
+0753217P;Lycée;Lycée polyvalent privé Sainte-Thérèse;40 rue Jean de La Fontaine;75016.0;Paris;48.85109598228065, 2.2720404805383816;0.0;1.0;1.0;;116.0;True;2022.0;28.0;8.0;both;28.0;8.0
+0920141D;Lycée;Lycée polyvalent Frédéric et Irène Joliot Curie;92 avenue Joliot-Curie;92014.0;Nanterre;48.89097484069988, 2.2075839125947363;1.0;1.0;1.0;;1524.0;True;2022.0;1413.0;567.0;both;1413.0;567.0
+0290007A;Lycée;Lycée La Pérouse - Kerichen;34 bis rue Jules Lesven;29801.0;Brest;48.40641186348107, -4.479274903861167;1.0;0.0;0.0;;705.0;True;2022.0;705.0;279.0;both;705.0;279.0
+0601863Z;Lycée;Lycée polyvalent Charles de Gaulle;44 rue Jacques Daguerre;60321.0;Compiègne;49.38532643849857, 2.780289962648359;1.0;1.0;1.0;;895.0;True;2022.0;706.0;241.0;both;706.0;241.0
+0170029P;Lycée;Lycée polyvalent Léonce Vieljeux;Rue des Gonthières;17026.0;La Rochelle;46.1775939773852, -1.1510104830182661;1.0;1.0;1.0;;1385.0;True;2022.0;1385.0;455.0;both;1385.0;455.0
+0520021R;Lycée;Lycée polyvalent Diderot;21 avenue du Gal de Gaulle;52206.0;Langres;47.849035646339864, 5.326379896942472;1.0;1.0;1.0;;763.0;True;2022.0;643.0;231.0;both;643.0;231.0
+0511565Z;Lycée;Lycée polyvalent François Arago;1 rue François Arago;51100.0;Reims;49.22940166227636, 4.0064656531151535;1.0;1.0;1.0;;516.0;True;2022.0;332.0;142.0;both;332.0;142.0
+9741620T;Lycée;Lycée polyvalent Mémona Hintermann-Afféjee;1 rue des franciscéas;97491.0;Saint-Denis;-20.909565079153445, 55.47795967340268;1.0;0.0;1.0;;1063.0;True;2022.0;727.0;262.0;both;727.0;262.0
+0595809U;Lycée;Lycée de l'Escaut;1 avenue de Saint Amand;59305.0;Valenciennes;50.36560364478319, 3.514151168296665;1.0;1.0;0.0;;1159.0;True;2022.0;1159.0;431.0;both;1159.0;431.0
+0597005U;Lycée;Lycée polyvalent Val de Lys;Rue Jacqueminemars;59940.0;Estaires;50.644029993116504, 2.7044897620264567;1.0;1.0;1.0;;670.0;True;2022.0;471.0;184.0;both;471.0;184.0
+0690042W;Lycée;Lycée Colbert;20 rue Louis Jouvet;69372.0;Lyon;45.74497037456857, 4.860280068704423;1.0;1.0;0.0;;530.0;True;2022.0;530.0;204.0;both;530.0;204.0
+0690023A;Lycée;Lycée Ampère;29 rue de la Bourse;69002.0;Lyon;45.76528336519406, 4.83700438868978;1.0;1.0;0.0;;1012.0;True;2022.0;1012.0;369.0;both;1012.0;369.0
+0290336H;Lycée;Lycée Estran Charles de Foucauld;32 rue de Quimper;29238.0;Brest;48.403306660413, -4.4591198803784415;1.0;1.0;0.0;;795.0;True;2022.0;795.0;294.0;both;795.0;294.0
+0754029X;Lycée;Lycée polyvalent privé Carcado Saisseval;121 boulevard Raspail - CS 10622;75006.0;Paris;48.84534298167878, 2.328835466682555;1.0;1.0;1.0;;562.0;True;2022.0;341.0;98.0;both;341.0;98.0
+0290108K;Lycée;Lycée Dupuy de Lôme;34 rue Dupuy de Lôme;29287.0;Brest;48.39104892833685, -4.51077046388147;0.0;1.0;1.0;;681.0;True;2022.0;173.0;42.0;both;173.0;42.0
+0290186V;Lycée;Lycée polyvalent Le Paraclet;35 avenue des Glénan;29018.0;Quimper;47.995122045776995, -4.114130402914331;0.0;1.0;1.0;;284.0;True;2022.0;159.0;34.0;both;159.0;34.0
+0951104J;Lycée;Lycée polyvalent Jean Perrin;2 rue des Egalisses;95310.0;Saint-Ouen-l'Aumône;49.05795045401262, 2.1301623470731075;1.0;1.0;1.0;;830.0;True;2022.0;543.0;170.0;both;543.0;170.0
+0770933W;Lycée;Lycée Jacques Amyot;6 bis rue Edmond Michelet;77011.0;Melun;48.545460734625166, 2.659210751824193;1.0;1.0;0.0;;665.0;True;2022.0;665.0;239.0;both;665.0;239.0
+0922249V;Lycée;Lycée Montesquieu;23 rue du Capitaine Facq;92350.0;Le Plessis-Robinson;48.7773364785789, 2.2636303880367494;1.0;1.0;1.0;;632.0;True;2022.0;600.0;190.0;both;600.0;190.0
+0750657G;Lycée;Lycée Montaigne;17 rue Auguste Comte;75006.0;Paris;48.844236978189386, 2.3348315716616432;1.0;0.0;0.0;;1051.0;True;2022.0;1051.0;347.0;both;1051.0;347.0
+0160022M;Lycée;Lycée polyvalent Émile Roux;30 avenue du Général de Gaulle;16500.0;Confolens;46.00865487863699, 0.6719993885926403;1.0;1.0;1.0;;493.0;True;2022.0;452.0;162.0;both;452.0;162.0
+0830032J;Lycée;Lycée Thomas Edison;1 rue Emile Héraud;83510.0;Lorgues;43.4932939123377, 6.3569093510238295;1.0;1.0;1.0;;1156.0;True;2022.0;1065.0;405.0;both;1065.0;405.0
+0310036W;Lycée;Lycée général Pierre de Fermat;Parvis des Jacobins;31068.0;Toulouse;43.6032751508944, 1.4398952901892104;1.0;0.0;0.0;;949.0;True;2022.0;949.0;359.0;both;949.0;359.0
+0720012X;Lycée;Lycée Racan;9 avenue du Mans;72500.0;Montval-sur-Loir;47.69897526750431, 0.4129213864522583;1.0;1.0;0.0;;453.0;True;2022.0;453.0;156.0;both;453.0;156.0
+0380063M;Lycée;Lycée polyvalent La Saulaie;la Saulaie;38162.0;Saint-Marcellin;45.15764989112699, 5.317670220840364;1.0;1.0;1.0;;923.0;True;2022.0;690.0;241.0;both;690.0;241.0
+0290170C;Lycée;Lycée le Likès;20 place de la Tourbie;29196.0;Quimper;48.000938753944055, -4.10240062335882;1.0;1.0;0.0;;1405.0;True;2022.0;1405.0;476.0;both;1405.0;476.0
+0160002R;Lycée;Lycée Guez de Balzac;Place Beaulieu;16021.0;Angoulême;45.650165640205316, 0.15117436981482055;1.0;1.0;0.0;;1123.0;True;2022.0;1123.0;359.0;both;1123.0;359.0
+0070066J;Lycée;Lycée général et technologique privé Marie Rivier;21 avenue Notre-Dame;7700.0;Bourg-Saint-Andéol;44.374186477850074, 4.644930459985576;1.0;1.0;0.0;;475.0;True;2022.0;475.0;170.0;both;475.0;170.0
+0560013K;Lycée;LEGTA Le Gros Chêne;rue de Bretagne;56308.0;Pontivy;48.0842567516204, -2.974909705804426;1.0;1.0;1.0;;;True;;;;left_only;646.0;207.0
+0450040Z;Lycée;Lycée en Forêt;45 avenue Louis Maurice Chautemps;45200.0;Montargis;48.01110109506568, 2.756769529417283;1.0;1.0;0.0;;1398.0;True;2022.0;1398.0;451.0;both;1398.0;451.0
+0380073Y;Lycée;Lycée polyvalent Elie Cartan;2 rue Justin Vernet;38110.0;La Tour-du-Pin;45.56434764470551, 5.441979352865536;1.0;1.0;1.0;;693.0;True;2022.0;546.0;235.0;both;546.0;235.0
+9711252J;Lycée;Lycée général et technologique Robert Weinum;Route de la Savane;97150.0;Saint-Martin;18.0970348568451, -63.06586954449471;1.0;1.0;0.0;;776.0;True;2022.0;776.0;238.0;both;776.0;238.0
+0694405N;Lycée;Lycée Docteur Charles Mérieux;2 avenue du pont Pasteur;69007.0;Lyon;45.73259846554497, 4.822634469258513;0.0;1.0;0.0;;582.0;True;2022.0;582.0;246.0;both;582.0;246.0
+0781974X;Lycée;Lycée Saint-Exupéry;11 rue Michaël Faraday;78180.0;Montigny-le-Bretonneux;48.795692848197156, 2.0492015541446027;1.0;1.0;0.0;;337.0;True;2022.0;337.0;115.0;both;337.0;115.0
+0783657B;Lycée;Lycée Saint-Augustin;39 rue Grande Fontaine;78100.0;Saint-Germain-en-Laye;48.89694998070632, 2.0856612993081693;1.0;0.0;0.0;;258.0;True;2022.0;258.0;105.0;both;258.0;105.0
+0500016W;Lycée;Lycée Jean-François Millet;1 rue de Bougainville;50130.0;Cherbourg-en-Cotentin;49.639657681556045, -1.6441401788202072;1.0;1.0;0.0;;1039.0;True;2022.0;1039.0;325.0;both;1039.0;325.0
+0371418R;Lycée;Lycée Jacques de Vaucanson;1 rue Jules Vedrines;37081.0;Tours;47.423381355457785, 0.70658040667596;1.0;1.0;0.0;;1093.0;True;2022.0;1093.0;401.0;both;1093.0;401.0
+0941719H;Lycée;Lycée Epin;19 avenue Eugène Pelletan;94400.0;Vitry-sur-Seine;48.79419945658507, 2.3848003666518878;1.0;1.0;0.0;;255.0;True;2022.0;255.0;129.0;both;255.0;129.0
+0171157R;Lycée;École d'enseignement technique de l'armée de l'air et de l'espace de Saintes;Base aérienne 722;17136.0;Saintes;45.44423810394464, -0.28864026869563486;1.0;1.0;1.0;;;True;;;;left_only;646.0;207.0
+9710882G;Lycée;Lycée général et technologique Des Droits de l'Homme;Pointe à Bacchus;97170.0;Petit-Bourg;16.20089621355786, -61.59177987280009;1.0;1.0;0.0;;1236.0;True;2022.0;1236.0;397.0;both;1236.0;397.0
+0782549X;Lycée;Lycée Louis Bascan;5 avenue du Général Leclerc;78513.0;Rambouillet;48.640987015077634, 1.824599290211812;1.0;1.0;1.0;;2387.0;True;2022.0;2082.0;698.0;both;2082.0;698.0
+0170060Y;Lycée;Lycée Bernard Palissy;1 rue de Gascogne;17107.0;Saintes;45.73503489068187, -0.6145802387898329;1.0;1.0;0.0;;753.0;True;2022.0;753.0;281.0;both;753.0;281.0
+0060026W;Lycée;Lycée Pierre et Marie Curie;353 avenue du Doyen Jean Lépine;6500.0;Menton;43.77737603538937, 7.484600420305029;1.0;1.0;0.0;;878.0;True;2022.0;878.0;300.0;both;878.0;300.0
+0570106F;Lycée;Lycée Charlemagne;17 avenue Clemenceau;57100.0;Thionville;49.360392615709415, 6.167929546588329;1.0;0.0;0.0;;811.0;True;2022.0;811.0;322.0;both;811.0;322.0
+0060013G;Lycée;Lycée Bristol;10 avenue Saint Nicolas;6414.0;Cannes;43.55556262678885, 7.018946279227393;1.0;1.0;0.0;;896.0;True;2022.0;896.0;277.0;both;896.0;277.0
+0370001A;Lycée;Lycée Léonard de Vinci;Rue du Clos des Gardes;37402.0;Amboise;47.40099688190214, 0.9824105459079514;1.0;1.0;0.0;;1166.0;True;2022.0;1166.0;435.0;both;1166.0;435.0
+0880036L;Lycée;Lycée polyvalent Jean-Baptiste Vuillaume;5 avenue Graillet;88503.0;Mirecourt;48.29899373483966, 6.131242901260693;1.0;1.0;0.0;;527.0;True;2022.0;516.0;167.0;both;516.0;167.0
+0134107U;Lycée;Lycée général Ibn Khaldoun;50 boulevard Viala;13015.0;Marseille;43.33507373147014, 5.360909728147842;1.0;1.0;0.0;;48.0;True;2022.0;48.0;21.0;both;48.0;21.0
+0760110G;Lycée;Lycée Marcel Sembat;128 rue Léon Salva;76301.0;Sotteville-lès-Rouen;49.41494307926244, 1.0851019972858098;1.0;1.0;0.0;;978.0;True;2022.0;978.0;371.0;both;978.0;371.0
+0760035A;Lycée;Lycée Guy de Maupassant;1575 boulevard Nelson Mandela;76401.0;Fécamp;49.746528199081006, 0.3878246554775106;1.0;1.0;0.0;;1038.0;True;2022.0;1038.0;366.0;both;1038.0;366.0
+0331491S;Lycée;Lycée privé Albert Le Grand;189 rue de Saint-Genès;33000.0;Bordeaux;44.823937482245064, -0.5819615849023279;1.0;0.0;0.0;;144.0;True;2022.0;144.0;57.0;both;144.0;57.0
+0160004T;Lycée;Lycée Charles Augustin Coulomb;Allée Joachim du Bellay;16000.0;Angoulême;45.63020030226998, 0.15831998093155397;1.0;1.0;0.0;;949.0;True;2022.0;949.0;319.0;both;949.0;319.0
+0290076A;Lycée;Lycée Kerneuzec;Kerneuzec;29391.0;Quimperlé;47.88402810497998, -3.553490379452943;1.0;1.0;0.0;;862.0;True;2022.0;862.0;287.0;both;862.0;287.0
+0782587N;Lycée;Lycée Viollet le Duc;1 route de Septeuil;78640.0;Villiers-Saint-Frédéric;48.814287603332, 1.874271330524718;1.0;1.0;1.0;;1245.0;True;2022.0;762.0;263.0;both;762.0;263.0
+0783288A;Lycée;Lycée Notre-Dame;3 rue de Témara;78100.0;Saint-Germain-en-Laye;48.89400203647947, 2.0753701866211363;1.0;0.0;0.0;;1202.0;True;2022.0;1166.0;404.0;both;1166.0;404.0
+0492406Z;Lycée;Lycée Sainte Marie;43 rue Bonaventure;49300.0;Cholet;47.05944910070926, -0.8777806576990039;1.0;1.0;0.0;;944.0;True;2022.0;944.0;322.0;both;944.0;322.0
+9720003W;Lycée;Lycée général et technologique de Bellevue;Rue M-Thérèse Gertrude;97262.0;Fort-de-France;14.601979900129926, -61.0838903718744;1.0;1.0;0.0;;1071.0;True;2022.0;1071.0;335.0;both;1071.0;335.0
+0101028N;Lycée;Lycée Camille Claudel;28 rue des Terrasses;10026.0;Troyes;48.291712471301985, 4.078309733639663;1.0;0.0;0.0;;705.0;True;2022.0;705.0;288.0;both;705.0;288.0
+0570058D;Lycée;Lycée Louis Vincent;1 rue de Verdun;57000.0;Metz;49.106321337217516, 6.168089357552267;1.0;1.0;0.0;;1348.0;True;2022.0;1348.0;457.0;both;1348.0;457.0
+0490904S;Lycée;Lycée Jeanne Delanoue;11 boulevard Jeanne d'Arc;49304.0;Cholet;47.06391906586731, -0.8681094647641268;0.0;1.0;1.0;;654.0;True;2022.0;300.0;76.0;both;300.0;76.0
+0880020U;Lycée;Lycée Claude Gellée;44 rue Abel Ferry;88000.0;Épinal;48.16658939004961, 6.454796674572373;1.0;0.0;0.0;;808.0;True;2022.0;808.0;296.0;both;808.0;296.0
+0880019T;Lycée;Lycée Louis Lapicque;5 rue Nicolas Bellot;88000.0;Épinal;48.175041765308976, 6.440819018073959;1.0;1.0;0.0;;1155.0;True;2022.0;1155.0;315.0;both;1155.0;315.0
+0270042Z;Lycée;Lycée Porte de Normandie;830 boulevard des Poissonniers;27130.0;Verneuil d'Avre et d'Iton;48.74118462197332, 0.9126600785917509;1.0;1.0;0.0;;684.0;True;2022.0;684.0;254.0;both;684.0;254.0
+0781883Y;Lycée;Lycée Dumont d'Urville;2 avenue de Franche-Comté;78310.0;Maurepas;48.76423591028176, 1.9521663410362289;1.0;1.0;1.0;;630.0;True;2022.0;472.0;181.0;both;472.0;181.0
+0783293F;Lycée;Lycée Les Châtaigniers;11 bis avenue Jean Jaurès;78000.0;Versailles;48.81688127983218, 2.1441671016364316;1.0;1.0;0.0;;151.0;True;2022.0;151.0;59.0;both;151.0;59.0
+0783283V;Lycée;Lycée l'Ermitage;18 rue des Côtes;78600.0;Maisons-Laffitte;48.942790721901126, 2.1452723270924445;1.0;0.0;0.0;;293.0;True;2022.0;293.0;101.0;both;293.0;101.0
+0171428K;Lycée;Lycée de la mer et du littoral;Rue William Bertrand;17560.0;Bourcefranc-le-Chapus;45.84674464949382, -1.1570495790048279;1.0;1.0;1.0;;670.0;True;2022.0;557.0;211.0;both;557.0;211.0
+0761713Z;Lycée;Lycée privé La Providence Nicolas Barré;6 rue Neuvillette;76240.0;Le Mesnil-Esnard;49.40660036193264, 1.140139211030241;1.0;1.0;0.0;;491.0;True;2022.0;491.0;171.0;both;491.0;171.0
+0071351F;Lycée;Lycée polyvalent Xavier Mallet;rue Frédéric Mistral;7400.0;Le Teil;44.537699356914565, 4.689608488338841;1.0;1.0;1.0;;612.0;True;2022.0;390.0;135.0;both;390.0;135.0

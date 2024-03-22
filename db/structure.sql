@@ -1364,7 +1364,10 @@ CREATE TABLE public.schools (
     fetched_school_address character varying(300),
     fetched_school_email character varying(100),
     legal_status character varying,
-    delegation_date date
+    delegation_date date,
+    is_public boolean DEFAULT true,
+    contract_code character varying(3),
+    contract_label character varying(70)
 );
 
 
@@ -3381,6 +3384,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240321160820'),
 ('20240320170403'),
 ('20240316135712'),
 ('20240315100413'),
