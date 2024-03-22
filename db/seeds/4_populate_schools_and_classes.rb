@@ -4,7 +4,7 @@ def populate_schools
   col_hash= { uai: 0, nom_etablissement: 2, adresse: 3, code_postal: 4, commune: 5, position: 6 }
   error_lines = []
   file_location_production = Rails.root.join('db/data_imports/annuaire_lycees.csv')
-  file_location_review = Rails.root.join('db/data_imports/annuaire_lycees_light.csv')
+  file_location_review = Rails.root.join('db/data_imports/light_files/annuaire_lycees_light.csv')
   file_location = Rails.env.in?(%w[review development]) ? file_location_review : file_location_production
   CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
     next if line_nr.zero?
@@ -81,6 +81,42 @@ def populate_class_rooms
   PrettyConsole.say_in_yellow "Done with creating class_rooms"
 end
 
+def update_schools_with_public_private_info
+  col_hash= { uai: 0, public_private: 1,  contract_label: 2, contract_code: 3}
+  error_lines = []
+  file_location = Rails.root.join('db/data_imports/school_public_prive.csv')
+  CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
+    next if line_nr.zero?
+
+    cells = row.to_s.split(';')
+
+    uai = cells[col_hash[:uai]]
+    next if uai.nil?
+    school = School.find_by(code_uai: uai)
+    next if school.nil?
+
+    is_public = cells[col_hash[:public_private]] == "Public"
+    contract_code = cells[col_hash[:contract_code]]
+    contract_label = cells[col_hash[:contract_label]]
+
+    school_params = {
+      is_public: is_public,
+      contract_code: contract_code,
+      contract_label: contract_label
+    }
+
+    result = school.update(**school_params)
+    if result
+      print "."
+    else
+      error_lines << ["Ligne #{line_nr}" , school.name, school.errors.full_messages.join(", ")]
+      print "o"
+    end
+  end
+  puts ""
+  PrettyConsole.say_in_yellow  "Done with updating schools(lycées)"
+end
+
 def find_default_school_during_test
   # school at Paris, Lycée polyvalent Jean Lurçat - Site Gobelins;48 avenue des Gobelins
   School.find_by_code_uai("0753268V")
@@ -103,5 +139,6 @@ end
 call_method_with_metrics_tracking([
   :populate_schools,
   :populate_class_rooms,
-  :populate_school_weeks
+  :populate_school_weeks,
+  :update_schools_with_public_private_info
 ])
