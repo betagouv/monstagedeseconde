@@ -8,6 +8,7 @@ class SchoolTest < ActiveSupport::TestCase
     assert school.invalid?
     assert_not_empty school.errors[:coordinates]
     assert_not_empty school.errors[:zipcode]
+    assert_nil school.legal_status
   end
 
   test 'Agreement association' do
@@ -18,6 +19,13 @@ class SchoolTest < ActiveSupport::TestCase
                                   internship_application: internship_application)
 
     assert school.internship_agreements.include?(internship_agreement)
+  end
+
+  test "legal_status" do
+    school = create(:school)
+    assert_equal "Public", school.legal_status
+    school.update(contract_code: "30", is_public: false)
+    assert_equal "Privé sous contrat", school.legal_status
   end
 
   test 'Users associations' do

@@ -101,7 +101,8 @@ module Builders
         student_phone: student.phone,
         student_full_name: student.name,
         student_class_room: student_class_room,
-        main_teacher_full_name: main_teacher_full_name
+        main_teacher_full_name: main_teacher_full_name,
+        legal_status: student.school.legal_status
       }
       # student_class_room is not used ...
     end

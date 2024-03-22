@@ -39,20 +39,24 @@ module Dashboard
         find('.fr-badge.fr-badge--success', text: "ACCEPTÉE PAR L'ENTREPRISE")
         find("#show_link_#{internship_application.id}").click
         assert_equal "validated_by_employer", internship_application.aasm_state
-        assert_changes ->{internship_application.reload.aasm_state},
-                      from: "validated_by_employer",
-                      to: "approved" do
-          employer = internship_application.internship_offer.employer
-          within('.fr-callout') do
-            find("h3.h5.fr-callout__title", text: "Contact en entreprise")
-            assert_equal employer.presenter.formal_name, find('ul li.test-employer-name strong').text
-            assert_equal employer.email, find('ul li.test-employer-email strong').text
+        assert_changes->{InternshipAgreement.count}, from:0, to:1 do
+          assert_changes ->{internship_application.reload.aasm_state},
+                        from: "validated_by_employer",
+                        to: "approved" do
+            employer = internship_application.internship_offer.employer
+            within('.fr-callout') do
+              find("h3.h5.fr-callout__title", text: "Contact en entreprise")
+              assert_equal employer.presenter.formal_name, find('ul li.test-employer-name strong').text
+              assert_equal employer.email, find('ul li.test-employer-email strong').text
+            end
+            click_button('Choisir ce stage')
+            click_button('Confirmer')
           end
-          click_button('Choisir ce stage')
-          click_button('Confirmer')
         end
+        assert_equal "Public", InternshipAgreement.last.legal_status
         find '.fr-badge.fr-badge--success', text: "STAGE VALIDÉ"
         find "a#show_link_#{internship_application.id}", text: "Contacter l'employeur"
+        
       end
 
       test 'student can submit an application from his applications dashboard' do
