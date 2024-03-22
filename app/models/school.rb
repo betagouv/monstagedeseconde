@@ -53,13 +53,6 @@ class School < ApplicationRecord
     )
   }
 
-  def contract_label
-    return "Public" if is_public?
-    return "Privé sous contrat" if contract_code.in?([30,31])
-
-    "Privé hors contrat"
-  end
-
   def select_text_method
     "#{name} - #{city} - #{zipcode}"
   end
