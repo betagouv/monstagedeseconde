@@ -4,6 +4,10 @@ require 'test_helper'
 
 module InternshipsOffers
   class WeeklyFramedTest < ActiveSupport::TestCase
+    
+    setup do
+      create(:department)
+    end
     test 'should be valid' do
       offer = build(:weekly_internship_offer)
       assert offer.valid?
@@ -121,6 +125,7 @@ module InternshipsOffers
     end
 
     test '.reverse_department_by_zipcode works on create and save' do
+      create(:department, code: '62', name: 'Pas-de-Calais')
       internship_offer = build(:weekly_internship_offer, zipcode: '62000', department: 'Arras')
       assert_changes -> { internship_offer.department },
                      from: 'Arras',

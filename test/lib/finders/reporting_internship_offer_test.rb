@@ -5,6 +5,7 @@ require 'test_helper'
 module Finders
   class ReportingInternshipOfferTest < ActiveSupport::TestCase
     test '.total with department params filters offers by departement' do
+      create(:department, code: '02', name: 'Aisne')
       finder = ReportingInternshipOffer.new(params: { department: 'Aisne' })
       assert_equal(0,
                    finder.total,
@@ -44,6 +45,8 @@ module Finders
       academy_key_departements_values = Academy::MAP.first
       academy_name, departements = *academy_key_departements_values
       zipcode = departements.first.ljust(5, '000')
+      create(:department, code: zipcode[0..1], name: 'Aisne')
+      create(:department, code: '60', name: 'Oise')
       create(:weekly_internship_offer, zipcode: '60000')
       finder = ReportingInternshipOffer.new(params: { academy: academy_name })
       assert_equal(0,

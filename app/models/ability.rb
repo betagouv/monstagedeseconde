@@ -75,16 +75,19 @@ class Ability
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
     can :apply, InternshipOffer do |internship_offer|
-      student_can_apply?(student: user, internship_offer: internship_offer)
+      user.other_approved_applications_compatible?(internship_offer: internship_offer)
     end
     can %i[submit_internship_application update show internship_application_edit],
         InternshipApplication do |internship_application|
       internship_application.student.id == user.id
     end
+    can(:read_employer_data, InternshipApplication) do |internship_application|
+      internship_application.student.id == user.id &&
+        (internship_application.approved? || internship_application.validated_by_employer?)
+    end 
     can(:cancel, InternshipApplication) do |internship_application|
       ok_canceling = %w[ submitted
                          read_by_employer
-                         examined
                          validated_by_employer
                          approved
                          convention_signed]
@@ -106,7 +109,6 @@ class Ability
       create
       edit
       edit_activity_rating_rich_text
-      edit_complementary_terms_rich_text
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
       edit_main_teacher_full_name
@@ -114,7 +116,8 @@ class Ability
       edit_school_representative_phone
       edit_school_representative_email
       edit_school_representative_role
-      edit_school_delegation_to_sign_delivered_at
+      edit_delegation_date
+      edit_legal_status
       edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
@@ -133,9 +136,6 @@ class Ability
       update
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
-    end
-    can %i[edit update], InternshipAgreementPreset do |internship_agreement_preset|
-      internship_agreement_preset.school_id == user.school_id
     end
     can :create, Signature  do |signature|
       signature.internship_agreement.student.school == user.school
@@ -160,7 +160,6 @@ class Ability
       edit
       sign_internship_agreements
       edit_activity_rating_rich_text
-      edit_complementary_terms_rich_text
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
       edit_main_teacher_full_name
@@ -168,7 +167,8 @@ class Ability
       edit_school_representative_phone
       edit_school_representative_email
       edit_school_representative_role
-      edit_school_delegation_to_sign_delivered_at
+      edit_delegation_date
+      edit_legal_status
       edit_student_refering_teacher_full_name
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
@@ -187,9 +187,6 @@ class Ability
       update
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
-    end
-    can %i[edit update], InternshipAgreementPreset do |internship_agreement_preset|
-      internship_agreement_preset.school_id == user.school_id
     end
     can :create, Signature do |signature|
       signature.internship_agreement.school_manager == user.id
@@ -247,9 +244,12 @@ class Ability
       edit_tutor_email
       edit_tutor_role
       edit_activity_scope_rich_text
+      edit_skills_observe_rich_text
+      edit_skills_communicate_rich_text
+      edit_skills_understand_rich_text
+      edit_skills_motivation_rich_text
       edit_activity_preparation_rich_text
       edit_activity_learnings_rich_text
-      edit_complementary_terms_rich_text
       edit_date_range
       edit_organisation_representative_full_name
       edit_siret
@@ -516,9 +516,5 @@ class Ability
 
     school_year_start = SchoolYear::Current.new.beginning_of_period
     internship_offer.last_date > school_year_start
-  end
-
-  def student_can_apply?(internship_offer:, student:)
-    !student.has_already_approved_an_application?
   end
 end

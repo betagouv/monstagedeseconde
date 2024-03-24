@@ -9,7 +9,7 @@ FactoryBot.define do
     hosting_info { create(:hosting_info, employer: employer) }
     practical_info { create(:practical_info, employer: employer) }
 
-    sequence(:title) { |n| "Stage de 3è - #{n}" }
+    sequence(:title) { |n| "Stage de 2de - #{n}" }
     description { 'Lorem ipsum dolor' }
     contact_phone { '+330612345678' }
     max_candidates { 1 }
@@ -27,6 +27,7 @@ FactoryBot.define do
     street { '1 rue du poulet' }
     zipcode { '75001' }
     city { 'Paris' }
+    department { create(:department, code: '75', name: 'Paris') }
     employer_name { 'Octo' }
     coordinates { Coordinates.paris }
     siret { '11122233300000' }
@@ -44,6 +45,10 @@ FactoryBot.define do
     end
     weekly_hours { [] }
     lunch_break { "12:00-13:00" }
+
+    before(:create) do |internship_offer|
+      Department.create(code: '75', name: 'Paris')
+    end
 
     trait :drafted do
       aasm_state { :drafted }
@@ -86,6 +91,9 @@ FactoryBot.define do
     trait :weekly_internship_offer do
       description { 'Lorem ipsum dolor weekly_internship_offer' }
       remaining_seats_count { max_candidates }
+      before(:create) do |internship_offer|
+        Department.create(code: '75', name: 'Paris')
+      end
     end
 
     trait :api_internship_offer do

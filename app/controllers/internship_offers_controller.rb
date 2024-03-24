@@ -121,17 +121,13 @@ class InternshipOffersController < ApplicationController
   end
 
   def alternative_internship_offers
-    # TODO refacto : difficult to understand
     priorities = [
       [:latitude, :longitude, :radius], #1
-      [:week_ids], #2
-      [:keyword] #3
+      [:keyword] #2
     ]
 
-    alternative_internship_offers = []
+    alternative_offers = []
     priorities.each do |priority|
-      next unless priority.any? { |p| params[p].present? && params[p] != Nearbyable::DEFAULT_NEARBY_RADIUS_IN_METER.to_s }
-
       priority_offers = Finders::InternshipOfferConsumer.new(
         params: params.permit(*priority),
         user: current_user_or_visitor
@@ -144,18 +140,23 @@ class InternshipOffersController < ApplicationController
         ).all.to_a
       end
 
-      alternative_internship_offers << priority_offers
+      alternative_offers << priority_offers
 
-      alternative_internship_offers = alternative_internship_offers.flatten
-      break if alternative_internship_offers.count > 5
-      alternative_internship_offers
+      alternative_offers = alternative_offers.flatten.uniq
+      break if alternative_offers.count > 5
     end
 
+    if alternative_offers.count < 5
+      alternative_offers += InternshipOffer.uncompleted.last(5 - alternative_offers.count)
+      alternative_offers = alternative_offers.uniq
+    end
+    
     if params[:latitude].present?
-      alternative_internship_offers.sort_by { |offer| offer.distance_from(params[:latitude], params[:longitude]) }.first(5)
+      alternative_offers.sort_by { |offer| offer.distance_from(params[:latitude], params[:longitude]) }.first(5)
     else
-      alternative_internship_offers.first(5)
+      alternative_offers.first(5)
     end
+    alternative_offers
   end
 
   def increment_internship_offer_view_count

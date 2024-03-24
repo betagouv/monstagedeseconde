@@ -29,7 +29,6 @@ module Product
 
 
     test 'USE_W3C, new_dashboard_internship_offer_path(duplicate_id)' do
-      skip "test to update after ui is finished #TODO #may_flower"
       stage_dev = create(:weekly_internship_offer)
       sign_in(stage_dev.employer)
       run_request_and_cache_response(report_as: 'new_dashboard_internship_offer_path') do
@@ -58,7 +57,7 @@ module Product
     end
 
     test 'index as school_manager see progress' do
-      school = create(:school, :with_agreement_presets, :with_school_manager)
+      school = create(:school, :with_school_manager)
       class_room = create(:class_room,  school: school)
 
       internship_application_1 = create(:weekly_internship_application,
@@ -87,7 +86,6 @@ module Product
     end
 
     test 'USE_W3C, employer dashboard_internship_applications_path' do
-      skip "test to update after ui is finished #TODO #may_flower"
       internship_application = create(:weekly_internship_application, :approved)
       sign_in(internship_application.internship_offer.employer)
       run_request_and_cache_response(report_as: 'dashboard_internship_applications_path') do

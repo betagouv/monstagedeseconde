@@ -2,9 +2,6 @@
 - if current_user
   - content_for(:page_title, "#{t(".page_title", name: @internship_application.student.presenter.full_name)} | Monstage")
   - presenter = @internship_application.presenter(current_user)
-  = render 'layouts/breadcrumb',
-            links: [ [current_user.presenter.dashboard_name_link, current_user.dashboard_name],
-                    ['', @internship_application.internship_offer.title]]
 
   - if current_user.student?
     .sticky-top.white-header
@@ -28,7 +25,7 @@
               aasm_target: :cancel_by_student!,
               aasm_notifier: aasm_notifier,
               modal_id: "cancel-by-student-internship-application-#{@internship_application.id}",
-              modal_opener_label: "Annuler",
+              modal_opener_label: "Confirmer l'annulation",
               message: "Une fois la candidature annulée, un email de notification va être envoyé à l'employeur avec le motif de l'annulation",
               rich_text: true,
               subtitle: "Motif de l'annulation"
@@ -43,7 +40,7 @@
               subtitle: ""
 
   - elsif current_user.employer_like?
-    .fr-mb-5w
+    .fr-mt-5w
         = link_to dashboard_candidatures_path(current_user.id),
                   class: 'fr-mt-8w ' do
           span.fr-icon-arrow-left-line.fr-btn--icon-left.fr-raw-link
@@ -60,23 +57,9 @@
               = render "internship_offers/show_details",
                       internship_offer: @internship_offer,
                       hidden_parts: true
-        - if @internship_application.approved?
-          .row
-            .col-sm-8.col-lg-12
-              .fr-callout
-                h3.h5.fr-callout__title Contact en entreprise
-                p.fr-callout__text
-                  ul
-                    li
-                      = "votre responsable dans l'entreprise : "
-                      strong = @internship_offer.employer.presenter.formal_name
-                    li
-                      = "son adresse email : "
-                      strong = @internship_offer.employer.email
-                = mail_to(@internship_offer.employer.email,
-                        'Lui écrire',
-                        subject: "[Stagiaire #{@internship_application.student.presenter.short_civil_full_name}] - prise de contact",
-                        class: 'fr-btn fr-btn--sm fr-mt-2w')
+        - if can?(:read_employer_data, @internship_application)
+          = render 'dashboard/internship_offers/internship_applications/employer_contact',
+                    internship_application: @internship_application
 .row
   .col-12
     h2.h3.fr-mt-4w.fr-mb-2w
@@ -88,7 +71,7 @@
     .grey-container-application.with-grey-background
       h2.h4.fr-mb-4w = @internship_application.student.presenter.full_name
       p.fr-icon-calendar-line.fr-btn--icon-left
-        ="Semaine <strong>#{@internship_application.internship_offer.period}</strong>".html_safe
+        = "Période : <strong>#{@internship_application.internship_offer.period_label}</strong>".html_safe
       - unless @internship_application.motivation.to_s.blank?
         h3.h5 Motivations
         p = @internship_application.motivation.to_s

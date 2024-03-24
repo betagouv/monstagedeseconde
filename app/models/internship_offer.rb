@@ -202,6 +202,8 @@ class InternshipOffer < ApplicationRecord
     where(school_year: next_year)
   }
 
+  scope :by_department, ->(departments) { where(department: departments) }
+
   aasm do
     state :drafted, initial: true
     state :published,

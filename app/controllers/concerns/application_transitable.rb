@@ -53,7 +53,7 @@ module ApplicationTransitable
     def update_flash_message
       current_user = authorize_through_sgid? ? @internship_application.student : @current_user
       case
-      when @internship_application.reload.read_by_employer? || @internship_application.examined?
+      when @internship_application.reload.read_by_employer?
         "Candidature mise à jour."
       when @internship_application.rejected?
         "Candidature refusée."
@@ -68,7 +68,6 @@ module ApplicationTransitable
       %w[
         submit!
         read!
-        examine!
         employer_validate!
         approve!
         reject!
@@ -78,8 +77,7 @@ module ApplicationTransitable
     end
 
     def optional_internship_application_params
-      params.permit(internship_application: %i[examined_message
-                                               approved_message
+      params.permit(internship_application: %i[approved_message
                                                canceled_by_employer_message
                                                canceled_by_student_message
                                                rejected_message

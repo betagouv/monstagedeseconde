@@ -11,7 +11,7 @@ module Presenters
                    current_total_approved_internship_applications_count
                    human_school_manager
                    full_address
-                   full_weeks].freeze
+                   ].freeze
 
       def self.metrics
         [].concat(ATTRS, METHODS)
@@ -41,10 +41,6 @@ module Presenters
 
       def full_address
         Address.new(instance: instance).to_s
-      end
-
-      def full_weeks
-        WeekList.new(weeks: instance.weeks).to_range_as_str
       end
 
       private

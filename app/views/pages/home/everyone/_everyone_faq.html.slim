@@ -1,0 +1,60 @@
+.mx-lg-0.fr-mx-2w.fr-py-4w
+  h3.fr-pt-3w Foire aux questions
+
+  .row.fr-py-3w 
+    .col-md-4.col-12-xs.d-flex.align-items-stretch.fr-mb-2w
+      .fr-card.fr-enlarge-link.without-arrow
+        .fr-card__body.fr-pt-2w
+          .fr-card__content
+            h3.fr-card__title.fr-mb-2w.std-height
+              = link_to "Qu’est-ce qu’une séquence d’observation en milieu professionnel ?",
+                        '#',
+                        class: 'text-dark'
+            p.fr-card__desc
+              |< Une séquence d’observation en milieu professionnel est un temps offert aux élèves pour découvrir un environnement technologique, économique et professionnel, en liaison avec les programmes d’enseignement, notamment dans le cadre de l’éducation à l’orientation. 
+            p.fr-card__desc
+              |<  Elle contribue à donner un sens à cette éducation en favorisant le contact direct avec les acteurs dans leur milieu professionnel.
+        .fr-card__header.fr-my-4w
+          ul.fr-badges-group.fr-p-4w
+            li
+              p.fr-badge.fr-badge--yellow-tournesol professionel
+    .col-md-4.col-12-xs.d-flex.align-items-stretch.fr-mb-2w
+      .fr-card.fr-enlarge-link.without-arrow
+        .fr-card__body.fr-pt-2w
+          .fr-card__content
+            h3.fr-card__title.fr-mb-2w.std-height
+              = link_to ' Quelle est la durée de la séquence d’observation et quand se déroule-t-elle ? ', '#', class: 'text-dark'
+            p.fr-card__desc
+              | Les élèves de classe de seconde générale et technologique accomplissent une séquence d’observation de deux semaines pendant le dernier mois de l’année scolaire selon un calendrier national. Elles s’effectuent sur temps scolaire. Cette période correspond à celle des épreuves terminales du baccalauréat général et technologique. 
+            p.fr-card__desc
+              | Pour l’année scolaire 2023-2024, celle-ci se déroulera du 17 au 28 juin 2024 inclus.
+        .fr-card__header.fr-my-4w
+          ul.fr-badges-group.fr-p-4w
+            li
+              p.fr-badge.fr-badge--info.fr-badge--no-icon éducation
+    .col-md-4.col-12-xs.d-flex.align-items-stretch.fr-mb-2w
+      .fr-card.fr-enlarge-link.without-arrow
+        .fr-card__body.fr-pt-2w
+          .fr-card__content
+            h3.fr-card__title.fr-mb-2w.std-height
+              = link_to 'Comment postuler à une offre de stage via la plateforme ?', '#', class: 'text-dark'
+            - url = "https://stagedeseconde.1jeune1solution.gouv.fr"
+            p.fr-card__desc
+              | 1. Rendez-vous sur la page d'accueil
+              = link_to url, url, target: '_blank', class: 'text-dark'
+              br
+                | 2. Cliquez sur le bloc "Élèves de 2de générale et technologique"
+              br
+                | 3. Cliquez sur Rechercher pour faire apparaître toutes les offres correspondant à vos attentes 
+              br
+                | 4. Cliquez sur l'offre qui vous intéresse, et cliquez sur le bouton "Je postule"
+        .fr-card__header.fr-my-4w
+          ul.fr-badges-group.fr-p-4w
+            li
+              p.fr-badge.fr-badge--purple-glycine élève
+
+  .row.fr-my-3w
+    .col-12.text-center
+      = link_to 'Accéder à la FAQ',
+                'https://zammad.incubateur.anct.gouv.fr/help/fr-fr',
+                class: 'fr-btn fr-btn--secondary'

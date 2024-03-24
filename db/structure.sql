@@ -404,7 +404,8 @@ CREATE TABLE public.class_rooms (
     name character varying,
     school_id bigint,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    class_size integer
 );
 
 
@@ -645,38 +646,6 @@ CREATE SEQUENCE public.identities_id_seq
 --
 
 ALTER SEQUENCE public.identities_id_seq OWNED BY public.identities.id;
-
-
---
--- Name: internship_agreement_presets; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.internship_agreement_presets (
-    id bigint NOT NULL,
-    school_delegation_to_sign_delivered_at date,
-    school_id bigint,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: internship_agreement_presets_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.internship_agreement_presets_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: internship_agreement_presets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.internship_agreement_presets_id_seq OWNED BY public.internship_agreement_presets.id;
 
 
 --
@@ -1373,38 +1342,6 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: school_internship_weeks; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.school_internship_weeks (
-    id bigint NOT NULL,
-    school_id bigint,
-    week_id bigint,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: school_internship_weeks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.school_internship_weeks_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: school_internship_weeks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.school_internship_weeks_id_seq OWNED BY public.school_internship_weeks.id;
-
-
---
 -- Name: schools; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1427,7 +1364,10 @@ CREATE TABLE public.schools (
     fetched_school_address character varying(300),
     fetched_school_email character varying(100),
     legal_status character varying,
-    delegation_date date
+    delegation_date date,
+    is_public boolean DEFAULT true,
+    contract_code character varying(3),
+    contract_label character varying(70)
 );
 
 
@@ -1951,13 +1891,6 @@ ALTER TABLE ONLY public.identities ALTER COLUMN id SET DEFAULT nextval('public.i
 
 
 --
--- Name: internship_agreement_presets id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.internship_agreement_presets ALTER COLUMN id SET DEFAULT nextval('public.internship_agreement_presets_id_seq'::regclass);
-
-
---
 -- Name: internship_agreements id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2060,13 +1993,6 @@ ALTER TABLE ONLY public.organisations ALTER COLUMN id SET DEFAULT nextval('publi
 --
 
 ALTER TABLE ONLY public.practical_infos ALTER COLUMN id SET DEFAULT nextval('public.practical_infos_id_seq'::regclass);
-
-
---
--- Name: school_internship_weeks id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.school_internship_weeks ALTER COLUMN id SET DEFAULT nextval('public.school_internship_weeks_id_seq'::regclass);
 
 
 --
@@ -2258,14 +2184,6 @@ ALTER TABLE ONLY public.identities
 
 
 --
--- Name: internship_agreement_presets internship_agreement_presets_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.internship_agreement_presets
-    ADD CONSTRAINT internship_agreement_presets_pkey PRIMARY KEY (id);
-
-
---
 -- Name: internship_agreements internship_agreements_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2391,14 +2309,6 @@ ALTER TABLE ONLY public.practical_infos
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
-
-
---
--- Name: school_internship_weeks school_internship_weeks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.school_internship_weeks
-    ADD CONSTRAINT school_internship_weeks_pkey PRIMARY KEY (id);
 
 
 --
@@ -2635,13 +2545,6 @@ CREATE INDEX index_identities_on_school_id ON public.identities USING btree (sch
 --
 
 CREATE INDEX index_identities_on_user_id ON public.identities USING btree (user_id);
-
-
---
--- Name: index_internship_agreement_presets_on_school_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internship_agreement_presets_on_school_id ON public.internship_agreement_presets USING btree (school_id);
 
 
 --
@@ -2967,20 +2870,6 @@ CREATE INDEX index_practical_infos_on_coordinates ON public.practical_infos USIN
 
 
 --
--- Name: index_school_internship_weeks_on_school_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_school_internship_weeks_on_school_id ON public.school_internship_weeks USING btree (school_id);
-
-
---
--- Name: index_school_internship_weeks_on_week_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_school_internship_weeks_on_week_id ON public.school_internship_weeks USING btree (week_id);
-
-
---
 -- Name: index_schools_on_city_tsv; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3185,14 +3074,6 @@ ALTER TABLE ONLY public.internship_applications
 
 
 --
--- Name: school_internship_weeks fk_rails_07f908dbef; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.school_internship_weeks
-    ADD CONSTRAINT fk_rails_07f908dbef FOREIGN KEY (week_id) REFERENCES public.weeks(id);
-
-
---
 -- Name: hosting_info_weeks fk_rails_0ab0d03d1c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3310,14 +3191,6 @@ ALTER TABLE ONLY public.identities
 
 ALTER TABLE ONLY public.internship_offer_weeks
     ADD CONSTRAINT fk_rails_5b8648c95e FOREIGN KEY (week_id) REFERENCES public.weeks(id);
-
-
---
--- Name: school_internship_weeks fk_rails_61db9e054c; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.school_internship_weeks
-    ADD CONSTRAINT fk_rails_61db9e054c FOREIGN KEY (school_id) REFERENCES public.schools(id);
 
 
 --
@@ -3511,6 +3384,8 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240321160820'),
+('20240320170403'),
 ('20240316135712'),
 ('20240315100413'),
 ('20240315090504'),

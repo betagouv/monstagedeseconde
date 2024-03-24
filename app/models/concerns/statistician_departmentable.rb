@@ -11,7 +11,7 @@ module StatisticianDepartmentable
     end
 
     def department_name
-      Department::MAP[department]
+      Department.find_by(code: department).try(:name)
     end
 
     def department_zipcode

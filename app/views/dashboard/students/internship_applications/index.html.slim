@@ -10,6 +10,9 @@
       - if current_user.student?
         h1.h2.mb-3.text-dark
           | Mes candidatures
+        p 
+          | Sur cette page, vous trouverez toutes les offres de stage auxquelles vous 
+          | avez postulé. Les offres qui nécessitent une action de votre part apparaissent en premier.
         - if params[:notice_banner]
           = render 'notice_banner'
       - else
@@ -26,7 +29,7 @@
         - if current_user.student?
           = link_to "Rechercher un stage", user_presenter.default_internship_offers_path, class: 'fr-btn my-1 px-5'
   - else
-    .d-flex.flex-column
+    .d-flex.flex-column.fr-py-4w
       - if current_user.student? && current_user.internship_applications.validated_by_employer.count.positive?
         .row
           .col-12.col-md-6.fr-mb-2w
@@ -35,7 +38,7 @@
               p L’entreprise a validé votre stage, c’est à vous de confirmer que vous choisissez ce stage et que vous allez y aller.
       = render partial: "dashboard/students/internship_applications/student_internship_application",
               collection: @internship_applications
-    - if current_user.student? && !current_user.has_already_approved_an_application?
+    - unless current_user.with_2_weeks_internships_approved?
       .row
         .col-12
           = link_to "Rechercher un autre stage",

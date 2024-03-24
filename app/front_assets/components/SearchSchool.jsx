@@ -115,7 +115,7 @@ export default function SearchSchool({
   }
 
   const renderAutocompleteInput = () => {
-    const search_label = 'Adresse ou ville de mon établissement REP ou REP+'
+    const search_label = 'Adresse ou commune de mon lycée'
     return (
       <Downshift
         initialInputValue={city}
@@ -194,7 +194,7 @@ export default function SearchSchool({
                         Object.keys(autocompleteCitySuggestions || {}).length > 0 ? '' : 'd-none'
                       }`}
                     >
-                      Ville(s)
+                      Communes(s)
                     </li>
                     {Object.keys(autocompleteCitySuggestions || {}).map((currentCity, index) => (
                       <li
@@ -264,7 +264,7 @@ export default function SearchSchool({
                 {autocompleteNoResult && (
                   <li className="list-group-item list-group-item-info small">
                     Aucun résultat pour votre recherche. Assurez-vous que l’établissement renseigné
-                    est un établissement REP ou REP+.
+                    est un lycée général ou technologique.
                   </li>
                 )}
               </ul>

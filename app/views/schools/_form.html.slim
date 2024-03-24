@@ -21,7 +21,7 @@
       = f.text_field :code_uai, class: "fr-input col-lg-6", required:true
 
     .form-group
-      = f.label :kind, "Type de collège", class: 'fr-label'
+      = f.label :kind, "Type de lycée", class: 'fr-label'
       = f.select :kind,
                   options_for_select(School::VALID_TYPE_PARAMS),
                   { include_blank: false },

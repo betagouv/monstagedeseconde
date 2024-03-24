@@ -20,7 +20,7 @@ fr:
     passwords:
       update: 'Mot de passe mis à jour.'
     sms:
-      welcome_student: "Bienvenue sur Mon Stage de 2de ! Faites votre première recherche et 2 candidatures ! Cliquez ici pour commencer : %{shrinked_url}"
+      welcome_student: "Bienvenue sur Mon Stage de 2de ! Faites votre première recherche et candidature ! Cliquez ici pour commencer : %{shrinked_url}"
   activerecord:
     models:
       area_notification:
@@ -130,7 +130,7 @@ fr:
         kind: Classification
         human_kind: Classification
         zipcode: Code postal
-        city: Ville
+        city: Commune
         visible: Activé?
         department: Département
         class_rooms: Classes
@@ -155,7 +155,7 @@ fr:
         group: Groupe ou institution
         street: Adresse du lieu de stage
         zipcode: Code postal
-        city: Ville
+        city: Commune
         coordinates: Coordonnées GPS
         siren: Code Siren
       hosting_info:
@@ -206,12 +206,10 @@ fr:
         weekly_hours: Horaires
         daily_lunch_break: Horaires journaliers pause déjeuner
         weekly_lunch_break: Horaires pause déjeuner
-        school_delegation_to_sign_delivered_at: Date de déléguation
         activity_rating_rich_text: Modalités d'évaluation
         activity_scope_rich_text: Objectifs du stage
         activity_preparation_rich_text: Modalités de concertation
         activity_learnings_rich_text: Compétences visées
-        complementary_terms_rich_text: Dispositions générales
         legal_terms_rich_text: Conditions complémentaires
         student_school: Établissement de l'élève
         doc_date: Date du document
@@ -506,7 +504,7 @@ fr:
             street:
               blank: "Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage"
             city:
-              blank: "Veuillez renseigner la ville l'employeur"
+              blank: "Veuillez renseigner la commune l'employeur"
             public:
               inclusion: "Veuillez choisir une institution de tutelle pour cette offre de stage"
         partner:

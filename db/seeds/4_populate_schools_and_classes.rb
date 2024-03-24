@@ -1,9 +1,10 @@
 import 'csv'
+require 'pretty_console'
 def populate_schools
   col_hash= { uai: 0, nom_etablissement: 2, adresse: 3, code_postal: 4, commune: 5, position: 6 }
   error_lines = []
   file_location_production = Rails.root.join('db/data_imports/annuaire_lycees.csv')
-  file_location_review = Rails.root.join('db/data_imports/annuaire_lycees_light.csv')
+  file_location_review = Rails.root.join('db/data_imports/light_files/annuaire_lycees_light.csv')
   file_location = Rails.env.in?(%w[review development]) ? file_location_review : file_location_production
   CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
     next if line_nr.zero?
@@ -54,11 +55,66 @@ def populate_schools
 end
 
 def populate_class_rooms
-  school = find_default_school_during_test
+  col_hash= { academie: 0, code_uai: 1, :'id_etab_sco-net' => 2, class_room_name: 3, class_size: 4 }
+  error_lines = []
+  file_location = Rails.root.join('db/data_imports/noms_de_classes.csv')
+  CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
+    # with_index(2) : 2 is the offset to keep track of line number, taking into account the header
+    next if line_nr.zero?
 
-  ClassRoom.create(name: '2de A', school: school)
-  ClassRoom.create(name: '2de B', school: school)
-  ClassRoom.create(name: '2de C', school: school)
+    cells = row.to_s.split(';')
+
+    code_uai = cells[col_hash[:code_uai]]
+    school = School.find_by(code_uai: code_uai)
+    unless school.nil?
+      print "#{school.name} - #{school.code_uai} missing data" if cells[col_hash[:class_room_name]].blank?
+      class_room_name_new = false
+      class_room = ClassRoom.find_or_create_by(name: cells[col_hash[:class_room_name]], school: school) do |class_room|
+        class_room.class_size = cells[col_hash[:class_size]]
+        class_room.name = cells[col_hash[:class_room_name]]
+        class_room.school_id = school.id
+        class_room_name_new = true
+      end
+    end
+  end
+  puts ''
+  PrettyConsole.say_in_yellow "Done with creating class_rooms"
+end
+
+def update_schools_with_public_private_info
+  col_hash= { uai: 0, public_private: 1,  contract_label: 2, contract_code: 3}
+  error_lines = []
+  file_location = Rails.root.join('db/data_imports/school_public_prive.csv')
+  CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
+    next if line_nr.zero?
+
+    cells = row.to_s.split(';')
+
+    uai = cells[col_hash[:uai]]
+    next if uai.nil?
+    school = School.find_by(code_uai: uai)
+    next if school.nil?
+
+    is_public = cells[col_hash[:public_private]].gsub("\n", '') == "Public"
+    contract_code = cells[col_hash[:contract_code]].gsub("\n", '')
+    contract_label = cells[col_hash[:contract_label]].gsub("\n", '')
+
+    school_params = {
+      is_public: is_public,
+      contract_code: contract_code,
+      contract_label: contract_label
+    }
+
+    result = school.update(**school_params)
+    if result
+      print "."
+    else
+      error_lines << ["Ligne #{line_nr}" , school.name, school.errors.full_messages.join(", ")]
+      print "o"
+    end
+  end
+  puts ""
+  PrettyConsole.say_in_yellow  "Done with updating schools(lycées)"
 end
 
 def find_default_school_during_test
@@ -74,22 +130,15 @@ end
 # used for application
 def populate_school_weeks
   school = find_default_school_during_test
-  weeks = Week.where(year: SchoolYear::Current.new.end_of_period.year.to_i, number: [29, 30])
-  # used for application
-  school.weeks = weeks
-  school.save!
 
   # used to test matching between internship_offers.weeks and existing school_weeks
   other_schools = School.nearby(latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude], radius: 60_000).limit(4)
                         .where.not(id: school.id)
-  other_schools.each.with_index do |another_school, i|
-    another_school.update!(weeks: weeks)
-  end
-  missing_school_manager_school.update!(weeks: weeks)
 end
 
 call_method_with_metrics_tracking([
   :populate_schools,
   :populate_class_rooms,
-  :populate_school_weeks
+  :populate_school_weeks,
+  :update_schools_with_public_private_info
 ])

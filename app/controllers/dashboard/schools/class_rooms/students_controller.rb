@@ -18,7 +18,7 @@ module Dashboard
         authorize! :manage_school_students, current_user.school
 
         @class_room = @school.class_rooms.find(params.require(:class_room_id))
-        @student = Users::Student.new
+        @student = ::Users::Student.new
         @students = @class_room.students.kept
                                .order(:created_at)
       end
@@ -26,7 +26,7 @@ module Dashboard
       def create
         authorize! :manage_school_students, current_user.school
         @class_room = @school.class_rooms.find(params.require(:class_room_id))
-        @student = Users::Student.new(formatted_student_params)
+        @student = ::Users::Student.new(formatted_student_params)
         if @student.save
           notify_student
           redirect_to new_dashboard_school_class_room_student_path(@class_room.school, @class_room), notice: 'Elève créé !'
@@ -56,7 +56,7 @@ module Dashboard
         student_params.merge(
           school_id: @class_room.school_id, 
           class_room_id: @class_room.id,
-          password: Devise.friendly_token.first(8),
+          password: make_password,
           created_by_teacher: true,
         )
       end
@@ -74,6 +74,13 @@ module Dashboard
         end
       end
 
+      def make_password
+        numbers = (0..9).to_a.sample(3)
+        capitals = ("A".."Z").to_a.sample(3)
+        letters = ("a".."z").to_a.sample(8)
+        specials = ["!","&","+","_","ç"].sample(2)
+        (numbers + capitals + letters + specials).shuffle.join
+      end
     end
   end
 end

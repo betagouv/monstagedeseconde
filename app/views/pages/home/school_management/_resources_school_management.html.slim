@@ -1,0 +1,27 @@
+.fr-my-4w
+  .row.fr-mb-3w
+    .col-lg-8.col-md-8.col-sm-12
+      h2.fr-h1.text-blue-france.pl-1.mb-0.pb-3
+        | Ressources utiles
+  .row.fr-pb-7w
+    - base_url = "http://monstagedeseconde-public.cellar-fr-north-hds-c1.services.clever-cloud.com/"
+    = render partial: "pages/home/resource_card",
+            locals: { badge: "PDF",
+                      link_title: "Fiche de présentation Équipes pédagogiques",
+                      file: "https://cellar-fr-north-hds-c1.services.clever-cloud.com/monstagedeseconde-public/Fiche_presentation_equipes_pedagogiques.pdf" ,
+                      target: '_blank' }
+    / = render partial: "pages/home/resource_card",
+            locals: { badge: "PDF",
+                      link_title: "Carnet de bord du stagiaire",
+                      file: "#{base_url}Carnet_de_bord_du_stagiaire.pdf",
+                      target: '_blank' }
+    = render partial: "pages/home/resource_card",
+            locals: { badge: "PDF",
+                      link_title: "Calendrier d’une semaine de stage à remplir",
+                      file: "https://cellar-fr-north-hds-c1.services.clever-cloud.com/monstagedeseconde-public/Calendrier_stage_a_remplir.pdf",
+                      target: '_blank' }
+    = render partial: "pages/home/resource_card",
+            locals: { badge: "Dossier",
+                      link_title: "Kit de communication",
+                      file: "#{base_url}Kit_de_communication_leger_Mon_stage_de_seconde.zip" }
+

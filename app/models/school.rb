@@ -6,18 +6,17 @@ class School < ApplicationRecord
   include SchoolUsersAssociations
 
   has_many :class_rooms, dependent: :destroy
-  has_many :school_internship_weeks, dependent: :destroy
-  has_many :weeks, through: :school_internship_weeks
   has_many :internship_offers, dependent: :nullify
   has_many :internship_applications, through: :students
   has_many :internship_agreements, through: :internship_applications
-  has_one :internship_agreement_preset
 
   has_rich_text :agreement_conditions_rich_text
 
   validates :city, :name, :code_uai, presence: true
   validates :code_uai, uniqueness: true
   validates :zipcode, zipcode: { country_code: :fr }
+
+  before_save :set_legal_status
 
   VALID_TYPE_PARAMS = %w[rep rep_plus qpv qpv_proche].freeze
 
@@ -37,14 +36,7 @@ class School < ApplicationRecord
                                             .pluck(:school_id))
   }
 
-  scope :without_weeks_on_current_year, lambda {
-    all.where.not(
-      id: self.joins(:weeks)
-              .merge(Week.selectable_on_school_year)
-              .pluck(:id)
-    )
-  }
-
+  # TODO : the following scopes are not used in the codebase
   scope :from_departments_with_len, lambda { |department_str_array:, string_size: |
     zip_codes_as_str = Arel::Nodes::NamedFunction.new('CAST', [Arel.sql("schools.zipcode as varchar(255)")] )
     first_chars = Arel::Nodes::NamedFunction.new('LEFT', [zip_codes_as_str, string_size] )
@@ -66,7 +58,7 @@ class School < ApplicationRecord
   end
 
   def agreement_address
-    "Collège #{name} - #{city}, #{zipcode}"
+    "Lycée #{name} - #{city}, #{zipcode}"
   end
   
   rails_admin do
@@ -134,11 +126,6 @@ class School < ApplicationRecord
       field :department
       field :class_rooms
       field :internship_offers
-      field :weeks do
-        pretty_value do
-          school = Presenters::WeekList.new(weeks: bindings[:object].weeks).to_range_as_str
-        end
-      end
       field :school_manager
     end
 
@@ -151,12 +138,6 @@ class School < ApplicationRecord
       field :school_manager, :string do
         export_value do
           bindings[:object].school_manager.try(:name)
-        end
-      end
-      # Weeks are removed for now because it is not readable as an export
-      field :weeks, :string do
-        export_value do
-          bindings[:object].weeks.map(&:long_select_text_method)
         end
       end
     end
@@ -176,12 +157,7 @@ class School < ApplicationRecord
     }
   end
 
-  def has_weeks_on_current_year?
-    weeks.selectable_on_school_year.exists?
-  end
 
-  after_create :create_internship_agreement_preset!,
-               if: lambda { |s| s.internship_agreement_preset.blank? }
 
   def has_staff?
     users.where("role = 'teacher' or role = 'main_teacher' or role = 'other'")
@@ -195,6 +171,19 @@ class School < ApplicationRecord
 
   def email_domain_name
     Academy.get_email_domain(Academy.lookup_by_zipcode(zipcode: zipcode))
+  end
+
+  private
+
+  def contract_label
+    return "Public" if is_public?
+    return "Privé sous contrat" if contract_code.in?(["30","31"])
+
+    "Privé hors contrat"
+  end
+
+  def set_legal_status
+    self.legal_status = contract_label
   end
 end
 

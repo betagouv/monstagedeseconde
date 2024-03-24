@@ -9,6 +9,8 @@ module Presenters
     delegate :default_search_options, to: :user
     delegate :email, to: :user
 
+    def forbidden_application_reason ; nil end
+
     def initials
       "#{user.first_name[0].capitalize}.#{user.last_name[0].capitalize}."
     end
@@ -22,7 +24,7 @@ module Presenters
     end
 
     def formal_name
-      "#{gender_text} #{user.first_name.try(:capitalize)} #{user.last_name.try(:capitalize)}"
+      "#{gender_text} #{user.first_name.try(:capitalize)} #{user.last_name.try(:capitalize)}".strip
     end
 
     def full_name_camel_case
@@ -109,7 +111,7 @@ module Presenters
         title = "Se créer un compte en tant que gestionnaire d'établissement scolaire"
         subtitle = "Vous souhaitez que vos élèves trouvent un stage " \
         "de qualité. Cet outil vous permettra d'accéder à un tableau " \
-        "de suivi de vos élèves tout au long de leurs recherches de leur stage." 
+        "de suivi de vos élèves tout au long de leur recherche de stage." 
       end
       {
         title: title,

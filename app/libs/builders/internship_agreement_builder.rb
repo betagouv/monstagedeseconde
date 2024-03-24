@@ -10,7 +10,6 @@ module Builders
         {}.merge(preprocess_student_to_params(internship_application.student))
           .merge(preprocess_internship_offer_params(internship_application.internship_offer))
           .merge(preprocess_internship_application_params(internship_application))
-          .merge(preprocess_internship_agreement_preset(internship_application))
       )
       internship_agreement.internship_application = internship_application
       internship_agreement
@@ -64,17 +63,6 @@ module Builders
       }
     end
 
-    def preprocess_internship_agreement_preset(internship_application)
-      internship_agreement_preset = internship_application.student.school.internship_agreement_preset
-
-      {
-        school_delegation_to_sign_delivered_at: internship_agreement_preset.school_delegation_to_sign_delivered_at,
-        legal_terms_rich_text: internship_agreement_preset.legal_terms_rich_text.body,
-        complementary_terms_rich_text: internship_agreement_preset.complementary_terms_rich_text.body,
-        activity_rating_rich_text: internship_agreement_preset.troisieme_generale_activity_rating_rich_text.body
-      }
-    end
-
     def preprocess_internship_offer_params(internship_offer)
       {
         organisation_representative_full_name: internship_offer.employer.presenter.full_name,
@@ -113,7 +101,8 @@ module Builders
         student_phone: student.phone,
         student_full_name: student.name,
         student_class_room: student_class_room,
-        main_teacher_full_name: main_teacher_full_name
+        main_teacher_full_name: main_teacher_full_name,
+        legal_status: student.school.legal_status
       }
       # student_class_room is not used ...
     end

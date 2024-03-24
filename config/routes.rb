@@ -100,7 +100,6 @@ Rails.application.routes.draw do
         resources :invitations, only: %i[new create index destroy], module: 'schools'
         get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
         resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
-        resources :internship_agreement_presets, only: %i[edit update],  module: 'schools'
 
         resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy], module: 'schools' do
           resources :students, path: 'eleves', only: %i[update index new create], module: 'class_rooms'

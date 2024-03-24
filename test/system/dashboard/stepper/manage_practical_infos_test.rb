@@ -11,6 +11,7 @@ class ManagePracticalInfosTest < ApplicationSystemTestCase
       organisation          = create(:organisation, employer: employer)
       internship_offer_info = create(:internship_offer_info, employer: employer)
       hosting_info          = create(:hosting_info, employer: employer)
+      create(:department, code: '75', name: 'Paris')
       sign_in(employer)
       visit new_dashboard_stepper_practical_info_path(organisation_id: organisation.id, internship_offer_info_id: internship_offer_info.id, hosting_info_id: hosting_info.id)
       find('span', text: 'Étape 4 sur 5')

@@ -8,20 +8,24 @@ class SchoolTest < ActiveSupport::TestCase
     assert school.invalid?
     assert_not_empty school.errors[:coordinates]
     assert_not_empty school.errors[:zipcode]
-  end
-
-  test 'nested objects on creation' do
-    assert create(:school).internship_agreement_preset.present?
+    assert_nil school.legal_status
   end
 
   test 'Agreement association' do
-    school = create(:school, :with_agreement_presets, :with_school_manager)
+    school = create(:school, :with_school_manager)
     student = create(:student, :troisieme_generale, school: school)
     internship_application = create(:weekly_internship_application, user_id: student.id)
     internship_agreement = create(:internship_agreement, :created_by_system,
                                   internship_application: internship_application)
 
     assert school.internship_agreements.include?(internship_agreement)
+  end
+
+  test "legal_status" do
+    school = create(:school)
+    assert_equal "Public", school.legal_status
+    school.update(contract_code: "30", is_public: false)
+    assert_equal "Privé sous contrat", school.legal_status
   end
 
   test 'Users associations' do
@@ -40,12 +44,6 @@ class SchoolTest < ActiveSupport::TestCase
     assert_includes school.users, main_teacher
     assert_includes school.users, teacher
     assert_includes school.users, school_manager
-  end
-
-  test '.has_weeks_on_current_year?' do
-    refute create(:school, weeks: []).has_weeks_on_current_year?
-    refute create(:school, weeks: Week.of_previous_school_year).has_weeks_on_current_year?
-    assert create(:school, weeks: Week.selectable_on_school_year).has_weeks_on_current_year?
   end
 
   test 'has_staff with only manager' do
@@ -79,22 +77,7 @@ class SchoolTest < ActiveSupport::TestCase
     assert school.has_staff?
   end
 
-  test 'scope without_weeks_on_current_year counts school weeks of this current_year only' do
-    travel_to(Date.new(2021, 3, 1)) do
-      weeks_1   = Week.from_date_to_date(from: Date.today, to: Date.today + 7.days)
-
-      create(:school, :with_school_manager, weeks: weeks_1.to_a)
-      assert_equal 0, School.without_weeks_on_current_year.count
-      create(:school, :with_school_manager, weeks: [])
-      assert_equal 1, School.without_weeks_on_current_year.count
-
-      last_year = Date.today - 1.year
-      weeks_2 = Week.from_date_to_date(from: last_year, to: last_year + 7.days)
-      create(:school, :with_school_manager, weeks: weeks_2.to_a)
-      assert_equal 2, School.without_weeks_on_current_year.count
-    end
-  end
-
+  
   test 'uniq code_uai' do
     school = create(:school)
     assert school.valid?

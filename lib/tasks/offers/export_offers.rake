@@ -23,18 +23,13 @@ namespace :offers do
         seats = weekly_framed.pluck(:max_candidates)
         api_seats = api.pluck(:max_candidates)
         # TODO : add applications count
-        # applications = InternshipApplications::WeeklyFramed.joins(:internship_offer_week)
-        #                                                    .where(internship_offer_week: {week_id: week.id})
-        schools = School.joins(:school_internship_weeks).where(school_internship_weeks: {week_id: week.id})
-        offers = weekly_framed.count + api.count
-        ratio = schools.count.zero? ? 'NA' : offers/schools.count
+        applications = InternshipApplications::WeeklyFramed.all.count
+        offers_count = weekly_framed.count + api.count
         csv << [
-                "#{week.beginning_of_week} - #{week.end_of_week}",
-                offers,
+                weekly_framed.period_label,
+                offers_count,
                 seats.sum + api_seats.sum,
-                # applications.count,
-                schools.count,
-                ratio,
+                applications.count,
                 'production']
       end
     end

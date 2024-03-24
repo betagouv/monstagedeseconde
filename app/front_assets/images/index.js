@@ -117,8 +117,8 @@ import './homepage/accueillir-un-stagiaire.svg';
 import './homepage/link-step-1-2.svg';
 import './homepage/link-step-2-3.svg';
 
-// import  './homepage/students/ms2e-stamp-medium.png'
-// import  './homepage/students/spin-vector.svg'
+import  './homepage/everyone/ms2e-stamp-medium.png'
+import  './homepage/students/spin-vector.svg'
 
 import './homepage/partenaires/involved_companies/airbus.png'
 import './homepage/partenaires/involved_companies/bnp.png'

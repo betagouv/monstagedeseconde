@@ -3,12 +3,16 @@
 module Api
   class InternshipOffersController < ApiBaseController
     before_action :authenticate_api_user!
+    before_action :throttle_api_requests
 
     def search
       render_not_authorized and return unless current_api_user.operator.api_full_access
 
       @internship_offers = finder.all.includes([:sector, :employer]).order(id: :desc)
-      
+      if @current_api_user.operator.departments.any?
+        @internship_offers = @internship_offers.by_department(@current_api_user.operator.departments.map(&:name))
+      end
+
       formatted_internship_offers = format_internship_offers(@internship_offers)
       data = {
         pagination: page_links,

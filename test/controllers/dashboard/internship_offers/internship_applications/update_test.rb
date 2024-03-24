@@ -40,6 +40,38 @@ module InternshipOffers::InternshipApplications
       assert_equal true, InternshipApplication.last.approved?
       assert_equal 1, InternshipAgreement.count
     end
+    test 'PATCH #update with approve! any no custom message transition sends email when no school_manager' do
+      school = create(:school)
+      class_room = create(:class_room, school: school)
+      student = create(:student, school: school, class_room: class_room)
+      internship_offer = create(:weekly_internship_offer, employer: create(:employer))
+      internship_application = create(
+        :weekly_internship_application,
+        :validated_by_employer,
+        internship_offer: internship_offer,
+        user_id: student.id
+      )
+      refute school.school_manager.present?
+      sign_in(internship_offer.employer)
+
+      assert_changes -> { InternshipAgreement.count }, from: 0, to: 1 do
+        patch(
+          dashboard_internship_offer_internship_application_path(
+            internship_offer,
+            internship_application ),
+            params: { transition: :approve! })
+          assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :approve!)
+      end
+      assert_equal 1, InternshipAgreement.count
+      assert_equal internship_application.id,
+                   InternshipAgreement.first.internship_application.id
+      follow_redirect!
+      validation_text = 'Candidature mise à jour avec succès. ' \
+                        'Vous pouvez renseigner la convention dès maintenant.'
+      assert_select('#alert-text', text: validation_text)
+      assert_equal true, InternshipApplication.last.approved?
+      assert_equal 1, InternshipAgreement.count
+    end
 
     test 'PATCH #update with approve! when employer is a statistician it does not create internship agreement' do
       school = create(:school, :with_school_manager)
@@ -115,7 +147,7 @@ module InternshipOffers::InternshipApplications
       assert_equal 0, InternshipAgreement.count
     end
 
-    test 'PATCH #update with approve! when school has no school_manager it does not create internship agreement' do
+    test 'PATCH #update with approve! when school has no school_manager it DOES create internship agreement anyway' do
       school = create(:school)
       class_room = create(:class_room, school: school)
       student = create(:student, school:school, class_room: class_room)
@@ -126,7 +158,7 @@ module InternshipOffers::InternshipApplications
       )
       sign_in(internship_application.internship_offer.employer)
 
-      assert_enqueued_emails 0 do # Student receives email
+      assert_enqueued_emails 1 do # Student receives email
         patch(
           dashboard_internship_offer_internship_application_path(
             internship_application.internship_offer,
@@ -134,7 +166,7 @@ module InternshipOffers::InternshipApplications
             params: { transition: :approve! })
           assert_redirected_to internship_application.internship_offer.employer.custom_candidatures_path(tab: :approve!)
       end
-      assert_equal 0, InternshipAgreement.count
+      assert_equal 1, InternshipAgreement.count
     end
 
     test 'PATCH #update with approve! and a custom message transition sends email' do
@@ -403,42 +435,6 @@ module InternshipOffers::InternshipApplications
       internship_application.reload
 
       assert internship_application.approved?
-    end
-
-    test 'patch #update employer examining a student application' do
-      freeze_time do
-        t_now = Time.zone.now
-        internship_offer = create(:weekly_internship_offer)
-        assert internship_offer.valid?
-        internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
-        sign_in(internship_offer.employer)
-
-        patch dashboard_internship_offer_internship_application_path(internship_offer,
-                                                          internship_application,
-                                                          transition: :examine!)
-        assert_response :redirect
-        assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :examine!)
-        assert_equal t_now, internship_application.reload.examined_at
-      end
-    end
-
-    test 'patch #update not sign in employer examining a student application with token' do
-      freeze_time do
-        t_now = Time.zone.now
-        internship_offer = create(:weekly_internship_offer)
-        assert internship_offer.valid?
-        internship_application = create(:weekly_internship_application, :examined, internship_offer: internship_offer)
-        
-
-        patch dashboard_internship_offer_internship_application_path(internship_offer,
-                                                          internship_application,
-                                                          transition: :approve!,
-                                                          token: internship_application.access_token)
-        assert_response :redirect
-        assert_redirected_to root_path
-        internship_application.reload
-        assert_equal 'examined', internship_application.aasm_state
-      end
     end
 
     test 'PATCH when application is approved #update with cancel_by_employer! delete agreement' do

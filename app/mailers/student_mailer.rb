@@ -35,9 +35,9 @@ class StudentMailer < ApplicationMailer
 
   def set_logo_attachment
     super
-    attachments.inline['securite.svg'] = File.read("#{Rails.root}/public/assets/securite.svg")
+    attachments.inline['securite.svg']      = File.read("#{Rails.root}/public/assets/securite.svg")
     attachments.inline['question_mark.svg'] = File.read("#{Rails.root}/public/assets/question_mark.svg")
-    attachments.inline['boy_girl.svg'] = File.read("#{Rails.root}/public/assets/boy_girl.svg")
+    attachments.inline['boy_girl.svg']      = File.read("#{Rails.root}/public/assets/boy_girl.svg")
   end
 
   def internship_application_approved_email(internship_application:)
@@ -61,17 +61,6 @@ class StudentMailer < ApplicationMailer
 
     mail(to: @internship_application.student.email,
          subject: "Une de vos candidatures a été annulée")
-  end
-
-  def internship_application_examined_email(internship_application:)
-    @internship_application = internship_application
-    @student = internship_application.student
-    @internship_offer = internship_application.internship_offer
-    @prez_offer = @internship_offer.presenter
-    @prez_student = @student.presenter
-
-    send_email(to: @student.email,
-               subject: "Votre candidature est en cours d'examen")
   end
 
   def internship_application_requested_confirmation_email(internship_application:)

@@ -6,6 +6,10 @@ module Api
   class CreateTest < ActionDispatch::IntegrationTest
     include ::ApiTestHelpers
 
+    # before each test
+    setup do
+      create(:department)
+    end
     test 'POST #create without token renders :unauthorized payload' do
       post api_internship_offers_path(params: {})
       documents_as(endpoint: :'internship_offers/create', state: :unauthorized) do

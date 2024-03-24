@@ -3,6 +3,8 @@
 module Api
   # Search school by city
   class SchoolsController < ApiBaseController
+    SEARCH_LIMIT = 150
+
     def search
       render_success(
         object: result,
@@ -17,16 +19,14 @@ module Api
       render_success(
         object: School.nearby(latitude: params[:latitude], longitude: params[:longitude], radius: 60_000),
         status: 200,
-        json_options: {
-          methods: %i[weeks]
-        }
+        json_options: { }
       )
     end
 
     private
 
     def result
-      Api::AutocompleteSchool.new(term: params[:query], limit: 25)
+      Api::AutocompleteSchool.new(term: params[:query], limit: SEARCH_LIMIT)
     end
   end
 end

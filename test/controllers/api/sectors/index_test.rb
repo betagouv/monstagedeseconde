@@ -29,6 +29,24 @@ module Api
         assert_equal 3, json_response['sectors'].count
       end
     end
+
+    test 'GET #index returns too many requests after max calls limit' do
+      user_1 = create(:user_operator)
+      create(:sector, name: 'Agriculture')
+      create(:sector, name: 'Agroalimentaire')
+      create(:sector, name: 'Architecture')
+
+      documents_as(endpoint: :'sectors/index', state: :too_many_requests) do
+        (InternshipOffers::Api::MAX_CALLS_PER_MINUTE + 1).times do
+          get api_sectors_path(
+            params: {
+              token: "Bearer #{user_1.api_token}"
+            }
+          )
+        end
+        assert_response :too_many_requests
+        assert_equal 'Trop de requêtes - Limite d\'utilisation de l\'API dépassée.', json_error
+      end
+    end
   end
 end
-
