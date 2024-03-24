@@ -17,4 +17,7 @@
       span.mb-2.fr-label= text_label
       = form.rg2a_required_content_tag if required
 
-    = form.select field, options_for_select(collection, form.object.try(field)), {prompt: prompt}, {class: "fr-select", required: required, disabled: disabled }
+    = form.select field,
+                  options_for_select(collection, value),
+                  {prompt: prompt},
+                  {class: "fr-select", required: required, disabled: disabled }

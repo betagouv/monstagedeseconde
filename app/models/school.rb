@@ -16,6 +16,8 @@ class School < ApplicationRecord
   validates :code_uai, uniqueness: true
   validates :zipcode, zipcode: { country_code: :fr }
 
+  before_save :set_legal_status
+
   VALID_TYPE_PARAMS = %w[rep rep_plus qpv qpv_proche].freeze
 
   scope :with_manager, lambda {
@@ -169,6 +171,19 @@ class School < ApplicationRecord
 
   def email_domain_name
     Academy.get_email_domain(Academy.lookup_by_zipcode(zipcode: zipcode))
+  end
+
+  private
+
+  def contract_label
+    return "Public" if is_public?
+    return "Privé sous contrat" if contract_code.in?(["30","31"])
+
+    "Privé hors contrat"
+  end
+
+  def set_legal_status
+    self.legal_status = contract_label
   end
 end
 
