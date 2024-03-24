@@ -99,7 +99,10 @@
                             / select field department
                             label.fr-label[for="user_department"]
                               |Choisissez votre département
-                            = f.select :department, options_for_select(Department.all.map { |code, name| ["#{code} - #{name}", code] }, resource.department), { prompt: "Départements" }, { class: "fr-select", required: false, data: { "signup-target": 'departmentSelect'  } }
+                            = f.select :department,
+                                       options_for_select(Department.all.map { |department| ["#{department.code} - #{department.name}", department.code] },
+                                       resource.department), { prompt: "Départements" },
+                                       { class: "fr-select", required: false, data: { "signup-target": 'departmentSelect'  } }
 
                       .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-ministry
                         .row
@@ -175,7 +178,7 @@
                         ul.fr-pl-0
                           li.fr-message.fr-message--info data-signup-target="length" 12 caractères
                           li.fr-message.fr-message--info data-signup-target="lowercase" 1 minuscule
-                          li.fr-message.fr-message--info data-signup-target="uppercase" 1 majuscule 
+                          li.fr-message.fr-message--info data-signup-target="uppercase" 1 majuscule
                           li.fr-message.fr-message--info data-signup-target="number" 1 chiffre
                           li.fr-message.fr-message--info data-signup-target="special" 1 caractère spécial
 
