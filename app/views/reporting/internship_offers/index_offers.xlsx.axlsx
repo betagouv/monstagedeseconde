@@ -1,5 +1,4 @@
 wb = xlsx_package.workbook
-max_weeks =  offers.map { |o| o.respond_to?(:weeks) ? o.weeks.count : 0 }.max
 wb.add_worksheet(name: 'Offres') do |sheet|
   # headers
   sheet.add_row(

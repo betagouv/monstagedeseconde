@@ -20,11 +20,7 @@ class Team
       team_members.each { |member| member.destroy }
     else
       if team_member.member_is_owner?
-        target_id = fetch_another_owner_id
-        change_owner(
-          target_id: target_id,
-          collection: team_members)
-        @team_owner_id = target_id
+        @team_owner_id = change_owner(collection: team_members)
       end
       team_member.destroy
       set_team_members
@@ -77,12 +73,14 @@ class Team
     @db_user ||= User.kept.find_by(email: team_member.invitation_email)
   end
 
-  def change_owner(target_id:, collection:)
+  def change_owner(collection:)
+    target_id = fetch_another_owner_id
     collection.each do |member|
       next if member.member_id == target_id
 
       member.update!(inviter_id: target_id)
     end
+    target_id
   end
 
   def add_owner
