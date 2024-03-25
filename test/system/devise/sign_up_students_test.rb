@@ -61,7 +61,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     end
     # students are confirmed by default and redirected to search page after signup
     assert Users::Student.last.confirmed?
-    find("h2 strong", text: "Les offres de stage")
+    find("h2 .strong", text: "Les offres de stage")
     assert_select '#alert-text', count: 0
   end
 
