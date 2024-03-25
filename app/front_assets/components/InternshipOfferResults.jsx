@@ -149,7 +149,7 @@ const InternshipOfferResults = ({ count, sectors, params }) => {
         <div className={`${isMobile() ? 'col-12 px-0' : 'col-sm-12 px-3'} d-flex flex-row-reverse no-x-scroll`} style={{ overflowY: 'scroll' }}>
           <div className="container-monstage">
             <div className="results-col results-row no-x-scroll hide-scrollbar fr-mt-2w fr-mx-3w">
-              <div className="row fr-py-2w mx-0">
+              <div className="row fr-py-2w mx-0 ">
                 <div className="col-8 px-0">
                   {
                     isLoading ? (
