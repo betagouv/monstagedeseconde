@@ -84,12 +84,19 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
 
 
           = form.label :period, '1 semaine - du 24 au 28 juin', for: 'period_week_2'
+      
+      .fr-form-group.fr-my-4w
+        = react_component("ReservedSchoolInput",
+                          props: { label: "Commune ou nom de l'établissement pour lequel le stage est reservé",
+                                   required: false,
+                                   resourceName: form.object_name,
+                                   selectClassRoom: false,
+                                   existingSchool: resource.school.as_json})
 
     .col-md-6.order-md-1.order-2
       .fr-alert.fr-alert--warning
         h3.fr-alert__title Informations
         p Les élèves de seconde doivent effectuer un stage obligatoire de deux semaines, du 17 juin au 28 juin 2024. Vous pouvez proposer un stage soit sur toute la période, soit sur la première semaine, soit sur la deuxième semaine.
-
   - if submit_button
     .fr-mt-2w
       = link_to edit_dashboard_stepper_internship_offer_info_path(params[:internship_offer_info_id],

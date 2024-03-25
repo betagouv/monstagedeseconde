@@ -138,12 +138,12 @@ module Builders
     end
 
     def preprocess_hosting_info_to_params(hosting_info)
-      params = {
+      {
         max_candidates: hosting_info.max_candidates,
         type: 'InternshipOffers::WeeklyFramed',
-        period: hosting_info.period
+        period: hosting_info.period,
+        school_id: hosting_info.school_id
       }
-      params
     end
 
     def preprocess_practical_info_to_params(practical_info)
