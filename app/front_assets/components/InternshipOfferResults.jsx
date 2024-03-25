@@ -146,151 +146,109 @@ const InternshipOfferResults = ({ count, sectors, params }) => {
         />
       ) : '' }
       <div className="row mx-0 fr-px-2w no-x-scroll">
-        <div className={`${isMobile() ? 'col-12 px-0' : 'col-7 px-3'} d-flex flex-row-reverse no-x-scroll`} style={{ overflowY: 'scroll' }}>
-
-          <div className="results-col results-row no-x-scroll hide-scrollbar fr-mt-2w">
-            <div className="row fr-py-2w mx-0">
-              <div className="col-8 px-0">
-                {
-                  isLoading ? (
-                    <div className="row fr-mb-2w">
-                      <TitleLoader/>
-                    </div>
-                  ) : (
-                    <h2 className="h2 mb-0" id="internship-offers-count">
-                      <div className="strong">
-                        Les offres de stage
+        <div className={`${isMobile() ? 'col-12 px-0' : 'col-sm-12 px-3'} d-flex flex-row-reverse no-x-scroll`} style={{ overflowY: 'scroll' }}>
+          <div className="container-monstage">
+            <div className="results-col results-row no-x-scroll hide-scrollbar fr-mt-2w fr-mx-3w">
+              <div className="row fr-py-2w mx-0 ">
+                <div className="col-8 px-0">
+                  {
+                    isLoading ? (
+                      <div className="row fr-mb-2w">
+                        <TitleLoader/>
                       </div>
-                    </h2>)
-                }
-                { !isLoading && (internshipOffersSeats == 0) &&
-                  (<p>Aucune offre répondant à vos critères n’est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
+                    ) : (
+                      <h2 className="h2 mb-0" id="internship-offers-count">
+                        <div className="strong">
+                          Les offres de stage
+                        </div>
+                      </h2>)
+                  }
+                  { !isLoading && (internshipOffersSeats == 0) &&
+                    (<p>Aucune offre répondant à vos critères n’est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
+                  }
+                </div>
+                {
+                  !isMobile() && (
+                  <div className="col-4 text-right px-0">
+                    <button className="fr-btn fr-btn--secondary fr-icon-filter-line fr-btn--icon-left" data-fr-opened="false" aria-controls="fr-modal-filter" id="filter-sectors-button">
+                      Secteur d'activité
+                      {
+                        selectedSectors.length > 0 ? (
+                          <p className="fr-badge fr-badge--success fr-badge--no-icon fr-m-1w">{selectedSectors.length}</p>
+                        ) : ''
+                      }
+                    </button>
+                  </div>
+                  )
                 }
               </div>
-              {
-                !isMobile() && (
-                <div className="col-4 text-right px-0">
-                  <button className="fr-btn fr-btn--secondary fr-icon-filter-line fr-btn--icon-left" data-fr-opened="false" aria-controls="fr-modal-filter" id="filter-sectors-button">
-                    Secteur d'activité
-                    {
-                      selectedSectors.length > 0 ? (
-                        <p className="fr-badge fr-badge--success fr-badge--no-icon fr-m-1w">{selectedSectors.length}</p>
-                      ) : ''
-                    }
-                  </button>
-                </div>
-                )
-              }
-            </div>
 
-            <div> {/* Cards */}
-              {
-                isLoading ? (
-                <div className="row">
-                    <div className={`col-${isMobile() ? '12' : '6'}`}>
-                    <CardLoader />
-                  </div>
-                    <div className={`col-${isMobile() ? '12' : '6'}`}>
-                    <CardLoader />
-                  </div>
-                    <div className={`col-${isMobile() ? '12' : '6'}`}>
-                    <CardLoader />
-                  </div>
-                </div>
-                ) : (
-                  <div>
-                    <div className="row">
-                      {
-                        isSuggestion ? (
-                          <div className='col'>
-                            {
-                              internshipOffers.length > 0 ? (
-                                <div>
-                                  <div className='search-no-result fr-mt-2w fr-mb-4w'></div>
-                                  <div className='row'>
-                                    {
-                                      internshipOffers.map((internshipOffer, i) => (
-                                        <InternshipOfferCard
-                                          internshipOffer={internshipOffer}
-                                          key={internshipOffer.id}
-                                          index={i}
-                                          handleMouseOut={handleMouseOut}
-                                          handleMouseOver={(value) => {handleMouseOver(value)}}
-                                          sendNotification={(message) => {sendNotification(message)}}
-                                          />
-                                      ))
-                                    }
-                                  </div>
-                                </div>
-                              ) : ''
-                            }
-                          </div>
-                        ) : (
-                          internshipOffers.map((internshipOffer, i) => (
-                            <InternshipOfferCard
-                              internshipOffer={internshipOffer}
-                              key={internshipOffer.id}
-                              index={i}
-                              handleMouseOut={handleMouseOut}
-                              handleMouseOver={(value) => {handleMouseOver(value)}}
-                              sendNotification={(message) => {sendNotification(message)}}
-                              />
-                          ))
-                        )
-                      }
-                  </div>
-                  <div>{paginateLinks ? <Paginator paginateLinks={paginateLinks} /> : ''}</div>
-                </div>
-                )
-
-              }
-            </div>
-          </div>
-        </div>
-
-        { !isMobile() && (<div className="col-5 map-container">
-          <div className="">
-            <MapContainer center={center} zoom={13} scrollWheelZoom={false}>
-              <TileLayer
-                url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-              />
-              <MarkerClusterGroup>
+              <div> {/* Cards */}
                 {
-                  internshipOffers.length ? (
-                    internshipOffers.map((internshipOffer) => (
-                      <Marker
-                        icon={
-                          internshipOffer.id === selectedOffer ? pointerIcon : defaultPointerIcon
+                  (isLoading )?  (
+                  <div className="row">
+                      <div className={`col-${isMobile() ? '12' : '6'}`}>
+                      <CardLoader />
+                    </div>
+                      <div className={`col-${isMobile() ? '12' : '6'}`}>
+                      <CardLoader />
+                    </div>
+                      <div className={`col-${isMobile() ? '12' : '6'}`}>
+                      <CardLoader />
+                    </div>
+                  </div>
+                  ) : (
+                    <div>
+                      <div className="row">
+                        {
+                          isSuggestion ? (
+                            <div className='col'>
+                              {
+                                internshipOffers.length > 0 ? (
+                                  <div>
+                                    <div className='search-no-result fr-mt-2w fr-mb-4w'></div>
+                                    <div className='row'>
+                                      {
+                                        internshipOffers.map((internshipOffer, i) => (
+                                          <InternshipOfferCard
+                                            internshipOffer={internshipOffer}
+                                            key={internshipOffer.id}
+                                            index={i}
+                                            handleMouseOut={handleMouseOut}
+                                            handleMouseOver={(value) => {handleMouseOver(value)}}
+                                            sendNotification={(message) => {sendNotification(message)}}
+                                            threeByRow={true}
+                                            />
+                                        ))
+                                      }
+                                    </div>
+                                  </div>
+                                ) : ''
+                              }
+                            </div>
+                          ) : (
+                            internshipOffers.map((internshipOffer, i) => (
+                              <InternshipOfferCard
+                                internshipOffer={internshipOffer}
+                                key={internshipOffer.id}
+                                index={i}
+                                handleMouseOut={handleMouseOut}
+                                handleMouseOver={(value) => {handleMouseOver(value)}}
+                                sendNotification={(message) => {sendNotification(message)}}
+                                threeByRow={true}
+                                />
+                            ))
+                          )
                         }
-                        position={[internshipOffer.lat, internshipOffer.lon]}
-                        key={internshipOffer.id}
-                      >
-                        <Popup className='popup-custom'>
-                          <a href={internshipOffer.link}>
-                            <div className="img">
-                              <img className="fr-responsive-img" src={internshipOffer.image} alt="image"></img>
-                            </div>
-
-                            <div className="content fr-p-2w">
-                              <p className="fr-card__detail">{internshipOffer.employer_name}</p>
-                              <h6 className="title">
-                                {internshipOffer.title}
-                              </h6>
-                            </div>
-                          </a>
-                        </Popup>
-                      </Marker>
-                    ))
-                  ) : ('')
+                    </div>
+                    <div>{paginateLinks ? <Paginator paginateLinks={paginateLinks} /> : ''}</div>
+                  </div>
+                  )
                 }
-              </MarkerClusterGroup>
-
-              <ClickMap internshipOffers={internshipOffers} recenterMap={newDataFetched} />
-
-            </MapContainer>
+              </div>
+            </div>
           </div>
         </div>
-        )}
       </div>
 
       {
