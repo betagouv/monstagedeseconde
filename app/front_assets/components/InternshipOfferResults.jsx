@@ -244,7 +244,6 @@ const InternshipOfferResults = ({ count, sectors, params }) => {
                     <div>{paginateLinks ? <Paginator paginateLinks={paginateLinks} /> : ''}</div>
                   </div>
                   )
-
                 }
               </div>
             </div>
