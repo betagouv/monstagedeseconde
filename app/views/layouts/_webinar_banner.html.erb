@@ -3,9 +3,9 @@
     <div class="fr-container" >
       <div class="fr-notice__body" >
         <p class="fr-notice__title fr-mb-0">
-          Entreprises, administrations, partenaires, équipes pédagogiques, ... notre équipe se tient à votre disposition pour répondre à vos questions sur la plateforme. Inscrivez-vous à nos prochains événements en cliquant sur ce lien
+          Entreprises, administrations, partenaires, équipes pédagogiques, ... notre équipe se tient à votre disposition pour répondre à vos questions sur la plateforme. Inscrivez-vous à nos prochains événements en cliquant 
           <%= link_to 'sur ce lien',
-                      register_to_webinar_path ,
+                      ENV['WEBINAR_URL'],
                       target: '_blank' %>
         </p>
       </div>
