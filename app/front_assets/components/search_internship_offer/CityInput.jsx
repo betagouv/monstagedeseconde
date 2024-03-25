@@ -25,7 +25,7 @@ function CityInput({
   const [radius, setRadius] = useState(searchParams.get('radius') || defaultRadius || 10_000);
   // const [whiteBg, setWhiteBg] = useState(searchParams.get('whiteBg') || defaultWhiteBg || true);
   const [searchResults, setSearchResults] = useState([]);
-  const [cityDebounced] = useDebounce(cityOrZipcode, 100);
+  const [cityDebounced] = useDebounce(cityOrZipcode, 1000);
   const [focus, setFocus] = useState(null);
   const inputChange = (event) => {
     setCity(event.target.value);
@@ -111,7 +111,7 @@ function CityInput({
   };
 
   useEffect(() => {
-    if (cityDebounced && cityDebounced.length > 2) {
+    if (cityDebounced && cityDebounced.length > 3) {
       searchCityByNameOrByZipcode(cityDebounced);
     }
   }, [cityDebounced]);
