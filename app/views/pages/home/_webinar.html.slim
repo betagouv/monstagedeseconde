@@ -14,5 +14,5 @@
       p.fr-mb-0
         |Inscrivez-vous pour la prochaine permanence en cliquant 
         = link_to 'sur ce lien',
-                  register_to_webinar_path,
+                  ENV['WEBINAR_URL'],
                   target: '_blank'
