@@ -2,7 +2,7 @@ import React from "react";
 
 const FilterModal = ({ sectors, requestInternshipOffers, clearSectors }) => (
   <dialog aria-labelledby="fr-modal-title-modal-filter" role="dialog" id="fr-modal-filter" className="fr-modal modal-filter">
-  <div className="fr-container fr-container--fluid fr-container-md">
+  <div className="fr-container fr-container--fluid fr-container-md container-monstage" >
     <div className="fr-grid-row fr-grid-row--center">
       <div className="fr-col-12 fr-col-md-8 fr-col-lg-6">
         <div className="fr-modal__body">

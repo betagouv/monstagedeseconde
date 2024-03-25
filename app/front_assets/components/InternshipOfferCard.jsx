@@ -41,7 +41,7 @@ const InternshipOfferCard = ({
     };
 
   return (
-    <div className={`col-${isMobile() ? '12 text-align-center' : (threeByRow ? '4' : '6')} fr-my-2w ${isMobile() ? '' : ((index % 2) == 0) ? '' : 'fr-pr-0-5v'}`}
+    <div className={`col-${isMobile() ? '11 text-align-center' : (threeByRow ? '4' : '6')} fr-my-2w fr-px-2w ${isMobile() ? '' : ((index % 2) == 0) ? '' : 'fr-pr-0-5v'}`}
     key={internshipOffer.id}
     onMouseOver={(e) => handleMouseOver(internshipOffer.id)}
     onMouseOut={handleMouseOut}
