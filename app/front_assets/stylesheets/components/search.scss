@@ -51,8 +51,7 @@
   }
 
   .results-row {
-    overflow-y: scroll;
-    height: 100vh;
+    overflow: hidden;
   }
 
   .map-container {
