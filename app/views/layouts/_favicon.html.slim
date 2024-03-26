@@ -1,0 +1,10 @@
+- if Rails.env.production? && URI(request.original_url).host == "stagedeseconde.recette.1jeune1solution.gouv.fr"
+  = favicon_link_tag asset_pack_path('media/images/favicons/favicon-staging.png')
+- elsif Rails.env.development?
+  = favicon_link_tag asset_pack_path('media/images/favicons/favicon-development.png')
+- elsif Rails.env.review? && URI(request.original_url).host.match?(/heroku/)
+  = favicon_link_tag asset_pack_path('media/images/favicons/favicon-review.png')
+- elsif Rails.env.review?
+  = favicon_link_tag asset_pack_path('media/images/favicons/favicon-heroku.png')
+- else
+  = favicon_link_tag asset_pack_path('media/images/favicon.png')
