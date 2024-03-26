@@ -77,7 +77,8 @@ module Dashboard::Stepper
             .permit(
               :employer_id,
               :max_candidates,
-              :period
+              :period,
+              :school_id
               )
     end
   end

@@ -45,6 +45,7 @@ class InternshipOffer < ApplicationRecord
   belongs_to :practical_info, optional: true
   belongs_to :employer, polymorphic: true, optional: true
   belongs_to :internship_offer_area, optional: true, touch: true
+
   has_many :favorites
   has_many :users, through: :favorites
   has_many :users_internship_offers_histories, dependent: :destroy
@@ -101,7 +102,7 @@ class InternshipOffer < ApplicationRecord
 
   validate :check_missing_seats, if: :user_update?, on: :update
   validates :period, inclusion: { in: [0, 1, 2] }
-  
+
   # Scopes
 
   # public.config_search_keyword config is
@@ -258,6 +259,9 @@ class InternshipOffer < ApplicationRecord
     presenter.first_monday
   end
 
+  def reserved_to_school?
+    school.present?
+  end
   # def last_monday
   #   I18n.l internship_offer_weeks.last.week.week_date,
   #           format: Week::WEEK_DATE_FORMAT
