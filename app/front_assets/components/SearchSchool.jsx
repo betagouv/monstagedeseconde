@@ -134,8 +134,6 @@ export default function SearchSchool({
           highlightedIndex,
           selectedItem,
         }) => (
-          <>
-          <p>test</p>
           <div id="header-search" className="custom-label-container fr-search-bar fr-mr-6w" role="search">
             <label
               {...getLabelProps({ className: 'fr-label', htmlFor: `${resourceName}_school_city` })}
@@ -272,7 +270,6 @@ export default function SearchSchool({
               </ul>
             </div>
           </div>
-          </>
         )}
       </Downshift>
     );
