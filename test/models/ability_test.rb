@@ -31,8 +31,8 @@ class AbilityTest < ActiveSupport::TestCase
       assert(ability.can?(:look_for_offers, student), 'students should be able to look for offers')
       assert(ability.can?(:read, InternshipOffer.new),
             'students should be able to consult internship offers')
-      assert(ability.can?(:apply, internship_offer),
-            'students should be able to apply for internship offers')
+      refute(ability.can?(:apply, internship_offer),
+            'students should not be able to apply for internship offers')
       assert(ability.cannot?(:manage, InternshipOffer.new),
             'students should not be able to con manage internships')
       assert(ability.can?(:show, :account),

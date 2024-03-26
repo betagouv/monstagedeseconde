@@ -7,6 +7,27 @@ module InternshipApplications
     include Devise::Test::IntegrationHelpers
     include ActionMailer::TestHelper
 
+    test 'GET #new internship application as student' do
+      internship_offer = create(:weekly_internship_offer)
+      school = create(:school)
+      student = create(:student, school: school, class_room: create(:class_room, school: school))
+      sign_in(student)
+     
+      get(new_internship_offer_internship_application_path(internship_offer))
+      assert_response :success
+    end
+
+    test 'GET #new internship application as student already applied' do
+      internship_offer = create(:weekly_internship_offer)
+      school = create(:school)
+      student = create(:student, school: school, class_room: create(:class_room, school: school))
+      create(:weekly_internship_application, internship_offer: internship_offer, student: student)
+
+      sign_in(student)
+      get(new_internship_offer_internship_application_path(internship_offer))
+      assert_redirected_to root_path
+    end
+
     test 'POST #create internship application as student' do
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
