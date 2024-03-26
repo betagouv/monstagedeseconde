@@ -136,6 +136,18 @@ module InternshipOffers
       assert_redirected_to student.presenter.default_internship_offers_path
     end
 
+    test 'GET #show as Student a message when he cannot apply to a reserved internship offer' do
+      student = create(:student, school: create(:school))
+      other_school = create(:school)
+      internship_offer = create(:weekly_internship_offer, school: other_school, max_candidates: 5)
+      sign_in(student)
+      get internship_offer_path(internship_offer)
+
+      assert_match "Offre réservée à l'établissement", response.body
+      assert_match internship_offer.school.name, response.body
+      assert_select '#new_internship_application', 0
+    end
+
     test 'GET #show as Student shows next/previous navigation in list' do
       previous_out = create(:weekly_internship_offer, title: 'previous_out')
       previous_in_page = create(:weekly_internship_offer, title: 'previous')
@@ -151,7 +163,6 @@ module InternshipOffers
         assert_response :success
         assert_select 'a[href=?]', internship_offer_path(previous_in_page)
         assert_select 'a[href=?]', internship_offer_path(next_in_page)
-        # end
       end
     end
 

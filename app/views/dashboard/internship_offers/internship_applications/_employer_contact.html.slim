@@ -11,7 +11,7 @@
           li.test-employer-email
             = "son adresse email : "
             strong = internship_offer.employer.email
-      = mail_to(@internship_offer.employer.email,
+      = mail_to(internship_offer.employer.email,
               'Lui écrire',
               subject: "[Stagiaire #{internship_application.student.presenter.short_civil_full_name}] - prise de contact",
               class: 'fr-btn fr-btn--sm fr-mt-2w')

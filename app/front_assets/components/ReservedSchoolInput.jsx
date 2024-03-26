@@ -52,7 +52,7 @@ class ReservedSchoolInput extends React.Component {
               Ce stage est réservé à un seul établissement ?
             </span>
             <small className="form-text text-muted">
-              Les stages reservés ne seront proposés qu'aux élèves de l'établissement selectionné.
+              Les stages réservés ne seront proposés qu'aux élèves de l'établissement sélectionné.
             </small>
           </label>
         </div>

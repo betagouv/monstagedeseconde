@@ -7,6 +7,8 @@ module StepperProxy
     included do
       after_initialize :init
 
+      belongs_to :school, optional: true, touch: true
+
       # Validations
       validates :max_candidates,
                 numericality: { only_integer: true,

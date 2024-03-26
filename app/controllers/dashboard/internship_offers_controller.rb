@@ -216,7 +216,7 @@ module Dashboard
                     :tutor_email, :employer_website, :employer_name, :street,
                     :zipcode, :city, :department, :region, :academy, :renewed,
                     :is_public, :group_id, :published_at, :republish, :type,
-                    :employer_id, :employer_type, :verb, :user_update,
+                    :employer_id, :employer_type, :verb, :user_update, :school_id,
                     :employer_description_rich_text, :siret, :employer_manual_enter, :period,
                     :contact_phone, :lunch_break, :aasm_state, coordinates: {},
                     daily_hours: {}, weekly_hours:[],
