@@ -5,7 +5,6 @@ module InternshipApplicationAasmMessageBuilders
     # for html formatted default message
     delegate :student,
              :internship_offer,
-             :week,
              to: :internship_application
 
     private
@@ -13,7 +12,7 @@ module InternshipApplicationAasmMessageBuilders
     def on_approved_message
       <<~HTML.strip
         <p>Bonjour #{student.presenter.formal_name},</p>
-        <p>Votre candidature pour le stage "#{internship_offer.title}" pour la semaine #{week.short_select_text_method} est acceptée .</p>
+        <p>Votre candidature pour le stage "#{internship_offer.title}" pour #{internship_offer.period_label} est acceptée .</p>
         <p>Vous devez maintenant faire signer la convention de stage.</p>
       HTML
     end
@@ -21,7 +20,7 @@ module InternshipApplicationAasmMessageBuilders
     def on_canceled_by_employer_message
       <<~HTML.strip
         <p>Bonjour #{student.presenter.formal_name},</p>
-        <p>Votre candidature pour le stage "#{internship_offer.title}" pour la semaine #{week.short_select_text_method} est annulée .</p>
+        <p>Votre candidature pour le stage "#{internship_offer.title}" pour #{internship_offer.period_label} est annulée .</p>
       HTML
     end
 
