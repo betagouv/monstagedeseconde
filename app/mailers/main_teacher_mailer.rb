@@ -52,7 +52,7 @@ class MainTeacherMailer < ApplicationMailer
     @offer_presenter = @internship_offer.presenter
     @student = internship_application.student
     @student_presenter = @student.presenter
-    @week_in_words = internship_application.week.very_long_select_text_method
+    @week_in_words = @offer_presenter.weeks_boundaries.gsub('Du ', '')
     @url = internship_offer_url(
       id: @internship_offer.id,
       mtm_campaign: 'application-validated-by-employer',
