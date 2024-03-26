@@ -43,7 +43,7 @@ class InternshipApplicationsController < ApplicationController
                 flash: { warning: 'Votre candidature avait déjà été soumise' }
   rescue ActiveRecord::RecordInvalid
     flash[:error] = 'Erreur dans la saisie de votre candidature'
-    render 'internship_application/show'
+    render 'internship_applications/show'
   end
 
   # students can candidate for one internship_offer
