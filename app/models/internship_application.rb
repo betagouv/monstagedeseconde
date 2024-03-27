@@ -191,7 +191,9 @@ class InternshipApplication < ApplicationRecord
         deliver_later_with_additional_delay do
           EmployerMailer.internship_application_submitted_email(internship_application: self)
         end
-        setSingleApplicationReminderJobs
+        # ReminderReset : tag to use to find commmented jobs for students reminders
+        # setSingleApplicationReminderJobs
+        # ReminderReset : tag to use to find commmented jobs for students reminders
       }
     end
 
