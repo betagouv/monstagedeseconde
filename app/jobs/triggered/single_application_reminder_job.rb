@@ -2,6 +2,9 @@ module Triggered
   class SingleApplicationReminderJob < ApplicationJob
     queue_as :default
     def perform(student_id)
+      # ReminderReset : tag to use to find commmented jobs for students reminders
+      return nil
+      # ReminderReset : tag to use to find commmented jobs for students reminders
       student = Users::Student.find(student_id)
       return nil unless student&.kept?
         
