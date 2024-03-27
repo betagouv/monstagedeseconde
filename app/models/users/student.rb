@@ -181,7 +181,7 @@ module Users
       shrinked_url = 'https://bit.ly/4athP2e' # internship_offers_url in production
       if phone.present?
         message = I18n.t('devise.sms.welcome_student', shrinked_url: shrinked_url)
-        SendSmsJob.perform_now(user: self, message: message)
+        SendSmsJob.perform_later(user: self, message: message)
       else
         StudentMailer.welcome_email(student: self, shrinked_url: shrinked_url)
                      .deliver_later
