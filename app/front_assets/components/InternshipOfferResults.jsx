@@ -145,10 +145,10 @@ const InternshipOfferResults = ({ count, sectors, params }) => {
           hideNotification={hideNotification}
         />
       ) : '' }
-      <div className="row mx-0 fr-px-2w no-x-scroll">
-        <div className={`${isMobile() ? 'col-12 px-0' : 'col-sm-12 px-3'} d-flex flex-row-reverse no-x-scroll`} style={{ overflowY: 'scroll' }}>
-          <div className="container-monstage">
-            <div className="results-col results-row no-x-scroll hide-scrollbar fr-mt-2w fr-mx-lg-0 fr-mx-1w ">
+      <div className="row fr-mx-0 fr-px-3v no-x-scroll">
+        <div className={`${isMobile() ? 'col-12 px-0' : 'col-sm-12'} d-flex flex-row-reverse no-x-scroll`} style={{ overflowY: 'scroll' }}>
+          <div className="container-monstage fr-px-0 fr-px-md-1w">
+            <div className="results-col results-row no-x-scroll hide-scrollbar fr-mt-2w fr-mx-1w">
               <div className="row fr-py-2w mx-0 ">
                 <div className="col-8 px-0">
                   {
