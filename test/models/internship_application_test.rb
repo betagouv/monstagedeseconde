@@ -139,7 +139,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     internship_application = create(:weekly_internship_application, :submitted, student: student)
 
     freeze_time do
-      bitly_stub do
+      sms_bitly_stub do
         assert_changes -> { internship_application.reload.approved_at },
                       from: nil,
                       to: Time.now.utc do
@@ -316,16 +316,18 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   test 'transition from rejected to validated_by_employer does not send email to student w/o email' do
     student = create(:student, phone: '+330611223944', email: nil )
     internship_application = create(:weekly_internship_application, :rejected, student: student)
-    freeze_time do
-      assert_changes -> { internship_application.reload.validated_by_employer_at },
-                    from: nil,
-                    to: Time.now.utc do
-        mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true, [{wait: 1.second}])
-        StudentMailer.stub :internship_application_approved_email, mock_mail do
-          internship_application.employer_validate!
+    sms_bitly_stub do
+      freeze_time do
+        assert_changes -> { internship_application.reload.validated_by_employer_at },
+                      from: nil,
+                      to: Time.now.utc do
+          mock_mail = Minitest::Mock.new
+          mock_mail.expect(:deliver_later, true, [{wait: 1.second}])
+          StudentMailer.stub :internship_application_approved_email, mock_mail do
+            internship_application.employer_validate!
+          end
+          assert_raises(MockExpectationError) { mock_mail.verify }
         end
-        assert_raises(MockExpectationError) { mock_mail.verify }
       end
     end
   end
