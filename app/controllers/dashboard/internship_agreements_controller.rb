@@ -89,12 +89,13 @@ module Dashboard
                                                 { internship_offer: [:employer, :rich_text_employer_description_rich_text, :rich_text_description_rich_text]}
                                                 ]
                                               )
-                                           .reject { |a| a.student.school.school_manager.nil? }
+                                          #  .reject { |a| a.student.school.school_manager.nil? }
       @school = current_user.school if current_user.school_management?
-      @no_agreement_internship_application_list = current_user.internship_applications
-                                                              .filtering_discarded_students
-                                                              .approved
-                                                              .select { |ia| ia.student.school.school_manager.nil? }
+      @no_agreement_internship_application_list = []
+                                                    # current_user.internship_applications
+                                                    #           .filtering_discarded_students
+                                                    #           .approved
+                                                    #           .select { |ia| ia.student.school.school_manager.nil? }
     end
 
     private

@@ -27,7 +27,7 @@ module Dashboard::InternshipOffers
       assert_select("td[data-head='#{internship_application.internship_offer.title}']", count: 0)
     end
 
-    test 'GET #edit as employer when missing school_manager renders success but missing internship_agreements' do
+    test 'GET #edit as employer when missing school_manager renders success even w/o school manager' do
       school = create(:school) #no_school_manager
       employer, internship_offer = create_employer_and_offer
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
@@ -37,7 +37,7 @@ module Dashboard::InternshipOffers
 
       get dashboard_internship_agreements_path
       assert_response :success
-      assert_select("td.actions a.fr-btn--secondary", text: "Contacter l'établissement")
+      assert_select("td.actions", text: "Remplir ma convention")
     end
 
     test 'GET #index as teacher ' do
