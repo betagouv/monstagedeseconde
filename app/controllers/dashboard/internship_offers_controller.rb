@@ -179,7 +179,6 @@ module Dashboard
           :latitude,
           :longitude,
           :radius,
-          :school_type,
           :keyword,
           :school_year,
           :filter

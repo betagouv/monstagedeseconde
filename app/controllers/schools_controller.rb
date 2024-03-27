@@ -29,8 +29,9 @@ class SchoolsController < ApplicationController
             :city,
             :street,
             :name,
-            :kind,
             :visible,
+            :contract_code,
+            :is_public,
             coordinates: {})
   end
 end
