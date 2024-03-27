@@ -136,6 +136,7 @@ fr:
         class_rooms: Classes
         school_manager: Chef d'établissement
         address: Adresse
+        code_uai: Code UAI
         weeks:
           one: Semaine de stage
           other: Semaines de stage
