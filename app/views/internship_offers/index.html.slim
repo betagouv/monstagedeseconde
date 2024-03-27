@@ -20,21 +20,21 @@
     = search_button_label
 - text = "De nouvelles offres sont proposées chaque jour, revenez régulièrement pour trouver celle qui vous convient."
 / mobile banner
-.container-monstage-fluid.fr-mt-2w.fr-hidden-sm.mobile
+.container-monstage-fluid.fr-hidden-sm.mobile
   / = render 'layouts/more_offers_to_come_banner'
   .ffr-sm-mx-2w.ffr-md-mx-0
     .fr-notice.fr-notice--info
       .fr-container
         .fr-notice__body
-          p.fr-notice__title
+          p.fr-notice__title.title-banner
             = text
 /desktop banner
-.container-monstage-fluid.fr-mt-2w.fr-hidden.fr-unhidden-sm
+.container-monstage-fluid.fr-hidden.fr-unhidden-sm
   .fr-sm-mx-2w.fr-md-mx-0
     .fr-notice.fr-notice--info
       .fr-container
         .fr-notice__body.fr-mx-3v
-          p.fr-notice__title
+          p.fr-notice__title.title-banner
             = text
 .fr-test-internship-offers-container
   = react_component("InternshipOfferResults",
