@@ -14,7 +14,7 @@ class School < ApplicationRecord
   has_rich_text :agreement_conditions_rich_text
 
   validates :city, :name, :code_uai, presence: true
-  validates :code_uai, uniqueness: true
+  validates :code_uai, uniqueness: true, message: "Ce code UAI est déjà utilisé, le lycée est déjà enregistré"
   validates :zipcode, zipcode: { country_code: :fr }
 
   before_save :set_legal_status
