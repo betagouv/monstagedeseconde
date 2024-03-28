@@ -12,10 +12,7 @@ html lang="fr"
     = action_cable_meta_tag
     title
       = page_title
-    = favicon_link_tag asset_pack_path('media/images/favicon.png') if Rails.env.production?
-    = favicon_link_tag asset_pack_path('media/images/favicons/favicon-review.png') if Rails.env.staging?
-    = favicon_link_tag asset_pack_path('media/images/favicons/favicon-development.png') if Rails.env.development?
-    = favicon_link_tag asset_pack_path('media/images/favicons/favicon-heroku.png') if Rails.env.review?
+    = render "layouts/favicon"
     = stylesheet_pack_tag "application.css", 'data-turbo-track': "reload", media: "all"
     = javascript_pack_tag "application.js", 'data-turbo-track': "reload", defer: true
   
