@@ -8,11 +8,11 @@
 
     .form-group
       = f.label :name, class: 'fr-label' do
-        = "Nom de l'établissement"
+        = "Nom de l'établissement (commencer avec 'Lycée', 'Collège', 'Ecole', etc.)"
         = f.rg2a_required_content_tag
 
       = f.text_field :name, class: "fr-input col-lg-6", required:true
-    
+
     .form-group
       = f.label :name, class: 'fr-label' do
         = "Code UAI de l'établissement"
@@ -21,11 +21,28 @@
       = f.text_field :code_uai, class: "fr-input col-lg-6", required:true
 
     .form-group
-      = f.label :kind, "Type de lycée", class: 'fr-label'
-      = f.select :kind,
-                  options_for_select(School::VALID_TYPE_PARAMS),
-                  { include_blank: false },
-                  class: "fr-select col-lg-6"
+      = f.label :is_public, class: 'fr-label' do
+        = "Public / Privé"
+        = f.rg2a_required_content_tag
+
+      - collection = [["Public", true], ["Privé", false]]
+      = f.select :is_public,
+                  options_for_select(collection),
+                  {prompt: ""},
+                  { class: "fr-select col-lg-6" }
+    .form-group
+      = f.label :contract_code, class: 'fr-label' do
+        = "Type de contrat"
+        = f.rg2a_required_content_tag
+        span class="fr-hint-text"
+          |Choisir SANS OBJET pour les établissements publics
+
+      - collection = School::CONTRACT_CODES.map{ |code, label| [label, code] }
+      = f.select :contract_code,
+                  options_for_select(collection),
+                  {prompt: ""},
+                  { class: "fr-select col-lg-6" }
+
 
     .form-group.mt-4
        .fr-checkbox-group.fr-checkbox-group--sm
@@ -43,4 +60,5 @@
                                                currentLongitude: @school.coordinates.try(:lng).try(:to_f),
                                                currentFullAddress: @school.formatted_autocomplete_address})
 
-  .actions.d-flex.d-sm-block= f.submit "Créer l'établissement", class: 'fr-btn'
+  .actions.d-flex.d-sm-block
+    = f.submit "Créer l'établissement", class: 'fr-btn'

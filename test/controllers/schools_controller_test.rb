@@ -30,8 +30,9 @@ class SchoolsControllerTest < ActionDispatch::IntegrationTest
     school_params = {
       name: 'Victor Hugo',
       code_uai: '1234567X',
-      kind: 'rep',
       street:'1 rue de Rivoli',
+      contract_code: "30",
+      is_public: false,
       zipcode: '75001',
       city: 'Paris',
       visible: 1,
@@ -48,10 +49,10 @@ class SchoolsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to rails_admin_path
     assert_equal school.name, 'Victor Hugo'
     assert_equal school.code_uai, '1234567X'
-    assert_equal school.kind, 'rep'
     assert_equal school.street, '1 rue de Rivoli'
     assert_equal school.zipcode, '75001'
     assert_equal school.city, 'Paris'
     assert_equal school.visible, true
+    assert_equal school.legal_status, 'Privé sous contrat'
   end 
 end

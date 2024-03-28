@@ -97,12 +97,10 @@ def update_schools_with_public_private_info
 
     is_public = cells[col_hash[:public_private]].gsub("\n", '') == "Public"
     contract_code = cells[col_hash[:contract_code]].gsub("\n", '')
-    contract_label = cells[col_hash[:contract_label]].gsub("\n", '')
 
     school_params = {
       is_public: is_public,
-      contract_code: contract_code,
-      contract_label: contract_label
+      contract_code: contract_code
     }
 
     result = school.update(**school_params)

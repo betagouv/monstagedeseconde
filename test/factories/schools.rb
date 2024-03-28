@@ -11,7 +11,6 @@ FactoryBot.define do
     code_uai { '075' + rand(100_000).to_s.rjust(5, '0') }
     department { 'Paris' }
     is_public { true }
-    contract_label {"SANS OBJET"}
     contract_code { "99" }
     legal_status { "Public" }
     before(:create) do |school|
