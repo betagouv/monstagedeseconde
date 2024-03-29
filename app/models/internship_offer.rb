@@ -284,14 +284,13 @@ class InternshipOffer < ApplicationRecord
     when 0 # full_time
       # third week of june
       self.first_date = current_school_year.first_week_internship_monday
-      self.last_date  = current_school_year.first_week_internship_friday
+      self.last_date  = current_school_year.second_week_internship_friday
     when 1 # week_1
+      self.first_date = current_school_year.first_week_internship_monday
+      self.last_date  = current_school_year.first_week_internship_friday
+    when 2 # week_2
       self.first_date = current_school_year.second_week_internship_monday
       self.last_date  = current_school_year.second_week_internship_friday
-    when 2 # week_2
-      self.first_date = current_school_year.first_week_internship_monday
-      self.last_date  = current_school_year.second_week_internship_friday
-    when 2 # week_2
     end
   end
 
@@ -552,6 +551,17 @@ class InternshipOffer < ApplicationRecord
 
   def user_update?
     user_update == "true"
+  end
+
+  def period_label_date_range
+    case period
+    when 0 #full_time
+      "Du 17 au 28 juin 2024"
+    when 1 #week_1
+      "Du 17 au 21 juin 2024"
+    when 2 #week_2
+      "Du 24 au 28 juin 2024"
+    end
   end
 
   protected

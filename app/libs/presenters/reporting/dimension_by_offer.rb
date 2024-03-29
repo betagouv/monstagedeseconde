@@ -12,6 +12,7 @@ module Presenters
                  discarded_at
                  department
                  academy
+                 period_label
                  permalink].freeze
       METHODS = %i[group_name
                    human_is_public

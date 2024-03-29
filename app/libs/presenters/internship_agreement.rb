@@ -53,7 +53,7 @@ module Presenters
       @current_user = current_user
       @student = internship_agreement.student
       @school_manager = internship_agreement.school_manager
-      @school = @school_manager.school
+      @school = @student.school
       @employer = internship_agreement.employer
       @internship_offer = internship_agreement.internship_application.internship_offer
     end
