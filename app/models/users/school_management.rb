@@ -14,11 +14,11 @@ module Users
               :last_name,
               :role,
               presence: true
-    
+
     validates_inclusion_of :accept_terms, in: ['1', true],
               message: :accept_terms,
               on: :create
-              
+
     belongs_to :school, optional: true
     belongs_to :class_room, optional: true
     has_many :students, through: :school
@@ -93,7 +93,12 @@ module Users
     def valid_academy_email_address?
       return false if school.blank?
 
-      email =~ /\A[^@\s]+@#{school.email_domain_name}\z/
+      if school_caen_or_normandie?
+        email =~ /\A[^@\s]+@ac-caen\.fr\z/ ||
+          email =~ /\A[^@\s]+@ac-normandie\.fr\z/
+      else
+        email =~ /\A[^@\s]+@#{school.email_domain_name}\z/
+      end
     end
 
     private
@@ -101,7 +106,7 @@ module Users
     # validators
     def official_email_address
       return if school_id.blank?
-      
+
       unless valid_academy_email_address?
         errors.add(
           :email,
@@ -134,7 +139,15 @@ module Users
     end
 
     def official_uai_email_address?
-      email =~ /\Ace\.\d{7}\S@#{school.email_domain_name}\z/
+      if school_caen_or_normandie?
+        email =~ /\Ace\.\d{7}@ac-caen\.fr\z/ || email =~ /\Ace\.\d{7}@ac-normandie\.fr\z/
+      else
+        email =~ /\Ace\.\d{7}@#{school.email_domain_name}\z/
+      end
+    end
+
+    def school_caen_or_normandie?
+      school.zipcode[0..1] == "61"
     end
   end
 end
