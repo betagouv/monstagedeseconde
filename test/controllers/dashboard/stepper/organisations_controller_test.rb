@@ -54,6 +54,7 @@ module Dashboard::Stepper
       assert_equal employer.id, created_organisation.employer_id
       assert_equal true, created_organisation.is_public
       assert_equal true, created_organisation.manual_enter
+      assert_equal group.id, created_organisation.group_id
 
       assert_redirected_to new_dashboard_stepper_internship_offer_info_path(organisation_id: created_organisation.id)
     end
@@ -117,6 +118,7 @@ module Dashboard::Stepper
       assert_equal statistician.id, created_organisation.employer_id
       assert_equal true, created_organisation.is_public
       assert_equal false, created_organisation.manual_enter
+      assert_equal group.id, created_organisation.group_id
 
       assert_redirected_to new_dashboard_stepper_internship_offer_info_path(organisation_id: created_organisation.id)
     end

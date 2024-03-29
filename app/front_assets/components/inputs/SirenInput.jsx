@@ -139,6 +139,10 @@ export default function SirenInput({
             //  -update organisation_is_public_false
             document.getElementById("organisation_is_public_true").checked = is_public;
             document.getElementById("organisation_is_public_false").checked = !is_public;
+            if (is_public) {
+              document.getElementById("organisation-group").classList.remove('d-none');
+              document.getElementById("organisation_group_id").setAttribute("required", "required");
+            }
             searchCoordinatesByAddress(fullAddress);
             setSelectedCompany({
               name: selection.uniteLegale.denominationUniteLegale,
