@@ -47,10 +47,11 @@
                       class: 'test-employer-website',
                       title: "#{internship_offer.employer_website} (nouvelle fenêtre)",
                       rel: "external noopener noreferrer"
-    .row 
-      .col-12
-        = react_component("Map",
-                    props: { internshipOffer: { id: internship_offer.id, lat: internship_offer.coordinates.latitude, lon: internship_offer.coordinates.longitude } })
+    - if can?(:read_employer_name, internship_offer)
+      .row 
+        .col-12
+          = react_component("Map",
+                      props: { internshipOffer: { id: internship_offer.id, lat: internship_offer.coordinates.latitude, lon: internship_offer.coordinates.longitude } })
 - unless hidden_parts
   .row
     .col-12
