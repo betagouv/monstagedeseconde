@@ -1,7 +1,7 @@
 - has_white_bg = current_page?(root_path) || current_page?(internship_offers_path)
 div [class="test-search-container #{has_white_bg ? 'search-container fr-pt-2w' : ''} #{render_as_partial ? 'd-none d-md-block rounded-6' : ''}"
      data-controller='search-form search-popover']
-    /  TODO : full remove search-week-checkboxes
+  /  TODO : full remove search-week-checkboxes
   = form_with url: url,
               method: :get,
               skip_enforcing_utf8: true,
