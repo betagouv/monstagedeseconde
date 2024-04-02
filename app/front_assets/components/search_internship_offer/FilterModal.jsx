@@ -41,7 +41,7 @@ const FilterModal = ({ sectors, updateSectors, clearSectors, selectedSectors, to
           }}
           >
             <div className="fr-modal__content modal-section">
-              <h1 id="fr-modal-title-modal-1" className="fr-modal__title fr-mt-2w">Secteurs d'activité 2 {selectedSectors.length} </h1>
+              <h1 id="fr-modal-title-modal-1" className="fr-modal__title fr-mt-2w">Secteurs d'activité</h1>
               <div className="row fr-py-1w">
                 {
                   sectors.map((sector, index) => (
