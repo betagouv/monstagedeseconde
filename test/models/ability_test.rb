@@ -62,17 +62,19 @@ class AbilityTest < ActiveSupport::TestCase
       assert(ability.can?(:read_employer_name, internship_offer),
             'students should be able to read city with ms2e internship offers' )
       operator = create(:operator_with_departments)
+      operator_with_masked_data = create(:operator_with_departments, masked_data: true)
       assert operator.departments.any?
 
       api_internship_offer = create(:api_internship_offer, employer: create(:user_operator, operator: operator), city: 'truc', zipcode: '60000')
       api_internship_offer_paris = create(:api_internship_offer, employer: create(:user_operator, operator: operator), city: 'Paris', zipcode: '75012')
       refute(ability.can?(:read_employer_name, api_internship_offer), "students should not be able to read city in a 'protected' api internship offers")
       assert(ability.can?(:read_employer_name, api_internship_offer_paris), "students should not be able to read city in a 'protected' api internship offers")
+      api_internship_offer = create(:api_internship_offer, employer: create(:user_operator, operator: operator_with_masked_data), city: 'truc', zipcode: '60000')
+      refute(ability.can?(:read_employer_name, api_internship_offer), "students should not be able to read city in a 'protected' api internship offers")
     end
   end
 
   test 'Employer' do
-
     employer = create(:employer)
     another_employer = create(:employer)
     internship_offer = create(:weekly_internship_offer, employer: employer)

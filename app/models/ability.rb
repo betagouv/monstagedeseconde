@@ -541,7 +541,9 @@ class Ability
 
   def read_employer_name?(internship_offer: )
     operator = internship_offer.employer.try(:operator)
-    if operator.present? && operator.departments.any?
+    if operator.present? && operator.masked_data
+      false
+    elsif operator.present? && operator.departments.any?
       !internship_offer.zipcode[0..1].in?(operator.departments.map(&:code))
     else
       true

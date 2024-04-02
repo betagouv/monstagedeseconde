@@ -5,7 +5,7 @@ FactoryBot.define do
     sequence(:name) { |n| "operator-#{n}" }
     api_full_access { false }
     target_count { 0 }
-
+    masked_data { false }
     realized_count { {
       '2022' => {
         'total': '10',
