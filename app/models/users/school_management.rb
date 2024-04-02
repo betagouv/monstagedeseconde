@@ -140,9 +140,9 @@ module Users
 
     def official_uai_email_address?
       if school_caen_or_normandie?
-        email =~ /\Ace\.\d{7}@ac-caen\.fr\z/ || email =~ /\Ace\.\d{7}@ac-normandie\.fr\z/
+       !!( email =~ /\Ace\.\d{7}\S\@ac\-caen\.fr\z/) || !!(email =~ /\Ace\.\d{7}\S\@ac\-normandie\.fr\z/)
       else
-        email =~ /\Ace\.\d{7}@#{school.email_domain_name}\z/
+       !!(email =~ /\Ace\.\d{7}\S\@#{school.email_domain_name}\z/)
       end
     end
 

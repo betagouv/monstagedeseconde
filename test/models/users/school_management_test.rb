@@ -103,14 +103,14 @@ module Users
     test "#valid_academy_email_address?" do
       create(:department, code: '61', name: 'Normandie')
       school = create(:school, zipcode: '75012')
-      assert build(:school_manager, email: 'ce.1112223@ac-paris.fr', school: school).valid?
-      refute build(:school_manager, email: 'ce.1112223@ac-caen.fr', school: school).valid?
+      assert build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school: school).valid?
+      refute build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school: school).valid?
       
       school = create(:school, zipcode: "61252", city: "Argentan")
-      assert build(:school_manager, email: 'ce.1112223@ac-normandie.fr', school: school).valid?
-      assert build(:school_manager, email: 'ce.1112223@ac-caen.fr', school: school).valid?
-      refute build(:school_manager, email: 'ce.1112223@ac-paris.fr', school: school).valid?
-      refute build(:school_manager, email: 'ce.1112223@ac-test.fr', school: school).valid?
+      assert build(:school_manager, email: 'ce.1122334x@ac-normandie.fr', school: school).valid?
+      assert build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school: school).valid?
+      refute build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school: school).valid?
+      refute build(:school_manager, email: 'ce.1122334x@ac-test.fr', school: school).valid?
     end
   end
 end
