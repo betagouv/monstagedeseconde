@@ -12,11 +12,9 @@ module Presenters
                  discarded_at
                  department
                  academy
-                 period_label
                  permalink].freeze
       METHODS = %i[group_name
                    human_is_public
-                   human_period
                    sector_name
                    contact_name
                    contact_email
@@ -44,8 +42,8 @@ module Presenters
         instance.max_candidates
       end
 
-      def human_period
-        instance.period_label
+      def period
+        ::InternshipOffer::PERIOD_LABELS.values[instance.period]
       end
 
       def human_max_candidates_string
