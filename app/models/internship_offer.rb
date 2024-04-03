@@ -553,17 +553,6 @@ class InternshipOffer < ApplicationRecord
     user_update == "true"
   end
 
-  def period_label_date_range
-    case period
-    when 0 #full_time
-      "Du 17 au 28 juin 2024"
-    when 1 #week_1
-      "Du 17 au 21 juin 2024"
-    when 2 #week_2
-      "Du 24 au 28 juin 2024"
-    end
-  end
-
   protected
 
   def make_sure_area_is_set
