@@ -218,6 +218,70 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: academies; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.academies (
+    id bigint NOT NULL,
+    name character varying,
+    email_domain character varying,
+    academy_region_id integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: academies_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.academies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: academies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.academies_id_seq OWNED BY public.academies.id;
+
+
+--
+-- Name: academy_regions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.academy_regions (
+    id bigint NOT NULL,
+    name character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: academy_regions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.academy_regions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: academy_regions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.academy_regions_id_seq OWNED BY public.academy_regions.id;
+
+
+--
 -- Name: action_text_rich_texts; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -437,7 +501,8 @@ CREATE TABLE public.departments (
     code character varying,
     name character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    academy_id integer
 );
 
 
@@ -1807,6 +1872,20 @@ ALTER SEQUENCE public.weeks_id_seq OWNED BY public.weeks.id;
 
 
 --
+-- Name: academies id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.academies ALTER COLUMN id SET DEFAULT nextval('public.academies_id_seq'::regclass);
+
+
+--
+-- Name: academy_regions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.academy_regions ALTER COLUMN id SET DEFAULT nextval('public.academy_regions_id_seq'::regclass);
+
+
+--
 -- Name: action_text_rich_texts id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2077,6 +2156,22 @@ ALTER TABLE ONLY public.users_search_histories ALTER COLUMN id SET DEFAULT nextv
 --
 
 ALTER TABLE ONLY public.weeks ALTER COLUMN id SET DEFAULT nextval('public.weeks_id_seq'::regclass);
+
+
+--
+-- Name: academies academies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.academies
+    ADD CONSTRAINT academies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: academy_regions academy_regions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.academy_regions
+    ADD CONSTRAINT academy_regions_pkey PRIMARY KEY (id);
 
 
 --
@@ -3384,6 +3479,9 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240403131643'),
+('20240403131625'),
+('20240403131231'),
 ('20240402150446'),
 ('20240326113043'),
 ('20240321160820'),

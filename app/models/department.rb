@@ -9,6 +9,7 @@ class Department < ApplicationRecord
   # updated_at: datetime, not null
 
   # Relationships
+  belongs_to :academy
   has_many :departments_operators
   has_many :operators, through: :departments_operators
 

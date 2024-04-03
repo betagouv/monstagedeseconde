@@ -1,4 +1,95 @@
+def populate_academy_regions
+  [
+    "Auvergne-Rhône-Alpes",
+    "Bourgogne-Franche-Comté",
+    "Bretagne",
+    "Centre-Val de Loire",
+    "Corse",
+    "Grand Est",
+    "Guadeloupe",
+    "Guyane",
+    "Hauts-de-France",
+    "Ile-de-France",
+    "La Réunion",
+    "Martinique",
+    "Mayotte",
+    "Normandie",
+    "Nouvelle-Aquitaine",
+    "Occitanie",
+    "Pays de la Loire",
+    "Provence-Alpes-Côte d'Azur"
+].each do |academy_region_name|
+    next if AcademyRegion.find_by(name: academy_region_name)
 
+    AcademyRegion.create!(name: academy_region_name)
+    print ' .'
+  end
+end
+
+def populate_academies
+  {
+    "Auvergne-Rhône-Alpes" => [
+      "Académie de Clermont-Ferrand",
+      "Académie de Grenoble",
+      "Académie de Lyon"
+    ],
+    "Bourgogne-Franche-Comté" => [
+      "Académie de Besançon",
+      "Académie de Dijon"
+    ],
+    "Bretagne" => [
+      "Académie de Rennes"
+    ],
+    "Centre-Val de Loire" => [
+      "Académie d'OrléansTours"
+    ],
+    "Corse" => [
+      "Académie de Corse"
+    ],
+    "Grand Est" => [
+      "Académie de Nancy-Metz",
+      "Académie de Reims",
+      "Académie de Strasbourg"
+    ],
+    "Guadeloupe" => [
+      "Académie de la Guadeloupe"
+    ],
+    "Guyane" => [
+      "Académie de la Guyane"
+    ],
+    "Hauts-de-France" => [
+      "Académie d'Amiens",
+      "Académie de Lille"
+    ],
+    "Ile-de-France" => [
+      "Académie de Créteil",
+      "Académie de Paris",
+      "Académie de Versailles"
+    ],
+    "La Réunion" => [
+      "Académie de La Réunion"
+    ],
+    "Martinique" => [
+      "Académie de Martinique"
+    ],
+    "Mayotte" => [
+      "Académie de Mayotte"
+    ],
+    "Normandie" => [
+      "Académie de Caen",
+      "Académie de Rouen"
+    ],
+    "Nouvelle-Aquitaine" => [
+      "Académie de Bordeaux",
+      "Académie de Limoges",
+      "Académie de Poitiers"
+    ],
+    "Occitanie" => [
+      "Académie de Montpellier",
+      "Académie de Toulouse"
+    ],
+    "Pays de la Loire" => [
+      "Académie de Nantes"
 
 def populate_departments 
   {
@@ -110,5 +201,8 @@ def populate_departments
     print ' .'
   end
 end
+
+call_method_with_metrics_tracking([:populate_academy_regions])
+call_method_with_metrics_tracking([:populate_academies])
 
 call_method_with_metrics_tracking([:populate_departments])
