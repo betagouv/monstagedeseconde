@@ -31,19 +31,19 @@ module Builders
     def update_from_stepper(internship_offer, organisation:, internship_offer_info:, hosting_info:, practical_info:)
       yield callback if block_given?
       authorize :update, model
-      internship_offer.update(
+      internship_offer.assign_attributes(
         {}.merge(preprocess_organisation_to_params(organisation))
-          .merge(preprocess_internship_offer_info_to_params(internship_offer_info))
-          .merge(preprocess_hosting_info_to_params(hosting_info))
-          .merge(preprocess_practical_info_to_params(practical_info))
-        )
-        internship_offer.save!
-        DraftedInternshipOfferJob.set(wait: 1.week)
-                                 .perform_later(internship_offer_id: internship_offer.id)
-        callback.on_success.try(:call, internship_offer)
-      rescue ActiveRecord::RecordInvalid => e
-        callback.on_failure.try(:call, e.record)
-      end
+        .merge(preprocess_internship_offer_info_to_params(internship_offer_info))
+        .merge(preprocess_hosting_info_to_params(hosting_info))
+        .merge(preprocess_practical_info_to_params(practical_info))
+      )
+      internship_offer.save!
+      DraftedInternshipOfferJob.set(wait: 1.week)
+                                .perform_later(internship_offer_id: internship_offer.id)
+      callback.on_success.try(:call, internship_offer)
+    rescue ActiveRecord::RecordInvalid => e
+      callback.on_failure.try(:call, e.record)
+    end
 
     # called by internship_offers#create (duplicate), api/internship_offers#create
     def create(params:)

@@ -3,10 +3,10 @@
 require "sti_preload"
 class InternshipOffer < ApplicationRecord
   PAGE_SIZE = 30
-  EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT = 250
+  EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT = 230
   MAX_CANDIDATES_HIGHEST = 200
   TITLE_MAX_CHAR_COUNT = 150
-  DESCRIPTION_MAX_CHAR_COUNT= 500
+  DESCRIPTION_MAX_CHAR_COUNT = 480
   PERIOD_LABELS = {
     full_time: "2 semaines - du 17 au 28 juin 2024",
     week_1: "1 semaine - du 17 au 21 juin 2024",
