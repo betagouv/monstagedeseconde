@@ -19,7 +19,6 @@
   </head>
 
   <body class="<%= env_class_name %> <%= body_class_name %>">
-    
     <a name="top" id="top"></a>
     <div class="content pt-0" data-controller='rg2a'>
       <header role="banner" class="custom-navbar">
@@ -38,18 +37,13 @@
         <% if content_for?(:custom_header) %> <%= content_for(:custom_header) %> <% end %>
         <div class="container-monstage">
           <%= render 'layouts/flash' %>
-          <div role="main">
-          <h1> Test </h1>
-          <%= yield %>
-          </div>
+          <div role="main"><%= yield %></div>
         </div>
       <% end %>
     </div>
 
     <div class="<%= agreement_form? ? "d-none" : "" %>"  >
       <%= render 'layouts/footer' %>
-      <h1><%=URI(request.original_url).host == "stagedeseconde.recette.1jeune1solution.gouv.fr"%></h1>
-      <h1>test</h1>
       <%= render partial: "layouts/analytics" %>
     </div>
 
