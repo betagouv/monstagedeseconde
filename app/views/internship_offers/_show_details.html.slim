@@ -27,16 +27,20 @@
 
 .row.fr-pt-3w
   .col-12
-    .row
-      .col-12
-        .h4.fr-mb-2w= internship_offer.employer_name
-    .row
-      .col-12
-        .fr-pl-1w.blue-france= Presenters::Address.new(instance: internship_offer).full_address
+    - if can?(:read_employer_name, internship_offer)
+      .row
+        .col-12
+          .h4.fr-mb-2w
+            = internship_offer.employer_name
+      .row
+        .col-12
+          .fr-pl-1w.blue-france
+            = Presenters::Address.new(instance: internship_offer).full_address
     .row.fr-my-1w
       .col-12
         - if internship_offer.employer_description_rich_text.present? || internship_offer.employer_description.present?
-          .reboot-trix-content.mt-2.test-description= internship_offer.employer_description_rich_text.to_s.present? ? internship_offer.employer_description_rich_text.to_s : internship_offer.employer_description
+          .reboot-trix-content.mt-2.test-description
+            = internship_offer.employer_description_rich_text.to_s.present? ? internship_offer.employer_description_rich_text.to_s : internship_offer.employer_description
 
     .row
       .col-12.fr-my-1w
