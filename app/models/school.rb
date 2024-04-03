@@ -19,6 +19,12 @@ class School < ApplicationRecord
 
   before_save :set_legal_status
 
+  CONTRACT_CODES = {
+    "10" => "HORS CONTRAT",
+    "30" => "CONTRAT D'ASSOCIATION TOUTES CLASSES",
+    "31" => "CONTRAT ASSOCIATION PARTIE DES CLASSES",
+    "99" => "SANS OBJET"
+  }
   VALID_TYPE_PARAMS = %w[rep rep_plus qpv qpv_proche].freeze
 
   scope :with_manager, lambda {
@@ -181,6 +187,10 @@ class School < ApplicationRecord
     return "Privé sous contrat" if contract_code.in?(["30","31"])
 
     "Privé hors contrat"
+  end
+
+  def contract_code_label
+    CONTRACT_CODES[contract_code]
   end
 
   def set_legal_status

@@ -284,14 +284,13 @@ class InternshipOffer < ApplicationRecord
     when 0 # full_time
       # third week of june
       self.first_date = current_school_year.first_week_internship_monday
-      self.last_date  = current_school_year.first_week_internship_friday
+      self.last_date  = current_school_year.second_week_internship_friday
     when 1 # week_1
+      self.first_date = current_school_year.first_week_internship_monday
+      self.last_date  = current_school_year.first_week_internship_friday
+    when 2 # week_2
       self.first_date = current_school_year.second_week_internship_monday
       self.last_date  = current_school_year.second_week_internship_friday
-    when 2 # week_2
-      self.first_date = current_school_year.first_week_internship_monday
-      self.last_date  = current_school_year.second_week_internship_friday
-    when 2 # week_2
     end
   end
 

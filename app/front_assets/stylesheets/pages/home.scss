@@ -26,6 +26,10 @@ a:hover {
     text-decoration: none;
 }
 
+.homepage button.fr-btn--close{
+    margin-right: 4px;
+}
+
 .d-hide-inline-sm {}
 
 .visible-smaller-md {}
@@ -543,4 +547,13 @@ img.covering {
 .fr-btns-group:where(:not(.fr-btns-group--sm):not(.fr-btns-group--lg)):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class^=fr-icon-] {
     max-width: none;
     justify-content: center;
+}
+
+
+.quote-pro-lp .fr-quote {
+   margin-left: 0
+}
+
+.fr-card__detail {
+    line-height: 1rem !important;
 }

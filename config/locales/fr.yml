@@ -20,7 +20,7 @@ fr:
     passwords:
       update: 'Mot de passe mis à jour.'
     sms:
-      welcome_student: "Bienvenue sur Mon Stage de 2de ! Faites votre première recherche et candidature ! Cliquez ici pour commencer : %{shrinked_url}"
+      welcome_student: "Bienvenue sur Mon stage de 2de. Commencez votre recherche ici : %{shrinked_url}"
   activerecord:
     models:
       area_notification:
@@ -136,6 +136,7 @@ fr:
         class_rooms: Classes
         school_manager: Chef d'établissement
         address: Adresse
+        code_uai: Code UAI
         weeks:
           one: Semaine de stage
           other: Semaines de stage

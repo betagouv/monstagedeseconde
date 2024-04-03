@@ -30,6 +30,17 @@ a.heavy-blue-link {
     text-decoration: underline;
   }
 }
+.mobile{
+  .fr-notice--info .fr-notice__body::before{
+    margin-left: 16px;
+
+  }
+  .fr-notice--info{
+    .fr-notice__title{
+      padding-left: 16px;
+    }
+  }
+}
 
 .fr-tabs__panel.fr-tabs__panel--selected.internships {
   min-height: 10rem;

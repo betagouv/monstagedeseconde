@@ -28,6 +28,9 @@ class Ability
 
   def visitor_abilities
     can %i[read apply], InternshipOffer
+    can(:read_employer_name, InternshipOffer) do |internship_offer|
+      read_employer_name?(internship_offer: internship_offer )
+    end
   end
 
   def god_abilities
@@ -64,6 +67,7 @@ class Ability
             see_dashboard_associations_summary], User
     can :manage, Operator
     can :see_minister_video, User
+    can :read_employer_name, InternshipOffer
   end
 
   def student_abilities(user:)
@@ -75,6 +79,7 @@ class Ability
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
     can :apply, InternshipOffer do |internship_offer|
+      !user.internship_applications.exists?(internship_offer_id: internship_offer.id) && # user has not already applied
       user.other_approved_applications_compatible?(internship_offer: internship_offer) &&
         (!internship_offer.reserved_to_school? || internship_offer.school_id == user.school_id)
     end
@@ -102,6 +107,9 @@ class Ability
            choose_gender_and_birthday
            register_with_phone], User
     can_read_dashboard_students_internship_applications(user: user)
+    can(:read_employer_name, InternshipOffer) do |internship_offer|
+      read_employer_name?(internship_offer: internship_offer )
+    end
   end
 
   def admin_officer_abilities(user:)
@@ -204,6 +212,9 @@ class Ability
 
   def as_account_user(user:)
     can :show, :account
+    can(:read_employer_name, InternshipOffer) do |internship_offer|
+      read_employer_name?(internship_offer: internship_offer )
+    end
   end
 
   def as_employers_like(user:)
@@ -229,6 +240,9 @@ class Ability
     can %i[update edit], Organisation , employer_id: user.team_members_ids
     can %i[create], Tutor
     can %i[index update], InternshipApplication
+    can(:read_employer_name, InternshipOffer) do |internship_offer|
+      read_employer_name?(internship_offer: internship_offer )
+    end
     can %i[show transfer], InternshipApplication do |internship_application|
       internship_application.internship_offer.employer_id == user.team_id
     end
@@ -335,6 +349,9 @@ class Ability
            see_reporting_schools
            see_reporting_enterprises
            check_his_statistics], User
+    can :read_employer_name, InternshipOffer do |internship_offer|
+      read_employer_name?(internship_offer: internship_offer )
+    end
   end
 
   def statistician_abilities(user:)
@@ -440,6 +457,9 @@ class Ability
           .positive?
     end
     can %i[see_tutor], InternshipOffer
+    can(:read_employer_name, InternshipOffer) do |internship_offer|
+      read_employer_name?(internship_offer: internship_offer )
+    end
     can %i[read], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
     end
@@ -517,5 +537,16 @@ class Ability
 
     school_year_start = SchoolYear::Current.new.beginning_of_period
     internship_offer.last_date > school_year_start
+  end
+
+  def read_employer_name?(internship_offer: )
+    operator = internship_offer.employer.try(:operator)
+    if operator.present? && operator.masked_data
+      false
+    elsif operator.present? && operator.departments.any?
+      !internship_offer.zipcode[0..1].in?(operator.departments.map(&:code))
+    else
+      true
+    end
   end
 end

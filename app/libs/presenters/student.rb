@@ -10,17 +10,18 @@ module Presenters
     def school_name
       return anonymized_message if student.anonymized?
 
-      school.name
+      school.try(:name)
     end
 
     def formal_school_name
+      return '' unless school
       "#{school.name} à #{school.city} (Code U.A.I: #{school.code_uai})"
     end
 
     def school_city
       return anonymized_message if student.anonymized?
 
-      school.city
+      school.try(:city)
     end
 
     def age

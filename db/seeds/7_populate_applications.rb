@@ -189,13 +189,6 @@ def populate_agreements
   agreement_2.aasm_state = :completed_by_employer
   agreement_2.save!
 
-  agreement_3 = Builders::InternshipAgreementBuilder.new(user: troisieme_applications_offers[3].internship_offer.employer)
-                                                    .new_from_application(troisieme_applications_offers[3])
-  agreement_3.school_manager_accept_terms = true
-  agreement_3.employer_accept_terms = true
-  agreement_3.aasm_state = :validated
-  agreement_3.save!
-
 end
 
 call_method_with_metrics_tracking([

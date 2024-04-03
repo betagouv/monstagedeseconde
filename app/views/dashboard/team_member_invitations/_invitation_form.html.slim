@@ -8,6 +8,8 @@
                     object: @team_member_invitation,
                     label: 'Adresse email',
                     field: :invitation_email,
+                    pattern: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                    type: 'email',
                     required: true}
   p.fr-mt-9v
     = link_to 'Précédent',
