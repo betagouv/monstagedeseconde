@@ -180,7 +180,8 @@ class InternshipOffersController < ApplicationController
         sector: internship_offer.sector.name,
         is_favorite: !!current_user && internship_offer.is_favorite?(current_user),
         logged_in: !!current_user,
-        can_manage_favorite: can?(:create, Favorite)
+        can_manage_favorite: can?(:create, Favorite),
+        can_read_employer_name: can?(:read_employer_name, internship_offer)
       }
     }
   end

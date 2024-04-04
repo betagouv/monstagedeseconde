@@ -1222,7 +1222,8 @@ CREATE TABLE public.operators (
     created_at timestamp without time zone DEFAULT '2021-05-06 08:22:40.377616'::timestamp without time zone NOT NULL,
     updated_at timestamp without time zone DEFAULT '2021-05-06 08:22:40.384734'::timestamp without time zone NOT NULL,
     api_full_access boolean DEFAULT false,
-    realized_count json DEFAULT '{}'::json
+    realized_count json DEFAULT '{}'::json,
+    masked_data boolean DEFAULT false
 );
 
 
@@ -3383,6 +3384,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240402150446'),
 ('20240326113043'),
 ('20240321160820'),
 ('20240320170403'),
