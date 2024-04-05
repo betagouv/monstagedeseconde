@@ -1350,7 +1350,6 @@ CREATE TABLE public.schools (
     id bigint NOT NULL,
     name character varying DEFAULT ''::character varying NOT NULL,
     city character varying DEFAULT ''::character varying NOT NULL,
-    department character varying,
     zipcode character varying,
     code_uai character varying,
     coordinates public.geography(Point,4326),
@@ -3400,6 +3399,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240405101512'),
 ('20240405094938'),
 ('20240404071148'),
 ('20240403131643'),
