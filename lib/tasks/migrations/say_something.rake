@@ -10,6 +10,8 @@ namespace :migrations do
   desc 'Fullfill schools department'
   task :fullfill_schools_department => :environment do
     School.all.each do |school|
+      next if school.department_id
+      next unless Department.find_by(name: school.department)
       school.update(department_id: Department.find_by(name: school.department).id)
     end 
   end
