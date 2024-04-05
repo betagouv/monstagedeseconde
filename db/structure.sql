@@ -1745,7 +1745,9 @@ CREATE TABLE public.users (
     survey_answered boolean DEFAULT false,
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
-    hubspot_id character varying
+    hubspot_id character varying,
+    academy_id integer,
+    academy_region_id integer
 );
 
 
@@ -2566,6 +2568,13 @@ CREATE INDEX index_class_rooms_on_school_id ON public.class_rooms USING btree (s
 
 
 --
+-- Name: index_departments_on_academy_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_departments_on_academy_id ON public.departments USING btree (academy_id);
+
+
+--
 -- Name: index_departments_operators_on_department_id_and_operator_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3042,6 +3051,20 @@ CREATE INDEX index_users_internship_offers_histories_on_user_id ON public.users_
 
 
 --
+-- Name: index_users_on_academy_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_academy_id ON public.users USING btree (academy_id);
+
+
+--
+-- Name: index_users_on_academy_region_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_academy_region_id ON public.users USING btree (academy_region_id);
+
+
+--
 -- Name: index_users_on_api_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3161,6 +3184,14 @@ CREATE TRIGGER sync_schools_city_tsv BEFORE INSERT OR UPDATE ON public.schools F
 
 
 --
+-- Name: users fk_rails_010513c2c7; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_010513c2c7 FOREIGN KEY (academy_id) REFERENCES public.academies(id);
+
+
+--
 -- Name: internship_applications fk_rails_064e6512b0; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3246,6 +3277,14 @@ ALTER TABLE ONLY public.internship_offers
 
 ALTER TABLE ONLY public.internship_offers
     ADD CONSTRAINT fk_rails_3cef9bdd89 FOREIGN KEY (group_id) REFERENCES public.groups(id);
+
+
+--
+-- Name: departments fk_rails_3f7cf55cd4; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.departments
+    ADD CONSTRAINT fk_rails_3f7cf55cd4 FOREIGN KEY (academy_id) REFERENCES public.academies(id);
 
 
 --
@@ -3433,6 +3472,14 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: users fk_rails_d5a5bff5c3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_d5a5bff5c3 FOREIGN KEY (academy_region_id) REFERENCES public.academy_regions(id);
+
+
+--
 -- Name: users_internship_offers_histories fk_rails_da8186a772; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3479,6 +3526,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240404071148'),
 ('20240403131643'),
 ('20240403131625'),
 ('20240403131231'),

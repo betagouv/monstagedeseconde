@@ -177,7 +177,7 @@ class School < ApplicationRecord
   end
 
   def email_domain_name
-    Academy.get_email_domain(Academy.lookup_by_zipcode(zipcode: zipcode))
+    Department.find_by_name(department)&.academy&.email_domain
   end
 
   private

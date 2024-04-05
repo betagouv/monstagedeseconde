@@ -68,10 +68,14 @@ def populate_users
   statistician_email = 'statistician@ms2e.fr'
   ministry_statistician_email = 'ministry_statistician@ms2e.fr'
   education_statistician_email = 'education_statistician@ms2e.fr'
+  academy_statistician_email = 'academy_statistician@ms2e.fr'
+  academy_region_statistician_email = 'academy_region_statistician@ms2e.fr'
   last_public_groups = Group.where(is_public: true).last(2)
   with_class_name_for_defaults(Users::PrefectureStatistician.new(email: statistician_email, password: password_value, department: '60')).save!
   with_class_name_for_defaults(Users::EducationStatistician.new(email: education_statistician_email, password: password_value,department: '60')).save!
   with_class_name_for_defaults(Users::MinistryStatistician.new(email: ministry_statistician_email, password: password_value, groups: last_public_groups)).save!
+  with_class_name_for_defaults(Users::AcademyStatistician.new(email: academy_statistician_email, password: password_value, academy: Academy.first)).save!
+  with_class_name_for_defaults(Users::AcademyRegionStatistician.new(email: academy_region_statistician_email, password: password_value, academy_region: AcademyRegion.first)).save!
 end
 
 def populate_students

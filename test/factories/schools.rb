@@ -13,8 +13,10 @@ FactoryBot.define do
     is_public { true }
     contract_code { "99" }
     legal_status { "Public" }
+
     before(:create) do |school|
-      Department.create(code: '75', name: 'Paris')
+      department = Department.create(code: '75', name: 'Paris')
+      school.department = department
     end
 
     trait :at_paris do
