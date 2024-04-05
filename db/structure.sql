@@ -1367,7 +1367,8 @@ CREATE TABLE public.schools (
     legal_status character varying,
     delegation_date date,
     is_public boolean DEFAULT true,
-    contract_code character varying(3)
+    contract_code character varying(3),
+    department_id bigint
 );
 
 
@@ -2884,6 +2885,13 @@ CREATE INDEX index_schools_on_coordinates ON public.schools USING gist (coordina
 
 
 --
+-- Name: index_schools_on_department_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_schools_on_department_id ON public.schools USING btree (department_id);
+
+
+--
 -- Name: index_signatures_on_internship_agreement_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3354,6 +3362,14 @@ ALTER TABLE ONLY public.internship_offer_stats
 
 
 --
+-- Name: schools fk_rails_e97840dde7; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.schools
+    ADD CONSTRAINT fk_rails_e97840dde7 FOREIGN KEY (department_id) REFERENCES public.departments(id);
+
+
+--
 -- Name: internship_offer_info_weeks fk_rails_e9c5c89c26; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3384,6 +3400,11 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240405094938'),
+('20240404071148'),
+('20240403131643'),
+('20240403131625'),
+('20240403131231'),
 ('20240402150446'),
 ('20240326113043'),
 ('20240321160820'),
