@@ -103,6 +103,8 @@ def populate_departments
     "973" => "Guyane",
     "974" => "La Réunion",
     "976" => "Mayotte",
+    "988" => "Nouvelle-Calédonie",
+    "987" => "Polynésie française"
   }.map do |department_code, department_name|
     next if Department.find_by(name: department_name)
 
