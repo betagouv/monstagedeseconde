@@ -1,11 +1,11 @@
 class Academy < ApplicationRecord
   belongs_to :academy_region
-  has_many :departements, dependent: :destroy
+  has_many :departments, dependent: :destroy
   has_many :statisticians, dependent: :destroy, class_name: 'Users::AcademyStatistician'
 
 
   def self.to_select(only: nil)
-    MAP.keys.sort
+    Academy.all.map(&:name).sort
   end
 
   def self.departments_by_name(academy:)

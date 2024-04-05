@@ -1,7 +1,7 @@
 module Users
   class AcademyRegionStatistician < Statistician
 
-    METABASE_DASHBOARD_ID = 31
+    METABASE_DASHBOARD_ID = 30
 
     belongs_to :academy_region
 

@@ -24,18 +24,18 @@ FactoryBot.define do
     trait :at_paris do
       city { 'Paris' }
       name { 'Parisian school' }
-      department { 'Paris 75015' }
       coordinates { Coordinates.paris }
     end
 
     trait :at_bordeaux do
       city { 'bordeaux' }
       name { 'bordeaux school' }
-      department { 'Gironde' }
       coordinates { Coordinates.bordeaux }
       zipcode { '33072' }
       before(:create) do |school|
-        Department.create(code: '33', name: 'Gironde')
+        academy_region = AcademyRegion.find_or_create_by(name: 'Nouvelle-Aquitaine')
+        academy = Academy.find_or_create_by(name: 'Bordeaux', email_domain: 'ac-bordeaux.fr', academy_region: academy_region)
+        department = Department.find_or_create_by(code: '33', name: 'Gironde', academy: academy)
       end
     end
 

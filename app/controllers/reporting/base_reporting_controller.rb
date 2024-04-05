@@ -8,7 +8,7 @@ module Reporting
 
     def reporting_cross_view_params
       params.permit(:is_public,
-                    :department,
+                    # :department,
                     :academy,
                     :group,
                     :ministries,

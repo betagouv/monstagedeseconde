@@ -1,7 +1,7 @@
 module Users
   class AcademyStatistician < Statistician
 
-    METABASE_DASHBOARD_ID = 31
+    METABASE_DASHBOARD_ID = 30
 
     belongs_to :academy
 
@@ -18,11 +18,14 @@ module Users
     end
 
     def custom_dashboard_path
-      url_helpers.root_path
-      # url_helpers.reporting_dashboards_path(
-      #   department: department_name,
-      #   school_year: SchoolYear::Current.new.beginning_of_period.year
-      # )
+      url_helpers.reporting_dashboards_path(
+        department: departments.map(&:code).join(',') || '',
+        school_year: SchoolYear::Current.new.beginning_of_period.year
+      )
+    end
+
+    def departments
+      academy.departments
     end
 
     rails_admin do
