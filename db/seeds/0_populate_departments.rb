@@ -8,6 +8,8 @@ def populate_academy_regions
     "Grand Est",
     "Guadeloupe",
     "Guyane",
+    "Nouvelle-Calédonie",
+    "Polynésie française",
     "Hauts-de-France",
     "Ile-de-France",
     "La Réunion",
@@ -56,6 +58,12 @@ def populate_academies
     ],
     'Guyane': [
       {'Académie de la Guyane': 'ac-guyane.fr'}
+    ],
+    'Nouvelle-Calédonie': [
+      {'Académie de la Nouvelle-Calédonie': 'ac-noumea.nc'}
+    ],
+    'Polynésie française': [
+      {'Académie de la Polynésie française': 'ac-polynesie.pf'}
     ],
     'Hauts-de-France': [
       {"Académie d'Amiens": 'ac-amiens.fr'},
@@ -179,6 +187,12 @@ def populate_departments
     ],
     "Académie de la Guyane": [
       {"973": "Guyane"}
+    ],
+    "Académie de la Nouvelle-Calédonie": [
+      {"988" => "Nouvelle-Calédonie"}
+    ],
+    'Académie de la Polynésie française': [
+      {"987" => "Polynésie française"} 
     ],
     "Académie d'Amiens": [
       {"02": "Aisne"},
