@@ -53,8 +53,6 @@ class InternshipOffer < ApplicationRecord
 
   accepts_nested_attributes_for :organisation, allow_destroy: true
 
-  has_rich_text :employer_description_rich_text
-
    # Callbacks
   after_initialize :init
 
@@ -376,7 +374,7 @@ class InternshipOffer < ApplicationRecord
                     is_public group school_id coordinates first_date last_date
                     siret employer_manual_enter internship_offer_area_id
                     contact_phone internship_offer_info_id organisation_id tutor_id
-                    weekly_hours daily_hours lunch_break]
+                    weekly_hours daily_hours lunch_break employer_description]
 
     internship_offer = generate_offer_from_attributes(white_list)
     organisation = self.organisation.dup
@@ -389,7 +387,7 @@ class InternshipOffer < ApplicationRecord
                     tutor_name tutor_phone tutor_email tutor_role employer_website
                     employer_name is_public group school_id coordinates
                     first_date last_date siret employer_manual_enter
-                    internship_offer_area_id
+                    internship_offer_area_id employer_description
                     internship_offer_info_id organisation_id tutor_id
                     weekly_hours daily_hours]
 
@@ -426,11 +424,6 @@ class InternshipOffer < ApplicationRecord
                                               else
                                                 description
                                               end)
-    internship_offer.employer_description_rich_text = (if employer_description_rich_text.present?
-                                                         employer_description_rich_text.to_s
-                                                       else
-                                                         employer_description
-                                                       end)
     internship_offer
   end
 

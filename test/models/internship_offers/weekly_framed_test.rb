@@ -154,12 +154,12 @@ module InternshipsOffers
 
     test 'duplicate' do
       internship_offer = create(:weekly_internship_offer, description_rich_text: 'abc',
-                                                          employer_description_rich_text: 'def')
+                                                          employer_description: 'def')
       duplicated_internship_offer = internship_offer.duplicate
       assert_equal internship_offer.description_rich_text.to_plain_text.strip,
                    duplicated_internship_offer.description_rich_text.to_plain_text.strip
-      assert_equal internship_offer.employer_description_rich_text.to_plain_text.strip,
-                   duplicated_internship_offer.employer_description_rich_text.to_plain_text.strip
+      assert_equal internship_offer.employer_description.strip,
+                   duplicated_internship_offer.employer_description.strip
     end
 
     test 'default max_candidates' do

@@ -120,7 +120,7 @@ module Builders
       {
         employer_name: organisation.employer_name,
         employer_website: organisation.employer_website,
-        employer_description_rich_text: organisation.employer_description,
+        employer_description: organisation.employer_description,
         is_public: organisation.is_public,
         siret: organisation.siret,
         employer_manual_enter: organisation.manual_enter
