@@ -142,11 +142,12 @@ export default class extends Controller {
       this.hideAcademySelect();
       this.hideAcademyRegionSelect();
     } else if (ministryType == "MinistryStatistician") {
-      $('#statistician-ministry').addClass('d-none');
+      console.log('ministry');
+      $('#statistician-ministry').removeClass('d-none');
       this.ministrySelectTarget.required = false;
       this.ministrySelectTarget.value = '';
 
-      this.hideMinistrySelect();
+      this.hideDepartmentSelect();
       this.hideAcademyRegionSelect();
       this.hideAcademySelect();
     } else if (ministryType == "AcademyStatistician") {
