@@ -12,6 +12,7 @@ class Department < ApplicationRecord
   belongs_to :academy
   has_many :departments_operators
   has_many :operators, through: :departments_operators
+  has_many :schools, foreign_key: :department_id
 
   def self.lookup_by_zipcode(zipcode:)
     code = key_for_lookup(zipcode: zipcode)

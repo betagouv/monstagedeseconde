@@ -10,6 +10,7 @@ class School < ApplicationRecord
   has_many :internship_applications, through: :students
   has_many :internship_agreements, through: :internship_applications
   has_many :dedicated_internship_offers, foreign_key: :school_id, dependent: :nullify, class_name: 'InternshipOffer'
+  belongs_to :department, optional: true
 
   has_rich_text :agreement_conditions_rich_text
 
@@ -177,7 +178,7 @@ class School < ApplicationRecord
   end
 
   def email_domain_name
-    Department.find_by_name(department)&.academy&.email_domain
+    department&.academy&.email_domain
   end
 
   private
