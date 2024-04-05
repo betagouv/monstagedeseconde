@@ -36,14 +36,29 @@ module Reporting
 
     def metabase_iframe
       year = params[:school_year].to_i
-      payload = {
-        resource: { dashboard: eval("#{current_user.class.to_s}::METABASE_DASHBOARD_ID") },
-        params: {
-          "d%C3%A9partement": [params[:department]],
-          "ann%C3%A9e_scolaire": "#{year}/#{year+1}"
-        },
-        exp: Time.now.to_i + (60 * 10) # 10 minute expiration
-      }
+      if current_user.is_a?(Users::AcademyStatistician) || current_user.is_a?(Users::AcademyRegionStatistician)
+        puts current_user.departments.map(&:name)
+        puts current_user.departments.map(&:name)
+        puts current_user.departments.map(&:name)
+
+        payload = {
+          resource: { dashboard: eval("#{current_user.class.to_s}::METABASE_DASHBOARD_ID") },
+          params: {
+            "d%C3%A9partement": current_user.departments.map(&:name),
+            "ann%C3%A9e_scolaire": "#{year}/#{year+1}"
+          },
+          exp: Time.now.to_i + (60 * 10) # 10 minute expiration
+        }
+      else
+        payload = {
+          resource: { dashboard: eval("#{current_user.class.to_s}::METABASE_DASHBOARD_ID") },
+          params: {
+            "d%C3%A9partement": [params[:department]],
+            "ann%C3%A9e_scolaire": "#{year}/#{year+1}"
+          },
+          exp: Time.now.to_i + (60 * 10) # 10 minute expiration
+        }
+      end
 
       payload[:params][:groupe] = current_user.ministries.map(&:name) if can?(:see_ministry_dashboard, current_user)
 

@@ -14,8 +14,19 @@ module Users
 
     def academy_region_statistician? ; true end
 
+    def departments
+      academy_region.departments
+    end
+
     def presenter
       Presenters::PrefectureStatistician.new(self)
+    end
+
+    def custom_dashboard_path
+      url_helpers.reporting_dashboards_path(
+        department: departments.map(&:name).join(',') || '',
+        school_year: SchoolYear::Current.new.beginning_of_period.year
+      )
     end
 
     rails_admin do
