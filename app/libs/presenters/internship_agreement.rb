@@ -65,6 +65,13 @@ module Presenters
         I18n.t("#{translation_path}.already_signed")
       elsif internship_agreement.signatures_started?
         I18n.t("#{translation_path}.not_signed_yet")
+      elsif @school_manager.nil?
+        translation_base_path = 'activerecord.attributes.internship_agreement.status'
+        if current_user.employer_like?
+          I18n.t("#{translation_base_path}.employer.no_school_manager")
+        else
+          I18n.t("#{translation_base_path}.teacher.no_school_manager")
+        end
       else
         I18n.t(translation_path)
       end

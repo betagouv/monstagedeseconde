@@ -60,6 +60,15 @@ class School < ApplicationRecord
     )
   }
 
+  def school_manager
+    Users::SchoolManagement.kept.find_by(school_id: id, role: 'school_manager')
+  end
+
+  def with_school_manager?
+    school_manager.present?
+  end
+
+  # TODO move these two to a presenter
   def select_text_method
     "#{name} - #{city} - #{zipcode}"
   end

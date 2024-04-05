@@ -235,6 +235,63 @@ module Dashboard
       find('a.fr-btn.button-component-cta-button', text: 'Signée de tous')
     end
 
+    # =================== Teacher ===================
+
+    test 'teacher reads internship agreement table with correct indications - draft' do
+      employer, internship_offer = create_employer_and_offer
+      internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
+      internship_agreement = create(:internship_agreement, internship_application: internship_application, aasm_state: :draft)
+      teacher = create(:teacher, school: internship_agreement.internship_application.student.school)
+      sign_in(teacher)
+      visit dashboard_internship_agreements_path
+      within('td[data-head="Statut"]') do
+        find('div.actions', text: 'En attente de l\'offreur.')
+      end
+      find('a.button-component-cta-button', text: 'En attente')
+    end
+
+    test 'teacher reads internship agreement table with correct indications - status: started_by_employer' do
+      internship_agreement = create(:internship_agreement, aasm_state: :started_by_employer)
+      teacher = create(:teacher, school: internship_agreement.internship_application.student.school)
+      sign_in(teacher)
+      visit dashboard_internship_agreements_path
+      within('td[data-head="Statut"]') do
+        find('div.actions', text: 'En attente de l\'offreur.')
+      end
+      find('a.button-component-cta-button', text: 'En attente')
+    end
+
+    test 'teacher reads internship agreement table with correct indications - draft - with no school_manager subscription' do
+      employer, internship_offer = create_employer_and_offer
+      school = create(:school)
+      assert school.school_manager.nil?
+      student = create(:student, school: school)
+      internship_application = create(:weekly_internship_application, internship_offer: internship_offer, student: student)
+      internship_agreement = create(:internship_agreement, internship_application: internship_application, aasm_state: :draft)
+      teacher = create(:teacher, school: school)
+      sign_in(teacher)
+      visit dashboard_internship_agreements_path
+      within('td[data-head="Statut"]') do
+        find('div.actions', text: 'En attente de l\'offreur.')
+      end
+      find('a.button-component-cta-button', text: 'En attente')
+    end
+
+    test 'teacher reads internship agreement table with correct indications - status: started_by_employer - with no school_manager subscription' do
+      employer, internship_offer = create_employer_and_offer
+      school = create(:school)
+      assert school.school_manager.nil?
+      student = create(:student, school: school)
+      internship_application = create(:weekly_internship_application, internship_offer: internship_offer, student: student)
+      internship_agreement = create(:internship_agreement, internship_application: internship_application, aasm_state: :started_by_employer)
+      teacher = create(:teacher, school: school)
+      sign_in(teacher)
+      visit dashboard_internship_agreements_path
+      within('td[data-head="Statut"]') do
+        find('div.actions', text: 'En attente de l\'offreur.')
+      end
+      find('a.button-component-cta-button', text: 'En attente')
+    end
     # =================== School Manager ===================
 
     test 'school_manager reads internship agreement table with correct indications - draft' do
