@@ -178,7 +178,7 @@ class School < ApplicationRecord
   end
 
   def email_domain_name
-    department&.academy&.email_domain
+    department.academy.email_domain
   end
 
   private

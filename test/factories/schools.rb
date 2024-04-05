@@ -14,13 +14,6 @@ FactoryBot.define do
     contract_code { "99" }
     legal_status { "Public" }
 
-    # before(:create) do |school|
-    #   academy_region = AcademyRegion.find_or_create_by(name: 'Ile-de-France')
-    #   academy = Academy.find_or_create_by(name: 'Paris', email_domain: 'ac-paris.fr', academy_region: academy_region)
-    #   department = Department.find_or_create_by(code: '75', name: 'Paris', academy: academy)
-    #   school.department = department
-    # end
-
     trait :at_paris do
       city { 'Paris' }
       name { 'Parisian school' }

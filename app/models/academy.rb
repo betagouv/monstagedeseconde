@@ -1,7 +1,7 @@
 class Academy < ApplicationRecord
   belongs_to :academy_region
-  has_many :departments, dependent: :destroy
-  has_many :statisticians, dependent: :destroy, class_name: 'Users::AcademyStatistician'
+  has_many :departments
+  has_many :statisticians, class_name: 'Users::AcademyStatistician'
 
 
   def self.to_select(only: nil)
@@ -12,6 +12,7 @@ class Academy < ApplicationRecord
     Academy.find_by(name: academy).departements
   end
 
+  # TODO change method name // remove if offer has department
   def self.lookup_by_zipcode(zipcode:)
     Department.where(name: Department.lookup_by_zipcode(zipcode: zipcode)).first.academy.name
   end

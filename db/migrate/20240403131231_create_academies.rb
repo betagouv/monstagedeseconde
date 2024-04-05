@@ -5,7 +5,7 @@ class CreateAcademies < ActiveRecord::Migration[7.1]
       t.string :email_domain
       t.integer :academy_region_id
 
-      t.timestamps
+      t.index :academy_region_id
     end
   end
 end

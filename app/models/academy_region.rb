@@ -6,16 +6,6 @@ class AcademyRegion < ApplicationRecord
   rails_admin do
     weight 16
     navigation_label 'Divers'
-
-    list do
-      # field :name
-    end
-    show do
-      # field :name
-    end
-    edit do
-      # field :name
-    end
+    
   end
-
 end
