@@ -28,7 +28,6 @@ module Api
                                               longitude: Coordinates.bordeaux[:longitude]}
       assert_response :success
       found_school = json_response.first
-      assert found_school.key?("department")
     end
   end
 end

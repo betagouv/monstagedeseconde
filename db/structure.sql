@@ -218,6 +218,70 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: academies; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.academies (
+    id bigint NOT NULL,
+    name character varying,
+    email_domain character varying,
+    academy_region_id integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: academies_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.academies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: academies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.academies_id_seq OWNED BY public.academies.id;
+
+
+--
+-- Name: academy_regions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.academy_regions (
+    id bigint NOT NULL,
+    name character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: academy_regions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.academy_regions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: academy_regions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.academy_regions_id_seq OWNED BY public.academy_regions.id;
+
+
+--
 -- Name: action_text_rich_texts; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -437,7 +501,8 @@ CREATE TABLE public.departments (
     code character varying,
     name character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    academy_id integer
 );
 
 
@@ -1680,7 +1745,9 @@ CREATE TABLE public.users (
     survey_answered boolean DEFAULT false,
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
-    hubspot_id character varying
+    hubspot_id character varying,
+    academy_id integer,
+    academy_region_id integer
 );
 
 
@@ -1804,6 +1871,20 @@ CREATE SEQUENCE public.weeks_id_seq
 --
 
 ALTER SEQUENCE public.weeks_id_seq OWNED BY public.weeks.id;
+
+
+--
+-- Name: academies id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.academies ALTER COLUMN id SET DEFAULT nextval('public.academies_id_seq'::regclass);
+
+
+--
+-- Name: academy_regions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.academy_regions ALTER COLUMN id SET DEFAULT nextval('public.academy_regions_id_seq'::regclass);
 
 
 --
@@ -2077,6 +2158,22 @@ ALTER TABLE ONLY public.users_search_histories ALTER COLUMN id SET DEFAULT nextv
 --
 
 ALTER TABLE ONLY public.weeks ALTER COLUMN id SET DEFAULT nextval('public.weeks_id_seq'::regclass);
+
+
+--
+-- Name: academies academies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.academies
+    ADD CONSTRAINT academies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: academy_regions academy_regions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.academy_regions
+    ADD CONSTRAINT academy_regions_pkey PRIMARY KEY (id);
 
 
 --
@@ -2468,6 +2565,13 @@ CREATE INDEX index_area_notifications_on_user_id ON public.area_notifications US
 --
 
 CREATE INDEX index_class_rooms_on_school_id ON public.class_rooms USING btree (school_id);
+
+
+--
+-- Name: index_departments_on_academy_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_departments_on_academy_id ON public.departments USING btree (academy_id);
 
 
 --
@@ -2954,6 +3058,20 @@ CREATE INDEX index_users_internship_offers_histories_on_user_id ON public.users_
 
 
 --
+-- Name: index_users_on_academy_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_academy_id ON public.users USING btree (academy_id);
+
+
+--
+-- Name: index_users_on_academy_region_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_academy_region_id ON public.users USING btree (academy_region_id);
+
+
+--
 -- Name: index_users_on_api_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3073,6 +3191,14 @@ CREATE TRIGGER sync_schools_city_tsv BEFORE INSERT OR UPDATE ON public.schools F
 
 
 --
+-- Name: users fk_rails_010513c2c7; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_010513c2c7 FOREIGN KEY (academy_id) REFERENCES public.academies(id);
+
+
+--
 -- Name: internship_applications fk_rails_064e6512b0; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3158,6 +3284,14 @@ ALTER TABLE ONLY public.internship_offers
 
 ALTER TABLE ONLY public.internship_offers
     ADD CONSTRAINT fk_rails_3cef9bdd89 FOREIGN KEY (group_id) REFERENCES public.groups(id);
+
+
+--
+-- Name: departments fk_rails_3f7cf55cd4; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.departments
+    ADD CONSTRAINT fk_rails_3f7cf55cd4 FOREIGN KEY (academy_id) REFERENCES public.academies(id);
 
 
 --
@@ -3342,6 +3476,14 @@ ALTER TABLE ONLY public.active_storage_attachments
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT fk_rails_d23d91f0e6 FOREIGN KEY (class_room_id) REFERENCES public.class_rooms(id);
+
+
+--
+-- Name: users fk_rails_d5a5bff5c3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_d5a5bff5c3 FOREIGN KEY (academy_region_id) REFERENCES public.academy_regions(id);
 
 
 --

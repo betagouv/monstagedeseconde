@@ -13,6 +13,8 @@ module Finders
         Users::PrefectureStatistician.name => :statistician_query,
         Users::MinistryStatistician.name => :ministry_statistician_query,
         Users::EducationStatistician.name => :statistician_query,
+        Users::AcademyRegionStatistician.name => :statistician_query,
+        Users::AcademyStatistician.name => :statistician_query,
         Users::God.name => :visitor_query
       }
     end
