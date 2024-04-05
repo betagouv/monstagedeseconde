@@ -121,7 +121,7 @@
                               |Choisissez votre région académique
                             = f.select :academy_region_id,
                                        options_for_select(AcademyRegion.all.map { |academy_region| [academy_region.name, academy_region.id] },
-                                       resource.academy_region), { prompt: "Régions académiques" },
+                                       resource.try(:academy_region)), { prompt: "Régions académiques" },
                                        { class: "fr-select", required: false, data: { "signup-target": 'academyRegionSelect'  } }
                       
                       .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-academy
@@ -132,7 +132,7 @@
                               |Choisissez votre académie
                             = f.select :academy_id,
                                        options_for_select(Academy.all.map { |academy| [academy.name, academy.id] },
-                                       resource.academy), { prompt: "Académies" },
+                                       resource.try(:academy)), { prompt: "Académies" },
                                        { class: "fr-select", required: false, data: { "signup-target": 'academySelect'  } }
 
                       .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-department
@@ -143,7 +143,7 @@
                               |Choisissez votre département
                             = f.select :department,
                                        options_for_select(Department.all.map { |department| ["#{department.code} - #{department.name}", department.code] },
-                                       resource.department), { prompt: "Départements" },
+                                       resource.try(:department)), { prompt: "Départements" },
                                        { class: "fr-select", required: false, data: { "signup-target": 'departmentSelect'  } }
 
                       .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-ministry
