@@ -40,9 +40,7 @@ class Department < ApplicationRecord
             else
               Department.all.map
             end
-    list.map { |code, name| ["#{code} - #{name}", name.to_s] }
-        .uniq { |item| item[1] }
-        .sort
+    list.map { |d| ["#{d.code} - #{d.name}", d.name] }.sort
   end
 
   def self.corsica?(zipcode:)
