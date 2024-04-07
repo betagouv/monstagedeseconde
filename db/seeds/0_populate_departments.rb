@@ -194,6 +194,12 @@ def populate_departments
     'Académie de la Polynésie française': [
       {"987" => "Polynésie française"} 
     ],
+    'Académie de la Réunion': [
+      {"974": "La Réunion"}
+    ],
+    'Académie de Mayotte': [
+      {"976": "Mayotte"}
+    ],
     "Académie d'Amiens": [
       {"02": "Aisne"},
       {"60": "Oise"},
@@ -284,8 +290,8 @@ def populate_departments
 
     departments.each do |department_hashes|
       department_hashes.each do |code, department_name|
-        next if Department.find_by(name: department_name)
-        Department.create!(name: department_name, code: code, academy: academy)
+        Department.find_by(name: department_name).update!(academy: academy)
+        # Department.create!(name: department_name, code: code, academy: academy)
         print ' .'
       end
     end
