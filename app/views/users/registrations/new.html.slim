@@ -117,7 +117,7 @@
                         .row
                           .col-lg-8.col-12
                             / select field academy region
-                            label.fr-label[for="user_academy_region"]
+                            label.fr-label[for="user_academy_region_id"]
                               |Choisissez votre région académique
                             = f.select :academy_region_id,
                                        options_for_select(AcademyRegion.all.map { |academy_region| [academy_region.name, academy_region.id] },
@@ -128,7 +128,7 @@
                         .row
                           .col-lg-8.col-12
                             / select field academy
-                            label.fr-label[for="user_academy"]
+                            label.fr-label[for="user_academy_id"]
                               |Choisissez votre académie
                             = f.select :academy_id,
                                        options_for_select(Academy.all.map { |academy| [academy.name, academy.id] },
