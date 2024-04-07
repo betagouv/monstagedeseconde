@@ -37,10 +37,6 @@ module Reporting
     def metabase_iframe
       year = params[:school_year].to_i
       if current_user.is_a?(Users::AcademyStatistician) || current_user.is_a?(Users::AcademyRegionStatistician)
-        puts current_user.departments.map(&:name)
-        puts current_user.departments.map(&:name)
-        puts current_user.departments.map(&:name)
-
         payload = {
           resource: { dashboard: eval("#{current_user.class.to_s}::METABASE_DASHBOARD_ID") },
           params: {
