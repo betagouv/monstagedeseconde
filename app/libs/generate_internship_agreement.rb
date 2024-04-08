@@ -495,6 +495,7 @@ class GenerateInternshipAgreement < Prawn::Document
     File.open(signature.local_signature_image_file_path, "wb") { |f| f.write(img) }
     signature
   rescue ActiveStorage::FileNotFoundError
+    Rails.logger.error "Signature image not found for #{signatory_role} for internship agreement #{internship_agreement.id}"
     nil
   end
 
