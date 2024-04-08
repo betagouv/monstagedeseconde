@@ -9,29 +9,26 @@ FactoryBot.define do
     city { 'Paris' }
     zipcode { '75015' }
     code_uai { '075' + rand(100_000).to_s.rjust(5, '0') }
-    department { 'Paris' }
+    department { create(:department) }
     is_public { true }
     contract_code { "99" }
     legal_status { "Public" }
-    before(:create) do |school|
-      Department.create(code: '75', name: 'Paris')
-    end
 
     trait :at_paris do
       city { 'Paris' }
       name { 'Parisian school' }
-      department { 'Paris 75015' }
       coordinates { Coordinates.paris }
     end
 
     trait :at_bordeaux do
       city { 'bordeaux' }
       name { 'bordeaux school' }
-      department { 'Gironde' }
       coordinates { Coordinates.bordeaux }
       zipcode { '33072' }
       before(:create) do |school|
-        Department.create(code: '33', name: 'Gironde')
+        academy_region = AcademyRegion.find_or_create_by(name: 'Nouvelle-Aquitaine')
+        academy = Academy.find_or_create_by(name: 'Bordeaux', email_domain: 'ac-bordeaux.fr', academy_region: academy_region)
+        department = Department.find_or_create_by(code: '33', name: 'Gironde', academy: academy)
       end
     end
 

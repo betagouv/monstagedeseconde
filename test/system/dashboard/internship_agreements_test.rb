@@ -551,7 +551,8 @@ module Dashboard
     end
 
     test 'statistician with approved internship application when school has no school_manager' do
-      skip
+      #TODO skip "irrelevant message"s
+      skip "irrelevant message"
       school = create(:school) # without_school_manager
       student = create(:student, school: school)
       internship_offer = create(:weekly_internship_offer, employer: create(:statistician, agreement_signatorable: true))

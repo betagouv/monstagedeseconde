@@ -10,6 +10,12 @@ module Reporting
       if current_user.ministry_statistician?
         params.merge!(ministries: current_user.ministries.map(&:id))
       end
+      if current_user.academy_statistician?
+        params.merge!(department: current_user.academy.departments.map(&:name))
+      end
+      if current_user.academy_region_statistician?
+        params.merge!(department: current_user.academy_region.departments.map(&:name))
+      end
       
       @offers = current_offers
       @no_offers = no_current_offers

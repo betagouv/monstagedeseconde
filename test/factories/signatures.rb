@@ -9,6 +9,7 @@ FactoryBot.define do
 
     trait :school_manager do
       after(:build) do |signature|
+        
         signature.user_id = signature.internship_agreement.school_manager.id
       end
       signatory_role { Signature::signatory_roles[:school_manager] }

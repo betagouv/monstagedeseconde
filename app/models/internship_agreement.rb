@@ -57,6 +57,12 @@ class InternshipAgreement < ApplicationRecord
               :student_legal_representative_phone,
               presence: true
     validate :valid_trix_school_manager_fields
+    validates :school_representative_phone,
+              :student_refering_teacher_phone,
+              :student_phone,
+              :student_legal_representative_phone,
+              format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/ ,
+                        message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'"}
   end
 
   with_options if: :enforce_employer_validations? do
