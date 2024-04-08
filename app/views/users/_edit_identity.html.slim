@@ -124,6 +124,15 @@
                                 placeholder: "ex : 0623456789",
                                 :'aria-label' => "[Numéro de téléphone]"
 
+    - if current_user.is_a?(Users::Student)
+      .row
+        .col-md-6.col-xs-12
+          .form-group
+            = f.label :birth_date, class: 'fr-label', for: 'user_birth_date' do
+              = 'Date de naissance'
+              = f.rg2a_required_content_tag
+            = f.date_field :birth_date, class: 'fr-input', required: true
+
 
     .row
       .col-md-6.col-xs-12

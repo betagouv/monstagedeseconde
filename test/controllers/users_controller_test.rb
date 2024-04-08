@@ -286,11 +286,13 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     patch account_path, params: { user: { school_id: school.id,
                                           class_room_id: class_room.id,
                                           first_name: 'Jules',
-                                          last_name: 'Verne' } }
+                                          last_name: 'Verne',
+                                          birth_date: '2000-01-01' } }
 
     assert_redirected_to account_path
     student.reload
     assert_equal class_room.id, student.class_room_id
+    assert_equal Date.new(2000,1,1), student.birth_date
     follow_redirect!
     assert_select '#alert-success #alert-text', { text: 'Compte mis à jour avec succès.' }, 1
   end
