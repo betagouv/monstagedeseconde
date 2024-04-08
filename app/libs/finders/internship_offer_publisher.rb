@@ -9,7 +9,9 @@ module Finders
         Users::Employer.name => :employer_query,
         Users::PrefectureStatistician.name => :statistician_query,
         Users::MinistryStatistician.name => :statistician_query,
-        Users::EducationStatistician.name => :statistician_query
+        Users::EducationStatistician.name => :statistician_query,
+        Users::AcademyRegionStatistician.name => :statistician_query,
+        Users::AcademyStatistician.name => :statistician_query
       }
     end
 

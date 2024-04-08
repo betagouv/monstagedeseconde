@@ -14,18 +14,28 @@ class Operator < ApplicationRecord
     list do
       field :name
       field :target_count
+      field :masked_data do
+        def label = 'Données masquées'
+      end
     end
     show do
       field :name
       field :target_count
       field :logo
       field :website
+      field :masked_data do
+        def label = 'Données masquées'
+      end
     end
+
     edit do
       field :name
       field :target_count
       field :logo
       field :website
+      field :masked_data do
+        def label = 'Données masquées'
+      end
     end
   end
 end

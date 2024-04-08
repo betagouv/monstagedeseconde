@@ -9,8 +9,10 @@ class Department < ApplicationRecord
   # updated_at: datetime, not null
 
   # Relationships
+  belongs_to :academy
   has_many :departments_operators
   has_many :operators, through: :departments_operators
+  has_many :schools, foreign_key: :department_id
 
   def self.lookup_by_zipcode(zipcode:)
     code = key_for_lookup(zipcode: zipcode)
@@ -38,9 +40,7 @@ class Department < ApplicationRecord
             else
               Department.all.map
             end
-    list.map { |code, name| ["#{code} - #{name}", name.to_s] }
-        .uniq { |item| item[1] }
-        .sort
+    list.map { |d| ["#{d.code} - #{d.name}", d.name] }.sort
   end
 
   def self.corsica?(zipcode:)

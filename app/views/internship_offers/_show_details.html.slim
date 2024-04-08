@@ -27,16 +27,20 @@
 
 .row.fr-pt-3w
   .col-12
-    .row
-      .col-12
-        .h4.fr-mb-2w= internship_offer.employer_name
-    .row
-      .col-12
-        .fr-pl-1w.blue-france= Presenters::Address.new(instance: internship_offer).full_address
+    - if can?(:read_employer_name, internship_offer)
+      .row
+        .col-12
+          .h4.fr-mb-2w
+            = internship_offer.employer_name
+      .row
+        .col-12
+          .fr-pl-1w.blue-france
+            = Presenters::Address.new(instance: internship_offer).full_address
     .row.fr-my-1w
       .col-12
         - if internship_offer.employer_description_rich_text.present? || internship_offer.employer_description.present?
-          .reboot-trix-content.mt-2.test-description= internship_offer.employer_description_rich_text.to_s.present? ? internship_offer.employer_description_rich_text.to_s : internship_offer.employer_description
+          .reboot-trix-content.mt-2.test-description
+            = internship_offer.employer_description_rich_text.to_s.present? ? internship_offer.employer_description_rich_text.to_s : internship_offer.employer_description
 
     .row
       .col-12.fr-my-1w
@@ -47,10 +51,11 @@
                       class: 'test-employer-website',
                       title: "#{internship_offer.employer_website} (nouvelle fenêtre)",
                       rel: "external noopener noreferrer"
-    .row 
-      .col-12
-        = react_component("Map",
-                    props: { internshipOffer: { id: internship_offer.id, lat: internship_offer.coordinates.latitude, lon: internship_offer.coordinates.longitude } })
+    - if can?(:read_employer_name, internship_offer)
+      .row 
+        .col-12
+          = react_component("Map",
+                      props: { internshipOffer: { id: internship_offer.id, lat: internship_offer.coordinates.latitude, lon: internship_offer.coordinates.longitude } })
 - unless hidden_parts
   .row
     .col-12
@@ -60,24 +65,25 @@
             = render "internship_offers/apply_cta",
                      internship_offer: internship_offer
 
-  .row
-    .col-6
-      .d-none.d-flex.align-items-center.fr-px-1w
-        - if @previous_internship_offer && support_listable?(current_user)
-          = link_to listable_internship_offer_path(@previous_internship_offer),
-                    class: 'list-item-previous d-flex align-items-center fr-raw-link' do
-            span.fr-icon-arrow-left-line aria-hidden="true"
-            span
-              | Offre précédente
+  - unless params[:stepper]
+    .row
+      .col-6
+        .d-none.d-flex.align-items-center.fr-px-1w
+          - if @previous_internship_offer && support_listable?(current_user)
+            = link_to listable_internship_offer_path(@previous_internship_offer),
+                      class: 'list-item-previous d-flex align-items-center fr-raw-link' do
+              span.fr-icon-arrow-left-line aria-hidden="true"
+              span
+                | Offre précédente
 
-    .col-6
-      .d-none.d-flex.align-items-center.justify-content-end.fr-px-1w
-        - if @next_internship_offer && support_listable?(current_user)
-          = link_to listable_internship_offer_path(@next_internship_offer),
-                    class: 'list-item-next d-flex align-items-center fr-raw-link' do
-            span
-              | Offre suivante
-            span.fr-icon-arrow-right-line aria-hidden="true"
-  
+      .col-6
+        .d-none.d-flex.align-items-center.justify-content-end.fr-px-1w
+          - if @next_internship_offer && support_listable?(current_user)
+            = link_to listable_internship_offer_path(@next_internship_offer),
+                      class: 'list-item-next d-flex align-items-center fr-raw-link' do
+              span
+                | Offre suivante
+              span.fr-icon-arrow-right-line aria-hidden="true"
+    
 
 
