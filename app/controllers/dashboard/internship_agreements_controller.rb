@@ -86,7 +86,7 @@ module Dashboard
                                            .includes(
                                               internship_application: [
                                                 { student: :school },
-                                                { internship_offer: [:employer, :rich_text_employer_description, :rich_text_description_rich_text]}
+                                                { internship_offer: [:employer]}
                                                 ]
                                               )
                                           #  .reject { |a| a.student.school.school_manager.nil? }
