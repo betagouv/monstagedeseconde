@@ -9,7 +9,7 @@ FactoryBot.define do
     city { 'Paris' }
     zipcode { '75015' }
     code_uai { '075' + rand(10_000).to_s.rjust(5, '0') + ('a'..'z').to_a.sample }
-    department { 'Paris' }
+    department { create(:department) }
     is_public { true }
     contract_code { "99" }
     legal_status { "Public" }
