@@ -272,9 +272,9 @@ module Dashboard
       sign_in(teacher)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: 'En attente de l\'offreur.')
+        find('div.actions', text: "En attente d'inscription du chef d'établissement.")
       end
-      find('a.button-component-cta-button', text: 'En attente')
+      find('button', text: 'Convention indisponible')
     end
 
     test 'teacher reads internship agreement table with correct indications - status: started_by_employer - with no school_manager subscription' do
@@ -288,9 +288,9 @@ module Dashboard
       sign_in(teacher)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: 'En attente de l\'offreur.')
+        find('div.actions', text: "En attente d'inscription du chef d'établissement.")
       end
-      find('a.button-component-cta-button', text: 'En attente')
+      find('button', text: 'Convention indisponible')
     end
     # =================== School Manager ===================
 

@@ -49,18 +49,17 @@ module InternshipAgreements
         case internship_agreement.aasm_state
         when 'draft', 'started_by_employer'
           if school_with_manager?
+            {status: 'disabled', text: 'En attente'}
+          else
             {status: 'secondary_cta',
              text: 'Convention indisponible',
-             icon: 'fr-icon-information-fill fr-icon fr-icon--right fr-link',
              tooltip:"L'inscription du chef d'établissement est nécessaire pour générer le PDF de la convention."}
-          else
-            {status: 'disabled', text: 'En attente'}
           end
         when 'completed_by_employer'
           if school_with_manager?
-            {status: 'secondary_cta', text: 'Convention indisponible', icon: 'fr-icon-information-fill'}
-          else
             {status: 'cta', text: 'Remplir ma convention'}
+          else
+            {status: 'secondary_cta', text: 'Convention indisponible', icon: 'fr-icon-information-fill'}
           end
         when 'started_by_school_manager'
           {status: 'cta', text: 'Valider ma convention'}
