@@ -142,6 +142,7 @@ export default function SirenInput({
             if (is_public) {
               document.getElementById("organisation-group").classList.remove('d-none');
               document.getElementById("organisation_group_id").setAttribute("required", "required");
+              document.querySelectorAll('.fr-select option').forEach(function(option) { option.style.display = 'inline'; });
             }
             searchCoordinatesByAddress(fullAddress);
             setSelectedCompany({
