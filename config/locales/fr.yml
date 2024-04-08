@@ -194,7 +194,7 @@ fr:
           pending_invitation: Invitation en attente de réponse
           accepted_invitation: Invitation acceptée
           refused_invitation: Invitation refusée
-      internship_agreement:
+      internship_agreement: &internship_agreement_fields
         internship_application: Candidature
         school_manager_accept_terms: Validée par CE
         employer_accept_terms: Validée par l'employeur
@@ -207,6 +207,9 @@ fr:
         school_representative_phone: Numéro de téléphone du chef d'établissement ou de son représentant
         school_representative_role: Fonction du chef d'établissement ou de son représentant
         student_full_name: Nom de l'élève
+        student_phone: Numéro de téléphone de l'élève ou du représentant légal de l'élève
+        student_refering_teacher_phone: Numéro de téléphone du professeur référent
+        student_legal_representative_phone: Numéro de téléphone du représentant légal de l'élève
         tutor_full_name: Nom du tuteur
         main_teacher_full_name: Nom du professeur principal
         daily_hours: Horaires journaliers
@@ -320,6 +323,8 @@ fr:
               already_signed: Vous avez déjà signé. En attente de la signature de l’employeur.
               not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
+      convention:
+        <<: *internship_agreement_fields
       signature:
         signatory_role: signataire
 
