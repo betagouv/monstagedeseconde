@@ -52,13 +52,14 @@ class InternshipApplicationsController < ApplicationController
     authorize! :apply, @internship_offer
 
     appli_params = {user_id: current_user.id}.merge(create_internship_application_params)
-    @internship_application = InternshipApplication.create!(appli_params)
-    redirect_to internship_offer_internship_application_path(@internship_offer,
+    @internship_application = InternshipApplication.new(appli_params)
+    if @internship_application.save
+      redirect_to internship_offer_internship_application_path(@internship_offer,
                                                              @internship_application)
-  rescue ActiveRecord::RecordInvalid => e
-    @internship_application = e.record
-    Rails.logger.error(e.message)
-    render 'new', status: :bad_request
+    else
+      Rails.logger.error(@internship_application.errors.full_messages)
+      render 'new', status: :bad_request
+    end
   end
 
   def completed
