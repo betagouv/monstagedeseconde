@@ -158,6 +158,8 @@ module Users
           targeted_offer_id
           type
           department
+          academy_id
+          academy_region_id
         ]
       )
     end

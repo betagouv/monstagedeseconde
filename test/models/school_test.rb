@@ -3,6 +3,10 @@
 require 'test_helper'
 
 class SchoolTest < ActiveSupport::TestCase
+  
+  def setup
+    # create(:department, name: 'Paris')
+  end
   test 'coordinates' do
     school = School.new
     assert school.invalid?

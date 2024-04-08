@@ -29,6 +29,7 @@ module Users
         school: school,
         accept_terms: true
       )
+      teacher.valid?
 
       assert teacher.valid?
     end

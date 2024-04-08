@@ -35,6 +35,12 @@ FactoryBot.define do
     activity_rating_rich_text { "<div>Après concertation, le tuteur appelera le professeur principal vers 17h le lundi et au moins un autre jour de la semaine choisi ensemble. L'élève n'est pas convié à cet échange.<br/>A ceci se rajoute le rapport de stage</div>"}
     activity_learnings_rich_text { '<div>Communication orale</div>'}
 
+    before(:create) do |ia|
+      academy_region = AcademyRegion.find_or_create_by(name: 'Ile-de-France')
+      academy = Academy.find_or_create_by(name: 'Paris', email_domain: 'ac-paris.fr', academy_region: academy_region)
+      department = Department.create(code: '75', name: 'Paris', academy: academy)
+    end
+    
     trait :created_by_system do
       skip_validations_for_system { true }
     end

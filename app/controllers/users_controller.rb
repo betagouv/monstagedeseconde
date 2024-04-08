@@ -79,6 +79,8 @@ class UsersController < ApplicationController
                                  :resume_languages,
                                  :password,
                                  :role,
+                                 :academy_id,
+                                 :academy_region_id,
                                  :employer_role,
                                  banners: {})
   end

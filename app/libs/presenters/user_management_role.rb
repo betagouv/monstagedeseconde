@@ -7,7 +7,9 @@ module Presenters
       'Users::Operator': 'Operateur',
       'Users::PrefectureStatistician': 'Référent départemental',
       'Users::MinistryStatistician': 'Référent central',
-      'Users::EducationStatistician': 'Référent éduc. nat.'
+      'Users::EducationStatistician': 'Référent éduc. nat.',
+      'Users::AcademyStatistician': 'Référent académique',
+      'Users::AcademyRegionStatistician': 'Référent académique régional'
     }
     ROLE_TRANSLATOR = {
       school_manager: "Chef d'établissement",
@@ -34,6 +36,10 @@ module Presenters
         TYPE_TRANSLATOR['Users::MinistryStatistician'.to_sym]
       when Users::EducationStatistician
         TYPE_TRANSLATOR['Users::EducationStatistician'.to_sym]
+      when Users::AcademyStatistician
+        TYPE_TRANSLATOR['Users::AcademyStatistician'.to_sym]
+      when Users::AcademyRegionStatistician
+        TYPE_TRANSLATOR['Users::AcademyRegionStatistician'.to_sym]
       when Users::SchoolManagement
         case user.role.to_sym
         when :school_manager

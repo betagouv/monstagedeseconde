@@ -31,6 +31,7 @@ module Users
 
     test 'creation succeed' do
       school = build(:school)
+      create(:department, name: 'Paris')
       school_manager = Users::SchoolManagement.new(
         role: :school_manager,
         email: "jean-pierre@#{school.email_domain_name}",
