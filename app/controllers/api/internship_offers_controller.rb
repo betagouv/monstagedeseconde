@@ -120,6 +120,7 @@ module Api
         :radius,
         :keyword,
         :period,
+        sector_ids: [],
         week_ids: []
       )
     end

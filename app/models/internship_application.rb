@@ -537,14 +537,17 @@ class InternshipApplication < ApplicationRecord
       errors.add(:student_email, 'Cet email est déjà utilisé')
     end
 
-    if student_phone && User.where.not(id: student.id).exists?(phone: "+33#{student_phone}")
-      errors.add(:student_phone, 'Ce numéro de téléphone est déjà utilisé')
+    if student_phone
+      phone_to_register = User.sanitize_mobile_phone_number(student_phone, "+330")
+      if User.where.not(id: student.id).exists?(phone: phone_to_register)
+        errors.add(:student_phone, 'Ce numéro de téléphone est déjà utilisé')
+      end
     end
   end
 
   def update_student_profile
-    student.update( 
-      phone: student.phone || "+33#{student_phone}",
+    student.update(
+      phone: student.phone || User.sanitize_mobile_phone_number(student_phone,"+330"),
       email: student.email || student_email
     )
   end
