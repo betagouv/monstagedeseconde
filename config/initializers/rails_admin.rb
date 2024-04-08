@@ -83,6 +83,8 @@ RailsAdmin.config do |config|
 
   config.included_models = %w[School
                               Sector
+                              Academy
+                              AcademyRegion
                               Group
                               User
                               InternshipOfferKeyword
@@ -98,6 +100,8 @@ RailsAdmin.config do |config|
                               Users::PrefectureStatistician
                               Users::MinistryStatistician
                               Users::EducationStatistician
+                              Users::AcademyStatistician
+                              Users::AcademyRegionStatistician
                               Users::Operator
                               Users::Employer
                               Users::God]

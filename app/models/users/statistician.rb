@@ -15,6 +15,8 @@ module Users
     has_many :organisations
     has_many :tutors
     has_many :internship_offer_infos
+    
+    belongs_to :academy_region, optional: true, class_name: 'AcademyRegion', foreign_key: 'academy_region_id'
 
 
     before_update :trigger_agreements_creation

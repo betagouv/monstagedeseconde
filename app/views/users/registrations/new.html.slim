@@ -75,13 +75,23 @@
                       .fr-fieldset__element
                         .fr-radio-group
                           = f.radio_button :statistician_type,
-                                            "MinistryStatistician",
-                                            id: 'user_statistician_ministry_type',
+                                            "AcademyRegionStatistician",
+                                            id: 'user_statistician_academy_region',
                                             class: "fr-radio__input",
                                             required: true,
                                             data: { action: "change->signup#onMinistryTypeChange" }
-                          label.fr-label[for="user_statistician_ministry_type"]
-                            | Administration centrale
+                          label.fr-label[for="user_statistician_academy_region"]
+                            | Région Académique
+                      .fr-fieldset__element
+                        .fr-radio-group
+                          = f.radio_button :statistician_type,
+                                            "AcademyStatistician",
+                                            id: 'user_statistician_academy',
+                                            class: "fr-radio__input",
+                                            required: true,
+                                            data: { action: "change->signup#onMinistryTypeChange" }
+                          label.fr-label[for="user_statistician_academy"]
+                            | Académie
                       .fr-fieldset__element
                         .fr-radio-group
                           = f.radio_button :statistician_type,
@@ -92,6 +102,38 @@
                                             data: { action: "change->signup#onMinistryTypeChange" }
                           label.fr-label[for="user_statistician_education"]
                             | DSDEN
+                      .fr-fieldset__element
+                        .fr-radio-group
+                          = f.radio_button :statistician_type,
+                                            "MinistryStatistician",
+                                            id: 'user_statistician_ministry_type',
+                                            class: "fr-radio__input",
+                                            required: true,
+                                            data: { action: "change->signup#onMinistryTypeChange" }
+                          label.fr-label[for="user_statistician_ministry_type"]
+                            | Administration centrale
+
+                      .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-academy-region
+                        .row
+                          .col-lg-8.col-12
+                            / select field academy region
+                            label.fr-label[for="user_academy_region_id"]
+                              |Choisissez votre région académique
+                            = f.select :academy_region_id,
+                                       options_for_select(AcademyRegion.all.map { |academy_region| [academy_region.name, academy_region.id] },
+                                       resource.try(:academy_region)), { prompt: "Régions académiques" },
+                                       { class: "fr-select", required: false, data: { "signup-target": 'academyRegionSelect'  } }
+                      
+                      .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-academy
+                        .row
+                          .col-lg-8.col-12
+                            / select field academy
+                            label.fr-label[for="user_academy_id"]
+                              |Choisissez votre académie
+                            = f.select :academy_id,
+                                       options_for_select(Academy.all.map { |academy| [academy.name, academy.id] },
+                                       resource.try(:academy)), { prompt: "Académies" },
+                                       { class: "fr-select", required: false, data: { "signup-target": 'academySelect'  } }
 
                       .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-department
                         .row
@@ -101,7 +143,7 @@
                               |Choisissez votre département
                             = f.select :department,
                                        options_for_select(Department.all.map { |department| ["#{department.code} - #{department.name}", department.code] },
-                                       resource.department), { prompt: "Départements" },
+                                       resource.try(:department)), { prompt: "Départements" },
                                        { class: "fr-select", required: false, data: { "signup-target": 'departmentSelect'  } }
 
                       .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-ministry

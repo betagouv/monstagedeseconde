@@ -80,6 +80,8 @@ class UsersController < ApplicationController
                                  :password,
                                  :role,
                                  :birth_date,
+                                 :academy_id,
+                                 :academy_region_id,
                                  :employer_role,
                                  banners: {})
   end
