@@ -61,7 +61,21 @@
                   = form.label :is_public_false, 'Privée', class: 'fr-label'
 
               div.fr-messages-group#radio-hint-messages aria-live="assertive"
-  .row.bloc-tooggle 
+        
+        div#organisation-group [class="form-group form-group-select-group fr-my-2w #{'d-none' if request.fullpath.include?('organisations/nouveau')}" data-organisation-form-target="groupBlock"]
+          .form-group.fr-my-2w
+            = form.label :group_id,
+                          "Institution de tutelle",
+                          data: {:"organisation-form-target" => 'groupLabel'},
+                          class: 'fr-label'
+
+            = form.select :group_id,
+                          options_for_select(options_for_groups, resource.group.try(:id)),
+                          { prompt: '-- Choisissez votre ministère --' },
+                          class: "fr-select",
+                          data: {:"organisation-form-target" => 'selectGroupName'}
+                            
+  .row.bloc-tooggle class="#{'d-none' unless request.path_info.include?('modification')}"
     .col-md-6
       fieldset aria-labelledby="presentation"
         legend Présentation de l'entreprise

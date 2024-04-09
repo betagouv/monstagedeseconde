@@ -123,7 +123,8 @@ module Builders
         employer_description: organisation.employer_description,
         is_public: organisation.is_public,
         siret: organisation.siret,
-        employer_manual_enter: organisation.manual_enter
+        employer_manual_enter: organisation.manual_enter,
+        group_id: organisation.group_id
       }
     end
 

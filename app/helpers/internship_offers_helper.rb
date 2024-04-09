@@ -25,6 +25,17 @@ module InternshipOffersHelper
   #   opts
   # end
 
+  def options_for_groups
+    Group.all.map do |group|
+      [
+        group.name,
+        group.id,
+        {
+          'data-organisation-form-target' => 'groupNamePublic'
+        }
+      ]
+    end
+  end
 
   def operator_name(internship_offer)
     internship_offer.employer.operator.name
