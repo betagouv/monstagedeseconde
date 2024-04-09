@@ -160,7 +160,7 @@ class User < ApplicationRecord
   end
 
   def self.sanitize_mobile_phone_number(number, prefix = '')
-    return if number.blank?
+    return "" if number.blank?
 
     thin_number = number.gsub(/[\s|;\,\.\:\(\)]/, '')
     if thin_number.match?(/\A\+330[6|7]\d{8}\z/)
@@ -240,6 +240,8 @@ class User < ApplicationRecord
   def statistician? ; false end
   def department_statistician? ; false end
   def ministry_statistician? ; false end
+  def academy_statistician? ; false end
+  def academy_region_statistician? ; false end
   def student? ; false end
   def employer? ; false end
   def operator? ; false end

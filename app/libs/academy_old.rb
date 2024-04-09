@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # see: https://fr.wikipedia.org/wiki/Acad%C3%A9mie_(%C3%A9ducation_en_France)#cite_note-RegAcad-16
-class Academy
+class AcademyOld
   MAP = {
     'Académie de Clermont-Ferrand' => %w[03 15 43 63],
     'Académie de Grenoble' => %w[07 26 38 73 74],

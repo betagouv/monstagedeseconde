@@ -12,6 +12,7 @@ module Reporting
     PAGE_SIZE = 100
 
     has_many :class_rooms
+    belongs_to :department, optional: true
 
     has_many :internship_applications, through: :students do
       def approved

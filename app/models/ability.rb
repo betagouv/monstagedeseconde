@@ -14,6 +14,8 @@ class Ability
       when 'Users::PrefectureStatistician' then statistician_abilities(user: user)
       when 'Users::EducationStatistician' then education_statistician_abilities(user: user)
       when 'Users::MinistryStatistician' then ministry_statistician_abilities(user: user)
+      when 'Users::AcademyStatistician' then academy_statistician_abilities(user: user)
+      when 'Users::AcademyRegionStatistician' then academy_region_statistician_abilities(user: user)
       when 'Users::SchoolManagement'
         common_school_management_abilities(user: user)
         school_manager_abilities(user: user) if user.school_manager?
@@ -28,12 +30,17 @@ class Ability
 
   def visitor_abilities
     can %i[read apply], InternshipOffer
+    can(:read_employer_name, InternshipOffer) do |internship_offer|
+      read_employer_name?(internship_offer: internship_offer )
+    end
   end
 
   def god_abilities
     can :show, :account
     can :manage, School
     can :manage, Sector
+    can :manage, Academy
+    can :manage, AcademyRegion
     can %i[destroy see_tutor], InternshipOffer
     can %i[read update export unpublish publish], InternshipOffer
     can %i[read update destroy export], InternshipApplication
@@ -64,6 +71,7 @@ class Ability
             see_dashboard_associations_summary], User
     can :manage, Operator
     can :see_minister_video, User
+    can :read_employer_name, InternshipOffer
   end
 
   def student_abilities(user:)
@@ -103,6 +111,9 @@ class Ability
            choose_gender_and_birthday
            register_with_phone], User
     can_read_dashboard_students_internship_applications(user: user)
+    can(:read_employer_name, InternshipOffer) do |internship_offer|
+      read_employer_name?(internship_offer: internship_offer )
+    end
   end
 
   def admin_officer_abilities(user:)
@@ -205,6 +216,9 @@ class Ability
 
   def as_account_user(user:)
     can :show, :account
+    can(:read_employer_name, InternshipOffer) do |internship_offer|
+      read_employer_name?(internship_offer: internship_offer )
+    end
   end
 
   def as_employers_like(user:)
@@ -230,6 +244,9 @@ class Ability
     can %i[update edit], Organisation , employer_id: user.team_members_ids
     can %i[create], Tutor
     can %i[index update], InternshipApplication
+    can(:read_employer_name, InternshipOffer) do |internship_offer|
+      read_employer_name?(internship_offer: internship_offer )
+    end
     can %i[show transfer], InternshipApplication do |internship_application|
       internship_application.internship_offer.employer_id == user.team_id
     end
@@ -336,6 +353,9 @@ class Ability
            see_reporting_schools
            see_reporting_enterprises
            check_his_statistics], User
+    can :read_employer_name, InternshipOffer do |internship_offer|
+      read_employer_name?(internship_offer: internship_offer )
+    end
   end
 
   def statistician_abilities(user:)
@@ -383,6 +403,32 @@ class Ability
     can %i[index], Acl::Reporting, &:ministry_statistician_allowed?
     can %i[ export_reporting_dashboard_data
             see_ministry_dashboard
+            see_dashboard_associations_summary ], User
+  end
+
+  def academy_statistician_abilities(user: )
+    common_to_all_statisticians(user: user)
+
+    can %i[index_and_filter], Reporting::InternshipOffer
+    can :read, Group
+    can %i[index], Acl::Reporting #, &:allowed?
+    can %i[ see_reporting_dashboard
+            see_dashboard_administrations_summary
+            see_dashboard_department_summary
+            export_reporting_dashboard_data
+            see_dashboard_associations_summary ], User
+  end
+
+  def academy_region_statistician_abilities(user: )
+    common_to_all_statisticians(user: user)
+
+    can %i[index_and_filter], Reporting::InternshipOffer
+    can :read, Group
+    can %i[index], Acl::Reporting #, &:allowed?
+    can %i[ export_reporting_dashboard_data
+            see_dashboard_administrations_summary
+            see_dashboard_department_summary
+            export_reporting_dashboard_data
             see_dashboard_associations_summary ], User
   end
 
@@ -441,6 +487,9 @@ class Ability
           .positive?
     end
     can %i[see_tutor], InternshipOffer
+    can(:read_employer_name, InternshipOffer) do |internship_offer|
+      read_employer_name?(internship_offer: internship_offer )
+    end
     can %i[read], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
     end
@@ -518,5 +567,16 @@ class Ability
 
     school_year_start = SchoolYear::Current.new.beginning_of_period
     internship_offer.last_date > school_year_start
+  end
+
+  def read_employer_name?(internship_offer: )
+    operator = internship_offer.employer.try(:operator)
+    if operator.present? && operator.masked_data
+      false
+    elsif operator.present? && operator.departments.any?
+      !internship_offer.zipcode[0..1].in?(operator.departments.map(&:code))
+    else
+      true
+    end
   end
 end

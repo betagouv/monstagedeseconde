@@ -73,7 +73,7 @@ class GenerateInternshipAgreement < Prawn::Document
     paraphing("Vu la circulaire n°96-248 du 25 octobre 1996 relative à la surveillance des élèves ;")
     paraphing("Vu la circulaire du 13 juin 2023 relative à l’organisation des "\
       "sorties et voyages scolaires dans les écoles, les collèges et les lycées publics ;")
-    paraphing("Vu la circulaire DGESCO relative aux séquences d’observation pour les élèves de seconde de lycée général et technologique ;")
+    paraphing("Vu la circulaire MENE2400643C du 28 mars 2024 relative aux séquences d’observation pour les élèves de seconde de lycée général et technologique ;")
     @pdf.move_down 20
   end
 
