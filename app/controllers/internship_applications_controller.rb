@@ -106,8 +106,7 @@ class InternshipApplicationsController < ApplicationController
       else
         target_path = edit_transfer_internship_offer_internship_application_path(@internship_application.internship_offer, @internship_application)
         flash_error_message = "Les adresses emails suivantes sont invalides : #{faulty_emails.join(', ')}" \
-                              ". Aucun transfert n'a été effectué, " \
-                              "aucun email n'a été émis."
+                              ". Aucun transfert n'a été effectué, aucun email n'a été émis."
         redirect_to(target_path, flash: { danger: flash_error_message }) and return
       end
     else
