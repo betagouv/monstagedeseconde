@@ -134,7 +134,7 @@ module Users
     end
 
     def official_uai_email_address?
-      email =~ /\Ace\.\d{7}\S@#{school.email_domain_name}\z/
+      email =~ /\Ace\.\d{7}\S?@#{school.email_domain_name}\z/
     end
   end
 end
