@@ -1,0 +1,25 @@
+.fr-card style="height: 370px;"
+  .fr-card__body
+    .fr-card__content
+      h4.fr-card__title.fr-my-1w.fr-mt-2w
+        = organisation.name
+      .fr-card__detail
+      .fr-card__desc
+        .fr-py-1w.fr-mb-1w 
+          = organisation.job
+        .text-muted
+          span.fr-icon-arrow-right-line.fr-icon--sm.fr-mb-0.fr-mr-1w
+          span= organisation.sector
+        .text-muted
+          span.fr-icon-arrow-right-line.fr-icon--sm.fr-mb-0.fr-mr-1w
+          span= organisation.size
+        .text-muted
+          span.fr-icon-arrow-right-line.fr-icon--sm.fr-mb-0.fr-mr-1w
+          span= organisation.address
+  .fr-card__footer.d-flex.justify-content-center
+    = link_to 'Postuler sur Immersion Facilitée', organisation.link, class: "fr-btn fr-btn--sm fr-mx-2w text-center btn-block"
+  .fr-card__header.fr-py-1w
+    ul.fr-badges-group.fr-my-2w.fr-mx-1w
+      li
+        .fr-badge.fr-badge--warning.fr-badge--no-icon Entreprise accueillante
+      
