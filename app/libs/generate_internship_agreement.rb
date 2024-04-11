@@ -225,7 +225,7 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.text "Prénom, nom du chef(fe) d’établissement, adresse postale et électronique du lieu de scolarisation dont relève l’élève :"
     html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_representative_full_name} </div>"
     html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_representative_role} </div>"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_manager.email} </div>"
+    html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_manager.try(:email)} </div>"
     html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_representative_phone} </div>"
     @pdf.move_down 20
     @pdf.text "Statut de l’établissement scolaire : #{@internship_agreement.legal_status.try(:capitalize)}"
