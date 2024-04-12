@@ -286,11 +286,7 @@ def populate_departments
       {"83": "Var"}
   ]
   }.each do |academy_name, departments|
-    puts '================================'
-    puts "departments : #{departments}"
-    puts "academy_name : #{academy_name}"
-    puts '================================'
-    puts ''
+
     academy = Academy.find_by(name: academy_name)
 
     departments.each do |department_hashes|
