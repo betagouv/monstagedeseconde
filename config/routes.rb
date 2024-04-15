@@ -65,7 +65,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :organisations, path: 'entreprises', only: %i[index]
+    resources :companies, path: 'entreprises', only: %i[index]
 
     resources :favorites, only: %i[create destroy index]
 

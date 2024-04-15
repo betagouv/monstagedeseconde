@@ -1,8 +1,8 @@
-class OrganisationsController < ApplicationController
+class CompaniesController < ApplicationController
   layout 'search'
 
   def index
-    @organisations = [
+    @companies = [
       OpenStruct.new(
         name: 'Oracle',
         job: 'Conseiller offres internet',

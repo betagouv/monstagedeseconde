@@ -34,12 +34,12 @@ header.container-xl.px-0
 
       .row.no-gutters.fr-p-2w.fr-mb-4w.white-search-frame.d-none.d-sm-block
         .col-12
-          .fr-tabs 
+          .fr-tabs
             ul.fr-tabs__list role="tablist" aria-label="Rechercher"
-              li role="presentation" 
+              li role="presentation"
                 button#offers.fr-tabs__tab aria-controls="offers-panel" aria-selected="true" role="tab" tabindex="0"  Rechercher un stage
               li role="presentation"
-                = link_to organisations_path, class: "fr-tabs__tab", tabindex: "0", role: "tab", aria_controls: "enterprises-panel" do
+                = link_to companies_path, class: "fr-tabs__tab", tabindex: "0", role: "tab", aria_controls: "enterprises-panel" do
                   | Rechercher une entreprise
 
             #offers-panel.fr-tabs__panel.fr-tabs__panel--selected role="tabpanel" aria-labelledby="offers-panel" tabindex="0"

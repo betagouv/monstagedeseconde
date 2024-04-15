@@ -7,15 +7,15 @@
 
 = render 'search_form'
 
-.fr-test-organisations-container
+.fr-test-companies-container
   .container-monstage
     .row
       .col-12.fr-py-2w
         h1 Les entreprises accueillantes
     .row.d-flex
-      - @organisations.each do |organisation|
+      - @companies.each do |company|
         .col-12.col-md-6.col-lg-4.fr-mb-3w
-          = render 'organisation', organisation: organisation
+          = render 'company', company: company
 
 .fr-py-2w
-  Changement d'adresse électronique (e-mail)= paginate(@pages)
+  | Changement d'adresse électronique (e-mail)= paginate(@pages)
