@@ -70,6 +70,9 @@ Rails.application.routes.draw do
         post :apply_count
       end
     end
+
+    resources :companies, path: 'entreprises', only: %i[index]
+
     resources :favorites, only: %i[create destroy index]
 
     namespace :api, path: 'api' do

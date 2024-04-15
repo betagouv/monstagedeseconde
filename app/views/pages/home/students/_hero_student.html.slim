@@ -34,11 +34,25 @@ header.container-xl.px-0
 
       .row.no-gutters.fr-p-2w.fr-mb-4w.white-search-frame.d-none.d-sm-block
         .col-12
-          = render partial: "internship_offers/search/form",
-                    locals: { render_as_partial: true,
-                              url: internship_offers_path,
-                              default_values: user_presenter.default_search_options,
-                              form_id: :home_search_form }
+          .fr-tabs
+            ul.fr-tabs__list role="tablist" aria-label="Rechercher"
+              li role="presentation"
+                button#offers.fr-tabs__tab aria-controls="offers-panel" aria-selected="true" role="tab" tabindex="0"  Rechercher un stage
+              li role="presentation"
+                = link_to companies_path, class: "fr-tabs__tab", tabindex: "0", role: "tab", aria_controls: "enterprises-panel" do
+                  | Rechercher une entreprise
+
+            #offers-panel.fr-tabs__panel.fr-tabs__panel--selected role="tabpanel" aria-labelledby="offers-panel" tabindex="0"
+              .fr-tabs__content
+                .fr-tabs__content-item.active#offers-search-tab
+                  .row
+                    .col-12
+                      = render partial: "internship_offers/search/form",
+                                locals: { render_as_partial: true,
+                                          url: internship_offers_path,
+                                          default_values: user_presenter.default_search_options,
+                                          form_id: :home_search_form }
+                                          
         .actions.d-stick.d-md-none.p-2.fitting
           = link_to internship_offers_path(current_user_or_visitor.default_search_options),
                     class: 'fr-btn fr-icon-search-line fr-btn--icon-right fr-px-11w',
