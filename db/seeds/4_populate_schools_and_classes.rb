@@ -36,7 +36,8 @@ def populate_schools
       street: adresse,
       zipcode: code_postal,
       city: commune,
-      coordinates: {longitude: longitude, latitude: latitude}
+      department: Department.fetch_by_zipcode(zipcode: code_postal),
+      coordinates: { longitude: longitude, latitude: latitude }
     }
     school = School.new(school_params)
     if school.valid?

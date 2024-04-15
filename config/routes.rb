@@ -43,6 +43,12 @@ Rails.application.routes.draw do
     end
     resources :schools, path: 'ecoles',only: %i[new create ]
 
+    resources :coded_crafts, only: [] do
+      collection do
+        post :search
+      end
+    end
+
     resources :internship_offer_keywords, only: [] do
       collection do
         post :search

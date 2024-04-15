@@ -156,10 +156,10 @@ CREATE TEXT SEARCH CONFIGURATION public.fr (
     PARSER = pg_catalog."default" );
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
-    ADD MAPPING FOR asciiword WITH public.french_nostopwords;
+    ADD MAPPING FOR asciiword WITH french_stem;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
-    ADD MAPPING FOR word WITH public.unaccent, public.french_nostopwords;
+    ADD MAPPING FOR word WITH public.unaccent, french_stem;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
     ADD MAPPING FOR numword WITH simple;
@@ -183,19 +183,19 @@ ALTER TEXT SEARCH CONFIGURATION public.fr
     ADD MAPPING FOR hword_numpart WITH simple;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
-    ADD MAPPING FOR hword_part WITH public.unaccent, public.french_nostopwords;
+    ADD MAPPING FOR hword_part WITH public.unaccent, french_stem;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
-    ADD MAPPING FOR hword_asciipart WITH public.french_nostopwords;
+    ADD MAPPING FOR hword_asciipart WITH french_stem;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
     ADD MAPPING FOR numhword WITH simple;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
-    ADD MAPPING FOR asciihword WITH public.french_nostopwords;
+    ADD MAPPING FOR asciihword WITH french_stem;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
-    ADD MAPPING FOR hword WITH public.unaccent, public.french_nostopwords;
+    ADD MAPPING FOR hword WITH public.unaccent, french_stem;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
     ADD MAPPING FOR url_path WITH simple;
@@ -225,9 +225,7 @@ CREATE TABLE public.academies (
     id bigint NOT NULL,
     name character varying,
     email_domain character varying,
-    academy_region_id integer,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    academy_region_id integer
 );
 
 
@@ -493,6 +491,101 @@ ALTER SEQUENCE public.class_rooms_id_seq OWNED BY public.class_rooms.id;
 
 
 --
+-- Name: coded_crafts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.coded_crafts (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    ogr_code integer NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    detailed_craft_id bigint NOT NULL,
+    name_tsv tsvector
+);
+
+
+--
+-- Name: coded_crafts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.coded_crafts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: coded_crafts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.coded_crafts_id_seq OWNED BY public.coded_crafts.id;
+
+
+--
+-- Name: craft_fields; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.craft_fields (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    letter character varying(1) NOT NULL
+);
+
+
+--
+-- Name: craft_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.craft_fields_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: craft_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.craft_fields_id_seq OWNED BY public.craft_fields.id;
+
+
+--
+-- Name: crafts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.crafts (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    number character varying NOT NULL,
+    craft_field_id bigint NOT NULL
+);
+
+
+--
+-- Name: crafts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.crafts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: crafts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.crafts_id_seq OWNED BY public.crafts.id;
+
+
+--
 -- Name: departments; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -502,7 +595,7 @@ CREATE TABLE public.departments (
     name character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    academy_id integer
+    academy_id bigint
 );
 
 
@@ -533,6 +626,39 @@ CREATE TABLE public.departments_operators (
     department_id bigint NOT NULL,
     operator_id bigint NOT NULL
 );
+
+
+--
+-- Name: detailed_crafts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.detailed_crafts (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    number character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    craft_id bigint NOT NULL
+);
+
+
+--
+-- Name: detailed_crafts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.detailed_crafts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: detailed_crafts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.detailed_crafts_id_seq OWNED BY public.detailed_crafts.id;
 
 
 --
@@ -1415,6 +1541,7 @@ CREATE TABLE public.schools (
     id bigint NOT NULL,
     name character varying DEFAULT ''::character varying NOT NULL,
     city character varying DEFAULT ''::character varying NOT NULL,
+    department character varying,
     zipcode character varying,
     code_uai character varying,
     coordinates public.geography(Point,4326),
@@ -1746,8 +1873,8 @@ CREATE TABLE public.users (
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
     hubspot_id character varying,
-    academy_id integer,
-    academy_region_id integer
+    academy_id bigint,
+    academy_region_id bigint
 );
 
 
@@ -1930,10 +2057,38 @@ ALTER TABLE ONLY public.class_rooms ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: coded_crafts id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.coded_crafts ALTER COLUMN id SET DEFAULT nextval('public.coded_crafts_id_seq'::regclass);
+
+
+--
+-- Name: craft_fields id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.craft_fields ALTER COLUMN id SET DEFAULT nextval('public.craft_fields_id_seq'::regclass);
+
+
+--
+-- Name: crafts id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.crafts ALTER COLUMN id SET DEFAULT nextval('public.crafts_id_seq'::regclass);
+
+
+--
 -- Name: departments id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.departments ALTER COLUMN id SET DEFAULT nextval('public.departments_id_seq'::regclass);
+
+
+--
+-- Name: detailed_crafts id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.detailed_crafts ALTER COLUMN id SET DEFAULT nextval('public.detailed_crafts_id_seq'::regclass);
 
 
 --
@@ -2233,11 +2388,43 @@ ALTER TABLE ONLY public.class_rooms
 
 
 --
+-- Name: coded_crafts coded_crafts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.coded_crafts
+    ADD CONSTRAINT coded_crafts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: craft_fields craft_fields_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.craft_fields
+    ADD CONSTRAINT craft_fields_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: crafts crafts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.crafts
+    ADD CONSTRAINT crafts_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: departments departments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.departments
     ADD CONSTRAINT departments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: detailed_crafts detailed_crafts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.detailed_crafts
+    ADD CONSTRAINT detailed_crafts_pkey PRIMARY KEY (id);
 
 
 --
@@ -2505,6 +2692,13 @@ ALTER TABLE ONLY public.weeks
 
 
 --
+-- Name: index_academies_on_academy_region_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_academies_on_academy_region_id ON public.academies USING btree (academy_region_id);
+
+
+--
 -- Name: index_action_text_rich_texts_uniqueness; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2568,6 +2762,41 @@ CREATE INDEX index_class_rooms_on_school_id ON public.class_rooms USING btree (s
 
 
 --
+-- Name: index_coded_crafts_on_detailed_craft_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_coded_crafts_on_detailed_craft_id ON public.coded_crafts USING btree (detailed_craft_id);
+
+
+--
+-- Name: index_coded_crafts_on_name_tsv; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_coded_crafts_on_name_tsv ON public.coded_crafts USING gin (name_tsv);
+
+
+--
+-- Name: index_coded_crafts_on_ogr_code; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_coded_crafts_on_ogr_code ON public.coded_crafts USING btree (ogr_code);
+
+
+--
+-- Name: index_craft_fields_on_letter; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_craft_fields_on_letter ON public.craft_fields USING btree (letter);
+
+
+--
+-- Name: index_crafts_on_craft_field_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_crafts_on_craft_field_id ON public.crafts USING btree (craft_field_id);
+
+
+--
 -- Name: index_departments_on_academy_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2586,6 +2815,13 @@ CREATE INDEX index_departments_operators_on_department_id_and_operator_id ON pub
 --
 
 CREATE INDEX index_departments_operators_on_operator_id_and_department_id ON public.departments_operators USING btree (operator_id, department_id);
+
+
+--
+-- Name: index_detailed_crafts_on_craft_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_detailed_crafts_on_craft_id ON public.detailed_crafts USING btree (craft_id);
 
 
 --
@@ -3177,6 +3413,20 @@ CREATE UNIQUE INDEX uniq_applications_per_internship_offer_week ON public.intern
 
 
 --
+-- Name: coded_crafts sync_coded_craft_name_tsv; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER sync_coded_craft_name_tsv BEFORE INSERT OR UPDATE ON public.coded_crafts FOR EACH ROW EXECUTE FUNCTION tsvector_update_trigger('name_tsv', 'public.fr', 'name');
+
+
+--
+-- Name: coded_crafts sync_coded_crafts_tsv; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER sync_coded_crafts_tsv BEFORE INSERT OR UPDATE ON public.coded_crafts FOR EACH ROW EXECUTE FUNCTION tsvector_update_trigger('name_tsv', 'public.fr', 'name');
+
+
+--
 -- Name: internship_offers sync_internship_offers_tsv; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3439,6 +3689,14 @@ ALTER TABLE ONLY public.area_notifications
 
 
 --
+-- Name: detailed_crafts fk_rails_ac5911bdc8; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.detailed_crafts
+    ADD CONSTRAINT fk_rails_ac5911bdc8 FOREIGN KEY (craft_id) REFERENCES public.crafts(id);
+
+
+--
 -- Name: internship_offers fk_rails_ae76931d64; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3519,6 +3777,22 @@ ALTER TABLE ONLY public.internship_offer_info_weeks
 
 
 --
+-- Name: coded_crafts fk_rails_ee4381e499; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.coded_crafts
+    ADD CONSTRAINT fk_rails_ee4381e499 FOREIGN KEY (detailed_craft_id) REFERENCES public.detailed_crafts(id);
+
+
+--
+-- Name: crafts fk_rails_efc358dba3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.crafts
+    ADD CONSTRAINT fk_rails_efc358dba3 FOREIGN KEY (craft_field_id) REFERENCES public.craft_fields(id);
+
+
+--
 -- Name: organisations fk_rails_f1474651e9; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3541,7 +3815,13 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20240405101512'),
+('20240412102015'),
+('20240412100406'),
+('20240412100004'),
+('20240410120927'),
+('20240410115028'),
+('20240410114806'),
+('20240410114637'),
 ('20240405094938'),
 ('20240404071148'),
 ('20240403131643'),
