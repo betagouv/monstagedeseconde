@@ -348,8 +348,11 @@ class GenerateInternshipAgreement < Prawn::Document
   end
   
   def signatures
-    @pdf.text "A #{@internship_agreement.school_manager.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."
-
+    if @internship_agreement.school_manager.present?
+      @pdf.text "A #{@internship_agreement.school_manager.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."
+    else
+      @pdf.text "A #{@internship_agreement.internship_application.student.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."
+    end
     @pdf.move_down 20
   end
 
