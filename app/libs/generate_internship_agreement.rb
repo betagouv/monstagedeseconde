@@ -492,11 +492,14 @@ class GenerateInternshipAgreement < Prawn::Document
     return signature if Rails.application.config.active_storage.service == :local
 
     # When on external storage service , they are to be donwloaded
-    img = signature.signature_image.download if signature.signature_image.attached?
+    img = signature.signature_image.try.download if signature.signature_image.attached?
     return nil if img.nil?
 
     File.open(signature.local_signature_image_file_path, "wb") { |f| f.write(img) }
     signature
+  rescue ActiveStorage::FileNotFoundError
+    Rails.logger.error "Signature image not found for #{signatory_role} for internship agreement #{internship_agreement.id}"
+    nil
   end
 
   def signature_date_str(signatory_role:)
