@@ -156,10 +156,10 @@ CREATE TEXT SEARCH CONFIGURATION public.fr (
     PARSER = pg_catalog."default" );
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
-    ADD MAPPING FOR asciiword WITH french_stem;
+    ADD MAPPING FOR asciiword WITH public.french_nostopwords;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
-    ADD MAPPING FOR word WITH public.unaccent, french_stem;
+    ADD MAPPING FOR word WITH public.unaccent, public.french_nostopwords;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
     ADD MAPPING FOR numword WITH simple;
@@ -183,19 +183,19 @@ ALTER TEXT SEARCH CONFIGURATION public.fr
     ADD MAPPING FOR hword_numpart WITH simple;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
-    ADD MAPPING FOR hword_part WITH public.unaccent, french_stem;
+    ADD MAPPING FOR hword_part WITH public.unaccent, public.french_nostopwords;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
-    ADD MAPPING FOR hword_asciipart WITH french_stem;
+    ADD MAPPING FOR hword_asciipart WITH public.french_nostopwords;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
     ADD MAPPING FOR numhword WITH simple;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
-    ADD MAPPING FOR asciihword WITH french_stem;
+    ADD MAPPING FOR asciihword WITH public.french_nostopwords;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
-    ADD MAPPING FOR hword WITH public.unaccent, french_stem;
+    ADD MAPPING FOR hword WITH public.unaccent, public.french_nostopwords;
 
 ALTER TEXT SEARCH CONFIGURATION public.fr
     ADD MAPPING FOR url_path WITH simple;
@@ -500,8 +500,7 @@ CREATE TABLE public.coded_crafts (
     ogr_code integer NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    detailed_craft_id bigint NOT NULL,
-    name_tsv tsvector
+    detailed_craft_id bigint NOT NULL
 );
 
 
@@ -2769,13 +2768,6 @@ CREATE INDEX index_coded_crafts_on_detailed_craft_id ON public.coded_crafts USIN
 
 
 --
--- Name: index_coded_crafts_on_name_tsv; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_coded_crafts_on_name_tsv ON public.coded_crafts USING gin (name_tsv);
-
-
---
 -- Name: index_coded_crafts_on_ogr_code; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3413,20 +3405,6 @@ CREATE UNIQUE INDEX uniq_applications_per_internship_offer_week ON public.intern
 
 
 --
--- Name: coded_crafts sync_coded_craft_name_tsv; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER sync_coded_craft_name_tsv BEFORE INSERT OR UPDATE ON public.coded_crafts FOR EACH ROW EXECUTE FUNCTION tsvector_update_trigger('name_tsv', 'public.fr', 'name');
-
-
---
--- Name: coded_crafts sync_coded_crafts_tsv; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER sync_coded_crafts_tsv BEFORE INSERT OR UPDATE ON public.coded_crafts FOR EACH ROW EXECUTE FUNCTION tsvector_update_trigger('name_tsv', 'public.fr', 'name');
-
-
---
 -- Name: internship_offers sync_internship_offers_tsv; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3815,9 +3793,6 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20240412102015'),
-('20240412100406'),
-('20240412100004'),
 ('20240410120927'),
 ('20240410115028'),
 ('20240410114806'),
