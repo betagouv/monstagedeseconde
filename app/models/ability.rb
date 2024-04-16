@@ -94,7 +94,7 @@ class Ability
     can(:read_employer_data, InternshipApplication) do |internship_application|
       internship_application.student.id == user.id &&
         (internship_application.approved? || internship_application.validated_by_employer?)
-    end 
+    end
     can(:cancel, InternshipApplication) do |internship_application|
       ok_canceling = %w[ submitted
                          read_by_employer
@@ -320,11 +320,12 @@ class Ability
 
 
     can :flip_notification, AreaNotification do |_area_notif|
-      return false if user.team.not_exists?
+        many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
+        current_area_notifications_are_off = !user.fetch_current_area_notification.notify
 
-      many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
-      current_area_notifications_are_off = !user.fetch_current_area_notification.notify
-      many_people_in_charge_of_area || current_area_notifications_are_off
+        # TODO : logic to be checked with current_area_notifications_are_off
+        user.team.alive? &&
+          (many_people_in_charge_of_area || current_area_notifications_are_off)
     end
 
     can :manage_abilities, AreaNotification do |area_notification|
