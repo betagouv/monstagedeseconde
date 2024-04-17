@@ -14,10 +14,13 @@ class Department < ApplicationRecord
   has_many :operators, through: :departments_operators
   has_many :schools, foreign_key: :department_id
 
-  def self.lookup_by_zipcode(zipcode:)
+  def self.fetch_by_zipcode(zipcode:)
     code = key_for_lookup(zipcode: zipcode)
     Department.find_by(code: code)
-              .try(:name)
+  end
+  
+  def self.lookup_by_zipcode(zipcode:)
+    fetch_by_zipcode(zipcode: zipcode).try(:name)
   end
 
   def self.key_for_lookup(zipcode:)
