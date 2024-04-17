@@ -100,6 +100,9 @@ class InternshipOffer < ApplicationRecord
 
   validate :check_missing_seats, if: :user_update?, on: :update
   validates :period, inclusion: { in: [0, 1, 2] }
+  validates :max_candidates, numericality: { only_integer: true,
+                                             greater_than: 0,
+                                             less_than_or_equal_to: InternshipOffer::MAX_CANDIDATES_HIGHEST }
 
   # Scopes
 
