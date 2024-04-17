@@ -101,6 +101,12 @@ fr:
       users/education_statistician:
         one: Référent de l'éducation nationale
         other: Référents de l'éducation nationale
+      users/academy_statistician:
+        one: Référent académique
+        other: Référents académiques
+      users/academy_region_statistician:
+        one: Référent région académique
+        other: Référents régions académiques
       week:
         one: Semaine
         other: Semaines
@@ -188,7 +194,7 @@ fr:
           pending_invitation: Invitation en attente de réponse
           accepted_invitation: Invitation acceptée
           refused_invitation: Invitation refusée
-      internship_agreement:
+      internship_agreement: &internship_agreement_fields
         internship_application: Candidature
         school_manager_accept_terms: Validée par CE
         employer_accept_terms: Validée par l'employeur
@@ -201,6 +207,9 @@ fr:
         school_representative_phone: Numéro de téléphone du chef d'établissement ou de son représentant
         school_representative_role: Fonction du chef d'établissement ou de son représentant
         student_full_name: Nom de l'élève
+        student_phone: Numéro de téléphone de l'élève ou du représentant légal de l'élève
+        student_refering_teacher_phone: Numéro de téléphone du professeur référent
+        student_legal_representative_phone: Numéro de téléphone du représentant légal de l'élève
         tutor_full_name: Nom du tuteur
         main_teacher_full_name: Nom du professeur principal
         daily_hours: Horaires journaliers
@@ -316,6 +325,8 @@ fr:
               already_signed: Vous avez déjà signé. En attente de la signature de l’employeur.
               not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
+      convention:
+        <<: *internship_agreement_fields
       signature:
         signatory_role: signataire
 
@@ -434,10 +445,13 @@ fr:
         other: "Autres fonctions"
         phone: Téléphone mobile
         phone_password_reset_count: Compteur de remise à zéro de mot de passe par téléphone
+        academy_region_id: Région académique
         roles:
           prefecture_statistician: Référent départemental
           ministry_statistician: Référent central
           education_statistician: Référent de l'éducation nationale
+          academy_statistician: Référent académique
+          academy_region_statistician: Référent académique régional
         school: "Etablissement"
         school_id: ID de l'établissement
         school_manager: "Chef d'établissement"

@@ -177,6 +177,24 @@ FactoryBot.define do
       end
     end
 
+    factory :academy_statistician,
+            parent: :user,
+            class: 'Users::AcademyStatistician' do
+      type { 'Users::AcademyStatistician' }
+      agreement_signatorable { false }
+      statistician_validation { true }
+      academy { create(:academy) }
+    end
+
+    factory :academy_region_statistician,
+            parent: :user,
+            class: 'Users::AcademyRegionStatistician' do
+      type { 'Users::AcademyRegionStatistician' }
+      agreement_signatorable { false }
+      statistician_validation { true }
+      academy_region { create(:academy_region) }
+    end
+
     # user_operator gets its offer_area created by callback
     factory :user_operator,
             parent: :user,

@@ -34,7 +34,6 @@ module InternshipOffers
         field :zipcode
         field :city
         field :sector
-        field :weeks
         field :remote_id
         field :permalink
         field :max_candidates

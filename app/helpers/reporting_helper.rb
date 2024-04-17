@@ -18,8 +18,13 @@ module ReportingHelper
               [reporting_internship_offers_path(department: params[:department]), params[:department]],
               ['', params[:group]] ]
     elsif params[:department].present?
-      [ [reporting_internship_offers_path(default_reporting_url_options(user)),  'Statistiques'],
+      if params[:department].is_a?(Array)
+        [ [reporting_internship_offers_path(default_reporting_url_options(user)),  'Statistiques'],
+              ['', user.try(:academy)&.name || user.academy_region&.name] ]
+      else
+        [ [reporting_internship_offers_path(default_reporting_url_options(user)),  'Statistiques'],
               ['', params[:department]] ]
+      end
     elsif params[:group].present?
       [ [reporting_internship_offers_path(default_reporting_url_options(user)),  'Statistiques'],
               ['', params[:group]] ]

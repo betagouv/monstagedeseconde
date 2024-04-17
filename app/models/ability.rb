@@ -14,6 +14,8 @@ class Ability
       when 'Users::PrefectureStatistician' then statistician_abilities(user: user)
       when 'Users::EducationStatistician' then education_statistician_abilities(user: user)
       when 'Users::MinistryStatistician' then ministry_statistician_abilities(user: user)
+      when 'Users::AcademyStatistician' then academy_statistician_abilities(user: user)
+      when 'Users::AcademyRegionStatistician' then academy_region_statistician_abilities(user: user)
       when 'Users::SchoolManagement'
         common_school_management_abilities(user: user)
         school_manager_abilities(user: user) if user.school_manager?
@@ -37,6 +39,8 @@ class Ability
     can :show, :account
     can :manage, School
     can :manage, Sector
+    can :manage, Academy
+    can :manage, AcademyRegion
     can %i[destroy see_tutor], InternshipOffer
     can %i[read update export unpublish publish], InternshipOffer
     can %i[read update destroy export], InternshipApplication
@@ -399,6 +403,32 @@ class Ability
     can %i[index], Acl::Reporting, &:ministry_statistician_allowed?
     can %i[ export_reporting_dashboard_data
             see_ministry_dashboard
+            see_dashboard_associations_summary ], User
+  end
+
+  def academy_statistician_abilities(user: )
+    common_to_all_statisticians(user: user)
+
+    can %i[index_and_filter], Reporting::InternshipOffer
+    can :read, Group
+    can %i[index], Acl::Reporting #, &:allowed?
+    can %i[ see_reporting_dashboard
+            see_dashboard_administrations_summary
+            see_dashboard_department_summary
+            export_reporting_dashboard_data
+            see_dashboard_associations_summary ], User
+  end
+
+  def academy_region_statistician_abilities(user: )
+    common_to_all_statisticians(user: user)
+
+    can %i[index_and_filter], Reporting::InternshipOffer
+    can :read, Group
+    can %i[index], Acl::Reporting #, &:allowed?
+    can %i[ export_reporting_dashboard_data
+            see_dashboard_administrations_summary
+            see_dashboard_department_summary
+            export_reporting_dashboard_data
             see_dashboard_associations_summary ], User
   end
 

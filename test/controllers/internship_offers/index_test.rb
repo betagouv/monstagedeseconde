@@ -69,9 +69,10 @@ class IndexTest < ActionDispatch::IntegrationTest
     get internship_offers_path(keyword: 'avocat', format: :json)
     assert_response :success
     refute_empty json_response['internshipOffers']
-    assert_equal 1, UsersSearchHistory.count
-    assert_equal 'avocat', UsersSearchHistory.last.keywords
-    assert_equal 0, UsersSearchHistory.last.results_count
+    # TODO : toggle when counter is on again
+    # assert_equal 1, UsersSearchHistory.count
+    # assert_equal 'avocat', UsersSearchHistory.last.keywords
+    # assert_equal 0, UsersSearchHistory.last.results_count
   end
 
   test 'GET #index with wrong coordinates as Visitor returns suggestions' do
