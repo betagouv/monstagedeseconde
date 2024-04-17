@@ -108,7 +108,7 @@ def populate_academies
     academies.each do |academy_hash|
       academy_hash.each do |academy_name, email_domain|
         next if Academy.find_by(name: academy_name)
-    
+
         Academy.create!(name: academy_name, academy_region: academy_region, email_domain: email_domain)
         print ' .'
       end
@@ -116,7 +116,7 @@ def populate_academies
   end
 end
 
-def populate_departments 
+def populate_departments
   {
     "Académie de Clermont-Ferrand": [
       {"03": "Allier"},
@@ -189,12 +189,12 @@ def populate_departments
       {"973": "Guyane"}
     ],
     "Académie de la Nouvelle-Calédonie": [
-      {"988" => "Nouvelle-Calédonie"}
+      {"988": "Nouvelle-Calédonie"}
     ],
     'Académie de la Polynésie française': [
-      {"987" => "Polynésie française"} 
+      {"987": "Polynésie française"}
     ],
-    'Académie de la Réunion': [
+    'Académie de La Réunion': [
       {"974": "La Réunion"}
     ],
     'Académie de Mayotte': [
@@ -290,8 +290,8 @@ def populate_departments
 
     departments.each do |department_hashes|
       department_hashes.each do |code, department_name|
-        Department.find_by(name: department_name).update!(academy: academy)
-        # Department.create!(name: department_name, code: code, academy: academy)
+        # Department.find_by(name: department_name).update!(academy: academy)
+        Department.create!(name: department_name, code: code, academy: academy)
         print ' .'
       end
     end

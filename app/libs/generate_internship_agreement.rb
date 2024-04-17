@@ -225,7 +225,7 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.text "Prénom, nom du chef(fe) d’établissement, adresse postale et électronique du lieu de scolarisation dont relève l’élève :"
     html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_representative_full_name} </div>"
     html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_representative_role} </div>"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_manager.email} </div>"
+    html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_manager.try(:email)} </div>"
     html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_representative_phone} </div>"
     @pdf.move_down 20
     @pdf.text "Statut de l’établissement scolaire : #{@internship_agreement.legal_status.try(:capitalize)}"
@@ -348,8 +348,11 @@ class GenerateInternshipAgreement < Prawn::Document
   end
   
   def signatures
-    @pdf.text "A #{@internship_agreement.school_manager.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."
-
+    if @internship_agreement.school_manager.present?
+      @pdf.text "A #{@internship_agreement.school_manager.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."
+    else
+      @pdf.text "A #{@internship_agreement.internship_application.student.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."
+    end
     @pdf.move_down 20
   end
 
@@ -489,11 +492,14 @@ class GenerateInternshipAgreement < Prawn::Document
     return signature if Rails.application.config.active_storage.service == :local
 
     # When on external storage service , they are to be donwloaded
-    img = signature.signature_image.download if signature.signature_image.attached?
+    img = signature.signature_image.try.download if signature.signature_image.attached?
     return nil if img.nil?
 
     File.open(signature.local_signature_image_file_path, "wb") { |f| f.write(img) }
     signature
+  rescue ActiveStorage::FileNotFoundError
+    Rails.logger.error "Signature image not found for #{signatory_role} for internship agreement #{internship_agreement.id}"
+    nil
   end
 
   def signature_date_str(signatory_role:)

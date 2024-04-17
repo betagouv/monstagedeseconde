@@ -74,11 +74,11 @@ class School < ApplicationRecord
       field :id
       field :name
       field :visible
-      field :kind
+      field :code_uai
       field :address do
         pretty_value do
           school = bindings[:object]
-          "#{school.city} – CP #{school.zipcode} (#{school.department})"
+          "#{school.city} – CP #{school.zipcode} (#{school.department.name})"
         end
       end
       field :school_manager
