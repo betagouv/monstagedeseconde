@@ -61,7 +61,7 @@
                   = form.label :is_public_false, 'Privée', class: 'fr-label'
 
               div.fr-messages-group#radio-hint-messages aria-live="assertive"
-        
+
         div#organisation-group [class="form-group form-group-select-group fr-my-2w #{'d-none' if request.fullpath.include?('organisations/nouveau')}" data-organisation-form-target="groupBlock"]
           .form-group.fr-my-2w
             = form.label :group_id,
@@ -74,14 +74,15 @@
                           { prompt: '-- Choisissez votre ministère --' },
                           class: "fr-select",
                           data: {:"organisation-form-target" => 'selectGroupName'}
-                            
-  .row.bloc-tooggle
+
+  .row.bloc-tooggle class=('d-none' if request.fullpath.include?('organisations/nouveau'))
     .col-md-6
+      - max_length = InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
       fieldset aria-labelledby="presentation"
         legend Présentation de l'entreprise
       .form-group.fr-my-2w [data-controller='max-length-input'
                             data-max-length-input-target="group"
-                            data-max-length-input-limit-value="#{InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT}"]
+                            data-max-length-input-limit-value="#{max_length}"]
         = render 'inputs/dsfr_input_field',
                   f: form,
                   field: :employer_description,
@@ -90,7 +91,8 @@
                   required: true,
                   title: 'description de l’entreprise',
                   object: form.object,
-                  field_type: 'text_area'
+                  field_type: 'text_area',
+                  options: { rows: 5, maxlength: (max_length - 1) }
         .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
           |La description est trop longue
         small.form-text data-max-length-input-target="charCount"

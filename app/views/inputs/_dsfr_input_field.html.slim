@@ -7,6 +7,7 @@
 - title ||= ''
 - type ||= 'text'
 - value = value || (object.send(field) if object)
+- options ||= {}
 - if object&.errors.blank?
   .fr-input-group
     = f.label field,
@@ -23,8 +24,9 @@
                           placeholder: placeholder,
                           required: required,
                           type: type,
+                          title: title,
                           **(pattern.present? ? { pattern: pattern } : {}),
-                          title: title)
+                          **options)
 - elsif object.errors[field].present?
   .fr-input-group.fr-input-group--error
     = f.label field,
@@ -41,8 +43,9 @@
                    value: value,
                    required: required,
                    type: type,
+                   title: title,
                    **(pattern.present? ? { pattern: pattern } : {}),
-                   title: title)
+                   **options)
     p.fr-error-text id="text-input-error-desc-error-#{field}"
       - field_name = t("activerecord.attributes.#{object.class.name.underscore}.#{field}")
       = "#{field_name} : #{object.errors[field].map(&:downcase).join(', ').html_safe}"
@@ -62,5 +65,6 @@
                    value: value,
                    type: type,
                    required: required,
+                   title: title,
                    **(pattern.present? ? { pattern: pattern } : {}),
-                   title: title)
+                   **options)
