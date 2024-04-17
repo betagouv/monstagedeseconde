@@ -225,7 +225,9 @@ CREATE TABLE public.academies (
     id bigint NOT NULL,
     name character varying,
     email_domain character varying,
-    academy_region_id integer
+    academy_region_id integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -500,7 +502,8 @@ CREATE TABLE public.coded_crafts (
     ogr_code integer NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    detailed_craft_id bigint NOT NULL
+    detailed_craft_id bigint NOT NULL,
+    search_tsv tsvector
 );
 
 
@@ -594,7 +597,7 @@ CREATE TABLE public.departments (
     name character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    academy_id bigint
+    academy_id integer
 );
 
 
@@ -1540,7 +1543,6 @@ CREATE TABLE public.schools (
     id bigint NOT NULL,
     name character varying DEFAULT ''::character varying NOT NULL,
     city character varying DEFAULT ''::character varying NOT NULL,
-    department character varying,
     zipcode character varying,
     code_uai character varying,
     coordinates public.geography(Point,4326),
@@ -1872,8 +1874,8 @@ CREATE TABLE public.users (
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
     hubspot_id character varying,
-    academy_id bigint,
-    academy_region_id bigint
+    academy_id integer,
+    academy_region_id integer
 );
 
 
@@ -2691,13 +2693,6 @@ ALTER TABLE ONLY public.weeks
 
 
 --
--- Name: index_academies_on_academy_region_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_academies_on_academy_region_id ON public.academies USING btree (academy_region_id);
-
-
---
 -- Name: index_action_text_rich_texts_uniqueness; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2772,6 +2767,13 @@ CREATE INDEX index_coded_crafts_on_detailed_craft_id ON public.coded_crafts USIN
 --
 
 CREATE UNIQUE INDEX index_coded_crafts_on_ogr_code ON public.coded_crafts USING btree (ogr_code);
+
+
+--
+-- Name: index_coded_crafts_on_search_tsv; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_coded_crafts_on_search_tsv ON public.coded_crafts USING gin (search_tsv);
 
 
 --
@@ -3405,6 +3407,13 @@ CREATE UNIQUE INDEX uniq_applications_per_internship_offer_week ON public.intern
 
 
 --
+-- Name: coded_crafts sync_coded_crafts_tsv; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER sync_coded_crafts_tsv BEFORE INSERT OR UPDATE ON public.coded_crafts FOR EACH ROW EXECUTE FUNCTION tsvector_update_trigger('search_tsv', 'public.fr', 'name');
+
+
+--
 -- Name: internship_offers sync_internship_offers_tsv; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3793,6 +3802,8 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240417085118'),
+('20240417084757'),
 ('20240410120927'),
 ('20240410115028'),
 ('20240410114806'),
