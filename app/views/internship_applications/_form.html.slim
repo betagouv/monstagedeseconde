@@ -4,7 +4,7 @@
             data: {turbo: false},
             url: (is_creating ? internship_offer_internship_applications_path(@internship_offer) : internship_offer_internship_application_path(@internship_offer, @internship_application)),
             scope: :internship_application,
-            html: {method: is_creating ? :post : :patch, id: 'new_internship_application'}) do |f|
+            html: {method: is_creating ? :post : :patch, id: 'new_internship_application'} ) do |f|
   = render "layouts/form_errors",
             resource: @internship_application,
             resource_name: :internship_application
@@ -25,30 +25,30 @@
         = f.rg2a_required_content_tag
         small.form-text.text-muted Relisez-vous pour éviter les fautes.
       = f.rich_text_area :motivation, class: "fr-input col-12", required: true, rows: 5
-
+    h6 = "des informations sur l'élève"
     .row.fr-my-2w
       .col-xs-12.col-sm-6
         = render '/inputs/dsfr_input_field',
-                    f: f,
-                    field: :student_email,
-                    object: f.object,
-                    value: f.object.student_email || f.object.student.email,
-                    label: "Adresse électronique (email)",
-                    required: true,
-                    pattern: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                    title: "S'il vous plaît, entrez une adresse email valide."
+                 field: :student_email,
+                 f: f,
+                 object: f.object,
+                 value: f.object.student_email || f.object.student.email,
+                 label: "Adresse électronique (email)",
+                 required: true,
+                 pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
+                 title: "Veuillez saisir une adresse email valide, sans espace ni majuscule."
     .row.fr-my-2w.fr-mb-3w
       .col-xs-12.col-sm-6
         = render '/inputs/dsfr_input_field',
-                    f: f,
-                    field: :student_phone,
-                    object: f.object,
-                    value: f.object.student_phone || f.object.student.phone&.gsub!('+33', ''),
-                    label: "Numéro de portable élève ou responsable légal",
-                    required: true,
-                    pattern: '0[67][0-9]{8}',
-                    hint: "Numéro commençant par 06 ou 07 uniquement",
-                    title: "Numéro de portable"
+                 field: :student_phone,
+                 f: f,
+                 object: f.object,
+                 value: f.object.student_phone || f.object.student.phone&.gsub!('+33', ''),
+                 label: "Numéro de portable élève ou responsable légal",
+                 required: true,
+                 pattern: '0[67][0-9]{8}',
+                 hint: "Veuillez saisir un numéro commençant par 06 ou 07 uniquement",
+                 title: "Numéro de portable"
 
     .actions.d-flex.justify-content-between.flex-row
       .d-inline-flex= link_to internship_offer_path(@internship_offer), class: 'fr-btn fr-btn--secondary' do
