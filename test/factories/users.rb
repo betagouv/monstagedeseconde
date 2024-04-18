@@ -74,7 +74,7 @@ FactoryBot.define do
       type { 'Users::SchoolManagement' }
       role { Users::SchoolManagement.roles[:school_manager] }
 
-      sequence(:email) { |n| "ce.#{"%07d" % n}X@#{school.email_domain_name}" }
+      sequence(:email) { |n| "ce.#{"%07d" % n}#{('a'..'z').to_a.sample}@#{school.email_domain_name}" }
     end
 
     factory :main_teacher, class: 'Users::SchoolManagement', parent: :user do

@@ -128,6 +128,18 @@ module Users
         assert_equal @url_helpers.dashboard_school_class_room_students_path(school, class_room), main_teacher.custom_dashboard_path
       end
     end
+
+    test "#valid_academy_email_address?" do
+      create(:department, code: '61', name: 'Normandie')
+      school = create(:school, zipcode: '75012')
+      assert build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school: school).valid?
+      refute build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school: school).valid?
+      
+      school = create(:school, zipcode: "61252", city: "Argentan")
+      assert build(:school_manager, email: 'ce.1122334x@ac-normandie.fr', school: school).valid?
+      assert build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school: school).valid?
+      refute build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school: school).valid?
+      refute build(:school_manager, email: 'ce.1122334x@ac-test.fr', school: school).valid?
+    end
   end
 end
-
