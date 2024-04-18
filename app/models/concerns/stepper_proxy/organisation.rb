@@ -37,6 +37,8 @@ module StepperProxy
         errors.add(:group, 'Veuillez choisir une institution de tutelle') if group.is_public?
       end
 
+      def is_private? = !is_public?
+
       def clean_siret
         self.siret = self.siret.gsub(' ', '') if self.try(:siret)
       end
