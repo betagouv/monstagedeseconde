@@ -365,7 +365,7 @@ class Ability
 
     can %i[create], Organisation
 
-    can %i[index], Acl::Reporting, &:allowed?
+    can %i[index], Acl::Reporting#, &:allowed?
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can %i[ see_reporting_dashboard
@@ -380,7 +380,7 @@ class Ability
   def education_statistician_abilities(user:)
     common_to_all_statisticians(user: user)
     can %i[create], Organisation
-    can %i[index], Acl::Reporting, &:allowed?
+    can %i[index], Acl::Reporting#, &:allowed?
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can %i[ see_reporting_dashboard
