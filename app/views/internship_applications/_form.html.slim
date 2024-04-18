@@ -4,7 +4,7 @@
             data: {turbo: false},
             url: (is_creating ? internship_offer_internship_applications_path(@internship_offer) : internship_offer_internship_application_path(@internship_offer, @internship_application)),
             scope: :internship_application,
-            html: {method: is_creating ? :post : :patch, id: 'new_internship_application'} ) do |f|
+            html: {method: is_creating ? :post : :patch, id: 'new_internship_application'}) do |f|
   = render "layouts/form_errors",
             resource: @internship_application,
             resource_name: :internship_application
@@ -25,7 +25,6 @@
         = f.rg2a_required_content_tag
         small.form-text.text-muted Relisez-vous pour éviter les fautes.
       = f.rich_text_area :motivation, class: "fr-input col-12", required: true, rows: 5
-    h6 = "des informations sur l'élève"
     .row.fr-my-2w
       .col-xs-12.col-sm-6
         = render '/inputs/dsfr_input_field',
