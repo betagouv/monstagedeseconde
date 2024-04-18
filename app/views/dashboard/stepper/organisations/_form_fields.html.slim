@@ -61,7 +61,7 @@
                   = form.label :is_public_false, 'Privée', class: 'fr-label'
 
               div.fr-messages-group#radio-hint-messages aria-live="assertive"
-        - edit_mode = (@organisation.try(:persisted?) && @organisation.is_private) || (@organisation.try(:employer_description).present? && @organisation.is_private)
+        - edit_mode = (@organisation.try(:persisted?) && @organisation.is_private?) || (@organisation.try(:employer_description).present? && @organisation.is_private?)
         div#organisation-group [class="form-group form-group-select-group fr-my-2w #{'d-none' if request.fullpath.include?('organisations/nouveau') || edit_mode}" data-organisation-form-target="groupBlock"]
           .form-group.fr-my-2w
             = form.label :group_id,
