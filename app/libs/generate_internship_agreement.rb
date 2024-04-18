@@ -492,7 +492,7 @@ class GenerateInternshipAgreement < Prawn::Document
     return signature if Rails.application.config.active_storage.service == :local
 
     # When on external storage service , they are to be donwloaded
-    img = signature.signature_image.try.download if signature.signature_image.attached?
+    img = signature.signature_image.try(:download) if signature.signature_image.attached?
     return nil if img.nil?
 
     File.open(signature.local_signature_image_file_path, "wb") { |f| f.write(img) }
