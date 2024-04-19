@@ -533,22 +533,21 @@ class InternshipApplication < ApplicationRecord
   end
 
   def phone_prefix
-    prefix = "+330"
-    if student.phone.present? && student.phone.start_with?('+596')
-      prefix = "+5960"
-    elsif student.phone.present? && student.phone.start_with?('+594')
-      prefix = "+5940"
-    elsif student.phone.present? && student.phone.start_with?('+262')
-      prefix = "+2620"
+    return '' if student.phone.blank?
+
+    prefix = '+33'
+    ['+262', '+594', '+596', '+687', '+689'].each do |p|
+      prefix = p if student.phone.start_with?(p)
     end
+    "#{prefix}0"
   end
 
   def check_contact_uniqueness
-    if student_email && User.where.not(id: student.id).exists?(email: student_email)
+    if student_email.present? && User.where.not(id: student.id).exists?(email: student_email)
       errors.add(:student_email, 'Cet email est déjà utilisé')
     end
 
-    if student_phone
+    if student_phone.present?
       phone_to_register = User.sanitize_mobile_phone_number(student_phone, phone_prefix)
       if User.where.not(id: student.id).exists?(phone: phone_to_register)
         errors.add(:student_phone, 'Ce numéro de téléphone est déjà utilisé')

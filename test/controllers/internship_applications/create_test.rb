@@ -12,7 +12,7 @@ module InternshipApplications
       school = create(:school)
       student = create(:student, school: school, class_room: create(:class_room, school: school))
       sign_in(student)
-     
+
       get(new_internship_offer_internship_application_path(internship_offer))
       assert_response :success
     end
@@ -184,7 +184,7 @@ module InternshipApplications
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
           student_email: 'julie@ms3e.fr',
-          student_phone: '0600119988'
+          student_phone: '+330600119988'
         }
       }
 
@@ -198,12 +198,12 @@ module InternshipApplications
 
       created_internship_application = InternshipApplications::WeeklyFramed.last
       student = student.reload
-      assert_equal '0600119988', created_internship_application.student_phone
+      assert_equal '+330600119988', created_internship_application.student_phone
       assert_equal 'julie@ms3e.fr', created_internship_application.student_email
       assert_equal '+330600119988', student.phone # changed
       assert_equal 'marc@ms3e.fr', student.email # unchanged
     end
-  
+
     test 'POST #create internship application as student with empty email in profile' do
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)

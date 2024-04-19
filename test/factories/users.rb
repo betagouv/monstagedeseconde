@@ -38,7 +38,7 @@ FactoryBot.define do
 
       trait :registered_with_phone do
         email { nil }
-        phone { '+330637607756' }
+        sequence(:phone) { |n| "+330637#{n.to_s.rjust(6,"0")}" }
       end
 
       factory :student_with_class_room_3e, class: 'Users::Student', parent: :student do

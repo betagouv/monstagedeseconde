@@ -20,8 +20,10 @@
         | Période de stage
       = f.select :period, options_for_select(InternshipOffer.period_collection, @internship_application.internship_offer.period), { prompt: 'Choisissez une période' }, class: "fr-select", disabled: true
     div class="form-group"
-      = f.label :motivation, class: 'fr-label', for: 'internship_application_motivation', 'data-controller' => "rich-text-label", 'data-rich-text-label-for-value' => "internship_application_motivation", 'data-rich-text-label-enable-value' => ""
-        | Pourquoi ce stage me motive 
+      = f.label :motivation,
+                class: 'fr-label',
+                for: 'internship_application_motivation', 'data-controller' => "rich-text-label", 'data-rich-text-label-for-value' => "internship_application_motivation", 'data-rich-text-label-enable-value' => ""
+        | Pourquoi ce stage me motive
         = f.rg2a_required_content_tag
         small.form-text.text-muted Relisez-vous pour éviter les fautes.
       = f.rich_text_area :motivation, class: "fr-input col-12", required: true, rows: 5
@@ -29,6 +31,7 @@
       .col-xs-12.col-sm-6
         = render '/inputs/dsfr_input_field',
                  field: :student_email,
+                 name: "#{f.object_name}[student_email]",
                  f: f,
                  object: f.object,
                  value: f.object.student_email || f.object.student.email,
@@ -36,19 +39,33 @@
                  required: true,
                  pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
                  hint: "Veuillez saisir une adresse email valide, sans espace ni majuscule.",
-                 title: 'Adresse électronique'
+                 title: 'Adresse électronique',
+                 readonly: f.object.student.email.present? && f.object.student.email.size > 5
     .row.fr-my-2w.fr-mb-3w
       .col-xs-12.col-sm-6
-        = render '/inputs/dsfr_input_field',
-                 field: :student_phone,
-                 f: f,
-                 object: f.object,
-                 value: f.object.student_phone || f.object.student.phone&.gsub!('+33', ''),
-                 label: "Numéro de portable élève ou responsable légal",
-                 required: true,
-                 pattern: '0[67][0-9]{8}',
-                 hint: "Veuillez saisir un numéro commençant par 06 ou 07 uniquement",
-                 title: "Numéro de portable"
+        - if f.object.student_phone.present? || f.object.student.phone.present? 
+          = render '/inputs/dsfr_input_field',
+                   field: :student_phone,
+                   name: "#{f.object_name}[student_phone]",
+                   f: f,
+                   object: f.object,
+                   value: f.object.student_phone || f.object.student.phone,
+                   label: "Numéro de mobile",
+                   required: true,
+                   title: 'Numéro de mobile',
+                   readonly: true
+        - else
+          .form-group.phone
+            = label_tag 'Numéro de mobile', '', class: 'fr-label'
+            = label_tag :student_phone, for: 'phone-input', class: 'fr-label' do
+              = 'Numéro de mobile'
+              = f.rg2a_required_content_tag
+            - registered_value = f.object.student_phone || f.object.student.phone
+            = react_component("CountryPhoneSelect",
+                              props: { name: "#{f.object_name}[student_phone]",
+                                      value:registered_value})
+            small.text-muted
+              | (+33 puis 06 11 22 33 44 par exemple)
 
     .actions.d-flex.justify-content-between.flex-row
       .d-inline-flex= link_to internship_offer_path(@internship_offer), class: 'fr-btn fr-btn--secondary' do
