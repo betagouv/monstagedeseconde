@@ -41,7 +41,7 @@ module InternshipApplications
           internship_offer_type: InternshipOffer.name,
           type: InternshipApplications::WeeklyFramed.name,
           student_email: student.email,
-          student_phone: '0600119988'
+          student_phone: '+330600119988'
         }
       }
 
@@ -58,7 +58,7 @@ module InternshipApplications
       assert_equal student.id, created_internship_application.student.id
 
       student = student.reload
-      assert_equal '0600119988', created_internship_application.student_phone
+      assert_equal '+330600119988', created_internship_application.student_phone
       assert_equal student.email, created_internship_application.student_email
     end
 

@@ -101,7 +101,10 @@ module Dashboard::InternshipOffers
         visit internship_offers_path
         click_on internship_offer.title
         first(:link, 'Postuler').click
-        fill_in 'Numéro de portable élève ou responsable légal',	with: "0600060606"
+        within(".react-tel-input") do
+          find('input[name="internship_application[student_phone]"]').set("0600060606")
+        end
+        # fill_in 'Numéro de portable élève ou responsable légal',	with: "0600060606"
         click_on 'Valider'
         assert_equal 2, InternshipApplication.count
         other_internship_application = InternshipApplication.last
@@ -118,7 +121,7 @@ module Dashboard::InternshipOffers
         school = create(:school, :with_school_manager)
         employer_1, internship_offer_1 = create_employer_and_offer
         employer_2, internship_offer_2 = create_employer_and_offer
-        student = create(:student, school: school)
+        student = create(:student, school: school, phone: '+330611223344')
         internship_application_1 = create(:weekly_internship_application, :submitted, internship_offer: internship_offer_1, student: student)
         internship_application_2 = create(:weekly_internship_application, :submitted, internship_offer: internship_offer_2, student: student)
 

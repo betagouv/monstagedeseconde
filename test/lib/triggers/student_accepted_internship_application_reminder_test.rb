@@ -7,7 +7,7 @@ module Triggers
     include ActiveJob::TestHelper
 
     setup do
-      @student = create(:student, phone: '+05940611223344')
+      @student = create(:student, phone: '+5940611223344')
       @reminder_service = Triggers::StudentAcceptedInternshipApplicationReminder.new
     end
 

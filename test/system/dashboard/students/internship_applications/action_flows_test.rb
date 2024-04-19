@@ -8,7 +8,7 @@ module Dashboard
 
       test 'student can browse his internship_applications' do
         school = create(:school, :with_school_manager )
-        student = create(:student, school: school)
+        student = create(:student, :when_applying, school: school)
         internship_applications = {
           drafted: create(:weekly_internship_application, :drafted, internship_offer: create(:weekly_internship_offer), student: student),
           submitted: create(:weekly_internship_application, :submitted, internship_offer: create(:weekly_internship_offer), student: student),
@@ -123,8 +123,9 @@ module Dashboard
           # fill in application form
           find('#internship_application_motivation', wait: 3).native.send_keys('Je suis au taquet')
           refute page.has_selector?('.nav-link-icon-with-label-success') # green element on screen
-          fill_in("Adresse électronique (email)", with: 'parents@gmail.com')
-          fill_in("Numéro de portable élève ou responsable légal", with: '0611223344')
+          within(".react-tel-input") do
+            find('input[name="internship_application[student_phone]"]').set('0619223344')
+          end
           assert_changes lambda {
                           student.internship_applications
                                   .where(aasm_state: :drafted)
@@ -155,8 +156,9 @@ module Dashboard
         travel_to Date.new(2023,2,1) do
           school = create(:school)
           student = create(:student,
-                          school: school,
-                          class_room: create( :class_room,
+                           :when_applying,
+                           school: school,
+                           class_room: create(:class_room,
                                               school: school)
                           )
           internship_offer = create(:weekly_internship_offer)
@@ -177,7 +179,7 @@ module Dashboard
           # fill in application form
           find('#internship_application_motivation').native.send_keys('et ')
           fill_in("Adresse électronique (email)", with: 'parents@gmail.com')
-          fill_in("Numéro de portable élève ou responsable légal", with: '0611223344')
+          # fill_in("Numéro de portable élève ou responsable légal", with: '+330611223344')
           assert_no_changes lambda {
                           student.internship_applications
                                   .where(aasm_state: :drafted)
@@ -282,6 +284,7 @@ module Dashboard
       test "when confirmed an internship_application a student cannot apply a drafted application anymore" do
         school = create(:school)
         student = create(:student,
+                        :when_applying,
                         school: school,
                         class_room: create(:class_room, school: school)
                         )

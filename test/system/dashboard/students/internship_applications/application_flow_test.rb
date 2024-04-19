@@ -33,8 +33,9 @@ module Dashboard
       test 'first and uniq test before submitting when email was missing' do
         school = create(:school, :with_school_manager )
         employer, internship_offer = create_employer_and_offer
-        student = create(:student, :registered_with_phone, school: school)
+        student = create(:student, phone: '+2620625852585', school: school, email: nil)
         new_email = 'tests@free.fr'
+
         sign_in(student)
         visit internship_offers_path
         click_on internship_offer.title
@@ -43,7 +44,7 @@ module Dashboard
         fill_in 'Adresse électronique (email)', with: new_email
         click_on 'Valider'
 
-        find('.fr-h3', text: 'Rappel du stage', wait: 5)
+        find('.fr-h3', text: 'Rappel du stage')
         assert_equal new_email,  student.reload.email
         internship_application = InternshipApplication.last
         assert_equal student.phone, internship_application.student_phone
