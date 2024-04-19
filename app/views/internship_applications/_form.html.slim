@@ -29,29 +29,27 @@
       = f.rich_text_area :motivation, class: "fr-input col-12", required: true, rows: 5
     .row.fr-my-2w
       .col-xs-12.col-sm-6
+        - readonly = f.object.student_email.present? && f.object.student_email.size > 5
         = render '/inputs/dsfr_input_field',
                  field: :student_email,
-                 name: "#{f.object_name}[student_email]",
                  f: f,
                  object: f.object,
                  value: f.object.student_email || f.object.student.email,
                  label: "Adresse électronique (email)",
-                 required: true,
+                 required: !readonly,
                  pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
                  hint: "Veuillez saisir une adresse email valide, sans espace ni majuscule.",
                  title: 'Adresse électronique',
-                 readonly: f.object.student.email.present? && f.object.student.email.size > 5
+                 readonly: readonly
     .row.fr-my-2w.fr-mb-3w
       .col-xs-12.col-sm-6
         - if f.object.student_phone.present? || f.object.student.phone.present? 
           = render '/inputs/dsfr_input_field',
                    field: :student_phone,
-                   name: "#{f.object_name}[student_phone]",
                    f: f,
                    object: f.object,
                    value: f.object.student_phone || f.object.student.phone,
                    label: "Numéro de mobile",
-                   required: true,
                    title: 'Numéro de mobile',
                    readonly: true
         - else
