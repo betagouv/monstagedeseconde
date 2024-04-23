@@ -29,7 +29,8 @@
       = f.rich_text_area :motivation, class: "fr-input col-12", required: true, rows: 5
     .row.fr-my-2w
       .col-xs-12.col-sm-6
-        - readonly = f.object.student_email.present? && f.object.student_email.size > 5
+        - readonly = f.object.student.email.present? && f.object.student.email.size > 5
+        h4 = readonly
         = render '/inputs/dsfr_input_field',
                  field: :student_email,
                  f: f,
@@ -43,7 +44,7 @@
                  readonly: readonly
     .row.fr-my-2w.fr-mb-3w
       .col-xs-12.col-sm-6
-        - if f.object.student_phone.present? || f.object.student.phone.present?
+        - if f.object.student.phone.present? || f.object.student.phone.present?
           - readonly = f.object.student_phone.present? && f.object.student_phone.size > 5
           = render '/inputs/dsfr_input_field',
                    field: :student_phone,
