@@ -21,6 +21,11 @@ class CountryPhoneSelect extends React.Component {
     }
     return (
       <PhoneInput
+        isValid={(inputNumber, country, countries) => {
+          const cond_1 = inputNumber.match(/^[^330]\d{8,}$/) !== null;
+          const cond_2 = inputNumber.match(/^330(6|7)\d{8}$/) !== null;
+          return (cond_1 || cond_2);
+        }}
         country="fr"
         onlyCountries={['fr', 'gf', 'mq', 'nc', 'pf', 're']}
         countryCodeEditable={false}
@@ -35,7 +40,6 @@ class CountryPhoneSelect extends React.Component {
         }}
         masks={{ fr: '.. .. .. .. ..' }}
         inputStyle={{ width: '100%', borderRadius: '3px 3px 0 0', borderTop: 0, borderLeft: 0, borderRight: 0, backgroundColor: '#eeeeee' }}
-        inputClass="fr-input"
         inputProps={inputProps}
       />
     );

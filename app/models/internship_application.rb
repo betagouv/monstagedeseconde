@@ -550,7 +550,7 @@ class InternshipApplication < ApplicationRecord
     if student_phone.present?
       phone_to_register = User.sanitize_mobile_phone_number(student_phone, phone_prefix)
       if User.where.not(id: student.id).exists?(phone: phone_to_register)
-        errors.add(:student_phone, 'Ce numéro de téléphone est déjà utilisé')
+        errors.add(:student_phone, "Ce numéro de téléphone est déjà utilisé, ou n'est pas un numéro de téléphone mobile")
       end
     end
   end

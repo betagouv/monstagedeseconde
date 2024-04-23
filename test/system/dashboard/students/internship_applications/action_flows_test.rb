@@ -178,8 +178,6 @@ module Dashboard
 
           # fill in application form
           find('#internship_application_motivation').native.send_keys('et ')
-          fill_in("Adresse électronique (email)", with: 'parents@gmail.com')
-          # fill_in("Numéro de portable élève ou responsable légal", with: '+330611223344')
           assert_no_changes lambda {
                           student.internship_applications
                                   .where(aasm_state: :drafted)
