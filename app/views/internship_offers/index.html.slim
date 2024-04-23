@@ -6,11 +6,20 @@
       .row
         .col-12
           .fr-py-2w
-            = render partial: "internship_offers/search/form",
-                              locals: { render_as_partial: true,
-                                        url: internship_offers_path,
-                                        default_values: params,
-                                        form_id: :desktop_internship_offers_index_search_form }
+            .fr-tabs.visible
+              ul.fr-tabs__list role="tablist" aria-label="Rechercher"
+                li role="presentation"
+                  button#offers.fr-tabs__tab aria-controls="offers-panel" aria-selected="true" role="tab" tabindex="0"  Rechercher un stage
+                li role="presentation"
+                  = link_to '#', class: "fr-tabs__tab", tabindex: "0", role: "tab", aria_controls: "enterprises-panel" do
+                    | Rechercher une entreprise
+
+              #offers-panel.fr-tabs__panel.fr-tabs__panel--selected role="tabpanel" aria-labelledby="offers-panel" tabindex="0"
+                = render partial: "internship_offers/search/form",
+                                  locals: { render_as_partial: true,
+                                            url: internship_offers_path,
+                                            default_values: params,
+                                            form_id: :desktop_internship_offers_index_search_form }
 
 .actions.d-flex.d-stick.d-md-none.py-2
   = link_to search_internship_offers_path(params.permit(:city, :latitude, :longitude, :radius, :keyword, :period)),
@@ -22,7 +31,7 @@
 / mobile banner
 .container-monstage-fluid.fr-hidden-sm.mobile
   / = render 'layouts/more_offers_to_come_banner'
-  .ffr-sm-mx-2w.ffr-md-mx-0
+  .ffr-sm-mx-2w.fr-md-mx-0
     .fr-notice.fr-notice--info
       .fr-container
         .fr-notice__body

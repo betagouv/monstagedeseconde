@@ -1,4 +1,4 @@
-.container-monstage-fluid-hero 
+.container-monstage-fluid-hero
   header.container-xl.px-0
     - if browser.device.mobile?
       / smart phone display
@@ -35,15 +35,20 @@
 
         .row.no-gutters.fr-p-2w.fr-mb-4w.white-search-frame.d-none.d-sm-block
           .col-12
-            .fr-tabs 
+            /companies
+            .fr-tabs
               ul.fr-tabs__list role="tablist" aria-label="Rechercher"
-                li role="presentation" 
+                li role="presentation"
                   = link_to eleves_path, class: "fr-tabs__tab", tabindex: "0", role: "tab", aria_controls: "offers-panel" do
                     | Rechercher une offre
                 li role="presentation"
-                  button#offers.fr-tabs__tab aria-controls="enterprises-panel" aria-selected="true" role="tab" tabindex="0"  Rechercher une entreprise
-
-              #enterprises-panel.fr-tabs__panel.fr-tabs__panel--selected role="tabpanel" aria-labelledby="offers-panel" tabindex="0"
+                  button#offers.fr-tabs__tab aria-controls="enterprises-panel" aria-selected="true" role="tab" tabindex="0"  
+                    | Rechercher une entreprise
+              #enterprises-panel.fr-tabs__panel.fr-tabs__panel--selected [role="tabpanel"
+                                                                          aria-labelledby="offers-panel"
+                                                                          tabindex="0"
+                                                                          data-controller="mandatory-fields"
+                                                                          data-mandatory-fields-minimum-length-value="2"]
                 .fr-tabs__content
                   .fr-tabs__content-item.active#offers-search-tab
                     .row
@@ -56,14 +61,14 @@
                         /              whiteBg: has_white_bg  } )
                         = render partial: "companies/search_form_fields",
                                   locals: { render_as_partial: true,
-                                            url: internship_offers_path,
+                                            url: companies_path,
                                             default_values: user_presenter.default_search_options,
                                             form_id: :home_search_form }
-                                            
                         .actions.d-stick.d-md-none.p-2.fitting
                           = link_to internship_offers_path(current_user_or_visitor.default_search_options),
                                     class: 'fr-btn fr-icon-search-line fr-btn--icon-right fr-px-11w',
-                                    data: { :"test-id" => 'mobile-search-button' }
+                                    data: { :"test-id" => 'mobile-search-buttonsss',
+                                            :"mandatory-fields-target" => "disabledField" } do
                             = "Rechercher"
         .row
           .col-12.fr-mt-2w
