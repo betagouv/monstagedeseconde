@@ -9,9 +9,9 @@ class CompaniesController < ApplicationController
     @longitude = @city_coordinates.last
     @radius_in_km = search_params[:radius_in_km].presence || 10
 
-    service = Services::ImmersionFacile.new({ latitude: latitude,
-                                              longitude: longitude,
-                                              radius_in_km: radius_in_km })
+    service = Services::ImmersionFacile.new(latitude: latitude,
+                                            longitude: longitude,
+                                            radius_in_km: radius_in_km)
     @companies = service.perform
     @pages = InternshipOffer.all
                             .order(created_at: :desc)
