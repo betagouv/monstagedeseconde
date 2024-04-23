@@ -242,6 +242,7 @@ class User < ApplicationRecord
   def ministry_statistician? ; false end
   def academy_statistician? ; false end
   def academy_region_statistician? ; false end
+  def education_statistician? ; false end
   def student? ; false end
   def employer? ; false end
   def operator? ; false end

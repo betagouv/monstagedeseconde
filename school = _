@@ -1,0 +1,23 @@
+ => 
+[32m#<School:0x000071a90996c6d8[0m
+ id: [34m[1m48[0m,
+ name: [31m[1m"[0m[31mLycée polyvalent Jean Lurçat - Site Gobelins[0m[31m[1m"[0m,
+ city: [31m[1m"[0m[31mParis[0m[31m[1m"[0m,
+ zipcode: [31m[1m"[0m[31m75013[0m[31m[1m"[0m,
+ code_uai: [31m[1m"[0m[31m0753268V[0m[31m[1m"[0m,
+ coordinates: [32m#<RGeo::Geographic::SphericalPointImpl:0x18e20 "POINT (48.83420799456895 2.353337607800063)">[0m,
+ street: [31m[1m"[0m[31m48 avenue des Gobelins[0m[31m[1m"[0m,
+ created_at: Thu, 18 Apr 2024 09:22:55.406894000 CEST +02:00,
+ updated_at: Thu, 18 Apr 2024 09:23:23.256557000 CEST +02:00,
+ city_tsv: [31m[1m"[0m[31m'gobelin':7 'jean':4 'lurcat':5 'lyce':2 'paris':1 'polyvalent':3 'sit':6[0m[31m[1m"[0m,
+ kind: [36m[1mnil[0m,
+ visible: [36m[1mtrue[0m,
+ internship_agreement_online: [36m[1mfalse[0m,
+ fetched_school_phone: [36m[1mnil[0m,
+ fetched_school_address: [36m[1mnil[0m,
+ fetched_school_email: [36m[1mnil[0m,
+ legal_status: [31m[1m"[0m[31mPublic[0m[31m[1m"[0m,
+ delegation_date: [36m[1mnil[0m,
+ is_public: [36m[1mtrue[0m,
+ contract_code: [31m[1m"[0m[31m99[0m[31m[1m"[0m,
+ department_id: [34m[1m57[0m[32m>[0m 

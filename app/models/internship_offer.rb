@@ -4,7 +4,7 @@ require "sti_preload"
 class InternshipOffer < ApplicationRecord
   PAGE_SIZE = 30
   EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT = 250
-  MAX_CANDIDATES_HIGHEST = 200
+  MAX_CANDIDATES_HIGHEST = 1_500
   TITLE_MAX_CHAR_COUNT = 150
   DESCRIPTION_MAX_CHAR_COUNT= 500
   PERIOD_LABELS = {
@@ -102,6 +102,9 @@ class InternshipOffer < ApplicationRecord
 
   validate :check_missing_seats, if: :user_update?, on: :update
   validates :period, inclusion: { in: [0, 1, 2] }
+  validates :max_candidates, numericality: { only_integer: true,
+                                             greater_than: 0,
+                                             less_than_or_equal_to: InternshipOffer::MAX_CANDIDATES_HIGHEST }
 
   # Scopes
 
