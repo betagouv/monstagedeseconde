@@ -26,12 +26,12 @@ module Presenters
       end
 
       test '.total_student_with_zero_application' do
-        student_1 = create(:student, class_room: @class_room)
+        student_1 = create(:student, class_room: @class_room, phone: '+330612345678')
         student_1_applications = [
           create(:weekly_internship_application, :submitted, student: student_1),
           create(:weekly_internship_application, :submitted, student: student_1)
         ]
-        student_2 = create(:student, class_room: @class_room)
+        student_2 = create(:student, phone: '+330612345679', class_room: @class_room)
         student_2_applications = [
           create(:weekly_internship_application, :submitted, student: student_2),
           create(:weekly_internship_application, :submitted, student: student_2)
@@ -46,12 +46,12 @@ module Presenters
       end
 
       test '.total_student_with_zero_internship' do
-        student_1 = create(:student, class_room: @class_room)
+        student_1 = create(:student, class_room: @class_room, phone: '+330612345678')
         student_1_applications = [
           create(:weekly_internship_application, :approved, student: student_1),
           create(:weekly_internship_application, :rejected, student: student_1)
         ]
-        student_2 = create(:student, class_room: @class_room)
+        student_2 = create(:student, class_room: @class_room,  phone: '+330612345679')
         student_2_applications = [
           create(:weekly_internship_application, :submitted, student: student_2),
           create(:weekly_internship_application, :rejected, student: student_1)

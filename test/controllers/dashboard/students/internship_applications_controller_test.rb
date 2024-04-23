@@ -70,7 +70,7 @@ module Dashboard
       end
 
       test 'GET internship_applications#index render internship_applications' do
-        student = create(:student)
+        student = create(:student, phone: '+5940611223344')
         states = %i[drafted
                     submitted
                     approved

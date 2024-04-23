@@ -1,6 +1,8 @@
 # frozen_string_literal: true
-
 FactoryBot.define do
+  sequence(:phone) do |n|
+    n.even? ? "+330637#{n.to_s.rjust(6,"0")}" :  "+2620612#{n.to_s.rjust(6,"0")}"
+  end
   factory :user do
     first_name { FFaker::NameFR.first_name.capitalize }
     last_name { FFaker::NameFR.last_name.capitalize }
@@ -28,6 +30,10 @@ FactoryBot.define do
         gender { 'm' }
       end
 
+      trait :when_applying do
+        phone
+      end
+
       trait :female do
         gender { 'f' }
       end
@@ -38,7 +44,11 @@ FactoryBot.define do
 
       trait :registered_with_phone do
         email { nil }
-        phone { '+330637607756' }
+        phone
+      end
+
+      trait :with_phone do
+        phone
       end
 
       factory :student_with_class_room_3e, class: 'Users::Student', parent: :student do
@@ -55,7 +65,7 @@ FactoryBot.define do
             parent: :user do
       type { 'Users::Employer' }
       employer_role { 'PDG' }
-      
+
       after(:create) do |employer|
         unless employer.current_area
           new_area = create(:internship_offer_area, employer: employer)

@@ -167,7 +167,7 @@ module Users
     end
 
     test "#with_2_weeks_internships_approved? context: 2 weeks different weeks approved application" do
-      student = create(:student)
+      student = create(:student,  phone: '+330612345678')
       internship_offer_week_1 = create(:weekly_internship_offer, :week_1)
       internship_offer_week_2 = create(:weekly_internship_offer, :week_2)
       create(:weekly_internship_application, :approved, student: student, internship_offer: internship_offer_week_1)
