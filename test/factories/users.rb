@@ -47,6 +47,10 @@ FactoryBot.define do
         phone
       end
 
+      trait :with_phone do
+        phone
+      end
+
       factory :student_with_class_room_3e, class: 'Users::Student', parent: :student do
         class_room { create(:class_room, school: school) }
         after(:create) do |student|

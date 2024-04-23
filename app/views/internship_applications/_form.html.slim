@@ -43,13 +43,15 @@
                  readonly: readonly
     .row.fr-my-2w.fr-mb-3w
       .col-xs-12.col-sm-6
-        - if f.object.student_phone.present? || f.object.student.phone.present? 
+        - if f.object.student_phone.present? || f.object.student.phone.present?
+          - readonly = f.object.student_phone.present? && f.object.student_phone.size > 5
           = render '/inputs/dsfr_input_field',
                    field: :student_phone,
                    f: f,
                    object: f.object,
                    value: f.object.student_phone || f.object.student.phone,
-                   label: "Numéro de mobile",
+                   label: "Numéro de portable élève ou responsable légal",
+                   required: false,
                    title: 'Numéro de mobile',
                    readonly: true
         - else

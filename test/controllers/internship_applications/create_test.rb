@@ -10,7 +10,7 @@ module InternshipApplications
     test 'GET #new internship application as student' do
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
-      student = create(:student, school: school, class_room: create(:class_room, school: school))
+      student = create(:student, :with_phone, school: school, class_room: create(:class_room, school: school))
       sign_in(student)
 
       get(new_internship_offer_internship_application_path(internship_offer))
@@ -240,7 +240,7 @@ module InternshipApplications
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
       student = create(:student, school: school, phone: '+330600110011', email: nil, class_room: create(:class_room, school: school))
-      student_2 = create(:student)
+      student_2 = create(:student, :with_phone)
       sign_in(student)
       valid_params = {
         internship_application: {
