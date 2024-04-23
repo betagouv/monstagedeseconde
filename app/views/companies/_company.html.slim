@@ -25,9 +25,11 @@
               - address = company['address']
               = "#{address['streetNumberAndAddress']}, #{address['postcode'] } #{address['city'] }"
     .fr-card__footer.d-flex.justify-content-center
+      - presenter = Presenters::Company.new(company)
       = link_to  "site", 
-                company['website'],
-                class: "fr-btn fr-btn--sm fr-mx-2w text-center btn-block"
+                presenter.immersion_facilitee_url,
+                class: "fr-btn fr-btn--sm fr-mx-2w text-center btn-block",
+                target: "_blank"
     .fr-card__header.fr-py-1w
       ul.fr-badges-group.fr-my-2w.fr-mx-1w
         li
