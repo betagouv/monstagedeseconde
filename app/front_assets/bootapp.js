@@ -25,6 +25,7 @@ import SearchSchoolByName from "components/SearchSchoolByName";
 import Map from "components/Map";
 
 import CityInput from "components/search_internship_offer/CityInput";
+import EnterpriseCityInput from "components/search_internship_offer/EnterpriseCityInput";
 import KeywordInput from "components/search_internship_offer/KeywordInput";
 
 import DistanceIcon from "components/icons/DistanceIcon";
@@ -45,6 +46,7 @@ ReactOnRails.register({
   SearchSchoolByName,
   DistanceIcon,
   CityInput,
+  EnterpriseCityInput,
   KeywordInput,
   CountryPhoneSelect,
   AddressInput,

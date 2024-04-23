@@ -16,9 +16,7 @@ export default class extends Controller {
 
   allMandatoryFieldsAreFilled(){
     let allFilled = true;
-    console.log(this.minimumLengthValue )
     this.mandatoryFieldTargets.forEach((field) => {
-      console.log(field.value.length)
       if (field.value.length <= this.minimumLengthValue) {
         allFilled = false;
       }

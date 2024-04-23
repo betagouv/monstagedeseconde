@@ -1,5 +1,4 @@
-div [class="test-search-container"]
-
+div.test-search-container.search-tab
   = form_with url: url,
               method: :get,
               skip_enforcing_utf8: true,
@@ -16,19 +15,26 @@ div [class="test-search-container"]
                           value: default_values[:keyword],
                           class: "fr-input almost-fitting",
                           title: "Recherche par métiers",
+                          disabled: true,
                           :'aria-label' => "Recherche par métiers",
                           :"data-mandatory-fields-target" => "disabledField"
+                          
 
       / Add input field localisation
       .form-group.mb-md-0.col-12.col-md.fr-ml-2w
-        = form.label :city, "Je me situe dans la ville de", class: "fr-label font-weight-lighter"
-        = form.text_field :city,
-                          value: default_values[:city],
-                          class: "fr-input almost-fitting",
-                          title: "Recherche par localisation",
-                          :'aria-label' => "Recherche par localisation",
-                          :"data-mandatory-fields-target" => "mandatoryField",
-                          :"data-action" => "keyup->mandatory-fields#fieldChange"
+        = react_component("EnterpriseCityInput",
+                          props: { city: default_values[:city],
+                                   latitude: default_values[:latitude],
+                                   longitude: default_values[:longitude],
+                                   whiteBg: false } )
+        / = form.label :city, "Je me situe dans la ville de", class: "fr-label font-weight-lighter"
+        / = form.text_field :city,
+        /                   value: default_values[:city],
+        /                   class: "fr-input almost-fitting",
+        /                   title: "Recherche par localisation",
+        /                   :'aria-label' => "Recherche par localisation",
+        /                   :"data-mandatory-fields-target" => "mandatoryField",
+        /                   :"data-action" => "keyup->mandatory-fields#fieldChange"
       .form-group.mb-md-0.col-12.col-md.fr-ml-2w
         = form.label :radius_in_km, "Distance maximum", class: "fr-label font-weight-lighter"
         = form.select :radius_in_km,
@@ -36,6 +42,7 @@ div [class="test-search-container"]
                       { include_blank: "Toutes les distances" },
                       class: "fr-select almost-fitting",
                       title: "Recherche par distance",
+                      disabled: true,
                       :'aria-label' => "Recherche par distance",
                       :"data-mandatory-fields-target" => "disabledField"
 
@@ -44,6 +51,7 @@ div [class="test-search-container"]
           = form.button "Afficher les résultats",
                         class: 'fr-btn fr-icon-search-line fr-btn--icon-right',
                         id: 'test-mobile-submit-search',
+                        disabled: true,
                         :"data-mandatory-fields-target" => "disabledField" do
             span.mr-2 = "Rechercher"
 

@@ -186,6 +186,7 @@ Rails.application.routes.draw do
   get '/politique-de-confidentialite', to: 'pages#politique_de_confidentialite'
   post '/newsletter', to: 'newsletter#subscribe'
   get '/inscription-permanence', to: 'pages#register_to_webinar'
+  get '/recherche-entreprises', to: 'pages#search_companies'
   # TODO
   # To be removed after june 2023
   get '/register_to_webinar', to: 'pages#register_to_webinar'
