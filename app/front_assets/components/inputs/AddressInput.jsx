@@ -91,6 +91,7 @@ export default function AddressInput({
               isOpen,
               highlightedIndex,
             }) => (
+              
               <div>
                 <label
                   {...getLabelProps({
@@ -116,6 +117,7 @@ export default function AddressInput({
                   <input
                     {...getInputProps({
                       onChange: inputChange,
+                      onClick: resetField,
                       value: fullAddress,
                       className: 'form-control',
                       name: `${resourceName}_autocomplete`,

@@ -11,8 +11,8 @@ class CodedCraft < ApplicationRecord
 
   def siblings(level: )
     level_name = name_by_level(level) || ''
-    extended_list = siblings_by_craft_level(level).uniq
-    [level_name, extended_list]
+    coded_craft_list = siblings_by_craft_level(level).uniq
+    [level_name, coded_craft_list]
   end
 
   private
@@ -20,11 +20,11 @@ class CodedCraft < ApplicationRecord
   def name_by_level(level)
     case level
     when 1
-      level_name = detailed_craft.name
+      detailed_craft.name
     when 2
-      level_name = detailed_craft.craft.name
+      detailed_craft.craft.name
     when 3
-      level_name = detailed_craft.craft.craft_field.name
+      detailed_craft.craft.craft_field.name
     end
   end
 

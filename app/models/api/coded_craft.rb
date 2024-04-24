@@ -3,6 +3,8 @@
 module Api
   class CodedCraft < ApplicationRecord
     include PgSearch::Model
+    MAX_RESULTS_LIMIT = 18
+    MIN_RESULTS_LIMIT = 8
 
     pg_search_scope :search_by_name,
                     against: :name,
@@ -15,10 +17,11 @@ module Api
                       }
                     }
 
-    scope :autocomplete_by_name, lambda { |term:|
+    scope :autocomplete_by_name, lambda { |term:, limit: MIN_RESULTS_LIMIT|
       search_by_name(term)
         .highlight_by_name(term)
         .select("#{table_name}.*")
+        .limit([MIN_RESULTS_LIMIT, limit.to_i, MAX_RESULTS_LIMIT].sort.second)
     }
 
     scope :visible, -> { where(visible: true) }

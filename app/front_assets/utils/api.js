@@ -71,6 +71,16 @@ export const endpoints = {
     const endpoint = new URL(`${host}/api/schools/search`);
     return endpoint;
   },
+  // @get
+  apiRomeQuery: ({keyword}) => {
+    const endpoint = new URL(`${host}/api/coded_crafts/search`);
+    const searchParams = new URLSearchParams();
+    
+    searchParams.append('keyword', keyword);
+    endpoint.search = searchParams.toString();
+    console.log(endpoint);
+    return endpoint;
+  },
 
   // @get
   searchInternshipOffers: () => {

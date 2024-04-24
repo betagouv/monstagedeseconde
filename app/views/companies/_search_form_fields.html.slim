@@ -11,14 +11,9 @@ div [class="test-search-container"]
     .row.no-gutters.align-items-end
       / Add input field
       .form-group.mb-md-0.col-12.col-md.fr-ml-2w
-        = form.label :job, "Je recherche le métier", class: "fr-label font-weight-lighter"
-        = form.text_field :job,
-                          value: default_values[:keyword],
-                          class: "fr-input almost-fitting",
-                          title: "Recherche par métiers",
-                          :'aria-label' => "Recherche par métiers",
-                          :"data-mandatory-fields-target" => "disabledField"
+        = react_component("RomeInput", props: { keyword: params[:keyword]})
 
+      = form.hidden_field :limit, value: 100
       / Add input field localisation
       .form-group.mb-md-0.col-12.col-md.fr-ml-2w
         = form.label :city, "Je me situe dans la ville de", class: "fr-label font-weight-lighter"

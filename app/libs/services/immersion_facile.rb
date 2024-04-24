@@ -82,18 +82,25 @@ module Services
     end
 
     def get_request_uri
-      URI("#{IMMERSION_FACILE_ENDPOINT_URL}?#{making_body.to_query}")
+      URI("#{IMMERSION_FACILE_ENDPOINT_URL}?#{query_string}")
     end
 
-    def making_body
+    def query_string
       body = {
-        longitude: longitude,
-        latitude: latitude,
-        distanceKm: radius_in_km,
+        longitude: longitude.to_f,
+        latitude: latitude.to_f,
+        distanceKm: radius_in_km.to_i,
         sortedBy: 'distance'
       }
-      body.merge(appellationCodes: appellation_codes) if appellation_codes.any?
-      body
+      query_str = body.to_query
+      appellation_codes.each do |appellation_code|
+        query_str = "#{query_str}&appellationCodes[]=#{appellation_code}"
+      end
+      puts '================================'
+      puts "query_str : #{query_str}"
+      puts '================================'
+      puts ''
+      query_str
     end
 
     # expected: Int|Array[Int],
@@ -122,8 +129,8 @@ module Services
     end
 
     def check_appellation_codes(appellation_codes)
-      return [] if appellation_codes.empty?
-      return [] unless appellation_codes.respond_to?(:map)
+      return "" if appellation_codes.empty?
+      return "" unless appellation_codes.respond_to?(:map)
 
       appellation_codes = appellation_codes.map(&:to_s)
       (appellation_codes.all? { |code| code.match?(/\A\d{4,}\z/)}) ? appellation_codes: []
