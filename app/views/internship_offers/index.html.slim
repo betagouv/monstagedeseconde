@@ -2,7 +2,7 @@
 
 - content_for(:custom_header) do
   .position-sticky.sticky-top.wrapper-sticky-with-offset.search-bar.d-none.d-sm-block
-    .container-monstage
+    .container-monstage.offer
       .row
         .col-12
           .fr-py-2w
@@ -11,7 +11,7 @@
                 li role="presentation"
                   button#offers.fr-tabs__tab aria-controls="offers-panel" aria-selected="true" role="tab" tabindex="0"  Rechercher un stage
                 li role="presentation"
-                  = link_to '#', class: "fr-tabs__tab", tabindex: "0", role: "tab", aria_controls: "enterprises-panel" do
+                  = link_to recherche_entreprises_path, class: "fr-tabs__tab", tabindex: "0", role: "tab", aria_controls: "enterprises-panel" do
                     | Rechercher une entreprise
 
               #offers-panel.fr-tabs__panel.fr-tabs__panel--selected role="tabpanel" aria-labelledby="offers-panel" tabindex="0"
