@@ -17,7 +17,7 @@ module Presenters
     def initialize(company)
       @company = company
       @siret = company['siret']
-      @appellation_code = company['appellations'][0]['appellationCode']
+      @appellation_code = company.dig('appellations', 0, 'appellationCode')
       @location_id = company['locationId']
     end
   end

@@ -34,23 +34,25 @@ import FullAddressInput from "components/inputs/FullAddressInput";
 import SirenInput from "components/inputs/SirenInput";
 import CountryPhoneSelect from "components/inputs/CountryPhoneSelect";
 import AddressInput from "components/inputs/AddressInput";
+import RomeInput from "components/inputs/RomeInput";
 
 ReactOnRails.register({
-  ReservedSchoolInput,
-  InternshipOfferResults,
-  InternshipOfferFavorites,
-  InternshipOfferCard,
-  InternshipOfferFavoriteButton,
-  FlashMessage,
-  SearchSchool,
-  SearchSchoolByName,
-  DistanceIcon,
+  AddressInput,
   CityInput,
   CompanyCityInput,
-  KeywordInput,
   CountryPhoneSelect,
-  AddressInput,
+  DistanceIcon,
+  FlashMessage,
   FullAddressInput,
-  SirenInput,
+  InternshipOfferCard,
+  InternshipOfferFavoriteButton,
+  InternshipOfferFavorites,
+  InternshipOfferResults,
+  KeywordInput,
   Map,
+  ReservedSchoolInput,
+  RomeInput,
+  SearchSchool,
+  SearchSchoolByName,
+  SirenInput 
 });

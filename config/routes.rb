@@ -81,15 +81,18 @@ Rails.application.routes.draw do
 
     namespace :api, path: 'api' do
       resources :internship_offers, only: %i[create update destroy index] do
-        collection do
-          get :search
-        end
+        get :search, on: :collection
       end
+
       resources :schools, only: [] do
         collection do
           post :nearby
           post :search
         end
+      end
+
+      resources :coded_crafts, only: [] do
+        get :search, on: :collection
       end
       resources :sectors, only: :index
     end
