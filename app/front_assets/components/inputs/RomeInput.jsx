@@ -10,8 +10,9 @@ export default function RomeInput({
   currentLatitude,
   currentLongitude
 }) {
+  const searchParams = new URLSearchParams(window.location.search);
   const [searchResults, setSearchResults] = useState([]);
-  const [keyword, setKeyword] = useState(currentKeyword || '');
+  const [keyword, setKeyword] = useState(currentKeyword || searchParams.get('coded_crafts') || '');
   const [ogrCode, setOgrCode] = useState('');
   const [keywordDebounced] = useDebounce(keyword, 200);
 
@@ -19,6 +20,10 @@ const inputChange = (event) => {
   setKeyword(event.target.value);
 };
 
+const resetField = () => {
+  searchParams.delete('coded_crafts');
+  setKeyword('');
+};
 
 const searchRomeByKeyword = () => {
   fetch(endpoints.apiRomeQuery({ keyword: keywordDebounced }))
@@ -47,7 +52,7 @@ useEffect(() => {
 return (
   <div>
     <input type='hidden' name='appellationCode' value={ogrCode} />
-    <div className="form-group mb-md-0 col-12 col-md fr-ml-2w" id="test-input-craft-by-keyword">
+    <div className="form-group mb-md-0 col-12 col-md" id="test-input-craft-by-keyword">
       <div className="container-downshift">
         <Downshift
           initialInputValue={keyword}
@@ -64,7 +69,6 @@ return (
             highlightedIndex,
             selectedItem,
             getRootProps,
-            resetField
           }) => (
             <div>
               <label
@@ -80,7 +84,7 @@ return (
                 <input
                   {...getInputProps({
                     onChange: inputChange,
-                    onClick: resetField,
+                    onClick:  (e) => {resetField()},
                     value: keyword,
                     className: 'fr-input',
                     name: 'coded_crafts',

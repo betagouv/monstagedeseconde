@@ -1,6 +1,9 @@
 module Services
   class ImmersionFacile
-    IMMERSION_FACILE_ENDPOINT_URL = "https://staging.immersion-facile.beta.gouv.fr/api/v2/search".freeze
+    IMMERSION_FACILE_ENDPOINT_URL = "https://immersion-facile.beta.gouv.fr/api/v2/search".freeze
+    
+    # Staging
+    # IMMERSION_FACILE_ENDPOINT_URL = "https://staging.immersion-facile.beta.gouv.fr/api/v2/search".freeze
     # sample of json response : {
     # [
     #   {
@@ -93,13 +96,11 @@ module Services
         sortedBy: 'distance'
       }
       query_str = body.to_query
-      appellation_codes.each do |appellation_code|
-        query_str = "#{query_str}&appellationCodes[]=#{appellation_code}"
+      unless appellation_codes.empty?
+        appellation_codes.each do |appellation_code|
+          query_str = "#{query_str}&appellationCodes[]=#{appellation_code}"
+        end
       end
-      puts '================================'
-      puts "query_str : #{query_str}"
-      puts '================================'
-      puts ''
       query_str
     end
 
