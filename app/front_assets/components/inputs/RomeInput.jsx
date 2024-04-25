@@ -89,7 +89,7 @@ return (
                     className: 'fr-input',
                     name: 'coded_crafts',
                     id: 'coded_crafts',
-                    placeholder: 'Métier recherché 2 caractères minimum',
+                    placeholder: '2 car. minimum - optionnel',
                   })}
                 />
               </div>
