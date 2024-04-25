@@ -71,7 +71,11 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :companies, path: 'entreprises', only: %i[index]
+    resources :companies, path: 'entreprises', only: %i[index] do
+      collection do
+        get :search, path: 'recherche'
+      end
+    end
 
     resources :favorites, only: %i[create destroy index]
 

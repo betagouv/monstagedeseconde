@@ -10,7 +10,7 @@ const COMPONENT_FOCUS_LABEL = 'location';
 // 'https://geo.api.gouv.fr/communes?codePostal=78000' --> code curl
 // 'https://geo.api.gouv.fr/communes?code=78646&fields=code,nom,codesPostaux,code
 
-function CityInput({
+function CompanyCityInput({
   city: defaultCity,
   latitude: defaultLatitude,
   longitude: defaultLongitude,
@@ -43,15 +43,9 @@ function CityInput({
 
   const updateLocation = () => {
     const event = new Event('change', { bubbles: true });
-    const input = document.querySelector('input[name="latitude"]');
-    input.value = latitude;
-    input.dispatchEvent(event);
-    const input2 = document.querySelector('input[name="longitude"]');
-    input2.value = longitude;
-    input2.dispatchEvent(event);
-    const input3 = document.querySelector('input[name="city"]');
-    input3.value = cityOrZipcode;
-    input3.dispatchEvent(event);
+    const city = document.querySelector('input[name="city"]');
+    city.value = cityOrZipcode;
+    city.dispatchEvent(event);
   };
 
   const isZipcode = (str) => {
@@ -73,8 +67,6 @@ function CityInput({
       element.removeAttribute('disabled');
     });
   };
-
-
 
   const searchCityByName = () => {
     const searchParams = new URLSearchParams();
@@ -219,4 +211,4 @@ function CityInput({
   );
 }
 
-export default CityInput;
+export default CompanyCityInput;
