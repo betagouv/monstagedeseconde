@@ -2,19 +2,19 @@
   header.container-xl.px-0
     - if browser.device.mobile?
       / smart phone display
-      .container-monstage.container-xl.homepage.px-0
-        .row.fr-mt-4w.mx-0
-          .col-lg-12.col-md-12
-            .fr-h3.py-lg-3.py-md-2.py-sm-2.pt-xs-1.blue-france
-              |Pour les élèves de 2de générale et technologique, trouvez ici un stage de qualité
+      / .container-monstage.container-xl.homepage.px-0
+      /   .row.fr-mt-4w.mx-0
+      /     .col-lg-12.col-md-12
+      /       .fr-h3.py-lg-3.py-md-2.py-sm-2.pt-xs-1.blue-france
+      /         |Pour les élèves de 2de générale et technologique, trouvez ici un stage de qualité
 
-        .search-bar.fr-mx-2w
-          .white-search-frame.mt-3.fr-mb-4w.mobile
-            = render partial: "internship_offers/search/form",
-                    locals: { render_as_partial: false,
-                              url: internship_offers_path,
-                              default_values: params,
-                              form_id: :mobile_internship_offers_index_search_form }
+      /   .search-bar.fr-mx-2w
+      /     .white-search-frame.mt-3.fr-mb-4w.mobile
+      /       = render partial: "internship_offers/search/form",
+      /               locals: { render_as_partial: false,
+      /                         url: internship_offers_path,
+      /                         default_values: params,
+      /                         form_id: :mobile_internship_offers_index_search_form }
     - else
       / desktop display
       .container-monstage.container-xl.homepage.visible
@@ -53,12 +53,6 @@
                   .fr-tabs__content-item.active#offers-search-tab
                     .row
                       .col-12
-                        / = react_component("CityInput",
-                        /     props: { city: default_values[:city],
-                        /              latitude: default_values[:latitude],
-                        /              longitude: default_values[:longitude],
-                        /              radius: default_values[:radius],
-                        /              whiteBg: has_white_bg  } )
                         = render partial: "companies/search_form_fields",
                                   locals: { render_as_partial: true,
                                             url: companies_path,

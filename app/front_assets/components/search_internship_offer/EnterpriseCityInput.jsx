@@ -37,7 +37,21 @@ function CityInput({
       setCity(item.nom);
       setLatitude(item.centre.coordinates[1]);
       setLongitude(item.centre.coordinates[0]);
+      updateLocation();
     }
+  };
+
+  const updateLocation = () => {
+    const event = new Event('change', { bubbles: true });
+    const input = document.querySelector('input[name="latitude"]');
+    input.value = latitude;
+    input.dispatchEvent(event);
+    const input2 = document.querySelector('input[name="longitude"]');
+    input2.value = longitude;
+    input2.dispatchEvent(event);
+    const input3 = document.querySelector('input[name="city"]');
+    input3.value = cityOrZipcode;
+    input3.dispatchEvent(event);
   };
 
   const isZipcode = (str) => {
@@ -51,12 +65,10 @@ function CityInput({
   const manageResults = (results) => {
     setSearchResults(results);
     setLocation(results[0]);
-    console.log('manage results');
     removeDisabled();
   };
 
   const removeDisabled = () => {
-    // # for each elements with data-mandatory-fields-target remove disabled attribute
     document.querySelectorAll('[data-mandatory-fields-target]').forEach((element) => {
       element.removeAttribute('disabled');
     });

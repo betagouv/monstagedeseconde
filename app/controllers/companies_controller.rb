@@ -20,6 +20,9 @@ class CompaniesController < ApplicationController
     render :index
   end
 
+  def search
+  end
+
   private
 
   def prefered_keys = []

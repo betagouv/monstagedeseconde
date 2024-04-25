@@ -6,7 +6,6 @@ div.test-search-container.search-tab
               local: true,
               html: { id: form_id } do |form|
 
-
     .row.no-gutters.align-items-end
       / Add input field
       .form-group.mb-md-0.col-12.col-md.fr-ml-2w
@@ -15,26 +14,17 @@ div.test-search-container.search-tab
                           value: default_values[:keyword],
                           class: "fr-input almost-fitting",
                           title: "Recherche par métiers",
-                          disabled: true,
-                          :'aria-label' => "Recherche par métiers",
-                          :"data-mandatory-fields-target" => "disabledField"
+                          :'aria-label' => "Recherche par métiers"
                           
 
       / Add input field localisation
       .form-group.mb-md-0.col-12.col-md.fr-ml-2w
-        = react_component("EnterpriseCityInput",
-                          props: { city: default_values[:city],
-                                   latitude: default_values[:latitude],
-                                   longitude: default_values[:longitude],
-                                   whiteBg: false } )
-        / = form.label :city, "Je me situe dans la ville de", class: "fr-label font-weight-lighter"
-        / = form.text_field :city,
-        /                   value: default_values[:city],
-        /                   class: "fr-input almost-fitting",
-        /                   title: "Recherche par localisation",
-        /                   :'aria-label' => "Recherche par localisation",
-        /                   :"data-mandatory-fields-target" => "mandatoryField",
-        /                   :"data-action" => "keyup->mandatory-fields#fieldChange"
+         = react_component("EnterpriseCityInput",
+                           props: { city: default_values[:city],
+                                    latitude: default_values[:latitude],
+                                    longitude: default_values[:longitude],
+                                    whiteBg: false } )
+        
       .form-group.mb-md-0.col-12.col-md.fr-ml-2w
         = form.label :radius_in_km, "Distance maximum", class: "fr-label font-weight-lighter"
         = form.select :radius_in_km,
@@ -46,40 +36,42 @@ div.test-search-container.search-tab
                       :'aria-label' => "Recherche par distance",
                       :"data-mandatory-fields-target" => "disabledField"
 
-      .form-group.fr-mb-0
-        .fr-mr-2w.d-none.d-sm-block
-          = form.button "Afficher les résultats",
-                        class: 'fr-btn fr-icon-search-line fr-btn--icon-right',
-                        id: 'test-mobile-submit-search',
-                        disabled: true,
-                        :"data-mandatory-fields-target" => "disabledField" do
-            span.mr-2 = "Rechercher"
-
-      / TODO Check responsive
-
-      / .pb-5
-      / - if render_as_partial || current_page?(eleves_path)
-      /   / desktop
-      /   div[class="fr-mr-2w d-none d-sm-block"
-      /       data-search-popover-target="searchSubmitContainer"]
-      /     = form.button class: 'fr-ml-2w fr-btn fr-icon-search-line fr-btn--icon-right',
-      /                   name: nil,
-      /                   id: 'test-desktop-submit-search' do
-      /       span.mr-2 = 'Rechercher'
-      /   / mobile
-      /   div[class="d-block d-sm-none w-100"
-      /       data-search-popover-target="searchSubmitContainer"]
-      /     ul.fr-btns-group.w-100
-      /       li.w-100
-      /         = form.button class: 'fr-btn fr-ml-3w fr-my-2w',
-      /                       style: "width: 90%; padding: 0 15% 0 15% ",
-      /                       name: nil,
-      /                       id: 'test-mobile-submit-search' do
-      /           span = 'Rechercher'
-      / - else
-      /   .actions.d-md-none.w-100.text-centers.fr-ml-3v.fr-mt-6w data-search-popover-target="searchSubmitContainer"
+      / .form-group.fr-mb-0
+      /   .fr-mr-2w.d-none.d-sm-block
       /     = form.button "Afficher les résultats",
       /                   class: 'fr-btn fr-icon-search-line fr-btn--icon-right',
-      /                   style: "width: 94%; padding: 0 15% 0 27% ",
-      /                   id: 'test-mobile-submit-search' do
-      /       span.mr-2 = "Trouver une entreprise"
+      /                   id: 'test-mobile-submit-search',
+      /                   disabled: true,
+      /                   :"data-mandatory-fields-target" => "disabledField" do
+      /       span.mr-2 = "Rechercher"
+
+      .pb-5
+      - if render_as_partial || current_page?(recherche_entreprises_path)
+        / desktop
+        div[class="fr-mr-2w d-none d-sm-block"
+            data-search-popover-target="searchSubmitContainer"]
+          = form.button class: 'fr-ml-2w fr-btn fr-icon-search-line fr-btn--icon-right',
+                        name: nil,
+                        disabled: true,
+                        :"data-mandatory-fields-target" => "disabledField",
+                        id: 'test-desktop-submit-search' do
+            span.mr-2 = 'Rechercher'
+        / mobile
+        div[class="d-block d-sm-none w-100"
+            data-search-popover-target="searchSubmitContainer"]
+          ul.fr-btns-group.w-100
+            li.w-100
+              = form.button class: 'fr-btn fr-ml-3w fr-my-2w',
+                            style: "width: 90%; padding: 0 15% 0 15% ",
+                            name: nil,
+                            disabled: true,
+                            :"data-mandatory-fields-target" => "disabledField",
+                            id: 'test-mobile-submit-search' do
+                span = 'Rechercher'
+      - else
+        .actions.d-md-none.w-100.text-centers.fr-ml-3v.fr-mt-6w data-search-popover-target="searchSubmitContainer"
+          = form.button "Afficher les résultats",
+                        class: 'fr-btn fr-icon-search-line fr-btn--icon-right',
+                        style: "width: 94%; padding: 0 15% 0 27% ",
+                        id: 'test-mobile-submit-search' do
+            span.mr-2 = "Trouver une entreprise"

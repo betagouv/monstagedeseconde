@@ -42,7 +42,6 @@ export default class extends Controller {
 
 
   mandatoryFieldTargetConnected(){
-    console.log('mandatoryFieldTargetConnected');
     this.checkValidation();
   }
 }

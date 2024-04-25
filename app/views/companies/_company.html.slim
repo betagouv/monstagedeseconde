@@ -1,5 +1,5 @@
-.col-12.col-md-6.col-lg-4.fr-mb-3w
-  .fr-card style="height: 370px;"
+.col.col-12.col-md-6.col-lg-4.fr-mb-3w.company
+  .fr-card.h-100
     .fr-card__body
       .fr-card__content
         h4.fr-card__title.fr-my-1w.fr-mt-2w
@@ -9,7 +9,7 @@
           .fr-py-1w.fr-mb-1w
             - if company['appellations'].present?
               - company['appellations'].each do |appellation|
-                span.fr-badge.fr-badge--warning.fr-badge--no-icon
+                .fr-text--sm
                   = appellation['appellationLabel']
           .text-muted
             span.fr-icon-arrow-right-line.fr-icon--sm.fr-mb-0.fr-mr-1w
@@ -26,12 +26,12 @@
               = "#{address['streetNumberAndAddress']}, #{address['postcode'] } #{address['city'] }"
     .fr-card__footer.d-flex.justify-content-center
       - presenter = Presenters::Company.new(company)
-      = link_to  "site", 
-                presenter.immersion_facilitee_url,
+      = link_to presenter.immersion_facilitee_url,
                 class: "fr-btn fr-btn--sm fr-mx-2w text-center btn-block",
-                target: "_blank"
-    .fr-card__header.fr-py-1w
-      ul.fr-badges-group.fr-my-2w.fr-mx-1w
-        li
-          .fr-badge.fr-badge--warning.fr-badge--no-icon
-            | Entreprise accueillante
+                target: "_blank" do
+        | Postuler sur Immersion Facilicitée
+    / .fr-card__header.fr-py-1w
+    /   ul.fr-badges-group.fr-my-2w.fr-mx-1w
+    /     li
+    /       .fr-badge.fr-badge--warning.fr-badge--no-icon
+    /         | Entreprise accueillante
