@@ -39,8 +39,6 @@ export default class extends Controller {
     }
   }
 
-
-
   mandatoryFieldTargetConnected(){
     this.checkValidation();
   }
