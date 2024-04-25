@@ -47,10 +47,6 @@ useEffect(() => {
 return (
   <div>
     <input type='hidden' name='appellationCode' value={ogrCode} />
-    {/* temporary */}
-    <input type='hidden' name='latitude' value='48.8535'/>
-    <input type='hidden' name='longitude' value='2.34839' />
-    {/* temporary */}
     <div className="form-group mb-md-0 col-12 col-md fr-ml-2w" id="test-input-craft-by-keyword">
       <div className="container-downshift">
         <Downshift
