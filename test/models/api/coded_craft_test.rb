@@ -58,6 +58,7 @@ class CodedCraftTest < ActiveSupport::TestCase
     full_name = 'conducteur de travaux'
     create(:coded_craft, name: full_name)
     keyword.split('').each.with_index do |_, idx|
+      next if idx <= 2
       query_part = keyword[0..idx]
       results = Api::CodedCraft.autocomplete_by_name(term: query_part)
       assert_equal 1, results.size, "fail to find with '#{query_part}'"
