@@ -7,7 +7,7 @@ class CompaniesController < ApplicationController
     return [] if @city_coordinates.empty?
 
     @companies    = []
-    @level_name   = ''
+    @level_name   = 'Pilote de ligne'
     @latitude     = search_params[:latitude].presence
     @longitude    = search_params[:longitude].presence
     @radius_in_km = search_params[:radius_in_km].presence || DEFAULT_RADIUS_IN_KM
