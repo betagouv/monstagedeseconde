@@ -152,7 +152,7 @@ function CompanyCityInput({
           openMenu,
         }) => (
           <div>
-            <label {...getLabelProps({ className: `almost-fitting ${(whiteBg) ? 'fr-label' : 'font-weight-lighter'}`, htmlFor: "input-search-by-city-or-zipcode" })}>
+            <label {...getLabelProps({ className: `${(whiteBg) ? 'fr-label' : 'font-weight-lighter'}`, htmlFor: "input-search-by-city-or-zipcode" })}>
               Je me situe dans la ville de
             </label>
             <div
@@ -165,7 +165,7 @@ function CompanyCityInput({
                 {...getInputProps({
                   onChange: inputChange,
                   value: inputValue,
-                  className: 'fr-input almost-fitting',
+                  className: 'fr-input',
                   name: 'city',
                   id: 'input-search-by-city-or-zipcode',
                   placeholder: '',

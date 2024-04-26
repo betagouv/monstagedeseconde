@@ -8,24 +8,24 @@ div.test-search-container.search-tab
 
     .row.no-gutters.align-items-end
       / Add input field
-      .form-group.mb-md-0.col-12.col-md.fr-ml-2w
+      .form-group.mb-md-0.col-12.col-md
         = react_component("RomeInput", props: { keyword: params[:keyword]})
 
       = form.hidden_field :limit, value: 100
       / Add input field localisation
-      .form-group.mb-md-0.col-12.col-md.fr-ml-2w
+      .form-group.mb-md-0.col-12.col-md.fr-mx-2w
          = react_component("CompanyCityInput",
                            props: { city: default_values[:city],
                                     latitude: default_values[:latitude],
                                     longitude: default_values[:longitude],
                                     whiteBg: false } )
         
-      .form-group.mb-md-0.col-12.col-md.fr-ml-2w
+      .form-group.mb-md-0.col-12.col-md.fr-mx-2w
         = form.label :radius_in_km, "Distance maximum", class: "fr-label font-weight-lighter"
         = form.select :radius_in_km,
                       options_for_select((1..50).map { |i| ["#{i} km", i]}, params[:radius_in_km]),
                       { include_blank: "Toutes les distances" },
-                      class: "fr-select almost-fitting",
+                      class: "fr-select",
                       title: "Recherche par distance",
                       disabled: true,
                       :'aria-label' => "Recherche par distance",

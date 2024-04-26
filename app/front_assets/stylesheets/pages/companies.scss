@@ -1,3 +1,19 @@
+.container-search {
+  position: relative;
+  min-height: 200px;
+}
+
+.search-companies {
+  background-color: #fff;
+  position: absolute;
+  bottom: -30px;
+  width: 100%;
+}
+
+.search-tabs-companies .fr-tabs__panel,
+.search-tabs-offers .fr-tabs__panel {
+  background-color: #fff;
+}
 .company .fr-btn::after {
   display: inline-block;
 }

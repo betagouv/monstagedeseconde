@@ -89,7 +89,7 @@ return (
                     className: 'fr-input',
                     name: 'coded_crafts',
                     id: 'coded_crafts',
-                    placeholder: '2 car. minimum - optionnel',
+                    placeholder: '',
                   })}
                 />
               </div>
