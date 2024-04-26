@@ -6,7 +6,7 @@ module Presenters
         siret: siret,
         location: location_id,
         appellationCode: appellation_code,
-        mtm_campaign: 'ms2de'
+        mtm_campaign: 'ms2e'
       }
       "https://immersion-facile.beta.gouv.fr/offre?#{params_hash.to_query}"
     end

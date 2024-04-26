@@ -91,7 +91,6 @@ export default function AddressInput({
               isOpen,
               highlightedIndex,
             }) => (
-              
               <div>
                 <label
                   {...getLabelProps({

@@ -53,13 +53,13 @@ module Services
       if response.nil? || !response.respond_to?(:body)
         error_message = "Faulty request : consider contacting developper"
         Rails.logger.error(error_message)
-        return nil
       end
-      if status?(200, response)
+      if response && response.respond_to?(:code) && status?(200, response)
         log_success
         JSON.parse(response.body)
       else
         log_failure(response)
+        []
       end
     end
 
@@ -70,8 +70,8 @@ module Services
     end
 
     def log_failure(response)
-      error_message = "Error #{response.code} with message: " \
-                      "#{JSON.parse(response.body)} for immmersion-" \
+      error_message = "Error #{response.try(:code)} with message: " \
+                      "#{response} for immmersion-" \
                       "facilitée with #{city} search"
       Rails.logger.error(error_message)
     end
@@ -90,9 +90,9 @@ module Services
 
     def query_string
       body = {
-        longitude: longitude.to_f,
-        latitude: latitude.to_f,
         distanceKm: radius_in_km.to_i,
+        latitude: latitude.to_f,
+        longitude: longitude.to_f,
         sortedBy: 'distance'
       }
       query_str = body.to_query
@@ -130,8 +130,8 @@ module Services
     end
 
     def check_appellation_codes(appellation_codes)
-      return "" if appellation_codes.empty?
-      return "" unless appellation_codes.respond_to?(:map)
+      return [] if appellation_codes.empty?
+      return [] unless appellation_codes.respond_to?(:map)
 
       appellation_codes = appellation_codes.map(&:to_s)
       (appellation_codes.all? { |code| code.match?(/\A\d{4,}\z/)}) ? appellation_codes: []

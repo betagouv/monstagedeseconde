@@ -65,17 +65,18 @@ export const endpoints = {
     endpoint.search = searchParams.toString();
     return endpoint;
   },
-  
+
   // @post
   apiSearchSchool: () => {
     const endpoint = new URL(`${host}/api/schools/search`);
     return endpoint;
   },
+
   // @get
   apiRomeQuery: ({keyword}) => {
     const endpoint = new URL(`${host}/api/coded_crafts/search`);
     const searchParams = new URLSearchParams();
-    
+
     searchParams.append('keyword', keyword);
     endpoint.search = searchParams.toString();
     console.log(endpoint);

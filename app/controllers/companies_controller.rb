@@ -3,30 +3,20 @@ class CompaniesController < ApplicationController
   DEFAULT_RADIUS_IN_KM = 10
 
   def index
-    @city_coordinates = Geofinder.coordinates(search_params[:city])
-    return [] if @city_coordinates.empty?
-
     @companies    = []
-    @level_name   = 'Pilote de ligne'
-    @latitude     = search_params[:latitude].presence
-    @longitude    = search_params[:longitude].presence
-    @radius_in_km = search_params[:radius_in_km].presence || DEFAULT_RADIUS_IN_KM
+    @level_name   = ''
     parameters = {
-      latitude: @latitude,
-      longitude: @longitude,
-      radius_in_km: @radius_in_km
+      latitude: search_params[:latitude].presence,
+      longitude: search_params[:longitude].presence,
+      radius_in_km: search_params[:radius_in_km].presence || DEFAULT_RADIUS_IN_KM
     }
-
     appellation_code = search_params[:appellationCode].presence
+
     if appellation_code.present?
       @level_name, @companies = fetch_companies_by_appellation_code(appellation_code, parameters)
     else
       @companies = fetch_companies(parameters)
     end
-    render :index
-  end
-
-  def search
   end
 
   private
@@ -44,19 +34,33 @@ class CompaniesController < ApplicationController
   end
 
   def fetch_companies(parameters)
+    return [] if parameters[:latitude].blank? || parameters[:longitude].blank?
+
     Services::ImmersionFacile.new(**parameters).perform
   end
 
   def fetch_companies_by_appellation_code(appellation_code, parameters)
-    coded_craft = CodedCraft.fetch_coded_craft(appellation_code)
     @level_name = ''
     iteration = 0
-    while iteration <= 3 && @companies.to_a.count.zero? do
+    coded_craft = CodedCraft.fetch_coded_craft(appellation_code)
+    while iteration < 3 && @companies.to_a.count.zero? do
+      puts '================================'
+      puts "coded_craft.siblings(level: iteration) : #{coded_craft.siblings(level: iteration)}"
+      puts '================================'
+      puts ''
       @level_name, sibling_coded_crafts = coded_craft.siblings(level: iteration)
+      puts '================================'
+      puts "@level_name : #{@level_name}"
+      puts '================================'
+      puts ''
       parameters.merge!(appellation_codes: sibling_coded_crafts.pluck(:ogr_code))
       @companies = fetch_companies(parameters)
       iteration += 1
     end
+    puts '================================'
+    puts "@level_name : #{@level_name}"
+    puts '================================'
+    puts ''
     [@level_name, @companies]
   end
 end
