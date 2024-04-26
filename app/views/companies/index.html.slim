@@ -12,9 +12,13 @@
 .fr-test-companies-container.with-grey-background[class=top_class]
   .container-monstage.fr-px-2w
     .row
-      .col-12.fr-py-2w
+      .col-12.fr-py-2w.d-flex.flex-row
         - mobile_class = browser.device.mobile? ? 'fr-text--lead' : 'h4'
-        div[class=mobile_class] Les entreprises accueillantes
+        div[class=mobile_class] Les entreprises accueillantes 
+        - if @level_name.present?
+          .ml-auto.text-right
+            .fr-pb-1v Recherche étendue au secteur
+            .font-weight-bold.blue-france= @level_name
     - if @companies.nil? || @companies.empty?
       h3 Aucune entreprise accueillante ne correspond à vos critères de recherche
     - else
