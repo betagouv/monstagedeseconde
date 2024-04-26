@@ -5,7 +5,8 @@ module Presenters
       params_hash = {
         siret: siret,
         location: location_id,
-        appellationCode: appellation_code
+        appellationCode: appellation_code,
+        mtm_campaign: 'ms2de'
       }
       "https://immersion-facile.beta.gouv.fr/offre?#{params_hash.to_query}"
     end

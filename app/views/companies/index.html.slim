@@ -1,8 +1,3 @@
-
-.container-homepage
-  .container-monstage
-    = render 'pages/home/top_nav'
-
 .actions.d-flex.d-stick.d-md-none.py-2
   = link_to search_companies_path(params.permit(:city, :latitude, :longitude, :radius)),
             class: 'fr-btn btn-block-mobile',
@@ -13,13 +8,13 @@
 .d-none.d-md-block
   = render 'companies/search_form'
 
-- top_class = browser.device.mobile? ? 'fr-mt-2w' : 'fr-mt-6w'
-.fr-test-companies-container[class=top_class]
+- top_class = browser.device.mobile? ? 'fr-pt-2w' : 'fr-pt-6w'
+.fr-test-companies-container.with-grey-background[class=top_class]
   .container-monstage.fr-px-2w
     .row
       .col-12.fr-py-2w
-        - mobile_class = browser.device.mobile? ? 'fr-text--lead' : ''
-        h1[class=mobile_class] Les entreprises accueillantes
+        - mobile_class = browser.device.mobile? ? 'fr-text--lead' : 'h4'
+        div[class=mobile_class] Les entreprises accueillantes
     - if @companies.nil? || @companies.empty?
       h3 Aucune entreprise accueillante ne correspond à vos critères de recherche
     - else

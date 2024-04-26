@@ -17,53 +17,28 @@
       /                         form_id: :mobile_internship_offers_index_search_form }
     - else
       / desktop display
-      .container-monstage.container-xl.homepage.visible
+      .container-monstage.container-xl.homepage.visible.container-search
         .row
-          .col-lg-12.col-md-12.px-0
+          .col-lg-8.col-md-12
             .d-flex.flex-row
               .blue-france.sub-hero
-                .fr-h6.fr-mt-4w.fr-mb-1w.blue-france
-                  | Élèves de 2de générale et technologique,
-                .div
-                  h1.fr-h1.blue-france
-                    | Trouvez ici un stage de qualité
+                .fr-h4.fr-mt-4w.fr-mb-1w.blue-france
+                  | Je recherche une entreprise pour réaliser mon stage de seconde générale et technologique
 
-              .fr-mr-2w.ml-auto.fr-mb-1w.show-stamp-logo.d-none.d-md-block
-                = image_tag asset_pack_path('media/images/homepage/everyone/ms2e-stamp-medium.png'),
-                            alt: 'Logo stade de 2de générale et technologique',
-                            class: 'stamp-logo-medium fr-mt-5w fr-ml-4w'
-
-        .row.no-gutters.fr-p-2w.fr-mb-4w.d-none.d-sm-block.search-companies
+        .row.no-gutters.fr-p-2w.d-none.d-sm-block.search-companies
           .col-12
             /companies
-            .fr-tabs.visible
-              ul.fr-tabs__list role="tablist" aria-label="Rechercher"
-                li role="presentation"
-                  = link_to eleves_path, class: "fr-tabs__tab", tabindex: "0", role: "tab", aria_controls: "offers-panel" do
-                    | Rechercher une offre
-                li role="presentation"
-                  button#offers.fr-tabs__tab aria-controls="enterprises-panel" aria-selected="true" role="tab" tabindex="0"  
-                    | Rechercher une entreprise
-              #enterprises-panel.fr-tabs__panel.fr-tabs__panel--selected [role="tabpanel"
-                                                                          aria-labelledby="offers-panel"
-                                                                          tabindex="0"
-                                                                          data-controller="mandatory-fields"
-                                                                          data-mandatory-fields-minimum-length-value="2"]
-                .fr-tabs__content
-                  .fr-tabs__content-item.active#offers-search-tab
-                    .row
-                      .col-12
-                        = render partial: "companies/search_form_fields",
-                                  locals: { render_as_partial: true,
-                                            url: companies_path,
-                                            default_values: user_presenter.default_search_options,
-                                            form_id: :home_search_form }
-                        .actions.d-stick.d-md-none.p-2.fitting
-                          = link_to internship_offers_path(current_user_or_visitor.default_search_options),
-                                    class: 'fr-btn fr-icon-search-line fr-btn--icon-right fr-px-11w',
-                                    data: { :"test-id" => 'mobile-search-buttonsss',
-                                            :"mandatory-fields-target" => "disabledField" } do
-                            = "Rechercher"
+            = render partial: "companies/search_form_fields",
+                      locals: { render_as_partial: true,
+                                url: companies_path,
+                                default_values: user_presenter.default_search_options,
+                                form_id: :home_search_form }
+            .actions.d-stick.d-md-none.p-2.fitting
+              = link_to internship_offers_path(current_user_or_visitor.default_search_options),
+                        class: 'fr-btn fr-icon-search-line fr-btn--icon-right fr-px-11w',
+                        data: { :"test-id" => 'mobile-search-buttonsss',
+                                :"mandatory-fields-target" => "disabledField" } do
+                = "Rechercher"
         .row
           .col-12.fr-mt-2w
 
