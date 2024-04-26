@@ -44,23 +44,11 @@ class CompaniesController < ApplicationController
     iteration = 0
     coded_craft = CodedCraft.fetch_coded_craft(appellation_code)
     while iteration < 3 && @companies.to_a.count.zero? do
-      puts '================================'
-      puts "coded_craft.siblings(level: iteration) : #{coded_craft.siblings(level: iteration)}"
-      puts '================================'
-      puts ''
       @level_name, sibling_coded_crafts = coded_craft.siblings(level: iteration)
-      puts '================================'
-      puts "@level_name : #{@level_name}"
-      puts '================================'
-      puts ''
       parameters.merge!(appellation_codes: sibling_coded_crafts.pluck(:ogr_code))
       @companies = fetch_companies(parameters)
       iteration += 1
     end
-    puts '================================'
-    puts "@level_name : #{@level_name}"
-    puts '================================'
-    puts ''
     [@level_name, @companies]
   end
 end
