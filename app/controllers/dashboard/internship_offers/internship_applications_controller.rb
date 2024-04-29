@@ -47,7 +47,9 @@ module Dashboard
           internship_application = InternshipApplication.from_sgid(params[:sgid])
           if internship_application.nil?
             flash_error_message = 'Le lien a expiré, veuillez vous identifier pour accéder à la candidature.'
-            path = dashboard_internship_offer_path(internship_application.internship_offer)
+            path = dashboard_internship_offer_internship_application(
+              internship_application.internship_offer,
+              internship_application)
             redirect_to path, flash: { danger: flash_error_message } and return
           else
             sign_in(internship_application.employer)
