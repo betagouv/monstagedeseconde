@@ -21,7 +21,8 @@ module Builders
             internship_offer_area_id: user.current_area_id)
         )
         internship_offer.save!
-        after_save_actions(internship_offer)
+        DraftedInternshipOfferJob.set(wait: 1.week)
+                                 .perform_later(internship_offer_id: internship_offer.id)
         callback.on_success.try(:call, internship_offer)
       rescue ActiveRecord::RecordInvalid => e
         callback.on_failure.try(:call, e.record)
@@ -211,12 +212,6 @@ module Builders
       Array(internship_offer.errors.details[:remote_id])
         .map { |error| error[:error] }
         .include?(:taken)
-    end
-
-    def after_save_actions(internship_offer)
-      DraftedInternshipOfferJob.set(wait: 1.week)
-                               .perform_later(internship_offer_id: internship_offer.id)
-      Services::SiretBase.new(internship_offer).store
     end
   end
 end

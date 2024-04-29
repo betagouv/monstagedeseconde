@@ -68,6 +68,9 @@ class CompaniesController < ApplicationController
 
   def internship_offers_sirets(companies)
     companies_siret = companies.map { |company| company['siret'] }
-    SiretBase.where(siret: companies_siret).pluck(:siret)
+    InternshipOffers::WeeklyFramed.kept
+                                  .where(siret: companies_siret)
+                                  .pluck(:siret)
+                                  .uniq
   end
 end
