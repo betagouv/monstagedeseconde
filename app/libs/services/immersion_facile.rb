@@ -55,7 +55,6 @@ module Services
         Rails.logger.error(error_message)
       end
       if response && response.respond_to?(:code) && status?(200, response)
-        log_success
         JSON.parse(response.body)
       else
         log_failure(response)
@@ -64,10 +63,6 @@ module Services
     end
 
     private
-
-    def log_success
-      Rails.logger.debug("Got a response for #{city}")
-    end
 
     def log_failure(response)
       error_message = "Error #{response.try(:code)} with message: " \

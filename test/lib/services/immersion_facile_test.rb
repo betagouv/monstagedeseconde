@@ -38,9 +38,6 @@ module Services
 
 
 
-
-
-
     test 'perform when connexion is ok and params are ok' do
       base_url = "https://immersion-facile.beta.gouv.fr/api/v2/search?distanceKm=" \
                  "#{parameters[:radius_in_km]}&latitude=#{parameters[:latitude]}" \
