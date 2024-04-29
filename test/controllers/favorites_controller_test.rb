@@ -3,6 +3,10 @@ require "test_helper"
 class FavoritesControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
+  test 'GET index not logged redirects to sign in' do
+    get favorites_path
+    assert_redirected_to user_session_path
+  end
 
   test 'GET index when logged in it renders the page' do
     student = create(:student)
@@ -43,10 +47,10 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
     assert_difference('Favorite.count', 1) do
       post favorites_path(id: internship_offer.id)
     end
-    
+
     assert_equal student.favorites.count, 1
     assert_equal student.favorites.last.internship_offer, internship_offer
-  end 
+  end
 
   test 'DELETE #destroy delete a favorite' do
     student = create(:student)
@@ -57,8 +61,8 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
     assert_difference('Favorite.count', -1) do
       delete favorite_path(id: internship_offer.id)
     end
-    
+
     assert_equal student.favorites.count, 0
     assert_nil student.favorites.last
-  end 
+  end
 end
