@@ -1651,6 +1651,38 @@ ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
 
 
 --
+-- Name: siret_bases; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.siret_bases (
+    id bigint NOT NULL,
+    siret character varying(14),
+    last_activity date,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: siret_bases_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.siret_bases_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: siret_bases_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.siret_bases_id_seq OWNED BY public.siret_bases.id;
+
+
+--
 -- Name: task_registers; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2254,6 +2286,13 @@ ALTER TABLE ONLY public.signatures ALTER COLUMN id SET DEFAULT nextval('public.s
 
 
 --
+-- Name: siret_bases id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.siret_bases ALTER COLUMN id SET DEFAULT nextval('public.siret_bases_id_seq'::regclass);
+
+
+--
 -- Name: task_registers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2618,6 +2657,14 @@ ALTER TABLE ONLY public.sectors
 
 ALTER TABLE ONLY public.signatures
     ADD CONSTRAINT signatures_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: siret_bases siret_bases_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.siret_bases
+    ADD CONSTRAINT siret_bases_pkey PRIMARY KEY (id);
 
 
 --
@@ -3239,6 +3286,13 @@ CREATE INDEX index_signatures_on_user_id ON public.signatures USING btree (user_
 
 
 --
+-- Name: index_siret_bases_on_siret; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_siret_bases_on_siret ON public.siret_bases USING btree (siret);
+
+
+--
 -- Name: index_team_member_invitations_on_inviter_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3802,13 +3856,13 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240429143904'),
 ('20240417085118'),
 ('20240417084757'),
 ('20240410120927'),
 ('20240410115028'),
 ('20240410114806'),
 ('20240410114637'),
-('20240405101512'),
 ('20240405094938'),
 ('20240404071148'),
 ('20240403131643'),

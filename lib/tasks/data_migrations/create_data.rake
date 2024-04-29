@@ -304,4 +304,23 @@ namespace :data_migrations do
                               data_migrations:create_crafts
                               data_migrations:create_detailed_crafts
                               data_migrations:create_coded_crafts]
+  
+  desc 'create siret base on internship_offer table info'
+  task create_siret_base: :environment do
+    InternshipOffer.kept.find_each do |internship_offer|
+      siret = internship_offer.siret
+      next if siret.nil?
+
+      siret_base = SiretBase.find_by(siret: siret)
+      if siret_base && internship_offer.last_date > siret_base.last_activity
+        siret_base.update(last_activity: internship_offer.last_date)
+        PrettyConsole.print_in_yellow "."
+      elsif siret_base.nil?
+        SiretBase.create(siret: siret, last_activity: internship_offer.last_date)
+        PrettyConsole.print_in_green "."
+      end
+    end
+    puts ""
+    PrettyConsole.say_in_yellow "Done with creating siret base"
+  end
 end

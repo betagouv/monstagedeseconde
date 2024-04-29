@@ -94,6 +94,9 @@ FactoryBot.define do
       before(:create) do |internship_offer|
         Department.create(code: '75', name: 'Paris')
       end
+      after(:create) do |internship_offer|
+        SiretBase.create(siret: internship_offer.siret, last_activity: internship_offer.last_date)
+      end
     end
 
     trait :api_internship_offer do

@@ -1,0 +1,2 @@
+class SiretBase < ApplicationRecord
+end

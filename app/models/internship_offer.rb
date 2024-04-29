@@ -369,6 +369,7 @@ class InternshipOffer < ApplicationRecord
       employer_description: 'NA'
     }
     update(fields_to_reset)
+    SiretBase.find_by(siret: siret)&.destroy
     discard
   end
 

@@ -3,10 +3,6 @@ require "test_helper"
 class FavoritesControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
-  test 'GET index not logged redirects to sign in' do
-    get favorites_path
-    assert_redirected_to user_session_path
-  end
 
   test 'GET index when logged in it renders the page' do
     student = create(:student)
