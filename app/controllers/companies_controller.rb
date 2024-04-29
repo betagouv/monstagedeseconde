@@ -54,14 +54,14 @@ class CompaniesController < ApplicationController
   def filtered_companies(parameters)
     companies = fetch_companies(parameters)
     companies = reject_missing_location_id(companies)
-    reject_siret_with_offers(companies)
+    reject_companies_with_offers(companies)
   end
 
   def reject_missing_location_id(companies)
     companies.reject { |company| company['locationId'].blank? }
   end
 
-  def reject_siret_with_offers(companies)
+  def reject_companies_with_offers(companies)
     sirets_in_base = internship_offers_sirets(companies)
     companies.reject { |company| company['siret'].in?(sirets_in_base) }
   end
