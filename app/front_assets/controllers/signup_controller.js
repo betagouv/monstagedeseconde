@@ -142,7 +142,6 @@ export default class extends Controller {
       this.hideAcademySelect();
       this.hideAcademyRegionSelect();
     } else if (ministryType == "MinistryStatistician") {
-      console.log('ministry');
       $('#statistician-ministry').removeClass('d-none');
       this.ministrySelectTarget.required = false;
       this.ministrySelectTarget.value = '';

@@ -22,6 +22,9 @@ html lang="fr"
       header.custom-navbar role="banner"
         .col.px-0
           = render "layouts/navbar"
+          .container-homepage
+            .container-monstage
+              = render 'pages/home/search_top_nav'
           = render 'layouts/webinar_banner' if can?(:subscribe_to_webinar, current_user_or_visitor)
       = content_for(:custom_header)
       .container-x
