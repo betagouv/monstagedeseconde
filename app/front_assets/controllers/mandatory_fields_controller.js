@@ -14,37 +14,34 @@ export default class extends Controller {
     this.checkValidation();
   }
 
-  allMandatoryFieldsAreFilled(){
-    let allFilled = true;
-    console.log(this.minimumLengthValue )
+  areAllMandatoryFieldsFilled(){
+    let allMandatoryFieldsAreFilled = true;
     this.mandatoryFieldTargets.forEach((field) => {
-      console.log(field.value.length)
       if (field.value.length <= this.minimumLengthValue) {
-        allFilled = false;
+        allMandatoryFieldsAreFilled = false;
       }
     });
-    return allFilled;
+    return allMandatoryFieldsAreFilled;
   }
 
-  setAllDisabledFields(status){
+  // possible values are 'disabled' or 'enabled'
+  setDisabledFieldsTo(status){
+
     const disabledFields = this.disabledFieldTargets;
     disabledFields.forEach((field) => {
-      field.disabled = status;
+      field.disabled =  (status === 'disabled') ;
     });
   }
 
   checkValidation(){
-    if( this.allMandatoryFieldsAreFilled() ){
-      this.setAllDisabledFields(false);
+    if(this.areAllMandatoryFieldsFilled()){
+      this.setDisabledFieldsTo('enabled');
     } else {
-      this.setAllDisabledFields(true);
+      this.setDisabledFieldsTo('disabled');
     }
   }
 
-
-
   mandatoryFieldTargetConnected(){
-    console.log('mandatoryFieldTargetConnected');
     this.checkValidation();
   }
 }

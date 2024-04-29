@@ -8,7 +8,7 @@ class SchoolsTest < ApplicationSystemTestCase
     visit internship_offers_path
     #June_flower
     # find("h2 .strong", text: "1 Offre de stage")
-    find("h2 .strong", text: "Les offres de stage")
+    find(".h4 .strong", text: "Les offres de stage")
     #June_flower
     assert_no_selector('.results-col .heart-empty')
   end
@@ -19,8 +19,7 @@ class SchoolsTest < ApplicationSystemTestCase
     create(:weekly_internship_offer)
     visit internship_offers_path
     #June_flower
-    # find("h2 .strong", text: "1 Offre de stage")
-    find("h2 .strong", text: "Les offres de stage")
+    find(".h4 .strong", text: "Les offres de stage")
     #June_flower
     assert_no_selector('.results-col .heart-empty')
   end
@@ -31,8 +30,7 @@ class SchoolsTest < ApplicationSystemTestCase
     sign_in student
     visit internship_offers_path
     #June_flower
-    # find("h2 .strong", text: "1 Offre de stage")
-    find("h2 .strong", text: "Les offres de stage")
+    find(".h4 .strong", text: "Les offres de stage")
     #June_flower
     assert_changes -> { Favorite.all.count }, from: 0, to: 1 do
       find(".results-col .heart-empty").click

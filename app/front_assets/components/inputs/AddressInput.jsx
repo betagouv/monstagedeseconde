@@ -116,6 +116,7 @@ export default function AddressInput({
                   <input
                     {...getInputProps({
                       onChange: inputChange,
+                      onClick: resetField,
                       value: fullAddress,
                       className: 'form-control',
                       name: `${resourceName}_autocomplete`,
