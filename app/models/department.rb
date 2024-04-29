@@ -40,9 +40,9 @@ class Department < ApplicationRecord
   def self.to_select(only: nil)
     list = if only
               Department.find_by code: only
-            else
+           else
               Department.all.map
-            end
+           end
     list.map { |d| ["#{d.code} - #{d.name}", d.name] }.sort
   end
 

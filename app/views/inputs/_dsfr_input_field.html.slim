@@ -6,6 +6,9 @@
 - pattern ||= ''
 - title ||= ''
 - type ||= 'text'
+- disabled ||= false
+- readonly ||= false
+- name ||= "#{f.object_name}[#{field}]"
 - value = value || (object.send(field) if object)
 - options ||= {}
 - if object&.errors.blank?
@@ -17,16 +20,21 @@
       = f.rg2a_required_content_tag if required
     - unless hint.blank?
       .text-muted.fr-mb-4v = hint
-    = f.send(field_type, field, class: "fr-input #{ hint.blank? ? "" : 'fr-mt-n2v'}",
-                          :'aria-describedby' => "text-input-valid-desc-valid",
-                          id: id,
-                          value: value,
-                          placeholder: placeholder,
-                          required: required,
-                          type: type,
-                          title: title,
-                          **(pattern.present? ? { pattern: pattern } : {}),
-                          **options)
+    = f.send(field_type,
+             field,
+             class: "fr-input #{ hint.blank? ? "" : 'fr-mt-n2v'}",
+             :'aria-describedby' => "text-input-valid-desc-valid",
+             id: id,
+             value: value,
+             placeholder: placeholder,
+             required: required,
+             disabled: disabled,
+             readonly: readonly,
+             type: type,
+             name: name,
+             title: title,
+             **(pattern.present? ? { pattern: pattern } : {}),
+             **options)
 - elsif object.errors[field].present?
   .fr-input-group.fr-input-group--error
     = f.label field,
@@ -36,16 +44,20 @@
       = f.rg2a_required_content_tag if required
     - unless hint.blank?
       .text-muted = hint
-    = f.send(field_type, field,
-                   class: "fr-input fr-input--error",
-                   :'aria-describedby' => "text-input-error-desc-error",
-                   id: id,
-                   value: value,
-                   required: required,
-                   type: type,
-                   title: title,
-                   **(pattern.present? ? { pattern: pattern } : {}),
-                   **options)
+    = f.send(field_type,
+             field,
+             class: "fr-input fr-input--error",
+             :'aria-describedby' => "text-input-error-desc-error",
+             id: id,
+             value: value,
+             required: required,
+             disabled: disabled,
+             readonly: readonly,
+             type: type,
+             name: name,
+             title: title,
+             **(pattern.present? ? { pattern: pattern } : {}),
+             **options)
     p.fr-error-text id="text-input-error-desc-error-#{field}"
       - field_name = t("activerecord.attributes.#{object.class.name.underscore}.#{field}")
       = "#{field_name} : #{object.errors[field].map(&:downcase).join(', ').html_safe}"
@@ -64,7 +76,9 @@
                    id: id,
                    value: value,
                    type: type,
+                   name: name,
                    required: required,
-                   title: title,
+                   disabled: disabled,
+                   readonly: readonly,
                    **(pattern.present? ? { pattern: pattern } : {}),
                    **options)

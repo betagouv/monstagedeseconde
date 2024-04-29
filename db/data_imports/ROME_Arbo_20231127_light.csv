@@ -1,0 +1,206 @@
+craft_field;craft;detailed_craft;name;Code OGR
+A; ; ;Agriculture et Pêche, Espaces naturels et Espaces verts, Soins aux animaux; 
+A;11; ;Engins agricoles et forestiers; 
+A;11;1;Conduite d'engins agricoles et forestiers; 
+A;11;1;Chauffeur / Chauffeuse de machines agricoles;11987
+A;11;1;Conducteur / Conductrice d'abatteuses;12862
+A;11;1;Conducteur / Conductrice d'automoteur de récolte;38874
+A;11;1;Conducteur / Conductrice d'engins d'exploitation agricole;13254
+A;11;1;Conducteur / Conductrice d'engins d'exploitation forestière;13255
+A;11;1;Conducteur / Conductrice d'engins de débardage;13248
+A;11;1;Conducteur / Conductrice d'engins forestiers;13256
+A;11;1;Conducteur / Conductrice d'épareuse;38877
+A;11;1;Conducteur / Conductrice de machines à vendanger;13232
+A;11;1;Conducteur / Conductrice de matériels de semis;38878
+A;11;1;Conducteur / Conductrice de pulvérisateur;38875
+A;11;1;Conducteur / Conductrice de tête d'abattage;13197
+A;11;1;Conducteur / Conductrice de tracteur;13201
+A;11;1;Conducteur / Conductrice de tracteur enjambeur;140877
+A;11;1;Conducteur / Conductrice de tracto-benne;38879
+A;11;1;Débardeur / Débardeuse;13886
+A;11;1;Débardeur forestier / Débardeuse forestière;13887
+A;11;1;Opérateur / Opératrice d'abatteuse;17055
+A;11;1;Opérateur / Opératrice d'épandage;38876
+A;11;1;Pilote de machines d'abattage;17751
+A;11;1;Tractoriste agricole;20404
+A;11;1;Tractoriste forestier / Tractoriste forestière;20405
+A;12; ;Espaces naturels et espaces verts; 
+A;12;1;Bûcheronnage et élagage; 
+A;12;1;Arboriste;11105
+A;12;1;Arboriste grimpeur / grimpeuse;11106
+A;12;1;Bûcheron / Bûcheronne;11606
+A;12;1;Bûcheron élagueur / Bûcheronne élagueuse;11607
+A;12;1;Charbonnier / Charbonnière;11740
+A;12;1;Commis / Commise de coupe;12755
+A;12;1;Éhouppeur / Éhouppeuse;14607
+A;12;1;Élagueur / Élagueuse;14608
+A;12;1;Élagueur / Élagueuse espaces verts;14609
+A;12;1;Élagueur-botteur / Élagueuse-botteuse;14610
+A;12;1;Élagueur-grimpeur / Élagueuse-grimpeuse;14611
+A;12;1;Grimpeur-élagueur / Grimpeuse-élagueuse;15429
+A;12;1;Homme / Femme de pied;38435
+A;12;1;Ouvrier / Ouvrière d'exploitation forestière;17483
+A;12;2;Entretien des espaces naturels; 
+A;12;2;Agent / Agente d'aménagement des circuits pédestres, équestres et Vtt;10382
+A;12;2;Agent / Agente d'aménagement des haies et fossés;10383
+A;12;2;Agent / Agente d'entretien de l'espace rural;10667
+A;12;2;Agent / Agente d'entretien de la nature;10664
+A;12;2;Agent / Agente d'entretien des espaces naturels;10673
+A;12;2;Agent / Agente d'entretien des rivières;10677
+A;12;2;Agent / Agente d'entretien nature du littoral;10685
+A;12;2;Agent / Agente d'entretien nature et biodiversité;38323
+A;12;2;Chef d'équipe d'entretien d'espaces naturels;12440
+A;12;2;Ouvrier / Ouvrière d'entretien des espaces naturels;17474
+A;12;2;Ouvrier / Ouvrière de génie écologique;200080
+A;12;3;Aménagement et entretien des espaces verts; 
+A;12;3;Agent / Agente d'entretien des parcs et jardins;10675
+A;12;3;Aide jardinier / jardinière;38436
+A;12;3;Chef d'équipe d'entretien des espaces verts;12439
+A;12;3;Chef d'équipe paysagiste;12482
+A;12;3;Jardinier / Jardinière;16067
+A;12;3;Jardinier / Jardinière d'espaces verts;16068
+A;12;3;Jardinier / Jardinière paysagiste;16069
+A;12;3;Manoeuvre des espaces verts;38437
+A;12;3;Ouvrier / Ouvrière d'entretien des espaces verts;17475
+A;12;3;Ouvrier / Ouvrière des espaces verts;17480
+A;12;3;Ouvrier / Ouvrière du paysage;17487
+A;12;3;Ouvrier / Ouvrière paysagiste;17515
+A;12;3;Technicien / Technicienne paysagiste;38077
+A;12;4;Protection du patrimoine naturel; 
+A;12;4;Agent / Agente technique des parcs nationaux;10780
+A;12;4;Agent chargé / Agente chargée de protection et de sauvegarde du patrimoine naturel;10358
+A;12;4;Éco garde;14562
+A;12;4;Garde-chasse;15205
+A;12;4;Garde-chasse particulier / particulière;15206
+A;12;4;Garde de parc naturel;15195
+A;12;4;Garde du littoral;15198
+A;12;4;Garde forestier / forestière;15199
+A;12;4;Garde moniteur / monitrice de parc national;15200
+A;12;4;Garde moniteur / monitrice de parc naturel;15201
+A;12;4;Garde national / nationale de la chasse et de la faune sauvage;15202
+A;12;4;Garde-pêche;15208
+A;12;4;Garde-rivière;15210
+A;12;4;Garde technicien / technicienne de réserve naturelle;15204
+A;12;4;Observateur / Observatrice des pêches;200100
+A;12;4;Technicien / Technicienne cynégétique;19706
+A;12;4;Technicien / Technicienne de rivière;38379
+A;12;5;Sylviculture; 
+A;12;5;Agent / Agente de maîtrise d'exploitation forestière;10514
+A;12;5;Agent technique forestier / Agente technique forestière;10795
+A;12;5;Chef d'équipe de travaux forestiers;38438
+A;12;5;Chef de district forestier;12136
+A;12;5;Conducteur / Conductrice de travaux forestiers;38439
+A;12;5;Contremaître / Contremaîtresse d'exploitation forestière;13572
+A;12;5;Exploitant forestier / Exploitante forestière;15010
+A;12;5;Forestier / Forestière;15109
+A;12;5;Manoeuvre forestier / forestière;16353
+A;12;5;Ouvrier forestier / Ouvrière forestière;17502
+A;12;5;Ouvrier sylvicole / Ouvrière sylvicole;17536
+A;12;5;Ouvrier sylviculteur / Ouvrière sylvicultrice;17537
+A;12;5;Populiculteur / Populicultrice;17889
+A;12;5;Sylviculteur / Sylvicultrice;19606
+A;13; ;Etudes et assistance technique; 
+A;13;1;Conseil et assistance technique en agriculture et environnement naturel; 
+A;13;1;Animateur / Animatrice agricole;10972
+A;13;1;Animateur / Animatrice d'organismes agricoles;11050
+A;13;1;Conseiller / Conseillère agricole;13350
+A;13;1;Conseiller / Conseillère d'agriculture;13386
+A;13;1;Conseiller / Conseillère d'élevage en production laitière;13395
+A;13;1;Conseiller / Conseillère de gestion agricole;13388
+A;13;1;Conseiller / Conseillère en génie climatique agricole;38324
+A;13;1;Conseiller / Conseillère en irrigation;13439
+A;13;1;Conseiller / Conseillère en machinisme agricole;13440
+A;13;1;Conseiller / Conseillère technique agricole;13481
+A;13;1;Conseiller / Conseillère viticole;13496
+A;13;1;Conseiller forestier / Conseillère forestière;13459
+A;13;1;Hydraulicien / Hydraulicienne en agriculture;15498
+A;13;1;Technicien / Technicienne arboricole;19657
+A;13;1;Technicien / Technicienne avicole;19667
+A;13;1;Technicien / Technicienne bâtiments d'élevage;19670
+A;13;1;Technicien / Technicienne bovin;19679
+A;13;1;Technicien / Technicienne caprin;19683
+A;13;1;Technicien / Technicienne cunicole;19705
+A;13;1;Technicien / Technicienne d'agriculture;19709
+A;13;1;Technicien / Technicienne d'élevage;19932
+A;13;1;Technicien / Technicienne d'expérimentation;19968
+A;13;1;Technicien / Technicienne de culture maraîchère;19743
+A;13;1;Technicien / Technicienne de génie écologique;200083
+A;13;1;Technicien / Technicienne de maintenance végétale;19875
+A;13;1;Technicien / Technicienne de production animale;19900
+A;13;1;Technicien / Technicienne des travaux forestiers;19953
+A;13;1;Technicien / Technicienne du génie rural;20019
+A;13;1;Technicien / Technicienne du génie sanitaire et environnement;20020
+A;13;1;Technicien / Technicienne en agriculture biologique;20036
+A;13;1;Technicien / Technicienne en alimentation animale;20037
+A;13;1;Technicien / Technicienne en fabrication fromagère;20066
+A;13;1;Technicien / Technicienne équin;20135
+A;13;1;Technicien / Technicienne horticole;20165
+A;13;1;Technicien / Technicienne ovin;20207
+A;13;1;Technicien / Technicienne porcin;20218
+A;13;1;Technicien / Technicienne semences;20252
+A;13;1;Technicien / Technicienne viticole;20286
+A;13;1;Technicien foncier / Technicienne foncière;20147
+A;13;1;Technicien foncier / Technicienne foncière en agriculture;20148
+A;13;1;Technicien forestier / Technicienne forestière;20149
+A;13;1;Technicien forestier / Technicienne forestière d'études et de recherche;20150
+A;13;1;Technicien laitier / Technicienne laitière;20179
+A;13;2;Contrôle et diagnostic technique en agriculture; 
+A;13;2;Agent / Agente de collecte d'embryons;10401
+A;13;2;Agent / Agente de production laitière;10566
+A;13;2;Agent / Agente sanitaire apicole;10754
+A;13;2;Agent / Agente sanitaire de l'agriculture;10755
+A;13;2;Agent / Agente technique agricole;10759
+A;13;2;Agent / Agente technique d'élevage;10778
+A;13;2;Agent / Agente technique en produits de traitement;10789
+A;13;2;Assistant / Assistante sanitaire apicole;11330
+A;13;2;Contrôleur / Contrôleuse de croissance de l'agriculture;13594
+A;13;2;Contrôleur / Contrôleuse de culture;13595
+A;13;2;Contrôleur / Contrôleuse de performance;13612
+A;13;2;Contrôleur / Contrôleuse viticole;13662
+A;13;2;Contrôleur laitier / Contrôleuse laitière;13642
+A;13;2;Contrôleur-pointeur / Contrôleuse-pointeuse;13665
+A;13;2;Inséminateur artificiel / Inséminatrice artificielle;15918
+A;13;2;Peseur laitier / Peseuse laitière;17673
+A;13;2;Technicien / Technicienne agricole;19652
+A;13;2;Technicien / Technicienne de contrôle de croissance de l'agriculture;19724
+A;13;2;Technicien / Technicienne de contrôle laitier;19736
+A;13;2;Technicien / Technicienne de production laitière;19917
+A;13;2;Technicien / Technicienne des services vétérinaires;19951
+A;13;3;Ingénierie en agriculture et environnement naturel; 
+A;13;3;Agro-économiste;10804
+A;13;3;Bio-ingénieur / Bio-ingénieure;11522
+A;13;3;Chargé / Chargée d'études agricoles;11896
+A;13;3;Chargé / Chargée d'études du patrimoine naturel;38762
+A;13;3;Chargé / Chargée d'études économiques en agriculture;11903
+A;13;3;Chargé / Chargée d'études en biodiversité;38761
+A;13;3;Chargé / Chargée d'études en développement agricole;11906
+A;13;3;Chargé / Chargée d'études en développement rural;11907
+A;13;3;Chargé / Chargée d'études environnement;11910
+A;13;3;Chargé / Chargée de mission biodiversité;38760
+A;13;3;Chargé / Chargée de mission en agriculture;11824
+A;13;3;Chargé / Chargée de recherche en agriculture;11861
+A;13;3;Expérimentateur / Expérimentatrice en agriculture;14931
+A;13;3;Expert / Experte cynégétique;14934
+A;13;3;Expert / Experte en aquaculture;14936
+A;13;3;Expert agricole et foncier / Experte agricole et foncière;14932
+A;13;3;Expert forestier / Experte forestière;14948
+A;13;3;Ingénieur / Ingénieure agro-environnement;15575
+A;13;3;Ingénieur / Ingénieure agro-halieute;15576
+A;13;3;Ingénieur / Ingénieure agronome;15577
+A;13;3;Ingénieur / Ingénieure arboricole;15583
+A;13;3;Ingénieur / Ingénieure d'études et de recherche agricoles;15711
+A;13;3;Ingénieur / Ingénieure des eaux et forêts;15682
+A;13;3;Ingénieur / Ingénieure des techniques forestières;15685
+A;13;3;Ingénieur / Ingénieure des travaux agricoles;15686
+A;13;3;Ingénieur / Ingénieure des travaux des eaux et forêts;15688
+A;13;3;Ingénieur / Ingénieure des travaux ruraux;15692
+A;13;3;Ingénieur / Ingénieure du génie rural;15723
+A;13;3;Ingénieur / Ingénieure du génie rural des eaux et forêts -IGREF-;15724
+A;13;3;Ingénieur / Ingénieure écologue;200081
+A;13;3;Ingénieur / Ingénieure en expérimentation animale;15760
+A;13;3;Ingénieur / Ingénieure en expérimentation végétale;15761
+A;13;3;Ingénieur / Ingénieure en techniques d'expérimentation animale;15788
+A;13;3;Ingénieur / Ingénieure halieute;15814
+A;13;3;Ingénieur / Ingénieure horticole;15815
+A;13;3;Ingénieur / Ingénieure méthanisation;200082
+A;13;3;Ingénieur / Ingénieure paysagiste;15852

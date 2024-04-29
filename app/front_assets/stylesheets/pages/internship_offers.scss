@@ -154,7 +154,8 @@ $sortLinkOffset: 15px;
 .grey-container-application{
   padding: 2rem;
 }
-.grey-container-application.with-grey-background{
+.grey-container-application.with-grey-background,
+.with-grey-background{
   background-color: var(--background-default-grey-hover);
 }
 
@@ -399,4 +400,16 @@ $sortLinkOffset: 15px;
       background-color: #e4e0f1;
     }
   }
+}
+
+.container-search {
+  position: relative;
+  min-height: 200px;
+}
+  
+.search-offers {
+  background-color: #fff;
+  position: absolute;
+  bottom: -100px;
+  width: 100%;
 }

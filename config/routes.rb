@@ -43,6 +43,12 @@ Rails.application.routes.draw do
     end
     resources :schools, path: 'ecoles',only: %i[new create ]
 
+    resources :coded_crafts, only: [] do
+      collection do
+        post :search
+      end
+    end
+
     resources :internship_offer_keywords, only: [] do
       collection do
         post :search
@@ -64,19 +70,29 @@ Rails.application.routes.draw do
         post :apply_count
       end
     end
+
+    resources :companies, path: 'entreprises', only: %i[index] do
+      collection do
+        get :search, path: 'recherche'
+      end
+    end
+
     resources :favorites, only: %i[create destroy index]
 
     namespace :api, path: 'api' do
       resources :internship_offers, only: %i[create update destroy index] do
-        collection do
-          get :search
-        end
+        get :search, on: :collection
       end
+
       resources :schools, only: [] do
         collection do
           post :nearby
           post :search
         end
+      end
+
+      resources :coded_crafts, only: [] do
+        get :search, on: :collection
       end
       resources :sectors, only: :index
     end
@@ -177,6 +193,7 @@ Rails.application.routes.draw do
   get '/politique-de-confidentialite', to: 'pages#politique_de_confidentialite'
   post '/newsletter', to: 'newsletter#subscribe'
   get '/inscription-permanence', to: 'pages#register_to_webinar'
+  get '/recherche-entreprises', to: 'pages#search_companies'
   # TODO
   # To be removed after june 2023
   get '/register_to_webinar', to: 'pages#register_to_webinar'

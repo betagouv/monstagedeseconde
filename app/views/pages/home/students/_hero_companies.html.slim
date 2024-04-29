@@ -1,0 +1,67 @@
+header.container-xl.px-0
+  - if browser.device.mobile?
+    / smart phone display
+    .container-monstage.container-xl.homepage.px-0
+      .row.fr-mt-4w.mx-0
+        .col-lg-12.col-md-12
+          .fr-h3.py-lg-3.py-md-2.py-sm-2.pt-xs-1.blue-france
+            |Pour les élèves de 2de générale et technologique, trouvez ici un stage de qualité
+
+      .search-bar.fr-mx-2w
+        .white-search-frame.mt-3.fr-mb-4w.mobile
+          = render partial: "companies/search_form_fields",
+                  locals: { render_as_partial: false,
+                            url: companies_path,
+                            default_values: params,
+                            form_id: :mobile_internship_offers_index_search_form }
+  - else
+    / desktop display
+    .container-monstage.container-xl.homepage.visible
+      .row
+        .col-lg-12.col-md-12
+          .d-flex.flex-row
+            .blue-france.sub-hero
+              .fr-h6.fr-mt-4w.fr-mb-1w.blue-france
+                | Élèves de 2de générale et technologique,
+              .div
+                h1.fr-h1.blue-france
+                  | Trouvez ici un stage de qualité
+
+            .fr-mr-2w.ml-auto.show-stamp-logo.d-none.d-md-block
+              = image_tag asset_pack_path('media/images/homepage/everyone/ms2e-stamp-medium.png'),
+                          alt: 'Logo stade de 2de générale et technologique',
+                          class: 'stamp-logo-medium fr-mt-5w fr-ml-4w'
+
+      .row.no-gutters.fr-py-2w.fr-mb-4w.d-none.d-sm-block.search-tabs-companies
+        .col-12
+          / internship_offers/search/form
+          .fr-tabs.visible
+            ul.fr-tabs__list role="tablist" aria-label="Rechercher"
+              li role="presentation"
+                = link_to eleves_path, class: "fr-tabs__tab", tabindex: "0", role: "tab", aria_controls: "offers-panel" do
+                  | Rechercher une offre de stage
+              li role="presentation"
+                button#offers.fr-tabs__tab aria-controls="enterprises-panel" aria-selected="true" role="tab" tabindex="0"  
+                  | Rechercher une entreprise
+
+            #offers-panel.fr-tabs__panel.fr-tabs__panel--selected role="tabpanel" aria-labelledby="offers-panel" tabindex="0"
+              .fr-tabs__content
+                .fr-tabs__content-item.active#offers-search-tab
+                  .row
+                    .col-12
+                      = render partial: "companies/search_form_fields",
+                                locals: { render_as_partial: true,
+                                          url: companies_path,
+                                          default_values: user_presenter.default_search_options,
+                                          form_id: :home_search_form }
+                                          
+        .actions.d-stick.d-md-none.p-2.fitting
+          = link_to internship_offers_path(current_user_or_visitor.default_search_options),
+                    class: 'fr-btn fr-icon-search-line fr-btn--icon-right fr-px-11w',
+                    data: { :"test-id" => 'mobile-search-button' }
+            = "Rechercher un stage"
+      .row
+        .col-12.fr-mt-2w
+
+
+

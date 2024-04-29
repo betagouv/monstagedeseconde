@@ -1,0 +1,46 @@
+.container-monstage-fluid-hero
+  header.container-xl.px-0
+    - if browser.device.mobile?
+      / smart phone display
+      / .container-monstage.container-xl.homepage.px-0
+      /   .row.fr-mt-4w.mx-0
+      /     .col-lg-12.col-md-12
+      /       .fr-h3.py-lg-3.py-md-2.py-sm-2.pt-xs-1.blue-france
+      /         |Pour les élèves de 2de générale et technologique, trouvez ici un stage de qualité
+
+      /   .search-bar.fr-mx-2w
+      /     .white-search-frame.mt-3.fr-mb-4w.mobile
+      /       = render partial: "internship_offers/search/form",
+      /               locals: { render_as_partial: false,
+      /                         url: internship_offers_path,
+      /                         default_values: params,
+      /                         form_id: :mobile_internship_offers_index_search_form }
+    - else
+      / desktop display
+      .container-monstage.container-xl.homepage.visible.container-search
+        .row
+          .col-lg-8.col-md-12
+            .d-flex.flex-row
+              .blue-france.sub-hero
+                .fr-h4.fr-mt-4w.fr-mb-1w.blue-france
+                  | Je recherche une entreprise pour réaliser mon stage de seconde générale et technologique
+
+        .row.no-gutters.fr-p-2w.d-none.d-sm-block.search-companies
+          .col-12
+            /companies
+            = render partial: "companies/search_form_fields",
+                      locals: { render_as_partial: true,
+                                url: companies_path,
+                                default_values: user_presenter.default_search_options,
+                                form_id: :home_search_form }
+            .actions.d-stick.d-md-none.p-2.fitting
+              = link_to internship_offers_path(current_user_or_visitor.default_search_options),
+                        class: 'fr-btn fr-icon-search-line fr-btn--icon-right fr-px-11w',
+                        data: { :"test-id" => 'mobile-search-buttonsss',
+                                :"mandatory-fields-target" => "disabledField" } do
+                = "Rechercher"
+        .row
+          .col-12.fr-mt-2w
+
+
+
