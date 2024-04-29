@@ -23,22 +23,13 @@ div.test-search-container.search-tab
       .form-group.mb-md-0.col-12.col-md.fr-mx-2w
         = form.label :radius_in_km, "Distance maximum", class: "fr-label font-weight-lighter"
         = form.select :radius_in_km,
-                      options_for_select((1..50).map { |i| ["#{i} km", i]}, params[:radius_in_km]),
-                      { include_blank: "Toutes les distances" },
+                      options_for_select((1..50).map { |i| ["#{i} km", i]}, params[:radius_in_km] || CompaniesController::DEFAULT_RADIUS_IN_KM),
+                      { },
                       class: "fr-select",
                       title: "Recherche par distance",
                       disabled: true,
                       :'aria-label' => "Recherche par distance",
                       :"data-mandatory-fields-target" => "disabledField"
-
-      / .form-group.fr-mb-0
-      /   .fr-mr-2w.d-none.d-sm-block
-      /     = form.button "Afficher les résultats",
-      /                   class: 'fr-btn fr-icon-search-line fr-btn--icon-right',
-      /                   id: 'test-mobile-submit-search',
-      /                   disabled: true,
-      /                   :"data-mandatory-fields-target" => "disabledField" do
-      /       span.mr-2 = "Rechercher"
 
       .pb-5
       - if render_as_partial || current_page?(recherche_entreprises_path)

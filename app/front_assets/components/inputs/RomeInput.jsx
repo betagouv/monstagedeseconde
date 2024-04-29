@@ -13,7 +13,7 @@ export default function RomeInput({
   const searchParams = new URLSearchParams(window.location.search);
   const [searchResults, setSearchResults] = useState([]);
   const [keyword, setKeyword] = useState(currentKeyword || searchParams.get('coded_crafts') || '');
-  const [ogrCode, setOgrCode] = useState('');
+  const [ogrCode, setOgrCode] = useState(searchParams.get('appellationCode') || '');
   const [keywordDebounced] = useDebounce(keyword, 200);
 
 const inputChange = (event) => {
