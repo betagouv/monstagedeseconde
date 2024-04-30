@@ -10,6 +10,7 @@
 - readonly ||= false
 - name ||= "#{f.object_name}[#{field}]"
 - value = value || (object.send(field) if object)
+- options ||= {}
 - if object&.errors.blank?
   .fr-input-group
     = f.label field,
@@ -31,8 +32,9 @@
              readonly: readonly,
              type: type,
              name: name,
+             title: title,
              **(pattern.present? ? { pattern: pattern } : {}),
-             title: title)
+             **options)
 - elsif object.errors[field].present?
   .fr-input-group.fr-input-group--error
     = f.label field,
@@ -53,8 +55,9 @@
              readonly: readonly,
              type: type,
              name: name,
+             title: title,
              **(pattern.present? ? { pattern: pattern } : {}),
-             title: title)
+             **options)
     p.fr-error-text id="text-input-error-desc-error-#{field}"
       - field_name = t("activerecord.attributes.#{object.class.name.underscore}.#{field}")
       = "#{field_name} : #{object.errors[field].map(&:downcase).join(', ').html_safe}"
@@ -78,4 +81,4 @@
                    disabled: disabled,
                    readonly: readonly,
                    **(pattern.present? ? { pattern: pattern } : {}),
-                   title: title)
+                   **options)

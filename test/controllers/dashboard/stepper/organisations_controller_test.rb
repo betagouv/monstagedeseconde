@@ -34,7 +34,7 @@ module Dashboard::Stepper
               zipcode: '75001',
               city: 'Paris',
               coordinates: { latitude: 1, longitude: 1 },
-              employer_description_rich_text: '<div><b>Activités de découverte</b></div>',
+              employer_description: 'Activités de découverte',
               is_public: group.is_public,
               group_id: group.id,
               employer_website: 'www.website.com',
@@ -49,7 +49,7 @@ module Dashboard::Stepper
       assert_equal '12 rue des bois - Batiment 1', created_organisation.street
       assert_equal '75001', created_organisation.zipcode
       assert_equal 'Paris', created_organisation.city
-      assert_equal 'Activités de découverte', created_organisation.employer_description_rich_text.to_plain_text.to_s
+      assert_equal 'Activités de découverte', created_organisation.employer_description
       assert_equal 'www.website.com', created_organisation.employer_website
       assert_equal employer.id, created_organisation.employer_id
       assert_equal true, created_organisation.is_public
@@ -100,7 +100,7 @@ module Dashboard::Stepper
               zipcode: '75001',
               city: 'Paris',
               coordinates: { latitude: 1, longitude: 1 },
-              employer_description_rich_text: '<div><b>Activités de découverte</b></div>',
+              employer_description: 'Activités de découverte',
               is_public: group.is_public,
               group_id: group.id,
               employer_website: 'www.website.com'
@@ -113,7 +113,7 @@ module Dashboard::Stepper
       assert_equal '12 rue des bois', created_organisation.street
       assert_equal '75001', created_organisation.zipcode
       assert_equal 'Paris', created_organisation.city
-      assert_equal 'Activités de découverte', created_organisation.employer_description_rich_text.to_plain_text.to_s
+      assert_equal 'Activités de découverte', created_organisation.employer_description
       assert_equal 'www.website.com', created_organisation.employer_website
       assert_equal statistician.id, created_organisation.employer_id
       assert_equal true, created_organisation.is_public
