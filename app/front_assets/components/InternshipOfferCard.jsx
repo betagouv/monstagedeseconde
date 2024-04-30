@@ -71,7 +71,9 @@ const InternshipOfferCard = ({
               }
             </div>
             <div className="fr-card__desc">
-              <div className="mr-auto blue-france fr-mb-6w">{internshipOffer.employer_name}</div>
+              {(internshipOffer.can_read_employer_name) &&
+                (<div className="mr-auto blue-france fr-mb-6w">{internshipOffer.employer_name}</div>)
+              }
             </div>
 
           </div>

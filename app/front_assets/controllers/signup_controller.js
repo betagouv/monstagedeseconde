@@ -25,6 +25,8 @@ export default class extends Controller {
     'schoolPhoneBloc',
     'departmentSelect',
     'ministrySelect',
+    'academySelect',
+    'academyRegionSelect',
     'length',
     'uppercase',
     'lowercase',
@@ -136,19 +138,62 @@ export default class extends Controller {
       $('#statistician-department').removeClass('d-none');
       this.departmentSelectTarget.required = true;
 
-      $('#statistician-ministry').addClass('d-none');
+      this.hideMinistrySelect();
+      this.hideAcademySelect();
+      this.hideAcademyRegionSelect();
+    } else if (ministryType == "MinistryStatistician") {
+      $('#statistician-ministry').removeClass('d-none');
       this.ministrySelectTarget.required = false;
       this.ministrySelectTarget.value = '';
-    } else {
-      $('#statistician-department').addClass('d-none');
-      this.departmentSelectTarget.required = false;
-      this.departmentSelectTarget.value = '';
 
-      $('#statistician-ministry').removeClass('d-none');
-      this.ministrySelectTarget.required = true;
+      this.hideDepartmentSelect();
+      this.hideAcademyRegionSelect();
+      this.hideAcademySelect();
+    } else if (ministryType == "AcademyStatistician") {
+      $('#statistician-academy').removeClass('d-none');
+      this.academySelectTarget.required = true;
+
+      this.hideMinistrySelect();
+      this.hideDepartmentSelect();
+      this.hideAcademyRegionSelect();
+    } else if (ministryType == "AcademyRegionStatistician") {
+      $('#statistician-academy-region').removeClass('d-none');
+      this.academyRegionSelectTarget.required = true;
+
+      this.hideMinistrySelect();
+      this.hideDepartmentSelect();
+      this.hideAcademySelect();
+    } else {
+      this.hideMinistrySelect();
+      this.hideDepartmentSelect();
+      this.hideAcademySelect();
+      this.hideAcademyRegionSelect();
     }
   }
 
+  hideMinistrySelect() {
+    $('#statistician-ministry').addClass('d-none');
+    this.ministrySelectTarget.required = false;
+    this.ministrySelectTarget.value = '';
+  }
+
+  hideDepartmentSelect() {
+    $('#statistician-department').addClass('d-none');
+    this.departmentSelectTarget.required = false;
+    this.departmentSelectTarget.value = '';
+  }
+
+  hideAcademySelect() {
+    $('#statistician-academy').addClass('d-none');
+    this.academySelectTarget.required = false;
+    this.academySelectTarget.value = '';
+  }
+
+  hideAcademyRegionSelect() {
+    $('#statistician-academy-region').addClass('d-none');
+    this.academyRegionSelectTarget.required = false;
+    this.academyRegionSelectTarget.value = '';
+  }
 
   checkPassword() {
     const password = this.passwordInputTarget.value;

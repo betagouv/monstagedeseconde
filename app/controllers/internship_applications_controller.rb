@@ -46,19 +46,21 @@ class InternshipApplicationsController < ApplicationController
     render 'internship_applications/show'
   end
 
-  # students can candidate for one internship_offer
+  # students can apply for one internship_offer
   def create
     set_internship_offer
     authorize! :apply, @internship_offer
 
     appli_params = {user_id: current_user.id}.merge(create_internship_application_params)
-    @internship_application = InternshipApplication.create!(appli_params)
-    redirect_to internship_offer_internship_application_path(@internship_offer,
+    appli_params = sanitizing_params(appli_params)
+    @internship_application = InternshipApplication.new(appli_params)
+    if @internship_application.save && save_missing_student_info(@internship_application.reload)
+      redirect_to internship_offer_internship_application_path(@internship_offer,
                                                              @internship_application)
-  rescue ActiveRecord::RecordInvalid => e
-    @internship_application = e.record
-    Rails.logger.error(e.message)
-    render 'new', status: :bad_request
+    else
+      Rails.logger.error(@internship_application.errors.full_messages)
+      render 'new', status: :bad_request
+    end
   end
 
   def completed
@@ -106,8 +108,7 @@ class InternshipApplicationsController < ApplicationController
       else
         target_path = edit_transfer_internship_offer_internship_application_path(@internship_application.internship_offer, @internship_application)
         flash_error_message = "Les adresses emails suivantes sont invalides : #{faulty_emails.join(', ')}" \
-                              ". Aucun transfert n'a été effectué, " \
-                              "aucun email n'a été émis."
+                              ". Aucun transfert n'a été effectué, aucun email n'a été émis."
         redirect_to(target_path, flash: { danger: flash_error_message }) and return
       end
     else
@@ -141,6 +142,20 @@ class InternshipApplicationsController < ApplicationController
               resume_languages
             ]
           )
+  end
+
+  def save_missing_student_info(internship_application)
+    student = internship_application.student
+    student.phone ||= internship_application.student_phone
+    student.email ||= internship_application.student_email
+    return true unless student.changed?
+    return false unless student.valid?
+    student.save
+  end
+
+  def sanitizing_params(appli_params)
+    phone = appli_params["student_phone"]&.gsub(/\s+/, '')
+    appli_params.merge!({"student_phone" => phone})
   end
 
   def check_transfer_destinations(destinations)

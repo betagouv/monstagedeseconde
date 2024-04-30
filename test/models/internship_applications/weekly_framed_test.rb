@@ -108,7 +108,7 @@ module InternshipApplications
     end
 
     test 'approving applications let some applications be canceled by student, when validated is one week long' do
-      student = create(:student)
+      student = create(:student, phone: '+330611223344')
       internship_offer_1 = create(:weekly_internship_offer, :week_1)
       internship_offer_2 = create(:weekly_internship_offer, :week_2)
       internship_offer_3 = create(:weekly_internship_offer, :full_time)
@@ -121,7 +121,7 @@ module InternshipApplications
     end
 
     test 'approving applications let some applications be canceled by student, when validated is two week long' do
-      student = create(:student)
+      student = create(:student, phone: '+330611223344')
       internship_offer_1 = create(:weekly_internship_offer, :week_1)
       internship_offer_2 = create(:weekly_internship_offer, :week_2)
       internship_offer_3 = create(:weekly_internship_offer, :full_time)

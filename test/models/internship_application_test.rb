@@ -448,4 +448,36 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       assert_equal internship_application_4, InternshipApplication.order_by_aasm_state_for_student.fifth
     end
   end
+
+  test '#check_contact_uniqueness with phone' do
+    phone_nr = '+330611223944'
+    student = create(:student, phone: phone_nr)
+    internship_application = create(:weekly_internship_application, student: student)
+    internship_application.student_phone = phone_nr
+    assert internship_application.valid?
+  end
+
+  test '#check_contact_uniqueness when phone_nr is used already' do
+    other_student_phone_nr = '+330611223344'
+    student = create(:student, phone: '+330611223945')
+    other_student = create(:student, phone: other_student_phone_nr)
+    internship_application = create(:weekly_internship_application, student: student)
+    internship_application.student_phone = other_student_phone_nr
+    refute internship_application.valid?
+  end
+
+  test '#check_contact_uniqueness with email' do
+    student = create(:student)
+    internship_application = create(:weekly_internship_application, student: student)
+    internship_application.student_email = student.email
+    assert internship_application.valid?
+  end
+
+  test '#check_contact_uniqueness when email is used already' do
+    student = create(:student)
+    other_student = create(:student)
+    internship_application = create(:weekly_internship_application, student: student)
+    internship_application.student_email = other_student.email
+    refute internship_application.valid?
+  end
 end

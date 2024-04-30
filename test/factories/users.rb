@@ -1,6 +1,8 @@
 # frozen_string_literal: true
-
 FactoryBot.define do
+  sequence(:phone) do |n|
+    n.even? ? "+330637#{n.to_s.rjust(6,"0")}" :  "+2620612#{n.to_s.rjust(6,"0")}"
+  end
   factory :user do
     first_name { FFaker::NameFR.first_name.capitalize }
     last_name { FFaker::NameFR.last_name.capitalize }
@@ -28,6 +30,10 @@ FactoryBot.define do
         gender { 'm' }
       end
 
+      trait :when_applying do
+        phone
+      end
+
       trait :female do
         gender { 'f' }
       end
@@ -38,7 +44,11 @@ FactoryBot.define do
 
       trait :registered_with_phone do
         email { nil }
-        phone { '+330637607756' }
+        phone
+      end
+
+      trait :with_phone do
+        phone
       end
 
       factory :student_with_class_room_3e, class: 'Users::Student', parent: :student do
@@ -55,7 +65,7 @@ FactoryBot.define do
             parent: :user do
       type { 'Users::Employer' }
       employer_role { 'PDG' }
-      
+
       after(:create) do |employer|
         unless employer.current_area
           new_area = create(:internship_offer_area, employer: employer)
@@ -74,7 +84,7 @@ FactoryBot.define do
       type { 'Users::SchoolManagement' }
       role { Users::SchoolManagement.roles[:school_manager] }
 
-      sequence(:email) { |n| "ce.#{"%07d" % n}X@#{school.email_domain_name}" }
+      sequence(:email) { |n| "ce.#{"%07d" % n}#{('a'..'z').to_a.sample}@#{school.email_domain_name}" }
     end
 
     factory :main_teacher, class: 'Users::SchoolManagement', parent: :user do
@@ -175,6 +185,24 @@ FactoryBot.define do
           employer.save
         end
       end
+    end
+
+    factory :academy_statistician,
+            parent: :user,
+            class: 'Users::AcademyStatistician' do
+      type { 'Users::AcademyStatistician' }
+      agreement_signatorable { false }
+      statistician_validation { true }
+      academy { create(:academy) }
+    end
+
+    factory :academy_region_statistician,
+            parent: :user,
+            class: 'Users::AcademyRegionStatistician' do
+      type { 'Users::AcademyRegionStatistician' }
+      agreement_signatorable { false }
+      statistician_validation { true }
+      academy_region { create(:academy_region) }
     end
 
     # user_operator gets its offer_area created by callback

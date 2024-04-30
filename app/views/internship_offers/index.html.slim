@@ -1,16 +1,43 @@
 - content_for(:canonical_url, params[:page] ? internship_offers_url(page: params[:page]) : internship_offers_url)
 
 - content_for(:custom_header) do
-  .position-sticky.sticky-top.wrapper-sticky-with-offset.search-bar.d-none.d-sm-block
-    .container-monstage
+  
+  .container-monstage-fluid-hero
+    .container-monstage.homepage.visible.container-search.d-none.d-sm-block
       .row
+        .col-lg-8.col-md-12
+          .d-flex.flex-row
+            .blue-france.sub-hero
+              .fr-h4.fr-mt-4w.fr-mb-1w.blue-france
+                | Je recherche une offre de stage de seconde générale et technologique
+      .row.no-gutters.search-offers
         .col-12
-          .fr-py-2w
+          .search-offer-bloc.fr-p-2w.d-none.d-sm-block
             = render partial: "internship_offers/search/form",
-                              locals: { render_as_partial: true,
-                                        url: internship_offers_path,
-                                        default_values: params,
-                                        form_id: :desktop_internship_offers_index_search_form }
+                            locals: { render_as_partial: true,
+                                      url: internship_offers_path,
+                                      default_values: params,
+                                      form_id: :desktop_internship_offers_index_search_form }
+
+          div
+            - text = "De nouvelles offres sont proposées chaque jour, revenez régulièrement pour trouver celle qui vous convient."
+            / mobile banner
+            .fr-hidden-sm.mobile
+              / = render 'layouts/more_offers_to_come_banner'
+              .fr-sm-mx-2w.fr-md-mx-0
+                .fr-notice.fr-notice--info
+                  .fr-container
+                    .fr-notice__body
+                      p.fr-notice__title.title-banner
+                        = text
+            /desktop banner
+            .fr-hidden.fr-unhidden-sm
+              .fr-sm-mx-2w.fr-md-mx-0
+                .fr-notice.fr-notice--info
+                  .fr-container
+                    .fr-notice__body.fr-mx-3v
+                      p.fr-notice__title.title-banner
+                        = text
 
 .actions.d-flex.d-stick.d-md-none.py-2
   = link_to search_internship_offers_path(params.permit(:city, :latitude, :longitude, :radius, :keyword, :period)),
@@ -18,26 +45,10 @@
             title: "Lancer la recherche",
             data: { :"test-id" => 'mobile-search-button' }
     = search_button_label
-- text = "De nouvelles offres sont proposées chaque jour, revenez régulièrement pour trouver celle qui vous convient."
-/ mobile banner
-.container-monstage-fluid.fr-hidden-sm.mobile
-  / = render 'layouts/more_offers_to_come_banner'
-  .ffr-sm-mx-2w.ffr-md-mx-0
-    .fr-notice.fr-notice--info
-      .fr-container
-        .fr-notice__body
-          p.fr-notice__title.title-banner
-            = text
-/desktop banner
-.container-monstage-fluid.fr-hidden.fr-unhidden-sm
-  .fr-sm-mx-2w.fr-md-mx-0
-    .fr-notice.fr-notice--info
-      .fr-container
-        .fr-notice__body.fr-mx-3v
-          p.fr-notice__title.title-banner
-            = text
-.fr-test-internship-offers-container
-  = react_component("InternshipOfferResults",
+
+.fr-test-internship-offers-container.with-grey-background.fr-pt-6w
+  .fr-pt-6w
+    = react_component("InternshipOfferResults",
                     props: { sectors: @sectors.to_a,
-                            params: @params})
+                            searchParams: @params})
 

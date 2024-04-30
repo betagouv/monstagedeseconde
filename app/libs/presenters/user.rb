@@ -107,6 +107,14 @@ module Presenters
         subtitle = "Vous êtes référent départemental du ministère " \
         "de l'éducation nationale et souhaitez accéder aux statistiques " \
         "relatives aux offres de stage de votre département."
+      when 'AcademyStatistician'
+        title = "Se créer un compte en tant que référent académique"
+        subtitle = "Vous êtes référent académique et souhaitez accéder " \
+        "aux statistiques relatives aux offres de stage de votre académie."
+      when 'AcademyRegionStatistician'
+        title = "Se créer un compte en tant que référent académique régional"
+        subtitle = "Vous êtes référent académique régional et souhaitez " \
+        "accéder aux statistiques relatives aux offres de stage de votre académie."
       when "SchoolManagement"
         title = "Se créer un compte en tant que gestionnaire d'établissement scolaire"
         subtitle = "Vous souhaitez que vos élèves trouvent un stage " \
@@ -125,7 +133,7 @@ module Presenters
         %i[employer_role email]
       when "SchoolManagement"
         %i[school email school_id class_room_id role ]
-      when 'MinistryStatistician', 'Statistician', 'EducationStatistician'
+      when 'MinistryStatistician', 'Statistician', 'EducationStatistician', 'AcademyStatistician', 'AcademyRegionStatistician'
         %i[email]
       else
         []

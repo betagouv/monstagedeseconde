@@ -47,23 +47,20 @@ module Dashboard
           internship_application = InternshipApplication.from_sgid(params[:sgid])
           if internship_application.nil?
             flash_error_message = 'Le lien a expiré, veuillez vous identifier pour accéder à la candidature.'
-            path = dashboard_internship_offer_internship_application(
-              internship_application.internship_offer,
-              internship_application)
-            redirect_to path, flash: { danger: flash_error_message } and return
+            redirect_to root_path, flash: { danger: flash_error_message } and return
           else
             sign_in(internship_application.employer)
           end
+          authorize! :show, InternshipApplication
         elsif params[:token].present?
-          unless current_user || (params[:token].present? && @internship_application.access_token == params[:token])
+          unless current_user || authorize_through_token?
             redirect_to root_path, flash: { error: 'Vous n’avez pas accès à cette candidature' } and return
           end
+          # no authorization here
         else
           authenticate_user!
         end
-        authorize! :show, InternshipApplication
       end
-
 
       def school_details
         authorize! :index, InternshipApplication
@@ -118,8 +115,6 @@ module Dashboard
       def find_internship_offer
         @internship_offer = InternshipOffer.find(params[:internship_offer_id])
       end
-
-
     end
   end
 end

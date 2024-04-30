@@ -4,7 +4,7 @@ require "sti_preload"
 class InternshipOffer < ApplicationRecord
   PAGE_SIZE = 30
   EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT = 250
-  MAX_CANDIDATES_HIGHEST = 200
+  MAX_CANDIDATES_HIGHEST = 1_500
   TITLE_MAX_CHAR_COUNT = 150
   DESCRIPTION_MAX_CHAR_COUNT= 500
   PERIOD_LABELS = {
@@ -53,8 +53,6 @@ class InternshipOffer < ApplicationRecord
 
   accepts_nested_attributes_for :organisation, allow_destroy: true
 
-  has_rich_text :employer_description_rich_text
-
    # Callbacks
   after_initialize :init
 
@@ -102,6 +100,9 @@ class InternshipOffer < ApplicationRecord
 
   validate :check_missing_seats, if: :user_update?, on: :update
   validates :period, inclusion: { in: [0, 1, 2] }
+  validates :max_candidates, numericality: { only_integer: true,
+                                             greater_than: 0,
+                                             less_than_or_equal_to: InternshipOffer::MAX_CANDIDATES_HIGHEST }
 
   # Scopes
 
@@ -376,7 +377,7 @@ class InternshipOffer < ApplicationRecord
                     is_public group school_id coordinates first_date last_date
                     siret employer_manual_enter internship_offer_area_id
                     contact_phone internship_offer_info_id organisation_id tutor_id
-                    weekly_hours daily_hours lunch_break]
+                    weekly_hours daily_hours lunch_break employer_description]
 
     internship_offer = generate_offer_from_attributes(white_list)
     organisation = self.organisation.dup
@@ -389,7 +390,7 @@ class InternshipOffer < ApplicationRecord
                     tutor_name tutor_phone tutor_email tutor_role employer_website
                     employer_name is_public group school_id coordinates
                     first_date last_date siret employer_manual_enter
-                    internship_offer_area_id
+                    internship_offer_area_id employer_description
                     internship_offer_info_id organisation_id tutor_id
                     weekly_hours daily_hours]
 
@@ -426,11 +427,6 @@ class InternshipOffer < ApplicationRecord
                                               else
                                                 description
                                               end)
-    internship_offer.employer_description_rich_text = (if employer_description_rich_text.present?
-                                                         employer_description_rich_text.to_s
-                                                       else
-                                                         employer_description
-                                                       end)
     internship_offer
   end
 
@@ -551,17 +547,6 @@ class InternshipOffer < ApplicationRecord
 
   def user_update?
     user_update == "true"
-  end
-
-  def period_label_date_range
-    case period
-    when 0 #full_time
-      "Du 17 au 28 juin 2024"
-    when 1 #week_1
-      "Du 17 au 21 juin 2024"
-    when 2 #week_2
-      "Du 24 au 28 juin 2024"
-    end
   end
 
   protected

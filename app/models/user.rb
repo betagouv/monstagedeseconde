@@ -39,7 +39,9 @@ class User < ApplicationRecord
   validates :first_name, :last_name,
             presence: true
   validates :phone, uniqueness: { allow_blank: true },
-                    format: { with: /\A\+\d{2,3}0(6|7)\d{8}\z/, message: 'Veuillez modifier le numéro de téléphone mobile' },
+                    format: {
+                      with: /\A\+(33|262|594|596|687|689)0(6|7)\d{8}\z/,
+                      message: 'Veuillez modifier le numéro de téléphone mobile' },
                     allow_blank: true
 
   validates :email, uniqueness: { allow_blank: true },
@@ -160,16 +162,16 @@ class User < ApplicationRecord
   end
 
   def self.sanitize_mobile_phone_number(number, prefix = '')
-    return if number.blank?
+    return "" if number.blank?
 
     thin_number = number.gsub(/[\s|;\,\.\:\(\)]/, '')
-    if thin_number.match?(/\A\+330[6|7]\d{8}\z/)
+    if thin_number.match?(/\A\+(33|262|594|596|687|689)0[6|7]\d{8}\z/)
       "#{prefix}#{thin_number[4..]}"
-    elsif thin_number.match?(/\A\+33[6|7]\d{8}\z/)
+    elsif thin_number.match?(/\A\+(33|262|594|596|687|689)[6|7]\d{8}\z/)
       "#{prefix}#{thin_number[3..]}"
-    elsif thin_number.match?(/\A33[6|7]\d{8}\z/)
+    elsif thin_number.match?(/\A(33|262|594|596|687|689)[6|7]\d{8}\z/)
       "#{prefix}#{thin_number[2..]}"
-    elsif thin_number.match?(/\A330[6|7]\d{8}\z/)
+    elsif thin_number.match?(/\A(33|262|594|596|687|689)0[6|7]\d{8}\z/)
       "#{prefix}#{thin_number[3..]}"
     elsif thin_number.match?(/\A0[6|7]\d{8}\z/)
       "#{prefix}#{thin_number[1..]}"
@@ -240,6 +242,9 @@ class User < ApplicationRecord
   def statistician? ; false end
   def department_statistician? ; false end
   def ministry_statistician? ; false end
+  def academy_statistician? ; false end
+  def academy_region_statistician? ; false end
+  def education_statistician? ; false end
   def student? ; false end
   def employer? ; false end
   def operator? ; false end

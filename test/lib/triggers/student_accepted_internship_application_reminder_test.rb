@@ -7,7 +7,7 @@ module Triggers
     include ActiveJob::TestHelper
 
     setup do
-      @student = create(:student)
+      @student = create(:student, phone: '+5940611223344')
       @reminder_service = Triggers::StudentAcceptedInternshipApplicationReminder.new
     end
 
@@ -23,6 +23,7 @@ module Triggers
         @reminder_service.enqueue_all
       end
     end
+
     test '.enqueue_all does not queue not queues job ' \
          'when internship_application are not validated_by_employer only' do
       internship_application = create(

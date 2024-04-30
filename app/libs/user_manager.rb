@@ -11,7 +11,9 @@ class UserManager
     'Statistician' => Users::Statistician,
     'PrefectureStatistician' => Users::PrefectureStatistician,
     'MinistryStatistician' => Users::MinistryStatistician,
-    'EducationStatistician' => Users::EducationStatistician
+    'EducationStatistician' => Users::EducationStatistician,
+    'AcademyStatistician' => Users::AcademyStatistician,
+    'AcademyRegionStatistician' => Users::AcademyRegionStatistician
   }.freeze
 
   PRESENTERS = {
@@ -19,7 +21,9 @@ class UserManager
     "Users::PrefectureStatistician" => Presenters::PrefectureStatistician,
     "Users::EducationStatistician" => Presenters::PrefectureStatistician,
     "Users::God" => Presenters::God,
-    "Users::MinistryStatistician" => Presenters::MinistryStatistician
+    "Users::MinistryStatistician" => Presenters::MinistryStatistician,
+    'Users::AcademyStatistician' => Presenters::PrefectureStatistician,
+    'Users::AcademyRegionStatistician' => Presenters::PrefectureStatistician
   }
 
   # raises KeyError whe can't find expected role

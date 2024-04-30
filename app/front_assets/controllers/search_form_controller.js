@@ -25,4 +25,16 @@ export default class extends Controller {
     })
     clickEvent.preventDefault();
   }
+
+  connect() {
+    const observer = new MutationObserver(removeStyle);
+    observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['style'] });
+
+    function removeStyle() {
+      const tabs = document.querySelector('.fr-tabs');
+      if (tabs) {
+          tabs.style.removeProperty('--tabs-height');
+      }
+    }
+  }
 }

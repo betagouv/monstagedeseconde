@@ -1,6 +1,7 @@
 - has_white_bg = current_page?(root_path) || current_page?(internship_offers_path)
 div [class="test-search-container #{has_white_bg ? 'search-container fr-pt-2w' : ''} #{render_as_partial ? 'd-none d-md-block rounded-6' : ''}"
-     data-controller='search-form search-popover search-week-checkboxes']
+     data-controller='search-form search-popover']
+  /  TODO : full remove search-week-checkboxes
   = form_with url: url,
               method: :get,
               skip_enforcing_utf8: true,
@@ -21,10 +22,10 @@ div [class="test-search-container #{has_white_bg ? 'search-container fr-pt-2w' :
 
       .form-group.mb-md-0.col-12.col-md.fr-ml-2w
         = react_component("CityInput",
-                          props: { city: default_values[:city],
-                                   latitude: default_values[:latitude],
-                                   longitude: default_values[:longitude],
-                                   radius: default_values[:radius],
+                          props: { city: params[:city],
+                                   latitude: params[:latitude],
+                                   longitude: params[:longitude],
+                                   radius: params[:radius],
                                    whiteBg: has_white_bg } )
 
       .form-group.mb-md-0.col-12.col-md.fr-ml-2w

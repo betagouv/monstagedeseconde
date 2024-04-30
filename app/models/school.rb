@@ -10,6 +10,7 @@ class School < ApplicationRecord
   has_many :internship_applications, through: :students
   has_many :internship_agreements, through: :internship_applications
   has_many :dedicated_internship_offers, foreign_key: :school_id, dependent: :nullify, class_name: 'InternshipOffer'
+  belongs_to :department, optional: true
 
   has_rich_text :agreement_conditions_rich_text
 
@@ -73,11 +74,11 @@ class School < ApplicationRecord
       field :id
       field :name
       field :visible
-      field :kind
+      field :code_uai
       field :address do
         pretty_value do
           school = bindings[:object]
-          "#{school.city} – CP #{school.zipcode} (#{school.department})"
+          "#{school.city} – CP #{school.zipcode} (#{school.department.name})"
         end
       end
       field :school_manager
@@ -177,7 +178,7 @@ class School < ApplicationRecord
   end
 
   def email_domain_name
-    Academy.get_email_domain(Academy.lookup_by_zipcode(zipcode: zipcode))
+    department.academy.email_domain
   end
 
   private
