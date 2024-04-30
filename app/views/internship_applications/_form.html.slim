@@ -18,12 +18,19 @@
     .form-group
       = f.label :period, class: 'fr-label fr-hint', for: 'internship_application_period'
         | Période de stage
-      = f.select :period, options_for_select(InternshipOffer.period_collection, @internship_application.internship_offer.period), { prompt: 'Choisissez une période' }, class: "fr-select", disabled: true
+      = f.select :period,
+                 options_for_select(InternshipOffer.period_collection,
+                 @internship_application.internship_offer.period),
+                 { prompt: 'Choisissez une période' },
+                 class: "fr-select", disabled: true
     div class="form-group"
       = f.label :motivation,
                 class: 'fr-label',
-                for: 'internship_application_motivation', 'data-controller' => "rich-text-label", 'data-rich-text-label-for-value' => "internship_application_motivation", 'data-rich-text-label-enable-value' => ""
-        | Pourquoi ce stage me motive
+                for: 'internship_application_motivation',
+                'data-controller' => "rich-text-label",
+                'data-rich-text-label-for-value' => "internship_application_motivation",
+                'data-rich-text-label-enable-value' => ""
+        | Pourquoi ce stage me motive 
         = f.rg2a_required_content_tag
         small.form-text.text-muted Relisez-vous pour éviter les fautes.
       = f.rich_text_area :motivation, class: "fr-input col-12", required: true, rows: 5

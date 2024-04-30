@@ -15,3 +15,8 @@
   background-color: $custom_cyan;
   color: $blue;
 }
+.fr-alert--sm{
+  &::before{
+      margin: 0.2rem 0 0 0.5rem;
+  }
+}

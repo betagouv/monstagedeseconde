@@ -67,7 +67,7 @@ module Dashboard::Stepper
               :city,
               :siret,
               :manual_enter,
-              :employer_description_rich_text,
+              :employer_description,
               :employer_website,
               :is_public,
               :group_id,

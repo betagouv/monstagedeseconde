@@ -11,10 +11,12 @@ class SchoolsController < ApplicationController
   def create
     authorize! :new, School
     @school = School.new(school_params)
+    department =  Department.fetch_by_zipcode(zipcode: @school.zipcode)
+    @school.department = department
     if @school.save
       redirect_to rails_admin_path, flash: { success: 'Etablissement créé !' }
     else
-      flash[:error] = 'Erreur lors de la validation des informations'
+      flash[:error] = "Erreur lors de la validation des informations : #{@school.errors.full_messages}"
       render :new
     end
   end
