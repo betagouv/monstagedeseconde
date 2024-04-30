@@ -34,6 +34,7 @@
                                 class: 'fr-input',
                                 placeholder: 'Mon code SIRET',
                                 required: true,
+                                pattern: '[0-9]{14}',
                                 data: { "organisation-form-target": "organisationSiret", 'target': 'organisation-form.requiredField' }
 
             = react_component("FullAddressInput",
