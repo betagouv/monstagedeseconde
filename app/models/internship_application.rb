@@ -80,7 +80,6 @@ class InternshipApplication < ApplicationRecord
 
   scope :expirable, lambda {
     simple_duration = InternshipApplication::EXPIRATION_DURATION
-    extended_duration = simple_duration + InternshipApplication::EXTENDED_DURATION
     expiration_not_extended_states.where('submitted_at < :date', date: simple_duration.ago)
   }
 

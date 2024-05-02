@@ -384,6 +384,7 @@ fr:
         group_name: Groupe ou institution
         school: Établissement réservé
         school_year: Année
+        siret: Siret
         internship_applications: Candidatures
         ministries: Ministères
         contact_name: Nom du contact
