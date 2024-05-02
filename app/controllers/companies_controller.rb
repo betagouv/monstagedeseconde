@@ -1,5 +1,6 @@
 class CompaniesController < ApplicationController
-  layout 'search'
+  layout 'search', only: :index
+
   DEFAULT_RADIUS_IN_KM = 10
   MAXIMUM_CODES_IN_LIST = 70
 
@@ -17,6 +18,23 @@ class CompaniesController < ApplicationController
     else
       @companies = reject_missing_location_id fetch_companies(parameters)
     end
+  end
+
+  def show
+    puts "Params: #{params}"
+    # create stub object 
+
+    
+    @company = params
+    @company.merge!(contact_message: contact_message)
+    #   siret: params[:siret], 
+    #   id: params[:id], appellation_code: params[:appellation_code], address: params[:address], name: params[:name], appelation_name: params[:appelation_name] }
+    # @company = Presenters::Company.new(company)
+  end
+
+  def contact
+    # send contact message to company
+    Services::SendContactImmersionFacilite.new(params).perform
   end
 
   private
@@ -53,5 +71,17 @@ class CompaniesController < ApplicationController
 
   def reject_missing_location_id(companies)
     companies.reject { |company| company['locationId'].blank? }
+  end
+
+  def contact_message
+    "Bonjour,J’ai identifié votre entreprise sur le module Stages de 2de générale et technologique "\
+    "du ministère de l’éducation nationale (plateforme 1 jeune 1 solution). Immersion Facilitée a "\
+    "en effet signalé que vous êtes disposés à accueillir des élèves de seconde générale et "\
+    "technologique pour leur séquence d’observation en milieu professionnel entre le 17 et "\
+    "le 28 juin 2024.***Rédigez ici votre email de motivation.***Pourriez-vous me contacter "\
+    "par mail ou par téléphone pour échanger sur mon projet de découverte de vos métiers ? "\
+    "Vous trouverez sur cet URL le modèle de convention à utiliser : "\
+    "https://www.education.gouv.fr/sites/default/files/ensel643_annexe1.pdf "\
+    "Avec mes remerciements anticipés."
   end
 end
