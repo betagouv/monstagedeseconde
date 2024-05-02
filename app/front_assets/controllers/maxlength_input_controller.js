@@ -1,11 +1,14 @@
+// TODO remove this component when trix components are outerHeight
 import $ from 'jquery';
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
-  static targets = ['trixElement', 'trixElementCharCount','maxLengthMessage'];
+  static targets = ['trixElement', 'trixElementCharCount', 'maxLengthMessage'];
+
   static values = {
     limit: Number
   }
+
   connect() {
     const limit = this.limitValue;
     const $trixElementCharCount = $(this.trixElementCharCountTarget);

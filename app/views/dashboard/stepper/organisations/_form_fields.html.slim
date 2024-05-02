@@ -5,7 +5,6 @@
         fieldset  aria-labelledby="organisation-name-legend"
           legend.fr-text--lg.font-weight-bold.fr-my-2w
             = current_user.ministry_statistician? ? "Votre administration" : "L'entreprise"
-          /  L'entreprise
           = form.hidden_field :manual_enter, value: false
           = form.hidden_field :employer_id, value: current_user.id
           - if resource.id
@@ -34,6 +33,7 @@
                                 class: 'fr-input',
                                 placeholder: 'Mon code SIRET',
                                 required: true,
+                                pattern: '[0-9]{14}',
                                 data: { "organisation-form-target": "organisationSiret", 'target': 'organisation-form.requiredField' }
 
             = react_component("FullAddressInput",
@@ -62,8 +62,8 @@
                   = form.label :is_public_false, 'Privée', class: 'fr-label'
 
               div.fr-messages-group#radio-hint-messages aria-live="assertive"
-        
-        div#organisation-group [class="form-group form-group-select-group fr-my-2w #{'d-none' if request.fullpath.include?('organisations/nouveau')}" data-organisation-form-target="groupBlock"]
+        - edit_mode = (@organisation.try(:persisted?) && @organisation.is_private?) || (@organisation.try(:employer_description).present? && @organisation.is_private?)
+        div#organisation-group [class="form-group form-group-select-group fr-my-2w #{'d-none' if request.fullpath.include?('organisations/nouveau') || edit_mode}" data-organisation-form-target="groupBlock"]
           .form-group.fr-my-2w
             = form.label :group_id,
                           "Institution de tutelle",
@@ -75,25 +75,27 @@
                           { prompt: '-- Choisissez votre ministère --' },
                           class: "fr-select",
                           data: {:"organisation-form-target" => 'selectGroupName'}
-                            
-  .row.bloc-tooggle class="#{'d-none' unless request.path_info.include?('modification')}"
+
+  .row.bloc-tooggle class=('d-none' if request.fullpath.include?('organisations/nouveau'))
     .col-md-6
+      - max_length = InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
       fieldset aria-labelledby="presentation"
         legend Présentation de l'entreprise
-      .form-group.fr-my-2w data-controller='maxlength-input' data-maxlength-input-limit-value="#{InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT}"
-        #label_organisation_description_rich_text.label.fr-label [data-rich-text-label-enable-value=true
-                                                                  data-rich-text-label-for-value="#{form.object_name} employer_description_rich_text"
-                                                                  data-controller="rich-text-label"]
-          | Description de l'entreprise (optionnel)
-        = form.rich_text_area :employer_description_rich_text,
-                              class: "fr-input col-12 col-lg-12",
-                              required: true,
-                              data: { :"maxlength-input-target" => 'trixElement' },
-                              aria: {labelledby: 'label_organisation_description_rich_text'},
-                              rows: 5
-        .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-maxlength-input-target="maxLengthMessage"
+      .form-group.fr-my-2w [data-controller='max-length-input'
+                            data-max-length-input-target="group"
+                            data-max-length-input-limit-value="#{max_length}"]
+        = render 'inputs/dsfr_input_field',
+                  f: form,
+                  field: :employer_description,
+                  label: 'Description de l’entreprise (optionnel)',
+                  aria: {labelledby: 'label_organisation_description'},
+                  required: true,
+                  title: 'description de l’entreprise',
+                  object: form.object,
+                  field_type: 'text_area'
+        .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
           |La description est trop longue
-        small.form-text data-maxlength-input-target="trixElementCharCount"
+        small.form-text data-max-length-input-target="charCount"
 
       .form-group.fr-my-2w
         = form.label :employer_website, class: 'fr-label' do
