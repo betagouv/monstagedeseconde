@@ -21,6 +21,8 @@ class CompaniesController < ApplicationController
   end
 
   def show
+    # redirect_to recherche_entreprises_path, notice: 'Votre message a bien été envoyé'
+
     puts "Params: #{params}"
     # create stub object 
 
@@ -33,8 +35,11 @@ class CompaniesController < ApplicationController
   end
 
   def contact
-    # send contact message to company
-    Services::SendContactImmersionFacilite.new(params).perform
+    if Services::SendContactImmersionFacilite.new(params).perform
+      redirect_to recherche_entreprises_path, notice: 'Votre message a bien été envoyé'
+    else
+      redirect_to recherche_entreprises_path, alert: "Une erreur est survenue lors de l'envoi de votre message"
+    end
   end
 
   private

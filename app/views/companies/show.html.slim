@@ -45,7 +45,7 @@
               | Cette entreprise a choisi d'être contactée par mail. 
               br
               | Veuillez compléter ce formulaire qui sera transmis à l'entreprise.
-          = form_tag contact_company_path(12), method: :post do |f|
+          = form_tag contact_company_path(12), method: :post, data: { turbo: false } do
             = hidden_field_tag :location_id,  @company[:id]
             = hidden_field_tag :siret, @company['siret']
             = hidden_field_tag :company_name, @company['name']
