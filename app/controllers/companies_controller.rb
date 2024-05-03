@@ -67,12 +67,12 @@ class CompaniesController < ApplicationController
 
   def filtered_companies(parameters)
     companies = fetch_companies(parameters)
-    companies = reject_missing_location_id(companies)
+    companies = reject_missing_location_id_and_wrong_contact_mode(companies)
     reject_companies_with_offers(companies)
   end
 
-  def reject_missing_location_id(companies)
-    companies.reject { |company| company['locationId'].blank? }
+  def reject_missing_location_id_and_wrong_contact_mode(companies)
+    companies.reject { |company| company['locationId'].blank? || company['contactMode'] != 'EMAIL' }
   end
 
   def contact_message
