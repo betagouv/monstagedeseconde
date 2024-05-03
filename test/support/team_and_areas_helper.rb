@@ -19,16 +19,21 @@ module TeamAndAreasHelper
     if employer_1.team.not_exists? || !employer_1.team.id_in_team?(employer_2.id)
       create_team(employer_1, employer_2)
     end
-    area = employer_1.current_area
-    employer_2.current_area = area
+    employer_2.current_area = employer_1.current_area
     employer_2.save
-    InternshipOfferArea.all.each do |area|
-      [employer_1, employer_2].each do |employer|
-        AreaNotification.find_or_create_by(user_id: employer.id, internship_offer_area_id: area.id, notify: true)
+    employers = [employer_1, employer_2]
+    InternshipOfferArea.where(employer_id: employers.map(&:id)).each do |area|
+      employers.each do |employer|
+        AreaNotification.find_or_create_by(
+          user_id: employer.id,
+          internship_offer_area_id: area.id,
+          notify: true)
       end
     end
 
-    create(:weekly_internship_offer,internship_offer_area_id: area.id, employer: employer_1)
+    create(:weekly_internship_offer,
+           internship_offer_area_id: employer_1.current_area.id,
+           employer: employer_1)
   end
 
   def create_employer_and_offer
@@ -46,8 +51,4 @@ module TeamAndAreasHelper
                     internship_offer_area: user_operator.current_area)
     [user_operator, offer]
   end
-
-  # def random_string
-  #   ('a'..'z').to_a.shuffle[0, 8].join
-  # end
 end

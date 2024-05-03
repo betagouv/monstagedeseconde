@@ -36,6 +36,8 @@ module Users
       'Mes offres'
     end
 
+    def invitation_email = nil
+
     def operator? ; true end
     def employer_like? ; true end
 

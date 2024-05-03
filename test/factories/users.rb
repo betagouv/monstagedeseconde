@@ -69,7 +69,7 @@ FactoryBot.define do
       after(:create) do |employer|
         unless employer.current_area
           new_area = create(:internship_offer_area, employer: employer)
-          employer.current_area = employer.internship_offer_area
+          employer.current_area = new_area
           employer.save
         end
       end
@@ -149,7 +149,7 @@ FactoryBot.define do
       after(:create) do |employer|
         unless employer.current_area
           new_area = create(:internship_offer_area, employer: employer)
-          employer.current_area = employer.internship_offer_area
+          employer.current_area = new_area
           employer.save
         end
       end
@@ -165,7 +165,7 @@ FactoryBot.define do
       after(:create) do |employer|
         unless employer.current_area
           new_area = create(:internship_offer_area, employer: employer)
-          employer.current_area = employer.internship_offer_area
+          employer.current_area = new_area
           employer.save
         end
       end
@@ -181,7 +181,7 @@ FactoryBot.define do
       after(:create) do |employer|
         unless employer.current_area
           new_area = create(:internship_offer_area, employer: employer)
-          employer.current_area = employer.internship_offer_area
+          employer.current_area = new_area
           employer.save
         end
       end
@@ -221,7 +221,7 @@ FactoryBot.define do
       after(:create) do |employer|
         unless employer.current_area
           new_area = create(:internship_offer_area, employer: employer)
-          employer.current_area = employer.internship_offer_area
+          employer.current_area = new_area
           employer.save
         end
       end

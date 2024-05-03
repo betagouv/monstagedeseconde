@@ -74,5 +74,37 @@ module Users
       assert_equal [internship_offer_1.id, internship_offer_2.id].sort,
                     employer_1.internship_offers.to_a.map(&:id).sort
     end
+
+    test '#anonymize when in a team with internship_offers' do
+      employer_1 = create(:employer)
+      original_area = employer_1.current_area
+      employer_2 = create(:employer)
+      assert_equal 2, InternshipOfferArea.count # 1 per employer
+      offer = create_internship_offer_visible_by_two(employer_1, employer_2)
+      assert_equal employer_1.current_area_id, employer_2.current_area_id
+      assert_equal employer_1.id, offer.employer.id
+      assert_equal employer_1.current_area_id, offer.internship_offer_area_id
+      offer_2 = create(:weekly_internship_offer, employer: employer_2, internship_offer_area_id: employer_1.current_area_id)
+      assert_equal employer_1.current_area_id, employer_2.current_area_id
+      assert_equal 2, employer_1.internship_offer_areas.count
+      assert_changes -> { InternshipOffer.kept.count } , from: 2, to: 1 do
+        assert_changes -> { InternshipOfferArea.count  } , from: 2, to: 1 do
+          employer_1.anonymize
+        end
+      end
+      assert_equal original_area.id, employer_2.current_area_id
+      assert_equal offer_2.internship_offer_area_id, employer_2.current_area_id
+    end
+
+    test '#anonymize when not in a team with internship_offers' do
+      employer_1 = create(:employer)
+      offer = create(:weekly_internship_offer, employer: employer_1, internship_offer_area_id: employer_1.current_area_id)
+      assert_equal 1, InternshipOfferArea.count
+      assert_changes -> { InternshipOffer.kept.count } , from: 1, to: 0 do
+        assert_no_changes -> { InternshipOfferArea.count }  do
+          employer_1.anonymize
+        end
+      end
+    end
   end
 end
