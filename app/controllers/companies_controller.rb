@@ -79,13 +79,13 @@ class CompaniesController < ApplicationController
   end
 
   def contact_message
-    "Bonjour,J’ai identifié votre entreprise sur le module Stages de 2de générale et technologique "\
+    "Bonjour,\nJ’ai identifié votre entreprise sur le module Stages de 2de générale et technologique "\
     "du ministère de l’éducation nationale (plateforme 1 jeune 1 solution). Immersion Facilitée a "\
     "en effet signalé que vous êtes disposés à accueillir des élèves de seconde générale et "\
     "technologique pour leur séquence d’observation en milieu professionnel entre le 17 et "\
-    "le 28 juin 2024.***Rédigez ici votre email de motivation.***Pourriez-vous me contacter "\
+    "le 28 juin 2024.\n\n***Rédigez ici votre email de motivation.***\n\nPourriez-vous me contacter "\
     "par mail ou par téléphone pour échanger sur mon projet de découverte de vos métiers ? "\
-    "Vous trouverez sur cet URL le modèle de convention à utiliser : "\
+    "Vous trouverez sur cet URL le modèle de convention à utiliser : \n"\
     "https://www.education.gouv.fr/sites/default/files/ensel643_annexe1.pdf "\
     "Avec mes remerciements anticipés."
   end
