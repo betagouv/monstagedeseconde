@@ -16,7 +16,7 @@ class CompaniesController < ApplicationController
     if @appellation_code.present?
       @level_name, @companies = fetch_companies_by_appellation_code(parameters)
     else
-      @companies = reject_missing_location_id fetch_companies(parameters)
+      @companies = filtered_companies(parameters)
     end
   end
 
@@ -59,10 +59,16 @@ class CompaniesController < ApplicationController
       sibling_coded_crafts_codes = sibling_coded_crafts.pluck(:ogr_code)
       break if sibling_coded_crafts_codes.count > MAXIMUM_CODES_IN_LIST
       parameters.merge!(appellation_codes: sibling_coded_crafts_codes)
-      @companies = reject_missing_location_id(fetch_companies(parameters))
+      @companies = filtered_companies(parameters)
       iteration += 1
     end
     [@level_name, @companies]
+  end
+
+  def filtered_companies(parameters)
+    companies = fetch_companies(parameters)
+    companies = reject_missing_location_id(companies)
+    reject_companies_with_offers(companies)
   end
 
   def reject_missing_location_id(companies)
@@ -79,5 +85,18 @@ class CompaniesController < ApplicationController
     "Vous trouverez sur cet URL le modèle de convention à utiliser : \n"\
     "https://www.education.gouv.fr/sites/default/files/ensel643_annexe1.pdf \n"\
     "Avec mes remerciements anticipés."
+  end
+
+  def reject_companies_with_offers(companies)
+    sirets_in_base = internship_offers_sirets(companies)
+    companies.reject { |company| company['siret'].in?(sirets_in_base) }
+  end
+
+  def internship_offers_sirets(companies)
+    companies_siret = companies.map { |company| company['siret'] }
+    InternshipOffers::WeeklyFramed.kept
+                                  .where(siret: companies_siret)
+                                  .pluck(:siret)
+                                  .uniq
   end
 end
