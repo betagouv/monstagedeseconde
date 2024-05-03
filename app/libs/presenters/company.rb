@@ -40,10 +40,6 @@ module Presenters
     private
 
     def initialize(company)
-      puts "Company: #{company}"
-      puts "Addresse : #{company['address']}"
-      puts "Addresse : #{company['address']['streetNumberAndAddress']}"
-
       @company = company
       @siret = company['siret']
       @appellation_code = company.dig('appellations', 0, 'appellationCode')
@@ -52,21 +48,6 @@ module Presenters
       @appelation_name = company.dig('appellations', 0, 'appellationLabel')
       @address = "#{company['address']['streetNumberAndAddress']}, #{company['address']['postcode']} #{company['address']['city']}"
       @naf_label = company['nafLabel']
-
-      # @company = company
-      # @siret = company[:siret]
-      # @address = company[:address]
-      # @appelation_name = company[:appelation_name]
-      # @name = company[:name]
-      # @appellation_code = company[:appellation_code]
-      # @location_id = company[:locationId]
-      # puts "Company: #{@company}"
-      # puts "Siret: #{@siret}"
-      # puts "Address: #{@address}"
-      # puts "Appelation Name: #{@appelation_name}"
-      # puts "Name: #{@name}"
-      # puts "Appellation Code: #{@appellation_code}"
-      # puts "Location ID: #{@location_id}"
     end
   end
 end

@@ -12,12 +12,9 @@ module Services
         return false
       end
 
-      if response && response.respond_to?(:code) && successful_status?(response.code)
-        true
-      else
-        log_failure(response)
-        false
-      end
+      is_success = response && response.respond_to?(:code) && successful_status?(response.code)
+      log_failure(response) unless is_success
+      is_success
     end
 
     private
