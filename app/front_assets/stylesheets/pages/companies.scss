@@ -22,3 +22,10 @@
   padding-top: 24px;
   padding-bottom: 0;
 }
+
+// if screen size is more than 768px
+@media (min-width: 768px) {
+  .company-contact-form {
+    border: 1px solid #e5e5e5;
+  }
+}

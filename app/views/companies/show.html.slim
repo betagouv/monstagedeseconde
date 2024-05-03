@@ -1,0 +1,80 @@
+.container-monstage
+  .fr-px-1w
+    = render 'layouts/breadcrumb',
+            links: [ [companies_path, 'Rechercher une entreprise'],
+                    ['', params[:id]] ]
+  .row
+    .col-12.col-md-4
+      .fr-px-1w
+        .h3.mb-3.text-dark Oracle
+        .fr-py-1w
+          .font-weight-bold 
+            | Adresse
+          .fr-py-1w
+            = @company['address']
+        .fr-py-1w
+          .font-weight-bold 
+            | SIRET
+          .fr-py-1w
+            = @company['siret']
+        .fr-py-1w
+          .font-weight-bold 
+            | Secteur d'activité
+          .fr-py-1w
+            = @company['naf_label']
+        .fr-py-1w
+          .font-weight-bold 
+            | Métier observable
+          .fr-py-1w
+            = @company['appelation_name']
+        .fr-py-2w
+          .fr-alert.fr-alert--info.fr-alert--sm
+            p 
+              | Le message à l'intention de l'entreprise est pré-rempli mais nous vous invitons vivement à le personnaliser afin de maximiser vos chances de retour de la part de l'entreprise en expliquant rapidement qui vous êtes et votre projet de découverte du métier.
+            p Relisez-vous pour éviter les fautes, erreurs de frappe, etc.
+            
+
+    .col-12.col-md-8
+      .fr-px-1w
+        .company-contact-form.fr-p-2w
+          .h3.text-dark Contactez Oracle
+          .fr-py-1w
+            p 
+              | Cette entreprise a choisi d'être contactée par mail. 
+              br
+              | Veuillez compléter ce formulaire qui sera transmis à l'entreprise.
+          = form_tag contact_company_path(12), method: :post, data: { turbo: false } do
+            = hidden_field_tag :location_id,  @company[:id]
+            = hidden_field_tag :siret, @company['siret']
+            = hidden_field_tag :company_name, @company['name']
+            = hidden_field_tag :appellation_code, @company['appellation_code']
+
+
+            .fr-text--lead.text-dark.font-weight-bold Votre email de motivation
+            
+            .form-group
+              = label_tag :message, "Votre message à l’entreprise", required: true, class: "fr-label"
+              = text_area_tag :message, @company['contact_message'], rows: 10, class: "fr-input"
+              
+            .fr-text--lead.text-dark.font-weight-bold.fr-pt-1w Vos informations 
+
+            .row 
+              .col-12.col-md-6
+                .form-group
+                  = label_tag :first_name, "Prénom", required: true, class: "fr-label"
+                  = text_field_tag :first_name, '', class: "fr-input", pattern: ".{2,}", required: true
+              .col-12.col-md-6
+                .form-group
+                  = label_tag :last_name, "Nom", required: true, class: "fr-label"
+                  = text_field_tag :last_name, '', class: "fr-input", pattern: ".{2,}", required: true
+            .row
+              .col-12.col-md-6
+                .form-group
+                  = label_tag :email, "Adresse électronique", required: true, class: "fr-label"
+                  = email_field_tag :email, '', class: "fr-input", pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$", required: true
+              .col-12.col-md-6
+                .form-group
+                  = label_tag :phone, "Téléphone", class: "fr-label"
+                  = text_field_tag :phone, '', class: "fr-input", pattern: "^[0-9]{10,}$"
+            .text-right      
+              = submit_tag   "Envoyer", class: "fr-btn"

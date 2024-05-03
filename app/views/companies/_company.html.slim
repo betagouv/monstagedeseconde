@@ -19,6 +19,8 @@
             span.fr-icon-arrow-right-line.fr-icon--sm.fr-mb-0.fr-mr-1w
             span
               = "#{company['numberOfEmployeeRange']} salariés"
+            div 
+              = company['contactMode']
           .text-muted
             span.fr-icon-arrow-right-line.fr-icon--sm.fr-mb-0.fr-mr-1w
             span
@@ -26,12 +28,8 @@
               = "#{address['streetNumberAndAddress']}, #{address['postcode'] } #{address['city'] }"
     .fr-card__footer.d-flex.justify-content-center
       - presenter = Presenters::Company.new(company)
-      = link_to presenter.immersion_facilitee_url,
-                class: "fr-btn fr-btn--sm fr-mx-2w text-center btn-block",
-                target: "_blank" do
-        | Postuler sur Immersion Facilitée
-    / .fr-card__header.fr-py-1w
-    /   ul.fr-badges-group.fr-my-2w.fr-mx-1w
-    /     li
-    /       .fr-badge.fr-badge--warning.fr-badge--no-icon
-    /         | Entreprise accueillante
+      = link_to presenter.company_url,
+                class: "fr-btn fr-btn--sm fr-mx-2w text-center btn-block" do
+        span.fr-icon-mail-line.fr-mr-1w.fr-icon--sm
+        | Contacter l'entreprise
+
