@@ -64,19 +64,19 @@
               .col-12.col-md-6
                 .form-group
                   = label_tag :first_name, "Prénom", required: true, class: "fr-label"
-                  = text_field_tag :first_name, '', class: "fr-input"
+                  = text_field_tag :first_name, '', class: "fr-input", pattern: ".{2,}", required: true
               .col-12.col-md-6
                 .form-group
                   = label_tag :last_name, "Nom", required: true, class: "fr-label"
-                  = text_field_tag :last_name, '', class: "fr-input"
+                  = text_field_tag :last_name, '', class: "fr-input", pattern: ".{2,}", required: true
             .row
               .col-12.col-md-6
                 .form-group
-                  = label_tag :email, "Email", required: true, class: "fr-label"
-                  = email_field_tag :email, '', class: "fr-input"
+                  = label_tag :email, "Adresse électronique", required: true, class: "fr-label"
+                  = email_field_tag :email, '', class: "fr-input", pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$", required: true
               .col-12.col-md-6
                 .form-group
                   = label_tag :phone, "Téléphone", class: "fr-label"
-                  = text_field_tag :phone, '', class: "fr-input"
+                  = text_field_tag :phone, '', class: "fr-input", pattern: "^[0-9]{10,}$"
             .text-right      
               = submit_tag   "Envoyer", class: "fr-btn"

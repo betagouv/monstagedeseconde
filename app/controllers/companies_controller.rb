@@ -21,17 +21,8 @@ class CompaniesController < ApplicationController
   end
 
   def show
-    # redirect_to recherche_entreprises_path, notice: 'Votre message a bien été envoyé'
-
-    puts "Params: #{params}"
-    # create stub object 
-
-    
     @company = params
     @company.merge!(contact_message: contact_message)
-    #   siret: params[:siret], 
-    #   id: params[:id], appellation_code: params[:appellation_code], address: params[:address], name: params[:name], appelation_name: params[:appelation_name] }
-    # @company = Presenters::Company.new(company)
   end
 
   def contact
@@ -86,7 +77,7 @@ class CompaniesController < ApplicationController
     "le 28 juin 2024.\n\n***Rédigez ici votre email de motivation.***\n\nPourriez-vous me contacter "\
     "par mail ou par téléphone pour échanger sur mon projet de découverte de vos métiers ? "\
     "Vous trouverez sur cet URL le modèle de convention à utiliser : \n"\
-    "https://www.education.gouv.fr/sites/default/files/ensel643_annexe1.pdf "\
+    "https://www.education.gouv.fr/sites/default/files/ensel643_annexe1.pdf \n"\
     "Avec mes remerciements anticipés."
   end
 end

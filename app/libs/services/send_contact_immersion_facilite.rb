@@ -1,10 +1,7 @@
 module Services
   class SendContactImmersionFacilite
-    IMMERSION_FACILE_ENDPOINT_URL = "https://staging.immersion-facile.beta.gouv.fr/api/v2/contact-establishment".freeze
     
-    # Staging
-    # IMMERSION_FACILE_ENDPOINT_URL = "https://staging.immersion-facile.beta.gouv.fr/api/v2/contact-establishment".freeze
-
+    IMMERSION_FACILITE_ENDPOINT_URL = ENV['IMMERSION_FACILE_API_URL'] + '/contact-establishment'
 
     def perform
       response = post_request
@@ -47,7 +44,7 @@ module Services
 
 
     def get_request_uri
-      URI(IMMERSION_FACILE_ENDPOINT_URL)
+      URI(IMMERSION_FACILITE_ENDPOINT_URL)
     end
 
     def body_request
@@ -58,9 +55,9 @@ module Services
         "appellationCode": appellation_code,
         "siret": siret,
         "contactMode": "EMAIL",
-        "message": message,
+        "message": 'message',
         "potentialBeneficiaryPhone": phone,
-        "immersionObjective": message,
+        "immersionObjective": "Découvrir un métier ou un secteur d'activité",
         "locationId": location_id
       }
     end
