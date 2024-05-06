@@ -2,11 +2,11 @@
   .fr-px-1w
     = render 'layouts/breadcrumb',
             links: [ [companies_path, 'Rechercher une entreprise'],
-                    ['', params[:id]] ]
+                    ['', @company['name']] ]
   .row
     .col-12.col-md-4
       .fr-px-1w
-        .h3.mb-3.text-dark Oracle
+        .h3.mb-3.text-dark = @company['name']
         .fr-py-1w
           .font-weight-bold 
             | Adresse
@@ -37,7 +37,7 @@
     .col-12.col-md-8
       .fr-px-1w
         .company-contact-form.fr-p-2w
-          .h3.text-dark Contactez Oracle
+          .h3.text-dark = "Contactez #{@company['name']}"
           .fr-py-1w
             p 
               | Cette entreprise a choisi d'être contactée par mail. 
