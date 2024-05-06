@@ -102,6 +102,7 @@ class CompaniesControllerTest < ActionDispatch::IntegrationTest
     { 'locationId' => '123',
       'name' => 'Company',
       "siret" => '12345678901234',
+      'contactMode' => 'EMAIL',
       'name' => 'Company 1' }
   end
 
@@ -109,6 +110,7 @@ class CompaniesControllerTest < ActionDispatch::IntegrationTest
     { 'locationId' => '124',
       'name' => 'Company',
       'siret' => '12345678901236',
+      'contactMode' => 'EMAIL',
       'name' => 'Company 2' }
   end
 
@@ -116,12 +118,14 @@ class CompaniesControllerTest < ActionDispatch::IntegrationTest
     { 'locationId' => '124',
       'name' => 'Company',
       'siret' => '12345678901237',
+      'contactMode' => 'EMAIL',
       'name' => 'Company 2' }
   end
 
   def missing_location_id_company
     { 'locationId' => nil,
       'siret' => '12345678901235',
+      'contactMode' => 'EMAIL',
       'name' => 'Company_with_missing_location_id' }
   end
 
