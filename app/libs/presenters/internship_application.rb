@@ -100,7 +100,7 @@ module Presenters
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')]
         }
       when "canceled_by_student_confirmation"
-        { label: "L'élève a choisi un autre stage",
+        { label: reader.student? ? "Vous avez choisi un autre stage" : "L'élève a choisi un autre stage",
           badge:'purple-glycine',
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')]
         }
