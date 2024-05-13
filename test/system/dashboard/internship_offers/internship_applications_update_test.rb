@@ -143,7 +143,7 @@ module Dashboard::InternshipOffers
         sign_in(employer_1)
         visit dashboard_candidatures_path
         click_button "Refusées"
-        find "p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--purple-glycine.fr-badge--no-icon", text: "annulée".upcase
+        find "p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--purple-glycine.fr-badge--no-icon", text: "L'élève a choisi un autre stage".upcase
       end
     end
 
