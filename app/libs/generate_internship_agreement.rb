@@ -79,8 +79,10 @@ class GenerateInternshipAgreement < Prawn::Document
 
   def contractors
     label_form("Entre")
-    paraphing("L'entreprise ou l'organisme d'accueil, représentée par M/Mme "\
-      "#{@internship_agreement.organisation_representative_full_name}, en qualité "\
+    paraphing("L'entreprise ou l'organisme d'accueil "\
+      "#{@internship_agreement.employer_name}, représentée par M/Mme "\
+      "#{@internship_agreement.organisation_representative_full_name} ("\
+      "#{@internship_agreement.employer_contact_email}), en qualité "\
       "de chef(fe) d'entreprise ou de responsable de l'organisme d'accueil d'une part, et")
     paraphing("L'établissement d'enseignement scolaire, représenté par M/Mme "\
       "#{@internship_agreement.school_representative_full_name}, en qualité de "\
@@ -243,6 +245,9 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.move_down 20
     paraphing("Dates de la séquence d'observation en milieu professionnel :")
     paraphing("La séquence d’observation en milieu professionnel se déroule pendant #{@internship_agreement.internship_offer.period_label} inclus.")
+    @pdf.move_down 20
+    paraphing("Lieu de la séquence d'observation en milieu professionnel :")
+    paraphing(@internship_agreement.internship_address)
     @pdf.move_down 20
 
     # Repères réglementaires relatifs à la législation sur le travail
