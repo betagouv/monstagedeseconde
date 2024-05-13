@@ -66,7 +66,8 @@ module Presenters
       student.internship_applications.validated_by_employer.count
     end
 
-    def forbidden_application_reason
+    def forbidden_application_reason(internship_offer)
+      return "Vous avez déjà postulé à cette offre" if student.internship_applications.exists?(internship_offer_id: internship_offer.id)
       if student.with_2_weeks_internships_approved?
         "Vous avez déjà validé un stage pour les deux semaines"
       else
