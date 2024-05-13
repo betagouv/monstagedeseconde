@@ -33,7 +33,7 @@ tbody.internship-agreement
         - filled_by = ["le chef d'établissement"]
         - prompt = "Sélectionner le statut de l'établissement"
         = render partial: 'dashboard/internship_agreements/date_field_element',
-                 locals: { field: :delegation_date, form: form, text_label: label, title: title, filled_by: filled_by, disabled: disabled, value: resource.school.delegation_date, prompt: prompt }
+                 locals: { field: :delegation_date, form: form, text_label: label, title: title, filled_by: filled_by, disabled: disabled, value: resource.school.delegation_date, prompt: prompt, required: false }
 
       .row.mt-0
         - label = "Courriel du chef d'établissement ou de son représentant"
