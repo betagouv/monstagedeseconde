@@ -357,10 +357,10 @@ class GenerateInternshipAgreement < Prawn::Document
 
   def signature_data
     { header: [[
-        "Le chef d'établissement",
-        "Le responsable de l'organisme d'accueil",
+        "Le chef d'établissement - #{school_manager.try(:presenter).try(:formal_name)}",
+        "Le responsable de l'organisme d'accueil - #{employer.presenter.formal_name}",
         "L'élève",
-        "Les parents       (responsables légaux)",
+        "Parents ou responsables légaux",
         "Le professeur référent",
         "Le référent en charge de l’élève à sein de l’organisme d’accueil"
         ]],
