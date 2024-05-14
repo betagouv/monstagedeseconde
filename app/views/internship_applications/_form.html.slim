@@ -16,7 +16,7 @@
   fieldset.mb-4
     / internship offer period by select disabled
     .form-group
-      = f.label :period, class: 'fr-label fr-hint', for: 'internship_application_period'
+      = f.label :period, class: 'fr-label fr-hint', for: 'internship_application_period', style: 'color: #929292' do
         | Période de stage
       = f.select :period,
                  options_for_select(InternshipOffer.period_collection,
@@ -30,27 +30,22 @@
                 'data-controller' => "rich-text-label",
                 'data-rich-text-label-for-value' => "internship_application_motivation",
                 'data-rich-text-label-enable-value' => ""
-        | Pourquoi ce stage me motive 
+        | Pourquoi ce stage me motive ? 
         = f.rg2a_required_content_tag
         small.form-text.text-muted Relisez-vous pour éviter les fautes.
       = f.rich_text_area :motivation, class: "fr-input col-12", required: true, rows: 5
+    
+    .row.fr-mt-4w
+      .col-12
+        .h4 Informations personnelles
+
+        .fr-alert.fr-alert--info
+          p Ces informations seront utilisées pour le remplissage de la convention de stage dématérialisée et ne seront pas transmises directement à l’entreprise.
+
+
     .row.fr-mt-2w
-      .col-xs-12.col-sm-6
-        - disabled = f.object.student.email.present? && f.object.student.email.size > 5
-        - if disabled
-          = render '/inputs/dsfr_input_field',
-                   field: :student_email_shown,
-                   f: f,
-                   object: f.object,
-                   value: f.object.student_email || f.object.student.email,
-                   label: "Adresse électronique (email)",
-                   required: false,
-                   title: 'Adresse électronique',
-                   disabled: true
-          = f.hidden_field :student_email,
-                           value: f.object.student_email || f.object.student.email
-        - else
-          = render '/inputs/dsfr_input_field',
+      .col-12
+        = render '/inputs/dsfr_input_field',
                    field: :student_email,
                    f: f,
                    object: f.object,
@@ -61,17 +56,16 @@
                    hint: "Veuillez saisir une adresse email valide, sans espace ni majuscule.",
                    title: 'Adresse électronique'
     - if f.object.student.phone.present? || f.object.student.phone.present?
-      .row.fr-mb-4w
-        .col-xs-12.col-sm-6
+      .row.fr-my-2w
+        .col-12
           = render '/inputs/dsfr_input_field',
                    field: :student_phone,
                    f: f,
                    object: f.object,
                    value: f.object.student_phone || f.object.student.phone,
                    label: "Numéro de portable élève ou responsable légal",
-                   required: false,
-                   title: 'Numéro de mobile',
-                   disabled: true
+                   required: true,
+                   title: 'Numéro de mobile'
           = f.hidden_field :student_phone,
                            value: f.object.student_phone || f.object.student.phone
     - else
@@ -89,10 +83,64 @@
             small.text-muted
               | (+33 puis 06 11 22 33 44 par exemple)
 
+    .row.fr-m-n2w.fr-mb-3w
+      .col-12
+        .form-group.phone
+          = label_tag 'Votre adresse postale complète', '', class: 'fr-label' do
+            = f.rg2a_required_content_tag
+          = render '/inputs/dsfr_input_field',
+                   field: :student_address,
+                   f: f,
+                   object: f.object,
+                   value: f.object.student_address ||f.object.student.address,
+                   label: "Votre adresse postale complète",
+                   required: true,
+                   title: 'Adresse'
+    .row.fr-m-n2w.fr-mb-3w
+      .col-12
+        .form-group.phone
+          = label_tag 'Nom et prénom de votre représentant légal', '', class: 'fr-label' do
+            = f.rg2a_required_content_tag
+          = render '/inputs/dsfr_input_field',
+                   field: :student_legal_representative_full_name,
+                   f: f,
+                   object: f.object,
+                   value: f.object.student_legal_representative_full_name ||f.object.student.legal_representative_full_name,
+                   label: "Nom et prénom de votre représentant légal",
+                   required: true,
+                   title: 'Représentant légal'
+    .row.fr-m-n2w.fr-mb-3w
+      .col-12
+        .form-group.phone
+          = label_tag 'Adresse email de votre représentant légal', '', class: 'fr-label' do
+            = f.rg2a_required_content_tag
+          = render '/inputs/dsfr_input_field',
+                   field: :student_legal_representative_email,
+                   f: f,
+                   object: f.object,
+                   value: f.object.student_legal_representative_email ||f.object.student.legal_representative_email,
+                   label: "Adresse électronique de votre représentant légal",
+                   required: true,
+                   title: 'Adresse électronique'
+    .row.fr-m-n2w.fr-mb-3w
+      .col-12
+        .form-group.phone
+          = label_tag 'Numéro de téléphone de votre représentant légal', '', class: 'fr-label' do
+            = f.rg2a_required_content_tag
+          = render '/inputs/dsfr_input_field',
+                   field: :student_legal_representative_phone,
+                   f: f,
+                   object: f.object,
+                   value: f.object.student_legal_representative_email ||f.object.student.legal_representative_email,
+                   label: "Numéro de téléphone de votre représentant légal",
+                   required: true,
+                   title: 'Téléphone'
+
+
     .actions.d-flex.justify-content-between.flex-row.fr-mt-2w
       .d-inline-flex= link_to internship_offer_path(@internship_offer), class: 'fr-btn fr-btn--secondary' do
         | Annuler
-      .d-inline-flex= f.submit "Valider", { class: 'fr-btn' }
+      .d-inline-flex= f.submit "Valider ma candidature", { class: 'fr-btn' }
 
 
 
