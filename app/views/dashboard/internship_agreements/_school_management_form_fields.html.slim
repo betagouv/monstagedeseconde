@@ -208,6 +208,22 @@ tbody.internship-agreement
         = render partial: 'dashboard/internship_agreements/text_field_element',
                  locals: { field: :main_teacher_full_name, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled }
 
+      .row.mt-0
+        - label = "Modalités d’évaluation de la séquence d’observation " \
+                  "en milieu professionnel"
+        - title = "Note au professeur principal :"
+        - content = "Critères d'évaluations"
+        - filled_by = ["le chef d'établissement"]
+        = render partial: 'dashboard/internship_agreements/trix_form_element',
+                 locals: { field: :activity_rating_rich_text, form: form, text_label: label, title: title, content: content , filled_by: filled_by, disabled: disabled, required: false }
+        
+        .col-12.fr-py-3w
+          .fr-hint.small
+            | La séquence d'observation doit être précédée d'un temps de préparation 
+            | et suivie d'un temps d'exploitation ou de restitution qui permet de 
+            | valoriser cette expérience. Les élèves peuvent s’exprimer sur ce qu’ils 
+            | ont vu, et revenir sur leurs activités et leurs impressions. 
+
       = form.submit 'Submit', class: 'd-none', id: 'submit'
 
       - unless disabled
