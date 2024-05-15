@@ -31,7 +31,14 @@ module InternshipApplications
     test 'POST #create internship application as student' do
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
-      student = create(:student, school: school, class_room: create(:class_room, school: school))
+      student = create(:student,
+        school: school, 
+        class_room: create(:class_room, school: school),
+        address: '100 bd Victor Hugo 13000 Marseille',
+        legal_representative_email: '',
+        legal_representative_full_name: 'Sylvie Dupont',
+        legal_representative_phone: '+33060011223344'
+      )
       sign_in(student)
       valid_params = {
         internship_application: {
