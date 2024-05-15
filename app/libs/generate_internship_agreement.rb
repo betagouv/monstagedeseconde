@@ -317,6 +317,7 @@ class GenerateInternshipAgreement < Prawn::Document
 
 
     paraphing("Modalités d'évaluation de la séquence d'observation en milieu professionnel :")
+    html_formating("<div>#{@internship_agreement.activity_rating_rich_text} </div>")
     @pdf.move_down 20
     paraphing(
       "La séquence d'observation doit être précédée d'un temps de préparation "\
