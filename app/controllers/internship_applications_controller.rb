@@ -148,6 +148,10 @@ class InternshipApplicationsController < ApplicationController
     student = internship_application.student
     student.phone ||= internship_application.student_phone
     student.email ||= internship_application.student_email
+    student.address ||= internship_application.student_address
+    student.legal_representative_full_name ||= internship_application.student_legal_representative_full_name
+    student.legal_representative_email ||= internship_application.student_legal_representative_email
+    student.legal_representative_phone ||= internship_application.student_legal_representative_phone
     return true unless student.changed?
     return false unless student.valid?
     student.save
@@ -185,6 +189,10 @@ class InternshipApplicationsController < ApplicationController
             :motivation,
             :student_phone,
             :student_email,
+            :student_address,
+            :student_legal_representative_full_name,
+            :student_legal_representative_email,
+            :student_legal_representative_phone,
             student_attributes: %i[
               email
               phone

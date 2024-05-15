@@ -24,6 +24,20 @@
                 .student-phone= "#{internship_application.student_phone || 'Non communiqué'}"
             tr
               td.fr-pr-2w.fr-pb-3w
+                h6.mb-0.text-dark Numéro de téléphone élève ou représentant légal
+                .student-email= "#{internship_application.student_legal_representative_phone || 'Non communiqué'}"
+              td.fr-pr-2w.fr-pb-3w
+                h6.mb-0.text-dark Votre adresse postale complète
+                .student-phone= "#{internship_application.student_address || 'Non communiqué'}"
+            tr
+              td.fr-pr-2w.fr-pb-3w
+                h6.mb-0.text-dark Nom et prénom de votre représentant légal
+                .student-email= "#{internship_application.student_legal_representative_full_name || 'Non communiqué'}"
+              td.fr-pr-2w.fr-pb-3w
+                h6.mb-0.text-dark Adresse email de votre représentant légal
+                .student-phone= "#{internship_application.student_legal_representative_email || 'Non communiqué'}"
+            tr
+              td.fr-pr-2w.fr-pb-3w
                 h6.mb-0.text-dark Etablissement
                 .school-name= student_presenter.school_name
               td.fr-pr-2w.fr-pb-3w

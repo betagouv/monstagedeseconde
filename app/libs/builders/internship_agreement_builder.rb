@@ -59,7 +59,11 @@ module Builders
 
     def preprocess_internship_application_params(internship_application)
       {
-        date_range: "Du #{internship_application.internship_offer.first_date.strftime( "%d/%m/%Y")} au #{internship_application.internship_offer.last_date.strftime( "%d/%m/%Y")}"
+        date_range: "Du #{internship_application.internship_offer.first_date.strftime( "%d/%m/%Y")} au #{internship_application.internship_offer.last_date.strftime( "%d/%m/%Y")}",
+        student_legal_representative_email: internship_application.student.legal_representative_email,
+        student_legal_representative_phone: User.sanitize_mobile_phone_number(internship_application.student.legal_representative_phone, "+330"),
+        student_legal_representative_full_name: internship_application.student.legal_representative_full_name,
+        student_address: internship_application.student_address
       }
     end
 
