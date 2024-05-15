@@ -75,7 +75,10 @@ module Builders
         daily_hours: internship_offer.daily_hours,
         weekly_hours: internship_offer.weekly_hours,
         lunch_break: internship_offer.lunch_break,
-        weekly_lunch_break: internship_offer&.weekly_lunch_break
+        weekly_lunch_break: internship_offer&.weekly_lunch_break,
+        employer_name: internship_offer.employer_name,
+        employer_contact_email: internship_offer.employer.email,
+        internship_address: "#{internship_offer.street}, #{internship_offer.zipcode} #{internship_offer.city}"
       }
     end
 

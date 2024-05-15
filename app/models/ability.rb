@@ -260,6 +260,10 @@ class Ability
       edit
       update
       edit_organisation_representative_role
+      edit_employer_name
+      edit_employer_address
+      edit_employer_contact_email
+      edit_internship_address
       edit_tutor_email
       edit_tutor_role
       edit_activity_scope_rich_text
