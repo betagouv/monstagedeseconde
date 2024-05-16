@@ -25,6 +25,10 @@ FactoryBot.define do
       gender { ['m','f'].shuffle.first }
       birth_date { 14.years.ago }
       school { create(:school, :with_school_manager) }
+      address { FFaker::AddressFR.full_address }
+      legal_representative_email { FFaker::Internet.email }
+      legal_representative_full_name { FFaker::NameFR.name }
+      legal_representative_phone { generate(:phone) }
 
       trait :male do
         gender { 'm' }

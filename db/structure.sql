@@ -890,7 +890,10 @@ CREATE TABLE public.internship_agreements (
     lunch_break text,
     organisation_representative_email character varying,
     legal_status character varying,
-    delegation_date date
+    delegation_date date,
+    internship_address character varying,
+    employer_name character varying,
+    employer_contact_email character varying
 );
 
 
@@ -944,7 +947,11 @@ CREATE TABLE public.internship_applications (
     dunning_letter_count integer DEFAULT 0,
     magic_link_tracker integer DEFAULT 0,
     access_token character varying,
-    transfered_at timestamp(6) without time zone
+    transfered_at timestamp(6) without time zone,
+    student_address character varying,
+    student_legal_representative_full_name character varying,
+    student_legal_representative_email character varying,
+    student_legal_representative_phone character varying
 );
 
 
@@ -1875,7 +1882,11 @@ CREATE TABLE public.users (
     statistician_validation boolean DEFAULT false,
     hubspot_id character varying,
     academy_id integer,
-    academy_region_id integer
+    academy_region_id integer,
+    address character varying,
+    legal_representative_full_name character varying,
+    legal_representative_email character varying,
+    legal_representative_phone character varying
 );
 
 
@@ -3802,6 +3813,9 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+
+('20240514132852'),
+('20240513094706'),
 ('20240417085118'),
 ('20240417084757'),
 ('20240410120927'),

@@ -2,10 +2,11 @@
           links: [ [dashboard_students_internship_applications_path(@internship_application.student), 'Mes candidatures'],
                    ['', 'Je Postule'] ]
 
-.row.mt-3
+.row
   .col-md-8
-    h1.h3.my-3 Ma candidature
-= render 'internship_applications/form',
+    h1.h2.my-3 Ma candidature
+
+    = render 'internship_applications/form',
           internship_application: @internship_application,
           internship_offer: @internship_offer,
           current_user: current_user
