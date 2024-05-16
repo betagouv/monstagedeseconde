@@ -183,7 +183,7 @@ module Dashboard
                                   .where(aasm_state: :drafted)
                                   .count
                         } do
-            find('input.fr-btn[type="submit"][name="commit"][value="Valider"]').click
+            find('input.fr-btn[type="submit"][name="commit"][value="Valider ma candidature"]').click
             page.find('#submit_application_form') # timer
           end
           application =  student.internship_applications.last
@@ -193,7 +193,7 @@ module Dashboard
 
           find('h1.h3', text: 'Ma candidature')
 
-          find('input.fr-btn[type="submit"][name="commit"][value="Valider"]').click
+          find('input.fr-btn[type="submit"][name="commit"][value="Valider ma candidature"]').click
         end
       end
 
@@ -411,7 +411,7 @@ module Dashboard
         click_link "Rechercher un autre stage"
         click_link internship_offer_2.title
         all('a', text:'Postuler').first.click
-        find('h1.h6', text: 'Votre candidature')
+        find('h1.h2', text: 'Votre candidature')
       end
 
       test "student cannot apply twice on the same week internship" do
