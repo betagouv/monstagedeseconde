@@ -22,6 +22,7 @@
       .d-flex.flex-row
         select [name="video_choice" 
                 id="video_choice"
+                title="Choisissez une vidéo de témoignage d'un professionnel"
                 class="fr-select fr-mb-4w"
                 data-video-line-target="comboSelect"
                 data-action="change->video-line#select_by_html" ]
@@ -30,6 +31,7 @@
               = video[:title]
     .col-12.iframe-container.fr-mb-8w.center-text
       iframe [src="#{video_data[0][:url]}"
+              title="Témoignages de professionnels pour des professionnels"
               data-video-line-target="iframe"
               data-iframe-resizer-target="iframe"
               frameborder="0"
