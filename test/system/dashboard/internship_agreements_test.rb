@@ -91,6 +91,9 @@ module Dashboard
       find("input[name='internship_agreement[organisation_representative_full_name]']")
       fill_in "Fonction du représentant de l'entreprise", with: 'CEO'
       fill_in "Adresse email du responsable de l'accueil en milieu professionnel", with: 'tuteur@free.fr'
+      fill_in "Nom de l'entreprise", with: 'Corporation'
+      fill_in "Adresse email de contact", with: 'corp@mail.com'
+      fill_in "Adresse du lieu du stage", with: '1 rue de la paix'
       find('label', text: 'Les horaires sont les mêmes sur toute la période de stage')
       execute_script("document.getElementById('weekly_planning').checked = false;")
       execute_script("document.getElementById('daily-planning-container').classList.remove('d-none');")
@@ -135,6 +138,9 @@ module Dashboard
       find('a.button-component-cta-button', text: 'Valider ma convention').click
       find("input[name='internship_agreement[organisation_representative_full_name]']")
       fill_in "Fonction du représentant de l'entreprise", with: 'CEO'
+      fill_in "Nom de l'entreprise", with: 'Corporation'
+      fill_in "Adresse email de contact", with: 'corp@mail.com'
+      fill_in "Adresse du lieu du stage", with: '1 rue de la paix'
       fill_in "Adresse email du responsable de l'accueil en milieu professionnel", with: 'tuteur@free.fr'
       execute_script("document.getElementById('weekly_planning').checked = false;")
       execute_script("document.getElementById('daily-planning-container').classList.remove('d-none');")
