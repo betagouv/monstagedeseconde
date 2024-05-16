@@ -43,7 +43,7 @@
           p.fr-mb-0 Ces informations seront utilisées pour le remplissage de la convention de stage dématérialisée et ne seront pas transmises directement à l’entreprise.
 
 
-    .row.fr-mt-2w
+    .row.fr-mt-2w.fr-mb-3w
       .col-12
         = render '/inputs/dsfr_input_field',
                    field: :student_email,
@@ -131,7 +131,7 @@
                    field: :student_legal_representative_phone,
                    f: f,
                    object: f.object,
-                   value: f.object.student_legal_representative_email ||f.object.student.legal_representative_email,
+                   value: f.object.student_legal_representative_phone ||f.object.student.legal_representative_phone,
                    label: "Numéro de téléphone de votre représentant légal",
                    required: true,
                    title: 'Téléphone'

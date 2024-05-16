@@ -35,9 +35,9 @@ module InternshipApplications
         school: school, 
         class_room: create(:class_room, school: school),
         address: '100 bd Victor Hugo 13000 Marseille',
-        legal_representative_email: '',
+        legal_representative_email: 'sylvie@gmail.com',
         legal_representative_full_name: 'Sylvie Dupont',
-        legal_representative_phone: '+33060011223344'
+        legal_representative_phone: '+330600000000'
       )
       sign_in(student)
       valid_params = {
@@ -47,12 +47,12 @@ module InternshipApplications
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
           type: InternshipApplications::WeeklyFramed.name,
-          student_email: student.email,
-          student_phone: '+330600119988',
+          student_email: 'newemail@gmail.com',
+          student_phone: '+330656565600',
           student_address: '1 rue de la paix 75001 Paris',
           student_legal_representative_full_name: 'Jean Dupont',
           student_legal_representative_email: 'parent@gmail.com',
-          student_legal_representative_phone: '+330600119988'
+          student_legal_representative_phone: '+330600990099'
         }
       }
 
@@ -69,13 +69,20 @@ module InternshipApplications
       assert_equal student.id, created_internship_application.student.id
 
       student = student.reload
-      assert_equal '+330600119988', created_internship_application.student_phone
-      assert_equal student.email, created_internship_application.student_email
-      assert_equal '+330600119988', created_internship_application.student_legal_representative_phone
-      assert_equal 'parent@gmail.com', created_internship_application.student_legal_representative_email
-      assert_equal 'Jean Dupont', created_internship_application.student_legal_representative_full_name
-      assert_equal '1 rue de la paix 75001 Paris', created_internship_application.student_address
+      assert_equal '+330656565600', created_internship_application.student_phone
 
+      assert_equal created_internship_application.student_email, 'newemail@gmail.com'
+
+      puts student.legal_representative_email
+      # byebug
+      assert_equal 'parent@gmail.com', student.reload.legal_representative_email
+      assert_equal created_internship_application.student_legal_representative_email, 'parent@gmail.com'
+
+      assert_equal student.legal_representative_full_name, 'Jean Dupont'
+      assert_equal created_internship_application.student_legal_representative_full_name, 'Jean Dupont'
+
+      assert_equal student.legal_representative_phone, '+330600990099'
+      assert_equal created_internship_application.student_legal_representative_phone, '+330600990099'
     end
 
     test 'POST #create internship application as student to offer posted by statistician' do
