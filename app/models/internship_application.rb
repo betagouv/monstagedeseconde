@@ -532,8 +532,6 @@ class InternshipApplication < ApplicationRecord
   end
 
   def phone_prefix
-    # return '' if student.phone.blank? # TODO Check if this is necessary why removing prefix if phone is blank but will be updated
-
     prefix = '+33'
     ['+262', '+594', '+596', '+687', '+689'].each do |p|
       prefix = p if student.phone&.start_with?(p)
@@ -548,8 +546,13 @@ class InternshipApplication < ApplicationRecord
 
     if student_phone.present?
       phone_to_register = User.sanitize_mobile_phone_number(student_phone, phone_prefix)
+      unless phone_to_register =~ /\A\+(\d{2,3})0(6|7)\d{8}\z/
+        errors.add(:student_phone, "Ce numéro de téléphone n'est pas un numéro de téléphone mobile")
+        return
+      end
+
       if User.where.not(id: student.id).exists?(phone: phone_to_register)
-        errors.add(:student_phone, "Ce numéro de téléphone est déjà utilisé, ou n'est pas un numéro de téléphone mobile")
+        errors.add(:student_phone, "Ce numéro de téléphone est déjà utilisé")
       end
     end
   end

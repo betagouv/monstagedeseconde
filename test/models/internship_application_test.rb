@@ -473,6 +473,16 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert internship_application.valid?
   end
 
+  test '#check_contact_uniqueness without phone' do
+    student = create(:student, phone: nil)
+
+    internship_application = create(:weekly_internship_application, student: student, student_phone: '0600110011')
+    internship_application.student_email = student.email
+    assert internship_application.valid?
+    internship_application.save
+    assert_equal student.phone, '+330600110011'
+  end
+
   test '#check_contact_uniqueness when email is used already' do
     student = create(:student)
     other_student = create(:student)
