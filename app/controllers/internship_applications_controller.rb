@@ -185,6 +185,10 @@ class InternshipApplicationsController < ApplicationController
             :motivation,
             :student_phone,
             :student_email,
+            :student_address,
+            :student_legal_representative_full_name,
+            :student_legal_representative_email,
+            :student_legal_representative_phone,
             student_attributes: %i[
               email
               phone

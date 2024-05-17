@@ -71,7 +71,10 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :companies, path: 'entreprises', only: %i[index] do
+    resources :companies, path: 'entreprises', only: %i[index show] do
+      member do
+        post :contact
+      end
       collection do
         get :search, path: 'recherche'
       end

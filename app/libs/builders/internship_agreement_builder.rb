@@ -59,7 +59,11 @@ module Builders
 
     def preprocess_internship_application_params(internship_application)
       {
-        date_range: "Du #{internship_application.internship_offer.first_date.strftime( "%d/%m/%Y")} au #{internship_application.internship_offer.last_date.strftime( "%d/%m/%Y")}"
+        date_range: "Du #{internship_application.internship_offer.first_date.strftime( "%d/%m/%Y")} au #{internship_application.internship_offer.last_date.strftime( "%d/%m/%Y")}",
+        student_legal_representative_email: internship_application.student.legal_representative_email,
+        student_legal_representative_phone: internship_application.student.legal_representative_phone,
+        student_legal_representative_full_name: internship_application.student.legal_representative_full_name,
+        student_address: internship_application.student_address
       }
     end
 
@@ -75,7 +79,10 @@ module Builders
         daily_hours: internship_offer.daily_hours,
         weekly_hours: internship_offer.weekly_hours,
         lunch_break: internship_offer.lunch_break,
-        weekly_lunch_break: internship_offer&.weekly_lunch_break
+        weekly_lunch_break: internship_offer&.weekly_lunch_break,
+        employer_name: internship_offer.employer_name,
+        employer_contact_email: internship_offer.employer.email,
+        internship_address: "#{internship_offer.street}, #{internship_offer.zipcode} #{internship_offer.city}"
       }
     end
 

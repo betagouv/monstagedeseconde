@@ -7,7 +7,7 @@ module Services
         'Accept'=>'application/json',
         'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
         'Authorization'=>ENV['IMMERSION_FACILE_API_KEY'],
-        'Host'=>'immersion-facile.beta.gouv.fr',
+        'Host'=>'staging.immersion-facile.beta.gouv.fr',
         'User-Agent'=>'Ruby'
       }
     end
@@ -39,7 +39,7 @@ module Services
 
 
     test 'perform when connexion is ok and params are ok' do
-      base_url = "https://immersion-facile.beta.gouv.fr/api/v2/search?distanceKm=" \
+      base_url = "https://staging.immersion-facile.beta.gouv.fr/api/v2/search?distanceKm=" \
                  "#{parameters[:radius_in_km]}&latitude=#{parameters[:latitude]}" \
                  "&longitude=#{parameters[:longitude]}&sortedBy=distance"
       stub_request(:get, base_url).with(headers: headers).to_return(positive_result)
@@ -49,7 +49,7 @@ module Services
     end
 
     test 'perform when connexion is ok and params are not ok with wrong appellationcode' do
-      stub_url = "https://immersion-facile.beta.gouv.fr/api/v2/search?distanceKm=" \
+      stub_url = "https://staging.immersion-facile.beta.gouv.fr/api/v2/search?distanceKm=" \
                  "#{parameters[:radius_in_km]}&latitude=#{parameters[:latitude]}" \
                  "&longitude=#{parameters[:longitude]}&sortedBy=distance"
       stub_request(:get, stub_url).with(headers: headers).to_return(wrong_appellation_codes_result)
@@ -60,7 +60,7 @@ module Services
     end
 
     test 'perform when connexion is not ok' do
-      stub_url = "https://immersion-facile.beta.gouv.fr/api/v2/search?distanceKm=" \
+      stub_url = "https://staging.immersion-facile.beta.gouv.fr/api/v2/search?distanceKm=" \
                  "appellationCodes[]='132456'&#{parameters[:radius_in_km]}&latitude=#{parameters[:latitude]}" \
                  "&longitude=#{parameters[:longitude]}&sortedBy=distance"
       Net::HTTP.stub_any_instance(:request, nil) do
