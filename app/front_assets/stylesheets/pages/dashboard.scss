@@ -40,6 +40,15 @@ tr a.trash-user{
 tr:hover a.trash-user{
     display: inline;
 }
+table.anonymizer tr {
+  td:first-child {
+    color: $blue-france;
+  }
+  td:nth-child(2){
+    font-weight: 800;
+    font-size: 1rem;
+  }
+}
 
 // input.teacher-type-radio[type="radio"]:checked+label {
 //   color: $blue

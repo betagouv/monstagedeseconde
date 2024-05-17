@@ -3,7 +3,8 @@
 class UsersController < ApplicationController
   include Phonable
   before_action :authenticate_user!
-  skip_before_action :check_school_requested, only: [:edit, :update, :answer_survey]
+  skip_before_action :check_school_requested,
+                     only: [:edit, :update, :answer_survey]
 
   def edit
     authorize! :update, current_user
@@ -44,6 +45,45 @@ class UsersController < ApplicationController
     render json: 'Survey answered', status: 200
   end
 
+  def anonymize_form
+    authorize! :anonymize_user, current_user
+    render 'users/anonymize_form'
+  end
+
+  def identify_user
+    authorize! :anonymize_user, current_user
+    form_input = user_params[:phone_or_email].strip
+    search_hash = {phone: form_input}
+    search_hash = {email: form_input} if form_input.match?(/\A[^@\s]+@[^@\s]+\z/)
+    user = User.kept.find_by(search_hash)
+    if user && (user.student? || user.employer?)
+      render 'users/anonymize_form',
+             locals: { user: user, url: utilisateurs_anonymiser_path }
+    else
+      error_message = 'Utilisateur inconnu'
+      if User.find_by(search_hash).try(:anonymized?)
+        error_message = 'Utilisateur déjà anonymisé'
+      elsif user.present? && !user.employer? && !user.student?
+        error_message = 'Ni un élève, ni un employeur'
+      end
+      render 'users/anonymize_form',
+             locals: { warning: error_message,
+                       user: nil,
+                       url: utilisateurs_identifier_path }
+    end
+  end
+
+  def anonymize_user
+    authorize! :anonymize_user, current_user
+    user_to_anonymize = User.find(user_params[:id])
+    if user_to_anonymize.anonymize(send_email: user_params[:anonymize_with_email] == 'true')
+      redirect_to '/admin', flash: { success: 'Utilisateur anonymisé avec succès.' }
+    else
+      error_message = 'Impossible d’anonymiser cet utilisateur.'
+      redirect_to '/admin', flash: { danger: error_message }
+    end
+  end
+
   helper_method :current_section
 
   private
@@ -64,7 +104,8 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:school_id,
+    params.require(:user).permit(:id,
+                                :school_id,
                                  :missing_weeks_school_id,
                                  :agreement_signatorable,
                                  :first_name,
@@ -83,6 +124,8 @@ class UsersController < ApplicationController
                                  :academy_id,
                                  :academy_region_id,
                                  :employer_role,
+                                 :phone_or_email,
+                                 :anonymize_with_email,
                                  banners: {})
   end
 
