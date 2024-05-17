@@ -174,7 +174,7 @@ module Dashboard
           click_link 'Modifier'
           refute page.has_selector?('.nav-link-icon-with-label-success') # green element on screen
 
-          find('h1.h3', text: 'Ma candidature')
+          find('h1.h2', text: 'Ma candidature')
 
           # fill in application form
           find('#internship_application_motivation').native.send_keys('et ')
@@ -191,7 +191,7 @@ module Dashboard
 
           click_link 'Modifier'
 
-          find('h1.h3', text: 'Ma candidature')
+          find('h1.h2', text: 'Ma candidature')
 
           find('input.fr-btn[type="submit"][name="commit"][value="Valider ma candidature"]').click
         end

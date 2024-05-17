@@ -290,6 +290,10 @@ class User < ApplicationRecord
     raw
   end
 
+  def anonymized_email
+    email.gsub(/(?<=.{2}).(?=[^@]*@)/, '*')
+  end
+
   private
 
   def concatenate_and_clean
