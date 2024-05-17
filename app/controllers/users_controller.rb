@@ -55,22 +55,21 @@ class UsersController < ApplicationController
     form_input = user_params[:phone_or_email].strip
     search_hash = {phone: form_input}
     search_hash = {email: form_input} if form_input.match?(/\A[^@\s]+@[^@\s]+\z/)
-    user = User.kept.find_by(search_hash)
-    if user && (user.student? || user.employer?)
-      render 'users/anonymize_form',
-             locals: { user: user, url: utilisateurs_anonymiser_path }
+    @user = User.kept.find_by(search_hash)
+    destination = 'users/anonymize_form'
+    if @user && (@user.student? || @user.employer?)
+      @url = utilisateurs_anonymiser_path
     else
-      error_message = 'Utilisateur inconnu'
+      @error_message = 'Utilisateur inconnu'
       if User.find_by(search_hash).try(:anonymized?)
-        error_message = 'Utilisateur déjà anonymisé'
-      elsif user.present? && !user.employer? && !user.student?
-        error_message = 'Ni un élève, ni un employeur'
+        @error_message = 'Utilisateur déjà anonymisé'
+      elsif @user.present? && !@user.employer? && !@user.student?
+        @error_message = 'Ni un élève, ni un employeur'
       end
-      render 'users/anonymize_form',
-             locals: { warning: error_message,
-                       user: nil,
-                       url: utilisateurs_identifier_path }
+      @url = utilisateurs_identifier_path
+      destination = 'users/anonymize_form'
     end
+    render destination
   end
 
   def anonymize_user
