@@ -1,0 +1,39 @@
+.fr-my-4w.fr-py-6w.mx-lg-0.fr-mx-2w
+  - video_data = Presenters::User.new(nil).pros_videos_data
+  h3.fr-pt-4w
+    |
+      Faites découvrir vos métiers, vos savoir-faire et suscitez des
+      vocations en accueillant des élèves de seconde en stage
+      d'observation, du 17 au 28 juin !
+  .videos-pros.row data-controller="video-line"
+    .col-12.fr-my-6w.d-none.d-md-block
+      .d-flex.flex-row
+        - video_data.each do |video|
+          .fr-tile.fr-enlarge-link id="tile-#{video[:id]}" data-video-line-target="tile" data-action="click->video-line#select"
+            .fr-tile__body
+              .fr-tile__content
+                h3.fr-tile__title
+                  = video[:title]
+                span.hidden
+                  = video[:url]
+                span.hidden
+                  = video[:id]
+    .col-12.fr-my-6w.d-md-none
+      .d-flex.flex-row
+        select [name="video_choice" 
+                id="video_choice"
+                title="Choisissez une vidéo de témoignage d'un professionnel"
+                class="fr-select fr-mb-4w"
+                data-video-line-target="comboSelect"
+                data-action="change->video-line#select_by_html" ]
+          - video_data.each do |video|
+            option value="#{video[:url]}"
+              = video[:title]
+    .col-12.iframe-container.fr-mb-8w.center-text
+      iframe [src="#{video_data[0][:url]}"
+              title="Témoignages de professionnels pour des professionnels"
+              data-video-line-target="iframe"
+              frameborder="0"
+              allowfullscreen=""
+              style='{margin: auto}'
+              sandbox="allow-same-origin allow-scripts allow-popups"]
