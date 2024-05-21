@@ -66,14 +66,16 @@
         div#organisation-group [class="form-group form-group-select-group fr-my-2w #{'d-none' if request.fullpath.include?('organisations/nouveau') || edit_mode}" data-organisation-form-target="groupBlock"]
           .form-group.fr-my-2w
             = form.label :group_id,
-                          "Institution de tutelle",
                           data: {:"organisation-form-target" => 'groupLabel'},
-                          class: 'fr-label'
+                          class: 'fr-label' do
+              = form.rg2a_required_content_tag
+              = "Type d’employeur public"
 
             = form.select :group_id,
                           options_for_select(options_for_groups, resource.group.try(:id)),
-                          { prompt: '-- Choisissez votre ministère --' },
+                          { prompt: '-- Choisissez votre type --' },
                           class: "fr-select",
+                          required: true,
                           data: {:"organisation-form-target" => 'selectGroupName'}
 
   .row.bloc-tooggle class=('d-none' if request.fullpath.include?('organisations/nouveau'))
@@ -89,7 +91,7 @@
                   field: :employer_description,
                   label: 'Description de l’entreprise (optionnel)',
                   aria: {labelledby: 'label_organisation_description'},
-                  required: true,
+                  required: false,
                   title: 'description de l’entreprise',
                   object: form.object,
                   field_type: 'text_area'
