@@ -17,7 +17,7 @@ module Dashboard::InternshipAgreements
     end
 
     # As Main Teacher
-    test 'PATCH #update as main teacher not owning internship_offer redirects to user_session_path' do
+    test 'PATCH #update as main teacher' do
       school                 = create(:school, :with_school_manager)
       class_room             = create(:class_room, school: school)
       other_class_room       = create(:class_room, school: school)
@@ -28,7 +28,7 @@ module Dashboard::InternshipAgreements
       sign_in main_teacher
       patch dashboard_internship_agreement_path(internship_agreement.id),
             params: {internship_agreement: {student_class_room: 'a'}}
-      assert_redirected_to root_path
+      assert_redirected_to dashboard_internship_agreements_path
     end
 
 
