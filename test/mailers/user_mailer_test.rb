@@ -15,6 +15,17 @@ class UserMailerTest < ActionMailer::TestCase
     refute_email_spammyness(email)
   end
 
+  test '.missing_school_manager_warning_email sends email to school manager' do
+    student = create(:student)
+    offer = create(:internship_offer)
+    email = UserMailer.missing_school_manager_warning_email(offer: offer, student: student)
+    email.deliver_now
+    assert_emails 1
+    assert_equal [EmailUtils.from], email.from
+    assert_equal ["ce.#{student.school.code_uai}@ac-paris.fr"], email.to
+    refute_email_spammyness(email)
+  end
+
   # TODO reporting is no longer used
 
   # test '.export_offers ministry_statistician' do
