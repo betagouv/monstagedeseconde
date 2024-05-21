@@ -169,9 +169,9 @@ module Dashboard
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: "La convention est dans les mains du chef d'établissement.")
+        find('div.actions', text: "La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.")
       end
-      find('a.button-component-cta-button', text: 'Vérifier ma convention')
+      find('a.button-component-cta-button', text: 'Imprimer')
     end
 
     test 'employer reads internship agreement table with correct indications - status: started_by_school_manager' do
@@ -181,9 +181,9 @@ module Dashboard
       sign_in(internship_offer.employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: "La convention est dans les mains du chef d'établissement.")
+        find('div.actions', text: "La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.")
       end
-      find('a.button-component-cta-button', text: 'Vérifier ma convention')
+      find('a.button-component-cta-button', text: 'Imprimer')
     end
 
     test 'employer reads internship agreement table with correct indications - status: validated' do
@@ -481,7 +481,7 @@ module Dashboard
       within('td[data-head="Statut"]') do
         # find('div.actions', text: "La convention est dans les mains du chef d'établissement.")
       end
-      find('a.button-component-cta-button', text: 'Vérifier ma convention')
+      find('a.button-component-cta-button', text: 'Imprimer')
     end
 
     test 'statistician reads internship agreement table with correct indications - status: started_by_school_manager' do
@@ -493,7 +493,7 @@ module Dashboard
       within('td[data-head="Statut"]') do
         # find('div.actions', text: "La convention est dans les mains du chef d'établissement.")
       end
-      find('a.button-component-cta-button', text: 'Vérifier ma convention')
+      find('a.button-component-cta-button', text: 'Imprimer')
     end
 
     test 'statistician reads internship agreement table with correct indications - status: validated' do
