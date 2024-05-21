@@ -1,10 +1,22 @@
 p style=head_styles
-  = "Candidature au stage \"#{@internship_application.internship_offer.title}\" expirée"
+  = "Votre Candidature a expirée"
 
 p style=p_styles
-  | Votre candidature au stage #{@internship_offer_title} a expiré.
-
-p style=p_styles
-  |À bientôt,
+  | Bonjour,
   br
-  |L'équipe Mon stage de 2de.
+  br
+  = "Nous tenons à vous informer que votre candidature pour l'offre #{@internship_offer.title} "
+  = "chez #{@internship_offer.employer_name} a expiré. Conformément au délai de #{@expiration_delay} jours "
+  = "accordé à l'entreprise pour répondre, votre candidature a malheureusement expiré sans retour de sa part. "
+  br
+  br
+  | Nous vous encourageons à persévérer et à explorer d'autres opportunités disponibles.
+
+p style=p_styles
+  | Cordialement,
+  br
+  | 1jeune1solution
+
+= render partial: "mailers/blue_call_to_action", 
+         locals: { href: @url, 
+         label: "Rechercher une offre" }
