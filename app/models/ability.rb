@@ -292,13 +292,12 @@ class Ability
 
 
     can :flip_notification, AreaNotification do |_area_notif|
-      if user.team.not_exists?
-        false
-      else
-        many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
-        current_area_notifications_are_off = !user.fetch_current_area_notification.notify
-        many_people_in_charge_of_area || current_area_notifications_are_off
-      end
+      many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
+      current_area_notifications_are_off = !user.fetch_current_area_notification.notify
+
+      # TODO : logic to be checked with current_area_notifications_are_off
+      user.team.alive? &&
+        (many_people_in_charge_of_area || current_area_notifications_are_off)
     end
 
     can :manage_abilities, AreaNotification do |area_notification|
