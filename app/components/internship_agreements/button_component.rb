@@ -13,18 +13,24 @@ module InternshipAgreements
     end
 
     def started_or_signed?
-      %w[validated
-         signatures_started
-         signed_by_all
-         signed
-      ].include?(internship_agreement.aasm_state)
+      after_validation_states = %w[validated
+                                   signatures_started
+                                   signed_by_all
+                                   signed]
+      state_in?(after_validation_states) ||
+        (current_user.employer_like? && right_after_employer_filled_agreement_state?)
     end
 
     def on_going_process?
-      employer_like = current_user.employer_like?
-      after_employer_state = %w[completed_by_employer
-                                started_by_school_manager].include?(internship_agreement.aasm_state)
-      employer_like || after_employer_state
+      current_user.employer_like? || right_after_employer_filled_agreement_state?
+    end
+
+    def right_after_employer_filled_agreement_state?
+      state_in?(%w[completed_by_employer started_by_school_manager])
+    end
+
+    def state_in?(states)
+      internship_agreement.aasm_state.in?(states)
     end
 
     def button_label(user:)
@@ -34,18 +40,12 @@ module InternshipAgreements
           {status: 'cta', text: 'Remplir ma convention'}
         when 'started_by_employer' then
           {status: 'cta', text: 'Valider ma convention'}
-        when 'completed_by_employer' then
-          {status: 'secondary_cta', text: 'Vérifier ma convention'}
-        when 'started_by_school_manager' then
-          {status: 'secondary_cta', text: 'Vérifier ma convention'}
-        when 'validated', 'signatures_started', 'signed_by_all' then
+        when 'completed_by_employer', 'started_by_school_manager', 'validated', 'signatures_started', 'signed_by_all' then
           {status: 'secondary_cta', text: 'Imprimer'}
         end
       else # school_manager
         case @internship_agreement.aasm_state
-        when 'draft' then
-          {status: 'disabled', text: 'En attente'}
-        when 'started_by_employer' then
+        when 'draft', 'started_by_employer' then
           {status: 'disabled', text: 'En attente'}
         when 'completed_by_employer' then
           {status: 'cta', text: 'Remplir ma convention'}
