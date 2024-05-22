@@ -117,39 +117,6 @@ class Ability
   end
 
   def admin_officer_abilities(user:)
-    can %i[
-      read
-      create
-      edit
-      edit_activity_rating_rich_text
-      edit_financial_conditions_rich_text
-      edit_legal_terms_rich_text
-      edit_main_teacher_full_name
-      edit_school_representative_full_name
-      edit_school_representative_phone
-      edit_school_representative_email
-      edit_school_representative_role
-      edit_delegation_date
-      edit_legal_status
-      edit_student_refering_teacher_full_name
-      edit_student_refering_teacher_email
-      edit_student_refering_teacher_phone
-      edit_student_address
-      edit_student_class_room
-      edit_student_full_name
-      edit_student_phone
-      edit_student_legal_representative_email
-      edit_student_legal_representative_full_name
-      edit_student_legal_representative_phone
-      edit_student_legal_representative_2_email
-      edit_student_legal_representative_2_full_name
-      edit_student_legal_representative_2_phone
-      edit_student_school
-      see_intro
-      update
-    ], InternshipAgreement do |agreement|
-      agreement.internship_application.student.school_id == user.school_id
-    end
     can :create, Signature  do |signature|
       signature.internship_agreement.student.school == user.school
     end
@@ -498,7 +465,37 @@ class Ability
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer: internship_offer )
     end
-    can %i[read], InternshipAgreement do |agreement|
+    can %i[
+      read
+      create
+      edit
+      edit_activity_rating_rich_text
+      edit_financial_conditions_rich_text
+      edit_legal_terms_rich_text
+      edit_main_teacher_full_name
+      edit_school_representative_full_name
+      edit_school_representative_phone
+      edit_school_representative_email
+      edit_school_representative_role
+      edit_delegation_date
+      edit_legal_status
+      edit_student_refering_teacher_full_name
+      edit_student_refering_teacher_email
+      edit_student_refering_teacher_phone
+      edit_student_address
+      edit_student_class_room
+      edit_student_full_name
+      edit_student_phone
+      edit_student_legal_representative_email
+      edit_student_legal_representative_full_name
+      edit_student_legal_representative_phone
+      edit_student_legal_representative_2_email
+      edit_student_legal_representative_2_full_name
+      edit_student_legal_representative_2_phone
+      edit_student_school
+      see_intro
+      update
+    ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
     end
   end

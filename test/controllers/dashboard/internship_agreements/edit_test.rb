@@ -48,5 +48,37 @@ module Dashboard::InternshipOffers
       get edit_dashboard_internship_agreement_path(internship_agreement.id)
       assert_response :success
     end
+
+     # As Teacher
+     test 'GET #edit as teacher if belong to school' do
+      internship_agreement = create(:internship_agreement, employer_accept_terms: true)
+      sign_in(create(:teacher, school: internship_agreement.internship_application.student.school))
+      get edit_dashboard_internship_agreement_path(internship_agreement.id)
+      assert_response :success
+    end
+
+     # As Main Teacher
+     test 'GET #edit as main teacher if belong to school' do
+      internship_agreement = create(:internship_agreement, employer_accept_terms: true)
+      sign_in(create(:main_teacher, school: internship_agreement.internship_application.student.school))
+      get edit_dashboard_internship_agreement_path(internship_agreement.id)
+      assert_response :success
+    end
+
+    # As Other 
+    test 'GET #edit as other if belong to school' do
+      internship_agreement = create(:internship_agreement, employer_accept_terms: true)
+      sign_in(create(:other, school: internship_agreement.internship_application.student.school))
+      get edit_dashboard_internship_agreement_path(internship_agreement.id)
+      assert_response :success
+    end
+
+    # As Admin officer
+    test 'GET #edit as admin officer if belong to school' do
+      internship_agreement = create(:internship_agreement, employer_accept_terms: true)
+      sign_in(create(:admin_officer, school: internship_agreement.internship_application.student.school))
+      get edit_dashboard_internship_agreement_path(internship_agreement.id)
+      assert_response :success
+    end
   end
 end

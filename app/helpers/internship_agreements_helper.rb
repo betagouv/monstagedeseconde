@@ -1,7 +1,7 @@
 module InternshipAgreementsHelper
   def current_user_agreement_terms(user)
-    return :school_manager_accept_terms if user.school_manager? || user.admin_officer?
-    return :main_teacher_accept_terms if user.main_teacher?
+    return :school_manager_accept_terms if user.school_management?
+
     return :employer_accept_terms if user.employer_like?
     raise ArgumentError, "#{user.type} does not support accept terms yet "
   end
