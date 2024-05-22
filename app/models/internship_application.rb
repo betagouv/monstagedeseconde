@@ -357,6 +357,15 @@ class InternshipApplication < ApplicationRecord
         MainTeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
       end
     end
+
+    if missing_school_manager?
+      UserMailer.missing_school_manager_warning_email(offer: internship_offer, student: student)
+                .deliver_later
+    end
+  end
+
+  def missing_school_manager?
+    student.school && student.school.school_manager.nil?
   end
 
   def self.from_sgid(sgid)

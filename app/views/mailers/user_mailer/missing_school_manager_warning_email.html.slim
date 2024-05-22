@@ -1,0 +1,23 @@
+p style=head_styles
+  ="Une convention de stage vous attend sur 1jeune1solution."
+
+p style=p_styles
+  | Bonjour,
+p style=p_styles
+  ="Nous avons le plaisir de vous informer que l'élève #{@student_prez.full_name} a été admis à un stage de seconde via la plateforme 1jeune1solution." 
+p style=p_styles
+  | L'entreprise a déjà rempli la convention en ligne. Maintenant, il est de votre responsabilité de compléter cette démarche. 
+p style=p_styles
+  | Nous vous prions de bien vouloir créer votre compte sur la plateforme en sélectionnant l'option 
+  strong = "Chef d'établissement "
+  | dans le formulaire d'inscription.
+p style=p_styles
+  |Assurez-vous d'utiliser votre adresse académique lors de cette procédure :
+p style=p_styles
+  = @school_manager_email
+p style=p_styles
+  | Cordialement,
+p style=p_styles
+  | 1jeune1solution
+= render partial: "mailers/blue_call_to_action",
+          locals: { href: @url, label: "Créer mon compte pour remplir la convention en ligne" }
