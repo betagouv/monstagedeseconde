@@ -17,15 +17,6 @@ class EmployerMailer < ApplicationMailer
                subject: 'Une candidature vous attend, veuillez y répondre')
   end
 
-  def internship_applications_reminder_email(employer:,
-                                             remindable_application_ids: )
-    @remindable_application_ids = InternshipApplication.where(id: remindable_application_ids)
-    @employer = employer
-
-    send_email(to: @employer.email,
-         subject: 'Candidatures en attente, veuillez y répondre')
-  end
-
   def internship_application_canceled_by_student_email(internship_application:)
     @internship_application = internship_application
     recipients_email        = internship_application.filter_notified_emails

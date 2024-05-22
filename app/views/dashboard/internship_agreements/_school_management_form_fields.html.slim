@@ -33,7 +33,7 @@ tbody.internship-agreement
         - filled_by = ["le chef d'établissement"]
         - prompt = "Sélectionner le statut de l'établissement"
         = render partial: 'dashboard/internship_agreements/date_field_element',
-                 locals: { field: :delegation_date, form: form, text_label: label, title: title, filled_by: filled_by, disabled: disabled, value: resource.school.delegation_date, prompt: prompt }
+                 locals: { field: :delegation_date, form: form, text_label: label, title: title, filled_by: filled_by, disabled: disabled, value: resource.school.delegation_date, prompt: prompt, required: false }
 
       .row.mt-0
         - label = "Courriel du chef d'établissement ou de son représentant"
@@ -215,7 +215,14 @@ tbody.internship-agreement
         - content = "Critères d'évaluations"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/trix_form_element',
-                 locals: { field: :activity_rating_rich_text, form: form, text_label: label, title: title, content: content , filled_by: filled_by, disabled: disabled }
+                 locals: { field: :activity_rating_rich_text, form: form, text_label: label, title: title, content: content , filled_by: filled_by, disabled: disabled, required: false }
+        
+        .col-12.fr-py-3w
+          .fr-hint.small
+            | La séquence d'observation doit être précédée d'un temps de préparation 
+            | et suivie d'un temps d'exploitation ou de restitution qui permet de 
+            | valoriser cette expérience. Les élèves peuvent s’exprimer sur ce qu’ils 
+            | ont vu, et revenir sur leurs activités et leurs impressions. 
 
       = form.submit 'Submit', class: 'd-none', id: 'submit'
 

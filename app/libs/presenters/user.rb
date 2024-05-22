@@ -9,7 +9,7 @@ module Presenters
     delegate :default_search_options, to: :user
     delegate :email, to: :user
 
-    def forbidden_application_reason ; nil end
+    def forbidden_application_reason(internship_offer) ; nil end
 
     def initials
       "#{user.first_name[0].capitalize}.#{user.last_name[0].capitalize}."
@@ -119,7 +119,7 @@ module Presenters
         title = "Se créer un compte en tant que gestionnaire d'établissement scolaire"
         subtitle = "Vous souhaitez que vos élèves trouvent un stage " \
         "de qualité. Cet outil vous permettra d'accéder à un tableau " \
-        "de suivi de vos élèves tout au long de leur recherche de stage." 
+        "de suivi de vos élèves tout au long de leur recherche de stage."
       end
       {
         title: title,
@@ -137,6 +137,29 @@ module Presenters
         %i[email]
       else
         []
+      end
+    end
+
+    def pros_videos_data
+      data = [
+        {label: "Témoignage de Sophie Boissard de Clariane",
+         url: "uL90WJEWbJk?si=qI1uI3wIcb6DPuZX"},
+        {label: "Témoignage de Nathalie Fournier d'ArcelorMittal",
+         url: "4yxBNMKTBZ4?si=PtQsvfQ3Cj31STs"},
+        {label: "Témoignage de Carine Dellière de L'Oréal France",
+         url: "KPvnLUa16Qg?si=n03OB1QZE9osKMdZ"},
+        {label: "Témoignage de Jean-Sébastien Blanc d'Engie",
+         url: "rzZqQHXeq0s?si=A3E6-rmNVUAIq5dS"},
+        {label: "Témoignage de Chloé Martin, Directrice d'école",
+         url: "f48XiJGNXJ8?si=e1lLx5lvaDRl3Tge"}
+      ]
+      data.each_with_index.map do |d, index|
+        {
+          label: d[:label],
+          url: "https://www.youtube-nocookie.com/embed/#{d[:url]}&amp;controls=0",
+          title: d[:label],
+          id: index
+        }
       end
     end
 

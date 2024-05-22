@@ -7,7 +7,8 @@ class PagesController < ApplicationController
                               regional_partners_index
                               school_management_landing
                               statistician_landing
-                              student_landing]
+                              student_landing
+                              search_companies]
 
   def register_to_webinar
     authorize! :subscribe_to_webinar, current_user
@@ -21,6 +22,9 @@ class PagesController < ApplicationController
   end
 
   def student_landing
+  end
+
+  def search_companies
   end
 
   alias_method :school_management_landing, :student_landing
