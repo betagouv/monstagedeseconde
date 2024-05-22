@@ -1,9 +1,7 @@
 module Services
   class ImmersionFacile
-    IMMERSION_FACILE_ENDPOINT_URL = "https://immersion-facile.beta.gouv.fr/api/v2/search".freeze
+    IMMERSION_FACILE_ENDPOINT_URL = ENV['IMMERSION_FACILE_API_URL'] + '/search'
     
-    # Staging
-    # IMMERSION_FACILE_ENDPOINT_URL = "https://staging.immersion-facile.beta.gouv.fr/api/v2/search".freeze
     # sample of json response : {
     # [
     #   {
