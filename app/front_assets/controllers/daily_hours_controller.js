@@ -7,7 +7,15 @@ export default class extends Controller {
     'weeklyHoursEnd',
     'dailyHoursStart',
     'dailyHoursEnd',
+    'presenceHint'
   ];
+
+  minimumPresence = 4; // 4 days of presence required
+
+  setValidateButton(stateOn = true) {
+    const validateButton = document.getElementById('practicalInfoSubmitButton');
+    validateButton.disabled = !stateOn;
+  }
 
   handleToggleWeeklyPlanning() {
     if ($('#weekly_planning').is(":checked")) {
@@ -23,6 +31,7 @@ export default class extends Controller {
       $("#daily-planning-container").removeClass('d-none')
       $("#daily-planning-container").slideDown()
     }
+    this.setValidateButton(false);
   }
 
   weeklyStartChange() {
@@ -34,11 +43,11 @@ export default class extends Controller {
           opt.disabled = true;
         }
       });
-      this.weeklyHoursEndTarget.disabled = false;
     } else {
-      this.weeklyHoursEndTarget.disabled = false;
       this.enableAllOptions(this.weeklyHoursEndTarget);
     }
+    this.weeklyHoursEndTarget.disabled = false;
+    this.checkWeeklyPresence();
   }
 
   weeklyEndChange() {
@@ -52,11 +61,22 @@ export default class extends Controller {
           opt.disabled = false;
         }
       });
-      this.weeklyHoursStartTarget.disabled = false;
     } else {
-        this.weeklyHoursStartTarget.disabled = false;
-        this.enableAllOptions(this.weeklyHoursStartTarget);
+      this.enableAllOptions(this.weeklyHoursStartTarget);
     }
+    this.weeklyHoursStartTarget.disabled = false;
+    this.checkWeeklyPresence();
+  }
+
+  checkWeeklyPresence() {
+    let enoughPresence = false;
+    this.setValidateButton(enoughPresence);
+    const start = this.getIFromTime(this.weeklyHoursStartTarget.value);
+    const end = this.getIFromTime(this.weeklyHoursEndTarget.value);
+    if (start && end) {
+      enoughPresence = true;
+    }
+    this.setValidateButton(enoughPresence);
   }
 
 
@@ -72,6 +92,7 @@ export default class extends Controller {
       this.dailyHoursEndTargets[i].disabled = false;
       this.enableAllOptions(this.dailyHoursEndTargets[i]);
     }
+    this.checkEnoughPresence();
   }
 
   dailyHoursEndChange(event) {
@@ -87,15 +108,29 @@ export default class extends Controller {
       this.dailyHoursStartTargets[i].disabled = false;
       this.enableAllOptions(this.dailyHoursStartTargets[i]);
     }
+    this.checkEnoughPresence();
+  }
+
+  checkEnoughPresence() {
+    let enoughPresence = false;
+    let daysCounter = 0;
+    this.dailyHoursStartTargets.forEach((dailyHoursStartTarget, i) => {
+      if (dailyHoursStartTarget.value !== '' && this.dailyHoursEndTargets[i].value !== '') {
+        daysCounter += 1;
+      }
+    });
+    if (daysCounter >= this.minimumPresence) {
+      enoughPresence = true;
+      this.presenceHintTarget.classList.add('d-none');
+    } else {
+      this.presenceHintTarget.classList.remove('d-none');
+    }
+    this.setValidateButton(enoughPresence);
   }
 
   disableOptionBeforeStart(element, start) {
     Array.from(element.options).forEach(opt => {
-      if (this.getIFromTime(opt.value) < start + 4) {
-        opt.disabled = true;
-      } else {
-        opt.disabled = false;
-      }
+      opt.disabled = (this.getIFromTime(opt.value) < start + 4)
     });
   }
 

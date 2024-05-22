@@ -1,6 +1,7 @@
 import { Controller } from 'stimulus';
 import $ from 'jquery';
 import { showElement, hideElement } from '../utils/dom';
+// TODO remove this entire script if not used anymore
 
 export default class extends Controller {
   static targets = [
