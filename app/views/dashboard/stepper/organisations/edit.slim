@@ -12,13 +12,13 @@
 .row
   .col-12
     = form_with model: @organisation,
-                data: {turbo: false},
+                data: { turbo: false },
                 method: :patch,
                 url: url do |form|
       = render "dashboard/stepper/steps", { current_step_number: 1,
-                                        total_steps: 5,
-                                        current_step_title: "Informations sur l'entreprise",
-                                        next_step_title: "Description du stage" }
+                                            total_steps: 5,
+                                            current_step_title: "Informations sur l'entreprise",
+                                            next_step_title: "Description du stage" }
       = render "layouts/form_errors",
                resource: @organisation,
                resource_name: :internship_offer

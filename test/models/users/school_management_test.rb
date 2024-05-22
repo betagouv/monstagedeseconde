@@ -135,7 +135,7 @@ module Users
       assert build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school: school).valid?
       refute build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school: school).valid?
       
-      school = create(:school, zipcode: "61252", city: "Argentan")
+      school = create(:school, zipcode: "61252", city: "Argentan", code_uai: "0612345A")
       assert build(:school_manager, email: 'ce.1122334x@ac-normandie.fr', school: school).valid?
       assert build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school: school).valid?
       refute build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school: school).valid?

@@ -40,12 +40,26 @@ tbody.internship-agreement
         = render partial: 'dashboard/internship_agreements/text_field_element',
                  locals: { field: :siret, limit: 14, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled, pattern: "[0-9]{14}" }
       .row.mt-0
+        - label = "Nom de l'entreprise"
+        - title = "Note au chef d'entreprise"
+        - content = "Nom de l'entreprise"
+        - filled_by = ["l'entreprise"]
+        = render partial: 'dashboard/internship_agreements/text_field_element',
+                 locals: { field: :employer_name, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled }
+      .row.mt-0
         - label = "Nom du responsable de l’accueil en milieu professionnel"
         - title = "Note au chef d'entreprise"
         - content = "Nom, prénom et role du tuteur"
         - filled_by = ["l'entreprise"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
                  locals: { field: :tutor_full_name, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled }
+      .row.mt-0
+        - label = "Adresse email de contact"
+        - title = "Note au chef d'entreprise"
+        - content = "Email de contact"
+        - filled_by = ["l'entreprise"]
+        = render partial: 'dashboard/internship_agreements/text_field_element',
+                 locals: { field: :employer_contact_email, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled }
       .row.mt-0
         - label = "Fonction du responsable de l’accueil dans l'entreprise"
         - title = "Note au chef d'entreprise"
@@ -68,6 +82,13 @@ tbody.internship-agreement
         - filled_by = ["l'entreprise"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
                  locals: { field: :date_range, form: form, text_label: label, content: content, title: title , filled_by: filled_by, disabled: disabled }
+      .row.mt-0
+        - label = "Adresse du lieu du stage"
+        - title = "Note au chef d'entreprise"
+        - content = "Adresse du stage"
+        - filled_by = ["l'entreprise"]
+        = render partial: 'dashboard/internship_agreements/text_field_element',
+                 locals: { field: :internship_address, form: form, text_label: label, content: content, title: title , filled_by: filled_by, disabled: disabled }
 
       .row.mt-0.backwards
         .col-12

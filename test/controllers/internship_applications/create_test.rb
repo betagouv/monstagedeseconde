@@ -10,9 +10,9 @@ module InternshipApplications
     test 'GET #new internship application as student' do
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
-      student = create(:student, school: school, class_room: create(:class_room, school: school))
+      student = create(:student, :with_phone, school: school, class_room: create(:class_room, school: school))
       sign_in(student)
-     
+
       get(new_internship_offer_internship_application_path(internship_offer))
       assert_response :success
     end
@@ -31,7 +31,14 @@ module InternshipApplications
     test 'POST #create internship application as student' do
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
-      student = create(:student, school: school, class_room: create(:class_room, school: school))
+      student = create(:student,
+        school: school, 
+        class_room: create(:class_room, school: school),
+        address: '100 bd Victor Hugo 13000 Marseille',
+        legal_representative_email: 'sylvie@gmail.com',
+        legal_representative_full_name: 'Sylvie Dupont',
+        legal_representative_phone: '+330600000000'
+      )
       sign_in(student)
       valid_params = {
         internship_application: {
@@ -40,8 +47,12 @@ module InternshipApplications
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
           type: InternshipApplications::WeeklyFramed.name,
-          student_email: student.email,
-          student_phone: '0600119988'
+          student_email: 'newemail@gmail.com',
+          student_phone: '+330656565600',
+          student_address: '1 rue de la paix 75001 Paris',
+          student_legal_representative_full_name: 'Jean Dupont',
+          student_legal_representative_email: 'parent@gmail.com',
+          student_legal_representative_phone: '+330600990099'
         }
       }
 
@@ -58,8 +69,20 @@ module InternshipApplications
       assert_equal student.id, created_internship_application.student.id
 
       student = student.reload
-      assert_equal '0600119988', created_internship_application.student_phone
-      assert_equal student.email, created_internship_application.student_email
+      assert_equal '+330656565600', created_internship_application.student_phone
+
+      assert_equal created_internship_application.student_email, 'newemail@gmail.com'
+
+      puts student.legal_representative_email
+      # byebug
+      assert_equal 'parent@gmail.com', student.reload.legal_representative_email
+      assert_equal created_internship_application.student_legal_representative_email, 'parent@gmail.com'
+
+      assert_equal student.legal_representative_full_name, 'Jean Dupont'
+      assert_equal created_internship_application.student_legal_representative_full_name, 'Jean Dupont'
+
+      assert_equal student.legal_representative_phone, '+330600990099'
+      assert_equal created_internship_application.student_legal_representative_phone, '+330600990099'
     end
 
     test 'POST #create internship application as student to offer posted by statistician' do
@@ -184,7 +207,7 @@ module InternshipApplications
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
           student_email: 'julie@ms3e.fr',
-          student_phone: '0600119988'
+          student_phone: '+330600119988'
         }
       }
 
@@ -198,12 +221,12 @@ module InternshipApplications
 
       created_internship_application = InternshipApplications::WeeklyFramed.last
       student = student.reload
-      assert_equal '0600119988', created_internship_application.student_phone
+      assert_equal '+330600119988', created_internship_application.student_phone
       assert_equal 'julie@ms3e.fr', created_internship_application.student_email
       assert_equal '+330600119988', student.phone # changed
       assert_equal 'marc@ms3e.fr', student.email # unchanged
     end
-  
+
     test 'POST #create internship application as student with empty email in profile' do
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
@@ -240,7 +263,7 @@ module InternshipApplications
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
       student = create(:student, school: school, phone: '+330600110011', email: nil, class_room: create(:class_room, school: school))
-      student_2 = create(:student)
+      student_2 = create(:student, :with_phone)
       sign_in(student)
       valid_params = {
         internship_application: {

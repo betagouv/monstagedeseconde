@@ -25,6 +25,7 @@ import SearchSchoolByName from "components/SearchSchoolByName";
 import Map from "components/Map";
 
 import CityInput from "components/search_internship_offer/CityInput";
+import CompanyCityInput from "components/search_internship_offer/CompanyCityInput";
 import KeywordInput from "components/search_internship_offer/KeywordInput";
 
 import DistanceIcon from "components/icons/DistanceIcon";
@@ -33,22 +34,25 @@ import FullAddressInput from "components/inputs/FullAddressInput";
 import SirenInput from "components/inputs/SirenInput";
 import CountryPhoneSelect from "components/inputs/CountryPhoneSelect";
 import AddressInput from "components/inputs/AddressInput";
+import RomeInput from "components/inputs/RomeInput";
 
 ReactOnRails.register({
-  ReservedSchoolInput,
-  InternshipOfferResults,
-  InternshipOfferFavorites,
+  AddressInput,
+  CityInput,
+  CompanyCityInput,
+  CountryPhoneSelect,
+  DistanceIcon,
+  FlashMessage,
+  FullAddressInput,
   InternshipOfferCard,
   InternshipOfferFavoriteButton,
-  FlashMessage,
+  InternshipOfferFavorites,
+  InternshipOfferResults,
+  KeywordInput,
+  Map,
+  ReservedSchoolInput,
+  RomeInput,
   SearchSchool,
   SearchSchoolByName,
-  DistanceIcon,
-  CityInput,
-  KeywordInput,
-  CountryPhoneSelect,
-  AddressInput,
-  FullAddressInput,
-  SirenInput,
-  Map,
+  SirenInput 
 });

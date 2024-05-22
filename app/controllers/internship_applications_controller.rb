@@ -46,14 +46,15 @@ class InternshipApplicationsController < ApplicationController
     render 'internship_applications/show'
   end
 
-  # students can candidate for one internship_offer
+  # students can apply for one internship_offer
   def create
     set_internship_offer
     authorize! :apply, @internship_offer
 
     appli_params = {user_id: current_user.id}.merge(create_internship_application_params)
+    appli_params = sanitizing_params(appli_params)
     @internship_application = InternshipApplication.new(appli_params)
-    if @internship_application.save
+    if @internship_application.save && save_missing_student_info(@internship_application.reload)
       redirect_to internship_offer_internship_application_path(@internship_offer,
                                                              @internship_application)
     else
@@ -143,6 +144,20 @@ class InternshipApplicationsController < ApplicationController
           )
   end
 
+  def save_missing_student_info(internship_application)
+    student = internship_application.student
+    student.phone ||= internship_application.student_phone
+    student.email ||= internship_application.student_email
+    return true unless student.changed?
+    return false unless student.valid?
+    student.save
+  end
+
+  def sanitizing_params(appli_params)
+    phone = appli_params["student_phone"]&.gsub(/\s+/, '')
+    appli_params.merge!({"student_phone" => phone})
+  end
+
   def check_transfer_destinations(destinations)
     email_errors = []
     destinations.each do |destination|
@@ -170,6 +185,10 @@ class InternshipApplicationsController < ApplicationController
             :motivation,
             :student_phone,
             :student_email,
+            :student_address,
+            :student_legal_representative_full_name,
+            :student_legal_representative_email,
+            :student_legal_representative_phone,
             student_attributes: %i[
               email
               phone

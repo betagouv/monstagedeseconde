@@ -51,8 +51,8 @@ module Presenters
     def initialize(internship_agreement, current_user)
       @internship_agreement = internship_agreement
       @current_user = current_user
-      @student = internship_agreement.student
-      @school_manager = internship_agreement.school_manager
+      @student = internship_agreement.internship_application.student
+      @school_manager = internship_agreement.try(:school_manager)
       @school = @student.school
       @employer = internship_agreement.employer
       @internship_offer = internship_agreement.internship_application.internship_offer

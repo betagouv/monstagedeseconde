@@ -8,5 +8,5 @@ fi
 
 cd ${APP_HOME}
 
-bundle exec rails internship_application_reminders
+bundle exec rails internship_application_expirers
 

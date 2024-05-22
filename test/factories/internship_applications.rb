@@ -4,9 +4,13 @@ FactoryBot.define do
   factory :internship_application do
     student { create(:student_with_class_room_3e) }
     motivation { 'Suis hyper motivé' }
-    student_phone { "0#{rand(6..7)}#{FFaker::PhoneNumberFR.mobile_phone_number[2..-1]}" }
+    student_phone { "+330#{rand(6..7)}#{FFaker::PhoneNumberFR.mobile_phone_number[2..-1]}".gsub(' ', '') }
     student_email { FFaker::Internet.email }
     access_token { nil }
+    student_address { FFaker::AddressFR.full_address }
+    student_legal_representative_full_name { FFaker::NameFR.name }
+    student_legal_representative_email { FFaker::Internet.email }
+    student_legal_representative_phone { "+330#{rand(6..7)}#{FFaker::PhoneNumberFR.mobile_phone_number[2..-1]}".gsub(' ', '') }
 
     trait :drafted do
       aasm_state { :drafted }
