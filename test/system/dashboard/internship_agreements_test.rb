@@ -122,7 +122,9 @@ module Dashboard
         "mardi" => ["08:00","16:00"],
         "mercredi" => ["08:00","16:00"],
         "jeudi" => ["08:00","16:00"],
-        "vendredi" => ["08:00","16:00"]}
+        "vendredi" => ["08:00","16:00"],
+        "samedi" => ["",""]
+      }
       assert_equal expected_days_hours, internship_agreement.reload.daily_hours
     end
 
