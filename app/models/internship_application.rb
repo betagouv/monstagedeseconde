@@ -312,6 +312,8 @@ class InternshipApplication < ApplicationRecord
                   to: :expired,
                   after: proc { |*_args|
         update!(expired_at: Time.now.utc)
+        # notitify_student
+        Triggered::StudentExpiredInternshipApplicationsNotificationJob.perform_later(self)
       }
     end
 

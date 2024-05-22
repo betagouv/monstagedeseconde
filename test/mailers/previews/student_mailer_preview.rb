@@ -62,4 +62,8 @@ class StudentMailerPreview < ActionMailer::Preview
       shrinked_url: 'https://stagedeseconde.1jeune1solution.gouv.fr/'
     )
   end
+
+  def internship_application_expired_email
+    StudentMailer.internship_application_expired_email(internship_application: InternshipApplication.first)
+  end
 end
