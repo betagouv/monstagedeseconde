@@ -27,7 +27,7 @@ module StepperProxy
         return if from_api?
         return if group.nil?
 
-        errors.add(:group, 'Veuillez choisir une institution de tutelle') unless group.is_public?
+        errors.add(:group, 'Veuillez choisir un type d’employeur public') unless group.is_public?
       end
 
       def validate_group_is_not_public?
