@@ -9,11 +9,11 @@ module Reporting
     setup do
       @sector_agri = create(:sector, name: 'Agriculture')
       @sector_wood = create(:sector, name: 'Filière bois')
-      @student_male1 = create(:student, :male)
-      @student_male2 = create(:student, :male)
-      @student_female1 = create(:student, :female)
+      @student_male2 = create(:student, :registered_with_phone, :male)
+      @student_male1 = create(:student, :registered_with_phone, :male)
+      @student_female1 = create(:student, :registered_with_phone, :female)
       @group_with_no_offer = create(:group, name: "no offer", is_public: false)
-      # Following will be discarded
+      # # Following will be discarded
       @internship_offer_agri_0 = create(:weekly_internship_offer,
                                         sector: @sector_agri,
                                         max_candidates: 1,

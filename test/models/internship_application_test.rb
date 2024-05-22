@@ -459,7 +459,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
 
   test '#check_contact_uniqueness when phone_nr is used already' do
     other_student_phone_nr = '+330611223344'
-    student = create(:student)
+    student = create(:student, phone: '+330611223945')
     other_student = create(:student, phone: other_student_phone_nr)
     internship_application = create(:weekly_internship_application, student: student)
     internship_application.student_phone = other_student_phone_nr

@@ -21,10 +21,10 @@ class EmailUpdateFlowTest < ApplicationSystemTestCase
       fill_in('Adresse électronique (ex : mon@domaine.fr)', with: alt_email)
       click_on('Enregistrer mon CV')
       success_message = find('#alert-text').text
-      expected_message = "Compte mis à jour avec succès. Un courriel a été envoyé " \
-                         "à l'ancienne adresse électronique (e-mail). Veuillez " \
-                         "cliquer sur le lien contenu dans le courriel pour confirmer" \
-                         " votre nouvelle adresse électronique (e-mail)."
+      expected_message = "Compte mis à jour avec succès. Pour confirmer le changement " \
+                         "d’adresse électronique, veuillez cliquer sur lien contenu " \
+                         "dans le courrier que vous venez de recevoir sur votre " \
+                         "nouvelle adresse électronique."
       assert_equal expected_message, success_message
     end
     visit account_path

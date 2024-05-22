@@ -6,7 +6,7 @@ module Presenters
   module Dashboard
     class StudentStatsTest < ActiveSupport::TestCase
       setup do
-        @student = create(:student)
+        @student = create(:student, phone: '+330612345678')
         @student_stats = StudentStats.new(student: @student)
       end
 
@@ -18,8 +18,8 @@ module Presenters
       end
 
       test '.applications_approved_count' do
-        create(:weekly_internship_application, :approved, student: @student)
         create(:weekly_internship_application, :rejected, student: @student)
+        create(:weekly_internship_application, :approved, student: @student)
         assert_equal 1, @student_stats.applications_approved_count
       end
 

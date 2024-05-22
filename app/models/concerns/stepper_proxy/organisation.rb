@@ -21,20 +21,13 @@ module StepperProxy
       validate :validate_group_is_public?, if: :is_public?
       validate :validate_group_is_not_public?, unless: :is_public?
 
-      has_rich_text :employer_description_rich_text
-
-      before_validation :replicate_employer_description_rich_text_to_raw_field, unless: :from_api?
       before_validation :clean_siret
-
-      def replicate_employer_description_rich_text_to_raw_field
-        self.employer_description = employer_description_rich_text.to_plain_text if employer_description_rich_text.present?
-      end
 
       def validate_group_is_public?
         return if from_api?
         return if group.nil?
 
-        errors.add(:group, 'Veuillez choisir une institution de tutelle') unless group.is_public?
+        errors.add(:group, 'Veuillez choisir un type d’employeur public') unless group.is_public?
       end
 
       def validate_group_is_not_public?
@@ -43,6 +36,8 @@ module StepperProxy
 
         errors.add(:group, 'Veuillez choisir une institution de tutelle') if group.is_public?
       end
+
+      def is_private? = !is_public?
 
       def clean_siret
         self.siret = self.siret.gsub(' ', '') if self.try(:siret)

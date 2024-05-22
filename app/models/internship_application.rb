@@ -57,7 +57,7 @@ class InternshipApplication < ApplicationRecord
   validate :check_contact_uniqueness
 
   # Callbacks
-  after_create :update_student_profile
+  after_save :update_student_profile
 
   #
   # Triggers scopes (used for transactional mails)
@@ -80,7 +80,6 @@ class InternshipApplication < ApplicationRecord
 
   scope :expirable, lambda {
     simple_duration = InternshipApplication::EXPIRATION_DURATION
-    extended_duration = simple_duration + InternshipApplication::EXTENDED_DURATION
     expiration_not_extended_states.where('submitted_at < :date', date: simple_duration.ago)
   }
 
@@ -532,23 +531,37 @@ class InternshipApplication < ApplicationRecord
     %w[read_by_employer validated_by_employer]
   end
 
+  def phone_prefix
+    # return '' if student.phone.blank? # TODO Check if this is necessary why removing prefix if phone is blank but will be updated
+
+    prefix = '+33'
+    ['+262', '+594', '+596', '+687', '+689'].each do |p|
+      prefix = p if student.phone&.start_with?(p)
+    end
+    "#{prefix}0"
+  end
+
   def check_contact_uniqueness
-    if student_email && User.where.not(id: student.id).exists?(email: student_email)
+    if student_email.present? && User.where.not(id: student.id).exists?(email: student_email)
       errors.add(:student_email, 'Cet email est déjà utilisé')
     end
 
-    if student_phone
-      phone_to_register = User.sanitize_mobile_phone_number(student_phone, "+330")
+    if student_phone.present?
+      phone_to_register = User.sanitize_mobile_phone_number(student_phone, phone_prefix)
       if User.where.not(id: student.id).exists?(phone: phone_to_register)
-        errors.add(:student_phone, 'Ce numéro de téléphone est déjà utilisé')
+        errors.add(:student_phone, "Ce numéro de téléphone est déjà utilisé, ou n'est pas un numéro de téléphone mobile")
       end
     end
   end
 
   def update_student_profile
     student.update(
-      phone: student.phone || User.sanitize_mobile_phone_number(student_phone,"+330"),
-      email: student.email || student_email
+      phone: student.phone || User.sanitize_mobile_phone_number(student_phone, phone_prefix),
+      email: student.email || student_email,
+      legal_representative_full_name: student_legal_representative_full_name,
+      legal_representative_email: student_legal_representative_email,
+      legal_representative_phone: student_legal_representative_phone,
+      address: student_address
     )
   end
 end
