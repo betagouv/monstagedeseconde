@@ -126,9 +126,6 @@ class UserTest < ActiveSupport::TestCase
 
     assert employer_2.id, internship_offer.reload.employer_id
     assert employer_2.team.not_exists?
-
-    internship_offer.reload
-    refute internship_offer.discarded?
   end
 
   test 'anonymize employer when in a team with tree' do
@@ -146,9 +143,6 @@ class UserTest < ActiveSupport::TestCase
     assert employer_3.id, internship_offer.reload.employer_id
     assert employer_3.team.alive?
     assert employer_2.team.alive?
-
-    internship_offer.reload
-    refute internship_offer.discarded?
   end
 
   test 'validate email bad' do

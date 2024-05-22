@@ -668,13 +668,6 @@ fr:
             student:
               taken: 'Vous ne pouvez pas postuler deux fois à la même offre'
   admin:
-    table_headers:
-      last_created: Dernier créé
-    toggle_navigation: 'toggle_navigation'
-
-    misc:
-      root_navigation:
-        "Tableaux de suivis"
     actions:
       switch_user:
         menu: 'Se connecter avec ce compte'
@@ -686,6 +679,13 @@ fr:
         menu: KPI
       index:
         no_records: Aucun résultat
+      delete:
+        done: 'utilisateur anonymisé avec succès'
+    flash: 
+      successful: 'Opération effectuée avec succès'
+    misc:
+      root_navigation:
+        "Tableaux de suivis"
     scopes:
       all: "Tous"
       school:
@@ -718,6 +718,9 @@ fr:
       internship_offers~api:
         kept: Actives
         discarded: Supprimées
+    table_headers:
+      last_created: Dernier créé
+    toggle_navigation: 'toggle_navigation'
   dashboard:
     internship_offer_area:
       index: "Tous mes espaces"

@@ -123,10 +123,10 @@ class User < ApplicationRecord
     # Remove all personal information
     email_for_job = email.dup
 
-    email = email.blank? ? nil : "#{SecureRandom.hex}@#{email_domain_name}"
+    rip_email = email.blank? ? nil : "#{SecureRandom.hex}@#{email_domain_name}"
 
     fields_to_reset = {
-      email: email ,
+      email: rip_email,
       first_name: 'NA',
       last_name: 'NA',
       phone: nil,

@@ -68,7 +68,8 @@ class Ability
             see_reporting_enterprises
             see_dashboard_enterprises_summary
             see_dashboard_administrations_summary
-            see_dashboard_associations_summary], User
+            see_dashboard_associations_summary
+            anonymize_user], User
     can :manage, Operator
     can :see_minister_video, User
     can :read_employer_name, InternshipOffer

@@ -94,21 +94,22 @@ module Dashboard
     end
 
 
+    # interface shows a destroy button when there is more than one area
+    # transfer possibilities exists only for teams => these are the specific areas
+    # provided by the form
     def destroy
       authorize! :destroy, @internship_offer_area
-      if params[:commit] != "Valider"
-        redirect_to dashboard_internship_offer_areas_path and return
-      elsif pure_destruction?(params)
-        target_area_id = random_other_area_from_team(@internship_offer_area).id
-        InternshipOffer.where(internship_offer_area_id: @internship_offer_area.id).each do |offer|
-          offer.internship_offer_area_id = target_area_id
-          offer.anonymize
-        end
-      else
+      target_area = @internship_offer_area.team_sibling_area_sample
+
+      redirect_to dashboard_internship_offer_areas_path and return if params[:commit] != "Valider"
+
+      unless pure_destruction?(params) || current_user.internship_offer_areas.count == 1
+        # this is the transfer option
         move_internship_offers_to_specific_area(params)
+        @internship_offer_area.clean_user_references_to_area(
+          target_area_id: target_area.id || form_target_area_id
+        )
       end
-      clean_user_references_to_area( to_be_removed_area_id: @internship_offer_area.id,
-                                     target_area_id: target_area_id || form_target_area_id)
       @internship_offer_area.destroy
       redirect_to dashboard_internship_offer_areas_path,
                   flash: { success: 'Espace supprimé avec succès.' }
@@ -123,7 +124,7 @@ module Dashboard
     end
 
     def pure_destruction?(params)
-      form_target_area_id.to_i == 0
+      form_target_area_id.to_i.zero?
     end
 
     def fetch_area_notification
@@ -141,12 +142,6 @@ module Dashboard
 
     def memorize_id
       current_user.current_area_id_memorize(@internship_offer_area.id)
-    end
-
-    def random_other_area_from_team(internship_offer_area)
-      current_user.internship_offer_areas
-                  .where.not(id: internship_offer_area.id)
-                  .sample
     end
 
     def move_internship_offers_to_specific_area(params)
