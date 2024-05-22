@@ -193,7 +193,7 @@ module Dashboard
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: "Votre convention est prête. Imprimez-la et renvoyez-la signée au chef d'établissement.")
+        find('div.actions', text: "Votre convention est prête à être signée.")
       end
       find('a.button-component-cta-button', text: 'Imprimer')
       find('button[data-action=\'group-signing#toggleFromButton\']', text: 'Ajouter aux signatures')
@@ -503,7 +503,7 @@ module Dashboard
       sign_in(internship_offer.employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        # find('div.actions', text: "Votre convention est prête. Imprimez-la et renvoyez-la signée au chef d'établissement.")
+        # find('div.actions', text: "Votre convention est prête à être signée.")
       end
       find('a.button-component-cta-button', text: 'Imprimer')
       find('button[data-action=\'group-signing#toggleFromButton\']', text: 'Ajouter aux signatures')
