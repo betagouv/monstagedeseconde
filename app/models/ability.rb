@@ -94,7 +94,7 @@ class Ability
     can(:read_employer_data, InternshipApplication) do |internship_application|
       internship_application.student.id == user.id &&
         (internship_application.approved? || internship_application.validated_by_employer?)
-    end 
+    end
     can(:cancel, InternshipApplication) do |internship_application|
       ok_canceling = %w[ submitted
                          read_by_employer
@@ -260,6 +260,10 @@ class Ability
       edit
       update
       edit_organisation_representative_role
+      edit_employer_name
+      edit_employer_address
+      edit_employer_contact_email
+      edit_internship_address
       edit_tutor_email
       edit_tutor_role
       edit_activity_scope_rich_text
@@ -320,17 +324,21 @@ class Ability
 
 
     can :flip_notification, AreaNotification do |_area_notif|
-      return false if user.team.not_exists?
-
-      many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
-      current_area_notifications_are_off = !user.fetch_current_area_notification.notify
-      many_people_in_charge_of_area || current_area_notifications_are_off
+      if user.team.not_exists?
+        false
+      else
+        many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
+        current_area_notifications_are_off = !user.fetch_current_area_notification.notify
+        many_people_in_charge_of_area || current_area_notifications_are_off
+      end
     end
 
     can :manage_abilities, AreaNotification do |area_notification|
-      return false if user.team.not_exists?
-
-      area_notification.internship_offer_area.employer_id.in?(user.team_members_ids)
+      if user.team.not_exists?
+        false
+      else
+        area_notification.internship_offer_area.employer_id.in?(user.team_members_ids)
+      end
     end
   end
 
@@ -365,7 +373,7 @@ class Ability
 
     can %i[create], Organisation
 
-    can %i[index], Acl::Reporting, &:allowed?
+    can %i[index], Acl::Reporting#, &:allowed?
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can %i[ see_reporting_dashboard
@@ -380,7 +388,7 @@ class Ability
   def education_statistician_abilities(user:)
     common_to_all_statisticians(user: user)
     can %i[create], Organisation
-    can %i[index], Acl::Reporting, &:allowed?
+    can %i[index], Acl::Reporting#, &:allowed?
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can %i[ see_reporting_dashboard
@@ -554,19 +562,23 @@ class Ability
   def renewable?(internship_offer:, user:)
     main_condition = internship_offer.persisted? &&
                      internship_offer.employer_id == user.id
-    return false unless main_condition
-
-    school_year_start = SchoolYear::Current.new.beginning_of_period
-    internship_offer.last_date <= school_year_start
+    if main_condition
+      school_year_start = SchoolYear::Current.new.beginning_of_period
+      internship_offer.last_date <= school_year_start
+    else
+      false
+    end
   end
 
   def duplicable?(internship_offer:, user:)
     main_condition = internship_offer.persisted? &&
                      internship_offer.employer_id == user.id
-    return false unless main_condition
-
-    school_year_start = SchoolYear::Current.new.beginning_of_period
-    internship_offer.last_date > school_year_start
+    if main_condition
+      school_year_start = SchoolYear::Current.new.beginning_of_period
+      internship_offer.last_date > school_year_start
+    else
+      false
+    end
   end
 
   def read_employer_name?(internship_offer: )

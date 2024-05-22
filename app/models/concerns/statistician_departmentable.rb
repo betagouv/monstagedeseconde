@@ -4,6 +4,8 @@ module StatisticianDepartmentable
   extend ActiveSupport::Concern
 
   included do
+    # belongs_to :department, optional: true
+    #TODO Change after data migration 
     validates :department, presence: true
     
     def dashboard_name
@@ -15,7 +17,7 @@ module StatisticianDepartmentable
     end
 
     def department_zipcode
-      department
+      department.try(:zipcode)
     end
 
     def destroy

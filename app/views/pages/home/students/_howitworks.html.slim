@@ -28,7 +28,14 @@
     h3.text-grey-50.my-4
       | Cherchez et postulez au stage qui vous fait envie !
     p.mt-3.fr-text.mb-lg-5.mb-md-5.mb-sm-4.mb-3
-      | Consultez de nombreuses offres et postulez aux stages qui vous font envie.
+      span.fr-pb-2w 
+        | Consultez les offres de stage et postulez à celles qui vous conviennent par l’onglet 
+        = link_to 'Rechercher une offre de stage', eleves_path, class: 'fr-raw-link font-weight-bold'
+      br
+      br
+      span.fr-pt-2w
+        | Consultez la liste des entreprises qui ont accepté d’être sollicitées par l’onglet 
+        = link_to 'Rechercher une entreprise', recherche_entreprises_path, class: 'fr-raw-link font-weight-bold'
   .d-lg-block.d-none.align-items-center.separator
     = image_tag asset_pack_path('media/images/homepage/students/spin-vector.svg'),
                   alt: "image de transition",

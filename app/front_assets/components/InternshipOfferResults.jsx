@@ -161,11 +161,11 @@ const InternshipOfferResults = ({ count, sectors, searchParams }) => {
                         <TitleLoader/>
                       </div>
                     ) : (
-                      <h2 className="h2 mb-0" id="internship-offers-count">
+                      <div className="h4 mb-0" id="internship-offers-count">
                         <div className="strong">
                           Les offres de stage
                         </div>
-                      </h2>)
+                      </div>)
                   }
                   { !isLoading && (internshipOffersSeats == 0) &&
                     (<p>Aucune offre répondant à vos critères n’est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)

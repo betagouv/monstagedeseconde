@@ -79,8 +79,10 @@ class GenerateInternshipAgreement < Prawn::Document
 
   def contractors
     label_form("Entre")
-    paraphing("L'entreprise ou l'organisme d'accueil, représentée par M/Mme "\
-      "#{@internship_agreement.organisation_representative_full_name}, en qualité "\
+    paraphing("L'entreprise ou l'organisme d'accueil "\
+      "#{@internship_agreement.employer_name}, représentée par M/Mme "\
+      "#{@internship_agreement.organisation_representative_full_name} ("\
+      "#{@internship_agreement.employer_contact_email}), en qualité "\
       "de chef(fe) d'entreprise ou de responsable de l'organisme d'accueil d'une part, et")
     paraphing("L'établissement d'enseignement scolaire, représenté par M/Mme "\
       "#{@internship_agreement.school_representative_full_name}, en qualité de "\
@@ -225,7 +227,7 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.text "Prénom, nom du chef(fe) d’établissement, adresse postale et électronique du lieu de scolarisation dont relève l’élève :"
     html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_representative_full_name} </div>"
     html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_representative_role} </div>"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_manager.email} </div>"
+    html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_manager.try(:email)} </div>"
     html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_representative_phone} </div>"
     @pdf.move_down 20
     @pdf.text "Statut de l’établissement scolaire : #{@internship_agreement.legal_status.try(:capitalize)}"
@@ -243,6 +245,9 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.move_down 20
     paraphing("Dates de la séquence d'observation en milieu professionnel :")
     paraphing("La séquence d’observation en milieu professionnel se déroule pendant #{@internship_agreement.internship_offer.period_label} inclus.")
+    @pdf.move_down 20
+    paraphing("Lieu de la séquence d'observation en milieu professionnel :")
+    paraphing(@internship_agreement.internship_address)
     @pdf.move_down 20
 
     # Repères réglementaires relatifs à la législation sur le travail
@@ -348,24 +353,27 @@ class GenerateInternshipAgreement < Prawn::Document
   end
   
   def signatures
-    @pdf.text "A #{@internship_agreement.school_manager.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."
-
+    if @internship_agreement.school_manager.present?
+      @pdf.text "A #{@internship_agreement.school_manager.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."
+    else
+      @pdf.text "A #{@internship_agreement.internship_application.student.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."
+    end
     @pdf.move_down 20
   end
 
   def signature_data
     { header: [[
-        "Le chef d'établissement",
-        "Le responsable de l'organisme d'accueil",
+        "Le chef d'établissement - #{school_manager.try(:presenter).try(:formal_name)}",
+        "Le responsable de l'organisme d'accueil - #{employer.presenter.formal_name}",
         "L'élève",
-        "Les parents       (responsables légaux)",
+        "Parents ou responsables légaux",
         "Le professeur référent",
         "Le référent en charge de l’élève à sein de l’organisme d’accueil"
         ]],
       body: [
         [""]*6,
         [
-          "Nom et prénom : #{school_manager.presenter.formal_name}",
+          "Nom et prénom : #{school_manager.try(:presenter).try(:formal_name)}",
           "Nom et prénom : #{employer.presenter.formal_name}",
           "Nom et prénom : #{student.presenter.formal_name}",
           "Nom et prénom : #{dotting(@internship_agreement.student_legal_representative_full_name)}",
@@ -489,11 +497,14 @@ class GenerateInternshipAgreement < Prawn::Document
     return signature if Rails.application.config.active_storage.service == :local
 
     # When on external storage service , they are to be donwloaded
-    img = signature.signature_image.download if signature.signature_image.attached?
+    img = signature.signature_image.try(:download) if signature.signature_image.attached?
     return nil if img.nil?
 
     File.open(signature.local_signature_image_file_path, "wb") { |f| f.write(img) }
     signature
+  rescue ActiveStorage::FileNotFoundError
+    Rails.logger.error "Signature image not found for #{signatory_role} for internship agreement #{internship_agreement.id}"
+    nil
   end
 
   def signature_date_str(signatory_role:)

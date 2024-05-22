@@ -1,0 +1,31 @@
+.container-search {
+  position: relative;
+  min-height: 200px;
+}
+
+.search-companies {
+  background-color: #fff;
+  position: absolute;
+  bottom: -30px;
+  width: 100%;
+}
+
+.search-tabs-companies .fr-tabs__panel,
+.search-tabs-offers .fr-tabs__panel {
+  background-color: #fff;
+}
+.company .fr-btn::after {
+  display: inline-block;
+}
+
+.container-monstage-fluid-hero .white-search-frame.mobile {
+  padding-top: 24px;
+  padding-bottom: 0;
+}
+
+// if screen size is more than 768px
+@media (min-width: 768px) {
+  .company-contact-form {
+    border: 1px solid #e5e5e5;
+  }
+}

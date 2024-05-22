@@ -55,9 +55,9 @@ class UsersController < ApplicationController
               end
 
     if current_user.unconfirmed_email
-      message += " Un courriel a été envoyé à l'ancienne adresse électronique (e-mail). " \
-                "Veuillez cliquer sur le lien contenu dans le courriel pour " \
-                "confirmer votre nouvelle adresse électronique (e-mail)." 
+      message += " Pour confirmer le changement d’adresse électronique, \
+                  veuillez cliquer sur lien contenu dans le courrier que \
+                  vous venez de recevoir sur votre nouvelle adresse électronique."
     end
     message = 'Etablissement mis à jour avec succès.' if current_user.school_id_previously_changed?
     message

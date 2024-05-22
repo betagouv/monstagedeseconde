@@ -44,7 +44,7 @@ class SchoolManagerMailer < ApplicationMailer
     ).html_safe
 
     send_email(
-      to: @school_manager.email,
+      to: @school_manager.try(:email),
       subject: 'Une convention de stage est prête à être signée !'
     )
   end

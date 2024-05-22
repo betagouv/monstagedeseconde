@@ -384,6 +384,7 @@ fr:
         group_name: Groupe ou institution
         school: Établissement réservé
         school_year: Année
+        siret: Siret
         internship_applications: Candidatures
         ministries: Ministères
         contact_name: Nom du contact
@@ -407,6 +408,7 @@ fr:
           expired: expirée
           canceled_by_employer: annulée par l'employeur
           canceled_by_student: annulée par l'élève
+          canceled_by_student_confirmation: L'élève a choisi un autre stage
           convention_signed: convention signée
         student_phone: Contact téléphone
         student_email: Contact email

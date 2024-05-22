@@ -101,7 +101,10 @@ module Dashboard::InternshipOffers
         visit internship_offers_path
         click_on internship_offer.title
         first(:link, 'Postuler').click
-        fill_in 'Numéro de portable élève ou responsable légal',	with: "0600060606"
+        within(".react-tel-input") do
+          find('input[name="internship_application[student_phone]"]').set("0600060606")
+        end
+        # fill_in 'Numéro de portable élève ou responsable légal',	with: "0600060606"
         click_on 'Valider'
         assert_equal 2, InternshipApplication.count
         other_internship_application = InternshipApplication.last
@@ -118,7 +121,7 @@ module Dashboard::InternshipOffers
         school = create(:school, :with_school_manager)
         employer_1, internship_offer_1 = create_employer_and_offer
         employer_2, internship_offer_2 = create_employer_and_offer
-        student = create(:student, school: school)
+        student = create(:student, school: school, phone: '+330611223344')
         internship_application_1 = create(:weekly_internship_application, :submitted, internship_offer: internship_offer_1, student: student)
         internship_application_2 = create(:weekly_internship_application, :submitted, internship_offer: internship_offer_2, student: student)
 
@@ -140,7 +143,7 @@ module Dashboard::InternshipOffers
         sign_in(employer_1)
         visit dashboard_candidatures_path
         click_button "Refusées"
-        find "p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--purple-glycine.fr-badge--no-icon", text: "annulée".upcase
+        find "p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--purple-glycine.fr-badge--no-icon", text: "L'élève a choisi un autre stage".upcase
       end
     end
 
@@ -157,7 +160,9 @@ module Dashboard::InternshipOffers
       click_on 'Envoyer'
       find('h2', text: 'Les candidatures')
       assert_match /La candidature a été transmise avec succès/, find('div.alert.alert-success').text
-      click_on 'Répondre'
+      sign_out(employer)
+      # in mail
+      visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application, token: internship_application.reload.access_token)
       find('button[data-toggle="modal"][data-fr-js-modal-button="true"]', text: 'Accepter')
       find('button[data-toggle="modal"][data-fr-js-modal-button="true"]', text: 'Refuser')
     end

@@ -23,7 +23,7 @@ module Dashboard::InternshipOffers
                          'coordinates' => { latitude: 1, longitude: 1 },
                          'school_id' => school.id,
                          'description_rich_text' => '<div>description</div>',
-                         'employer_description_rich_text' => '<div>hop+employer_description</div>',
+                         'employer_description' => 'hop+employer_description',
                          'employer_id' => internship_offer.employer_id,
                          'employer_type' => 'Users::Employer')
         assert_difference('InternshipOffer.count', 1) do
@@ -52,7 +52,7 @@ module Dashboard::InternshipOffers
                           'coordinates' => { latitude: 1, longitude: 1 },
                           'school_id' => school.id,
                           'description_rich_text' => '<div>description</div>',
-                          'employer_description_rich_text' => '<div>hop+employer_description</div>',
+                          'employer_description' => 'hop+employer_description',
                           'employer_type' => 'Users::MinistryStatistician')
 
         assert_difference('InternshipOffer.count', 1) do
