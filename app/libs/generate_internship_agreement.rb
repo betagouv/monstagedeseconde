@@ -261,7 +261,7 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.move_down 10
 
     internship_offer_hours = []
-    %w(lundi mardi mercredi jeudi vendredi).each_with_index do |weekday, i|
+    %w(lundi mardi mercredi jeudi vendredi samedi).each_with_index do |weekday, i|
       if @internship_agreement.daily_planning?
         start_hours = @internship_agreement.daily_hours&.dig(weekday)&.first
         end_hours = @internship_agreement.daily_hours&.dig(weekday)&.last
