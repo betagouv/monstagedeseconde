@@ -189,8 +189,8 @@ class InternshipApplication < ApplicationRecord
         update!("submitted_at": Time.now.utc)
         deliver_later_with_additional_delay do
           EmployerMailer.internship_application_submitted_email(internship_application: self)
-          StudentMailer.internship_application_submitted_email(internship_application: self)
         end
+        Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
         # ReminderReset : tag to use to find commmented jobs for students reminders
         # setSingleApplicationReminderJobs
         # ReminderReset : tag to use to find commmented jobs for students reminders

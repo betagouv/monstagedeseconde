@@ -47,7 +47,7 @@ class StudentMailer < ApplicationMailer
     @prez_offer = @internship_offer.presenter
     @prez_student = @student.presenter
     sgid = @student.to_sgid(expires_in: InternshipApplication::MAGIC_LINK_EXPIRATION_DELAY).to_s
-    @url = internship_offers_url(student.default_search_options)
+    @url = internship_offers_url(@student.default_search_options)
 
     mail(to: @student.email, subject: "Votre candidature a bien été transmise")
   end
