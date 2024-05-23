@@ -54,6 +54,11 @@ FactoryBot.define do
       aasm_state { :drafted }
     end
 
+    trait :public do
+      is_public { true }
+      group { create(:group, is_public: true) }
+    end
+
     trait :published do
       published_at { Time.now }
       aasm_state { 'published' }
