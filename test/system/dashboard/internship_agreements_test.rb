@@ -152,10 +152,8 @@ module Dashboard
       select('16:00', from:'internship_agreement_daily_hours_mardi_end')
       select('08:00', from:'internship_agreement_daily_hours_mercredi_start')
       select('16:00', from:'internship_agreement_daily_hours_mercredi_end')
-      select('08:00', from:'internship_agreement_daily_hours_jeudi_start')
-      select('16:00', from:'internship_agreement_daily_hours_jeudi_end')
       text_area = first(:css,"textarea[name='internship_agreement[lunch_break]']").native.send_keys('un repas à la cantine bien chaud')
-      # Missing lunch break indications on friday
+      # Missing lunch break indications on thursday and friday
       # samedi is avoided on purpose
       click_button('Valider la convention')
       find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Valider la convention")
