@@ -165,10 +165,19 @@
                         |Fonction
                       = f.select :role,
                           options_from_collection_for_select(user_roles_to_select, :value, :text, resource.role),
-                          { prompt: "-- Veuillez choisir une fonction --" },
+                          { prompt: "Choisissez une fonction" },
                           { class: "fr-select",
                                     required: true,
                                     data: { action: "change->signup#refreshEmailFieldLabel", :'signup-target' => "roleInput" } }
+                      .fr-message.fr-message--info.fr-mt-1w
+                        / span.fr-icon-info-fill.fr-icon--sm aria-hidden="true"
+                        span
+                          | Seule la fonction 
+                          span.font-weight-bold Chef d'établissement 
+                          | est autorisée à procéder à 
+                          | la signature en ligne des conventions. Toutes les autres fonctions 
+                          | peuvent cependant remplir et éditer les conventions, mais ne 
+                          | peuvent pas les signer en ligne.
                       = error_tag
                 - if user_presenter.show_when_subscribe?(as: as, field: :employer_role)
                   = render partial: "users/registrations/input_field",
@@ -214,7 +223,7 @@
                                          autocomplete: "new-password",
                                          class: "fr-password__input fr-input fr-password__input fr-input #{error_tag.present? ? 'fr-input--error' : ''}",
                                          required: true,
-                                         pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]{12,}$',
+                                         pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W]{12,}$',
                                          data: { action: "signup#checkPassword", :"signup-target" => "passwordInput" }
                       #password-input-messages.fr-messages-group aria-live="assertive"
                         ul.fr-pl-0

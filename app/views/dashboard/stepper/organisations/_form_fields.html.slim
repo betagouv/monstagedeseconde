@@ -75,7 +75,7 @@
                           options_for_select(options_for_groups, resource.group.try(:id)),
                           { prompt: '-- Choisissez votre type --' },
                           class: "fr-select",
-                          required: false,
+                          required: true,
                           data: {:"organisation-form-target" => 'selectGroupName'}
 
   .row.bloc-tooggle class=('d-none' if request.fullpath.include?('organisations/nouveau'))

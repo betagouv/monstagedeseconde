@@ -21,10 +21,9 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
     travel_to Date.new(2020, 10, 1) do
       old_internship_offer = create(:weekly_internship_offer, :full_time, employer: employer, internship_offer_area_id: employer.current_area_id)
     end
-    travel_to Date.new(2023, 10, 1) do
+      travel_to Date.new(2023, 10, 1) do
       internship_offer = create(:weekly_internship_offer, :full_time, employer: employer, internship_offer_area_id: employer.current_area_id)
-      assert_equal Date.new(2024,6,28), internship_offer.last_date
-
+      assert_equal Date.new(2024, 6, 28), internship_offer.last_date
       assert old_internship_offer.last_date < Time.now.utc
 
       sign_in(employer)

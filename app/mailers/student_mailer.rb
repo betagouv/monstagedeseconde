@@ -40,6 +40,20 @@ class StudentMailer < ApplicationMailer
     attachments.inline['boy_girl.svg']      = File.read("#{Rails.root}/public/assets/boy_girl.svg")
   end
 
+  def internship_application_submitted_email(internship_application:)
+    @internship_application = internship_application
+    @student = internship_application.student
+    @internship_offer = internship_application.internship_offer
+    @prez_offer = @internship_offer.presenter
+    @prez_student = @student.presenter
+    sgid = @student.to_sgid(expires_in: InternshipApplication::MAGIC_LINK_EXPIRATION_DELAY).to_s
+    @url = internship_offers_url(student.default_search_options)
+
+    mail(to: @student.email, subject: "Votre candidature a bien été transmise")
+  end
+
+
+
   def internship_application_approved_email(internship_application:)
     @internship_application = internship_application
 
@@ -119,8 +133,8 @@ class StudentMailer < ApplicationMailer
     @internship_application = internship_application
     @student = internship_application.student
     @internship_offer = internship_application.internship_offer
-    @prez_offer = @internship_offer.presenter
-    @prez_student = @student.presenter
+    @url = internship_offers_url
+    @expiration_delay = InternshipApplication::EXPIRATION_DURATION / 1.day
 
     send_email(to: @student.email,
                subject: "Votre candidature a expiré")

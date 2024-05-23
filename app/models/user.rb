@@ -123,10 +123,10 @@ class User < ApplicationRecord
     # Remove all personal information
     email_for_job = email.dup
 
-    email = email.blank? ? nil : "#{SecureRandom.hex}@#{email_domain_name}"
+    rip_email = email.blank? ? nil : "#{SecureRandom.hex}@#{email_domain_name}"
 
     fields_to_reset = {
-      email: email ,
+      email: rip_email,
       first_name: 'NA',
       last_name: 'NA',
       phone: nil,
@@ -239,41 +239,42 @@ class User < ApplicationRecord
     canceled_targeted_offer_id
   end
 
-  def statistician? ; false end
-  def department_statistician? ; false end
-  def ministry_statistician? ; false end
-  def academy_statistician? ; false end
-  def academy_region_statistician? ; false end
-  def education_statistician? ; false end
-  def student? ; false end
-  def employer? ; false end
-  def operator? ; false end
-  def school_management? ; false end
-  def god? ; false end
-  def employer_like? ; false end
-  def can_sign?(internship_agreement); false end
-  def email_required? ; false end
-  def needs_to_see_modal? ; false end
-  def has_offers_to_apply_to? ; false end
-  def with_2_weeks_internships_approved? ; false end
+  def statistician? = false
+  def department_statistician? = false
+  def ministry_statistician? = false
+  def academy_statistician? = false
+  def academy_region_statistician? = false
+  def education_statistician? = false
+  def student? = false
+  def employer? = false
+  def operator? = false
+  def school_management? = false
+  def school_manager_like? = false
+  def god? = false
+  def employer_like? = false
+  def can_sign?(internship_agreement)= false
+  def email_required? = false
+  def needs_to_see_modal? = false
+  def has_offers_to_apply_to? = false
+  def with_2_weeks_internships_approved? = false
 
-  def fetch_current_area_notification; nil end
-  def create_signature_phone_token ; nil end
-  def send_signature_sms_token ; nil end
-  def signatory_role ; nil end
-  def obfuscated_phone_number ; nil end
-  def create_default_internship_offer_area ; nil end
-  def department_name ; nil end
+  def fetch_current_area_notification = nil
+  def create_signature_phone_token = nil
+  def send_signature_sms_token = nil
+  def signatory_role = nil
+  def obfuscated_phone_number = nil
+  def create_default_internship_offer_area = nil
+  def department_name = nil
 
-  def already_signed?(internship_agreement_id:); true end
+  def already_signed?(internship_agreement_id:) = true
 
-  def team_id; id end
-  def team_members_ids; [id] end
-  def agreement_signatorable? ; agreement_signatorable end
-  def anonymized? ; self.anonymized end
-  def pending_invitation_to_a_team ; [] end
-  def available_offers; InternshipOffer.none end
-  def team_members ; User.none end
+  def team_id = id
+  def team_members_ids = [id]
+  def agreement_signatorable? = agreement_signatorable
+  def anonymized? = self.anonymized
+  def pending_invitation_to_a_team = []
+  def available_offers = InternshipOffer.none
+  def team_members = User.none
 
   def just_created?
     self.created_at < Time.now  + 3.seconds

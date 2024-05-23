@@ -158,7 +158,7 @@ module InternshipOffers::InternshipApplications
       )
       sign_in(internship_application.internship_offer.employer)
 
-      assert_enqueued_emails 1 do # Student receives email
+      assert_enqueued_emails 2 do # Student receives email + School Manager receives email
         patch(
           dashboard_internship_offer_internship_application_path(
             internship_application.internship_offer,

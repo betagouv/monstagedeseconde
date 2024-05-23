@@ -17,6 +17,10 @@ module Teamable
              class_name: 'InternshipOfferArea',
              foreign_key: 'employer_id'
 
+    has_many :area_notifications,
+             through: :internship_offer_areas,
+             as: :employer
+
     has_one :internship_offer_area,
             as: :employer,
             class_name: 'InternshipOfferArea',
@@ -50,15 +54,21 @@ module Teamable
     end
 
     def anonymize(send_email: true)
-      if team.alive?
-        move_internship_offers_ownership_to_team
-        team.remove_member
-      else
-        InternshipOffer.where(employer_id: id).each do |offer|
-          offer.discard
-        end
+      InternshipOffer.where(employer_id: id).each do |offer|
+        offer.anonymize
       end
+      destroy_area_and_notifications_with_anonymizing
+      team.remove_member if team.alive?
       super(send_email: send_email)
+    end
+
+    def destroy_area_and_notifications_with_anonymizing
+      internship_offer_areas.each do |area|
+        area.area_notifications.where(user_id: id).to_a.each do |notif|
+          notif.destroy
+        end
+        area.destroy
+      end
     end
 
     def internship_agreements
@@ -129,24 +139,6 @@ module Teamable
 
     def refused_invitations
       TeamMemberInvitation.refused_invitation.where(inviter_id: team_id)
-    end
-
-    # -------------------------------
-    private
-    # -------------------------------
-
-    def move_internship_offers_ownership_to_team
-      if team.team_size == 2
-        other_employer_id = team.team_members.pluck(:member_id) - [id]
-        personal_internship_offers.update_all(employer_id: other_employer_id)
-        team.remove_member
-      else # more than 2 members
-        team_to_quit = team
-        team_to_quit.remove_member
-        personal_internship_offers.update_all(
-          employer_id: team_to_quit.team_owner_id
-        )
-      end
     end
   end
 end

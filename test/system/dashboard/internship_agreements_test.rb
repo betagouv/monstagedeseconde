@@ -122,7 +122,9 @@ module Dashboard
         "mardi" => ["08:00","16:00"],
         "mercredi" => ["08:00","16:00"],
         "jeudi" => ["08:00","16:00"],
-        "vendredi" => ["08:00","16:00"]}
+        "vendredi" => ["08:00","16:00"],
+        "samedi" => ["",""]
+      }
       assert_equal expected_days_hours, internship_agreement.reload.daily_hours
     end
 
@@ -150,10 +152,8 @@ module Dashboard
       select('16:00', from:'internship_agreement_daily_hours_mardi_end')
       select('08:00', from:'internship_agreement_daily_hours_mercredi_start')
       select('16:00', from:'internship_agreement_daily_hours_mercredi_end')
-      select('08:00', from:'internship_agreement_daily_hours_jeudi_start')
-      select('16:00', from:'internship_agreement_daily_hours_jeudi_end')
       text_area = first(:css,"textarea[name='internship_agreement[lunch_break]']").native.send_keys('un repas à la cantine bien chaud')
-      # Missing lunch break indications on friday
+      # Missing lunch break indications on thursday and friday
       # samedi is avoided on purpose
       click_button('Valider la convention')
       find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Valider la convention")
@@ -169,9 +169,9 @@ module Dashboard
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: "La convention est dans les mains du chef d'établissement.")
+        find('div.actions', text: "La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.")
       end
-      find('a.button-component-cta-button', text: 'Vérifier ma convention')
+      find('a.button-component-cta-button', text: 'Imprimer')
     end
 
     test 'employer reads internship agreement table with correct indications - status: started_by_school_manager' do
@@ -181,9 +181,9 @@ module Dashboard
       sign_in(internship_offer.employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: "La convention est dans les mains du chef d'établissement.")
+        find('div.actions', text: "La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.")
       end
-      find('a.button-component-cta-button', text: 'Vérifier ma convention')
+      find('a.button-component-cta-button', text: 'Imprimer')
     end
 
     test 'employer reads internship agreement table with correct indications - status: validated' do
@@ -193,7 +193,7 @@ module Dashboard
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: "Votre convention est prête. Imprimez-la et renvoyez-la signée au chef d'établissement.")
+        find('div.actions', text: "Votre convention est prête à être signée.")
       end
       find('a.button-component-cta-button', text: 'Imprimer')
       find('button[data-action=\'group-signing#toggleFromButton\']', text: 'Ajouter aux signatures')
@@ -481,7 +481,7 @@ module Dashboard
       within('td[data-head="Statut"]') do
         # find('div.actions', text: "La convention est dans les mains du chef d'établissement.")
       end
-      find('a.button-component-cta-button', text: 'Vérifier ma convention')
+      find('a.button-component-cta-button', text: 'Imprimer')
     end
 
     test 'statistician reads internship agreement table with correct indications - status: started_by_school_manager' do
@@ -493,7 +493,7 @@ module Dashboard
       within('td[data-head="Statut"]') do
         # find('div.actions', text: "La convention est dans les mains du chef d'établissement.")
       end
-      find('a.button-component-cta-button', text: 'Vérifier ma convention')
+      find('a.button-component-cta-button', text: 'Imprimer')
     end
 
     test 'statistician reads internship agreement table with correct indications - status: validated' do
@@ -503,7 +503,7 @@ module Dashboard
       sign_in(internship_offer.employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        # find('div.actions', text: "Votre convention est prête. Imprimez-la et renvoyez-la signée au chef d'établissement.")
+        # find('div.actions', text: "Votre convention est prête à être signée.")
       end
       find('a.button-component-cta-button', text: 'Imprimer')
       find('button[data-action=\'group-signing#toggleFromButton\']', text: 'Ajouter aux signatures')

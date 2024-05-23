@@ -42,7 +42,9 @@ class InternshipApplicationTest < ActiveSupport::TestCase
         mock_mail = Minitest::Mock.new
         mock_mail.expect(:deliver_later, true, [] , wait: 1.second)
         EmployerMailer.stub :internship_application_submitted_email, mock_mail do
-          internship_application.submit!
+          StudentMailer.stub :internship_application_submitted_email, mock_mail do
+            internship_application.submit!
+          end
         end
         mock_mail.verify
       end

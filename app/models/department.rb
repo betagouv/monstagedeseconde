@@ -18,7 +18,7 @@ class Department < ApplicationRecord
     code = key_for_lookup(zipcode: zipcode)
     Department.find_by(code: code)
   end
-  
+
   def self.lookup_by_zipcode(zipcode:)
     fetch_by_zipcode(zipcode: zipcode).try(:name)
   end
@@ -54,5 +54,10 @@ class Department < ApplicationRecord
   def self.departement_identified_by_3_chars?(zipcode:)
     zipcode.starts_with?('97') ||
     zipcode.starts_with?('98')
+  end
+
+  def self.email_domain(zipcode:)
+    fetch_by_zipcode(zipcode: zipcode).academy
+                                      .email_domain
   end
 end

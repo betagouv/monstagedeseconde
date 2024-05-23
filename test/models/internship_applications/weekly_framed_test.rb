@@ -4,6 +4,8 @@ require 'test_helper'
 
 module InternshipApplications
   class InternshipApplicationTest < ActiveSupport::TestCase
+    include ActionMailer::TestHelper
+
     test 'is not applicable twice on same week by same student' do
       travel_to Date.new(2019, 1, 1) do
         weeks = Week.selectable_from_now_until_end_of_school_year.first(2).last(1)
@@ -130,6 +132,15 @@ module InternshipApplications
       internship_application = create(:weekly_internship_application, :validated_by_employer, student: student, internship_offer: internship_offer_3)
       assert_changes -> { InternshipApplication.canceled_by_student_confirmation.count}, from: 0, to: 2 do
         internship_application.approve!
+      end
+    end
+
+    test 'expired applications notify student with one job enqueued' do
+      student = create(:student, phone: '+330611223344')
+      internship_offer = create(:weekly_internship_offer)
+      internship_application = create(:weekly_internship_application, :submitted, student: student, internship_offer: internship_offer)
+      assert_enqueued_jobs 1 do
+        internship_application.expire!
       end
     end
   end

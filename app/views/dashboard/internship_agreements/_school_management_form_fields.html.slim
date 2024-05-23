@@ -41,7 +41,7 @@ tbody.internship-agreement
         - content = "Courriel du chef d'établissement ou de son représentant"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :school_representative_email, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :school_representative_email, limit: 100, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
 
       .row.mt-0
         - label = "Numéro de téléphone du chef d'établissement"
