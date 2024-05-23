@@ -53,7 +53,7 @@ module Dashboard::InternshipOffers
     end
 
 
-    test 'PATCH #update sucessfully with title as employer owning internship_offer updates internship_offer' do
+    test 'PATCH #update successfully with title as employer owning internship_offer updates internship_offer' do
       internship_offer = create(:weekly_internship_offer)
       new_title = 'new title'
       new_group = create(:group, is_public: false, name: 'woop')
@@ -82,7 +82,7 @@ module Dashboard::InternshipOffers
          'updates internship_offer' do
       travel_to(Date.new(2019,9,1)) do
         weeks = Week.all.first(40).last(3)
-        internship_offer = create(:weekly_internship_offer, max_candidates: 3)
+        internship_offer = create(:weekly_internship_offer, :public,  max_candidates: 3)
         create(:weekly_internship_application,
                :approved,
                internship_offer: internship_offer)
@@ -92,7 +92,6 @@ module Dashboard::InternshipOffers
                 max_candidates: 2
               } })
         follow_redirect!
-        
         assert_select("#alert-text", text: "Votre annonce a bien été modifiée")
         assert_equal 2, internship_offer.reload.max_candidates
       end
