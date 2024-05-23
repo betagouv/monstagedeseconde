@@ -44,6 +44,7 @@ class StudentMailer < ApplicationMailer
     @internship_application = internship_application
     @student = internship_application.student
     @internship_offer = internship_application.internship_offer
+    @expiration_delay = InternshipApplication::EXPIRATION_DURATION / 1.day
     @prez_offer = @internship_offer.presenter
     @prez_student = @student.presenter
     sgid = @student.to_sgid(expires_in: InternshipApplication::MAGIC_LINK_EXPIRATION_DELAY).to_s
