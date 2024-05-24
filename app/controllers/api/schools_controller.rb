@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 module Api
   # Search school by city
   class SchoolsController < ApiBaseController
@@ -26,7 +25,13 @@ module Api
     private
 
     def result
-      Api::AutocompleteSchool.new(term: params[:query], limit: SEARCH_LIMIT)
+      cache = Rails.cache
+      search_key = params[:query]
+      cache_key = "autocomplete_school_#{search_key}"
+      cache.fetch(cache_key) do
+        Api::AutocompleteSchool.new(term: search_key, limit: SEARCH_LIMIT).to_json
+      end
+      JSON.parse(cache.fetch(cache_key))
     end
   end
 end
