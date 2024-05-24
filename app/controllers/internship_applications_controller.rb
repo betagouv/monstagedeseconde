@@ -38,7 +38,6 @@ class InternshipApplicationsController < ApplicationController
       @internship_application.update(update_internship_application_params)
       destination = internship_offer_internship_application_path(@internship_offer, @internship_application)
     end
-    save_missing_student_info(@internship_application.reload)
     redirect_to destination
   rescue AASM::InvalidTransition
     redirect_to dashboard_students_internship_applications_path(current_user, @internship_application),
@@ -57,7 +56,6 @@ class InternshipApplicationsController < ApplicationController
     appli_params = sanitizing_params(appli_params)
     @internship_application = InternshipApplication.new(appli_params)
     if @internship_application.save
-      save_missing_student_info(@internship_application.reload)
       redirect_to internship_offer_internship_application_path(@internship_offer,
                                                              @internship_application)
     else
@@ -147,15 +145,6 @@ class InternshipApplicationsController < ApplicationController
           )
   end
 
-  def save_missing_student_info(internship_application)
-    student = internship_application.student
-    student.phone ||= internship_application.student_phone
-    student.email ||= internship_application.student_email
-    return true unless student.changed?
-    return false unless student.valid?
-
-    student.save
-  end
 
   def sanitizing_params(appli_params)
     phone = appli_params["student_phone"]&.gsub(/\s+/, '')
