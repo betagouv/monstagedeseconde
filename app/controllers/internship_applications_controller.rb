@@ -32,10 +32,10 @@ class InternshipApplicationsController < ApplicationController
 
     if params[:transition] == 'submit!'
       @internship_application.submit!
-      @internship_application.save!
+      @internship_application.save! && save_missing_student_info(@internship_application.reload)
       redirect_to dashboard_students_internship_applications_path(student_id: current_user.id, notice_banner: true)
     else
-      @internship_application.update(update_internship_application_params)
+      @internship_application.update(update_internship_application_params) && save_missing_student_info(@internship_application.reload)
       redirect_to internship_offer_internship_application_path(@internship_offer, @internship_application)
     end
   rescue AASM::InvalidTransition
@@ -150,6 +150,7 @@ class InternshipApplicationsController < ApplicationController
     student.email ||= internship_application.student_email
     return true unless student.changed?
     return false unless student.valid?
+
     student.save
   end
 
