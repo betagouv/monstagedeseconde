@@ -181,6 +181,7 @@ Rails.application.routes.draw do
   get 'api_address_proxy/search', to: 'api_address_proxy#search', as: :api_address_proxy_search
   get 'api_sirene_proxy/search', to: 'api_sirene_proxy#search', as: :api_sirene_proxy_search
   get 'api_entreprise_proxy/search', to: 'api_entreprise_proxy#search', as: :api_entreprise_proxy_search
+  get 'api_city_proxy/search', to: 'api_city_proxy#search', as: :api_city_proxy_search
 
   get 'mon-compte(/:section)', to: 'users#edit', as: 'account'
   patch 'mon-compte', to: 'users#update'

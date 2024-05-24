@@ -50,7 +50,8 @@ WebMock.disable_net_connect!(
     /storage\.googleapis\.com/,
     /edgedl.me.gvt1.com/,
     /api-adresse.data.gouv.fr/,
-    /education.gouv.fr\/annuaire/
+    /education.gouv.fr\/annuaire/,
+    /geo.api.gouv.fr\/communes/
   ]
 )
 
