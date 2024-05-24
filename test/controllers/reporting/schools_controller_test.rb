@@ -15,15 +15,16 @@ module Reporting
     test 'get index as Statistician' \
          'when department params match his departement_name' do
       statistician = create(:statistician)
+      create(:department, code: '60', name: 'Oise')
       sign_in(statistician)
-      get reporting_schools_path(department: statistician.department_name)
+      get reporting_schools_path(department: statistician.department_name, group: 'public', department: statistician.department_name)
       assert_response :success
       assert_select 'title', "Statistiques sur les établissements | Stages de 2de"
     end
 
     test 'get index.xlsx as Statistician' \
          'when department params match his departement_name' do
-      skip "failing test on CI but passing locally" if ENV.fetch('CI') == 'true'
+      create(:department, code: '60', name: 'Oise')
       statistician = create(:statistician)
       sign_in(statistician)
       get reporting_schools_path(department: statistician.department_name,
@@ -33,7 +34,7 @@ module Reporting
 
     test 'GET #index as statistician fails ' \
          'when department params does not match his department' do
-      skip "to be fixed on 19/04/2024"
+      create(:department, code: '60', name: 'Oise')
       statistician = create(:statistician)
       sign_in(statistician)
       get reporting_schools_path(department: 'Ain')

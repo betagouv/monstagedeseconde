@@ -37,6 +37,7 @@ module Reporting
     def metabase_iframe
       year = params[:school_year].to_i
       if current_user.is_a?(Users::AcademyStatistician) || current_user.is_a?(Users::AcademyRegionStatistician)
+        # TODO : add a method in users models to get the dashboard id '+' refactos
         payload = {
           resource: { dashboard: eval("#{current_user.class.to_s}::METABASE_DASHBOARD_ID") },
           params: {
