@@ -32,7 +32,7 @@ module InternshipApplications
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
       student = create(:student,
-        school: school, 
+        school: school,
         class_room: create(:class_room, school: school),
         address: '100 bd Victor Hugo 13000 Marseille',
         legal_representative_email: 'sylvie@gmail.com',
@@ -41,7 +41,7 @@ module InternshipApplications
       )
 
       assert_nil student.phone
-      
+
       sign_in(student)
       valid_params = {
         internship_application: {
@@ -95,7 +95,7 @@ module InternshipApplications
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
       student = create(:student,
-        school: school, 
+        school: school,
         phone: '+330600110011',
         email: nil,
         class_room: create(:class_room, school: school),
@@ -107,7 +107,7 @@ module InternshipApplications
 
       assert_nil student.email
       refute_nil student.phone
-      
+
       sign_in(student)
       valid_params = {
         internship_application: {
@@ -159,7 +159,7 @@ module InternshipApplications
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
       student = create(:student,
-        school: school, 
+        school: school,
         phone: '+330600110011',
         email: '',
         class_room: create(:class_room, school: school),
@@ -169,9 +169,9 @@ module InternshipApplications
         legal_representative_phone: '+330600000000'
       )
 
-      assert_equal student.email, ''
+      assert_equal student.email, nil
       refute_nil student.phone
-      
+
       sign_in(student)
       valid_params = {
         internship_application: {
