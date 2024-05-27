@@ -32,7 +32,9 @@ module Users
     validate :validate_school_presence_at_creation
 
     # Callbacks
-    after_create :welcome_new_student, :set_reminders
+    after_create :welcome_new_student,
+                 :set_reminders,
+                 :clean_phone_or_email_when_empty
 
     def student?; true end
 
@@ -190,6 +192,11 @@ module Users
 
     def set_reminders
       SendReminderToStudentsWithoutApplicationJob.set(wait: 3.day).perform_later(id)
+    end
+
+    def clean_phone_or_email_when_empty
+      update_columns(phone: nil) if phone.blank?
+      update_columns(email: nil) if email.blank?
     end
   end
 end
