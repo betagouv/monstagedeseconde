@@ -569,7 +569,7 @@ class InternshipApplication < ApplicationRecord
   def update_student_profile
     student.update(
       phone: student.phone || User.sanitize_mobile_phone_number(student_phone, phone_prefix),
-      email: student.email || student_email,
+      email: student.email.blank? ? student_email : student.email,
       legal_representative_full_name: student_legal_representative_full_name,
       legal_representative_email: student_legal_representative_email,
       legal_representative_phone: student_legal_representative_phone,
