@@ -9,6 +9,7 @@ module Reporting
     def reporting_cross_view_params
       params.permit(:is_public,
                     :academy,
+                    :department,
                     :group,
                     :ministries,
                     :subscribed_school,
@@ -17,7 +18,6 @@ module Reporting
                     :school_year,
                     :school_id
                     )
-      # :department,
     end
 
     def export_filename(base_name)

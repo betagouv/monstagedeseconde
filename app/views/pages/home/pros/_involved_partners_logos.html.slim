@@ -1,7 +1,7 @@
 .mx-lg-0.fr-mx-2w.fr-py-4w
   .fr-h3.blue-france Nos entreprises engagées
   .d-flex.align-content-start.flex-wrap
-    - involved_partners_logos.shuffle.each do |partner|
+    - involved_partners_logos.each do |partner|
       .involved_partner_logo.fr-mb-1w
         = image_tag asset_pack_path("media/images/homepage/partenaires/involved_companies/#{partner[:logo_img]}"),
                                      alt: partner[:alt],

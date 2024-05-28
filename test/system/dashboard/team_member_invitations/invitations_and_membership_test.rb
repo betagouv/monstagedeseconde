@@ -268,6 +268,7 @@ module Dashboard::TeamMemberInvitations
     end
 
     test 'a statistician can accept an invitation to join a team' do
+      create(:department, code: '60', name: 'Oise')
       statistician_1 = create(:statistician)
       statistician_2 = create(:statistician)
       create :team_member_invitation,
@@ -282,6 +283,7 @@ module Dashboard::TeamMemberInvitations
     end
 
     test 'a statistician can refuse an invitation to join a team' do
+      create(:department, code: '60', name: 'Oise')
       statistician_1 = create(:statistician)
       statistician_2 = create(:statistician)
       create :team_member_invitation,

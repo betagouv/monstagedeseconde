@@ -21,6 +21,7 @@ module Reporting
 
     test 'GET #index as statistician success ' \
          'when department params match his departement_name' do
+      create(:department, code: '60', name: 'Oise')
       statistician = create(:statistician)
       zipcode = "#{statistician.department_zipcode}000"
       sign_in(statistician)
@@ -30,7 +31,7 @@ module Reporting
 
     test 'GET #index as statistician fails ' \
          'when department params does not match his department' do
-      skip "to be fixed on 19/04/2024"
+      create(:department, code: '60', name: 'Oise')
       statistician = create(:statistician)
       sign_in(statistician)
       get reporting_dashboards_path(department: 'Ain')
