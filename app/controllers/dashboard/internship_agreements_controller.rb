@@ -115,7 +115,6 @@ module Dashboard
               :legal_status,
               :student_full_name,
               :student_class_room,
-              :main_teacher_full_name,
               :organisation_representative_full_name,
               :organisation_representative_role,
               :date_range,

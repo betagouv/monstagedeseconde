@@ -361,7 +361,6 @@ class AbilityTest < ActiveSupport::TestCase
       edit_activity_rating_rich_text
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
-      edit_main_teacher_full_name
       edit_school_representative_full_name
       edit_school_representative_phone
       edit_school_representative_email
