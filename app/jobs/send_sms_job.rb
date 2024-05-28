@@ -15,8 +15,7 @@ class SendSmsJob < ApplicationJob
       Rails.logger.error("Campaign name is too long: #{campaign_name}")
       return
     end
-    # BUG: phone_number prefix is not mandatorily 33 !
-    phone = phone_number || User.sanitize_mobile_phone_number(user.phone, '33')
+    phone = phone_number || User.sanitize_mobile_phone_number(user.phone, user.compute_mobile_phone_prefix)
 
     Services::SmsSender.new(phone_number: phone, content: message, campaign_name: campaign_name)
                        .perform
