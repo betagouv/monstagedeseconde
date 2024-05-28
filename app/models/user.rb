@@ -7,7 +7,6 @@ class User < ApplicationRecord
   include Discard::Model
   include UserAdmin
   include ActiveModel::Dirty
-  include PhoneComputation
 
   has_many :favorites
   has_many :url_shrinkers
@@ -156,7 +155,30 @@ class User < ApplicationRecord
     end
   end
 
-  
+  def formatted_phone
+    return if phone.blank?
+
+    phone[0..4].gsub('0', '') + phone[5..]
+  end
+
+  def self.sanitize_mobile_phone_number(number, prefix = '')
+    return "" if number.blank?
+
+    thin_number = number.gsub(/[\s|;\,\.\:\(\)]/, '')
+    if thin_number.match?(/\A\+(33|262|594|596|687|689)0[6|7]\d{8}\z/)
+      "#{prefix}#{thin_number[4..]}"
+    elsif thin_number.match?(/\A\+(33|262|594|596|687|689)[6|7]\d{8}\z/)
+      "#{prefix}#{thin_number[3..]}"
+    elsif thin_number.match?(/\A(33|262|594|596|687|689)[6|7]\d{8}\z/)
+      "#{prefix}#{thin_number[2..]}"
+    elsif thin_number.match?(/\A(33|262|594|596|687|689)0[6|7]\d{8}\z/)
+      "#{prefix}#{thin_number[3..]}"
+    elsif thin_number.match?(/\A0[6|7]\d{8}\z/)
+      "#{prefix}#{thin_number[1..]}"
+    else
+      nil
+    end
+  end
 
   def send_sms_token
     return unless phone.present? && student? && !created_by_teacher
@@ -275,6 +297,22 @@ class User < ApplicationRecord
   end
 
   private
+
+  def concatenate_and_clean
+    # if prefix and suffix phone are given,
+    # this means an update temptative
+    if phone_prefix.present? && !phone_suffix.nil?
+      self.phone = "#{phone_prefix}#{phone_suffix}".gsub(/\s+/, '')
+      self.phone_prefix = nil
+      self.phone_suffix = nil
+    end
+    clean_phone
+  end
+
+  def clean_phone
+    self.phone = phone.delete(' ') unless phone.nil?
+    self.phone = nil if phone == '+33'
+  end
 
   def add_email_to_phone_account?
     phone.present? && confirmed? && email.blank?
