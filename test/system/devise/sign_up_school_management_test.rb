@@ -8,7 +8,7 @@ class SignUpSchoolManagersTest < ApplicationSystemTestCase
     
     school_1 = create(:school, name: 'Etablissement Test 1', city: 'Saint-Martin')
     create(:student, email: existing_email)
-    password = 'kikoololtest'
+    password = 'kikoolT1_test'
     # go to signup as school_manager
     visit new_user_registration_path(as: 'SchoolManagement')
 

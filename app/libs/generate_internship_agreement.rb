@@ -266,11 +266,11 @@ class GenerateInternshipAgreement < Prawn::Document
         start_hours = @internship_agreement.daily_hours&.dig(weekday)&.first
         end_hours = @internship_agreement.daily_hours&.dig(weekday)&.last
       else
-        start_hours = @internship_agreement.weekly_hours&.first
-        end_hours = @internship_agreement.weekly_hours&.last
+        start_hours = (weekday == "samedi") ? "" : @internship_agreement.weekly_hours&.first
+        end_hours   = (weekday == "samedi") ? "" : @internship_agreement.weekly_hours&.last
       end
       if start_hours.blank? || end_hours.blank?
-        internship_offer_hours << [weekday.capitalize, ""]
+        internship_offer_hours << [weekday.capitalize, "", ""]
       else
         internship_offer_hours << [weekday.capitalize, "De #{start_hours.gsub(':', 'h')}", "A #{end_hours.gsub(':', 'h')}"] 
       end

@@ -28,17 +28,20 @@ module InternshipApplications
       assert_redirected_to root_path
     end
 
-    test 'POST #create internship application as student' do
+    test 'POST #create internship application as student with email and no phone' do
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
       student = create(:student,
-        school: school, 
+        school: school,
         class_room: create(:class_room, school: school),
         address: '100 bd Victor Hugo 13000 Marseille',
         legal_representative_email: 'sylvie@gmail.com',
         legal_representative_full_name: 'Sylvie Dupont',
         legal_representative_phone: '+330600000000'
       )
+
+      assert_nil student.phone
+
       sign_in(student)
       valid_params = {
         internship_application: {
@@ -83,6 +86,136 @@ module InternshipApplications
 
       assert_equal student.legal_representative_phone, '+330600990099'
       assert_equal created_internship_application.student_legal_representative_phone, '+330600990099'
+
+      refute_equal student.email, 'newemail@gmail.com' # unchanged
+      assert_equal student.phone, '+330656565600' # changed with student_phone
+    end
+
+    test 'POST #create internship application as student with phone and no email' do
+      internship_offer = create(:weekly_internship_offer)
+      school = create(:school)
+      student = create(:student,
+        school: school,
+        phone: '+330600110011',
+        email: nil,
+        class_room: create(:class_room, school: school),
+        address: '100 bd Victor Hugo 13000 Marseille',
+        legal_representative_email: 'sylvie@gmail.com',
+        legal_representative_full_name: 'Sylvie Dupont',
+        legal_representative_phone: '+330600000000'
+      )
+
+      assert_nil student.email
+      refute_nil student.phone
+
+      sign_in(student)
+      valid_params = {
+        internship_application: {
+          motivation: 'Je suis trop motivé wesh',
+          user_id: student.id,
+          internship_offer_id: internship_offer.id,
+          internship_offer_type: InternshipOffer.name,
+          type: InternshipApplications::WeeklyFramed.name,
+          student_email: 'newemail@gmail.com',
+          student_phone: '+330656565600',
+          student_address: '1 rue de la paix 75001 Paris',
+          student_legal_representative_full_name: 'Jean Dupont',
+          student_legal_representative_email: 'parent@gmail.com',
+          student_legal_representative_phone: '+330600990099'
+        }
+      }
+
+      assert_difference('InternshipApplications::WeeklyFramed.count', 1) do
+        post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
+        assert_redirected_to internship_offer_internship_application_path(
+          internship_offer,
+          InternshipApplications::WeeklyFramed.last
+        )
+      end
+
+      created_internship_application = InternshipApplications::WeeklyFramed.last
+      assert_equal 'Je suis trop motivé wesh', created_internship_application.motivation.to_plain_text
+      assert_equal student.id, created_internship_application.student.id
+
+      student = student.reload
+      assert_equal '+330656565600', created_internship_application.student_phone
+
+      assert_equal created_internship_application.student_email, 'newemail@gmail.com'
+
+      assert_equal 'parent@gmail.com', student.reload.legal_representative_email
+      assert_equal created_internship_application.student_legal_representative_email, 'parent@gmail.com'
+
+      assert_equal student.legal_representative_full_name, 'Jean Dupont'
+      assert_equal created_internship_application.student_legal_representative_full_name, 'Jean Dupont'
+
+      assert_equal student.legal_representative_phone, '+330600990099'
+      assert_equal created_internship_application.student_legal_representative_phone, '+330600990099'
+
+      assert_equal student.email, 'newemail@gmail.com' # changed with student_email
+      refute_equal student.phone, '+330656565600' # unchanged with student_phone
+    end
+
+    test 'POST #create internship application as student with phone and blank email' do
+      internship_offer = create(:weekly_internship_offer)
+      school = create(:school)
+      student = create(:student,
+        :registered_with_phone,
+        school: school,
+        class_room: create(:class_room, school: school),
+        address: '100 bd Victor Hugo 13000 Marseille',
+        legal_representative_email: 'sylvie@gmail.com',
+        legal_representative_full_name: 'Sylvie Dupont',
+        legal_representative_phone: '+330600000000'
+      )
+
+      assert_nil student.email
+      refute_nil student.phone
+
+      sign_in(student)
+      valid_params = {
+        internship_application: {
+          motivation: 'Je suis trop motivé wesh',
+          user_id: student.id,
+          internship_offer_id: internship_offer.id,
+          internship_offer_type: InternshipOffer.name,
+          type: InternshipApplications::WeeklyFramed.name,
+          student_email: 'newemail@gmail.com',
+          student_phone: '+330656565600',
+          student_address: '1 rue de la paix 75001 Paris',
+          student_legal_representative_full_name: 'Jean Dupont',
+          student_legal_representative_email: 'parent@gmail.com',
+          student_legal_representative_phone: '+330600990099'
+        }
+      }
+
+      assert_difference('InternshipApplications::WeeklyFramed.count', 1) do
+        post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
+        assert_redirected_to internship_offer_internship_application_path(
+          internship_offer,
+          InternshipApplications::WeeklyFramed.last
+        )
+      end
+
+      created_internship_application = InternshipApplications::WeeklyFramed.last
+      assert_equal 'Je suis trop motivé wesh', created_internship_application.motivation.to_plain_text
+      assert_equal student.id, created_internship_application.student.id
+
+      student = student.reload
+      assert_equal '+330656565600', created_internship_application.student_phone
+
+      assert_equal created_internship_application.student_email, 'newemail@gmail.com'
+
+      assert_equal 'parent@gmail.com', student.reload.legal_representative_email
+      assert_equal created_internship_application.student_legal_representative_email, 'parent@gmail.com'
+
+      assert_equal student.legal_representative_full_name, 'Jean Dupont'
+      assert_equal created_internship_application.student_legal_representative_full_name, 'Jean Dupont'
+
+      assert_equal student.legal_representative_phone, '+330600990099'
+      assert_equal created_internship_application.student_legal_representative_phone, '+330600990099'
+
+      assert_equal student.email, 'newemail@gmail.com' # changed with student_email
+      refute_equal student.phone, '+330656565600' # unchanged with student_phone
     end
 
     test 'POST #create internship application as student to offer posted by statistician' do

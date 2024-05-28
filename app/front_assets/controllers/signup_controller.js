@@ -31,7 +31,8 @@ export default class extends Controller {
     'uppercase',
     'lowercase',
     'special',
-    'number'
+    'number',
+    'submitButton'
   ];
 
   static values = {
@@ -198,12 +199,31 @@ export default class extends Controller {
   checkPassword() {
     const password = this.passwordInputTarget.value;
 
-    this.lengthTarget.style.color = password.length >= 12 ? "green" : "red"
-    this.uppercaseTarget.style.color = /[A-Z]/.test(password) ? "green" : "red"
-    this.lowercaseTarget.style.color = /[a-z]/.test(password) ? "green" : "red"
-    this.numberTarget.style.color = /[0-9]/.test(password) ? "green" : "red"
-    this.specialTarget.style.color = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password) ? "green" : "red"
+    this.lengthTarget.style.color = this.isPwdLengthOk(password) ? "green" : "red"
+    this.uppercaseTarget.style.color = this.isPwdUppercaseOk(password) ? "green" : "red"
+    this.lowercaseTarget.style.color = this.isPwdLowercaseOk(password) ? "green" : "red"
+    this.numberTarget.style.color = this.isPwdNumberOk(password) ? "green" : "red"
+    this.specialTarget.style.color = this.isPwdSpecialCharOk(password) ? "green" : "red"
+    const authorization = this.isPwdLengthOk(password) && this.isPwdUppercaseOk(password) && this.isPwdLowercaseOk(password) && this.isPwdNumberOk(password) && this.isPwdSpecialCharOk(password)
+    this.submitButtonTarget.disabled = !authorization
   }
+
+  isPwdLengthOk(password) {
+    return this.lengthTarget.style.color = password.length >= 12
+  }
+  isPwdUppercaseOk(password) {
+    return this.uppercaseTarget.style.color = /[A-Z]/.test(password)
+  }
+  isPwdLowercaseOk(password) {
+    return this.lowercaseTarget.style.color = /[a-z]/.test(password)
+  }
+  isPwdNumberOk(password) {
+    return this.numberTarget.style.color = /[0-9]/.test(password)
+  }
+  isPwdSpecialCharOk(password) {
+    return this.specialTarget.style.color = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password)
+  }
+
 
   checkChannel() {
     switch (this.channelValue) {

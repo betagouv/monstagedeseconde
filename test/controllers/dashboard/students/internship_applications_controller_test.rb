@@ -181,6 +181,33 @@ module Dashboard
           assert_equal 2, internship_application.reload.magic_link_tracker
         end
       end
+
+      test 'POST when apply, it copies missing email to student' do
+        student = create(:student, email: nil, phone: '+330623659789')
+        internship_offer = create(:weekly_internship_offer)
+        new_email = 'test@free.fr'
+        sign_in(student)
+
+        assert_difference('InternshipApplication.count', 1) do
+          params = {
+            internship_offer_id: internship_offer.id,
+            internship_application: {
+              internship_offer_id: internship_offer.id,
+              student_email: new_email,
+              legal_representative_full_name: student.legal_representative_full_name,
+              legal_representative_email: student.legal_representative_email,
+              legal_representative_phone: student.legal_representative_phone,
+              address: student.address,
+              type: 'InternshipApplications::WeeklyFramed',
+              internship_offer_type: 'InternshipOffer',
+              motivation: 'motivation',
+              period: 0
+            }
+          }
+          post internship_offer_internship_applications_path(internship_offer), params: params
+          assert_equal new_email, student.reload.email
+        end
+      end
     end
   end
 end

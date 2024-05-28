@@ -17,4 +17,13 @@
             locals: { badge: "Dossier",
                       link_title: "Kit de communication",
                       file: "https://cellar-fr-north-hds-c1.services.clever-cloud.com/monstagedeseconde-public/Kit_de_communication-Mon_stage_de_seconde_v2.zip" }
-  
+    = render partial: "pages/home/resource_card",
+              locals: { badge: "PDF",
+                        link_title: "Exemple d'activités à proposer",
+                        file: "https://cellar-fr-north-hds-c1.services.clever-cloud.com/monstagedeseconde-public/Activites_2de.pdf",
+                        target: '_blank' }
+    = render partial: "pages/home/resource_card",
+              locals: { badge: "PDF",
+                        link_title: "Grilles pour la séquence d'observation de 2de",
+                        file: "https://cellar-fr-north-hds-c1.services.clever-cloud.com/monstagedeseconde-public/Grille_sequence_2de.pdf",
+                        target: '_blank' }

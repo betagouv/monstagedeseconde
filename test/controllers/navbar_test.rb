@@ -131,6 +131,7 @@ class NavbarTest < ActionDispatch::IntegrationTest
   end
 
   test 'statistician' do
+    create(:department, code: '60', name: 'Oise')
     statistician = create(:statistician)
     sign_in(statistician)
     get statistician.custom_dashboard_path
@@ -162,6 +163,7 @@ class NavbarTest < ActionDispatch::IntegrationTest
 
   test 'education statistician' do
     education_statistician = create(:education_statistician)
+    create(:department, code: '60', name: 'Oise')
     sign_in(education_statistician)
     get education_statistician.custom_dashboard_path
     assert_select('li a.fr-link.text-decoration-none.active', count: 1, text: 'Statistiques')

@@ -230,8 +230,7 @@ class AbilityTest < ActiveSupport::TestCase
     refute ability.can?(:destroy, User)
     # TODO: fix this test
 #     assert ability.can?(:index_and_filter, Reporting::InternshipOffer)
-#     skip "to be fixed on 19/04/2024"
-#     refute ability.can?(:index, Acl::Reporting.new(user: statistician, params: {}))
+    refute ability.can?(:index, Acl::Reporting.new(user: statistician, params: {}))
     assert(ability.can?(:index, Acl::Reporting, &:allowed?))
 
     refute ability.can?(:apply, create(:weekly_internship_offer))
