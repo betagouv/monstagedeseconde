@@ -4,8 +4,8 @@ class SendSmsJob < ApplicationJob
   # TODO add a SMS service class since following is a data clamp
 
   def perform(user: , message: , phone_number: nil, campaign_name: nil)
-    return if Rails.env.test?
     return if phone_number.nil? && user.phone.blank?
+
     if message.blank? || message.length > 318
       Rails.logger.error("SMS: Message is too long: #{message}") if message&.length&.to_i > 318
       Rails.logger.error("SMS: Message is just blank") if message
