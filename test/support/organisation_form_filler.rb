@@ -21,7 +21,7 @@ module OrganisationFormFiller
             api-insee-adresse-east-side-software.json]
       )
     )
-    stub_request(:get, "https://api.insee.fr/entreprises/sirene/V3/siret?q=siret:90943224700015").
+    stub_request(:get, "https://api.insee.fr/entreprises/sirene/siret/90943224700015").
       with(
         headers: {
               'Accept'=>'application/json',
