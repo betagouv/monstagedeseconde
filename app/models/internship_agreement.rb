@@ -39,7 +39,6 @@ class InternshipAgreement < ApplicationRecord
 
   with_options if: :enforce_main_teacher_validations? do
     validates :student_class_room, presence: true
-    validates :main_teacher_full_name, presence: true
   end
 
   with_options if: :enforce_school_manager_validations? do
@@ -308,7 +307,6 @@ class InternshipAgreement < ApplicationRecord
       student_class_room: 'NA',
       student_school: 'NA',
       tutor_full_name: 'NA',
-      main_teacher_full_name: 'NA',
       siret: 'NA',
       tutor_role: 'NA',
       tutor_email: 'NA',

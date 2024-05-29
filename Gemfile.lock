@@ -1,13 +1,3 @@
-GIT
-  remote: https://github.com/prawnpdf/prawn.git
-  revision: f82783b1d0207abacd642ddd2c0959685cbc4a09
-  branch: master
-  specs:
-    prawn (2.5.0)
-      matrix (~> 0.4)
-      pdf-core (~> 0.10.0)
-      ttfunk (~> 1.8)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -340,6 +330,10 @@ GEM
     pg_search (2.3.2)
       activerecord (>= 5.2)
       activesupport (>= 5.2)
+    prawn (2.5.0)
+      matrix (~> 0.4)
+      pdf-core (~> 0.10.0)
+      ttfunk (~> 1.8)
     prawn-styled-text (0.1.4)
       oga (~> 2)
       prawn (~> 2)
@@ -604,7 +598,7 @@ DEPENDENCIES
   ovh-rest
   pg
   pg_search (= 2.3.2)
-  prawn!
+  prawn
   prawn-styled-text
   prawn-table
   pry-byebug

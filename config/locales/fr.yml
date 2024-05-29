@@ -211,7 +211,6 @@ fr:
         student_refering_teacher_phone: Numéro de téléphone du professeur référent
         student_legal_representative_phone: Numéro de téléphone du représentant légal de l'élève
         tutor_full_name: Nom du tuteur
-        main_teacher_full_name: Nom du professeur principal
         daily_hours: Horaires journaliers
         weekly_hours: Horaires
         daily_lunch_break: Horaires journaliers pause déjeuner
@@ -505,8 +504,6 @@ fr:
             school_representative_role:
               blank: "Veuillez saisir la fonction du représentant de l'établissement scolaire"
             student_class_room:
-              blank: "Veuillez saisir la classe de l'élève"
-            main_teacher_full_name:
               blank: "Veuillez saisir la classe de l'élève"
         organisation:
           attributes: &organisation_errors
