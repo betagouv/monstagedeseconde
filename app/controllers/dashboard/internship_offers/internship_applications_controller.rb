@@ -29,6 +29,9 @@ module Dashboard
           @internship_application.internship_offer,
           @internship_application
         )
+      rescue ActiveRecord::RecordInvalid => e
+        redirect_back fallback_location: current_user.custom_dashboard_path,
+                      alert: @internship_application.errors.messages.first.join(' : ')
       end
 
       def user_internship_applications
@@ -63,6 +66,7 @@ module Dashboard
       end
 
       def school_details
+        #TODO
         authorize! :index, InternshipApplication
         @school = @internship_application.student.school
         @school_presenter = @school.presenter
