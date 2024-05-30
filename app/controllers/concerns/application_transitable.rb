@@ -30,7 +30,7 @@ module ApplicationTransitable
       redirect_back fallback_location: current_user ? current_user.custom_dashboard_path || root_path : root_path,
                     flash: { warning: 'Cette candidature a déjà été traitée' }
     rescue ActiveRecord::RecordInvalid => e
-      alert = @internship_application.nil ? e.message : @internship_application.errors.messages.first.join(' : ')
+      alert = @internship_application.nil? ? e.message : @internship_application.errors.messages.first.join(' : ')
       redirect_back fallback_location: current_user.custom_dashboard_path,
                     alert: alert
     end
