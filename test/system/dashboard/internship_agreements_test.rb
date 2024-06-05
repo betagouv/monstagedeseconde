@@ -94,7 +94,7 @@ module Dashboard
       fill_in "Nom de l'entreprise", with: 'Corporation'
       fill_in "Adresse email de contact", with: 'corp@mail.com'
       fill_in "Adresse du lieu du stage", with: '1 rue de la paix'
-      find('label', text: 'Les horaires sont les mêmes sur toute la période de stage')
+      find('label', text: 'Les horaires seront les mêmes sur toute la période de stage')
       execute_script("document.getElementById('weekly_planning').checked = false;")
       execute_script("document.getElementById('daily-planning-container').classList.remove('d-none');")
       select('08:00', from:'internship_agreement_daily_hours_lundi_start')

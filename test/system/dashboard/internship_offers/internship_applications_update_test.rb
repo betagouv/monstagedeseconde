@@ -16,6 +16,24 @@ module Dashboard::InternshipOffers
       find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--warning', text: "LU")
     end
 
+    test 'employer cannot set to read status an internship_application when email aint ok' do
+      faulty_employer_true_student = create(:employer, email: 'student@free.fr')
+      employer, internship_offer = create_employer_and_offer
+      student = create(:student, :registered_with_phone)
+      internship_application = create(:weekly_internship_application,
+                                      :submitted,
+                                      student: student,
+                                      internship_offer: internship_offer)
+      internship_application.update_column(:student_email, faulty_employer_true_student.email)
+      sign_in(employer)
+      visit dashboard_candidatures_path
+      click_link 'Répondre'
+      find(
+        'span#alert-text',
+        text: 'student_email : Cet email est déjà utilisé'
+      )
+    end
+
     test 'employer can reject an internship_application' do
       employer, internship_offer = create_employer_and_offer
       internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
