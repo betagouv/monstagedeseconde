@@ -1,5 +1,5 @@
 - is_creating = @internship_application.try(:new_record?)
-- phone_pattern = '^\+?[0-9]{9,13}$'
+- phone_pattern = '^\+?(\d{2,3}\s?)?(\d{2}\s?){3,4}\d{2}$'
 
 = form_with(model: @internship_application,
             data: {turbo: false},
