@@ -8,7 +8,7 @@
               method: method,
               data: { turbo: false } do |f|
     - if @user.nil?
-      = f.label :anonymize, class: 'fr-label' do
+      = f.label :phone_or_email, class: 'fr-label' do
         = 'Adresse électronique (e-mail) ou téléphone de l\'utilisateur à anonymiser'
         = f.rg2a_required_content_tag
       = f.text_field :phone_or_email, class: 'fr-input', required: true

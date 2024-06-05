@@ -109,6 +109,7 @@ RailsAdmin.config do |config|
   config.navigation_static_links = {
     "Ajouter un établissement" => "/ecoles/nouveau",
     "Supprimer un étudiant, un employeur" => "/utilisateurs/anonymiseur",
+    "Tranformer un compte" => "/utilisateurs/transform",
     "Stats" => stats_path,
     "Sidekiq" => "/sidekiq",
     "Zammad (Support)" => "https://monstage.zammad.com",

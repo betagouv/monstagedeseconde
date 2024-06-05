@@ -45,6 +45,35 @@ class UsersController < ApplicationController
     render json: 'Survey answered', status: 200
   end
 
+  def transform_identifier_form
+    authorize! :transform_user, current_user
+    render 'users/transform_form'
+  end
+
+  def transform_parameters # with identification
+    authorize! :transform_user, current_user
+    form_input = user_params[:phone_or_email].strip
+    search_hash = {phone: form_input}
+    search_hash = {email: form_input} if form_input.match?(/\A[^@\s]+@[^@\s]+\z/)
+    @user = User.kept.find_by(search_hash)
+    @url = utilisateurs_transform_parameters_path
+    @url = utilisateurs_transform_path unless @user.nil? || !@user.employer? || @user.discarded?
+    if @user.nil?
+      @error_message = 'Utilisateur inconnu'
+    elsif @user.present? && !@user.employer?
+      @error_message = "Cet utilisateur n'est pas un employeur"
+    elsif @user.discarded?
+      @error_message = 'Utilisateur supprimé / anonymisé'
+    end
+    if @error_message
+      render 'users/transform_form', alert: 'erreur en deça des Pyrénées'
+    render @url
+  end
+
+  def transform_user
+    authorize! :transform_user, current_user
+  end
+
   def anonymize_form
     authorize! :anonymize_user, current_user
     render 'users/anonymize_form'
