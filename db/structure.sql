@@ -1886,7 +1886,10 @@ CREATE TABLE public.users (
     address character varying,
     legal_representative_full_name character varying,
     legal_representative_email character varying,
-    legal_representative_phone character varying
+    legal_representative_phone character varying,
+    failed_attempts integer DEFAULT 0 NOT NULL,
+    unlock_token character varying,
+    locked_at timestamp(6) without time zone
 );
 
 
@@ -3383,6 +3386,13 @@ CREATE INDEX index_users_on_school_id ON public.users USING btree (school_id);
 
 
 --
+-- Name: index_users_on_unlock_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_users_on_unlock_token ON public.users USING btree (unlock_token);
+
+
+--
 -- Name: index_users_search_histories_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3821,6 +3831,7 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20240531100023'),
+('20240531101222'),
 ('20240527081911'),
 ('20240514132852'),
 ('20240513094706'),

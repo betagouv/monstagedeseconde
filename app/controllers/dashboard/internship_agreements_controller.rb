@@ -57,6 +57,7 @@ module Dashboard
     end
 
     def show
+      authorize! :update, @internship_agreement
       respond_to do |format|
         format.html
         format.pdf do

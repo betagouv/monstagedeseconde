@@ -15,10 +15,6 @@ FactoryBot.define do
     max_candidates { 1 }
     blocked_weeks_count { 0 }
     sector { create(:sector) }
-    tutor_name { 'Eric Dubois' }
-    tutor_phone { '0123456789' }
-    tutor_email { 'eric@dubois.fr' }
-    tutor_role { 'comptable' }
     school_year { SchoolYear::Current::new.year_in_june}
     is_public { true }
     group { create(:group, is_public: true) }
