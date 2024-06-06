@@ -17,7 +17,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable,
          :validatable, :confirmable, :trackable,
-         :timeoutable
+         :timeoutable, :lockable
 
   include DelayedDeviseEmailSender
 
@@ -155,8 +155,6 @@ class User < ApplicationRecord
              last_phone_password_reset: Time.now)
     end
   end
-
-  
 
   def send_sms_token
     return unless phone.present? && student? && !created_by_teacher

@@ -28,7 +28,7 @@ class UserTest < ActiveSupport::TestCase
       :weekly_internship_application,
       student: student,
       motivation: 'a wonderful world',
-      student_phone: '33601254118',
+      student_phone: '687012345',
       student_email: 'test@free.fr'
     )
     assert internship_application.motivation.present?
@@ -253,6 +253,8 @@ class UserTest < ActiveSupport::TestCase
     numbers.each do |number|
       assert_nil User.sanitize_mobile_phone_number(number, prefix)
     end
+    assert_nil User.sanitize_mobile_phone_number('', prefix)
+    assert_nil User.sanitize_mobile_phone_number(nil, prefix)
   end
 
   test 'phone prefix' do

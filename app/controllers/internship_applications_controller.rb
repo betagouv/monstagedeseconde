@@ -116,6 +116,9 @@ class InternshipApplicationsController < ApplicationController
       redirect_to edit_transfer_internship_offer_internship_application_path(@internship_application.internship_offer, @internship_application),
                   flash: { danger: "La candidature n'a pas pu être transmise avec succès, faute de destinataires" }
     end
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_back fallback_location: current_user.custom_dashboard_path,
+                  alert: e.message
   end
 
   private

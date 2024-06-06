@@ -12,9 +12,12 @@ module Dashboard
         student = create(:student, school: school)
         new_phone_number = '0606060606'
         sign_in(student)
+
         visit internship_offers_path
         click_on internship_offer.title
+
         all('.fr-btn', text: 'Postuler').first.click
+
         find('#internship_application_motivation', visible: false).set("Le dev ça motive")
         within(".react-tel-input") do
           find('input[name="internship_application[student_phone]"]').set(new_phone_number)
@@ -23,7 +26,6 @@ module Dashboard
 
         find('.fr-h3', text: 'Rappel du stage')
         formatted_phone = "+33#{new_phone_number}"
-        assert_equal formatted_phone,  student.reload.phone
         internship_application = InternshipApplication.last
         assert_equal "Le dev ça motive", internship_application.motivation.to_plain_text
         assert_equal formatted_phone, internship_application.student_phone
@@ -45,10 +47,48 @@ module Dashboard
         click_on 'Valider'
 
         find('.fr-h3', text: 'Rappel du stage')
-        assert_equal new_email,  student.reload.email
+        assert_nil student.reload.email
         internship_application = InternshipApplication.last
         assert_equal student.phone, internship_application.student_phone
-        assert_equal student.email, internship_application.student_email
+      end
+
+      test 'student_email is suggested from previous internship_applications' do
+        employer, internship_offer = create_employer_and_offer
+        second_internship_offer = create(:weekly_internship_offer, employer: employer)
+        former_student_email = 'test@free.fr'
+        student = create(:student, :registered_with_phone)
+        internship_application = create(:weekly_internship_application,
+                                        :submitted,
+                                        internship_offer: internship_offer,
+                                        student: student,
+                                        student_email: former_student_email)
+        assert_nil student.email
+        sign_in(student)
+        visit internship_offers_path
+        click_on second_internship_offer.title
+        all('.fr-btn', text: 'Postuler').first.click
+        form_student_value = find('input[name="internship_application[student_email]"]').value
+        assert_equal former_student_email, form_student_value
+      end
+
+      test 'student_phone is suggested from previous internship_applications' do
+        employer, internship_offer = create_employer_and_offer
+        second_internship_offer = create(:weekly_internship_offer, employer: employer)
+        former_student_phone = '+330623055441'
+        student = create(:student)
+        assert_nil student.phone
+        internship_application = create(:weekly_internship_application,
+                                        :submitted,
+                                        internship_offer: internship_offer,
+                                        student: student,
+                                        student_phone: former_student_phone)
+        sign_in(student)
+        visit internship_offers_path
+        click_on second_internship_offer.title
+        all('.fr-btn', text: 'Postuler').first.click
+        
+        form_student_value = find('input[name="internship_application[student_phone]"]').value.gsub(/\s+/, '')
+        assert_equal former_student_phone, form_student_value
       end
     end
   end

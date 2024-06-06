@@ -43,7 +43,7 @@ module Dashboard::InternshipOffers
       travel_to(Date.new(2020, 9, 1)) do
         school = create(:school)
         employer = create(:ministry_statistician)
-        internship_offer = build(:weekly_internship_offer, employer: employer)
+        internship_offer = build(:weekly_internship_offer, :public, employer: employer)
         sign_in(internship_offer.employer)
         params = internship_offer
                   .attributes
@@ -62,6 +62,7 @@ module Dashboard::InternshipOffers
         assert_equal InternshipOffers::WeeklyFramed.name, created_internship_offer.type
         assert_equal employer, created_internship_offer.employer
         assert_equal params['max_candidates'], created_internship_offer.max_candidates
+        assert_equal Group.all.last, created_internship_offer.group
         assert_redirected_to internship_offer_path(created_internship_offer, stepper: true)
       end
     end

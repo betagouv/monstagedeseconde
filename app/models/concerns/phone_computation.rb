@@ -23,7 +23,7 @@ module PhoneComputation
     end
 
     def self.sanitize_mobile_phone_number(number, prefix = '')
-      return "" if number.blank?
+      return nil if number.blank?
 
       thin_number = number.gsub(/[\s|;\,\.\:\(\)]/, '')
       if thin_number.match?(/\A\+(33|262|594|596|687|689)0[6|7]\d{8}\z/)
