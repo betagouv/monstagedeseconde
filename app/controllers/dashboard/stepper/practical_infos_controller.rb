@@ -33,16 +33,16 @@ module Dashboard::Stepper
         {}.merge(practical_info_params)
         .merge(employer_id: current_user.id)
         )
-      # transaction postgrsql
       ActiveRecord::Base.transaction do
         @practical_info.save
         internship_offer_builder.create_from_stepper(**builder_params) do |on|
           on.success do |created_internship_offer|
+            created_internship_offer.save!
             redirect_to(internship_offer_path(created_internship_offer, origine: 'dashboard', stepper: true),
                         flash: { success: 'Votre offre de stage est prête à être publiée.' })
           end
           on.failure do |failed_internship_offer|
-            render :new, status: :bad_request
+            raise ActiveRecord::RecordInvalid
           end
         end
       end

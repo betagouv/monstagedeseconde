@@ -43,7 +43,7 @@ module Dashboard::Stepper
     #
     # Create PracticalInfo
     #
-    test 'POST create redirects to new tutor' do
+    test 'POST create does create practical_info and internship_offer' do
       employer = create(:employer, phone: '+330623456789')
       sign_in(employer)
       organisation = create(:organisation, employer: employer)
@@ -225,7 +225,7 @@ module Dashboard::Stepper
         end
       end
    
-      assert_redirected_to new_dashboard_stepper_organisation_path
+      assert_response :bad_request
     end
 
     test 'POST #create as employer with missing params' do
