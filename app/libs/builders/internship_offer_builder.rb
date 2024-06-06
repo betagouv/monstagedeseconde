@@ -15,7 +15,6 @@ module Builders
           .merge(employer_id: user.id, employer_type: 'User')
           .merge(
             organisation_id: organisation.id,
-            group_id: organisation.group_id,
             internship_offer_info_id: internship_offer_info.id,
             hosting_info_id: hosting_info.id,
             practical_info_id: practical_info.id,
@@ -163,15 +162,13 @@ module Builders
     def preprocess_organisation(params)
       return params unless params["organisation_attributes"]
 
-      orga_params = params["organisation_attributes"]
-      params["employer_name"] = orga_params["employer_name"] unless orga_params["employer_name"].blank?
-      params["employer_website"] = orga_params["employer_website"] unless orga_params["employer_website"].blank?
-      params["coordinates"] = orga_params["coordinates"] unless orga_params["coordinates"].blank?
-      params["street"] = orga_params["street"] unless orga_params["street"].blank?
-      params["zipcode"] = orga_params["zipcode"] unless orga_params["zipcode"].blank?
-      params["city"] = orga_params["city"] unless orga_params["city"].blank?
-      params["is_public"] = orga_params["is_public"] unless orga_params["is_public"].blank?
-      params["group_id"] = orga_params["group_id"] unless orga_params["group_id"].blank?
+      params["employer_name"] = params["organisation_attributes"]["employer_name"] unless params["organisation_attributes"]["employer_name"].blank?
+      params["employer_website"] = params["organisation_attributes"]["employer_website"] unless params["organisation_attributes"]["employer_website"].blank?
+      params["coordinates"] = params["organisation_attributes"]["coordinates"] unless params["organisation_attributes"]["coordinates"].blank?
+      params["street"] = params["organisation_attributes"]["street"] unless params["organisation_attributes"]["street"].blank?
+      params["zipcode"] = params["organisation_attributes"]["zipcode"] unless params["organisation_attributes"]["zipcode"].blank?
+      params["city"] = params["organisation_attributes"]["city"] unless params["organisation_attributes"]["city"].blank?
+      params["is_public"] = params["organisation_attributes"]["is_public"] unless params["organisation_attributes"]["is_public"].blank?
     end
 
     def from_api?
@@ -182,6 +179,7 @@ module Builders
       return instance unless max_candidates_will_change?(params: params, instance: instance)
 
       approved_applications_count = instance.internship_applications.approved.count
+      former_max_candidates = instance.max_candidates
       next_max_candidates = params[:max_candidates].to_i
 
       if next_max_candidates < approved_applications_count

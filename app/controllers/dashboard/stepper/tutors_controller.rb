@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Dashboard::Stepper
-  # TODO remove this file
   # Step 1 of internship offer creation: fill in tutor info
   class TutorsController < ApplicationController
     before_action :authenticate_user!

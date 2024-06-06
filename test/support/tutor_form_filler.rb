@@ -1,5 +1,4 @@
 module TutorFormFiller
-  # TODO remove this file if not used
   def fill_in_tutor_form
     fill_in 'Nom du tuteur/trice', with: 'Brice Durand'
     fill_in 'Adresse électronique / Email', with: 'le@brice.durand'
