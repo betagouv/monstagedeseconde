@@ -81,7 +81,7 @@ module Dashboard
       end
 
       def fetch_internship_application
-        @internship_application = InternshipApplication.find(params[:id])
+        @internship_application = InternshipApplication.find_by(uuid: params[:uuid])
       end
 
       def filter_by_week_or_application_date(internship_offer, params_order)

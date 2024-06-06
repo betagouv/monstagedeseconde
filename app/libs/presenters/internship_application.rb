@@ -248,7 +248,7 @@ module Presenters
     def internship_application_path
       rails_routes.dashboard_students_internship_application_path(
         student_id: internship_application.user_id,
-        id: internship_application.id
+        uuid: internship_application.uuid
       )
     end
 

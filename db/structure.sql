@@ -20,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -34,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 
 
 --
@@ -48,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -892,7 +892,8 @@ CREATE TABLE public.internship_agreements (
     delegation_date date,
     internship_address character varying,
     employer_name character varying,
-    employer_contact_email character varying
+    employer_contact_email character varying,
+    uuid uuid DEFAULT gen_random_uuid() NOT NULL
 );
 
 
@@ -950,7 +951,8 @@ CREATE TABLE public.internship_applications (
     student_address character varying,
     student_legal_representative_full_name character varying,
     student_legal_representative_email character varying,
-    student_legal_representative_phone character varying
+    student_legal_representative_phone character varying,
+    uuid uuid DEFAULT gen_random_uuid() NOT NULL
 );
 
 
@@ -2909,6 +2911,13 @@ CREATE INDEX index_internship_agreements_on_internship_application_id ON public.
 
 
 --
+-- Name: index_internship_agreements_on_uuid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_internship_agreements_on_uuid ON public.internship_agreements USING btree (uuid);
+
+
+--
 -- Name: index_internship_applications_on_aasm_state; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2934,6 +2943,13 @@ CREATE INDEX index_internship_applications_on_internship_offer_week_id ON public
 --
 
 CREATE INDEX index_internship_applications_on_user_id ON public.internship_applications USING btree (user_id);
+
+
+--
+-- Name: index_internship_applications_on_uuid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_internship_applications_on_uuid ON public.internship_applications USING btree (uuid);
 
 
 --
@@ -3822,7 +3838,9 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240606131313'),
 ('20240531101222'),
+('20240531100023'),
 ('20240527081911'),
 ('20240514132852'),
 ('20240513094706'),

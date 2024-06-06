@@ -21,13 +21,13 @@ class InternshipApplicationsController < ApplicationController
 
   # alias for draft
   def show
-    @internship_application = @internship_offer.internship_applications.find(params[:id])
+    @internship_application = @internship_offer.internship_applications.find_by(uuid: params[:uuid])
     authorize! :submit_internship_application, @internship_application
   end
 
   # alias for submit/update
   def update
-    @internship_application = @internship_offer.internship_applications.find(params[:id])
+    @internship_application = @internship_offer.internship_applications.find_by(uuid: params[:uuid])
     authorize! :submit_internship_application, @internship_application
 
     destination = dashboard_students_internship_applications_path(student_id: current_user.id, notice_banner: true)
@@ -81,12 +81,12 @@ class InternshipApplicationsController < ApplicationController
   end
 
   def edit_transfer
-    @internship_application = InternshipApplication.find(params[:id])
+    @internship_application = InternshipApplication.find_by(uuid: params[:uuid])
     authorize! :transfer, @internship_application
   end
 
   def transfer
-    @internship_application = InternshipApplication.find(params[:id])
+    @internship_application = InternshipApplication.find_by(uuid: params[:uuid])
     authorize! :transfer, @internship_application
     # send email to the invited employer
     if transfer_params[:destinations].present?
