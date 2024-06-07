@@ -20,6 +20,7 @@ class CompaniesControllerTest < ActionDispatch::IntegrationTest
       last_name: 'Doe',
       email: 'jdoe@gmail.com',
       phone: '0123456789',
+      message: 'message',
     }
     get company_path(company_params)
     # success
@@ -36,25 +37,25 @@ class CompaniesControllerTest < ActionDispatch::IntegrationTest
       last_name: 'Doe',
       email: 'jdoe@gmail.com',
       phone: '0123456789',
-    }
-    body = {
-      potentialBeneficiaryFirstName: 'John',
-      potentialBeneficiaryLastName: 'Doe',
-      potentialBeneficiaryEmail: 'jdoe@gmail.com',
-      appellationCode: "5678",
-      siret: "12345678901234",
-      contactMode: 'EMAIL',
       message: 'message',
-      potentialBeneficiaryPhone: '0123456789',
-      immersionObjective: 'Découvrir un métier ou un secteur d\'activité',
-      locationId: '1234'
+      }
+      body = {
+        potentialBeneficiaryFirstName: 'John',
+        potentialBeneficiaryLastName: 'Doe',
+        potentialBeneficiaryEmail: 'jdoe@gmail.com',
+        appellationCode: "5678",
+        siret: "12345678901234",
+        contactMode: 'EMAIL',
+        message: 'message',
+        potentialBeneficiaryPhone: '0123456789',
+        immersionObjective: 'Découvrir un métier ou un secteur d\'activité',
+        locationId: '1234'
     }
     stub_request(:post, "https://staging.immersion-facile.beta.gouv.fr/api/v2/contact-establishment").
           with(
             body: body.to_json,
             headers: headers
-          ).
-          to_return(status: 201, body: "", headers: {}) 
+          ).to_return(status: 201, body: "", headers: {})
 
     post contact_company_path(company_params)
     # success
@@ -72,7 +73,8 @@ class CompaniesControllerTest < ActionDispatch::IntegrationTest
       last_name: 'Doe',
       email: '',
       phone: '0123456789',
-    }
+      message: 'message',
+      }
     body = {
       potentialBeneficiaryFirstName: 'John',
       potentialBeneficiaryLastName: 'Doe',
@@ -90,14 +92,14 @@ class CompaniesControllerTest < ActionDispatch::IntegrationTest
             body: body.to_json,
             headers: headers
           ).
-          to_return(status: 400, body: "", headers: {}) 
+          to_return(status: 400, body: "", headers: {})
 
     post contact_company_path(company_params)
     # bad request
     assert_redirected_to recherche_entreprises_path
     assert_equal "Une erreur est survenue lors de l'envoi de votre message", flash[:alert]
   end
-  
+
   def std_company
     { 'locationId' => '123',
       'name' => 'Company',
