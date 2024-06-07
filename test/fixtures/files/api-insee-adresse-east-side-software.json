@@ -6,7 +6,7 @@
     "debut": 0,
     "nombre": 1
   },
-  "etablissements": [{
+  "etablissement": {
     "siren": "909432247",
     "nic": "00015",
     "siret": "90943224700015",
@@ -114,5 +114,5 @@
       "caractereEmployeurEtablissement": "N",
       "changementCaractereEmployeurEtablissement": false
     }]
-  }]
+  }
 }

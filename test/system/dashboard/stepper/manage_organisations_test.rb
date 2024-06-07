@@ -55,4 +55,20 @@ class ManageOrganisationsTest < ApplicationSystemTestCase
       find('.fr-alert.fr-alert--error')
     end
   end
+
+  test 'update organisation fails gracefuly when employer description is too long' do
+    sector = create(:sector)
+    employer = create(:employer)
+    group = create(:group, name: 'hello', is_public: true)
+    organisation = create(:organisation, employer: employer, group: group)
+    sign_in(employer)
+    travel_to(Date.new(2019, 3, 1)) do
+      visit edit_dashboard_stepper_organisation_path(organisation)
+      as = 'a' * (InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT + 2)
+      fill_in 'Description de l’entreprise', with: as
+      find('.fr-alert.fr-alert--error')
+      click_on "Suivant"
+      find('span', text: 'Étape 1 sur 5')
+    end
+  end
 end

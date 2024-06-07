@@ -49,7 +49,7 @@
                    field: :student_email,
                    f: f,
                    object: f.object,
-                   value: f.object.student_email || f.object.student.email,
+                   value: f.object.student_email || f.object.student.email || f.object.previous_student_email,
                    label: "Adresse électronique (email)",
                    required: true,
                    pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
@@ -62,7 +62,7 @@
                    field: :student_phone,
                    f: f,
                    object: f.object,
-                   value: f.object.student_phone || f.object.student.phone,
+                   value: f.object.student_phone || f.object.student.phone || f.object.previous_student_phone,
                    label: "Numéro de portable élève ou responsable légal",
                    required: true,
                    title: 'Numéro de mobile'
@@ -76,7 +76,7 @@
             = label_tag :student_phone, for: 'phone-input', class: 'fr-label' do
               = 'Numéro de mobile'
               = f.rg2a_required_content_tag
-            - registered_value = f.object.student_phone || f.object.student.phone
+            - registered_value = f.object.student_phone || f.object.student.phone || f.object.previous_student_phone
             = react_component("CountryPhoneSelect",
                               props: { name: "#{f.object_name}[student_phone]",
                                        value: registered_value})
