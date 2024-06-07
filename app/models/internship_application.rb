@@ -56,7 +56,7 @@ class InternshipApplication < ApplicationRecord
   # Validations
   validates :student_phone,
             format: {
-              with: /\A\+?(33|262|594|596|687|689)?0?(6|7)\d{6,}\z/,
+              with: /\A\+?(33|262|594|596|687|689)?\s?0?(6|7)\s?(\d{2,3}\s?){1,3}\d{2,3}\z/,
               message: 'Veuillez modifier le numéro de téléphone mobile'
             },
             allow_blank: true
