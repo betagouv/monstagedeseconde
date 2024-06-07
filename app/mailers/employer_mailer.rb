@@ -8,7 +8,7 @@ class EmployerMailer < ApplicationMailer
     recipients_email        = internship_application.filter_notified_emails
     @url = dashboard_internship_offer_internship_application_url(
           @internship_offer,
-          @internship_application
+          uuid: @internship_application.uuid
         )
     @url_more_options = "#{@url}?sgid=#{@internship_application.to_sgid}"
     @url_accept       = "#{@url_more_options}&opened_modal=accept"
@@ -109,7 +109,7 @@ class EmployerMailer < ApplicationMailer
     @message                = message
     @url = dashboard_internship_offer_internship_application_url(
       internship_offer_id: @internship_offer.id,
-      id: @internship_application.id,
+      uuid: @internship_application.uuid,
       token: @internship_application.access_token
     ).html_safe
 

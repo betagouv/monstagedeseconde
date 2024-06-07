@@ -31,7 +31,7 @@ module Dashboard
           redirect_to(
             dashboard_students_internship_application_path(
                         student_id: @current_student.id,
-                        id: @internship_application.id)
+                        uuid: @internship_application.uuid)
           ) and return
         else
            authenticate_user!
@@ -68,7 +68,7 @@ module Dashboard
       end
 
       def set_internship_application
-        @internship_application = @current_student.internship_applications.find(params[:id])
+        @internship_application = @current_student.internship_applications.find_by(uuid: params[:uuid])
       end
 
       def increase_dunning_letter_count

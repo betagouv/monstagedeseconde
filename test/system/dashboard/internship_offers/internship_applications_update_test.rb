@@ -20,7 +20,7 @@ module Dashboard::InternshipOffers
       employer, internship_offer = create_employer_and_offer
       internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
       sign_in(employer)
-      visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
+      visit dashboard_internship_offer_internship_application_path(internship_offer, uuid: internship_application.uuid)
       click_on 'Refuser'
       find("#internship_application_rejected_message").click.set("(test ata test)")
       find('#refuser-button').click
@@ -36,7 +36,7 @@ module Dashboard::InternshipOffers
       employer, internship_offer = create_employer_and_offer
       internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
       sign_in(employer)
-      visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
+      visit dashboard_internship_offer_internship_application_path(internship_offer, uuid: internship_application.uuid)
       click_on 'Accepter'
       find('#accepter-button').click
       assert internship_application.reload.validated_by_employer?
@@ -89,7 +89,7 @@ module Dashboard::InternshipOffers
         internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer, student: student)
         sign_in(employer)
 
-        visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
+        visit dashboard_internship_offer_internship_application_path(internship_offer, uuid: internship_application.uuid)
         click_on 'Accepter'
         find('#accepter-button').click
         assert internship_application.reload.validated_by_employer?
@@ -111,7 +111,7 @@ module Dashboard::InternshipOffers
         sign_out(other_student)
 
         sign_in(employer)
-        visit dashboard_internship_offer_internship_application_path(internship_offer, other_internship_application)
+        visit dashboard_internship_offer_internship_application_path(internship_offer, uuid: other_internship_application.uuid)
         assert_select('button', text: 'Accepter', count: 0)
       end
     end
@@ -126,7 +126,7 @@ module Dashboard::InternshipOffers
         internship_application_2 = create(:weekly_internship_application, :submitted, internship_offer: internship_offer_2, student: student)
 
         sign_in(employer_2)
-        visit dashboard_internship_offer_internship_application_path(internship_offer_2, internship_application_2)
+        visit dashboard_internship_offer_internship_application_path(internship_offer_2, uuid: internship_application_2.uuid)
         click_on 'Accepter'
         find('#accepter-button').click
         assert internship_application_2.reload.validated_by_employer?
@@ -162,7 +162,7 @@ module Dashboard::InternshipOffers
       assert_match /La candidature a été transmise avec succès/, find('div.alert.alert-success').text
       sign_out(employer)
       # in mail
-      visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application, token: internship_application.reload.access_token)
+      visit dashboard_internship_offer_internship_application_path(internship_offer, uuid: internship_application.uuid, token: internship_application.reload.access_token)
       find('button[data-toggle="modal"][data-fr-js-modal-button="true"]', text: 'Accepter')
       find('button[data-toggle="modal"][data-fr-js-modal-button="true"]', text: 'Refuser')
     end
