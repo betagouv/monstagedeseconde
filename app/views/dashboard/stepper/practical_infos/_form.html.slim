@@ -25,5 +25,5 @@
                             submit_button: true }
 
 div [data-controller='broadcast-coordinates-changed'
-     data-broadcast-coordinates-changed-latitude-value=@practical_info.coordinates.lat
-     data-broadcast-coordinates-changed-longitude-value=@practical_info.coordinates.lon]
+     data-broadcast-coordinates-changed-latitude-value=@practical_info.coordinates.try(:lat)
+     data-broadcast-coordinates-changed-longitude-value=@practical_info.coordinates.try(:lon)]
