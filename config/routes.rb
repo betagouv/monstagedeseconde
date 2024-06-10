@@ -82,9 +82,9 @@ Rails.application.routes.draw do
 
     resources :favorites, only: %i[create destroy index]
 
-    get '/utilisateurs/transform', to: 'users#transform_identifier_form'
-    get '/utilisateurs/transform_parameters', to: 'users#transform_form'
-    post '/utilisateurs/transform', to: 'users#transform_user'
+    get '/utilisateurs/transform_input', to: 'users#transform_input' #display
+    get '/utilisateurs/transform', to: 'users#transform_form' #identify and show parameters
+    post '/utilisateurs/transform', to: 'users#transform_user' #transform
 
     get '/utilisateurs/anonymiseur', to: 'users#anonymize_form'
     get '/utilisateurs/identifier', to: 'users#identify_user'
