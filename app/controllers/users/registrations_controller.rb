@@ -35,6 +35,7 @@ module Users
 
     # GET /resource/sign_up
     def new
+      @captcha_image, @captcha_uuid = Services::Captcha.generate
       @resource_channel = resource_channel
       options = {}
       if params.dig(:user, :targeted_offer_id)
@@ -61,6 +62,7 @@ module Users
 
     # POST /resource
     def create
+      check_captcha(params[:captcha], params[:captcha_uuid])
       [:honey_pot_checking,
        :phone_reuse_checking].each do |check|
           check_proc = send(check, params)
@@ -160,6 +162,8 @@ module Users
           department
           academy_id
           academy_region_id
+          captcha
+          captcha_uuid
         ]
       )
     end
@@ -253,6 +257,13 @@ module Users
       else
         users_registrations_standby_path(id: resource.id)
       end
+    end
+
+    def check_captcha(captcha, captcha_uuid)
+      return if Services::Captcha.verify(captcha, captcha__uuid)
+
+      flash[:alert] = "I18n.t('devise.registrations.captcha_error')"
+      redirect_to new_user_registration_path
     end
   end
 end
