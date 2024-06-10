@@ -138,8 +138,8 @@ class User < ApplicationRecord
 
     discard! unless discarded?
 
-    unless email_for_job.blank?
-      AnonymizeUserJob.perform_later(email: email_for_job) if send_email
+    if send_email && email_for_job.present?
+      AnonymizeUserJob.perform_later(email: email_for_job)
     end
   end
 
@@ -278,7 +278,7 @@ class User < ApplicationRecord
   def team_members = User.none
 
   def just_created?
-    self.created_at < Time.now  + 3.seconds
+    created_at < Time.now + 3.seconds
   end
 
   def presenter
@@ -289,7 +289,7 @@ class User < ApplicationRecord
     raw, hashed = Devise.token_generator.generate(User, :reset_password_token)
     self.reset_password_token = hashed
     self.reset_password_sent_at = Time.now.utc
-    self.save
+    save
     raw
   end
 
