@@ -1,4 +1,5 @@
 - is_creating = @internship_application.try(:new_record?)
+- phone_pattern = '^\+?(33|262|594|596|687|689)?\s?0?(6|7)\s?(\d{2,3}\s?){1,3}\d{2,3}$'
 
 = form_with(model: @internship_application,
             data: {turbo: false},
@@ -30,11 +31,11 @@
                 'data-controller' => "rich-text-label",
                 'data-rich-text-label-for-value' => "internship_application_motivation",
                 'data-rich-text-label-enable-value' => ""
-        | Pourquoi ce stage me motive ? 
+        | Pourquoi ce stage me motive ?
         = f.rg2a_required_content_tag
         small.form-text.text-muted Relisez-vous pour éviter les fautes.
       = f.rich_text_area :motivation, class: "fr-input col-12", required: true, rows: 5
-    
+
     .row.fr-mt-4w
       .col-12
         .h4 Informations personnelles
@@ -65,7 +66,8 @@
                    value: f.object.student_phone || f.object.student.phone || f.object.previous_student_phone,
                    label: "Numéro de portable élève ou responsable légal",
                    required: true,
-                   title: 'Numéro de mobile'
+                   title: 'Numéro de mobile',
+                   pattern: phone_pattern
           = f.hidden_field :student_phone,
                            value: f.object.student_phone || f.object.student.phone
     - else
@@ -134,7 +136,8 @@
                    value: f.object.student_legal_representative_phone ||f.object.student.legal_representative_phone,
                    label: "Numéro de téléphone de votre représentant légal",
                    required: true,
-                   title: 'Téléphone'
+                   title: 'Téléphone',
+                   pattern: phone_pattern
 
 
     .actions.d-flex.justify-content-between.flex-row.fr-mt-2w
