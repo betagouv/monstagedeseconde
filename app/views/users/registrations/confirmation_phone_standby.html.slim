@@ -1,6 +1,6 @@
 - user = User.find_by(id: params[:id])
 - user ||= User.find_by(phone: params[:phone])
-.onboarding-card.onboarding-card-sm.mb-4
+.onboarding-card.onboarding-card-sm.my-4
   - if !@confirmable_user
     header.header-account
       h1.h2.text-center Encore une petite étape...

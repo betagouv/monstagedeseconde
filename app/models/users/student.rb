@@ -62,7 +62,7 @@ module Users
       if targeted_offer_id.present?
         url_helpers.internship_offer_path(id: canceled_targeted_offer_id)
       else
-        presenter.default_internship_offers_path
+        url_helpers.new_user_session_path
       end
     end
 
