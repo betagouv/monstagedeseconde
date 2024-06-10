@@ -105,7 +105,7 @@ class StudentMailer < ApplicationMailer
     @url = dashboard_students_internship_application_url(
       sgid: sgid,
       student_id: @student.id,
-      id: @internship_application.id
+      uuid: @internship_application.uuid
     )
 
     send_email(to: @student.email,
@@ -124,7 +124,7 @@ class StudentMailer < ApplicationMailer
     @url = dashboard_students_internship_application_url(
       sgid: sgid,
       student_id: @student.id,
-      id: @internship_application.id
+      uuid: @internship_application.uuid
     )
 
     send_email(to: @student.email,
