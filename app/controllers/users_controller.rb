@@ -77,11 +77,12 @@ class UsersController < ApplicationController
     else
       user_params[:role].present? &&
       user_params[:school_id].present?
+      user_to_transform.becomes!(Users::SchoolManagement)
+                       .save
       user_to_transform.update_columns(
-        role: user_params[:role],
-        school_id: user_params[:school_id],
-        type: 'Users::SchoolManagement'
-        )
+                          role: user_params[:role],
+                          school_id: user_params[:school_id],
+                       )
       redirect_to '/admin', flash: { success: 'Utilisateur transformé avec succès.' }
     end
   end
