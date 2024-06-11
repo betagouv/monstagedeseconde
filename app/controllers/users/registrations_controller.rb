@@ -54,9 +54,7 @@ module Users
     end
 
     def resource_channel
-      return current_user.channel unless current_user.nil?
-
-      :email
+      current_user.try(:channel) || :email
     end
 
     # POST /resource
