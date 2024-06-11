@@ -49,7 +49,8 @@ module Users
 
     # The path used after sign up for inactive accounts.
     def after_confirmation_path_for(_resource_name, resource)
-      new_user_session_path(email: resource.email)
+      parameter = resource.phone.present? ? {phone: resource.phone} : {email: resource.email}
+      new_user_session_path(**parameter)
     end
   end
 end

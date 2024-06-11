@@ -21,7 +21,7 @@ class User < ApplicationRecord
   include DelayedDeviseEmailSender
 
   before_validation :concatenate_and_clean
-  # after_create :send_sms_token
+  after_create :send_sms_token
 
   # school_managements includes different roles
   # Everyone should register with ac-xxx.fr email
@@ -153,6 +153,38 @@ class User < ApplicationRecord
       update(phone_password_reset_count: phone_password_reset_count + 1,
              last_phone_password_reset: Time.now)
     end
+  end
+
+  def send_sms_token
+    return unless phone.present?
+
+    create_phone_token
+    message = "Votre code d'activation d'inscription, valide pendant 1h, est : #{self.phone_token}"
+    SendSmsJob.perform_later(user: self, message: message)
+  end
+
+  def create_phone_token
+    update(phone_token: format('%04d', rand(10_000)),
+           phone_token_validity: 1.hour.from_now)
+  end
+
+  def phone_confirmable?
+    phone_token.present? && Time.now < phone_token_validity
+  end
+
+  def confirm_by_phone!
+    update(phone_token: nil,
+           phone_token_validity: nil,
+           confirmed_at: Time.now,
+           phone_password_reset_count: 0)
+  end
+
+  def check_phone_token?(token)
+    phone_confirmable? && phone_token == token
+  end
+
+  def after_confirmation
+    super
   end
 
   def formatted_phone
