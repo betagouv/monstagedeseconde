@@ -21,13 +21,13 @@ class InternshipApplicationsController < ApplicationController
 
   # alias for draft
   def show
-    @internship_application = @internship_offer.internship_applications.find(params[:id])
+    @internship_application = @internship_offer.internship_applications.find_by(uuid: params[:uuid])
     authorize! :submit_internship_application, @internship_application
   end
 
   # alias for submit/update
   def update
-    @internship_application = @internship_offer.internship_applications.find(params[:id])
+    @internship_application = @internship_offer.internship_applications.find_by(uuid: params[:uuid])
     authorize! :submit_internship_application, @internship_application
 
     destination = dashboard_students_internship_applications_path(student_id: current_user.id, notice_banner: true)
@@ -36,11 +36,11 @@ class InternshipApplicationsController < ApplicationController
       @internship_application.save!
     else
       @internship_application.update(update_internship_application_params)
-      destination = internship_offer_internship_application_path(@internship_offer, @internship_application)
+      destination = internship_offer_internship_application_path(@internship_offer, uuid: @internship_application.uuid)
     end
     redirect_to destination
   rescue AASM::InvalidTransition
-    redirect_to dashboard_students_internship_applications_path(current_user, @internship_application),
+    redirect_to dashboard_students_internship_applications_path(current_user, uuid: @internship_application.uuid),
                 flash: { warning: 'Votre candidature avait déjà été soumise' }
   rescue ActiveRecord::RecordInvalid
     flash[:error] = 'Erreur dans la saisie de votre candidature'
@@ -57,7 +57,7 @@ class InternshipApplicationsController < ApplicationController
     @internship_application = InternshipApplication.new(appli_params)
     if @internship_application.save
       redirect_to internship_offer_internship_application_path(@internship_offer,
-                                                             @internship_application)
+                                                             uuid: @internship_application.uuid)
     else
       Rails.logger.error(@internship_application.errors.full_messages)
       render 'new', status: :bad_request
@@ -66,7 +66,7 @@ class InternshipApplicationsController < ApplicationController
 
   def completed
     set_internship_offer
-    @internship_application = @internship_offer.internship_applications.find(params[:id])
+    @internship_application = @internship_offer.internship_applications.find_by(uuid: params[:uuid])
     authorize! :submit_internship_application, @internship_application
 
     @suggested_offers = Finders::InternshipOfferConsumer.new(
@@ -81,12 +81,12 @@ class InternshipApplicationsController < ApplicationController
   end
 
   def edit_transfer
-    @internship_application = InternshipApplication.find(params[:id])
+    @internship_application = InternshipApplication.find_by(uuid: params[:uuid])
     authorize! :transfer, @internship_application
   end
 
   def transfer
-    @internship_application = InternshipApplication.find(params[:id])
+    @internship_application = InternshipApplication.find_by(uuid: params[:uuid])
     authorize! :transfer, @internship_application
     # send email to the invited employer
     if transfer_params[:destinations].present?
