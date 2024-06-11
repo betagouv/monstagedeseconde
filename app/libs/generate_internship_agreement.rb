@@ -8,8 +8,9 @@ class GenerateInternshipAgreement < Prawn::Document
     @internship_agreement = InternshipAgreement.find(internship_agreement_id)
     @pdf = Prawn::Document.new(margin: [40, 40, 100, 40])
     @pdf.font_families.update("Arial" => {
-      :normal => Rails.root.join("public/assets/arial.ttf").to_s,
-      :bold => Rails.root.join("public/assets/arial_bold.ttf").to_s
+      :normal => Rails.root.join("public/assets/fonts/arial.ttf").to_s,
+      :bold => Rails.root.join("public/assets/fonts/arial_bold.ttf").to_s,
+      :italic => Rails.root.join("public/assets/fonts/arial_italic.ttf").to_s
     })
     @pdf.font "Arial"
   end
