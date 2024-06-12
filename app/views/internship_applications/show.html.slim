@@ -22,7 +22,7 @@
       .actions.d-flex.d-xs-stick.justify-content-between.flex-row.fr-py-2w.fr-px-2w
         .d-inline-flex
           - destination = edit_dashboard_students_internship_application_path(student_id: @internship_application.user_id,
-                                                                              id: @internship_application.id)
+                                                                              uuid: @internship_application.uuid)
           = link_to "Modifier", destination, class: 'fr-btn fr-btn--secondary fr-px-6w'
         .d-inline-flex
           = button_to "Envoyer",

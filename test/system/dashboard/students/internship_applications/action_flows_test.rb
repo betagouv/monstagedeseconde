@@ -326,7 +326,7 @@ module Dashboard
           url = dashboard_students_internship_application_url(
             sgid: sgid,
             student_id: student.id,
-            id: internship_application.id
+            uuid: internship_application.uuid
           )
           visit url
           click_button "Annuler la candidature"
@@ -355,7 +355,7 @@ module Dashboard
           url = dashboard_students_internship_application_url(
             sgid: sgid,
             student_id: student.id,
-            id: internship_application.id
+            uuid: internship_application.uuid
           )
           visit url
           click_button "Choisir ce stage"

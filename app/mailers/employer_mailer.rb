@@ -33,7 +33,7 @@ class EmployerMailer < ApplicationMailer
     @employer              = @internship_offer.employer
     @url = dashboard_internship_offer_internship_applications_url(
       internship_offer_id: @internship_offer.id,
-      id: internship_application.id,
+      uuid: internship_application.uuid,
       mtm_campaign: "Offreur - Convention Ready to Edit#internship-application-#{internship_application.id}"
     ).html_safe
 
