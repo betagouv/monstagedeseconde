@@ -7,7 +7,7 @@ module Users
       if by_phone?
         fetch_user_by_phone
         return if @user.try(:created_by_teacher)
-        if @user.try(:student?)
+        if @user&.student?
           SendSmsJob.perform_later(
             user: fetch_user_by_phone,
             message: "Votre code de validation : #{fetch_user_by_phone.phone_token}"
