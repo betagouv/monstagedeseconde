@@ -129,7 +129,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   end
 
   test 'Student with account and former internship offer visit lands on offer page after login' do
-    password = 'kikoololletest'
+    password = 'kikoololletesT123$!'
     create(:department, name: 'Seine-et-Marne', code: '77')
     school_1 = create(:school, name: 'Etablissement Test 1',
                                city: 'Saint-Martin', zipcode: '77515')
