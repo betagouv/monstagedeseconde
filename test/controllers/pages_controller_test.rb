@@ -12,6 +12,14 @@ class PagesTest < ActionDispatch::IntegrationTest
     assert_select 'title', "Accueil | Stages de 2de"
   end
 
+  test 'GET home after too many requests' do
+    ApplicationController.const_set("MAX_REQUESTS_PER_MINUTE", 5)
+    6.times do
+      get root_path
+    end
+    assert_response :too_many_requests
+  end
+
   test 'GET home when maintenance mode is on' do
     ENV['MAINTENANCE_MODE'] = 'true'
     get root_path
