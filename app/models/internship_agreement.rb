@@ -272,7 +272,7 @@ class InternshipAgreement < ApplicationRecord
 
   def signed_by_team_member?(user:)
     return false if user.nil?
-    return signed_by?(user: user) if user.team.not_exists?
+    return signed_by?(user: user) if user.team.try(:not_exists?)
 
     user.team.db_members.any? { |member| signed_by?(user: member) }
   end
