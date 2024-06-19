@@ -2,11 +2,15 @@
 class ApplicationController < ActionController::Base
   include Turbo::Redirection
 
+  # max requests per minute
+  MAX_REQUESTS_PER_MINUTE = 100
+
   helper Turbo::FramesHelper if Rails.env.test?
   helper Turbo::StreamsHelper if Rails.env.test?
 
   before_action :check_school_requested
   before_action :check_for_maintenance
+  before_action :throttle_ip_requests
 
   default_form_builder Rg2aFormBuilder
 
@@ -33,6 +37,20 @@ class ApplicationController < ActionController::Base
 
   def check_for_maintenance
     redirect_to '/maintenance.html' if ENV['MAINTENANCE_MODE'] == 'true'
+  end
+
+  def throttle_ip_requests
+    ip_address = request.remote_ip
+    key = "ip:#{ip_address}:#{Time.now.to_i / 60}"
+    count = $redis.incr(key)
+    $redis.expire(key, 60) if count == 1
+  
+    if count > MAX_REQUESTS_PER_MINUTE
+      respond_to do |format|
+        format.html { render plain: "Trop de requêtes - Limite d'utilisation de l'application.", status: :too_many_requests }
+        format.json { render json: { error: "Trop de requêtes - Limite d'utilisation de l'application dépassée." }, status: :too_many_requests }
+      end
+    end
   end
 
   private
