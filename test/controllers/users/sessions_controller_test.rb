@@ -3,6 +3,8 @@
 require 'test_helper'
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+
   test 'GET works' do
     get new_user_session_path
     assert_response :success
@@ -160,5 +162,12 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get user_unlock_path(unlock_token: raw)
     assert_redirected_to new_user_session_path
     refute student.reload.access_locked?
+  end
+
+  test 'session cookies are deleted on sign out' do
+    student = create(:student)
+    sign_in(student)
+    delete destroy_user_session_path
+    assert_nil cookies['_ms2gt_manage_session']
   end
 end
