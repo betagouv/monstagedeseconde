@@ -216,11 +216,8 @@ Rails.application.routes.draw do
   # Redirects
   get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%{id}', status: 302)
 
-  if ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true'
-    root to: 'pages#home'
-  else
-    root to: 'pages#maintenance_estivale'
-  end
+  root_destination = (ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true') ? 'maintenance_estivale' : 'home'
+  root to: "pages##{root_destination}"
 
   get '/404', to: 'errors#not_found'
   get '/422', to: 'errors#unacceptable'

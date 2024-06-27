@@ -10,7 +10,7 @@
           = render 'pages/home/holidays_maintenance/hero'
         .contact-form
           .form
-            #maintenance-contact-form data-controller='maintenance-contact-page'
+            = render 'pages/home/holidays_maintenance/contact_form'
     .maintenance-empty-block.d-none.d-md-block
   / mobile
   .d-block.d-md-none.fr-mx-1w
@@ -23,4 +23,4 @@
         .col-12
           .contact-form
             .form
-              #feedback-form data-controller='contact-page'
+              = render 'pages/home/holidays_maintenance/contact_form'
