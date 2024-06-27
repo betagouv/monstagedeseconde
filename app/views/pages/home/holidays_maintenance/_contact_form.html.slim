@@ -1,0 +1,39 @@
+.fr-mx-2w
+  h2.h4 Pour contacter l'équipe 1jeune1solution, remplissez le formulaire ci-dessous
+  .fr-my-2w [data-controller="maintenance-contact-form mandatory-fields"
+             data-mandatory-fields-minimum-length-value= "3"]
+    form
+      / data-form-target="form.form" data-action="form#submit"
+      .form-group
+        label.fr-label for="name-field"
+          | Nom
+        input.fr-input [type="name"
+                        id="name-field"
+                        maxlength="80"
+                        data-mandatory-fields-target="mandatoryField"
+                        data-action="input->mandatory-fields#fieldChange"
+                        data-maintenance-contact-form-target="nameField" ]
+      .form-group
+        label.fr-label for="email-field"
+          | Adresse email
+        input.fr-input [type="email"
+                        id="email-field"
+                        maxlength="120"
+                        data-mandatory-fields-target="mandatoryField"
+                        data-action="input->mandatory-fields#fieldChange"
+                        data-maintenance-contact-form-target="emailField" ]
+      .form-group
+        label.fr-label for="message-field"
+          | Message
+        textarea.fr-input [cols="80"
+                           rows="6"
+                           id="message-field"
+                           maxlength="250"
+                           data-mandatory-fields-target="mandatoryField"
+                           data-action="input->mandatory-fields#fieldChange"
+                           data-maintenance-contact-form-target="messageField" ]
+      .form-group.fr-my-2w
+        button.fr-btn [type="submit"
+                       data-mandatory-fields-target="disabledField"
+                       data-action="maintenance-contact-form#submitForm"]
+          | Envoyer

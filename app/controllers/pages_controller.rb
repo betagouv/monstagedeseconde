@@ -8,7 +8,8 @@ class PagesController < ApplicationController
                               school_management_landing
                               statistician_landing
                               student_landing
-                              search_companies]
+                              search_companies
+                              maintenance_estivale]
 
   def register_to_webinar
     authorize! :subscribe_to_webinar, current_user
