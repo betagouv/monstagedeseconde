@@ -516,26 +516,28 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'search on period works' do
-    offer_1 = create(:weekly_internship_offer, :week_1)
-    offer_2 = create(:weekly_internship_offer, :week_2)
-    offer_3 = create(:weekly_internship_offer, :full_time)
+    travel_to(Date.new(2024, 3, 1)) do
+      offer_1 = create(:weekly_internship_offer, :week_1)
+      offer_2 = create(:weekly_internship_offer, :week_2)
+      offer_3 = create(:weekly_internship_offer, :full_time)
 
-    get internship_offers_path(period: 1, format: :json)
-    assert_response :success
-    assert_json_presence_of(json_response, offer_1)
-    assert_json_absence_of(json_response, offer_2)
-    assert_json_absence_of(json_response, offer_3)
+      get internship_offers_path(period: 1, format: :json)
+      assert_response :success
+      assert_json_presence_of(json_response, offer_1)
+      assert_json_absence_of(json_response, offer_2)
+      assert_json_absence_of(json_response, offer_3)
 
-    get internship_offers_path(period: 2, format: :json)
-    assert_response :success
-    assert_json_absence_of(json_response, offer_1)
-    assert_json_presence_of(json_response, offer_2)
-    assert_json_absence_of(json_response, offer_3)
+      get internship_offers_path(period: 2, format: :json)
+      assert_response :success
+      assert_json_absence_of(json_response, offer_1)
+      assert_json_presence_of(json_response, offer_2)
+      assert_json_absence_of(json_response, offer_3)
 
-    get internship_offers_path(period: 0, format: :json)
-    assert_response :success
-    assert_json_absence_of(json_response, offer_1)
-    assert_json_absence_of(json_response, offer_2)
-    assert_json_presence_of(json_response, offer_3)
+      get internship_offers_path(period: 0, format: :json)
+      assert_response :success
+      assert_json_absence_of(json_response, offer_1)
+      assert_json_absence_of(json_response, offer_2)
+      assert_json_presence_of(json_response, offer_3)
+    end
   end
 end
