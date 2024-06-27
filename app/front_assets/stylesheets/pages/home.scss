@@ -108,51 +108,7 @@ a:hover {
         max-width: 269px;
 
     }
-    .sub-hero-maintenance{
-        // color: $blue-france;
-        font-size: 1.85rem;
-        font-weight: normal;
-        margin-top: -1.25rem;
-    }
 }
-
-.holidays-maintenance{
-    max-width: 1200px;
-    margin: auto;
-    position: relative;
-    height: 425px;
-    .contact-form{
-        position: absolute;
-        display: block;
-        top: 0 px;
-        right: 0;
-        overflow-y: visible;
-        .form{
-            padding: 24px;
-            margin-right:24px;
-            background-color: $grey-975 ;
-            margin-top: 24px;
-            max-width: 360px;
-        }
-    }
-
-    .container-monstage.container-xl.homepage{
-        max-width: 1200px;
-        margin: auto;
-        position: absolute;
-        height: 100%;
-    }
-}
-.maintenance #feedback-form > div > form > h2 {
-    font-size: 1.5rem;
-    margin-bottom: 24px;
-}
-.maintenance-empty-block {
-    height: 450px;
-    display: block;
-    color: $grey-50;
-};
-
 
 .everyone, .school-management  {
     .container-monstage .stamp-logo {

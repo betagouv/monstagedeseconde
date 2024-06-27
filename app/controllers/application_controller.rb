@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   helper Turbo::FramesHelper if Rails.env.test?
   helper Turbo::StreamsHelper if Rails.env.test?
 
-  before_action :check_for_holidays_maintenance_page
   before_action :check_school_requested
   before_action :check_for_maintenance
 
@@ -17,9 +16,9 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    return resource.after_sign_in_path if resource.is_a?(Users::God)
+    return resource.after_sign_in_path if resource.is_a?(Users::God)  
     session[:show_student_reminder_modal] = true if resource.needs_to_see_modal?
-
+  
     stored_location_for(resource) || resource.reload.after_sign_in_path || super
   end
 
@@ -42,15 +41,5 @@ class ApplicationController < ActionController::Base
     if current_user && current_user.missing_school?
       redirect_to account_path(:school), flash: {warning: 'Veuillez choisir un établissement scolaire'}
     end
-  end
-
-  def check_for_holidays_maintenance_page
-    if ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true' && allow_maintenance_redirection?
-      redirect_to '/maintenance_estivale.html' and return
-    end
-  end
-
-  def allow_maintenance_redirection?
-    !request.path.in?(%w[/maintenance_estivale.html /contact.html])
   end
 end

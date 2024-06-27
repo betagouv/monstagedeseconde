@@ -1,4 +1,3 @@
-- holidays_maintenance ||= false
 .sticky-top-customed
   .homepage
     header.fr-header role="banner"
@@ -6,12 +5,12 @@
         .fr-container
           .fr-header__body-row.fr-mx-1v
             = render partial: 'layouts/navbar/french_republic'
-            = render partial: 'layouts/navbar/nav' unless holidays_maintenance
-      - unless holidays_maintenance
-        #modal-833.fr-header__menu.fr-modal aria-labelledby="fr-btn-menu-mobile"
-          .fr-container
-            button.fr-btn--close.fr-btn aria-controls="modal-833"  Fermer
-            .fr-header__menu-links
-            nav#navigation-832.fr-nav aria-label="Menu principal" role="navigation"
-              ul.fr-nav__list
+            = render partial: 'layouts/navbar/nav'
+            
+      #modal-833.fr-header__menu.fr-modal aria-labelledby="fr-btn-menu-mobile"
+        .fr-container
+          button.fr-btn--close.fr-btn aria-controls="modal-833"  Fermer
+          .fr-header__menu-links
+          nav#navigation-832.fr-nav aria-label="Menu principal" role="navigation"
+            ul.fr-nav__list
 
