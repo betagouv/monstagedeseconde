@@ -225,7 +225,9 @@ CREATE TABLE public.academies (
     id bigint NOT NULL,
     name character varying,
     email_domain character varying,
-    academy_region_id integer
+    academy_region_id integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -595,7 +597,7 @@ CREATE TABLE public.departments (
     name character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    academy_id bigint
+    academy_id integer
 );
 
 
@@ -845,17 +847,17 @@ ALTER SEQUENCE public.identities_id_seq OWNED BY public.identities.id;
 
 CREATE TABLE public.internship_agreements (
     id bigint NOT NULL,
-    date_range character varying(90) NOT NULL,
+    date_range character varying NOT NULL,
     aasm_state character varying,
     internship_application_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    organisation_representative_full_name character varying(90),
-    school_representative_full_name character varying(70),
-    student_full_name character varying(70),
-    student_class_room character varying(20),
-    student_school character varying(120),
-    tutor_full_name character varying(95),
+    organisation_representative_full_name character varying,
+    school_representative_full_name character varying,
+    student_full_name character varying,
+    student_class_room character varying,
+    student_school character varying,
+    tutor_full_name character varying,
     doc_date date,
     school_manager_accept_terms boolean DEFAULT false,
     employer_accept_terms boolean DEFAULT false,
@@ -865,11 +867,11 @@ CREATE TABLE public.internship_agreements (
     school_delegation_to_sign_delivered_at date,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
-    siret character varying(15),
+    siret character varying(16),
     tutor_role character varying(500),
-    tutor_email character varying(77),
+    tutor_email character varying(80),
     organisation_representative_role character varying(500),
-    student_address character varying(300),
+    student_address character varying(250),
     student_phone character varying(200),
     school_representative_phone character varying(100),
     student_refering_teacher_phone character varying(100),
@@ -937,14 +939,14 @@ CREATE TABLE public.internship_applications (
     applicable_type character varying,
     internship_offer_type character varying NOT NULL,
     week_id bigint,
-    student_phone character varying(683),
-    student_email character varying(70),
+    student_phone character varying,
+    student_email character varying,
     read_at timestamp(6) without time zone,
     examined_at timestamp(6) without time zone,
     validated_by_employer_at timestamp(6) without time zone,
     dunning_letter_count integer DEFAULT 0,
     magic_link_tracker integer DEFAULT 0,
-    access_token character varying(25),
+    access_token character varying,
     transfered_at timestamp(6) without time zone,
     student_address character varying,
     student_legal_representative_full_name character varying,
@@ -1044,7 +1046,7 @@ ALTER SEQUENCE public.internship_offer_info_weeks_id_seq OWNED BY public.interns
 
 CREATE TABLE public.internship_offer_infos (
     id bigint NOT NULL,
-    title character varying(150),
+    title character varying,
     description text,
     max_candidates integer,
     school_id integer,
@@ -1240,36 +1242,36 @@ ALTER SEQUENCE public.internship_offer_weeks_id_seq OWNED BY public.internship_o
 
 CREATE TABLE public.internship_offers (
     id bigint NOT NULL,
-    title character varying(150),
-    description text,
+    title character varying,
+    description character varying,
     max_candidates integer DEFAULT 1 NOT NULL,
     internship_offer_weeks_count integer DEFAULT 0 NOT NULL,
-    tutor_name character varying(290),
-    tutor_phone character varying(100),
-    tutor_email character varying(70),
-    employer_website character varying(370),
-    street character varying(300),
-    zipcode character varying(5),
-    city character varying(50),
+    tutor_name character varying,
+    tutor_phone character varying,
+    tutor_email character varying,
+    employer_website character varying,
+    street character varying,
+    zipcode character varying,
+    city character varying,
     is_public boolean,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     discarded_at timestamp without time zone,
     coordinates public.geography(Point,4326),
-    employer_name character varying(180),
+    employer_name character varying,
     employer_id bigint,
     school_id bigint,
-    employer_description character varying(250),
+    employer_description character varying,
     sector_id bigint,
     blocked_weeks_count integer DEFAULT 0 NOT NULL,
     total_applications_count integer DEFAULT 0 NOT NULL,
     approved_applications_count integer DEFAULT 0 NOT NULL,
-    employer_type character varying(80),
+    employer_type character varying,
     department character varying DEFAULT ''::character varying NOT NULL,
-    academy text DEFAULT ''::character varying NOT NULL,
+    academy character varying DEFAULT ''::character varying NOT NULL,
     total_male_applications_count integer DEFAULT 0 NOT NULL,
-    remote_id character varying(50),
-    permalink character varying(280),
+    remote_id character varying,
+    permalink character varying,
     view_count integer DEFAULT 0 NOT NULL,
     submitted_applications_count integer DEFAULT 0 NOT NULL,
     rejected_applications_count integer DEFAULT 0 NOT NULL,
@@ -1287,14 +1289,14 @@ CREATE TABLE public.internship_offers (
     tutor_id bigint,
     new_daily_hours jsonb DEFAULT '{}'::jsonb,
     daterange daterange GENERATED ALWAYS AS (daterange(first_date, last_date)) STORED,
-    siret character varying(14),
+    siret character varying,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
     total_female_applications_count integer DEFAULT 0 NOT NULL,
     total_female_approved_applications_count integer DEFAULT 0,
     max_students_per_group integer DEFAULT 1 NOT NULL,
     employer_manual_enter boolean DEFAULT false,
-    tutor_role character varying(150),
+    tutor_role character varying,
     remaining_seats_count integer DEFAULT 0,
     hidden_duplicate boolean DEFAULT false,
     daily_hours jsonb,
@@ -1450,12 +1452,12 @@ ALTER SEQUENCE public.operators_id_seq OWNED BY public.operators.id;
 
 CREATE TABLE public.organisations (
     id bigint NOT NULL,
-    employer_name character varying(180) NOT NULL,
-    street character varying(300) NOT NULL,
-    zipcode character varying(5) NOT NULL,
-    city character varying(50) NOT NULL,
+    employer_name character varying NOT NULL,
+    street character varying NOT NULL,
+    zipcode character varying NOT NULL,
+    city character varying NOT NULL,
     employer_website character varying,
-    employer_description character varying(250),
+    employer_description text,
     coordinates public.geography(Point,4326),
     department character varying DEFAULT ''::character varying NOT NULL,
     is_public boolean DEFAULT false NOT NULL,
@@ -1464,7 +1466,7 @@ CREATE TABLE public.organisations (
     updated_at timestamp(6) without time zone NOT NULL,
     employer_id integer,
     siren character varying,
-    siret character varying(14),
+    siret character varying,
     is_paqte boolean,
     manual_enter boolean DEFAULT false
 );
@@ -1496,9 +1498,9 @@ ALTER SEQUENCE public.organisations_id_seq OWNED BY public.organisations.id;
 CREATE TABLE public.practical_infos (
     id bigint NOT NULL,
     employer_id integer,
-    street character varying(300) NOT NULL,
-    zipcode character varying(5) NOT NULL,
-    city character varying(50) NOT NULL,
+    street character varying NOT NULL,
+    zipcode character varying NOT NULL,
+    city character varying NOT NULL,
     coordinates public.geography(Point,4326),
     department character varying DEFAULT ''::character varying NOT NULL,
     daily_hours jsonb DEFAULT '{}'::jsonb,
@@ -1548,7 +1550,6 @@ CREATE TABLE public.schools (
     id bigint NOT NULL,
     name character varying DEFAULT ''::character varying NOT NULL,
     city character varying DEFAULT ''::character varying NOT NULL,
-    department character varying,
     zipcode character varying,
     code_uai character varying,
     coordinates public.geography(Point,4326),
@@ -1730,13 +1731,13 @@ ALTER SEQUENCE public.team_member_invitations_id_seq OWNED BY public.team_member
 
 CREATE TABLE public.tutors (
     id bigint NOT NULL,
-    tutor_name character varying(290) NOT NULL,
-    tutor_email character varying(70) NOT NULL,
-    tutor_phone character varying(100) NOT NULL,
+    tutor_name character varying NOT NULL,
+    tutor_email character varying NOT NULL,
+    tutor_phone character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     employer_id bigint NOT NULL,
-    tutor_role character varying(150)
+    tutor_role character varying
 );
 
 
@@ -1880,8 +1881,8 @@ CREATE TABLE public.users (
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
     hubspot_id character varying,
-    academy_id bigint,
-    academy_region_id bigint,
+    academy_id integer,
+    academy_region_id integer,
     address character varying,
     legal_representative_full_name character varying,
     legal_representative_email character varying,
@@ -2703,13 +2704,6 @@ ALTER TABLE ONLY public.users_search_histories
 
 ALTER TABLE ONLY public.weeks
     ADD CONSTRAINT weeks_pkey PRIMARY KEY (id);
-
-
---
--- Name: index_academies_on_academy_region_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_academies_on_academy_region_id ON public.academies USING btree (academy_region_id);
 
 
 --
@@ -3836,8 +3830,6 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20240626133711'),
-('20240620123704'),
 ('20240612074103'),
 ('20240531101222'),
 ('20240531100023'),
@@ -3850,6 +3842,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240410115028'),
 ('20240410114806'),
 ('20240410114637'),
+('20240405101512'),
 ('20240405094938'),
 ('20240404071148'),
 ('20240403131643'),
