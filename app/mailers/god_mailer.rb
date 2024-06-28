@@ -91,4 +91,16 @@ class GodMailer < ApplicationMailer
       subject: "Inscription référent à valider : #{@statistician.full_name}"
     )
   end
+
+  def maintenance_mailing(hash)
+    @name = hash[:name]
+    @subject = hash[:subject]
+    @cc = hash[:email]
+    @to = "contact@stagedeseconde.education.gouv.fr"
+    @message = hash[:message]
+
+    send_email( to: @to,
+                subject: @subject,
+                cc: @cc)
+  end
 end

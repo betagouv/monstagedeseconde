@@ -212,6 +212,7 @@ Rails.application.routes.draw do
   get '/equipe-pedagogique', to: 'pages#school_management_landing'
   get '/referents', to: 'pages#statistician_landing'
   get '/maintenance_estivale', to: 'pages#maintenance_estivale'
+  post '/maintenance_messaging', to: 'pages#maintenance_messaging'
 
   # Redirects
   get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%{id}', status: 302)
