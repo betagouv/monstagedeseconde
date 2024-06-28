@@ -865,9 +865,9 @@ CREATE TABLE public.internship_agreements (
     school_delegation_to_sign_delivered_at date,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
-    siret character varying(15),
+    siret character varying(14),
     tutor_role character varying(500),
-    tutor_email character varying(77),
+    tutor_email character varying(80),
     organisation_representative_role character varying(500),
     student_address character varying(300),
     student_phone character varying(200),
@@ -1463,7 +1463,7 @@ CREATE TABLE public.organisations (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     employer_id integer,
-    siren character varying,
+    siren character varying(9),
     siret character varying(14),
     is_paqte boolean,
     manual_enter boolean DEFAULT false
@@ -3836,8 +3836,8 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240628150306'),
 ('20240626133711'),
-('20240620123704'),
 ('20240612074103'),
 ('20240531101222'),
 ('20240531100023'),
