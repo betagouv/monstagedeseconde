@@ -191,40 +191,42 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as student ignores internship_offers with existing application' do
-    internship_offer_without_application = create(
-      :weekly_internship_offer,
-      title: 'offer without_application'
-    )
+    travel_to(Date.new(2024, 3, 1)) do
+      internship_offer_without_application = create(
+        :weekly_internship_offer,
+        title: 'offer without_application'
+      )
 
-    assert_equal 1, InternshipOffers::WeeklyFramed.count
+      assert_equal 1, InternshipOffers::WeeklyFramed.count
 
-    school = create(:school)
-    class_room = create(:class_room,  school: school)
-    student = create(:student, school: school, class_room: class_room)
-    internship_offer_with_application = create(
-      :weekly_internship_offer,
-      max_candidates: 2,
-      title: 'offer with_application')
+      school = create(:school)
+      class_room = create(:class_room,  school: school)
+      student = create(:student, school: school, class_room: class_room)
+      internship_offer_with_application = create(
+        :weekly_internship_offer,
+        max_candidates: 2,
+        title: 'offer with_application')
 
-    internship_application = create(
-      :internship_application,
-      internship_offer: internship_offer_with_application,
-      aasm_state: 'approved',
-      student: student)
+      internship_application = create(
+        :internship_application,
+        internship_offer: internship_offer_with_application,
+        aasm_state: 'approved',
+        student: student)
 
-    assert_equal 2, InternshipOffers::WeeklyFramed.count
-    assert_equal 1, InternshipApplication.count
-    assert_equal 1, InternshipApplication.approved.count
-    assert_equal 1, internship_offer_with_application.reload.remaining_seats_count
+      assert_equal 2, InternshipOffers::WeeklyFramed.count
+      assert_equal 1, InternshipApplication.count
+      assert_equal 1, InternshipApplication.approved.count
+      assert_equal 1, internship_offer_with_application.reload.remaining_seats_count
 
-    sign_in(student)
-    InternshipOffer.stub :nearby, InternshipOffer.all do
-      InternshipOffer.stub :by_weeks, InternshipOffer.all do
-        assert_equal 2, InternshipOffers::WeeklyFramed.uncompleted_with_max_candidates.count
-        get internship_offers_path, params: { format: :json }
-        assert_response :success
-        assert_equal 1, json_response['internshipOffers'].count
-        assert_json_presence_of(json_response, internship_offer_without_application)
+      sign_in(student)
+      InternshipOffer.stub :nearby, InternshipOffer.all do
+        InternshipOffer.stub :by_weeks, InternshipOffer.all do
+          assert_equal 2, InternshipOffers::WeeklyFramed.uncompleted_with_max_candidates.count
+          get internship_offers_path, params: { format: :json }
+          assert_response :success
+          assert_equal 1, json_response['internshipOffers'].count
+          assert_json_presence_of(json_response, internship_offer_without_application)
+        end
       end
     end
   end
@@ -237,40 +239,46 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as student. ignores internship offers not published' do
-    api_internship_offer         = create(:api_internship_offer)
-    internship_offer_published   = create(:weekly_internship_offer)
-    internship_offer_unpublished = create(:weekly_internship_offer,:unpublished)
-    student = create(:student)
-    sign_in(student)
-    InternshipOffer.stub :nearby, InternshipOffer.all do
-      InternshipOffer.stub :by_weeks, InternshipOffer.all do
-        get internship_offers_path, params: { format: :json }
-        assert_equal 2, json_response['internshipOffers'].count
-        assert_json_absence_of(json_response, internship_offer_unpublished)
-        assert_json_presence_of(json_response, api_internship_offer)
-        assert_json_presence_of(json_response, internship_offer_published)
+    travel_to(Date.new(2024, 3, 1)) do
+      api_internship_offer         = create(:api_internship_offer)
+      internship_offer_published   = create(:weekly_internship_offer)
+      internship_offer_unpublished = create(:weekly_internship_offer,:unpublished)
+      student = create(:student)
+      sign_in(student)
+      InternshipOffer.stub :nearby, InternshipOffer.all do
+        InternshipOffer.stub :by_weeks, InternshipOffer.all do
+          get internship_offers_path, params: { format: :json }
+          assert_equal 2, json_response['internshipOffers'].count
+          assert_json_absence_of(json_response, internship_offer_unpublished)
+          assert_json_presence_of(json_response, api_internship_offer)
+          assert_json_presence_of(json_response, internship_offer_published)
+      end
       end
     end
   end
 
   test 'GET #index as visitor does not show discarded offers' do
-    discarded_internship_offer = create(:weekly_internship_offer,
-                                        discarded_at: 2.days.ago)
-    not_discarded_internship_offer = create(:weekly_internship_offer,
-                                            discarded_at: nil)
-    get internship_offers_path, params: { format: :json }
-    assert_json_presence_of(json_response, not_discarded_internship_offer)
-    assert_json_absence_of(json_response, discarded_internship_offer)
+    travel_to(Date.new(2024, 3, 1)) do
+      discarded_internship_offer = create(:weekly_internship_offer,
+                                          discarded_at: 2.days.ago)
+      not_discarded_internship_offer = create(:weekly_internship_offer,
+                                              discarded_at: nil)
+      get internship_offers_path, params: { format: :json }
+      assert_json_presence_of(json_response, not_discarded_internship_offer)
+      assert_json_absence_of(json_response, discarded_internship_offer)
+    end
   end
 
   test 'GET #index as visitor does not show unpublished offers' do
-    published_internship_offer = create(:weekly_internship_offer,
-                                        aasm_state: 'published',
-                                        published_at: 2.days.ago)
-    not_published_internship_offer = create(:weekly_internship_offer, :unpublished)
-    get internship_offers_path, params: { format: :json }
-    assert_json_presence_of(json_response, published_internship_offer)
-    assert_json_absence_of(json_response, not_published_internship_offer)
+    travel_to(Date.new(2024, 3, 1)) do
+      published_internship_offer = create(:weekly_internship_offer,
+                                          aasm_state: 'published',
+                                          published_at: 2.days.ago)
+      not_published_internship_offer = create(:weekly_internship_offer, :unpublished)
+      get internship_offers_path, params: { format: :json }
+      assert_json_presence_of(json_response, published_internship_offer)
+      assert_json_absence_of(json_response, not_published_internship_offer)
+    end
   end
 
   test 'GET #index as visitor does not show fulfilled offers' do
@@ -383,24 +391,26 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'search by location (radius) works' do
-    internship_offer_at_paris = create(:weekly_internship_offer,
-                                       coordinates: Coordinates.paris)
-    internship_offer_at_verneuil = create(:weekly_internship_offer,
-                                          coordinates: Coordinates.verneuil)
+    travel_to(Date.new(2024, 3, 1)) do
+      internship_offer_at_paris = create(:weekly_internship_offer,
+                                        coordinates: Coordinates.paris)
+      internship_offer_at_verneuil = create(:weekly_internship_offer,
+                                            coordinates: Coordinates.verneuil)
 
-    get internship_offers_path(latitude: Coordinates.paris[:latitude],
-                               longitude: Coordinates.paris[:longitude],
-                               radius: 60_000,
-                               format: :json)
-    assert_json_presence_of(json_response, internship_offer_at_verneuil)
-    assert_json_presence_of(json_response, internship_offer_at_paris)
+      get internship_offers_path(latitude: Coordinates.paris[:latitude],
+                                longitude: Coordinates.paris[:longitude],
+                                radius: 60_000,
+                                format: :json)
+      assert_json_presence_of(json_response, internship_offer_at_verneuil)
+      assert_json_presence_of(json_response, internship_offer_at_paris)
 
-    get internship_offers_path(latitude: Coordinates.verneuil[:latitude],
-                               longitude: Coordinates.verneuil[:longitude],
-                               radius: 5_000,
-                               format: :json)
-    assert_json_presence_of(json_response, internship_offer_at_verneuil)
-    assert_json_absence_of(json_response, internship_offer_at_paris)
+      get internship_offers_path(latitude: Coordinates.verneuil[:latitude],
+                                longitude: Coordinates.verneuil[:longitude],
+                                radius: 5_000,
+                                format: :json)
+      assert_json_presence_of(json_response, internship_offer_at_verneuil)
+      assert_json_absence_of(json_response, internship_offer_at_paris)
+    end
   end
 
   test 'GET #index?latitude=?&longitude=? as student returns internship_offer 60km around this location' do
@@ -501,18 +511,20 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as Visitor with search keyword find internship offer' do
-    keyword = 'foobar'
-    foundable_internship_offer = create(:weekly_internship_offer,
-                                        title: keyword)
-    ignored_internship_offer = create(:weekly_internship_offer, title: 'bom')
+    travel_to(Date.new(2024, 3, 1)) do
+      keyword = 'foobar'
+      foundable_internship_offer = create(:weekly_internship_offer,
+                                          title: keyword)
+      ignored_internship_offer = create(:weekly_internship_offer, title: 'bom')
 
-    dictionnary_api_call_stub
-    SyncInternshipOfferKeywordsJob.perform_now
+      dictionnary_api_call_stub
+      SyncInternshipOfferKeywordsJob.perform_now
 
-    get internship_offers_path(keyword: keyword, format: :json)
-    assert_response :success
-    assert_json_presence_of(json_response, foundable_internship_offer)
-    assert_json_absence_of(json_response, ignored_internship_offer)
+      get internship_offers_path(keyword: keyword, format: :json)
+      assert_response :success
+      assert_json_presence_of(json_response, foundable_internship_offer)
+      assert_json_absence_of(json_response, ignored_internship_offer)
+    end
   end
 
   test 'search on period works' do
