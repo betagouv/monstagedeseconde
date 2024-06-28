@@ -45,12 +45,14 @@ class ApplicationController < ActionController::Base
   end
 
   def check_for_holidays_maintenance_page
-    if ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true' && allow_maintenance_redirection?
+    if ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true' && !maintenance_redirection_exception?
       redirect_to '/maintenance_estivale.html' and return
     end
   end
 
-  def allow_maintenance_redirection?
-    !request.path.in?(%w[/maintenance_estivale.html /contact.html])
+  def maintenance_redirection_exception?
+    allowed_paths = %w[/maintenance_estivale.html /contact.html]
+    request.path.in?(allowed_paths) ||
+      (request.path == "/maintenance_messaging" && request.post?)
   end
 end
