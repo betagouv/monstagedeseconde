@@ -14,6 +14,6 @@ export default class extends Controller {
       attachmentSupport: true,
     });
 
-    $formContainer.find('button[type="submit"]').addClass('btn-primary');
+    $formContainer.find('button[type="submit"]').addClass('fr-btn');
   }
 }
