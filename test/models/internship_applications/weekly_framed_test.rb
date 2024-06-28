@@ -58,36 +58,40 @@ module InternshipApplications
     end
 
     test 'application updates offer favorites along with approved applications' do
-      offer = create(:weekly_internship_offer, max_candidates: 1)
-      favorite = create(:favorite, internship_offer: offer)
-      assert_equal Favorite.count, 1
-      other_favorite = create(:favorite)
-      application = create(:weekly_internship_application, internship_offer: offer)
-      
-      application.submit!
-      assert_equal Favorite.count, 2
-      
-      application.employer_validate!
-      application.approve!
-      assert_equal "approved", application.aasm_state
-      assert_equal Favorite.count, 1
+      travel_to(Date.new(2024, 3, 1)) do
+        offer = create(:weekly_internship_offer, max_candidates: 1)
+        favorite = create(:favorite, internship_offer: offer)
+        assert_equal Favorite.count, 1
+        other_favorite = create(:favorite)
+        application = create(:weekly_internship_application, internship_offer: offer)
+        
+        application.submit!
+        assert_equal Favorite.count, 2
+        
+        application.employer_validate!
+        application.approve!
+        assert_equal "approved", application.aasm_state
+        assert_equal Favorite.count, 1
+      end
     end
     
     test 'application updates old offer favorites along with approved applications' do
-      old_offer = create(:weekly_internship_offer, last_date: 7.days.ago)
-      favorite = create(:favorite, internship_offer: old_offer)
-      assert_equal Favorite.count, 1
-      other_favorite = create(:favorite)
-      application = create(:weekly_internship_application, internship_offer: old_offer)
-      
-      application.submit!
-      assert_equal Favorite.count, 2
-      
-      application.employer_validate!
-      application.approve!
-      assert_equal "approved", application.aasm_state
-      assert_equal Favorite.count, 1
-      assert_operator Favorite.last.internship_offer.last_date, :>, Time.now
+      travel_to(Date.new(2024, 3, 1)) do
+        old_offer = create(:weekly_internship_offer, last_date: 7.days.ago)
+        favorite = create(:favorite, internship_offer: old_offer)
+        assert_equal Favorite.count, 1
+        other_favorite = create(:favorite)
+        application = create(:weekly_internship_application, internship_offer: old_offer)
+        
+        application.submit!
+        assert_equal Favorite.count, 2
+        
+        application.employer_validate!
+        application.approve!
+        assert_equal "approved", application.aasm_state
+        assert_equal Favorite.count, 1
+        assert_operator Favorite.last.internship_offer.last_date, :>, Time.now
+      end
     end
 
     test 'scope :expirable' do
