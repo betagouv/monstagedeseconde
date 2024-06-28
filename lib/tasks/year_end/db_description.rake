@@ -22,8 +22,7 @@ namespace :year_end do
           limit1 = table.pluck(column_name.to_sym)
                         .map(&:to_s)
                         .sort_by { |a| a.size}
-                        .last
-                        .size
+                        .last&.size || 0
           PrettyConsole.print_in_yellow "#{column_name} ; #{limit1};"
           puts ''
         end
