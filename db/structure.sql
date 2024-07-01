@@ -854,7 +854,7 @@ CREATE TABLE public.internship_agreements (
     school_representative_full_name character varying(70),
     student_full_name character varying(70),
     student_class_room character varying(20),
-    student_school character varying(120),
+    student_school character varying(150),
     tutor_full_name character varying(95),
     doc_date date,
     school_manager_accept_terms boolean DEFAULT false,
@@ -865,9 +865,9 @@ CREATE TABLE public.internship_agreements (
     school_delegation_to_sign_delivered_at date,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
-    siret character varying(14),
+    siret character varying(15),
     tutor_role character varying(500),
-    tutor_email character varying(80),
+    tutor_email character varying(77),
     organisation_representative_role character varying(500),
     student_address character varying(300),
     student_phone character varying(200),
@@ -3836,6 +3836,9 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240701075037'),
+('20240626133711'),
+('20240620123704'),
 ('20240612074103'),
 ('20240531101222'),
 ('20240531100023'),
