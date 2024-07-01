@@ -1,0 +1,22 @@
+h5 Personne identifiée :
+table.fr-table.fr-mt-2w.anonymizer
+  tbody
+    tr.fr-p-1w
+      td Prénom
+      td = @user.first_name
+    tr.fr-p-1w
+      td Nom
+      td = @user.last_name
+    tr.fr-p-1w
+      td Adresse électronique
+      td = @user.email
+    tr.fr-p-1w
+      td Téléphone
+      td = @user.phone
+    - if @user.role
+      tr.fr-p-1w
+        td Rôle
+        td = @user.role
+    tr.fr-p-1w
+      td Type
+      td = Presenters::UserManagementRole.new(user: @user).role

@@ -1,0 +1,63 @@
+.fr-notice.fr-notice--info.fr-mt-4w
+  .fr-container
+    .fr-notice__body
+      p.fr-notice__title
+        |
+          A l'heure actuelle, seule la transformation de d'un 
+        span.strong employeur
+          en équipe pédagogique est possible à travers cette interface.
+
+
+.fr-stepper.fr-my-4w
+  h2.fr-stepper__title
+    | Identification du compte par l'email ou le numéro de téléphone
+    br
+    span.fr-stepper__state
+      | Étape 1 sur 3
+  .fr-stepper__steps data-fr-current-step="1" data-fr-steps="3"
+  p.fr-stepper__details
+    span.fr-text--bold Étape suivante :
+    | Elements complémentaires
+- method = @user.nil? ? :get : :post
+= form_with scope: :user,
+            url: @url || utilisateurs_transform_path,
+            method: method,
+            data: { turbo: false } do |f|
+  - if @user.nil?
+    = f.label :phone_or_email, class: 'fr-label' do
+      = 'Adresse électronique (e-mail) ou téléphone de l\'utilisateur à muter en équipe pédagogique'
+      = f.rg2a_required_content_tag
+    = f.text_field :phone_or_email, class: 'fr-input', required: true
+  - elsif !@user.discarded? && (@user.student? || @user.employer?)
+    = f.hidden_field :id, value: @user.id
+    hr
+    h5 Personne identifiée :
+    table.fr-table.fr-mt-2w.anonymizer
+      tbody
+        tr.fr-p-1w
+          td Prénom
+          td = @user.first_name
+        tr.fr-p-1w
+          td Nom
+          td = @user.last_name
+        tr.fr-p-1w
+          td Adresse électronique
+          td = @user.email
+        tr.fr-p-1w
+          td Téléphone
+          td = @user.phone
+        - if @user.role
+          tr.fr-p-1w
+            td Rôle
+            td = @user.role
+        tr.fr-p-1w
+          td Type
+          td = Presenters::UserManagementRole.new(user: @user).role
+  .fr-mt-2w
+    - if @user.nil?
+      = f.submit 'Identifier', class: 'fr-btn fr-btn--secondary fr-mt-2w'
+    - elsif !@user.discarded? && (@user.student? || @user.employer?)
+      = f.submit 'Anonymiser', class: 'fr-btn fr-mt-2w'
+    - else 
+      = link_to 'Retour', utilisateurs_anonymiseur_path,  class: 'fr-btn fr-mt-2w fr-btn--secondary'
+    = link_to 'Annuler', '/admin', class: 'fr-btn fr-btn--tertiary fr-mt-2w fr-mx-2w'

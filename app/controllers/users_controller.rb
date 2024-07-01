@@ -45,6 +45,48 @@ class UsersController < ApplicationController
     render json: 'Survey answered', status: 200
   end
 
+  def transform_input
+    authorize! :transform_user, current_user
+    @url = "utilisateurs/transform_input"
+    @user_mismatch = true
+  end
+
+  def transform_form
+    authorize! :transform_user, current_user
+    @user = User.kept.find_by(**search_hash)
+    @user_mismatch = user_mismatch?
+    if @user.nil?
+      @error_message = 'Utilisateur inconnu' 
+    elsif @user&.anonymized?
+      @error_message = 'Utilisateur déjà anonymisé'
+    elsif !@user.employer?
+      @error_message = "Cet utilisateur n'est pas un employeur"
+    elsif @user.internship_offers.present?
+      @error_message = 'Impossible de transformer cet employeur, car il a encore des offres'
+    end
+    render 'users/transform_input'
+  end
+
+  def transform_user
+    authorize! :transform_user, current_user
+    @error_message = nil
+    user_to_transform = User.find(user_params[:id])
+    if user_to_transform.internship_offers.present?
+      @error_message = 'Impossible de transformer cet employeur, car il a encore des offres'
+      render 'users/transform'
+    else
+      user_params[:role].present? &&
+      user_params[:school_id].present?
+      user_to_transform.becomes!(Users::SchoolManagement)
+                       .save
+      user_to_transform.update_columns(
+                          role: user_params[:role],
+                          school_id: user_params[:school_id],
+                       )
+      redirect_to '/admin', flash: { success: 'Utilisateur transformé avec succès.' }
+    end
+  end
+
   def anonymize_form
     authorize! :anonymize_user, current_user
     render 'users/anonymize_form'
@@ -52,13 +94,9 @@ class UsersController < ApplicationController
 
   def identify_user
     authorize! :anonymize_user, current_user
-    form_input = user_params[:phone_or_email].strip
-    search_hash = {phone: form_input}
-    search_hash = {email: form_input} if form_input.match?(/\A[^@\s]+@[^@\s]+\z/)
-    @user = User.kept.find_by(search_hash)
-    destination = 'users/anonymize_form'
+    @user = User.kept.find_by(**search_hash)
     if @user && (@user.student? || @user.employer?)
-      @url = utilisateurs_anonymiser_path
+      # @url = utilisateurs_anonymiser_path
     else
       @error_message = 'Utilisateur inconnu'
       if User.find_by(search_hash).try(:anonymized?)
@@ -66,10 +104,9 @@ class UsersController < ApplicationController
       elsif @user.present? && !@user.employer? && !@user.student?
         @error_message = 'Ni un élève, ni un employeur'
       end
-      @url = utilisateurs_identifier_path
-      destination = 'users/anonymize_form'
+      # @url = utilisateurs_identifier_path
     end
-    render destination
+    render 'users/anonymize_form'
   end
 
   def anonymize_user
@@ -142,5 +179,19 @@ class UsersController < ApplicationController
 
   def password_change_allowed?
     current_user.valid_password?(params[:user][:current_password])
+  end
+
+  def search_hash
+    form_input = user_params[:phone_or_email].strip
+    search_hash = {phone: form_input}
+    search_hash = {email: form_input} if form_input.match?(/\A[^@\s]+@[^@\s]+\z/)
+    search_hash
+  end
+
+  def user_mismatch?
+    @user.nil? ||
+      !@user.employer? ||
+      @user.discarded? ||
+      @user.internship_offers.present?
   end
 end
