@@ -20,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+-- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -34,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+-- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -48,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+-- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -845,7 +845,7 @@ ALTER SEQUENCE public.identities_id_seq OWNED BY public.identities.id;
 
 CREATE TABLE public.internship_agreements (
     id bigint NOT NULL,
-    date_range character varying(210) NOT NULL,
+    date_range character varying(90) NOT NULL,
     aasm_state character varying,
     internship_application_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
@@ -865,11 +865,11 @@ CREATE TABLE public.internship_agreements (
     school_delegation_to_sign_delivered_at date,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
-    siret character varying(15),
+    siret character varying(14),
     tutor_role character varying(500),
-    tutor_email character varying(77),
+    tutor_email character varying(80),
     organisation_representative_role character varying(500),
-    student_address character varying(170),
+    student_address character varying(300),
     student_phone character varying(200),
     school_representative_phone character varying(100),
     student_refering_teacher_phone character varying(100),
@@ -885,12 +885,12 @@ CREATE TABLE public.internship_agreements (
     school_representative_email character varying(180),
     discarded_at timestamp(6) without time zone,
     lunch_break text,
-    organisation_representative_email character varying(70),
-    legal_status character varying(20),
+    organisation_representative_email character varying,
+    legal_status character varying,
     delegation_date date,
-    internship_address character varying(500),
-    employer_name character varying(180),
-    employer_contact_email character varying(71),
+    internship_address character varying,
+    employer_name character varying,
+    employer_contact_email character varying,
     uuid uuid DEFAULT gen_random_uuid() NOT NULL
 );
 
@@ -935,7 +935,7 @@ CREATE TABLE public.internship_applications (
     type character varying DEFAULT 'InternshipApplications::WeeklyFramed'::character varying,
     internship_offer_id bigint NOT NULL,
     applicable_type character varying,
-    internship_offer_type character varying(50) NOT NULL,
+    internship_offer_type character varying NOT NULL,
     week_id bigint,
     student_phone character varying(683),
     student_email character varying(70),
@@ -947,9 +947,9 @@ CREATE TABLE public.internship_applications (
     access_token character varying(25),
     transfered_at timestamp(6) without time zone,
     student_address character varying,
-    student_legal_representative_full_name character varying(150),
-    student_legal_representative_email character varying(70),
-    student_legal_representative_phone character varying(20)
+    student_legal_representative_full_name character varying,
+    student_legal_representative_email character varying,
+    student_legal_representative_phone character varying
 );
 
 
@@ -1266,7 +1266,7 @@ CREATE TABLE public.internship_offers (
     approved_applications_count integer DEFAULT 0 NOT NULL,
     employer_type character varying(80),
     department character varying DEFAULT ''::character varying NOT NULL,
-    academy character varying(50) DEFAULT ''::character varying NOT NULL,
+    academy text DEFAULT ''::character varying NOT NULL,
     total_male_applications_count integer DEFAULT 0 NOT NULL,
     remote_id character varying(50),
     permalink character varying(280),
@@ -1278,7 +1278,7 @@ CREATE TABLE public.internship_offers (
     group_id bigint,
     first_date date NOT NULL,
     last_date date NOT NULL,
-    type character varying(40),
+    type character varying,
     search_tsv tsvector,
     aasm_state character varying,
     internship_offer_info_id bigint,
@@ -1454,7 +1454,7 @@ CREATE TABLE public.organisations (
     street character varying(300) NOT NULL,
     zipcode character varying(5) NOT NULL,
     city character varying(50) NOT NULL,
-    employer_website character varying(560),
+    employer_website character varying,
     employer_description character varying(250),
     coordinates public.geography(Point,4326),
     department character varying DEFAULT ''::character varying NOT NULL,
@@ -3838,7 +3838,6 @@ SET search_path TO "$user", public;
 INSERT INTO "schema_migrations" (version) VALUES
 ('20240701075037'),
 ('20240626133711'),
-('20240620123704'),
 ('20240612074103'),
 ('20240531101222'),
 ('20240531100023'),
