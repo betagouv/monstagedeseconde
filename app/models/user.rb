@@ -265,6 +265,7 @@ class User < ApplicationRecord
   def obfuscated_phone_number = nil
   def create_default_internship_offer_area = nil
   def department_name = nil
+  def team = nil
 
   def already_signed?(internship_agreement_id:) = true
 
