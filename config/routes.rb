@@ -211,11 +211,14 @@ Rails.application.routes.draw do
   get '/partenaires_regionaux', to: 'pages#regional_partners_index'
   get '/equipe-pedagogique', to: 'pages#school_management_landing'
   get '/referents', to: 'pages#statistician_landing'
+  get '/maintenance_estivale', to: 'pages#maintenance_estivale'
+  post '/maintenance_messaging', to: 'pages#maintenance_messaging'
 
   # Redirects
   get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%{id}', status: 302)
 
-  root to: 'pages#home'
+  root_destination = (ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true') ? 'maintenance_estivale' : 'home'
+  root to: "pages##{root_destination}"
 
   get '/404', to: 'errors#not_found'
   get '/422', to: 'errors#unacceptable'
