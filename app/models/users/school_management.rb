@@ -101,6 +101,20 @@ module Users
       end
     end
 
+    def internship_agreements_query
+      internship_agreements.kept
+                           .filtering_discarded_students
+    end
+
+    def pending_agreements_actions_count
+      part1 = internship_agreements_query.where(aasm_state: [:completed_by_employer, :started_by_school_manager])
+      part2 = internship_agreements_query.signatures_started
+                                          .joins(:signatures)
+                                          .where.not(signatures: {signatory_role: :school_manager} )
+      [part1, part2].compact.map(&:count).sum
+    end
+    alias :team_pending_agreements_actions_count :pending_agreements_actions_count
+
     private
 
     # validators

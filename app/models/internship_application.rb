@@ -30,6 +30,9 @@ class InternshipApplication < ApplicationRecord
 
   attr_accessor :sgid
 
+  belongs_to :weekly_internship_offer,
+             class_name: 'InternshipOffers::WeeklyFramed',
+             foreign_key: 'internship_offer_id'
   belongs_to :internship_offer, polymorphic: true
   # has_many :internship_agreements
   belongs_to :student, class_name: 'Users::Student',
