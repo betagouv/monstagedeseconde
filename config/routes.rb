@@ -168,6 +168,9 @@ Rails.application.routes.draw do
   end
   # ------------------ SCOPE END ------------------
 
+  post 'captcha/verify', to: 'captcha#verify'
+  get 'captcha/generate', to: 'captcha#generate'
+  
   namespace :reporting, path: 'reporting' do
     get '/dashboards', to: 'dashboards#index'
 
