@@ -54,8 +54,6 @@ class StudentMailer < ApplicationMailer
     send_email(to: email, subject: "Votre candidature a bien été transmise")
   end
 
-
-
   def internship_application_approved_email(internship_application:)
     @internship_application = internship_application
 

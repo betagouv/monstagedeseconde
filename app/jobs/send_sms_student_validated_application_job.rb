@@ -14,19 +14,8 @@ class SendSmsStudentValidatedApplicationJob < ApplicationJob
                 "a été acceptée. Vous pouvez maintenant la confirmer " \
                 "sur Mon stage de seconde : #{url}"
 
-      if ENV.fetch('NO_SMS', false)
-        sms_message = "sms [internship_application_id = #{internship_application.id}] " \
-                          "to be sent with message '#{message}' " \
-                          "to phone number '#{phone}'"
-        Rails.logger.info(sms_message)
-        puts '================'
-        puts "sms_message : #{sms_message}"
-        puts '================'
-        puts ''
-      else
-        Services::SmsSender.new(phone_number: phone, content: message)
-                           .perform
-      end
+      Services::SmsSender.new(phone_number: phone, content: message)
+                         .perform
     else
       error_message = "sms [internship_application_id = #{internship_application.id}] " \
                       "to be sent with faulty phone " \
