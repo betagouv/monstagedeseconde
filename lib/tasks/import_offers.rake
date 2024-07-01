@@ -284,6 +284,7 @@ task :import_offers_in_4_steps, [:csv_uri] => :environment do |t, args|
 
 
               Builders::InternshipOfferBuilder.new(user: employer, context: :web).create_from_stepper(
+                user: employer,
                 internship_offer_info: internship_offer_info,
                 hosting_info: hosting_info,
                 practical_info: practical_info,

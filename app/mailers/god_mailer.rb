@@ -95,12 +95,12 @@ class GodMailer < ApplicationMailer
   def maintenance_mailing(hash)
     @name = hash[:name]
     @subject = hash[:subject]
-    @cc = hash[:email]
+    @reply_to = hash[:email]
     @to = "contact@stagedeseconde.education.gouv.fr"
     @message = hash[:message]
 
     send_email( to: @to,
                 subject: @subject,
-                cc: @cc)
+                reply_to: @reply_to)
   end
 end
