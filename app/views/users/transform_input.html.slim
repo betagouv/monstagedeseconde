@@ -1,0 +1,67 @@
+- id ||= nil
+.fr-notice.fr-notice--info.fr-mt-4w
+  .fr-container
+    .fr-notice__body
+      p.fr-notice__title
+        |
+          A l'heure actuelle, seule la transformation d'un employeur
+          en équipe pédagogique est possible à travers cette interface.
+
+
+.fr-stepper.fr-my-4w
+  - step = @user_mismatch ? 1 : 2
+  h2.fr-stepper__title
+    - if step == 1
+      | Identification du compte par l'email ou le numéro de téléphone
+    - else
+      | Éléments complémentaires
+    br
+    span.fr-stepper__state
+      = "Étape #{step} sur 2"
+  .fr-stepper__steps data-fr-current-step="#{step}" data-fr-steps="2"
+  p.fr-stepper__details
+    span.fr-text--bold Étape suivante :
+    - if step == 1
+      | Éléments complémentaires
+    - else
+      | Confirmation
+- method = @user_mismatch ? :get : :post
+= form_with scope: :user,
+            url: '/utilisateurs/transform' ,
+            method: method,
+            data: { turbo: false } do |f|
+  - if @user_mismatch
+    = f.label :phone_or_email, class: 'fr-label' do
+      = 'Adresse électronique (e-mail) ou téléphone de l\'utilisateur à muter en équipe pédagogique'
+      = f.rg2a_required_content_tag
+    = f.text_field :phone_or_email, class: 'fr-input', required: true
+  - else
+    = f.hidden_field :id, value: @user.id
+    hr
+    = render 'users/identified_person'
+    .fr-fieldset__element
+      .fr-input-group.fr-mb-2v
+        label.fr-label for="user_school_city"
+          | Établissement ou commune
+        = react_component("SearchSchool",
+                          props: { classes: "col-12",
+                                   label: 'Établissement ou commune',
+                                   required: true,
+                                   resourceName: :user})
+    .fr-input-group.fr-mb-2v
+      label.fr-label for="user_role"
+        |Fonction
+      = f.select :role,
+                 options_from_collection_for_select(user_roles_to_select, :value, :text, @user.role),
+                 { prompt: "Choisissez une fonction" },
+                 { class: "fr-select", required: true}
+  - if @error_message
+    .fr-alert.fr-alert--error.fr-mt-2w
+      h3.fr-alert__title Erreur
+      p = @error_message
+  .fr-mt-2w
+    - if @user_mismatch
+      = f.submit 'Identifier', class: 'fr-btn fr-btn--secondary fr-mt-2w'
+    - else
+      = f.submit 'Transformer', class: 'fr-btn fr-mt-2w'
+    = link_to "Retour à l'admin", '/admin', class: 'fr-btn fr-btn--tertiary fr-mt-2w fr-mx-2w'

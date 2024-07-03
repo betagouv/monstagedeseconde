@@ -18,13 +18,27 @@ class StudentRegistrationsTest < ActionDispatch::IntegrationTest
     assert_select 'label', /Sexe/
   end
 
+  test 'POST Create Student without class fails' do
+    assert_difference('Users::Student.count', 0) do
+      post user_registration_path(params: {
+                                    user: { email: 'fatou@snapchat.com',
+                                            password: 'okokok',
+                                            first_name: 'Fatou',
+                                            last_name: 'D',
+                                            type: 'Users::Student',
+                                            accept_terms: '1' }
+                                  })
+      assert_response 200
+    end
+  end	
+  
   test 'POST create Student with class responds with success' do
     school = create(:school)
     class_room = create(:class_room, school: school)
     birth_date = 14.years.ago
     email = 'fourcade.m@gmail.com'
-    assert_enqueued_jobs 2 do
-      assert_enqueued_emails 1 do
+    assert_enqueued_jobs 3 do
+      assert_enqueued_emails 2 do
         assert_difference('Users::Student.count') do
           post user_registration_path(
             params: {
@@ -42,7 +56,7 @@ class StudentRegistrationsTest < ActionDispatch::IntegrationTest
               }
             }
           )
-          assert_redirected_to internship_offers_path
+          assert_redirected_to users_registrations_standby_path(id: Users::Student.last.id)
         end
       end
     end
@@ -121,7 +135,7 @@ class StudentRegistrationsTest < ActionDispatch::IntegrationTest
           }
         }
       )
-      assert_redirected_to internship_offers_path
+      assert_redirected_to users_registrations_standby_path(id: Users::Student.last.id)
     end
     created_student = Users::Student.first
     assert_equal identity.school_id, created_student.school.id
