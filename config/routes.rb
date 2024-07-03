@@ -82,6 +82,10 @@ Rails.application.routes.draw do
 
     resources :favorites, only: %i[create destroy index]
 
+    get '/utilisateurs/transform_input', to: 'users#transform_input' #display
+    get '/utilisateurs/transform', to: 'users#transform_form' #identify and show parameters
+    post '/utilisateurs/transform', to: 'users#transform_user' #transform
+
     get '/utilisateurs/anonymiseur', to: 'users#anonymize_form'
     get '/utilisateurs/identifier', to: 'users#identify_user'
     post '/utilisateurs/anonymiser', to: 'users#anonymize_user'
@@ -187,7 +191,7 @@ Rails.application.routes.draw do
   patch 'mon-compte', to: 'users#update'
   patch 'account_password', to: 'users#update_password'
   patch 'answer_survey', to: 'users#answer_survey'
-  
+
 
   get '/accessibilite', to: 'pages#accessibilite'
   get '/conditions-d-utilisation', to: 'pages#conditions_d_utilisation'

@@ -8,35 +8,14 @@
               method: method,
               data: { turbo: false } do |f|
     - if @user.nil?
-      = f.label :anonymize, class: 'fr-label' do
+      = f.label :phone_or_email, class: 'fr-label' do
         = 'Adresse électronique (e-mail) ou téléphone de l\'utilisateur à anonymiser'
         = f.rg2a_required_content_tag
       = f.text_field :phone_or_email, class: 'fr-input', required: true
     - elsif !@user.discarded? && (@user.student? || @user.employer?)
       = f.hidden_field :id, value: @user.id
       hr
-      h5 Personne identifiée :
-      table.fr-table.fr-mt-2w.anonymizer
-        tbody
-          tr.fr-p-1w
-            td Prénom
-            td = @user.first_name
-          tr.fr-p-1w
-            td Nom
-            td = @user.last_name
-          tr.fr-p-1w
-            td Adresse électronique
-            td = @user.email
-          tr.fr-p-1w
-            td Téléphone
-            td = @user.phone
-          - if @user.role
-            tr.fr-p-1w
-              td Rôle
-              td = @user.role
-          tr.fr-p-1w
-            td Type
-            td = Presenters::UserManagementRole.new(user: @user).role
+      = render 'users/identified_person'
       = f.label :anonymize_with_email, class: 'fr-label' do
         = 'Anonymiser avec envoi d\'email'
         = f.rg2a_required_content_tag
