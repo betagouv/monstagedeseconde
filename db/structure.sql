@@ -850,12 +850,12 @@ CREATE TABLE public.internship_agreements (
     internship_application_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    organisation_representative_full_name character varying(90),
-    school_representative_full_name character varying(70),
-    student_full_name character varying(70),
-    student_class_room character varying(20),
+    organisation_representative_full_name character varying(150),
+    school_representative_full_name character varying(100),
+    student_full_name character varying(100),
+    student_class_room character varying(27),
     student_school character varying(150),
-    tutor_full_name character varying(95),
+    tutor_full_name character varying(271),
     doc_date date,
     school_manager_accept_terms boolean DEFAULT false,
     employer_accept_terms boolean DEFAULT false,
@@ -865,9 +865,9 @@ CREATE TABLE public.internship_agreements (
     school_delegation_to_sign_delivered_at date,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
-    siret character varying(15),
+    siret character varying(145),
     tutor_role character varying(500),
-    tutor_email character varying(77),
+    tutor_email character varying(85),
     organisation_representative_role character varying(500),
     student_address character varying(170),
     student_phone character varying(200),
@@ -891,7 +891,15 @@ CREATE TABLE public.internship_agreements (
     internship_address character varying(500),
     employer_name character varying(180),
     employer_contact_email character varying(71),
-    uuid uuid DEFAULT gen_random_uuid() NOT NULL
+    uuid uuid DEFAULT gen_random_uuid() NOT NULL,
+    activity_scope_tmp text,
+    activity_preparation_tmp text,
+    activity_learnings_tmp text,
+    activity_rating_tmp text,
+    skills_observe_tmp text,
+    skills_communicate_tmp text,
+    skills_understand_tmp text,
+    skills_motivation_tmp text
 );
 
 
@@ -938,7 +946,7 @@ CREATE TABLE public.internship_applications (
     internship_offer_type character varying(50) NOT NULL,
     week_id bigint,
     student_phone character varying(683),
-    student_email character varying(70),
+    student_email character varying(100),
     read_at timestamp(6) without time zone,
     examined_at timestamp(6) without time zone,
     validated_by_employer_at timestamp(6) without time zone,
@@ -948,8 +956,11 @@ CREATE TABLE public.internship_applications (
     transfered_at timestamp(6) without time zone,
     student_address character varying,
     student_legal_representative_full_name character varying(150),
-    student_legal_representative_email character varying(70),
-    student_legal_representative_phone character varying(20)
+    student_legal_representative_email character varying(109),
+    student_legal_representative_phone character varying(50),
+    motivation_tmp text,
+    rejected_message_tmp text,
+    canceled_by_employer_message_tmp text
 );
 
 
@@ -1062,7 +1073,8 @@ CREATE TABLE public.internship_offer_infos (
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
     max_students_per_group integer DEFAULT 1 NOT NULL,
-    remaining_seats_count integer DEFAULT 0
+    remaining_seats_count integer DEFAULT 0,
+    description_str character varying(500)
 );
 
 
@@ -1246,9 +1258,9 @@ CREATE TABLE public.internship_offers (
     internship_offer_weeks_count integer DEFAULT 0 NOT NULL,
     tutor_name character varying(290),
     tutor_phone character varying(100),
-    tutor_email character varying(70),
-    employer_website character varying(370),
-    street character varying(300),
+    tutor_email character varying(100),
+    employer_website character varying(560),
+    street character varying(3000),
     zipcode character varying(5),
     city character varying(50),
     is_public boolean,
@@ -1305,7 +1317,8 @@ CREATE TABLE public.internship_offers (
     contact_phone character varying(20),
     handicap_accessible boolean DEFAULT false,
     period integer DEFAULT 0 NOT NULL,
-    school_year integer DEFAULT 0 NOT NULL
+    school_year integer DEFAULT 0 NOT NULL,
+    description_str character varying(500)
 );
 
 
@@ -1451,7 +1464,7 @@ ALTER SEQUENCE public.operators_id_seq OWNED BY public.operators.id;
 CREATE TABLE public.organisations (
     id bigint NOT NULL,
     employer_name character varying(180) NOT NULL,
-    street character varying(300) NOT NULL,
+    street character varying(500) NOT NULL,
     zipcode character varying(5) NOT NULL,
     city character varying(50) NOT NULL,
     employer_website character varying(560),
@@ -1496,7 +1509,7 @@ ALTER SEQUENCE public.organisations_id_seq OWNED BY public.organisations.id;
 CREATE TABLE public.practical_infos (
     id bigint NOT NULL,
     employer_id integer,
-    street character varying(300) NOT NULL,
+    street character varying(500) NOT NULL,
     zipcode character varying(5) NOT NULL,
     city character varying(50) NOT NULL,
     coordinates public.geography(Point,4326),
@@ -1566,7 +1579,8 @@ CREATE TABLE public.schools (
     delegation_date date,
     is_public boolean DEFAULT true,
     contract_code character varying(3),
-    department_id bigint
+    department_id bigint,
+    agreement_conditions_tmp text
 );
 
 
@@ -1731,7 +1745,7 @@ ALTER SEQUENCE public.team_member_invitations_id_seq OWNED BY public.team_member
 CREATE TABLE public.tutors (
     id bigint NOT NULL,
     tutor_name character varying(290) NOT NULL,
-    tutor_email character varying(70) NOT NULL,
+    tutor_email character varying(100) NOT NULL,
     tutor_phone character varying(100) NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
@@ -1831,64 +1845,64 @@ ALTER SEQUENCE public.user_groups_id_seq OWNED BY public.user_groups.id;
 
 CREATE TABLE public.users (
     id bigint NOT NULL,
-    email character varying DEFAULT ''::character varying,
-    encrypted_password character varying DEFAULT ''::character varying NOT NULL,
-    reset_password_token character varying,
+    email character varying(70) DEFAULT ''::character varying,
+    encrypted_password character varying(60) DEFAULT ''::character varying NOT NULL,
+    reset_password_token character varying(64),
     reset_password_sent_at timestamp without time zone,
     remember_created_at timestamp without time zone,
     sign_in_count integer DEFAULT 0 NOT NULL,
     current_sign_in_at timestamp without time zone,
     last_sign_in_at timestamp without time zone,
-    current_sign_in_ip character varying,
-    last_sign_in_ip character varying,
-    confirmation_token character varying,
+    current_sign_in_ip character varying(15),
+    last_sign_in_ip character varying(15),
+    confirmation_token character varying(20),
     confirmed_at timestamp without time zone,
     confirmation_sent_at timestamp without time zone,
-    unconfirmed_email character varying,
-    phone character varying,
-    first_name character varying,
-    last_name character varying,
-    operator_name character varying,
-    type character varying,
+    unconfirmed_email character varying(70),
+    phone character varying(20),
+    first_name character varying(85),
+    last_name character varying(85),
+    operator_name character varying(50),
+    type character varying(50),
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     school_id bigint,
     birth_date date,
-    gender character varying,
+    gender character varying(2),
     class_room_id bigint,
     operator_id bigint,
-    api_token character varying,
+    api_token character varying(36),
     accept_terms boolean DEFAULT false NOT NULL,
     discarded_at timestamp without time zone,
-    department character varying,
-    role character varying,
-    phone_token character varying,
+    department character varying(2),
+    role character varying(50),
+    phone_token character varying(4),
     phone_token_validity timestamp without time zone,
     phone_password_reset_count integer DEFAULT 0,
     last_phone_password_reset timestamp without time zone,
     anonymized boolean DEFAULT false NOT NULL,
     banners jsonb DEFAULT '{}'::jsonb,
     targeted_offer_id integer,
-    signature_phone_token character varying(6),
+    signature_phone_token character varying(10),
     signature_phone_token_expires_at timestamp(6) without time zone,
     signature_phone_token_checked_at timestamp(6) without time zone,
-    employer_role character varying,
+    employer_role character varying(150),
     subscribed_to_webinar_at timestamp(6) without time zone DEFAULT NULL::timestamp without time zone,
     agreement_signatorable boolean DEFAULT false,
     created_by_teacher boolean DEFAULT false,
     survey_answered boolean DEFAULT false,
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
-    hubspot_id character varying,
+    failed_attempts integer DEFAULT 0 NOT NULL,
+    unlock_token character varying(64),
+    locked_at timestamp(6) without time zone,
+    hubspot_id character varying(15),
     academy_id bigint,
     academy_region_id bigint,
-    address character varying,
-    legal_representative_full_name character varying,
-    legal_representative_email character varying,
-    legal_representative_phone character varying,
-    failed_attempts integer DEFAULT 0 NOT NULL,
-    unlock_token character varying,
-    locked_at timestamp(6) without time zone
+    address character varying(300),
+    legal_representative_full_name character varying(100),
+    legal_representative_email character varying(109),
+    legal_representative_phone character varying(50)
 );
 
 
@@ -3836,8 +3850,11 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240701155626'),
+('20240701150709'),
 ('20240701075037'),
 ('20240628150306'),
+('20240627152436'),
 ('20240626133711'),
 ('20240620123704'),
 ('20240612074103'),

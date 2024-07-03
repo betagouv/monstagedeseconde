@@ -11,7 +11,26 @@ namespace :year_end do
               Tutor,
               InternshipApplication,
               InternshipAgreement,
-              User]
+              User,
+              Identity,
+              AcademyRegion,
+              Academy,
+              ClassRoom,
+              Craft,
+              Department,
+              DetailedCraft,
+              Group,
+              InternshipOfferArea,
+              Invitation,
+              Operator,
+              Organisation,
+              PracticalInfo,
+              School,
+              Sector,
+              TaskRegister,
+              TeamMemberInvitation,
+              Tutor,
+              UrlShrinker]
     table_list = tables.map do |table| table.name end.join(', ')
     PrettyConsole.announce_task("Describing column size for #{table_list}") do
       tables.each do |table|

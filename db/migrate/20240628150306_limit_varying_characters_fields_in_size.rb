@@ -10,8 +10,8 @@ class LimitVaryingCharactersFieldsInSize < ActiveRecord::Migration[7.1]
 
     change_column :internship_applications, :internship_offer_type, :string, limit: 50
     change_column :internship_applications, :student_legal_representative_full_name, :string, limit: 150
-    change_column :internship_applications, :student_legal_representative_email, :string, limit: 70
-    change_column :internship_applications, :student_legal_representative_phone, :string, limit: 20
+    change_column :internship_applications, :student_legal_representative_email, :string, limit: 109
+    change_column :internship_applications, :student_legal_representative_phone, :string, limit: 50
     
     change_column :internship_agreements, :student_address, :string, limit: 170
     change_column :internship_agreements, :date_range, :string, limit: 210
