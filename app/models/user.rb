@@ -21,7 +21,7 @@ class User < ApplicationRecord
   include DelayedDeviseEmailSender
 
   before_validation :concatenate_and_clean
-  # after_create :send_sms_token
+  after_create :send_sms_token
 
   # school_managements includes different roles
   # Everyone should register with ac-xxx.fr email
@@ -134,8 +134,8 @@ class User < ApplicationRecord
 
     discard! unless discarded?
 
-    unless email_for_job.blank?
-      AnonymizeUserJob.perform_later(email: email_for_job) if send_email
+    if send_email && email_for_job.present?
+      AnonymizeUserJob.perform_later(email: email_for_job)
     end
   end
 
@@ -149,6 +149,38 @@ class User < ApplicationRecord
       update(phone_password_reset_count: phone_password_reset_count + 1,
              last_phone_password_reset: Time.now)
     end
+  end
+
+  def send_sms_token
+    return unless phone.present?
+
+    create_phone_token
+    message = "Votre code d'activation d'inscription, valide pendant 1h, est : #{self.phone_token}"
+    SendSmsJob.perform_later(user: self, message: message)
+  end
+
+  def create_phone_token
+    update(phone_token: format('%04d', rand(10_000)),
+           phone_token_validity: 1.hour.from_now)
+  end
+
+  def phone_confirmable?
+    phone_token.present? && Time.now < phone_token_validity
+  end
+
+  def confirm_by_phone!
+    update(phone_token: nil,
+           phone_token_validity: nil,
+           confirmed_at: Time.now,
+           phone_password_reset_count: 0)
+  end
+
+  def check_phone_token?(token)
+    phone_confirmable? && phone_token == token
+  end
+
+  def after_confirmation
+    super
   end
 
   def formatted_phone
@@ -209,7 +241,8 @@ class User < ApplicationRecord
   end
 
   def send_confirmation_instructions
-    return if created_by_teacher || statistician? || student?
+    return if created_by_teacher || statistician?
+
     super
   end
 
@@ -273,7 +306,7 @@ class User < ApplicationRecord
   def team_members = User.none
 
   def just_created?
-    self.created_at < Time.now  + 3.seconds
+    created_at < Time.now + 3.seconds
   end
 
   def presenter
@@ -284,7 +317,7 @@ class User < ApplicationRecord
     raw, hashed = Devise.token_generator.generate(User, :reset_password_token)
     self.reset_password_token = hashed
     self.reset_password_sent_at = Time.now.utc
-    self.save
+    save
     raw
   end
 

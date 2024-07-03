@@ -3,6 +3,8 @@ module Services
     LINK_MOBILITY_SENDING_ENDPOINT_URL = "https://europe.ipx.com/restapi/v1/sms/send".freeze
     # TODO link mobility provider as a class variable
     def perform
+      treat_no_sms_message and return if no_sms_mode?
+
       response = get_request
       if response.nil? || !response.respond_to?(:body)
         error_message = "Link Mobility error: response is ko | phone_number: " \
@@ -17,6 +19,18 @@ module Services
     attr_reader :phone_number, :content , :sender_name, :user, :pass, :campaign_name
 
     private
+
+    def no_sms_mode?
+      ENV.fetch('NO_SMS', false) == 'true'
+    end
+
+    def treat_no_sms_message
+      sms_message = "sms for #{@phone_numer} : === '#{@content}' ==="
+      sms_message = "#{sms_message} | campaign_name: '#{@campaign_name}'" if @campaign_name.present?
+      puts("========== SMS ==========")
+      puts(sms_message)
+      puts("========== SMS ==========")
+    end
 
     def log_success(response_body)
       info = "Link Mobility success for phone '#{@phone_number}', with content " \
@@ -71,7 +85,7 @@ module Services
     end
 
     def initialize(phone_number: , content: , campaign_name: nil)
-      @phone_number = phone_number 
+      @phone_number = phone_number
       @campaign_name = campaign_name
       @content = content
       @sender_name = 'MonStage2de' # Max length: 16 chars
