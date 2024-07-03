@@ -74,16 +74,16 @@ class UsersController < ApplicationController
     if user_to_transform.internship_offers.present?
       @error_message = 'Impossible de transformer cet employeur, car il a encore des offres'
       render 'users/transform'
-    else
-      user_params[:role].present? &&
-      user_params[:school_id].present?
+    elsif user_params[:role].present? && user_params[:school_id].present?
+      user_to_transform.update_columns( role: user_params[:role],
+                                        school_id: user_params[:school_id],
+                                    )
       user_to_transform.becomes!(Users::SchoolManagement)
-                       .save
-      user_to_transform.update_columns(
-                          role: user_params[:role],
-                          school_id: user_params[:school_id],
-                       )
+                       .save!
       redirect_to '/admin', flash: { success: 'Utilisateur transformé avec succès.' }
+    else
+      @error_message = 'Impossible de transformer cet utilisateur à qui il manque une fonction ou une école.'
+      render 'users/transform'
     end
   end
 
