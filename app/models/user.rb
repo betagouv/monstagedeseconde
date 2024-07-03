@@ -69,19 +69,15 @@ class User < ApplicationRecord
     respond_to?(relationship) && self.send(relationship).present?
   end
 
-
   def missing_school?
     return true if respond_to?(:school) && school.blank?
     false
   end
 
-  def to_s
-    name
-  end
-
   def name
     "#{first_name.try(:capitalize)} #{last_name.try(:capitalize)}"
   end
+  alias to_s name
 
   def after_sign_in_path
     custom_dashboard_path
