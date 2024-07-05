@@ -3,28 +3,38 @@
     = form.label :first_name, class: 'fr-label' do
       = 'Prénom'
       = form.rg2a_required_content_tag
-    = form.text_field :first_name, class: 'fr-input',
-      required: true
+    = form.text_field :first_name,
+                      class: 'fr-input',
+                      maxlength: 85,
+                      required: true
   .col-6
     = form.label :last_name, class: 'fr-label' do
       = 'Nom'
       = form.rg2a_required_content_tag
-    = form.text_field :last_name, class: 'fr-input',
-      required: true
+    = form.text_field :last_name,
+                      class: 'fr-input',
+                      maxlength: 85,
+                      required: true
 
 .row.mt-3
   .col-6
     = form.label :email, class: 'fr-label' do
       span data-profile-target="label"= current_user.school_manager? ? 'Adresse électronique académique' : 'Adresse électronique (e-mail)'
       = form.rg2a_required_content_tag
-    = form.text_field :email,
-                   {class: 'fr-input', required: true, data: {action: 'change->profile#onBlurEmailInput', :"profile-target" => 'emailInput'}}.merge(current_user.is_a?(Users::PrefectureStatistician) ? { readonly: true } : {})
+    = form.text_field :email, { class: 'fr-input',
+                                maxlength: 100,
+                                required: true,
+                                data: {action: 'change->profile#onBlurEmailInput', :"profile-target" => 'emailInput'}}.merge(current_user.is_a?(Users::PrefectureStatistician) ? { readonly: true } : {})
     small.d-none data-profile-target="emailHint"
   .col-6
     .form-group.fr-select-group--disabled
       = form.label :phone, class: 'fr-label' do
         = 'Numéro de mobile'
-      = form.text_field :phone, value: current_user.phone, class: 'fr-input', disabled: true
+      = form.text_field :phone,
+                        value: current_user.phone,
+                        maxlength: 20,
+                        class: 'fr-input',
+                        disabled: true
 .row.mt-3
   .col-6.fr-select-group--disabled
     = form.label :school, class: 'fr-label' do
