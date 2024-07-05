@@ -35,6 +35,7 @@ class LimitingAnotherSetOfVarchars < ActiveRecord::Migration[7.1]
     change_column :internship_agreements, :student_class_room, :string, limit: 50
     change_column :internship_agreements, :tutor_full_name, :string, limit: 275
     change_column :internship_agreements, :school_representative_full_name, :string, limit: 120
+    change_column :internship_agreements, :siret, :string, limit: 14
 
     change_column :users_search_histories, :city, :string, limit: 165
 
