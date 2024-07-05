@@ -166,6 +166,7 @@ function CompanyCityInput({
                   onChange: inputChange,
                   value: inputValue,
                   className: 'fr-input',
+                  maxlength: "50",
                   name: 'city',
                   id: 'input-search-by-city-or-zipcode',
                   placeholder: '',
