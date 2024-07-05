@@ -59,6 +59,9 @@ namespace :data_migrations do
           value = record.send(field).to_plain_text
           next if value.blank?
 
+          print "o" if record.send(key.to_sym).present?
+          next if record.send(key.to_sym).present?
+
           record.update(key => value)
           print '.'
         end
