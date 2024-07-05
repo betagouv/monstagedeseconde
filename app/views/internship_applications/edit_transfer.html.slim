@@ -22,8 +22,6 @@
             = form.label :destination, "Adresse email"
             = form.text_field :destination,
                               class: 'fr-input destinataire-input',
-                              maxlength: 100,
-                              pattern: Devise.email_regexp,
                               placeholder: 'magali@organisation.fr',
                               required: true,
                               data: { :'transfer-application-target'=>"email", :'transfer-application-target'=>"requiredField"}
@@ -48,7 +46,6 @@
             = form.text_area :comment,
                               class: 'fr-input',
                               placeholder: 'Message',
-                              maxlength: 2_000,
                               required: true,
                               rows: 6,
                               data: { :"transfer-application-target" => "comment", :'transfer-application-target'=>"requiredField"}

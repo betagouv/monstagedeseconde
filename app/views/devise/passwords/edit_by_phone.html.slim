@@ -17,23 +17,12 @@
           small.text-muted 
             | (+33 puis 06 11 22 33 44 par exemple)
         .form-group.custom-label-container
-          = number_field_tag :phone_token,
-                            '',
-                            class: 'fr-input',
-                            maxlength: 4,
-                            required: true,
-                            placeholder: "ex: 1234"
+          = number_field_tag :phone_token, '', class: 'fr-input', required: true, placeholder: "ex: 1234"
           = label_tag :phone_token, class: 'fr-label' do
             ' Code de confirmation
         .form-group.custom-label-container
-          = password_field_tag :password,
-                                '',
-                                autofocus: true,
-                                autocomplete: "new-password",
-                                required: true,
-                                maxlength: 70,
-                                class: 'fr-input'
-          = label_tag :password, class: 'fr-label' do
+          = password_field_tag :password, '', autofocus: true, autocomplete: "new-password", required: true, class: 'fr-input'
+          = label_tag :password , class: 'fr-label' do
             ' Nouveau mot de passe
             - if @minimum_password_length
               small.form-text.text-muted= t('devise.shared.minimum_password_length', count: @minimum_password_length)

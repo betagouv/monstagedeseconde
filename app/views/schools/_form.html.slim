@@ -11,21 +11,14 @@
         = "Nom de l'établissement (commencer avec 'Lycée', 'Collège', 'Ecole', etc.)"
         = f.rg2a_required_content_tag
 
-      = f.text_field :name,
-                     class: "fr-input col-lg-6",
-                     maxlength: 150,
-                     required:true
+      = f.text_field :name, class: "fr-input col-lg-6", required:true
 
     .form-group
-      = f.label :code_uai,
-                     class: 'fr-label' do
+      = f.label :code_uai, class: 'fr-label' do
         = "Code UAI de l'établissement"
         = f.rg2a_required_content_tag
 
-      = f.text_field :code_uai,
-                     class: "fr-input col-lg-6",
-                     maxlength: 8,
-                     required:true
+      = f.text_field :code_uai, class: "fr-input col-lg-6", required:true
 
     .form-group
       = f.label :is_public, class: 'fr-label' do

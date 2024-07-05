@@ -97,8 +97,7 @@
                    value: f.object.student_address ||f.object.student.address,
                    label: "Votre adresse postale complète",
                    required: true,
-                   title: 'Adresse',
-                   maxlength: 300
+                   title: 'Adresse'
     .row.fr-m-n2w.fr-mb-3w
       .col-12
         .form-group.phone
@@ -111,7 +110,6 @@
                    value: f.object.student_legal_representative_full_name ||f.object.student.legal_representative_full_name,
                    label: "Nom et prénom de votre représentant légal",
                    required: true,
-                   maxlength: 180,
                    title: 'Représentant légal'
     .row.fr-m-n2w.fr-mb-3w
       .col-12
@@ -125,8 +123,6 @@
                    value: f.object.student_legal_representative_email ||f.object.student.legal_representative_email,
                    label: "Adresse électronique de votre représentant légal",
                    required: true,
-                   pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
-                   maxlength: 100,
                    title: 'Adresse électronique'
     .row.fr-m-n2w.fr-mb-3w
       .col-12
@@ -140,7 +136,6 @@
                    value: f.object.student_legal_representative_phone ||f.object.student.legal_representative_phone,
                    label: "Numéro de téléphone de votre représentant légal",
                    required: true,
-                   maxlength: 20,
                    title: 'Téléphone',
                    pattern: phone_pattern
 

@@ -47,7 +47,7 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                             placeholder: "Nombre d'élèves prévus pour cette offre",
                             disabled: false,
                             required: true,
-                            pattern: "[0-9]{1,5}",
+                            pattern: "[0-9]*",
                             inputmode: "numeric",
                             min: resource.is_a?(InternshipOffer) ? (resource.internship_applications.try(:approved).try(:count) || 0) : 0,
                             data: { :"hosting-infos-target" => 'maxCandidatesInput',

@@ -56,7 +56,6 @@
                                     field: :first_name,
                                     resource: resource,
                                     resource_name: resource_name,
-                                    maxlength: 85,
                                     value: resource&.first_name || params[:first_name],
                                     option: { required: true },
                                     errors: errors }
@@ -65,7 +64,6 @@
                                    field_label: "Nom",
                                    field: :last_name,
                                    value: resource&.last_name || params[:last_name],
-                                   maxlength: 85,
                                    resource: resource,
                                    resource_name: resource_name,
                                    option: { required: true },
@@ -205,8 +203,6 @@
                           autofocus: params[:email].blank? ,
                           :'aria-describedby' => "user_email",
                           type: "email",
-                          maxlength: 100,
-                          pattern: Devise.email_regexp,
                           autocomplete: "on",
                           data: {action: 'change->signup#onBlurEmailInput', :"signup-target" => 'emailInput'}
                     p.fr-message.fr-message--error.d-none[data-signup-target="emailHint"]
@@ -227,7 +223,6 @@
                                          autocomplete: "new-password",
                                          class: "fr-password__input fr-input fr-password__input fr-input #{error_tag.present? ? 'fr-input--error' : ''}",
                                          required: true,
-                                         maxlength: 70,
                                          data: { action: "signup#checkPassword", :"signup-target" => "passwordInput" }
                       #password-input-messages.fr-messages-group aria-live="assertive"
                         ul.fr-pl-0

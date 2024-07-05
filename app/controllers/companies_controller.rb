@@ -58,7 +58,6 @@ class CompaniesController < ApplicationController
       @level_name, sibling_coded_crafts = coded_craft.siblings(level: iteration)
       sibling_coded_crafts_codes = sibling_coded_crafts.pluck(:ogr_code)
       break if sibling_coded_crafts_codes.count > MAXIMUM_CODES_IN_LIST
-
       parameters.merge!(appellation_codes: sibling_coded_crafts_codes)
       @companies = filtered_companies(parameters)
       iteration += 1

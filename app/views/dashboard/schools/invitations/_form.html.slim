@@ -10,7 +10,6 @@
                       object: @invitation,
                       label: 'Nom',
                       field: :last_name,
-                      maxlength: 85,
                       required: true}
 
   = render partial: 'inputs/dsfr_input_field',
@@ -18,7 +17,6 @@
                       object: @invitation,
                       label: 'Prénom',
                       field: :first_name,
-                      maxlength: 85,
                       required: true}
 
   = render partial: 'inputs/dsfr_input_field',
@@ -27,7 +25,6 @@
                       label: 'Adresse électronique',
                       hint: "Format attendu : nom@ac-academie.fr",
                       field: :email,
-                      maxlength: 100,
                       required: true}
 
   .fr-select-group
