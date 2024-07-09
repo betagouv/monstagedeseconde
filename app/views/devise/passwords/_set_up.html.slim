@@ -22,7 +22,11 @@ hr
             | Numéro de téléphone indiqué par votre professeur
           small.form-text.text-muted
             | Ce numéro sera utilisé uniquement pour communiquer avec vous. Il vous servira également d’identifiant pour vous connecter.  
-        = f.text_field :phone, class: "fr-input", value: current_user.phone.gsub('+33', ''), disabled: true
+        = f.text_field :phone,
+                       class: "fr-input",
+                       value: current_user.phone,
+                       maxlength: 20,
+                       disabled: true
 
     - else 
       .form-group.custom-label-container
@@ -31,7 +35,11 @@ hr
             | Adresse email indiquée par votre professeur
           small.form-text.text-muted
             | Cette adresse sera utilisée uniquement pour communiquer avec vous. Elle vous servira également d’identifiant pour vous connecter.
-        = f.text_field :email, class: "fr-input", value: current_user.try(:email), disabled: true
+        = f.text_field :email,
+                       class: "fr-input",
+                       maxlength: 100,
+                       value: current_user.try(:email),
+                       disabled: true
     
     .row
       .col-md-6.col-xs-12

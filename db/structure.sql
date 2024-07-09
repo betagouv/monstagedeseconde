@@ -223,8 +223,8 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.academies (
     id bigint NOT NULL,
-    name character varying,
-    email_domain character varying,
+    name character varying(40),
+    email_domain character varying(100),
     academy_region_id integer
 );
 
@@ -254,7 +254,7 @@ ALTER SEQUENCE public.academies_id_seq OWNED BY public.academies.id;
 
 CREATE TABLE public.academy_regions (
     id bigint NOT NULL,
-    name character varying,
+    name character varying(40),
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -463,7 +463,7 @@ ALTER SEQUENCE public.area_notifications_id_seq OWNED BY public.area_notificatio
 
 CREATE TABLE public.class_rooms (
     id bigint NOT NULL,
-    name character varying,
+    name character varying(50),
     school_id bigint,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -561,7 +561,7 @@ ALTER SEQUENCE public.craft_fields_id_seq OWNED BY public.craft_fields.id;
 CREATE TABLE public.crafts (
     id bigint NOT NULL,
     name character varying(255) NOT NULL,
-    number character varying NOT NULL,
+    number character varying(5) NOT NULL,
     craft_field_id bigint NOT NULL
 );
 
@@ -591,8 +591,8 @@ ALTER SEQUENCE public.crafts_id_seq OWNED BY public.crafts.id;
 
 CREATE TABLE public.departments (
     id bigint NOT NULL,
-    code character varying,
-    name character varying,
+    code character varying(5),
+    name character varying(40),
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     academy_id bigint
@@ -634,7 +634,7 @@ CREATE TABLE public.departments_operators (
 
 CREATE TABLE public.detailed_crafts (
     id bigint NOT NULL,
-    name character varying(255) NOT NULL,
+    name character varying(120) NOT NULL,
     number character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
@@ -698,7 +698,7 @@ ALTER SEQUENCE public.favorites_id_seq OWNED BY public.favorites.id;
 CREATE TABLE public.groups (
     id bigint NOT NULL,
     is_public boolean,
-    name character varying,
+    name character varying(150),
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     is_paqte boolean
@@ -807,13 +807,13 @@ ALTER SEQUENCE public.hosting_infos_id_seq OWNED BY public.hosting_infos.id;
 CREATE TABLE public.identities (
     id bigint NOT NULL,
     user_id bigint,
-    first_name character varying,
-    last_name character varying,
+    first_name character varying(82),
+    last_name character varying(82),
     school_id bigint,
     class_room_id bigint,
     birth_date date,
     gender character varying DEFAULT 'np'::character varying,
-    token character varying,
+    token character varying(50),
     anonymized boolean DEFAULT false,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -850,12 +850,12 @@ CREATE TABLE public.internship_agreements (
     internship_application_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    organisation_representative_full_name character varying(150),
-    school_representative_full_name character varying(100),
+    organisation_representative_full_name character varying(140),
+    school_representative_full_name character varying(120),
     student_full_name character varying(100),
-    student_class_room character varying(27),
+    student_class_room character varying(50),
     student_school character varying(150),
-    tutor_full_name character varying(271),
+    tutor_full_name character varying(275),
     doc_date date,
     school_manager_accept_terms boolean DEFAULT false,
     employer_accept_terms boolean DEFAULT false,
@@ -932,7 +932,7 @@ CREATE TABLE public.internship_applications (
     internship_offer_week_id bigint,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    aasm_state character varying,
+    aasm_state character varying(100),
     approved_at timestamp without time zone,
     rejected_at timestamp without time zone,
     convention_signed_at timestamp without time zone,
@@ -940,21 +940,21 @@ CREATE TABLE public.internship_applications (
     expired_at timestamp without time zone,
     pending_reminder_sent_at timestamp without time zone,
     canceled_at timestamp without time zone,
-    type character varying DEFAULT 'InternshipApplications::WeeklyFramed'::character varying,
+    type character varying(100) DEFAULT 'InternshipApplications::WeeklyFramed'::character varying,
     internship_offer_id bigint NOT NULL,
-    applicable_type character varying,
+    applicable_type character varying(100),
     internship_offer_type character varying(50) NOT NULL,
     week_id bigint,
-    student_phone character varying(683),
+    student_phone character varying(20),
     student_email character varying(100),
     read_at timestamp(6) without time zone,
     examined_at timestamp(6) without time zone,
     validated_by_employer_at timestamp(6) without time zone,
     dunning_letter_count integer DEFAULT 0,
     magic_link_tracker integer DEFAULT 0,
-    access_token character varying(25),
+    access_token character varying(20),
     transfered_at timestamp(6) without time zone,
-    student_address character varying,
+    student_address character varying(300),
     student_legal_representative_full_name character varying(150),
     student_legal_representative_email character varying(109),
     student_legal_representative_phone character varying(50),
@@ -989,9 +989,9 @@ ALTER SEQUENCE public.internship_applications_id_seq OWNED BY public.internship_
 
 CREATE TABLE public.internship_offer_areas (
     id bigint NOT NULL,
-    employer_type character varying,
+    employer_type character varying(50),
     employer_id bigint,
-    name character varying,
+    name character varying(150),
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -1060,7 +1060,7 @@ CREATE TABLE public.internship_offer_infos (
     max_candidates integer,
     school_id integer,
     employer_id bigint NOT NULL,
-    type character varying,
+    type character varying(50),
     sector_id bigint,
     last_date date,
     weeks_count integer DEFAULT 0 NOT NULL,
@@ -1253,14 +1253,14 @@ ALTER SEQUENCE public.internship_offer_weeks_id_seq OWNED BY public.internship_o
 CREATE TABLE public.internship_offers (
     id bigint NOT NULL,
     title character varying(150),
-    description text,
+    description character varying(500),
     max_candidates integer DEFAULT 1 NOT NULL,
     internship_offer_weeks_count integer DEFAULT 0 NOT NULL,
-    tutor_name character varying(290),
-    tutor_phone character varying(100),
+    tutor_name character varying(150),
+    tutor_phone character varying(20),
     tutor_email character varying(100),
     employer_website character varying(560),
-    street character varying(3000),
+    street character varying(500),
     zipcode character varying(5),
     city character varying(50),
     is_public boolean,
@@ -1268,7 +1268,7 @@ CREATE TABLE public.internship_offers (
     updated_at timestamp without time zone NOT NULL,
     discarded_at timestamp without time zone,
     coordinates public.geography(Point,4326),
-    employer_name character varying(180),
+    employer_name character varying(150),
     employer_id bigint,
     school_id bigint,
     employer_description character varying(250),
@@ -1276,12 +1276,12 @@ CREATE TABLE public.internship_offers (
     blocked_weeks_count integer DEFAULT 0 NOT NULL,
     total_applications_count integer DEFAULT 0 NOT NULL,
     approved_applications_count integer DEFAULT 0 NOT NULL,
-    employer_type character varying(80),
-    department character varying DEFAULT ''::character varying NOT NULL,
+    employer_type character varying(30),
+    department character varying(40) DEFAULT ''::character varying NOT NULL,
     academy character varying(50) DEFAULT ''::character varying NOT NULL,
     total_male_applications_count integer DEFAULT 0 NOT NULL,
-    remote_id character varying(50),
-    permalink character varying(280),
+    remote_id character varying(60),
+    permalink character varying(200),
     view_count integer DEFAULT 0 NOT NULL,
     submitted_applications_count integer DEFAULT 0 NOT NULL,
     rejected_applications_count integer DEFAULT 0 NOT NULL,
@@ -1292,7 +1292,7 @@ CREATE TABLE public.internship_offers (
     last_date date NOT NULL,
     type character varying(40),
     search_tsv tsvector,
-    aasm_state character varying,
+    aasm_state character varying(100),
     internship_offer_info_id bigint,
     organisation_id bigint,
     weekly_hours text[] DEFAULT '{}'::text[],
@@ -1426,10 +1426,10 @@ CREATE TABLE public.months (
 
 CREATE TABLE public.operators (
     id bigint NOT NULL,
-    name character varying,
+    name character varying(80),
     target_count integer DEFAULT 0,
-    logo character varying,
-    website character varying,
+    logo character varying(250),
+    website character varying(250),
     created_at timestamp without time zone DEFAULT '2021-05-06 08:22:40.377616'::timestamp without time zone NOT NULL,
     updated_at timestamp without time zone DEFAULT '2021-05-06 08:22:40.384734'::timestamp without time zone NOT NULL,
     api_full_access boolean DEFAULT false,
@@ -1463,14 +1463,14 @@ ALTER SEQUENCE public.operators_id_seq OWNED BY public.operators.id;
 
 CREATE TABLE public.organisations (
     id bigint NOT NULL,
-    employer_name character varying(180) NOT NULL,
-    street character varying(500) NOT NULL,
+    employer_name character varying(150) NOT NULL,
+    street character varying(200) NOT NULL,
     zipcode character varying(5) NOT NULL,
     city character varying(50) NOT NULL,
     employer_website character varying(560),
     employer_description character varying(250),
     coordinates public.geography(Point,4326),
-    department character varying DEFAULT ''::character varying NOT NULL,
+    department character varying(40) DEFAULT ''::character varying NOT NULL,
     is_public boolean DEFAULT false NOT NULL,
     group_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
@@ -1509,11 +1509,11 @@ ALTER SEQUENCE public.organisations_id_seq OWNED BY public.organisations.id;
 CREATE TABLE public.practical_infos (
     id bigint NOT NULL,
     employer_id integer,
-    street character varying(500) NOT NULL,
+    street character varying(470) NOT NULL,
     zipcode character varying(5) NOT NULL,
     city character varying(50) NOT NULL,
     coordinates public.geography(Point,4326),
-    department character varying DEFAULT ''::character varying NOT NULL,
+    department character varying(40) DEFAULT ''::character varying NOT NULL,
     daily_hours jsonb DEFAULT '{}'::jsonb,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_hours text[] DEFAULT '{}'::text[],
@@ -1559,23 +1559,23 @@ CREATE TABLE public.schema_migrations (
 
 CREATE TABLE public.schools (
     id bigint NOT NULL,
-    name character varying DEFAULT ''::character varying NOT NULL,
-    city character varying DEFAULT ''::character varying NOT NULL,
-    department character varying,
-    zipcode character varying,
-    code_uai character varying,
+    name character varying(150) DEFAULT ''::character varying NOT NULL,
+    city character varying(50) DEFAULT ''::character varying NOT NULL,
+    department character varying(40),
+    zipcode character varying(5),
+    code_uai character varying(10),
     coordinates public.geography(Point,4326),
-    street character varying,
+    street character varying(200),
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     city_tsv tsvector,
-    kind character varying,
+    kind character varying(50),
     visible boolean DEFAULT true,
     internship_agreement_online boolean DEFAULT false,
     fetched_school_phone character varying(20),
     fetched_school_address character varying(300),
     fetched_school_email character varying(100),
-    legal_status character varying,
+    legal_status character varying(20),
     delegation_date date,
     is_public boolean DEFAULT true,
     contract_code character varying(3),
@@ -1609,8 +1609,8 @@ ALTER SEQUENCE public.schools_id_seq OWNED BY public.schools.id;
 
 CREATE TABLE public.sectors (
     id bigint NOT NULL,
-    name character varying,
-    external_url character varying DEFAULT ''::character varying NOT NULL,
+    name character varying(50),
+    external_url character varying(200) DEFAULT ''::character varying NOT NULL,
     uuid character varying DEFAULT ''::character varying NOT NULL
 );
 
@@ -1676,8 +1676,8 @@ ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
 
 CREATE TABLE public.task_registers (
     id bigint NOT NULL,
-    task_name character varying,
-    used_environment character varying,
+    task_name character varying(250),
+    used_environment character varying(150),
     played_at timestamp(6) without time zone,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -1715,7 +1715,7 @@ CREATE TABLE public.team_member_invitations (
     member_id bigint,
     invitation_email character varying(150) NOT NULL,
     invitation_refused_at timestamp(6) without time zone,
-    aasm_state character varying DEFAULT 'pending_invitation'::character varying
+    aasm_state character varying(100) DEFAULT 'pending_invitation'::character varying
 );
 
 
@@ -1744,13 +1744,13 @@ ALTER SEQUENCE public.team_member_invitations_id_seq OWNED BY public.team_member
 
 CREATE TABLE public.tutors (
     id bigint NOT NULL,
-    tutor_name character varying(290) NOT NULL,
+    tutor_name character varying(120) NOT NULL,
     tutor_email character varying(100) NOT NULL,
-    tutor_phone character varying(100) NOT NULL,
+    tutor_phone character varying(20) NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     employer_id bigint NOT NULL,
-    tutor_role character varying(150)
+    tutor_role character varying(250)
 );
 
 
@@ -1779,8 +1779,8 @@ ALTER SEQUENCE public.tutors_id_seq OWNED BY public.tutors.id;
 
 CREATE TABLE public.url_shrinkers (
     id bigint NOT NULL,
-    original_url character varying,
-    url_token character varying,
+    original_url character varying(370),
+    url_token character varying(6),
     click_count integer DEFAULT 0,
     user_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
@@ -1969,7 +1969,7 @@ CREATE TABLE public.users_search_histories (
     keywords character varying(255),
     latitude double precision,
     longitude double precision,
-    city character varying,
+    city character varying(165),
     radius integer,
     results_count integer DEFAULT 0,
     created_at timestamp(6) without time zone NOT NULL,
@@ -3850,6 +3850,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240704093707'),
 ('20240701155626'),
 ('20240701150709'),
 ('20240701075037'),
