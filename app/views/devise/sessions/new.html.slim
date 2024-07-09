@@ -52,6 +52,7 @@ main#content[role="main"
                                                 class: "fr-password__input fr-input #{error_status ? 'text-input-error' : ''}",
                                                 :'aria-required' => true,
                                                 required: true,
+                                                maxlength: 70,
                                                 autofocus: !params[:email].blank?
                           - if devise_mapping.recoverable? && controller_name != "passwords" && controller_name != "registrations"
                             .fr-fieldset__element

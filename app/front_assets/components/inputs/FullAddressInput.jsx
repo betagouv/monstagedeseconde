@@ -250,6 +250,7 @@ export default function AddressInput({
               value={city}
               type="text"
               readOnly
+              maxlength="50"
               name={`${resourceName}[city]`}
               id={`${resourceName}_city`}
               data-organisation-form-target="requiredField"
