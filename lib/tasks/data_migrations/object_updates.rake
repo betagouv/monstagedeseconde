@@ -148,7 +148,7 @@ namespace :data_migrations do
       decrease_size(InternshipOffer, :title, 150)
       decrease_size(InternshipOffer, :tutor_name, 120)
       decrease_size(InternshipOffer, :employer_website, 300)
-      decrease_size(InternshipOffer, :street, 400)
+      decrease_size(InternshipOffer, :street, 300)
 
       decrease_size(Organisation, :employer_website, 300)
 
