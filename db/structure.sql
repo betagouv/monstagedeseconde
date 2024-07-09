@@ -20,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -34,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -48,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -463,7 +463,7 @@ ALTER SEQUENCE public.area_notifications_id_seq OWNED BY public.area_notificatio
 
 CREATE TABLE public.class_rooms (
     id bigint NOT NULL,
-    name character varying(40),
+    name character varying(50),
     school_id bigint,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -813,7 +813,7 @@ CREATE TABLE public.identities (
     class_room_id bigint,
     birth_date date,
     gender character varying DEFAULT 'np'::character varying,
-    token character varying,
+    token character varying(50),
     anonymized boolean DEFAULT false,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -850,8 +850,8 @@ CREATE TABLE public.internship_agreements (
     internship_application_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    organisation_representative_full_name character varying(100),
-    school_representative_full_name character varying(100),
+    organisation_representative_full_name character varying(140),
+    school_representative_full_name character varying(120),
     student_full_name character varying(100),
     student_class_room character varying(50),
     student_school character varying(150),
@@ -865,7 +865,7 @@ CREATE TABLE public.internship_agreements (
     school_delegation_to_sign_delivered_at date,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
-    siret character varying(145),
+    siret character varying(14),
     tutor_role character varying(500),
     tutor_email character varying(85),
     organisation_representative_role character varying(500),
@@ -1259,8 +1259,8 @@ CREATE TABLE public.internship_offers (
     tutor_name character varying(150),
     tutor_phone character varying(20),
     tutor_email character varying(100),
-    employer_website character varying(250),
-    street character varying(200),
+    employer_website character varying(560),
+    street character varying(500),
     zipcode character varying(5),
     city character varying(50),
     is_public boolean,
@@ -1610,7 +1610,7 @@ ALTER SEQUENCE public.schools_id_seq OWNED BY public.schools.id;
 CREATE TABLE public.sectors (
     id bigint NOT NULL,
     name character varying(50),
-    external_url character varying(300) DEFAULT ''::character varying NOT NULL,
+    external_url character varying(200) DEFAULT ''::character varying NOT NULL,
     uuid character varying(50) DEFAULT ''::character varying NOT NULL
 );
 
@@ -1676,8 +1676,8 @@ ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
 
 CREATE TABLE public.task_registers (
     id bigint NOT NULL,
-    task_name character varying,
-    used_environment character varying,
+    task_name character varying(250),
+    used_environment character varying(150),
     played_at timestamp(6) without time zone,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -1779,7 +1779,7 @@ ALTER SEQUENCE public.tutors_id_seq OWNED BY public.tutors.id;
 
 CREATE TABLE public.url_shrinkers (
     id bigint NOT NULL,
-    original_url character varying(370),
+    original_url character varying(380),
     url_token character varying(6),
     click_count integer DEFAULT 0,
     user_id bigint NOT NULL,
@@ -1969,7 +1969,7 @@ CREATE TABLE public.users_search_histories (
     keywords character varying(255),
     latitude double precision,
     longitude double precision,
-    city character varying,
+    city character varying(165),
     radius integer,
     results_count integer DEFAULT 0,
     created_at timestamp(6) without time zone NOT NULL,
@@ -3850,6 +3850,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240704093707'),
 ('20240703143657'),
 ('20240701155626'),
 ('20240701150709'),

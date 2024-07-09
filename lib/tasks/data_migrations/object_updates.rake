@@ -1,4 +1,23 @@
 require 'pretty_console'
+
+def decrease_size(model, field, size)
+  puts "- " * 10
+  puts model.name
+  puts field
+  puts "*" * 10
+  # candidates = model.pluck(field).compact.select { |value| value.length > size }
+  # puts "#{candidates.count} records to update"
+  model.find_each do |record|
+    next if record.send(field)&.length.nil?
+    next if record.send(field)&.length <= size
+
+    record.update(field => record.send(field).truncate(size))
+    print '.'
+  end
+end
+
+# -----------------------------------------------------------------------------
+
 namespace :data_migrations do
 
   desc 'create "lycees" from csv file'
@@ -59,6 +78,9 @@ namespace :data_migrations do
           value = record.send(field).to_plain_text
           next if value.blank?
 
+          print "o" if record.send(key.to_sym).present?
+          next if record.send(key.to_sym).present?
+
           record.update(key => value)
           print '.'
         end
@@ -99,6 +121,41 @@ namespace :data_migrations do
       end
       puts '-------------------'
       puts ' '
+    end
+  end
+
+  desc 'decrease field size for some fields in tables'
+  task 'decrease_field_size': :environment do
+    PrettyConsole.announce_task("shrinking phase") do
+      decrease_size(InternshipAgreement, :date_range, 70)
+      decrease_size(InternshipAgreement, :tutor_full_name, 120)
+      decrease_size(InternshipAgreement, :siret, 14)
+      decrease_size(InternshipAgreement, :tutor_role, 200)
+      decrease_size(InternshipAgreement, :organisation_representative_role, 250)
+      decrease_size(InternshipAgreement, :student_phone, 20)
+      decrease_size(InternshipAgreement, :school_representative_phone, 20)
+      decrease_size(InternshipAgreement, :student_refering_teacher_phone, 20)
+      decrease_size(InternshipAgreement, :student_refering_teacher_email, 100)
+      decrease_size(InternshipAgreement, :student_legal_representative_phone, 100)
+      decrease_size(InternshipAgreement, :student_legal_representative_2_full_name, 120)
+      decrease_size(InternshipAgreement, :student_legal_representative_2_email, 100)
+      decrease_size(InternshipAgreement, :student_legal_representative_2_phone, 20)
+      decrease_size(InternshipAgreement, :school_representative_email, 100)
+
+      decrease_size(InternshipApplication, :student_legal_representative_email, 100)
+      decrease_size(InternshipApplication, :student_legal_representative_phone, 20)
+
+      decrease_size(InternshipOffer, :title, 150)
+      decrease_size(InternshipOffer, :tutor_name, 120)
+      decrease_size(InternshipOffer, :employer_website, 300)
+      decrease_size(InternshipOffer, :street, 400)
+
+      decrease_size(Organisation, :employer_website, 300)
+
+      decrease_size(User, :legal_representative_email, 100)
+      decrease_size(User, :legal_representative_phone, 20)
+
+      decrease_size(UsersSearchHistory, :city, 50)
     end
   end
 end
