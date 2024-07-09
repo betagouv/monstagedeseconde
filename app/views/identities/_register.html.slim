@@ -55,6 +55,7 @@ main#content[role="main"
                                          autocomplete: "new-password",
                                          class: "fr-password__input fr-input fr-password__input fr-input #{error_tag.present? ? 'fr-input--error' : ''}",
                                          required: true,
+                                         maxlength: 70,
                                          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]{12,}$',
                                          data: { action: "signup#checkPassword", :"signup-target" => "passwordInput" }
                       = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :password)
