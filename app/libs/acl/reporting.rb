@@ -3,9 +3,10 @@
 module Acl
   class Reporting
     def allowed?
-      return false if params[:department].try(:downcase).nil?
+      department_name_from_params = params[:department].try(:downcase)
+      return false if department_name_from_params.nil?
       
-      user.try(:department_name).try(:downcase) == params[:department].try(:downcase)
+      user.department_name.try(:downcase) == department_name_from_params
     end
 
     def ministry_statistician_allowed?

@@ -16,12 +16,12 @@ def create_organisation_from_internship_offer(offer)
     is_paqte: false
   }
   organisation_id = Organisation.find_or_create_by!(attributes).id
-  offer.update_columns(organisation_id: organisation_id)
+  offer.update_columns(organisation_id:)
 end
 
 namespace :retrofit do
   desc 'missing organisations creation for older kept internship_offers upon internship_offer data'
-  task :missing_organisations_creation => :environment do |task|
+  task missing_organisations_creation: :environment do |task|
     PrettyConsole.announce_task(task) do
       ActiveRecord::Base.transaction do
         InternshipOffers::WeeklyFramed.kept
@@ -34,19 +34,59 @@ namespace :retrofit do
     end
   end
 
-  desc 'add missing group_id from organisation to internship_offers'
-  task :fix_missing_group_id => :environment do |task|
+  desc 'missing group in internship_offer to be found in organisations'
+  task fixing_missing_group: :environment do |task|
+    import 'csv'
     PrettyConsole.announce_task(task) do
-      offers_to_update = InternshipOffers::WeeklyFramed.kept
-                                                       .is_public
-                                                       .where(group_id: nil)
-      PrettyConsole.print_in_yellow("offers to update: #{offers_to_update.count}\n")
-      offers_wont_update = offers_to_update.select { |offer| offer.organisation.group_id.nil? }
-      PrettyConsole.print_in_cyan("offers that won't update: #{offers_wont_update.count}\n")
-      offers_to_update.each do |offer|
+      error_lines = []
+      file_location = Rails.root.join('storage/tmp/Question_result_2024-06-19_light.csv')
+      CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
+        next if line_nr.zero?
+
+        cells = row.to_s.split(';')
+
+        offer_id = cells[0]
+        offer = InternshipOffer.find_by(id: offer_id)
+        next if offer.nil?
+        next if offer.group_id.present?
+
+        if offer.nil?
+          PrettyConsole.puts_in_blue("Skipping offer with id: #{offer_id}")
+          next
+        end
+        if offer.organisation.nil?
+          PrettyConsole.puts_in_blue("Missing organisation with offer_id: #{offer_id}")
+          next
+        end
         group_id = offer.organisation.group_id
-        next if group_id.nil?
-        offer.update_columns(group_id: group_id)
+        if group_id.nil?
+          PrettyConsole.puts_in_blue("Missing group_id with organisation_id: #{organisation.id}")
+          next
+        end
+
+        offer.update_columns(group_id:)
+        print '.'
+      end
+    end
+  end
+
+  task fixing_missing_group_from_db: :environment do |task|
+    PrettyConsole.announce_task(task) do
+      InternshipOffers::WeeklyFramed.kept
+                                    .where(group_id: nil)
+                                    .where(is_public: true)
+                                    .each do |offer|
+        if offer.organisation.nil?
+          PrettyConsole.puts_in_blue("Missing organisation with offer_id: #{offer_id}")
+          next
+        end
+        group_id = offer.organisation.group_id
+        if group_id.nil?
+          PrettyConsole.puts_in_blue("Missing group_id with organisation_id: #{organisation.id}")
+          next
+        end
+
+        offer.update_columns(group_id:)
         print '.'
       end
     end

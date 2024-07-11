@@ -25,9 +25,14 @@ module ApplicationTransitable
         redirect_back fallback_location: current_user.custom_dashboard_path,
                       flash: { success: 'Impossible de traiter votre requête, veuillez contacter notre support' }
       end
+
     rescue AASM::InvalidTransition => e
       redirect_back fallback_location: current_user ? current_user.custom_dashboard_path || root_path : root_path,
                     flash: { warning: 'Cette candidature a déjà été traitée' }
+    rescue ActiveRecord::RecordInvalid => e
+      alert = @internship_application.nil? ? e.message : @internship_application.errors.messages.first.join(' : ')
+      redirect_back fallback_location: current_user ? current_user.custom_dashboard_path : root_path,
+                    alert: alert
     end
 
     def authorize_through_sgid?

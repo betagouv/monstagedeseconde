@@ -21,7 +21,6 @@ FactoryBot.define do
     student_legal_representative_2_phone { FFaker::PhoneNumberFR.mobile_phone_number }
     student_legal_representative_2_email{ FFaker::Internet.email }
     student_class_room { '2de A'}
-    main_teacher_full_name { FFaker::NameFR.name }
     organisation_representative_full_name { 'DGSE' }
     tutor_role { 'Responsable financier' }
     tutor_full_name { FFaker::NameFR.name }
@@ -34,6 +33,7 @@ FactoryBot.define do
     weekly_lunch_break { '1h dans la cantine. Repas fourni.' }
     activity_rating_rich_text { "<div>Après concertation, le tuteur appelera le professeur principal vers 17h le lundi et au moins un autre jour de la semaine choisi ensemble. L'élève n'est pas convié à cet échange.<br/>A ceci se rajoute le rapport de stage</div>"}
     activity_learnings_rich_text { '<div>Communication orale</div>'}
+    uuid { SecureRandom.uuid }
 
     before(:create) do |ia|
       academy_region = AcademyRegion.find_or_create_by(name: 'Ile-de-France')

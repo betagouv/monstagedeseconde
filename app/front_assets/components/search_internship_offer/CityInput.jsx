@@ -3,6 +3,7 @@ import { useDebounce } from 'use-debounce';
 import Downshift from 'downshift';
 import RadiusInput from './RadiusInput';
 import { fetch } from 'whatwg-fetch';
+import { endpoints} from '../../utils/api';
 
 const COMPONENT_FOCUS_LABEL = 'location';
 
@@ -34,7 +35,7 @@ function CityInput({
       setLongitude("")
     }
   };
-  const endpoint = new URL('https://geo.api.gouv.fr/communes');
+  const endpoint = endpoints['searchCitiesByNameOrZipcode']();
   const setLocation = (item) => {
     if (item) {
       setCity(item.nom);
@@ -157,6 +158,7 @@ function CityInput({
                   name: 'city',
                   id: 'input-search-by-city-or-zipcode',
                   placeholder: '',
+                  maxlength: "50",
                   "aria-label": "Autour de",
                   onFocus: (event) => {
                     openMenu(event);

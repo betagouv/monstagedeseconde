@@ -69,7 +69,8 @@ class Ability
             see_dashboard_enterprises_summary
             see_dashboard_administrations_summary
             see_dashboard_associations_summary
-            anonymize_user], User
+            anonymize_user
+            transform_user], User
     can :manage, Operator
     can :see_minister_video, User
     can :read_employer_name, InternshipOffer
@@ -143,7 +144,6 @@ class Ability
       edit_activity_rating_rich_text
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
-      edit_main_teacher_full_name
       edit_school_representative_full_name
       edit_school_representative_phone
       edit_school_representative_email
@@ -292,13 +292,12 @@ class Ability
 
 
     can :flip_notification, AreaNotification do |_area_notif|
-      if user.team.not_exists?
-        false
-      else
-        many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
-        current_area_notifications_are_off = !user.fetch_current_area_notification.notify
-        many_people_in_charge_of_area || current_area_notifications_are_off
-      end
+      many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
+      current_area_notifications_are_off = !user.fetch_current_area_notification.notify
+
+      # TODO : logic to be checked with current_area_notifications_are_off
+      user.team.alive? &&
+        (many_people_in_charge_of_area || current_area_notifications_are_off)
     end
 
     can :manage_abilities, AreaNotification do |area_notification|
@@ -341,7 +340,7 @@ class Ability
 
     can %i[create], Organisation
 
-    can %i[index], Acl::Reporting#, &:allowed?
+    can %i[index], Acl::Reporting, &:allowed?
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can %i[ see_reporting_dashboard
@@ -356,7 +355,7 @@ class Ability
   def education_statistician_abilities(user:)
     common_to_all_statisticians(user: user)
     can %i[create], Organisation
-    can %i[index], Acl::Reporting#, &:allowed?
+    can %i[index], Acl::Reporting, &:allowed?
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can %i[ see_reporting_dashboard
@@ -473,7 +472,6 @@ class Ability
       edit_activity_rating_rich_text
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
-      edit_main_teacher_full_name
       edit_school_representative_full_name
       edit_school_representative_phone
       edit_school_representative_email

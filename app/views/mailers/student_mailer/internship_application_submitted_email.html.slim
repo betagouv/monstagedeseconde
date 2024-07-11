@@ -1,0 +1,21 @@
+p style=head_styles
+  = "Votre candidature a bien été transmise"
+
+p style=p_styles
+  | Bonjour,
+  br
+  br
+  = "Votre candidature pour l'offre #{@internship_offer.title} "
+  = "chez #{@internship_offer.employer_name} a bien été transmise. Conformément à notre procédure, "
+  = "l'entreprise dispose d'un délai de #{@expiration_delay} jours "
+  = "pour examiner votre candidature. En cas d'absence de réponse dans ce délai imparti, votre candidature sera automatiquement expirée."
+  br
+
+p style=p_styles
+  | Cordialement,
+  br
+  | 1jeune1solution
+
+= render partial: "mailers/blue_call_to_action", 
+         locals: { href: @url, 
+         label: "Rechercher une offre" }

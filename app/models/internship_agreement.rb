@@ -14,6 +14,8 @@ class InternshipAgreement < ApplicationRecord
   include AASM
   include Discard::Model
 
+  MIN_PRESENCE_DAYS = 4
+
   belongs_to :internship_application
   has_many :signatures, dependent: :destroy
 
@@ -37,7 +39,6 @@ class InternshipAgreement < ApplicationRecord
 
   with_options if: :enforce_main_teacher_validations? do
     validates :student_class_room, presence: true
-    validates :main_teacher_full_name, presence: true
   end
 
   with_options if: :enforce_school_manager_validations? do
@@ -224,18 +225,20 @@ class InternshipAgreement < ApplicationRecord
   def daily_planning?
     return false if daily_hours.blank?
 
-    daily_hours.except('samedi').values.flatten.any? { |v| v.present? }
+    daily_hours.values.flatten.any? { |v| v.present? }
   end
 
   def valid_daily_planning?
     # daily_hours sample data :
     # {"jeudi"=>["11:45", "16:00"], "lundi"=>["11:45", "15:45"], "mardi"=>["12:00", "16:00"], "samedi"=>["", ""], "mercredi"=>["12:00", "16:00"], "vendredi"=>["", ""]}
     # {"jeudi"=>"a good meal", "lundi"=>"a good meal", "mardi"=>"a good meal", "samedi"=>"a good meal "mercredi"=>"a good meal", "vendredi"=>"a good meal"}
-    daily_hours_ok = daily_hours.except('samedi').values.all? do |v|
-      v.first.present? && v.second.present?
+    valid_presence_days_count = daily_hours.values.inject(0) do |count, v|
+      count += 1 if v.first.present? && v.second.present?
+      count
     end
-    
-    daily_hours_ok && (weekly_lunch_break.present? || lunch_break.present?)
+
+    valid_presence_days_count >= MIN_PRESENCE_DAYS &&
+      (weekly_lunch_break.present? || lunch_break.present?)
   end
 
   def roles_not_signed_yet
@@ -304,7 +307,6 @@ class InternshipAgreement < ApplicationRecord
       student_class_room: 'NA',
       student_school: 'NA',
       tutor_full_name: 'NA',
-      main_teacher_full_name: 'NA',
       siret: 'NA',
       tutor_role: 'NA',
       tutor_email: 'NA',

@@ -30,14 +30,15 @@ class InternshipApplicationsController < ApplicationController
     @internship_application = @internship_offer.internship_applications.find(params[:id])
     authorize! :submit_internship_application, @internship_application
 
+    destination = dashboard_students_internship_applications_path(student_id: current_user.id, notice_banner: true)
     if params[:transition] == 'submit!'
       @internship_application.submit!
       @internship_application.save!
-      redirect_to dashboard_students_internship_applications_path(student_id: current_user.id, notice_banner: true)
     else
       @internship_application.update(update_internship_application_params)
-      redirect_to internship_offer_internship_application_path(@internship_offer, @internship_application)
+      destination = internship_offer_internship_application_path(@internship_offer, @internship_application)
     end
+    redirect_to destination
   rescue AASM::InvalidTransition
     redirect_to dashboard_students_internship_applications_path(current_user, @internship_application),
                 flash: { warning: 'Votre candidature avait déjà été soumise' }
@@ -54,7 +55,7 @@ class InternshipApplicationsController < ApplicationController
     appli_params = {user_id: current_user.id}.merge(create_internship_application_params)
     appli_params = sanitizing_params(appli_params)
     @internship_application = InternshipApplication.new(appli_params)
-    if @internship_application.save && save_missing_student_info(@internship_application.reload)
+    if @internship_application.save
       redirect_to internship_offer_internship_application_path(@internship_offer,
                                                              @internship_application)
     else
@@ -115,6 +116,9 @@ class InternshipApplicationsController < ApplicationController
       redirect_to edit_transfer_internship_offer_internship_application_path(@internship_application.internship_offer, @internship_application),
                   flash: { danger: "La candidature n'a pas pu être transmise avec succès, faute de destinataires" }
     end
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_back fallback_location: current_user.custom_dashboard_path,
+                  alert: e.message
   end
 
   private
@@ -144,14 +148,6 @@ class InternshipApplicationsController < ApplicationController
           )
   end
 
-  def save_missing_student_info(internship_application)
-    student = internship_application.student
-    student.phone ||= internship_application.student_phone
-    student.email ||= internship_application.student_email
-    return true unless student.changed?
-    return false unless student.valid?
-    student.save
-  end
 
   def sanitizing_params(appli_params)
     phone = appli_params["student_phone"]&.gsub(/\s+/, '')

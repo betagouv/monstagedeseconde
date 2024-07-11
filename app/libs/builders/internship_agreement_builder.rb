@@ -90,10 +90,8 @@ module Builders
       main_teacher = student&.class_room&.main_teacher
       school_manager = student.school_manager
       if student.class_room
-        main_teacher_full_name = main_teacher&.name
         student_class_room = student&.class_room&.name
       else
-        main_teacher_full_name = 'N/A'
         student_class_room = ""
       end
       {
@@ -102,13 +100,12 @@ module Builders
         school_representative_phone:User.sanitize_mobile_phone_number(school_manager.try(:phone), "+330") ,
         school_representative_role: "Chef d'établissement",
         school_representative_email: school_manager&.email,
-        student_refering_teacher_full_name: main_teacher&.presenter&.full_name,
+        student_refering_teacher_full_name: main_teacher&.presenter&.full_name || 'N/A',
         student_refering_teacher_email: main_teacher&.email,
         student_refering_teacher_phone: User.sanitize_mobile_phone_number(main_teacher&.phone, "+330"),
         student_phone:  User.sanitize_mobile_phone_number(student.phone, "+330"),
         student_full_name: student.name,
         student_class_room: student_class_room,
-        main_teacher_full_name: main_teacher_full_name,
         legal_status: student.school.legal_status
       }
       # student_class_room is not used ...

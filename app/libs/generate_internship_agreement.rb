@@ -7,6 +7,12 @@ class GenerateInternshipAgreement < Prawn::Document
   def initialize(internship_agreement_id)
     @internship_agreement = InternshipAgreement.find(internship_agreement_id)
     @pdf = Prawn::Document.new(margin: [40, 40, 100, 40])
+    @pdf.font_families.update("Arial" => {
+      :normal => Rails.root.join("public/assets/fonts/arial.ttf").to_s,
+      :bold => Rails.root.join("public/assets/fonts/arial_bold.ttf").to_s,
+      :italic => Rails.root.join("public/assets/fonts/arial_italic.ttf").to_s
+    })
+    @pdf.font "Arial"
   end
 
   PAGE_WIDTH = 532
@@ -261,16 +267,16 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.move_down 10
 
     internship_offer_hours = []
-    %w(lundi mardi mercredi jeudi vendredi).each_with_index do |weekday, i|
+    %w(lundi mardi mercredi jeudi vendredi samedi).each_with_index do |weekday, i|
       if @internship_agreement.daily_planning?
         start_hours = @internship_agreement.daily_hours&.dig(weekday)&.first
         end_hours = @internship_agreement.daily_hours&.dig(weekday)&.last
       else
-        start_hours = @internship_agreement.weekly_hours&.first
-        end_hours = @internship_agreement.weekly_hours&.last
+        start_hours = (weekday == "samedi") ? "" : @internship_agreement.weekly_hours&.first
+        end_hours   = (weekday == "samedi") ? "" : @internship_agreement.weekly_hours&.last
       end
       if start_hours.blank? || end_hours.blank?
-        internship_offer_hours << [weekday.capitalize, ""]
+        internship_offer_hours << [weekday.capitalize, "", ""]
       else
         internship_offer_hours << [weekday.capitalize, "De #{start_hours.gsub(':', 'h')}", "A #{end_hours.gsub(':', 'h')}"] 
       end

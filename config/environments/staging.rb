@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+# ==================================
+# DONT USE THIS FILE FOR ANYTHING
+# IT IS NOT USED IN THE PROJECT
+# ==================================
+
 Rails.application.configure do
   # Verifies that versions and hashed value of the package contents in the project's package.json
   config.webpacker.check_yarn_integrity = false
@@ -73,7 +78,8 @@ Rails.application.configure do
   config.log_tags = [:request_id]
 
   # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
+  config.cache_store = :redis_cache_store,
+                       { url: ENV.fetch("REDIS_URL") , :'maxmemory-policy' => "allkeys-lfu" }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque

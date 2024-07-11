@@ -54,7 +54,15 @@ class InternshipApplication < ApplicationRecord
   paginates_per PAGE_SIZE
 
   # Validations
-  validate :check_contact_uniqueness
+  validates :student_phone,
+            format: {
+              with: /\A\+?(33|262|594|596|687|689)?\s?0?(6|7)\s?(\d{2,3}\s?){1,3}\d{2,3}\z/,
+              message: 'Veuillez modifier le numéro de téléphone mobile'
+            },
+            allow_blank: true
+  validates :student_email,
+            format: { with: Devise.email_regexp },
+            allow_blank: true
 
   # Callbacks
   after_save :update_student_profile
@@ -190,6 +198,7 @@ class InternshipApplication < ApplicationRecord
         deliver_later_with_additional_delay do
           EmployerMailer.internship_application_submitted_email(internship_application: self)
         end
+        Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
         # ReminderReset : tag to use to find commmented jobs for students reminders
         # setSingleApplicationReminderJobs
         # ReminderReset : tag to use to find commmented jobs for students reminders
@@ -435,9 +444,17 @@ class InternshipApplication < ApplicationRecord
     student.gender == 'f'
   end
 
-  # def application_via_school_manager?
-  #   internship_offer&.school_id
-  # end
+  def previous_student_phone
+    student.internship_applications
+           .where.not(student_phone: nil)
+           .last&.student_phone
+  end
+
+  def previous_student_email
+    student.internship_applications
+           .where.not(student_email: nil)
+           .last&.student_email
+  end
 
   def max_dunning_letter_count_reached?
     dunning_letter_count >= 1
@@ -552,23 +569,8 @@ class InternshipApplication < ApplicationRecord
     "#{prefix}0"
   end
 
-  def check_contact_uniqueness
-    if student_email.present? && User.where.not(id: student.id).exists?(email: student_email)
-      errors.add(:student_email, 'Cet email est déjà utilisé')
-    end
-
-    if student_phone.present?
-      phone_to_register = User.sanitize_mobile_phone_number(student_phone, phone_prefix)
-      if User.where.not(id: student.id).exists?(phone: phone_to_register)
-        errors.add(:student_phone, "Ce numéro de téléphone est déjà utilisé, ou n'est pas un numéro de téléphone mobile")
-      end
-    end
-  end
-
   def update_student_profile
     student.update(
-      phone: student.phone || User.sanitize_mobile_phone_number(student_phone, phone_prefix),
-      email: student.email || student_email,
       legal_representative_full_name: student_legal_representative_full_name,
       legal_representative_email: student_legal_representative_email,
       legal_representative_phone: student_legal_representative_phone,

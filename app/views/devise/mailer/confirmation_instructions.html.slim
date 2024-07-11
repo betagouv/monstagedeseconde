@@ -1,32 +1,21 @@
-- if @resource.student?
-  p style=head_styles
-    |Bienvenue sur Mon stage de seconde
-    = " #{@resource.presenter.formal_name}"
-  p style=p_styles
-    | Vous êtes maintenant 
-    = @resource.presenter.genred(' prêt')
-    = " à trouver votre stage de seconde."
-    br /
-    | Pour commencer, cliquez sur le bouton ci-dessous.
+p style=head_styles
+  | Plus qu'une étape...
+p style=p_styles
+  | Bienvenue
+  = " #{@resource.presenter.formal_name} "
+  br /
+  | Votre compte a bien été enregistré !
+  br /
+  | Cliquez sur le bouton ci-dessous afin d'activer votre compte.
 
-  = render( partial: "mailers/blue_call_to_action",
-            locals: {href: "#{ENV['HOST']}#{@resource.after_sign_in_path}", label:"Trouver un stage"})
-  p style=p_styles
-    | Si vous avez des questions ou rencontrez des problèmes, n'hésitez pas à nous contacter via le chat en direct sur notre site web ou par e-mail à contact@stagedeseconde.education.gouv.fr
-- else
-  p style=head_styles
-    | Plus qu'une étape...
-  p style=p_styles
-    | Bienvenue
-    = " #{@resource.presenter.formal_name} "
-    br /
-    | Votre compte a bien été enregistré !
-    br /
-    | Cliquez sur le bouton ci-dessous afin d'activer votre compte.
+= render(partial: "mailers/blue_call_to_action",
+         locals: {href: confirmation_url(@resource, confirmation_token: @token),
+                  label:"Activer mon compte"})
 
-  = render(partial: "mailers/blue_call_to_action", locals: {href: confirmation_url(@resource, confirmation_token: @token), label:"Activer mon compte"})
+p style=p_styles({'font-size': '11px'})
+  = "Vous pouvez aussi copier/coller le lien suivant pour activer votre compte"
+  br /
+  = "#{confirmation_url(@resource, confirmation_token: @token)}"
 
-  p style=p_styles({'font-size': '11px'})
-    = "Vous pouvez aussi copier/coller le lien suivant pour activer votre compte"
-    br /
-    = "#{confirmation_url(@resource, confirmation_token: @token)}"
+p style=p_styles
+  | L'équipe Monstage de seconde

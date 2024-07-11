@@ -22,7 +22,7 @@ module Api
     end
 
     def index
-      @internship_offers = current_api_user.internship_offers.kept.order(id: :desc).page(params[:page])
+      @internship_offers = current_api_user.personal_internship_offers.kept.order(id: :desc).page(params[:page])
       formatted_internship_offers = format_internship_offers(@internship_offers)
       data = {
         pagination: page_links,

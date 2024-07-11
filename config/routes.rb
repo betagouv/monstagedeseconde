@@ -82,6 +82,10 @@ Rails.application.routes.draw do
 
     resources :favorites, only: %i[create destroy index]
 
+    get '/utilisateurs/transform_input', to: 'users#transform_input' #display
+    get '/utilisateurs/transform', to: 'users#transform_form' #identify and show parameters
+    post '/utilisateurs/transform', to: 'users#transform_user' #transform
+
     get '/utilisateurs/anonymiseur', to: 'users#anonymize_form'
     get '/utilisateurs/identifier', to: 'users#identify_user'
     post '/utilisateurs/anonymiser', to: 'users#anonymize_user'
@@ -108,7 +112,7 @@ Rails.application.routes.draw do
       resources :team_member_invitations, path: 'invitation-equipes', only: %i[create index new destroy] do
         patch :join, to: 'team_member_invitations#join', on: :member
       end
-      resources :internship_agreements,  path: 'conventions-de-stage', except: %i[destroy]
+      resources :internship_agreements,  path: 'conventions-de-stage', except: %i[destroy], param: :uuid
       resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
         member do
           post 'start_signing'
@@ -181,12 +185,13 @@ Rails.application.routes.draw do
   get 'api_address_proxy/search', to: 'api_address_proxy#search', as: :api_address_proxy_search
   get 'api_sirene_proxy/search', to: 'api_sirene_proxy#search', as: :api_sirene_proxy_search
   get 'api_entreprise_proxy/search', to: 'api_entreprise_proxy#search', as: :api_entreprise_proxy_search
+  get 'api_city_proxy/search', to: 'api_city_proxy#search', as: :api_city_proxy_search
 
   get 'mon-compte(/:section)', to: 'users#edit', as: 'account'
   patch 'mon-compte', to: 'users#update'
   patch 'account_password', to: 'users#update_password'
   patch 'answer_survey', to: 'users#answer_survey'
-  
+
 
   get '/accessibilite', to: 'pages#accessibilite'
   get '/conditions-d-utilisation', to: 'pages#conditions_d_utilisation'
@@ -210,11 +215,14 @@ Rails.application.routes.draw do
   get '/partenaires_regionaux', to: 'pages#regional_partners_index'
   get '/equipe-pedagogique', to: 'pages#school_management_landing'
   get '/referents', to: 'pages#statistician_landing'
+  get '/maintenance_estivale', to: 'pages#maintenance_estivale'
+  post '/maintenance_messaging', to: 'pages#maintenance_messaging'
 
   # Redirects
   get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%{id}', status: 302)
 
-  root to: 'pages#home'
+  root_destination = (ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true') ? 'maintenance_estivale' : 'home'
+  root to: "pages##{root_destination}"
 
   get '/404', to: 'errors#not_found'
   get '/422', to: 'errors#unacceptable'

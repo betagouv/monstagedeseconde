@@ -25,8 +25,8 @@ export default function SirenInput({
     fetch(endpoints.searchCompanyBySiret({ siret }))
       .then((response) => response.json())
       .then((json) => {
-        if (json.etablissements !== undefined) {
-          setSearchResults(json.etablissements);
+        if (json.etablissement !== undefined) {
+          setSearchResults([json.etablissement]);
         } else {
           setSearchResults([])
         }

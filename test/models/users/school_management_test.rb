@@ -7,15 +7,43 @@ module Users
       @url_helpers = Rails.application.routes.url_helpers
     end
 
-    test 'creation fails (school_manager requires an .ac ending mail' do
+    test '#official_uai_email_address' do
+      other_attributes = {first_name: 'Carl',
+                          last_name: 'Orloff',
+                          role: :school_manager,
+                          confirmed_at: Time.zone.now,
+                          accept_terms: true,
+                          school: create(:school),
+                          password: '12456abcDEF?/ç'}
       school_manager = Users::SchoolManagement.new(
-        role: :school_manager,
-        email: 'chef@etablissement.com',
-        school: create(:school)
+        other_attributes.merge(
+          email: 'chef@etablissement.com',
+        )
       )
-
       assert school_manager.invalid?
       assert_not_empty school_manager.errors[:email]
+
+      school_manager = Users::SchoolManagement.new(
+        other_attributes.merge(
+          email: 'ce.123456@ac-paris.fr',
+        )
+      )
+      assert school_manager.invalid?
+      assert_not_empty school_manager.errors[:email]
+
+      school_manager = Users::SchoolManagement.new(
+        other_attributes.merge(
+          email: 'ce.1234567x@ac-paris.fr',
+        )
+      )
+      assert school_manager.valid?
+
+      school_manager = Users::SchoolManagement.new(
+        other_attributes.merge(
+          email: 'ce.1234567@ac-paris.fr',
+        )
+      )
+      assert school_manager.valid?
     end
 
     test 'validates other fields' do

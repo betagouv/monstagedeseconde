@@ -230,8 +230,7 @@ class AbilityTest < ActiveSupport::TestCase
     refute ability.can?(:destroy, User)
     # TODO: fix this test
 #     assert ability.can?(:index_and_filter, Reporting::InternshipOffer)
-#     skip "to be fixed on 19/04/2024"
-#     refute ability.can?(:index, Acl::Reporting.new(user: statistician, params: {}))
+    refute ability.can?(:index, Acl::Reporting.new(user: statistician, params: {}))
     assert(ability.can?(:index, Acl::Reporting, &:allowed?))
 
     refute ability.can?(:apply, create(:weekly_internship_offer))
@@ -362,7 +361,6 @@ class AbilityTest < ActiveSupport::TestCase
       edit_activity_rating_rich_text
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
-      edit_main_teacher_full_name
       edit_school_representative_full_name
       edit_school_representative_phone
       edit_school_representative_email

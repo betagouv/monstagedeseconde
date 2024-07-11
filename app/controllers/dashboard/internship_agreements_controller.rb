@@ -57,6 +57,7 @@ module Dashboard
     end
 
     def show
+      authorize! :update, @internship_agreement
       respond_to do |format|
         format.html
         format.pdf do
@@ -115,7 +116,6 @@ module Dashboard
               :legal_status,
               :student_full_name,
               :student_class_room,
-              :main_teacher_full_name,
               :organisation_representative_full_name,
               :organisation_representative_role,
               :date_range,
@@ -194,7 +194,7 @@ module Dashboard
     end
 
     def set_internship_agreement
-      @internship_agreement = InternshipAgreement.find(params[:id])
+      @internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
     end
   end
 end
