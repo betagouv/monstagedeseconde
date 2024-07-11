@@ -960,7 +960,9 @@ CREATE TABLE public.internship_applications (
     student_legal_representative_phone character varying(50),
     motivation_tmp text,
     rejected_message_tmp text,
-    canceled_by_employer_message_tmp text
+    canceled_by_employer_message_tmp text,
+    canceled_by_student_message_tmp text,
+    approved_message_tmp text
 );
 
 
@@ -1074,7 +1076,8 @@ CREATE TABLE public.internship_offer_infos (
     weekly_lunch_break text,
     max_students_per_group integer DEFAULT 1 NOT NULL,
     remaining_seats_count integer DEFAULT 0,
-    description_str character varying(500)
+    description_str character varying(500),
+    description_tmp text
 );
 
 
@@ -1902,7 +1905,10 @@ CREATE TABLE public.users (
     address character varying(300),
     legal_representative_full_name character varying(100),
     legal_representative_email character varying(109),
-    legal_representative_phone character varying(50)
+    legal_representative_phone character varying(50),
+    resume_educational_background_tmp text,
+    resume_other_tmp text,
+    resume_languages_tmp text
 );
 
 
@@ -3850,6 +3856,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240711083454'),
 ('20240704093707'),
 ('20240701155626'),
 ('20240701150709'),
