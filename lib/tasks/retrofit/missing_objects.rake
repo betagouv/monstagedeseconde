@@ -39,7 +39,7 @@ namespace :retrofit do
     import 'csv'
     PrettyConsole.announce_task(task) do
       error_lines = []
-      file_location = Rails.root.join('storage/tmp/Question_result_2024-06-19_light.csv')
+      file_location = Rails.root.join('db/data_imports/Question_result_2024-06-19_light.csv')
       CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
         next if line_nr.zero?
 
@@ -47,6 +47,7 @@ namespace :retrofit do
 
         offer_id = cells[0]
         offer = InternshipOffer.find_by(id: offer_id)
+        next if offer.nil?
         next if offer.group_id.present?
 
         if offer.nil?
