@@ -1,14 +1,14 @@
 module Services
   class SmsSender
-    LINK_MOBILITY_SENDING_ENDPOINT_URL = "https://europe.ipx.com/restapi/v1/sms/send".freeze
-    # TODO link mobility provider as a class variable
+    LINK_MOBILITY_SENDING_ENDPOINT_URL = 'https://europe.ipx.com/restapi/v1/sms/send'.freeze
+    # TODO: link mobility provider as a class variable
     def perform
       if no_sms_mode?
         treat_no_sms_message
       else
         response = get_request
         if response.nil? || !response.respond_to?(:body)
-          error_message = "Link Mobility error: response is ko | phone_number: " \
+          error_message = 'Link Mobility error: response is ko | phone_number: ' \
                           "#{@phone_number} | content: #{@content}"
           Rails.logger.error(error_message)
           return nil
@@ -18,7 +18,7 @@ module Services
       end
     end
 
-    attr_reader :phone_number, :content , :sender_name, :user, :pass, :campaign_name
+    attr_reader :phone_number, :content, :sender_name, :user, :pass, :campaign_name
 
     private
 
@@ -87,8 +87,8 @@ module Services
       { 'Accept': 'application/json' }
     end
 
-    def initialize(phone_number: , content: , campaign_name: nil)
-      @phone_number = phone_number 
+    def initialize(phone_number:, content:, campaign_name: nil)
+      @phone_number = phone_number
       @campaign_name = campaign_name
       @content = content
       @sender_name = 'MonStage2de' # Max length: 16 chars

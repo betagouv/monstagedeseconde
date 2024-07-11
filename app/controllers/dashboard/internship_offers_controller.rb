@@ -100,6 +100,7 @@ module Dashboard
     end
 
     def destroy
+      authorize! :update, @internship_offer
       internship_offer_builder.discard(instance: @internship_offer) do |on|
         on.success do
           redirect_to(dashboard_internship_offers_path,

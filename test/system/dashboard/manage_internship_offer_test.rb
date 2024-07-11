@@ -62,7 +62,7 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   end
 
   test 'Employer can change max candidates parameter back and forth' do
-    travel_to(Date.new(2022, 1, 10)) do
+    travel_to(Date.new(2024, 1, 10)) do
       employer = create(:employer)
       internship_offer = create(:weekly_internship_offer,
                                 employer: employer,

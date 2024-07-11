@@ -17,6 +17,7 @@ module Dashboard
     end
 
     def create
+      authorize! :manage_teams, TeamMemberInvitation
       case check_invitation(team_member_invitation_params[:invitation_email])
       when :ok
         params = team_member_invitation_params.merge(inviter_id: current_user.team_id)

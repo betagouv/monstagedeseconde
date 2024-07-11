@@ -1,47 +1,57 @@
 - user = User.find_by(id: params[:id])
 - user ||= User.find_by(phone: params[:phone])
-.onboarding-card.onboarding-card-sm.mb-4
-  - if !@confirmable_user
-    header.header-account
-      h1.h2.text-center Encore une petite étape...
-
-    p.alert.alert-danger
-      = "Aucun compte n'est lié au téléphone: #{user.phone}."
-      br
-      = "Veuillez "
-      = link_to "créer un compte", users_choose_profile_path, class: 'text-white'
-
-  - elsif @confirmable_user.confirmed_at
+.onboarding-card.onboarding-card-sm.my-4
+  - if @confirmable_user.try(:confirmed_at)
     - user = User.find_by(id: params[:id])
     p.alert.alert-success
       = "Votre compte est déjà confirmé (#{user.phone})."
       br
       = "Veuillez vous "
       = link_to "connecter", new_user_session_path(phone: user.phone), class: 'text-white'
+  - else 
+    header.header-account
+      h1.h2.text-center Encore une petite étape...
+    - if !@confirmable_user
+      .fr-mt-8w.fr-mb-8w.fr-mx-4w
+        .fr-alert.fr-alert--error
+          h3.fr-alert__title
+            = "Erreur"
+          p
+            = "Si un compte existe au numéro de téléphone #{user.phone}, sa confirmation a échoué."
+            br
+            = "Cliquez sur le lien ci-dessous pour "
+            = link_to "créer un compte",
+                      users_choose_profile_path
 
-  - else
     header.header-account
       h1.h2.text-center Encore une petite étape...
     .body
-      p
-        span.confirmation-text= "Votre compte a bien été enregistré "
-        strong= "(#{user.phone})"
-        = "."
-        br
-        | Vous venez de recevoir un sms afin de confirmer votre inscription.
+      - unless !@confirmable_user
+        p
+          span.confirmation-text= "Votre compte a bien été enregistré "
+          strong= "(#{user.phone})"
+          = "."
+          br
+          | Vous venez de recevoir un sms afin de confirmer votre inscription.
 
-      = form_tag phone_validation_path, method: :post do
+      = form_tag phone_validation_path,
+                 method: :post,
+                 data: { turbo: false } do
         p.small.text-muted aria-hidden='true'
             = "Les champs avec "
             abbr class='text-danger' title='(obligatoire)' *
             = " sont obligatoires."
         = hidden_field_tag :phone, user.phone
         .form-group.custom-label-container
-          = text_field_tag :phone_token, '', class: 'fr-input', required: true, placeholder: "ex: 1234"
           = label_tag :phone_token, class: 'fr-label' do
             = 'Code de confirmation'
-            = content_tag(:abbr, '*', title: '(obligatoire)',
-                                      aria: { hidden: 'true' })
+            = content_tag(:abbr, '*', title: '(obligatoire)', aria: { hidden: 'true' })
+          = text_field_tag :phone_token,
+                           nil,
+                           class: 'fr-input',
+                           maxlength: 4,
+                           required: true,
+                           placeholder: "ex: 1234"
 
         .actions.d-flex.d-sm-block.text-center
           = submit_tag 'Valider', class: 'fr-btn'
