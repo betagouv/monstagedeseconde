@@ -117,6 +117,9 @@ namespace :data_migrations do
           next if value.blank?
 
           key = "#{attr}_tmp"
+          print 'o' if record.send(key.to_sym).present?
+          next if record.send(key.to_sym).present?
+
           record.update(key => value)
           print '.'
         end
@@ -144,6 +147,9 @@ namespace :data_migrations do
           next if value.blank?
 
           key = "#{attr}_tmp"
+          print 'o' if record.send(key.to_sym).present?
+          next if record.send(key.to_sym).present?
+
           record.update(key => value)
           print '.'
         end
