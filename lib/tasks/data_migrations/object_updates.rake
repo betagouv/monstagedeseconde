@@ -103,7 +103,6 @@ namespace :data_migrations do
                                skills_motivation]],
       # legal_terms_rich_text
       [School, %i[agreement_conditions]],
-      [Organisation, %i[employer_description]],
       [InternshipOfferInfo, %i[description]]
     ]
 
@@ -153,8 +152,6 @@ namespace :data_migrations do
       puts '-------------------'
       puts ' '
     end
-
-
   end
 
   desc 'decrease field size for some fields in tables'
