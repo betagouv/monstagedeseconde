@@ -48,6 +48,7 @@ div [data-controller="mandatory-fields" data-mandatory-fields-minimum-length-val
                            required: true,
                            maxlength: InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT,
                            rows: 5,
+                           title: "Activités du stage",
                            aria: { labelledby: 'label_internship_offer_info_description_rich_text' },
                            data: { :"maxlength-input-target" => 'trixElement',
                                    action: "input->mandatory-fields#fieldChange",

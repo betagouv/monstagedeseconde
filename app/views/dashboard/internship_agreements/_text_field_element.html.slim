@@ -30,15 +30,15 @@
                     required: required,
                     **(pattern.present? ? { pattern: pattern } : {}),
                     **(input_type == :text_area ? { rows: rows } : {}),
+                    **(title.blank? ? {} : { title: title } ),
                     **(limit.nil? ?  {} : { maxlength: limit}),
-                    data: {:'internship-agreement-form-target' => 'textField',
-                           :'win1252-checker-target' => 'field',
+                    data: { :'win1252-checker-target' => 'field',
                            action: 'change->win1252-checker#checkWin1252'}
         .fr-alert.fr-alert--error.fr-alert--sm.fr-mt-1v.d-none data-win1252-checker-target='errorMessage'
           | Prière de retirer les caractères spéciaux de ce champ
 
       - else
-        - options = { class: 'form-control', disabled: true , required: required }
+        - options = { class: 'form-control', disabled: true , required: required, title: title }
         - options[:maxlength] = limit if limit
         = form.text_field field, options
         = form.hidden_field field, class: 'form-control', id: "#{sanitize_to_id(form.object_name)}_#{field}_hidden"
