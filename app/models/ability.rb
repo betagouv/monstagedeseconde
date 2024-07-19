@@ -141,7 +141,7 @@ class Ability
       create
       edit
       sign_internship_agreements
-      edit_activity_rating_rich_text
+      edit_activity_rating_tmp
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
       edit_school_representative_full_name
@@ -234,13 +234,13 @@ class Ability
       edit_internship_address
       edit_tutor_email
       edit_tutor_role
-      edit_activity_scope_rich_text
-      edit_skills_observe_rich_text
-      edit_skills_communicate_rich_text
-      edit_skills_understand_rich_text
-      edit_skills_motivation_rich_text
-      edit_activity_preparation_rich_text
-      edit_activity_learnings_rich_text
+      edit_activity_scope_tmp
+      edit_skills_observe_tmp
+      edit_skills_communicate_tmp
+      edit_skills_understand_tmp
+      edit_skills_motivation_tmp
+      edit_activity_preparation_tmp
+      edit_activity_learnings_tmp
       edit_date_range
       edit_organisation_representative_full_name
       edit_siret
@@ -469,7 +469,7 @@ class Ability
       read
       create
       edit
-      edit_activity_rating_rich_text
+      edit_activity_rating_tmp
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
       edit_school_representative_full_name

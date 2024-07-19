@@ -63,13 +63,13 @@ tbody.internship-agreement
           h2.h4
             | TITRE PREMIER : DISPOSITIONS GÉNÉRALES
         .col-3.offset-2.pt-3
-      .row.mt-0
+      / .row.mt-0
         - label = "Articles"
         - title = "Note destinée au chef d'établissement :"
         - content = "Les articles sont modifiables selon vos spécificités locales."
         - filled_by = ["le chef d'établissement"]
 
-        = render partial: 'dashboard/internship_agreements/trix_form_element',
+        / = render partial: 'dashboard/internship_agreements/trix_form_element',
                  locals: { field: :legal_terms_rich_text, form: form, title: title, content: content, text_label: label, filled_by: filled_by }
       .row.mt-0
         .col-7
@@ -144,8 +144,16 @@ tbody.internship-agreement
         - title = "Note destinée à l'entreprise"
         - content = "Objectifs du stage"
         - filled_by = ["l'entreprise"]
-        = render partial: 'dashboard/internship_agreements/trix_form_element',
-                 locals: { field: :activity_scope_rich_text, form: form, text_label: label, title: title, content: content, filled_by: filled_by}
+        = render partial: 'dashboard/internship_agreements/text_field_element',
+                 locals: { field: :activity_scope_tmp,
+                           field_type: :text_area,
+                           rows: 4,
+                           form: form,
+                           text_label: label,
+                           content: content,
+                           title: title,
+                           filled_by: filled_by,
+                           limit: 1_000 }
 
       .row.mt-0
         .col-7

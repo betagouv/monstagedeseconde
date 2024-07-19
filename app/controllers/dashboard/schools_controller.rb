@@ -48,7 +48,6 @@ module Dashboard
       @school = School.find(params.require(:school_id))
     end
 
-
     private
 
     def set_school

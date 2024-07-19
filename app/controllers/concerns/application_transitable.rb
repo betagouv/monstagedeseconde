@@ -2,7 +2,6 @@ module ApplicationTransitable
   extend ActiveSupport::Concern
 
   included do
-
     # params[:token] is used for transfers from employer to outsiders (with no logging but decision abilities)
     # params[:sgid] is used in short-living links for students when choosing to accept or reject an offer
     def update
@@ -17,7 +16,7 @@ module ApplicationTransitable
           reset_session
           redirect_to root_path, flash: { success: update_flash_message }
         else
-          extra_parameter = {tab: params[:transition]}
+          extra_parameter = { tab: params[:transition] }
           redirect_path = current_user ? current_user.custom_candidatures_path(extra_parameter) : root_path
           redirect_to redirect_path, flash: { success: update_flash_message }
         end
@@ -25,14 +24,13 @@ module ApplicationTransitable
         redirect_back fallback_location: current_user.custom_dashboard_path,
                       flash: { success: 'Impossible de traiter votre requête, veuillez contacter notre support' }
       end
-
     rescue AASM::InvalidTransition => e
       redirect_back fallback_location: current_user ? current_user.custom_dashboard_path || root_path : root_path,
                     flash: { warning: 'Cette candidature a déjà été traitée' }
     rescue ActiveRecord::RecordInvalid => e
       alert = @internship_application.nil? ? e.message : @internship_application.errors.messages.first.join(' : ')
       redirect_back fallback_location: current_user ? current_user.custom_dashboard_path : root_path,
-                    alert: alert
+                    alert:
     end
 
     def authorize_through_sgid?
@@ -44,26 +42,26 @@ module ApplicationTransitable
 
     def authorize_through_token?
       return false unless params[:token].present?
+
       @internship_application.access_token == params[:token]
     end
 
     protected
 
     def valid_states
-        InternshipApplication::RECEIVED_STATES +
-          InternshipApplication::REJECTED_STATES +
-          InternshipApplication::APPROVED_STATES
+      InternshipApplication::RECEIVED_STATES +
+        InternshipApplication::REJECTED_STATES +
+        InternshipApplication::APPROVED_STATES
     end
 
     def update_flash_message
       current_user = authorize_through_sgid? ? @internship_application.student : @current_user
-      case
-      when @internship_application.reload.read_by_employer?
-        "Candidature mise à jour."
-      when @internship_application.rejected?
-        "Candidature refusée."
-      when @internship_application.approved?
-        current_user.employer? ? "Candidature mise à jour avec succès. #{extra_message}" : "Candidature acceptée !"
+      if @internship_application.reload.read_by_employer?
+        'Candidature mise à jour.'
+      elsif @internship_application.rejected?
+        'Candidature refusée.'
+      elsif @internship_application.approved?
+        current_user.employer? ? "Candidature mise à jour avec succès. #{extra_message}" : 'Candidature acceptée !'
       else
         'Candidature mise à jour avec succès.'
       end
@@ -82,10 +80,10 @@ module ApplicationTransitable
     end
 
     def optional_internship_application_params
-      params.permit(internship_application: %i[approved_message
-                                               canceled_by_employer_message
-                                               canceled_by_student_message
-                                               rejected_message
+      params.permit(internship_application: %i[approved_message_tmp
+                                               canceled_by_employer_message_tmp
+                                               canceled_by_student_message_tmp
+                                               rejected_message_tmp
                                                type
                                                aasm_state
                                                sgid])

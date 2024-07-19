@@ -26,13 +26,13 @@ FactoryBot.define do
     tutor_full_name { FFaker::NameFR.name }
     tutor_email { FFaker::Internet.email }
     date_range { "du 10/10/2020 au 15/10/2020" }
-    activity_scope_rich_text { '<div>Accueil clients</div>'}
-    activity_preparation_rich_text { '<div>Appel téléphonique</div>'}
+    activity_scope_tmp { 'Accueil clients' }
+    activity_preparation_tmp { 'Appel téléphonique'}
     aasm_state { 'draft' }
     weekly_hours { ['9:00', '17:00'] }
     weekly_lunch_break { '1h dans la cantine. Repas fourni.' }
-    activity_rating_rich_text { "<div>Après concertation, le tuteur appelera le professeur principal vers 17h le lundi et au moins un autre jour de la semaine choisi ensemble. L'élève n'est pas convié à cet échange.<br/>A ceci se rajoute le rapport de stage</div>"}
-    activity_learnings_rich_text { '<div>Communication orale</div>'}
+    activity_rating_tmp { "Après concertation, le tuteur appelera le professeur principal vers 17h le lundi et au moins un autre jour de la semaine choisi ensemble. L'élève n'est pas convié à cet échange.<br/>A ceci se rajoute le rapport de stage"}
+    activity_learnings_tmp { 'Communication orale' }
     uuid { SecureRandom.uuid }
 
     before(:create) do |ia|

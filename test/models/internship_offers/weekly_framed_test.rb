@@ -4,7 +4,6 @@ require 'test_helper'
 
 module InternshipsOffers
   class WeeklyFramedTest < ActiveSupport::TestCase
-    
     setup do
       create(:department)
     end
@@ -30,42 +29,42 @@ module InternshipsOffers
     end
 
     test 'fulfilled internship_offers' do
-      travel_to Date.new(2019,9,1) do
+      travel_to Date.new(2019, 9, 1) do
         internship_offer = create(:weekly_internship_offer,
                                   max_candidates: 2)
         assert_equal 0, InternshipOffers::WeeklyFramed.fulfilled.to_a.count
         create(:weekly_internship_application,
-              :approved,
-              internship_offer: internship_offer)
+               :approved,
+               internship_offer:)
         assert_equal 0, InternshipOffers::WeeklyFramed.fulfilled.to_a.count
         create(:weekly_internship_application,
-              :submitted,
-              internship_offer: internship_offer)
+               :submitted,
+               internship_offer:)
         assert_equal 0, InternshipOffers::WeeklyFramed.fulfilled.to_a.count
         create(:weekly_internship_application,
-              :approved,
-              internship_offer: internship_offer)
+               :approved,
+               internship_offer:)
         assert_equal 1, InternshipOffers::WeeklyFramed.fulfilled.to_a.count
       end
     end
 
     test 'uncompleted internship_offers' do
-      travel_to Date.new(2019,9,1) do
+      travel_to Date.new(2019, 9, 1) do
         weeks = Week.selectable_from_now_until_end_of_school_year.first(5).last(3)
         internship_offer = create(:weekly_internship_offer,
                                   max_candidates: 2)
         assert_equal 1, InternshipOffers::WeeklyFramed.uncompleted.count
         create(:weekly_internship_application,
-              :approved,
-              internship_offer: internship_offer)
+               :approved,
+               internship_offer:)
         assert_equal 1, InternshipOffers::WeeklyFramed.uncompleted.count
         create(:weekly_internship_application,
-              :submitted,
-              internship_offer: internship_offer)
+               :submitted,
+               internship_offer:)
         assert_equal 1, InternshipOffers::WeeklyFramed.uncompleted.count
         create(:weekly_internship_application,
-              :approved,
-              internship_offer: internship_offer)
+               :approved,
+               internship_offer:)
         assert_equal 0, InternshipOffers::WeeklyFramed.uncompleted.count
       end
     end
@@ -79,16 +78,16 @@ module InternshipsOffers
         assert_equal 1, InternshipOffers::WeeklyFramed.uncompleted.to_a.count
         # assert_equal 1, InternshipOffers::WeeklyFramed.ignore_max_candidates_reached.to_a.count
         create(:weekly_internship_application,
-              :approved,
-              internship_offer: internship_offer)
+               :approved,
+               internship_offer:)
         assert_equal 1, InternshipOffers::WeeklyFramed.uncompleted.to_a.count
         create(:weekly_internship_application,
-              :submitted,
-              internship_offer: internship_offer)
+               :submitted,
+               internship_offer:)
         assert_equal 1, InternshipOffers::WeeklyFramed.uncompleted.to_a.count
         create(:weekly_internship_application,
-              :approved,
-              internship_offer: internship_offer)
+               :approved,
+               internship_offer:)
         internship_offer.reload
 
         assert_equal 0, InternshipOffers::WeeklyFramed.uncompleted.to_a.count
@@ -99,8 +98,8 @@ module InternshipsOffers
       internship_offer = create(:weekly_internship_offer, max_candidates: 2)
 
       assert internship_offer.has_spots_left?
-      create(:weekly_internship_application, internship_offer: internship_offer, aasm_state: :approved)
-      create(:weekly_internship_application, internship_offer: internship_offer, aasm_state: :approved)
+      create(:weekly_internship_application, internship_offer:, aasm_state: :approved)
+      create(:weekly_internship_application, internship_offer:, aasm_state: :approved)
       internship_offer.reload
       refute internship_offer.has_spots_left?
     end
@@ -109,7 +108,7 @@ module InternshipsOffers
       first_io_week = Week.find_by(year: 2019, number: 50)
       last_week = Week.find_by(year: 2020, number: 2)
       internship_offer = create(:weekly_internship_offer, max_candidates: 2)
-      
+
       # TO DO Update
       # assert_equal internship_offer.first_date, first_io_week.week_date.beginning_of_week
       # assert_equal internship_offer.last_date, last_week.week_date.end_of_week
@@ -153,11 +152,13 @@ module InternshipsOffers
     end
 
     test 'duplicate' do
-      internship_offer = create(:weekly_internship_offer, description_rich_text: 'abc',
+      internship_offer = create(:weekly_internship_offer, description: 'abc',
                                                           employer_description: 'def')
       duplicated_internship_offer = internship_offer.duplicate
-      assert_equal internship_offer.description_rich_text.to_plain_text.strip,
-                   duplicated_internship_offer.description_rich_text.to_plain_text.strip
+      assert internship_offer.description.present?
+      assert duplicated_internship_offer.description.present?
+      assert_equal internship_offer.description.strip,
+                   duplicated_internship_offer.description.strip
       assert_equal internship_offer.employer_description.strip,
                    duplicated_internship_offer.employer_description.strip
     end
@@ -178,7 +179,8 @@ module InternshipsOffers
         assert_equal 10, internship_offer.max_candidates
         assert_equal 10, internship_offer.remaining_seats_count
 
-        internship_application = create(:weekly_internship_application, internship_offer: internship_offer, aasm_state: :submitted)
+        internship_application = create(:weekly_internship_application, internship_offer:,
+                                                                        aasm_state: :submitted)
         internship_application.employer_validate!
         internship_application.approve!
 
