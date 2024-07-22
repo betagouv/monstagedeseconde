@@ -1,0 +1,25 @@
+.container-homepage
+  = render 'layouts/navbar', holidays_maintenance: true
+.maintenance
+  / desktop
+  .d-none.d-md-block
+    .container-monstage-fluid-hero
+      .holidays-maintenance
+        .container-monstage.container-xl.homepage
+          = render 'pages/home/holidays_maintenance/hero'
+        .contact-form
+          .form
+            = render 'pages/home/holidays_maintenance/contact_form'
+    .maintenance-empty-block.d-none.d-md-block
+  / mobile
+  .d-block.d-md-none.fr-mx-1w
+    div
+      .container-monstage-fluid-hero
+        .row
+          .col-12
+            = render 'pages/home/holidays_maintenance/hero'
+      .row.fr-my-2w
+        .col-12
+          .contact-form
+            .form
+              = render 'pages/home/holidays_maintenance/contact_form'

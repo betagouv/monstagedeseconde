@@ -52,7 +52,7 @@ class InternshipOfferTest < ActiveSupport::TestCase
 
   test 'faulty zipcode' do
     internship_offer = create(:weekly_internship_offer)
-    internship_offer.update_columns(zipcode: 'xy75012')
+    internship_offer.update_columns(zipcode: 'xy752')
 
     refute internship_offer.valid?
     assert_equal ["Code postal le code postal ne permet pas de déduire le département" ],
@@ -71,7 +71,7 @@ class InternshipOfferTest < ActiveSupport::TestCase
     refute internship_offer.is_favorite?(other_student)
     assert internship_offer.is_favorite?(student)
   end
-  
+
   test 'when bulking internship_offer is created, make sure area is set' do
     employer = create(:employer)
     assert_equal 1, employer.internship_offer_areas.count
