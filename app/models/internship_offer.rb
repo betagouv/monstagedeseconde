@@ -125,6 +125,7 @@ class InternshipOffer < ApplicationRecord
                     }
                   }
 
+  scope :is_public, -> { where(is_public: true) }
   scope :by_sector, lambda { |sector_id|
     where(sector_id:)
   }

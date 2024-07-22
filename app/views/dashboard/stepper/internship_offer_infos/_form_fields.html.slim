@@ -26,6 +26,7 @@ div [data-controller="mandatory-fields" data-mandatory-fields-minimum-length-val
             | Indiquez clairement le métier à découvrir par l’élève
         = form.text_field :title,
                           class: "fr-input",
+                          maxlength: 150,
                           placeholder: "Animateur sportif, Métiers de l’hôtellerie…",
                           data: { action: "input->mandatory-fields#fieldChange",
                                 :'mandatory-fields-target' => "mandatoryField"},

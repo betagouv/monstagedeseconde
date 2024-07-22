@@ -183,6 +183,7 @@ export default function SirenInput({
                       onChange: inputChange,
                       value: currentSiret,
                       className: 'fr-input',
+                      maxLength: 14,
                       id: `${resourceName}_siren`,
                       placeholder: 'Rechercher par nom ou par SIRET(14 caractères)',
                       name: `${resourceName}[siren]`

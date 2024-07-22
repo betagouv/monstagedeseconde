@@ -1611,7 +1611,7 @@ CREATE TABLE public.sectors (
     id bigint NOT NULL,
     name character varying(50),
     external_url character varying(200) DEFAULT ''::character varying NOT NULL,
-    uuid character varying DEFAULT ''::character varying NOT NULL
+    uuid character varying(50) DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -1779,7 +1779,7 @@ ALTER SEQUENCE public.tutors_id_seq OWNED BY public.tutors.id;
 
 CREATE TABLE public.url_shrinkers (
     id bigint NOT NULL,
-    original_url character varying(370),
+    original_url character varying(380),
     url_token character varying(6),
     click_count integer DEFAULT 0,
     user_id bigint NOT NULL,
@@ -3857,12 +3857,14 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240711125033'),
 ('20240711083454'),
 ('20240704093707'),
+('20240703143657'),
 ('20240701155626'),
 ('20240701150709'),
 ('20240701075037'),
 ('20240628150306'),
 ('20240627152436'),
 ('20240626133711'),
+('20240620123704'),
 ('20240612074103'),
 ('20240531101222'),
 ('20240531100023'),

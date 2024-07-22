@@ -193,6 +193,7 @@ namespace :data_migrations do
       decrease_size(InternshipAgreement, :siret, 14)
       decrease_size(InternshipAgreement, :tutor_role, 200)
       decrease_size(InternshipAgreement, :organisation_representative_role, 250)
+      decrease_size(InternshipAgreement, :organisation_representative_full_name, 120)
       decrease_size(InternshipAgreement, :student_phone, 20)
       decrease_size(InternshipAgreement, :school_representative_phone, 20)
       decrease_size(InternshipAgreement, :student_refering_teacher_phone, 20)
@@ -209,7 +210,7 @@ namespace :data_migrations do
       decrease_size(InternshipOffer, :title, 150)
       decrease_size(InternshipOffer, :tutor_name, 120)
       decrease_size(InternshipOffer, :employer_website, 300)
-      decrease_size(InternshipOffer, :street, 400)
+      decrease_size(InternshipOffer, :street, 300)
 
       decrease_size(Organisation, :employer_website, 300)
 
