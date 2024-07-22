@@ -16,12 +16,12 @@ def create_organisation_from_internship_offer(offer)
     is_paqte: false
   }
   organisation_id = Organisation.find_or_create_by!(attributes).id
-  offer.update_columns(organisation_id: organisation_id)
+  offer.update_columns(organisation_id:)
 end
 
 namespace :retrofit do
   desc 'missing organisations creation for older kept internship_offers upon internship_offer data'
-  task :missing_organisations_creation => :environment do |task|
+  task missing_organisations_creation: :environment do |task|
     PrettyConsole.announce_task(task) do
       ActiveRecord::Base.transaction do
         InternshipOffers::WeeklyFramed.kept
@@ -35,7 +35,7 @@ namespace :retrofit do
   end
 
   desc 'missing group in internship_offer to be found in organisations'
-  task :fixing_missing_group => :environment do |task|
+  task fixing_missing_group: :environment do |task|
     import 'csv'
     PrettyConsole.announce_task(task) do
       error_lines = []
@@ -64,13 +64,13 @@ namespace :retrofit do
           next
         end
 
-        offer.update_columns(group_id: group_id)
+        offer.update_columns(group_id:)
         print '.'
       end
     end
   end
 
-  task :fixing_missing_group_from_db => :environment do |task|
+  task fixing_missing_group_from_db: :environment do |task|
     PrettyConsole.announce_task(task) do
       InternshipOffers::WeeklyFramed.kept
                                     .where(group_id: nil)
@@ -88,7 +88,7 @@ namespace :retrofit do
           next
         end
 
-        offer.update_columns(group_id: group_id)
+        offer.update_columns(group_id:)
         print '.'
       end
     end
