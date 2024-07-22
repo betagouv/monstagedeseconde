@@ -168,6 +168,7 @@ namespace :data_migrations do
       decrease_size(InternshipAgreement, :siret, 14)
       decrease_size(InternshipAgreement, :tutor_role, 200)
       decrease_size(InternshipAgreement, :organisation_representative_role, 250)
+      decrease_size(InternshipAgreement, :organisation_representative_full_name, 120)
       decrease_size(InternshipAgreement, :student_phone, 20)
       decrease_size(InternshipAgreement, :school_representative_phone, 20)
       decrease_size(InternshipAgreement, :student_refering_teacher_phone, 20)
