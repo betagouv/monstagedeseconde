@@ -336,7 +336,7 @@ class User < ApplicationRecord
 
   def password_complexity
     if password.present?
-      unless password =~ /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/
+      unless password =~ /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?_&])/
         errors.add :password, "doit inclure au moins une minuscule, une majuscule, un chiffre et un caractère spécial"
       end
       unless password.length >= 12
