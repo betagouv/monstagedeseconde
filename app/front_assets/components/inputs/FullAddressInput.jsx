@@ -217,6 +217,7 @@ export default function AddressInput({
               type="text"
               name={`${resourceName}[street]`}
               id={`${resourceName}_street`}
+              maxlength="150"
               data-organisation-form-target="requiredField"
             />
           </div>
@@ -231,6 +232,7 @@ export default function AddressInput({
             <input
               className="fr-input"
               type="text"
+              maxlength="100"
               name={`${resourceName}[street_complement]`}
               id={`${resourceName}_street_complement`}
             />
