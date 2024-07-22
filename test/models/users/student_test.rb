@@ -5,13 +5,13 @@ module Users
   class StudentTest < ActiveSupport::TestCase
     include ActiveJob::TestHelper
 
-    test 'student.after_sign_in_path redirects to internship_offers_path' do
+    test 'student.after_sign_in_path redirects to new_session_path' do
       student = create(:student)
       assert_equal(student.after_sign_in_path,
-                   student.presenter.default_internship_offers_path,
+                   Rails.application.routes.url_helpers.internship_offers_path(student.default_search_options),
                    'failed to use default_internship_offers_path for user without targeted_offer_id')
 
-      student.targeted_offer_id= 1
+      student.targeted_offer_id = 1
       assert_equal(student.after_sign_in_path,
                    Rails.application.routes.url_helpers.internship_offer_path(id: 1))
 
@@ -167,12 +167,14 @@ module Users
     end
 
     test "#with_2_weeks_internships_approved? context: 2 weeks different weeks approved application" do
-      student = create(:student,  phone: '+330612345678')
-      internship_offer_week_1 = create(:weekly_internship_offer, :week_1)
-      internship_offer_week_2 = create(:weekly_internship_offer, :week_2)
-      create(:weekly_internship_application, :approved, student: student, internship_offer: internship_offer_week_1)
-      create(:weekly_internship_application, :approved, student: student, internship_offer: internship_offer_week_2)
-      assert student.with_2_weeks_internships_approved?
+      travel_to Date.new(2023, 9, 1) do
+        student = create(:student,  phone: '+330612345678')
+        internship_offer_week_1 = create(:weekly_internship_offer, :week_1)
+        internship_offer_week_2 = create(:weekly_internship_offer, :week_2)
+        create(:weekly_internship_application, :approved, student: student, internship_offer: internship_offer_week_1)
+        create(:weekly_internship_application, :approved, student: student, internship_offer: internship_offer_week_2)
+        assert student.with_2_weeks_internships_approved?
+      end
     end
   end
 end

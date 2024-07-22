@@ -54,9 +54,7 @@ module Users
     end
 
     def resource_channel
-      return current_user.channel unless current_user.nil?
-
-      :email
+      current_user.try(:channel) || :email
     end
 
     # POST /resource
@@ -76,10 +74,7 @@ module Users
         resource.groups << Group.find(params[:user][:group_id]) if params[:user][:group_id].present?
         @current_ability = Ability.new(resource)
       end
-      if resource.student?
-        resource.skip_confirmation!
-        resource.save
-      elsif resource.persisted?
+      if resource.persisted?
         resource.try(:create_default_internship_offer_area)
         resource.save
       end
@@ -176,8 +171,10 @@ module Users
 
     # The path used after sign up for inactive accounts.
     def after_inactive_sign_up_path_for(resource)
-      if resource.student?
-        register_student_path(resource)
+      if resource.phone.present? && resource.student?
+        options = { id: resource.id }
+        options = options.merge({ as: 'Student'}) if resource.student?
+        users_registrations_phone_standby_path(options)
       elsif resource.statistician?
         statistician_standby_path(id: resource.id)
       else
@@ -244,9 +241,8 @@ module Users
     def register_student_path(resource)
       if resource.just_created?
         flash.discard
-        resource.skip_confirmation! && resource.save
-        bypass_sign_in resource
-        internship_offers_path
+        # bypass_sign_in resource
+        new_session_path
       elsif resource.phone.present?
         options = { id: resource.id, as: 'Student' }
         users_registrations_phone_standby_path(options)
