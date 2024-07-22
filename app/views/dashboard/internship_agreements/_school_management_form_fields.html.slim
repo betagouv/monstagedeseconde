@@ -80,7 +80,7 @@ tbody.internship-agreement
         - content = "Le champ est prérempli avec l'email du professeur principal s'il s'est inscrit. Ce champ obligatoire peut être modifié."
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_refering_teacher_email, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :student_refering_teacher_email, limit: 100, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
 
       .row.mt-0
         - label = "Numéro de téléphone du professeur référent"
@@ -142,7 +142,7 @@ tbody.internship-agreement
         - content = "Email du représentant légal (ou personne responsable) n°1"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_legal_representative_email, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :student_legal_representative_email, limit: 100, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled }
 
       .row.mt-0
         - label = "Numéro de téléphone du représentant légal de l'élève"
@@ -165,7 +165,7 @@ tbody.internship-agreement
         - content = "Représentant légal (ou personne responsable) n°2 (nom et prénom)"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_legal_representative_2_full_name, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled, required: false}
+                 locals: { field: :student_legal_representative_2_full_name, limit: 120, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled, required: false}
 
       .row.mt-0
         - label = "Email du second représentant légal de l'élève (facultatif)"
@@ -173,7 +173,7 @@ tbody.internship-agreement
         - content = "Email du représentant légal (ou personne responsable) n°2"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_legal_representative_2_email, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled, required: false}
+                 locals: { field: :student_legal_representative_2_email, limit: 100, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled, required: false}
 
       .row.mt-0
         - label = "Numéro de téléphone du second représentant légal de l'élève (facultatif)"

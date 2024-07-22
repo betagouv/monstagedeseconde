@@ -20,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -34,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -48,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -865,7 +865,7 @@ CREATE TABLE public.internship_agreements (
     school_delegation_to_sign_delivered_at date,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
-    siret character varying(15),
+    siret character varying(14),
     tutor_role character varying(500),
     tutor_email character varying(85),
     organisation_representative_role character varying(500),
@@ -1614,7 +1614,7 @@ CREATE TABLE public.sectors (
     id bigint NOT NULL,
     name character varying(50),
     external_url character varying(200) DEFAULT ''::character varying NOT NULL,
-    uuid character varying DEFAULT ''::character varying NOT NULL
+    uuid character varying(50) DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -1782,7 +1782,7 @@ ALTER SEQUENCE public.tutors_id_seq OWNED BY public.tutors.id;
 
 CREATE TABLE public.url_shrinkers (
     id bigint NOT NULL,
-    original_url character varying(370),
+    original_url character varying(380),
     url_token character varying(6),
     click_count integer DEFAULT 0,
     user_id bigint NOT NULL,
@@ -3858,12 +3858,14 @@ SET search_path TO "$user", public;
 INSERT INTO "schema_migrations" (version) VALUES
 ('20240711083454'),
 ('20240704093707'),
+('20240703143657'),
 ('20240701155626'),
 ('20240701150709'),
 ('20240701075037'),
 ('20240628150306'),
 ('20240627152436'),
 ('20240626133711'),
+('20240620123704'),
 ('20240612074103'),
 ('20240531101222'),
 ('20240531100023'),
