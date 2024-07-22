@@ -31,18 +31,24 @@ module Dashboard::Stepper
       destroy_dupplicate!
       @practical_info = PracticalInfo.new(
         {}.merge(practical_info_params)
-          .merge(employer_id: current_user.id)
-      )
-      @practical_info.save!
-      internship_offer_builder.create_from_stepper(**builder_params) do |on|
-        on.success do |created_internship_offer|
-          redirect_to(internship_offer_path(created_internship_offer, origine: 'dashboard', stepper: true),
-                      flash: { success: 'Votre offre de stage est prête à être publiée.' })
-        end
-        on.failure do |failed_internship_offer|
-          render :new, status: :bad_request
+        .merge(employer_id: current_user.id)
+        )
+      ActiveRecord::Base.transaction do
+        @practical_info.save
+        internship_offer_builder.create_from_stepper(**builder_params) do |on|
+          on.success do |created_internship_offer|
+            created_internship_offer.save!
+            redirect_to(internship_offer_path(created_internship_offer, origine: 'dashboard', stepper: true),
+                        flash: { success: 'Votre offre de stage est prête à être publiée.' })
+          end
+          on.failure do |failed_internship_offer|
+            raise ActiveRecord::RecordInvalid
+          end
         end
       end
+    rescue ArgumentError => e
+      logger.error "Impossible de créer cette offre. offreur: #{current_user.id} params: #{params}"
+      redirect_to new_dashboard_stepper_organisation_path, flash: { error: 'Impossible de créer cette offre.' }
     rescue ActiveRecord::RecordInvalid
       @organisation = Organisation.find(params[:organisation_id])
       @practical_info = PracticalInfo.new(
@@ -82,6 +88,7 @@ module Dashboard::Stepper
         if internship_offer.present?
           # update internship_offer from builder
           internship_offer_builder.update_from_stepper(internship_offer,
+                                                        user: current_user,
                                                         organisation: Organisation.find(params[:organisation_id]),
                                                         internship_offer_info: InternshipOfferInfo.find(params[:internship_offer_info_id]),
                                                         hosting_info: HostingInfo.find(params[:hosting_info_id]),
@@ -132,6 +139,7 @@ module Dashboard::Stepper
 
     def builder_params
       {
+        user: current_user,
         organisation: Organisation.find(params[:organisation_id]),
         internship_offer_info: InternshipOfferInfo.find(params[:internship_offer_info_id]),
         hosting_info: HostingInfo.find(params[:hosting_info_id]),

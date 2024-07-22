@@ -4,9 +4,12 @@ module Builders
   # wrap internship offer creation logic / failure for API/web usage
   class InternshipOfferBuilder < BuilderBase
     # called by dashboard/stepper/practical_info#create during creating with steps
-    def create_from_stepper(organisation:, internship_offer_info:, hosting_info:, practical_info:)
+    def create_from_stepper(user: , organisation:, internship_offer_info:, hosting_info:, practical_info:)
       yield callback if block_given?
       authorize :create, model
+      unless all_steps_belongs_to_current_user?(user, organisation, internship_offer_info, hosting_info, practical_info)
+        raise ArgumentError, 'Impossible de créer cette offre.' 
+      end
       internship_offer = model.new(
         {}.merge(preprocess_organisation_to_params(organisation))
           .merge(preprocess_internship_offer_info_to_params(internship_offer_info))
@@ -25,11 +28,14 @@ module Builders
         DraftedInternshipOfferJob.set(wait: 1.week)
                                  .perform_later(internship_offer_id: internship_offer.id)
         callback.on_success.try(:call, internship_offer)
+      rescue ArgumentError => e
+        Rails.logger.error "Impossible de créer cette offre. offreur: #{user.id}"
+        callback.on_failure.try(:call, @practical_info)
       rescue ActiveRecord::RecordInvalid => e
         callback.on_failure.try(:call, e.record)
       end
 
-    def update_from_stepper(internship_offer, organisation:, internship_offer_info:, hosting_info:, practical_info:)
+    def update_from_stepper(internship_offer, user: , organisation:, internship_offer_info:, hosting_info:, practical_info:)
       yield callback if block_given?
       authorize :update, model
       internship_offer.update(
@@ -214,6 +220,10 @@ module Builders
       Array(internship_offer.errors.details[:remote_id])
         .map { |error| error[:error] }
         .include?(:taken)
+    end
+
+    def all_steps_belongs_to_current_user?(user, organisation, internship_offer_info, hosting_info, practical_info)
+      [organisation, internship_offer_info,hosting_info].all?{ |obj| obj.employer_id == user.id }
     end
   end
 end

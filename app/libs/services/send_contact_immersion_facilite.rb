@@ -52,7 +52,7 @@ module Services
         "appellationCode": appellation_code,
         "siret": siret,
         "contactMode": "EMAIL",
-        "message": 'message',
+        "message": message,
         "potentialBeneficiaryPhone": phone,
         "immersionObjective": "Découvrir un métier ou un secteur d'activité",
         "locationId": location_id
