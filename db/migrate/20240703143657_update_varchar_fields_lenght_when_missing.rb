@@ -230,7 +230,7 @@ class UpdateVarcharFieldsLenghtWhenMissing < ActiveRecord::Migration[7.1]
     # url_shrinkers (
     # original_url character varying,
     # url_token character varying,
-    change_column :url_shrinkers, :original_url, :string, limit: 370
+    change_column :url_shrinkers, :original_url, :string, limit: 380
     change_column :url_shrinkers, :url_token, :string, limit: 6
   end
 
