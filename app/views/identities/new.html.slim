@@ -44,18 +44,19 @@ main#content[role="main"
                   label.fr-label for="user_school_city"
                         | Établissement ou commune
                   = react_component("SearchSchool", props: { classes: 'col-12 fr-input',
-                                                    required: true,
-                                                    label: 'Établissement ou commune',
-                                                    resourceName: :identity,
-                                                    selectClassRoom: true,
-                                                    existingSchool: @identity.school.as_json,
-                                                    existingClassRoom: @identity.try(:class_room).try(:as_json)})
+                                                             required: true,
+                                                             label: 'Établissement ou commune',
+                                                             resourceName: :identity,
+                                                             selectClassRoom: true,
+                                                             existingSchool: @identity.school.as_json,
+                                                             existingClassRoom: @identity.try(:class_room).try(:as_json)})
                 .fr-mt-2w
                   = render partial: "users/registrations/input_field",
                             locals: { f: f,
                                       field_label: "Prénom",
                                       field: :first_name,
                                       resource: resource,
+                                      maxlength: 85,
                                       resource_name: :identity,
                                       option: { required: true },
                                       errors: errors }
@@ -64,6 +65,7 @@ main#content[role="main"
                                     field_label: "Nom",
                                     field: :last_name,
                                     resource: resource,
+                                    maxlength: 85,
                                     resource_name: :identity,
                                     option: { required: true },
                                     errors: errors }
@@ -71,7 +73,11 @@ main#content[role="main"
                   .fr-input-group 
                     = f.label 'Date de naissance', class: 'fr-label', for: 'identity_birth_date'
                     .fr-input-wrap.fr-icon-calendar-line
-                      = f.date_field :birth_date, class: 'fr-input', required: true
+                      = f.date_field :birth_date,
+                                     placeholder: 'jj/mm/aaaaAA',
+                                     pattern: '^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19|20)[0-9]{2}$',
+                                     class: 'fr-input',
+                                     required: true
                 .fr-fieldset__element
                   = f.label "Sexe", class: "fr-label", for: "select-gender"
                   .fr-fieldset__content
