@@ -958,7 +958,7 @@ CREATE TABLE public.internship_applications (
     student_legal_representative_full_name character varying(150),
     student_legal_representative_email character varying(109),
     student_legal_representative_phone character varying(50),
-    uuid uuid DEFAULT gen_random_uuid() NOT NULL
+    uuid uuid DEFAULT gen_random_uuid() NOT NULL,
     motivation_tmp text,
     rejected_message_tmp text,
     canceled_by_employer_message_tmp text,
