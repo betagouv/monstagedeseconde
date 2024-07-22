@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   include Turbo::Redirection
 
   # max requests per minute
-  MAX_REQUESTS_PER_MINUTE = 100
+  MAX_REQUESTS_PER_MINUTE = ENV['MAX_REQUESTS_PER_MINUTE'].to_i
 
   helper Turbo::FramesHelper if Rails.env.test?
   helper Turbo::StreamsHelper if Rails.env.test?
