@@ -76,8 +76,6 @@ namespace :retrofit do
                                     .where(group_id: nil)
                                     .where(is_public: true)
                                     .each do |offer|
-        next if offer.group_id.present?
-
         if offer.organisation.nil?
           PrettyConsole.puts_in_blue("Missing organisation with offer_id: #{offer_id}")
           next
