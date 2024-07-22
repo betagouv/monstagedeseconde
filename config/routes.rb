@@ -224,7 +224,9 @@ Rails.application.routes.draw do
   root_destination = (ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true') ? 'maintenance_estivale' : 'home'
   root to: "pages##{root_destination}"
 
+  get '/400', to: 'errors#bad_request'
   get '/404', to: 'errors#not_found'
+  get '/406', to: 'errors#not_acceptable'
   get '/422', to: 'errors#unacceptable'
   get '/500', to: 'errors#internal_error'
 end
