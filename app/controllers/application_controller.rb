@@ -47,6 +47,7 @@ class ApplicationController < ActionController::Base
     $redis.expire(key, 60) if count == 1
   
     if count > MAX_REQUESTS_PER_MINUTE
+      puts "IP #{ip_address} exceeded rate limit, count: #{count}, #{MAX_REQUESTS_PER_MINUTE}"
       respond_to do |format|
         format.html { render plain: "Trop de requêtes - Limite d'utilisation de l'application.", status: :too_many_requests }
         format.json { render json: { error: "Trop de requêtes - Limite d'utilisation de l'application dépassée." }, status: :too_many_requests }
