@@ -158,6 +158,31 @@ namespace :data_migrations do
       puts '-------------------'
       puts ' '
     end
+    # ===================
+    fields = [
+      [InternshipOfferInfo, %i[]],
+      [School, %i[agreement_conditions]]
+    ]
+
+    fields.each do |model, attrs|
+      PrettyConsole.puts_in_green "Table: #{model.name}"
+      puts '-------------------'
+      attrs.each do |attr|
+        puts attr
+        puts('- ' * 10)
+        model.find_each(batch_size: 300) do |record|
+          value = record.send("#{attr}_rich_text").to_plain_text
+          next if value.blank?
+
+          key = "#{attr}_tmp"
+          record.update(key => value)
+          print '.'
+        end
+        puts ' '
+      end
+      puts '-------------------'
+      puts ' '
+    end
   end
 
   desc 'decrease field size for some fields in tables'

@@ -11,12 +11,13 @@ module InternshipOffersHelper
       InternshipOffers::WeeklyFramed,
       HostingInfo
     ]
-    is_preselectable_entity.any?{ |klass| object.is_a?(klass) }
+    is_preselectable_entity.any? { |klass| object.is_a?(klass) }
   end
 
   def internship_offer_application_path(object)
     return object.permalink if object.from_api?
-    return listable_internship_offer_path(object, anchor: 'internship-application-form')
+
+    listable_internship_offer_path(object, anchor: 'internship-application-form')
   end
 
   # def internship_offer_application_html_opts(object, opts)
@@ -58,7 +59,8 @@ module InternshipOffersHelper
   end
 
   def back_to_internship_offers_from_internship_offer_path(current_user, url)
-    if url.include?('dashboard') && [Users::Employer, Users::Operator, Users::PrefectureStatistician].include?(current_user.class)
+    if url.include?('dashboard') && [Users::Employer, Users::Operator,
+                                     Users::PrefectureStatistician].include?(current_user.class)
       return dashboard_internship_offers_path
     end
 
@@ -75,14 +77,7 @@ module InternshipOffersHelper
     internship_offer_path(default_params.merge(forwardable_params))
   end
 
-
   def select_weekly_end(internship_offer)
     internship_offer.weekly_planning? ? internship_offer.weekly_hours.try(:last) || '17:00' : '--'
-  end
-
-
-  def truncate_description(internship_offer)
-    description = internship_offer.description_rich_text.to_s.present? ? internship_offer.description_rich_text.to_plain_text : internship_offer.description
-    description.truncate(280, separator: ' ')
   end
 end

@@ -306,24 +306,24 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.move_down 20
     html_formating("<div><span>Activités prévues :</span> ")
     @pdf.move_down 20
-    html_formating("<div>#{@internship_agreement.activity_scope_rich_text} </div>")
+    html_formating("<div>#{@internship_agreement.activity_scope_tmp} </div>")
     @pdf.move_down 20
 
 
     html_formating("<div><span>Compétences visées :</span></div>")
     @pdf.move_down 20
-    html_formating("<div style='margin-left: 35'><span>Observer (capacité de l’élève à décrire l’environnement professionnel qui l’accueille) :</span> #{@internship_agreement.skills_observe_rich_text}</div>")
+    html_formating("<div style='margin-left: 35'><span>Observer (capacité de l’élève à décrire l’environnement professionnel qui l’accueille) :</span> #{@internship_agreement.skills_observe_tmp}</div>")
     @pdf.move_down 20
-    html_formating("<div style='margin-left: 35'><span>Communiquer (savoir-être, posture de l’élève lorsqu’il s’adresse à ses interlocuteurs, les interroge ou leur fait des propositions) </span> : #{@internship_agreement.skills_communicate_rich_text} </div>")
+    html_formating("<div style='margin-left: 35'><span>Communiquer (savoir-être, posture de l’élève lorsqu’il s’adresse à ses interlocuteurs, les interroge ou leur fait des propositions) </span> : #{@internship_agreement.skills_communicate_tmp} </div>")
     @pdf.move_down 20
-    html_formating("<div style='margin-left: 35'><span>Comprendre (esprit de curiosité manifesté par l’élève, capacité à analyser les enjeux du métiers, les relations entre les acteurs, les différentes phases de production, etc.) </span> : #{@internship_agreement.skills_understand_rich_text} </div>")  
+    html_formating("<div style='margin-left: 35'><span>Comprendre (esprit de curiosité manifesté par l’élève, capacité à analyser les enjeux du métiers, les relations entre les acteurs, les différentes phases de production, etc.) </span> : #{@internship_agreement.skills_understand_tmp} </div>")  
     @pdf.move_down 20
-    html_formating("<div style='margin-left: 35'><span>S’impliquer (faire preuve de motivation, se proposer pour participer à certaines démarches) </span> : #{@internship_agreement.skills_motivation_rich_text} </div>")
+    html_formating("<div style='margin-left: 35'><span>S’impliquer (faire preuve de motivation, se proposer pour participer à certaines démarches) </span> : #{@internship_agreement.skills_motivation_tmp} </div>")
     @pdf.move_down 20
 
 
     paraphing("Modalités d'évaluation de la séquence d'observation en milieu professionnel :")
-    html_formating("<div>#{@internship_agreement.activity_rating_rich_text} </div>")
+    html_formating("<div>#{@internship_agreement.activity_rating_tmp} </div>")
     @pdf.move_down 20
     paraphing(
       "La séquence d'observation doit être précédée d'un temps de préparation "\
