@@ -34,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+-- COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 
 
 --
@@ -956,6 +956,7 @@ CREATE TABLE public.internship_applications (
     transfered_at timestamp(6) without time zone,
     student_address character varying(300),
     student_legal_representative_full_name character varying(150),
+    uuid uuid DEFAULT gen_random_uuid() NOT NULL,
     student_legal_representative_email character varying(100),
     student_legal_representative_phone character varying(20),
     motivation_tmp text,
@@ -2968,6 +2969,13 @@ CREATE INDEX index_internship_applications_on_user_id ON public.internship_appli
 
 
 --
+-- Name: index_internship_applications_on_uuid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_internship_applications_on_uuid ON public.internship_applications USING btree (uuid);
+
+
+--
 -- Name: index_internship_applications_on_week_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3866,6 +3874,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240626133711'),
 ('20240620123704'),
 ('20240612074103'),
+('20240606131313'),
 ('20240531101222'),
 ('20240531100023'),
 ('20240527081911'),
