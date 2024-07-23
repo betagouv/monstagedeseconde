@@ -3,14 +3,16 @@
 FactoryBot.define do
   factory :internship_application do
     student { create(:student_with_class_room_3e) }
-    motivation { 'Suis hyper motivé' }
+    motivation_tmp { 'Suis hyper motivé' }
     student_phone { "+330#{rand(6..7)}#{FFaker::PhoneNumberFR.mobile_phone_number[2..-1]}".gsub(' ', '') }
     student_email { FFaker::Internet.email }
     access_token { nil }
     student_address { FFaker::AddressFR.full_address }
     student_legal_representative_full_name { FFaker::NameFR.name }
     student_legal_representative_email { FFaker::Internet.email }
-    student_legal_representative_phone { "+330#{rand(6..7)}#{FFaker::PhoneNumberFR.mobile_phone_number[2..-1]}".gsub(' ', '') }
+    student_legal_representative_phone do
+      "+330#{rand(6..7)}#{FFaker::PhoneNumberFR.mobile_phone_number[2..-1]}".gsub(' ', '')
+    end
 
     trait :drafted do
       aasm_state { :drafted }
@@ -20,7 +22,7 @@ FactoryBot.define do
       aasm_state { :submitted }
       submitted_at { 3.days.ago }
     end
-    
+
     trait :read_by_employer do
       aasm_state { :read_by_employer }
       submitted_at { 3.days.ago }
@@ -45,7 +47,7 @@ FactoryBot.define do
       validated_by_employer_at { 2.days.ago }
       approved_at { 1.days.ago }
       after(:create) do |internship_application|
-        create(:internship_agreement, internship_application: internship_application)
+        create(:internship_agreement, internship_application:)
       end
     end
 
@@ -81,7 +83,7 @@ FactoryBot.define do
     end
 
     transient do
-      weekly_internship_offer_helper {create(:weekly_internship_offer)}
+      weekly_internship_offer_helper { create(:weekly_internship_offer) }
     end
 
     trait :weekly do

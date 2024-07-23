@@ -4,17 +4,17 @@ class UsersController < ApplicationController
   include Phonable
   before_action :authenticate_user!
   skip_before_action :check_school_requested,
-                     only: [:edit, :update, :answer_survey]
+                     only: %i[edit update answer_survey]
 
   def edit
     authorize! :update, current_user
     split_phone_parts(current_user)
     redirect_to = account_path(section: :school)
-    if force_select_school? && can_redirect?(redirect_to)
-      redirect_to(redirect_to,
-                  flash: { danger: "Veuillez rejoindre un etablissement" })
-      return
-    end
+    return unless force_select_school? && can_redirect?(redirect_to)
+
+    redirect_to(redirect_to,
+                flash: { danger: 'Veuillez rejoindre un etablissement' })
+    nil
   end
 
   def update
@@ -47,7 +47,7 @@ class UsersController < ApplicationController
 
   def transform_input
     authorize! :transform_user, current_user
-    @url = "utilisateurs/transform_input"
+    @url = 'utilisateurs/transform_input'
     @user_mismatch = true
   end
 
@@ -56,7 +56,7 @@ class UsersController < ApplicationController
     @user = User.kept.find_by(**search_hash)
     @user_mismatch = user_mismatch?
     if @user.nil?
-      @error_message = 'Utilisateur inconnu' 
+      @error_message = 'Utilisateur inconnu'
     elsif @user&.anonymized?
       @error_message = 'Utilisateur déjà anonymisé'
     elsif !@user.employer?
@@ -75,9 +75,8 @@ class UsersController < ApplicationController
       @error_message = 'Impossible de transformer cet employeur, car il a encore des offres'
       render 'users/transform'
     elsif user_params[:role].present? && user_params[:school_id].present?
-      user_to_transform.update_columns( role: user_params[:role],
-                                        school_id: user_params[:school_id],
-                                    )
+      user_to_transform.update_columns(role: user_params[:role],
+                                       school_id: user_params[:school_id])
       user_to_transform.becomes!(Users::SchoolManagement)
                        .save!
       redirect_to '/admin', flash: { success: 'Utilisateur transformé avec succès.' }
@@ -127,7 +126,8 @@ class UsersController < ApplicationController
   def current_flash_message
     message = if params.dig(:user, :missing_weeks_school_id).present?
               then "Nous allons prévenir votre chef d'établissement pour que vous puissiez postuler"
-              else 'Compte mis à jour avec succès.'
+              else
+                'Compte mis à jour avec succès.'
               end
 
     if current_user.unconfirmed_email
@@ -141,7 +141,7 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:id,
-                                :school_id,
+                                 :school_id,
                                  :missing_weeks_school_id,
                                  :agreement_signatorable,
                                  :first_name,
@@ -152,8 +152,8 @@ class UsersController < ApplicationController
                                  :phone_suffix,
                                  :department,
                                  :class_room_id,
-                                 :resume_other,
-                                 :resume_languages,
+                                 :resume_other_tmp,
+                                 :resume_languages_tmp,
                                  :password,
                                  :role,
                                  :birth_date,
@@ -170,7 +170,7 @@ class UsersController < ApplicationController
   end
 
   def force_select_school?
-    current_user.missing_school? && current_section.to_s != "school"
+    current_user.missing_school? && current_section.to_s != 'school'
   end
 
   def can_redirect?(path)
@@ -183,8 +183,8 @@ class UsersController < ApplicationController
 
   def search_hash
     form_input = user_params[:phone_or_email].strip
-    search_hash = {phone: form_input}
-    search_hash = {email: form_input} if form_input.match?(/\A[^@\s]+@[^@\s]+\z/)
+    search_hash = { phone: form_input }
+    search_hash = { email: form_input } if form_input.match?(/\A[^@\s]+@[^@\s]+\z/)
     search_hash
   end
 

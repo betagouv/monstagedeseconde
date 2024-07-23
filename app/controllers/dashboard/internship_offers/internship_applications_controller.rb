@@ -66,7 +66,7 @@ module Dashboard
       end
 
       def school_details
-        #TODO
+        # TODO
         authorize! :index, InternshipApplication
         @school = @internship_application.student.school
         @school_presenter = @school.presenter
@@ -86,17 +86,11 @@ module Dashboard
 
       def filter_by_week_or_application_date(internship_offer, params_order)
         includings = %i[ internship_offer
-                         rich_text_motivation
-                         internship_agreement
-                         rich_text_rejected_message
-                         rich_text_canceled_by_employer_message ]
-        student_includings = %i[ school
-                                 rich_text_resume_languages
-                                 rich_text_resume_languages
-                                 rich_text_resume_other ]
+                         internship_agreement]
+        student_includings = %i[school]
         internship_applications = InternshipApplications::WeeklyFramed.includes(*includings)
                                                                       .includes(student: [*student_includings])
-                                                                      .where(internship_offer: internship_offer)
+                                                                      .where(internship_offer:)
                                                                       .not_drafted
         if params_order == ORDER_WITH_INTERNSHIP_DATE
           internship_applications.order(

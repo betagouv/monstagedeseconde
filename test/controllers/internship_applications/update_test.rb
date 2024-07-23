@@ -9,7 +9,7 @@ module InternshipApplications
     test 'patch #update works for student owning internship_application, ' \
          'with transition=submit! submit internship_application and redirect to dashboard/students/internship_application#show' do
       internship_offer = create(:weekly_internship_offer)
-      internship_application = create(:weekly_internship_application, :drafted, internship_offer: internship_offer)
+      internship_application = create(:weekly_internship_application, :drafted, internship_offer:)
       sign_in(internship_application.student)
       assert_changes -> { internship_application.reload.submitted? },
                      from: false,
@@ -29,15 +29,15 @@ module InternshipApplications
       internship_offer = create(:weekly_internship_offer)
       initial_motivation = 'pizza'
       new_motivation = 'le travail dequipe'
-      internship_application = create(:weekly_internship_application, :drafted, internship_offer: internship_offer,
-                                                                                motivation: initial_motivation)
+      internship_application = create(:weekly_internship_application, :drafted, internship_offer:,
+                                                                                motivation_tmp: initial_motivation)
       sign_in(internship_application.student)
-      assert_changes -> { internship_application.reload.motivation.to_plain_text },
+      assert_changes -> { internship_application.reload.motivation_tmp },
                      from: initial_motivation,
                      to: new_motivation do
         patch internship_offer_internship_application_path(internship_offer,
                                                            uuid: internship_application.uuid),
-              params: { internship_application: { motivation: new_motivation } }
+              params: { internship_application: { motivation_tmp: new_motivation } }
         assert_redirected_to internship_offer_internship_application_path(internship_offer,
           uuid: internship_application.uuid)
       end
@@ -55,13 +55,13 @@ module InternshipApplications
 
     test 'patch #update for student not owning internship_application is forbidden' do
       internship_offer = create(:weekly_internship_offer)
-      internship_application = create(:weekly_internship_application, :drafted, internship_offer: internship_offer)
+      internship_application = create(:weekly_internship_application, :drafted, internship_offer:)
       sign_in(create(:student))
 
       patch internship_offer_internship_application_path(internship_offer,
                                                          uuid: internship_application.uuid,
                                                          transition: :submit!),
-            params: { internship_application: { motivation: 'whoop' } }
+            params: { internship_application: { motivation_tmp: 'whoop' } }
       assert_response :redirect
     end
   end

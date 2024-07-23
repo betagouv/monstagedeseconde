@@ -4,7 +4,7 @@ class EmployerMailerPreview < ActionMailer::Preview
     internship_application = InternshipApplication.submitted.first
 
     EmployerMailer.internship_application_submitted_email(
-      internship_application: internship_application
+      internship_application:
     )
   end
 
@@ -12,7 +12,7 @@ class EmployerMailerPreview < ActionMailer::Preview
     internship_application = InternshipApplication.submitted.first
 
     EmployerMailer.resend_internship_application_submitted_email(
-      internship_application: internship_application
+      internship_application:
     )
   end
 
@@ -21,7 +21,7 @@ class EmployerMailerPreview < ActionMailer::Preview
                                     .internship_offer
                                     .employer
     EmployerMailer.internship_applications_reminder_email(
-      employer: employer,
+      employer:,
       remindable_application_ids: employer.internship_applications
     )
     # expirable_application_ids: employer.internship_applications
@@ -29,9 +29,9 @@ class EmployerMailerPreview < ActionMailer::Preview
 
   def internship_application_canceled_by_student_email
     internship_application = InternshipApplication&.approved&.first
-    internship_application.canceled_by_student_message.body = "J'ai trouvé un autre stage ailleurs"
+    internship_application.canceled_by_student_message_tmp = "J'ai trouvé un autre stage ailleurs"
     EmployerMailer.internship_application_canceled_by_student_email(
-      internship_application: internship_application
+      internship_application:
     )
   end
 
@@ -76,10 +76,10 @@ class EmployerMailerPreview < ActionMailer::Preview
     internship_application = InternshipApplication.first
 
     EmployerMailer.transfer_internship_application_email(
-      internship_application: internship_application,
+      internship_application:,
       employer_id: internship_application.employer.id,
-      email: "test@free.fr",
-      message: "This is my message to youhuhu"
+      email: 'test@free.fr',
+      message: 'This is my message to youhuhu'
     )
   end
 
@@ -90,9 +90,9 @@ class EmployerMailerPreview < ActionMailer::Preview
 
   def drafted_internship_offer_email
     internship_offer = InternshipOffers::WeeklyFramed.drafted&.first ||
-                         create(:weekly_internship_offer, :drafted)
+                       create(:weekly_internship_offer, :drafted)
     EmployerMailer.drafted_internship_offer_email(
-      internship_offer: internship_offer,
+      internship_offer:
     )
   end
 end

@@ -16,7 +16,8 @@ class InternshipApplicationsController < ApplicationController
     @internship_application = InternshipApplication.new(
       internship_offer_id: params[:internship_offer_id],
       internship_offer_type: 'InternshipOffer',
-      student: current_user)
+      student: current_user
+    )
   end
 
   # alias for draft
@@ -52,7 +53,7 @@ class InternshipApplicationsController < ApplicationController
     set_internship_offer
     authorize! :apply, @internship_offer
 
-    appli_params = {user_id: current_user.id}.merge(create_internship_application_params)
+    appli_params = { user_id: current_user.id }.merge(create_internship_application_params)
     appli_params = sanitizing_params(appli_params)
     @internship_application = InternshipApplication.new(appli_params)
     if @internship_application.save
@@ -76,8 +77,8 @@ class InternshipApplicationsController < ApplicationController
       },
       user: current_user_or_visitor
     ).all
-     .includes([:sector])
-     .last(6)
+                                                        .includes([:sector])
+                                                        .last(6)
   end
 
   def edit_transfer
@@ -136,22 +137,21 @@ class InternshipApplicationsController < ApplicationController
   def update_internship_application_params
     params.require(:internship_application)
           .permit(
-            :motivation,
+            :motivation_tmp,
             :student_phone,
             :student_email,
             student_attributes: %i[
               email
               phone
-              resume_other
-              resume_languages
+              resume_other_tmp
+              resume_languages_tmp
             ]
           )
   end
 
-
   def sanitizing_params(appli_params)
-    phone = appli_params["student_phone"]&.gsub(/\s+/, '')
-    appli_params.merge!({"student_phone" => phone})
+    phone = appli_params['student_phone']&.gsub(/\s+/, '')
+    appli_params.merge!({ 'student_phone' => phone })
   end
 
   def check_transfer_destinations(destinations)
@@ -178,7 +178,7 @@ class InternshipApplicationsController < ApplicationController
             :week_id,
             :internship_offer_id,
             :internship_offer_type,
-            :motivation,
+            :motivation_tmp,
             :student_phone,
             :student_email,
             :student_address,
@@ -188,8 +188,8 @@ class InternshipApplicationsController < ApplicationController
             student_attributes: %i[
               email
               phone
-              resume_other
-              resume_languages
+              resume_other_tmp
+              resume_languages_tmp
             ]
           )
   end

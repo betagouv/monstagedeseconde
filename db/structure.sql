@@ -845,7 +845,7 @@ ALTER SEQUENCE public.identities_id_seq OWNED BY public.identities.id;
 
 CREATE TABLE public.internship_agreements (
     id bigint NOT NULL,
-    date_range character varying(210) NOT NULL,
+    date_range character varying(70) NOT NULL,
     aasm_state character varying,
     internship_application_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
@@ -855,7 +855,7 @@ CREATE TABLE public.internship_agreements (
     student_full_name character varying(100),
     student_class_room character varying(50),
     student_school character varying(150),
-    tutor_full_name character varying(275),
+    tutor_full_name character varying(120),
     doc_date date,
     school_manager_accept_terms boolean DEFAULT false,
     employer_accept_terms boolean DEFAULT false,
@@ -866,23 +866,23 @@ CREATE TABLE public.internship_agreements (
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
     siret character varying(14),
-    tutor_role character varying(500),
+    tutor_role character varying(200),
     tutor_email character varying(85),
-    organisation_representative_role character varying(500),
+    organisation_representative_role character varying(250),
     student_address character varying(170),
-    student_phone character varying(200),
-    school_representative_phone character varying(100),
-    student_refering_teacher_phone character varying(100),
+    student_phone character varying(20),
+    school_representative_phone character varying(20),
+    student_refering_teacher_phone character varying(20),
     student_legal_representative_email character varying(180),
     student_refering_teacher_email character varying(100),
     student_legal_representative_full_name character varying(180),
     student_refering_teacher_full_name character varying(180),
-    student_legal_representative_phone character varying(250),
-    student_legal_representative_2_full_name character varying(180),
-    student_legal_representative_2_email character varying(120),
-    student_legal_representative_2_phone character varying(250),
+    student_legal_representative_phone character varying(100),
+    student_legal_representative_2_full_name character varying(120),
+    student_legal_representative_2_email character varying(100),
+    student_legal_representative_2_phone character varying(20),
     school_representative_role character varying(200),
-    school_representative_email character varying(180),
+    school_representative_email character varying(100),
     discarded_at timestamp(6) without time zone,
     lunch_break text,
     organisation_representative_email character varying(70),
@@ -956,9 +956,9 @@ CREATE TABLE public.internship_applications (
     transfered_at timestamp(6) without time zone,
     student_address character varying(300),
     student_legal_representative_full_name character varying(150),
-    student_legal_representative_email character varying(109),
-    student_legal_representative_phone character varying(50),
     uuid uuid DEFAULT gen_random_uuid() NOT NULL,
+    student_legal_representative_email character varying(100),
+    student_legal_representative_phone character varying(20),
     motivation_tmp text,
     rejected_message_tmp text,
     canceled_by_employer_message_tmp text,
@@ -1076,9 +1076,7 @@ CREATE TABLE public.internship_offer_infos (
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
     max_students_per_group integer DEFAULT 1 NOT NULL,
-    remaining_seats_count integer DEFAULT 0,
-    description_str character varying(500),
-    description_tmp text
+    remaining_seats_count integer DEFAULT 0
 );
 
 
@@ -1260,11 +1258,11 @@ CREATE TABLE public.internship_offers (
     description character varying(500),
     max_candidates integer DEFAULT 1 NOT NULL,
     internship_offer_weeks_count integer DEFAULT 0 NOT NULL,
-    tutor_name character varying(150),
+    tutor_name character varying(120),
     tutor_phone character varying(20),
     tutor_email character varying(100),
-    employer_website character varying(560),
-    street character varying(500),
+    employer_website character varying(300),
+    street character varying(400),
     zipcode character varying(5),
     city character varying(50),
     is_public boolean,
@@ -1321,8 +1319,7 @@ CREATE TABLE public.internship_offers (
     contact_phone character varying(20),
     handicap_accessible boolean DEFAULT false,
     period integer DEFAULT 0 NOT NULL,
-    school_year integer DEFAULT 0 NOT NULL,
-    description_str character varying(500)
+    school_year integer DEFAULT 0 NOT NULL
 );
 
 
@@ -1471,7 +1468,7 @@ CREATE TABLE public.organisations (
     street character varying(200) NOT NULL,
     zipcode character varying(5) NOT NULL,
     city character varying(50) NOT NULL,
-    employer_website character varying(560),
+    employer_website character varying(300),
     employer_description character varying(250),
     coordinates public.geography(Point,4326),
     department character varying(40) DEFAULT ''::character varying NOT NULL,
@@ -1905,8 +1902,8 @@ CREATE TABLE public.users (
     academy_region_id bigint,
     address character varying(300),
     legal_representative_full_name character varying(100),
-    legal_representative_email character varying(109),
-    legal_representative_phone character varying(50),
+    legal_representative_email character varying(100),
+    legal_representative_phone character varying(20),
     resume_educational_background_tmp text,
     resume_other_tmp text,
     resume_languages_tmp text
@@ -1976,7 +1973,7 @@ CREATE TABLE public.users_search_histories (
     keywords character varying(255),
     latitude double precision,
     longitude double precision,
-    city character varying(165),
+    city character varying(50),
     radius integer,
     results_count integer DEFAULT 0,
     created_at timestamp(6) without time zone NOT NULL,
@@ -3864,6 +3861,8 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240712080757'),
+('20240711125033'),
 ('20240711083454'),
 ('20240704093707'),
 ('20240703143657'),
