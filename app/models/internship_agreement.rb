@@ -179,9 +179,9 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def valid_trix_employer_fields
-    return unless activity_scope_tmp.blank?
+    return unless activity_scope.blank?
 
-    errors.add(:activity_scope_tmp,
+    errors.add(:activity_scope,
                'Veuillez compléter les objectifs du stage')
   end
 

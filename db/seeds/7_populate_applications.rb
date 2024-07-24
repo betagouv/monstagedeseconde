@@ -8,7 +8,7 @@ def populate_applications
       aasm_state: offer.id.to_i.even? ? :drafted : :submitted,
       submitted_at: 10.days.ago,
       student: students.first,
-      motivation_tmp: 'Au taquet',
+      motivation: 'Au taquet',
       internship_offer: offer,
       student_phone: "060606#{(1000..9999).to_a.sample}",
       student_email: 'paul@gmail.com'
@@ -24,7 +24,7 @@ def populate_applications
     submitted_at: 10.days.ago,
     approved_at: 2.days.ago,
     student: students.second,
-    motivation_tmp: 'Au taquet',
+    motivation: 'Au taquet',
     internship_offer: offers.first,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
@@ -38,7 +38,7 @@ def populate_applications
     approved_at: 3.days.ago,
     canceled_at: 1.day.ago,
     student: students.second,
-    motivation_tmp: 'Parce que ma société n\'a pas d\'encadrant cette semaine là',
+    motivation: 'Parce que ma société n\'a pas d\'encadrant cette semaine là',
     internship_offer: offers.second,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
@@ -53,7 +53,7 @@ def populate_applications
     submitted_at: 10.days.ago,
     approved_at: 2.days.ago,
     student: students.third,
-    motivation_tmp: 'Au taquet',
+    motivation: 'Au taquet',
     internship_offer: offers.third,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
@@ -67,7 +67,7 @@ def populate_applications
     approved_at: 2.days.ago,
     canceled_at: 1.day.ago,
     student: students.third,
-    motivation_tmp: 'Au taquet',
+    motivation: 'Au taquet',
     internship_offer: offers.fourth,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
@@ -82,7 +82,7 @@ def populate_applications
     submitted_at: 10.days.ago,
     approved_at: 2.days.ago,
     student: students.fourth,
-    motivation_tmp: 'Au taquet',
+    motivation: 'Au taquet',
     internship_offer: offers.fourth,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
@@ -94,7 +94,7 @@ def populate_applications
     submitted_at: 9.days.ago,
     validated_by_employer_at: 3.days.ago,
     student: students.fourth,
-    motivation_tmp: 'Assez moyennement motivé pour ce stage',
+    motivation: 'Assez moyennement motivé pour ce stage',
     internship_offer: offers.fifth,
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
@@ -106,7 +106,7 @@ def populate_applications
     submitted_at: 29.days.ago,
     validated_by_employer_at: 23.days.ago,
     student: students.fourth,
-    motivation_tmp: 'motivé moyennement pour ce stage, je vous préviens',
+    motivation: 'motivé moyennement pour ce stage, je vous préviens',
     internship_offer: offers[6],
     student_phone: "060606#{(1000..9999).to_a.sample}",
     student_email: 'paul@gmail.com'
@@ -117,7 +117,7 @@ def populate_applications
     aasm_state: :validated_by_employer,
     submitted_at: 29.days.ago,
     student: students.fourth,
-    motivation_tmp: 'motivé moyennement pour ce stage, je vous préviens',
+    motivation: 'motivé moyennement pour ce stage, je vous préviens',
     internship_offer: offers[0]
   )
   application.save! if application.valid?
@@ -127,7 +127,7 @@ def populate_applications
     submitted_at: 29.days.ago,
     validated_by_employer_at: 20.days.ago,
     student: students.fourth,
-    motivation_tmp: 'Très motivé pour ce stage, je vous préviens',
+    motivation: 'Très motivé pour ce stage, je vous préviens',
     internship_offer: offers[5]
   )
   application.save! if application.valid?
@@ -146,7 +146,7 @@ def populate_applications
     submitted_at: 23.days.ago,
     approved_at: 18.days.ago,
     student: students[6],
-    motivation_tmp: 'Très motivé pour ce stage, je vous préviens',
+    motivation: 'Très motivé pour ce stage, je vous préviens',
     internship_offer: offers[4]
   )
   application.save! if application.valid?
@@ -159,7 +159,7 @@ def populate_applications
     submitted_at: 23.days.ago,
     approved_at: 18.days.ago,
     student: students[7],
-    motivation_tmp: 'Très motivé pour ce stage, je vous préviens',
+    motivation: 'Très motivé pour ce stage, je vous préviens',
     internship_offer: offers[5]
   )
   application.save! if application.valid?

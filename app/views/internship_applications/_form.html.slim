@@ -26,13 +26,13 @@ div data-controller="mandatory-fields" data-mandatory-fields-minimum-length-valu
                   { prompt: 'Choisissez une période' },
                   class: "fr-select", disabled: true
       div class="form-group"
-        = f.label :motivation_tmp,
+        = f.label :motivation,
                   class: 'fr-label',
-                  for: 'internship_application_motivation_tmp'
+                  for: 'internship_application_motivation'
           | Pourquoi ce stage me motive ?
           = f.rg2a_required_content_tag
           small.form-text.text-muted Relisez-vous pour éviter les fautes.
-        = f.text_area :motivation_tmp,
+        = f.text_area :motivation,
                       class: "fr-input col-12",
                       required: true,
                       rows: 5,

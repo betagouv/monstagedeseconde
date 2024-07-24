@@ -93,7 +93,7 @@ module Dashboard
           student               = create(:student, school:, class_room: create(:class_room, school:))
           internship_application = create(:weekly_internship_application,
                                           :drafted,
-                                          motivation_tmp: 'au taquet',
+                                          motivation: 'au taquet',
                                           student:,
                                           internship_offer:,
                                           week: weeks.last)
@@ -127,7 +127,7 @@ module Dashboard
           first(:link, 'Postuler').click
 
           # fill in application form
-          find('#internship_application_motivation_tmp', wait: 3).native.send_keys('Je suis au taquet')
+          find('#internship_application_motivation', wait: 3).native.send_keys('Je suis au taquet')
           refute page.has_selector?('.nav-link-icon-with-label-success') # green element on screen
           within('.react-tel-input') do
             find('input[name="internship_application[student_phone]"]').set('0619223344')
@@ -181,7 +181,7 @@ module Dashboard
           find('h1.h2', text: 'Ma candidature')
 
           # fill in application form
-          find('#internship_application_motivation_tmp').native.send_keys(', carrément')
+          find('#internship_application_motivation').native.send_keys(', carrément')
           assert_no_changes lambda {
                               student.internship_applications
                                      .where(aasm_state: :drafted)
@@ -191,7 +191,7 @@ module Dashboard
             page.find('#submit_application_form') # timer
           end
           application = student.internship_applications.last
-          assert_equal 'Suis hyper motivé, carrément', application.motivation_tmp
+          assert_equal 'Suis hyper motivé, carrément', application.motivation
 
           click_link 'Modifier'
 
@@ -224,7 +224,7 @@ module Dashboard
                                 .where(aasm_state: :canceled_by_student)
                                 .count
                        }, from: 0, to: 1 do
-          selector = '#internship_application_canceled_by_student_message_tmp'
+          selector = '#internship_application_canceled_by_student_message'
           find(selector)
           find(selector).set('Je ne suis plus disponible')
           # fill_in "Motif de l'annulation",	with: 'Je ne suis plus disponible'
@@ -328,7 +328,7 @@ module Dashboard
           )
           visit url
           click_button 'Annuler la candidature'
-          selector = '#internship_application_canceled_by_student_message_tmp'
+          selector = '#internship_application_canceled_by_student_message'
           find(selector).native.send_keys('Je ne suis plus disponible')
           click_button 'Confirmer'
           assert_equal 'canceled_by_student', internship_application.reload.aasm_state
@@ -383,7 +383,7 @@ module Dashboard
           click_link 'Candidatures'
           click_link 'Répondre'
           click_button 'Refuser'
-          selector = '#internship_application_rejected_message_tmp'
+          selector = '#internship_application_rejected_message'
           find(selector).native.send_keys('Le tuteur est malade')
           within('.fr-modal__footer') do
             click_button 'Refuser'

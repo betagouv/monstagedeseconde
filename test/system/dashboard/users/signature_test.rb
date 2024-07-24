@@ -25,7 +25,7 @@ module Dashboard
         create(:school_manager, school: student.school)
         internship_application = create(:weekly_internship_application,
                                         :approved,
-                                        motivation_tmp: 'au taquet',
+                                        motivation: 'au taquet',
                                         student:,
                                         internship_offer:)
         internship_agreement_2 = InternshipAgreement.last
@@ -111,7 +111,7 @@ module Dashboard
         create(:school_manager, school: student.school)
         internship_application = create(:weekly_internship_application,
                                         :approved,
-                                        motivation_tmp: 'au taquet',
+                                        motivation: 'au taquet',
                                         student:,
                                         internship_offer:)
         internship_agreement = InternshipAgreement.last
@@ -189,7 +189,7 @@ module Dashboard
         student = create(:student, school:, class_room: create(:class_room, school:))
         internship_application = create(:weekly_internship_application,
                                         :approved,
-                                        motivation_tmp: 'au taquet',
+                                        motivation: 'au taquet',
                                         student:,
                                         internship_offer:)
         internship_agreement_2 = InternshipAgreement.last
@@ -271,7 +271,7 @@ module Dashboard
       student2 = create(:student, school:, class_room: create(:class_room, school:))
       internship_application = create(:weekly_internship_application,
                                       :approved,
-                                      motivation_tmp: 'au taquet',
+                                      motivation: 'au taquet',
                                       student: student2,
                                       internship_offer:)
       internship_application.validate!

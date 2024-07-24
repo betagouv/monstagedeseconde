@@ -203,14 +203,14 @@ module InternshipOffers::InternshipApplications
           )
           patch(update_url, params: {
                   transition: :approve!,
-                  internship_application: { approved_message_tmp: 'OK' }
+                  internship_application: { approved_message: 'OK' }
                 })
           assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :approve!)
         end
       end
       internship_application.reload
 
-      assert_equal 'OK', internship_application.approved_message_tmp
+      assert_equal 'OK', internship_application.approved_message
       assert InternshipApplication.last.approved?
     end
 
@@ -235,7 +235,7 @@ module InternshipOffers::InternshipApplications
           )
           patch(update_url, params: {
                   transition: :employer_validate!,
-                  internship_application: { approved_message_tmp: 'OK' }
+                  internship_application: { approved_message: 'OK' }
                 })
           assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :employer_validate!)
         end
@@ -274,7 +274,7 @@ module InternshipOffers::InternshipApplications
               )
               patch(update_url, params: {
                       transition: :approve!,
-                      internship_application: { approved_message_tmp: 'OK' }
+                      internship_application: { approved_message: 'OK' }
                     })
               assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :approve!)
             end
@@ -283,7 +283,7 @@ module InternshipOffers::InternshipApplications
         internship_application.reload
         internship_application_2.reload
 
-        assert_equal 'OK', internship_application.approved_message_tmp
+        assert_equal 'OK', internship_application.approved_message
         assert_equal true, internship_application.approved?
         assert_equal 'canceled_by_student_confirmation', internship_application_2.aasm_state
       end
@@ -327,7 +327,7 @@ module InternshipOffers::InternshipApplications
           )
           patch(update_url, params: {
                   transition: :approve!,
-                  internship_application: { approved_message_tmp: 'OK' }
+                  internship_application: { approved_message: 'OK' }
                 })
           assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :approve!)
         end
@@ -337,7 +337,7 @@ module InternshipOffers::InternshipApplications
       internship_application_3.reload
       internship_application_4.reload
 
-      assert_equal 'OK', internship_application.approved_message_tmp
+      assert_equal 'OK', internship_application.approved_message
       assert_equal true, internship_application.approved?
       assert_equal 'canceled_by_student_confirmation', internship_application_2.aasm_state
       assert_equal 'canceled_by_student_confirmation', internship_application_3.aasm_state
@@ -378,13 +378,13 @@ module InternshipOffers::InternshipApplications
         )
         patch(update_url, params: {
                 transition: :approve!,
-                internship_application: { rejected_message_tmp: 'OK' }
+                internship_application: { rejected_message: 'OK' }
               })
         assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :approve!)
       end
       internship_application.reload
 
-      assert_equal 'OK', internship_application.rejected_message_tmp
+      assert_equal 'OK', internship_application.rejected_message
       assert InternshipApplication.last.approved?
     end
 
@@ -396,12 +396,12 @@ module InternshipOffers::InternshipApplications
       assert_enqueued_emails 1 do
         patch(dashboard_internship_offer_internship_application_path(internship_application.internship_offer, internship_application),
               params: { transition: :cancel_by_employer!,
-                        internship_application: { canceled_by_employer_message_tmp: 'OK' } })
+                        internship_application: { canceled_by_employer_message: 'OK' } })
         assert_redirected_to internship_application.internship_offer.employer.custom_candidatures_path(tab: :cancel_by_employer!)
       end
       internship_application.reload
 
-      assert_equal 'OK', internship_application.canceled_by_employer_message_tmp
+      assert_equal 'OK', internship_application.canceled_by_employer_message
       assert internship_application.canceled_by_employer?
       assert_nil internship_application.internship_agreement
     end
@@ -418,13 +418,13 @@ module InternshipOffers::InternshipApplications
             internship_application.internship_offer, internship_application
           ),
           params: { transition: :cancel_by_student!,
-                    internship_application: { canceled_by_student_message_tmp: 'OK' } }
+                    internship_application: { canceled_by_student_message: 'OK' } }
         )
         assert_redirected_to dashboard_students_internship_applications_path(student)
       end
       internship_application.reload
 
-      assert_equal 'OK', internship_application.canceled_by_student_message_tmp
+      assert_equal 'OK', internship_application.canceled_by_student_message
       assert internship_application.canceled_by_student?
 
       follow_redirect!
@@ -453,10 +453,10 @@ module InternshipOffers::InternshipApplications
 
       patch(dashboard_internship_offer_internship_application_path(internship_application.internship_offer, internship_application),
             params: { transition: :cancel_by_employer!,
-                      internship_application: { canceled_by_employer_message_tmp: 'OK' } })
+                      internship_application: { canceled_by_employer_message: 'OK' } })
 
       internship_application.reload
-      assert_equal 'OK', internship_application.canceled_by_employer_message_tmp
+      assert_equal 'OK', internship_application.canceled_by_employer_message
       assert internship_application.canceled_by_employer?
       assert_nil internship_application.internship_agreement
     end
@@ -468,10 +468,10 @@ module InternshipOffers::InternshipApplications
 
       patch(dashboard_internship_offer_internship_application_path(internship_application.internship_offer, internship_application),
             params: { transition: :cancel_by_student!,
-                      internship_application: { canceled_by_employer_message_tmp: 'OK' } })
+                      internship_application: { canceled_by_employer_message: 'OK' } })
 
       internship_application.reload
-      assert_equal 'OK', internship_application.canceled_by_employer_message_tmp
+      assert_equal 'OK', internship_application.canceled_by_employer_message
       assert internship_application.canceled_by_student?
       assert_nil internship_application.internship_agreement
     end

@@ -44,7 +44,7 @@ module InternshipApplications
       sign_in(student)
       valid_params = {
         internship_application: {
-          motivation_tmp: 'Je suis trop motivé wesh',
+          motivation: 'Je suis trop motivé wesh',
           user_id: student.id,
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
@@ -67,7 +67,7 @@ module InternshipApplications
       end
 
       created_internship_application = InternshipApplications::WeeklyFramed.last
-      assert_equal 'Je suis trop motivé wesh', created_internship_application.motivation_tmp
+      assert_equal 'Je suis trop motivé wesh', created_internship_application.motivation
       assert_equal student.id, created_internship_application.student.id
 
       student = student.reload
@@ -109,7 +109,7 @@ module InternshipApplications
       sign_in(student)
       valid_params = {
         internship_application: {
-          motivation_tmp: 'Je suis trop motivé wesh',
+          motivation: 'Je suis trop motivé wesh',
           user_id: student.id,
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
@@ -132,7 +132,7 @@ module InternshipApplications
       end
 
       created_internship_application = InternshipApplications::WeeklyFramed.last
-      assert_equal 'Je suis trop motivé wesh', created_internship_application.motivation_tmp
+      assert_equal 'Je suis trop motivé wesh', created_internship_application.motivation
       assert_equal student.id, created_internship_application.student.id
 
       student = student.reload
@@ -172,7 +172,7 @@ module InternshipApplications
       sign_in(student)
       valid_params = {
         internship_application: {
-          motivation_tmp: 'Je suis trop motivé wesh',
+          motivation: 'Je suis trop motivé wesh',
           user_id: student.id,
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
@@ -195,7 +195,7 @@ module InternshipApplications
       end
 
       created_internship_application = InternshipApplications::WeeklyFramed.last
-      assert_equal 'Je suis trop motivé wesh', created_internship_application.motivation_tmp
+      assert_equal 'Je suis trop motivé wesh', created_internship_application.motivation
       assert_equal student.id, created_internship_application.student.id
 
       student = student.reload
@@ -224,7 +224,7 @@ module InternshipApplications
       sign_in(student)
       valid_params = {
         internship_application: {
-          motivation_tmp: 'Je suis trop motivé wesh',
+          motivation: 'Je suis trop motivé wesh',
           user_id: student.id,
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
@@ -244,7 +244,7 @@ module InternshipApplications
       end
 
       created_internship_application = InternshipApplications::WeeklyFramed.last
-      assert_equal 'Je suis trop motivé wesh', created_internship_application.motivation_tmp
+      assert_equal 'Je suis trop motivé wesh', created_internship_application.motivation
       assert_equal student.id, created_internship_application.student.id
 
       student = student.reload
@@ -258,7 +258,7 @@ module InternshipApplications
       sign_in(student)
       valid_params = {
         internship_application: {
-          motivation_tmp: 'Je suis trop motivé wesh',
+          motivation: 'Je suis trop motivé wesh',
           user_id: student.id,
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
@@ -278,7 +278,7 @@ module InternshipApplications
       end
 
       created_internship_application = InternshipApplications::WeeklyFramed.last
-      assert_equal 'Je suis trop motivé wesh', created_internship_application.motivation_tmp
+      assert_equal 'Je suis trop motivé wesh', created_internship_application.motivation
       assert_equal student.id, created_internship_application.student.id
 
       student = student.reload
@@ -305,7 +305,7 @@ module InternshipApplications
 
       valid_params = {
         internship_application: {
-          motivation_tmp: 'Je suis trop motivé wesh',
+          motivation: 'Je suis trop motivé wesh',
           user_id: student_2.id,
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
@@ -334,7 +334,7 @@ module InternshipApplications
       sign_in(student)
       valid_params = {
         internship_application: {
-          motivation_tmp: 'Je suis trop motivé wesh',
+          motivation: 'Je suis trop motivé wesh',
           user_id: student.id,
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
@@ -367,7 +367,7 @@ module InternshipApplications
       sign_in(student)
       valid_params = {
         internship_application: {
-          motivation_tmp: 'Je suis trop motivé wesh',
+          motivation: 'Je suis trop motivé wesh',
           user_id: student.id,
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
@@ -401,7 +401,7 @@ module InternshipApplications
       sign_in(student)
       valid_params = {
         internship_application: {
-          motivation_tmp: 'Je suis trop motivé wesh',
+          motivation: 'Je suis trop motivé wesh',
           user_id: student.id,
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
@@ -425,7 +425,7 @@ module InternshipApplications
       sign_in(student)
       valid_params = {
         internship_application: {
-          motivation_tmp: 'Je suis trop motivé wesh',
+          motivation: 'Je suis trop motivé wesh',
           user_id: student.id,
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,

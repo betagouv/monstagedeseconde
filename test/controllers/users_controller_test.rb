@@ -145,16 +145,16 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     patch(account_path, params: {
             user: {
-              resume_other_tmp: 'other',
-              resume_languages_tmp: 'languages',
+              resume_other: 'other',
+              resume_languages: 'languages',
               phone: '+330665656540'
             }
           })
 
     assert_redirected_to account_path
     student.reload
-    assert_equal 'other', student.resume_other_tmp
-    assert_equal 'languages', student.resume_languages_tmp
+    assert_equal 'other', student.resume_other
+    assert_equal 'languages', student.resume_languages
     assert_equal '+330665656540', student.phone
     follow_redirect!
     assert_select '#alert-success #alert-text', { text: 'Compte mis à jour avec succès.' }, 1
@@ -384,7 +384,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     sign_in(employer)
     user_params = {
       current_password: employer.password,
-      password: 'password123',
+      password: 'password123'
     }
     patch account_password_path, params: { user: user_params }
 
@@ -396,12 +396,10 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     sign_in(employer)
     user_params = {
       current_password: employer.password,
-      password: 'password123',
+      password: 'password123'
     }
     patch account_password_path, params: { user: user_params }
 
     assert_response :bad_request
   end
-
-
 end

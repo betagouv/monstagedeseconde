@@ -5,10 +5,10 @@
       .col-12.col-md-12
         .form-group
           - title = 'Activités extra-scolaires'
-          #activities.fr-label for="resume_other_tmp"
+          #activities.fr-label for="resume_other"
             = title
             small.form-text.text-muted Sports, loisirs, engagements associatifs, etc.
-          = form.rich_text_area :resume_other_tmp,
+          = form.rich_text_area :resume_other,
                                 class: 'fr-input col-12',
                                 disabled: disabled,
                                 maxlength: 2000,
@@ -18,10 +18,10 @@
       .col-12.col-md-12
         .form-group
           - label = 'Langues vivantes'
-          .fr-label for="resume_languages_tmp"
+          .fr-label for="resume_languages"
             = label
             small.form-text.text-muted Langues étudiées et/ou parlées
-          = form.rich_text_area :resume_languages_tmp,
+          = form.rich_text_area :resume_languages,
                                 class: 'fr-input col-12',
                                 title: label,
                                 disabled: disabled,

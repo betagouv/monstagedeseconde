@@ -75,7 +75,7 @@ module Builders
         tutor_full_name: internship_offer.tutor_name,
         tutor_role: internship_offer.try(:tutor_role),
         tutor_email: internship_offer.try(:tutor_email),
-        activity_preparation_tmp: internship_offer.description,
+        activity_preparation: internship_offer.description,
         daily_hours: internship_offer.daily_hours,
         weekly_hours: internship_offer.weekly_hours,
         lunch_break: internship_offer.lunch_break,

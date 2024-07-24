@@ -459,7 +459,7 @@ class InternshipApplication < ApplicationRecord
   end
 
   def anonymize
-    self.motivation_tmp = nil
+    self.motivation = nil
     return unless student_phone || student_email
 
     self.student_phone = nil
