@@ -80,10 +80,10 @@ module ApplicationTransitable
     end
 
     def optional_internship_application_params
-      params.permit(internship_application: %i[approved_message_tmp
-                                               canceled_by_employer_message_tmp
-                                               canceled_by_student_message_tmp
-                                               rejected_message_tmp
+      params.permit(internship_application: %i[approved_message
+                                               canceled_by_employer_message
+                                               canceled_by_student_message
+                                               rejected_message
                                                type
                                                aasm_state
                                                sgid])

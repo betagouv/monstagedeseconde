@@ -30,13 +30,13 @@ module SchoolYear
                            current_sign_in_ip: '0.0.0.0',
                            last_sign_in_ip: '0.0.0.0',
                            birth_date: 14.years.ago,
-                           resume_other_tmp: 'resume_other',
-                           resume_languages_tmp: 'resume_languages')
+                           resume_other: 'resume_other',
+                           resume_languages: 'resume_languages')
           employer = create(:employer)
           internship_application = create(:weekly_internship_application,
                                           :approved,
                                           internship_offer:,
-                                          motivation_tmp: 'Motivation',
+                                          motivation: 'Motivation',
                                           student:)
 
           student2 = create(:student, school_id: school.id)
@@ -56,10 +56,10 @@ module SchoolYear
           assert_nil discarded_student.current_sign_in_ip
           assert_nil discarded_student.last_sign_in_ip
           assert_nil discarded_student.birth_date
-          assert_empty discarded_student.resume_other_tmp
-          assert_empty discarded_student.resume_languages_tmp
+          assert_empty discarded_student.resume_other
+          assert_empty discarded_student.resume_languages
           discarded_student.internship_applications.each do |internship_application|
-            assert_empty internship_application.motivation_tmp
+            assert_empty internship_application.motivation
           end
           assert discarded_student.anonymized
 

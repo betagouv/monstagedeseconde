@@ -23,23 +23,23 @@ class UserTest < ActiveSupport::TestCase
     student = create(:student, email: 'test@test.com', first_name: 'Toto', last_name: 'Tata',
                                current_sign_in_ip: '127.0.0.1', last_sign_in_ip: '127.0.0.1', birth_date: '01/01/2000',
                                gender: 'm', class_room_id: class_room.id,
-                               resume_other_tmp: 'chocolat', resume_languages_tmp: 'FR', phone: '+330600110011')
+                               resume_other: 'chocolat', resume_languages: 'FR', phone: '+330600110011')
     internship_application = create(
       :weekly_internship_application,
       student:,
-      motivation_tmp: 'a wonderful world',
+      motivation: 'a wonderful world',
       student_phone: '687012345',
       student_email: 'test@free.fr'
     )
-    assert internship_application.motivation_tmp.present?
-    assert_equal 'a wonderful world', internship_application.motivation_tmp
+    assert internship_application.motivation.present?
+    assert_equal 'a wonderful world', internship_application.motivation
 
     assert_enqueued_jobs 1, only: AnonymizeUserJob do
       student.anonymize
     end
 
     assert_equal 'm', student.gender
-    assert_nil internship_application.reload.motivation_tmp
+    assert_nil internship_application.reload.motivation
     assert_nil internship_application.student_phone
     assert_nil internship_application.student_email
     assert_nil student.class_room_id
@@ -53,8 +53,8 @@ class UserTest < ActiveSupport::TestCase
 
     assert_equal 'm', student.gender
     assert_nil student.class_room_id
-    assert_not_equal 'chocolat', student.resume_other_tmp
-    assert_not_equal 'chocolat', student.resume_languages_tmp
+    assert_not_equal 'chocolat', student.resume_other
+    assert_not_equal 'chocolat', student.resume_languages
     assert_not_equal '+330600110011', student.phone
     assert student.anonymized
   end
@@ -65,7 +65,7 @@ class UserTest < ActiveSupport::TestCase
     student = create(:student, email: '', first_name: 'Toto', last_name: 'Tata',
                                current_sign_in_ip: '127.0.0.1', last_sign_in_ip: '127.0.0.1', birth_date: '01/01/2000',
                                gender: 'm', class_room_id: class_room.id,
-                               resume_other_tmp: 'chocolat', resume_languages_tmp: 'FR', phone: '+330600110011')
+                               resume_other: 'chocolat', resume_languages: 'FR', phone: '+330600110011')
 
     assert_enqueued_jobs 0 do
       student.anonymize
@@ -80,8 +80,8 @@ class UserTest < ActiveSupport::TestCase
     assert_not_equal '127.0.0.1', student.current_sign_in_ip
     assert_not_equal '127.0.0.1', student.last_sign_in_ip
     assert_not_equal '01/01/2000', student.birth_date
-    assert_not_equal 'chocolat', student.resume_other_tmp
-    assert_not_equal 'chocolat', student.resume_languages_tmp
+    assert_not_equal 'chocolat', student.resume_other
+    assert_not_equal 'chocolat', student.resume_languages
     assert_not_equal '+330600110011', student.phone
     assert student.anonymized
   end
@@ -92,7 +92,7 @@ class UserTest < ActiveSupport::TestCase
     student = create(:student, email: 'test@test.com', first_name: 'Toto', last_name: 'Tata',
                                current_sign_in_ip: '127.0.0.1', last_sign_in_ip: '127.0.0.1', birth_date: '01/01/2000',
                                gender: 'm', class_room_id: class_room.id,
-                               resume_other_tmp: 'chocolat', resume_languages_tmp: 'FR', phone: '+330600110011')
+                               resume_other: 'chocolat', resume_languages: 'FR', phone: '+330600110011')
 
     assert_enqueued_jobs 0, only: AnonymizeUserJob do
       student.archive

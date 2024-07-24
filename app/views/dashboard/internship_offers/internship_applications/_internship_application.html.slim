@@ -28,13 +28,13 @@
       .col-10
         - if internship_application.submitted?
           div class="mb-3 reboot-trix-content" data-internship-application-index-target='motivation'
-            = internship_application.motivation_tmp
+            = internship_application.motivation
         - elsif internship_application.rejected?
           div class="mb-3 reboot-trix-content text-truncate-max-height-50 d-none" data-internship-application-index-target='motivation'
-            = internship_application.motivation_tmp
+            = internship_application.motivation
         - else
           div class="mb-3 reboot-trix-content text-truncate-max-height-50"        data-internship-application-index-target='motivation'
-            = internship_application.motivation_tmp
+            = internship_application.motivation
 
     .row.no-gutters
       .col-10

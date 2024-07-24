@@ -370,11 +370,11 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test 'RGPD' do
-    internship_application = create(:weekly_internship_application, motivation_tmp: 'amazing')
+    internship_application = create(:weekly_internship_application, motivation: 'amazing')
 
     internship_application.anonymize
 
-    assert_not_equal 'amazing', internship_application.motivation_tmp
+    assert_not_equal 'amazing', internship_application.motivation
   end
 
   test '#after_employer_validation_notifications when student registered by phone' do

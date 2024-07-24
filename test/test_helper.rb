@@ -6,7 +6,7 @@ require 'minitest/reporters'
 require 'minitest/autorun'
 require 'rails/test_help'
 require 'capybara-screenshot/minitest'
-require "view_component/test_case"
+require 'view_component/test_case'
 require 'support/api_test_helpers'
 require 'support/third_party_test_helpers'
 require 'support/search_internship_offer_helpers'
@@ -23,6 +23,8 @@ require 'webmock/minitest'
 # these two lines should be withdrawn whenever the ChromeDriver is ok
 # https://stackoverflow.com/questions/70967207/selenium-chromedriver-cannot-construct-keyevent-from-non-typeable-key/70971698#70971698
 require 'webdrivers/chromedriver'
+
+ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 5000)
 
 # version 115 is not working with chromedriver-helper
 # Webdrivers::Chromedriver.required_version = "114.0.5735.90"
@@ -50,8 +52,8 @@ WebMock.disable_net_connect!(
     /storage\.googleapis\.com/,
     /edgedl.me.gvt1.com/,
     /api-adresse.data.gouv.fr/,
-    /education.gouv.fr\/annuaire/,
-    /geo.api.gouv.fr\/communes/
+    %r{education.gouv.fr/annuaire},
+    %r{geo.api.gouv.fr/communes}
   ]
 )
 

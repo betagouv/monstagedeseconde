@@ -139,14 +139,14 @@ class InternshipApplicationsController < ApplicationController
   def update_internship_application_params
     params.require(:internship_application)
           .permit(
-            :motivation_tmp,
+            :motivation,
             :student_phone,
             :student_email,
             student_attributes: %i[
               email
               phone
-              resume_other_tmp
-              resume_languages_tmp
+              resume_other
+              resume_languages
             ]
           )
   end
@@ -180,7 +180,7 @@ class InternshipApplicationsController < ApplicationController
             :week_id,
             :internship_offer_id,
             :internship_offer_type,
-            :motivation_tmp,
+            :motivation,
             :student_phone,
             :student_email,
             :student_address,
@@ -190,8 +190,8 @@ class InternshipApplicationsController < ApplicationController
             student_attributes: %i[
               email
               phone
-              resume_other_tmp
-              resume_languages_tmp
+              resume_other
+              resume_languages
             ]
           )
   end

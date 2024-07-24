@@ -8,13 +8,13 @@ module InternshipApplicationsHelper
 
   def has_resume_other?(internship_application)
     internship_application.student
-                          .resume_other_tmp
+                          .resume_other
                           .present?
   end
 
   def has_resume_languages?(internship_application)
     internship_application.student
-                          .resume_languages_tmp
+                          .resume_languages
                           .present?
   end
 

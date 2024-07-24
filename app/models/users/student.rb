@@ -110,9 +110,9 @@ module Users
                      current_sign_in_ip: nil,
                      last_sign_in_ip: nil,
                      class_room_id: nil,
-                     resume_other_tmp: nil,
-                     resume_educational_background_tmp: nil,
-                     resume_languages_tmp: nil)
+                     resume_other: nil,
+                     resume_educational_background: nil,
+                     resume_languages: nil)
       update_columns(phone: 'NA') unless phone.nil?
       internship_applications.map(&:anonymize)
     end

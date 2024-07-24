@@ -18,7 +18,7 @@ module Dashboard
 
         all('.fr-btn', text: 'Postuler').first.click
 
-        find('#internship_application_motivation_tmp', visible: false).set('Le dev ça motive')
+        find('#internship_application_motivation', visible: false).set('Le dev ça motive')
         within('.react-tel-input') do
           find('input[name="internship_application[student_phone]"]').set(new_phone_number)
         end
@@ -27,7 +27,7 @@ module Dashboard
         find('.fr-h3', text: 'Rappel du stage')
         formatted_phone = "+33#{new_phone_number}"
         internship_application = InternshipApplication.last
-        assert_equal 'Le dev ça motive', internship_application.motivation_tmp
+        assert_equal 'Le dev ça motive', internship_application.motivation
         assert_equal formatted_phone, internship_application.student_phone
         assert_equal student.email, internship_application.student_email
       end
@@ -42,7 +42,7 @@ module Dashboard
         visit internship_offers_path
         click_on internship_offer.title
         all('.fr-btn', text: 'Postuler').first.click
-        find('#internship_application_motivation_tmp', visible: false).set('Le dev ça motive')
+        find('#internship_application_motivation', visible: false).set('Le dev ça motive')
         fill_in 'Adresse électronique (email)', with: new_email
         click_on 'Valider'
 

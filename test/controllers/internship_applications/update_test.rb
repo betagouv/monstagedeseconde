@@ -30,14 +30,14 @@ module InternshipApplications
       initial_motivation = 'pizza'
       new_motivation = 'le travail dequipe'
       internship_application = create(:weekly_internship_application, :drafted, internship_offer:,
-                                                                                motivation_tmp: initial_motivation)
+                                                                                motivation: initial_motivation)
       sign_in(internship_application.student)
-      assert_changes -> { internship_application.reload.motivation_tmp },
+      assert_changes -> { internship_application.reload.motivation },
                      from: initial_motivation,
                      to: new_motivation do
         patch internship_offer_internship_application_path(internship_offer,
                                                            internship_application),
-              params: { internship_application: { motivation_tmp: new_motivation } }
+              params: { internship_application: { motivation: new_motivation } }
         assert_redirected_to internship_offer_internship_application_path(internship_offer,
                                                                           internship_application)
       end
@@ -61,7 +61,7 @@ module InternshipApplications
       patch internship_offer_internship_application_path(internship_offer,
                                                          internship_application,
                                                          transition: :submit!),
-            params: { internship_application: { motivation_tmp: 'whoop' } }
+            params: { internship_application: { motivation: 'whoop' } }
       assert_response :redirect
     end
   end

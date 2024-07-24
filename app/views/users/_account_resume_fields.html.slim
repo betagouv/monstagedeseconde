@@ -3,10 +3,10 @@
     div class="#{disabled ? 'opacity-05' : ''} col-12 mb-4" aria-labelledby="activities"
       .form-group
         - title = 'Activités extra-scolaires'
-        #activities.label.fr-label for="user_resume_other_tmp"
+        #activities.label.fr-label for="user_resume_other"
           = title
           small.form-text.text-muted Sports, loisirs, engagements associatifs, etc.
-        = form.text_area :resume_other_tmp,
+        = form.text_area :resume_other,
                           class: 'fr-input col-12',
                           disabled: disabled,
                           title: title,
@@ -16,10 +16,10 @@
   .col-md-6.col-xs-12
     .form-group
       - title = 'Langues vivantes'
-      .label.fr-label for="user_resume_languages_tmp"
+      .label.fr-label for="user_resume_languages"
         = title
         small.form-text.text-muted Langues étudiées et/ou parlées
-      = form.text_area :resume_languages_tmp,
+      = form.text_area :resume_languages,
                        title: title,
                        class: 'fr-input col-12',
                        disabled: disabled,

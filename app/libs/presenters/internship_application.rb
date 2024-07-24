@@ -7,8 +7,8 @@ module Presenters
     delegate :title, to: :internship_offer, prefix: true
     delegate :employer_name, to: :internship_offer
     delegate :period, to: :internship_offer
-    delegate :canceled_by_employer_message_tmp, to: :internship_application
-    delegate :rejected_message_tmp, to: :internship_application
+    delegate :canceled_by_employer_message, to: :internship_application
+    delegate :rejected_message, to: :internship_application
 
     def expires_in
       start = internship_application.updated_at
@@ -191,18 +191,18 @@ module Presenters
 
     def explanation_count
       count = 0
-      count += 1 if internship_application.canceled_by_employer_message_tmp?
-      count += 1 if internship_application.rejected_message_tmp?
+      count += 1 if internship_application.canceled_by_employer_message?
+      count += 1 if internship_application.rejected_message?
       count
     end
 
     def employer_explanations
       motives = []
-      canceled_motive = { meth: :canceled_by_employer_message_tmp, label: 'Annulation par l\'entreprise' }
-      rejected_motive = { meth: :rejected_message_tmp, label: 'Refus par l\'entreprise' }
+      canceled_motive = { meth: :canceled_by_employer_message, label: 'Annulation par l\'entreprise' }
+      rejected_motive = { meth: :rejected_message, label: 'Refus par l\'entreprise' }
 
-      motives << canceled_motive if internship_application.canceled_by_employer_message_tmp?
-      motives << rejected_motive if internship_application.rejected_message_tmp?
+      motives << canceled_motive if internship_application.canceled_by_employer_message?
+      motives << rejected_motive if internship_application.rejected_message?
 
       motives.map do |motive|
         text = internship_application.send(motive[:meth].to_s)

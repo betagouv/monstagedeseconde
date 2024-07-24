@@ -22,7 +22,7 @@ module Dashboard::InternshipOffers
       sign_in(employer)
       visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
       click_on 'Refuser'
-      find('#internship_application_rejected_message_tmp').click.set('(test ata test)')
+      find('#internship_application_rejected_message').click.set('(test ata test)')
       find('#refuser-button').click
       assert internship_application.reload.rejected?
       find('h2.h4', text: 'Les candidatures')
@@ -98,7 +98,7 @@ module Dashboard::InternshipOffers
         visit internship_offers_path
         click_on internship_offer.title
         first(:link, 'Postuler').click
-        find('#internship_application_motivation_tmp').click.set('Motivation')
+        find('#internship_application_motivation').click.set('Motivation')
         within('.react-tel-input') do
           find('input[name="internship_application[student_phone]"]').set('0600060606')
         end

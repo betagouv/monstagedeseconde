@@ -29,7 +29,7 @@ class EmployerMailerPreview < ActionMailer::Preview
 
   def internship_application_canceled_by_student_email
     internship_application = InternshipApplication&.approved&.first
-    internship_application.canceled_by_student_message_tmp = "J'ai trouvé un autre stage ailleurs"
+    internship_application.canceled_by_student_message = "J'ai trouvé un autre stage ailleurs"
     EmployerMailer.internship_application_canceled_by_student_email(
       internship_application:
     )
