@@ -5,28 +5,24 @@ module Reporting
     helper_method :dimension_is?, :presenter_for_dimension
 
     def index
-      authorize! :index, Acl::Reporting.new(user: current_user, params: params)
+      authorize! :index, Acl::Reporting.new(user: current_user, params:)
 
-      if current_user.ministry_statistician?
-        params.merge!(ministries: current_user.ministries.map(&:id))
-      end
-      if current_user.academy_statistician?
-        params.merge!(department: current_user.academy.departments.map(&:name))
-      end
+      params.merge!(ministries: current_user.ministries.map(&:id)) if current_user.ministry_statistician?
+      params.merge!(department: current_user.academy.departments.map(&:name)) if current_user.academy_statistician?
       if current_user.academy_region_statistician?
         params.merge!(department: current_user.academy_region.departments.map(&:name))
       end
-      
+
       @offers = current_offers
       @no_offers = no_current_offers
       return if offers_hash[:school_year].blank?
-    
+
       respond_to do |format|
         format.xlsx do
           if dimension_is?('offers', params[:dimension])
             SendExportOffersJob.perform_later(current_user, offers_hash)
             redirect_back fallback_location: reporting_dashboards_path(offers_hash),
-                          flash: { success: "Votre fichier va vous être envoyé " \
+                          flash: { success: 'Votre fichier va vous être envoyé ' \
                                             "à l'adresse email : #{current_user.email}" }
           else
             response.headers['Content-Disposition'] = %(attachment; filename="#{export_filename('offres')}.xlsx")
@@ -39,7 +35,7 @@ module Reporting
     end
 
     def employers_offers
-      authorize! :index, Acl::Reporting.new(user: current_user, params: params)
+      authorize! :index, Acl::Reporting.new(user: current_user, params:)
 
       @offers = current_offers
     end
@@ -89,8 +85,7 @@ module Reporting
     def offers_hash
       { department: params[:department],
         school_year: params[:school_year],
-        ministries: params[:ministries]
-      }
+        ministries: params[:ministries] }
     end
   end
 end
