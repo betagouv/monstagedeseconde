@@ -106,7 +106,7 @@ module InternshipOffers
           period: 2 # week_
         )
         employer = InternshipOffer.last.employer
-        
+
         get internship_offer_path(offer)
         assert_select('.period-label-test', text: '1 semaine - du 24 au 28 juin 2024')
       end
@@ -239,23 +239,6 @@ module InternshipOffers
     #
     # Visitor
     #
-    test 'GET #show as Visitor show breadcrumb with link to previous page' do
-      skip "forward parameters expected or not ? PO answering soon"
-      internship_offer = create(:weekly_internship_offer, :full_time)
-      forwarded_params = { latitude: Coordinates.paris[:lat],
-                           longitude: Coordinates.paris[:lon],
-                           radius: 60_000,
-                           city: 'Mantes-la-Jolie',
-                           keyword: 'Boucher+ecarisseur',
-                           page: 5 }
-
-      get internship_offer_path({ id: internship_offer.id }.merge(forwarded_params))
-      assert_response :success
-      assert_template 'layouts/_breadcrumb'
-      assert_template 'internship_offers/_apply_cta'
-      assert_select('a[href=?]', internship_offers_path(forwarded_params))
-      assert_select('button[disabled=disabled]', text: 'Postuler')
-    end
 
     test 'GET #show as Visitor - canonical links works' do
       internship_offer = create(:weekly_internship_offer)
@@ -344,7 +327,7 @@ module InternshipOffers
 
     test 'GET #show as Employer displays internship_applications link' do
       published_at = 2.weeks.ago
-      internship_offer = create(:weekly_internship_offer, published_at: published_at)
+      internship_offer = create(:weekly_internship_offer, published_at:)
       sign_in(internship_offer.employer)
       get internship_offer_path(internship_offer)
       assert_response :success
@@ -377,7 +360,8 @@ module InternshipOffers
     end
 
     test 'GET #show as employer does show duplicate  button when internship_offer has been created durent current_year' do
-      internship_offer = create(:weekly_internship_offer, created_at: SchoolYear::Current.new.beginning_of_period + 1.day)
+      internship_offer = create(:weekly_internship_offer,
+                                created_at: SchoolYear::Current.new.beginning_of_period + 1.day)
       sign_in(internship_offer.employer)
 
       get internship_offer_path(internship_offer)
@@ -396,7 +380,6 @@ module InternshipOffers
 
       get internship_offer_path(api_internship_offer)
       assert_response :success
-
     end
   end
 end

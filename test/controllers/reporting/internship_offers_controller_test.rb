@@ -12,7 +12,7 @@ module Reporting
       @student_male2 = create(:student, :registered_with_phone, :male)
       @student_male1 = create(:student, :registered_with_phone, :male)
       @student_female1 = create(:student, :registered_with_phone, :female)
-      @group_with_no_offer = create(:group, name: "no offer", is_public: false)
+      @group_with_no_offer = create(:group, name: 'no offer', is_public: false)
       # # Following will be discarded
       @internship_offer_agri_0 = create(:weekly_internship_offer,
                                         sector: @sector_agri,
@@ -56,21 +56,21 @@ module Reporting
       create(:weekly_internship_offer)
       get reporting_internship_offers_path
       assert_response :success
-      assert_select 'title', "Statistiques des offres | Stages de 2de"
+      assert_select 'title', 'Statistiques des offres | Stages de 2de'
     end
 
     test 'GET #index as statistician success ' \
          'when department params match his departement_name' do
-      skip "#may_flower failing test because exports are not working"
+      skip '#may_flower failing test because exports are not working'
       statistician = create(:prefecture_statistician)
       department_name = statistician.department_name # Oise
       create(:department, name: 'Oise', code: '60')
-      offer = create(:weekly_internship_offer, zipcode: '60000')
+      create(:weekly_internship_offer, zipcode: '60000')
       sign_in(statistician)
 
       get reporting_internship_offers_path(department: department_name, is_public: false)
       assert_response :success
-      total_report = retrieve_html_value('test-total-report','test-total-applications', response)
+      total_report = retrieve_html_value('test-total-report', 'test-total-applications', response)
       assert_equal 0, total_report.to_i
 
       Reporting::InternshipOffer.stub :by_department, Reporting::InternshipOffer.where(discarded_at: nil) do
@@ -97,14 +97,24 @@ module Reporting
         # assert_equal 0, retrieve_html_value('test-female-approved-applications', 'test-male-approved-applications', response)
         # assert_equal 0, retrieve_html_value('test-no-gender-approved-applications', 'test-male-approved-applications', response)
         # null
-        assert_equal 0, retrieve_html_value('test-total-report-null','test-total-applications', response)
+        assert_equal 0, retrieve_html_value('test-total-report-null', 'test-total-applications', response)
         assert_equal 0, retrieve_html_value('test-total-applications-null', 'test-total-male-applications', response)
-        assert_equal 0, retrieve_html_value('test-total-male-applications-null', 'test-total-female-applications', response)
-        assert_equal 0, retrieve_html_value('test-total-female-applications-null','test-approved-applications', response)
-        assert_equal 0, retrieve_html_value('test-approved-applications-null','test-custom-track-approved-applications', response)
-        assert_equal 0, retrieve_html_value('test-male-approved-applications-null', 'test-approved-applications', response)
-        assert_equal 0, retrieve_html_value('test-female-approved-applications-null', 'test-male-approved-applications', response)
-        assert_equal 0, retrieve_html_value('test-no-gender-approved-applications-null', 'test-male-approved-applications', response)
+        assert_equal 0,
+                     retrieve_html_value('test-total-male-applications-null', 'test-total-female-applications',
+                                         response)
+        assert_equal 0,
+                     retrieve_html_value('test-total-female-applications-null', 'test-approved-applications', response)
+        assert_equal 0,
+                     retrieve_html_value('test-approved-applications-null', 'test-custom-track-approved-applications',
+                                         response)
+        assert_equal 0,
+                     retrieve_html_value('test-male-approved-applications-null', 'test-approved-applications', response)
+        assert_equal 0,
+                     retrieve_html_value('test-female-approved-applications-null', 'test-male-approved-applications',
+                                         response)
+        assert_equal 0,
+                     retrieve_html_value('test-no-gender-approved-applications-null',
+                                         'test-male-approved-applications', response)
 
         get reporting_internship_offers_path(department: department_name, is_public: true, dimension: 'group')
         assert_response :success
@@ -139,7 +149,7 @@ module Reporting
         group: :index_stats,
         sector: :index_stats
       }.each_pair do |dimension, template|
-        get(reporting_internship_offers_path(dimension: dimension,
+        get(reporting_internship_offers_path(dimension:,
                                              school_year: Date.today.year,
                                              format: :xlsx))
         assert_response :success
@@ -169,7 +179,6 @@ module Reporting
       get reporting_internship_offers_path(department: 'Ain')
       assert_response 302
     end
-
 
     test 'GET #index as operator works' do
       user_operator = create(:user_operator)

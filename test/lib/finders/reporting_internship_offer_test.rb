@@ -35,25 +35,22 @@ module Finders
     test '.total with dimension sector group offers by sector' do
       finder = ReportingInternshipOffer.new(params: { dimension: :sector })
       sector = create(:sector)
-      create(:weekly_internship_offer, sector: sector)
+      create(:weekly_internship_offer, sector:)
       assert_equal(1,
                    finder.total,
                    'should find offers with sector')
     end
 
     test '.total with academy params filters offers by school.academy' do
-      skip 'TODO #Fix test'
-      academy_key_departements_values = Academy::MAP.first
-      academy_name, departements = *academy_key_departements_values
-      zipcode = departements.first.ljust(5, '000')
-      create(:department, code: zipcode[0..1], name: 'Aisne')
+      academy = create(:academy, name: "Academy de l'Aisne")
+      create(:department, code: '02', name: 'Aisne', academy:)
       create(:department, code: '60', name: 'Oise')
       create(:weekly_internship_offer, zipcode: '60000')
-      finder = ReportingInternshipOffer.new(params: { academy: academy_name })
+      finder = ReportingInternshipOffer.new(params: { academy: academy.name })
       assert_equal(0,
                    finder.total,
                    'should not find offers not in academy')
-      create(:weekly_internship_offer, zipcode: zipcode)
+      create(:weekly_internship_offer, zipcode: '02000')
       assert_equal(1,
                    finder.total,
                    'should not find offers not in academy')
@@ -71,20 +68,6 @@ module Finders
       assert_equal(1,
                    finder.total,
                    'should find offers in a private group')
-    end
-
-    test '.total with school_year params filters offers by year' do
-      skip 'TODO #mayflower'
-      offer_2018 = create(:weekly_internship_offer)
-      offer_2020 = create(:weekly_internship_offer)
-      finder = ReportingInternshipOffer.new(params: { school_year: 2018 })
-      assert_equal 1, finder.total
-      finder = ReportingInternshipOffer.new(params: { school_year: 2019 })
-      assert_equal 0, finder.total
-      finder = ReportingInternshipOffer.new(params: { school_year: 2020 })
-      assert_equal 1, finder.total
-      finder = ReportingInternshipOffer.new(params: { school_year: 2021 })
-      assert_equal 0, finder.total
     end
   end
 end

@@ -11,13 +11,19 @@
     = render 'layouts/form_errors', resource: current_user, resource_name: :user
 
     - if current_user.respond_to?(:school)
-      = react_component("SearchSchool", props: { classes: 'col-12 fr-input',
-                                                 required: true,
-                                                 label: 'Établissement ou commune',
-                                                 resourceName: :user,
-                                                 selectClassRoom: @current_user.try(:school) && @current_user.school.class_rooms.any? && can?(:change, @current_user.school.class_rooms.first) ? true : false,
-                                                 existingSchool: @current_user.try(:school).try(:as_json),
-                                                 existingClassRoom: @current_user.try(:class_room)})
+      .row
+        .col-md-6.col-xs-12
+          .form-group.fr-mb-4w
+            label.fr-label for="user_school_city"
+              | Établissement ou commune
+              = f.rg2a_required_content_tag
+            = react_component("SearchSchool", props: { classes: 'col-12 fr-input',
+                                                      required: true,
+                                                      label: 'Établissement ou commune',
+                                                      resourceName: :user,
+                                                      selectClassRoom: @current_user.try(:school) && @current_user.school.class_rooms.any? && can?(:change, @current_user.school.class_rooms.first) ? true : false,
+                                                      existingSchool: @current_user.try(:school).try(:as_json),
+                                                      existingClassRoom: @current_user.try(:class_room)})
 
     - if can?(:choose_operator, :sign_up)
       .row

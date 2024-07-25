@@ -136,7 +136,7 @@ export default function SearchSchool({
         }) => (
           <div id="header-search" className="custom-label-container fr-search-bar fr-mr-6w" role="search">
             <label
-              {...getLabelProps({ className: 'fr-label', htmlFor: `${resourceName}_school_city` })}
+             {...getLabelProps({ className: 'fr-label', htmlFor: `${resourceName}_school_city` })}
             >
               {label}
             </label>
@@ -144,7 +144,7 @@ export default function SearchSchool({
               {...getInputProps({
                 onChange: inputChange,
                 value: currentCityString(),
-                className: `fr-input ${classes || ''} ${
+                className: `fr-input fr-mb-2w ${classes || ''} ${
                   autocompleteNoResult ? '' : 'rounded-0'
                 }`,
                 id: `${resourceName}_school_city`,

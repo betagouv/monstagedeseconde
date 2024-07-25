@@ -197,7 +197,7 @@ class InternshipApplication < ApplicationRecord
                            end
                            Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
                            # ReminderReset : tag to use to find commmented jobs for students reminders
-                           # setSingleApplicationReminderJobs
+                           setSingleApplicationReminderJobs
                            # ReminderReset : tag to use to find commmented jobs for students reminders
                          }
     end
