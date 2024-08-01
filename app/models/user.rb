@@ -303,6 +303,9 @@ class User < ApplicationRecord
   def agreement_signatorable? = agreement_signatorable
   def anonymized? = self.anonymized
   def pending_invitation_to_a_team = []
+  def pending_agreements_actions_count = 0
+  def team_pending_agreements_actions_count = 0
+  def internship_agreements_query = InternshipAgreement.none
   def available_offers = InternshipOffer.none
   def team_members = User.none
 
