@@ -1,5 +1,7 @@
 - if can?(:supply_offers, current_user)
-  div data-controller='organisation-form' data-action="input->organisation-form#checkForm"
+  div [data-controller='organisation-form mandatory-fields'
+       data-action="input->organisation-form#checkForm"
+       data-mandatory-fields-minimum-length-value="2"]
     .row
       .col-md-6.order-md-1.order-2
         fieldset  aria-labelledby="organisation-name-legend"
@@ -26,8 +28,9 @@
                                 placeholder: raison,
                                 required: true,
                                 maxlength: 180,
-                                :'data-organisation-form-target' => 'organisationName',
-                                :'data-organisation-form-target' => 'requiredField'
+                                data: { action: "input->mandatory-fields#fieldChange",
+                                        :'organisation-form-target' => 'organisationName',
+                                        :'mandatory-fields-target' => "mandatoryField"}
             .form-group.fr-my-2w
               = form.label :siret, "SIRET"
 
@@ -37,7 +40,9 @@
                                 required: true,
                                 pattern: '[0-9]{14}',
                                 :'data-organisation-form-target' => 'organisationSiret',
-                                :'data-organisation-form-target' => 'requiredField'
+                                data: { :'organisation-form-target' => 'organisationSiret',
+                                        action: "input->mandatory-fields#fieldChange",
+                                        :'mandatory-fields-target' => "mandatoryField"}
 
             = react_component("FullAddressInput",
                               props: { resourceName: form.object_name,
@@ -130,5 +135,6 @@
       = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
       = button_tag :submit,
                    class: 'fr-btn',
-                   :'data-organisation-form-target' => "submitButton" do
+                   :'data-organisation-form-target' => "submitButton",
+                   :'data-mandatory-fileds-target' => "disabledField"  do
         = "Suivant "

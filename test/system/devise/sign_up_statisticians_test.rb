@@ -4,7 +4,6 @@ require 'application_system_test_case'
 
 class SignUpStatisticiansTest < ApplicationSystemTestCase
   test 'navigation & interaction works until statistician creation' do
-    skip
     # go to signup as statistician
     bad_email = 'lol@lol.fr'
     good_email = 'kikoolol@gmail.com'
@@ -19,11 +18,11 @@ class SignUpStatisticiansTest < ApplicationSystemTestCase
       execute_script("document.getElementById('user_statistician_education').checked=true;")
       execute_script("document.getElementById('statistician-department').classList.remove('d-none');")
       execute_script("document.getElementById('new_user').action = '/utilisateurs?as=EducationStatistician';")
-      select('75', from: "user_department")
+      select('75', from: 'user_department')
       fill_in 'Adresse électronique', with: good_email
       fill_in 'Créer un mot de passe', with: valid_password
       execute_script("document.getElementById('user_accept_terms').checked = true;")
-      click_on "Valider"
+      click_on 'Valider'
     end
 
     # check created statistician has valid info

@@ -3,18 +3,17 @@ class Academy < ApplicationRecord
   has_many :departments
   has_many :statisticians, class_name: 'Users::AcademyStatistician'
 
-
   def self.to_select(only: nil)
     Academy.all.map(&:name).sort
   end
 
-  def self.departments_by_name(academy:)
-    Academy.find_by(name: academy).departements
+  def self.departments_by_name(academy_name:)
+    Academy.find_by(name: academy_name).departements
   end
 
-  # TODO change method name // remove if offer has department
+  # TODO: change method name // remove if offer has department
   def self.lookup_by_zipcode(zipcode:)
-    Department.where(name: Department.lookup_by_zipcode(zipcode: zipcode)).first.academy.name
+    Department.where(name: Department.lookup_by_zipcode(zipcode:)).first.academy.name
   end
 
   def self.get_email_domain(academy)
@@ -38,5 +37,4 @@ class Academy < ApplicationRecord
       # field :email_domain
     end
   end
-
 end
