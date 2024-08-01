@@ -70,7 +70,7 @@ class PagesTest < ActionDispatch::IntegrationTest
   end
 
   test '#register_to_webinar succeds when referent' do
-    travel_to Time.zone.local(2021, 1, 1, 12, 0, 0) do
+    travel_to Time.zone.local(2024, 1, 1, 12, 0, 0) do
       webinar_url = ENV.fetch('WEBINAR_URL')
       ministry_statistician = create(:ministry_statistician)
       sign_in ministry_statistician

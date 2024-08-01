@@ -58,6 +58,7 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
   .row
     .col-md-6
       / radio button for period
+      - labels = InternshipOffer.current_period_labels
       .fr-form-group
         .fr-label.fr-py-2w
           = "Vous souhaitez proposer un stage pour"
@@ -67,14 +68,18 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                               id: 'period_full_time',
                               checked: resource.full_time? || resource.new_record?
 
-          = form.label :period, '2 semaines - du 17 au 28 juin', for: 'period_full_time'
+          = form.label :period,
+                       labels[:full_time],
+                       for: 'period_full_time'
         .fr-radio-group.fr-py-1w
           = form.radio_button :period,
                               1,
                               id: 'period_week_1',
                               checked: resource.week_1?
 
-          = form.label :period, '1 semaine - du 17 au 21 juin', for: 'period_week_1'
+          = form.label :period,
+                        labels[:week_1],
+                       for: 'period_week_1'
 
         .fr-radio-group.fr-py-1w
           = form.radio_button :period,
@@ -83,7 +88,9 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                               checked: resource.week_2?
 
 
-          = form.label :period, '1 semaine - du 24 au 28 juin', for: 'period_week_2'
+          = form.label :period,
+                       labels[:week_2],
+                       for: 'period_week_2'
       
       .fr-form-group.fr-my-4w
         = react_component("ReservedSchoolInput",

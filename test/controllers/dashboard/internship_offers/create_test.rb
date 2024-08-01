@@ -12,7 +12,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'POST #create (duplicate) /InternshipOffers::WeeklyFramed as employer creates the post' do
-      travel_to(Date.new(2019, 3, 1)) do
+      travel_to(Date.new(2024, 3, 1)) do
         school = create(:school)
         employer = create(:employer)
         internship_offer = build(:weekly_internship_offer, employer:)
@@ -40,7 +40,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'POST #create (duplicate) /InternshipOffers::WeeklyFramed as ministry statistican creates the post' do
-      travel_to(Date.new(2020, 9, 1)) do
+      travel_to(Date.new(2024, 9, 1)) do
         school = create(:school)
         employer = create(:ministry_statistician)
         internship_offer = build(:weekly_internship_offer, :public, employer:)

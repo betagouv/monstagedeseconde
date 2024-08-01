@@ -247,7 +247,23 @@ class InternshipOffer < ApplicationRecord
     end
   end
 
+  # -------------------------
   # Methods
+  # -------------------------
+
+  def self.period_labels(school_year:)
+    ::SchoolTrack::Seconde::PERIOD_COLLECTION[school_year]
+  end
+
+  def self.current_period_labels
+    period_labels(school_year: SchoolYear::Current.new.end_of_period.year)
+  end
+
+  def current_period_label
+    periods = InternshipOffer.current_period_labels.keys
+    InternshipOffer.current_period_labels[periods[period].to_sym]
+  end
+
   def weeks_count
     full_time? ? 2 : 1
   end

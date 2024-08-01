@@ -279,7 +279,7 @@ module Dashboard
       internship_agreement_2.complete!
       internship_agreement_2.finalize!
 
-      travel_to(weeks[0].week_date - 1.week) do
+      travel_to(weeks.select { |w| w.year == 2024 }.first.week_date - 1.week) do
         sign_in(school_manager)
 
         visit dashboard_internship_agreements_path

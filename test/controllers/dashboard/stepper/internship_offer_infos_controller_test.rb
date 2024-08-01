@@ -17,7 +17,7 @@ module Dashboard::Stepper
     test 'GET #new as employer show valid form' do
       employer = create(:employer)
       sign_in(employer)
-      travel_to(Date.new(2019, 3, 1)) do
+      travel_to(Date.new(2024, 3, 1)) do
         organisation = create(:organisation, employer:)
         get new_dashboard_stepper_internship_offer_info_path(organisation_id: organisation.id)
 

@@ -14,7 +14,7 @@ class AbilityTest < ActiveSupport::TestCase
   end
 
   test 'Student' do
-    travel_to Date.new(2020, 9, 1) do
+    travel_to Date.new(2024, 9, 1) do
       internship_offer = create(:weekly_internship_offer)
       school = create(:school)
       class_room = create(:class_room, school:)

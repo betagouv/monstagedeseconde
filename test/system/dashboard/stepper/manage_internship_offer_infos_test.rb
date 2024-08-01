@@ -14,7 +14,7 @@ class ManageInternshipOfferInfosTest < ApplicationSystemTestCase
     school = create(:school, city: 'Paris', zipcode: 75_012, name: school_name)
     sign_in(employer)
     assert_difference 'InternshipOfferInfo.count' do
-      travel_to(Date.new(2019, 3, 1)) do
+      travel_to(Date.new(2024, 3, 1)) do
         visit new_dashboard_stepper_internship_offer_info_path(organisation_id: organisation.id)
         fill_in_internship_offer_info_form(sector:)
         page.assert_no_selector('span.number', text: '1')

@@ -29,7 +29,7 @@ module InternshipsOffers
     end
 
     test 'fulfilled internship_offers' do
-      travel_to Date.new(2019, 9, 1) do
+      travel_to Date.new(2024, 9, 1) do
         internship_offer = create(:weekly_internship_offer,
                                   max_candidates: 2)
         assert_equal 0, InternshipOffers::WeeklyFramed.fulfilled.to_a.count
@@ -49,7 +49,7 @@ module InternshipsOffers
     end
 
     test 'uncompleted internship_offers' do
-      travel_to Date.new(2019, 9, 1) do
+      travel_to Date.new(2024, 9, 1) do
         weeks = Week.selectable_from_now_until_end_of_school_year.first(5).last(3)
         internship_offer = create(:weekly_internship_offer,
                                   max_candidates: 2)
@@ -70,7 +70,7 @@ module InternshipsOffers
     end
 
     test 'ignore_max_candidates_reached internship_offers' do
-      travel_to Date.new(2020, 1, 1) do
+      travel_to Date.new(2024, 1, 1) do
         internship_offer = create(:weekly_internship_offer,
                                   max_candidates: 2,
                                   published_at: nil)
