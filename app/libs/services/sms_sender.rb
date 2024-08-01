@@ -1,22 +1,24 @@
 module Services
   class SmsSender
-    LINK_MOBILITY_SENDING_ENDPOINT_URL = "https://europe.ipx.com/restapi/v1/sms/send".freeze
-    # TODO link mobility provider as a class variable
+    LINK_MOBILITY_SENDING_ENDPOINT_URL = 'https://europe.ipx.com/restapi/v1/sms/send'.freeze
+    # TODO: link mobility provider as a class variable
     def perform
-      treat_no_sms_message and return if no_sms_mode?
-
-      response = get_request
-      if response.nil? || !response.respond_to?(:body)
-        error_message = "Link Mobility error: response is ko | phone_number: " \
-                        "#{@phone_number} | content: #{@content}"
-        Rails.logger.error(error_message)
-        return nil
+      if no_sms_mode?
+        treat_no_sms_message
+      else
+        response = get_request
+        if response.nil? || !response.respond_to?(:body)
+          error_message = 'Link Mobility error: response is ko | phone_number: ' \
+                          "#{@phone_number} | content: #{@content}"
+          Rails.logger.error(error_message)
+          return nil
+        end
+        response_body = JSON.parse(response.body)
+        status?(0, response_body) ? log_success(response_body) : log_failure(response_body)
       end
-      response_body = JSON.parse(response.body)
-      status?(0, response_body) ? log_success(response_body) : log_failure(response_body)
     end
 
-    attr_reader :phone_number, :content , :sender_name, :user, :pass, :campaign_name
+    attr_reader :phone_number, :content, :sender_name, :user, :pass, :campaign_name
 
     private
 
@@ -25,11 +27,12 @@ module Services
     end
 
     def treat_no_sms_message
-      sms_message = "sms for #{@phone_numer} : === '#{@content}' ==="
-      sms_message = "#{sms_message} | campaign_name: '#{@campaign_name}'" if @campaign_name.present?
-      puts("========== SMS ==========")
-      puts(sms_message)
-      puts("========== SMS ==========")
+      info = "===> No SMS mode activated | phone_number: #{@phone_number} | content: #{@content}"
+      Rails.logger.info(info)
+      puts '----------------------------------'
+      puts info
+      puts '----------------------------------'
+      true
     end
 
     def log_success(response_body)
@@ -84,7 +87,7 @@ module Services
       { 'Accept': 'application/json' }
     end
 
-    def initialize(phone_number: , content: , campaign_name: nil)
+    def initialize(phone_number:, content:, campaign_name: nil)
       @phone_number = phone_number
       @campaign_name = campaign_name
       @content = content

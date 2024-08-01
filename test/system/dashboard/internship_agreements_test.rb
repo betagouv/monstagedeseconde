@@ -331,6 +331,7 @@ module Dashboard
                          user_id: internship_agreement.employer.id)
       sign_in(internship_agreement.school_manager.reload)
       visit dashboard_internship_agreements_path
+
       within('td[data-head="Statut"]') do
         find('.actions.d-flex', text: "L'employeur a déjà signé. En attente de votre signature.")
       end
