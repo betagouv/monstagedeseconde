@@ -7,11 +7,6 @@ class InternshipOffer < ApplicationRecord
   MAX_CANDIDATES_HIGHEST = 6_000
   TITLE_MAX_CHAR_COUNT = 150
   DESCRIPTION_MAX_CHAR_COUNT = 500
-  PERIOD_LABELS = {
-    full_time: '2 semaines - du 17 au 28 juin 2024',
-    week_1: '1 semaine - du 17 au 21 juin 2024',
-    week_2: '1 semaine - du 24 au 28 juin 2024'
-  }
 
   include StiPreload
   include AASM

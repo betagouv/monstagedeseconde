@@ -23,12 +23,12 @@ module StepperProxy
 
       attribute :period, :integer, default: 0
 
-      def period_label
-        InternshipOffer::PERIOD_LABELS.values[period]
+      def current_period_label
+        ::InternshipOffer.current_period_labels.values[period]
       end
 
-      def self.period_collection
-        InternshipOffer::PERIOD_LABELS.values.each.with_index(0).map do |value, index| 
+      def self.current_period_collection
+        ::InternshipOffer.current_period_labels.values.each.with_index(0).map do |value, index|
           [value, index]
         end
       end

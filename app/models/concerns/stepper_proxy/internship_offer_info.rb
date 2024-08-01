@@ -15,6 +15,14 @@ module StepperProxy
 
       # Relations
       belongs_to :sector
+
+      def self.period_labels(school_year:)
+        ::SchoolTrack::Seconde::PERIOD_COLLECTION[school_year]
+      end
+
+      def self.current_period_labels
+        period_labels(school_year: SchoolYear::Current.new.end_of_period.year)
+      end
     end
   end
 end
