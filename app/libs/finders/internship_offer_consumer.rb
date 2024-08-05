@@ -20,7 +20,7 @@ module Finders
     end
 
     def available_offers(max_distance: MAX_RADIUS_SEARCH_DISTANCE)
-      student_query = kept_published_future_offers_query.ignore_already_applied(user: user) # Whatever application status !!!
+      student_query = kept_published_future_offers_query.ignore_already_applied(user:) # Whatever application status !!!
       return student_query if user.school.nil?
 
       school_latitude  = user.school.coordinates&.latitude
@@ -38,7 +38,7 @@ module Finders
       InternshipOffer.kept
                      .published
                      .with_seats
-                     .in_the_future
+                     .in_current_year
     end
 
     def kept_published_future_offers_query
@@ -54,21 +54,21 @@ module Finders
     end
 
     def school_members_query
-      school_management_query.ignore_already_applied(user: user)
+      school_management_query.ignore_already_applied(user:)
     end
 
     def statistician_query
       visitor_query.tap do |query|
-        query.merge(query.limited_to_department(user: user)) if user.department
+        query.merge(query.limited_to_department(user:)) if user.department
       end
     end
 
     def ministry_statistician_query
-      visitor_query.limited_to_ministry(user: user)
+      visitor_query.limited_to_ministry(user:)
     end
 
     def visitor_query
-      common_filter { light_kept_published_future_offers_query}
+      common_filter { light_kept_published_future_offers_query }
     end
   end
 end

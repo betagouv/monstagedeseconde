@@ -285,7 +285,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as visitor does not show fulfilled offers' do
-    travel_to(Date.new(2022, 9, 1)) do
+    travel_to(Date.new(2024, 9, 1)) do
       internship_application = create(:weekly_internship_application, :submitted)
       internship_offer = internship_application.internship_offer
       get internship_offers_path, params: { format: :json }
@@ -550,6 +550,53 @@ class IndexTest < ActionDispatch::IntegrationTest
       assert_json_absence_of(json_response, offer_1)
       assert_json_absence_of(json_response, offer_2)
       assert_json_presence_of(json_response, offer_3)
+    end
+  end
+
+  test 'search with school years works' do
+    employer = create(:employer)
+    sign_in(employer)
+    offer_1 = nil
+    offer_2 = nil
+    offer_3 = nil
+    travel_to(Date.new(2024, 3, 1)) do
+      offer_1 = create(:weekly_internship_offer, :week_1, school_year: 2024, employer:)
+    end
+    travel_to(Date.new(2025, 3, 1)) do
+      offer_2 = create(:weekly_internship_offer, :week_2, school_year: 2025, employer:)
+    end
+    travel_to(Date.new(2026, 3, 1)) do
+      offer_3 = create(:weekly_internship_offer, :full_time, school_year: 2026, employer:)
+    end
+    assert_equal Date.new(2024, 6, 21), offer_1.last_date
+    assert_equal Date.new(2025, 6, 27), offer_2.last_date
+    assert_equal Date.new(2026, 6, 26), offer_3.last_date
+    travel_to(Date.new(2024, 3, 1)) do
+      sign_in(employer)
+      get internship_offers_path(school_year: 2024, format: :json)
+      assert_response :success
+      assert_json_presence_of(json_response, offer_1)
+      assert_json_absence_of(json_response, offer_2)
+      assert_json_absence_of(json_response, offer_3)
+      sign_out(employer)
+    end
+    travel_to(Date.new(2025, 3, 1)) do
+      sign_in(employer)
+      get internship_offers_path(school_year: 2025, format: :json)
+      assert_response :success
+      assert_json_absence_of(json_response, offer_1)
+      assert_json_presence_of(json_response, offer_2)
+      assert_json_absence_of(json_response, offer_3)
+      sign_out(employer)
+    end
+    travel_to(Date.new(2026, 3, 1)) do
+      sign_in(employer)
+      get internship_offers_path(school_year: 2026, format: :json)
+      assert_response :success
+      assert_json_absence_of(json_response, offer_1)
+      assert_json_absence_of(json_response, offer_2)
+      assert_json_presence_of(json_response, offer_3)
+      sign_out(employer)
     end
   end
 end

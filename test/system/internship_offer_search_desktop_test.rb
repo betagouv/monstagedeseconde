@@ -49,16 +49,15 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
 
       visit internship_offers_path
       fill_in_city_or_zipcode(with: '75012', expect: 'Paris')
-
       submit_form
       assert_card_presence_of(internship_offer: internship_offer_at_paris)
       assert_absence_of(internship_offer: internship_offer_at_bordeaux)
 
       # reset search and submit
-      fill_in_city_or_zipcode(with: '', expect: '')
+      fill_in_city_or_zipcode(with: '33000', expect: 'Bordeaux')
       submit_form
-      # assert_presence_of(internship_offer: internship_offer_at_paris)
-      # assert_presence_of(internship_offer: internship_offer_at_bordeaux)
+      assert_card_presence_of(internship_offer: internship_offer_at_bordeaux)
+      assert_absence_of(internship_offer: internship_offer_at_paris)
     end
   end
 

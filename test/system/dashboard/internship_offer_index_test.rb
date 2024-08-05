@@ -18,14 +18,14 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   test 'cron set aasm_state to need_to_be_updated when necessary' do
     employer = create(:employer)
     old_internship_offer = nil
-    travel_to Date.new(2023, 10, 1) do
+    travel_to Date.new(2024, 10, 1) do
       old_internship_offer = create(:weekly_internship_offer, :full_time, employer:,
                                                                           internship_offer_area_id: employer.current_area_id)
     end
-    travel_to Date.new(2024, 10, 1) do
+    travel_to Date.new(2025, 10, 1) do
       internship_offer = create(:weekly_internship_offer, :full_time, employer:,
                                                                       internship_offer_area_id: employer.current_area_id)
-      assert_equal Date.new(2025, 6, 27), internship_offer.last_date
+      assert_equal Date.new(2026, 6, 26), internship_offer.last_date
       assert old_internship_offer.last_date < Time.now.utc
 
       sign_in(employer)
@@ -142,20 +142,16 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   test 'publish navigation when max_candidates updates are necessary' do
     employer = create(:employer)
     internship_offer = nil
-    travel_to Date.new(2021, 10, 1) do
-      within_2_weeks = Week.find_by(id: (Week.current.id + 2))
-      within_1_year = Week.find_by(id: (Week.current.id + 54))
+    travel_to Date.new(2024, 10, 1) do
       internship_offer = create(
         :weekly_internship_offer,
         max_candidates: 1,
         employer:,
         internship_offer_area_id: employer.current_area_id
       )
-      create(:weekly_internship_application,
-             :approved,
-             internship_offer:)
+      create(:weekly_internship_application, :approved, internship_offer:)
     end
-    travel_to Date.new(2024, 9, 1) do
+    travel_to Date.new(2025, 9, 1) do
       internship_offer.need_update! # due to cron job and max_candidates too low
       sign_in(employer)
       InternshipOffer.stub :nearby, InternshipOffer.all do

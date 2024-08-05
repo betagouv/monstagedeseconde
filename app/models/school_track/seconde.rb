@@ -1,21 +1,62 @@
 module SchoolTrack
   class Seconde
-    PERIOD_COLLECTION = {
-      2024 => {
-        full_time: '2 semaines - du 17 au 28 juin 2024',
-        week_1: '1 semaine - du 17 au 21 juin 2024',
-        week_2: '1 semaine - du 24 au 28 juin 2024'
-      },
-      2025 => {
-        full_time: '2 semaines - du 16 au 27 juin 2025',
-        week_1: '1 semaine - du 16 au 20 juin 2025',
-        week_2: '1 semaine - du 23 au 27 juin 2025'
-      },
-      2026 => {
-        full_time: '2 semaines - du 15 au 26 juin 2026',
-        week_1: '1 semaine - du 15 au 19 juin 2026',
-        week_2: '1 semaine - du 22 au 26 juin 2026'
+    # hash computing two last week of june hash with year as key where year starts from 2022 to 2029
+    def self.last_june_friday(year:)
+      last_day_of_june = Date.new(year, 6, 30)
+      wday = last_day_of_june.wday
+      offset = wday >= 5 ? wday - 5 : wday + 2
+      last_day_of_june.days_ago(offset)
+    end
+
+    def self.period_collection(school_year:)
+      last_friday = last_june_friday(year: school_year)
+      first_friday = last_friday.days_ago(7)
+      last_monday = last_friday.days_ago(4)
+      first_monday = last_friday.days_ago(11)
+
+      hash = {
+        full_time: {
+          start_day: first_monday,
+          end_day: last_friday,
+          start: first_monday.mday,
+          end: last_friday.mday
+        },
+        week_1: {
+          start_day: first_monday,
+          end_day: first_friday,
+          start: first_monday.mday,
+          end: first_friday.mday
+        },
+        week_2: {
+          start_day: last_monday,
+          end_day: last_friday,
+          start: last_monday.mday,
+          end: last_friday.mday
+        }
       }
-    }
+      hash.each_value do |value|
+        value.merge!(month: 'juin', year: school_year)
+      end
+      hash
+    end
+
+    def self.period_labels(school_year:)
+      period_collection(school_year:).transform_values do |time_frame|
+        prefix = time_frame[:end] - time_frame[:start] > 10 ? '2 semaines' : '1 semaine'
+        "#{prefix} - du #{time_frame[:start]} au #{time_frame[:end]} #{time_frame[:month]} #{time_frame[:year]}"
+      end
+    end
+
+    def self.current_period_labels
+      period_labels(school_year: current_year)
+    end
+
+    def self.current_year
+      SchoolYear::Current.new.year_in_june
+    end
+
+    def self.current_period_data
+      period_collection(school_year: current_year)
+    end
   end
 end
