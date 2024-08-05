@@ -24,7 +24,7 @@ require 'webmock/minitest'
 # https://stackoverflow.com/questions/70967207/selenium-chromedriver-cannot-construct-keyevent-from-non-typeable-key/70971698#70971698
 require 'webdrivers/chromedriver'
 
-ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 5000)
+ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 10_000)
 
 # version 115 is not working with chromedriver-helper
 # Webdrivers::Chromedriver.required_version = "114.0.5735.90"

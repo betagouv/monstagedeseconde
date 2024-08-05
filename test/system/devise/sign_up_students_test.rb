@@ -7,7 +7,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   include ActiveJob::TestHelper
 
   def safe_submit
-    click_on "Valider"
+    click_on 'Valider'
   rescue Selenium::WebDriver::Error::ElementClickInterceptedError
     execute_script("document.getElementById('new_user').submit()")
   end
@@ -16,16 +16,15 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     identity = create(:identity)
     visit new_user_registration_path(as: 'Student', identity_token: identity.token)
     fill_in 'Adresse électronique', with: 'email@free.fr'
-    assert find("#select-channel-email", visible: false).selected?
-    find("#select-channel-phone", visible: false)
+    assert find('#select-channel-email', visible: false).selected?
+    find('#select-channel-phone', visible: false)
 
     find('label', text: 'Par téléphone').click
 
     fill_in 'Numéro de téléphone', with: '0623042525'
-    assert find("#select-channel-phone", visible: false).selected?
-    find("#select-channel-email", visible: false)
+    assert find('#select-channel-phone', visible: false).selected?
+    find('#select-channel-email', visible: false)
   end
-
 
   test 'navigation & interaction works until student creation' do
     create(:department, name: 'Seine-et-Marne', code: '77')
@@ -46,10 +45,10 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
     # fails to create student with existing email and display email channel
     assert_difference('Users::Student.count', 0) do
-      find("label[for='select-channel-email']",).click
+      find("label[for='select-channel-email']").click
       fill_in 'Adresse électronique', with: existing_email
       fill_in 'Créer un mot de passe', with: new_email_password
-      click_on "Valider"
+      click_on 'Valider'
       find('.fr-alert.fr-alert--error', text: 'Courriel : Un compte est déjà associé à cet email')
       assert_equal existing_email, find('#user_email').value
     end
@@ -59,7 +58,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
       find('label', text: 'Par email').click
       fill_in 'Adresse électronique', with: new_email
       fill_in 'Créer un mot de passe', with: new_email_password
-      click_on "Valider"
+      click_on 'Valider'
     end
     refute Users::Student.last.confirmed?
     Users::Student.last.confirm
@@ -67,8 +66,8 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     visit new_user_session_path
     fill_in 'Adresse électronique', with: new_email
     fill_in 'Mot de passe', with: new_email_password
-    click_button "Se connecter"
-    find(".h4 .strong", text: "Les offres de stage")
+    click_button 'Se connecter'
+    find('.h4 .strong', text: 'Les offres de stage')
     assert_select '#alert-text', count: 0
   end
 
@@ -86,16 +85,16 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     find_field('Établissement ou commune').fill_in(with: 'Saint')
     find('#downshift-0-item-0').click
     # find("label[for=\"select-school-#{school_1.id}\"]").click
-    select school_1.name, from: "identity_school_id"
-    select("Autre classe", from: 'identity_class_room_id')
+    select school_1.name, from: 'identity_school_id'
+    select('Autre classe', from: 'identity_class_room_id')
   end
 
   test 'Student with mail subscription with former internship_offer ' \
        'visit leads to offer page even when mistaking along the way' do
-    travel_to  Date.new(2020, 1, 1) do
+    travel_to Date.new(2024, 1, 1) do
       create(:department, name: 'Seine-et-Marne', code: '77')
       school_1 = create(:school, name: 'Etablissement Test 1',
-                                city: 'Saint-Martin', zipcode: '77515')
+                                 city: 'Saint-Martin', zipcode: '77515')
       class_room_1 = create(:class_room, name: '2de A', school: school_1)
       birth_date = 14.years.ago
       email = 'yetanother@gmail.com'
@@ -104,7 +103,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
       visit internship_offer_path(offer)
       first(:link, 'Postuler').click
-      find('a.fr-btn--secondary', text: "Créer un compte").click
+      find('a.fr-btn--secondary', text: 'Créer un compte').click
 
       # mistaking with password confirmation
       assert_difference('Users::Student.count', 0) do
@@ -113,11 +112,11 @@ class SignUpStudentsTest < ApplicationSystemTestCase
         find('#downshift-0-item-0').click
         fill_in 'Prénom', with: 'Martine'
         fill_in 'Nom', with: 'Fourcadex'
-        select school_1.name, from: "identity_school_id"
+        select school_1.name, from: 'identity_school_id'
         fill_in 'Date de naissance', with: birth_date.strftime('%d/%m/%Y')
         find('label', text: 'Féminin').click
 
-        click_on "Valider"
+        click_on 'Valider'
       end
 
       # real signup as student
@@ -128,7 +127,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
         find("input[type='submit']").click
       end
 
-      created_student = Users::Student.find_by(email: email)
+      created_student = Users::Student.find_by(email:)
 
       refute created_student.confirmed?
     end
@@ -141,12 +140,12 @@ class SignUpStudentsTest < ApplicationSystemTestCase
                                city: 'Saint-Martin', zipcode: '77515')
     class_room_1 = create(:class_room, name: '2de A', school: school_1)
     student = create(:student, school: school_1, class_room: class_room_1,
-                               password: password)
+                               password:)
     offer = create(:weekly_internship_offer)
 
     visit internship_offer_path(offer.id)
 
-    # TODO April flower
+    # TODO: April flower
     # first(:link, 'Postuler').click
     # below : 'Pas encore de compte ? Inscrivez-vous'
     # within('.onboarding-card.onboarding-card-sm') do
@@ -157,8 +156,6 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     #
 
     # sign_in as Student STEP 1
-
-
 
     # sign_in as Student STEP 2
     # find('label', text: 'Par email').click
@@ -174,16 +171,16 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   end
 
   test 'Student registered with phone logs in after visiting an internship_offer and lands on offer page' do
-    travel_to Date.new(2020, 1, 1) do
+    travel_to Date.new(2024, 1, 1) do
       password = 'kik2olollTtest!'
       create(:department, name: 'Seine-Saint-Denis', code: '93')
       school_1 = create(:school, name: 'Etablissement Test 1',
-                                 city: 'Gagny', 
+                                 city: 'Gagny',
                                  zipcode: '93220')
       class_room_1 = create(:class_room, name: '2de A', school: school_1)
       student = create(:student, :registered_with_phone, school: school_1,
-                                                        class_room: class_room_1,
-                                                        password: password)
+                                                         class_room: class_room_1,
+                                                         password:)
       offer = create(:weekly_internship_offer)
 
       visit internship_offer_path(offer.id)
@@ -214,7 +211,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
     visit internship_offers_path
     find('h4 a', text: offer.title).click
-    # TODO April flower
+    # TODO: April flower
     # find('.sticky-top a[data-turbo="false"]', text: 'Postuler').click
     # click_link 'Créer mon compte'
 
@@ -250,13 +247,13 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   end
 
   test 'navigation & interaction works until student creation with phone' do
-    travel_to Date.new(2020, 1, 1) do
+    travel_to Date.new(2024, 1, 1) do
       create(:department, name: 'Seine-et-Marne', code: '77')
       create(:department, name: 'Marne', code: '51')
       school_1 = create(:school, name: 'Etablissement Test 1',
-                               city: 'Saint-Martin', zipcode: '77515')
+                                 city: 'Saint-Martin', zipcode: '77515')
       school_2 = create(:school, name: 'Etablissement Test 2',
-                                city: 'Saint-Parfait', zipcode: '51577')
+                                 city: 'Saint-Parfait', zipcode: '51577')
       class_room_1 = create(:class_room, name: '2de A', school: school_1)
       create(:class_room, name: '2de B', school: school_2)
       existing_phone = '+330600110011'
@@ -270,13 +267,13 @@ class SignUpStudentsTest < ApplicationSystemTestCase
       assert_difference('Users::Student.count', 0) do
         find_field('Établissement ou commune').fill_in(with: 'Saint')
         find('#downshift-0-item-0').click
-        select school_1.name, from: "identity_school_id"
+        select school_1.name, from: 'identity_school_id'
         select(class_room_1.name, from: 'identity_class_room_id')
         fill_in 'Prénom', with: 'Martin'
         fill_in 'Nom', with: 'Fourcade'
         fill_in 'Date de naissance', with: birth_date.strftime('%d/%m/%Y')
         find('label', text: 'Masculin').click
-        click_on "Valider"
+        click_on 'Valider'
 
         find('label', text: 'Par téléphone').click
         execute_script("document.getElementById('phone-input').value = '#{existing_phone}';")
@@ -285,8 +282,9 @@ class SignUpStudentsTest < ApplicationSystemTestCase
       end
 
       # ensure failure drives user to login_page
-      find('span#alert-text', text: "Un compte est déjà associé à ce numéro de téléphone, connectez-vous ou réinitialisez votre mot de passe si vous l'avez oublié")
-      # TODO functional is not ok
+      find('span#alert-text',
+           text: "Un compte est déjà associé à ce numéro de téléphone, connectez-vous ou réinitialisez votre mot de passe si vous l'avez oublié")
+      # TODO: functional is not ok
       assert_equal '+33 06 00 11 00 11', find("input[name='user[phone]']").value
     end
   end

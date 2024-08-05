@@ -7,11 +7,6 @@ class InternshipOffer < ApplicationRecord
   MAX_CANDIDATES_HIGHEST = 6_000
   TITLE_MAX_CHAR_COUNT = 150
   DESCRIPTION_MAX_CHAR_COUNT = 500
-  PERIOD_LABELS = {
-    full_time: '2 semaines - du 17 au 28 juin 2024',
-    week_1: '1 semaine - du 17 au 21 juin 2024',
-    week_2: '1 semaine - du 24 au 28 juin 2024'
-  }
 
   include StiPreload
   include AASM
@@ -160,6 +155,11 @@ class InternshipOffer < ApplicationRecord
     where('last_date > :now', now: Time.now)
   }
 
+  scope :in_current_year, lambda {
+    last_date = SchoolYear::Current.new.end_of_period
+    in_the_future.where('last_date <= :last_date', last_date:)
+  }
+
   scope :weekly_framed, lambda {
     where(type: [InternshipOffers::WeeklyFramed.name,
                  InternshipOffers::Api.name])
@@ -185,11 +185,15 @@ class InternshipOffer < ApplicationRecord
   }
 
   # scope :specific_school_year, lambda { |school_year:|
-  #   week_ids = Week.weeks_of_school_year(school_year: school_year).pluck(:id)
+  #   week_ids = Week.weeks_of_school_year(school_year:).pluck(:id)
 
   #   joins(:internship_offer_weeks)
   #     .where('internship_offer_weeks.week_id in (?)', week_ids)
   # }
+
+  scope :with_school_year, lambda { |school_year:|
+    where(school_year:)
+  }
 
   scope :shown_to_employer, lambda {
     where(hidden_duplicate: false)
@@ -252,7 +256,26 @@ class InternshipOffer < ApplicationRecord
     end
   end
 
+  # -------------------------
   # Methods
+  # -------------------------
+
+  def self.period_labels(school_year:)
+    SchoolTrack::Seconde.period_labels(school_year:)
+  end
+
+  def self.current_period_labels
+    period_labels(school_year: SchoolYear::Current.new.year_in_june)
+  end
+
+  def current_period_label
+    InternshipOffer.current_period_labels.values[period]
+  end
+
+  def period_label
+    InternshipOffer.period_labels(school_year:).values[period]
+  end
+
   def weeks_count
     full_time? ? 2 : 1
   end

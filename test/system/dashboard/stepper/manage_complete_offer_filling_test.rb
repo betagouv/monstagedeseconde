@@ -17,7 +17,7 @@ class ManageCompleteOfferFillingTest < ApplicationSystemTestCase
     new_group_name = "Ministère de l'Amour"
     group_amour = create(:group, name: new_group_name, is_public: true)
     sector = create(:sector)
-    travel_to(Date.new(2019, 3, 1)) do
+    travel_to(Date.new(2024, 3, 1)) do
       sign_in(employer)
       visit employer.custom_dashboard_path
       find('#test-create-offer').click
@@ -70,7 +70,7 @@ class ManageCompleteOfferFillingTest < ApplicationSystemTestCase
     employer = create(:employer)
     group    = create(:group, name: 'hello', is_public: false)
     sector   = create(:sector)
-    travel_to(Date.new(2019, 3, 1)) do
+    travel_to(Date.new(2024, 3, 1)) do
       sign_in(employer)
       visit employer.custom_dashboard_path
       find('#test-create-offer').click
@@ -115,7 +115,7 @@ class ManageCompleteOfferFillingTest < ApplicationSystemTestCase
   test 'logged in employer accesses her idle offer through email url (cta)' do
     employer = create(:employer)
     internship_offer = create(:weekly_internship_offer, employer:)
-    travel_to(Date.new(2020, 3, 1)) do
+    travel_to(Date.new(2024, 3, 1)) do
       sign_in(employer)
       visit internship_offer_path(id: internship_offer.id, mtm_campaign: 'Offreur_Offre_de_stage_en_attente',
                                   origine: 'email')
@@ -128,7 +128,7 @@ class ManageCompleteOfferFillingTest < ApplicationSystemTestCase
     password = '45po78M;$pass'
     employer = create(:employer, password:)
     internship_offer = create(:weekly_internship_offer, employer:)
-    travel_to(Date.new(2020, 3, 1)) do
+    travel_to(Date.new(2024, 3, 1)) do
       visit internship_offer_path(id: internship_offer.id, mtm_campaign: 'Offreur_Offre_de_stage_en_attente',
                                   origine: 'email')
       assert_equal 'Connexion à Mon stage de seconde', find('h1').text

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'application_system_test_case'
 
 class InternshipOfferSearchMobileTest < ApplicationSystemTestCase
@@ -46,7 +47,6 @@ class InternshipOfferSearchMobileTest < ApplicationSystemTestCase
   end
 
   test 'USE_IPHONE_EMULATION, search by location (zipcodes) works' do
-
     internship_offer_at_paris = create(:weekly_internship_offer,
                                        coordinates: Coordinates.paris)
     internship_offer_at_bordeaux = create(:weekly_internship_offer,
@@ -90,8 +90,8 @@ class InternshipOfferSearchMobileTest < ApplicationSystemTestCase
   end
 
   test 'USE_IPHONE_EMULATION, search by week works' do
-    travel_to(Date.new(2020,9,6)) do
-      skip "TODO #mayflower"
+    travel_to(Date.new(2020, 9, 6)) do
+      skip 'TODO #mayflower'
 
       searched_internship_offer = create(:weekly_internship_offer)
       not_searched_internship_offer = create(:weekly_internship_offer)
@@ -104,17 +104,16 @@ class InternshipOfferSearchMobileTest < ApplicationSystemTestCase
       # assert_absence_of(internship_offer: not_searched_internship_offer)
       # TODO: ensure weeks navigation and months navigation
     end
-
   end
 
   test 'USE_IPHONE_EMULATION, search by all criteria' do
-    travel_to(Date.new(2022,1,10)) do
+    travel_to(Date.new(2024, 1, 10)) do
       searched_keyword = 'helloworld'
       searched_location = Coordinates.paris
       not_searched_keyword = 'bouhbouh'
       not_searched_location = Coordinates.bordeaux
       searched_opts = { title: searched_keyword,
-                        coordinates: searched_location}
+                        coordinates: searched_location }
       # build findable
       findable_internship_offer = create(:weekly_internship_offer, searched_opts)
 

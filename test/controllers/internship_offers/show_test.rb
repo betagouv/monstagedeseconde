@@ -75,7 +75,7 @@ module InternshipOffers
 
     test 'GET #show with applications from other students reduces the number ' \
          'of available weeks with weeklist splitted version' do
-      travel_to(Date.new(2020, 1, 1)) do
+      travel_to(Date.new(2024, 1, 1)) do
         offer = create(
           :weekly_internship_offer,
           city: 'Bordeaux',
@@ -96,7 +96,7 @@ module InternshipOffers
     end
 
     test 'GET #show with period 2' do
-      travel_to(Date.new(2020, 1, 1)) do
+      travel_to(Date.new(2024, 1, 1)) do
         offer = create(
           :weekly_internship_offer,
           city: 'Bordeaux',
@@ -113,7 +113,7 @@ module InternshipOffers
     end
 
     test 'GET #show as Student with API offer' do
-      travel_to(Date.new(2019, 10, 1)) do
+      travel_to(Date.new(2023, 10, 1)) do
         weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
         internship_offer = create(:api_internship_offer)
         student = create(:student, school: create(:school))

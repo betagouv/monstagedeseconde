@@ -76,7 +76,6 @@ module InternshipApplications
       assert_equal created_internship_application.student_email, 'newemail@gmail.com'
 
       puts student.legal_representative_email
-      # byebug
       assert_equal 'parent@gmail.com', student.reload.legal_representative_email
       assert_equal created_internship_application.student_legal_representative_email, 'parent@gmail.com'
 

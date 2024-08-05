@@ -112,7 +112,7 @@ module Dashboard
       end
 
       test 'student can draft, submit, and cancel(by_student) internship_applications' do
-        travel_to Date.new(2019, 12, 1) do
+        travel_to Date.new(2024, 12, 1) do
           school = create(:school)
           student = create(:student,
                            school:,
@@ -159,7 +159,7 @@ module Dashboard
       end
 
       test 'student can update her internship_application' do
-        travel_to Date.new(2023, 2, 1) do
+        travel_to Date.new(2024, 2, 1) do
           school = create(:school)
           student = create(:student,
                            :when_applying,
@@ -309,7 +309,7 @@ module Dashboard
       end
 
       test 'quick decision process with canceling' do
-        travel_to Date.new(2019, 10, 1) do
+        travel_to Date.new(2024, 10, 1) do
           school = create(:school)
           student = create(:student,
                            school:,
@@ -337,7 +337,7 @@ module Dashboard
       end
 
       test 'quick decision process with approving' do
-        travel_to Date.new(2019, 10, 1) do
+        travel_to Date.new(2024, 10, 1) do
           school = create(:school)
           student = create(:student,
                            school:,
@@ -365,7 +365,7 @@ module Dashboard
       end
 
       test 'reasons for rejection are explicit for students when employer rejects internship_application' do
-        travel_to Date.new(2019, 10, 1) do
+        travel_to Date.new(2024, 10, 1) do
           employer = create(:employer)
           school = create(:school)
           student = create(:student,

@@ -17,15 +17,16 @@ module Dashboard::Stepper
     test 'GET #new as employer show valid form' do
       employer = create(:employer)
       sign_in(employer)
-      travel_to(Date.new(2019, 3, 1)) do
-        organisation = create(:organisation, employer: employer)
+      travel_to(Date.new(2024, 3, 1)) do
+        organisation = create(:organisation, employer:)
         internship_offer_info = create(:internship_offer_info)
         hosting_info = create(:hosting_info)
 
         get new_dashboard_stepper_practical_info_path(
           organisation_id: organisation.id,
           internship_offer_info_id: internship_offer_info.id,
-          hosting_info_id: hosting_info.id)
+          hosting_info_id: hosting_info.id
+        )
 
         assert_response :success
         asserted_input_count = 0
@@ -35,7 +36,7 @@ module Dashboard::Stepper
     test 'GET #new as employer is not turbolinkable' do
       employer = create(:employer)
       sign_in(employer)
-      organisation = create(:organisation, employer: employer)
+      organisation = create(:organisation, employer:)
       get new_dashboard_stepper_internship_offer_info_path(organisation_id: organisation.id)
       assert_select 'meta[name="turbo-visit-control"][content="reload"]'
     end
@@ -46,18 +47,19 @@ module Dashboard::Stepper
     test 'POST create does create practical_info and internship_offer' do
       employer = create(:employer, phone: '+330623456789')
       sign_in(employer)
-      organisation = create(:organisation, employer: employer)
-      internship_offer_info = create(:internship_offer_info, employer: employer)
-      hosting_info = create(:hosting_info, employer: employer)
+      organisation = create(:organisation, employer:)
+      internship_offer_info = create(:internship_offer_info, employer:)
+      hosting_info = create(:hosting_info, employer:)
       create(:department)
-      
+
       assert_difference('InternshipOffer.count', 1) do
         assert_difference('PracticalInfo.count', 1) do
           post(
             dashboard_stepper_practical_infos_path(
               organisation_id: organisation.id,
               internship_offer_info_id: internship_offer_info.id,
-              hosting_info_id: hosting_info.id),
+              hosting_info_id: hosting_info.id
+            ),
             params: {
               practical_info: {
                 street: '12 rue des bois',
@@ -67,14 +69,15 @@ module Dashboard::Stepper
                 coordinates: { latitude: 1, longitude: 1 },
                 contact_phone: '+330623456789',
                 daily_hours: {
-                  "lundi" => ['08:00', '15:00'],
-                  "mardi" => ['08:00', '13:00'],
-                  "mercredi" => ['09:00', '14:00'],
-                  "jeudi" => ['10:00', '15:00'],
-                  "vendredi" => ['11:00', '16:00']
+                  'lundi' => ['08:00', '15:00'],
+                  'mardi' => ['08:00', '13:00'],
+                  'mercredi' => ['09:00', '14:00'],
+                  'jeudi' => ['10:00', '15:00'],
+                  'vendredi' => ['11:00', '16:00']
                 }
-              },
-            })
+              }
+            }
+          )
         end
       end
 
@@ -85,12 +88,12 @@ module Dashboard::Stepper
       assert_equal 'Paris', created_practical_info.city
       assert_equal 1, created_practical_info.coordinates.latitude
       assert_equal 1, created_practical_info.coordinates.longitude
-      assert_equal ['08:00', '15:00'], created_practical_info.daily_hours["lundi"]
-      assert_equal ['08:00', '13:00'], created_practical_info.daily_hours["mardi"]
-      assert_equal ['09:00', '14:00'], created_practical_info.daily_hours["mercredi"]
-      assert_equal ['10:00', '15:00'], created_practical_info.daily_hours["jeudi"]
-      assert_equal ['11:00', '16:00'], created_practical_info.daily_hours["vendredi"]
-      
+      assert_equal ['08:00', '15:00'], created_practical_info.daily_hours['lundi']
+      assert_equal ['08:00', '13:00'], created_practical_info.daily_hours['mardi']
+      assert_equal ['09:00', '14:00'], created_practical_info.daily_hours['mercredi']
+      assert_equal ['10:00', '15:00'], created_practical_info.daily_hours['jeudi']
+      assert_equal ['11:00', '16:00'], created_practical_info.daily_hours['vendredi']
+
       assert_redirected_to internship_offer_path(created_internship_offer, origine: 'dashboard', stepper: true)
 
       # recopy organisation
@@ -127,9 +130,9 @@ module Dashboard::Stepper
     test 'POST create when already created redirects to internship offer' do
       employer = create(:employer, phone: '+330623456789')
       sign_in(employer)
-      organisation = create(:organisation, employer: employer)
-      internship_offer_info = create(:internship_offer_info, employer: employer)
-      hosting_info = create(:hosting_info, employer: employer)
+      organisation = create(:organisation, employer:)
+      internship_offer_info = create(:internship_offer_info, employer:)
+      hosting_info = create(:hosting_info, employer:)
       create(:department)
       # first time
       assert_enqueued_jobs 1, only: DraftedInternshipOfferJob do
@@ -139,7 +142,8 @@ module Dashboard::Stepper
               dashboard_stepper_practical_infos_path(
                 organisation_id: organisation.id,
                 internship_offer_info_id: internship_offer_info.id,
-                hosting_info_id: hosting_info.id),
+                hosting_info_id: hosting_info.id
+              ),
               params: {
                 practical_info: {
                   street: '12 rue des bois',
@@ -149,14 +153,15 @@ module Dashboard::Stepper
                   coordinates: { latitude: 1, longitude: 1 },
                   contact_phone: '+330623456789',
                   daily_hours: {
-                    "lundi" => ['08:00', '15:00'],
-                    "mardi" => ['08:00', '13:00'],
-                    "mercredi" => ['09:00', '14:00'],
-                    "jeudi" => ['10:00', '15:00'],
-                    "vendredi" => ['11:00', '16:00']
+                    'lundi' => ['08:00', '15:00'],
+                    'mardi' => ['08:00', '13:00'],
+                    'mercredi' => ['09:00', '14:00'],
+                    'jeudi' => ['10:00', '15:00'],
+                    'vendredi' => ['11:00', '16:00']
                   }
-                },
-              })
+                }
+              }
+            )
           end
         end
       end
@@ -167,7 +172,8 @@ module Dashboard::Stepper
           dashboard_stepper_practical_infos_path(
             organisation_id: organisation.id,
             internship_offer_info_id: internship_offer_info.id,
-            hosting_info_id: hosting_info.id),
+            hosting_info_id: hosting_info.id
+          ),
           params: {
             practical_info: {
               street: '12 rue des bois',
@@ -177,34 +183,36 @@ module Dashboard::Stepper
               coordinates: { latitude: 1, longitude: 1 },
               contact_phone: '+330623456789',
               daily_hours: {
-                "lundi" => ['08:00', '15:00'],
-                "mardi" => ['08:00', '13:00'],
-                "mercredi" => ['09:00', '14:00'],
-                "jeudi" => ['10:00', '15:00'],
-                "vendredi" => ['11:00', '16:00']
+                'lundi' => ['08:00', '15:00'],
+                'mardi' => ['08:00', '13:00'],
+                'mercredi' => ['09:00', '14:00'],
+                'jeudi' => ['10:00', '15:00'],
+                'vendredi' => ['11:00', '16:00']
               }
-            },
-          })
-      end     
+            }
+          }
+        )
+      end
     end
 
     test "POST create when try to user other' steps redirects to organisation" do
       employer = create(:employer, phone: '+330623456789')
       employer_2 = create(:employer)
       sign_in(employer)
-      organisation = create(:organisation, employer: employer)
-      internship_offer_info = create(:internship_offer_info, employer: employer)
-      hosting_info = create(:hosting_info, employer: employer)
+      organisation = create(:organisation, employer:)
+      internship_offer_info = create(:internship_offer_info, employer:)
+      hosting_info = create(:hosting_info, employer:)
       hosting_info_2 = create(:hosting_info, employer: employer_2)
       create(:department)
-      
+
       assert_difference('InternshipOffer.count', 0) do
         assert_difference('PracticalInfo.count', 0) do
           post(
             dashboard_stepper_practical_infos_path(
               organisation_id: organisation.id,
               internship_offer_info_id: internship_offer_info.id,
-              hosting_info_id: hosting_info_2.id), # wrong hosting_info_id
+              hosting_info_id: hosting_info_2.id
+            ), # wrong hosting_info_id
             params: {
               practical_info: {
                 street: '12 rue des bois',
@@ -214,31 +222,32 @@ module Dashboard::Stepper
                 coordinates: { latitude: 1, longitude: 1 },
                 contact_phone: '+330623456789',
                 daily_hours: {
-                  "lundi" => ['08:00', '15:00'],
-                  "mardi" => ['08:00', '13:00'],
-                  "mercredi" => ['09:00', '14:00'],
-                  "jeudi" => ['10:00', '15:00'],
-                  "vendredi" => ['11:00', '16:00']
+                  'lundi' => ['08:00', '15:00'],
+                  'mardi' => ['08:00', '13:00'],
+                  'mercredi' => ['09:00', '14:00'],
+                  'jeudi' => ['10:00', '15:00'],
+                  'vendredi' => ['11:00', '16:00']
                 }
-              },
-            })
+              }
+            }
+          )
         end
       end
-   
+
       assert_response :bad_request
     end
 
     test 'POST #create as employer with missing params' do
       employer = create(:employer)
       sign_in(employer)
-      organisation = create(:organisation, employer: employer)
+      organisation = create(:organisation, employer:)
       internship_offer_info = create(:internship_offer_info)
       hosting_info = create(:hosting_info)
 
       post(
         dashboard_stepper_practical_infos_path(organisation_id: organisation.id,
-                                      internship_offer_info_id: internship_offer_info.id,
-                                      hosting_info_id: hosting_info.id),
+                                               internship_offer_info_id: internship_offer_info.id,
+                                               hosting_info_id: hosting_info.id),
         params: {
           practical_info: {
             street: '12 rue des bois'

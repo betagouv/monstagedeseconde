@@ -19,11 +19,11 @@ div.test-search-container.search-tab
                                     latitude: default_values[:latitude],
                                     longitude: default_values[:longitude],
                                     whiteBg: false } )
-        
+
       .form-group.mb-md-0.col-12.col-md.fr-mx-2w
         = form.label :radius_in_km, "Distance maximum", class: "fr-label font-weight-lighter"
         = form.select :radius_in_km,
-                      options_for_select((1..50).map { |i| ["#{i} km", i]}, params[:radius_in_km] || CompaniesController::DEFAULT_RADIUS_IN_KM),
+                      options_for_select((1..8).to_a.concat([10,12]).map { |i| ["#{i * 5} km", i * 5]}, params[:radius_in_km] || CompaniesController::DEFAULT_RADIUS_IN_KM),
                       { },
                       class: "fr-select",
                       title: "Recherche par distance",
