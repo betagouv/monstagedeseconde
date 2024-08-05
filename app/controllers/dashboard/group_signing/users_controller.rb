@@ -14,47 +14,44 @@ module Dashboard
         respond_to do |format|
           format.turbo_stream do
             render turbo_stream:
-              turbo_stream.update("internship-agreement-group",
-                                   partial: starting_path(current_user),
-                                   locals: { agreement_ids: @agreement_ids,
-                                             counter: @counter } )
+              turbo_stream.update('internship-agreement-group',
+                                  partial: starting_path(current_user),
+                                  locals: { agreement_ids: @agreement_ids,
+                                            counter: @counter })
           end
         end
       end
 
-
-
       def update
         authorize! :sign_internship_agreements, InternshipAgreement
         @agreement_ids = user_params[:agreement_ids]
-        if save_phone_user(current_user) && current_user.reload.send_signature_sms_token
+        if current_user.save_phone_user(user_params) &&
+           current_user.reload.send_signature_sms_token
           respond_to do |format|
             format.turbo_stream do
               path = 'dashboard/internship_agreements/signature/modal_code_submit'
               render turbo_stream:
-                turbo_stream.replace("internship-agreement-signature-form",
-                                      partial: path,
-                                      locals: { current_user: current_user,
-                                                agreement_ids: @agreement_ids })
+                turbo_stream.replace('internship-agreement-signature-form',
+                                     partial: path,
+                                     locals: { current_user:,
+                                               agreement_ids: @agreement_ids })
+            end
+          end
+        elsif current_user.errors.any?
+          respond_to do |format|
+            format.turbo_stream do
+              err_path = 'dashboard/internship_agreements/signature/code_error_messages'
+              err_msg = current_user.errors.messages.values.flatten.join(',')
+              render turbo_stream:
+                turbo_stream.replace('update-error-messages',
+                                     partial: err_path,
+                                     locals: { error_message: err_msg,
+                                               agreement_ids: @agreement_ids })
             end
           end
         else
-          if current_user.errors.any?
-            respond_to do |format|
-              format.turbo_stream do
-                err_path = 'dashboard/internship_agreements/signature/code_error_messages'
-                err_msg = current_user.errors.messages.values.flatten.join(',')
-                render turbo_stream:
-                  turbo_stream.replace("update-error-messages",
-                                        partial: err_path,
-                                        locals: { error_message: err_msg ,
-                                                  agreement_ids: @agreement_ids })
-              end
-            end
-          else
-            redirect_to dashboard_internship_agreements_path,
-                        alert: "Une erreur est survenue et le SMS n'a pas été envoyé"
-          end
+          redirect_to dashboard_internship_agreements_path,
+                      alert: "Une erreur est survenue et le SMS n'a pas été envoyé"
         end
       end
 
@@ -66,7 +63,7 @@ module Dashboard
                       notice: 'Votre numéro de téléphone a été supprimé'
         else
           redirect_to dashboard_internship_agreements_path,
-                      alert: "Une erreur est survenue et " \
+                      alert: 'Une erreur est survenue et ' \
                              "votre demande n'a pas été traitée"
         end
       end
@@ -80,7 +77,7 @@ module Dashboard
             respond_to do |format|
               format.turbo_stream do
                 render turbo_stream:
-                  turbo_stream.replace("code-request",
+                  turbo_stream.replace('code-request',
                                        partial: flash_path,
                                        locals: { notice: 'Un nouveau code a été envoyé' })
               end
@@ -92,9 +89,9 @@ module Dashboard
             respond_to do |format|
               format.turbo_stream do
                 render turbo_stream:
-                  turbo_stream.replace("code-request",
-                                        partial: flash_path,
-                                        locals: { alert: err_msg })
+                  turbo_stream.replace('code-request',
+                                       partial: flash_path,
+                                       locals: { alert: err_msg })
               end
             end
           end
@@ -104,7 +101,6 @@ module Dashboard
       def signature_code_validate
         authorize! :sign_internship_agreements, InternshipAgreement
 
-
         @agreement_ids = user_params[:agreement_ids]
         err_path = 'dashboard/internship_agreements/signature/code_error_messages'
         ok_path = 'dashboard/internship_agreements/signature/modal_handwrite_sign'
@@ -113,9 +109,9 @@ module Dashboard
             respond_to do |format|
               format.turbo_stream do
                 render turbo_stream:
-                  turbo_stream.replace("internship-agreement-group",
+                  turbo_stream.replace('internship-agreement-group',
                                        partial: ok_path,
-                                       locals: { current_user: current_user,
+                                       locals: { current_user:,
                                                  agreement_ids: @agreement_ids })
               end
             end
@@ -124,7 +120,7 @@ module Dashboard
             respond_to do |format|
               format.turbo_stream do
                 render turbo_stream:
-                  turbo_stream.replace("error-messages",
+                  turbo_stream.replace('error-messages',
                                        partial: err_path,
                                        locals: { error_message: error.errors.full_messages.join(','),
                                                  agreement_ids: @agreement_ids })
@@ -135,10 +131,10 @@ module Dashboard
             respond_to do |format|
               format.turbo_stream do
                 render turbo_stream:
-                  turbo_stream.replace("error-messages",
-                                      partial: err_path,
-                                      locals: { error_message: error_msg.message ,
-                                                agreement_ids: @agreement_ids })
+                  turbo_stream.replace('error-messages',
+                                       partial: err_path,
+                                       locals: { error_message: error_msg.message,
+                                                 agreement_ids: @agreement_ids })
               end
             end
           end
@@ -180,19 +176,6 @@ module Dashboard
         current_user.formatted_phone.present? ? path_with_phone : path_without_phone
       end
 
-      def save_phone_user(user)
-        return true if user.phone && user.phone == clean_phone_number
-        return false if clean_phone_number.blank?
-
-        user.phone = clean_phone_number
-        user.save
-      end
-
-      def clean_phone_number
-        phone_number = "#{user_params[:phone_prefix]}#{user_params[:phone_suffix]}"
-        phone_number.try(:delete, ' ')
-      end
-
       def signature_builder
         @signature_buider = Builders::SignatureBuilder.new(
           user: current_user,
@@ -202,7 +185,7 @@ module Dashboard
       end
 
       def user_params
-        allowed_params = (0..5).map {|i| "digit-code-target-#{i}".to_sym}
+        allowed_params = (0..5).map { |index| "digit-code-target-#{index}".to_sym }
         allowed_params += %i[
           id
           phone_suffix
