@@ -14,7 +14,7 @@ module RailsAdminInternshipOfferable
           def label = 'Période de stage'
 
           def pretty_value
-            bindings[:object].current_period_label
+            bindings[:object].period_label
           end
         end
         field :department

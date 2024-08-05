@@ -154,10 +154,10 @@ class InternshipOffer < ApplicationRecord
   scope :in_the_future, lambda {
     where('last_date > :now', now: Time.now)
   }
-  
+
   scope :in_current_year, lambda {
     last_date = SchoolYear::Current.new.end_of_period
-    in_the_future.where('last_date <= :last_date', last_date: )
+    in_the_future.where('last_date <= :last_date', last_date:)
   }
 
   scope :weekly_framed, lambda {
@@ -270,6 +270,10 @@ class InternshipOffer < ApplicationRecord
 
   def current_period_label
     InternshipOffer.current_period_labels.values[period]
+  end
+
+  def period_label
+    InternshipOffer.period_labels(school_year:).values[period]
   end
 
   def weeks_count
