@@ -68,6 +68,7 @@ module Finders
         keyword
         period
         sector_ids
+        school_year
       ].each do |sym_key|
         query = send("#{sym_key}_query", query) if use_params(sym_key)
       end

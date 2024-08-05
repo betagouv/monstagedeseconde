@@ -34,11 +34,14 @@ module Finders
 
     private
 
-    def light_kept_published_future_offers_query
+    def light_kept_published_offers_query
       InternshipOffer.kept
                      .published
                      .with_seats
-                     .in_current_year
+    end
+
+    def light_kept_published_future_offers_query
+      light_kept_published_offers_query.within_current_year
     end
 
     def kept_published_future_offers_query
