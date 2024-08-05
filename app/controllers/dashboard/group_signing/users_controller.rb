@@ -184,16 +184,18 @@ module Dashboard
         )
       end
 
-      def user_params
-        allowed_params = (0..5).map { |index| "digit-code-target-#{index}".to_sym }
-        allowed_params += %i[
+      def allowed_params
+        %i[
           id
           phone_suffix
           phone_prefix
           signature_image
           agreement_ids
-        ]
-        allowed_params += [internship_agreement_ids: []]
+        ].concat((0..5).map { |index| "digit-code-target-#{index}".to_sym })
+          .concat([internship_agreement_ids: []])
+      end
+
+      def user_params
         params.require(:user).permit(*allowed_params)
       end
     end
