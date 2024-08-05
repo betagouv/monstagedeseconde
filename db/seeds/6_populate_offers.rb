@@ -383,7 +383,7 @@ def populate_internship_offers
     employer_description: "Le centre de service IBM de Lille délivre des services d'infrastructure informatique.",
     street: '128 rue brancion',
     zipcode: '75015',
-    city: 'paris',
+    city: 'Paris',
     remote_id: FFaker::Guid.guid,
     permalink: 'https://www.google.fr',
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
@@ -391,7 +391,7 @@ def populate_internship_offers
     internship_offer_area_id: area_id,
     school_year: 2023,
     period: 1,
-    start_date: SchoolTrack::Seconde.period_collection(school_year: 2023)[:week_1][:start_day],
+    first_date: SchoolTrack::Seconde.period_collection(school_year: 2023)[:week_1][:start_day],
     last_date: SchoolTrack::Seconde.period_collection(school_year: 2023)[:week_1][:end_day]
   )
   InternshipOffer.last.publish!
