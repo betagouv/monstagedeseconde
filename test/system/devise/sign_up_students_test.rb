@@ -145,29 +145,19 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
     visit internship_offer_path(offer.id)
 
-    # TODO: April flower
-    # first(:link, 'Postuler').click
+    first(:link, 'Postuler').click
     # below : 'Pas encore de compte ? Inscrivez-vous'
-    # within('.onboarding-card.onboarding-card-sm') do
-    #   click_link 'Me connecter'
-    # end
-
-    # TO DO FIX TEST
-    #
-
-    # sign_in as Student STEP 1
-
-    # sign_in as Student STEP 2
-    # find('label', text: 'Par email').click
-    # find("input[name='user[email]']").fill_in with: student.email
-    # find('label', text: 'Mot de passe').click
-    # find("input[name='user[password]']").fill_in with: password
-    # find("input[type='submit'][value='Connexion']").click
+    find("ul.fr-btns-group li input[type='submit'][value='Se connecter']").click
+    find('label', text: 'Par email').click
+    find("input[name='user[email]']").fill_in with: student.email
+    find('label', text: 'Mot de passe').click
+    find("input[name='user[password]']").fill_in with: password
+    find("ul.fr-btns-group li input[type='submit'][value='Se connecter']").click
     # redirected page is a show of targeted internship_offer
-    # assert_equal "/internship_offers/#{offer.id}/internship_applications/new", current_path
+    assert_equal "/offres-de-stage/#{offer.id}/candidatures/nouveau", current_path
     # targeted offer id at student's level is now empty
-    # assert_nil student.reload.targeted_offer_id,
-    #            'targeted offer should have been reset'
+    assert_nil student.reload.targeted_offer_id,
+               'targeted offer should have been reset'
   end
 
   test 'Student registered with phone logs in after visiting an internship_offer and lands on offer page' do
@@ -194,8 +184,8 @@ class SignUpStudentsTest < ApplicationSystemTestCase
       # redirected page is a show of targeted internship_offer
       assert_equal "/offres-de-stage/#{offer.id}/candidatures/nouveau", current_path
       # targeted offer id at student's level is now empty
-      # assert_nil student.reload.targeted_offer_id,
-      #            'targeted offer should have been reset'
+      assert_nil student.reload.targeted_offer_id,
+                 'targeted offer should have been reset'
     end
   end
 
@@ -205,15 +195,14 @@ class SignUpStudentsTest < ApplicationSystemTestCase
                                city: 'Saint-Martin', zipcode: '77515')
     class_room_1 = create(:class_room, name: '2de A', school: school_1)
     birth_date = 14.years.ago
-    password = 'kikoololletest'
+    password = 'kikooL4$olletest'
     valid_phone_number = '+330637607756'
     offer = create(:weekly_internship_offer)
 
     visit internship_offers_path
     find('h4 a', text: offer.title).click
-    # TODO: April flower
-    # find('.sticky-top a[data-turbo="false"]', text: 'Postuler').click
-    # click_link 'Créer mon compte'
+    find('.sticky-top a[data-turbo="false"]', text: 'Postuler').click
+    click_link 'Créer mon compte'
 
     # below : 'Pas encore de compte ? Inscrivez-vous'
     # click_on(class: 'text-danger') /!\ do not work
@@ -221,29 +210,29 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     # -----------------------------------------
     # TODO After student is invited to subscribe
     # -----------------------------------------
-    # find('a[href="/identites/nouveau?as=Student"]').click
+    find('a[href="/identites/nouveau?as=Student"]').click
 
-    # assert Identity.count.zero?
-    # assert_difference('Users::Student.count', 1) do
-    #   # signup as student - Identity creation
-    #   find_field('Nom (ou ville) de mon établissement').fill_in(with: 'Saint')
-    #   find('#downshift-0-item-0').click
-    #   select(school_1.name, from: "identity_school_id")
-    #   select(class_room_1.name, from: 'identity_class_room_id')
-    #   fill_in 'Prénom', with: 'Coufert'
-    #   fill_in 'Nom', with: 'Darmarin'
-    #   fill_in 'Date de naissance', with: birth_date.strftime('%d/%m/%Y')
-    #   find('label', text: 'Masculin').click
-    #   find('input[type="submit"]').click
-    #   # 2nd page
-    #   find('label[for="select-channel-phone"]').click
-    #   execute_script("document.querySelector('div[data-signup-target=\"phoneBloc\"]').classList.remove('d-none')")
-    #   execute_script("document.getElementById('phone-input').value = '#{valid_phone_number}';")
-    #   fill_in 'Créer un mot de passe', with: password
-    #   find('input[type="submit"]').click
-    #   assert Identity.count.positive?
-    # end
-    # find('h4 a', text: offer.title)
+    assert Identity.count.zero?
+    assert_difference('Users::Student.count', 1) do
+      # signup as student - Identity creation
+      find_field('Établissement ou commune').fill_in(with: 'Saint')
+      find('#downshift-0-item-0').click
+      select(school_1.name, from: 'identity_school_id')
+      select(class_room_1.name, from: 'identity_class_room_id')
+      fill_in 'Prénom', with: 'Coufert'
+      fill_in 'Nom', with: 'Darmarin'
+      fill_in 'Date de naissance', with: birth_date.strftime('%d/%m/%Y')
+      find('label', text: 'Masculin').click
+      find('input[type="submit"]').click
+      # 2nd page
+      find('label[for="select-channel-phone"]').click
+      execute_script("document.querySelector('div[data-signup-target=\"phoneBloc\"]').classList.remove('d-none')")
+      execute_script("document.getElementById('phone-input').value = '#{valid_phone_number}';")
+      fill_in 'Créer un mot de passe', with: password
+      find('input[type="submit"]').click
+      assert Identity.count.positive?
+    end
+    find('header h1.h2.text-center', text: 'Encore une petite étape...')
   end
 
   test 'navigation & interaction works until student creation with phone' do
