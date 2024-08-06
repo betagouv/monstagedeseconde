@@ -294,17 +294,13 @@ class Ability
       many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
       current_area_notifications_are_off = !user.fetch_current_area_notification.notify
 
-      # TODO : logic to be checked with current_area_notifications_are_off
       user.team.alive? &&
         (many_people_in_charge_of_area || current_area_notifications_are_off)
     end
 
     can :manage_abilities, AreaNotification do |area_notification|
-      if user.team.not_exists?
-        false
-      else
+      user.team.alive? &&
         area_notification.internship_offer_area.employer_id.in?(user.team_members_ids)
-      end
     end
   end
 

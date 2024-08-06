@@ -1,7 +1,7 @@
 module Services
   class SmsSender < ApiRequestsHelper
     LINK_MOBILITY_SENDING_ENDPOINT_URL = 'https://europe.ipx.com/restapi/v1/sms/send'.freeze
-    # TODO: link mobility provider as a class variable
+
     def perform
       if no_sms_mode?
         treat_no_sms_message
