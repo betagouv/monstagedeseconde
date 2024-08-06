@@ -28,18 +28,8 @@ module SchoolYear
       end
     end
 
-    def first_week_internship_monday
-      first_week_june = Date.new(year_in_june, 6, 1)
-                            .end_of_week
-      offset = first_week_june.mday >= 7 ? 8 : 15
-      first_week_june.days_since(offset.days)
-    end
-
-    def first_week_internship_friday = first_week_internship_monday.days_since(4.days)
-    def second_week_internship_monday = first_week_internship_monday.days_since(7.days)
-    def second_week_internship_friday = second_week_internship_monday.days_since(4.days)
-    def self.year_in_june = new.year_in_june
     def year_in_june = end_of_period.year
+    def self.year_in_june = new.year_in_june
 
     private
 

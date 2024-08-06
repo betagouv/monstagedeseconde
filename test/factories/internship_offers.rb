@@ -2,7 +2,6 @@
 
 FactoryBot.define do
   factory :internship_offer, aliases: %i[with_public_group_internship_offer] do
-    # TODO: use transient to set the distinction between weekly and api offers
     employer { create(:employer) }
     organisation { create(:organisation, employer:) }
     internship_offer_info { create(:internship_offer_info, employer:) }
@@ -61,21 +60,20 @@ FactoryBot.define do
 
     trait :week_1 do
       period { 1 }
-      # TODO: use SchoolYear::Current::new to update
-      first_date { SchoolYear::Current.new.first_week_internship_monday }
-      last_date { SchoolYear::Current.new.first_week_internship_friday }
+      first_date { SchoolTrack::Seconde.current_period_data.dig(:week_1, :start_day) }
+      last_date { SchoolTrack::Seconde.current_period_data.dig(:week_1, :end_day) }
     end
 
     trait :week_2 do
       period { 2 }
-      first_date { SchoolYear::Current.new.second_week_internship_monday }
-      last_date { SchoolYear::Current.new.second_week_internship_friday }
+      first_date { SchoolTrack::Seconde.current_period_data.dig(:week_2, :start_day) }
+      last_date { SchoolTrack::Seconde.current_period_data.dig(:week_2, :end_day) }
     end
 
     trait :full_time do
       period { 0 }
-      first_date { SchoolYear::Current.new.first_week_internship_monday }
-      last_date { SchoolYear::Current.new.second_week_internship_friday }
+      first_date { SchoolTrack::Seconde.current_period_data.dig(:full_time, :start_day) }
+      last_date { SchoolTrack::Seconde.current_period_data.dig(:full_time, :end_day) }
     end
 
     trait :draft do
