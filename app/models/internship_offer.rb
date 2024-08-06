@@ -155,7 +155,7 @@ class InternshipOffer < ApplicationRecord
     where('last_date > :now', now: Time.now)
   }
 
-  scope :in_current_year, lambda {
+  scope :within_current_year, lambda {
     last_date = SchoolYear::Current.new.end_of_period
     in_the_future.where('last_date <= :last_date', last_date:)
   }
@@ -265,7 +265,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def self.current_period_labels
-    period_labels(school_year: SchoolYear::Current.new.year_in_june)
+    period_labels(school_year: SchoolYear::Current.year_in_june)
   end
 
   def current_period_label
@@ -367,7 +367,7 @@ class InternshipOffer < ApplicationRecord
 
   def init
     self.max_candidates ||= 1
-    self.school_year = SchoolYear::Current.new.year_in_june
+    self.school_year ||= SchoolYear::Current.year_in_june
   end
 
   def already_applied_by_student?(student)

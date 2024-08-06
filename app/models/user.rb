@@ -178,6 +178,19 @@ class User < ApplicationRecord
            phone_password_reset_count: 0)
   end
 
+  def save_phone_user(user_params)
+    return true if phone && phone == clean_phone_number(user_params)
+    return false if clean_phone_number(user_params).blank?
+
+    self.phone = clean_phone_number(user_params)
+    !!save
+  end
+
+  def clean_phone_number(user_params)
+    phone_number = "#{user_params[:phone_prefix]}#{user_params[:phone_suffix]}"
+    phone_number.try(:delete, ' ')
+  end
+
   def check_phone_token?(token)
     phone_confirmable? && phone_token == token
   end
@@ -295,13 +308,13 @@ class User < ApplicationRecord
   end
 
   def password_complexity
-    if password.present?
-      unless password =~ /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?_&])/
-        errors.add :password, "doit inclure au moins une minuscule, une majuscule, un chiffre et un caractère spécial"
-      end
-      unless password.length >= 12
-        errors.add :password, "doit comporter au moins 12 caractères"
-      end
+    return unless password.present?
+
+    unless password =~ /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?_&])/
+      errors.add :password, 'doit inclure au moins une minuscule, une majuscule, un chiffre et un caractère spécial'
     end
+    return if password.length >= 12
+
+    errors.add :password, 'doit comporter au moins 12 caractères'
   end
 end
