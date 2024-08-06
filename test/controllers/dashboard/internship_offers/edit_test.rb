@@ -28,7 +28,6 @@ module Dashboard::InternshipOffers
     end
 
     test 'GET #edit post offer render selectable week of past year' do
-      skip 'will be ok when reaching 2025'
       travel_to(Date.new(Date.today.year - 1, 5, 31)) do
         employer = create(:employer)
         school_year_n_minus_one = SchoolYear::Floating.new_by_year(year: Date.today.year - 1)
