@@ -75,7 +75,6 @@ module Reporting
       Reporting::InternshipOffer.stub :by_department, Reporting::InternshipOffer.where(discarded_at: nil) do
         get reporting_internship_offers_path(department: 'Oise')
         assert_response :success
-        # TODO : check why this is not working
         assert_equal 2, retrieve_html_value('test-total-report', 'test-total-applications', response)
         assert_equal 4, retrieve_html_value('test-total-applications', 'test-total-male-applications', response)
         assert_equal 3, retrieve_html_value('test-total-male-applications', 'test-total-female-applications', response)
