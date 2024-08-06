@@ -15,27 +15,17 @@ module SchoolTrack
       first_monday = last_friday.days_ago(11)
 
       hash = {
-        full_time: {
-          start_day: first_monday,
-          end_day: last_friday,
-          start: first_monday.mday,
-          end: last_friday.mday
-        },
-        week_1: {
-          start_day: first_monday,
-          end_day: first_friday,
-          start: first_monday.mday,
-          end: first_friday.mday
-        },
-        week_2: {
-          start_day: last_monday,
-          end_day: last_friday,
-          start: last_monday.mday,
-          end: last_friday.mday
-        }
+        full_time: { start_day: first_monday, end_day: last_friday },
+        week_1: { start_day: first_monday, end_day: first_friday },
+        week_2: { start_day: last_monday, end_day: last_friday }
       }
       hash.each_value do |value|
-        value.merge!(month: 'juin', year: school_year)
+        value.merge!(
+          month: 'juin',
+          year: school_year,
+          start: value[:start_day].mday,
+          end: value[:end_day].mday
+        )
       end
       hash
     end
