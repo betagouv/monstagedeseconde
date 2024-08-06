@@ -10,7 +10,7 @@ export default class extends Controller {
     minimumLength: Number
   }
 
-  // use it with:
+  // use it with copying the following line in the html file:
   // --------------------------
   // data-controller="mandatory-fields" data-mandatory-fields-minimum-length-value="3"
   // --------------------------
