@@ -11,9 +11,10 @@ class Academy < ApplicationRecord
     Academy.find_by(name: academy_name).departements
   end
 
-  # TODO: change method name // remove if offer has department
-  def self.lookup_by_zipcode(zipcode:)
-    Department.where(name: Department.lookup_by_zipcode(zipcode:)).first.academy.name
+  def self.academy_name_by_zipcode(zipcode:)
+    Department.find_by(name: Department.lookup_by_zipcode(zipcode:))
+              .academy
+              .name
   end
 
   def self.get_email_domain(academy)

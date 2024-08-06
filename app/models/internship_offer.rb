@@ -454,7 +454,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def reverse_academy_by_zipcode
-    self.academy = Academy.lookup_by_zipcode(zipcode:)
+    self.academy = Academy.academy_name_by_zipcode(zipcode:)
   end
 
   def sync_internship_offer_keywords
