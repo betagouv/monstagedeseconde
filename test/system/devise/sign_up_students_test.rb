@@ -95,7 +95,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
       create(:department, name: 'Seine-et-Marne', code: '77')
       school_1 = create(:school, name: 'Etablissement Test 1',
                                  city: 'Saint-Martin', zipcode: '77515')
-      class_room_1 = create(:class_room, name: '2de A', school: school_1)
+      create(:class_room, name: '2de A', school: school_1)
       birth_date = 14.years.ago
       email = 'yetanother@gmail.com'
       password = 'kikoololT4!letest'
@@ -207,9 +207,6 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     # below : 'Pas encore de compte ? Inscrivez-vous'
     # click_on(class: 'text-danger') /!\ do not work
     visit users_choose_profile_path
-    # -----------------------------------------
-    # TODO After student is invited to subscribe
-    # -----------------------------------------
     find('a[href="/identites/nouveau?as=Student"]').click
 
     assert Identity.count.zero?
@@ -233,6 +230,13 @@ class SignUpStudentsTest < ApplicationSystemTestCase
       assert Identity.count.positive?
     end
     find('header h1.h2.text-center', text: 'Encore une petite étape...')
+    fill_in 'Code de confirmation', with: User.last.phone_token
+    find('input[type="submit"]').click # Valider
+    find('h1', text: 'Connexion à Mon stage de seconde')
+    find('input[name="user[phone]"]').set(valid_phone_number)
+    find('input[type="password"]').set(password)
+    find('input[type="submit"]').click
+    find('h1.h2.my-3', text: 'Votre candidature')
   end
 
   test 'navigation & interaction works until student creation with phone' do
