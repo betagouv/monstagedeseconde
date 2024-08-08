@@ -39,8 +39,10 @@ div [data-controller="mandatory-fields" data-mandatory-fields-minimum-length-val
           |< l’utilisation des acronymes. Les 40 premiers caractères de cette zone apparaîtront comme titre de votre
           |< offre : soyez explicite et concis !
   .row
-    .col-md-6
-        .form-group.fr-my-2w data-controller='maxlength-input' data-maxlength-input-limit-value="#{InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT}"
+    .col-md-6 [data-controller='max-length-input'
+                            data-max-length-input-target="group"
+                            data-max-length-input-limit-value="#{InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT}"]
+        .form-group.fr-my-2w
           #label_internship_offer_info_description.label
             = "Activités du stage"
 
@@ -51,12 +53,9 @@ div [data-controller="mandatory-fields" data-mandatory-fields-minimum-length-val
                            rows: 5,
                            title: "Activités du stage",
                            aria: { labelledby: 'label_internship_offer_info_description_rich_text' },
-                           data: { :"maxlength-input-target" => 'trixElement',
-                                   action: "input->mandatory-fields#fieldChange",
+                           data: { action: "input->mandatory-fields#fieldChange",
                                    :'mandatory-fields-target' => "mandatoryField"}
-          .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-maxlength-input-target="maxLengthMessage"
-            |La description de l'activité est trop longue
-          small.form-text data-maxlength-input-target="trixElementCharCount"
+          small.form-text data-max-length-input-target="charCount"
     .col-md-6.order-md-2.order-1
       .fr-alert.fr-alert--info
         h3.fr-alert__title Information

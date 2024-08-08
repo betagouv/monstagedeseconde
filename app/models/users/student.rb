@@ -163,7 +163,7 @@ module Users
         longitude: search_params[:longitude],
         city: search_params[:city],
         radius: search_params[:radius],
-        results_count: search_params[:results_count],
+        results_count: search_params[:results_count]&.to_i || 0,
         user: self
       )
       search_history.save

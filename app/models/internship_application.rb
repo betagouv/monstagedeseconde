@@ -256,7 +256,7 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |*_args|
                     if employer_aware_states.include?(aasm_state)
                       # Employer need to be notified
-                      EmployerMailer.internship_application_approved_for_an_other_internship_offer(internship_application: self).deliver_later
+                      EmployerMailer.internship_application_approved_for_an_other_internship_offer_email(internship_application: self).deliver_later
                     end
                   }
     end

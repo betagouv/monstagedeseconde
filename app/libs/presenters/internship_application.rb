@@ -22,9 +22,8 @@ module Presenters
                             .address
     end
 
-    # TODO: remove following method since delegated
     def internship_offer_title
-      internship_application.internship_offer.title
+      internship_offer.title
     end
 
     def human_state

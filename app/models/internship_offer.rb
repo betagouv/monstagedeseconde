@@ -304,18 +304,18 @@ class InternshipOffer < ApplicationRecord
   # callbacks
   #
   def sync_first_and_last_date
-    current_school_year = SchoolYear::Current.new
+    period_collection = SchoolTrack::Seconde.current_period_data
     case period
     when 0 # full_time
       # third week of june
-      self.first_date = current_school_year.first_week_internship_monday
-      self.last_date  = current_school_year.second_week_internship_friday
+      self.first_date = period_collection.dig(:full_time, :start_day)
+      self.last_date = period_collection.dig(:full_time, :end_day)
     when 1 # week_1
-      self.first_date = current_school_year.first_week_internship_monday
-      self.last_date  = current_school_year.first_week_internship_friday
+      self.first_date = period_collection.dig(:week_1, :start_day)
+      self.last_date = period_collection.dig(:week_1, :end_day)
     when 2 # week_2
-      self.first_date = current_school_year.second_week_internship_monday
-      self.last_date  = current_school_year.second_week_internship_friday
+      self.first_date = period_collection.dig(:week_2, :start_day)
+      self.last_date = period_collection.dig(:week_2, :end_day)
     end
   end
 
@@ -454,7 +454,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def reverse_academy_by_zipcode
-    self.academy = Academy.lookup_by_zipcode(zipcode:)
+    self.academy = Academy.academy_name_by_zipcode(zipcode:)
   end
 
   def sync_internship_offer_keywords

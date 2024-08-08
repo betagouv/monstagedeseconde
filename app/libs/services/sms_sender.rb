@@ -1,7 +1,7 @@
 module Services
-  class SmsSender
+  class SmsSender < ApiRequestsHelper
     LINK_MOBILITY_SENDING_ENDPOINT_URL = 'https://europe.ipx.com/restapi/v1/sms/send'.freeze
-    # TODO: link mobility provider as a class variable
+
     def perform
       if no_sms_mode?
         treat_no_sms_message
@@ -49,14 +49,6 @@ module Services
                       " '#{@phone_number}', with content '#{@content}'"
       Rails.logger.error(error_message)
       false
-    end
-
-    def get_request
-      uri = get_request_uri
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      request = Net::HTTP::Get.new(uri, default_headers)
-      http.request(request)
     end
 
     def get_request_uri

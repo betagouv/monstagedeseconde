@@ -6,7 +6,6 @@ module Product
   class InternshipOfferStepperTest < ApplicationSystemTestCase
     include OrganisationFormFiller
     include InternshipOfferInfoFormFiller
-    include TutorFormFiller
 
     test 'USE_W3C, new_dashboard_stepper_organisation_path' do
       employer = create(:employer)
