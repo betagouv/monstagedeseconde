@@ -632,3 +632,13 @@ img.covering {
         z-index: 0;
     }
 }
+
+.student-hero .container-xl {
+  background-color: $blue-france-975;
+}
+
+.student-hero .sub-hero {
+  background-image: url("../images/homepage/eleves_hero_illustration.png");
+  background-repeat: no-repeat;
+  background-position: right bottom;
+}
