@@ -105,7 +105,7 @@ a:hover {
     }
     .stamp-logo {
         margin-top: 4rem;
-        max-width: 269px;
+        max-width: 200px;
 
     }
     .sub-hero-maintenance{
@@ -161,10 +161,11 @@ a:hover {
 .everyone, .school-management  {
     .container-monstage .stamp-logo {
         img{
-           width: 193px;
+           width: 100%;
         }
         display: block;
-        margin-top: 37%;
+        margin-top: -50%;
+        margin-left: -50%;
     }
 }
 
@@ -180,11 +181,7 @@ p.fr-card__desc.std-height {
 }
 
 .container-monstage-fluid-hero {
-    background-image: url('../images/homepage/backgrd-header.png');
-    background-position: center center;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-color: $blue-france;
 
     .white-search-frame {
       background-color: #FFF;
@@ -609,3 +606,29 @@ img.covering {
 // .container-monstage-fluid-hero .white-search-frame {
 //   background-color: transparent !important
 // }
+
+.fr-follow__newsletter {
+    .fr-input {
+       background-color: #fff;
+    }
+}
+
+.hero-cards-container {
+    position: relative;
+    width: 100%;
+    min-height: 100px; 
+    .fr-card {
+      z-index: 4;
+    }
+    .content {
+      z-index: 1;
+    }
+
+    .hero-stamp {
+        position: absolute;
+        top: -20%;
+        right: -20%;
+        max-width: 400px;
+        z-index: 0;
+    }
+}

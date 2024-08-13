@@ -4,6 +4,9 @@
   = render 'pages/home/top_nav'
 .container-monstage-fluid-hero
   = render 'pages/home/everyone/hero_everyone'
+.container-homepage.light-blue-background.fr-px-2w
+  .container-monstage.fr-py-2w
+    = render 'pages/home/everyone/onisep'
 .container-homepage
   .container-monstage
     = render 'pages/home/everyone/everyone_faq'
@@ -12,10 +15,13 @@
     = render 'pages/home/everyone/BO'
 .container-homepage.light-blue-background.fr-px-2w
   .container-monstage.fr-py-2w
-    = render 'pages/home/pros/partners_resources'
+    = render 'pages/home/everyone/newsletter'
+/ .container-homepage.light-blue-background.fr-px-2w
+/   .container-monstage.fr-py-2w
+/     = render 'pages/home/pros/partners_resources'
 .container-homepage
-  .container-monstage
-    = render 'pages/home/everyone/everyone_resources'
+  / .container-monstage
+  /   = render 'pages/home/everyone/everyone_resources'
   .container-monstage
     .d-none.d-md-block
       = render 'pages/home/elevator'

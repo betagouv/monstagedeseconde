@@ -100,6 +100,10 @@ import './homepage/logo-education-nationale.svg';
 import './homepage/backgrd-header.webp';
 import './homepage/backgrd-header.png';
 import './homepage/hero-side-stamp.png';
+import './homepage/eleves_card_illustration.jpg';
+import './homepage/pro_card_illustration.jpg';
+import './homepage/education_card_illustration.jpg';
+import './homepage/onisep.png';
 
 import './homepage/resources/etablissements.svg';
 import './homepage/resources/parents_eleves.svg';
