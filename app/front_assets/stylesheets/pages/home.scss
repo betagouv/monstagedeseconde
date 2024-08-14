@@ -634,7 +634,8 @@ img.covering {
 }
 
 .student-hero .container-xl,
-.pro-hero .container-xl {
+.pro-hero .container-xl,
+.education-hero .container-xl {
   background-color: $blue-france-975;
 }
 
@@ -646,6 +647,12 @@ img.covering {
 
 .pro-hero .sub-hero {
   background-image: url("../images/homepage/pros_hero_illustration.png");
+  background-repeat: no-repeat;
+  background-position: right bottom;
+}
+
+.education-hero .sub-hero {
+  background-image: url("../images/homepage/education_hero_illustration.png");
   background-repeat: no-repeat;
   background-position: right bottom;
 }
