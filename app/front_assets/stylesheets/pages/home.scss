@@ -633,12 +633,19 @@ img.covering {
     }
 }
 
-.student-hero .container-xl {
+.student-hero .container-xl,
+.pro-hero .container-xl {
   background-color: $blue-france-975;
 }
 
 .student-hero .sub-hero {
   background-image: url("../images/homepage/eleves_hero_illustration.png");
+  background-repeat: no-repeat;
+  background-position: right bottom;
+}
+
+.pro-hero .sub-hero {
+  background-image: url("../images/homepage/pros_hero_illustration.png");
   background-repeat: no-repeat;
   background-position: right bottom;
 }
