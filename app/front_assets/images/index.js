@@ -106,6 +106,7 @@ import './homepage/education_card_illustration.jpg';
 import './homepage/onisep.png';
 import './homepage/eleves_hero_illustration.png';
 import './homepage/pros_hero_illustration.png';
+import './homepage/education_hero_illustration.png';
 
 import './homepage/resources/etablissements.svg';
 import './homepage/resources/parents_eleves.svg';

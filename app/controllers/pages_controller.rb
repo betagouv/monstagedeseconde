@@ -23,9 +23,19 @@ class PagesController < ApplicationController
   end
 
   def student_landing
+    @faqs = get_faqs('student')
   end
 
-  def search_companies
+  def pro_landing
+    @faqs = get_faqs('pro')
+  end
+
+  def school_management_landing
+    @faqs = get_faqs('education')
+  end
+
+  def home
+    @faqs = get_faqs('student')
   end
 
   def maintenance_messaging
@@ -44,6 +54,43 @@ class PagesController < ApplicationController
     params.require(:user).permit(:name, :email, :message)
   end
 
-  alias_method :school_management_landing, :student_landing
-  alias_method :statistician_landing, :student_landing
+  private
+
+  def link_resolver
+    @link_resolver ||= Prismic::LinkResolver.new(nil) do |link|
+      # URL for the category type
+      if link.type == 'faq'
+        '/faq/' + link.uid
+      # Default case for all other types
+      else
+        '/'
+      end
+    end
+  end
+
+  def get_faqs(tag)
+    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
+
+    begin
+      response = api.query([
+                             Prismic::Predicates.at('document.type', 'faq'),
+                             Prismic::Predicates.at('document.tags', [tag])
+                           ],
+                           { 'orderings' => '[my.faq.order]' })
+    rescue StandardError => e
+      puts "Error: #{e}"
+      return
+    end
+
+    serialize_faq(response.results)
+  end
+
+  def serialize_faq(results)
+    results.map do |doc|
+      {
+        question: doc['faq.question'].as_text,
+        answer: doc['faq.answer'].as_html(link_resolver)
+      }
+    end
+  end
 end
