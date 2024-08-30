@@ -29,9 +29,12 @@ module Services
 
       request = Net::HTTP::Post.new(uri.request_uri)
       # add params to the request captch and uuid
-      request.set_form_data(code: captcha, uuid: uuid)
+      request.content_type = 'application/json'  
+      request.body = {code: captcha, uuid: uuid}.to_json
+      request['Authorization'] = "Bearer #{token}"
       response = http.request(request)
-      puts response.body
+
+      response.body == "true"
     end
 
     def self.get_oauth_token

@@ -7,9 +7,14 @@ module Api
     include ::ApiTestHelpers
 
 
-    test 'empty searh works' do
+    test 'empty search or faulty search both works' do
       post search_api_schools_path, params: {}
       assert_response :success
+      assert_equal({"match_by_city"=>{}, "match_by_name"=>[], "no_match"=>true}, json_response)
+
+      post search_api_schools_path, params: {term: 'eeeeeeeee'}
+      assert_response :success
+      assert_equal({"match_by_city"=>{}, "match_by_name"=>[], "no_match"=>true}, json_response)
     end
 
     test 'POST#search with term works' do
@@ -29,5 +34,10 @@ module Api
       assert_response :success
       found_school = json_response.first
     end
+
+    # test 'constructor with a valid term' do
+    #   autocomplete_school = Api::AutocompleteSchool.new(term: 'Paris', limit: 10)
+    #   assert_equal 'dsds', autocomplete_school.result[:match_by_city]
+    # end
   end
 end

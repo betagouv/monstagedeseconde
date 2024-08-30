@@ -43,11 +43,11 @@ module Presenters
       end
 
       def period
-        ::InternshipOffer::PERIOD_LABELS.values[instance.period]
+        ::InternshipOffer.current_period_labels.values[instance.period]
       end
 
       def human_max_candidates_string
-        instance.max_candidates == 1 ? 'Individuel' : " Collectif"
+        instance.max_candidates == 1 ? 'Individuel' : ' Collectif'
       end
 
       def human_is_public
@@ -83,7 +83,7 @@ module Presenters
       end
 
       def full_address
-        Address.new(instance: instance).to_s
+        Address.new(instance:).to_s
       end
 
       def full_year

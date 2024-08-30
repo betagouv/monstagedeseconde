@@ -8,7 +8,7 @@ module Api
     def search
       render_not_authorized and return unless current_api_user.operator.api_full_access
 
-      @internship_offers = finder.all.includes([:sector, :employer]).order(id: :desc)
+      @internship_offers = finder.all.includes(%i[sector employer]).order(id: :desc)
       if @current_api_user.operator.departments.any?
         @internship_offers = @internship_offers.by_department(@current_api_user.operator.departments.map(&:name))
       end
@@ -16,7 +16,7 @@ module Api
       formatted_internship_offers = format_internship_offers(@internship_offers)
       data = {
         pagination: page_links,
-        internshipOffers: formatted_internship_offers,
+        internshipOffers: formatted_internship_offers
       }
       render json: data, status: 200
     end
@@ -26,7 +26,7 @@ module Api
       formatted_internship_offers = format_internship_offers(@internship_offers)
       data = {
         pagination: page_links,
-        internshipOffers: formatted_internship_offers,
+        internshipOffers: formatted_internship_offers
       }
       render json: data, status: 200
     end
@@ -133,24 +133,25 @@ module Api
     end
 
     def format_internship_offers(internship_offers)
-      internship_offers.map { |internship_offer|
+      internship_offers.map do |internship_offer|
         {
           id: internship_offer.id,
           title: internship_offer.title,
           description: internship_offer.description.to_s,
-          pediod: internship_offer.period,
+          period: internship_offer.period,
           employer_name: internship_offer.employer_name,
-          url: internship_offer_url(internship_offer, query_params.merge({utm_source: current_api_user.operator.name})),
+          url: internship_offer_url(internship_offer,
+                                    query_params.merge({ utm_source: current_api_user.operator.name })),
           city: internship_offer.city.capitalize,
           date_start: I18n.localize(internship_offer.first_date, format: :human_mm_dd_yyyy),
-          date_end:  I18n.localize(internship_offer.last_date, format: :human_mm_dd_yyyy),
+          date_end: I18n.localize(internship_offer.last_date, format: :human_mm_dd_yyyy),
           latitude: internship_offer.coordinates.latitude,
           longitude: internship_offer.coordinates.longitude,
           image: view_context.asset_pack_url("media/images/sectors/#{internship_offer.sector.cover}"),
           sector: internship_offer.sector.name,
-          handicap_accessible: internship_offer.handicap_accessible,
+          handicap_accessible: internship_offer.handicap_accessible
         }
-      }
+      end
     end
 
     def page_links
@@ -159,11 +160,11 @@ module Api
         internshipOffersPerPage: InternshipOffer::PAGE_SIZE,
         totalPages: @internship_offers.total_pages,
         currentPage: @internship_offers.current_page,
-        nextPage: @internship_offers.next_page ? search_api_internship_offers_url(query_params.merge({page: @internship_offers.next_page})) : nil,
-        prevPage: @internship_offers.prev_page ? search_api_internship_offers_url(query_params.merge({page: @internship_offers.prev_page})) : nil,
+        nextPage: @internship_offers.next_page ? search_api_internship_offers_url(query_params.merge({ page: @internship_offers.next_page })) : nil,
+        prevPage: @internship_offers.prev_page ? search_api_internship_offers_url(query_params.merge({ page: @internship_offers.prev_page })) : nil,
         isFirstPage: @internship_offers.first_page?,
         isLastPage: @internship_offers.last_page?,
-        pageUrlBase:  url_for(query_params.except('page'))
+        pageUrlBase: url_for(query_params.except('page'))
       }
     end
   end

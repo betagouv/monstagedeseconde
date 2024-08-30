@@ -35,7 +35,9 @@ module Users
 
     # GET /resource/sign_up
     def new
-      @captcha_image, @captcha_uuid = Services::Captcha.generate
+      if params[:as] == 'Employer'
+        @captcha_image, @captcha_uuid = Services::Captcha.generate
+      end
       @resource_channel = resource_channel
       options = {}
       if params.dig(:user, :targeted_offer_id)
@@ -55,14 +57,16 @@ module Users
     end
 
     def resource_channel
-      return current_user.channel unless current_user.nil?
-
-      :email
+      current_user.try(:channel) || :email
     end
 
     # POST /resource
     def create
-      check_captcha(params[:captcha], params[:captcha_uuid])
+      if params[:as] == 'Employer' && !check_captcha(params[:user][:captcha], params[:user][:captcha_uuid])
+        flash[:alert] = I18n.t('devise.registrations.captcha_error')
+        redirect_to_register_page(params[:as])
+        return
+      end
       [:honey_pot_checking,
        :phone_reuse_checking].each do |check|
           check_proc = send(check, params)
@@ -78,10 +82,7 @@ module Users
         resource.groups << Group.find(params[:user][:group_id]) if params[:user][:group_id].present?
         @current_ability = Ability.new(resource)
       end
-      if resource.student?
-        resource.skip_confirmation!
-        resource.save
-      elsif resource.persisted?
+      if resource.persisted?
         resource.try(:create_default_internship_offer_area)
         resource.save
       end
@@ -162,8 +163,6 @@ module Users
           department
           academy_id
           academy_region_id
-          captcha
-          captcha_uuid
         ]
       )
     end
@@ -180,8 +179,10 @@ module Users
 
     # The path used after sign up for inactive accounts.
     def after_inactive_sign_up_path_for(resource)
-      if resource.student?
-        register_student_path(resource)
+      if resource.phone.present? && resource.student?
+        options = { id: resource.id }
+        options = options.merge({ as: 'Student'}) if resource.student?
+        users_registrations_phone_standby_path(options)
       elsif resource.statistician?
         statistician_standby_path(id: resource.id)
       else
@@ -248,9 +249,8 @@ module Users
     def register_student_path(resource)
       if resource.just_created?
         flash.discard
-        resource.skip_confirmation! && resource.save
-        bypass_sign_in resource
-        internship_offers_path
+        # bypass_sign_in resource
+        new_session_path
       elsif resource.phone.present?
         options = { id: resource.id, as: 'Student' }
         users_registrations_phone_standby_path(options)
@@ -260,10 +260,16 @@ module Users
     end
 
     def check_captcha(captcha, captcha_uuid)
-      return if Services::Captcha.verify(captcha, captcha__uuid)
+      puts 'verify captcha'
+      Services::Captcha.verify(captcha, captcha_uuid)
+    end
 
-      flash[:alert] = "I18n.t('devise.registrations.captcha_error')"
-      redirect_to new_user_registration_path
+    def redirect_to_register_page(resource)
+      if resource == 'Student'
+        redirect_to new_user_identity_path(as: params[:as])
+      else
+        redirect_to new_user_registration_path(as: params[:as])
+      end
     end
   end
 end

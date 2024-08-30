@@ -106,5 +106,71 @@ module Users
         end
       end
     end
+
+    test '#pending_agreements_actions_count with 1 signature by employer' do
+      employer = create(:employer)
+      create(:weekly_internship_offer, employer: employer)
+      status_count = InternshipAgreement.aasm.states.count
+      status_count.times do
+        student = create(:student)
+        wio = create(:weekly_internship_offer, employer: employer)
+        create(
+          :weekly_internship_application,
+          :submitted,
+          internship_offer: wio,
+          student: student
+        )
+      end
+      InternshipAgreement.aasm.states.each_with_index do |state, index|
+        create(
+          :internship_agreement,
+          aasm_state: state.name.to_sym,
+          internship_application: InternshipApplication.all.to_a[index],
+        )
+      end
+      create(
+        :signature,
+        signatory_role: 'employer',
+        internship_agreement_id: InternshipAgreement.find_by(aasm_state: :signatures_started).id
+      )
+      assert_equal 3, employer.pending_agreements_actions_count
+      # 1 for :draft
+      # 1 for :started_by_employer
+      # 1 for :validated
+      # 0 for :signatures_started
+    end
+
+    test "#pending_agreements_actions_count with 1 signature by school_manager" do
+      employer = create(:employer)
+      create(:weekly_internship_offer, employer: employer)
+      status_count = InternshipAgreement.aasm.states.count
+      status_count.times do
+        student = create(:student)
+        wio = create(:weekly_internship_offer, employer: employer)
+        create(
+          :weekly_internship_application,
+          :submitted,
+          internship_offer: wio,
+          student: student
+        )
+      end
+      InternshipAgreement.aasm.states.each_with_index do |state, index|
+        create(
+          :internship_agreement,
+          aasm_state: state.name.to_sym,
+          internship_application: InternshipApplication.all.to_a[index],
+        )
+      end
+      create(
+        :signature,
+        signatory_role: 'school_manager',
+        internship_agreement_id: InternshipAgreement.find_by(aasm_state: :signatures_started).id
+      )
+      assert_equal 4, employer.pending_agreements_actions_count
+      # 1 for :draft
+      # 1 for :started_by_employer
+      # 1 for :validated
+      # 1 for :signatures_started
+    end
   end
 end

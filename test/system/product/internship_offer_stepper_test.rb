@@ -6,7 +6,6 @@ module Product
   class InternshipOfferStepperTest < ApplicationSystemTestCase
     include OrganisationFormFiller
     include InternshipOfferInfoFormFiller
-    include TutorFormFiller
 
     test 'USE_W3C, new_dashboard_stepper_organisation_path' do
       employer = create(:employer)
@@ -15,20 +14,20 @@ module Product
       sign_in(employer)
       run_request_and_cache_response(report_as: 'new_dashboard_stepper_organisation_path') do
         visit new_dashboard_stepper_organisation_path
-        fill_in_organisation_form(is_public: true, group: group)
+        fill_in_organisation_form(is_public: true, group:)
       end
     end
 
     test 'USE_W3C, new_dashboard_stepper_internship_offer_info_path' do
       employer = create(:employer)
-      organisation = create(:organisation, employer: employer)
+      organisation = create(:organisation, employer:)
       sector = create(:sector)
       sign_in(employer)
 
-      travel_to(Date.new(2019, 3, 1)) do
+      travel_to(Date.new(2024, 3, 1)) do
         run_request_and_cache_response(report_as: 'new_dashboard_stepper_internship_offer_info_path') do
           visit new_dashboard_stepper_internship_offer_info_path(organisation_id: organisation.id)
-          fill_in_internship_offer_info_form(sector: sector)
+          fill_in_internship_offer_info_form(sector:)
         end
       end
     end

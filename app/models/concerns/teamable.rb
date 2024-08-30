@@ -78,6 +78,22 @@ module Teamable
       InternshipAgreement.kept.where(internship_application: internship_applications)
     end
 
+    def team_pending_agreements_actions_count
+      return pending_agreements_actions_count if team.not_exists?
+
+      team.db_members.inject(0) do |sum, member|
+        sum + member.pending_agreements_actions_count
+      end
+    end
+
+    def pending_agreements_actions_count
+      part1 = internship_agreements.where(aasm_state: InternshipAgreement::EMPLOYERS_PENDING_STATES)
+      part2 = internship_agreements.signatures_started
+                                   .joins(:signatures)
+                                   .where.not(signatures: {signatory_role: :employer})
+      [part1, part2].compact.map(&:count).sum
+    end
+
     def internship_offer_ids_by_area(area_id: )
       InternshipOffer.kept
                      .where(employer_id: team_members_ids)
@@ -117,8 +133,8 @@ module Teamable
     end
 
     def team_members_ids
-      members = team.team_members.pluck(:member_id).compact
-      members.empty? ? [id] : members
+      member_ids = team.team_members.pluck(:member_id).compact
+      member_ids.empty? ? [id] : member_ids
     end
 
     def db_team_members

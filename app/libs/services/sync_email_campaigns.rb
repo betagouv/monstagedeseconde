@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Services
-  class SyncEmailCampaigns
+  class SyncEmailCampaigns < ApiRequestsHelper
     require 'net/https'
 
     SARBACANE_HOST = 'https://sarbacaneapis.com/v1'.freeze
@@ -153,13 +153,6 @@ module Services
       else
         Net::HTTP::Get.new(full_endpoint, default_header)
       end
-    end
-
-    # expected: Int|Array[Int],
-    # response: HttpResponse
-    def status?(expected, response)
-      actual = response.code.to_i
-      Array(expected).include?(actual)
     end
 
     def with_http_connection(&block)

@@ -75,7 +75,7 @@ module InternshipOffers
 
     test 'GET #show with applications from other students reduces the number ' \
          'of available weeks with weeklist splitted version' do
-      travel_to(Date.new(2020, 1, 1)) do
+      travel_to(Date.new(2024, 1, 1)) do
         offer = create(
           :weekly_internship_offer,
           city: 'Bordeaux',
@@ -96,7 +96,7 @@ module InternshipOffers
     end
 
     test 'GET #show with period 2' do
-      travel_to(Date.new(2020, 1, 1)) do
+      travel_to(Date.new(2024, 1, 1)) do
         offer = create(
           :weekly_internship_offer,
           city: 'Bordeaux',
@@ -106,14 +106,14 @@ module InternshipOffers
           period: 2 # week_
         )
         employer = InternshipOffer.last.employer
-        
+
         get internship_offer_path(offer)
         assert_select('.period-label-test', text: '1 semaine - du 24 au 28 juin 2024')
       end
     end
 
     test 'GET #show as Student with API offer' do
-      travel_to(Date.new(2019, 10, 1)) do
+      travel_to(Date.new(2023, 10, 1)) do
         weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
         internship_offer = create(:api_internship_offer)
         student = create(:student, school: create(:school))
@@ -149,81 +149,89 @@ module InternshipOffers
     end
 
     test 'GET #show as Student shows next/previous navigation in list' do
-      previous_out = create(:weekly_internship_offer, title: 'previous_out')
-      previous_in_page = create(:weekly_internship_offer, title: 'previous')
-      current = create(:weekly_internship_offer, title: 'current')
-      next_in_page = create(:weekly_internship_offer, title: 'next')
-      next_out = create(:weekly_internship_offer, title: 'next_out')
-      student = create(:student, school: create(:school))
+      travel_to(Date.new(2024, 3, 1)) do
+        previous_out = create(:weekly_internship_offer, title: 'previous_out')
+        previous_in_page = create(:weekly_internship_offer, title: 'previous')
+        current = create(:weekly_internship_offer, title: 'current')
+        next_in_page = create(:weekly_internship_offer, title: 'next')
+        next_out = create(:weekly_internship_offer, title: 'next_out')
+        student = create(:student, school: create(:school))
 
-      InternshipOffer.stub :nearby, InternshipOffer.all do
-        sign_in(student)
-        get internship_offer_path(current)
-
-        assert_response :success
-        assert_select 'a[href=?]', internship_offer_path(previous_in_page)
-        assert_select 'a[href=?]', internship_offer_path(next_in_page)
-      end
-    end
-
-    test 'GET #show as Student shows next and not previous when no previous' do
-      current = create(:weekly_internship_offer, title: 'current')
-      next_in_page = create(:weekly_internship_offer, title: 'next')
-      next_out = create(:weekly_internship_offer, title: 'next_out')
-      student = create(:student, school: create(:school))
-
-      InternshipOffer.stub :nearby, InternshipOffer.all do
-        InternshipOffer.stub :by_weeks, InternshipOffer.all do
-          sign_in(student)
-          get internship_offer_path(current)
-
-          assert_response :success
-          assert_select 'a.list-item-previous', count: 0
-          assert_select 'a[href=?]', internship_offer_path(next_in_page)
-        end
-      end
-    end
-
-    test 'GET #show as Student shows previous and not next when no not' do
-      previous_out = create(:weekly_internship_offer, title: 'previous_out')
-      previous_in_page = create(:weekly_internship_offer, title: 'previous')
-      current = create(:weekly_internship_offer, title: 'current')
-      student = create(:student, school: create(:school))
-
-      InternshipOffer.stub :nearby, InternshipOffer.all do
-        InternshipOffer.stub :by_weeks, InternshipOffer.all do
+        InternshipOffer.stub :nearby, InternshipOffer.all do
           sign_in(student)
           get internship_offer_path(current)
 
           assert_response :success
           assert_select 'a[href=?]', internship_offer_path(previous_in_page)
-          assert_select 'a.list-item-next', count: 0
+          assert_select 'a[href=?]', internship_offer_path(next_in_page)
+        end
+      end
+    end
+
+    test 'GET #show as Student shows next and not previous when no previous' do
+      travel_to(Date.new(2024, 3, 1)) do
+        current = create(:weekly_internship_offer, title: 'current')
+        next_in_page = create(:weekly_internship_offer, title: 'next')
+        next_out = create(:weekly_internship_offer, title: 'next_out')
+        student = create(:student, school: create(:school))
+
+        InternshipOffer.stub :nearby, InternshipOffer.all do
+          InternshipOffer.stub :by_weeks, InternshipOffer.all do
+            sign_in(student)
+            get internship_offer_path(current)
+
+            assert_response :success
+            assert_select 'a.list-item-previous', count: 0
+            assert_select 'a[href=?]', internship_offer_path(next_in_page)
+          end
+        end
+      end
+    end
+
+    test 'GET #show as Student shows previous and not next when no not' do
+      travel_to(Date.new(2024, 3, 1)) do
+        previous_out = create(:weekly_internship_offer, title: 'previous_out')
+        previous_in_page = create(:weekly_internship_offer, title: 'previous')
+        current = create(:weekly_internship_offer, title: 'current')
+        student = create(:student, school: create(:school))
+
+        InternshipOffer.stub :nearby, InternshipOffer.all do
+          InternshipOffer.stub :by_weeks, InternshipOffer.all do
+            sign_in(student)
+            get internship_offer_path(current)
+
+            assert_response :success
+            assert_select 'a[href=?]', internship_offer_path(previous_in_page)
+            assert_select 'a.list-item-next', count: 0
+          end
         end
       end
     end
 
     test 'GET #show as Student with forwards latitude, longitude & radius in params to next/prev ' do
-      previous_in_page = create(:weekly_internship_offer, title: 'previous')
-      current = create(:weekly_internship_offer, title: 'current')
-      next_in_page = create(:weekly_internship_offer, title: 'next')
-      student = create(:student, school: create(:school))
+      travel_to(Date.new(2024, 3, 1)) do
+        previous_in_page = create(:weekly_internship_offer, title: 'previous')
+        current = create(:weekly_internship_offer, title: 'current')
+        next_in_page = create(:weekly_internship_offer, title: 'next')
+        student = create(:student, school: create(:school))
 
-      InternshipOffer.stub :nearby, InternshipOffer.all do
-        InternshipOffer.stub :by_weeks, InternshipOffer.all do
-          sign_in(student)
-          get internship_offer_path(id: current, radius: 1_000, latitude: 1, longitude: 2)
+        InternshipOffer.stub :nearby, InternshipOffer.all do
+          InternshipOffer.stub :by_weeks, InternshipOffer.all do
+            sign_in(student)
+            get internship_offer_path(id: current, radius: 1_000, latitude: 1, longitude: 2)
 
-          assert_response :success
-          assert_select 'a[href=?]',
-                        internship_offer_path(id: previous_in_page.id,
-                                              latitude: 1,
-                                              longitude: 2,
-                                              radius: 1_000)
-          assert_select 'a[href=?]',
-                        internship_offer_path(id: next_in_page.id,
-                                              latitude: 1,
-                                              longitude: 2,
-                                              radius: 1_000)
+            assert_response :success
+            assert_select 'a[href=?]',
+                          internship_offer_path(id: previous_in_page.id,
+                                                latitude: 1,
+                                                longitude: 2,
+                                                radius: 1_000)
+            assert_select 'a[href=?]',
+                          internship_offer_path(id: next_in_page.id,
+                                                latitude: 1,
+                                                longitude: 2,
+                                                radius: 1_000)
+          end
         end
       end
     end
@@ -231,23 +239,6 @@ module InternshipOffers
     #
     # Visitor
     #
-    test 'GET #show as Visitor show breadcrumb with link to previous page' do
-      skip "forward parameters expected or not ? PO answering soon"
-      internship_offer = create(:weekly_internship_offer, :full_time)
-      forwarded_params = { latitude: Coordinates.paris[:lat],
-                           longitude: Coordinates.paris[:lon],
-                           radius: 60_000,
-                           city: 'Mantes-la-Jolie',
-                           keyword: 'Boucher+ecarisseur',
-                           page: 5 }
-
-      get internship_offer_path({ id: internship_offer.id }.merge(forwarded_params))
-      assert_response :success
-      assert_template 'layouts/_breadcrumb'
-      assert_template 'internship_offers/_apply_cta'
-      assert_select('a[href=?]', internship_offers_path(forwarded_params))
-      assert_select('button[disabled=disabled]', text: 'Postuler')
-    end
 
     test 'GET #show as Visitor - canonical links works' do
       internship_offer = create(:weekly_internship_offer)
@@ -336,7 +327,7 @@ module InternshipOffers
 
     test 'GET #show as Employer displays internship_applications link' do
       published_at = 2.weeks.ago
-      internship_offer = create(:weekly_internship_offer, published_at: published_at)
+      internship_offer = create(:weekly_internship_offer, published_at:)
       sign_in(internship_offer.employer)
       get internship_offer_path(internship_offer)
       assert_response :success
@@ -369,7 +360,8 @@ module InternshipOffers
     end
 
     test 'GET #show as employer does show duplicate  button when internship_offer has been created durent current_year' do
-      internship_offer = create(:weekly_internship_offer, created_at: SchoolYear::Current.new.beginning_of_period + 1.day)
+      internship_offer = create(:weekly_internship_offer,
+                                created_at: SchoolYear::Current.new.beginning_of_period + 1.day)
       sign_in(internship_offer.employer)
 
       get internship_offer_path(internship_offer)
@@ -388,7 +380,6 @@ module InternshipOffers
 
       get internship_offer_path(api_internship_offer)
       assert_response :success
-
     end
   end
 end

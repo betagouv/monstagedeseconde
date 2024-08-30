@@ -12,7 +12,7 @@ module SchoolYear
     end
 
     test '.beginning_of_period / end_of_period from june to september' do
-      travel_to(Date.new(2019, 6,30)) do
+      travel_to(Date.new(2019, 6, 30)) do
         school_year = Current.new
         assert_equal Date.new(2018, 9, 1), school_year.beginning_of_period
         assert_equal Date.new(2019, 7, 1), school_year.end_of_period
@@ -34,6 +34,5 @@ module SchoolYear
         assert_equal Date.new(2020, 7, 1), school_year.end_of_period
       end
     end
-
   end
 end

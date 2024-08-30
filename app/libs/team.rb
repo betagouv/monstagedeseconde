@@ -30,6 +30,7 @@ class Team
   def self.remove_member_by_id(db_id)
     @team_member = TeamMemberInvitation.find_by(member_id: db_id)
     return if @team_member.nil?
+
     Team.new(@team_member).remove_member
   end
 
@@ -167,7 +168,7 @@ class Team
   end
 
   def initialize(user_or_team_member)
-    if user_or_team_member.is_a?(User)
+    if user_or_team_member.is_a?(User) && user_or_team_member.employer_like?
       @user = user_or_team_member
       @team_member = TeamMemberInvitation.find_by(member_id: user.id)
       @team_member = nil if @team_member&.refused_invitation?

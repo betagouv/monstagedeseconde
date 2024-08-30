@@ -6,7 +6,7 @@ p style=(p_styles)
 p style=(p_styles)
   i 
     div style='padding-left:25px;'
-      = @internship_application.rejected_message.to_plain_text
+      = @internship_application.rejected_message&.gsub("\n", "<br>")&.html_safe
 
 p style=(p_styles)
   strong

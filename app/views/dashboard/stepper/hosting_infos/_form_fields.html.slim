@@ -47,7 +47,7 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                             placeholder: "Nombre d'élèves prévus pour cette offre",
                             disabled: false,
                             required: true,
-                            pattern: "[0-9]*",
+                            pattern: "[0-9]{1,5}",
                             inputmode: "numeric",
                             min: resource.is_a?(InternshipOffer) ? (resource.internship_applications.try(:approved).try(:count) || 0) : 0,
                             data: { :"hosting-infos-target" => 'maxCandidatesInput',
@@ -58,6 +58,7 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
   .row
     .col-md-6
       / radio button for period
+      - labels = SchoolTrack::Seconde.current_period_labels
       .fr-form-group
         .fr-label.fr-py-2w
           = "Vous souhaitez proposer un stage pour"
@@ -67,14 +68,18 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                               id: 'period_full_time',
                               checked: resource.full_time? || resource.new_record?
 
-          = form.label :period, '2 semaines - du 17 au 28 juin', for: 'period_full_time'
+          = form.label :period,
+                       labels[:full_time],
+                       for: 'period_full_time'
         .fr-radio-group.fr-py-1w
           = form.radio_button :period,
                               1,
                               id: 'period_week_1',
                               checked: resource.week_1?
 
-          = form.label :period, '1 semaine - du 17 au 21 juin', for: 'period_week_1'
+          = form.label :period,
+                        labels[:week_1],
+                       for: 'period_week_1'
 
         .fr-radio-group.fr-py-1w
           = form.radio_button :period,
@@ -83,8 +88,10 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
                               checked: resource.week_2?
 
 
-          = form.label :period, '1 semaine - du 24 au 28 juin', for: 'period_week_2'
-      
+          = form.label :period,
+                       labels[:week_2],
+                       for: 'period_week_2'
+
       .fr-form-group.fr-my-4w
         = react_component("ReservedSchoolInput",
                           props: { label: "Commune ou nom de l'établissement pour lequel le stage est reservé",
@@ -96,7 +103,13 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
     .col-md-6.order-md-1.order-2
       .fr-alert.fr-alert--warning
         h3.fr-alert__title Informations
-        p Les élèves de seconde doivent effectuer un stage obligatoire de deux semaines, du 17 juin au 28 juin 2024. Vous pouvez proposer un stage soit sur toute la période, soit sur la première semaine, soit sur la deuxième semaine.
+        p
+          | Les élèves de seconde doivent effectuer un stage obligatoire de deux semaines,
+          - dates = SchoolTrack::Seconde.current_period_data[:full_time]
+          = " du #{dates[:start]} #{dates[:month]} au #{dates[:end]} #{dates[:month]} #{dates[:year]}."
+          |
+            Vous pouvez proposer un stage soit sur toute la période,
+            soit sur la première semaine, soit sur la deuxième semaine.
   - if submit_button
     .fr-mt-2w
       = link_to edit_dashboard_stepper_internship_offer_info_path(params[:internship_offer_info_id],

@@ -82,6 +82,10 @@ Rails.application.routes.draw do
 
     resources :favorites, only: %i[create destroy index]
 
+    get '/utilisateurs/transform_input', to: 'users#transform_input' #display
+    get '/utilisateurs/transform', to: 'users#transform_form' #identify and show parameters
+    post '/utilisateurs/transform', to: 'users#transform_user' #transform
+
     get '/utilisateurs/anonymiseur', to: 'users#anonymize_form'
     get '/utilisateurs/identifier', to: 'users#identify_user'
     post '/utilisateurs/anonymiser', to: 'users#anonymize_user'
@@ -167,9 +171,6 @@ Rails.application.routes.draw do
     # ------------------ DASHBOARD END ------------------
   end
   # ------------------ SCOPE END ------------------
-
-  post 'captcha/verify', to: 'captcha#verify'
-  get 'captcha/generate', to: 'captcha#generate'
   
   namespace :reporting, path: 'reporting' do
     get '/dashboards', to: 'dashboards#index'
@@ -190,7 +191,7 @@ Rails.application.routes.draw do
   patch 'mon-compte', to: 'users#update'
   patch 'account_password', to: 'users#update_password'
   patch 'answer_survey', to: 'users#answer_survey'
-  
+
 
   get '/accessibilite', to: 'pages#accessibilite'
   get '/conditions-d-utilisation', to: 'pages#conditions_d_utilisation'
@@ -214,13 +215,19 @@ Rails.application.routes.draw do
   get '/partenaires_regionaux', to: 'pages#regional_partners_index'
   get '/equipe-pedagogique', to: 'pages#school_management_landing'
   get '/referents', to: 'pages#statistician_landing'
+  get '/maintenance_estivale', to: 'pages#maintenance_estivale'
+  post '/maintenance_messaging', to: 'pages#maintenance_messaging'
 
   # Redirects
   get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%{id}', status: 302)
 
-  root to: 'pages#home'
+  root_destination = (ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true') ? 'maintenance_estivale' : 'home'
+  root to: "pages##{root_destination}"
 
+  get '/400', to: 'errors#bad_request'
   get '/404', to: 'errors#not_found'
+  get '/406', to: 'errors#not_acceptable'
   get '/422', to: 'errors#unacceptable'
+  get '/429', to: 'errors#not_found'
   get '/500', to: 'errors#internal_error'
 end

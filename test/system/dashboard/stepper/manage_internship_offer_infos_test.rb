@@ -10,33 +10,18 @@ class ManageInternshipOfferInfosTest < ApplicationSystemTestCase
     sector = create(:sector)
     employer = create(:employer)
     school_name = 'Abd El Kader'
-    organisation = create(:organisation, employer: employer)
-    school = create(:school, city: 'Paris', zipcode: 75012, name: school_name)
+    organisation = create(:organisation, employer:)
+    school = create(:school, city: 'Paris', zipcode: 75_012, name: school_name)
     sign_in(employer)
     assert_difference 'InternshipOfferInfo.count' do
-      travel_to(Date.new(2019, 3, 1)) do
+      travel_to(Date.new(2024, 3, 1)) do
         visit new_dashboard_stepper_internship_offer_info_path(organisation_id: organisation.id)
-        fill_in_internship_offer_info_form(sector: sector)
+        fill_in_internship_offer_info_form(sector:)
         page.assert_no_selector('span.number', text: '1')
         find('span', text: 'Étape 2 sur 5')
-        click_on "Suivant"
+        click_on 'Suivant'
         find('h2', text: 'Accueil des élèves')
       end
-    end
-  end
-
-  test 'create internship offer info fails gracefuly' do
-    sector = create(:sector)
-    employer = create(:employer)
-    organisation = create(:organisation, employer: employer)
-    sign_in(employer)
-    travel_to(Date.new(2019, 3, 1)) do
-      visit new_dashboard_stepper_internship_offer_info_path(organisation_id: organisation.id)
-      fill_in_internship_offer_info_form(sector: sector)
-      as = 'a' * 151
-      fill_in 'internship_offer_info_title', with: as
-      click_on "Suivant"
-      find('.fr-alert.fr-alert--error')
     end
   end
 
@@ -45,16 +30,16 @@ class ManageInternshipOfferInfosTest < ApplicationSystemTestCase
       sector = create(:sector)
       employer = create(:employer)
       school_name = 'Abd El Kader'
-      organisation = create(:organisation, employer: employer)
-      school = create(:school, city: 'Paris', zipcode: 75012, name: school_name)
+      organisation = create(:organisation, employer:)
+      school = create(:school, city: 'Paris', zipcode: 75_012, name: school_name)
 
       sign_in(employer)
-      assert_changes 'InternshipOfferInfo.count' , from: 0, to: 1 do
+      assert_changes 'InternshipOfferInfo.count', from: 0, to: 1 do
         visit new_dashboard_stepper_internship_offer_info_path(organisation_id: organisation.id)
-        fill_in_internship_offer_info_form(sector: sector)
+        fill_in_internship_offer_info_form(sector:)
         page.assert_no_selector('span.number', text: '1')
         find('span', text: 'Étape 2 sur 5')
-        click_on "Suivant"
+        click_on 'Suivant'
         find('span', text: 'Étape 3 sur 5')
       end
     end

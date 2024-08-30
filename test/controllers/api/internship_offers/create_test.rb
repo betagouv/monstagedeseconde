@@ -39,7 +39,7 @@ module Api
         post api_internship_offers_path(
           params: {
             token: "Bearer #{operator.api_token}",
-            internship_offer: { title: '', permalink:  'http://staging.lesite.com' }
+            internship_offer: { title: '', permalink: 'http://staging.lesite.com' }
           }
         )
       end
@@ -77,16 +77,17 @@ module Api
                                                                  :coordinates)
                                                          .merge(sector_uuid: sector.uuid,
                                                                 coordinates: { latitude: 1, longitude: 1 })
-      
+
       geocoder_response = {
         status: 200,
         body: [{
-          "address": {"office": "Ministère de l'Éducation Nationale", "road": "Rue de Grenelle", "suburb": "", "city_district": "7th Arrondissement", "city": "Paris", "municipality": "Paris", "county": "Paris", "country": "France", "postcode": "75002", "country_code": "fr"}, 
+          "address": { "office": "Ministère de l'Éducation Nationale", "road": 'Rue de Grenelle', "suburb": '',
+                       "city_district": '7th Arrondissement', "city": 'Paris', "municipality": 'Paris', "county": 'Paris', "country": 'France', "postcode": '75002', "country_code": 'fr' },
           "lat": 1,
-          "lon": 1,
+          "lon": 1
         }].to_json
       }
-      stub_request(:get, "https://nominatim.openstreetmap.org/search?accept-language=en&addressdetails=1&format=json&q=75001,%20France").to_return(geocoder_response)
+      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=en&addressdetails=1&format=json&q=75001,%20France').to_return(geocoder_response)
 
       documents_as(endpoint: :'internship_offers/create', state: :conflict) do
         post api_internship_offers_path(
@@ -115,30 +116,31 @@ module Api
       sector_uuid = sector.uuid
       remote_id = 'test'
       permalink = 'https://www.google.fr'
-      daily_hours = {"lundi": ["9:00","17:00"], "mardi": ["9:00","17:00"], "mercredi": ["9:00","17:00"], "jeudi": ["9:00","17:00"], "vendredi": ["9:00","17:00"]}
+      daily_hours = { "lundi": ['9:00', '17:00'], "mardi": ['9:00', '17:00'], "mercredi": ['9:00', '17:00'],
+                      "jeudi": ['9:00', '17:00'], "vendredi": ['9:00', '17:00'] }
       assert_difference('InternshipOffer.count', 1) do
         documents_as(endpoint: :'internship_offers/create', state: :created) do
           post api_internship_offers_path(
             params: {
               token: "Bearer #{operator.api_token}",
               internship_offer: {
-                title: title,
-                description: description,
-                employer_name: employer_name,
-                employer_description: employer_description,
-                employer_website: employer_website,
-                siret: siret,
+                title:,
+                description:,
+                employer_name:,
+                employer_description:,
+                employer_website:,
+                siret:,
                 'coordinates' => coordinates,
-                street: street,
-                zipcode: zipcode,
-                city: city,
-                sector_uuid: sector_uuid,
-                remote_id: remote_id,
-                permalink: permalink,
+                street:,
+                zipcode:,
+                city:,
+                sector_uuid:,
+                remote_id:,
+                permalink:,
                 max_candidates: 2,
                 is_public: true,
-                daily_hours: daily_hours,
-                lunch_break: "Repas sur place"
+                daily_hours:,
+                lunch_break: 'Repas sur place'
               }
             }
           )
@@ -167,12 +169,12 @@ module Api
       assert_equal 'published', internship_offer.aasm_state
       assert internship_offer.is_public
       assert_equal false, internship_offer.handicap_accessible
-      assert_equal daily_hours[:lundi], internship_offer.daily_hours["lundi"]
-      assert_equal daily_hours[:mardi], internship_offer.daily_hours["mardi"]
-      assert_equal daily_hours[:mercredi], internship_offer.daily_hours["mercredi"]
-      assert_equal daily_hours[:jeudi], internship_offer.daily_hours["jeudi"]
-      assert_equal daily_hours[:vendredi], internship_offer.daily_hours["vendredi"]
-      assert_equal "Repas sur place", internship_offer.lunch_break
+      assert_equal daily_hours[:lundi], internship_offer.daily_hours['lundi']
+      assert_equal daily_hours[:mardi], internship_offer.daily_hours['mardi']
+      assert_equal daily_hours[:mercredi], internship_offer.daily_hours['mercredi']
+      assert_equal daily_hours[:jeudi], internship_offer.daily_hours['jeudi']
+      assert_equal daily_hours[:vendredi], internship_offer.daily_hours['vendredi']
+      assert_equal 'Repas sur place', internship_offer.lunch_break
       assert_equal 0, internship_offer.period # default value
 
       assert_equal JSON.parse(internship_offer.to_json), json_response
@@ -195,16 +197,17 @@ module Api
       sector_uuid = sector.uuid
       remote_id = 'test'
       permalink = 'https://www.google.fr'
-      
+
       geocoder_response = {
         status: 200,
         body: [{
-          "address": {"office": "Ministère de l'Éducation Nationale", "road": "Rue de Grenelle", "suburb": "", "city_district": "7th Arrondissement", "city": "Paris", "municipality": "Paris", "county": "Paris", "country": "France", "postcode": "75002", "country_code": "fr"}, 
+          "address": { "office": "Ministère de l'Éducation Nationale", "road": 'Rue de Grenelle', "suburb": '',
+                       "city_district": '7th Arrondissement', "city": 'Paris', "municipality": 'Paris', "county": 'Paris', "country": 'France', "postcode": '75002', "country_code": 'fr' },
           "lat": coordinates[:latitude],
-          "lon": coordinates[:longitude],
+          "lon": coordinates[:longitude]
         }].to_json
       }
-      stub_request(:get, "https://nominatim.openstreetmap.org/search?accept-language=en&addressdetails=1&format=json&q=75002,%20France").to_return(geocoder_response)
+      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=en&addressdetails=1&format=json&q=75002,%20France').to_return(geocoder_response)
 
       assert_difference('InternshipOffer.count', 1) do
         documents_as(endpoint: :'internship_offers/create', state: :created) do
@@ -212,19 +215,19 @@ module Api
             params: {
               token: "Bearer #{operator.api_token}",
               internship_offer: {
-                title: title,
-                description: description,
-                employer_name: employer_name,
-                employer_description: employer_description,
-                period: period,
-                employer_website: employer_website,
-                siret: siret,
-                street: street,
-                zipcode: zipcode,
-                city: city,
-                sector_uuid: sector_uuid,
-                remote_id: remote_id,
-                permalink: permalink,
+                title:,
+                description:,
+                employer_name:,
+                employer_description:,
+                period:,
+                employer_website:,
+                siret:,
+                street:,
+                zipcode:,
+                city:,
+                sector_uuid:,
+                remote_id:,
+                permalink:,
                 max_candidates: 2,
                 handicap_accessible: true
               }
@@ -242,7 +245,7 @@ module Api
       assert_equal coordinates[:longitude], internship_offer.coordinates.longitude
       assert_equal JSON.parse(internship_offer.to_json), json_response
       assert_equal true, internship_offer.handicap_accessible
-    end  
+    end
 
     test 'POST #create as operator without max_candidates works and set up remaing_seats_count to 1' do
       operator = create(:user_operator, api_token: SecureRandom.uuid)
@@ -268,20 +271,20 @@ module Api
             params: {
               token: "Bearer #{operator.api_token}",
               internship_offer: {
-                title: title,
-                description: description,
-                employer_name: employer_name,
-                employer_description: employer_description,
-                period: period,
-                employer_website: employer_website,
-                siret: siret,
+                title:,
+                description:,
+                employer_name:,
+                employer_description:,
+                period:,
+                employer_website:,
+                siret:,
                 'coordinates' => coordinates,
-                street: street,
-                zipcode: zipcode,
-                city: city,
-                sector_uuid: sector_uuid,
-                remote_id: remote_id,
-                permalink: permalink
+                street:,
+                zipcode:,
+                city:,
+                sector_uuid:,
+                remote_id:,
+                permalink:
               }
             }
           )
@@ -301,12 +304,13 @@ module Api
       geocoder_response = {
         status: 200,
         body: [{
-          "address": {"office": "Ministère de l'Éducation Nationale", "road": "Rue de Grenelle", "suburb": "7th Arrondissement", "city_district": "7th Arrondissement", "city": "Paris", "municipality": "Paris", "county": "Paris", "country": "France", "postcode": "75007", "country_code": "fr"}
+          "address": { "office": "Ministère de l'Éducation Nationale", "road": 'Rue de Grenelle',
+                       "suburb": '7th Arrondissement', "city_district": '7th Arrondissement', "city": 'Paris', "municipality": 'Paris', "county": 'Paris', "country": 'France', "postcode": '75007', "country_code": 'fr' }
         }].to_json
       }
-      stub_request(:get, "https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761").to_return(geocoder_response)
+      stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761').to_return(geocoder_response)
 
-      travel_to(Date.new(2019, 3, 1)) do
+      travel_to(Date.new(2024, 3, 1)) do
         assert_difference('InternshipOffer.count', 1) do
           documents_as(endpoint: :'internship_offers/create', state: :unprocessable_entity_bad_data) do
             post api_internship_offers_path(
@@ -343,12 +347,13 @@ module Api
       geocoder_response = {
         status: 200,
         body: [{
-          "address": {"office": "Ministère de l'Éducation Nationale", "road": "Rue de Grenelle", "suburb": "7th Arrondissement", "city_district": "7th Arrondissement", "city": "Paris", "municipality": "Paris", "county": "Paris", "country": "France", "postcode": "75007", "country_code": "fr"}
+          "address": { "office": "Ministère de l'Éducation Nationale", "road": 'Rue de Grenelle',
+                       "suburb": '7th Arrondissement', "city_district": '7th Arrondissement', "city": 'Paris', "municipality": 'Paris', "county": 'Paris', "country": 'France', "postcode": '75007', "country_code": 'fr' }
         }].to_json
       }
-      stub_request(:get, "https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761").to_return(geocoder_response)
+      stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761').to_return(geocoder_response)
 
-      travel_to(Date.new(2019, 3, 1)) do
+      travel_to(Date.new(2024, 3, 1)) do
         assert_difference('InternshipOffer.count', 1) do
           documents_as(endpoint: :'internship_offers/create', state: :unprocessable_entity_bad_data) do
             post api_internship_offers_path(
@@ -386,13 +391,13 @@ module Api
       geocoder_response = {
         status: 200,
         body: [{
-          "address": {"office": "Ministère de l'Éducation Nationale", "road": "Rue de Grenelle", "suburb": "7th Arrondissement", "city_district": "7th Arrondissement", "city": "Paris", "municipality": "Paris", "county": "Paris", "country": "France", "postcode": "75007", "country_code": "fr"}
+          "address": { "office": "Ministère de l'Éducation Nationale", "road": 'Rue de Grenelle',
+                       "suburb": '7th Arrondissement', "city_district": '7th Arrondissement', "city": 'Paris', "municipality": 'Paris', "county": 'Paris', "country": 'France', "postcode": '75007', "country_code": 'fr' }
         }].to_json
       }
-      stub_request(:get, "https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761").to_return(geocoder_response)
+      stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761').to_return(geocoder_response)
 
-
-      travel_to(Date.new(2019, 3, 1)) do
+      travel_to(Date.new(2024, 3, 1)) do
         assert_difference('InternshipOffer.count', 1) do
           documents_as(endpoint: :'internship_offers/create', state: :unprocessable_entity_bad_data) do
             post api_internship_offers_path(
@@ -428,12 +433,11 @@ module Api
       sector = create(:sector, uuid: SecureRandom.uuid)
       geocoder_response = {
         status: 200,
-        body: [{ "error": "wrong address" }].to_json
+        body: [{ "error": 'wrong address' }].to_json
       }
-      stub_request(:get, "https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=148&lon=14").to_return(geocoder_response)
+      stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=148&lon=14').to_return(geocoder_response)
 
-
-      travel_to(Date.new(2019, 3, 1)) do
+      travel_to(Date.new(2024, 3, 1)) do
         assert_difference('InternshipOffer.count', 1) do
           documents_as(endpoint: :'internship_offers/create', state: :unprocessable_entity_bad_data) do
             post api_internship_offers_path(
@@ -469,10 +473,9 @@ module Api
       sector = create(:sector, uuid: SecureRandom.uuid)
       geocoder_response = {
         status: 200,
-        body: [{ "error": "wrong address" }].to_json
+        body: [{ "error": 'wrong address' }].to_json
       }
-      stub_request(:get, "https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=148&lon=14").to_return(geocoder_response)
-
+      stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=148&lon=14').to_return(geocoder_response)
 
       travel_to(Date.new(2018, 3, 1)) do
         assert_difference('InternshipOffer.count', 1) do

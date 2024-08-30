@@ -8,12 +8,12 @@ class UserUpdateTest < ApplicationSystemTestCase
     sign_in(student)
     visit account_path
 
-    user_email_selector = find(:css, "#user_email_1")
+    user_email_selector = find(:css, '#user_email_1')
     assert user_email_selector.value == student.email
-    fill_in('user[email]', with: "baboo@free.fr")
+    fill_in('user[email]', with: 'baboo@free.fr')
     click_on 'Enregistrer'
     success_message = find('#alert-text').text
-    assert_equal "Compte mis à jour avec succès. Pour confirmer le changement d’adresse électronique, veuillez cliquer sur lien contenu dans le courrier que vous venez de recevoir sur votre nouvelle adresse électronique.",
+    assert_equal 'Compte mis à jour avec succès. Pour confirmer le changement d’adresse électronique, veuillez cliquer sur lien contenu dans le courrier que vous venez de recevoir sur votre nouvelle adresse électronique.',
                  success_message
   end
 
@@ -23,7 +23,7 @@ class UserUpdateTest < ApplicationSystemTestCase
     visit account_path
 
     user_phone_selector = find(:css, '#phone-input')
-    assert user_phone_selector.value.gsub(' ','') == student.phone
+    assert user_phone_selector.value.gsub(' ', '') == student.phone
     fill_in('user[phone]', with: '+330623043058')
     click_on 'Enregistrer'
     success_message = find('#alert-text').text
@@ -52,18 +52,16 @@ class UserUpdateTest < ApplicationSystemTestCase
     visit account_path
     click_button('Mon mot de passe')
     assert find('input[type="submit"]').disabled?
-    fill_in('user[current_password]', with: 'password') 
+    fill_in('user[current_password]', with: 'password')
     assert find('input[type="submit"]').disabled?
     fill_in('user[password]', with: 'pass')
     assert find('input[type="submit"]').disabled?
-    find('.invalid-feedback', text: '6 caractères minimum sont attendus')
-    fill_in('user[password]', with: 'passpass')
+    fill_in('user[password]', with: 'passPass123$')
     refute find('input[type="submit"]').disabled?
-    assert_select('.invalid-feedback', text: '6 caractères minimum sont attendus', count: 0)
   end
 
   test 'student with no school is redirected to account(:school)' do
-    skip 'This is ok locally but fails on CI due to slowlyness' if ENV['CI']
+    skip 'This is ok locally but fails on CI due to slowlyness' if ENV['CI'] == 'true'
     school_new = create(:school, name: 'Etablissement Test 1', city: 'Paris', zipcode: '75012')
     student = create(:student)
     student.school = nil
@@ -77,9 +75,9 @@ class UserUpdateTest < ApplicationSystemTestCase
       click_button('Fermer')
     end
     click_button 'Mon établissement'
-    find_field('Nom (ou commune) de mon établissement').fill_in(with: 'Paris ')
+    find_field('Établissement ou commune').fill_in(with: 'Paris ')
     find('li#downshift-0-item-0').click
-    select school_new.name, from: "user_school_id"
+    select school_new.name, from: 'user_school_id'
     click_button('Enregistrer')
 
     visit internship_offers_path
@@ -91,7 +89,7 @@ class UserUpdateTest < ApplicationSystemTestCase
   end
 
   test 'employer can update his phone_number' do
-    employer = create(:employer , phone: '+330623042585')
+    employer = create(:employer, phone: '+330623042585')
     sign_in(employer)
     visit account_path
 

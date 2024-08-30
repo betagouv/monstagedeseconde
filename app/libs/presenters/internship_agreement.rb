@@ -1,9 +1,8 @@
 module Presenters
   class InternshipAgreement
-
-
     delegate :signature_started?,  to: :internship_agreement
     delegate :signed_by?,  to: :internship_agreement
+    delegate :signed_by_team_member?,  to: :internship_agreement
 
     def student_name
       student.name
@@ -53,14 +52,14 @@ module Presenters
       @current_user = current_user
       @student = internship_agreement.internship_application.student
       @school_manager = internship_agreement.try(:school_manager)
-      @school = @student.school
+      @school = @student&.school
       @employer = internship_agreement.employer
       @internship_offer = internship_agreement.internship_application.internship_offer
     end
 
     def common_status_label(translation_path)
       if internship_agreement.signatures_started? &&
-          (internship_agreement.signed_by?(user: current_user) ||
+          (internship_agreement.signed_by_team_member?(user: current_user) ||
             internship_agreement.signed_by?(user: current_user.try(:school).try(:school_manager)))
         I18n.t("#{translation_path}.already_signed")
       elsif internship_agreement.signatures_started?

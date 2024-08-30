@@ -100,6 +100,7 @@ module Dashboard
     end
 
     def destroy
+      authorize! :update, @internship_offer
       internship_offer_builder.discard(instance: @internship_offer) do |on|
         on.success do
           redirect_to(dashboard_internship_offers_path,
@@ -210,7 +211,7 @@ module Dashboard
 
     def internship_offer_params
       params.require(:internship_offer)
-            .permit(:title, :description_rich_text, :sector_id, :max_candidates,
+            .permit(:title, :description, :sector_id, :max_candidates,
                     :tutor_name, :tutor_phone, :tutor_role,
                     :tutor_email, :employer_website, :employer_name, :street,
                     :zipcode, :city, :department, :region, :academy, :renewed,
