@@ -6,7 +6,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test 'GET works' do
     get new_user_session_path
     assert_response :success
-    assert_select 'title', "Connexion | Stages de 2de"
+    assert_select 'title', 'Connexion | Stages de 2de'
     assert_select '#user_email'
     assert_select '#select-channel-phone'
     assert_select '#user_password[autofocus=autofocus]', count: 0
@@ -14,11 +14,11 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test 'GET #new_session with check_confirmation and id params and unconfirmed account' do
     email = 'fourcade.m@gmail.com'
-    employer = create(:employer, email: email, confirmed_at: nil)
-    get new_user_session_path(params:{check_confirmation: true, id: employer.id})
+    employer = create(:employer, email:, confirmed_at: nil)
+    get new_user_session_path(params: { check_confirmation: true, id: employer.id })
     follow_redirect!
     assert_response :success
-    assert_select('.h2', text: '1 . Activez votre compte !')
+    assert_select('.h3', text: 'Confirmez votre compte')
     flash_message = 'Vous trouverez parmi vos emails le message' \
                       ' permettant l\'activation de votre compte'
     assert_select('span#alert-text', text: flash_message) # 1
@@ -26,16 +26,16 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test 'GET #new_session with check_confirmation and id params and confirmed account' do
     email = 'fourcade.m@gmail.com'
-    employer = create(:employer, email: email, confirmed_at: nil)
+    employer = create(:employer, email:, confirmed_at: nil)
     employer.confirm
-    get new_user_session_path(params:{check_confirmation: true, id: employer.id})
+    get new_user_session_path(params: { check_confirmation: true, id: employer.id })
     assert_response :success
     assert_select('h1', text: 'Connexion à Mon stage de seconde')
   end
 
   test 'GET with prefilled email works' do
     email = 'fourcade.m@gmail.com'
-    get new_user_session_path(email: email)
+    get new_user_session_path(email:)
     assert_response :success
     assert_select '#user_email[autofocus=autofocus]', count: 0
     assert_select "#user_email[value=\"#{email}\"]"
@@ -50,16 +50,17 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
                                              password: pwd } })
     assert_response :found
     follow_redirect!
-    assert_select '#alert-warning #alert-text', text: 'Un message d’activation vous a été envoyé par courrier électronique. Veuillez suivre les instructions qu’il contient.', count: 1
+    assert_select '#alert-warning #alert-text',
+                  text: 'Un message d’activation vous a été envoyé par courrier électronique. Veuillez suivre les instructions qu’il contient.', count: 1
   end
 
   test 'POST session with phone' do
     pwd = 'okokok1Max!!'
     phone = '+330637607756'
-    student = create(:student, email: nil, phone: phone, password: pwd, confirmed_at: 2.days.ago)
+    student = create(:student, email: nil, phone:, password: pwd, confirmed_at: 2.days.ago)
     post user_session_path(params: { user: { channel: 'phone',
-                                            phone: student.phone,
-                                            password: pwd } })
+                                             phone: student.phone,
+                                             password: pwd } })
     assert_response :found
     follow_redirect!
     assert_select 'a[href=?]', account_path
@@ -68,7 +69,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test 'POST session with email' do
     pwd = 'okokok1Max!!'
     email = 'fourcade.m@gmail.com'
-    student = create(:student, email: email, phone: nil, password: pwd, confirmed_at: 2.days.ago)
+    student = create(:student, email:, phone: nil, password: pwd, confirmed_at: 2.days.ago)
     post user_session_path(params: { user: { channel: 'email',
                                              email: student.email,
                                              password: pwd } })
@@ -80,9 +81,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test 'POST session as EMPLOYER with email and check after sign in path when pending applications' do
     pwd = 'okokok1Max!!'
     email = 'employer@corp.com'
-    employer = create(:employer, email: email, phone: nil, password: pwd, confirmed_at: 2.days.ago)
-    internship_offer = create(:weekly_internship_offer, employer: employer)
-    create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
+    employer = create(:employer, email:, phone: nil, password: pwd, confirmed_at: 2.days.ago)
+    internship_offer = create(:weekly_internship_offer, employer:)
+    create(:weekly_internship_application, :submitted, internship_offer:)
 
     post user_session_path(params: { user: { channel: 'email',
                                              email: employer.email,
@@ -94,7 +95,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test 'POST session as EMPLOYER with email and check after sign in path when no pending applications' do
     pwd = 'okokok1Max!!'
     email = 'employer@corp.com'
-    employer = create(:employer, email: email, phone: nil, password: pwd, confirmed_at: 2.days.ago)
+    employer = create(:employer, email:, phone: nil, password: pwd, confirmed_at: 2.days.ago)
 
     post user_session_path(params: { user: { channel: 'email',
                                              email: employer.email,
@@ -107,17 +108,18 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     student = create(:student, password: 'okokok1Max!!')
     internship_offer = create(:weekly_internship_offer)
     internship_application = create(:weekly_internship_application, :validated_by_employer,
-          student: student,
-          internship_offer: internship_offer)
+                                    student:,
+                                    internship_offer:)
 
     post user_session_path(params: { user: { channel: 'email',
-                                              email: student.email,
-                                              password: 'okokok1Max!!' } })
+                                             email: student.email,
+                                             password: 'okokok1Max!!' } })
 
-                                              follow_redirect!
+    follow_redirect!
     assert_response :success
     assert response.body.include? 'Une de vos candidatures a été acceptée'
-    assert_select 'a[href=?]', dashboard_students_internship_application_path(student_id: student.id, id: internship_application.id), 1
+    assert_select 'a[href=?]',
+                  dashboard_students_internship_application_path(student_id: student.id, id: internship_application.id), 1
   end
 
   test 'lock account' do
@@ -126,20 +128,22 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     student = create(:student, password: 'okokok1Max!!', confirmed_at: nil)
     email = student.email
 
-    post user_session_path(params: { user: { channel: 'email', email: email, password: wrong_password } })
+    post user_session_path(params: { user: { channel: 'email', email:, password: wrong_password } })
     assert_response :success
-    assert_select 'p#text-input-error-desc-error-email', text: 'Adresse électronique  ou mot de passe incorrects', count: 1
+    assert_select 'p#text-input-error-desc-error-email', text: 'Adresse électronique  ou mot de passe incorrects',
+                                                         count: 1
     # <p class="fr-error-text" id="text-input-error-desc-error-email">Adresse électronique  ou mot de passe incorrects</p>
     assert_equal 1, student.reload.failed_attempts
     max_attempts = Devise.maximum_attempts
 
     (max_attempts - 2).times do
-      post user_session_path(params: { user: { channel: 'email', email: email, password: wrong_password } })
+      post user_session_path(params: { user: { channel: 'email', email:, password: wrong_password } })
     end
-    assert_select("span#alert-text", text: 'Il vous reste une tentative avant que votre compte ne soit bloqué.', count: 1)
-    assert_equal max_attempts-1, student.reload.failed_attempts
+    assert_select('span#alert-text', text: 'Il vous reste une tentative avant que votre compte ne soit bloqué.',
+                                     count: 1)
+    assert_equal max_attempts - 1, student.reload.failed_attempts
 
-    post user_session_path(params: { user: { channel: 'email', email: email, password: wrong_password } })
+    post user_session_path(params: { user: { channel: 'email', email:, password: wrong_password } })
     assert_equal max_attempts, student.reload.failed_attempts
     assert student.reload.access_locked?
   end
@@ -150,12 +154,12 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     student.lock_access!
 
-    post user_unlock_path(params: {user: { email: email }})
+    post user_unlock_path(params: { user: { email: } })
     assert_redirected_to new_user_session_path
 
     # using inside's Devise magics
-        raw, enc = Devise.token_generator.generate(User, :unlock_token)
-        student.update_columns(unlock_token: enc)
+    raw, enc = Devise.token_generator.generate(User, :unlock_token)
+    student.update_columns(unlock_token: enc)
     # using inside's Devise magics end
     get user_unlock_path(unlock_token: raw)
     assert_redirected_to new_user_session_path

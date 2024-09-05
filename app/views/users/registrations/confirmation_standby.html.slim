@@ -32,7 +32,7 @@
                                           alt: 'Consultez votre messagerie mail'
           .row
             .col-12.on-boarding-text.fr-mb-3w
-              p.h2.fr-mt-4w 1 . Confirmez votre compte
+              p.h3.text-dark.fr-mt-4w Confirmez votre compte
               p.text-dark
                 | Nous venons de vous envoyer un email sur
                 br
@@ -55,13 +55,10 @@
                   = link_to "Renvoyer les instructions",
                             new_confirmation_path(resource_name),
                             class: 'fr-btn fr-btn--secondary'
-      - else
+      - elsif user&.phone
         .fr-alert.fr-alert--error.fr-mb-4w
           h3.fr-alert__title
-            = "Erreurssssss"
+            = "Erreur"
           p
-            = "Si un compte existe au numéro de téléphone #{user.phone}, sa confirmation a échoué."
-        = render 'users/registrations/phone_token_input_zone',
-                  user: user,
-                  confirmable_user: @confirmable_user
+            = "Si un compte existe au numéro de téléphone #{user&.phone}, sa confirmation a échoué."
 
