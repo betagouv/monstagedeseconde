@@ -28,7 +28,7 @@ module Users
     alias confirmation_phone_standby confirmation_standby
 
     def resource_class
-      UserManager.new.by_params(params: params)
+      UserManager.new.by_params(params:)
     rescue KeyError
       User
     end
@@ -43,7 +43,7 @@ module Users
         )
       end
 
-      if UserManager.new.valid?(params: params)
+      if UserManager.new.valid?(params:)
         super do |resource|
           resource = set_default_resource(resource, params)
           @current_ability = Ability.new(resource)
@@ -59,10 +59,10 @@ module Users
 
     # POST /resource
     def create
-      [:honey_pot_checking,
-       :phone_reuse_checking].each do |check|
-          check_proc = send(check, params)
-          (check_proc.call and return) if check_proc.respond_to?(:call)
+      %i[honey_pot_checking
+         phone_reuse_checking].each do |check|
+        check_proc = send(check, params)
+        (check_proc.call and return) if check_proc.respond_to?(:call)
       end
       params[:user].delete(:confirmation_email) if params.dig(:user, :confirmation_email)
       params[:user] = merge_identity(params) if params.dig(:user, :identity_token)
@@ -99,6 +99,32 @@ module Users
     end
 
     def statistician_standby
+    end
+
+    def resend_confirmation_phone_token
+      user = User.find_by(id: users_params[:id])
+      flash_path = 'dashboard/internship_agreements/signature/flash_new_code'
+      if user && !user&.confirmed? && user.phone && user.resend_confirmation_phone_token
+        notice = 'Votre code a été renvoyé'
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream:
+              turbo_stream.replace('code-request',
+                                   partial: flash_path,
+                                   locals: { notice: })
+          end
+        end
+      else
+        alert = "Une erreur est survenue et le code n'a pas été renvoyé"
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream:
+              turbo_stream.replace('code-request',
+                                   partial: flash_path,
+                                   locals: { alert: })
+          end
+        end
+      end
     end
 
     # GET /resource/edit
@@ -159,6 +185,10 @@ module Users
       )
     end
 
+    def users_params
+      params.require(:user).permit(:id)
+    end
+
     # If you have extra params to permit, append them to the sanitizer.
     # def configure_account_update_params
     #   devise_parameter_sanitizer.permit(:account_update, keys: [:attribute])
@@ -173,7 +203,7 @@ module Users
     def after_inactive_sign_up_path_for(resource)
       if resource.phone.present? && resource.student?
         options = { id: resource.id }
-        options = options.merge({ as: 'Student'}) if resource.student?
+        options = options.merge({ as: 'Student' }) if resource.student?
         users_registrations_phone_standby_path(options)
       elsif resource.statistician?
         statistician_standby_path(id: resource.id)
@@ -208,34 +238,33 @@ module Users
       identity = Identity.find_by_token(params[:user][:identity_token])
 
       params[:user].merge({
-        first_name: identity.first_name,
-        last_name: identity.last_name,
-        birth_date: identity.birth_date,
-        school_id: identity.school_id,
-        class_room_id: identity.class_room_id,
-        gender: identity.gender
-      })
+                            first_name: identity.first_name,
+                            last_name: identity.last_name,
+                            birth_date: identity.birth_date,
+                            school_id: identity.school_id,
+                            class_room_id: identity.class_room_id,
+                            gender: identity.gender
+                          })
     end
 
-
     def honey_pot_checking(params)
-      if params[:user][:confirmation_email].present?
-        notice = "Votre inscription a bien été prise en compte. " \
-                 "Vous recevrez un email de confirmation dans " \
-                 "les prochaines minutes."
-        lambda { redirect_to(root_path, flash: { notice: notice }) }
-      end
+      return unless params[:user][:confirmation_email].present?
+
+      notice = 'Votre inscription a bien été prise en compte. ' \
+               'Vous recevrez un email de confirmation dans ' \
+               'les prochaines minutes.'
+      -> { redirect_to(root_path, flash: { notice: }) }
     end
 
     def phone_reuse_checking(params)
-      if params && params.dig(:user, :phone) && fetch_user_by_phone && @user
-        lambda {
-          redirect_to(
-            new_user_session_path(phone: fetch_user_by_phone.phone),
-            flash: { danger: I18n.t('devise.registrations.reusing_phone_number')}
-          )
-        }
-      end
+      return unless params && params.dig(:user, :phone) && fetch_user_by_phone && @user
+
+      lambda {
+        redirect_to(
+          new_user_session_path(phone: fetch_user_by_phone.phone),
+          flash: { danger: I18n.t('devise.registrations.reusing_phone_number') }
+        )
+      }
     end
 
     def register_student_path(resource)
