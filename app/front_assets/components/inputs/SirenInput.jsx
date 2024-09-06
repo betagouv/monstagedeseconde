@@ -4,6 +4,7 @@ import { useDebounce } from 'use-debounce';
 import Downshift from 'downshift';
 import { fetch } from 'whatwg-fetch';
 import { endpoints } from '../../utils/api';
+import { broadcast, zipcodeChanged, cityChanged } from '../../utils/events';
 
 // see: https://geo.api.gouv.fr/adresse
 export default function SirenInput({
@@ -128,7 +129,9 @@ export default function SirenInput({
             document.getElementById("organisation_employer_name").value = selection.uniteLegale.denominationUniteLegale;
             const is_public = selection.is_public;
             const zipcode = selection.adresseEtablissement.codePostalEtablissement;
+            broadcast(zipcodeChanged({ zipcode }));
             const city = selection.adresseEtablissement.libelleCommuneEtablissement;
+            broadcast(cityChanged({ city }));
             const street = `${selection.adresseEtablissement.numeroVoieEtablissement} ${selection.adresseEtablissement.typeVoieEtablissement} ${selection.adresseEtablissement.libelleVoieEtablissement} `;
             const fullAddress = `${street} ${zipcode} ${city}`;
             document.getElementById("organisation_autocomplete").value = fullAddress;
