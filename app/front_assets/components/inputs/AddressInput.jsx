@@ -210,7 +210,7 @@ export default function AddressInput({
               className="form-control"
               required="required"
               value={city}
-              maxlength="50"
+              maxLength="50"
               type="text"
               readOnly
               name={`${resourceName}[city]`}
@@ -230,7 +230,7 @@ export default function AddressInput({
               className="form-control"
               required="required"
               value={zipcode}
-              maxlength="5"
+              maxLength="5"
               type="text"
               name={`${resourceName}[zipcode]`}
               id={`${resourceName}_zipcode`}
