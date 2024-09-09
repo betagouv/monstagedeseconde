@@ -170,7 +170,7 @@ class StudentMailer < ApplicationMailer
   def reminder_without_application_email(student: )
     @subject   = "Faites votre première candidature !"
     @student   = student
-    @message   = "Vous n'avez pas encore postulé sur Mon stage de seconde ? " \
+    @message   = "Vous n'avez pas encore postulé sur Mon stage à l'école ? " \
                  "Faites une recherche en indiquant le métier qui vous intéresse, " \
                  "le lieu et la semaine de votre stage, puis proposez votre " \
                   "candidature à plusieurs entreprises."

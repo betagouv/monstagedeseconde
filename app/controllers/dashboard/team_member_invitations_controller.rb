@@ -21,7 +21,7 @@ module Dashboard
       case check_invitation(team_member_invitation_params[:invitation_email])
       when :ok
         params = team_member_invitation_params.merge(inviter_id: current_user.team_id)
-        @team_member_invitation= TeamMemberInvitation.new(params)
+        @team_member_invitation = TeamMemberInvitation.new(params)
         @team_member_invitation.save!
         @team_member_invitation.send_invitation
         flash = { success: 'Membre d\'équipe invité avec succès' }
@@ -30,11 +30,11 @@ module Dashboard
       when :already_in_team
         flash = { warning: 'Ce collaborateur fait déjà partie de l\'équipe' }
       when :in_another_team
-        flash = { alert: 'Ce collaborateur fait déjà partie d’une équipe sur mon stage de seconde. Il ne pourra pas rejoindre votre équipe' }
+        flash = { alert: "Ce collaborateur fait déjà partie d’une équipe sur mon stage à l'école. Il ne pourra pas rejoindre votre équipe" }
       else
         render(:new, status: :bad_request) and return
       end
-      redirect_to dashboard_team_member_invitations_path, flash: flash
+      redirect_to dashboard_team_member_invitations_path, flash:
     end
 
     # when accepting an invitation or not
@@ -42,14 +42,13 @@ module Dashboard
       authorize! :manage_teams, @team_member_invitation
       flash = {}
       if @team_member_invitation.pending_invitation?
-        action =  params[:commit] == "Oui" ? :accept_invitation! : :refuse_invitation!
+        action = params[:commit] == 'Oui' ? :accept_invitation! : :refuse_invitation!
         @team_member_invitation.send(action)
       else
-        state = @team_member_invitation.refused_invitation? ? "refusée" : "acceptée"
-        flash = {warning: "L'invitation a déjà été #{state}"}
+        state = @team_member_invitation.refused_invitation? ? 'refusée' : 'acceptée'
+        flash = { warning: "L'invitation a déjà été #{state}" }
       end
-      redirect_to dashboard_team_member_invitations_path, flash: flash
-
+      redirect_to dashboard_team_member_invitations_path, flash:
     end
 
     def destroy
@@ -82,7 +81,7 @@ module Dashboard
     end
 
     def check_invitation(email)
-      ::Services::TeamMemberInvitationValidator.new(email: email, current_user: current_user)
+      ::Services::TeamMemberInvitationValidator.new(email:, current_user:)
                                                .check_invitation
     end
 
@@ -92,7 +91,7 @@ module Dashboard
 
     def team_member_invitation_params
       params.require(:team_member_invitation)
-            .permit( :invitation_email )
+            .permit(:invitation_email)
     end
   end
 end
