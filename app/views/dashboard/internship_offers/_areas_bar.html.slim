@@ -1,3 +1,19 @@
+fieldset.fr-segmented.fr-segmented--sm
+  legend.fr-segmented__legend
+    | Légende
+  .fr-segmented__elements
+    .fr-segmented__element
+      input#segmented-2227-1[name="segmented-2227" type="radio" value="1"]
+      label.fr-icon-road-map-line.fr-label[for="segmented-2227-1"]
+        | Libellé
+    .fr-segmented__element
+      input#segmented-2227-2[name="segmented-2227" type="radio" value="2" checked]
+      label.fr-icon-road-map-line.fr-label[for="segmented-2227-2"]
+        | Libellé
+    .fr-segmented__element
+      input#segmented-2227-3[name="segmented-2227" type="radio" value="3"]
+      label.fr-icon-road-map-line.fr-label[for="segmented-2227-3"]
+        | Libellé
 - if current_user.employer_like?
   - internship_offer_areas = current_user.internship_offer_areas
   .bar-area.fr-mb-3w
