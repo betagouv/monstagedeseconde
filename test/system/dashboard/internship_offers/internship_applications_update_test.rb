@@ -27,7 +27,7 @@ module Dashboard::InternshipOffers
       assert internship_application.reload.rejected?
       find('h2.h4', text: 'Les candidatures')
       find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--error', text: 'REFUSÉ')
-      find('span#alert-text', text: 'Candidature refusée.')
+      find('span#alert-text', text: 'Candidature non retenue.')
       find('button#tabpanel-received[aria-controls="tabpanel-received-panel"]', text: 'Reçues').click
       find('td.text-center[colspan="5"]', text: 'Aucune candidature reçue')
     end

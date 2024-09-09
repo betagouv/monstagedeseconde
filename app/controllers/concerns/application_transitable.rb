@@ -59,7 +59,7 @@ module ApplicationTransitable
       if @internship_application.reload.read_by_employer?
         'Candidature mise à jour.'
       elsif @internship_application.rejected?
-        'Candidature refusée.'
+        'Candidature non retenue.'
       elsif @internship_application.approved?
         current_user.employer? ? "Candidature mise à jour avec succès. #{extra_message}" : 'Candidature acceptée !'
       else
