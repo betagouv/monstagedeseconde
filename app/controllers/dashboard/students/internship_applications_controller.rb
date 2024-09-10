@@ -16,6 +16,13 @@ module Dashboard
                                                    .includes(:internship_offer, :student)
                                                    .order_by_aasm_state_for_student
                                                    .order(created_at: :desc)
+        @submitted_internship_applications = @internship_applications.where(aasm_state: %w[submitted read_by_employer
+                                                                                           transfered])
+        @approved_internship_applications = @internship_applications.where(aasm_state: 'approved')
+        @canceled_internship_applications = @internship_applications.where(aasm_state: %w[canceled_by_student
+                                                                                          canceled_by_employer canceled_by_student_confirmation])
+        @rejected_internship_applications = @internship_applications.where(aasm_state: 'rejected')
+        @expired_internship_applications = @internship_applications.where(aasm_state: %w[expired expired_by_student])
       end
 
       # 0 no magic link - status quo - default value
@@ -24,17 +31,18 @@ module Dashboard
       def show
         if params[:sgid].present? && magic_fetch_student&.student? && magic_fetch_student.id == @current_student.id
           @internship_application.update(magic_link_tracker: 1)
-          @internship_application_sgid= @internship_application.to_sgid(expires_in: MAGIC_EXPIRATION_TIME).to_s
+          @internship_application_sgid = @internship_application.to_sgid(expires_in: MAGIC_EXPIRATION_TIME).to_s
           render 'dashboard/students/internship_applications/making_decisions' and return
         elsif params[:sgid].present?
           @internship_application.update(magic_link_tracker: 2)
           redirect_to(
             dashboard_students_internship_application_path(
-                        student_id: @current_student.id,
-                        id: @internship_application.id)
+              student_id: @current_student.id,
+              id: @internship_application.id
+            )
           ) and return
         else
-           authenticate_user!
+          authenticate_user!
         end
         authorize! :dashboard_show, @internship_application
         @internship_offer = @internship_application.internship_offer
@@ -48,12 +56,12 @@ module Dashboard
       def resend_application
         if @internship_application.max_dunning_letter_count_reached?
           redirect_to dashboard_students_internship_applications_path(@current_student),
-                      alert: "Vous avez atteint le nombre maximum de relances pour cette candidature"
+                      alert: 'Vous avez atteint le nombre maximum de relances pour cette candidature'
         else
           increase_dunning_letter_count
           EmployerMailer.resend_internship_application_submitted_email(internship_application: @internship_application).deliver_now
           redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, id: @internship_application.id),
-                      notice: "Votre candidature a bien été renvoyée"
+                      notice: 'Votre candidature a bien été renvoyée'
         end
       end
 
