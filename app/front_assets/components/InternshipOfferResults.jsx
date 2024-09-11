@@ -58,7 +58,7 @@ const InternshipOfferResults = ({ count, sectors, searchParams }) => {
         internshipOffer.lon,
       ]);
       map.fitBounds(bounds);
-      L.tileLayer.provider('CartoDB.Positron').addTo(map);
+      // L.tileLayer.provider('CartoDB.Positron').addTo(map); MAP STYLE
     }
 
     setNewDataFetched(false);
@@ -150,8 +150,8 @@ const InternshipOfferResults = ({ count, sectors, searchParams }) => {
         />
       ) : '' }
       <div className="row fr-mx-0 fr-px-3v no-x-scroll">
-        <div className={`${isMobile() ? 'col-12 px-0' : 'col-sm-12'} d-flex flex-row-reverse no-x-scroll`} style={{ overflowY: 'scroll' }}>
-          <div className="container-monstage fr-px-0 fr-px-md-1w">
+        <div className={`${isMobile() ? 'col-12 px-0' : 'col-7 px-3'} d-flex flex-row-reverse no-x-scroll`} style={{ overflowY: 'scroll' }}>
+          
             <div className="results-col results-row no-x-scroll hide-scrollbar fr-mt-2w fr-mx-1w">
               <div className="row fr-py-2w mx-0 ">
                 <div className="col-8 px-0">
@@ -163,7 +163,7 @@ const InternshipOfferResults = ({ count, sectors, searchParams }) => {
                     ) : (
                       <div className="h4 mb-0" id="internship-offers-count">
                         <div className="strong">
-                          Les offres de stage
+                          Rechercher un stage d'observation
                         </div>
                       </div>)
                   }
@@ -251,8 +251,50 @@ const InternshipOfferResults = ({ count, sectors, searchParams }) => {
                 }
               </div>
             </div>
+          
+        </div>
+      
+      { !isMobile() && (<div className="col-5 map-container">
+          <div className="">
+            <MapContainer center={center} zoom={13} scrollWheelZoom={false}>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">'
+              />
+              <MarkerClusterGroup>
+                {
+                  internshipOffers.length ? (
+                    internshipOffers.map((internshipOffer) => (
+                      <Marker
+                        icon={
+                          internshipOffer.id === selectedOffer ? pointerIcon : defaultPointerIcon
+                        }
+                        position={[internshipOffer.lat, internshipOffer.lon]}
+                        key={internshipOffer.id}
+                      >
+                        <Popup className='popup-custom'>
+                          <a href={internshipOffer.link}>
+                            <div className="img">
+                              <img className="fr-responsive-img" src={internshipOffer.image} alt="image"></img>
+                            </div>
+                            <div className="content fr-p-2w">
+                              <p className="fr-card__detail">{internshipOffer.employer_name}</p>
+                              <h6 className="title">
+                                {internshipOffer.title}
+                              </h6>
+                            </div>
+                          </a>
+                        </Popup>
+                      </Marker>
+                    ))
+                  ) : ('')
+                }
+              </MarkerClusterGroup>
+              <ClickMap internshipOffers={internshipOffers} recenterMap={newDataFetched} />
+            </MapContainer>
           </div>
         </div>
+      )}
       </div>
 
       {
