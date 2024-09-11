@@ -29,7 +29,7 @@ const defaultPointerIcon = new L.Icon({
   popupAnchor: [0, -60], // changed popup position
 });
 
-const InternshipOfferResults = ({ count, sectors, searchParams }) => {
+const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
   // const [map, setMap] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [paginateLinks, setPaginateLinks] = useState(null);
@@ -163,7 +163,7 @@ const InternshipOfferResults = ({ count, sectors, searchParams }) => {
                     ) : (
                       <div className="h4 mb-0" id="internship-offers-count">
                         <div className="strong">
-                          Rechercher un stage d'observation
+                          {title}
                         </div>
                       </div>)
                   }

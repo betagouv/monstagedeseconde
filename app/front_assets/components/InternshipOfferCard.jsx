@@ -53,20 +53,19 @@ const InternshipOfferCard = ({
           
 
           <div className="fr-card__detail fr-mt-1w">
-          <h4 className="fr-card__title">
-            <a href={internshipOffer.link}
-              className="row-link text-dark"
-              onClick={(e) => { e.stopPropagation() }}
-            ><div className="card-title-std-height">
-              {internshipOffer.title}
+          <div className="fr-card__title">
+            <h4>
+              <a href={internshipOffer.link}
+                className="row-link text-dark"
+                onClick={(e) => { e.stopPropagation() }}
+              ><div className="card-title-std-height">
+                {internshipOffer.title}
+              </div>
+              </a>
+            </h4>
             </div>
-            </a>
-          </h4>
-            { internshipOffer.logged_in && internshipOffer.can_manage_favorite &&
-              <div className={`heart-${isFavorite ? 'full' : 'empty'}`}
-                onClick={(e) => { (isFavorite) ? removeFavorite(internshipOffer.id) : addFavorite(internshipOffer.id)}}
-              ></div>
-            }
+
+            
           </div>
 
           <div className="fr-card__desc fr-my-1w">
@@ -76,8 +75,8 @@ const InternshipOfferCard = ({
             <div className="fr-text fr-py-1w">{internshipOffer.city}</div>
           </div>
         </div>
-
-        <div className="ftets">
+        {/* puts elements at the opposite on a line */}
+        <div className="d-flex justify-content-between">
           <ul className="fr-badges-group fr-p-2w">
             <li>
               <div className="fr-badge fr-badge--no-icon">
@@ -92,6 +91,11 @@ const InternshipOfferCard = ({
               <div className="fr-badge fr-badge--no-icon">3ème</div>
             </li>
           </ul>
+          { internshipOffer.logged_in && internshipOffer.can_manage_favorite &&
+              <span className={`fr-mx-2w fr-my-2w heart-${isFavorite ? 'full' : 'empty'}`}
+                onClick={(e) => { (isFavorite) ? removeFavorite(internshipOffer.id) : addFavorite(internshipOffer.id)}}
+              ></span>
+            }
         </div>
 
       </div>
