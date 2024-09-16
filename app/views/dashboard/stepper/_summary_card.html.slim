@@ -1,3 +1,23 @@
-h3 data-organisation-cardfill-target="sectorOutput"
-h3 data-organisation-cardfill-target="cityOutput"
-h3 data-organisation-cardfill-target="zipcodeOutput"
+.fr-badge.fr-badge--purple-glycine.fr-px-2w.fr-mb-3w
+  |Aperçu de votre offre de stage
+
+.fr-card.fr-enlarge-link.fr-card--horizontal.preview-card
+  .fr-card__body
+    .fr-card__content
+      h3.fr-card__title
+        a href="#" disabled=true
+          span data-organisation-cardfill-target="titleOutput"
+      p.fr-card__desc data-organisation-cardfill-target="employerNameOutput"
+      .fr-card__start
+        ul.fr-tags-group
+          li
+            p.fr-tag
+              span.preview-card.fr-mr-1w.fr-icon-calendar-2-fill aria-hidden="true" data-organisation-cardfill-target="durationOutput"
+              |< Dates proposées
+              span data-organisation-cardfill-target="durationOutput"
+        p.fr-card__detail data-organisation-cardfill-target="sectorOutput"
+
+      .fr-card__end
+        p.fr-card__detail
+          span.fr-mr-1w data-organisation-cardfill-target="cityOutput"
+          span data-organisation-cardfill-target="zipcodeOutput"

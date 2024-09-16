@@ -45,13 +45,13 @@ export const offerTitleChanged = ({ offerTitle }) => {
   });
 };
 
-export const employerName = ({ employerName }) => {
+export const employerNameChanged = ({ employerName }) => {
   return new CustomEvent(EVENT_LIST.EMPLOYER_NAME_CHANGED, {
     detail: { employerName },
   });
 };
 
-export const weeksCount = ({ weeksCount }) => {
+export const weeksCountChanged = ({ weeksCount }) => {
   return new CustomEvent(EVENT_LIST.WEEKS_COUNT_CHANGED, {
     detail: { weeksCount },
   });

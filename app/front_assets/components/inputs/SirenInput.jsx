@@ -4,7 +4,7 @@ import { useDebounce } from 'use-debounce';
 import Downshift from 'downshift';
 import { fetch } from 'whatwg-fetch';
 import { endpoints } from '../../utils/api';
-import { broadcast, zipcodeChanged, cityChanged } from '../../utils/events';
+import { broadcast, zipcodeChanged, cityChanged, employerNameChanged} from '../../utils/events';
 
 // see: https://geo.api.gouv.fr/adresse
 export default function SirenInput({
@@ -155,6 +155,7 @@ export default function SirenInput({
               street: street,
               siret: selection.siret,
             });
+            broadcast(employerNameChanged({ employerName: selection.uniteLegale.denominationUniteLegale }));
             }
           }
           itemToString={item => (item ? item.value : '')}
