@@ -377,6 +377,19 @@ class InternshipApplication < ApplicationRecord
     student.school && student.school.school_manager.nil?
   end
 
+  def is_modifiable?
+    not_modifiable_states = %w[drafted submitted read_by_employer transfered validated_by_employer approved]
+    !not_modifiable_states.include?(aasm_state)
+  end
+
+  def is_re_approvable?
+    # false if sutdent is anonymised or student has an approved application
+    return false if student.anonymized? || student.internship_applications.where(aasm_state: 'approved').any?
+    re_approvable_states = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
+    return true if re_approvable_states.include?(aasm_state)
+    false
+  end
+
   def self.from_sgid(sgid)
     GlobalID::Locator.locate_signed(sgid)
   end
@@ -538,6 +551,10 @@ class InternshipApplication < ApplicationRecord
 
   def presenter(user)
     @presenter ||= Presenters::InternshipApplication.new(self, user)
+  end
+
+  def response_message
+    rejected_message || approved_message || canceled_by_employer_message || canceled_by_student_message
   end
 
   private
