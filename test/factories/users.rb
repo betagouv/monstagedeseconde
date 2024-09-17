@@ -27,7 +27,6 @@ FactoryBot.define do
       gender { %w[m f].sample }
       birth_date { 14.years.ago }
       school { create(:school, :with_school_manager) }
-      gradin { 'troisieme' }
       address { FFaker::AddressFR.full_address }
       legal_representative_email { FFaker::Internet.email }
       legal_representative_full_name { FFaker::NameFR.name }
