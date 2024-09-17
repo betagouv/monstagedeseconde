@@ -35,7 +35,7 @@ class UserMailerTest < ActionMailer::TestCase
         email.deliver_now
       end
     end
-    assert_equal 'Export des offres de Mon stage de seconde', email.subject
+    assert_equal "Export des offres de Mon stage à l'école", email.subject
     refute_email_spammyness(email)
   end
 
@@ -49,7 +49,7 @@ class UserMailerTest < ActionMailer::TestCase
         email.deliver_now
       end
     end
-    assert_equal 'Export des offres de Mon stage de seconde', email.subject
+    assert_equal "Export des offres de Mon stage à l'école", email.subject
     refute_email_spammyness(email)
   end
 
@@ -63,7 +63,7 @@ class UserMailerTest < ActionMailer::TestCase
         email.deliver_now
       end
     end
-    assert_equal 'Export des offres de Mon stage de seconde', email.subject
+    assert_equal "Export des offres de Mon stage à l'école", email.subject
     refute_email_spammyness(email)
   end
 end
