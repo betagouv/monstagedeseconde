@@ -23,6 +23,7 @@ module Users
 
     validates :birth_date,
               :gender,
+              :grade,
               presence: true
 
     validate :validate_school_presence_at_creation

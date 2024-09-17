@@ -1,6 +1,5 @@
 class InvitationMailer < ApplicationMailer
-  def staff_invitation(from:, invitation: )
-
+  def staff_invitation(from:, invitation:)
     @from        = from.email
     @school_name = from.school.name
     @from_name   = from.presenter.formal_name
@@ -23,7 +22,7 @@ class InvitationMailer < ApplicationMailer
     mail(
       from: @from,
       to: @to,
-      subject: "Invitation à rejoindre Mon stage de seconde"
+      subject: "Invitation à rejoindre Mon stage à l'école"
     )
   end
 end

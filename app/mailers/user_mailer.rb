@@ -9,17 +9,19 @@ class UserMailer < ApplicationMailer
     school = student.school
     return if school.nil?
 
-    @student_prez  = student.presenter
+    @student_prez = student.presenter
     @offer_prez = offer.presenter
     @school_manager_email = made_school_manager_email(school)
     @url = rails_pathes.new_user_registration_url(
       host: ENV['HOST'],
       as: 'SchoolManagement',
       email: @school_manager_email,
-      user_role: 'school_manager')
+      user_role: 'school_manager'
+    )
     send_email(
       to: @school_manager_email,
-      subject: 'Une convention de stage vous attend.')
+      subject: 'Une convention de stage vous attend.'
+    )
   end
 
   def export_offers(user, params)
@@ -30,17 +32,17 @@ class UserMailer < ApplicationMailer
       params.delete(:ministries)
     end
 
-    offers = Finders::ReportingInternshipOffer.new(params: params).dimension_offer
+    offers = Finders::ReportingInternshipOffer.new(params:).dimension_offer
 
     attachment_name = "#{serialize_params_for_filenaming(params)}.xlsx"
     xlsx = render_to_string layout: false,
                             handlers: [:axlsx],
                             formats: [:xlsx],
-                            template: "reporting/internship_offers/index_offers",
-                            locals: { offers: offers,
+                            template: 'reporting/internship_offers/index_offers',
+                            locals: { offers:,
                                       presenter_for_dimension: Presenters::Reporting::DimensionByOffer }
-    attachments[attachment_name] = {mime_type: Mime[:xlsx], content: xlsx}
-    mail(to: recipient_email, subject: "Export des offres de Mon stage de seconde")
+    attachments[attachment_name] = { mime_type: Mime[:xlsx], content: xlsx }
+    mail(to: recipient_email, subject: "Export des offres de Mon stage à l'école")
   end
 
   private
@@ -50,7 +52,7 @@ class UserMailer < ApplicationMailer
   end
 
   def serialize_params_for_filenaming(params)
-    params.compact.inject("export-des-offres") do |accu, (k,v)|
+    params.compact.inject('export-des-offres') do |accu, (k, v)|
       "#{accu}-#{InternshipOffer.human_attribute_name(k.to_s).parameterize}-#{v.to_s.parameterize}"
     end
   end
