@@ -52,7 +52,8 @@ class StudentRegistrationsTest < ActionDispatch::IntegrationTest
                 gender: 'np',
                 email: 'fourcade.m@gmail.com',
                 password: 'okokok1Max!!',
-                accept_terms: '1'
+                accept_terms: '1',
+                grade: '3e'
               }
             }
           )
