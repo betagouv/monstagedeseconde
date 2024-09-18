@@ -31,6 +31,7 @@ FactoryBot.define do
       legal_representative_email { FFaker::Internet.email }
       legal_representative_full_name { FFaker::NameFR.name }
       legal_representative_phone { generate(:phone) }
+      grade { '3e' }
 
       trait :male do
         gender { 'm' }
