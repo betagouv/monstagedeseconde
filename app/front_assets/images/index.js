@@ -71,6 +71,8 @@ import './icons/empty_heart.svg';
 import './icons/disabled_heart.svg';
 import './icons/file_copy_line.svg';
 
+import './onboarding/inbox-mail.svg';
+
 import './pages/statistics/hand_left.svg';
 import './pages/statistics/hand_right.svg';
 import './pages/statistics/handshake.svg';

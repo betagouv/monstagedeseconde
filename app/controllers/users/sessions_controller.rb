@@ -25,12 +25,14 @@ module Users
       if by_phone? && fetch_user_by_phone.try(:valid_password?, params[:user][:password])
         user = fetch_user_by_phone
         if user.student?
-          store_targeted_offer_id(user: user)
+          store_targeted_offer_id(user:)
           if user.confirmed?
             sign_in(user)
             redirect_to after_sign_in_path_for(user)
           else
+            # TODO: something wrong about this when send_sms_token is sent at user creation time with a callback
             user.send_sms_token
+            #--------------------
             redirect_to users_registrations_phone_standby_path(phone: safe_phone_param)
           end
           return
@@ -47,9 +49,9 @@ module Users
         Rails.logger.error("--------------\n#{params}\n--------------\n")
         raise 'params[:user] is nil'
       end
-      if user && params[:user][:targeted_offer_id].present?
-        user.update(targeted_offer_id: params[:user][:targeted_offer_id])
-      end
+      return unless user && params[:user][:targeted_offer_id].present?
+
+      user.update(targeted_offer_id: params[:user][:targeted_offer_id])
     end
 
     def fetch_user_by_email
@@ -58,7 +60,7 @@ module Users
         raise 'params[:user] is nil'
       end
       param_email = params[:user][:email]
-      return User.find_by(email: param_email) if param_email.present?
+      User.find_by(email: param_email) if param_email.present?
     end
 
     # If you have extra params to permit, append them to the sanitizer.

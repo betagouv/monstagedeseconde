@@ -19,8 +19,6 @@ fr:
       unconfirmed: "Un message d’activation vous a été envoyé par courrier électronique. Veuillez suivre les instructions qu’il contient."
     passwords:
       update: 'Mot de passe mis à jour.'
-    sms:
-      welcome_student: "Bienvenue sur Mon stage de 2de. Commencez votre recherche ici : %{shrinked_url}"
   activerecord:
     models:
       area_notification:

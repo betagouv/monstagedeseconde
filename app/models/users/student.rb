@@ -4,6 +4,8 @@ module Users
   class Student < User
     include StudentAdmin
 
+    BITLY_STUDENT_WELCOME_URL = 'https://bit.ly/4athP2e' # internship_offers_url in production
+
     belongs_to :school, optional: true
     belongs_to :class_room, optional: true
 
@@ -36,7 +38,7 @@ module Users
                  :set_reminders,
                  :clean_phone_or_email_when_empty
 
-    def student?; true end
+    def student? = true
 
     def channel
       return :email if email.present?
@@ -70,7 +72,7 @@ module Users
       url_helpers.dashboard_students_internship_applications_path(self)
     end
 
-    def custom_candidatures_path(parameters={})
+    def custom_candidatures_path(parameters = {})
       custom_dashboard_path
     end
 
@@ -100,15 +102,15 @@ module Users
 
     def available_offers(max_distance: Finders::ContextTypableInternshipOffer::MAX_RADIUS_SEARCH_DISTANCE)
       Finders::InternshipOfferConsumer.new(user: self, params: {})
-                                      .available_offers(max_distance: max_distance)
+                                      .available_offers(max_distance:)
     end
 
     def has_offers_to_apply_to?(max_distance: Finders::ContextTypableInternshipOffer::MAX_RADIUS_SEARCH_DISTANCE)
-      available_offers(max_distance: max_distance).any?
+      available_offers(max_distance:).any?
     end
 
     def anonymize(send_email: true)
-      super(send_email: send_email)
+      super(send_email:)
 
       update_columns(birth_date: nil,
                      current_sign_in_ip: nil,
@@ -122,9 +124,16 @@ module Users
     end
 
     def validate_school_presence_at_creation
-      if new_record? && school.blank?
-        errors.add(:school, :blank)
-      end
+      return unless new_record? && school.blank?
+
+      errors.add(:school, :blank)
+    end
+
+    def resend_confirmation_phone_token
+      return unless phone.present?
+
+      message = "Votre code de validation : #{phone_token}"
+      SendSmsJob.perform_later(user: self, message:)
     end
 
     def presenter
@@ -138,7 +147,7 @@ module Users
                              .map(&:internship_offer)
                              .pluck(:period)
                              .uniq
-                             .in?([[0], [1,2]])
+                             .in?([[0], [1, 2]])
     end
 
     def other_approved_applications_compatible?(internship_offer:)
@@ -174,20 +183,10 @@ module Users
     end
 
     def welcome_new_student
-      # url_options = default_search_options.merge(host: ENV.fetch('HOST'))
-      # target_url = Rails.application
-      #                   .routes
-      #                   .url_helpers
-      #                   .internship_offers_url(**url_options)
-      # shrinked_url = UrlShrinker.short_url( url: target_url, user_id: id )
-      shrinked_url = 'https://bit.ly/4athP2e' # internship_offers_url in production
-      if phone.present?
-        message = I18n.t('devise.sms.welcome_student', shrinked_url: shrinked_url)
-        SendSmsJob.perform_later(user: self, message: message)
-      else
-        StudentMailer.welcome_email(student: self, shrinked_url: shrinked_url)
-                     .deliver_later
-      end
+      return unless email.present?
+
+      StudentMailer.welcome_email(student: self, shrinked_url: BITLY_STUDENT_WELCOME_URL)
+                   .deliver_later
     end
 
     def set_reminders
