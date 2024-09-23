@@ -4,5 +4,6 @@ FactoryBot.define do
   factory :class_room do
     school
     name { '2de A' }
+    grade { 'seconde' }
   end
 end

@@ -10,9 +10,10 @@ FactoryBot.define do
     zipcode { '75015' }
     code_uai { '075' + rand(10_000).to_s.rjust(5, '0') + ('a'..'z').to_a.sample }
     department { create(:department) }
+
     is_public { true }
-    contract_code { "99" }
-    legal_status { "Public" }
+    contract_code { '99' }
+    legal_status { 'Public' }
 
     trait :at_paris do
       city { 'Paris' }
@@ -27,13 +28,22 @@ FactoryBot.define do
       zipcode { '33072' }
       before(:create) do |school|
         academy_region = AcademyRegion.find_or_create_by(name: 'Nouvelle-Aquitaine')
-        academy = Academy.find_or_create_by(name: 'Bordeaux', email_domain: 'ac-bordeaux.fr', academy_region: academy_region)
-        department = Department.find_or_create_by(code: '33', name: 'Gironde', academy: academy)
+        academy = Academy.find_or_create_by(name: 'Bordeaux', email_domain: 'ac-bordeaux.fr',
+                                            academy_region:)
+        department = Department.find_or_create_by(code: '33', name: 'Gironde', academy:)
       end
     end
 
     trait :with_school_manager do
       school_manager { build(:school_manager) }
+    end
+
+    trait :lycee do
+      school_type { :lycee }
+    end
+
+    trait :college do
+      school_type { :college }
     end
   end
 

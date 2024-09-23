@@ -25,9 +25,6 @@ require 'webdrivers/chromedriver'
 
 ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 10_000)
 
-# version 115 is not working with chromedriver-helper
-# Webdrivers::Chromedriver.required_version = "114.0.5735.90"
-
 Capybara.save_path = Rails.root.join('tmp/screenshots')
 
 Minitest::Retry.use!(
