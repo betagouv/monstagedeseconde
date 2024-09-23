@@ -31,6 +31,7 @@ module Api
     end
 
     test 'GET #index returns too many requests after max calls limit' do
+      InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 5)
       user_1 = create(:user_operator)
       create(:sector, name: 'Agriculture')
       create(:sector, name: 'Agroalimentaire')
@@ -44,6 +45,7 @@ module Api
             }
           )
         end
+        InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 1_000)
         assert_response :too_many_requests
         assert_equal 'Trop de requêtes - Limite d\'utilisation de l\'API dépassée.', json_error
       end

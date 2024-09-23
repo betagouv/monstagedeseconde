@@ -17,7 +17,7 @@ class PagesTest < ActionDispatch::IntegrationTest
     6.times do
       get root_path
     end
-    ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 5000)
+    ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 10_000)
     assert_response :too_many_requests
   end
 

@@ -24,6 +24,7 @@ require 'webmock/minitest'
 require 'webdrivers/chromedriver'
 
 ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 10_000)
+InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 1_000)
 
 Capybara.save_path = Rails.root.join('tmp/screenshots')
 
