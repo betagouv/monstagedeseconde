@@ -232,7 +232,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     find('header h1.h2.text-center', text: 'Encore une petite étape...')
     fill_in 'Code de confirmation', with: User.last.phone_token
     find('input[type="submit"]').click # Valider
-    find('h1', text: 'Connexion à Mon stage de seconde')
+    find('h1', text: "Connexion à Mon stage à l'école")
     find('input[name="user[phone]"]').set(valid_phone_number)
     find('input[type="password"]').set(password)
     find('input[type="submit"]').click

@@ -20,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -34,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 
 
 --
@@ -48,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -225,7 +225,9 @@ CREATE TABLE public.academies (
     id bigint NOT NULL,
     name character varying(40),
     email_domain character varying(100),
-    academy_region_id integer
+    academy_region_id integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -595,7 +597,7 @@ CREATE TABLE public.departments (
     name character varying(40),
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    academy_id bigint
+    academy_id integer
 );
 
 
@@ -816,7 +818,8 @@ CREATE TABLE public.identities (
     token character varying(50),
     anonymized boolean DEFAULT false,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    grade character varying(100) DEFAULT 'seconde'::character varying NOT NULL
 );
 
 
@@ -866,23 +869,23 @@ CREATE TABLE public.internship_agreements (
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
     siret character varying(14),
-    tutor_role character varying(500),
+    tutor_role character varying(150),
     tutor_email character varying(85),
-    organisation_representative_role character varying(500),
+    organisation_representative_role character varying(150),
     student_address character varying(170),
-    student_phone character varying(200),
-    school_representative_phone character varying(100),
-    student_refering_teacher_phone character varying(100),
-    student_legal_representative_email character varying(180),
+    student_phone character varying(20),
+    school_representative_phone character varying(20),
+    student_refering_teacher_phone character varying(20),
+    student_legal_representative_email character varying(100),
     student_refering_teacher_email character varying(100),
-    student_legal_representative_full_name character varying(180),
-    student_refering_teacher_full_name character varying(180),
-    student_legal_representative_phone character varying(250),
-    student_legal_representative_2_full_name character varying(180),
-    student_legal_representative_2_email character varying(120),
-    student_legal_representative_2_phone character varying(250),
-    school_representative_role character varying(200),
-    school_representative_email character varying(180),
+    student_legal_representative_full_name character varying(100),
+    student_refering_teacher_full_name character varying(100),
+    student_legal_representative_phone character varying(50),
+    student_legal_representative_2_full_name character varying(100),
+    student_legal_representative_2_email character varying(100),
+    student_legal_representative_2_phone character varying(20),
+    school_representative_role character varying(100),
+    school_representative_email character varying(100),
     discarded_at timestamp(6) without time zone,
     lunch_break text,
     organisation_representative_email character varying(70),
@@ -958,6 +961,7 @@ CREATE TABLE public.internship_applications (
     student_legal_representative_full_name character varying(150),
     student_legal_representative_email character varying(109),
     student_legal_representative_phone character varying(50),
+    uuid uuid DEFAULT gen_random_uuid() NOT NULL,
     motivation text,
     rejected_message text,
     canceled_by_employer_message text,
@@ -1318,7 +1322,8 @@ CREATE TABLE public.internship_offers (
     contact_phone character varying(20),
     handicap_accessible boolean DEFAULT false,
     period integer DEFAULT 0 NOT NULL,
-    school_year integer DEFAULT 0 NOT NULL
+    school_year integer DEFAULT 0 NOT NULL,
+    mother_id integer DEFAULT 0
 );
 
 
@@ -1561,7 +1566,6 @@ CREATE TABLE public.schools (
     id bigint NOT NULL,
     name character varying(150) DEFAULT ''::character varying NOT NULL,
     city character varying(50) DEFAULT ''::character varying NOT NULL,
-    department character varying(40),
     zipcode character varying(5),
     code_uai character varying(10),
     coordinates public.geography(Point,4326),
@@ -1580,7 +1584,8 @@ CREATE TABLE public.schools (
     is_public boolean DEFAULT true,
     contract_code character varying(3),
     department_id bigint,
-    agreement_conditions text
+    agreement_conditions text,
+    level character varying(100) DEFAULT 'lycee'::character varying NOT NULL
 );
 
 
@@ -1893,19 +1898,20 @@ CREATE TABLE public.users (
     survey_answered boolean DEFAULT false,
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
-    failed_attempts integer DEFAULT 0 NOT NULL,
-    unlock_token character varying(64),
-    locked_at timestamp(6) without time zone,
     hubspot_id character varying(15),
-    academy_id bigint,
-    academy_region_id bigint,
+    academy_id integer,
+    academy_region_id integer,
     address character varying(300),
     legal_representative_full_name character varying(100),
     legal_representative_email character varying(109),
     legal_representative_phone character varying(50),
+    failed_attempts integer DEFAULT 0 NOT NULL,
+    unlock_token character varying(64),
+    locked_at timestamp(6) without time zone,
     resume_educational_background text,
     resume_other text,
-    resume_languages text
+    resume_languages text,
+    grade character varying(100)
 );
 
 
@@ -2723,13 +2729,6 @@ ALTER TABLE ONLY public.weeks
 
 
 --
--- Name: index_academies_on_academy_region_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_academies_on_academy_region_id ON public.academies USING btree (academy_region_id);
-
-
---
 -- Name: index_action_text_rich_texts_uniqueness; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2965,6 +2964,13 @@ CREATE INDEX index_internship_applications_on_internship_offer_week_id ON public
 --
 
 CREATE INDEX index_internship_applications_on_user_id ON public.internship_applications USING btree (user_id);
+
+
+--
+-- Name: index_internship_applications_on_uuid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_internship_applications_on_uuid ON public.internship_applications USING btree (uuid);
 
 
 --
@@ -3853,6 +3859,8 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240827145706'),
+('20240808094927'),
 ('20240719095729'),
 ('20240712080757'),
 ('20240711083454'),
@@ -3864,8 +3872,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240628150306'),
 ('20240627152436'),
 ('20240626133711'),
+('20240624201910'),
 ('20240620123704'),
 ('20240612074103'),
+('20240606131313'),
 ('20240531101222'),
 ('20240531100023'),
 ('20240527081911'),
@@ -3877,6 +3887,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240410115028'),
 ('20240410114806'),
 ('20240410114637'),
+('20240405101512'),
 ('20240405094938'),
 ('20240404071148'),
 ('20240403131643'),

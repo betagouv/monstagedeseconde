@@ -71,7 +71,7 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
            params: { team_member_invitation: { invitation_email: employer_2.email } }
     end
     assert_redirected_to dashboard_team_member_invitations_path
-    assert_equal "Ce collaborateur fait déjà partie d’une équipe sur mon stage de seconde. Il ne pourra pas rejoindre votre équipe", flash[:alert]
+    assert_equal "Ce collaborateur fait déjà partie d’une équipe sur mon stage à l'école. Il ne pourra pas rejoindre votre équipe", flash[:alert]
   end
 
   # ------- Accept/refuse
