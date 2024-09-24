@@ -4,7 +4,7 @@ import { useDebounce } from 'use-debounce';
 import Downshift from 'downshift';
 import { fetch } from 'whatwg-fetch';
 import { endpoints } from '../../utils/api';
-import { broadcast, newCoordinatesChanged } from '../../utils/events';
+import { broadcast, newCoordinatesChanged, cityChanged, zipcodeChanged } from '../../utils/events';
 
 // see: https://geo.api.gouv.fr/adresse
 export default function AddressInput({
@@ -24,11 +24,26 @@ export default function AddressInput({
   const [latitude, setLatitude] = useState(currentLatitude || 0);
   const [longitude, setLongitude] = useState(currentLongitude || 0);
   const [searchResults, setSearchResults] = useState([]);
+  const [detailedFieldsVisibility, setdetailedFieldsVisibility] = useState(false);
   const [queryString, setQueryString] = useState('');
   const [fullAddressDebounced] = useDebounce(fullAddress, 100);
 
   const inputChange = (event) => {
     setFullAddress(event.target.value);
+  };
+
+  const resetField = (e) => {
+    e.stopPropagation();
+    setFullAddress("");
+    setStreet("");
+    setCity("");
+    setZipcode("");
+    setLatitude(0);
+    setLongitude(0);
+    broadcast(cityChanged({ city: "" }));
+    broadcast(zipcodeChanged({ zipcode: "" }));
+    broadcast(newCoordinatesChanged({ latitude: 0, longitude: 0 }));
+    setdetailedFieldsVisibility(false)
   };
 
   const toggleHelpVisible = (event) => {
@@ -56,9 +71,12 @@ export default function AddressInput({
       );
     };
     setCity(item.properties.city);
+    broadcast(cityChanged({ city: item.properties.city }));
     setZipcode(item.properties.postcode);
+    broadcast(zipcodeChanged({ zipcode : item.properties.postcode}));
     setLatitude(parseFloat(item.geometry.coordinates[1]));
     setLongitude(parseFloat(item.geometry.coordinates[0]));
+    setdetailedFieldsVisibility(true);
   };
 
   useEffect(() => {
@@ -99,9 +117,6 @@ export default function AddressInput({
                   })}
                 >
                   Adresse du lieu où se déroule le stage
-                  <abbr title="(obligatoire)" aria-hidden="true">
-                    *
-                  </abbr>
                   <a
                     className="btn-absolute btn fr-btn btn-link py-0"
                     href="#help-multi-location"
@@ -112,7 +127,7 @@ export default function AddressInput({
                   </a>
                 </label>
 
-                <div>
+                <div className="input-group">
                   <input
                     {...getInputProps({
                       onChange: inputChange,
@@ -122,10 +137,10 @@ export default function AddressInput({
                       name: `${resourceName}_autocomplete`,
                       id: `${resourceName}_autocomplete`,
                       placeholder: 'Adresse',
+                      required: true,
                     })}
                   />
-                </div>
-                <div>
+
                   <div className="search-in-place bg-white shadow">
                     <ul
                       {...getMenuProps({
@@ -153,6 +168,11 @@ export default function AddressInput({
                         : null}
                     </ul>
                   </div>
+                <div className="input-group-append">
+                  <a onClick={resetField}>
+                    <span className="input-group-text">Effacer</span> 
+                  </a>
+                </div>
                 </div>
               </div>
             )}
@@ -179,66 +199,54 @@ export default function AddressInput({
           type="hidden"
         />
       </div>
-      <div className="form-row">
-        <div className="col-sm-12">
-          <div className="form-group">
-            <label htmlFor={`${resourceName}_street`}>
-              Rue ou compléments d'adresse
-              <abbr title="(obligatoire)" aria-hidden="true">
-                *
-              </abbr>
+      { detailedFieldsVisibility && (
+        <div className="form-row">
+          <div className="col-sm-12 fr-mt-1w">
+            <label htmlFor={`${resourceName}_street`} className="fr-label">
+              Voie publique ou privée
             </label>
             <input
-              className="form-control"
+              className="fr-input"
               value={street}
-              readOnly
               type="text"
               name={`${resourceName}[street]`}
               id={`${resourceName}_street`}
+              readOnly
             />
           </div>
-        </div>
-        <div className="col-sm-12">
-          <div className="form-group">
-            <label htmlFor={`${resourceName}_city`}>
+          <div className="col-sm-12 fr-mt-1w">
+            <label htmlFor={`${resourceName}_city`} className="fr-label">
               Commune
-              <abbr title="(obligatoire)" aria-hidden="true">
-                *
-              </abbr>
             </label>
             <input
-              className="form-control"
+              className="fr-input"
               required="required"
               value={city}
               maxLength="50"
               type="text"
-              readOnly
               name={`${resourceName}[city]`}
               id={`${resourceName}_city`}
+              readOnly
             />
           </div>
-        </div>
-        <div className="col-sm-12">
-          <div className="form-group">
-            <label htmlFor={`${resourceName}_zipcode`}>
+          <div className="col-sm-12 fr-mt-1w">
+            <label htmlFor={`${resourceName}_zipcode`} className="fr-label">
               Code postal
-              <abbr title="(obligatoire)" aria-hidden="true">
-                *
-              </abbr>
             </label>
             <input
-              className="form-control"
+              className="fr-input"
               required="required"
               value={zipcode}
               maxLength="5"
               type="text"
               name={`${resourceName}[zipcode]`}
               id={`${resourceName}_zipcode`}
+              data-mandatory-fields-target="filledComponent"
               readOnly
             />
           </div>
         </div>
-      </div>
+        )}
     </div>
   );
 }

@@ -1,31 +1,24 @@
 import { Controller } from 'stimulus';
+import { EVENT_LIST, attach, detach} from '../utils/events';
 
 export default class extends Controller {
   static targets = [
     'mandatoryField',
-    'disabledField'
+    'disabledField',
+    'coordinatesAreFilled'
   ];
 
   static values = {
     minimumLength: Number
   }
 
-  /* use it with copying the following line in the html file:
-  --------------------------
-  data-controller="mandatory-fields" data-mandatory-fields-minimum-length-value="3"
-  --------------------------
-  input [data-mandatory-fields-target="mandatoryField"
-         data-action="input->mandatory-fields#fieldChange"]
-  or
-  data: { action: "input->mandatory-fields#fieldChange",
-          :'mandatory-fields-target' => "mandatoryField"}
-  --------------------------
-  input data-mandatory-fields-target="disabledField"
-  or
-  data: { :'mandatory-fields-target' => "disabledField"}
-  */
-
   fieldChange(event){
+    this.checkValidation();
+  }
+
+  coordinatesChanged(event){
+    console.log(event.detail)
+    this.coordinatesAreFilled = event.detail.latitude !== 0 && event.detail.longitude !== 0;
     this.checkValidation();
   }
 
@@ -36,7 +29,10 @@ export default class extends Controller {
         allMandatoryFieldsAreFilled = false;
       }
     });
-    return allMandatoryFieldsAreFilled;
+
+    allMandatoryFieldsAreFilled &&= this.coordinatesAreFilled;
+
+    return allMandatoryFieldsAreFilled
   }
 
   // possible values are 'disabled' or 'enabled'
@@ -55,7 +51,9 @@ export default class extends Controller {
     }
   }
 
-  mandatoryFieldTargetConnected(){
+  connect(){
+    attach(EVENT_LIST.COORDINATES_CHANGED,this.coordinatesChanged.bind(this));
+    this.coordinatesAreFilled = false;
     this.checkValidation();
   }
 }

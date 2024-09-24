@@ -16,10 +16,13 @@ class InternshipOffer < ApplicationRecord
   include FindableWeek
   include Zipcodable
 
+  # Legacy now
   include StepperProxy::InternshipOfferInfo
   include StepperProxy::Organisation
   include StepperProxy::HostingInfo
   include StepperProxy::PracticalInfo
+  # New stepper models
+  include StepperProxy::InternshipOccupation
 
   # utils
   include Discard::Model
@@ -32,10 +35,16 @@ class InternshipOffer < ApplicationRecord
   has_many :internship_applications, as: :internship_offer,
                                      foreign_key: 'internship_offer_id'
 
+  # Legacy
   belongs_to :organisation, optional: true
   belongs_to :internship_offer_info, optional: true
   belongs_to :hosting_info, optional: true
   belongs_to :practical_info, optional: true
+  # new stepper models
+  belongs_to :internship_occupation, optional: true
+  belongs_to :entreprise, optional: true
+  belongs_to :planning, optional: true
+
   belongs_to :employer, polymorphic: true, optional: true
   belongs_to :internship_offer_area, optional: true, touch: true
 
@@ -420,6 +429,22 @@ class InternshipOffer < ApplicationRecord
                                      weekly_hours daily_hours]
 
     generate_offer_from_attributes(white_list_without_location)
+  end
+
+  def update_from_internship_occupation
+    return unless internship_occupation
+
+    # self.employer_name = organisation.employer_name
+    # self.employer_website = organisation.employer_website
+    self.description = internship_occupation.description
+    # self.siret = organisation.siret
+    # self.group_id = organisation.group_id
+    # self.is_public = organisation.is_public
+    self.internship_street = internship_occupation.internship_street
+    self.internship_zipcode = internship_occupation.internship_zipcode
+    self.internship_city = internship_occupation.internship_city
+    self.internship_coordinates = internship_occupation.internship_coordinates
+    self.internship_offer_area_id = internship_occupation.internship_offer_area_id
   end
 
   def update_from_organisation

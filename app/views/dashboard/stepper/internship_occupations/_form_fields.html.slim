@@ -1,141 +1,185 @@
 - if can?(:supply_offers, current_user)
-  div [data-controller='organisation-form mandatory-fields internship-occupation-cardfill'
-       data-action="input->internship_occupation-form#checkForm"
-       data-mandatory-fields-minimum-length-value="2"]
-    .row
-      .col-md-6.order-md-1.order-2
-        fieldset  aria-labelledby="internship_occupation-name-legend"
-          legend.fr-text--lg.font-weight-bold.fr-my-2w
-            | Métiers et localisation
-            / = current_user.ministry_statistician? ? "Votre administration" : "L'entreprise"
-          = form.hidden_field :manual_enter, value: false
-          = form.hidden_field :employer_id, value: current_user.id
-          - if resource.id
-            = form.hidden_field :id, value: resource.id
-
-          / = react_component("SirenInput",
-          /                   props: { resourceName: form.object_name,
-          /                            presentationLabel: "L'administration",
-          /                            currentSiren: resource.siret,
-          /                            railsEnv: Rails.env })
-
-          #manual-input class=('d-none bloc-manual' if request.fullpath.include?('internship_occupations/nouveau'))
+    / = current_user.ministry_statistician? ? "Votre administration" : "L'entreprise"
+    = form.hidden_field :manual_enter, value: false
+    = form.hidden_field :employer_id, value: current_user.id
+    - if resource.id
+      = form.hidden_field :id, value: resource.id
+    .row  [data-controller='internship-occupation-form mandatory-fields-with-coordinates'
+           data-action="input->internship-occupation-form#checkForm"
+           data-mandatory-fields-with-coordinates-minimum-length-value="2"]
+      .col-md-6
+        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+          .col-12
+            fieldset aria-labelledby="presentation"
+              legend Le ou les métiers que vous proposez d'observer:
             .form-group.fr-my-2w
-              - raison = current_user.ministry_statistician? ? "Nom de l’institution" : "Nom de l’entreprise proposant l’offre"
-              = form.label :employer_name, raison
+              = render 'inputs/dsfr_input_field',
+                        f: form,
+                        field: :title,
+                        label: "Indiquez le ou les métiers qui seront observables par l'élève",
+                        placeholder: "Observation du métier de comptable",
+                        aria: {labelledby: 'label_internship_occupation_title'},
+                        required: false,
+                        title: 'intitulé du stage',
+                        object: form.object,
+                        field_type: :text_field,
+                        data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
+                                :'mandatory-fields-with-coordinates-target' => "mandatoryField"}
+        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+          .col-12
+            - max_length = InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
+            .form-group.fr-my-2w [data-controller='max-length-input'
+                                  data-max-length-input-target="group"
+                                  data-max-length-input-limit-value="#{max_length}"]
+              = render 'inputs/dsfr_input_field',
+                        f: form,
+                        field: :description,
+                        label: "Décrivez les activités qui seront proposées à l’élève",
+                        aria: {labelledby: 'label_internship_occupation_description'},
+                        required: false,
+                        title: 'Activités prévues au cours du stage',
+                        object: form.object,
+                        options: { rows: 5 ,
+                                   data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
+                                           :'mandatory-fields-with-coordinates-target' => "mandatoryField"}},
+                        field_type: :text_area
+              .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
+                |La description est trop longue
+              small.form-text data-max-length-input-target="charCount"
+        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+          .col-12
+            .fr-alert.fr-alert--info
+              h3.fr-alert__title
+              p
+                |
+                  Les élèves ne peuvent accéder aux machines, appareils ou produits dont l'usage
+                  est proscrit aux mineurs par les articles D. 4153-15 à D. 4153-37 du code du travail.
+                  Ils ne peuvent ni procéder à des manœuvres ou manipulations sur d'autres machines,
+                  produits ou appareils de production ni effectuer des travaux légers
+                  autorisés aux mineurs par ce même code.
+        .row.fr-mt-2w
+        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+          .col-12
+            fieldset aria-labelledby="presentation"
+              legend Le lieu où se déroulera le stage :
+            = react_component("AddressInput",
+              props: { resourceName: form.object_name,
+                        currentStreet: resource.street,
+                        currentCity: resource.city,
+                        currentZipcode: resource.zipcode,
+                        currentLatitude: resource.coordinates.try(:lat).try(:to_f),
+                        currentLongitude: resource.coordinates.try(:lng).try(:to_f),
+                        currentFullAddress: resource.formatted_autocomplete_address})
+        / .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+        /   .col-12
+        /     fieldset aria-labelledby="presentation"
+        /       legend Le lieu où se déroulera le stage :
+        /     = react_component("FullAddressInput",
+        /                         props: { resourceName: form.object_name,
+        /                                 currentStreet: resource.street,
+        /                                 currentCity: resource.city,
+        /                                 currentZipcode: resource.zipcode,
+        /                                 currentLatitude: resource.coordinates.try(:lat).try(:to_f),
+        /                                 currentLongitude: resource.coordinates.try(:lon).try(:to_f),
+        /                                 currentFullAddress: resource.formatted_autocomplete_address})
 
-              = form.text_field :employer_name,
-                                class: 'fr-input',
-                                placeholder: raison,
-                                required: true,
-                                maxlength: 180,
-                                data: { action: "input->mandatory-fields#fieldChange",
-                                        :'internship_occupation-form-target' => 'internship_occupationName',
-                                        :'mandatory-fields-target' => "mandatoryField"}
+            / = react_component("SirenInput",
+            /                   props: { resourceName: form.object_name,
+            /                            presentationLabel: "L'administration",
+            /                            currentSiren: resource.siret,
+            /                            railsEnv: Rails.env })
+
+            / #manual-input class=('d-none bloc-manual' if request.fullpath.include?('internship_occupations/nouveau'))
+              .form-group.fr-my-2w
+                - raison = current_user.ministry_statistician? ? "Nom de l’institution" : "Nom de l’entreprise proposant l’offre"
+                = form.label :employer_name, raison
+
+                / = form.text_field :employer_name,
+                                  class: 'fr-input',
+                                  placeholder: raison,
+                                  required: true,
+                                  maxlength: 180,
+                                  data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
+                                          :'internship_occupation-form-target' => 'internship_occupationName',
+                                          :'mandatory-fields-with-coordinates-target' => "mandatoryField"}
+              / .form-group.fr-my-2w
+                / = form.label :siret, "SIRET"
+
+                / = form.text_field :siret,
+                /                   class: 'fr-input',
+                /                   placeholder: 'Mon code SIRET',
+                /                   required: true,
+                /                   pattern: '[0-9]{14}',
+                /                   :'data-internship_occupation-form-target' => 'internship_occupationSiret',
+                /                   data: { :'internship_occupation-form-target' => 'internship_occupationSiret',
+                /                           action: "input->mandatory-fields-with-coordinates#fieldChange",
+                /                           :'mandatory-fields-with-coordinates-target' => "mandatoryField"}
+
+              /
+
+          / .bloc-tooggle class=('d-none' if request.fullpath.include?('internship_occupations/nouveau'))
+            - if current_user.ministry_statistician?
+              = form.hidden_field :is_public, value: true
+            - else
+              fieldset.fr-fieldset.fr-my-2w#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
+                legend.label
+                  | Entreprise
+                div.fr-fieldset__element
+                  div.fr-radio-group
+                    = form.radio_button :is_public,
+                                        true,
+                                        class: '',
+                                        required: true,
+                                        :'data-action' => 'change->internship_occupation-form#handleClickIsPublic',
+                                        :'data-internship_occupation-form-target' => 'requiredField'
+                    = form.label :is_public_true, 'Publique', class: 'fr-label'
+                div.fr-fieldset__element
+                  div.fr-radio-group
+                    = form.radio_button :is_public,
+                                        false,
+                                        class: '',
+                                        required: true,
+                                        :'data-action' => 'change->internship_occupation-form#handleClickIsPublic',
+                                        :'data-internship_occupation-form-target' => 'requiredField'
+                    = form.label :is_public_false, 'Privée', class: 'fr-label'
+
+                / div.fr-messages-group#radio-hint-messages aria-live="assertive"
+          / - edit_mode = (@internship_occupation.try(:persisted?)) || (@internship_occupation.try(:description).present?)
+          / div#internship_occupation-group [class="form-group form-group-select-group fr-my-2w #{'d-none' if request.fullpath.include?('internship_occupations/nouveau') || edit_mode}" data-internship_occupation-form-target="groupBlock"]
             .form-group.fr-my-2w
-              / = form.label :siret, "SIRET"
+              = form.label :group_id,
+                            class: 'fr-label',
+                            :'data-internship_occupation-form-target' => 'groupLabel' do
+                = form.rg2a_required_content_tag
+                = "Type d’employeur public"
 
-              / = form.text_field :siret,
-              /                   class: 'fr-input',
-              /                   placeholder: 'Mon code SIRET',
-              /                   required: true,
-              /                   pattern: '[0-9]{14}',
-              /                   :'data-internship_occupation-form-target' => 'internship_occupationSiret',
-              /                   data: { :'internship_occupation-form-target' => 'internship_occupationSiret',
-              /                           action: "input->mandatory-fields#fieldChange",
-              /                           :'mandatory-fields-target' => "mandatoryField"}
+              / = form.select :group_id,
+                            options_for_select(options_for_groups, resource.group.try(:id)),
+                            { prompt: '-- Choisissez votre type --' },
+                            class: "fr-select",
+                            required: false,
+                            :'data-internship_occupation-form-target' => 'selectGroupName'
 
-            = react_component("FullAddressInput",
-                              props: { resourceName: form.object_name,
-                                       currentStreet: resource.street,
-                                       currentCity: resource.city,
-                                       currentZipcode: resource.zipcode,
-                                       currentLatitude: resource.coordinates.try(:lat).try(:to_f),
-                                       currentLongitude: resource.coordinates.try(:lon).try(:to_f),
-                                       currentFullAddress: resource.formatted_autocomplete_address})
 
-        .bloc-tooggle class=('d-none' if request.fullpath.include?('internship_occupations/nouveau'))
-          / - if current_user.ministry_statistician?
-            = form.hidden_field :is_public, value: true
-          / - else
-            fieldset.fr-fieldset.fr-my-2w#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
-              legend.label
-                | Entreprise
-              div.fr-fieldset__element
-                div.fr-radio-group
-                  = form.radio_button :is_public,
-                                      true,
-                                      class: '',
-                                      required: true,
-                                      :'data-action' => 'change->internship_occupation-form#handleClickIsPublic',
-                                      :'data-internship_occupation-form-target' => 'requiredField'
-                  = form.label :is_public_true, 'Publique', class: 'fr-label'
-              div.fr-fieldset__element
-                div.fr-radio-group
-                  = form.radio_button :is_public,
-                                      false,
-                                      class: '',
-                                      required: true,
-                                      :'data-action' => 'change->internship_occupation-form#handleClickIsPublic',
-                                      :'data-internship_occupation-form-target' => 'requiredField'
-                  = form.label :is_public_false, 'Privée', class: 'fr-label'
 
-              / div.fr-messages-group#radio-hint-messages aria-live="assertive"
-        / - edit_mode = (@internship_occupation.try(:persisted?)) || (@internship_occupation.try(:description).present?)
-        / div#internship_occupation-group [class="form-group form-group-select-group fr-my-2w #{'d-none' if request.fullpath.include?('internship_occupations/nouveau') || edit_mode}" data-internship_occupation-form-target="groupBlock"]
-          .form-group.fr-my-2w
-            = form.label :group_id,
-                          class: 'fr-label',
-                          :'data-internship_occupation-form-target' => 'groupLabel' do
-              = form.rg2a_required_content_tag
-              = "Type d’employeur public"
+        / .form-group.fr-my-2w
+          = form.label :employer_website, class: 'fr-label' do
+            = 'Site web (optionnel)'
+            small.form-text.text-muted Afin que l’élève puisse en apprendre plus sur son futur stage
+          = form.url_field :employer_website,
+                          class: 'fr-input',
+                          maxlength: 300,
+                          placeholder: "https://"
 
-            / = form.select :group_id,
-                          options_for_select(options_for_groups, resource.group.try(:id)),
-                          { prompt: '-- Choisissez votre type --' },
-                          class: "fr-select",
-                          required: false,
-                          :'data-internship_occupation-form-target' => 'selectGroupName'
-
-  .row.bloc-tooggle class=('d-none' if request.fullpath.include?('internship_occupations/nouveau'))
-    .col-md-6
-      - max_length = InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
-      fieldset aria-labelledby="presentation"
-        legend Présentation de l'entreprise
-      .form-group.fr-my-2w [data-controller='max-length-input'
-                            data-max-length-input-target="group"
-                            data-max-length-input-limit-value="#{max_length}"]
-        = render 'inputs/dsfr_input_field',
-                  f: form,
-                  field: :description,
-                  label: 'Description de l’entreprise (optionnel)',
-                  aria: {labelledby: 'label_internship_occupation_description'},
-                  required: false,
-                  title: 'description de l’entreprise',
-                  object: form.object,
-                  field_type: 'text_area'
-        .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
-          |La description est trop longue
-        small.form-text data-max-length-input-target="charCount"
-
-      / .form-group.fr-my-2w
-        = form.label :employer_website, class: 'fr-label' do
-          = 'Site web (optionnel)'
-          small.form-text.text-muted Afin que l’élève puisse en apprendre plus sur son futur stage
-        = form.url_field :employer_website,
-                         class: 'fr-input',
-                         maxlength: 300,
-                         placeholder: "https://"
-
-    .col-md-6
-      .fr-alert.fr-alert--info
-        h3.fr-alert__title Conseil
-        p La présentation de l’entreprise est un des éléments déterminant dans le choix du stage. Utilisez un vocabulaire simple, facile à comprendre. N’hésitez pas à ajouter des détails sur les principales activités de l’entreprise.
-  - if submit_button
-    .fr-mt-3w
-      = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
-      = button_tag :submit,
-                   class: 'fr-btn',
-                   :'data-internship_occupation-form-target' => "submitButton",
-                   :'data-mandatory-fileds-target' => "disabledField"  do
-        = "Suivant "
+        - if submit_button
+          .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+            .col-12
+              .fr-mt-3w
+                = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
+                = button_tag :submit,
+                            class: 'fr-btn',
+                            data: { :'mandatory-fields-with-coordinates-target' => "disabledField",
+                                    :'internship_occupation-form-target' => "submitButton"} do
+                  = "Suivant "
+      .col-md-6
+        = render 'dashboard/stepper/summary_card', internship_occupation: resource
