@@ -69,6 +69,8 @@ class PagesController < ApplicationController
   end
 
   def get_faqs(tag)
+    return [] if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
+
     api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
 
     begin

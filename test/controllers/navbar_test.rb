@@ -9,8 +9,8 @@ class NavbarTest < ActionDispatch::IntegrationTest
 
   test 'visitor navbar' do
     get root_path
-    assert_select('li a.fr-link.fr-icon-lock-line', text: 'Connexion', count: 1)
-    assert_select('li a.fr-link.fr-icon-user-line', text: 'Créer mon compte', count: 1)
+    assert_select('li a.fr-link.fr-icon-account-line', text: 'Connexion', count: 1)
+    assert_select('li a.fr-link.fr-icon-user-add-line', text: 'Créer mon compte', count: 1)
   end
 
   test 'employer' do
