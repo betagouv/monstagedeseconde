@@ -103,7 +103,8 @@ module Api
     test 'GET #search with coordinates params returns all internship_offers available in the city' do
       travel_to(Date.new(2024, 3, 1)) do
         user = create(:user_operator, :fully_authorized)
-        offer_1 = create(:weekly_internship_offer, city: 'Bordeaux', coordinates: { latitude: 44.8624, longitude: -0.5848 })
+        offer_1 = create(:weekly_internship_offer, city: 'Bordeaux',
+                                                   coordinates: { latitude: 44.8624, longitude: -0.5848 })
         offer_2 = create(:weekly_internship_offer)
         offer_3 = create(:weekly_internship_offer, :unpublished)
 
@@ -129,8 +130,10 @@ module Api
     test 'GET #search with coordinates and radius params returns all internship_offers available in the radius' do
       travel_to(Date.new(2024, 3, 1)) do
         user = create(:user_operator, :fully_authorized)
-        offer_1 = create(:weekly_internship_offer, city: 'Bordeaux', coordinates: { latitude: 44.8624, longitude: -0.5848 })
-        offer_2 = create(:weekly_internship_offer, city: 'Le Bouscat', coordinates: { latitude: 44.865, longitude: -0.6033 })
+        offer_1 = create(:weekly_internship_offer, city: 'Bordeaux',
+                                                   coordinates: { latitude: 44.8624, longitude: -0.5848 })
+        offer_2 = create(:weekly_internship_offer, city: 'Le Bouscat',
+                                                   coordinates: { latitude: 44.865, longitude: -0.6033 })
         offer_3 = create(:weekly_internship_offer, :unpublished)
 
         documents_as(endpoint: :'internship_offers/search', state: :success) do
@@ -145,8 +148,8 @@ module Api
 
           assert_response :success
           assert_equal 2, json_response['internshipOffers'].count
-          assert_equal "Bordeaux", json_response['internshipOffers'][0]['city']
-          assert_equal "Le bouscat", json_response['internshipOffers'][1]['city']
+          assert_equal 'Bordeaux', json_response['internshipOffers'][0]['city']
+          assert_equal 'Le bouscat', json_response['internshipOffers'][1]['city']
         end
       end
     end
@@ -154,8 +157,10 @@ module Api
     test 'GET #search with coordinates and radius params returns all internship_offers available in the radis' do
       travel_to(Date.new(2024, 3, 1)) do
         user = create(:user_operator, :fully_authorized)
-        offer_1 = create(:weekly_internship_offer, city: 'Bordeaux', coordinates: { latitude: 44.8624, longitude: -0.5848 })
-        offer_2 = create(:weekly_internship_offer, city: 'Le Bouscat', coordinates: { latitude: 44.865, longitude: -0.6033 })
+        offer_1 = create(:weekly_internship_offer, city: 'Bordeaux',
+                                                   coordinates: { latitude: 44.8624, longitude: -0.5848 })
+        offer_2 = create(:weekly_internship_offer, city: 'Le Bouscat',
+                                                   coordinates: { latitude: 44.865, longitude: -0.6033 })
         offer_3 = create(:weekly_internship_offer, :unpublished)
 
         documents_as(endpoint: :'internship_offers/search', state: :success) do
@@ -199,6 +204,7 @@ module Api
 
     test 'GET #search returns too many requests after max calls limit' do
       user = create(:user_operator, :fully_authorized)
+      InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 5)
       (InternshipOffers::Api::MAX_CALLS_PER_MINUTE + 1).times do
         get search_api_internship_offers_path(
           params: {
@@ -211,6 +217,7 @@ module Api
           token: "Bearer #{user.api_token}"
         }
       )
+      InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 1_000)
 
       documents_as(endpoint: :'internship_offers/search', state: :too_many_requests) do
         assert_response :too_many_requests

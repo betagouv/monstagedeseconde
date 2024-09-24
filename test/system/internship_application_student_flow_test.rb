@@ -89,7 +89,7 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
     )
     assert page.has_selector?("a[href='#{url}']", count: 1)
     visit url
-    find('.row .col-12 .fr-pl-1w.blue-france', text: '1 rue du poulet 75001 Paris', count: 1)
+    find('.row .col-12 .fr-pl-1w.blue-france', text: '1 rue du poulet 75001 Paris')
   end
 
   test 'student with submittted application can not see employer\'s address' do

@@ -20,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+-- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -34,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+-- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -48,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+-- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -58,6 +58,17 @@ COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 CREATE TYPE public.agreement_signatory_role AS ENUM (
     'employer',
     'school_manager'
+);
+
+
+--
+-- Name: school_category; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.school_category AS ENUM (
+    'college',
+    'lycee',
+    'college_lycee'
 );
 
 
@@ -467,7 +478,8 @@ CREATE TABLE public.class_rooms (
     school_id bigint,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    class_size integer
+    class_size integer,
+    grade character varying(25) DEFAULT 'seconde'::character varying NOT NULL
 );
 
 
@@ -1403,7 +1415,10 @@ CREATE TABLE public.internship_offers (
     contact_phone character varying(20),
     handicap_accessible boolean DEFAULT false,
     period integer DEFAULT 0 NOT NULL,
-    school_year integer DEFAULT 0 NOT NULL
+    school_year integer DEFAULT 0 NOT NULL,
+    internship_occupation_id bigint,
+    entreprise_id bigint,
+    planning_id bigint
 );
 
 
@@ -1707,7 +1722,8 @@ CREATE TABLE public.schools (
     contract_code character varying(3),
     department_id bigint,
     agreement_conditions text,
-    level character varying(100) DEFAULT 'lycee'::character varying NOT NULL
+    level character varying(100) DEFAULT 'lycee'::character varying NOT NULL,
+    school_type public.school_category DEFAULT 'college'::public.school_category NOT NULL
 );
 
 
@@ -3316,6 +3332,13 @@ CREATE INDEX index_internship_offers_on_employer_id ON public.internship_offers 
 
 
 --
+-- Name: index_internship_offers_on_entreprise_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offers_on_entreprise_id ON public.internship_offers USING btree (entreprise_id);
+
+
+--
 -- Name: index_internship_offers_on_group_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3327,6 +3350,13 @@ CREATE INDEX index_internship_offers_on_group_id ON public.internship_offers USI
 --
 
 CREATE INDEX index_internship_offers_on_hosting_info_id ON public.internship_offers USING btree (hosting_info_id);
+
+
+--
+-- Name: index_internship_offers_on_internship_occupation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offers_on_internship_occupation_id ON public.internship_offers USING btree (internship_occupation_id);
 
 
 --
@@ -3355,6 +3385,13 @@ CREATE INDEX index_internship_offers_on_organisation_id ON public.internship_off
 --
 
 CREATE INDEX index_internship_offers_on_period ON public.internship_offers USING btree (period);
+
+
+--
+-- Name: index_internship_offers_on_planning_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offers_on_planning_id ON public.internship_offers USING btree (planning_id);
 
 
 --
@@ -3764,6 +3801,14 @@ ALTER TABLE ONLY public.signatures
 
 
 --
+-- Name: internship_offers fk_rails_1cb061229c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offers
+    ADD CONSTRAINT fk_rails_1cb061229c FOREIGN KEY (internship_occupation_id) REFERENCES public.internship_occupations(id);
+
+
+--
 -- Name: area_notifications fk_rails_2194cad748; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4052,6 +4097,14 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: internship_offers fk_rails_d33020d0b1; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offers
+    ADD CONSTRAINT fk_rails_d33020d0b1 FOREIGN KEY (planning_id) REFERENCES public.plannings(id);
+
+
+--
 -- Name: users fk_rails_d5a5bff5c3; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4108,6 +4161,14 @@ ALTER TABLE ONLY public.crafts
 
 
 --
+-- Name: internship_offers fk_rails_efcf9ec504; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offers
+    ADD CONSTRAINT fk_rails_efcf9ec504 FOREIGN KEY (entreprise_id) REFERENCES public.entreprises(id);
+
+
+--
 -- Name: organisations fk_rails_f1474651e9; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4130,6 +4191,8 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240923090303'),
+('20240918144248'),
 ('20240916160037'),
 ('20240827145706'),
 ('20240719095729'),
@@ -4505,4 +4568,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
-

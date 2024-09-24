@@ -49,7 +49,7 @@ class School < ApplicationRecord
   end
 
   def agreement_address
-    "Lycée #{name} - #{city}, #{zipcode}"
+    "#{presenter.school_name} - #{city}, #{zipcode}"
   end
 
   rails_admin do
@@ -132,6 +132,10 @@ class School < ApplicationRecord
         end
       end
     end
+  end
+
+  def college?
+    school_type == 'college'
   end
 
   def presenter
