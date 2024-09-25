@@ -190,7 +190,7 @@ class EmployerMailer < ApplicationMailer
                 'à la vie active'.html_safe
     @extra_content = 'Si vous souhaitez conserver votre compte, ' \
                      'connectez-vous dès maintenant.'
-    @greetings = 'L\'équipe Mon stage de seconde'
+    @greetings = "L\'équipe Mon stage à l'école"
     @cta_label = 'Se connecter'
     @url       = new_user_session_url
     send_email(to: @employer.email, subject:)
@@ -206,7 +206,7 @@ class EmployerMailer < ApplicationMailer
     @title       = 'Finalisez la publication de votre offre de stage.'
     @bonjour     = "Bonjour #{@employer.presenter.full_name},"
     @paragraph_1 = "Nous avons remarqué que votre offre de stage intitulée #{internship_offer.title} " \
-                   'a été initiée sur Mon stage de seconde, mais reste enregistrée ' \
+                   "a été initiée sur Mon stage à l'école, mais reste enregistrée " \
                    'en tant que brouillon.'
     @paragraph_2 = 'Pour publier votre offre, suivez ces étapes simples :'
     @paragraph3_items = [

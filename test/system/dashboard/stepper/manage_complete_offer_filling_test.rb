@@ -131,7 +131,7 @@ class ManageCompleteOfferFillingTest < ApplicationSystemTestCase
     travel_to(Date.new(2024, 3, 1)) do
       visit internship_offer_path(id: internship_offer.id, mtm_campaign: 'Offreur_Offre_de_stage_en_attente',
                                   origine: 'email')
-      assert_equal 'Connexion à Mon stage de seconde', find('h1').text
+      assert_equal "Connexion à Mon stage à l'école", find('h1').text
       fill_in 'Adresse électronique', with: employer.email
       fill_in 'Mot de passe', with: password
       click_on 'Se connecter'
