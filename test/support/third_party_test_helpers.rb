@@ -48,4 +48,23 @@ module ThirdPartyTestHelpers
       }).
     to_return(status: 200, body: "", headers: {})
   end
+
+  def captcha_stub
+    stub_request(:post, "https://oauth.piste.gouv.fr/api/oauth/token").
+    with(
+      body: {
+        "client_id"=> ENV['CAPTCHA_CLIENT_ID'], 
+        "client_secret"=>ENV['CAPTCHA_CLIENT_SECRET'], 
+        "grant_type"=>"client_credentials", 
+        "scope"=>"piste.captchetat"
+      },
+      headers: {
+            'Accept'=>'*/*',
+            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Content-Type'=>'application/x-www-form-urlencoded',
+            'Host'=>'oauth.piste.gouv.fr',
+            'User-Agent'=>'Ruby'
+      }).
+    to_return(status: 200, body: "", headers: {})
+  end
 end

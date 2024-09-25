@@ -3,6 +3,8 @@
 require 'test_helper'
 
 class EmployerRegistrationsTest < ActionDispatch::IntegrationTest
+  include ThirdPartyTestHelpers
+
   def assert_employer_form_rendered
     assert_select 'title', "Inscription | Stages de 2de"
     assert_select 'input', value: 'Employer', hidden: 'hidden'
@@ -12,10 +14,12 @@ class EmployerRegistrationsTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET new as a Employer' do
-    get new_user_registration_path(as: 'Employer')
-
-    assert_response :success
-    assert_employer_form_rendered
+    captcha_stub do
+      get new_user_registration_path(as: 'Employer')
+      
+      assert_response :success
+      assert_employer_form_rendered
+    end
   end
 
   test 'POST Create Employer' do
