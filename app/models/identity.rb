@@ -15,5 +15,4 @@ class Identity < ApplicationRecord
   def generate_token
     self.token = SecureRandom.hex(12)
   end
-  
 end

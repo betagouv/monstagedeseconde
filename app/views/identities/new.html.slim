@@ -32,14 +32,30 @@ main#content[role="main"
                 .fr-grid-row.fr-grid-row-gutters
                   p.fr-stepper__details
                     | Sauf mention contraire, tous les champs sont obligatoires.
-              fieldset#new-student-form.fr-mx-2w[aria-labelledby="new-student-title"]
+              fieldset.fr-fieldset#new-student-form.fr-mx-2w[aria-labelledby="new-student-title"]
                 legend
-                = f.hidden_field :targeted_offer_id, value: params[:targeted_offer_id]
+                  = f.hidden_field :targeted_offer_id, value: params[:targeted_offer_id]
                 span data-signup-target="emailBloc"
                 span data-signup-target="emailHint"
                 span data-signup-target="emailInput"
                 span data-signup-target="emailRadioButton"
                 span data-signup-target="phoneBloc"
+                legend.fr-fieldset__legend--regular.fr-fieldset__legend
+                  = f.label "Niveau", class: "fr-label", for: "select-grade"
+                .fr-fieldset__element.fr-fieldset__element--inline
+                  .fr-radio-group
+                    = f.radio_button :grade, "quatrieme", id: "select-grade-quatrieme", class: "border", required: true
+                    = f.label :grade, "4ème", class: "fr-label fr-mb-0", for: "select-grade-quatrieme"
+                .fr-fieldset__element.fr-fieldset__element--inline
+                  .fr-radio-group
+                    = f.radio_button :grade, "troisieme", id: "select-grade-troisieme"
+                    = f.label :grade, "3ème", class: "fr-label fr-mb-0", for: "select-grade-troisieme"
+                .fr-fieldset__element.fr-fieldset__element--inline
+                  .fr-radio-group
+                    = f.radio_button :grade, "seconde", id: "select-grade-seconde"
+                    = f.label :grade, "2de générale et technologique", class: "fr-label fr-mb-0", for: "select-grade-seconde"
+              
+              fieldset.fr-mx-2w
                 .fr-mx-1w
                   label.fr-label for="user_school_city"
                         | Établissement ou commune

@@ -1,4 +1,4 @@
-Pour diffuser des offres sur la plateforme [Mon stage de seconde](https://stagedeseconde.1jeune1solution.gouv.fr/), une API est mise à disposition pour :
+Pour diffuser des offres sur la plateforme [Mon stage à l'école](https://stagedeseconde.1jeune1solution.gouv.fr/), une API est mise à disposition pour :
 
 * les associations
 * les collectivités
@@ -6,11 +6,11 @@ Pour diffuser des offres sur la plateforme [Mon stage de seconde](https://staged
 * les partenaires
 
 Il s'agit d'une API REST qui permet les opérations suivantes :
-- Ajouter une offre de stage sur Mon stage de seconde
-- Modifier une offre de stage sur Mon stage de seconde
-- Supprimer une offre de stage sur Mon stage de seconde
-- Récupérer ses offres de stage postées sur Mon stage de seconde
-- Rechercher des offres de stage sur Mon stage de seconde
+- Ajouter une offre de stage sur Mon stage à l'école
+- Modifier une offre de stage sur Mon stage à l'école
+- Supprimer une offre de stage sur Mon stage à l'école
+- Récupérer ses offres de stage postées sur Mon stage à l'école
+- Rechercher des offres de stage sur Mon stage à l'école
 
 # Table des matières
 - [Environnements](#environnements)
