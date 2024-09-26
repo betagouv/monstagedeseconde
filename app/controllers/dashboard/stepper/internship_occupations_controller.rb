@@ -68,7 +68,7 @@ module Dashboard::Stepper
               :internship_address_manual_enter,
               :autocomplete,
               :employer_id,
-              coordinates: {}
+              coordinates: [:latitude, :longitude]
             ).merge(employer_id: current_user.id)
     end
 
