@@ -28,6 +28,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   driven_by CAPYBARA_DRIVER, using: CAPYBARA_BROWSER do |driver_opts|
     # when ENV['USE_IPHONE_EMULATION'], use chrome emulation with iPhone 6
     driver_opts.add_emulation(device_name: 'iPhone 6') if CAPYBARA_EMULATE_MOBILE
+    driver_opts.add_argument('--disable-search-engine-choice-screen')
   end
 
   include Devise::Test::IntegrationHelpers

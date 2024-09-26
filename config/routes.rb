@@ -186,7 +186,7 @@ Rails.application.routes.draw do
     # ------------------ DASHBOARD END ------------------
   end
   # ------------------ SCOPE END ------------------
-
+  
   namespace :reporting, path: 'reporting' do
     get '/dashboards', to: 'dashboards#index'
 

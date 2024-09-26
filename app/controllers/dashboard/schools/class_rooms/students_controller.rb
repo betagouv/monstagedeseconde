@@ -49,7 +49,8 @@ module Dashboard
           :birth_date,
           :gender,
           :class_room_id,
-          :school_id
+          :school_id,
+          :grade
         )
       end
 
