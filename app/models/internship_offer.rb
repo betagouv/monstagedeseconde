@@ -18,12 +18,12 @@ class InternshipOffer < ApplicationRecord
 
   # Legacy now
   include StepperProxy::InternshipOfferInfo
-  # include StepperProxy::Organisation
+  include StepperProxy::Organisation
   include StepperProxy::HostingInfo
   include StepperProxy::PracticalInfo
   # New stepper models
   include StepperProxy::InternshipOccupation
-  include StepperProxy::Entreprise
+  # include StepperProxy::Entreprise
   include StepperProxy::Planning
 
   # utils

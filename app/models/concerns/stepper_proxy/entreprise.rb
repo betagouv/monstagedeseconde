@@ -1,7 +1,7 @@
 module StepperProxy
   module Entreprise
     belongs_to :group, optional: true
-    belongs_to :internship_occupation
+    # belongs_to :internship_occupation
 
     # validates :is_public, inclusion: { in: [true, false] }
     # validates :siret, length: { is: 14 }, allow_blank: true
