@@ -171,8 +171,8 @@ Rails.application.routes.draw do
         resources :tutors, path: 'tuteurs', only: %i[create new]
         # new stepper path
         resources :internship_occupations, path: 'metiers_et_localisation', only: %i[create new edit update]
-        resources :entreprise, path: 'entreprise', only: %i[create new edit update]
-        resources :planning, path: 'planning', only: %i[create new edit update]
+        resources :entreprises, path: 'entreprise', only: %i[create new edit update]
+        resources :plannings, path: 'planning', only: %i[create new edit update]
       end
 
       namespace :students, path: '/:student_id/' do

@@ -23,4 +23,7 @@
                resource: @internship_occupation,
                resource_name: :internship_offer
       = render 'dashboard/stepper/internship_occupations/form_fields',
-               { resource: @internship_occupation, form: form, submit_button: true, warning_block: true }
+               resource: @internship_occupation,
+               form: form,
+               submit_button: true,
+               warning_block: true

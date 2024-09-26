@@ -694,9 +694,9 @@ CREATE TABLE public.entreprises (
     tutor_phone character varying(20) NOT NULL,
     tutor_function character varying(120) NOT NULL,
     group_id bigint,
-    internship_application_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    internship_occupation_id bigint
 );
 
 
@@ -1051,7 +1051,7 @@ ALTER SEQUENCE public.internship_applications_id_seq OWNED BY public.internship_
 CREATE TABLE public.internship_occupations (
     id bigint NOT NULL,
     title character varying(150) NOT NULL,
-    description text,
+    description character varying(500) NOT NULL,
     street character varying(200) NOT NULL,
     zipcode character varying(5) NOT NULL,
     city character varying(50) NOT NULL,
@@ -1059,7 +1059,8 @@ CREATE TABLE public.internship_occupations (
     coordinates public.geography(Point,4326),
     employer_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    internship_address_manual_enter boolean DEFAULT false
 );
 
 
@@ -1617,10 +1618,10 @@ CREATE TABLE public.plannings (
     daily_hours jsonb DEFAULT '{}'::jsonb,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     entreprise_id bigint,
-    internship_applications_id bigint,
     school_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    internship_occupation_id bigint
 );
 
 
@@ -3059,10 +3060,10 @@ CREATE INDEX index_entreprises_on_group_id ON public.entreprises USING btree (gr
 
 
 --
--- Name: index_entreprises_on_internship_application_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_entreprises_on_internship_occupation_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_entreprises_on_internship_application_id ON public.entreprises USING btree (internship_application_id);
+CREATE INDEX index_entreprises_on_internship_occupation_id ON public.entreprises USING btree (internship_occupation_id);
 
 
 --
@@ -3493,10 +3494,10 @@ CREATE INDEX index_plannings_on_entreprise_id ON public.plannings USING btree (e
 
 
 --
--- Name: index_plannings_on_internship_applications_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_plannings_on_internship_occupation_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_plannings_on_internship_applications_id ON public.plannings USING btree (internship_applications_id);
+CREATE INDEX index_plannings_on_internship_occupation_id ON public.plannings USING btree (internship_occupation_id);
 
 
 --
@@ -3753,6 +3754,14 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: plannings fk_rails_027ab2d97f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.plannings
+    ADD CONSTRAINT fk_rails_027ab2d97f FOREIGN KEY (internship_occupation_id) REFERENCES public.internship_occupations(id);
+
+
+--
 -- Name: internship_applications fk_rails_064e6512b0; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3761,19 +3770,19 @@ ALTER TABLE ONLY public.internship_applications
 
 
 --
--- Name: plannings fk_rails_0846364b19; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.plannings
-    ADD CONSTRAINT fk_rails_0846364b19 FOREIGN KEY (internship_applications_id) REFERENCES public.internship_applications(id);
-
-
---
 -- Name: hosting_info_weeks fk_rails_0ab0d03d1c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.hosting_info_weeks
     ADD CONSTRAINT fk_rails_0ab0d03d1c FOREIGN KEY (week_id) REFERENCES public.weeks(id);
+
+
+--
+-- Name: entreprises fk_rails_0c4a513d70; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.entreprises
+    ADD CONSTRAINT fk_rails_0c4a513d70 FOREIGN KEY (internship_occupation_id) REFERENCES public.internship_occupations(id);
 
 
 --
@@ -3910,14 +3919,6 @@ ALTER TABLE ONLY public.identities
 
 ALTER TABLE ONLY public.internship_offer_weeks
     ADD CONSTRAINT fk_rails_5b8648c95e FOREIGN KEY (week_id) REFERENCES public.weeks(id);
-
-
---
--- Name: entreprises fk_rails_5c2b8bdecf; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.entreprises
-    ADD CONSTRAINT fk_rails_5c2b8bdecf FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
 
 
 --
@@ -4191,6 +4192,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240925100635'),
 ('20240923090303'),
 ('20240918144248'),
 ('20240916160037'),

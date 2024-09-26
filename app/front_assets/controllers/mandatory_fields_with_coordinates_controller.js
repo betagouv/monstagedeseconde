@@ -9,7 +9,8 @@ export default class extends Controller {
   ];
 
   static values = {
-    minimumLength: Number
+    minimumLength: Number,
+    noEventCheck: Boolean
   }
 
   fieldChange(event){
@@ -17,8 +18,7 @@ export default class extends Controller {
   }
 
   coordinatesChanged(event){
-    console.log(event.detail)
-    this.coordinatesAreFilled = event.detail.latitude !== 0 && event.detail.longitude !== 0;
+    this.coordinatesAreFilled = this.noEventCheckValue || (event.detail.latitude !== 0 && event.detail.longitude !== 0);
     this.checkValidation();
   }
 

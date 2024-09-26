@@ -15,6 +15,7 @@ export default function AddressInput({
   currentLatitude,
   currentLongitude,
   currentFullAddress,
+  addressFieldsVisible,
 }) {
   const [helpVisible, setHelpVisible] = useState(false);
   const [fullAddress, setFullAddress] = useState(currentFullAddress || '');
@@ -24,8 +25,8 @@ export default function AddressInput({
   const [latitude, setLatitude] = useState(currentLatitude || 0);
   const [longitude, setLongitude] = useState(currentLongitude || 0);
   const [searchResults, setSearchResults] = useState([]);
-  const [detailedFieldsVisibility, setdetailedFieldsVisibility] = useState(false);
   const [queryString, setQueryString] = useState('');
+  const [addressFieldsVisibility, setAddressFieldsVisibility] = useState(addressFieldsVisible);
   const [fullAddressDebounced] = useDebounce(fullAddress, 100);
 
   const inputChange = (event) => {
@@ -34,49 +35,57 @@ export default function AddressInput({
 
   const resetField = (e) => {
     e.stopPropagation();
-    setFullAddress("");
-    setStreet("");
-    setCity("");
-    setZipcode("");
-    setLatitude(0);
-    setLongitude(0);
+    setFields(undefined);
+    broadcastReset();
+    setAddressFieldsVisibility(false)
+  };
+
+  const broadcastReset = () => {
     broadcast(cityChanged({ city: "" }));
     broadcast(zipcodeChanged({ zipcode: "" }));
     broadcast(newCoordinatesChanged({ latitude: 0, longitude: 0 }));
-    setdetailedFieldsVisibility(false)
   };
 
-  const toggleHelpVisible = (event) => {
-    event.stopPropagation();
-    setHelpVisible(!helpVisible);
-  };
+  const setFields = (item) => {
+    if( item === undefined) {
+      setFullAddress("");
+      setStreet("");
+      setCity("");
+      setZipcode("");
+      setLatitude(0);
+      setLongitude(0);
+    } else  {
+      setFullAddress(item.properties.label);
+      if (item.properties.housenumber === undefined) {
+        setStreet(item.properties.name);
+      } else {
+        setStreet(
+          [item.properties.housenumber, item.properties.street]
+            .filter((component) => component)
+            .join(' ')
+        );
+      };
+      setCity(item.properties.city);
+      setZipcode(item.properties.postcode);
+      setLatitude(parseFloat(item.geometry.coordinates[1]));
+      setLongitude(parseFloat(item.geometry.coordinates[0]));
+      broadcast(zipcodeChanged({ zipcode : item.properties.postcode}));
+      broadcast(cityChanged({ city: item.properties.city }));
+    }
+  }
+
   const searchCityByAddress = () => {
     fetch(endpoints.apiSearchAddress({ fullAddress }))
       .then((response) => response.json())
       .then((json) => {
-        setSearchResults(json.features)
-        setQueryString(json.query)
+        setQueryString(json.query);
+        setSearchResults(json.features);
       });
   };
 
   const setFullAddressComponents = (item) => {
-    setFullAddress(item.properties.label);
-    if (item.properties.housenumber === undefined) {
-      setStreet(item.properties.name);
-    } else {
-      setStreet(
-        [item.properties.housenumber, item.properties.street]
-          .filter((component) => component)
-          .join(' ')
-      );
-    };
-    setCity(item.properties.city);
-    broadcast(cityChanged({ city: item.properties.city }));
-    setZipcode(item.properties.postcode);
-    broadcast(zipcodeChanged({ zipcode : item.properties.postcode}));
-    setLatitude(parseFloat(item.geometry.coordinates[1]));
-    setLongitude(parseFloat(item.geometry.coordinates[0]));
-    setdetailedFieldsVisibility(true);
+    setFields(item)
+    setAddressFieldsVisibility(true);
   };
 
   useEffect(() => {
@@ -117,14 +126,6 @@ export default function AddressInput({
                   })}
                 >
                   Adresse du lieu où se déroule le stage
-                  <a
-                    className="btn-absolute btn fr-btn btn-link py-0"
-                    href="#help-multi-location"
-                    aria-label="Afficher l'aide"
-                    onClick={toggleHelpVisible}
-                  >
-                    <i className="fas fa-question-circle" />
-                  </a>
                 </label>
 
                 <div className="input-group">
@@ -140,39 +141,38 @@ export default function AddressInput({
                       required: true,
                     })}
                   />
-
-                  <div className="search-in-place bg-white shadow">
-                    <ul
-                      {...getMenuProps({
-                        className: 'p-0 m-0',
-                      })}
-                    >
-                      { isOpen && queryString === fullAddress
-                        ? searchResults.map((item, index) => (
-                            <li
-                              {...getItemProps({
-                                className: `py-2 px-3 listview-item ${
-                                  highlightedIndex === index ? 'highlighted-listview-item' : ''
-                                }`,
-                                key: `${item.properties.id}-${item.properties.label}`,
-                                index,
-                                item,
-                                style: {
-                                  fontWeight: highlightedIndex === index? 'bold' : 'normal',
-                                },
-                              })}
-                            >
-                              {item.properties.label}
-                            </li>
-                          ))
-                        : null}
-                    </ul>
+                  <div className="input-group-append">
+                    <a onClick={resetField}>
+                      <span className="input-group-text">Effacer</span>
+                    </a>
                   </div>
-                <div className="input-group-append">
-                  <a onClick={resetField}>
-                    <span className="input-group-text">Effacer</span> 
-                  </a>
                 </div>
+
+                <div className="search-in-place bg-white shadow">
+                  <ul
+                    {...getMenuProps({
+                      className: 'p-0 m-0',
+                    })}
+                  >
+                    { isOpen && (queryString === fullAddress) && searchResults.map((item, index) => (
+                        <li
+                          {...getItemProps({
+                            className: `py-2 px-3 listview-item ${
+                              highlightedIndex === index ? 'highlighted-listview-item' : ''
+                            }`,
+                            key: `${item.properties.id}-${item.properties.label}`,
+                            index,
+                            item,
+                            style: {
+                              fontWeight: highlightedIndex === index? 'bold' : 'normal',
+                            },
+                          })}
+                        >
+                          {item.properties.label}
+                        </li>
+                      ))
+                    }
+                  </ul>
                 </div>
               </div>
             )}
@@ -199,7 +199,7 @@ export default function AddressInput({
           type="hidden"
         />
       </div>
-      { detailedFieldsVisibility && (
+      { addressFieldsVisibility && (
         <div className="form-row">
           <div className="col-sm-12 fr-mt-1w">
             <label htmlFor={`${resourceName}_street`} className="fr-label">

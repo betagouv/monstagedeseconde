@@ -18,11 +18,13 @@ class InternshipOffer < ApplicationRecord
 
   # Legacy now
   include StepperProxy::InternshipOfferInfo
-  include StepperProxy::Organisation
+  # include StepperProxy::Organisation
   include StepperProxy::HostingInfo
   include StepperProxy::PracticalInfo
   # New stepper models
   include StepperProxy::InternshipOccupation
+  include StepperProxy::Entreprise
+  include StepperProxy::Planning
 
   # utils
   include Discard::Model
@@ -440,10 +442,10 @@ class InternshipOffer < ApplicationRecord
     # self.siret = organisation.siret
     # self.group_id = organisation.group_id
     # self.is_public = organisation.is_public
-    self.internship_street = internship_occupation.internship_street
-    self.internship_zipcode = internship_occupation.internship_zipcode
-    self.internship_city = internship_occupation.internship_city
-    self.internship_coordinates = internship_occupation.internship_coordinates
+    self.internship_street = internship_occupation.street
+    self.internship_zipcode = internship_occupation.zipcode
+    self.internship_city = internship_occupation.city
+    self.internship_coordinates = internship_occupation.coordinates
     self.internship_offer_area_id = internship_occupation.internship_offer_area_id
   end
 
