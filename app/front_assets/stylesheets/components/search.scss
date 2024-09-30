@@ -43,7 +43,7 @@
 
 .results-container {
   .results-col {
-    width: 100%;
+    width: calc(14.28571% + 570px) !important;
     top: 56px;
     .row {
       overflow-x: hidden;
