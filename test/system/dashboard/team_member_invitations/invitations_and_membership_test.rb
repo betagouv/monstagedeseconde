@@ -121,7 +121,7 @@ module Dashboard::TeamMemberInvitations
     ## ============= Operators ===================
 
     test 'as operator, team member can invite a new team member' do
-      skip 'Chromewebdriver issue'
+      skip 'works locally but not on CI'
       operator_1 = create(:user_operator)
       operator_2 = create(:user_operator)
       sign_in(operator_1)
@@ -225,7 +225,7 @@ module Dashboard::TeamMemberInvitations
 
     ## ============= statisticians ===================
     test 'as statistician, team member can invite a new team member' do
-      skip 'Chromewebdriver issue'
+      skip 'works locally but not on CI'
       statistician_1 = create(:statistician)
       sign_in(statistician_1)
       statistician_2 = create(:statistician)
