@@ -6,10 +6,10 @@ class SchoolsTest < ApplicationSystemTestCase
   test 'cannot add favorite as a visitor' do
     create(:weekly_internship_offer)
     visit internship_offers_path
-    #June_flower
+    # June_flower
     # find("h2 .strong", text: "1 Offre de stage")
-    find(".h4 .strong", text: "Les offres de stage")
-    #June_flower
+    find('.h4 .strong', text: "Rechercher un stage d'observation")
+    # June_flower
     assert_no_selector('.results-col .heart-empty')
   end
 
@@ -18,9 +18,9 @@ class SchoolsTest < ApplicationSystemTestCase
     sign_in(employer)
     create(:weekly_internship_offer)
     visit internship_offers_path
-    #June_flower
-    find(".h4 .strong", text: "Les offres de stage")
-    #June_flower
+    # June_flower
+    find('.h4 .strong', text: "Rechercher un stage d'observation")
+    # June_flower
     assert_no_selector('.results-col .heart-empty')
   end
 
@@ -29,23 +29,23 @@ class SchoolsTest < ApplicationSystemTestCase
     student = create(:student)
     sign_in student
     visit internship_offers_path
-    #June_flower
-    find(".h4 .strong", text: "Les offres de stage")
-    #June_flower
+    # June_flower
+    find('.h4 .strong', text: "Rechercher un stage d'observation")
+    # June_flower
     assert_changes -> { Favorite.all.count }, from: 0, to: 1 do
-      find(".results-col .heart-empty").click
-      find(".results-col .heart-full")
+      find('.results-col .heart-empty').click
+      find('.results-col .heart-full')
     end
     favorite = Favorite.first
     assert_equal favorite.internship_offer, internship_offer
     assert_equal favorite.user, student
     assert_changes -> { Favorite.all.count }, from: 1, to: 0 do
-      find(".results-col .heart-full").click
-      find(".results-col .heart-empty")
+      find('.results-col .heart-full').click
+      find('.results-col .heart-empty')
     end
     assert_changes -> { Favorite.all.count }, from: 0, to: 1 do
-      find(".results-col .heart-empty").click
-      find(".results-col .heart-full")
+      find('.results-col .heart-empty').click
+      find('.results-col .heart-full')
     end
   end
 end

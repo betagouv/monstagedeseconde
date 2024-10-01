@@ -72,7 +72,7 @@ const InternshipOfferCard = ({
             {(internshipOffer.can_read_employer_name) &&
               (<div className="mr-auto blue-france fr-mb-1w">{internshipOffer.employer_name}</div>)
             }
-            <div className="fr-text fr-py-1w">{internshipOffer.city}</div>
+            <div className="fr-text fr-py-1w test-city">{internshipOffer.city}</div>
           </div>
         </div>
         {/* puts elements at the opposite on a line */}
