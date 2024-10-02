@@ -19,13 +19,19 @@
     thead
       tr
         th scope="col" Nom de l'espace
-        th scope="col" Candidatures reçues
-        th scope="col" Candidatures refusées
+        th scope="col" Offres déposées
         th scope="col" Candidatures en attente
         th scope="col" Candidatures acceptées
+        th scope="col" 
+          / = link_to '#', data: { fr_opened: "false", aria: { describedby: "tooltip-2994" } }, class: 'fr-link' do
+          | Recevoir les notifications
+          
+          / span.fr-tooltip.fr-placement id="tooltip-2994" role="tooltip" aria-hidden="true"
+          /   | Lorem [...] elit ut.
+
         - if current_user.team_areas.count > 1
-          th scope="col" 
-            | Supprimer l'espace
+          th.action-col scope="col" 
+            
     tbody
       - @internship_offer_areas.each do |area|
         tr
@@ -33,32 +39,90 @@
             = link_to area.name,
                    filter_by_area_dashboard_internship_offer_area_path(id: area.id)
           td
-            = current_user.internship_applications_by_area_and_states(area_id: area.id, aasm_state: InternshipApplication::RECEIVED_STATES).current_school_year.count
-          td
-            = current_user.internship_applications_by_area_and_states(area_id: area.id, aasm_state: InternshipApplication::REJECTED_STATES).current_school_year.count
+            = current_user.internship_offers_by_area(area_id: area.id).within_current_year.count
           td
             = current_user.internship_applications_by_area_and_states(area_id: area.id, aasm_state: InternshipApplication::PENDING_STATES).current_school_year.count
           td
             = current_user.internship_applications_by_area_and_states(area_id: area.id, aasm_state: :approved).current_school_year.count
+          td
+            - notification = AreaNotification.where(user_id: current_user.id, internship_offer_area_id: area.id).first
+            .d-flex.flex-column
+              - if can?(:flip_notification, notification)
+                = render 'dashboard/internship_offer_areas/area_notifications/toggle_dashboard',
+                          area_notification: notification, internship_offer_area: area
           - if can?(:destroy, area)
             td
-              button.fr-btn.fr-btn--secondary.fr-icon.fr-fi-delete-line [data-fr-opened="false"
-                                                       aria-controls="fr-modal-area-destroy-dialog-#{area.id}"]
+              = link_to '#', data: { fr_opened: "false", aria: { controls: "fr-modal-area-destroy-dialog-#{area.id}" } }, class: 'your-button-class' do
+                span.fr-fi-delete-fill
         = render 'dashboard/internship_offer_areas/destroy_areas_modal_dialog',
                   internship_offer_area: area
       tr
         td
           | Total
         td
-          = current_user.internship_applications_by_states(aasm_state: InternshipApplication::RECEIVED_STATES).current_school_year.count
-        td
-          = current_user.internship_applications_by_states(aasm_state: InternshipApplication::REJECTED_STATES).current_school_year.count
+          = current_user.internship_offers_by_team.within_current_year.count
         td
           = current_user.internship_applications_by_states(aasm_state: InternshipApplication::PENDING_STATES).current_school_year.count
         td
           = current_user.internship_applications_by_states(aasm_state: :approved).current_school_year.count
+        td
         - if current_user.team_areas.count > 1
           td
+
+  h2.fr-h3.fr-pt-5v.fr-mb-1w.fr-text-center.fr-text-dark
+    | Mon équipe
+
+  .fr-table.fr-table--layout-fixed.fr-mt-3w
+    table
+      thead
+        tr
+          th scope="col" Nom
+          th scope="col" Email
+          th scope="col" Statut
+          th.action-col scope="col" Action
+      tbody
+        - if @team_members.empty?
+          tr
+            td.text-center colspan="4"
+              | Vous n'avez pas encore invité de membre dans votre équipe.
+        - else
+          - @team_members.each do |team_member_invitation|
+            - prez = team_member_invitation.presenter(current_user)
+            tr
+              td
+                = prez.full_name
+              td
+                = prez.email
+              td
+                - status = team_member_invitation.presenter(current_user).status
+                span class="fr-badge fr-badge--no-icon fr-badge--#{status[:type]}"
+                  = status[:label]
+              td
+                - if can?(:destroy, team_member_invitation)
+                  = link_to dashboard_team_member_invitation_path(team_member_invitation),
+                            method: :delete,
+                            data: { confirm: "Êtes-vous sûr de vouloir supprimer #{prez.full_name} de votre équipe ?" } do
+                    span.fr-fi-delete-fill
+  .row
+    .col-6 
+      .fr-callout
+        p.fr-callout__title À quoi servent les espaces ?
+        p.fr-callout__text
+          |
+            Les espaces vous permettent d’organiser vos offres en 
+            les classant dans des dossiers, selon vos préférences. 
+            Par exemple, pour gérer les offres destinées à différents 
+            sites de votre entreprise, vous pouvez créer des espaces 
+            distincts pour chaque site (Paris, Nantes, Poitiers, etc.).
+    .col-6 
+      .fr-callout
+        p.fr-callout__title À quoi sert une équipe ?
+        p.fr-callout__text
+          |
+            Tous les membres d’une équipe ont accès aux mêmes espaces, 
+            offres, candidatures, conventions, etc., facilitant ainsi 
+            la collaboration au sein de votre entreprise.
+
 #fr-modal-add-space-dialog
   = render 'dashboard/internship_offer_areas/areas_modal_dialog',
             internship_offer_area: @internship_offer_area
