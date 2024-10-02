@@ -9,15 +9,15 @@ module Presenters
     end
 
     def status
-      user = ::Users::SchoolManagement.find_by(email: email)
-      return { type: 'success', label: 'inscrit', status: :subscribed} if user.present?
-      return { type: 'new', label: 'Invitation envoyée', status: :email_sent} if sent_at.present?
+      user = ::Users::SchoolManagement.find_by(email:)
+      return { type: 'success', label: 'inscrit', status: :subscribed } if user.present?
+      return { type: 'warning', label: 'Invitation envoyée', status: :email_sent } if sent_at.present?
 
       nil
     end
 
     def role_name
-      translator = I18n.t("activerecord.attributes.invitation.roles")
+      translator = I18n.t('activerecord.attributes.invitation.roles')
       translator[role.to_sym]
     end
 
