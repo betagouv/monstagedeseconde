@@ -7,6 +7,7 @@ namespace :migrations do
   task :populate_stepper_fields, [] => :environment do |t, args|
     ActiveRecord::Base.transaction do
       InternshipOffer.find_each do |internship_offer|
+        raise 'Warning! Field names have changed'
         InternshipOccupation.create!(
           title: internship_offer.title,
           description: internship_offer.description,
@@ -18,19 +19,20 @@ namespace :migrations do
           department: internship_offer.department,
           updated_at: internship_offer.updated_at,
           employer_id: internship_offer.employer_id
-          )
-          # trades: internship_offer.trades,
+        )
+        # trades: internship_offer.trades,
       end
 
-      PrettyConsole.say_in_green "Internship occupations populated"
+      PrettyConsole.say_in_green 'Internship occupations populated'
 
       InternshipOffer.find_each do |internship_offer|
+        raise 'Warning! Field names have changed'
         Entreprise.create!(
           manual_enter: internship_offer.manual_enter,
           siret: internship_offer.siret,
           is_public: internship_offer.is_public,
           employer_name: internship_offer.employer_name,
-          chosen_employer_name: internship_offer.employer_name,
+          employer_chosen_name: internship_offer.employer_name,
           entreprise_city: internship_offer.city,
           entreprise_zipcode: internship_offer.zipcode,
           entreprise_street: internship_offer.street,
@@ -44,6 +46,7 @@ namespace :migrations do
       end
 
       InternshipOffer.find_each do |internship_offer|
+        raise 'Warning! Field names have changed'
         Planning.create!(
           weeks_count: internship_offer.internship_offer_weeks_count,
           max_candidates: internship_offer.max_candidates,

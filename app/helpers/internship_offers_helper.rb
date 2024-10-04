@@ -38,6 +38,18 @@ module InternshipOffersHelper
     end
   end
 
+  def options_for_public_groups
+    Group.is_public.map do |group|
+      [
+        group.name,
+        group.id,
+        {
+          'data-organisation-form-target' => 'groupNamePublic'
+        }
+      ]
+    end
+  end
+
   def operator_name(internship_offer)
     internship_offer.employer.operator.name
   end

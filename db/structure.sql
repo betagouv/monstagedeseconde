@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -679,24 +680,23 @@ ALTER SEQUENCE public.detailed_crafts_id_seq OWNED BY public.detailed_crafts.id;
 
 CREATE TABLE public.entreprises (
     id bigint NOT NULL,
-    manual_enter boolean DEFAULT false NOT NULL,
     siret character varying(14) NOT NULL,
     is_public boolean DEFAULT false NOT NULL,
     employer_name character varying(150) NOT NULL,
-    chosen_employer_name character varying(150),
-    entreprise_city character varying(50) NOT NULL,
-    entreprise_zipcode character varying(5) NOT NULL,
-    entreprise_street character varying(200) NOT NULL,
+    employer_chosen_name character varying(150),
     entreprise_coordinates public.geography(Point,4326),
-    tutor_first_name character varying(50) NOT NULL,
-    tutor_last_name character varying(50) NOT NULL,
-    tutor_email character varying(100) NOT NULL,
-    tutor_phone character varying(20) NOT NULL,
-    tutor_function character varying(120) NOT NULL,
+    tutor_first_name character varying(60),
+    tutor_last_name character varying(60),
+    tutor_email character varying(80),
+    tutor_phone character varying(20),
+    tutor_function character varying(150),
     group_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    internship_occupation_id bigint
+    internship_occupation_id bigint,
+    entreprise_full_address character varying(200) NOT NULL,
+    sector_id bigint NOT NULL,
+    updated_entreprise_full_address boolean DEFAULT false
 );
 
 
@@ -3067,6 +3067,13 @@ CREATE INDEX index_entreprises_on_internship_occupation_id ON public.entreprises
 
 
 --
+-- Name: index_entreprises_on_sector_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_entreprises_on_sector_id ON public.entreprises USING btree (sector_id);
+
+
+--
 -- Name: index_favorites_on_internship_offer_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3938,6 +3945,14 @@ ALTER TABLE ONLY public.user_groups
 
 
 --
+-- Name: entreprises fk_rails_6efe4d9b92; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.entreprises
+    ADD CONSTRAINT fk_rails_6efe4d9b92 FOREIGN KEY (sector_id) REFERENCES public.sectors(id);
+
+
+--
 -- Name: internship_applications fk_rails_75752a1ac2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4192,6 +4207,7 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240927075929'),
 ('20240925100635'),
 ('20240923090303'),
 ('20240918144248'),

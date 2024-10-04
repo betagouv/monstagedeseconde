@@ -125,7 +125,7 @@ export default function AddressInput({
                     htmlFor: `${resourceName}_autocomplete`,
                   })}
                 >
-                  Adresse du lieu où se déroule le stage
+                  Rechercher une adresse*
                 </label>
 
                 <div className="input-group">
@@ -154,7 +154,7 @@ export default function AddressInput({
                       className: 'p-0 m-0',
                     })}
                   >
-                    { isOpen && (queryString === fullAddress) && searchResults.map((item, index) => (
+                    { isOpen && (queryString === fullAddress) && (searchResults !== undefined) && searchResults.map((item, index) => (
                         <li
                           {...getItemProps({
                             className: `py-2 px-3 listview-item ${

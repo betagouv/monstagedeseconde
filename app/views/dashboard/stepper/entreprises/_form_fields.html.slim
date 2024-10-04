@@ -1,143 +1,207 @@
 - if can?(:supply_offers, current_user)
-  div [data-controller='organisation-form mandatory-fields organisation-cardfill'
-       data-action="input->organisation-form#checkForm"
+  div [data-controller='mandatory-fields entreprise-cardfill ministry-fields'
+       data-action="input->entreprise-form#checkForm"
        data-mandatory-fields-minimum-length-value="2"]
-    / .row
+    .row
       .col-md-6.order-md-2.order-1.d-none.d-md-block
         = render 'dashboard/stepper/summary_card'
-      / .col-md-6.order-md-1.order-2
-        fieldset  aria-labelledby="organisation-name-legend"
-          legend.fr-text--lg.font-weight-bold.fr-my-2w
-            = current_user.ministry_statistician? ? "Votre administration" : "L'entreprise"
-          = form.hidden_field :manual_enter, value: false
-          = form.hidden_field :employer_id, value: current_user.id
-          - if resource.id
-            = form.hidden_field :id, value: resource.id
+      .col-md-6.order-md-1.order-2
+        fieldset  aria-labelledby="entreprise-name-legend"
+          legend.fr-text--lg.font-weight-bold
+            | Les informations liées à votre structure
+          .row
+            .col-12
+              = form.hidden_field :manual_enter, value: false
+              = form.hidden_field :internship_occupation_id, value: resource.internship_occupation_id
+              = form.hidden_field :employer_id, value: current_user.id
+              = form.hidden_field :entreprise_coordinates_longitude, value: resource&.entreprise_coordinates&.longitude || 0
+              = form.hidden_field :entreprise_coordinates_latitude, value: resource&.entreprise_coordinates&.latitude || 0
+              = form.hidden_field :siret, value: resource&.siret || ''
+              - if resource.id
+                = form.hidden_field :id, value: resource.id
+              = react_component("SirenInput",
+                                props: { resourceName: form.object_name,
+                                         presentationLabel: "L'administration",
+                                         currentSiren: resource.siret,
+                                         railsEnv: Rails.env })
 
-          = react_component("SirenInput",
-                            props: { resourceName: form.object_name,
-                                     presentationLabel: "L'administration",
-                                     currentSiren: resource.siret,
-                                     railsEnv: Rails.env })
+          .row.fr-mt-3w.bloc-tooggle.d-none
+            .col-12
+              div class=('d-none' if request.fullpath.include?('entreprises/nouveau'))
+              - if current_user.ministry_statistician?
+                = form.hidden_field :is_public, value: true
+              - else
+                fieldset.fr-fieldset#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
+                  legend.label 
+                    | Votre entreprise est une structure publique ? *
+                  div.fr-fieldset__element
+                    div.fr-radio-group
+                      = form.radio_button :is_public,
+                                          true,
+                                          class: '',
+                                          required: true,
+                                          data: { action: 'ministry-fields#handleClickIsPublic' }
+                      = form.label :is_public_true,
+                                   'Oui',
+                                   class: 'fr-label',
+                                   data: { action: 'ministry-fields#handleClickIsPublic' }
+                  div.fr-fieldset__element
+                    div.fr-radio-group
+                      = form.radio_button :is_public,
+                                          false,
+                                          class: '',
+                                          required: true,
+                                          data: { action: 'ministry-fields#handleClickIsPublic' }
+                      = form.label :is_public_false,
+                                   'Non',
+                                   class: 'fr-label',
+                                   data: { action: 'ministry-fields#handleClickIsPublic' }
 
-          #manual-input class=('d-none bloc-manual' if request.fullpath.include?('organisations/nouveau'))
-            .form-group.fr-my-2w
-              - raison = current_user.ministry_statistician? ? "Nom de l’institution" : "Nom de l’entreprise proposant l’offre"
-              = form.label :employer_name, raison
+                  div.fr-messages-group#radio-hint-messages aria-live="assertive"
+          - edit_mode = (@organisation.try(:persisted?) && @organisation.is_private?) || (@organisation.try(:employer_description).present? && @organisation.is_private?)
+          .row.fr-mt-3w.bloc-tooggle [data-ministry-fields-target="groupNamePublic"]
+            .col-12
+              = form.label :group_id, class: 'fr-label' do
+                = form.rg2a_required_content_tag
+                = "Type d’employeur public"
 
-              = form.text_field :employer_name,
-                                class: 'fr-input',
-                                placeholder: raison,
-                                required: true,
-                                maxlength: 180,
-                                data: { action: "input->mandatory-fields#fieldChange",
-                                        :'organisation-form-target' => 'organisationName',
-                                        :'mandatory-fields-target' => "mandatoryField"}
-            .form-group.fr-my-2w
-              = form.label :siret, "SIRET"
+              = form.select :group_id,
+                            options_for_select(options_for_public_groups, resource.group.try(:id)),
+                            { prompt: '-- Choisissez votre ministère de tutelle --' },
+                            class: "fr-select ",
+                            required: false,
+                            :'data-ministry-fields-target' => 'selectGroupName'
+          .row.fr-mt-3w.bloc-tooggle.d-none
+            .col-12
+              = form.label :sector_id , class: 'fr-label'do
+                = "Secteur d'activité"
+              = form.select :sector_id,
+                            options_from_collection_for_select(Sector.all.order(:name), :id, :name, resource.sector_id),
+                            { prompt: sectors_options_for_default },
+                            class: "fr-select",
+                            required: true
+          .row.fr-mt-3w.bloc-tooggle.d-none
+            .col-12
+              = render 'inputs/dsfr_input_field',
+                        field: :presentation_siret,
+                        f: form,
+                        label: "SIRET",
+                        required: true,
+                        readonly: true,
+                        title: 'SIRET',
+                        object: form.object,
+                        value: resource&.presenter&.formal_siret
+          .row.fr-mt-3w.bloc-tooggle.d-none
+            .col-12
+              - label = "Vérifiez le nom (raison sociale) de votre établissement"
+              = render 'inputs/dsfr_input_field',
+                        field: :employer_name,
+                        f: form,
+                        label: label,
+                        required: true,
+                        readonly: true,
+                        title: label,
+                        object: form.object,
+                        value: resource&.employer_name
+          .row.fr-mt-3w.bloc-tooggle.d-none
+            .col-12
+              - label = "Indiquez le nom de l'enseigne de l'établissement d'accueil, si elle diffère de la raison sociale"
+              = render 'inputs/dsfr_input_field',
+                        field: :employer_chosen_name,
+                        f: form,
+                        label: label,
+                        required: false,
+                        title: label,
+                        object: form.object,
+                        value: resource&.employer_chosen_name
+          .row.fr-mt-3w.bloc-tooggle.d-none
+            .col-12
+              = form.hidden_field :entreprise_full_address, value: resource&.entreprise_full_address
+              - label = "Vérifiez l'adresse du siège de votre établissement *"
+              = render 'inputs/dsfr_input_field',
+                        field: :entreprise_chosen_full_address,
+                        f: form,
+                        label: label,
+                        required: true,
+                        title: label,
+                        object: form.object,
+                        value: resource&.entreprise_full_address
+              .fr-mt-2v.d-flex.align-items-center
+                small
+                  span.fr-icon-info-fill.text-blue-info aria-hidden="true"
+                small.text-blue-info.fr-mx-1w
+                  | L’adresse du siège peut être différente de l’adresse où se déroulera le stage.
+            - edit_mode = (@entreprise.try(:persisted?) && @entreprise.is_private?) || (@entreprise.try(:employer_description).present? && @entreprise.is_private?)
+        br
+          fieldset.fr-mt-4w.bloc-tooggle.d-none  aria-labelledby="entreprise-name-legend"
+            legend.fr-text--lg.font-weight-bold
+              | Qui sera le tuteur du ou des stagiaires ?
 
-              = form.text_field :siret,
-                                class: 'fr-input',
-                                placeholder: 'Mon code SIRET',
-                                required: true,
-                                pattern: '[0-9]{14}',
-                                :'data-organisation-form-target' => 'organisationSiret',
-                                data: { :'organisation-form-target' => 'organisationSiret',
-                                        action: "input->mandatory-fields#fieldChange",
-                                        :'mandatory-fields-target' => "mandatoryField"}
-
-            = react_component("FullAddressInput",
-                              props: { resourceName: form.object_name,
-                                       currentStreet: resource.street,
-                                       currentCity: resource.city,
-                                       currentZipcode: resource.zipcode,
-                                       currentLatitude: resource.coordinates.try(:lat).try(:to_f),
-                                       currentLongitude: resource.coordinates.try(:lon).try(:to_f),
-                                       currentFullAddress: resource.formatted_autocomplete_address})
-
-        .bloc-tooggle class=('d-none' if request.fullpath.include?('organisations/nouveau'))
-          - if current_user.ministry_statistician?
-            = form.hidden_field :is_public, value: true
-          - else
-            fieldset.fr-fieldset.fr-my-2w#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
-              legend.label
-                | Entreprise
-              div.fr-fieldset__element
-                div.fr-radio-group
-                  = form.radio_button :is_public,
-                                      true,
-                                      class: '',
-                                      required: true,
-                                      :'data-action' => 'change->organisation-form#handleClickIsPublic',
-                                      :'data-organisation-form-target' => 'requiredField'
-                  = form.label :is_public_true, 'Publique', class: 'fr-label'
-              div.fr-fieldset__element
-                div.fr-radio-group
-                  = form.radio_button :is_public,
-                                      false,
-                                      class: '',
-                                      required: true,
-                                      :'data-action' => 'change->organisation-form#handleClickIsPublic',
-                                      :'data-organisation-form-target' => 'requiredField'
-                  = form.label :is_public_false, 'Privée', class: 'fr-label'
-
-              div.fr-messages-group#radio-hint-messages aria-live="assertive"
-        - edit_mode = (@organisation.try(:persisted?) && @organisation.is_private?) || (@organisation.try(:employer_description).present? && @organisation.is_private?)
-        div#organisation-group [class="form-group form-group-select-group fr-my-2w #{'d-none' if request.fullpath.include?('organisations/nouveau') || edit_mode}" data-organisation-form-target="groupBlock"]
-          .form-group.fr-my-2w
-            = form.label :group_id,
-                          class: 'fr-label',
-                          :'data-organisation-form-target' => 'groupLabel' do
-              = form.rg2a_required_content_tag
-              = "Type d’employeur public"
-
-            = form.select :group_id,
-                          options_for_select(options_for_groups, resource.group.try(:id)),
-                          { prompt: '-- Choisissez votre type --' },
-                          class: "fr-select",
+            .row.fr-mt-1w.bloc-tooggle.d-none
+              .col-12
+                = render 'inputs/dsfr_input_field',
+                          field: :tutor_first_name,
+                          f: form,
+                          label: "Prénom du référent",
                           required: false,
-                          :'data-organisation-form-target' => 'selectGroupName'
+                          title: "Prénom du référent",
+                          object: form.object,
+                          value: resource&.tutor_first_name,
+                          options: { maxlength: 60 }
 
+            .row.fr-mt-3w.bloc-tooggle.d-none
+              .col-12
+                = render 'inputs/dsfr_input_field',
+                          field: :tutor_last_name,
+                          f: form,
+                          label: "Nom du référent",
+                          required: false,
+                          title: "Nom du référent",
+                          object: form.object,
+                          value: resource&.tutor_last_name,
+                          options: { maxlength: 60 }
+            .row.fr-mt-3w.bloc-tooggle.d-none
+              .col-12
+                = render 'inputs/dsfr_input_field',
+                          field: :tutor_function,
+                          f: form,
+                          label:  "Fonction du référent",
+                          required: false,
+                          title:  "Fonction du référent",
+                          object: form.object,
+                          value: resource&.tutor_function,
+                          options: { maxlength: 150 }
+            .row.fr-mt-3w.bloc-tooggle.d-none
+              .col-12
+                = render 'inputs/dsfr_input_field',
+                          field: :tutor_phone,
+                          f: form,
+                          label:  'Numéro de téléphone du référent',
+                          required: false,
+                          hint: 'Ce numéro ne sera pas communiqué directement aux élèves',
+                          title: 'Numéro de téléphone du référent',
+                          object: form.object,
+                          value: resource&.tutor_phone,
+                          pattern: optional_phone_pattern,
+                          options: { maxlength: 20 }
+            .row.fr-mt-3w.bloc-tooggle.d-none
+              .col-12
+                = render 'inputs/dsfr_input_field',
+                          field: :tutor_email,
+                          f: form,
+                          label:  "Adresse électronique du référent",
+                          required: false,
+                          title:  "Adresse électronique du référent",
+                          object: form.object,
+                          pattern: optional_mail_pattern,
+                          value: resource&.tutor_email,
+                          options: { maxlength: 80 }
 
-  / .row.bloc-tooggle class=('d-none' if request.fullpath.include?('organisations/nouveau'))
-    .col-md-6
-      - max_length = InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
-      fieldset aria-labelledby="presentation"
-        legend Présentation de l'entreprise
-      .form-group.fr-my-2w [data-controller='max-length-input'
-                            data-max-length-input-target="group"
-                            data-max-length-input-limit-value="#{max_length}"]
-        = render 'inputs/dsfr_input_field',
-                  f: form,
-                  field: :employer_description,
-                  label: 'Description de l’entreprise (optionnel)',
-                  aria: {labelledby: 'label_organisation_description'},
-                  required: false,
-                  title: 'description de l’entreprise',
-                  object: form.object,
-                  field_type: 'text_area'
-        .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
-          |La description est trop longue
-        small.form-text data-max-length-input-target="charCount"
-
-      .form-group.fr-my-2w
-        = form.label :employer_website, class: 'fr-label' do
-          = 'Site web (optionnel)'
-          small.form-text.text-muted Afin que l’élève puisse en apprendre plus sur son futur stage
-        = form.url_field :employer_website,
-                         class: 'fr-input',
-                         maxlength: 300,
-                         placeholder: "https://"
-
-    / .col-md-6
-      .fr-alert.fr-alert--info
-        h3.fr-alert__title Conseil
-        p La présentation de l’entreprise est un des éléments déterminant dans le choix du stage. Utilisez un vocabulaire simple, facile à comprendre. N’hésitez pas à ajouter des détails sur les principales activités de l’entreprise.
-  / - if submit_button
-    .fr-mt-3w
+  - if submit_button
+    .fr-mt-6w.bloc-tooggle.d-none
       = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
       = button_tag :submit,
                    class: 'fr-btn',
-                   :'data-organisation-form-target' => "submitButton",
+                   :'data-entreprise-form-target' => "submitButton",
                    :'data-mandatory-fileds-target' => "disabledField"  do
         = "Suivant "

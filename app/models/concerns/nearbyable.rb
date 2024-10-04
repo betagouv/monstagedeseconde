@@ -25,8 +25,8 @@ module Nearbyable
     # since relative_distance is not known as a column,
     # this scope is to be used as the very last in the query
     scope :nearby_and_ordered, lambda { |latitude:, longitude:, radius:|
-      nearby(latitude: latitude, longitude: longitude, radius: radius)
-        .with_distance_from(latitude: latitude, longitude: longitude)
+      nearby(latitude:, longitude:, radius:)
+        .with_distance_from(latitude:, longitude:)
         .unscope(:order)
         .order(relative_distance: :asc)
     }
@@ -61,9 +61,9 @@ module Nearbyable
       case coordinates
       when Hash
         if coordinates[:latitude]
-          super(geo_point_factory(latitude: coordinates[:latitude],longitude: coordinates[:longitude]))
+          super(geo_point_factory(latitude: coordinates[:latitude], longitude: coordinates[:longitude]))
         else
-          super(geo_point_factory(latitude: coordinates['latitude'],longitude: coordinates['longitude']))
+          super(geo_point_factory(latitude: coordinates['latitude'], longitude: coordinates['longitude']))
         end
       when RGeo::Geographic::SphericalPointImpl
         super(coordinates)
@@ -71,6 +71,7 @@ module Nearbyable
         super
       end
     end
+    # alias_method :entreprise_coordinates=, :coordinates=
 
     # def osm_url
     #   return "http://www.openstreetmap.org/" unless coordinates_are_valid?
@@ -92,6 +93,5 @@ module Nearbyable
 
       errors.add(:coordinates, :blank)
     end
-
   end
 end

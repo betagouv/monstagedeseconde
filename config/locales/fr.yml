@@ -155,6 +155,35 @@ fr:
         current_approved_internship_applications_count: Candidatures acceptées
         full_address: "Adresse de l'établissement"
         full_weeks: Semaines
+      internship_occupation: &internship_occupations_fields
+        title: Intitulé
+        description: Description
+        street: Adresse
+        zipcode: Code postal
+        city: Commune
+        coordinates: Coordonnées GPS
+        department: Département
+        internship_address_manual_enter: modalité de saisie de l'adresse
+      entreprise: &entreprises_fields
+        siret: Siret
+        is_public: Secteur public/privé
+        employer_name: Nom de l'employeur(issu du siret)
+        employer_chosen_name: Nom de l'employeur
+        entreprise_coordinates: Coordonnées GPS de l'entreprise
+        entreprise_full_address: Adresse de l'entreprise
+        tutor_first_name: Prénom du tuteur
+        tutor_last_name: Nom du tuteur
+        tutor_email: Email du tuteur
+        tutor_phone: Téléphone du tuteur
+        tutor_function: Fonction du tuteur
+        internship_occupation: Métiers observés et localisation du stage
+      planning: &planning_fields
+        max_candidates: Nbr. max de candidats accueillis sur le stage
+        daily_hours: Horaires journaliers
+        daily_lunch_break: Pause déjeuner par jour
+        weekly_lunch_break: Pause déjeuner
+        weekly_hours: Horaires
+        max_students_per_group: Nbr. max d'élèves par groupe
       organisation: &organisation_fields
         employer_name: Employeur
         employer_description: Description de l'employeur
@@ -332,6 +361,9 @@ fr:
         <<: *organisation_fields
         <<: *internship_offer_info_fields
         <<: *tutor_fields
+        <<: *internship_occupations_fields
+        <<: *entreprises_fields
+        <<: *planning_fields
 
         id: Identifiant unique de l'offre
         internship_offer_weeks: Semaines ouvertes aux stages
@@ -393,6 +425,16 @@ fr:
         period: Période de stage
         organisation:
           group: Groupe ou institution de tutelle
+
+        internship_occupation: Métiers observés et localisation du stage
+          # title: Intitulé
+          # description: Description
+          # street: Adresse
+          # zipcode: Code postal
+          # city: Commune
+          # coordinates: Coordonnées GPS
+          # department: Département
+          # internship_address_manual_enter: modalité de saisie de l'adresse
       internship_offers/weekly_framed:
         contact_phone: Votre numéro de téléphone de correspondance
 
@@ -418,7 +460,6 @@ fr:
       internship_applications/weekly_framed:
         student_phone: Contact téléphone
         student_email: Contact email
-
 
       invitation:
         email: Email
