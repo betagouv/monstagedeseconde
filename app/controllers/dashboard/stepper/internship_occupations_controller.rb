@@ -40,7 +40,7 @@ module Dashboard::Stepper
       authorize! :update, @internship_occupation
 
       if @internship_occupation.update(internship_occupation_params)
-        if params[:entreprise_id].present? && Entreprise.find(params[:entreprise_id])
+        if params[:entreprise_id].present? && Entreprise.find_by(id: params[:entreprise_id])
           redirect_to edit_dashboard_stepper_entreprise_path(
             internship_occupation_id: @internship_occupation.id,
             entreprise_id: params[:entreprise_id],
@@ -51,6 +51,7 @@ module Dashboard::Stepper
           redirect_to new_dashboard_stepper_entreprise_path(internship_occupation_id: @internship_occupation.id)
         end
       else
+        log_error
         render :new, status: :bad_request
       end
     end
@@ -68,8 +69,8 @@ module Dashboard::Stepper
               :internship_address_manual_enter,
               :autocomplete,
               :employer_id,
-              coordinates: [:latitude, :longitude]
-            ).merge(employer_id: current_user.id)
+              coordinates: %i[latitude longitude]
+            )
     end
 
     def clean_params
