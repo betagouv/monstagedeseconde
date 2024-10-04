@@ -52,6 +52,7 @@ module Dashboard
             @received_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::RECEIVED_STATES)
             @approved_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::APPROVED_STATES)
             @rejected_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::REJECTED_STATES)
+            @expired_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::EXPIRED_STATES)
           end
         end
       end

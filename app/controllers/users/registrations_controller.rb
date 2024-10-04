@@ -28,13 +28,16 @@ module Users
     alias confirmation_phone_standby confirmation_standby
 
     def resource_class
-      UserManager.new.by_params(params: params)
+      UserManager.new.by_params(params:)
     rescue KeyError
       User
     end
 
     # GET /resource/sign_up
     def new
+      if params[:as] == 'Employer'
+        @captcha_image, @captcha_uuid = Services::Captcha.generate
+      end
       @resource_channel = resource_channel
       options = {}
       if params.dig(:user, :targeted_offer_id)
@@ -43,7 +46,7 @@ module Users
         )
       end
 
-      if UserManager.new.valid?(params: params)
+      if UserManager.new.valid?(params:)
         super do |resource|
           resource = set_default_resource(resource, params)
           @current_ability = Ability.new(resource)
@@ -59,10 +62,15 @@ module Users
 
     # POST /resource
     def create
-      [:honey_pot_checking,
-       :phone_reuse_checking].each do |check|
-          check_proc = send(check, params)
-          (check_proc.call and return) if check_proc.respond_to?(:call)
+      if params[:as] == 'Employer' && !check_captcha(params[:user][:captcha], params[:user][:captcha_uuid])
+        flash[:alert] = I18n.t('devise.registrations.captcha_error')
+        redirect_to_register_page(params[:as])
+        return
+      end
+      %i[honey_pot_checking
+         phone_reuse_checking].each do |check|
+        check_proc = send(check, params)
+        (check_proc.call and return) if check_proc.respond_to?(:call)
       end
       params[:user].delete(:confirmation_email) if params.dig(:user, :confirmation_email)
       params[:user] = merge_identity(params) if params.dig(:user, :identity_token)
@@ -155,6 +163,7 @@ module Users
           department
           academy_id
           academy_region_id
+          grade
         ]
       )
     end
@@ -173,7 +182,7 @@ module Users
     def after_inactive_sign_up_path_for(resource)
       if resource.phone.present? && resource.student?
         options = { id: resource.id }
-        options = options.merge({ as: 'Student'}) if resource.student?
+        options = options.merge({ as: 'Student' }) if resource.student?
         users_registrations_phone_standby_path(options)
       elsif resource.statistician?
         statistician_standby_path(id: resource.id)
@@ -208,34 +217,34 @@ module Users
       identity = Identity.find_by_token(params[:user][:identity_token])
 
       params[:user].merge({
-        first_name: identity.first_name,
-        last_name: identity.last_name,
-        birth_date: identity.birth_date,
-        school_id: identity.school_id,
-        class_room_id: identity.class_room_id,
-        gender: identity.gender
-      })
+                            first_name: identity.first_name,
+                            last_name: identity.last_name,
+                            birth_date: identity.birth_date,
+                            school_id: identity.school_id,
+                            class_room_id: identity.class_room_id,
+                            gender: identity.gender,
+                            grade: identity.grade
+                          })
     end
 
-
     def honey_pot_checking(params)
-      if params[:user][:confirmation_email].present?
-        notice = "Votre inscription a bien été prise en compte. " \
-                 "Vous recevrez un email de confirmation dans " \
-                 "les prochaines minutes."
-        lambda { redirect_to(root_path, flash: { notice: notice }) }
-      end
+      return unless params[:user][:confirmation_email].present?
+
+      notice = 'Votre inscription a bien été prise en compte. ' \
+               'Vous recevrez un email de confirmation dans ' \
+               'les prochaines minutes.'
+      -> { redirect_to(root_path, flash: { notice: }) }
     end
 
     def phone_reuse_checking(params)
-      if params && params.dig(:user, :phone) && fetch_user_by_phone && @user
-        lambda {
-          redirect_to(
-            new_user_session_path(phone: fetch_user_by_phone.phone),
-            flash: { danger: I18n.t('devise.registrations.reusing_phone_number')}
-          )
-        }
-      end
+      return unless params && params.dig(:user, :phone) && fetch_user_by_phone && @user
+
+      lambda {
+        redirect_to(
+          new_user_session_path(phone: fetch_user_by_phone.phone),
+          flash: { danger: I18n.t('devise.registrations.reusing_phone_number') }
+        )
+      }
     end
 
     def register_student_path(resource)
@@ -248,6 +257,19 @@ module Users
         users_registrations_phone_standby_path(options)
       else
         users_registrations_standby_path(id: resource.id)
+      end
+    end
+
+    def check_captcha(captcha, captcha_uuid)
+      puts 'verify captcha'
+      Services::Captcha.verify(captcha, captcha_uuid)
+    end
+
+    def redirect_to_register_page(resource)
+      if resource == 'Student'
+        redirect_to new_user_identity_path(as: params[:as])
+      else
+        redirect_to new_user_registration_path(as: params[:as])
       end
     end
   end

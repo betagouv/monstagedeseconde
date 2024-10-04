@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 FactoryBot.define do
   sequence(:phone) do |n|
-    n.even? ? "+330637#{n.to_s.rjust(6,"0")}" :  "+2620612#{n.to_s.rjust(6,"0")}"
+    n.even? ? "+330637#{n.to_s.rjust(6, '0')}" : "+2620612#{n.to_s.rjust(6, '0')}"
   end
   factory :user do
     first_name { FFaker::NameFR.first_name.capitalize }
@@ -15,20 +16,22 @@ FactoryBot.define do
     phone_token_validity { nil }
     phone_password_reset_count { 0 }
     last_phone_password_reset { 10.days.ago }
+    grade { nil }
 
     # Student
     factory :student, class: 'Users::Student', parent: :user do
       type { 'Users::Student' }
 
-      first_name { FFaker::NameFR.first_name.capitalize  }
+      first_name { FFaker::NameFR.first_name.capitalize }
       last_name { FFaker::NameFR.last_name.capitalize }
-      gender { ['m','f'].shuffle.first }
+      gender { %w[m f].sample }
       birth_date { 14.years.ago }
       school { create(:school, :with_school_manager) }
       address { FFaker::AddressFR.full_address }
       legal_representative_email { FFaker::Internet.email }
       legal_representative_full_name { FFaker::NameFR.name }
       legal_representative_phone { generate(:phone) }
+      grade { '3e' }
 
       trait :male do
         gender { 'm' }
@@ -56,7 +59,7 @@ FactoryBot.define do
       end
 
       factory :student_with_class_room_3e, class: 'Users::Student', parent: :student do
-        class_room { create(:class_room, school: school) }
+        class_room { create(:class_room, school:) }
         after(:create) do |student|
           create(:main_teacher, class_room: student.class_room, school: student.school)
         end
@@ -72,7 +75,7 @@ FactoryBot.define do
 
       after(:create) do |employer|
         unless employer.current_area
-          new_area = create(:internship_offer_area, employer: employer)
+          new_area = create(:internship_offer_area, employer:)
           employer.current_area = new_area
           employer.save
         end
@@ -88,7 +91,7 @@ FactoryBot.define do
       type { 'Users::SchoolManagement' }
       role { Users::SchoolManagement.roles[:school_manager] }
 
-      sequence(:email) { |n| "ce.#{"%07d" % n}#{('a'..'z').to_a.sample}@#{school.email_domain_name}" }
+      sequence(:email) { |n| "ce.#{'%07d' % n}#{('a'..'z').to_a.sample}@#{school.email_domain_name}" }
     end
 
     factory :main_teacher, class: 'Users::SchoolManagement', parent: :user do
@@ -152,7 +155,7 @@ FactoryBot.define do
       statistician_validation { true }
       after(:create) do |employer|
         unless employer.current_area
-          new_area = create(:internship_offer_area, employer: employer)
+          new_area = create(:internship_offer_area, employer:)
           employer.current_area = new_area
           employer.save
         end
@@ -168,7 +171,7 @@ FactoryBot.define do
       department { '60' }
       after(:create) do |employer|
         unless employer.current_area
-          new_area = create(:internship_offer_area, employer: employer)
+          new_area = create(:internship_offer_area, employer:)
           employer.current_area = new_area
           employer.save
         end
@@ -184,7 +187,7 @@ FactoryBot.define do
       groups { [create(:group, is_public: true), create(:group, is_public: true)] }
       after(:create) do |employer|
         unless employer.current_area
-          new_area = create(:internship_offer_area, employer: employer)
+          new_area = create(:internship_offer_area, employer:)
           employer.current_area = new_area
           employer.save
         end
@@ -224,20 +227,19 @@ FactoryBot.define do
       end
       after(:create) do |employer|
         unless employer.current_area
-          new_area = create(:internship_offer_area, employer: employer)
+          new_area = create(:internship_offer_area, employer:)
           employer.current_area = new_area
           employer.save
         end
       end
     end
 
-
     #
     # Users::Student specific traits
     #
     # traits to create a student[with a school] having a specific class_rooms
     trait :troisieme_generale do
-      class_room { build(:class_room, school: school) }
+      class_room { build(:class_room, school:) }
     end
   end
 end

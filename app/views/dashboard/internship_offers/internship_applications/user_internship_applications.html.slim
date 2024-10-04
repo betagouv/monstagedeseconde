@@ -35,6 +35,12 @@
                                                                  aria-selected="#{ selected_tab.in?(%w[reject! cancel_by_employer! cancel_by_student!])}"
                                                                  aria-controls="tabpanel-refused-panel"]
           | Refusées
+      li
+        button#tabpanel-expired.fr-tabs__tab.fr-tabs__tab--icon-left[tabindex="-1"
+                                                                 role="tab"
+                                                                 aria-selected="#{ selected_tab.in?(%w[reject! cancel_by_employer! cancel_by_student!])}"
+                                                                 aria-controls="tabpanel-expired-panel"]
+          | Expirées
 
     #tabpanel-received-panel.fr-tabs__panel.fr-tabs__panel--selected[role="tabpanel"
                                                                 aria-labelledby="tabpanel-received"
@@ -53,3 +59,8 @@
                                        tabindex="0"]
       = render 'dashboard/internship_offers/internship_applications/rejected',
                internship_applications: @rejected_internship_applications
+    #tabpanel-expired-panel.fr-tabs__panel[role="tabpanel"
+                                       aria-labelledby="tabpanel-expired"
+                                       tabindex="0"]
+      = render 'dashboard/internship_offers/internship_applications/expired',
+               internship_applications: @expired_internship_applications
