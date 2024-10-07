@@ -67,7 +67,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     fill_in 'Adresse électronique', with: new_email
     fill_in 'Mot de passe', with: new_email_password
     click_button 'Se connecter'
-    find('.h4 .strong', text: 'Les offres de stage')
+    find('.h4 .strong', text: 'Rechercher un stage de 3ème')
     assert_select '#alert-text', count: 0
   end
 

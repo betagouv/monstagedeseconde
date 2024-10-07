@@ -50,6 +50,20 @@ module InternshipOffersHelper
     end
   end
 
+  def internship_offer_results_title(user)
+    return "Rechercher un stage d'observation" unless user.is_a?(Users::Student)
+    case user.grade
+    when 'quatrieme'
+      "Rechercher un stage de 4ème"
+    when 'troisieme'
+      "Rechercher un stage de 3ème"
+    when 'seconde'
+      "Rechercher un stage de seconde"
+    else
+      "Rechercher un stage d'observation"
+    end
+  end
+
   def operator_name(internship_offer)
     internship_offer.employer.operator.name
   end

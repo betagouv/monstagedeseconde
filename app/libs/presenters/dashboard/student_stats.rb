@@ -28,11 +28,11 @@ module Presenters
       end
 
       def applications_best_status
-        states_hash= {
-          must_apply: {color: 'warning', label: 'doit faire des candidatures'},
+        states_hash = {
+          must_apply: { color: 'warning', label: 'doit faire des candidatures' },
           expired: { color: 'error ', label: 'candidature expirée' },
-          canceled: { color: 'error', label: "candidature annulée par l'élève"},
-          rejected: { color: 'error', label: 'candidature refusée' },
+          canceled: { color: 'error', label: "candidature annulée par l'élève" },
+          rejected: { color: 'error', label: 'candidature non retenue' },
           waiting: { color: 'info', label: 'en attente de réponse' },
           validated: { color: 'new', label: "confirmer la venue dans l'entreprise" },
           approved: { color: 'success', label: 'stage accepté' }
@@ -41,19 +41,19 @@ module Presenters
         return states_hash[:must_apply] if applications.empty?
 
         case ::InternshipApplication.best_state(applications)
-        when "drafted"
+        when 'drafted'
           states_hash[:must_apply]
-        when "expired"
+        when 'expired'
           states_hash[:expired]
-        when "canceled_by_student", "canceled_by_student_confirmation"
+        when 'canceled_by_student', 'canceled_by_student_confirmation'
           states_hash[:canceled]
-        when "rejected", "expired_by_student", "canceled_by_employer"
+        when 'rejected', 'expired_by_student', 'canceled_by_employer'
           states_hash[:rejected]
-        when "submitted", "read_by_employer", "transfered"
+        when 'submitted', 'read_by_employer', 'transfered'
           states_hash[:waiting]
-        when "validated_by_employer"
+        when 'validated_by_employer'
           states_hash[:validated]
-        when "approved"
+        when 'approved'
           states_hash[:approved]
         else
           states_hash[:must_apply]
@@ -80,6 +80,7 @@ module Presenters
       private
 
       attr_reader :student
+
       def initialize(student:)
         @student = student
       end

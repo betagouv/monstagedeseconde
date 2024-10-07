@@ -3,13 +3,16 @@
 require 'test_helper'
 
 class SchoolManagerRegistrationsTest < ActionDispatch::IntegrationTest
+  include ThirdPartyTestHelpers
   test 'GET new as a SchoolManager' do
-    get new_user_registration_path(as: 'SchoolManagement')
+    captcha_stub do
+      get new_user_registration_path(as: 'SchoolManagement')
 
-    assert_response :success
-    assert_select 'title', "Inscription | Stages de 2de"
-    assert_select 'input', value: 'SchoolManagement', hidden: 'hidden'
-    assert_select 'label', /J'accepte les/
+      assert_response :success
+      assert_select 'title', 'Inscription | Stages de 2de'
+      assert_select 'input', value: 'SchoolManagement', hidden: 'hidden'
+      assert_select 'label', /J'accepte les/
+    end
   end
 
   test 'POST create School Manager responds with success' do
@@ -41,7 +44,7 @@ class SchoolManagerRegistrationsTest < ActionDispatch::IntegrationTest
                                                     phone_prefix: '+33',
                                                     phone_suffix: '0602030405',
                                                     role: :school_manager,
-                                                    type: 'Users::SchoolManagement' }})
+                                                    type: 'Users::SchoolManagement' } })
       assert_response :success
     end
   end
