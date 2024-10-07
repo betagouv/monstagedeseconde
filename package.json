@@ -39,7 +39,7 @@
     "react-leaflet": "^4.0.0",
     "react-leaflet-cluster": "^2.0.0",
     "react-on-rails": "14.0.5",
-    "react-phone-input-2": "mfo/react-phone-input-2",
+    "react-phone-input-2": "https://github.com/mfo/react-phone-input-2.git",
     "regenerator-runtime": "^0.14.1",
     "signature_pad": "^5.0.3",
     "stimulus": "3.2.2",
