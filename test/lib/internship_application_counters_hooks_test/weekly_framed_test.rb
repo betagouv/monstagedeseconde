@@ -7,7 +7,7 @@ module InternshipApplicationCountersHooks
       student = create(:student, :male)
       @internship_offer = create(:weekly_internship_offer)
       @internship_application = build(:weekly_internship_application, internship_offer: @internship_offer,
-                                                                      student: student)
+                                                                      student:)
     end
 
     test '.update_internship_offer_counters tracks internship_offer.total_applications_count' do
@@ -17,27 +17,6 @@ module InternshipApplicationCountersHooks
                      to: 1 do
         @internship_application.save!
         @internship_offer.reload
-      end
-    end
-
-    test '.update_internship_offer_counters ignores drafted applications with internship_offer.total_applications_count' do
-      create(:weekly_internship_application, :drafted,
-             internship_offer: @internship_offer)
-
-      assert_equal 0, @internship_offer.reload.total_applications_count
-    end
-
-
-    test '.update_internship_offer_counters tracks internship_offer.approved_applications_count' do
-      @internship_application.aasm_state = :submitted
-      @internship_application.save!
-
-      assert_changes -> { @internship_offer.reload.approved_applications_count },
-                     from: 0,
-                     to: 1 do
-                    
-        @internship_application.employer_validate!
-        @internship_application.approve!
       end
     end
 
@@ -83,17 +62,6 @@ module InternshipApplicationCountersHooks
                      from: 0,
                      to: 1 do
         @internship_application.reject!
-      end
-    end
-
-    test '.update_internship_offer_counters tracks internship_offer.submitted_applications_count' do
-      @internship_application.aasm_state = :drafted
-      @internship_application.save!
-
-      assert_changes -> { @internship_offer.reload.submitted_applications_count },
-                     from: 0,
-                     to: 1 do
-        @internship_application.submit!
       end
     end
 

@@ -41,8 +41,6 @@ module Presenters
         return states_hash[:must_apply] if applications.empty?
 
         case ::InternshipApplication.best_state(applications)
-        when 'drafted'
-          states_hash[:must_apply]
         when 'expired'
           states_hash[:expired]
         when 'canceled_by_student', 'canceled_by_student_confirmation'

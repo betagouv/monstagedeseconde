@@ -10,12 +10,9 @@ export default class extends Controller {
     minimumLength: Number
   }
 
-  // use it with copying the following line in the html file:
-  // --------------------------
-  // data-controller="mandatory-fields" data-mandatory-fields-minimum-length-value="3"
-  // --------------------------
-  // input[ data-mandatory-fields-target="mandatoryField"
-  //        data-action="input->mandatory-fields#fieldChange"]
+  connect() {
+    this.checkFields()
+  }
   // or
   // data: { action: "input->mandatory-fields#fieldChange",
   //         :'mandatory-fields-target' => "mandatoryField"}
@@ -23,6 +20,11 @@ export default class extends Controller {
   // input data-mandatory-fields-target="disabledField"
   // or
   // data: { :'mandatory-fields-target' => "disabledField"}
+
+  checkFields() {
+    const allFieldsFilled = this.mandatoryFieldTargets.every(field => field.value.length >= this.minimumLengthValue)
+    this.disabledFieldTarget.disabled = !allFieldsFilled
+  }
 
   fieldChange(event){
     this.checkValidation();
@@ -47,6 +49,11 @@ export default class extends Controller {
     });
   }
 
+  checkFields() {
+    const allFieldsFilled = this.mandatoryFieldTargets.every(field => field.value.length >= this.minimumLengthValue)
+    this.disabledFieldTarget.disabled = !allFieldsFilled
+  }
+
   checkValidation(){
     if(this.areAllMandatoryFieldsFilled()){
       this.setDisabledFieldsTo('enabled');
@@ -57,5 +64,22 @@ export default class extends Controller {
 
   mandatoryFieldTargetConnected(){
     this.checkValidation();
+  }
+
+  openConfirmModal(event) {
+    event.preventDefault()
+    const modal = document.getElementById('confirmModal')
+    modal.classList.add('fr-modal--opened')
+  }
+
+  closeConfirmModal() {
+    const modal = document.getElementById('confirmModal')
+    modal.classList.remove('fr-modal--opened')
+    modal.removeAttribute('aria-modal')
+  }
+
+  submitForm() {
+    const form = document.getElementById('new_internship_application')
+    form.submit()
   }
 }
