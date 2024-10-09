@@ -35,6 +35,9 @@ jobs: # a collection of steps
           yarn-version: '1.22.22'
           node-version: '18.17.1'
       - run:
+          name: Allow yarn to be updated
+          command: yarn policies set-version 1.22.22
+      - run:
           name: get missing parts for chrome
           command: |
             wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
