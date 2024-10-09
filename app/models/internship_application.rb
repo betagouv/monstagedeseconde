@@ -176,6 +176,8 @@ class InternshipApplication < ApplicationRecord
     yield.deliver_later(wait: 1.second)
   end
 
+  has_many :state_changes, class_name: 'InternshipApplicationStateChange'
+
   aasm do
     state :drafted, initial: true
     state :submitted,
@@ -193,15 +195,14 @@ class InternshipApplication < ApplicationRecord
     event :submit do
       transitions from: :drafted,
                   to: :submitted,
-                  after: proc { |*_args|
+                  after: proc { |author, metadata = {}|
                            update!("submitted_at": Time.now.utc)
+                           record_state_change(author, metadata)
                            deliver_later_with_additional_delay do
                              EmployerMailer.internship_application_submitted_email(internship_application: self)
                            end
                            Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
-                           # ReminderReset : tag to use to find commmented jobs for students reminders
                            setSingleApplicationReminderJobs
-                           # ReminderReset : tag to use to find commmented jobs for students reminders
                          }
     end
 
@@ -385,8 +386,10 @@ class InternshipApplication < ApplicationRecord
   def is_re_approvable?
     # false if sutdent is anonymised or student has an approved application
     return false if student.anonymized? || student.internship_applications.where(aasm_state: 'approved').any?
+
     re_approvable_states = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
     return true if re_approvable_states.include?(aasm_state)
+
     false
   end
 
@@ -594,5 +597,58 @@ class InternshipApplication < ApplicationRecord
       legal_representative_phone: student_legal_representative_phone,
       address: student_address
     )
+  end
+
+  def record_state_change(author, metadata = {})
+    state_changes.create!(
+      from_state: aasm.from_state,
+      to_state: aasm.to_state,
+      author:,
+      metadata:
+    )
+  end
+
+  def submit!(author, metadata = {})
+    super(author, metadata)
+  end
+
+  def read!(author, metadata = {})
+    super(author, metadata)
+  end
+
+  def transfer!(author, metadata = {})
+    super(author, metadata)
+  end
+
+  def employer_validate!(author, metadata = {})
+    super(author, metadata)
+  end
+
+  def approve!(author, metadata = {})
+    super(author, metadata)
+  end
+
+  def reject!(author, metadata = {})
+    super(author, metadata)
+  end
+
+  def cancel_by_student_confirmation!(author, metadata = {})
+    super(author, metadata)
+  end
+
+  def cancel_by_employer!(author, metadata = {})
+    super(author, metadata)
+  end
+
+  def cancel_by_student!(author, metadata = {})
+    super(author, metadata)
+  end
+
+  def expire!(author, metadata = {})
+    super(author, metadata)
+  end
+
+  def expire_by_student!(author, metadata = {})
+    super(author, metadata)
   end
 end

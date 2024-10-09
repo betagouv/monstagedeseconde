@@ -16,29 +16,64 @@ FactoryBot.define do
 
     trait :drafted do
       aasm_state { :drafted }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: nil,
+               to_state: 'drafted',
+               author: application.student.full_name)
+      end
     end
 
     trait :submitted do
       aasm_state { :submitted }
       submitted_at { 3.days.ago }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'drafted',
+               to_state: 'submitted',
+               author: application.student.full_name)
+      end
     end
 
     trait :read_by_employer do
       aasm_state { :read_by_employer }
       submitted_at { 3.days.ago }
       read_at { 2.days.ago }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'submitted',
+               to_state: 'read_by_employer',
+               author: application.internship_offer.employer.full_name)
+      end
     end
 
     trait :expired do
       aasm_state { :expired }
       submitted_at { 19.days.ago }
       expired_at { 3.days.ago }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'submitted',
+               to_state: 'expired',
+               author: application.internship_offer.employer.full_name)
+      end
     end
 
     trait :validated_by_employer do
       aasm_state { :validated_by_employer }
       submitted_at { 15.days.ago }
       validated_by_employer_at { 2.days.ago }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'read_by_employer',
+               to_state: 'validated_by_employer',
+               author: application.internship_offer.employer.full_name)
+      end
     end
 
     trait :approved do
@@ -46,8 +81,13 @@ FactoryBot.define do
       submitted_at { 3.days.ago }
       validated_by_employer_at { 2.days.ago }
       approved_at { 1.days.ago }
-      after(:create) do |internship_application|
-        create(:internship_agreement, internship_application:)
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'validated_by_employer',
+               to_state: 'approved',
+               author: application.internship_offer.school.main_teacher.full_name)
+        create(:internship_agreement, internship_application: application)
       end
     end
 
@@ -55,6 +95,13 @@ FactoryBot.define do
       aasm_state { :rejected }
       submitted_at { 3.days.ago }
       rejected_at { 2.days.ago }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'read_by_employer',
+               to_state: 'rejected',
+               author: application.internship_offer.employer.full_name)
+      end
     end
 
     trait :canceled_by_employer do
@@ -62,12 +109,26 @@ FactoryBot.define do
       submitted_at { 3.days.ago }
       rejected_at { 2.days.ago }
       canceled_at { 2.days.ago }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'approved',
+               to_state: 'canceled_by_employer',
+               author: application.internship_offer.employer.full_name)
+      end
     end
 
     trait :canceled_by_student do
       aasm_state { :canceled_by_student }
       submitted_at { 3.days.ago }
       canceled_at { 2.days.ago }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'approved',
+               to_state: 'canceled_by_student',
+               author: application.student.full_name)
+      end
     end
 
     trait :canceled_by_student_confirmation do
@@ -75,11 +136,25 @@ FactoryBot.define do
       submitted_at { 3.days.ago }
       validated_by_employer_at { 2.days.ago }
       approved_at { 1.days.ago }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'approved',
+               to_state: 'canceled_by_student_confirmation',
+               author: application.student.full_name)
+      end
     end
 
     trait :expired_by_student do
       aasm_state { :expired_by_student }
       submitted_at { 3.days.ago }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'approved',
+               to_state: 'expired_by_student',
+               author: application.student.full_name)
+      end
     end
 
     transient do
