@@ -3,16 +3,15 @@ header.bg-cover-image-homepage.container-xl.px-0.everyone
     .row.fr-px-2w
       .col-lg-12.col-md-12.px-0
         .fr-pt-6w
-          h1.fr-h1.blue-france
-            | Un stage du 17 au 28 juin 2024,
+          h1.fr-h3.white
+            | Des stages de qualité dédiés aux élèves
             br
-            | pour les élèves de seconde générale et technologique.
+            | de 4ème, 3ème et 2de générale et technologique.
+          .fr-text.white
+            .row 
+              .col-12.col-md-6
+                | Nullam mauris pellentesque nunc arcu a donec vulputate amet. Urna quis enim curabitur vitae adipiscing quam augue nisi sit. Duis libero at id neque eu in tincidunt et ultrices turpis.
         .d-flex.flex-row.fr-pb-6w.fr-mt-3w
           .blue-france.sub-hero
-            .sub-hero-text
+            .sub-hero-text.hero-cards-container
               = render 'pages/home/everyone/hero_everyone_cards'
-
-          .fr-ml-2w.ml-auto.fr-mb-0.show-stamp-logo.d-none.d-md-block
-            = image_tag asset_pack_path('media/images/homepage/hero-side-stamp.png'),
-                        alt: 'Logo stade de 2de générale et technologique',
-                        class: 'stamp-logo fr-px-2w'

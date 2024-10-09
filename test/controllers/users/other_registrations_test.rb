@@ -3,6 +3,8 @@
 require 'test_helper'
 
 class OtherRegistrationsTest < ActionDispatch::IntegrationTest
+  include ThirdPartyTestHelpers
+
   def assert_other_form_rendered
     assert_select 'input', value: 'SchoolManagement', hidden: 'hidden'
     assert_select 'label', /Adresse électronique/
@@ -11,10 +13,12 @@ class OtherRegistrationsTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET new as a Other renders expected inputs' do
-    get new_user_registration_path(as: 'SchoolManagement')
+    captcha_stub do
+      get new_user_registration_path(as: 'SchoolManagement')
 
-    assert_response :success
-    assert_other_form_rendered
+      assert_response :success
+      assert_other_form_rendered
+    end
   end
 
   test 'POST #create with missing params fails creation' do
@@ -32,7 +36,7 @@ class OtherRegistrationsTest < ActionDispatch::IntegrationTest
 
   test 'POST #create with all params create Other' do
     school = create(:school)
-    create(:school_manager, school: school)
+    create(:school_manager, school:)
     assert_difference('Users::SchoolManagement.other.count', 1) do
       post user_registration_path(params: { user: { email: "cpe@#{school.email_domain_name}",
                                                     password: 'okokok1Max!!',
