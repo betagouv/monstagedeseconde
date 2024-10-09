@@ -33,19 +33,19 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert_equal 3, InternshipApplication.remindable.count
   end
 
-  test 'transition from draft to submit updates submitted_at and sends email to employer' do
-    internship_application = create(:weekly_internship_application, :drafted)
+  test 'creating a new internship application sets submitted_at and sends email to employer' do
     freeze_time do
-      assert_changes -> { internship_application.reload.submitted_at },
-                     from: nil,
-                     to: Time.now.utc do
+      assert_changes -> { InternshipApplication.count }, from: 0, to: 1 do
         mock_mail = Minitest::Mock.new
         mock_mail.expect(:deliver_later, true, [], wait: 1.second)
+
         EmployerMailer.stub :internship_application_submitted_email, mock_mail do
           StudentMailer.stub :internship_application_submitted_email, mock_mail do
-            internship_application.submit!
+            internship_application = create(:weekly_internship_application)
           end
         end
+
+        assert_equal Time.now.utc, InternshipApplication.last.submitted_at
         mock_mail.verify
       end
     end

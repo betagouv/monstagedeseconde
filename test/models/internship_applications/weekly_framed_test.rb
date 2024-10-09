@@ -41,9 +41,6 @@ module InternshipApplications
       assert_equal offer.max_candidates, offer.remaining_seats_count
       application = create(:weekly_internship_application, internship_offer: offer)
       assert_equal offer.max_candidates, offer.remaining_seats_count
-      assert_equal 'drafted', application.aasm_state
-
-      application.submit!
       assert_equal 'submitted', application.aasm_state
       assert_equal offer.max_candidates, offer.reload.remaining_seats_count
 
@@ -65,7 +62,6 @@ module InternshipApplications
         other_favorite = create(:favorite)
         application = create(:weekly_internship_application, internship_offer: offer)
 
-        application.submit!
         assert_equal Favorite.count, 2
 
         application.employer_validate!
@@ -83,7 +79,6 @@ module InternshipApplications
         other_favorite = create(:favorite)
         application = create(:weekly_internship_application, internship_offer: old_offer)
 
-        application.submit!
         assert_equal Favorite.count, 2
 
         application.employer_validate!
