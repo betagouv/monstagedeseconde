@@ -21,7 +21,7 @@ FactoryBot.define do
                internship_application: application,
                from_state: nil,
                to_state: 'drafted',
-               author: application.student.full_name)
+               author: application.student)
       end
     end
 
@@ -33,7 +33,7 @@ FactoryBot.define do
                internship_application: application,
                from_state: 'drafted',
                to_state: 'submitted',
-               author: application.student.full_name)
+               author: application.student)
       end
     end
 
@@ -46,7 +46,7 @@ FactoryBot.define do
                internship_application: application,
                from_state: 'submitted',
                to_state: 'read_by_employer',
-               author: application.internship_offer.employer.full_name)
+               author: application.internship_offer.employer)
       end
     end
 
@@ -59,7 +59,7 @@ FactoryBot.define do
                internship_application: application,
                from_state: 'submitted',
                to_state: 'expired',
-               author: application.internship_offer.employer.full_name)
+               author: application.internship_offer.employer)
       end
     end
 
@@ -72,7 +72,7 @@ FactoryBot.define do
                internship_application: application,
                from_state: 'read_by_employer',
                to_state: 'validated_by_employer',
-               author: application.internship_offer.employer.full_name)
+               author: application.internship_offer.employer)
       end
     end
 
@@ -86,7 +86,7 @@ FactoryBot.define do
                internship_application: application,
                from_state: 'validated_by_employer',
                to_state: 'approved',
-               author: application.internship_offer.school.main_teacher.full_name)
+               author: application.internship_offer.employer)
         create(:internship_agreement, internship_application: application)
       end
     end
@@ -100,7 +100,7 @@ FactoryBot.define do
                internship_application: application,
                from_state: 'read_by_employer',
                to_state: 'rejected',
-               author: application.internship_offer.employer.full_name)
+               author: application.internship_offer.employer)
       end
     end
 
@@ -114,7 +114,7 @@ FactoryBot.define do
                internship_application: application,
                from_state: 'approved',
                to_state: 'canceled_by_employer',
-               author: application.internship_offer.employer.full_name)
+               author: application.internship_offer.employer)
       end
     end
 
@@ -127,7 +127,7 @@ FactoryBot.define do
                internship_application: application,
                from_state: 'approved',
                to_state: 'canceled_by_student',
-               author: application.student.full_name)
+               author: application.student)
       end
     end
 
@@ -141,7 +141,7 @@ FactoryBot.define do
                internship_application: application,
                from_state: 'approved',
                to_state: 'canceled_by_student_confirmation',
-               author: application.student.full_name)
+               author: application.student)
       end
     end
 
@@ -153,7 +153,7 @@ FactoryBot.define do
                internship_application: application,
                from_state: 'approved',
                to_state: 'expired_by_student',
-               author: application.student.full_name)
+               author: application.student)
       end
     end
 
