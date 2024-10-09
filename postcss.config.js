@@ -1,6 +1,8 @@
 module.exports = {
   plugins: [
-    require('postcss-import'),
+    require('postcss-import')({
+      path: ['src/styles'] // Vous pouvez ajuster ce chemin selon votre projet
+    }),
     require('postcss-flexbugs-fixes'),
     require('postcss-preset-env')({
       autoprefixer: {
