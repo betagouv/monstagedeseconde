@@ -88,12 +88,13 @@
       - if @internship_application.is_modifiable?
         .fr-card.fr-px-2w
           .fr-card-body
-            / badge with status
-            .fr-badge.fr-badge--warning.fr-badge--no-icon.fr-my-2w = @internship_application.aasm.human_state
+            - presenter = @internship_application.presenter(current_user)
+            .fr-badge.fr-badge--no-icon.fr-my-2w class="fr-badge--#{presenter.human_state[:badge]}" = @internship_application.aasm.human_state
             h3.h5.fr-mb-2w.fr-mt-2w
-              = "Candidature refusée le #{l((@internship_application.updated_at))}"
+              = "Candidature #{@internship_application.aasm.human_state} le #{l((@internship_application.state_changes.last.created_at))}"
             p.fr-mb-2w
-              = "Par #{current_user.presenter.full_name}"
+              - author = @internship_application.state_changes.last.author
+              = "Par #{author.presenter.full_name}"
             .row.fr-mb-2w.small.fr-px-2w
               .col-1
                 span.fr-icon-arrow-right-line.fr-icon--sm
@@ -107,7 +108,6 @@
           - if @internship_application.is_re_approvable?
             p.fr-callout__text
               | Un email sera envoyé à l’élève lui indiquant que vous souhaitez retenir sa candidature. Il devra ensuite confirmer sa participation au stage.
-            / = button_to "Retenir la candidature", '', metho d: :post, class: "fr-btn fr-btn--sm fr-mt-2w"
             = render "dashboard/internship_offers/internship_applications/action_modal",
               internship_application:@internship_application,
               aasm_target: :employer_validate!,
