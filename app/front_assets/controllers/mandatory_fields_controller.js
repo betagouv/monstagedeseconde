@@ -10,19 +10,20 @@ export default class extends Controller {
     minimumLength: Number
   }
 
-  // use it with copying the following line in the html file:
-  // --------------------------
-  // data-controller="mandatory-fields" data-mandatory-fields-minimum-length-value="3"
-  // --------------------------
-  // input[ data-mandatory-fields-target="mandatoryField"
-  //        data-action="input->mandatory-fields#fieldChange"]
-  // or
-  // data: { action: "input->mandatory-fields#fieldChange",
-  //         :'mandatory-fields-target' => "mandatoryField"}
-  // --------------------------
-  // input data-mandatory-fields-target="disabledField"
-  // or
-  // data: { :'mandatory-fields-target' => "disabledField"}
+  /* use it with copying the following line in the html file:
+  --------------------------
+  data-controller="mandatory-fields" data-mandatory-fields-minimum-length-value="3"
+  --------------------------
+  input [data-mandatory-fields-target="mandatoryField"
+         data-action="input->mandatory-fields#fieldChange"]
+  or
+  data: { action: "input->mandatory-fields#fieldChange",
+          :'mandatory-fields-target' => "mandatoryField"}
+  --------------------------
+  input data-mandatory-fields-target="disabledField"
+  or
+  data: { :'mandatory-fields-target' => "disabledField"}
+  */
 
   fieldChange(event){
     this.checkValidation();
@@ -40,7 +41,6 @@ export default class extends Controller {
 
   // possible values are 'disabled' or 'enabled'
   setDisabledFieldsTo(status){
-
     const disabledFields = this.disabledFieldTargets;
     disabledFields.forEach((field) => {
       field.disabled =  (status === 'disabled') ;
