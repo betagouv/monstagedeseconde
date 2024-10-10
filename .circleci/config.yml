@@ -32,11 +32,8 @@ jobs: # a collection of steps
 
       - node/install:
           install-yarn: true
-          yarn-version: '1.22.22'
+          yarn-version: '1.22.19'
           node-version: '18.17.1'
-      - run:
-          name: Allow yarn to be updated
-          command: yarn policies set-version 1.22.22
       - run:
           name: get missing parts for chrome
           command: |
