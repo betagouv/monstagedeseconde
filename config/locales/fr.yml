@@ -591,6 +591,8 @@ fr:
               blank: "Missing street"
             zipcode:
               blank: "Missing zipcode"
+              invalid: "Zipcode is invalid"
+              required: "Missing zipcode"
             city:
               blank: "Missing city"
             sector:

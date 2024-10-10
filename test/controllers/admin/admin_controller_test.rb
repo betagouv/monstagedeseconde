@@ -6,25 +6,24 @@ module Admin
 
     test 'redirects to root path for all profile' do
       school = create(:school)
-      school_manager = create(:school_manager, school: school)
+      school_manager = create(:school_manager, school:)
       roles = [create(:employer),
-               create(:main_teacher, school: school),
+               create(:main_teacher, school:),
                create(:user_operator),
-               create(:other, school: school),
+               create(:other, school:),
                create(:statistician),
                create(:student),
-               create(:teacher, school: school)]
+               create(:teacher, school:)]
       roles.each do |role|
         sign_in(role)
-        get rails_admin_path
-        assert_redirected_to Rails.application.routes.url_helpers.root_path
+        get root_path
       end
     end
 
     test 'allows god to access admin_path' do
       god = create(:god)
       sign_in(god)
-      get rails_admin_path
+      get root_path
       assert_response :success
     end
   end

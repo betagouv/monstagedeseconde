@@ -20,22 +20,4 @@ class Academy < ApplicationRecord
   def self.get_email_domain(academy)
     Academy.find_by(name: academy).email_domain
   end
-
-  rails_admin do
-    weight 16
-    navigation_label 'Divers'
-
-    list do
-      field :name
-      # field :email_domain
-    end
-    show do
-      field :name
-      # field :email_domain
-    end
-    edit do
-      field :name
-      # field :email_domain
-    end
-  end
 end

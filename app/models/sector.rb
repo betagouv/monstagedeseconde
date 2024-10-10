@@ -58,23 +58,6 @@ class Sector < ApplicationRecord
     "Verre, béton, céramique" => "industrie.svg"
   }
 
-  rails_admin do
-    weight 15
-    navigation_label 'Divers'
-
-    list do
-      field :name
-      field :uuid
-    end
-    show do
-      field :name
-      field :uuid
-    end
-    edit do
-      field :name
-    end
-  end
-
   def cover
     MAPPING_COVER[name] || 'default_sector.svg'
   end

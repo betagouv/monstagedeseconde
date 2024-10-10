@@ -139,13 +139,6 @@ class Week < ApplicationRecord
     year < other_week.year || (year == other_week.year && number < other_week.number)
   end
 
-  rails_admin do
-    export do
-      field :number
-      field :year
-    end
-  end
-
   def consecutive_to?(other_week)
     self.id.to_i == other_week.id.to_i + 1
   end

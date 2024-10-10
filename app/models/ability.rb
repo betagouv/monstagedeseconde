@@ -46,17 +46,15 @@ class Ability
     can %i[read update destroy export], InternshipApplication
     can :manage, InternshipOfferKeyword
     can :manage, Group
-    can :access, :rails_admin   # grant access to rails_admin
     can %i[read update delete discard export], InternshipOffers::Api
-    can :read, :dashboard       # grant access to the dashboard
+    can :read, :dashboard # grant access to the dashboard
     can :read, :kpi # grant access to the dashboard
     can %i[index department_filter], Acl::Reporting do |_acl|
       true
     end
     can %i[index_and_filter], Reporting::InternshipOffer
     can :manage, InternshipAgreement
-    can %i[ switch_user
-            read
+    can %i[ read
             update
             destroy
             export

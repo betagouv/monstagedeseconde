@@ -525,18 +525,6 @@ class InternshipApplication < ApplicationRecord
     emails.compact
   end
 
-  rails_admin do
-    weight 14
-    navigation_label 'Offres'
-
-    list do
-      field :id
-      field :student
-      field :internship_offer
-      field :aasm_state, :state
-    end
-  end
-
   def presenter(user)
     @presenter ||= Presenters::InternshipApplication.new(self, user)
   end

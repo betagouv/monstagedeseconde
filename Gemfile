@@ -43,9 +43,9 @@ gem 'aws-sdk-s3', require: false
 gem 'redis', '~> 4.0'
 
 # admin
-gem 'rails_admin', '~> 3.2.0'
-gem 'rails_admin_aasm'
-gem 'rails_admin-i18n'
+# gem 'rails_admin', '~> 3.2.0'
+# gem 'rails_admin_aasm'
+# gem 'rails_admin-i18n'
 
 # instrumentation
 gem 'geocoder'
