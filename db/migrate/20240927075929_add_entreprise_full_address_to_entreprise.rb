@@ -1,12 +1,11 @@
 class AddEntrepriseFullAddressToEntreprise < ActiveRecord::Migration[7.1]
   def up
+    add_column :entreprises, :entreprise_full_address, :string, null: true, limit: 200
 
-    add_column :entreprises, :entreprise_full_address, :string, null: false, limit: 200
-
-    remove_column :entreprises, :entreprise_street, :string
-    remove_column :entreprises, :entreprise_zipcode, :string
-    remove_column :entreprises, :entreprise_city, :string
-    remove_column :entreprises, :manual_enter, :boolean
+    remove_column :entreprises, :entreprise_street, :string, if_exists: true
+    remove_column :entreprises, :entreprise_zipcode, :string, if_exists: true
+    remove_column :entreprises, :entreprise_city, :string, if_exists: true
+    remove_column :entreprises, :manual_enter, :boolean, if_exists: true
 
     rename_column :entreprises, :chosen_employer_name, :employer_chosen_name
 
@@ -31,11 +30,10 @@ class AddEntrepriseFullAddressToEntreprise < ActiveRecord::Migration[7.1]
     add_column :entreprises, :manual_enter, :boolean
 
     rename_column :entreprises, :employer_chosen_name, :chosen_employer_name
-    
-    remove_column :entreprises, :entreprise_full_address, :string
+
+    remove_column :entreprises, :entreprise_full_address, :string, if_exists: true
 
     remove_reference :entreprises, :sector, foreign_key: true
-    remove_column :entreprises, :updated_entreprise_full_address, :boolean
-
+    remove_column :entreprises, :updated_entreprise_full_address, :boolean, if_exists: true
   end
 end

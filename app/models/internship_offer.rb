@@ -17,13 +17,13 @@ class InternshipOffer < ApplicationRecord
   include Zipcodable
 
   # Legacy now
-  include StepperProxy::InternshipOfferInfo
-  include StepperProxy::Organisation
-  include StepperProxy::HostingInfo
-  include StepperProxy::PracticalInfo
+  # include StepperProxy::InternshipOfferInfo
+  # include StepperProxy::Organisation
+  # include StepperProxy::HostingInfo
+  # include StepperProxy::PracticalInfo
   # New stepper models
   include StepperProxy::InternshipOccupation
-  # include StepperProxy::Entreprise
+  include StepperProxy::Entreprise
   include StepperProxy::Planning
 
   # utils
@@ -38,10 +38,10 @@ class InternshipOffer < ApplicationRecord
                                      foreign_key: 'internship_offer_id'
 
   # Legacy
-  belongs_to :organisation, optional: true
-  belongs_to :internship_offer_info, optional: true
-  belongs_to :hosting_info, optional: true
-  belongs_to :practical_info, optional: true
+  # belongs_to :organisation, optional: true
+  # belongs_to :internship_offer_info, optional: true
+  # belongs_to :hosting_info, optional: true
+  # belongs_to :practical_info, optional: true
   # new stepper models
   belongs_to :internship_occupation, optional: true
   belongs_to :entreprise, optional: true
@@ -55,7 +55,7 @@ class InternshipOffer < ApplicationRecord
   has_many :users_internship_offers_histories, dependent: :destroy
   has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy
 
-  accepts_nested_attributes_for :organisation, allow_destroy: true
+  # accepts_nested_attributes_for :organisation, allow_destroy: true
 
   # Callbacks
   after_initialize :init
@@ -461,15 +461,15 @@ class InternshipOffer < ApplicationRecord
   end
 
   def update_organisation
-    return unless organisation && !organisation.new_record?
+    # nil unless organisation && !organisation.new_record?
 
     # return si aucun changement qui concerne organisation
-    organisation.update_columns(employer_name:) if attribute_changed?(:employer_name)
-    organisation.update_columns(employer_website:) if attribute_changed?(:employer_website)
-    organisation.update_columns(employer_description:) if attribute_changed?(:employer_description)
-    organisation.update_columns(siret:) if attribute_changed?(:siret)
-    organisation.update_columns(group_id:) if attribute_changed?(:group_id)
-    organisation.update_columns(is_public:) if attribute_changed?(:is_public)
+    # organisation.update_columns(employer_name:) if attribute_changed?(:employer_name)
+    # organisation.update_columns(employer_website:) if attribute_changed?(:employer_website)
+    # organisation.update_columns(employer_description:) if attribute_changed?(:employer_description)
+    # organisation.update_columns(siret:) if attribute_changed?(:siret)
+    # organisation.update_columns(group_id:) if attribute_changed?(:group_id)
+    # organisation.update_columns(is_public:) if attribute_changed?(:is_public)
   end
 
   def generate_offer_from_attributes(white_list)
@@ -594,7 +594,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def user_update?
-    user_update == 'true'
+    # user_update == 'true'
   end
 
   protected

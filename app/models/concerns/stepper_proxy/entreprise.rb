@@ -4,7 +4,7 @@ module StepperProxy
 
     included do
       belongs_to :group, optional: true
-      belongs_to :internship_occupation
+
       belongs_to :sector
 
       before_validation :clean_siret

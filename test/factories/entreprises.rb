@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :entreprise do
+    internship_occupation
     siret { FFaker::CompanyFR.siret }
     is_public { true }
     employer_name { FFaker::CompanyFR.name }
@@ -13,6 +14,5 @@ FactoryBot.define do
     tutor_phone { FFaker::PhoneNumberFR.phone_number }
     tutor_function { 'Chef de clinique' }
     sector { build(:sector) }
-    internship_occupation { build(:internship_occupation) }
   end
 end

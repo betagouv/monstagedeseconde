@@ -1,5 +1,6 @@
 class Entreprise < ApplicationRecord
   include StepperProxy::Entreprise
+  belongs_to :internship_occupation
 
   validates :is_public, inclusion: { in: [true, false] }
   validates :siret, length: { is: 14 }
@@ -12,10 +13,10 @@ class Entreprise < ApplicationRecord
             exclusion: { in: [geo_point_factory(latitude: 0, longitude: 0)] }
   validates :tutor_first_name,
             :tutor_last_name,
-            length: { in: 3..60 },
+            length: { maximum: 60 },
             allow_blank: true
   validates :tutor_phone,
-            length: { in: 10..20 },
+            length: { maximum: 20 },
             allow_blank: true
   validates :tutor_email,
             length: { maximum: 80 },

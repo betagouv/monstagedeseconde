@@ -51,7 +51,7 @@ module Dashboard::Stepper
           redirect_to new_dashboard_stepper_entreprise_path(internship_occupation_id: @internship_occupation.id)
         end
       else
-        log_error
+        log_error(controller: self, object: @internship_occupation)
         render :new, status: :bad_request
       end
     end
@@ -77,12 +77,6 @@ module Dashboard::Stepper
       params[:internship_occupation][:street] =
         [params[:internship_occupation][:street],
          params[:internship_occupation][:street_complement]].compact_blank.join(' - ')
-    end
-
-    def log_error
-      Rails.logger.error(
-        "InternshipOccupation creation error: #{@internship_occupation.errors.full_messages.join(', ')}"
-      )
     end
   end
 end

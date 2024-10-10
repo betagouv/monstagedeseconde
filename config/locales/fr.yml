@@ -27,12 +27,18 @@ fr:
       area_notification:
         one: Notification
         other: Notifications
+      entreprise:
+        one: Entreprise ou admindistration
+        other: Entreprises ou administrations
       group:
         one: Groupe
         other: Groupes
       internship_agreement:
         one: Convention
         other: Conventions
+      internship_occupation:
+        one: Métier et localisation
+        other: Métiers et localisations
       internship_offer_area:
         one: Espace
         other: Espaces
@@ -54,6 +60,9 @@ fr:
       operator:
         one: Association
         other: Associations
+      planning:
+        one: Planning
+        other: Plannings
       sector:
         one: Secteur
         other: Secteurs
@@ -405,6 +414,7 @@ fr:
         siren: Code Siren
         permalink: "Lien vers l'association partenaire"
         sector_name: Secteur
+        entreprise: Entreprise ou administration
         full_school: Établissement
         full_weeks: Semaines
         full_week: Semaine
