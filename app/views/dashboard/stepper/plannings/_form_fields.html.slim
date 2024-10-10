@@ -1,0 +1,66 @@
+- if can?(:supply_offers, current_user)
+  div [data-controller='mandatory-fields'
+       data-mandatory-fields-minimum-length-value="2"]
+    .row
+      .col-md-6.order-md-2.order-1.d-none.d-md-block
+        = render 'dashboard/stepper/summary_card'
+      .col-md-6.order-md-1.order-2
+        .row
+          .col-12
+            = form.hidden_field :entreprise_id, value: form.object.entreprise_id
+
+            = form.hidden_field :school_id, value: form.object.school_id
+            = form.hidden_field :max_candidates, value: 10
+            = form.hidden_field :max_students_per_group, value: 2
+            = form.hidden_field :weekly_lunch_break, value: 'test de lunch break'
+
+            - field = :grade_3e4e
+            = render 'inputs/dsfr_checkbox_field',
+              form: form,
+              field: field,
+              title: 'Votre offre sera proposée aux élèves des niveaux suivants :',
+              label: 'Collégiens (4ème et 3ème)',
+              extra_header_classes: 'fr-text--lg font-weight-bold',
+              default_value: true
+
+        .row
+          .col-12
+            - error = form.object.errors[field].any?
+            fieldset#radio-rich-hint [class="fr-fieldset #{error ? 'fr-fieldset--error' : '' }"
+                                      aria-labelledby="radio-rich-hint-legend radio-rich-hint-messages"]
+              legend#radio-rich-hint-legend.fr-fieldset__legend--regular.fr-fieldset__legend.fr-text--lg.font-weight-bold
+                | Sur quelle période proposez-vous ce stage pour les collégiens ?
+                span.fr-hint-text
+              = render 'inputs/dsfr_rich_radio_field',
+                form: form,
+                error: error,
+                field: :all_year_long,
+                label: "Toute l'année",
+                hint: 'Les élèves pourront candidater toute l’année à votre offre.',
+                icon: 'fr-icon-calendar-2-fill',
+                value: true
+              = render 'inputs/dsfr_rich_radio_field',
+                form: form,
+                error: error,
+                field: :all_year_long,
+                label: 'Une ou plusieurs semaines spécifiques',
+                hint: 'Les élèves avec des dates de stages communes pourront candidater.',
+                icon: 'fr-icon-calendar-line',
+                value: false
+
+        .row
+            .col-12
+            .form-group
+              = render partial: "weeks/checkbox_inputs",
+                                locals: {current_weeks: @available_weeks,
+                                        form: form,
+                                        render_employer_components: true,
+                                        label: "Date du stage" }
+
+  - if submit_button
+    .fr-mt-6w
+      = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
+      = button_tag :submit,
+                   class: 'fr-btn',
+                   :'data-mandatory-fileds-target' => "disabledField"  do
+        = "Suivant "
