@@ -1,11 +1,52 @@
-const { environment } = require('@rails/webpacker')
-const webpack = require('webpack')
+const { environment } = require('@rails/webpacker');
+const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // Configuration pour jQuery
 environment.plugins.append('Provide', new webpack.ProvidePlugin({
   $: 'jquery',
   jQuery: 'jquery'
-}))
+}));
+
+// Configuration du loader PostCSS
+const postcssLoader = environment.loaders.get('css').use.find(el => el.loader === 'postcss-loader');
+
+if (postcssLoader) {
+  postcssLoader.options = {
+    postcssOptions: {
+      plugins: [
+        require('autoprefixer'),
+      ]
+    }
+  };
+}
+
+// Configuration du loader SASS
+const sassLoader = environment.loaders.get('sass').use.find(el => el.loader === 'sass-loader');
+
+if (sassLoader) {
+  sassLoader.options = {
+    sourceMap: true // Activer la génération de source map si nécessaire
+  };
+}
+
+// Loader pour les fichiers SCSS
+environment.loaders.append('scss', {
+  test: /\.scss$/,
+  use: [
+    MiniCssExtractPlugin.loader, // Utilisation du loader MiniCssExtractPlugin
+    'css-loader',
+    {
+      loader: 'postcss-loader',
+      options: {
+        postcssOptions: {
+          plugins: [require('autoprefixer')]
+        }
+      }
+    },
+    'sass-loader'
+  ]
+});
 
 // Loader pour les fichiers images, y compris .webp
 environment.loaders.append('images', {
@@ -19,22 +60,19 @@ environment.loaders.append('images', {
       }
     }
   ]
-})
+});
 
 // Loader pour les fichiers CSS et SCSS
 environment.loaders.append('styles', {
   test: /\.(css|scss|sass)$/,
   use: [
-    {
-      loader: 'mini-css-extract-plugin/dist/loader',
-      options: {}
-    },
+    MiniCssExtractPlugin.loader, // Utilisation correcte du loader
     'css-loader',
     'sass-loader'
   ]
-})
+});
 
-// Assure-toi que les loaders sont configurés pour Babel
+// Loader pour Babel
 environment.loaders.append('babel', {
   test: /\.(js|jsx|mjs)$/,
   exclude: /node_modules/,
@@ -44,6 +82,15 @@ environment.loaders.append('babel', {
       presets: ['@babel/preset-env']
     }
   }
-})
+});
 
-module.exports = environment
+// Ajout du plugin MiniCssExtractPlugin
+environment.plugins.append(
+  'MiniCssExtractPlugin',
+  new MiniCssExtractPlugin({
+    filename: '[name].[contenthash].css',
+    chunkFilename: '[id].[contenthash].css'
+  })
+);
+
+module.exports = environment;
