@@ -378,17 +378,4 @@ class InternshipAgreement < ApplicationRecord
       employer: EmployerMailer
     }
   end
-
-  rails_admin do
-    weight 14
-    navigation_label 'Offres'
-
-    list do
-      field :id
-      field :internship_application
-      field :aasm_state
-      field :school_manager_accept_terms
-      field :employer_accept_terms
-    end
-  end
 end

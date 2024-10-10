@@ -1,4 +1,4 @@
-require "active_support/core_ext/integer/time"
+require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -12,6 +12,8 @@ Rails.application.configure do
   # and those relying on copy on write to perform better.
   # Rake tasks automatically ignore this option for performance.
   config.eager_load = true
+
+  config.assets.compile = false
 
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local       = false
@@ -45,7 +47,6 @@ Rails.application.configure do
   # config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  
 
   # Mount Action Cable outside main process or domain
   host_or_default = ENV.fetch('HOST')
@@ -54,7 +55,7 @@ Rails.application.configure do
 
   config.action_cable.mount_path = nil
   config.action_cable.url = "wss://#{host_uri.host}"
-  config.action_cable.allowed_request_origins = [ host_uri.to_s ]
+  config.action_cable.allowed_request_origins = [host_uri.to_s]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
@@ -62,20 +63,20 @@ Rails.application.configure do
 
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new(STDOUT)
-    .tap  { |logger| logger.formatter = ::Logger::Formatter.new }
-    .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
+                                       .tap  { |logger| logger.formatter = ::Logger::Formatter.new }
+                                       .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
 
   # Info include generic and useful information about system operation, but avoids logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII). If you
   # want to log everything, set the level to "debug".
-  config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
+  config.log_level = ENV.fetch('RAILS_LOG_LEVEL', 'info')
 
   # Use a different cache store in production.
   config.cache_store = :redis_cache_store,
-                       { url: ENV.fetch("REDIS_URL") , :'maxmemory-policy' => "allkeys-lfu" }
+                       { url: ENV.fetch('REDIS_URL'), 'maxmemory-policy': 'allkeys-lfu' }
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter = :resque

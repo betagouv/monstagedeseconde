@@ -1,4 +1,4 @@
-require "test_helper"
+require 'test_helper'
 
 class SchoolsControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
@@ -26,18 +26,18 @@ class SchoolsControllerTest < ActionDispatch::IntegrationTest
     god = create(:god)
     sign_in(god)
     create(:department)
-    
+
     school_params = {
       name: 'Victor Hugo',
       code_uai: '1234567X',
-      street:'1 rue de Rivoli',
-      contract_code: "30",
+      street: '1 rue de Rivoli',
+      contract_code: '30',
       is_public: false,
       zipcode: '75001',
       city: 'Paris',
       visible: 1,
       coordinates: {
-        latitude: 48.866667, 
+        latitude: 48.866667,
         longitude: 2.333333
       }
     }
@@ -46,7 +46,7 @@ class SchoolsControllerTest < ActionDispatch::IntegrationTest
       post schools_path(school: school_params)
     end
     school = School.last
-    assert_redirected_to rails_admin_path
+    assert_redirected_to root_path
     assert_equal school.name, 'Victor Hugo'
     assert_equal school.code_uai, '1234567X'
     assert_equal school.street, '1 rue de Rivoli'
@@ -54,5 +54,5 @@ class SchoolsControllerTest < ActionDispatch::IntegrationTest
     assert_equal school.city, 'Paris'
     assert_equal school.visible, true
     assert_equal school.legal_status, 'Privé sous contrat'
-  end 
+  end
 end

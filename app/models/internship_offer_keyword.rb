@@ -34,7 +34,7 @@ class InternshipOfferKeyword < ApplicationRecord
   # - it's curated via ActiveAdmin [searchable]
   scope :search, lambda { |term|
     quoted_term = ActiveRecord::Base.connection.quote_string(term)
-    where('word % :term', term: term)
+    where('word % :term', term:)
       .where(searchable: true)
       .order(Arel.sql("similarity(word, '#{quoted_term}') DESC"))
   }
@@ -43,7 +43,7 @@ class InternshipOfferKeyword < ApplicationRecord
     where('word_nature is null')
       .where(searchable: true)
       .find_each(batch_size: 100) do |keyword|
-      qualify_single_word(keyword: keyword)
+      qualify_single_word(keyword:)
     end
   end
 
@@ -57,24 +57,24 @@ class InternshipOfferKeyword < ApplicationRecord
                                                .join(SEPARATOR)
                                                .truncate(199)
 
-      if natures == '' || all_rejected_natures?(natures: natures)
-        update_keyword(id: keyword.id, natures: natures, searchable: false)
+      if natures == '' || all_rejected_natures?(natures:)
+        update_keyword(id: keyword.id, natures:, searchable: false)
       else
-        update_keyword(id: keyword.id, natures: natures, searchable: true)
+        update_keyword(id: keyword.id, natures:, searchable: true)
       end
     end
   end
 
   def self.make_unsearchable(id:)
-    InternshipOfferKeyword.where(id: id)
+    InternshipOfferKeyword.where(id:)
                           .update(searchable: false)
   end
 
   def self.update_keyword(id:, natures:, searchable:)
-    InternshipOfferKeyword.where(id: id)
+    InternshipOfferKeyword.where(id:)
                           .update(
                             word_nature: natures,
-                            searchable: searchable
+                            searchable:
                           )
   end
 
@@ -82,10 +82,5 @@ class InternshipOfferKeyword < ApplicationRecord
     natures.split(SEPARATOR)
            .difference(REJECTED_NATURES)
            .empty?
-  end
-
-  rails_admin do
-    weight 15
-    navigation_label 'Divers'
   end
 end

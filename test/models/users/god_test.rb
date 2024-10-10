@@ -6,7 +6,7 @@ module Users
     test 'god.after_sign_in_path redirects to rails admin' do
       god = build(:god)
       assert_equal(god.after_sign_in_path,
-                   Rails.application.routes.url_helpers.rails_admin_path)
+                   Rails.application.routes.url_helpers.root_path)
     end
   end
 end
