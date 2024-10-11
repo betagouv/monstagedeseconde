@@ -516,6 +516,9 @@ GEM
     timeout (0.4.1)
     ttfunk (1.8.0)
       bigdecimal (~> 3.1)
+    turbo-rails (2.0.10)
+      actionpack (>= 6.0.0)
+      railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uglifier (4.2.1)
@@ -632,6 +635,7 @@ DEPENDENCIES
   slim-rails
   split
   spring (= 3.0.0)
+  turbo-rails
   tzinfo-data
   uglifier
   validates_zipcode
