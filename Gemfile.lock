@@ -573,7 +573,7 @@ DEPENDENCIES
   aasm
   actionpack (>= 6.1.3.2)
   activerecord-explain-analyze
-  activerecord-postgis-adapter
+  activerecord-postgis-adapter (>= 8.0.1)
   aws-sdk-s3
   bitly
   bootsnap

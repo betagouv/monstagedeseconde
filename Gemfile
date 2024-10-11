@@ -15,8 +15,7 @@ gem 'rake'
 
 # pg extension for geo queries
 # wait for : https://github.com/rgeo/activerecord-postgis-adapter/tree/ar61 to be merge into master
-gem 'activerecord-postgis-adapter'
-'>= 8.0.1'
+gem 'activerecord-postgis-adapter', '>= 8.0.1'
 
 # don't bump until fixed, https://github.com/Casecommons/pg_search/issues/446
 gem 'pg_search', '2.3.2' # pg search for autocomplete
