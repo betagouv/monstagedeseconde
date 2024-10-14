@@ -1,14 +1,15 @@
 # frozen_string_literal: true
+
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
   # ------------------ SCOPE START ------------------
   scope(path_names: { new: 'nouveau', edit: 'modification' }) do
-    authenticate :user, lambda { |u| u.is_a?(Users::God) } do
+    authenticate :user, ->(u) { u.is_a?(Users::God) } do
       mount Sidekiq::Web => '/sidekiq'
-      match "/split" => Split::Dashboard,
-          anchor: false,
-          via: [:get, :post, :delete]
+      match '/split' => Split::Dashboard,
+            anchor: false,
+            via: %i[get post delete]
     end
 
     mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
@@ -28,12 +29,18 @@ Rails.application.routes.draw do
 
     devise_scope :user do
       get 'utilisateurs/choisir_profil', to: 'users/registrations#choose_profile', as: 'users_choose_profile'
-      get '/utilisateurs/inscriptions/en-attente', to: 'users/registrations#confirmation_standby', as: 'users_registrations_standby'
-      get '/utilisateurs/inscriptions/referent-en-attente', to: 'users/registrations#statistician_standby', as: 'statistician_standby'
-      get '/utilisateurs/inscriptions/en-attente-telephone', to: 'users/registrations#confirmation_phone_standby', as: 'users_registrations_phone_standby'
-      post '/utilisateurs/inscriptions/validation-telephone', to: 'users/registrations#phone_validation', as: 'phone_validation'
-      get '/utilisateurs/mot-de-passe/modification-par-telephone', to: 'users/passwords#edit_by_phone', as: 'phone_edit_password'
-      put '/utilisateurs/mot-de-passe/update_by_phone', to: 'users/passwords#update_by_phone', as: 'phone_update_password'
+      get '/utilisateurs/inscriptions/en-attente', to: 'users/registrations#confirmation_standby',
+                                                   as: 'users_registrations_standby'
+      get '/utilisateurs/inscriptions/referent-en-attente', to: 'users/registrations#statistician_standby',
+                                                            as: 'statistician_standby'
+      get '/utilisateurs/inscriptions/en-attente-telephone', to: 'users/registrations#confirmation_phone_standby',
+                                                             as: 'users_registrations_phone_standby'
+      post '/utilisateurs/inscriptions/validation-telephone', to: 'users/registrations#phone_validation',
+                                                              as: 'phone_validation'
+      get '/utilisateurs/mot-de-passe/modification-par-telephone', to: 'users/passwords#edit_by_phone',
+                                                                   as: 'phone_edit_password'
+      put '/utilisateurs/mot-de-passe/update_by_phone', to: 'users/passwords#update_by_phone',
+                                                        as: 'phone_update_password'
       get '/utilisateurs/mot-de-passe/initialisation', to: 'users/passwords#set_up', as: 'set_up_password'
     end
 
@@ -41,7 +48,7 @@ Rails.application.routes.draw do
     resources :url_shrinkers, path: 'c', only: %i[] do
       get :o, on: :member
     end
-    resources :schools, path: 'ecoles',only: %i[new create ]
+    resources :schools, path: 'ecoles', only: %i[new create]
 
     resources :coded_crafts, only: [] do
       collection do
@@ -82,9 +89,9 @@ Rails.application.routes.draw do
 
     resources :favorites, only: %i[create destroy index]
 
-    get '/utilisateurs/transform_input', to: 'users#transform_input' #display
-    get '/utilisateurs/transform', to: 'users#transform_form' #identify and show parameters
-    post '/utilisateurs/transform', to: 'users#transform_user' #transform
+    get '/utilisateurs/transform_input', to: 'users#transform_input' # display
+    get '/utilisateurs/transform', to: 'users#transform_form' # identify and show parameters
+    post '/utilisateurs/transform', to: 'users#transform_user' # transform
 
     get '/utilisateurs/anonymiseur', to: 'users#anonymize_form'
     get '/utilisateurs/identifier', to: 'users#identify_user'
@@ -112,7 +119,7 @@ Rails.application.routes.draw do
       resources :team_member_invitations, path: 'invitation-equipes', only: %i[create index new destroy] do
         patch :join, to: 'team_member_invitations#join', on: :member
       end
-      resources :internship_agreements,  path: 'conventions-de-stage', except: %i[destroy], param: :uuid
+      resources :internship_agreements, path: 'conventions-de-stage', except: %i[destroy], param: :uuid
       resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
         member do
           post 'start_signing'
@@ -123,12 +130,16 @@ Rails.application.routes.draw do
         end
       end
 
+      post 'internship_applications/update_multiple', to: 'internship_applications#update_multiple',
+                                                      as: :update_multiple_internship_applications
+
       resources :schools, path: 'ecoles', only: %i[index edit update show] do
         resources :invitations, only: %i[new create index destroy], module: 'schools'
         get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
         resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
 
-        resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy], module: 'schools' do
+        resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy],
+                                module: 'schools' do
           resources :students, path: 'eleves', only: %i[update index new create], module: 'class_rooms'
         end
         put '/update_students_by_group', to: 'schools/students#update_by_group', module: 'schools'
@@ -137,13 +148,15 @@ Rails.application.routes.draw do
 
       resources :internship_offer_areas, path: 'espaces', except: %i[show] do
         get :filter_by_area, on: :member
-        resources :area_notifications, path: 'notifications-d-espace', only: %i[edit update index], module: 'internship_offer_areas' do
-          patch :flip , on: :member
+        resources :area_notifications, path: 'notifications-d-espace', only: %i[edit update index],
+                                       module: 'internship_offer_areas' do
+          patch :flip, on: :member
         end
       end
 
       resources :internship_offers, path: 'offres-de-stage', except: %i[show] do
-        resources :internship_applications, path: 'candidatures', only: %i[update index show], module: 'internship_offers' do
+        resources :internship_applications, path: 'candidatures', only: %i[update index show],
+                                            module: 'internship_offers' do
           patch :set_to_read, on: :member
           get :school_details, on: :member
         end
@@ -171,7 +184,7 @@ Rails.application.routes.draw do
     # ------------------ DASHBOARD END ------------------
   end
   # ------------------ SCOPE END ------------------
-  
+
   namespace :reporting, path: 'reporting' do
     get '/dashboards', to: 'dashboards#index'
 
@@ -191,7 +204,6 @@ Rails.application.routes.draw do
   patch 'mon-compte', to: 'users#update'
   patch 'account_password', to: 'users#update_password'
   patch 'answer_survey', to: 'users#answer_survey'
-
 
   get '/accessibilite', to: 'pages#accessibilite'
   get '/conditions-d-utilisation', to: 'pages#conditions_d_utilisation'
@@ -219,9 +231,9 @@ Rails.application.routes.draw do
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
 
   # Redirects
-  get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%{id}', status: 302)
+  get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
 
-  root_destination = (ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true') ? 'maintenance_estivale' : 'home'
+  root_destination = ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true' ? 'maintenance_estivale' : 'home'
   root to: "pages##{root_destination}"
 
   get '/400', to: 'errors#bad_request'
