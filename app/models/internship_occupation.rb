@@ -3,6 +3,8 @@ class InternshipOccupation < ApplicationRecord
 
   # for ACL
   belongs_to :employer, class_name: 'User' # , optional: true
+  has_one :entreprise, dependent: :destroy
+  has_one :planning, dependent: :destroy
   has_one :internship_offer, inverse_of: :internship_occupation, dependent: :destroy
 
   # linked via stepper

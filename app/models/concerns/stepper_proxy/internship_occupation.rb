@@ -6,6 +6,9 @@ module StepperProxy
     included do
       include Nearbyable
 
+
+      
+
       validates :title,
                 :description,
                 :street,

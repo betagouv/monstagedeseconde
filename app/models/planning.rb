@@ -7,4 +7,5 @@ class Planning < ApplicationRecord
   belongs_to :entreprise
   # validates :weeks, presence: true
   # validate :enough_weeks
+  # has_one :internship_offer
 end

@@ -2,6 +2,9 @@ class Entreprise < ApplicationRecord
   include StepperProxy::Entreprise
   belongs_to :internship_occupation
 
+  belongs_to :internship_occupation
+  has_one :planning, dependent: :destroy
+
   validates :is_public, inclusion: { in: [true, false] }
   validates :siret, length: { is: 14 }
   validates :entreprise_full_address,
