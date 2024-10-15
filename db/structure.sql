@@ -1,7 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -21,7 +21,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+-- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -35,7 +35,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+-- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -49,7 +49,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+-- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -1485,7 +1485,13 @@ CREATE TABLE public.internship_offers (
     school_year integer DEFAULT 0 NOT NULL,
     internship_occupation_id bigint,
     entreprise_id bigint,
-    planning_id bigint
+    planning_id bigint,
+    employer_chosen_name character varying(250),
+    entreprise_coordinates point,
+    tutor_function character varying(150),
+    tutor_last_name character varying(60),
+    tutor_first_name character varying(60),
+    entreprise_full_address character varying(200)
 );
 
 
@@ -1670,12 +1676,75 @@ ALTER SEQUENCE public.organisations_id_seq OWNED BY public.organisations.id;
 
 
 --
+-- Name: planning_grades; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.planning_grades (
+    id bigint NOT NULL,
+    grade_id bigint NOT NULL,
+    planning_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: planning_grades_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.planning_grades_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: planning_grades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.planning_grades_id_seq OWNED BY public.planning_grades.id;
+
+
+--
+-- Name: planning_weeks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.planning_weeks (
+    id bigint NOT NULL,
+    planning_id bigint NOT NULL,
+    week_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: planning_weeks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.planning_weeks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: planning_weeks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.planning_weeks_id_seq OWNED BY public.planning_weeks.id;
+
+
+--
 -- Name: plannings; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.plannings (
     id bigint NOT NULL,
-    weeks_count integer NOT NULL,
     max_candidates integer DEFAULT 1 NOT NULL,
     max_students_per_group integer DEFAULT 1 NOT NULL,
     remaining_seats_count integer DEFAULT 0,
@@ -2495,6 +2564,20 @@ ALTER TABLE ONLY public.organisations ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: planning_grades id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_grades ALTER COLUMN id SET DEFAULT nextval('public.planning_grades_id_seq'::regclass);
+
+
+--
+-- Name: planning_weeks id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_weeks ALTER COLUMN id SET DEFAULT nextval('public.planning_weeks_id_seq'::regclass);
+
+
+--
 -- Name: plannings id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2886,6 +2969,22 @@ ALTER TABLE ONLY public.operators
 
 ALTER TABLE ONLY public.organisations
     ADD CONSTRAINT organisations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: planning_grades planning_grades_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_grades
+    ADD CONSTRAINT planning_grades_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: planning_weeks planning_weeks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_weeks
+    ADD CONSTRAINT planning_weeks_pkey PRIMARY KEY (id);
 
 
 --
@@ -3604,6 +3703,34 @@ CREATE INDEX index_organisations_on_group_id ON public.organisations USING btree
 
 
 --
+-- Name: index_planning_grades_on_grade_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_planning_grades_on_grade_id ON public.planning_grades USING btree (grade_id);
+
+
+--
+-- Name: index_planning_grades_on_planning_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_planning_grades_on_planning_id ON public.planning_grades USING btree (planning_id);
+
+
+--
+-- Name: index_planning_weeks_on_planning_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_planning_weeks_on_planning_id ON public.planning_weeks USING btree (planning_id);
+
+
+--
+-- Name: index_planning_weeks_on_week_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_planning_weeks_on_week_id ON public.planning_weeks USING btree (week_id);
+
+
+--
 -- Name: index_plannings_on_entreprise_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3967,6 +4094,22 @@ ALTER TABLE ONLY public.internship_offer_grades
 
 
 --
+-- Name: planning_grades fk_rails_30cc61e8d2; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_grades
+    ADD CONSTRAINT fk_rails_30cc61e8d2 FOREIGN KEY (grade_id) REFERENCES public.grades(id);
+
+
+--
+-- Name: planning_weeks fk_rails_31376ce004; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_weeks
+    ADD CONSTRAINT fk_rails_31376ce004 FOREIGN KEY (planning_id) REFERENCES public.plannings(id);
+
+
+--
 -- Name: internship_occupations fk_rails_31384619d4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4135,6 +4278,14 @@ ALTER TABLE ONLY public.internship_applications
 
 
 --
+-- Name: planning_weeks fk_rails_993020ef1f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_weeks
+    ADD CONSTRAINT fk_rails_993020ef1f FOREIGN KEY (week_id) REFERENCES public.weeks(id);
+
+
+--
 -- Name: active_storage_variant_records fk_rails_993965df05; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4287,6 +4438,14 @@ ALTER TABLE ONLY public.internship_offer_info_weeks
 
 
 --
+-- Name: planning_grades fk_rails_eae037a466; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_grades
+    ADD CONSTRAINT fk_rails_eae037a466 FOREIGN KEY (planning_id) REFERENCES public.plannings(id);
+
+
+--
 -- Name: coded_crafts fk_rails_ee4381e499; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4333,7 +4492,9 @@ ALTER TABLE ONLY public.internship_offer_weeks
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20241007100849'),
+('20241010085334'),
+('20241009115015'),
+('20241009091909'),
 ('20241007094016'),
 ('20241007083702'),
 ('20240927075929'),
@@ -4715,4 +4876,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
-

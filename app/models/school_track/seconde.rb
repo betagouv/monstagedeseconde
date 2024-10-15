@@ -1,6 +1,28 @@
 module SchoolTrack
   class Seconde
     # hash computing two last week of june hash with year as key where year starts from 2022 to 2029
+    
+    def self.current_period_data
+      period_collection(school_year: current_year)
+    end
+
+    def self.current_period_labels
+      period_labels(school_year: current_year)
+    end
+
+    def self.current_year
+      SchoolYear::Current.new.year_in_june
+    end
+
+    def self.period_labels(school_year:)
+      period_collection(school_year:).transform_values do |time_frame|
+        prefix = time_frame[:end] - time_frame[:start] > 10 ? '2 semaines' : '1 semaine'
+        "#{prefix} - du #{time_frame[:start]} au #{time_frame[:end]} #{time_frame[:month]} #{time_frame[:year]}"
+      end
+    end
+
+    private
+
     def self.last_june_friday(year:)
       last_day_of_june = Date.new(year, 6, 30)
       wday = last_day_of_june.wday
@@ -28,25 +50,6 @@ module SchoolTrack
         )
       end
       hash
-    end
-
-    def self.period_labels(school_year:)
-      period_collection(school_year:).transform_values do |time_frame|
-        prefix = time_frame[:end] - time_frame[:start] > 10 ? '2 semaines' : '1 semaine'
-        "#{prefix} - du #{time_frame[:start]} au #{time_frame[:end]} #{time_frame[:month]} #{time_frame[:year]}"
-      end
-    end
-
-    def self.current_period_labels
-      period_labels(school_year: current_year)
-    end
-
-    def self.current_year
-      SchoolYear::Current.new.year_in_june
-    end
-
-    def self.current_period_data
-      period_collection(school_year: current_year)
     end
   end
 end

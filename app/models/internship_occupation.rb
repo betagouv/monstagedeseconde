@@ -18,11 +18,14 @@ class InternshipOccupation < ApplicationRecord
     internship_offer.update_from_internship_occupation if internship_offer
   end
 
-  def from_api?
-    false
-  end
+  # def from_api?
+  #   false
+  # end
+
+  def is_fully_editable? = true
 
   def duplicate
+    raise 'boom with duplicate inside internship_occupation'
     dup.tap do |new_internship_occupation|
       new_internship_occupation.employer = employer
       new_internship_occupation.internship_street = internship_street

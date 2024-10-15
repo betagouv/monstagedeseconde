@@ -282,7 +282,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def weeks_count
-    full_time? ? 2 : 1
+    internship_offer_weeks.count
   end
 
   def first_monday
@@ -369,6 +369,7 @@ class InternshipOffer < ApplicationRecord
   def from_api?
     permalink.present?
   end
+  
 
   def init
     self.max_candidates ||= 1

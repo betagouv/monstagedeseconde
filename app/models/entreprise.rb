@@ -43,6 +43,8 @@ class Entreprise < ApplicationRecord
     end
   end
 
+  def is_fully_editable? = true
+
   def presenter
     @presenter ||= Presenters::Entreprise.new(self)
   end
