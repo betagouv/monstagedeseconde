@@ -37,12 +37,6 @@ class InternshipOffer < ApplicationRecord
   has_many :internship_applications, as: :internship_offer,
                                      foreign_key: 'internship_offer_id'
 
-  # Legacy
-  # belongs_to :organisation, optional: true
-  # belongs_to :internship_offer_info, optional: true
-  # belongs_to :hosting_info, optional: true
-  # belongs_to :practical_info, optional: true
-  # new stepper models
   belongs_to :internship_occupation, optional: true
   belongs_to :entreprise, optional: true
   belongs_to :planning, optional: true

@@ -25,9 +25,11 @@ export default function AddressInput({
   const [latitude, setLatitude] = useState(currentLatitude || 0);
   const [longitude, setLongitude] = useState(currentLongitude || 0);
   const [searchResults, setSearchResults] = useState([]);
+  const [detailedFieldsVisibility, setdetailedFieldsVisibility] = useState(false);
   const [queryString, setQueryString] = useState('');
   const [addressFieldsVisibility, setAddressFieldsVisibility] = useState(addressFieldsVisible);
   const [fullAddressDebounced] = useDebounce(fullAddress, 100);
+
 
   const inputChange = (event) => {
     setFullAddress(event.target.value);
@@ -241,12 +243,13 @@ export default function AddressInput({
               type="text"
               name={`${resourceName}[zipcode]`}
               id={`${resourceName}_zipcode`}
-              data-mandatory-fields-target="filledComponent"
+              data-mandatory-fields-target="mandatoryField"
+              data-action="input->mandatory-fields#fieldChange"
               readOnly
             />
           </div>
-        </div>
-        )}
+        </div>)
+        }
     </div>
   );
 }

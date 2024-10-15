@@ -29,6 +29,10 @@ export default class extends Controller {
     this.checkValidation();
   }
 
+  sayHello(){
+    alert('Hello');
+  }
+
   areAllMandatoryFieldsFilled(){
     let allMandatoryFieldsAreFilled = true;
     this.mandatoryFieldTargets.forEach((field) => {
