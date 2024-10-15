@@ -1156,8 +1156,8 @@ ALTER SEQUENCE public.internship_offer_areas_id_seq OWNED BY public.internship_o
 
 CREATE TABLE public.internship_offer_grades (
     id bigint NOT NULL,
-    internship_offer_id bigint NOT NULL,
     grade_id bigint NOT NULL,
+    internship_offer_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
