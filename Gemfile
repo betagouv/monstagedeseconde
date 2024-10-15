@@ -26,14 +26,16 @@ gem 'prawn-table'
 # front end
 gem 'browser'
 gem 'caxlsx_rails'
+# gem 'cssbundling-rails'
 gem 'inline_svg'
+gem 'jsbundling-rails'
+gem 'propshaft'
 gem 'react_on_rails'
 gem 'slim-rails'
 gem 'split', require: 'split/dashboard'
 gem 'turbo-rails'
 gem 'uglifier'
 gem 'view_component'
-gem 'webpacker'
 
 # background jobs
 gem 'redis-namespace' # plug redis queues on same instance for prod/staging

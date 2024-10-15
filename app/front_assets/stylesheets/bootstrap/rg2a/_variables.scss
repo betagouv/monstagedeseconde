@@ -20,9 +20,15 @@ $blue_custom: #160D91;
 $warning_custom: #FCA000;
 $purple_custom: #8E62CA;
 $cyan_custom: #62CAC6;
+@use "sass:color";
+$some-red:#dc3545;
+$some-green: #28a745;
+$red: color.adjust($some-red, $lightness: -10%);
+$green: color.adjust($some-green, $lightness: -10%);
+
 // darken colors based on a11y feed
-$red:     darken(#dc3545, 3); // do not change
-$green:   darken(#28a745, 8); // do not change
+// $red:     darken(#dc3545, 3); // do not change
+// $green:   darken(#28a745, 8); // do not change
 
 $green_lime: rgb(18,199,123);
 $fr-text-with-success: #00A851;

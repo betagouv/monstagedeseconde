@@ -20,9 +20,9 @@
     <%elsif Rails.env.review? %>
       <%= favicon_link_tag asset_pack_path('media/images/favicons/favicon-heroku.png') %>
     <%end%>
-    <%= stylesheet_pack_tag "application.css", media: "all", 'data-turbo-track': "reload" %>
+    <%= stylesheet_link_tag "application.css", media: "all", 'data-turbo-track': "reload" %>
     <%= stylesheet_link_tag "https://unpkg.com/leaflet@1.8.0/dist/leaflet.css", media: "all" %>
-    <%= javascript_pack_tag "application.js", defer: true, 'data-turbo-track': "reload" %>
+    <%= javascript_include_tag *webpack_asset_urls("application", "js"), defer: true, 'data-turbo-track': "reload" %>
     <%= javascript_include_tag "https://unpkg.com/leaflet@1.8.0/dist/leaflet.js", integrity: "sha384-4Dmmo81xejNChaqLOci80VhUcuEAD5pXpCtqtizmdgWEzdETh3zrJvzOhU4T79cN", crossorigin: "anonymous" %>
   </head>
 

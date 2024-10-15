@@ -4,9 +4,10 @@
 // a relevant structure within app/front_assets and only use these pack files to reference
 // that code so it'll be compiled.
 //
-// To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
+// To reference this file, add <%= javascript_include_tag 'application' %> to the appropriate
+
+
 // layout file, like app/views/layouts/application.html.erb
-// rails pollyfills (ie<11), see: https://github.com/rails/webpacker/issues/1963
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 

@@ -11,9 +11,9 @@ html lang="fr"
     meta name="turbo-visit-control" content="reload"
     meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"
     = favicon_link_tag asset_pack_path('media/images/favicon.png')
-    = stylesheet_pack_tag "application.css", media: "all", 'data-turbo-track': "reload"
+    = stylesheet_link_tag(*webpack_asset_urls("application","css"), media: "all", 'data-turbo-track': "reload")
     = stylesheet_link_tag "https://unpkg.com/leaflet@1.8.0/dist/leaflet.css", media: "all"
-    = javascript_pack_tag "application.js", defer: true, 'data-turbo-track': "reload"
+    = javascript_include_tag(*webpack_asset_urls("application","js"), defer: true, 'data-turbo-track': "reload")
     = javascript_include_tag "https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
 
   body class="#{env_class_name} #{body_class_name}"

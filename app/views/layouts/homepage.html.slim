@@ -12,12 +12,14 @@ html lang="fr"
     = action_cable_meta_tag
     title
       = page_title
-    = favicon_link_tag asset_pack_path('media/images/favicon.png') if Rails.env.production?
-    = favicon_link_tag asset_pack_path('media/images/favicons/favicon-review.png') if Rails.env.staging?
-    = favicon_link_tag asset_pack_path('media/images/favicons/favicon-development.png') if Rails.env.development?
-    = favicon_link_tag asset_pack_path('media/images/favicons/favicon-heroku.png') if Rails.env.review?
-    = stylesheet_pack_tag "application.css", 'data-turbo-track': "reload", media: "all"
-    = javascript_pack_tag "application.js", 'data-turbo-track': "reload", defer: true
+    = favicon_link_tag 'favicon.png' if Rails.env.production?
+    = favicon_link_tag 'favicons/favicon-review.png' if Rails.env.staging?
+    / = favicon_link_tag 'favicons/favicon-development.png' if Rails.env.development?
+    - if Rails.env.development?
+      link rel='icon' type='image/png' sizes='16x16' href='/images/favicons/favicon-heroku.png'
+    = favicon_link_tag 'favicons/favicon-heroku.png' if Rails.env.review?
+    = stylesheet_link_tag(*webpack_asset_urls("application","css"), 'data-turbo-track': "reload", media: "all")
+    = javascript_include_tag(*webpack_asset_urls("application","js"), 'data-turbo-track': "reload", defer: true)
   
   body class=(env_class_name + " " + body_class_name)
     a name="top" id="top"

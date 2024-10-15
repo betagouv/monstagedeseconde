@@ -7,8 +7,8 @@
     <%= csp_meta_tag %>
     <%= action_cable_meta_tag %>
     <%= favicon_link_tag asset_pack_path('media/images/favicon.png') %>
-    <%= stylesheet_pack_tag "application.css", 'data-turbo-track': "reload", media: "all" %>
-    <%= javascript_pack_tag "application.js", 'data-turbo-track': "reload", defer: true %>
+    <%= stylesheet_link_tag *webpack_asset_urls("application","css"), 'data-turbo-track': "reload", media: "all" %>
+    <%= javascript_include_tag *webpack_asset_urls("application","js"), 'data-turbo-track': "reload", defer: true %>
   </head>
 
   <body class=''>
