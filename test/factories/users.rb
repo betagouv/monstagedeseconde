@@ -16,7 +16,7 @@ FactoryBot.define do
     phone_token_validity { nil }
     phone_password_reset_count { 0 }
     last_phone_password_reset { 10.days.ago }
-    grade { nil }
+    grade_id { nil }
 
     # Student
     factory :student, class: 'Users::Student', parent: :user do
@@ -27,12 +27,11 @@ FactoryBot.define do
       gender { %w[m f].sample }
       birth_date { 14.years.ago }
       school { create(:school, :with_school_manager) }
-      grade { 'troisieme' }
       address { FFaker::AddressFR.full_address }
       legal_representative_email { FFaker::Internet.email }
       legal_representative_full_name { FFaker::NameFR.name }
       legal_representative_phone { generate(:phone) }
-      grade { '3e' }
+      grade { create(:grade) }
 
       trait :male do
         gender { 'm' }
@@ -53,6 +52,18 @@ FactoryBot.define do
       trait :registered_with_phone do
         email { nil }
         phone
+      end
+
+      trait :quatrieme do
+        grade { create(:grade, :quatrieme) }
+      end
+
+      trait :troisieme do
+        grade { create(:grade, :troisieme) }
+      end
+
+      trait :seconde do
+        grade { create(:grade, :seconde) }
       end
 
       trait :with_phone do

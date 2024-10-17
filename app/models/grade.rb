@@ -16,11 +16,11 @@ class Grade < ApplicationRecord
   has_many :planning_grades, dependent: :destroy
 
   def self.troisieme
-    fetch_by_short_name('troisieme')
+    fetch_by_short_name('troisieme').first
   end
 
   def self.quatrieme
-    fetch_by_short_name('quatrieme')
+    fetch_by_short_name('quatrieme').first
   end
 
   def self.troisieme_et_quatrieme
@@ -28,7 +28,7 @@ class Grade < ApplicationRecord
   end
 
   def self.seconde
-    fetch_by_short_name('seconde')
+    fetch_by_short_name('seconde').first
   end
 
   def school_track

@@ -303,7 +303,7 @@ def populate_grades
                            school_year_end_month: '06', school_year_end_day: '30')
   Grade.find_or_create_by!(short_name: :troisieme, name: 'troisieme générale', school_year_end_month: '05',
                            school_year_end_day: '31')
-  Grade.find_or_create_by!(short_name: :quatrieme, name: 'quatrieme générale et technologique',
+  Grade.find_or_create_by!(short_name: :quatrieme, name: 'quatrieme générale',
                            school_year_end_month: '05', school_year_end_day: '31')
 end
 

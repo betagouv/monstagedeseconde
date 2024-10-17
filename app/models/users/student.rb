@@ -6,6 +6,7 @@ module Users
 
     belongs_to :school, optional: true
     belongs_to :class_room, optional: true
+    belongs_to :grade, optional: true
 
     has_many :internship_applications, dependent: :destroy,
                                        foreign_key: 'user_id' do
