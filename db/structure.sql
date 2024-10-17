@@ -480,7 +480,7 @@ CREATE TABLE public.class_rooms (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     class_size integer,
-    grade character varying(25) DEFAULT 'seconde'::character varying NOT NULL
+    grade_id bigint
 );
 
 
@@ -1481,7 +1481,6 @@ CREATE TABLE public.internship_offers (
     lunch_break text,
     contact_phone character varying(20),
     handicap_accessible boolean DEFAULT false,
-    period integer DEFAULT 0 NOT NULL,
     school_year integer DEFAULT 0 NOT NULL,
     internship_occupation_id bigint,
     entreprise_id bigint,
@@ -2185,7 +2184,7 @@ CREATE TABLE public.users (
     resume_educational_background text,
     resume_other text,
     resume_languages text,
-    grade character varying(100)
+    grade_id bigint
 );
 
 
@@ -3171,6 +3170,13 @@ CREATE INDEX index_area_notifications_on_user_id ON public.area_notifications US
 
 
 --
+-- Name: index_class_rooms_on_grade_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_class_rooms_on_grade_id ON public.class_rooms USING btree (grade_id);
+
+
+--
 -- Name: index_class_rooms_on_school_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3598,13 +3604,6 @@ CREATE INDEX index_internship_offers_on_organisation_id ON public.internship_off
 
 
 --
--- Name: index_internship_offers_on_period; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internship_offers_on_period ON public.internship_offers USING btree (period);
-
-
---
 -- Name: index_internship_offers_on_planning_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3889,6 +3888,13 @@ CREATE INDEX index_users_on_discarded_at ON public.users USING btree (discarded_
 --
 
 CREATE INDEX index_users_on_email ON public.users USING btree (email);
+
+
+--
+-- Name: index_users_on_grade_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_grade_id ON public.users USING btree (grade_id);
 
 
 --
@@ -4198,6 +4204,14 @@ ALTER TABLE ONLY public.internship_offer_infos
 
 
 --
+-- Name: users fk_rails_6bdbc6c887; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_6bdbc6c887 FOREIGN KEY (grade_id) REFERENCES public.grades(id);
+
+
+--
 -- Name: user_groups fk_rails_6d478d2f65; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4486,12 +4500,22 @@ ALTER TABLE ONLY public.internship_offer_weeks
 
 
 --
+-- Name: class_rooms fk_rails_f67c7bff3c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.class_rooms
+    ADD CONSTRAINT fk_rails_f67c7bff3c FOREIGN KEY (grade_id) REFERENCES public.grades(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20241016134457'),
+('20241015085210'),
 ('20241010085334'),
 ('20241009115015'),
 ('20241009091909'),

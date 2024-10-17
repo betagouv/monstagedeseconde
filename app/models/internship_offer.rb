@@ -33,20 +33,29 @@ class InternshipOffer < ApplicationRecord
   attr_accessor :republish
 
   # Other associations
-
   has_many :internship_applications, as: :internship_offer,
                                      foreign_key: 'internship_offer_id'
 
   belongs_to :internship_occupation, optional: true
   belongs_to :entreprise, optional: true
   belongs_to :planning, optional: true
-
   belongs_to :employer, polymorphic: true, optional: true
   belongs_to :internship_offer_area, optional: true, touch: true
 
   has_many :favorites
   has_many :users, through: :favorites
   has_many :users_internship_offers_histories, dependent: :destroy
+  has_many :internship_offer_weeks,
+           dependent: :destroy,
+           foreign_key: :internship_offer_id,
+           inverse_of: :internship_offer
+  has_many :weeks, through: :internship_offer_weeks
+  has_many :internship_grades,
+           dependent: :destroy,
+            foreign_key: :internship_offer_id,
+            inverse_of: :internship_offer
+  has_many :grades, through: :internship_grades
+
   has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy
 
   # accepts_nested_attributes_for :organisation, allow_destroy: true
@@ -369,7 +378,7 @@ class InternshipOffer < ApplicationRecord
   def from_api?
     permalink.present?
   end
-  
+
 
   def init
     self.max_candidates ||= 1
