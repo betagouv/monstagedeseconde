@@ -3,7 +3,7 @@ class CreateInternshipApplicationStateChanges < ActiveRecord::Migration[7.1]
     create_table :internship_application_state_changes do |t|
       t.references :internship_application, null: false, foreign_key: true
       t.references :author, polymorphic: true
-      t.string :from_state, null: false
+      t.string :from_state
       t.string :to_state, null: false
       t.jsonb :metadata, default: {}
       t.timestamps

@@ -932,10 +932,10 @@ ALTER SEQUENCE public.internship_agreements_id_seq OWNED BY public.internship_ag
 CREATE TABLE public.internship_application_state_changes (
     id bigint NOT NULL,
     internship_application_id bigint NOT NULL,
-    from_state character varying NOT NULL,
-    to_state character varying NOT NULL,
     author_type character varying,
     author_id bigint,
+    from_state character varying,
+    to_state character varying NOT NULL,
     metadata jsonb DEFAULT '{}'::jsonb,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL

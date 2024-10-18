@@ -194,15 +194,14 @@ class InternshipApplication < ApplicationRecord
     event :submit do
       transitions from: :drafted,
                   to: :submitted,
-                  after: proc { |author, metadata = {}|
+                  after: proc { |user, metadata = {}|
                            update!("submitted_at": Time.now.utc)
-                           record_state_change(author, metadata)
                            deliver_later_with_additional_delay do
                              EmployerMailer.internship_application_submitted_email(internship_application: self)
                            end
                            Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
                            setSingleApplicationReminderJobs
-                           record_state_change(current_user, {})
+                           record_state_change(user, {})
                          }
     end
 
@@ -236,7 +235,6 @@ class InternshipApplication < ApplicationRecord
                     reload
                     after_employer_validation_notifications
                     CancelValidatedInternshipApplicationJob.set(wait: 15.days).perform_later(internship_application_id: id)
-                    byebug
                     record_state_change(user, {})
                   }
     end
@@ -333,7 +331,7 @@ class InternshipApplication < ApplicationRecord
                            update!(expired_at: Time.now.utc)
                            # notitify_student
                            Triggered::StudentExpiredInternshipApplicationsNotificationJob.perform_later(self)
-                           record_state_change(current_user, {})
+                           record_state_change(user, {})
                          }
     end
 
@@ -620,60 +618,5 @@ class InternshipApplication < ApplicationRecord
       author_type: author.try(:class).try(:name),
       metadata:
     )
-  end
-
-  def submit(author = nil, metadata = {})
-    super()
-    record_state_change(author, metadata)
-  end
-
-  def read(author = nil, metadata = {})
-    super()
-    record_state_change(author, metadata)
-  end
-
-  def transfer(author = nil, metadata = {})
-    super()
-    record_state_change(author, metadata)
-  end
-
-  def employer_validate!(author = nil, metadata = {})
-    super()
-    record_state_change(author, metadata)
-  end
-
-  def approve(author = nil, metadata = {})
-    super()
-    record_state_change(author, metadata)
-  end
-
-  def reject(author = nil, metadata = {})
-    super()
-    record_state_change(author, metadata)
-  end
-
-  def cancel_by_student_confirmation!(author = nil, metadata = {})
-    super()
-    record_state_change(author, metadata)
-  end
-
-  def cancel_by_employer!(author = nil, metadata = {})
-    super()
-    record_state_change(author, metadata)
-  end
-
-  def cancel_by_student!(author = nil, metadata = {})
-    super()
-    record_state_change(author, metadata)
-  end
-
-  def expire!(author = nil, metadata = {})
-    super()
-    record_state_change(author, metadata)
-  end
-
-  def expire_by_student!(author = nil, metadata = {})
-    super()
-    record_state_change(author, metadata)
   end
 end
