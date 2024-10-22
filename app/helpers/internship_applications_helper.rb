@@ -2,7 +2,7 @@
 
 module InternshipApplicationsHelper
   def is_resume_empty?(internship_application)
-      !has_resume_other?(internship_application) &&
+    !has_resume_other?(internship_application) &&
       !has_resume_languages?(internship_application)
   end
 
@@ -21,6 +21,7 @@ module InternshipApplicationsHelper
   def sign_application_modal_id(internship_application)
     "sign-internship-application-#{internship_application.id}-#{internship_application.user_id}"
   end
+
   def show_application_modal_id(internship_application)
     "show-internship-application-#{internship_application.id}-#{internship_application.user_id}"
   end

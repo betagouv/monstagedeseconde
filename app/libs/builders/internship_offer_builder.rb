@@ -139,7 +139,7 @@ module Builders
       {
         sector_id: internship_offer_info.sector_id,
         title: internship_offer_info.title,
-        description_rich_text: (internship_offer_info.description_rich_text.present? ? internship_offer_info.description_rich_text.to_s : internship_offer_info.description),
+        description: internship_offer_info.description,
         type: 'InternshipOfferInfo'
       }
     end

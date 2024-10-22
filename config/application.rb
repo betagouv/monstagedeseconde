@@ -50,6 +50,7 @@ module Monstage
 
     config.middleware.use Rack::Deflater
 
+
     config.exceptions_app = self.routes
 
     config.action_view.form_with_generates_remote_forms = false

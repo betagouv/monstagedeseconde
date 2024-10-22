@@ -33,161 +33,173 @@ module Api
     end
 
     test 'GET #search without params returns all internship_offers available' do
-      user = create(:user_operator, :fully_authorized)
-      offer_1 = create(:weekly_internship_offer, coordinates: Coordinates.tours, city: 'Tours')
-      offer_2 = create(:weekly_internship_offer, coordinates: Coordinates.paris, city: 'Paris')
-      offer_3 = create(:weekly_internship_offer, :unpublished, coordinates: Coordinates.bordeaux, city: 'Bordeaux')
+      travel_to(Date.new(2024, 3, 1)) do
+        user = create(:user_operator, :fully_authorized)
+        offer_1 = create(:weekly_internship_offer, coordinates: Coordinates.tours, city: 'Tours')
+        offer_2 = create(:weekly_internship_offer, coordinates: Coordinates.paris, city: 'Paris')
+        offer_3 = create(:weekly_internship_offer, :unpublished, coordinates: Coordinates.bordeaux, city: 'Bordeaux')
 
-      documents_as(endpoint: :'internship_offers/search', state: :success) do
-        get search_api_internship_offers_path(
-          params: {
-            token: "Bearer #{user.api_token}"
-          }
-        )
+        documents_as(endpoint: :'internship_offers/search', state: :success) do
+          get search_api_internship_offers_path(
+            params: {
+              token: "Bearer #{user.api_token}"
+            }
+          )
 
-        assert_response :success
-        assert_equal 2, json_response['internshipOffers'].count
-        assert_equal 2, json_response['pagination']['totalInternshipOffers']
-        assert_equal 1, json_response['pagination']['totalPages']
-        assert_equal true, json_response['pagination']['isFirstPage']
-        # since api order is id: :desc
-        assert_equal 'Paris', json_response['internshipOffers'][0]['city']
-        assert_equal 'Tours', json_response['internshipOffers'][1]['city']
+          assert_response :success
+          assert_equal 2, json_response['internshipOffers'].count
+          assert_equal 2, json_response['pagination']['totalInternshipOffers']
+          assert_equal 1, json_response['pagination']['totalPages']
+          assert_equal true, json_response['pagination']['isFirstPage']
+          # since api order is id: :desc
+          assert_equal 'Paris', json_response['internshipOffers'][0]['city']
+          assert_equal 'Tours', json_response['internshipOffers'][1]['city']
+        end
       end
     end
 
     test 'GET #search with page params returns the page results' do
       user = create(:user_operator, :fully_authorized)
-      (InternshipOffer::PAGE_SIZE + 1).times { create(:weekly_internship_offer) }
+      travel_to Date.new(2024, 1, 1) do
+        (InternshipOffer::PAGE_SIZE + 1).times { create(:weekly_internship_offer) }
 
-      documents_as(endpoint: :'internship_offers/search', state: :success) do
-        get search_api_internship_offers_path(
-          params: {
-            token: "Bearer #{user.api_token}",
-            page: 2
-          }
-        )
+        documents_as(endpoint: :'internship_offers/search', state: :success) do
+          get search_api_internship_offers_path(
+            params: {
+              token: "Bearer #{user.api_token}",
+              page: 2
+            }
+          )
 
-        assert_response :success
-        assert_equal 1, json_response['internshipOffers'].count
-        assert_equal InternshipOffer::PAGE_SIZE + 1, json_response['pagination']['totalInternshipOffers']
-        assert_equal 2, json_response['pagination']['totalPages']
+          assert_response :success
+          assert_equal 1, json_response['internshipOffers'].count
+          assert_equal InternshipOffer::PAGE_SIZE + 1, json_response['pagination']['totalInternshipOffers']
+          assert_equal 2, json_response['pagination']['totalPages']
+        end
       end
     end
 
     test 'GET #search with big page number params returns empty results' do
-      user = create(:user_operator, :fully_authorized)
-      (InternshipOffer::PAGE_SIZE + 1).times { create(:weekly_internship_offer) }
+      travel_to Date.new(2024, 1, 1) do
+        user = create(:user_operator, :fully_authorized)
+        (InternshipOffer::PAGE_SIZE + 1).times { create(:weekly_internship_offer) }
 
-      documents_as(endpoint: :'internship_offers/search', state: :success) do
-        get search_api_internship_offers_path(
-          params: {
-            token: "Bearer #{user.api_token}",
-            page: 9
-          }
-        )
+        documents_as(endpoint: :'internship_offers/search', state: :success) do
+          get search_api_internship_offers_path(
+            params: {
+              token: "Bearer #{user.api_token}",
+              page: 9
+            }
+          )
 
-        assert_response :success
-        assert_equal 0, json_response['internshipOffers'].count
-        assert_equal InternshipOffer::PAGE_SIZE + 1, json_response['pagination']['totalInternshipOffers']
-        assert_equal 2, json_response['pagination']['totalPages']
+          assert_response :success
+          assert_equal 0, json_response['internshipOffers'].count
+          assert_equal InternshipOffer::PAGE_SIZE + 1, json_response['pagination']['totalInternshipOffers']
+          assert_equal 2, json_response['pagination']['totalPages']
+        end
       end
     end
 
-
-
     test 'GET #search with coordinates params returns all internship_offers available in the city' do
-      user = create(:user_operator, :fully_authorized)
-      offer_1 = create(:weekly_internship_offer, city: 'Bordeaux', coordinates: { latitude: 44.8624, longitude: -0.5848 })
-      offer_2 = create(:weekly_internship_offer)
-      offer_3 = create(:weekly_internship_offer, :unpublished)
+      travel_to(Date.new(2024, 3, 1)) do
+        user = create(:user_operator, :fully_authorized)
+        offer_1 = create(:weekly_internship_offer, city: 'Bordeaux', coordinates: { latitude: 44.8624, longitude: -0.5848 })
+        offer_2 = create(:weekly_internship_offer)
+        offer_3 = create(:weekly_internship_offer, :unpublished)
 
-      documents_as(endpoint: :'internship_offers/search', state: :success) do
-        get search_api_internship_offers_path(
-          params: {
-            token: "Bearer #{user.api_token}",
-            latitude: 44.8624,
-            longitude: -0.5848
-          }
-        )
+        documents_as(endpoint: :'internship_offers/search', state: :success) do
+          get search_api_internship_offers_path(
+            params: {
+              token: "Bearer #{user.api_token}",
+              latitude: 44.8624,
+              longitude: -0.5848
+            }
+          )
 
-        assert_response :success
-        assert_equal 1, json_response['internshipOffers'].count
-        assert_equal 1, json_response['pagination']['totalInternshipOffers']
-        assert_equal 1, json_response['pagination']['totalPages']
-        assert_equal true, json_response['pagination']['isFirstPage']
-        assert_equal offer_1.id, json_response['internshipOffers'][0]['id']
+          assert_response :success
+          assert_equal 1, json_response['internshipOffers'].count
+          assert_equal 1, json_response['pagination']['totalInternshipOffers']
+          assert_equal 1, json_response['pagination']['totalPages']
+          assert_equal true, json_response['pagination']['isFirstPage']
+          assert_equal offer_1.id, json_response['internshipOffers'][0]['id']
+        end
       end
     end
 
     test 'GET #search with coordinates and radius params returns all internship_offers available in the radius' do
-      user = create(:user_operator, :fully_authorized)
-      offer_1 = create(:weekly_internship_offer, city: 'Bordeaux', coordinates: { latitude: 44.8624, longitude: -0.5848 })
-      offer_2 = create(:weekly_internship_offer, city: 'Le Bouscat', coordinates: { latitude: 44.865, longitude: -0.6033 })
-      offer_3 = create(:weekly_internship_offer, :unpublished)
+      travel_to(Date.new(2024, 3, 1)) do
+        user = create(:user_operator, :fully_authorized)
+        offer_1 = create(:weekly_internship_offer, city: 'Bordeaux', coordinates: { latitude: 44.8624, longitude: -0.5848 })
+        offer_2 = create(:weekly_internship_offer, city: 'Le Bouscat', coordinates: { latitude: 44.865, longitude: -0.6033 })
+        offer_3 = create(:weekly_internship_offer, :unpublished)
 
-      documents_as(endpoint: :'internship_offers/search', state: :success) do
-        get search_api_internship_offers_path(
-          params: {
-            token: "Bearer #{user.api_token}",
-            latitude: 44.8624,
-            longitude: -0.5848,
-            radius: 10_000
-          }
-        )
+        documents_as(endpoint: :'internship_offers/search', state: :success) do
+          get search_api_internship_offers_path(
+            params: {
+              token: "Bearer #{user.api_token}",
+              latitude: 44.8624,
+              longitude: -0.5848,
+              radius: 10_000
+            }
+          )
 
-        assert_response :success
-        assert_equal 2, json_response['internshipOffers'].count
-        assert_equal "Bordeaux", json_response['internshipOffers'][0]['city']
-        assert_equal "Le bouscat", json_response['internshipOffers'][1]['city']
+          assert_response :success
+          assert_equal 2, json_response['internshipOffers'].count
+          assert_equal "Bordeaux", json_response['internshipOffers'][0]['city']
+          assert_equal "Le bouscat", json_response['internshipOffers'][1]['city']
+        end
       end
     end
 
     test 'GET #search with coordinates and radius params returns all internship_offers available in the radis' do
-      user = create(:user_operator, :fully_authorized)
-      offer_1 = create(:weekly_internship_offer, city: 'Bordeaux', coordinates: { latitude: 44.8624, longitude: -0.5848 })
-      offer_2 = create(:weekly_internship_offer, city: 'Le Bouscat', coordinates: { latitude: 44.865, longitude: -0.6033 })
-      offer_3 = create(:weekly_internship_offer, :unpublished)
+      travel_to(Date.new(2024, 3, 1)) do
+        user = create(:user_operator, :fully_authorized)
+        offer_1 = create(:weekly_internship_offer, city: 'Bordeaux', coordinates: { latitude: 44.8624, longitude: -0.5848 })
+        offer_2 = create(:weekly_internship_offer, city: 'Le Bouscat', coordinates: { latitude: 44.865, longitude: -0.6033 })
+        offer_3 = create(:weekly_internship_offer, :unpublished)
 
-      documents_as(endpoint: :'internship_offers/search', state: :success) do
-        get search_api_internship_offers_path(
-          params: {
-            token: "Bearer #{user.api_token}",
-            latitude: 44.8624,
-            longitude: -0.5848,
-            radius: 1
-          }
-        )
+        documents_as(endpoint: :'internship_offers/search', state: :success) do
+          get search_api_internship_offers_path(
+            params: {
+              token: "Bearer #{user.api_token}",
+              latitude: 44.8624,
+              longitude: -0.5848,
+              radius: 1
+            }
+          )
 
-        assert_response :success
-        assert_equal 1, json_response['internshipOffers'].count
-        assert_equal offer_1.id, json_response['internshipOffers'][0]['id']
+          assert_response :success
+          assert_equal 1, json_response['internshipOffers'].count
+          assert_equal offer_1.id, json_response['internshipOffers'][0]['id']
+        end
       end
     end
 
     test 'GET #search with keyword params returns all internship_offers available in the radis' do
-      user = create(:user_operator, :fully_authorized)
-      offer_1 = create(:weekly_internship_offer, title: 'Chef de chantier')
-      offer_2 = create(:weekly_internship_offer, title: 'Avocat')
-      offer_3 = create(:weekly_internship_offer, title: 'Cheffe de cuisine')
+      travel_to(Date.new(2024, 3, 1)) do
+        user = create(:user_operator, :fully_authorized)
+        offer_1 = create(:weekly_internship_offer, title: 'Chef de chantier')
+        offer_2 = create(:weekly_internship_offer, title: 'Avocat')
+        offer_3 = create(:weekly_internship_offer, title: 'Cheffe de cuisine')
 
-      documents_as(endpoint: :'internship_offers/search', state: :success) do
-        get search_api_internship_offers_path(
-          params: {
-            token: "Bearer #{user.api_token}",
-            keyword: 'cuisine'
-          }
-        )
+        documents_as(endpoint: :'internship_offers/search', state: :success) do
+          get search_api_internship_offers_path(
+            params: {
+              token: "Bearer #{user.api_token}",
+              keyword: 'cuisine'
+            }
+          )
 
-        assert_response :success
-        assert_equal 1, json_response['internshipOffers'].count
-        assert_equal offer_3.id, json_response['internshipOffers'][0]['id']
+          assert_response :success
+          assert_equal 1, json_response['internshipOffers'].count
+          assert_equal offer_3.id, json_response['internshipOffers'][0]['id']
+        end
       end
     end
 
     test 'GET #search returns too many requests after max calls limit' do
       user = create(:user_operator, :fully_authorized)
-      InternshipOffers::Api::MAX_CALLS_PER_MINUTE.times do
+      (InternshipOffers::Api::MAX_CALLS_PER_MINUTE + 1).times do
         get search_api_internship_offers_path(
           params: {
             token: "Bearer #{user.api_token}"

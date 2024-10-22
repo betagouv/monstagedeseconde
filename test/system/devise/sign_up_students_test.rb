@@ -35,6 +35,8 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     class_room_1 = create(:class_room, name: '2de A', school: school_1)
     class_room_2 = create(:class_room, name: '2de B', school: school_2)
     existing_email = 'fourcade.m@gmail.com'
+    new_email = 'another@email.com'
+    new_email_password = 'Kikoololletest123!!'
     birth_date = 14.years.ago
     student = create(:student, email: existing_email)
     identity = create(:identity)
@@ -46,7 +48,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     assert_difference('Users::Student.count', 0) do
       find("label[for='select-channel-email']",).click
       fill_in 'Adresse électronique', with: existing_email
-      fill_in 'Créer un mot de passe', with: 'Kikoololletest123!!'
+      fill_in 'Créer un mot de passe', with: new_email_password
       click_on "Valider"
       find('.fr-alert.fr-alert--error', text: 'Courriel : Un compte est déjà associé à cet email')
       assert_equal existing_email, find('#user_email').value
@@ -55,12 +57,17 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     # create student
     assert_difference('Users::Student.count', 1) do
       find('label', text: 'Par email').click
-      fill_in 'Adresse électronique', with: 'another@email.com'
-      fill_in 'Créer un mot de passe', with: 'Kikoololletest123!!'
+      fill_in 'Adresse électronique', with: new_email
+      fill_in 'Créer un mot de passe', with: new_email_password
       click_on "Valider"
     end
-    # students are confirmed by default and redirected to search page after signup
+    refute Users::Student.last.confirmed?
+    Users::Student.last.confirm
     assert Users::Student.last.confirmed?
+    visit new_user_session_path
+    fill_in 'Adresse électronique', with: new_email
+    fill_in 'Mot de passe', with: new_email_password
+    click_button "Se connecter"
     find(".h4 .strong", text: "Les offres de stage")
     assert_select '#alert-text', count: 0
   end
@@ -123,13 +130,12 @@ class SignUpStudentsTest < ApplicationSystemTestCase
 
       created_student = Users::Student.find_by(email: email)
 
-      # confirmation mail under the hood
-      assert created_student.confirmed?
+      refute created_student.confirmed?
     end
   end
 
   test 'Student with account and former internship offer visit lands on offer page after login' do
-    password = 'kikoololletest'
+    password = 'kikoololletesT123$!'
     create(:department, name: 'Seine-et-Marne', code: '77')
     school_1 = create(:school, name: 'Etablissement Test 1',
                                city: 'Saint-Martin', zipcode: '77515')

@@ -1,7 +1,7 @@
 def populate_applications
   students = Users::Student.all
   offers = InternshipOffers::WeeklyFramed.all
-  puts "every offers receives an application from first stud"
+  puts 'every offers receives an application from first stud'
   offers.first(4).each do |offer|
     puts "offer #{offer.id} receives an application from first stud"
     application = InternshipApplications::WeeklyFramed.new(
@@ -18,7 +18,7 @@ def populate_applications
   #-----------------
   # 2nd student [1 approved, 1 canceled_by_employer]
   #-----------------
-  puts "second offer receive an approval --> second stud"
+  puts 'second offer receive an approval --> second stud'
   application = InternshipApplications::WeeklyFramed.new(
     aasm_state: :approved,
     submitted_at: 10.days.ago,
@@ -31,8 +31,7 @@ def populate_applications
   )
   application.save! if application.valid?
 
-
-  puts  "second stud is canceled by employer of last internship_offer"
+  puts 'second stud is canceled by employer of last internship_offer'
   application = InternshipApplications::WeeklyFramed.new(
     aasm_state: :canceled_by_employer,
     submitted_at: 10.days.ago,
@@ -61,7 +60,7 @@ def populate_applications
   )
   applications.save! if applications.valid?
 
-  puts  "third stud cancels his application to first offer"
+  puts 'third stud cancels his application to first offer'
   application = InternshipApplications::WeeklyFramed.new(
     aasm_state: :canceled_by_student,
     submitted_at: 10.days.ago,
@@ -119,7 +118,7 @@ def populate_applications
     submitted_at: 29.days.ago,
     student: students.fourth,
     motivation: 'motivé moyennement pour ce stage, je vous préviens',
-    internship_offer: offers[0],
+    internship_offer: offers[0]
   )
   application.save! if application.valid?
 
@@ -129,7 +128,7 @@ def populate_applications
     validated_by_employer_at: 20.days.ago,
     student: students.fourth,
     motivation: 'Très motivé pour ce stage, je vous préviens',
-    internship_offer: offers[5],
+    internship_offer: offers[5]
   )
   application.save! if application.valid?
 
@@ -148,7 +147,7 @@ def populate_applications
     approved_at: 18.days.ago,
     student: students[6],
     motivation: 'Très motivé pour ce stage, je vous préviens',
-    internship_offer: offers[4],
+    internship_offer: offers[4]
   )
   application.save! if application.valid?
 
@@ -161,7 +160,7 @@ def populate_applications
     approved_at: 18.days.ago,
     student: students[7],
     motivation: 'Très motivé pour ce stage, je vous préviens',
-    internship_offer: offers[5],
+    internship_offer: offers[5]
   )
   application.save! if application.valid?
 end
@@ -188,10 +187,9 @@ def populate_agreements
   agreement_2.employer_accept_terms = true
   agreement_2.aasm_state = :completed_by_employer
   agreement_2.save!
-
 end
 
-call_method_with_metrics_tracking([
-  :populate_applications,
-  :populate_agreements
-])
+call_method_with_metrics_tracking(%i[
+                                    populate_applications
+                                    populate_agreements
+                                  ])

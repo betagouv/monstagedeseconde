@@ -17,7 +17,14 @@ tbody.internship-agreement
         - content = "Nom et prénom du chef d'etablissement"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :school_representative_full_name, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :school_representative_full_name,
+                           form: form,
+                           text_label: label,
+                           limit: 150,
+                           title: title,
+                           content: content,
+                           filled_by: filled_by,
+                           disabled: disabled }
 
       .row.mt-0
         - label = "Statut de l’établissement"
@@ -26,14 +33,30 @@ tbody.internship-agreement
         - filled_by = ["le chef d'établissement"]
         - prompt = "Sélectionner le statut de l'établissement"
         = render partial: 'dashboard/internship_agreements/select_field_element',
-                 locals: { field: :legal_status, form: form, text_label: label, title: title, collection: collection, filled_by: filled_by, disabled: disabled, value: resource.legal_status, prompt: prompt }
+                 locals: { field: :legal_status,
+                           form: form,
+                           text_label: label,
+                           title: title,
+                           collection: collection,
+                           filled_by: filled_by,
+                           disabled: disabled,
+                           value: resource.legal_status,
+                           prompt: prompt }
       .row.mt-0
         - label = "Date de délibération du Conseil d’administration approuvant la convention-type"
         - title = "Date de délibération du Conseil d’administration approuvant la convention-type :"
         - filled_by = ["le chef d'établissement"]
         - prompt = "Sélectionner le statut de l'établissement"
         = render partial: 'dashboard/internship_agreements/date_field_element',
-                 locals: { field: :delegation_date, form: form, text_label: label, title: title, filled_by: filled_by, disabled: disabled, value: resource.school.delegation_date, prompt: prompt, required: false }
+                 locals: { field: :delegation_date,
+                           form: form,
+                           text_label: label,
+                           title: title,
+                           filled_by: filled_by,
+                           disabled: disabled,
+                           value: resource.school.delegation_date,
+                           prompt: prompt,
+                           required: false }
 
       .row.mt-0
         - label = "Courriel du chef d'établissement ou de son représentant"
@@ -41,7 +64,14 @@ tbody.internship-agreement
         - content = "Courriel du chef d'établissement ou de son représentant"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :school_representative_email, limit: 100, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :school_representative_email,
+                           limit: 100,
+                           form: form,
+                           text_label: label,
+                           title: title,
+                           content: content,
+                           filled_by: filled_by,
+                           disabled: disabled }
 
       .row.mt-0
         - label = "Numéro de téléphone du chef d'établissement"
@@ -64,7 +94,14 @@ tbody.internship-agreement
         - content = "Fonction du chef d'établissement ou de son représentant"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :school_representative_role, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :school_representative_role,
+                           form: form,
+                           limit: 200,
+                           text_label: label,
+                           title: title,
+                           content: content,
+                           filled_by: filled_by,
+                           disabled: disabled }
 
       .row.mt-0
         - label = "Nom et prénom du professeur référent (professeur principal par défaut)"
@@ -72,7 +109,14 @@ tbody.internship-agreement
         - content = "Le champ est prérempli avec le nom et le prénom du professeur principal s'il s'est inscrit. Ce champ obligatoire peut être modifié."
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_refering_teacher_full_name, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :student_refering_teacher_full_name,
+                           form: form,
+                           text_label: label,
+                           limit: 150,
+                           title: title,
+                           content: content,
+                           filled_by: filled_by,
+                           disabled: disabled }
 
       .row.mt-0
         - label = "Email du professeur référent"
@@ -80,7 +124,14 @@ tbody.internship-agreement
         - content = "Le champ est prérempli avec l'email du professeur principal s'il s'est inscrit. Ce champ obligatoire peut être modifié."
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_refering_teacher_email, form: form, text_label: label, title: title, content: content, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :student_refering_teacher_email,
+                           form: form,
+                           text_label: label,
+                           title: title,
+                           limit: 100,
+                           content: content,
+                           filled_by: filled_by,
+                           disabled: disabled }
 
       .row.mt-0
         - label = "Numéro de téléphone du professeur référent"
@@ -103,7 +154,13 @@ tbody.internship-agreement
         - content = "Nom(s) et prénom(s) de(s) l'élève(s) effectuant le stage."
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_full_name, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :student_full_name,
+                           form: form,
+                           text_label: label,
+                           content: content,
+                           title: title,
+                           filled_by: filled_by,
+                           disabled: disabled }
 
       .row.mt-0
         - label = "Adresse personnelle complète de l'élève"
@@ -111,7 +168,13 @@ tbody.internship-agreement
         - content = "Adresse, code postal, commune et pays de l'élève"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_address, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :student_address,
+                           form: form,
+                           text_label: label,
+                           content: content,
+                           title: title,
+                           filled_by: filled_by,
+                           disabled: disabled }
 
       .row.mt-0
         - label = "Numéro de téléphone de l'élève"
@@ -134,7 +197,14 @@ tbody.internship-agreement
         - content = "Représentant légal (ou personne responsable) n°1 (nom et prénom)"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_legal_representative_full_name, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :student_legal_representative_full_name,
+                           form: form,
+                           text_label: label,
+                           content: content,
+                           title: title,
+                           limit: 150, 
+                           filled_by: filled_by,
+                           disabled: disabled }
 
       .row.mt-0
         - label = "Email du représentant légal de l'élève"
@@ -142,7 +212,14 @@ tbody.internship-agreement
         - content = "Email du représentant légal (ou personne responsable) n°1"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_legal_representative_email, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :student_legal_representative_email,
+                           form: form,
+                           text_label: label,
+                           content: content,
+                           limit: 100,
+                           title: title,
+                           filled_by: filled_by,
+                           disabled: disabled }
 
       .row.mt-0
         - label = "Numéro de téléphone du représentant légal de l'élève"
@@ -165,7 +242,15 @@ tbody.internship-agreement
         - content = "Représentant légal (ou personne responsable) n°2 (nom et prénom)"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_legal_representative_2_full_name, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled, required: false}
+                 locals: { field: :student_legal_representative_2_full_name,
+                           form: form,
+                           text_label: label,
+                           content: content,
+                           title: title,
+                           limit: 120,
+                           filled_by: filled_by,
+                           disabled: disabled,
+                           required: false}
 
       .row.mt-0
         - label = "Email du second représentant légal de l'élève (facultatif)"
@@ -173,7 +258,15 @@ tbody.internship-agreement
         - content = "Email du représentant légal (ou personne responsable) n°2"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_legal_representative_2_email, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled, required: false}
+                 locals: { field: :student_legal_representative_2_email,
+                           form: form,
+                           text_label: label,
+                           content: content,
+                           title: title,
+                           filled_by: filled_by,
+                           disabled: disabled,
+                           limit: 100,
+                           required: false}
 
       .row.mt-0
         - label = "Numéro de téléphone du second représentant légal de l'élève (facultatif)"
@@ -197,7 +290,14 @@ tbody.internship-agreement
         - content = "Adresse de l'etablissement d'origine de(e) élève(s)"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_school, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled }
+                 locals: { field: :student_school,
+                           form: form,
+                           limit: 300,
+                           text_label: label,
+                           content: content,
+                           title: title,
+                           filled_by: filled_by,
+                           disabled: disabled }
 
       .row.mt-0
         - label = "Modalités d’évaluation de la séquence d’observation " \
@@ -205,15 +305,25 @@ tbody.internship-agreement
         - title = "Note au professeur principal :"
         - content = "Critères d'évaluations"
         - filled_by = ["le chef d'établissement"]
-        = render partial: 'dashboard/internship_agreements/trix_form_element',
-                 locals: { field: :activity_rating_rich_text, form: form, text_label: label, title: title, content: content , filled_by: filled_by, disabled: disabled, required: false }
-        
+        = render partial: 'dashboard/internship_agreements/text_field_element',
+                 locals: { field: :activity_rating,
+                           field_type: :text_area,
+                           rows: 4,
+                           limit: 1_000,
+                           form: form,
+                           text_label: label,
+                           title: title,
+                           content: content ,
+                           filled_by: filled_by,
+                           disabled: disabled,
+                           required: false }
+
         .col-12.fr-py-3w
           .fr-hint.small
-            | La séquence d'observation doit être précédée d'un temps de préparation 
-            | et suivie d'un temps d'exploitation ou de restitution qui permet de 
-            | valoriser cette expérience. Les élèves peuvent s’exprimer sur ce qu’ils 
-            | ont vu, et revenir sur leurs activités et leurs impressions. 
+            | La séquence d'observation doit être précédée d'un temps de préparation
+            | et suivie d'un temps d'exploitation ou de restitution qui permet de
+            | valoriser cette expérience. Les élèves peuvent s’exprimer sur ce qu’ils
+            | ont vu, et revenir sur leurs activités et leurs impressions.
 
       = form.submit 'Submit', class: 'd-none', id: 'submit'
 

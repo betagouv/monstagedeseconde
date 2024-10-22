@@ -123,7 +123,7 @@ fr:
         name: Nom
         updated_at: Mis à jour le
       convention:
-        activity_scope_rich_text: Objectifs du stage
+        activity_scope: Objectifs du stage
         weekly_planning: Planning hebdomadaire
         same_daily_planning: Horaires quotidiens
       practical_info:
@@ -215,9 +215,9 @@ fr:
         weekly_hours: Horaires
         daily_lunch_break: Horaires journaliers pause déjeuner
         weekly_lunch_break: Horaires pause déjeuner
-        activity_rating_rich_text: Modalités d'évaluation
-        activity_scope_rich_text: Objectifs du stage
-        activity_preparation_rich_text: Modalités de concertation
+        activity_rating: Modalités d'évaluation
+        activity_scope: Objectifs du stage
+        activity_preparation: Modalités de concertation
         activity_learnings_rich_text: Compétences visées
         legal_terms_rich_text: Conditions complémentaires
         student_school: Établissement de l'élève

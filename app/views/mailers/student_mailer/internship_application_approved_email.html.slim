@@ -1,7 +1,7 @@
 p style=head_styles
   = "Candidature au stage \"#{@internship_application.internship_offer.title}\" acceptée !"
 
-= @internship_application.approved_message.to_s
+= @internship_application.approved_message
 
 p style=p_styles
 = render partial: "mailers/blue_call_to_action",

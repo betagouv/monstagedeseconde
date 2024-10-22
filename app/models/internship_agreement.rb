@@ -19,16 +19,6 @@ class InternshipAgreement < ApplicationRecord
   belongs_to :internship_application
   has_many :signatures, dependent: :destroy
 
-  has_rich_text :activity_scope_rich_text
-  has_rich_text :activity_preparation_rich_text
-  has_rich_text :activity_learnings_rich_text
-  has_rich_text :activity_rating_rich_text
-
-  has_rich_text :skills_observe_rich_text
-  has_rich_text :skills_communicate_rich_text
-  has_rich_text :skills_understand_rich_text
-  has_rich_text :skills_motivation_rich_text
-
   # beware, complementary_terms_rich_text/lega_terms_rich_text are recopy from school.internship_agreement_presets.*
   #         it must stay a recopy and not a direct link (must live separatery)
 
@@ -62,8 +52,8 @@ class InternshipAgreement < ApplicationRecord
               :student_refering_teacher_phone,
               :student_phone,
               :student_legal_representative_phone,
-              format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/ ,
-                        message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'"}
+              format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
+                        message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
   end
 
   with_options if: :enforce_employer_validations? do
@@ -99,8 +89,8 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[draft started_by_employer],
                   to: :completed_by_employer,
                   after: proc { |*_args|
-        notify_school_manager_of_employer_completion(self)
-      }
+                           notify_school_manager_of_employer_completion(self)
+                         }
     end
 
     event :start_by_school_manager do
@@ -113,24 +103,24 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[completed_by_employer started_by_school_manager],
                   to: :validated,
                   after: proc { |*_args|
-        notify_employer_school_manager_completed(self)
-      }
+                           notify_employer_school_manager_completed(self)
+                         }
     end
 
     event :sign do
       transitions from: %i[validated signatures_started],
                   to: :signatures_started,
                   after: proc { |*_args|
-        notify_others_signatures_started(self)
-      }
+                           notify_others_signatures_started(self)
+                         }
     end
 
     event :signatures_finalize do
       transitions from: [:signatures_started],
                   to: :signed_by_all,
                   after: proc { |*_args|
-        notify_others_signatures_finished(self)
-      }
+                           notify_others_signatures_finished(self)
+                         }
     end
   end
 
@@ -141,14 +131,14 @@ class InternshipAgreement < ApplicationRecord
   delegate :school_manager,        to: :school
   delegate :internship_offer_area, to: :internship_offer
 
-  scope :having_school_manager, ->{
-    kept.joins(internship_application: {student: :school})
+  scope :having_school_manager, lambda {
+    kept.joins(internship_application: { student: :school })
         .merge(School.with_school_manager)
   }
 
-  scope :filtering_discarded_students, ->{
+  scope :filtering_discarded_students, lambda {
     joins(internship_application: :student)
-      .where(internship_application: {users: {discarded_at: nil}})
+      .where(internship_application: { users: { discarded_at: nil } })
   }
 
   def at_least_one_validated_terms
@@ -189,10 +179,10 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def valid_trix_employer_fields
-    if activity_scope_rich_text.blank?
-      errors.add(:activity_scope_rich_text,
-                 'Veuillez compléter les objectifs du stage')
-    end
+    return unless activity_scope.blank?
+
+    errors.add(:activity_scope,
+               'Veuillez compléter les objectifs du stage')
   end
 
   def valid_trix_school_manager_fields
@@ -248,11 +238,11 @@ class InternshipAgreement < ApplicationRecord
   def signature_by_role(signatory_role:)
     return nil if signatures.blank?
 
-    signatures.find_by(signatory_role: signatory_role)
+    signatures.find_by(signatory_role:)
   end
 
   def signature_image_attached?(signatory_role:)
-    signature = signature_by_role(signatory_role: signatory_role)
+    signature = signature_by_role(signatory_role:)
     return signature.signature_image.attached? if signature && signature.signature_image
 
     false
@@ -260,7 +250,7 @@ class InternshipAgreement < ApplicationRecord
 
   def ready_to_sign?(user:)
     aasm_state.to_s.in?(%w[validated signatures_started]) && \
-      !signed_by?(user: user) && \
+      !signed_by?(user:) && \
       user.can_sign?(self)
   end
 
@@ -283,11 +273,11 @@ class InternshipAgreement < ApplicationRecord
   def signature_by_role(signatory_role:)
     return nil if signatures.blank?
 
-    signatures.find_by(signatory_role: signatory_role)
+    signatures.find_by(signatory_role:)
   end
 
   def signature_image_attached?(signatory_role:)
-    signature = signature_by_role(signatory_role:signatory_role)
+    signature = signature_by_role(signatory_role:)
     return signature.signature_image.attached? if signature && signature.signature_image
 
     false
@@ -329,7 +319,6 @@ class InternshipAgreement < ApplicationRecord
     update_columns(fields_to_reset)
     discard! unless discarded?
   end
-
 
   private
 

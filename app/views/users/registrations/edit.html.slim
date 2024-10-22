@@ -33,6 +33,8 @@ main#content[role="main"
                         autofocus: params[:email].blank? ,
                         :'aria-describedby' => "user_email",
                         type: "email",
+                        maxlength: 100,
+                        pattern: Devise.email_regexp,
                         autocomplete: "on",
                         data: {action: 'change->signup#onBlurEmailInput', :"signup-target" => 'emailInput'}
                   p.fr-message.fr-message--error.d-none[data-signup-target="emailHint"]
@@ -50,6 +52,7 @@ main#content[role="main"
                     = f.password_field :password,
                                         :'aria-describedby' => "user_password-messages",
                                         autocomplete: "new-password",
+                                        maxlength: 70,
                                         class: "fr-password__input fr-input fr-password__input fr-input #{error_tag.present? ? 'fr-input--error' : ''}",
                                         required: true,
                                         data: { action: "change->signup#checkPassword", :"signup-target" => "passwordInput" }
@@ -70,7 +73,10 @@ main#content[role="main"
                     small.form-text.text-muted
                       = t('.we_need_your_current_password_to_confirm_your_changes')
                   .fr-input-wrap
-                    = f.password_field :current_password, autocomplete: "current-password", class: "fr-input"
+                    = f.password_field :current_password,
+                                       autocomplete: "current-password",
+                                       maxlength: 70,
+                                       class: "fr-input"
               .fr-col-12
                 .actions.text-right
                   = f.submit "Valider", class: "fr-btn fr-mx-2w", id: "test-update-user"
