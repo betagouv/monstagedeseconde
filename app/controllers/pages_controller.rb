@@ -28,6 +28,20 @@ class PagesController < ApplicationController
   def search_companies
   end
 
+  def maintenance_estivale
+    @waiting_list_entry = WaitingListEntry.new
+  end
+
+  def waiting_list
+    @waiting_list_entry = WaitingListEntry.new(waiting_list_params)
+    if @waiting_list_entry.save
+      message = 'Votre e-mail a été ajouté à la liste d\'attente.'
+    else
+      message = 'Une erreur est survenue lors de l\'ajout de votre e-mail à la liste d\'attente.'
+    end
+    redirect_to '/maintenance_estivale.html', notice: message
+  end
+
   def maintenance_messaging
     hash = {
       subject: "Message de la page de maintenance de #{user_params[:name]}",
@@ -46,4 +60,10 @@ class PagesController < ApplicationController
 
   alias_method :school_management_landing, :student_landing
   alias_method :statistician_landing, :student_landing
+
+  private
+
+  def waiting_list_params
+    params.require(:waiting_list_entry).permit(:email)
+  end
 end

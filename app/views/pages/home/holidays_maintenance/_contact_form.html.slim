@@ -1,43 +1,24 @@
-= form_for :user,
-           url: maintenance_messaging_path,
+= form_for @waiting_list_entry,
+           url: waiting_list_path,
            method: :post,
            data: {turbo: false} do |f|
   .fr-mx-2w
-    h2.fr-h5 Pour contacter l'équipe 1jeune1solution, remplissez le formulaire ci-dessous
+    h2.fr-h5 Indiquez votre adresse email ci-dessous, nous vous préviendrons de la date d’ouverture :
     .fr-my-2w [data-controller="maintenance-contact-form mandatory-fields"
-              data-mandatory-fields-minimum-length-value= "3"]
+              data-mandatory-fields-minimum-length-value= "6"]
       form
         .form-group
-          label.fr-label for="name-field"
-            | Nom
-          = f.text_field :name,
-                        id: "name-field",
-                        maxlength: "80",
-                        class: "fr-input",
-                        :'data-mandatory-fields-target' => "mandatoryField",
-                        :'data-action' => "input->mandatory-fields#fieldChange"
-        .form-group
           label.fr-label for="email-field"
-            | Adresse email
+            | Email
           = f.email_field :email, placeholder: "Adresse email",
                           class: "fr-input",
                           id: "email-field",
+                          required: true,
                           maxlength: "120",
                           pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,14}$",
                           :'data-mandatory-fields-target' => "mandatoryField",
                           :'data-action' => "input->mandatory-fields#fieldChange"
-        .form-group
-          label.fr-label for="message-field"
-            | Message
-          = f.text_area :message,
-                        placeholder: "Message",
-                        class: "fr-input",
-                        cols: "80",
-                        rows: "6",
-                        id: "message-field",
-                        maxlength: "250",
-                        :'data-mandatory-fields-target' => "mandatoryField",
-                        :'data-action' => "input->mandatory-fields#fieldChange"
+
         .form-group.fr-my-2w
           = f.submit 'Envoyer',
                     class: "fr-btn",

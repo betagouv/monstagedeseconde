@@ -70,8 +70,8 @@ class ApplicationController < ActionController::Base
   end
 
   def maintenance_redirection_exception?
-    allowed_paths = %w[/maintenance_estivale.html /contact.html]
+    allowed_paths = %w[/maintenance_estivale.html /contact.html /waiting_list]
     request.path.in?(allowed_paths) ||
-      (request.path == "/maintenance_messaging" && request.post?)
+      (request.path == "/waiting_list" && request.post?)
   end
 end
