@@ -16,7 +16,6 @@ class SchoolTest < ActiveSupport::TestCase
 
   test 'Agreement association' do
     school = create(:school, :with_school_manager)
-    # refute_nil school.id
     student = create(:student, :troisieme_generale, school:)
     internship_application = create(:weekly_internship_application, user_id: student.id)
     internship_agreement = create(:internship_agreement, :created_by_system,

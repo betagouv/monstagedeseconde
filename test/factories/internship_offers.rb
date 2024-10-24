@@ -2,11 +2,14 @@
 
 FactoryBot.define do
   factory :internship_offer, aliases: %i[with_public_group_internship_offer] do
-    employer { create(:employer) }
-    organisation { create(:organisation, employer:) }
-    internship_offer_info { create(:internship_offer_info, employer:) }
-    hosting_info { create(:hosting_info, employer:) }
-    practical_info { create(:practical_info, employer:) }
+    planning
+    entreprise { planning.entreprise }
+    internship_occupation { entreprise.internship_occupation }
+    employer { internship_occupation.employer }
+    # organisation { create(:organisation, employer:) }
+    # internship_offer_info { create(:internship_offer_info, employer:) }
+    # hosting_info { create(:hosting_info, employer:) }
+    # practical_info { create(:practical_info, employer:) }
     sequence(:title) { |n| "Stage de 2de - #{n}" }
     description { 'Lorem ipsum dolor' }
     contact_phone { '+330612345678' }

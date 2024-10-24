@@ -6,21 +6,19 @@ module Dashboard::Stepper
 
     def new
       @entreprise = Entreprise.new(internship_occupation_id: params[:internship_occupation_id])
+      authorize! :create, @entreprise
     end
 
     def create
       @entreprise = Entreprise.new(entreprise_params)
+      authorize! :create, @entreprise
       @entreprise.entreprise_coordinates = { longitude: entreprise_params[:entreprise_coordinates_longitude],
                                              latitude: entreprise_params[:entreprise_coordinates_latitude] }
       @entreprise = set_updated_address_flag(@entreprise, entreprise_params)
 
       if @entreprise.save
-        path_params = {
-          entreprise_id: @entreprise.id,
-          internship_occupation_id: @entreprise.internship_occupation_id
-        }
         notice = "Les informations de l'entreprise ont bien été enregistrées"
-        redirect_to new_dashboard_stepper_planning_path(path_params), notice:
+        redirect_to new_dashboard_stepper_planning_path(entreprise_id: @entreprise.id), notice:
       else
         log_error
         render :new, status: :bad_request
@@ -67,11 +65,7 @@ module Dashboard::Stepper
               :entreprise_chosen_full_address,
               :entreprise_coordinates_longitude,
               :entreprise_coordinates_latitude,
-              :tutor_first_name,
-              :tutor_last_name,
-              :tutor_email,
-              :tutor_phone,
-              :tutor_function,
+
               :internship_occupation_id
             )
       # :group_id

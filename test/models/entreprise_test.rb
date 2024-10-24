@@ -1,10 +1,16 @@
 require 'test_helper'
 
 class EntrepriseTest < ActiveSupport::TestCase
-  test 'factory' do
+  test 'factory build' do
     entreprise = build(:entreprise)
     assert entreprise.valid?
-    assert entreprise.save
+    assert_equal Coordinates.paris[:latitude], entreprise.entreprise_coordinates.latitude
+    assert_equal Coordinates.paris[:longitude], entreprise.entreprise_coordinates.longitude
+  end
+
+  test 'factory create' do
+    entreprise = create(:entreprise)
+    refute_nil entreprise.id
   end
 
   test '#entreprise_coordinates' do
@@ -13,5 +19,13 @@ class EntrepriseTest < ActiveSupport::TestCase
     entreprise.entreprise_coordinates = { latitude: 48.8566, longitude: 2.3522 }
     assert_equal 2.3522, entreprise.entreprise_coordinates.longitude
     assert_equal 48.8566, entreprise.entreprise_coordinates.latitude
+  end
+
+  test 'tutor partially filled form fails gracefully' do
+    valid_email = 'test@free.fr'
+    entreprise = build(:entreprise, tutor_email: valid_email, tutor_first_name: '')
+    refute entreprise.valid?
+    assert_equal 'Prénom du tuteur Les informations du tuteur doivent être entièrement renseignées ou totalement vides',
+                 entreprise.errors.full_messages.first
   end
 end

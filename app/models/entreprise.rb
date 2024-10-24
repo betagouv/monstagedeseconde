@@ -1,32 +1,33 @@
 class Entreprise < ApplicationRecord
   include StepperProxy::Entreprise
-  belongs_to :internship_occupation
 
+  # Associations
   belongs_to :internship_occupation
-  has_one :planning, dependent: :destroy
+  # accepts_nested_attributes_for :tutor,
+  #                               reject_if: ->(attributes) { attributes['email'].blank? },
+  #                               allow_destroy: true
+  has_one :tutor,
+          dependent: :destroy
 
-  validates :is_public, inclusion: { in: [true, false] }
+  has_one :planning,
+          dependent: :destroy,
+          foreign_key: :entreprise_id,
+          inverse_of: :entreprise
+
+  # Validations
+  validates :is_public,
+            inclusion: { in: [true, false] }
   validates :siret, length: { is: 14 }
   validates :entreprise_full_address,
-            length: { minmum: 8, maximum: 200 },
+            length: { minimum: 8, maximum: 200 },
             presence: true
+  validates :employer_chosen_name,
+            length: { maximum: 80 },
+            allow_blank: true
   validates :employer_name,
             presence: true
   validates :entreprise_coordinates,
             exclusion: { in: [geo_point_factory(latitude: 0, longitude: 0)] }
-  validates :tutor_first_name,
-            :tutor_last_name,
-            length: { maximum: 60 },
-            allow_blank: true
-  validates :tutor_phone,
-            length: { maximum: 20 },
-            allow_blank: true
-  validates :tutor_email,
-            length: { maximum: 80 },
-            allow_blank: true
-  validates :tutor_function,
-            length: { maximum: 150 },
-            allow_blank: true
 
   def entreprise_coordinates=(geolocation)
     case geolocation

@@ -50,11 +50,11 @@ class InternshipOffer < ApplicationRecord
            foreign_key: :internship_offer_id,
            inverse_of: :internship_offer
   has_many :weeks, through: :internship_offer_weeks
-  has_many :internship_grades,
+  has_many :internship_offer_grades,
            dependent: :destroy,
-            foreign_key: :internship_offer_id,
-            inverse_of: :internship_offer
-  has_many :grades, through: :internship_grades
+           foreign_key: :internship_offer_id,
+           inverse_of: :internship_offer
+  has_many :grades, through: :internship_offer_grades
 
   has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy
 
@@ -94,19 +94,7 @@ class InternshipOffer < ApplicationRecord
   delegate :update_need, to: :stats, allow_nil: true
 
   # Validations
-  validates :contact_phone,
-            presence: true,
-            unless: :from_api?,
-            length: { minimum: 10 },
-            on: :create
-  validates :contact_phone,
-            unless: :from_api?,
-            format: { with: /\A\+?[\d\s]+\z/,
-                      message: 'Le numéro de téléphone doit contenir des caractères chiffrés uniquement' },
-            on: :create
-
   validate :check_missing_seats, if: :user_update?, on: :update
-  validates :period, inclusion: { in: [0, 1, 2] }
   validates :max_candidates, numericality: { only_integer: true,
                                              greater_than: 0,
                                              less_than_or_equal_to: InternshipOffer::MAX_CANDIDATES_HIGHEST }
@@ -283,7 +271,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def current_period_label
-    InternshipOffer.current_period_labels.values[period]
+    Presenters::WeekList.new(weeks: weeks).to_range_as_str
   end
 
   def period_label
@@ -318,19 +306,9 @@ class InternshipOffer < ApplicationRecord
   # callbacks
   #
   def sync_first_and_last_date
-    period_collection = SchoolTrack::Seconde.current_period_data
-    case period
-    when 0 # full_time
-      # third week of june
-      self.first_date = period_collection.dig(:full_time, :start_day)
-      self.last_date = period_collection.dig(:full_time, :end_day)
-    when 1 # week_1
-      self.first_date = period_collection.dig(:week_1, :start_day)
-      self.last_date = period_collection.dig(:week_1, :end_day)
-    when 2 # week_2
-      self.first_date = period_collection.dig(:week_2, :start_day)
-      self.last_date = period_collection.dig(:week_2, :end_day)
-    end
+    ordered_weeks = weeks.to_a.sort_by(&:id)
+    self.first_date = ordered_weeks.first&.week_date
+    self.last_date = ordered_weeks.last&.week_date
   end
 
   #
@@ -378,7 +356,6 @@ class InternshipOffer < ApplicationRecord
   def from_api?
     permalink.present?
   end
-
 
   def init
     self.max_candidates ||= 1

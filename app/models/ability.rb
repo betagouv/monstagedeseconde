@@ -203,19 +203,23 @@ class Ability
     can %i[create see_tutor], InternshipOffer
     can %i[read update discard publish], InternshipOffer, employer_id: user.team_members_ids
     # legacy_abilities for stepper
-    can %i[create], InternshipOfferInfo
-    can %i[create], HostingInfo
-    can %i[create], PracticalInfo
-    can %i[create], Organisation
+    # can %i[create], InternshipOfferInfo
+    # can %i[create], HostingInfo
+    # can %i[create], PracticalInfo
+    # can %i[create], Organisation
     # new_abilities for stepper
     can %i[create], InternshipOccupation
-    can %i[create], Entreprise
-    can %i[create], Planning
+    can %i[create], Entreprise do |entreprise|
+      entreprise.internship_occupation.employer_id == user.id
+    end
+    can %i[create], Planning do |planning|
+      planning.entreprise.internship_occupation.employer_id == user.id
+    end
     # legacy_abilities for stepper
-    can %i[update edit renew], InternshipOfferInfo, employer_id: user.team_members_ids
-    can %i[update edit renew], HostingInfo, employer_id: user.team_members_ids
-    can %i[update edit renew], PracticalInfo, employer_id: user.team_members_ids
-    can %i[update edit], Organisation, employer_id: user.team_members_ids
+    # can %i[update edit renew], InternshipOfferInfo, employer_id: user.team_members_ids
+    # can %i[update edit renew], HostingInfo, employer_id: user.team_members_ids
+    # can %i[update edit renew], PracticalInfo, employer_id: user.team_members_ids
+    # can %i[update edit], Organisation, employer_id: user.team_members_ids
     can %i[create], Tutor
     # new_abilities for stepper
     can %i[update edit renew], InternshipOccupation, employer_id: user.team_members_ids

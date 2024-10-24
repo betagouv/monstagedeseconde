@@ -9,6 +9,7 @@ class School < ApplicationRecord
   has_many :internship_offers, dependent: :nullify
   has_many :internship_applications, through: :students
   has_many :internship_agreements, through: :internship_applications
+  has_many :plannings, dependent: :destroy
   has_many :dedicated_internship_offers, foreign_key: :school_id, dependent: :nullify, class_name: 'InternshipOffer'
   belongs_to :department, optional: true
 

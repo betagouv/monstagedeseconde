@@ -3,7 +3,7 @@
 module SchoolYear
   class Base
     YEAR_START          = 2019
-    MONTH_OF_YEAR_SHIFT = 7
+    MONTH_OF_YEAR_SHIFT = 6
     DAY_OF_YEAR_SHIFT   = 1
     SEPTEMBER = 9
     FIRST = 1
@@ -34,7 +34,7 @@ module SchoolYear
     # end
 
     def range
-      beginning_of_period..(self.next_year).beginning_of_period
+      beginning_of_period..next_year.beginning_of_period
     end
 
     def next_year

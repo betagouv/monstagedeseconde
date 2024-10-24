@@ -5,21 +5,4 @@
   .col
     h1.h2.mb-3 Déposer une offre de stage
 
-
-= form_with model: @planning,
-            url: dashboard_stepper_plannings_path(@planning),
-            scope: :planning,
-            data: { turbo: false },
-            method: :post do |form|
-  = render "dashboard/stepper/steps", { current_step_number: 3,
-                                        total_steps: 3,
-                                        current_step_title: "Votre annonce planning",
-                                        next_step_title: "Publication de l'annonce" }
-  = render "layouts/form_errors",
-            resource: @planning,
-            resource_name: :internship_offer
-
-  = render 'dashboard/stepper/plannings/form_fields', { resource: @planning,
-                                                        warning_block: true,
-                                                        form: form,
-                                                        submit_button: true }
+= render('form')

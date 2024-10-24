@@ -30,6 +30,9 @@ fr:
       entreprise:
         one: Entreprise ou admindistration
         other: Entreprises ou administrations
+      grade:
+        one: Niveau
+        other: Niveaux
       group:
         one: Groupe
         other: Groupes
@@ -193,6 +196,7 @@ fr:
         weekly_lunch_break: Pause déjeuner
         weekly_hours: Horaires
         max_students_per_group: Nbr. max d'élèves par groupe
+        grades: Niveaux ciblés
       organisation: &organisation_fields
         employer_name: Employeur
         employer_description: Description de l'employeur

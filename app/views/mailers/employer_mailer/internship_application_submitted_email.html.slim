@@ -6,7 +6,7 @@ table
       p style=head_cyclop_styles
         = @internship_application.student.presenter.full_name
       p style=p_cyclop_styles({color: '#000091'})
-        ="<strong>#{@internship_application.internship_offer.current_period_label}</strong>".html_safe
+        ="<strong>#{@internship_application.week.human_select_text_method}</strong>".html_safe
       - unless @internship_application.motivation.blank?
       p style=p_cyclop_styles({color: '#000091'})
         <strong> Motivations </strong>

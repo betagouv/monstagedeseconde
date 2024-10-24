@@ -1,61 +1,67 @@
 - if can?(:supply_offers, current_user)
   div [data-controller='mandatory-fields'
        data-mandatory-fields-minimum-length-value="2"]
-    .row
+    .row data-controller='grade'
       .col-md-6.order-md-2.order-1.d-none.d-md-block
         = render 'dashboard/stepper/summary_card'
+        = form.hidden_field :school_id, value: form.object.school_id
       .col-md-6.order-md-1.order-2
         .row
           .col-12
-            = form.hidden_field :entreprise_id, value: form.object.entreprise_id
-
-            = form.hidden_field :school_id, value: form.object.school_id
-            = form.hidden_field :max_candidates, value: 10
-            = form.hidden_field :max_students_per_group, value: 2
-            = form.hidden_field :weekly_lunch_break, value: 'test de lunch break'
-
-            - field = :grade_3e4e
             = render 'inputs/dsfr_checkbox_field',
               form: form,
-              field: field,
+              field: :grade_3e4e,
               title: 'Votre offre sera proposée aux élèves des niveaux suivants :',
               label: 'Collégiens (4ème et 3ème)',
               extra_header_classes: 'fr-text--lg font-weight-bold',
-              default_value: true
+              options: { data: {:'grade-target' => 'grade3e4e', action: 'grade#onClick' } }
 
+        .row data-grade-target="troisiemeContainer"
+          .col-12
+            = render partial: "weeks/checkbox_inputs",
+                              locals: { current_weeks: @available_weeks,
+                                        form: form,
+                                        render_employer_components: true }
         .row
           .col-12
-            - error = form.object.errors[field].any?
-            fieldset#radio-rich-hint [class="fr-fieldset #{error ? 'fr-fieldset--error' : '' }"
-                                      aria-labelledby="radio-rich-hint-legend radio-rich-hint-messages"]
-              legend#radio-rich-hint-legend.fr-fieldset__legend--regular.fr-fieldset__legend.fr-text--lg.font-weight-bold
-                | Sur quelle période proposez-vous ce stage pour les collégiens ?
-                span.fr-hint-text
-              = render 'inputs/dsfr_rich_radio_field',
-                form: form,
-                error: error,
-                field: :all_year_long,
-                label: "Toute l'année",
-                hint: 'Les élèves pourront candidater toute l’année à votre offre.',
-                icon: 'fr-icon-calendar-2-fill',
-                value: true
-              = render 'inputs/dsfr_rich_radio_field',
-                form: form,
-                error: error,
-                field: :all_year_long,
-                label: 'Une ou plusieurs semaines spécifiques',
-                hint: 'Les élèves avec des dates de stages communes pourront candidater.',
-                icon: 'fr-icon-calendar-line',
-                value: false
-
+            hr
         .row
-            .col-12
-            .form-group
-              = render partial: "weeks/checkbox_inputs",
-                                locals: {current_weeks: @available_weeks,
-                                        form: form,
-                                        render_employer_components: true,
-                                        label: "Date du stage" }
+          .col-12
+            .d-none.fr-alert.fr-alert--error.fr-alert--sm data-grade-target="alertContainer"
+              p Vous devez sélectionner au moins un public parmi les lycéens et les collégiens
+            = render 'inputs/dsfr_checkbox_field',
+              form: form,
+              field: :grade_2e,
+              title: '',
+              label: 'Lycéens de 2de générale et technologique',
+              options: { data: {:'grade-target' => 'grade2e', action: 'grade#onClick' } }
+        .row data-grade-target="secondeContainer"
+          .col-12
+            = render 'seconde_period_radio_buttons_fields',
+                    form: form,
+                    resource: form.object
+        .row
+          .col-12
+            hr
+        - klass = resource.class.to_s.split("s::").first
+        .row data-controller="planning-candidates" data-planning-candidates-base-type-value="#{klass}"
+          .col-12
+            = render 'collective_or_individual_radio_buttons',
+                     form: form,
+                     resource: form.object
+        .row
+          .col-12
+            = render 'daily_hours',
+                     form: form,
+                     resource: form.object
+        .row
+          .col-12
+            = react_component("ReservedSchoolInput",
+                              props: { label: "Commune ou nom de l'établissement pour lequel le stage est reservé",
+                                      required: false,
+                                      resourceName: form.object_name,
+                                      selectClassRoom: false,
+                                      existingSchool: form.object&.school&.as_json})
 
   - if submit_button
     .fr-mt-6w
@@ -63,4 +69,4 @@
       = button_tag :submit,
                    class: 'fr-btn',
                    :'data-mandatory-fileds-target' => "disabledField"  do
-        = "Suivant "
+        = "Publier l'offre"

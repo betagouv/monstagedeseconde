@@ -42,7 +42,7 @@ module EntrepriseFormFiller
     find('#entreprise_group_id')
     select group.name,
            from: 'Type d’employeur public'
-    select sector.name, from: "Secteur d'activité"
+    select sector.name, from: "Secteur d'activité" unless sector.nil?
     assert_equal '909 432 247 00015',  find('input#entreprise_presentation_siret').value
     assert_equal 'EAST SIDE SOFTWARE', find('input#entreprise_employer_name').value.strip
     fill_in "Indiquez le nom de l'enseigne de l'établissement d'accueil, si elle diffère de la raison sociale",

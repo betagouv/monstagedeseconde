@@ -11,9 +11,10 @@ class Grade < ApplicationRecord
   # updated_at: datetime, not null
 
   # Relationships
-  # has_many :internship_offers, through: :internship_offer_grades
   has_many :plannings, through: :planning_grades
   has_many :planning_grades, dependent: :destroy
+  has_many :internship_offer_grades, dependent: :destroy
+  has_many :internship_offers, through: :internship_offer_grades
 
   def self.troisieme
     fetch_by_short_name('troisieme').first
@@ -32,7 +33,7 @@ class Grade < ApplicationRecord
   end
 
   def school_track
-    return SchoolTrack::Troisieme if short_name.in?(%w(troisieme quatrieme))
+    return SchoolTrack::Troisieme if short_name.in?(%w[troisieme quatrieme])
 
     SchoolTrack::Seconde
   end

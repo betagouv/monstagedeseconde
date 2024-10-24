@@ -12,6 +12,9 @@ module StepperProxy
                class_name: 'PlanningGrade',
                foreign_key: :planning_id
       has_many :grades, through: :planning_grades
+      has_many :internship_offer_weeks
+      has_many :weeks, through: :internship_offer_weeks
+      belongs_to :school, optional: true
 
       # Validations
       validates :max_candidates,
@@ -25,6 +28,7 @@ module StepperProxy
                                 message: "Le nombre maximal d'élèves par groupe ne peut pas dépasser le nombre maximal d'élèves attendus dans l'année" }
       validates :weeks, presence: true
       validate :enough_weeks
+      validate :at_least_one_grade
 
       # methods common to planning and internship_offer
       def enough_weeks
@@ -64,6 +68,14 @@ module StepperProxy
         school_year = SchoolYear::Floating.new(date: weeks.first.week_date)
 
         Week.selectable_on_specific_school_year(school_year:)
+      end
+
+      private
+
+      def at_least_one_grade
+        return if grades.present?
+
+        errors.add(:grades, 'Vous devez sélectionner au moins une classe')
       end
     end
   end

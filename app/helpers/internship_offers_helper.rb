@@ -9,7 +9,8 @@ module InternshipOffersHelper
       InternshipOfferInfo,
       InternshipOffer,
       InternshipOffers::WeeklyFramed,
-      HostingInfo
+      HostingInfo,
+      Planning
     ]
     is_preselectable_entity.any? { |klass| object.is_a?(klass) }
   end
@@ -51,15 +52,19 @@ module InternshipOffersHelper
   end
 
   def internship_offer_results_title(user)
-    return "Rechercher un stage d'observation" unless user.is_a?(Users::Student)
+    unless user.is_a?(Users::Student) || user.is_a?(Users::Visitor) || user.grade.nil?
+      return "Rechercher un stage d'observation"
+    end
+
     case user.grade
     when 'quatrieme'
-      "Rechercher un stage de 4ème"
+      'Rechercher un stage de 4ème'
     when 'troisieme'
-      "Rechercher un stage de 3ème"
+      'Rechercher un stage de 3ème'
     when 'seconde'
-      "Rechercher un stage de seconde"
+      'Rechercher un stage de seconde'
     else
+      Rails.logger.error "Unknown grade: #{user.grade}"
       "Rechercher un stage d'observation"
     end
   end

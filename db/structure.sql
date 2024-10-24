@@ -685,18 +685,13 @@ CREATE TABLE public.entreprises (
     employer_name character varying(150) NOT NULL,
     employer_chosen_name character varying(150),
     entreprise_coordinates public.geography(Point,4326),
-    tutor_first_name character varying(60),
-    tutor_last_name character varying(60),
-    tutor_email character varying(80),
-    tutor_phone character varying(20),
-    tutor_function character varying(150),
     group_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    internship_occupation_id bigint,
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
-    updated_entreprise_full_address boolean DEFAULT false
+    updated_entreprise_full_address boolean DEFAULT false,
+    internship_occupation_id bigint
 );
 
 
@@ -1466,7 +1461,6 @@ CREATE TABLE public.internship_offers (
     daterange daterange GENERATED ALWAYS AS (daterange(first_date, last_date)) STORED,
     siret character varying(14),
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
-    weekly_lunch_break text,
     total_female_applications_count integer DEFAULT 0 NOT NULL,
     total_female_approved_applications_count integer DEFAULT 0,
     max_students_per_group integer DEFAULT 1 NOT NULL,
@@ -1486,11 +1480,11 @@ CREATE TABLE public.internship_offers (
     entreprise_id bigint,
     planning_id bigint,
     employer_chosen_name character varying(250),
-    entreprise_coordinates point,
     tutor_function character varying(150),
     tutor_last_name character varying(60),
     tutor_first_name character varying(60),
-    entreprise_full_address character varying(200)
+    entreprise_full_address character varying(200),
+    entreprise_coordinates public.geography(Point,4326)
 );
 
 
@@ -1747,7 +1741,6 @@ CREATE TABLE public.plannings (
     max_candidates integer DEFAULT 1 NOT NULL,
     max_students_per_group integer DEFAULT 1 NOT NULL,
     remaining_seats_count integer DEFAULT 0,
-    weekly_lunch_break character varying(200) NOT NULL,
     weekly_hours character varying(400)[] DEFAULT '{}'::character varying[],
     daily_hours jsonb DEFAULT '{}'::jsonb,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
@@ -1755,7 +1748,8 @@ CREATE TABLE public.plannings (
     school_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    internship_occupation_id bigint
+    employer_id bigint,
+    lunch_break character varying(250)
 );
 
 
@@ -2022,13 +2016,12 @@ ALTER SEQUENCE public.team_member_invitations_id_seq OWNED BY public.team_member
 
 CREATE TABLE public.tutors (
     id bigint NOT NULL,
-    tutor_name character varying(120) NOT NULL,
-    tutor_email character varying(100) NOT NULL,
-    tutor_phone character varying(20) NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    employer_id bigint NOT NULL,
-    tutor_role character varying(250)
+    tutor_name character varying(150),
+    tutor_email character varying(150),
+    tutor_phone character varying(20),
+    tutor_role character varying(120)
 );
 
 
@@ -3555,6 +3548,13 @@ CREATE INDEX index_internship_offers_on_employer_id ON public.internship_offers 
 
 
 --
+-- Name: index_internship_offers_on_entreprise_coordinates; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offers_on_entreprise_coordinates ON public.internship_offers USING gist (entreprise_coordinates);
+
+
+--
 -- Name: index_internship_offers_on_entreprise_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3730,17 +3730,17 @@ CREATE INDEX index_planning_weeks_on_week_id ON public.planning_weeks USING btre
 
 
 --
+-- Name: index_plannings_on_employer_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_plannings_on_employer_id ON public.plannings USING btree (employer_id);
+
+
+--
 -- Name: index_plannings_on_entreprise_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_plannings_on_entreprise_id ON public.plannings USING btree (entreprise_id);
-
-
---
--- Name: index_plannings_on_internship_occupation_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_plannings_on_internship_occupation_id ON public.plannings USING btree (internship_occupation_id);
 
 
 --
@@ -4004,19 +4004,19 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: plannings fk_rails_027ab2d97f; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.plannings
-    ADD CONSTRAINT fk_rails_027ab2d97f FOREIGN KEY (internship_occupation_id) REFERENCES public.internship_occupations(id);
-
-
---
 -- Name: internship_applications fk_rails_064e6512b0; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.internship_applications
     ADD CONSTRAINT fk_rails_064e6512b0 FOREIGN KEY (week_id) REFERENCES public.weeks(id);
+
+
+--
+-- Name: plannings fk_rails_06c56a2d59; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.plannings
+    ADD CONSTRAINT fk_rails_06c56a2d59 FOREIGN KEY (employer_id) REFERENCES public.users(id);
 
 
 --
@@ -4356,14 +4356,6 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
--- Name: tutors fk_rails_af56aa365a; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tutors
-    ADD CONSTRAINT fk_rails_af56aa365a FOREIGN KEY (employer_id) REFERENCES public.users(id);
-
-
---
 -- Name: plannings fk_rails_b32215a275; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4514,6 +4506,9 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20241024080025'),
+('20241024075951'),
+('20241022094733'),
 ('20241016134457'),
 ('20241015085210'),
 ('20241010085334'),

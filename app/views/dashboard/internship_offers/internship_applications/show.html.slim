@@ -71,7 +71,7 @@
     .grey-container-application.with-grey-background
       h2.h4.fr-mb-4w = @internship_application.student.presenter.full_name
       p.fr-icon-calendar-line.fr-btn--icon-left
-        = "Période : <strong>#{@internship_application.internship_offer.current_period_label}</strong>".html_safe
+        = "Période : <strong>#{@internship_application.week.human_select_text_method}</strong>".html_safe
       - unless @internship_application.motivation.blank?
         h3.h5 Motivations
         p = @internship_application.motivation

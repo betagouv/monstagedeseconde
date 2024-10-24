@@ -1,0 +1,41 @@
+/ radio button for period
+- labels = SchoolTrack::Seconde.current_period_labels
+- week_1 = SchoolTrack::Seconde.first_week
+- week_2 = SchoolTrack::Seconde.second_week
+- both_weeks = SchoolTrack::Seconde.both_weeks
+- grades = resource.grades
+
+p.fr-badge.fr-badge--error.d-none data-grade-target="alertContainer"
+  | Veuillez sélectionner au moins un public parmi les lycéens et les collégiens
+fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend radio-hint-messages"
+  legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-text--lg font-weight-bold" id="radio-hint-legend"
+    | Sur quelle période proposez-vous ce stage pour les lycéens ?
+  .fr-form-group.fr-ml-1v
+    .fr-radio-group.fr-py-1w
+      = form.radio_button :period,
+                          0,
+                          id: 'period_full_time',
+                          checked: resource.new_record? || both_weeks.in?(resource.weeks)
+
+      = form.label :period,
+                    labels[:full_time],
+                    for: 'period_full_time'
+    .fr-radio-group.fr-py-1w
+      = form.radio_button :period,
+                          1,
+                          id: 'period_week_1',
+                          checked: !resource.new_record? && week_1.in?(resource.weeks) && !both_weeks.in?(resource.weeks)
+
+      = form.label :period,
+                    labels[:week_1],
+                    for: 'period_week_1'
+
+    .fr-radio-group.fr-py-1w
+      = form.radio_button :period,
+                          2,
+                          id: 'period_week_2',
+                          checked: !resource.new_record? && week_2.in?(resource.weeks) && !both_weeks.in?(resource.weeks)
+
+      = form.label :period,
+                    labels[:week_2],
+                    for: 'period_week_2'

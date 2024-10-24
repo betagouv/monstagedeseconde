@@ -1,4 +1,4 @@
-# wrap shared behaviour between internship offer / organisation [by stepper]
+# wrap shared behaviour between internship offer / internship_occupation [by stepper]
 module StepperProxy
   module InternshipOccupation
     extend ActiveSupport::Concern
@@ -6,8 +6,7 @@ module StepperProxy
     included do
       include Nearbyable
 
-
-      
+      before_save :set_department
 
       validates :title,
                 :description,
@@ -17,6 +16,10 @@ module StepperProxy
 
       validates :description,
                 length: { maximum: InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT }
+
+      def set_department
+        self.department = Department.lookup_by_zipcode(zipcode: zipcode)
+      end
     end
   end
 end
