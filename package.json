@@ -61,8 +61,8 @@
     "eslint-plugin-react": "^7.14.3",
     "prettier": "^2.0.4",
     "prop-types": "^15.7.2",
-    "vnu-jar": "^20.3.16",
-    "webpack-dev-server": "3.11.0"
+    "webpack-dev-server": "3.11.0",
+    "vnu-jar": "^20.3.16"
   },
   "engines": {
     "node": "16.x"
