@@ -202,15 +202,25 @@ class Ability
     end
     can %i[create see_tutor], InternshipOffer
     can %i[read update discard publish], InternshipOffer, employer_id: user.team_members_ids
+    # legacy_abilities for stepper
     can %i[create], InternshipOfferInfo
     can %i[create], HostingInfo
     can %i[create], PracticalInfo
     can %i[create], Organisation
+    # new_abilities for stepper
+    can %i[create], InternshipOccupation
+    can %i[create], Entreprise
+    can %i[create], Planning
+    # legacy_abilities for stepper
     can %i[update edit renew], InternshipOfferInfo, employer_id: user.team_members_ids
     can %i[update edit renew], HostingInfo, employer_id: user.team_members_ids
     can %i[update edit renew], PracticalInfo, employer_id: user.team_members_ids
     can %i[update edit], Organisation, employer_id: user.team_members_ids
     can %i[create], Tutor
+    # new_abilities for stepper
+    can %i[update edit renew], InternshipOccupation, employer_id: user.team_members_ids
+    can %i[update edit renew], Entreprise, employer_id: user.team_members_ids
+    can %i[update edit renew], Planning, employer_id: user.team_members_ids
     can %i[index update], InternshipApplication
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)

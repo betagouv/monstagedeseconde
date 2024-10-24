@@ -11,7 +11,7 @@ require 'support/api_test_helpers'
 require 'support/third_party_test_helpers'
 require 'support/search_internship_offer_helpers'
 require 'support/email_spam_euristics_assertions'
-require 'support/organisation_form_filler'
+require 'support/internship_occupation_form_filler'
 require 'support/school_form_filler'
 require 'support/internship_offer_info_form_filler'
 require 'support/practical_info_form_filler'
@@ -24,9 +24,7 @@ require 'webmock/minitest'
 require 'webdrivers/chromedriver'
 
 ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 10_000)
-
-# version 115 is not working with chromedriver-helper
-# Webdrivers::Chromedriver.required_version = "114.0.5735.90"
+InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 1_000)
 
 Capybara.save_path = Rails.root.join('tmp/screenshots')
 

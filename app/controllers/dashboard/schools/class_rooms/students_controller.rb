@@ -57,6 +57,7 @@ module Dashboard
       def formatted_student_params
         student_params.merge(
           school_id: @class_room.school_id,
+          grade: @class_room.grade,
           class_room_id: @class_room.id,
           password: make_password,
           created_by_teacher: true
