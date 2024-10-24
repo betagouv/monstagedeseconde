@@ -29,6 +29,8 @@ class InternshipApplication < ApplicationRecord
     validated_by_employer
     approved
   ]
+  NOT_MODIFIABLE_STATES = %w[drafted submitted read_by_employer transfered validated_by_employer approved]
+  RE_APPROVABLE_STATES = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
 
   attr_accessor :sgid
 
@@ -388,18 +390,14 @@ class InternshipApplication < ApplicationRecord
   end
 
   def is_modifiable?
-    not_modifiable_states = %w[drafted submitted read_by_employer transfered validated_by_employer approved]
-    !not_modifiable_states.include?(aasm_state)
+    NOT_MODIFIABLE_STATES.exclude?(aasm_state)
   end
 
   def is_re_approvable?
     # false if sutdent is anonymised or student has an approved application
     return false if student.anonymized? || student.internship_applications.where(aasm_state: 'approved').any?
 
-    re_approvable_states = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
-    return true if re_approvable_states.include?(aasm_state)
-
-    false
+    RE_APPROVABLE_STATES.include?(aasm_state)
   end
 
   def self.from_sgid(sgid)
