@@ -128,7 +128,7 @@ module Teamable
       offer_ids = internship_offer_ids_by_area(area_id:)
       return InternshipOffer.none if offer_ids.empty?
 
-      InternshipOffer.where(id: offer_ids)
+      InternshipOffer.kept.where(id: offer_ids)
     end
 
     def internship_offers_by_team
