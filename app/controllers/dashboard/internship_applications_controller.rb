@@ -13,24 +13,33 @@ module Dashboard
     end
 
     def update_multiple
-      authorize! :update, InternshipApplication
+      authorize! :update_multiple, InternshipApplication
       @internship_applications = InternshipApplication.where(id: params[:ids].split(','))
 
       begin
         ActiveRecord::Base.transaction do
           @internship_applications.each do |internship_application|
-            internship_application.send(params[:transition])
+            if valid_transition?(params[:transition])
+              internship_application.public_send(params[:transition])
+            else
+              raise ArgumentError, "Transition non autorisée: #{params[:transition]}"
+            end
             internship_application.update!(rejected_message: params[:rejection_message])
           end
         end
         redirect_to dashboard_candidatures_path, notice: 'Les candidatures ont été modifiées'
-      rescue ActiveRecord::RecordInvalid => e
+      rescue ActiveRecord::RecordInvalid, ArgumentError => e
         redirect_to dashboard_candidatures_path, alert: "Erreur lors de la modification des candidatures: #{e.message}"
-      rescue NoMethodError => e
-        redirect_to dashboard_candidatures_path, alert: "Transition invalide: #{e.message}"
       rescue StandardError => e
         redirect_to dashboard_candidatures_path, alert: "Erreur lors de la modification des candidatures: #{e.message}"
       end
+    end
+
+    private
+
+    def valid_transition?(transition)
+      allowed_transitions = ['approve', 'reject', 'cancel']
+      allowed_transitions.include?(transition)
     end
   end
 end

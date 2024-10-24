@@ -115,18 +115,3 @@ css:
   .fr-menu[aria-hidden="false"] {
     display: block;
   }
-
-javascript:
-  function toggleDropdown() {
-    const button = document.getElementById('dropdownButton');
-    const menu = document.getElementById('dropdownMenu');
-    
-    const isExpanded = button.getAttribute('aria-expanded') === 'true';
-
-    // Alterner l'état aria-expanded du bouton
-    button.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
-
-    // Afficher ou masquer le menu
-    menu.setAttribute('aria-hidden', isExpanded ? 'true' : 'false');
-    menu.classList.toggle('fr-hidden');
-  }

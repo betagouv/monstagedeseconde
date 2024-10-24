@@ -1,15 +1,20 @@
-.fr-table.fr-table--bordered.fr-table--no-caption
-  // Add a button for bulk processing above the table
+.fr-table.fr-table--bordered.fr-table--no-caption data-controller="internship-application-index"
   .fr-mb-2w
-    button.fr-btn.fr-btn--secondary#bulk-process-btn[style="display: none;"]
-      | Traiter les candidatures sélectionnées
+    button.fr-btn.fr-btn--secondary#bulk-process-btn[
+      data-internship-application-index-target="bulkActionButton"
+      data-action="click->internship-application-index#bulkProcess"
+    ] Traiter les candidatures sélectionnées
 
   table
     thead
       tr
-        // Add a new header column for checkboxes
         th[scope="col" style="width: 40px;"]
-          input.fr-checkbox[type="checkbox" id="select-all"]
+          input.fr-checkbox[
+            type="checkbox"
+            id="select-all"
+            data-internship-application-index-target="selectAll"
+            data-action="change->internship-application-index#toggleSelectAll"
+          ]
         th[scope="col"]
           | Nom de l'élève
         th[scope="col"]
@@ -28,9 +33,14 @@
         - internship_applications.each do |internship_application|
           - prez = internship_application.presenter(current_user)
           tr
-            // Add a new cell with a checkbox
             td
-              input.fr-checkbox.application-checkbox[type="checkbox" data-application-id=internship_application.id]
+              input.fr-checkbox.application-checkbox[
+                type="checkbox"
+                data-internship-application-index-target="applicationCheckbox"
+                data-action="change->internship-application-index#toggleCheckbox"
+                data-application-id=internship_application.id
+                value=internship_application.id
+              ]
             td.col-name
               = prez.student.presenter.full_name
             td.col-title
@@ -52,31 +62,3 @@
                   span.fr-icon-eye-line.fr-icon--sm aria-hidden="true"
                   .fr-pl-1w Voir
 
-// Add JavaScript to handle checkbox functionality
-javascript:
-  document.addEventListener('DOMContentLoaded', function() {
-    const selectAllCheckbox = document.getElementById('select-all');
-    const applicationCheckboxes = document.querySelectorAll('.application-checkbox');
-    const bulkProcessBtn = document.getElementById('bulk-process-btn');
-
-    selectAllCheckbox.addEventListener('change', function() {
-      applicationCheckboxes.forEach(checkbox => checkbox.checked = this.checked);
-      updateBulkProcessBtn();
-    });
-
-    applicationCheckboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', updateBulkProcessBtn);
-    });
-
-    function updateBulkProcessBtn() {
-      const checkedBoxes = document.querySelectorAll('.application-checkbox:checked');
-      bulkProcessBtn.style.display = checkedBoxes.length > 0 ? 'inline-block' : 'none';
-    }
-
-    bulkProcessBtn.addEventListener('click', function() {
-      const selectedIds = Array.from(document.querySelectorAll('.application-checkbox:checked'))
-        .map(checkbox => checkbox.dataset.applicationId);
-      // TODO: Implement bulk processing logic here
-      console.log('Processing applications with IDs:', selectedIds);
-    });
-  });

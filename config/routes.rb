@@ -231,7 +231,7 @@ Rails.application.routes.draw do
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
 
   # Redirects
-  get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
+  get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/#{id}', status: 302)
 
   root_destination = ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true' ? 'maintenance_estivale' : 'home'
   root to: "pages##{root_destination}"

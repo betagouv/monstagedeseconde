@@ -2,24 +2,30 @@ import { Controller } from '@hotwired/stimulus';
 import { toggleElement, hideElement, showElement } from '../utils/dom';
 
 export default class extends Controller {
-  static targets = ['bulkActionButton', 'selectedCount', 'dropdownMenu', 'acceptationModal', 'rejectionModal'];
+  static targets = ['bulkActionButton', 'selectedCount', 'dropdownMenu', 'acceptationModal', 'rejectionModal', 'selectAll', 'applicationCheckbox'];
 
   connect() {
+    this.updateBulkProcessBtn();
   }
 
-  toggleBulkActionButton() {
-    if (!this.hasBulkActionButtonTarget) {
-      return;
-    }
+  toggleSelectAll() {
+    const isChecked = this.selectAllTarget.checked;
+    this.applicationCheckboxTargets.forEach(checkbox => checkbox.checked = isChecked);
+    this.updateBulkProcessBtn();
+  }
 
-    const checkedBoxes = this.element.querySelectorAll('input[type="checkbox"]:checked');
+  toggleCheckbox() {
+    this.updateBulkProcessBtn();
+  }
+
+  updateBulkProcessBtn() {
+    const checkedBoxes = this.applicationCheckboxTargets.filter(checkbox => checkbox.checked);
     const checkedCount = checkedBoxes.length;
 
-    if (checkedCount > 1) {
+    if (checkedCount > 0) {
       this.bulkActionButtonTarget.classList.remove('fr-hidden');
       const buttonText = `Action groupée (${checkedCount}) <i class="fr-icon-arrow-down-s-line fr-icon--right" aria-hidden="true"></i>`;
       this.bulkActionButtonTarget.innerHTML = buttonText;
-      // update all selectedCounts
       this.selectedCountTargets.forEach(target => {
         target.textContent = checkedCount;
       });
@@ -27,6 +33,15 @@ export default class extends Controller {
     } else {
       this.bulkActionButtonTarget.classList.add('fr-hidden');
     }
+  }
+
+  bulkProcess() {
+    const selectedIds = this.applicationCheckboxTargets
+      .filter(checkbox => checkbox.checked)
+      .map(checkbox => checkbox.dataset.applicationId);
+    
+    // Here you can add the logic to process the selected applications
+    console.log('Selected IDs:', selectedIds);
   }
 
   openAcceptationModal(event) {
@@ -50,10 +65,17 @@ export default class extends Controller {
   }
 
   updateIdsField() {
-    // updae all ids field form in all modals not just in acceptationModal
-    const ids = Array.from(this.element.querySelectorAll('input[type="checkbox"]:checked')).map((checkbox) => checkbox.value).join(',');
-    this.acceptationModalTarget.querySelector('input[name="ids"]').value = ids;
-    this.rejectionModalTarget.querySelector('input[name="ids"]').value = ids;
+    const ids = this.applicationCheckboxTargets
+      .filter(checkbox => checkbox.checked)
+      .map(checkbox => checkbox.value)
+      .join(',');
+    
+    if (this.hasAcceptationModalTarget) {
+      this.acceptationModalTarget.querySelector('input[name="ids"]').value = ids;
+    }
+    if (this.hasRejectionModalTarget) {
+      this.rejectionModalTarget.querySelector('input[name="ids"]').value = ids;
+    }
   }
 
   toggleDropdown(event) {
