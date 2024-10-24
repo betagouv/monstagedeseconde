@@ -60,9 +60,9 @@ module InternshipApplications
 
       assert_difference('InternshipApplications::WeeklyFramed.count', 1) do
         post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
-        assert_redirected_to internship_offer_internship_application_path(
-          internship_offer,
-          InternshipApplications::WeeklyFramed.last
+        assert_redirected_to dashboard_students_internship_applications_path(
+          student_id: student.id,
+          notice_banner: true
         )
       end
 
@@ -124,9 +124,9 @@ module InternshipApplications
 
       assert_difference('InternshipApplications::WeeklyFramed.count', 1) do
         post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
-        assert_redirected_to internship_offer_internship_application_path(
-          internship_offer,
-          InternshipApplications::WeeklyFramed.last
+        assert_redirected_to dashboard_students_internship_applications_path(
+          student_id: student.id,
+          notice_banner: true
         )
       end
 
@@ -187,9 +187,9 @@ module InternshipApplications
 
       assert_difference('InternshipApplications::WeeklyFramed.count', 1) do
         post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
-        assert_redirected_to internship_offer_internship_application_path(
-          internship_offer,
-          InternshipApplications::WeeklyFramed.last
+        assert_redirected_to dashboard_students_internship_applications_path(
+          student_id: student.id,
+          notice_banner: true
         )
       end
 
@@ -236,9 +236,9 @@ module InternshipApplications
 
       assert_difference('InternshipApplications::WeeklyFramed.count', 1) do
         post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
-        assert_redirected_to internship_offer_internship_application_path(
-          internship_offer,
-          InternshipApplications::WeeklyFramed.last
+        assert_redirected_to dashboard_students_internship_applications_path(
+          student_id: student.id,
+          notice_banner: true
         )
       end
 
@@ -270,9 +270,9 @@ module InternshipApplications
 
       assert_difference('InternshipApplications::WeeklyFramed.count', 1) do
         post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
-        assert_redirected_to internship_offer_internship_application_path(
-          internship_offer,
-          InternshipApplications::WeeklyFramed.last
+        assert_redirected_to dashboard_students_internship_applications_path(
+          student_id: student.id,
+          notice_banner: true
         )
       end
 
@@ -317,9 +317,9 @@ module InternshipApplications
 
       assert_difference('InternshipApplications::WeeklyFramed.count', 1) do # no failure since validation is not run
         post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
-        assert_redirected_to internship_offer_internship_application_path(
-          internship_offer,
-          InternshipApplications::WeeklyFramed.last
+        assert_redirected_to dashboard_students_internship_applications_path(
+          student_id: student_2.id,
+          notice_banner: true
         )
       end
     end
@@ -344,9 +344,9 @@ module InternshipApplications
 
       assert_difference('InternshipApplications::WeeklyFramed.count', 1) do
         post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
-        assert_redirected_to internship_offer_internship_application_path(
-          internship_offer,
-          InternshipApplications::WeeklyFramed.last
+        assert_redirected_to dashboard_students_internship_applications_path(
+          student_id: student.id,
+          notice_banner: true
         )
       end
 
@@ -377,9 +377,9 @@ module InternshipApplications
 
       assert_difference('InternshipApplications::WeeklyFramed.count', 1) do
         post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
-        assert_redirected_to internship_offer_internship_application_path(
-          internship_offer,
-          InternshipApplications::WeeklyFramed.last
+        assert_redirected_to dashboard_students_internship_applications_path(
+          student_id: student.id,
+          notice_banner: true
         )
       end
 

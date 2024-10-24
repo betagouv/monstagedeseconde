@@ -16,7 +16,6 @@ class InternshipApplication < ApplicationRecord
   EXPIRED_STATES = %w[expired expired_by_student]
   APPROVED_STATES = %w[approved validated_by_employer]
   ORDERED_STATES_INDEX = %w[
-    drafted
     expired
     canceled_by_student_confirmation
     canceled_by_student
@@ -70,6 +69,8 @@ class InternshipApplication < ApplicationRecord
             allow_blank: true
 
   # Callbacks
+  before_create :set_submitted_at
+  after_create :notify_users
   after_save :update_student_profile
 
   #
@@ -178,9 +179,8 @@ class InternshipApplication < ApplicationRecord
   end
 
   aasm do
-    state :drafted, initial: true
-    state :submitted,
-          :read_by_employer,
+    state :submitted, initial: true
+    state :read_by_employer,
           :transfered,
           :validated_by_employer,
           :approved,
@@ -334,6 +334,20 @@ class InternshipApplication < ApplicationRecord
                            update!(expired_at: Time.now.utc)
                          }
     end
+  end
+
+  def set_submitted_at
+    self.submitted_at = Time.now.utc if submitted_at.nil?
+  end
+
+  def notify_users
+    EmployerMailer.internship_application_submitted_email(internship_application: self).deliver_later(wait: 1.second)
+    Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
+
+    return if student.internship_applications.count == 0
+
+    Triggered::SingleApplicationReminderJob.set(wait: 2.days).perform_later(student.id)
+    Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
   end
 
   def state_index

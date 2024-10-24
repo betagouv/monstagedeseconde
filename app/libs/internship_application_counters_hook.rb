@@ -17,7 +17,6 @@ class InternshipApplicationCountersHook
 
   def total_applications_count
     internship_offer.internship_applications
-                    .reject(&:drafted?)
                     .count
   end
 
@@ -25,7 +24,6 @@ class InternshipApplicationCountersHook
     internship_offer.internship_applications
                     .joins(:student)
                     .includes(:student)
-                    .reject(&:drafted?)
                     .select(&:student_is_male?)
                     .count
   end
@@ -34,7 +32,6 @@ class InternshipApplicationCountersHook
     internship_offer.internship_applications
                     .joins(:student)
                     .includes(:student)
-                    .reject(&:drafted?)
                     .select(&:student_is_female?)
                     .count
   end
@@ -74,7 +71,6 @@ class InternshipApplicationCountersHook
                     .select(&:submitted?)
                     .count
   end
-
 
   private
 
