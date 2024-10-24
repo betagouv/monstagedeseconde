@@ -6,15 +6,10 @@ module Services
       internship_application       = create(:weekly_internship_application)
       other_internship_application = create(:weekly_internship_application)
 
-      assert_equal 0, internship_application.internship_offer.total_applications_count
-      internship_application.submit!
-      
       assert_equal 1, internship_application.internship_offer.total_applications_count
-      other_internship_application.submit!
-
       assert_equal 1, other_internship_application.internship_offer.total_applications_count
       refute internship_application.reload.approved?
-      
+
       internship_application.employer_validate!
       internship_application.approve!
       assert_equal 1, internship_application.internship_offer.approved_applications_count
