@@ -9,7 +9,7 @@ module ApplicationTransitable
       authorize_through_sgid? || authorize_through_token? || authorize!(:update, @internship_application)
       if valid_transition?
         # action happens here
-        @internship_application.send(params[:transition].to_sym)
+        @internship_application.send(params[:transition].to_sym, current_user)
         @internship_application.update!(optional_internship_application_params)
         # now exit if temporary authorization
         if authorize_through_sgid? || authorize_through_token?

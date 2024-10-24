@@ -102,6 +102,12 @@ module InternshipOffers::InternshipApplications
         assert_redirected_to internship_application.internship_offer.employer.custom_candidatures_path(tab: :approve!)
       end
       assert_equal 0, InternshipAgreement.count
+      assert_equal 'approved', internship_application.reload.aasm_state
+      assert_equal 'read_by_employer', internship_application.state_changes.first.from_state
+      assert_equal 'approved', internship_application.state_changes.last.to_state
+      assert_equal internship_application.internship_offer.employer.id,
+                   internship_application.state_changes.last.author_id
+      assert_equal 'Users::Employer', internship_application.state_changes.last.author_type
     end
 
     test 'PATCH #update with approve! when employer is a statistician that can sign agreements , it does create internship agreement' do
@@ -346,6 +352,7 @@ module InternshipOffers::InternshipApplications
 
     test 'PATCH #update with reject! transition sends email' do
       internship_application = create(:weekly_internship_application, :submitted)
+      assert_equal 'submitted', internship_application.aasm_state
 
       sign_in(internship_application.internship_offer.employer)
 
@@ -356,6 +363,11 @@ module InternshipOffers::InternshipApplications
       end
 
       assert InternshipApplication.last.rejected?
+      assert_equal 'rejected', InternshipApplication.last.aasm_state
+      assert_equal 'submitted', InternshipApplication.last.state_changes.last.from_state
+      assert_equal 'rejected', InternshipApplication.last.state_changes.last.to_state
+      assert_equal internship_application.internship_offer.employer,
+                   InternshipApplication.last.state_changes.last.author
     end
 
     test 'PATCH #update with reject! and a custom message transition sends email' do
