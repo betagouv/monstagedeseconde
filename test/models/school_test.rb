@@ -3,7 +3,6 @@
 require 'test_helper'
 
 class SchoolTest < ActiveSupport::TestCase
-  
   def setup
     # create(:department, name: 'Paris')
   end
@@ -17,28 +16,29 @@ class SchoolTest < ActiveSupport::TestCase
 
   test 'Agreement association' do
     school = create(:school, :with_school_manager)
-    student = create(:student, :troisieme_generale, school: school)
+    # refute_nil school.id
+    student = create(:student, :troisieme_generale, school:)
     internship_application = create(:weekly_internship_application, user_id: student.id)
     internship_agreement = create(:internship_agreement, :created_by_system,
-                                  internship_application: internship_application)
+                                  internship_application:)
 
     assert school.internship_agreements.include?(internship_agreement)
   end
 
-  test "legal_status" do
+  test 'legal_status' do
     school = create(:school)
-    assert_equal "Public", school.legal_status
-    school.update(contract_code: "30", is_public: false)
-    assert_equal "Privé sous contrat", school.legal_status
+    assert_equal 'Public', school.legal_status
+    school.update(contract_code: '30', is_public: false)
+    assert_equal 'Privé sous contrat', school.legal_status
   end
 
   test 'Users associations' do
     school = create(:school)
 
-    student = create(:student, school: school)
-    school_manager = create(:school_manager, school: school)
-    main_teacher = create(:main_teacher, school: school)
-    teacher = create(:teacher, school: school)
+    student = create(:student, school:)
+    school_manager = create(:school_manager, school:)
+    main_teacher = create(:main_teacher, school:)
+    teacher = create(:teacher, school:)
 
     assert_equal [student], school.students.all
     assert_equal [main_teacher], school.main_teachers.all
@@ -57,31 +57,30 @@ class SchoolTest < ActiveSupport::TestCase
 
   test 'has_staff with only teacher' do
     school = create(:school, :with_school_manager)
-    teacher = create(:teacher, school: school)
+    teacher = create(:teacher, school:)
     assert school.has_staff?
   end
 
   test 'has_staff with only main_teacher' do
     school = create(:school, :with_school_manager)
-    main_teacher = create(:main_teacher, school: school)
+    main_teacher = create(:main_teacher, school:)
     assert school.has_staff?
   end
 
   test 'has_staff with only other' do
     school = create(:school, :with_school_manager)
-    other = create(:other, school: school)
+    other = create(:other, school:)
     assert school.has_staff?
   end
 
   test 'has_staff with all kind of staff' do
     school = create(:school, :with_school_manager)
-    main_teacher = create(:main_teacher, school: school)
-    other = create(:other, school: school)
-    teacher = create(:teacher, school: school)
+    main_teacher = create(:main_teacher, school:)
+    other = create(:other, school:)
+    teacher = create(:teacher, school:)
     assert school.has_staff?
   end
 
-  
   test 'uniq code_uai' do
     school = create(:school)
     assert school.valid?

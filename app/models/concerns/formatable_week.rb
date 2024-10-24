@@ -15,10 +15,10 @@ module FormatableWeek
 
     def short_range_as_str
       [
-        I18n.localize(week_date.beginning_of_week, format: "%e %B"),
-        " ➝ ",
-        I18n.localize(week_date.end_of_week, format: "%e %B")
-      ].join("")
+        I18n.localize(week_date.beginning_of_week, format: '%e %B'),
+        ' ➝ ',
+        I18n.localize(week_date.end_of_week, format: '%e %B')
+      ].join('')
     end
 
     alias_method :to_s, :short_range_as_str
@@ -45,17 +45,20 @@ module FormatableWeek
     end
 
     def select_text_method
-      ['Du', beginning_of_week_with_short_month_year_long, 'au', end_of_week_with_short_month_years_long, "[Sem - #{number}]"]
+      ['Du', beginning_of_week_with_short_month_year_long, 'au', end_of_week_with_short_month_years_long,
+       "[Sem - #{number}]"]
         .map(&:to_s)
         .map(&:strip)
         .join(' ')
     end
+
     def select_text_method_with_year
       ['Semaine', number, '- du', beginning_of_week, 'au', end_of_week, year]
         .map(&:to_s)
         .map(&:strip)
         .join(' ')
     end
+    alias_method :to_str, :select_text_method_with_year
 
     def week_date
       Date.commercial(year, number)

@@ -71,7 +71,6 @@ module Nearbyable
         super
       end
     end
-    # alias_method :entreprise_coordinates=, :coordinates=
 
     # def osm_url
     #   return "http://www.openstreetmap.org/" unless coordinates_are_valid?

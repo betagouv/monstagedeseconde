@@ -1,4 +1,4 @@
 module SchoolTrack
-  class Troisieme
+  class Troisieme < Base
   end
 end
