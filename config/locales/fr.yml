@@ -193,6 +193,7 @@ fr:
         max_candidates: Nbr. max de candidats accueillis sur le stage
         daily_hours: Horaires journaliers
         daily_lunch_break: Pause déjeuner par jour
+        lunch_break: Pause déjeuner
         weekly_lunch_break: Pause déjeuner
         weekly_hours: Horaires
         max_students_per_group: Nbr. max d'élèves par groupe
@@ -588,7 +589,7 @@ fr:
             max_candidates:
               not_a_number: "Veuillez saisir un nombre de candidats par stage"
             is_public:
-              blank: "Le stage doit être soit collectif, soit individuel"
+              blank: "Le stage doit être soit public ou privé"
             description:
               blank: "Veuillez saisir une description pour l'offre de stage"
               too_long: La description doit faire au maximum 500 caractères
