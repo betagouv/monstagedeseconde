@@ -35,9 +35,8 @@ module Users
 
     # GET /resource/sign_up
     def new
-      if params[:as] == 'Employer'
-        @captcha_image, @captcha_uuid = Services::Captcha.generate
-      end
+      @captcha_image, @captcha_uuid = Services::Captcha.generate if %w[Employer SchoolManagement
+                                                                       Statistician].include?(params[:as])
       @resource_channel = resource_channel
       options = {}
       if params.dig(:user, :targeted_offer_id)
@@ -62,7 +61,10 @@ module Users
 
     # POST /resource
     def create
-      if params[:as] == 'Employer' && !check_captcha(params[:user][:captcha], params[:user][:captcha_uuid])
+      if %w[Employer
+            SchoolManagement
+            Statistician].include?(params[:as]) && !check_captcha(params[:user][:captcha],
+                                                                  params[:user][:captcha_uuid])
         flash[:alert] = I18n.t('devise.registrations.captcha_error')
         redirect_to_register_page(params[:as])
         return

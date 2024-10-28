@@ -285,7 +285,7 @@
                         span.font-weight-normal
                           = " pour connaître les modalités d'utilisations de mes informations récoltées."
                     = error_tag
-                - if params['as'] == 'Employer'
+                - if %w(Employer SchoolManagement Statistician).include?(params['as'])
                   .fr-col-12
                     hr.fr-mb-0
                     .fr-text
