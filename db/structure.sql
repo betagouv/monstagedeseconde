@@ -1484,6 +1484,7 @@ CREATE TABLE public.internship_offers (
     tutor_last_name character varying(60),
     tutor_first_name character varying(60),
     entreprise_full_address character varying(200),
+    internship_weeks_number integer DEFAULT 0,
     entreprise_coordinates public.geography(Point,4326)
 );
 
@@ -1749,7 +1750,8 @@ CREATE TABLE public.plannings (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     employer_id bigint,
-    lunch_break character varying(250)
+    lunch_break character varying(250),
+    internship_weeks_number integer DEFAULT 0
 );
 
 

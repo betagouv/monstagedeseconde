@@ -166,7 +166,8 @@ module Builders
         employer_id: planning.employer_id,
         lunch_break: planning.lunch_break,
         weeks: planning.weeks,
-        grades: planning.grades
+        grades: planning.grades,
+        internship_weeks_number: planning.weeks_count
       }
     end
 

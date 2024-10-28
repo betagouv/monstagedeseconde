@@ -212,6 +212,7 @@ module Dashboard
                     :is_public, :group_id, :published_at, :republish, :type,
                     :employer_id, :employer_type, :verb, :user_update, :school_id,
                     :siret, :employer_manual_enter, :lunch_break, :aasm_state,
+                    :internship_weeks_number,
                     entreprise_coordinates: {}, coordinates: {},
                     daily_hours: {}, weekly_hours: [], week_ids: [])
     end

@@ -4,7 +4,9 @@ class PlanningAndInternshipOfferUpdates < ActiveRecord::Migration[7.1]
     remove_reference :plannings, :internship_occupation, index: true, foreign_key: true
     add_reference :plannings, :employer, foreign_key: { to_table: :users }
     add_column :plannings, :lunch_break, :string, limit: 250, null: true
+    add_column :plannings, :internship_weeks_number, :integer, default: 0
 
+    add_column :internship_offers, :internship_weeks_number, :integer, default: 0
     remove_column :internship_offers, :weekly_lunch_break, :string
     add_column :internship_offers, :entreprise_coordinates, :st_point, geographic: true
     add_index :internship_offers, :entreprise_coordinates, using: :gist
