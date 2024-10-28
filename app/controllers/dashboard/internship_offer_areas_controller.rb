@@ -6,6 +6,9 @@ module Dashboard
     def index
       authorize! :index, InternshipOfferArea
       @internship_offer_areas = current_user.internship_offer_areas.includes([:employer])
+      @team_members = (current_user.pending_invitations_to_my_team.to_a +
+                      current_user.refused_invitations.to_a +
+                      Array(current_user.team&.team_members.to_a)).uniq
     end
 
     def new
@@ -21,8 +24,8 @@ module Dashboard
     def create
       authorize! :create, InternshipOfferArea
       build_params = internship_offer_area_params.merge(
-          employer_type: 'User',
-          employer_id: current_user.id
+        employer_type: 'User',
+        employer_id: current_user.id
       )
       @internship_offer_area = current_user.internship_offer_areas.build(build_params)
       if @internship_offer_area.save
@@ -39,10 +42,10 @@ module Dashboard
           format.turbo_stream do
             path = 'dashboard/internship_offer_areas/areas_modal_dialog'
             render turbo_stream:
-              turbo_stream.replace("fr-modal-add-space-dialog",
-                                    partial: path,
-                                    locals: { current_user: current_user,
-                                              internship_offer_area: @internship_offer_area })
+              turbo_stream.replace('fr-modal-add-space-dialog',
+                                   partial: path,
+                                   locals: { current_user:,
+                                             internship_offer_area: @internship_offer_area })
           end
         end
       end
@@ -58,16 +61,16 @@ module Dashboard
       if @internship_offer_area.update(internship_offer_area_params)
         notice = 'Modification du nom d\'espace opérée'
         redirect_to dashboard_internship_offers_path,
-                    notice: notice
+                    notice:
       else
         respond_to do |format|
           format.turbo_stream do
             path = 'dashboard/internship_offer_areas/edit_areas_modal_dialog'
             render turbo_stream:
-              turbo_stream.replace("fr-modal-edit-space-dialog",
-                                    partial: path,
-                                    locals: { current_user: current_user,
-                                              internship_offer_area: @internship_offer_area })
+              turbo_stream.replace('fr-modal-edit-space-dialog',
+                                   partial: path,
+                                   locals: { current_user:,
+                                             internship_offer_area: @internship_offer_area })
           end
         end
       end
@@ -78,21 +81,20 @@ module Dashboard
       raise 'boom' if @internship_offer_area.nil?
 
       @area_notification = fetch_area_notification ||
-                              quick_nofif_creation(area:internship_offer_area)
+                           quick_nofif_creation(area: internship_offer_area)
       respond_to do |format|
         format.turbo_stream do
           path = 'dashboard/internship_offer_areas/area_notifications/toggle'
           render turbo_stream:
             turbo_stream.replace("toggle_notif_#{dom_id(@area_notification)}",
-                                  partial: path,
-                                  locals: { area_notification: @area_notification,
-                                            internship_offer_area: @internship_offer_area })
+                                 partial: path,
+                                 locals: { area_notification: @area_notification,
+                                           internship_offer_area: @internship_offer_area })
         end
       end
     rescue ActiveRecord::RecordInvalid
       render :edit, status: :unprocessable_entity
     end
-
 
     # interface shows a destroy button when there is more than one area
     # transfer possibilities exists only for teams => these are the specific areas
@@ -101,7 +103,7 @@ module Dashboard
       authorize! :destroy, @internship_offer_area
       target_area = @internship_offer_area.team_sibling_area_sample
 
-      redirect_to dashboard_internship_offer_areas_path and return if params[:commit] != "Valider"
+      redirect_to dashboard_internship_offer_areas_path and return if params[:commit] != 'Valider'
 
       unless pure_destruction?(params) || current_user.internship_offer_areas.count == 1
         # this is the transfer option
@@ -129,7 +131,7 @@ module Dashboard
 
     def fetch_area_notification
       AreaNotification.find_by(user_id: current_user.id,
-                              internship_offer_area_id: @internship_offer_area.id)
+                               internship_offer_area_id: @internship_offer_area.id)
     end
 
     def quick_nofif_creation(area:)
@@ -163,11 +165,10 @@ module Dashboard
       user_to_update_list.each { |user| user.current_area_id_memorize(target_area_id) }
     end
 
-
     def set_areas_notifications
       current_user.team_members_ids.each do |user_id|
         AreaNotification.create!(
-          user_id: user_id,
+          user_id:,
           internship_offer_area_id: @internship_offer_area.id,
           notify: true
         )
