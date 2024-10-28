@@ -17,6 +17,7 @@ class Planning < ApplicationRecord
            foreign_key: :planning_id,
            inverse_of: :planning
   has_many :grades, through: :planning_grades
+  has_one :internship_offer, dependent: :destroy
 
   # Callbacks
 

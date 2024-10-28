@@ -15,19 +15,13 @@ class Entreprise < ApplicationRecord
           inverse_of: :entreprise
 
   # Validations
-  validates :is_public,
-            inclusion: { in: [true, false] }
   validates :siret, length: { is: 14 }
   validates :entreprise_full_address,
             length: { minimum: 8, maximum: 200 },
             presence: true
-  validates :employer_chosen_name,
-            length: { maximum: 80 },
-            allow_blank: true
-  validates :employer_name,
+  validates :is_public,
+            inclusion: { in: [true, false] },
             presence: true
-  validates :entreprise_coordinates,
-            exclusion: { in: [geo_point_factory(latitude: 0, longitude: 0)] }
 
   def entreprise_coordinates=(geolocation)
     case geolocation

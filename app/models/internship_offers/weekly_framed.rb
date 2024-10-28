@@ -17,6 +17,9 @@ module InternshipOffers
               numericality: { only_integer: true,
                               greater_than: 0,
                               less_than_or_equal_to: MAX_CANDIDATES_HIGHEST }
+    validates :is_public,
+              inclusion: { in: [true, false] },
+              presence: true
 
     validate :schedules_check
 
@@ -54,12 +57,12 @@ module InternshipOffers
     }
 
     def visible
-      published? ? "oui" : "non"
+      published? ? 'oui' : 'non'
     end
 
     def supplied_applications
       InternshipApplication.where(internship_offer_id: id)
-                           .where(aasm_state: ['approved', 'convention_signed'])
+                           .where(aasm_state: %w[approved convention_signed])
                            .count
     end
 
@@ -77,10 +80,10 @@ module InternshipOffers
     end
 
     def schedules_check
-      unless schedules_ok?
-        errors.add(:weekly_hours, :blank) if weekly_hours.blank?
-        errors.add(:daily_hours, :blank) if daily_hours.blank?
-      end
+      return if schedules_ok?
+
+      errors.add(:weekly_hours, :blank) if weekly_hours.blank?
+      errors.add(:daily_hours, :blank) if daily_hours.blank?
     end
 
     def schedules_ok?

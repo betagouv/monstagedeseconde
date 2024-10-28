@@ -13,6 +13,14 @@ module StepperProxy
                     :entreprise_coordinates_longitude,
                     :entreprise_coordinates_latitude
 
+      validates :employer_chosen_name,
+                length: { maximum: 80 },
+                allow_blank: true
+      validates :employer_name,
+                presence: true
+      validates :entreprise_coordinates,
+                exclusion: { in: [geo_point_factory(latitude: 0, longitude: 0)] }
+
       def entreprise_coordinates=(coordinates)
         case coordinates
         when Hash
