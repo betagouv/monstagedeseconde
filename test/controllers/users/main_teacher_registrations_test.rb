@@ -3,6 +3,8 @@
 require 'test_helper'
 
 class MainTeacherRegistrationsTest < ActionDispatch::IntegrationTest
+  include ThirdPartyTestHelpers
+
   def assert_main_teacher_form_rendered
     assert_select 'input', value: 'SchoolManagement', hidden: 'hidden'
     assert_select 'label', /Adresse électronique/
@@ -11,10 +13,12 @@ class MainTeacherRegistrationsTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET new as a SchoolManagement renders expected inputs' do
-    get new_user_registration_path(as: 'SchoolManagement')
+    captcha_stub do
+      get new_user_registration_path(as: 'SchoolManagement')
 
-    assert_response :success
-    assert_main_teacher_form_rendered
+      assert_response :success
+      assert_main_teacher_form_rendered
+    end
   end
 
   test 'POST #create with missing params fails creation' do
@@ -31,8 +35,8 @@ class MainTeacherRegistrationsTest < ActionDispatch::IntegrationTest
 
   test 'POST #create with all params create MainTeacher' do
     school = create(:school)
-    school_manager = create(:school_manager, school: school)
-    class_room = create(:class_room, name: '2de A', school: school)
+    school_manager = create(:school_manager, school:)
+    class_room = create(:class_room, name: '2de A', school:)
     assert_difference('Users::SchoolManagement.main_teacher.count', 1) do
       post user_registration_path(params: { user: { email: "teacher@#{school.email_domain_name}",
                                                     password: 'okokok1Max!!',
@@ -43,7 +47,7 @@ class MainTeacherRegistrationsTest < ActionDispatch::IntegrationTest
                                                     class_room_id: class_room.id,
                                                     accept_terms: '1',
                                                     role: :main_teacher } })
-      main_teacher_id =  Users::SchoolManagement.where(role: 'main_teacher').last.id
+      main_teacher_id = Users::SchoolManagement.where(role: 'main_teacher').last.id
       assert_redirected_to users_registrations_standby_path(id: main_teacher_id)
     end
   end
@@ -51,12 +55,12 @@ class MainTeacherRegistrationsTest < ActionDispatch::IntegrationTest
   test 'POST #create with all params create MainTeacher and withdraws the invitation' do
     email = 'teacher@ac-paris.fr'
     school = create(:school)
-    school_manager = create(:school_manager, school: school)
-    create(:invitation, email: email, user_id: school_manager.id)
-    class_room = create(:class_room, name: '2de A', school: school)
+    school_manager = create(:school_manager, school:)
+    create(:invitation, email:, user_id: school_manager.id)
+    class_room = create(:class_room, name: '2de A', school:)
     assert_equal 1, Invitation.count
     assert_difference('Users::SchoolManagement.main_teacher.count', 1) do
-      post user_registration_path(params: { user: { email: email,
+      post user_registration_path(params: { user: { email:,
                                                     password: 'okokok1Max!!',
                                                     type: 'Users::SchoolManagement',
                                                     first_name: 'Martin',

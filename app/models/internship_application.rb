@@ -13,6 +13,7 @@ class InternshipApplication < ApplicationRecord
   RECEIVED_STATES = %w[submitted read_by_employer expired transfered]
   PENDING_STATES = RECEIVED_STATES + %w[validated_by_employer] - %w[expired]
   REJECTED_STATES = %w[rejected canceled_by_employer canceled_by_student canceled_by_student_confirmation]
+  EXPIRED_STATES = %w[expired expired_by_student]
   APPROVED_STATES = %w[approved validated_by_employer]
   ORDERED_STATES_INDEX = %w[
     drafted
