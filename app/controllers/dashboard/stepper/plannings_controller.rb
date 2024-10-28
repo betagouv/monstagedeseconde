@@ -7,11 +7,17 @@ module Dashboard::Stepper
     before_action :fetch_planning, only: %i[edit update]
     before_action :fetch_entreprise, only: %i[new create]
 
+    PERIOD = {
+      two_weeks: 2,
+      first_week: 11,
+      second_week: 12
+    }
+
     def new
       @planning = Planning.new(
         all_year_long: true,
-        grade_3e4e: true,
-        grade_2e: true,
+        grade_3e4e: '1',
+        grade_2e: '1',
         entreprise_id: params[:entreprise_id]
       )
       authorize! :create, @planning
@@ -27,7 +33,7 @@ module Dashboard::Stepper
       if @planning.save
         internship_offer_builder.create_from_stepper(**builder_params) do |on|
           on.success do |created_internship_offer|
-            redirect_to(dashboard_internship_offer_path(created_internship_offer, origine: 'dashboard'),
+            redirect_to(internship_offer_path(created_internship_offer, origine: 'dashboard', stepper: true),
                         notice: 'Les informations de planning ont bien été enregistrées. Votre offre est publiée')
           end
           on.failure do |failed_internship_offer|
@@ -80,6 +86,7 @@ module Dashboard::Stepper
               :period,
               :school_id,
               :employer_id,
+              :weeks_count,
               daily_hours: {},
               weekly_hours: [],
               week_ids: []
@@ -100,17 +107,34 @@ module Dashboard::Stepper
     end
 
     def manage_grades
-      @planning.grades = Grade.troisieme_et_quatrieme.to_a if planning_params[:grade_3e4e] == '1'
-      @planning.grades.append Grade.seconde if planning_params[:grade_2e] == '1'
+      @planning.grades = Grade.troisieme_et_quatrieme.to_a if params_offer_for_troisieme_or_quatrieme?
+      @planning.grades.append Grade.seconde if params_offer_for_seconde?
     end
 
     def manage_weeks
-      @planning.weeks = @available_weeks if employer_chose_whole_year?
-      return unless planning_params[:grade_2e] == '1'
+      # @planning.weeks = @available_weeks if employer_chose_whole_year? # legacy
+      @planning.internship_weeks_number = 1
+      @planning.weeks = [] unless params_offer_for_troisieme_or_quatrieme?
+      return unless params_offer_for_seconde?
 
-      @planning.weeks << SchoolTrack::Seconde.both_weeks if planning_params[:period].to_i.zero?
-      @planning.weeks << SchoolTrack::Seconde.first_week if planning_params[:period].to_i == 1
-      @planning.weeks << SchoolTrack::Seconde.second_week if planning_params[:period].to_i == 2
+      if period == PERIOD[:two_weeks]
+        @planning.internship_weeks_number = 2
+        @planning.weeks << SchoolTrack::Seconde.both_weeks
+      end
+      @planning.weeks << SchoolTrack::Seconde.first_week if period == PERIOD[:first_week]
+      @planning.weeks << SchoolTrack::Seconde.second_week if period == PERIOD[:second_week]
+    end
+
+    def params_offer_for_seconde?
+      planning_params[:grade_2e].to_i == 1
+    end
+
+    def params_offer_for_troisieme_or_quatrieme?
+      planning_params[:grade_3e4e].to_i == 1
+    end
+
+    def period
+      planning_params[:period].to_i
     end
 
     def internship_offer_builder

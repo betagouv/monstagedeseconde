@@ -7,6 +7,13 @@ class InternshipOffer < ApplicationRecord
   MAX_CANDIDATES_HIGHEST = 6_000
   TITLE_MAX_CHAR_COUNT = 150
   DESCRIPTION_MAX_CHAR_COUNT = 500
+  DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description
+                            employer_name street zipcode city department entreprise_coordinates
+                            employer_chosen_name,
+                            entreprise_full_address internship_offer_area_id internship_weeks_number
+                            is_public group school_id coordinates first_date last_date
+                            siret employer_manual_enter lunch_break daily_hours
+                            weekly_hours ].freeze
 
   include StiPreload
   include AASM
@@ -302,6 +309,20 @@ class InternshipOffer < ApplicationRecord
     internship_applications.empty?
   end
 
+  def two_weeks_long?
+    internship_weeks_number == 2
+  end
+
+  def seconde_school_track_week_1?
+    internship_weeks_number == 1 &&
+      SchoolTrack::Seconde.first_week.in?(weeks)
+  end
+
+  def seconde_school_track_week_2?
+    internship_weeks_number == 1 &&
+      SchoolTrack::Seconde.second_week.in?(weeks)
+  end
+
   #
   # callbacks
   #
@@ -388,28 +409,11 @@ class InternshipOffer < ApplicationRecord
   end
 
   def duplicate
-    white_list = %w[type title sector_id max_candidates description
-                    tutor_name tutor_phone tutor_email tutor_role employer_website
-                    employer_name street zipcode city department region academy
-                    is_public group school_id coordinates first_date last_date
-                    siret employer_manual_enter internship_offer_area_id
-                    contact_phone internship_offer_info_id organisation_id tutor_id
-                    weekly_hours daily_hours lunch_break employer_description]
-
-    internship_offer = generate_offer_from_attributes(white_list)
-    organisation = self.organisation.dup
-    internship_offer.organisation = organisation
-    internship_offer
+    generate_offer_from_attributes(DUPLICATE_WHITE_LIST)
   end
 
   def duplicate_without_location
-    white_list_without_location = %w[type title sector_id max_candidates
-                                     tutor_name tutor_phone tutor_email tutor_role employer_website
-                                     employer_name is_public group school_id coordinates
-                                     first_date last_date siret employer_manual_enter
-                                     internship_offer_area_id employer_description
-                                     internship_offer_info_id organisation_id tutor_id
-                                     weekly_hours daily_hours]
+    white_list_without_location = DUPLICATE_WHITE_LIST - %w[street city zipcode coordinates]
 
     generate_offer_from_attributes(white_list_without_location)
   end
@@ -454,7 +458,10 @@ class InternshipOffer < ApplicationRecord
   end
 
   def generate_offer_from_attributes(white_list)
-    InternshipOffer.new(attributes.slice(*white_list))
+    offer = InternshipOffer.new(attributes.slice(*white_list))
+    offer.weeks = weeks
+    offer.grades = grades
+    offer
   end
 
   def preset_published_at_to_now

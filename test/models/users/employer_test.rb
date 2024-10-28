@@ -14,8 +14,8 @@ module Users
     test '(rails6.1 upgrade) employer.kept_internship_offers' do
       employer = create(:employer)
       assert !!employer.reload.id, 'employer id shoud be present'
-      kept_internship_offer = create(:weekly_internship_offer, employer: employer)
-      discarded_internship_offer = create(:weekly_internship_offer, employer: employer)
+      kept_internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
+      discarded_internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
       discarded_internship_offer.discard
 
       assert_equal 1, employer.kept_internship_offers.count
@@ -30,8 +30,8 @@ module Users
 
     test '(rails6.1 upgrade) employer.internship_applications' do
       employer = create(:employer)
-      kept_internship_offer = create(:weekly_internship_offer, employer: employer)
-      discarded_internship_offer = create(:weekly_internship_offer, employer: employer)
+      kept_internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
+      discarded_internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
       kept_internship_application = create(:weekly_internship_application, internship_offer: kept_internship_offer)
       discarded_internship_application = create(:weekly_internship_application,
                                                 internship_offer: discarded_internship_offer)
@@ -68,7 +68,7 @@ module Users
       assert_equal 2, TeamMemberInvitation.count
       assert_equal [internship_offer_1.id, internship_offer_2.id].sort, employer_2.internship_offers.to_a.map(&:id).sort
       assert_equal [internship_offer_1.id, internship_offer_2.id].sort, employer_1.internship_offers.to_a.map(&:id).sort
-      internship_offer_3 = create(:weekly_internship_offer,
+      internship_offer_3 = create(:weekly_internship_offer_2nde,
                                   employer: employer_1,
                                   internship_offer_area_id: create(:area).id)
       assert_equal [internship_offer_1.id, internship_offer_2.id].sort,
@@ -86,8 +86,8 @@ module Users
       assert_equal employer_1.current_area_id, employer_2.current_area_id
       assert_equal employer_1.id, offer.employer.id
       assert_equal employer_1.current_area_id, offer.internship_offer_area_id
-      offer_2 = create(:weekly_internship_offer, employer: employer_2,
-                                                 internship_offer_area_id: employer_1.current_area_id)
+      offer_2 = create(:weekly_internship_offer_2nde, employer: employer_2,
+                                                      internship_offer_area_id: employer_1.current_area_id)
       assert_equal employer_1.current_area_id, employer_2.current_area_id
       assert_equal 2, employer_1.internship_offer_areas.count
       assert_changes -> { InternshipOffer.kept.count }, from: 2, to: 1 do
@@ -101,8 +101,8 @@ module Users
 
     test '#anonymize when not in a team with internship_offers' do
       employer_1 = create(:employer)
-      offer = create(:weekly_internship_offer, employer: employer_1,
-                                               internship_offer_area_id: employer_1.current_area_id)
+      offer = create(:weekly_internship_offer_2nde, employer: employer_1,
+                                                    internship_offer_area_id: employer_1.current_area_id)
       assert_equal 1, InternshipOfferArea.count
       assert_changes -> { InternshipOffer.kept.count }, from: 1, to: 0 do
         assert_no_changes -> { InternshipOfferArea.count } do
@@ -113,11 +113,11 @@ module Users
 
     test '#pending_agreements_actions_count with 1 signature by employer' do
       employer = create(:employer)
-      create(:weekly_internship_offer, employer: employer)
+      create(:weekly_internship_offer_2nde, employer: employer)
       status_count = InternshipAgreement.aasm.states.count
       status_count.times do
         student = create(:student)
-        wio = create(:weekly_internship_offer, employer: employer)
+        wio = create(:weekly_internship_offer_2nde, employer: employer)
         create(
           :weekly_internship_application,
           :submitted,
@@ -146,11 +146,11 @@ module Users
 
     test '#pending_agreements_actions_count with 1 signature by school_manager' do
       employer = create(:employer)
-      create(:weekly_internship_offer, employer: employer)
+      create(:weekly_internship_offer_2nde, employer: employer)
       status_count = InternshipAgreement.aasm.states.count
       status_count.times do
         student = create(:student)
-        wio = create(:weekly_internship_offer, employer: employer)
+        wio = create(:weekly_internship_offer_2nde, employer: employer)
         create(
           :weekly_internship_application,
           :submitted,

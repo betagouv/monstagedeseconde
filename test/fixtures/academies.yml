@@ -53,7 +53,7 @@ Guyane:
 Caledonie:
   name: Académie de la Nouvelle-Calédonie
   email_domain: ac-noumea.nc
-  academy_region: Caledonie 
+  academy_region: Caledonie
 Polynésie:
   name: Académie de la Nouvelle-Calédonie
   email_domain: ac-polynesie.pf
@@ -76,11 +76,11 @@ Lille:
   academy_region: Nord
 Creteil:
   name: Académie de Créteil
-  email_domain: 
+  email_domain: ac-creteil.fr
   academy_region: Ile
 Paris:
   name: Académie de Paris
-  email_domain: 
+  email_domain: ac-paris.fr
   academy_region: Ile
 Versailles:
   name: Académie de Versailles

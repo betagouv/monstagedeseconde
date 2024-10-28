@@ -207,7 +207,7 @@ module Dashboard
         student = create(:student,
                          school:,
                          class_room: create(:class_room, school:))
-        internship_offer = create(:weekly_internship_offer, :week_1)
+        internship_offer = create(:weekly_internship_offer_2nde, :week_1)
         create(:weekly_internship_application,
                :submitted,
                internship_offer:,
@@ -286,7 +286,7 @@ module Dashboard
                          :when_applying,
                          school:,
                          class_room: create(:class_room, school:))
-        internship_offer_1 = create(:weekly_internship_offer, :week_1)
+        internship_offer_1 = create(:weekly_internship_offer_2nde, :week_1)
         internship_offer_2 = create(:weekly_internship_offer, :week_2)
         approved_application_1 = create(:weekly_internship_application,
                                         :drafted,
@@ -402,7 +402,7 @@ module Dashboard
 
       test "student can apply twice if he's got one week internship only" do
         student = create(:student)
-        internship_offer_1 = create(:weekly_internship_offer, :week_1)
+        internship_offer_1 = create(:weekly_internship_offer_2nde, :week_1)
         internship_offer_2 = create(:weekly_internship_offer, :week_2)
         internship_application = create(:weekly_internship_application, :approved, student:,
                                                                                    internship_offer: internship_offer_1)
@@ -417,8 +417,8 @@ module Dashboard
 
       test 'student cannot apply twice on the same week internship' do
         student = create(:student)
-        internship_offer_1 = create(:weekly_internship_offer, :week_1)
-        internship_offer_2 = create(:weekly_internship_offer, :week_1)
+        internship_offer_1 = create(:weekly_internship_offer_2nde, :week_1)
+        internship_offer_2 = create(:weekly_internship_offer_2nde, :week_1)
         internship_application = create(:weekly_internship_application, :approved, student:,
                                                                                    internship_offer: internship_offer_1)
         sign_in(student)

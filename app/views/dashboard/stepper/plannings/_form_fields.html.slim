@@ -65,8 +65,9 @@
 
   - if submit_button
     .fr-mt-6w
-      = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
+      = link_to 'Précédent', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
       = button_tag :submit,
                    class: 'fr-btn',
-                   :'data-mandatory-fileds-target' => "disabledField"  do
+                   :'data-daily-hours-target' => "submitButton",
+                   :'data-mandatory-fields-target' => "disabledField"  do
         = "Publier l'offre"

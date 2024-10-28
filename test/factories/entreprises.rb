@@ -12,7 +12,6 @@ FactoryBot.define do
     entreprise_coordinates { Coordinates.paris }
 
     trait :private do
-      group { create(:group, is_public: false) }
       is_public { false }
     end
     trait :public do

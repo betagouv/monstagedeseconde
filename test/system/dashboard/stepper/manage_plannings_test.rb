@@ -7,7 +7,7 @@ class ManagePlanningsTest < ApplicationSystemTestCase
 
   test 'can create a planning with grade troisieme / quatrieme only' do
     travel_to Date.new(2025, 1, 1) do
-      entreprise = create(:entreprise)
+      entreprise = create(:entreprise, is_public: false)
       internship_occupation = entreprise.internship_occupation
       employer = internship_occupation.employer
 
@@ -60,6 +60,7 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_equal Coordinates.paris[:longitude], internship_offer.entreprise_coordinates.longitude
       assert_equal '75012', internship_offer.zipcode
       assert_equal 'Paris', internship_offer.city
+      refute internship_offer.is_public
     end
   end
 

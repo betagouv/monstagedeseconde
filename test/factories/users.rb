@@ -55,15 +55,15 @@ FactoryBot.define do
       end
 
       trait :quatrieme do
-        grade { create(:grade, :quatrieme) }
+        grade { Grade.quatrieme }
       end
 
       trait :troisieme do
-        grade { create(:grade, :troisieme) }
+        grade { Grade.troisieme }
       end
 
       trait :seconde do
-        grade { create(:grade, :seconde) }
+        grade { Grade.seconde }
       end
 
       trait :with_phone do
@@ -71,7 +71,14 @@ FactoryBot.define do
       end
 
       factory :student_with_class_room_3e, class: 'Users::Student', parent: :student do
-        class_room { create(:class_room, school:) }
+        class_room { create(:class_room, :troisieme) }
+        after(:create) do |student|
+          create(:main_teacher, class_room: student.class_room, school: student.school)
+        end
+      end
+
+      factory :student_with_class_room_2nde, class: 'Users::Student', parent: :student do
+        class_room { create(:class_room, :seconde) }
         after(:create) do |student|
           create(:main_teacher, class_room: student.class_room, school: student.school)
         end

@@ -13,7 +13,7 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
   .fr-form-group.fr-ml-1v
     .fr-radio-group.fr-py-1w
       = form.radio_button :period,
-                          0,
+                          2,
                           id: 'period_full_time',
                           checked: resource.new_record? || both_weeks.in?(resource.weeks)
 
@@ -22,7 +22,7 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
                     for: 'period_full_time'
     .fr-radio-group.fr-py-1w
       = form.radio_button :period,
-                          1,
+                          11,
                           id: 'period_week_1',
                           checked: !resource.new_record? && week_1.in?(resource.weeks) && !both_weeks.in?(resource.weeks)
 
@@ -32,7 +32,7 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
 
     .fr-radio-group.fr-py-1w
       = form.radio_button :period,
-                          2,
+                          12,
                           id: 'period_week_2',
                           checked: !resource.new_record? && week_2.in?(resource.weeks) && !both_weeks.in?(resource.weeks)
 

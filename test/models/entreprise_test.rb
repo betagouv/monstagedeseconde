@@ -22,8 +22,7 @@ class EntrepriseTest < ActiveSupport::TestCase
   end
 
   test 'tutor partially filled form fails gracefully' do
-    valid_email = 'test@free.fr'
-    entreprise = build(:entreprise, tutor_email: valid_email, tutor_first_name: '')
+    entreprise = build(:entreprise, entreprise_full_address: '')
     refute entreprise.valid?
     assert_equal 'Prénom du tuteur Les informations du tuteur doivent être entièrement renseignées ou totalement vides',
                  entreprise.errors.full_messages.first

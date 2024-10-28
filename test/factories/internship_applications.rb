@@ -10,6 +10,7 @@ FactoryBot.define do
     student_address { FFaker::AddressFR.full_address }
     student_legal_representative_full_name { FFaker::NameFR.name }
     student_legal_representative_email { FFaker::Internet.email }
+    week { Week.selectable_from_now_until_end_of_school_year.sample }
     student_legal_representative_phone do
       "+330#{rand(6..7)}#{FFaker::PhoneNumberFR.mobile_phone_number[2..-1]}".gsub(' ', '')
     end
@@ -83,11 +84,29 @@ FactoryBot.define do
     end
 
     transient do
-      weekly_internship_offer_helper { create(:weekly_internship_offer) }
+      weekly_internship_offer_helper { create(:weekly_internship_offer_2nde) }
     end
 
     trait :weekly do
       internship_offer { weekly_internship_offer_helper }
+    end
+
+    trait :first_june_week do
+      student { create(:student_with_class_room_2nde, :seconde) }
+      week { SchoolTrack::Seconde.both_weeks.first }
+      internship_offer { create(:weekly_internship_offer_2nde, :week_1) }
+    end
+
+    trait :second_june_week do
+      student { create(:student_with_class_room_2nde, :seconde) }
+      week { SchoolTrack::Seconde.both_weeks.second }
+      internship_offer { create(:weekly_internship_offer, :week_2) }
+    end
+
+    trait :both_june_weeks do
+      student { create(:student_with_class_room_2nde, :seconde) }
+      week { SchoolTrack::Seconde.first_week }
+      internship_offer { create(:weekly_internship_offer_2nde, :both_weeks) }
     end
 
     factory :weekly_internship_application, traits: [:weekly],

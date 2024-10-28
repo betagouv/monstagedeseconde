@@ -16,6 +16,15 @@ class Grade < ApplicationRecord
   has_many :internship_offer_grades, dependent: :destroy
   has_many :internship_offers, through: :internship_offer_grades
 
+  def troisieme_or_quatrieme?
+    short_name.in?(%w[troisieme quatrieme])
+  end
+  alias troisieme_ou_quatrieme? troisieme_or_quatrieme?
+
+  def seconde?
+    short_name == 'seconde'
+  end
+
   def self.troisieme
     fetch_by_short_name('troisieme').first
   end

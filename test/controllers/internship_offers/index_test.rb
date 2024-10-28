@@ -528,9 +528,9 @@ class IndexTest < ActionDispatch::IntegrationTest
 
   test 'search on period works' do
     travel_to(Date.new(2024, 3, 1)) do
-      offer_1 = create(:weekly_internship_offer, :week_1)
+      offer_1 = create(:weekly_internship_offer_2nde, :week_1)
       offer_2 = create(:weekly_internship_offer, :week_2)
-      offer_3 = create(:weekly_internship_offer, :full_time)
+      offer_3 = create(:weekly_internship_offer_2nde, :both_weeks)
 
       get internship_offers_path(period: 1, format: :json)
       assert_response :success
