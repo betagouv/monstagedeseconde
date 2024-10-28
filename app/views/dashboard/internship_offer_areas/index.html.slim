@@ -22,13 +22,7 @@
         th scope="col" Offres déposées
         th scope="col" Candidatures en attente
         th scope="col" Candidatures acceptées
-        th scope="col" 
-          / = link_to '#', data: { fr_opened: "false", aria: { describedby: "tooltip-2994" } }, class: 'fr-link' do
-          | Recevoir les notifications
-          
-          / span.fr-tooltip.fr-placement id="tooltip-2994" role="tooltip" aria-hidden="true"
-          /   | Lorem [...] elit ut.
-
+        th scope="col" Recevoir les notifications
         - if current_user.team_areas.count > 1
           th.action-col scope="col" 
             
@@ -52,10 +46,11 @@
                           area_notification: notification, internship_offer_area: area
           - if can?(:destroy, area)
             td
-              = link_to '#', data: { fr_opened: "false", aria: { controls: "fr-modal-area-destroy-dialog-#{area.id}" } }, class: 'your-button-class' do
+              button.blue-france[data-fr-opened="false"
+                                                      aria-controls="fr-modal-area-destroy-dialog-#{area.id}"]
                 span.fr-fi-delete-fill
-        = render 'dashboard/internship_offer_areas/destroy_areas_modal_dialog',
-                  internship_offer_area: area
+            = render 'dashboard/internship_offer_areas/destroy_areas_modal_dialog',
+                    internship_offer_area: area
       tr
         td
           | Total
