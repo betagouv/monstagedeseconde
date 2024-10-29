@@ -61,8 +61,8 @@ module Dashboard
         anchor = 'weeks_container'
         warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des semaines de stage"
       end
-      redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor: anchor),
-                  flash: { warning: warning }
+      redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor:),
+                  flash: { warning: }
     end
 
     def update
@@ -212,7 +212,7 @@ module Dashboard
                     :is_public, :group_id, :published_at, :republish, :type,
                     :employer_id, :employer_type, :verb, :user_update, :school_id,
                     :siret, :employer_manual_enter, :lunch_break, :aasm_state,
-                    :internship_weeks_number,
+                    :internship_weeks_number, :period,
                     entreprise_coordinates: {}, coordinates: {},
                     daily_hours: {}, weekly_hours: [], week_ids: [])
     end

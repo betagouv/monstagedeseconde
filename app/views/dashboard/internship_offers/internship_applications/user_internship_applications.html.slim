@@ -12,6 +12,9 @@
       - if can?(:flip_notification, notification)
         = render 'dashboard/internship_offer_areas/area_notifications/flip_notification',
                   area_notification: notification
+    
+  .d-flex.justify-content-end 
+    = link_to 'Exporter les candidatures', dashboard_candidatures_path(format: 'xlsx'), class: 'fr-btn fr-btn--secondary fr-mb-2w fr-btn--icon-left fr-icon-file-download-fill'
   .fr-tabs.dashboard
     ul.fr-tabs__list[role="tablist" aria-label="[Candidatures par type]"]
       li
