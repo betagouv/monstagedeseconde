@@ -24,7 +24,7 @@ module Dashboard
 
       def set_to_read
         authorize! :update, @internship_application, InternshipApplication
-        @internship_application.read! if @internship_application.submitted?
+        @internship_application.read!(current_user) if @internship_application.submitted?
         redirect_to dashboard_internship_offer_internship_application_path(
           @internship_application.internship_offer,
           @internship_application
@@ -74,6 +74,9 @@ module Dashboard
           end
           # no authorization here
         else
+          if @internship_application.submitted? && current_user.employer_like?
+            @internship_application.read!(current_user)
+          end
           authenticate_user!
         end
       end

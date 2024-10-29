@@ -44,7 +44,7 @@
         = link_to dashboard_candidatures_path,
                   class: 'fr-mt-8w ' do
           span.fr-icon-arrow-left-line.fr-btn--icon-left.fr-raw-link
-            | retour
+            | Retourner aux candidatures
   - if current_user.student?
     .row
       .col-12
@@ -60,31 +60,107 @@
         - if can?(:read_employer_data, @internship_application)
           = render 'dashboard/internship_offers/internship_applications/employer_contact',
                     internship_application: @internship_application
-.row
-  .col-12
-    h2.h3.fr-mt-4w.fr-mb-2w
-      = @internship_application.internship_offer.title
-    p.fr-text--sm.fr-mb-4w
-      = "#{@internship_application.internship_offer.city.capitalize} - #{@internship_application.internship_offer.employer_name}"
-.d-flex.align-items-end
-  .container-monstage-application
-    .grey-container-application.with-grey-background
-      h2.h4.fr-mb-4w = @internship_application.student.presenter.full_name
-      p.fr-icon-calendar-line.fr-btn--icon-left
-        = "Période : <strong>#{@internship_application.internship_offer.current_period_label}</strong>".html_safe
-      - unless @internship_application.motivation.blank?
-        h3.h5 Motivations
-        p = @internship_application.motivation
+- if current_user&.employer_like?
+  .row
+    .col-12
+      h2.h3.fr-mt-4w.fr-mb-2w
+        = @internship_application.title
+  .d-flex
+    .container-monstage-application
+      .grey-container-application.with-grey-background
+        h2.h4.fr-mb-4w = @internship_application.internship_offer.title
+        p.fr-icon-calendar-line.fr-btn--icon-left
+          = "Période : <strong>#{@internship_application.internship_offer.current_period_label}</strong>".html_safe
+        h4.h5 Motivations
+        p.fr-mb-2w = @internship_application.motivation || "Non communiquées"
 
-      = render partial: "/internship_applications/student_details",
-                        locals: { student: @internship_application.student,
-                                internship_application: @internship_application}
+        = render partial: "/internship_applications/student_details",
+                          locals: { student: @internship_application.student,
+                                  internship_application: @internship_application}
 
-    .grey-container-application.fr-mb-18w
-      - if current_user&.employer_like? || params[:token].present?
-        - opts = { internship_application: @internship_application }
-        - opts.merge!(opened_modal: params[:opened_modal]) if params[:opened_modal].present?
-        = render "dashboard/internship_offers/internship_applications/actions/employer_decisions", **opts
+      .grey-container-application.fr-mb-18w
+        - if current_user.employer_like? || params[:token].present?
+          - opts = { internship_application: @internship_application }
+          - opts.merge!(opened_modal: params[:opened_modal]) if params[:opened_modal].present?
+          = render "dashboard/internship_offers/internship_applications/actions/employer_decisions", **opts
 
-  .fr-ml-11w.fr-mb-8v
-    = render 'internship_applications/transfer_notice'
+    .fr-ml-11w.rg2a-width-100.w-100.
+      - if @internship_application.is_modifiable?
+        .fr-card.fr-px-2w
+          .fr-card-body
+            - presenter = @internship_application.presenter(current_user)
+            .fr-badge.fr-badge--no-icon.fr-my-2w class="fr-badge--#{presenter.human_state[:badge]}" = @internship_application.aasm.human_state
+            h3.h5.fr-mb-2w.fr-mt-2w
+              = "Candidature #{@internship_application.aasm.human_state} le #{l((@internship_application.state_changes.last.created_at))}"
+            p.fr-mb-2w
+              - author = @internship_application.state_changes.last.author
+              = "Par #{author.presenter.full_name}"
+            .row.fr-mb-2w.small.fr-px-2w
+              .col-1
+                span.fr-icon-arrow-right-line.fr-icon--sm
+              .col-11
+                span.font-weight-bold  Motif 
+                p.small=  @internship_application.response_message || "Non communiqué"
+        
+        .fr-callout.fr-icon-information-line.fr-mt-4w.fr-mb-4w
+          h3.fr-callout__title
+            = callout_title(@internship_application)
+          - if @internship_application.is_re_approvable?
+            p.fr-callout__text
+              | Un email sera envoyé à l’élève lui indiquant que vous souhaitez retenir sa candidature. Il devra ensuite confirmer sa participation au stage.
+            = render "dashboard/internship_offers/internship_applications/action_modal",
+              internship_application:@internship_application,
+              aasm_target: :employer_validate!,
+              modal_opener_label: 'Retenir cette candidature',
+              subtitle: '',
+              message: "En cliquant sur Retenir cette candidature, vous confirmez que vous souhaitez prendre cet élève en stage. Celui-ci sera informé de votre décision.",
+              rich_text: false,
+              modal_id: "approve-internship-application-#{@internship_application.id}",
+              fa_icon: "fr-icon-check-line",
+              token: nil,
+              opened_modal: defined?(opened_modal) ? opened_modal == 'accept' : false
+          - else
+            / = button_to callout_btn_title(@internship_application), 'callout_path', method: :post, class: "fr-btn fr-btn--sm fr-mt-2w"
+            = render "dashboard/internship_offers/internship_applications/action_modal",
+              internship_application: @internship_application,
+              aasm_target: :reject!,
+              modal_opener_label: 'Refuser cette candidature',
+              subtitle: 'Motif de refus de stage*',
+              message: "En cliquant sur “refuser”, vous confirmez que vous ne souhaitez " \
+                                  "pas prendre cet élève en stage. Celui-ci sera informé de votre décision.",
+              rich_text: true,
+              modal_id: "reject-internship-application-#{@internship_application.id}",
+              fa_icon: "fr-icon-close-line",
+              token: nil,
+              opened_modal: defined?(opened_modal) ? opened_modal == 'refuse' : false
+
+        
+- else
+  .row
+    .col-12
+      h2.h3.fr-mt-4w.fr-mb-2w
+        = @internship_application.internship_offer.title
+      p.fr-text--sm.fr-mb-4w
+        = "#{@internship_application.internship_offer.city.capitalize} - #{@internship_application.internship_offer.employer_name}"
+  .d-flex.align-items-end
+    .container-monstage-application
+      .grey-container-application.with-grey-background
+        h2.h4.fr-mb-4w = @internship_application.student.presenter.full_name
+        p.fr-icon-calendar-line.fr-btn--icon-left
+          = "Période : <strong>#{@internship_application.internship_offer.current_period_label}</strong>".html_safe
+        - unless @internship_application.motivation.blank?
+          h3.h5 Motivations
+          p = @internship_application.motivation
+
+        = render partial: "/internship_applications/student_details",
+                          locals: { student: @internship_application.student,
+                                  internship_application: @internship_application}
+
+      .grey-container-application.fr-mb-18w
+        - if current_user&.employer_like? || params[:token].present?
+          - opts = { internship_application: @internship_application }
+          - opts.merge!(opened_modal: params[:opened_modal]) if params[:opened_modal].present?
+          = render "dashboard/internship_offers/internship_applications/actions/employer_decisions", **opts
+
+    .fr-ml-11w.fr-mb-8v
+      = render 'internship_applications/transfer_notice'
