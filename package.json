@@ -65,7 +65,7 @@
     "webpack-dev-server": "3.11.0"
   },
   "engines": {
-    "node": "18.17"
+    "node": "18.x"
   },
   "resolutions": {
     "rails_admin/@fortawesome/fontawesome-free": "^5.15.0"
