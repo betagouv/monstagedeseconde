@@ -28,6 +28,8 @@ class InternshipApplication < ApplicationRecord
     validated_by_employer
     approved
   ]
+  NOT_MODIFIABLE_STATES = %w[drafted submitted read_by_employer transfered validated_by_employer approved]
+  RE_APPROVABLE_STATES = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
 
   attr_accessor :sgid
 
@@ -39,7 +41,7 @@ class InternshipApplication < ApplicationRecord
   belongs_to :student, class_name: 'Users::Student',
                        foreign_key: 'user_id'
   has_one :internship_agreement
-  # has_many :internship_applications
+  has_many :state_changes, class_name: 'InternshipApplicationStateChange'
 
   delegate :update_all_counters, to: :internship_application_counter_hook
   delegate :name, to: :student, prefix: true
@@ -194,30 +196,31 @@ class InternshipApplication < ApplicationRecord
     event :submit do
       transitions from: :drafted,
                   to: :submitted,
-                  after: proc { |*_args|
+                  after: proc { |user, metadata = {}|
                            update!("submitted_at": Time.now.utc)
                            deliver_later_with_additional_delay do
                              EmployerMailer.internship_application_submitted_email(internship_application: self)
                            end
                            Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
-                           # ReminderReset : tag to use to find commmented jobs for students reminders
                            setSingleApplicationReminderJobs
-                           # ReminderReset : tag to use to find commmented jobs for students reminders
+                           record_state_change(user, {})
                          }
     end
 
     event :read do
       transitions from: :submitted, to: :read_by_employer,
-                  after: proc { |*_args|
+                  after: proc { |user, *_args|
                            update!("read_at": Time.now.utc)
+                           record_state_change(user, {})
                          }
     end
 
     event :transfer do
       transitions from: %i[submitted read_by_employer],
                   to: :transfered,
-                  after: proc { |*_args|
+                  after: proc { |user, *_args|
                            update!("transfered_at": Time.now.utc)
+                           record_state_change(user, {})
                          }
     end
 
@@ -229,21 +232,23 @@ class InternshipApplication < ApplicationRecord
                        rejected]
       transitions from: from_states,
                   to: :validated_by_employer,
-                  after: proc { |*_args|
+                  after: proc { |user, *_args|
                     update!("validated_by_employer_at": Time.now.utc, aasm_state: :validated_by_employer)
                     reload
                     after_employer_validation_notifications
                     CancelValidatedInternshipApplicationJob.set(wait: 15.days).perform_later(internship_application_id: id)
+                    record_state_change(user, {})
                   }
     end
 
     event :approve do
       transitions from: %i[validated_by_employer],
                   to: :approved,
-                  after: proc { |*_args|
+                  after: proc { |user, *_args|
                     update!("approved_at": Time.now.utc)
                     student_approval_notifications
                     cancel_all_pending_applications
+                    record_state_change(user, {})
                   }
     end
 
@@ -254,11 +259,12 @@ class InternshipApplication < ApplicationRecord
                        validated_by_employer ]
       transitions from: from_states,
                   to: :canceled_by_student_confirmation,
-                  after: proc { |*_args|
+                  after: proc { |user, *_args|
                     if employer_aware_states.include?(aasm_state)
                       # Employer need to be notified
                       EmployerMailer.internship_application_approved_for_an_other_internship_offer_email(internship_application: self).deliver_later
                     end
+                    record_state_change(user, {})
                   }
     end
 
@@ -269,13 +275,14 @@ class InternshipApplication < ApplicationRecord
                        validated_by_employer ]
       transitions from: from_states,
                   to: :rejected,
-                  after: proc { |*_args|
+                  after: proc { |user, *_args|
                            update!("rejected_at": Time.now.utc)
                            if student.email.present?
                              deliver_later_with_additional_delay do
                                StudentMailer.internship_application_rejected_email(internship_application: self)
                              end
                            end
+                           record_state_change(user, {})
                          }
     end
 
@@ -288,7 +295,7 @@ class InternshipApplication < ApplicationRecord
                        approved ]
       transitions from: from_states,
                   to: :canceled_by_employer,
-                  after: proc { |*_args|
+                  after: proc { |user, *_args|
                            update!("canceled_at": Time.now.utc)
                            if student.email.present?
                              deliver_later_with_additional_delay do
@@ -296,6 +303,7 @@ class InternshipApplication < ApplicationRecord
                              end
                            end
                            internship_agreement&.destroy
+                           record_state_change(user, {})
                          }
     end
 
@@ -306,7 +314,7 @@ class InternshipApplication < ApplicationRecord
                        approved]
       transitions from: from_states,
                   to: :canceled_by_student,
-                  after: proc { |*_args|
+                  after: proc { |user, *_args|
                            update!("canceled_at": Time.now.utc)
                            deliver_later_with_additional_delay do
                              EmployerMailer.internship_application_canceled_by_student_email(
@@ -314,24 +322,27 @@ class InternshipApplication < ApplicationRecord
                              )
                            end
                            internship_agreement&.destroy
+                           record_state_change(user, {})
                          }
     end
 
     event :expire do
       transitions from: %i[submitted read_by_employer validated_by_employer],
                   to: :expired,
-                  after: proc { |*_args|
+                  after: proc { |user, *_args|
                            update!(expired_at: Time.now.utc)
                            # notitify_student
                            Triggered::StudentExpiredInternshipApplicationsNotificationJob.perform_later(self)
+                           record_state_change(user, {})
                          }
     end
 
     event :expire_by_student do
       transitions from: %i[validated_by_employer read_by_employer submitted drafted],
                   to: :expired_by_student,
-                  after: proc { |*_args|
+                  after: proc { |user, *_args|
                            update!(expired_at: Time.now.utc)
+                           record_state_change(user, {})
                          }
     end
   end
@@ -390,6 +401,17 @@ class InternshipApplication < ApplicationRecord
 
   def missing_school_manager?
     student.school && student.school.school_manager.nil?
+  end
+
+  def is_modifiable?
+    NOT_MODIFIABLE_STATES.exclude?(aasm_state)
+  end
+
+  def is_re_approvable?
+    # false if sutdent is anonymised or student has an approved application
+    return false if student.anonymized? || student.internship_applications.where(aasm_state: 'approved').any?
+
+    RE_APPROVABLE_STATES.include?(aasm_state)
   end
 
   def self.from_sgid(sgid)
@@ -555,6 +577,10 @@ class InternshipApplication < ApplicationRecord
     @presenter ||= Presenters::InternshipApplication.new(self, user)
   end
 
+  def response_message
+    rejected_message || approved_message || canceled_by_employer_message || canceled_by_student_message
+  end
+
   private
 
   def should_notify?(employer)
@@ -591,6 +617,18 @@ class InternshipApplication < ApplicationRecord
       legal_representative_email: student_legal_representative_email,
       legal_representative_phone: student_legal_representative_phone,
       address: student_address
+    )
+  end
+
+  def record_state_change(author, metadata = {})
+    return if aasm.from_state == aasm.to_state
+
+    state_changes.create!(
+      from_state: aasm.from_state,
+      to_state: aasm.to_state,
+      author_id: author.try(:id),
+      author_type: author.try(:class).try(:name),
+      metadata:
     )
   end
 end
