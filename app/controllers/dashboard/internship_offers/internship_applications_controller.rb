@@ -74,6 +74,9 @@ module Dashboard
           end
           # no authorization here
         else
+          if @internship_application.submitted? && current_user.employer_like?
+            @internship_application.read!(current_user)
+          end
           authenticate_user!
         end
       end

@@ -82,7 +82,7 @@
         - if current_user.employer_like? || params[:token].present?
           - opts = { internship_application: @internship_application }
           - opts.merge!(opened_modal: params[:opened_modal]) if params[:opened_modal].present?
-          = render "employer_decisions", **opts
+          = render "dashboard/internship_offers/internship_applications/actions/employer_decisions", **opts
 
     .fr-ml-11w.rg2a-width-100.w-100.
       - if @internship_application.is_modifiable?

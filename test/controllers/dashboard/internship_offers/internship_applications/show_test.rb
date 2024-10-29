@@ -13,7 +13,8 @@ module InternshipApplications
       get dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
                                                                  internship_application)
       assert_response :success
-      assert_equal 'drafted', internship_application.aasm_state
+      internship_application.reload
+      assert_equal 'read_by_employer', internship_application.aasm_state
     end
 
     test 'GET #show redirects to new_user_session_path when not logged in' do
