@@ -91,10 +91,14 @@
             - presenter = @internship_application.presenter(current_user)
             .fr-badge.fr-badge--no-icon.fr-my-2w class="fr-badge--#{presenter.human_state[:badge]}" = @internship_application.aasm.human_state
             h3.h5.fr-mb-2w.fr-mt-2w
-              = "Candidature #{@internship_application.aasm.human_state} le #{l((@internship_application.state_changes.last.created_at))}"
+              - if @internship_application.state_changes.last.present?
+                = "Candidature #{@internship_application.aasm.human_state} le #{l((@internship_application.state_changes.last.try(:created_at)))}"
+              - else
+                = "Candidature #{@internship_application.aasm.human_state}"
             p.fr-mb-2w
-              - author = @internship_application.state_changes.last.author
-              = "Par #{author.presenter.full_name}"
+              - if @internship_application.state_changes.last.present?
+                - author = @internship_application.state_changes.last.author
+                = "Par #{author.presenter.full_name}"
             .row.fr-mb-2w.small.fr-px-2w
               .col-1
                 span.fr-icon-arrow-right-line.fr-icon--sm

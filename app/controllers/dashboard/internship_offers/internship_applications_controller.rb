@@ -49,7 +49,7 @@ module Dashboard
           end
           format.html do
             @internship_offer_areas = current_user.internship_offer_areas
-            @received_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::RECEIVED_STATES)
+            @received_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::RECEIVED_STATES - InternshipApplication::EXPIRED_STATES)
             @approved_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::APPROVED_STATES)
             @rejected_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::REJECTED_STATES)
             @expired_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::EXPIRED_STATES)
