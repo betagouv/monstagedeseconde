@@ -2,7 +2,7 @@
 
 class InternshipApplicationsController < ApplicationController
   before_action :persist_login_param, only: %i[new]
-  before_action :authenticate_user!, except: %i[update]
+  before_action :authenticate_user!
   before_action :set_internship_offer
 
   def index
@@ -27,26 +27,26 @@ class InternshipApplicationsController < ApplicationController
   end
 
   # alias for submit/update
-  def update
-    @internship_application = @internship_offer.internship_applications.find(params[:id])
-    authorize! :submit_internship_application, @internship_application
+  # def update
+  #   @internship_application = @internship_offer.internship_applications.find(params[:id])
+  #   authorize! :submit_internship_application, @internship_application
 
-    destination = dashboard_students_internship_applications_path(student_id: current_user.id, notice_banner: true)
-    if params[:transition] == 'submit!'
-      @internship_application.submit!
-      @internship_application.save!
-    else
-      @internship_application.update(update_internship_application_params)
-      destination = internship_offer_internship_application_path(@internship_offer, @internship_application)
-    end
-    redirect_to destination
-  rescue AASM::InvalidTransition
-    redirect_to dashboard_students_internship_applications_path(current_user, @internship_application),
-                flash: { warning: 'Votre candidature avait déjà été soumise' }
-  rescue ActiveRecord::RecordInvalid
-    flash[:error] = 'Erreur dans la saisie de votre candidature'
-    render 'internship_applications/show'
-  end
+  #   destination = dashboard_students_internship_applications_path(student_id: current_user.id, notice_banner: true)
+  #   if params[:transition] == 'submit!'
+  #     @internship_application.submit!
+  #     @internship_application.save!
+  #   else
+  #     @internship_application.update(update_internship_application_params)
+  #     destination = internship_offer_internship_application_path(@internship_offer, @internship_application)
+  #   end
+  #   redirect_to destination
+  # rescue AASM::InvalidTransition
+  #   redirect_to dashboard_students_internship_applications_path(current_user, @internship_application),
+  #               flash: { warning: 'Votre candidature avait déjà été soumise' }
+  # rescue ActiveRecord::RecordInvalid
+  #   flash[:error] = 'Erreur dans la saisie de votre candidature'
+  #   render 'internship_applications/show'
+  # end
 
   # students can apply for one internship_offer
   def create
@@ -56,9 +56,10 @@ class InternshipApplicationsController < ApplicationController
     appli_params = { user_id: current_user.id }.merge(create_internship_application_params)
     appli_params = sanitizing_params(appli_params)
     @internship_application = InternshipApplication.new(appli_params)
+    destination = dashboard_students_internship_applications_path(student_id: current_user.id, notice_banner: true)
+
     if @internship_application.save
-      redirect_to internship_offer_internship_application_path(@internship_offer,
-                                                               @internship_application)
+      redirect_to destination
     else
       Rails.logger.error(@internship_application.errors.full_messages)
       render 'new', status: :bad_request
