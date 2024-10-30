@@ -19,11 +19,12 @@ module Dashboard
       begin
         ActiveRecord::Base.transaction do
           @internship_applications.each do |internship_application|
-            if valid_transition?(params[:transition])
-              internship_application.public_send(params[:transition])
-            else
+            unless valid_transition?(params[:transition])
               raise ArgumentError, "Transition non autorisée: #{params[:transition]}"
             end
+
+            internship_application.public_send(params[:transition])
+
             internship_application.update!(rejected_message: params[:rejection_message])
           end
         end
@@ -38,7 +39,7 @@ module Dashboard
     private
 
     def valid_transition?(transition)
-      allowed_transitions = ['approve', 'reject', 'cancel']
+      allowed_transitions = %w[approve reject cancel]
       allowed_transitions.include?(transition)
     end
   end
