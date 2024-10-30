@@ -9,10 +9,13 @@ export default class extends Controller {
   static values = {
     minimumLength: Number
   }
-
-  connect() {
-    this.checkFields()
-  }
+  
+  // use it with copying the following line in the html file:
+  // --------------------------
+  // data-controller="mandatory-fields" data-mandatory-fields-minimum-length-value="3"
+  // --------------------------
+  // input[ data-mandatory-fields-target="mandatoryField"
+  //        data-action="input->mandatory-fields#fieldChange"]
   // or
   // data: { action: "input->mandatory-fields#fieldChange",
   //         :'mandatory-fields-target' => "mandatoryField"}
@@ -20,6 +23,10 @@ export default class extends Controller {
   // input data-mandatory-fields-target="disabledField"
   // or
   // data: { :'mandatory-fields-target' => "disabledField"}
+
+  connect() {
+    this.checkFields()
+  }
 
   checkFields() {
     const allFieldsFilled = this.mandatoryFieldTargets.every(field => field.value.length >= this.minimumLengthValue)

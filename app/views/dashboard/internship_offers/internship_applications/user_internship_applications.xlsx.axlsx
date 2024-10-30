@@ -1,0 +1,43 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: 'Associations') do |sheet|
+  # headers
+  sheet.add_row(
+    [ "Prénom de l'élève",
+      "Nom de l'élève",
+      "Établissement de l'élève",
+      "Offre candidatée",
+      "Date de candidature",
+      "Statut de candidature",
+      "Date d’acceptation",
+      "Date de refus",
+      "Date d’expiration",
+      "Date d’annulation",
+      "Acceptée par",
+      "Refusée par",
+      "Annulée par",
+      "ID de la candidature"
+      ]
+  )
+
+  # raws
+  @internship_applications.each do |application|
+    sheet.add_row([
+      application.student.first_name,
+      application.student.last_name,
+      application.student.school.name,
+      application.internship_offer.title,
+      localize(application.created_at, format: "%d %B"),
+      t("activerecord.attributes.internship_application.aasm_state.#{application.aasm_state}").capitalize,
+      "N/A", #date d'acceptation'
+      "N/A", #date de refus
+      "N/A", #date d'expiration
+      "N/A", #date d'annulation
+      "N/A", #acceptée par
+      "N/A", #refusée par
+      "N/A", #annulée par
+      application.id
+  ])
+  end
+  
+end

@@ -1,0 +1,21 @@
+.toggle-block.text-left.d-flex data-action='change->toggle-activate#toggle' data-toggle-activate-type-param='alink'
+  = turbo_frame_tag dom_id(area_notification) do
+    .toggle-swap
+      = link_to flip_dashboard_internship_offer_area_area_notification_path(internship_offer_area_id: internship_offer_area.id, id: area_notification.id, dashboard: true),
+                class: '',
+                method: :patch,
+                turbo_method: :patch,
+                data: { :'toggle-activate-target' => 'checkToggle', :'toggle-activate-type-param' => 'link' },
+                title: 'Publier / Masquer' do
+
+        - options = { id: "axe-#{internship_offer_area.id}",
+                class: 'fr-toggle__input',
+                :'aria-describedby' => "#{internship_offer_area.id}-hint-text",
+                title: 'Publier / Masquer' }
+
+        .fr-toggle
+          = check_box_tag 'toggle_publish',
+                          area_notification.notify,
+                          area_notification.notify,
+                          options
+          = label_tag internship_offer_area.id, '', class: "fr-toggle__label"
