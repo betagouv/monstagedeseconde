@@ -1,7 +1,20 @@
-.fr-table.fr-table--bordered.fr-table--no-caption
+.fr-table.fr-table--bordered.fr-table--no-caption data-controller="internship-application-index"
+  .fr-mb-2w
+    button.fr-btn.fr-btn--secondary#bulk-process-btn[
+      data-internship-application-index-target="bulkActionButton"
+      data-action="click->internship-application-index#bulkProcess"
+    ] Traiter les candidatures sélectionnées
+
   table
     thead
       tr
+        th[scope="col" style="width: 40px;"]
+          input.fr-checkbox[
+            type="checkbox"
+            id="select-all"
+            data-internship-application-index-target="selectAll"
+            data-action="change->internship-application-index#toggleSelectAll"
+          ]
         th[scope="col"]
           | Nom de l'élève
         th[scope="col"]
@@ -20,6 +33,14 @@
         - internship_applications.each do |internship_application|
           - prez = internship_application.presenter(current_user)
           tr
+            td
+              input.fr-checkbox.application-checkbox[
+                type="checkbox"
+                data-internship-application-index-target="applicationCheckbox"
+                data-action="change->internship-application-index#toggleCheckbox"
+                data-application-id=internship_application.id
+                value=internship_application.id
+              ]
             td.col-name
               = prez.student.presenter.full_name
             td.col-title
@@ -40,3 +61,4 @@
                           class: 'fr-raw-link d-flex flex-row' do
                   span.fr-icon-eye-line.fr-icon--sm aria-hidden="true"
                   .fr-pl-1w Voir
+
