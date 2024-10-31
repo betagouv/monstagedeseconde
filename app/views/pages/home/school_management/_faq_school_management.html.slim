@@ -7,7 +7,7 @@ h3.fr-pt-4w Foire aux questions
          .fr-card__body.fr-pt-2w
            .fr-card__content
              h3.fr-card__title.fr-mb-2w.blue-france
-               = link_to faq[:question], 'https://zammad.incubateur.anct.gouv.fr/help/fr-fr/4/55', class: 'text-dark'
+               = link_to faq[:question], faq[:url], class: 'text-dark'
              p.fr-card__desc
                = faq[:answer].gsub(/<\/?pre>/, '').html_safe
          .fr-card__header.fr-my-4w
