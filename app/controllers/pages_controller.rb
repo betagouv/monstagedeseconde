@@ -24,6 +24,7 @@ class PagesController < ApplicationController
 
   def student_landing
     @faqs = get_faqs('student')
+    @resources = get_resources('student')
   end
 
   def pro_landing
@@ -33,6 +34,12 @@ class PagesController < ApplicationController
 
   def school_management_landing
     @faqs = get_faqs('education')
+    @resources = get_resources('education')
+  end
+
+  def statistician_landing
+    @faqs = get_faqs('statistician')
+    @resources = get_resources('statistician')
   end
 
   def home

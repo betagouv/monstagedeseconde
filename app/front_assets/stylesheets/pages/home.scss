@@ -662,4 +662,11 @@ img.covering {
   min-height: 200px;
   display: none;
 }
-  
+
+.fr-sidemenu__btn[aria-expanded=true] {
+  --idle: transparent;
+  --hover: var(--background-open-blue-france-hover);
+  --active: var(--background-open-blue-france-active);
+  background-color: #e3e3fd;
+  background-color: var(--background-open-blue-france);
+}
