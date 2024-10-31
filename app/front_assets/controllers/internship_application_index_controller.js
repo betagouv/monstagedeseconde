@@ -22,7 +22,7 @@ export default class extends Controller {
     const checkedBoxes = this.applicationCheckboxTargets.filter(checkbox => checkbox.checked);
     const checkedCount = checkedBoxes.length;
 
-    if (checkedCount > 0) {
+    if (checkedCount > 1) {
       this.bulkActionButtonTarget.classList.remove('fr-hidden');
       const buttonText = `Action groupée (${checkedCount}) <i class="fr-icon-arrow-down-s-line fr-icon--right" aria-hidden="true"></i>`;
       this.bulkActionButtonTarget.innerHTML = buttonText;
@@ -39,9 +39,6 @@ export default class extends Controller {
     const selectedIds = this.applicationCheckboxTargets
       .filter(checkbox => checkbox.checked)
       .map(checkbox => checkbox.dataset.applicationId);
-    
-    // Here you can add the logic to process the selected applications
-    console.log('Selected IDs:', selectedIds);
   }
 
   openAcceptationModal(event) {
@@ -69,7 +66,6 @@ export default class extends Controller {
       .filter(checkbox => checkbox.checked)
       .map(checkbox => checkbox.value)
       .join(',');
-    
     if (this.hasAcceptationModalTarget) {
       this.acceptationModalTarget.querySelector('input[name="ids"]').value = ids;
     }

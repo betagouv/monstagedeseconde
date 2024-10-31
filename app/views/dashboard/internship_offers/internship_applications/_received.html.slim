@@ -31,7 +31,6 @@ div data-controller="internship-application-index"
       thead
         tr
           th[scope="col"]
-            | Sélectionner
           th[scope="col"]
             | Nom de l'élève
           th[scope="col"]
@@ -57,7 +56,7 @@ div data-controller="internship-application-index"
               td
                 = check_box_tag "selected_applications[]", internship_application.id, false, 
                                   class: 'fr-checkbox', 
-                                  data: { action: 'change->internship-application-index#toggleBulkActionButton' }
+                                  data: { action: 'change->internship-application-index#toggleCheckbox', target: 'internship-application-index.applicationCheckbox' }
               td.col-name
                 = prez.student.presenter.full_name
               td.col-title

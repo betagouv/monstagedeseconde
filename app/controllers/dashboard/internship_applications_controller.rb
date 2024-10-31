@@ -39,7 +39,7 @@ module Dashboard
     private
 
     def valid_transition?(transition)
-      allowed_transitions = %w[approve reject cancel]
+      allowed_transitions = %w[approve reject cancel employer_validate]
       allowed_transitions.include?(transition)
     end
   end
