@@ -3200,10 +3200,6 @@ ALTER TABLE ONLY public.weeks
 
 
 --
--- Name: index_academies_on_academy_region_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_academies_on_academy_region_id ON public.academies USING btree (academy_region_id);
 -- Name: idx_on_internship_application_id_085823fd89; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3215,6 +3211,13 @@ CREATE INDEX idx_on_internship_application_id_085823fd89 ON public.internship_ap
 --
 
 CREATE INDEX idx_on_internship_application_id_created_at_42571d8745 ON public.internship_application_state_changes USING btree (internship_application_id, created_at);
+
+
+--
+-- Name: index_academies_on_academy_region_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_academies_on_academy_region_id ON public.academies USING btree (academy_region_id);
 
 
 --
@@ -4416,16 +4419,19 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
--- Name: plannings fk_rails_91fffc9efc; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.plannings
-    ADD CONSTRAINT fk_rails_91fffc9efc FOREIGN KEY (school_id) REFERENCES public.schools(id);
 -- Name: internship_application_state_changes fk_rails_8ab7e06756; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.internship_application_state_changes
     ADD CONSTRAINT fk_rails_8ab7e06756 FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
+
+
+--
+-- Name: plannings fk_rails_91fffc9efc; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.plannings
+    ADD CONSTRAINT fk_rails_91fffc9efc FOREIGN KEY (school_id) REFERENCES public.schools(id);
 
 
 --
@@ -4670,6 +4676,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20241010085334'),
 ('20241009115015'),
 ('20241009091909'),
+('20241009082550'),
 ('20241007094016'),
 ('20241007083702'),
 ('20240927075929'),
@@ -4677,7 +4684,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240923090303'),
 ('20240918144248'),
 ('20240916160037'),
-('20241009082550'),
 ('20240827145706'),
 ('20240719095729'),
 ('20240712080757'),
