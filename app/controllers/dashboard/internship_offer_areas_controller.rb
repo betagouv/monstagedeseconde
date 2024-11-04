@@ -60,8 +60,12 @@ module Dashboard
       authorize! :update, @internship_offer_area
       if @internship_offer_area.update(internship_offer_area_params)
         notice = 'Modification du nom d\'espace opérée'
-        redirect_to dashboard_internship_offers_path,
-                    notice:
+        if params[:internship_offer_area][:from_dashboard]
+          redirect_to dashboard_internship_offer_areas_path, notice:
+        else
+          redirect_to dashboard_internship_offers_path,
+                      notice:
+        end
       else
         respond_to do |format|
           format.turbo_stream do
