@@ -86,9 +86,7 @@ module Dashboard::Stepper
               :max_students_per_group,
               :period,
               :school_id,
-              :employer_id,
               :weeks_count,
-              :entreprise_id,
               daily_hours: {},
               weekly_hours: [],
               week_ids: []
