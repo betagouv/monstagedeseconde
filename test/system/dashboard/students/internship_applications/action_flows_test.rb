@@ -10,8 +10,6 @@ module Dashboard
         school = create(:school, :with_school_manager)
         student = create(:student, :when_applying, school:)
         internship_applications = {
-          drafted: create(:weekly_internship_application, :drafted, internship_offer: create(:weekly_internship_offer_2nde),
-                                                                    student:),
           submitted: create(:weekly_internship_application, :submitted,
                             internship_offer: create(:weekly_internship_offer_2nde), student:),
           approved: create(:weekly_internship_application, :approved,
@@ -64,25 +62,6 @@ module Dashboard
         assert_equal 'Public', InternshipAgreement.last.legal_status
         find '.fr-badge.fr-badge--success', text: 'STAGE VALIDÉ'
         find "a#show_link_#{internship_application.id}", text: "Contacter l'employeur"
-      end
-
-      test 'student can submit an application from his applications dashboard' do
-        school = create(:school, :with_school_manager)
-        student = create(:student, school:)
-        internship_application = create(:weekly_internship_application, :drafted, student:)
-        sign_in(student)
-        visit '/'
-        click_on 'Candidatures'
-        find('.fr-badge', text: 'BROUILLON')
-        find("#show_link_#{internship_application.id}").click
-        assert_equal 'drafted', internship_application.aasm_state
-        assert_changes -> { internship_application.reload.aasm_state },
-                       from: 'drafted',
-                       to: 'submitted' do
-          find('input[value="Envoyer la demande"]').click
-        end
-        find '.fr-badge.fr-badge--info', text: "SANS RÉPONSE DE L'ENTREPRISE"
-        find "a#show_link_#{internship_application.id}", text: 'Voir'
       end
 
       test 'GET #show as Student with existing draft application shows the draft' do
@@ -157,49 +136,6 @@ module Dashboard
           end
 
           page.find('h4', text: "Félicitations, c'est ici que vous retrouvez toutes vos candidatures.")
-        end
-      end
-
-      test 'student can update her internship_application' do
-        travel_to Date.new(2024, 2, 1) do
-          school = create(:school)
-          student = create(:student,
-                           :when_applying,
-                           school:,
-                           class_room: create(:class_room, school:))
-          internship_offer = create(:weekly_internship_offer_2nde)
-          internship_application = create(:weekly_internship_application,
-                                          internship_offer:,
-                                          student:)
-
-          sign_in(student)
-          visit dashboard_students_internship_applications_path(student_id: student.id)
-
-          click_link 'Finaliser ma candidature'
-
-          click_link 'Modifier'
-          refute page.has_selector?('.nav-link-icon-with-label-success') # green element on screen
-
-          find('h1.h2', text: 'Ma candidature')
-
-          # fill in application form
-          find('#internship_application_motivation').native.send_keys(', carrément')
-          assert_no_changes lambda {
-                              student.internship_applications
-                                     .where(aasm_state: :drafted)
-                                     .count
-                            } do
-            find('input.fr-btn[type="submit"][name="commit"][value="Valider ma candidature"]').click
-            page.find('#submit_application_form') # timer
-          end
-          application = student.internship_applications.last
-          assert_equal 'Suis hyper motivé, carrément', application.motivation
-
-          click_link 'Modifier'
-
-          find('h1.h2', text: 'Ma candidature')
-
-          find('input.fr-btn[type="submit"][name="commit"][value="Valider ma candidature"]').click
         end
       end
 
@@ -279,35 +215,6 @@ module Dashboard
           find('ul li.test-employer-name', text: internship_offer.employer.presenter.formal_name)
           find('ul li.test-employer-email', text: internship_offer.employer.email)
         end
-      end
-
-      test 'when confirmed an internship_application a student cannot apply a drafted application anymore' do
-        school = create(:school)
-        student = create(:student,
-                         :when_applying,
-                         school:,
-                         class_room: create(:class_room, school:))
-        internship_offer_1 = create(:weekly_internship_offer_2nde, :week_1)
-        internship_offer_2 = create(:weekly_internship_offer_2nde, :week_2)
-        approved_application_1 = create(:weekly_internship_application,
-                                        :drafted,
-                                        internship_offer: internship_offer_1,
-                                        student:)
-        approved_application_2 = create(:weekly_internship_application,
-                                        :drafted,
-                                        internship_offer: internship_offer_2,
-                                        student:)
-
-        sign_in(student)
-        visit dashboard_students_internship_applications_path(student_id: student.id)
-
-        find("a#show_link_#{approved_application_1.id}").click
-        find "input[type='submit'][value='Envoyer la demande']"
-
-        approved_application_2.update_column(:aasm_state, 'approved')
-        visit dashboard_students_internship_applications_path(student_id: student.id)
-        click_link("Contacter l'employeur")
-        assert_select "input[type='submit'][value='Envoyer la demande']", count: 0
       end
 
       test 'quick decision process with canceling' do

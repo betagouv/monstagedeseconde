@@ -6,11 +6,10 @@ module Services
       ministry_statistician = create(:ministry_statistician)
       internship_offer = create(:weekly_internship_offer_2nde, employer: ministry_statistician)
       school = create(:school)
-      student = create(:student, school: school, class_room: create(:class_room, school: school))
+      student = create(:student, school:, class_room: create(:class_room, school:))
       internship_application = create(:weekly_internship_application,
-                                      internship_offer: internship_offer,
-                                      student: student)
-      internship_application.submit!
+                                      internship_offer:,
+                                      student:)
       internship_application.employer_validate!
       internship_application.approve!
 
@@ -24,11 +23,10 @@ module Services
         ministry_statistician = create(:ministry_statistician, agreement_signatorable: false)
         internship_offer = create(:weekly_internship_offer_2nde, employer: ministry_statistician)
         school = create(:school, :with_school_manager)
-        student = create(:student, school: school, class_room: create(:class_room, school: school))
+        student = create(:student, school:, class_room: create(:class_room, school:))
         internship_application = create(:weekly_internship_application,
-                                        internship_offer: internship_offer,
-                                        student: student)
-        internship_application.submit!
+                                        internship_offer:,
+                                        student:)
         internship_application.employer_validate!
         internship_application.approve!
 

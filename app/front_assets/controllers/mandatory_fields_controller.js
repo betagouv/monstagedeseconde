@@ -25,6 +25,15 @@ export default class extends Controller {
   data: { :'mandatory-fields-target' => "disabledField"}
   */
 
+  connect() {
+    this.checkFields()
+  }
+
+  checkFields() {
+    const allFieldsFilled = this.mandatoryFieldTargets.every(field => field.value.length >= this.minimumLengthValue)
+    this.disabledFieldTarget.disabled = !allFieldsFilled
+  }
+
   fieldChange(event){
     this.checkValidation();
   }
@@ -51,6 +60,11 @@ export default class extends Controller {
     });
   }
 
+  checkFields() {
+    const allFieldsFilled = this.mandatoryFieldTargets.every(field => field.value.length >= this.minimumLengthValue)
+    this.disabledFieldTarget.disabled = !allFieldsFilled
+  }
+
   checkValidation(){
     if(this.areAllMandatoryFieldsFilled()){
       this.setDisabledFieldsTo('enabled');
@@ -61,5 +75,22 @@ export default class extends Controller {
 
   mandatoryFieldTargetConnected(){
     this.checkValidation();
+  }
+
+  openConfirmModal(event) {
+    event.preventDefault()
+    const modal = document.getElementById('confirmModal')
+    modal.classList.add('fr-modal--opened')
+  }
+
+  closeConfirmModal() {
+    const modal = document.getElementById('confirmModal')
+    modal.classList.remove('fr-modal--opened')
+    modal.removeAttribute('aria-modal')
+  }
+
+  submitForm() {
+    const form = document.getElementById('new_internship_application')
+    form.submit()
   }
 }

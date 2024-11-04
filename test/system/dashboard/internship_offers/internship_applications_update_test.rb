@@ -10,7 +10,7 @@ module Dashboard::InternshipOffers
       sign_in(employer)
       visit dashboard_candidatures_path
       click_link 'Répondre'
-      click_on 'retour'
+      click_on 'Retourner aux candidatures'
       assert internship_application.reload.read_by_employer?
       find('h2.h4', text: 'Les candidatures')
       find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--warning', text: 'LU')
@@ -106,6 +106,8 @@ module Dashboard::InternshipOffers
         end
         # fill_in 'Numéro de portable élève ou responsable légal',	with: "0600060606"
         click_on 'Valider'
+        click_on 'Envoyer ma candidature'
+
         assert_equal 2, InternshipApplication.count
         other_internship_application = InternshipApplication.last
         sign_out(other_student)

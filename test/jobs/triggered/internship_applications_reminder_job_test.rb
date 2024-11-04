@@ -43,7 +43,7 @@ module Triggered
 
     test 'perform expire! when internship_applications is pending for more than EXPIRATION_DURATION' do
       internship_application = nil
-      assert_enqueued_emails 1 do # one for student welcome messaging
+      assert_enqueued_emails 2 do # one for student welcome messaging, one for employer
         internship_application = create(:weekly_internship_application, :submitted,
                                         submitted_at: (InternshipApplication::EXPIRATION_DURATION + 1.day).ago,
                                         pending_reminder_sent_at: 7.days.ago,
@@ -55,7 +55,7 @@ module Triggered
                        from: false,
                        to: true do
           InternshipApplicationsExpirerJob.perform_now(@internship_offer.employer)
-          assert_enqueued_emails 1 # one for employer
+          assert_enqueued_emails 2 # one for employer, one for student
         end
         internship_application.reload
         assert_equal Time.now.utc, internship_application.expired_at, 'expired_at not updated'

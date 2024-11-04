@@ -130,6 +130,9 @@ Rails.application.routes.draw do
         end
       end
 
+      post 'internship_applications/update_multiple', to: 'internship_applications#update_multiple',
+                                                      as: :update_multiple_internship_applications
+
       resources :schools, path: 'ecoles', only: %i[index edit update show] do
         resources :invitations, only: %i[new create index destroy], module: 'schools'
         get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
@@ -233,7 +236,7 @@ Rails.application.routes.draw do
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
 
   # Redirects
-  get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
+  get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/#{id}', status: 302)
 
   root_destination = ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true' ? 'maintenance_estivale' : 'home'
   root to: "pages##{root_destination}"

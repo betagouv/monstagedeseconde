@@ -24,7 +24,7 @@ module Dashboard
 
       def set_to_read
         authorize! :update, @internship_application, InternshipApplication
-        @internship_application.read! if @internship_application.submitted?
+        @internship_application.read!(current_user) if @internship_application.submitted?
         redirect_to dashboard_internship_offer_internship_application_path(
           @internship_application.internship_offer,
           @internship_application
@@ -49,7 +49,7 @@ module Dashboard
           end
           format.html do
             @internship_offer_areas = current_user.internship_offer_areas
-            @received_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::RECEIVED_STATES)
+            @received_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::RECEIVED_STATES - InternshipApplication::EXPIRED_STATES)
             @approved_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::APPROVED_STATES)
             @rejected_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::REJECTED_STATES)
             @expired_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::EXPIRED_STATES)
@@ -74,6 +74,9 @@ module Dashboard
           end
           # no authorization here
         else
+          if @internship_application.submitted? && current_user&.employer_like?
+            @internship_application.read!(current_user)
+          end
           authenticate_user!
         end
       end

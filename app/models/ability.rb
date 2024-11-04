@@ -230,6 +230,9 @@ class Ability
       planning.entreprise.internship_occupation.employer_id.in?(user.team_members_ids)
     end
     can %i[index update], InternshipApplication
+    can %i[update_multiple], InternshipApplication do |internship_applications|
+      internship_applications.all? { |internship_application| internship_application.internship_offer.employer_id == user.team_id }
+    end
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)
     end

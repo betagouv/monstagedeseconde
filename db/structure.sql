@@ -1011,6 +1011,42 @@ ALTER SEQUENCE public.internship_agreements_id_seq OWNED BY public.internship_ag
 
 
 --
+-- Name: internship_application_state_changes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.internship_application_state_changes (
+    id bigint NOT NULL,
+    internship_application_id bigint NOT NULL,
+    author_type character varying,
+    author_id bigint,
+    from_state character varying,
+    to_state character varying NOT NULL,
+    metadata jsonb DEFAULT '{}'::jsonb,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: internship_application_state_changes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.internship_application_state_changes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: internship_application_state_changes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.internship_application_state_changes_id_seq OWNED BY public.internship_application_state_changes.id;
+
+
+--
 -- Name: internship_applications; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2485,6 +2521,13 @@ ALTER TABLE ONLY public.internship_agreements ALTER COLUMN id SET DEFAULT nextva
 
 
 --
+-- Name: internship_application_state_changes id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_state_changes ALTER COLUMN id SET DEFAULT nextval('public.internship_application_state_changes_id_seq'::regclass);
+
+
+--
 -- Name: internship_applications id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2885,6 +2928,14 @@ ALTER TABLE ONLY public.internship_agreements
 
 
 --
+-- Name: internship_application_state_changes internship_application_state_changes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_state_changes
+    ADD CONSTRAINT internship_application_state_changes_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: internship_applications internship_applications_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3153,6 +3204,17 @@ ALTER TABLE ONLY public.weeks
 --
 
 CREATE INDEX index_academies_on_academy_region_id ON public.academies USING btree (academy_region_id);
+-- Name: idx_on_internship_application_id_085823fd89; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_on_internship_application_id_085823fd89 ON public.internship_application_state_changes USING btree (internship_application_id);
+
+
+--
+-- Name: idx_on_internship_application_id_created_at_42571d8745; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_on_internship_application_id_created_at_42571d8745 ON public.internship_application_state_changes USING btree (internship_application_id, created_at);
 
 
 --
@@ -3398,6 +3460,13 @@ CREATE INDEX index_internship_agreements_on_internship_application_id ON public.
 --
 
 CREATE UNIQUE INDEX index_internship_agreements_on_uuid ON public.internship_agreements USING btree (uuid);
+
+
+--
+-- Name: index_internship_application_state_changes_on_author; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_application_state_changes_on_author ON public.internship_application_state_changes USING btree (author_type, author_id);
 
 
 --
@@ -4352,6 +4421,11 @@ ALTER TABLE ONLY public.internship_offers
 
 ALTER TABLE ONLY public.plannings
     ADD CONSTRAINT fk_rails_91fffc9efc FOREIGN KEY (school_id) REFERENCES public.schools(id);
+-- Name: internship_application_state_changes fk_rails_8ab7e06756; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_state_changes
+    ADD CONSTRAINT fk_rails_8ab7e06756 FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
 
 
 --
@@ -4603,6 +4677,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240923090303'),
 ('20240918144248'),
 ('20240916160037'),
+('20241009082550'),
 ('20240827145706'),
 ('20240719095729'),
 ('20240712080757'),
