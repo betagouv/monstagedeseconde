@@ -19,7 +19,7 @@
   .col-12.fr-py-2w
     .fr-tag.fr-icon-calendar-fill.fr-tag--icon-left
       .fr-mr-2w.period-label-test
-        = internship_offer.weeks
+        = Presenters::WeekList.new(weeks: internship_offer.weeks).split_range_string.join(" ")
 
 .row
   .col-12.fr-py-2w
