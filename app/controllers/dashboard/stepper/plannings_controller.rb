@@ -87,7 +87,7 @@ module Dashboard::Stepper
               :period,
               :school_id,
               :weeks_count,
-              daily_hours: {},
+              daily_hours: %i[lundi mardi mercredi jeudi vendredi samedi],
               weekly_hours: [],
               week_ids: []
             )
