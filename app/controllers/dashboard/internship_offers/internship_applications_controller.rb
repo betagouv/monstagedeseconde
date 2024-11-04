@@ -40,12 +40,12 @@ module Dashboard
         @internship_applications = fetch_user_internship_applications.filtering_discarded_students
         respond_to do |format|
           format.xlsx do
-            current_area = current_user.current_area
-            if current_area
-              @internship_applications = @internship_applications.where(internship_offer: current_area.internship_offers)
+            @current_area = current_user.current_area
+            if @current_area
+              @internship_applications = @internship_applications.where(internship_offer: @current_area.internship_offers).order(created_at: :desc)
             end
             response.headers['Content-Disposition'] =
-              "attachment; filename=\"candidatures-#{current_area&.name || 'toutes'}-#{Time.zone.now.strftime('%Y-%m-%d')}.xlsx\""
+              "attachment; filename=\"candidatures-#{@current_area&.name || 'toutes'}-#{Time.zone.now.strftime('%Y-%m-%d')}.xlsx\""
           end
           format.html do
             @internship_offer_areas = current_user.internship_offer_areas
