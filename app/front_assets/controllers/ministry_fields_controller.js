@@ -8,6 +8,10 @@ export default class extends Controller {
     'selectGroupName',
   ];
 
+  static values = {
+    newRecord: Boolean,
+  }
+
   handleClickIsPublic(event) {
     const isPublic = event.target.value === 'true';
     this.toggleGroupNames(isPublic);

@@ -9,7 +9,8 @@ import { endpoints } from '../../utils/api';
 export default function SirenInput({
   resourceName,
   currentSiret,
-  railsEnv
+  railsEnv,
+  newRecord,
 }) {
   const [siret, setSiret] = useState(currentSiret || '');
   const [searchResults, setSearchResults] = useState([]);
@@ -60,6 +61,22 @@ export default function SirenInput({
       });
   };
 
+  // const openManual = (event) => {
+  //   event.preventDefault();
+  //   const blocs = document.querySelectorAll('.bloc-tooggle');
+  //   blocs.forEach(bloc => {
+  //     bloc.classList.remove('d-none');
+  //   });
+  //   const manualBlocs = document.querySelectorAll('.bloc-manual');
+  //   manualBlocs.forEach(bloc => {
+  //     bloc.classList.remove('d-none');
+  //   });
+  //   document.querySelector('.fr-callout').classList.add('d-none');
+  //   document.getElementById('organisation_city').removeAttribute("readonly");
+  //   document.getElementById('organisation_zipcode').removeAttribute("readonly");
+  //   document.getElementById("organisation_manual_enter").value = true;
+  // }
+
   const isAValidSiret = (siret) => {
     if ((siret.length != 14) || (isNaN(siret))) { return false; }
 
@@ -78,7 +95,7 @@ export default function SirenInput({
   }
 
   const onChange = (selection) => {
-    show_form();
+    show_form(true);
     const is_public = selection.is_public;
     const zipcode = selection.adresseEtablissement.codePostalEtablissement;
     const city = selection.adresseEtablissement.libelleCommuneEtablissement;
@@ -99,10 +116,14 @@ export default function SirenInput({
             .add(is_public ? 'public' : 'd-none');
   }
 
-  const show_form = () => {
+  const show_form = (show) => {
     const blocs = document.querySelectorAll('.bloc-tooggle');
     blocs.forEach(bloc => {
-      bloc.classList.remove('d-none');
+      if(show){
+        bloc.classList.remove('d-none');
+      } else {
+        bloc.classList.add('d-none');
+      }
     });
   }
 
@@ -129,6 +150,11 @@ export default function SirenInput({
       searchCompanyByName(siret);
     }
   }, [debouncedSiret]);
+
+  // initialization
+  useEffect(() => {
+    show_form(!newRecord);
+  }), [];
 
 
   return (
@@ -171,6 +197,11 @@ export default function SirenInput({
                   })}
                 />
               </div>
+              {/* <div className='mt-2 d-flex align-items-center'>
+                  <small><span className="fr-icon-info-fill text-blue-info" aria-hidden="true"></span></small>
+                  <small className="text-blue-info fr-mx-1w">Société introuvable ?</small>
+                  <a href='#manual-input' className='pl-2 small text-blue-info' onClick={openManual}>Ajouter une société manuellement</a>
+                </div> */}
               <div className="alerte alert-danger siren-error p-2 mt-2 d-none" id='siren-error' role="alert">
                 <small>Aucune réponse trouvée, essayez avec le SIRET.</small>
               </div>

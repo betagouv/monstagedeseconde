@@ -1,7 +1,8 @@
 - if can?(:supply_offers, current_user)
   div [data-controller='mandatory-fields fill-card ministry-fields'
        data-action="input->entreprise-form#checkForm"
-       data-mandatory-fields-minimum-length-value="2"]
+       data-mandatory-fields-minimum-length-value="2"
+       data-ministry-fields-newRecord-value="#{resource.new_record?}"]
     .row
       .col-md-6.order-md-2.order-1.d-none.d-md-block
         - if form.object.new_record?
@@ -20,12 +21,12 @@
               = form.hidden_field :siret, value: resource&.siret || ''
               - if resource.id
                 = form.hidden_field :id, value: resource.id
-              - unless form.object.persisted?
-                = react_component("SirenInput",
-                                  props: { resourceName: form.object_name,
-                                          presentationLabel: "L'administration",
-                                          currentSiren: resource.siret,
-                                          railsEnv: Rails.env })
+              = react_component("SirenInput",
+                                props: { resourceName: form.object_name,
+                                        presentationLabel: "L'administration",
+                                        currentSiren: resource.siret,
+                                        railsEnv: Rails.env,
+                                        newRecord: resource.new_record? })
 
           div class= "row fr-mt-3w bloc-tooggle (form.object.persisted? ? '' : 'd-none')"
             .col-12
