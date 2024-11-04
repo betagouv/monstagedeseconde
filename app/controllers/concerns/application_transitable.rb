@@ -9,7 +9,7 @@ module ApplicationTransitable
       authorize_through_sgid? || authorize_through_token? || authorize!(:update, @internship_application)
       if valid_transition?
         # action happens here
-        @internship_application.send(params[:transition].to_sym)
+        @internship_application.send(params[:transition].to_sym, current_user)
         @internship_application.update!(optional_internship_application_params)
         # now exit if temporary authorization
         if authorize_through_sgid? || authorize_through_token?
@@ -59,7 +59,7 @@ module ApplicationTransitable
       if @internship_application.reload.read_by_employer?
         'Candidature mise à jour.'
       elsif @internship_application.rejected?
-        'Candidature refusée.'
+        'Candidature non retenue.'
       elsif @internship_application.approved?
         current_user.employer? ? "Candidature mise à jour avec succès. #{extra_message}" : 'Candidature acceptée !'
       else

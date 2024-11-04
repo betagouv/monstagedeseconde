@@ -2,26 +2,26 @@
   = render 'layouts/navbar', home_nav_bar: true
 .fr-container
   = render 'pages/home/top_nav'
-.container-monstage-fluid-hero.school_management.mx-0
-    = render 'pages/home/school_management/hero_school_management'
+.container-monstage-fluid-hero.mx-0.education-hero
+  = render 'pages/home/school_management/hero'
 .container-homepage
   .container-monstage
-    = render 'pages/home/school_management/howitworks_school_management'
-.container-homepage.light-blue-background.fr-px-2w
-  .container-monstage
-    = render 'pages/home/pros/pro_events'
+    = render 'pages/home/school_management/howitworks'
+/ .container-homepage.light-blue-background.fr-px-2w
+/   .container-monstage
+/     = render 'pages/home/pros/pro_events'
 .container-homepage.fr-py-3w
   .container-monstage
     = render 'pages/home/school_management/faq_school_management'
-.container-homepage
-  .container-monstage
-    = render 'pages/home/everyone/BO'
+/ .container-homepage
+/   .container-monstage
+/     = render 'pages/home/everyone/BO'
 .container-homepage.light-blue-background.fr-px-2w
   .container-monstage.fr-py-2w
     = render 'pages/home/pros/partners_resources'
 .container-home.fr-py-3w
   .container-monstage
-    = render 'pages/home/school_management/resources_school_management'
+    = render 'pages/home/everyone/usefull_resources'
 .container-homepage
   .container-monstage.homepage
     .d-none.d-md-block

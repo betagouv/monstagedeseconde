@@ -50,7 +50,7 @@ module Dashboard::InternshipOffers
       internship_application = create(:weekly_internship_application,
                                       internship_offer: included_internship_offer,
                                       student:)
-      internship_application.submit!
+
       sign_in(employer)
       get dashboard_internship_offers_path
       assert_response :success

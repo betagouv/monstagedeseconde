@@ -17,7 +17,7 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
       internship_offer = create(:weekly_internship_offer,
                                 employer: create(:employer))
       internship_application = create(:weekly_internship_application,
-                                      :drafted,
+                                      :submitted,
                                       internship_offer:,
                                       student:)
 
@@ -46,7 +46,7 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
       internship_offer = create(:weekly_internship_offer,
                                 employer: create(:employer))
       internship_application = create(:weekly_internship_application,
-                                      :drafted,
+                                      :submitted,
                                       internship_offer:,
                                       student:)
 
@@ -75,14 +75,14 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
                                     employer: create(:employer))
       internship_offer = create(:weekly_internship_offer,
                                 employer: create(:employer))
-      internship_application = create(:weekly_internship_application,
-                                      :drafted,
-                                      internship_offer:,
-                                      student:)
+
       sms_stub do
         assert_enqueued_jobs 1, only: SendSmsJob do
           assert_no_changes -> { ::ActionMailer::Base.deliveries.count } do
-            internship_application.submit
+            internship_application = create(:weekly_internship_application,
+                                            :submitted,
+                                            internship_offer:,
+                                            student:)
           end
         end
       end

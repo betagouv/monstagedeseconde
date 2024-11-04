@@ -24,7 +24,7 @@ module Dashboard
 
       def set_to_read
         authorize! :update, @internship_application, InternshipApplication
-        @internship_application.read! if @internship_application.submitted?
+        @internship_application.read!(current_user) if @internship_application.submitted?
         redirect_to dashboard_internship_offer_internship_application_path(
           @internship_application.internship_offer,
           @internship_application
@@ -38,10 +38,23 @@ module Dashboard
         authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
         @internship_offers = current_user.internship_offers
         @internship_applications = fetch_user_internship_applications.filtering_discarded_students
-        @internship_offer_areas = current_user.internship_offer_areas
-        @received_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::RECEIVED_STATES)
-        @approved_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::APPROVED_STATES)
-        @rejected_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::REJECTED_STATES)
+        respond_to do |format|
+          format.xlsx do
+            @current_area = current_user.current_area
+            if @current_area
+              @internship_applications = @internship_applications.where(internship_offer: @current_area.internship_offers).order(created_at: :desc)
+            end
+            response.headers['Content-Disposition'] =
+              "attachment; filename=\"candidatures-#{@current_area&.name || 'toutes'}-#{Time.zone.now.strftime('%Y-%m-%d')}.xlsx\""
+          end
+          format.html do
+            @internship_offer_areas = current_user.internship_offer_areas
+            @received_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::RECEIVED_STATES - InternshipApplication::EXPIRED_STATES)
+            @approved_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::APPROVED_STATES)
+            @rejected_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::REJECTED_STATES)
+            @expired_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::EXPIRED_STATES)
+          end
+        end
       end
 
       # magic_link_tracker is not updated here
@@ -61,6 +74,9 @@ module Dashboard
           end
           # no authorization here
         else
+          if @internship_application.submitted? && current_user&.employer_like?
+            @internship_application.read!(current_user)
+          end
           authenticate_user!
         end
       end
