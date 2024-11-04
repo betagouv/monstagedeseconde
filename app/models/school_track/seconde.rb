@@ -17,16 +17,16 @@ module SchoolTrack
       end
     end
 
-    def self.first_week
-      Week.fetch_from(date: first_friday)
+    def self.first_week(year: current_year)
+      Week.fetch_from(date: first_friday(year:))
     end
 
-    def self.second_week
-      Week.fetch_from(date: last_friday)
+    def self.second_week(year: current_year)
+      Week.fetch_from(date: last_friday(year:))
     end
 
-    def self.both_weeks
-      [first_week, second_week]
+    def self.both_weeks(year: current_year)
+      [first_week(year:), second_week(year:)]
     end
 
     def self.last_june_friday(year: current_year)
@@ -36,20 +36,20 @@ module SchoolTrack
       last_day_of_june.days_ago(offset)
     end
 
-    def self.last_friday
-      last_june_friday
+    def self.last_friday(year: current_year)
+      last_june_friday(year:)
     end
 
-    def self.first_friday
-      last_june_friday.days_ago(7)
+    def self.first_friday(year: current_year)
+      last_june_friday(year:).days_ago(7)
     end
 
-    def self.last_monday
-      last_june_friday.days_ago(4)
+    def self.last_monday(year: current_year)
+      last_june_friday(year:).days_ago(4)
     end
 
-    def self.first_monday
-      last_june_friday.days_ago(11)
+    def self.first_monday(year: current_year)
+      last_june_friday(year:).days_ago(11)
     end
 
     def self.period_collection(school_year:)

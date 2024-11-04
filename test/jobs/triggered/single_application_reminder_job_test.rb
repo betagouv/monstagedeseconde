@@ -14,7 +14,7 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
       school = create(:school, :with_school_manager)
       student = create(:student, school:)
       assert student.phone.blank?
-      internship_offer = create(:weekly_internship_offer,
+      internship_offer = create(:weekly_internship_offer_2nde,
                                 employer: create(:employer))
       internship_application = create(:weekly_internship_application,
                                       :drafted,
@@ -41,9 +41,9 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
       school = create(:school, :with_school_manager)
       student = create(:student, school:)
       assert student.phone.blank?
-      internship_offer_ref = create(:weekly_internship_offer,
+      internship_offer_ref = create(:weekly_internship_offer_3eme,
                                     employer: create(:employer))
-      internship_offer = create(:weekly_internship_offer,
+      internship_offer = create(:weekly_internship_offer_3eme,
                                 employer: create(:employer))
       internship_application = create(:weekly_internship_application,
                                       :drafted,
@@ -71,9 +71,9 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
       weeks_till_end = Week.selectable_from_now_until_end_of_school_year
       school = create(:school, :with_school_manager)
       student = create(:student, school:, phone: '+330623443058')
-      internship_offer_ref = create(:weekly_internship_offer,
+      internship_offer_ref = create(:weekly_internship_offer_2nde,
                                     employer: create(:employer))
-      internship_offer = create(:weekly_internship_offer,
+      internship_offer = create(:weekly_internship_offer_2nde,
                                 employer: create(:employer))
       internship_application = create(:weekly_internship_application,
                                       :drafted,

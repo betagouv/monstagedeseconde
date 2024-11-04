@@ -79,15 +79,19 @@ module Users
 
     test '#anonymize when in a team with internship_offers' do
       employer_1 = create(:employer)
+
       original_area = employer_1.current_area
       employer_2 = create(:employer)
       assert_equal 2, InternshipOfferArea.count # 1 per employer
       offer = create_internship_offer_visible_by_two(employer_1, employer_2)
+      assert_equal 2, InternshipOfferArea.count # 1 per employer
       assert_equal employer_1.current_area_id, employer_2.current_area_id
       assert_equal employer_1.id, offer.employer.id
       assert_equal employer_1.current_area_id, offer.internship_offer_area_id
-      offer_2 = create(:weekly_internship_offer_2nde, employer: employer_2,
-                                                      internship_offer_area_id: employer_1.current_area_id)
+      offer_2 = create(:weekly_internship_offer_2nde,
+                       :week_1,
+                       employer: employer_2,
+                       internship_offer_area_id: employer_1.current_area_id)
       assert_equal employer_1.current_area_id, employer_2.current_area_id
       assert_equal 2, employer_1.internship_offer_areas.count
       assert_changes -> { InternshipOffer.kept.count }, from: 2, to: 1 do

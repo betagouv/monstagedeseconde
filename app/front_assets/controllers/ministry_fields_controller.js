@@ -34,7 +34,6 @@ export default class extends Controller {
   }
 
   groupNamePublicTargetConnected(element) {
-    console.log('groupNamePublicTargetConnected');
     this.toggleGroupNames(false);
   }
 

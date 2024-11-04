@@ -1,4 +1,5 @@
 - preselect_all = preselect_all_weeks?(form.object)
+- is_all_year_long = form.object.all_year_long?
 - allow_select_all = !form.object.is_fully_editable?
 - error = form.object.errors[:all_year_long].any?
 div [data-controller="select-weeks"
@@ -29,7 +30,7 @@ div [data-controller="select-weeks"
               form: form,
               error: error,
               field: :all_year_long,
-              label: 'Une ou plusieurs semaines spécifiques',
+              label: "Une ou plusieurs semaines spécifiques #{form.object.persisted?} #{form.object.all_year_long?}",
               hint: 'Les élèves avec des dates de stages communes pourront candidater.',
               icon: 'fr-icon-calendar-line',
               value: false,
@@ -38,25 +39,26 @@ div [data-controller="select-weeks"
 
     .row data-select-weeks-target="checkboxesContainer" class="#{preselect_all ? 'd-none' : ''}"
       .col-md-12
-        .custom-control-checkbox-list.d-none
-          - current_weeks.map do |week|
-            .fr-checkbox-group.fr-checkbox-group--sm.position-relative.pr-3.my-2
-              - # prevent removing weeks with application by showing a disable checkbox (not submitted to server)
-              - # keep reference of checkbox id for easier labelling
-              - checkbox_id = "#{form.object_name}_week_ids_#{week.id}_checkbox"
-              - # also add an id for hidden field for two reason, avoid conflict, testing
-              - hidden_id = "#{form.object_name}_week_ids_#{week.id}_hidden"
-              - options =  { multiple: true,
-                            id: checkbox_id,
-                            data: {:"select-weeks-target" => 'weekCheckboxes',
-                                    action: 'change->select-weeks#handleCheckboxesChanges'} }
-              - options.merge!({checked: true}) if preselect_all
-              = form.check_box :week_ids, options, week.id, false
-              = form.label :"week_id", for: checkbox_id, class: 'fr-label' do
-                = week.select_text_method_with_year
+        .custom-control-checkbox-list class=(is_all_year_long ? 'd-none' : '')
+          - if current_weeks.present?
+            - current_weeks.map do |week|
+              .fr-checkbox-group.fr-checkbox-group--sm.position-relative.pr-3.my-2
+                - # prevent removing weeks with application by showing a disable checkbox (not submitted to server)
+                - # keep reference of checkbox id for easier labelling
+                - checkbox_id = "#{form.object_name}_week_ids_#{week.id}_checkbox"
+                - # also add an id for hidden field for two reason, avoid conflict, testing
+                - hidden_id = "#{form.object_name}_week_ids_#{week.id}_hidden"
+                - options =  { multiple: true,
+                              id: checkbox_id,
+                              data: {:"select-weeks-target" => 'weekCheckboxes',
+                                      action: 'change->select-weeks#handleCheckboxesChanges'} }
+                - options.merge!({checked: true}) if preselect_all
+                = form.check_box :week_ids, options, week.id, false
+                = form.label :"week_id", for: checkbox_id, class: 'fr-label' do
+                  = week.select_text_method_with_year
 
-              div.position-absolute.badge-week-density.rounded.d-none data-select-weeks-target='inputWeekLegend' data-week-id=week.id
-                | ?
+                div.position-absolute.badge-week-density.rounded.d-none data-select-weeks-target='inputWeekLegend' data-week-id=week.id
+                  | ?
 
           - if render_employer_components
             .custom-control-checkbox-legend data-select-weeks-target="legendContainer" data-test='select-week-legend'

@@ -223,8 +223,12 @@ class Ability
     can %i[create], Tutor
     # new_abilities for stepper
     can %i[update edit renew], InternshipOccupation, employer_id: user.team_members_ids
-    can %i[update edit renew], Entreprise, employer_id: user.team_members_ids
-    can %i[update edit renew], Planning, employer_id: user.team_members_ids
+    can %i[update edit renew], Entreprise do |entreprise|
+      entreprise.internship_occupation.employer_id.in?(user.team_members_ids)
+    end
+    can %i[update edit renew], Planning do |planning|
+      planning.entreprise.internship_occupation.employer_id.in?(user.team_members_ids)
+    end
     can %i[index update], InternshipApplication
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)

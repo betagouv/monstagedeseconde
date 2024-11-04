@@ -21,6 +21,7 @@ module Dashboard::Stepper
         entreprise_id: params[:entreprise_id]
       )
       authorize! :create, @planning
+      @internship_occupation = @entreprise.internship_occupation
       @available_weeks = @planning.available_weeks || []
     end
 
@@ -45,7 +46,7 @@ module Dashboard::Stepper
         # temporary debug
         puts "errors : @planning.errors : #{@planning.errors&.full_messages}" unless @planning.errors&.blank?
         # end temporary debug
-        log_error(controller: self, object: @planning)
+        log_error(object: @planning)
         render :new, status: :bad_request
       end
     end
@@ -87,6 +88,7 @@ module Dashboard::Stepper
               :school_id,
               :employer_id,
               :weeks_count,
+              :entreprise_id,
               daily_hours: {},
               weekly_hours: [],
               week_ids: []
@@ -114,15 +116,18 @@ module Dashboard::Stepper
     def manage_weeks
       # @planning.weeks = @available_weeks if employer_chose_whole_year? # legacy
       @planning.internship_weeks_number = 1
-      @planning.weeks = [] unless params_offer_for_troisieme_or_quatrieme?
       return unless params_offer_for_seconde?
 
-      if period == PERIOD[:two_weeks]
+      @planning.weeks = [] unless params_offer_for_troisieme_or_quatrieme?
+      case period
+      when PERIOD[:two_weeks]
         @planning.internship_weeks_number = 2
         @planning.weeks << SchoolTrack::Seconde.both_weeks
+      when PERIOD[:first_week]
+        @planning.weeks << SchoolTrack::Seconde.first_week
+      when PERIOD[:second_week]
+        @planning.weeks << SchoolTrack::Seconde.second_week
       end
-      @planning.weeks << SchoolTrack::Seconde.first_week if period == PERIOD[:first_week]
-      @planning.weeks << SchoolTrack::Seconde.second_week if period == PERIOD[:second_week]
     end
 
     def params_offer_for_seconde?
@@ -147,7 +152,6 @@ module Dashboard::Stepper
 
     def fetch_entreprise
       @entreprise ||= Entreprise.find(params[:entreprise_id])
-      # @internship_occupation ||= @entreprise.internship_occupation
     end
 
     def employer_chose_whole_year?

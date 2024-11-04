@@ -12,7 +12,8 @@ module Dashboard::InternshipOffers
       student = create(:student, school: school)
 
       employer, internship_offer = create_employer_and_offer
-      internship_application = create(:weekly_internship_application, :approved, student: student, internship_offer: internship_offer)
+      internship_application = create(:weekly_internship_application, :approved, student: student,
+                                                                                 internship_offer: internship_offer)
       internship_agreement = internship_application.internship_agreement
       sign_in(employer)
 
@@ -28,25 +29,27 @@ module Dashboard::InternshipOffers
     end
 
     test 'GET #edit as employer when missing school_manager renders success even w/o school manager' do
-      school = create(:school) #no_school_manager
+      school = create(:school) # no_school_manager
       employer, internship_offer = create_employer_and_offer
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
       internship_application.student.update(school_id: school.id)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application, school_manager_accept_terms: true)
+      internship_agreement = create(:internship_agreement, internship_application: internship_application,
+                                                           school_manager_accept_terms: true)
       sign_in(employer)
 
       get dashboard_internship_agreements_path
       assert_response :success
-      assert_select("td.actions", text: "Remplir ma convention")
+      assert_select('td.actions', text: 'Remplir ma convention')
     end
 
     test 'GET #index as teacher ' do
       school = create(:school, :with_school_manager)
       teacher = create(:teacher, school: school)
-      internship_offer = create(:weekly_internship_offer, employer: create(:employer))
+      internship_offer = create(:weekly_internship_offer_2nde, employer: create(:employer))
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
       internship_application.student.update(school_id: school.id)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application, school_manager_accept_terms: true)
+      internship_agreement = create(:internship_agreement, internship_application: internship_application,
+                                                           school_manager_accept_terms: true)
 
       sign_in(teacher)
 
@@ -60,7 +63,8 @@ module Dashboard::InternshipOffers
       teacher = create(:admin_officer, school: school)
       internship_application = create(:weekly_internship_application, :approved)
       internship_application.student.update(school_id: school.id)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application, school_manager_accept_terms: true)
+      internship_agreement = create(:internship_agreement, internship_application: internship_application,
+                                                           school_manager_accept_terms: true)
 
       sign_in(teacher)
 
@@ -74,7 +78,8 @@ module Dashboard::InternshipOffers
       cpe = create(:cpe, school: school)
       internship_application = create(:weekly_internship_application, :approved)
       internship_application.student.update(school_id: school.id)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application, school_manager_accept_terms: true)
+      internship_agreement = create(:internship_agreement, internship_application: internship_application,
+                                                           school_manager_accept_terms: true)
 
       sign_in(cpe)
 

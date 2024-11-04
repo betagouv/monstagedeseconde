@@ -3,7 +3,9 @@ module StepperProxy
     extend ActiveSupport::Concern
 
     included do
-      belongs_to :group, optional: true
+      # belongs_to :group, optional: true
+      # TODO
+      belongs_to :group, -> { where is_public: true }, optional: true
       belongs_to :sector
 
       before_validation :clean_siret
@@ -20,6 +22,7 @@ module StepperProxy
                 presence: true
       validates :entreprise_coordinates,
                 exclusion: { in: [geo_point_factory(latitude: 0, longitude: 0)] }
+      validates :is_public, inclusion: [true, false]
 
       def entreprise_coordinates=(coordinates)
         case coordinates

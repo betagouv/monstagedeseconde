@@ -15,7 +15,7 @@ module Dashboard::InternshipOffers
       travel_to(Date.new(2024, 3, 1)) do
         school = create(:school)
         employer = create(:employer)
-        internship_offer = build(:weekly_internship_offer, employer:)
+        internship_offer = build(:weekly_internship_offer_3eme, employer:)
         sign_in(internship_offer.employer)
         params = internship_offer
                  .attributes
@@ -43,7 +43,7 @@ module Dashboard::InternshipOffers
       travel_to(Date.new(2024, 9, 1)) do
         school = create(:school)
         employer = create(:ministry_statistician)
-        internship_offer = build(:weekly_internship_offer, :public, employer:)
+        internship_offer = build(:weekly_internship_offer_3eme, :public, employer:)
         sign_in(internship_offer.employer)
         params = internship_offer
                  .attributes
@@ -52,7 +52,6 @@ module Dashboard::InternshipOffers
                         'coordinates' => { latitude: 1, longitude: 1 },
                         'school_id' => school.id,
                         'description' => '<div>description</div>',
-                        'employer_description' => 'hop+employer_description',
                         'employer_type' => 'Users::MinistryStatistician')
 
         assert_difference('InternshipOffer.count', 1) do

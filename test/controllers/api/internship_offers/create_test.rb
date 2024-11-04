@@ -7,9 +7,6 @@ module Api
     include ::ApiTestHelpers
 
     # before each test
-    setup do
-      create(:department)
-    end
     test 'POST #create without token renders :unauthorized payload' do
       post api_internship_offers_path(params: {})
       documents_as(endpoint: :'internship_offers/create', state: :unauthorized) do
@@ -39,7 +36,7 @@ module Api
         post api_internship_offers_path(
           params: {
             token: "Bearer #{operator.api_token}",
-            internship_offer: { title: '', permalink: 'http://staging.lesite.com' }
+            internship_offer: { title: '' }
           }
         )
       end
@@ -63,14 +60,11 @@ module Api
       assert_equal ['Missing sector'],
                    json_error['sector'],
                    'bad sector message'
-      assert_equal ['Le lien ne doit pas renvoyer vers un environnement de test.'],
-                   json_error['permalink'],
-                   'bad permalink message'
     end
 
     test 'POST #create as operator post duplicate remote_id' do
       operator = create(:user_operator, api_token: SecureRandom.uuid)
-      existing_internship_offer = create(:api_internship_offer, employer: operator)
+      existing_internship_offer = create(:api_internship_offer_2nde, employer: operator)
       sector = create(:sector, uuid: SecureRandom.uuid)
       internship_offer_params = existing_internship_offer.attributes
                                                          .except(:sector,
@@ -115,7 +109,6 @@ module Api
       siret = FFaker::CompanyFR.siret
       sector_uuid = sector.uuid
       remote_id = 'test'
-      permalink = 'https://www.google.fr'
       daily_hours = { "lundi": ['9:00', '17:00'], "mardi": ['9:00', '17:00'], "mercredi": ['9:00', '17:00'],
                       "jeudi": ['9:00', '17:00'], "vendredi": ['9:00', '17:00'] }
       assert_difference('InternshipOffer.count', 1) do
@@ -136,11 +129,12 @@ module Api
                 city:,
                 sector_uuid:,
                 remote_id:,
-                permalink:,
                 max_candidates: 2,
                 is_public: true,
                 daily_hours:,
-                lunch_break: 'Repas sur place'
+                lunch_break: 'Repas sur place',
+                grades: Grade.all,
+                weeks: Week.selectable_from_now_until_end_of_school_year + SchoolTrack::Seconde.both_weeks
               }
             }
           )
@@ -163,7 +157,6 @@ module Api
 
       assert_equal sector, internship_offer.sector
       assert_equal remote_id, internship_offer.remote_id
-      assert_equal permalink, internship_offer.permalink
       assert_equal 2, internship_offer.max_candidates
       assert_equal 2, internship_offer.remaining_seats_count
       assert_equal 'published', internship_offer.aasm_state
@@ -196,7 +189,6 @@ module Api
       siret = FFaker::CompanyFR.siret
       sector_uuid = sector.uuid
       remote_id = 'test'
-      permalink = 'https://www.google.fr'
 
       geocoder_response = {
         status: 200,
@@ -227,7 +219,6 @@ module Api
                 city:,
                 sector_uuid:,
                 remote_id:,
-                permalink:,
                 max_candidates: 2,
                 handicap_accessible: true
               }
@@ -264,7 +255,8 @@ module Api
       siret = FFaker::CompanyFR.siret
       sector_uuid = sector.uuid
       remote_id = 'test'
-      permalink = 'https://www.google.fr'
+      grades = Grade.all,
+      weeks = Week.selectable_from_now_until_end_of_school_year + SchoolTrack::Seconde.both_weeks
       assert_difference('InternshipOffer.count', 1) do
         documents_as(endpoint: :'internship_offers/create', state: :created) do
           post api_internship_offers_path(
@@ -278,13 +270,14 @@ module Api
                 period:,
                 employer_website:,
                 siret:,
-                'coordinates' => coordinates,
+                coordinates:,
                 street:,
                 zipcode:,
                 city:,
                 sector_uuid:,
                 remote_id:,
-                permalink:
+                grades: ,
+                weeks:
               }
             }
           )
@@ -329,7 +322,8 @@ module Api
                   city: 'Paris',
                   sector_uuid: sector.uuid,
                   remote_id: 'remote_id',
-                  permalink: 'http://google.fr/permalink'
+                  grades: Grade.all,
+                  weeks: Week.selectable_from_now_until_end_of_school_year + SchoolTrack::Seconde.both_weeks
                 }
               }
             )
@@ -373,7 +367,8 @@ module Api
                   city: 'Paris',
                   sector_uuid: sector.uuid,
                   remote_id: 'remote_id',
-                  permalink: 'http://google.fr/permalink'
+                  grades: Grade.all,
+                  weeks: Week.selectable_from_now_until_end_of_school_year + SchoolTrack::Seconde.both_weeks
                 }
               }
             )
@@ -416,7 +411,8 @@ module Api
                   siret: FFaker::CompanyFR.siret,
                   sector_uuid: sector.uuid,
                   remote_id: 'remote_id',
-                  permalink: 'http://google.fr/permalink'
+                  grades: Grade.all,
+                  weeks: Week.selectable_from_now_until_end_of_school_year + SchoolTrack::Seconde.both_weeks
                 }
               }
             )
@@ -456,7 +452,8 @@ module Api
                   city: 'Paris',
                   sector_uuid: sector.uuid,
                   remote_id: 'remote_id',
-                  permalink: 'http://google.fr/permalink'
+                  grades: Grade.all,
+                  weeks: Week.selectable_from_now_until_end_of_school_year + SchoolTrack::Seconde.both_weeks
                 }
               }
             )
@@ -495,8 +492,9 @@ module Api
                 city: 'Paris',
                 sector_uuid: sector.uuid,
                 remote_id: 'remote_id',
-                permalink: 'http://google.fr/permalink',
-                max_candidates: 3
+                max_candidates: 3,
+                grades: Grade.all,
+                weeks: Week.selectable_from_now_until_end_of_school_year + SchoolTrack::Seconde.both_weeks
               }
             }
           )

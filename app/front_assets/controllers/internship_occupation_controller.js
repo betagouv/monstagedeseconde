@@ -3,6 +3,7 @@ import $ from 'jquery';
 import { showElement, hideElement } from '../utils/dom';
 
 export default class extends Controller {
+  /*
   static targets = [
     'groupBlock',
     'groupLabel',
@@ -69,4 +70,6 @@ export default class extends Controller {
   }
 
   disconnect() {}
+  */
+  connect() {}
 }

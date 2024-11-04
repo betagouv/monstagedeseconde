@@ -11,7 +11,7 @@ module InternshipOffers::InternshipApplications
       school = create(:school, :with_school_manager)
       class_room = create(:class_room, school:)
       student = create(:student, school:, class_room:)
-      internship_offer = create(:weekly_internship_offer, employer: create(:employer))
+      internship_offer = create(:weekly_internship_offer_2nde, employer: create(:employer))
       internship_application = create(
         :weekly_internship_application,
         :validated_by_employer,
@@ -46,7 +46,7 @@ module InternshipOffers::InternshipApplications
       school = create(:school)
       class_room = create(:class_room, school:)
       student = create(:student, school:, class_room:)
-      internship_offer = create(:weekly_internship_offer, employer: create(:employer))
+      internship_offer = create(:weekly_internship_offer_2nde, employer: create(:employer))
       internship_application = create(
         :weekly_internship_application,
         :validated_by_employer,

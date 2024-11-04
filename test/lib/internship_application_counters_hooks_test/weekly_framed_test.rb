@@ -5,7 +5,7 @@ module InternshipApplicationCountersHooks
   class WeeklyFramedTest < ActiveSupport::TestCase
     setup do
       student = create(:student, :male)
-      @internship_offer = create(:weekly_internship_offer)
+      @internship_offer = create(:weekly_internship_offer_2nde)
       @internship_application = build(:weekly_internship_application, internship_offer: @internship_offer,
                                                                       student: student)
     end
@@ -27,7 +27,6 @@ module InternshipApplicationCountersHooks
       assert_equal 0, @internship_offer.reload.total_applications_count
     end
 
-
     test '.update_internship_offer_counters tracks internship_offer.approved_applications_count' do
       @internship_application.aasm_state = :submitted
       @internship_application.save!
@@ -35,7 +34,6 @@ module InternshipApplicationCountersHooks
       assert_changes -> { @internship_offer.reload.approved_applications_count },
                      from: 0,
                      to: 1 do
-                    
         @internship_application.employer_validate!
         @internship_application.approve!
       end

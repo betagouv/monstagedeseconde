@@ -6,6 +6,11 @@ module Dashboard::Stepper
   class PlanningsControllerTest < ActionDispatch::IntegrationTest
     include Devise::Test::IntegrationHelpers
 
+    test 'GET new not logged redirects to sign in' do
+      get new_dashboard_stepper_planning_path
+      assert_redirected_to user_session_path
+    end
+
     test 'post a valid planning form' do
       travel_to Date.new(2025, 1, 1) do
         employer = create(:employer)
@@ -25,7 +30,6 @@ module Dashboard::Stepper
           max_students_per_group: 2,
           week_ids: weeks.ids,
           lunch_break: 'test de lunch break',
-
           daily_hours: {
             'lundi' => ['08:00', '15:00'],
             'mardi' => ['08:00', '13:00'],

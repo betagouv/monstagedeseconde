@@ -9,7 +9,7 @@ module Triggered
     # @warning: sometimes it fails ; surprising,
     # try to empty deliveries before running the spec
     setup do
-      @internship_offer = create(:weekly_internship_offer)
+      @internship_offer = create(:weekly_internship_offer_2nde)
       ActionMailer::Base.deliveries = []
     end
     teardown { ActionMailer::Base.deliveries = [] }
@@ -20,9 +20,9 @@ module Triggered
                                       submitted_at: Time.now - InternshipApplication::EXPIRATION_DURATION + 1.day,
                                       internship_offer: @internship_offer)
       internship_application_2 = create(:weekly_internship_application, :submitted,
-                                      submitted_at: 1.day.ago,
-                                      aasm_state: 'validated_by_employer',
-                                      internship_offer: @internship_offer)
+                                        submitted_at: 1.day.ago,
+                                        aasm_state: 'validated_by_employer',
+                                        internship_offer: @internship_offer)
       InternshipApplicationsExpirerJob.perform_now(@internship_offer.employer)
       internship_application.reload
       assert_nil internship_application.pending_reminder_sent_at
@@ -43,7 +43,7 @@ module Triggered
 
     test 'perform expire! when internship_applications is pending for more than EXPIRATION_DURATION' do
       internship_application = nil
-      assert_enqueued_emails 1 do #one for student welcome messaging
+      assert_enqueued_emails 1 do # one for student welcome messaging
         internship_application = create(:weekly_internship_application, :submitted,
                                         submitted_at: (InternshipApplication::EXPIRATION_DURATION + 1.day).ago,
                                         pending_reminder_sent_at: 7.days.ago,

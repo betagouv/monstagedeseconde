@@ -7,6 +7,7 @@ module InternshipOffers
     after_initialize :init
     before_create :reverse_academy_by_zipcode
 
+    # TODO: remove following since inherited
     attr_accessor :republish
 
     validates :street,
@@ -17,10 +18,6 @@ module InternshipOffers
               numericality: { only_integer: true,
                               greater_than: 0,
                               less_than_or_equal_to: MAX_CANDIDATES_HIGHEST }
-    validates :is_public,
-              inclusion: { in: [true, false] },
-              presence: true
-
     validate :schedules_check
 
     after_initialize :init

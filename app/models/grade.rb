@@ -25,6 +25,10 @@ class Grade < ApplicationRecord
     short_name == 'seconde'
   end
 
+  def troisieme_or_quatrieme?
+    short_name.in?(%w[troisieme quatrieme])
+  end
+
   def self.troisieme
     fetch_by_short_name('troisieme').first
   end

@@ -66,7 +66,7 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
           = form.radio_button :period,
                               0,
                               id: 'period_full_time',
-                              checked: resource.full_time? || resource.new_record?
+                              checked: resource.two_weeks_long? || resource.new_record?
 
           = form.label :period,
                        labels[:full_time],
@@ -75,7 +75,7 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
           = form.radio_button :period,
                               1,
                               id: 'period_week_1',
-                              checked: resource.week_1?
+                              checked: resource.seconde_school_track_week_1?
 
           = form.label :period,
                         labels[:week_1],
@@ -85,7 +85,7 @@ div [data-controller='hosting-infos' data-hosting-infos-base-type-value="#{klass
           = form.radio_button :period,
                               2,
                               id: 'period_week_2',
-                              checked: resource.week_2?
+                              checked: resource.seconde_school_track_week_2?
 
 
           = form.label :period,

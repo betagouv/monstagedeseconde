@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def log_error(controller:, object:)
+  def log_error(object:, controller: self)
     Rails.logger.error("#{controller.class.name} error: #{object.errors.full_messages.join(', ')}")
   end
 

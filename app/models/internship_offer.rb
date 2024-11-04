@@ -12,7 +12,7 @@ class InternshipOffer < ApplicationRecord
                             employer_chosen_name,
                             entreprise_full_address internship_offer_area_id internship_weeks_number
                             is_public group school_id coordinates first_date last_date
-                            siret employer_manual_enter lunch_break daily_hours
+                            siret internship_address_manual_enter lunch_break daily_hours
                             weekly_hours ].freeze
 
   include StiPreload
@@ -37,7 +37,7 @@ class InternshipOffer < ApplicationRecord
   include Discard::Model
   include PgSearch::Model
 
-  attr_accessor :republish
+  attr_accessor :republish, :grade_3e4e, :grade_2e, :all_year_long, :period, :internship_type
 
   # Other associations
   has_many :internship_applications, as: :internship_offer,
@@ -129,7 +129,7 @@ class InternshipOffer < ApplicationRecord
                     }
                   }
 
-  scope :is_public, -> { where(is_public: true) }
+  scope :public_entreprise, -> { where is_public: true }
   scope :by_sector, lambda { |sector_id|
     where(sector_id:)
   }
@@ -323,13 +323,21 @@ class InternshipOffer < ApplicationRecord
       SchoolTrack::Seconde.second_week.in?(weeks)
   end
 
+  def fits_for_seconde?
+    grades.select { |grade| grade.seconde? }.any?
+  end
+
+  def fits_for_troisieme_or_quatrieme?
+    grades.select { |grade| grade.troisieme_or_quatrieme? }.any?
+  end
+
   #
   # callbacks
   #
   def sync_first_and_last_date
     ordered_weeks = weeks.to_a.sort_by(&:id)
     self.first_date = ordered_weeks.first&.week_date
-    self.last_date = ordered_weeks.last&.week_date
+    self.last_date = ordered_weeks.last&.week_date&.+ 4.days
   end
 
   #
@@ -379,7 +387,6 @@ class InternshipOffer < ApplicationRecord
   end
 
   def init
-    self.max_candidates ||= 1
     self.school_year ||= SchoolYear::Current.year_in_june
   end
 
@@ -427,22 +434,22 @@ class InternshipOffer < ApplicationRecord
     # self.siret = organisation.siret
     # self.group_id = organisation.group_id
     # self.is_public = organisation.is_public
-    self.internship_street = internship_occupation.street
-    self.internship_zipcode = internship_occupation.zipcode
-    self.internship_city = internship_occupation.city
-    self.internship_coordinates = internship_occupation.coordinates
-    self.internship_offer_area_id = internship_occupation.internship_offer_area_id
+    # self.internship_street = internship_occupation.street
+    # self.internship_zipcode = internship_occupation.zipcode
+    # self.internship_city = internship_occupation.city
+    # self.internship_coordinates = internship_occupation.coordinates
+    # self.internship_offer_area_id = internship_occupation.internship_offer_area_id
   end
 
   def update_from_organisation
-    return unless organisation
+    nil unless organisation
 
-    self.employer_name = organisation.employer_name
-    self.employer_website = organisation.employer_website
-    self.employer_description = organisation.employer_description
-    self.siret = organisation.siret
-    self.group_id = organisation.group_id
-    self.is_public = organisation.is_public
+    #   self.employer_name = organisation.employer_name
+    #   self.employer_website = organisation.employer_website
+    #   self.employer_description = organisation.employer_description
+    #   self.siret = organisation.siret
+    #   self.group_id = organisation.group_id
+    #   self.is_public = organisation.is_public
   end
 
   def update_organisation

@@ -54,7 +54,7 @@ module Dashboard
 
       test 'student_email is suggested from previous internship_applications' do
         employer, internship_offer = create_employer_and_offer
-        second_internship_offer = create(:weekly_internship_offer, employer:)
+        second_internship_offer = create(:weekly_internship_offer_2nde, employer:)
         former_student_email = 'test@free.fr'
         student = create(:student, :registered_with_phone)
         internship_application = create(:weekly_internship_application,
@@ -73,7 +73,7 @@ module Dashboard
 
       test 'student_phone is suggested from previous internship_applications' do
         employer, internship_offer = create_employer_and_offer
-        second_internship_offer = create(:weekly_internship_offer, employer:)
+        second_internship_offer = create(:weekly_internship_offer_2nde, employer:)
         former_student_phone = '+330623055441'
         student = create(:student)
         assert_nil student.phone

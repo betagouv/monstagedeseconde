@@ -1,6 +1,7 @@
-- url = dashboard_stepper_internship_occupation_path(id: @internship_occupation.id,
-                                                     entreprise_id: params[:entreprise_id],
-                                                     planning_id: params[:planning_id])
+- model = @internship_occupation
+- method = :patch
+- url = dashboard_stepper_internship_occupation_path(@internship_occupation)
+
 = render 'layouts/breadcrumb',
           links: [ [dashboard_internship_offers_path, 'Mes offres de stage'],
                    ['', 'Publier une offre de stage']]
@@ -10,20 +11,7 @@
 
 .row
   .col-12
-    = form_with model: @internship_occupation,
-                data: { turbo: false },
-                method: :patch,
-                url: url do |form|
-      = render "dashboard/stepper/steps",
-               current_step_number: 1,
-               total_steps: 3,
-               current_step_title: "Métier et localisation",
-               next_step_title: "Votre entreprise"
-      = render "layouts/form_errors",
-               resource: @internship_occupation,
-               resource_name: :internship_offer
-      = render 'dashboard/stepper/internship_occupations/form_fields',
-               resource: @internship_occupation,
-               form: form,
-               submit_button: true,
-               warning_block: true
+    = render 'form',
+             show_resume: true,
+             submit_button: true ,
+             model: model, method: method, url: url

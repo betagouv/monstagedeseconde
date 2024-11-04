@@ -3,9 +3,10 @@
        data-mandatory-fields-minimum-length-value="2"]
     .row data-controller='grade'
       .col-md-6.order-md-2.order-1.d-none.d-md-block
-        = render 'dashboard/stepper/summary_card'
-        = form.hidden_field :school_id, value: form.object.school_id
+        - if form.object.new_record?
+          = render 'dashboard/stepper/summary_card', form: form
       .col-md-6.order-md-1.order-2
+        = form.hidden_field :school_id, value: form.object.school_id
         .row
           .col-12
             = render 'inputs/dsfr_checkbox_field',
@@ -37,7 +38,7 @@
               options: { data: {:'grade-target' => 'grade2e', action: 'grade#onClick' } }
         .row data-grade-target="secondeContainer"
           .col-12
-            = render 'seconde_period_radio_buttons_fields',
+            = render '/dashboard/stepper/plannings/seconde_period_radio_buttons_fields',
                     form: form,
                     resource: form.object
         .row
@@ -46,12 +47,12 @@
         - klass = resource.class.to_s.split("s::").first
         .row data-controller="planning-candidates" data-planning-candidates-base-type-value="#{klass}"
           .col-12
-            = render 'collective_or_individual_radio_buttons',
+            = render '/dashboard/stepper/plannings/collective_or_individual_radio_buttons',
                      form: form,
                      resource: form.object
         .row
           .col-12
-            = render 'daily_hours',
+            = render '/dashboard/stepper/plannings/daily_hours',
                      form: form,
                      resource: form.object
         .row
@@ -65,7 +66,9 @@
 
   - if submit_button
     .fr-mt-6w
-      = link_to 'Précédent', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
+      = link_to 'Précédent',
+                edit_dashboard_stepper_entreprise_path(resource.entreprise, show_resume: show_resume, entreprise_id: resource.entreprise.id),
+                class: 'fr-btn fr-btn--secondary fr-mr-3w'
       = button_tag :submit,
                    class: 'fr-btn',
                    :'data-daily-hours-target' => "submitButton",

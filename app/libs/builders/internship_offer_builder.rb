@@ -23,11 +23,6 @@ module Builders
                                 )
 
       internship_offer = model.new(**internship_attributes)
-      unless internship_offer.valid?
-        puts '*' * 100
-        puts internship_offer.errors.full_messages
-        puts '*' * 100
-      end
       internship_offer.save!
       DraftedInternshipOfferJob.set(wait: 1.week)
                                .perform_later(internship_offer_id: internship_offer.id)
@@ -61,7 +56,7 @@ module Builders
     def create(params:)
       yield callback if block_given?
       authorize :create, model
-      preprocess_organisation(params)
+      # preprocess_organisation(params)
       create_params = preprocess_api_params(params)
       internship_offer = model.create!(create_params)
       internship_offer.update(
@@ -139,7 +134,7 @@ module Builders
         department: internship_occupation.department,
         coordinates: internship_occupation.coordinates,
         employer_id: internship_occupation.employer_id,
-        employer_manual_enter: internship_occupation.internship_address_manual_enter
+        internship_address_manual_enter: internship_occupation.internship_address_manual_enter
       }
     end
 
@@ -214,19 +209,19 @@ module Builders
     #   }
     # end
 
-    def preprocess_organisation(params)
-      return params unless params['organisation_attributes']
+    # def preprocess_organisation(params)
+    #   return params unless params['organisation_attributes']
 
-      orga_params = params['organisation_attributes']
-      params['employer_name'] = orga_params['employer_name'] unless orga_params['employer_name'].blank?
-      params['employer_website'] = orga_params['employer_website'] unless orga_params['employer_website'].blank?
-      params['coordinates'] = orga_params['coordinates'] unless orga_params['coordinates'].blank?
-      params['street'] = orga_params['street'] unless orga_params['street'].blank?
-      params['zipcode'] = orga_params['zipcode'] unless orga_params['zipcode'].blank?
-      params['city'] = orga_params['city'] unless orga_params['city'].blank?
-      params['is_public'] = orga_params['is_public'] unless orga_params['is_public'].blank?
-      params['group_id'] = orga_params['group_id'] unless orga_params['group_id'].blank?
-    end
+    #   orga_params = params['organisation_attributes']
+    #   params['employer_name'] = orga_params['employer_name'] unless orga_params['employer_name'].blank?
+    #   params['employer_website'] = orga_params['employer_website'] unless orga_params['employer_website'].blank?
+    #   params['coordinates'] = orga_params['coordinates'] unless orga_params['coordinates'].blank?
+    #   params['street'] = orga_params['street'] unless orga_params['street'].blank?
+    #   params['zipcode'] = orga_params['zipcode'] unless orga_params['zipcode'].blank?
+    #   params['city'] = orga_params['city'] unless orga_params['city'].blank?
+    #   params['is_public'] = orga_params['is_public'] unless orga_params['is_public'].blank?
+    #   params['group_id'] = orga_params['group_id'] unless orga_params['group_id'].blank?
+    # end
 
     def from_api?
       context == :api

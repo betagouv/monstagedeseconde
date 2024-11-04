@@ -10,20 +10,20 @@ module Dashboard
         school = create(:school, :with_school_manager)
         student = create(:student, :when_applying, school:)
         internship_applications = {
-          drafted: create(:weekly_internship_application, :drafted, internship_offer: create(:weekly_internship_offer),
+          drafted: create(:weekly_internship_application, :drafted, internship_offer: create(:weekly_internship_offer_2nde),
                                                                     student:),
           submitted: create(:weekly_internship_application, :submitted,
-                            internship_offer: create(:weekly_internship_offer), student:),
+                            internship_offer: create(:weekly_internship_offer_2nde), student:),
           approved: create(:weekly_internship_application, :approved,
-                           internship_offer: create(:weekly_internship_offer), student:),
+                           internship_offer: create(:weekly_internship_offer_2nde), student:),
           rejected: create(:weekly_internship_application, :rejected,
-                           internship_offer: create(:weekly_internship_offer), student:),
+                           internship_offer: create(:weekly_internship_offer_2nde), student:),
           canceled_by_student_confirmation: create(:weekly_internship_application, :canceled_by_student_confirmation,
-                                                   internship_offer: create(:weekly_internship_offer), student:),
+                                                   internship_offer: create(:weekly_internship_offer_2nde), student:),
           validated_by_employer: create(:weekly_internship_application, :validated_by_employer,
-                                        internship_offer: create(:weekly_internship_offer), student:),
+                                        internship_offer: create(:weekly_internship_offer_2nde), student:),
           canceled_by_student: create(:weekly_internship_application, :canceled_by_student,
-                                      internship_offer: create(:weekly_internship_offer), student:)
+                                      internship_offer: create(:weekly_internship_offer_2nde), student:)
         }
         sign_in(student)
         visit '/'
@@ -88,7 +88,7 @@ module Dashboard
       test 'GET #show as Student with existing draft application shows the draft' do
         if ENV['RUN_BRITTLE_TEST']
           weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
-          internship_offer      = create(:weekly_internship_offer)
+          internship_offer      = create(:weekly_internship_offer_2nde)
           school                = create(:school)
           student               = create(:student, school:, class_room: create(:class_room, school:))
           internship_application = create(:weekly_internship_application,
@@ -116,10 +116,11 @@ module Dashboard
         travel_to Date.new(2024, 12, 1) do
           school = create(:school)
           student = create(:student,
+                           :seconde,
                            school:,
                            class_room: create(:class_room,
                                               school:))
-          internship_offer = create(:weekly_internship_offer)
+          internship_offer = create(:weekly_internship_offer_2nde, :week_1)
 
           sign_in(student)
           visit internship_offer_path(internship_offer)
@@ -166,7 +167,7 @@ module Dashboard
                            :when_applying,
                            school:,
                            class_room: create(:class_room, school:))
-          internship_offer = create(:weekly_internship_offer)
+          internship_offer = create(:weekly_internship_offer_2nde)
           internship_application = create(:weekly_internship_application,
                                           internship_offer:,
                                           student:)
@@ -238,7 +239,7 @@ module Dashboard
         student = create(:student,
                          school:,
                          class_room: create(:class_room, school:))
-        internship_offer = create(:weekly_internship_offer)
+        internship_offer = create(:weekly_internship_offer_2nde)
         create(:weekly_internship_application, :submitted, internship_offer:, student:)
 
         sign_in(student)
@@ -262,7 +263,7 @@ module Dashboard
         student = create(:student,
                          school:,
                          class_room: create(:class_room, school:))
-        internship_offer = create(:weekly_internship_offer)
+        internship_offer = create(:weekly_internship_offer_2nde)
         internship_application = create(:weekly_internship_application,
                                         :approved,
                                         internship_offer:,
@@ -287,7 +288,7 @@ module Dashboard
                          school:,
                          class_room: create(:class_room, school:))
         internship_offer_1 = create(:weekly_internship_offer_2nde, :week_1)
-        internship_offer_2 = create(:weekly_internship_offer, :week_2)
+        internship_offer_2 = create(:weekly_internship_offer_2nde, :week_2)
         approved_application_1 = create(:weekly_internship_application,
                                         :drafted,
                                         internship_offer: internship_offer_1,
@@ -315,7 +316,7 @@ module Dashboard
           student = create(:student,
                            school:,
                            class_room: create(:class_room, school:))
-          internship_offer = create(:weekly_internship_offer)
+          internship_offer = create(:weekly_internship_offer_2nde)
           internship_application = create(:weekly_internship_application,
                                           :validated_by_employer,
                                           internship_offer:,
@@ -343,7 +344,7 @@ module Dashboard
           student = create(:student,
                            school:,
                            class_room: create(:class_room, school:))
-          internship_offer = create(:weekly_internship_offer)
+          internship_offer = create(:weekly_internship_offer_2nde)
           internship_application = create(:weekly_internship_application,
                                           :validated_by_employer,
                                           internship_offer:,
@@ -373,8 +374,8 @@ module Dashboard
           student = create(:student,
                            school:,
                            class_room: create(:class_room, school:))
-          internship_offer = create(:weekly_internship_offer, internship_offer_area: employer.current_area,
-                                                              employer:)
+          internship_offer = create(:weekly_internship_offer_2nde, internship_offer_area: employer.current_area,
+                                                                   employer:)
           internship_application = create(:weekly_internship_application,
                                           :submitted,
                                           internship_offer:,
@@ -401,26 +402,34 @@ module Dashboard
       end
 
       test "student can apply twice if he's got one week internship only" do
-        student = create(:student)
-        internship_offer_1 = create(:weekly_internship_offer_2nde, :week_1)
-        internship_offer_2 = create(:weekly_internship_offer, :week_2)
-        internship_application = create(:weekly_internship_application, :approved, student:,
-                                                                                   internship_offer: internship_offer_1)
-        sign_in(student)
-        visit dashboard_internship_offers_path
-        click_link 'Candidatures'
-        click_link 'Rechercher un autre stage'
-        click_link internship_offer_2.title
-        all('a', text: 'Postuler').first.click
-        find('h1.h2', text: 'Votre candidature')
+        travel_to Date.new(2024, 10, 1) do
+          student = create(:student, :seconde)
+          internship_offer_1 = create(:weekly_internship_offer_2nde, :week_1)
+          internship_offer_2 = create(:weekly_internship_offer_2nde, :week_2)
+          create(:weekly_internship_application,
+                 :approved,
+                 student:,
+                 internship_offer: internship_offer_1,
+                 week: internship_offer_1.weeks.first)
+          sign_in(student)
+          visit dashboard_internship_offers_path
+          click_link 'Candidatures'
+          click_link 'Rechercher un autre stage'
+          click_link internship_offer_2.title
+          all('a', text: 'Postuler').first.click
+          find('h1.h2', text: 'Votre candidature')
+        end
       end
 
       test 'student cannot apply twice on the same week internship' do
-        student = create(:student)
+        student = create(:student, :seconde)
         internship_offer_1 = create(:weekly_internship_offer_2nde, :week_1)
         internship_offer_2 = create(:weekly_internship_offer_2nde, :week_1)
-        internship_application = create(:weekly_internship_application, :approved, student:,
-                                                                                   internship_offer: internship_offer_1)
+        internship_application = create(:weekly_internship_application,
+                                        :approved,
+                                        student:,
+                                        internship_offer: internship_offer_1,
+                                        week: internship_offer_1.weeks.first)
         sign_in(student)
         visit dashboard_internship_offers_path
         click_link 'Candidatures'

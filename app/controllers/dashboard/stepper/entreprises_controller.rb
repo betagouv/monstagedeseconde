@@ -6,21 +6,20 @@ module Dashboard::Stepper
 
     def new
       @entreprise = Entreprise.new(internship_occupation_id: params[:internship_occupation_id])
+      @internship_occupation = @entreprise.internship_occupation
       authorize! :create, @entreprise
     end
 
     def create
       @entreprise = Entreprise.new(entreprise_params)
       authorize! :create, @entreprise
-      @entreprise.entreprise_coordinates = { longitude: entreprise_params[:entreprise_coordinates_longitude],
-                                             latitude: entreprise_params[:entreprise_coordinates_latitude] }
-      @entreprise = set_updated_address_flag(@entreprise, entreprise_params)
+      set_computed_params
 
       if @entreprise.save
         notice = "Les informations de l'entreprise ont bien été enregistrées"
         redirect_to new_dashboard_stepper_planning_path(entreprise_id: @entreprise.id), notice:
       else
-        log_error
+        log_error(object: @entreprise)
         render :new, status: :bad_request
       end
     end
@@ -41,11 +40,10 @@ module Dashboard::Stepper
             id: params[:entreprise_id]
           )
         else
-          log_error
-          redirect_to new_dashboard_stepper_entreprise_path(entreprise_id: @entreprise.id)
+          redirect_to new_dashboard_stepper_planning_path(entreprise_id: @entreprise.id)
         end
       else
-        log_error
+        log_error(object: @entreprise)
         render :new, status: :bad_request
       end
     end
@@ -65,26 +63,25 @@ module Dashboard::Stepper
               :entreprise_chosen_full_address,
               :entreprise_coordinates_longitude,
               :entreprise_coordinates_latitude,
-
               :internship_occupation_id
             )
-      # :group_id
     end
 
-    def set_updated_address_flag(entreprise, parameter)
-      entreprise.tap do |e|
-        e.updated_entreprise_full_address = e.entreprise_full_address != parameter[:entreprise_chosen_full_address]
+    def set_computed_params
+      @entreprise.is_public ||= entreprise_params[:is_public] == 'true'
+      @entreprise.entreprise_coordinates = { longitude: entreprise_params[:entreprise_coordinates_longitude],
+                                             latitude: entreprise_params[:entreprise_coordinates_latitude] }
+      @entreprise = set_updated_address_flag
+    end
+
+    def set_updated_address_flag
+      @entreprise.tap do |e|
+        e.updated_entreprise_full_address = e.entreprise_full_address != entreprise_params[:entreprise_chosen_full_address]
       end
     end
 
     def fetch_entreprise
       @entreprise = Entreprise.find(params[:entreprise_id])
-    end
-
-    def log_error
-      Rails.logger.error(
-        "Entreprise creation error: #{@entreprise.errors.full_messages.join(', ')}"
-      )
     end
   end
 end

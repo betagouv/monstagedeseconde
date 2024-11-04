@@ -267,7 +267,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test 'transition from submited to approved create internship_agreement for student' do
-    internship_offer = create(:weekly_internship_offer)
+    internship_offer = create(:weekly_internship_offer_2nde)
     school = create(:school, :with_school_manager)
     class_room = create(:class_room, school:)
     student = create(:student, class_room:)
@@ -416,7 +416,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test '.order_by_aasm_state_for_student' do
-    skip 'This test is flaky, it fails on CI'
+    skip 'This test is flaky, it fails on CI' if ENV['CI'] == true
     internship_application_1 = nil
     internship_application_2 = nil
     internship_application_3 = nil

@@ -19,9 +19,9 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
   end
 
   test 'search by location (city) works' do
-    internship_offer_at_paris = create(:weekly_internship_offer,
+    internship_offer_at_paris = create(:weekly_internship_offer_2nde,
                                        coordinates: Coordinates.paris)
-    internship_offer_at_bordeaux = create(:weekly_internship_offer,
+    internship_offer_at_bordeaux = create(:weekly_internship_offer_2nde,
                                           city: 'Bordeaux',
                                           coordinates: Coordinates.bordeaux)
 
@@ -42,9 +42,9 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
 
   test 'search by location (zipcodes) works' do
     travel_to(Date.new(2023, 9, 6)) do
-      internship_offer_at_paris = create(:weekly_internship_offer,
+      internship_offer_at_paris = create(:weekly_internship_offer_2nde,
                                          coordinates: Coordinates.paris)
-      internship_offer_at_bordeaux = create(:weekly_internship_offer,
+      internship_offer_at_bordeaux = create(:weekly_internship_offer_2nde,
                                             coordinates: Coordinates.bordeaux)
 
       visit internship_offers_path
@@ -66,8 +66,8 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
 
   test 'search by keyword works' do
     searched_keyword = 'helloworld'
-    searched_internship_offer = create(:weekly_internship_offer, title: searched_keyword)
-    not_searched_internship_offer = create(:weekly_internship_offer)
+    searched_internship_offer = create(:weekly_internship_offer_2nde, title: searched_keyword)
+    not_searched_internship_offer = create(:weekly_internship_offer_2nde)
     dictionnary_api_call_stub
     SyncInternshipOfferKeywordsJob.perform_now
     InternshipOfferKeyword.update_all(searchable: true)
@@ -95,19 +95,19 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
                         coordinates: searched_location,
                         period: 1 }
       # build findable
-      findable_internship_offer = create(:weekly_internship_offer, searched_opts)
+      findable_internship_offer = create(:weekly_internship_offer_2nde, searched_opts)
 
       # build ignored
       not_found_by_location = create(
-        :weekly_internship_offer,
+        :weekly_internship_offer_2nde,
         searched_opts.merge(coordinates: Coordinates.bordeaux)
       )
       not_found_by_keyword = create(
-        :weekly_internship_offer,
+        :weekly_internship_offer_2nde,
         searched_opts.merge(title: not_searched_keyword)
       )
       not_found_by_week = create(
-        :weekly_internship_offer, :week_2
+        :weekly_internship_offer_2nde, :week_2
       )
 
       dictionnary_api_call_stub

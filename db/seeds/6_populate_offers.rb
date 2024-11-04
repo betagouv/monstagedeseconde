@@ -1,5 +1,7 @@
 def populate_internship_offers
   current_school_year = SchoolYear::Current.new.beginning_of_period
+  weeks = SchoolTrack::Seconde.both_weeks
+  weeks += Week.selectable_from_now_until_end_of_school_year
   # public sector
   # 1
   InternshipOffers::WeeklyFramed.create!(
@@ -20,7 +22,10 @@ def populate_internship_offers
     city: 'Tours',
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude] },
     employer_name: Group.is_paqte.first.name,
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    internship_weeks_number: 2
   )
 
   # 2
@@ -42,7 +47,10 @@ def populate_internship_offers
     city: 'Verneuil-sur-Seine',
     coordinates: { latitude: Coordinates.verneuil[:latitude], longitude: Coordinates.verneuil[:longitude] },
     employer_name: Group.is_paqte.first.name,
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    internship_weeks_number: 2
   )
 
   # 3
@@ -63,7 +71,9 @@ def populate_internship_offers
     city: 'paris',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: Group.is_public.last.name,
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks -  SchoolTrack::Seconde.second_week,
+    grades: Grade.all
   )
 
   # 4
@@ -85,7 +95,9 @@ def populate_internship_offers
     city: 'paris',
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Du temps pour moi',
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks -  SchoolTrack::Seconde.second_week,
+    grades: Grade.all
   )
   # dépubliée
   # 5
@@ -108,7 +120,9 @@ def populate_internship_offers
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Du temps pour moi',
     max_candidates: 7,
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all
   )
 
   # 6
@@ -129,7 +143,10 @@ def populate_internship_offers
     city: 'paris',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: 'Editegis',
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    internship_weeks_number: 2
   )
   # 7
   InternshipOffers::WeeklyFramed.create!(
@@ -150,7 +167,10 @@ def populate_internship_offers
     city: 'Tours',
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude] },
     employer_name: 'Education Nationale',
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    internship_weeks_number: 2
   )
 
   area_id = Users::Operator.first.reload.internship_offer_areas.first.id
@@ -173,7 +193,9 @@ def populate_internship_offers
     permalink: 'https://www.google.fr',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: 'IBM',
-    internship_offer_area_id: area_id
+    internship_offer_area_id: area_id,
+    weeks: weeks -  SchoolTrack::Seconde.first_week,
+    grades: Grade.all
   )
 
   # 9 api - 2
@@ -200,11 +222,13 @@ def populate_internship_offers
     permalink: 'https://www.google.fr',
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Ministère de l\'Education Nationale',
-    internship_offer_area_id: area_id
+    internship_offer_area_id: area_id,
+    weeks: weeks - SchoolTrack::Seconde.first_week,
+    grades: Grade.all
   )
 
-  # 10 
-  description = " - Présentation des services de la direction régionale de Valenciennes (service contentieux, pôle action économique). - Présentation de la recette interrégionale (service de perception). - Immersion au sein d’un bureau de douane (gestion des procédures, déclarations en douane, dédouanement, contrôles des déclarations et des marchandises)."
+  # 10
+  description = ' - Présentation des services de la direction régionale de Valenciennes (service contentieux, pôle action économique). - Présentation de la recette interrégionale (service de perception). - Immersion au sein d’un bureau de douane (gestion des procédures, déclarations en douane, dédouanement, contrôles des déclarations et des marchandises).'
   InternshipOffers::WeeklyFramed.create!(
     max_candidates: 5,
     employer: Users::Employer.first,
@@ -222,7 +246,10 @@ def populate_internship_offers
     city: 'Montmorency',
     coordinates: { latitude: Coordinates.montmorency[:latitude], longitude: Coordinates.montmorency[:longitude] },
     employer_name: 'Douanes Assistance Corp.',
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    internship_weeks_number: 2
   )
 
   # 11
@@ -243,7 +270,10 @@ def populate_internship_offers
     city: 'Verneuil-sur-Seine',
     coordinates: { latitude: Coordinates.verneuil[:latitude], longitude: Coordinates.verneuil[:longitude] },
     employer_name: 'MetaBoutShop',
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    internship_weeks_number: 2
   )
 
   InternshipOffers::WeeklyFramed.all.each { |o| o.publish! if o.may_publish? }
@@ -283,7 +313,10 @@ def populate_internship_offers
     city: 'paris',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: 'Oyonnax Corp.',
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    internship_weeks_number: 2
   )
 
   # 12
@@ -305,7 +338,9 @@ def populate_internship_offers
     city: 'Bordeaux',
     coordinates: { latitude: Coordinates.bordeaux[:latitude], longitude: Coordinates.bordeaux[:longitude] },
     employer_name: Group.is_paqte.second.name,
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks - SchoolTrack::Seconde.second_week,
+    grades: Grade.all
   )
   InternshipOffer.last.publish!
 
@@ -328,7 +363,9 @@ def populate_internship_offers
     city: 'Tours',
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude] },
     employer_name: Group.is_paqte.second.name,
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks - SchoolTrack::Seconde.first_week,
+    grades: Grade.all
   )
   InternshipOffer.last.publish!
 
@@ -351,11 +388,17 @@ def populate_internship_offers
     permalink: 'https://www.google.fr',
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Ministère de l\'Education Nationale',
-    internship_offer_area_id: area_id
+    internship_offer_area_id: area_id,
+    weeks: weeks - SchoolTrack::Seconde.first_week,
+    grades: Grade.all
   )
   InternshipOffer.last.publish!
 
   # 15 older school year
+  current_year = SchoolTrack::Seconde.current_year
+  former_year = current_year - 1
+  weeks = SchoolTrack::Seconde.both_weeks(year: former_year)
+  weeks += Week.of_previous_school_year
   InternshipOffers::Api.create!(
     employer: Users::Operator.first,
     contact_phone: '+33637607756',
@@ -376,8 +419,8 @@ def populate_internship_offers
     internship_offer_area_id: area_id,
     school_year: 2023,
     period: 1,
-    first_date: SchoolTrack::Seconde.period_collection(school_year: 2023)[:week_1][:start_day],
-    last_date: SchoolTrack::Seconde.period_collection(school_year: 2023)[:week_1][:end_day]
+    weeks: weeks - SchoolTrack::Seconde.second_week,
+    grades: Grade.all
   )
   InternshipOffer.last.publish!
 end

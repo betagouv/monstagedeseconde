@@ -5,7 +5,7 @@
             method: :post do |form|
   = render "dashboard/stepper/steps", { current_step_number: 3,
                                         total_steps: 3,
-                                        current_step_title: "Votre annonce planning",
+                                        current_step_title: "Le planning",
                                         next_step_title: "Publication de l'annonce" }
   = render "layouts/form_errors",
             resource: @planning,
@@ -14,4 +14,5 @@
   = render 'dashboard/stepper/plannings/form_fields', { resource: @planning,
                                                         warning_block: true,
                                                         form: form,
-                                                        submit_button: true }
+                                                        submit_button: true,
+                                                        show_resume: show_resume }

@@ -14,6 +14,7 @@ FactoryBot.define do
     trait :private do
       is_public { false }
     end
+
     trait :public do
       group { create(:group, is_public: true) }
       is_public { true }

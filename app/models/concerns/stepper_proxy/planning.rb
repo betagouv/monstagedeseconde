@@ -4,9 +4,12 @@ module StepperProxy
     # common to planning and internship_offer
 
     included do
-      after_initialize :init
-
+      # db default value for
+      #     internhip_weeks_number is   1
+      #     max_candidates is           1
+      #     max_students_per_group is   1
       # Associations
+
       has_many :planning_grades,
                dependent: :destroy,
                class_name: 'PlanningGrade',
@@ -53,11 +56,6 @@ module StepperProxy
         @skip_enough_weeks_validation ||= false
       end
 
-      def init
-        self.max_candidates ||= 1
-        self.max_students_per_group ||= 1
-      end
-
       def available_weeks
         return Week.selectable_from_now_until_end_of_school_year unless respond_to?(:weeks)
         return Week.selectable_from_now_until_end_of_school_year unless persisted?
@@ -68,6 +66,10 @@ module StepperProxy
         school_year = SchoolYear::Floating.new(date: weeks.first.week_date)
 
         Week.selectable_on_specific_school_year(school_year:)
+      end
+
+      def all_year_long?
+        Week.selectable_from_now_until_end_of_school_year.in?(weeks)
       end
 
       private

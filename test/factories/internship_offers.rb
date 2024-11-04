@@ -2,14 +2,10 @@
 
 FactoryBot.define do
   factory :internship_offer, aliases: %i[with_public_group_internship_offer] do
-    planning
-    entreprise { planning.entreprise }
-    internship_occupation { entreprise.internship_occupation }
-    employer { internship_occupation.employer }
-    # organisation { create(:organisation, employer:) }
-    # internship_offer_info { create(:internship_offer_info, employer:) }
-    # hosting_info { create(:hosting_info, employer:) }
-    # practical_info { create(:practical_info, employer:) }
+    employer
+    internship_occupation { create(:internship_occupation, employer: employer) }
+    entreprise { create(:entreprise, internship_occupation: internship_occupation) }
+    planning { create(:planning, entreprise: entreprise) }
     sequence(:title) { |n| "Stage de 2de - #{n}" }
     description { 'Lorem ipsum dolor' }
     # contact_phone { '+330612345678' }
@@ -20,7 +16,6 @@ FactoryBot.define do
     is_public { true }
     group { create(:group, is_public: true) }
     internship_offer_area { create(:area, employer_id: employer.id, employer_type: 'User') }
-    # employer_description { 'on envoie du parpaing' }
     street { '1 rue du poulet' }
     zipcode { '75001' }
     city { 'Paris' }
@@ -138,15 +133,15 @@ FactoryBot.define do
     #  create(:internship_offer_stats, internship_offer: internship_offer)
     # end
 
-    factory :api_internship_offer_2nde, traits: %i[api_internship_offer both_weeks],
+    factory :api_internship_offer_2nde, traits: %i[api_internship_offer week_1],
                                         class: 'InternshipOffers::Api',
                                         parent: :internship_offer
 
-    factory :weekly_internship_offer_2nde, traits: %i[weekly_internship_offer published both_weeks],
+    factory :weekly_internship_offer_2nde, traits: %i[weekly_internship_offer published week_1],
                                            class: 'InternshipOffers::WeeklyFramed',
                                            parent: :internship_offer
 
-    factory :weekly_internship_offer_by_statistician_2nde, traits: %i[weekly_internship_offer_by_statistician both_weeks],
+    factory :weekly_internship_offer_by_statistician_2nde, traits: %i[weekly_internship_offer_by_statistician week_1],
                                                            class: 'InternshipOffers::WeeklyFramed',
                                                            parent: :internship_offer
     factory :api_internship_offer_3eme, traits: %i[api_internship_offer],

@@ -24,6 +24,7 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
       end
     end
     assert_equal 'Étape 2 sur 3', find('h2 > span.fr-stepper__state').text
+    assert InternshipOccupation.last.coordinates.present?
   end
   # test 'can not create public InternshipOccupation without group' do
   #   2.times { create(:school) }
@@ -58,10 +59,10 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
   # ------------------------
 
   test 'update internship_occupation is ok once internship_occupation is retrieved' do
-    employer = create(:employer)
-    internship_occupation = create(:internship_occupation, employer:)
-    sign_in(employer)
     travel_to(Date.new(2024, 3, 1)) do
+      employer = create(:employer)
+      internship_occupation = create(:internship_occupation, employer:)
+      sign_in(employer)
       visit edit_dashboard_stepper_internship_occupation_path(internship_occupation)
       as = 'a' * 10
       fill_in_internship_occupation_form(description: as, full_address: ' ')

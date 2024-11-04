@@ -22,6 +22,17 @@ module Dashboard
       )
     end
 
+    def new
+      authorize! :create, InternshipOffer
+      internship_offer = current_user.internship_offers.find(params[:duplicate_id]).duplicate
+
+      @internship_offer = if params[:without_location].present?
+                            internship_offer.duplicate_without_location
+                          else
+                            internship_offer.duplicate
+                          end
+    end
+
     # duplicate submit
     def create
       authorize! :create, InternshipOffer
@@ -48,21 +59,11 @@ module Dashboard
 
     def edit
       authorize! :update, @internship_offer
+      @internship_offer.grade_3e4e = @internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
+      @internship_offer.grade_2e = @internship_offer.fits_for_seconde? ? '1' : '0'
+      @internship_offer.all_year_long = @internship_offer.all_year_long?
+      @available_weeks = Week.selectable_from_now_until_end_of_school_year
       @republish = true
-    end
-
-    def republish
-      anchor = 'max_candidates_fields'
-      warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places et des semaines de stage"
-
-      if @internship_offer.remaining_seats_count.zero?
-        warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places de stage"
-      elsif @internship_offer.remaining_seats_count > 0
-        anchor = 'weeks_container'
-        warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des semaines de stage"
-      end
-      redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor:),
-                  flash: { warning: }
     end
 
     def update
@@ -122,6 +123,20 @@ module Dashboard
       end
     end
 
+    def republish
+      anchor = 'max_candidates_fields'
+      warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places et des semaines de stage"
+
+      if @internship_offer.remaining_seats_count.zero?
+        warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places de stage"
+      elsif @internship_offer.remaining_seats_count > 0
+        anchor = 'weeks_container'
+        warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des semaines de stage"
+      end
+      redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor:),
+                  flash: { warning: }
+    end
+
     def remove # Back to step 4
       if offer_contains_stepper_informations?
         redirect_to(
@@ -138,16 +153,6 @@ module Dashboard
     end
 
     # duplicate form
-    def new
-      authorize! :create, InternshipOffer
-      internship_offer = current_user.internship_offers.find(params[:duplicate_id]).duplicate
-
-      @internship_offer = if params[:without_location].present?
-                            internship_offer.duplicate_without_location
-                          else
-                            internship_offer.duplicate
-                          end
-    end
 
     private
 
@@ -211,7 +216,7 @@ module Dashboard
                     :zipcode, :city, :department, :region, :academy, :renewed,
                     :is_public, :group_id, :published_at, :republish, :type,
                     :employer_id, :employer_type, :verb, :user_update, :school_id,
-                    :siret, :employer_manual_enter, :lunch_break, :aasm_state,
+                    :siret, :internship_address_manual_enter, :lunch_break, :aasm_state,
                     :internship_weeks_number, :period,
                     entreprise_coordinates: {}, coordinates: {},
                     daily_hours: {}, weekly_hours: [], week_ids: [])

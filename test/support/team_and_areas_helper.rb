@@ -29,9 +29,8 @@ module TeamAndAreasHelper
         )
       end
     end
-
     create(:weekly_internship_offer_2nde,
-           internship_offer_area_id: employer_1.current_area.id,
+           internship_offer_area: employer_1.current_area,
            employer: employer_1)
   end
 
@@ -45,7 +44,7 @@ module TeamAndAreasHelper
 
   def create_user_operator_and_api_offer(operator_id)
     user_operator = create(:user_operator, operator_id: operator_id)
-    offer = create(:api_internship_offer,
+    offer = create(:api_internship_offer_2nde,
                    employer: user_operator,
                    internship_offer_area: user_operator.current_area)
     [user_operator, offer]

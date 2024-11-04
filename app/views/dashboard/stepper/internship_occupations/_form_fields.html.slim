@@ -1,10 +1,10 @@
 - if can?(:supply_offers, current_user)
     / = current_user.ministry_statistician? ? "Votre administration" : "L'entreprise"
-    = form.hidden_field :internship_address_manual_enter, value: false
+    = form.hidden_field :internship_address_manual_enter, value: !!resource.internship_address_manual_enter
     = form.hidden_field :employer_id, value: current_user.id
     - if resource.id
       = form.hidden_field :id, value: resource.id
-    .row [data-controller='mandatory-fields-with-coordinates'
+    .row [data-controller='mandatory-fields-with-coordinates fill-card'
           data-mandatory-fields-with-coordinates-minimum-length-value="6"
           data-mandatory-fields-with-coordinates-no-event-check-value="#{resource.id.present?}"]
       .col-md-6
@@ -23,8 +23,9 @@
                         title: 'intitulé du stage',
                         object: form.object,
                         field_type: :text_field,
-                        options: { data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
-                                           :'mandatory-fields-with-coordinates-target' => "mandatoryField"}}
+                        options: { data: { action: "input->mandatory-fields-with-coordinates#fieldChange input->fill-card#offerTitleChanged",
+                                           :'mandatory-fields-with-coordinates-target' => "mandatoryField",
+                                           :'fill-card-target' => "offerTitleInput"} }
         .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
           .col-12
             - max_length = InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
@@ -62,15 +63,21 @@
           .col-12
             fieldset aria-labelledby="presentation"
               legend Le lieu où se déroulera le stage :
+            - currentLatitude     = resource.coordinates.try(:lat).try(:to_f)
+            - currentLongitude    = resource.coordinates.try(:lng).try(:to_f)
+            - currentLatitude   ||= resource.coordinates.try(:latitude).try(:to_f)
+            - currentLongitude  ||= resource.coordinates.try(:longitude).try(:to_f)
+
             = react_component("AddressInput",
                               props: { resourceName: form.object_name,
                                        currentStreet: resource.street,
                                        currentCity: resource.city,
                                        currentZipcode: resource.zipcode,
-                                       currentLatitude: resource.coordinates.try(:lat).try(:to_f),
-                                       currentLongitude: resource.coordinates.try(:lng).try(:to_f),
+                                       currentLatitude: rcurrentLatitude,
+                                       currentLongitude: currentLongitude,
                                        currentFullAddress: resource.formatted_autocomplete_address,
                                        addressFieldsVisible: !resource.id.nil?})
+
         - if submit_button
           .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
             .col-12
@@ -82,4 +89,4 @@
                                     :'internship_occupation-form-target' => "submitButton"} do
                   = "Suivant "
       .col-md-6
-        = render 'dashboard/stepper/summary_card', internship_occupation: resource
+        = render 'dashboard/stepper/summary_card', form: form

@@ -1,10 +1,10 @@
-require "test_helper"
+require 'test_helper'
 
 class InternshipApplicationsControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   test 'GET edit_transfer not logged redirects to sign in' do
-    internship_offer = create(:weekly_internship_offer)
+    internship_offer = create(:weekly_internship_offer_2nde)
     internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
     get edit_transfer_internship_offer_internship_application_path(internship_offer, internship_application)
     assert_redirected_to user_session_path
@@ -12,7 +12,7 @@ class InternshipApplicationsControllerTest < ActionDispatch::IntegrationTest
 
   test 'GET edit_transfer when logged in it renders the page' do
     employer = create(:employer)
-    internship_offer = create(:weekly_internship_offer, employer: employer)
+    internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
     internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
     sign_in(employer)
 
@@ -22,7 +22,7 @@ class InternshipApplicationsControllerTest < ActionDispatch::IntegrationTest
 
   test 'GET edit_transfer when logged in as statistician it renders the page' do
     employer = create(:statistician)
-    internship_offer = create(:weekly_internship_offer, employer: employer)
+    internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
     internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
     sign_in(employer)
 
@@ -32,7 +32,7 @@ class InternshipApplicationsControllerTest < ActionDispatch::IntegrationTest
 
   test 'POST transfer when logged in it sends emails to targets' do
     employer = create(:employer)
-    internship_offer = create(:weekly_internship_offer, employer: employer)
+    internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
     internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
     sign_in(employer)
 
@@ -44,7 +44,8 @@ class InternshipApplicationsControllerTest < ActionDispatch::IntegrationTest
           destinations: 'test@mail.com,jojo@mail.com'
         }
       }
-      post transfer_internship_offer_internship_application_path(internship_offer, internship_application), params: params
+      post transfer_internship_offer_internship_application_path(internship_offer, internship_application),
+           params: params
     end
 
     internship_application.reload
@@ -55,7 +56,7 @@ class InternshipApplicationsControllerTest < ActionDispatch::IntegrationTest
 
   test 'POST transfer when email list contains faulty emails' do
     employer = create(:employer)
-    internship_offer = create(:weekly_internship_offer, employer: employer)
+    internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
     internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
     sign_in(employer)
 
@@ -66,7 +67,8 @@ class InternshipApplicationsControllerTest < ActionDispatch::IntegrationTest
           destinations: '@test@mail.com,jojo@mail.com'
         }
       }
-      post transfer_internship_offer_internship_application_path(internship_offer, internship_application), params: params
+      post transfer_internship_offer_internship_application_path(internship_offer, internship_application),
+           params: params
     end
 
     internship_application.reload

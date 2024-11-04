@@ -78,7 +78,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :companies, path: 'entreprises', only: %i[index show] do
+    resources :companies, path: 'organisations', only: %i[index show] do
       member do
         post :contact
       end

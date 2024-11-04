@@ -13,6 +13,7 @@ class InternshipApplicationsController < ApplicationController
 
   def new
     authorize! :apply, @internship_offer
+    @available_weeks = @internship_offer.weeks
     @internship_application = InternshipApplication.new(
       internship_offer_id: params[:internship_offer_id],
       internship_offer_type: 'InternshipOffer',
@@ -142,6 +143,7 @@ class InternshipApplicationsController < ApplicationController
             :motivation,
             :student_phone,
             :student_email,
+            :week_id,
             student_attributes: %i[
               email
               phone

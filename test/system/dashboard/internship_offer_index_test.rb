@@ -19,12 +19,12 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
     employer = create(:employer)
     old_internship_offer = nil
     travel_to Date.new(2024, 10, 1) do
-      old_internship_offer = create(:weekly_internship_offer, :full_time, employer:,
-                                                                          internship_offer_area_id: employer.current_area_id)
+      old_internship_offer = create(:weekly_internship_offer_2nde, :both_weeks, employer:,
+                                                                                internship_offer_area_id: employer.current_area_id)
     end
     travel_to Date.new(2025, 10, 1) do
-      internship_offer = create(:weekly_internship_offer, :full_time, employer:,
-                                                                      internship_offer_area_id: employer.current_area_id)
+      internship_offer = create(:weekly_internship_offer_2nde, :both_weeks, employer:,
+                                                                            internship_offer_area_id: employer.current_area_id)
       assert_equal Date.new(2026, 6, 26), internship_offer.last_date
       assert old_internship_offer.last_date < Time.now.utc
 
@@ -59,7 +59,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
 
   test 'tabs test(still todo)' do
     employer = create(:employer)
-    internship_offer = create(:weekly_internship_offer, employer:)
+    internship_offer = create(:weekly_internship_offer_2nde, employer:)
     sign_in(employer)
     InternshipOffer.stub :nearby, InternshipOffer.all do
       InternshipOffer.stub :by_weeks, InternshipOffer.all do
@@ -71,8 +71,8 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   test 'unpublish navigation and republish after' do
     travel_to Date.new(2021, 10, 1) do
       employer = create(:employer)
-      internship_offer = create(:weekly_internship_offer, employer:,
-                                                          internship_offer_area_id: employer.current_area_id)
+      internship_offer = create(:weekly_internship_offer_2nde, employer:,
+                                                               internship_offer_area_id: employer.current_area_id)
       sign_in(employer)
       InternshipOffer.stub :nearby, InternshipOffer.all do
         assert internship_offer.published?
@@ -113,7 +113,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
     travel_to Date.new(2024, 10, 1) do
       employer = create(:employer)
       internship_offer = create(
-        :weekly_internship_offer,
+        :weekly_internship_offer_2nde,
         employer:,
         internship_offer_area_id: employer.current_area_id
       )
@@ -146,7 +146,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
     internship_offer = nil
     travel_to Date.new(2024, 10, 1) do
       internship_offer = create(
-        :weekly_internship_offer,
+        :weekly_internship_offer_2nde,
         max_candidates: 1,
         employer:,
         internship_offer_area_id: employer.current_area_id

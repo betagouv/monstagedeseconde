@@ -1,3 +1,7 @@
+- model = @entreprise
+- method = :post
+- url = dashboard_stepper_entreprises_path
+
 = render 'layouts/breadcrumb',
           links: [ [dashboard_internship_offers_path, 'Mes offres de stage'],
                    ['', 'Déposer une offre de stage']]
@@ -6,20 +10,7 @@
     h1.h2.mb-3 Déposer une offre de stage
 
 
-= form_with model: @entreprise,
-            url: dashboard_stepper_entreprises_path(@entreprise),
-            scope: :entreprise,
-            data: { turbo: false },
-            method: :post do |form|
-  = render "dashboard/stepper/steps", { current_step_number: 2,
-                                        total_steps: 3,
-                                        current_step_title: "Le planning",
-                                        next_step_title: "Planning" }
-  = render "layouts/form_errors",
-            resource: @entreprise,
-            resource_name: :internship_offer
-
-  = render 'dashboard/stepper/entreprises/form_fields', { resource: @entreprise,
-                                                          warning_block: true,
-                                                          form: form,
-                                                          submit_button: true }
+= render 'form',
+         show_resume: true,
+         submit_button: true,
+         model: model, method: method, url: url

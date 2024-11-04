@@ -35,9 +35,10 @@ module Api
     test 'GET #search without params returns all internship_offers available' do
       travel_to(Date.new(2024, 3, 1)) do
         user = create(:user_operator, :fully_authorized)
-        offer_1 = create(:weekly_internship_offer, coordinates: Coordinates.tours, city: 'Tours')
-        offer_2 = create(:weekly_internship_offer, coordinates: Coordinates.paris, city: 'Paris')
-        offer_3 = create(:weekly_internship_offer, :unpublished, coordinates: Coordinates.bordeaux, city: 'Bordeaux')
+        offer_1 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.tours, city: 'Tours')
+        offer_2 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.paris, city: 'Paris')
+        offer_3 = create(:weekly_internship_offer_2nde, :unpublished, coordinates: Coordinates.bordeaux,
+                                                                      city: 'Bordeaux')
 
         documents_as(endpoint: :'internship_offers/search', state: :success) do
           get search_api_internship_offers_path(
@@ -61,7 +62,7 @@ module Api
     test 'GET #search with page params returns the page results' do
       user = create(:user_operator, :fully_authorized)
       travel_to Date.new(2024, 1, 1) do
-        (InternshipOffer::PAGE_SIZE + 1).times { create(:weekly_internship_offer) }
+        (InternshipOffer::PAGE_SIZE + 1).times { create(:weekly_internship_offer_2nde) }
 
         documents_as(endpoint: :'internship_offers/search', state: :success) do
           get search_api_internship_offers_path(
@@ -82,7 +83,7 @@ module Api
     test 'GET #search with big page number params returns empty results' do
       travel_to Date.new(2024, 1, 1) do
         user = create(:user_operator, :fully_authorized)
-        (InternshipOffer::PAGE_SIZE + 1).times { create(:weekly_internship_offer) }
+        (InternshipOffer::PAGE_SIZE + 1).times { create(:weekly_internship_offer_2nde) }
 
         documents_as(endpoint: :'internship_offers/search', state: :success) do
           get search_api_internship_offers_path(
@@ -103,10 +104,10 @@ module Api
     test 'GET #search with coordinates params returns all internship_offers available in the city' do
       travel_to(Date.new(2024, 3, 1)) do
         user = create(:user_operator, :fully_authorized)
-        offer_1 = create(:weekly_internship_offer, city: 'Bordeaux',
-                                                   coordinates: { latitude: 44.8624, longitude: -0.5848 })
-        offer_2 = create(:weekly_internship_offer)
-        offer_3 = create(:weekly_internship_offer, :unpublished)
+        offer_1 = create(:weekly_internship_offer_2nde, city: 'Bordeaux',
+                                                        coordinates: { latitude: 44.8624, longitude: -0.5848 })
+        offer_2 = create(:weekly_internship_offer_2nde)
+        offer_3 = create(:weekly_internship_offer_2nde, :unpublished)
 
         documents_as(endpoint: :'internship_offers/search', state: :success) do
           get search_api_internship_offers_path(
@@ -130,11 +131,11 @@ module Api
     test 'GET #search with coordinates and radius params returns all internship_offers available in the radius' do
       travel_to(Date.new(2024, 3, 1)) do
         user = create(:user_operator, :fully_authorized)
-        offer_1 = create(:weekly_internship_offer, city: 'Bordeaux',
-                                                   coordinates: { latitude: 44.8624, longitude: -0.5848 })
-        offer_2 = create(:weekly_internship_offer, city: 'Le Bouscat',
-                                                   coordinates: { latitude: 44.865, longitude: -0.6033 })
-        offer_3 = create(:weekly_internship_offer, :unpublished)
+        offer_1 = create(:weekly_internship_offer_2nde, city: 'Bordeaux',
+                                                        coordinates: { latitude: 44.8624, longitude: -0.5848 })
+        offer_2 = create(:weekly_internship_offer_2nde, city: 'Le Bouscat',
+                                                        coordinates: { latitude: 44.865, longitude: -0.6033 })
+        offer_3 = create(:weekly_internship_offer_2nde, :unpublished)
 
         documents_as(endpoint: :'internship_offers/search', state: :success) do
           get search_api_internship_offers_path(
@@ -157,11 +158,11 @@ module Api
     test 'GET #search with coordinates and radius params returns all internship_offers available in the radis' do
       travel_to(Date.new(2024, 3, 1)) do
         user = create(:user_operator, :fully_authorized)
-        offer_1 = create(:weekly_internship_offer, city: 'Bordeaux',
-                                                   coordinates: { latitude: 44.8624, longitude: -0.5848 })
-        offer_2 = create(:weekly_internship_offer, city: 'Le Bouscat',
-                                                   coordinates: { latitude: 44.865, longitude: -0.6033 })
-        offer_3 = create(:weekly_internship_offer, :unpublished)
+        offer_1 = create(:weekly_internship_offer_2nde, city: 'Bordeaux',
+                                                        coordinates: { latitude: 44.8624, longitude: -0.5848 })
+        offer_2 = create(:weekly_internship_offer_2nde, city: 'Le Bouscat',
+                                                        coordinates: { latitude: 44.865, longitude: -0.6033 })
+        offer_3 = create(:weekly_internship_offer_2nde, :unpublished)
 
         documents_as(endpoint: :'internship_offers/search', state: :success) do
           get search_api_internship_offers_path(
@@ -183,9 +184,9 @@ module Api
     test 'GET #search with keyword params returns all internship_offers available in the radis' do
       travel_to(Date.new(2024, 3, 1)) do
         user = create(:user_operator, :fully_authorized)
-        offer_1 = create(:weekly_internship_offer, title: 'Chef de chantier')
-        offer_2 = create(:weekly_internship_offer, title: 'Avocat')
-        offer_3 = create(:weekly_internship_offer, title: 'Cheffe de cuisine')
+        offer_1 = create(:weekly_internship_offer_2nde, title: 'Chef de chantier')
+        offer_2 = create(:weekly_internship_offer_2nde, title: 'Avocat')
+        offer_3 = create(:weekly_internship_offer_2nde, title: 'Cheffe de cuisine')
 
         documents_as(endpoint: :'internship_offers/search', state: :success) do
           get search_api_internship_offers_path(

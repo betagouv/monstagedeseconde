@@ -8,7 +8,7 @@ module InternshipApplications
 
     test 'patch #update works for student owning internship_application, ' \
          'with transition=submit! submit internship_application and redirect to dashboard/students/internship_application#show' do
-      internship_offer = create(:weekly_internship_offer)
+      internship_offer = create(:weekly_internship_offer_2nde)
       internship_application = create(:weekly_internship_application, :drafted, internship_offer:)
       sign_in(internship_application.student)
       assert_changes -> { internship_application.reload.submitted? },
@@ -26,7 +26,7 @@ module InternshipApplications
 
     test 'patch #update works for student owning internship_application, ' \
          'without transition=submit! updates internship_applications and redirect to show' do
-      internship_offer = create(:weekly_internship_offer)
+      internship_offer = create(:weekly_internship_offer_2nde)
       initial_motivation = 'pizza'
       new_motivation = 'le travail dequipe'
       internship_application = create(:weekly_internship_application, :drafted, internship_offer:,
@@ -54,7 +54,7 @@ module InternshipApplications
     end
 
     test 'patch #update for student not owning internship_application is forbidden' do
-      internship_offer = create(:weekly_internship_offer)
+      internship_offer = create(:weekly_internship_offer_2nde)
       internship_application = create(:weekly_internship_application, :drafted, internship_offer:)
       sign_in(create(:student))
 

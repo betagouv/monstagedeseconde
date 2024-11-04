@@ -10,6 +10,8 @@ class EntrepriseTest < ActiveSupport::TestCase
 
   test 'factory create' do
     entreprise = create(:entreprise)
+    assert entreprise.valid?
+    assert entreprise.persisted?
     refute_nil entreprise.id
   end
 
@@ -24,7 +26,7 @@ class EntrepriseTest < ActiveSupport::TestCase
   test 'tutor partially filled form fails gracefully' do
     entreprise = build(:entreprise, entreprise_full_address: '')
     refute entreprise.valid?
-    assert_equal 'Prénom du tuteur Les informations du tuteur doivent être entièrement renseignées ou totalement vides',
+    assert_equal "Adresse de l'entreprise est trop court (au moins 8 caractères)",
                  entreprise.errors.full_messages.first
   end
 end

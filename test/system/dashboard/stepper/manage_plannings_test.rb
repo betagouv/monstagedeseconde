@@ -4,26 +4,20 @@ require 'application_system_test_case'
 
 class ManagePlanningsTest < ApplicationSystemTestCase
   include Devise::Test::IntegrationHelpers
+  include PlanningFormFiller
 
   test 'can create a planning with grade troisieme / quatrieme only' do
     travel_to Date.new(2025, 1, 1) do
-      entreprise = create(:entreprise, is_public: false)
+      entreprise = create(:entreprise, :private)
+      refute entreprise.is_public
       internship_occupation = entreprise.internship_occupation
       employer = internship_occupation.employer
 
       sign_in(employer)
       visit new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
-      execute_script('document.getElementById("planning_all_year_long_true").click()')
-
-      # default 'seconde' choice will be unchecked
-      execute_script('document.getElementById("planning_grade_2e").click()')
-
-      fill_in "Nombre total d'élèves que vous souhaitez accueillir sur la période de stage", with: 10
-      find('#planning_weekly_hours_start').select('08:00')
-      find('#planning_weekly_hours_end').select('15:00')
-      fill_in 'Pause déjeuner', with: 'test de lunch break'
+      fill_in_planning_form(with_seconde: false)
+      # TODO: schools management
       execute_script('document.querySelector("input[name=\'is_reserved\']").click()')
-      # TODO
       # fill_in "Commune ou nom de l'établissement pour lequel le stage est reservé",
       #         with: school.city
       # sleep 1
@@ -71,14 +65,9 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       employer = internship_occupation.employer
 
       sign_in(employer)
+      visit new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
       assert_no_difference('Planning.count') do
-        visit new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
-        execute_script('document.getElementById("planning_grade_3e4e").click()')
-        execute_script('document.getElementById("planning_all_year_long_true").click()')
-        execute_script('document.getElementById("planning_grade_2e").click()')
-
-        fill_in 'Pause déjeuner', with: 'test de lunch break'
-
+        fill_in_planning_form(with_seconde: false, with_troisieme: false)
         find("button[type='submit']").click
       end
       within('.fr-alert.fr-alert--error') do

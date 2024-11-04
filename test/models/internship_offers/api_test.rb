@@ -31,10 +31,6 @@ module InternshipOffers
       internship_offer_bis = InternshipOffers::Api.create(@default_params.merge(remote_id: 1,
                                                                                 employer: operator))
       validity = internship_offer.valid?
-      puts '================================'
-      puts "internship_offer.errors.full_messages : #{internship_offer.errors.full_messages}"
-      puts '================================'
-      puts ''
       assert internship_offer.valid?
       assert internship_offer_bis.invalid?
     end

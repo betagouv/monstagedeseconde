@@ -16,7 +16,7 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   test 'Employer can edit internship offer' do
     travel_to(Date.new(2024, 3, 1)) do
       employer = create(:employer)
-      internship_offer = create(:weekly_internship_offer, employer:)
+      internship_offer = create(:weekly_internship_offer_2nde, employer:)
 
       sign_in(employer)
       visit edit_dashboard_internship_offer_path(internship_offer)
@@ -32,7 +32,7 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   test 'Employer can edit an unpublished internship offer and have it published' do
     travel_to(Date.new(2024, 3, 1)) do
       employer = create(:employer)
-      internship_offer = create(:weekly_internship_offer, employer:)
+      internship_offer = create(:weekly_internship_offer_2nde, employer:)
       internship_offer.unpublish!
       refute internship_offer.published?
 
@@ -50,7 +50,7 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
 
   test 'Employer can discard internship_offer' do
     employer = create(:employer)
-    internship_offer = create(:weekly_internship_offer, employer:)
+    internship_offer = create(:weekly_internship_offer_2nde, employer:)
 
     sign_in(employer)
 
@@ -64,7 +64,7 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   test 'Employer can change max candidates parameter back and forth' do
     travel_to(Date.new(2024, 1, 10)) do
       employer = create(:employer)
-      internship_offer = create(:weekly_internship_offer,
+      internship_offer = create(:weekly_internship_offer_2nde,
                                 employer:,
                                 internship_offer_area_id: employer.current_area_id)
       assert_equal 1, internship_offer.max_candidates
@@ -98,7 +98,7 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
     employer = create(:employer)
     organisation = create(:organisation, employer:, is_public: true)
     current_internship_offer = create(
-      :weekly_internship_offer,
+      :weekly_internship_offer_2nde,
       employer:,
       organisation:,
       internship_offer_area_id: employer.current_area_id
@@ -129,12 +129,12 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
            :accepted_invitation,
            inviter_id: employer_1.id,
            member_id: employer_1.id)
-    internship_offer_1 = create(:weekly_internship_offer, employer: employer_1,
-                                                          internship_offer_area_id: employer_1.current_area_id)
-    internship_offer_2 = create(:weekly_internship_offer, employer: employer_2,
-                                                          internship_offer_area_id: employer_2.current_area_id)
-    internship_offer_3 = create(:weekly_internship_offer, employer: employer_3,
-                                                          internship_offer_area_id: employer_3.current_area_id)
+    internship_offer_1 = create(:weekly_internship_offer_2nde, employer: employer_1,
+                                                               internship_offer_area_id: employer_1.current_area_id)
+    internship_offer_2 = create(:weekly_internship_offer_2nde, employer: employer_2,
+                                                               internship_offer_area_id: employer_2.current_area_id)
+    internship_offer_3 = create(:weekly_internship_offer_2nde, employer: employer_3,
+                                                               internship_offer_area_id: employer_3.current_area_id)
 
     sign_in(employer_1)
     visit dashboard_internship_offers_path

@@ -54,7 +54,7 @@ class StudentRegistrationsTest < ActionDispatch::IntegrationTest
                 grade: 'troisieme',
                 password: 'okokok1Max!!',
                 accept_terms: '1',
-                grade: '3e'
+                grade: Grade.troisieme
               }
             }
           )

@@ -11,6 +11,8 @@ class School < ApplicationRecord
   has_many :internship_agreements, through: :internship_applications
   has_many :plannings, dependent: :destroy
   has_many :dedicated_internship_offers, foreign_key: :school_id, dependent: :nullify, class_name: 'InternshipOffer'
+  has_many :school_internship_weeks, dependent: :destroy
+  has_many :weeks, through: :school_internship_weeks
   belongs_to :department, optional: true
 
   has_rich_text :agreement_conditions_rich_text
@@ -51,6 +53,10 @@ class School < ApplicationRecord
 
   def agreement_address
     "#{presenter.school_name} - #{city}, #{zipcode}"
+  end
+
+  def has_weeks_on_current_year?
+    weeks.selectable_on_school_year.exists?
   end
 
   rails_admin do

@@ -3,11 +3,6 @@ class Entreprise < ApplicationRecord
 
   # Associations
   belongs_to :internship_occupation
-  # accepts_nested_attributes_for :tutor,
-  #                               reject_if: ->(attributes) { attributes['email'].blank? },
-  #                               allow_destroy: true
-  has_one :tutor,
-          dependent: :destroy
 
   has_one :planning,
           dependent: :destroy,
@@ -18,9 +13,6 @@ class Entreprise < ApplicationRecord
   validates :siret, length: { is: 14 }
   validates :entreprise_full_address,
             length: { minimum: 8, maximum: 200 },
-            presence: true
-  validates :is_public,
-            inclusion: { in: [true, false] },
             presence: true
 
   def entreprise_coordinates=(geolocation)
@@ -43,6 +35,4 @@ class Entreprise < ApplicationRecord
   def presenter
     @presenter ||= Presenters::Entreprise.new(self)
   end
-
-  private
 end

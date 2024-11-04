@@ -8,7 +8,7 @@ module Api
 
     setup do
       @operator = create(:user_operator)
-      @internship_offer = create(:api_internship_offer, employer: @operator)
+      @internship_offer = create(:api_internship_offer_3eme, employer: @operator)
     end
 
     test 'PATCH #update without token renders :unauthorized payload' do
@@ -159,7 +159,7 @@ module Api
         }
       )
       assert_response :success
-      assert_in_delta Time.now.to_i , @internship_offer.reload.published_at.to_i, 2
+      assert_in_delta Time.now.to_i, @internship_offer.reload.published_at.to_i, 2
       assert_equal true, @internship_offer.published?
     end
   end

@@ -12,14 +12,14 @@ module Dashboard::InternshipOffers
 
     test 'PATCH #update as visitor redirects to user_session_path' do
       travel_to(Date.new(2024, 9, 1)) do
-        internship_offer = create(:weekly_internship_offer)
+        internship_offer = create(:weekly_internship_offer_2nde)
         patch(dashboard_internship_offer_path(internship_offer.to_param), params: {})
         assert_redirected_to user_session_path
       end
     end
 
     test 'PATCH #update as employer not owning internship_offer redirects to user_session_path' do
-      internship_offer = create(:weekly_internship_offer)
+      internship_offer = create(:weekly_internship_offer_2nde)
       sign_in(create(:employer))
       patch(
         dashboard_internship_offer_path(internship_offer.to_param),
@@ -30,7 +30,7 @@ module Dashboard::InternshipOffers
 
     test 'PATCH #update with title as employer owning internship_offer updates internship_offer' \
          'even if dates are missing in the future since it is not published' do
-      internship_offer = create(:weekly_internship_offer)
+      internship_offer = create(:weekly_internship_offer_2nde)
       new_title = 'new title'
       new_group = create(:group, is_public: false, name: 'woop')
       sign_in(internship_offer.employer)
@@ -54,7 +54,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'PATCH #update successfully with title as employer owning internship_offer updates internship_offer' do
-      internship_offer = create(:weekly_internship_offer)
+      internship_offer = create(:weekly_internship_offer_2nde)
       new_title = 'new title'
       new_group = create(:group, is_public: false, name: 'woop')
       sign_in(internship_offer.employer)
@@ -81,7 +81,7 @@ module Dashboard::InternshipOffers
          'updates internship_offer' do
       travel_to(Date.new(2024, 9, 1)) do
         weeks = Week.all.first(40).last(3)
-        internship_offer = create(:weekly_internship_offer, :public, max_candidates: 3)
+        internship_offer = create(:weekly_internship_offer_3eme, :public, max_candidates: 3)
         create(:weekly_internship_application,
                :approved,
                internship_offer:)
@@ -100,7 +100,7 @@ module Dashboard::InternshipOffers
          'updates internship_offer and fails due to too many accepted internships' do
       travel_to(Date.new(2024, 9, 1)) do
         internship_offer = create(
-          :weekly_internship_offer, max_candidates: 3
+          :weekly_internship_offer_3eme, max_candidates: 3
         )
         create(:weekly_internship_application,
                :approved,
@@ -123,7 +123,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'PATCH #update as statistician owning internship_offer updates internship_offer' do
-      internship_offer = create(:weekly_internship_offer)
+      internship_offer = create(:weekly_internship_offer_2nde)
       statistician = create(:statistician)
       internship_offer.update(employer_id: statistician.id)
       new_title = 'new title'
@@ -147,7 +147,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'PATCH #update as employer owning internship_offer can publish/unpublish offer' do
-      internship_offer = create(:weekly_internship_offer)
+      internship_offer = create(:weekly_internship_offer_2nde)
       published_at = 2.days.ago.utc
       sign_in(internship_offer.employer)
       assert_changes -> { internship_offer.reload.published_at.to_i },
@@ -161,7 +161,7 @@ module Dashboard::InternshipOffers
     test 'PATCH #republish as employer with missing seats' do
       travel_to(Date.new(2025, 9, 1)) do
         employer = create(:employer)
-        internship_offer = create(:weekly_internship_offer,
+        internship_offer = create(:weekly_internship_offer_2nde,
                                   employer:,
                                   max_candidates: 1)
         internship_application = create(:weekly_internship_application,
@@ -193,7 +193,7 @@ module Dashboard::InternshipOffers
       end
       travel_to Date.new(2023, 10, 1) do
         employer = create(:employer)
-        internship_offer = create(:weekly_internship_offer,
+        internship_offer = create(:weekly_internship_offer_2nde,
                                   employer:,
                                   max_candidates: 1)
         internship_application = create(:weekly_internship_application,
@@ -220,7 +220,7 @@ module Dashboard::InternshipOffers
     test 'PATCH as employer while removing weeks where internship_applications were formerly created' do
       travel_to Date.new(2024, 10, 1) do
         employer = create(:employer)
-        internship_offer = create(:weekly_internship_offer,
+        internship_offer = create(:weekly_internship_offer_2nde,
                                   employer:,
                                   max_candidates: 1)
         internship_application = create(:weekly_internship_application,

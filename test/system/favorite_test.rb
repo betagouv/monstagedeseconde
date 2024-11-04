@@ -4,7 +4,7 @@ class SchoolsTest < ApplicationSystemTestCase
   include Devise::Test::IntegrationHelpers
 
   test 'cannot add favorite as a visitor' do
-    create(:weekly_internship_offer)
+    create(:weekly_internship_offer_2nde)
     visit internship_offers_path
     # June_flower
     # find("h2 .strong", text: "1 Offre de stage")
@@ -16,7 +16,7 @@ class SchoolsTest < ApplicationSystemTestCase
   test 'cannot add favorite as a employer' do
     employer = create(:employer)
     sign_in(employer)
-    create(:weekly_internship_offer)
+    create(:weekly_internship_offer_2nde)
     visit internship_offers_path
     # June_flower
     find('.h4 .strong', text: "Rechercher un stage d'observation")
@@ -25,7 +25,7 @@ class SchoolsTest < ApplicationSystemTestCase
   end
 
   test 'can add favorite as a student' do
-    internship_offer = create(:weekly_internship_offer)
+    internship_offer = create(:weekly_internship_offer_2nde)
     student = create(:student)
     sign_in student
     visit internship_offers_path

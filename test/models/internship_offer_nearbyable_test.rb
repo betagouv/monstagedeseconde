@@ -5,24 +5,18 @@ require 'test_helper'
 class InternshipOfferNearbyableTest < ActiveSupport::TestCase
   def setup
     @coordinates_paris = Coordinates.paris
-    create(:department)
     @coordinates_verneuil = Coordinates.verneuil
-    create(:department, code: '78', name: 'Yvelines')
     @coordinates_chatillon = Coordinates.chatillon
-    create(:department, code: '92', name: 'Hauts-de-Seine')
     @coordinates_bordeaux = Coordinates.bordeaux
-    create(:department, code: '33', name: 'Gironde')
     @coordinates_pithiviers = Coordinates.pithiviers
-    create(:department, code: '45', name: 'Loiret')
     @coordinates_melun = Coordinates.melun
-    create(:department, code: '77', name: 'Seine-et-Marne')
 
-    @offer_paris      = create(:weekly_internship_offer, coordinates: @coordinates_paris, city: 'Paris')
-    @offer_chatillon  = create(:weekly_internship_offer, coordinates: @coordinates_chatillon, city: 'Chatillon')
-    @offer_bordeaux   = create(:weekly_internship_offer, coordinates: @coordinates_bordeaux, city: 'Bordeaux')
-    @offer_pithiviers = create(:weekly_internship_offer, coordinates: @coordinates_pithiviers, city: 'Pithiviers')
-    @offer_verneuil   = create(:weekly_internship_offer, coordinates: @coordinates_verneuil, city: 'Verneuil')
-    @offer_melun      = create(:weekly_internship_offer, coordinates: @coordinates_melun, city: 'Melun')
+    @offer_paris      = create(:weekly_internship_offer_2nde, coordinates: @coordinates_paris, city: 'Paris')
+    @offer_chatillon  = create(:weekly_internship_offer_2nde, coordinates: @coordinates_chatillon, city: 'Chatillon')
+    @offer_bordeaux   = create(:weekly_internship_offer_2nde, coordinates: @coordinates_bordeaux, city: 'Bordeaux')
+    @offer_pithiviers = create(:weekly_internship_offer_2nde, coordinates: @coordinates_pithiviers, city: 'Pithiviers')
+    @offer_verneuil   = create(:weekly_internship_offer_2nde, coordinates: @coordinates_verneuil, city: 'Verneuil')
+    @offer_melun      = create(:weekly_internship_offer_2nde, coordinates: @coordinates_melun, city: 'Melun')
   end
   test '.distance_from' do
     internship_offers = InternshipOffer.with_distance_from(latitude: @coordinates_bordeaux[:latitude],

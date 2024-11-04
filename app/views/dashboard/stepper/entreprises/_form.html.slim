@@ -1,0 +1,25 @@
+- new_record = @entreprise.new_record?
+- method = new_record ? :post : :patch
+- url_when_new_record = dashboard_stepper_entreprises_path(@entreprise)
+- unless new_record
+  - url_when_old_record = dashboard_stepper_entreprise_path(id: @entreprise.id)
+- url = new_record ? url_when_new_record : url_when_old_record
+
+= form_with model: @entreprise,
+            url: ,
+            scope: :entreprise,
+            data: { turbo: false },
+            method: method do |form|
+  = render "dashboard/stepper/steps", { current_step_number: 2,
+                                        total_steps: 3,
+                                        current_step_title: "L'entreprise",
+                                        next_step_title: "Planning" }
+  = render "layouts/form_errors",
+            resource: @entreprise,
+            resource_name: :internship_offer
+
+  = render 'dashboard/stepper/entreprises/form_fields', { resource: @entreprise,
+                                                          warning_block: true,
+                                                          form: form,
+                                                          submit_button: submit_button,
+                                                          show_resume: show_resume }

@@ -52,20 +52,21 @@ module InternshipOffersHelper
   end
 
   def internship_offer_results_title(user)
-    unless user.is_a?(Users::Student) || user.is_a?(Users::Visitor) || user.grade.nil?
-      return "Rechercher un stage d'observation"
-    end
+    default_label = "Rechercher un stage d'observation"
+    return default_label if user.nil? || user.is_a?(Users::Visitor)
+    return default_label unless user.student?
+    return default_label if user.grade.nil?
 
-    case user.grade
-    when 'quatrieme'
+    case user.grade.short_name
+    when :quatrieme
       'Rechercher un stage de 4ème'
-    when 'troisieme'
+    when :troisieme
       'Rechercher un stage de 3ème'
-    when 'seconde'
+    when :seconde
       'Rechercher un stage de seconde'
     else
       Rails.logger.error "Unknown grade: #{user.grade}"
-      "Rechercher un stage d'observation"
+      default_label
     end
   end
 

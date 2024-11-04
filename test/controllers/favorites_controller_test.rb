@@ -1,4 +1,4 @@
-require "test_helper"
+require 'test_helper'
 
 class FavoritesControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
@@ -41,7 +41,7 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
 
   test 'POST #create create a favorite' do
     student = create(:student)
-    internship_offer = create(:weekly_internship_offer)
+    internship_offer = create(:weekly_internship_offer_2nde)
     sign_in(student)
 
     assert_difference('Favorite.count', 1) do
@@ -54,7 +54,7 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
 
   test 'DELETE #destroy delete a favorite' do
     student = create(:student)
-    internship_offer = create(:weekly_internship_offer)
+    internship_offer = create(:weekly_internship_offer_2nde)
     favorite = create(:favorite, user: student, internship_offer: internship_offer)
     sign_in(student)
 
