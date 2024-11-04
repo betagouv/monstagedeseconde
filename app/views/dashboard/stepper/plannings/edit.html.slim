@@ -1,6 +1,6 @@
 - model = @planning
 - method = :patch
-- url = dashboard_stepper_planning_path(@planning)
+- url = dashboard_stepper_planning_path(planning_id: @planning.id)
 
 = render 'layouts/breadcrumb',
           links: [ [dashboard_internship_offers_path, 'Mes offres de stage'],
