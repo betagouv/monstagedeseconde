@@ -19,6 +19,7 @@ module Dashboard::Stepper
       authorize! :create, InternshipOccupation
 
       @internship_occupation ||= InternshipOccupation.new(internship_occupation_params)
+      @internship_occupation.employer_id = current_user.id
 
       if @internship_occupation.save
         redirect_to new_dashboard_stepper_entreprise_path(internship_occupation_id: @internship_occupation.id,
@@ -81,8 +82,7 @@ module Dashboard::Stepper
               :city,
               :internship_address_manual_enter,
               :autocomplete,
-              :employer_id,
-              coordinates: {}
+              coordinates: %i[latitude longitude]
             )
     end
 
