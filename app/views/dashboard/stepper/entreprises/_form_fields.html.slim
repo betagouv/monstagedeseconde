@@ -20,7 +20,7 @@
               = form.hidden_field :siret, value: resource&.siret || ''
               - if resource.id
                 = form.hidden_field :id, value: resource.id
-              - unless form.object.persisted?   
+              - unless form.object.persisted?
                 = react_component("SirenInput",
                                   props: { resourceName: form.object_name,
                                           presentationLabel: "L'administration",

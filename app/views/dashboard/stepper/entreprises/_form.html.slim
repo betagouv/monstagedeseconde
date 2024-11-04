@@ -1,10 +1,3 @@
-- new_record = @entreprise.new_record?
-- method = new_record ? :post : :patch
-- url_when_new_record = dashboard_stepper_entreprises_path(@entreprise)
-- unless new_record
-  - url_when_old_record = dashboard_stepper_entreprise_path(id: @entreprise.id)
-- url = new_record ? url_when_new_record : url_when_old_record
-
 = form_with model: @entreprise,
             url: ,
             scope: :entreprise,

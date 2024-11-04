@@ -16,10 +16,10 @@ div data-controller="write-summary-card"
             li
               p.fr-tag
                 span.preview-card.fr-mr-1w.fr-icon-calendar-2-fill aria-hidden="true"
-                |< Dates proposées
-                span data-write-summary-card-target="weeksOutput"
+                |> Dates proposées
+                span.fr-ml-1v data-write-summary-card-target="weeksOutput"
                   - count = form.object.try(:weeks).try(:count) || @planning&.weeks&.count
-                  = " #{count} semaines"
+                  = " #{count} #{"semaine".pluralize(count)}"
 
           p.fr-card__detail data-write-summary-card-target="sectorOutput"
             = form.object.try(:sector).try(:name) || @entreprise&.sector&.name
