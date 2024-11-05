@@ -32,7 +32,6 @@ jobs: # a collection of steps
 
       - node/install:
           install-yarn: true
-          yarn-version: '1.22.21'
           node-version: '18.17'
       - run:
           name: get missing parts for chrome
