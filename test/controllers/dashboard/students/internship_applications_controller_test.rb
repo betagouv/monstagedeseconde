@@ -91,7 +91,7 @@ module Dashboard
         assert_response :success
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--purple-glycine', text: 'annulée', count: 1
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--error', text: 'expirée', count: 1
-        assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: "acceptée par l'entreprise", count: 1
+        assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'stage validé', count: 1
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--error', text: "refusée par l'entreprise", count: 2
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--info', text: "Sans réponse de l'entreprise", count: 1
       end
