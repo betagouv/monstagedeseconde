@@ -750,3 +750,7 @@ fr:
 
   date:
     day_names: [Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi]
+  
+  time:
+    formats:
+      long_with_time: "%d/%m/%Y à %Hh%M"
