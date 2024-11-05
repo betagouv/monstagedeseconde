@@ -14,7 +14,6 @@ class InternshipOccupation < ApplicationRecord
   after_update :update_internship_offer
 
   def update_internship_offer
-    # internship_offer.update_from_organisation if internship_offer
     internship_offer.update_from_internship_occupation if internship_offer
   end
 
@@ -31,14 +30,8 @@ class InternshipOccupation < ApplicationRecord
       new_internship_occupation.internship_street = internship_street
       new_internship_occupation.internship_zipcode = internship_zipcode
       new_internship_occupation.internship_city = internship_city
-      # new_internship_occupation.siret = siret
-      # new_internship_occupation.manual_enter = manual_enter
       new_internship_occupation.internship_coordinates = internship_coordinates
       new_internship_occupation.description = description
-      # new_internship_occupation.employer_website = employer_website
-      # new_internship_occupation.employer_name = employer_name
-      # new_internship_occupation.group_id = group_id
-      # new_internship_occupation.is_public = is_public
     end
   end
 end

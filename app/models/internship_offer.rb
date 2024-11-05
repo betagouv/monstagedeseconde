@@ -37,7 +37,7 @@ class InternshipOffer < ApplicationRecord
   include Discard::Model
   include PgSearch::Model
 
-  attr_accessor :republish, :grade_3e4e, :grade_2e, :all_year_long, :period, :internship_type
+  attr_accessor :republish, :grade_college, :grade_2e, :all_year_long, :period, :internship_type
 
   # Other associations
   has_many :internship_applications, as: :internship_offer,
