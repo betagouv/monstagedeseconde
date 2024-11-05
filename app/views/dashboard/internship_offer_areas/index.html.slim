@@ -1,15 +1,6 @@
 - content_for :page_title, "#{t(".page_title")} | Monstage"
 = render 'dashboard/internship_offers/areas_bar'
-.d-flex
-  = image_tag asset_pack_path('media/images/pages/areas/space_girl.svg'),
-                          alt: 'Gérez vos espaces en équipe',
-                          class: ''
-  .fr-ml-6w
-    h1.fr-h3.fr-mt-2w.fr-mb-1w Nouvel espace
-    p.fr-mt-n-1w
-      |
-        Vous souhaitez différencier la gestion des  offres et des candidature
-        par lieux, par équipes, par filiales ou collaborateur.
+
 - if can?(:create, InternshipOfferArea)
   .text-right.fr-mt-5v
     button.fr-btn.fr-icon-add-line.fr-btn--icon-left[data-fr-opened="false" aria-controls="fr-modal-add-space"]
@@ -19,6 +10,7 @@
     thead
       tr
         th scope="col" Nom de l'espace
+        th style="width: 50px" scope="col" 
         th scope="col" Offres déposées
         th scope="col" Candidatures en attente
         th scope="col" Candidatures acceptées
@@ -32,6 +24,16 @@
           td.area-name
             = link_to area.name,
                    filter_by_area_dashboard_internship_offer_area_path(id: area.id)
+          td.max-w-30
+            - if current_user.employer_like?
+              = render 'dashboard/internship_offer_areas/edit_areas_modal_dialog',
+                        internship_offer_area: area, from_dashboard: true
+
+              span.fr-icon-pencil-line.fr-pt-0.fr-ml-1w.with_blue.blue-france [
+                aria-hidden="true"
+                aria-label="Modifier le nom d'un espace"
+                data-fr-opened="false"
+                aria-controls="fr-modal-edit-space-dialog-area-#{area.id}"]
           td
             = current_user.internship_offers_by_area(area_id: area.id).within_current_year.count
           td
@@ -54,6 +56,7 @@
       tr
         td
           | Total
+        td
         td
           = current_user.internship_offers_by_team.within_current_year.count
         td
@@ -115,7 +118,7 @@
         p.fr-callout__text
           |
             Tous les membres d’une équipe ont accès aux mêmes espaces, 
-            offres, candidatures, conventions, etc., facilitant ainsi 
+            offres, candidatures, facilitant ainsi 
             la collaboration au sein de votre entreprise.
 
 #fr-modal-add-space-dialog

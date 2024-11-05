@@ -593,6 +593,10 @@ class InternshipApplication < ApplicationRecord
     rejected_message || approved_message || canceled_by_employer_message || canceled_by_student_message
   end
 
+  def has_been(state)
+    state_changes.select { |state_change| state_change.to_state == state }.last
+  end
+
   private
 
   def should_notify?(employer)
