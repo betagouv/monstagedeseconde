@@ -16,7 +16,7 @@ module Dashboard::Stepper
     def new
       @planning = Planning.new(
         all_year_long: true,
-        grade_3e4e: '1',
+        grade_college: '1',
         grade_2e: '1',
         entreprise_id: params[:entreprise_id]
       )
@@ -38,14 +38,10 @@ module Dashboard::Stepper
                         notice: 'Les informations de planning ont bien été enregistrées. Votre offre est publiée')
           end
           on.failure do |failed_internship_offer|
-            # @organisation = Organisation.find(params[:organisation_id])
             render :edit, status: :bad_request
           end
         end
       else
-        # temporary debug
-        puts "errors : @planning.errors : #{@planning.errors&.full_messages}" unless @planning.errors&.blank?
-        # end temporary debug
         log_error(object: @planning)
         render :new, status: :bad_request
       end
@@ -79,7 +75,7 @@ module Dashboard::Stepper
       params.require(:planning)
             .permit(
               :all_year_long,
-              :grade_3e4e,
+              :grade_college,
               :grade_2e,
               :lunch_break,
               :max_candidates,
@@ -133,7 +129,7 @@ module Dashboard::Stepper
     end
 
     def params_offer_for_troisieme_or_quatrieme?
-      planning_params[:grade_3e4e].to_i == 1
+      planning_params[:grade_college].to_i == 1
     end
 
     def period

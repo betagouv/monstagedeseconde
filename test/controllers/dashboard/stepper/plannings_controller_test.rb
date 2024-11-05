@@ -24,7 +24,7 @@ module Dashboard::Stepper
         sign_in(employer)
         planning = {
           all_year_long: true,
-          grade_3e4e: '1',
+          grade_college: '1',
           grade_2e: '0',
           max_candidates: 10,
           max_students_per_group: 2,
@@ -79,7 +79,7 @@ module Dashboard::Stepper
         sign_in(employer)
         planning = {
           all_year_long: true,
-          grade_3e4e: '0',
+          grade_college: '0',
           grade_2e: '1',
           period: '2',
           max_candidates: 10,

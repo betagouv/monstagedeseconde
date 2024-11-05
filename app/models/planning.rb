@@ -27,7 +27,7 @@ class Planning < ApplicationRecord
   # accessors
   attr_accessor :all_year_long,
                 :specific_weeks,
-                :grade_3e4e,
+                :grade_college,
                 :grade_2e,
                 :period,
                 :internship_type
