@@ -54,6 +54,7 @@ gem 'sentry-rails'
 gem 'sentry-ruby'
 gem 'sentry-sidekiq'
 # TODO: remove bitly
+# should be done by now
 gem 'bitly'
 gem 'mime-types'
 gem 'prismic.io', require: 'prismic'
@@ -75,8 +76,8 @@ gem 'validates_zipcode'
 # dev utils
 gem 'bootsnap', require: false
 gem 'dalli'
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem 'dotenv-rails', require: 'dotenv/load'
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 group :development, :test do
   gem 'debug'
