@@ -60,7 +60,7 @@
         - if can?(:read_employer_data, @internship_application)
           = render 'dashboard/internship_offers/internship_applications/employer_contact',
                     internship_application: @internship_application
-- if current_user.employer_like?
+- if current_user.try(:employer_like?)
   .row
     .col-12
       h2.h3.fr-mt-4w.fr-mb-2w
