@@ -73,10 +73,11 @@ gem 'jwt'
 gem 'validates_zipcode'
 
 # dev utils
+gem 'after_party'
 gem 'bootsnap', require: false
 gem 'dalli'
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem 'dotenv-rails', require: 'dotenv/load'
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 group :development, :test do
   gem 'debug'
