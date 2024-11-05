@@ -35,7 +35,6 @@ module Dashboard::Stepper
         if params[:planning_id].present? && Planning.find_by(id: params[:planning_id])
           redirect_to edit_dashboard_stepper_planning_path(
             entreprise_id: @entreprise.id,
-            internship_occupation_id: params[:internship_occupation_id],
             planning_id: params[:planning_id],
             id: params[:entreprise_id]
           )

@@ -11,7 +11,7 @@ module Dashboard::InternshipOffers
       school = create(:school, :with_school_manager)
       student = create(:student, school: school)
 
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                  internship_offer: internship_offer)
       internship_agreement = internship_application.internship_agreement
@@ -30,7 +30,7 @@ module Dashboard::InternshipOffers
 
     test 'GET #edit as employer when missing school_manager renders success even w/o school manager' do
       school = create(:school) # no_school_manager
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
       internship_application.student.update(school_id: school.id)
       internship_agreement = create(:internship_agreement, internship_application: internship_application,

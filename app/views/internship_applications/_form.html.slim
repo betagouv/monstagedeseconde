@@ -20,11 +20,11 @@ div data-controller="mandatory-fields" data-mandatory-fields-minimum-length-valu
         - unless current_user.school.has_weeks_on_current_year?
           = render partial: "internship_applications/forms/student_missing_school_weeks"
         .fr-select-group
-          = f.label :internship_offer_week_id, class: 'required fr-label' do
+          = f.label :week_id, class: 'required fr-label' do
             | Quelle semaine ?
 
           = f.select :week_id,
-                      options_from_collection_for_select(@applicable_weeks, :id, :human_select_text_method, @internship_application.week_id),
+                      options_from_collection_for_select(@available_weeks, :id, :human_select_text_method, @internship_application.week_id),
                       { prompt: 'Choisir une semaine'},
                       class: "fr-select",
                       required: true
@@ -39,28 +39,28 @@ div data-controller="mandatory-fields" data-mandatory-fields-minimum-length-valu
                       class: "fr-input",
                       value: week_applied.very_long_select_text_method,
                       readonly: true
-        / = f.hidden_field :week_id,
-        /                  value: week_applied.id
+        
+        / = f.hidden_field :week_id, value: week_applied.id
         / = f.select :period,
         /           options_for_select(HostingInfo.current_period_collection,
         /                             @internship_application.internship_offer.period),
         /           { prompt: 'Choisissez une période' },
         /           class: "fr-select", disabled: true
         
-        div class="form-group"
-          = f.label :motivation,
-                    class: 'fr-label',
-                    for: 'internship_application_motivation'
-            | Pourquoi ce stage me motive ?
-            = f.rg2a_required_content_tag
-            small.form-text.text-muted Relisez-vous pour éviter les fautes.
-          = f.text_area :motivation,
-                        class: "fr-input col-12",
-                        required: true,
-                        rows: 5,
-                        maxlength: 1_500,
-                        data: {:'mandatory-fields-target' => "mandatoryField",
-                              action: "input->mandatory-fields#fieldChange"}
+      div class="form-group fr-mt-2w"
+        = f.label :motivation,
+                  class: 'fr-label',
+                  for: 'internship_application_motivation'
+          | Pourquoi ce stage me motive ?
+          = f.rg2a_required_content_tag
+          small.form-text.text-muted Relisez-vous pour éviter les fautes.
+        = f.text_area :motivation,
+                      class: "fr-input col-12",
+                      required: true,
+                      rows: 5,
+                      maxlength: 1_500,
+                      data: {:'mandatory-fields-target' => "mandatoryField",
+                            action: "input->mandatory-fields#fieldChange"}
 
       .row.fr-mt-4w
         .col-12

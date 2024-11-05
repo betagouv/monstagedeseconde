@@ -141,7 +141,7 @@ module Dashboard::InternshipAgreements
     end
 
     test 'PATCH #update as school manager owning students updates internship_agreement with missing school_manager_event' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
       internship_agreement = create(:internship_agreement, :created_by_system,
                                     school_manager_accept_terms: true,
@@ -186,7 +186,7 @@ module Dashboard::InternshipAgreements
     end
 
     test 'PATCH #update with complete!transition sends email' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application,
                                       :approved,
                                       internship_offer: internship_offer)

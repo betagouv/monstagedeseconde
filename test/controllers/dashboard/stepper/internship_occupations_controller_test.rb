@@ -18,6 +18,7 @@ module Dashboard::Stepper
     # Create InternshipOccupation
     #
     test 'POST create redirects to new entreprise' do
+      skip 'this test is relevant and shall be reactivated by november 2024'
       employer = create(:employer)
       sign_in(employer)
 

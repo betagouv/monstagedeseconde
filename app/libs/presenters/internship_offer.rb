@@ -15,6 +15,10 @@ module Presenters
       I18n.localize(internship_offer.last_date, format: :human_mm_dd_yyyy)
     end
 
+    def employer_name
+      internship_offer.employer_name
+    end
+
     def address
       "#{internship_offer.street}, #{internship_offer.zipcode} #{internship_offer.city}"
     end

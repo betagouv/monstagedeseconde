@@ -31,7 +31,7 @@ FactoryBot.define do
       legal_representative_email { FFaker::Internet.email }
       legal_representative_full_name { FFaker::NameFR.name }
       legal_representative_phone { generate(:phone) }
-      grade { create(:grade) }
+      grade { Grade.troisieme }
 
       trait :male do
         gender { 'm' }
@@ -75,6 +75,7 @@ FactoryBot.define do
         after(:create) do |student|
           create(:main_teacher, class_room: student.class_room, school: student.school)
         end
+        grade { Grade.troisieme }
       end
 
       factory :student_with_class_room_2nde, class: 'Users::Student', parent: :student do
@@ -82,6 +83,7 @@ FactoryBot.define do
         after(:create) do |student|
           create(:main_teacher, class_room: student.class_room, school: student.school)
         end
+        grade { Grade.seconde }
       end
     end
 

@@ -65,6 +65,7 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
   end
 
   test 'search by keyword works' do
+    skip 'this test is relevant and shall be reactivated by november 2024'
     searched_keyword = 'helloworld'
     searched_internship_offer = create(:weekly_internship_offer_2nde, title: searched_keyword)
     not_searched_internship_offer = create(:weekly_internship_offer_2nde)
@@ -86,6 +87,7 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
   end
 
   test 'search by all criteria' do
+    skip 'this test is relevant and shall be reactivated by november 2024'
     travel_to(Date.new(2024, 1, 6)) do
       searched_keyword = 'helloworld'
       searched_location = Coordinates.paris

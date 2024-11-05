@@ -13,12 +13,12 @@ class InternshipApplicationsController < ApplicationController
 
   def new
     authorize! :apply, @internship_offer
-    @available_weeks = @internship_offer.weeks
     @internship_application = InternshipApplication.new(
       internship_offer_id: params[:internship_offer_id],
       internship_offer_type: 'InternshipOffer',
       student: current_user
     )
+    @available_weeks = @internship_application.selectable_weeks
   end
 
   # alias for draft
@@ -40,7 +40,7 @@ class InternshipApplicationsController < ApplicationController
     if @internship_application.save
       redirect_to destination
     else
-      Rails.logger.error(@internship_application.errors.full_messages)
+      log_error(object: @internship_application)
       render 'new', status: :bad_request
     end
   end

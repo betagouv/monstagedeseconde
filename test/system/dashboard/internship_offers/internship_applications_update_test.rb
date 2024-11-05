@@ -5,7 +5,7 @@ module Dashboard::InternshipOffers
     include TeamAndAreasHelper
 
     test 'employer can set to read status an internship_application' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
       sign_in(employer)
       visit dashboard_candidatures_path
@@ -17,7 +17,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'employer can reject an internship_application' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
       sign_in(employer)
       visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
@@ -33,7 +33,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'employer can accept an internship_application' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
       sign_in(employer)
       visit dashboard_internship_offer_internship_application_path(internship_offer, internship_application)
@@ -49,7 +49,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'employer can unpublish an internship_offer from index page' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       assert internship_offer.published?
       assert_equal 'published', internship_offer.aasm_state
       refute_equal nil, internship_offer.published_at
@@ -64,7 +64,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'employer can publish an internship_offer from index page' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_offer.unpublish!
       refute internship_offer.published?
       assert_equal 'unpublished', internship_offer.aasm_state
@@ -82,8 +82,8 @@ module Dashboard::InternshipOffers
     test 'employer cannot validate an internship_application twice for different students' do
       travel_to Date.new(2024, 1, 1) do
         school = create(:school, :with_school_manager)
-        employer, internship_offer = create_employer_and_offer
-        student = create(:student, school:)
+        employer, internship_offer = create_employer_and_offer_3eme
+        student = create(:student, :troisieme, school:)
         other_student = create(:student, school:)
         internship_application = create(:weekly_internship_application, :submitted, internship_offer:, student:)
         sign_in(employer)
@@ -100,7 +100,8 @@ module Dashboard::InternshipOffers
         visit internship_offers_path
         click_on internship_offer.title
         first(:link, 'Postuler').click
-        find('#internship_application_motivation').click.set('Motivation')
+        select 'Semaine du 8 janvier au 14 janvier', from: 'Quelle semaine ?'
+        find('textarea[name="internship_application[motivation]"]').click.set('Motivation')
         within('.react-tel-input') do
           find('input[name="internship_application[student_phone]"]').set('0600060606')
         end
@@ -121,8 +122,8 @@ module Dashboard::InternshipOffers
     test "other employer can see rejection from student confirmation to another employer's internship_offer" do
       travel_to Date.new(2024, 1, 1) do
         school = create(:school, :with_school_manager)
-        employer_1, internship_offer_1 = create_employer_and_offer
-        employer_2, internship_offer_2 = create_employer_and_offer
+        employer_1, internship_offer_1 = create_employer_and_offer_2nde
+        employer_2, internship_offer_2 = create_employer_and_offer_2nde
         student = create(:student, school:, phone: '+330611223344')
         internship_application_1 = create(:weekly_internship_application, :submitted,
                                           internship_offer: internship_offer_1, student:)
@@ -154,7 +155,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'employer can transfer an internship_application' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
       sign_in(employer)
       visit dashboard_candidatures_path
@@ -175,7 +176,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'employer cannot transfer an internship_application with a faulty email' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
       sign_in(employer)
       visit dashboard_candidatures_path

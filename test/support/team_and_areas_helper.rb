@@ -34,9 +34,17 @@ module TeamAndAreasHelper
            employer: employer_1)
   end
 
-  def create_employer_and_offer
+  def create_employer_and_offer_2nde
     employer = create(:employer)
     offer = create(:weekly_internship_offer_2nde,
+                   employer: employer,
+                   internship_offer_area_id: employer.current_area_id)
+    [employer, offer]
+  end
+
+  def create_employer_and_offer_3eme
+    employer = create(:employer)
+    offer = create(:weekly_internship_offer_3eme,
                    employer: employer,
                    internship_offer_area_id: employer.current_area_id)
     [employer, offer]

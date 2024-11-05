@@ -4,12 +4,9 @@ module StepperProxy
     # common to planning and internship_offer
 
     included do
-      # db default value for
-      #     internhip_weeks_number is   1
-      #     max_candidates is           1
-      #     max_students_per_group is   1
-      # Associations
+      after_initialize :set_default_values
 
+      # Associations
       has_many :planning_grades,
                dependent: :destroy,
                class_name: 'PlanningGrade',
@@ -73,6 +70,12 @@ module StepperProxy
       end
 
       private
+
+      def set_default_values
+        self.max_candidates ||= 1
+        self.max_students_per_group ||= 1
+        self.internship_weeks_number ||= 1
+      end
 
       def at_least_one_grade
         return if grades.present?

@@ -15,6 +15,7 @@ class Grade < ApplicationRecord
   has_many :planning_grades, dependent: :destroy
   has_many :internship_offer_grades, dependent: :destroy
   has_many :internship_offers, through: :internship_offer_grades
+  has_many :identities
 
   def troisieme_or_quatrieme?
     short_name.in?(%w[troisieme quatrieme])
@@ -53,7 +54,7 @@ class Grade < ApplicationRecord
 
   private
 
-  def self.fetch_by_short_name(short_names_array)
-    Grade.where(short_name: short_names_array)
+  def self.fetch_by_short_name(short_names)
+    Grade.where(short_name: short_names)
   end
 end

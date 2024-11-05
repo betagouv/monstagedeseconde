@@ -436,6 +436,16 @@ class InternshipApplication < ApplicationRecord
     SendSmsStudentValidatedApplicationJob.perform_later(internship_application_id: id)
   end
 
+  def selectable_weeks
+    available_weeks = []
+    if student.seconde_gt?
+      available_weeks = internship_offer.weeks
+    elsif student.troisieme_or_quatrieme?
+      available_weeks = Week.selectable_from_now_until_end_of_school_year & internship_offer.weeks
+    end
+    available_weeks
+  end
+
   def generate_token
     return if access_token.present?
 

@@ -21,7 +21,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'GET #index as Employer displays internship_applications link' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       sign_in(employer)
       get dashboard_internship_offers_path
       assert_response :success
@@ -30,7 +30,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'GET #index as employer returns his internship_offers' do
-      employer, included_internship_offer = create_employer_and_offer
+      employer, included_internship_offer = create_employer_and_offer_2nde
       included_internship_offer.update(title: 'Hellow-me')
       excluded_internship_offer = create(:weekly_internship_offer_2nde,
                                          title: 'Not hellow-me') # another employer
@@ -42,7 +42,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'GET #index as employer returns his internship_offers with applications on them' do
-      employer, included_internship_offer = create_employer_and_offer
+      employer, included_internship_offer = create_employer_and_offer_2nde
       excluded_internship_offer = create(:weekly_internship_offer_2nde,
                                          internship_offer_area_id: employer.current_area_id,
                                          title: 'Not hellow-me')
@@ -144,7 +144,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'GET #index filters as Employer show published, unpublished, in past when required' do
-      employer, internship_offer_published = create_employer_and_offer
+      employer, internship_offer_published = create_employer_and_offer_2nde
       internship_offer_unpublished = create(:weekly_internship_offer_2nde,
                                             internship_offer_area_id: employer.current_area_id,
                                             employer:)
@@ -171,7 +171,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'GET #index returns sortable table' do
-      employer, internship_offer_published = create_employer_and_offer
+      employer, internship_offer_published = create_employer_and_offer_2nde
       sign_in(employer)
       get dashboard_internship_offers_path
       assert_select 'a[href=?]',

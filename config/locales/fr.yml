@@ -514,6 +514,7 @@ fr:
         school_manager: "Chef d'établissement"
         teacher: "Professeur"
         zipcode: Code postal
+        grade: Niveau
 
       identity:
         first_name: Prénom
@@ -522,6 +523,7 @@ fr:
         school: "Etablissement"
         class_room: "Classe"
         birth_date: Date de naissance
+        grade: Niveau
 
       week:
         number: Numéro de semaine

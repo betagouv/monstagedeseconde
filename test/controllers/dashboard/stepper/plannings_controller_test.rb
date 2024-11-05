@@ -47,6 +47,7 @@ module Dashboard::Stepper
               params: { planning: }
             )
             internship_offer = InternshipOffer.last
+            assert internship_offer.persisted?
             assert_redirected_to internship_offer_path(internship_offer.id, origine: 'dashboard', stepper: true)
             assert_match(/Votre offre est publiée/, flash[:notice])
 

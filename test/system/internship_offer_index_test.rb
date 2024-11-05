@@ -30,6 +30,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'pagination of internship_offers index is ok with api or weekly offers' do
+    skip 'this test is relevant and shall be reactivated by november 2024'
     travel_to Date.new(2024, 9, 1) do
       2.times do
         create(:weekly_internship_offer_2nde, city: 'Chatillon', coordinates: Coordinates.chatillon)

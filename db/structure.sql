@@ -904,7 +904,7 @@ CREATE TABLE public.identities (
     anonymized boolean DEFAULT false,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    grade character varying(100) DEFAULT 'seconde'::character varying NOT NULL
+    grade_id bigint
 );
 
 
@@ -3431,6 +3431,13 @@ CREATE INDEX index_identities_on_class_room_id ON public.identities USING btree 
 
 
 --
+-- Name: index_identities_on_grade_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_identities_on_grade_id ON public.identities USING btree (grade_id);
+
+
+--
 -- Name: index_identities_on_school_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4491,6 +4498,14 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
+-- Name: identities fk_rails_ab66e55058; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.identities
+    ADD CONSTRAINT fk_rails_ab66e55058 FOREIGN KEY (grade_id) REFERENCES public.grades(id);
+
+
+--
 -- Name: area_notifications fk_rails_ab915cf6e4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4665,6 +4680,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20241105092317'),
 ('20241101100649'),
 ('20241031131640'),
 ('20241031101009'),

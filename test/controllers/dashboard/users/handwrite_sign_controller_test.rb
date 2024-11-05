@@ -18,14 +18,14 @@ module Dashboard::Users
         sign_in(employer)
 
         params = {
-          user:{
+          user: {
             id: employer.id,
             agreement_ids: internship_agreement.id,
             signature_image: File.read(Rails.root.join(*%w[test fixtures files signature]))
           }
         }
 
-        post handwrite_sign_dashboard_user_path( id: employer.id), params: params
+        post handwrite_sign_dashboard_user_path(id: employer.id), params: params
 
         follow_redirect!
         assert_response :success
@@ -35,22 +35,23 @@ module Dashboard::Users
     end
 
     test 'when employer handwrite_sign_dashboard_internship_agreement_user_path fails with missing handwrite' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application, aasm_state: :validated)
+      internship_agreement = create(:internship_agreement, internship_application: internship_application,
+                                                           aasm_state: :validated)
       employer.update(phone: '+330623456789')
       employer.create_signature_phone_token
       check_code(employer)
       sign_in(employer)
 
       params = {
-        user:{
+        user: {
           id: employer.id,
           agreement_ids: internship_agreement.id
         } # no handwrite_signature
       }
 
-      post handwrite_sign_dashboard_user_path( id: employer.id), params: params
+      post handwrite_sign_dashboard_user_path(id: employer.id), params: params
       follow_redirect!
       assert_response :success
       assert_equal 'Votre signature n\'a pas été détectée', flash[:alert]
@@ -67,14 +68,14 @@ module Dashboard::Users
         sign_in(employer)
 
         params = {
-          user:{
+          user: {
             id: employer.id,
             agreement_ids: internship_agreement.id,
             signature_image: File.read(Rails.root.join(*%w[test fixtures files signature]))
           }
         }
 
-        post handwrite_sign_dashboard_user_path( id: employer.id), params: params
+        post handwrite_sign_dashboard_user_path(id: employer.id), params: params
         follow_redirect!
         assert_response :success
         assert_equal 'Votre signature n\'a pas été enregistrée', flash[:alert]
