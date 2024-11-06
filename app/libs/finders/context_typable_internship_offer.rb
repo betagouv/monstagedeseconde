@@ -66,8 +66,8 @@ module Finders
       query = yield
       %i[
         keyword
-        period
         sector_ids
+        week_ids
         school_year
       ].each do |sym_key|
         query = send("#{sym_key}_query", query) if use_params(sym_key)
@@ -83,6 +83,10 @@ module Finders
 
     def sector_ids_query(query)
       query.where(sector_id: use_params(:sector_ids))
+    end
+
+    def week_ids_query(query)
+      query.merge(InternshipOffer.by_weeks(weeks: OpenStruct.new(ids: use_params(:week_ids))))
     end
 
     def school_year_query(query)

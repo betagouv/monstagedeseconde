@@ -26,12 +26,10 @@ module StepperProxy
                                 greater_than: 0,
                                 less_than_or_equal_to: :max_candidates,
                                 message: "Le nombre maximal d'élèves par groupe ne peut pas dépasser le nombre maximal d'élèves attendus dans l'année" }
-      validates :lunch_break, length: { minimum: 10, maximum: 200 }
       validates :weeks, presence: true
-      validate :enough_weeks
       validate :at_least_one_grade
 
-      # methods common to planning and internship_offer
+      # methods common to planning and internship_offer but not for API
       def enough_weeks
         weeks_size = ((try(:internship_offer_weeks) || try(:planning_weeks)) || []).to_a.size
         return if weeks_size.zero?

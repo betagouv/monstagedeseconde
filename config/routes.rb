@@ -98,22 +98,40 @@ Rails.application.routes.draw do
     post '/utilisateurs/anonymiser', to: 'users#anonymize_user'
 
     namespace :api, path: 'api' do
-      resources :internship_offers, only: %i[create update destroy index] do
-        get :search, on: :collection
-      end
-
-      resources :schools, only: [] do
-        collection do
-          post :nearby
-          post :search
+      # add version 1 and 2
+      namespace :v1 do
+        resources :internship_offers, only: %i[create update destroy index] do
+          get :search, on: :collection
         end
+        resources :schools, only: [] do
+          collection do
+            post :nearby
+            post :search
+          end
+        end
+        resources :coded_crafts, only: [] do
+          get :search, on: :collection
+        end
+        resources :sectors, only: :index
       end
 
-      resources :coded_crafts, only: [] do
-        get :search, on: :collection
+      namespace :v2 do
+        resources :internship_offers, only: %i[create update destroy index] do
+          get :search, on: :collection
+        end
+        resources :schools, only: [] do
+          collection do
+            post :nearby
+            post :search
+          end
+        end
+        resources :coded_crafts, only: [] do
+          get :search, on: :collection
+        end
+        resources :sectors, only: :index
       end
-      resources :sectors, only: :index
     end
+
     # ------------------ DASHBOARD START ------------------
     namespace :dashboard, path: 'tableau-de-bord' do
       resources :team_member_invitations, path: 'invitation-equipes', only: %i[create index new destroy] do

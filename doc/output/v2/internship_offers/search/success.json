@@ -1,0 +1,16 @@
+{
+  "pagination": {
+    "totalInternshipOffers": 31,
+    "internshipOffersPerPage": 30,
+    "totalPages": 2,
+    "currentPage": 9,
+    "nextPage": null,
+    "prevPage": null,
+    "isFirstPage": false,
+    "isLastPage": false,
+    "pageUrlBase": "http://www.example.com/api/v2/internship_offers/search"
+  },
+  "internshipOffers": [
+
+  ]
+}
