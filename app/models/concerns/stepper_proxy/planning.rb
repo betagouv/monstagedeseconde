@@ -26,7 +26,6 @@ module StepperProxy
                                 greater_than: 0,
                                 less_than_or_equal_to: :max_candidates,
                                 message: "Le nombre maximal d'élèves par groupe ne peut pas dépasser le nombre maximal d'élèves attendus dans l'année" }
-      validates :lunch_break, length: { minimum: 10, maximum: 200 }
       validates :weeks, presence: true
       validate :enough_weeks
       validate :at_least_one_grade

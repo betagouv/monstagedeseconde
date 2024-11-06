@@ -39,7 +39,7 @@ class InternshipOffer < ApplicationRecord
 
   attr_accessor :republish, :grade_college, :grade_2e, :all_year_long, :period, :internship_type
 
-  # Other associations
+  # Other associations not defined in StepperProxy
   has_many :internship_applications, as: :internship_offer,
                                      foreign_key: 'internship_offer_id'
 
@@ -129,7 +129,7 @@ class InternshipOffer < ApplicationRecord
                     }
                   }
 
-  scope :public_entreprise, -> { where is_public: true }
+  # scope :public, -> { where is_public: true }
   scope :by_sector, lambda { |sector_id|
     where(sector_id:)
   }

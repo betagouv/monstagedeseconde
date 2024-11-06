@@ -22,7 +22,6 @@ class Planning < ApplicationRecord
   # Callbacks
 
   # Validations
-  validates :lunch_break, length: { minimum: 10, maximum: 200 }
 
   # accessors
   attr_accessor :all_year_long,
