@@ -73,7 +73,6 @@ gem 'jwt'
 gem 'validates_zipcode'
 
 # dev utils
-gem 'after_party'
 gem 'bootsnap', require: false
 gem 'dalli'
 gem 'dotenv-rails', require: 'dotenv/load'

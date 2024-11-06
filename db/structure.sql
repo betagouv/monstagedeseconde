@@ -2013,12 +2013,36 @@ ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
 
 
 --
--- Name: task_records; Type: TABLE; Schema: public; Owner: -
+-- Name: task_registers; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.task_records (
-    version character varying NOT NULL
+CREATE TABLE public.task_registers (
+    id bigint NOT NULL,
+    task_name character varying(250),
+    used_environment character varying(150),
+    played_at timestamp(6) without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
+
+
+--
+-- Name: task_registers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.task_registers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: task_registers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
 
 
 --
@@ -2665,6 +2689,13 @@ ALTER TABLE ONLY public.signatures ALTER COLUMN id SET DEFAULT nextval('public.s
 
 
 --
+-- Name: task_registers id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.task_registers ALTER COLUMN id SET DEFAULT nextval('public.task_registers_id_seq'::regclass);
+
+
+--
 -- Name: team_member_invitations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3094,6 +3125,14 @@ ALTER TABLE ONLY public.sectors
 
 ALTER TABLE ONLY public.signatures
     ADD CONSTRAINT signatures_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: task_registers task_registers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.task_registers
+    ADD CONSTRAINT task_registers_pkey PRIMARY KEY (id);
 
 
 --
@@ -4641,8 +4680,6 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20241105172654'),
-('20241105171942'),
 ('20241105092317'),
 ('20241101100649'),
 ('20241031131640'),

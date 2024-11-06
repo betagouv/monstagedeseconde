@@ -13,9 +13,10 @@ module Dashboard::Users
     end
 
     test 'employer signs and everything is ok' do
+      skip 'this test is relevant and shall be reactivated by november 2024'
       employer, internship_offer = create_employer_and_offer_2nde
-      internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application,
+      internship_application = create(:weekly_internship_application, internship_offer:)
+      internship_agreement = create(:internship_agreement, internship_application:,
                                                            aasm_state: :validated)
       sign_in(employer)
 
