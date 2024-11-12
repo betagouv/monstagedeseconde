@@ -72,7 +72,6 @@ div [data-controller="select-weeks"
                       = "#{month_name} #{year}"
                     - weeks.each do |week|
                       div class="fr-checkbox-group fr-checkbox-group--sm position-relative pr-3 #{month_name}"
-                        = form.object.weeks.select { |w| w.id == week.id }.first&.checked?
                         - # prevent removing weeks with application by showing a disable checkbox (not submitted to server)
                         - # keep reference of checkbox id for easier labelling
                         - checkbox_id = "#{form.object_name}_week_ids_#{week.id}_checkbox"

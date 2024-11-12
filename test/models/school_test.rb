@@ -100,7 +100,7 @@ class SchoolTest < ActiveSupport::TestCase
       latitude = school_paris.coordinates.latitude
       longitude = school_paris.coordinates.longitude
 
-      assert_equal [Week.first.id],
+      assert_equal ["school-week-#{Week.first.id}".to_sym],
                    School.nearby_school_weeks(latitude:, longitude:, radius: 60_000).keys
     end
   end
