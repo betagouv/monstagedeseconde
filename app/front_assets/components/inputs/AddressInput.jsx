@@ -127,25 +127,28 @@ export default function AddressInput({
                     htmlFor: `${resourceName}_autocomplete`,
                   })}
                 >
-                  Rechercher une adresse*
+                  Rechercher une adresse postale*
                 </label>
 
-                <div className="input-group">
+                <div className="d-flex">
                   <input
                     {...getInputProps({
                       onChange: inputChange,
                       onClick: resetField,
                       value: fullAddress,
-                      className: 'form-control',
+                      className: 'fr-input flex-grow-1',
                       name: `${resourceName}_autocomplete`,
                       id: `${resourceName}_autocomplete`,
-                      placeholder: 'Adresse',
+                      placeholder: '',
                       required: true,
                     })}
                   />
+
                   <div className="input-group-append">
                     <a onClick={resetField}>
-                      <span className="input-group-text">Effacer</span>
+                      <button className="fr-btn fr-btn--tertiary" type="button">
+                        Effacer
+                      </button>
                     </a>
                   </div>
                 </div>
