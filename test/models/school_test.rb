@@ -88,4 +88,35 @@ class SchoolTest < ActiveSupport::TestCase
     assert school_2.invalid?
     assert_not_empty school_2.errors[:code_uai]
   end
+
+  test '.nearby_school_weeks' do
+    travel_to Date.new(2019, 9, 1) do
+      school_paris = create(:school, :at_paris, weeks: [Week.first]) # Paris
+      school_bordeaux = create(:school, :at_bordeaux, weeks: Week.first(3))
+
+      assert (school_bordeaux.coordinates.longitude - school_paris.coordinates.longitude).abs > 0.01
+      assert (school_bordeaux.coordinates.latitude - school_paris.coordinates.longitude).abs > 0.04
+
+      latitude = school_paris.coordinates.latitude
+      longitude = school_paris.coordinates.longitude
+
+      assert_equal [Week.first.id],
+                   School.nearby_school_weeks(latitude:, longitude:, radius: 60_000).keys
+    end
+  end
+
+  test '.with_school_manager' do
+    school = create(:school, :with_school_manager)
+    assert_equal [school], School.with_school_manager
+  end
+
+  test 'select_text_method' do
+    school = create(:school)
+    assert_equal "#{school.name} - #{school.city} - #{school.zipcode}", school.select_text_method
+  end
+
+  test 'agreement_address' do
+    school = create(:school)
+    assert_equal "#{school.name} - #{school.city}, #{school.zipcode}", school.agreement_address
+  end
 end

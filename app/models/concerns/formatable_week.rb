@@ -60,12 +60,30 @@ module FormatableWeek
     end
     alias_method :to_str, :select_text_method_with_year
 
+    def human_shortest
+      if week_date.month == week_date.end_of_week.month
+        ['du',
+         week_date.day,
+         'au',
+         end_of_week].map(&:to_s)
+          .map(&:strip)
+          .join(' ')
+      else
+        ['du', beginning_of_week(format: '%e %b'), 'au', end_of_week_abr].map(&:to_s)
+                                                                         .map(&:strip)
+                                                                         .join(' ')
+      end
+    end
+
     def week_date
       Date.commercial(year, number)
     end
+    alias_method :date, :week_date
+    alias_method :to_date, :week_date
+    alias_method :monday, :week_date
 
-    def beginning_of_week
-      I18n.localize(week_date.beginning_of_week, format: :human_mm_dd)
+    def beginning_of_week(format: :human_mm_dd)
+      I18n.localize(week_date.beginning_of_week, format:)
     end
 
     def beginning_of_week_short
@@ -84,8 +102,12 @@ module FormatableWeek
       I18n.localize(week_date.beginning_of_week, format: :human_dd_short_mm_yyyy)
     end
 
-    def end_of_week
-      I18n.localize(week_date.end_of_week, format: :human_mm_dd)
+    def end_of_week(format: :human_mm_dd)
+      I18n.localize(week_date.end_of_week, format:)
+    end
+
+    def end_of_week_abr
+      I18n.localize(week_date.end_of_week, format: :human_dd_mm)
     end
 
     def end_of_working_week
@@ -106,6 +128,15 @@ module FormatableWeek
 
     def end_of_week_with_short_month_years_long
       I18n.localize(week_date.end_of_week, format: :human_dd_short_mm_yyyy)
+    end
+
+    def month_number
+      monday = week_date.beginning_of_week
+      tuesday = monday + 1.day
+      wednesday = tuesday + 1.day
+      return monday.month if monday.month == tuesday.month && tuesday.month == wednesday.month
+
+      (monday + 4.days).month
     end
   end
 end

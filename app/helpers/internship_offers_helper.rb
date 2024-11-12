@@ -5,14 +5,12 @@ module InternshipOffersHelper
   def preselect_all_weeks?(object)
     return false unless object.try(:new_record?)
 
-    is_preselectable_entity = [
-      InternshipOfferInfo,
+    preselectable_classes = [
       InternshipOffer,
       InternshipOffers::WeeklyFramed,
-      HostingInfo,
       Planning
     ]
-    is_preselectable_entity.any? { |klass| object.is_a?(klass) }
+    preselectable_classes.any? { |klass| object.is_a?(klass) }
   end
 
   def internship_offer_application_path(object)

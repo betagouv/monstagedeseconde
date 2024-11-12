@@ -25,6 +25,7 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi",
     internship_weeks_number: 2
   )
 
@@ -50,6 +51,7 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi",
     internship_weeks_number: 2
   )
 
@@ -72,8 +74,9 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: Group.is_public.last.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: weeks -  SchoolTrack::Seconde.second_week,
-    grades: Grade.all
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   # 4
@@ -96,8 +99,9 @@ def populate_internship_offers
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Du temps pour moi',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: weeks -  SchoolTrack::Seconde.second_week,
-    grades: Grade.all
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
   # dépubliée
   # 5
@@ -122,7 +126,8 @@ def populate_internship_offers
     max_candidates: 7,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
-    grades: Grade.all
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   # 6
@@ -146,7 +151,8 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
-    internship_weeks_number: 2
+    internship_weeks_number: 2,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
   # 7
   InternshipOffers::WeeklyFramed.create!(
@@ -170,7 +176,8 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
-    internship_weeks_number: 2
+    internship_weeks_number: 2,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   area_id = Users::Operator.first.reload.internship_offer_areas.first.id
@@ -194,8 +201,9 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: 'IBM',
     internship_offer_area_id: area_id,
-    weeks: weeks -  SchoolTrack::Seconde.first_week,
-    grades: Grade.all
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   # 9 api - 2
@@ -223,8 +231,9 @@ def populate_internship_offers
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Ministère de l\'Education Nationale',
     internship_offer_area_id: area_id,
-    weeks: weeks - SchoolTrack::Seconde.first_week,
-    grades: Grade.all
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   # 10
@@ -249,6 +258,7 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi",
     internship_weeks_number: 2
   )
 
@@ -273,6 +283,7 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi",
     internship_weeks_number: 2
   )
 
@@ -316,6 +327,7 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi",
     internship_weeks_number: 2
   )
 
@@ -339,8 +351,9 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.bordeaux[:latitude], longitude: Coordinates.bordeaux[:longitude] },
     employer_name: Group.is_paqte.second.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: weeks - SchoolTrack::Seconde.second_week,
-    grades: Grade.all
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
   InternshipOffer.last.publish!
 
@@ -364,7 +377,8 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude] },
     employer_name: Group.is_paqte.second.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: weeks - SchoolTrack::Seconde.first_week,
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    lunch_break: "L'élève doit prévoir son repas de midi",
     grades: Grade.all
   )
   InternshipOffer.last.publish!
@@ -389,7 +403,8 @@ def populate_internship_offers
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Ministère de l\'Education Nationale',
     internship_offer_area_id: area_id,
-    weeks: weeks - SchoolTrack::Seconde.first_week,
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    lunch_break: "L'élève doit prévoir son repas de midi",
     grades: Grade.all
   )
   InternshipOffer.last.publish!
@@ -419,7 +434,8 @@ def populate_internship_offers
     internship_offer_area_id: area_id,
     school_year: 2023,
     period: 1,
-    weeks: weeks - SchoolTrack::Seconde.second_week,
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    lunch_break: "L'élève doit prévoir son repas de midi",
     grades: Grade.all
   )
   InternshipOffer.last.publish!

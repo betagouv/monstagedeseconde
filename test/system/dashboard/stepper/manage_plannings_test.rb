@@ -90,4 +90,25 @@ class ManagePlanningsTest < ApplicationSystemTestCase
   end
   test 'can create a planning with all grades' do
   end
+
+  test 'planning shows the right amount of schools nearby the entreprise' do
+    # internship in paris, schools in bordeaux and paris, the latter with one week only.
+    travel_to Date.new(2019, 9, 1) do
+      first_3_weeks = Week.selectable_from_now_until_end_of_school_year.first(3)
+      school_bordeaux = create(:school, city: 'Bordeaux', zipcode: '33000',
+                                        weeks: first_3_weeks, coordinates: Coordinates.bordeaux)
+      school_paris = create(:school, city: 'Paris', zipcode: '75001',
+                                     weeks: [first_3_weeks.first])
+      internship_occupation = create(:internship_occupation, city: 'Paris', zipcode: '75001',
+                                                             coordinates: Coordinates.paris)
+      entreprise = create(:entreprise, internship_occupation:)
+      assert internship_occupation.coordinates.latitude == Coordinates.paris[:latitude]
+      assert internship_occupation.coordinates.longitude == Coordinates.paris[:longitude]
+      sign_in(internship_occupation.employer)
+      visit new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
+      find('label[for="planning_all_year_long_false"]').click
+      assert find("label[for='planning_week_ids_#{first_3_weeks.first.id}_checkbox']").text.match(/disponible/)
+      refute find("label[for='planning_week_ids_#{first_3_weeks.last.id}_checkbox']").text.match(/disponible/)
+    end
+  end
 end

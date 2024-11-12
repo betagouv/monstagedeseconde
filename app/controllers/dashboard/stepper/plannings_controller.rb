@@ -6,12 +6,14 @@ module Dashboard::Stepper
     before_action :authenticate_user!
     before_action :fetch_planning, only: %i[edit update]
     before_action :fetch_entreprise, only: %i[new create]
+    before_action :fetch_internship_occupation, only: %i[new edit create]
 
     PERIOD = {
       two_weeks: 2,
       first_week: 11,
       second_week: 12
     }
+    DEFAULT_SCHOOL_RADIUS = 60_000 # 60km
 
     def new
       @planning = Planning.new(
@@ -23,6 +25,11 @@ module Dashboard::Stepper
       authorize! :create, @planning
       @internship_occupation = @entreprise.internship_occupation
       @available_weeks = @planning.available_weeks || []
+      @school_weeks = School.nearby_school_weeks(
+        latitude: @internship_occupation.coordinates.latitude,
+        longitude: @internship_occupation.coordinates.longitude,
+        radius: DEFAULT_SCHOOL_RADIUS
+      )
     end
 
     def create
@@ -49,6 +56,11 @@ module Dashboard::Stepper
 
     def edit
       authorize! :edit, @planning
+      @school_weeks = School.nearby_school_weeks(
+        latitude: @internship_occupation.coordinates.latitude,
+        longitude: @internship_occupation.coordinates.longitude,
+        radius: DEFAULT_SCHOOL_RADIUS
+      )
     end
 
     # process update following a back to step 2
@@ -146,6 +158,10 @@ module Dashboard::Stepper
 
     def fetch_entreprise
       @entreprise ||= Entreprise.find(params[:entreprise_id])
+    end
+
+    def fetch_internship_occupation
+      @internship_occupation ||= @entreprise&.internship_occupation || @planning&.entreprise&.internship_occupation
     end
 
     def employer_chose_whole_year?

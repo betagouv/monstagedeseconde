@@ -47,6 +47,18 @@ class School < ApplicationRecord
                                             .pluck(:school_id))
   }
 
+  scope :internship_weeks, lambda { |latitude:, longitude:, radius:|
+                             joins(school_internship_weeks: :week)
+                               .nearby(latitude:, longitude:, radius:)
+                           }
+
+  def self.nearby_school_weeks(latitude:, longitude:, radius:)
+    internship_weeks(latitude:, longitude:, radius:)
+      .pluck(:week_id)
+      .tally
+      .transform_keys { |week_id| "school-week-#{week_id}".to_sym }
+  end
+
   def select_text_method
     "#{name} - #{city} - #{zipcode}"
   end
