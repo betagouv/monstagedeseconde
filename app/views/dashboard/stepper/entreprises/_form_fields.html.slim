@@ -28,8 +28,10 @@
                                         railsEnv: Rails.env,
                                         newRecord: resource.new_record? })
 
-          div class= "row fr-mt-3w bloc-tooggle (form.object.persisted? ? '' : 'd-none')"
-            .col-12
+          #hidden-public-private-field.d-none
+            input type='hidden' name='entreprise[is_public]'
+          div class= "row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'})"
+            #public-private-radio-buttons.bloc-tooggle.col-12
               div class=('d-none' if request.fullpath.include?('entreprises/nouveau'))
               - if current_user.ministry_statistician?
                 = form.hidden_field :is_public, value: true
@@ -62,7 +64,7 @@
 
                   div.fr-messages-group#radio-hint-messages aria-live="assertive"
           - edit_mode = (@organisation.try(:persisted?) && @organisation.is_private?) || (@organisation.try(:employer_description).present? && @organisation.is_private?)
-          .row.fr-mt-3w.bloc-tooggle [data-ministry-fields-target="groupNamePublic"]
+          #ministry-choice.row.fr-mt-3w.bloc-tooggle [data-ministry-fields-target="groupNamePublic"]
             .col-12
               = form.label :group_id, class: 'fr-label' do
                 = form.rg2a_required_content_tag
@@ -74,7 +76,7 @@
                             class: "fr-select ",
                             required: false,
                             :'data-ministry-fields-target' => 'selectGroupName'
-          div class="row fr-mt-3w bloc-tooggle (form.object.persisted? ? '' : 'd-none')"
+          div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               = form.label :sector_id , class: 'fr-label'do
                 = "Secteur d'activité"
@@ -84,8 +86,9 @@
                             class: "fr-select",
                             required: true,
                             data: { :'fill-card-target' => "sectorInput",
-                                    action: "change->fill-card#sectorChanged"}
-          div class="row fr-mt-3w bloc-tooggle (form.object.persisted? ? '' : 'd-none')"
+                                    :'mandatory-fields-target' => "mandatoryField",
+                                    data: { action: "input->mandatory-fields#fieldChange change->fill-card#sectorChanged"}}
+          div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               = render 'inputs/dsfr_input_field',
                         field: :presentation_siret,
@@ -96,7 +99,7 @@
                         title: 'SIRET',
                         object: form.object,
                         value: resource.presenter.formal_siret
-          div class="row fr-mt-3w bloc-tooggle (form.object.persisted? ? '' : 'd-none')"
+          div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               - label = "Vérifiez le nom (raison sociale) de votre établissement"
               = render 'inputs/dsfr_input_field',
@@ -108,7 +111,7 @@
                         title: label,
                         object: form.object,
                         value: resource&.employer_name
-          div class="row fr-mt-3w bloc-tooggle (form.object.persisted? ? '' : 'd-none')"
+          div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               - label = "Indiquez le nom de l'enseigne de l'établissement d'accueil, si elle diffère de la raison sociale"
               = render 'inputs/dsfr_input_field',
@@ -121,7 +124,7 @@
                         value: resource&.employer_name,
                         options: { data: { :'fill-card-target' => "employerNameInput",
                                          action: "input->fill-card#employerNameChanged"} }
-          div class="row fr-mt-3w bloc-tooggle (form.object.persisted? ? '' : 'd-none')"
+          div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               = form.hidden_field :entreprise_full_address, value: resource&.entreprise_full_address
               - label = "Vérifiez l'adresse du siège de votre établissement *"

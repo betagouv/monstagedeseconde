@@ -5,10 +5,10 @@ module EntrepriseFormFiller
         *%w[test
             fixtures
             files
-            api-insee-adresse-east-side-software.json]
+            api-insee-mairie-st-ouen.json]
       )
     )
-    stub_request(:get, 'https://api.insee.fr/entreprises/sirene/siret/90943224700015')
+    stub_request(:get, 'https://api.insee.fr/entreprises/sirene/siret/21950572400209')
       .with(
         headers: {
           'Accept' => 'application/json',
@@ -35,7 +35,7 @@ module EntrepriseFormFiller
       )
       .to_return(status: 200, body: { access_token: 'TOKEN' }.to_json, headers: {})
     fill_in 'Indiquez le nom ou le SIRET de la structure d’accueil*',
-            with: '90943224700015'
+            with: '21950572400209'
     find("div.search-in-sirene ul[role='listbox'] li[role='option']").click
     find("label.fr-label[for='entreprise_is_public_true']").click
     assert Group.is_public.count.positive?
@@ -43,9 +43,9 @@ module EntrepriseFormFiller
     select group.name,
            from: 'Type d’employeur public'
     select sector.name, from: "Secteur d'activité" unless sector.nil?
-    assert_equal '909 432 247 00015',  find('input#entreprise_presentation_siret').value
-    assert_equal 'EAST SIDE SOFTWARE', find('input#entreprise_employer_name').value.strip
+    assert_equal '219 505 724 00209',  find('input#entreprise_presentation_siret').value
+    assert_equal 'COMMUNE DE SAINT OUEN L AUMONE', find('input#entreprise_employer_name').value.strip
     fill_in "Indiquez le nom de l'enseigne de l'établissement d'accueil, si elle diffère de la raison sociale",
-            with: 'East Side Software-Paris'
+            with: 'Mairie de Saint-Ouen-l’Aumône'
   end
 end
