@@ -4,6 +4,7 @@ import { useDebounce } from "use-debounce";
 import Downshift from "downshift";
 import { fetch } from "whatwg-fetch";
 import { endpoints } from "../../utils/api";
+import { employerNameChanged , broadcast} from "../../utils/events";
 
 // see: https://geo.api.gouv.fr/adresse
 export default function SirenInput({
@@ -108,7 +109,9 @@ export default function SirenInput({
     const street = `${selection.adresseEtablissement.numeroVoieEtablissement} ${selection.adresseEtablissement.typeVoieEtablissement} ${selection.adresseEtablissement.libelleVoieEtablissement} `;
     const addressConcatenated = `${street} ${zipcode} ${city}`.trim();
     searchCoordinatesByAddress(addressConcatenated);
-    document.getElementById("entreprise_employer_name").value = selection.uniteLegale.denominationUniteLegale;
+    const employerName = selection.uniteLegale.denominationUniteLegale;
+    document.getElementById("entreprise_employer_name").value = employerName;
+    broadcast(employerNameChanged({ employerName }));
     document.getElementById("entreprise_entreprise_full_address").value = addressConcatenated;
     document.getElementById("entreprise_entreprise_chosen_full_address").value = addressConcatenated;
     document.getElementById("entreprise_siret").value = selection.siret;
