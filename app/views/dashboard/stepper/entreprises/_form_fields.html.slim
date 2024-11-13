@@ -67,8 +67,7 @@
           #ministry-choice.row.fr-mt-3w.bloc-tooggle [data-ministry-fields-target="groupNamePublic"]
             .col-12
               = form.label :group_id, class: 'fr-label' do
-                = form.rg2a_required_content_tag
-                = "Type d’employeur public"
+                = "Type d’employeur public *"
 
               = form.select :group_id,
                             options_for_select(options_for_public_groups, resource.group.try(:id)),
@@ -93,7 +92,7 @@
               = render 'inputs/dsfr_input_field',
                         field: :presentation_siret,
                         f: form,
-                        label: "SIRET",
+                        label: "SIRET *",
                         required: true,
                         readonly: true,
                         title: 'SIRET',
@@ -101,7 +100,7 @@
                         value: resource.presenter.formal_siret
           div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
-              - label = "Vérifiez le nom (raison sociale) de votre établissement"
+              - label = "Vérifiez le nom (raison sociale) de votre établissement *"
               = render 'inputs/dsfr_input_field',
                         field: :employer_name,
                         f: form,

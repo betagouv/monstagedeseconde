@@ -34,7 +34,7 @@ module EntrepriseFormFiller
         }
       )
       .to_return(status: 200, body: { access_token: 'TOKEN' }.to_json, headers: {})
-    fill_in 'Indiquez le nom ou le SIRET de la structure d’accueil*',
+    fill_in 'Indiquez le nom ou le SIRET de la structure d’accueil *',
             with: '21950572400209'
     find("div.search-in-sirene ul[role='listbox'] li[role='option']").click
     find("label.fr-label[for='entreprise_is_public_true']").click

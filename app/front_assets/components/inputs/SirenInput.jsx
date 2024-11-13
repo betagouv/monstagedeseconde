@@ -113,6 +113,8 @@ export default function SirenInput({
     document.getElementById("entreprise_entreprise_chosen_full_address").value = addressConcatenated;
     document.getElementById("entreprise_siret").value = selection.siret;
     document.getElementById("entreprise_presentation_siret").value = siretPresentation(selection.siret);
+    const ministryClassList = document.getElementById("ministry-choice").classList;
+    ministryClassList.add("d-none");
     if( is_public != undefined) {
       document
         .getElementById("public-private-radio-buttons")
@@ -120,14 +122,8 @@ export default function SirenInput({
       const hiddenField = document.getElementById("hidden-public-private-field").children[0];
       hiddenField.value = is_public;
       hiddenField.classList.remove("d-none");
-      if (is_public) {
-        document.getElementById("ministry-choice").classList.remove('d-none');
-      } else {
-        document.getElementById("ministry-choice").classList.add("d-none");
-      }
-    } else {
-      document.getElementById("ministry-choice").classList.add("d-none");
-    }
+      if (is_public) {ministryClassList.remove('d-none')}
+    } 
   };
 
   const show_form = (show) => {
@@ -196,7 +192,7 @@ export default function SirenInput({
                   htmlFor: `${resourceName}_siren`,
                 })}
               >
-                Indiquez le nom ou le SIRET de la structure d’accueil*
+                Indiquez le nom ou le SIRET de la structure d’accueil *
                 {railsEnv === "development"
                   ? " (dev only : 21950572400209)"
                   : ""}
