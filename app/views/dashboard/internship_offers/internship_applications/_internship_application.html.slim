@@ -20,7 +20,8 @@
       .col-10.grey-on-grey
         span.fr-fi-calendar-line.fr-fi--sm
         span.mx-2= "Pour la semaine"
-        strong= "#{internship_application.week.human_select_text_method}"
+        strong
+          = Presenters::InternshipApplication.new(internship_application, current_user).str_weeks
     .row.no-gutters
       .col-10
           h3.h6.mt-3 Motivations

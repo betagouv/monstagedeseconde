@@ -319,7 +319,7 @@ module Dashboard
                  :approved,
                  student:,
                  internship_offer: internship_offer_1,
-                 week: internship_offer_1.weeks.first)
+                 weeks: [internship_offer_1.weeks.first])
           sign_in(student)
           visit dashboard_internship_offers_path
           click_link 'Candidatures'
@@ -338,7 +338,7 @@ module Dashboard
                                         :approved,
                                         student:,
                                         internship_offer: internship_offer_1,
-                                        week: internship_offer_1.weeks.first)
+                                        weeks: [internship_offer_1.weeks.first])
         sign_in(student)
         visit dashboard_internship_offers_path
         click_link 'Candidatures'

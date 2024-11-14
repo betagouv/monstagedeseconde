@@ -22,6 +22,7 @@ module Dashboard
       # 1 magic link successfully clicked
       # 2 magic link clicked but expired
       def show
+        @prez_application = Presenters::InternshipApplication.new(@internship_application, current_user)
         if params[:sgid].present? && magic_fetch_student&.student? && magic_fetch_student.id == @current_student.id
           @internship_application.update(magic_link_tracker: 1)
           @internship_application_sgid = @internship_application.to_sgid(expires_in: MAGIC_EXPIRATION_TIME).to_s

@@ -20,6 +20,7 @@ class SchoolManagerMailer < ApplicationMailer
     @prez_stud             = student.presenter
     @school_manager        = student.school&.school_manager
     @week                  = @internship_application.internship_offer.period
+    @prez_application = Presenters::InternshipApplication.new(@internship_application, @school_manager)
     @url = dashboard_internship_agreements_url(
       id: internship_agreement.id,
       mtm_campaign: 'SchoolManager - Convention To Fill In'
@@ -28,7 +29,7 @@ class SchoolManagerMailer < ApplicationMailer
     to = @school_manager&.email
     subject = 'Vous avez une convention de stage à renseigner.'
 
-    send_email(to: to, subject: subject)
+    send_email(to:, subject:)
   end
 
   def notify_others_signatures_started_email(internship_agreement:)

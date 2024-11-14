@@ -6,6 +6,9 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   include ThirdPartyTestHelpers
   include TeamAndAreasHelper
 
+  test 'factory' do
+    assert build(:weekly_internship_application).valid?
+  end
   test 'scope remindable' do
     create(:weekly_internship_application, :submitted,
            submitted_at: 5.days.ago,

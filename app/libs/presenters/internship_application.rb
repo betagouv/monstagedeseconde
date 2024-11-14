@@ -209,10 +209,15 @@ module Presenters
       end.compact
     end
 
+    def str_weeks
+      ::Presenters::WeekList.new(weeks:).to_s
+    end
+
     attr_reader :internship_application,
                 :student,
                 :internship_offer,
-                :reader
+                :reader,
+                :weeks
 
     protected
 
@@ -221,6 +226,7 @@ module Presenters
       @internship_application = internship_application
       @student                = internship_application.student
       @internship_offer       = internship_application.internship_offer
+      @weeks                  = internship_application.weeks
     end
 
     def rails_routes

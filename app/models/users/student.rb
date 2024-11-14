@@ -158,7 +158,7 @@ module Users
       return false if with_2_weeks_internships_approved?
       return false if internship_offer.nil?
 
-      approved_offers_week_ids = internship_applications.approved.map(&:week).map(&:id).uniq
+      approved_offers_week_ids = internship_applications.approved.map(&:weeks).flatten.map(&:id).uniq
       official_weeks_ids = SchoolTrack::Seconde.both_weeks.map(&:id)
       targeted_week_id = (internship_offer.weeks.map(&:id) & official_weeks_ids)
       unless (approved_offers_week_ids - official_weeks_ids).empty? && (targeted_week_id - official_weeks_ids).empty?
