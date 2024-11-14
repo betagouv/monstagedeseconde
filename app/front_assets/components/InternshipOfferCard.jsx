@@ -49,16 +49,16 @@ const InternshipOfferCard = ({
     >
       <div className="fr-card fr-enlarge-link fr-card--full-text" data-test-id={internshipOffer.id}>
         <div className="fr-card__body">
-          <div className="sector">{internshipOffer.sector}</div>
+          <div className="sector fr-mb-1w fr-text--grey-425">{internshipOffer.sector}</div>
           
 
           <div className="fr-card__detail fr-mt-1w">
           <div className="fr-card__title">
             <h4>
               <a href={internshipOffer.link}
-                className="row-link text-dark"
+                className="row-link"
                 onClick={(e) => { e.stopPropagation() }}
-              ><div className="card-title-std-height">
+              ><div className="h5 fr-mb-2w">
                 {internshipOffer.title}
               </div>
               </a>
@@ -70,25 +70,25 @@ const InternshipOfferCard = ({
 
           <div className="fr-card__desc fr-my-1w">
             {(internshipOffer.can_read_employer_name) &&
-              (<div className="mr-auto blue-france fr-mb-1w">{internshipOffer.employer_name}</div>)
+              (<div className="mr-auto fr-mb-1w">{internshipOffer.employer_name}</div>)
             }
-            <div className="fr-text fr-py-1w test-city">{internshipOffer.city}</div>
+            <div className="fr-text fr-py-1w test-city fr-text--sm fr-text--grey-425">{internshipOffer.city}</div>
           </div>
         </div>
         {/* puts elements at the opposite on a line */}
         <div className="d-flex justify-content-between">
           <ul className="fr-badges-group fr-p-2w">
             <li>
-              <div className="fr-badge fr-badge--no-icon">
+              <div className="fr-tag fr-mr-1w">
                 <span className="fr-icon-calendar-line fr-mr-1w"></span>
                 1 semaine disponible
               </div>
             </li>
             <li>
-              <div className="fr-badge fr-badge--no-icon">4ème</div>
+              <div className="fr-tag fr-mr-1w">4ème</div>
             </li>
             <li>
-              <div className="fr-badge fr-badge--no-icon">3ème</div>
+              <div className="fr-tag">3ème</div>
             </li>
           </ul>
           { internshipOffer.logged_in && internshipOffer.can_manage_favorite &&
