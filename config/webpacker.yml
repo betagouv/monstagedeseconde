@@ -93,7 +93,7 @@ test:
 
   cache_manifest: true
 
-review_heroku:
+review_heroku: &review_heroku
   <<: *default
 
   # Production depends on precompilation of packs prior to booting for performance.
@@ -104,6 +104,9 @@ review_heroku:
 
   # Cache manifest.json for performance
   cache_manifest: true
+
+review:
+  <<: *review_heroku
 
 production:
   <<: *default
