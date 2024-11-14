@@ -210,7 +210,7 @@ module Presenters
     end
 
     def str_weeks
-      ::Presenters::WeekList.new(weeks:).to_s
+      WeekList.new(weeks:).to_s
     end
 
     attr_reader :internship_application,
