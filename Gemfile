@@ -35,8 +35,7 @@ gem 'view_component'
 gem 'webpacker'
 
 # background jobs
-gem 'redis-namespace' # plug redis queues on same instance for prod/staging
-gem 'sidekiq', '~> 6.5', '>= 6.1.2'
+gem 'sidekiq', '< 8'
 # Use Redis for Action Cable
 gem 'aws-sdk-s3', require: false
 gem 'redis', '~> 4.0'
