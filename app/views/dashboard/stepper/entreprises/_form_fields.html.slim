@@ -5,7 +5,7 @@
        data-ministry-fields-newRecord-value="#{resource.new_record?}"]
     .row
       .col-md-6.order-md-2.order-1.d-none.d-md-block
-        - if form.object.new_record?
+        - if form.object.new_record? && show_resume
           = render 'dashboard/stepper/summary_card', form: form
       .col-md-6.order-md-1.order-2
         fieldset  aria-labelledby="entreprise-name-legend"

@@ -89,4 +89,5 @@
                                     :'internship_occupation-form-target' => "submitButton"} do
                   = "Suivant "
       .col-md-6
-        = render 'dashboard/stepper/summary_card', form: form
+        - if resource.new_record? && show_resume
+          = render 'dashboard/stepper/summary_card', form: form

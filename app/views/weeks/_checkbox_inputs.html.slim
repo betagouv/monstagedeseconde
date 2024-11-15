@@ -2,11 +2,13 @@
 - is_all_year_long = form.object.all_year_long?
 - allow_select_all = !form.object.is_fully_editable?
 - error = form.object.errors[:all_year_long].any?
+- latitude = form.object.coordinates&.latitude
+- longitude = form.object.coordinates&.longitude
 div [data-controller="select-weeks"
      data-planning-target='weeksContainer'
      data-select-weeks-skip-validation-value="false"
-     data-select-weeks-latitude-value="#{form.object.coordinates.latitude}"
-     data-select-weeks-longitude-value="#{form.object.coordinates.longitude}"]
+     data-select-weeks-latitude-value="#{latitude}"
+     data-select-weeks-longitude-value="#{longitude}"]
   div data-select-weeks-target='submitButton'
   fieldset#radio-rich-hint [class="fr-fieldset #{error ? 'fr-fieldset--error' : '' }"
                           aria-labelledby="radio-rich-hint-legend radio-rich-hint-messages"]

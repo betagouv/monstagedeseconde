@@ -6,4 +6,7 @@
     .row
       h1.h2.mb-3 = text_for_title
 
-= render "form", submit_text: submit_text, renew: params[:renewed]
+= render "form",
+         submit_text: submit_text,
+         renew: params[:renewed],
+         show_resume: params[:show_resume]
