@@ -2,19 +2,18 @@
 
 module InternshipOffers
   class Api < InternshipOffer
-
     MAX_CALLS_PER_MINUTE = 100
 
     rails_admin do
       weight 13
-      navigation_label "Offres"
+      navigation_label 'Offres'
 
       configure :created_at, :datetime do
         date_format 'BUGGY'
       end
 
       list do
-        scopes [:kept, :discarded]
+        scopes %i[kept discarded]
 
         field :title
         field :department
@@ -60,7 +59,8 @@ module InternshipOffers
 
     validates :zipcode, zipcode: { country_code: :fr }
     validates :remote_id, uniqueness: { scope: :employer_id }
-    validates :permalink, presence: true, format: { without: /.*(test|staging).*/i, message: "Le lien ne doit pas renvoyer vers un environnement de test." }
+    validates :permalink, presence: true,
+                          format: { without: /.*(test|staging).*/i, message: 'Le lien ne doit pas renvoyer vers un environnement de test.' }
 
     scope :uncompleted_with_max_candidates, lambda {
       where('1=1')
@@ -104,6 +104,25 @@ module InternshipOffers
       unpublish! if may_unpublish? && published_at.nil?
     end
 
+    def period
+      case weeks
+      when [SchoolTrack::Seconde.first_week]
+        1
+      when [SchoolTrack::Seconde.second_week]
+        2
+      else
+        0
+      end
+    end
+
+    def formatted_weeks
+      weeks.map { |week| "#{week.year}-W#{week.number}" }
+    end
+
+    def formatted_grades
+      grades.map(&:short_name)
+    end
+
     def as_json(options = {})
       super(options.merge(
         only: %i[title
@@ -119,9 +138,12 @@ module InternshipOffers
                  sector_uuid
                  max_candidates
                  published_at
-                is_public],
+                 is_public],
         methods: [:formatted_coordinates]
-      ))
+      )).merge(
+        weeks: formatted_weeks,
+        grades: formatted_grades
+      )
     end
   end
 end

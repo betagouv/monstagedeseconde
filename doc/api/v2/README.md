@@ -1,3 +1,5 @@
+# API V2
+
 Pour diffuser des offres sur la plateforme [Mon stage à l'école](https://stagedeseconde.1jeune1solution.gouv.fr/), une API est mise à disposition pour :
 
 * les associations
@@ -30,9 +32,9 @@ Il s'agit d'une API REST qui permet les opérations suivantes :
 
 
 # Environnements
-L'api est disponible sur ```/api``` sur les environnements de pré production et de production. Soit les ```baseURL``` suivantes
-  * En pré production : https://stagedeseconde.recette.1jeune1solution.gouv.fr/api
-  * En production : https://stagedeseconde.1jeune1solution.gouv.fr/api
+L'api est disponible sur ```/api/v2``` sur les environnements de pré production et de production. Soit les ```baseURL``` suivantes
+  * En pré production : https://stagedeseconde.recette.1jeune1solution.gouv.fr/api/v2
+  * En production : https://stagedeseconde.1jeune1solution.gouv.fr/api/v2
 
 # Authentification
 
@@ -72,7 +74,7 @@ Pour tester l'API et comprendre son fonctionnement un [swagger](https://app-e29a
 
 ## Offres de stage
 
-Les offres de stages décrits ci-dessous décrivent les offres réservées aux classes de seconde générales et technologiques.
+Les offres de stages décrits ci-dessous décrivent les offres réservées aux classes de **quatrième**, **troisième** et **seconde générale et technologique** :
 
 ```
 {
@@ -89,8 +91,9 @@ Les offres de stages décrits ci-dessous décrivent les offres réservées aux c
     zipcode  : Code postal ou se déroule le stage
     city : Nom de la commune où se déroule le stage
 
-    sector_uuid : Identifiant unique du secteurs, voir référentiel *(1)
-    period: Durée du stage (voir ci-dessous)
+    weeks : Liste des semaines pendant lesquelles l'offre est accessible, voir référentiel *(1)
+    sector_uuid : Identifiant unique du secteurs, voir référentiel *(2)
+    grades: Liste des niveaux scolaires pour lesquels l'offre est accessible, voir référentiel *(3)
 
     remote_id: l'identifiant unique du coté operateur|collectivité|association
     permalink: lien de redirection pour renvoyer sur le site unique du coté operateur|collectivité|association
@@ -100,13 +103,19 @@ Les offres de stages décrits ci-dessous décrivent les offres réservées aux c
   }
 }
 ```
-### <a name="ref-period"></a>
-## Période de stage
+### <a name="ref-weeks"></a>
+## Semaines
+Les stages se faisant sur des cycles hebdomadaires de travail (du lundi au vendredi), cette information est codifiée selon la [norme ISO 8601 ](https://fr.wikipedia.org/wiki/Num%C3%A9rotation_ISO_des_semaines).
 
-L'API attend en paramètre obligatoire la durée du stage qui peut être :
-* Plein temps - du 17 au 24 juin 2024 : **0**,
-* Semaine 1 - du 17 au 21 juin 2024 : **1**,
-* Semaine 2 - du 24 au 28 juin 2024 : **2**
+Exemple : 2025-W20 correspondant à :
+* L'année : 2025
+* Le numéro de semaine : 20, du 12 au 18 mai 2025
+
+Exemple de ce que nous attendons dans nos API :
+
+```
+internship_offer.weeks: ["2025-W20", "2025-W21", "2025-W22"]
+```
 
 ### <a name="ref-sectors"></a>
 ## Secteurs d'activité
@@ -171,6 +180,16 @@ Exemple de ce que nous attendons donc un uuid dans nos API :
 internship_offer.sector_uuid: "s33"
 ```
 
+### <a name="ref-grades"></a>
+## Niveaux scolaires
+Les offres de stage peuvent être proposées pour trois niveaux scolaires différents : quatrième, troisième et seconde.
+Exemple de ce que nous attendons dans nos API :
+```
+internship_offer.grades: ['troisieme', 'seconde']
+```
+
+
+
 ### <a name="ref-daily-hours"></a>
 ## Horaires quotidiens
 Les stages se déroulant sur une semaine du lundi au vendredi, il est possible de préciser les horaires de chaque journée de la façon suivante :
@@ -230,7 +249,7 @@ En plus de ses erreurs transverses, les erreurs spécifiques à un appel seront 
 * **permalink** *(url, required)*
 * **max_candidates** *(integer)*
 * **is_public** *(boolean, optional)*: true|false
-* **lunch_break** *(text, optional *<= 500 caractères)
+* **lunch_break** *(text, optional entre 11 et 500 caractères)
 * **daily_hours** *(object, optional, 
 
 ### Exemple curl
@@ -365,7 +384,7 @@ curl -H "Authorization: Bearer foobarbaz" \
      -H "Accept: application/json" \
      -X DELETE \
      -vvv \
-     https://monstagedetroisieme.fr/api/internship_offers/#{job_irl_id|vvmt_id|myfuture_id|provider_id...}
+     https://monstagedetroisieme.fr/api/internship_offers/#{remote_id...}
 ```
 
 ### Erreurs

@@ -19,6 +19,7 @@ module InternshipOffers
                               greater_than: 0,
                               less_than_or_equal_to: MAX_CANDIDATES_HIGHEST }
     validate :schedules_check
+    validate :enough_weeks
 
     after_initialize :init
     before_create :reverse_academy_by_zipcode

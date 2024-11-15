@@ -1,0 +1,22 @@
+{
+  "sectors": [
+    {
+      "id": 325,
+      "name": "Agriculture",
+      "external_url": "",
+      "uuid": "682e1608-111b-4af4-b2bf-e9e4a3c42382"
+    },
+    {
+      "id": 326,
+      "name": "Agroalimentaire",
+      "external_url": "",
+      "uuid": "a2afb758-4ba7-4a2f-bd68-22807206cf08"
+    },
+    {
+      "id": 327,
+      "name": "Architecture",
+      "external_url": "",
+      "uuid": "0ba18904-8a5d-447f-9a40-06a61e132f5c"
+    }
+  ]
+}

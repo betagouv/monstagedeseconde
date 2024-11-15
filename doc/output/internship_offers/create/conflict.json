@@ -1,4 +1,4 @@
 {
-  "code": "DUPLICATE_INTERNSHIP_OFFER",
-  "error": "internship_offer with this remote_id (2) already exists"
+  "code": "DUPLICATE_API",
+  "error": "api with this remote_id (5) already exists"
 }

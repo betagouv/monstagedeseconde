@@ -23,6 +23,7 @@ class Planning < ApplicationRecord
 
   # Validations
   validates :lunch_break, length: { minimum: 10, maximum: 200 }
+  validate :enough_weeks
 
   # accessors
   attr_accessor :all_year_long,

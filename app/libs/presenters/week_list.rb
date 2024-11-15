@@ -31,9 +31,7 @@ module Presenters
       week_list = weeks.dup.to_a.sort_by(&:id)
       while week_list.present?
         joined_weeks = [week_list.shift]
-        while week_list.present? && week_list.first.consecutive_to?(joined_weeks.last)
-          joined_weeks << week_list.shift
-        end
+        joined_weeks << week_list.shift while week_list.present? && week_list.first.consecutive_to?(joined_weeks.last)
         container << (basic ? joined_weeks : self.class.new(weeks: joined_weeks))
       end
       container
@@ -50,6 +48,11 @@ module Presenters
 
     def split_range_string
       to_range_as_str.split(/(\d*\s?semaines?\s?:?)/)
+    end
+
+    def to_api_formatted
+      weeks.map(&:long_select_text_method)
+           .join(', ')
     end
 
     attr_reader :weeks, :first_week, :last_week
@@ -71,13 +74,11 @@ module Presenters
       ].join(' ').html_safe
     end
 
-    
     private
-    
+
     def initialize(weeks:)
       @weeks = weeks
       @first_week, @last_week = weeks.minmax_by(&:id)
     end
-
   end
 end
