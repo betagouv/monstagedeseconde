@@ -62,7 +62,6 @@ module Dashboard::Stepper
             assert_equal school.id, planning.school_id
             assert_equal '08:00', planning.daily_hours['lundi'].first
             assert_equal employer.id, planning.employer_id
-            assert_equal 1, planning.internship_weeks_number
           end
         end
       end
@@ -113,7 +112,6 @@ module Dashboard::Stepper
             assert_equal 2, planning.max_candidates / planning.max_students_per_group
             assert_equal '08:00', planning.daily_hours['lundi'].first
             assert_equal weeks.map(&:id).sort, planning.weeks.map(&:id).sort
-            assert_equal 2, planning.internship_weeks_number
           end
         end
       end

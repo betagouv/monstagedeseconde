@@ -16,6 +16,5 @@ FactoryBot.define do
     lunch_break { ' test de lunch break' }
     weeks { Week.selectable_from_now_until_end_of_school_year }
     grades { Grade.all }
-    internship_weeks_number { 1 }
   end
 end

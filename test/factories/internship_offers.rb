@@ -23,7 +23,6 @@ FactoryBot.define do
     department { Department.find_by(code: '75') }
     coordinates { Coordinates.paris }
     entreprise_coordinates { Coordinates.paris }
-    internship_weeks_number { 1 }
     entreprise_full_address { '1 rue du poulet, 75001 Paris' }
 
     siret { '11122233300000' }
@@ -63,7 +62,6 @@ FactoryBot.define do
       first_date { SchoolTrack::Seconde.current_period_data.dig(:week_1, :start_day) }
       last_date { SchoolTrack::Seconde.current_period_data.dig(:week_1, :end_day) }
       weeks { [SchoolTrack::Seconde.first_week] }
-      internship_weeks_number { 1 }
     end
 
     trait :week_2 do
@@ -71,7 +69,6 @@ FactoryBot.define do
       first_date { SchoolTrack::Seconde.current_period_data.dig(:week_2, :start_day) }
       last_date { SchoolTrack::Seconde.current_period_data.dig(:week_2, :end_day) }
       weeks { [SchoolTrack::Seconde.second_week] }
-      internship_weeks_number { 1 }
     end
 
     trait :both_weeks do
@@ -79,7 +76,6 @@ FactoryBot.define do
       first_date { SchoolTrack::Seconde.current_period_data.dig(:full_time, :start_day) }
       last_date { SchoolTrack::Seconde.current_period_data.dig(:full_time, :end_day) }
       weeks { SchoolTrack::Seconde.both_weeks }
-      internship_weeks_number { 2 }
     end
 
     trait :draft do

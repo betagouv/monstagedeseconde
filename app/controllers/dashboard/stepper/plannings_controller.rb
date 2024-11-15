@@ -121,13 +121,11 @@ module Dashboard::Stepper
 
     def manage_weeks
       # @planning.weeks = @available_weeks if employer_chose_whole_year? # legacy
-      @planning.internship_weeks_number = 1
       return unless params_offer_for_seconde?
 
       @planning.weeks = [] unless params_offer_for_troisieme_or_quatrieme?
       case period
       when PERIOD[:two_weeks]
-        @planning.internship_weeks_number = 2
         @planning.weeks << SchoolTrack::Seconde.both_weeks
       when PERIOD[:first_week]
         @planning.weeks << SchoolTrack::Seconde.first_week

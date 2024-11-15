@@ -10,7 +10,7 @@ class InternshipOffer < ApplicationRecord
   DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description
                             employer_name street zipcode city department entreprise_coordinates
                             employer_chosen_name,
-                            entreprise_full_address internship_offer_area_id internship_weeks_number
+                            entreprise_full_address internship_offer_area_id
                             is_public group school_id coordinates first_date last_date
                             siret internship_address_manual_enter lunch_break daily_hours
                             weekly_hours ].freeze
@@ -310,17 +310,15 @@ class InternshipOffer < ApplicationRecord
   end
 
   def two_weeks_long?
-    internship_weeks_number == 2
+    weeks & SchoolTrack::Seconde.both_weeks == SchoolTrack::Seconde.both_weeks
   end
 
   def seconde_school_track_week_1?
-    internship_weeks_number == 1 &&
-      SchoolTrack::Seconde.first_week.in?(weeks)
+    weeks & SchoolTrack::Seconde.both_weeks == SchoolTrack::Seconde.first_week
   end
 
   def seconde_school_track_week_2?
-    internship_weeks_number == 1 &&
-      SchoolTrack::Seconde.second_week.in?(weeks)
+    weeks & SchoolTrack::Seconde.both_weeks == SchoolTrack::Seconde.second_week
   end
 
   def fits_for_seconde?
