@@ -1,0 +1,125 @@
+---
+version: "3"
+
+tasks:
+  install:
+    desc: Install Bun JavaScript runtime.
+    summary: |
+      ℹ️ Description:
+        Installs Bun, a fast all-in-one JavaScript runtime, ensuring the correct version
+        to provide a consistent development environment.
+
+      🔧 Variables:
+        BUN_VERSION: The version of Bun to install (default: latest)
+
+      🔐 Preconditions:
+        - User must have sudo privileges or be root.
+        - unzip must be installed.
+
+      🔄 Execution:
+        Executes the Bun installation script with the specified version.
+
+      📝 Note:
+        This task establishes a Bun environment, providing a foundation for JavaScript
+        development without the need for Node.js. It is designed to be flexible,
+        accommodating various project configurations and Linux distributions.
+    vars:
+      BUN_VERSION: '{{.BUN_VERSION | default "latest"}}'
+    status:
+      - command -v bun &> /dev/null
+    preconditions:
+      - sh: "[[ $EUID -eq 0 ]] || sudo -n true"
+        msg: "❌ You must be root or have sudo privileges to run this task."
+      - sh: "command -v unzip &> /dev/null"
+        msg: "❌ unzip is not installed. Please install unzip and try again."
+    cmds:
+      - |
+        if [[ {{OS}} == 'linux' ]]; then
+          curl -fsSL https://bun.sh/install | bash
+        elif [[ {{OS}} == 'darwin' ]]; then
+          brew tap oven-sh/bun
+          brew install bun
+        else
+          echo '❌ Unsupported operating system. Please install Bun manually.'
+          exit 1
+        fi
+      - task: configure-bashrc
+      - |
+        export BUN_INSTALL="$HOME/.bun"
+        export PATH=$BUN_INSTALL/bin:$PATH
+        bun --version
+      - cmd: echo '✅ Bun has been installed successfully.'
+        silent: true
+
+  configure-bashrc:
+    desc: Set up Bun environment in .bashrc.
+    summary: |
+      ℹ️ Description:
+        Configures .bashrc to include Bun in the PATH, ensuring a single, correct configuration.
+        Also cleans up excessive empty lines in the .bashrc file.
+
+      🔧 Variables: none
+
+      🔐 Preconditions: none
+
+      🔄 Execution:
+        Removes any existing Bun configurations from .bashrc, adds a single, correct configuration,
+        and removes excessive empty lines.
+
+      📝 Note:
+        This task ensures that Bun is correctly configured in .bashrc without duplicates
+        and maintains a clean file structure with at most one empty line between entries.
+    cmds:
+      - |
+        # Remove any existing Bun configurations
+        sed -i '/# bun/d' ~/.bashrc
+        sed -i '/export BUN_INSTALL/d' ~/.bashrc
+        sed -i '/export PATH=\$BUN_INSTALL/d' ~/.bashrc
+      - |
+        # Add a single, correct Bun configuration
+        echo -e "\n# bun" >> ~/.bashrc
+        echo 'export BUN_INSTALL="$HOME/.bun"' >> ~/.bashrc
+        echo 'export PATH=$BUN_INSTALL/bin:$PATH' >> ~/.bashrc
+      - |
+        # Clean up excessive empty lines (more than one consecutive empty line)
+        sed -i '/^$/N;/^\n$/D' ~/.bashrc
+      - |
+        # Ensure there's exactly one newline at the end of the file
+        sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' ~/.bashrc
+      - cmd: echo '✅ Bun configuration in .bashrc has been updated and file structure cleaned.'
+        silent: true
+
+  uninstall:
+    desc: Remove Bun from the system.
+    summary: |
+      ℹ️ Description:
+        Uninstalls Bun and removes all related configurations.
+
+      🔧 Variables: none
+
+      🔐 Preconditions: none
+
+      🔄 Execution:
+        Removes Bun installation directory and related configurations from .bashrc.
+
+      📝 Note:
+        This task completely removes Bun from your system, including all configurations.
+        Use with caution as this action cannot be undone.
+    prompt: |
+      ⚠️  Warning: This will completely remove Bun from your system.
+      Are you sure you want to continue? This action cannot be undone.
+    cmds:
+      - rm -rf ~/.bun
+      - |
+        # Remove any existing Bun configurations
+        sed -i '/# bun/d' ~/.bashrc
+        sed -i '/export BUN_INSTALL/d' ~/.bashrc
+        sed -i '/export PATH=\$BUN_INSTALL/d' ~/.bashrc
+      - |
+        # Clean up excessive empty lines
+        sed -i '/^$/N;/^\n$/D' ~/.bashrc
+      - |
+        # Ensure there's exactly one newline at the end of the file
+        sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' ~/.bashrc
+      - cmd: echo '✅ Bun has been successfully uninstalled from your system and .bashrc cleaned.'
+        silent: true
