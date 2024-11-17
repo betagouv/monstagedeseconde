@@ -53,3 +53,4 @@ signature_storage
 *.code-workspace
 megalinter-reports/
 venv
+copier.yml
