@@ -1,66 +1,93 @@
-= render layout: 'layouts/dashboards_with_menu' do
-  - selected_tab = params[:tab] || 'received!'
-  - if current_user.employer_like?
-    .d-flex
-      .fr-alert.fr-alert--warning
-        h3.text-dark Délai de réponse aux élèves
-        p Le délai de traitement des candidatures des élèves est de 15 jours . Au delà de ce délai, la candidature sera annulée et vous ne pourrez plus y répondre.
-  .d-flex.justify-content-between
-    h2.h4.fr-mr-2w.fr-mt-7w.text-dark Les candidatures
-    .menu-ladder
-      - notification = current_user.fetch_current_area_notification
-      - if can?(:flip_notification, notification)
-        = render 'dashboard/internship_offer_areas/area_notifications/flip_notification',
-                  area_notification: notification
-    
-  .d-flex.justify-content-end 
-    = link_to 'Exporter les candidatures', dashboard_candidatures_path(format: 'xlsx'), class: 'fr-btn fr-btn--secondary fr-mb-2w fr-btn--icon-left fr-icon-file-download-fill'
-  .fr-tabs.dashboard
-    ul.fr-tabs__list[role="tablist" aria-label="[Candidatures par type]"]
-      li
-        button#tabpanel-received.fr-tabs__tab.fr-tabs__tab--icon-left[tabindex="0"
-                                                                 role="tab"
-                                                                 aria-selected="#{ selected_tab.in?(%w[submit! read! received!])}"
-                                                                 aria-controls="tabpanel-received-panel"]
-          | Reçues
-      li
-        button#tabpanel-approved.fr-tabs__tab.fr-tabs__tab--icon-left[tabindex="-1"
-                                                                 role="tab"
-                                                                 aria-selected="#{ selected_tab.in?(%w[employer_validate! approve!])}"
-                                                                 aria-controls="tabpanel-approved-panel"]
-          | Acceptées
-      li
-        button#tabpanel-refused.fr-tabs__tab.fr-tabs__tab--icon-left[tabindex="-1"
-                                                                 role="tab"
-                                                                 aria-selected="#{ selected_tab.in?(%w[reject! cancel_by_employer! cancel_by_student!])}"
-                                                                 aria-controls="tabpanel-refused-panel"]
-          | Refusées
-      li
-        button#tabpanel-expired.fr-tabs__tab.fr-tabs__tab--icon-left[tabindex="-1"
-                                                                 role="tab"
-                                                                 aria-selected="#{ selected_tab.in?(%w[reject! cancel_by_employer! expire! cancel_by_student!])}"
-                                                                 aria-controls="tabpanel-expired-panel"]
-          | Expirées
+div data-controller="internship-application-index"
+  = render layout: 'layouts/dashboards_with_menu' do
+    - selected_tab = params[:tab] || 'received!'
+    - if current_user.employer_like?
+      .d-flex
+        .fr-alert.fr-alert--warning
+          h3.text-dark Délai de réponse aux élèves
+          p Le délai de traitement des candidatures des élèves est de 15 jours . Au delà de ce délai, la candidature sera annulée et vous ne pourrez plus y répondre.
+    .d-flex.justify-content-between
+      h2.h4.fr-mr-2w.fr-mt-7w.text-dark Les candidatures
+      .menu-ladder
+        - notification = current_user.fetch_current_area_notification
+        - if can?(:flip_notification, notification)
+          = render 'dashboard/internship_offer_areas/area_notifications/flip_notification',
+                    area_notification: notification
+      
+    .d-flex.justify-content-end 
+      .div
+        .fr-mb-2w.d-flex.justify-content-end.fr-mr-2w
+          .fr-dropdown.position-relative
+            = button_tag type: "button", 
+              class: "fr-btn fr-btn--secondary fr-hidden fr-dropdown__btn", 
+              aria: { controls: "dropdownMenu", expanded: "false" }, 
+              data: { target: "internship-application-index.bulkActionButton", action: 'click->internship-application-index#toggleDropdown' } do
+                | Action groupée
+                i.fr-icon-arrow-down-s-line.fr-icon--right aria-hidden="true"
+            
+            .fr-menu2.fr-hidden#dropdownMenu role="menu" aria-label="Action groupée" aria-expanded="false" aria-haspopup="true" data-internship-application-index-target="dropdownMenu"
+              ul.fr-menu__list
+                li.list-group-item.py-2
+                  = link_to "#", class: "fr-menu__link fr-raw-link", role: "menuitem", data: { action: "click->internship-application-index#openAcceptationModal" } do
+                    span.fr-icon-check-line.fr-icon--sm.fr-mr-1v aria-hidden="true"
+                    | Accepter 
+                    span[data-internship-application-index-target="selectedCount"] 0
+                    |  candidatures
 
-    #tabpanel-received-panel.fr-tabs__panel.fr-tabs__panel--selected[role="tabpanel"
-                                                                aria-labelledby="tabpanel-received"
-                                                                tabindex="0"]
-      = render 'dashboard/internship_offers/internship_applications/received',
-               internship_applications: @received_internship_applications
+                li.list-group-item.py-2
+                  = link_to "#", class: "fr-menu__link fr-raw-link", role: "menuitem", data: { action: "click->internship-application-index#openRejectionModal" } do
+                    span.fr-icon-close-line.fr-icon--sm.fr-mr-1v aria-hidden="true"
+                    | Refuser 
+                    span[data-internship-application-index-target="selectedCount"] 0
+                    |  candidatures
 
-    #tabpanel-approved-panel.fr-tabs__panel[role="tabpanel"
-                                       aria-labelledby="tabpanel-approved"
-                                       tabindex="0"]
-      = render 'dashboard/internship_offers/internship_applications/approved_or_pending',
-               internship_applications: @approved_internship_applications
+      = link_to 'Exporter les candidatures', dashboard_candidatures_path(format: 'xlsx'), class: 'fr-btn fr-btn--secondary fr-mb-2w fr-btn--icon-left fr-icon-file-download-fill'
+    .fr-tabs.dashboard
+      ul.fr-tabs__list[role="tablist" aria-label="[Candidatures par type]"]
+        li
+          button#tabpanel-received.fr-tabs__tab.fr-tabs__tab--icon-left[tabindex="0"
+                                                                  role="tab"
+                                                                  aria-selected="#{ selected_tab.in?(%w[submit! read! received!])}"
+                                                                  aria-controls="tabpanel-received-panel"]
+            | Reçues
+        li
+          button#tabpanel-approved.fr-tabs__tab.fr-tabs__tab--icon-left[tabindex="-1"
+                                                                  role="tab"
+                                                                  aria-selected="#{ selected_tab.in?(%w[employer_validate! approve!])}"
+                                                                  aria-controls="tabpanel-approved-panel"]
+            | Acceptées
+        li
+          button#tabpanel-refused.fr-tabs__tab.fr-tabs__tab--icon-left[tabindex="-1"
+                                                                  role="tab"
+                                                                  aria-selected="#{ selected_tab.in?(%w[reject! cancel_by_employer! cancel_by_student!])}"
+                                                                  aria-controls="tabpanel-refused-panel"]
+            | Refusées
+        li
+          button#tabpanel-expired.fr-tabs__tab.fr-tabs__tab--icon-left[tabindex="-1"
+                                                                  role="tab"
+                                                                  aria-selected="#{ selected_tab.in?(%w[reject! cancel_by_employer! expire! cancel_by_student!])}"
+                                                                  aria-controls="tabpanel-expired-panel"]
+            | Expirées
 
-    #tabpanel-refused-panel.fr-tabs__panel[role="tabpanel"
-                                       aria-labelledby="tabpanel-refused"
-                                       tabindex="0"]
-      = render 'dashboard/internship_offers/internship_applications/rejected',
-               internship_applications: @rejected_internship_applications
-    #tabpanel-expired-panel.fr-tabs__panel[role="tabpanel"
-                                       aria-labelledby="tabpanel-expired"
-                                       tabindex="0"]
-      = render 'dashboard/internship_offers/internship_applications/expired',
-               internship_applications: @expired_internship_applications
+      #tabpanel-received-panel.fr-tabs__panel.fr-tabs__panel--selected[role="tabpanel"
+                                                                  aria-labelledby="tabpanel-received"
+                                                                  tabindex="0"]
+        = render 'dashboard/internship_offers/internship_applications/received',
+                internship_applications: @received_internship_applications
+
+      #tabpanel-approved-panel.fr-tabs__panel[role="tabpanel"
+                                        aria-labelledby="tabpanel-approved"
+                                        tabindex="0"]
+        = render 'dashboard/internship_offers/internship_applications/approved_or_pending',
+                internship_applications: @approved_internship_applications
+
+      #tabpanel-refused-panel.fr-tabs__panel[role="tabpanel"
+                                        aria-labelledby="tabpanel-refused"
+                                        tabindex="0"]
+        = render 'dashboard/internship_offers/internship_applications/rejected',
+                internship_applications: @rejected_internship_applications
+      #tabpanel-expired-panel.fr-tabs__panel[role="tabpanel"
+                                        aria-labelledby="tabpanel-expired"
+                                        tabindex="0"]
+        = render 'dashboard/internship_offers/internship_applications/expired',
+                internship_applications: @expired_internship_applications

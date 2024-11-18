@@ -175,3 +175,20 @@ ul.class-room {
 .action-col {
   width: 100px;
 }
+
+
+.fr-menu2 {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1050;
+}
+
+.fr-menu2[aria-expanded="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#dropdownMenu {
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}

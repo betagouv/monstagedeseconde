@@ -32,6 +32,7 @@ export default class extends Controller {
       this.updateIdsField();
     } else {
       this.bulkActionButtonTarget.classList.add('fr-hidden');
+      this.hideDropdown();
     }
   }
 
@@ -74,6 +75,11 @@ export default class extends Controller {
     }
   }
 
+  hideDropdown() {
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    dropdownMenu.classList.add('fr-hidden');
+  }
+
   toggleDropdown(event) {
     event.preventDefault();
 
@@ -82,19 +88,26 @@ export default class extends Controller {
     }
 
     const isExpanded = this.bulkActionButtonTarget.getAttribute('aria-expanded') === 'true';
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    if (isExpanded) {
+      dropdownMenu.style.opacity = '0';
+      dropdownMenu.style.transform = 'translateY(-10px)';
+      
+      setTimeout(() => {
+        dropdownMenu.classList.add('fr-hidden');
+      }, 200);
+    } else {
+      dropdownMenu.classList.remove('fr-hidden');
+      
+      dropdownMenu.offsetHeight;
+      
+      dropdownMenu.style.opacity = '1';
+      dropdownMenu.style.transform = 'translateY(0)';
+    }
+
     this.bulkActionButtonTarget.setAttribute('aria-expanded', (!isExpanded).toString());
     this.dropdownMenuTarget.classList.toggle('fr-collapse--expanded');
     this.dropdownMenuTarget.classList.toggle('is-visible');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    const dropdown = this.element.querySelector('.fr-dropdown');
-
-    if (isExpanded) {
-      dropdownMenu.classList.add('fr-hidden');
-      dropdown.classList.remove('min-height-100');
-    } else {
-      dropdownMenu.classList.remove('fr-hidden');
-      dropdown.classList.add('min-height-100');
-    }
-
   }
 }
