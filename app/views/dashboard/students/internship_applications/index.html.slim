@@ -50,10 +50,10 @@
       .fr-tabs.fr-tabs--centered.fr-tabs--secondary.fr-my-2w
         ul.fr-tabs__list aria-label=("Candidatures") role="tablist"
           li 
-            button id="submitted-internship-applications" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="true" aria-controls="submitted-internship-applications-panel"
+            button id="submitted-internship-applications" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="#{@validated_internship_applications.blank?}" aria-controls="submitted-internship-applications-panel"
               | Envoyées, en attente de réponse
           li 
-            button id="validated-internship-applications" class="fr-tabs__tab" tabindex="1" role="tab" aria-selected="false" aria-controls="validated-internship-applications-panel"
+            button id="validated-internship-applications" class="fr-tabs__tab" tabindex="1" role="tab" aria-selected="#{@validated_internship_applications.present?}" aria-controls="validated-internship-applications-panel"
               | Acceptées par l’offreur, à confirmer par l’élève
           li
             button id="canceled-internship-applications" class="fr-tabs__tab" tabindex="3" role="tab" aria-selected="false" aria-controls="canceled-internship-applications-panel"
