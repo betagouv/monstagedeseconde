@@ -112,8 +112,9 @@ module Dashboard
       unless pure_destruction?(params) || current_user.internship_offer_areas.count == 1
         # this is the transfer option
         move_internship_offers_to_specific_area(params)
-        @internship_offer_area.clean_user_references_to_area(
-          target_area_id: target_area.id || form_target_area_id
+        clean_user_references_to_area(
+          target_area_id: target_area.id || form_target_area_id,
+          to_be_removed_area_id: @internship_offer_area
         )
       end
       @internship_offer_area.destroy
