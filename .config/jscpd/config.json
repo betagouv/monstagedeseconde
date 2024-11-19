@@ -1,0 +1,13 @@
+{
+  "ignore": [
+    "**/.git/**",
+    "**/*.md",
+    "**/megalinter-reports/**",
+    "**/node_modules/**",
+    "**/venv/**"
+  ],
+  "mode": "strict",
+  "reporters": ["console", "html", "json", "markdown"],
+  "threshold": 0,
+  "verbose": true
+}

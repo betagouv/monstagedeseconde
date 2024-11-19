@@ -1,0 +1,68 @@
+---
+version: "3"
+
+vars:
+  NODEJS_MAJOR_VERSION: '{{.NODEJS_MAJOR_VERSION | default "20"}}'
+
+tasks:
+  install:
+    desc: Install Node.js on the system.
+    summary: |
+      🏷️ Description:
+        Meticulously installs NodeJS and its dependencies, ensuring the correct version
+        based on the specified major version to provide a consistent development environment.
+
+      🔧 Variables:
+        - NODEJS_MAJOR_VERSION: Specifies the major version of NodeJS to be installed.
+          Default: "20"
+
+      🔐 Preconditions:
+        - The NODEJS_MAJOR_VERSION variable must be set.
+
+      🔄 Execution:
+        Executes the installation script with the specified NodeJS major version.
+
+      📝 Note:
+        This task establishes a robust NodeJS environment, providing a solid foundation
+        for further development and deployment tasks. It is designed to be flexible,
+        accommodating various project configurations.
+    preconditions:
+      - sh: "[[ ! -z {{.NODEJS_MAJOR_VERSION}} ]]"
+        msg: "❌ The NODEJS_MAJOR_VERSION variable must be defined to proceed with the installation."
+    status:
+      - node -v | grep -q 'v{{.NODEJS_MAJOR_VERSION}}'
+    cmds:
+      - |
+        if [[ {{OS}} == 'linux' && $(grep -i 'debian' /etc/os-release) ]]; then
+          sh install/debian.sh {{.NODEJS_MAJOR_VERSION}}
+        fi
+
+  test:
+    desc: Run Node.js installation tests.
+    summary: |
+      🎯 Description:
+        Executes all test files located in the 'tests/' directory.
+
+      🔧 Variables:
+        - LIST_TEST_FILES: A dynamically generated list of all .sh files in the tests/ directory.
+
+      🔐 Preconditions:
+        - Test files must exist in the 'tests/' directory.
+
+      🔄 Execution:
+        Iterates through each test file and executes it.
+
+      📝 Note:
+        Ensure all test files are properly formatted and executable before running this task.
+    vars:
+      LIST_TEST_FILES:
+        sh: find tests/ -type f -name '*.sh'
+    preconditions:
+      - sh: test -n "$(find tests/ -type f -name '*.sh')"
+        msg: "❌ No test files found in the 'tests/' directory."
+    cmds:
+      - for:
+          var: LIST_TEST_FILES
+        cmd: sh {{.ITEM}}
+      - cmd: echo "✅ All tests have been executed successfully."
+        silent: true
