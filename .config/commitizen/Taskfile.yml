@@ -1,0 +1,222 @@
+---
+version: "3"
+
+vars:
+  CZ_VIRTUALENV: '{{.CZ_VIRTUALENV | default "./venv/commitizen"}}'
+  CZ_COMMAND: '{{.CZ_COMMAND | default "./venv/commitizen/bin/cz"}}'
+  CZ_CONFIG_FULL_PATH: '{{.CZ_CONFIG_FULL_PATH | default ".config/commitizen/cz.yaml"}}'
+  CZ_CLI_OPTS: '{{.CZ_CLI_OPTS | default ""}}'
+  CZ_CLI_CHECK_OPTS: '{{.CZ_CLI_CHECK_OPTS | default "--rev-range origin/main..HEAD"}}'
+  CZ_PYTHON_VERSION_FILE: '{{.CZ_PYTHON_VERSION_FILE | default ".config/python/.python-version"}}'
+  CZ_REQUIREMENTS_FILE: '{{.CZ_REQUIREMENTS_FILE | default ".config/commitizen/requirements.txt"}}'
+  CZ_BUMP_DRY_RUN: '{{.CZ_BUMP_DRY_RUN | default "true"}}'
+  CZ_BUMP_YES: '{{.CZ_BUMP_YES | default "true"}}'
+  CZ_BUMP_CHECK_CONSISTENCY: '{{.CZ_BUMP_CHECK_CONSISTENCY | default "true"}}'
+  CZ_BUMP_NO_RAISE: '{{.CZ_BUMP_NO_RAISE | default "21"}}'
+  CZ_BUMP_CHANGELOG: '{{.CZ_BUMP_CHANGELOG | default "true"}}'
+  CZ_BUMP_PRERELEASE: '{{.CZ_BUMP_PRERELEASE | default ""}}'
+  CZ_BUMP_DEV_RELEASE: '{{.CZ_BUMP_DEV_RELEASE | default ""}}'
+  CZ_DEFAULT_BRANCH: '{{.CZ_DEFAULT_BRANCH | default "main"}}'
+  CZ_RELEASE_BRANCH_PATTERN: '{{.CZ_RELEASE_BRANCH_PATTERN | default "^release/"}}'
+  GIT_CURRENT_BRANCH:
+    sh: |
+      if [ -n "$CI_COMMIT_REF_NAME" ]; then
+        echo "$CI_COMMIT_REF_NAME"
+      elif [ -n "$GITHUB_REF_NAME" ]; then
+        echo "$GITHUB_REF_NAME"
+      elif [ -n "$GIT_BRANCH" ]; then
+        echo "$GIT_BRANCH"
+      else
+        git rev-parse --abbrev-ref HEAD
+      fi
+
+tasks:
+  default:
+    deps: [install]
+    interactive: true
+    desc: Run Commitizen for commit message formatting.
+    summary: |
+      ℹ️ Description:
+        Executes commitizen to guide the user through creating a standardized commit message.
+
+      🔧 Variables:
+        - CZ_VIRTUALENV: Path to the virtual environment. Default: "./venv/commitizen"
+        - CZ_COMMAND: Command to run commitizen. Default: "./venv/commitizen/bin/cz"
+        - CZ_CONFIG_FULL_PATH: Path to the commitizen configuration file. Default: ".config/commitizen/cz.yaml"
+        - CZ_CLI_OPTS: Command line options for commitizen. Default: ""
+
+      🔐 Preconditions:
+        - The 'install' task must have been successfully executed.
+        - A commitizen configuration file must exist at the specified location.
+
+      🔄 Execution:
+        Runs commitizen with the specified options and configuration for interactive commit message creation.
+
+      📝 Note:
+        This task should be executed when creating a new commit.
+    cmds:
+      - "{{.CZ_COMMAND}} --config {{.CZ_CONFIG_FULL_PATH}} {{.CZ_CLI_OPTS}} commit {{.CLI_ARGS}}"
+
+  install:
+    desc: Set up Commitizen in a virtual environment.
+    summary: |
+      ℹ️ Description:
+        Configures Commitizen and its dependencies within a controlled virtual environment.
+
+      🔧 Variables:
+        - CZ_PYTHON_VERSION_FILE: Path to the file specifying the Python version.
+          Default: ".config/python/.python-version"
+          Example content: "3.11"
+        - CZ_REQUIREMENTS_FILE: Path to the file listing required packages.
+          Default: ".config/commitizen/requirements.txt"
+          Example content: "commitizen==3.28.0"
+        - CZ_VIRTUALENV: Location of the virtual environment for Commitizen.
+          Default: "./venv/commitizen"
+
+      🔐 Preconditions:
+        - Python must be installed on the system.
+        - A Python version file must exist at the specified location.
+        - An active internet connection is required to download Commitizen and its dependencies.
+
+      🔄 Execution:
+        1. Creates a new Python virtual environment using the version specified in CZ_PYTHON_VERSION_FILE.
+        2. Installs Commitizen and its dependencies using the CZ_REQUIREMENTS_FILE.
+        3. Verifies the installation by checking the installed Commitizen version.
+
+      📝 Note:
+        Ensure the Python version file specifies a version compatible with Commitizen and its dependencies.
+    preconditions:
+      - sh: command -v python3 >/dev/null 2>&1
+        msg: "❌ Error: Python is not installed. Please install Python before proceeding."
+      - sh: test -f {{.CZ_PYTHON_VERSION_FILE}}
+        msg: |
+          ❌ Error: missing file {{.CZ_PYTHON_VERSION_FILE}}.
+          Please create it as follows:
+          ```bash
+          mkdir -p $(dirname "{{.CZ_PYTHON_VERSION_FILE}}")
+          echo "3.11" > {{.CZ_PYTHON_VERSION_FILE}}
+          ```
+    status:
+      - |
+        {{.CZ_COMMAND}} version | grep -q $(awk -F '==' '{print $2}' {{.CZ_REQUIREMENTS_FILE}})
+    cmds:
+      - python$(cut -d '=' -f 2 {{.CZ_PYTHON_VERSION_FILE}}) -m venv {{.CZ_VIRTUALENV}}
+      - "{{.CZ_VIRTUALENV}}/bin/pip install -r {{.CZ_REQUIREMENTS_FILE}}"
+      - cmd: echo "✅ Commitizen and dependencies are successfully installed in the virtual environment."
+        silent: true
+
+  check:
+    deps: [install]
+    desc: Verify commit messages with Commitizen.
+    summary: |
+      ℹ️ Description:
+        Automatically verifies commits using Commitizen rules.
+
+      🔧 Variables:
+        - CZ_COMMAND: Command to run commitizen. Default: "./venv/commitizen/bin/cz"
+        - CZ_CONFIG_FULL_PATH: Path to the commitizen configuration file. Default: ".config/commitizen/cz.yaml"
+        - CZ_CLI_OPTS: Additional command line options for commitizen. Default: ""
+        - CZ_CLI_CHECK_OPTS: Options specific to the check command. Default: "--rev-range origin/main..HEAD"
+
+      🔐 Preconditions:
+        - The 'install' task must have been successfully executed.
+        - A commitizen configuration file must exist at the specified location.
+
+      🔄 Execution:
+        Runs the commitizen check command with the specified configuration and options.
+
+      📝 Note:
+        This task verifies that commit messages conform to the Commitizen standards.
+        The default behaviour checks commits from main to HEAD, but this can be customised
+        by modifying the CZ_CLI_CHECK_OPTS variable.
+    cmds:
+      - |
+        if {{.CZ_COMMAND}} --config {{.CZ_CONFIG_FULL_PATH}} {{.CZ_CLI_OPTS}} check {{.CZ_CLI_CHECK_OPTS}}; then
+          echo "🎉 All commits successfully verified with Commitizen!"
+        else
+          exit_code=$?
+          if [ $exit_code -eq 3 ]; then
+            echo "⚠️  Warning: No commits found in the specified range to verify."
+          else
+            echo "❌ Commitizen check failed with exit code $exit_code"
+            exit $exit_code
+          fi
+        fi
+
+  bump:
+    deps: [install]
+    desc: Increment version based on commit history.
+    summary: |
+      ℹ️ Description:
+        Increments the version number based on the commit history.
+
+      🔧 Variables:
+        - CZ_COMMAND: Command to run commitizen. Default: "./venv/commitizen/bin/cz"
+        - CZ_CONFIG_FULL_PATH: Path to the commitizen configuration file. Default: ".config/commitizen/cz.yaml"
+        - CZ_CLI_OPTS: Additional command line options for commitizen. Default: ""
+        - CZ_BUMP_DRY_RUN: Whether to perform a dry run. Default: true
+        - CZ_BUMP_YES: Whether to automatically confirm prompts. Default: true
+        - CZ_BUMP_CHECK_CONSISTENCY: Whether to check consistency before bumping. Default: true
+        - CZ_BUMP_NO_RAISE: Comma-separated error codes that won't raise an error. Default: "21"
+        - CZ_BUMP_CHANGELOG: Whether to update the changelog when bumping. Default: true
+        - CZ_BUMP_PRERELEASE: Prerelease identifier (e.g., "alpha", "beta"). Default: ""
+        - CZ_BUMP_DEV_RELEASE: Development release identifier. Default: ""
+
+      🔐 Preconditions:
+        - The 'install' task must have been successfully executed.
+        - A commitizen configuration file must exist at the specified location.
+
+      🔄 Execution:
+        Runs the commitizen bump command with the specified configuration and options.
+
+      📝 Note:
+        This task increments the version number based on the commit history.
+        Use CZ_BUMP_DRY_RUN=false to apply changes, CZ_BUMP_YES=false to enable confirmations,
+        and CZ_BUMP_CHECK_CONSISTENCY=false to skip consistency checks if needed.
+        Set CZ_BUMP_NO_RAISE to a comma-separated list of error codes to ignore specific errors,
+        e.g., CZ_BUMP_NO_RAISE=21 to ignore the "Nothing to commit" error.
+        Use CZ_BUMP_PRERELEASE and CZ_BUMP_DEV_RELEASE for managing pre-releases and development versions.
+    vars:
+      BUMP_OPTIONS:
+        sh: |
+          options=(
+            {{if eq .CZ_BUMP_YES "true"}}"--yes"{{end}}
+            {{if eq .CZ_BUMP_DRY_RUN "true"}}"--dry-run"{{end}}
+            {{if eq .CZ_BUMP_CHECK_CONSISTENCY "true"}}"--check-consistency"{{end}}
+            {{if eq .CZ_BUMP_CHANGELOG "true"}}"--changelog"{{end}}
+          )
+
+          if [[ "{{.GIT_CURRENT_BRANCH}}" =~ {{.CZ_RELEASE_BRANCH_PATTERN}} ]] || [ -n "{{.CZ_BUMP_PRERELEASE}}" ]; then
+            options+=("--prerelease")
+          elif [[ "{{.GIT_CURRENT_BRANCH}}" != "{{.CZ_DEFAULT_BRANCH}}" ]] || [ -n "{{.CZ_BUMP_DEV_RELEASE}}" ]; then
+            options+=("--devrelease" "$(date +%Y%m%d%H%M%S)")
+          fi
+
+          echo "${options[@]}"
+      CLI_OPTIONS:
+        sh: |
+          options=({{.CZ_CLI_OPTS}})
+          if [ -n "{{.CZ_BUMP_NO_RAISE}}" ]; then
+            options+=("--no-raise" "{{.CZ_BUMP_NO_RAISE}}")
+          fi
+          echo "${options[@]}"
+    cmds:
+      - |
+        if {{.CZ_COMMAND}} --config {{.CZ_CONFIG_FULL_PATH}} {{.CLI_OPTIONS}} bump {{.BUMP_OPTIONS}}; then
+          echo "🎉 All commits successfully verified with Commitizen!"
+        else
+          exit_code=$?
+          if [ $exit_code -eq 3 ]; then
+            echo "⚠️  Warning: No commits found in the specified range to verify."
+          else
+            echo "❌ Commitizen bump failed with exit code $exit_code"
+            exit $exit_code
+          fi
+        fi
+      - cmd: |
+          if [ "{{.CZ_BUMP_DRY_RUN}}" = "true" ]; then
+            echo "🎉 Version bump completed in dry-run mode. No changes were applied."
+          else
+            echo "✅ Version bump completed successfully!"
+          fi
+        silent: true

@@ -43,9 +43,7 @@ module Dashboard
         sign_in(school_manager)
         get dashboard_students_internship_applications_path(student_id: student.id)
         assert_response :success
-        assert_select 'a[href=?]',
-                      dashboard_internship_offer_internship_application_path(internship_application.internship_offer, internship_application,
-                                                                             transition: :signed!)
+        assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'stage validé'
       end
 
       test 'GET internship_applications#index as SchoolManagement works and show convention button' do
@@ -57,9 +55,7 @@ module Dashboard
         sign_in(main_teacher)
         get dashboard_students_internship_applications_path(student)
         assert_response :success
-        assert_select 'a[href=?]',
-                      dashboard_internship_offer_internship_application_path(internship_application.internship_offer, internship_application,
-                                                                             transition: :signed!)
+        assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'stage validé'
       end
 
       test 'GET internship_applications#index render navbar, timeline' do
@@ -91,7 +87,7 @@ module Dashboard
         assert_response :success
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--purple-glycine', text: 'annulée', count: 1
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--error', text: 'expirée', count: 1
-        assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: "acceptée par l'entreprise", count: 1
+        assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'stage validé', count: 1
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--error', text: "refusée par l'entreprise", count: 2
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--info', text: "Sans réponse de l'entreprise", count: 1
       end

@@ -1,0 +1,16 @@
+---
+version: "3"
+
+tasks:
+  default:
+    desc: Run all generic test tasks
+    cmds:
+      - cmd: |
+          if [[ "{{.TASK_DOCKER_ENABLED}}" == "true" ]]; then
+            echo "🧪 Running Docker tests..."
+            task docker:test
+            echo "{{.TASK_SEPARATOR}}"
+          else
+            echo "⚠️ Skipping docker test (disabled via TASK_DOCKER_ENABLED=false)"
+          fi
+        silent: true
