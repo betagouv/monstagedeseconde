@@ -11,13 +11,13 @@ module Dashboard
         student = create(:student, :when_applying, school:)
         internship_applications = {
           submitted: create(:weekly_internship_application, :submitted,
-                            internship_offer: create(:weekly_internship_offer), student:),
+                            internship_offer: create(:weekly_internship_offer_2nde), student:),
           validated_by_employer: create(:weekly_internship_application, :validated_by_employer,
-                                        internship_offer: create(:weekly_internship_offer), student:),
+                                        internship_offer: create(:weekly_internship_offer_2nde), student:),
           rejected: create(:weekly_internship_application, :rejected,
                            internship_offer: create(:weekly_internship_offer_2nde), student:),
           canceled_by_student_confirmation: create(:weekly_internship_application, :canceled_by_student_confirmation,
-                                                   internship_offer: create(:weekly_internship_offer), student:),
+                                                   internship_offer: create(:weekly_internship_offer_2nde), student:),
           canceled_by_student: create(:weekly_internship_application, :canceled_by_student,
                                       internship_offer: create(:weekly_internship_offer_2nde), student:)
         }
