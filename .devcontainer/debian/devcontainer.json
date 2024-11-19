@@ -1,0 +1,44 @@
+{
+  "name": "Debian Dev Container",
+  "runArgs": [
+      "--group-add=docker"
+  ],
+  "dockerComposeFile": ["../../.config/devcontainer/docker-compose.yml"],
+  "service": "debian",
+  "shutdownAction": "none",
+  "workspaceFolder": "${localWorkspaceFolder}",
+  "updateRemoteUserUID": true,
+  "mounts": [
+      "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true,
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash"
+          }
+        }
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "editorconfig.editorconfig",
+        "esbenp.prettier-vscode",
+        "ms-azuretools.vscode-docker",
+        "MS-SarifVSCode.sarif-viewer",
+        "redhat.vscode-yaml"
+      ]
+    }
+  },
+  "postCreateCommand": {
+    "cleanup": "rm -rf venv && rm -rf megalinter-reports",
+    "taskfile": "task dev:setup-environment",
+    "docker" : "sudo chmod 666 /var/run/docker.sock"
+  },
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin"
+  }
+}

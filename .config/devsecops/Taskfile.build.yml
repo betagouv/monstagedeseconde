@@ -1,0 +1,16 @@
+---
+version: "3"
+
+tasks:
+  default:
+    desc: Run all generic build tasks
+    cmds:
+      - cmd: |
+          if [[ "{{.TASK_DOCKER_ENABLED}}" == "true" ]]; then
+            echo "🐳 Building Docker images..."
+            task docker:build:all:dockerfile
+            echo "{{.TASK_SEPARATOR}}"
+          else
+            echo "⚠️ Skipping docker build (disabled via TASK_DOCKER_ENABLED=false)"
+          fi
+        silent: true

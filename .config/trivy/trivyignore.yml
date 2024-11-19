@@ -1,0 +1,6 @@
+---
+misconfigurations:
+  - id: AVD-DS-0010
+    paths:
+      - ".devcontainer/Dockerfile"
+    statement: Including sudo in the Dockerfile is essential to allow necessary administrative tasks during development within the DevContainer environment.

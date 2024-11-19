@@ -1,0 +1,140 @@
+---
+version: "3"
+
+includes:
+  test:
+    taskfile: tests/Taskfile.yml
+
+tasks:
+  install:
+    desc: Install Docker on the system.
+    summary: |
+      ℹ️ Description:
+        Meticulously installs Docker and its dependencies, ensuring the correct version
+        based on the specified version to provide a consistent development environment.
+
+      🔧 Variables: none
+
+      🔐 Preconditions: none
+
+      🔄 Execution:
+        Executes the installation script with the specified Docker version.
+
+      📝 Note:
+        This task establishes a robust Docker environment, providing a solid foundation
+        for further development and deployment tasks. It is designed to be flexible,
+        accommodating various project configurations and Linux distributions.
+    status:
+      - command -v docker &> /dev/null
+    preconditions:
+      - sh: "[[ $EUID -eq 0 ]] || sudo -n true"
+        msg: "❌ You must be root or have sudo privileges to run this task."
+    cmds:
+      - |
+        if [[ {{OS}} == 'linux' && $(grep -i 'debian' /etc/os-release) ]]; then
+          bash .config/docker/install/debian.sh
+        else
+          echo "❌ Unsupported operating system. Please install Docker manually."
+          exit 1
+        fi
+
+  prune:
+    desc: Clean up unused Docker resources.
+    summary: |
+      ℹ️ Description:
+        Cleans up unused Docker resources, including stopped containers, unused networks,
+        dangling images, and build cache.
+
+      🔧 Variables: none
+
+      🔐 Preconditions:
+        - Docker must be installed and running.
+
+      🔄 Execution:
+        Runs various Docker prune commands to clean up the system.
+
+      📝 Note:
+        This task helps maintain system resources by removing unused Docker objects.
+        Use with caution as it may remove resources you still need.
+        A confirmation prompt will be shown before execution.
+    preconditions:
+      - sh: "command -v docker &> /dev/null"
+        msg: "❌ Docker is not installed. Please run the 'install' task first."
+    prompt: |
+      ⚠️  Warning: This will remove all unused Docker resources, including:
+        - Stopped containers
+        - Networks not used by at least one container
+        - Dangling images
+        - Build cache
+
+      Are you sure you want to continue? This action cannot be undone.
+    cmds:
+      - docker system prune -af
+      - docker volume prune -f
+      - cmd: echo "✅ Docker system has been pruned successfully."
+        silent: true
+
+  version:
+    desc: Display the installed Docker version.
+    summary: |
+      ℹ️ Description:
+        Displays the current installed version of Docker.
+
+      🔧 Variables: none
+
+      🔐 Preconditions:
+        - Docker must be installed.
+
+      🔄 Execution:
+        Retrieves and displays the Docker version information.
+    preconditions:
+      - sh: "command -v docker &> /dev/null"
+        msg: "❌ Docker is not installed. Please run the 'install' task first."
+    cmds:
+      - docker --version
+
+  build:all:dockerfile:
+    desc: Build all Dockerfiles in the project.
+    summary: |
+      ℹ️ Description:
+        Searches for all Dockerfile in the project and attempts to build them.
+        This task ensures that all Docker builds are functioning correctly.
+
+      🔧 Variables:
+        DOCKERFILE_LIST: A list of all Dockerfile found in the project.
+
+      🔐 Preconditions:
+        - Docker must be installed and running.
+        - sha256sum must be installed.
+
+      🔄 Execution:
+        Iterates through each Dockerfile found and attempts to build it.
+
+      📝 Note:
+        This task is useful for verifying the integrity of all Dockerfile
+        in the project. It does not push or deploy the built images.
+    vars:
+      DOCKERFILE_LIST:
+        sh: find . -name Dockerfile
+    status:
+      - test "$(find . -name Dockerfile | wc -l)" -eq "$(docker images -q -f "reference=test-build-*" | wc -l)"
+    preconditions:
+      - sh: command -v docker >/dev/null 2>&1
+        msg: "❌ Docker is not installed or not in PATH. Please install Docker first."
+      - sh: command -v sha256sum >/dev/null 2>&1
+        msg: "❌ sha256sum is not installed or not in PATH. Please install sha256sum first."
+    cmds:
+      - defer: { task: cleanup }
+      - for: { var: DOCKERFILE_LIST }
+        cmd: |
+          echo "Building Dockerfile: {{.ITEM}}"
+          HASH=$(sha256sum {{.ITEM}} | cut -d' ' -f1)
+          docker build -t test-build-${HASH} -f {{.ITEM}} .
+
+  cleanup:
+    desc: Remove temporary Docker images.
+    internal: true
+    cmds:
+      - cmd: |
+          docker images -q -f "reference=test-build-*" | xargs -r docker rmi -f
+        ignore_error: true
