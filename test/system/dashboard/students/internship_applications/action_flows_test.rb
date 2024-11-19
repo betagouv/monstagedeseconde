@@ -6,16 +6,69 @@ module Dashboard
       include Devise::Test::IntegrationHelpers
       include TeamAndAreasHelper
 
-      test 'student can browse his internship_applications' do
+      test 'student can browse his submitted internship_applications' do
         school = create(:school, :with_school_manager)
         student = create(:student, :when_applying, school:)
         internship_applications = {
           submitted: create(:weekly_internship_application, :submitted,
                             internship_offer: create(:weekly_internship_offer_2nde), student:),
+        }
+        sign_in(student)
+        visit '/'
+        click_on 'Candidatures'
+        internship_applications.each do |_aasm_state, internship_application|
+          badge = internship_application.presenter(student).human_state
+          find('.internship-application-status .h5.internship-offer-title',
+               text: internship_application.internship_offer.title)
+          find("a#show_link_#{internship_application.id}", text: badge[:actions].first[:label]).click
+          find('a span.fr-icon-arrow-left-line', text: 'toutes mes candidatures').click
+        end
+      end
+
+      test 'student can browse his validated by employer internship_applications' do
+        school = create(:school, :with_school_manager)
+        student = create(:student, :when_applying, school:)
+        internship_applications = {
           validated_by_employer: create(:weekly_internship_application, :validated_by_employer,
                                         internship_offer: create(:weekly_internship_offer_2nde), student:),
+        }
+        sign_in(student)
+        visit '/'
+        click_on 'Candidatures'
+        internship_applications.each do |_aasm_state, internship_application|
+          badge = internship_application.presenter(student).human_state
+          click_on 'Acceptées par l’offreur, à confirmer par l’élève'
+          find('.internship-application-status .h5.internship-offer-title',
+               text: internship_application.internship_offer.title)
+          find("a#show_link_#{internship_application.id}", text: badge[:actions].first[:label]).click
+          find('a span.fr-icon-arrow-left-line', text: 'toutes mes candidatures').click
+        end
+      end
+
+      test 'student can browse his rejected internship_applications' do
+        school = create(:school, :with_school_manager)
+        student = create(:student, :when_applying, school:)
+        internship_applications = {
           rejected: create(:weekly_internship_application, :rejected,
                            internship_offer: create(:weekly_internship_offer_2nde), student:),
+        }
+        sign_in(student)
+        visit '/'
+        click_on 'Candidatures'
+        internship_applications.each do |_aasm_state, internship_application|
+          badge = internship_application.presenter(student).human_state
+          click_on 'Refusées' if _aasm_state == :rejected
+          find('.internship-application-status .h5.internship-offer-title',
+               text: internship_application.internship_offer.title)
+          find("a#show_link_#{internship_application.id}", text: badge[:actions].first[:label]).click
+          find('a span.fr-icon-arrow-left-line', text: 'toutes mes candidatures').click
+        end
+      end
+
+      test 'student can browse his canceled internship_applications ' do
+        school = create(:school, :with_school_manager)
+        student = create(:student, :when_applying, school:)
+        internship_applications = {
           canceled_by_student_confirmation: create(:weekly_internship_application, :canceled_by_student_confirmation,
                                                    internship_offer: create(:weekly_internship_offer_2nde), student:),
           canceled_by_student: create(:weekly_internship_application, :canceled_by_student,
@@ -26,8 +79,6 @@ module Dashboard
         click_on 'Candidatures'
         internship_applications.each do |_aasm_state, internship_application|
           badge = internship_application.presenter(student).human_state
-          click_on 'Acceptées par l’offreur, à confirmer par l’élève' if _aasm_state == :validated_by_employer
-          click_on 'Refusées' if _aasm_state == :rejected
           click_on 'Annulées' if %i[canceled_by_student canceled_by_student_confirmation].include?(_aasm_state)
           find('.internship-application-status .h5.internship-offer-title',
                text: internship_application.internship_offer.title)
