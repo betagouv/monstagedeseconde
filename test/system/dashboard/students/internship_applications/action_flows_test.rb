@@ -11,7 +11,7 @@ module Dashboard
         student = create(:student, :when_applying, school:)
         internship_applications = {
           submitted: create(:weekly_internship_application, :submitted,
-                            internship_offer: create(:weekly_internship_offer_2nde), student:),
+                            internship_offer: create(:weekly_internship_offer_2nde), student:)
         }
         sign_in(student)
         visit '/'
@@ -30,7 +30,7 @@ module Dashboard
         student = create(:student, :when_applying, school:)
         internship_applications = {
           validated_by_employer: create(:weekly_internship_application, :validated_by_employer,
-                                        internship_offer: create(:weekly_internship_offer_2nde), student:),
+                                        internship_offer: create(:weekly_internship_offer_2nde), student:)
         }
         sign_in(student)
         visit '/'
@@ -50,7 +50,7 @@ module Dashboard
         student = create(:student, :when_applying, school:)
         internship_applications = {
           rejected: create(:weekly_internship_application, :rejected,
-                           internship_offer: create(:weekly_internship_offer_2nde), student:),
+                           internship_offer: create(:weekly_internship_offer_2nde), student:)
         }
         sign_in(student)
         visit '/'
@@ -117,28 +117,27 @@ module Dashboard
       end
 
       test 'GET #show as Student with existing draft application shows the draft' do
-        skip 'This is ok locally but fails on CI'  if ENV['CI'] == 'true'
-          weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
-          internship_offer      = create(:weekly_internship_offer_2nde)
-          school                = create(:school)
-          student               = create(:student, school:, class_room: create(:class_room, school:))
-          internship_application = create(:weekly_internship_application,
-                                          :drafted,
-                                          motivation: 'au taquet',
-                                          student:,
-                                          internship_offer:,
-                                          week: weeks.last)
+        skip 'flaky test' if ENV['CI'] == 'true'
+        weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
+        internship_offer      = create(:weekly_internship_offer_2nde)
+        school                = create(:school)
+        student               = create(:student, school:, class_room: create(:class_room, school:))
+        internship_application = create(:weekly_internship_application,
+                                        :drafted,
+                                        motivation: 'au taquet',
+                                        student:,
+                                        internship_offer:,
+                                        week: weeks.last)
 
-          travel_to(weeks[0].week_date - 1.week) do
-            sign_in(student)
-            visit internship_offer_path(internship_offer)
-            find('.h1', text: internship_offer.title)
-            find('.h3', text: internship_offer.employer_name)
-            find('.h6', text: internship_offer.street)
-            find('.h4', text: 'Informations sur le stage')
-            find('.reboot-trix-content', text: internship_offer.description)
-            assert page.has_content? 'Stage individuel'
-          end
+        travel_to(weeks[0].week_date - 1.week) do
+          sign_in(student)
+          visit internship_offer_path(internship_offer)
+          find('.h1', text: internship_offer.title)
+          find('.h3', text: internship_offer.employer_name)
+          find('.h6', text: internship_offer.street)
+          find('.h4', text: 'Informations sur le stage')
+          find('.reboot-trix-content', text: internship_offer.description)
+          assert page.has_content? 'Stage individuel'
         end
       end
 
