@@ -30,7 +30,7 @@ module Dashboard::InternshipOffers
       find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--error', text: 'REFUSÉ')
       find('span#alert-text', text: 'Candidature non retenue.')
       find('button#tabpanel-received[aria-controls="tabpanel-received-panel"]', text: 'Reçues').click
-      find('td.text-center[colspan="5"]', text: 'Aucune candidature reçue')
+      find('td.text-center[colspan="6"]', text: 'Aucune candidature reçue')
     end
 
     test 'employer can accept an internship_application' do
@@ -47,7 +47,7 @@ module Dashboard::InternshipOffers
 
       find('span#alert-text', text: 'Candidature mise à jour avec succès.')
       find('button#tabpanel-received[aria-controls="tabpanel-received-panel"]', text: 'Reçues').click
-      find('td.text-center[colspan="5"]', text: 'Aucune candidature reçue')
+      find('td.text-center[colspan="6"]', text: 'Aucune candidature reçue')
     end
 
     test 'employer can unpublish an internship_offer from index page' do

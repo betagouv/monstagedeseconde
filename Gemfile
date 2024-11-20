@@ -11,6 +11,7 @@ gem 'puma'
 gem 'rails', '~> 7.1.3'
 # db
 gem 'pg'
+gem 'rack', '>= 3.0'
 gem 'rake'
 
 # pg extension for geo queries

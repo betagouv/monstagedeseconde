@@ -23,7 +23,7 @@ module Dashboard
               raise ArgumentError, "Transition non autorisée: #{params[:transition]}"
             end
 
-            internship_application.public_send(params[:transition])
+            internship_application.public_send(params[:transition], current_user)
 
             internship_application.update!(rejected_message: params[:rejection_message])
           end

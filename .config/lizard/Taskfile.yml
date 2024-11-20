@@ -1,0 +1,99 @@
+---
+version: "3"
+
+vars:
+  LIZARD_CLI_OPTS: '{{.LIZARD_CLI_OPTS | default ""}}'
+  LIZARD_COMMAND: '{{.LIZARD_COMMAND | default "./venv/lizard/bin/lizard"}}'
+  LIZARD_PATH_TO_ANALYSE: '{{.LIZARD_PATH_TO_ANALYSE | default "."}}'
+  LIZARD_PYTHON_VERSION_FILE: '{{.LIZARD_PYTHON_VERSION_FILE | default ".config/python/.python-version"}}'
+  LIZARD_REQUIREMENTS_FILE: '{{.LIZARD_REQUIREMENTS_FILE | default ".config/lizard/requirements.txt"}}'
+  LIZARD_VIRTUALENV: '{{.LIZARD_VIRTUALENV | default "./venv/lizard"}}'
+
+tasks:
+  default:
+    deps: [install]
+    desc: Analyze code complexity with Lizard.
+    summary: |
+      ℹ️ Description:
+        Executes Lizard to analyse code complexity and maintainability.
+
+      🔧 Variables:
+        - LIZARD_VIRTUALENV: Virtual environment path
+        - LIZARD_COMMAND: Lizard execution command
+        - LIZARD_CLI_OPTS: Command-line options for Lizard
+        - LIZARD_PATH_TO_ANALYSE: Path to analyse
+
+      🔐 Preconditions:
+        - 'install' task must be completed successfully
+        - Lizard configuration file must exist
+
+      🔄 Execution:
+        Runs Lizard with specified options on designated files
+
+      📝 Note:
+        Execute after code modifications to maintain quality standards
+    cmds:
+      - |
+        {{.LIZARD_COMMAND}} $(grep -v '^#' .gitignore | grep -v '^$' | awk '{if ($0 ~ /\./) print "-x"$0; else print "-x./"$0"/*"}' | tr '\n' ' ') {{.LIZARD_CLI_OPTS}} {{.LIZARD_PATH_TO_ANALYSE}}
+      - cmd: echo "✅ Lizard analysis completed successfully."
+        silent: true
+
+  install:
+    desc: Set up Lizard in a virtual environment.
+    summary: |
+      ℹ️ Description:
+        Sets up Lizard and its dependencies in a virtual environment.
+
+      🔧 Variables:
+        - LIZARD_PYTHON_VERSION_FILE: Python version file path
+        - LIZARD_REQUIREMENTS_FILE: Requirements file path
+        - LIZARD_VIRTUALENV: Virtual environment location
+
+      🔐 Preconditions:
+        - Python version file must exist
+        - Active internet connection required
+
+      🔄 Execution:
+        1. Creates Python virtual environment
+        2. Installs Lizard and dependencies
+        3. Verifies installation
+
+      📝 Note:
+        Ensure Python version is compatible with Lizard
+    preconditions:
+      - sh: test -f {{.LIZARD_PYTHON_VERSION_FILE}}
+        msg: |
+          ❌ Error: missing file {{.LIZARD_PYTHON_VERSION_FILE}}.
+          Please create it as follows:
+          ```bash
+          mkdir -p $(dirname "{{.LIZARD_PYTHON_VERSION_FILE}}")
+          echo "3.11" > {{.LIZARD_PYTHON_VERSION_FILE}}
+          ```
+    status:
+      - |
+        {{.LIZARD_COMMAND}} --version | grep -q $(awk -F '==' '{print $2}' {{.LIZARD_REQUIREMENTS_FILE}})
+    cmds:
+      - python$(cut -d '=' -f 2 {{.LIZARD_PYTHON_VERSION_FILE}}) -m venv {{.LIZARD_VIRTUALENV}}
+      - "{{.LIZARD_VIRTUALENV}}/bin/pip install -r {{.LIZARD_REQUIREMENTS_FILE}}"
+      - cmd: echo "☑️  Lizard and dependencies installed successfully."
+        silent: true
+
+  uninstall:
+    desc: Remove Lizard and clean up.
+    summary: |
+      ℹ️ Description:
+        Removes temporary files and cleans up the environment after Lizard execution.
+
+      🔧 Variables: None
+
+      🔐 Preconditions: None
+
+      🔄 Execution:
+        Removes temporary files and directories created during Lizard analysis
+
+      📝 Note:
+        This task is typically called via defer in other tasks
+    cmds:
+      - rm -rf {{.LIZARD_VIRTUALENV}}
+      - cmd: echo "✅ Uninstall completed successfully."
+        silent: true

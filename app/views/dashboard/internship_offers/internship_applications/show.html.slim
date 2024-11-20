@@ -85,7 +85,7 @@
           = render "dashboard/internship_offers/internship_applications/actions/employer_decisions", **opts
 
     .fr-ml-11w.rg2a-width-100.w-100.
-      - if @internship_application.is_modifiable? || @internship_application.aasm_state == "validated_by_employer"
+      - if @internship_application.is_modifiable? || %w(validated_by_employer approved).include?(@internship_application.aasm_state)
         .fr-card.fr-px-2w
           .fr-card-body
             - presenter = @internship_application.presenter(current_user)
@@ -98,7 +98,7 @@
             p.fr-mb-2w
               - if @internship_application.state_changes.last.present?
                 - author = @internship_application.state_changes.last.author
-                = "Par #{author.presenter.full_name}"
+                = "Par #{author.try(:presenter).try(:full_name)}"
             .row.fr-mb-2w.small.fr-px-2w
               .col-1
                 span.fr-icon-arrow-right-line.fr-icon--sm
@@ -106,37 +106,37 @@
                 span.font-weight-bold  Motif 
                 p.small=  @internship_application.response_message || "Non communiqué"
         
-        .fr-callout.fr-icon-information-line.fr-mt-4w.fr-mb-4w
-          h3.fr-callout__title
-            = callout_title(@internship_application)
-          - if @internship_application.is_re_approvable?
-            p.fr-callout__text
-              | Un email sera envoyé à l’élève lui indiquant que vous souhaitez retenir sa candidature. Il devra ensuite confirmer sa participation au stage.
-            = render "dashboard/internship_offers/internship_applications/action_modal",
-              internship_application:@internship_application,
-              aasm_target: :employer_validate!,
-              modal_opener_label: 'Retenir cette candidature',
-              subtitle: '',
-              message: "En cliquant sur Retenir cette candidature, vous confirmez que vous souhaitez prendre cet élève en stage. Celui-ci sera informé de votre décision.",
-              rich_text: false,
-              modal_id: "approve-internship-application-#{@internship_application.id}",
-              fa_icon: "fr-icon-check-line",
-              token: nil,
-              opened_modal: defined?(opened_modal) ? opened_modal == 'accept' : false
-          - else
-            / = button_to callout_btn_title(@internship_application), 'callout_path', method: :post, class: "fr-btn fr-btn--sm fr-mt-2w"
-            = render "dashboard/internship_offers/internship_applications/action_modal",
-              internship_application: @internship_application,
-              aasm_target: :reject!,
-              modal_opener_label: 'Refuser cette candidature',
-              subtitle: 'Motif de refus de stage*',
-              message: "En cliquant sur “refuser”, vous confirmez que vous ne souhaitez " \
-                                  "pas prendre cet élève en stage. Celui-ci sera informé de votre décision.",
-              rich_text: true,
-              modal_id: "reject-internship-application-#{@internship_application.id}",
-              fa_icon: "fr-icon-close-line",
-              token: nil,
-              opened_modal: defined?(opened_modal) ? opened_modal == 'refuse' : false
+        - if @internship_application.is_re_approvable? || @internship_application.is_modifiable? 
+          .fr-callout.fr-icon-information-line.fr-mt-4w.fr-mb-4w
+            h3.fr-callout__title
+              = callout_title(@internship_application)
+            - if @internship_application.is_re_approvable?
+              p.fr-callout__text
+                | Un email sera envoyé à l’élève lui indiquant que vous souhaitez retenir sa candidature. Il devra ensuite confirmer sa participation au stage.
+              = render "dashboard/internship_offers/internship_applications/action_modal",
+                internship_application:@internship_application,
+                aasm_target: :employer_validate!,
+                modal_opener_label: 'Retenir cette candidature',
+                subtitle: '',
+                message: "En cliquant sur Retenir cette candidature, vous confirmez que vous souhaitez prendre cet élève en stage. Celui-ci sera informé de votre décision.",
+                rich_text: false,
+                modal_id: "approve-internship-application-#{@internship_application.id}",
+                fa_icon: "fr-icon-check-line",
+                token: nil,
+                opened_modal: defined?(opened_modal) ? opened_modal == 'accept' : false
+            - elsif @internship_application.is_modifiable?
+              = render "dashboard/internship_offers/internship_applications/action_modal",
+                internship_application: @internship_application,
+                aasm_target: :reject!,
+                modal_opener_label: 'Refuser cette candidature',
+                subtitle: 'Motif de refus de stage*',
+                message: "En cliquant sur “refuser”, vous confirmez que vous ne souhaitez " \
+                                    "pas prendre cet élève en stage. Celui-ci sera informé de votre décision.",
+                rich_text: true,
+                modal_id: "reject-internship-application-#{@internship_application.id}",
+                fa_icon: "fr-icon-close-line",
+                token: nil,
+                opened_modal: defined?(opened_modal) ? opened_modal == 'refuse' : false
 
         
 - else
