@@ -165,7 +165,7 @@ module Users
           department
           academy_id
           academy_region_id
-          grade
+          grade_id
         ]
       )
     end
@@ -225,7 +225,7 @@ module Users
                             school_id: identity.school_id,
                             class_room_id: identity.class_room_id,
                             gender: identity.gender,
-                            grade: identity.grade
+                            grade_id: identity.grade.id
                           })
     end
 

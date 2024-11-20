@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Api
   # Search school by city
   class SchoolsController < ApiBaseController
@@ -18,7 +19,7 @@ module Api
       render_success(
         object: School.nearby(latitude: params[:latitude], longitude: params[:longitude], radius: 60_000),
         status: 200,
-        json_options: { }
+        json_options: {}
       )
     end
 
@@ -30,7 +31,7 @@ module Api
       Rails.cache.fetch(cache_key) do
         Api::AutocompleteSchool.new(term: search_key, limit: SEARCH_LIMIT).to_json
       end
-      cached_response = Rails.cache.fetch(cache_key) || { :match_by_city => {}, :match_by_name => [], :no_match => true }
+      cached_response = Rails.cache.fetch(cache_key) || { match_by_city: {}, match_by_name: [], no_match: true }
       JSON.parse(cached_response)
     end
   end

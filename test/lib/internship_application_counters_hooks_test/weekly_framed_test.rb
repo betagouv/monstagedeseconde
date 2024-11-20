@@ -5,7 +5,7 @@ module InternshipApplicationCountersHooks
   class WeeklyFramedTest < ActiveSupport::TestCase
     setup do
       student = create(:student, :male)
-      @internship_offer = create(:weekly_internship_offer)
+      @internship_offer = create(:weekly_internship_offer_2nde)
       @internship_application = build(:weekly_internship_application, internship_offer: @internship_offer,
                                                                       student:)
     end

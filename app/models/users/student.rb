@@ -6,6 +6,7 @@ module Users
 
     belongs_to :school, optional: true
     belongs_to :class_room, optional: true
+    belongs_to :grade, optional: true
 
     has_many :internship_applications, dependent: :destroy,
                                        foreign_key: 'user_id' do
@@ -87,6 +88,15 @@ module Users
       internship_applications.validated_by_employer.any?
     end
 
+    def seconde_gt?
+      grade == Grade.seconde
+    end
+
+    def troisieme_ou_quatrieme?
+      grade.in?(Grade.troisieme_et_quatrieme)
+    end
+    alias troisieme_or_quatrieme? troisieme_ou_quatrieme?
+
     def main_teacher
       return nil if try(:class_room).nil?
 
@@ -129,32 +139,33 @@ module Users
     end
 
     def with_2_weeks_internships_approved?
+      return false if troisieme_ou_quatrieme?
       return false if internship_applications.empty? || internship_applications.approved.empty?
 
-      internship_applications.approved
-                             .map(&:internship_offer)
-                             .pluck(:period)
-                             .uniq
-                             .in?([[0], [1, 2]])
+      approved_offers = internship_applications.approved.map(&:internship_offer)
+      return true if approved_offers.any? { |offer| offer.internship_weeks_number == 2 }
+      return true if approved_offers.map(&:weeks).uniq.count == 2
+
+      false
     end
 
     def other_approved_applications_compatible?(internship_offer:)
-      return false if internship_offer.nil?
+      # one week internship only for troisieme and quatrieme
+      # seconde only from now on
       return true if internship_applications.empty? || internship_applications.approved.empty?
+      return false if troisieme_ou_quatrieme? && internship_applications.approved.size > 0
+      # there is at least one approved application
+      return false if with_2_weeks_internships_approved?
+      return false if internship_offer.nil?
 
-      related_approved_offers_periods = internship_applications.approved
-                                                               .map(&:internship_offer)
-                                                               .pluck(:period)
-      case internship_offer.period
-      when 0
-        !internship_applications.approved.any?
-      when 1
-        related_approved_offers_periods == [2]
-      when 2
-        related_approved_offers_periods == [1]
-      else
-        false
+      approved_offers_week_ids = internship_applications.approved.map(&:weeks).flatten.map(&:id).uniq
+      official_weeks_ids = SchoolTrack::Seconde.both_weeks.map(&:id)
+      targeted_week_id = (internship_offer.weeks.map(&:id) & official_weeks_ids)
+      unless (approved_offers_week_ids - official_weeks_ids).empty? && (targeted_week_id - official_weeks_ids).empty?
+        raise "out of bound week for seconde student #{id} and offer #{internship_offer.id}"
       end
+
+      official_weeks_ids - approved_offers_week_ids == targeted_week_id
     end
 
     def log_search_history(search_params)

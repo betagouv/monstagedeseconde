@@ -78,7 +78,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :companies, path: 'entreprises', only: %i[index show] do
+    resources :companies, path: 'organisations', only: %i[index show] do
       member do
         post :contact
       end
@@ -166,11 +166,16 @@ Rails.application.routes.draw do
       end
 
       namespace :stepper, path: 'etapes' do
+        # legacy stepper routes
         resources :organisations, only: %i[create new edit update]
         resources :internship_offer_infos, path: 'offre-de-stage-infos', only: %i[create new edit update]
         resources :hosting_infos, path: 'accueil-infos', only: %i[create new edit update]
         resources :practical_infos, path: 'infos-pratiques', only: %i[create new edit update]
         resources :tutors, path: 'tuteurs', only: %i[create new]
+        # new stepper path
+        resources :internship_occupations, path: 'metiers_et_localisation', only: %i[create new edit update]
+        resources :entreprises, path: 'entreprise', only: %i[create new edit update]
+        resources :plannings, path: 'planning', only: %i[create new edit update]
       end
 
       namespace :students, path: '/:student_id/' do

@@ -10,7 +10,7 @@ module InternshipApplications
       travel_to Date.new(2024, 1, 1) do
         weeks = Week.selectable_from_now_until_end_of_school_year.first(2).last(1)
         student = create(:student)
-        internship_offer = create(:weekly_internship_offer)
+        internship_offer = create(:weekly_internship_offer_2nde)
         internship_application_1 = create(:weekly_internship_application, student:,
                                                                           internship_offer:)
         assert internship_application_1.valid?
@@ -24,7 +24,7 @@ module InternshipApplications
       weeks = Week.selectable_from_now_until_end_of_school_year.first(3).last(2)
       travel_to Date.new(2024, 1, 1) do
         student = create(:student)
-        internship_offer = create(:weekly_internship_offer)
+        internship_offer = create(:weekly_internship_offer_2nde)
         internship_application_1 = create(:weekly_internship_application,
                                           internship_offer:,
                                           student:)
@@ -37,7 +37,7 @@ module InternshipApplications
     end
 
     test 'application updates remaining_seats_count along with approved applications' do
-      offer = create(:weekly_internship_offer)
+      offer = create(:weekly_internship_offer_2nde)
       assert_equal offer.max_candidates, offer.remaining_seats_count
       application = create(:weekly_internship_application, internship_offer: offer)
       assert_equal offer.max_candidates, offer.remaining_seats_count
@@ -56,7 +56,7 @@ module InternshipApplications
 
     test 'application updates offer favorites along with approved applications' do
       travel_to(Date.new(2024, 3, 1)) do
-        offer = create(:weekly_internship_offer, max_candidates: 1)
+        offer = create(:weekly_internship_offer_2nde, max_candidates: 1)
         favorite = create(:favorite, internship_offer: offer)
         assert_equal Favorite.count, 1
         other_favorite = create(:favorite)
@@ -73,7 +73,7 @@ module InternshipApplications
 
     test 'application updates old offer favorites along with approved applications' do
       travel_to(Date.new(2024, 3, 1)) do
-        old_offer = create(:weekly_internship_offer, last_date: 7.days.ago)
+        old_offer = create(:weekly_internship_offer_2nde, last_date: 7.days.ago)
         favorite = create(:favorite, internship_offer: old_offer)
         assert_equal Favorite.count, 1
         other_favorite = create(:favorite)
@@ -94,7 +94,7 @@ module InternshipApplications
       internship_application = nil
       travel_to start_date do
         weeks = Week.selectable_from_now_until_end_of_school_year.first(2).first(1)
-        internship_offer = create(:weekly_internship_offer)
+        internship_offer = create(:weekly_internship_offer_2nde)
         internship_application = create(:weekly_internship_application, :submitted,
                                         internship_offer:,
                                         submitted_at: start_date)
@@ -110,25 +110,25 @@ module InternshipApplications
 
     test 'approving applications let some applications be canceled by student, when validated is one week long' do
       student = create(:student, phone: '+330611223344')
-      internship_offer_1 = create(:weekly_internship_offer, :week_1)
-      internship_offer_2 = create(:weekly_internship_offer, :week_2)
-      internship_offer_3 = create(:weekly_internship_offer, :full_time)
+      internship_offer_1 = create(:weekly_internship_offer_2nde, :week_1)
+      internship_offer_2 = create(:weekly_internship_offer_2nde, :week_2)
+      internship_offer_3 = create(:weekly_internship_offer_2nde, :both_weeks)
       create(:weekly_internship_application, :validated_by_employer, student:,
                                                                      internship_offer: internship_offer_1)
       internship_application = create(:weekly_internship_application, :validated_by_employer, student:,
                                                                                               internship_offer: internship_offer_2)
       create(:weekly_internship_application, :validated_by_employer, student:,
                                                                      internship_offer: internship_offer_3)
-      assert_changes -> { InternshipApplication.canceled_by_student_confirmation.count }, from: 0, to: 1 do
+      assert_changes -> { InternshipApplication.canceled_by_student_confirmation.count }, from: 0, to: 2 do
         internship_application.approve!
       end
     end
 
     test 'approving applications let some applications be canceled by student, when validated is two week long' do
       student = create(:student, phone: '+330611223344')
-      internship_offer_1 = create(:weekly_internship_offer, :week_1)
-      internship_offer_2 = create(:weekly_internship_offer, :week_2)
-      internship_offer_3 = create(:weekly_internship_offer, :full_time)
+      internship_offer_1 = create(:weekly_internship_offer_2nde, :week_1)
+      internship_offer_2 = create(:weekly_internship_offer_2nde, :week_2)
+      internship_offer_3 = create(:weekly_internship_offer_2nde, :both_weeks)
       create(:weekly_internship_application, :validated_by_employer, student:,
                                                                      internship_offer: internship_offer_1)
       create(:weekly_internship_application, :validated_by_employer, student:,
@@ -142,7 +142,7 @@ module InternshipApplications
 
     test 'expired applications notify student with one job enqueued' do
       student = create(:student, phone: '+330611223344')
-      internship_offer = create(:weekly_internship_offer)
+      internship_offer = create(:weekly_internship_offer_2nde)
       internship_application = create(:weekly_internship_application, :submitted, student:,
                                                                                   internship_offer:)
       assert_enqueued_jobs 1 do

@@ -37,11 +37,12 @@ class InternshipApplication < ApplicationRecord
              class_name: 'InternshipOffers::WeeklyFramed',
              foreign_key: 'internship_offer_id'
   belongs_to :internship_offer, polymorphic: true
-  # has_many :internship_agreements
   belongs_to :student, class_name: 'Users::Student',
                        foreign_key: 'user_id'
   has_one :internship_agreement
   has_many :state_changes, class_name: 'InternshipApplicationStateChange'
+  has_many :internship_application_weeks
+  has_many :weeks, through: :internship_application_weeks
 
   delegate :update_all_counters, to: :internship_application_counter_hook
   delegate :name, to: :student, prefix: true
@@ -436,6 +437,16 @@ class InternshipApplication < ApplicationRecord
     SendSmsStudentValidatedApplicationJob.perform_later(internship_application_id: id)
   end
 
+  def selectable_weeks
+    available_weeks = []
+    if student.seconde_gt?
+      available_weeks = internship_offer.weeks
+    elsif student.troisieme_or_quatrieme?
+      available_weeks = Week.selectable_from_now_until_end_of_school_year & internship_offer.weeks
+    end
+    available_weeks
+  end
+
   def generate_token
     return if access_token.present?
 
@@ -532,16 +543,18 @@ class InternshipApplication < ApplicationRecord
   def cancel_all_pending_applications
     applications_to_cancel = student.internship_applications
                                     .where(aasm_state: InternshipApplication::PENDING_STATES)
-    case internship_offer.period
-    when 1
-      applications_to_cancel = applications_to_cancel.select do |application|
-        offer = application.internship_offer
-        offer.week_1? || offer.full_time?
+    if student.seconde_gt?
+      if internship_offer.seconde_school_track_week_1?
+        applications_to_cancel = applications_to_cancel.select do |application|
+          offer = application.internship_offer
+          offer.seconde_school_track_week_1? || offer.two_weeks_long?
+        end
       end
-    when 2
-      applications_to_cancel = applications_to_cancel.select do |application|
-        offer = application.internship_offer
-        offer.week_2? || offer.full_time?
+      if internship_offer.seconde_school_track_week_2?
+        applications_to_cancel = applications_to_cancel.select do |application|
+          offer = application.internship_offer
+          offer.seconde_school_track_week_2? || offer.two_weeks_long?
+        end
       end
     end
     applications_to_cancel.each do |application|

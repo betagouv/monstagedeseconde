@@ -22,7 +22,7 @@ module Api
       documents_as(endpoint: :'internship_offers/index', state: :unauthorized) do
         get api_internship_offers_path(
           params: {
-            token: "Bearer abcdefghijklmnop"
+            token: 'Bearer abcdefghijklmnop'
           }
         )
 
@@ -36,9 +36,9 @@ module Api
       user_1 = create(:user_operator)
       user_2 = create(:user_operator)
 
-      offer_1     = create(:api_internship_offer, employer: user_1)
-      offer_1_bis = create(:api_internship_offer, employer: user_1)
-      offer_2     = create(:api_internship_offer, employer: user_2)
+      offer_1     = create(:api_internship_offer_3eme, employer: user_1)
+      offer_1_bis = create(:api_internship_offer_3eme, employer: user_1)
+      offer_2     = create(:api_internship_offer_3eme, employer: user_2)
 
       documents_as(endpoint: :'internship_offers/index', state: :success) do
         get api_internship_offers_path(
@@ -59,9 +59,8 @@ module Api
     test 'GET #index only returns operators offers not discarded' do
       user = create(:user_operator)
 
-      offer_1 = create(:api_internship_offer, employer: user)
-      offer_2 = create(:api_internship_offer, employer: user)
-
+      offer_1 = create(:api_internship_offer_3eme, employer: user)
+      offer_2 = create(:api_internship_offer_3eme, employer: user)
 
       # Delete the first offer
       delete api_internship_offer_path(
@@ -70,10 +69,10 @@ module Api
           token: "Bearer #{user.api_token}"
         }
       )
-      
+
       offer_1.reload
       assert offer_1.discarded?
-      
+
       # Get only the second offer
       documents_as(endpoint: :'internship_offers/index', state: :success) do
         get api_internship_offers_path(

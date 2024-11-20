@@ -3,10 +3,11 @@ module Presenters
     def select_text_method
       "#{school_name} - #{school.city} - #{school.zipcode}"
     end
-    alias_method :agreement_address, :select_text_method
+    alias agreement_address select_text_method
 
     def school_name
-      return school.name if school.name.match(/^\s*Lycée.*/)
+      return school.name if start_with_lycee_or_college?
+      return "Collège #{school.name}" if school.college?
 
       "Lycée #{school.name}"
     end
@@ -41,18 +42,19 @@ module Presenters
     end
 
     def staff
-      %i(main_teachers teachers others).map do |role|
+      %i[main_teachers teachers others].map do |role|
         school.send(role).kept.includes(:school)
       end.flatten
     end
 
-    
-
-
     private
 
+    def start_with_lycee_or_college?
+      school.name.match(/^\s*(Lycée|Collège|Lycee|College).*/)
+    end
+
     def fetch_details
-      Services::SchoolDirectory.new(school: school).school_data_search
+      Services::SchoolDirectory.new(school:).school_data_search
       school.reload
     end
 

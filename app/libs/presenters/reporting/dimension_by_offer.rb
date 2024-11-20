@@ -18,7 +18,6 @@ module Presenters
                    sector_name
                    contact_name
                    contact_email
-                   contact_phone
                    full_employer
                    full_address
                    full_school
@@ -72,10 +71,6 @@ module Presenters
 
       def contact_email
         instance.employer.email
-      end
-
-      def contact_phone
-        instance.employer.phone
       end
 
       def full_employer

@@ -18,6 +18,7 @@ class InternshipApplicationsController < ApplicationController
       internship_offer_type: 'InternshipOffer',
       student: current_user
     )
+    @available_weeks = @internship_application.selectable_weeks
   end
 
   # alias for draft
@@ -39,7 +40,7 @@ class InternshipApplicationsController < ApplicationController
     if @internship_application.save
       redirect_to destination
     else
-      Rails.logger.error(@internship_application.errors.full_messages)
+      log_error(object: @internship_application)
       render 'new', status: :bad_request
     end
   end
@@ -121,6 +122,7 @@ class InternshipApplicationsController < ApplicationController
             :motivation,
             :student_phone,
             :student_email,
+            :week_id,
             student_attributes: %i[
               email
               phone

@@ -1,0 +1,17 @@
+- model = @internship_occupation
+- method = :patch
+- url = dashboard_stepper_internship_occupation_path(@internship_occupation)
+
+= render 'layouts/breadcrumb',
+          links: [ [dashboard_internship_offers_path, 'Mes offres de stage'],
+                   ['', 'Publier une offre de stage']]
+.row
+  .col-12
+      h1.h2.mb-3 Publier une offre de stage
+
+.row
+  .col-12
+    = render 'form',
+             show_resume: true,
+             submit_button: true ,
+             model: model, method: method, url: url

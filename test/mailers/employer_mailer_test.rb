@@ -51,7 +51,7 @@ class EmployerMailerTest < ActionMailer::TestCase
   test '.internship_application_approved_with_agreement_email does not deliver when notifications are off with user_operators' do
     operator               = create(:operator)
     user_operator          = create(:user_operator, operator: operator)
-    internship_offer       = create(:weekly_internship_offer, employer: user_operator)
+    internship_offer       = create(:weekly_internship_offer_2nde, employer: user_operator)
     internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
     internship_agreement   = create(:internship_agreement, internship_application: internship_application)
     create_team(user_operator, create(:user_operator, operator: operator))
@@ -69,8 +69,8 @@ class EmployerMailerTest < ActionMailer::TestCase
   end
 
   test '.internship_application_approved_with_agreement_email does not deliver when notifications are off with department statisticians' do
-    statistician          = create(:statistician, agreement_signatorable: true)
-    internship_offer       = create(:weekly_internship_offer, employer: statistician)
+    statistician           = create(:statistician, agreement_signatorable: true)
+    internship_offer       = create(:weekly_internship_offer_2nde, employer: statistician)
     internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
     internship_agreement   = create(:internship_agreement, internship_application: internship_application)
     create_team(statistician, create(:statistician, agreement_signatorable: true, email: 'statistician@free.fr'))

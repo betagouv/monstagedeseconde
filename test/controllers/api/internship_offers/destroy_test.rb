@@ -8,7 +8,7 @@ module Api
 
     setup do
       @operator = create(:user_operator)
-      @internship_offer = create(:api_internship_offer, employer: @operator)
+      @internship_offer = create(:api_internship_offer_2nde, employer: @operator)
     end
 
     test 'DELETE #destroy without token renders :unauthorized payload' do

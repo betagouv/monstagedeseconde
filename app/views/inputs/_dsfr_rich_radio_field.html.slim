@@ -1,0 +1,41 @@
+- size ||= "fr-icon"
+- hint ||= ""
+- klass = form.object.class.name.downcase
+- id = "#{klass}_#{field}_#{value}"
+- name = "#{klass}[#{field}]"
+- error = form.object.errors[field].any?
+- extra_container_class ||= ''
+- data_action ||= options[:data][:action]
+- data ||= options[:data]
+
+- if error
+  / TODO
+- else
+  div class="fr-fieldset__element #{extra_container_class}" data-action="#{data_action}"
+    .fr-radio-group.fr-radio-rich
+      - if checked
+        input [id="#{id}"
+              value="#{value}"
+              type="radio"
+              checked="#{checked}"
+              name="#{name}"
+              data="#{data}"]
+      - else
+        input [id="#{id}"
+              value="#{value}"
+              type="radio"
+              name="#{name}"
+              data="#{data}"]
+      label.fr-label for="#{id}"
+        = label
+        - if hint.present?
+          span.fr-hint-text
+            = hint
+      
+      .fr-radio-rich__pictogram
+        / span class="#{size} #{icon} "
+        / svg.fr-artwork[aria-hidden="true" viewbox="0 0 80 80" width="80px" height="80px"]
+          use.fr-artwork-decorative[href="gouvfr/dsfr/dist/artwork/pictograms/buildings/city-hall.svg#artwork-decorative"]
+          use.fr-artwork-minor[href="gouvfr/dsfr/dist/artwork/pictograms/buildings/city-hall.svg#artwork-minor"]
+          use.fr-artwork-major[href="gouvfr/dsfr/dist/artwork/pictograms/buildings/city-hall.svg#artwork-major"]
+

@@ -14,7 +14,7 @@
           .fr-text--xs.fr-mb-0= @prez.internship_offer_address
       .fr-mt-0
         p.fr-tag.fr-tag--sm
-          = internship_application.internship_offer.current_period_label
+          = @prez.str_weeks
       .action.fr-mt-4w
         .d-flex
           - if status_hash[:actions].present?

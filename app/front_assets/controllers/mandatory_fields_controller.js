@@ -9,23 +9,26 @@ export default class extends Controller {
   static values = {
     minimumLength: Number
   }
-  
-  // use it with copying the following line in the html file:
-  // --------------------------
-  // data-controller="mandatory-fields" data-mandatory-fields-minimum-length-value="3"
-  // --------------------------
-  // input[ data-mandatory-fields-target="mandatoryField"
-  //        data-action="input->mandatory-fields#fieldChange"]
-  // or
-  // data: { action: "input->mandatory-fields#fieldChange",
-  //         :'mandatory-fields-target' => "mandatoryField"}
-  // --------------------------
-  // input data-mandatory-fields-target="disabledField"
-  // or
-  // data: { :'mandatory-fields-target' => "disabledField"}
+
+  /* use it with copying the following line in the html file:
+  --------------------------
+  data-controller="mandatory-fields" data-mandatory-fields-minimum-length-value="3"
+  --------------------------
+  input [data-mandatory-fields-target="mandatoryField"
+         data-action="input->mandatory-fields#fieldChange"]
+  or
+  data: { action: "input->mandatory-fields#fieldChange",
+          :'mandatory-fields-target' => "mandatoryField"}
+  --------------------------
+  input data-mandatory-fields-target="disabledField"
+  or
+  data: { :'mandatory-fields-target' => "disabledField"}
+  */
 
   connect() {
-    this.checkFields()
+    if(this.hasDisabledFieldTarget){
+      this.checkFields()
+    }
   }
 
   checkFields() {
@@ -35,6 +38,10 @@ export default class extends Controller {
 
   fieldChange(event){
     this.checkValidation();
+  }
+
+  sayHello(){
+    alert('Hello');
   }
 
   areAllMandatoryFieldsFilled(){
@@ -49,7 +56,6 @@ export default class extends Controller {
 
   // possible values are 'disabled' or 'enabled'
   setDisabledFieldsTo(status){
-
     const disabledFields = this.disabledFieldTargets;
     disabledFields.forEach((field) => {
       field.disabled =  (status === 'disabled') ;

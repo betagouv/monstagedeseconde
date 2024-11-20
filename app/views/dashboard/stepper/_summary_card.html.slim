@@ -1,0 +1,32 @@
+div data-controller="write-summary-card"
+  .fr-badge.fr-badge--purple-glycine.fr-px-2w.fr-mb-3w
+    |Aperçu de votre offre de stage
+  .fr-card.fr-enlarge-link.fr-card--horizontal.preview-card
+    .fr-card__body
+      .fr-card__content
+        h3.fr-card__title
+          a href="#" disabled=true
+            span [data-write-summary-card-target="offerTitleOutput"]
+              = form.object.try(:title) || @internship_occupation&.title
+        p.fr-card__desc [data-write-summary-card-target="employerNameOutput"]
+          = form.object.try(:employer_name) || @entreprise&.employer_name
+        / data-write-summary-card-target="durationOutput"
+        .fr-card__start
+          ul.fr-tags-group
+            li
+              p.fr-tag
+                span.preview-card.fr-mr-1w.fr-icon-calendar-2-fill aria-hidden="true"
+                |> Dates proposées
+                span.fr-ml-1v data-write-summary-card-target="weeksOutput"
+                  - count = form.object.try(:weeks).try(:count) || @planning&.weeks&.count
+                  = " #{count} #{"semaine".pluralize(count)}"
+
+          p.fr-card__detail data-write-summary-card-target="sectorOutput"
+            = form.object.try(:sector).try(:name) || @entreprise&.sector&.name
+
+        .fr-card__end
+          p.fr-card__detail
+            span.fr-mr-1w data-write-summary-card-target="cityOutput"
+              = form.object.try(:city) || @internship_occupation&.city
+            span data-write-summary-card-target="zipcodeOutput"
+              = form.object.try(:zipcode) || @internship_occupation&.zipcode

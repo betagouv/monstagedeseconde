@@ -158,11 +158,30 @@ FactoryBot.define do
     end
 
     transient do
-      weekly_internship_offer_helper { create(:weekly_internship_offer) }
+      weekly_internship_offer_helper { create(:weekly_internship_offer_2nde) }
     end
 
     trait :weekly do
       internship_offer { weekly_internship_offer_helper }
+      weeks { [internship_offer.weeks.to_a.sample] }
+    end
+
+    trait :first_june_week do
+      student { create(:student_with_class_room_2nde, :seconde) }
+      weeks { [SchoolTrack::Seconde.both_weeks.first] }
+      internship_offer { create(:weekly_internship_offer_2nde, :week_1) }
+    end
+
+    trait :second_june_week do
+      student { create(:student_with_class_room_2nde, :seconde) }
+      weeks { [SchoolTrack::Seconde.both_weeks.second] }
+      internship_offer { create(:weekly_internship_offer, :week_2) }
+    end
+
+    trait :both_june_weeks do
+      student { create(:student_with_class_room_2nde, :seconde) }
+      weeks { SchoolTrack::Seconde.both_weeks }
+      internship_offer { create(:weekly_internship_offer_2nde, :both_weeks) }
     end
 
     factory :weekly_internship_application, traits: [:weekly],

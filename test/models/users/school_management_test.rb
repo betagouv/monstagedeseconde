@@ -59,7 +59,6 @@ module Users
 
     test 'creation succeed' do
       school = build(:school)
-      create(:department, name: 'Paris')
       school_manager = Users::SchoolManagement.new(
         role: :school_manager,
         email: "jean-pierre@#{school.email_domain_name}",
@@ -130,7 +129,6 @@ module Users
     end
 
     test '#valid_academy_email_address?' do
-      create(:department, code: '61', name: 'Normandie')
       school = create(:school, zipcode: '75012')
       assert build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school:).valid?
       refute build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school:).valid?

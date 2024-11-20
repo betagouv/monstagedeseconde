@@ -5,13 +5,12 @@ module InternshipOffersHelper
   def preselect_all_weeks?(object)
     return false unless object.try(:new_record?)
 
-    is_preselectable_entity = [
-      InternshipOfferInfo,
+    preselectable_classes = [
       InternshipOffer,
       InternshipOffers::WeeklyFramed,
-      HostingInfo
+      Planning
     ]
-    is_preselectable_entity.any? { |klass| object.is_a?(klass) }
+    preselectable_classes.any? { |klass| object.is_a?(klass) }
   end
 
   def internship_offer_application_path(object)
@@ -38,17 +37,34 @@ module InternshipOffersHelper
     end
   end
 
+  def options_for_public_groups
+    Group.is_public.map do |group|
+      [
+        group.name,
+        group.id,
+        {
+          'data-organisation-form-target' => 'groupNamePublic'
+        }
+      ]
+    end
+  end
+
   def internship_offer_results_title(user)
-    return "Rechercher un stage d'observation" unless user.is_a?(Users::Student)
-    case user.grade
-    when 'quatrieme'
-      "Rechercher un stage de 4ème"
-    when 'troisieme'
-      "Rechercher un stage de 3ème"
-    when 'seconde'
-      "Rechercher un stage de seconde"
+    default_label = "Rechercher un stage d'observation"
+    return default_label if user.nil? || user.is_a?(Users::Visitor)
+    return default_label unless user.student?
+    return default_label if user.grade.nil?
+
+    case user.grade.short_name
+    when :quatrieme
+      'Rechercher un stage de 4ème'
+    when :troisieme
+      'Rechercher un stage de 3ème'
+    when :seconde
+      'Rechercher un stage de seconde'
     else
-      "Rechercher un stage d'observation"
+      Rails.logger.error "Unknown grade: #{user.grade}"
+      default_label
     end
   end
 
