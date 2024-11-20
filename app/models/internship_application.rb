@@ -37,11 +37,12 @@ class InternshipApplication < ApplicationRecord
              class_name: 'InternshipOffers::WeeklyFramed',
              foreign_key: 'internship_offer_id'
   belongs_to :internship_offer, polymorphic: true
-  belongs_to :week
   belongs_to :student, class_name: 'Users::Student',
                        foreign_key: 'user_id'
   has_one :internship_agreement
   has_many :state_changes, class_name: 'InternshipApplicationStateChange'
+  has_many :internship_application_weeks
+  has_many :weeks, through: :internship_application_weeks
 
   delegate :update_all_counters, to: :internship_application_counter_hook
   delegate :name, to: :student, prefix: true

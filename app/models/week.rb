@@ -8,14 +8,14 @@ class Week < ApplicationRecord
                                      foreign_key: :week_id
 
   scope :from_date_to_date, lambda { |from:, to:|
-    query = from_date_for_current_year(from: from)
-    return query.to_date_for_current_year(to: to) if from.year == to.year
+    query = from_date_for_current_year(from:)
+    return query.to_date_for_current_year(to:) if from.year == to.year
 
-    query.or(to_date_for_current_year(to: to))
+    query.or(to_date_for_current_year(to:))
   }
 
   scope :by_year, lambda { |year:|
-    where(year: year)
+    where(year:)
   }
 
   scope :from_now, lambda {
@@ -48,7 +48,7 @@ class Week < ApplicationRecord
   scope :fetch_from, lambda { |date:|
     number = date.cweek
     year = number == 53 ? date.year - 1 : date.year
-    find_by(number: number, year: year)
+    find_by(number:, year:)
   }
 
   scope :selectable_from_now_until_end_of_school_year, lambda {

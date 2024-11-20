@@ -26,7 +26,9 @@ export default class extends Controller {
   */
 
   connect() {
-    this.checkFields()
+    if(this.hasDisabledFieldTarget){
+      this.checkFields()
+    }
   }
 
   checkFields() {

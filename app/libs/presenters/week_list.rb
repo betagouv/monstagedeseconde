@@ -3,6 +3,13 @@
 module Presenters
   # render a lit of week easily with folding of internval
   class WeekList
+    MONTHS = %w[Janvier Février Mars Avril Mai Juin Juillet Aout Septembre Octobre Novembre Décembre].freeze
+
+    # [ {month: 9, name: 'Septembre'} ,{ month: 10, }...]
+    MONTH_LIST =
+      MONTHS.each_with_index.map { |month, index| { month: index + 1, name: month } }
+            .rotate(8).freeze
+
     def to_range_as_str
       to_range do |is_first:, is_last:, week:|
         if is_first
@@ -35,6 +42,11 @@ module Presenters
         container << (basic ? joined_weeks : self.class.new(weeks: joined_weeks))
       end
       container
+    end
+
+    # @return [Hash{ month_number: Array[weeks belonging to month_number]}]
+    def month_split
+      weeks.group_by(&:month_number)
     end
 
     def to_s

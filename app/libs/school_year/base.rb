@@ -8,6 +8,10 @@ module SchoolYear
     SEPTEMBER = 9
     FIRST = 1
 
+    MONTH_LIST = %w[
+      Janvier Février Mars Avril Mai Juin Juillet Aout Septembre Novembre Décembre
+    ].rotate(8).freeze
+
     def strict_beginning_of_period
       case current_month
       when january_to_june

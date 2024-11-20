@@ -22,8 +22,6 @@ class Planning < ApplicationRecord
   # Callbacks
 
   # Validations
-  validates :lunch_break, length: { minimum: 10, maximum: 200 }
-  validate :enough_weeks
 
   # accessors
   attr_accessor :all_year_long,
@@ -45,5 +43,9 @@ class Planning < ApplicationRecord
 
   def daily_planning?
     daily_hours.except('samedi').values.flatten.any? { |v| !v.blank? }
+  end
+
+  def coordinates
+    entreprise.try(:internship_occupation).try(:coordinates) || { longitude: 0, latitude: 0 }
   end
 end

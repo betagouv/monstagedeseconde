@@ -1047,6 +1047,38 @@ ALTER SEQUENCE public.internship_application_state_changes_id_seq OWNED BY publi
 
 
 --
+-- Name: internship_application_weeks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.internship_application_weeks (
+    id bigint NOT NULL,
+    week_id bigint NOT NULL,
+    internship_application_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: internship_application_weeks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.internship_application_weeks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: internship_application_weeks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.internship_application_weeks_id_seq OWNED BY public.internship_application_weeks.id;
+
+
+--
 -- Name: internship_applications; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2013,12 +2045,36 @@ ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
 
 
 --
--- Name: task_records; Type: TABLE; Schema: public; Owner: -
+-- Name: task_registers; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.task_records (
-    version character varying NOT NULL
+CREATE TABLE public.task_registers (
+    id bigint NOT NULL,
+    task_name character varying(250),
+    used_environment character varying(150),
+    played_at timestamp(6) without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
+
+
+--
+-- Name: task_registers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.task_registers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: task_registers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
 
 
 --
@@ -2504,6 +2560,13 @@ ALTER TABLE ONLY public.internship_application_state_changes ALTER COLUMN id SET
 
 
 --
+-- Name: internship_application_weeks id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_weeks ALTER COLUMN id SET DEFAULT nextval('public.internship_application_weeks_id_seq'::regclass);
+
+
+--
 -- Name: internship_applications id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2662,6 +2725,13 @@ ALTER TABLE ONLY public.sectors ALTER COLUMN id SET DEFAULT nextval('public.sect
 --
 
 ALTER TABLE ONLY public.signatures ALTER COLUMN id SET DEFAULT nextval('public.signatures_id_seq'::regclass);
+
+
+--
+-- Name: task_registers id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.task_registers ALTER COLUMN id SET DEFAULT nextval('public.task_registers_id_seq'::regclass);
 
 
 --
@@ -2905,6 +2975,14 @@ ALTER TABLE ONLY public.internship_application_state_changes
 
 
 --
+-- Name: internship_application_weeks internship_application_weeks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_weeks
+    ADD CONSTRAINT internship_application_weeks_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: internship_applications internship_applications_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3097,6 +3175,14 @@ ALTER TABLE ONLY public.signatures
 
 
 --
+-- Name: task_registers task_registers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.task_registers
+    ADD CONSTRAINT task_registers_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: team_member_invitations team_member_invitations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3172,6 +3258,13 @@ CREATE INDEX idx_on_internship_application_id_085823fd89 ON public.internship_ap
 --
 
 CREATE INDEX idx_on_internship_application_id_created_at_42571d8745 ON public.internship_application_state_changes USING btree (internship_application_id, created_at);
+
+
+--
+-- Name: idx_on_internship_application_id_e95b0b9dbb; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_on_internship_application_id_e95b0b9dbb ON public.internship_application_weeks USING btree (internship_application_id);
 
 
 --
@@ -3438,6 +3531,13 @@ CREATE UNIQUE INDEX index_internship_agreements_on_uuid ON public.internship_agr
 --
 
 CREATE INDEX index_internship_application_state_changes_on_author ON public.internship_application_state_changes USING btree (author_type, author_id);
+
+
+--
+-- Name: index_internship_application_weeks_on_week_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_application_weeks_on_week_id ON public.internship_application_weeks USING btree (week_id);
 
 
 --
@@ -4259,6 +4359,14 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
+-- Name: internship_application_weeks fk_rails_3d493b87c4; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_weeks
+    ADD CONSTRAINT fk_rails_3d493b87c4 FOREIGN KEY (week_id) REFERENCES public.weeks(id);
+
+
+--
 -- Name: departments fk_rails_3f7cf55cd4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4320,6 +4428,14 @@ ALTER TABLE ONLY public.school_internship_weeks
 
 ALTER TABLE ONLY public.internship_offer_infos
     ADD CONSTRAINT fk_rails_65006c3093 FOREIGN KEY (employer_id) REFERENCES public.users(id);
+
+
+--
+-- Name: internship_application_weeks fk_rails_664e7390e4; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_weeks
+    ADD CONSTRAINT fk_rails_664e7390e4 FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
 
 
 --
@@ -4641,8 +4757,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20241105172654'),
-('20241105171942'),
+('20241113151423'),
 ('20241105092317'),
 ('20241101100649'),
 ('20241031131640'),

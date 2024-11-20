@@ -52,8 +52,6 @@ class Grade < ApplicationRecord
     SchoolTrack::Seconde
   end
 
-  private
-
   def self.fetch_by_short_name(short_names)
     Grade.where(short_name: short_names)
   end

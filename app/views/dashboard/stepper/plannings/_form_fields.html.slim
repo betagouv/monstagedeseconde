@@ -1,7 +1,6 @@
 - if can?(:supply_offers, current_user)
-  div [data-controller='mandatory-fields'
-       data-mandatory-fields-minimum-length-value="2"]
-    .row data-controller='grade'
+  div [data-controller='mandatory-fields grade' data-mandatory-fields-minimum-length-value="8"]
+    .row
       .col-md-6.order-md-2.order-1.d-none.d-md-block
         - if form.object.new_record?
           = render 'dashboard/stepper/summary_card', form: form
@@ -14,7 +13,7 @@
               field: :grade_college,
               title: 'Votre offre sera proposée aux élèves des niveaux suivants :',
               label: 'Collégiens (4ème et 3ème)',
-              extra_header_classes: 'fr-text--lg font-weight-bold',
+              extra_header_classes: 'fr-h6',
               options: { data: {:'grade-target' => 'grade3e4e', action: 'grade#onClick' } }
 
         .row data-grade-target="troisiemeContainer"
@@ -64,13 +63,13 @@
                                       selectClassRoom: false,
                                       existingSchool: form.object&.school&.as_json})
 
-  - if submit_button
-    .fr-mt-6w
-      = link_to 'Précédent',
-                edit_dashboard_stepper_entreprise_path(resource.entreprise, show_resume: show_resume, entreprise_id: resource.entreprise.id),
-                class: 'fr-btn fr-btn--secondary fr-mr-3w'
-      = button_tag :submit,
-                   class: 'fr-btn',
-                   :'data-daily-hours-target' => "submitButton",
-                   :'data-mandatory-fields-target' => "disabledField"  do
-        = "Publier l'offre"
+    - if submit_button
+      .fr-mt-6w
+        = link_to 'Précédent',
+                  edit_dashboard_stepper_entreprise_path(resource.entreprise, show_resume: show_resume, entreprise_id: resource.entreprise.id),
+                  class: 'fr-btn fr-btn--secondary fr-mr-3w'
+        = button_tag :submit,
+                    class: 'fr-btn',
+                    data: { :'mandatory-fields-target' => "disabledField"}  do
+          = "Publier l'offre"
+

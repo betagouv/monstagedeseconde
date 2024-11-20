@@ -65,10 +65,13 @@ div.fr-my-2w data-controller="daily-hours"
     .col-12.mt-2.fr-my-2w
       .form-group
         = form.label :lunch_break, class: 'fr-label'  do
-          | Pause déjeuner
+          | Pause déjeuner *
         = form.text_area :lunch_break,
                          value: form.object.lunch_break,
                          class: "fr-input",
                          required: true,
                          placeholder: "12h -13h dans les locaux…",
-                         disabled: disabled
+                         disabled: disabled,
+                         data: { action: "input->mandatory-fields#fieldChange",
+                                :'mandatory-fields-target' => "mandatoryField"}
+

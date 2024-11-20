@@ -11,7 +11,7 @@
         .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
           .col-12
             fieldset aria-labelledby="presentation"
-              legend Le ou les métiers que vous proposez d'observer:
+              legend.fr-h6 Le ou les métiers que vous proposez d'observer :
             .form-group.fr-my-2w
               = render 'inputs/dsfr_input_field',
                         f: form,
@@ -59,10 +59,10 @@
                   produits ou appareils de production ni effectuer des travaux légers
                   autorisés aux mineurs par ce même code.
         .row.fr-mt-2w
-        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+        .row.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
           .col-12
             fieldset aria-labelledby="presentation"
-              legend Le lieu où se déroulera le stage :
+              legend.fr-h6 Le lieu où se déroulera le stage :
             - currentLatitude     = resource.coordinates.try(:lat).try(:to_f)
             - currentLongitude    = resource.coordinates.try(:lng).try(:to_f)
             - currentLatitude   ||= resource.coordinates.try(:latitude).try(:to_f)

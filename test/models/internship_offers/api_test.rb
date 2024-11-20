@@ -6,11 +6,9 @@ module InternshipOffers
   class ApiTest < ActiveSupport::TestCase
     setup do
       @default_params = {
-        title: 'foo',
-        description: 'bar',
+        title: 'foo bar baz meh',
+        description: 'bar bat fdate fd fdfd',
         employer_name: 'baz',
-        employer_description: 'rab',
-        employer_website: 'https://www.google.fr',
         'coordinates' => { latitude: 1, longitude: 1 },
         street: '7 rue du puits',
         remote_id: 1,

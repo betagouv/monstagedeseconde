@@ -5,6 +5,7 @@ class EmployerMailer < ApplicationMailer
     @internship_application = internship_application
     @internship_offer       = @internship_application.internship_offer
     recipients_email        = internship_application.filter_notified_emails
+    @prez_application       = @internship_application.presenter(internship_application.internship_offer.employer)
     @url = dashboard_internship_offer_internship_application_url(
       @internship_offer,
       @internship_application
