@@ -1,0 +1,57 @@
+---
+version: "3"
+
+tasks:
+  plan:
+    desc: Run project-specific plan tasks
+    cmds:
+      - cmd: echo "Running project-specific plan tasks..."
+        silent: true
+
+  code:
+    desc: Run project-specific code tasks
+    cmds:
+      - cmd: echo "Running project-specific code tasks..."
+        silent: true
+
+  build:
+    desc: Run project-specific build tasks
+    cmds:
+      - cmd: echo "Running project-specific build tasks..."
+        silent: true
+
+  test:
+    desc: Run project-specific test tasks
+    cmds:
+      - cmd: echo "Running project-specific test tasks..."
+        silent: true
+
+  release:
+    desc: Run project-specific release tasks
+    cmds:
+      - cmd: echo "Running project-specific release tasks..."
+        silent: true
+
+  deploy:
+    desc: Run project-specific deploy tasks
+    cmds:
+      - cmd: echo "Running project-specific deploy tasks..."
+        silent: true
+
+  operate:
+    desc: Run project-specific operate tasks
+    cmds:
+      - cmd: echo "Running project-specific operate tasks..."
+        silent: true
+
+  monitor:
+    desc: Run project-specific monitor tasks
+    cmds:
+      - cmd: echo "Running project-specific monitor tasks..."
+        silent: true
+
+  feedback:
+    desc: Run project-specific feedback tasks
+    cmds:
+      - cmd: echo "Running project-specific feedback tasks..."
+        silent: true

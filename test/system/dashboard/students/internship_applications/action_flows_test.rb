@@ -11,15 +11,25 @@ module Dashboard
         student = create(:student, :when_applying, school:)
         internship_applications = {
           submitted: create(:weekly_internship_application, :submitted,
+<<<<<<< HEAD
                             internship_offer: create(:weekly_internship_offer_2nde), student:),
           approved: create(:weekly_internship_application, :approved,
                            internship_offer: create(:weekly_internship_offer_2nde), student:),
+=======
+                            internship_offer: create(:weekly_internship_offer), student:),
+          validated_by_employer: create(:weekly_internship_application, :validated_by_employer,
+                                        internship_offer: create(:weekly_internship_offer), student:),
+>>>>>>> review
           rejected: create(:weekly_internship_application, :rejected,
                            internship_offer: create(:weekly_internship_offer_2nde), student:),
           canceled_by_student_confirmation: create(:weekly_internship_application, :canceled_by_student_confirmation,
+<<<<<<< HEAD
                                                    internship_offer: create(:weekly_internship_offer_2nde), student:),
           validated_by_employer: create(:weekly_internship_application, :validated_by_employer,
                                         internship_offer: create(:weekly_internship_offer_2nde), student:),
+=======
+                                                   internship_offer: create(:weekly_internship_offer), student:),
+>>>>>>> review
           canceled_by_student: create(:weekly_internship_application, :canceled_by_student,
                                       internship_offer: create(:weekly_internship_offer_2nde), student:)
         }
@@ -28,6 +38,9 @@ module Dashboard
         click_on 'Candidatures'
         internship_applications.each do |_aasm_state, internship_application|
           badge = internship_application.presenter(student).human_state
+          click_on 'Acceptées par l’offreur, à confirmer par l’élève' if _aasm_state == :validated_by_employer
+          click_on 'Refusées' if _aasm_state == :rejected
+          click_on 'Annulées' if %i[canceled_by_student canceled_by_student_confirmation].include?(_aasm_state)
           find('.internship-application-status .h5.internship-offer-title',
                text: internship_application.internship_offer.title)
           find("a#show_link_#{internship_application.id}", text: badge[:actions].first[:label]).click
@@ -42,7 +55,7 @@ module Dashboard
         sign_in(student)
         visit '/'
         click_on 'Candidatures'
-        find('.fr-badge.fr-badge--success', text: "ACCEPTÉE PAR L'ENTREPRISE")
+        click_on 'Acceptées par l’offreur, à confirmer par l’élève'
         find("#show_link_#{internship_application.id}").click
         assert_equal 'validated_by_employer', internship_application.aasm_state
         assert_changes -> { InternshipAgreement.count }, from: 0, to: 1 do
@@ -60,7 +73,7 @@ module Dashboard
           end
         end
         assert_equal 'Public', InternshipAgreement.last.legal_status
-        find '.fr-badge.fr-badge--success', text: 'STAGE VALIDÉ'
+        find '#alert-text', text: 'Candidature acceptée !'
         find "a#show_link_#{internship_application.id}", text: "Contacter l'employeur"
       end
 
@@ -90,8 +103,7 @@ module Dashboard
         end
       end
 
-      test 'student can draft, submit, and cancel(by_student) internship_applications' do
-        skip 'this test is relevant and shall be reactivated by november 2024'
+      test 'student can submit, and cancel(by_student) internship_applications' do
         skip 'This is ok locally but fails on CI due to slowlyness' if ENV['CI'] == 'true'
         travel_to Date.new(2024, 12, 1) do
           school = create(:school)
@@ -114,16 +126,8 @@ module Dashboard
           within('.react-tel-input') do
             find('input[name="internship_application[student_phone]"]').set('0619223344')
           end
-          assert_changes lambda {
-                           student.internship_applications
-                                  .where(aasm_state: :drafted)
-                                  .count
-                         },
-                         from: 0,
-                         to: 1 do
-            click_on 'Valider'
-            page.find('#submit_application_form') # timer
-          end
+
+          click_on 'Valider ma candidature'
 
           assert_changes lambda {
                            student.internship_applications
@@ -132,7 +136,7 @@ module Dashboard
                          },
                          from: 0,
                          to: 1 do
-            click_on 'Envoyer'
+            click_on 'Envoyer ma candidature'
             sleep 0.15
           end
 
@@ -305,6 +309,7 @@ module Dashboard
 
           sign_in(student)
           visit dashboard_students_internship_applications_path(student_id: student.id)
+          click_on 'Refusées'
           click_link 'Voir'
           assert_text 'Le tuteur est malade'
         end

@@ -1,0 +1,33 @@
+# kics-scan disable=ce76b7d0-9e77-464d-b86f-c5c48e03e22d,610e266e-6c12-4bca-9925-1ed0cd29742b
+---
+services:
+  debian:
+    build:
+      context: ../..
+      dockerfile: .config/devcontainer/debian/Dockerfile
+      args:
+        USERNAME: ${USER:-developer}
+        http_proxy: ${http_proxy:-}
+        HTTP_PROXY: ${HTTP_PROXY:-}
+        https_proxy: ${https_proxy:-}
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
+    volumes:
+      # kics-scan ignore-line
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${HOME}:/home/${USER:-developer}
+    environment:
+      - HTTP_PROXY=${HTTP_PROXY:-}
+      - HTTPS_PROXY=${HTTPS_PROXY:-}
+      - http_proxy=${http_proxy:-}
+      - https_proxy=${https_proxy:-}
+    command: sleep infinity
+    working_dir: ${PWD:-/home/developer/workspace/project}
+    init: true
+    group_add:
+      - docker
+    healthcheck:
+      test: ["CMD", "task", "--version"]
+      interval: 30s
+      timeout: 10s
+      start_period: 5s
+      retries: 3

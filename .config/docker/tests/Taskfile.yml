@@ -1,0 +1,201 @@
+---
+version: "3"
+
+tasks:
+  default:
+    summary: |
+      ℹ️ Description:
+        Executes a comprehensive test of the Docker installation process on a specified IMAGE container.
+
+      🔧 Variables:
+        - TEST: Name of the test and the container
+        - SCRIPT: Path to the Docker installation script
+        - IMAGE: Operating system to test on
+        - IMAGE_TAG: Version of the operating system
+
+      🔐 Preconditions:
+        - Docker must be installed on the host system
+        - The script must exist at the specified path
+
+      🔄 Execution:
+        Sets up a container for the specified IMAGE, installs necessary packages, runs the Docker installation
+        script, and verifies the installation.
+
+      📝 Note:
+        This task simulates the Docker installation process in a controlled environment to ensure
+        its reliability and correctness.
+    preconditions:
+      - sh: "command -v docker &> /dev/null"
+        msg: "❌ Docker is not installed. Please install it on the host."
+    cmds:
+      - task: test:actions
+        vars:
+          {
+            TEST: docker_install_debian_12,
+            SCRIPT: "{{.USER_WORKING_DIR}}/.config/docker/install/debian.sh",
+            IMAGE: "debian",
+            IMAGE_TAG: "12",
+          }
+      - task: test:actions
+        vars:
+          {
+            TEST: docker_install_debian_11,
+            SCRIPT: "{{.USER_WORKING_DIR}}/.config/docker/install/debian.sh",
+            IMAGE: "debian",
+            IMAGE_TAG: "11",
+          }
+
+  test:actions:
+    internal: true
+    requires: { vars: [TEST, SCRIPT, IMAGE, IMAGE_TAG] }
+    preconditions:
+      - sh: "command -v docker &> /dev/null"
+        msg: "❌ Docker is not installed on the host system."
+      - sh: "[ -f '{{.SCRIPT}}' ]"
+        msg: "❌ Installation script not found at {{.SCRIPT}}"
+    cmds:
+      - cmd: |
+          echo "🚀 Test begins for {{.TEST}} 🚀"
+        silent: true
+      - task: cleanup
+        vars: { CONTAINER_NAME: "{{.TEST}}" }
+      - task: start-container
+        vars:
+          {
+            CONTAINER_NAME: "{{.TEST}}",
+            IMAGE: "{{.IMAGE}}",
+            IMAGE_TAG: "{{.IMAGE_TAG}}",
+          }
+      - task: setup-container
+        vars: { CONTAINER_NAME: "{{.TEST}}" }
+      - task: verify-curl
+        vars: { CONTAINER_NAME: "{{.TEST}}" }
+      - task: copy-install-script
+        vars: { CONTAINER_NAME: "{{.TEST}}", SCRIPT: "{{.SCRIPT}}" }
+      - task: execute-install-script
+        vars: { CONTAINER_NAME: "{{.TEST}}" }
+      - task: verify-installation
+        vars: { CONTAINER_NAME: "{{.TEST}}" }
+      - cmd: echo "✅ Test completed successfully for {{.TEST}}."
+        silent: true
+
+  cleanup:
+    internal: true
+    requires: { vars: [CONTAINER_NAME] }
+    cmds:
+      - |
+        echo "🧹 Remove container: {{.CONTAINER_NAME}}"
+        docker rm -f {{.CONTAINER_NAME}} 2>/dev/null || true
+
+  start-container:
+    internal: true
+    requires: { vars: [IMAGE, IMAGE_TAG, CONTAINER_NAME] }
+    cmds:
+      - task: cleanup
+        vars: { CONTAINER_NAME: "{{.TEST}}" }
+      - |
+        echo "Starting {{.IMAGE}}:{{.IMAGE_TAG}} container..."
+        docker run --rm --privileged -d \
+          {{if .HTTP_PROXY}}-e HTTP_PROXY={{.HTTP_PROXY}}{{end}} \
+          {{if .HTTPS_PROXY}}-e HTTPS_PROXY={{.HTTPS_PROXY}}{{end}} \
+          {{if .NO_PROXY}}-e NO_PROXY={{.NO_PROXY}}{{end}} \
+          --name {{.CONTAINER_NAME}} \
+          -v /var/run/docker.sock:/var/run/docker.sock:rw \
+          {{.IMAGE}}:{{.IMAGE_TAG}} tail -f /dev/null
+      - task: wait-for-container
+        vars: { CONTAINER_NAME: "{{.CONTAINER_NAME}}" }
+
+  wait-for-container:
+    internal: true
+    requires: { vars: [CONTAINER_NAME] }
+    cmds:
+      - |
+        echo "Waiting for container to be ready..."
+        for i in {1..30}; do
+          if [ "$(docker inspect -f '{{`{{.State.Running}}`}}' {{.CONTAINER_NAME}} 2>/dev/null)" == "true" ]; then
+            echo "Container is ready."
+            exit 0
+          fi
+          if [ "$i" -eq 30 ]; then
+            echo "❌ Error: Container failed to start within 30 seconds."
+            exit 1
+          fi
+          sleep 1
+        done
+
+  setup-container:
+    internal: true
+    requires: { vars: [CONTAINER_NAME] }
+    cmds:
+      - |
+        echo "Setting up sudo user and installing necessary packages..."
+        docker exec {{.CONTAINER_NAME}} bash -c "
+          export HTTP_PROXY={{.HTTP_PROXY}}
+          export HTTPS_PROXY={{.HTTPS_PROXY}}
+          export NO_PROXY={{.NO_PROXY}}
+          apt-get update && \
+          apt-get install -y sudo curl ca-certificates && \
+          useradd -m testuser && \
+          echo 'testuser ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+        " || {
+          echo "❌ Failed to set up sudo user and install packages"
+          exit 1
+        }
+
+  verify-curl:
+    internal: true
+    requires: { vars: [CONTAINER_NAME] }
+    cmds:
+      - |
+        echo "Verifying curl works with proxy..."
+        docker exec {{.CONTAINER_NAME}} bash -c "
+          export HTTP_PROXY={{.HTTP_PROXY}}
+          export HTTPS_PROXY={{.HTTPS_PROXY}}
+          export NO_PROXY={{.NO_PROXY}}
+          curl -sS https://download.docker.com/linux/debian/gpg >/dev/null || (echo '❌ Curl failed to connect to Docker GPG key. Check your proxy settings.'; exit 1)
+        "
+
+  copy-install-script:
+    internal: true
+    requires: { vars: [SCRIPT, CONTAINER_NAME] }
+    cmds:
+      - |
+        echo "Copying installation script..."
+        docker cp "{{.SCRIPT}}" {{.CONTAINER_NAME}}:/home/testuser/install_docker.sh || {
+          echo "❌ Failed to copy installation script"
+          exit 1
+        }
+      - docker exec {{.CONTAINER_NAME}} chown testuser:testuser /home/testuser/install_docker.sh
+      - docker exec {{.CONTAINER_NAME}} chmod +x /home/testuser/install_docker.sh
+
+  execute-install-script:
+    internal: true
+    requires: { vars: [CONTAINER_NAME] }
+    cmds:
+      - |
+        echo "Executing Docker installation script..."
+        docker exec -u testuser {{.CONTAINER_NAME}} bash -c "
+          export HTTP_PROXY={{.HTTP_PROXY}}
+          export HTTPS_PROXY={{.HTTPS_PROXY}}
+          export NO_PROXY={{.NO_PROXY}}
+          sudo -E /home/testuser/install_docker.sh
+        " || {
+          echo "❌ Docker installation failed"
+          exit 1
+        }
+
+  verify-installation:
+    internal: true
+    requires: { vars: [CONTAINER_NAME] }
+    cmds:
+      - |
+        echo "Verifying Docker installation..."
+        docker exec {{.CONTAINER_NAME}} docker --version || {
+          echo "❌ Docker verification failed"
+          exit 1
+        }
+      - |
+        docker exec {{.CONTAINER_NAME}} docker run hello-world || {
+          echo "❌ Docker hello-world test failed"
+          exit 1
+        }
