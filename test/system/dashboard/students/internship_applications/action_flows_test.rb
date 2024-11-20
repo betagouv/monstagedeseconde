@@ -117,7 +117,7 @@ module Dashboard
       end
 
       test 'GET #show as Student with existing draft application shows the draft' do
-        if ENV['RUN_BRITTLE_TEST']
+        skip 'This is ok locally but fails on CI'  if ENV['CI'] == 'true'
           weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
           internship_offer      = create(:weekly_internship_offer_2nde)
           school                = create(:school)
