@@ -6,16 +6,69 @@ module Dashboard
       include Devise::Test::IntegrationHelpers
       include TeamAndAreasHelper
 
-      test 'student can browse his internship_applications' do
+      test 'student can browse his submitted internship_applications' do
         school = create(:school, :with_school_manager)
         student = create(:student, :when_applying, school:)
         internship_applications = {
           submitted: create(:weekly_internship_application, :submitted,
-                            internship_offer: create(:weekly_internship_offer_2nde), student:),
+                            internship_offer: create(:weekly_internship_offer_2nde), student:)
+        }
+        sign_in(student)
+        visit '/'
+        click_on 'Candidatures'
+        internship_applications.each do |_aasm_state, internship_application|
+          badge = internship_application.presenter(student).human_state
+          find('.internship-application-status .h5.internship-offer-title',
+               text: internship_application.internship_offer.title)
+          find("a#show_link_#{internship_application.id}", text: badge[:actions].first[:label]).click
+          find('a span.fr-icon-arrow-left-line', text: 'toutes mes candidatures').click
+        end
+      end
+
+      test 'student can browse his validated by employer internship_applications' do
+        school = create(:school, :with_school_manager)
+        student = create(:student, :when_applying, school:)
+        internship_applications = {
           validated_by_employer: create(:weekly_internship_application, :validated_by_employer,
-                                        internship_offer: create(:weekly_internship_offer_2nde), student:),
+                                        internship_offer: create(:weekly_internship_offer_2nde), student:)
+        }
+        sign_in(student)
+        visit '/'
+        click_on 'Candidatures'
+        internship_applications.each do |_aasm_state, internship_application|
+          badge = internship_application.presenter(student).human_state
+          click_on 'Acceptées par l’offreur, à confirmer par l’élève'
+          find('.internship-application-status .h5.internship-offer-title',
+               text: internship_application.internship_offer.title)
+          find("a#show_link_#{internship_application.id}", text: badge[:actions].first[:label]).click
+          find('a span.fr-icon-arrow-left-line', text: 'toutes mes candidatures').click
+        end
+      end
+
+      test 'student can browse his rejected internship_applications' do
+        school = create(:school, :with_school_manager)
+        student = create(:student, :when_applying, school:)
+        internship_applications = {
           rejected: create(:weekly_internship_application, :rejected,
-                           internship_offer: create(:weekly_internship_offer_2nde), student:),
+                           internship_offer: create(:weekly_internship_offer_2nde), student:)
+        }
+        sign_in(student)
+        visit '/'
+        click_on 'Candidatures'
+        internship_applications.each do |_aasm_state, internship_application|
+          badge = internship_application.presenter(student).human_state
+          click_on 'Refusées' if _aasm_state == :rejected
+          find('.internship-application-status .h5.internship-offer-title',
+               text: internship_application.internship_offer.title)
+          find("a#show_link_#{internship_application.id}", text: badge[:actions].first[:label]).click
+          find('a span.fr-icon-arrow-left-line', text: 'toutes mes candidatures').click
+        end
+      end
+
+      test 'student can browse his canceled internship_applications ' do
+        school = create(:school, :with_school_manager)
+        student = create(:student, :when_applying, school:)
+        internship_applications = {
           canceled_by_student_confirmation: create(:weekly_internship_application, :canceled_by_student_confirmation,
                                                    internship_offer: create(:weekly_internship_offer_2nde), student:),
           canceled_by_student: create(:weekly_internship_application, :canceled_by_student,
@@ -26,8 +79,6 @@ module Dashboard
         click_on 'Candidatures'
         internship_applications.each do |_aasm_state, internship_application|
           badge = internship_application.presenter(student).human_state
-          click_on 'Acceptées par l’offreur, à confirmer par l’élève' if _aasm_state == :validated_by_employer
-          click_on 'Refusées' if _aasm_state == :rejected
           click_on 'Annulées' if %i[canceled_by_student canceled_by_student_confirmation].include?(_aasm_state)
           find('.internship-application-status .h5.internship-offer-title',
                text: internship_application.internship_offer.title)
@@ -66,28 +117,27 @@ module Dashboard
       end
 
       test 'GET #show as Student with existing draft application shows the draft' do
-        if ENV['RUN_BRITTLE_TEST']
-          weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
-          internship_offer      = create(:weekly_internship_offer_2nde)
-          school                = create(:school)
-          student               = create(:student, school:, class_room: create(:class_room, school:))
-          internship_application = create(:weekly_internship_application,
-                                          :drafted,
-                                          motivation: 'au taquet',
-                                          student:,
-                                          internship_offer:,
-                                          week: weeks.last)
+        skip 'flaky test' if ENV['CI'] == 'true'
+        weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
+        internship_offer      = create(:weekly_internship_offer_2nde)
+        school                = create(:school)
+        student               = create(:student, school:, class_room: create(:class_room, school:))
+        internship_application = create(:weekly_internship_application,
+                                        :drafted,
+                                        motivation: 'au taquet',
+                                        student:,
+                                        internship_offer:,
+                                        week: weeks.last)
 
-          travel_to(weeks[0].week_date - 1.week) do
-            sign_in(student)
-            visit internship_offer_path(internship_offer)
-            find('.h1', text: internship_offer.title)
-            find('.h3', text: internship_offer.employer_name)
-            find('.h6', text: internship_offer.street)
-            find('.h4', text: 'Informations sur le stage')
-            find('.reboot-trix-content', text: internship_offer.description)
-            assert page.has_content? 'Stage individuel'
-          end
+        travel_to(weeks[0].week_date - 1.week) do
+          sign_in(student)
+          visit internship_offer_path(internship_offer)
+          find('.h1', text: internship_offer.title)
+          find('.h3', text: internship_offer.employer_name)
+          find('.h6', text: internship_offer.street)
+          find('.h4', text: 'Informations sur le stage')
+          find('.reboot-trix-content', text: internship_offer.description)
+          assert page.has_content? 'Stage individuel'
         end
       end
 
@@ -312,7 +362,7 @@ module Dashboard
                  :approved,
                  student:,
                  internship_offer: internship_offer_1,
-                 week: internship_offer_1.weeks.first)
+                 weeks: [internship_offer_1.weeks.first])
           sign_in(student)
           visit dashboard_internship_offers_path
           click_link 'Candidatures'
@@ -331,7 +381,7 @@ module Dashboard
                                         :approved,
                                         student:,
                                         internship_offer: internship_offer_1,
-                                        week: internship_offer_1.weeks.first)
+                                        weeks: [internship_offer_1.weeks.first])
         sign_in(student)
         visit dashboard_internship_offers_path
         click_link 'Candidatures'

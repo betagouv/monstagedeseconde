@@ -94,7 +94,7 @@ module Users
       student = create(:student, :seconde)
       internship_offer_week_2 = create(:weekly_internship_offer_2nde, :week_2)
       create(:weekly_internship_application, :approved, student:,
-                                                        week: internship_offer_week_2.weeks.first,
+                                                        weeks: [internship_offer_week_2.weeks.first],
                                                         internship_offer: internship_offer_week_2)
       internship_offer = create(:weekly_internship_offer_2nde, :both_weeks)
       refute student.other_approved_applications_compatible?(internship_offer:)
@@ -119,7 +119,7 @@ module Users
       internship_offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
       create(:weekly_internship_application, :approved, student:,
                                                         internship_offer: internship_offer_week_1,
-                                                        week: internship_offer_week_1.weeks.first)
+                                                        weeks: [internship_offer_week_1.weeks.first])
       internship_offer = create(:weekly_internship_offer_2nde, :week_1)
       refute student.other_approved_applications_compatible?(internship_offer:)
     end
@@ -128,7 +128,7 @@ module Users
       student = create(:student, :seconde)
       internship_offer_week_2 = create(:weekly_internship_offer_2nde, :week_2)
       create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_week_2,
-                                                        week: internship_offer_week_2.weeks.first)
+                                                        weeks: [internship_offer_week_2.weeks.first])
       internship_offer = create(:weekly_internship_offer_2nde, :week_1)
       assert student.other_approved_applications_compatible?(internship_offer:)
     end

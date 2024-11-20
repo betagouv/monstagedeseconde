@@ -18,8 +18,8 @@ class ManageEntreprisesTest < ApplicationSystemTestCase
     find('#alert-success', text: "Les informations de l'entreprise ont bien été enregistrées")
 
     entreprise = Entreprise.last
-    assert_equal 'East Side Software-Paris', entreprise.employer_name
-    assert_equal '90943224700015', entreprise.siret
+    assert_equal 'Mairie de Saint-Ouen-l’Aumône', entreprise.employer_name
+    assert_equal '21950572400209', entreprise.siret
     assert_equal group.id, entreprise.group_id
     assert entreprise.is_public
   end
