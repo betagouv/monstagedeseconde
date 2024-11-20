@@ -45,12 +45,12 @@ WebMock.disable_net_connect!(
     /github.com/,
     /github-production-release-asset*/,
     /chromedriver\.storage\.googleapis\.com/,
-    /googlechromelabs.github.io/,
+    /googlechromelabs\.github\.io/,
     /storage\.googleapis\.com/,
-    /edgedl.me.gvt1.com/,
-    /api-adresse.data.gouv.fr/,
-    %r{education.gouv.fr/annuaire},
-    %r{geo.api.gouv.fr/communes}
+    /edgedl\.me\.gvt1\.com/,
+    /api-adresse\.data\.gouv.fr/,
+    %r{education\.gouv\.fr/annuaire},
+    %r{geo\.api\.gouv\.fr/communes}
   ]
 )
 
