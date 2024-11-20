@@ -7,6 +7,12 @@ module Api
     class CreateTest < ActionDispatch::IntegrationTest
       include ::ApiTestHelpers
 
+      setup do
+        @operator = create(:user_operator, api_token: SecureRandom.uuid)
+        post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
+        @token = json_response['token']
+      end
+
       # before each test
       test 'POST #create without token renders :unauthorized payload' do
         post api_v2_internship_offers_path(params: {})
@@ -18,11 +24,10 @@ module Api
       end
 
       test 'POST #create as operator fails with invalid payload respond with :unprocessable_entity' do
-        operator = create(:user_operator, api_token: SecureRandom.uuid)
         documents_as(endpoint: :'v2/internship_offers/create', state: :unprocessable_entity_bad_payload) do
           post api_v2_internship_offers_path(
             params: {
-              token: "Bearer #{operator.api_token}"
+              token: "Bearer #{@token}"
             }
           )
         end
@@ -32,11 +37,10 @@ module Api
       end
 
       test 'POST #create as operator fails with invalid data respond with :bad_request' do
-        operator = create(:user_operator, api_token: SecureRandom.uuid)
         documents_as(endpoint: :'v2/internship_offers/create', state: :bad_request) do
           post api_v2_internship_offers_path(
             params: {
-              token: "Bearer #{operator.api_token}",
+              token: "Bearer #{@token}",
               internship_offer: { title: '', grades: ['seconde'], weeks: ['2025-W25'] }
             }
           )
@@ -64,8 +68,7 @@ module Api
       end
 
       test 'POST #create as operator post duplicate remote_id' do
-        operator = create(:user_operator, api_token: SecureRandom.uuid)
-        existing_internship_offer = create(:api_internship_offer_2nde, employer: operator)
+        existing_internship_offer = create(:api_internship_offer_2nde, employer: @operator)
         sector = create(:sector, uuid: SecureRandom.uuid)
         internship_offer_params = existing_internship_offer.attributes
                                                            .except(:sector,
@@ -89,7 +92,7 @@ module Api
         documents_as(endpoint: :'v2/internship_offers/create', state: :conflict) do
           post api_v2_internship_offers_path(
             params: {
-              token: "Bearer #{operator.api_token}",
+              token: "Bearer #{@token}",
               internship_offer: internship_offer_params
             }
           )
@@ -98,7 +101,6 @@ module Api
       end
 
       test 'POST #create as operator works to seconde internship_offer' do
-        operator = create(:user_operator, api_token: SecureRandom.uuid)
         sector = create(:sector, uuid: SecureRandom.uuid)
         title = 'title'
         description = 'description'
@@ -121,7 +123,7 @@ module Api
           documents_as(endpoint: :'v2/internship_offers/create', state: :created) do
             post api_v2_internship_offers_path(
               params: {
-                token: "Bearer #{operator.api_token}",
+                token: "Bearer #{@token}",
                 internship_offer: {
                   title:,
                   description:,
@@ -186,7 +188,9 @@ module Api
 
       test 'POST #create when missing coordinates works to create internship_offers' do
         travel_to(Date.new(2025, 3, 1)) do
-          operator = create(:user_operator, api_token: SecureRandom.uuid)
+          post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
+          @token = json_response['token']
+
           sector = create(:sector, uuid: SecureRandom.uuid)
           title = 'title'
           description = 'description'
@@ -219,7 +223,7 @@ module Api
             documents_as(endpoint: :'v2/internship_offers/create', state: :created) do
               post api_v2_internship_offers_path(
                 params: {
-                  token: "Bearer #{operator.api_token}",
+                  token: "Bearer #{@token}",
                   internship_offer: {
                     title:,
                     description:,
@@ -257,6 +261,9 @@ module Api
       end
       test 'POST #create when wrong weeks for seconde offer returns 422' do
         travel_to(Date.new(2025, 3, 1)) do
+          post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
+          @token = json_response['token']
+
           operator = create(:user_operator, api_token: SecureRandom.uuid)
           sector = create(:sector, uuid: SecureRandom.uuid)
           title = 'title'
@@ -290,7 +297,7 @@ module Api
             documents_as(endpoint: :'v2/internship_offers/create', state: :created) do
               post api_v2_internship_offers_path(
                 params: {
-                  token: "Bearer #{operator.api_token}",
+                  token: "Bearer #{@token}",
                   internship_offer: {
                     title:,
                     description:,
@@ -318,7 +325,6 @@ module Api
       end
 
       test 'POST #create as operator without max_candidates works and set up remaing_seats_count to 1' do
-        operator = create(:user_operator, api_token: SecureRandom.uuid)
         week_instances = [weeks(:week_2019_1), weeks(:week_2019_2)]
         sector = create(:sector, uuid: SecureRandom.uuid)
         title = 'title'
@@ -342,7 +348,7 @@ module Api
           documents_as(endpoint: :'v2/internship_offers/create', state: :created) do
             post api_v2_internship_offers_path(
               params: {
-                token: "Bearer #{operator.api_token}",
+                token: "Bearer #{@token}",
                 internship_offer: {
                   title:,
                   description:,
@@ -373,7 +379,6 @@ module Api
       end
 
       test 'POST #create as operator with empty street creates the internship offer' do
-        operator = create(:user_operator, api_token: SecureRandom.uuid)
         sector = create(:sector, uuid: SecureRandom.uuid)
         geocoder_response = {
           status: 200,
@@ -389,7 +394,7 @@ module Api
             documents_as(endpoint: :'v2/internship_offers/create', state: :unprocessable_entity_bad_data) do
               post api_v2_internship_offers_path(
                 params: {
-                  token: "Bearer #{operator.api_token}",
+                  token: "Bearer #{@token}",
                   internship_offer: {
                     title: 'title',
                     description: 'description',
@@ -418,7 +423,6 @@ module Api
       end
 
       test 'POST #create as operator with empty zipcode creates the internship offer' do
-        operator = create(:user_operator, api_token: SecureRandom.uuid)
         sector = create(:sector, uuid: SecureRandom.uuid)
         geocoder_response = {
           status: 200,
@@ -434,7 +438,7 @@ module Api
             documents_as(endpoint: :'v2/internship_offers/create', state: :unprocessable_entity_bad_data) do
               post api_v2_internship_offers_path(
                 params: {
-                  token: "Bearer #{operator.api_token}",
+                  token: "Bearer #{@token}",
                   internship_offer: {
                     title: 'title',
                     description: 'description',
@@ -464,7 +468,6 @@ module Api
       end
 
       test 'POST #create as operator with without street creates the internship offer' do
-        operator = create(:user_operator, api_token: SecureRandom.uuid)
         sector = create(:sector, uuid: SecureRandom.uuid)
         geocoder_response = {
           status: 200,
@@ -476,11 +479,14 @@ module Api
         stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761').to_return(geocoder_response)
 
         travel_to(Date.new(2025, 3, 1)) do
+          post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
+          @token = json_response['token']
+
           assert_difference('InternshipOffer.count', 1) do
             documents_as(endpoint: :'v2/internship_offers/create', state: :unprocessable_entity_bad_data) do
               post api_v2_internship_offers_path(
                 params: {
-                  token: "Bearer #{operator.api_token}",
+                  token: "Bearer #{@token}",
                   internship_offer: {
                     title: 'title',
                     description: 'description',
@@ -509,7 +515,6 @@ module Api
       end
 
       test 'POST #create as operator with wrong coordinates creates the internship offer with N/A street' do
-        operator = create(:user_operator, api_token: SecureRandom.uuid)
         sector = create(:sector, uuid: SecureRandom.uuid)
         geocoder_response = {
           status: 200,
@@ -522,7 +527,7 @@ module Api
             documents_as(endpoint: :'v2/internship_offers/create', state: :unprocessable_entity_bad_data) do
               post api_v2_internship_offers_path(
                 params: {
-                  token: "Bearer #{operator.api_token}",
+                  token: "Bearer #{@token}",
                   internship_offer: {
                     title: 'title',
                     description: 'description',

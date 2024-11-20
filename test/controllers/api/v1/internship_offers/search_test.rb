@@ -206,24 +206,30 @@ module Api
 
       test 'GET #search returns too many requests after max calls limit' do
         user = create(:user_operator, :fully_authorized)
-        InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 5)
-        (InternshipOffers::Api::MAX_CALLS_PER_MINUTE + 1).times do
+
+        original_max_calls = InternshipOffers::Api::MAX_CALLS_PER_MINUTE
+        InternshipOffers::Api::MAX_CALLS_PER_MINUTE = 5
+
+        begin
+          (InternshipOffers::Api::MAX_CALLS_PER_MINUTE + 1).times do
+            get search_api_v1_internship_offers_path(
+              params: {
+                token: "Bearer #{user.api_token}"
+              }
+            )
+          end
           get search_api_v1_internship_offers_path(
             params: {
               token: "Bearer #{user.api_token}"
             }
           )
-        end
-        get search_api_v1_internship_offers_path(
-          params: {
-            token: "Bearer #{user.api_token}"
-          }
-        )
-        InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 1_000)
 
-        documents_as(endpoint: :'internship_offers/search', state: :too_many_requests) do
-          assert_response :too_many_requests
-          assert_equal 'Trop de requêtes - Limite d\'utilisation de l\'API dépassée.', json_error
+          documents_as(endpoint: :'internship_offers/search', state: :too_many_requests) do
+            assert_response :too_many_requests
+            assert_equal 'Trop de requêtes - Limite d\'utilisation de l\'API dépassée.', json_error
+          end
+        ensure
+          InternshipOffers::Api::MAX_CALLS_PER_MINUTE = original_max_calls
         end
       end
     end

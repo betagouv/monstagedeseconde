@@ -5,6 +5,11 @@ module Api
     class IndexTest < ActionDispatch::IntegrationTest
       include ::ApiTestHelpers
 
+      setup do
+        @operator = create(:user_operator, api_token: SecureRandom.uuid)
+        post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
+        @token = json_response['token']
+      end
       test 'GET #index without token is to render :unauthorized payload' do
         get api_v2_sectors_path
         documents_as(endpoint: :'v2/sectors/index', state: :unauthorized) do
@@ -15,7 +20,6 @@ module Api
       end
 
       test 'GET #index returns sectors' do
-        user_1 = create(:user_operator)
         create(:sector, name: 'Agriculture')
         create(:sector, name: 'Agroalimentaire')
         create(:sector, name: 'Architecture')
@@ -23,7 +27,7 @@ module Api
         documents_as(endpoint: :'v2/sectors/index', state: :success) do
           get api_v2_sectors_path(
             params: {
-              token: "Bearer #{user_1.api_token}"
+              token: "Bearer #{@token}"
             }
           )
           assert_response :success
@@ -34,7 +38,6 @@ module Api
       test 'GET #index returns too many requests after max calls limit' do
         skip 'Works locally but not always on CI' if ENV['CI'] == 'true'
         InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 5)
-        user_1 = create(:user_operator)
         create(:sector, name: 'Agriculture')
         create(:sector, name: 'Agroalimentaire')
         create(:sector, name: 'Architecture')
@@ -43,7 +46,7 @@ module Api
           (InternshipOffers::Api::MAX_CALLS_PER_MINUTE + 1).times do
             get api_v2_sectors_path(
               params: {
-                token: "Bearer #{user_1.api_token}"
+                token: "Bearer #{@token}"
               }
             )
           end

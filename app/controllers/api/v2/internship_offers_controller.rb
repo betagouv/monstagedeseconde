@@ -3,6 +3,8 @@
 module Api
   module V2
     class InternshipOffersController < Api::Shared::InternshipOffersController
+      include Api::AuthV2
+
       def search
         render_not_authorized and return unless current_api_user.operator.api_full_access
 

@@ -120,7 +120,7 @@ module InternshipOffers
     end
 
     def formatted_grades
-      grades.map(&:short_name)
+      grades.map(&:short_name).sort
     end
 
     def as_json(options = {})

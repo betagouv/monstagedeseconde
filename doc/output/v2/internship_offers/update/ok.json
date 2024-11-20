@@ -9,7 +9,7 @@
   "is_public": true,
   "employer_name": "Octo",
   "employer_description": null,
-  "remote_id": "7",
+  "remote_id": "2",
   "permalink": "https://google.fr",
   "published_at": null,
   "formatted_coordinates": {
@@ -17,7 +17,6 @@
     "longitude": 2.333333
   },
   "weeks": [
-    "2024-W47",
     "2024-W48",
     "2024-W49",
     "2024-W50",

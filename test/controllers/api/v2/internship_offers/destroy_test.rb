@@ -9,6 +9,8 @@ module Api
 
       setup do
         @operator = create(:user_operator)
+        post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
+        @token = json_response['token']
         @internship_offer = create(:api_internship_offer_2nde, employer: @operator)
       end
 
@@ -23,11 +25,14 @@ module Api
 
       test 'DELETE #destroy an internship_offer which does not belongs to current auth operator' do
         bad_operator = create(:user_operator)
+        post api_v2_auth_login_path(email: bad_operator.email, password: bad_operator.password)
+        bad_operator_token = json_response['token']
+
         documents_as(endpoint: :'v2/internship_offers/destroy', state: :forbidden) do
           delete api_v2_internship_offer_path(
             id: @internship_offer.remote_id,
             params: {
-              token: "Bearer #{bad_operator.api_token}"
+              token: "Bearer #{bad_operator_token}"
             }
           )
         end
@@ -41,7 +46,7 @@ module Api
           delete api_v2_internship_offer_path(
             id: 'foo',
             params: {
-              token: "Bearer #{@operator.api_token}"
+              token: "Bearer #{@token}"
             }
           )
         end
@@ -55,7 +60,7 @@ module Api
           delete api_v2_internship_offer_path(
             id: @internship_offer.remote_id,
             params: {
-              token: "Bearer #{@operator.api_token}"
+              token: "Bearer #{@token}"
             }
           )
         end
@@ -67,9 +72,9 @@ module Api
       test 'DELETE #destroy twice renders conflict' do
         documents_as(endpoint: :'v2/internship_offers/destroy', state: :conflict) do
           delete api_v2_internship_offer_path(id: @internship_offer.remote_id,
-                                              params: { token: "Bearer #{@operator.api_token}" })
+                                              params: { token: "Bearer #{@token}" })
           delete api_v2_internship_offer_path(id: @internship_offer.remote_id,
-                                              params: { token: "Bearer #{@operator.api_token}" })
+                                              params: { token: "Bearer #{@token}" })
         end
         assert_response :conflict
       end

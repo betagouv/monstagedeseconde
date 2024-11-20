@@ -123,6 +123,7 @@ Rails.application.routes.draw do
       end
 
       namespace :v2 do
+        post 'auth/login', to: 'auth#login'
         resources :internship_offers, only: %i[create update destroy index] do
           get :search, on: :collection
         end

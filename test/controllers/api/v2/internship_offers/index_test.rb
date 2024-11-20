@@ -7,6 +7,12 @@ module Api
     class IndexTest < ActionDispatch::IntegrationTest
       include ::ApiTestHelpers
 
+      setup do
+        @operator = create(:user_operator)
+        post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
+        @token = json_response['token']
+      end
+
       test 'GET #index without token renders :unauthorized payload' do
         get api_v2_internship_offers_path(params: {})
         documents_as(endpoint: :'v2/internship_offers/index', state: :unauthorized) do
@@ -17,8 +23,7 @@ module Api
       end
 
       test 'GET #index renders :unauthorized payload' do
-        user = create(:user_operator)
-        operator = user.operator.update(api_full_access: false)
+        operator = @operator.operator.update(api_full_access: false)
 
         documents_as(endpoint: :'v2/internship_offers/index', state: :unauthorized) do
           get api_v2_internship_offers_path(
@@ -34,7 +39,7 @@ module Api
       end
 
       test 'GET #index only returns operators offers' do
-        user_1 = create(:user_operator)
+        user_1 = @operator
         user_2 = create(:user_operator)
 
         offer_1     = create(:api_internship_offer_3eme, employer: user_1)
@@ -44,7 +49,7 @@ module Api
         documents_as(endpoint: :'v2/internship_offers/index', state: :success) do
           get api_v2_internship_offers_path(
             params: {
-              token: "Bearer #{user_1.api_token}",
+              token: "Bearer #{@token}",
               page: 1
             }
           )
@@ -58,16 +63,14 @@ module Api
       end
 
       test 'GET #index only returns operators offers not discarded' do
-        user = create(:user_operator)
-
-        offer_1 = create(:api_internship_offer_3eme, employer: user)
-        offer_2 = create(:api_internship_offer_3eme, employer: user)
+        offer_1 = create(:api_internship_offer_3eme, employer: @operator)
+        offer_2 = create(:api_internship_offer_3eme, employer: @operator)
 
         # Delete the first offer
         delete api_v2_internship_offer_path(
           id: offer_1.remote_id,
           params: {
-            token: "Bearer #{user.api_token}"
+            token: "Bearer #{@token}"
           }
         )
 
@@ -78,7 +81,7 @@ module Api
         documents_as(endpoint: :'v2/internship_offers/index', state: :success) do
           get api_v2_internship_offers_path(
             params: {
-              token: "Bearer #{user.api_token}",
+              token: "Bearer #{@token}",
               page: 1
             }
           )

@@ -9,6 +9,8 @@ module Api
 
       setup do
         @operator = create(:user_operator)
+        post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
+        @token = json_response['token']
         @internship_offer = create(:api_internship_offer_3eme, employer: @operator)
       end
 
@@ -26,7 +28,7 @@ module Api
           patch api_v2_internship_offer_path(
             id: @internship_offer.remote_id,
             params: {
-              token: "Bearer #{@operator.api_token}"
+              token: "Bearer #{@token}"
             }
           )
         end
@@ -37,11 +39,14 @@ module Api
 
       test 'PATCH #update an internship_offer which does not belongs to current auth operator' do
         bad_operator = create(:user_operator)
+        post api_v2_auth_login_path(email: bad_operator.email, password: bad_operator.password)
+        bad_operator_token = json_response['token']
+
         documents_as(endpoint: :'v2/internship_offers/update', state: :forbidden) do
           patch api_v2_internship_offer_path(
             id: @internship_offer.remote_id,
             params: {
-              token: "Bearer #{bad_operator.api_token}",
+              token: "Bearer #{bad_operator_token}",
               internship_offer: {
                 title: ''
               }
@@ -58,7 +63,7 @@ module Api
           patch api_v2_internship_offer_path(
             id: 'foo',
             params: {
-              token: "Bearer #{@operator.api_token}",
+              token: "Bearer #{@token}",
               internship_offer: {
                 description: 'a' * (InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT + 2)
               }
@@ -75,7 +80,7 @@ module Api
           patch api_v2_internship_offer_path(
             id: @internship_offer.remote_id,
             params: {
-              token: "Bearer #{@operator.api_token}",
+              token: "Bearer #{@token}",
               internship_offer: {
                 description: 'a' * (InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT + 2)
               }
@@ -96,7 +101,7 @@ module Api
           patch api_v2_internship_offer_path(
             id: @internship_offer.remote_id,
             params: {
-              token: "Bearer #{@operator.api_token}",
+              token: "Bearer #{@token}",
               internship_offer: {
                 title: new_title,
                 max_candidates: 2,
@@ -120,7 +125,7 @@ module Api
         patch api_v2_internship_offer_path(
           id: @internship_offer.remote_id,
           params: {
-            token: "Bearer #{@operator.api_token}",
+            token: "Bearer #{@token}",
             internship_offer: {
               published_at: nil
             }
@@ -134,7 +139,7 @@ module Api
         patch api_v2_internship_offer_path(
           id: @internship_offer.remote_id,
           params: {
-            token: "Bearer #{@operator.api_token}",
+            token: "Bearer #{@token}",
             internship_offer: {
               published_at: new_publication_date
             }
