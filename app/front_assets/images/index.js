@@ -100,13 +100,14 @@ import './homepage/logo-education-nationale.svg';
 import './homepage/backgrd-header.webp';
 import './homepage/backgrd-header.png';
 import './homepage/hero-side-stamp.png';
-import './homepage/eleves_card_illustration.jpg';
-import './homepage/pro_card_illustration.jpg';
-import './homepage/education_card_illustration.jpg';
+import './homepage/web_illustration.png';
+import './homepage/notepad_illustration.png';
+import './homepage/media_illustration.png';
 import './homepage/onisep.png';
 import './homepage/eleves_hero_illustration.png';
 import './homepage/pros_hero_illustration.png';
 import './homepage/education_hero_illustration.png';
+import './homepage/1eleve1stage_tag.png';
 
 import './homepage/resources/etablissements.svg';
 import './homepage/resources/parents_eleves.svg';

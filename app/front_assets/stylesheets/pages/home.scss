@@ -181,7 +181,11 @@ p.fr-card__desc.std-height {
 }
 
 .container-monstage-fluid-hero {
-    background-color: $blue-france;
+    background-image: url('../images/homepage/backgrd-header.png');
+    background-position: center center;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: cover;
 
     .white-search-frame {
       background-color: #FFF;
@@ -670,3 +674,26 @@ img.covering {
   background-color: #e3e3fd;
   background-color: var(--background-open-blue-france);
 }
+
+.bg-cover-image-homepage {
+    border-radius: 0;
+    background-image: url('../images/homepage/backgrd-header.png');
+    background-repeat: no-repeat;
+    background-position: right bottom;
+}
+
+.custom-arrow-list {
+    list-style: none;
+    
+    li {
+      position: relative;
+      padding-left: 1.5rem;
+      
+      &::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: inherit;
+      }
+    }
+  }

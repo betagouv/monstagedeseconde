@@ -46,6 +46,10 @@ class PagesController < ApplicationController
     @faqs = get_faqs('student')
   end
 
+  def search_companies
+    @faqs = get_faqs('student')
+  end
+
   def maintenance_messaging
     hash = {
       subject: "Message de la page de maintenance de #{user_params[:name]}",

@@ -1,13 +1,12 @@
 .fr-my-2w.fr-py-2w.mx-lg-0.fr-mx-2w
-  .row 
-    .col-12.col-md-4.fr-px-1w
-      = image_tag asset_pack_path('media/images/homepage/onisep.png'), class: 'fr-responsive-img', alt: 'Onisep'
+  .row
     .col-12.col-md-8
-      h3.fr-h3.blue-france 
+      h3.fr-h5.blue-france 
         | Connaître plus tôt pour mieux choisir plus tard.
         br
         | Un stage d’observation en milieu professionnel, c’est :
-      ul.fr-pl-3w
+      ul.fr-pl-3w.custom-arrow-list
+        / li without puce
         li.fr-text--lg.blue-france Offrir à chaque jeune l’opportunité d’une connaissance immersive des métiers, quels que soient son origine sociale, son sexe ou son territoire d’origine.
         li.fr-text--lg.blue-france Permettre à chaque élève de faire des choix éclairés de parcours de formation, de choix de spécialités, de poursuite d’études, d’insertion professionnelle.
         li.fr-text--lg.blue-france Accéder à une meilleure connaissance des secteurs en tension et des secteurs d’avenir.
@@ -18,3 +17,5 @@
         |
       .fr-pt-1w
         = link_to 'Découvrez les spécificités de chaque stage selon le niveau d’études', 'https://www.onisep.fr/Decouvrir-les-metiers', target: '_blank', class: 'fr-btn fr-btn--secondary partner-btn'
+    .col-12.col-md-4.fr-px-1w
+      = image_tag asset_pack_path('media/images/homepage/onisep.png'), class: 'fr-responsive-img', alt: 'Onisep'
