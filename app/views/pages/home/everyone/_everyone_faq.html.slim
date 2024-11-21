@@ -4,13 +4,17 @@
   .row.fr-py-3w 
     - @faqs.each do |faq|
       .col-md-4.col-12-xs.d-flex.align-items-stretch.fr-mb-2w
-        .fr-card
+        .fr-card.fr-enlarge-link.without-arrow
           .fr-card__body.fr-pt-2w
             .fr-card__content
               h3.fr-card__title.fr-mb-2w.blue-france
-                = link_to faq[:question], faq[:url]
+                = link_to faq[:question], faq[:url], class: 'fr-raw-link'
               p.fr-card__desc
                 = faq[:answer].gsub(/<\/?pre>/, '').html_safe
+          .fr-card__header.fr-my-4w
+            ul.fr-badges-group.fr-p-4w
+              li
+                p.fr-badge.fr-badge--green-menthe = 'élèves'
          
 
   .row.fr-my-3w

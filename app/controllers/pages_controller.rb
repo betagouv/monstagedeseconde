@@ -48,6 +48,7 @@ class PagesController < ApplicationController
 
   def search_companies
     @faqs = get_faqs('student')
+    @resources = get_resources('student')
   end
 
   def maintenance_messaging
