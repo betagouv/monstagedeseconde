@@ -5,9 +5,10 @@ module Dashboard::Users
     include TeamAndAreasHelper
 
     test 'employer requests a new code and everything is ok' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application, aasm_state: :validated)
+      internship_agreement = create(:internship_agreement, internship_application: internship_application,
+                                                           aasm_state: :validated)
       sign_in(employer)
       visit dashboard_internship_agreements_path
       click_on 'Ajouter aux signatures'
@@ -19,10 +20,10 @@ module Dashboard::Users
       click_button('Recevoir un code')
 
       find('h1#fr-modal-signature-title', text: 'Nous vous avons envoyé un code de vérification')
-      find("button#button-code-submit.fr-btn[disabled]")
+      find('button#button-code-submit.fr-btn[disabled]')
       click_link('Renvoyer le code')
       sleep 0.1
-      find("#code-request", text: 'Un nouveau code a été envoyé')
+      find('#code-request', text: 'Un nouveau code a été envoyé')
     end
 
     test 'school_manager requests a new code and everything is ok' do
@@ -37,16 +38,17 @@ module Dashboard::Users
       click_button('Recevoir un code')
 
       find('h1#fr-modal-signature-title', text: 'Nous vous avons envoyé un code de vérification')
-      find("button#button-code-submit.fr-btn[disabled]")
+      find('button#button-code-submit.fr-btn[disabled]')
       click_link('Renvoyer le code')
       sleep 0.1
-      find("#code-request", text: 'Un nouveau code a été envoyé')
+      find('#code-request', text: 'Un nouveau code a été envoyé')
     end
 
     test 'employer requests a new code and it fails for almost no reason' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application, aasm_state: :validated)
+      internship_agreement = create(:internship_agreement, internship_application: internship_application,
+                                                           aasm_state: :validated)
       sign_in(employer)
       visit dashboard_internship_agreements_path
       click_on 'Ajouter aux signatures'
@@ -58,9 +60,9 @@ module Dashboard::Users
 
       find('h1#fr-modal-signature-title', text: 'Nous vous avons envoyé un code de vérification')
       raises_exception = -> { raise ArgumentError.new('This is a test') }
-      Users::Employer.stub_any_instance(:send_signature_sms_token, raises_exception) do #error
+      Users::Employer.stub_any_instance(:send_signature_sms_token, raises_exception) do # error
         click_link('Renvoyer le code')
-        find("#code-request", text: "Une erreur est survenue et votre demande n'a pas été traitée")
+        find('#code-request', text: "Une erreur est survenue et votre demande n'a pas été traitée")
       end
     end
   end

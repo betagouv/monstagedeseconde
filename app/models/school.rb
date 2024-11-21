@@ -9,7 +9,10 @@ class School < ApplicationRecord
   has_many :internship_offers, dependent: :nullify
   has_many :internship_applications, through: :students
   has_many :internship_agreements, through: :internship_applications
+  has_many :plannings, dependent: :destroy
   has_many :dedicated_internship_offers, foreign_key: :school_id, dependent: :nullify, class_name: 'InternshipOffer'
+  has_many :school_internship_weeks, dependent: :destroy
+  has_many :weeks, through: :school_internship_weeks
   belongs_to :department, optional: true
 
   has_rich_text :agreement_conditions_rich_text
@@ -44,12 +47,28 @@ class School < ApplicationRecord
                                             .pluck(:school_id))
   }
 
+  scope :internship_weeks, lambda { |latitude:, longitude:, radius:|
+                             joins(school_internship_weeks: :week)
+                               .nearby(latitude:, longitude:, radius:)
+                           }
+
+  def self.nearby_school_weeks(latitude:, longitude:, radius:)
+    internship_weeks(latitude:, longitude:, radius:)
+      .pluck(:week_id)
+      .tally
+      .transform_keys { |week_id| "school-week-#{week_id}".to_sym }
+  end
+
   def select_text_method
     "#{name} - #{city} - #{zipcode}"
   end
 
   def agreement_address
     "#{presenter.school_name} - #{city}, #{zipcode}"
+  end
+
+  def has_weeks_on_current_year?
+    weeks.selectable_on_school_year.exists?
   end
 
   rails_admin do

@@ -79,7 +79,6 @@ module Dashboard
                                      :name,
                                      :visible,
                                      :agreement_conditions_rich_text,
-                                     :period,
                                      coordinates: {})
     end
 

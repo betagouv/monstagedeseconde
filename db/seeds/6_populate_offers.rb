@@ -1,5 +1,7 @@
 def populate_internship_offers
   current_school_year = SchoolYear::Current.new.beginning_of_period
+  weeks = SchoolTrack::Seconde.both_weeks
+  weeks += Week.selectable_from_now_until_end_of_school_year
   # public sector
   # 1
   InternshipOffers::WeeklyFramed.create!(
@@ -20,7 +22,11 @@ def populate_internship_offers
     city: 'Tours',
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude] },
     employer_name: Group.is_paqte.first.name,
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    internship_weeks_number: 2
   )
 
   # 2
@@ -42,7 +48,11 @@ def populate_internship_offers
     city: 'Verneuil-sur-Seine',
     coordinates: { latitude: Coordinates.verneuil[:latitude], longitude: Coordinates.verneuil[:longitude] },
     employer_name: Group.is_paqte.first.name,
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    internship_weeks_number: 2
   )
 
   # 3
@@ -57,14 +67,16 @@ def populate_internship_offers
     is_public: true,
     title: 'Observation du métier de chef de service - Ministère',
     description: 'Découvrez les réunions et comment se prennent les décisions au plus haut niveau mais aussi tous les interlocuteurs de notre société qui intéragissent avec nos services ',
-    description: "Venez découvrir le métier de chef de service ! Vous observerez comment nos administrateurs garantissent aux usagers l'exercice de leur droits, tout en respectant leurs devoirs.",
     employer_description: 'De multiples méthodes de travail et de prises de décisions seront observées',
     street: '18 rue Damiens',
     zipcode: '75012',
     city: 'paris',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: Group.is_public.last.name,
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   # 4
@@ -86,7 +98,10 @@ def populate_internship_offers
     city: 'paris',
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Du temps pour moi',
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
   # dépubliée
   # 5
@@ -109,7 +124,10 @@ def populate_internship_offers
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Du temps pour moi',
     max_candidates: 7,
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   # 6
@@ -130,7 +148,11 @@ def populate_internship_offers
     city: 'paris',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: 'Editegis',
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    internship_weeks_number: 2,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
   # 7
   InternshipOffers::WeeklyFramed.create!(
@@ -151,7 +173,11 @@ def populate_internship_offers
     city: 'Tours',
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude] },
     employer_name: 'Education Nationale',
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    internship_weeks_number: 2,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   area_id = Users::Operator.first.reload.internship_offer_areas.first.id
@@ -165,7 +191,6 @@ def populate_internship_offers
     group: Group.is_private.first,
     is_public: false,
     title: "API - Observation du métier d'Administrateur de systèmes informatiques - IBM SERVICES CENTER",
-    description: 'Découvrez les machines mais aussi tous les interlocuteurs de notre société qui intéragissent avec nos services informatiques',
     description: "Venez découvrir le métier d'administrateur systèmes ! Vous observerez comment nos administrateurs garantissent aux clients le bon fonctionnement etc.",
     employer_description: "Le centre de service IBM de Lille délivre des services d'infrastructure informatique.",
     street: '128 rue brancion',
@@ -175,7 +200,10 @@ def populate_internship_offers
     permalink: 'https://www.google.fr',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: 'IBM',
-    internship_offer_area_id: area_id
+    internship_offer_area_id: area_id,
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   # 9 api - 2
@@ -189,7 +217,6 @@ def populate_internship_offers
     group: Group.is_public.first,
     is_public: false,
     title: "Découverte des métiers administratifs de l'Education nationale",
-    description: "La Direction des Services de l'Education Nationale de Seine-et-Marne (DSDEN) propose des stages d'observation",
     description: "La Direction des Services de l'Education Nationale de Seine-et-Marne (DSDEN) se compose de plusieurs services répartis sur 11 étages. Ses 240 agents  ...",
     employer_description: "Le centre de service IBM de Lille délivre des services d'infrastructure informatique.",
     tutor_name: 'Martin Fourcade',
@@ -203,15 +230,14 @@ def populate_internship_offers
     permalink: 'https://www.google.fr',
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Ministère de l\'Education Nationale',
-    internship_offer_area_id: area_id
+    internship_offer_area_id: area_id,
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
-  # 10 mullti-line
-  multiline_description = <<~MULTI_LINE
-    - Présentation des services de la direction régionale de Valenciennes (service contentieux, pôle action économique).
-    - Présentation de la recette interrégionale (service de perception).
-    - Immersion au sein d’un bureau de douane (gestion des procédures, déclarations en douane, dédouanement, contrôles des déclarations et des marchandises).
-  MULTI_LINE
+  # 10
+  description = ' - Présentation des services de la direction régionale de Valenciennes (service contentieux, pôle action économique). - Présentation de la recette interrégionale (service de perception). - Immersion au sein d’un bureau de douane (gestion des procédures, déclarations en douane, dédouanement, contrôles des déclarations et des marchandises).'
   InternshipOffers::WeeklyFramed.create!(
     max_candidates: 5,
     employer: Users::Employer.first,
@@ -221,7 +247,7 @@ def populate_internship_offers
     group: Group.is_private.first,
     is_public: false,
     title: 'Découverte des services douaniers de Valenciennes',
-    description: multiline_description,
+    description: description,
     employer_description: 'La douane assure des missions fiscales et de lutte contre les trafics illicites et la criminalité organisée.',
     employer_website: 'http://www.prefectures-regions.gouv.fr/hauts-de-france/Region-et-institutions/Organisation-administrative-de-la-region/Les-services-de-l-Etat-en-region/Direction-interregionale-des-douanes/Direction-interregionale-des-douanes',
     street: '2 rue jean moulin',
@@ -229,15 +255,15 @@ def populate_internship_offers
     city: 'Montmorency',
     coordinates: { latitude: Coordinates.montmorency[:latitude], longitude: Coordinates.montmorency[:longitude] },
     employer_name: 'Douanes Assistance Corp.',
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    internship_weeks_number: 2
   )
 
-  # 11 multi-line
-  multiline_description = <<~MULTI_LINE
-    - Présentation des services de la succursale MetaBoutShop
-    - Présentation des principes fondamentaux du métier.
-    - Immersion au sein d’une équipe de gestionnaire de la boutique. Proposition de gestion de portefeuille de boutiques et de stands fictifs en fin de stage, avec les conseils du tuteur'.
-  MULTI_LINE
+  # 11
+  description = " - Présentation des services de la succursale MetaBoutShop - Présentation des principes fondamentaux du métier. - Immersion au sein d’une équipe de gestionnaire de la boutique. Proposition de gestion de portefeuille de boutiques et de stands fictifs en fin de stage, avec les conseils du tuteur'."
   InternshipOffers::WeeklyFramed.create!(
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
@@ -247,14 +273,18 @@ def populate_internship_offers
     group: Group.is_private.first,
     is_public: false,
     title: 'Découverte du travail de gestionnaire en ligne',
-    description: multiline_description,
+    description: description,
     employer_description: 'Le métier de gestionnaire consiste à optimiser les ressources de la MetaBoutShop en spéculant sur des valeurs mobilières',
     street: '2 Allée de la Garenne',
     zipcode: '78480',
     city: 'Verneuil-sur-Seine',
     coordinates: { latitude: Coordinates.verneuil[:latitude], longitude: Coordinates.verneuil[:longitude] },
     employer_name: 'MetaBoutShop',
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    internship_weeks_number: 2
   )
 
   InternshipOffers::WeeklyFramed.all.each { |o| o.publish! if o.may_publish? }
@@ -271,11 +301,7 @@ def populate_internship_offers
                                 &.unpublish!
 
   # 11 multi-line
-  multiline_description = <<~MULTI_LINE
-    - Présentation des services de la direction régionale de la banque Acme Corp. (banque de dépôt).
-    - Présentation des principes secondaires du métier.
-    - Immersion au sein d’une équipe d'admiistrateurs de comptes de la banque. Proposition de gestion de portefeuille de clients en fin de stage, avec les conseils du tuteur'.
-  MULTI_LINE
+  description = " - Présentation des services de la direction régionale de la banque Acme Corp. (banque de dépôt). - Présentation des principes secondaires du métier. - Immersion au sein d’une équipe d'admiistrateurs de comptes de la banque. Proposition de gestion de portefeuille de clients en fin de stage, avec les conseils du tuteur'. "
 
   InternshipOffers::WeeklyFramed.create!(
     max_candidates: 5,
@@ -287,7 +313,7 @@ def populate_internship_offers
     is_public: false,
     school_year: 2023,
     title: 'Découverte du travail de trader',
-    description: multiline_description,
+    description: description,
     employer_description: 'Le métier de trader consiste à optimiser les ressources de la banque Oyonnax Corp. en spéculant sur des valeurs mobilières',
     tutor_name: 'Martin Fourcade',
     tutor_email: 'fourcade.m@gmail.com',
@@ -298,7 +324,11 @@ def populate_internship_offers
     city: 'paris',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: 'Oyonnax Corp.',
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: weeks,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    internship_weeks_number: 2
   )
 
   # 12
@@ -320,7 +350,10 @@ def populate_internship_offers
     city: 'Bordeaux',
     coordinates: { latitude: Coordinates.bordeaux[:latitude], longitude: Coordinates.bordeaux[:longitude] },
     employer_name: Group.is_paqte.second.name,
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    grades: Grade.all,
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
   InternshipOffer.last.publish!
 
@@ -343,7 +376,10 @@ def populate_internship_offers
     city: 'Tours',
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude] },
     employer_name: Group.is_paqte.second.name,
-    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    grades: Grade.all
   )
   InternshipOffer.last.publish!
 
@@ -366,11 +402,18 @@ def populate_internship_offers
     permalink: 'https://www.google.fr',
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Ministère de l\'Education Nationale',
-    internship_offer_area_id: area_id
+    internship_offer_area_id: area_id,
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    grades: Grade.all
   )
   InternshipOffer.last.publish!
 
   # 15 older school year
+  current_year = SchoolTrack::Seconde.current_year
+  former_year = current_year - 1
+  weeks = SchoolTrack::Seconde.both_weeks(year: former_year)
+  weeks += Week.of_previous_school_year
   InternshipOffers::Api.create!(
     employer: Users::Operator.first,
     contact_phone: '+33637607756',
@@ -391,8 +434,9 @@ def populate_internship_offers
     internship_offer_area_id: area_id,
     school_year: 2023,
     period: 1,
-    first_date: SchoolTrack::Seconde.period_collection(school_year: 2023)[:week_1][:start_day],
-    last_date: SchoolTrack::Seconde.period_collection(school_year: 2023)[:week_1][:end_day]
+    weeks: Week.selectable_from_now_until_end_of_school_year,
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    grades: Grade.all
   )
   InternshipOffer.last.publish!
 end

@@ -1,0 +1,18 @@
+= form_with model: @entreprise,
+            url: ,
+            scope: :entreprise,
+            data: { turbo: false },
+            method: method do |form|
+  = render "dashboard/stepper/steps", { current_step_number: 2,
+                                        total_steps: 3,
+                                        current_step_title: "Votre entreprise",
+                                        next_step_title: "Planning" }
+  = render "layouts/form_errors",
+            resource: @entreprise,
+            resource_name: :internship_offer
+
+  = render 'dashboard/stepper/entreprises/form_fields', { resource: @entreprise,
+                                                          warning_block: true,
+                                                          form: form,
+                                                          submit_button: submit_button,
+                                                          show_resume: show_resume }

@@ -61,11 +61,11 @@ module Users
       travel_to Date.new(2024, 9, 1) do
         weeks_till_end = Week.selectable_from_now_until_end_of_school_year
         school         = create(:school, :with_school_manager)
-        student        = create(:student, school:)
+        student        = create(:student, :troisieme, school:)
         refute student.has_offers_to_apply_to?
-        create(:weekly_internship_offer, coordinates: Coordinates.bordeaux)
+        create(:weekly_internship_offer_3eme, coordinates: Coordinates.bordeaux)
         refute student.has_offers_to_apply_to?
-        create(:weekly_internship_offer, coordinates: Coordinates.paris)
+        create(:weekly_internship_offer_3eme, coordinates: Coordinates.paris)
         assert student.has_offers_to_apply_to?
       end
     end
@@ -77,99 +77,104 @@ module Users
     end
 
     test '#other_approved_applications_compatible? context: no application, student tries to apply to an offer with a both weeks period' do
-      student = create(:student)
-      internship_offer = create(:weekly_internship_offer, :full_time)
+      student = create(:student, :seconde)
+      internship_offer = create(:weekly_internship_offer_2nde, :both_weeks)
       assert student.other_approved_applications_compatible?(internship_offer:)
     end
 
     test '#other_approved_applications_compatible? context: 1 approved application week 1, student tries to apply to an offer with a both weeks period' do
       student = create(:student)
-      internship_offer_week_1 = create(:weekly_internship_offer, :week_1)
+      internship_offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
       create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_week_1)
-      internship_offer = create(:weekly_internship_offer, :full_time)
+      internship_offer = create(:weekly_internship_offer_2nde, :both_weeks)
       refute student.other_approved_applications_compatible?(internship_offer:)
     end
 
     test '#other_approved_applications_compatible? context: 1 approved application week 2, student tries to apply to an offer with a both weeks period' do
-      student = create(:student)
-      internship_offer_week_2 = create(:weekly_internship_offer, :week_2)
-      create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_week_2)
-      internship_offer = create(:weekly_internship_offer, :full_time)
+      student = create(:student, :seconde)
+      internship_offer_week_2 = create(:weekly_internship_offer_2nde, :week_2)
+      create(:weekly_internship_application, :approved, student:,
+                                                        weeks: [internship_offer_week_2.weeks.first],
+                                                        internship_offer: internship_offer_week_2)
+      internship_offer = create(:weekly_internship_offer_2nde, :both_weeks)
       refute student.other_approved_applications_compatible?(internship_offer:)
     end
 
     test '#other_approved_applications_compatible? context: 1 approved application both weeks, student tries to apply to an offer with a both weeks period' do
-      student = create(:student)
-      internship_offer_full_time = create(:weekly_internship_offer, :full_time)
-      create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_full_time)
-      internship_offer = create(:weekly_internship_offer, :full_time)
-      refute student.other_approved_applications_compatible?(internship_offer:)
+      internship_offer_full_time = create(:weekly_internship_offer_2nde, :both_weeks)
+      internship_application = create(:weekly_internship_application, :approved, :both_june_weeks,
+                                      internship_offer: internship_offer_full_time)
+      internship_offer = create(:weekly_internship_offer_2nde, :both_weeks)
+      refute internship_application.student.other_approved_applications_compatible?(internship_offer:)
     end
 
     test '#other_approved_applications_compatible? context: no application, student tries to apply to an offer with a week_1 period' do
-      student = create(:student)
-      internship_offer = create(:weekly_internship_offer, :week_1)
+      student = create(:student, :seconde)
+      internship_offer = create(:weekly_internship_offer_2nde, :week_1)
       assert student.other_approved_applications_compatible?(internship_offer:)
     end
 
     test '#other_approved_applications_compatible? context: 1 approved application week 1, student tries to apply to an offer with a week_1 period' do
-      student = create(:student)
-      internship_offer_week_1 = create(:weekly_internship_offer, :week_1)
-      create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_week_1)
-      internship_offer = create(:weekly_internship_offer, :week_1)
+      student = create(:student, :seconde)
+      internship_offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
+      create(:weekly_internship_application, :approved, student:,
+                                                        internship_offer: internship_offer_week_1,
+                                                        weeks: [internship_offer_week_1.weeks.first])
+      internship_offer = create(:weekly_internship_offer_2nde, :week_1)
       refute student.other_approved_applications_compatible?(internship_offer:)
     end
 
     test '#other_approved_applications_compatible? context: 1 approved application week 2, student tries to apply to an offer with a week_1 period' do
-      student = create(:student)
-      internship_offer_week_2 = create(:weekly_internship_offer, :week_2)
-      create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_week_2)
-      internship_offer = create(:weekly_internship_offer, :week_1)
+      student = create(:student, :seconde)
+      internship_offer_week_2 = create(:weekly_internship_offer_2nde, :week_2)
+      create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_week_2,
+                                                        weeks: [internship_offer_week_2.weeks.first])
+      internship_offer = create(:weekly_internship_offer_2nde, :week_1)
       assert student.other_approved_applications_compatible?(internship_offer:)
     end
 
     test '#other_approved_applications_compatible? context: 1 approved application both weeks, student tries to apply to an offer with a week_1 period ' do
       student = create(:student)
-      internship_offer_full_time = create(:weekly_internship_offer, :full_time)
+      internship_offer_full_time = create(:weekly_internship_offer_2nde, :both_weeks)
       create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_full_time)
-      internship_offer = create(:weekly_internship_offer, :week_1)
+      internship_offer = create(:weekly_internship_offer_2nde, :week_1)
       refute student.other_approved_applications_compatible?(internship_offer:)
     end
 
     test '#other_approved_applications_compatible? context: 1 *submitted* application both weeks, student tries to apply to an offer with a week_1 period ' do
-      student = create(:student)
-      internship_offer_full_time = create(:weekly_internship_offer, :full_time)
+      student = create(:student, :seconde)
+      internship_offer_full_time = create(:weekly_internship_offer_2nde, :both_weeks)
       create(:weekly_internship_application, :submitted, student:, internship_offer: internship_offer_full_time)
-      internship_offer = create(:weekly_internship_offer, :week_1)
+      internship_offer = create(:weekly_internship_offer_2nde, :week_1)
       assert student.other_approved_applications_compatible?(internship_offer:)
     end
 
     test '#with_2_weeks_internships_approved? context: no approved application' do
-      student = create(:student)
-      internship_offer_full_time = create(:weekly_internship_offer, :full_time)
+      student = create(:student, :seconde)
+      internship_offer_full_time = create(:weekly_internship_offer_2nde, :both_weeks)
       create(:weekly_internship_application, :submitted, student:, internship_offer: internship_offer_full_time)
       refute student.with_2_weeks_internships_approved?
     end
 
     test '#with_2_weeks_internships_approved? context: a 1 week approved application' do
-      student = create(:student)
-      internship_offer_week_1 = create(:weekly_internship_offer, :week_1)
+      student = create(:student, :seconde)
+      internship_offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
       create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_week_1)
       refute student.with_2_weeks_internships_approved?
     end
 
     test '#with_2_weeks_internships_approved? context: a 2 weeks approved application' do
-      student = create(:student)
-      internship_offer_full_time = create(:weekly_internship_offer, :full_time)
+      student = create(:student, :seconde)
+      internship_offer_full_time = create(:weekly_internship_offer_2nde, :both_weeks)
       create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_full_time)
       assert student.with_2_weeks_internships_approved?
     end
 
     test '#with_2_weeks_internships_approved? context: 2 weeks different weeks approved application' do
       travel_to Date.new(2023, 9, 1) do
-        student = create(:student, phone: '+330612345678')
-        internship_offer_week_1 = create(:weekly_internship_offer, :week_1)
-        internship_offer_week_2 = create(:weekly_internship_offer, :week_2)
+        student = create(:student, :seconde, phone: '+330612345678')
+        internship_offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
+        internship_offer_week_2 = create(:weekly_internship_offer_2nde, :week_2)
         create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_week_1)
         create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_week_2)
         assert student.with_2_weeks_internships_approved?

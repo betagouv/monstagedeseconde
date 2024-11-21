@@ -1,8 +1,10 @@
 # frozen_string_literal: true
+
 require 'csv'
 require_relative '../test/support/coordinates'
 require 'ffaker'
 require 'active_support/notifications'
+require 'pretty_console'
 
 def siret
   siret = FFaker::CompanyFR.siret
@@ -40,11 +42,11 @@ end
 
 def find_default_school_during_test
   # School.find_by_code_uai("0781896M") # school at mantes lajolie, school name : Pasteur.
-  School.find_by_code_uai("0752694W") # school at Paris, school name : Camille Claudel.
+  School.find_by_code_uai('0752694W') # school at Paris, school name : Camille Claudel.
 end
 
-ActiveSupport::Notifications.subscribe /seed/ do |event|
-  puts "#{event.name} done! #{event.duration}"
+ActiveSupport::Notifications.subscribe(/seed/) do |event|
+  PrettyConsole.puts_in_blue "#{event.name} done! #{event.duration}"
 end
 
 def prevent_sidekiq_to_run_job_after_seed_loaded
@@ -53,9 +55,9 @@ def prevent_sidekiq_to_run_job_after_seed_loaded
   end
 end
 
-if true #Rails.env == 'review' || Rails.env.development?
+if Rails.env == 'review' || Rails.env.development?
   Dir[File.join(Rails.root, 'db', 'seeds', '*.rb')].sort.each do |seed|
-    puts "Loading #{seed}"
+    PrettyConsole.puts_in_yellow "Loading #{seed}"
     load seed
   end
 

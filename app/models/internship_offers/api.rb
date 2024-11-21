@@ -2,19 +2,18 @@
 
 module InternshipOffers
   class Api < InternshipOffer
-
     MAX_CALLS_PER_MINUTE = 100
 
     rails_admin do
       weight 13
-      navigation_label "Offres"
+      navigation_label 'Offres'
 
       configure :created_at, :datetime do
         date_format 'BUGGY'
       end
 
       list do
-        scopes [:kept, :discarded]
+        scopes %i[kept discarded]
 
         field :title
         field :department
@@ -60,7 +59,8 @@ module InternshipOffers
 
     validates :zipcode, zipcode: { country_code: :fr }
     validates :remote_id, uniqueness: { scope: :employer_id }
-    validates :permalink, presence: true, format: { without: /.*(test|staging).*/i, message: "Le lien ne doit pas renvoyer vers un environnement de test." }
+    validates :permalink, presence: true,
+                          format: { without: /.*(test|staging).*/i, message: 'Le lien ne doit pas renvoyer vers un environnement de test.' }
 
     scope :uncompleted_with_max_candidates, lambda {
       where('1=1')
@@ -119,7 +119,7 @@ module InternshipOffers
                  sector_uuid
                  max_candidates
                  published_at
-                is_public],
+                 is_public],
         methods: [:formatted_coordinates]
       ))
     end

@@ -11,46 +11,45 @@
   - if @republish
     = form.hidden_field :published_at, value: Time.now
 
-  // used when posted from stepper
-  = form.hidden_field :organisation_id,
-                      value: @internship_offer.organisation_id
-  = form.hidden_field :internship_offer_info_id,
-                      value: @internship_offer.internship_offer_info_id
-  = form.hidden_field :hosting_id,
-                      value: @internship_offer.hosting_info_id
-  = form.hidden_field :practical_info_id,
-                      value: @internship_offer.practical_info_id
-  // Organisation
-  = form.fields_for :organisation do |organisation_form|
-    = render 'dashboard/stepper/organisations/form_fields',
-              { resource: @internship_offer.organisation,
-                form: organisation_form,
-                warning_block: true,
-                submit_button: false }
-
+  // used posted from stepper
+  = form.hidden_field :internship_occupation_id,
+                      value: @internship_offer.internship_occupation_id
+  = form.hidden_field :entreprise_id,
+                      value: @internship_offer.entreprise_id
+  = form.hidden_field :planning_id,
+                      value: @internship_offer.planning_id
+  // internship_occupation
+  / = form.fields_for :internship_occupation do |internship_occupation|
+  /   = render 'dashboard/stepper/organisations/form_fields',
+  /             { resource: @internship_offer.organisation,
+  /               form: organisation_form,
+  /               warning_block: true,
+  /               submit_button: false }
+  // TODO remove warning_blocks
+  = render 'dashboard/stepper/internship_occupations/form_fields',
+            { resource: @internship_offer,
+              form: form,
+              warning_block: true,
+              show_resume: true,
+              submit_button: false }
   hr
-  // OfferInfo
-  = render 'dashboard/stepper/internship_offer_infos/form_fields',
+  // Entreprise
+  = render 'dashboard/stepper/entreprises/form_fields',
            { resource: @internship_offer,
              form: form,
              warning_block: false,
+             show_resume: false,
              submit_button: false }
 
   hr
-  // HostingInfo
-  = render 'dashboard/stepper/hosting_infos/form_fields',
+  // Planning
+  = render 'dashboard/stepper/plannings/form_fields',
            { resource: @internship_offer,
              form: form,
+             show_resume: false,
              warning_block: false,
              submit_button: false }
 
-  hr
-  // PracticalInfo
-  = render 'dashboard/stepper/practical_infos/form_fields',
-           { resource: @internship_offer,
-             form: form,
-             warning_block: false,
-             submit_button: false }
 
   .actions
     .row.fr-mb-8w

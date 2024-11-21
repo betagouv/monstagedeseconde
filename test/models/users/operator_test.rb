@@ -14,12 +14,12 @@ module Users
       assert_equal operator, user_operator.operator
       assert_not_nil user_operator.api_token
       assert user_operator.current_area_id.present?
-      assert_equal "Espace de M.Fourcade", user_operator.current_area.name
+      assert_equal 'Espace de M.Fourcade', user_operator.current_area.name
     end
 
     test 'association.internship_offers' do
       operator = create(:user_operator)
-      internship_offer = create(:weekly_internship_offer, employer: operator)
+      internship_offer = create(:weekly_internship_offer_2nde, employer: operator)
       operator.reload
 
       assert_equal internship_offer, operator.personal_internship_offers.first

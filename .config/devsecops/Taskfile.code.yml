@@ -1,0 +1,46 @@
+---
+version: "3"
+
+tasks:
+  default:
+    desc: Run all generic code tasks
+    cmds:
+      - cmd: |
+          if [[ "{{.TASK_COMMITLINT_ENABLED}}" == "true" ]]; then
+            echo "🔍 Running commitlint..."
+            task commitlint
+            echo "{{.TASK_SEPARATOR}}"
+          else
+            echo "⚠️ Skipping commitlint (disabled via TASK_COMMITLINT_ENABLED=false)"
+          fi
+        silent: true
+      - cmd: |
+          if [[ "{{.TASK_MEGALINTER_ENABLED}}" == "true" ]]; then
+            echo "🔍 Running megalinter..."
+            task megalinter
+            echo "{{.TASK_SEPARATOR}}"
+          else
+            echo "⚠️ Skipping megalinter (disabled via TASK_MEGALINTER_ENABLED=false)"
+          fi
+        silent: true
+      - cmd: |
+          if [[ "{{.TASK_COMMITIZEN_ENABLED}}" == "true" ]]; then
+            echo "📝 Running commitizen checks..."
+            task commitizen:check
+            echo "{{.TASK_SEPARATOR}}"
+            echo "📝 Running commitizen bump..."
+            task commitizen:bump
+            echo "{{.TASK_SEPARATOR}}"
+          else
+            echo "⚠️ Skipping commitizen (disabled via TASK_COMMITIZEN_ENABLED=false)"
+          fi
+        silent: true
+      - cmd: |
+          if [[ "{{.TASK_LIZARD_ENABLED}}" == "true" ]]; then
+            echo "🔍 Running lizard code analysis..."
+            task lizard
+            echo "{{.TASK_SEPARATOR}}"
+          else
+            echo "⚠️ Skipping lizard (disabled via TASK_LIZARD_ENABLED=false)"
+          fi
+        silent: true

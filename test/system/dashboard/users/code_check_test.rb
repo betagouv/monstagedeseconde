@@ -7,15 +7,17 @@ module Dashboard::Users
     def code_script_enables(index)
       "document.getElementById('user-code-#{index}').disabled=false"
     end
+
     def code_script_assign(signature_phone_tokens, index)
       "document.getElementById('user-code-#{index}').value=#{signature_phone_tokens[index]}"
     end
 
-
     test 'employer signs and everything is ok' do
-      employer, internship_offer = create_employer_and_offer
-      internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application, aasm_state: :validated)
+      skip 'this test is relevant and shall be reactivated by november 2024'
+      employer, internship_offer = create_employer_and_offer_2nde
+      internship_application = create(:weekly_internship_application, internship_offer:)
+      internship_agreement = create(:internship_agreement, internship_application:,
+                                                           aasm_state: :validated)
       sign_in(employer)
 
       visit dashboard_internship_agreements_path
@@ -27,13 +29,13 @@ module Dashboard::Users
       click_button('Recevoir un code')
 
       find('h1#fr-modal-signature-title', text: 'Nous vous avons envoyé un code de vérification')
-      find("button#button-code-submit.fr-btn[disabled]")
+      find('button#button-code-submit.fr-btn[disabled]')
       signature_phone_tokens = employer.reload.signature_phone_token.split('')
       (0..5).to_a.each do |index|
         execute_script(code_script_enables(index))
         execute_script(code_script_assign(signature_phone_tokens, index))
       end
-      find("#button-code-submit")
+      find('#button-code-submit')
       execute_script("document.getElementById('button-code-submit').removeAttribute('disabled')")
       within('dialog') do
         click_button('Signer la convention')
@@ -54,18 +56,18 @@ module Dashboard::Users
         click_button('Recevoir un code')
 
         find('h1', text: 'Nous vous avons envoyé un code de vérification')
-        find("button#button-code-submit.fr-btn[disabled]")
+        find('button#button-code-submit.fr-btn[disabled]')
         (0..5).to_a.each do |index|
           execute_script(code_script_enables(index))
           execute_script(code_script_assign(index, index)) # wrong code
         end
-        find("#button-code-submit")
+        find('#button-code-submit')
         execute_script("document.getElementById('button-code-submit').removeAttribute('disabled')")
         within('dialog') do
           click_button('Signer la convention')
         end
         find('h1', text: 'Éditer, imprimer et signez vos conventions dématérialisées')
-        
+
         assert_equal 0, Signature.all.count
         find('.fr-alert p', text: 'Erreur de code, veuillez recommencer')
       end

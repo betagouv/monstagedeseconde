@@ -21,7 +21,7 @@ class MainTeacherMailer < ApplicationMailer
     subject = "La candidature d'un de vos élèves a été acceptée"
     cc = @student.school_manager_email
 
-    send_email( to: to, subject: subject, cc: cc )
+    send_email(to:, subject: , cc: )
   end
 
   def internship_application_approved_with_no_agreement_email(internship_application:, main_teacher:)
@@ -43,7 +43,7 @@ class MainTeacherMailer < ApplicationMailer
     subject = "Un de vos élèves a été accepté à un stage"
     cc = nil
 
-    send_email(to: to, subject: subject, cc: cc)
+    send_email(to:, subject: , cc: )
   end
 
   def internship_application_validated_by_employer_email(internship_application)
@@ -64,6 +64,6 @@ class MainTeacherMailer < ApplicationMailer
     subject = "Un de vos élèves a été accepté en stage"
     cc = nil
 
-    send_email( to: to, subject: subject, cc: cc )
+    send_email(to:, subject: , cc: )
   end
 end

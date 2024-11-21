@@ -1,0 +1,29 @@
+- klass = form.object.class.name.downcase
+- id = "#{klass}_#{field}"
+- name = "#{klass}[#{field}]"
+- extra_header_classes = extra_header_classes || ''
+- error = form.object.errors[field].any?
+- options = options || {}
+- checked = options[:checked] == 'true'
+- action = options[:data][:action]
+
+fieldset#checkboxes class="fr-fieldset #{error ? 'fr-fieldset--error' : ''}" aria-labelledby="checkboxes-legend checkboxes-messages"
+  legend#checkboxes-legend class="fr-fieldset__legend--regular fr-fieldset__legend #{extra_header_classes}"
+    - if title.present?
+      = title
+  .fr-fieldset__element
+    - value = form.object.send(field) || value
+    .fr-checkbox-group data-action="#{action}"
+      / 1 for true, 0 for false
+      = form.check_box field,
+                       options.merge(:'aria-describedby' => "#{id}-messages")
+      label.fr-label for="#{id}"
+        = label
+      div.fr-messages-group id="{id}-messages" aria-live="assertive"
+    -if error
+      .fr-messages-group aria-live="assertive" id="checkboxes-error-message-error"
+        p.fr-message.fr-message--error" id="checkboxes-error-message-error"
+          = form.object.errors[field]
+
+
+

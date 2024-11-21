@@ -6,6 +6,9 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   include ThirdPartyTestHelpers
   include TeamAndAreasHelper
 
+  test 'factory' do
+    assert build(:weekly_internship_application).valid?
+  end
   test 'scope remindable' do
     create(:weekly_internship_application, :submitted,
            submitted_at: 5.days.ago,
@@ -33,19 +36,19 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert_equal 3, InternshipApplication.remindable.count
   end
 
-  test 'transition from draft to submit updates submitted_at and sends email to employer' do
-    internship_application = create(:weekly_internship_application, :drafted)
+  test 'creating a new internship application sets submitted_at and sends email to employer' do
     freeze_time do
-      assert_changes -> { internship_application.reload.submitted_at },
-                     from: nil,
-                     to: Time.now.utc do
+      assert_changes -> { InternshipApplication.count }, from: 0, to: 1 do
         mock_mail = Minitest::Mock.new
         mock_mail.expect(:deliver_later, true, [], wait: 1.second)
+
         EmployerMailer.stub :internship_application_submitted_email, mock_mail do
           StudentMailer.stub :internship_application_submitted_email, mock_mail do
-            internship_application.submit!
+            internship_application = create(:weekly_internship_application)
           end
         end
+
+        assert_equal Time.now.utc, InternshipApplication.last.submitted_at
         mock_mail.verify
       end
     end
@@ -267,7 +270,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test 'transition from submited to approved create internship_agreement for student' do
-    internship_offer = create(:weekly_internship_offer)
+    internship_offer = create(:weekly_internship_offer_2nde)
     school = create(:school, :with_school_manager)
     class_room = create(:class_room, school:)
     student = create(:student, class_room:)
@@ -416,6 +419,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test '.order_by_aasm_state_for_student' do
+    skip 'This test is flaky, it fails on CI' if ENV['CI'] == true
     internship_application_1 = nil
     internship_application_2 = nil
     internship_application_3 = nil

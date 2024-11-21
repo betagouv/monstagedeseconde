@@ -9,19 +9,28 @@ module Dashboard
     helper_method :order_direction
 
     def index
-      if current_user.employer_like?
-        @internship_offer_areas = current_user.internship_offer_areas
-      end
+      @internship_offer_areas = current_user.internship_offer_areas if current_user.employer_like?
       authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
       @internship_offers = finder.all
-      order_param = order_direction.nil? ? :published_at : {order_column => order_direction}
+      order_param = order_direction.nil? ? :published_at : { order_column => order_direction }
       @internship_offers = @internship_offers.order(order_param)
-      if params[:search].present?
-        @internship_offers = @internship_offers.where(
-          "title ILIKE :search OR employer_name ILIKE :search OR city ILIKE :search",
-          search: "%#{params[:search]}%"
-        )
-      end
+      return unless params[:search].present?
+
+      @internship_offers = @internship_offers.where(
+        'title ILIKE :search OR employer_name ILIKE :search OR city ILIKE :search',
+        search: "%#{params[:search]}%"
+      )
+    end
+
+    def new
+      authorize! :create, InternshipOffer
+      internship_offer = current_user.internship_offers.find(params[:duplicate_id]).duplicate
+
+      @internship_offer = if params[:without_location].present?
+                            internship_offer.duplicate_without_location
+                          else
+                            internship_offer.duplicate
+                          end
     end
 
     # duplicate submit
@@ -50,46 +59,35 @@ module Dashboard
 
     def edit
       authorize! :update, @internship_offer
+      @internship_offer.grade_college = @internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
+      @internship_offer.grade_2e = @internship_offer.fits_for_seconde? ? '1' : '0'
+      @internship_offer.all_year_long = @internship_offer.all_year_long?
+      @available_weeks = Week.selectable_from_now_until_end_of_school_year
       @republish = true
-    end
-
-    def republish
-      anchor = "max_candidates_fields"
-      warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places et des semaines de stage"
-
-      if @internship_offer.remaining_seats_count.zero?
-        warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places de stage"
-      elsif (@internship_offer.remaining_seats_count > 0)
-        anchor = "weeks_container"
-        warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des semaines de stage"
-      end
-      redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor: anchor),
-                  flash: { warning: warning}
     end
 
     def update
       authorize! :update, @internship_offer
       internship_offer_builder.update(instance: @internship_offer,
                                       params: internship_offer_params) do |on|
-
-      on.success do |updated_internship_offer|
-        @internship_offer = updated_internship_offer
-        respond_to do |format|
-          format.turbo_stream
-          format.html do
-            redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
-                        flash: { success: 'Votre annonce a bien été modifiée' }
+        on.success do |updated_internship_offer|
+          @internship_offer = updated_internship_offer
+          respond_to do |format|
+            format.turbo_stream
+            format.html do
+              redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
+                          flash: { success: 'Votre annonce a bien été modifiée' }
+            end
           end
         end
-      end
-      on.failure do |failed_internship_offer|
-        respond_to do |format|
-          format.html do
-            @internship_offer = failed_internship_offer
-            render :edit, status: :bad_request
+        on.failure do |failed_internship_offer|
+          respond_to do |format|
+            format.html do
+              @internship_offer = failed_internship_offer
+              render :edit, status: :bad_request
+            end
           end
         end
-      end
       rescue ActionController::ParameterMissing
         respond_to do |format|
           format.html do
@@ -125,6 +123,20 @@ module Dashboard
       end
     end
 
+    def republish
+      anchor = 'max_candidates_fields'
+      warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places et des semaines de stage"
+
+      if @internship_offer.remaining_seats_count.zero?
+        warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places de stage"
+      elsif @internship_offer.remaining_seats_count > 0
+        anchor = 'weeks_container'
+        warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des semaines de stage"
+      end
+      redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor:),
+                  flash: { warning: }
+    end
+
     def remove # Back to step 4
       if offer_contains_stepper_informations?
         redirect_to(
@@ -136,22 +148,11 @@ module Dashboard
           )
         )
       else
-        redirect_to( edit_dashboard_internship_offer_path( id: @internship_offer.id ) )
+        redirect_to(edit_dashboard_internship_offer_path(id: @internship_offer.id))
       end
     end
 
     # duplicate form
-    def new
-      authorize! :create, InternshipOffer
-      internship_offer = current_user.internship_offers.find(params[:duplicate_id]).duplicate
-
-      if params[:without_location].present?
-        @internship_offer = internship_offer.duplicate_without_location
-      else
-        @internship_offer = internship_offer.duplicate
-      end
-
-    end
 
     private
 
@@ -171,7 +172,6 @@ module Dashboard
         @internship_offer.internship_offer_info_id &&
         @internship_offer.organisation_id)
     end
-
 
     def finder
       @finder ||= Finders::InternshipOfferPublisher.new(
@@ -201,7 +201,7 @@ module Dashboard
     def order_direction
       return nil unless params[:direction]
 
-      return params[:direction] if %w[asc desc].include?(params[:direction])
+      params[:direction] if %w[asc desc].include?(params[:direction])
     end
 
     def internship_offer_builder
@@ -212,29 +212,14 @@ module Dashboard
     def internship_offer_params
       params.require(:internship_offer)
             .permit(:title, :description, :sector_id, :max_candidates,
-                    :tutor_name, :tutor_phone, :tutor_role,
-                    :tutor_email, :employer_website, :employer_name, :street,
+                    :employer_name, :street,
                     :zipcode, :city, :department, :region, :academy, :renewed,
                     :is_public, :group_id, :published_at, :republish, :type,
                     :employer_id, :employer_type, :verb, :user_update, :school_id,
-                    :employer_description, :siret, :employer_manual_enter, :period,
-                    :contact_phone, :lunch_break, :aasm_state, coordinates: {},
-                    daily_hours: {}, weekly_hours:[],
-                    organisation_attributes: [
-                      :id,
-                      :employer_name,
-                      :street,
-                      :zipcode,
-                      :city,
-                      :siret,
-                      :manual_enter,
-                      :employer_description,
-                      :employer_website,
-                      :is_public,
-                      :group_id,
-                      :autocomplete,
-                      coordinates: {}
-                    ])
+                    :siret, :internship_address_manual_enter, :lunch_break, :aasm_state,
+                    :internship_weeks_number, :period,
+                    entreprise_coordinates: {}, coordinates: {},
+                    daily_hours: {}, weekly_hours: [], week_ids: [])
     end
 
     def set_internship_offer

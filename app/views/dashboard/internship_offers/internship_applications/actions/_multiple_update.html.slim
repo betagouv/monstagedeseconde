@@ -1,0 +1,40 @@
+dialog.fr-modal[
+  id="#{modal_id}"
+  data-internship-application-index-target="#{modal_target}"
+  role="dialog"
+  aria-labelledby="fr-modal-title"
+]
+  .fr-container.fr-container--fluid.fr-container-md
+    .fr-grid-row.fr-grid-row--center
+      .fr-col-12.fr-col-md-8.fr-col-lg-6
+      .fr-modal__body
+        = form_with(url: url, method: :post, data: { turbo: false }, class: 'd-inline') do |f|
+          = f.hidden_field :ids
+          = f.hidden_field :transition, value: transition
+          .fr-modal__header
+            button.fr-btn--close.fr-btn[
+              aria-controls="#{modal_id}"
+              title="Fermer la fenêtre modale"
+              data-action="click->internship-application-index##{close_action}"
+            ]
+              | Fermer
+          .fr-modal__content
+            h1#fr-modal-title.fr-modal__title
+              | Vous souhaitez #{action_text} 
+              span[data-internship-application-index-target="selectedCount"] 0
+              |  candidatures
+            p = description
+            - if transition == 'reject'
+              .fr-y-0
+                .fr-label.fr-py-1w
+                  | Motif de refus
+                = text_area_tag :rejection_message, nil, required: true, class: 'fr-input col-12 motivation-text'
+          .fr-modal__footer
+            ul.fr-btns-group.fr-btns-group--right.fr-btns-group--inline-lg
+              li
+                button.fr-btn.fr-btn--secondary.fr-mr-2w[
+                  data-action="click->internship-application-index##{close_action}"
+                ]
+                  | Annuler
+              li    
+                = f.submit submit_text, class: "fr-btn"

@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -479,7 +480,7 @@ CREATE TABLE public.class_rooms (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     class_size integer,
-    grade character varying(25) DEFAULT 'seconde'::character varying NOT NULL
+    grade_id bigint
 );
 
 
@@ -679,24 +680,18 @@ ALTER SEQUENCE public.detailed_crafts_id_seq OWNED BY public.detailed_crafts.id;
 
 CREATE TABLE public.entreprises (
     id bigint NOT NULL,
-    manual_enter boolean DEFAULT false NOT NULL,
     siret character varying(14) NOT NULL,
     is_public boolean DEFAULT false NOT NULL,
     employer_name character varying(150) NOT NULL,
-    chosen_employer_name character varying(150),
-    entreprise_city character varying(50) NOT NULL,
-    entreprise_zipcode character varying(5) NOT NULL,
-    entreprise_street character varying(200) NOT NULL,
+    employer_chosen_name character varying(150),
     entreprise_coordinates public.geography(Point,4326),
-    tutor_first_name character varying(50) NOT NULL,
-    tutor_last_name character varying(50) NOT NULL,
-    tutor_email character varying(100) NOT NULL,
-    tutor_phone character varying(20) NOT NULL,
-    tutor_function character varying(120) NOT NULL,
     group_id bigint,
-    internship_application_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    entreprise_full_address character varying(200),
+    sector_id bigint NOT NULL,
+    updated_entreprise_full_address boolean DEFAULT false,
+    internship_occupation_id bigint
 );
 
 
@@ -747,6 +742,40 @@ CREATE SEQUENCE public.favorites_id_seq
 --
 
 ALTER SEQUENCE public.favorites_id_seq OWNED BY public.favorites.id;
+
+
+--
+-- Name: grades; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.grades (
+    id bigint NOT NULL,
+    name character varying(40) NOT NULL,
+    short_name character varying(30) NOT NULL,
+    school_year_end_month character varying(2) NOT NULL,
+    school_year_end_day character varying(2) NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: grades_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.grades_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: grades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.grades_id_seq OWNED BY public.grades.id;
 
 
 --
@@ -875,7 +904,7 @@ CREATE TABLE public.identities (
     anonymized boolean DEFAULT false,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    grade character varying(100) DEFAULT 'seconde'::character varying NOT NULL
+    grade_id bigint
 );
 
 
@@ -982,6 +1011,74 @@ ALTER SEQUENCE public.internship_agreements_id_seq OWNED BY public.internship_ag
 
 
 --
+-- Name: internship_application_state_changes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.internship_application_state_changes (
+    id bigint NOT NULL,
+    internship_application_id bigint NOT NULL,
+    author_type character varying,
+    author_id bigint,
+    from_state character varying,
+    to_state character varying NOT NULL,
+    metadata jsonb DEFAULT '{}'::jsonb,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: internship_application_state_changes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.internship_application_state_changes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: internship_application_state_changes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.internship_application_state_changes_id_seq OWNED BY public.internship_application_state_changes.id;
+
+
+--
+-- Name: internship_application_weeks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.internship_application_weeks (
+    id bigint NOT NULL,
+    week_id bigint NOT NULL,
+    internship_application_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: internship_application_weeks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.internship_application_weeks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: internship_application_weeks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.internship_application_weeks_id_seq OWNED BY public.internship_application_weeks.id;
+
+
+--
 -- Name: internship_applications; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1051,7 +1148,7 @@ ALTER SEQUENCE public.internship_applications_id_seq OWNED BY public.internship_
 CREATE TABLE public.internship_occupations (
     id bigint NOT NULL,
     title character varying(150) NOT NULL,
-    description text,
+    description character varying(500) NOT NULL,
     street character varying(200) NOT NULL,
     zipcode character varying(5) NOT NULL,
     city character varying(50) NOT NULL,
@@ -1059,7 +1156,8 @@ CREATE TABLE public.internship_occupations (
     coordinates public.geography(Point,4326),
     employer_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    internship_address_manual_enter boolean DEFAULT false
 );
 
 
@@ -1113,6 +1211,38 @@ CREATE SEQUENCE public.internship_offer_areas_id_seq
 --
 
 ALTER SEQUENCE public.internship_offer_areas_id_seq OWNED BY public.internship_offer_areas.id;
+
+
+--
+-- Name: internship_offer_grades; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.internship_offer_grades (
+    id bigint NOT NULL,
+    grade_id bigint NOT NULL,
+    internship_offer_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: internship_offer_grades_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.internship_offer_grades_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: internship_offer_grades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.internship_offer_grades_id_seq OWNED BY public.internship_offer_grades.id;
 
 
 --
@@ -1399,11 +1529,10 @@ CREATE TABLE public.internship_offers (
     daterange daterange GENERATED ALWAYS AS (daterange(first_date, last_date)) STORED,
     siret character varying(14),
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
-    weekly_lunch_break text,
     total_female_applications_count integer DEFAULT 0 NOT NULL,
     total_female_approved_applications_count integer DEFAULT 0,
     max_students_per_group integer DEFAULT 1 NOT NULL,
-    employer_manual_enter boolean DEFAULT false,
+    internship_address_manual_enter boolean DEFAULT false,
     tutor_role character varying(150),
     remaining_seats_count integer DEFAULT 0,
     hidden_duplicate boolean DEFAULT false,
@@ -1414,11 +1543,17 @@ CREATE TABLE public.internship_offers (
     lunch_break text,
     contact_phone character varying(20),
     handicap_accessible boolean DEFAULT false,
-    period integer DEFAULT 0 NOT NULL,
     school_year integer DEFAULT 0 NOT NULL,
     internship_occupation_id bigint,
     entreprise_id bigint,
-    planning_id bigint
+    planning_id bigint,
+    employer_chosen_name character varying(250),
+    tutor_function character varying(150),
+    tutor_last_name character varying(60),
+    tutor_first_name character varying(60),
+    entreprise_full_address character varying(200),
+    internship_weeks_number integer DEFAULT 1,
+    entreprise_coordinates public.geography(Point,4326)
 );
 
 
@@ -1603,24 +1738,88 @@ ALTER SEQUENCE public.organisations_id_seq OWNED BY public.organisations.id;
 
 
 --
+-- Name: planning_grades; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.planning_grades (
+    id bigint NOT NULL,
+    grade_id bigint NOT NULL,
+    planning_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: planning_grades_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.planning_grades_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: planning_grades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.planning_grades_id_seq OWNED BY public.planning_grades.id;
+
+
+--
+-- Name: planning_weeks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.planning_weeks (
+    id bigint NOT NULL,
+    planning_id bigint NOT NULL,
+    week_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: planning_weeks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.planning_weeks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: planning_weeks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.planning_weeks_id_seq OWNED BY public.planning_weeks.id;
+
+
+--
 -- Name: plannings; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.plannings (
     id bigint NOT NULL,
-    weeks_count integer NOT NULL,
     max_candidates integer DEFAULT 1 NOT NULL,
     max_students_per_group integer DEFAULT 1 NOT NULL,
     remaining_seats_count integer DEFAULT 0,
-    weekly_lunch_break character varying(200) NOT NULL,
     weekly_hours character varying(400)[] DEFAULT '{}'::character varying[],
     daily_hours jsonb DEFAULT '{}'::jsonb,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     entreprise_id bigint,
-    internship_applications_id bigint,
     school_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    employer_id bigint,
+    lunch_break character varying(250),
+    internship_weeks_number integer DEFAULT 1
 );
 
 
@@ -1692,6 +1891,38 @@ ALTER SEQUENCE public.practical_infos_id_seq OWNED BY public.practical_infos.id;
 CREATE TABLE public.schema_migrations (
     version character varying NOT NULL
 );
+
+
+--
+-- Name: school_internship_weeks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.school_internship_weeks (
+    id bigint NOT NULL,
+    school_id bigint NOT NULL,
+    week_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: school_internship_weeks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.school_internship_weeks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: school_internship_weeks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.school_internship_weeks_id_seq OWNED BY public.school_internship_weeks.id;
 
 
 --
@@ -1887,13 +2118,12 @@ ALTER SEQUENCE public.team_member_invitations_id_seq OWNED BY public.team_member
 
 CREATE TABLE public.tutors (
     id bigint NOT NULL,
-    tutor_name character varying(120) NOT NULL,
-    tutor_email character varying(100) NOT NULL,
-    tutor_phone character varying(20) NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    employer_id bigint NOT NULL,
-    tutor_role character varying(250)
+    tutor_name character varying(150),
+    tutor_email character varying(150),
+    tutor_phone character varying(20),
+    tutor_role character varying(120)
 );
 
 
@@ -2049,7 +2279,7 @@ CREATE TABLE public.users (
     resume_educational_background text,
     resume_other text,
     resume_languages text,
-    grade character varying(100)
+    grade_id bigint
 );
 
 
@@ -2281,6 +2511,13 @@ ALTER TABLE ONLY public.favorites ALTER COLUMN id SET DEFAULT nextval('public.fa
 
 
 --
+-- Name: grades id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.grades ALTER COLUMN id SET DEFAULT nextval('public.grades_id_seq'::regclass);
+
+
+--
 -- Name: groups id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2316,6 +2553,20 @@ ALTER TABLE ONLY public.internship_agreements ALTER COLUMN id SET DEFAULT nextva
 
 
 --
+-- Name: internship_application_state_changes id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_state_changes ALTER COLUMN id SET DEFAULT nextval('public.internship_application_state_changes_id_seq'::regclass);
+
+
+--
+-- Name: internship_application_weeks id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_weeks ALTER COLUMN id SET DEFAULT nextval('public.internship_application_weeks_id_seq'::regclass);
+
+
+--
 -- Name: internship_applications id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2334,6 +2585,13 @@ ALTER TABLE ONLY public.internship_occupations ALTER COLUMN id SET DEFAULT nextv
 --
 
 ALTER TABLE ONLY public.internship_offer_areas ALTER COLUMN id SET DEFAULT nextval('public.internship_offer_areas_id_seq'::regclass);
+
+
+--
+-- Name: internship_offer_grades id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offer_grades ALTER COLUMN id SET DEFAULT nextval('public.internship_offer_grades_id_seq'::regclass);
 
 
 --
@@ -2414,6 +2672,20 @@ ALTER TABLE ONLY public.organisations ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: planning_grades id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_grades ALTER COLUMN id SET DEFAULT nextval('public.planning_grades_id_seq'::regclass);
+
+
+--
+-- Name: planning_weeks id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_weeks ALTER COLUMN id SET DEFAULT nextval('public.planning_weeks_id_seq'::regclass);
+
+
+--
 -- Name: plannings id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2425,6 +2697,13 @@ ALTER TABLE ONLY public.plannings ALTER COLUMN id SET DEFAULT nextval('public.pl
 --
 
 ALTER TABLE ONLY public.practical_infos ALTER COLUMN id SET DEFAULT nextval('public.practical_infos_id_seq'::regclass);
+
+
+--
+-- Name: school_internship_weeks id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.school_internship_weeks ALTER COLUMN id SET DEFAULT nextval('public.school_internship_weeks_id_seq'::regclass);
 
 
 --
@@ -2640,6 +2919,14 @@ ALTER TABLE ONLY public.favorites
 
 
 --
+-- Name: grades grades_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.grades
+    ADD CONSTRAINT grades_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: groups groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2680,6 +2967,22 @@ ALTER TABLE ONLY public.internship_agreements
 
 
 --
+-- Name: internship_application_state_changes internship_application_state_changes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_state_changes
+    ADD CONSTRAINT internship_application_state_changes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: internship_application_weeks internship_application_weeks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_weeks
+    ADD CONSTRAINT internship_application_weeks_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: internship_applications internship_applications_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2701,6 +3004,14 @@ ALTER TABLE ONLY public.internship_occupations
 
 ALTER TABLE ONLY public.internship_offer_areas
     ADD CONSTRAINT internship_offer_areas_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: internship_offer_grades internship_offer_grades_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offer_grades
+    ADD CONSTRAINT internship_offer_grades_pkey PRIMARY KEY (id);
 
 
 --
@@ -2792,6 +3103,22 @@ ALTER TABLE ONLY public.organisations
 
 
 --
+-- Name: planning_grades planning_grades_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_grades
+    ADD CONSTRAINT planning_grades_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: planning_weeks planning_weeks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_weeks
+    ADD CONSTRAINT planning_weeks_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: plannings plannings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2813,6 +3140,14 @@ ALTER TABLE ONLY public.practical_infos
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: school_internship_weeks school_internship_weeks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.school_internship_weeks
+    ADD CONSTRAINT school_internship_weeks_pkey PRIMARY KEY (id);
 
 
 --
@@ -2912,6 +3247,27 @@ ALTER TABLE ONLY public.weeks
 
 
 --
+-- Name: idx_on_internship_application_id_085823fd89; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_on_internship_application_id_085823fd89 ON public.internship_application_state_changes USING btree (internship_application_id);
+
+
+--
+-- Name: idx_on_internship_application_id_created_at_42571d8745; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_on_internship_application_id_created_at_42571d8745 ON public.internship_application_state_changes USING btree (internship_application_id, created_at);
+
+
+--
+-- Name: idx_on_internship_application_id_e95b0b9dbb; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_on_internship_application_id_e95b0b9dbb ON public.internship_application_weeks USING btree (internship_application_id);
+
+
+--
 -- Name: index_academies_on_academy_region_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2972,6 +3328,13 @@ CREATE UNIQUE INDEX index_area_notifications_on_user_and_area ON public.area_not
 --
 
 CREATE INDEX index_area_notifications_on_user_id ON public.area_notifications USING btree (user_id);
+
+
+--
+-- Name: index_class_rooms_on_grade_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_class_rooms_on_grade_id ON public.class_rooms USING btree (grade_id);
 
 
 --
@@ -3059,10 +3422,17 @@ CREATE INDEX index_entreprises_on_group_id ON public.entreprises USING btree (gr
 
 
 --
--- Name: index_entreprises_on_internship_application_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_entreprises_on_internship_occupation_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_entreprises_on_internship_application_id ON public.entreprises USING btree (internship_application_id);
+CREATE INDEX index_entreprises_on_internship_occupation_id ON public.entreprises USING btree (internship_occupation_id);
+
+
+--
+-- Name: index_entreprises_on_sector_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_entreprises_on_sector_id ON public.entreprises USING btree (sector_id);
 
 
 --
@@ -3115,6 +3485,13 @@ CREATE INDEX index_identities_on_class_room_id ON public.identities USING btree 
 
 
 --
+-- Name: index_identities_on_grade_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_identities_on_grade_id ON public.identities USING btree (grade_id);
+
+
+--
 -- Name: index_identities_on_school_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3147,6 +3524,20 @@ CREATE INDEX index_internship_agreements_on_internship_application_id ON public.
 --
 
 CREATE UNIQUE INDEX index_internship_agreements_on_uuid ON public.internship_agreements USING btree (uuid);
+
+
+--
+-- Name: index_internship_application_state_changes_on_author; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_application_state_changes_on_author ON public.internship_application_state_changes USING btree (author_type, author_id);
+
+
+--
+-- Name: index_internship_application_weeks_on_week_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_application_weeks_on_week_id ON public.internship_application_weeks USING btree (week_id);
 
 
 --
@@ -3203,6 +3594,20 @@ CREATE INDEX index_internship_occupations_on_employer_id ON public.internship_oc
 --
 
 CREATE INDEX index_internship_offer_areas_on_employer ON public.internship_offer_areas USING btree (employer_type, employer_id);
+
+
+--
+-- Name: index_internship_offer_grades_on_grade_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offer_grades_on_grade_id ON public.internship_offer_grades USING btree (grade_id);
+
+
+--
+-- Name: index_internship_offer_grades_on_internship_offer_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offer_grades_on_internship_offer_id ON public.internship_offer_grades USING btree (internship_offer_id);
 
 
 --
@@ -3332,6 +3737,13 @@ CREATE INDEX index_internship_offers_on_employer_id ON public.internship_offers 
 
 
 --
+-- Name: index_internship_offers_on_entreprise_coordinates; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offers_on_entreprise_coordinates ON public.internship_offers USING gist (entreprise_coordinates);
+
+
+--
 -- Name: index_internship_offers_on_entreprise_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3381,10 +3793,10 @@ CREATE INDEX index_internship_offers_on_organisation_id ON public.internship_off
 
 
 --
--- Name: index_internship_offers_on_period; Type: INDEX; Schema: public; Owner: -
+-- Name: index_internship_offers_on_planning_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_internship_offers_on_period ON public.internship_offers USING btree (period);
+CREATE INDEX index_internship_offers_on_planning_id ON public.internship_offers USING btree (planning_id);
 
 
 --
@@ -3486,17 +3898,45 @@ CREATE INDEX index_organisations_on_group_id ON public.organisations USING btree
 
 
 --
+-- Name: index_planning_grades_on_grade_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_planning_grades_on_grade_id ON public.planning_grades USING btree (grade_id);
+
+
+--
+-- Name: index_planning_grades_on_planning_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_planning_grades_on_planning_id ON public.planning_grades USING btree (planning_id);
+
+
+--
+-- Name: index_planning_weeks_on_planning_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_planning_weeks_on_planning_id ON public.planning_weeks USING btree (planning_id);
+
+
+--
+-- Name: index_planning_weeks_on_week_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_planning_weeks_on_week_id ON public.planning_weeks USING btree (week_id);
+
+
+--
+-- Name: index_plannings_on_employer_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_plannings_on_employer_id ON public.plannings USING btree (employer_id);
+
+
+--
 -- Name: index_plannings_on_entreprise_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_plannings_on_entreprise_id ON public.plannings USING btree (entreprise_id);
-
-
---
--- Name: index_plannings_on_internship_applications_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_plannings_on_internship_applications_id ON public.plannings USING btree (internship_applications_id);
 
 
 --
@@ -3511,6 +3951,20 @@ CREATE INDEX index_plannings_on_school_id ON public.plannings USING btree (schoo
 --
 
 CREATE INDEX index_practical_infos_on_coordinates ON public.practical_infos USING gist (coordinates);
+
+
+--
+-- Name: index_school_internship_weeks_on_school_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_school_internship_weeks_on_school_id ON public.school_internship_weeks USING btree (school_id);
+
+
+--
+-- Name: index_school_internship_weeks_on_week_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_school_internship_weeks_on_week_id ON public.school_internship_weeks USING btree (week_id);
 
 
 --
@@ -3647,6 +4101,13 @@ CREATE INDEX index_users_on_email ON public.users USING btree (email);
 
 
 --
+-- Name: index_users_on_grade_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_grade_id ON public.users USING btree (grade_id);
+
+
+--
 -- Name: index_users_on_phone; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3761,11 +4222,19 @@ ALTER TABLE ONLY public.internship_applications
 
 
 --
--- Name: plannings fk_rails_0846364b19; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: plannings fk_rails_06c56a2d59; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.plannings
-    ADD CONSTRAINT fk_rails_0846364b19 FOREIGN KEY (internship_applications_id) REFERENCES public.internship_applications(id);
+    ADD CONSTRAINT fk_rails_06c56a2d59 FOREIGN KEY (employer_id) REFERENCES public.users(id);
+
+
+--
+-- Name: school_internship_weeks fk_rails_07f908dbef; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.school_internship_weeks
+    ADD CONSTRAINT fk_rails_07f908dbef FOREIGN KEY (week_id) REFERENCES public.weeks(id);
 
 
 --
@@ -3774,6 +4243,14 @@ ALTER TABLE ONLY public.plannings
 
 ALTER TABLE ONLY public.hosting_info_weeks
     ADD CONSTRAINT fk_rails_0ab0d03d1c FOREIGN KEY (week_id) REFERENCES public.weeks(id);
+
+
+--
+-- Name: entreprises fk_rails_0c4a513d70; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.entreprises
+    ADD CONSTRAINT fk_rails_0c4a513d70 FOREIGN KEY (internship_occupation_id) REFERENCES public.internship_occupations(id);
 
 
 --
@@ -3833,6 +4310,30 @@ ALTER TABLE ONLY public.users_internship_offers_histories
 
 
 --
+-- Name: internship_offer_grades fk_rails_2cc542d77a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offer_grades
+    ADD CONSTRAINT fk_rails_2cc542d77a FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+
+
+--
+-- Name: planning_grades fk_rails_30cc61e8d2; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_grades
+    ADD CONSTRAINT fk_rails_30cc61e8d2 FOREIGN KEY (grade_id) REFERENCES public.grades(id);
+
+
+--
+-- Name: planning_weeks fk_rails_31376ce004; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_weeks
+    ADD CONSTRAINT fk_rails_31376ce004 FOREIGN KEY (planning_id) REFERENCES public.plannings(id);
+
+
+--
 -- Name: internship_occupations fk_rails_31384619d4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3862,6 +4363,14 @@ ALTER TABLE ONLY public.internship_offers
 
 ALTER TABLE ONLY public.internship_offers
     ADD CONSTRAINT fk_rails_3cef9bdd89 FOREIGN KEY (group_id) REFERENCES public.groups(id);
+
+
+--
+-- Name: internship_application_weeks fk_rails_3d493b87c4; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_weeks
+    ADD CONSTRAINT fk_rails_3d493b87c4 FOREIGN KEY (week_id) REFERENCES public.weeks(id);
 
 
 --
@@ -3913,11 +4422,11 @@ ALTER TABLE ONLY public.internship_offer_weeks
 
 
 --
--- Name: entreprises fk_rails_5c2b8bdecf; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: school_internship_weeks fk_rails_61db9e054c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.entreprises
-    ADD CONSTRAINT fk_rails_5c2b8bdecf FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
+ALTER TABLE ONLY public.school_internship_weeks
+    ADD CONSTRAINT fk_rails_61db9e054c FOREIGN KEY (school_id) REFERENCES public.schools(id);
 
 
 --
@@ -3929,11 +4438,35 @@ ALTER TABLE ONLY public.internship_offer_infos
 
 
 --
+-- Name: internship_application_weeks fk_rails_664e7390e4; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_weeks
+    ADD CONSTRAINT fk_rails_664e7390e4 FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
+
+
+--
+-- Name: users fk_rails_6bdbc6c887; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_6bdbc6c887 FOREIGN KEY (grade_id) REFERENCES public.grades(id);
+
+
+--
 -- Name: user_groups fk_rails_6d478d2f65; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_groups
     ADD CONSTRAINT fk_rails_6d478d2f65 FOREIGN KEY (group_id) REFERENCES public.groups(id);
+
+
+--
+-- Name: entreprises fk_rails_6efe4d9b92; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.entreprises
+    ADD CONSTRAINT fk_rails_6efe4d9b92 FOREIGN KEY (sector_id) REFERENCES public.sectors(id);
 
 
 --
@@ -3977,6 +4510,14 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
+-- Name: internship_application_state_changes fk_rails_8ab7e06756; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_application_state_changes
+    ADD CONSTRAINT fk_rails_8ab7e06756 FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
+
+
+--
 -- Name: plannings fk_rails_91fffc9efc; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3998,6 +4539,14 @@ ALTER TABLE ONLY public.users_search_histories
 
 ALTER TABLE ONLY public.internship_applications
     ADD CONSTRAINT fk_rails_93579c3ede FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: planning_weeks fk_rails_993020ef1f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_weeks
+    ADD CONSTRAINT fk_rails_993020ef1f FOREIGN KEY (week_id) REFERENCES public.weeks(id);
 
 
 --
@@ -4033,6 +4582,14 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
+-- Name: identities fk_rails_ab66e55058; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.identities
+    ADD CONSTRAINT fk_rails_ab66e55058 FOREIGN KEY (grade_id) REFERENCES public.grades(id);
+
+
+--
 -- Name: area_notifications fk_rails_ab915cf6e4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4057,11 +4614,11 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
--- Name: tutors fk_rails_af56aa365a; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: plannings fk_rails_b32215a275; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.tutors
-    ADD CONSTRAINT fk_rails_af56aa365a FOREIGN KEY (employer_id) REFERENCES public.users(id);
+ALTER TABLE ONLY public.plannings
+    ADD CONSTRAINT fk_rails_b32215a275 FOREIGN KEY (entreprise_id) REFERENCES public.entreprises(id);
 
 
 --
@@ -4129,6 +4686,14 @@ ALTER TABLE ONLY public.internship_offer_stats
 
 
 --
+-- Name: internship_offer_grades fk_rails_e960458274; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offer_grades
+    ADD CONSTRAINT fk_rails_e960458274 FOREIGN KEY (grade_id) REFERENCES public.grades(id);
+
+
+--
 -- Name: schools fk_rails_e97840dde7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4142,6 +4707,14 @@ ALTER TABLE ONLY public.schools
 
 ALTER TABLE ONLY public.internship_offer_info_weeks
     ADD CONSTRAINT fk_rails_e9c5c89c26 FOREIGN KEY (week_id) REFERENCES public.weeks(id);
+
+
+--
+-- Name: planning_grades fk_rails_eae037a466; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_grades
+    ADD CONSTRAINT fk_rails_eae037a466 FOREIGN KEY (planning_id) REFERENCES public.plannings(id);
 
 
 --
@@ -4185,12 +4758,38 @@ ALTER TABLE ONLY public.internship_offer_weeks
 
 
 --
+-- Name: class_rooms fk_rails_f67c7bff3c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.class_rooms
+    ADD CONSTRAINT fk_rails_f67c7bff3c FOREIGN KEY (grade_id) REFERENCES public.grades(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20241113151423'),
+('20241105092317'),
+('20241101100649'),
+('20241031131640'),
+('20241031101009'),
+('20241024080025'),
+('20241024075951'),
+('20241022094733'),
+('20241016134457'),
+('20241015085210'),
+('20241010085334'),
+('20241009115015'),
+('20241009091909'),
+('20241009082550'),
+('20241007094016'),
+('20241007083702'),
+('20240927075929'),
+('20240925100635'),
 ('20240923090303'),
 ('20240918144248'),
 ('20240916160037'),

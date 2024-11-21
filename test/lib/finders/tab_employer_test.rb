@@ -7,7 +7,7 @@ module Finders
   class TabEmployerTest < ActiveSupport::TestCase
     test 'pending_agreements_count only draft agreements' do
       employer = create(:employer)
-      internship_offer = create(:weekly_internship_offer, employer: employer, max_candidates: 2)
+      internship_offer = create(:weekly_internship_offer_3eme, employer: employer, max_candidates: 2)
       draft_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
       completed_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
       completed_application.internship_agreement.update(aasm_state: :completed_by_employer)
@@ -20,7 +20,7 @@ module Finders
       employer = create(:employer)
       InternshipApplication.aasm.states.each do |state|
         student = create(:student)
-        wio = create(:weekly_internship_offer,
+        wio = create(:weekly_internship_offer_3eme,
                      employer: employer,
                      internship_offer_area: employer.current_area)
         create(

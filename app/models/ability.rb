@@ -202,16 +202,37 @@ class Ability
     end
     can %i[create see_tutor], InternshipOffer
     can %i[read update discard publish], InternshipOffer, employer_id: user.team_members_ids
-    can %i[create], InternshipOfferInfo
-    can %i[create], HostingInfo
-    can %i[create], PracticalInfo
-    can %i[create], Organisation
-    can %i[update edit renew], InternshipOfferInfo, employer_id: user.team_members_ids
-    can %i[update edit renew], HostingInfo, employer_id: user.team_members_ids
-    can %i[update edit renew], PracticalInfo, employer_id: user.team_members_ids
-    can %i[update edit], Organisation, employer_id: user.team_members_ids
+    # legacy_abilities for stepper
+    # can %i[create], InternshipOfferInfo
+    # can %i[create], HostingInfo
+    # can %i[create], PracticalInfo
+    # can %i[create], Organisation
+    # new_abilities for stepper
+    can %i[create], InternshipOccupation
+    can %i[create], Entreprise do |entreprise|
+      entreprise.internship_occupation.employer_id == user.id
+    end
+    can %i[create], Planning do |planning|
+      planning.entreprise.internship_occupation.employer_id == user.id
+    end
+    # legacy_abilities for stepper
+    # can %i[update edit renew], InternshipOfferInfo, employer_id: user.team_members_ids
+    # can %i[update edit renew], HostingInfo, employer_id: user.team_members_ids
+    # can %i[update edit renew], PracticalInfo, employer_id: user.team_members_ids
+    # can %i[update edit], Organisation, employer_id: user.team_members_ids
     can %i[create], Tutor
+    # new_abilities for stepper
+    can %i[update edit renew], InternshipOccupation, employer_id: user.team_members_ids
+    can %i[update edit renew], Entreprise do |entreprise|
+      entreprise.internship_occupation.employer_id.in?(user.team_members_ids)
+    end
+    can %i[update edit renew], Planning do |planning|
+      planning.entreprise.internship_occupation.employer_id.in?(user.team_members_ids)
+    end
     can %i[index update], InternshipApplication
+    can %i[update_multiple], InternshipApplication do |internship_applications|
+      internship_applications.all? { |internship_application| internship_application.internship_offer.employer_id == user.team_id }
+    end
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)
     end

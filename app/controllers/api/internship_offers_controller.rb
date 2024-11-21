@@ -82,9 +82,9 @@ module Api
               :is_public,
               :handicap_accessible,
               :lunch_break,
-              :period,
               daily_hours: {},
-              coordinates: {}
+              coordinates: {},
+              week_ids: []
             )
     end
 
@@ -102,13 +102,13 @@ module Api
               :permalink,
               :sector_uuid,
               :max_candidates,
-              :period,
               :published_at,
               :is_public,
               :lunch_break,
               :handicap_accessible,
               daily_hours: {},
-              coordinates: {}
+              coordinates: {},
+              week_ids: []
             )
     end
 
@@ -119,7 +119,6 @@ module Api
         :longitude,
         :radius,
         :keyword,
-        :period,
         sector_ids: [],
         week_ids: []
       )
@@ -138,7 +137,6 @@ module Api
           id: internship_offer.id,
           title: internship_offer.title,
           description: internship_offer.description.to_s,
-          period: internship_offer.period,
           employer_name: internship_offer.employer_name,
           url: internship_offer_url(internship_offer,
                                     query_params.merge({ utm_source: current_api_user.operator.name })),

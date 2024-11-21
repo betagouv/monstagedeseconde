@@ -15,7 +15,7 @@ class AbilityTest < ActiveSupport::TestCase
 
   test 'Student' do
     travel_to Date.new(2024, 9, 1) do
-      internship_offer = create(:weekly_internship_offer)
+      internship_offer = create(:weekly_internship_offer_3eme)
       school = create(:school)
       class_room = create(:class_room, school:)
       student = create(:student, class_room:, school:)
@@ -65,17 +65,17 @@ class AbilityTest < ActiveSupport::TestCase
       operator_with_masked_data = create(:operator_with_departments, masked_data: true)
       assert operator.departments.any?
 
-      api_internship_offer = create(:api_internship_offer, employer: create(:user_operator, operator:),
-                                                           city: 'truc', zipcode: '60000')
-      api_internship_offer_paris = create(:api_internship_offer, employer: create(:user_operator, operator:),
-                                                                 city: 'Paris', zipcode: '75012')
-      refute(ability.can?(:read_employer_name, api_internship_offer),
+      api_internship_offer_3eme = create(:api_internship_offer_2nde, employer: create(:user_operator, operator:),
+                                                                     city: 'truc', zipcode: '60000')
+      api_internship_offer_paris = create(:api_internship_offer_2nde, employer: create(:user_operator, operator:),
+                                                                      city: 'Paris', zipcode: '75012')
+      refute(ability.can?(:read_employer_name, api_internship_offer_3eme),
              "students should not be able to read city in a 'protected' api internship offers")
       assert(ability.can?(:read_employer_name, api_internship_offer_paris),
              "students should not be able to read city in a 'protected' api internship offers")
-      api_internship_offer = create(:api_internship_offer,
-                                    employer: create(:user_operator, operator: operator_with_masked_data), city: 'truc', zipcode: '60000')
-      refute(ability.can?(:read_employer_name, api_internship_offer),
+      api_internship_offer_3eme = create(:api_internship_offer_3eme,
+                                         employer: create(:user_operator, operator: operator_with_masked_data), city: 'truc', zipcode: '60000')
+      refute(ability.can?(:read_employer_name, api_internship_offer_3eme),
              "students should not be able to read city in a 'protected' api internship offers")
     end
   end
@@ -83,9 +83,9 @@ class AbilityTest < ActiveSupport::TestCase
   test 'Employer' do
     employer = create(:employer)
     another_employer = create(:employer)
-    internship_offer = create(:weekly_internship_offer, employer:)
-    alt_internship_offer = create(:weekly_internship_offer, employer: another_employer)
-    internship_offer_api = create(:api_internship_offer, employer:)
+    internship_offer = create(:weekly_internship_offer_2nde, employer:)
+    alt_internship_offer = create(:weekly_internship_offer_2nde, employer: another_employer)
+    internship_offer_api = create(:api_internship_offer_3eme, employer:)
     internship_application = create(:weekly_internship_application, internship_offer:)
     internship_application_other = create(:weekly_internship_application, internship_offer: alt_internship_offer)
     internship_agreement = create(:internship_agreement, :created_by_system,
@@ -151,8 +151,8 @@ class AbilityTest < ActiveSupport::TestCase
     assert ability.can?(:manage, Group)
     assert ability.can?(:index_and_filter, Reporting::InternshipOffer)
     assert ability.can?(:index, Acl::Reporting.new(user: god, params: {}))
-    refute ability.can?(:apply, create(:weekly_internship_offer))
-    refute ability.can?(:apply, create(:api_internship_offer))
+    refute ability.can?(:apply, create(:weekly_internship_offer_2nde))
+    refute ability.can?(:apply, create(:api_internship_offer_3eme))
     assert ability.can?(:new, InternshipAgreement)
     assert ability.can?(:see_reporting_dashboard, User)
     assert ability.can?(:see_reporting_internship_offers, User)
@@ -188,8 +188,8 @@ class AbilityTest < ActiveSupport::TestCase
     #     refute ability.can?(:index, Acl::Reporting.new(user: statistician, params: {}))
     assert(ability.can?(:index, Acl::Reporting, &:allowed?))
 
-    refute ability.can?(:apply, create(:weekly_internship_offer))
-    refute ability.can?(:apply, create(:api_internship_offer))
+    refute ability.can?(:apply, create(:weekly_internship_offer_2nde))
+    refute ability.can?(:apply, create(:api_internship_offer_3eme))
 
     assert ability.can?(:see_reporting_dashboard, User)
     refute ability.can?(:see_dashboard_enterprises_summary, User)
@@ -210,8 +210,6 @@ class AbilityTest < ActiveSupport::TestCase
 
   test 'Education Statistician' do
     statistician = create(:education_statistician)
-    create(:department, code: '60', name: 'Oise')
-    create(:department, code: '60', name: 'Oise')
     ability = Ability.new(statistician)
 
     assert(ability.can?(:supply_offers, statistician), 'statistician are to be able to supply offers')
@@ -239,8 +237,8 @@ class AbilityTest < ActiveSupport::TestCase
     refute ability.can?(:index, Acl::Reporting.new(user: statistician, params: {}))
     assert(ability.can?(:index, Acl::Reporting, &:allowed?))
 
-    refute ability.can?(:apply, create(:weekly_internship_offer))
-    refute ability.can?(:apply, create(:api_internship_offer))
+    refute ability.can?(:apply, create(:weekly_internship_offer_2nde))
+    refute ability.can?(:apply, create(:api_internship_offer_3eme))
 
     assert ability.can?(:see_reporting_dashboard, User)
     refute ability.can?(:see_dashboard_enterprises_summary, User)
@@ -282,13 +280,13 @@ class AbilityTest < ActiveSupport::TestCase
     refute ability.can?(:destroy, User)
     assert ability.can?(:index_and_filter, Reporting::InternshipOffer)
 
-    offer = create(:weekly_internship_offer,
+    offer = create(:weekly_internship_offer_3eme,
                    group_id: ministry.id,
                    employer: ministry_statistician,
                    is_public: true)
 
-    refute ability.can?(:apply, create(:weekly_internship_offer))
-    refute ability.can?(:apply, create(:api_internship_offer))
+    refute ability.can?(:apply, create(:weekly_internship_offer_2nde))
+    refute ability.can?(:apply, create(:api_internship_offer_3eme))
 
     assert ability.can?(:see_reporting_dashboard, User)
     refute ability.can?(:see_reporting_internship_offers, User)

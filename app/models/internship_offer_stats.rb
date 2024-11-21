@@ -23,12 +23,11 @@ class InternshipOfferStats < ApplicationRecord
       remaining_seats_count: remaining_seats
     )
   end
-  
+
   private
 
   def total_applications
     internship_offer.internship_applications
-                    .reject(&:drafted?)
                     .count
   end
 
@@ -36,7 +35,6 @@ class InternshipOfferStats < ApplicationRecord
     internship_offer.internship_applications
                     .joins(:student)
                     .includes(:student)
-                    .reject(&:drafted?)
                     .select(&:student_is_male?)
                     .count
   end
@@ -45,15 +43,14 @@ class InternshipOfferStats < ApplicationRecord
     internship_offer.internship_applications
                     .joins(:student)
                     .includes(:student)
-                    .reject(&:drafted?)
                     .select(&:student_is_female?)
                     .count
   end
 
   def approved_applications
     internship_applications
-                    .select(&:approved?)
-                    .count
+      .select(&:approved?)
+      .count
   end
 
   def total_male_approved_applications
@@ -93,6 +90,7 @@ class InternshipOfferStats < ApplicationRecord
 
   def check_update_needed?
     return unless internship_offer.requires_updates?
+
     internship_offer.update_columns(aasm_state: 'need_to_be_updated', published_at: nil)
   end
 end
