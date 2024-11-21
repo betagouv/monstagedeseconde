@@ -7,6 +7,8 @@ class CreatePlanningGradesTable < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
+    return if table_exists?(:internship_offer_grades)
+
     create_table :internship_offer_grades do |t|
       t.references :grade, null: false, foreign_key: true
       t.references :internship_offer, null: false, foreign_key: true
