@@ -170,9 +170,12 @@ module Api
       end
 
       def check_grades_and_weeks_validity
-        mandatory_weeks = %w[2025-W25 2025-W26]
+        MANDATORY_SECONDE_WEEKS = SchoolTrack::Seconde.both_weeks.map do |week|
+          "#{week.year}-W#{week.number.to_s.rjust(2, '0')}"
+        end.freeze
+
         is_seconde = params[:internship_offer][:grades].include?('seconde')
-        has_mandatory_weeks = mandatory_weeks.any? { |week| params[:internship_offer][:weeks].include?(week) }
+        has_mandatory_weeks = MANDATORY_SECONDE_WEEKS.any? { |week| params[:internship_offer][:weeks].include?(week) }
 
         return unless is_seconde && !has_mandatory_weeks
 
