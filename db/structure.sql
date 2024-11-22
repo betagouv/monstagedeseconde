@@ -3800,13 +3800,6 @@ CREATE INDEX index_internship_offers_on_planning_id ON public.internship_offers 
 
 
 --
--- Name: index_internship_offers_on_planning_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internship_offers_on_planning_id ON public.internship_offers USING btree (planning_id);
-
-
---
 -- Name: index_internship_offers_on_practical_info_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4611,14 +4604,6 @@ ALTER TABLE ONLY public.detailed_crafts
 
 ALTER TABLE ONLY public.internship_offers
     ADD CONSTRAINT fk_rails_ae76931d64 FOREIGN KEY (practical_info_id) REFERENCES public.practical_infos(id);
-
-
---
--- Name: plannings fk_rails_b32215a275; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.plannings
-    ADD CONSTRAINT fk_rails_b32215a275 FOREIGN KEY (entreprise_id) REFERENCES public.entreprises(id);
 
 
 --
