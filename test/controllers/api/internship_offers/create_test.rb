@@ -31,7 +31,6 @@ module Api
     end
 
     test 'POST #create as operator fails with invalid data respond with :bad_request' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
       operator = create(:user_operator, api_token: SecureRandom.uuid)
       documents_as(endpoint: :'internship_offers/create', state: :bad_request) do
         post api_internship_offers_path(
@@ -49,7 +48,7 @@ module Api
       assert_equal ['Missing employer_name'],
                    json_error['employer_name'],
                    'bad employer_name message'
-      assert_equal ['Missing zipcode', 'Zipcode is invalid'],
+      assert_equal ['Missing zipcode', 'is invalid'],
                    json_error['zipcode'],
                    'bad zipcode message'
       assert_equal ['Missing city'],

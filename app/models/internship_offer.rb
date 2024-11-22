@@ -2,6 +2,7 @@
 
 require 'sti_preload'
 class InternshipOffer < ApplicationRecord
+  GUARD_PERIOD = 5.days
   PAGE_SIZE = 30
   EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT = 250
   MAX_CANDIDATES_HIGHEST = 6_000
@@ -9,7 +10,7 @@ class InternshipOffer < ApplicationRecord
   DESCRIPTION_MAX_CHAR_COUNT = 500
   DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description
                             employer_name street zipcode city department entreprise_coordinates
-                            employer_chosen_name,
+                            employer_chosen_name all_year_long period grade_ids week_ids
                             entreprise_full_address internship_offer_area_id
                             is_public group school_id coordinates first_date last_date
                             siret internship_address_manual_enter lunch_break daily_hours
@@ -70,11 +71,10 @@ class InternshipOffer < ApplicationRecord
   # Callbacks
   after_initialize :init
 
-  before_validation :update_organisation
-
   before_save :sync_first_and_last_date,
               :reverse_academy_by_zipcode,
-              :make_sure_area_is_set
+              :make_sure_area_is_set,
+              :entreprise_used_name
 
   before_create :preset_published_at_to_now
   after_commit :sync_internship_offer_keywords
@@ -165,7 +165,7 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :within_current_year, lambda {
-    last_date = SchoolYear::Current.new.end_of_period
+    last_date = SchoolYear::Current.new.end_of_period + GUARD_PERIOD
     in_the_future.where('last_date <= :last_date', last_date:)
   }
 
@@ -450,18 +450,6 @@ class InternshipOffer < ApplicationRecord
     #   self.is_public = organisation.is_public
   end
 
-  def update_organisation
-    # nil unless organisation && !organisation.new_record?
-
-    # return si aucun changement qui concerne organisation
-    # organisation.update_columns(employer_name:) if attribute_changed?(:employer_name)
-    # organisation.update_columns(employer_website:) if attribute_changed?(:employer_website)
-    # organisation.update_columns(employer_description:) if attribute_changed?(:employer_description)
-    # organisation.update_columns(siret:) if attribute_changed?(:siret)
-    # organisation.update_columns(group_id:) if attribute_changed?(:group_id)
-    # organisation.update_columns(is_public:) if attribute_changed?(:is_public)
-  end
-
   def generate_offer_from_attributes(white_list)
     offer = InternshipOffer.new(attributes.slice(*white_list))
     offer.weeks = weeks
@@ -526,20 +514,6 @@ class InternshipOffer < ApplicationRecord
   def requires_updates?
     may_need_update? && no_remaining_seat_anymore?
   end
-
-  # def available_weeks
-  #   return Week.selectable_from_now_until_end_of_school_year unless respond_to?(:weeks)
-  #   return Week.selectable_from_now_until_end_of_school_year unless persisted?
-  #   if weeks&.first.nil?
-  #     return Week.selectable_for_school_year(
-  #       school_year: SchoolYear::Floating.new(date: Date.today)
-  #     )
-  #   end
-
-  #   school_year = SchoolYear::Floating.new(date: weeks.first.week_date)
-
-  #   Week.selectable_on_specific_school_year(school_year: school_year)
-  # end
 
   def requires_update_at_toggle_time?
     return false if published?

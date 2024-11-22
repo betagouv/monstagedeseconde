@@ -21,7 +21,6 @@ module Builders
                                   group_id: entreprise.group_id,
                                   internship_offer_area_id: user.current_area_id
                                 )
-
       internship_offer = model.new(**internship_attributes)
       internship_offer.save!
       DraftedInternshipOfferJob.set(wait: 1.week)
@@ -34,15 +33,14 @@ module Builders
       callback.on_failure.try(:call, e.record)
     end
 
-    def update_from_stepper(internship_offer, user:, organisation:, internship_offer_info:, hosting_info:,
-                            practical_info:)
+    # TODO : is this still used ?
+    def update_from_stepper(internship_offer, user:, planning:)
       yield callback if block_given?
       authorize :update, model
       internship_offer.update(
-        {}.merge(preprocess_organisation_to_params(organisation))
-          .merge(preprocess_internship_offer_info_to_params(internship_offer_info))
-          .merge(preprocess_hosting_info_to_params(hosting_info))
-          .merge(preprocess_practical_info_to_params(practical_info))
+        {}.merge(preprocess_internship_occupation_to_params(planning.entreprise.internship_occupation))
+          .merge(preprocess_entreprise_to_params(planning.entreprise))
+          .merge(preprocess_planning_to_params(planning))
       )
       internship_offer.save!
       DraftedInternshipOfferJob.set(wait: 1.week)
@@ -56,9 +54,13 @@ module Builders
     def create(params:)
       yield callback if block_given?
       authorize :create, model
-      # preprocess_organisation(params)
       create_params = preprocess_api_params(params)
+      # puts '================================'
+      # puts "create_params : #{create_params}"
+      # puts '================================'
+      # puts ''
       internship_offer = model.create!(create_params)
+      internship_offer.weeks &= SchoolTrack::Seconde.both_weeks if create_params[:grade_college] == '0'
       internship_offer.update(
         aasm_state: 'published',
         internship_offer_area_id: user.current_area_id
@@ -78,13 +80,17 @@ module Builders
       yield callback if block_given?
       authorize :update, instance
       instance.attributes = preprocess_api_params(params)
+      # puts '================================'
+      # puts "instance.published? : #{instance.published?}"
+      # puts "instance.attributes : #{instance.attributes}"
+      # puts "instance.attributes[:republish] : #{instance.attributes[:republish]}"
+      # puts '================================'
+      # puts ''
       instance = deal_with_max_candidates_change(params: params, instance: instance)
       if from_api?
         instance.reset_publish_states
-      elsif instance.may_publish? && instance.republish
+      elsif instance.may_publish?
         instance.publish!
-      elsif instance.published_at.nil? && instance.may_unpublish?
-        instance.unpublish!
       end
       instance.save! # this may set aasm_state to need_to_be_updated state
       callback.on_success.try(:call, instance)
@@ -164,63 +170,6 @@ module Builders
         grades: planning.grades
       }
     end
-
-    # def preprocess_organisation_to_params(organisation)
-    #   {
-    #     employer_name: organisation.employer_name,
-    #     employer_website: organisation.employer_website,
-    #     employer_description: organisation.employer_description,
-    #     is_public: organisation.is_public,
-    #     siret: organisation.siret,
-    #     employer_manual_enter: organisation.manual_enter,
-    #     group_id: organisation.group_id
-    #   }
-    # end
-
-    # def preprocess_internship_offer_info_to_params(internship_offer_info)
-    #   {
-    #     sector_id: internship_offer_info.sector_id,
-    #     title: internship_offer_info.title,
-    #     description: internship_offer_info.description,
-    #     type: 'InternshipOfferInfo'
-    #   }
-    # end
-
-    # def preprocess_hosting_info_to_params(hosting_info)
-    #   {
-    #     max_candidates: hosting_info.max_candidates,
-    #     type: 'InternshipOffers::WeeklyFramed',
-    #     period: hosting_info.period,
-    #     school_id: hosting_info.school_id
-    #   }
-    # end
-
-    # def preprocess_practical_info_to_params(practical_info)
-    #   {
-    #     weekly_hours: practical_info.weekly_hours,
-    #     daily_hours: practical_info.daily_hours,
-    #     lunch_break: practical_info.lunch_break,
-    #     street: practical_info.street,
-    #     zipcode: practical_info.zipcode,
-    #     city: practical_info.city,
-    #     coordinates: practical_info.coordinates,
-    #     contact_phone: practical_info.contact_phone,
-    #   }
-    # end
-
-    # def preprocess_organisation(params)
-    #   return params unless params['organisation_attributes']
-
-    #   orga_params = params['organisation_attributes']
-    #   params['employer_name'] = orga_params['employer_name'] unless orga_params['employer_name'].blank?
-    #   params['employer_website'] = orga_params['employer_website'] unless orga_params['employer_website'].blank?
-    #   params['coordinates'] = orga_params['coordinates'] unless orga_params['coordinates'].blank?
-    #   params['street'] = orga_params['street'] unless orga_params['street'].blank?
-    #   params['zipcode'] = orga_params['zipcode'] unless orga_params['zipcode'].blank?
-    #   params['city'] = orga_params['city'] unless orga_params['city'].blank?
-    #   params['is_public'] = orga_params['is_public'] unless orga_params['is_public'].blank?
-    #   params['group_id'] = orga_params['group_id'] unless orga_params['group_id'].blank?
-    # end
 
     def from_api?
       context == :api

@@ -62,6 +62,6 @@ class WeekTest < ActiveSupport::TestCase
 
   test '#beginning_of_week' do
     weeks = Week.selectable_on_school_year
-    assert_equal ' 2 sept.', weeks.first.beginning_of_week(format: :human_dd_mm)
+    assert_equal '2 sept.', weeks.first.beginning_of_week(format: :human_dd_mm)
   end
 end

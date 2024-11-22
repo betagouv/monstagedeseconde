@@ -2,7 +2,7 @@
   div [data-controller='mandatory-fields grade' data-mandatory-fields-minimum-length-value="8"]
     .row
       .col-md-6.order-md-2.order-1.d-none.d-md-block
-        - if form.object.new_record?
+        - if form.object.new_record? && !duplication
           = render 'dashboard/stepper/summary_card', form: form
       .col-md-6.order-md-1.order-2
         = form.hidden_field :school_id, value: form.object.school_id
@@ -14,7 +14,7 @@
               title: 'Votre offre sera proposée aux élèves des niveaux suivants :',
               label: 'Collégiens (4ème et 3ème)',
               extra_header_classes: 'fr-h6',
-              options: { data: {:'grade-target' => 'grade3e4e', action: 'grade#onClick' } }
+              options: { data: {:'grade-target' => 'gradeCollege', action: 'grade#onClick' } }
 
         .row data-grade-target="troisiemeContainer"
           .col-12

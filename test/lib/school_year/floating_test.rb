@@ -7,7 +7,7 @@ module SchoolYear
       travel_to(Date.new(2019, 1, 1)) do
         school_year = Floating.new(date: Date.today)
         assert_equal Date.today, school_year.updated_beginning_of_period
-        assert_equal Date.new(2019, 6, 1), school_year.end_of_period
+        assert_equal Date.new(2019, 7, 1), school_year.end_of_period
       end
     end
 
@@ -15,7 +15,7 @@ module SchoolYear
       travel_to(Date.new(2019, 7, 2)) do
         school_year = Floating.new(date: Date.today)
         assert_equal Date.new(2019, 9, 1), school_year.beginning_of_period
-        assert_equal Date.new(2020, 6, 1), school_year.end_of_period
+        assert_equal Date.new(2020, 7, 1), school_year.end_of_period
       end
     end
 
@@ -23,7 +23,7 @@ module SchoolYear
       travel_to(Date.new(2019, 7, 1)) do
         school_year = Floating.new(date: Date.today)
         assert_equal Date.new(2019, 9, 1), school_year.beginning_of_period
-        assert_equal Date.new(2020, 6, 1), school_year.end_of_period
+        assert_equal Date.new(2020, 7, 1), school_year.end_of_period
       end
     end
 
@@ -31,7 +31,7 @@ module SchoolYear
       travel_to(Date.new(2021, 7, 1)) do
         school_year = Floating.new(date: Date.today)
         assert_equal Date.new(2021, 9, 1), school_year.beginning_of_period
-        assert_equal Date.new(2022, 6, 1), school_year.end_of_period
+        assert_equal Date.new(2022, 7, 1), school_year.end_of_period
       end
     end
 
@@ -39,7 +39,7 @@ module SchoolYear
       travel_to(Date.new(2019, 9, 1)) do
         school_year = Floating.new(date: Date.today)
         assert_equal Date.new(2019, 9, 1), school_year.beginning_of_period
-        assert_equal Date.new(2020, 6, 1), school_year.end_of_period
+        assert_equal Date.new(2020, 7, 1), school_year.end_of_period
       end
     end
   end

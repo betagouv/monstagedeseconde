@@ -30,12 +30,12 @@ module Dashboard::Stepper
         longitude: @internship_occupation.coordinates.longitude,
         radius: DEFAULT_SCHOOL_RADIUS
       )
+      @duplication = false
     end
 
     def create
       @planning = Planning.new(planning_params.merge(entreprise_id: params[:entreprise_id]))
       authorize! :create, @planning
-      @available_weeks = @planning.available_weeks
       manage_planning_associations
 
       if @planning.save
@@ -110,7 +110,12 @@ module Dashboard::Stepper
 
     def manage_planning_associations
       manage_grades
+      puts '================================'
+      puts "@planning.weeks.map(&:id) : #{@planning.weeks.map(&:id)}"
       manage_weeks
+      puts "@planning.weeks.map(&:id) : #{@planning.weeks.map(&:id)}"
+      puts '================================'
+      puts ''
       @planning.employer_id = current_user.id
     end
 
@@ -120,17 +125,45 @@ module Dashboard::Stepper
     end
 
     def manage_weeks
-      # @planning.weeks = @available_weeks if employer_chose_whole_year? # legacy
-      return unless params_offer_for_seconde?
+      case @planning.grades.sort_by(&:id)
+      when [Grade.seconde]
+        manage_seconde_weeks
+        remove_troisieme_weeks
+      when Grade.troisieme_et_quatrieme.sort_by(&:id), [Grade.troisieme], [Grade.quatrieme]
+        manage_troisieme_weeks
+        remove_seconde_weeks
+      when Grade.all.sort_by(&:id)
+        manage_troisieme_weeks
+        manage_seconde_weeks
+      end
+    end
 
-      @planning.weeks = [] unless params_offer_for_troisieme_or_quatrieme?
+    def remove_seconde_weeks = reject_weeks(Week.seconde_weeks)
+    def remove_troisieme_weeks = reject_weeks(Week.troisieme_weeks)
+
+    def manage_seconde_weeks
+      weeks = []
       case period
-      when PERIOD[:two_weeks]
-        @planning.weeks << SchoolTrack::Seconde.both_weeks
-      when PERIOD[:first_week]
-        @planning.weeks << SchoolTrack::Seconde.first_week
-      when PERIOD[:second_week]
-        @planning.weeks << SchoolTrack::Seconde.second_week
+      when PERIOD[:first_week], PERIOD[:two_weeks]
+        weeks << SchoolTrack::Seconde.first_week
+      when PERIOD[:second_week], PERIOD[:two_weeks]
+        weeks << SchoolTrack::Seconde.second_week
+      end
+      add_weeks_to_planning(weeks)
+    end
+
+    def manage_troisieme_weeks
+      @available_weeks = Week.troisieme_selectable_weeks
+      add_weeks_to_planning(@available_weeks) if employer_chose_whole_year?
+    end
+
+    def add_weeks_to_planning(weeks)
+      @planning.week_ids = (@planning.weeks << weeks).uniq.map(&:id)
+    end
+
+    def reject_weeks(weeks)
+      @planning.weeks = @planning.weeks.reject do |week|
+        week.id.in?(weeks.map(&:id))
       end
     end
 

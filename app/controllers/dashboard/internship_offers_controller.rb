@@ -23,14 +23,21 @@ module Dashboard
     end
 
     def new
+      @duplication = true
       authorize! :create, InternshipOffer
-      internship_offer = current_user.internship_offers.find(params[:duplicate_id]).duplicate
+      internship_offer = current_user.internship_offers
+                                     .find(params[:duplicate_id])
 
       @internship_offer = if params[:without_location].present?
                             internship_offer.duplicate_without_location
                           else
                             internship_offer.duplicate
                           end
+
+      @available_weeks = Week.both_school_track_selectable_weeks
+      @internship_offer.grade_college = @internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
+      @internship_offer.grade_2e = @internship_offer.fits_for_seconde? ? '1' : '0'
+      @internship_offer.all_year_long = @internship_offer.all_year_long?
     end
 
     # duplicate submit
@@ -59,10 +66,10 @@ module Dashboard
 
     def edit
       authorize! :update, @internship_offer
+      @available_weeks = Week.both_school_track_selectable_weeks
       @internship_offer.grade_college = @internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
       @internship_offer.grade_2e = @internship_offer.fits_for_seconde? ? '1' : '0'
-      @internship_offer.all_year_long = @internship_offer.all_year_long?
-      @available_weeks = Week.selectable_from_now_until_end_of_school_year
+      @internship_offer.all_year_long = @internship_offer.all_year_long? # ? strange ... removal seems possible
       @republish = true
     end
 
@@ -71,6 +78,7 @@ module Dashboard
       internship_offer_builder.update(instance: @internship_offer,
                                       params: internship_offer_params) do |on|
         on.success do |updated_internship_offer|
+          # updated_internship_offer.publish! unless updated_internship_offer.published?
           @internship_offer = updated_internship_offer
           respond_to do |format|
             format.turbo_stream
@@ -138,18 +146,18 @@ module Dashboard
     end
 
     def remove # Back to step 4
-      if offer_contains_stepper_informations?
-        redirect_to(
-          edit_dashboard_stepper_practical_info_path(
-            id: @internship_offer.practical_info_id,
-            organisation_id: @internship_offer.organisation_id,
-            internship_offer_info_id: @internship_offer.internship_offer_info_id,
-            hosting_info_id: @internship_offer.hosting_info_id
-          )
-        )
-      else
-        redirect_to(edit_dashboard_internship_offer_path(id: @internship_offer.id))
-      end
+      # if offer_contains_stepper_informations?
+      #   redirect_to(
+      #     edit_dashboard_stepper_practical_info_path(
+      #       id: @internship_offer.practical_info_id,
+      #       organisation_id: @internship_offer.organisation_id,
+      #       internship_offer_info_id: @internship_offer.internship_offer_info_id,
+      #       hosting_info_id: @internship_offer.hosting_info_id
+      #     )
+      #   )
+      # else
+      #   redirect_to(edit_dashboard_internship_offer_path(id: @internship_offer.id))
+      # end
     end
 
     # duplicate form
@@ -166,12 +174,12 @@ module Dashboard
       VALID_ORDER_COLUMNS.include?(params[:order])
     end
 
-    def offer_contains_stepper_informations?
-      !!(@internship_offer.practical_info_id &&
-        @internship_offer.hosting_info_id &&
-        @internship_offer.internship_offer_info_id &&
-        @internship_offer.organisation_id)
-    end
+    # def offer_contains_stepper_informations?
+    #   !!(@internship_offer.practical_info_id &&
+    #     @internship_offer.hosting_info_id &&
+    #     @internship_offer.internship_offer_info_id &&
+    #     @internship_offer.organisation_id)
+    # end
 
     def finder
       @finder ||= Finders::InternshipOfferPublisher.new(
@@ -211,13 +219,14 @@ module Dashboard
 
     def internship_offer_params
       params.require(:internship_offer)
-            .permit(:title, :description, :sector_id, :max_candidates,
-                    :employer_name, :street,
+            .permit(:title, :description, :sector_id, :max_candidates, :max_students_per_group,
+                    :employer_name, :employer_chosen_name, :street,
                     :zipcode, :city, :department, :region, :academy, :renewed,
                     :is_public, :group_id, :published_at, :republish, :type,
                     :employer_id, :employer_type, :verb, :user_update, :school_id,
                     :siret, :internship_address_manual_enter, :lunch_break, :aasm_state,
-                    :period, entreprise_coordinates: {}, coordinates: {},
+                    :grade_college, :grade_2e, :period,
+                    :period, entreprise_coordinates: {}, coordinates: {}, grade_ids: [],
                              daily_hours: {}, weekly_hours: [], week_ids: [])
     end
 

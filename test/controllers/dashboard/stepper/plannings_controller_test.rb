@@ -19,7 +19,7 @@ module Dashboard::Stepper
         entreprise = create(:entreprise, internship_occupation:)
 
         assert entreprise.internship_occupation.present?
-        weeks = Week.selectable_from_now_until_end_of_school_year
+        weeks = Week.troisieme_selectable_weeks
 
         sign_in(employer)
         planning = {

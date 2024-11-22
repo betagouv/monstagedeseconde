@@ -17,7 +17,7 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       visit new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
       fill_in_planning_form(with_seconde: false)
       # TODO: schools management
-      execute_script('document.querySelector("input[name=\'is_reserved\']").click()')
+      # execute_script('document.querySelector("input[name=\'is_reserved\']").click()')
       # fill_in "Commune ou nom de l'établissement pour lequel le stage est reservé",
       #         with: school.city
       # sleep 1
@@ -35,7 +35,7 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       planning = Planning.last
       assert_equal entreprise.id, planning.entreprise_id
       assert_equal Grade.troisieme_et_quatrieme.ids.sort, planning.grades.map(&:id).sort
-      assert_equal Week.selectable_from_now_until_end_of_school_year.pluck(:id).sort,
+      assert_equal Week.troisieme_selectable_weeks.pluck(:id).sort,
                    planning.weeks.pluck(:id).sort
       assert_equal 'test de lunch break', planning.lunch_break
       refute SchoolTrack::Seconde.first_week.id.in?(planning.weeks.pluck(:id))

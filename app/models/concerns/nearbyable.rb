@@ -25,7 +25,7 @@ module Nearbyable
     # since relative_distance is not known as a column,
     # this scope is to be used as the very last in the query
     scope :nearby_and_ordered, lambda { |latitude:, longitude:, radius:|
-      nearby(latitude:, longitude:, radius:)
+      nearby(latitude:, longitude:, radius: radius.to_i)
         .with_distance_from(latitude:, longitude:)
         .unscope(:order)
         .order(relative_distance: :asc)

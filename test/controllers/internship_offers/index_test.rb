@@ -193,7 +193,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   test 'GET #index as student ignores internship_offers with existing application' do
     travel_to(Date.new(2024, 3, 1)) do
       internship_offer_without_application = create(
-        :weekly_internship_offer_3eme,
+        :weekly_internship_offer_2nde,
         title: 'offer without_application'
       )
 
@@ -203,8 +203,9 @@ class IndexTest < ActionDispatch::IntegrationTest
       class_room = create(:class_room, school:)
       student = create(:student, school:, class_room:)
       internship_offer_with_application = create(
-        :weekly_internship_offer_3eme,
+        :weekly_internship_offer_2nde,
         max_candidates: 2,
+        max_students_per_group: 2,
         title: 'offer with_application'
       )
 
@@ -241,7 +242,6 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as student. ignores internship offers not published' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
     travel_to(Date.new(2024, 3, 1)) do
       api_internship_offer         = create(:api_internship_offer_2nde)
       internship_offer_published   = create(:weekly_internship_offer_3eme)
@@ -262,9 +262,9 @@ class IndexTest < ActionDispatch::IntegrationTest
 
   test 'GET #index as visitor does not show discarded offers' do
     travel_to(Date.new(2024, 3, 1)) do
-      discarded_internship_offer = create(:weekly_internship_offer_3eme,
+      discarded_internship_offer = create(:weekly_internship_offer_2nde,
                                           discarded_at: 2.days.ago)
-      not_discarded_internship_offer = create(:weekly_internship_offer_3eme,
+      not_discarded_internship_offer = create(:weekly_internship_offer_2nde,
                                               discarded_at: nil)
       get internship_offers_path, params: { format: :json }
       assert_json_presence_of(json_response, not_discarded_internship_offer)
@@ -274,10 +274,10 @@ class IndexTest < ActionDispatch::IntegrationTest
 
   test 'GET #index as visitor does not show unpublished offers' do
     travel_to(Date.new(2024, 3, 1)) do
-      published_internship_offer = create(:weekly_internship_offer_3eme,
+      published_internship_offer = create(:weekly_internship_offer_2nde,
                                           aasm_state: 'published',
                                           published_at: 2.days.ago)
-      not_published_internship_offer = create(:weekly_internship_offer_3eme, :unpublished)
+      not_published_internship_offer = create(:weekly_internship_offer_2nde, :unpublished)
       get internship_offers_path, params: { format: :json }
       assert_json_presence_of(json_response, published_internship_offer)
       assert_json_absence_of(json_response, not_published_internship_offer)
@@ -342,7 +342,6 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as student with page, returns paginated content' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
     # Api offers are ordered by creation date, so we can't test pagination with cities
     travel_to(Date.new(2024, 3, 1)) do
       # Student school is in Paris
@@ -369,12 +368,11 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as student with InternshipOffers::Api, returns paginated content' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
     travel_to(Date.new(2024, 3, 1)) do
       internship_offers = InternshipOffer::PAGE_SIZE.times.map do
-        create(:api_internship_offer_2nde)
+        create(:api_internship_offer_3eme)
       end
-      create(:api_internship_offer_2nde, coordinates: Coordinates.bordeaux, city: 'Bordeaux')
+      create(:api_internship_offer_3eme, coordinates: Coordinates.bordeaux, city: 'Bordeaux')
       sign_in(create(:student))
       InternshipOffer.stub :by_weeks, InternshipOffer.all do
         InternshipOffer.stub :in_the_future, InternshipOffer.all do
@@ -394,9 +392,9 @@ class IndexTest < ActionDispatch::IntegrationTest
 
   test 'search by location (radius) works' do
     travel_to(Date.new(2024, 3, 1)) do
-      internship_offer_at_paris = create(:weekly_internship_offer_3eme,
+      internship_offer_at_paris = create(:api_internship_offer_3eme,
                                          coordinates: Coordinates.paris)
-      internship_offer_at_verneuil = create(:weekly_internship_offer_3eme,
+      internship_offer_at_verneuil = create(:api_internship_offer_3eme,
                                             coordinates: Coordinates.verneuil)
 
       get internship_offers_path(latitude: Coordinates.paris[:latitude],
@@ -420,9 +418,9 @@ class IndexTest < ActionDispatch::IntegrationTest
       week = Week.find_by(year: 2019, number: 10)
       school_at_paris = create(:school, :at_paris)
       student = create(:student, school: school_at_paris)
-      internship_offer_at_paris = create(:weekly_internship_offer_3eme,
+      internship_offer_at_paris = create(:weekly_internship_offer_2nde,
                                          coordinates: Coordinates.paris)
-      internship_offer_at_bordeaux = create(:weekly_internship_offer_3eme,
+      internship_offer_at_bordeaux = create(:weekly_internship_offer_2nde,
                                             coordinates: Coordinates.bordeaux)
 
       InternshipOffer.stub :by_weeks, InternshipOffer.all do
@@ -513,12 +511,11 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as Visitor with search keyword find internship offer' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
     travel_to(Date.new(2024, 3, 1)) do
       keyword = 'foobar'
-      foundable_internship_offer = create(:weekly_internship_offer_3eme,
+      foundable_internship_offer = create(:weekly_internship_offer_2nde,
                                           title: keyword)
-      ignored_internship_offer = create(:weekly_internship_offer_3eme, title: 'bom')
+      ignored_internship_offer = create(:weekly_internship_offer_2nde, title: 'bom')
 
       dictionnary_api_call_stub
       SyncInternshipOfferKeywordsJob.perform_now
@@ -531,7 +528,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'search on period works' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
+    skip 'TODO with search on period / relevant test to be reactivated by november 2024'
     travel_to(Date.new(2024, 3, 1)) do
       offer_1 = create(:weekly_internship_offer_2nde, :week_1)
       offer_2 = create(:weekly_internship_offer_3eme, :week_2)
@@ -558,7 +555,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'search with school years works' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
+    # skip 'this test is relevant and shall be reactivated by november 2024'
     employer = create(:employer)
     sign_in(employer)
     offer_1 = nil
@@ -566,6 +563,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     offer_3 = nil
     travel_to(Date.new(2024, 3, 1)) do
       offer_1 = create(:weekly_internship_offer_2nde, :week_1, school_year: 2024, employer:)
+      assert Date.new(2024, 7, 21), offer_1.last_date
     end
     travel_to(Date.new(2025, 3, 1)) do
       offer_2 = create(:weekly_internship_offer_2nde, :week_2, school_year: 2025, employer:)

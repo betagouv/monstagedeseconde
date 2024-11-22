@@ -59,7 +59,7 @@ div [data-controller="select-weeks"
                   - score = (weeks & form.object.weeks).size
                   - if score > 0
                     p class="blue-france strong bold fr-text--sm #{month_name} month-score" data-select-weeks-target='monthScore'
-                      = "#{month_name} <span class='month-score'>(#{score})</span>"
+                      = "#{month_name} <span class='month-score'>(#{score})</span>".html_safe
                   - else
                     p class="fr-hint-text fr-text--sm #{month_name} month-score" data-select-weeks-target='monthScore'
                       = month_name
@@ -82,7 +82,7 @@ div [data-controller="select-weeks"
                         - options =  { multiple: true,
                                       id: checkbox_id,
                                       data: {:"select-weeks-target" => 'weekCheckboxes',
-                                              action: 'change->select-weeks#handleCheckboxesChanges change->select-weeks#handleOneCheckboxChange'} }
+                                              action: 'change->select-weeks#handleOneCheckboxChange'} }
                         - options.merge!({checked: true}) if preselect_all
                         = form.check_box :week_ids, options, week.id, false
                         = form.label :"week_id", for: checkbox_id, class: 'fr-label fr-text--sm fr-mb-1v w-100' do

@@ -2,7 +2,8 @@
   div [data-controller='mandatory-fields fill-card ministry-fields'
        data-action="input->entreprise-form#checkForm"
        data-mandatory-fields-minimum-length-value="2"
-       data-ministry-fields-newRecord-value="#{resource.new_record?}"]
+       data-ministry-fields-newRecord-value="#{resource.new_record?}"
+       data-ministry-fields-isEntreprisePublic-value="#{resource.try(:is_public) ? 'true' : 'false'}" ]
     .row
       .col-md-6.order-md-2.order-1.d-none.d-md-block
         - if form.object.new_record? && show_resume
@@ -26,7 +27,7 @@
                                         presentationLabel: "L'administration",
                                         currentSiren: resource.siret,
                                         railsEnv: Rails.env,
-                                        newRecord: resource.new_record? })
+                                        newRecord: resource.new_record? && !duplication })
 
           #hidden-public-private-field.d-none
             input type='hidden' name='entreprise[is_public]'

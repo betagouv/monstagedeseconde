@@ -98,9 +98,7 @@ export default class extends Controller {
   }
 
   showSchoolDensityPerWeek(schools) {
-    console.log(schools);
     const weeksSchoolsHash = mapNumberOfSchoolHavingWeek(schools);
-    console.log("weeksSchoolsHash", weeksSchoolsHash);
 
     $(this.inputWeekLegendTargets).each((i, el) => {
       const weekId = parseInt(el.getAttribute("data-week-id"), 10);
@@ -242,6 +240,7 @@ export default class extends Controller {
   }
 
   handleOneCheckboxChange(event) {
+    this.handleCheckboxesChanges(event);
     this.setMonthScore(event);
     this.repaintScores();
   }

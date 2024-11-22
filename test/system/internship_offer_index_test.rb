@@ -43,15 +43,14 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
       assert_equal 'Paris', student.school.city
       sign_in(student)
       visit internship_offers_path
-      # TODO: april flower
-      # find("li a.fr-link", text: 'Recherche').click
-      # within(".fr-test-internship-offers-container") do
-      #   assert_selector('ul.fr-badges-group li .fr-badge.fr-badge--warning.fr-badge--no-icon', text: 'PARIS', count: InternshipOffer::PAGE_SIZE, wait: 5)
-      # end
-      # click_link 'Page suivante'
-      # within(".fr-test-internship-offers-container") do
-      #   assert_selector('ul.fr-badges-group li .fr-badge.fr-badge--warning.fr-badge--no-icon', text: 'CHATILLON', count: 2, wait: 2)
-      # end
+      find("li a.fr-link", text: 'Recherche').click
+      within(".fr-test-internship-offers-container") do
+        assert_selector('ul.fr-badges-group li .fr-badge.fr-badge--warning.fr-badge--no-icon', text: 'PARIS', count: InternshipOffer::PAGE_SIZE, wait: 5)
+      end
+      click_link 'Page suivante'
+      within(".fr-test-internship-offers-container") do
+        assert_selector('ul.fr-badges-group li .fr-badge.fr-badge--warning.fr-badge--no-icon', text: 'CHATILLON', count: 2, wait: 2)
+      end
     end
   end
 

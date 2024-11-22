@@ -8,6 +8,7 @@ module Dashboard::Stepper
       @entreprise = Entreprise.new(internship_occupation_id: params[:internship_occupation_id])
       @internship_occupation = @entreprise.internship_occupation
       authorize! :create, @entreprise
+      @duplication = false
     end
 
     def create
@@ -26,6 +27,7 @@ module Dashboard::Stepper
 
     def edit
       authorize! :edit, @entreprise
+      @duplication = false
     end
 
     # process update following a back to step 2

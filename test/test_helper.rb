@@ -74,6 +74,7 @@ class ActionDispatch::IntegrationTest
   def after_teardown
     super
     FileUtils.rm_rf(ActiveStorage::Blob.service.root)
+    Sidekiq.redis(&:flushdb)
   end
   parallelize_setup do |i|
     ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"
