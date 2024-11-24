@@ -37,7 +37,3 @@ div.fr-container.d-flex.fr-mt-2w
         - if @internship_offer.planning_id
           - url = edit_dashboard_stepper_planning_path(@internship_offer.planning_id)
         = link_to 'Modifier', url, class: 'fr-btn fr-mr-1w fr-btn--secondary'
-      = button_to 'Publier',
-                  publish_dashboard_internship_offer_path(@internship_offer),
-                  data: { turbo: false },
-                  class: 'fr-btn fr-ml-1w'
