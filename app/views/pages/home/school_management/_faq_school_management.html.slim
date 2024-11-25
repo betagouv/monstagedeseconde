@@ -3,11 +3,11 @@ h3.fr-pt-4w Foire aux questions
 .row.fr-py-3w
   - @faqs.each do |faq|
      .col-md-4.col-12-xs.d-flex.align-items-stretch.fr-mb-2w
-       .fr-card.fr-enlarge-link
+       .fr-card
          .fr-card__body.fr-pt-2w
            .fr-card__content
              h3.fr-card__title.fr-mb-2w.blue-france
-               = link_to faq[:question], faq[:url], class: 'text-dark'
+               = link_to faq[:question], faq[:url], class: 'fr-raw-link'
              p.fr-card__desc
                = faq[:answer].gsub(/<\/?pre>/, '').html_safe
          .fr-card__header.fr-my-4w
@@ -17,6 +17,7 @@ h3.fr-pt-4w Foire aux questions
 
 .row.fr-py-3w
   .col-12.text-center
-    = link_to 'Accéder à la FAQ',
-              'https://zammad.incubateur.anct.gouv.fr/help/fr-fr/5',
-              class: 'fr-btn fr-btn--secondary'
+    = link_to 'Voir toutes les questions fréquentes',
+              'https://www.education.gouv.fr/',
+              class: 'fr-btn fr-btn--secondary',
+              target: '_blank'
