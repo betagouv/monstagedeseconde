@@ -10,7 +10,7 @@ class StudentRegistrationsTest < ActionDispatch::IntegrationTest
     get new_identity_path
     assert_response :success
     assert_select 'input', value: 'Student', hidden: 'hidden'
-    assert_select 'title', 'Inscription élève - etape 1 sur 2 | Monstage'
+    assert_select 'title', 'Inscription élève - etape 1 sur 2 | 1élève1stage'
     # jsx componentes do not show labels with the usual way
     assert_select 'label', /Nom/
     assert_select 'label', /Prénom/

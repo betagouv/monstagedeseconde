@@ -21,7 +21,7 @@ fr:
     passwords:
       update: 'Mot de passe mis à jour.'
     sms:
-      welcome_student: "Bienvenue sur Mon stage de 2de. Commencez votre recherche ici : %{shrinked_url}"
+      welcome_student: "Bienvenue sur 1élève1stage. Commencez votre recherche ici : %{shrinked_url}"
   activerecord:
     models:
       area_notification:

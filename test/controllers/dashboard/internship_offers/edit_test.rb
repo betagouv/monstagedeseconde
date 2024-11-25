@@ -76,7 +76,7 @@ module Dashboard::InternshipOffers
 
       get edit_dashboard_internship_offer_path(internship_offer.to_param)
       assert_response :success
-      assert_select 'title', "Offre de stage '#{internship_offer.title}' | Monstage"
+      assert_select 'title', "Offre de stage '#{internship_offer.title}' | 1élève1stage"
 
       assert_select '#internship_type_true[checked]', count: 1
       assert_select '#internship_type_false[checked]', count: 0

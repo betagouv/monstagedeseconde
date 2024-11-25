@@ -1,4 +1,4 @@
-To post offers on the [Mon stage à l'école](https://stagedeseconde.1jeune1solution.gouv.fr/) platform, an API is available for:
+To post offers on the [1élève1stage](https://stagedeseconde.1jeune1solution.gouv.fr/) platform, an API is available for:
 
 * Associations
 * Local Authorities
@@ -7,11 +7,11 @@ To post offers on the [Mon stage à l'école](https://stagedeseconde.1jeune1solu
 
 This is a REST API that allows the following operations:
 
-* Add an internship offer on Mon stage à l'école
-* Modify an internship offer on Mon stage à l'école
-* Delete an internship offer on Mon stage à l'école
-* Retrieve posted internship offers on Mon stage à l'école
-* Search for internship offers on Mon stage à l'école
+* Add an internship offer on 1élève1stage
+* Modify an internship offer on 1élève1stage
+* Delete an internship offer on 1élève1stage
+* Retrieve posted internship offers on 1élève1stage
+* Search for internship offers on 1élève1stage
 
 # Table of contents
 - [Environments](#environments)

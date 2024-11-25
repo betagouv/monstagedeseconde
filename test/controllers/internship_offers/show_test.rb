@@ -20,7 +20,7 @@ module InternshipOffers
     #   get internship_offer_path(internship_offer)
 
     #   assert_response :success
-    #   assert_select 'title', "Offre de stage '#{internship_offer.title}' | Monstage"
+    #   assert_select 'title', "Offre de stage '#{internship_offer.title}' | 1élève1stage"
     #   assert_select 'form[id=?]', 'new_internship_application', count: 0
     #   assert_select 'strong.tutor_name', text: internship_offer.tutor_name
     #   assert_select 'ul li.tutor_phone', text: "Portable : #{internship_offer.tutor_phone}"
