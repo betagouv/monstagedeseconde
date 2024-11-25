@@ -78,6 +78,7 @@ class Ability
 
   def student_abilities(user:)
     can :look_for_offers, User
+    can :sign_with_sms, User
     can :show, :account
     can :change, ClassRoom do |class_room|
       class_room.school_id == user.school_id
@@ -231,7 +232,9 @@ class Ability
     end
     can %i[index update], InternshipApplication
     can %i[update_multiple], InternshipApplication do |internship_applications|
-      internship_applications.all? { |internship_application| internship_application.internship_offer.employer_id == user.team_id }
+      internship_applications.all? do |internship_application|
+        internship_application.internship_offer.employer_id == user.team_id
+      end
     end
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)
