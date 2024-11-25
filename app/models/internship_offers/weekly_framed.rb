@@ -20,7 +20,6 @@ module InternshipOffers
                               less_than_or_equal_to: MAX_CANDIDATES_HIGHEST }
     validates :lunch_break, length: { minimum: 10, maximum: 200 }
     validate :schedules_check
-    validate :enough_weeks
 
     after_initialize :init
     before_create :reverse_academy_by_zipcode
