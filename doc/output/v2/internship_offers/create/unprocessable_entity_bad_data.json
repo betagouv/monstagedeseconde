@@ -11,14 +11,14 @@
   "employer_description": "employer_description",
   "remote_id": "remote_id",
   "permalink": "http://monsite.com",
-  "published_at": "2024-03-01T00:00:00.000+01:00",
+  "published_at": "2025-03-01T00:00:00.000+01:00",
   "formatted_coordinates": {
     "latitude": 48.8566383,
     "longitude": 2.3211761
   },
   "weeks": [
-    "2025-W18",
-    "2025-W20"
+    "2025-W21",
+    "2025-W12"
   ],
   "grades": [
     "troisieme"

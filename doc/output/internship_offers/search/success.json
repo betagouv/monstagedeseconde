@@ -10,7 +10,5 @@
     "isLastPage": false,
     "pageUrlBase": "http://www.example.com/api/v1/internship_offers/search"
   },
-  "internshipOffers": [
-
-  ]
+  "internshipOffers": []
 }

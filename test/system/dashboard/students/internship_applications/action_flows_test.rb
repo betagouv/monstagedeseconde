@@ -72,7 +72,7 @@ module Dashboard
       end
 
       test 'student can browse his canceled internship_applications ' do
-        skip
+        skip 'TO DO Check if this test is still relevant'
         school = create(:school, :with_school_manager)
         student = create(:student, :when_applying, school:)
         internship_applications = {

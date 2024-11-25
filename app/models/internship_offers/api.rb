@@ -3,7 +3,9 @@
 module InternshipOffers
   class Api < InternshipOffer
     MAX_CALLS_PER_MINUTE = 100
-
+    MANDATORY_SECONDE_WEEKS = SchoolTrack::Seconde.both_weeks.map do |week|
+      "#{week.year}-W#{week.number.to_s.rjust(2, '0')}"
+    end.freeze
     rails_admin do
       weight 13
       navigation_label 'Offres'

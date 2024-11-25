@@ -1,8 +1,8 @@
 {
-  "code": 401,
+  "code": "VALIDATION_ERROR",
   "error": {
-    "period": [
-      "n'est pas inclus(e) dans la liste"
+    "description": [
+      "Description too long, allowed up 500 chars"
     ]
   }
 }

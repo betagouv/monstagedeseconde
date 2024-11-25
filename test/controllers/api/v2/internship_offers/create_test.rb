@@ -41,7 +41,7 @@ module Api
           post api_v2_internship_offers_path(
             params: {
               token: "Bearer #{@token}",
-              internship_offer: { title: '', grades: ['seconde'], weeks: ['2025-W25'] }
+              internship_offer: { title: '', grades: ['troisieme'], weeks: ['2025-W25'] }
             }
           )
         end
@@ -76,7 +76,7 @@ module Api
                                                            .merge(sector_uuid: sector.uuid,
                                                                   coordinates: { latitude: 1, longitude: 1 },
                                                                   grades: ['seconde'],
-                                                                  weeks: %w[2025-W25 2025-W22])
+                                                                  weeks: InternshipOffers::Api::MANDATORY_SECONDE_WEEKS)
 
         geocoder_response = {
           status: 200,
@@ -116,7 +116,7 @@ module Api
         remote_id = 'test'
         permalink = 'http://monsite.com'
         grades = %w[seconde troisieme]
-        weeks = %w[2025-W24 2025-W25]
+        weeks = InternshipOffers::Api::MANDATORY_SECONDE_WEEKS
         daily_hours = { "lundi": ['9:00', '17:00'], "mardi": ['9:00', '17:00'], "mercredi": ['9:00', '17:00'],
                         "jeudi": ['9:00', '17:00'], "vendredi": ['9:00', '17:00'] }
         assert_difference('InternshipOffer.count', 1) do
