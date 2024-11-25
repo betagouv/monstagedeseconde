@@ -62,6 +62,11 @@ module Presenters
       to_range_as_str.split(/(\d*\s?semaines?\s?:?)/)
     end
 
+    def to_api_formatted
+      weeks.map(&:long_select_text_method)
+           .join(', ')
+    end
+
     attr_reader :weeks, :first_week, :last_week
 
     protected

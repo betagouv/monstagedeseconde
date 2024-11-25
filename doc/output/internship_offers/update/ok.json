@@ -8,13 +8,18 @@
   "city": "Paris",
   "is_public": true,
   "employer_name": "Octo",
-  "employer_description": "on envoie du parpaing",
-  "remote_id": "43",
+  "employer_description": null,
+  "remote_id": "5",
   "permalink": "https://google.fr",
   "published_at": null,
-  "max_students_per_group": 1,
   "formatted_coordinates": {
     "latitude": 48.866667,
     "longitude": 2.333333
-  }
+  },
+  "weeks": [
+    "2025-W26"
+  ],
+  "grades": [
+    "seconde"
+  ]
 }

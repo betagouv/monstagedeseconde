@@ -27,10 +27,11 @@ module StepperProxy
                                 less_than_or_equal_to: :max_candidates,
                                 message: "Le nombre maximal d'élèves par groupe ne peut pas dépasser le nombre maximal d'élèves attendus dans l'année" }
       validates :weeks, presence: true
-      validate :enough_weeks
+      # if not API, validate enough weeks
+      validate :enough_weeks unless :from_api
       validate :at_least_one_grade
 
-      # methods common to planning and internship_offer
+      # methods common to planning and internship_offer but not for API
       def enough_weeks
         weeks_size = ((try(:internship_offer_weeks) || try(:planning_weeks)) || []).to_a.size
         return if weeks_size.zero?

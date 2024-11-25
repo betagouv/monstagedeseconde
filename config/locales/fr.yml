@@ -440,7 +440,7 @@ fr:
         period: Période de stage
         organisation:
           group: Groupe ou institution de tutelle
-
+        
         internship_occupation: Métiers observés et localisation du stage
           # title: Intitulé
           # description: Description
@@ -651,6 +651,7 @@ fr:
               blank: "Missing street"
             zipcode:
               blank: "Missing zipcode"
+              invalid: "Zipcode is invalid"
             city:
               blank: "Missing city"
             sector:

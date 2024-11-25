@@ -3,7 +3,9 @@
 module InternshipOffers
   class Api < InternshipOffer
     MAX_CALLS_PER_MINUTE = 100
-
+    MANDATORY_SECONDE_WEEKS = SchoolTrack::Seconde.both_weeks.map do |week|
+      "#{week.year}-W#{week.number.to_s.rjust(2, '0')}"
+    end.freeze
     rails_admin do
       weight 13
       navigation_label 'Offres'
@@ -104,6 +106,25 @@ module InternshipOffers
       unpublish! if may_unpublish? && published_at.nil?
     end
 
+    def period
+      case weeks
+      when [SchoolTrack::Seconde.first_week]
+        1
+      when [SchoolTrack::Seconde.second_week]
+        2
+      else
+        0
+      end
+    end
+
+    def formatted_weeks
+      weeks.map { |week| "#{week.year}-W#{week.number}" }
+    end
+
+    def formatted_grades
+      grades.map(&:short_name).sort
+    end
+
     def as_json(options = {})
       super(options.merge(
         only: %i[title
@@ -121,7 +142,10 @@ module InternshipOffers
                  published_at
                  is_public],
         methods: [:formatted_coordinates]
-      ))
+      )).merge(
+        weeks: formatted_weeks,
+        grades: formatted_grades
+      )
     end
   end
 end
