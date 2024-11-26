@@ -27,6 +27,7 @@ module Dashboard
       authorize! :create, InternshipOffer
       internship_offer = current_user.internship_offers
                                      .find(params[:duplicate_id])
+                                     .duplicate # A revoir TODO
 
       @internship_offer = if params[:without_location].present?
                             internship_offer.duplicate_without_location

@@ -40,7 +40,6 @@ FactoryBot.define do
     end
     weekly_hours { [] }
     lunch_break { '12:00-13:00 avec le repas que vous apporterez' }
-    
     grades { Grade.all }
 
     trait :drafted do
@@ -81,7 +80,7 @@ FactoryBot.define do
     trait :troisieme_generale_internship_offer do
       weeks { Week.troisieme_selectable_weeks }
       grades { [Grade.troisieme] }
-      first_date {weeks.first.monday }
+      first_date { weeks.first.monday }
       last_date { weeks.last.monday + 5.days }
     end
 
@@ -162,15 +161,15 @@ FactoryBot.define do
                                                            parent: :internship_offer
     # Both school tracks :
     factory :api_internship_offer, traits: %i[api_internship_offer both_school_tracks_internship_offer],
-                                    class: 'InternshipOffers::Api',
-                                    parent: :internship_offer
+                                   class: 'InternshipOffers::Api',
+                                   parent: :internship_offer
 
     factory :weekly_internship_offer, traits: %i[weekly_internship_offer published both_school_tracks_internship_offer],
-                                          class: 'InternshipOffers::WeeklyFramed',
-                                          parent: :internship_offer
+                                      class: 'InternshipOffers::WeeklyFramed',
+                                      parent: :internship_offer
 
     factory :weekly_internship_offer_by_statistician, traits: %i[weekly_internship_offer_by_statistician both_school_tracks_internship_offer],
-                                                          class: 'InternshipOffers::WeeklyFramed',
-                                                          parent: :internship_offer
+                                                      class: 'InternshipOffers::WeeklyFramed',
+                                                      parent: :internship_offer
   end
 end

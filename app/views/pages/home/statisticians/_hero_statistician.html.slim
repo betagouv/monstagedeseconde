@@ -1,27 +1,25 @@
 header.container-xl.px-0
   .container-monstage.container-xl.homepage
-    .row.fr-px-2w
-      .col-lg-12.col-md-12.px-0
-        .d-flex.flex-row
-          .blue-france.sub-hero
-            .fr-h4.fr-mt-6w.fr-mb-1w.blue-france
-              | Administration centrale, académie, ...
-            .div
-              h1.fr-h1.blue-france
-                | Promouvoir et piloter le dispositif
-                br
-                | Mon stage à l'école
-
-          .fr-mr-2w.ml-auto.fr-mb-1w.show-stamp-logo.d-none.d-md-block
-            = image_tag asset_pack_path('media/images/homepage/everyone/ms2e-stamp-medium.png'),
-                        alt: 'Logo stade de 2de générale et technologique',
-                        class: 'stamp-logo-medium fr-mt-5w fr-ml-4w'
-
-      .row.no-gutters.fr-mb-6w
-        .col-12
-          = link_to "S'inscrire",
-                    new_user_registration_path(as: 'Statistician'),
+    .row.fr-px-2w.fr-pt-6w.fr-mb-2w
+      .col-lg-6.col-md-12.px-0
+        h1.fr-h3.blue-france
+          | Administration centrale, académie, ...
+          br
+          | Promouvoir et piloter le dispositif
+          br
+          | 1élève1stage      
+        .row.no-gutters.fr-mb-6w
+          .col-12
+            = link_to "S'inscrire",
+                      new_user_registration_path(as: 'Statistician'),
                     class: 'fr-btn'
+      .col-lg-6.col-md-12.px-0.d-flex.align-items-center
+        = image_tag asset_pack_path('media/images/homepage/1eleve1stage_tag.png'),
+                    alt: 'Illustration élèves',
+                    height: '100px',
+                    class: 'img-fluid'
+
+      
 
 
 

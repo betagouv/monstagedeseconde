@@ -36,6 +36,7 @@ module Dashboard::Stepper
     def create
       @planning = Planning.new(planning_params.merge(entreprise_id: params[:entreprise_id]))
       authorize! :create, @planning
+      # @available_weeks = @planning.available_weeks
       manage_planning_associations
 
       if @planning.save
@@ -110,12 +111,7 @@ module Dashboard::Stepper
 
     def manage_planning_associations
       manage_grades
-      puts '================================'
-      puts "@planning.weeks.map(&:id) : #{@planning.weeks.map(&:id)}"
       manage_weeks
-      puts "@planning.weeks.map(&:id) : #{@planning.weeks.map(&:id)}"
-      puts '================================'
-      puts ''
       @planning.employer_id = current_user.id
     end
 

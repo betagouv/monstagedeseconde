@@ -133,5 +133,14 @@ module FormatableWeek
 
       wednesday.month
     end
+
+    def month_number
+      monday = week_date.beginning_of_week
+      tuesday = monday + 1.day
+      wednesday = tuesday + 1.day
+      return monday.month if monday.month == tuesday.month && tuesday.month == wednesday.month
+
+      (monday + 4.days).month
+    end
   end
 end

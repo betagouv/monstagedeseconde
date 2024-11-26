@@ -12,7 +12,7 @@ class SendSmsStudentValidatedApplicationJob < ApplicationJob
       message = 'Votre candidature pour le stage ' \
                 "de #{internship_application.internship_offer.title} " \
                 'a été acceptée. Vous pouvez maintenant la confirmer ' \
-                "sur Mon stage à l'école : #{url}"
+                "sur 1élève1stage : #{url}"
 
       Services::SmsSender.new(phone_number: phone, content: message)
                          .perform

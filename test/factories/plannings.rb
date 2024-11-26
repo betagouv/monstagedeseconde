@@ -30,6 +30,5 @@ FactoryBot.define do
     trait :with_seconde_and_troisieme do
       # default
     end
-
   end
 end

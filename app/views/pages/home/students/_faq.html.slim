@@ -1,68 +1,17 @@
 .fr-mx-lg-0.fr-mx-2w
-  h3.fr-pt-3w.fr-mt-2w Foire aux questions
+  h3.fr-pt-3w.fr-mt-2w Questions fréquentes
   .row.fr-py-3w
     - @faqs.each do |faq|
       .col-md-4.col-12-xs.d-flex.align-items-stretch.fr-mb-2w
-        .fr-card.fr-enlarge-link
+        .fr-card
           .fr-card__body.fr-pt-2w
             .fr-card__content
               h3.fr-card__title.fr-mb-2w.blue-france
-                = link_to faq[:question], faq[:url], class: 'text-dark'
+                = link_to faq[:question], faq[:url], class: 'fr-raw-link'
               p.fr-card__desc
                 = faq[:answer].gsub(/<\/?pre>/, '').html_safe
           .fr-card__header.fr-my-4w
             ul.fr-badges-group.fr-p-4w
               li
-                p.fr-badge.fr-badge--green-menthe élèves
-
-
-  /   .col-md-4.col-12-xs.d-flex.align-items-stretch.fr-mb-2w
-  /     .fr-card.fr-enlarge-link
-  /       .fr-card__body.fr-pt-2w
-  /         .fr-card__content
-  /           h3.fr-card__title.fr-mb-2w.blue-france
-  /             = link_to "Quelle est la durée de la séquence d’observation et quand se déroule-t-elle ?", 'https://zammad.incubateur.anct.gouv.fr/help/fr-fr/4-eleves/56-quelle-est-la-duree-de-la-sequence-d-observation-et-quand-se-deroule-t-elle', class: 'text-dark'
-  /           p.fr-card__desc
-  /             |
-  /               Les élèves de classe de seconde générale et technologique accomplissent une
-  /               séquence d’observation de deux semaines pendant le dernier mois de
-  /               l’année scolaire selon un calendrier national. Elles s’effectuent
-  /               sur temps scolaire. Cette période correspond à celle des épreuves
-  /               terminales du baccalauréat général et technologique. 
-  /           p.fr-card__desc
-  /             |
-  /               Pour l’année scolaire 2023-2024, celle-ci se déroulera du
-  /               17 au 28 juin 2024 inclus.
-  /       .fr-card__header.fr-my-4w
-  /         ul.fr-badges-group.fr-p-4w
-  /           li
-  /             p.fr-badge.fr-badge--purple-glycine élève
-
-
-  /   .col-md-4.col-12-xs.d-flex.align-items-stretch.fr-mb-2w
-  /     .fr-card.fr-enlarge-link
-  /       .fr-card__body.fr-pt-2w
-  /         .fr-card__content
-  /           h3.fr-card__title.fr-mb-2w.blue-france
-  /             = link_to "Comment postuler à une offre de stage via la plateforme ?", 'https://zammad.incubateur.anct.gouv.fr/help/fr-fr/4-eleves/20-comment-postuler-a-une-offre-de-stage', class: 'text-dark'
-  /           p.fr-card__desc
-  /             br
-  /               | 1. Rendez-vous sur la page d'accueil 
-  /               = link_to 'https://stagedeseconde.1jeune1solution.gouv.fr/', "https://stagedeseconde.1jeune1solution.gouv.fr/"
-  /             br
-  /               |  2. Cliquez sur le bloc "Élèves de 2de générale et technologique"
-  /             br
-  /               |  3. Cliquez sur Rechercher pour faire apparaître toutes les offres correspondant à vos attentes
-  /             br
-  /               |  4. Cliquez sur l'offre qui vous intéresse, et cliquez sur le bouton "Je postule"
-  /       .fr-card__header.fr-my-4w
-  /         ul.fr-badges-group.fr-p-4w
-  /           li
-  /             p.fr-badge.fr-badge--purple-glycine éleves
-
-  / .row.fr-my-3w
-  /   .col-12.text-center
-  /     = link_to 'Accéder à la FAQ',
-  /               'https://zammad.incubateur.anct.gouv.fr/help/fr-fr/4-eleves',
-  /               target: '_blank',
-  /               class: 'fr-btn fr-btn--secondary'
+                p.fr-badge.fr-badge--green-menthe 'élèves'
+         

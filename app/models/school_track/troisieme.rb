@@ -16,7 +16,7 @@ module SchoolTrack
     end
 
     def self.selectable_from_now_until_end_of_school_year
-      selectable_on_school_year.where('id >= ?',  Week.current.id)
+      selectable_on_school_year.where('id >= ?', Week.current.id)
     end
   end
 end

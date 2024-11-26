@@ -44,7 +44,7 @@ module Reporting
         dimension: 'group'
       )
       assert_response :success
-      assert_select 'title', "Statistiques par catégories d'entreprises | Monstage"
+      assert_select 'title', "Statistiques par catégories d'entreprises | 1élève1stage"
 
       # assert_select ".test-employer-#{public_internship_offer.group_id}", text: public_internship_offer.group.name
       # assert_select ".test-public-#{public_internship_offer.group_id}", text: 'Public'
@@ -185,7 +185,7 @@ module Reporting
         dimension: 'group'
       )
       assert_response :success
-      assert_select 'title', "Statistiques par catégories d'entreprises | Monstage"
+      assert_select 'title', "Statistiques par catégories d'entreprises | 1élève1stage"
 
       # assert_select ".test-employer-#{public_internship_offer.group_id}", text: public_internship_offer.group.name
       # assert_select ".test-public-#{public_internship_offer.group_id}", text: 'Public'
