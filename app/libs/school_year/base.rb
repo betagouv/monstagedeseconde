@@ -3,7 +3,7 @@
 module SchoolYear
   class Base
     YEAR_START          = 2019
-    MONTH_OF_YEAR_SHIFT = 7
+    MONTH_OF_YEAR_SHIFT = 8
     DAY_OF_YEAR_SHIFT   = 1
     SEPTEMBER = 9
     FIRST = 1

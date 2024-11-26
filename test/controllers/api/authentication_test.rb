@@ -15,7 +15,7 @@ module Api
     end
 
     test 'works with token param' do
-      delete api_internship_offer_path(
+      delete api_v1_internship_offer_path(
         id: 'anything',
         params: {
           token: "Bearer #{@operator.api_token}"
@@ -25,7 +25,7 @@ module Api
     end
 
     test 'works with Authorization header' do
-      delete(api_internship_offer_path(id: 'anything'),
+      delete(api_v1_internship_offer_path(id: 'anything'),
              headers: {
                'Authorization' => "Bearer #{@operator.api_token}"
              })

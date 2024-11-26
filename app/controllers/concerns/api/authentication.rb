@@ -15,11 +15,6 @@ module Api
         bearer && bearer.split('Bearer ')[1]
       end
 
-      def current_api_user
-        query = Users::Operator.where(api_token: token)
-        @current_api_user ||= query.first
-      end
-
       def authenticate_api_user!
         render_error(code: 'UNAUTHORIZED', error: 'wrong api token', status: :unauthorized) unless current_api_user
       end

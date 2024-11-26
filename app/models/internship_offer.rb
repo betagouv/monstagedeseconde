@@ -564,6 +564,10 @@ class InternshipOffer < ApplicationRecord
     # user_update == 'true'
   end
 
+  def weeks_api_formatted
+    Presenters::WeekList.new(weeks: weeks).to_api_formatted
+  end
+
   protected
 
   def make_sure_area_is_set

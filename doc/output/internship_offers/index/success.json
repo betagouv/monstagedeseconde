@@ -8,38 +8,40 @@
     "prevPage": null,
     "isFirstPage": true,
     "isLastPage": true,
-    "pageUrlBase": "http://www.example.com/api/internship_offers"
+    "pageUrlBase": "http://www.example.com/api/v1/internship_offers"
   },
   "internshipOffers": [
     {
-      "id": 1478,
-      "title": "Stage de 3è - 96",
+      "id": 88,
+      "title": "Stage de 2de - 3",
       "description": "Lorem ipsum dolor api",
       "employer_name": "Octo",
-      "url": "http://www.example.com/offres-de-stage/1478?page=1&utm_source=operator-39",
+      "url": "http://www.example.com/offres-de-stage/88?page=1&utm_source=operator-7",
       "city": "Paris",
-      "date_start": "22 janvier 2024",
-      "date_end": "28 janvier 2024",
+      "date_start": " 2 décembre 2024",
+      "date_end": " 1 août 2025",
       "latitude": 48.866667,
       "longitude": 2.333333,
       "image": "http://www.example.com/packs-test/media/images/sectors/default_sector-e1b60d1832d3ebc2a8ccff663f1a8dd8.svg",
-      "sector": "secteur-211",
-      "handicap_accessible": false
+      "sector": "secteur-12",
+      "handicap_accessible": false,
+      "period": 0
     },
     {
-      "id": 1477,
-      "title": "Stage de 3è - 95",
+      "id": 87,
+      "title": "Stage de 2de - 2",
       "description": "Lorem ipsum dolor api",
       "employer_name": "Octo",
-      "url": "http://www.example.com/offres-de-stage/1477?page=1&utm_source=operator-39",
+      "url": "http://www.example.com/offres-de-stage/87?page=1&utm_source=operator-7",
       "city": "Paris",
-      "date_start": "22 janvier 2024",
-      "date_end": "28 janvier 2024",
+      "date_start": " 2 décembre 2024",
+      "date_end": " 1 août 2025",
       "latitude": 48.866667,
       "longitude": 2.333333,
       "image": "http://www.example.com/packs-test/media/images/sectors/default_sector-e1b60d1832d3ebc2a8ccff663f1a8dd8.svg",
-      "sector": "secteur-209",
-      "handicap_accessible": false
+      "sector": "secteur-10",
+      "handicap_accessible": false,
+      "period": 0
     }
   ]
 }

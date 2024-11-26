@@ -8,7 +8,7 @@ module Api
       #
       # base responders
       #
-      def render_success(object:, status:, json_options:{})
+      def render_success(object:, status:, json_options: {})
         render json: object.to_json(json_options),
                status: status
       end
@@ -16,6 +16,12 @@ module Api
       def render_error(code:, error:, status:)
         render json: { code: code, error: error },
                status: status
+      end
+
+      def render_bad_request
+        render_error(code: 'BAD_REQUEST',
+                     error: 'bad request',
+                     status: :bad_request)
       end
 
       #
@@ -40,7 +46,7 @@ module Api
       end
 
       def render_argument_error(error)
-        render_error(code: "BAD_ARGUMENT",
+        render_error(code: 'BAD_ARGUMENT',
                      error: error.to_s,
                      status: :unprocessable_entity)
       end

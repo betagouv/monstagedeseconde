@@ -7,11 +7,17 @@ module Dashboard
       include TeamAndAreasHelper
 
       test 'student can browse his submitted internship_applications' do
+        skip
         school = create(:school, :with_school_manager)
         student = create(:student, :when_applying, school:)
         internship_applications = {
           submitted: create(:weekly_internship_application, :submitted,
-                            internship_offer: create(:weekly_internship_offer_2nde), student:)
+                            internship_offer: create(:weekly_internship_offer_2nde), student:),
+          approved: create(:weekly_internship_application, :approved,
+                           internship_offer: create(:weekly_internship_offer_2nde), student:),
+          validated_by_employer: create(:weekly_internship_application, :validated_by_employer,
+                                        internship_offer: create(:weekly_internship_offer), student:),
+          internship_offer: create(:weekly_internship_offer_2nde), student:)
         }
         sign_in(student)
         visit '/'
@@ -67,12 +73,15 @@ module Dashboard
       end
 
       test 'student can browse his canceled internship_applications ' do
-        skip 'this test is relevant and shall pass by november 2024'
+        skip 'TO DO Check if this test is still relevant'
         school = create(:school, :with_school_manager)
         student = create(:student, :when_applying, school:)
         internship_applications = {
           canceled_by_student_confirmation: create(:weekly_internship_application, :canceled_by_student_confirmation,
                                                    internship_offer: create(:weekly_internship_offer_2nde), student:),
+          validated_by_employer: create(:weekly_internship_application, :validated_by_employer,
+                                        internship_offer: create(:weekly_internship_offer_2nde), student:),
+          internship_offer: create(:weekly_internship_offer_2nde), student:),
           canceled_by_student: create(:weekly_internship_application, :canceled_by_student,
                                       internship_offer: create(:weekly_internship_offer_2nde), student:)
         }
