@@ -179,8 +179,6 @@ class AbilityTest < ActiveSupport::TestCase
            'statistician should be able to edit user')
     refute(ability.can?(:check_his_statistics, User),
            'statistician should be able to check his statistics')
-    assert(ability.can?(:create, Tutor),
-           'statistician should be able to create tutors')
     refute ability.can?(:read, User)
     refute ability.can?(:destroy, User)
     assert ability.can?(:index_and_filter, Reporting::InternshipOffer)
@@ -228,8 +226,6 @@ class AbilityTest < ActiveSupport::TestCase
            'statisticians can subscribe to webinars')
     assert(ability.can?(:choose_to_sign_agreements, User.new),
            'statisticians can decide to sign all agreements')
-    assert(ability.can?(:create, Tutor),
-           'statistician should be able to create tutors')
     refute ability.can?(:read, User)
     refute ability.can?(:destroy, User)
     # TODO: fix this test

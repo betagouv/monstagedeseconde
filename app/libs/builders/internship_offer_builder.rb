@@ -55,12 +55,10 @@ module Builders
       yield callback if block_given?
       authorize :create, model
       create_params = preprocess_api_params(params)
-      # puts '================================'
-      # puts "create_params : #{create_params}"
-      # puts '================================'
-      # puts ''
-      internship_offer = model.create!(create_params)
-      internship_offer.weeks &= SchoolTrack::Seconde.both_weeks if create_params[:grade_college] == '0'
+      internship_offer = model.new(create_params)
+      internship_offer = Dto::PlanningAdapter.new(instance: internship_offer, params: create_params, current_user: user)
+                                             .manage_planning_associations
+                                             .instance
       internship_offer.update(
         aasm_state: 'published',
         internship_offer_area_id: user.current_area_id
@@ -80,18 +78,16 @@ module Builders
       yield callback if block_given?
       authorize :update, instance
       instance.attributes = preprocess_api_params(params)
-      # puts '================================'
-      # puts "instance.published? : #{instance.published?}"
-      # puts "instance.attributes : #{instance.attributes}"
-      # puts "instance.attributes[:republish] : #{instance.attributes[:republish]}"
-      # puts '================================'
-      # puts ''
       instance = deal_with_max_candidates_change(params: params, instance: instance)
+      instance = Dto::PlanningAdapter.new(instance:, params:, current_user: user)
+                                     .manage_planning_associations
+                                     .instance
       if from_api?
         instance.reset_publish_states
       elsif instance.may_publish?
         instance.publish!
       end
+
       instance.save! # this may set aasm_state to need_to_be_updated state
       callback.on_success.try(:call, instance)
     rescue ActiveRecord::RecordInvalid => e
@@ -153,6 +149,7 @@ module Builders
         group_id: entreprise.group_id,
         sector_id: entreprise.sector_id,
         entreprise_full_address: entreprise.entreprise_full_address,
+        entreprise_chosen_full_address: entreprise.entreprise_chosen_full_address,
         entreprise_coordinates: entreprise.entreprise_coordinates
       }
     end

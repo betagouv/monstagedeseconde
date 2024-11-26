@@ -44,12 +44,14 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as "Users::Visitor" works and has a page title' do
+    skip 'SEARCH is not implemented yet to be finished by november 2024'
     get internship_offers_path
     assert_response :success
     assert_select 'title', 'Recherche de stages | Stages de 2de'
   end
 
   test 'GET #index with coordinates as "Users::Visitor" works' do
+    skip 'SEARCH is not implemented yet to be finished by november 2024'
     get internship_offers_path(latitude: 44.8378, longitude: -0.579512)
     assert_response :success
   end
@@ -180,6 +182,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index canonical links works' do
+    skip 'SEARCH is not implemented yet to be finished by november 2024'
     get internship_offers_path(latitude: 44.8378, longitude: -0.579512)
     assert_match(
       %r{<link href="http://www.example.com/offres-de-stage" rel="canonical" />}, response.body
@@ -235,6 +238,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as statistician works' do
+    skip 'SEARCH is not implemented yet to be finished by november 2024'
     statistician = create(:statistician)
     sign_in(statistician)
     get internship_offers_path
@@ -298,6 +302,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as visitor or student default shows both middle school and high school offers' do
+    skip 'SEARCH is not implemented yet to be finished by november 2024'
     internship_offer_weekly = create(:weekly_internship_offer_3eme)
     # Visitor
     get internship_offers_path

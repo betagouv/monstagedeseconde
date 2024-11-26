@@ -171,7 +171,7 @@ module Api
 
       def check_grades_and_weeks_validity
         is_seconde = params[:internship_offer][:grades].include?('seconde')
-        has_all_mandatory_weeks = InternshipOffers::Api::MANDATORY_SECONDE_WEEKS.all? do |week|
+        has_all_mandatory_weeks = InternshipOffers::Api.mandatory_seconde_weeks.all? do |week|
           params[:internship_offer][:weeks].include?(week)
         end
 

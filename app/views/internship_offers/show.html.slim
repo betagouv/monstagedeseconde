@@ -34,6 +34,7 @@ div.fr-container.d-flex.fr-mt-2w
             button.fr-mr-1w.fr-btn.fr-icon-delete-line.fr-btn--icon.fr-btn--secondary.test-discard-button data-fr-opened="false" aria-controls="discard-internship-offer-modal"
       - if can?(:update, @internship_offer)
         - url = edit_dashboard_internship_offer_path(@internship_offer)
-        - if @internship_offer.planning_id
-          - url = edit_dashboard_stepper_planning_path(@internship_offer.planning_id)
+        / - if @internship_offer.planning_id && @internship_offer.planning_id > 0
+        /   - url = edit_dashboard_stepper_planning_path(@internship_offer.planning_id)
         = link_to 'Modifier', url, class: 'fr-btn fr-mr-1w fr-btn--secondary'
+      

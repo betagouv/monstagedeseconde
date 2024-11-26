@@ -115,7 +115,7 @@ class Week < ApplicationRecord
 
   def self.both_school_track_weeks
     [
-      SchoolTrack::Troisieme.selectable_on_school_year,
+      SchoolTrack::Troisieme.selectable_on_school_year_weeks,
       SchoolTrack::Seconde.both_weeks
     ].flatten
   end
@@ -125,7 +125,7 @@ class Week < ApplicationRecord
   end
 
   def self.troisieme_weeks
-    SchoolTrack::Troisieme.selectable_on_school_year
+    SchoolTrack::Troisieme.selectable_on_school_year_weeks
   end
 
   def self.troisieme_selectable_weeks

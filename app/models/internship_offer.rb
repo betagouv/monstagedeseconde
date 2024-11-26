@@ -322,11 +322,13 @@ class InternshipOffer < ApplicationRecord
   end
 
   def fits_for_seconde?
-    grades.select { |grade| grade.seconde? }.any?
+    grades.select { |grade| grade.seconde? }.any? &&
+      weeks.any? { |w| w.id.in?(SchoolTrack::Seconde.both_weeks.map(&:id)) }
   end
 
   def fits_for_troisieme_or_quatrieme?
-    grades.select { |grade| grade.troisieme_or_quatrieme? }.any?
+    grades.select { |grade| grade.troisieme_or_quatrieme? }.any? &&
+      weeks.any? { |w| w.id.in?(SchoolTrack::Troisieme.selectable_on_school_year_weeks.map(&:id)) }
   end
 
   #

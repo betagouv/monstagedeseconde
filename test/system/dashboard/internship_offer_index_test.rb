@@ -70,11 +70,12 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'unpublish navigation and republish after' do
-    skip 'test is relevant and shall pass by november 2024'
+    skip 'not working test is relevant and shall pass by november 2024'
     travel_to Date.new(2021, 10, 1) do
       employer = create(:employer)
-      internship_offer = create(:weekly_internship_offer_2nde, employer:,
-                                                               internship_offer_area_id: employer.current_area_id)
+      internship_offer = create(:weekly_internship_offer_2nde,
+                                employer:,
+                                internship_offer_area_id: employer.current_area_id)
       sign_in(employer)
       InternshipOffer.stub :nearby, InternshipOffer.all do
         assert internship_offer.published?
@@ -111,7 +112,6 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'publish navigation when max_candidates updates are necessary' do
-    skip 'test is relevant and shall pass by november 2024'
     skip 'works locally but not on CI' if ENV['CI'] == 'true'
     employer = create(:employer)
     internship_offer = nil

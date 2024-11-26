@@ -11,12 +11,12 @@ module SchoolTrack
       Week.fetch_from(date: Date.new(current_year - 1, 9, 6))
     end
 
-    def self.selectable_on_school_year
+    def self.selectable_on_school_year_weeks
       Week.where(id: first_week.id..last_week_of_may.id)
     end
 
     def self.selectable_from_now_until_end_of_school_year
-      selectable_on_school_year.where('id >= ?', Week.current.id)
+      selectable_on_school_year_weeks.where('id >= ?', Week.current.id)
     end
   end
 end

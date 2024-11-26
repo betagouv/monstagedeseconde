@@ -62,7 +62,10 @@ module Dashboard::InternshipOffers
             params: {
               internship_offer: {
                 title: new_title,
-                week_ids: Week.selectable_from_now_until_end_of_school_year.map(&:id),
+                week_ids: Week.troisieme_selectable_weeks.map(&:id),
+                grade_college: '1',
+                grade_2e: '0',
+                all_year_long: '1',
                 is_public: false,
                 group_id: new_group.id,
                 daily_hours: { 'lundi' => %w[10h 12h] }
@@ -231,6 +234,34 @@ module Dashboard::InternshipOffers
               params: { internship_offer: internship_offer.attributes.merge!({ week_ids: [weeks.second.id] }) }
         refute internship_application.canceled_by_employer?
         # assert internship_application.reload.canceled_by_employer?
+      end
+    end
+
+    test 'PATCH #update as employer owning internship_offer swiches offer from troisieme to seconde' do
+      # purpose of test is to check the weeks are updated
+      travel_to Date.new(2024, 9, 1) do
+        employer = create(:employer)
+        internship_offer = create(:weekly_internship_offer_3eme,
+                                  weeks: Week.troisieme_selectable_weeks,
+                                  employer:,
+                                  max_candidates: 1)
+        sign_in(employer)
+        switching_params = {
+          grade_college: '0',
+          grade_2e: '1',
+          max_candidates: 20,
+          max_students_per_group: 20,
+          week_ids: [SchoolTrack::Seconde.first_week.id],
+          period: '11'
+        }
+        params = { internship_offer: internship_offer.attributes.merge!(switching_params) }
+        patch dashboard_internship_offer_path(internship_offer.to_param), params: params
+        assert_redirected_to dashboard_internship_offers_path(origine: 'dashboard')
+        assert_equal 20, internship_offer.reload.max_candidates
+        assert_equal 20, internship_offer.max_students_per_group
+        assert_equal [Grade.seconde], internship_offer.grades
+        assert_equal SchoolTrack::Seconde.first_week.id, internship_offer.weeks.first.id
+        assert_equal 1, internship_offer.weeks.count
       end
     end
   end

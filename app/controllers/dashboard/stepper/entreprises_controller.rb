@@ -33,6 +33,7 @@ module Dashboard::Stepper
     # process update following a back to step 2
     def update
       authorize! :update, @entreprise
+      set_computed_params
       if @entreprise.update(entreprise_params)
         if params[:planning_id].present? && Planning.find_by(id: params[:planning_id])
           redirect_to edit_dashboard_stepper_planning_path(
@@ -69,10 +70,11 @@ module Dashboard::Stepper
     end
 
     def set_computed_params
+      @entreprise = set_updated_address_flag
       @entreprise.is_public ||= entreprise_params[:is_public] == 'true'
       @entreprise.entreprise_coordinates = { longitude: entreprise_params[:entreprise_coordinates_longitude],
                                              latitude: entreprise_params[:entreprise_coordinates_latitude] }
-      @entreprise = set_updated_address_flag
+      @entreprise.entreprise_full_address = entreprise_params[:entreprise_chosen_full_address]
     end
 
     def set_updated_address_flag

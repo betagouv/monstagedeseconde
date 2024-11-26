@@ -86,13 +86,9 @@ module Dashboard
 
           click_on 'Valider ma candidature'
 
-          assert_changes lambda {
-                           student.internship_applications
-                                  .where(aasm_state: :submitted)
-                                  .count
-                         },
-                         from: 0,
-                         to: 1 do
+          assert_changes(lambda {
+            student.internship_applications.where(aasm_state: :submitted).count
+          }, from: 0, to: 1) do
             click_on 'Envoyer ma candidature'
             sleep 0.15
           end

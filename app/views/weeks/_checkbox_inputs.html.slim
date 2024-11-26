@@ -51,53 +51,52 @@ div [data-controller="select-weeks"
                 | Tout décocher
       .row.fr-mb-1w.weeks-list
         .col-12
+          - current_weeks = Week.troisieme_selectable_weeks if current_weeks.blank?
+          - current_weeks = current_weeks.reject { |week| week.id.in?(SchoolTrack::Seconde.both_weeks.map(&:id))}
           .d-flex
             .small-interline.fr-text--sm.border-right.month-lane
-              - if current_weeks.present?
-                - Presenters::WeekList.new(weeks: current_weeks).month_split.each do |month_num, weeks|
-                  - month_name = Presenters::WeekList::MONTH_LIST[month_num - 9][:name]
-                  - score = (weeks & form.object.weeks).size
-                  - if score > 0
-                    p class="blue-france strong bold fr-text--sm #{month_name} month-score" data-select-weeks-target='monthScore'
-                      = "#{month_name} <span class='month-score'>(#{score})</span>".html_safe
-                  - else
-                    p class="fr-hint-text fr-text--sm #{month_name} month-score" data-select-weeks-target='monthScore'
-                      = month_name
+              - Presenters::WeekList.new(weeks: current_weeks).month_split.each do |month_num, weeks|
+                - month_name = Presenters::WeekList::MONTH_LIST[month_num - 9][:name]
+                - score = (weeks & form.object.weeks).size
+                - klass = score > 0 ? 'blue-france strong bold' : 'fr-hint-text'
+                - content = score > 0 ? "#{month_name} (#{score})" : month_name
+                p class="fr-text--sm #{klass} #{month_name} month-score" data-select-weeks-target='monthScore'
+                  = content
 
             .flex-fill.weeks-list
               div class="custom-control-checkbox-list #{is_all_year_long ? 'd-none' : ''}"
-                - if current_weeks.present?
-                  - Presenters::WeekList.new(weeks: current_weeks).month_split.each do |month_num, weeks|
-                    - month_name = Presenters::WeekList::MONTH_LIST[month_num - 9][:name]
-                    - year = weeks.first.year
-                    .fr-text.fr-raised.fr-mb-1w
-                      = "#{month_name} #{year}"
-                    - weeks.each do |week|
-                      div class="fr-checkbox-group fr-checkbox-group--sm position-relative pr-3 #{month_name}"
-                        - # prevent removing weeks with application by showing a disable checkbox (not submitted to server)
-                        - # keep reference of checkbox id for easier labelling
-                        - checkbox_id = "#{form.object_name}_week_ids_#{week.id}_checkbox"
-                        - # also add an id for hidden field for two reason, avoid conflict, testing
-                        - hidden_id = "#{form.object_name}_week_ids_#{week.id}_hidden"
-                        - options =  { multiple: true,
-                                      id: checkbox_id,
-                                      data: {:"select-weeks-target" => 'weekCheckboxes',
-                                              action: 'change->select-weeks#handleOneCheckboxChange'} }
-                        - options.merge!({checked: true}) if preselect_all
-                        = form.check_box :week_ids, options, week.id, false
-                        = form.label :"week_id", for: checkbox_id, class: 'fr-label fr-text--sm fr-mb-1v w-100' do
+                - Presenters::WeekList.new(weeks: current_weeks).month_split.each do |month_num, weeks|
+                  - month_name = Presenters::WeekList::MONTH_LIST[month_num - 9][:name]
+                  - year = weeks.first.year
+                  .fr-text.fr-raised.fr-mb-1w
+                    = "#{month_name} #{year}"
+                  - weeks.each do |week|
+                    div class="fr-checkbox-group fr-checkbox-group--sm position-relative pr-3 #{month_name}"
+                      - # prevent removing weeks with application by showing a disable checkbox (not submitted to server)
+                      - # keep reference of checkbox id for easier labelling
+                      - checkbox_id = "#{form.object_name}_week_ids_#{week.id}_checkbox"
+                      - # also add an id for hidden field for two reason, avoid conflict, testing
+                      - hidden_id = "#{form.object_name}_week_ids_#{week.id}_hidden"
+                      - options =  { multiple: true,
+                                    id: checkbox_id,
+                                    data: {:"select-weeks-target" => 'weekCheckboxes',
+                                            action: 'change->select-weeks#handleOneCheckboxChange'} }
+                      - options.merge!({checked: true}) if preselect_all
+                      = form.check_box :week_ids, options, week.id, false
+                      = form.label :"week_id", for: checkbox_id, class: 'fr-label fr-text--sm fr-mb-1v w-100' do
+                        span.w-50
+                          = week.human_shortest
+                        - key = "school-week-#{week.id}".to_sym
+                        - if @school_weeks.present? && key.in?(@school_weeks.keys)
+                          - weeks_count = @school_weeks.fetch(key, 0)
                           span.w-50
-                            = week.human_shortest
-                          - key = "school-week-#{week.id}".to_sym
-                          - if @school_weeks.present? && key.in?(@school_weeks.keys)
-                            - weeks_count = @school_weeks.fetch(key, 0)
-                            span.w-50
-                              .fr-tag.fr-fi-info-line.fr-tag--sm.fr-tag--icon-left
-                                = "#{weeks_count}+  #{'collège'.pluralize(weeks_count)} #{'disponible'.pluralize(weeks_count)}"
+                            .fr-tag.fr-fi-info-line.fr-tag--sm.fr-tag--icon-left
+                              = "#{weeks_count}+  #{'collège'.pluralize(weeks_count)} #{'disponible'.pluralize(weeks_count)}"
 
-                      div.position-absolute.badge-week-density.rounded.d-none data-select-weeks-target='inputWeekLegend' data-week-id=week.id
-                        | ?
-                    p.border-bottom.fr-my-2w.fr-ml-n2w
+                    div.position-absolute.badge-week-density.rounded.d-none data-select-weeks-target='inputWeekLegend' data-week-id=week.id
+                      | ?
+                  p.border-bottom.fr-my-2w.fr-ml-n2w
+                
 
         .row
           .col-12

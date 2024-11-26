@@ -39,13 +39,21 @@ module Dashboard
       @internship_offer.grade_college = @internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
       @internship_offer.grade_2e = @internship_offer.fits_for_seconde? ? '1' : '0'
       @internship_offer.all_year_long = @internship_offer.all_year_long?
+      @internship_offer.entreprise_chosen_full_address = @internship_offer.entreprise_full_address
     end
 
-    # duplicate submit
+    # duplication submit
     def create
+      @duplication = true
       authorize! :create, InternshipOffer
       internship_offer_builder.create(params: internship_offer_params) do |on|
         on.success do |created_internship_offer|
+          @internship_offer = created_internship_offer
+          @internship_offer = Dto::PlanningAdapter.new(instance: @internship_offer, params: internship_offer_params,
+                                                       current_user:)
+                                                  .manage_planning_associations
+                                                  .instance
+          @available_weeks = Week.troisieme_weeks
           success_message = if params[:commit] == 'Renouveler l\'offre'
                               'Votre offre de stage a été renouvelée pour cette année scolaire.'
                             else
@@ -71,11 +79,13 @@ module Dashboard
       @internship_offer.grade_college = @internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
       @internship_offer.grade_2e = @internship_offer.fits_for_seconde? ? '1' : '0'
       @internship_offer.all_year_long = @internship_offer.all_year_long? # ? strange ... removal seems possible
+      @internship_offer.entreprise_chosen_full_address = @internship_offer.entreprise_full_address
       @republish = true
     end
 
     def update
       authorize! :update, @internship_offer
+      @available_weeks = Week.troisieme_selectable_weeks # TODO : check if it's the right weeks
       internship_offer_builder.update(instance: @internship_offer,
                                       params: internship_offer_params) do |on|
         on.success do |updated_internship_offer|
@@ -221,14 +231,14 @@ module Dashboard
     def internship_offer_params
       params.require(:internship_offer)
             .permit(:title, :description, :sector_id, :max_candidates, :max_students_per_group,
-                    :employer_name, :employer_chosen_name, :street,
-                    :zipcode, :city, :department, :region, :academy, :renewed,
-                    :is_public, :group_id, :published_at, :republish, :type,
-                    :employer_id, :employer_type, :verb, :user_update, :school_id,
+                    :employer_name, :employer_chosen_name, :street, :entreprise_full_address,
+                    :entreprise_chosen_full_address, :zipcode, :city, :department, :region,
+                    :academy, :renewed, :is_public, :group_id, :published_at, :republish,
+                    :type, :employer_id, :employer_type, :verb, :user_update, :school_id,
                     :siret, :internship_address_manual_enter, :lunch_break, :aasm_state,
-                    :grade_college, :grade_2e, :period,
-                    :period, entreprise_coordinates: {}, coordinates: {}, grade_ids: [],
-                             daily_hours: {}, weekly_hours: [], week_ids: [])
+                    :grade_college, :grade_2e, :period, :period,
+                    entreprise_coordinates: {}, coordinates: {}, grade_ids: [],
+                    daily_hours: {}, weekly_hours: [], week_ids: [])
     end
 
     def set_internship_offer

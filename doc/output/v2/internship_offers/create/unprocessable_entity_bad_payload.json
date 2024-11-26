@@ -1,4 +1,4 @@
 {
-  "code": "BAD_PAYLOAD",
-  "error": "param is missing or the value is empty: internship_offer"
+  "code": "UNAUTHORIZED",
+  "error": "wrong api token"
 }

@@ -1,3 +1,4 @@
+
 import $ from "jquery";
 import { add, Controller } from "stimulus";
 import { fetch } from "whatwg-fetch";
@@ -100,29 +101,29 @@ export default class extends Controller {
   showSchoolDensityPerWeek(schools) {
     const weeksSchoolsHash = mapNumberOfSchoolHavingWeek(schools);
 
-    $(this.inputWeekLegendTargets).each((i, el) => {
-      const weekId = parseInt(el.getAttribute("data-week-id"), 10);
-      const schoolCountOnWeek = (weeksSchoolsHash[weekId] || []).length;
+    // this.inputWeekLegendTargets.each(( el) => {
+    //   const weekId = parseInt(el.getAttribute("data-week-id"), 10);
+    //   const schoolCountOnWeek = (weeksSchoolsHash[weekId] || []).length;
 
-      el.innerText = `${schoolCountOnWeek.toString()} etablissement`;
-      el.classList.add(
-        (function (threshold) {
-          switch (threshold) {
-            case 0:
-              return "bg-dark-70";
-            case 1:
-              return "bg-success-20";
-            case 2:
-              return "bg-success-30";
-            case 4:
-              return "bg-success-40";
-            default:
-              return "bg-success";
-          }
-        })(schoolCountOnWeek)
-      );
-      el.classList.remove("d-none");
-    });
+    //   el.innerText = `${schoolCountOnWeek.toString()} etablissement`;
+    //   el.classList.add(
+    //     (function (threshold) {
+    //       switch (threshold) {
+    //         case 0:
+    //           return "bg-dark-70";
+    //         case 1:
+    //           return "bg-success-20";
+    //         case 2:
+    //           return "bg-success-30";
+    //         case 4:
+    //           return "bg-success-40";
+    //         default:
+    //           return "bg-success";
+    //       }
+    //     })(schoolCountOnWeek)
+    //   );
+    //   el.classList.remove("d-none");
+    // });
   }
 
   // toggle all weeks options
@@ -142,12 +143,12 @@ export default class extends Controller {
   }
 
   showSpecificWeeks(event) {
-    if ($("#planning_all_year_long_false").is(":checked")) {
-      $(".custom-control-checkbox-list").removeClass("d-none");
-      $("#all_year_long").prop("checked", false);
-    } else {
-      $(".custom-control-checkbox-list").addClass("d-none");
-    }
+    // if ($("#planning_all_year_long_false").is(":checked")) {
+    //   $(".custom-control-checkbox-list").removeClass("d-none");
+    //   $("#all_year_long").prop("checked", false);
+    // } else {
+    //   $(".custom-control-checkbox-list").addClass("d-none");
+    // }
 
     $(this.weekCheckboxesTargets).each((i, el) => {
       $(el).prop("checked", false);

@@ -1,36 +1,4 @@
 {
-  "code": "VALIDATION_ERROR",
-  "error": {
-    "zipcode": [
-      "Missing zipcode",
-      "is invalid"
-    ],
-    "coordinates": [
-      "Missing coordinates"
-    ],
-    "title": [
-      "Missing title"
-    ],
-    "description": [
-      "Missing description"
-    ],
-    "street": [
-      "Missing street"
-    ],
-    "city": [
-      "Missing city"
-    ],
-    "sector": [
-      "Missing sector"
-    ],
-    "employer_name": [
-      "Missing employer_name"
-    ],
-    "remote_id": [
-      "Missing remote_id"
-    ],
-    "permalink": [
-      "Missing permalink"
-    ]
-  }
+  "code": "UNAUTHORIZED",
+  "error": "wrong api token"
 }

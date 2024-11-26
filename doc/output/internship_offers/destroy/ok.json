@@ -1,5 +1,5 @@
 {
-  "title": "Stage de 2de - 8",
+  "title": "Stage de 2de - 6",
   "description": "Lorem ipsum dolor api",
   "max_candidates": 1,
   "employer_website": null,
@@ -9,9 +9,9 @@
   "is_public": true,
   "employer_name": "Octo",
   "employer_description": null,
-  "remote_id": "5",
+  "remote_id": "4",
   "permalink": "https://google.fr",
-  "published_at": "2024-11-25T11:12:32.145+01:00",
+  "published_at": "2024-11-26T18:17:58.238+01:00",
   "formatted_coordinates": {
     "latitude": 48.866667,
     "longitude": 2.333333

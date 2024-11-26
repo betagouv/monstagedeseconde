@@ -11,7 +11,6 @@ class ManageCompleteOfferFillingTest < ApplicationSystemTestCase
   end
 
   test 'can create a complete offer' do
-    skip 'test is relevant and shall pass by november 2024'
     group = create(:group, name: 'group example', is_public: true)
     sector = create(:sector, name: 'Ministère de l\'Amour')
     employer = create(:employer)
@@ -43,7 +42,6 @@ class ManageCompleteOfferFillingTest < ApplicationSystemTestCase
   end
 
   test 'can go backwards from planning to internhip_occupation' do
-    skip 'test is relevant and shall pass by november 2024'
     group = create(:group, name: 'group example', is_public: true)
     sector = create(:sector, name: 'Ministère de l\'Amour')
     employer = create(:employer)

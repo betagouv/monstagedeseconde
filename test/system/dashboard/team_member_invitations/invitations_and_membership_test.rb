@@ -106,7 +106,6 @@ module Dashboard::TeamMemberInvitations
 
     test 'when two employers are in the same team on a single area, ' \
          'they can manage internship_agreements of the team' do
-      skip 'test is relevant and shall pass by november 2024'
       employer_1 = create(:employer)
       employer_2 = create(:employer)
       internship_offer = create_internship_offer_visible_by_two(employer_1, employer_2)
@@ -228,7 +227,6 @@ module Dashboard::TeamMemberInvitations
 
     ## ============= statisticians ===================
     test 'as statistician, team member can invite a new team member' do
-      skip 'test is relevant and shall pass by november 2024'
       skip 'works locally but not on CI' if ENV['CI'] == 'true'
       statistician_1 = create(:statistician)
       statistician_2 = create(:statistician)
