@@ -32,7 +32,8 @@ export default class extends Controller {
     'lowercase',
     'special',
     'number',
-    'submitButton'
+    'submitButton',
+    'gradeRadio'
   ];
 
   static values = {
@@ -123,6 +124,10 @@ export default class extends Controller {
     // setTimeout(() => {
     //   this.checkChannel();
     // }, 100);
+  }
+
+  connect() {
+    console.log("Signup controller connected");
   }
 
   disconnect() {
@@ -272,5 +277,42 @@ export default class extends Controller {
 
   focusPhone() {
     $('#phone-input').focus()
+  }
+
+  debug(event) {
+    console.log("Radio clicked:", event.target.value);
+    console.log("Radio checked status:", event.target.checked);
+    console.log("Event type:", event.type);
+    console.log("Event target:", event.target);
+  }
+
+  updateGrade(event) {
+    const gradeId = parseInt(event.target.value)
+    console.log("Grade ID:", gradeId);
+    let gradeName
+    
+    switch(gradeId) {
+      case 3:
+        gradeName = "quatrieme"
+        break
+      case 2:
+        gradeName = "troisieme"
+        break
+      case 1:
+        gradeName = "seconde"
+        break
+    }
+
+    console.log("Grade name:", gradeName);
+    this.updateSearchSchoolGrade(gradeName)
+  }
+
+  updateSearchSchoolGrade(grade) {
+    // Find the SearchSchool React component and update its grade
+    const event = new CustomEvent('gradeChanged', { 
+      detail: { grade: grade },
+      bubbles: true 
+    })
+    this.element.dispatchEvent(event)
   }
 }

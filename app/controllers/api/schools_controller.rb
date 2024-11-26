@@ -27,9 +27,10 @@ module Api
 
     def result
       search_key = params[:query]
-      cache_key = "autocomplete_school_#{search_key}"
+      grade = params[:grade]
+      cache_key = "autocomplete_school_#{search_key}_#{grade}"
       Rails.cache.fetch(cache_key) do
-        Api::AutocompleteSchool.new(term: search_key, limit: SEARCH_LIMIT).to_json
+        Api::AutocompleteSchool.new(term: search_key, grade: grade, limit: SEARCH_LIMIT).to_json
       end
       cached_response = Rails.cache.fetch(cache_key) || { match_by_city: {}, match_by_name: [], no_match: true }
       JSON.parse(cached_response)
