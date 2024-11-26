@@ -13,7 +13,7 @@ class SendReminderToStudentsWithoutApplicationJob < ApplicationJob
 
       phone = student.phone
       content = "Faites votre première candidature et trouvez votre stage \
-                    sur Mon stage à l'école. L'équipe de Mon Stage à l'école"
+                    sur 1élève1stage. L'équipe de 1élève1stage"
 
       SendSmsJob.perform_later(user: student, message: content)
     else
