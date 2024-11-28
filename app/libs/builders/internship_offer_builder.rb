@@ -41,6 +41,7 @@ module Builders
         {}.merge(preprocess_internship_occupation_to_params(planning.entreprise.internship_occupation))
           .merge(preprocess_entreprise_to_params(planning.entreprise))
           .merge(preprocess_planning_to_params(planning))
+          .delete(:employer_id)
       )
       internship_offer.save!
       DraftedInternshipOfferJob.set(wait: 1.week)
@@ -59,10 +60,9 @@ module Builders
       internship_offer = Dto::PlanningAdapter.new(instance: internship_offer, params: create_params, current_user: user)
                                              .manage_planning_associations
                                              .instance
-      internship_offer.update(
-        aasm_state: 'published',
-        internship_offer_area_id: user.current_area_id
-      )
+      internship_offer.internship_offer_area_id = user.current_area_id
+      internship_offer.aasm_state = 'published' if internship_offer.may_publish?
+      internship_offer.save!
       callback.on_success.try(:call, internship_offer)
     rescue ActiveRecord::RecordInvalid => e
       if duplicate?(e.record)
