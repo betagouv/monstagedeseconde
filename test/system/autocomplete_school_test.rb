@@ -3,7 +3,6 @@
 require 'application_system_test_case'
 
 class AutocompleteSchoolTest < ApplicationSystemTestCase
-
   setup do
     @default_school_name = 'Pasteur'
     @default_school_city = 'Mantes-la-Jolie'
@@ -19,7 +18,7 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
     school_manager = @default_school.school_manager
     sign_in(school_manager)
     visit account_path(section: :school)
-    within(".fr-tabs") do
+    within('.fr-tabs') do
       click_on 'Mon établissement'
     end
 
@@ -42,7 +41,7 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
     assert_changes -> { school_manager.reload.school_id },
                    from: @default_school.id,
                    to: @next_school.id do
-      within(".fr-tabs") do
+      within('.fr-tabs') do
         click_on 'Mon établissement'
       end
       fill_in('Établissement ou commune', with: @next_school_city[0..3])
@@ -51,7 +50,7 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
                    @next_school_city,
                    "can't find next school.city"
 
-      select @next_school.name, from: "user_school_id"
+      select @next_school.name, from: 'user_school_id'
       click_on 'Enregistrer'
     end
   end
@@ -60,10 +59,10 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
     student = create(:student, school: @default_school)
     sign_in(student)
     visit account_path(section: :school)
-    within(".fr-tabs") do
+    within('.fr-tabs') do
       click_on 'Mon établissement'
     end
-    
+
     if ENV['RUN_BRITTLE_TEST'] && ENV['RUN_BRITTLE_TEST'] == 'true'
       # default presence of fields
       assert_equal 1, all('#user_school_name').size, 'default school name missing'
@@ -82,7 +81,7 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
     student = create(:student, school: @default_school, class_room: default_class_room)
     sign_in(student)
     visit account_path(section: :school)
-    within(".fr-tabs") do
+    within('.fr-tabs') do
       click_on 'Mon établissement'
     end
 
@@ -93,7 +92,7 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
 
     fill_in('Établissement ou commune', with: @next_school_city[0..3])
     all('.autocomplete-school-results .list-group-item-action').first.click
-    select @next_school.name, from: "user_school_id"
+    select @next_school.name, from: 'user_school_id'
     select(next_class_room.name, from: 'user_class_room_id')
     click_on 'Enregistrer'
 

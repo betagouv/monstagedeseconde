@@ -1552,7 +1552,6 @@ CREATE TABLE public.internship_offers (
     tutor_last_name character varying(60),
     tutor_first_name character varying(60),
     entreprise_full_address character varying(200),
-    internship_weeks_number integer DEFAULT 1,
     entreprise_coordinates public.geography(Point,4326)
 );
 
@@ -4757,6 +4756,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20241115093512'),
 ('20241113151423'),
 ('20241105092317'),
 ('20241101100649'),

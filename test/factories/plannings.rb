@@ -14,8 +14,21 @@ FactoryBot.define do
     end
     employer_id { entreprise.internship_occupation.employer_id }
     lunch_break { ' test de lunch break' }
-    weeks { Week.selectable_from_now_until_end_of_school_year }
+    weeks { Week.both_school_track_selectable_weeks }
     grades { Grade.all }
-    internship_weeks_number { 1 }
+
+    trait :with_seconde_only do
+      weeks { SchoolTrack::Seconde.both_weeks }
+      grades { [Grade.seconde] }
+    end
+
+    trait :with_troisieme_only do
+      weeks { Week.troisieme_selectable_weeks }
+      grades { [Grade.troisieme] }
+    end
+
+    trait :with_seconde_and_troisieme do
+      # default
+    end
   end
 end

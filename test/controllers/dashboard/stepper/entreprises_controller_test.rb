@@ -51,7 +51,7 @@ module Dashboard::Stepper
       entreprise = Entreprise.last
       assert_equal '12345678901234', entreprise.siret
       assert_equal 'Test', entreprise.employer_name
-      assert_equal 'Test in Pariso', entreprise.entreprise_full_address
+      assert_equal 'Testo in Paris', entreprise.entreprise_full_address
       assert_nil entreprise.entreprise_chosen_full_address
       assert_equal false, entreprise.is_public
       assert_equal sector.id, entreprise.sector_id

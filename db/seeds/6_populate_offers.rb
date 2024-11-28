@@ -25,8 +25,7 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
-    lunch_break: "L'élève doit prévoir son repas de midi",
-    internship_weeks_number: 2
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   # 2
@@ -51,8 +50,7 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
-    lunch_break: "L'élève doit prévoir son repas de midi",
-    internship_weeks_number: 2
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   # 3
@@ -151,7 +149,6 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
-    internship_weeks_number: 2,
     lunch_break: "L'élève doit prévoir son repas de midi"
   )
   # 7
@@ -176,7 +173,6 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
-    internship_weeks_number: 2,
     lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
@@ -258,8 +254,7 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
-    lunch_break: "L'élève doit prévoir son repas de midi",
-    internship_weeks_number: 2
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   # 11
@@ -283,8 +278,7 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
-    lunch_break: "L'élève doit prévoir son repas de midi",
-    internship_weeks_number: 2
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   InternshipOffers::WeeklyFramed.all.each { |o| o.publish! if o.may_publish? }
@@ -327,8 +321,7 @@ def populate_internship_offers
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: weeks,
     grades: Grade.all,
-    lunch_break: "L'élève doit prévoir son repas de midi",
-    internship_weeks_number: 2
+    lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   # 12

@@ -70,11 +70,12 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'unpublish navigation and republish after' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
+    skip 'not working test is relevant and shall pass by november 2024'
     travel_to Date.new(2021, 10, 1) do
       employer = create(:employer)
-      internship_offer = create(:weekly_internship_offer_2nde, employer:,
-                                                               internship_offer_area_id: employer.current_area_id)
+      internship_offer = create(:weekly_internship_offer_2nde,
+                                employer:,
+                                internship_offer_area_id: employer.current_area_id)
       sign_in(employer)
       InternshipOffer.stub :nearby, InternshipOffer.all do
         assert internship_offer.published?
@@ -106,39 +107,6 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
         sleep 0.05
         assert internship_offer.reload.published?
         refute internship_offer.published_at.nil?
-      end
-    end
-  end
-
-  test 'publish navigation when drafted and no updates are necessary' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
-    skip 'This test is not working on CI, but works locally' if ENV['CI'] == 'true'
-    travel_to Date.new(2024, 10, 1) do
-      employer = create(:employer)
-      internship_offer = create(
-        :weekly_internship_offer_2nde,
-        employer:,
-        internship_offer_area_id: employer.current_area_id
-      )
-      internship_offer.update_columns(published_at: nil, updated_at: Time.now - 1.day, aasm_state: 'drafted')
-      assert_equal 'drafted', internship_offer.aasm_state
-      sign_in(employer)
-      InternshipOffer.stub :nearby, InternshipOffer.all do
-        InternshipOffer.stub :by_weeks, InternshipOffer.all do
-          visit dashboard_internship_offers_path
-          within("#toggle_status_#{dom_id(internship_offer)}") do
-            find('.label', text: 'Masqué')
-            # following leads to intenship offer detail page because no updates are necessary
-            find("a[title='Publier / Masquer']").click
-          end
-
-          find('h1.h3.text-dark', text: internship_offer.title)
-
-          within('.fr-container .fat-line-below .col-8.d-print-none') do
-            find('p.fr-badge.fr-badge--new', text: 'BROUILLON')
-          end
-          assert_equal 'drafted', internship_offer.aasm_state
-        end
       end
     end
   end

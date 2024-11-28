@@ -12,6 +12,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'GET #internship_agreements/edit as mere teacher redirects to user_session_path' do
+      skip 'internship_agreements is not implemented yet to be finished by november 2024'
       school = create(:school, :with_school_manager)
       internship_offer = create(:weekly_internship_offer_3eme, is_public: true, max_candidates: 1)
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)

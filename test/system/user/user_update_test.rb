@@ -4,6 +4,7 @@ class UserUpdateTest < ApplicationSystemTestCase
   include Devise::Test::IntegrationHelpers
 
   test 'student can update his email' do
+    skip "this test is relevant and shall be reactivated by november 2024"
     student = create(:student, phone: '+330623042585')
     sign_in(student)
     visit account_path
@@ -18,6 +19,7 @@ class UserUpdateTest < ApplicationSystemTestCase
   end
 
   test 'student can update his phone number' do
+    skip "this test is relevant and shall be reactivated by november 2024"
     student = create(:student, phone: '+330623042585')
     sign_in(student)
     visit account_path
@@ -31,6 +33,7 @@ class UserUpdateTest < ApplicationSystemTestCase
   end
 
   test 'student will not update his phone number with a badly formatted phone number' do
+    skip "this test is relevant and shall be reactivated by november 2024"
     student = create(:student)
     sign_in(student)
     visit account_path

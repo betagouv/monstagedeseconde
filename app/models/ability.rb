@@ -221,7 +221,6 @@ class Ability
     # can %i[update edit renew], HostingInfo, employer_id: user.team_members_ids
     # can %i[update edit renew], PracticalInfo, employer_id: user.team_members_ids
     # can %i[update edit], Organisation, employer_id: user.team_members_ids
-    can %i[create], Tutor
     # new_abilities for stepper
     can %i[update edit renew], InternshipOccupation, employer_id: user.team_members_ids
     can %i[update edit renew], Entreprise do |entreprise|
@@ -357,7 +356,7 @@ class Ability
 
     can :show, :api_token
 
-    can %i[create], Organisation
+    can %i[create], InternshipOccupation
 
     can %i[index], Acl::Reporting, &:allowed?
 
@@ -373,7 +372,7 @@ class Ability
 
   def education_statistician_abilities(user:)
     common_to_all_statisticians(user:)
-    can %i[create], Organisation
+    can %i[create], InternshipOccupation
     can %i[index], Acl::Reporting, &:allowed?
 
     can %i[index_and_filter], Reporting::InternshipOffer
@@ -388,8 +387,8 @@ class Ability
   def ministry_statistician_abilities(user:)
     common_to_all_statisticians(user:)
 
-    can %i[create], Organisation do |organisation|
-      organisation.group.in?(user.ministries) && organisation.is_public
+    can %i[create], InternshipOccupation do |internship_occupation|
+      internship_occupation.group.in?(user.ministries) && internship_occupation.is_public
     end
 
     can %i[index_and_filter], Reporting::InternshipOffer

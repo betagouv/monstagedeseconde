@@ -62,6 +62,11 @@ module Presenters
       to_range_as_str.split(/(\d*\s?semaines?\s?:?)/)
     end
 
+    def to_api_formatted
+      weeks.map(&:long_select_text_method)
+           .join(', ')
+    end
+
     attr_reader :weeks, :first_week, :last_week
 
     protected
@@ -69,16 +74,16 @@ module Presenters
     def render_first_week_only
       [
         'Disponible la semaine',
-        yield(is_first: false, is_last: false, week: first_week)
-      ].join(' ')
+        yield(is_first: false, is_last: false, week: first_week).strip
+      ].join.gsub(/\s+/, ' ').html_safe
     end
 
     def render_by_collapsing_date_from_first_to_last_week
       [
-        "Disponible sur #{weeks.size} semaines :",
-        yield(is_first: true, is_last: false, week: first_week).to_s,
+        "Disponible sur#{weeks.size} semaines :",
+        yield(is_first: true, is_last: false, week: first_week),
         " → #{yield(is_first: false, is_last: true, week: last_week)}"
-      ].join(' ').html_safe
+      ].join.gsub(/\s+/, ' ').html_safe
     end
 
     private

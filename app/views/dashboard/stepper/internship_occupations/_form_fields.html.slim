@@ -76,7 +76,8 @@
                                        currentLatitude: ,
                                        currentLongitude: ,
                                        currentFullAddress: resource.formatted_autocomplete_address,
-                                       addressFieldsVisible: !resource.id.nil?})
+                                       addressFieldsVisible: !resource.id.nil?,
+                                       isDuplication: @duplication})
 
         - if submit_button
           .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
@@ -89,4 +90,5 @@
                                     :'internship_occupation-form-target' => "submitButton"} do
                   = "Suivant "
       .col-md-6
-        = render 'dashboard/stepper/summary_card', form: form
+        - if resource.new_record? && show_resume
+          = render 'dashboard/stepper/summary_card', form: form

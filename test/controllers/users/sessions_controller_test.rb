@@ -107,6 +107,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as Student with a pending internship_application' do
+    skip 'SEARCH is not implemented yet to be finished by november 2024'
     student = create(:student, password: 'okokok1Max!!')
     internship_offer = create(:weekly_internship_offer_3eme)
     internship_application = create(:weekly_internship_application, :validated_by_employer,

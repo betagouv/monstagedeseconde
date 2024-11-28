@@ -82,7 +82,6 @@ export default class extends Controller {
       this.maxCandidatesInputTarget.setAttribute('max', 100);
       this.maxCandidatesInputTarget.setAttribute('value', 2);
       this.studentsMaxGroupInputTarget.setAttribute('min', 2);
-      this.studentsMaxGroupInputTarget.setAttribute('value', maxValue);
     }
   }
 
@@ -95,6 +94,9 @@ export default class extends Controller {
   withCollectiveToggling() {
     this.collectiveButtonTarget.checked = true;
     this.studentsMaxCandidatesGroupTarget.classList.remove('d-none');
+    this.studentsMaxCandidatesGroupTarget.setAttribute('min', 2);
+    this.studentsMaxCandidatesGroupTarget.value = ('min', 2);
+    this.studentsMaxGroupInputTarget.setAttribute('value', 2);
     this.updateMaxCandidateCount();
   }
 }
