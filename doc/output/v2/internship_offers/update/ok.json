@@ -1,4 +1,25 @@
 {
-  "code": "UNAUTHORIZED",
-  "error": "wrong api token"
+  "title": "hellow",
+  "description": "Lorem ipsum dolor api",
+  "max_candidates": 2,
+  "employer_website": null,
+  "street": "1 rue du poulet",
+  "zipcode": "75001",
+  "city": "Paris",
+  "is_public": true,
+  "employer_name": "Octo",
+  "employer_description": null,
+  "remote_id": "1",
+  "permalink": "https://google.fr",
+  "published_at": null,
+  "formatted_coordinates": {
+    "latitude": 48.866667,
+    "longitude": 2.333333
+  },
+  "weeks": [
+    "2025-W25"
+  ],
+  "grades": [
+    "seconde"
+  ]
 }

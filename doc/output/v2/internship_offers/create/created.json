@@ -1,4 +1,26 @@
 {
-  "code": "UNAUTHORIZED",
-  "error": "wrong api token"
+  "title": "title",
+  "description": "description",
+  "max_candidates": 2,
+  "employer_website": "http://google.fr",
+  "street": "Avenue de l'opéra",
+  "zipcode": "75002",
+  "city": "Paris",
+  "is_public": false,
+  "employer_name": "employer_name",
+  "employer_description": "employer_description",
+  "remote_id": "test",
+  "permalink": "http://monsite.com",
+  "published_at": "2025-03-01T00:00:00.000+01:00",
+  "formatted_coordinates": {
+    "latitude": 48.8602244,
+    "longitude": 2.333
+  },
+  "weeks": [
+    "2025-W21",
+    "2025-W22"
+  ],
+  "grades": [
+    "troisieme"
+  ]
 }

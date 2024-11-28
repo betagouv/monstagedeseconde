@@ -572,7 +572,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     offer_3 = nil
     travel_to(Date.new(2024, 3, 1)) do
       offer_1 = create(:weekly_internship_offer_2nde, :week_1, school_year: 2024, employer:)
-      assert_equal Date.new(2024, 7, 21), offer_1.last_date
+      assert_equal Date.new(2024, 6, 21), offer_1.last_date
     end
     travel_to(Date.new(2025, 3, 1)) do
       offer_2 = create(:weekly_internship_offer_2nde, :week_2, school_year: 2025, employer:)

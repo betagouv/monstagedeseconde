@@ -12,7 +12,7 @@ module SchoolTrack
     end
 
     def self.selectable_on_school_year_weeks
-      Week.where(id: first_week.id..last_week_of_may.id)
+      Week.where(id: (first_week.id..last_week_of_may.id).to_a)
     end
 
     def self.selectable_from_now_until_end_of_school_year

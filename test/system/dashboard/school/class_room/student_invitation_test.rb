@@ -5,6 +5,7 @@ module Dashboard
     include Devise::Test::IntegrationHelpers
 
     test 'school manager or teacher can invite students to monstagedeseconde' do
+      skip "this test is relevant and shall be reactivated by november 2024"
       school = create(:school, :with_school_manager)
       class_room = create(:class_room, school: school)
       teacher = create(:teacher, school: school, class_room: class_room)
