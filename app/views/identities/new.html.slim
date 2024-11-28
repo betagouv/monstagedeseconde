@@ -50,16 +50,29 @@ main#content[role="main"
                 - seconde_id = Grade.seconde.id
                 .fr-fieldset__element.fr-fieldset__element--inline
                   .fr-radio-group
-                    = f.radio_button :grade_id, quatrieme_id, class: "border", required: true
-                    = f.label :grade_id, "4ème", class: "fr-label fr-mb-0", for: "identity_grade_#{quatrieme_id}"
+                    = f.radio_button :grade_id, 
+                                     quatrieme_id, 
+                                     class: "border", 
+                                     required: true,
+                                     data: { action: "change->signup#updateGrade" }
+                    = f.label :grade_id, "4ème", class: "fr-label fr-mb-0", for: "identity_grade_id_#{quatrieme_id}"
                 .fr-fieldset__element.fr-fieldset__element--inline
                   .fr-radio-group
-                    = f.radio_button :grade_id, troisieme_id, class: "border", required: true
-                    = f.label :grade_id, "3ème", class: "fr-label fr-mb-0", for: "identity_grade_#{troisieme_id}"
+                    = f.radio_button :grade_id, 
+                                     troisieme_id, 
+                                     class: "border", 
+                                     required: true,
+                                     data: { action: "change->signup#updateGrade" }
+                    = f.label :grade_id, "3ème", class: "fr-label fr-mb-0", for: "identity_grade_id_#{troisieme_id}"
                 .fr-fieldset__element.fr-fieldset__element--inline
                   .fr-radio-group
-                    = f.radio_button :grade_id, seconde_id, class: "border", required: true, checked: true
-                    = f.label :grade_id, "2de générale et technologique", class: "fr-label fr-mb-0", for: "identity_grade_#{seconde_id}"
+                    = f.radio_button :grade_id, 
+                                     seconde_id, 
+                                     class: "border", 
+                                     required: true, 
+                                     checked: true,
+                                     data: { action: "change->signup#updateGrade" }
+                    = f.label :grade_id, "2de générale et technologique", class: "fr-label fr-mb-0", for: "identity_grade_id_#{seconde_id}"
               
               fieldset.fr-mx-2w
                 .fr-mx-1w

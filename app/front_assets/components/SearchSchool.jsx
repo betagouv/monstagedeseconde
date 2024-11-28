@@ -34,6 +34,8 @@ export default function SearchSchool({
   const [schoolsInCitySuggestions, setSchoolsInCitySuggestions] = useState([]);
   const [classRoomsSuggestions, setClassRoomsSuggestions] = useState(null);
 
+  const [grade, setGrade] = useState('seconde');
+
   const currentCityString = () => {
     if (city === null || city === undefined) {
       return '';
@@ -45,7 +47,7 @@ export default function SearchSchool({
 
   const emitRequest = (cityName) => {
     setCurrentRequest(
-      $.ajax({ type: 'POST', url: endpoints['apiSearchSchool'](), data: { query: cityName } })
+      $.ajax({ type: 'POST', url: endpoints['apiSearchSchool'](), data: { query: cityName, grade: grade } })
         .done(fetchDone)
         .fail(fetchFail),
     );
@@ -282,6 +284,18 @@ export default function SearchSchool({
       setAutocompleteCitySuggestions({});
     }
   }, [city]);
+
+  useEffect(() => {
+    const handleGradeChange = (event) => {
+      setGrade(event.detail.grade)
+    }
+    
+    document.addEventListener('gradeChanged', handleGradeChange)
+    
+    return () => {
+      document.removeEventListener('gradeChanged', handleGradeChange)
+    }
+  }, [])
 
   return (
     <div className="autocomplete-school-container">

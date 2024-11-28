@@ -24,6 +24,18 @@ module Api
       parisian_schools_key = json_response.keys.first
       first_parisian_school = json_response[parisian_schools_key].first
     end
+    test 'POST#search with grade works' do
+      parisian_school_lycee = create(:api_school, city: 'Paris', zipcode: '75015', school_type: 'lycee')
+      parisian_school_college = create(:api_school, city: 'Paris', zipcode: '75015', school_type: 'college')
+      parisian_school_college_2 = create(:api_school, city: 'Paris', zipcode: '75015', school_type: 'college')
+      parisian_school_lycee.reload # ensure triggered city_tsv had been reloaded
+      parisian_school_college.reload # ensure triggered city_tsv had been reloaded
+      parisian_school_college_2.reload # ensure triggered city_tsv had been reloaded
+
+      post search_api_schools_path, params: { query: 'Paris', grade: 'seconde' }
+      parisian_schools_key = json_response.keys.first
+      first_parisian_school = json_response[parisian_schools_key].first
+    end
 
     test 'POST#nearby with lat/lng/radius' do
       school_at_bordeaux = create(:school, :at_bordeaux)
