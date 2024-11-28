@@ -2,8 +2,8 @@
   div [data-controller='mandatory-fields fill-card ministry-fields'
        data-action="input->entreprise-form#checkForm"
        data-mandatory-fields-minimum-length-value="2"
-       data-ministry-fields-newRecord-value="#{resource.new_record?}"
-       data-ministry-fields-isEntreprisePublic-value="#{resource.try(:is_public) ? 'true' : 'false'}" ]
+       data-ministry-fields-new-record-value="#{resource.new_record?}"
+       data-ministry-fields-is-entreprise-public-value="#{resource.try(:is_public) ? 'true' : 'false'}" ]
     .row
       .col-md-6.order-md-2.order-1.d-none.d-md-block
         - if form.object.new_record? && show_resume
@@ -64,8 +64,8 @@
                                    data: { action: 'ministry-fields#handleClickIsPublic' }
 
                   div.fr-messages-group#radio-hint-messages aria-live="assertive"
-          - edit_mode = (@organisation.try(:persisted?) && @organisation.is_private?) || (@organisation.try(:employer_description).present? && @organisation.is_private?)
-          #ministry-choice.row.fr-mt-3w.bloc-tooggle [data-ministry-fields-target="groupNamePublic"]
+          / - edit_mode = (@organisation.try(:persisted?) && @organisation.is_private?) || (@organisation.try(:employer_description).present? && @organisation.is_private?)
+          #ministry-choice.row.fr-mt-3w.bloc-tooggle.d-none [data-ministry-fields-target="groupNamePublic"]
             .col-12
               = form.label :group_id, class: 'fr-label' do
                 = "Type d’employeur public *"

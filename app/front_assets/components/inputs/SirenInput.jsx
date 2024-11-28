@@ -116,8 +116,12 @@ export default function SirenInput({
     document.getElementById("entreprise_entreprise_chosen_full_address").value = addressConcatenated;
     document.getElementById("entreprise_siret").value = selection.siret;
     document.getElementById("entreprise_presentation_siret").value = siretPresentation(selection.siret);
-    const ministryClassList = document.getElementById("ministry-choice").classList;
-    ministryClassList.add("d-none");
+    const ministry = document.getElementById("ministry-choice");
+    const ministryClassList = ministry.classList;
+    // TODO pub/sub with broadcasting would be better
+    // because both jsx and stimulus send events to the containers (show/hide)
+    ministryClassList.add("d-none"); // default
+    // is_public is known when user seached by name and unknown when user searched by siret
     if( is_public != undefined) {
       document
         .getElementById("public-private-radio-buttons")
@@ -125,8 +129,10 @@ export default function SirenInput({
       const hiddenField = document.getElementById("hidden-public-private-field").children[0];
       hiddenField.value = is_public;
       hiddenField.classList.remove("d-none");
-      if (is_public) {ministryClassList.remove('d-none')}
-    } 
+      if (is_public) {
+        ministry.removeAttribute("style");
+        ministryClassList.remove('d-none')}
+    }
   };
 
   const show_form = (show) => {
