@@ -126,10 +126,6 @@ export default class extends Controller {
     // }, 100);
   }
 
-  connect() {
-    console.log("Signup controller connected");
-  }
-
   disconnect() {
     try {
       this.wssClient.disconnect();
@@ -279,16 +275,8 @@ export default class extends Controller {
     $('#phone-input').focus()
   }
 
-  debug(event) {
-    console.log("Radio clicked:", event.target.value);
-    console.log("Radio checked status:", event.target.checked);
-    console.log("Event type:", event.type);
-    console.log("Event target:", event.target);
-  }
-
   updateGrade(event) {
     const gradeId = parseInt(event.target.value)
-    console.log("Grade ID:", gradeId);
     let gradeName
     
     switch(gradeId) {
@@ -303,7 +291,6 @@ export default class extends Controller {
         break
     }
 
-    console.log("Grade name:", gradeName);
     this.updateSearchSchoolGrade(gradeName)
   }
 
