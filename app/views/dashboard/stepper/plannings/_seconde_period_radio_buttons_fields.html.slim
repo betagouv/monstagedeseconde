@@ -1,9 +1,14 @@
 / radio button for period
 - labels = SchoolTrack::Seconde.current_period_labels
-- week_1 = SchoolTrack::Seconde.first_week
-- week_2 = SchoolTrack::Seconde.second_week
-- both_weeks = SchoolTrack::Seconde.both_weeks
-- grades = resource.grades
+
+- week_1_id = SchoolTrack::Seconde.first_week.id
+- week_2_id = SchoolTrack::Seconde.second_week.id
+- both_weeks_ids = SchoolTrack::Seconde.both_weeks.map(&:id)
+- weeks_ids = resource.weeks.to_a.map(&:id)
+
+- both_weeks = resource.new_record? || (both_weeks_ids - weeks_ids).empty?
+- week_1 = !both_weeks && week_1_id.in?(weeks_ids)
+- week_2 = !both_weeks && week_2_id.in?(weeks_ids)
 
 p.fr-badge.fr-badge--error.d-none data-grade-target="alertContainer"
   | Veuillez sélectionner au moins un public parmi les lycéens et les collégiens
@@ -15,7 +20,7 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
       = form.radio_button :period,
                           2,
                           id: 'period_full_time',
-                          checked: resource.new_record? || both_weeks.in?(resource.weeks)
+                          checked: both_weeks
 
       = form.label :period,
                     labels[:full_time],
@@ -24,7 +29,7 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
       = form.radio_button :period,
                           11,
                           id: 'period_week_1',
-                          checked: !resource.new_record? && week_1.in?(resource.weeks) && !both_weeks.in?(resource.weeks)
+                          checked: week_1
 
       = form.label :period,
                     labels[:week_1],
@@ -34,7 +39,7 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
       = form.radio_button :period,
                           12,
                           id: 'period_week_2',
-                          checked: !resource.new_record? && week_2.in?(resource.weeks) && !both_weeks.in?(resource.weeks)
+                          checked: week_2
 
       = form.label :period,
                     labels[:week_2],

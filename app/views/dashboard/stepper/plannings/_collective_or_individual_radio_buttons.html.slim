@@ -1,5 +1,5 @@
 - error = form.object.errors[:individual].any?
-- checked = resource.new_record? && resource.errors.empty? && params[:duplicate_id].blank? ? true : resource.is_individual?
+- checked = (resource.new_record? && params[:duplicate_id].blank? && resource.errors.empty?) || resource.is_individual?
 fieldset.fr-fieldset
   .row.w-100
     .col-6
@@ -33,9 +33,6 @@ fieldset.fr-fieldset
 .form-group.form-group-select-max-candidates
   = form.label :max_candidates, class: 'fr-label' do
     = "Nombre total d'élèves que vous souhaitez accueillir sur la période de stage"
-
-    / small.form-text.text-muted
-    /   | Vous accueillerez ces élèves individuellement ou par groupes
   = form.number_field :max_candidates,
                       class: "fr-input",
                       value: resource.max_candidates,
@@ -62,4 +59,3 @@ fieldset.fr-fieldset
                         data: { :"planning-candidates-target" => 'studentsMaxGroupInput',
                                 action: "change->planning-candidates#handleMaxCandidatesPerGroupChanges"}
 
-/ = form.hidden_field :type, value: resource.type, data: { :"planning-candidates-target" => "type" } unless resource.is_a?(HostingInfo)

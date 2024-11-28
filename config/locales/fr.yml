@@ -21,7 +21,7 @@ fr:
     passwords:
       update: 'Mot de passe mis à jour.'
     sms:
-      welcome_student: "Bienvenue sur Mon stage de 2de. Commencez votre recherche ici : %{shrinked_url}"
+      welcome_student: "Bienvenue sur 1élève1stage. Commencez votre recherche ici : %{shrinked_url}"
   activerecord:
     models:
       area_notification:
@@ -440,7 +440,7 @@ fr:
         period: Période de stage
         organisation:
           group: Groupe ou institution de tutelle
-
+        
         internship_occupation: Métiers observés et localisation du stage
           # title: Intitulé
           # description: Description
@@ -651,6 +651,7 @@ fr:
               blank: "Missing street"
             zipcode:
               blank: "Missing zipcode"
+              invalid: "Zipcode is invalid"
             city:
               blank: "Missing city"
             sector:

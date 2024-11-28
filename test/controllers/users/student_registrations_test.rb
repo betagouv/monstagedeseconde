@@ -10,7 +10,7 @@ class StudentRegistrationsTest < ActionDispatch::IntegrationTest
     get new_identity_path
     assert_response :success
     assert_select 'input', value: 'Student', hidden: 'hidden'
-    assert_select 'title', 'Inscription élève - etape 1 sur 2 | Monstage'
+    assert_select 'title', 'Inscription élève - etape 1 sur 2 | 1élève1stage'
     # jsx componentes do not show labels with the usual way
     assert_select 'label', /Nom/
     assert_select 'label', /Prénom/
@@ -33,7 +33,6 @@ class StudentRegistrationsTest < ActionDispatch::IntegrationTest
   end
 
   test 'POST create Student with class responds with success' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
     school = create(:school, school_type: :college)
     class_room = create(:class_room, school:)
     birth_date = 14.years.ago
@@ -52,10 +51,9 @@ class StudentRegistrationsTest < ActionDispatch::IntegrationTest
                 birth_date:,
                 gender: 'np',
                 email: 'fourcade.m@gmail.com',
-                grade: 'troisieme',
+                grade_id: Grade.troisieme.id,
                 password: 'okokok1Max!!',
-                accept_terms: '1',
-                grade: Grade.troisieme
+                accept_terms: '1'
               }
             }
           )

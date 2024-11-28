@@ -20,7 +20,7 @@ module InternshipOffers
     #   get internship_offer_path(internship_offer)
 
     #   assert_response :success
-    #   assert_select 'title', "Offre de stage '#{internship_offer.title}' | Monstage"
+    #   assert_select 'title', "Offre de stage '#{internship_offer.title}' | 1élève1stage"
     #   assert_select 'form[id=?]', 'new_internship_application', count: 0
     #   assert_select 'strong.tutor_name', text: internship_offer.tutor_name
     #   assert_select 'ul li.tutor_phone', text: "Portable : #{internship_offer.tutor_phone}"
@@ -59,7 +59,8 @@ module InternshipOffers
           city: 'Bordeaux',
           coordinates: Coordinates.bordeaux,
           title: 'Vendeur de cannelés',
-          max_candidates: 3
+          max_candidates: 3,
+          grades: [Grade.troisieme]
         )
         employer = InternshipOffer.last.employer
         application = create(
@@ -70,13 +71,16 @@ module InternshipOffers
         get internship_offer_path(offer)
         assert_select('button', text: 'Postuler', count: 0)
 
-        assert_select('.period-label-test', text: '2 semaines - du 17 au 28 juin 2024')
+        assert_select(
+          '.period-label-test',
+          text: 'Disponible sur 21 semaines : 8 janvier 2024 → 2 juin 2024'
+        )
       end
     end
 
     test 'GET #show with applications from other students reduces the number ' \
          'of available weeks with weeklist splitted version' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
+      # skip 'this test is relevant and shall be reactivated by november 2024'
       travel_to(Date.new(2024, 1, 1)) do
         offer = create(
           :weekly_internship_offer_3eme,
@@ -93,7 +97,7 @@ module InternshipOffers
           internship_offer: offer
         )
         get internship_offer_path(offer)
-        assert_select('.period-label-test', text: '1 semaine - du 17 au 21 juin 2024')
+        assert_select('.period-label-test', text: 'Disponible sur 21 semaines : 8 janvier 2024 → 2 juin 2024')
       end
     end
 
@@ -101,17 +105,16 @@ module InternshipOffers
       skip 'this test is relevant and shall be reactivated by november 2024'
       travel_to(Date.new(2024, 1, 1)) do
         offer = create(
-          :weekly_internship_offer_3eme,
+          :weekly_internship_offer_2nde,
           city: 'Bordeaux',
           coordinates: Coordinates.bordeaux,
           title: 'Vendeur de cannelés',
-          max_candidates: 3,
-          period: 2 # week_
+          max_candidates: 1
         )
         employer = InternshipOffer.last.employer
 
         get internship_offer_path(offer)
-        assert_select('.period-label-test', text: '1 semaine - du 24 au 28 juin 2024')
+        assert_select('.period-label-test', text: 'Disponible la  semaine du 17 juin 2024 au 23 juin 2024')
       end
     end
 
@@ -152,13 +155,13 @@ module InternshipOffers
     end
 
     test 'GET #show as Student shows next/previous navigation in list' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
+      skip 'what should be done with this test? are next/previous relevant?'
       travel_to(Date.new(2024, 3, 1)) do
-        previous_out = create(:weekly_internship_offer_2nde, title: 'previous_out')
+        # previous_out = create(:weekly_internship_offer_2nde, title: 'previous_out')
         previous_in_page = create(:weekly_internship_offer_2nde, title: 'previous')
         current = create(:weekly_internship_offer_2nde, title: 'current')
         next_in_page = create(:weekly_internship_offer_2nde, title: 'next')
-        next_out = create(:weekly_internship_offer_2nde, title: 'next_out')
+        # next_out = create(:weekly_internship_offer_2nde, title: 'next_out')
         student = create(:student, school: create(:school))
 
         InternshipOffer.stub :nearby, InternshipOffer.all do
@@ -172,8 +175,7 @@ module InternshipOffers
       end
     end
 
-    test 'GET #show as Student shows next and not previous when no previous' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
+    test 'GET #show as Student shows nex t and not previous when no previous' do
       travel_to(Date.new(2024, 3, 1)) do
         current = create(:weekly_internship_offer_2nde, title: 'current')
         next_in_page = create(:weekly_internship_offer_2nde, title: 'next')

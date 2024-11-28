@@ -27,15 +27,15 @@ module StepperProxy
                                 less_than_or_equal_to: :max_candidates,
                                 message: "Le nombre maximal d'élèves par groupe ne peut pas dépasser le nombre maximal d'élèves attendus dans l'année" }
       validates :weeks, presence: true
-      validate :enough_weeks
+      # if not API, validate enough weeks
+      validate :enough_weeks unless :from_api
       validate :at_least_one_grade
 
-      # methods common to planning and internship_offer
+      # methods common to planning and internship_offer but not for API
       def enough_weeks
-        weeks_size = ((try(:internship_offer_weeks) || try(:planning_weeks)) || []).to_a.size
-        return if weeks_size.zero?
+        return if weeks.empty?
         return if skip_enough_weeks_validation?
-        return if max_candidates / max_students_per_group <= weeks_size
+        return if max_candidates / max_students_per_group.to_f <= weeks.size
 
         error_message = 'Le nombre maximal d\'élèves est trop important par ' \
                         'rapport au nombre de semaines de stage choisi. Ajoutez des ' \
@@ -54,14 +54,12 @@ module StepperProxy
       end
 
       def available_weeks
-        return Week.selectable_from_now_until_end_of_school_year unless respond_to?(:weeks)
-        return Week.selectable_from_now_until_end_of_school_year unless persisted?
-        if weeks&.first.nil?
-          return Week.selectable_for_school_year(school_year: SchoolYear::Floating.new(date: Date.today))
-        end
+        both_tracks_weeks = Week.both_school_track_selectable_weeks
+        return both_tracks_weeks unless respond_to?(:weeks)
+        return both_tracks_weeks unless persisted?
+        return both_tracks_weeks if weeks&.first.nil?
 
         school_year = SchoolYear::Floating.new(date: weeks.first.week_date)
-
         Week.selectable_on_specific_school_year(school_year:)
       end
 
@@ -74,7 +72,6 @@ module StepperProxy
       def set_default_values
         self.max_candidates ||= 1
         self.max_students_per_group ||= 1
-        self.internship_weeks_number ||= 1
       end
 
       def at_least_one_grade

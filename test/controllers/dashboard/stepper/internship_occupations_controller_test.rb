@@ -18,7 +18,6 @@ module Dashboard::Stepper
     # Create InternshipOccupation
     #
     test 'POST create redirects to new entreprise' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
       employer = create(:employer)
       sign_in(employer)
 
@@ -29,7 +28,6 @@ module Dashboard::Stepper
             internship_occupation: {
               title: 'Activités de découverte',
               street: '12 rue des bois',
-              street_complement: 'Batiment 1',
               zipcode: '75001',
               city: 'Paris',
               coordinates: { latitude: 1, longitude: 1 },
@@ -38,11 +36,14 @@ module Dashboard::Stepper
             }
           }
         )
+        # should be added when adding manual address entering
+        # street_complement: 'Batiment 1',
       end
 
       created_internship_occupation = InternshipOccupation.last
 
-      assert_equal '12 rue des bois - Batiment 1', created_internship_occupation.street
+      assert_equal '12 rue des bois', created_internship_occupation.street
+      # assert_equal '12 rue des bois - Batiment 1', created_internship_occupation.street
       assert_equal '75001', created_internship_occupation.zipcode
       assert_equal 'Paris', created_internship_occupation.city
       assert_equal 'Activités de découverte avec des enfants', created_internship_occupation.description
@@ -50,7 +51,9 @@ module Dashboard::Stepper
       assert_equal employer.id, created_internship_occupation.employer_id
       refute created_internship_occupation.internship_address_manual_enter
 
-      assert_redirected_to new_dashboard_stepper_entreprise_path(internship_occupation_id: created_internship_occupation.id)
+      assert_redirected_to new_dashboard_stepper_entreprise_path(
+        internship_occupation_id: created_internship_occupation.id, submit_button: true
+      )
       follow_redirect!
       assert_select 'span#alert-text',
                     text: "L'adresse du stage et son intitulé ont bien été enregistrés"

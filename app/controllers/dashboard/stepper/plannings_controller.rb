@@ -8,11 +8,6 @@ module Dashboard::Stepper
     before_action :fetch_entreprise, only: %i[new create]
     before_action :fetch_internship_occupation, only: %i[new edit create]
 
-    PERIOD = {
-      two_weeks: 2,
-      first_week: 11,
-      second_week: 12
-    }
     DEFAULT_SCHOOL_RADIUS = 60_000 # 60km
 
     def new
@@ -30,14 +25,16 @@ module Dashboard::Stepper
         longitude: @internship_occupation.coordinates.longitude,
         radius: DEFAULT_SCHOOL_RADIUS
       )
+      @duplication = false
     end
 
     def create
       @planning = Planning.new(planning_params.merge(entreprise_id: params[:entreprise_id]))
       authorize! :create, @planning
-      @available_weeks = @planning.available_weeks
-      manage_planning_associations
-
+      adapter = Dto::PlanningAdapter.new(instance: @planning, params: planning_params, current_user:)
+                                    .manage_planning_associations
+      @planning = adapter.instance
+      @available_weeks = adapter.instance.weeks
       if @planning.save
         internship_offer_builder.create_from_stepper(**builder_params) do |on|
           on.success do |created_internship_offer|
@@ -65,6 +62,7 @@ module Dashboard::Stepper
 
     # process update following a back to step 2
     def update
+      raise 'expected to be never used '
       authorize! :update, @planning
 
       if @planning.update(planning_params)
@@ -108,46 +106,6 @@ module Dashboard::Stepper
       }
     end
 
-    def manage_planning_associations
-      manage_grades
-      manage_weeks
-      @planning.employer_id = current_user.id
-    end
-
-    def manage_grades
-      @planning.grades = Grade.troisieme_et_quatrieme.to_a if params_offer_for_troisieme_or_quatrieme?
-      @planning.grades.append Grade.seconde if params_offer_for_seconde?
-    end
-
-    def manage_weeks
-      # @planning.weeks = @available_weeks if employer_chose_whole_year? # legacy
-      @planning.internship_weeks_number = 1
-      return unless params_offer_for_seconde?
-
-      @planning.weeks = [] unless params_offer_for_troisieme_or_quatrieme?
-      case period
-      when PERIOD[:two_weeks]
-        @planning.internship_weeks_number = 2
-        @planning.weeks << SchoolTrack::Seconde.both_weeks
-      when PERIOD[:first_week]
-        @planning.weeks << SchoolTrack::Seconde.first_week
-      when PERIOD[:second_week]
-        @planning.weeks << SchoolTrack::Seconde.second_week
-      end
-    end
-
-    def params_offer_for_seconde?
-      planning_params[:grade_2e].to_i == 1
-    end
-
-    def params_offer_for_troisieme_or_quatrieme?
-      planning_params[:grade_college].to_i == 1
-    end
-
-    def period
-      planning_params[:period].to_i
-    end
-
     def internship_offer_builder
       @builder ||= Builders::InternshipOfferBuilder.new(user: current_user, context: :web)
     end
@@ -162,10 +120,6 @@ module Dashboard::Stepper
 
     def fetch_internship_occupation
       @internship_occupation ||= @entreprise&.internship_occupation || @planning&.entreprise&.internship_occupation
-    end
-
-    def employer_chose_whole_year?
-      params[:planning][:all_year_long] == 'true'
     end
   end
 end

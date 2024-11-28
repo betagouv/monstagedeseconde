@@ -22,6 +22,15 @@ module InternshipApplications
       assert_select '.student-phone', internship_application.student_phone
     end
 
+    test 'GET #show not owning internship_application is forbidden' do
+      internship_offer = create(:weekly_internship_offer_3eme)
+      internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
+      sign_in(create(:student))
+      get internship_offer_internship_application_path(internship_offer,
+                                                       internship_application)
+      assert_response :redirect
+    end
+
     test 'GET #show renders preview for school_manager' do
       skip 'this test is relevant and shall be reactivated by november 2024'
       school = create(:school, :with_school_manager)
@@ -29,8 +38,8 @@ module InternshipApplications
       student = create(:student, class_room:, school:)
       main_teacher = create(:main_teacher, class_room:, school:)
       internship_offer = create(:weekly_internship_offer_3eme)
-      internship_application = create(:weekly_internship_application, :drafted, internship_offer:,
-                                                                                student:)
+      internship_application = create(:weekly_internship_application, :submitted, internship_offer:,
+                                                                                  student:)
       sign_in(main_teacher)
       get internship_offer_internship_application_path(internship_offer,
                                                        internship_application)
@@ -38,16 +47,6 @@ module InternshipApplications
       assert_select "form[action=\"#{internship_offer_internship_application_path(internship_offer,
                                                                                   internship_application, transition: :submit!)}\"]"
       assert_select "#submit_application_form[method='post'] input[name='_method'][value='patch']"
-    end
-
-    test 'GET #show not owning internship_application is forbidden' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
-      internship_offer = create(:weekly_internship_offer_3eme)
-      internship_application = create(:weekly_internship_application, :drafted, internship_offer:)
-      sign_in(create(:student))
-      get internship_offer_internship_application_path(internship_offer,
-                                                       internship_application)
-      assert_response :redirect
     end
   end
 end

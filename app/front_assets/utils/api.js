@@ -68,7 +68,7 @@ export const endpoints = {
 
   // @post
   apiSearchSchool: () => {
-    const endpoint = new URL(`${host}/api/schools/search`);
+    const endpoint = new URL(`${host}/api/v1/schools/search`);
     return endpoint;
   },
 

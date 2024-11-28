@@ -1,4 +1,4 @@
-- content_for :page_title, "#{t(".page_title", name: @school.name)} | Monstage"
+- content_for :page_title, "#{t(".page_title", name: @school.name)} | 1élève1stage"
 - badge_counter = Finders::TabSchoolManager.new(school: @school) if current_user.school_manager?
 - badge_counter = Finders::TabMainTeacher.new(main_teacher: current_user) if current_user.main_teacher?
 - badge_counter = Finders::TabNull.new if badge_counter.nil?

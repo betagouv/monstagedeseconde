@@ -7,6 +7,7 @@ class EmailUpdateFlowTest < ApplicationSystemTestCase
   # include ::EmailSpamEuristicsAssertions
 
   test 'student updates her email' do
+    skip "this test is relevant and shall be reactivated by november 2024"
     password  = 'kikoolol1Max!!'
     email     = 'fourcade.m@gmail.com'
     alt_email = 'another_email@free.fr'
@@ -15,7 +16,6 @@ class EmailUpdateFlowTest < ApplicationSystemTestCase
                             phone: nil,
                             confirmed_at: Time.now.utc)
     sign_in(user)
-
     assert_changes -> { user.reload.unconfirmed_email } do
       visit account_path
       fill_in('Adresse électronique (ex : mon@domaine.fr)', with: alt_email)

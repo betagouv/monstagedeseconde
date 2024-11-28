@@ -23,6 +23,7 @@ module InternshipOffers
 
     after_initialize :init
     before_create :reverse_academy_by_zipcode
+    before_save :copy_entreprise_full_address
 
     #---------------------
     # fullfilled scope isolates those offers that have reached max_candidates
@@ -90,6 +91,10 @@ module InternshipOffers
       return false if weekly_hours_compacted&.empty? && daily_hours_compacted&.empty?
 
       true
+    end
+
+    def copy_entreprise_full_address
+      self.entreprise_full_address = entreprise_chosen_full_address.blank? ? entreprise_full_address : entreprise_chosen_full_address
     end
   end
 end

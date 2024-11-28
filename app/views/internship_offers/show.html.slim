@@ -1,4 +1,4 @@
-- content_for(:page_title, "#{t(".page_title", name: @internship_offer.title)} | Monstage")
+- content_for(:page_title, "#{t(".page_title", name: @internship_offer.title)} | 1élève1stage")
 - content_for(:canonical_url, internship_offer_url(@internship_offer))
 
 = render 'layouts/breadcrumb',
@@ -34,10 +34,7 @@ div.fr-container.d-flex.fr-mt-2w
             button.fr-mr-1w.fr-btn.fr-icon-delete-line.fr-btn--icon.fr-btn--secondary.test-discard-button data-fr-opened="false" aria-controls="discard-internship-offer-modal"
       - if can?(:update, @internship_offer)
         - url = edit_dashboard_internship_offer_path(@internship_offer)
-        - if @internship_offer.planning_id
-          - url = edit_dashboard_stepper_planning_path(@internship_offer.planning_id)
+        / - if @internship_offer.planning_id && @internship_offer.planning_id > 0
+        /   - url = edit_dashboard_stepper_planning_path(@internship_offer.planning_id)
         = link_to 'Modifier', url, class: 'fr-btn fr-mr-1w fr-btn--secondary'
-      = button_to 'Publier',
-                  publish_dashboard_internship_offer_path(@internship_offer),
-                  data: { turbo: false },
-                  class: 'fr-btn fr-ml-1w'
+      

@@ -83,6 +83,7 @@ module Dashboard
     end
 
     test 'employer reads internship agreement table with correct indications / daily hours - status: started_by_employer' do
+      # skip 'this test is relevant and shall be reactivated by november 2024'
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:internship_agreement, internship_application:,
@@ -390,7 +391,6 @@ module Dashboard
     end
 
     test 'admin_officer reads internship agreement table with correct indications - status: completed_by_employer' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
       internship_agreement = create(:internship_agreement, aasm_state: :completed_by_employer)
       admin_officer = create(:admin_officer, school: internship_agreement.school)
       sign_in(admin_officer)

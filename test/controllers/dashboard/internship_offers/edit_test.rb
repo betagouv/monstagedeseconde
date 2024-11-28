@@ -28,17 +28,20 @@ module Dashboard::InternshipOffers
     end
 
     test 'GET #edit post offer render selectable week of past year' do
-      travel_to(Date.new(Date.today.year - 1, 5, 31)) do
+      travel_to(Date.new(Date.today.year - 1, 6, 1)) do
         employer = create(:employer)
         school_year_n_minus_one = SchoolYear::Floating.new_by_year(year: Date.today.year - 1)
 
-        first_week = Week.where(year: school_year_n_minus_one.beginning_of_period.year,
-                                number: school_year_n_minus_one.beginning_of_period.cweek)
-                         .first
+        first_week = Week.find_by(year: school_year_n_minus_one.beginning_of_period.year,
+                                  number: school_year_n_minus_one.beginning_of_period.cweek)
 
         sign_in(employer)
-        internship_offer = create(:weekly_internship_offer_3eme, employer:,
-                                                                 max_candidates: 2)
+        internship_offer = create(
+          :weekly_internship_offer_3eme,
+          employer:,
+          weeks: [first_week],
+          max_candidates: 1
+        )
         get edit_dashboard_internship_offer_path(internship_offer.to_param)
         assert_response :success
       end
@@ -76,7 +79,7 @@ module Dashboard::InternshipOffers
 
       get edit_dashboard_internship_offer_path(internship_offer.to_param)
       assert_response :success
-      assert_select 'title', "Offre de stage '#{internship_offer.title}' | Monstage"
+      assert_select 'title', "Offre de stage '#{internship_offer.title}' | 1élève1stage"
 
       assert_select '#internship_type_true[checked]', count: 1
       assert_select '#internship_type_false[checked]', count: 0

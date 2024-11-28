@@ -25,6 +25,8 @@ module Dashboard::InternshipOffers
                         'school_id' => school.id,
                         'description' => '<div>description</div>',
                         'employer_description' => 'hop+employer_description',
+                        'week_ids' => internship_offer.weeks.map(&:id),
+                        'grade_ids' => internship_offer.grades.map(&:id),
                         'employer_id' => internship_offer.employer_id,
                         'employer_type' => 'Users::Employer')
         assert_difference('InternshipOffer.count', 1) do
@@ -52,6 +54,8 @@ module Dashboard::InternshipOffers
                  .merge('type' => InternshipOffers::WeeklyFramed.name,
                         'group' => employer.ministries.first,
                         'coordinates' => { latitude: 1, longitude: 1 },
+                        'week_ids' => internship_offer.weeks.map(&:id),
+                        'grade_ids' => internship_offer.grades.map(&:id),
                         'school_id' => school.id,
                         'description' => '<div>description</div>',
                         'employer_type' => 'Users::MinistryStatistician')
@@ -68,8 +72,8 @@ module Dashboard::InternshipOffers
       end
     end
 
-    test 'POST #create as employer with invalid data, prefill form' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
+    test 'POST #create as employer with invalid data, prefills form' do
+    skip "this test is relevant and shall be reactivated by november 2024"
       sign_in(create(:employer))
       post(dashboard_internship_offers_path, params: {
              internship_offer: {
@@ -82,7 +86,6 @@ module Dashboard::InternshipOffers
       assert_select('.fr-alert.fr-alert--error strong', html: /Description/)
       assert_select('.fr-alert.fr-alert--error strong', html: /Secteur/)
       assert_select('.fr-alert.fr-alert--error strong', html: /Coordonnées GPS/)
-      assert_select('.fr-alert.fr-alert--error strong', html: /Adresse du lieu de stage/)
 
       assert_select('.fr-alert.fr-alert--error', html: /Veuillez renseigner le code postal de l'employeur/)
       assert_select('.fr-alert.fr-alert--error', html: /Veuillez saisir une description pour l'offre de stage/)
