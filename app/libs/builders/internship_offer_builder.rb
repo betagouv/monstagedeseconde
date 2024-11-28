@@ -41,7 +41,7 @@ module Builders
         {}.merge(preprocess_internship_occupation_to_params(planning.entreprise.internship_occupation))
           .merge(preprocess_entreprise_to_params(planning.entreprise))
           .merge(preprocess_planning_to_params(planning))
-          .delete(:employer_id)
+          .except(:employer_id)
       )
       internship_offer.save!
       DraftedInternshipOfferJob.set(wait: 1.week)
