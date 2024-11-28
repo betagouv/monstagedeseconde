@@ -2,10 +2,11 @@
   div [data-controller='mandatory-fields fill-card ministry-fields'
        data-action="input->entreprise-form#checkForm"
        data-mandatory-fields-minimum-length-value="2"
-       data-ministry-fields-newRecord-value="#{resource.new_record?}"]
+       data-ministry-fields-newRecord-value="#{resource.new_record?}"
+       data-ministry-fields-isEntreprisePublic-value="#{resource.try(:is_public) ? 'true' : 'false'}" ]
     .row
       .col-md-6.order-md-2.order-1.d-none.d-md-block
-        - if form.object.new_record?
+        - if form.object.new_record? && show_resume
           = render 'dashboard/stepper/summary_card', form: form
       .col-md-6.order-md-1.order-2
         fieldset  aria-labelledby="entreprise-name-legend"
@@ -26,7 +27,7 @@
                                         presentationLabel: "L'administration",
                                         currentSiren: resource.siret,
                                         railsEnv: Rails.env,
-                                        newRecord: resource.new_record? })
+                                        newRecord: resource.new_record? && !duplication })
 
           #hidden-public-private-field.d-none
             input type='hidden' name='entreprise[is_public]'
@@ -134,13 +135,13 @@
                         required: true,
                         title: label,
                         object: form.object,
+                        maxlength: 200,
                         value: resource&.entreprise_full_address
               .fr-mt-2v.d-flex.align-items-center
                 small
                   span.fr-icon-info-fill.text-blue-info aria-hidden="true"
                 small.text-blue-info.fr-mx-1w
                   | L’adresse du siège peut être différente de l’adresse où se déroulera le stage.
-        / - edit_mode = (@entreprise.try(:persisted?) && @entreprise.is_private?) || (@entreprise.try(:employer_description).present? && @entreprise.is_private?)
 
     - if submit_button
       .fr-mt-6w.bloc-tooggle

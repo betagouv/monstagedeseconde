@@ -1,8 +1,8 @@
-- content_for :page_title, "#{t(".page_title", name: @internship_offer.title)} | Monstage"
+- content_for :page_title, "#{t(".page_title", name: @internship_offer.title)} | 1élève1stage"
 
-.row
+.row.fr-my-3w 
   .col-12
-      h1.h2.mb-3
+      h1.h2
         | Modifier une offre de stage
 
 = render "form", submit_text: "Publier l'offre"

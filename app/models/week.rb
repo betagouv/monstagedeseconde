@@ -113,6 +113,33 @@ class Week < ApplicationRecord
                                                  .or(where('number <= ?', first_day_of_july_week).where(year: school_year + 1))
   }
 
+  def self.both_school_track_weeks
+    [
+      SchoolTrack::Troisieme.selectable_on_school_year_weeks,
+      SchoolTrack::Seconde.both_weeks
+    ].flatten
+  end
+
+  def self.both_school_track_selectable_weeks
+    selectable_from_now_until_end_of_school_year.where(id: both_school_track_weeks.map(&:id))
+  end
+
+  def self.troisieme_weeks
+    SchoolTrack::Troisieme.selectable_on_school_year_weeks
+  end
+
+  def self.troisieme_selectable_weeks
+    selectable_from_now_until_end_of_school_year.where(id: troisieme_weeks.map(&:id))
+  end
+
+  def self.seconde_weeks
+    SchoolTrack::Seconde.both_weeks
+  end
+
+  def self.seconde_selectable_weeks
+    selectable_from_now_until_end_of_school_year.where(id: seconde_weeks.map(&:id))
+  end
+
   WEEK_DATE_FORMAT = '%d/%m/%Y'
 
   def self.current

@@ -19,12 +19,16 @@ require 'support/turbo_assertions_helper'
 require 'support/team_and_areas_helper'
 require 'minitest/retry'
 require 'webmock/minitest'
+require 'sidekiq/testing'
+
 # these two lines should be withdrawn whenever the ChromeDriver is ok
 # https://stackoverflow.com/questions/70967207/selenium-chromedriver-cannot-construct-keyevent-from-non-typeable-key/70971698#70971698
 require 'webdrivers/chromedriver'
 
 ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 10_000)
 InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 1_000)
+
+Sidekiq::Testing.fake!
 
 Capybara.save_path = Rails.root.join('tmp/screenshots')
 
@@ -70,6 +74,7 @@ class ActionDispatch::IntegrationTest
   def after_teardown
     super
     FileUtils.rm_rf(ActiveStorage::Blob.service.root)
+    Sidekiq.redis(&:flushdb)
   end
   parallelize_setup do |i|
     ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"

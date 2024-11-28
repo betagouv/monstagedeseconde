@@ -143,7 +143,7 @@ module Users
       return false if internship_applications.empty? || internship_applications.approved.empty?
 
       approved_offers = internship_applications.approved.map(&:internship_offer)
-      return true if approved_offers.any? { |offer| offer.internship_weeks_number == 2 }
+      return true if approved_offers.any? { |offer| offer.weeks.count == 2 }
       return true if approved_offers.map(&:weeks).uniq.count == 2
 
       false

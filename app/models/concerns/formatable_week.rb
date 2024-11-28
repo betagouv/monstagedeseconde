@@ -61,18 +61,10 @@ module FormatableWeek
     alias_method :to_str, :select_text_method_with_year
 
     def human_shortest
-      if week_date.month == week_date.end_of_week.month
-        ['du',
-         week_date.day,
-         'au',
-         end_of_week].map(&:to_s)
-          .map(&:strip)
-          .join(' ')
-      else
-        ['du', beginning_of_week(format: '%e %b'), 'au', end_of_week_abr].map(&:to_s)
-                                                                         .map(&:strip)
-                                                                         .join(' ')
-      end
+      same_month = week_date.month == week_date.end_of_week.month
+      beginning = same_month ? week_date.day.to_s : beginning_of_week_abr
+      ending    = same_month ? end_of_week : end_of_week_abr
+      ['du', beginning, 'au', ending].map(&:strip).join(' ')
     end
 
     def week_date
@@ -83,51 +75,63 @@ module FormatableWeek
     alias_method :monday, :week_date
 
     def beginning_of_week(format: :human_mm_dd)
-      I18n.localize(week_date.beginning_of_week, format:)
+      I18n.localize(week_date.beginning_of_week, format:).strip
     end
 
-    def beginning_of_week_short
-      I18n.localize(week_date.beginning_of_week, format: :human_mm_dd)
+    def beginning_of_week_short(format: :human_mm_dd)
+      I18n.localize(week_date.beginning_of_week, format: :human_mm_dd).strip
     end
 
     def beginning_of_week_with_year
-      I18n.localize(week_date.beginning_of_week, format: :default)
+      I18n.localize(week_date.beginning_of_week, format: :default).strip
     end
 
     def beginning_of_week_with_year_long
-      I18n.localize(week_date.beginning_of_week, format: :human_mm_dd_yyyy)
+      I18n.localize(week_date.beginning_of_week, format: :human_mm_dd_yyyy).strip
     end
 
     def beginning_of_week_with_short_month_year_long
-      I18n.localize(week_date.beginning_of_week, format: :human_dd_short_mm_yyyy)
+      I18n.localize(week_date.beginning_of_week, format: :human_dd_short_mm_yyyy).strip
+    end
+
+    def beginning_of_week_abr
+      I18n.localize(week_date.beginning_of_week, format: :human_dd_mm).strip
     end
 
     def end_of_week(format: :human_mm_dd)
-      I18n.localize(week_date.end_of_week, format:)
+      I18n.localize(week_date.end_of_week, format:).strip
     end
 
     def end_of_week_abr
-      I18n.localize(week_date.end_of_week, format: :human_dd_mm)
+      I18n.localize(week_date.end_of_week, format: :human_dd_mm).strip
     end
 
     def end_of_working_week
-      I18n.localize(week_date.end_of_week - 2.days, format: :human_mm_dd)
+      I18n.localize(week_date.end_of_week - 2.days, format: :human_mm_dd).strip
     end
 
     def end_of_week_with_years
-      I18n.localize(week_date.end_of_week, format: :default)
+      I18n.localize(week_date.end_of_week, format: :default).strip
     end
 
     def end_of_week_with_years_long
-      I18n.localize(week_date.end_of_week, format: :human_mm_dd_yyyy)
+      I18n.localize(week_date.end_of_week, format: :human_mm_dd_yyyy).strip
     end
 
     def friday_of_week_with_years_long
-      I18n.localize(week_date + 4, format: :human_mm_dd_yyyy)
+      I18n.localize(week_date + 4, format: :human_mm_dd_yyyy).strip
     end
 
     def end_of_week_with_short_month_years_long
-      I18n.localize(week_date.end_of_week, format: :human_dd_short_mm_yyyy)
+      I18n.localize(week_date.end_of_week, format: :human_dd_short_mm_yyyy).strip
+    end
+
+    def month_number
+      monday = week_date.beginning_of_week
+      wednesday = monday + 2.day
+      return monday.month if monday.month == wednesday.month
+
+      wednesday.month
     end
 
     def month_number

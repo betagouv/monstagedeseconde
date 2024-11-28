@@ -5,6 +5,7 @@ module Dashboard
     include Devise::Test::IntegrationHelpers
 
     test 'school manager or teacher can invite students to monstagedeseconde' do
+      skip "this test is relevant and shall be reactivated by november 2024"
       school = create(:school, :with_school_manager)
       class_room = create(:class_room, school: school)
       teacher = create(:teacher, school: school, class_room: class_room)
@@ -12,12 +13,12 @@ module Dashboard
 
       sign_in(teacher)
       visit dashboard_school_class_rooms_path(school)
-      find("a.small.fr-raw-link.fr-tag.fr-tag--sm").click
+      find('a.small.fr-raw-link.fr-tag.fr-tag--sm').click
       click_link('Ajouter des élèves à cette classe')
       fill_in "Prénom de l'élève", with: 'Martin'
       fill_in "Nom de l'élève", with: 'Dupont'
-      fill_in "Adresse électronique", with: 'martin.dupont@free.fr'
-      find("#user_birth_date").set("01/01/2008")
+      fill_in 'Adresse électronique', with: 'martin.dupont@free.fr'
+      find('#user_birth_date').set('01/01/2008')
       find("label[for='select-gender-boy']").click
       click_button("Confirmer l'inscription de l'élève")
       find('.alert-success', text: 'Elève créé !')

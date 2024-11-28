@@ -5,12 +5,15 @@
 = render 'layouts/breadcrumb',
           links: [ [dashboard_internship_offers_path, 'Mes offres de stage'],
                    ['', 'Déposer une offre de stage']]
-.row
+.row.fr-my-3w 
   .col
-    h1.h2.mb-3 Déposer une offre de stage
+    h1.h2 Déposer une offre de stage
 
 
 = render 'form',
          show_resume: false,
          submit_button: true,
-         model: model, method: method, url: url
+         model: model,
+         method: method,
+         url: url,
+         duplication: @duplication

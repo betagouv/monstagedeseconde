@@ -1,6 +1,6 @@
 
 - if current_user
-  - content_for(:page_title, "#{t(".page_title", name: @internship_application.student.presenter.full_name)} | Monstage")
+  - content_for(:page_title, "#{t(".page_title", name: @internship_application.student.presenter.full_name)} | 1élève1stage")
   - presenter = @internship_application.presenter(current_user)
 
   - if current_user.student?

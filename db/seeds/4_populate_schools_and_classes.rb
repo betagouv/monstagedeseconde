@@ -32,35 +32,6 @@ def populate_schools
   puts 'Done with creating schools(lycées)'
   # ---------------------
   # Collèges
-  # <<<<<<< HEAD
-  #   col_hash = { uai: 4, nom_etablissement: 0, adresse: 5, code_postal: 3, commune: 1, position: 5 }
-  #   error_lines = []
-  #   file_location_production = Rails.root.join('db/data_imports/school_data_ms3e.csv')
-  #   file_location_review = Rails.root.join('db/data_imports/light_files/school_data_ms3e_light.csv')
-  #   file_location = Rails.env.in?(%w[review development]) ? file_location_review : file_location_production
-  #   CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
-  #     next if line_nr.zero?
-
-  #     cells = row.to_s.split(';')
-
-  #     uai = cells[col_hash[:uai]]
-  #     next if uai.nil?
-  #     next if School.find_by(code_uai: uai)
-
-  #     school = School.new(school_params(col_hash:).merge({ school_type: :college }))
-  #     if school.valid?
-  #       school.save
-  #       print '.'
-  #     else
-  #       error_lines << ["ligne: #{line_nr}", school.name, school.errors.full_messages.join(', ')]
-  #       print 'o'
-  #     end
-  #   end
-  #   error_lines.each do |line|
-  #     puts "Error #{line} | "
-  #   end
-  #   puts "#{error_lines.size} errors"
-  # =======
   puts '---------------------'
   puts 'collèges '
   file_location_production = Rails.root.join('db/data_imports/seed-colleges.csv')
@@ -77,11 +48,10 @@ def populate_schools
       department: Department.fetch_by_zipcode(zipcode: row['zipcode']),
       zipcode: row['zipcode'],
       coordinates: geo_point_factory_array(JSON.parse(row['coordinates'])['coordinates'])
-    )
-    print '-'
-  end
-  puts ''
-  # >>>>>>> review
+      )
+      print '-'
+    end
+    puts ''
   puts 'Done with creating schools(collèges)'
 end
 

@@ -7,7 +7,6 @@ module Dashboard
       include TeamAndAreasHelper
 
       test 'first and uniq test before submitting when email was missing' do
-        skip 'this test is relevant and shall be reactivated by november 2024'
         school = create(:school, :with_school_manager)
         employer, internship_offer = create_employer_and_offer_2nde
         student = create(:student, phone: '+2620625852585', school:, email: nil)
