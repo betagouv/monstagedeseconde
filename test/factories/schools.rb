@@ -14,6 +14,7 @@ FactoryBot.define do
     is_public { true }
     contract_code { '99' }
     legal_status { 'Public' }
+    school_type { 'lycee' }
 
     trait :at_paris do
       city { 'Paris' }
