@@ -57,9 +57,12 @@ module Builders
       authorize :create, model
       create_params = preprocess_api_params(params)
       internship_offer = model.new(create_params)
-      internship_offer = Dto::PlanningAdapter.new(instance: internship_offer, params: create_params, current_user: user)
-                                             .manage_planning_associations
-                                             .instance
+      unless from_api?
+        internship_offer = Dto::PlanningAdapter.new(instance: internship_offer, params: create_params,
+                                                    current_user: user)
+                                               .manage_planning_associations
+                                               .instance
+      end
       internship_offer.internship_offer_area_id = user.current_area_id
       internship_offer.aasm_state = 'published' if internship_offer.may_publish?
       internship_offer.save!
@@ -77,11 +80,14 @@ module Builders
     def update(instance:, params:)
       yield callback if block_given?
       authorize :update, instance
-      instance.attributes = preprocess_api_params(params)
+      if from_api?
+        instance.attributes = preprocess_api_params(params)
+      else
+        instance = Dto::PlanningAdapter.new(instance:, params:, current_user: user)
+                                       .manage_planning_associations
+                                       .instance
+      end
       instance = deal_with_max_candidates_change(params: params, instance: instance)
-      instance = Dto::PlanningAdapter.new(instance:, params:, current_user: user)
-                                     .manage_planning_associations
-                                     .instance
       if from_api?
         instance.reset_publish_states
       elsif instance.may_publish?

@@ -32,7 +32,7 @@ module Api
       parisian_school_college.reload # ensure triggered city_tsv had been reloaded
       parisian_school_college_2.reload # ensure triggered city_tsv had been reloaded
 
-      post search_api_schools_path, params: { query: 'Paris', grade: 'seconde' }
+      post search_api_v1_schools_path, params: { query: 'Paris', grade: 'seconde' }
       parisian_schools_key = json_response.keys.first
       first_parisian_school = json_response[parisian_schools_key].first
     end

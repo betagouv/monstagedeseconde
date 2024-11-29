@@ -10,27 +10,23 @@ export default class extends Controller {
   ];
 
   gradeCollegeTargetConnected() {
-    this.onClick(true);
+    this.onClick();
   }
 
   grade2eTargetConnected() {
-    this.onClick(true);
+    this.onClick();
   }
 
-  onClick(atLoadingTime = false) {
+  onClick(event) {
     const gradeCollegeChecked = this.gradeCollegeTarget.checked;
     const grade2eChecked = this.grade2eTarget.checked;
     const noGradesChecked = !grade2eChecked && !gradeCollegeChecked;
 
-    const alertClassList = this.alertContainerTarget.classList;
-    const troisiemeClassList = this.troisiemeContainerTarget.classList;
-    const secondeClassList = this.secondeContainerTarget.classList;
-
-    toggleContainer(troisiemeClassList, gradeCollegeChecked);
-    toggleContainer(secondeClassList, grade2eChecked);
+    toggleContainer(this.troisiemeContainerTarget, gradeCollegeChecked);
+    toggleContainer(this.secondeContainerTarget, grade2eChecked);
     // At least One Choice Between 3e/4e and 2e
-    if (!atLoadingTime) {
-      toggleContainer(alertClassList, noGradesChecked);
+    if (event =! undefined) {
+      toggleContainer(this.alertContainerTarget, noGradesChecked);
     }
   }
 }
