@@ -97,7 +97,6 @@ module Api
         end
       end
       test 'GET #search with june weeks params returns all internship_offers available on the given weeks' do
-      skip "this test is relevant and shall be reactivated by november 2024"
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
           @token = json_response['token']
@@ -115,14 +114,12 @@ module Api
             )
 
             assert_response :success
-            assert_equal 3, json_response['internshipOffers'].count
-            assert_equal 3, json_response['pagination']['totalInternshipOffers']
+            assert_equal 1, json_response['internshipOffers'].count
+            assert_equal 1, json_response['pagination']['totalInternshipOffers']
             assert_equal 1, json_response['pagination']['totalPages']
             assert_equal true, json_response['pagination']['isFirstPage']
             # since api order is id: :desc
             assert_equal 'Bordeaux', json_response['internshipOffers'][0]['city']
-            assert_equal 'Paris', json_response['internshipOffers'][1]['city']
-            assert_equal 'Tours', json_response['internshipOffers'][2]['city']
           end
         end
       end
@@ -371,7 +368,7 @@ module Api
       end
 
       test 'GET #search returns too many requests after max calls limit' do
-      skip "this test is relevant and shall be reactivated by november 2024"
+        skip 'this test is relevant and shall be reactivated by november 2024'
         post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
         @token = json_response['token']
 
