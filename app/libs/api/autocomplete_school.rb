@@ -30,9 +30,9 @@ module Api
 
     attr_reader :term, :grade, :limit, :result, :school_type
 
-    def initialize(term:, grade:, limit:)
+    def initialize(term:, limit:, grade: 'seconde')
       @term = term
-      @grade = grade || 'seconde'
+      @grade = grade
       @school_type = @grade == 'seconde' ? 'lycee' : 'college'
       @limit = limit
       @result = Api::School.autocomplete_by_name_or_city(term: term)
