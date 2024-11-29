@@ -1,4 +1,3 @@
-
 import $ from "jquery";
 import { add, Controller } from "stimulus";
 import { fetch } from "whatwg-fetch";
@@ -36,6 +35,10 @@ export default class extends Controller {
     "legendContainer",
     "submitButton",
     "monthScore",
+    "grade2e",
+    "gradeCollege",
+    "period",
+    "allYearLong",
   ];
   static values = {
     skipValidation: Boolean,
@@ -58,16 +61,7 @@ export default class extends Controller {
     Décembre: 0,
   };
 
-  connect() {
-    // if (this.getForm() === null) {
-    //   return;
-    // }
-    // this.onCoordinatesChangedRef = this.fetchSchoolsNearby.bind(this);
-    // this.onSubmitRef = this.handleSubmit.bind(this);
-    // this.onApiSchoolsNearbySuccess = this.showSchoolDensityPerWeek.bind(this);
-    // this.attachEventListeners();
-    this.fetchSchoolsNearby();
-  }
+  score = 0;
 
   weekCheckboxesTargetConnected() {
     this.weekCheckboxesTargets.forEach((el) => {
@@ -80,22 +74,15 @@ export default class extends Controller {
     this.detachEventListeners();
   }
 
-  // attachEventListeners() {
-  //   attach(EVENT_LIST.COORDINATES_CHANGED, this.onCoordinatesChangedRef);
-  //   $(this.getForm()).on("submit", this.onSubmitRef);
-  // }
-
-  // detachEventListeners() {
-  //   detach(EVENT_LIST.COORDINATES_CHANGED, this.onCoordinatesChangedRef);
-  //   $(this.getForm()).off("submit", this.onSubmitRef);
-  // }
-
   fetchSchoolsNearby() {
     // fetch(endpoints.apiSchoolsNearby(event.detail), { method: "POST" })
-    const body = {longitude: this.longitudeValue, latitude: this.latitudeValue};
-    fetch(endpoints.apiSchoolsNearby(body), { method: "POST" })
-      .then((response) => response.json())
-      .then(this.showSchoolDensityPerWeek);
+    const body = {
+      longitude: this.longitudeValue,
+      latitude: this.latitudeValue,
+    };
+    // fetch(endpoints.apiSchoolsNearby(body), { method: "POST" })
+    //   .then((response) => response.json())
+    //   .then(this.showSchoolDensityPerWeek);
   }
 
   showSchoolDensityPerWeek(schools) {
@@ -131,12 +118,14 @@ export default class extends Controller {
     this.unSelectThemAll();
     $(".custom-control-checkbox-list").addClass("d-none");
     toggleContainer(this.checkboxesContainerTarget, false);
+    this.repaintScores();
   }
 
   showSpecificWeeks(event) {
     this.unChekThemAll();
     $(".custom-control-checkbox-list").removeClass("d-none");
     toggleContainer(this.checkboxesContainerTarget, true);
+    this.repaintScores();
   }
 
   handleSubmit(event) {
@@ -201,40 +190,17 @@ export default class extends Controller {
     this.repaintScores();
   }
 
-  unChekThemAll() {
-    $(this.weekCheckboxesTargets).each((i, el) => {
-      $(el).prop("checked", false);
-    });
-  }
-
-  resetScores() {
-    Object.keys(this.scores).forEach((key) => {
-      this.scores[key] = 0;
-    });
-  }
-
   // on week checked
   handleCheckboxesChanges(event) {
-    (this.hasAtLeastOneCheckbox()) ? this.onNoWeekSelected() : this.onAtLeastOneWeekSelected() ;
+    this.hasAtLeastOneCheckbox()
+      ? this.onNoWeekSelected()
+      : this.onAtLeastOneWeekSelected();
   }
 
   handleOneCheckboxChange(event) {
     this.handleCheckboxesChanges(event);
     this.setMonthScore(event);
     this.repaintScores();
-  }
-
-  repaintScores() {
-    this.monthList().forEach((monthName) => {
-      this.monthScoreTargets.forEach((sideElement) => {
-        if (sideElement.classList.contains(monthName)) {
-          const score = this.scores[monthName];
-          this.switchClasses(sideElement, score);
-          this.switchText(sideElement, score, monthName);
-        }
-      });
-    });
-    this.broadcastWeeksCount();
   }
 
   setMonthScore(event) {
@@ -246,17 +212,84 @@ export default class extends Controller {
     const classList = htmlBox.parentNode.classList;
     this.monthList().forEach((monthName) => {
       if (classList.contains(monthName)) {
-        const addedValue = htmlBox.checked ? 1 : -1;
-        this.scores[monthName] += addedValue;
+        this.scores[monthName] += htmlBox.checked ? 1 : -1; // action is check or uncheck;
       }
     });
   }
 
+  repaintScores() {
+    this.computeMonthScore();
+    this.broadcastWeeksCount();
+  }
+
+  computeMonthScore() {
+    this.monthList().forEach((monthName) => {
+      this.monthScoreTargets.forEach((sideElement) => {
+        if (sideElement.classList.contains(monthName)) {
+          const score = this.scores[monthName];
+          this.switchHtmlClasses(sideElement, score);
+          this.switchText(sideElement, score, monthName);
+        }
+      });
+    });
+  }
+
+  // summary_card is a subscriptor of this event
+  broadcastWeeksCount() {
+    const semaines = this.totalScore();
+    let weeksCount = semaines + " semaine";
+    if (semaines > 1) {
+      weeksCount += "s";
+    }
+    broadcast(weeksCountChanged({ weeksCount }));
+  }
+
+  totalScore() {
+    return this.computeTroisiemeScore() + this.computeSecondeScore();
+  }
+
+  computeTroisiemeScore() {
+    if (!this.gradeCollegeTarget.checked) {
+      return 0;
+    }
+    let troisiemeScore = 0;
+    if (this.allYearLongTarget.checked) {
+      troisiemeScore = document.querySelectorAll(".custom-control-checkbox-list input").length;
+    } else {
+      troisiemeScore = Object.values(this.scores).reduce((a, b) => a + b);
+    }
+    return troisiemeScore;
+  }
+
+  computeSecondeScore() {
+    const grade2e = this.grade2eTarget.checked;
+    if (!grade2e) { return 0; }
+
+    let checkedPeriod = 0;
+    let secondeScore = 1;
+    this.periodTargets.forEach((el, i) => {
+      if (el.checked) {
+        checkedPeriod = parseInt(el.value, 10);
+      }
+    });
+    if (checkedPeriod == 2) { secondeScore = 2; }
+    return secondeScore;
+  }
+
+  onPeriodClick(_e) {
+    this.repaintScores();
+  }
+  onGrade2ndeClick(_e) {
+    this.repaintScores();
+  }
+  onGradeTroisiemeClick(_e) {
+    this.repaintScores();
+  }
   monthList() {
     return Object.keys(this.scores);
   }
 
-  switchClasses(element, score) {
+  switchHtmlClasses(element, score) {
     const classList = element.classList;
     if (score == 0) {
       classList.add("fr-hint-text");
@@ -268,19 +301,19 @@ export default class extends Controller {
   }
 
   switchText(element, score, monthName) {
-    const text = (score == 0) ? monthName : monthName + " (" + score + ")";
+    const text = score == 0 ? monthName : monthName + " (" + score + ")";
     element.innerText = text;
   }
 
-  totalScore() {
-    return Object.values(this.scores).reduce((a, b) => a + b);
+  unChekThemAll() {
+    $(this.weekCheckboxesTargets).each((i, el) => {
+      $(el).prop("checked", false);
+    });
   }
 
-  // summary_card is a subscriptor of this event
-  broadcastWeeksCount() {
-    const semaines = this.totalScore();
-    let weeksCount = semaines + " semaine";
-    if (semaines > 1) { weeksCount += "s"; }
-    broadcast(weeksCountChanged({ weeksCount }));
+  resetScores() {
+    this.monthList().forEach((key) => {
+      this.scores[key] = 0;
+    });
   }
 }

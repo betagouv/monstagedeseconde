@@ -20,7 +20,9 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
       = form.radio_button :period,
                           2,
                           id: 'period_full_time',
-                          checked: both_weeks
+                          checked: both_weeks,
+                          data: {:'select-weeks-target' => :period,
+                                 action: 'select-weeks#onPeriodClick'}
 
       = form.label :period,
                     labels[:full_time],
@@ -29,7 +31,9 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
       = form.radio_button :period,
                           11,
                           id: 'period_week_1',
-                          checked: week_1
+                          checked: week_1,
+                          data: {:'select-weeks-target' => :period,
+                                 action: 'select-weeks#onPeriodClick'}
 
       = form.label :period,
                     labels[:week_1],
@@ -39,7 +43,9 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
       = form.radio_button :period,
                           12,
                           id: 'period_week_2',
-                          checked: week_2
+                          checked: week_2,
+                          data: {:'select-weeks-target' => :period,
+                                 action: 'select-weeks#onPeriodClick'}
 
       = form.label :period,
                     labels[:week_2],

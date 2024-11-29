@@ -11,23 +11,22 @@ div [data-internship-offer-infos-target='weeksContainer'
       - allow_select_all = !form.object.is_fully_editable?
       .fr-checkbox-group.fr-checkbox-group--sm.mb-1
         = check_box_tag 'all_year_long',
-                        false,
+                        true,
                         preselect_all,
-                        { class: '',
-                          disabled: allow_select_all,
-                          data: { "internship-offer-infos-target": "allYearLong",
-                                  action: "change->select-weeks#showAllYearLong"}}
+                        disabled: allow_select_all,
+                        data: { :"select-weeks-target" => "allYearLong",
+                                  action: "change->select-weeks#showAllYearLong"}
+
         = label_tag 'all_year_long', class: 'custom-control-label fr-label' do
           | Toute l'année scolaire
-
           = " #{SchoolYear::Current.new.beginning_of_period.year}-#{SchoolYear::Current.new.end_of_period.year}"
 
         = check_box_tag 'specific_weeks',
                         false,
                         !preselect_all,
-                        { disabled: allow_select_all,
-                          data: { "internship-offer-infos-target": "specificWeeks",
-                                  action: "change->select-weeks#showSpecificWeeks"}}
+                        disabled: allow_select_all,
+                        data: { "internship-offer-infos-target": "specificWeeks",
+                                  action: "change->select-weeks#showSpecificWeeks"}
         = label_tag 'specific_weeks', class: 'fr-label' do
           | Semaines spécifiques
 
@@ -36,7 +35,7 @@ div [data-internship-offer-infos-target='weeksContainer'
         div class="col-lg-#{size == 'half-size' ? "6" : "12"}"
           .custom-control-checkbox-list.p-4
             - current_weeks.map do |week|
-              .fr-checkbox-group.fr-checkbox-group--sm.position-relative.pr-3
+              .fr-checkbox-group.fr-checkbox-group--sm.position-relative.pr-3.troisieme
                 - # prevent removing weeks with application by showing a disable checkbox (not submitted to server)
                 - # keep reference of checkbox id for easier labelling
                 - checkbox_id = "#{form.object_name}_week_ids_#{week.id}_checkbox"
@@ -64,16 +63,16 @@ div [data-internship-offer-infos-target='weeksContainer'
                   | ?
       div data-select-weeks-target='submitButton'
 
-      - if render_employer_components
-        .custom-control-checkbox-legend data-select-weeks-target="legendContainer" data-test='select-week-legend'
-          .row.align-items-center
-            .col-6
-              p.mb-0.font-weight-bold Les établissements autour de vous ont tendance à choisir ces dates
-            .col-6
-              .row
-                .col-4 Faible
-                .col-4.badge-legend.rounded
-                .col-4 Forte
+      / - if render_employer_components
+      /   .custom-control-checkbox-legend data-select-weeks-target="legendContainer" data-test='select-week-legend'
+      /     .row.align-items-center
+      /       .col-6
+      /         p.mb-0.font-weight-bold Les établissements autour de vous ont tendance à choisir ces dates
+      /       .col-6
+      /         .row
+      /           .col-4 Faible
+      /           .col-4.badge-legend.rounded
+      /           .col-4 Forte
 
     .form-text.fr-mt-1w.blue-france.d-none data-select-weeks-target="hint"
       |Veuillez saisir au moins une semaine de stage
