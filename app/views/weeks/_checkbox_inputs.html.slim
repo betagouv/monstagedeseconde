@@ -4,8 +4,6 @@
 - error = form.object.errors[:all_year_long].any?
 - latitude = form.object.coordinates&.latitude
 - longitude = form.object.coordinates&.longitude
-- current_weeks = Week.troisieme_selectable_weeks if current_weeks.blank?
-- current_weeks = current_weeks.reject { |week| week.id.in?(SchoolTrack::Seconde.both_weeks.map(&:id))}
 div [data-controller="select-weeks"
      data-planning-target='weeksContainer'
      data-select-weeks-skip-validation-value="false"
@@ -53,7 +51,8 @@ div [data-controller="select-weeks"
                 | Tout décocher
       .row.fr-mb-1w.weeks-list
         .col-12
-          
+          - current_weeks = Week.troisieme_selectable_weeks if current_weeks.blank?
+          - current_weeks = current_weeks.reject { |week| week.id.in?(SchoolTrack::Seconde.both_weeks.map(&:id))}
           .d-flex
             .small-interline.fr-text--sm.border-right.month-lane
               - Presenters::WeekList.new(weeks: current_weeks).month_split.each do |month_num, weeks|

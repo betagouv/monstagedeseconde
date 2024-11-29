@@ -2,7 +2,7 @@
 import $ from "jquery";
 import { add, Controller } from "stimulus";
 import { fetch } from "whatwg-fetch";
-import { showElement, hideElement, toggleContainer } from "../utils/dom";
+import { showElement, hideElement } from "../utils/dom";
 import {
   attach,
   detach,
@@ -128,15 +128,37 @@ export default class extends Controller {
 
   // toggle all weeks options
   showAllYearLong(event) {
+    if ($("#planning_all_year_long_true").is(":checked")) {
+      $(".custom-control-checkbox-list").addClass("d-none");
+      $("#specific_weeks").prop("checked", false);
+    } else {
+      $(".custom-control-checkbox-list").removeClass("d-none");
+    }
+
     this.unSelectThemAll();
-    $(".custom-control-checkbox-list").addClass("d-none");
-    toggleContainer(this.checkboxesContainerTarget, false);
+    const Weekscontainer = $(this.checkboxesContainerTarget);
+    event.target.checked
+      ? hideElement(Weekscontainer)
+      : showElement(Weekscontainer);
   }
 
   showSpecificWeeks(event) {
-    this.unChekThemAll();
-    $(".custom-control-checkbox-list").removeClass("d-none");
-    toggleContainer(this.checkboxesContainerTarget, true);
+    // if ($("#planning_all_year_long_false").is(":checked")) {
+    //   $(".custom-control-checkbox-list").removeClass("d-none");
+    //   $("#all_year_long").prop("checked", false);
+    // } else {
+    //   $(".custom-control-checkbox-list").addClass("d-none");
+    // }
+
+    $(this.weekCheckboxesTargets).each((i, el) => {
+      $(el).prop("checked", false);
+    });
+
+    if (event.target.checked) {
+      showElement($(this.checkboxesContainerTarget));
+    } else {
+      hideElement($(this.checkboxesContainerTarget));
+    }
   }
 
   handleSubmit(event) {
