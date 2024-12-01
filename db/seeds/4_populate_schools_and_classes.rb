@@ -39,6 +39,7 @@ def populate_schools
   file_location = Rails.env.in?(%w[review development]) ? file_location_review : file_location_production
   CSV.foreach(file_location, headers: { col_sep: ',' }).each.with_index do |row, i|
     next if i.zero?
+
     name = row['ETABLISSEMENT'].gsub('Collège ', '').gsub('College ', '')
     school = School.find_or_create_by!(
       code_uai: row['Code UAI'],
