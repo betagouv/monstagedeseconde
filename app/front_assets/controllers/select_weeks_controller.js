@@ -149,9 +149,8 @@ export default class extends Controller {
   }
 
   getForm() {
-    if (!this.getFirstInput() || !this.getFirstInput().form) {
-      return null;
-    }
+    if (!this.getFirstInput() || !this.getFirstInput().form) return null;
+
     return this.getFirstInput().form;
   }
 
@@ -204,9 +203,7 @@ export default class extends Controller {
   }
 
   setMonthScore(event) {
-    if (event == undefined) {
-      return;
-    }
+    if (event == undefined) return;
 
     const htmlBox = event.target;
     const classList = htmlBox.parentNode.classList;
@@ -219,7 +216,7 @@ export default class extends Controller {
 
   repaintScores() {
     this.computeMonthScore();
-    this.broadcastWeeksCount();
+    this.broadcastWeeksCount(this.totalScore());
   }
 
   computeMonthScore() {
@@ -235,12 +232,8 @@ export default class extends Controller {
   }
 
   // summary_card is a subscriptor of this event
-  broadcastWeeksCount() {
-    const semaines = this.totalScore();
-    let weeksCount = semaines + " semaine";
-    if (semaines > 1) {
-      weeksCount += "s";
-    }
+  broadcastWeeksCount(totalScore) {
+    const weeksCount = this.setWeeksMesssage(this.totalScore());
     broadcast(weeksCountChanged({ weeksCount }));
   }
 
@@ -249,9 +242,8 @@ export default class extends Controller {
   }
 
   computeTroisiemeScore() {
-    if (!this.gradeCollegeTarget.checked) {
-      return 0;
-    }
+    if (!this.gradeCollegeTarget.checked) return 0;
+
     let troisiemeScore = 0;
     if (this.allYearLongTarget.checked) {
       troisiemeScore = document.querySelectorAll(".custom-control-checkbox-list input").length;
@@ -262,32 +254,17 @@ export default class extends Controller {
   }
 
   computeSecondeScore() {
-    const grade2e = this.grade2eTarget.checked;
-    if (!grade2e) { return 0; }
+    if (!this.grade2eTarget.checked)  return 0;
 
-    let checkedPeriod = 0;
-    let secondeScore = 1;
-    this.periodTargets.forEach((el, i) => {
-      if (el.checked) {
-        checkedPeriod = parseInt(el.value, 10);
-      }
-    });
-    if (checkedPeriod == 2) { secondeScore = 2; }
-    return secondeScore;
+    const checkedPeriodElement = this.periodTargets.find((el) => el.checked);
+    const checkedPeriod = (checkedPeriodElement) ? parseInt(checkedPeriodElement.value, 10) : 0;
+    return (checkedPeriod == 2) ? 2 : 1;
   }
 
-  onPeriodClick(_e) {
-    this.repaintScores();
-  }
-  onGrade2ndeClick(_e) {
-    this.repaintScores();
-  }
-  onGradeTroisiemeClick(_e) {
-    this.repaintScores();
-  }
-  monthList() {
-    return Object.keys(this.scores);
-  }
+  onPeriodClick(_e) { this.repaintScores(); }
+  onGrade2ndeClick(_e) { this.repaintScores(); }
+  onGradeTroisiemeClick(_e) { this.repaintScores(); }
+  monthList() { return Object.keys(this.scores); }
 
   switchHtmlClasses(element, score) {
     const classList = element.classList;
@@ -315,5 +292,12 @@ export default class extends Controller {
     this.monthList().forEach((key) => {
       this.scores[key] = 0;
     });
+  }
+
+  setWeeksMesssage(totalScore) {
+    const semaines = this.totalScore();
+    let weeksCount = totalScore + " semaine";
+    if (semaines > 1) { weeksCount += "s"; }
+    return weeksCount;
   }
 }
