@@ -5,6 +5,7 @@ import Downshift from "downshift";
 import { fetch } from "whatwg-fetch";
 import { endpoints } from "../../utils/api";
 import { employerNameChanged , broadcast} from "../../utils/events";
+import {toggleContainer} from "../../utils/dom";
 
 // see: https://geo.api.gouv.fr/adresse
 export default function SirenInput({
@@ -117,10 +118,9 @@ export default function SirenInput({
     document.getElementById("entreprise_siret").value = selection.siret;
     document.getElementById("entreprise_presentation_siret").value = siretPresentation(selection.siret);
     const ministry = document.getElementById("ministry-choice");
-    const ministryClassList = ministry.classList;
     // TODO pub/sub with broadcasting would be better
     // because both jsx and stimulus send events to the containers (show/hide)
-    ministryClassList.add("d-none"); // default
+    toggleContainer(ministry, false);// default
     // is_public is known when user seached by name and unknown when user searched by siret
     if( is_public != undefined) {
       document
@@ -128,22 +128,16 @@ export default function SirenInput({
         .classList.add("d-none");
       const hiddenField = document.getElementById("hidden-public-private-field").children[0];
       hiddenField.value = is_public;
-      hiddenField.classList.remove("d-none");
-      if (is_public) {
-        ministry.removeAttribute("style");
-        ministryClassList.remove('d-none')}
+      toggleContainer(hiddenField, true);
+      if (is_public) ministry.removeAttribute("style");
+      
+      toggleContainer(ministry, is_public);
     }
   };
 
   const show_form = (show) => {
     const blocs = document.querySelectorAll(".bloc-tooggle");
-    blocs.forEach((bloc) => {
-      if (show) {
-        bloc.classList.remove("d-none");
-      } else {
-        bloc.classList.add("d-none");
-      }
-    });
+    blocs.forEach(bloc => toggleContainer(bloc, show));
   };
 
   useEffect(() => {
