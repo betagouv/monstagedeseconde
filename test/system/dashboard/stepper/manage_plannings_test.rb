@@ -70,14 +70,14 @@ class ManagePlanningsTest < ApplicationSystemTestCase
         fill_in_planning_form(with_seconde: false, with_troisieme: false)
         find("button[type='submit']").click
       end
-      within('.fr-alert.fr-alert--error') do
+      within('.fr-alert.fr-alert--error.server-error') do
         find 'strong', text: /Niveaux ciblés/
       end
     end
   end
 
   test 'another employer cannot see the planning page' do
-    skip "this test is relevant and shall be reactivated by november 2024"
+    skip 'this test is relevant and shall be reactivated by november 2024'
     travel_to Date.new(2025, 1, 1) do
       entreprise = create(:entreprise)
       employer = create(:employer)
