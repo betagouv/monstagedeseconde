@@ -77,7 +77,6 @@ class ManagePlanningsTest < ApplicationSystemTestCase
   end
 
   test 'another employer cannot see the planning page' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
     travel_to Date.new(2025, 1, 1) do
       entreprise = create(:entreprise)
       employer = create(:employer)
