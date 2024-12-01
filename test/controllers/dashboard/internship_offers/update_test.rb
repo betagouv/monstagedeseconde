@@ -83,7 +83,6 @@ module Dashboard::InternshipOffers
     test 'PATCH #update as employer owning internship_offer ' \
          'updates internship_offer' do
       travel_to(Date.new(2024, 9, 1)) do
-        weeks = Week.all.first(40).last(3)
         internship_offer = create(:weekly_internship_offer_3eme, :public, max_candidates: 3)
         create(:weekly_internship_application,
                :approved,

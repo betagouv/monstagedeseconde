@@ -80,6 +80,7 @@ module Builders
     def update(instance:, params:)
       yield callback if block_given?
       authorize :update, instance
+      instance.assign_attributes(params)
       if from_api?
         instance.attributes = preprocess_api_params(params)
       else
@@ -87,7 +88,8 @@ module Builders
                                        .manage_planning_associations
                                        .instance
       end
-      instance = deal_with_max_candidates_change(params: params, instance: instance)
+      instance = deal_with_max_candidates_change(params:, instance:)
+
       if from_api?
         instance.reset_publish_states
       elsif instance.may_publish?
