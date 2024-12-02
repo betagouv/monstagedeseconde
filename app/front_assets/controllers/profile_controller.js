@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { Controller } from 'stimulus';
 import ActionCable from 'actioncable';
-import { toggleElement, showElement, hideElement } from '../utils/dom';
+import { toggleContainer, showElement, hideElement } from '../utils/dom';
 
 export default class extends Controller {
   static targets = [
@@ -39,7 +39,7 @@ export default class extends Controller {
     );
     $(this.emailExplanationTarget).text(
       event.target.value == "school_manager" ?
-      'Merci de saisir une adresse au format : ce.UAI@ac-academie.fr. Cette adresse sera utilisée pour communiquer avec vous. ' : 
+      'Merci de saisir une adresse au format : ce.UAI@ac-academie.fr. Cette adresse sera utilisée pour communiquer avec vous. ' :
       'Merci de saisir une adresse au format : xxx@ac-academie.fr. Cette adresse sera utilisée pour communiquer avec vous. '
     )
   }
@@ -74,21 +74,25 @@ export default class extends Controller {
 
         switch (data.status) {
           case 'valid':
-            $hint.attr('class', 'valid-feedback');
-            $input.attr('class', 'form-control is-valid');
-            emailHintElement.innerText = 'Votre email semble correct!';
+            this.emailInputTarget.parentNode.classList.add('fr-input-group--valid');
+            this.emailInputTarget.parentNode.classList.remove('fr-input-group--error');
+            this.emailHintTarget.classList.add('fr-valid-text');
+            this.emailHintTarget.classList.remove('fr-error-text');
+            this.emailHintTarget.innerText = 'Votre email semble correct!';
+            toggleContainer(this.emailHintTarget, true);
             break;
           case 'invalid':
-            $hint.attr('class', 'invalid-feedback');
-            $input.attr('class', 'form-control is-invalid');
-
-            emailHintElement.innerText =
-              'Cette adresse éléctronique ne nous semble pas valide, veuillez vérifier';
+            this.emailInputTarget.parentNode.classList.remove('fr-input-group--valid');
+            this.emailInputTarget.parentNode.classList.add('fr-input-group--error');
+            this.emailHintTarget.classList.remove('fr-valid-text');
+            this.emailHintTarget.classList.add('fr-error-text');
+            toggleContainer(this.emailHintTarget, true);
             break;
           case 'hint':
-            $hint.attr('class', 'invalid-feedback');
-            $input.attr('class', 'form-control is-invalid');
-            emailHintElement.innerText = `Peut être avez-vous fait une erreur de frappe ? ${data.replacement}`;
+            this.emailInputTarget.parentNode.classList.remove('fr-input-group--valid', 'fr-input-group--error');
+            this.emailHintTarget.innerText = `Peut être avez-vous fait une erreur de frappe ? ${data.replacement} ?`;
+            this.emailHintTarget.classList.add('fr-error-text');
+            toggleContainer(this.emailHintTarget, true);
             break;
           default:
             hideElement($hint);
@@ -179,8 +183,7 @@ export default class extends Controller {
   }
 
   hide(fieldToHide) {
-    $(fieldToHide).hide();
-    $(fieldToHide).addClass('d-none');
+    toggleContainer(fieldToHide, false);
   }
 
   show(fieldToDisplay) {
