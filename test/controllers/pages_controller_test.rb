@@ -13,7 +13,7 @@ class PagesTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET home after too many requests' do
-    skip 'This test is flaky'
+    skip 'works locally but fails on CI' if ENV['CI'] == 'true'
     ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 5)
     6.times do
       get root_path
