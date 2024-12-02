@@ -7,7 +7,6 @@ module Dashboard
       include TeamAndAreasHelper
 
       test 'student can browse his internship_applications' do
-        skip
         school = create(:school, :with_school_manager)
         student = create(:student, :when_applying, school:)
         internship_applications = [
@@ -24,6 +23,8 @@ module Dashboard
         internship_applications.each do |elem|
           _aasm_state, internship_application = elem.first
           badge = internship_application.presenter(student).human_state
+          find('.fr-tabs__tab', text: badge[:tab])
+          click_on badge[:tab]
           find('.internship-application-status .h5.internship-offer-title',
                text: internship_application.internship_offer.title)
           find("a#show_link_#{internship_application.id}", text: badge[:actions].first[:label]).click
@@ -61,7 +62,7 @@ module Dashboard
       end
 
       test 'student can submit, and cancel(by_student) internship_applications' do
-        skip 'This is ok locally but fails on CI due to slowlyness' if ENV['CI'] == 'true'
+        # skip 'This is ok locally but fails on CI due to slowlyness' if ENV['CI'] == 'true'
         travel_to Date.new(2024, 12, 1) do
           school = create(:school)
           student = create(:student,
@@ -98,7 +99,6 @@ module Dashboard
       end
 
       test 'submitted internship_application can be canceled by student' do
-        skip 'this test is relevant and shall be reactivated by november 2024'
         school = create(:school)
         student = create(:student,
                          school:,
@@ -233,8 +233,7 @@ module Dashboard
       end
 
       test 'reasons for rejection are explicit for students when employer rejects internship_application' do
-        skip "this test is relevant and shall be reactivated by november 2024"
-        skip 'This is ok locally but fails on CI due to slowlyness' if ENV['CI'] == 'true'
+        # skip 'This is ok locally but fails on CI due to slowlyness' if ENV['CI'] == 'true'
         travel_to Date.new(2024, 10, 1) do
           employer = create(:employer)
           school = create(:school)
