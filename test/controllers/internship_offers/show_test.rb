@@ -52,7 +52,6 @@ module InternshipOffers
     end
 
     test 'GET #show with applications from other students' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
       travel_to(Date.new(2024, 1, 1)) do
         offer = create(
           :weekly_internship_offer_3eme,
@@ -102,7 +101,6 @@ module InternshipOffers
     end
 
     test 'GET #show with period 2' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
       travel_to(Date.new(2024, 1, 1)) do
         offer = create(
           :weekly_internship_offer_2nde,
@@ -155,7 +153,6 @@ module InternshipOffers
     end
 
     test 'GET #show as Student shows next/previous navigation in list' do
-      skip 'what should be done with this test? are next/previous relevant?'
       travel_to(Date.new(2024, 3, 1)) do
         # previous_out = create(:weekly_internship_offer_2nde, title: 'previous_out')
         previous_in_page = create(:weekly_internship_offer_2nde, title: 'previous')
@@ -196,7 +193,6 @@ module InternshipOffers
     end
 
     test 'GET #show as Student shows previous and not next when no not' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
       travel_to(Date.new(2024, 3, 1)) do
         previous_out = create(:weekly_internship_offer_2nde, title: 'previous_out')
         previous_in_page = create(:weekly_internship_offer_2nde, title: 'previous')
@@ -217,7 +213,6 @@ module InternshipOffers
     end
 
     test 'GET #show as Student with forwards latitude, longitude & radius in params to next/prev ' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
       travel_to(Date.new(2024, 3, 1)) do
         previous_in_page = create(:weekly_internship_offer_2nde, title: 'previous')
         current = create(:weekly_internship_offer_2nde, title: 'current')
