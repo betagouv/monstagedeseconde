@@ -10,6 +10,7 @@ export default class extends Controller {
 
   static values = {
     minimumLength: Number,
+    maximumLength: Number,
     noEventCheck: Boolean
   }
 
@@ -26,6 +27,9 @@ export default class extends Controller {
     let allMandatoryFieldsAreFilled = true;
     this.mandatoryFieldTargets.forEach((field) => {
       if (field.value.length <= this.minimumLengthValue) {
+        allMandatoryFieldsAreFilled = false;
+      }
+      if(field.value.length > this.maximumLengthValue) {
         allMandatoryFieldsAreFilled = false;
       }
     });

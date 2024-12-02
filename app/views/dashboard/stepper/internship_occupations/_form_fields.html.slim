@@ -6,6 +6,7 @@
       = form.hidden_field :id, value: resource.id
     .row [data-controller='mandatory-fields-with-coordinates fill-card'
           data-mandatory-fields-with-coordinates-minimum-length-value="6"
+          data-mandatory-fields-with-coordinates-maximum-length-value="#{InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT}"
           data-mandatory-fields-with-coordinates-no-event-check-value="#{resource.id.present?}"]
       .col-md-6
         .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
