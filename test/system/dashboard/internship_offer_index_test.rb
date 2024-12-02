@@ -70,7 +70,6 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'unpublish navigation and republish after' do
-    skip 'not working test is relevant and shall pass by november 2024'
     travel_to Date.new(2021, 10, 1) do
       employer = create(:employer)
       internship_offer = create(:weekly_internship_offer_2nde,
@@ -84,7 +83,10 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
         visit dashboard_internship_offers_path
         within("#toggle_status_#{dom_id(internship_offer)}") do
           find('.label', text: 'Publié')
-          find("a[rel='nofollow'][data-method='patch']").click # this unpublishes the internship_offer
+          # ----------------------------
+          # unpublish
+          # ----------------------------
+          find("a[rel='nofollow'][data-method='patch']").click
         end
 
         find('h2.h4', text: 'Les offres')
@@ -101,7 +103,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
         # republish
         # ----------------------------
         within("#toggle_status_#{dom_id(internship_offer)}") do
-          find("a[rel='nofollow'][data-method='patch']").click # this republishes the internship_offer
+          find("a[rel='nofollow'][data-method='patch']").click
         end
         find('h2.h4', text: 'Les offres')
         sleep 0.05

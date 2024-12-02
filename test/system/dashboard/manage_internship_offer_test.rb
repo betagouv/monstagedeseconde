@@ -14,7 +14,6 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   # end
 
   test 'Employer can edit internship offer' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
     travel_to(Date.new(2024, 3, 1)) do
       employer = create(:employer)
       internship_offer = create(:weekly_internship_offer_2nde, employer:)
@@ -31,7 +30,6 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   end
 
   test 'Employer can edit an unpublished internship offer and have it published' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
     travel_to(Date.new(2024, 3, 1)) do
       employer = create(:employer)
       internship_offer = create(:weekly_internship_offer_2nde, employer:)
@@ -65,7 +63,6 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   end
 
   test 'Employer can change max candidates parameter back and forth' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
     travel_to(Date.new(2024, 1, 10)) do
       employer = create(:employer)
       internship_offer = create(:weekly_internship_offer_3eme,
