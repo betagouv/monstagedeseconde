@@ -216,7 +216,6 @@ module InternshipApplications
     end
 
     test 'POST #create internship application as student to offer posted by statistician' do
-      # skip 'this test is relevant and shall be reactivated by november 2024'
       internship_offer = create(:weekly_internship_offer_3eme)
       internship_offer.update(employer_id: create(:statistician).id)
       school = create(:school)
