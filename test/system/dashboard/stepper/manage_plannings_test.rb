@@ -77,7 +77,6 @@ class ManagePlanningsTest < ApplicationSystemTestCase
   end
 
   test 'another employer cannot see the planning page' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
     travel_to Date.new(2025, 1, 1) do
       entreprise = create(:entreprise)
       employer = create(:employer)
@@ -93,7 +92,6 @@ class ManagePlanningsTest < ApplicationSystemTestCase
   end
 
   test 'planning shows the right amount of schools nearby the entreprise' do
-    # internship in paris, schools in bordeaux and paris, the latter with one week only.
     travel_to Date.new(2019, 9, 1) do
       first_3_weeks = Week.selectable_from_now_until_end_of_school_year.first(3)
       school_bordeaux = create(:school, city: 'Bordeaux', zipcode: '33000',
