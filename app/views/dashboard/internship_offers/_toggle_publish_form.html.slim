@@ -9,7 +9,7 @@ div id="toggle_status_#{dom_id(internship_offer)}" name="toggle_status_#{dom_id(
     = form_with(model: internship_offer,
                 url: republish_dashboard_internship_offer_path(internship_offer.to_param),
                 method: :patch,
-                data: {turbo: false, :'toggle-activate-target' => 'checkToggle'}) do |f|
+                data: {turbo: true, :'toggle-activate-target' => 'checkToggle'}) do |f|
       = f.hidden_field :published_at, value: toggled_published_at
       div [class="toggle-block text-left"
            id="form_toggle_status_#{dom_id(internship_offer)}"

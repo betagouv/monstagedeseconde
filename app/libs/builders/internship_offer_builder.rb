@@ -92,7 +92,7 @@ module Builders
 
       if from_api?
         instance.reset_publish_states
-      elsif instance.may_publish?
+      elsif instance.may_publish? && params[:aasm_state] != 'unpublished'
         instance.publish!
       end
 
