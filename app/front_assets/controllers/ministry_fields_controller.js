@@ -28,9 +28,8 @@ export default class extends Controller {
   toggleGroupNames(isPublic) {
     this.groupNamePublicTarget.classList.remove("d-none");
     hide($(this.groupNamePublicTarget));
-      if (isPublic) {
-      this.isElementLoaded(
-        'div[data-ministry-fields-target="groupNamePublic"]'
+    if (isPublic) {
+      this.isElementLoaded('div[data-ministry-fields-target="groupNamePublic"]'
       ).then((element) => {
         showSlow($(this.groupNamePublicTarget));
       });
@@ -38,6 +37,7 @@ export default class extends Controller {
   }
 
   groupNamePublicTargetConnected(element) {
-    this.toggleGroupNames( !!this.isEntreprisePublicValue);
+    console.log("public: " + this.isEntreprisePublicValue);
+    this.toggleGroupNames(!!this.isEntreprisePublicValue);
   }
 }

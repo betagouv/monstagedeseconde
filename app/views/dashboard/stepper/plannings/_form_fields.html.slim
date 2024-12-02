@@ -1,5 +1,5 @@
 - if can?(:supply_offers, current_user)
-  div [data-controller='mandatory-fields grade' data-mandatory-fields-minimum-length-value="8"]
+  div [data-controller='mandatory-fields grade select-weeks' data-mandatory-fields-minimum-length-value="8"]
     = form.hidden_field :type, value: resource.type, data: { :"planning-candidates-target" => "type" } unless resource.is_a?(Planning)
     .row
       .col-md-6.order-md-2.order-1.d-none.d-md-block
@@ -15,7 +15,9 @@
               title: 'Votre offre sera proposée aux élèves des niveaux suivants :',
               label: 'Collégiens (4ème et 3ème)',
               extra_header_classes: 'fr-h6',
-              options: { data: {:'grade-target' => 'gradeCollege', action: 'grade#onClick' } }
+              options: { data: {:'grade-target' => 'gradeCollege',
+                                action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick' ,
+                                :'select-weeks-target' => 'gradeCollege'  } }
 
         .row data-grade-target="troisiemeContainer"
           .col-12
@@ -35,7 +37,9 @@
               field: :grade_2e,
               title: '',
               label: 'Lycéens de 2de générale et technologique',
-              options: { data: {:'grade-target' => 'grade2e', action: 'grade#onClick' } }
+              options: { data: {:'grade-target' => 'grade2e',
+                                action: 'grade#onClick click->select-weeks#onGrade2ndeClick' ,
+                                :'select-weeks-target' => 'grade2e' } }
         .row data-grade-target="secondeContainer"
           .col-12
             = render '/dashboard/stepper/plannings/seconde_period_radio_buttons_fields',
