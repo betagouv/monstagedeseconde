@@ -528,7 +528,6 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'search with school years works' do
-    # skip 'this test is relevant and shall be reactivated by november 2024'
     employer = create(:employer)
     sign_in(employer)
     offer_1 = nil

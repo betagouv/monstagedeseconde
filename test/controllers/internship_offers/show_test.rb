@@ -79,7 +79,6 @@ module InternshipOffers
 
     test 'GET #show with applications from other students reduces the number ' \
          'of available weeks with weeklist splitted version' do
-      # skip 'this test is relevant and shall be reactivated by november 2024'
       travel_to(Date.new(2024, 1, 1)) do
         offer = create(
           :weekly_internship_offer_3eme,
