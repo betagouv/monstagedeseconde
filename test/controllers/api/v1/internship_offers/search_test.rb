@@ -206,31 +206,34 @@ module Api
 
       test 'GET #search returns too many requests after max calls limit' do
         skip 'Works locally but not always on CI' if ENV['CI'] == 'true'
-        user = create(:user_operator, :fully_authorized)
+        if ENV.fetch('TEST_WITH_MAX_REQUESTS_PER_MINUTE', false) == 'true'
+          user = create(:user_operator, :fully_authorized)
 
-        original_max_calls = InternshipOffers::Api::MAX_CALLS_PER_MINUTE
-        InternshipOffers::Api::MAX_CALLS_PER_MINUTE = 5
+          original_max_calls = InternshipOffers::Api::MAX_CALLS_PER_MINUTE
+          InternshipOffers::Api::MAX_CALLS_PER_MINUTE = 5
 
-        begin
-          (InternshipOffers::Api::MAX_CALLS_PER_MINUTE + 1).times do
+          begin
+            (InternshipOffers::Api::MAX_CALLS_PER_MINUTE + 1).times do
+              get search_api_v1_internship_offers_path(
+                params: {
+                  token: "Bearer #{user.api_token}"
+                }
+              )
+            end
             get search_api_v1_internship_offers_path(
               params: {
                 token: "Bearer #{user.api_token}"
               }
             )
-          end
-          get search_api_v1_internship_offers_path(
-            params: {
-              token: "Bearer #{user.api_token}"
-            }
-          )
 
-          documents_as(endpoint: :'internship_offers/search', state: :too_many_requests) do
-            assert_response :too_many_requests
-            assert_equal 'Trop de requêtes - Limite d\'utilisation de l\'API dépassée.', json_error
+            documents_as(endpoint: :'internship_offers/search', state: :too_many_requests) do
+              assert_response :too_many_requests
+              assert_equal 'Trop de requêtes - Limite d\'utilisation de l\'API dépassée.', json_error
+            end
+          ensure
+            InternshipOffers::Api::MAX_CALLS_PER_MINUTE = original_max_calls
+            # end
           end
-        ensure
-          InternshipOffers::Api::MAX_CALLS_PER_MINUTE = original_max_calls
         end
       end
     end

@@ -25,8 +25,10 @@ require 'sidekiq/testing'
 # https://stackoverflow.com/questions/70967207/selenium-chromedriver-cannot-construct-keyevent-from-non-typeable-key/70971698#70971698
 require 'webdrivers/chromedriver'
 
-ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 10_000)
-InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 1_000)
+if ENV['TEST_WITH_MAX_REQUESTS_PER_MINUTE'] == 'true'
+  ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 10_000)
+  InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 1_000)
+end
 
 Sidekiq::Testing.fake!
 

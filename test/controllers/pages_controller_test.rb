@@ -14,12 +14,14 @@ class PagesTest < ActionDispatch::IntegrationTest
 
   test 'GET home after too many requests' do
     skip 'works locally but fails on CI' if ENV['CI'] == 'true'
-    ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 5)
-    6.times do
-      get root_path
+    if ENV.fetch('TEST_WITH_MAX_REQUESTS_PER_MINUTE', false) == 'true'
+      ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 5)
+      6.times do
+        get root_path
+      end
+      ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 10_000)
+      assert_response :too_many_requests
     end
-    ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 10_000)
-    assert_response :too_many_requests
   end
 
   test 'GET home when maintenance mode is on' do

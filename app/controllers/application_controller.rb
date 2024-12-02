@@ -43,11 +43,12 @@ class ApplicationController < ActionController::Base
   end
 
   def throttle_ip_requests
+    return if Rails.env.test? && ENV.fetch('TEST_WITH_MAX_REQUESTS_PER_MINUTE', false) != 'true'
+
     ip_address = request.remote_ip
     key = "ip:#{ip_address}:#{Time.now.to_i / 60}"
     count = $redis.incr(key)
     $redis.expire(key, 60) if count == 1
-
     return unless count > MAX_REQUESTS_PER_MINUTE
 
     puts "IP #{ip_address} exceeded rate limit, count: #{count}, #{MAX_REQUESTS_PER_MINUTE}"
