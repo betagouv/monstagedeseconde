@@ -26,9 +26,7 @@ class InternshipOfferNearbyableTest < ActiveSupport::TestCase
   end
 
   test 'scope :with_distance_from' do
-    if ENV.fetch('CI', false) == 'true'
-      skip "This test is not working on CI, it's working locally. Need to investigate why."
-    end
+    skip "This test is not working on CI, it's working locally." if ENV['CI']
     result = InternshipOffer.with_distance_from(
       latitude: @coordinates_paris[:latitude],
       longitude: @coordinates_paris[:longitude]

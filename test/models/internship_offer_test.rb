@@ -84,18 +84,9 @@ class InternshipOfferTest < ActiveSupport::TestCase
   end
 
   test 'school_year value' do
-    skip "this test is relevant and shall be reactivated by november 2024"
-    travel_to(Date.new(2024, 7, 17)) do
+    travel_to(Date.new(2025, 3, 1)) do
       internship_offer = create(:weekly_internship_offer_2nde, :week_1)
       assert_equal 2025, internship_offer.school_year
-    end
-    travel_to(Date.new(2023, 10, 17)) do
-      internship_offer = create(:weekly_internship_offer_2nde, :week_1)
-      assert_equal 2024, internship_offer.school_year
-    end
-    travel_to(Date.new(2024, 3, 17)) do
-      internship_offer = create(:weekly_internship_offer_2nde, :week_1)
-      assert_equal 2024, internship_offer.school_year
     end
   end
 

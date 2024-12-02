@@ -12,7 +12,6 @@ module Dashboard::InternshipOffers
     end
 
     test 'POST #create (duplicate) /InternshipOffers::WeeklyFramed as employer creates the post' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
       travel_to(Date.new(2024, 3, 1)) do
         school = create(:school)
         employer = create(:employer)
@@ -43,7 +42,6 @@ module Dashboard::InternshipOffers
     end
 
     test 'POST #create (duplicate) /InternshipOffers::WeeklyFramed as ministry statistican creates the post' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
       travel_to(Date.new(2024, 9, 1)) do
         school = create(:school)
         employer = create(:ministry_statistician)
@@ -73,7 +71,6 @@ module Dashboard::InternshipOffers
     end
 
     test 'POST #create as employer with invalid data, prefills form' do
-    skip "this test is relevant and shall be reactivated by november 2024"
       sign_in(create(:employer))
       post(dashboard_internship_offers_path, params: {
              internship_offer: {
