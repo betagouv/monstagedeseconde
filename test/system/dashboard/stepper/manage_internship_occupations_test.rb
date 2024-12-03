@@ -72,7 +72,6 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
   end
 
   test 'update internship_occupation fails gracefuly when employer description is too long' do
-    # skip 'this test is relevant and shall be reactivated by november 2024'
     employer = create(:employer)
     internship_occupation = create(:internship_occupation, employer:)
     sign_in(employer)
