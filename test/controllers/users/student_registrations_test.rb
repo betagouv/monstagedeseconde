@@ -33,7 +33,6 @@ class StudentRegistrationsTest < ActionDispatch::IntegrationTest
   end
 
   test 'POST create Student with class responds with success' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
     school = create(:school, school_type: :college)
     class_room = create(:class_room, school:)
     birth_date = 14.years.ago

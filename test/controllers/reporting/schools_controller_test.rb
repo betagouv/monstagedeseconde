@@ -28,6 +28,7 @@ module Reporting
       sign_in(statistician)
       get reporting_schools_path(department: statistician.department_name,
                                  format: :xlsx)
+      sleep 0.1
       assert_response :success
     end
 

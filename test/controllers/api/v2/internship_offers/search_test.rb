@@ -368,7 +368,6 @@ module Api
       end
 
       test 'GET #search returns too many requests after max calls limit' do
-        skip 'works locally but not on CI' if ENV['CI']
         post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
         @token = json_response['token']
 
