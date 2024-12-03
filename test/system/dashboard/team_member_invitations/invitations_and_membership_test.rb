@@ -24,7 +24,6 @@ module Dashboard::TeamMemberInvitations
 
     test 'when two employers are in the same team, ' \
          'they cannot place an invitation to the same third employer' do
-          skip "this test is relevant and shall be reactivated by november 2024"
       employer_1 = create(:employer)
       employer_2 = create(:employer)
       create_team(employer_1, employer_2)
@@ -140,7 +139,6 @@ module Dashboard::TeamMemberInvitations
 
     test 'when two user operators are in the same team, ' \
          'they cannot place an invitation to the same third employer' do
-          skip "this test is relevant and shall be reactivated by november 2024"
       skip 'Chromewebdriver issue' if ENV['CI'] == 'true'
       user_operator_1 = create(:user_operator)
       user_operator_2 = create(:user_operator)
@@ -247,7 +245,6 @@ module Dashboard::TeamMemberInvitations
 
     test 'when two statisticians are in the same team, ' \
          'they cannot place an invitation to the same third employer' do
-      skip "this test is relevant and shall be reactivated by november 2024"
       statistician_1 = create(:statistician)
       statistician_2 = create(:statistician)
       create_team(statistician_1, statistician_2)

@@ -184,7 +184,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
   end
 
   test 'Student with phone subscription with former internship_offer choice leads to offer page' do
-    skip "this test is relevant and shall be reactivated by november 2024"
+    skip 'this test is relevant and shall be reactivated by november 2024'
     school_1 = create(:school, name: 'Etablissement Test 1',
                                city: 'Saint-Martin', zipcode: '77515')
     class_room_1 = create(:class_room, name: '2de A', school: school_1)
@@ -226,7 +226,7 @@ class SignUpStudentsTest < ApplicationSystemTestCase
     find('header h1.h2.text-center', text: 'Encore une petite étape...')
     fill_in 'Code de confirmation', with: User.last.phone_token
     find('input[type="submit"]').click # Valider
-    find('h1', text: "Connexion à 1élève1stage")
+    find('h1', text: 'Connexion à 1élève1stage')
     find('input[name="user[phone]"]').set(valid_phone_number)
     find('input[type="password"]').set(password)
     find('input[type="submit"]').click
