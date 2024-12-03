@@ -30,7 +30,7 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   end
 
   test 'Employer can edit an unpublished internship offer and have it published' do
-    travel_to(Date.new(2024, 3, 1)) do
+    travel_to(Date.new(2025, 3, 1)) do
       employer = create(:employer)
       internship_offer = create(:weekly_internship_offer_2nde, employer:)
       assert internship_offer.grades.include?(Grade.seconde)
