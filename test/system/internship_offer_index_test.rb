@@ -30,7 +30,6 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'pagination of internship_offers index is ok with api or weekly offers' do
-    skip 'test is relevant only and shall be reactivated by november 2024'
     travel_to Date.new(2025, 3, 1) do
       2.times do
         create(:weekly_internship_offer_2nde, city: 'Chatillon', coordinates: Coordinates.chatillon)
@@ -45,13 +44,13 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
       visit internship_offers_path
       find('li a.fr-link', text: 'Recherche').click
       sleep 1
-      selector = 'ul.fr-badges-group li .fr-badge.fr-badge--warning.fr-badge--no-icon'
+      selector = '.fr-text.fr-py-1w.test-city.fr-text--sm.fr-text--grey-425'
       within('.fr-test-internship-offers-container') do
-        assert_selector(selector, text: 'PARIS', count: InternshipOffer::PAGE_SIZE, wait: 5)
+        assert_selector(selector, text: 'Paris', count: InternshipOffer::PAGE_SIZE, wait: 5)
       end
       click_link 'Page suivante'
       within('.fr-test-internship-offers-container') do
-        assert_selector(selector, text: 'CHATILLON', count: 2, wait: 2)
+        assert_selector(selector, text: 'Chatillon', count: 2, wait: 2)
       end
     end
   end

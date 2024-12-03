@@ -90,11 +90,7 @@ module Builders
       end
       instance = deal_with_max_candidates_change(params:, instance:)
 
-      if from_api?
-        instance.reset_publish_states
-      elsif instance.may_publish?
-        instance.publish!
-      end
+      instance.reset_publish_states if from_api?
 
       instance.save! # this may set aasm_state to need_to_be_updated state
       callback.on_success.try(:call, instance)
