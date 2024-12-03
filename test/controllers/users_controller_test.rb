@@ -11,7 +11,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET index as Student' do
-    skip "this test is relevant and shall be reactivated by november 2024"
+    skip 'this test is relevant and shall be reactivated by november 2024'
     student = create(:student)
     sign_in(student)
     get account_path
