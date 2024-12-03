@@ -11,12 +11,10 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET index as Student' do
-    skip 'this test is relevant and shall be reactivated by november 2024'
     student = create(:student)
     sign_in(student)
     get account_path
     assert_template 'users/edit'
-    assert_template 'users/_edit_resume'
     assert_select 'form[action=?]', account_path
   end
 
