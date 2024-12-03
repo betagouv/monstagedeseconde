@@ -5,7 +5,6 @@ module Dashboard::TeamMemberInvitations
     include TeamAndAreasHelper
 
     test 'team member can invite a new team member' do
-      # skip 'this test is relevant and shall be reactivated by november 2024'
       skip 'works locally but not on CI' if ENV['CI'] == 'true'
       employer_1 = create(:employer)
       sign_in(employer_1)
