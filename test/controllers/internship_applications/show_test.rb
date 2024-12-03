@@ -32,7 +32,6 @@ module InternshipApplications
     end
 
     test 'GET #show renders preview for school_manager' do
-      skip 'this test is relevant and shall be reactivated by november 2024'
       school = create(:school, :with_school_manager)
       class_room = create(:class_room, school:)
       student = create(:student, class_room:, school:)
