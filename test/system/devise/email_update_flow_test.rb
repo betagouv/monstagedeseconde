@@ -7,7 +7,6 @@ class EmailUpdateFlowTest < ApplicationSystemTestCase
   # include ::EmailSpamEuristicsAssertions
 
   test 'student updates her email' do
-    # skip "this test is relevant and shall be reactivated by november 2024"
     password  = 'kikoolol1Max!!'
     email     = 'fourcade.m@gmail.com'
     alt_email = 'another_email@free.fr'
