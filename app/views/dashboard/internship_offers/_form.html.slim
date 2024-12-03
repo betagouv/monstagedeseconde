@@ -12,12 +12,13 @@
     = form.hidden_field :published_at, value: Time.now
 
   // used posted from stepper
-  = form.hidden_field :internship_occupation_id,
-                      value: @internship_offer.internship_occupation_id
-  = form.hidden_field :entreprise_id,
-                      value: @internship_offer.entreprise_id
+  / = form.hidden_field :internship_occupation_id,
+  /                     value: @internship_offer.internship_occupation_id
+  / = form.hidden_field :entreprise_id,
+  /                     value: @internship_offer.entreprise_id
   = form.hidden_field :planning_id,
                       value: @internship_offer.planning_id
+  = form.hidden_field :shall_publish, value: @republish
   = render 'dashboard/stepper/internship_occupations/form_fields',
             { resource: @internship_offer,
               form: form,

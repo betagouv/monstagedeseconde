@@ -40,12 +40,11 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
       sign_in(employer)
       visit edit_dashboard_internship_offer_path(internship_offer)
       find('input[name="internship_offer[employer_chosen_name]"]').fill_in(with: 'NewCompany')
-
       click_on "Publier l'offre"
 
       wait_form_submitted
-      assert(/NewCompany/.match?(internship_offer.reload.employer_name))
-      assert internship_offer.published?
+      assert internship_offer.reload.published?
+      assert(/NewCompany/.match?(internship_offer.employer_name))
     end
   end
 

@@ -10,9 +10,9 @@
           .fr-mx-1w
             button.fr-mr-1w.fr-btn.fr-icon-delete-line.fr-btn--icon.fr-btn--secondary.test-discard-button data-fr-opened="false" aria-controls="discard-internship-offer-modal"
         - if internship_offer.shown_as_masked?
-          = button_to 'Modifier',
-                      remove_dashboard_internship_offer_path(@internship_offer),
-                      class: 'fr-btn fr-btn--secondary fr-mr-2w'
+          = link_to 'Modifier',
+                     edit_dashboard_internship_offer_path(id: @internship_offer.id),
+                     class: 'fr-btn fr-btn--secondary fr-mr-2w'
           = button_to 'Publier',
                       publish_dashboard_internship_offer_path(@internship_offer),
                       data: { turbo: false },
