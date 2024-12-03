@@ -70,7 +70,6 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'unpublish navigation and republish after' do
-    skip 'not working test is relevant and shall pass by november 2024'
     travel_to Date.new(2021, 10, 1) do
       employer = create(:employer)
       internship_offer = create(:weekly_internship_offer_2nde,
@@ -78,24 +77,19 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
                                 internship_offer_area_id: employer.current_area_id)
       sign_in(employer)
       InternshipOffer.stub :nearby, InternshipOffer.all do
+        # published
         assert internship_offer.published?
         InternshipOffers::WeeklyFramed.update_older_internship_offers
         assert internship_offer.reload.published?
         visit dashboard_internship_offers_path
-        within("#toggle_status_#{dom_id(internship_offer)}") do
-          find('.label', text: 'Publié')
-          find("a[rel='nofollow'][data-method='patch']").click # this unpublishes the internship_offer
-        end
+        find('.label', text: 'Publié')
 
+        # Mask it
+        find("a[title='Publier / Masquer']").click
         find('h2.h4', text: 'Les offres')
-        sleep 0.05
-        assert internship_offer.reload.unpublished?
-
-        within("#toggle_status_#{dom_id(internship_offer)}") do
-          find('.label', text: 'Masqué')
-        end
-        assert internship_offer.reload.unpublished?
-        assert_nil internship_offer.published_at
+        find('.label', text: 'Masqué')
+        assert_nil internship_offer.reload.published_at
+        assert internship_offer.unpublished?
 
         # ----------------------------
         # republish
