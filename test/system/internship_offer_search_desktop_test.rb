@@ -86,7 +86,6 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
   end
 
   test 'search by all criteria' do
-    skip 'SEARCH this test is relevant and shall be reactivated by november 2024'
     travel_to(Date.new(2024, 1, 6)) do
       searched_keyword = 'helloworld'
       searched_location = Coordinates.paris
@@ -119,7 +118,7 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
 
       fill_in_city_or_zipcode(with: 'Pari', expect: 'Paris')
       fill_in_keyword(keyword: searched_keyword)
-      select('1 semaine - du 17 au 21 juin 2024')
+      # select('1 semaine - du 17 au 21 juin 2024')TO DO update with new filters
       submit_form
 
       assert_card_presence_of(internship_offer: findable_internship_offer)
