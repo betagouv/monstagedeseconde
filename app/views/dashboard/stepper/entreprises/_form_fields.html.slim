@@ -79,7 +79,7 @@
           div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               = form.label :sector_id , class: 'fr-label'do
-                = "Secteur d'activité"
+                = "Secteur d'activité *"
               = form.select :sector_id,
                             options_from_collection_for_select(Sector.all.order(:name), :id, :name, resource.sector_id),
                             { prompt: sectors_options_for_default },

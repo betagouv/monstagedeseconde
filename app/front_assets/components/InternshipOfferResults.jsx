@@ -175,7 +175,7 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
                   !isMobile() && (
                   <div className="col-4 text-right px-0">
                     <button className="fr-btn fr-btn--secondary fr-icon-filter-line fr-btn--icon-left" data-fr-opened="false" aria-controls="fr-modal-filter" id="filter-sectors-button">
-                      Secteur d'activité
+                      Secteur d'activité *
                       {
                         selectedSectors.length > 0 ? (
                           <p className="fr-badge fr-badge--success fr-badge--no-icon fr-m-1w">{selectedSectors.length}</p>
