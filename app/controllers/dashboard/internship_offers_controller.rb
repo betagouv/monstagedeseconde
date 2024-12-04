@@ -4,7 +4,7 @@ module Dashboard
   class InternshipOffersController < ApplicationController
     before_action :authenticate_user!
     before_action :set_internship_offer,
-                  only: %i[edit update destroy republish remove]
+                  only: %i[edit update destroy republish]
 
     helper_method :order_direction
 
@@ -88,9 +88,7 @@ module Dashboard
       @available_weeks = Week.troisieme_selectable_weeks # TODO : check if it's the right weeks
       internship_offer_builder.update(instance: @internship_offer,
                                       params: internship_offer_params) do |on|
-        on.success do |updated_internship_offer|
-          # updated_internship_offer.publish! unless updated_internship_offer.published?
-          @internship_offer = updated_internship_offer
+        on.success do |_updated_internship_offer|
           respond_to do |format|
             format.turbo_stream
             format.html do
@@ -154,21 +152,6 @@ module Dashboard
       end
       redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor:),
                   flash: { warning: }
-    end
-
-    def remove # Back to step 4
-      # if offer_contains_stepper_informations?
-      #   redirect_to(
-      #     edit_dashboard_stepper_practical_info_path(
-      #       id: @internship_offer.practical_info_id,
-      #       organisation_id: @internship_offer.organisation_id,
-      #       internship_offer_info_id: @internship_offer.internship_offer_info_id,
-      #       hosting_info_id: @internship_offer.hosting_info_id
-      #     )
-      #   )
-      # else
-      #   redirect_to(edit_dashboard_internship_offer_path(id: @internship_offer.id))
-      # end
     end
 
     # duplicate form
@@ -236,7 +219,7 @@ module Dashboard
                     :academy, :renewed, :is_public, :group_id, :published_at, :republish,
                     :type, :employer_id, :employer_type, :verb, :user_update, :school_id,
                     :siret, :internship_address_manual_enter, :lunch_break, :aasm_state,
-                    :grade_college, :grade_2e, :period, :period,
+                    :grade_college, :grade_2e, :period, :period, :shall_publish,
                     entreprise_coordinates: {}, coordinates: {}, grade_ids: [],
                     daily_hours: {}, weekly_hours: [], week_ids: [])
     end
