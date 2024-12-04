@@ -244,25 +244,25 @@ En plus de ses erreurs transverses, les erreurs spécifiques à un appel seront 
 
 *Paramètres de body :*
 
-* **internship_offer.title** *(string, required)*
+* **internship_offer.title** *(string, required*<= 150 caractères)
 * **internship_offer.description** *(text, required *<= 500 caractères)
-* **internship_offer.employer_name** *(string, required)*
+* **internship_offer.employer_name** *(string, required*<= 150 caractères)
 * **internship_offer.employer_description** *(string, required *<= 275 caractères)
-* **internship_offer.employer_website** *(string, optional)*
+* **internship_offer.employer_website** *(string, optional*<= 560 caractères)
 * **internship_offer.coordinates** *(object/geography, optional)* : { "latitude" : 1, "longitude" : 1 }
-* **internship_offer.street** *(text, optional)*
-* **internship_offer.zipcode** *(string, required)*
-* **internship_offer.city** *(string, required)*
+* **internship_offer.street** *(text, optional*<= 500 caractères)
+* **internship_offer.zipcode** *(string, required*<= 5 caractères)
+* **internship_offer.city** *(string, required*<= 50 caractères)
 * **internship_offer.sector_uuid** *(integer, required)*
-* **internship_offer.period** *(integer, required)*
 * **internship_offer.lunch_break** *(string, optional)*: le détail de la pause déjeuner
 * **internship_offer.daily_hours** *(object, optional)*: Les horaires de chaque jour. ex: {"lundi": ['9:00', '16:00], "mardi": ['9:00', '16:00], "mercredi": ['9:00', '16:00], "jeudi": ['9:00', '16:00], "vendredi": ['9:00', '16:00]}
 * **remote_id** *(string, required)*: l'identifiant unique du coté operateur|collectivité|association
-* **permalink** *(url, required)*
+* **permalink** *(url, required*<= 200 caractères)
 * **max_candidates** *(integer)*
 * **is_public** *(boolean, optional)*: true|false
 * **lunch_break** *(text, optional entre 11 et 500 caractères)
-* **daily_hours** *(object, optional, 
+* **weeks** *(array, required)*: les semaines pendant lesquelles l'offre est accessible, voir [référentiel](#ref-weeks)
+
 
 ### Exemple curl
 
@@ -354,10 +354,10 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 * **internship_offer.zipcode** *(string)*
 * **internship_offer.city** *(string)*
 * **internship_offer.sector_uuid** *(integer)*
-* **internship_offer.period** *(integer)*
 * **permalink** *(url)*
 * **max_candidates** *(integer)*
 * **is_public** *(boolean, optional)*: true|false
+* **weeks** *(array)*: les semaines pendant lesquelles l'offre est accessible, voir [référentiel](#ref-weeks)
 * **published_at** *(datetime.iso8601(0))* : voir [reference](https://ruby-doc.org/stdlib-2.6.1/libdoc/date/rdoc/DateTime.html#method-i-iso8601)
 
 Note : La dépublication s'opère en passant null dans le paramètre published_at
