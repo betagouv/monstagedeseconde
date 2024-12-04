@@ -57,7 +57,7 @@ Nous utilisons des jwt pour l'authentification, qui sont valables 24 heures.
 
 Voici comment récupérer un token :
 
-**url** : ```#{baseURL}/```
+**url** : ```#{baseURL}/auth/login```
 
 **method** : POST
 
