@@ -1,6 +1,6 @@
 # API V2
 
-Pour diffuser des offres sur la plateforme [Mon stage à l'école](https://stagedeseconde.1jeune1solution.gouv.fr/), une API est mise à disposition pour :
+Pour diffuser des offres sur la plateforme [1élève1stage](https://1eleve1stage.education.gouv.fr/), une API est mise à disposition pour :
 
 * les associations
 * les collectivités
@@ -8,11 +8,11 @@ Pour diffuser des offres sur la plateforme [Mon stage à l'école](https://stage
 * les partenaires
 
 Il s'agit d'une API REST qui permet les opérations suivantes :
-- Ajouter une offre de stage sur Mon stage à l'école
-- Modifier une offre de stage sur Mon stage à l'école
-- Supprimer une offre de stage sur Mon stage à l'école
-- Récupérer ses offres de stage postées sur Mon stage à l'école
-- Rechercher des offres de stage sur Mon stage à l'école
+- Ajouter une offre de stage sur 1élève1stage
+- Modifier une offre de stage sur 1élève1stage
+- Supprimer une offre de stage sur 1élève1stage
+- Récupérer ses offres de stage postées sur 1élève1stage
+- Rechercher des offres de stage sur 1élève1stage
 
 # Table des matières
 - [Environnements](#environnements)
@@ -33,14 +33,14 @@ Il s'agit d'une API REST qui permet les opérations suivantes :
 
 # Environnements
 L'api est disponible sur ```/api/v2``` sur les environnements de pré production et de production. Soit les ```baseURL``` suivantes
-  * En pré production : https://stagedeseconde.recette.1jeune1solution.gouv.fr/api/v2
-  * En production : https://stagedeseconde.1jeune1solution.gouv.fr/api/v2
+  * En pré production : https://recette.1eleve1stage.education.gouv.fr/api/v2
+  * En production : https://1eleve1stage.education.gouv.fr/api/v2
 
 # Authentification
 
 *Les APIs sont ouvertes uniquement aux acteurs concernés.*
 
-**Merci d'effectuer une demande par mail** ([support](mailto:contact@stagedeseconde.education.gouv.fr)) pour créer un compte API.
+**Merci d'effectuer une demande par mail** ([support](mailto:contact@1eleve1stage.education.gouv.fr)) pour créer un compte API.
 
 Une fois le compte créé, le token d'API pourra être récupéré via notre interface web. Il est différent selon l'environnement de pré production ou production.
 
@@ -52,25 +52,33 @@ L'utilisation est limitée à 100 appels par minute, au-delà une erreur 429 est
 
 ### Comment récuperer mon token d'authentification
 
-[Se connecter](https://stagedeseconde.1jeune1solution.gouv.fr/utilisateurs/connexion) avec votre compte opérateur
+Un token d'authentification est nécessaire pour accéder aux endpoints de l'API.
+Nous utilisons des jwt pour l'authentification, qui sont valables 24 heures.
 
-![](screenshots/login.png)
+Voici comment récupérer un token :
 
-Depuis la page [Mon profil](https://stagedeseconde.1jeune1solution.gouv.fr/mon-compte), se rendre sur la page API
+**url** : ```#{baseURL}/```
 
-![](screenshots/logged.png)
+**method** : POST
 
-Depuis la page [API](https://stagedeseconde.1jeune1solution.gouv.fr/mon-compte/api), récupérer le token
+*Paramètres de body :*
 
-![](screenshots/api.png)
+* **email** *(string, required)*
+* **password** *(text, required)*
 
+<!-- TODO: Ajouter un exemple de curl -->
+``` bash
+curl -H "Content-Type: application/json" -X POST -d '{"email": "test@example.com", "password": "password123$-K"}' https://1eleve1stage.education.gouv.fr/api/v2/
+```
 
-
+Exemple de réponse :
+``` json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTc5MzIwMzksInN1YiI6IjEifQ.6874687468746874687468746874687468746874"
+}
+```
 
 # Structures de données et référentiels
-
-## Swagger
-Pour tester l'API et comprendre son fonctionnement un [swagger](https://app-e29a97fc-5386-434f-bf9d-8f813c68f838.cleverapps.io/docs/) est disponible.
 
 ## Offres de stage
 
@@ -183,11 +191,15 @@ internship_offer.sector_uuid: "s33"
 ### <a name="ref-grades"></a>
 ## Niveaux scolaires
 Les offres de stage peuvent être proposées pour trois niveaux scolaires différents : quatrième, troisième et seconde.
+Voici les identifiants uniques associés à chaque niveau :
+* quatrième : **quatrieme**
+* troisième : **troisieme**
+* seconde : **seconde**
+
 Exemple de ce que nous attendons dans nos API :
 ```
 internship_offer.grades: ['troisieme', 'seconde']
 ```
-
 
 
 ### <a name="ref-daily-hours"></a>
@@ -384,51 +396,9 @@ curl -H "Authorization: Bearer foobarbaz" \
      -H "Accept: application/json" \
      -X DELETE \
      -vvv \
-     https://monstagedetroisieme.fr/api/internship_offers/#{remote_id...}
+     https://1eleve1stage.education.gouv.fr/api/internship_offers/#{remote_id...}
 ```
 
 ### Erreurs
 
 - 404, Not Found. Aucune offre n'a été trouvée avec le ```remote_id``` spécifié
-
-
-# Premiers pas et exemples
-
-Pour éprouver nos APIs, nous utilisons des [scripts shell](https://github.com/betagouv/monstagedeseconde/tree/master/doc/requests/internship_offers/).
-
-
-C'est un moyen simple pour tester votre token et nos APIs.
-
-``` bash
-git clone https://github.com/betagouv/monstagedeseconde.git
-cd monstagedeseconde
-cd doc
-cp env.sample env.sh
-```
-
-Vous pouvez maintenant configurer votre environnement (pre-production/production) et votre token en editant le fichier ```env.sh```
-
-```
-set -x
-
-# usage: rename env.sample env.sh
-
-MONSTAGEDESECONDE_ENV=https://stagedeseconde.1jeune1solution.gouv.fr/api
-MONSTAGEDESECONDE_TOKEN=foobarbaz
-```
-
-
-## Création d'une offre
-
-* exemple d'appel à l'api : ```./requests/internship_offers/create.sh```
-* exemple de reponse, cf: ./output/internship_offers/create/*
-* exemple de payload, cf: ./input/internship_offers/create.json
-
-## Mise à jour d'une offre
-* exemple d'appel à l'api : ```./requests/internship_offers/update.sh```
-* exemple de reponse, cf: ./output/internship_offers/update/*
-* exemple de payload, cf: ./input/internship_offers/update.json
-
-## Suppression d'une offre
-* exemple d'appel à l'api : ```./requests/internship_offers/destroy.sh```
-* exemple de reponse, cf: ./output/internship_offers/destroy/*
