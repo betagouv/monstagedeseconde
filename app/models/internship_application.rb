@@ -459,12 +459,15 @@ class InternshipApplication < ApplicationRecord
   end
 
   def anonymize
-    self.motivation = nil
-    return unless student_phone || student_email
-
-    self.student_phone = nil
-    self.student_email = nil
-    save
+    update_columns(
+      motivation: 'NA',
+      student_address: 'NA',
+      student_legal_representative_full_name: 'NA',
+      student_legal_representative_email: 'NA',
+      student_legal_representative_phone: '+330600110011',
+      student_phone: '+330600110011',
+      student_email: 'NA'
+    )
   end
 
   def short_target_url(sgid = nil)
