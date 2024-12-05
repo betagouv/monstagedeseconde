@@ -13,6 +13,10 @@ module InternshipOffers
     validates :street,
               :city,
               presence: true
+    validates :contact_phone,
+              format: { with: Regexp.new(ApplicationController.helpers.field_phone_pattern),
+                        message: 'Le numéro de téléphone doit être composé de 10 chiffres' },
+              unless: :from_api?
 
     validates :max_candidates,
               numericality: { only_integer: true,
