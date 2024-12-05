@@ -65,6 +65,7 @@ module Dashboard::Stepper
               :entreprise_chosen_full_address,
               :entreprise_coordinates_longitude,
               :entreprise_coordinates_latitude,
+              :contact_phone,
               :internship_occupation_id
             )
     end

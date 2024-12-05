@@ -47,5 +47,6 @@ module EntrepriseFormFiller
     assert_equal 'COMMUNE DE SAINT OUEN L AUMONE', find('input#entreprise_employer_name').value.strip
     fill_in "Indiquez le nom de l'enseigne de l'établissement d'accueil, si elle diffère de la raison sociale",
             with: 'Mairie de Saint-Ouen-l’Aumône'
+    fill_in 'Numéro de téléphone du dépositaire *', with: '0130131313'
   end
 end

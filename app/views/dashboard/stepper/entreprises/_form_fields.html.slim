@@ -142,6 +142,21 @@
                   span.fr-icon-info-fill.text-blue-info aria-hidden="true"
                 small.text-blue-info.fr-mx-1w
                   | L’adresse du siège peut être différente de l’adresse où se déroulera le stage.
+          div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
+            .col-12
+              - label = "Numéro de téléphone du dépositaire *"
+              - hint = "Ce numéro ne sera pas communiqué aux candidats."
+              = render 'inputs/dsfr_input_field',
+                        field: :contact_phone,
+                        f: form,
+                        label: label,
+                        required: true,
+                        title: label,
+                        object: form.object,
+                        hint: hint,
+                        pattern: phone_pattern,
+                        maxlength: 20,
+                        value: resource&.contact_phone
 
     - if submit_button
       .fr-mt-6w.bloc-tooggle

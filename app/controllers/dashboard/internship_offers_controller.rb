@@ -219,7 +219,7 @@ module Dashboard
                     :academy, :renewed, :is_public, :group_id, :published_at, :republish,
                     :type, :employer_id, :employer_type, :verb, :user_update, :school_id,
                     :siret, :internship_address_manual_enter, :lunch_break, :aasm_state,
-                    :grade_college, :grade_2e, :period, :period, :shall_publish,
+                    :grade_college, :grade_2e, :period, :period, :shall_publish, :contact_phone,
                     entreprise_coordinates: {}, coordinates: {}, grade_ids: [],
                     daily_hours: {}, weekly_hours: [], week_ids: [])
     end

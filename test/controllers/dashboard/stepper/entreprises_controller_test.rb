@@ -37,6 +37,7 @@ module Dashboard::Stepper
               entreprise_chosen_full_address: 'Testo in Paris',
               entreprise_coordinates_longitude: '2.35',
               entreprise_coordinates_latitude: '48.85',
+              contact_phone: '0123456789',
               is_public: false,
               sector_id: sector.id
             }
