@@ -112,7 +112,12 @@ module Users
                      class_room_id: nil,
                      resume_other: nil,
                      resume_educational_background: nil,
-                     resume_languages: nil)
+                     resume_languages: nil,
+                     gender: nil,
+                     address: nil,
+                     legal_representative_full_name: nil,
+                     legal_representative_phone: nil,
+                     legal_representative_email: nil)
       update_columns(phone: 'NA') unless phone.nil?
       internship_applications.map(&:anonymize)
     end
