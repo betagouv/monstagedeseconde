@@ -1,0 +1,33 @@
+.fr-my-4w.fr-py-4w.mx-lg-0
+  h2.fr-mb-3w Ressources utiles
+  p.fr-text.fr-mb-3w
+    | Accédez à des ressources sur les questions d’orientation et de découverte des métiers,quelque soit la filière que vous représentez.
+  .row.fr-pb-7w data-controller="resources"
+    .col-3
+      nav.fr-sidemenu role="navigation" aria-labelledby="fr-sidemenu-title"
+        .fr-sidemenu__inner
+          .fr-collapse#fr-sidemenu-wrapper
+            ul.fr-sidemenu__list
+              - menu_i = 0
+              - @resources.each_with_index do |(school_level, categories), index|
+                li.fr-sidemenu__item
+                  button.fr-sidemenu__btn aria-expanded="#{index == 0}" aria-controls="fr-sidemenu-item-#{index}" aria-current=("true" if index == 0) data-action="click->resources#selectLevel" data-resources-target="levelButton"
+                    | #{school_level}
+                  .fr-collapse id="fr-sidemenu-item-#{index}"
+                    ul.fr-sidemenu__list
+                      - categories.each_with_index do |(category_name, documents), cat_index|
+                        li.fr-sidemenu__item
+                          a.fr-sidemenu__link href='#' aria-controls="fr-sidemenu-category-#{index}-#{cat_index}" aria-current=("true" if index == 0) data-action="click->resources#showContent" data-index="#{menu_i}" data-resources-target="categoryButton"
+                            | #{category_name}
+                        - menu_i = menu_i + 1
+
+    .col-9
+      - content_i = 0
+      - @resources.each_with_index do |(school_level, categories), level_index|
+        - categories.each_with_index do |(category_name, documents), category_index|
+          .content-div id="content-#{content_i}" style="display: none;" data-resources-target="contentDiv"
+            .category-content id="content-level-#{level_index}-category-#{category_index}" 
+              .row
+                - documents.each do |resource|
+                  = render partial: "pages/home/resource_card", locals: { badge: "PDF", link_title: resource[:title], target: '_blank', file: resource[:url] }
+          - content_i = content_i + 1

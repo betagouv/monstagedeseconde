@@ -15,7 +15,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     sign_in(student)
     get account_path
     assert_template 'users/edit'
-    assert_template 'users/_edit_resume'
     assert_select 'form[action=?]', account_path
   end
 
@@ -153,8 +152,8 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to account_path
     student.reload
-    assert_equal 'other', student.resume_other.to_plain_text
-    assert_equal 'languages', student.resume_languages.to_plain_text
+    assert_equal 'other', student.resume_other
+    assert_equal 'languages', student.resume_languages
     assert_equal '+330665656540', student.phone
     follow_redirect!
     assert_select '#alert-success #alert-text', { text: 'Compte mis à jour avec succès.' }, 1
@@ -396,5 +395,27 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     )
     assert_response :success
     assert_select('#code-request', text: "Une erreur est survenue et le code n'a pas été renvoyé")
+  test 'PATCH password as Employer fails with weak password' do
+    employer = create(:employer)
+    sign_in(employer)
+    user_params = {
+      current_password: employer.password,
+      password: 'password123'
+    }
+    patch account_password_path, params: { user: user_params }
+
+    assert_response :bad_request
+  end
+
+  test 'PATCH password as Employer registreed by phone fails with weak password' do
+    employer = create(:employer, email: nil, phone: '+330623042585')
+    sign_in(employer)
+    user_params = {
+      current_password: employer.password,
+      password: 'password123'
+    }
+    patch account_password_path, params: { user: user_params }
+
+    assert_response :bad_request
   end
 end

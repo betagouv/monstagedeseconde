@@ -82,7 +82,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :companies, path: 'entreprises', only: %i[index show] do
+    resources :companies, path: 'organisations', only: %i[index show] do
       member do
         post :contact
       end
@@ -103,22 +103,48 @@ Rails.application.routes.draw do
 
 
     namespace :api, path: 'api' do
-      resources :internship_offers, only: %i[create update destroy index] do
-        get :search, on: :collection
-      end
+      # TO DO : fix this redirect
+      # match '/*path', via: %i[get post put delete], to: redirect { |path_params, _req|
+      #   path = path_params[:path]
+      #   return false if path.start_with?('v1/') || path.start_with?('v2/')
 
-      resources :schools, only: [] do
-        collection do
-          post :nearby
-          post :search
+      #   "/api/v1/#{path}"
+      # }
+
+      namespace :v1 do
+        resources :internship_offers, only: %i[create update destroy index] do
+          get :search, on: :collection
         end
+        resources :schools, only: [] do
+          collection do
+            post :nearby
+            post :search
+          end
+        end
+        resources :coded_crafts, only: [] do
+          get :search, on: :collection
+        end
+        resources :sectors, only: :index
       end
 
-      resources :coded_crafts, only: [] do
-        get :search, on: :collection
+      namespace :v2 do
+        post 'auth/login', to: 'auth#login'
+        resources :internship_offers, only: %i[create update destroy index] do
+          get :search, on: :collection
+        end
+        resources :schools, only: [] do
+          collection do
+            post :nearby
+            post :search
+          end
+        end
+        resources :coded_crafts, only: [] do
+          get :search, on: :collection
+        end
+        resources :sectors, only: :index
       end
-      resources :sectors, only: :index
     end
+
     # ------------------ DASHBOARD START ------------------
     namespace :dashboard, path: 'tableau-de-bord' do
       resources :team_member_invitations, path: 'invitation-equipes', only: %i[create index new destroy] do
@@ -134,6 +160,9 @@ Rails.application.routes.draw do
           post 'handwrite_sign'
         end
       end
+
+      post 'internship_applications/update_multiple', to: 'internship_applications#update_multiple',
+                                                      as: :update_multiple_internship_applications
 
       resources :schools, path: 'ecoles', only: %i[index edit update show] do
         resources :invitations, only: %i[new create index destroy], module: 'schools'
@@ -168,11 +197,16 @@ Rails.application.routes.draw do
       end
 
       namespace :stepper, path: 'etapes' do
+        # legacy stepper routes
         resources :organisations, only: %i[create new edit update]
         resources :internship_offer_infos, path: 'offre-de-stage-infos', only: %i[create new edit update]
         resources :hosting_infos, path: 'accueil-infos', only: %i[create new edit update]
         resources :practical_infos, path: 'infos-pratiques', only: %i[create new edit update]
         resources :tutors, path: 'tuteurs', only: %i[create new]
+        # new stepper path
+        resources :internship_occupations, path: 'metiers_et_localisation', only: %i[create new edit update]
+        resources :entreprises, path: 'entreprise', only: %i[create new edit update]
+        resources :plannings, path: 'planning', only: %i[create new edit update]
       end
 
       namespace :students, path: '/:student_id/' do
@@ -233,12 +267,16 @@ Rails.application.routes.draw do
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
 
   # Redirects
-  get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
+  # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
+  get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/#{id}', status: 302)
 
   root_destination = ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true' ? 'maintenance_estivale' : 'home'
   root to: "pages##{root_destination}"
 
+  get '/400', to: 'errors#bad_request'
   get '/404', to: 'errors#not_found'
+  get '/406', to: 'errors#not_acceptable'
   get '/422', to: 'errors#unacceptable'
+  get '/429', to: 'errors#not_found'
   get '/500', to: 'errors#internal_error'
 end

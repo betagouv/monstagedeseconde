@@ -22,7 +22,7 @@ main#content[role="main"
                           id: "login-1760",
                           url: session_path(resource_name)) do |f|
                 h1.fr-h4.fr-mb-n1w
-                  | Connexion à Mon stage de seconde
+                  | Connexion à 1élève1stage
                 = f.hidden_field :targeted_offer_id,
                                   value: params.dig(:user, :targeted_offer_id)
                 = render "layouts/form_errors",
@@ -52,6 +52,7 @@ main#content[role="main"
                                                 class: "fr-password__input fr-input #{error_status ? 'text-input-error' : ''}",
                                                 :'aria-required' => true,
                                                 required: true,
+                                                maxlength: 70,
                                                 autofocus: !params[:email].blank?
                           - if devise_mapping.recoverable? && controller_name != "passwords" && controller_name != "registrations"
                             .fr-fieldset__element

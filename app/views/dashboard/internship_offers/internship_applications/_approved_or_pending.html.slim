@@ -1,4 +1,10 @@
-.fr-table.fr-table--bordered.fr-table--no-caption
+.fr-table.fr-table--bordered.fr-table--no-caption data-controller="internship-application-index"
+  .fr-mb-2w
+    button.fr-btn.fr-btn--secondary#bulk-process-btn[
+      data-internship-application-index-target="bulkActionButton"
+      data-action="click->internship-application-index#bulkProcess"
+    ] Traiter les candidatures sélectionnées
+
   table
     thead
       tr
@@ -35,8 +41,9 @@
                           class: 'fr-raw-link d-flex flex-row' do
                   span.fr-icon-file-line.fr-icon--sm aria-hidden="true"
                   .fr-pl-1v Remplir la convention
-              - else
-                = link_to dashboard_internship_offer_internship_application_path(internship_application.internship_offer.id.to_i, internship_application),
-                          class: 'fr-raw-link d-flex flex-row' do
-                  span.fr-icon-eye-line.fr-icon--sm aria-hidden="true"
-                  .fr-pl-1w Voir
+              
+              = link_to dashboard_internship_offer_internship_application_path(internship_application.internship_offer.id.to_i, internship_application),
+                        class: 'fr-raw-link d-flex flex-row' do
+                span.fr-icon-eye-line.fr-icon--sm aria-hidden="true"
+                .fr-pl-1w Voir
+

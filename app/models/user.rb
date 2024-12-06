@@ -6,6 +6,7 @@ class User < ApplicationRecord
   include Discard::Model
   include UserAdmin
   include ActiveModel::Dirty
+  include PhoneComputation
 
   has_many :favorites
   has_many :url_shrinkers
@@ -50,6 +51,7 @@ class User < ApplicationRecord
 
   validate :email_or_phone
   validate :keep_email_existence, on: :update
+  validate :password_complexity
 
   delegate :application, to: Rails
   delegate :routes, to: :application
@@ -115,8 +117,8 @@ class User < ApplicationRecord
   end
 
   def anonymize(send_email: true)
-    # TODO
-    # return if anonymized && !discarded_at.nil?
+    return if anonymized && !discarded_at.nil?
+
     # Remove all personal information
     email_for_job = email.dup
 
@@ -152,6 +154,13 @@ class User < ApplicationRecord
            last_phone_password_reset: Time.now)
   end
 
+  def send_sms_token
+    return unless phone.present?
+
+    create_phone_token
+    message = "Votre code d'activation d'inscription, valide pendant 1h, est : #{phone_token}"
+    SendSmsJob.perform_later(user: self, message:)
+  end
 
   def create_phone_token
     update(phone_token: format('%04d', rand(10_000)),
@@ -162,52 +171,24 @@ class User < ApplicationRecord
     phone_token.present? && Time.now < phone_token_validity
   end
 
-  def check_phone_token?(token)
-    phone_confirmable? && phone_token == token
-  end
-
-  def after_confirmation
-    super
-  end
-
-  def formatted_phone
-    return if phone.blank?
-
-    phone[0..4].gsub('0', '') + phone[5..]
-  end
-
-  def self.sanitize_mobile_phone_number(number, prefix = '')
-    return nil if number.blank?
-
-    thin_number = number.gsub(/[\s|;,.:()]/, '')
-    if thin_number.match?(/\A\+(33|262|594|596|687|689)0[6|7]\d{8}\z/)
-      "#{prefix}#{thin_number[4..]}"
-    elsif thin_number.match?(/\A\+(33|262|594|596|687|689)[6|7]\d{8}\z/)
-      "#{prefix}#{thin_number[3..]}"
-    elsif thin_number.match?(/\A(33|262|594|596|687|689)[6|7]\d{8}\z/)
-      "#{prefix}#{thin_number[2..]}"
-    elsif thin_number.match?(/\A(33|262|594|596|687|689)0[6|7]\d{8}\z/)
-      "#{prefix}#{thin_number[3..]}"
-    elsif thin_number.match?(/\A0[6|7]\d{8}\z/)
-      "#{prefix}#{thin_number[1..]}"
-    else
-      nil
-    end
-  end
-
-  def send_sms_token
-    return unless phone.present? && student? && !created_by_teacher
-
-    create_phone_token
-    message = "Votre code de validation : #{phone_token}"
-    SendSmsJob.perform_later(user: self, message:)
-  end
-
   def confirm_by_phone!
     update(phone_token: nil,
            phone_token_validity: nil,
            confirmed_at: Time.now,
            phone_password_reset_count: 0)
+  end
+
+  def save_phone_user(user_params)
+    return true if phone && phone == clean_phone_number(user_params)
+    return false if clean_phone_number(user_params).blank?
+
+    self.phone = clean_phone_number(user_params)
+    !!save
+  end
+
+  def clean_phone_number(user_params)
+    phone_number = "#{user_params[:phone_prefix]}#{user_params[:phone_suffix]}"
+    phone_number.try(:delete, ' ')
   end
 
   def send_confirmation_instructions
@@ -263,6 +244,7 @@ class User < ApplicationRecord
   def create_default_internship_offer_area = nil
   def department_name = nil
   def resend_confirmation_phone_token = nil
+  def team = nil
 
   def already_signed?(internship_agreement_id:) = true
 
@@ -271,6 +253,9 @@ class User < ApplicationRecord
   def agreement_signatorable? = agreement_signatorable
   def anonymized? = anonymized
   def pending_invitation_to_a_team = []
+  def pending_agreements_actions_count = 0
+  def team_pending_agreements_actions_count = 0
+  def internship_agreements_query = InternshipAgreement.none
   def available_offers = InternshipOffer.none
   def team_members = User.none
 
@@ -296,22 +281,6 @@ class User < ApplicationRecord
 
   private
 
-  def concatenate_and_clean
-    # if prefix and suffix phone are given,
-    # this means an update temptative
-    if phone_prefix.present? && !phone_suffix.nil?
-      self.phone = "#{phone_prefix}#{phone_suffix}".gsub(/\s+/, '')
-      self.phone_prefix = nil
-      self.phone_suffix = nil
-    end
-    clean_phone
-  end
-
-  def clean_phone
-    self.phone = phone.delete(' ') unless phone.nil?
-    self.phone = nil if phone == '+33'
-  end
-
   def add_email_to_phone_account?
     phone.present? && confirmed? && email.blank?
   end
@@ -329,5 +298,16 @@ class User < ApplicationRecord
       :email,
       'Il faut conserver un email valide pour assurer la continuité du service'
     )
+  end
+
+  def password_complexity
+    return unless password.present?
+
+    unless password =~ /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?_&])/
+      errors.add :password, 'doit inclure au moins une minuscule, une majuscule, un chiffre et un caractère spécial'
+    end
+    return if password.length >= 12
+
+    errors.add :password, 'doit comporter au moins 12 caractères'
   end
 end

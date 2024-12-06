@@ -22,7 +22,7 @@ class CompaniesController < ApplicationController
 
   def show
     @company = params
-    @company.merge!(contact_message: contact_message)
+    @company.merge!(contact_message: Company.contact_message)
   end
 
   def contact
@@ -54,10 +54,11 @@ class CompaniesController < ApplicationController
     @level_name = ''
     iteration = 0
     coded_craft = CodedCraft.fetch_coded_craft(@appellation_code)
-    while iteration < 3 && @companies.to_a.count.zero? do
+    while iteration < 3 && @companies.to_a.count.zero?
       @level_name, sibling_coded_crafts = coded_craft.siblings(level: iteration)
       sibling_coded_crafts_codes = sibling_coded_crafts.pluck(:ogr_code)
       break if sibling_coded_crafts_codes.count > MAXIMUM_CODES_IN_LIST
+
       parameters.merge!(appellation_codes: sibling_coded_crafts_codes)
       @companies = filtered_companies(parameters)
       iteration += 1
@@ -73,18 +74,6 @@ class CompaniesController < ApplicationController
 
   def reject_missing_location_id_and_wrong_contact_mode(companies)
     companies.reject { |company| company['locationId'].blank? || company['contactMode'] != 'EMAIL' }
-  end
-
-  def contact_message
-    "Bonjour,\nJ’ai identifié votre entreprise sur le module Stages de 2de générale et technologique "\
-    "du ministère de l’éducation nationale (plateforme 1 jeune 1 solution). Immersion Facilitée a "\
-    "en effet signalé que vous êtes disposés à accueillir des élèves de seconde générale et "\
-    "technologique pour leur séquence d’observation en milieu professionnel entre le 17 et "\
-    "le 28 juin 2024.\n\n***Rédigez ici votre email de motivation.***\n\nPourriez-vous me contacter "\
-    "par mail ou par téléphone pour échanger sur mon projet de découverte de vos métiers ? "\
-    "Vous trouverez sur cet URL le modèle de convention à utiliser : \n"\
-    "https://www.education.gouv.fr/sites/default/files/ensel643_annexe1.pdf \n"\
-    "Avec mes remerciements anticipés."
   end
 
   def reject_companies_with_offers(companies)

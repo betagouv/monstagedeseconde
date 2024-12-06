@@ -1,0 +1,80 @@
+- if can?(:supply_offers, current_user)
+  div [data-controller='mandatory-fields grade select-weeks' data-mandatory-fields-minimum-length-value="8"]
+    = form.hidden_field :type, value: resource.type, data: { :"planning-candidates-target" => "type" } unless resource.is_a?(Planning)
+    .row
+      .col-md-6.order-md-2.order-1.d-none.d-md-block
+        - if form.object.new_record? && !duplication
+          = render 'dashboard/stepper/summary_card', form: form
+      .col-md-6.order-md-1.order-2
+        = form.hidden_field :school_id, value: form.object.school_id
+        .row
+          .col-12
+            = render 'inputs/dsfr_checkbox_field',
+              form: form,
+              field: :grade_college,
+              title: 'Votre offre sera proposée aux élèves des niveaux suivants :',
+              label: 'Collégiens (4ème et 3ème)',
+              extra_header_classes: 'fr-h6',
+              options: { data: {:'grade-target' => 'gradeCollege',
+                                action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick' ,
+                                :'select-weeks-target' => 'gradeCollege'  } }
+
+        .row data-grade-target="troisiemeContainer"
+          .col-12
+            = render partial: "weeks/checkbox_inputs",
+                              locals: { current_weeks: @available_weeks,
+                                        form: form,
+                                        render_employer_components: true }
+        .row
+          .col-12
+            hr
+        .row
+          .col-12
+            .d-none.fr-alert.fr-alert--error.fr-alert--sm data-grade-target="alertContainer"
+              p Vous devez sélectionner au moins un public parmi les lycéens et les collégiens
+            = render 'inputs/dsfr_checkbox_field',
+              form: form,
+              field: :grade_2e,
+              title: '',
+              label: 'Lycéens de 2de générale et technologique',
+              options: { data: {:'grade-target' => 'grade2e',
+                                action: 'grade#onClick click->select-weeks#onGrade2ndeClick' ,
+                                :'select-weeks-target' => 'grade2e' } }
+        .row data-grade-target="secondeContainer"
+          .col-12
+            = render '/dashboard/stepper/plannings/seconde_period_radio_buttons_fields',
+                    form: form,
+                    resource: form.object
+        .row
+          .col-12
+            hr
+        - klass = resource.class.to_s.split("s::").first
+        .row data-controller="planning-candidates" data-planning-candidates-base-type-value="#{klass}"
+          .col-12
+            = render '/dashboard/stepper/plannings/collective_or_individual_radio_buttons',
+                     form: form,
+                     resource: form.object
+        .row
+          .col-12
+            = render '/dashboard/stepper/plannings/daily_hours',
+                     form: form,
+                     resource: form.object
+        .row
+          .col-12
+            = react_component("ReservedSchoolInput",
+                              props: { label: "Commune ou nom de l'établissement pour lequel le stage est reservé",
+                                      required: false,
+                                      resourceName: form.object_name,
+                                      selectClassRoom: false,
+                                      existingSchool: form.object&.school&.as_json})
+
+    - if submit_button
+      .fr-mt-6w
+        = link_to 'Précédent',
+                  edit_dashboard_stepper_entreprise_path(resource.entreprise, show_resume: show_resume, entreprise_id: resource.entreprise.id),
+                  class: 'fr-btn fr-btn--secondary fr-mr-3w'
+        = button_tag :submit,
+                    class: 'fr-btn',
+                    data: { :'mandatory-fields-target' => "disabledField"}  do
+          = "Publier l'offre"
+

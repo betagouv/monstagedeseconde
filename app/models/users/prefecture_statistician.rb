@@ -6,7 +6,11 @@ module Users
 
     METABASE_DASHBOARD_ID = 3
 
-    def department_statistician?; true end
+    def department_statistician? = true
+
+    def department_name
+      Department.find_by(code: department).try(:name)
+    end
 
     def presenter
       Presenters::PrefectureStatistician.new(self)
@@ -14,7 +18,7 @@ module Users
 
     rails_admin do
       weight 3
-      navigation_label "Référents"
+      navigation_label 'Référents'
       list do
         field :first_name do
           label 'Prénom'
@@ -27,7 +31,7 @@ module Users
         end
         field :department do
           label 'Département'
-          pretty_value { bindings[:object]&.department}
+          pretty_value { bindings[:object]&.department }
         end
         field :statistician_validation do
           label 'Validation'
@@ -72,9 +76,9 @@ module Users
         end
         field :created_at do
           label "Date d'inscription"
-          formatted_value {
+          formatted_value do
             I18n.l(bindings[:object].created_at, format: '%d/%m/%Y')
-          }
+          end
         end
         field :department, :string do
           label 'Département'

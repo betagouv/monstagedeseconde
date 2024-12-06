@@ -23,14 +23,18 @@ module StepperProxy
 
       attribute :period, :integer, default: 0
 
-      def period_label
-        InternshipOffer::PERIOD_LABELS.values[period]
+      def self.current_period_labels
+        SchoolTrack::Seconde.current_period_labels.values
       end
 
-      def self.period_collection
-        InternshipOffer::PERIOD_LABELS.values.each.with_index(0).map do |value, index| 
+      def self.current_period_collection
+        current_period_labels.each.with_index(0).map do |value, index|
           [value, index]
         end
+      end
+
+      def current_period_label
+        HostingInfo.current_period_labels[period]
       end
 
       def is_individual?

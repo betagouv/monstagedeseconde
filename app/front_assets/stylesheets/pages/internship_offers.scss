@@ -326,6 +326,7 @@ $sortLinkOffset: 15px;
     }
   }
 }
+
 .fr-toggle input[type=checkbox] {
   margin-top: -5px ;
 }
@@ -412,4 +413,12 @@ $sortLinkOffset: 15px;
   position: absolute;
   bottom: -100px;
   width: 100%;
+}
+
+.fr-text--grey-425 {
+  color: $grey-425;
+}
+
+.sector {
+  font-size: 0.875rem !important;
 }

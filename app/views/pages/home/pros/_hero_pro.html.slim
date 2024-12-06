@@ -1,27 +1,30 @@
-header.bg-cover-image-homepage.container-xl.px-0
-  .container-monstage.container-xl.homepage
-    .row.fr-px-2w
-      .col-lg-12.col-md-12.px-0
-        .fr-pt-5w
-          h1.fr-h1.blue-france
-            | Un stage du 17 au 28 juin 2024,
-            br
-            | pour les élèves de seconde générale et technologique.
-        .d-flex.flex-row
-          .fr-mt-4w.blue-france.sub-hero
-            .sub-hero-text
-              |
-                Les élèves de classe de seconde générale et technologique scolarisés dans
-                les établissements scolaires relevant du ministère chargé de l'éducation et
-                du ministère chargé de l'agriculture ainsi que dans les établissements d'enseignement
-                privé sous contrat sont concernés par l'instauration d'une séquence
-                d'observation obligatoire en milieu professionnel.
-            .fr-mt-4w
-              = link_to 'Déposer une offre de stage',
-                        new_user_registration_path(as: 'Employer'),
-                        class: 'fr-btn fr-btn--md fr-mb-1w'
-
-          .fr-mr-2w.ml-auto.fr-mb-0.show-stamp-logo.d-none.d-md-block
-            = image_tag asset_pack_path('media/images/homepage/hero-side-stamp.png'),
-                        alt: 'Logo stade de 2de générale et technologique',
-                        class: 'stamp-logo fr-mb-2w fr-ml-4w'
+header.container-xl.px-0
+  / desktop display
+  .container-monstage.container-xl.homepage.visible.fr-pb-3w
+    .row
+      .col-12
+        .row.fr-px-2w.fr-pt-6w.fr-mb-2w
+          .col-lg-6.col-md-12.px-0
+            h1.fr-h3.blue-france
+              | Entreprises, administrations, partenaires, faites découvrir votre secteur d'activités et vos métiers aux élèves de
+              br
+              | de 4
+              sup e
+              | , 3
+              sup e 
+              | , et 2
+              sup de
+              |  générale et technologique.
+            .fr-text.blue-france
+              .row 
+                .col-12
+                  span.fr-text
+                    | Proposez des stages d’observation aux élèves et participez à leur découverte du monde professionnel tout en valorisant votre secteur d’activité.
+        
+          .col-lg-6.col-md-12.px-0.d-flex.align-items-center
+            = image_tag asset_pack_path('media/images/homepage/1eleve1stage_tag.png'),
+                        alt: 'Illustration élèves',
+                      class: 'img-fluid'
+        .row.fr-my-3w
+          .col-12 
+            = link_to 'Déposer une offre de stage', new_user_registration_path(as: 'Employer'), class: 'fr-btn'

@@ -1,0 +1,21 @@
+---
+version: "3"
+
+tasks:
+  default:
+    desc: Run MegaLinter for comprehensive code analysis.
+    vars:
+      CONTAINER_NAME: megalinter-container
+    preconditions:
+      - sh: "command -v docker &> /dev/null"
+        msg: "❌ Docker is not installed. Please run the 'docker:install' task first."
+    cmds:
+      - docker rm -f {{.CONTAINER_NAME}}
+      - sudo rm -rf ./megalinter-reports
+      - defer: docker rm -f {{.CONTAINER_NAME}}
+      - defer: docker cp {{.CONTAINER_NAME}}:/tmp/lint/megalinter-reports ./megalinter-reports && sudo chown -R $(id -u):$(id -g) megalinter-reports
+      - docker run --rm -d --name {{.CONTAINER_NAME}} -e MEGALINTER_CONFIG='.config/megalinter/config.yml' -v /var/run/docker.sock:/var/run/docker.sock:rw --entrypoint sleep oxsecurity/megalinter:v7 infinity
+      - docker cp {{.USER_WORKING_DIR}} {{.CONTAINER_NAME}}:/tmp/lint
+      - docker exec {{.CONTAINER_NAME}} /bin/bash /entrypoint.sh
+      - cmd: echo "🎉 All files correctly linted with megalinter!"
+        silent: true

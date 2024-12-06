@@ -1,70 +1,23 @@
 h3.fr-pt-4w Foire aux questions
 
 .row.fr-py-3w
-  .col-4.d-flex.align-items-stretch
-    .fr-card.fr-enlarge-link.without-arrow
-      .fr-card__body.fr-pt-2w
-        .fr-card__content
-          h3.fr-card__title.fr-mb-2w
-            = link_to "Qu’est-ce qu’une séquence d’observation en milieu professionnel ?", '#', class: 'text-dark'
-          p.fr-card__desc
-            |
-              Une séquence d’observation en milieu professionnel est un temps
-              offert aux élèves pour découvrir un environnement technologique,
-              économique et professionnel, en liaison avec les programmes
-              d’enseignement, notamment dans le cadre de l’éducation à l’orientation.
-            br
-            |
-              Elle contribue à donner un sens à cette éducation en favorisant
-              le contact direct avec les acteurs dans leur milieu professionnel.
-      .fr-card__header.fr-my-4w
-        ul.fr-badges-group.fr-p-4w
-          li
-            p.fr-badge.fr-badge--info.fr-badge--no-icon éducation
-  .col-4.d-flex.align-items-stretch
-    .fr-card.fr-enlarge-link.without-arrow
-      .fr-card__body.fr-pt-2w
-        .fr-card__content
-          h3.fr-card__title.fr-mb-2w
-            = link_to "Quelle est la durée de la séquence d’observation et quand se déroule-t-elle ?",
-                       '#', class: 'text-dark'
-          p.fr-card__desc
-            |
-              Les élèves de classe de seconde générale et technologique accomplissent
-              une séquence d’observation de deux semaines pendant le dernier mois
-              de l’année scolaire selon un calendrier national.
-              Elles s’effectuent sur temps scolaire. Cette période correspond à
-              celle des épreuves terminales du baccalauréat général et technologique.
-            br
-            | Pour l’année scolaire 2023-2024, celle-ci se déroulera du 17 au 28 juin 2024 inclus.
-
-      .fr-card__header.fr-my-4w
-        ul.fr-badges-group.fr-p-4w
-          li
-            p.fr-badge.fr-badge--info.fr-badge--no-icon éducation
-  .col-4.d-flex.align-items-stretch
-    .fr-card.fr-enlarge-link.without-arrow
-      .fr-card__body.fr-pt-2w
-        .fr-card__content
-          h3.fr-card__title.fr-mb-2w
-            = link_to "Comment s’effectue la signature de la convention de stage ?",
-                      '#', class: 'text-dark'
-          p.fr-card__desc
-            | Une fois la convention signée par la structure d'accueil, le chef d'établissement peut :
-            br
-            br
-            | 1. Se rendre sur l'onglet "Mes conventions"
-            br
-            | 2. Cliquer sur "Remplir la convention"
-            br
-            | 3. Imprimer la convention à la remettre à l'élève afin qu'il la signe / la fasse signer à ses parents
-      .fr-card__header.fr-my-4w
-        ul.fr-badges-group.fr-p-4w
-          li
-            p.fr-badge.fr-badge--info.fr-badge--no-icon éducation
+  - @faqs.each do |faq|
+     .col-md-4.col-12-xs.d-flex.align-items-stretch.fr-mb-2w
+       .fr-card
+         .fr-card__body.fr-pt-2w
+           .fr-card__content
+             h3.fr-card__title.fr-mb-2w.blue-france
+               = link_to faq[:question], faq[:url], class: 'fr-raw-link'
+             p.fr-card__desc
+               = faq[:answer].gsub(/<\/?pre>/, '').html_safe
+         .fr-card__header.fr-my-4w
+           ul.fr-badges-group.fr-p-4w
+             li
+               p.fr-badge.fr-badge--info.fr-badge--no-icon éducation
 
 .row.fr-py-3w
   .col-12.text-center
-    = link_to 'Accéder à la FAQ',
-              'https://zammad.incubateur.anct.gouv.fr/help/fr-fr/5',
-              class: 'fr-btn fr-btn--secondary'
+    = link_to 'Voir toutes les questions fréquentes',
+              'https://www.education.gouv.fr/',
+              class: 'fr-btn fr-btn--secondary',
+              target: '_blank'

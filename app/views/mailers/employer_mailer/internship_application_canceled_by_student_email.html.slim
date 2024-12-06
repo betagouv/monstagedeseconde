@@ -9,9 +9,9 @@ p style=p_styles
 p style=p_styles
   | Voici le motif de l’annulation :
   br
-  => @internship_application.canceled_by_student_message.to_s
+  => @internship_application.canceled_by_student_message.gsub("\n", "<br>").html_safe
 
 p style=p_styles
   | À bientôt,
   br
-  | L'équipe Mon stage de 2de.
+  | L'équipe 1élève1stage

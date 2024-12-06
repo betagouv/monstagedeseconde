@@ -12,12 +12,12 @@ module Dashboard
 
       sign_in(teacher)
       visit dashboard_school_class_rooms_path(school)
-      find("a.small.fr-raw-link.fr-tag.fr-tag--sm").click
+      find('a.small.fr-raw-link.fr-tag.fr-tag--sm').click
       click_link('Ajouter des élèves à cette classe')
       fill_in "Prénom de l'élève", with: 'Martin'
       fill_in "Nom de l'élève", with: 'Dupont'
-      fill_in "Adresse électronique", with: 'martin.dupont@free.fr'
-      find("#user_birth_date").set("01/01/2008")
+      fill_in 'Adresse électronique', with: 'martin.dupont@free.fr'
+      find('#user_birth_date').set('01/01/2008')
       find("label[for='select-gender-boy']").click
       click_button("Confirmer l'inscription de l'élève")
       find('.alert-success', text: 'Elève créé !')

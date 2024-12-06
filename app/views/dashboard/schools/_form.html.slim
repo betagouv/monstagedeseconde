@@ -14,7 +14,10 @@ div data-controller='select-weeks'
             = "Nom de l'établissement"
             = f.rg2a_required_content_tag
 
-          = f.text_field :name, class: "fr-input col-lg-6", required:true
+          = f.text_field :name,
+                         class: "fr-input col-lg-6",
+                         maxlength: 150,
+                         required:true
 
         .form-group
           .fr-checkbox-group.fr-checkbox-group--sm
@@ -25,12 +28,12 @@ div data-controller='select-weeks'
         legend= "Localisation"
 
         = react_component("AddressInput", props: { resourceName: :school,
-                                                  currentStreet: @school.street,
-                                                  currentCity: @school.city,
-                                                  currentZipcode: @school.zipcode,
-                                                  currentLatitude: @school.coordinates.try(:lat).try(:to_f),
-                                                  currentLongitude: @school.coordinates.try(:lng).try(:to_f),
-                                                  currentFullAddress: @school.formatted_autocomplete_address})
+                                                   currentStreet: @school.street,
+                                                   currentCity: @school.city,
+                                                   currentZipcode: @school.zipcode,
+                                                   currentLatitude: @school.coordinates.try(:lat).try(:to_f),
+                                                   currentLongitude: @school.coordinates.try(:lng).try(:to_f),
+                                                   currentFullAddress: @school.formatted_autocomplete_address})
 
 
     - else

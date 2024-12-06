@@ -1,13 +1,8 @@
-- content_for(:page_title, "#{t(".page_title", name: @internship_offer.title)} | Monstage")
+- content_for(:page_title, "#{t(".page_title", name: @internship_offer.title)} | 1élève1stage")
 - content_for(:canonical_url, internship_offer_url(@internship_offer))
 
 = render 'layouts/breadcrumb',
          links: [[dashboard_internship_offers_path, 'Dashboard'], [internship_offer_path(@internship_offer), @internship_offer.title]]
-- if @internship_offer.drafted?
-  = render "dashboard/stepper/steps", { current_step_number: 5,
-                                        total_steps: 5,
-                                        current_step_title: "Valider le récapitulatif de l'offre",
-                                        next_step_title: '' }
 
 div.fr-container
   - if can?(:create, InternshipOffer)
@@ -21,9 +16,11 @@ div.fr-container
                  hidden_parts: false
     .col-sm-4.col-12.mb-4.d-none.d-sm-block
       .sticky-top.fr-px-1w.fr-py-2w.internship-offer-side-description
-        = render "internship_offers/show_side_details", internship_offer: @internship_offer
+        = render "internship_offers/show_side_details",
+                 internship_offer: @internship_offer
 .d-flex.actions.d-flex.d-block.d-sm-none.d-xs-stick.fr-py-2w.align-items-center.justify-content-center
-  = render "internship_offers/apply_cta", internship_offer: @internship_offer
+  = render "internship_offers/apply_cta",
+           internship_offer: @internship_offer
 
 - if can?(:discard, InternshipOffer)
   = render "dashboard/internship_offers/delete_internship_offer_modal",
@@ -37,10 +34,7 @@ div.fr-container.d-flex.fr-mt-2w
             button.fr-mr-1w.fr-btn.fr-icon-delete-line.fr-btn--icon.fr-btn--secondary.test-discard-button data-fr-opened="false" aria-controls="discard-internship-offer-modal"
       - if can?(:update, @internship_offer)
         - url = edit_dashboard_internship_offer_path(@internship_offer)
-        - if @internship_offer.practical_info_id
-          - url = edit_dashboard_stepper_practical_info_path(@internship_offer.practical_info_id, hosting_info_id: @internship_offer.hosting_info_id, organisation_id: @internship_offer.organisation_id, internship_offer_info_id: @internship_offer.internship_offer_info_id)
+        / - if @internship_offer.planning_id && @internship_offer.planning_id > 0
+        /   - url = edit_dashboard_stepper_planning_path(@internship_offer.planning_id)
         = link_to 'Modifier', url, class: 'fr-btn fr-mr-1w fr-btn--secondary'
-      = button_to 'Publier',
-                  publish_dashboard_internship_offer_path(@internship_offer),
-                  data: { turbo: false },
-                  class: 'fr-btn fr-ml-1w'
+      

@@ -51,3 +51,6 @@ signature_storage
 /infra/disaster/docker/backup_manager/_docker-run-with-env.sh
 /dump.rdb
 *.code-workspace
+megalinter-reports/
+venv
+copier.yml

@@ -48,7 +48,6 @@ module Dashboard
       @school = School.find(params.require(:school_id))
     end
 
-
     private
 
     def set_school
@@ -80,7 +79,6 @@ module Dashboard
                                      :name,
                                      :visible,
                                      :agreement_conditions_rich_text,
-                                     :period,
                                      coordinates: {})
     end
 

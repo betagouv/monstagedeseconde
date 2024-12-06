@@ -45,9 +45,11 @@ module Finders
       params[:radius]
     end
 
-    # def school_year_param
-    #    return params[:school_year].to_i if check_param?(:school_year)
-    # end
+    def school_year_param
+      return SchoolTrack::Seconde.current_year unless params.key?(:school_year)
+
+      params[:school_year].to_i
+    end
 
     def use_params(param_key)
       params[param_key].presence
@@ -64,12 +66,12 @@ module Finders
       query = yield
       %i[
         keyword
-        period
         sector_ids
+        week_ids
+        school_year
       ].each do |sym_key|
-        query = self.send("#{sym_key}_query", query) if use_params(sym_key)
+        query = send("#{sym_key}_query", query) if use_params(sym_key)
       end
-      # query = school_year_query(query) if school_year_param
       query = hide_duplicated_offers_query(query) unless user.god?
       query = nearby_query(query) if coordinate_params
       query
@@ -83,9 +85,13 @@ module Finders
       query.where(sector_id: use_params(:sector_ids))
     end
 
-    # def school_year_query(query)
-    #   query.merge(InternshipOffer.specific_school_year(school_year: school_year_param))
-    # end
+    def week_ids_query(query)
+      query.merge(InternshipOffer.by_weeks(weeks: OpenStruct.new(ids: use_params(:week_ids))))
+    end
+
+    def school_year_query(query)
+      query.merge(InternshipOffer.with_school_year(school_year: school_year_param))
+    end
 
     def keyword_query(query)
       query.merge(InternshipOffer.search_by_keyword(use_params(:keyword)).group(:rank))

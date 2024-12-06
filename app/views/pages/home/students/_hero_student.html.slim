@@ -17,20 +17,28 @@ header.container-xl.px-0
   - else
     / desktop display
     .container-monstage.container-xl.homepage.visible
-      .row
-        .col-lg-12.col-md-12
-          .d-flex.flex-row
-            .blue-france.sub-hero
-              .fr-h6.fr-mt-4w.fr-mb-1w.blue-france
-                | Élèves de 2de générale et technologique,
-              .div
-                h1.fr-h1.blue-france
-                  | Trouvez ici un stage de qualité
-
-            .fr-mr-2w.ml-auto.show-stamp-logo.d-none.d-md-block
-              = image_tag asset_pack_path('media/images/homepage/everyone/ms2e-stamp-medium.png'),
-                          alt: 'Logo stade de 2de générale et technologique',
-                          class: 'stamp-logo-medium fr-mt-5w fr-ml-4w'
+      .row.fr-px-2w.fr-pt-6w.fr-mb-2w
+        .col-lg-6.col-md-12.px-0
+          h1.fr-h3.blue-france
+            | Des stages de qualité dédiés aux élèves
+            br
+            | de 4
+            sup e
+            | , 3
+            sup e 
+            | , et 2
+            sup de
+            |  générale et technologique.
+          .fr-text.blue-france
+            .row 
+              .col-12
+                span.font-weight-bold
+                  | 1élève1stage 
+                | offre aux élèves la possibilité de réaliser des stages d’observation de qualité. Elle facilite les interactions entre les écoles et les entreprises, permettant une première expérience dans le monde professionnel.
+        .col-lg-6.col-md-12.px-0.d-flex.align-items-center
+          = image_tag asset_pack_path('media/images/homepage/1eleve1stage_tag.png'),
+                      alt: 'Illustration élèves',
+                      class: 'img-fluid'
 
       .row.no-gutters.fr-py-2w.fr-mb-4w.d-none.d-sm-block.search-tabs-offers.fr-px-0
         .col-12
@@ -61,6 +69,26 @@ header.container-xl.px-0
             = "Rechercher un stage"
       .row
         .col-12.fr-mt-2w
+
+
+
+/ header.container-xl.px-0
+/   / desktop display
+/   .container-monstage.container-xl.homepage.visible.fr-pb-3w
+/     .row
+/       .col-12.sub-hero
+/         .blue-france
+/           .fr-h3.fr-mt-4w.fr-mb-1w.blue-france
+/             | Élèves de 4ème, 3ème et 2de générale
+/           .fr-h3.blue-france
+/               | et technologique, trouvez ici un stage de qualité.
+/         .row 
+/           .col-12.col-md-6
+/             p Nullam mauris pellentesque nunc arcu a donec vulputate amet. Urna quis enim curabitur vitae adipiscing quam augue nisi sit. Duis libero at id neque eu in tincidunt et ultrices turpis.
+
+/         .row.fr-my-3w
+/           .col-12 
+/             = link_to 'Trouver un stage', internship_offers_path(current_user_or_visitor.default_search_options), class: 'fr-btn fr-btn--icon-right fr-icon-search-line'
 
 
 

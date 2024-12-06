@@ -1,22 +1,22 @@
 {
   "sectors": [
     {
-      "id": 4685,
+      "id": 248,
       "name": "Agriculture",
       "external_url": "",
-      "uuid": "d8030346-f19d-42d2-b633-6545ed381f49"
+      "uuid": "3c6128a1-7f1c-40f7-b4c1-da1fe1beadfe"
     },
     {
-      "id": 4686,
+      "id": 249,
       "name": "Agroalimentaire",
       "external_url": "",
-      "uuid": "bd9a525a-5b3b-4380-9d6f-4f0afaf0b719"
+      "uuid": "1a70bd62-5df0-4da9-b0e3-feb6e61d57d5"
     },
     {
-      "id": 4687,
+      "id": 250,
       "name": "Architecture",
       "external_url": "",
-      "uuid": "0fa8797b-b4b4-41f1-b7c8-3a2cc8dc72c1"
+      "uuid": "2275d4b0-998b-44c2-a4ca-f5c36dd64377"
     }
   ]
 }

@@ -6,7 +6,12 @@
     .fr-px-1w
       = render 'layouts/breadcrumb',
               links: [['', 'Confirmez votre compte'] ]
-
+    / .body
+    /   - unless !@confirmable_user
+    /     p
+    /       span.confirmation-text= "Votre compte a bien été enregistré "
+    /       strong= "(#{user.phone})"
+    /       = "."
     .onboarding-card-lg.mb-4.p-2.light-blue-background
       - if @confirmable_user.try(:confirmed_at)
         - user = User.find_by(id: params[:id])
@@ -89,4 +94,22 @@
 
 
 
+      = form_tag phone_validation_path,
+                 method: :post,
+                 data: { turbo: false } do
+        p.small.text-muted aria-hidden='true'
+            = "Les champs avec "
+            abbr class='text-danger' title='(obligatoire)' *
+            = " sont obligatoires."
+        = hidden_field_tag :phone, user.phone
+        .form-group.custom-label-container
+          = label_tag :phone_token, class: 'fr-label' do
+            = 'Code de confirmation'
+            = content_tag(:abbr, '*', title: '(obligatoire)', aria: { hidden: 'true' })
+          = text_field_tag :phone_token,
+                           nil,
+                           class: 'fr-input',
+                           maxlength: 4,
+                           required: true,
+                           placeholder: "ex: 1234"
 

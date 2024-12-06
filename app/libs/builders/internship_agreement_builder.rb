@@ -3,7 +3,6 @@
 module Builders
   # wrap internship offer creation logic / failure for API/web usage
   class InternshipAgreementBuilder < BuilderBase
-
     def new_from_application(internship_application)
       authorize :new, InternshipAgreement
       internship_agreement = InternshipAgreement.new(
@@ -49,17 +48,18 @@ module Builders
       @callback = Callback.new
     end
 
-    def preprocess_terms(soft_saving= false)
+    def preprocess_terms(soft_saving = false)
       return { enforce_school_manager_validations: !soft_saving } if user.school_management?
       return { enforce_main_teacher_validations: !soft_saving } if user.main_teacher?
       return { enforce_employer_validations: !soft_saving } if user.employer_like?
       return { skip_validations_for_system: true } if user.is_a?(Users::God)
+
       raise ArgumentError, "#{user.type} can not create agreement yet"
     end
 
     def preprocess_internship_application_params(internship_application)
       {
-        date_range: "Du #{internship_application.internship_offer.first_date.strftime( "%d/%m/%Y")} au #{internship_application.internship_offer.last_date.strftime( "%d/%m/%Y")}",
+        date_range: "Du #{internship_application.internship_offer.first_date.strftime('%d/%m/%Y')} au #{internship_application.internship_offer.last_date.strftime('%d/%m/%Y')}",
         student_legal_representative_email: internship_application.student.legal_representative_email,
         student_legal_representative_phone: internship_application.student.legal_representative_phone,
         student_legal_representative_full_name: internship_application.student.legal_representative_full_name,
@@ -75,11 +75,11 @@ module Builders
         tutor_full_name: internship_offer.tutor_name,
         tutor_role: internship_offer.try(:tutor_role),
         tutor_email: internship_offer.try(:tutor_email),
-        activity_preparation_rich_text: internship_offer.description_rich_text.body,
+        activity_preparation: internship_offer.description,
         daily_hours: internship_offer.daily_hours,
         weekly_hours: internship_offer.weekly_hours,
         lunch_break: internship_offer.lunch_break,
-        weekly_lunch_break: internship_offer&.weekly_lunch_break,
+        weekly_lunch_break: internship_offer&.lunch_break,
         employer_name: internship_offer.employer_name,
         employer_contact_email: internship_offer.employer.email,
         internship_address: "#{internship_offer.street}, #{internship_offer.zipcode} #{internship_offer.city}"
@@ -89,23 +89,23 @@ module Builders
     def preprocess_student_to_params(student)
       main_teacher = student&.class_room&.main_teacher
       school_manager = student.school_manager
-      if student.class_room
-        student_class_room = student&.class_room&.name
-      else
-        student_class_room = ""
-      end
+      student_class_room = if student.class_room
+                             student&.class_room&.name
+                           else
+                             ''
+                           end
       {
         student_school: student.presenter.formal_school_name,
         school_representative_full_name: school_manager&.presenter&.full_name,
-        school_representative_phone:User.sanitize_mobile_phone_number(school_manager.try(:phone), "+330") ,
+        school_representative_phone: User.sanitize_mobile_phone_number(school_manager.try(:phone), '+330'),
         school_representative_role: "Chef d'établissement",
         school_representative_email: school_manager&.email,
         student_refering_teacher_full_name: main_teacher&.presenter&.full_name || 'N/A',
         student_refering_teacher_email: main_teacher&.email,
-        student_refering_teacher_phone: User.sanitize_mobile_phone_number(main_teacher&.phone, "+330"),
-        student_phone:  User.sanitize_mobile_phone_number(student.phone, "+330"),
+        student_refering_teacher_phone: User.sanitize_mobile_phone_number(main_teacher&.phone, '+330'),
+        student_phone: User.sanitize_mobile_phone_number(student.phone, '+330'),
         student_full_name: student.name,
-        student_class_room: student_class_room,
+        student_class_room:,
         legal_status: student.school.legal_status
       }
       # student_class_room is not used ...

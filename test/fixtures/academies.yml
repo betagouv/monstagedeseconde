@@ -1,0 +1,128 @@
+Clermont:
+  name: Académie de Clermont-Ferrand
+  email_domain: ac-clermont.fr
+  academy_region: Auvergne
+Grenoble:
+  name: 'Académie de Grenoble'
+  email_domain:  ac-grenoble.fr
+  academy_region: Auvergne
+Lyon:
+  name: Académie de Lyon
+  email_domain: ac-lyon.fr
+  academy_region: Auvergne
+Besancon:
+  name: Académie de Besançon
+  email_domain: ac-besancon.fr
+  academy_region: Bourgogne
+Dijon:
+  name: Académie de Dijon
+  email_domain: ac-dijon.fr'
+  academy_region: Bourgogne
+Rennes:
+  name: Académie de Rennes
+  email_domain: ac-rennes.fr
+  academy_region: Bretagne
+Tours:
+  name: Académie d'OrléansTours
+  email_domain: ac-orleans-tours.fr
+  academy_region: Loire
+Corse:
+  name: Académie de Corse
+  email_domain: ac-corse.fr
+  academy_region: Corse
+Nancy:
+  name: Académie de Nancy-Metz
+  email_domain: ac-nancy-metz.fr
+  academy_region: Est
+Reims:
+  name: Académie de Reims
+  email_domain: ac-reims.fr
+  academy_region: Est
+Strasbourg:
+  name: Académie de Strasbourg
+  email_domain: ac-strasbourg.fr
+  academy_region: Est
+Guadeloupe:
+  name: 'Académie de la Guadeloupe'
+  email_domain: ac-guadeloupe.fr
+  academy_region: Guadeloupe
+Guyane:
+  name: Académie de la Guyane
+  email_domain: ac-guyane.fr
+  academy_region: Guyane
+Caledonie:
+  name: Académie de la Nouvelle-Calédonie
+  email_domain: ac-noumea.nc
+  academy_region: Caledonie
+Polynésie:
+  name: Académie de la Nouvelle-Calédonie
+  email_domain: ac-polynesie.pf
+  academy_region: Polynesie
+Reunion:
+  name: Académie de La Réunion
+  email_domain: ac-reunion.fr
+  academy_region: Reunion
+Mayotte:
+  name: Académie de Mayotte
+  email_domain: ac-mayotte.fr
+  academy_region: Mayotte
+Amiens:
+  name: Académie d'Amiens
+  email_domain: ac-amiens.fr
+  academy_region: Nord
+Lille:
+  name: Académie de Lille
+  email_domain: ac-lille.fr
+  academy_region: Nord
+Creteil:
+  name: Académie de Créteil
+  email_domain: ac-creteil.fr
+  academy_region: Ile
+Paris:
+  name: Académie de Paris
+  email_domain: ac-paris.fr
+  academy_region: Ile
+Versailles:
+  name: Académie de Versailles
+  email_domain: ac-versailles.fr
+  academy_region: Ile
+Martinique:
+  name: Académie de Martinique
+  email_domain: ac-martinique.fr
+  academy_region: Martinique
+Normandie:
+  name: Académie de Normandie
+  email_domain: ac-normandie.fr
+  academy_region: Normandie
+Bordeaux:
+  name: Académie de Bordeaux
+  email_domain: ac-bordeaux.fr
+  academy_region: Aquitaine
+Limoges:
+  name: Académie de Limoges
+  email_domain: ac-limoges.fr
+  academy_region: Aquitaine
+Poitiers:
+  name: Académie de Poitiers
+  email_domain: ac-poitiers.fr
+  academy_region: Aquitaine
+Montpellier:
+  name: Académie de Montpellier
+  email_domain: ac-montpellier.fr
+  academy_region: Occitanie
+Toulouse:
+  name: Académie de Toulouse
+  email_domain: ac-toulouse.fr
+  academy_region: Occitanie
+Nantes:
+  name: Académie de Nantes
+  email_domain: ac-nantes.fr
+  academy_region: Loire
+Marseille:
+  name: Académie de Marseilles
+  email_domain: ac-marseille.fr
+  academy_region: Provence
+Nice:
+  name: Académie de Nice
+  email_domain: ac-nice.fr
+  academy_region: Provence

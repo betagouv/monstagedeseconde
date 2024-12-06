@@ -20,7 +20,6 @@ module Users
 
     test 'creation succeed' do
       school = build(:school, :with_school_manager)
-      create(:department, name: 'Paris')
       other = Users::SchoolManagement.new(
         role: :other,
         email: "jeanne@#{school.email_domain_name}",
@@ -33,6 +32,5 @@ module Users
 
       assert other.valid?
     end
-
   end
 end

@@ -1,0 +1,61 @@
+- error = form.object.errors[:individual].any?
+- checked = (resource.new_record? && params[:duplicate_id].blank? && resource.errors.empty?) || resource.is_individual?
+fieldset.fr-fieldset
+  .row.w-100
+    .col-6
+      .fr-fieldset__element
+        .fr-radio-group.fr-radio-rich
+          = radio_button_tag :internship_type,
+                              true,
+                              checked,
+                              class: '',
+                              data: { :'planning-candidates-target' => 'individualButton',
+                                      action: "change->planning-candidates#toggleInternshipmaxCandidates" }
+
+          = label_tag :internship_type_true, class: 'fr-label no-padding-right' do
+            = "Stage individuel"
+            span.fr-hint-text
+              | Un seul élève par semaine
+    .col-6
+      .fr-fieldset__element.fr-mr-n3w
+        .fr-radio-group.fr-radio-rich
+          = radio_button_tag :internship_type,
+                              false,
+                              !checked,
+                              class: 'no-padding-right',
+                              data: { :'planning-candidates-target' => 'collectiveButton',
+                                      action: "change->planning-candidates#toggleInternshipmaxCandidates" }
+          = label_tag :internship_type_false, class: 'fr-label no-padding-right' do
+            = "Stage collectif"
+            span.fr-hint-text
+              | Plusieurs élèves par semaine
+
+.form-group.form-group-select-max-candidates
+  = form.label :max_candidates, class: 'fr-label' do
+    = "Nombre total d'élèves que vous souhaitez accueillir sur la période de stage"
+  = form.number_field :max_candidates,
+                      class: "fr-input",
+                      value: resource.max_candidates,
+                      placeholder: "Nombre d'élèves prévus pour cette offre",
+                      disabled: false,
+                      required: true,
+                      pattern: "[0-9]{1,5}",
+                      inputmode: "numeric",
+                      min: resource.is_a?(InternshipOffer) ? (resource.internship_applications.try(:approved).try(:count) || 0) : 0,
+                      data: { :"planning-candidates-target" => 'maxCandidatesInput',
+                              action: "change->planning-candidates#handleMaxCandidatesChanges"}
+  .d-none data-planning-candidates-target="studentsMaxCandidatesGroup"
+    = form.label :max_students_per_group, class: 'fr-label fr-mt-2w' do
+      = "Nombre maximal d’élèves par groupe"
+    = form.number_field :max_students_per_group ,
+                        class: "fr-input",
+                        value: resource.max_students_per_group,
+                        placeholder: "Nombre maximal d’élèves par groupe",
+                        disabled: false,
+                        required: true,
+                        pattern: "[0-9]{1,5}",
+                        inputmode: "numeric",
+                        min: resource.is_a?(InternshipOffer) ? (resource.internship_applications.try(:approved).try(:count) || 0) : 0,
+                        data: { :"planning-candidates-target" => 'studentsMaxGroupInput',
+                                action: "change->planning-candidates#handleMaxCandidatesPerGroupChanges"}
+

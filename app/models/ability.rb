@@ -78,10 +78,10 @@ class Ability
 
   def student_abilities(user:)
     can :look_for_offers, User
-    # can :resend_confirmation_phone_token, User do |user|
-    #   puts( user) && user.phone.present? && user.student?
-    # end
-    can :resend_confirmation_phone_token, User
+    can :resend_confirmation_phone_token, User do |user|
+      user.phone.present? && user.student?
+    end
+    can :sign_with_sms, User
     can :show, :account
     can :change, ClassRoom do |class_room|
       class_room.school_id == user.school_id
@@ -145,7 +145,7 @@ class Ability
       create
       edit
       sign_internship_agreements
-      edit_activity_rating_rich_text
+      edit_activity_rating
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
       edit_school_representative_full_name
@@ -206,16 +206,38 @@ class Ability
     end
     can %i[create see_tutor], InternshipOffer
     can %i[read update discard publish], InternshipOffer, employer_id: user.team_members_ids
-    can %i[create], InternshipOfferInfo
-    can %i[create], HostingInfo
-    can %i[create], PracticalInfo
-    can %i[create], Organisation
-    can %i[update edit renew], InternshipOfferInfo, employer_id: user.team_members_ids
-    can %i[update edit renew], HostingInfo, employer_id: user.team_members_ids
-    can %i[update edit renew], PracticalInfo, employer_id: user.team_members_ids
-    can %i[update edit], Organisation, employer_id: user.team_members_ids
-    can %i[create], Tutor
+    # legacy_abilities for stepper
+    # can %i[create], InternshipOfferInfo
+    # can %i[create], HostingInfo
+    # can %i[create], PracticalInfo
+    # can %i[create], Organisation
+    # new_abilities for stepper
+    can %i[create], InternshipOccupation
+    can %i[create], Entreprise do |entreprise|
+      entreprise.internship_occupation.employer_id == user.id
+    end
+    can %i[create], Planning do |planning|
+      planning.entreprise.internship_occupation.employer_id == user.id
+    end
+    # legacy_abilities for stepper
+    # can %i[update edit renew], InternshipOfferInfo, employer_id: user.team_members_ids
+    # can %i[update edit renew], HostingInfo, employer_id: user.team_members_ids
+    # can %i[update edit renew], PracticalInfo, employer_id: user.team_members_ids
+    # can %i[update edit], Organisation, employer_id: user.team_members_ids
+    # new_abilities for stepper
+    can %i[update edit renew], InternshipOccupation, employer_id: user.team_members_ids
+    can %i[update edit renew], Entreprise do |entreprise|
+      entreprise.internship_occupation.employer_id.in?(user.team_members_ids)
+    end
+    can %i[update edit renew], Planning do |planning|
+      planning.entreprise.internship_occupation.employer_id.in?(user.team_members_ids)
+    end
     can %i[index update], InternshipApplication
+    can %i[update_multiple], InternshipApplication do |internship_applications|
+      internship_applications.all? do |internship_application|
+        internship_application.internship_offer.employer_id == user.team_id
+      end
+    end
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)
     end
@@ -238,13 +260,13 @@ class Ability
       edit_internship_address
       edit_tutor_email
       edit_tutor_role
-      edit_activity_scope_rich_text
-      edit_skills_observe_rich_text
-      edit_skills_communicate_rich_text
-      edit_skills_understand_rich_text
-      edit_skills_motivation_rich_text
-      edit_activity_preparation_rich_text
-      edit_activity_learnings_rich_text
+      edit_activity_scope
+      edit_skills_observe
+      edit_skills_communicate
+      edit_skills_understand
+      edit_skills_motivation
+      edit_activity_preparation
+      edit_activity_learnings
       edit_date_range
       edit_organisation_representative_full_name
       edit_siret
@@ -298,17 +320,13 @@ class Ability
       many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
       current_area_notifications_are_off = !user.fetch_current_area_notification.notify
 
-      # TODO : logic to be checked with current_area_notifications_are_off
       user.team.alive? &&
         (many_people_in_charge_of_area || current_area_notifications_are_off)
     end
 
     can :manage_abilities, AreaNotification do |area_notification|
-      if user.team.not_exists?
-        false
-      else
+      user.team.alive? &&
         area_notification.internship_offer_area.employer_id.in?(user.team_members_ids)
-      end
     end
   end
 
@@ -341,7 +359,7 @@ class Ability
 
     can :show, :api_token
 
-    can %i[create], Organisation
+    can %i[create], InternshipOccupation
 
     can %i[index], Acl::Reporting, &:allowed?
 
@@ -357,7 +375,7 @@ class Ability
 
   def education_statistician_abilities(user:)
     common_to_all_statisticians(user:)
-    can %i[create], Organisation
+    can %i[create], InternshipOccupation
     can %i[index], Acl::Reporting, &:allowed?
 
     can %i[index_and_filter], Reporting::InternshipOffer
@@ -372,8 +390,8 @@ class Ability
   def ministry_statistician_abilities(user:)
     common_to_all_statisticians(user:)
 
-    can %i[create], Organisation do |organisation|
-      organisation.group.in?(user.ministries) && organisation.is_public
+    can %i[create], InternshipOccupation do |internship_occupation|
+      internship_occupation.group.in?(user.ministries) && internship_occupation.is_public
     end
 
     can %i[index_and_filter], Reporting::InternshipOffer
@@ -473,7 +491,7 @@ class Ability
       read
       create
       edit
-      edit_activity_rating_rich_text
+      edit_activity_rating
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
       edit_school_representative_full_name

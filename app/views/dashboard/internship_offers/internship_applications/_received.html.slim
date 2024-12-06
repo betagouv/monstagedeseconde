@@ -1,55 +1,90 @@
-.fr-table.fr-table--bordered.fr-table--no-caption
-  table
-    thead
-      tr
-        th[scope="col"]
-          | Nom de l'élève
-        th[scope="col"]
-          | Intitulé du stage
-        th[scope="col"]
-          | Candidature annulée
-          br/
-          | dans
-        th[scope="col"]
-          | Statut
-        th[scope="col"]
-          | Action
-    - if internship_applications.empty?
-      tbody
+div
+  .fr-table.fr-table--bordered.fr-table--no-caption
+    table
+      thead
         tr
-          td.text-center[colspan="5"]
-            | Aucune candidature reçue
-    - else
-      tbody
-        - internship_applications.each do |internship_application|
-          - prez = internship_application.presenter(current_user)
+          th[scope="col"]
+            = check_box_tag "select_all", false, false, class: 'fr-checkbox', data: { action: 'change->internship-application-index#toggleSelectAll', target: 'internship-application-index.selectAll' }
+          th[scope="col"]
+            | Nom de l'élève
+          th[scope="col"]
+            | Intitulé du stage
+          th[scope="col"]
+            | Candidature annulée
+            br/
+            | dans
+          th[scope="col"]
+            | Statut
+          th[scope="col"]
+            | Action
+      - if internship_applications.empty?
+        tbody
           tr
-            td.col-name
-              = prez.student.presenter.full_name
-            td.col-title
-              - prez_offer = internship_application.internship_offer.presenter
-              = prez.internship_offer.title
-              br/
-              = prez_offer.address
-            td.col-canceled-in
-              = internship_application.expired? ? '-' : prez.expires_in
-            td.col-status
-              p class="fr-mt-1w fr-badge fr-badge--sm fr-badge--#{prez.human_state[:badge]} fr-badge--no-icon"
-                = prez.human_state[:label]
-            td.text-center style="width: 100px;" data-controller="toggle-activate"
-              = form_with( model: internship_application,
-                            url: set_to_read_dashboard_internship_offer_internship_application_path(prez.internship_offer, internship_application),
-                            scope: :internship_application,
-                            data: { turbo: false },
-                            method: :PATCH) do |f|
-                = link_to "#",
-                          title: "Répondre à la candidature",
-                          data: { :'toggle-activate-target' => 'checkToggle',
-                                  action: 'click->toggle-activate#toggle',
-                                  :'toggle-activate-type-param' => 'form' },
-                          class: 'fr-raw-link fr-text--sm d-flex' do
-                  - if internship_application.expired?
-                    | Voir 
-                  - else
-                    span.fr-icon-mail-line.fr-icon--sm.fr-mr-1v aria-hidden="true"
-                    |Répondre
+            td.text-center[colspan="6"]
+              | Aucune candidature reçue
+      - else
+        tbody
+          - internship_applications.each do |internship_application|
+            - prez = internship_application.presenter(current_user)
+            tr
+              td
+                = check_box_tag "selected_applications[]", internship_application.id, false, 
+                                  class: 'fr-checkbox', 
+                                  data: { action: 'change->internship-application-index#toggleCheckbox', target: 'internship-application-index.applicationCheckbox' }
+              td.col-name
+                = prez.student.presenter.full_name
+              td.col-title
+                - prez_offer = internship_application.internship_offer.presenter
+                = prez.internship_offer.title
+                br/
+                = prez_offer.address
+              td.col-canceled-in
+                = internship_application.expired? ? '-' : prez.expires_in
+              td.col-status
+                p class="fr-mt-1w fr-badge fr-badge--sm fr-badge--#{prez.human_state[:badge]} fr-badge--no-icon"
+                  = prez.human_state[:label]
+              td.text-center style="width: 100px;" data-controller="toggle-activate"
+                = form_with( model: internship_application,
+                              url: set_to_read_dashboard_internship_offer_internship_application_path(prez.internship_offer, internship_application),
+                              scope: :internship_application,
+                              data: { turbo: false },
+                              method: :PATCH) do |f|
+                  = link_to "#",
+                            title: "Répondre à la candidature",
+                            data: { :'toggle-activate-target' => 'checkToggle',
+                                    action: 'click->toggle-activate#toggle',
+                                    :'toggle-activate-type-param' => 'form' },
+                            class: 'fr-raw-link fr-text--sm d-flex' do
+                    - if internship_application.expired?
+                      | Voir 
+                    - else
+                      span.fr-icon-mail-line.fr-icon--sm.fr-mr-1v aria-hidden="true"
+                      |Répondre
+  
+  .modal-container
+    = render partial: 'dashboard/internship_offers/internship_applications/actions/multiple_update', locals: { modal_id: 'acceptation-modal',
+      modal_target: 'acceptationModal',
+      close_action: 'closeAcceptationModal',
+      action_text: 'accepter',
+      transition: 'employer_validate',
+      description: "En confirmant cette action, les élèves seront notifiés de votre acceptation. Ils devront à leur tour confirmer leur volonté de participer au stage afin qu'une convention soit générée.",
+      submit_text: "Confirmer l'acceptation",
+      url: dashboard_update_multiple_internship_applications_path}
+    
+    = render partial: 'dashboard/internship_offers/internship_applications/actions/multiple_update', locals: { modal_id: 'rejection-modal',
+      modal_target: 'rejectionModal',
+      close_action: 'closeRejectionModal',
+      action_text: 'refuser',
+      transition: 'reject',
+      description: "En confirmant cette action, les élèves seront notifiés de votre refus. Vous devez également ajouter un motif de refus pour permettre aux élèves de comprendre votre décision.",
+      submit_text: "Confirmer le refus",
+      url: dashboard_update_multiple_internship_applications_path}
+
+css:
+  .fr-menu {
+    display: none;
+  }
+
+  .fr-menu[aria-hidden="false"] {
+    display: block;
+  }

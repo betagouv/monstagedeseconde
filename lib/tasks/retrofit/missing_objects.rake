@@ -16,12 +16,12 @@ def create_organisation_from_internship_offer(offer)
     is_paqte: false
   }
   organisation_id = Organisation.find_or_create_by!(attributes).id
-  offer.update_columns(organisation_id: organisation_id)
+  offer.update_columns(organisation_id:)
 end
 
 namespace :retrofit do
   desc 'missing organisations creation for older kept internship_offers upon internship_offer data'
-  task :missing_organisations_creation => :environment do |task|
+  task missing_organisations_creation: :environment do |task|
     PrettyConsole.announce_task(task) do
       ActiveRecord::Base.transaction do
         InternshipOffers::WeeklyFramed.kept
@@ -35,11 +35,11 @@ namespace :retrofit do
   end
 
   desc 'missing group in internship_offer to be found in organisations'
-  task :fixing_missing_group => :environment do |task|
+  task fixing_missing_group: :environment do |task|
     import 'csv'
     PrettyConsole.announce_task(task) do
       error_lines = []
-      file_location = Rails.root.join('storage/tmp/Question_result_2024-06-19_light.csv')
+      file_location = Rails.root.join('db/data_imports/Question_result_2024-06-19_light.csv')
       CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
         next if line_nr.zero?
 
@@ -47,6 +47,7 @@ namespace :retrofit do
 
         offer_id = cells[0]
         offer = InternshipOffer.find_by(id: offer_id)
+        next if offer.nil?
         next if offer.group_id.present?
 
         if offer.nil?
@@ -63,20 +64,18 @@ namespace :retrofit do
           next
         end
 
-        offer.update_columns(group_id: group_id)
+        offer.update_columns(group_id:)
         print '.'
       end
     end
   end
 
-  task :fixing_missing_group_from_db => :environment do |task|
+  task fixing_missing_group_from_db: :environment do |task|
     PrettyConsole.announce_task(task) do
       InternshipOffers::WeeklyFramed.kept
                                     .where(group_id: nil)
                                     .where(is_public: true)
                                     .each do |offer|
-        next if offer.group_id.present?
-
         if offer.organisation.nil?
           PrettyConsole.puts_in_blue("Missing organisation with offer_id: #{offer_id}")
           next
@@ -87,7 +86,7 @@ namespace :retrofit do
           next
         end
 
-        offer.update_columns(group_id: group_id)
+        offer.update_columns(group_id:)
         print '.'
       end
     end
