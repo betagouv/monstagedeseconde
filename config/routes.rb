@@ -28,7 +28,8 @@ Rails.application.routes.draw do
     }
 
     devise_scope :user do
-      get 'utilisateurs/choisir_profil', to: 'users/registrations#choose_profile', as: 'users_choose_profile'
+      get 'utilisateurs/choisir_profil', to: 'users/registrations#choose_profile',
+                                         as: 'users_choose_profile'
       get '/utilisateurs/inscriptions/en-attente', to: 'users/registrations#confirmation_standby',
                                                    as: 'users_registrations_standby'
       get '/utilisateurs/inscriptions/referent-en-attente', to: 'users/registrations#statistician_standby',
@@ -41,7 +42,10 @@ Rails.application.routes.draw do
                                                                    as: 'phone_edit_password'
       put '/utilisateurs/mot-de-passe/update_by_phone', to: 'users/passwords#update_by_phone',
                                                         as: 'phone_update_password'
-      get '/utilisateurs/mot-de-passe/initialisation', to: 'users/passwords#set_up', as: 'set_up_password'
+      get '/utilisateurs/mot-de-passe/initialisation', to: 'users/passwords#set_up',
+                                                       as: 'set_up_password'
+      post '/utilisateurs/renvoyer-le-code-de-confirmation', to: 'users/registrations#resend_confirmation_phone_token',
+                                                             as: 'resend_confirmation_phone_token'
     end
 
     resources :identities, path: 'identites', only: %i[new create]
@@ -96,6 +100,7 @@ Rails.application.routes.draw do
     get '/utilisateurs/anonymiseur', to: 'users#anonymize_form'
     get '/utilisateurs/identifier', to: 'users#identify_user'
     post '/utilisateurs/anonymiser', to: 'users#anonymize_user'
+
 
     namespace :api, path: 'api' do
       # TO DO : fix this redirect
@@ -262,6 +267,7 @@ Rails.application.routes.draw do
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
 
   # Redirects
+  # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
   get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/#{id}', status: 302)
 
   root_destination = ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true' ? 'maintenance_estivale' : 'home'
