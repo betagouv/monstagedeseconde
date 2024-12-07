@@ -32,9 +32,9 @@ module Users
     validate :validate_school_presence_at_creation
 
     # Callbacks
-    after_create :welcome_new_student,
-                 :set_reminders,
-                 :clean_phone_or_email_when_empty
+    after_create :set_reminders,
+                 :clean_phone_or_email_when_empty,
+                 :welcome_new_student
 
     def student? = true
 
@@ -191,21 +191,11 @@ module Users
     end
 
     def welcome_new_student
-      # url_options = default_search_options.merge(host: ENV.fetch('HOST'))
-      # target_url = Rails.application
-      #                   .routes
-      #                   .url_helpers
-      #                   .internship_offers_url(**url_options)
-      # shrinked_url = UrlShrinker.short_url( url: target_url, user_id: id )
-      # TODO no hard coded url
-      shrinked_url = 'https://bit.ly/4athP2e' # internship_offers_url in production
-      if phone.present?
-        message = I18n.t('devise.sms.welcome_student', shrinked_url:)
-        SendSmsJob.perform_later(user: self, message:)
-      else
-        StudentMailer.welcome_email(student: self, shrinked_url:)
-                     .deliver_later
-      end
+      return if email.blank?
+      return if phone.present?
+
+      StudentMailer.welcome_email(student: self, shrinked_url: BITLY_STUDENT_WELCOME_URL)
+                   .deliver_later
     end
 
     def set_reminders

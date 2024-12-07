@@ -191,6 +191,10 @@ class User < ApplicationRecord
     phone_number.try(:delete, ' ')
   end
 
+  def check_phone_token?(token)
+    phone_confirmable? && phone_token == token
+  end
+
   def send_confirmation_instructions
     return if created_by_teacher || statistician?
 

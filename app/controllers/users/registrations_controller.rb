@@ -93,10 +93,10 @@ module Users
 
     def phone_validation
       if fetch_user_by_phone.try(:check_phone_token?, params[:phone_token])
-        fetch_user_by_phone.confirm_by_phone!
+        @user.confirm_by_phone!
         message = { success: I18n.t('devise.confirmations.confirmed') }
         redirect_to(
-          new_user_session_path(phone: fetch_user_by_phone.phone),
+          new_user_session_path(phone: @user.phone),
           flash: message
         )
       else
@@ -248,15 +248,13 @@ module Users
     def merge_identity(params)
       identity = Identity.find_by_token(params[:user][:identity_token])
 
-      params[:user].merge({
-                            first_name: identity.first_name,
-                            last_name: identity.last_name,
-                            birth_date: identity.birth_date,
-                            school_id: identity.school_id,
-                            class_room_id: identity.class_room_id,
-                            gender: identity.gender,
-                            grade_id: identity.grade.id
-                          })
+      params[:user].merge(first_name: identity.first_name,
+                          last_name: identity.last_name,
+                          birth_date: identity.birth_date,
+                          school_id: identity.school_id,
+                          class_room_id: identity.class_room_id,
+                          gender: identity.gender,
+                          grade_id: identity.grade.id)
     end
 
     def honey_pot_checking(params)

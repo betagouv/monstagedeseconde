@@ -222,9 +222,9 @@ class SignUpStudentsTest < ApplicationSystemTestCase
       find('input[type="submit"]').click
       assert Identity.count.positive?
     end
-    find('header h1.h2.text-center', text: 'Encore une petite étape...')
+    find('p.h3.text-dark.fr-mt-4w', text: 'Confirmez votre compte')
     fill_in 'Code de confirmation', with: User.last.phone_token
-    find('input[type="submit"]').click # Valider
+    find('input[type="submit"][data-disable-with="Confirmer"]').click # Valider
     find('h1', text: 'Connexion à 1élève1stage')
     find('input[name="user[phone]"]').set(valid_phone_number)
     find('input[type="password"]').set(password)
