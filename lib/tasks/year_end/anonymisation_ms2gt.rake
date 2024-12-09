@@ -6,23 +6,12 @@ namespace :anonymisation do
     PrettyConsole.announce_task('Anonymizing students') do
       Services::Archiver.archive_students
     end
-
-    PrettyConsole.announce_task('Anonymizing identities') do
-      Services::Archiver.archive_identities
-    end
   end
 
   # internship agreements
   task :internship_agreements, [] => :environment do |args|
     PrettyConsole.announce_task('Anonymizing internship agreements') do
       Services::Archiver.archive_internship_agreements
-    end
-  end
-
-  # internship application
-  task :internship_applications, [] => :environment do |args|
-    PrettyConsole.announce_task('Anonymizing internship applications') do
-      Services::Archiver.archive_internship_applications
     end
   end
 
@@ -47,7 +36,6 @@ namespace :anonymisation do
   task all_ms2gt: %i[
     students
     internship_agreements
-    internship_applications
     class_rooms
   ]
 end

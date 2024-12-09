@@ -120,6 +120,7 @@ module Users
                      legal_representative_email: nil)
       update_columns(phone: 'NA') unless phone.nil?
       internship_applications.map(&:anonymize)
+      identity.anonymize
     end
 
     def validate_school_presence_at_creation

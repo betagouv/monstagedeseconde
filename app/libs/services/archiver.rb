@@ -23,14 +23,6 @@ module Services
               .each_record(&:archive)
     end
 
-    def self.archive_internship_applications
-      InternshipApplication.in_batches(of: 100)
-                           .each_record do |internship_application|
-        internship_application.anonymize
-        internship_application.save
-      end
-    end
-
     def self.archive_internship_offers
       InternshipOffer.in_batches(of: 100)
                      .each_record(&:archive)
