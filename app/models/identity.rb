@@ -12,9 +12,9 @@ class Identity < ApplicationRecord
 
   def archive
     update_columns(
-      first_name: ::FFaker::Name.first_name,
-      last_name: ::FFaker::Name.last_name,
-      birth_date: ::FFaker::Date.birthday(min_age: 18, max_age: 65),
+      first_name: 'NA',
+      last_name: 'NA',
+      birth_date: FFaker::Date.birthday(min_age: 18, max_age: 65),
       class_room_id: nil,
       anonymized: true
     )
