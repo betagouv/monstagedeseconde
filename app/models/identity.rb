@@ -10,7 +10,7 @@ class Identity < ApplicationRecord
 
   before_validation :generate_token, unless: :token
 
-  def anonymize
+  def archive
     update_columns(
       first_name: ::FFaker::Name.first_name,
       last_name: ::FFaker::Name.last_name,
