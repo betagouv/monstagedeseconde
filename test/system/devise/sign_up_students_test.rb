@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require 'application_system_test_case'
+require 'test_helper'
 
 class SignUpStudentsTest < ApplicationSystemTestCase
   # unfortunatelly on CI tests fails
   include ActiveJob::TestHelper
+  include ActionMailer::TestHelper
 
   def safe_submit
     click_on 'Valider'
@@ -271,5 +273,45 @@ class SignUpStudentsTest < ApplicationSystemTestCase
       # TODO: functional is not ok
       assert_equal '+33 06 00 11 00 11', find("input[name='user[phone]']").value
     end
+  end
+
+  test 'Student register with phone does not receive notification and ask for reconfirmation by sms' do
+    student_identity = create(:identity)
+    phone = '0600110012'
+    password = 'kikool1Test!Ok'
+    visit new_user_registration_path(as: 'Student', identity_token: student_identity.token)
+    find('label', text: 'Par téléphone').click
+    fill_in 'Numéro de téléphone', with: phone
+    fill_in 'Créer un mot de passe', with: password
+    click_on 'Valider'
+    find('p.h3', text: 'Confirmez votre compte')
+    click_button 'Renvoyer le code de confirmation'
+    assert_text(
+      'Nous venons de vous envoyer un code par SMS au numéro de téléphone terminant par *** 0012.'
+    )
+    fill_in 'Code de confirmation', with: User.last.phone_token
+    click_on 'Confirmer'
+    find('h1', text: 'Connexion à 1élève1stage')
+    assert User.last.confirmed?
+  end
+
+  test 'Student register with phone does not receive notification and ask for reconfirmation by mail' do
+    student_identity = create(:identity)
+    email = FFaker::Internet.email
+    password = 'kikool1Test!Ok'
+    visit new_user_registration_path(as: 'Student', identity_token: student_identity.token)
+    fill_in 'Adresse électronique', with: email
+    fill_in 'Créer un mot de passe', with: password
+    click_on 'Valider'
+    find('p.h3', text: 'Confirmez votre compte')
+    assert_text("Nous venons de vous envoyer un email sur\n#{email}")
+    click_link 'Renvoyer les instructions'
+    fill_in 'Adresse électronique', with: email
+    assert_emails 1 do
+      click_button 'Renvoyer'
+    end
+    mail = ActionMailer::Base.deliveries.last
+    assert_equal [email], mail.to
+    assert_equal 'Activation de votre compte 1élève1stage', mail.subject
   end
 end
