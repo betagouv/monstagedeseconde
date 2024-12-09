@@ -54,3 +54,11 @@ fieldset.registration,
 body.registration {
   margin: 0px 20px;
 }
+
+.with-no-confirmation-sms{
+  #code-request{
+    font-size: 1.1rem;
+    color: $grey-50;
+    font-weight: 500 !important;
+  }
+}
