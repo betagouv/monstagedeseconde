@@ -36,7 +36,7 @@ namespace :anonymisation do
     end
   end
 
-  desc 'anonymize and delete what should be before merging into 1E1S'
+  desc 'anonymize and delete what should be before merging into 1E1S '
   task all_ms2gt: %i[
     students
     internship_agreements
