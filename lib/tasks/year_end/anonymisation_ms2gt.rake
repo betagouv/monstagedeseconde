@@ -6,6 +6,10 @@ namespace :anonymisation do
     PrettyConsole.announce_task('Anonymizing students') do
       Services::Archiver.archive_students
     end
+
+    PrettyConsole.announce_task('Anonymizing identities') do
+      Services::Archiver.archive_identities
+    end
   end
 
   # internship agreements
