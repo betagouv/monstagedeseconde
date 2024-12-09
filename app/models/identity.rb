@@ -10,10 +10,19 @@ class Identity < ApplicationRecord
 
   before_validation :generate_token, unless: :token
 
+  def anonymize
+    update_columns(
+      first_name: ::FFaker::Name.first_name,
+      last_name: ::FFaker::Name.last_name,
+      birth_date: ::FFaker::Date.birthday(min_age: 18, max_age: 65),
+      class_room_id: nil,
+      anonymized: true
+    )
+  end
+
   private
 
   def generate_token
     self.token = SecureRandom.hex(12)
   end
-  
 end
