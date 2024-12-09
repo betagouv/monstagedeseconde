@@ -16,7 +16,6 @@ module InternshipOccupationFormFiller
     fill_in "Indiquez le ou les métiers qui seront observables par l'élève", with: 'Observation du métier de boulanger'
     fill_in 'Décrivez les activités qui seront proposées à l’élève',
             with: description
-    find_field('Rechercher une adresse postale*').native.send_keys(full_address[0..-2])
-    find_field('Rechercher une adresse postale*').native.send_keys(full_address[-1])
+    find_field('Rechercher une adresse postale*').native.send_keys(full_address[0..-1])
   end
 end
