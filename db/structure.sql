@@ -691,8 +691,7 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
-    internship_occupation_id bigint,
-    contact_phone character varying(20)
+    internship_occupation_id bigint
 );
 
 
@@ -955,23 +954,23 @@ CREATE TABLE public.internship_agreements (
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
     siret character varying(14),
-    tutor_role character varying(150),
+    tutor_role character varying(500),
     tutor_email character varying(85),
-    organisation_representative_role character varying(150),
+    organisation_representative_role character varying(500),
     student_address character varying(170),
-    student_phone character varying(20),
-    school_representative_phone character varying(20),
-    student_refering_teacher_phone character varying(20),
-    student_legal_representative_email character varying(100),
+    student_phone character varying(200),
+    school_representative_phone character varying(100),
+    student_refering_teacher_phone character varying(100),
+    student_legal_representative_email character varying(180),
     student_refering_teacher_email character varying(100),
     student_legal_representative_full_name character varying(180),
-    student_refering_teacher_full_name character varying(100),
-    student_legal_representative_phone character varying(20),
-    student_legal_representative_2_full_name character varying(100),
-    student_legal_representative_2_email character varying(100),
-    student_legal_representative_2_phone character varying(20),
-    school_representative_role character varying(100),
-    school_representative_email character varying(100),
+    student_refering_teacher_full_name character varying(180),
+    student_legal_representative_phone character varying(250),
+    student_legal_representative_2_full_name character varying(180),
+    student_legal_representative_2_email character varying(120),
+    student_legal_representative_2_phone character varying(250),
+    school_representative_role character varying(200),
+    school_representative_email character varying(180),
     discarded_at timestamp(6) without time zone,
     lunch_break text,
     organisation_representative_email character varying(70),
@@ -2042,15 +2041,6 @@ CREATE SEQUENCE public.signatures_id_seq
 --
 
 ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
-
-
---
--- Name: task_records; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.task_records (
-    version character varying NOT NULL
-);
 
 
 --
@@ -4766,9 +4756,6 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20241204173244'),
-('20241204164257'),
-('20241204150852'),
 ('20241115093512'),
 ('20241113151423'),
 ('20241105092317'),
