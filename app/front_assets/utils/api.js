@@ -74,7 +74,7 @@ export const endpoints = {
 
   // @get
   apiRomeQuery: ({keyword}) => {
-    const endpoint = new URL(`${host}/api/coded_crafts/search`);
+    const endpoint = new URL(`${host}/api/v2/coded_crafts/search`);
     const searchParams = new URLSearchParams();
 
     searchParams.append('keyword', keyword);
