@@ -122,6 +122,76 @@ namespace :data_migrations do
     PrettyConsole.say_in_yellow 'Done with creating schools(lycées)'
   end
 
+  desc 'create "collèges" and "lycees" from csv file'
+  task create_colleges_lycees: :environment do
+    file_location = Rails.root.join('db/data_imports/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre.csv')
+    # header is :
+    # numero_uai;appellation_officielle;denomination_principale;patronyme_uai;secteur_public_prive_libe;adresse_uai;
+    # lieu_dit_uai;boite_postale_uai;code_postal_uai;localite_acheminement_uai;libelle_commune;
+    # coordonnee_x;coordonnee_y;EPSG;latitude;longitude;appariement;
+    # localisation;nature_uai;nature_uai_libe;etat_etablissement;etat_etablissement_libe;
+    # code_departement;code_region;code_academie;code_commune;libelle_departement;
+    # libelle_region;libelle_academie;position;secteur_prive_code_type_contrat;
+    # secteur_prive_libelle_type_contrat;code_ministere;
+    # libelle_ministere;date_ouverture
+    counter = 1
+    error_lines = []
+    CSV.foreach(file_location, 'r', headers: true, header_converters: :symbol, col_sep: ';').each do |row|
+      counter += 1
+      name = row[:appellation_officielle]&.strip
+      next if name.nil?
+
+      longitude = row[:longitude].to_f
+      latitude = row[:latitude].to_f
+      adresse = row[:adresse_uai]&.strip
+
+      code_postal = row[:code_postal_uai]&.to_s&.strip
+      code_postal = "0#{code_postal}" if code_postal.size == 4
+
+      commune = row[:libelle_commune]&.strip
+
+      if (longitude == 0.0 && latitude == 0.0) || (longitude.nil? || latitude.nil?)
+        coordinates = Geofinder.coordinates("#{adresse}, #{code_postal} #{commune}")
+        longitude = coordinates[0]
+        latitude = coordinates[1]
+      end
+
+      is_college = row[:denomination_principale]&.match?(/coll{e|è}ge/i)
+      is_lycee = row[:denomination_principale]&.match?(/lyc{é|e}e/i)
+      school_type = if is_college && is_lycee
+                      'college_lycee'
+                    else
+                      is_lycee ? 'lycee' : 'college'
+                    end
+
+      school_params = {
+        code_uai: row[:numero_uai],
+        name: name,
+        street: adresse,
+        zipcode: code_postal,
+        city: commune,
+        school_type: school_type,
+        contract_code: row[:secteur_prive_code_type_contrat],
+        coordinates: { longitude: longitude, latitude: latitude }
+      }
+
+      School.find_by(code_uai: school_params[:code_uai]).present? && next
+
+      school = School.new(school_params)
+      if school.valid?
+        school.save
+        print '.'
+      else
+        error = "Ligne #{counter}, #{school.name}, #{school.errors.full_messages.join(', ')}"
+        puts error
+        error_lines << error
+        puts '---'
+      end
+    end
+    puts "#{error_lines.size} errors"
+    PrettyConsole.say_in_yellow 'Done with creating schools(lycées)'
+  end
+
   desc 'create class_rooms from csv file'
   task provide_with_class_rooms: :environment do
     import 'csv'
