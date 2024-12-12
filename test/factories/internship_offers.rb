@@ -8,7 +8,7 @@ FactoryBot.define do
     planning { create(:planning, entreprise: entreprise) }
     sequence(:title) { |n| "Stage de 2de - #{n}" }
     description { 'Lorem ipsum dolor' }
-    # contact_phone { '+330612345678' }
+    contact_phone { '+330612345678' }
     max_candidates { 1 }
     blocked_weeks_count { 0 }
     sector { create(:sector) }

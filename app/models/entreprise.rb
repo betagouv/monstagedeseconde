@@ -14,6 +14,9 @@ class Entreprise < ApplicationRecord
   validates :entreprise_full_address,
             length: { minimum: 8, maximum: 200 },
             presence: true
+  validates :contact_phone,
+            format: { with: Regexp.new(ApplicationController.helpers.field_phone_pattern),
+                      message: 'Le numéro de téléphone doit être composé de 10 chiffres' }
 
   def entreprise_coordinates=(geolocation)
     case geolocation
