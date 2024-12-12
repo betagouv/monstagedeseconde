@@ -12,7 +12,9 @@ hr
                                 currentZipcode: form.object.zipcode,
                                 currentLatitude: form.object.coordinates.try(:lat).try(:to_f),
                                 currentLongitude: form.object.coordinates.try(:longitude).try(:to_f),
-                                currentFullAddress: form.object.formatted_autocomplete_address})
+                                currentFullAddress: form.object.formatted_autocomplete_address,
+                                isDuplication: false,
+                                editMode: false})
 
 
 hr

@@ -42,10 +42,6 @@ FactoryBot.define do
     lunch_break { '12:00-13:00 avec le repas que vous apporterez' }
     grades { Grade.all }
 
-    trait :drafted do
-      aasm_state { :drafted }
-    end
-
     trait :public do
       is_public { true }
       group { create(:group, is_public: true) }

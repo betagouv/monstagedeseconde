@@ -319,15 +319,14 @@ module InternshipOffers
     end
 
     test 'GET #show as Employer displays internship_applications link' do
-      published_at = 2.weeks.ago
-      internship_offer = create(:weekly_internship_offer_2nde, published_at:)
+      internship_offer = create(:weekly_internship_offer_2nde, published_at: 2.weeks.ago)
       sign_in(internship_offer.employer)
       get internship_offer_path(internship_offer)
       assert_response :success
       assert_template 'dashboard/internship_offers/_navigation'
 
       assert_select 'a[href=?]', edit_dashboard_internship_offer_path(internship_offer),
-                    { count: 1 },
+                    { count: 2 },
                     'missing edit internship_offer link for employer'
 
       assert_select 'button[aria-controls="discard-internship-offer-modal"]',

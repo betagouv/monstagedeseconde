@@ -14,12 +14,13 @@ div data-controller="write-summary-card"
         .fr-card__start
           ul.fr-tags-group
             li
-              p.fr-tag
-                span.preview-card.fr-mr-1w.fr-icon-calendar-2-fill aria-hidden="true"
-                |> Dates proposées
-                span.fr-ml-1v data-write-summary-card-target="weeksOutput"
-                  - count = (form.object.try(:weeks).try(:count).try(:positive?))  ? form.object.try(:weeks).try(:count) : @available_weeks&.count
-                  = " #{count} #{"semaine".pluralize(count)}"
+              - excluded_controllers_paths = %w[dashboard/stepper/internship_occupations dashboard/stepper/entreprises]
+              - unless controller_path.to_s.in?(excluded_controllers_paths)
+                p.fr-tag
+                  span.preview-card.fr-mr-1w.fr-icon-calendar-2-fill aria-hidden="true"
+                  span.fr-ml-1v data-write-summary-card-target="weeksOutput"
+                    - count = (form.object.try(:weeks).try(:count).try(:positive?)) ? form.object.try(:weeks).try(:count) : @available_weeks&.count
+                    = " #{count} #{"semaine".pluralize(count)} #{"proposée".pluralize(count)}"
 
           p.fr-card__detail data-write-summary-card-target="sectorOutput"
             = form.object.try(:sector).try(:name) || @entreprise&.sector&.name

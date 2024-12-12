@@ -296,8 +296,7 @@ export default class extends Controller {
 
   setWeeksMesssage(totalScore) {
     const semaines = this.totalScore();
-    let weeksCount = totalScore + " semaine";
-    if (semaines > 1) { weeksCount += "s"; }
+    let weeksCount = (semaines > 1) ? totalScore + " semaines proposées" : totalScore + " semaine proposée";
     return weeksCount;
   }
 }

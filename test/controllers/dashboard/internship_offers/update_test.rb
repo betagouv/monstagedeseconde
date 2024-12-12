@@ -137,8 +137,7 @@ module Dashboard::InternshipOffers
               is_public: false,
               group_id: new_group.id,
               daily_hours: { 'lundi' => %w[10h 12h] }
-
-            } })
+      }}.deep_symbolize_keys)
       assert_redirected_to(dashboard_internship_offers_path(origine: 'dashboard'),
                            'redirection should point to updated offer')
 

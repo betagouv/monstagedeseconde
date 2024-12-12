@@ -53,18 +53,16 @@ export default function SirenInput({
   };
 
   const searchCoordinatesByAddress = (fullAddress) => {
+    const coordinates = `${resourceName}_entreprise_coordinates`;
+    const selector_lon = `${coordinates}_longitude`;
+    const selector_lat = `${coordinates}_latitude`;
     fetch(endpoints.apiSearchAddress({ fullAddress }))
       .then((response) => response.json())
       .then((json) => {
-        const coordinates = json.features[0].geometry.coordinates;
-        document.getElementById(
-          "entreprise_entreprise_coordinates_longitude"
-        ).value = coordinates[0];
-        document.getElementById(
-          "entreprise_entreprise_coordinates_latitude"
-        ).value = coordinates[1];
+        document.getElementById(selector_lon).value = json.features[0].geometry.coordinates[0];
+        document.getElementById(selector_lat).value = json.features[0].geometry.coordinates[1];
       });
-  };
+    };
 
   // const openManual = (event) => {
   //   event.preventDefault();
@@ -110,12 +108,24 @@ export default function SirenInput({
     const addressConcatenated = `${street} ${zipcode} ${city}`.trim();
     searchCoordinatesByAddress(addressConcatenated);
     const employerName = selection.uniteLegale.denominationUniteLegale;
-    document.getElementById("entreprise_employer_name").value = employerName;
+
+    const employerNameId = `${resourceName}_employer_name`;
+    // alert(employerNameId);
+    document.getElementById(employerNameId).value = employerName;
     broadcast(employerNameChanged({ employerName }));
-    document.getElementById("entreprise_entreprise_full_address").value = addressConcatenated;
-    document.getElementById("entreprise_entreprise_chosen_full_address").value = addressConcatenated;
-    document.getElementById("entreprise_siret").value = selection.siret;
-    document.getElementById("entreprise_presentation_siret").value = siretPresentation(selection.siret);
+
+    const entrepriseFullAddressId = `${resourceName}_entreprise_full_address`;
+    document.getElementById(entrepriseFullAddressId).value = addressConcatenated;
+
+    const entrepriseChosentFullAddressId = `${resourceName}_entreprise_chosen_full_address`;
+    document.getElementById(entrepriseChosentFullAddressId).value = addressConcatenated;
+
+    const siretId = `${resourceName}_siret`;
+    document.getElementById(siretId).value = selection.siret;
+
+    const presentationSiretId = `${resourceName}_presentation_siret`;
+    document.getElementById(presentationSiretId).value = siretPresentation(selection.siret);
+
     const ministry = document.getElementById("ministry-choice");
     const ministryClassList = ministry.classList;
     // TODO pub/sub with broadcasting would be better

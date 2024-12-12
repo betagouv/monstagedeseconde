@@ -78,7 +78,8 @@
                                        currentLongitude: ,
                                        currentFullAddress: resource.formatted_autocomplete_address,
                                        addressFieldsVisible: !resource.id.nil?,
-                                       isDuplication: @duplication})
+                                       isDuplication: @duplication,
+                                       editMode: @edit_mode})
 
         - if submit_button
           .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
