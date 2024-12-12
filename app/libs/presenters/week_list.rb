@@ -50,8 +50,7 @@ module Presenters
     end
 
     def to_s
-      weeks.map(&:long_select_text_method)
-           .join("\n")
+      to_range_as_str
     end
 
     def empty?
@@ -73,14 +72,14 @@ module Presenters
 
     def render_first_week_only
       [
-        'Disponible la semaine',
+        'Disponible la semaine ',
         yield(is_first: false, is_last: false, week: first_week).strip
       ].join.gsub(/\s+/, ' ').html_safe
     end
 
     def render_by_collapsing_date_from_first_to_last_week
       [
-        "Disponible sur#{weeks.size} semaines :",
+        "Disponible sur #{weeks.size} semaines :",
         yield(is_first: true, is_last: false, week: first_week),
         " → #{yield(is_first: false, is_last: true, week: last_week)}"
       ].join.gsub(/\s+/, ' ').html_safe

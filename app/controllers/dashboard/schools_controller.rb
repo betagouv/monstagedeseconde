@@ -79,11 +79,12 @@ module Dashboard
                                      :name,
                                      :visible,
                                      :agreement_conditions_rich_text,
-                                     coordinates: {})
+                                     coordinates: {},
+                                     week_ids: [])
     end
 
     def school_manager_internship_weeks_params
-      params.require(:school).permit(:agreement_conditions_rich_text)
+      params.require(:school).permit(:agreement_conditions_rich_text, week_ids: [])
     end
   end
 end

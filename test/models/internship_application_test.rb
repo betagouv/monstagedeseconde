@@ -448,4 +448,46 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert_equal internship_application_3.id, InternshipApplication.order_by_aasm_state_for_student.fourth.id
     assert_equal internship_application_4.id, InternshipApplication.order_by_aasm_state_for_student.fifth.id
   end
+
+  test '.selectable_weeks' do
+    travel_to Time.zone.local(2025, 3, 1) do
+      # 1 : 3e - no weeks set by school -> all weeks are selectable
+      internship_offer = create(:weekly_internship_offer_3eme)
+      school = create(:school, school_type: 'college')
+      student = create(:student, school:, class_room: create(:class_room, school:))
+      internship_application = InternshipApplication.new(student:, internship_offer:)
+
+      assert_equal internship_offer.weeks, internship_application.selectable_weeks
+
+      # 2 : 3e - 2 weeks set by school in the past -> no weeks are selectable
+      internship_offer = create(:weekly_internship_offer_3eme)
+      school = create(:school, school_type: 'college')
+      week_1 = Week.selectable_on_school_year.first
+      week_2 = Week.selectable_on_school_year.second
+      school.weeks = [week_1, week_2]
+      student = create(:student, school:, class_room: create(:class_room, school:))
+      internship_application = InternshipApplication.new(student:, internship_offer:)
+
+      assert_equal [], internship_application.selectable_weeks
+
+      # 3 : 3eme - 2 weeks set by school in the future -> 2 weeks are selectable
+      # get first 2 next weeks from now
+      week_1 = Week.where(year: 2025, number: Date.today.strftime('%W').to_i + 3).first
+      week_2 = Week.where(year: 2025, number: Date.today.strftime('%W').to_i + 4).first
+      internship_offer = create(:weekly_internship_offer_3eme, weeks: [week_1, week_2])
+      school = create(:school, school_type: 'college')
+      school.weeks = [week_1, week_2]
+      student = create(:student, school:, class_room: create(:class_room, school:))
+      internship_application = InternshipApplication.new(student:, internship_offer:)
+
+      assert_equal [week_1, week_2], internship_application.selectable_weeks
+
+      # test for seconde_gt
+      internship_offer = create(:weekly_internship_offer_2nde, weeks: [week_1, week_2])
+      student = create(:student)
+      internship_application = InternshipApplication.new(student:, internship_offer:)
+
+      assert_equal internship_offer.weeks, internship_application.selectable_weeks
+    end
+  end
 end
