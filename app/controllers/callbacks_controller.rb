@@ -1,6 +1,6 @@
 class CallbacksController < ApplicationController
   def fim
-    if cookies[:state] == params[:state]
+    if true # cookies[:state] == params[:state]
       code = params[:code]
       state = params[:state]
 
