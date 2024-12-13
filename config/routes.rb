@@ -97,7 +97,7 @@ Rails.application.routes.draw do
         get :search, path: 'recherche'
       end
     end
-    resources :favorites, only: %i[create destroy index] unless when_employers_only
+    resources :favorites, only: %i[create destroy index]
 
     get '/utilisateurs/transform_input', to: 'users#transform_input' # display
     get '/utilisateurs/transform', to: 'users#transform_form' # identify and show parameters

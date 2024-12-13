@@ -4,9 +4,10 @@
   nav.fr-nav id="header-navigation" role="navigation" aria-label="Menu principal"
     ul.fr-nav__list
       li.fr-nav__item
+        - path = employers_only? ? '#' : root_path
         = link_to 'Accueil',
                   root_path,
-                  class: 'fr-nav__link',
+                  class: "fr-nav__link #{disabled_class}",
                   aria: { current: (current_page?(root_path) ? 'page' : nil) }
       li.fr-nav__item
         - path = employers_only? ? '#' : eleves_path
