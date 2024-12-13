@@ -51,8 +51,9 @@ module Services
         redirect_uri: ENV.fetch('FIM_REDIRECT_URI'),
         grant_type: 'authorization_code',
         code: @code,
-        scope: 'openid stage email address phone profile stage 1eleve1stage',
-        state: @state
+        scope: 'openid stage email profile',
+        state: @state,
+        nonce: SecureRandom.uuid
       }
       url = "#{ENV.fetch('FIM_URL')}/idp/profile/oidc/token"
 
