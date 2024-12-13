@@ -1,4 +1,3 @@
-
 module PhoneComputation
   extend ActiveSupport::Concern
 
@@ -10,10 +9,10 @@ module PhoneComputation
       return nil if phone.blank?
 
       bare_prefix = phone[0..4]
-      french_prefix = %w(+3306 +3307 +2620 +5960 +5940 +6870 +6890)
+      french_prefix = %w[+3306 +3307 +2620 +5960 +5940 +6870 +6890]
       return nil unless bare_prefix.in?(french_prefix)
 
-      bare_prefix.in?(%w(+3306 +3307)) ? '33' : bare_prefix[1..-2]
+      bare_prefix.in?(%w[+3306 +3307]) ? '33' : bare_prefix[1..-2]
     end
 
     def formatted_phone
@@ -25,7 +24,7 @@ module PhoneComputation
     def self.sanitize_mobile_phone_number(number, prefix = '')
       return nil if number.blank?
 
-      thin_number = number.gsub(/[\s|;\,\.\:\(\)]/, '')
+      thin_number = number.gsub(/[\s|;,.:()]/, '')
       if thin_number.match?(/\A\+(33|262|594|596|687|689)0[6|7]\d{8}\z/)
         "#{prefix}#{thin_number[4..]}"
       elsif thin_number.match?(/\A\+(33|262|594|596|687|689)[6|7]\d{8}\z/)

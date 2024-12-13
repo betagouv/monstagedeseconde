@@ -2,12 +2,17 @@ footer#footer.fr-footer role="contentinfo" data-controller='footer'
   .fr-footer__top.fr-px-2w
     .fr-container
       .row
+        - klass = employers_only? ? 'disabled_tab' : '' 
         .col-12.col-md-3
           .fr-footer__top-column
-            .title.fr-text--sm.fr-mb-1w = "Élèves"
-            .fr-py-1w = link_to "Trouver un stage", eleves_path, class: 'fr-raw-link fr-text--sm link'
-            .fr-py-1w = link_to "Découvrir le dispositif", eleves_path(anchor: 'discover'), class: 'fr-raw-link fr-text--sm link'
-            .fr-py-1w = link_to "Ressources utiles", eleves_path(anchor: 'resources'), class: 'fr-raw-link fr-text--sm link'
+            div class="title fr-text--sm fr-mb-1w #{klass}"
+              = "Élèves"
+            - path = employers_only? ? '#' : eleves_path
+            - path_anchor = employers_only? ? '#' : eleves_path(anchor: 'discover')
+            - path_resources = employers_only? ? '#' : eleves_path(anchor: 'resources')
+            .fr-py-1w = link_to "Trouver un stage", path, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Découvrir le dispositif", path_anchor, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Ressources utiles", path_resources, class: "fr-raw-link fr-text--sm link #{klass}"
         .col-12.col-md-3
           .fr-footer__top-column
             .title.fr-text--sm.fr-mb-1w = "Professionnels"
@@ -16,10 +21,12 @@ footer#footer.fr-footer role="contentinfo" data-controller='footer'
             .fr-py-1w = link_to "Ressources utiles", professionnels_path(anchor: 'resources'), class: 'fr-raw-link fr-text--sm link'
         .col-12.col-md-3
           .fr-footer__top-column
-            .title.fr-text--sm.fr-mb-1w = "Établissements scolaires"
-            .fr-py-1w = link_to "Suivez vos élèves", equipe_pedagogique_path, class: 'fr-raw-link fr-text--sm link'
-            .fr-py-1w = link_to "Découvrir le dispositif", equipe_pedagogique_path, class: 'fr-raw-link fr-text--sm link'
-            .fr-py-1w = link_to "Ressources utiles", equipe_pedagogique_path, class: 'fr-raw-link fr-text--sm link'
+            - path = employers_only? ? '#' : equipe_pedagogique_path
+            div class="title fr-text--sm fr-mb-1w #{klass}"
+              = "Établissements scolaires"
+            .fr-py-1w = link_to "Suivez vos élèves", path, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Découvrir le dispositif", path, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Ressources utiles", path, class: "fr-raw-link fr-text--sm link #{klass}"
         .col-12.col-md-3
           .fr-footer__top-column
             .title.fr-text--sm.fr-mb-1w = "Référents"
