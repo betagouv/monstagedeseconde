@@ -12,18 +12,21 @@
         fieldset  aria-labelledby="entreprise-name-legend"
           legend.fr-h6
             | Les informations liées à votre structure
+          - resource_name = form.object_name
           .row
             .col-12
+              - latitude = form.object.entreprise_coordinates&.latitude || 0
+              - longitude = form.object.entreprise_coordinates&.longitude || 0
               = form.hidden_field :manual_enter, value: false
-              = form.hidden_field :internship_occupation_id, value: resource.internship_occupation_id
-              = form.hidden_field :employer_id, value: current_user.id
               = form.hidden_field :entreprise_coordinates_longitude, value: resource&.entreprise_coordinates&.longitude || 0
               = form.hidden_field :entreprise_coordinates_latitude,  value: resource&.entreprise_coordinates&.latitude || 0
+              = form.hidden_field :internship_occupation_id, value: resource.internship_occupation_id
+              = form.hidden_field :entreprise_coordinates, value: { latitude: latitude, longitude: longitude }
               = form.hidden_field :siret, value: resource&.siret || ''
               - if resource.id
                 = form.hidden_field :id, value: resource.id
               = react_component("SirenInput",
-                                props: { resourceName: form.object_name,
+                                props: { resourceName: resource_name,
                                         presentationLabel: "L'administration",
                                         currentSiren: resource.siret,
                                         railsEnv: Rails.env,
@@ -64,7 +67,6 @@
                                    data: { action: 'ministry-fields#handleClickIsPublic' }
 
                   div.fr-messages-group#radio-hint-messages aria-live="assertive"
-          / - edit_mode = (@organisation.try(:persisted?) && @organisation.is_private?) || (@organisation.try(:employer_description).present? && @organisation.is_private?)
           #ministry-choice.row.fr-mt-3w.bloc-tooggle.d-none [data-ministry-fields-target="groupNamePublic"]
             .col-12
               = form.label :group_id, class: 'fr-label' do
@@ -136,7 +138,7 @@
                         title: label,
                         object: form.object,
                         maxlength: 200,
-                        value: resource&.entreprise_full_address
+                        value: resource&.entreprise_chosen_full_address
               .fr-mt-2v.d-flex.align-items-center
                 small
                   span.fr-icon-info-fill.text-blue-info aria-hidden="true"

@@ -30,7 +30,7 @@ div [data-planning-target='weeksContainer'
               value: true,
               checked: checked,
               options: { data: { "select-weeks-target": "allYearLong",
-                                action: "change->select-weeks#showAllYearLong"}}
+                                action: "change->select-weeks#showAllYearLong" } }
             = render 'inputs/dsfr_rich_radio_field',
               form: form,
               error: error,
@@ -42,7 +42,7 @@ div [data-planning-target='weeksContainer'
               checked: !checked,
               options: { data:{ action: "change->select-weeks#showSpecificWeeks" } }
 
-    div data-select-weeks-target="checkboxesContainer" class="weeks-months #{preselect_all ? 'd-none' : ''}"
+    div data-select-weeks-target="checkboxesContainer" class="weeks-months weeks-container-active #{preselect_all ? 'd-none' : ''}" 
       .row
         .col-12.fr-text--sm.fr-strong.w-100
           .d-flex
@@ -50,7 +50,7 @@ div [data-planning-target='weeksContainer'
             .ml-auto
               button type="button" class="fr-mr-1w fr-btn fr-btn--tertiary fr-btn--sm" data-action="click->select-weeks#unSelectThemAll"
                 | Tout décocher
-      .row.fr-mb-1w.weeks-list
+      .row.fr-mb-1w.weeks-list 
         .col-12
           .d-flex
             .small-interline.fr-text--sm.border-right.month-lane
@@ -67,8 +67,9 @@ div [data-planning-target='weeksContainer'
                 - Presenters::WeekList.new(weeks: current_weeks).month_split.each do |month_num, weeks|
                   - month_name = Presenters::WeekList::MONTH_LIST[month_num - 9][:name]
                   - year = weeks.first.year
-                  .fr-text.fr-raised.fr-mb-1w
-                    = "#{month_name} #{year}"
+                  .fr-text--xs.fr-mb-1w
+                    strong
+                      = "#{month_name} #{year}"
                   - weeks.each do |week|
                     div class="fr-checkbox-group fr-checkbox-group--sm position-relative pr-3 #{month_name}"
                       - # prevent removing weeks with application by showing a disable checkbox (not submitted to server)
