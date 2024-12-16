@@ -48,20 +48,27 @@ module Services
       body = {
         client_id: ENV.fetch('FIM_CLIENT_ID'),
         client_secret: ENV.fetch('FIM_CLIENT_SECRET'),
-        redirect_uri: ENV.fetch('FIM_REDIRECT_URI'),
-        grant_type: 'authorization_code',
         code: @code,
-        scope: 'openid stage email profile',
+        grant_type: 'authorization_code',
+        redirect_uri: ENV.fetch('FIM_REDIRECT_URI'),
+        scope: 'openid stage profile email', # Ordre corrigé des scopes
         state: @state,
         nonce: SecureRandom.uuid
       }
-      url = "#{ENV.fetch('FIM_URL')}/idp/profile/oidc/token"
 
-      response = Net::HTTP.post(
-        URI(url),
-        body.to_json,
-        'Content-Type' => 'application/json'
-      )
+      url = "#{ENV.fetch('FIM_URL')}/idp/profile/oidc/token"
+      uri = URI(url)
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true if uri.scheme == 'https'
+
+      request = Net::HTTP::Post.new(uri)
+      request['Content-Type'] = 'application/x-www-form-urlencoded'
+      request.body = URI.encode_www_form(body)
+
+      puts "Request body: #{request.body}" # Pour debug
+      response = http.request(request)
+      puts "Response: #{response.body}"
 
       raise "Failed to get token: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
 
