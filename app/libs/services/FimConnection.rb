@@ -34,8 +34,18 @@ module Services
       }
 
       url = "#{ENV.fetch('FIM_URL')}/api/v1/users/me"
+      uri = URI(url)
 
-      response = Net::HTTP.get(URI("#{ENV.fetch('FIM_URL')}"), headers)
+      # Créer une requête HTTP complète
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true if uri.scheme == 'https'
+
+      request = Net::HTTP::Get.new(uri)
+      headers.each { |key, value| request[key] = value }
+
+      response = http.request(request)
+      puts "Response: #{response}"
+      puts "Response body: #{response.body}"
 
       raise "Failed to get user info: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
 
