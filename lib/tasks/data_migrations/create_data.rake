@@ -162,16 +162,6 @@ namespace :data_migrations do
                ''
              end
 
-      # longitude = row[:longitude].to_f
-      # latitude = row[:latitude].to_f
-      # if (longitude == 0.0 && latitude == 0.0) || (longitude.nil? || latitude.nil?)
-      #   coordinates = Geofinder.coordinates("#{adresse}, #{code_postal} #{commune}")
-      #   longitude = coordinates[0]
-      #   latitude = coordinates[1]
-      # end
-      # contract_code: row[:secteur_prive_code_type_contrat],
-      # coordinates: { longitude: longitude, latitude: latitude }
-
       school_params = {
         code_uai: code_uai,
         name: name,
@@ -201,20 +191,20 @@ namespace :data_migrations do
       if complementary_data.present?
         longitude = complementary_data[:longitude]&.to_f || 0.0
         latitude = complementary_data[:latitude]&.to_f || 0.0
-        contract_code = complementary_data[:secteur_prive_code_type_contrat]
       else
         coordinates = Geofinder.coordinates("#{adresse}, #{code_postal} #{commune}")
         longitude = coordinates[0] || 0.0
         latitude = coordinates[1] || 0.0
       end
       if longitude == 0.0 && latitude == 0.0
-        error = "Ligne #{counter}, #{school_params[:name]}, #{school_params[:street]}, #{school_params[:zipcode]} #{school_params[:city]}"
+        error = "Ligne #{counter}, #{school_params[:name]}, #{school_params[:street]}, #{school_params[:zipcode]} #{school_params[:city]}: no coordinates found"
         puts error
         error_lines << error
         next
       end
       school_params[:coordinates] = { longitude: longitude, latitude: latitude }
 
+      contract_code = complementary_data[:secteur_prive_code_type_contrat]
       school_params.merge!(contract_code: contract_code) if contract_code.present?
 
       School.find_by(code_uai: school_params[:code_uai]).present? && next
