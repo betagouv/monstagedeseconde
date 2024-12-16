@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'ostruct'
 module UsersHelper
   def user_roles_to_select
     Users::SchoolManagement.roles.map do |ruby_role, _pg_role|
