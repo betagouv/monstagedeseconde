@@ -219,15 +219,14 @@ class InternshipOffer < ApplicationRecord
   scope :by_department, ->(departments) { where(department: departments) }
 
   aasm do
-    state :drafted, initial: true
-    state :published,
-          :removed,
+    state :published, initial: true
+    state :removed,
           :unpublished,
           :need_to_be_updated,
           :splitted
 
     event :publish do
-      transitions from: %i[drafted unpublished need_to_be_updated],
+      transitions from: %i[unpublished need_to_be_updated],
                   to: :published, after: proc { |*_args|
                                            update!("published_at": Time.now.utc)
                                            if employer.internship_offers.count == 1
@@ -237,7 +236,7 @@ class InternshipOffer < ApplicationRecord
     end
 
     event :remove do
-      transitions from: %i[published need_to_be_updated drafted unpublished],
+      transitions from: %i[published need_to_be_updated unpublished],
                   to: :removed, after: proc { |*_args|
                                          update!(published_at: nil)
                                        }
@@ -251,14 +250,14 @@ class InternshipOffer < ApplicationRecord
     end
 
     event :split do
-      transitions from: %i[published need_to_be_updated drafted unpublished],
+      transitions from: %i[published need_to_be_updated unpublished],
                   to: :splitted, after: proc { |*_args|
                                           # update!(published_at: nil) TODO
                                         }
     end
 
     event :need_update do
-      transitions from: %i[published drafted unpublished need_to_be_updated],
+      transitions from: %i[published unpublished need_to_be_updated],
                   to: :need_to_be_updated, after: proc { |*_args|
                                                     update!(published_at: nil)
                                                   }
