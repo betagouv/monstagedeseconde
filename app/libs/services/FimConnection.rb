@@ -33,7 +33,7 @@ module Services
         'Content-Type' => 'application/json'
       }
 
-      url = "#{ENV.fetch('FIM_URL')}/api/v1/users/me"
+      url = "#{ENV.fetch('FIM_URL')}/idp/profile/oidc/userinfo"
       uri = URI(url)
 
       # Créer une requête HTTP complète
