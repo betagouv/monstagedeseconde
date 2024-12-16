@@ -13,7 +13,7 @@ div class="fr-card #{employers_only? ? 'disabled_tab' : ''}"
       ul.fr-btns-group
         li
           - path = employers_only? ? '#' : new_user_registration_path(as: 'SchoolManagement')
-          - label = employers_only? ? 'Inscription à venir' : 'Inscription'
+          - label = employers_only? ? 'Inscription à venir' : 'Inscription par la FIM'
           - klass = employers_only? ? 'fr-btn--tertiary' : 'fr-btn--secondary'
           = link_to label, path, class: "fr-btn #{klass}", disabled: employers_only?
   .fr-card__header
