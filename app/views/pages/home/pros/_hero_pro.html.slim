@@ -34,9 +34,9 @@ header.container-xl.px-0
               .fr-mt-1w.fr-mb-4w.header-cartel.fr-px-6v.fr-py-1w
                 p.blue-france
                   strong
-                    = link_to "Vous êtes en 4ème, 3e ou 2nde générale ou technologique ?",
+                    = link_to ENV.fetch('HOME_PROS_STUDENTS_LINK_LABEL', "Vous êtes en 4ème, 3e ou 2nde générale ou technologique ?"),
                               "https://forms.sbc36.com/62553f47462f0e1887f81bfe/xtszW7joSFu4cBSfyOLMdw/form.html",
                               target: '_blank',
                               class: 'fr-raw-link'
                 p.default-grey
-                  = "L'ouverture du service est prévue le #{ENV.fetch 'STUDENTS_OPENING_DAY','3 février 2024'} ."
+                  = "L'ouverture du service est prévue le #{ENV.fetch 'STUDENTS_OPENING_DAY','3 février 2024'}."

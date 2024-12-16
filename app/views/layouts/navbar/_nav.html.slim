@@ -9,7 +9,7 @@
           li
             - active = current_page?(root_path) ? 'active' : ''
             = link_to 'Accueil',
-                      root_path,
+                      employers_only? ? professionnels_path : root_path,
                       class: "fr-link text-decoration-none mr-4 #{active}" 
           - if current_user.is_a?(Users::Student) && !employers_only?
             li
