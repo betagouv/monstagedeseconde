@@ -24,9 +24,12 @@ class CallbacksController < ApplicationController
         user.school_id = get_school_id(user_info['rne'])
 
         user.confirmed_at = Time.now
-        user.save!
-
-        sign_in_and_redirect user, event: :authentication
+        if user.save
+          sign_in_and_redirect user, event: :authentication
+        else
+          puts user.errors.full_messages
+          redirect_to root_path, alert: 'Erreur lors de la création de l\'utilisateur'
+        end
       end
     else
       redirect_to root_path, alert: 'State invalide'
