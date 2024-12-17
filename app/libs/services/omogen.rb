@@ -113,8 +113,29 @@ module Services
         puts response.body
         raise "Failed to get sygne eleves : #{response.message}"
       end
-    end
-
+      
+    #   end
+    #   [{:name=>"BADEZ",
+    #   :first_name=>"Claudette",
+    #   :email=>"O*************@email.co",
+    #   :phone=>"04XXXXXXXX",
+    #   :address=>"4, rue du Muguet, Le Banel 12110 AUBIN",
+    #   :level=>"3",
+    #   :sexe=>"F"},
+    #  {:name=>"CHIERICI",
+    #   :first_name=>"Frederic",
+    #   :email=>"I*************@email.co",
+    #   :phone=>"04XXXXXXXX",
+    #   :address=>"4, rue du Muguet, Le Banel 12110 AUBIN",
+    #   :level=>"1",
+    #   :sexe=>"F"},
+    #  {:name=>"GROHIN",
+    #   :first_name=>"Juliette",
+    #   :email=>"G*************@email.co",
+    #   :phone=>"04XXXXXXXX",
+    #   :address=>"4, rue du Muguet, Le Banel 12110 AUBIN",
+    #   :level=>"1",
+    #   :sexe=>"M"}]
     def sygne_responsables
       # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
       uri = URI(ENV['SYGNE_URL'] + '/eleves/001291528AA/responsables')
