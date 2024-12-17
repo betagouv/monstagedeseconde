@@ -1,0 +1,20 @@
+{
+  "etablissements": [
+      {
+          "siret": "90943224700015",
+          "is_public": false,
+          "activite": "Programmation, conseil et autres activités informatiques",
+          "uniteLegale": {
+              "denominationUniteLegale": "EAST SIDE SOFTWARE"
+          },
+          "adresseEtablissement": {
+              "numeroVoieEtablissement": "",
+              "typeVoieEtablissement": "",
+              "libelleVoieEtablissement": "18 RUE DE COTTE",
+              "codePostalEtablissement": "75112",
+              "libelleCommuneEtablissement": "PARIS",
+              "adresseCompleteEtablissement": "18 RUE DE COTTE 75012 PARIS"
+          }
+      }
+  ]
+}

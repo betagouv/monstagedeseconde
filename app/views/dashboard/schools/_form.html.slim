@@ -28,12 +28,14 @@ div data-controller='select-weeks'
         legend= "Localisation"
 
         = react_component("AddressInput", props: { resourceName: :school,
-                                                  currentStreet: @school.street,
-                                                  currentCity: @school.city,
-                                                  currentZipcode: @school.zipcode,
-                                                  currentLatitude: @school.coordinates.try(:lat).try(:to_f),
-                                                  currentLongitude: @school.coordinates.try(:lng).try(:to_f),
-                                                  currentFullAddress: @school.formatted_autocomplete_address})
+                                                   currentStreet: @school.street,
+                                                   currentCity: @school.city,
+                                                   currentZipcode: @school.zipcode,
+                                                   currentLatitude: @school.coordinates.try(:lat).try(:to_f),
+                                                   currentLongitude: @school.coordinates.try(:lng).try(:to_f),
+                                                   currentFullAddress: @school.formatted_autocomplete_address,
+                                                   isDuplication: false,
+                                                   editMode: false})
 
 
     - else

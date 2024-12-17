@@ -1,4 +1,5 @@
-dialog#fr-modal-edit-space-dialog.fr-modal[aria-labelledby="fr-modal-edit-space-title" role="dialog"]
+- from_dashboard = from_dashboard || nil
+dialog.fr-modal[id="fr-modal-edit-space-dialog#{from_dashboard ? "-area-#{internship_offer_area.id}" : ''}" aria-labelledby="fr-modal-edit-space-title" role="dialog"]
   .fr-container.fr-container--fluid.fr-container-md
     .fr-grid-row.fr-grid-row--center
       .fr-col-12.fr-col-md-8.fr-col-lg-6
@@ -7,8 +8,9 @@ dialog#fr-modal-edit-space-dialog.fr-modal[aria-labelledby="fr-modal-edit-space-
                       scope: :internship_offer_area,
                       url: dashboard_internship_offer_area_path(id: internship_offer_area.id),
                       method: :patch do |form|
+            = form.hidden_field :from_dashboard, value: from_dashboard
             .fr-modal__header
-              button.fr-link--close.fr-link[aria-controls="fr-modal-edit-space-dialog"]
+              button.fr-link--close.fr-link[aria-controls="fr-modal-edit-space-dialog#{from_dashboard ? "-area-#{internship_offer_area.id}" : '' }"]
                 | Fermer
             .fr-modal__content
               h1#fr-modal-edit-space-title.fr-modal__title

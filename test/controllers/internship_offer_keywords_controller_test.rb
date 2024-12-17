@@ -11,9 +11,9 @@ class InternshipOfferKeywordsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '#post search with existing find it' do
-    create(:weekly_internship_offer, title: 'Horticulteur',
-                                     description: 'Des plantes, des fleurs, des légumes',
-                                     employer_description: 'De la nature, du bien être')
+    create(:weekly_internship_offer_2nde, title: 'Horticulteur',
+                                          description: 'Des plantes, des fleurs, des légumes',
+                                          employer_description: 'De la nature, du bien être')
 
     dictionnary_api_call_stub
     SyncInternshipOfferKeywordsJob.perform_now
@@ -27,9 +27,9 @@ class InternshipOfferKeywordsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '#post search with typo find it' do
-    create(:weekly_internship_offer, title: 'pâtissier',
-                                     description: 'Des plantes, des fleurs, des légumes',
-                                     employer_description: 'De la nature, du bien être')
+    create(:weekly_internship_offer_2nde, title: 'pâtissier',
+                                          description: 'Des plantes, des fleurs, des légumes',
+                                          employer_description: 'De la nature, du bien être')
 
     dictionnary_api_call_stub
     SyncInternshipOfferKeywordsJob.perform_now

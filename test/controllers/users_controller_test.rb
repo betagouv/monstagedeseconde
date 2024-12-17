@@ -15,7 +15,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     sign_in(student)
     get account_path
     assert_template 'users/edit'
-    assert_template 'users/_edit_resume'
     assert_select 'form[action=?]', account_path
   end
 

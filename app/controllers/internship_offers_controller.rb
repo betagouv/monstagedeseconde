@@ -18,23 +18,18 @@ class InternshipOffersController < ApplicationController
         @params = query_params.merge(sector_ids: params[:sector_ids])
       end
       format.json do
-        # @internship_offers_all_without_page = finder.all_without_page
         @internship_offers = finder.all
 
         @is_suggestion = @internship_offers.to_a.count.zero?
         @internship_offers = alternative_internship_offers if @is_suggestion
 
-        # @internship_offers_all_without_page_array = @internship_offers_all_without_page.to_a
-        # @internship_offers_array = @internship_offers.to_a
-
         @params = query_params
         data = {
           internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
-          # seats: calculate_seats,
           isSuggestion: @is_suggestion
         }
-        current_user.log_search_history(@params.merge({ results_count: data[:seats] })) if current_user&.student?
+        current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
         render json: data, status: 200
       end
     end

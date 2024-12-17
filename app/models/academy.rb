@@ -12,7 +12,7 @@ class Academy < ApplicationRecord
   end
 
   def self.academy_name_by_zipcode(zipcode:)
-    Department.find_by(name: Department.lookup_by_zipcode(zipcode:))
+    Department.fetch_by_zipcode(zipcode: zipcode)
               .academy
               .name
   end

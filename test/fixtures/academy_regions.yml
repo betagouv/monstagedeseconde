@@ -1,0 +1,40 @@
+  Auvergne:
+    name: 'Auvergne-Rhône-Alpes'
+  Bourgogne:
+    name: 'Bourgogne-Franche-Comté'
+  Bretagne:
+    name: 'Bretagne'
+  Centre:
+    name: 'Centre-Val de Loire'
+  Corse:
+    name: 'Corse'
+  Est:
+    name: 'Grand Est'
+  Guadeloupe:
+    name: 'Guadeloupe'
+  Guyane:
+    name: 'Guyane'
+  Caledonie:
+    name: 'Nouvelle-Calédonie'
+  Polynesie:
+    name: 'Polynésie française'
+  Nord:
+    name: 'Hauts-de-France'
+  Ile:
+    name: 'Ile-de-France'
+  Reunion:
+    name: 'La Réunion'
+  Martinique:
+    name: 'Martinique'
+  Mayotte:
+    name: 'Mayotte'
+  Normandie:
+    name: Normandie
+  Aquitaine:
+    name: 'Nouvelle-Aquitaine'
+  Occitanie:
+    name: 'Occitanie'
+  Loire:
+    name: 'Pays de la Loire'
+  Provence:
+    name: "Provence-Alpes-Côte d'Azur"

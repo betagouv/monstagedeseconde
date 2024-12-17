@@ -50,13 +50,6 @@ module RailsAdminInternshipOfferable
         field :organisation do
           label 'Groupe ou institution'
         end
-        field :period do
-          def label = 'Période de stage'
-
-          def pretty_value
-            bindings[:object].current_period_label
-          end
-        end
       end
 
       edit do
@@ -101,13 +94,6 @@ module RailsAdminInternshipOfferable
         field :visible
         field :created_at
         field :updated_at
-        field :period do
-          def label = 'Période de stage'
-
-          def pretty_value
-            bindings[:object].current_period_label
-          end
-        end
       end
     end
   end

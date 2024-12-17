@@ -1,0 +1,16 @@
+---
+version: "3"
+
+tasks:
+  default:
+    desc: Run all generic release tasks
+    cmds:
+      - cmd: |
+          if [[ "{{.TASK_COMMITIZEN_ENABLED}}" == "true" ]]; then
+            echo "📦 Running commitizen bump for release..."
+            CZ_BUMP_DRY_RUN="false" CZ_BUMP_YES="true" task commitizen:bump
+            echo "{{.TASK_SEPARATOR}}"
+          else
+            echo "⚠️ Skipping commitizen bump (disabled via TASK_COMMITIZEN_ENABLED=false)"
+          fi
+        silent: true

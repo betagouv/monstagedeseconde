@@ -5,7 +5,7 @@ module Dashboard::TeamMemberInvitations
     include TeamAndAreasHelper
 
     test 'team member can invite a new team member' do
-      skip 'works locally but not on CI'
+      skip 'works locally but not on CI' if ENV['CI'] == 'true'
       employer_1 = create(:employer)
       sign_in(employer_1)
       employer_2 = create(:employer)
@@ -121,13 +121,14 @@ module Dashboard::TeamMemberInvitations
     ## ============= Operators ===================
 
     test 'as operator, team member can invite a new team member' do
-      skip 'works locally but not on CI'
+      skip 'works locally but not on CI' if ENV['CI'] == 'true'
       operator_1 = create(:user_operator)
       operator_2 = create(:user_operator)
       sign_in(operator_1)
       visit account_path
       click_link 'équipe'.capitalize
-      fill_in 'team_member_invitation[invitation_email]', with: operator_2.email
+      find('a', text: "Inviter un membre de l'équipe").click
+      fill_in 'Adresse email', with: operator_2.email
       click_on 'Inviter'
       assert_text "Membre d'équipe invité avec succès"
       assert_equal 0, operator_1.team.team_size
@@ -137,7 +138,7 @@ module Dashboard::TeamMemberInvitations
 
     test 'when two user operators are in the same team, ' \
          'they cannot place an invitation to the same third employer' do
-      skip 'Chromewebdriver issue'
+      skip 'Chromewebdriver issue' if ENV['CI'] == 'true'
       user_operator_1 = create(:user_operator)
       user_operator_2 = create(:user_operator)
       create_team(user_operator_1, user_operator_2)
@@ -147,7 +148,7 @@ module Dashboard::TeamMemberInvitations
       visit dashboard_team_member_invitations_path
       click_link 'équipe'.capitalize
       find('a', text: "Inviter un membre de l'équipe").click
-      fill_in 'team_member_invitation[invitation_email]', with: user_operator_3.email
+      fill_in 'Adresse email', with: user_operator_3.email
       click_on 'Inviter'
       logout(user_operator_1)
 
@@ -225,12 +226,13 @@ module Dashboard::TeamMemberInvitations
 
     ## ============= statisticians ===================
     test 'as statistician, team member can invite a new team member' do
-      skip 'works locally but not on CI'
+      skip 'works locally but not on CI' if ENV['CI'] == 'true'
       statistician_1 = create(:statistician)
-      sign_in(statistician_1)
       statistician_2 = create(:statistician)
+      sign_in(statistician_1)
       visit account_path
       click_link 'équipe'.capitalize
+      find('a', text: "Inviter un membre de l'équipe").click
       fill_in 'team_member_invitation[invitation_email]', with: statistician_2.email
       click_on 'Inviter'
       assert_text "Membre d'équipe invité avec succès"
@@ -265,13 +267,12 @@ module Dashboard::TeamMemberInvitations
       visit dashboard_team_member_invitations_path
       click_link 'équipe'.capitalize
       find('a', text: "Inviter un membre de l'équipe").click
-      fill_in 'team_member_invitation[invitation_email]', with: statistician_3.email
+      fill_in 'Adresse email', with: statistician_3.email
       click_on 'Inviter'
       assert_text 'Ce collaborateur est déjà invité'
     end
 
     test 'a statistician can accept an invitation to join a team' do
-      create(:department, code: '60', name: 'Oise')
       statistician_1 = create(:statistician)
       statistician_2 = create(:statistician)
       create :team_member_invitation,
@@ -286,7 +287,6 @@ module Dashboard::TeamMemberInvitations
     end
 
     test 'a statistician can refuse an invitation to join a team' do
-      create(:department, code: '60', name: 'Oise')
       statistician_1 = create(:statistician)
       statistician_2 = create(:statistician)
       create :team_member_invitation,

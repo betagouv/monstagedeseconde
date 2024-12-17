@@ -1,0 +1,17 @@
+.small-interline > p {
+  margin: 0.3em 0.1rem 0.3rem 0;
+  line-height: 0.8rem;
+}
+.month-lane{
+  width:110px;
+  padding-left: 10px
+}
+.month-score.blue-france{
+  font-weight: bold;
+}
+.weeks-months{
+  width: 570px;
+  .weeks-list{
+    overflow-x: hidden;
+  }
+}

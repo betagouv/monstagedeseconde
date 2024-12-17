@@ -10,7 +10,7 @@ class NavbarTest < ActionDispatch::IntegrationTest
   test 'visitor navbar' do
     get root_path
     assert_select('li a.fr-link.fr-icon-account-line', text: 'Connexion', count: 1)
-    assert_select('li a.fr-link.fr-icon-user-add-line', text: 'Créer mon compte', count: 1)
+    assert_select('li a.fr-link.fr-icon-user-add-line', text: 'Inscription', count: 1)
   end
 
   test 'employer' do
@@ -107,7 +107,6 @@ class NavbarTest < ActionDispatch::IntegrationTest
   end
 
   test 'statistician' do
-    create(:department, code: '60', name: 'Oise')
     statistician = create(:statistician)
     sign_in(statistician)
     get statistician.custom_dashboard_path
@@ -137,7 +136,6 @@ class NavbarTest < ActionDispatch::IntegrationTest
 
   test 'education statistician' do
     education_statistician = create(:education_statistician)
-    create(:department, code: '60', name: 'Oise')
     sign_in(education_statistician)
     get education_statistician.custom_dashboard_path
     assert_select('li a.fr-link.text-decoration-none.active', count: 1, text: 'Statistiques')

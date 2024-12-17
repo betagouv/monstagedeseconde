@@ -1,74 +1,105 @@
 - preselect_all = preselect_all_weeks?(form.object)
-div [data-controller="select-weeks"
-     data-hosting-infos-target='weeksContainer'
-     data-select-weeks-skip-validation-value="false"]
+- is_all_year_long = form.object.all_year_long?
+- allow_select_all = !form.object.is_fully_editable?
+- error = form.object.errors[:all_year_long].any?
+- latitude = form.object.coordinates&.latitude
+- longitude = form.object.coordinates&.longitude
+- current_weeks = Week.troisieme_selectable_weeks if current_weeks.blank?
+- current_weeks = current_weeks.reject { |week| week.id.in?(SchoolTrack::Seconde.both_weeks.map(&:id))}
+div [data-planning-target='weeksContainer'
+     data-select-weeks-skip-validation-value="false"
+     data-select-weeks-latitude-value="#{latitude}"
+     data-select-weeks-longitude-value="#{longitude}"]
   div data-select-weeks-target='submitButton'
-  .row
-    .col-md-12
-      .form-group
-        div.fr-label.font-weight-bold
-          = label
-          = form.rg2a_required_content_tag
+  fieldset#radio-rich-hint [class="fr-fieldset #{error ? 'fr-fieldset--error' : '' }"
+                          aria-labelledby="radio-rich-hint-legend radio-rich-hint-messages"]
+    legend#radio-rich-hint-legend.fr-fieldset__legend--regular.fr-fieldset__legend.fr-text--lg.font-weight-bold
+      | Sur quelle période proposez-vous ce stage pour les collégiens ?
+      span.fr-hint-text
+    - if render_employer_components
+      .row
+        .col-12
+            - checked = !!form.object.all_year_long
+            = render 'inputs/dsfr_rich_radio_field',
+              form: form,
+              error: error,
+              field: :all_year_long,
+              label: "Toute l'année",
+              hint: 'Les élèves pourront candidater toute l’année à votre offre.',
+              icon: 'fr-icon-calendar-2-fill',
+              value: true,
+              checked: checked,
+              options: { data: { "select-weeks-target": "allYearLong",
+                                action: "change->select-weeks#showAllYearLong" } }
+            = render 'inputs/dsfr_rich_radio_field',
+              form: form,
+              error: error,
+              field: :all_year_long,
+              label: "Une ou plusieurs semaines spécifiques",
+              hint: 'Les élèves avec des dates de stages communes pourront candidater.',
+              icon: 'fr-icon-calendar-line',
+              value: false,
+              checked: !checked,
+              options: { data:{ action: "change->select-weeks#showSpecificWeeks" } }
 
-        - if render_employer_components
-          - allow_select_all = !form.object.is_fully_editable?
-          .fr-checkbox-group.fr-checkbox-group--sm.mb-1
-            = check_box_tag 'all_year_long',
-                            false,
-                            preselect_all,
-                            { disabled: allow_select_all,
-                              data: { "internship-offer-infos-target": "allYearLong",
-                                      action: "change->select-weeks#showAllYearLong"}}
-            = label_tag 'all_year_long', class: 'fr-label' do
-              | Toute l'année scolaire
+    div data-select-weeks-target="checkboxesContainer" class="weeks-months weeks-container-active #{preselect_all ? 'd-none' : ''}" 
+      .row
+        .col-12.fr-text--sm.fr-strong.w-100
+          .d-flex
+            .fr-ml-1w Cochez uniquement les semaines que vous souhaitez proposer
+            .ml-auto
+              button type="button" class="fr-mr-1w fr-btn fr-btn--tertiary fr-btn--sm" data-action="click->select-weeks#unSelectThemAll"
+                | Tout décocher
+      .row.fr-mb-1w.weeks-list 
+        .col-12
+          .d-flex
+            .small-interline.fr-text--sm.border-right.month-lane
+              - Presenters::WeekList.new(weeks: current_weeks).month_split.each do |month_num, weeks|
+                - month_name = Presenters::WeekList::MONTH_LIST[month_num - 9][:name]
+                - score = (weeks & form.object.weeks).size
+                - klass = score > 0 ? 'blue-france strong bold' : 'fr-hint-text'
+                - content = score > 0 ? "#{month_name} (#{score})" : month_name
+                p class="fr-text--sm #{klass} #{month_name} month-score" data-select-weeks-target='monthScore'
+                  = content
 
-              = " #{SchoolYear::Current.new.beginning_of_period.year}-#{SchoolYear::Current.new.end_of_period.year}"
-            
-            = check_box_tag 'specific_weeks',
-                            false,
-                            !preselect_all,
-                            { disabled: allow_select_all,
-                              data: { "internship-offer-infos-target": "specificWeeks",
-                                      action: "change->select-weeks#showSpecificWeeks" }}
-            = label_tag 'specific_weeks', class: 'fr-label' do
-              | Semaines spécifiques
+            .flex-fill.weeks-list
+              div class="custom-control-checkbox-list #{is_all_year_long ? 'd-none' : ''}"
+                - Presenters::WeekList.new(weeks: current_weeks).month_split.each do |month_num, weeks|
+                  - month_name = Presenters::WeekList::MONTH_LIST[month_num - 9][:name]
+                  - year = weeks.first.year
+                  .fr-text--xs.fr-mb-1w
+                    strong
+                      = "#{month_name} #{year}"
+                  - weeks.each do |week|
+                    div class="fr-checkbox-group fr-checkbox-group--sm position-relative pr-3 #{month_name}"
+                      - # prevent removing weeks with application by showing a disable checkbox (not submitted to server)
+                      - # keep reference of checkbox id for easier labelling
+                      - checkbox_id = "#{form.object_name}_week_ids_#{week.id}_checkbox"
+                      - # also add an id for hidden field for two reason, avoid conflict, testing
+                      - hidden_id = "#{form.object_name}_week_ids_#{week.id}_hidden"
+                      - options =  { multiple: true,
+                                    id: checkbox_id,
+                                    data: {:"select-weeks-target" => 'weekCheckboxes',
+                                            action: 'change->select-weeks#handleOneCheckboxChange'} }
+                      - options.merge!({checked: true}) if preselect_all
+                      = form.check_box :week_ids, options, week.id, false
+                      = form.label :"week_id", for: checkbox_id, class: 'fr-label fr-text--sm fr-mb-1v w-100' do
+                        span.w-50
+                          = week.human_shortest
+                        - key = "school-week-#{week.id}".to_sym
+                        - if @school_weeks.present? && key.in?(@school_weeks.keys)
+                          - weeks_count = @school_weeks.fetch(key, 0)
+                          span.w-50
+                            .fr-tag.fr-fi-info-line.fr-tag--sm.fr-tag--icon-left
+                              = "#{weeks_count}+  #{'collège'.pluralize(weeks_count)} #{'disponible'.pluralize(weeks_count)}"
 
-  .row data-select-weeks-target="checkboxesContainer" class="#{preselect_all ? 'd-none' : ''}"
-    .col-md-6
-      .custom-control-checkbox-list
-        - current_weeks.map do |week|
-          .fr-checkbox-group.fr-checkbox-group--sm.position-relative.pr-3.my-2
-            - # prevent removing weeks with application by showing a disable checkbox (not submitted to server)
-            - # keep reference of checkbox id for easier labelling
-            - checkbox_id = "#{form.object_name}_week_ids_#{week.id}_checkbox"
-            - # also add an id for hidden field for two reason, avoid conflict, testing
-            - hidden_id = "#{form.object_name}_week_ids_#{week.id}_hidden"
+                    div.position-absolute.badge-week-density.rounded.d-none data-select-weeks-target='inputWeekLegend' data-week-id=week.id
+                      | ?
+                  p.border-bottom.fr-my-2w.fr-ml-n2w
 
-            - options =  { multiple: true,
-                           id: checkbox_id,
-                           data: {:"select-weeks-target" => 'weekCheckboxes',
-                                  action: 'change->select-weeks#handleCheckboxesChanges'} }
-            - options.merge!({checked: true}) if preselect_all
-            = form.check_box :week_ids, options, week.id, false
-            = form.label :"week_id", for: checkbox_id, class: 'fr-label' do
-              = week.select_text_method_with_year
 
-            div.position-absolute.badge-week-density.rounded.d-none data-select-weeks-target='inputWeekLegend' data-week-id=week.id
-              | ?
-
-      - if render_employer_components
-        .custom-control-checkbox-legend data-select-weeks-target="legendContainer" data-test='select-week-legend'
-          .row.align-items-center
-            .col-6
-              p.mb-0.font-weight-bold Les établissements autour de vous ont tendance à choisir ces dates
-            .col-6
-              .row
-                .col-4 Faible
-                .col-4.badge-legend.rounded
-                .col-4 Forte
+        .row
+          .col-12
+            hr
 
         .form-text.text-danger.d-none data-select-weeks-target="hint" Veuillez saisir au moins une semaine de stage
-    .col-md-6
-      .fr-alert.fr-alert--info
-        h3.fr-alert__title Conseil
-        p Décembre et  janvier sont les mois où se déroulent la plupart des stages.

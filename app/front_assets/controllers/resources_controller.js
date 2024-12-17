@@ -2,23 +2,36 @@ import $ from 'jquery';
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
-  static targets = ["contentDiv"]
+  static targets = ["contentDiv", "levelButton", "categoryButton"]
 
   connect() {
-    // display the first content-div
     this.contentDivTargets[0].style.display = 'block';
+  }
+
+  selectLevel(event) {
+    event.preventDefault();
+
+    this.levelButtonTargets.forEach((button) => {
+      button.removeAttribute('aria-current');
+    });
+
+    event.currentTarget.setAttribute('aria-current', 'true');
   }
 
   showContent(event) {
     event.preventDefault();
     const index = event.currentTarget.dataset.index;
 
-    // Hide all content-div
+    this.categoryButtonTargets.forEach((button) => {
+      button.removeAttribute('aria-current');
+    });
+
+    event.currentTarget.setAttribute('aria-current', 'true');
+
     this.contentDivTargets.forEach((div, idx) => {
       div.style.display = 'none';
     });
 
-    // Display the content-div with the index
     this.contentDivTargets[index].style.display = 'block';
   }
 }

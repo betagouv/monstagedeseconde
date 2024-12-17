@@ -2,11 +2,19 @@
 
 require 'sti_preload'
 class InternshipOffer < ApplicationRecord
+  GUARD_PERIOD = 5.days
   PAGE_SIZE = 30
   EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT = 250
   MAX_CANDIDATES_HIGHEST = 6_000
   TITLE_MAX_CHAR_COUNT = 150
   DESCRIPTION_MAX_CHAR_COUNT = 500
+  DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description
+                            employer_name street zipcode city department entreprise_coordinates
+                            employer_chosen_name all_year_long period grade_ids week_ids
+                            entreprise_full_address internship_offer_area_id
+                            is_public group school_id coordinates first_date last_date
+                            siret internship_address_manual_enter lunch_break daily_hours
+                            weekly_hours ].freeze
 
   include StiPreload
   include AASM
@@ -16,44 +24,57 @@ class InternshipOffer < ApplicationRecord
   include FindableWeek
   include Zipcodable
 
-  include StepperProxy::InternshipOfferInfo
-  include StepperProxy::Organisation
-  include StepperProxy::HostingInfo
-  include StepperProxy::PracticalInfo
+  # Legacy now
+  # include StepperProxy::InternshipOfferInfo
+  # include StepperProxy::Organisation
+  # include StepperProxy::HostingInfo
+  # include StepperProxy::PracticalInfo
+  # New stepper models
+  include StepperProxy::InternshipOccupation
+  include StepperProxy::Entreprise
+  include StepperProxy::Planning
 
   # utils
   include Discard::Model
   include PgSearch::Model
 
-  attr_accessor :republish
+  attr_accessor :republish, :grade_college, :grade_2e, :all_year_long, :period, :internship_type, :shall_publish
 
-  # Other associations
-
+  # Other associations not defined in StepperProxy
   has_many :internship_applications, as: :internship_offer,
                                      foreign_key: 'internship_offer_id'
 
-  belongs_to :organisation, optional: true
-  belongs_to :internship_offer_info, optional: true
-  belongs_to :hosting_info, optional: true
-  belongs_to :practical_info, optional: true
+  belongs_to :internship_occupation, optional: true
+  belongs_to :entreprise, optional: true
+  belongs_to :planning, optional: true
   belongs_to :employer, polymorphic: true, optional: true
   belongs_to :internship_offer_area, optional: true, touch: true
 
   has_many :favorites
   has_many :users, through: :favorites
   has_many :users_internship_offers_histories, dependent: :destroy
+  has_many :internship_offer_weeks,
+           dependent: :destroy,
+           foreign_key: :internship_offer_id,
+           inverse_of: :internship_offer
+  has_many :weeks, through: :internship_offer_weeks
+  has_many :internship_offer_grades,
+           dependent: :destroy,
+           foreign_key: :internship_offer_id,
+           inverse_of: :internship_offer
+  has_many :grades, through: :internship_offer_grades
+
   has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy
 
-  accepts_nested_attributes_for :organisation, allow_destroy: true
+  # accepts_nested_attributes_for :organisation, allow_destroy: true
 
   # Callbacks
   after_initialize :init
 
-  before_validation :update_organisation
-
   before_save :sync_first_and_last_date,
               :reverse_academy_by_zipcode,
-              :make_sure_area_is_set
+              :make_sure_area_is_set,
+              :entreprise_used_name
 
   before_create :preset_published_at_to_now
   after_commit :sync_internship_offer_keywords
@@ -80,19 +101,7 @@ class InternshipOffer < ApplicationRecord
   delegate :update_need, to: :stats, allow_nil: true
 
   # Validations
-  validates :contact_phone,
-            presence: true,
-            unless: :from_api?,
-            length: { minimum: 10 },
-            on: :create
-  validates :contact_phone,
-            unless: :from_api?,
-            format: { with: /\A\+?[\d\s]+\z/,
-                      message: 'Le numéro de téléphone doit contenir des caractères chiffrés uniquement' },
-            on: :create
-
   validate :check_missing_seats, if: :user_update?, on: :update
-  validates :period, inclusion: { in: [0, 1, 2] }
   validates :max_candidates, numericality: { only_integer: true,
                                              greater_than: 0,
                                              less_than_or_equal_to: InternshipOffer::MAX_CANDIDATES_HIGHEST }
@@ -120,7 +129,7 @@ class InternshipOffer < ApplicationRecord
                     }
                   }
 
-  scope :is_public, -> { where(is_public: true) }
+  # scope :public, -> { where is_public: true }
   scope :by_sector, lambda { |sector_id|
     where(sector_id:)
   }
@@ -156,7 +165,7 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :within_current_year, lambda {
-    last_date = SchoolYear::Current.new.end_of_period
+    last_date = SchoolYear::Current.new.end_of_period + GUARD_PERIOD
     in_the_future.where('last_date <= :last_date', last_date:)
   }
 
@@ -210,15 +219,14 @@ class InternshipOffer < ApplicationRecord
   scope :by_department, ->(departments) { where(department: departments) }
 
   aasm do
-    state :drafted, initial: true
-    state :published,
-          :removed,
+    state :published, initial: true
+    state :removed,
           :unpublished,
           :need_to_be_updated,
           :splitted
 
     event :publish do
-      transitions from: %i[drafted unpublished need_to_be_updated],
+      transitions from: %i[unpublished need_to_be_updated],
                   to: :published, after: proc { |*_args|
                                            update!("published_at": Time.now.utc)
                                            if employer.internship_offers.count == 1
@@ -228,7 +236,7 @@ class InternshipOffer < ApplicationRecord
     end
 
     event :remove do
-      transitions from: %i[published need_to_be_updated drafted unpublished],
+      transitions from: %i[published need_to_be_updated unpublished],
                   to: :removed, after: proc { |*_args|
                                          update!(published_at: nil)
                                        }
@@ -242,14 +250,14 @@ class InternshipOffer < ApplicationRecord
     end
 
     event :split do
-      transitions from: %i[published need_to_be_updated drafted unpublished],
+      transitions from: %i[published need_to_be_updated unpublished],
                   to: :splitted, after: proc { |*_args|
                                           # update!(published_at: nil) TODO
                                         }
     end
 
     event :need_update do
-      transitions from: %i[published drafted unpublished need_to_be_updated],
+      transitions from: %i[published unpublished need_to_be_updated],
                   to: :need_to_be_updated, after: proc { |*_args|
                                                     update!(published_at: nil)
                                                   }
@@ -269,7 +277,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def current_period_label
-    InternshipOffer.current_period_labels.values[period]
+    Presenters::WeekList.new(weeks: weeks).to_range_as_str
   end
 
   def period_label
@@ -277,7 +285,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def weeks_count
-    full_time? ? 2 : 1
+    internship_offer_weeks.count
   end
 
   def first_monday
@@ -300,23 +308,35 @@ class InternshipOffer < ApplicationRecord
     internship_applications.empty?
   end
 
+  def two_weeks_long?
+    weeks & SchoolTrack::Seconde.both_weeks == SchoolTrack::Seconde.both_weeks
+  end
+
+  def seconde_school_track_week_1?
+    weeks & SchoolTrack::Seconde.both_weeks == SchoolTrack::Seconde.first_week
+  end
+
+  def seconde_school_track_week_2?
+    weeks & SchoolTrack::Seconde.both_weeks == SchoolTrack::Seconde.second_week
+  end
+
+  def fits_for_seconde?
+    grades.select { |grade| grade.seconde? }.any? &&
+      weeks.any? { |w| w.id.in?(SchoolTrack::Seconde.both_weeks.map(&:id)) }
+  end
+
+  def fits_for_troisieme_or_quatrieme?
+    grades.select { |grade| grade.troisieme_or_quatrieme? }.any? &&
+      weeks.any? { |w| w.id.in?(SchoolTrack::Troisieme.selectable_on_school_year_weeks.map(&:id)) }
+  end
+
   #
   # callbacks
   #
   def sync_first_and_last_date
-    period_collection = SchoolTrack::Seconde.current_period_data
-    case period
-    when 0 # full_time
-      # third week of june
-      self.first_date = period_collection.dig(:full_time, :start_day)
-      self.last_date = period_collection.dig(:full_time, :end_day)
-    when 1 # week_1
-      self.first_date = period_collection.dig(:week_1, :start_day)
-      self.last_date = period_collection.dig(:week_1, :end_day)
-    when 2 # week_2
-      self.first_date = period_collection.dig(:week_2, :start_day)
-      self.last_date = period_collection.dig(:week_2, :end_day)
-    end
+    ordered_weeks = weeks.to_a.sort_by(&:id)
+    self.first_date = ordered_weeks.first&.week_date
+    self.last_date = ordered_weeks.last&.week_date&.+ 4.days
   end
 
   #
@@ -366,7 +386,6 @@ class InternshipOffer < ApplicationRecord
   end
 
   def init
-    self.max_candidates ||= 1
     self.school_year ||= SchoolYear::Current.year_in_june
   end
 
@@ -396,57 +415,47 @@ class InternshipOffer < ApplicationRecord
   end
 
   def duplicate
-    white_list = %w[type title sector_id max_candidates description
-                    tutor_name tutor_phone tutor_email tutor_role employer_website
-                    employer_name street zipcode city department region academy
-                    is_public group school_id coordinates first_date last_date
-                    siret employer_manual_enter internship_offer_area_id
-                    contact_phone internship_offer_info_id organisation_id tutor_id
-                    weekly_hours daily_hours lunch_break employer_description]
-
-    internship_offer = generate_offer_from_attributes(white_list)
-    organisation = self.organisation.dup
-    internship_offer.organisation = organisation
-    internship_offer
+    generate_offer_from_attributes(DUPLICATE_WHITE_LIST)
   end
 
   def duplicate_without_location
-    white_list_without_location = %w[type title sector_id max_candidates
-                                     tutor_name tutor_phone tutor_email tutor_role employer_website
-                                     employer_name is_public group school_id coordinates
-                                     first_date last_date siret employer_manual_enter
-                                     internship_offer_area_id employer_description
-                                     internship_offer_info_id organisation_id tutor_id
-                                     weekly_hours daily_hours]
+    white_list_without_location = DUPLICATE_WHITE_LIST - %w[street city zipcode coordinates]
 
     generate_offer_from_attributes(white_list_without_location)
   end
 
-  def update_from_organisation
-    return unless organisation
+  def update_from_internship_occupation
+    return unless internship_occupation
 
-    self.employer_name = organisation.employer_name
-    self.employer_website = organisation.employer_website
-    self.employer_description = organisation.employer_description
-    self.siret = organisation.siret
-    self.group_id = organisation.group_id
-    self.is_public = organisation.is_public
+    # self.employer_name = organisation.employer_name
+    # self.employer_website = organisation.employer_website
+    self.description = internship_occupation.description
+    # self.siret = organisation.siret
+    # self.group_id = organisation.group_id
+    # self.is_public = organisation.is_public
+    # self.internship_street = internship_occupation.street
+    # self.internship_zipcode = internship_occupation.zipcode
+    # self.internship_city = internship_occupation.city
+    # self.internship_coordinates = internship_occupation.coordinates
+    # self.internship_offer_area_id = internship_occupation.internship_offer_area_id
   end
 
-  def update_organisation
-    return unless organisation && !organisation.new_record?
+  def update_from_organisation
+    nil unless organisation
 
-    # return si aucun changement qui concerne organisation
-    organisation.update_columns(employer_name:) if attribute_changed?(:employer_name)
-    organisation.update_columns(employer_website:) if attribute_changed?(:employer_website)
-    organisation.update_columns(employer_description:) if attribute_changed?(:employer_description)
-    organisation.update_columns(siret:) if attribute_changed?(:siret)
-    organisation.update_columns(group_id:) if attribute_changed?(:group_id)
-    organisation.update_columns(is_public:) if attribute_changed?(:is_public)
+    #   self.employer_name = organisation.employer_name
+    #   self.employer_website = organisation.employer_website
+    #   self.employer_description = organisation.employer_description
+    #   self.siret = organisation.siret
+    #   self.group_id = organisation.group_id
+    #   self.is_public = organisation.is_public
   end
 
   def generate_offer_from_attributes(white_list)
-    InternshipOffer.new(attributes.slice(*white_list))
+    offer = InternshipOffer.new(attributes.slice(*white_list))
+    offer.weeks = weeks
+    offer.grades = grades
+    offer
   end
 
   def preset_published_at_to_now
@@ -507,20 +516,6 @@ class InternshipOffer < ApplicationRecord
     may_need_update? && no_remaining_seat_anymore?
   end
 
-  # def available_weeks
-  #   return Week.selectable_from_now_until_end_of_school_year unless respond_to?(:weeks)
-  #   return Week.selectable_from_now_until_end_of_school_year unless persisted?
-  #   if weeks&.first.nil?
-  #     return Week.selectable_for_school_year(
-  #       school_year: SchoolYear::Floating.new(date: Date.today)
-  #     )
-  #   end
-
-  #   school_year = SchoolYear::Floating.new(date: weeks.first.week_date)
-
-  #   Week.selectable_on_specific_school_year(school_year: school_year)
-  # end
-
   def requires_update_at_toggle_time?
     return false if published?
 
@@ -567,7 +562,11 @@ class InternshipOffer < ApplicationRecord
   end
 
   def user_update?
-    user_update == 'true'
+    # user_update == 'true'
+  end
+
+  def weeks_api_formatted
+    Presenters::WeekList.new(weeks: weeks).to_api_formatted
   end
 
   protected

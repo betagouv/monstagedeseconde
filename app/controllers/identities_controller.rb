@@ -8,7 +8,7 @@ class IdentitiesController < ApplicationController
     if @identity.save
       redirect_to(
         new_user_registration_path(identity_token: @identity.token, as: 'Student',
-                                   targeted_offer_id: params[:identity][:targeted_offer_id]),
+                                   targeted_offer_id: identity_params[:targeted_offer_id]),
         flash: { success: I18n.t('devise.registrations.second_step') }
       )
     else
@@ -27,7 +27,7 @@ class IdentitiesController < ApplicationController
             :first_name,
             :last_name,
             :birth_date,
-            :grade,
+            :grade_id,
             :gender
           )
   end

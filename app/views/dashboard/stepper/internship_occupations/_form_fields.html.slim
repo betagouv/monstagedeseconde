@@ -1,0 +1,96 @@
+- if can?(:supply_offers, current_user)
+    / = current_user.ministry_statistician? ? "Votre administration" : "L'entreprise"
+    = form.hidden_field :internship_address_manual_enter, value: !!resource.internship_address_manual_enter
+    = form.hidden_field :employer_id, value: current_user.id
+    - if resource.id
+      = form.hidden_field :id, value: resource.id
+    .row [data-controller='mandatory-fields-with-coordinates fill-card'
+          data-mandatory-fields-with-coordinates-minimum-length-value="6"
+          data-mandatory-fields-with-coordinates-maximum-length-value="#{InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT}"
+          data-mandatory-fields-with-coordinates-no-event-check-value="#{resource.id.present?}"]
+      .col-md-6
+        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+          .col-12
+            fieldset aria-labelledby="presentation"
+              legend.fr-h6 Le ou les métiers que vous proposez d'observer :
+            .form-group.fr-my-2w
+              = render 'inputs/dsfr_input_field',
+                        f: form,
+                        field: :title,
+                        label: "Indiquez le ou les métiers qui seront observables par l'élève",
+                        placeholder: "Observation du métier de comptable",
+                        aria: {labelledby: 'label_internship_occupation_title'},
+                        required: false,
+                        title: 'intitulé du stage',
+                        object: form.object,
+                        field_type: :text_field,
+                        options: { data: { action: "input->mandatory-fields-with-coordinates#fieldChange input->fill-card#offerTitleChanged",
+                                           :'mandatory-fields-with-coordinates-target' => "mandatoryField",
+                                           :'fill-card-target' => "offerTitleInput"} }
+        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+          .col-12
+            - max_length = InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
+            .form-group.fr-my-2w [data-controller='max-length-input'
+                                  data-max-length-input-target="group"
+                                  data-max-length-input-limit-value="#{max_length}"]
+              = render 'inputs/dsfr_input_field',
+                        f: form,
+                        field: :description,
+                        label: "Décrivez les activités qui seront proposées à l’élève",
+                        aria: {labelledby: 'label_internship_occupation_description'},
+                        required: false,
+                        title: 'Activités prévues au cours du stage',
+                        object: form.object,
+                        options: { rows: 5 ,
+                                   data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
+                                           :'mandatory-fields-with-coordinates-target' => "mandatoryField"}},
+                        field_type: :text_area
+              .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
+                |La description est trop longue
+              small.form-text data-max-length-input-target="charCount"
+        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+          .col-12
+            .fr-alert.fr-alert--info
+              h3.fr-alert__title
+              p
+                |
+                  Les élèves ne peuvent accéder aux machines, appareils ou produits dont l'usage
+                  est proscrit aux mineurs par les articles D. 4153-15 à D. 4153-37 du code du travail.
+                  Ils ne peuvent ni procéder à des manœuvres ou manipulations sur d'autres machines,
+                  produits ou appareils de production ni effectuer des travaux légers
+                  autorisés aux mineurs par ce même code.
+        .row.fr-mt-2w
+        .row.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+          .col-12
+            fieldset aria-labelledby="presentation"
+              legend.fr-h6 Le lieu où se déroulera le stage :
+            - currentLatitude     = resource.coordinates.try(:lat).try(:to_f)
+            - currentLongitude    = resource.coordinates.try(:lng).try(:to_f)
+            - currentLatitude   ||= resource.coordinates.try(:latitude).try(:to_f)
+            - currentLongitude  ||= resource.coordinates.try(:longitude).try(:to_f)
+
+            = react_component("AddressInput",
+                              props: { resourceName: form.object_name,
+                                       currentStreet: resource.street,
+                                       currentCity: resource.city,
+                                       currentZipcode: resource.zipcode,
+                                       currentLatitude: ,
+                                       currentLongitude: ,
+                                       currentFullAddress: resource.formatted_autocomplete_address,
+                                       addressFieldsVisible: !resource.id.nil?,
+                                       isDuplication: @duplication,
+                                       editMode: @edit_mode})
+
+        - if submit_button
+          .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+            .col-12
+              .fr-mt-3w
+                = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
+                = button_tag :submit,
+                            class: 'fr-btn',
+                            data: { :'mandatory-fields-with-coordinates-target' => "disabledField",
+                                    :'internship_occupation-form-target' => "submitButton"} do
+                  = "Suivant "
+      .col-md-6
+        - if resource.new_record? && show_resume
+          = render 'dashboard/stepper/summary_card', form: form

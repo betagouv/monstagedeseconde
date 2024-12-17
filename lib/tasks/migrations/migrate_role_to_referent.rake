@@ -13,22 +13,21 @@ namespace :migrations do
     email, zipcode = arguments.split(';').map { |arg| arg.split(':').last }
 
     user = User.find_by(email: email)
-    short_zipcode =  if Department.departement_identified_by_3_chars?(zipcode: zipcode)
-                       zipcode[0..2]
-                     else
-                       zipcode[0..1]
-                     end
+    short_zipcode = if Department.departement_identified_by_3_chars?(zipcode: zipcode)
+                      zipcode[0..2]
+                    else
+                      zipcode[0..1]
+                    end
 
     if short_zipcode.nil?
-        PrettyConsole.puts_in_red "Zipcode not found"
-        raise "Zipcode not found"
+      PrettyConsole.puts_in_red 'Zipcode not found'
+      raise 'Zipcode not found'
     elsif user.nil? || !user.school_management?
-      PrettyConsole.puts_in_red "User not found or not a school management"
-    elsif
-      user.school_manager? && user.send(:official_uai_email_address?)
-      message = "User uses a shared email address, he should not be allowed" \
-                " to become statistician with this email address. He should " \
-                "change his email address first to a professional, yet personal one"
+      PrettyConsole.puts_in_cyan 'User not found or not a school management'
+    elsif user.school_manager? && user.send(:official_uai_email_address?)
+      message = 'User uses a shared email address, he should not be allowed' \
+                ' to become statistician with this email address. He should ' \
+                'change his email address first to a professional, yet personal one'
       PrettyConsole.puts_in_red message
     else
       ActiveRecord::Base.transaction do
@@ -53,20 +52,20 @@ namespace :migrations do
     # ======================================
     arguments = args.identity
     email, zipcode, signatorable = arguments.split(';').map { |arg| arg.split(':').last }
-    signatorable = signatorable[0...-1] == "true"
+    signatorable = signatorable[0...-1] == 'true'
 
     user = User.find_by(email: email)
-    short_zipcode =  if Department.departement_identified_by_3_chars?(zipcode: zipcode)
-                       zipcode[0..2]
-                     else
-                       zipcode[0..1]
-                     end
+    short_zipcode = if Department.departement_identified_by_3_chars?(zipcode: zipcode)
+                      zipcode[0..2]
+                    else
+                      zipcode[0..1]
+                    end
 
     if short_zipcode.nil?
-        PrettyConsole.puts_in_red "Zipcode not found"
-        raise "Zipcode not found"
+      PrettyConsole.puts_in_red 'Zipcode not found'
+      raise 'Zipcode not found'
     elsif user.nil? || !user.employer?
-      PrettyConsole.puts_in_red "User not found or not an employer"
+      PrettyConsole.puts_in_red 'User not found or not an employer'
     else
       ActiveRecord::Base.transaction do
         # skip emails sending from user existence test
@@ -80,8 +79,11 @@ namespace :migrations do
         user.save!
 
         new_user = User.find_by(email: email)
-        PrettyConsole.say_in_red('Invalid Object') and raise 'invalid migration' unless new_user.valid?
-        PrettyConsole.say_in_heavy_white "as user is agreement signatorable, it may have created internship_agreements" if signatorable
+        PrettyConsole.say_in_yellow('Invalid Object') and raise 'invalid migration' unless new_user.valid?
+
+        if signatorable
+          PrettyConsole.say_in_heavy_white 'as user is agreement signatorable, it may have created internship_agreements'
+        end
       end
     end
   end
@@ -94,20 +96,20 @@ namespace :migrations do
     # ======================================
     arguments = args.identity
     email, zipcode, signatorable = arguments.split(';').map { |arg| arg.split(':').last }
-    signatorable = signatorable[0...-1] == "true"
+    signatorable = signatorable[0...-1] == 'true'
 
     user = User.find_by(email: email)
-    short_zipcode =  if Department.departement_identified_by_3_chars?(zipcode: zipcode)
-                       zipcode[0..2]
-                     else
-                       zipcode[0..1]
-                     end
+    short_zipcode = if Department.departement_identified_by_3_chars?(zipcode: zipcode)
+                      zipcode[0..2]
+                    else
+                      zipcode[0..1]
+                    end
 
     if short_zipcode.nil?
-        PrettyConsole.puts_in_red "Zipcode not found"
-        raise "Zipcode not found"
+      PrettyConsole.puts_in_red 'Zipcode not found'
+      raise 'Zipcode not found'
     elsif user.nil? || !user.employer?
-      PrettyConsole.puts_in_red "User not found or not an employer"
+      PrettyConsole.puts_in_red 'User not found or not an employer'
     else
       ActiveRecord::Base.transaction do
         # skip emails sending from user existence test
@@ -121,8 +123,11 @@ namespace :migrations do
         user.save!
 
         new_user = User.find_by(email: email)
-        PrettyConsole.say_in_red('Invalid Object') and raise 'invalid migration' unless new_user.valid?
-        PrettyConsole.say_in_heavy_white "as user is agreement signatorable, it may have created internship_agreements" if signatorable
+        PrettyConsole.say_in_yellow('Invalid Object') and raise 'invalid migration' unless new_user.valid?
+
+        if signatorable
+          PrettyConsole.say_in_heavy_white 'as user is agreement signatorable, it may have created internship_agreements'
+        end
       end
     end
   end

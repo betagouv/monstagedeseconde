@@ -39,9 +39,9 @@ class Department < ApplicationRecord
 
   def self.to_select(only: nil)
     list = if only
-              Department.find_by code: only
+             Department.find_by code: only
            else
-              Department.all.map
+             Department.all.map
            end
     list.map { |d| ["#{d.code} - #{d.name}", d.name] }.sort
   end
@@ -53,7 +53,7 @@ class Department < ApplicationRecord
   # edge case for [971->978]
   def self.departement_identified_by_3_chars?(zipcode:)
     zipcode.starts_with?('97') ||
-    zipcode.starts_with?('98')
+      zipcode.starts_with?('98')
   end
 
   def self.email_domain(zipcode:)

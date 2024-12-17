@@ -1,0 +1,15 @@
+- model = @internship_occupation
+- method = :post
+- url = dashboard_stepper_internship_occupations_path
+
+= render 'layouts/breadcrumb',
+          links: [ [dashboard_internship_offers_path, 'Mes offres de stage'],
+                   ['', 'Déposer une offre de stage']]
+.row.fr-my-3w 
+  .col
+    h1.h2 Déposer une offre de stage
+
+= render "form",
+         show_resume: true,
+         submit_button: true ,
+         model: model, method: method, url: url

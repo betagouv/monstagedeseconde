@@ -24,16 +24,15 @@ module Presenters
       end
 
       test '.internship_location' do
-        create(:department, code: '60', name: 'Oise')
-        internship_offer = create(:weekly_internship_offer, street: '7 rue du puits',
-                                                           city: 'Coye la foret',
-                                                           zipcode: '60580')
+        internship_offer = create(:weekly_internship_offer_2nde, street: '7 rue du puits',
+                                                                 city: 'Coye la foret',
+                                                                 zipcode: '60580')
         create(:weekly_internship_application,
                :approved,
                student: @student,
-               internship_offer: internship_offer)
+               internship_offer:)
         assert_equal [internship_offer.formatted_autocomplete_address],
-                      @student_stats.internship_locations
+                     @student_stats.internship_locations
       end
 
       test '.internship_tutors' do
@@ -44,16 +43,16 @@ module Presenters
         }
         StudentStats::Tutor.new(**tutor_kwargs)
         internship_offer = create(
-          :weekly_internship_offer,
-          **tutor_kwargs)
+          :weekly_internship_offer_2nde,
+          **tutor_kwargs
+        )
         weekly_internship_application = create(
           :weekly_internship_application,
           :approved,
           student: @student,
-          internship_offer: internship_offer
+          internship_offer:
         )
         weekly_internship_application.save
-
 
         tutor = @student_stats.internship_tutors.first
         assert_equal tutor.tutor_name, internship_offer.tutor_name
@@ -65,11 +64,8 @@ module Presenters
         student = create(:student)
         assert_equal({ color: 'warning', label: 'doit faire des candidatures' },
                      @student_stats.applications_best_status)
-        create(:weekly_internship_application, :drafted, student: student)
-        assert_equal({ color: 'warning', label: 'doit faire des candidatures' },
-                     StudentStats.new(student: student.reload).applications_best_status)
         create(:weekly_internship_application, :expired, student: student)
-	      assert_equal({ color: 'error ', label: 'candidature expirée' },
+        assert_equal({ color: 'error ', label: 'candidature expirée' },
                      StudentStats.new(student: student.reload).applications_best_status)
         create(:weekly_internship_application, :canceled_by_student_confirmation, student: student)
         assert_equal({ color: 'error', label: 'candidature annulée par l\'élève' },
@@ -79,7 +75,7 @@ module Presenters
                      StudentStats.new(student: student.reload).applications_best_status)
         create(:weekly_internship_application, :expired_by_student, student: student)
         assert_equal({ color: 'error', label: 'candidature non retenue' },
-                    StudentStats.new(student: student.reload).applications_best_status)
+                     StudentStats.new(student: student.reload).applications_best_status)
         create(:weekly_internship_application, :rejected, student: student)
         assert_equal({ color: 'error', label: 'candidature non retenue' },
                      StudentStats.new(student: student.reload).applications_best_status)
@@ -89,16 +85,37 @@ module Presenters
         create(:weekly_internship_application, :submitted, student: student)
         assert_equal({ color: 'info', label: 'en attente de réponse' },
                      StudentStats.new(student: student.reload).applications_best_status)
-        create(:weekly_internship_application, :read_by_employer, student: student)
+        create(:weekly_internship_application, :expired, student:)
         assert_equal({ color: 'info', label: 'en attente de réponse' },
                      StudentStats.new(student: student.reload).applications_best_status)
-        create(:weekly_internship_application, student: student)
+        create(:weekly_internship_application, :canceled_by_student_confirmation, student:)
         assert_equal({ color: 'info', label: 'en attente de réponse' },
                      StudentStats.new(student: student.reload).applications_best_status)
-        create(:weekly_internship_application, :validated_by_employer, student: student)
+        create(:weekly_internship_application, :canceled_by_student, student:)
+        assert_equal({ color: 'info', label: 'en attente de réponse' },
+                     StudentStats.new(student: student.reload).applications_best_status)
+        create(:weekly_internship_application, :expired_by_student, student:)
+        assert_equal({ color: 'info', label: 'en attente de réponse' },
+                     StudentStats.new(student: student.reload).applications_best_status)
+        create(:weekly_internship_application, :rejected, student:)
+        assert_equal({ color: 'info', label: 'en attente de réponse' },
+                     StudentStats.new(student: student.reload).applications_best_status)
+        create(:weekly_internship_application, :canceled_by_employer, student:)
+        assert_equal({ color: 'info', label: 'en attente de réponse' },
+                     StudentStats.new(student: student.reload).applications_best_status)
+        create(:weekly_internship_application, :submitted, student:)
+        assert_equal({ color: 'info', label: 'en attente de réponse' },
+                     StudentStats.new(student: student.reload).applications_best_status)
+        create(:weekly_internship_application, :read_by_employer, student:)
+        assert_equal({ color: 'info', label: 'en attente de réponse' },
+                     StudentStats.new(student: student.reload).applications_best_status)
+        create(:weekly_internship_application, student:)
+        assert_equal({ color: 'info', label: 'en attente de réponse' },
+                     StudentStats.new(student: student.reload).applications_best_status)
+        create(:weekly_internship_application, :validated_by_employer, student:)
         assert_equal({ color: 'new', label: "confirmer la venue dans l'entreprise" },
                      StudentStats.new(student: student.reload).applications_best_status)
-        create(:weekly_internship_application, :approved, student: student)
+        create(:weekly_internship_application, :approved, student:)
         assert_equal({ color: 'success', label: 'stage accepté' },
                      StudentStats.new(student: student.reload).applications_best_status)
       end

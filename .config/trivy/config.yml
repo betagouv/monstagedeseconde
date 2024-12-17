@@ -1,0 +1,2 @@
+---
+ignorefile: .config/trivy/trivyignore.yml

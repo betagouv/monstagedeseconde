@@ -1,9 +1,13 @@
-- content_for :page_title, "#{t(".page_title", name: @internship_offer.title)} | Monstage"
+- content_for :page_title, "#{t(".page_title", name: @internship_offer.title)} | 1élève1stage"
 - submit_text = params[:renewed] ? "Renouveler l'offre" : "Dupliquer l'offre"
 - text_for_title = params[:renewed] ? "Renouveler l'offre pour l'année en cours" : "Dupliquer une offre"
-.row.mx-5
+.row.mx-5.fr-my-3w 
   .col-12
     .row
-      h1.h2.mb-3 = text_for_title
+      h1.h2 = text_for_title
 
-= render "form", submit_text: submit_text, renew: params[:renewed]
+= render "form",
+         submit_text: submit_text,
+         renew: params[:renewed],
+         show_resume: params[:show_resume],
+         duplication: @duplication

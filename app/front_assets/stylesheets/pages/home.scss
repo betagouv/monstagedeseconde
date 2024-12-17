@@ -181,7 +181,11 @@ p.fr-card__desc.std-height {
 }
 
 .container-monstage-fluid-hero {
-    background-color: $blue-france;
+    background-image: url('../images/homepage/backgrd-header.png');
+    background-position: center center;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: cover;
 
     .white-search-frame {
       background-color: #FFF;
@@ -623,7 +627,6 @@ img.covering {
     .content {
       z-index: 1;
     }
-
     .hero-stamp {
         position: absolute;
         top: -20%;
@@ -631,12 +634,6 @@ img.covering {
         max-width: 400px;
         z-index: 0;
     }
-}
-
-.student-hero .container-xl,
-.pro-hero .container-xl,
-.education-hero .container-xl {
-  background-color: $blue-france-975;
 }
 
 .student-hero .sub-hero {
@@ -662,4 +659,34 @@ img.covering {
   min-height: 200px;
   display: none;
 }
-  
+
+.fr-sidemenu__btn[aria-expanded=true] {
+  --idle: transparent;
+  --hover: var(--background-open-blue-france-hover);
+  --active: var(--background-open-blue-france-active);
+  background-color: #e3e3fd;
+  background-color: var(--background-open-blue-france);
+}
+
+.bg-cover-image-homepage {
+    border-radius: 0;
+    background-image: url('../images/homepage/backgrd-header.png');
+    background-repeat: no-repeat;
+    background-position: right bottom;
+}
+
+.custom-arrow-list {
+    list-style: none;
+    
+    li {
+      position: relative;
+      padding-left: 1.5rem;
+      
+      &::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: inherit;
+      }
+    }
+  }

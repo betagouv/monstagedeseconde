@@ -1,0 +1,158 @@
+---
+# Taskfile.yml: Central hub for development operations.
+version: "3"
+
+vars:
+  # Environment variables for task control
+  TASK_BUN_ENABLED: '{{.TASK_BUN_ENABLED | default "true"}}'
+  TASK_COMMITIZEN_ENABLED: '{{.TASK_COMMITIZEN_ENABLED | default "true"}}'
+  TASK_COMMITLINT_ENABLED: '{{.TASK_COMMITLINT_ENABLED | default "true"}}'
+  TASK_DEV_ENABLED: '{{.TASK_DEV_ENABLED | default "true"}}'
+  TASK_DOCKER_ENABLED: '{{.TASK_DOCKER_ENABLED | default "true"}}'
+  TASK_LIZARD_ENABLED: '{{.TASK_LIZARD_ENABLED | default "true"}}'
+  TASK_MEGALINTER_ENABLED: '{{.TASK_MEGALINTER_ENABLED | default "true"}}'
+  TASK_NODEJS_ENABLED: '{{.TASK_NODEJS_ENABLED | default "true"}}'
+  TASK_YAMLLINT_ENABLED: '{{.TASK_YAMLLINT_ENABLED | default "true"}}'
+
+  # Simple separator
+  TASK_SEPARATOR: '{{.TASK_SEPARATOR | default (print (repeat 120 "-") "\n" (repeat 120 "-") "\n" (repeat 120 "-"))}}'
+  TASK_DEVSECOPS_ICON: '{{.TASK_DEVSECOPS_ICON | default "♾️"}}'
+
+  EXT_COMMITLINT_FROM: 'origin/review'
+
+
+# Includes: Specify necessary and additional components for development.
+# - Essential includes are required for a successful Docker build.
+# - Optional includes extras like tests and lint (not needed for Docker builds)
+includes:
+  # Essential includes (Required for Docker build and k3s)
+  devsecops:plan:
+    taskfile: .config/devsecops/Taskfile.plan.yml
+  devsecops:code:
+    taskfile: .config/devsecops/Taskfile.code.yml
+  devsecops:build:
+    taskfile: .config/devsecops/Taskfile.build.yml
+  devsecops:test:
+    taskfile: .config/devsecops/Taskfile.test.yml
+  devsecops:release:
+    taskfile: .config/devsecops/Taskfile.release.yml
+  devsecops:deploy:
+    taskfile: .config/devsecops/Taskfile.deploy.yml
+  devsecops:operate:
+    taskfile: .config/devsecops/Taskfile.operate.yml
+  devsecops:monitor:
+    taskfile: .config/devsecops/Taskfile.monitor.yml
+  devsecops:feedback:
+    taskfile: .config/devsecops/Taskfile.feedback.yml
+  project:
+    taskfile: src/Taskfile.yml
+
+  # Optional includes (For dev, testing, linting, etc.)
+  bun:
+    taskfile: .config/bun/Taskfile.yml
+    optional: true
+  commitizen:
+    taskfile: .config/commitizen/Taskfile.yml
+    optional: true
+  commitlint:
+    taskfile: .config/commitlint/Taskfile.yml
+    optional: true
+  copier:
+    taskfile: .config/copier/Taskfile.yml
+    optional: true
+  dev:
+    taskfile: .config/dev/Taskfile.yml
+    optional: true
+  docker:
+    taskfile: .config/docker/Taskfile.yml
+    optional: true
+  lizard:
+    taskfile: .config/lizard/Taskfile.yml
+    optional: true
+  megalinter:
+    taskfile: .config/megalinter/Taskfile.yml
+    optional: true
+  nodejs:
+    taskfile: .config/nodejs/Taskfile.yml
+    dir: .config/nodejs
+    optional: true
+  yamllint:
+    taskfile: .config/yamllint/Taskfile.yml
+    optional: true
+
+tasks:
+  default:
+    # Orchestrates DevSecOps workflows.
+    cmds:
+      - task: plan
+      - task: code
+      - task: build
+      - task: test
+      - task: release
+      - task: deploy
+      - task: operate
+      - task: monitor
+      - task: feedback
+
+  plan:
+    cmds:
+      - cmd: echo "{{.TASK_DEVSECOPS_ICON}} Plan"
+        silent: true
+      - task: devsecops:plan
+      - task: project:plan
+
+  code:
+    cmds:
+      - cmd: echo "{{.TASK_DEVSECOPS_ICON}} Code"
+        silent: true
+      - task: devsecops:code
+      - task: project:code
+
+  build:
+    cmds:
+      - cmd: echo "{{.TASK_DEVSECOPS_ICON}} Build"
+        silent: true
+      - task: devsecops:build
+      - task: project:build
+
+  test:
+    cmds:
+      - cmd: echo "{{.TASK_DEVSECOPS_ICON}} Test"
+        silent: true
+      - task: devsecops:test
+      - task: project:test
+
+  release:
+    cmds:
+      - cmd: echo "{{.TASK_DEVSECOPS_ICON}} Release"
+        silent: true
+      - task: devsecops:release
+      - task: project:release
+
+  deploy:
+    cmds:
+      - cmd: echo "{{.TASK_DEVSECOPS_ICON}} Deploy"
+        silent: true
+      - task: devsecops:deploy
+      - task: project:deploy
+
+  operate:
+    cmds:
+      - cmd: echo "{{.TASK_DEVSECOPS_ICON}} Operate"
+        silent: true
+      - task: devsecops:operate
+      - task: project:operate
+
+  monitor:
+    cmds:
+      - cmd: echo "{{.TASK_DEVSECOPS_ICON}} Monitor"
+        silent: true
+      - task: devsecops:monitor
+      - task: project:monitor
+
+  feedback:
+    cmds:
+      - cmd: echo "{{.TASK_DEVSECOPS_ICON}} Feedback"
+        silent: true
+      - task: devsecops:feedback
+      - task: project:feedback

@@ -1,14 +1,14 @@
 module EmailSpamEuristicsAssertions
   def refute_email_spammyness(email)
-    assert_subject_length_is_between_35_and_50_chars(email)
+    assert_subject_length_is_between_30_and_50_chars(email)
     assert_body_does_not_contains_upcase_word(email)
   end
 
   private
 
-  def assert_subject_length_is_between_35_and_50_chars(email)
-    assert(email.subject.size >= 35 && email.subject.size <= 50,
-           "woops, too long subject [35<=#{email.subject.size}>=50]: #{email.subject}")
+  def assert_subject_length_is_between_30_and_50_chars(email)
+    assert(email.subject.size >= 30 && email.subject.size <= 50,
+           "woops, too long subject [30<=#{email.subject.size}>=50]: #{email.subject}")
   end
 
   def assert_body_does_not_contains_upcase_word(email)

@@ -6,7 +6,7 @@ module Dashboard::Users
     include TeamAndAreasHelper
 
     test 'employer resets his phone_number' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
       internship_agreement = create(:internship_agreement, internship_application: internship_application)
       employer.update(phone: '+330602030405')
@@ -17,7 +17,7 @@ module Dashboard::Users
 
       assert_redirected_to dashboard_internship_agreements_path(opened_modal: true)
       follow_redirect!
-      assert_select '#alert-text', text: "Votre numéro de téléphone a été supprimé"
+      assert_select '#alert-text', text: 'Votre numéro de téléphone a été supprimé'
       assert employer.reload.phone.blank?
     end
 
@@ -31,12 +31,12 @@ module Dashboard::Users
            params: {}
       assert_redirected_to dashboard_internship_agreements_path(opened_modal: true)
       follow_redirect!
-      assert_select '#alert-text', text: "Votre numéro de téléphone a été supprimé"
+      assert_select '#alert-text', text: 'Votre numéro de téléphone a été supprimé'
       assert school_manager.reload.phone.blank?
     end
 
     test 'employer is redirected to dashboard_internship_agreements_path when resetting his phone number fails' do
-      employer, internship_offer = create_employer_and_offer
+      employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
       internship_agreement = create(:internship_agreement, internship_application: internship_application)
       employer.update(phone: '+330602030405')
@@ -44,11 +44,11 @@ module Dashboard::Users
       sign_in(employer)
 
       klass.stub_any_instance(:nullify_phone_number!, false) do
-        post reset_phone_number_dashboard_user_path( id: employer.id), params: {}
+        post reset_phone_number_dashboard_user_path(id: employer.id), params: {}
       end
       assert_redirected_to dashboard_internship_agreements_path
       follow_redirect!
-      assert_select '#alert-warning', content: "Une erreur est survenue et " \
+      assert_select '#alert-warning', content: 'Une erreur est survenue et ' \
                                          "votre demande n'a pas été traitée"
       assert_equal '+330602030405', employer.reload.phone
     end
@@ -61,11 +61,11 @@ module Dashboard::Users
       sign_in(school_manager)
 
       klass.stub_any_instance(:nullify_phone_number!, false) do
-        post reset_phone_number_dashboard_user_path( id: school_manager.id), params: {}
+        post reset_phone_number_dashboard_user_path(id: school_manager.id), params: {}
       end
       assert_redirected_to dashboard_internship_agreements_path
       follow_redirect!
-      assert_select '#alert-text', text: "Une erreur est survenue et " \
+      assert_select '#alert-text', text: 'Une erreur est survenue et ' \
                                          "votre demande n'a pas été traitée"
       assert_equal '+330602030405', school_manager.reload.phone
     end

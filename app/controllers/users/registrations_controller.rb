@@ -16,10 +16,11 @@ module Users
     rescue_from(ActiveRecord::RecordNotUnique) do |_error|
       redirect_to after_inactive_sign_up_path_for(resource)
     end
-    # GET /users/choose_profile
-    # def choose_profile
-    #
-    # end
+
+    def choose_profile
+      @fim_url = build_fim_url
+    end
+
     def confirmation_standby
       flash.delete(:notice)
       @confirmable_user = ::User.find_by(id: params[:id]) if params[:id].present?
@@ -35,9 +36,8 @@ module Users
 
     # GET /resource/sign_up
     def new
-      if params[:as] == 'Employer'
-        @captcha_image, @captcha_uuid = Services::Captcha.generate
-      end
+      @captcha_image, @captcha_uuid = Services::Captcha.generate if %w[Employer SchoolManagement
+                                                                       Statistician].include?(params[:as])
       @resource_channel = resource_channel
       options = {}
       if params.dig(:user, :targeted_offer_id)
@@ -62,7 +62,10 @@ module Users
 
     # POST /resource
     def create
-      if params[:as] == 'Employer' && !check_captcha(params[:user][:captcha], params[:user][:captcha_uuid])
+      if %w[Employer
+            SchoolManagement
+            Statistician].include?(params[:as]) && !check_captcha(params[:user][:captcha],
+                                                                  params[:user][:captcha_uuid])
         flash[:alert] = I18n.t('devise.registrations.captcha_error')
         redirect_to_register_page(params[:as])
         return
@@ -163,7 +166,7 @@ module Users
           department
           academy_id
           academy_region_id
-          grade
+          grade_id
         ]
       )
     end
@@ -223,7 +226,7 @@ module Users
                             school_id: identity.school_id,
                             class_room_id: identity.class_room_id,
                             gender: identity.gender,
-                            grade: identity.grade
+                            grade_id: identity.grade.id
                           })
     end
 
@@ -261,7 +264,6 @@ module Users
     end
 
     def check_captcha(captcha, captcha_uuid)
-      puts 'verify captcha'
       Services::Captcha.verify(captcha, captcha_uuid)
     end
 
@@ -271,6 +273,21 @@ module Users
       else
         redirect_to new_user_registration_path(as: params[:as])
       end
+    end
+
+    def build_fim_url
+      oauth_params = {
+        redirect_uri: ENV['FIM_REDIRECT_URI'],
+        client_id: ENV['FIM_CLIENT_ID'],
+        scope: 'openid profile email stage',
+        response_type: 'code',
+        state: SecureRandom.uuid,
+        nonce: SecureRandom.uuid
+      }
+
+      cookies[:state] = oauth_params[:state]
+
+      ENV['FIM_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
     end
   end
 end

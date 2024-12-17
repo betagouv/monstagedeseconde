@@ -1,0 +1,157 @@
+- if can?(:supply_offers, current_user)
+  div [data-controller='mandatory-fields fill-card ministry-fields'
+       data-action="input->entreprise-form#checkForm"
+       data-mandatory-fields-minimum-length-value="2"
+       data-ministry-fields-new-record-value="#{resource.new_record?}"
+       data-ministry-fields-is-entreprise-public-value="#{resource.try(:is_public) ? 'true' : 'false'}" ]
+    .row
+      .col-md-6.order-md-2.order-1.d-none.d-md-block
+        - if form.object.new_record? && show_resume
+          = render 'dashboard/stepper/summary_card', form: form
+      .col-md-6.order-md-1.order-2
+        fieldset  aria-labelledby="entreprise-name-legend"
+          legend.fr-h6
+            | Les informations liées à votre structure
+          - resource_name = form.object_name
+          .row
+            .col-12
+              - latitude = form.object.entreprise_coordinates&.latitude || 0
+              - longitude = form.object.entreprise_coordinates&.longitude || 0
+              = form.hidden_field :manual_enter, value: false
+              = form.hidden_field :entreprise_coordinates_longitude, value: resource&.entreprise_coordinates&.longitude || 0
+              = form.hidden_field :entreprise_coordinates_latitude,  value: resource&.entreprise_coordinates&.latitude || 0
+              = form.hidden_field :internship_occupation_id, value: resource.internship_occupation_id
+              = form.hidden_field :entreprise_coordinates, value: { latitude: latitude, longitude: longitude }
+              = form.hidden_field :siret, value: resource&.siret || ''
+              - if resource.id
+                = form.hidden_field :id, value: resource.id
+              = react_component("SirenInput",
+                                props: { resourceName: resource_name,
+                                        presentationLabel: "L'administration",
+                                        currentSiren: resource.siret,
+                                        railsEnv: Rails.env,
+                                        newRecord: resource.new_record? && !duplication })
+
+          #hidden-public-private-field.d-none
+            input type='hidden' name='entreprise[is_public]'
+          div class= "row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'})"
+            #public-private-radio-buttons.bloc-tooggle.col-12
+              div class=('d-none' if request.fullpath.include?('entreprises/nouveau'))
+              - if current_user.ministry_statistician?
+                = form.hidden_field :is_public, value: true
+              - else
+                fieldset.fr-fieldset#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
+                  legend.label
+                    | Votre entreprise est une structure publique ? *
+                  div.fr-fieldset__element
+                    div.fr-radio-group
+                      = form.radio_button :is_public,
+                                          true,
+                                          class: '',
+                                          required: true,
+                                          data: { action: 'ministry-fields#handleClickIsPublic' }
+                      = form.label :is_public_true,
+                                   'Oui',
+                                   class: 'fr-label',
+                                   data: { action: 'ministry-fields#handleClickIsPublic' }
+                  div.fr-fieldset__element
+                    div.fr-radio-group
+                      = form.radio_button :is_public,
+                                          false,
+                                          class: '',
+                                          required: true,
+                                          data: { action: 'ministry-fields#handleClickIsPublic' }
+                      = form.label :is_public_false,
+                                   'Non',
+                                   class: 'fr-label',
+                                   data: { action: 'ministry-fields#handleClickIsPublic' }
+
+                  div.fr-messages-group#radio-hint-messages aria-live="assertive"
+          #ministry-choice.row.fr-mt-3w.bloc-tooggle.d-none [data-ministry-fields-target="groupNamePublic"]
+            .col-12
+              = form.label :group_id, class: 'fr-label' do
+                = "Type d’employeur public *"
+
+              = form.select :group_id,
+                            options_for_select(options_for_public_groups, resource.group.try(:id)),
+                            { prompt: '-- Choisissez votre ministère de tutelle --' },
+                            class: "fr-select ",
+                            required: false,
+                            :'data-ministry-fields-target' => 'selectGroupName'
+          div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
+            .col-12
+              = form.label :sector_id , class: 'fr-label'do
+                = "Secteur d'activité"
+              = form.select :sector_id,
+                            options_from_collection_for_select(Sector.all.order(:name), :id, :name, resource.sector_id),
+                            { prompt: sectors_options_for_default },
+                            class: "fr-select",
+                            required: true,
+                            data: { :'fill-card-target' => "sectorInput",
+                                    :'mandatory-fields-target' => "mandatoryField",
+                                    data: { action: "input->mandatory-fields#fieldChange change->fill-card#sectorChanged"}}
+          div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
+            .col-12
+              = render 'inputs/dsfr_input_field',
+                        field: :presentation_siret,
+                        f: form,
+                        label: "SIRET *",
+                        required: true,
+                        readonly: true,
+                        title: 'SIRET',
+                        object: form.object,
+                        value: resource.presenter.formal_siret
+          div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
+            .col-12
+              - label = "Vérifiez le nom (raison sociale) de votre établissement *"
+              = render 'inputs/dsfr_input_field',
+                        field: :employer_name,
+                        f: form,
+                        label: label,
+                        required: true,
+                        readonly: true,
+                        title: label,
+                        object: form.object,
+                        value: resource&.employer_name
+          div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
+            .col-12
+              - label = "Indiquez le nom de l'enseigne de l'établissement d'accueil, si elle diffère de la raison sociale"
+              = render 'inputs/dsfr_input_field',
+                        field: :employer_chosen_name,
+                        f: form,
+                        label: label,
+                        required: false,
+                        title: label,
+                        object: form.object,
+                        value: resource&.employer_name,
+                        options: { data: { :'fill-card-target' => "employerNameInput",
+                                         action: "input->fill-card#employerNameChanged"} }
+          div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
+            .col-12
+              = form.hidden_field :entreprise_full_address, value: resource&.entreprise_full_address
+              - label = "Vérifiez l'adresse du siège de votre établissement *"
+              = render 'inputs/dsfr_input_field',
+                        field: :entreprise_chosen_full_address,
+                        f: form,
+                        label: label,
+                        required: true,
+                        title: label,
+                        object: form.object,
+                        maxlength: 200,
+                        value: resource&.entreprise_chosen_full_address
+              .fr-mt-2v.d-flex.align-items-center
+                small
+                  span.fr-icon-info-fill.text-blue-info aria-hidden="true"
+                small.text-blue-info.fr-mx-1w
+                  | L’adresse du siège peut être différente de l’adresse où se déroulera le stage.
+
+    - if submit_button
+      .fr-mt-6w.bloc-tooggle
+        = link_to 'Précédent',
+                  edit_dashboard_stepper_internship_occupation_path(id: resource.internship_occupation_id, show_resume: show_resume ),
+                  class: 'fr-btn fr-btn--secondary fr-mr-3w'
+        = button_tag :submit,
+                    class: 'fr-btn',
+                    :'data-entreprise-form-target' => "submitButton",
+                    :'data-mandatory-fileds-target' => "disabledField"  do
+          = "Suivant "

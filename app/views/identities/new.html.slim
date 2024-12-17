@@ -1,4 +1,4 @@
-- content_for(:page_title, "#{t(".page_title")} | Monstage")
+- content_for(:page_title, "#{t(".page_title")} | 1élève1stage")
 - errors = Presenters::Error.new(errors: @identity.errors)
 - incipit = user_presenter.subscription_incipit(as: "Student")
 - resource = @identity
@@ -16,7 +16,10 @@ main#content[role="main"
             = render 'layouts/breadcrumb', links: [ ['', incipit[:title]]]
         .fr-container.fr-background-alt--grey.fr-px-md-0.fr-pt-10v.fr-pt-md-14v
           .fr-mx-1w.fr-mx-md-13w
-            = form_for @identity, id: 'new_user' do |f|
+            = form_with(model: @identity,
+                        scope: :identity,
+                        url: identities_path,
+                        method: :post) do |f|
               .fr-mx-3w
                 .fr-stepper
                   h2.fr-stepper__title
@@ -42,18 +45,34 @@ main#content[role="main"
                 span data-signup-target="phoneBloc"
                 legend.fr-fieldset__legend--regular.fr-fieldset__legend
                   = f.label "Niveau", class: "fr-label", for: "select-grade"
+                - quatrieme_id = Grade.quatrieme.id
+                - troisieme_id = Grade.troisieme.id
+                - seconde_id = Grade.seconde.id
                 .fr-fieldset__element.fr-fieldset__element--inline
                   .fr-radio-group
-                    = f.radio_button :grade, "quatrieme", id: "select-grade-quatrieme", class: "border", required: true
-                    = f.label :grade, "4ème", class: "fr-label fr-mb-0", for: "select-grade-quatrieme"
+                    = f.radio_button :grade_id, 
+                                     quatrieme_id, 
+                                     class: "border", 
+                                     required: true,
+                                     data: { action: "change->signup#updateGrade" }
+                    = f.label :grade_id, "4ème", class: "fr-label fr-mb-0", for: "identity_grade_id_#{quatrieme_id}"
                 .fr-fieldset__element.fr-fieldset__element--inline
                   .fr-radio-group
-                    = f.radio_button :grade, "troisieme", id: "select-grade-troisieme"
-                    = f.label :grade, "3ème", class: "fr-label fr-mb-0", for: "select-grade-troisieme"
+                    = f.radio_button :grade_id, 
+                                     troisieme_id, 
+                                     class: "border", 
+                                     required: true,
+                                     data: { action: "change->signup#updateGrade" }
+                    = f.label :grade_id, "3ème", class: "fr-label fr-mb-0", for: "identity_grade_id_#{troisieme_id}"
                 .fr-fieldset__element.fr-fieldset__element--inline
                   .fr-radio-group
-                    = f.radio_button :grade, "seconde", id: "select-grade-seconde"
-                    = f.label :grade, "2de générale et technologique", class: "fr-label fr-mb-0", for: "select-grade-seconde"
+                    = f.radio_button :grade_id, 
+                                     seconde_id, 
+                                     class: "border", 
+                                     required: true, 
+                                     checked: true,
+                                     data: { action: "change->signup#updateGrade" }
+                    = f.label :grade_id, "2de générale et technologique", class: "fr-label fr-mb-0", for: "identity_grade_id_#{seconde_id}"
               
               fieldset.fr-mx-2w
                 .fr-mx-1w

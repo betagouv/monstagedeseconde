@@ -2,14 +2,13 @@
 
 FactoryBot.define do
   factory :internship_offer, aliases: %i[with_public_group_internship_offer] do
-    employer { create(:employer) }
-    organisation { create(:organisation, employer:) }
-    internship_offer_info { create(:internship_offer_info, employer:) }
-    hosting_info { create(:hosting_info, employer:) }
-    practical_info { create(:practical_info, employer:) }
+    employer
+    internship_occupation { create(:internship_occupation, employer: employer) }
+    entreprise { create(:entreprise, internship_occupation: internship_occupation) }
+    planning { create(:planning, entreprise: entreprise) }
     sequence(:title) { |n| "Stage de 2de - #{n}" }
     description { 'Lorem ipsum dolor' }
-    contact_phone { '+330612345678' }
+    # contact_phone { '+330612345678' }
     max_candidates { 1 }
     blocked_weeks_count { 0 }
     sector { create(:sector) }
@@ -17,13 +16,15 @@ FactoryBot.define do
     is_public { true }
     group { create(:group, is_public: true) }
     internship_offer_area { create(:area, employer_id: employer.id, employer_type: 'User') }
-    employer_description { 'on envoie du parpaing' }
     street { '1 rue du poulet' }
     zipcode { '75001' }
     city { 'Paris' }
-    department { create(:department, code: '75', name: 'Paris') }
     employer_name { 'Octo' }
+    department { Department.find_by(code: '75') }
     coordinates { Coordinates.paris }
+    entreprise_coordinates { Coordinates.paris }
+    entreprise_full_address { '1 rue du poulet, 75001 Paris' }
+    weeks { Week.both_school_track_weeks }
     siret { '11122233300000' }
     aasm_state { 'published' }
     hidden_duplicate { false }
@@ -38,15 +39,8 @@ FactoryBot.define do
       }
     end
     weekly_hours { [] }
-    lunch_break { '12:00-13:00' }
-
-    before(:create) do |internship_offer|
-      Department.create(code: '75', name: 'Paris')
-    end
-
-    trait :drafted do
-      aasm_state { :drafted }
-    end
+    lunch_break { '12:00-13:00 avec le repas que vous apporterez' }
+    grades { Grade.all }
 
     trait :public do
       is_public { true }
@@ -59,20 +53,37 @@ FactoryBot.define do
     end
 
     trait :week_1 do
-      period { 1 }
+      grades { [Grade.seconde] }
       first_date { SchoolTrack::Seconde.current_period_data.dig(:week_1, :start_day) }
       last_date { SchoolTrack::Seconde.current_period_data.dig(:week_1, :end_day) }
+      weeks { [SchoolTrack::Seconde.first_week] }
     end
 
     trait :week_2 do
-      period { 2 }
+      grades { [Grade.seconde] }
       first_date { SchoolTrack::Seconde.current_period_data.dig(:week_2, :start_day) }
       last_date { SchoolTrack::Seconde.current_period_data.dig(:week_2, :end_day) }
+      weeks { [SchoolTrack::Seconde.second_week] }
     end
 
-    trait :full_time do
-      period { 0 }
+    trait :both_weeks do
+      grades { [Grade.seconde] }
       first_date { SchoolTrack::Seconde.current_period_data.dig(:full_time, :start_day) }
+      last_date { SchoolTrack::Seconde.current_period_data.dig(:full_time, :end_day) }
+      weeks { SchoolTrack::Seconde.both_weeks }
+    end
+
+    trait :troisieme_generale_internship_offer do
+      weeks { Week.troisieme_selectable_weeks }
+      grades { [Grade.troisieme] }
+      first_date { weeks.first.monday }
+      last_date { weeks.last.monday + 5.days }
+    end
+
+    trait :both_school_tracks_internship_offer do
+      weeks { Week.both_school_track_weeks }
+      grades { [Grade.seconde, Grade.troisieme] }
+      first_date { Week.troisieme_selectable_weeks.first.monday }
       last_date { SchoolTrack::Seconde.current_period_data.dig(:full_time, :end_day) }
     end
 
@@ -89,9 +100,6 @@ FactoryBot.define do
     trait :weekly_internship_offer do
       description { 'Lorem ipsum dolor weekly_internship_offer' }
       remaining_seats_count { max_candidates }
-      before(:create) do |internship_offer|
-        Department.create(code: '75', name: 'Paris')
-      end
     end
 
     trait :api_internship_offer do
@@ -103,9 +111,6 @@ FactoryBot.define do
     end
 
     trait :weekly_internship_offer_by_statistician do
-    end
-
-    trait :troisieme_generale_internship_offer do
     end
 
     trait :discarded do
@@ -126,19 +131,40 @@ FactoryBot.define do
       group { create(:group, is_public: true) }
     end
 
-    # after(:create) do |internship_offer, params|
-    #  create(:internship_offer_stats, internship_offer: internship_offer)
-    # end
+    # Seconde :
+    factory :api_internship_offer_2nde, traits: %i[api_internship_offer week_1],
+                                        class: 'InternshipOffers::Api',
+                                        parent: :internship_offer
 
-    factory :api_internship_offer, traits: %i[api_internship_offer full_time],
+    factory :weekly_internship_offer_2nde, traits: %i[weekly_internship_offer published week_1],
+                                           class: 'InternshipOffers::WeeklyFramed',
+                                           parent: :internship_offer
+
+    factory :weekly_internship_offer_by_statistician_2nde, traits: %i[weekly_internship_offer_by_statistician week_1],
+                                                           class: 'InternshipOffers::WeeklyFramed',
+                                                           parent: :internship_offer
+    # Troisième :
+    factory :api_internship_offer_3eme, traits: %i[api_internship_offer troisieme_generale_internship_offer],
+                                        class: 'InternshipOffers::Api',
+                                        parent: :internship_offer
+
+    factory :weekly_internship_offer_3eme, traits: %i[weekly_internship_offer published troisieme_generale_internship_offer],
+                                           class: 'InternshipOffers::WeeklyFramed',
+                                           parent: :internship_offer
+
+    factory :weekly_internship_offer_by_statistician_3eme, traits: %i[weekly_internship_offer_by_statistician troisieme_generale_internship_offer],
+                                                           class: 'InternshipOffers::WeeklyFramed',
+                                                           parent: :internship_offer
+    # Both school tracks :
+    factory :api_internship_offer, traits: %i[api_internship_offer both_school_tracks_internship_offer],
                                    class: 'InternshipOffers::Api',
-                                   parent: :weekly_internship_offer
+                                   parent: :internship_offer
 
-    factory :weekly_internship_offer, traits: %i[weekly_internship_offer published full_time],
+    factory :weekly_internship_offer, traits: %i[weekly_internship_offer published both_school_tracks_internship_offer],
                                       class: 'InternshipOffers::WeeklyFramed',
                                       parent: :internship_offer
 
-    factory :weekly_internship_offer_by_statistician, traits: %i[weekly_internship_offer_by_statistician full_time],
+    factory :weekly_internship_offer_by_statistician, traits: %i[weekly_internship_offer_by_statistician both_school_tracks_internship_offer],
                                                       class: 'InternshipOffers::WeeklyFramed',
                                                       parent: :internship_offer
   end

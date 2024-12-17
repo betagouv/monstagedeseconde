@@ -1,5 +1,5 @@
 require 'pretty_console'
-# Use Sample : 
+# Use Sample :
 # tm = TaskManager.new(
 #   allowed_environments: %w[development test],
 #   task_name: 'say_something',
@@ -14,7 +14,7 @@ class TaskManager
                 "#{last_played.played_at.strftime('%d %B %Y')}"
       PrettyConsole.puts_in_blue(message)
     else
-      process_task(run_with_a_job: run_with_a_job)
+      process_task(run_with_a_job:)
     end
   end
 
@@ -26,20 +26,20 @@ class TaskManager
     if messages_checking_tasks_ok.present?
       PrettyConsole.puts_in_red(messages_checking_tasks_ok.join("\n"))
     else
-      process_task(run_with_a_job: run_with_a_job)
+      process_task(run_with_a_job:)
     end
   end
 
   def reset_task_counter
     PrettyConsole.say_in_yellow("--Start resetting task #{task_name} with #{arguments} on " \
       "#{actual_environment}--")
-    TaskRegister.where(task_name: task_name, used_environment: actual_environment)
+    TaskRegister.where(task_name:, used_environment: actual_environment)
                 .destroy_all
     PrettyConsole.say_in_yellow(
-      "---   Done    ---"
+      '---   Done    ---'
     )
   end
-  
+
   attr_accessor :allowed_environments, :played_at, :task_name, :arguments, :actual_environment
 
   private
@@ -53,7 +53,7 @@ class TaskManager
 
   def process_task(run_with_a_job:)
     task_to_register = TaskRegister.new(
-      task_name: task_name,
+      task_name:,
       used_environment: actual_environment,
       played_at: Time.zone.now
     )
@@ -73,26 +73,30 @@ class TaskManager
 
   def messages_checking_tasks_ok
     messages = []
-    messages << "Task has no name ..." if task_name.blank?
-    messages << "Task #{task_name} does not exist " \
-                "please check the spelling" unless task_defined?
+    messages << 'Task has no name ...' if task_name.blank?
+    unless task_defined?
+      messages << "Task #{task_name} does not exist " \
+                  'please check the spelling'
+    end
     return messages unless task_defined?
 
-    messages <<  "A declared environment for #{task_name}#{arguments} " \
-                 "does not exist, it has to be chosen from " \
-                 "#{TaskRegister::ALLOWED_ENVIRONMENTS.join(', ')}" unless check_inclusion_in_list?
+    unless check_inclusion_in_list?
+      messages <<  "A declared environment for #{task_name}#{arguments} " \
+                   'does not exist, it has to be chosen from ' \
+                   "#{TaskRegister::ALLOWED_ENVIRONMENTS.join(', ')}"
+    end
     unless check_environment_context?
       PrettyConsole.puts_in_yellow(
-        "#{task_name} is not executed in this environment")
+        "#{task_name} is not executed in this environment"
+      )
     end
     messages
   end
 
   def last_played
-    former_registration = TaskRegister.find(task_name: task_name,
+    former_registration = TaskRegister.find(task_name:,
                                             used_environment: actual_environment)
   end
-
 
   def task_defined?
     Rake::Task.task_defined?(task_name)

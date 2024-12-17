@@ -6,11 +6,9 @@ module InternshipOffers
   class ApiTest < ActiveSupport::TestCase
     setup do
       @default_params = {
-        title: 'foo',
-        description: 'bar',
+        title: 'foo bar baz meh',
+        description: 'bar bat fdate fd fdfd',
         employer_name: 'baz',
-        employer_description: 'rab',
-        employer_website: 'https://www.google.fr',
         'coordinates' => { latitude: 1, longitude: 1 },
         street: '7 rue du puits',
         remote_id: 1,
@@ -18,10 +16,10 @@ module InternshipOffers
         zipcode: '60580',
         city: 'Coye la foret',
         sector: create(:sector),
-        permalink: 'https://google.fr'
+        permalink: 'https://google.fr',
+        grades: Grade.all,
+        weeks: Week.selectable_from_now_until_end_of_school_year
       }
-
-      create(:department, code: '60', name: 'Oise')
     end
 
     test 'duplicate remote id same employer invalid instance' do
@@ -30,6 +28,7 @@ module InternshipOffers
                                                                             employer: operator))
       internship_offer_bis = InternshipOffers::Api.create(@default_params.merge(remote_id: 1,
                                                                                 employer: operator))
+      validity = internship_offer.valid?
       assert internship_offer.valid?
       assert internship_offer_bis.invalid?
     end
@@ -44,7 +43,7 @@ module InternshipOffers
     end
 
     test '.as_json' do
-      internship_offer = build(:api_internship_offer)
+      internship_offer = build(:api_internship_offer_2nde)
       json = internship_offer.as_json
       assert_equal({ 'latitude' => Coordinates.paris[:latitude],
                      'longitude' => Coordinates.paris[:longitude] },
@@ -65,7 +64,7 @@ module InternshipOffers
     end
 
     test 'is_public does not changes' do
-      internship_offer = create(:api_internship_offer, is_public: true)
+      internship_offer = create(:api_internship_offer_3eme, is_public: true)
       internship_offer.title = 'booboop'
       internship_offer.save!
       assert InternshipOffer.pluck(:is_public).all?

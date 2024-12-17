@@ -1,0 +1,56 @@
+---
+version: "3"
+
+# Note: This is a test to ensure that the tool functions correctly and is mastered before being fully integrated into the project.
+
+vars:
+  DC_VERSION: "latest"
+  DC_DIRECTORY: "{{.HOME}}/OWASP-Dependency-Check"
+  DC_PROJECT: "dependency-check scan: {{.PWD}}"
+  DATA_DIRECTORY: "{{.DC_DIRECTORY}}/data"
+  CACHE_DIRECTORY: "{{.DC_DIRECTORY}}/data/cache"
+  REPORT_DIRECTORY: "{{.PWD}}/odc-reports"
+
+tasks:
+  setup:
+    desc: Prepare directories for Dependency-Check.
+    cmds:
+      - mkdir -p {{.DATA_DIRECTORY}}
+      - mkdir -p {{.CACHE_DIRECTORY}}
+      - mkdir -p {{.REPORT_DIRECTORY}}
+
+  pull:
+    desc: Download latest Dependency-Check Docker image.
+    cmds:
+      - docker pull owasp/dependency-check:{{.DC_VERSION}}
+
+  analyze:
+    desc: Run Dependency-Check analysis.
+    deps: [setup, pull]
+    cmds:
+      - |
+        docker run --rm \
+          -e user=$USER \
+          -u $(id -u ${USER}):$(id -g ${USER}) \
+          --volume {{.PWD}}:/src:z \
+          --volume {{.DATA_DIRECTORY}}:/usr/share/dependency-check/data:z \
+          --volume {{.REPORT_DIRECTORY}}:/report:z \
+          owasp/dependency-check:{{.DC_VERSION}} \
+          --scan /src \
+          --format "ALL" \
+          --project "{{.DC_PROJECT}}" \
+          --out /report
+      - echo "Dependency-Check analysis completed. Reports available in {{.REPORT_DIRECTORY}}"
+
+  clean:
+    desc: Remove Dependency-Check data and reports.
+    cmds:
+      - rm -rf {{.DC_DIRECTORY}}
+      - rm -rf {{.REPORT_DIRECTORY}}
+
+  # Note: There's no direct update command in the Docker example,
+  # but pulling the latest image serves a similar purpose
+  update:
+    desc: Update Dependency-Check Docker image.
+    cmds:
+      - task: pull

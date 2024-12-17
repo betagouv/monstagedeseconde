@@ -36,7 +36,7 @@ function RenderSchoolSelectInput({
       {isWaitingCitySelection && (
         <div className="fr-mt-2w">
           <label className='fr-label' htmlFor={`${resourceName}_school_name`}>
-            Lycée
+            Établissement
           </label>
           <input
             value=""
@@ -51,7 +51,7 @@ function RenderSchoolSelectInput({
       {isAlreadySelected && (
         <div className="">
           <label className='fr-label' htmlFor={`${resourceName}_school_name`}>
-            Lycée
+            Établissement
           </label>
           <input
             readOnly
@@ -68,7 +68,7 @@ function RenderSchoolSelectInput({
       )}
       {hasPendingSuggestion && (
         <div>
-          <label htmlFor={`${resourceName}_school_id`} className="fr-label fr-mt-2w">Lycée</label>
+          <label htmlFor={`${resourceName}_school_id`} className="fr-label fr-mt-2w">Établissement</label>
           
            
               <select

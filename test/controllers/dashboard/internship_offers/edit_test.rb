@@ -7,38 +7,41 @@ module Dashboard::InternshipOffers
     include Devise::Test::IntegrationHelpers
 
     test 'GET #edit as visitor redirects to user_session_path' do
-      get edit_dashboard_internship_offer_path(create(:weekly_internship_offer).to_param)
+      get edit_dashboard_internship_offer_path(create(:weekly_internship_offer_2nde).to_param)
       assert_redirected_to user_session_path
     end
 
     test 'GET #edit as employer not owning internship_offer redirects to user_session_path' do
       sign_in(create(:employer))
-      get edit_dashboard_internship_offer_path(create(:weekly_internship_offer).to_param)
+      get edit_dashboard_internship_offer_path(create(:weekly_internship_offer_2nde).to_param)
       assert_redirected_to root_path
     end
 
     test 'GET #edit as employer owning internship_offer renders success' do
       employer = create(:employer)
       sign_in(employer)
-      internship_offer = create(:weekly_internship_offer, employer:,
-                                                          max_candidates: 2)
+      internship_offer = create(:weekly_internship_offer_3eme, employer:,
+                                                               max_candidates: 2)
       get edit_dashboard_internship_offer_path(internship_offer.to_param)
       assert_select "#internship_offer_max_candidates[value=#{internship_offer.max_candidates}]", count: 1
       assert_response :success
     end
 
     test 'GET #edit post offer render selectable week of past year' do
-      travel_to(Date.new(Date.today.year - 1, 5, 31)) do
+      travel_to(Date.new(Date.today.year - 1, 6, 1)) do
         employer = create(:employer)
         school_year_n_minus_one = SchoolYear::Floating.new_by_year(year: Date.today.year - 1)
 
-        first_week = Week.where(year: school_year_n_minus_one.beginning_of_period.year,
-                                number: school_year_n_minus_one.beginning_of_period.cweek)
-                         .first
+        first_week = Week.find_by(year: school_year_n_minus_one.beginning_of_period.year,
+                                  number: school_year_n_minus_one.beginning_of_period.cweek)
 
         sign_in(employer)
-        internship_offer = create(:weekly_internship_offer, employer:,
-                                                            max_candidates: 2)
+        internship_offer = create(
+          :weekly_internship_offer_3eme,
+          employer:,
+          weeks: [first_week],
+          max_candidates: 1
+        )
         get edit_dashboard_internship_offer_path(internship_offer.to_param)
         assert_response :success
       end
@@ -47,7 +50,7 @@ module Dashboard::InternshipOffers
     test 'GET #edit is not turboable' do
       employer = create(:employer)
       sign_in(employer)
-      internship_offer = create(:weekly_internship_offer, employer:)
+      internship_offer = create(:weekly_internship_offer_2nde, employer:)
       get edit_dashboard_internship_offer_path(internship_offer.to_param)
       assert_select 'meta[name="turbo-visit-control"][content="reload"]'
     end
@@ -55,8 +58,8 @@ module Dashboard::InternshipOffers
     test 'GET #edit with disabled fields if applications exist' do
       employer = create(:employer)
       sign_in(employer)
-      internship_offer = create(:weekly_internship_offer, employer:,
-                                                          internship_offer_area: employer.current_area)
+      internship_offer = create(:weekly_internship_offer_2nde, employer:,
+                                                               internship_offer_area: employer.current_area)
       internship_application = create(:weekly_internship_application,
                                       :submitted,
                                       internship_offer:)
@@ -70,15 +73,13 @@ module Dashboard::InternshipOffers
     test 'GET #edit with default fields' do
       employer = create(:employer)
       sign_in(employer)
-      internship_offer = create(:weekly_internship_offer, is_public: true,
-                                                          max_candidates: 1,
-                                                          employer:)
+      internship_offer = create(:weekly_internship_offer_2nde, is_public: true,
+                                                               max_candidates: 1,
+                                                               employer:)
 
       get edit_dashboard_internship_offer_path(internship_offer.to_param)
       assert_response :success
-      assert_select 'title', "Offre de stage '#{internship_offer.title}' | Monstage"
-      assert_select '#internship_offer_organisation_attributes_is_public_true[checked]', count: 1 # "ensure user select kind of group"
-      assert_select '#internship_offer_organisation_attributes_is_public_false[checked]', count: 0 # "ensure user select kind of group"
+      assert_select 'title', "Offre de stage '#{internship_offer.title}' | 1élève1stage"
 
       assert_select '#internship_type_true[checked]', count: 1
       assert_select '#internship_type_false[checked]', count: 0

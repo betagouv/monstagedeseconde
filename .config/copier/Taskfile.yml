@@ -1,0 +1,92 @@
+---
+version: "3"
+
+vars:
+  COPIER_VIRTUALENV: '{{.COPIER_VIRTUALENV | default "./venv/copier"}}'
+  COPIER_COMMAND: '{{.COPIER_COMMAND | default "./venv/copier/bin/copier"}}'
+  COPIER_PYTHON_VERSION_FILE: '{{.COPIER_PYTHON_VERSION_FILE | default ".config/python/.python-version"}}'
+  COPIER_REQUIREMENTS_FILE: '{{.COPIER_REQUIREMENTS_FILE | default ".config/copier/requirements.txt"}}'
+  COPIER_CLI_OPTS: '{{.COPIER_CLI_OPTS | default ""}}'
+
+tasks:
+  install:
+    desc: |
+      ℹ️ Description:
+        Configures Copier and its dependencies within a controlled virtual environment.
+
+      🔧 Variables:
+        - COPIER_PYTHON_VERSION_FILE: Path to the Python version file
+          Default: ".config/python/.python-version"
+        - COPIER_REQUIREMENTS_FILE: Path to the requirements file
+          Default: ".config/copier/requirements.txt"
+        - COPIER_VIRTUALENV: Location of the virtual environment
+          Default: "./venv/copier"
+
+      🔐 Preconditions:
+        - Python must be installed
+        - Python version file must exist
+
+      🔄 Execution:
+        Creates a virtual environment and installs Copier with dependencies
+
+      📝 Note:
+        Ensure Python version file contains a version compatible with Copier
+    preconditions:
+      - sh: command -v python3 >/dev/null 2>&1
+        msg: "❌ Error: Python is not installed. Please install Python before proceeding."
+      - sh: test -f {{.COPIER_PYTHON_VERSION_FILE}}
+        msg: |
+          ❌ Error: missing file {{.COPIER_PYTHON_VERSION_FILE}}.
+          Please create it with the content "3.11"
+    status:
+      - |
+        {{.COPIER_COMMAND}} --version | grep -q $(awk -F '==' '{print $2}' {{.COPIER_REQUIREMENTS_FILE}})
+    cmds:
+      - defer: { task: cleanup }
+      - python$(cut -d '=' -f 2 {{.COPIER_PYTHON_VERSION_FILE}}) -m venv {{.COPIER_VIRTUALENV}}
+      - "{{.COPIER_VIRTUALENV}}/bin/pip install -r {{.COPIER_REQUIREMENTS_FILE}}"
+      - cmd: echo "✅ Copier and dependencies are successfully installed in the virtual environment."
+        silent: true
+
+  default:
+    deps: [install]
+    desc: |
+      ℹ️ Description:
+        Run Copier with specified options.
+
+      🔧 Variables:
+        - COPIER_COMMAND: Command to run Copier
+          Default: "./venv/copier/bin/copier"
+        - COPIER_CLI_OPTS: Additional command line options
+          Default: ""
+
+      🔐 Preconditions:
+        - The 'install' task must be completed
+
+      🔄 Execution:
+        Runs Copier with the provided arguments
+
+      📝 Note:
+        Use CLI_ARGS to pass additional arguments to Copier
+    cmds:
+      - "{{.COPIER_COMMAND}} {{.COPIER_CLI_OPTS}} {{.CLI_ARGS}}"
+
+  cleanup:
+    internal: true
+    desc: |
+      ℹ️ Description:
+        Cleans up temporary files created during installation.
+
+      🔧 Variables: None
+
+      🔐 Preconditions: None
+
+      🔄 Execution:
+        Removes temporary installation files.
+
+      📝 Note:
+        This task is internal and automatically called via defer.
+    cmds:
+      - rm -rf {{.COPIER_VIRTUALENV}}/*-cache/
+      - cmd: echo "✅ Temporary files have been cleaned up."
+        silent: true

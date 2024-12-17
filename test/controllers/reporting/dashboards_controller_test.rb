@@ -16,12 +16,11 @@ module Reporting
       sign_in(god)
       get reporting_dashboards_path
       assert_response :success
-      assert_select 'title', "Statistiques - Tableau de bord | Stages de 2de"
+      assert_select 'title', 'Statistiques - Tableau de bord | Stages de 2de'
     end
 
     test 'GET #index as statistician success ' \
          'when department params match his departement_name' do
-      create(:department, code: '60', name: 'Oise')
       statistician = create(:statistician)
       zipcode = "#{statistician.department_zipcode}000"
       sign_in(statistician)
@@ -31,7 +30,6 @@ module Reporting
 
     test 'GET #index as statistician fails ' \
          'when department params does not match his department' do
-      create(:department, code: '60', name: 'Oise')
       statistician = create(:statistician)
       sign_in(statistician)
       get reporting_dashboards_path(department: 'Ain')
@@ -53,7 +51,7 @@ module Reporting
       ministry_groups = ministry_statistician.ministries
       ministry_group = ministry_groups.first
       public_group = create(:public_group)
-      private_group  = create(:private_group)
+      private_group = create(:private_group)
       strict_beginning_year = SchoolYear::Current.new.strict_beginning_of_period.year
       current_year = strict_beginning_year
       last_year = current_year - 1
@@ -62,7 +60,7 @@ module Reporting
              'ministry_statistician associated group should have been public'
       # ministry internship offer with 1
       first_offer = create(
-        :weekly_internship_offer,
+        :weekly_internship_offer_3eme,
         :troisieme_generale_internship_offer,
         group: ministry_group,
         is_public: true
@@ -70,7 +68,7 @@ module Reporting
 
       # private independant internship_offer with 10
       create(
-        :weekly_internship_offer,
+        :weekly_internship_offer_3eme,
         :troisieme_generale_internship_offer,
         max_candidates: 10,
         group: nil,
@@ -79,7 +77,7 @@ module Reporting
 
       # private internship offer with 20
       create(
-        :weekly_internship_offer,
+        :weekly_internship_offer_3eme,
         :troisieme_generale_internship_offer,
         max_candidates: 20,
         group: private_group,

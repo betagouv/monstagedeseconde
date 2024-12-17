@@ -27,7 +27,7 @@ module Html5Validator
 
   def self.run
     puts "running w3c validation with: java -jar node_modules/vnu-jar/build/dist/vnu.jar --errors-only \n#{w3c_files_to_validates.join("\n")}"
-    `java -jar node_modules/vnu-jar/build/dist/vnu.jar --errors-only #{W3C_RESPONSE_STORED_DIR.to_s}/*.html`
+    `java -jar node_modules/vnu-jar/build/dist/vnu.jar --errors-only #{W3C_RESPONSE_STORED_DIR}/*.html`
   end
 
   def run_request_and_cache_response(report_as:)
@@ -36,13 +36,10 @@ module Html5Validator
     ext = '.html'
     assert_equal 1, page.all('.content').size
 
-
     File.open(W3C_RESPONSE_STORED_DIR.join("#{basename}#{ext}"), 'w+') do |fd|
-      fd.write("<!DOCTYPE html>")
+      fd.write('<!DOCTYPE html>')
       fd.write(page.body)
-      if ENV.has_key?('FUNCTIONAL_SCREENSHOTS')
-        page.save_screenshot(SCREENSHOT_DIR.join("#{basename}.png"), full: true)
-      end
+      page.save_screenshot(SCREENSHOT_DIR.join("#{basename}.png"), full: true) if ENV.has_key?('FUNCTIONAL_SCREENSHOTS')
       assert page_title_ok?(page.body)
     end
     screenshot_full_page("#{report_as.parameterize}.png")
@@ -50,6 +47,7 @@ module Html5Validator
 
   def screenshot_full_page(screenshot_path)
     return if ENV['CI']
+
     initial_size = page.driver.browser.manage.window.size
     width = initial_size.width
     height = page.evaluate_script('document.body.scrollHeight')
@@ -62,9 +60,9 @@ module Html5Validator
   end
 
   def page_title_ok?(data)
-    titles_array = data.match(/<title>(.*)<\/title>/).captures
+    titles_array = data.match(%r{<title>(.*)</title>}).captures
     return false if titles_array.count > 1
-    return false if titles_array.first == 'Monstage'
+    return false if titles_array.first == '1élève1stage'
 
     true
   end

@@ -1,0 +1,410 @@
+01:
+  name: 'Ain'
+  code: '01'
+  academy: Lyon
+02:
+  name: 'Aisne'
+  code: '02'
+  academy: Amiens
+03:
+  name: 'Allier'
+  code: '03'
+  academy: Clermont
+04:
+  name: 'Alpes-de-Haute-Provence'
+  code: '04'
+  academy: Marseille
+05:
+  name: 'Hautes-Alpes'
+  code: '05'
+  academy: Marseille
+06:
+  name: 'Alpes-Maritimes'
+  code: '06'
+  academy: Nice
+07:
+  name: 'Ardèche'
+  code: '07'
+  academy: Grenoble
+08:
+  name: 'Ardennes'
+  code: '08'
+  academy: Reims
+09:
+  name: 'Ariège'
+  code: '09'
+  academy: Toulouse
+10:
+  name: 'Aube'
+  code: '10'
+  academy: Reims
+11:
+  name: 'Aude'
+  code: '11'
+  academy: Montpellier
+12:
+  name: 'Aveyron'
+  code: '12'
+  academy: Toulouse
+13:
+  name: 'Bouches-du-Rhône'
+  code: '13'
+  academy: Marseille
+14:
+  name: 'Calvados'
+  code: '14'
+  academy: Normandie
+15:
+  name: 'Cantal'
+  code: '15'
+  academy: Clermont
+16:
+  name: 'Charente'
+  code: '16'
+  academy: Poitiers
+17:
+  name: 'Charente-Maritime'
+  code: '17'
+  academy: Poitiers
+18:
+  name: 'Cher'
+  code: '18'
+  academy: Tours
+19:
+  name: 'Corrèze'
+  code: '19'
+  academy: Limoges
+21:
+  name: "Côte-d'Or"
+  code: '21'
+  academy: Dijon
+22:
+  name: "Côtes-d'Armor"
+  code: '22'
+  academy: Rennes
+23:
+  name: 'Creuse'
+  code: '23'
+  academy: Limoges
+24:
+  name: 'Dordogne'
+  code: '24'
+  academy: Bordeaux
+25:
+  name: 'Doubs'
+  code: '25'
+  academy: Besancon
+26:
+  name: 'Drôme'
+  code: '26'
+  academy: Grenoble
+27:
+  name: 'Eure'
+  code: '27'
+  academy: Normandie
+28:
+  name: 'Eure-et-Loir'
+  code: '28'
+  academy: Tours
+29:
+  name: 'Finistère'
+  code: '29'
+  academy: Rennes
+30:
+  name: 'Gard'
+  code: '30'
+  academy: Montpellier
+31:
+  name: 'Haute-Garonne'
+  code: '31'
+  academy: Toulouse
+32:
+  name: 'Gers'
+  code: '32'
+  academy: Toulouse
+33:
+  name: 'Gironde'
+  code: '33'
+  academy: Bordeaux
+34:
+  name: 'Hérault'
+  code: '34'
+  academy: Montpellier
+35:
+  name: 'Ille-et-Vilaine'
+  code: '35'
+  academy: Rennes
+36:
+  name: 'Indre'
+  code: '36'
+  academy: Tours
+37:
+  name: 'Indre-et-Loire'
+  code: '37'
+  academy: Tours
+38:
+  name: 'Isère'
+  code: '38'
+  academy: Grenoble
+39:
+  name: 'Jura'
+  code: '39'
+  academy: Besancon
+40:
+  name: 'Landes'
+  code: '40'
+  academy: Bordeaux
+41:
+  name: 'Loir-et-Cher'
+  code: '41'
+  academy: Tours
+42:
+  name: 'Loire'
+  code: '42'
+  academy: Lyon
+43:
+  name: 'Haute-Loire'
+  code: '43'
+  academy: Clermont
+44:
+  name: 'Loire-Atlantique'
+  code: '44'
+  academy: Nantes
+45:
+  name: 'Loiret'
+  code: '45'
+  academy: Tours
+46:
+  name: 'Lot'
+  code: '46'
+  academy: Toulouse
+47:
+  name: 'Lot-et-Garonne'
+  code: '47'
+  academy: Bordeaux
+48:
+  name: 'Lozère'
+  code: '48'
+  academy: Montpellier
+49:
+  name: 'Maine-et-Loire'
+  code: '49'
+  academy: Nantes
+50:
+  name: 'Manche'
+  code: '50'
+  academy: Normandie
+51:
+  name: 'Marne'
+  code: '51'
+  academy: Reims
+52:
+  name: 'Haute-Marne'
+  code: '52'
+  academy: Reims
+53:
+  name: 'Mayenne'
+  code: '53'
+  academy: Nantes
+54:
+  name: 'Meurthe-et-Moselle'
+  code: '54'
+  academy: Nancy
+55:
+  name: 'Meuse'
+  code: '55'
+  academy: Nancy
+56:
+  name: 'Morbihan'
+  code: '56'
+  academy: Rennes
+57:
+  name: 'Moselle'
+  code: '57'
+  academy: Nancy
+58:
+  name: 'Nièvre'
+  code: '58'
+  academy: Dijon
+59:
+  name: 'Nord'
+  code: '59'
+  academy: Lille
+60:
+  name: 'Oise'
+  code: '60'
+  academy: Amiens
+61:
+  name: 'Orne'
+  code: '61'
+  academy: Normandie
+62:
+  name: 'Pas-de-Calais'
+  code: '62'
+  academy: Lille
+63:
+  name: 'Puy-de-Dôme'
+  code: '63'
+  academy: Clermont
+64:
+  name: 'Pyrénées-Atlantiques'
+  code: '64'
+  academy: Bordeaux
+65:
+  name: 'Hautes-Pyrénées'
+  code: '65'
+  academy: Toulouse
+66:
+  name: 'Pyrénées-Orientales'
+  code: '66'
+  academy: Montpellier
+67:
+  name: 'Bas-Rhin'
+  code: '67'
+  academy: Strasbourg
+68:
+  name: 'Haut-Rhin'
+  code: '68'
+  academy: Strasbourg
+69:
+  name: 'Rhône'
+  code: '69'
+  academy: Lyon
+70:
+  name: 'Haute-Saône'
+  code: '70'
+  academy: Besancon
+71:
+  name: 'Saône-et-Loire'
+  code: '71'
+  academy: Dijon
+72:
+  name: 'Sarthe'
+  code: '72'
+  academy: Nantes
+73:
+  name: 'Savoie'
+  code: '73'
+74:
+  name: 'Haute-Savoie'
+  code: '74'
+75:
+  name: 'Paris'
+  code: '75'
+  academy: Paris
+76:
+  name: 'Seine-Maritime'
+  code: '76'
+  academy: Normandie
+77:
+  name: 'Seine-et-Marne'
+  code: '77'
+  academy: Creteil
+78:
+  name: 'Yvelines'
+  code: '78'
+  academy: Versailles
+79:
+  name: 'Deux-Sèvres'
+  code: '79'
+  academy: Poitiers
+80:
+  name: 'Somme'
+  code: '80'
+  academy: Amiens
+81:
+  name: 'Tarn'
+  code: '81'
+  academy: Toulouse
+82:
+  name: 'Tarn-et-Garonne'
+  code: '82'
+  academy: Toulouse
+83:
+  name: 'Var'
+  code: '83'
+  academy: Nice
+84:
+  name: 'Vaucluse'
+  code: '84'
+  academy: Marseille
+85:
+  name: 'Vendée'
+  code: '85'
+  academy: Nantes
+86:
+  name: 'Vienne'
+  code: '86'
+  academy: Poitiers
+87:
+  name: 'Haute-Vienne'
+  code: '87'
+  academy: Limoges
+88:
+  name: 'Vosges'
+  code: '88'
+  academy: Nancy
+89:
+  name: 'Yonne'
+  code: '89'
+  academy: Dijon
+90:
+  name: 'Territoire de Belfort'
+  code: '90'
+  academy: Besancon
+91:
+  name: 'Essonne'
+  code: '91'
+  academy: Versailles
+92:
+  name: 'Hauts-de-Seine'
+  code: '92'
+  academy: Versailles
+93:
+  name: 'Seine-Saint-Denis'
+  code: '93'
+  academy: Creteil
+94:
+  name: 'Val-de-Marne'
+  code: '94'
+  academy: Creteil
+95:
+  name: "Val-d'Oise"
+  code: '95'
+  academy: Versailles
+971:
+  name: 'Guadeloupe'
+  code: '971'
+  academy: Guadeloupe
+972:
+  name: 'Martinique'
+  code: '972'
+  academy: Martinique
+973:
+  name: 'Guyane'
+  code: '973'
+  academy: Guyane
+974:
+  name: 'La Réunion'
+  code: '974'
+  academy: Reunion
+976:
+  name: 'Mayotte'
+  code: '976'
+  academy: Mayotte
+988:
+  name: 'Nouvelle-Calédonie'
+  code: '988'
+  academy: Calédonie
+987:
+  name: 'Polynésie française'
+  code: '987'
+  academy: Polynésie
+2A:
+  name: 'Corse-du-Sud'
+  code: '2A'
+  academy: Corse
+2B:
+  name: 'Haute-Corse'
+  code: '2B'
+  academy: Corse

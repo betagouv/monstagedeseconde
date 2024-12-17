@@ -16,11 +16,11 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   test 'Employer can edit internship offer' do
     travel_to(Date.new(2024, 3, 1)) do
       employer = create(:employer)
-      internship_offer = create(:weekly_internship_offer, employer:)
+      internship_offer = create(:weekly_internship_offer_2nde, employer:)
 
       sign_in(employer)
       visit edit_dashboard_internship_offer_path(internship_offer)
-      find('input[name="internship_offer[organisation_attributes][employer_name]"]').fill_in(with: 'NewCompany')
+      find('input[name="internship_offer[employer_chosen_name]"]').fill_in(with: 'NewCompany')
 
       click_on "Publier l'offre"
 
@@ -30,27 +30,27 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   end
 
   test 'Employer can edit an unpublished internship offer and have it published' do
-    travel_to(Date.new(2024, 3, 1)) do
+    travel_to(Date.new(2025, 3, 1)) do
       employer = create(:employer)
-      internship_offer = create(:weekly_internship_offer, employer:)
+      internship_offer = create(:weekly_internship_offer_2nde, employer:)
+      assert internship_offer.grades.include?(Grade.seconde)
       internship_offer.unpublish!
       refute internship_offer.published?
 
       sign_in(employer)
       visit edit_dashboard_internship_offer_path(internship_offer)
-      find('input[name="internship_offer[organisation_attributes][employer_name]"]').fill_in(with: 'NewCompany')
-
+      find('input[name="internship_offer[employer_chosen_name]"]').fill_in(with: 'NewCompany')
       click_on "Publier l'offre"
 
       wait_form_submitted
-      assert(/NewCompany/.match?(internship_offer.reload.employer_name))
-      assert internship_offer.published?
+      assert internship_offer.reload.published?
+      assert(/NewCompany/.match?(internship_offer.employer_name))
     end
   end
 
   test 'Employer can discard internship_offer' do
     employer = create(:employer)
-    internship_offer = create(:weekly_internship_offer, employer:)
+    internship_offer = create(:weekly_internship_offer_2nde, employer:)
 
     sign_in(employer)
 
@@ -64,7 +64,7 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
   test 'Employer can change max candidates parameter back and forth' do
     travel_to(Date.new(2024, 1, 10)) do
       employer = create(:employer)
-      internship_offer = create(:weekly_internship_offer,
+      internship_offer = create(:weekly_internship_offer_3eme,
                                 employer:,
                                 internship_offer_area_id: employer.current_area_id)
       assert_equal 1, internship_offer.max_candidates
@@ -80,6 +80,7 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
       within('.form-group-select-max-candidates') do
         fill_in('Nombre total d\'élèves que vous souhaitez accueillir sur la période de stage', with: 4)
       end
+      fill_in('Nombre maximal d’élèves par groupe', with: 4)
       click_button('Publier l\'offre')
       assert_equal 4,
                    internship_offer.reload.max_candidates,
@@ -96,11 +97,9 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
 
   test 'Employer can duplicate an internship offer' do
     employer = create(:employer)
-    organisation = create(:organisation, employer:, is_public: true)
     current_internship_offer = create(
-      :weekly_internship_offer,
+      :weekly_internship_offer_2nde,
       employer:,
-      organisation:,
       internship_offer_area_id: employer.current_area_id
     )
     sign_in(employer)
@@ -129,12 +128,12 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
            :accepted_invitation,
            inviter_id: employer_1.id,
            member_id: employer_1.id)
-    internship_offer_1 = create(:weekly_internship_offer, employer: employer_1,
-                                                          internship_offer_area_id: employer_1.current_area_id)
-    internship_offer_2 = create(:weekly_internship_offer, employer: employer_2,
-                                                          internship_offer_area_id: employer_2.current_area_id)
-    internship_offer_3 = create(:weekly_internship_offer, employer: employer_3,
-                                                          internship_offer_area_id: employer_3.current_area_id)
+    internship_offer_1 = create(:weekly_internship_offer_2nde, employer: employer_1,
+                                                               internship_offer_area_id: employer_1.current_area_id)
+    internship_offer_2 = create(:weekly_internship_offer_2nde, employer: employer_2,
+                                                               internship_offer_area_id: employer_2.current_area_id)
+    internship_offer_3 = create(:weekly_internship_offer_2nde, employer: employer_3,
+                                                               internship_offer_area_id: employer_3.current_area_id)
 
     sign_in(employer_1)
     visit dashboard_internship_offers_path
