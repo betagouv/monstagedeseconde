@@ -40,8 +40,12 @@ class CallbacksController < ApplicationController
     case role
     when 'DIR'
       'school_manager'
-    else
+    when 'ADF'
+      'admin_officer'
+    when 'ENS'
       'teacher'
+    else
+      'other'
     end
   end
 
