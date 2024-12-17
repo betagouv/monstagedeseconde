@@ -1,7 +1,7 @@
 header.header-account.subscription
   h1.h2.fr-my-3w Inscription
   p
-    = link_to "Vous avez déjà un compte ?", new_user_session_path, class: 'fr-link blue-france fr-raw-link'
+    = link_to "Vous avez déjà un compte ?", users_choose_connection_path, class: 'fr-link blue-france fr-raw-link'
 .d-none.d-md-block
   .one_card.fr-mt-3w.d-none.d-sm-block
     = render 'users/registrations/cards/professional'
