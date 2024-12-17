@@ -17,9 +17,17 @@
 
 - else
   h1#fr-sidemenu-title.h3.text-dark Tableau de bord
-= render SideMenuComponent.new(candidatures_notice: applications_notice,
+- side_menu_parameters = {current_page_offers: true,
+                          candidatures_notice: nil,
+                          agreements_notice: nil,
+                          agreements_authorization: false,
+                          current_page_candidatures: false,
+                          current_page_agreements: false }
+- unless employers_only?
+  - side_menu_parameters.merge!(current_page_offers: current_page?(dashboard_internship_offers_path),
+                               candidatures_notice: applications_notice,
                                agreements_notice: agreements_notice,
                                agreements_authorization: can?(:index, InternshipAgreement),
-                               current_page_offers: current_page?(dashboard_internship_offers_path),
                                current_page_candidatures: current_page?(dashboard_candidatures_path),
                                current_page_agreements: current_page?(dashboard_internship_agreements_path))
+= render SideMenuComponent.new(**side_menu_parameters)

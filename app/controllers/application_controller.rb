@@ -12,8 +12,10 @@ class ApplicationController < ActionController::Base
   before_action :check_for_holidays_maintenance_page
   before_action :check_school_requested
   before_action :check_for_maintenance
+  before_action :employers_only_redirect
   before_action :throttle_ip_requests
 
+  # TODO: Remove following line
   default_form_builder Rg2aFormBuilder
 
   rescue_from(CanCan::AccessDenied) do |_error|
@@ -40,6 +42,12 @@ class ApplicationController < ActionController::Base
 
   def check_for_maintenance
     redirect_to '/maintenance.html' if ENV['MAINTENANCE_MODE'] == 'true'
+  end
+
+  def employers_only_redirect
+    return unless employers_only? && request.path == '/'
+
+    redirect_to professionnels_path
   end
 
   def throttle_ip_requests
@@ -85,5 +93,9 @@ class ApplicationController < ActionController::Base
     allowed_paths = %w[/maintenance_estivale.html /contact.html]
     request.path.in?(allowed_paths) ||
       (request.path == '/maintenance_messaging' && request.post?)
+  end
+
+  def employers_only?
+    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
   end
 end
