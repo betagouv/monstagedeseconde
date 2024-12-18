@@ -14,7 +14,7 @@ class InternshipOffersController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @sectors = Sector.all.order(:name).to_a
+        @sectors = Sector.order(:name).to_a
         @params = query_params.merge(sector_ids: params[:sector_ids])
       end
       format.json do
