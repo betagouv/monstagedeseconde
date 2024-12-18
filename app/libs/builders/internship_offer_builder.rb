@@ -57,8 +57,10 @@ module Builders
       authorize :create, model
       create_params = preprocess_api_params(params)
       internship_offer = model.new(create_params)
+
       unless from_api?
-        internship_offer = Dto::PlanningAdapter.new(instance: internship_offer, params: create_params,
+        internship_offer = Dto::PlanningAdapter.new(instance: internship_offer,
+                                                    params: create_params,
                                                     current_user: user)
                                                .manage_planning_associations
                                                .instance

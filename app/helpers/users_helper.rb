@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'ostruct'
+
 module UsersHelper
   def user_roles_to_select
     Users::SchoolManagement.roles.map do |ruby_role, _pg_role|
@@ -11,7 +13,8 @@ module UsersHelper
     roles = {
       teacher: 'teacher',
       main_teacher: 'main_teacher',
-      other: 'other', cpe: 'cpe',
+      other: 'other',
+      cpe: 'cpe',
       admin_officer: 'admin_officer'
     }
     roles.map do |ruby_role, _pg_role|
