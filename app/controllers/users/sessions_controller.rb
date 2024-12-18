@@ -49,6 +49,11 @@ module Users
       end
     end
 
+    def choose_connection
+      @fim_url = build_fim_url
+      @educonnect_url = build_educonnect_url
+    end
+
     protected
 
     def store_targeted_offer_id(user:)
@@ -110,6 +115,32 @@ module Users
 
     def identify_user_with_id
       @user = User.find_by(id: params[:id])
+    end
+
+    def build_fim_url
+      oauth_params = {
+        redirect_uri: ENV['FIM_REDIRECT_URI'],
+        client_id: ENV['FIM_CLIENT_ID'],
+        scope: 'openid profile email stage',
+        response_type: 'code',
+        state: SecureRandom.uuid,
+        nonce: SecureRandom.uuid
+      }
+
+      cookies[:state] = oauth_params[:state]
+
+      ENV['FIM_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
+    end
+
+    def build_educonnect_url
+      oauth_params = {
+        redirect_uri: ENV['EDUCONNECT_REDIRECT_URI'],
+        client_id: ENV['EDUCONNECT_CLIENT_ID'],
+        scope: 'openid profile email stage',
+        response_type: 'code',
+        state: SecureRandom.uuid,
+        nonce: SecureRandom.uuid
+      }
     end
   end
 end
