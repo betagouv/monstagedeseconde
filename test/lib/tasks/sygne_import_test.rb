@@ -117,6 +117,7 @@ class SygneImportTest < ActiveSupport::TestCase
         omogen.sygne_import_by_schools(@code_uai)
       end
     end
+    assert_equal 'test54@free.fr', Users::Student.last.legal_representative_email
   end
 end
 
