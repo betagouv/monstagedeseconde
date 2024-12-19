@@ -3,6 +3,10 @@
 module Users
   class Operator < User
     include Teamable
+    devise :database_authenticatable, :registerable,
+           :recoverable, :rememberable,
+           :validatable, :confirmable, :trackable,
+           :timeoutable, :lockable
 
     belongs_to :operator, foreign_key: :operator_id,
                           class_name: '::Operator'
@@ -38,8 +42,8 @@ module Users
 
     def invitation_email = nil
 
-    def operator? ; true end
-    def employer_like? ; true end
+    def operator? = true
+    def employer_like? = true
 
     def presenter
       Presenters::Operator.new(self)

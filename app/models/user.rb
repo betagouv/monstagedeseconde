@@ -13,11 +13,6 @@ class User < ApplicationRecord
 
   attr_accessor :phone_prefix, :phone_suffix, :statistician_type
 
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable,
-         :validatable, :confirmable, :trackable,
-         :timeoutable, :lockable
-
   include DelayedDeviseEmailSender
 
   before_validation :concatenate_and_clean
@@ -316,5 +311,9 @@ class User < ApplicationRecord
     return if password.length >= 12
 
     errors.add :password, 'doit comporter au moins 12 caractères'
+  end
+
+  def devise_authentication?
+    current_user.nil? || employer_like? || school_management? || operator?
   end
 end

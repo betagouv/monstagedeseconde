@@ -29,6 +29,15 @@ class ApplicationController < ActionController::Base
     stored_location_for(resource) || resource.reload.after_sign_in_path || super
   end
 
+  def current_user = nil
+  helper_method :current_user
+
+  def user_signed_in? = false
+  helper_method :user_signed_in?
+
+  # def new_user_session_path = Rails.helper.path choose_profile_path
+  # helper_method :new_user_session_path
+
   def current_user_or_visitor
     current_user || Users::Visitor.new
   end

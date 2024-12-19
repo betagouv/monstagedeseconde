@@ -2,15 +2,14 @@
 
 module Users
   class MinistryStatistician < Statistician
-
     METABASE_DASHBOARD_ID = 29
 
     has_many :user_groups,
              foreign_key: :user_id,
              inverse_of: :user
     has_many :groups,
-              -> { where is_public: true },
-              through: :user_groups
+             -> { where is_public: true },
+             through: :user_groups
     has_many :organisations
 
     def ministries
@@ -21,15 +20,14 @@ module Users
       'Statistiques nationales'
     end
 
-    def ministry_statistician? ; true end
-    def employer_like? ; true end
+    def ministry_statistician? = true
 
     def presenter
       Presenters::MinistryStatistician.new(self)
     end
 
     rails_admin do
-      navigation_label "Référents"
+      navigation_label 'Référents'
       list do
         field :first_name do
           label 'Prénom'
@@ -42,9 +40,9 @@ module Users
         end
         field :ministeres do
           label 'Ministères'
-          formatted_value{
-              bindings[:object]&.groups.map(&:name).join(', ')
-          }
+          formatted_value do
+            bindings[:object]&.groups&.map(&:name)&.join(', ')
+          end
         end
         field :statistician_validation do
           label 'Validation'
@@ -56,7 +54,7 @@ module Users
         field :groups do
           label 'Ministère'
           pretty_value do
-            bindings[:object]&.groups.map(&:name)
+            bindings[:object]&.groups&.map(&:name)
           end
         end
         field :statistician_validation do
@@ -70,9 +68,9 @@ module Users
 
       show do
         field :ministeres do
-          formatted_value{
-              bindings[:object]&.groups.map(&:name).join(', ')
-          }
+          formatted_value do
+            bindings[:object]&.groups&.map(&:name)&.join(', ')
+          end
         end
       end
 
@@ -88,14 +86,14 @@ module Users
         end
         field :created_at do
           label "Date d'inscription"
-          formatted_value {
+          formatted_value do
             I18n.l(bindings[:object].created_at, format: '%d/%m/%Y')
-          }
+          end
         end
         field :ministeres, :string do
-          formatted_value{
-              bindings[:object]&.groups.map(&:name).join(', ')
-          }
+          formatted_value  do
+            bindings[:object]&.groups&.map(&:name)&.join(', ')
+          end
         end
         field :statistician_validation do
           label 'Validation'

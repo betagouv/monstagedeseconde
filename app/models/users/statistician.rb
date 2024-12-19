@@ -4,20 +4,23 @@ module Users
   class Statistician < User
     include Signatorable
     include Teamable
+    devise :database_authenticatable, :registerable,
+           :recoverable, :rememberable,
+           :validatable, :confirmable, :trackable,
+           :timeoutable, :lockable
     has_many :internship_offers, as: :employer,
-             dependent: :destroy
+                                 dependent: :destroy
 
     has_many :kept_internship_offers, -> { merge(InternshipOffer.kept) },
-    class_name: 'InternshipOffer', foreign_key: 'employer_id'
+             class_name: 'InternshipOffer', foreign_key: 'employer_id'
 
     has_many :internship_applications, through: :kept_internship_offers
     has_many :internship_agreements, through: :internship_applications
     has_many :organisations
     has_many :tutors
     has_many :internship_offer_infos
-    
-    belongs_to :academy_region, optional: true, class_name: 'AcademyRegion', foreign_key: 'academy_region_id'
 
+    belongs_to :academy_region, optional: true, class_name: 'AcademyRegion', foreign_key: 'academy_region_id'
 
     before_update :trigger_agreements_creation
     # before_validation :confirm
@@ -27,9 +30,9 @@ module Users
 
     # Validations
     validates_inclusion_of :accept_terms, in: ['1', true],
-                                        message: :accept_terms,
-                                        on: :create
-                                        
+                                          message: :accept_terms,
+                                          on: :create
+
     scope :active, -> { where(discarded_at: nil) }
 
     def custom_dashboard_path
@@ -51,15 +54,15 @@ module Users
       ]
     end
 
-    def statistician? ; true end
-    def employer_like? ; true end
+    def statistician? = true
+    def employer_like? = true
 
     def confirm_if_validated
-      if self.statistician_validation && self.confirmed_at.nil?
-        self.confirmed_at = Time.now if confirmed_at.nil?
-        self.save
-        SendStatisticianValidatedEmailJob.perform_later(self)
-      end
+      return unless statistician_validation && confirmed_at.nil?
+
+      self.confirmed_at = Time.now if confirmed_at.nil?
+      save
+      SendStatisticianValidatedEmailJob.perform_later(self)
     end
 
     def notify_manager
@@ -75,9 +78,9 @@ module Users
     end
 
     def trigger_agreements_creation
-      if changes[:agreement_signatorable] == [false, true]
-        AgreementsAPosterioriJob.perform_later(user_id: id)
-      end
+      return unless changes[:agreement_signatorable] == [false, true]
+
+      AgreementsAPosterioriJob.perform_later(user_id: id)
     end
 
     rails_admin do
@@ -127,5 +130,5 @@ module Users
         end
       end
     end
-  end 
+  end
 end

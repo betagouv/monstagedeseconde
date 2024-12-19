@@ -15,23 +15,26 @@ Rails.application.routes.draw do
     mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
     mount ActionCable.server => '/cable'
 
-    devise_for :users, path: 'utilisateurs', path_names: {
-      sign_in: 'connexion',
-      sign_out: 'deconnexion',
-      sign_up: 'inscription',
-      password: 'mot-de-passe'
-    }, controllers: {
-      confirmations: 'users/confirmations',
-      registrations: 'users/registrations',
-      sessions: 'users/sessions',
-      passwords: 'users/passwords'
-    }
+    devise_for :'users/employers',
+               path: 'employeurs',
+               module: 'users/employers',
+               path_names: {
+                 sign_in: 'connexion',
+                 sign_out: 'deconnexion',
+                 sign_up: 'inscription',
+                 password: 'mot-de-passe'
+               }, controllers: {
+                 confirmations: 'users/employers/confirmations',
+                 registrations: 'users/employers/registrations',
+                 sessions: 'users/employers/sessions',
+                 passwords: 'users/employers/passwords'
+               }
 
     get '/auth/fim/callback', to: 'callbacks#fim', as: 'fim_callback'
     get '/auth/educonnect/callback', to: 'callbacks#educonnect', as: 'educonnect_callback'
     # get '/auth/failure', to: 'sessions#failure'
 
-    devise_scope :user do
+    devise_scope :'user/employers' do
       get 'utilisateurs/choisir_profil', to: 'users/registrations#choose_profile', as: 'users_choose_profile'
       get '/utilisateurs/inscriptions/en-attente', to: 'users/registrations#confirmation_standby',
                                                    as: 'users_registrations_standby'
