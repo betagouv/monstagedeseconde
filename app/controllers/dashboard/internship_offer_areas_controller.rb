@@ -5,7 +5,7 @@ module Dashboard
 
     def index
       authorize! :index, InternshipOfferArea
-      @internship_offer_areas = current_user.internship_offer_areas.includes([:employer])
+      @internship_offer_areas = current_user.internship_offer_areas
       @team_members = (current_user.pending_invitations_to_my_team.to_a +
                       current_user.refused_invitations.to_a +
                       Array(current_user.team&.team_members.to_a)).uniq

@@ -37,7 +37,10 @@ module Dashboard
       def user_internship_applications
         authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
         @internship_offers = current_user.internship_offers
+        to_be_loaded = %i[student internship_agreement]
         @internship_applications = fetch_user_internship_applications.filtering_discarded_students
+                                                                     .includes(to_be_loaded)
+
         respond_to do |format|
           format.xlsx do
             @current_area = current_user.current_area
@@ -52,7 +55,7 @@ module Dashboard
             @received_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::RECEIVED_STATES - InternshipApplication::EXPIRED_STATES)
             @approved_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::APPROVED_STATES)
             @rejected_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::REJECTED_STATES)
-            @expired_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::EXPIRED_STATES)
+            @expired_internship_applications  = @internship_applications.where(aasm_state: InternshipApplication::EXPIRED_STATES)
           end
         end
       end

@@ -13,7 +13,7 @@ module Dashboard
       def index
         authorize! :dashboard_index, @current_student
         @internship_applications = @current_student.internship_applications
-                                                   .includes(:internship_offer, :student)
+                                                   .includes(:internship_offer, :student, :weeks)
                                                    .order_by_aasm_state_for_student
                                                    .order(created_at: :desc)
         @submitted_internship_applications = @internship_applications.where(aasm_state: %w[submitted read_by_employer
