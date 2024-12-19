@@ -10,12 +10,12 @@ module InternshipOccupationFormFiller
       )
     ).to_json
     expected_endpoint = 'https://api-adresse.data.gouv.fr/search?q=12+rue+taine+paris&limit=10'
-    expected_response = { status: 200, body: }
+    expected_response = { status: 200, body: body }
     stub_request(:get, expected_endpoint).to_return(expected_response)
 
     fill_in "Indiquez le ou les métiers qui seront observables par l'élève", with: 'Observation du métier de boulanger'
     fill_in 'Décrivez les activités qui seront proposées à l’élève',
             with: description
-    find_field('Rechercher une adresse postale*').native.send_keys(full_address)
+    find_field('Rechercher une adresse postale*').native.send_keys(full_address[0..-1])
   end
 end
