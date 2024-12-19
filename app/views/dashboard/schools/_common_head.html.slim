@@ -32,6 +32,17 @@ h1.h2.mb-4
           tabindex="1"]
           | Personnels
 
+      - if @school.school_type == 'college'
+        li
+          - path = edit_dashboard_school_path(@school)
+          = link_to path do 
+            button#weeks.fr-tabs__tab [
+              aria-controls="weeks-panel"
+              aria-selected="#{current_page?(path)}"
+              role="tab"
+              tabindex="2"]
+              | Semaines de stage
+
     - if current_user.respond_to?(:school) && can?(:read, InternshipAgreement)
       li
         - path = dashboard_internship_agreements_path
