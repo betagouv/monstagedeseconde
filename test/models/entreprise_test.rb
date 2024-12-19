@@ -21,6 +21,7 @@ class EntrepriseTest < ActiveSupport::TestCase
     entreprise.entreprise_coordinates = { latitude: 48.8566, longitude: 2.3522 }
     assert_equal 2.3522, entreprise.entreprise_coordinates.longitude
     assert_equal 48.8566, entreprise.entreprise_coordinates.latitude
+    assert entreprise.contact_phone.gsub(' ', '').match?(/0\d{9}/)
   end
 
   test 'tutor partially filled form fails gracefully' do

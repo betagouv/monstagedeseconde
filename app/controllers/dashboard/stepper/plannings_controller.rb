@@ -61,6 +61,7 @@ module Dashboard::Stepper
     end
 
     # process update following a back to step 2
+    # should never be used
     def update
       raise 'expected to be never used '
       authorize! :update, @planning
