@@ -18,33 +18,33 @@ class SygneImportTest < ActiveSupport::TestCase
   end
 
   test 'student import fails with wrong codeMef' do
-    uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves")
-    expected_response = {
-      'ine' => '001291528AA',
-      'nom' => 'SABABADICHETTY',
-      'prenom' => 'Felix',
-      'dateNaissance' => '2003-05-28',
-      'codeSexe' => '1',
-      'codeUai' => '0590116F',
-      'anneeScolaire' => 2023,
-      'niveau' => '2212',
-      'libelleNiveau' => '1ERE G-T',
-      'codeMef' => '20110019110',
-      'libelleLongMef' => 'PREMIERE GENERALE',
-      'codeMefRatt' => '20110019110',
-      'classe' => '3E4',
-      'codeRegime' => '2',
-      'libelleRegime' => 'DP DAN',
-      'codeStatut' => 'ST',
-      'libelleLongStatut' => 'SCOLAIRE',
-      'dateDebSco' => '2023-09-05',
-      'adhesionTransport' => false
-    }.to_json
-    stub_request(:get, uri).with(headers: @headers)
-                           .to_return(status: 200, body: expected_response, headers: {})
+    Services::Sygne::Omogen::MEFSTAT4_CODES.each do |niveau|
+      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves?niveau=#{niveau}")
+      expected_response = {
+        'ine' => '001291528AA',
+        'nom' => 'SABABADICHETTY',
+        'prenom' => 'Felix',
+        'dateNaissance' => '2003-05-28',
+        'codeSexe' => '1',
+        'codeUai' => '0590116F',
+        'anneeScolaire' => 2023,
+        'niveau' => '2212',
+        'libelleNiveau' => '1ERE G-T',
+        'codeMef' => '20110019110',
+        'libelleLongMef' => 'PREMIERE GENERALE',
+        'codeMefRatt' => '20110019110',
+        'classe' => '3E4',
+        'codeRegime' => '2',
+        'libelleRegime' => 'DP DAN',
+        'codeStatut' => 'ST',
+        'libelleLongStatut' => 'SCOLAIRE',
+        'dateDebSco' => '2023-09-05',
+        'adhesionTransport' => false
+      }.to_json
+      stub_request(:get, uri).with(headers: @headers)
+                             .to_return(status: 200, body: expected_response, headers: {})
+    end
 
-    stub_request(:post_form,
-                 uri).to_return(body: expected_response.to_json)
     omogen = Services::Sygne::Omogen.new
     assert_no_difference 'Users::Student.count' do
       omogen.sygne_import_by_schools(@code_uai)
@@ -52,35 +52,37 @@ class SygneImportTest < ActiveSupport::TestCase
   end
   test 'student import is ok with correct' do
     ine = '001291528AA'
-    uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves")
-    expected_response = {
-      'ine' => ine,
-      'nom' => 'SABABADICHETTY',
-      'prenom' => 'Felix',
-      'dateNaissance' => '2003-05-28',
-      'codeSexe' => '1',
-      'codeUai' => '0590116F',
-      'anneeScolaire' => 2023,
-      'niveau' => '2212',
-      'libelleNiveau' => '1ERE G-T',
-      'codeMef' => '20010019110', # correct codeMef
-      'libelleLongMef' => 'PREMIERE GENERALE',
-      'codeMefRatt' => '20010019110',
-      'classe' => '2E2',
-      'codeRegime' => '2',
-      'libelleRegime' => 'DP DAN',
-      'codeStatut' => 'ST',
-      'libelleLongStatut' => 'SCOLAIRE',
-      'dateDebSco' => '2023-09-05',
-      'adhesionTransport' => false
-    }
+    Services::Sygne::Omogen::MEFSTAT4_CODES.each do |niveau|
+      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves?niveau=#{niveau}")
+      expected_response = {
+        'ine' => ine,
+        'nom' => 'SABABADICHETTY',
+        'prenom' => 'Felix',
+        'dateNaissance' => '2003-05-28',
+        'codeSexe' => '1',
+        'codeUai' => '0590116F',
+        'anneeScolaire' => 2023,
+        'niveau' => '2212',
+        'libelleNiveau' => '1ERE G-T',
+        'codeMef' => '20010019110', # correct codeMef
+        'libelleLongMef' => 'PREMIERE GENERALE',
+        'codeMefRatt' => '20010019110',
+        'classe' => '2E2',
+        'codeRegime' => '2',
+        'libelleRegime' => 'DP DAN',
+        'codeStatut' => 'ST',
+        'libelleLongStatut' => 'SCOLAIRE',
+        'dateDebSco' => '2023-09-05',
+        'adhesionTransport' => false
+      }
 
-    stub_request(:get, uri).with(headers: @headers)
-                           .to_return(
-                             status: 200,
-                             body: expected_response.to_json,
-                             headers: {}
-                           )
+      stub_request(:get, uri).with(headers: @headers)
+                             .to_return(
+                               status: 200,
+                               body: expected_response.to_json,
+                               headers: {}
+                             )
+    end
     uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
     expected_response = [
       { nomFamille: 'BADEZ',
@@ -117,11 +119,5 @@ class SygneImportTest < ActiveSupport::TestCase
         omogen.sygne_import_by_schools(@code_uai)
       end
     end
-    assert_equal 'test54@free.fr', Users::Student.last.legal_representative_email
   end
 end
-
-# stuf
-# , { grant_type: 'client_credentials',
-#                                client_id: ENV['OMOGEN_CLIENT_ID'],
-#                                client_secret: ENV['OMOGEN_CLIENT_SECRET'] }

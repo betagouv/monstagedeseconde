@@ -1,6 +1,8 @@
 module Services::Sygne
   # Manage Captcha services
   class Omogen
+    # MEFSTAT4_CODES=%w[2114 ,2122,2434,2115,2381 (2nde pro ?),2116,2117, 2121,2211,2433]
+    MEFSTAT4_CODES = %w[2114 2122 2434 2115 2116 2117 2121 2211 2433]
     def net_synchro
       uri = URI(ENV['NET_SYNCHRO_URL'])
 
@@ -88,15 +90,17 @@ module Services::Sygne
     # }
 
     def sygne_import_by_schools(code_uai = '0590116F')
-      students = sygne_eleves(code_uai)
-      students.each do |student|
-        student.make_student
+      MEFSTAT4_CODES.each do |niveau|
+        students = sygne_eleves(code_uai, niveau: niveau)
+        students.each do |student|
+          student.make_student
+        end
       end
     end
 
-    def sygne_eleves(code_uai = '0590116F')
+    def sygne_eleves(code_uai = '0590116F', niveau: '2211')
       students = []
-      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves")
+      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
 
       response = sygne_eleves_request(uri)
       case response
