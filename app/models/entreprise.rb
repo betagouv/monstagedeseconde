@@ -10,7 +10,9 @@ class Entreprise < ApplicationRecord
           inverse_of: :entreprise
 
   # Validations
-  validates :siret, length: { is: 14 }
+  validates :siret,
+            length: { is: 14 },
+            unless: -> { internship_address_manual_enter }
   validates :entreprise_full_address,
             length: { minimum: 8, maximum: 200 },
             presence: true

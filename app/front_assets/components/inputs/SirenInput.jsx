@@ -4,7 +4,13 @@ import { useDebounce } from "use-debounce";
 import Downshift from "downshift";
 import { fetch } from "whatwg-fetch";
 import { endpoints } from "../../utils/api";
-import { employerNameChanged , broadcast} from "../../utils/events";
+import { employerNameChanged, broadcast } from "../../utils/events";
+import {
+  setValueById,
+  toggleContainer,
+  toggleContainers,
+  toggleContainerById,
+} from "../../utils/dom";
 
 // see: https://geo.api.gouv.fr/adresse
 export default function SirenInput({
@@ -12,10 +18,13 @@ export default function SirenInput({
   currentSiret,
   railsEnv,
   newRecord,
+  currentManualEnter,
 }) {
   const [siret, setSiret] = useState(currentSiret || "");
   const [searchResults, setSearchResults] = useState([]);
   const [debouncedSiret, setDebouncedSiret] = useState(siret);
+  const [internshipAddressManualEnter, setInternshipAddressManualEnter] =
+    useState(currentManualEnter || false);
 
   const inputChange = (event) => {
     setSiret(event.target.value);
@@ -59,26 +68,37 @@ export default function SirenInput({
     fetch(endpoints.apiSearchAddress({ fullAddress }))
       .then((response) => response.json())
       .then((json) => {
-        document.getElementById(selector_lon).value = json.features[0].geometry.coordinates[0];
-        document.getElementById(selector_lat).value = json.features[0].geometry.coordinates[1];
+        document.getElementById(selector_lon).value =
+          json.features[0].geometry.coordinates[0];
+        document.getElementById(selector_lat).value =
+          json.features[0].geometry.coordinates[1];
       });
-    };
+  };
 
-  // const openManual = (event) => {
-  //   event.preventDefault();
-  //   const blocs = document.querySelectorAll('.bloc-tooggle');
-  //   blocs.forEach(bloc => {
-  //     bloc.classList.remove('d-none');
-  //   });
-  //   const manualBlocs = document.querySelectorAll('.bloc-manual');
-  //   manualBlocs.forEach(bloc => {
-  //     bloc.classList.remove('d-none');
-  //   });
-  //   document.querySelector('.fr-callout').classList.add('d-none');
-  //   document.getElementById('organisation_city').removeAttribute("readonly");
-  //   document.getElementById('organisation_zipcode').removeAttribute("readonly");
-  //   document.getElementById("organisation_manual_enter").value = true;
-  // }
+  const openManual = (event) => {
+    event.preventDefault();
+    setOpenManual();
+  };
+
+  const setOpenManual = () => {
+    setInternshipAddressManualEnter(true);
+    toggleContainers(document.querySelectorAll(".bloc-tooggle"), true);
+    setValueById(`${resourceName}_internship_address_manual_enter`, true);
+    toggleContainers(document.querySelectorAll(".show-when-manual"), true);
+    toggleContainers(document.querySelectorAll(".hide-when-manual"), false);
+
+    const labelEntrepriseName = document.querySelector( `label[for='${resourceName}_employer_name']` );
+    labelEntrepriseName.innerHTML = "Saisissez le nom (raison sociale) de votre établissement *";
+    const inputEntrepriseName = document.getElementById( `${resourceName}_employer_name` );
+    inputEntrepriseName.required = true;
+    inputEntrepriseName.removeAttribute("readonly");
+
+    const labelEntrepriseAddress = document.querySelector( `label[for='${resourceName}_entreprise_chosen_full_address']` );
+    labelEntrepriseAddress.innerHTML = "Saisissez l'adresse du siège de votre établissement *";
+    const inputEntrepriseAddress = document.getElementById( `${resourceName}_entreprise_chosen_full_address` );
+    inputEntrepriseAddress.required = true;
+    inputEntrepriseAddress.removeAttribute("readonly");
+  };
 
   const isAValidSiret = (siret) => {
     if (siret.length != 14 || isNaN(siret)) {
@@ -109,22 +129,13 @@ export default function SirenInput({
     searchCoordinatesByAddress(addressConcatenated);
     const employerName = selection.uniteLegale.denominationUniteLegale;
 
-    const employerNameId = `${resourceName}_employer_name`;
-    // alert(employerNameId);
-    document.getElementById(employerNameId).value = employerName;
+    setValueById( `${resourceName}_entreprise_full_address`, addressConcatenated );
+    setValueById( `${resourceName}_entreprise_chosen_full_address`, addressConcatenated );
+    setValueById(`${resourceName}_siret`, selection.siret);
+    setValueById( `${resourceName}_presentation_siret`, siretPresentation(selection.siret) );
+    setValueById(`${resourceName}_employer_name`, employerName);
+
     broadcast(employerNameChanged({ employerName }));
-
-    const entrepriseFullAddressId = `${resourceName}_entreprise_full_address`;
-    document.getElementById(entrepriseFullAddressId).value = addressConcatenated;
-
-    const entrepriseChosentFullAddressId = `${resourceName}_entreprise_chosen_full_address`;
-    document.getElementById(entrepriseChosentFullAddressId).value = addressConcatenated;
-
-    const siretId = `${resourceName}_siret`;
-    document.getElementById(siretId).value = selection.siret;
-
-    const presentationSiretId = `${resourceName}_presentation_siret`;
-    document.getElementById(presentationSiretId).value = siretPresentation(selection.siret);
 
     const ministry = document.getElementById("ministry-choice");
     const ministryClassList = ministry.classList;
@@ -132,16 +143,15 @@ export default function SirenInput({
     // because both jsx and stimulus send events to the containers (show/hide)
     ministryClassList.add("d-none"); // default
     // is_public is known when user seached by name and unknown when user searched by siret
-    if( is_public != undefined) {
-      document
-        .getElementById("public-private-radio-buttons")
-        .classList.add("d-none");
-      const hiddenField = document.getElementById("hidden-public-private-field").children[0];
+    if (is_public != undefined) {
+      toggleContainerById("public-private-radio-buttons", false);
+      const hiddenField = document.getElementById("hidden-public-private-field") .children[0];
       hiddenField.value = is_public;
-      hiddenField.classList.remove("d-none");
+      toggleContainer(hiddenField, true);
       if (is_public) {
         ministry.removeAttribute("style");
-        ministryClassList.remove('d-none')}
+        ministryClassList.remove("d-none");
+      }
     }
   };
 
@@ -183,8 +193,8 @@ export default function SirenInput({
   // initialization
   useEffect(() => {
     show_form(!newRecord);
-  }),
-    [];
+    if (internshipAddressManualEnter) { setOpenManual(); }
+  }, []);
 
   return (
     <div className="form-group" id="input-siren">
@@ -230,11 +240,24 @@ export default function SirenInput({
                   })}
                 />
               </div>
-              {/* <div className='mt-2 d-flex align-items-center'>
-                  <small><span className="fr-icon-info-fill text-blue-info" aria-hidden="true"></span></small>
-                  <small className="text-blue-info fr-mx-1w">Société introuvable ?</small>
-                  <a href='#manual-input' className='pl-2 small text-blue-info' onClick={openManual}>Ajouter une société manuellement</a>
-                </div> */}
+              <div className="mt-2 d-flex align-items-center">
+                <small>
+                  <span
+                    className="fr-icon-info-fill text-blue-info"
+                    aria-hidden="true"
+                  ></span>
+                </small>
+                <small className="text-blue-info fr-mx-1w">
+                  Société introuvable ?
+                </small>
+                <a
+                  href="#manual-input"
+                  className="pl-2 small text-blue-info"
+                  onClick={openManual}
+                >
+                  Ajouter une société manuellement
+                </a>
+              </div>
               <div
                 className="alerte alert-danger siren-error p-2 mt-2 d-none"
                 id="siren-error"

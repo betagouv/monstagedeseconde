@@ -1,6 +1,5 @@
 - if can?(:supply_offers, current_user)
     / = current_user.ministry_statistician? ? "Votre administration" : "L'entreprise"
-    = form.hidden_field :internship_address_manual_enter, value: !!resource.internship_address_manual_enter
     = form.hidden_field :employer_id, value: current_user.id
     - if resource.id
       = form.hidden_field :id, value: resource.id

@@ -146,8 +146,7 @@ module Builders
         city: internship_occupation.city,
         department: internship_occupation.department,
         coordinates: internship_occupation.coordinates,
-        employer_id: internship_occupation.employer_id,
-        internship_address_manual_enter: internship_occupation.internship_address_manual_enter
+        employer_id: internship_occupation.employer_id
       }
     end
 
@@ -161,7 +160,8 @@ module Builders
         sector_id: entreprise.sector_id,
         entreprise_full_address: entreprise.entreprise_full_address,
         entreprise_chosen_full_address: entreprise.entreprise_chosen_full_address,
-        entreprise_coordinates: entreprise.entreprise_coordinates
+        entreprise_coordinates: entreprise.entreprise_coordinates,
+        internship_address_manual_enter: entreprise.internship_address_manual_enter
       }
     end
 
