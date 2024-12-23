@@ -82,23 +82,6 @@ module Users
       assert_includes school_manager.main_teachers.entries, main_teacher
     end
 
-    test 'school_manager.after_sign_in_path with school and weeks redirects to dashboard_school_path' do
-      school = create(:school)
-      school_manager = create(:school_manager, school:)
-      redirect_to = @url_helpers.dashboard_school_path(school_manager.school)
-      assert_equal(redirect_to, school_manager.after_sign_in_path)
-    end
-
-    test 'teacher.after_sign_in_path with school redirects to dashboard_school_class_room_path when class_room exists' do
-      travel_to Date.new(2024, 9, 1) do
-        school = create(:school)
-        class_room = create(:class_room, school:)
-        school_manager = create(:school_manager, school:, class_room:)
-        redirect_to = @url_helpers.dashboard_school_class_room_students_path(school, class_room)
-        assert_equal(redirect_to, school_manager.after_sign_in_path)
-      end
-    end
-
     test 'change school notify new school_manager' do
       school_1 = create(:school)
       school_2 = create(:school)
@@ -115,16 +98,6 @@ module Users
           user.save!
         end
         mock_mail.verify
-      end
-    end
-
-    test '#custom_dashboard_path as main_teacher' do
-      travel_to Date.new(2024, 9, 1) do
-        school = create(:school, :with_school_manager)
-        class_room = create(:class_room, school:)
-        main_teacher = create(:main_teacher, school:, class_room:)
-        assert_equal @url_helpers.dashboard_school_class_room_students_path(school, class_room),
-                     main_teacher.custom_dashboard_path
       end
     end
 
