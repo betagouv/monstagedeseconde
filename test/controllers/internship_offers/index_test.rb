@@ -527,6 +527,31 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'GET #index as Visitor with search keyword find internship offer filtered by grade' do
+    travel_to(Date.new(2024, 3, 1)) do
+      foundable_internship_offer = create(:weekly_internship_offer_2nde)
+      ignored_internship_offer = create(:weekly_internship_offer_3eme)
+
+      get internship_offers_path(grade_id: Grade.seconde.id, format: :json)
+      assert_response :success
+      assert_json_presence_of(json_response, foundable_internship_offer)
+      assert_json_absence_of(json_response, ignored_internship_offer)
+    end
+  end
+  test 'GET #index as Visitor with search keyword find internship offer filtered by weeks' do
+    travel_to(Date.new(2024, 3, 1)) do
+      weeks = [Week.selectable_from_now_until_end_of_school_year.second]
+      foundable_internship_offer = create(:weekly_internship_offer_2nde, weeks:)
+      weeks_other = [Week.selectable_from_now_until_end_of_school_year.third]
+      ignored_internship_offer = create(:weekly_internship_offer_3eme, weeks: weeks_other)
+
+      get internship_offers_path(week_ids: weeks.map(&:id), format: :json)
+      assert_response :success
+      assert_json_presence_of(json_response, foundable_internship_offer)
+      assert_json_absence_of(json_response, ignored_internship_offer)
+    end
+  end
+
   test 'search with school years works' do
     employer = create(:employer)
     sign_in(employer)

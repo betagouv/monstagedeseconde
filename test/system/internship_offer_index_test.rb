@@ -70,4 +70,170 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
                                     count: 2, wait: 2)
     end
   end
+
+  test 'search by grade works for visitors' do
+    travel_to Date.new(2024, 9, 1) do
+      seconde_weeks = SchoolTrack::Seconde.both_weeks
+      internship_offer = create(:weekly_internship_offer_2nde, weeks: seconde_weeks)
+      visit internship_offers_path
+      Grade.all.each do |grade|
+        select grade.name, from: 'Filière'
+      end
+      select 'troisieme générale', from: 'Filière'
+      click_button 'Rechercher'
+      assert_no_selector('.test-city', text: internship_offer.city)
+      select 'seconde générale', from: 'Filière'
+      click_button 'Rechercher'
+      assert_selector('.test-city', text: internship_offer.city)
+    end
+  end
+  test 'search by grade works for students' do
+    travel_to Date.new(2024, 9, 1) do
+      seconde_weeks = SchoolTrack::Seconde.both_weeks
+      internship_offer = create(:weekly_internship_offer_2nde, weeks: seconde_weeks)
+
+      student = create(:student, grade: Grade.troisieme)
+      sign_in(student)
+      visit internship_offers_path
+      select 'troisieme générale', from: 'Filière'
+      click_button 'Rechercher'
+      assert_no_selector('.test-city', text: internship_offer.city)
+      logout(student)
+
+      student = create(:student, grade: Grade.seconde)
+      sign_in(student)
+      visit internship_offers_path
+      select Grade.seconde.name, from: 'Filière'
+      click_button 'Rechercher'
+      assert_selector('.test-city', text: internship_offer.city)
+    end
+  end
+  test 'search by weeks displays the right list of weeks for visitors' do
+    travel_to Date.new(2024, 12, 26) do
+      visit internship_offers_path
+      find('button span', text: 'Sélectionnez une option').click
+      within('.weeks-search-panel') do
+        assert_selector('p.Décembre.month-score', text: 'Décembre (1)', count: 0)
+        assert_selector('p.Janvier.month-score', text: 'Janvier (5)', count: 1)
+        assert_selector('p.Février.month-score', text: 'Février (4)', count: 1)
+        assert_selector('p.Mars.month-score', text: 'Mars (4)', count: 1)
+        assert_selector('p.Avril.month-score', text: 'Avril (5)', count: 1)
+        assert_selector('p.Mai.month-score', text: 'Mai (4)', count: 1)
+        assert_selector('p.Juin.month-score', text: 'Juin (2)', count: 1)
+      end
+      assert_equal 5,
+                   all('.custom-control-checkbox-list .Janvier input[type="checkbox"][checked="checked"]',
+                       visible: false).count
+      assert_equal 4,
+                   all('.custom-control-checkbox-list .Février input[type="checkbox"][checked="checked"]',
+                       visible: false).count
+      assert_equal 2,
+                   all('.custom-control-checkbox-list .Juin input[type="checkbox"][checked="checked"]',
+                       visible: false).count
+    end
+  end
+  test 'search by weeks displays the right list of weeks for students when school chose weeks' do
+    travel_to Date.new(2024, 12, 26) do
+      # seconde student
+      school = create(:school) # No weeks declared
+      student = create(:student, school: school, grade: Grade.seconde)
+      assert_equal 2, student.school.school_weeks(student.grade).count
+      sign_in(student)
+      visit internship_offers_path
+      find('button span', text: 'Sélectionnez une option').click
+      within('.weeks-search-panel') do
+        assert_selector('p.Décembre.month-score', text: 'Décembre', count: 0)
+        assert_selector('p.Janvier.month-score', text: 'Janvier (5)', count: 0)
+        assert_selector('p.Février.month-score', text: 'Février (4)', count: 0)
+        assert_selector('p.Mars.month-score', text: 'Mars (4)', count: 0)
+        assert_selector('p.Avril.month-score', text: 'Avril (5)', count: 0)
+        assert_selector('p.Mai.month-score', text: 'Mai (4)', count: 0)
+        assert_selector('p.Juin.month-score', text: 'Juin (2)', count: 1)
+      end
+      assert_equal 0,
+                   all('.custom-control-checkbox-list .Janvier input[type="checkbox"][checked="checked"]',
+                       visible: false).count
+      assert_equal 2,
+                   all('.custom-control-checkbox-list .Juin input[type="checkbox"][checked="checked"]',
+                       visible: false).count
+      logout(student)
+
+      # Troisieme student with no weeks declared
+      school = create(:school)
+      student = create(:student, school: school, grade: Grade.troisieme)
+      assert_equal 23, student.school.school_weeks(student.grade).count
+      sign_in(student)
+      visit internship_offers_path
+      find('button span', text: 'Sélectionnez une option').click
+      within('.weeks-search-panel') do
+        assert_selector('p.Décembre.month-score', text: 'Décembre', count: 1)
+        assert_selector('p.Janvier.month-score', text: 'Janvier (5)', count: 1)
+        assert_selector('p.Février.month-score', text: 'Février (4)', count: 1)
+        assert_selector('p.Mars.month-score', text: 'Mars (4)', count: 1)
+        assert_selector('p.Avril.month-score', text: 'Avril (5)', count: 1)
+        assert_selector('p.Mai.month-score', text: 'Mai (4)', count: 1)
+        assert_selector('p.Juin.month-score', text: 'Juin (2)', count: 0)
+      end
+      assert_equal 5,
+                   all('.custom-control-checkbox-list .Janvier input[type="checkbox"][checked="checked"]',
+                       visible: false).count
+      assert_equal 0,
+                   all('.custom-control-checkbox-list .Juin input[type="checkbox"][checked="checked"]',
+                       visible: false).count
+      logout(student)
+
+      # Troisieme student with weeks declared
+      school = create(:school,
+                      weeks: SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year.last(2))
+      student = create(:student, school: school)
+      sign_in(student)
+      visit internship_offers_path
+      find('button span', text: 'Sélectionnez une option').click
+      within('.weeks-search-panel') do
+        assert_selector('p.Décembre.month-score', text: 'Décembre', count: 0)
+        assert_selector('p.Janvier.month-score', text: 'Janvier', count: 0)
+        assert_selector('p.Février.month-score', text: 'Février', count: 0)
+        assert_selector('p.Mars.month-score', text: 'Mars', count: 0)
+        assert_selector('p.Avril.month-score', text: 'Avril', count: 0)
+        assert_selector('p.Mai.month-score', text: 'Mai (2)', count: 1)
+        assert_selector('p.Juin.month-score', text: 'Juin', count: 0)
+      end
+    end
+  end
+
+  test 'clicking on a week in the search panel updates the offers counter' do
+    # Troisieme student with no weeks declared
+    school = create(:school)
+    student = create(:student, school: school, grade: Grade.troisieme)
+    sign_in(student)
+    visit internship_offers_path
+    find('button span', text: 'Sélectionnez une option').click
+    within('.month-lane') do
+      assert_selector('p.Janvier.month-score', text: 'Janvier (5)', count: 1)
+    end
+    within('.flex-fill.weeks-list') do
+      find('span.dates-column', text: 'du 30 déc. au 5 jan.').click
+    end
+    within('.month-lane') do
+      assert_selector('p.Janvier.month-score', text: 'Janvier (4)', count: 1)
+    end
+  end
+
+  test 'search by weeks filters the offers' do
+    travel_to Date.new(2024, 12, 26) do
+      internship_offer = create(:weekly_internship_offer_2nde, :week_1)
+      visit internship_offers_path
+      click_button 'Rechercher'
+      assert_selector('.test-city', text: internship_offer.city, count: 1)
+      find('button span', text: 'Sélectionnez une option').click
+      within('.weeks-search-panel') do
+        find('span.dates-column', text: 'du 16 au 22 juin').click # leaves it unchecked
+      end
+      within('.month-lane') do
+        assert_selector('p.Juin.month-score', text: 'Juin (1)', count: 1) # second week selected
+      end
+      click_button 'Rechercher'
+      assert_selector('.test-city', text: internship_offer.city, count: 0)
+    end
+  end
 end

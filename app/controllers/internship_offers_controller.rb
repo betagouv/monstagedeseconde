@@ -12,6 +12,7 @@ class InternshipOffersController < ApplicationController
   end
 
   def index
+    @school_weeks_list, @preselected_weeks_list = compute_weeks_lists
     respond_to do |format|
       format.html do
         @sectors = Sector.all.order(:name).to_a
@@ -110,8 +111,10 @@ class InternshipOffersController < ApplicationController
         :longitude,
         :radius,
         :keyword,
-        :period,
         :school_year,
+        :grade_id,
+        grade_ids: [],
+        week_ids: [],
         sector_ids: []
       ),
       user: current_user_or_visitor
@@ -197,6 +200,31 @@ class InternshipOffersController < ApplicationController
       isLastPage: offers.last_page?,
       pageUrlBase: url_for(query_params.except('page'))
     }
+  end
+
+  def compute_weeks_lists
+    weeks_chosen_by_school = current_user.try(:school).try(:weeks) || []
+    school_weeks = determine_school_weeks(weeks_chosen_by_school)
+    preselected_weeks = determine_preselected_weeks(weeks_chosen_by_school)
+    [school_weeks, preselected_weeks]
+  end
+
+  def determine_school_weeks(weeks_chosen_by_school)
+    if weeks_chosen_by_school.empty? && current_user.try(:school).try(:school_weeks, current_user.try(:grade)).nil?
+      Week.both_school_track_selectable_weeks
+    elsif weeks_chosen_by_school.empty?
+      current_user.try(:school).try(:school_weeks, current_user.try(:grade))
+    else
+      weeks_chosen_by_school
+    end
+  end
+
+  def determine_preselected_weeks(weeks_chosen_by_school)
+    if weeks_chosen_by_school.empty?
+      Week.both_school_track_selectable_weeks
+    else
+      weeks_chosen_by_school
+    end
   end
 
   # def calculate_seats

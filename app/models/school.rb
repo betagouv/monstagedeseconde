@@ -184,6 +184,15 @@ class School < ApplicationRecord
     department.academy.email_domain
   end
 
+  def school_weeks(grade)
+    case grade.short_name
+    when 'troisieme', 'quatrieme'
+      SchoolTrack::Troisieme
+    when 'seconde'
+      SchoolTrack::Seconde
+    end.selectable_from_now_until_end_of_school_year
+  end
+
   private
 
   def contract_label

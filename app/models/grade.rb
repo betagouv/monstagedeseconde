@@ -46,6 +46,13 @@ class Grade < ApplicationRecord
     fetch_by_short_name('seconde').first
   end
 
+  def self.options_for_select(current_user)
+    complete_list = all.map { |grade| [grade.name, grade.id] }
+    return complete_list if current_user.nil? || !current_user.student?
+
+    complete_list.filter { |grade| grade[1] == current_user.grade_id }
+  end
+
   def school_track
     return SchoolTrack::Troisieme if short_name.in?(%w[troisieme quatrieme])
 

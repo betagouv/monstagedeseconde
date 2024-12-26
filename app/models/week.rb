@@ -157,6 +157,10 @@ class Week < ApplicationRecord
       week_date.end_of_week < Date.new(year, 9, 1)
   end
 
+  def in_the_past?
+    week_date.end_of_week < Date.current
+  end
+
   def <(other)
     year < other.year || (year == other.year && number < other.number)
   end
