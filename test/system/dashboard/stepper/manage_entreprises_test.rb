@@ -44,6 +44,7 @@ class ManageEntreprisesTest < ApplicationSystemTestCase
     sign_in(internship_occupation.employer)
     visit new_dashboard_stepper_entreprise_path(internship_occupation_id: internship_occupation.id)
     fill_in_entreprise_manual_form(group:, sector:)
+    find('p.fr-card__desc[data-write-summary-card-target="employerNameOutput"]', text: 'Mairie de Saint-Ouen-l’Aumône')
     find("button[type='submit']").click
     find('#alert-success', text: "Les informations de l'entreprise ont bien été enregistrées")
 
@@ -53,6 +54,7 @@ class ManageEntreprisesTest < ApplicationSystemTestCase
     assert_equal '', entreprise.siret
     assert_equal group.id, entreprise.group_id
     assert entreprise.is_public
+    assert entreprise.internship_address_manual_enter
     find('.fr-stepper__state', text: 'Étape 3 sur 3')
 
     find('a.fr-btn--secondary', text: 'Précédent').click

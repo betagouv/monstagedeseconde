@@ -98,7 +98,10 @@ export default function SirenInput({
     const inputEntrepriseAddress = document.getElementById( `${resourceName}_entreprise_chosen_full_address` );
     inputEntrepriseAddress.required = true;
     inputEntrepriseAddress.removeAttribute("readonly");
-  };
+    inputEntrepriseName.addEventListener('keyup', (event) => {
+      broadcast(employerNameChanged({ employerName: event.target.value }));
+    });
+  }
 
   const isAValidSiret = (siret) => {
     if (siret.length != 14 || isNaN(siret)) {
