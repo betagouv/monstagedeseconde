@@ -255,7 +255,7 @@ export default function SirenInput({
                 </small>
                 <a
                   href="#manual-input"
-                  className="pl-2 small text-blue-info"
+                  className="small text-blue-info"
                   onClick={openManual}
                 >
                   Ajouter votre structure manuellement

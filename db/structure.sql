@@ -680,7 +680,7 @@ ALTER SEQUENCE public.detailed_crafts_id_seq OWNED BY public.detailed_crafts.id;
 
 CREATE TABLE public.entreprises (
     id bigint NOT NULL,
-    siret character varying(14) NOT NULL,
+    siret character varying(14),
     is_public boolean DEFAULT false NOT NULL,
     employer_name character varying(150) NOT NULL,
     employer_chosen_name character varying(150),
@@ -4770,6 +4770,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250106175910'),
 ('20241223095629'),
 ('20241217104101'),
 ('20241213131559'),
