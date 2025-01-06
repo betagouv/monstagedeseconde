@@ -61,7 +61,7 @@ module Services
         code: @code,
         grant_type: 'authorization_code',
         redirect_uri: ENV.fetch('FIM_REDIRECT_URI'),
-        scope: 'openid stage profile email', # Ordre corrigé des scopes
+        scope: 'openid stage profile email',
         state: @state,
         nonce: SecureRandom.uuid
       }
