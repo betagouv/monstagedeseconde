@@ -40,7 +40,7 @@
 
       <% if homepage? || statistics? %>
         <%= render 'layouts/flash' %>
-        <div role="main"><%= yield %></div>
+        <main role="main"><%= yield %></main>
       <% else %>
         <% if content_for?(:custom_header) %> <%= content_for(:custom_header) %> <% end %>
         <div class="container-monstage">
