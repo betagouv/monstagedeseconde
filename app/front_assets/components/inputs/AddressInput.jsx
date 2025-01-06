@@ -16,7 +16,8 @@ export default function AddressInput({
   currentLongitude,
   currentFullAddress,
   addressFieldsVisible,
-  isDuplication
+  isDuplication,
+  editMode
 }) {
   const [helpVisible, setHelpVisible] = useState(false);
   const [fullAddress, setFullAddress] = useState(currentFullAddress || '');
@@ -29,7 +30,7 @@ export default function AddressInput({
   const [detailedFieldsVisibility, setdetailedFieldsVisibility] = useState(false);
   const [queryString, setQueryString] = useState('');
   const [addressFieldsVisibility, setAddressFieldsVisibility] = useState(addressFieldsVisible);
-  const [isADuplicate, setDuplication] = useState(isDuplication || false);
+
   const [fullAddressDebounced] = useDebounce(fullAddress, 100);
 
 
@@ -206,7 +207,7 @@ export default function AddressInput({
           type="hidden"
         />
       </div>
-      { (addressFieldsVisibility || isADuplicate) && (
+      { (addressFieldsVisibility || isDuplication || editMode) && (
         <div className="form-row">
           <div className="col-sm-12 fr-mt-1w">
             <label htmlFor={`${resourceName}_street`} className="fr-label">

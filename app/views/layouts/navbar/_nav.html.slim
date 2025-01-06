@@ -84,7 +84,7 @@
           /           class: "fr-link text-decoration-none mr-4 #{active}"
         li
           = link_to 'Connexion',
-                    new_user_session_path,
+                    users_choose_connection_path,
                     class: "fr-link fr-icon-account-line text-decoration-none #{current_controller?(:sessions) ? 'active' : ''}"
         li
           = link_to 'Inscription',

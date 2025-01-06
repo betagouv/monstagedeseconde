@@ -22,8 +22,10 @@ module Dashboard
       )
     end
 
+    # when duplicating
     def new
       @duplication = true
+      @edit_mode = true
       authorize! :create, InternshipOffer
       internship_offer = current_user.internship_offers
                                      .find(params[:duplicate_id])
@@ -213,15 +215,19 @@ module Dashboard
 
     def internship_offer_params
       params.require(:internship_offer)
-            .permit(:title, :description, :sector_id, :max_candidates, :max_students_per_group,
-                    :employer_name, :employer_chosen_name, :street, :entreprise_full_address,
-                    :entreprise_chosen_full_address, :zipcode, :city, :department, :region,
-                    :academy, :renewed, :is_public, :group_id, :published_at, :republish,
-                    :type, :employer_id, :employer_type, :verb, :user_update, :school_id,
-                    :siret, :internship_address_manual_enter, :lunch_break, :aasm_state,
-                    :grade_college, :grade_2e, :period, :period, :shall_publish,
-                    entreprise_coordinates: {}, coordinates: {}, grade_ids: [],
-                    daily_hours: {}, weekly_hours: [], week_ids: [])
+            .permit(:academy, :aasm_state, :city,
+                    :department, :description, :employer_chosen_name, :employer_id,
+                    :employer_name, :employer_type, :entreprise_chosen_full_address,
+                    :entreprise_city,
+                    :entreprise_coordinates_longitude, :entreprise_coordinates_latitude,
+                    :entreprise_full_address,
+                    :entreprise_street, :entreprise_zipcode, :grade_2e, :grade_college,
+                    :group_id, :internship_address_manual_enter,
+                    :is_public, :lunch_break, :max_candidates, :max_students_per_group,
+                    :period, :published_at, :region, :renewed, :republish, :school_id,
+                    :sector_id, :shall_publish, :siret, :street, :title, :type,
+                    :user_update, :verb, :zipcode, entreprise_coordinates: {}, coordinates: {},
+                    week_ids: [], grade_ids: [], daily_hours:{}, weekly_hours: [] )
     end
 
     def set_internship_offer
