@@ -41,7 +41,6 @@ class NavbarTest < ActionDispatch::IntegrationTest
     create(:class_room, school: @school)
     sign_in(other)
     get other.custom_dashboard_path
-    follow_redirect!
 
     assert_select('#classes-panel a[href=?]',
                   new_dashboard_school_class_room_path)
@@ -69,7 +68,7 @@ class NavbarTest < ActionDispatch::IntegrationTest
     school_manager = @school.school_manager
     sign_in(school_manager)
     get school_manager.custom_dashboard_path
-    follow_redirect!
+
     assert_select('li a.fr-link.text-decoration-none.active', count: 1)
     assert_select('li a.fr-link.text-decoration-none.active', text: 'Mon établissement', count: 1)
     assert_select('li a.fr-link.mr-4', text: 'Accueil', count: 1)
