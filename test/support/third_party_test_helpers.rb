@@ -73,18 +73,97 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: '', headers: {})
   end
 
-  def fim_token_stub
+  def fim_token_stub(code)
     stub_request(:post, 'https://hub-pr2.phm.education.gouv.fr/idp/profile/oidc/token')
       .with(
+        body: {
+          'client_id' => ENV['FIM_CLIENT_ID'],
+          'client_secret' => ENV['FIM_CLIENT_SECRET'],
+          'code' => code,
+          'grant_type' => 'authorization_code',
+          'redirect_uri' => ENV['FIM_REDIRECT_URI'],
+          'scope' => 'openid stage profile email',
+          'state' => /.*/,
+          'nonce' => /.*/
+        },
         headers: {
           'Accept' => '*/*',
           'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Host' => 'oauth.piste.gouv.fr',
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'Host' => 'hub-pr2.phm.education.gouv.fr',
           'User-Agent' => 'Ruby'
         }
       )
       .to_return(status: 200, body: {
-        'access_token' => '123456'
+        'access_token' => '123456abc'
+      }.to_json, headers: {})
+  end
+
+  def fim_school_manager_userinfo_stub
+    stub_request(:get, ENV['FIM_URL'] + '/idp/profile/oidc/userinfo')
+      .with(
+        headers: {
+          'Authorization' => 'Bearer 123456abc',
+          'Content-Type' => 'application/json'
+        }
+      )
+      .to_return(status: 200, body: {
+        'FrEduFonctAdm' => 'DIR',
+        'given_name' => 'Jean',
+        'family_name' => 'Dupont',
+        'email' => 'jean.dupont@ac-lille.fr',
+        'rne' => '0590121L'
+      }.to_json, headers: {})
+  end
+
+  def fim_teacher_userinfo_stub
+    stub_request(:get, ENV['FIM_URL'] + '/idp/profile/oidc/userinfo')
+      .with(
+        headers: {
+          'Authorization' => 'Bearer 123456abc',
+          'Content-Type' => 'application/json'
+        }
+      )
+      .to_return(status: 200, body: {
+        'FrEduFonctAdm' => 'ENS',
+        'given_name' => 'Jean',
+        'family_name' => 'Dupont',
+        'email' => 'jean.dupont@ac-lille.fr',
+        'rne' => '0590121L'
+      }.to_json, headers: {})
+  end
+
+  def fim_admin_userinfo_stub
+    stub_request(:get, ENV['FIM_URL'] + '/idp/profile/oidc/userinfo')
+      .with(
+        headers: {
+          'Authorization' => 'Bearer 123456abc',
+          'Content-Type' => 'application/json'
+        }
+      )
+      .to_return(status: 200, body: {
+        'FrEduFonctAdm' => 'ADF',
+        'given_name' => 'Jean',
+        'family_name' => 'Dupont',
+        'email' => 'jean.dupont@ac-lille.fr',
+        'rne' => '0590121L'
+      }.to_json, headers: {})
+  end
+
+  def fim_teacher_without_school_userinfo_stub
+    stub_request(:get, ENV['FIM_URL'] + '/idp/profile/oidc/userinfo')
+      .with(
+        headers: {
+          'Authorization' => 'Bearer 123456abc',
+          'Content-Type' => 'application/json'
+        }
+      )
+      .to_return(status: 200, body: {
+        'FrEduFonctAdm' => 'ENS',
+        'given_name' => 'Jean',
+        'family_name' => 'Dupont',
+        'email' => 'jean.dupont@ac-lille.fr',
+        'rne' => '0590121X'
       }.to_json, headers: {})
   end
 end
