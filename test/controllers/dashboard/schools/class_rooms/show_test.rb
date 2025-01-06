@@ -31,14 +31,14 @@ module Dashboard
 
         get dashboard_school_class_room_students_path(school, class_room)
         assert_response :success
-        assert_select "li a[href=?]", dashboard_school_class_rooms_path(school) , count: 1
-        assert_select "li a[href=?]", dashboard_school_users_path(school), count: 1
-        assert_select "li a[href=?]", dashboard_internship_agreements_path, count: 1
-        assert_select "li a[href=?]", dashboard_school_information_path(school), count: 1
+        assert_select 'li a[href=?]', dashboard_school_class_rooms_path(school), count: 2
+        assert_select 'li a[href=?]', dashboard_school_users_path(school), count: 1
+        assert_select 'li a[href=?]', dashboard_internship_agreements_path, count: 1
+        assert_select 'li a[href=?]', dashboard_school_information_path(school), count: 1
       end
 
       test 'GET class_rooms#show as SchoolManagement with no weeks declared contains key navigations links' do
-       puts 'TODO'
+        puts 'TODO'
       end
 
       test 'GET class_rooms#show as SchoolManagement can remove student from school' do

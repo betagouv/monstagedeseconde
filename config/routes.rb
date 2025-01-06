@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 require 'sidekiq/web'
+when_employers_only = ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
+root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
+                     'maintenance_estivale'
+                   elsif when_employers_only
+                     'pro_landing'
+                   else
+                     'home'
+                   end
 
 Rails.application.routes.draw do
   # ------------------ SCOPE START ------------------
@@ -27,8 +35,13 @@ Rails.application.routes.draw do
       passwords: 'users/passwords'
     }
 
+    get '/auth/fim/callback', to: 'callbacks#fim', as: 'fim_callback'
+    get '/auth/educonnect/callback', to: 'callbacks#educonnect', as: 'educonnect_callback'
+    # get '/auth/failure', to: 'sessions#failure'
+
     devise_scope :user do
       get 'utilisateurs/choisir_profil', to: 'users/registrations#choose_profile', as: 'users_choose_profile'
+      get 'utilisateurs/choisir_connexion', to: 'users/sessions#choose_connection', as: 'users_choose_connection'
       get '/utilisateurs/inscriptions/en-attente', to: 'users/registrations#confirmation_standby',
                                                    as: 'users_registrations_standby'
       get '/utilisateurs/inscriptions/referent-en-attente', to: 'users/registrations#statistician_standby',
@@ -45,16 +58,19 @@ Rails.application.routes.draw do
     end
 
     resources :identities, path: 'identites', only: %i[new create]
-    resources :url_shrinkers, path: 'c', only: %i[] do
-      get :o, on: :member
+    unless when_employers_only
+      resources :url_shrinkers, path: 'c', only: %i[] do
+        get :o, on: :member
+      end
     end
-    resources :schools, path: 'ecoles', only: %i[new create]
 
     resources :coded_crafts, only: [] do
       collection do
         post :search
       end
     end
+
+    resources :schools, path: 'ecoles', only: %i[new create]
 
     resources :internship_offer_keywords, only: [] do
       collection do
@@ -86,7 +102,6 @@ Rails.application.routes.draw do
         get :search, path: 'recherche'
       end
     end
-
     resources :favorites, only: %i[create destroy index]
 
     get '/utilisateurs/transform_input', to: 'users#transform_input' # display
@@ -145,31 +160,34 @@ Rails.application.routes.draw do
       resources :team_member_invitations, path: 'invitation-equipes', only: %i[create index new destroy] do
         patch :join, to: 'team_member_invitations#join', on: :member
       end
-      resources :internship_agreements, path: 'conventions-de-stage', except: %i[destroy], param: :uuid
-      resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
-        member do
-          post 'start_signing'
-          post 'reset_phone_number'
-          post 'resend_sms_code'
-          post 'signature_code_validate'
-          post 'handwrite_sign'
-        end
-      end
 
       post 'internship_applications/update_multiple', to: 'internship_applications#update_multiple',
                                                       as: :update_multiple_internship_applications
 
-      resources :schools, path: 'ecoles', only: %i[index edit update show] do
-        resources :invitations, only: %i[new create index destroy], module: 'schools'
-        get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
-        resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
-
-        resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy],
-                                module: 'schools' do
-          resources :students, path: 'eleves', only: %i[update index new create], module: 'class_rooms'
+      resources :internship_agreements, path: 'conventions-de-stage', except: %i[destroy], param: :uuid
+      unless when_employers_only
+        resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
+          member do
+            post 'start_signing'
+            post 'reset_phone_number'
+            post 'resend_sms_code'
+            post 'signature_code_validate'
+            post 'handwrite_sign'
+          end
         end
-        put '/update_students_by_group', to: 'schools/students#update_by_group', module: 'schools'
-        get '/information', to: 'schools#information', module: 'schools'
+
+        resources :schools, path: 'ecoles', only: %i[index edit update show] do
+          resources :invitations, only: %i[new create index destroy], module: 'schools'
+          get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
+          resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
+
+          resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy],
+                                  module: 'schools' do
+            resources :students, path: 'eleves', only: %i[update index new create], module: 'class_rooms'
+          end
+          put '/update_students_by_group', to: 'schools/students#update_by_group', module: 'schools'
+          get '/information', to: 'schools#information', module: 'schools'
+        end
       end
 
       resources :internship_offer_areas, path: 'espaces', except: %i[show] do
@@ -209,21 +227,21 @@ Rails.application.routes.draw do
           post :resend_application, on: :member
         end
       end
-
       get 'candidatures', to: 'internship_offers/internship_applications#user_internship_applications'
     end
     # ------------------ DASHBOARD END ------------------
   end
   # ------------------ SCOPE END ------------------
+  unless when_employers_only
+    namespace :reporting, path: 'reporting' do
+      get '/dashboards', to: 'dashboards#index'
 
-  namespace :reporting, path: 'reporting' do
-    get '/dashboards', to: 'dashboards#index'
-
-    get '/schools', to: 'schools#index'
-    get '/employers_internship_offers', to: 'internship_offers#employers_offers'
-    get 'internship_offers', to: 'internship_offers#index'
-    get 'operators', to: 'operators#index'
-    put 'operators', to: 'operators#update'
+      get '/schools', to: 'schools#index'
+      get '/employers_internship_offers', to: 'internship_offers#employers_offers'
+      get 'internship_offers', to: 'internship_offers#index'
+      get 'operators', to: 'operators#index'
+      put 'operators', to: 'operators#update'
+    end
   end
 
   get 'api_address_proxy/search', to: 'api_address_proxy#search', as: :api_address_proxy_search
@@ -253,10 +271,10 @@ Rails.application.routes.draw do
   # TODO
   # To be removed after june 2023
   get '/register_to_webinar', to: 'pages#register_to_webinar'
-  get '/eleves', to: 'pages#student_landing'
+  get '/eleves', to: when_employers_only ? 'pages#home' : 'pages#student_landing'
   get '/professionnels', to: 'pages#pro_landing'
   get '/partenaires_regionaux', to: 'pages#regional_partners_index'
-  get '/equipe-pedagogique', to: 'pages#school_management_landing'
+  get '/equipe-pedagogique', to: when_employers_only ? 'pages#home' : 'pages#school_management_landing'
   get '/referents', to: 'pages#statistician_landing'
   get '/maintenance_estivale', to: 'pages#maintenance_estivale'
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
@@ -264,7 +282,6 @@ Rails.application.routes.draw do
   # Redirects
   get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/#{id}', status: 302)
 
-  root_destination = ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true' ? 'maintenance_estivale' : 'home'
   root to: "pages##{root_destination}"
 
   get '/400', to: 'errors#bad_request'

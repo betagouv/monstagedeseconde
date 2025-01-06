@@ -15,11 +15,11 @@ class InternshipOffersController < ApplicationController
     @school_weeks_list, @preselected_weeks_list = compute_weeks_lists
     respond_to do |format|
       format.html do
-        @sectors = Sector.all.order(:name).to_a
+        @sectors = Sector.order(:name).to_a
         @params = query_params.merge(sector_ids: params[:sector_ids])
       end
       format.json do
-        @internship_offers = finder.all
+        @internship_offers = finder.all.includes(:sector, :employer)
 
         @is_suggestion = @internship_offers.to_a.count.zero?
         @internship_offers = alternative_internship_offers if @is_suggestion

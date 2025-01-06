@@ -1,6 +1,7 @@
 module Services
   class ApiRequestsHelper
     def get_request
+      # TODO: specific implementation not ok with inheritance !
       uri = get_request_uri
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
