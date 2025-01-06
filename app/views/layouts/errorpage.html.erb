@@ -19,8 +19,9 @@
           <%= render 'layouts/webinar_banner' if can?(:subscribe_to_webinar, current_user_or_visitor)%>
         </div>
       </header>
-
+      <main>
         <%= yield %>
+      </main>
     </div>
   </body>
 </html>

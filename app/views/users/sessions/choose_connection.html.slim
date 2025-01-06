@@ -1,0 +1,17 @@
+header.header-account.subscription
+  h1.h2.fr-my-3w Connexion
+  p
+    = link_to "Vous n'avez pas encore de compte ?", users_choose_profile_path, class: 'fr-link blue-france fr-raw-link'
+.d-none.d-md-block
+  .one_card.fr-mt-3w.d-none.d-sm-block
+    = render 'users/sessions/cards/professional'
+  .three_cards.d-flex.flex-fill.flex-row.align-items-stretch
+    = render 'users/sessions/cards/student'
+    = render 'users/sessions/cards/education'
+    = render 'users/sessions/cards/statistician'
+.d-block.d-md-none
+  .cards-column.flex-column
+    = render 'users/sessions/cards/professional'
+    = render 'users/sessions/cards/student'
+    = render 'users/sessions/cards/education'
+    = render 'users/sessions/cards/statistician'
