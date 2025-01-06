@@ -41,6 +41,7 @@ Rails.application.routes.draw do
 
     devise_scope :user do
       get 'utilisateurs/choisir_profil', to: 'users/registrations#choose_profile', as: 'users_choose_profile'
+      get 'utilisateurs/choisir_connexion', to: 'users/sessions#choose_connection', as: 'users_choose_connection'
       get '/utilisateurs/inscriptions/en-attente', to: 'users/registrations#confirmation_standby',
                                                    as: 'users_registrations_standby'
       get '/utilisateurs/inscriptions/referent-en-attente', to: 'users/registrations#statistician_standby',
