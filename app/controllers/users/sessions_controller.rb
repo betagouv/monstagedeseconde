@@ -47,6 +47,11 @@ module Users
       end
     end
 
+    def choose_connection
+      @fim_url = build_fim_url
+      @educonnect_url = build_educonnect_url
+    end
+
     protected
 
     def store_targeted_offer_id(user:)
@@ -54,9 +59,9 @@ module Users
         Rails.logger.error("--------------\n#{params}\n--------------\n")
         raise 'params[:user] is nil'
       end
-      if user && params[:user][:targeted_offer_id].present?
-        user.update(targeted_offer_id: params[:user][:targeted_offer_id])
-      end
+      return unless user && params[:user][:targeted_offer_id].present?
+
+      user.update(targeted_offer_id: params[:user][:targeted_offer_id])
     end
 
     def fetch_user_by_email
@@ -65,7 +70,7 @@ module Users
         raise 'params[:user] is nil'
       end
       param_email = params[:user][:email]
-      return User.find_by(email: param_email) if param_email.present?
+      User.find_by(email: param_email) if param_email.present?
     end
 
     # If you have extra params to permit, append them to the sanitizer.
@@ -108,6 +113,32 @@ module Users
 
     def identify_user_with_id
       @user = User.find_by(id: params[:id])
+    end
+
+    def build_fim_url
+      oauth_params = {
+        redirect_uri: ENV['FIM_REDIRECT_URI'],
+        client_id: ENV['FIM_CLIENT_ID'],
+        scope: 'openid profile email stage',
+        response_type: 'code',
+        state: SecureRandom.uuid,
+        nonce: SecureRandom.uuid
+      }
+
+      cookies[:state] = oauth_params[:state]
+
+      ENV['FIM_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
+    end
+
+    def build_educonnect_url
+      oauth_params = {
+        redirect_uri: ENV['EDUCONNECT_REDIRECT_URI'],
+        client_id: ENV['EDUCONNECT_CLIENT_ID'],
+        scope: 'openid profile email stage',
+        response_type: 'code',
+        state: SecureRandom.uuid,
+        nonce: SecureRandom.uuid
+      }
     end
   end
 end
