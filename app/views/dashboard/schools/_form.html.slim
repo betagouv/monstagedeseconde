@@ -33,7 +33,9 @@ div data-controller='select-weeks'
                                                    currentZipcode: @school.zipcode,
                                                    currentLatitude: @school.coordinates.try(:lat).try(:to_f),
                                                    currentLongitude: @school.coordinates.try(:lng).try(:to_f),
-                                                   currentFullAddress: @school.formatted_autocomplete_address})
+                                                   currentFullAddress: @school.formatted_autocomplete_address,
+                                                   isDuplication: false,
+                                                   editMode: false})
 
 
     - else

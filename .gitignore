@@ -41,6 +41,7 @@ yarn-debug.log*
 .yarn/*
 .yarnrc
 .env
+.cursorrules
 
 /doc/env.sh
 /doc/output/internship_offers/create/*

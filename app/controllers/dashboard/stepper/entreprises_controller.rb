@@ -9,6 +9,7 @@ module Dashboard::Stepper
       @internship_occupation = @entreprise.internship_occupation
       authorize! :create, @entreprise
       @duplication = false
+      @edit_mode = false
     end
 
     def create
@@ -27,7 +28,9 @@ module Dashboard::Stepper
 
     def edit
       authorize! :edit, @entreprise
+      @entreprise.entreprise_chosen_full_address = @entreprise.entreprise_full_address
       @duplication = false
+      @edit_mode = true
     end
 
     # process update following a back to step 2
@@ -60,11 +63,15 @@ module Dashboard::Stepper
               :group_id,
               :sector_id,
               :employer_name,
+              :entreprise_street,
+              :entreprise_zipcode,
+              :entreprise_city,
               :employer_chosen_name,
               :entreprise_full_address,
               :entreprise_chosen_full_address,
               :entreprise_coordinates_longitude,
               :entreprise_coordinates_latitude,
+              :entreprise_coordinates,
               :internship_occupation_id
             )
     end
@@ -84,7 +91,8 @@ module Dashboard::Stepper
     end
 
     def fetch_entreprise
-      @entreprise = Entreprise.find(params[:entreprise_id])
+      id = params[:id] || params[:entreprise_id]
+      @entreprise = Entreprise.find(id)
     end
   end
 end

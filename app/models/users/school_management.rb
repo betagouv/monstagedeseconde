@@ -16,8 +16,8 @@ module Users
               presence: true
 
     validates_inclusion_of :accept_terms, in: ['1', true],
-              message: :accept_terms,
-              on: :create
+                                          message: :accept_terms,
+                                          on: :create
 
     belongs_to :school, optional: true
     belongs_to :class_room, optional: true
@@ -34,10 +34,10 @@ module Users
     before_update :notify_school_manager, if: :notifiable?
     after_create :notify_school_manager, if: :notifiable?
 
-
     def custom_dashboard_path
       if school.present?
         return url_helpers.dashboard_school_class_room_students_path(school, class_room) if induced_teacher?
+
         return url_helpers.dashboard_school_path(school)
       end
 
@@ -49,8 +49,8 @@ module Users
     end
 
     def custom_dashboard_paths
-      array = school.present? ? [ url_helpers.dashboard_school_class_rooms_path(school)] : []
-      array <<  after_sign_in_path
+      array = school.present? ? [url_helpers.dashboard_school_class_rooms_path(school)] : []
+      array << after_sign_in_path
       array
     rescue ActionController::UrlGenerationError
       []
@@ -65,7 +65,7 @@ module Users
       return 'Ma classe' if school.present? && induced_teacher?
       return 'Mon établissement' if school.present?
 
-      ""
+      ''
     end
 
     def custom_agreements_path
@@ -75,16 +75,16 @@ module Users
     def role_presenter
       Presenters::UserManagementRole.new(user: self)
     end
-    alias :presenter :role_presenter
+    alias presenter role_presenter
 
     def signatory_role
       Signature.signatory_roles[:school_manager] if role == 'school_manager'
     end
 
-    def school_management? ; true end
-    def school_manager? ; role == 'school_manager' end
-    def admin_officer?  ; role == 'admin_officer' end
-    def cpe?            ; role == 'cpe' end
+    def school_management? = true
+    def school_manager? = role == 'school_manager'
+    def admin_officer? = role == 'admin_officer'
+    def cpe? = role == 'cpe'
 
     def school_manager
       try(:school).try(:school_manager)
@@ -106,14 +106,18 @@ module Users
                            .filtering_discarded_students
     end
 
+    def custom_dashboard_path
+      url_helpers.dashboard_school_class_rooms_path(school)
+    end
+
     def pending_agreements_actions_count
-      part1 = internship_agreements_query.where(aasm_state: [:completed_by_employer, :started_by_school_manager])
+      part1 = internship_agreements_query.where(aasm_state: %i[completed_by_employer started_by_school_manager])
       part2 = internship_agreements_query.signatures_started
-                                          .joins(:signatures)
-                                          .where.not(signatures: {signatory_role: :school_manager} )
+                                         .joins(:signatures)
+                                         .where.not(signatures: { signatory_role: :school_manager })
       [part1, part2].compact.map(&:count).sum
     end
-    alias :team_pending_agreements_actions_count :pending_agreements_actions_count
+    alias team_pending_agreements_actions_count pending_agreements_actions_count
 
     private
 
@@ -121,22 +125,22 @@ module Users
     def official_email_address
       return if school_id.blank?
 
-      unless valid_academy_email_address?
-        errors.add(
-          :email,
-          "L'adresse email utilisée doit être officielle.<br>ex: XXXX@ac-academie.fr".html_safe
-        )
-      end
+      return if valid_academy_email_address?
+
+      errors.add(
+        :email,
+        "L'adresse email utilisée doit être officielle.<br>ex: XXXX@ac-academie.fr".html_safe
+      )
     end
 
     def official_uai_email_address
       return if school_id.blank?
 
-      unless official_uai_email_address?
-        message = "L'adresse email utilisée doit être l'adresse officielle " \
-                  "de l'établissement.<br>ex: ce.MON_CODE_UAI@ac-MON_ACADEMIE.fr"
-        errors.add(:email, message.html_safe)
-      end
+      return if official_uai_email_address?
+
+      message = "L'adresse email utilisée doit être l'adresse officielle " \
+                "de l'établissement.<br>ex: ce.MON_CODE_UAI@ac-MON_ACADEMIE.fr"
+      errors.add(:email, message.html_safe)
     end
 
     # notify
@@ -145,23 +149,23 @@ module Users
     end
 
     def notify_school_manager
-      if school.school_manager.present?
-        SchoolManagerMailer.new_member(school_manager: school.school_manager,
-                                       member: self)
-                           .deliver_later
-      end
+      return unless school.school_manager.present?
+
+      SchoolManagerMailer.new_member(school_manager: school.school_manager,
+                                     member: self)
+                         .deliver_later
     end
 
     def official_uai_email_address?
       if school_caen_or_normandie?
-       !!( email =~ /\Ace\.\d{7}\S?\@ac\-caen\.fr\z/) || !!(email =~ /\Ace\.\d{7}\S?\@ac\-normandie\.fr\z/)
+        !!(email =~ /\Ace\.\d{7}\S?@ac-caen\.fr\z/) || !!(email =~ /\Ace\.\d{7}\S?@ac-normandie\.fr\z/)
       else
-       !!(email =~ /\Ace\.\d{7}\S?\@#{school.email_domain_name}\z/)
+        !!(email =~ /\Ace\.\d{7}\S?@#{school.email_domain_name}\z/)
       end
     end
 
     def school_caen_or_normandie?
-      school.zipcode[0..1] == "61"
+      school.zipcode[0..1] == '61'
     end
   end
 end
