@@ -1,6 +1,6 @@
 module Services
   class ImmersionFacile < ApiRequestsHelper
-    IMMERSION_FACILE_ENDPOINT_URL = ENV['IMMERSION_FACILE_API_URL'] + '/search'
+    IMMERSION_FACILE_ENDPOINT_URL = "#{ENV['IMMERSION_FACILE_API_URL']}/search".freeze
 
     # sample of json response : {
     # [

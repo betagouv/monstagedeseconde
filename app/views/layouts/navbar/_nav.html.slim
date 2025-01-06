@@ -1,3 +1,4 @@
+- disabled_class = employers_only? ? 'disabled' : ''
 .fr-header__tools
   .fr-header__tools-links
     ul.fr-links-group.custom-navbar
@@ -9,8 +10,8 @@
             - active = current_page?(root_path) ? 'active' : ''
             = link_to 'Accueil',
                       root_path,
-                      class: "fr-link text-decoration-none mr-4 #{active}"
-          - if current_user.is_a?(Users::Student)
+                      class: "fr-link text-decoration-none mr-4 #{active}" 
+          - if current_user.is_a?(Users::Student) && !employers_only?
             li
               - active = current_page?(internship_offers_path) && !request.url.include?('origine=dashboard') ? 'active' : ''
               = link_to 'Recherche',
