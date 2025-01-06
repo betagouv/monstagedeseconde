@@ -251,14 +251,14 @@ export default function SirenInput({
                   ></span>
                 </small>
                 <small className="text-blue-info fr-mx-1w">
-                  Société introuvable ?
+                  Structure introuvable ?
                 </small>
                 <a
                   href="#manual-input"
                   className="pl-2 small text-blue-info"
                   onClick={openManual}
                 >
-                  Ajouter une société manuellement
+                  Ajouter votre structure manuellement
                 </a>
               </div>
               <div
