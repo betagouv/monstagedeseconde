@@ -8,7 +8,7 @@ module EmailUtils
   end
 
   def self.from
-    "contact@stagedeseconde.education.gouv.fr"
+    'contact@stagedeseconde.education.gouv.fr'
   end
 
   def self.formatted_from
@@ -16,16 +16,15 @@ module EmailUtils
   end
 
   def self.reply_to
-    "contact@stagedeseconde.education.gouv.fr"
+    'contact@stagedeseconde.education.gouv.fr'
   end
 
   def self.formatted_reply_to
     formatted_email(reply_to)
   end
 
-
   def self.display_name
-    'Mon Stage de 2de'
+    '1Élève1Stage'
   end
 
   def self.formatted_email(email)
