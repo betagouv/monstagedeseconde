@@ -18,7 +18,7 @@ class SygneImportTest < ActiveSupport::TestCase
   end
 
   test 'student import fails with wrong codeMef' do
-    Services::Sygne::Omogen::MEFSTAT4_CODES.each do |niveau|
+    Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves?niveau=#{niveau}")
       expected_response = {
         'ine' => '001291528AA',
@@ -45,14 +45,14 @@ class SygneImportTest < ActiveSupport::TestCase
                              .to_return(status: 200, body: expected_response, headers: {})
     end
 
-    omogen = Services::Sygne::Omogen.new
+    omogen = Services::Omogen::Sygne.new
     assert_no_difference 'Users::Student.count' do
       omogen.sygne_import_by_schools(@code_uai)
     end
   end
   test 'student import is ok with correct' do
     ine = '001291528AA'
-    Services::Sygne::Omogen::MEFSTAT4_CODES.each do |niveau|
+    Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves?niveau=#{niveau}")
       expected_response = {
         'ine' => ine,
@@ -113,7 +113,7 @@ class SygneImportTest < ActiveSupport::TestCase
                              body: expected_response.to_json,
                              headers: {}
                            )
-    omogen = Services::Sygne::Omogen.new
+    omogen = Services::Omogen::Sygne.new
     assert_difference 'ClassRoom.count', 1 do
       assert_difference 'Users::Student.count', 1 do
         omogen.sygne_import_by_schools(@code_uai)

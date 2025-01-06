@@ -1,4 +1,4 @@
-module Services::Sygne
+module Services::Omogen
   # Sygne eleves
   #  {
   #  "ine"=>"001291528AA",
@@ -84,7 +84,7 @@ module Services::Sygne
 
       @school = School.find_by(code_uai: code_uai)
       @grade = Grade.grade_by_mef(code_mef: code_mef)
-      @responsible = Services::Sygne::Omogen.new.sygne_responsable(ine)
+      @responsible = Services::Omogen::Sygne.new.sygne_responsable(ine)
     end
 
     def gender

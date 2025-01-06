@@ -1,4 +1,4 @@
-module Services::Sygne
+module Services::Omogen
   class SygneResponsible
     attr_accessor :last_name, :first_name, :email, :phone, :address, :level, :civility
 

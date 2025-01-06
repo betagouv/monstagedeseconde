@@ -1,8 +1,13 @@
-module Services::Sygne
+module Services::Omogen
   # Manage Captcha services
-  class Omogen
-    # MEFSTAT4_CODES=%w[2114 ,2122,2434,2115,2381 (2nde pro ?),2116,2117, 2121,2211,2433]
-    MEFSTAT4_CODES = %w[2114 2122 2434 2115 2116 2117 2121 2211 2433]
+  class Sygne
+    # 2434 : 3E SEGPA
+    # 2115 : 4EME
+    # 2116 : 3EME
+    # 2211 : 2NDE G-T
+    # 2433 : 4E SEGPA
+
+    MEFSTAT4_CODES = %w[2115 2116 2211 2434 2433]
     def net_synchro
       uri = URI(ENV['NET_SYNCHRO_URL'])
 
@@ -89,7 +94,7 @@ module Services::Sygne
     #  "adhesionTransport"=>false
     # }
 
-    def sygne_import_by_schools(code_uai = '0590116F')
+    def sygne_import_by_schools(code_uai)
       MEFSTAT4_CODES.each do |niveau|
         students = sygne_eleves(code_uai, niveau: niveau)
         students.each do |student|
@@ -98,7 +103,7 @@ module Services::Sygne
       end
     end
 
-    def sygne_eleves(code_uai = '0590116F', niveau: '2211')
+    def sygne_eleves(code_uai, niveau:)
       students = []
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
 
@@ -118,7 +123,7 @@ module Services::Sygne
       students
     end
 
-    def sygne_responsable(ine = '001291528AA')
+    def sygne_responsable(ine)
       response = sygne_responsables_request(ine)
       case response
       when Net::HTTPSuccess
@@ -157,10 +162,6 @@ module Services::Sygne
       request['Authorization'] = "Bearer #{@token}"
       request['Compression-Zip'] = 'non'
 
-      # puts 'request', request
-      puts 'uri', uri
-      puts '----'
-
       response = http.request(request)
     end
 
@@ -175,10 +176,6 @@ module Services::Sygne
       request = Net::HTTP::Get.new(uri.request_uri)
       request['Authorization'] = "Bearer #{@token}"
       request['Compression-Zip'] = 'non'
-
-      puts 'request', request
-      puts 'uri', uri
-      puts '----'
 
       http.request(request)
     end
