@@ -60,16 +60,6 @@
               small.form-text data-max-length-input-target="charCount"
         .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
           .col-12
-            / delete hereafter after 2025-02-01
-            / .fr-alert.fr-alert--info
-            /   h3.fr-alert__title
-            /   p
-            /     |
-            /       Les élèves ne peuvent accéder aux machines, appareils ou produits dont l'usage
-            /       est proscrit aux mineurs par les articles D. 4153-15 à D. 4153-37 du code du travail.
-            /       Ils ne peuvent ni procéder à des manœuvres ou manipulations sur d'autres machines,
-            /       produits ou appareils de production ni effectuer des travaux légers
-            /       autorisés aux mineurs par ce même code.
             .fr-alert.fr-alert--info
               h3.fr-alert__title Conseil
               p
@@ -77,6 +67,13 @@
                   Ce paragraphe est très important car il va permettre à l'élève
                   de se projeter dans son futur stage. Il est important d'utiliser
                   des mots simples. N'hésitez pas à ajouter des détails.
+              p
+                |
+                  Les élèves ne peuvent accéder aux machines, appareils ou produits dont l'usage
+                  est proscrit aux mineurs par les articles D. 4153-15 à D. 4153-37 du code du travail.
+                  Ils ne peuvent ni procéder à des manœuvres ou manipulations sur d'autres machines,
+                  produits ou appareils de production ni effectuer des travaux légers
+                  autorisés aux mineurs par ce même code.
         .row.fr-mt-2w
         .row.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
           .col-12
