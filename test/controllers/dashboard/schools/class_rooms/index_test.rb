@@ -35,7 +35,7 @@ module Dashboard
       end
 
       test 'GET class_rooms#index as SchoolManagement shows link to manage school' do
-        school = create(:school, :with_school_manager)
+        school = create(:school, :college, :with_school_manager)
 
         sign_in(school.school_manager)
         get dashboard_school_class_rooms_path(school)
