@@ -59,10 +59,10 @@
         = render '/dashboard/stepper/plannings/daily_hours',
                   form: form,
                   resource: form.object
-      .col-6 
+      .col-6
         .fr-alert.fr-alert--info
-            h3.fr-alert__title 
-              | 
+            h3.fr-alert__title
+              |
                 Les élèves peuvent-ils être accueillis en séquence d’observation
                 en dehors des horaires et jours de leur emploi du temps scolaire ?
             p
@@ -85,6 +85,23 @@
                                   resourceName: form.object_name,
                                   selectClassRoom: false,
                                   existingSchool: form.object&.school&.as_json})
+    .row
+      .col-6
+        = render 'inputs/dsfr_checkbox_field',
+          form: form,
+          field: :rep,
+          title: nil,
+          label: 'Ce stage est réservé aux établissements REP ou REP+ ?',
+          options: {}
+
+    .row
+      .col-6
+        = render 'inputs/dsfr_checkbox_field',
+          form: form,
+          field: :qpv,
+          title: nil,
+          label: 'Ce stage est réservé aux établissements QPV ?',
+          options: {}
 
     - if submit_button
       .fr-mt-6w
