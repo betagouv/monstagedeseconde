@@ -314,6 +314,19 @@ p.fr-card__desc.std-height {
 
 .fr-nav__link[aria-current] {
     background-color: $blue-france-light;
+    .disabled_tab{
+        opacity: 0.5;
+    }
+}
+
+.disabled_tab{
+    background-color: $grey-975 !important;
+    opacity: 0.5;
+    .fr-card__content{
+        h3.fr-h4 {
+           color: grey
+        }
+    }
 }
 
 h1,
