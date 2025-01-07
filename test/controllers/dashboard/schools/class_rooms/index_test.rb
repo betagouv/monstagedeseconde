@@ -43,11 +43,6 @@ module Dashboard
                       dashboard_school_users_path(school),
                       { count: 1 },
                       'missing link to manage school users'
-        # TODO: reactivate this test when 501 is merged
-        # assert_select 'li a[href=?]',
-        #               dashboard_school_path(school),
-        #               { count: 1 },
-        #               'missing or extra link to manage school weeks'
       end
 
       test 'GET class_rooms#index contains key navigations links to manage school classroom' do

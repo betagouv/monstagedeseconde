@@ -38,7 +38,9 @@ module Dashboard::Stepper
             'jeudi' => ['10:00', '15:00'],
             'vendredi' => ['11:00', '16:00']
           },
-          school_id: school.id
+          school_id: school.id,
+          rep: true,
+          qpv: true
         }
 
         assert_difference('Planning.count') do
@@ -64,6 +66,8 @@ module Dashboard::Stepper
             assert_equal '08:00', planning.daily_hours['lundi'].first
             assert_equal employer.id, planning.employer_id
             assert_equal SchoolTrack::Seconde.first_week.id, planning.weeks.first.id
+            assert_equal true, planning.rep
+            assert_equal true, planning.qpv
           end
         end
       end

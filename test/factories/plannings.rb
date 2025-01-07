@@ -16,6 +16,8 @@ FactoryBot.define do
     lunch_break { ' test de lunch break' }
     weeks { Week.both_school_track_selectable_weeks }
     grades { Grade.all }
+    rep { false }
+    qpv { false }
 
     trait :with_seconde_only do
       weeks { SchoolTrack::Seconde.both_weeks }

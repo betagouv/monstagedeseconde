@@ -19,6 +19,11 @@ class InternshipApplicationsController < ApplicationController
       student: current_user
     )
     @available_weeks = @internship_application.selectable_weeks
+
+    return unless @available_weeks.empty?
+
+    redirect_to internship_offer_path(@internship_offer),
+                alert: "Votre établissement a déclaré des semaines de stage et aucune semaine n'est compatible avec cette offre de stage."
   end
 
   # alias for draft
@@ -31,6 +36,11 @@ class InternshipApplicationsController < ApplicationController
   def create
     set_internship_offer
     authorize! :apply, @internship_offer
+
+    if params[:internship_application][:week_ids].present?
+      params[:internship_application][:week_ids] =
+        params[:internship_application][:week_ids].split(',')
+    end
 
     appli_params = { user_id: current_user.id }.merge(create_internship_application_params)
     appli_params = sanitizing_params(appli_params)
@@ -122,7 +132,7 @@ class InternshipApplicationsController < ApplicationController
             :motivation,
             :student_phone,
             :student_email,
-            :week_id,
+            week_ids: [],
             student_attributes: %i[
               email
               phone
@@ -158,7 +168,6 @@ class InternshipApplicationsController < ApplicationController
     params.require(:internship_application)
           .permit(
             :type,
-            :week_id,
             :internship_offer_id,
             :internship_offer_type,
             :motivation,
@@ -168,6 +177,7 @@ class InternshipApplicationsController < ApplicationController
             :student_legal_representative_full_name,
             :student_legal_representative_email,
             :student_legal_representative_phone,
+            week_ids: [],
             student_attributes: %i[
               email
               phone
