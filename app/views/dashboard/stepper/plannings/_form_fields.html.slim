@@ -67,7 +67,24 @@
                                       resourceName: form.object_name,
                                       selectClassRoom: false,
                                       existingSchool: form.object&.school&.as_json})
+        .row 
+          .col-12
+            = render 'inputs/dsfr_checkbox_field',
+              form: form,
+              field: :rep,
+              title: nil,
+              label: 'Ce stage est réservé aux établissements REP ou REP+ ?',
+              options: {}
 
+        .row 
+          .col-12
+            = render 'inputs/dsfr_checkbox_field',
+              form: form,
+              field: :qpv,
+              title: nil,
+              label: 'Ce stage est réservé aux établissements QPV ?',
+              options: {}
+             
     - if submit_button
       .fr-mt-6w
         = link_to 'Précédent',
