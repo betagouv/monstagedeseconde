@@ -14,7 +14,7 @@ class InternshipOffer < ApplicationRecord
                             entreprise_full_address internship_offer_area_id contact_phone
                             is_public group school_id coordinates first_date last_date
                             siret internship_address_manual_enter lunch_break daily_hours
-                            weekly_hours ].freeze
+                            weekly_hours rep qpv].freeze
 
   include StiPreload
   include AASM

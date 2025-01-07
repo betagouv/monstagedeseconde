@@ -1,7 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -35,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+-- COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 
 
 --
@@ -237,7 +236,9 @@ CREATE TABLE public.academies (
     id bigint NOT NULL,
     name character varying(40),
     email_domain character varying(100),
-    academy_region_id integer
+    academy_region_id integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -608,7 +609,7 @@ CREATE TABLE public.departments (
     name character varying(40),
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    academy_id bigint
+    academy_id integer
 );
 
 
@@ -688,6 +689,7 @@ CREATE TABLE public.entreprises (
     group_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
+    internship_occupation_id bigint,
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
@@ -964,9 +966,9 @@ CREATE TABLE public.internship_agreements (
     student_refering_teacher_phone character varying(20),
     student_legal_representative_email character varying(100),
     student_refering_teacher_email character varying(100),
-    student_legal_representative_full_name character varying(180),
+    student_legal_representative_full_name character varying(100),
     student_refering_teacher_full_name character varying(100),
-    student_legal_representative_phone character varying(20),
+    student_legal_representative_phone character varying(50),
     student_legal_representative_2_full_name character varying(100),
     student_legal_representative_2_email character varying(100),
     student_legal_representative_2_phone character varying(20),
@@ -1115,6 +1117,7 @@ CREATE TABLE public.internship_applications (
     student_legal_representative_full_name character varying(150),
     student_legal_representative_email character varying(109),
     student_legal_representative_phone character varying(50),
+    uuid uuid DEFAULT gen_random_uuid() NOT NULL,
     motivation text,
     rejected_message text,
     canceled_by_employer_message text,
@@ -1545,15 +1548,15 @@ CREATE TABLE public.internship_offers (
     contact_phone character varying(20),
     handicap_accessible boolean DEFAULT false,
     school_year integer DEFAULT 0 NOT NULL,
+    mother_id integer DEFAULT 0,
     internship_occupation_id bigint,
     entreprise_id bigint,
     planning_id bigint,
     employer_chosen_name character varying(250),
-    tutor_function character varying(150),
-    tutor_last_name character varying(60),
-    tutor_first_name character varying(60),
     entreprise_full_address character varying(200),
-    entreprise_coordinates public.geography(Point,4326)
+    entreprise_coordinates public.geography(Point,4326),
+    rep boolean DEFAULT false,
+    qpv boolean DEFAULT false
 );
 
 
@@ -1819,7 +1822,9 @@ CREATE TABLE public.plannings (
     updated_at timestamp(6) without time zone NOT NULL,
     employer_id bigint,
     lunch_break character varying(250),
-    internship_weeks_number integer DEFAULT 1
+    internship_weeks_number integer DEFAULT 1,
+    rep boolean DEFAULT false,
+    qpv boolean DEFAULT false
 );
 
 
@@ -1933,7 +1938,6 @@ CREATE TABLE public.schools (
     id bigint NOT NULL,
     name character varying(150) DEFAULT ''::character varying NOT NULL,
     city character varying(50) DEFAULT ''::character varying NOT NULL,
-    department character varying(40),
     zipcode character varying(5),
     code_uai character varying(10),
     coordinates public.geography(Point,4326),
@@ -2066,7 +2070,6 @@ CREATE TABLE public.task_registers (
     updated_at timestamp(6) without time zone NOT NULL
 );
 
-
 --
 -- Name: task_registers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
@@ -2127,12 +2130,13 @@ ALTER SEQUENCE public.team_member_invitations_id_seq OWNED BY public.team_member
 
 CREATE TABLE public.tutors (
     id bigint NOT NULL,
+    tutor_name character varying(120) NOT NULL,
+    tutor_email character varying(100) NOT NULL,
+    tutor_phone character varying(20) NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    tutor_name character varying(150),
-    tutor_email character varying(150),
-    tutor_phone character varying(20),
-    tutor_role character varying(120)
+    employer_id bigint NOT NULL,
+    tutor_role character varying(250)
 );
 
 
@@ -2275,16 +2279,16 @@ CREATE TABLE public.users (
     survey_answered boolean DEFAULT false,
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
-    failed_attempts integer DEFAULT 0 NOT NULL,
-    unlock_token character varying(64),
-    locked_at timestamp(6) without time zone,
     hubspot_id character varying(15),
-    academy_id bigint,
-    academy_region_id bigint,
+    academy_id integer,
+    academy_region_id integer,
     address character varying(300),
     legal_representative_full_name character varying(100),
     legal_representative_email character varying(109),
     legal_representative_phone character varying(50),
+    failed_attempts integer DEFAULT 0 NOT NULL,
+    unlock_token character varying(64),
+    locked_at timestamp(6) without time zone,
     resume_educational_background text,
     resume_other text,
     resume_languages text,
@@ -2380,6 +2384,37 @@ CREATE SEQUENCE public.users_search_histories_id_seq
 --
 
 ALTER SEQUENCE public.users_search_histories_id_seq OWNED BY public.users_search_histories.id;
+
+
+--
+-- Name: waiting_list_entries; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.waiting_list_entries (
+    id bigint NOT NULL,
+    email character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: waiting_list_entries_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.waiting_list_entries_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: waiting_list_entries_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.waiting_list_entries_id_seq OWNED BY public.waiting_list_entries.id;
 
 
 --
@@ -2737,13 +2772,6 @@ ALTER TABLE ONLY public.signatures ALTER COLUMN id SET DEFAULT nextval('public.s
 
 
 --
--- Name: task_registers id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.task_registers ALTER COLUMN id SET DEFAULT nextval('public.task_registers_id_seq'::regclass);
-
-
---
 -- Name: team_member_invitations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2790,6 +2818,13 @@ ALTER TABLE ONLY public.users_internship_offers_histories ALTER COLUMN id SET DE
 --
 
 ALTER TABLE ONLY public.users_search_histories ALTER COLUMN id SET DEFAULT nextval('public.users_search_histories_id_seq'::regclass);
+
+
+--
+-- Name: waiting_list_entries id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.waiting_list_entries ALTER COLUMN id SET DEFAULT nextval('public.waiting_list_entries_id_seq'::regclass);
 
 
 --
@@ -3184,14 +3219,6 @@ ALTER TABLE ONLY public.signatures
 
 
 --
--- Name: task_registers task_registers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.task_registers
-    ADD CONSTRAINT task_registers_pkey PRIMARY KEY (id);
-
-
---
 -- Name: team_member_invitations team_member_invitations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3248,6 +3275,14 @@ ALTER TABLE ONLY public.users_search_histories
 
 
 --
+-- Name: waiting_list_entries waiting_list_entries_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.waiting_list_entries
+    ADD CONSTRAINT waiting_list_entries_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: weeks weeks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3274,13 +3309,6 @@ CREATE INDEX idx_on_internship_application_id_created_at_42571d8745 ON public.in
 --
 
 CREATE INDEX idx_on_internship_application_id_e95b0b9dbb ON public.internship_application_weeks USING btree (internship_application_id);
-
-
---
--- Name: index_academies_on_academy_region_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_academies_on_academy_region_id ON public.academies USING btree (academy_region_id);
 
 
 --
@@ -3575,6 +3603,13 @@ CREATE INDEX index_internship_applications_on_internship_offer_week_id ON public
 --
 
 CREATE INDEX index_internship_applications_on_user_id ON public.internship_applications USING btree (user_id);
+
+
+--
+-- Name: index_internship_applications_on_uuid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_internship_applications_on_uuid ON public.internship_applications USING btree (uuid);
 
 
 --
@@ -4616,6 +4651,14 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
+-- Name: tutors fk_rails_af56aa365a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tutors
+    ADD CONSTRAINT fk_rails_af56aa365a FOREIGN KEY (employer_id) REFERENCES public.users(id);
+
+
+--
 -- Name: plannings fk_rails_b32215a275; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4766,17 +4809,21 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20241220134854'),
 ('20241204173244'),
 ('20241204164257'),
 ('20241204150852'),
 ('20241115093512'),
 ('20241113151423'),
+('20241105172654'),
+('20241105171942'),
 ('20241105092317'),
 ('20241101100649'),
 ('20241031131640'),
 ('20241031101009'),
 ('20241024080025'),
 ('20241024075951'),
+('20241022161032'),
 ('20241022094733'),
 ('20241016134457'),
 ('20241015085210'),
@@ -4792,6 +4839,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240918144248'),
 ('20240916160037'),
 ('20240827145706'),
+('20240808094927'),
 ('20240719095729'),
 ('20240712080757'),
 ('20240711083454'),
@@ -4803,8 +4851,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240628150306'),
 ('20240627152436'),
 ('20240626133711'),
+('20240624201910'),
 ('20240620123704'),
 ('20240612074103'),
+('20240606131313'),
 ('20240531101222'),
 ('20240531100023'),
 ('20240527081911'),
@@ -4816,6 +4866,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240410115028'),
 ('20240410114806'),
 ('20240410114637'),
+('20240405101512'),
 ('20240405094938'),
 ('20240404071148'),
 ('20240403131643'),
@@ -5165,3 +5216,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
+

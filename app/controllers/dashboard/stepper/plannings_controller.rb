@@ -93,6 +93,8 @@ module Dashboard::Stepper
               :max_students_per_group,
               :period,
               :school_id,
+              :rep,
+              :qpv,
               :weeks_count,
               daily_hours: {},
               weekly_hours: [],
