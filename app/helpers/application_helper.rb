@@ -44,10 +44,6 @@ module ApplicationHelper
     current_page?(root_path)
   end
 
-  def employers_only?
-    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
-  end
-
   # def in_dashboard?
   #   request.path.include?('dashboard') || request.path.include?('tableau-de-bord')
   # end

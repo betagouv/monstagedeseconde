@@ -1,8 +1,8 @@
-.fr-card
+div class="fr-card #{employers_only? ? 'disabled_tab' : ''}"
   .fr-card__body
     .fr-card__content
       h3.fr-h4
-        | Élève de seconde
+        | Élèves de 4e, 3e et 2de
         br
         |< générale
         br
@@ -12,7 +12,10 @@
     .fr-card__footer
       ul.fr-btns-group
         li
-          = link_to "Connexion via ÉduConnect", @educonnect_url, class: 'fr-btn fr-btn--secondary'
+          - path = employers_only? ? '#' : @educonnect_url
+          - label = employers_only? ? 'Connexion à venir' : 'Connexion via ÉduConnect'
+          - klass = employers_only? ? 'fr-btn--tertiary' : 'fr-btn--secondary'
+          = link_to label, path, class: "fr-btn #{klass}", disabled: employers_only?
   .fr-card__header
     .fr-ml-4w.fr-mt-5w
       .fr-badge.fr-badge--purple-glycine.fr-badge--no-icon élève
