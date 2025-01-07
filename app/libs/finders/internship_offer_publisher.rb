@@ -18,11 +18,9 @@ module Finders
     private
 
     def operator_query
-      query = common_filter do
+      common_filter do
         user.internship_offers.kept
       end
-
-      query
     end
 
     def employer_query

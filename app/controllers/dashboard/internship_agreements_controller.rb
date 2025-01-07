@@ -80,15 +80,19 @@ module Dashboard
 
     def index
       authorize! :index, InternshipAgreement
-      @internship_offers = current_user.internship_offers if current_user.employer_like?
+      if current_user.employer_like?
+        @internship_offers = current_user.internship_offers
+                                         .includes([:weeks, { school: :school_manager }])
+      end
       @internship_agreements = current_user.internship_agreements
                                            .filtering_discarded_students
                                            .kept
                                            .includes(
-                                             internship_application: [
+                                             { internship_application: [
                                                { student: :school },
-                                               { internship_offer: [:employer] }
-                                             ]
+                                               { internship_offer: [:employer, :sector, :stats, :weeks,
+                                                                    { school: :school_manager }] }
+                                             ] }
                                            )
       #  .reject { |a| a.student.school.school_manager.nil? }
       @school = current_user.school if current_user.school_management?
