@@ -13,12 +13,14 @@ module Finders
     def base_query
       send(mapping_user_type.fetch(user.type))
         .group(:id)
+        .includes(:sector, :employer)
         .page(params[:page])
     end
 
     def base_query_without_page
       send(mapping_user_type.fetch(user.type))
         .group(:id)
+        .includes(:sector, :employer)
     end
 
     private
