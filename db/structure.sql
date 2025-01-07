@@ -2047,12 +2047,35 @@ ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
 
 
 --
--- Name: task_records; Type: TABLE; Schema: public; Owner: -
+-- Name: task_registers; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.task_records (
-    version character varying NOT NULL
+CREATE TABLE public.task_registers (
+    id bigint NOT NULL,
+    task_name character varying(250),
+    used_environment character varying(150),
+    played_at timestamp(6) without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
+
+--
+-- Name: task_registers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.task_registers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: task_registers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
 
 
 --
