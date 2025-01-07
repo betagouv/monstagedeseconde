@@ -39,7 +39,7 @@ class ReservedSchoolInput extends React.Component {
     const checkedOrHasExistingSchool = (checked === true) || (checked === null && existingSchool);
     return (
       <>
-        <div className="fr-checkbox-group fr-checkbox-group--sm test-school-reserved" onClick={this.toggleChange}>
+        <div className="fr-checkbox-group test-school-reserved" onClick={this.toggleChange}>
           <input
             type="checkbox"
             name="is_reserved"
