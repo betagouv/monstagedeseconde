@@ -693,7 +693,6 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
-    internship_occupation_id bigint,
     contact_phone character varying(20)
 );
 
