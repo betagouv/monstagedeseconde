@@ -681,7 +681,7 @@ ALTER SEQUENCE public.detailed_crafts_id_seq OWNED BY public.detailed_crafts.id;
 
 CREATE TABLE public.entreprises (
     id bigint NOT NULL,
-    siret character varying(14) NOT NULL,
+    siret character varying(14),
     is_public boolean DEFAULT false NOT NULL,
     employer_name character varying(150) NOT NULL,
     employer_chosen_name character varying(150),
@@ -693,7 +693,8 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
-    contact_phone character varying(20)
+    contact_phone character varying(20),
+    internship_address_manual_enter boolean DEFAULT false
 );
 
 
@@ -1159,8 +1160,7 @@ CREATE TABLE public.internship_occupations (
     coordinates public.geography(Point,4326),
     employer_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    internship_address_manual_enter boolean DEFAULT false
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -4813,6 +4813,8 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20241220134854'),
+('20250106175910'),
+('20241223095629'),
 ('20241217104101'),
 ('20241213131559'),
 ('20241204173244'),
