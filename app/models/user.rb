@@ -265,6 +265,7 @@ class User < ApplicationRecord
   def internship_agreements_query = InternshipAgreement.none
   def available_offers = InternshipOffer.none
   def team_members = User.none
+  def custom_dashboard_path = Rails.application.routes.url_helpers.root_path
 
   def just_created?
     created_at < Time.now + 3.seconds
