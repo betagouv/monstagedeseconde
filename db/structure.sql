@@ -20,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -34,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 
 
 --
@@ -48,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -692,7 +692,9 @@ CREATE TABLE public.entreprises (
     internship_occupation_id bigint,
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
-    updated_entreprise_full_address boolean DEFAULT false
+    updated_entreprise_full_address boolean DEFAULT false,
+    workspace_conditions text DEFAULT ''::text,
+    workspace_accessibility text DEFAULT ''::text
 );
 
 
@@ -1554,7 +1556,9 @@ CREATE TABLE public.internship_offers (
     entreprise_full_address character varying(200),
     entreprise_coordinates public.geography(Point,4326),
     rep boolean DEFAULT false,
-    qpv boolean DEFAULT false
+    qpv boolean DEFAULT false,
+    workspace_conditions text DEFAULT ''::text,
+    workspace_accessibility text DEFAULT ''::text
 );
 
 
@@ -2047,35 +2051,12 @@ ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
 
 
 --
--- Name: task_registers; Type: TABLE; Schema: public; Owner: -
+-- Name: task_records; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.task_registers (
-    id bigint NOT NULL,
-    task_name character varying(250),
-    used_environment character varying(150),
-    played_at timestamp(6) without time zone,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+CREATE TABLE public.task_records (
+    version character varying NOT NULL
 );
-
---
--- Name: task_registers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.task_registers_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: task_registers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
 
 
 --
@@ -4798,6 +4779,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250107105855'),
 ('20241220134854'),
 ('20241115093512'),
 ('20241113151423'),
