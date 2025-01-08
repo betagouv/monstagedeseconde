@@ -31,34 +31,23 @@ class InternshipApplicationAasmMessageBuilder
   # so depending on the targeted state, fetch the rich_text_object (void)
   # and assign the body [which show on front end the text]
   #
-  MAP_TARGET_TO_RICH_TEXT_ATTRIBUTE = {
-    employer_validate!: :validated_by_employer,
+
+  MAP_TARGET_TO_FIELD_ATTRIBUTE = {
+    employer_validate!: :validated_by_employer_message,
     approve!: :approved_message,
     cancel_by_employer!: :canceled_by_employer_message,
     cancel_by_student!: :canceled_by_student_message,
     reject!: :rejected_message
   }.freeze
 
-  MAP_TARGET_TO_RICH_TEXT_INITIALIZER = {
-    employer_validate!: :on_validated_by_employer_message,
-    approve!: :on_approved_message,
-    cancel_by_employer!: :on_canceled_by_employer_message,
-    cancel_by_student!: :on_canceled_by_student_message,
-    reject!: :on_rejected_message
-  }.freeze
-
-  def assigned_rich_text_attribute
-    rich_text_object = MAP_TARGET_TO_RICH_TEXT_ATTRIBUTE.fetch(aasm_target)
-    rich_text_initializer = MAP_TARGET_TO_RICH_TEXT_INITIALIZER.fetch(aasm_target)
-
-    send(rich_text_object).body = send(rich_text_initializer)
-
-    rich_text_object
+  def associated_text_field
+    MAP_TARGET_TO_FIELD_ATTRIBUTE.fetch(aasm_target)
   end
 
   private
 
   attr_reader :aasm_target, :internship_application
+
   def initialize(internship_application:, aasm_target:)
     @internship_application = internship_application
     @aasm_target = aasm_target

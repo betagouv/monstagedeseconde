@@ -1,7 +1,8 @@
 = render 'layouts/breadcrumb',
           links: [ [dashboard_students_internship_applications_path(@internship_application.student), 'Mes candidatures'],
                    ['', 'Transférer'] ]
-.fr-container data-controller='transfer-application'
+.fr-container [data-controller='transfer-application mandatory-fields'
+               data-mandatory-fields-minimum-length-value="3"]
   .row
     .col
       h1.h2.mb-3 Transférer une candidature
@@ -22,15 +23,20 @@
             = form.label :destination, "Adresse email"
             = form.text_field :destination,
                               class: 'fr-input destinataire-input',
+                              maxlength: 100,
+                              pattern: Devise.email_regexp,
                               placeholder: 'magali@organisation.fr',
                               required: true,
-                              data: { :'transfer-application-target'=>"email", :'transfer-application-target'=>"requiredField"}
+                              data: { :'transfer-application-target'=>"email",
+                                      action: "input->mandatory-fields#fieldChange",
+                                      :'mandatory-fields-target' => "mandatoryField"}
 
           .fr-mt-2w
             = button_to 'Ajouter un destinataire',
                         '#',
                         class: 'fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-line',
-                        data: { :'transfer-application-target' => "addDestination", action: 'click->transfer-application#addDestinataire' }
+                        data: { :'transfer-application-target' => "addDestination",
+                                action: 'click->transfer-application#addDestinataire' }
 
         .col-6
           = render 'internship_applications/transfer_notice'
@@ -46,9 +52,12 @@
             = form.text_area :comment,
                               class: 'fr-input',
                               placeholder: 'Message',
+                              maxlength: 2_000,
                               required: true,
                               rows: 6,
-                              data: { :"transfer-application-target" => "comment", :'transfer-application-target'=>"requiredField"}
+                              data: { :"transfer-application-target" => "comment",
+                                      :'mandatory-fields-target' => "mandatoryField",
+                                      action: "input->mandatory-fields#fieldChange" }
       .row
         .col-6
           /  Submit buttons
@@ -59,4 +68,5 @@
             = form.submit 'Envoyer',
                           class: 'fr-btn',
                           disabled: true,
-                          data: {:"transfer-application-target" => "submitButton"}
+                          data: {:"transfer-application-target" => "submitButton",
+                                 :'mandatory-fields-target' => "disabledField"}

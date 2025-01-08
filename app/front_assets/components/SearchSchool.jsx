@@ -34,6 +34,8 @@ export default function SearchSchool({
   const [schoolsInCitySuggestions, setSchoolsInCitySuggestions] = useState([]);
   const [classRoomsSuggestions, setClassRoomsSuggestions] = useState(null);
 
+  const [grade, setGrade] = useState('seconde');
+
   const currentCityString = () => {
     if (city === null || city === undefined) {
       return '';
@@ -45,7 +47,7 @@ export default function SearchSchool({
 
   const emitRequest = (cityName) => {
     setCurrentRequest(
-      $.ajax({ type: 'POST', url: endpoints['apiSearchSchool'](), data: { query: cityName } })
+      $.ajax({ type: 'POST', url: endpoints['apiSearchSchool'](), data: { query: cityName, grade: grade } })
         .done(fetchDone)
         .fail(fetchFail),
     );
@@ -136,7 +138,7 @@ export default function SearchSchool({
         }) => (
           <div id="header-search" className="custom-label-container fr-search-bar fr-mr-6w" role="search">
             <label
-              {...getLabelProps({ className: 'fr-label', htmlFor: `${resourceName}_school_city` })}
+             {...getLabelProps({ className: 'fr-label', htmlFor: `${resourceName}_school_city` })}
             >
               {label}
             </label>
@@ -144,7 +146,7 @@ export default function SearchSchool({
               {...getInputProps({
                 onChange: inputChange,
                 value: currentCityString(),
-                className: `fr-input ${classes || ''} ${
+                className: `fr-input fr-mb-2w ${classes || ''} ${
                   autocompleteNoResult ? '' : 'rounded-0'
                 }`,
                 id: `${resourceName}_school_city`,
@@ -282,6 +284,18 @@ export default function SearchSchool({
       setAutocompleteCitySuggestions({});
     }
   }, [city]);
+
+  useEffect(() => {
+    const handleGradeChange = (event) => {
+      setGrade(event.detail.grade)
+    }
+    
+    document.addEventListener('gradeChanged', handleGradeChange)
+    
+    return () => {
+      document.removeEventListener('gradeChanged', handleGradeChange)
+    }
+  }, [])
 
   return (
     <div className="autocomplete-school-container">

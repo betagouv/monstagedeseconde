@@ -18,7 +18,6 @@ module Presenters
                    sector_name
                    contact_name
                    contact_email
-                   contact_phone
                    full_employer
                    full_address
                    full_school
@@ -43,11 +42,11 @@ module Presenters
       end
 
       def period
-        ::InternshipOffer::PERIOD_LABELS.values[instance.period]
+        ::InternshipOffer.current_period_labels.values[instance.period]
       end
 
       def human_max_candidates_string
-        instance.max_candidates == 1 ? 'Individuel' : " Collectif"
+        instance.max_candidates == 1 ? 'Individuel' : ' Collectif'
       end
 
       def human_is_public
@@ -74,16 +73,12 @@ module Presenters
         instance.employer.email
       end
 
-      def contact_phone
-        instance.employer.phone
-      end
-
       def full_employer
         [instance.employer_name, instance.employer_website, instance.employer_description].compact.join("\n")
       end
 
       def full_address
-        Address.new(instance: instance).to_s
+        Address.new(instance:).to_s
       end
 
       def full_year

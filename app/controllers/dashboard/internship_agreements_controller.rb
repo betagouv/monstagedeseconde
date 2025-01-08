@@ -41,10 +41,11 @@ module Dashboard
         on.success do |updated_internship_agreement|
           updated_internship_agreement = process_state_update(
             agreement: updated_internship_agreement,
-            params: params
+            params:
           )
           updated_internship_agreement.save
-          redirect_to dashboard_internship_agreements_path, flash: { success: update_success_message(updated_internship_agreement) }
+          redirect_to dashboard_internship_agreements_path,
+                      flash: { success: update_success_message(updated_internship_agreement) }
         end
         on.failure do |failed_internship_agreement|
           @internship_agreement = failed_internship_agreement || InternshipAgreement.find(params[:id])
@@ -67,12 +68,12 @@ module Dashboard
                                                .full_name_camel_case
           send_data(
             GenerateInternshipAgreement.new(@internship_agreement.id).call.render,
-              filename: "Convention_de_stage_#{ext_file_name}.pdf",
-              type: 'application/pdf',
-              disposition: 'inline'
+            filename: "Convention_de_stage_#{ext_file_name}.pdf",
+            type: 'application/pdf',
+            disposition: 'inline'
           ) && @internship_agreement.signatures.each do |signature|
-              signature.config_clean_local_signature_file
-            end
+                 signature.config_clean_local_signature_file
+               end
         end
       end
     end
@@ -81,23 +82,25 @@ module Dashboard
       authorize! :index, InternshipAgreement
       if current_user.employer_like?
         @internship_offers = current_user.internship_offers
+                                         .includes([:weeks, { school: :school_manager }])
       end
       @internship_agreements = current_user.internship_agreements
                                            .filtering_discarded_students
                                            .kept
                                            .includes(
-                                              internship_application: [
-                                                { student: :school },
-                                                { internship_offer: [:employer]}
-                                                ]
-                                              )
-                                          #  .reject { |a| a.student.school.school_manager.nil? }
+                                             { internship_application: [
+                                               { student: :school },
+                                               { internship_offer: [:employer, :sector, :stats, :weeks,
+                                                                    { school: :school_manager }] }
+                                             ] }
+                                           )
+      #  .reject { |a| a.student.school.school_manager.nil? }
       @school = current_user.school if current_user.school_management?
       @no_agreement_internship_application_list = []
-                                                    # current_user.internship_applications
-                                                    #           .filtering_discarded_students
-                                                    #           .approved
-                                                    #           .select { |ia| ia.student.school.school_manager.nil? }
+      # current_user.internship_applications
+      #           .filtering_discarded_students
+      #           .approved
+      #           .select { |ia| ia.student.school.school_manager.nil? }
     end
 
     private
@@ -120,15 +123,14 @@ module Dashboard
               :organisation_representative_role,
               :date_range,
               :doc_date,
-              :schedule_rich_text,
-              :activity_scope_rich_text,
-              :activity_preparation_rich_text,
-              :activity_learnings_rich_text,
-              :activity_rating_rich_text,
-              :skills_observe_rich_text,
-              :skills_communicate_rich_text,
-              :skills_understand_rich_text,
-              :skilles_motivation_rich_text,
+              :activity_scope,
+              :activity_preparation,
+              :activity_learnings,
+              :activity_rating,
+              :skills_observe,
+              :skills_communicate,
+              :skills_understand,
+              :skilles_motivation,
               :legal_terms_rich_text,
               :school_manager_accept_terms,
               :employer_accept_terms,
@@ -155,9 +157,10 @@ module Dashboard
               :tutor_email,
               :lunch_break,
               :weekly_lunch_break,
-              weekly_hours:[],
-              daily_hours:{},
-              )
+              weekly_hours: [],
+              daily_hours: {}
+            )
+      # :schedule_rich_text,
     end
 
     def internship_agreement_builder
@@ -169,23 +172,22 @@ module Dashboard
       when 'started_by_employer' then 'La convention a été enregistrée.'
       when 'completed_by_employer' then "La convention a été envoyée au chef d'établissement."
       when 'started_by_school_manager' then 'La convention a été enregistrée.'
-      when 'validated' then "La convention est validée, le fichier pdf de la convention est maintenant disponible."
+      when 'validated' then 'La convention est validée, le fichier pdf de la convention est maintenant disponible.'
       else
         'La convention a été enregistrée.'
       end
     end
 
-    def process_state_update( agreement: , params: )
+    def process_state_update(agreement:, params:)
       employer_event       = params[:internship_agreement][:employer_event]
       school_manager_event = params[:internship_agreement][:school_manager_event]
       return agreement if employer_event.blank? && school_manager_event.blank?
 
-      agreement = transit_when_allowed( agreement: agreement, event: employer_event )
-      agreement = transit_when_allowed( agreement: agreement, event: school_manager_event )
-      agreement
+      agreement = transit_when_allowed(agreement:, event: employer_event)
+      transit_when_allowed(agreement:, event: school_manager_event)
     end
 
-    def transit_when_allowed(agreement: , event:)
+    def transit_when_allowed(agreement:, event:)
       return agreement if event.blank?
       return agreement unless agreement.send("may_#{event}?")
 

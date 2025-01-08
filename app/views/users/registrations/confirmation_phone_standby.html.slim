@@ -6,7 +6,12 @@
     .fr-px-1w
       = render 'layouts/breadcrumb',
               links: [['', 'Confirmez votre compte'] ]
-
+    / .body
+    /   - unless !@confirmable_user
+    /     p
+    /       span.confirmation-text= "Votre compte a bien été enregistré "
+    /       strong= "(#{user.phone})"
+    /       = "."
     .onboarding-card-lg.mb-4.p-2.light-blue-background
       - if @confirmable_user.try(:confirmed_at)
         - user = User.find_by(id: params[:id])
@@ -40,8 +45,8 @@
                 p.h3.text-dark.fr-mt-4w Confirmez votre compte
                 p.text-dark
                   |
-                    Nous venons de vous envoyer un code par SMS le
-                    numéro de téléphone terminant par
+                    Nous venons de vous envoyer un code par SMS au
+                    numéro de téléphone terminant par ***
                   strong
                     = " #{user.phone[-4..-1]}"
                   |. Saisissez le code ci-dessous pour commencer à utiliser Mon stage à l’école.
@@ -84,9 +89,3 @@
                                     data: {turbo: true}) do |f|
                           = f.submit 'Renvoyer le code de confirmation',
                                     class: 'fr-btn fr-btn--secondary'
-
-
-
-
-
-

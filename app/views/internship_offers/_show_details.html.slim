@@ -1,7 +1,7 @@
 .row.fr-py-3w.thin-line-below
   .col-12
     .fr-text--lg.fr-mb-1w
-      = internship_offer.sector.name 
+      = internship_offer.sector.name
   .col-12
     h1.h3.text-dark role="heading" aria-level="1"
       = internship_offer.title
@@ -10,7 +10,8 @@
   .col-12
     h2.h4.fr-mb-2w Informations sur le stage
   .col-12.pb-2w
-    .reboot-trix-content= internship_offer.description_rich_text.to_s.present? ? internship_offer.description_rich_text.to_s : internship_offer.description
+    .reboot-trix-content
+      = internship_offer.description.gsub("\n", "<br>").html_safe
 
 .row.fr-pt-3w.thin-line-below
   .col-12
@@ -51,7 +52,7 @@
                       title: "#{internship_offer.employer_website} (nouvelle fenêtre)",
                       rel: "external noopener noreferrer"
     - if can?(:read_employer_name, internship_offer)
-      .row 
+      .row
         .col-12
           = react_component("Map",
                       props: { internshipOffer: { id: internship_offer.id, lat: internship_offer.coordinates.latitude, lon: internship_offer.coordinates.longitude } })
@@ -83,6 +84,6 @@
               span
                 | Offre suivante
               span.fr-icon-arrow-right-line aria-hidden="true"
-    
+
 
 

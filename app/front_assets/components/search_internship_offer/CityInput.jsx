@@ -158,6 +158,7 @@ function CityInput({
                   name: 'city',
                   id: 'input-search-by-city-or-zipcode',
                   placeholder: '',
+                  maxLength: "50",
                   "aria-label": "Autour de",
                   onFocus: (event) => {
                     openMenu(event);

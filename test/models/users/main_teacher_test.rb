@@ -19,8 +19,8 @@ module Users
     end
 
     test 'creation succeed' do
-      school = build(:school, :with_school_manager)
-      create(:department, name: 'Paris')
+      department = Department.find_by(code: '75')
+      school = build(:school, :with_school_manager, department:)
       teacher = Users::SchoolManagement.new(
         role: :main_teacher,
         email: "jeanne@#{school.email_domain_name}",
@@ -30,9 +30,10 @@ module Users
         school: school,
         accept_terms: true
       )
-
+      validity = teacher.valid?
+      puts teacher.email
+      puts teacher.errors.full_messages unless validity
       assert teacher.valid?
     end
-
   end
 end

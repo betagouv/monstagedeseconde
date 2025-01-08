@@ -3,6 +3,8 @@
 require 'test_helper'
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+
   test 'GET works' do
     get new_user_session_path
     assert_response :success
@@ -30,7 +32,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     employer.confirm
     get new_user_session_path(params: { check_confirmation: true, id: employer.id })
     assert_response :success
-    assert_select('h1', text: 'Connexion à Mon stage de seconde')
+    assert_select('h1', text: 'Connexion à 1élève1stage')
   end
 
   test 'GET with prefilled email works' do
@@ -82,7 +84,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     pwd = 'okokok1Max!!'
     email = 'employer@corp.com'
     employer = create(:employer, email:, phone: nil, password: pwd, confirmed_at: 2.days.ago)
-    internship_offer = create(:weekly_internship_offer, employer:)
+    internship_offer = create(:weekly_internship_offer_2nde, employer:)
     create(:weekly_internship_application, :submitted, internship_offer:)
 
     post user_session_path(params: { user: { channel: 'email',
@@ -104,9 +106,21 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to dashboard_internship_offers_path
   end
 
+  test 'POST session as OPERATOR with email and check after sign in path when no pending applications' do
+    pwd = 'okokok1Max!!'
+    email = 'operator@corp.com'
+    employer = create(:user_operator, email:, phone: nil, password: pwd, confirmed_at: 2.days.ago)
+
+    post user_session_path(params: { user: { channel: 'email',
+                                             email: employer.email,
+                                             password: pwd } })
+
+    assert_redirected_to dashboard_internship_offers_path
+  end
+
   test 'GET #index as Student with a pending internship_application' do
     student = create(:student, password: 'okokok1Max!!')
-    internship_offer = create(:weekly_internship_offer)
+    internship_offer = create(:weekly_internship_offer_3eme)
     internship_application = create(:weekly_internship_application, :validated_by_employer,
                                     student:,
                                     internship_offer:)
@@ -164,5 +178,12 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get user_unlock_path(unlock_token: raw)
     assert_redirected_to new_user_session_path
     refute student.reload.access_locked?
+  end
+
+  test 'session cookies are deleted on sign out' do
+    student = create(:student)
+    sign_in(student)
+    delete destroy_user_session_path
+    assert_nil cookies['_ms2gt_manage_session']
   end
 end

@@ -12,7 +12,7 @@ module InternshipApplicationAasmMessageBuilders
     def on_approved_message
       <<~HTML.strip
         <p>Bonjour #{student.presenter.formal_name},</p>
-        <p>Votre candidature pour le stage "#{internship_offer.title}" pour #{internship_offer.period_label} est acceptée .</p>
+        <p>Votre candidature pour le stage "#{internship_offer.title}" est acceptée .</p>
         <p>Vous devez maintenant faire signer la convention de stage.</p>
       HTML
     end
@@ -20,12 +20,12 @@ module InternshipApplicationAasmMessageBuilders
     def on_canceled_by_employer_message
       <<~HTML.strip
         <p>Bonjour #{student.presenter.formal_name},</p>
-        <p>Votre candidature pour le stage "#{internship_offer.title}" pour #{internship_offer.period_label} est annulée .</p>
+        <p>Votre candidature pour le stage "#{internship_offer.title}" est annulée .</p>
       HTML
     end
 
     def on_canceled_by_student_message
-      ""
+      ''
     end
     alias on_rejected_message on_canceled_by_student_message
   end

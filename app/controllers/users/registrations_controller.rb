@@ -16,10 +16,11 @@ module Users
     rescue_from(ActiveRecord::RecordNotUnique) do |_error|
       redirect_to after_inactive_sign_up_path_for(resource)
     end
-    # GET /users/choose_profile
-    # def choose_profile
-    #
-    # end
+
+    def choose_profile
+      @fim_url = build_fim_url
+    end
+
     def confirmation_standby
       flash.delete(:notice)
       @confirmable_user = ::User.find_by(id: params[:id]) if params[:id].present?
@@ -35,6 +36,8 @@ module Users
 
     # GET /resource/sign_up
     def new
+      @captcha_image, @captcha_uuid = Services::Captcha.generate if %w[Employer SchoolManagement
+                                                                       Statistician].include?(params[:as])
       @resource_channel = resource_channel
       options = {}
       if params.dig(:user, :targeted_offer_id)
@@ -59,6 +62,14 @@ module Users
 
     # POST /resource
     def create
+      if %w[Employer
+            SchoolManagement
+            Statistician].include?(params[:as]) && !check_captcha(params[:user][:captcha],
+                                                                  params[:user][:captcha_uuid])
+        flash[:alert] = I18n.t('devise.registrations.captcha_error')
+        redirect_to_register_page(params[:as])
+        return
+      end
       %i[honey_pot_checking
          phone_reuse_checking].each do |check|
         check_proc = send(check, params)
@@ -83,10 +94,10 @@ module Users
 
     def phone_validation
       if fetch_user_by_phone.try(:check_phone_token?, params[:phone_token])
-        fetch_user_by_phone.confirm_by_phone!
+        @user.confirm_by_phone!
         message = { success: I18n.t('devise.confirmations.confirmed') }
         redirect_to(
-          new_user_session_path(phone: fetch_user_by_phone.phone),
+          new_user_session_path(phone: @user.phone),
           flash: message
         )
       else
@@ -181,6 +192,7 @@ module Users
           department
           academy_id
           academy_region_id
+          grade_id
         ]
       )
     end
@@ -237,14 +249,13 @@ module Users
     def merge_identity(params)
       identity = Identity.find_by_token(params[:user][:identity_token])
 
-      params[:user].merge({
-                            first_name: identity.first_name,
-                            last_name: identity.last_name,
-                            birth_date: identity.birth_date,
-                            school_id: identity.school_id,
-                            class_room_id: identity.class_room_id,
-                            gender: identity.gender
-                          })
+      params[:user].merge(first_name: identity.first_name,
+                          last_name: identity.last_name,
+                          birth_date: identity.birth_date,
+                          school_id: identity.school_id,
+                          class_room_id: identity.class_room_id,
+                          gender: identity.gender,
+                          grade_id: identity.grade.id)
     end
 
     def honey_pot_checking(params)
@@ -278,6 +289,33 @@ module Users
       else
         users_registrations_standby_path(id: resource.id)
       end
+    end
+
+    def check_captcha(captcha, captcha_uuid)
+      Services::Captcha.verify(captcha, captcha_uuid)
+    end
+
+    def redirect_to_register_page(resource)
+      if resource == 'Student'
+        redirect_to new_user_identity_path(as: params[:as])
+      else
+        redirect_to new_user_registration_path(as: params[:as])
+      end
+    end
+
+    def build_fim_url
+      oauth_params = {
+        redirect_uri: ENV['FIM_REDIRECT_URI'],
+        client_id: ENV['FIM_CLIENT_ID'],
+        scope: 'openid profile email stage',
+        response_type: 'code',
+        state: SecureRandom.uuid,
+        nonce: SecureRandom.uuid
+      }
+
+      cookies[:state] = oauth_params[:state]
+
+      ENV['FIM_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
     end
   end
 end

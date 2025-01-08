@@ -117,7 +117,7 @@ $line-height: 4px;
 
 .internship-application-status {
   display: block;
-  max-width: 583px;
+  min-width: 100%;
   min-height: 280px;
   border: 1px solid $grey-disabled;
   padding: 32px;
@@ -174,4 +174,13 @@ table tr {
   .no-xs-margin {
     margin: 0 !important;
   }
+}
+
+#dropdownMenu {
+  position: absolute; 
+  right: 0;
+}
+
+.min-height-100 {
+  min-height: 110px;
 }

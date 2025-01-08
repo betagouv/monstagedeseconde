@@ -1,13 +1,14 @@
 p style=head_styles
-  = "#{@from_name} vous invite à rejoindre #{link_to('Mon stage de seconde', @url)}".html_safe
+  = "#{@from_name} vous invite à rejoindre #{link_to("1élève1stage", @url)}".html_safe
 
 p style=p_styles
   = "Bienvenue #{@invitation_first_name} #{@invitation_last_name}, "
 
 p style=p_styles
   = "#{@from_name}, du lycée "
-  span style=("font-weight: bold") = "#{@school_name}, "
-  ="vous invite à rejoindre la plateforme Mon stage de seconde"
+  span style=("font-weight: bold") 
+  = "#{@school_name}, "
+  = "vous invite à rejoindre la plateforme 1élève1stage"
 
 p style=p_styles
   | Elle vous permettra d'accompagner et de suivre vos élèves dans leurs recherches de stage.

@@ -3,8 +3,8 @@ html lang="fr"
   head
     meta charset="utf-8"
     meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    meta name="description" content="Mon stage de seconde permet aux éléves de seconde générale et technologique de trouver des stages près de chez eux."
-    meta name="author" content="Mon stage de seconde"
+    meta name="description" content="1élève1stage permet aux éléves de seconde générale et technologique de trouver des stages près de chez eux."
+    meta name="author" content="1élève1stage"
     meta name="turbo-visit-control" content="reload"
     link rel='canonical' href=ENV.fetch('MGF_SITE_URL')
     = csrf_meta_tags
@@ -23,7 +23,7 @@ html lang="fr"
     a name="top" id="top"
     .content.fr-pb-0 data-controller='rg2a'
       = render "layouts/flash"
-      div role="main"
+      main role="main"
         = yield
     div
       = render 'layouts/footer'

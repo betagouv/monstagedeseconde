@@ -1,18 +1,30 @@
-header.bg-cover-image-homepage.container-xl.px-0.everyone
+header.container-xl.px-0.everyone
   .container-monstage.container-xl.homepage
-    .row.fr-px-2w
-      .col-lg-12.col-md-12.px-0
-        .fr-pt-6w
-          h1.fr-h1.blue-france
-            | Un stage du 17 au 28 juin 2024,
-            br
-            | pour les élèves de seconde générale et technologique.
+    .row.fr-px-2w.fr-mt-6w.fr-mb-2w
+      .col-lg-6.col-md-12.px-0
+        h1.fr-h3.blue-france
+          | Des stages de qualité dédiés aux élèves
+          br
+          | de 4
+          sup e
+          | , 3
+          sup e 
+          | , et 2
+          sup de
+          |  générale et technologique.
+        .fr-text.blue-france
+          .row 
+            .col-12.fr-text
+              span.font-weight-bold
+                | 1élève1stage 
+              | offre aux élèves la possibilité de réaliser des stages d’observation de qualité. Elle facilite les interactions entre les écoles et les entreprises, permettant une première expérience dans le monde professionnel.
+      .col-lg-6.col-md-12.px-0.d-flex.align-items-center
+        = image_tag asset_pack_path('media/images/homepage/1eleve1stage_tag.png'),
+                    alt: 'Illustration élèves',
+                    class: 'img-fluid'
+    .row 
+      .col-12.col-md-12.px-0
         .d-flex.flex-row.fr-pb-6w.fr-mt-3w
           .blue-france.sub-hero
-            .sub-hero-text
+            .sub-hero-text.hero-cards-container
               = render 'pages/home/everyone/hero_everyone_cards'
-
-          .fr-ml-2w.ml-auto.fr-mb-0.show-stamp-logo.d-none.d-md-block
-            = image_tag asset_pack_path('media/images/homepage/hero-side-stamp.png'),
-                        alt: 'Logo stade de 2de générale et technologique',
-                        class: 'stamp-logo fr-px-2w'

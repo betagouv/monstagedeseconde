@@ -9,7 +9,6 @@
 .custom-control-checkbox-list{
   height: 380px;
   overflow: scroll;
-  background-color: $blue-france-975;
 
   padding: $input-btn-padding-x/2 $input-btn-padding-y;
   &.is-invalid{
@@ -247,4 +246,15 @@ trix-editor {
 .fr-btn-danger:hover {
   background-color: $red-marianne-active !important;
   --blend-full-size: 0%;
+}
+.no-padding-right {
+  .fr-radio-rich input[type=radio] + label {
+    padding-right: 1rem !important ;
+  }
+}
+
+.fr-radio-rich {
+  .no-padding-right{
+    padding-right: 1rem !important ;
+  }
 }

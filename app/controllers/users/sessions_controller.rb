@@ -22,6 +22,12 @@ module Users
     end
 
     def create
+      # TODO : withdraw next line after employers_only function removal
+      allowed_profiles_when_employers_only = current_user.try(:employer?) ||
+                                             current_user.try(:operator?) ||
+                                             current_user.try(:god?)
+      redirect_to root_path and return if employers_only? && !allowed_profiles_when_employers_only
+
       if by_phone? && fetch_user_by_phone.try(:valid_password?, params[:user][:password])
         user = fetch_user_by_phone
         if user.student?
@@ -40,6 +46,18 @@ module Users
       end
       store_targeted_offer_id(user: fetch_user_by_email)
       super
+    end
+
+    def destroy
+      super do
+        cookies.delete(:_monstage_session)
+        cookies.delete(:_ms2gt_manage_session)
+      end
+    end
+
+    def choose_connection
+      @fim_url = build_fim_url
+      @educonnect_url = build_educonnect_url
     end
 
     protected
@@ -103,6 +121,32 @@ module Users
 
     def identify_user_with_id
       @user = User.find_by(id: params[:id])
+    end
+
+    def build_fim_url
+      oauth_params = {
+        redirect_uri: ENV['FIM_REDIRECT_URI'],
+        client_id: ENV['FIM_CLIENT_ID'],
+        scope: 'openid profile email stage',
+        response_type: 'code',
+        state: SecureRandom.uuid,
+        nonce: SecureRandom.uuid
+      }
+
+      cookies[:state] = oauth_params[:state]
+
+      ENV['FIM_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
+    end
+
+    def build_educonnect_url
+      oauth_params = {
+        redirect_uri: ENV['EDUCONNECT_REDIRECT_URI'],
+        client_id: ENV['EDUCONNECT_CLIENT_ID'],
+        scope: 'openid profile email stage',
+        response_type: 'code',
+        state: SecureRandom.uuid,
+        nonce: SecureRandom.uuid
+      }
     end
   end
 end

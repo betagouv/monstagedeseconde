@@ -19,27 +19,27 @@ class UserTest < ActiveSupport::TestCase
 
   test 'anonymize student' do
     school = create(:school)
-    class_room = create(:class_room, school: school)
+    class_room = create(:class_room, school:)
     student = create(:student, email: 'test@test.com', first_name: 'Toto', last_name: 'Tata',
                                current_sign_in_ip: '127.0.0.1', last_sign_in_ip: '127.0.0.1', birth_date: '01/01/2000',
                                gender: 'm', class_room_id: class_room.id,
                                resume_other: 'chocolat', resume_languages: 'FR', phone: '+330600110011')
     internship_application = create(
       :weekly_internship_application,
-      student: student,
+      student:,
       motivation: 'a wonderful world',
       student_phone: '687012345',
       student_email: 'test@free.fr'
     )
     assert internship_application.motivation.present?
-    assert_equal 'a wonderful world', internship_application.motivation.body.to_plain_text
+    assert_equal 'a wonderful world', internship_application.motivation
 
     assert_enqueued_jobs 1, only: AnonymizeUserJob do
       student.anonymize
     end
 
     assert_equal 'm', student.gender
-    assert_nil  internship_application.reload.motivation.body
+    assert_nil internship_application.reload.motivation
     assert_nil internship_application.student_phone
     assert_nil internship_application.student_email
     assert_nil student.class_room_id
@@ -61,7 +61,7 @@ class UserTest < ActiveSupport::TestCase
 
   test 'anonymize student which email is empty' do
     school = create(:school)
-    class_room = create(:class_room, school: school)
+    class_room = create(:class_room, school:)
     student = create(:student, email: '', first_name: 'Toto', last_name: 'Tata',
                                current_sign_in_ip: '127.0.0.1', last_sign_in_ip: '127.0.0.1', birth_date: '01/01/2000',
                                gender: 'm', class_room_id: class_room.id,
@@ -88,7 +88,7 @@ class UserTest < ActiveSupport::TestCase
 
   test 'archive student' do
     school = create(:school)
-    class_room = create(:class_room, school: school)
+    class_room = create(:class_room, school:)
     student = create(:student, email: 'test@test.com', first_name: 'Toto', last_name: 'Tata',
                                current_sign_in_ip: '127.0.0.1', last_sign_in_ip: '127.0.0.1', birth_date: '01/01/2000',
                                gender: 'm', class_room_id: class_room.id,
@@ -105,8 +105,8 @@ class UserTest < ActiveSupport::TestCase
     employer = create(:employer, email: 'test@test.com', first_name: 'Toto', last_name: 'Tata',
                                  current_sign_in_ip: '127.0.0.1', last_sign_in_ip: '127.0.0.1')
 
-    internship_offer = create(:weekly_internship_offer,
-                              employer: employer,
+    internship_offer = create(:weekly_internship_offer_2nde,
+                              employer:,
                               internship_offer_area: employer.current_area)
 
     employer.anonymize
@@ -241,20 +241,38 @@ class UserTest < ActiveSupport::TestCase
                '+33 6.  12 ..34    56 78',
                '33 06.  12 ..34    56 78',
                '33 6.  12 ..34    56 78',
-               '06.  12 ..34    56 78' ]
+               '06.  12 ..34    56 78']
     numbers.each do |number|
       assert_equal '612345678', User.sanitize_mobile_phone_number(number, prefix)
     end
     numbers = ['+33 2.  12 ..34    56 78',
                '02.  12 ..34    56 78',
                '06.  12 ..34    56 7',
-               '06.  12 ..34    56 78 9'
-              ]
+               '06.  12 ..34    56 78 9']
     numbers.each do |number|
       assert_nil User.sanitize_mobile_phone_number(number, prefix)
     end
     assert_nil User.sanitize_mobile_phone_number('', prefix)
     assert_nil User.sanitize_mobile_phone_number(nil, prefix)
+  end
+
+  test 'phone prefix' do
+    user = build(:student, phone: '+330612345678')
+    assert_equal '33', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+330712345678')
+    assert_equal '33', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+2620612345678') # Réunion
+    assert_equal '262', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+5960612345678') # Guadeloupe
+    assert_equal '596', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+5940612345678') # Guyane
+    assert_equal '594', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+6870612345678') # Nouvelle-Calédonie
+    assert_equal '687', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+6890612345678') # Polynésie française
+    assert_equal '689', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+330123456789')
+    assert_nil user.compute_mobile_phone_prefix
   end
 
   test 'employer gets an internship_offer_area' do

@@ -1,7 +1,7 @@
 - @prez = internship_application.presenter(current_user)
 - status_hash = @prez.human_state
 .row
-  .col-12.col-md-6
+  .col-12
     .internship-application-status.d-flex.flex-column.align-items-start
       div class="fr-badge fr-badge--#{status_hash[:badge]} fr-badge--no-icon"
         = status_hash[:label]
@@ -13,7 +13,8 @@
         .d-flex
           .fr-text--xs.fr-mb-0= @prez.internship_offer_address
       .fr-mt-0
-        p.fr-tag.fr-tag--sm= internship_application.internship_offer.period_label
+        p.fr-tag.fr-tag--sm
+          = @prez.str_weeks
       .action.fr-mt-4w
         .d-flex
           - if status_hash[:actions].present?

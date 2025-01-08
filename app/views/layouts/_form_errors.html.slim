@@ -7,9 +7,9 @@
   dl.my-0
     dd
       - errors.notice_messages(resource_name: resource_name, resource: resource).each do |notice_message|
-        div class="fr-alert fr-alert--success fr-mb-2v"
+        div class="fr-alert fr-alert--success fr-mb-2v server-notice"
           = notice_message
-      div class="fr-alert fr-alert--error fr-mb-2v"
+      div class="fr-alert fr-alert--error fr-mb-2v server-error"
         = errors.error_messages(resource_name: resource_name, resource: resource, separator: "<br/>")
 
 

@@ -41,6 +41,7 @@ yarn-debug.log*
 .yarn/*
 .yarnrc
 .env
+.cursorrules
 
 /doc/env.sh
 /doc/output/internship_offers/create/*
@@ -51,3 +52,6 @@ signature_storage
 /infra/disaster/docker/backup_manager/_docker-run-with-env.sh
 /dump.rdb
 *.code-workspace
+megalinter-reports/
+venv
+copier.yml

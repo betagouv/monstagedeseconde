@@ -39,7 +39,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       .to_return(status: 200, body: File.read(Rails.root.join(*%w[test
                                                                   fixtures
                                                                   files
-                                                                  api-address-paris-13.json])))
+                                                                  12-rue-taine-paris.json])))
 
     stub_request(:any, /recherche-entreprises.api.gouv.fr/)
       .to_return(status: 200, body: '')

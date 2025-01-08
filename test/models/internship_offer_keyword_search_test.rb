@@ -5,15 +5,15 @@ require 'test_helper'
 class InternshipOfferKeywordSearchTest < ActiveSupport::TestCase
   include ::ApiTestHelpers
   setup do
-    FactoryBot.create(:weekly_internship_offer,
+    FactoryBot.create(:weekly_internship_offer_2nde,
                       title: 'docteur',
                       description: 'stage dans un xxx',
                       employer_description: '')
-    FactoryBot.create(:weekly_internship_offer,
+    FactoryBot.create(:weekly_internship_offer_2nde,
                       title: 'police',
                       description: 'stage dans un xxx',
                       employer_description: '')
-    FactoryBot.create(:weekly_internship_offer,
+    FactoryBot.create(:weekly_internship_offer_2nde,
                       title: 'gendarme',
                       description: 'stage dans une xxx',
                       employer_description: '')

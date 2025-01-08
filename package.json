@@ -43,7 +43,7 @@
     "regenerator-runtime": "^0.13.3",
     "signature_pad": "^4.0.5",
     "stimulus": "3",
-    "trix": "^1.2.0",
+    "trix": "^2.1.12",
     "url-search-params-polyfill": "^8.0.0",
     "use-debounce": "5",
     "whatwg-fetch": "^3.2.0"
@@ -65,7 +65,7 @@
     "webpack-dev-server": "3.11.0"
   },
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   },
   "resolutions": {
     "rails_admin/@fortawesome/fontawesome-free": "^5.15.0"
