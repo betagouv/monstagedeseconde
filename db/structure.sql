@@ -966,9 +966,9 @@ CREATE TABLE public.internship_agreements (
     student_refering_teacher_phone character varying(20),
     student_legal_representative_email character varying(100),
     student_refering_teacher_email character varying(100),
-    student_legal_representative_full_name character varying(100),
+    student_legal_representative_full_name character varying(180),
     student_refering_teacher_full_name character varying(100),
-    student_legal_representative_phone character varying(50),
+    student_legal_representative_phone character varying(20),
     student_legal_representative_2_full_name character varying(100),
     student_legal_representative_2_email character varying(100),
     student_legal_representative_2_phone character varying(20),
@@ -4812,13 +4812,14 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20241220134854'),
 ('20250106175910'),
 ('20241223095629'),
-('20241217104101'),
+('20241220134854'),
 ('20241213131559'),
 ('20241204173244'),
 ('20241204164257'),
+('20241204150852'),
+('20241217104101'),
 ('20241115093512'),
 ('20241113151423'),
 ('20241105172654'),
