@@ -22,6 +22,8 @@ module Users
     end
 
     def create
+      # TODO : withdraw next line after employers_only function removal
+      redirect_to root_path and return if employers_only? && !current_user.try(:employer?) && !current_user.try(:operator?)
       if by_phone? && fetch_user_by_phone.try(:valid_password?, params[:user][:password])
         user = fetch_user_by_phone
         if user.student?
