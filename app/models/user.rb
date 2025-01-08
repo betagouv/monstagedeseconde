@@ -195,10 +195,6 @@ class User < ApplicationRecord
     phone_confirmable? && phone_token == token
   end
 
-  def after_confirmation
-    super
-  end
-
   def send_confirmation_instructions
     return if created_by_teacher || statistician?
 
@@ -251,6 +247,7 @@ class User < ApplicationRecord
   def obfuscated_phone_number = nil
   def create_default_internship_offer_area = nil
   def department_name = nil
+  def resend_confirmation_phone_token = nil
   def team = nil
 
   def already_signed?(internship_agreement_id:) = true

@@ -39,7 +39,7 @@ class UserMailer < ApplicationMailer
                             handlers: [:axlsx],
                             formats: [:xlsx],
                             template: 'reporting/internship_offers/index_offers',
-                            locals: { offers:,
+                            locals: { offers: offers,
                                       presenter_for_dimension: Presenters::Reporting::DimensionByOffer }
     attachments[attachment_name] = { mime_type: Mime[:xlsx], content: xlsx }
     mail(to: recipient_email, subject: 'Export des offres de 1élève1stage')

@@ -11,26 +11,26 @@ header.container-xl.px-0
               | de 4
               sup e
               | , 3
-              sup e 
+              sup e
               | , et 2
               sup de
               |  générale et technologique.
             .fr-text.blue-france
-              .row 
+              .row
                 .col-12
                   span.fr-text
                     | Proposez des stages d’observation aux élèves et participez à leur découverte du monde professionnel tout en valorisant votre secteur d’activité.
-        
+
           .col-lg-6.col-md-12.px-0.d-flex.align-items-center
             = image_tag asset_pack_path('media/images/homepage/1eleve1stage_tag.png'),
                         alt: 'Illustration élèves',
                       class: 'img-fluid'
         .row.fr-my-1w
-          .col-12 
+          .col-12
             = link_to 'Déposer une offre de stage', new_user_registration_path(as: 'Employer'), class: 'fr-btn'
         - if employers_only?
           .row.fr-mb-3w
-            .col-12 
+            .col-12
               .fr-mt-1w.fr-mb-4w.header-cartel.fr-px-6v.fr-py-1w
                 p.blue-france
                   strong

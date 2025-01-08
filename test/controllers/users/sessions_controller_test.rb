@@ -20,7 +20,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get new_user_session_path(params: { check_confirmation: true, id: employer.id })
     follow_redirect!
     assert_response :success
-    assert_select('.h2', text: '1 . Activez votre compte !')
+    assert_select('.h3', text: 'Confirmez votre compte')
     flash_message = 'Vous trouverez parmi vos emails le message' \
                       ' permettant l\'activation de votre compte'
     assert_select('span#alert-text', text: flash_message) # 1
@@ -98,6 +98,18 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     pwd = 'okokok1Max!!'
     email = 'employer@corp.com'
     employer = create(:employer, email:, phone: nil, password: pwd, confirmed_at: 2.days.ago)
+
+    post user_session_path(params: { user: { channel: 'email',
+                                             email: employer.email,
+                                             password: pwd } })
+
+    assert_redirected_to dashboard_internship_offers_path
+  end
+
+  test 'POST session as OPERATOR with email and check after sign in path when no pending applications' do
+    pwd = 'okokok1Max!!'
+    email = 'operator@corp.com'
+    employer = create(:user_operator, email:, phone: nil, password: pwd, confirmed_at: 2.days.ago)
 
     post user_session_path(params: { user: { channel: 'email',
                                              email: employer.email,

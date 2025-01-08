@@ -8,7 +8,7 @@ module StepperProxy
       belongs_to :group, -> { where is_public: true }, optional: true
       belongs_to :sector
 
-      before_validation :clean_siret
+      before_validation :clean_siret, unless: -> { internship_address_manual_enter }
       before_save :entreprise_used_name
 
       attr_accessor :entreprise_chosen_full_address,
@@ -19,9 +19,11 @@ module StepperProxy
                 length: { maximum: 80 },
                 allow_blank: true
       validates :employer_name,
-                presence: true
+                presence: true,
+                length: { maximum: 80 }
       validates :entreprise_coordinates,
-                exclusion: { in: [geo_point_factory(latitude: 0, longitude: 0)] }
+                exclusion: { in: [geo_point_factory(latitude: 0, longitude: 0)] },
+                unless: -> { internship_address_manual_enter }
       validates :is_public, inclusion: [true, false]
 
       def entreprise_coordinates=(coordinates)
