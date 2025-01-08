@@ -1,4 +1,4 @@
-.fr-card
+div class="fr-card #{employers_only? ? 'disabled_tab' : ''}"
   .fr-card__body
     .fr-card__content
       h3.fr-h4
@@ -7,8 +7,11 @@
         | Vous êtes référent d’administration centrale ou en académie. Accédez aux statistiques et à vos outils de pilotage.
     .fr-card__footer
       ul.fr-btns-group
-        li= link_to "Connexion", new_user_session_path(as: 'Statistician'), class: 'fr-btn fr-btn--secondary'
-                    
+          - path = employers_only? ? '#' : new_user_session_path(as: 'Statistician')
+          - label = employers_only? ? 'Connexion à venir' : 'Connexion'
+          - klass = employers_only? ? 'fr-btn--tertiary' : 'fr-btn--secondary'
+          = link_to label, path, class: "fr-btn #{klass}", disabled: employers_only?
+
   .fr-card__header
     .fr-ml-4w.fr-mt-5w
       .fr-badge.fr-badge--success.fr-badge--no-icon Référent

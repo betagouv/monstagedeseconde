@@ -35,6 +35,12 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   include Html5Validator
 
   def setup
+    stub_request(:any, /api-adresse.data.gouv.fr/)
+      .to_return(status: 200, body: File.read(Rails.root.join(*%w[test
+                                                                  fixtures
+                                                                  files
+                                                                  12-rue-taine-paris.json])))
+
     stub_request(:any, /recherche-entreprises.api.gouv.fr/)
       .to_return(status: 200, body: '')
   end

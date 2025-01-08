@@ -33,10 +33,14 @@ class ApplicationController < ActionController::Base
     current_user || Users::Visitor.new
   end
 
-  helper_method :user_presenter, :current_user_or_visitor
+  def employers_only?
+    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
+  end
+
   def user_presenter
     @user_presenter ||= Presenters::User.new(current_user_or_visitor)
   end
+  helper_method :user_presenter, :current_user_or_visitor, :employers_only?
 
   def check_for_maintenance
     redirect_to '/maintenance.html' if ENV['MAINTENANCE_MODE'] == 'true'
