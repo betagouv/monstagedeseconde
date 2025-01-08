@@ -20,7 +20,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get new_user_session_path(params: { check_confirmation: true, id: employer.id })
     follow_redirect!
     assert_response :success
-    assert_select('.h2', text: '1 . Activez votre compte !')
+    assert_select('.h3', text: 'Confirmez votre compte')
     flash_message = 'Vous trouverez parmi vos emails le message' \
                       ' permettant l\'activation de votre compte'
     assert_select('span#alert-text', text: flash_message) # 1

@@ -296,7 +296,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_select '#alert-success #alert-text', { text: 'Compte mis à jour avec succès.' }, 1
   end
-
+  
   test 'PATCH edit as SchoolManagement can change role' do
     school = create(:school, :with_school_manager)
     users = [
@@ -376,6 +376,38 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert true, employer.valid_password?('passw0rd')
     follow_redirect!
     assert_select '#alert-success #alert-text', { text: 'Compte mis à jour avec succès.' }, 1
+  end
+
+  test 'POST resend_confirmation_phone_toke' do
+    student = create(:student, :registered_with_phone, confirmed_at: nil)
+    post resend_confirmation_phone_token_path(
+      format: :turbo_stream,
+      params: { user: { id: student.id } }
+    )
+    assert_response :success
+    assert_select('#code-request', text: 'Votre code a été renvoyé')
+  end
+
+  test 'POST resend_confirmation_phone_toke fails with wrong data' do
+    post resend_confirmation_phone_token_path(
+      format: :turbo_stream,
+      params: { user: { id: 1 } } # error
+    )
+    assert_response :success
+    assert_select('#code-request', text: "Une erreur est survenue et le code n'a pas été renvoyé")
+  end
+
+  test 'POST resend_confirmation_phone_token' do
+    student = create(:student, :registered_with_phone, confirmed_at: nil)
+    post resend_confirmation_phone_token_path(format: :turbo_stream, params: { user: { id: student.id } })
+    assert_response :success
+    assert_select('#code-request', text: 'Votre code a été renvoyé')
+  end
+
+  test 'POST resend_confirmation_phone_token fails with wrong data' do
+    post resend_confirmation_phone_token_path(format: :turbo_stream, params: { user: { id: 1 } }) # error
+    assert_response :success
+    assert_select('#code-request', text: "Une erreur est survenue et le code n'a pas été renvoyé")
   end
 
   test 'PATCH password as Employer fails with weak password' do
