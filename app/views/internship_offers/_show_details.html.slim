@@ -25,6 +25,18 @@
       .row.d-block.d-sm-none
         .col-12.fr-py-2w.internship-offer-side-description
           = render "internship_offers/show_side_details", internship_offer: internship_offer
+  .col-12.fr-pb-2   
+    - if internship_offer.workspace_conditions.present?
+      .fr-my-2w
+        h2.h4.fr-mb-2w Environnement de travail
+        .fr-my-2w
+          p.text-wrap.text-break= internship_offer.workspace_conditions
+    - if internship_offer.workspace_accessibility.present?
+      .fr-my-2w
+      h2.h4.fr-mb-2w Accessibilité du poste
+      .fr-my-2w
+        p.text-wrap.text-break= internship_offer.workspace_accessibility
+        
 
 .row.fr-pt-3w
   .col-12
