@@ -73,7 +73,8 @@ module Dashboard::Stepper
               :entreprise_coordinates_latitude,
               :contact_phone,
               :entreprise_coordinates,
-              :internship_occupation_id
+              :internship_occupation_id,
+              :internship_address_manual_enter
             )
     end
 

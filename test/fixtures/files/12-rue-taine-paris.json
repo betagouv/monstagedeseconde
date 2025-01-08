@@ -6,11 +6,11 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [ 2.392239, 48.837832 ]
+        "coordinates": [2.392239, 48.837832]
       },
       "properties": {
         "label": "12 Rue Taine 75012 Paris",
-        "score": 0.974641818181818,
+        "score": 0.8837327272727272,
         "housenumber": "12",
         "id": "75112_9153_00012",
         "name": "12 Rue Taine",
@@ -23,11 +23,12 @@
         "context": "75, Paris, Île-de-France",
         "type": "housenumber",
         "importance": 0.72106,
-        "street": "Rue Taine" }
+        "street": "Rue Taine"
+      }
     }
   ],
   "attribution": "BAN",
   "licence": "ETALAB-2.0",
-  "query": "12 Rue Taine 75012 Paris",
+  "query": "12 rue taine par",
   "limit": 10
 }

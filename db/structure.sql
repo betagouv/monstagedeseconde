@@ -681,7 +681,7 @@ ALTER SEQUENCE public.detailed_crafts_id_seq OWNED BY public.detailed_crafts.id;
 
 CREATE TABLE public.entreprises (
     id bigint NOT NULL,
-    siret character varying(14) NOT NULL,
+    siret character varying(14),
     is_public boolean DEFAULT false NOT NULL,
     employer_name character varying(150) NOT NULL,
     employer_chosen_name character varying(150),
@@ -693,7 +693,8 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
-    contact_phone character varying(20)
+    contact_phone character varying(20),
+    internship_address_manual_enter boolean DEFAULT false
 );
 
 
@@ -1159,8 +1160,7 @@ CREATE TABLE public.internship_occupations (
     coordinates public.geography(Point,4326),
     employer_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    internship_address_manual_enter boolean DEFAULT false
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -1957,7 +1957,9 @@ CREATE TABLE public.schools (
     department_id bigint,
     agreement_conditions text,
     level character varying(100) DEFAULT 'lycee'::character varying NOT NULL,
-    school_type public.school_category DEFAULT 'college'::public.school_category NOT NULL
+    school_type public.school_category DEFAULT 'college'::public.school_category NOT NULL,
+    voie_generale boolean,
+    voie_techno boolean
 );
 
 
@@ -2291,7 +2293,9 @@ CREATE TABLE public.users (
     resume_educational_background text,
     resume_other text,
     resume_languages text,
-    grade_id bigint
+    grade_id bigint,
+    ine character varying(15),
+    active_at timestamp(6) without time zone
 );
 
 
@@ -4808,10 +4812,14 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250106175910'),
+('20241223095629'),
 ('20241220134854'),
+('20241204150852'),
+('20241217104101'),
+('20241213131559'),
 ('20241204173244'),
 ('20241204164257'),
-('20241204150852'),
 ('20241115093512'),
 ('20241113151423'),
 ('20241105172654'),

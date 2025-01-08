@@ -42,11 +42,24 @@ module EntrepriseFormFiller
     find('#entreprise_group_id')
     select group.name,
            from: 'Type d’employeur public'
-    select sector.name, from: "Secteur d'activité" unless sector.nil?
-    assert_equal '219 505 724 00209',  find('input#entreprise_presentation_siret').value
-    assert_equal 'COMMUNE DE SAINT OUEN L AUMONE', find('input#entreprise_employer_name').value.strip
+    select sector.name, from: "Indiquez le secteur d'activité de votre structure" unless sector.nil?
+    assert_equal '219 505 724 00209', find('input#entreprise_presentation_siret').value
+    assert_equal 'COMMUNE DE SAINT OUEN L AUMONE', find('input#entreprise_employer_name', visible: true).value.strip
     fill_in "Indiquez le nom de l'enseigne de l'établissement d'accueil, si elle diffère de la raison sociale",
             with: 'Mairie de Saint-Ouen-l’Aumône'
     fill_in 'Numéro de téléphone du dépositaire *', with: '0130131313'
+  end
+
+  def fill_in_entreprise_manual_form(group: nil, sector: nil)
+    click_link('Ajouter votre structure manuellement')
+    find("label.fr-label[for='entreprise_is_public_true']").click
+    assert Group.is_public.count.positive?
+    find('#entreprise_group_id')
+    select group.name,
+           from: 'Type d’employeur public'
+    select sector.name, from: "Indiquez le secteur d'activité de votre structure" unless sector.nil?
+    fill_in('Saisissez le nom (raison sociale) de votre établissement *', with: 'Mairie de Saint-Ouen-l’Aumône')
+    fill_in "Saisissez l'adresse du siège de votre établissement *",
+            with: "PLACE PIERRE MENDES FRANCE 95310 SAINT-OUEN-L'AUMONE"
   end
 end

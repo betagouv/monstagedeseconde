@@ -78,6 +78,9 @@ class Ability
 
   def student_abilities(user:)
     can :look_for_offers, User
+    can :resend_confirmation_phone_token, User do |user|
+      user.phone.present? && user.student?
+    end
     can :sign_with_sms, User
     can :show, :account
     can :change, ClassRoom do |class_room|
