@@ -10,6 +10,8 @@ FactoryBot.define do
     entreprise_full_address { FFaker::AddressFR.full_address }
     entreprise_chosen_full_address { FFaker::AddressFR.full_address }
     entreprise_coordinates { Coordinates.paris }
+    workspace_conditions { FFaker::Lorem.paragraph }
+    workspace_accessibility { FFaker::Lorem.paragraph }
 
     trait :private do
       is_public { false }
