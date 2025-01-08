@@ -13,7 +13,7 @@ html lang="fr"
     title
       = page_title
     = favicon_link_tag asset_pack_path('media/images/favicon.png') if Rails.env.production?
-    = favicon_link_tag asset_pack_path('media/images/favicons/favicon-review.png') if Rails.env.staging?
+    = favicon_link_tag asset_pack_path('media/images/favicons/favicon-staging.png') if Rails.env.staging?
     = favicon_link_tag asset_pack_path('media/images/favicons/favicon-development.png') if Rails.env.development?
     = favicon_link_tag asset_pack_path('media/images/favicons/favicon-heroku.png') if Rails.env.review?
     = stylesheet_pack_tag "application.css", 'data-turbo-track': "reload", media: "all"
