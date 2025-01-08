@@ -122,6 +122,108 @@ namespace :data_migrations do
     PrettyConsole.say_in_yellow 'Done with creating schools(lycées)'
   end
 
+  desc 'create "collèges" and "lycees" from csv file'
+  task create_colleges_lycees: :environment do
+    file_location = Rails.root.join('db/data_imports/sources_EN/Liste_etablissements.csv')
+    # uai;type_etab;nom_etablissement;adresse;code_postal;commune;voie_generale;voie_techno;nbeleves;zone_ep
+    counter = 1
+    error_lines = []
+    CSV.foreach(file_location, 'r', headers: true, header_converters: :symbol, col_sep: ';').each do |row|
+      counter += 1
+      code_uai = row[:uai]
+      School.find_by(code_uai: code_uai).present? && next
+
+      name = row[:nom_etablissement]&.strip
+      next if name.nil?
+
+      adresse = row[:adresse]&.strip
+      commune = row[:commune]&.strip
+
+      code_postal = row[:code_postal]&.to_s&.strip
+      code_postal = "0#{code_postal}" if code_postal.size == 4
+
+      school_type = case row[:type_etab]
+                    when 'Collège'
+                      'college'
+                    when 'Lycée'
+                      'lycee'
+                    else
+                      print 'x'
+                      'college_lycee'
+                    end
+      kind = case row[:zone_ep]
+             when 'REP', 'rep'
+               'rep'
+             when 'REP+', 'rep+'
+               'rep_plus'
+             when 'QPV', 'qpv'
+               'qpv'
+             else
+               ''
+             end
+
+      school_params = {
+        code_uai: code_uai,
+        name: name,
+        street: adresse,
+        zipcode: code_postal,
+        city: commune,
+        school_type: school_type,
+        kind: kind
+      }
+      # searching for complementary data
+      #
+      ressource_file_location = Rails.root.join('db/data_imports/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre.csv')
+      # header is :
+      # numero_uai;appellation_officielle;denomination_principale;patronyme_uai;secteur_public_prive_libe;adresse_uai;
+      # lieu_dit_uai;boite_postale_uai;code_postal_uai;localite_acheminement_uai;libelle_commune;
+      # coordonnee_x;coordonnee_y;EPSG;latitude;longitude;appariement;
+      # localisation;nature_uai;nature_uai_libe;etat_etablissement;etat_etablissement_libe;
+      # code_departement;code_region;code_academie;code_commune;libelle_departement;
+      # libelle_region;libelle_academie;position;secteur_prive_code_type_contrat;
+      # secteur_prive_libelle_type_contrat;code_ministere;
+      # libelle_ministere;date_ouverture
+      complementary_csv = CSV.read(ressource_file_location, headers: true, header_converters: :symbol,
+                                                            col_sep: ';')
+      complementary_data = complementary_csv.find { |row| row[:numero_uai] == code_uai }
+      longitude = 0.0
+      latitude = 0.0
+      if complementary_data.present?
+        longitude = complementary_data[:longitude]&.to_f || 0.0
+        latitude = complementary_data[:latitude]&.to_f || 0.0
+      else
+        coordinates = Geofinder.coordinates("#{adresse}, #{code_postal} #{commune}")
+        longitude = coordinates[0] || 0.0
+        latitude = coordinates[1] || 0.0
+      end
+      if longitude == 0.0 && latitude == 0.0
+        error = "Ligne #{counter}, #{school_params[:name]}, #{school_params[:street]}, #{school_params[:zipcode]} #{school_params[:city]}: no coordinates found"
+        puts error
+        error_lines << error
+        next
+      end
+      school_params[:coordinates] = { longitude: longitude, latitude: latitude }
+
+      contract_code = complementary_data[:secteur_prive_code_type_contrat]
+      school_params.merge!(contract_code: contract_code) if contract_code.present?
+
+      School.find_by(code_uai: school_params[:code_uai]).present? && next
+
+      school = School.new(**school_params)
+      if school.valid?
+        school.save
+        print '.'
+      else
+        error = "Ligne #{counter}, #{school.name}, #{school.errors.full_messages.join(', ')}"
+        puts error
+        error_lines << error
+        puts '---'
+      end
+    end
+    puts "#{error_lines.size} errors"
+    PrettyConsole.say_in_yellow 'Done with creating schools(lycées)'
+  end
+
   desc 'create class_rooms from csv file'
   task provide_with_class_rooms: :environment do
     import 'csv'
