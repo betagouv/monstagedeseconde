@@ -94,10 +94,10 @@ module Users
 
     def phone_validation
       if fetch_user_by_phone.try(:check_phone_token?, params[:phone_token])
-        fetch_user_by_phone.confirm_by_phone!
+        @user.confirm_by_phone!
         message = { success: I18n.t('devise.confirmations.confirmed') }
         redirect_to(
-          new_user_session_path(phone: fetch_user_by_phone.phone),
+          new_user_session_path(phone: @user.phone),
           flash: message
         )
       else
@@ -110,6 +110,32 @@ module Users
     end
 
     def statistician_standby
+    end
+
+    def resend_confirmation_phone_token
+      user = User.find_by(id: users_params[:id])
+      flash_path = 'dashboard/internship_agreements/signature/flash_new_code'
+      if user && !user&.confirmed? && user.phone && user.resend_confirmation_phone_token
+        notice = 'Votre code a été renvoyé'
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream:
+              turbo_stream.replace('code-request',
+                                   partial: flash_path,
+                                   locals: { notice: })
+          end
+        end
+      else
+        alert = "Une erreur est survenue et le code n'a pas été renvoyé"
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream:
+              turbo_stream.replace('code-request',
+                                   partial: flash_path,
+                                   locals: { alert: })
+          end
+        end
+      end
     end
 
     # GET /resource/edit
@@ -171,6 +197,10 @@ module Users
       )
     end
 
+    def users_params
+      params.require(:user).permit(:id)
+    end
+
     # If you have extra params to permit, append them to the sanitizer.
     # def configure_account_update_params
     #   devise_parameter_sanitizer.permit(:account_update, keys: [:attribute])
@@ -219,15 +249,13 @@ module Users
     def merge_identity(params)
       identity = Identity.find_by_token(params[:user][:identity_token])
 
-      params[:user].merge({
-                            first_name: identity.first_name,
-                            last_name: identity.last_name,
-                            birth_date: identity.birth_date,
-                            school_id: identity.school_id,
-                            class_room_id: identity.class_room_id,
-                            gender: identity.gender,
-                            grade_id: identity.grade.id
-                          })
+      params[:user].merge(first_name: identity.first_name,
+                          last_name: identity.last_name,
+                          birth_date: identity.birth_date,
+                          school_id: identity.school_id,
+                          class_room_id: identity.class_room_id,
+                          gender: identity.gender,
+                          grade_id: identity.grade.id)
     end
 
     def honey_pot_checking(params)
