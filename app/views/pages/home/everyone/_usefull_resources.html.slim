@@ -17,7 +17,7 @@
                     ul.fr-sidemenu__list
                       - categories.each_with_index do |(category_name, documents), cat_index|
                         li.fr-sidemenu__item
-                          a.fr-sidemenu__link href='#' aria-controls="fr-sidemenu-category-#{index}-#{cat_index}" aria-current=("true" if index == 0) data-action="click->resources#showContent" data-index="#{menu_i}" data-resources-target="categoryButton"
+                          a.fr-sidemenu__link href='#' aria-controls="fr-sidemenu-category-#{index}-#{cat_index}" data-action="click->resources#showContent" data-index="#{menu_i}" data-resources-target="categoryButton"
                             | #{category_name}
                         - menu_i = menu_i + 1
 
