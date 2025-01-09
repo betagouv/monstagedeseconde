@@ -1,8 +1,9 @@
 - content_for(:page_title, "#{t(".page_title", name: @internship_offer.title)} | 1élève1stage")
 - content_for(:canonical_url, internship_offer_url(@internship_offer))
 
+- return_link = current_user.try(:employer?) ? [dashboard_internship_offers_path, 'Dashboard'] : [internship_offers_path, "Recherche d'une offre de stage"]
 = render 'layouts/breadcrumb',
-         links: [[dashboard_internship_offers_path, 'Dashboard'], [internship_offer_path(@internship_offer), @internship_offer.title]]
+         links: [return_link, [internship_offer_path(@internship_offer), @internship_offer.title]]
 
 div.fr-container
   - if can?(:create, InternshipOffer)

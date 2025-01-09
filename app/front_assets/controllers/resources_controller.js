@@ -6,6 +6,7 @@ export default class extends Controller {
 
   connect() {
     this.contentDivTargets[0].style.display = 'block';
+    this.categoryButtonTargets[0].setAttribute('aria-current', 'true');
   }
 
   selectLevel(event) {
