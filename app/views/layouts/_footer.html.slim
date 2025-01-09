@@ -29,10 +29,14 @@ footer#footer.fr-footer role="contentinfo" data-controller='footer'
             .fr-py-1w = link_to "Ressources utiles", path, class: "fr-raw-link fr-text--sm link #{klass}"
         .col-12.col-md-3
           .fr-footer__top-column
-            .title.fr-text--sm.fr-mb-1w = "Référents"
-            .fr-py-1w = link_to "Suivez votre territoire", referents_path, class: 'fr-raw-link fr-text--sm link'
-            .fr-py-1w = link_to "Découvrir le dispositif", referents_path(anchor: 'discover'), class: 'fr-raw-link fr-text--sm link'
-            .fr-py-1w = link_to "Ressources utiles", referents_path(anchor: 'resources'), class: 'fr-raw-link fr-text--sm link'
+            - path = employers_only? ? '#' : referents_path
+            - path_anchor = employers_only? ? '#' : referents_path(anchor: 'discover')
+            - path_resources = employers_only? ? '#' : referents_path(anchor: 'resources')
+            div class="title fr-text--sm fr-mb-1w #{klass}"
+              = "Référents"
+            .fr-py-1w = link_to "Suivez votre territoire", path, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Découvrir le dispositif", path_anchor, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Ressources utiles", path_resources, class: "fr-raw-link fr-text--sm link #{klass}"
               
         
   .fr-container.fr-px-2w
