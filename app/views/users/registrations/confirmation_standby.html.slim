@@ -1,44 +1,64 @@
 - user = User.find_by(id: params[:id])
 - user ||= User.find_by(email: params[:email])
-.onboarding-card-lg.mb-4.p-2
-  header.header-account
+- with_email = user&.email
+.max-md-width.centered
+  .container-monstage.container-xl.fr-mt-6w
+    .fr-px-1w
+      = render 'layouts/breadcrumb',
+              links: [['', 'Confirmez votre compte'] ]
 
-  - if !@confirmable_user || user.nil?
-    .fr-alert.fr-alert--error
-      h3.fr-alert__title= "Aucun compte n'est lié à cet identifiant : #{params[:id]}"
-      br
-      = "Veuillez "
-      = link_to "créer un compte", users_choose_profile_path
+    .onboarding-card-lg.mb-4.p-2.light-blue-background
+      header.header-account
 
-  - elsif @confirmable_user&.confirmed_at
-    .fr-alert.fr-alert--success
-      h3.fr-alert__title= "Votre compte est déjà confirmé (#{user.anonymized_email})"
-      br
-      = "Veuillez vous "
-      = link_to "connecter", new_user_session_path(email: user.email)
+      - if !@confirmable_user || user.nil?
+        .fr-alert.fr-alert--error
+          h3.fr-alert__title= "Aucun compte n'est lié à cet identifiant : #{params[:id]}"
+          br
+          = "Veuillez "
+          = link_to "créer un compte", users_choose_profile_path
 
-  - else
-    .room-for-explanation.py-4.px-3
-      .row
-        .col-lg-5.col-md-12.d-none.d-lg-block
-          .both-desktop-and-mobile.px-2
-            .confirm-desktop = image_tag asset_pack_path("media/images/onboarding/confirm-desktop-2.svg"), alt: 'Activer par mail sur ordinateur', class: 'd-none d-md-block', style: "height: auto; width: 100%;"
-            .confirm-mobile  = image_tag asset_pack_path("media/images/onboarding/confirm-mobile-2.svg"), alt: 'Activer par mail sur mobile', class: 'd-none d-md-block', style: "height: auto; width: 100%;"
-        .col-lg-7.col-md-12.on-boarding-text
-          p.h2.mt-5 1 . Activez votre compte !
-          p.text-dark
-            span = user.presenter.full_name
-            |, nous venons de vous envoyer un email sur&nbsp;
-            span = user.email
-            |&nbsp;afin d'activer votre compte. Consultez-le pour commencer à
-            |&nbsp;utiliser 1élève1stage
-          p.h2.mt-3 2 . Connectez-vous !
-          p.text-dark
-            |Une fois votre compte validé, connectez-vous avec le bouton ci-dessous
-          p.mt-3
-            - label = "Se connecter"
-            - label = "#{label} et trouver un stage !" if @confirmable_user.student?
-            = link_to new_user_session_path(check_confirmation: true, id: user.id) do
-              button  class="fr-btn" disabled="disabled"
-                = label
+      - elsif @confirmable_user&.confirmed_at
+        .fr-alert.fr-alert--success
+          h3.fr-alert__title= "Votre compte est déjà confirmé (#{user.anonymized_email})"
+          br
+          = "Veuillez vous "
+          = link_to "connecter", new_user_session_path(email: user.email)
+
+      - elsif with_email
+        .room-for-explanation.fr-px-12w
+          .row
+            .col-12
+              = image_tag asset_pack_path("media/images/onboarding/inbox-mail.svg"),
+                                          alt: 'Consultez votre messagerie mail'
+          .row
+            .col-12.on-boarding-text.fr-mb-3w
+              p.h3.text-dark.fr-mt-4w Confirmez votre compte
+              p.text-dark
+                | Nous venons de vous envoyer un email sur
+                br
+                strong = user.email
+                |, afin de confirmer votre compte.
+                br
+                | Cliquez sur le lien pour commencer à utiliser 1Eleve1Stage.
+              hr.fr-mt-4w.fr-mb-2w
+              p.text-dark
+                .fr-callout.fr-icon-information-line
+                  h3.fr-callout__title Vous n'avez pas reçu l'email ?
+                  p.fr-callout__text
+                    | L'email peut mettre quelques minutes à être reçu.
+                    br
+                    |
+                      Consultez également vos spams. Si vous n'avez toujours
+                      rien reçu, vous pouvez renvoyer un email de confirmation
+                      en cliquant sur le bouton ci-dessous
+
+                  = link_to "Renvoyer les instructions",
+                            new_confirmation_path(resource_name),
+                            class: 'fr-btn fr-btn--secondary'
+      - elsif user&.phone
+        .fr-alert.fr-alert--error.fr-mb-4w
+          h3.fr-alert__title
+            = "Erreur"
+          p
+            = "Si un compte existe au numéro de téléphone #{user&.phone}, sa confirmation a échoué."
 

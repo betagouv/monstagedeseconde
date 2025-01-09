@@ -7,7 +7,6 @@ FactoryBot.define do
     zipcode { '75012' }
     city { 'Paris' }
     coordinates { Coordinates.paris }
-    internship_address_manual_enter { false }
     department { Department.lookup_by_zipcode(zipcode: zipcode) }
   end
 end

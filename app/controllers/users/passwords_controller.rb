@@ -11,11 +11,11 @@ module Users
         )
         return
       elsif by_phone? && fetch_user_by_phone
-        fetch_user_by_phone.reset_password_by_phone
+        @user.reset_password_by_phone
         redirect_to phone_edit_password_path(phone: safe_phone_param)
         return
       end
-      
+
       super
     end
 
@@ -31,7 +31,7 @@ module Users
         current_user.password = params['user']['password']
         current_user.save
         current_user.confirm if current_user.confirmed_at.nil?
-        redirect_to new_user_session_path, flash: { success:  'Mot de passe enregistré !' }
+        redirect_to new_user_session_path, flash: { success: 'Mot de passe enregistré !' }
       else
         super
       end
@@ -39,9 +39,8 @@ module Users
 
     def edit_by_phone; end
 
-
     def set_up
-    end 
+    end
 
     def update_by_phone
       if fetch_user_by_phone.try(:check_phone_token?, params[:phone_token])

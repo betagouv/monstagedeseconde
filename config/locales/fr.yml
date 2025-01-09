@@ -238,6 +238,7 @@ fr:
           pending_invitation: Invitation en attente de réponse
           accepted_invitation: Invitation acceptée
           refused_invitation: Invitation refusée
+          read_by_employer: Lu par l'employeur
       internship_agreement: &internship_agreement_fields
         internship_application: Candidature
         school_manager_accept_terms: Validée par CE
@@ -275,6 +276,7 @@ fr:
           started_by_school_manager: À remplir par le chef d'établissement
           validated: Validée
           signed: Signée
+          read_by_employer: Lu par l'employeur
         status:
           admin_officer:
             draft: En attente de l'offreur.
@@ -469,6 +471,7 @@ fr:
           canceled_by_student: annulée par l'élève
           canceled_by_student_confirmation: L'élève a choisi un autre stage
           convention_signed: convention signée
+          read_by_employer: Lu par l'employeur
         student_phone: Contact téléphone
         student_email: Contact email
         user_id: Elève
