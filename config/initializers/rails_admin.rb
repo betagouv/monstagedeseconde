@@ -1,14 +1,15 @@
 # postgis type
-require "nested_form/engine"
-require "nested_form/builder_mixin"
-require "school_year/base"
-require "school_year/current"
+require 'nested_form/engine'
+require 'nested_form/builder_mixin'
+require 'school_year/base'
+require 'school_year/current'
 class RailsAdmin::Config::Fields::Types::Geography < RailsAdmin::Config::Fields::Types::Hidden
   RailsAdmin::Config::Fields::Types.register(self)
 end
+
 # daterange type
 class RailsAdmin::Config::Fields::Types::Daterange < RailsAdmin::Config::Fields::Base
-  RailsAdmin::Config::Fields::Types::register(self)
+  RailsAdmin::Config::Fields::Types.register(self)
 end
 
 # https://github.com/railsadminteam/rails_admin/issues/2502#issuecomment-504612818 lead to the following monkey-patch
@@ -33,7 +34,6 @@ require Rails.root.join('lib', 'rails_admin', 'config', 'actions', 'switch_user.
 stats_path = "/reporting/dashboards?school_year=#{SchoolYear::Current.new.beginning_of_period.year}"
 
 RailsAdmin.config do |config|
-
   config.asset_source = :webpacker
   ### Popular gems integration
 
@@ -42,7 +42,7 @@ RailsAdmin.config do |config|
     warden.authenticate! scope: :user
   end
   config.current_user_method(&:current_user)
-  config.main_app_name = ["Mon stage de 2de"]
+  config.main_app_name = ['1élève1stage']
 
   ## == CancanCan ==
   config.authorize_with :cancancan
@@ -107,13 +107,12 @@ RailsAdmin.config do |config|
                               Users::God]
 
   config.navigation_static_links = {
-    "Ajouter un établissement" => "/ecoles/nouveau",
-    "Supprimer un étudiant, un employeur" => "/utilisateurs/anonymiseur",
-    "Stats" => stats_path,
-    "Sidekiq" => "/sidekiq",
-    "Zammad (Support)" => "https://monstage.zammad.com",
-    "AB Testing" => "/split"
+    'Ajouter un établissement' => '/ecoles/nouveau',
+    'Supprimer un étudiant, un employeur' => '/utilisateurs/anonymiseur',
+    'Tranformer un compte' => '/utilisateurs/transform_input',
+    'Stats' => stats_path,
+    'Sidekiq' => '/sidekiq',
+    'Zammad (Support)' => 'https://monstage.zammad.com',
+    'AB Testing' => '/split'
   }
-
-
 end

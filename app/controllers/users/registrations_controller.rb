@@ -16,10 +16,11 @@ module Users
     rescue_from(ActiveRecord::RecordNotUnique) do |_error|
       redirect_to after_inactive_sign_up_path_for(resource)
     end
-    # GET /users/choose_profile
-    # def choose_profile
-    #
-    # end
+
+    def choose_profile
+      @fim_url = build_fim_url
+    end
+
     def confirmation_standby
       flash.delete(:notice)
       @confirmable_user = ::User.find_by(id: params[:id]) if params[:id].present?
@@ -28,13 +29,15 @@ module Users
     alias confirmation_phone_standby confirmation_standby
 
     def resource_class
-      UserManager.new.by_params(params: params)
+      UserManager.new.by_params(params:)
     rescue KeyError
       User
     end
 
     # GET /resource/sign_up
     def new
+      @captcha_image, @captcha_uuid = Services::Captcha.generate if %w[Employer SchoolManagement
+                                                                       Statistician].include?(params[:as])
       @resource_channel = resource_channel
       options = {}
       if params.dig(:user, :targeted_offer_id)
@@ -43,7 +46,7 @@ module Users
         )
       end
 
-      if UserManager.new.valid?(params: params)
+      if UserManager.new.valid?(params:)
         super do |resource|
           resource = set_default_resource(resource, params)
           @current_ability = Ability.new(resource)
@@ -54,17 +57,23 @@ module Users
     end
 
     def resource_channel
-      return current_user.channel unless current_user.nil?
-
-      :email
+      current_user.try(:channel) || :email
     end
 
     # POST /resource
     def create
-      [:honey_pot_checking,
-       :phone_reuse_checking].each do |check|
-          check_proc = send(check, params)
-          (check_proc.call and return) if check_proc.respond_to?(:call)
+      if %w[Employer
+            SchoolManagement
+            Statistician].include?(params[:as]) && !check_captcha(params[:user][:captcha],
+                                                                  params[:user][:captcha_uuid])
+        flash[:alert] = I18n.t('devise.registrations.captcha_error')
+        redirect_to_register_page(params[:as])
+        return
+      end
+      %i[honey_pot_checking
+         phone_reuse_checking].each do |check|
+        check_proc = send(check, params)
+        (check_proc.call and return) if check_proc.respond_to?(:call)
       end
       params[:user].delete(:confirmation_email) if params.dig(:user, :confirmation_email)
       params[:user] = merge_identity(params) if params.dig(:user, :identity_token)
@@ -76,10 +85,7 @@ module Users
         resource.groups << Group.find(params[:user][:group_id]) if params[:user][:group_id].present?
         @current_ability = Ability.new(resource)
       end
-      if resource.student?
-        resource.skip_confirmation!
-        resource.save
-      elsif resource.persisted?
+      if resource.persisted?
         resource.try(:create_default_internship_offer_area)
         resource.save
       end
@@ -88,10 +94,10 @@ module Users
 
     def phone_validation
       if fetch_user_by_phone.try(:check_phone_token?, params[:phone_token])
-        fetch_user_by_phone.confirm_by_phone!
+        @user.confirm_by_phone!
         message = { success: I18n.t('devise.confirmations.confirmed') }
         redirect_to(
-          new_user_session_path(phone: fetch_user_by_phone.phone),
+          new_user_session_path(phone: @user.phone),
           flash: message
         )
       else
@@ -104,6 +110,32 @@ module Users
     end
 
     def statistician_standby
+    end
+
+    def resend_confirmation_phone_token
+      user = User.find_by(id: users_params[:id])
+      flash_path = 'dashboard/internship_agreements/signature/flash_new_code'
+      if user && !user&.confirmed? && user.phone && user.resend_confirmation_phone_token
+        notice = 'Votre code a été renvoyé'
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream:
+              turbo_stream.replace('code-request',
+                                   partial: flash_path,
+                                   locals: { notice: })
+          end
+        end
+      else
+        alert = "Une erreur est survenue et le code n'a pas été renvoyé"
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream:
+              turbo_stream.replace('code-request',
+                                   partial: flash_path,
+                                   locals: { alert: })
+          end
+        end
+      end
     end
 
     # GET /resource/edit
@@ -160,8 +192,13 @@ module Users
           department
           academy_id
           academy_region_id
+          grade_id
         ]
       )
+    end
+
+    def users_params
+      params.require(:user).permit(:id)
     end
 
     # If you have extra params to permit, append them to the sanitizer.
@@ -176,8 +213,10 @@ module Users
 
     # The path used after sign up for inactive accounts.
     def after_inactive_sign_up_path_for(resource)
-      if resource.student?
-        register_student_path(resource)
+      if resource.phone.present? && resource.student?
+        options = { id: resource.id }
+        options = options.merge({ as: 'Student' }) if resource.student?
+        users_registrations_phone_standby_path(options)
       elsif resource.statistician?
         statistician_standby_path(id: resource.id)
       else
@@ -210,49 +249,73 @@ module Users
     def merge_identity(params)
       identity = Identity.find_by_token(params[:user][:identity_token])
 
-      params[:user].merge({
-        first_name: identity.first_name,
-        last_name: identity.last_name,
-        birth_date: identity.birth_date,
-        school_id: identity.school_id,
-        class_room_id: identity.class_room_id,
-        gender: identity.gender
-      })
+      params[:user].merge(first_name: identity.first_name,
+                          last_name: identity.last_name,
+                          birth_date: identity.birth_date,
+                          school_id: identity.school_id,
+                          class_room_id: identity.class_room_id,
+                          gender: identity.gender,
+                          grade_id: identity.grade.id)
     end
 
-
     def honey_pot_checking(params)
-      if params[:user][:confirmation_email].present?
-        notice = "Votre inscription a bien été prise en compte. " \
-                 "Vous recevrez un email de confirmation dans " \
-                 "les prochaines minutes."
-        lambda { redirect_to(root_path, flash: { notice: notice }) }
-      end
+      return unless params[:user][:confirmation_email].present?
+
+      notice = 'Votre inscription a bien été prise en compte. ' \
+               'Vous recevrez un email de confirmation dans ' \
+               'les prochaines minutes.'
+      -> { redirect_to(root_path, flash: { notice: }) }
     end
 
     def phone_reuse_checking(params)
-      if params && params.dig(:user, :phone) && fetch_user_by_phone && @user
-        lambda {
-          redirect_to(
-            new_user_session_path(phone: fetch_user_by_phone.phone),
-            flash: { danger: I18n.t('devise.registrations.reusing_phone_number')}
-          )
-        }
-      end
+      return unless params && params.dig(:user, :phone) && fetch_user_by_phone && @user
+
+      lambda {
+        redirect_to(
+          new_user_session_path(phone: fetch_user_by_phone.phone),
+          flash: { danger: I18n.t('devise.registrations.reusing_phone_number') }
+        )
+      }
     end
 
     def register_student_path(resource)
       if resource.just_created?
         flash.discard
-        resource.skip_confirmation! && resource.save
-        bypass_sign_in resource
-        internship_offers_path
+        # bypass_sign_in resource
+        new_session_path
       elsif resource.phone.present?
         options = { id: resource.id, as: 'Student' }
         users_registrations_phone_standby_path(options)
       else
         users_registrations_standby_path(id: resource.id)
       end
+    end
+
+    def check_captcha(captcha, captcha_uuid)
+      Services::Captcha.verify(captcha, captcha_uuid)
+    end
+
+    def redirect_to_register_page(resource)
+      if resource == 'Student'
+        redirect_to new_user_identity_path(as: params[:as])
+      else
+        redirect_to new_user_registration_path(as: params[:as])
+      end
+    end
+
+    def build_fim_url
+      oauth_params = {
+        redirect_uri: ENV['FIM_REDIRECT_URI'],
+        client_id: ENV['FIM_CLIENT_ID'],
+        scope: 'openid profile email stage',
+        response_type: 'code',
+        state: SecureRandom.uuid,
+        nonce: SecureRandom.uuid
+      }
+
+      cookies[:state] = oauth_params[:state]
+
+      ENV['FIM_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
     end
   end
 end

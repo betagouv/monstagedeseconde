@@ -3,6 +3,7 @@ class Identity < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :school
   belongs_to :class_room, optional: true
+  belongs_to :grade
 
   # Validations
   validates :first_name, :last_name, :birth_date, :token,
@@ -15,5 +16,4 @@ class Identity < ApplicationRecord
   def generate_token
     self.token = SecureRandom.hex(12)
   end
-  
 end

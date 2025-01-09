@@ -4,14 +4,15 @@ module RailsAdminInternshipOfferable
     # ActiveAdmin index specifics
     rails_admin do
       weight 11
-      navigation_label "Offres"
+      navigation_label 'Offres'
 
       list do
-        scopes [:kept, :discarded]
+        scopes %i[kept discarded]
         field :title
         field :employer
         field :period do
-          def label  = "Période de stage"
+          def label = 'Période de stage'
+
           def pretty_value
             bindings[:object].period_label
           end
@@ -25,7 +26,6 @@ module RailsAdminInternshipOfferable
       end
 
       show do
-
         exclude_fields :blocked_weeks_count,
                        :total_applications_count,
                        :approved_applications_count,
@@ -38,22 +38,17 @@ module RailsAdminInternshipOfferable
           def label
             "Email de l'employeur"
           end
+
           def pretty_value
             bindings[:object].employer.email
           end
         end
         field :employer
         field :internship_offer_area do
-          label "Espace"
+          label 'Espace'
         end
-        field  :organisation do
-          label "Groupe ou institution"
-        end
-        field :period do
-          def label  = "Période de stage"
-          def pretty_value
-            bindings[:object].period_label
-          end
+        field :organisation do
+          label 'Groupe ou institution'
         end
       end
 
@@ -99,12 +94,6 @@ module RailsAdminInternshipOfferable
         field :visible
         field :created_at
         field :updated_at
-        field :period do
-          def label  = "Période de stage"
-          def pretty_value
-            bindings[:object].period_label
-          end
-        end
       end
     end
   end

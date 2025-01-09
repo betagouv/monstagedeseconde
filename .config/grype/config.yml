@@ -1,0 +1,6 @@
+---
+exclude:
+  - "./megalinter-reports"
+  - "./vendor"
+  - "./venv"
+  - "./.git"

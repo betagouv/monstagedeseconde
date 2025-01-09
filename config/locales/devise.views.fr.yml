@@ -38,6 +38,7 @@ fr:
         resend_confirmation_instructions: Renvoyer les instructions de confirmation
       send_instructions: Vous allez recevoir sous quelques minutes un courriel comportant des instructions pour confirmer votre compte.
       send_paranoid_instructions: Si votre courriel existe sur notre base de données, vous recevrez sous quelques minutes un message avec des instructions pour confirmer votre compte.
+      unconfirmed: Vous devez confirmer votre compte pour pouvoir l'utiliser.
     failure:
       already_authenticated: Vous êtes déjà connecté(e).
       inactive: Votre compte n’est pas encore activé.
@@ -53,7 +54,7 @@ fr:
         action: Confirmer mon courriel
         greeting: Bienvenue %{recipient} !
         instruction: 'Vous pouvez confirmer votre courriel grâce au lien ci-dessous :'
-        subject: Activation de votre compte Mon stage de seconde
+        subject: Activation de votre compte 1élève1stage
       email_changed:
         greeting: Bonjour %{recipient} !
         message: Nous vous contactons pour vous notifier que votre adresse de courriel a été changée en %{email}.

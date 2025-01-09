@@ -6,46 +6,49 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   include ThirdPartyTestHelpers
   include TeamAndAreasHelper
 
+  test 'factory' do
+    assert build(:weekly_internship_application).valid?
+  end
   test 'scope remindable' do
     create(:weekly_internship_application, :submitted,
-                                           submitted_at: 5.days.ago,
-                                           pending_reminder_sent_at: 5.days.ago)
+           submitted_at: 5.days.ago,
+           pending_reminder_sent_at: 5.days.ago)
     create(:weekly_internship_application, :submitted,
-                                           submitted_at: 10.days.ago,
-                                           pending_reminder_sent_at: 10.days.ago) # +1
+           submitted_at: 10.days.ago,
+           pending_reminder_sent_at: 10.days.ago) # +1
     create(:weekly_internship_application, :submitted,
-                                           submitted_at: 18.days.ago,
-                                           pending_reminder_sent_at: 18.days.ago)
+           submitted_at: 18.days.ago,
+           pending_reminder_sent_at: 18.days.ago)
     create(:weekly_internship_application, :submitted,
-                                           submitted_at: 3.days.ago,
-                                           pending_reminder_sent_at: nil)
+           submitted_at: 3.days.ago,
+           pending_reminder_sent_at: nil)
     create(:weekly_internship_application, :submitted,
-                                           submitted_at: 8.days.ago,
-                                           pending_reminder_sent_at: 2.days.ago)
+           submitted_at: 8.days.ago,
+           pending_reminder_sent_at: 2.days.ago)
     create(:weekly_internship_application, :submitted,
-                                           submitted_at: 8.days.ago,
-                                           pending_reminder_sent_at: nil) # +1
+           submitted_at: 8.days.ago,
+           pending_reminder_sent_at: nil) # +1
     create(:weekly_internship_application, submitted_at: 15.days.ago,
                                            pending_reminder_sent_at: nil) # +1
     create(:weekly_internship_application, :approved,
-                                           approved_at: 10.days.ago,
-                                           pending_reminder_sent_at: 10.days.ago)
+           approved_at: 10.days.ago,
+           pending_reminder_sent_at: 10.days.ago)
     assert_equal 3, InternshipApplication.remindable.count
   end
 
-  test 'transition from draft to submit updates submitted_at and sends email to employer' do
-    internship_application = create(:weekly_internship_application, :drafted)
+  test 'creating a new internship application sets submitted_at and sends email to employer' do
     freeze_time do
-      assert_changes -> { internship_application.reload.submitted_at },
-          from: nil,
-          to: Time.now.utc do
+      assert_changes -> { InternshipApplication.count }, from: 0, to: 1 do
         mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true, [] , wait: 1.second)
+        mock_mail.expect(:deliver_later, true, [], wait: 1.second)
+
         EmployerMailer.stub :internship_application_submitted_email, mock_mail do
           StudentMailer.stub :internship_application_submitted_email, mock_mail do
-            internship_application.submit!
+            internship_application = create(:weekly_internship_application)
           end
         end
+
+        assert_equal Time.now.utc, InternshipApplication.last.submitted_at
         mock_mail.verify
       end
     end
@@ -73,9 +76,9 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       school: internship_application.student.school
     )
     mock_mail_to_main_teacher = Minitest::Mock.new
-    mock_mail_to_main_teacher.expect(:deliver_later, true, [] , wait: 1.second)
+    mock_mail_to_main_teacher.expect(:deliver_later, true, [], wait: 1.second)
     mock_mail_to_student = Minitest::Mock.new
-    mock_mail_to_student.expect(:deliver_later, true, [] , wait: 1.second)
+    mock_mail_to_student.expect(:deliver_later, true, [], wait: 1.second)
 
     MainTeacherMailer.stub :internship_application_validated_by_employer_email, mock_mail_to_main_teacher do
       StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail_to_student do
@@ -104,12 +107,11 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     internship_application = create(:weekly_internship_application, :validated_by_employer)
     create(:main_teacher,
            class_room: internship_application.student.class_room,
-           school: internship_application.student.school
-    )
+           school: internship_application.student.school)
 
     internship_application.stub :create_agreement, nil do
       mock_mail_to_main_teacher = Minitest::Mock.new
-      mock_mail_to_main_teacher.expect(:deliver_later, true, [] , wait: 1.second)
+      mock_mail_to_main_teacher.expect(:deliver_later, true, [], wait: 1.second)
 
       MainTeacherMailer.stub :internship_application_approved_with_agreement_email, mock_mail_to_main_teacher do
         internship_application.approve!
@@ -137,14 +139,14 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   # end
 
   test 'transition from submited to approved does not send approved email to student w/o email' do
-    student = create(:student, phone: '+330611223944', email: nil )
-    internship_application = create(:weekly_internship_application, :submitted, student: student)
+    student = create(:student, phone: '+330611223944', email: nil)
+    internship_application = create(:weekly_internship_application, :submitted, student:)
 
     freeze_time do
       sms_bitly_stub do
         assert_changes -> { internship_application.reload.approved_at },
-                      from: nil,
-                      to: Time.now.utc do
+                       from: nil,
+                       to: Time.now.utc do
           mock_mail_to_student = Minitest::Mock.new
           mock_mail_to_student.expect(:deliver_later, true, [{ wait: 1.second }])
           StudentMailer.stub :internship_application_approved_email, mock_mail_to_student do
@@ -160,11 +162,11 @@ class InternshipApplicationTest < ActiveSupport::TestCase
 
   test 'transition from submited to validated_by_employer sends no email when main_teacher misses' do
     school = create(:school)
-    class_room = create(:class_room, school: school)
-    student = build(:student, class_room: class_room)
-    create(:school_manager, school: school)
+    class_room = create(:class_room, school:)
+    student = build(:student, class_room:)
+    create(:school_manager, school:)
 
-    internship_application = create(:weekly_internship_application, :submitted, student: student)
+    internship_application = create(:weekly_internship_application, :submitted, student:)
 
     mock_mail_to_main_teacher = Minitest::Mock.new
     mock_mail_to_main_teacher.expect(:deliver_later, true)
@@ -181,11 +183,11 @@ class InternshipApplicationTest < ActiveSupport::TestCase
 
   test 'transition from validated_by_employer to approved sends no email when main_teacher misses' do
     school = create(:school)
-    class_room = create(:class_room, school: school)
-    student = build(:student, class_room: class_room)
-    create(:school_manager, school: school)
+    class_room = create(:class_room, school:)
+    student = build(:student, class_room:)
+    create(:school_manager, school:)
 
-    internship_application = create(:weekly_internship_application, :validated_by_employer, student: student)
+    internship_application = create(:weekly_internship_application, :validated_by_employer, student:)
 
     mock_mail_to_main_teacher = Minitest::Mock.new
     mock_mail_to_main_teacher.expect(:deliver_later, true)
@@ -193,7 +195,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     InternshipApplication.stub_any_instance(:student_approval_notifications, nil) do
       InternshipApplication.stub_any_instance(:create_agreement, nil) do
         MainTeacherMailer.stub(:internship_application_approved_with_agreement_email,
-                              mock_mail_to_main_teacher) do
+                               mock_mail_to_main_teacher) do
           internship_application.save
           internship_application.approve!
         end
@@ -204,17 +206,17 @@ class InternshipApplicationTest < ActiveSupport::TestCase
 
   test 'transition from validated_by_employer to approved sends an email to employer when agreement is possible' do
     school = create(:school)
-    class_room = create(:class_room, school: school)
-    student = build(:student, class_room: class_room)
-    create(:school_manager, school: school)
+    class_room = create(:class_room, school:)
+    student = build(:student, class_room:)
+    create(:school_manager, school:)
 
-    internship_application = create(:weekly_internship_application, :validated_by_employer, student: student)
+    internship_application = create(:weekly_internship_application, :validated_by_employer, student:)
 
     mock_mail_to_employer = Minitest::Mock.new
     mock_mail_to_employer.expect(:deliver_later, true)
 
     EmployerMailer.stub(:internship_application_approved_with_agreement_email,
-                              mock_mail_to_employer) do
+                        mock_mail_to_employer) do
       internship_application.approve!
     end
     mock_mail_to_employer.verify
@@ -244,7 +246,6 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test 'transition from submited to approved sends an email to main_teacher when no agreement is possible' do
-
     # TO BE CONFIRMED there's no case where agreement is not possible anymore
 
     # school = create(:school)
@@ -269,11 +270,11 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test 'transition from submited to approved create internship_agreement for student' do
-    internship_offer = create(:weekly_internship_offer)
+    internship_offer = create(:weekly_internship_offer_2nde)
     school = create(:school, :with_school_manager)
-    class_room = create(:class_room,  school: school)
-    student = create(:student, class_room: class_room)
-    internship_application = create(:weekly_internship_application, :validated_by_employer, student: student)
+    class_room = create(:class_room, school:)
+    student = create(:student, class_room:)
+    internship_application = create(:weekly_internship_application, :validated_by_employer, student:)
 
     assert_changes -> { InternshipAgreement.count },
                    'Expected to have created agreement',
@@ -316,15 +317,15 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test 'transition from rejected to validated_by_employer does not send email to student w/o email' do
-    student = create(:student, phone: '+330611223944', email: nil )
-    internship_application = create(:weekly_internship_application, :rejected, student: student)
+    student = create(:student, phone: '+330611223944', email: nil)
+    internship_application = create(:weekly_internship_application, :rejected, student:)
     sms_bitly_stub do
       freeze_time do
         assert_changes -> { internship_application.reload.validated_by_employer_at },
-                      from: nil,
-                      to: Time.now.utc do
+                       from: nil,
+                       to: Time.now.utc do
           mock_mail = Minitest::Mock.new
-          mock_mail.expect(:deliver_later, true, [{wait: 1.second}])
+          mock_mail.expect(:deliver_later, true, [{ wait: 1.second }])
           StudentMailer.stub :internship_application_approved_email, mock_mail do
             internship_application.employer_validate!
           end
@@ -371,7 +372,6 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     end
   end
 
-
   test 'RGPD' do
     internship_application = create(:weekly_internship_application, motivation: 'amazing')
 
@@ -380,15 +380,15 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert_not_equal 'amazing', internship_application.motivation
   end
 
-  test "#after_employer_validation_notifications when student registered by phone" do
-    student = create(:student,:registered_with_phone)
-    internship_application = create(:weekly_internship_application, student: student)
+  test '#after_employer_validation_notifications when student registered by phone' do
+    student = create(:student, :registered_with_phone)
+    internship_application = create(:weekly_internship_application, student:)
     assert internship_application.after_employer_validation_notifications.is_a?(SendSmsStudentValidatedApplicationJob)
   end
 
-  test "#after_employer_validation_notifications when student registered by email" do
+  test '#after_employer_validation_notifications when student registered by email' do
     student = create(:student)
-    internship_application = create(:weekly_internship_application, student: student)
+    internship_application = create(:weekly_internship_application, student:)
 
     mock_mail = Minitest::Mock.new
     mock_mail.expect(:deliver_later, true, [], wait: 1.second)
@@ -399,7 +399,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     mock_mail.verify
   end
 
-  test "#should_notify_employer_like?" do
+  test '#should_notify_employer_like?' do
     employer_1 = create(:employer)
     employer_2 = create(:employer)
     offer = create_internship_offer_visible_by_two(employer_1, employer_2)
@@ -407,7 +407,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
 
     assert_equal 2, internship_application.filter_notified_emails.count
 
-    #update : employer_1 no longer receives notifications
+    # update : employer_1 no longer receives notifications
     area_notification = employer_1.fetch_current_area_notification
     area_notification.update_column(:notify, false)
     assert_equal [employer_2.email], internship_application.filter_notified_emails
@@ -419,35 +419,75 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test '.order_by_aasm_state_for_student' do
-    # TODO fin a way to test this
-    if ENV['RUN_BRITTLE_TEST']
-      internship_application_1 = nil
-      internship_application_2 = nil
-      internship_application_3 = nil
-      internship_application_4 = nil
-      internship_application_5 = nil
-      travel_to Time.zone.local(2020, 1, 1, 12, 0, 0) do
-        internship_application_1 = create(:weekly_internship_application, :submitted) #n°3 in the list by created_at
-      end
-      travel_to Time.zone.local(2020, 1, 1, 13, 0, 0) do
-        internship_application_2 = create(:weekly_internship_application, :validated_by_employer) #n°1 in the list by status
-      end
-      travel_to Time.zone.local(2020, 1, 1, 14, 0, 0) do
-        internship_application_3 = create(:weekly_internship_application) #n°4 in the list by created_at
-      end
-      travel_to Time.zone.local(2020, 1, 1, 15, 0, 0) do
-        internship_application_4 = create(:weekly_internship_application, :read_by_employer) #n°5 in the list by created_at
-      end
-      travel_to Time.zone.local(2020, 1, 1, 16, 0, 0) do
-        internship_application_5 = create(:weekly_internship_application, :validated_by_employer) #n°2 in the list by status
-      end
-      sleep 1
+    skip 'This test is flaky, it fails on CI' if ENV['CI'] == 'true'
+    internship_application_1 = nil
+    internship_application_2 = nil
+    internship_application_3 = nil
+    internship_application_4 = nil
+    internship_application_5 = nil
+    travel_to Time.zone.local(2024, 1, 1, 12, 0, 0) do
+      internship_application_1 = create(:weekly_internship_application, :submitted) # n°3 in the list by created_at
+    end
+    travel_to Time.zone.local(2024, 1, 1, 13, 0, 0) do
+      internship_application_2 = create(:weekly_internship_application, :validated_by_employer) # n°1 in the list by status
+    end
+    travel_to Time.zone.local(2024, 1, 1, 14, 0, 0) do
+      internship_application_3 = create(:weekly_internship_application) # n°4 in the list by created_at
+    end
+    travel_to Time.zone.local(2024, 1, 1, 15, 0, 0) do
+      internship_application_4 = create(:weekly_internship_application, :read_by_employer) # n°5 in the list by created_at
+    end
+    travel_to Time.zone.local(2024, 1, 1, 16, 0, 0) do
+      internship_application_5 = create(:weekly_internship_application, :validated_by_employer) # n°2 in the list by status
+    end
+    sleep 1
 
-      assert_equal internship_application_2, InternshipApplication.order_by_aasm_state_for_student.first
-      assert_equal internship_application_5, InternshipApplication.order_by_aasm_state_for_student.second
-      assert_equal internship_application_1, InternshipApplication.order_by_aasm_state_for_student.third
-      assert_equal internship_application_3, InternshipApplication.order_by_aasm_state_for_student.fourth
-      assert_equal internship_application_4, InternshipApplication.order_by_aasm_state_for_student.fifth
+    assert_equal internship_application_2.id, InternshipApplication.order_by_aasm_state_for_student.first.id
+    assert_equal internship_application_5.id, InternshipApplication.order_by_aasm_state_for_student.second.id
+    assert_equal internship_application_1.id, InternshipApplication.order_by_aasm_state_for_student.third.id
+    assert_equal internship_application_3.id, InternshipApplication.order_by_aasm_state_for_student.fourth.id
+    assert_equal internship_application_4.id, InternshipApplication.order_by_aasm_state_for_student.fifth.id
+  end
+
+  test '.selectable_weeks' do
+    travel_to Time.zone.local(2025, 3, 1) do
+      # 1 : 3e - no weeks set by school -> all weeks are selectable
+      internship_offer = create(:weekly_internship_offer_3eme)
+      school = create(:school, school_type: 'college')
+      student = create(:student, school:, class_room: create(:class_room, school:))
+      internship_application = InternshipApplication.new(student:, internship_offer:)
+
+      assert_equal internship_offer.weeks, internship_application.selectable_weeks
+
+      # 2 : 3e - 2 weeks set by school in the past -> no weeks are selectable
+      internship_offer = create(:weekly_internship_offer_3eme)
+      school = create(:school, school_type: 'college')
+      week_1 = Week.selectable_on_school_year.first
+      week_2 = Week.selectable_on_school_year.second
+      school.weeks = [week_1, week_2]
+      student = create(:student, school:, class_room: create(:class_room, school:))
+      internship_application = InternshipApplication.new(student:, internship_offer:)
+
+      assert_equal [], internship_application.selectable_weeks
+
+      # 3 : 3eme - 2 weeks set by school in the future -> 2 weeks are selectable
+      # get first 2 next weeks from now
+      week_1 = Week.where(year: 2025, number: Date.today.strftime('%W').to_i + 3).first
+      week_2 = Week.where(year: 2025, number: Date.today.strftime('%W').to_i + 4).first
+      internship_offer = create(:weekly_internship_offer_3eme, weeks: [week_1, week_2])
+      school = create(:school, school_type: 'college')
+      school.weeks = [week_1, week_2]
+      student = create(:student, school:, class_room: create(:class_room, school:))
+      internship_application = InternshipApplication.new(student:, internship_offer:)
+
+      assert_equal [week_1, week_2], internship_application.selectable_weeks
+
+      # test for seconde_gt
+      internship_offer = create(:weekly_internship_offer_2nde, weeks: [week_1, week_2])
+      student = create(:student)
+      internship_application = InternshipApplication.new(student:, internship_offer:)
+
+      assert_equal internship_offer.weeks, internship_application.selectable_weeks
     end
   end
 end

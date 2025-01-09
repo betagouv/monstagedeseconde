@@ -1,0 +1,16 @@
+---
+# Based on ansible-lint config
+extends: default
+
+rules:
+  line-length: disable
+  comments:
+    min-spaces-from-content: 1
+  braces:
+    max-spaces-inside: 1
+
+# commitizen rewrite the cz.yaml file after 'cz bump' without the '---' at the beginning
+ignore: |
+  venv
+  megalinter-reports
+  .cz.yaml

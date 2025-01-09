@@ -1,7 +1,7 @@
 - hint ||= ''
 - placeholder ||= ''
 - required ||= false
-- id = "#{object.class.name.downcase}_#{field}"
+- id = "#{f.object_name}_#{field}"
 - field_type ||= :text_field
 - pattern ||= ''
 - title ||= ''
@@ -17,7 +17,6 @@
               class: "fr-label",
               for: id
       = label
-      = f.rg2a_required_content_tag if required
     - unless hint.blank?
       .text-muted.fr-mb-4v = hint
     = f.send(field_type,

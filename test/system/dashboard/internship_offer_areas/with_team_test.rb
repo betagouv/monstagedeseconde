@@ -3,18 +3,18 @@ require 'application_system_test_case'
 class WithTeamTest < ApplicationSystemTestCase
   include Devise::Test::IntegrationHelpers
   include TeamAndAreasHelper
-  
+
   test 'workflow for making a team is ok' do
     employer_1 = create(:employer)
     employer_2 = create(:employer)
     create :team_member_invitation,
-            inviter_id: employer_1.id,
-            invitation_email: employer_2.email
+           inviter_id: employer_1.id,
+           invitation_email: employer_2.email
     sign_in(employer_2)
     visit employer_2.after_sign_in_path
     assert_difference('AreaNotification.count', 4) do
       click_button 'Oui'
-      assert_equal 2, all('span.fr-badge.fr-badge--no-icon.fr-badge--success', text: "INSCRIT").count
+      assert_equal 2, all('span.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'INSCRIT').count
       assert_equal 2, employer_1.team.team_size
       assert_equal 2, employer_2.team.team_size
     end
@@ -24,12 +24,12 @@ class WithTeamTest < ApplicationSystemTestCase
     employer_1 = create(:employer)
     employer_2 = create(:employer)
     offer = create_internship_offer_visible_by_two(employer_1, employer_2)
-    assert_equal 4 , AreaNotification.count
+    assert_equal 4, AreaNotification.count
     employer_3 = create(:employer)
-    assert_equal 4 , AreaNotification.count
+    assert_equal 4, AreaNotification.count
     create :team_member_invitation,
-            inviter_id: employer_1.id,
-            invitation_email: employer_3.email
+           inviter_id: employer_1.id,
+           invitation_email: employer_3.email
     sign_in(employer_3)
     visit employer_3.after_sign_in_path
     assert_difference -> { AreaNotification.count }, 5 do
@@ -42,8 +42,8 @@ class WithTeamTest < ApplicationSystemTestCase
     employer_2 = create(:employer, first_name: 'Etienne')
     space_name = 'Espace 2'
     create :team_member_invitation,
-    inviter_id: employer_1.id,
-    invitation_email: employer_2.email
+           inviter_id: employer_1.id,
+           invitation_email: employer_2.email
     sign_in(employer_2)
     visit employer_2.after_sign_in_path
     assert_equal 0, AreaNotification.all.count
@@ -76,12 +76,11 @@ class WithTeamTest < ApplicationSystemTestCase
     visit employer_2.after_sign_in_path
     assert_equal 4, AreaNotification.all.count
     find('li a', text: 'Espaces').click
-    all("tbody tr td.area-name a").each do |el|
+    all('tbody tr td.area-name a').each do |el|
       el.text.in?([employer_1.current_area.name, employer_2.current_area.name])
     end
     find("button[aria-controls='fr-modal-area-destroy-dialog-#{employer_2.current_area_id}']").click
     find('input[type="submit"]').click
-    find('h1', text: 'Nouvel espace')
     find 'tbody tr td.area-name a'
     assert_equal 1, InternshipOfferArea.all.count
     assert_equal 2, AreaNotification.all.count

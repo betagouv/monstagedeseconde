@@ -1,7 +1,6 @@
 module Dashboard
   module InternshipOfferAreas
     class AreaNotificationsController < ApplicationController
-
       before_action :authenticate_user!
       before_action :fetch_area_notification, only: %i[edit update flip]
 
@@ -13,12 +12,13 @@ module Dashboard
 
       def flip
         can? :manage_abilities, AreaNotification
-        parameters = flip_infos(team_flip: params[:team_flip] || false)
+        parameters = flip_infos(team_flip: params[:team_flip] || false, dashboard: params[:dashboard] || false)
         if current_user.team.alive? &&
-            (!current_user.current_area.single_human_in_charge? || !@area_notification.notify)
+           (!@area_notification.internship_offer_area.single_human_in_charge? || !@area_notification.notify)
           @area_notification.update(notify: !@area_notification.notify)
           options = { partial: parameters[:path],
-                      locals: { area_notification: @area_notification}}
+                      locals: { area_notification: @area_notification,
+                                internship_offer_area: @area_notification.internship_offer_area } }
 
           respond_to do |format|
             format.turbo_stream do
@@ -33,7 +33,7 @@ module Dashboard
           respond_to do |format|
             @internship_offer_area.errors.add(:base, :only_one_left)
             options = { partial: parameters[:path],
-                        locals: { area_notification: @area_notification}}
+                        locals: { area_notification: @area_notification } }
             format.turbo_stream do
               render turbo_stream: turbo_stream.replace(parameters[:replace_id], options)
             end
@@ -46,7 +46,7 @@ module Dashboard
           redirect_to edit_dashboard_internship_offer_area_path(@internship_offer_area)
         end
       rescue ActiveRecord::RecordInvalid
-        redirect_to edit_dashboard_internship_offer_area_path(@internship_offer_area), alert:'Erreur X605'
+        redirect_to edit_dashboard_internship_offer_area_path(@internship_offer_area), alert: 'Erreur X605'
       end
 
       def update
@@ -64,15 +64,16 @@ module Dashboard
         @internship_offer_area = @area_notification.internship_offer_area
       end
 
-      def flip_infos(team_flip: false)
-        if team_flip
+      def flip_infos(team_flip: false, dashboard: false)
+        if dashboard
+          { path: 'dashboard/internship_offer_areas/area_notifications/toggle_dashboard',
+            replace_id: "area_notification_#{@area_notification.id}" }
+        elsif team_flip
           { path: 'dashboard/internship_offer_areas/area_notifications/toggle',
-            replace_id: "area_notification_#{@area_notification.id}"
-          }
+            replace_id: "area_notification_#{@area_notification.id}" }
         else
           { path: 'dashboard/internship_offer_areas/area_notifications/flip_notification',
-            replace_id: "flip_notification"
-          }
+            replace_id: 'flip_notification' }
         end
       end
     end

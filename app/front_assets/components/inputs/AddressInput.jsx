@@ -4,7 +4,7 @@ import { useDebounce } from 'use-debounce';
 import Downshift from 'downshift';
 import { fetch } from 'whatwg-fetch';
 import { endpoints } from '../../utils/api';
-import { broadcast, newCoordinatesChanged } from '../../utils/events';
+import { broadcast, newCoordinatesChanged, cityChanged, zipcodeChanged } from '../../utils/events';
 
 // see: https://geo.api.gouv.fr/adresse
 export default function AddressInput({
@@ -15,6 +15,9 @@ export default function AddressInput({
   currentLatitude,
   currentLongitude,
   currentFullAddress,
+  addressFieldsVisible,
+  isDuplication,
+  editMode
 }) {
   const [helpVisible, setHelpVisible] = useState(false);
   const [fullAddress, setFullAddress] = useState(currentFullAddress || '');
@@ -24,41 +27,70 @@ export default function AddressInput({
   const [latitude, setLatitude] = useState(currentLatitude || 0);
   const [longitude, setLongitude] = useState(currentLongitude || 0);
   const [searchResults, setSearchResults] = useState([]);
+  const [detailedFieldsVisibility, setdetailedFieldsVisibility] = useState(false);
   const [queryString, setQueryString] = useState('');
+  const [addressFieldsVisibility, setAddressFieldsVisibility] = useState(addressFieldsVisible);
+
   const [fullAddressDebounced] = useDebounce(fullAddress, 100);
+
 
   const inputChange = (event) => {
     setFullAddress(event.target.value);
   };
 
-  const toggleHelpVisible = (event) => {
-    event.stopPropagation();
-    setHelpVisible(!helpVisible);
+  const resetField = (e) => {
+    e.stopPropagation();
+    setFields(undefined);
+    broadcastReset();
+    setAddressFieldsVisibility(false)
   };
+
+  const broadcastReset = () => {
+    broadcast(cityChanged({ city: "" }));
+    broadcast(zipcodeChanged({ zipcode: "" }));
+    broadcast(newCoordinatesChanged({ latitude: 0, longitude: 0 }));
+  };
+
+  const setFields = (item) => {
+    if( item === undefined) {
+      setFullAddress("");
+      setStreet("");
+      setCity("");
+      setZipcode("");
+      setLatitude(0);
+      setLongitude(0);
+    } else  {
+      setFullAddress(item.properties.label);
+      if (item.properties.housenumber === undefined) {
+        setStreet(item.properties.name);
+      } else {
+        setStreet(
+          [item.properties.housenumber, item.properties.street]
+            .filter((component) => component)
+            .join(' ')
+        );
+      };
+      setCity(item.properties.city);
+      setZipcode(item.properties.postcode);
+      setLatitude(parseFloat(item.geometry.coordinates[1]));
+      setLongitude(parseFloat(item.geometry.coordinates[0]));
+      broadcast(zipcodeChanged({ zipcode : item.properties.postcode}));
+      broadcast(cityChanged({ city: item.properties.city }));
+    }
+  }
+
   const searchCityByAddress = () => {
     fetch(endpoints.apiSearchAddress({ fullAddress }))
       .then((response) => response.json())
       .then((json) => {
-        setSearchResults(json.features)
-        setQueryString(json.query)
+        setQueryString(json.query);
+        setSearchResults(json.features);
       });
   };
 
   const setFullAddressComponents = (item) => {
-    setFullAddress(item.properties.label);
-    if (item.properties.housenumber === undefined) {
-      setStreet(item.properties.name);
-    } else {
-      setStreet(
-        [item.properties.housenumber, item.properties.street]
-          .filter((component) => component)
-          .join(' ')
-      );
-    };
-    setCity(item.properties.city);
-    setZipcode(item.properties.postcode);
-    setLatitude(parseFloat(item.geometry.coordinates[1]));
-    setLongitude(parseFloat(item.geometry.coordinates[0]));
+    setFields(item)
+    setAddressFieldsVisibility(true);
   };
 
   useEffect(() => {
@@ -98,61 +130,57 @@ export default function AddressInput({
                     htmlFor: `${resourceName}_autocomplete`,
                   })}
                 >
-                  Adresse du lieu où se déroule le stage
-                  <abbr title="(obligatoire)" aria-hidden="true">
-                    *
-                  </abbr>
-                  <a
-                    className="btn-absolute btn fr-btn btn-link py-0"
-                    href="#help-multi-location"
-                    aria-label="Afficher l'aide"
-                    onClick={toggleHelpVisible}
-                  >
-                    <i className="fas fa-question-circle" />
-                  </a>
+                  Rechercher une adresse postale*
                 </label>
 
-                <div>
+                <div className="d-flex">
                   <input
                     {...getInputProps({
                       onChange: inputChange,
                       onClick: resetField,
                       value: fullAddress,
-                      className: 'form-control',
+                      className: 'fr-input flex-grow-1',
                       name: `${resourceName}_autocomplete`,
                       id: `${resourceName}_autocomplete`,
-                      placeholder: 'Adresse',
+                      placeholder: '',
+                      required: true,
                     })}
                   />
-                </div>
-                <div>
-                  <div className="search-in-place bg-white shadow">
-                    <ul
-                      {...getMenuProps({
-                        className: 'p-0 m-0',
-                      })}
-                    >
-                      { isOpen && queryString === fullAddress
-                        ? searchResults.map((item, index) => (
-                            <li
-                              {...getItemProps({
-                                className: `py-2 px-3 listview-item ${
-                                  highlightedIndex === index ? 'highlighted-listview-item' : ''
-                                }`,
-                                key: `${item.properties.id}-${item.properties.label}`,
-                                index,
-                                item,
-                                style: {
-                                  fontWeight: highlightedIndex === index? 'bold' : 'normal',
-                                },
-                              })}
-                            >
-                              {item.properties.label}
-                            </li>
-                          ))
-                        : null}
-                    </ul>
+
+                  <div className="input-group-append">
+                    <a onClick={resetField}>
+                      <button className="fr-btn fr-btn--tertiary" type="button">
+                        Effacer
+                      </button>
+                    </a>
                   </div>
+                </div>
+
+                <div className="search-in-place bg-white shadow">
+                  <ul
+                    {...getMenuProps({
+                      className: 'p-0 m-0',
+                    })}
+                  >
+                    { isOpen && (queryString === fullAddress) && (searchResults !== undefined) && searchResults.map((item, index) => (
+                        <li
+                          {...getItemProps({
+                            className: `py-2 px-3 listview-item ${
+                              highlightedIndex === index ? 'highlighted-listview-item' : ''
+                            }`,
+                            key: `${item.properties.id}-${item.properties.label}`,
+                            index,
+                            item,
+                            style: {
+                              fontWeight: highlightedIndex === index? 'bold' : 'normal',
+                            },
+                          })}
+                        >
+                          {item.properties.label}
+                        </li>
+                      ))
+                    }
+                  </ul>
                 </div>
               </div>
             )}
@@ -179,64 +207,55 @@ export default function AddressInput({
           type="hidden"
         />
       </div>
-      <div className="form-row">
-        <div className="col-sm-12">
-          <div className="form-group">
-            <label htmlFor={`${resourceName}_street`}>
-              Rue ou compléments d'adresse
-              <abbr title="(obligatoire)" aria-hidden="true">
-                *
-              </abbr>
+      { (addressFieldsVisibility || isDuplication || editMode) && (
+        <div className="form-row">
+          <div className="col-sm-12 fr-mt-1w">
+            <label htmlFor={`${resourceName}_street`} className="fr-label">
+              Voie publique ou privée
             </label>
             <input
-              className="form-control"
+              className="fr-input"
               value={street}
-              readOnly
               type="text"
               name={`${resourceName}[street]`}
               id={`${resourceName}_street`}
+              readOnly
             />
           </div>
-        </div>
-        <div className="col-sm-12">
-          <div className="form-group">
-            <label htmlFor={`${resourceName}_city`}>
+          <div className="col-sm-12 fr-mt-1w">
+            <label htmlFor={`${resourceName}_city`} className="fr-label">
               Commune
-              <abbr title="(obligatoire)" aria-hidden="true">
-                *
-              </abbr>
             </label>
             <input
-              className="form-control"
+              className="fr-input"
               required="required"
               value={city}
+              maxLength="50"
               type="text"
-              readOnly
               name={`${resourceName}[city]`}
               id={`${resourceName}_city`}
+              readOnly
             />
           </div>
-        </div>
-        <div className="col-sm-12">
-          <div className="form-group">
-            <label htmlFor={`${resourceName}_zipcode`}>
+          <div className="col-sm-12 fr-mt-1w">
+            <label htmlFor={`${resourceName}_zipcode`} className="fr-label">
               Code postal
-              <abbr title="(obligatoire)" aria-hidden="true">
-                *
-              </abbr>
             </label>
             <input
-              className="form-control"
+              className="fr-input"
               required="required"
               value={zipcode}
+              maxLength="5"
               type="text"
               name={`${resourceName}[zipcode]`}
               id={`${resourceName}_zipcode`}
+              data-mandatory-fields-target="mandatoryField"
+              data-action="input->mandatory-fields#fieldChange"
               readOnly
             />
           </div>
-        </div>
-      </div>
+        </div>)
+        }
     </div>
   );
 }

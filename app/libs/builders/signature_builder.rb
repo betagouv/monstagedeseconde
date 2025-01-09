@@ -37,8 +37,8 @@ module Builders
           raise ActiveRecord::RecordInvalid, user
         end
 
-        unless (internship_agreement_id !~ /\D+/)
-          Rails.logger.error("internship_agreement_ids " \
+        unless internship_agreement_id !~ /\D+/
+          Rails.logger.error('internship_agreement_ids ' \
                               "list is wrong : #{internship_agreement_id}")
         end
 
@@ -83,29 +83,28 @@ module Builders
 
     def code_checks
       code = (0..5).inject([]) { |acc, i| acc << params["digit-code-target-#{i}".to_sym] }.join('')
-
-      code_valid = user.code_valid?( code: code )
+      code_valid = user.code_valid?(code: code)
       raise ArgumentError, 'Erreur de code, veuillez recommencer' unless code_valid
 
-      code_expired = user.code_expired?( code: code )
+      code_expired = user.code_expired?(code: code)
       raise ArgumentError, 'Code périmé, veuillez en réclamer un autre' if code_expired
     end
 
-    def make_image(params:, internship_agreement_id: , user:)
+    def make_image(params:, internship_agreement_id:, user:)
       raise ArgumentError, 'Missing signature' if params[:signature_image].blank?
 
       signature_file_path = Signature.file_path(
         internship_agreement_id: internship_agreement_id,
         user: user
       )
-      img = (params[:signature_image]).split(",")[1]
+      img = (params[:signature_image]).split(',')[1]
       img = Base64.decode64 img
 
-      File.open(signature_file_path, "wb") { |f| f.write img } && true
+      File.open(signature_file_path, 'wb') { |f| f.write img } && true
     end
 
     def image_from(params:)
-      img = (params[:signature_image]).split(",")[1]
+      img = (params[:signature_image]).split(',')[1]
       Base64.decode64 img
     end
 

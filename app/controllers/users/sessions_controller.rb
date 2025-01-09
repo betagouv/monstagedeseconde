@@ -22,15 +22,23 @@ module Users
     end
 
     def create
+      # TODO : withdraw next line after employers_only function removal
+      allowed_profiles_when_employers_only = current_user.try(:employer?) ||
+                                             current_user.try(:operator?) ||
+                                             current_user.try(:god?)
+      redirect_to root_path and return if employers_only? && !allowed_profiles_when_employers_only
+
       if by_phone? && fetch_user_by_phone.try(:valid_password?, params[:user][:password])
         user = fetch_user_by_phone
         if user.student?
-          store_targeted_offer_id(user: user)
+          store_targeted_offer_id(user:)
           if user.confirmed?
             sign_in(user)
             redirect_to after_sign_in_path_for(user)
           else
+            # TODO: something wrong about this when send_sms_token is sent at user creation time with a callback
             user.send_sms_token
+            #--------------------
             redirect_to users_registrations_phone_standby_path(phone: safe_phone_param)
           end
           return
@@ -40,6 +48,18 @@ module Users
       super
     end
 
+    def destroy
+      super do
+        cookies.delete(:_monstage_session)
+        cookies.delete(:_ms2gt_manage_session)
+      end
+    end
+
+    def choose_connection
+      @fim_url = build_fim_url
+      @educonnect_url = build_educonnect_url
+    end
+
     protected
 
     def store_targeted_offer_id(user:)
@@ -47,9 +67,9 @@ module Users
         Rails.logger.error("--------------\n#{params}\n--------------\n")
         raise 'params[:user] is nil'
       end
-      if user && params[:user][:targeted_offer_id].present?
-        user.update(targeted_offer_id: params[:user][:targeted_offer_id])
-      end
+      return unless user && params[:user][:targeted_offer_id].present?
+
+      user.update(targeted_offer_id: params[:user][:targeted_offer_id])
     end
 
     def fetch_user_by_email
@@ -58,7 +78,7 @@ module Users
         raise 'params[:user] is nil'
       end
       param_email = params[:user][:email]
-      return User.find_by(email: param_email) if param_email.present?
+      User.find_by(email: param_email) if param_email.present?
     end
 
     # If you have extra params to permit, append them to the sanitizer.
@@ -101,6 +121,32 @@ module Users
 
     def identify_user_with_id
       @user = User.find_by(id: params[:id])
+    end
+
+    def build_fim_url
+      oauth_params = {
+        redirect_uri: ENV['FIM_REDIRECT_URI'],
+        client_id: ENV['FIM_CLIENT_ID'],
+        scope: 'openid profile email stage',
+        response_type: 'code',
+        state: SecureRandom.uuid,
+        nonce: SecureRandom.uuid
+      }
+
+      cookies[:state] = oauth_params[:state]
+
+      ENV['FIM_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
+    end
+
+    def build_educonnect_url
+      oauth_params = {
+        redirect_uri: ENV['EDUCONNECT_REDIRECT_URI'],
+        client_id: ENV['EDUCONNECT_CLIENT_ID'],
+        scope: 'openid profile email stage',
+        response_type: 'code',
+        state: SecureRandom.uuid,
+        nonce: SecureRandom.uuid
+      }
     end
   end
 end

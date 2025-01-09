@@ -1,4 +1,4 @@
-- content_for(:page_title, "#{t(".page_title")} | Monstage")
+- content_for(:page_title, "#{t(".page_title")} | 1élève1stage")
 - errors = Presenters::Error.new(errors: @identity.errors)
 - incipit = user_presenter.subscription_incipit(as: "Student")
 - resource = @identity
@@ -16,7 +16,10 @@ main#content[role="main"
             = render 'layouts/breadcrumb', links: [ ['', incipit[:title]]]
         .fr-container.fr-background-alt--grey.fr-px-md-0.fr-pt-10v.fr-pt-md-14v
           .fr-mx-1w.fr-mx-md-13w
-            = form_for @identity, id: 'new_user' do |f|
+            = form_with(model: @identity,
+                        scope: :identity,
+                        url: identities_path,
+                        method: :post) do |f|
               .fr-mx-3w
                 .fr-stepper
                   h2.fr-stepper__title
@@ -32,30 +35,63 @@ main#content[role="main"
                 .fr-grid-row.fr-grid-row-gutters
                   p.fr-stepper__details
                     | Sauf mention contraire, tous les champs sont obligatoires.
-              fieldset#new-student-form.fr-mx-2w[aria-labelledby="new-student-title"]
+              fieldset.fr-fieldset#new-student-form.fr-mx-2w[aria-labelledby="new-student-title"]
                 legend
-                = f.hidden_field :targeted_offer_id, value: params[:targeted_offer_id]
+                  = f.hidden_field :targeted_offer_id, value: params[:targeted_offer_id]
                 span data-signup-target="emailBloc"
                 span data-signup-target="emailHint"
                 span data-signup-target="emailInput"
                 span data-signup-target="emailRadioButton"
                 span data-signup-target="phoneBloc"
+                legend.fr-fieldset__legend--regular.fr-fieldset__legend
+                  = f.label "Niveau", class: "fr-label", for: "select-grade"
+                - quatrieme_id = Grade.quatrieme.id
+                - troisieme_id = Grade.troisieme.id
+                - seconde_id = Grade.seconde.id
+                .fr-fieldset__element.fr-fieldset__element--inline
+                  .fr-radio-group
+                    = f.radio_button :grade_id, 
+                                     quatrieme_id, 
+                                     class: "border", 
+                                     required: true,
+                                     data: { action: "change->signup#updateGrade" }
+                    = f.label :grade_id, "4ème", class: "fr-label fr-mb-0", for: "identity_grade_id_#{quatrieme_id}"
+                .fr-fieldset__element.fr-fieldset__element--inline
+                  .fr-radio-group
+                    = f.radio_button :grade_id, 
+                                     troisieme_id, 
+                                     class: "border", 
+                                     required: true,
+                                     data: { action: "change->signup#updateGrade" }
+                    = f.label :grade_id, "3ème", class: "fr-label fr-mb-0", for: "identity_grade_id_#{troisieme_id}"
+                .fr-fieldset__element.fr-fieldset__element--inline
+                  .fr-radio-group
+                    = f.radio_button :grade_id, 
+                                     seconde_id, 
+                                     class: "border", 
+                                     required: true, 
+                                     checked: true,
+                                     data: { action: "change->signup#updateGrade" }
+                    = f.label :grade_id, "2de générale et technologique", class: "fr-label fr-mb-0", for: "identity_grade_id_#{seconde_id}"
+              
+              fieldset.fr-mx-2w
                 .fr-mx-1w
                   label.fr-label for="user_school_city"
                         | Établissement ou commune
                   = react_component("SearchSchool", props: { classes: 'col-12 fr-input',
-                                                    required: true,
-                                                    label: 'Établissement ou commune',
-                                                    resourceName: :identity,
-                                                    selectClassRoom: true,
-                                                    existingSchool: @identity.school.as_json,
-                                                    existingClassRoom: @identity.try(:class_room).try(:as_json)})
+                                                             required: true,
+                                                             label: 'Établissement ou commune',
+                                                             resourceName: :identity,
+                                                             selectClassRoom: true,
+                                                             existingSchool: @identity.school.as_json,
+                                                             existingClassRoom: @identity.try(:class_room).try(:as_json)})
                 .fr-mt-2w
                   = render partial: "users/registrations/input_field",
                             locals: { f: f,
                                       field_label: "Prénom",
                                       field: :first_name,
                                       resource: resource,
+                                      maxlength: 85,
                                       resource_name: :identity,
                                       option: { required: true },
                                       errors: errors }
@@ -64,6 +100,7 @@ main#content[role="main"
                                     field_label: "Nom",
                                     field: :last_name,
                                     resource: resource,
+                                    maxlength: 85,
                                     resource_name: :identity,
                                     option: { required: true },
                                     errors: errors }
@@ -71,7 +108,11 @@ main#content[role="main"
                   .fr-input-group 
                     = f.label 'Date de naissance', class: 'fr-label', for: 'identity_birth_date'
                     .fr-input-wrap.fr-icon-calendar-line
-                      = f.date_field :birth_date, class: 'fr-input', required: true
+                      = f.date_field :birth_date,
+                                     placeholder: 'jj/mm/aaaaAA',
+                                     pattern: '^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19|20)[0-9]{2}$',
+                                     class: 'fr-input',
+                                     required: true
                 .fr-fieldset__element
                   = f.label "Sexe", class: "fr-label", for: "select-gender"
                   .fr-fieldset__content

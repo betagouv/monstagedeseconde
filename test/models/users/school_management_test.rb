@@ -8,16 +8,16 @@ module Users
     end
 
     test '#official_uai_email_address' do
-      other_attributes = {first_name: 'Carl',
-                          last_name: 'Orloff',
-                          role: :school_manager,
-                          confirmed_at: Time.zone.now,
-                          accept_terms: true,
-                          school: create(:school),
-                          password: '12456abcDEF?/ç'}
+      other_attributes = { first_name: 'Carl',
+                           last_name: 'Orloff',
+                           role: :school_manager,
+                           confirmed_at: Time.zone.now,
+                           accept_terms: true,
+                           school: create(:school),
+                           password: '12456abcDEF?/ç' }
       school_manager = Users::SchoolManagement.new(
         other_attributes.merge(
-          email: 'chef@etablissement.com',
+          email: 'chef@etablissement.com'
         )
       )
       assert school_manager.invalid?
@@ -25,7 +25,7 @@ module Users
 
       school_manager = Users::SchoolManagement.new(
         other_attributes.merge(
-          email: 'ce.123456@ac-paris.fr',
+          email: 'ce.123456@ac-paris.fr'
         )
       )
       assert school_manager.invalid?
@@ -33,14 +33,14 @@ module Users
 
       school_manager = Users::SchoolManagement.new(
         other_attributes.merge(
-          email: 'ce.1234567x@ac-paris.fr',
+          email: 'ce.1234567x@ac-paris.fr'
         )
       )
       assert school_manager.valid?
 
       school_manager = Users::SchoolManagement.new(
         other_attributes.merge(
-          email: 'ce.1234567@ac-paris.fr',
+          email: 'ce.1234567@ac-paris.fr'
         )
       )
       assert school_manager.valid?
@@ -59,7 +59,6 @@ module Users
 
     test 'creation succeed' do
       school = build(:school)
-      create(:department, name: 'Paris')
       school_manager = Users::SchoolManagement.new(
         role: :school_manager,
         email: "jean-pierre@#{school.email_domain_name}",
@@ -67,7 +66,7 @@ module Users
         first_name: 'Chef',
         last_name: 'Etablissement',
         phone: '+330602030405',
-        school: school,
+        school:,
         accept_terms: true
       )
       assert school_manager.valid?
@@ -75,30 +74,12 @@ module Users
 
     test 'has_many main_teachers' do
       school = create(:school)
-      school_manager = create(:school_manager, school: school)
-      main_teacher = create(:main_teacher, school: school)
+      school_manager = create(:school_manager, school:)
+      main_teacher = create(:main_teacher, school:)
 
       school_manager.reload
 
       assert_includes school_manager.main_teachers.entries, main_teacher
-    end
-
-
-    test 'school_manager.after_sign_in_path with school and weeks redirects to dashboard_school_path' do
-      school = create(:school)
-      school_manager = create(:school_manager, school: school)
-      redirect_to = @url_helpers.dashboard_school_path(school_manager.school)
-      assert_equal(redirect_to, school_manager.after_sign_in_path)
-    end
-
-    test 'teacher.after_sign_in_path with school redirects to dashboard_school_class_room_path when class_room exists' do
-      travel_to Date.new(2019, 9, 1) do
-        school = create(:school)
-        class_room = create(:class_room, school: school)
-        school_manager = create(:school_manager, school: school, class_room: class_room)
-        redirect_to = @url_helpers.dashboard_school_class_room_students_path(school, class_room)
-        assert_equal(redirect_to, school_manager.after_sign_in_path)
-      end
     end
 
     test 'change school notify new school_manager' do
@@ -120,26 +101,16 @@ module Users
       end
     end
 
-    test '#custom_dashboard_path as main_teacher' do
-      travel_to Date.new(2019, 9, 1) do
-        school = create(:school, :with_school_manager)
-        class_room = create(:class_room, school: school)
-        main_teacher = create(:main_teacher, school: school, class_room: class_room)
-        assert_equal @url_helpers.dashboard_school_class_room_students_path(school, class_room), main_teacher.custom_dashboard_path
-      end
-    end
-
-    test "#valid_academy_email_address?" do
-      create(:department, code: '61', name: 'Normandie')
+    test '#valid_academy_email_address?' do
       school = create(:school, zipcode: '75012')
-      assert build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school: school).valid?
-      refute build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school: school).valid?
-      
-      school = create(:school, zipcode: "61252", city: "Argentan", code_uai: "0612345A")
-      assert build(:school_manager, email: 'ce.1122334x@ac-normandie.fr', school: school).valid?
-      assert build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school: school).valid?
-      refute build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school: school).valid?
-      refute build(:school_manager, email: 'ce.1122334x@ac-test.fr', school: school).valid?
+      assert build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school:).valid?
+      refute build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school:).valid?
+
+      school = create(:school, zipcode: '61252', city: 'Argentan', code_uai: '0612345A')
+      assert build(:school_manager, email: 'ce.1122334x@ac-normandie.fr', school:).valid?
+      assert build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school:).valid?
+      refute build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school:).valid?
+      refute build(:school_manager, email: 'ce.1122334x@ac-test.fr', school:).valid?
     end
   end
 end

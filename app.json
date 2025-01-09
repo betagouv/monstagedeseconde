@@ -1,11 +1,11 @@
 {
-  "name": "Monstage",
+  "name": "1élève1stage",
   "description": "Help students to find quality internships",
   "website": "https://stagedeseconde.1jeune1solution.gouv.fr/",
 
   "repository": "https://github.com/betagouv/monstagedeseconde",
 
-  "stack": "heroku-20",
+  "stack": "heroku-22",
   "buildpacks": [{
       "url": "heroku/nodejs"
     }, {

@@ -14,34 +14,28 @@ class InternshipOffersController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @sectors = Sector.all.order(:name).to_a
+        @sectors = Sector.order(:name).to_a
         @params = query_params.merge(sector_ids: params[:sector_ids])
       end
       format.json do
-        # @internship_offers_all_without_page = finder.all_without_page
-        @internship_offers = finder.all
+        @internship_offers = finder.all.includes(:sector, :employer)
 
         @is_suggestion = @internship_offers.to_a.count.zero?
         @internship_offers = alternative_internship_offers if @is_suggestion
-
-        # @internship_offers_all_without_page_array = @internship_offers_all_without_page.to_a
-        # @internship_offers_array = @internship_offers.to_a
 
         @params = query_params
         data = {
           internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
-          # seats: calculate_seats,
           isSuggestion: @is_suggestion
         }
-        # current_user.log_search_history(@params.merge({results_count: data[:seats]})) if current_user&.student?
+        current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
         render json: data, status: 200
       end
     end
   end
 
   def show
-
     @previous_internship_offer = finder.next_from(from: @internship_offer)
     @next_internship_offer = finder.previous_from(from: @internship_offer)
 
@@ -67,16 +61,18 @@ class InternshipOffersController < ApplicationController
   end
 
   def query_params
-    params.permit(
-      :page,
-      :latitude,
-      :longitude,
-      :city,
-      :radius,
-      :keyword,
-      :period,
-      sector_ids: []
-    )
+    common_query_params = %i[page
+                             latitude
+                             longitude
+                             city
+                             radius
+                             keyword
+                             period]
+    if current_user_or_visitor.god? ||
+       current_user_or_visitor.statistician?
+      common_query_params += [:school_year]
+    end
+    params.permit(*common_query_params, sector_ids: [])
   end
 
   def check_internship_offer_is_not_discarded_or_redirect
@@ -115,6 +111,7 @@ class InternshipOffersController < ApplicationController
         :radius,
         :keyword,
         :period,
+        :school_year,
         sector_ids: []
       ),
       user: current_user_or_visitor
@@ -123,8 +120,8 @@ class InternshipOffersController < ApplicationController
 
   def alternative_internship_offers
     priorities = [
-      [:latitude, :longitude, :radius], #1
-      [:keyword] #2
+      %i[latitude longitude radius], # 1
+      [:keyword] # 2
     ]
 
     alternative_offers = []
@@ -134,7 +131,7 @@ class InternshipOffersController < ApplicationController
         user: current_user_or_visitor
       ).all.to_a
 
-      if priority_offers.count < 5 && priority == [:latitude, :longitude, :radius]
+      if priority_offers.count < 5 && priority == %i[latitude longitude radius]
         priority_offers = Finders::InternshipOfferConsumer.new(
           params: params.permit(*priority).merge(radius: Nearbyable::DEFAULT_NEARBY_RADIUS_IN_METER + 40_000),
           user: current_user_or_visitor
@@ -151,7 +148,7 @@ class InternshipOffersController < ApplicationController
       alternative_offers += InternshipOffer.uncompleted.last(5 - alternative_offers.count)
       alternative_offers = alternative_offers.uniq
     end
-    
+
     if params[:latitude].present?
       alternative_offers.sort_by { |offer| offer.distance_from(params[:latitude], params[:longitude]) }.first(5)
     else
@@ -165,7 +162,7 @@ class InternshipOffersController < ApplicationController
   end
 
   def format_internship_offers(internship_offers)
-    internship_offers.map { |internship_offer|
+    internship_offers.map do |internship_offer|
       {
         id: internship_offer.id,
         title: internship_offer.title.truncate(44),
@@ -174,7 +171,7 @@ class InternshipOffersController < ApplicationController
         link: internship_offer_path(internship_offer, query_params),
         city: internship_offer.city.capitalize,
         date_start: I18n.localize(internship_offer.first_date, format: :human_mm_dd_yyyy),
-        date_end:  I18n.localize(internship_offer.last_date, format: :human_mm_dd_yyyy),
+        date_end: I18n.localize(internship_offer.last_date, format: :human_mm_dd_yyyy),
         lat: internship_offer.coordinates.latitude,
         lon: internship_offer.coordinates.longitude,
         image: view_context.asset_pack_path("media/images/sectors/#{internship_offer.sector.cover}"),
@@ -184,12 +181,13 @@ class InternshipOffersController < ApplicationController
         can_manage_favorite: can?(:create, Favorite),
         can_read_employer_name: can?(:read_employer_name, internship_offer)
       }
-    }
+    end
   end
 
   def page_links
     offers = @internship_offers
     return nil if offers.to_a.size < 1 || @is_suggestion
+
     {
       totalPages: offers.total_pages,
       currentPage: offers.current_page,
@@ -197,7 +195,7 @@ class InternshipOffersController < ApplicationController
       prevPage: offers.prev_page,
       isFirstPage: offers.first_page?,
       isLastPage: offers.last_page?,
-      pageUrlBase:  url_for(query_params.except('page'))
+      pageUrlBase: url_for(query_params.except('page'))
     }
   end
 

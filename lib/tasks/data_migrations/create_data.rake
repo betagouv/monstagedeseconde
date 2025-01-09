@@ -3,61 +3,61 @@ namespace :data_migrations do
   desc 'create sectors'
   task add_sectors: :environment do
     {
-      "Agroéquipement" => "s1",
-      "Architecture, urbanisme et paysage" => "s2",
-      "Armée - Défense" => "s3",
-      "Art et design" => "s4",
-      "Artisanat d'art" => "s5",
-      "Arts du spectacle" => "s6",
-      "Audiovisuel" => "s7",
-      "Automobile" => "s8",
-      "Banque et assurance" => "s9",
-      "Bâtiment et travaux publics (BTP)" => "s10",
-      "Bien-être" => "s11",
-      "Commerce et distribution" => "s12",
-      "Communication" => "s13",
-      "Comptabilité, gestion, ressources humaines" => "s14",
-      "Conseil et audit" => "s15",
-      "Construction aéronautique, ferroviaire et navale" => "s16",
-      "Culture et patrimoine" => "s17",
-      "Droit et justice" => "s18",
-      "Édition, librairie, bibliothèque" => "s19",
-      "Électronique" => "s20",
-      "Énergie" => "s21",
-      "Enseignement" => "s22",
-      "Environnement" => "s23",
-      "Filiere bois" => "s24",
-      "Fonction publique" => "s25",
-      "Hôtellerie, restauration" => "s26",
-      "Immobilier, transactions immobilières" => "s27",
-      "Industrie alimentaire" => "s28",
-      "Industrie chimique" => "s29",
-      "Industrie, ingénierie industrielle" => "s30",
-      "Informatique et réseaux" => "s31",
-      "Jeu vidéo" => "s32",
-      "Journalisme" => "s33",
-      "Logistique et transport" => "s34",
-      "Maintenance" => "s35",
-      "Marketing, publicité" => "s36",
-      "Mécanique" => "s37",
-      "Métiers d'art" => "s38",
-      "Mode" => "s39",
-      "Papiers Cartons" => "s40",
-      "Paramédical" => "s41",
-      "Recherche" => "s42",
-      "Santé" => "s43",
-      "Sécurité" => "s44",
-      "Services postaux" => "s45",
-      "Social" => "s46",
-      "Sport" => "s47",
-      "Tourisme" => "s48",
-      "Traduction, interprétation" => "s49",
-      "Verre, béton, céramique" => "s50",
+      'Agroéquipement' => 's1',
+      'Architecture, urbanisme et paysage' => 's2',
+      'Armée - Défense' => 's3',
+      'Art et design' => 's4',
+      "Artisanat d'art" => 's5',
+      'Arts du spectacle' => 's6',
+      'Audiovisuel' => 's7',
+      'Automobile' => 's8',
+      'Banque et assurance' => 's9',
+      'Bâtiment et travaux publics (BTP)' => 's10',
+      'Bien-être' => 's11',
+      'Commerce et distribution' => 's12',
+      'Communication' => 's13',
+      'Comptabilité, gestion, ressources humaines' => 's14',
+      'Conseil et audit' => 's15',
+      'Construction aéronautique, ferroviaire et navale' => 's16',
+      'Culture et patrimoine' => 's17',
+      'Droit et justice' => 's18',
+      'Édition, librairie, bibliothèque' => 's19',
+      'Électronique' => 's20',
+      'Énergie' => 's21',
+      'Enseignement' => 's22',
+      'Environnement' => 's23',
+      'Filiere bois' => 's24',
+      'Fonction publique' => 's25',
+      'Hôtellerie, restauration' => 's26',
+      'Immobilier, transactions immobilières' => 's27',
+      'Industrie alimentaire' => 's28',
+      'Industrie chimique' => 's29',
+      'Industrie, ingénierie industrielle' => 's30',
+      'Informatique et réseaux' => 's31',
+      'Jeu vidéo' => 's32',
+      'Journalisme' => 's33',
+      'Logistique et transport' => 's34',
+      'Maintenance' => 's35',
+      'Marketing, publicité' => 's36',
+      'Mécanique' => 's37',
+      "Métiers d'art" => 's38',
+      'Mode' => 's39',
+      'Papiers Cartons' => 's40',
+      'Paramédical' => 's41',
+      'Recherche' => 's42',
+      'Santé' => 's43',
+      'Sécurité' => 's44',
+      'Services postaux' => 's45',
+      'Social' => 's46',
+      'Sport' => 's47',
+      'Tourisme' => 's48',
+      'Traduction, interprétation' => 's49',
+      'Verre, béton, céramique' => 's50'
     }.map do |sector_name, sector_uuid|
       next if Sector.find_by(name: sector_name)
 
       Sector.create!(name: sector_name, uuid: sector_uuid)
-      print "."
+      print '.'
     end
   end
 
@@ -70,11 +70,11 @@ namespace :data_migrations do
     # fields are the following:
     # uai,type_etab,nom_etablissement,adresse,code_postal,commune,position,voie_generale,voie_techno,voie_pro,etab_mere,nbeleves,voie_gt,rentree_scolaire,nombre_d_eleves,2ndes_gt,_merge,nbeleves_est,2des_est
     # their index are
-    col_hash= { uai: 0, nom_etablissement: 2, adresse: 3, code_postal: 4, commune: 5, position: 6 }
+    col_hash = { uai: 0, nom_etablissement: 2, adresse: 3, code_postal: 4, commune: 5, position: 6 }
     error_lines = []
     file_location_production = Rails.root.join('db/data_imports/annuaire_lycees.csv')
     file_location_review = Rails.root.join('db/data_imports/light_files/annuaire_lycees_light.csv')
-    file_location = Rails.env.in?(%w[development review ]) ? file_location_review : file_location_production
+    file_location = Rails.env.in?(%w[development review]) ? file_location_review : file_location_production
     CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
       next if line_nr.zero?
 
@@ -104,22 +104,124 @@ namespace :data_migrations do
         street: adresse,
         zipcode: code_postal,
         city: commune,
-        coordinates: {longitude: longitude, latitude: latitude}
+        coordinates: { longitude: longitude, latitude: latitude }
       }
       school = School.new(school_params)
       if school.valid?
         school.save
-        print "."
+        print '.'
       else
-        error_lines << ["Ligne #{line_nr}" , school.name, school.errors.full_messages.join(", ")]
-        print "o"
+        error_lines << ["Ligne #{line_nr}", school.name, school.errors.full_messages.join(', ')]
+        print 'o'
       end
     end
     error_lines.each do |line|
       puts "Error #{line}"
     end
     puts "#{error_lines.size} errors"
-    PrettyConsole.say_in_yellow  "Done with creating schools(lycées)"
+    PrettyConsole.say_in_yellow 'Done with creating schools(lycées)'
+  end
+
+  desc 'create "collèges" and "lycees" from csv file'
+  task create_colleges_lycees: :environment do
+    file_location = Rails.root.join('db/data_imports/sources_EN/Liste_etablissements.csv')
+    # uai;type_etab;nom_etablissement;adresse;code_postal;commune;voie_generale;voie_techno;nbeleves;zone_ep
+    counter = 1
+    error_lines = []
+    CSV.foreach(file_location, 'r', headers: true, header_converters: :symbol, col_sep: ';').each do |row|
+      counter += 1
+      code_uai = row[:uai]
+      School.find_by(code_uai: code_uai).present? && next
+
+      name = row[:nom_etablissement]&.strip
+      next if name.nil?
+
+      adresse = row[:adresse]&.strip
+      commune = row[:commune]&.strip
+
+      code_postal = row[:code_postal]&.to_s&.strip
+      code_postal = "0#{code_postal}" if code_postal.size == 4
+
+      school_type = case row[:type_etab]
+                    when 'Collège'
+                      'college'
+                    when 'Lycée'
+                      'lycee'
+                    else
+                      print 'x'
+                      'college_lycee'
+                    end
+      kind = case row[:zone_ep]
+             when 'REP', 'rep'
+               'rep'
+             when 'REP+', 'rep+'
+               'rep_plus'
+             when 'QPV', 'qpv'
+               'qpv'
+             else
+               ''
+             end
+
+      school_params = {
+        code_uai: code_uai,
+        name: name,
+        street: adresse,
+        zipcode: code_postal,
+        city: commune,
+        school_type: school_type,
+        kind: kind
+      }
+      # searching for complementary data
+      #
+      ressource_file_location = Rails.root.join('db/data_imports/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre.csv')
+      # header is :
+      # numero_uai;appellation_officielle;denomination_principale;patronyme_uai;secteur_public_prive_libe;adresse_uai;
+      # lieu_dit_uai;boite_postale_uai;code_postal_uai;localite_acheminement_uai;libelle_commune;
+      # coordonnee_x;coordonnee_y;EPSG;latitude;longitude;appariement;
+      # localisation;nature_uai;nature_uai_libe;etat_etablissement;etat_etablissement_libe;
+      # code_departement;code_region;code_academie;code_commune;libelle_departement;
+      # libelle_region;libelle_academie;position;secteur_prive_code_type_contrat;
+      # secteur_prive_libelle_type_contrat;code_ministere;
+      # libelle_ministere;date_ouverture
+      complementary_csv = CSV.read(ressource_file_location, headers: true, header_converters: :symbol,
+                                                            col_sep: ';')
+      complementary_data = complementary_csv.find { |row| row[:numero_uai] == code_uai }
+      longitude = 0.0
+      latitude = 0.0
+      if complementary_data.present?
+        longitude = complementary_data[:longitude]&.to_f || 0.0
+        latitude = complementary_data[:latitude]&.to_f || 0.0
+      else
+        coordinates = Geofinder.coordinates("#{adresse}, #{code_postal} #{commune}")
+        longitude = coordinates[0] || 0.0
+        latitude = coordinates[1] || 0.0
+      end
+      if longitude == 0.0 && latitude == 0.0
+        error = "Ligne #{counter}, #{school_params[:name]}, #{school_params[:street]}, #{school_params[:zipcode]} #{school_params[:city]}: no coordinates found"
+        puts error
+        error_lines << error
+        next
+      end
+      school_params[:coordinates] = { longitude: longitude, latitude: latitude }
+
+      contract_code = complementary_data[:secteur_prive_code_type_contrat]
+      school_params.merge!(contract_code: contract_code) if contract_code.present?
+
+      School.find_by(code_uai: school_params[:code_uai]).present? && next
+
+      school = School.new(**school_params)
+      if school.valid?
+        school.save
+        print '.'
+      else
+        error = "Ligne #{counter}, #{school.name}, #{school.errors.full_messages.join(', ')}"
+        puts error
+        error_lines << error
+        puts '---'
+      end
+    end
+    puts "#{error_lines.size} errors"
+    PrettyConsole.say_in_yellow 'Done with creating schools(lycées)'
   end
 
   desc 'create class_rooms from csv file'
@@ -128,7 +230,7 @@ namespace :data_migrations do
     # ACADEMIE	CODE_RNE (UAI)	ID_ETAB_SCONET (ETAB_UAJ_Id)	DIVISION (CLASSE)	EFFECTIF DECLARE
     # Aix-Marseille	0134252B	1188	2ND09	35
     # their index are
-    col_hash= { academie: 0, code_uai: 1, :'id_etab_sco-net' => 2, class_room_name: 3, class_size: 4 }
+    col_hash = { academie: 0, code_uai: 1, 'id_etab_sco-net': 2, class_room_name: 3, class_size: 4 }
     error_lines = []
     file_location = Rails.root.join('db/data_imports/noms_de_classes.csv')
     CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
@@ -139,11 +241,13 @@ namespace :data_migrations do
 
       code_uai = cells[col_hash[:code_uai]]
       next if code_uai.nil?
+
       school = School.find_by(code_uai: code_uai)
       unless school.nil?
         print "#{school.name} - #{school.code_uai} missing data" if cells[col_hash[:class_room_name]].blank?
         class_room_name_new = false
-        class_room = ClassRoom.find_or_create_by(name: cells[col_hash[:class_room_name]], school: school) do |class_room|
+        class_room = ClassRoom.find_or_create_by(name: cells[col_hash[:class_room_name]],
+                                                 school: school) do |class_room|
           class_room.class_size = cells[col_hash[:class_size]]
           class_room.name = cells[col_hash[:class_room_name]]
           class_room.school_id = school.id
@@ -159,7 +263,7 @@ namespace :data_migrations do
     school_without_class_rooms.each do |school|
       puts "#{school.code_uai} - #{school.name}"
     end
-    PrettyConsole.say_in_yellow "Done with creating class_rooms"
+    PrettyConsole.say_in_yellow 'Done with creating class_rooms'
   end
 
   desc 'create craft fields'
@@ -174,7 +278,7 @@ namespace :data_migrations do
     }
     file_location_production = Rails.root.join('db/data_imports/ROME_Arbo_20231127.csv')
     file_location_review = Rails.root.join('db/data_imports/ROME_Arbo_20231127.csv')
-    file_location = Rails.env.in?(%w[development review ]) ? file_location_review : file_location_production
+    file_location = Rails.env.in?(%w[development review]) ? file_location_review : file_location_production
     CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
       next if line_nr.zero?
 
@@ -182,13 +286,13 @@ namespace :data_migrations do
       next unless cells[col_hash[:craft]].blank? && cells[col_hash[:detailed_craft]].blank?
 
       craft_field = CraftField.find_or_create_by(letter: cells[col_hash[:craft_field_letter]]) do |craft_field|
-        PrettyConsole.print_in_green "."
+        PrettyConsole.print_in_green '.'
         craft_field.name = cells[col_hash[:name]]
         craft_field.letter = cells[col_hash[:craft_field_letter]]
       end
     end
-    puts ""
-    PrettyConsole.say_in_yellow "Done with creating craft fields"
+    puts ''
+    PrettyConsole.say_in_yellow 'Done with creating craft fields'
   end
 
   desc 'create crafts'
@@ -203,26 +307,27 @@ namespace :data_migrations do
     }
     file_location_production = Rails.root.join('db/data_imports/ROME_Arbo_20231127.csv')
     file_location_review = Rails.root.join('db/data_imports/ROME_Arbo_20231127.csv')
-    file_location = Rails.env.in?(%w[development review ]) ? file_location_review : file_location_production
+    file_location = Rails.env.in?(%w[development review]) ? file_location_review : file_location_production
     CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
       next if line_nr.zero?
 
       cells = row.to_s.split(';').map(&:strip)
       next if cells[col_hash[:craft]].blank? && cells[col_hash[:detailed_craft]].blank?
       next unless cells[col_hash[:detailed_craft]].blank?
+
       Craft.joins(:craft_field)
            .where(number: cells[col_hash[:craft]])
-           .where(craft_field: {letter: cells[col_hash[:craft_field_letter]]})
+           .where(craft_field: { letter: cells[col_hash[:craft_field_letter]] })
            .first_or_create do |craft|
-        PrettyConsole.print_in_green "."
+        PrettyConsole.print_in_green '.'
         craft.name = cells[col_hash[:name]]
         craft.number = cells[col_hash[:craft]]
         craft_field = CraftField.find_by(letter: cells[col_hash[:craft_field_letter]])
         craft.craft_field = craft_field
       end
     end
-    puts ""
-    PrettyConsole.say_in_yellow "Done with creating crafts"
+    puts ''
+    PrettyConsole.say_in_yellow 'Done with creating crafts'
   end
 
   desc 'create detailed_crafts'
@@ -237,7 +342,7 @@ namespace :data_migrations do
     }
     file_location_production = Rails.root.join('db/data_imports/ROME_Arbo_20231127.csv')
     file_location_review = Rails.root.join('db/data_imports/ROME_Arbo_20231127.csv')
-    file_location = Rails.env.in?(%w[development review ]) ? file_location_review : file_location_production
+    file_location = Rails.env.in?(%w[development review]) ? file_location_review : file_location_production
     CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
       next if line_nr.zero?
 
@@ -245,21 +350,20 @@ namespace :data_migrations do
       next if cells[col_hash[:craft]].blank? || cells[col_hash[:detailed_craft]].blank?
       next unless cells[col_hash[:ogr_code]].blank?
 
-
       DetailedCraft.joins(craft: :craft_field)
-                   .where(craft: {number: cells[col_hash[:craft]]})
-                   .where(craft_field: {letter: cells[col_hash[:craft_field_letter]]})
+                   .where(craft: { number: cells[col_hash[:craft]] })
+                   .where(craft_field: { letter: cells[col_hash[:craft_field_letter]] })
                    .where(number: cells[col_hash[:detailed_craft]])
                    .first_or_create do |detailed_craft|
-        PrettyConsole.print_in_green "."
+        PrettyConsole.print_in_green '.'
         detailed_craft.name = cells[col_hash[:name]]
         detailed_craft.number = cells[col_hash[:detailed_craft]]
         craft = Craft.find_by(number: cells[col_hash[:craft]])
         detailed_craft.craft = craft
       end
     end
-    puts ""
-    PrettyConsole.say_in_yellow "Done with creating detailed crafts"
+    puts ''
+    PrettyConsole.say_in_yellow 'Done with creating detailed crafts'
   end
 
   desc 'create coded_crafts'
@@ -274,7 +378,7 @@ namespace :data_migrations do
     }
     file_location_production = Rails.root.join('db/data_imports/ROME_Arbo_20231127.csv')
     file_location_review = Rails.root.join('db/data_imports/ROME_Arbo_20231127.csv')
-    file_location = Rails.env.in?(%w[development review ]) ? file_location_review : file_location_production
+    file_location = Rails.env.in?(%w[development review]) ? file_location_review : file_location_production
     CSV.foreach(file_location, headers: { col_sep: ';' }).each.with_index(2) do |row, line_nr|
       next if line_nr.zero?
 
@@ -282,26 +386,36 @@ namespace :data_migrations do
       next if cells[col_hash[:craft]].blank? || cells[col_hash[:detailed_craft]].blank?
       next if cells[col_hash[:ogr_code]].blank?
 
-      CodedCraft.joins(detailed_craft: {craft: :craft_field})
-                .where(detailed_craft: {number: cells[col_hash[:detailed_craft]]})
-                .where(craft: {number: cells[col_hash[:craft]]})
-                .where(craft_field: {letter: cells[col_hash[:craft_field_letter]]})
+      CodedCraft.joins(detailed_craft: { craft: :craft_field })
+                .where(detailed_craft: { number: cells[col_hash[:detailed_craft]] })
+                .where(craft: { number: cells[col_hash[:craft]] })
+                .where(craft_field: { letter: cells[col_hash[:craft_field_letter]] })
                 .where(ogr_code: cells[col_hash[:ogr_code]])
                 .first_or_create(ogr_code: cells[col_hash[:ogr_code]]) do |coded_craft|
-        PrettyConsole.print_in_green "."
+        PrettyConsole.print_in_green '.'
         coded_craft.name = cells[col_hash[:name]]
         coded_craft.ogr_code = cells[col_hash[:ogr_code]]
         detailed_craft = DetailedCraft.find_by(number: cells[col_hash[:detailed_craft]])
         coded_craft.detailed_craft = detailed_craft
       end
     end
-    puts ""
-    PrettyConsole.say_in_yellow "Done with creating coded crafts"
+    puts ''
+    PrettyConsole.say_in_yellow 'Done with creating coded crafts'
   end
 
   desc 'populate crafts with 4 tables'
-  task :populate_crafts => %w[data_migrations:create_craft_fields
-                              data_migrations:create_crafts
-                              data_migrations:create_detailed_crafts
-                              data_migrations:create_coded_crafts]
+  task populate_crafts: %w[data_migrations:create_craft_fields
+                           data_migrations:create_crafts
+                           data_migrations:create_detailed_crafts
+                           data_migrations:create_coded_crafts]
+
+  desc 'populate grades'
+  task populate_grades: :environment do
+    Grade.find_or_create_by!(short_name: :seconde, name: 'seconde générale et technologique',
+                             school_year_end_month: '06', school_year_end_day: '30')
+    Grade.find_or_create_by!(short_name: :troisieme, name: 'troisieme générale', school_year_end_month: '05',
+                             school_year_end_day: '31')
+    Grade.find_or_create_by!(short_name: :quatrieme, name: 'quatrieme générale',
+                             school_year_end_month: '05', school_year_end_day: '31')
+  end
 end
