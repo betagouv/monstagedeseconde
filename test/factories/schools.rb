@@ -43,6 +43,7 @@ FactoryBot.define do
     end
 
     trait :college do
+      name { 'Collège Lucien Alphandary' }
       school_type { :college }
     end
   end

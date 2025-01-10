@@ -54,6 +54,14 @@ def populate_users
                                                   phone: '+330623655541'
                                                 ))
   school_manager.save!
+  school_manager_2= with_class_name_for_defaults(Users::SchoolManagement.new(
+                                                  role: 'school_manager',
+                                                  email: "ce.1234568X@#{find_default_school_during_test.email_domain_name}",
+                                                  password: password_value,
+                                                  school: find_default_school_during_test('college'),
+                                                  phone: '+330623655542'
+                                                ))
+                                                school_manager_2.save!
   with_class_name_for_defaults(Users::SchoolManagement.new(role: 'main_teacher', class_room:,
                                                            email: "main_teacher@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
   with_class_name_for_defaults(Users::SchoolManagement.new(role: 'main_teacher',

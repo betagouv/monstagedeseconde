@@ -147,8 +147,13 @@ def update_schools_with_public_private_info
 end
 
 def find_default_school_during_test(school_type = 'lycee')
+  # lycee
   # code_uai: "0753268V"
   # school at Paris, Lycée polyvalent Jean Lurçat - Site Gobelins;48 avenue des Gobelins
+
+  # collège
+  # code_uai: "0752694W"
+  # school at Paris, Collège Camille Claudel; 1 rue de la Nouvelle France
   School.where(school_type:, city: 'Paris').first
 end
 

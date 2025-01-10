@@ -113,6 +113,14 @@ FactoryBot.define do
       role { Users::SchoolManagement.roles[:school_manager] }
 
       sequence(:email) { |n| "ce.#{'%07d' % n}#{('a'..'z').to_a.sample}@#{school.email_domain_name}" }
+
+      trait :college do
+        school { create(:school, :college) }
+      end
+
+      trait :lycee do
+        school { create(:school, :lycee) }
+      end
     end
 
     factory :main_teacher, class: 'Users::SchoolManagement', parent: :user do
