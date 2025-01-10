@@ -9,7 +9,7 @@ module Finders
         Users::Employer.name => :visitor_query,
         Users::Visitor.name => :visitor_query,
         Users::SchoolManagement.name => :school_management_query,
-        Users::Student.name => :school_members_query,
+        Users::Student.name => :student_query,
         Users::PrefectureStatistician.name => :statistician_query,
         Users::MinistryStatistician.name => :ministry_statistician_query,
         Users::EducationStatistician.name => :statistician_query,
@@ -58,6 +58,15 @@ module Finders
 
     def school_members_query
       school_management_query.ignore_already_applied(user:)
+    end
+
+    def student_query
+      case user.try(:grade).try(:id)
+      when Grade.seconde.id
+        school_members_query.seconde
+      else
+        school_members_query.troisieme_or_quatrieme
+      end
     end
 
     def statistician_query

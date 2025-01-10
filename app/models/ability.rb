@@ -89,7 +89,8 @@ class Ability
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
     can :apply, InternshipOffer do |internship_offer|
-      !user.internship_applications.exists?(internship_offer_id: internship_offer.id) && # user has not already applied
+      internship_offer.grades.include?(user.grade) &&
+        !user.internship_applications.exists?(internship_offer_id: internship_offer.id) && # user has not already applied
         user.other_approved_applications_compatible?(internship_offer:) &&
         (!internship_offer.reserved_to_school? || internship_offer.school_id == user.school_id)
     end

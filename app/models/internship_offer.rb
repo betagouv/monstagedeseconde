@@ -216,6 +216,24 @@ class InternshipOffer < ApplicationRecord
     where(school_year: next_year)
   }
 
+  scope :troisieme_or_quatrieme, lambda {
+    joins(:grades).where(grades: { id: Grade.troisieme_et_quatrieme.ids })
+  }
+
+  scope :seconde, lambda {
+    joins(:grades).where(grades: { id: Grade.seconde.id })
+  }
+
+  scope :with_grade, lambda { |user|
+    return all if user.nil?
+
+    if user.grade_id == Grade.seconde.id
+      seconde
+    else
+      troisieme_or_quatrieme
+    end
+  }
+
   scope :by_department, ->(departments) { where(department: departments) }
 
   aasm do

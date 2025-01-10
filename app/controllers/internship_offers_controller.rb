@@ -145,7 +145,9 @@ class InternshipOffersController < ApplicationController
     end
 
     if alternative_offers.count < 5
-      alternative_offers += InternshipOffer.uncompleted.last(5 - alternative_offers.count)
+      alternative_offers += InternshipOffer.with_grade(current_user)
+                                           .uncompleted
+                                           .last(5 - alternative_offers.count)
       alternative_offers = alternative_offers.uniq
     end
 
