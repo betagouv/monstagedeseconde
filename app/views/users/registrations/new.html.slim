@@ -291,13 +291,12 @@
                     .fr-text
                       | Pour valider la création de votre compte, tapez les caractères que vous voyez sur cette image
                     .fr-my-1w 
-                      = image_tag src=@captcha_image, alt: "Captcha", class: "fr-mt-2w fr-mb-2w"
+                      = image_tag @captcha_image, alt: "Captcha", class: "fr-mt-2w fr-mb-2w"
                     .actions
                       = f.hidden_field :captcha_uuid, value: @captcha_uuid
                       .row 
                         .col-12.col-lg-6
                           = f.text_field :captcha, as: :string, label: false, input_html: { autocomplete: "off" }, class: "fr-input fr-mb-2v", required: true
-                      
                 
                 .col-12.col-lg-6
                   = f.submit "Valider",
