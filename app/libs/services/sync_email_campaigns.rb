@@ -4,14 +4,14 @@ module Services
   class SyncEmailCampaigns < ApiRequestsHelper
     require 'net/https'
 
-    SARBACANE_HOST = 'https://sarbacaneapis.com/v1'.freeze
+    SARBACANE_HOST = 'https://sarbacaneapis.com/v1'
 
     SARBACANE_ENDPOINTS = {
-      list:{
+      list: {
         add: { url_part: '/lists', method: :post },
         read: { url_part: '/lists', method: :get }
       },
-      contact:{
+      contact: {
         add: { url_part: '/lists/%s/contacts', method: :post },
         search: { url_part: '/lists/%s/contacts', method: :get },
         delete: { url_part: '/lists/%s/contacts', method: :delete }
@@ -19,7 +19,7 @@ module Services
     }.freeze
 
     # public API
-    def add_contact(user:, list_name: 'newsletter')
+    def add_contact(user:, list_name: 'Newsletter - 1E1S')
       list_id = fetch_list_id(list_name: list_name)
       return :unexisting_list if list_id.blank?
 
@@ -32,7 +32,7 @@ module Services
       raise StandardError.new "Fail to add_contact ##{user.id} in #{list_name}"
     end
 
-    def remove_contact(email:, list_name: 'newsletter')
+    def remove_contact(email:, list_name: 'Newsletter - 1E1S')
       list_id = fetch_list_id(list_name: list_name)
       return :unexisting_list if list_id.blank?
 
@@ -44,7 +44,6 @@ module Services
 
       raise StandardError.new "fail to remove contact #{email} from #{list_name}: code[#{response.code}], #{response.body}"
     end
-
 
     private
 
@@ -64,15 +63,14 @@ module Services
 
     # Browser methods
 
-    def fetch_list_id(list_name: )
+    def fetch_list_id(list_name:)
       campaign_lists = read_lists
 
       campaign_lists.each do |list|
         return list['id'] if list['name'] == list_name
       end
-      ""
+      ''
     end
-
 
     def search_contact_by_email(email:, list_id:)
       contacts = list_contacts(list_id: list_id)
@@ -85,7 +83,7 @@ module Services
     end
 
     #
-    #Requests
+    # Requests
     #
 
     def fetch_lists
@@ -96,7 +94,7 @@ module Services
       end
     end
 
-    def add_contact_to_list(list_id: , user:)
+    def add_contact_to_list(list_id:, user:)
       with_http_connection do |http|
         body = { email: user.email, phone: user.phone }.to_json
         http.request(
@@ -113,7 +111,7 @@ module Services
       end
     end
 
-    def delete_contact_from_list(list_id: , email:)
+    def delete_contact_from_list(list_id:, email:)
       with_http_connection do |http|
         params = { email: email }
         http.request(
@@ -126,7 +124,7 @@ module Services
     # utils
     #
 
-    def full_endpoint(url_parts:, parameter: , params: )
+    def full_endpoint(url_parts:, parameter:, params:)
       url = SARBACANE_ENDPOINTS.dig(*url_parts)[:url_part]
       url = SARBACANE_ENDPOINTS.dig(*url_parts)[:url_part] % parameter if parameter.present?
       url = "#{SARBACANE_HOST}/#{url}"
@@ -135,7 +133,7 @@ module Services
       "#{url}?#{params.to_query}"
     end
 
-    def do_request(url_parts: , default_header: default_headers, parameter: nil, body: nil, params:{})
+    def do_request(url_parts:, default_header: default_headers, parameter: nil, body: nil, params: {})
       full_endpoint = full_endpoint(url_parts: url_parts, parameter: parameter, params: params)
       case SARBACANE_ENDPOINTS.dig(*url_parts)[:method]
       when :get
@@ -157,9 +155,7 @@ module Services
 
     def with_http_connection(&block)
       uri = URI(SARBACANE_HOST)
-      Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |https|
-        yield(https)
-      end
+      Net::HTTP.start(uri.host, uri.port, use_ssl: true, &block)
     end
 
     def default_headers
