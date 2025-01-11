@@ -15,6 +15,7 @@ class InternshipAgreement < ApplicationRecord
   include Discard::Model
 
   MIN_PRESENCE_DAYS = 4
+  EMPLOYERS_PENDING_STATES = %i[draft started_by_employer signed_by_employer validated].freeze
 
   belongs_to :internship_application
   has_many :signatures, dependent: :destroy
@@ -98,7 +99,8 @@ class InternshipAgreement < ApplicationRecord
                   to: :started_by_school_manager
     end
 
-    # validate is a reserved keyword and finalize is used instead
+    # validate is a reserved keyword and finalize is used instead.
+    # Means the agreement is ready to be signed by one of the parties
     event :finalize do
       transitions from: %i[completed_by_employer started_by_school_manager],
                   to: :validated,
@@ -255,7 +257,16 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def signed_by?(user:)
-    signatures.pluck(:user_id).include?(user.id)
+    return false if user.nil?
+
+    signatures.pluck(:user_id).include?(user.team.id)
+  end
+
+  def signed_by_team_member?(user:)
+    return false if user.nil?
+    return signed_by?(user: user) if user.team.nil? || user.team.not_exists?
+
+    user.team.db_members.any? { |member| signed_by?(user: member) }
   end
 
   def signed_by_school?

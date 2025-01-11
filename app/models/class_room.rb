@@ -2,6 +2,7 @@
 
 class ClassRoom < ApplicationRecord
   belongs_to :school
+  belongs_to :grade, optional: true
   has_many :students, class_name: 'Users::Student',
                       dependent: :nullify
   has_many :school_managements, class_name: 'Users::SchoolManagement',

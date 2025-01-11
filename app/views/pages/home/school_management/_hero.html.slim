@@ -1,0 +1,24 @@
+header.container-xl.px-0
+  / desktop display
+  .container-monstage.container-xl.homepage.visible.fr-pb-3w
+    .row
+      .col-12
+        .row.fr-px-2w.fr-pt-6w.fr-mb-2w
+          .col-lg-6.col-md-12.px-0
+            h1.fr-h3.blue-france
+              | Équipes éducatives, équipes administratives en établissements scolaires, accompagnez vos élèves dans leur recherche de stages et dans leurs candidatures.
+            
+            .fr-text.blue-france
+              .row 
+                .col-12
+                  span
+                    | Suivez vos élèves dans leurs recherches de stage et accompagnez-les tout au long de cette première immersion dans le monde professionnel.
+        
+          .col-lg-6.col-md-12.px-0.d-flex.align-items-center
+            = image_tag asset_pack_path('media/images/homepage/1eleve1stage_tag.png'),
+                        alt: 'Illustration élèves',
+                      class: 'img-fluid'
+        .row.fr-my-3w
+          .col-12 
+            = link_to "S'inscrire", new_user_registration_path(as: 'SchoolManagement'), class: 'fr-btn'
+

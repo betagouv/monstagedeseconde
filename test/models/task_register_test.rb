@@ -1,7 +1,7 @@
-require "test_helper"
+require 'test_helper'
 
 class TaskRegisterTest < ActiveSupport::TestCase
- test 'factory' do
+  test 'factory' do
     assert build(:development_task_register).valid?
     assert build(:review_task_register).valid?
     assert build(:staging_task_register).valid?

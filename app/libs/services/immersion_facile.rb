@@ -1,7 +1,7 @@
 module Services
-  class ImmersionFacile
-    IMMERSION_FACILE_ENDPOINT_URL = ENV['IMMERSION_FACILE_API_URL'] + '/search'
-    
+  class ImmersionFacile < ApiRequestsHelper
+    IMMERSION_FACILE_ENDPOINT_URL = "#{ENV['IMMERSION_FACILE_API_URL']}/search".freeze
+
     # sample of json response : {
     # [
     #   {
@@ -45,11 +45,10 @@ module Services
     #   }
     # ]
 
-
     def perform
       response = get_request
       if response.nil? || !response.respond_to?(:body)
-        error_message = "Faulty request : consider contacting developper"
+        error_message = 'Faulty request : consider contacting developper'
         Rails.logger.error(error_message)
       end
       if response && response.respond_to?(:code) && status?(200, response)
@@ -67,14 +66,6 @@ module Services
                       "#{response} for immmersion-" \
                       "facilitée with #{city} search"
       Rails.logger.error(error_message)
-    end
-
-    def get_request
-      uri = get_request_uri
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      request = Net::HTTP::Get.new(uri, default_headers)
-      http.request(request)
     end
 
     def get_request_uri
@@ -97,15 +88,9 @@ module Services
       query_str
     end
 
-    # expected: Int|Array[Int],
-    # response: HttpResponse,
-    def status?(expected, response)
-      Array(expected).include?(response.code.to_i)
-    end
-
     def default_headers
       {
-        'Accept': 'application/json' ,
+        'Accept': 'application/json',
         'Authorization': ENV['IMMERSION_FACILE_API_KEY']
       }
     end
@@ -127,7 +112,7 @@ module Services
       return [] unless appellation_codes.respond_to?(:map)
 
       appellation_codes = appellation_codes.map(&:to_s)
-      (appellation_codes.all? { |code| code.match?(/\A\d{4,}\z/)}) ? appellation_codes: []
+      appellation_codes.all? { |code| code.match?(/\A\d{4,}\z/) } ? appellation_codes : []
     end
   end
 end

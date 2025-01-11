@@ -1,0 +1,49 @@
+{
+  "pagination": {
+    "totalInternshipOffers": 2,
+    "internshipOffersPerPage": 30,
+    "totalPages": 1,
+    "currentPage": 1,
+    "nextPage": null,
+    "prevPage": null,
+    "isFirstPage": true,
+    "isLastPage": true,
+    "pageUrlBase": "http://www.example.com/api/v2/internship_offers"
+  },
+  "internshipOffers": [
+    {
+      "id": 143,
+      "title": "Stage de 2de - 8",
+      "description": "Lorem ipsum dolor api",
+      "employer_name": "Octo",
+      "url": "http://www.example.com/offres-de-stage/143?page=1&utm_source=operator-3",
+      "city": "Paris",
+      "date_start": " 2 décembre 2024",
+      "date_end": "30 mai 2025",
+      "latitude": 48.866667,
+      "longitude": 2.333333,
+      "image": "http://www.example.com/packs-test/media/images/sectors/default_sector-e1b60d1832d3ebc2a8ccff663f1a8dd8.svg",
+      "sector": "secteur-20",
+      "handicap_accessible": false,
+      "period": 0,
+      "weeks": "du 02/12/2024 au 08/12/2024, du 09/12/2024 au 15/12/2024, du 16/12/2024 au 22/12/2024, du 23/12/2024 au 29/12/2024, du 30/12/2024 au 05/01/2025, du 06/01/2025 au 12/01/2025, du 13/01/2025 au 19/01/2025, du 20/01/2025 au 26/01/2025, du 27/01/2025 au 02/02/2025, du 03/02/2025 au 09/02/2025, du 10/02/2025 au 16/02/2025, du 17/02/2025 au 23/02/2025, du 24/02/2025 au 02/03/2025, du 03/03/2025 au 09/03/2025, du 10/03/2025 au 16/03/2025, du 17/03/2025 au 23/03/2025, du 24/03/2025 au 30/03/2025, du 31/03/2025 au 06/04/2025, du 07/04/2025 au 13/04/2025, du 14/04/2025 au 20/04/2025, du 21/04/2025 au 27/04/2025, du 28/04/2025 au 04/05/2025, du 05/05/2025 au 11/05/2025, du 12/05/2025 au 18/05/2025, du 19/05/2025 au 25/05/2025, du 26/05/2025 au 01/06/2025"
+    },
+    {
+      "id": 142,
+      "title": "Stage de 2de - 7",
+      "description": "Lorem ipsum dolor api",
+      "employer_name": "Octo",
+      "url": "http://www.example.com/offres-de-stage/142?page=1&utm_source=operator-3",
+      "city": "Paris",
+      "date_start": " 2 décembre 2024",
+      "date_end": "30 mai 2025",
+      "latitude": 48.866667,
+      "longitude": 2.333333,
+      "image": "http://www.example.com/packs-test/media/images/sectors/default_sector-e1b60d1832d3ebc2a8ccff663f1a8dd8.svg",
+      "sector": "secteur-18",
+      "handicap_accessible": false,
+      "period": 0,
+      "weeks": "du 02/12/2024 au 08/12/2024, du 09/12/2024 au 15/12/2024, du 16/12/2024 au 22/12/2024, du 23/12/2024 au 29/12/2024, du 30/12/2024 au 05/01/2025, du 06/01/2025 au 12/01/2025, du 13/01/2025 au 19/01/2025, du 20/01/2025 au 26/01/2025, du 27/01/2025 au 02/02/2025, du 03/02/2025 au 09/02/2025, du 10/02/2025 au 16/02/2025, du 17/02/2025 au 23/02/2025, du 24/02/2025 au 02/03/2025, du 03/03/2025 au 09/03/2025, du 10/03/2025 au 16/03/2025, du 17/03/2025 au 23/03/2025, du 24/03/2025 au 30/03/2025, du 31/03/2025 au 06/04/2025, du 07/04/2025 au 13/04/2025, du 14/04/2025 au 20/04/2025, du 21/04/2025 au 27/04/2025, du 28/04/2025 au 04/05/2025, du 05/05/2025 au 11/05/2025, du 12/05/2025 au 18/05/2025, du 19/05/2025 au 25/05/2025, du 26/05/2025 au 01/06/2025"
+    }
+  ]
+}

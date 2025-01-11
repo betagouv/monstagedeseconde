@@ -1,0 +1,87 @@
+---
+version: "3"
+
+vars:
+  YAMLLINT_VIRTUALENV: '{{.YAMLLINT_VIRTUALENV | default "./venv/yamllint"}}'
+  YAMLLINT_COMMAND: '{{.YAMLLINT_COMMAND | default "./venv/yamllint/bin/yamllint"}}'
+  YAMLLINT_CONFIG_FULL_PATH: '{{.YAMLLINT_CONFIG_FULL_PATH | default ".config/yamllint/config.yml"}}'
+  YAMLLINT_CLI_OPTS: '{{.YAMLLINT_CLI_OPTS | default "--strict"}}'
+  YAMLLINT_PATH_TO_LINT: '{{.YAMLLINT_PATH_TO_LINT | default "."}}'
+
+tasks:
+  default:
+    deps: [install]
+    desc: Lint YAML files using yamllint.
+    summary: |
+      🏷️ Description:
+        Executes yamllint to ensure YAML files adhere to specified syntax standards.
+
+      🔧 Variables:
+        - YAMLLINT_VIRTUALENV: Path to the virtual environment. Default: "./venv/yamllint"
+        - YAMLLINT_COMMAND: Command to run yamllint. Default: "./venv/yamllint/bin/yamllint"
+        - YAMLLINT_CONFIG_FULL_PATH: Full path to the yamllint configuration file. Default: ".config/yamllint/config.yml"
+        - YAMLLINT_CLI_OPTS: Command line options for yamllint. Default: "--strict"
+        - YAMLLINT_PATH_TO_LINT: Path to the files to be linted. Default: "."
+
+      🔐 Preconditions:
+        - The 'install' task must have been successfully executed.
+        - A yamllint configuration file must exist at the specified location.
+
+      🔄 Execution:
+        Runs yamllint with the specified options and configuration on the designated files.
+
+      📝 Note:
+        This task should be executed after any modifications to YAML files to maintain consistent formatting.
+    cmds:
+      - "{{.YAMLLINT_COMMAND}} {{.YAMLLINT_CLI_OPTS}} -c {{.YAMLLINT_CONFIG_FULL_PATH}} {{.YAMLLINT_PATH_TO_LINT}}"
+      - cmd: echo "🎉 All files correctly linted with yamllint!"
+        silent: true
+
+  install:
+    desc: Set up yamllint in a virtual environment.
+    summary: |
+      🎯 Description:
+        Configures yamllint and its dependencies within a controlled virtual environment.
+
+      🔧 Variables:
+        - YAMLLINT_PYTHON_VERSION_FILE: Path to the file specifying the Python version.
+          Default: ".config/python/.python-version"
+          Example content: "3.11"
+        - YAMLLINT_REQUIREMENTS_FILE: Path to the file listing required packages.
+          Default: ".config/yamllint/requirements.txt"
+          Example content: "yamllint==1.32.0"
+        - YAMLLINT_VIRTUALENV: Location of the virtual environment for yamllint.
+          Default: "./venv/yamllint"
+
+      🔐 Preconditions:
+        - A Python version file must exist at the specified location.
+          Example content: "3.11"
+        - An active internet connection is required to download yamllint and its dependencies.
+
+      🔄 Execution:
+        1. Creates a new Python virtual environment using the version specified in YAMLLINT_PYTHON_VERSION_FILE.
+        2. Installs yamllint and its dependencies using the YAMLLINT_REQUIREMENTS_FILE.
+        3. Verifies the installation by checking the installed yamllint version.
+
+      📝 Note:
+        Ensure the Python version file specifies a version compatible with yamllint and its dependencies.
+    preconditions:
+      - sh: test -f {{.YAMLLINT_PYTHON_VERSION_FILE}}
+        msg: |
+          Error: missing file {{.YAMLLINT_PYTHON_VERSION_FILE}}.
+          Please create it as follows:
+          ```bash
+          mkdir -p $(dirname "{{.YAMLLINT_PYTHON_VERSION_FILE}}")
+          echo "3.11" > {{.YAMLLINT_PYTHON_VERSION_FILE}}
+          ```
+    vars:
+      YAMLLINT_PYTHON_VERSION_FILE: '{{.YAMLLINT_PYTHON_VERSION_FILE | default ".config/python/.python-version"}}'
+      YAMLLINT_REQUIREMENTS_FILE: '{{.YAMLLINT_REQUIREMENTS_FILE | default ".config/yamllint/requirements.txt"}}'
+    status:
+      - |
+        {{.YAMLLINT_COMMAND}} --version | grep -q $(awk -F '==' '{print $2}' {{.YAMLLINT_REQUIREMENTS_FILE}})
+    cmds:
+      - python$(cut -d '=' -f 2 {{.YAMLLINT_PYTHON_VERSION_FILE}}) -m venv {{.YAMLLINT_VIRTUALENV}}
+      - "{{.YAMLLINT_VIRTUALENV}}/bin/pip install -r {{.YAMLLINT_REQUIREMENTS_FILE}}"
+      - cmd: echo "☑️  Yamllint and dependencies are successfully installed in the virtual environment."
+        silent: true

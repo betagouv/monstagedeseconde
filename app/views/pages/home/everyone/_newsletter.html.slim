@@ -1,0 +1,15 @@
+.fr-my-2w.fr-py-2w.mx-lg-0.fr-mx-2w
+  .fr-follow__newsletter
+    .row
+      .col-12.col-md-6.fr-px-1w
+        h2.fr-h5 Abonnez-vous à notre lettre d’information
+        p.fr-text--sm Recevez des conseils pratiques sur l’accompagnement des élèves, les bonnes pratiques en matière de stages, actualités sur les collaborations entre écoles et entreprises, ...
+      .col-12.col-md-6.fr-px-1w
+        = form_tag '/newsletter', method: :post do
+          .fr-input-group
+            label.fr-label[for="newsletter-email"] Votre adresse électronique (ex. : nom@domaine.fr)
+            .fr-input-wrap.fr-input-wrap--addon
+              = email_field_tag :email, nil, title: "Votre adresse électronique (ex. : nom@domaine.fr)", 'aria-describedby': "newsletter-email-hint-text newsletter-email-messages", placeholder: "Votre adresse électronique (ex. : nom@domaine.fr)",  id: "newsletter-email", required: "required",  class: "fr-input"
+              = submit_tag 'S’abonner', class: 'fr-btn', id: 'newsletter-button', title: "S‘abonner à notre lettre d’information"
+            .fr-messages-group#newsletter-email-messages[aria-live="assertive"]
+          p#newsletter-email-hint-text.fr-hint-text En renseignant votre adresse électronique, vous acceptez de recevoir nos actualités par courriel. Vous pouvez vous désinscrire à tout moment à l’aide des liens de désinscription ou en nous contactant.

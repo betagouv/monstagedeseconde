@@ -22,45 +22,41 @@ module Presenters
                             .address
     end
 
-    # TODO: remove following method since delegated
     def internship_offer_title
-      internship_application.internship_offer.title
+      internship_offer.title
     end
 
     def human_state
       action_path = { path: internship_application_path }
       case internship_application.aasm_state
-      when 'drafted'
-        student_has_found = internship_application.student
-                                                  .with_2_weeks_internships_approved?
-        label = student_has_found ? 'Voir' : 'Finaliser ma candidature'
-        level = student_has_found ? 'tertiary' : 'primary'
-
-        { label: 'brouillon',
-          badge: 'grey',
-          actions: [action_path.merge(label:, level:)] }
       when 'submitted'
         label = reader.student? || reader.school_management? ? "Sans réponse de l'entreprise" : 'nouveau'
         action_label = reader.student? ? 'Voir' : 'Répondre'
         action_level = reader.student? ? 'tertiary' : 'primary'
+        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Reçues, en attente de réponse'
         { label:,
           badge: 'info',
+          tab:,
           actions: [action_path.merge(label: action_label, level: action_level)] }
       when 'read_by_employer'
         label = reader.student? || reader.school_management? ? "Sans réponse de l'entreprise" : 'Lue'
         badge = reader.student? ? 'info' : 'warning'
+        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Reçues, en attente de réponse'
         action_label = reader.student? || reader.school_management? ? 'Voir' : 'Répondre'
         action_level = reader.student? ? 'tertiary' : 'primary'
         { label:,
           badge:,
+          tab:,
           actions: [action_path.merge(label: action_label, level: action_level)] }
 
       when 'transfered'
         action_label = reader.student? ? 'en attente de réponse' : 'transféré'
         action_level = reader.student? ? 'tertiary' : 'primary'
         label = reader.student? ? 'en attente de réponse' : 'transféré'
+        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Transférées'
         { label:,
           badge: 'info',
+          tab:,
           actions: [action_path.merge(label: action_label, level: action_level)] }
 
       when 'validated_by_employer'
@@ -68,27 +64,36 @@ module Presenters
         action_label = reader.student? ? 'Répondre' : 'Voir'
         action_level = reader.student? ? 'primary' : 'tertiary'
         badge = reader.student? ? 'success' : 'info'
+        tab = "Acceptées par l’offreur, à confirmer par l’élève"
         { label:,
           badge:,
+          tab:,
           actions: [action_path.merge(label: action_label, level: action_level)] }
       when 'canceled_by_employer'
         label = reader.student? || reader.school_management? ? 'annulée par l\'entreprise' : 'refusée'
+        tab = 'Annulées'
         { label: 'refusée par l\'entreprise',
           badge: 'error',
+          tab:,
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
       when 'rejected'
         label = reader.student? || reader.school_management? ? 'refusée par l\'entreprise' : 'refusée'
+        tab = 'Refusées'
         { label: 'refusée par l\'entreprise',
           badge: 'error',
+          tab:,
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
       when 'canceled_by_student'
         label = reader.student? || reader.school_management? ? 'annulée' : 'annulée par l\'élève'
+        tab = 'Annulées'
         { label:,
           badge: 'purple-glycine',
+          tab:,
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
       when 'expired'
         { label: 'expirée',
           badge: 'error',
+          tab: 'Expirées',
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
       when 'canceled_by_student_confirmation'
         { label: reader.student? ? 'Vous avez choisi un autre stage' : "L'élève a choisi un autre stage",
@@ -97,8 +102,10 @@ module Presenters
       when 'approved'
         action_label = reader.student? ? 'Contacter l\'employeur' : 'Voir'
         action_level = reader.student? ? 'primary' : 'secondary'
+        tab = reader.student? ? 'Votre stage validé' : 'Stage validé'
         { label: 'stage validé',
           badge: 'success',
+          tab:,
           actions: [action_path.merge(label: action_label, level: action_level)] }
       else
         {}
@@ -210,10 +217,15 @@ module Presenters
       end.compact
     end
 
+    def str_weeks
+      WeekList.new(weeks:).to_s
+    end
+
     attr_reader :internship_application,
                 :student,
                 :internship_offer,
-                :reader
+                :reader,
+                :weeks
 
     protected
 
@@ -222,6 +234,7 @@ module Presenters
       @internship_application = internship_application
       @student                = internship_application.student
       @internship_offer       = internship_application.internship_offer
+      @weeks                  = internship_application.weeks
     end
 
     def rails_routes

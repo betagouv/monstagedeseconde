@@ -10,7 +10,7 @@ module Product
     test 'USE_W3C, dashboard_internship_offers_path' do
       employer = create(:employer)
       %i[drafted submitted approved rejected].map do |aasm_state|
-        internship_offer = create(:weekly_internship_offer, employer: employer)
+        internship_offer = create(weekly_internship_offer_2nde, employer: employer)
         create(:weekly_internship_application, aasm_state: aasm_state, internship_offer: internship_offer)
       end
       sign_in(employer)
@@ -20,16 +20,15 @@ module Product
     end
 
     test 'USE_W3C, edit_dashboard_internship_offer_path' do
-      stage_dev = create(:weekly_internship_offer)
+      stage_dev = create(weekly_internship_offer_2nde)
       sign_in(stage_dev.employer)
       run_request_and_cache_response(report_as: 'edit_dashboard_internship_offer_path') do
         visit edit_dashboard_internship_offer_path(id: stage_dev.to_param)
       end
     end
 
-
     test 'USE_W3C, new_dashboard_internship_offer_path(duplicate_id)' do
-      stage_dev = create(:weekly_internship_offer)
+      stage_dev = create(weekly_internship_offer_2nde)
       sign_in(stage_dev.employer)
       run_request_and_cache_response(report_as: 'new_dashboard_internship_offer_path') do
         visit new_dashboard_internship_offer_path(duplicate_id: stage_dev.id)
@@ -58,21 +57,21 @@ module Product
 
     test 'index as school_manager see progress' do
       school = create(:school, :with_school_manager)
-      class_room = create(:class_room,  school: school)
+      class_room = create(:class_room, school: school)
 
       internship_application_1 = create(:weekly_internship_application,
-                                               :approved,
-                                                student: create(:student, school: school, class_room: class_room))
+                                        :approved,
+                                        student: create(:student, school: school, class_room: class_room))
       internship_application_2 = create(:weekly_internship_application,
-                                               :approved,
-                                                student: create(:student, school: school, class_room: class_room))
+                                        :approved,
+                                        student: create(:student, school: school, class_room: class_room))
       internship_application_3 = create(:weekly_internship_application,
-                                               :approved,
-                                                student: create(:student, school: school, class_room: class_room))
+                                        :approved,
+                                        student: create(:student, school: school, class_room: class_room))
       internship_application_4 = create(:weekly_internship_application,
-                                               :approved,
-                                                student: create(:student, school: school, class_room: class_room))
-      
+                                        :approved,
+                                        student: create(:student, school: school, class_room: class_room))
+
       InternshipAgreement.find_by(internship_application: internship_application_2)
                          .update_columns(employer_accept_terms: true, school_manager_accept_terms: false)
       InternshipAgreement.find_by(internship_application: internship_application_3)

@@ -5,6 +5,8 @@ fieldset.select-channel.fr-fieldset.fr-mt-n4w[aria-labelledby="channel-legend"]
       = yield
   p.fr-fieldset__details.fr-ml-1w
     = label
+    small.form-text.text-muted
+      | Un code de confirmation de compte vous sera envoyé par email ou par téléphone.
   .fr-fieldset__content.fr-fieldset--inline
     .fr-radio-group
       = form.radio_button :channel,

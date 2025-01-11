@@ -50,5 +50,6 @@
   .fr-pt-6w
     = react_component("InternshipOfferResults",
                     props: { sectors: @sectors.to_a,
+                            title: internship_offer_results_title(current_user),
                             searchParams: @params})
 

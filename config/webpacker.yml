@@ -8,6 +8,7 @@ default: &default
   cache_path: tmp/cache/webpacker
   check_yarn_integrity: false
   webpack_compile_output: false
+  additional_paths: []
 
   # Additional paths webpack should lookup modules
   # ['app/assets', 'engine/foo/app/assets']
@@ -93,7 +94,7 @@ test:
 
   cache_manifest: true
 
-review_heroku:
+review:
   <<: *default
 
   # Production depends on precompilation of packs prior to booting for performance.

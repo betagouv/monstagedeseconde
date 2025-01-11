@@ -1,5 +1,45 @@
-footer#footer.fr-footer.fr-px-2w role="contentinfo" data-controller='footer'
-  .fr-container
+footer#footer.fr-footer role="contentinfo" data-controller='footer'
+  .fr-footer__top.fr-px-2w
+    .fr-container
+      .row
+        - klass = employers_only? ? 'disabled_tab' : '' 
+        .col-12.col-md-3
+          .fr-footer__top-column
+            div class="title fr-text--sm fr-mb-1w #{klass}"
+              = "Élèves"
+            - path = employers_only? ? '#' : eleves_path
+            - path_anchor = employers_only? ? '#' : eleves_path(anchor: 'discover')
+            - path_resources = employers_only? ? '#' : eleves_path(anchor: 'resources')
+            .fr-py-1w = link_to "Trouver un stage", path, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Découvrir le dispositif", path_anchor, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Ressources utiles", path_resources, class: "fr-raw-link fr-text--sm link #{klass}"
+        .col-12.col-md-3
+          .fr-footer__top-column
+            .title.fr-text--sm.fr-mb-1w = "Professionnels"
+            .fr-py-1w = link_to "Déposer une offre de stage", professionnels_path, class: 'fr-raw-link fr-text--sm link'
+            .fr-py-1w = link_to "Découvrir le dispositif", professionnels_path(anchor: 'discover'), class: 'fr-raw-link fr-text--sm link'
+            .fr-py-1w = link_to "Ressources utiles", professionnels_path(anchor: 'resources'), class: 'fr-raw-link fr-text--sm link'
+        .col-12.col-md-3
+          .fr-footer__top-column
+            - path = employers_only? ? '#' : equipe_pedagogique_path
+            div class="title fr-text--sm fr-mb-1w #{klass}"
+              = "Établissements scolaires"
+            .fr-py-1w = link_to "Suivez vos élèves", path, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Découvrir le dispositif", path, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Ressources utiles", path, class: "fr-raw-link fr-text--sm link #{klass}"
+        .col-12.col-md-3
+          .fr-footer__top-column
+            - path = employers_only? ? '#' : referents_path
+            - path_anchor = employers_only? ? '#' : referents_path(anchor: 'discover')
+            - path_resources = employers_only? ? '#' : referents_path(anchor: 'resources')
+            div class="title fr-text--sm fr-mb-1w #{klass}"
+              = "Référents"
+            .fr-py-1w = link_to "Suivez votre territoire", path, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Découvrir le dispositif", path_anchor, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Ressources utiles", path_resources, class: "fr-raw-link fr-text--sm link #{klass}"
+              
+        
+  .fr-container.fr-px-2w
     .fr-footer__body
       .fr-logo
         |MINISTèRE 
@@ -8,16 +48,14 @@ footer#footer.fr-footer.fr-px-2w role="contentinfo" data-controller='footer'
         br
         |NATIONALE
       .fr-footer__content
-        p.fr-footer__content-desc = "Mon stage de seconde générale et technologique est un service fourni par la Direction du Numérique pour l’Éducation (DNE)."
+        p.fr-footer__content-desc = "1élève1stage est un service fourni par la Direction du Numérique pour l’Éducation (DNE)."
         ul.fr-footer__content-list
           li.fr-footer__content-item
-            a.fr-footer__content-link target="_blank" href="http://education.gouv.fr/" education.gouv.fr 
-          li.fr-footer__content-item
-            a.fr-footer__content-link target="_blank" href="https://legifrance.gouv.fr" legifrance.gouv.fr 
-          li.fr-footer__content-item
-            a.fr-footer__content-link target="_blank" href="https://gouvernement.fr"  gouvernement.fr
+            a.fr-footer__content-link target="_blank" href="https://www.info.gouv.fr/" info.gouv.fr 
           li.fr-footer__content-item
             a.fr-footer__content-link target="_blank"href="https://service-public.fr"  service-public.fr
+          li.fr-footer__content-item
+            a.fr-footer__content-link target="_blank" href="https://legifrance.gouv.fr" legifrance.gouv.fr 
           li.fr-footer__content-item
             a.fr-footer__content-link target="_blank" href="https://data.gouv.fr"  data.gouv.fr
     - unless ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
@@ -27,23 +65,23 @@ footer#footer.fr-footer.fr-px-2w role="contentinfo" data-controller='footer'
           li.fr-footer__bottom-item
             = link_to "Accessibilité : non conforme",
                       accessibilite_path,
-                      class: 'rf-footer__top-link'
+                      class: 'fr-raw-link fr-text--sm link'
           li.fr-footer__bottom-item
             = link_to "Mentions légales",
                       mentions_legales_path,
-                      class: 'rf-footer__top-link'
+                      class: 'fr-raw-link fr-text--sm link'
           li.fr-footer__bottom-item
             = link_to "Politique de confidentialité",
                       politique_de_confidentialite_path,
-                      class: 'rf-footer__top-link'
+                      class: 'fr-raw-link fr-text--sm link'
           li.fr-footer__bottom-item
             = link_to "Conditions d'utilisation",
                       conditions_d_utilisation_path,
-                      class: 'rf-footer__top-link'
+                      class: 'fr-raw-link fr-text--sm link'
           li.fr-footer__bottom-item
-            = link_to "Contact",
+            = link_to "Contactez-nous",
                       contact_path,
-                      class: 'rf-footer__top-link'
-    p.fr-mb-8w.fr-py-2w.fr-text--sm
-      | Sauf mention contraire, tous les contenus de ce site sont sous
-      a href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank"  licence etalab-2.0
+                      class: 'fr-raw-link fr-text--sm link'
+    p.fr-mb-8w.fr-py-2w.fr-text--sm.license
+      | Sauf mention explicite de propriété intellectuelle détenue par des tiers, les contenus de ce site sont proposés sous 
+      a href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank" class="link" licence etalab-2.0 

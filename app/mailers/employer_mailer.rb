@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 class EmployerMailer < ApplicationMailer
-  #TODO : every method's name should finish with _email in every_template
   def internship_application_submitted_email(internship_application:)
     @internship_application = internship_application
     @internship_offer       = @internship_application.internship_offer
     recipients_email        = internship_application.filter_notified_emails
+    @prez_application       = @internship_application.presenter(internship_application.internship_offer.employer)
     @url = dashboard_internship_offer_internship_application_url(
-          @internship_offer,
-          @internship_application
-        )
+      @internship_offer,
+      @internship_application
+    )
     @url_more_options = "#{@url}?sgid=#{@internship_application.to_sgid}"
     @url_accept       = "#{@url_more_options}&opened_modal=accept"
     @url_refuse       = "#{@url_more_options}&opened_modal=refuse"
@@ -24,7 +24,7 @@ class EmployerMailer < ApplicationMailer
                subject: 'Information - Une candidature a été annulée')
   end
 
-  def internship_application_approved_with_agreement_email(internship_agreement: )
+  def internship_application_approved_with_agreement_email(internship_agreement:)
     internship_application = internship_agreement.internship_application
     recipients_email       = internship_application.filter_notified_emails
     @internship_offer      = internship_application.internship_offer
@@ -43,7 +43,7 @@ class EmployerMailer < ApplicationMailer
     )
   end
 
-  def school_manager_finished_notice_email(internship_agreement: )
+  def school_manager_finished_notice_email(internship_agreement:)
     internship_application = internship_agreement.internship_application
     recipients_email       = internship_application.filter_notified_emails
     @internship_offer      = internship_application.internship_offer
@@ -100,7 +100,7 @@ class EmployerMailer < ApplicationMailer
     )
   end
 
-  def transfer_internship_application_email(internship_application:, employer_id: , email:, message:)
+  def transfer_internship_application_email(internship_application:, employer_id:, email:, message:)
     @internship_application = internship_application
     @internship_offer       = internship_application.internship_offer
     @employer               = @internship_offer.employer
@@ -130,7 +130,7 @@ class EmployerMailer < ApplicationMailer
     )
   end
 
-  def internship_application_approved_for_an_other_internship_offer(internship_application:)
+  def internship_application_approved_for_an_other_internship_offer_email(internship_application:)
     recipients_email  = internship_application.filter_notified_emails
     @internship_offer = internship_application.internship_offer
     student           = internship_application.student
@@ -139,7 +139,7 @@ class EmployerMailer < ApplicationMailer
     @url = dashboard_internship_offer_internship_applications_url(
       internship_offer_id: @internship_offer.id,
       id: internship_application.id,
-      mtm_campaign: "Offreur - internship application cancelled"
+      mtm_campaign: 'Offreur - internship application cancelled'
     ).html_safe
 
     send_email(
@@ -148,7 +148,7 @@ class EmployerMailer < ApplicationMailer
     )
   end
 
-  def team_member_invitation_email(team_member_invitation: , user: )
+  def team_member_invitation_email(team_member_invitation:, user:)
     @email = team_member_invitation.invitation_email
     @inviter_presenter = team_member_invitation.inviter.presenter
     # user may be nil
@@ -182,46 +182,46 @@ class EmployerMailer < ApplicationMailer
     subject   = @title
     @hello    = "#{@employer.presenter.formal_name},"
     @header   = 'Votre compte sera supprimé dans 14 jours : '
-    @content  = "nous avons effectivement constaté que votre participation " \
-                "à la plateforme stagedeseconde.1jeune1solution.gouv.fr " \
-                "est très faible depuis deux ans.<br/> " \
+    @content  = 'nous avons effectivement constaté que votre participation ' \
+                'à la plateforme stagedeseconde.1jeune1solution.gouv.fr ' \
+                'est très faible depuis deux ans.<br/> ' \
                 "La suppression de votre compte n'est naturellement pas notre souhait, " \
-                "car votre participation " \
+                'car votre participation ' \
                 "est essentielle au projet d'intégration de jeunes élèves " \
-                "à la vie active".html_safe
-    @extra_content = "Si vous souhaitez conserver votre compte, " \
-                     "connectez-vous dès maintenant."
-    @greetings = 'L\'équipe Mon stage de seconde'
+                'à la vie active'.html_safe
+    @extra_content = 'Si vous souhaitez conserver votre compte, ' \
+                     'connectez-vous dès maintenant.'
+    @greetings = "L\'équipe 1élève1stage"
     @cta_label = 'Se connecter'
     @url       = new_user_session_url
-    send_email( to: @employer.email, subject: subject )
+    send_email(to: @employer.email, subject:)
   end
 
   def drafted_internship_offer_email(internship_offer:)
     @employer = internship_offer.employer
-    @url = internship_offer_url( id: internship_offer.id,
-                                 mtm_campaign: 'Offreur_Offre_de_stage_en_attente',
-                                 origine: 'email' ).html_safe
+    @url = internship_offer_url(id: internship_offer.id,
+                                mtm_campaign: 'Offreur_Offre_de_stage_en_attente',
+                                origine: 'email').html_safe
     @url_label   = "Publier l'offre"
-    subject      = "Votre offre de stage attend sa publication"
-    @title       = "Finalisez la publication de votre offre de stage."
+    subject      = 'Votre offre de stage attend sa publication'
+    @title       = 'Finalisez la publication de votre offre de stage.'
     @bonjour     = "Bonjour #{@employer.presenter.full_name},"
     @paragraph_1 = "Nous avons remarqué que votre offre de stage intitulée #{internship_offer.title} " \
-                   "a été initiée sur Mon stage de seconde, mais reste enregistrée " \
-                   "en tant que brouillon."
-    @paragraph_2 = "Pour publier votre offre, suivez ces étapes simples :"
+                   "a été initiée sur 1élève1stage, mais reste enregistrée " \
+                   'en tant que brouillon.'
+    @paragraph_2 = 'Pour publier votre offre, suivez ces étapes simples :'
     @paragraph3_items = [
-      "Connectez-vous à votre compte sur stagedeseconde.1jeune1solution.gouv.fr.",
-      "Rendez-vous dans la section « Mes offres ».",
+      'Connectez-vous à votre compte sur stagedeseconde.1jeune1solution.gouv.fr.',
+      'Rendez-vous dans la section « Mes offres ».',
       "Sélectionnez l'offre \"#{internship_offer.title}\"",
       "Vérifiez les informations de l'offre et cliquez sur « Publier » pour la rendre visible aux élèves."
     ]
 
     @paragraph_4 = "Si l'offre n'est plus d'actualité ou si vous avez changé d'avis, " \
-                   "vous pouvez la supprimer depuis l’étape 4."
-    @paragraph_5 = "Nous sommes à votre disposition pour toute aide ou question. " \
+                   'vous pouvez la supprimer depuis l’étape 4.'
+    @paragraph_5 = 'Nous sommes à votre disposition pour toute aide ou question. ' \
                    "N'hésitez pas à nous contacter sur contact@stagedeseconde.education.gouv.fr"
 
-    send_email( to: @employer.email, subject: subject )
+    send_email(to: @employer.email, subject:)
   end
 end

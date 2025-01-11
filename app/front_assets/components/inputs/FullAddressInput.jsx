@@ -7,7 +7,7 @@ import { endpoints } from '../../utils/api';
 import { broadcast, newCoordinatesChanged } from '../../utils/events';
 
 // see: https://geo.api.gouv.fr/adresse
-export default function AddressInput({
+export default function FullAddressInput({
   resourceName,
   labelName,
   currentStreet,
@@ -16,6 +16,8 @@ export default function AddressInput({
   currentLatitude,
   currentLongitude,
   currentFullAddress,
+  isDuplication,
+  editMode
 }) {
   const [helpVisible, setHelpVisible] = useState(false);
   const [fullAddress, setFullAddress] = useState(currentFullAddress || '');
@@ -217,7 +219,7 @@ export default function AddressInput({
               type="text"
               name={`${resourceName}[street]`}
               id={`${resourceName}_street`}
-              maxlength="150"
+              maxLength="150"
               data-organisation-form-target="requiredField"
             />
           </div>
@@ -232,7 +234,7 @@ export default function AddressInput({
             <input
               className="fr-input"
               type="text"
-              maxlength="100"
+              maxLength="100"
               name={`${resourceName}[street_complement]`}
               id={`${resourceName}_street_complement`}
             />
@@ -252,7 +254,7 @@ export default function AddressInput({
               value={city}
               type="text"
               readOnly
-              maxlength="50"
+              maxLength="50"
               name={`${resourceName}[city]`}
               id={`${resourceName}_city`}
               data-organisation-form-target="requiredField"

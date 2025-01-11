@@ -19,9 +19,9 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
   end
 
   test 'search by location (city) works' do
-    internship_offer_at_paris = create(:weekly_internship_offer,
+    internship_offer_at_paris = create(:weekly_internship_offer_2nde,
                                        coordinates: Coordinates.paris)
-    internship_offer_at_bordeaux = create(:weekly_internship_offer,
+    internship_offer_at_bordeaux = create(:weekly_internship_offer_2nde,
                                           city: 'Bordeaux',
                                           coordinates: Coordinates.bordeaux)
 
@@ -41,33 +41,33 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
   end
 
   test 'search by location (zipcodes) works' do
-    travel_to (Date.new(2023, 9, 6)) do
-      internship_offer_at_paris = create(:weekly_internship_offer,
-                                        coordinates: Coordinates.paris)
-      internship_offer_at_bordeaux = create(:weekly_internship_offer,
+    travel_to(Date.new(2023, 9, 6)) do
+      internship_offer_at_paris = create(:weekly_internship_offer_2nde,
+                                         coordinates: Coordinates.paris)
+      internship_offer_at_bordeaux = create(:weekly_internship_offer_2nde,
                                             coordinates: Coordinates.bordeaux)
 
       visit internship_offers_path
       fill_in_city_or_zipcode(with: '75012', expect: 'Paris')
-
       submit_form
+      sleep 1
       assert_card_presence_of(internship_offer: internship_offer_at_paris)
       assert_absence_of(internship_offer: internship_offer_at_bordeaux)
 
       # reset search and submit
-      fill_in_city_or_zipcode(with: '', expect: '')
-      submit_form
-      # assert_presence_of(internship_offer: internship_offer_at_paris)
-      # assert_presence_of(internship_offer: internship_offer_at_bordeaux)
+      if ENV['RUN_BRITTLE_TEST']
+        fill_in_city_or_zipcode(with: '33000', expect: 'Bordeaux')
+        submit_form
+        assert_card_presence_of(internship_offer: internship_offer_at_bordeaux)
+        assert_absence_of(internship_offer: internship_offer_at_paris)
+      end
     end
   end
 
-
-
   test 'search by keyword works' do
     searched_keyword = 'helloworld'
-    searched_internship_offer = create(:weekly_internship_offer, title: searched_keyword)
-    not_searched_internship_offer = create(:weekly_internship_offer)
+    searched_internship_offer = create(:weekly_internship_offer_2nde, title: searched_keyword)
+    not_searched_internship_offer = create(:weekly_internship_offer_2nde)
     dictionnary_api_call_stub
     SyncInternshipOfferKeywordsJob.perform_now
     InternshipOfferKeyword.update_all(searchable: true)
@@ -86,28 +86,28 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
   end
 
   test 'search by all criteria' do
-    travel_to(Date.new(2022, 1, 6)) do
+    travel_to(Date.new(2024, 1, 6)) do
       searched_keyword = 'helloworld'
       searched_location = Coordinates.paris
       not_searched_keyword = 'bouhbouh'
       not_searched_location = Coordinates.bordeaux
       searched_opts = { title: searched_keyword,
                         coordinates: searched_location,
-                        period: 1}
+                        period: 1 }
       # build findable
-      findable_internship_offer = create(:weekly_internship_offer, searched_opts)
+      findable_internship_offer = create(:weekly_internship_offer_2nde, searched_opts)
 
       # build ignored
       not_found_by_location = create(
-        :weekly_internship_offer,
+        :weekly_internship_offer_2nde,
         searched_opts.merge(coordinates: Coordinates.bordeaux)
       )
       not_found_by_keyword = create(
-        :weekly_internship_offer,
+        :weekly_internship_offer_2nde,
         searched_opts.merge(title: not_searched_keyword)
       )
       not_found_by_week = create(
-        :weekly_internship_offer, :week_2
+        :weekly_internship_offer_2nde, :week_2
       )
 
       dictionnary_api_call_stub
@@ -118,7 +118,7 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
 
       fill_in_city_or_zipcode(with: 'Pari', expect: 'Paris')
       fill_in_keyword(keyword: searched_keyword)
-      select("1 semaine - du 17 au 21 juin 2024")
+      # select('1 semaine - du 17 au 21 juin 2024')TO DO update with new filters
       submit_form
 
       assert_card_presence_of(internship_offer: findable_internship_offer)

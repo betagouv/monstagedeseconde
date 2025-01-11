@@ -21,7 +21,7 @@ module Dashboard
       if ENV['RUN_BRITTLE_TEST']
         internship_agreement = create(:internship_agreement, :validated)
         employer = internship_agreement.employer
-        internship_offer = create(:weekly_internship_offer, employer:)
+        internship_offer = create(:weekly_internship_offer_2nde, employer:)
         create(:school_manager, school: student.school)
         internship_application = create(:weekly_internship_application,
                                         :approved,
@@ -106,7 +106,7 @@ module Dashboard
       if ENV['RUN_BRITTLE_TEST']
         employer = create(:statistician, agreement_signatorable: true)
         weeks = [Week.find_by(number: 5, year: 2020), Week.find_by(number: 6, year: 2020)]
-        internship_offer = create(:weekly_internship_offer, weeks:, employer:)
+        internship_offer = create(:weekly_internship_offer_2nde, weeks:, employer:)
         student = create(:student, school: create(:school))
         create(:school_manager, school: student.school)
         internship_application = create(:weekly_internship_application,
@@ -184,7 +184,7 @@ module Dashboard
         internship_agreement = create(:internship_agreement, :validated)
         school_manager = internship_agreement.school_manager
         weeks = [Week.find_by(number: 5, year: 2020), Week.find_by(number: 6, year: 2020)]
-        internship_offer = create(:weekly_internship_offer, weeks:)
+        internship_offer = create(:weekly_internship_offer_2nde, weeks:)
         school = school_manager.school
         student = create(:student, school:, class_room: create(:class_room, school:))
         internship_application = create(:weekly_internship_application,
@@ -266,7 +266,7 @@ module Dashboard
 
       school_manager = internship_agreement.school_manager
       # weeks = [Week.find_by(number: 5, year: 2020), Week.find_by(number: 6, year: 2020)]
-      internship_offer = create(:weekly_internship_offer)
+      internship_offer = create(:weekly_internship_offer_2nde)
       school = school_manager.school
       student2 = create(:student, school:, class_room: create(:class_room, school:))
       internship_application = create(:weekly_internship_application,
@@ -279,7 +279,7 @@ module Dashboard
       internship_agreement_2.complete!
       internship_agreement_2.finalize!
 
-      travel_to(weeks[0].week_date - 1.week) do
+      travel_to(weeks.select { |w| w.year == 2024 }.first.week_date - 1.week) do
         sign_in(school_manager)
 
         visit dashboard_internship_agreements_path

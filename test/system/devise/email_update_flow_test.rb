@@ -15,12 +15,11 @@ class EmailUpdateFlowTest < ApplicationSystemTestCase
                             phone: nil,
                             confirmed_at: Time.now.utc)
     sign_in(user)
-
     assert_changes -> { user.reload.unconfirmed_email } do
       visit account_path
-      fill_in('Adresse électronique (ex : mon@domaine.fr)', with: alt_email)
-      click_on('Enregistrer mon CV')
-      success_message = find('#alert-text').text
+      fill_in('Adresse électronique (e-mail) *', with: alt_email)
+      find('input[type=submit]').click
+      success_message = find('span#alert-text').text
       expected_message = "Compte mis à jour avec succès. Pour confirmer le changement " \
                          "d’adresse électronique, veuillez cliquer sur lien contenu " \
                          "dans le courrier que vous venez de recevoir sur votre " \
@@ -28,17 +27,12 @@ class EmailUpdateFlowTest < ApplicationSystemTestCase
       assert_equal expected_message, success_message
     end
     visit account_path
-    assert_equal alt_email, find('#user_unconfirmed_email').value
+    assert_equal alt_email, find('input#user_unconfirmed_email').value
     assert_text(
       "Cet email n'est pas encore confirmé : veuillez consulter vos emails"
     )
-    find_link( text: "Vous n'avez pas reçu le message d'activation ?" ).click
-    find('label[for=select-channel-email]').click
-    execute_script("document.getElementById('user_email').value = '#{alt_email}';")
-
-    click_on('Renvoyer')
     user.confirm
     visit account_path
-    assert_equal alt_email, find('#user_email_1').value
+    assert_equal alt_email, find('#user_email').value
   end
 end

@@ -32,7 +32,8 @@ export default class extends Controller {
     'lowercase',
     'special',
     'number',
-    'submitButton'
+    'submitButton',
+    'gradeRadio'
   ];
 
   static values = {
@@ -272,5 +273,33 @@ export default class extends Controller {
 
   focusPhone() {
     $('#phone-input').focus()
+  }
+
+  updateGrade(event) {
+    const gradeId = parseInt(event.target.value)
+    let gradeName
+    
+    switch(gradeId) {
+      case 3:
+        gradeName = "quatrieme"
+        break
+      case 2:
+        gradeName = "troisieme"
+        break
+      case 1:
+        gradeName = "seconde"
+        break
+    }
+
+    this.updateSearchSchoolGrade(gradeName)
+  }
+
+  updateSearchSchoolGrade(grade) {
+    // Find the SearchSchool React component and update its grade
+    const event = new CustomEvent('gradeChanged', { 
+      detail: { grade: grade },
+      bubbles: true 
+    })
+    this.element.dispatchEvent(event)
   }
 }

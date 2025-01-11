@@ -1,26 +1,36 @@
 {
   "code": "VALIDATION_ERROR",
   "error": {
+    "zipcode": [
+      "Missing zipcode",
+      "is invalid"
+    ],
     "coordinates": [
       "Missing coordinates"
     ],
     "title": [
       "Missing title"
     ],
-    "employer_name": [
-      "Missing employer_name"
+    "description": [
+      "Missing description"
     ],
-    "zipcode": [
-      "Missing zipcode"
+    "street": [
+      "Missing street"
     ],
     "city": [
       "Missing city"
     ],
-    "description": [
-      "Missing description"
-    ],
     "sector": [
       "Missing sector"
+    ],
+    "employer_name": [
+      "Missing employer_name"
+    ],
+    "weeks": [
+      "Missing weeks"
+    ],
+    "grades": [
+      "Vous devez sélectionner au moins une classe"
     ],
     "remote_id": [
       "Missing remote_id"

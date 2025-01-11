@@ -1,3 +1,4 @@
+- disabled_class = employers_only? ? 'disabled' : ''
 .fr-header__tools
   .fr-header__tools-links
     ul.fr-links-group.custom-navbar
@@ -8,9 +9,9 @@
           li
             - active = current_page?(root_path) ? 'active' : ''
             = link_to 'Accueil',
-                      root_path,
-                      class: "fr-link text-decoration-none mr-4 #{active}"
-          - if current_user.is_a?(Users::Student)
+                      employers_only? ? professionnels_path : root_path,
+                      class: "fr-link text-decoration-none mr-4 #{active}" 
+          - if current_user.is_a?(Users::Student) && !employers_only?
             li
               - active = current_page?(internship_offers_path) && !request.url.include?('origine=dashboard') ? 'active' : ''
               = link_to 'Recherche',
@@ -83,9 +84,9 @@
           /           class: "fr-link text-decoration-none mr-4 #{active}"
         li
           = link_to 'Connexion',
-                    new_user_session_path,
-                    class: "fr-link fr-icon-lock-line text-decoration-none #{current_controller?(:sessions) ? 'active' : ''}"
+                    users_choose_connection_path,
+                    class: "fr-link fr-icon-account-line text-decoration-none #{current_controller?(:sessions) ? 'active' : ''}"
         li
-          = link_to 'Créer mon compte',
+          = link_to 'Inscription',
                 new_user_registration_path,
-                class: "fr-link fr-icon-user-line text-decoration-none href#{current_controller?(:registrations) ? 'active' : ''}"
+                class: "fr-link fr-icon-user-add-line text-decoration-none href#{current_controller?(:registrations) ? 'active' : ''}"

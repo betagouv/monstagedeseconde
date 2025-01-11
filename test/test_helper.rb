@@ -11,23 +11,26 @@ require 'support/api_test_helpers'
 require 'support/third_party_test_helpers'
 require 'support/search_internship_offer_helpers'
 require 'support/email_spam_euristics_assertions'
-require 'support/organisation_form_filler'
+require 'support/internship_occupation_form_filler'
+require 'support/entreprise_form_filler'
+require 'support/planning_form_filler'
 require 'support/school_form_filler'
-require 'support/internship_offer_info_form_filler'
-require 'support/practical_info_form_filler'
-require 'support/tutor_form_filler'
 require 'support/turbo_assertions_helper'
 require 'support/team_and_areas_helper'
 require 'minitest/retry'
 require 'webmock/minitest'
+require 'sidekiq/testing'
+
 # these two lines should be withdrawn whenever the ChromeDriver is ok
 # https://stackoverflow.com/questions/70967207/selenium-chromedriver-cannot-construct-keyevent-from-non-typeable-key/70971698#70971698
 require 'webdrivers/chromedriver'
 
-ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 5000)
+if ENV['TEST_WITH_MAX_REQUESTS_PER_MINUTE'] == 'true'
+  ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 10_000)
+  InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 1_000)
+end
 
-# version 115 is not working with chromedriver-helper
-# Webdrivers::Chromedriver.required_version = "114.0.5735.90"
+Sidekiq::Testing.fake!
 
 Capybara.save_path = Rails.root.join('tmp/screenshots')
 
@@ -48,12 +51,12 @@ WebMock.disable_net_connect!(
     /github.com/,
     /github-production-release-asset*/,
     /chromedriver\.storage\.googleapis\.com/,
-    /googlechromelabs.github.io/,
+    /googlechromelabs\.github\.io/,
     /storage\.googleapis\.com/,
-    /edgedl.me.gvt1.com/,
-    /api-adresse.data.gouv.fr/,
-    %r{education.gouv.fr/annuaire},
-    %r{geo.api.gouv.fr/communes}
+    /edgedl\.me\.gvt1\.com/,
+    /api-adresse\.data\.gouv\.fr/,
+    %r{education\.gouv\.fr/annuaire},
+    %r{geo\.api\.gouv\.fr/communes}
   ]
 )
 
@@ -73,6 +76,7 @@ class ActionDispatch::IntegrationTest
   def after_teardown
     super
     FileUtils.rm_rf(ActiveStorage::Blob.service.root)
+    Sidekiq.redis(&:flushdb)
   end
   parallelize_setup do |i|
     ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"

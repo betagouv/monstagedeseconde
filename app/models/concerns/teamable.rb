@@ -29,7 +29,7 @@ module Teamable
     has_many :internship_offers,
              through: :internship_offer_areas,
              source: :employer,
-             source_type: "User",
+             source_type: 'User',
              class_name: 'InternshipOffer',
              foreign_key: 'employer_id'
 
@@ -59,7 +59,7 @@ module Teamable
       end
       destroy_area_and_notifications_with_anonymizing
       team.remove_member if team.alive?
-      super(send_email: send_email)
+      super(send_email:)
     end
 
     def destroy_area_and_notifications_with_anonymizing
@@ -78,34 +78,62 @@ module Teamable
       InternshipAgreement.kept.where(internship_application: internship_applications)
     end
 
-    def internship_offer_ids_by_area(area_id: )
+    def team_pending_agreements_actions_count
+      return pending_agreements_actions_count if team.not_exists?
+
+      team.db_members.inject(0) do |sum, member|
+        sum + member.pending_agreements_actions_count
+      end
+    end
+
+    def pending_agreements_actions_count
+      part1 = internship_agreements.where(aasm_state: InternshipAgreement::EMPLOYERS_PENDING_STATES)
+      part2 = internship_agreements.signatures_started
+                                   .joins(:signatures)
+                                   .where.not(signatures: { signatory_role: :employer })
+      [part1, part2].compact.map(&:count).sum
+    end
+
+    def internship_offer_ids_by_area(area_id:)
       InternshipOffer.kept
                      .where(employer_id: team_members_ids)
                      .where(internship_offer_area_id: area_id || fetch_current_area_id)
                      .pluck(:id)
     end
 
-    def internship_applications_by_area(area_id: )
-      offer_ids = internship_offer_ids_by_area(area_id: area_id)
+    def internship_applications_by_area(area_id:)
+      offer_ids = internship_offer_ids_by_area(area_id:)
       return InternshipApplication.none if offer_ids.empty?
 
       InternshipApplication.where(internship_offer_id: offer_ids)
     end
 
-    def internship_applications_by_area_and_states(area_id:, aasm_state: )
-      offer_ids = internship_offer_ids_by_area(area_id: area_id)
+    def internship_applications_by_area_and_states(area_id:, aasm_state:)
+      offer_ids = internship_offer_ids_by_area(area_id:)
       return InternshipApplication.none if offer_ids.empty?
 
       InternshipApplication.where(internship_offer_id: offer_ids)
-                           .where(aasm_state: aasm_state)
+                           .where(aasm_state:)
     end
 
-    def internship_applications_by_states( aasm_state: )
+    def internship_applications_by_states(aasm_state:)
       offer_ids = team_internship_offers.kept.pluck(:id)
       return InternshipApplication.none if offer_ids.empty?
 
       InternshipApplication.where(internship_offer_id: offer_ids)
-                           .where(aasm_state: aasm_state)
+                           .where(aasm_state:)
+    end
+
+    def internship_offers_by_area(area_id:)
+      offer_ids = internship_offer_ids_by_area(area_id:)
+      return InternshipOffer.none if offer_ids.empty?
+
+      InternshipOffer.kept.where(id: offer_ids)
+    end
+
+    def internship_offers_by_team
+      InternshipOffer.kept
+                     .where(employer_id: team_members_ids)
     end
 
     def team
@@ -117,8 +145,8 @@ module Teamable
     end
 
     def team_members_ids
-      members = team.team_members.pluck(:member_id).compact
-      members.empty? ? [id] : members
+      member_ids = team.team_members.pluck(:member_id).compact
+      member_ids.empty? ? [id] : member_ids
     end
 
     def db_team_members

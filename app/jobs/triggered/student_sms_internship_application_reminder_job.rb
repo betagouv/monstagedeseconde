@@ -7,12 +7,14 @@ module Triggered
     def perform(internship_application_id)
       internship_application = InternshipApplication.find(internship_application_id)
       student = internship_application.student
-      phone = student.phone || (internship_application.student_phone.present? && internship_application.student_phone.gsub(/^0/, '+33'))
+      phone = student.phone || (internship_application.student_phone.present? && internship_application.student_phone.gsub(
+        /^0/, '+33'
+      ))
       if phone.present? && phone.match?(/\A\+33[6-7]\d{8}\z/)
 
         sgid = student.to_sgid(expires_in: InternshipApplication::MAGIC_LINK_EXPIRATION_DELAY).to_s
         url = Rails.application.routes.url_helpers.dashboard_students_internship_application_url(
-          sgid: sgid,
+          sgid:,
           student_id: student.id,
           id: internship_application.id,
           host: ENV['HOST']
@@ -20,7 +22,7 @@ module Triggered
 
         url = internship_application.short_target_url(internship_application)
 
-        notify(student: student, application_id: internship_application.id, url: url, phone: phone)
+        notify(student:, application_id: internship_application.id, url:, phone:)
       else
         Rails.logger.error("StudentSmsInternshipApplicationReminderJob: phone is not on the right format for student #{student.id}")
       end
@@ -29,10 +31,10 @@ module Triggered
     private
 
     def notify(student:, application_id:, url:, phone:)
-      message = "Vous êtes accepté à un stage. Confirmez votre présence :" \
-                "#{url}. L'équipe mon stage de seconde."
-      SendSmsJob.new.perform_later(user: student, message: message, phone: phone)
-      info = "StudentSmsInternshipApplicationReminderJob: SMS " \
+      message = 'Vous êtes accepté à un stage. Confirmez votre présence :' \
+                "#{url}. L'équipe mon stage à l'école."
+      SendSmsJob.new.perform_later(user: student, message:, phone:)
+      info = 'StudentSmsInternshipApplicationReminderJob: SMS ' \
              "sent to #{student.id} with response #{response}"
       Rails.logger.info(info)
     end

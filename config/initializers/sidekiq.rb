@@ -1,12 +1,4 @@
-def get_redis_namespace
-  return "development-#{Etc.getlogin}".parameterize if Rails.env.development?
-  return :production if Rails.env.production?
-  return :staging if Rails.env.staging?
-  return :test if Rails.env.test?
-  return ENV['HEROKU_APP_NAME'] if Rails.env.review?
-  return "SIDEKIQ"
-end
-redis_config = { :namespace => get_redis_namespace }
+redis_config = { url: ENV['REDIS_URL'] }
 
 Sidekiq.configure_server do |config|
  config.redis = redis_config

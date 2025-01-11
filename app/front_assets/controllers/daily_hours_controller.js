@@ -7,14 +7,16 @@ export default class extends Controller {
     'weeklyHoursEnd',
     'dailyHoursStart',
     'dailyHoursEnd',
-    'presenceHint'
+    'presenceHint',
+    'submitButton'
   ];
 
   minimumPresence = 4; // 4 days of presence required
 
   setValidateButton(stateOn = true) {
-    const validateButton = document.getElementById('practicalInfoSubmitButton');
-    validateButton.disabled = !stateOn;
+    // const validateButton = document.getElementById('practicalInfoSubmitButton');
+
+    // validateButton.disabled = !stateOn;
   }
 
   handleToggleWeeklyPlanning() {

@@ -256,7 +256,7 @@ class GenerateInternshipAgreement < Prawn::Document
     html_formating "<div style='margin-left: 35'> #{@internship_agreement.student_refering_teacher_phone} </div>"
     @pdf.move_down 20
     paraphing("Dates de la séquence d'observation en milieu professionnel :")
-    paraphing("La séquence d’observation en milieu professionnel se déroule pendant #{@internship_agreement.internship_offer.period_label} inclus.")
+    paraphing("La séquence d’observation en milieu professionnel se déroule pendant #{@internship_agreement.internship_offer.current_period_label} inclus.")
     @pdf.move_down 20
     paraphing("Lieu de la séquence d'observation en milieu professionnel :")
     paraphing(@internship_agreement.internship_address)

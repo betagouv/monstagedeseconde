@@ -7,7 +7,7 @@ module Triggered
       # ReminderReset : tag to use to find commmented jobs for students reminders
       student = Users::Student.find(student_id)
       return nil unless student&.kept?
-        
+
       notify_with_channel(student) if notifiable?(student, 2)
     end
 
@@ -22,7 +22,7 @@ module Triggered
       if student.phone.present?
         send_sms_to_student(student)
       else
-        StudentMailer.single_application_reminder_email(student: student)
+        StudentMailer.single_application_reminder_email(student:)
                      .deliver
       end
     end
@@ -32,10 +32,10 @@ module Triggered
         host: ENV.fetch('HOST'),
         **student.default_search_options
       )
-      shrinked_url = UrlShrinker.short_url(url: url, user_id:student.id)
-      content = "Multipliez vos chances de trouver un stage ! Envoyez au moins " \
+      shrinked_url = UrlShrinker.short_url(url:, user_id: student.id)
+      content = 'Multipliez vos chances de trouver un stage ! Envoyez au moins ' \
                 "3 candidatures sur notre site : #{shrinked_url} . " \
-                "L'équipe Mon stage de seconde "
+                "L'équipe 1élève1stage"
       SendSmsJob.new.perform(user: student, message: content)
     end
   end

@@ -11,12 +11,12 @@ gem 'puma'
 gem 'rails', '~> 7.1.3'
 # db
 gem 'pg'
+gem 'rack', '>= 3.0'
 gem 'rake'
 
 # pg extension for geo queries
 # wait for : https://github.com/rgeo/activerecord-postgis-adapter/tree/ar61 to be merge into master
-gem 'activerecord-postgis-adapter'
-'>= 8.0.1'
+gem 'activerecord-postgis-adapter', '>= 8.0.1'
 
 # don't bump until fixed, https://github.com/Casecommons/pg_search/issues/446
 gem 'pg_search', '2.3.2' # pg search for autocomplete
@@ -36,8 +36,7 @@ gem 'view_component'
 gem 'webpacker'
 
 # background jobs
-gem 'redis-namespace' # plug redis queues on same instance for prod/staging
-gem 'sidekiq', '~> 6.5', '>= 6.1.2'
+gem 'sidekiq', '< 8'
 # Use Redis for Action Cable
 gem 'aws-sdk-s3', require: false
 gem 'redis', '~> 4.0'
@@ -57,6 +56,7 @@ gem 'sentry-sidekiq'
 # TODO: remove bitly
 gem 'bitly'
 gem 'mime-types'
+gem 'prismic.io', require: 'prismic'
 
 # acl
 gem 'cancancan'
@@ -75,12 +75,11 @@ gem 'validates_zipcode'
 # dev utils
 gem 'bootsnap', require: false
 gem 'dalli'
-gem 'ffaker'
+gem 'dotenv-rails', require: 'dotenv/load'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 group :development, :test do
   gem 'debug'
-  gem 'dotenv-rails', require: 'dotenv/load'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'pry-byebug'
@@ -122,4 +121,5 @@ end
 
 group :test, :development, :review do
   gem 'factory_bot_rails'
+  gem 'ffaker'
 end

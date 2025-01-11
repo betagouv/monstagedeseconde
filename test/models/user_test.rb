@@ -105,7 +105,7 @@ class UserTest < ActiveSupport::TestCase
     employer = create(:employer, email: 'test@test.com', first_name: 'Toto', last_name: 'Tata',
                                  current_sign_in_ip: '127.0.0.1', last_sign_in_ip: '127.0.0.1')
 
-    internship_offer = create(:weekly_internship_offer,
+    internship_offer = create(:weekly_internship_offer_2nde,
                               employer:,
                               internship_offer_area: employer.current_area)
 
@@ -254,6 +254,25 @@ class UserTest < ActiveSupport::TestCase
     end
     assert_nil User.sanitize_mobile_phone_number('', prefix)
     assert_nil User.sanitize_mobile_phone_number(nil, prefix)
+  end
+
+  test 'phone prefix' do
+    user = build(:student, phone: '+330612345678')
+    assert_equal '33', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+330712345678')
+    assert_equal '33', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+2620612345678') # Réunion
+    assert_equal '262', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+5960612345678') # Guadeloupe
+    assert_equal '596', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+5940612345678') # Guyane
+    assert_equal '594', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+6870612345678') # Nouvelle-Calédonie
+    assert_equal '687', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+6890612345678') # Polynésie française
+    assert_equal '689', user.compute_mobile_phone_prefix
+    user = build(:student, phone: '+330123456789')
+    assert_nil user.compute_mobile_phone_prefix
   end
 
   test 'employer gets an internship_offer_area' do

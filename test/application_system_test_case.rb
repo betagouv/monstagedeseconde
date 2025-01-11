@@ -28,6 +28,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   driven_by CAPYBARA_DRIVER, using: CAPYBARA_BROWSER do |driver_opts|
     # when ENV['USE_IPHONE_EMULATION'], use chrome emulation with iPhone 6
     driver_opts.add_emulation(device_name: 'iPhone 6') if CAPYBARA_EMULATE_MOBILE
+    driver_opts.add_argument('--disable-search-engine-choice-screen')
   end
 
   include Devise::Test::IntegrationHelpers
@@ -35,14 +36,13 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   def setup
     stub_request(:any, /api-adresse.data.gouv.fr/)
-        .to_return(status: 200, body: File.read(Rails.root.join(*%w[test
+      .to_return(status: 200, body: File.read(Rails.root.join(*%w[test
                                                                   fixtures
                                                                   files
-                                                                  api-address-paris-13.json])))
-
+                                                                  12-rue-taine-paris.json])))
 
     stub_request(:any, /recherche-entreprises.api.gouv.fr/)
-      .to_return(status: 200, body: "")
+      .to_return(status: 200, body: '')
   end
 
   def after_teardown

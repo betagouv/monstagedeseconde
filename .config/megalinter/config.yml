@@ -1,0 +1,27 @@
+---
+APPLY_FIXES:
+  - JSON_PRETTIER
+  - YAML_PRETTIER
+
+DISABLE_LINTERS:
+  - JSON_V8R
+  - YAML_V8R
+  - COPYPASTE_JSCPD
+
+EXCLUDED_DIRECTORIES:
+  - megalinter-reports
+  - vendor
+  - venv
+  - .git
+
+COPYPASTE_JSCPD_CONFIG_FILE: .config/jscpd/config.json
+REPOSITORY_DEVSKIM_CONFIG_FILE: .config/devskim/config.json
+REPOSITORY_GRYPE_CONFIG_FILE: .config/grype/config.yml
+SPELL_CSPELL_CONFIG_FILE: .config/cspell/config.json
+YAML_YAMLLINT_CONFIG_FILE: .config/yamllint/config.yml
+REPOSITORY_TRIVY_CONFIG_FILE: .config/trivy/config.yml
+
+SHOW_ELAPSED_TIME: true
+SARIF_REPORTER: true
+CLEAR_REPORT_FOLDER: true
+PARALLEL_PROCESS_NUMBER: 2 # Limiting to 2 cores is necessary to prevent Dustilock or Checkov from crashing.

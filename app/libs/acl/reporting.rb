@@ -5,7 +5,7 @@ module Acl
     def allowed?
       department_name_from_params = params[:department].try(:downcase)
       return false if department_name_from_params.nil?
-      
+
       user.department_name.try(:downcase) == department_name_from_params
     end
 
@@ -16,6 +16,7 @@ module Acl
     private
 
     attr_reader :params, :user
+
     def initialize(params:, user:)
       @params = params
       @user = user

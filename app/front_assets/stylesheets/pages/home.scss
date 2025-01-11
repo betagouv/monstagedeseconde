@@ -49,6 +49,13 @@ a:hover {
     background-color: #F5F5FF;
 }
 
+.max-md-width{
+    max-width: 792px;
+}
+.centered{
+    margin: auto;
+}
+
 .d-flex.ccm {
   .ccm-card {
     max-width: 310px;
@@ -105,7 +112,7 @@ a:hover {
     }
     .stamp-logo {
         margin-top: 4rem;
-        max-width: 269px;
+        max-width: 200px;
 
     }
     .sub-hero-maintenance{
@@ -161,10 +168,11 @@ a:hover {
 .everyone, .school-management  {
     .container-monstage .stamp-logo {
         img{
-           width: 193px;
+           width: 100%;
         }
         display: block;
-        margin-top: 37%;
+        margin-top: -50%;
+        margin-left: -50%;
     }
 }
 
@@ -313,6 +321,19 @@ p.fr-card__desc.std-height {
 
 .fr-nav__link[aria-current] {
     background-color: $blue-france-light;
+    .disabled_tab{
+        opacity: 0.5;
+    }
+}
+
+.disabled_tab{
+    background-color: $grey-975 !important;
+    opacity: 0.5;
+    .fr-card__content{
+        h3.fr-h4 {
+           color: grey
+        }
+    }
 }
 
 h1,
@@ -609,3 +630,83 @@ img.covering {
 // .container-monstage-fluid-hero .white-search-frame {
 //   background-color: transparent !important
 // }
+
+.fr-follow__newsletter {
+    .fr-input {
+       background-color: #fff;
+    }
+}
+
+.hero-cards-container {
+    position: relative;
+    width: 100%;
+    min-height: 100px; 
+    .fr-card {
+      z-index: 4;
+    }
+    .content {
+      z-index: 1;
+    }
+    .hero-stamp {
+        position: absolute;
+        top: -20%;
+        right: -20%;
+        max-width: 400px;
+        z-index: 0;
+    }
+}
+
+.student-hero .sub-hero {
+  background-image: url("../images/homepage/eleves_hero_illustration.png");
+  background-repeat: no-repeat;
+  background-position: right bottom;
+}
+
+.pro-hero .sub-hero {
+  background-image: url("../images/homepage/pros_hero_illustration.png");
+  background-repeat: no-repeat;
+  background-position: right bottom;
+}
+
+.education-hero .sub-hero {
+  background-image: url("../images/homepage/education_hero_illustration.png");
+  background-repeat: no-repeat;
+  background-position: right bottom;
+}
+
+.content-div {
+  padding: 20px;
+  min-height: 200px;
+  display: none;
+}
+
+.fr-sidemenu__btn[aria-expanded=true] {
+  --idle: transparent;
+  --hover: var(--background-open-blue-france-hover);
+  --active: var(--background-open-blue-france-active);
+  background-color: #e3e3fd;
+  background-color: var(--background-open-blue-france);
+}
+
+.bg-cover-image-homepage {
+    border-radius: 0;
+    background-image: url('../images/homepage/backgrd-header.png');
+    background-repeat: no-repeat;
+    background-position: right bottom;
+}
+
+.custom-arrow-list {
+    list-style: none;
+    
+    li {
+      position: relative;
+      padding-left: 1.5rem;
+      
+      &::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: inherit;
+      }
+    }
+  }

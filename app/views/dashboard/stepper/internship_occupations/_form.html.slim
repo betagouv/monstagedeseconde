@@ -1,0 +1,17 @@
+= form_with model: model, url: url , method: method, data: { turbo: false } do |form|
+  = render "dashboard/stepper/steps",
+            current_step_number: 1,
+            total_steps: 3,
+            current_step_title: "Métier et localisation",
+            next_step_title: "Votre entreprise"
+
+  = render "layouts/form_errors",
+           resource: @internship_occupation,
+           resource_name: :internship_offer
+
+  = render 'dashboard/stepper/internship_occupations/form_fields',
+            resource: @internship_occupation,
+            warning_block: true,
+            form: form,
+            submit_button: true,
+            show_resume: show_resume
