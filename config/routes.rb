@@ -117,6 +117,7 @@ Rails.application.routes.draw do
     get '/utilisateurs/identifier', to: 'users#identify_user'
     post '/utilisateurs/anonymiser', to: 'users#anonymize_user'
 
+
     namespace :api, path: 'api' do
       # TO DO : fix this redirect
       # match '/*path', via: %i[get post put delete], to: redirect { |path_params, _req|
