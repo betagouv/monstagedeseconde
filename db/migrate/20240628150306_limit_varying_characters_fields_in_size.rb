@@ -1,6 +1,6 @@
 class LimitVaryingCharactersFieldsInSize < ActiveRecord::Migration[7.1]
   def up
-    change_column :organisations, :siren, :string, limit: 9
+    # change_column :organisations, :siren, :string, limit: 9
     change_column :organisations, :siret, :string, limit: 14
     change_column :organisations, :employer_website, :string, limit: 560
     
