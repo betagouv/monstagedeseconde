@@ -11,6 +11,16 @@ class Identity < ApplicationRecord
 
   before_validation :generate_token, unless: :token
 
+  def archive
+    update_columns(
+      first_name: 'NA',
+      last_name: 'NA',
+      birth_date: FFaker::Date.birthday(min_age: 18, max_age: 65),
+      class_room_id: nil,
+      anonymized: true
+    )
+  end
+
   private
 
   def generate_token
