@@ -32,7 +32,7 @@
     "popper.js": "^1.15.0",
     "raf": "^3.4.1",
     "rails-ujs": "^5.2.2",
-    "rails_admin": "3.1.2",
+    "rails_admin": "3.3.0",
     "react": "^18.2.0",
     "react-content-loader": "^6.2.0",
     "react-dom": "^18.2.0",
@@ -57,12 +57,12 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.0",
-    "pa11y-ci": "^3.0.1",
     "eslint-plugin-react": "^7.14.3",
+    "pa11y-ci": "^3.0.1",
     "prettier": "^2.0.4",
     "prop-types": "^15.7.2",
-    "webpack-dev-server": "3.11.0",
-    "vnu-jar": "^20.3.16"
+    "vnu-jar": "^20.3.16",
+    "webpack-dev-server": "3.11.0"
   },
   "engines": {
     "node": "18.x"
