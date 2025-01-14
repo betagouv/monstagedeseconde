@@ -78,6 +78,28 @@ module InternshipOffers
       end
     end
 
+    def split_in_two
+      return unless grades.include?(Grade.seconde)
+
+      new_internship_offer = self.dup
+      if new_internship_offer.period == 0
+        new_internship_offer.weeks = SchoolTrack::Seconde.both_weeks
+      elsif new_internship_offer.period == 1
+        new_internship_offer.weeks << SchoolTrack::Seconde.first_week
+      elsif new_internship_offer.period == 2
+        new_internship_offer.weeks << SchoolTrack::Seconde.second_weeks
+      end
+      new_internship_offer.grades = [Grade.seconde]
+      new_internship_offer.published_at = nil
+      new_internship_offer.aasm_state = 'need_to_be_updated'
+      new_internship_offer.hidden_duplicate = false
+      new_internship_offer.mother_id = id
+      new_internship_offer.save
+
+      self.hidden_duplicate = true
+      save && new_internship_offer
+    end
+
     def schedules_check
       return if schedules_ok?
 

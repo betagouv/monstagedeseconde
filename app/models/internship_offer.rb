@@ -339,33 +339,6 @@ class InternshipOffer < ApplicationRecord
     self.last_date = ordered_weeks.last&.week_date&.+ 4.days
   end
 
-  #
-  # inherited
-  #
-  # def duplicate
-  #   internship_offer = super
-  #   internship_offer.week_ids = week_ids
-  #   internship_offer
-  # end
-
-  def split_in_two
-    print '.'
-
-    internship_offer = duplicate
-    internship_offer.remaining_seats_count = max_candidates
-    internship_offer.employer = employer
-    unless internship_offer.valid?
-      raise StandardError.new "##{internship_offer.errors.full_messages} - on #{internship_offer.errors.full_messages}"
-    end
-
-    internship_offer.save
-
-    self.hidden_duplicate = true
-    split!
-    save!
-
-    internship_offer
-  end
 
   def shown_as_masked?
     !published?
