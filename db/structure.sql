@@ -1153,7 +1153,7 @@ ALTER SEQUENCE public.internship_applications_id_seq OWNED BY public.internship_
 CREATE TABLE public.internship_occupations (
     id bigint NOT NULL,
     title character varying(150) NOT NULL,
-    description character varying(500) NOT NULL,
+    description character varying(1500) NOT NULL,
     street character varying(200) NOT NULL,
     zipcode character varying(5) NOT NULL,
     city character varying(50) NOT NULL,
@@ -1485,7 +1485,7 @@ ALTER SEQUENCE public.internship_offer_weeks_id_seq OWNED BY public.internship_o
 CREATE TABLE public.internship_offers (
     id bigint NOT NULL,
     title character varying(150),
-    description character varying(500),
+    description character varying(1500),
     max_candidates integer DEFAULT 1 NOT NULL,
     internship_offer_weeks_count integer DEFAULT 0 NOT NULL,
     tutor_name character varying(150),
@@ -1503,7 +1503,7 @@ CREATE TABLE public.internship_offers (
     employer_name character varying(150),
     employer_id bigint,
     school_id bigint,
-    employer_description character varying(250),
+    employer_description character varying(1500),
     sector_id bigint,
     blocked_weeks_count integer DEFAULT 0 NOT NULL,
     total_applications_count integer DEFAULT 0 NOT NULL,
@@ -4815,6 +4815,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250114094329'),
 ('20250107100940'),
 ('20250106175910'),
 ('20241223095629'),

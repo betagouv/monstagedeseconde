@@ -90,7 +90,7 @@ module Dashboard::Stepper
               :lunch_break,
               :max_candidates,
               :max_students_per_group,
-              :period,
+              :period_field,
               :school_id,
               :rep,
               :qpv,

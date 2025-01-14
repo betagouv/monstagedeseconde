@@ -17,36 +17,36 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
     | Sur quelle période proposez-vous ce stage pour les lycéens ?
   .fr-form-group.fr-ml-1v
     .fr-radio-group.fr-py-1w
-      = form.radio_button :period,
+      = form.radio_button :period_field,
                           2,
-                          id: 'period_full_time',
+                          id: 'period_field_full_time',
                           checked: both_weeks,
                           data: {:'select-weeks-target' => :period,
                                  action: 'select-weeks#onPeriodClick'}
 
-      = form.label :period,
+      = form.label :period_field,
                     labels[:full_time],
-                    for: 'period_full_time'
+                    for: 'period_field_full_time'
     .fr-radio-group.fr-py-1w
-      = form.radio_button :period,
+      = form.radio_button :period_field,
                           11,
-                          id: 'period_week_1',
+                          id: 'period_field_week_1',
                           checked: week_1,
                           data: {:'select-weeks-target' => :period,
                                  action: 'select-weeks#onPeriodClick'}
 
-      = form.label :period,
+      = form.label :period_field,
                     labels[:week_1],
-                    for: 'period_week_1'
+                    for: 'period_field_week_1'
 
     .fr-radio-group.fr-py-1w
-      = form.radio_button :period,
+      = form.radio_button :period_field,
                           12,
-                          id: 'period_week_2',
+                          id: 'period_field_week_2',
                           checked: week_2,
                           data: {:'select-weeks-target' => :period,
                                  action: 'select-weeks#onPeriodClick'}
 
-      = form.label :period,
+      = form.label :period_field,
                     labels[:week_2],
-                    for: 'period_week_2'
+                    for: 'period_field_week_2'

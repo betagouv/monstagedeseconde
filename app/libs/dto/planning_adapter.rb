@@ -19,8 +19,8 @@ module Dto
       params[:all_year_long] == 'true'
     end
 
-    def period
-      params[:period].to_i
+    def period_field
+      params[:period_field].to_i
     end
 
     def manage_grades
@@ -29,7 +29,8 @@ module Dto
       instance.grades = []
       if params_offer_for_troisieme_or_quatrieme?
         instance.grades.append Grade.troisieme_et_quatrieme.to_a
-      elsif params_offer_for_seconde?
+      end
+      if params_offer_for_seconde?
         instance.grades.append Grade.seconde
       end
     end
@@ -55,10 +56,10 @@ module Dto
 
     def manage_seconde_weeks
       weeks = []
-      case period
-      when PERIOD[:first_week], PERIOD[:two_weeks]
+      if period_field.in?([PERIOD[:two_weeks], PERIOD[:first_week]])
         weeks << SchoolTrack::Seconde.first_week
-      when PERIOD[:second_week], PERIOD[:two_weeks]
+      end
+      if period_field.in?([PERIOD[:two_weeks], PERIOD[:second_week]])
         weeks << SchoolTrack::Seconde.second_week
       end
       add_weeks_to_planning(weeks)
