@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   helper Turbo::FramesHelper if Rails.env.test?
   helper Turbo::StreamsHelper if Rails.env.test?
 
+  before_action :check_host_for_redirection
   before_action :check_for_holidays_maintenance_page
   before_action :check_school_requested
   before_action :check_for_maintenance
@@ -96,6 +97,13 @@ class ApplicationController < ActionController::Base
   def maintenance_redirection_exception?
     allowed_paths = %w[/maintenance_estivale.html /contact.html /waiting_list]
     request.path.in?(allowed_paths) ||
-      (request.path == "/waiting_list" && request.post?)
+      (request.path == '/waiting_list' && request.post?)
+  end
+
+  def check_host_for_redirection
+    return unless request.host == 'stagedeseconde.1jeune1solution.gouv.fr/'
+
+    redirect_to ('https://1eleve1stage.education.gouv.fr' + request.fullpath), status: :moved_permanently,
+                                                                               allow_other_host: true
   end
 end
