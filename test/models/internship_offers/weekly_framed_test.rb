@@ -197,45 +197,47 @@ module InternshipsOffers
       end
     end
 
-    test '#basic_duplicate fail unless offer is a 2nde offer' do
+    test '#split_in_two fail unless offer is a 2nde offer' do
       internship_offer = create(:weekly_internship_offer_3eme, max_candidates: 10)
-      assert_no_changes -> { 'InternshipOffer.count' }  do
-        internship_offer.basic_duplicate
+      assert_no_changes -> { 'InternshipOffer.count' } do
+        internship_offer.split_in_two
       end
     end
 
     test '#split_in_two' do
-      school = create(:school, :lycee)
-      internship_offer = create(:weekly_internship_offer_2nde,
-                                :week_1,
-                                school: school,
-                                max_candidates: 10,
-                                period: 1)
-      assert_equal 10, internship_offer.max_candidates
-      assert_equal 10, internship_offer.remaining_seats_count
-      assert_changes -> { InternshipOffer.count }, from: 1, to: 2  do
-
-        new_internship_offer = internship_offer.split_in_two
-
-        stored_offer = InternshipOffer.find_by(hidden_duplicate: true)
-        living_offer = InternshipOffer.find_by(hidden_duplicate: false)
-        refute_nil stored_offer.id
-        refute_nil living_offer.id
-        assert_equal living_offer.id, new_internship_offer.id
-
+      travel_to Date.new(2025, 1, 1) do
+        school = create(:school, :lycee)
+        weeks = [SchoolTrack::Seconde.first_week(year: 2024), SchoolTrack::Seconde.first_week]
+        internship_offer = create(:weekly_internship_offer_2nde,
+                                  weeks: weeks,
+                                  school: school,
+                                  max_candidates: 10,
+                                  period: 1)
         assert_equal 10, internship_offer.max_candidates
         assert_equal 10, internship_offer.remaining_seats_count
+        assert_changes -> { InternshipOffer.count }, from: 1, to: 2 do
+          new_internship_offer = internship_offer.split_in_two
 
-        assert_equal 10, new_internship_offer.max_candidates
-        assert_equal 10, new_internship_offer.remaining_seats_count
-        assert_equal stored_offer.id, new_internship_offer.mother_id
-        assert_equal school, new_internship_offer.school
+          stored_offer = InternshipOffer.find_by(hidden_duplicate: true)
+          living_offer = InternshipOffer.find_by(hidden_duplicate: false)
+          refute_nil stored_offer.id
+          refute_nil living_offer.id
+          assert_equal living_offer.id, new_internship_offer.id
 
-        assert_equal [Grade.seconde.id], new_internship_offer.grades.ids
-        assert_equal [Grade.seconde.id], living_offer.grades.ids
-        assert_equal [SchoolTrack::Seconde.first_week.id], new_internship_offer.weeks.ids
-        assert_equal [SchoolTrack::Seconde.first_week.id], stored_offer.weeks.ids
-        assert_equal new_internship_offer.employer.id, stored_offer.employer.id
+          assert_equal 10, internship_offer.max_candidates
+          assert_equal 10, internship_offer.remaining_seats_count
+
+          assert_equal 10, new_internship_offer.max_candidates
+          assert_equal 10, new_internship_offer.remaining_seats_count
+          assert_equal stored_offer.id, new_internship_offer.mother_id
+          assert_equal school, new_internship_offer.school
+
+          assert_equal [Grade.seconde.id], new_internship_offer.grades.ids
+          assert_equal [Grade.seconde.id], living_offer.grades.ids
+          assert_equal [SchoolTrack::Seconde.first_week.id], new_internship_offer.weeks.ids
+          assert_equal [SchoolTrack::Seconde.first_week(year: 2024).id], stored_offer.weeks.ids
+          assert_equal new_internship_offer.employer.id, stored_offer.employer.id
+        end
       end
     end
   end

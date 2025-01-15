@@ -78,25 +78,37 @@ module InternshipOffers
       end
     end
 
-    def split_in_two
-      return unless grades.include?(Grade.seconde)
+    def has_weeks_in_the_past?
+      start_week = Week.current_year_start_week
+      weeks.any? { |week| week.number < start_week.number && week.year <= start_week.year }
+    end
 
-      new_internship_offer = self.dup
-      if new_internship_offer.period == 0
-        new_internship_offer.weeks = SchoolTrack::Seconde.both_weeks
-      elsif new_internship_offer.period == 1
-        new_internship_offer.weeks << SchoolTrack::Seconde.first_week
-      elsif new_internship_offer.period == 2
-        new_internship_offer.weeks << SchoolTrack::Seconde.second_weeks
-      end
-      new_internship_offer.grades = [Grade.seconde]
-      new_internship_offer.published_at = nil
-      new_internship_offer.aasm_state = 'need_to_be_updated'
+    # TODO
+    # make a before and after block to be reused
+
+    def has_weeks_in_the_future?
+      start_week = Week.current_year_start_week
+      weeks.any? { |week| week.number >= start_week.number && week.year >= start_week.year }
+    end
+
+    def has_weeks_in_the_past_and_in_the_future?
+      has_weeks_in_the_past? && has_weeks_in_the_future?
+    end
+
+    def split_in_two
+      new_internship_offer = dup
+
       new_internship_offer.hidden_duplicate = false
       new_internship_offer.mother_id = id
+      new_internship_offer.weeks = weeks & Week.weeks_of_school_year(school_year: Week.current_year_start_week.year)
+      new_internship_offer.grades = grades
+      new_internship_offer.weekly_hours = weekly_hours
       new_internship_offer.save
 
       self.hidden_duplicate = true
+      self.weeks = weeks & Week.of_past_school_years
+      self.published_at = nil
+      self.aasm_state = 'splitted'
       save && new_internship_offer
     end
 
