@@ -64,7 +64,7 @@ module Presenters
         action_label = reader.student? ? 'Répondre' : 'Voir'
         action_level = reader.student? ? 'primary' : 'tertiary'
         badge = reader.student? ? 'success' : 'info'
-        tab = "Acceptées par l’offreur, à confirmer par l’élève"
+        tab = 'Acceptées par l’offreur, à confirmer par l’élève'
         { label:,
           badge:,
           tab:,
@@ -130,18 +130,6 @@ module Presenters
 
     def actions_when_student_has_not_found
       case internship_application.aasm_state
-      when 'drafted'
-        [{ label: 'Modifier',
-           link_path: edit_internship_application_path,
-           color: 'primary',
-           level: 'secondary' }, {
-             label: 'Envoyer la demande',
-             form_path: internship_application_path,
-             transition: 'submit!',
-             color: 'primary',
-             level: 'primary'
-           }]
-
       when 'submitted'
         [{ label: 'Renvoyer la demande',
            color: 'primary',

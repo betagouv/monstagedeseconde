@@ -28,7 +28,7 @@ class InternshipApplication < ApplicationRecord
     validated_by_employer
     approved
   ]
-  NOT_MODIFIABLE_STATES = %w[drafted submitted read_by_employer transfered validated_by_employer approved]
+  NOT_MODIFIABLE_STATES = %w[submitted read_by_employer transfered validated_by_employer approved]
   RE_APPROVABLE_STATES = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
 
   attr_accessor :sgid
@@ -113,7 +113,6 @@ class InternshipApplication < ApplicationRecord
       .select(%(
       CASE
         WHEN aasm_state = 'convention_signed' THEN 0
-        WHEN aasm_state = 'drafted' THEN 1
         WHEN aasm_state = 'approved' THEN 2
         WHEN aasm_state = 'submitted' THEN 3
         WHEN aasm_state = 'rejected' THEN 4
@@ -134,14 +133,6 @@ class InternshipApplication < ApplicationRecord
       .order('orderable_aasm_state')
   }
 
-  scope :no_date_index, lambda {
-    where.not(aasm_state: [:drafted])
-         .includes(
-           :student,
-           :internship_offer
-         ).default_order
-  }
-
   scope :through_teacher, lambda { |teacher:|
     joins(student: :class_room).where('users.class_room_id = ?', teacher.class_room_id)
   }
@@ -149,8 +140,6 @@ class InternshipApplication < ApplicationRecord
   scope :with_active_students, lambda {
     joins(:student).where('users.discarded_at is null')
   }
-
-  scope :not_drafted, -> { where.not(aasm_state: 'drafted') }
 
   scope :approved_or_signed, lambda {
     applications = InternshipApplication.arel_table
@@ -193,20 +182,6 @@ class InternshipApplication < ApplicationRecord
           :canceled_by_employer,
           :canceled_by_student,
           :canceled_by_student_confirmation
-
-    event :submit do
-      transitions from: :drafted,
-                  to: :submitted,
-                  after: proc { |user, metadata = {}|
-                           update!("submitted_at": Time.now.utc)
-                           deliver_later_with_additional_delay do
-                             EmployerMailer.internship_application_submitted_email(internship_application: self)
-                           end
-                           Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
-                           setSingleApplicationReminderJobs
-                           record_state_change(user, {})
-                         }
-    end
 
     event :read do
       transitions from: :submitted, to: :read_by_employer,
@@ -288,8 +263,7 @@ class InternshipApplication < ApplicationRecord
     end
 
     event :cancel_by_employer do
-      from_states = %i[drafted
-                       submitted
+      from_states = %i[submitted
                        read_by_employer
                        transfered
                        validated_by_employer
