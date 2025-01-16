@@ -1,23 +1,31 @@
 class NewsletterController < ApplicationController
-
   def subscribe
-    redirect_to root_path,
-                flash: { warning: "Votre email a l'air erroné" } and return unless newsletter_email_checked?
-    # our honeypot is filled, we don't subscribe this email, but pretend it's ok
-    redirect_to root_path,
-                notice: "Votre email a bien été enregistré" and return if fake_confirmation_filled?
+    unless newsletter_email_checked?
+      redirect_to root_path,
+                  flash: { alert: "Votre email a l'air erroné" } and return
+    end
 
-    user = User.new(email: email_param[:newsletter_email])
+    # our honeypot is filled, we don't subscribe this email, but pretend it's ok
+    if fake_confirmation_filled?
+      redirect_to root_path,
+                  notice: 'Votre email a bien été enregistré' and return
+    end
+
+    user = User.new(email: params[:email])
     result = Services::SyncEmailCampaigns.new.add_contact(user: user)
-    redirect_to root_path,
-                notice: "Votre email a bien été enregistré" and return if success?(result)
+    if success?(result)
+      redirect_to root_path,
+                  notice: 'Votre email a bien été enregistré' and return
+    end
 
     duplicate_message = 'Votre email était déjà enregistré. :-) .'
-    redirect_to root_path,
-                flash: { warning: duplicate_message } and return if result == :previously_existing_email
+    if result == :previously_existing_email
+      redirect_to root_path,
+                  flash: { warning: duplicate_message } and return
+    end
 
     err_message = "Une erreur s'est produite et nous n'avons pas " \
-                  "pu enregistrer votre email"
+                  'pu enregistrer votre email'
     redirect_to root_path, flash: { warning: err_message }
   end
 
@@ -36,6 +44,6 @@ class NewsletterController < ApplicationController
   end
 
   def newsletter_email_checked?
-    email_param[:newsletter_email].match?(/[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/)
+    params[:email].match?(/[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/)
   end
 end

@@ -1,4 +1,4 @@
-- content_for :page_title, "#{t(".page_title", name: @school.name)} | Monstage"
+- content_for :page_title, "#{t(".page_title", name: @school.name)} | 1élève1stage"
 - badge_counter = Finders::TabSchoolManager.new(school: @school) if current_user.school_manager?
 - badge_counter = Finders::TabMainTeacher.new(main_teacher: current_user) if current_user.main_teacher?
 - badge_counter = Finders::TabNull.new if badge_counter.nil?
@@ -19,7 +19,11 @@ h1.h2.mb-4
         /   = " (#{badge_counter.student_without_class_room_count})"
     li
       = link_to dashboard_school_path(@school) do
-        button#users.fr-tabs__tab aria-controls="users-panel" aria-selected="false" role="tab" tabindex="1"  Personnels
+        button#users.fr-tabs__tab aria-controls="users-panel" aria-selected="false" role="tab" tabindex="1"  = @school.school_type
+    - if @school.school_type == 'college'
+      li
+        = link_to dashboard_school_path(@school) do 
+        button#weeks.fr-tabs__tab aria-controls="weeks-panel" aria-selected="false" role="tab" tabindex="2"  Semaines de stage
     li
       = link_to dashboard_school_path(@school) do
         button#internship-agreements.fr-tabs__tab aria-controls="internship-agreements-panel" aria-selected="false" role="tab" tabindex="3"  Mes conventions de stage

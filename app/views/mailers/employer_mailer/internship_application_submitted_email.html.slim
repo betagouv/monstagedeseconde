@@ -6,12 +6,12 @@ table
       p style=head_cyclop_styles
         = @internship_application.student.presenter.full_name
       p style=p_cyclop_styles({color: '#000091'})
-        ="<strong>#{@internship_application.internship_offer.period_label}</strong>".html_safe
-      - unless @internship_application.motivation_tmp.blank?
+        ="<strong>#{@prez_application.str_weeks}</strong>".html_safe
+      - unless @internship_application.motivation.blank?
       p style=p_cyclop_styles({color: '#000091'})
         <strong> Motivations </strong>
       p style=p_cyclop_styles
-        = @internship_application.motivation_tmp
+        = @internship_application.motivation
       p style=p_cyclop_styles({color: '#000091', 'margin-bottom': '0'})
         <strong> Informations sur l'élève </strong>
       table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body standard"  width="500px"

@@ -1,0 +1,15 @@
+quatrieme:
+  name: 'quatrieme générale'
+  short_name: 'quatrieme'
+  school_year_end_month: '05'
+  school_year_end_day: '30'
+troisieme:
+  name: 'troisieme générale'
+  short_name: 'troisieme'
+  school_year_end_month: '05'
+  school_year_end_day: '30'
+seconde:
+  name: 'seconde générale et technologique'
+  short_name: 'seconde'
+  school_year_end_month: '06'
+  school_year_end_day: '30'

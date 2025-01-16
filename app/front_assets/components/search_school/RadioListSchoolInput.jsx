@@ -17,10 +17,9 @@ function RadioListSchoolInput({
   return (
     <div className={`form-group ${isWaitingCitySelection ? 'opacity-05' : ''}`}>
       {isWaitingCitySelection && (
-        
         <div className="custom-label-container">
           <label className='fr-label' htmlFor={`${resourceName}_school_name`}>
-            Lycée
+            Établissement
             <abbr title="(obligatoire)" aria-hidden="true">
               *
             </abbr>
@@ -37,7 +36,7 @@ function RadioListSchoolInput({
       {isAlreadySelected && (
         <div className="custom-label-container">
           <label className='fr-label' htmlFor={`${resourceName}_school_name`}>
-            Lycée
+            Établissement
             <abbr title="(obligatoire)" aria-hidden="true">
               *
             </abbr>
@@ -51,7 +50,7 @@ function RadioListSchoolInput({
             name={`${resourceName}[school_name]`}
             id={`${resourceName}_school_name`}
           />
-          
+
           <input type="hidden" value={existingSchool.id} name={`${resourceName}[school_id]`} />
         </div>
       )}

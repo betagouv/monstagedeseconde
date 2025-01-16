@@ -34,7 +34,7 @@ class AcademyOld
     "Académie d'Aix-Marseille" => %w[04 05 13 84],
     'Académie de Nice' => %w[06 83],
     'Académie de La Réunion' => %w[974],
-    'Académie de Mayotte' => %w[976],
+    'Académie de Mayotte' => %w[976]
   }.freeze
 
   MAP_EMAIL_DOMAIN = {
@@ -80,12 +80,12 @@ class AcademyOld
     MAP.fetch(academy)
   end
 
-  def self.lookup_by_zipcode(zipcode:)
+  def self.academy_name_by_zipcode(zipcode:)
     MAP.map do |academy_name, departement_numbers|
-      if ::Department.departement_identified_by_3_chars?(zipcode: zipcode)
+      if ::Department.departement_identified_by_3_chars?(zipcode:)
         return academy_name if departement_numbers.include?(zipcode[0..2])
       elsif zipcode[0..1] == '20'
-        return 'Académie de Corse' 
+        return 'Académie de Corse'
       elsif departement_numbers.include?(zipcode[0..1])
         return academy_name
       end

@@ -1,0 +1,19 @@
+- model = @entreprise
+- method = :patch
+- url = dashboard_stepper_entreprise_path(@entreprise)
+
+= render 'layouts/breadcrumb',
+          links: [ [dashboard_internship_offers_path, 'Mes offres de stage'],
+                   ['', 'Déposer une offre de stage']]
+.row.fr-my-3w 
+  .col
+    h1.h2 Déposer une offre de stage
+
+
+= render 'form',
+         show_resume: false,
+         submit_button: true,
+         model: model,
+         method: method,
+         url: url,
+         duplication: @duplication

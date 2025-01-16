@@ -20,7 +20,8 @@ class UsersController < ApplicationController
   def update
     authorize! :update, current_user
     current_user.update!(user_params)
-    redirect_back fallback_location: account_path, flash: { success: current_flash_message }
+    redirect_back fallback_location: account_path,
+                  flash: { success: current_flash_message }
   rescue ActiveRecord::RecordInvalid
     render :edit, status: :bad_request
   end
@@ -152,8 +153,8 @@ class UsersController < ApplicationController
                                  :phone_suffix,
                                  :department,
                                  :class_room_id,
-                                 :resume_other_tmp,
-                                 :resume_languages_tmp,
+                                 :resume_other,
+                                 :resume_languages,
                                  :password,
                                  :role,
                                  :birth_date,

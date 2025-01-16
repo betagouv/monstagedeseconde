@@ -1,13 +1,12 @@
 module Services
-  class SendContactImmersionFacilite
-    
+  class SendContactImmersionFacilite < ApiRequestsHelper
     IMMERSION_FACILITE_ENDPOINT_URL = ENV['IMMERSION_FACILE_API_URL'] + '/contact-establishment'
 
     def perform
       response = post_request
 
       unless response&.respond_to?(:body)
-        error_message = "Faulty request : consider contacting developper"
+        error_message = 'Faulty request : consider contacting developper'
         Rails.logger.error(error_message)
         return false
       end
@@ -39,7 +38,6 @@ module Services
       [200, 201].include?(response_code.to_i)
     end
 
-
     def get_request_uri
       URI(IMMERSION_FACILITE_ENDPOINT_URL)
     end
@@ -51,7 +49,7 @@ module Services
         "potentialBeneficiaryEmail": email,
         "appellationCode": appellation_code,
         "siret": siret,
-        "contactMode": "EMAIL",
+        "contactMode": 'EMAIL',
         "message": message,
         "potentialBeneficiaryPhone": phone,
         "immersionObjective": "Découvrir un métier ou un secteur d'activité",
@@ -59,15 +57,9 @@ module Services
       }
     end
 
-    # expected: Int|Array[Int],
-    # response: HttpResponse,
-    def status?(expected, response)
-      Array(expected).include?(response.code.to_i)
-    end
-
     def default_headers
       {
-        'Accept': 'application/json' ,
+        'Accept': 'application/json',
         'Authorization': ENV['IMMERSION_FACILE_API_KEY'],
         'Content-Type': 'application/json'
       }

@@ -7,6 +7,7 @@ module InternshipOffers
     after_initialize :init
     before_create :reverse_academy_by_zipcode
 
+    # TODO: remove following since inherited
     attr_accessor :republish
 
     validates :street,
@@ -17,11 +18,12 @@ module InternshipOffers
               numericality: { only_integer: true,
                               greater_than: 0,
                               less_than_or_equal_to: MAX_CANDIDATES_HIGHEST }
-
+    validates :lunch_break, length: { minimum: 10, maximum: 200 }
     validate :schedules_check
 
     after_initialize :init
     before_create :reverse_academy_by_zipcode
+    before_save :copy_entreprise_full_address
 
     #---------------------
     # fullfilled scope isolates those offers that have reached max_candidates
@@ -54,12 +56,12 @@ module InternshipOffers
     }
 
     def visible
-      published? ? "oui" : "non"
+      published? ? 'oui' : 'non'
     end
 
     def supplied_applications
       InternshipApplication.where(internship_offer_id: id)
-                           .where(aasm_state: ['approved', 'convention_signed'])
+                           .where(aasm_state: %w[approved convention_signed])
                            .count
     end
 
@@ -77,10 +79,10 @@ module InternshipOffers
     end
 
     def schedules_check
-      unless schedules_ok?
-        errors.add(:weekly_hours, :blank) if weekly_hours.blank?
-        errors.add(:daily_hours, :blank) if daily_hours.blank?
-      end
+      return if schedules_ok?
+
+      errors.add(:weekly_hours, :blank) if weekly_hours.blank?
+      errors.add(:daily_hours, :blank) if daily_hours.blank?
     end
 
     def schedules_ok?
@@ -89,6 +91,10 @@ module InternshipOffers
       return false if weekly_hours_compacted&.empty? && daily_hours_compacted&.empty?
 
       true
+    end
+
+    def copy_entreprise_full_address
+      self.entreprise_full_address = entreprise_chosen_full_address.blank? ? entreprise_full_address : entreprise_chosen_full_address
     end
   end
 end

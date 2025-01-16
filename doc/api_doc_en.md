@@ -1,4 +1,4 @@
-To post offers on the [Mon stage de seconde](https://stagedeseconde.1jeune1solution.gouv.fr/) platform, an API is available for:
+To post offers on the [1élève1stage](https://stagedeseconde.1jeune1solution.gouv.fr/) platform, an API is available for:
 
 * Associations
 * Local Authorities
@@ -7,11 +7,11 @@ To post offers on the [Mon stage de seconde](https://stagedeseconde.1jeune1solut
 
 This is a REST API that allows the following operations:
 
-* Add an internship offer on Mon stage de seconde
-* Modify an internship offer on Mon stage de seconde
-* Delete an internship offer on Mon stage de seconde
-* Retrieve posted internship offers on Mon stage de seconde
-* Search for internship offers on Mon stage de seconde
+* Add an internship offer on 1élève1stage
+* Modify an internship offer on 1élève1stage
+* Delete an internship offer on 1élève1stage
+* Retrieve posted internship offers on 1élève1stage
+* Search for internship offers on 1élève1stage
 
 # Table of contents
 - [Environments](#environments)
@@ -39,7 +39,7 @@ The API is available at /api in both pre-production and production environments,
 
 *The APIs are open only to the concerned stakeholders.*
 
-**Please request an API account via email** ([support](mailto:contact@stagedeseconde.education.gouv.fr)) pour créer un compte API.
+**Please request an API account via email** ([support](mailto:contact@1eleve1stage.education.gouv.fr)) pour créer un compte API.
 
 Once the account is created, the API token can be retrieved through our web interface. It varies between the pre-production and production environments.
 

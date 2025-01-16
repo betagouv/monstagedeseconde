@@ -9,8 +9,10 @@ module Layoutable
     # email attachements for inline image
     before_action :set_logo_attachment
     def set_logo_attachment
-      attachments.inline['logo-education-nationale.png'] = File.read("#{Rails.root}/public/assets/emails/logo-education-nationale.png")
+      attachments.inline['logo-education-nationale.png'] =
+        File.read("#{Rails.root}/public/assets/emails/logo-education-nationale.png")
       attachments.inline['header-email.png'] = File.read("#{Rails.root}/public/assets/emails/header-email.png")
+      attachments.inline['footer-email.png'] = File.read("#{Rails.root}/public/assets/emails/footer-email.png")
       # attachments.inline['rf.png'] = File.read("#{Rails.root}/public/assets/rf.png")
     end
 
@@ -60,7 +62,6 @@ module Layoutable
         'padding-left' => '25px',
         'margin' => '0',
         'margin-bottom' => '15px;'
-
       }.merge(options)
         .map { |k, v| "#{k}:#{v}" }
         .join(';')
@@ -87,12 +88,12 @@ module Layoutable
       joiner(hash, options)
     end
 
-    def p_cyclop_styles(options={})
+    def p_cyclop_styles(options = {})
       hash = {
         'font-family' => font_family,
         'font-size' => '17px',
         'font-weight' => '400',
-        'line-height'=> '20px',
+        'line-height' => '20px',
         'letter-spacing' => '0em',
         'text-align' => 'left',
         'margin' => '0',
@@ -120,7 +121,7 @@ module Layoutable
         'font-weight' => 'normal',
         'margin' => '0',
         'line-height' => '30px;',
-       'vertical-align' => 'bottom;'
+        'vertical-align' => 'bottom;'
       }
       joiner(hash, options)
     end
@@ -128,7 +129,7 @@ module Layoutable
     def joiner(hash, options)
       hash.merge(options)
           .map { |k, v| "#{k}:#{v}" }
-          .join(";")
+          .join(';')
     end
   end
 end

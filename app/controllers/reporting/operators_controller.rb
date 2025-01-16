@@ -2,10 +2,9 @@
 
 module Reporting
   class OperatorsController < BaseReportingController
-
     def index
       authorize! :index, Acl::Reporting.new(user: current_user, params: params)
-      @operators = Operator.all.order(:name)
+      @operators = Operator.order(:name)
       respond_to do |format|
         format.xlsx do
           @school_year = params[:school_year] || SchoolYear::Current.new.beginning_of_period.year
@@ -36,16 +35,15 @@ module Reporting
     end
 
     def realized_count_hash
-      { params[:operator][:school_year] => { 
-          total: calulate_total_count,
-          onsite: params[:operator][:onsite_count].to_i,
-          hybrid: params[:operator][:hybrid_count].to_i,
-          online: params[:operator][:online_count].to_i,
-          workshop: params[:operator][:workshop_count].to_i,
-          public: params[:operator][:public_count].to_i,
-          private: calulate_total_count - params[:operator][:public_count].to_i,
-        }
-      }
+      { params[:operator][:school_year] => {
+        total: calulate_total_count,
+        onsite: params[:operator][:onsite_count].to_i,
+        hybrid: params[:operator][:hybrid_count].to_i,
+        online: params[:operator][:online_count].to_i,
+        workshop: params[:operator][:workshop_count].to_i,
+        public: params[:operator][:public_count].to_i,
+        private: calulate_total_count - params[:operator][:public_count].to_i
+      } }
     end
 
     def calulate_total_count

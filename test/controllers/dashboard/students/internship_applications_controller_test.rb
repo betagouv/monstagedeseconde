@@ -22,9 +22,9 @@ module Dashboard
 
       test 'GET internship_applications#index as student.school.school_manager responds with 200' do
         school = create(:school)
-        class_room = create(:class_room, school: school)
-        student = create(:student, school: school, class_room: class_room)
-        school_manager = create(:school_manager, school: school)
+        class_room = create(:class_room, school:)
+        student = create(:student, school:, class_room:)
+        school_manager = create(:school_manager, school:)
         sign_in(school_manager)
         get dashboard_students_internship_applications_path(student)
         assert_response :success
@@ -36,26 +36,32 @@ module Dashboard
 
       test 'GET internship_applications#index as student.school.school_manager works and show convention button' do
         school = create(:school)
-        class_room = create(:class_room, school: school)
-        student = create(:student, school: school, class_room: class_room)
-        school_manager = create(:school_manager, school: school)
-        internship_application = create(:weekly_internship_application, :approved, student: student)
+        class_room = create(:class_room, school:)
+        student = create(:student, school:, class_room:)
+        school_manager = create(:school_manager, school:)
+        internship_application = create(:weekly_internship_application, :approved, student:)
         sign_in(school_manager)
         get dashboard_students_internship_applications_path(student_id: student.id)
         assert_response :success
-        assert_select 'a[href=?]', dashboard_internship_offer_internship_application_path(internship_application.internship_offer, uuid: internship_application.uuid, transition: :signed!)
+        assert_select 'a[href=?]',
+                      dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
+                                                                             uuid: internship_application.uuid, transition: :signed!)
+        assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'stage validé'
       end
 
       test 'GET internship_applications#index as SchoolManagement works and show convention button' do
         school = create(:school, :with_school_manager)
-        class_room = create(:class_room, school: school)
-        student = create(:student, school: school, class_room: class_room)
-        main_teacher = create(:main_teacher, school: school, class_room: class_room)
-        internship_application = create(:weekly_internship_application, :approved, student: student)
+        class_room = create(:class_room, school:)
+        student = create(:student, school:, class_room:)
+        main_teacher = create(:main_teacher, school:, class_room:)
+        internship_application = create(:weekly_internship_application, :approved, student:)
         sign_in(main_teacher)
         get dashboard_students_internship_applications_path(student)
         assert_response :success
-        assert_select 'a[href=?]', dashboard_internship_offer_internship_application_path(internship_application.internship_offer, uuid: internship_application.uuid, transition: :signed!)
+        assert_select 'a[href=?]',
+                      dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
+                                                                             uuid: internship_application.uuid, transition: :signed!)
+        assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'stage validé'
       end
 
       test 'GET internship_applications#index render navbar, timeline' do
@@ -71,8 +77,7 @@ module Dashboard
 
       test 'GET internship_applications#index render internship_applications' do
         student = create(:student, phone: '+5940611223344')
-        states = %i[drafted
-                    submitted
+        states = %i[submitted
                     approved
                     expired
                     validated_by_employer
@@ -80,7 +85,7 @@ module Dashboard
                     canceled_by_employer
                     canceled_by_student]
         internship_applications = states.each_with_object({}) do |state, accu|
-          accu[state] = create(:weekly_internship_application, state, student: student)
+          accu[state] = create(:weekly_internship_application, state, student:)
         end
 
         sign_in(student)
@@ -88,15 +93,14 @@ module Dashboard
         assert_response :success
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--purple-glycine', text: 'annulée', count: 1
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--error', text: 'expirée', count: 1
-        assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: "acceptée par l'entreprise", count: 1
+        assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'stage validé', count: 1
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--error', text: "refusée par l'entreprise", count: 2
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--info', text: "Sans réponse de l'entreprise", count: 1
-        assert_select '.fr-badge.fr-badge--no-icon', text: "brouillon", count: 1
       end
 
       test 'GET internship_applications#show not connected responds with redirection' do
         student = create(:student)
-        internship_application = create(:weekly_internship_application, student: student)
+        internship_application = create(:weekly_internship_application, student:)
         get dashboard_students_internship_application_path(student,
                                                            internship_application)
         assert_response :redirect
@@ -106,7 +110,7 @@ module Dashboard
         student = create(:student)
         sign_in(student)
         internship_application = create(:weekly_internship_application, {
-                                          student: student,
+                                          student:,
                                           aasm_state: :approved,
                                           convention_signed_at: 1.days.ago,
                                           approved_at: 1.days.ago,
@@ -119,65 +123,67 @@ module Dashboard
         assert_response :success
 
         assert_template 'dashboard/students/internship_applications/show'
-        assert_select ".fr-badge.fr-badge--no-icon.fr-badge--success", text:"stage validé"
+        assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'stage validé'
       end
 
-      test 'GET internship_applications#show with drafted can be submitted' do
+      test 'GET internship_applications#show with submitted application' do
         student = create(:student)
         sign_in(student)
-        internship_application = create(:weekly_internship_application, student: student)
+        internship_application = create(:weekly_internship_application, student:)
 
         get dashboard_students_internship_application_path(student_id: student.id,
                                                            uuid: internship_application.uuid)
         assert_response :success
-        assert_select ".fr-badge.fr-badge--no-icon", text:"brouillon"
-        assert_select "input.fr-btn[type='submit'][value='Envoyer la demande']"
+        assert_select '.fr-badge.fr-badge--no-icon', text: "Sans réponse de l'entreprise"
       end
 
-      test "#resend_application" do
+      test '#resend_application' do
         student = create(:student)
         sign_in(student)
         internship_application = create(
           :weekly_internship_application,
           :submitted,
-          student: student
+          student:
         )
         assert_changes -> { internship_application.reload.dunning_letter_count } do
           post resend_application_dashboard_students_internship_application_path(
             student_id: internship_application.student.id,
             uuid: internship_application.uuid
-            ), params: {}
+          ), params: {}
         end
         assert_equal 1, internship_application.reload.dunning_letter_count
         assert_no_changes -> { internship_application.reload.dunning_letter_count } do
           post resend_application_dashboard_students_internship_application_path(
             student_id: internship_application.student.id,
             id: internship_application.id
-            ), params: {}
+          ), params: {}
         end
         assert_redirected_to dashboard_students_internship_applications_path(student)
       end
 
       test '#show with a magic link' do
         student = create(:student)
-        sgid = ""
-        internship_application = create(:weekly_internship_application, student: student)
+        sgid = ''
+        internship_application = create(:weekly_internship_application, student:)
         travel_to Time.now - 3.month do
           sgid = student.to_sgid(expires_in: InternshipApplication::MAGIC_LINK_EXPIRATION_DELAY).to_s
           get dashboard_students_internship_application_path(
-            sgid: sgid,
+            sgid:,
             student_id: student.id,
-            uuid: internship_application.uuid)
+            uuid: internship_application.uuid
+          )
           assert_equal 1, internship_application.reload.magic_link_tracker
         end
         travel_to Time.now do
           get dashboard_students_internship_application_path(
-            sgid: sgid,
+            sgid:,
             student_id: student.id,
-            uuid: internship_application.uuid)
+            uuid: internship_application.uuid
+          )
           assert_redirected_to dashboard_students_internship_application_path(
             student_id: student.id,
-            uuid: internship_application.uuid)
+            uuid: internship_application.uuid
+          )
           assert_equal 2, internship_application.reload.magic_link_tracker
         end
       end

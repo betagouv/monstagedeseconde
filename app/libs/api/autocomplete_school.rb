@@ -28,22 +28,26 @@ module Api
 
     private
 
-    attr_reader :term, :limit, :result
-    def initialize(term:, limit:)
+    attr_reader :term, :grade, :limit, :result, :school_type
+
+    def initialize(term:, limit:, grade: 'seconde')
       @term = term
+      @grade = grade
+      @school_type = @grade == 'seconde' ? 'lycee' : 'college'
       @limit = limit
       @result = Api::School.autocomplete_by_name_or_city(term: term)
                            .where(visible: true)
+                           .where(school_type: school_type)
                            .includes(:class_rooms)
                            .limit(limit)
     end
 
     def append_result(list:, item:, sort_by:)
-      # Following sort by puts at the end those with 
+      # Following sort by puts at the end those with
       # attribute nil that would otherwise generate an error
       Array(list).push(item)
-                 .sort_by do |ite| 
-                    [ite.send(sort_by) ? 0 : 1 , ite.send(sort_by)]
+                 .sort_by do |ite|
+                   [ite.send(sort_by) ? 0 : 1, ite.send(sort_by)]
                  end
     end
   end

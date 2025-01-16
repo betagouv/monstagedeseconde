@@ -2,28 +2,28 @@ require 'test_helper'
 
 class ReportingKpiTest < ActiveSupport::TestCase
   test 'last_week_kpis' do
-    travel_to Date.new(2022, 01, 25) do
+    travel_to Date.new(2024, 0o1, 25) do
       school_manager = create(:school_manager, school: create(:school))
 
-    # internship_offer_unpublished should not be taken into account
+      # internship_offer_unpublished should not be taken into account
       next_weeks = Week.selectable_from_now_until_end_of_school_year
       three_next_weeks = next_weeks.first(3).to_a
       two_next_weeeks = next_weeks.first(2).to_a
       create(
-        :weekly_internship_offer,
+        :weekly_internship_offer_3eme,
         :with_private_employer_group,
         :unpublished,
-        max_candidates: 3,
+        max_candidates: 3
       )
 
       internship_offer = create(
-        :weekly_internship_offer, #public by default
-        max_candidates: 2,
+        :weekly_internship_offer_3eme, # public by default
+        max_candidates: 2
       )
       internship_offer = create(
-        :weekly_internship_offer,
+        :weekly_internship_offer_3eme,
         :with_private_employer_group,
-        max_candidates: 3,
+        max_candidates: 3
       )
 
       expected = {
@@ -44,7 +44,7 @@ class ReportingKpiTest < ActiveSupport::TestCase
         created_at: Date.today - 7.days
       )
       updated_expected = {
-        subscriptions: {"Elève"=>1},
+        subscriptions: { 'Elève' => 1 },
         applications_count: 0,
         student_applyers_count: 0,
         offers_count: 2,
@@ -56,15 +56,16 @@ class ReportingKpiTest < ActiveSupport::TestCase
       internship_application = create(
         :weekly_internship_application,
         :approved,
-        student: student,
-        internship_offer: internship_offer)
+        student:,
+        internship_offer:
+      )
       assert_equal updated_expected, Reporting::Kpi.new.last_week_kpis
       internship_application.update_columns(
         updated_at: Date.today - 7.days,
         created_at: Date.today - 7.days
       )
       new_updated_expected = {
-        subscriptions: {"Elève"=>1},
+        subscriptions: { 'Elève' => 1 },
         applications_count: 1,
         student_applyers_count: 1,
         offers_count: 2,

@@ -18,19 +18,19 @@ module InternshipApplications
     end
 
     test 'GET internship_applications#index redirects to new_user_session_path when not logged in' do
-      get dashboard_internship_offer_internship_applications_path(create(:weekly_internship_offer))
+      get dashboard_internship_offer_internship_applications_path(create(:weekly_internship_offer_2nde))
       assert_redirected_to new_user_session_path
     end
 
     test 'GET #index redirects to root_path when logged in as student' do
       sign_in(create(:student))
-      get dashboard_internship_offer_internship_applications_path(create(:weekly_internship_offer))
+      get dashboard_internship_offer_internship_applications_path(create(:weekly_internship_offer_2nde))
       assert_redirected_to root_path
     end
 
     test 'GET #index redirects to root_path when logged as different employer than internship_offer.employer' do
       sign_in(create(:employer))
-      get dashboard_internship_offer_internship_applications_path(create(:weekly_internship_offer))
+      get dashboard_internship_offer_internship_applications_path(create(:weekly_internship_offer_2nde))
       assert_redirected_to root_path
     end
 
@@ -40,8 +40,8 @@ module InternshipApplications
                                  phone: '+330665656565',
                                  email: 'student@edu.school',
                                  birth_date: 14.years.ago,
-                                 resume_other_tmp: 'resume_other',
-                                 resume_languages_tmp: 'resume_languages')
+                                 resume_other: 'resume_other',
+                                 resume_languages: 'resume_languages')
       internship_application = create(:weekly_internship_application, :submitted, student:)
       sign_in(internship_application.internship_offer.employer)
       get dashboard_internship_offer_internship_applications_path(internship_application.internship_offer)
@@ -64,8 +64,8 @@ module InternshipApplications
                                  phone: '+330665656565',
                                  email: 'student@edu.school',
                                  birth_date: 14.years.ago,
-                                 resume_other_tmp: 'resume_other',
-                                 resume_languages_tmp: 'resume_languages')
+                                 resume_other: 'resume_other',
+                                 resume_languages: 'resume_languages')
       internship_application = create(:weekly_internship_application, :submitted, student:)
       student.archive
       sign_in(internship_application.internship_offer.employer)
@@ -73,12 +73,12 @@ module InternshipApplications
       assert_response :success
     end
 
-    test 'GET #index with drafted does not shows internship_application' do
-      internship_application = create(:weekly_internship_application, :drafted)
+    test 'GET #index with submitted shows internship_application' do
+      internship_application = create(:weekly_internship_application)
       sign_in(internship_application.internship_offer.employer)
       get dashboard_internship_offer_internship_applications_path(internship_application.internship_offer)
       assert_response :success
-      assert_select "[data-test-id=internship-application-#{internship_application.id}]", count: 0
+      assert_select "[data-test-id=internship-application-#{internship_application.id}]", count: 1
     end
 
     test 'GET #index with expired shows internship_application' do

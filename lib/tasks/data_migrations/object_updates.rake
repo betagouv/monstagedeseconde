@@ -158,31 +158,6 @@ namespace :data_migrations do
       puts '-------------------'
       puts ' '
     end
-    # ===================
-    fields = [
-      [InternshipOfferInfo, %i[]],
-      [School, %i[agreement_conditions]]
-    ]
-
-    fields.each do |model, attrs|
-      PrettyConsole.puts_in_green "Table: #{model.name}"
-      puts '-------------------'
-      attrs.each do |attr|
-        puts attr
-        puts('- ' * 10)
-        model.find_each(batch_size: 300) do |record|
-          value = record.send("#{attr}_rich_text").to_plain_text
-          next if value.blank?
-
-          key = "#{attr}_tmp"
-          record.update(key => value)
-          print '.'
-        end
-        puts ' '
-      end
-      puts '-------------------'
-      puts ' '
-    end
   end
 
   desc 'decrease field size for some fields in tables'
@@ -218,6 +193,33 @@ namespace :data_migrations do
       decrease_size(User, :legal_representative_phone, 20)
 
       decrease_size(UsersSearchHistory, :city, 50)
+    end
+  end
+
+  desc "update internship_offer's format from 2024 format to 2025's"
+  task 'offers_format_update': :environment do
+    PrettyConsole.announce_task("update internship_offer's format from 2024 format to 2025's") do
+      older_offers = InternshipOffer.where(school_id: nil)
+                                    .where('created_at < ?', Date.new(2024, 8, 1))
+      # period enum : { full_time: 0, week_1: 1, week_2: 2 }
+      first_week_2024 = SchoolTrack::Seconde.first_week(year: 2024)
+      second_week_2024 = SchoolTrack::Seconde.second_week(year: 2024)
+
+      older_offers.where(period: 0).find_each do |offer|
+        offer.weeks = [first_week_2024, second_week_2024]
+        offer.save
+        print('.')
+      end
+      older_offers.where(period: 1).find_each do |offer|
+        offer.weeks = [first_week_2024]
+        offer.save
+        print('.')
+      end
+      older_offers.where(period: 2).find_each do |offer|
+        offer.weeks = [second_week_2024]
+        offer.save
+        print('.')
+      end
     end
   end
 end

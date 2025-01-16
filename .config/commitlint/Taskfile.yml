@@ -1,0 +1,60 @@
+---
+version: "3"
+
+vars:
+  COMMITLINT_DIR: '{{.COMMITLINT_DIR | default ".config/commitlint"}}'
+  COMMITLINT_COMMAND: '{{.COMMITLINT_COMMAND | default "bunx --install=force --bun commitlint"}}'
+  COMMITLINT_CONFIG: '{{.COMMITLINT_CONFIG | default ".config/commitlint/config.yml"}}'
+  COMMITLINT_FROM: '{{.EXT_COMMITLINT_FROM | default "origin/main"}}'
+  COMMITLINT_TO: '{{.COMMITLINT_TO | default "HEAD"}}'
+
+tasks:
+  default:
+    desc: Check commit messages with commitlint.
+    summary: |
+      ℹ️ Description:
+        Runs commitlint to check commit messages.
+
+      🔧 Variables:
+        - COMMITLINT_COMMAND: Command to run commitlint. Default: "bunx commitlint"
+        - COMMITLINT_CONFIG: Path to commitlint configuration file. Default: ".config/commitlint/config.yml"
+        - COMMITLINT_FROM: Starting point for commit range. Default: "HEAD~1"
+        - COMMITLINT_TO: Ending point for commit range. Default: "HEAD"
+
+      🔐 Preconditions:
+        - The 'install' task must have been successfully executed.
+
+      🔄 Execution:
+        Runs commitlint on the specified range of commits.
+
+      📝 Note:
+        This task checks commit messages against the configured rules.
+    # deps: [install]
+    vars:
+      COMMITLINT_LINT_COMMAND: "{{.COMMITLINT_COMMAND}} --config {{.COMMITLINT_CONFIG}} --from {{.COMMITLINT_FROM}} --to {{.COMMITLINT_TO}}"
+      RED: '\033[0;31m'
+      GREEN: '\033[0;32m'
+      BLUE: '\033[0;34m'
+      PURPLE: '\033[0;35m'
+      NC: '\033[0m' # No Color
+    cmds:
+      - echo "{{.COMMITLINT_LINT_COMMAND}}"
+      - cmd: |
+          # Run commitlint and capture the exit status
+          if ! {{.COMMITLINT_LINT_COMMAND}}; then
+            echo -e "{{.RED}}❌ Commit message lint failed. Please follow these steps to correct the issue:{{.NC}}"
+            echo -e "1. Note the erroneous commit message(s) from the '{{.BLUE}}⧗   input{{.NC}}' lines in the log above."
+            echo -e "2. Run the following command to start an interactive rebase from the beginning of your branch:"
+            echo -e "   {{.GREEN}}git rebase -i \$(git merge-base HEAD origin/main){{.NC}}"
+            echo -e "3. In the opened file, find the commit(s) with the incorrect message(s)."
+            echo -e "4. Change '{{.PURPLE}}pick{{.NC}}' to '{{.PURPLE}}reword{{.NC}}' at the beginning of the line(s) for the commit(s) you want to modify."
+            echo -e "5. Save and close the file. This will open each selected commit message for editing."
+            echo -e "6. Edit the commit message(s) to comply with the commitlint rules."
+            echo -e "7. After editing, force push your changes with:"
+            echo -e "   {{.GREEN}}git push --force-with-lease origin HEAD{{.NC}}"
+            echo -e "8. Run '{{.GREEN}}task commitlint:lint{{.NC}}' again to ensure all issues are resolved."
+            exit 1
+          fi
+        silent: true
+      - cmd: echo "🎉 All commit messages successfully passed commitlint!"
+        silent: true

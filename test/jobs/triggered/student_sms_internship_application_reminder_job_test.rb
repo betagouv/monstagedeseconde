@@ -8,7 +8,7 @@ module Triggered
     include ThirdPartyTestHelpers
 
     setup do
-      @internship_offer = create(:weekly_internship_offer)
+      @internship_offer = create(:weekly_internship_offer_2nde)
       ActionMailer::Base.deliveries = []
     end
     teardown { ActionMailer::Base.deliveries = [] }

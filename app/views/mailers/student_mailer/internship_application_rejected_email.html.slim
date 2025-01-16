@@ -6,7 +6,7 @@ p style=(p_styles)
 p style=(p_styles)
   i 
     div style='padding-left:25px;'
-      = @internship_application.rejected_message_tmp&.gsub("\n", "<br>")&.html_safe
+      = @internship_application.rejected_message&.gsub("\n", "<br>")&.html_safe
 
 p style=(p_styles)
   strong
@@ -22,5 +22,5 @@ p style=p_styles
 p style=(p_styles)
   | A bientôt
   br
-  | L'équipe Mon stage de 2de.
+  | L'équipe 1élève1stage.
 

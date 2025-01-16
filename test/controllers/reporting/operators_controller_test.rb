@@ -5,6 +5,8 @@ require 'test_helper'
 module Reporting
   class OperatorsControllerTest < ActionDispatch::IntegrationTest
     include Devise::Test::IntegrationHelpers
+    include ThirdPartyTestHelpers
+
     setup { create(:school) }
 
     test 'get index as visitor redirects to root' do
@@ -16,7 +18,7 @@ module Reporting
       statistician = create(:statistician)
       sign_in(statistician)
       get reporting_operators_path
-      # TODO check why this test fails
+      # TODO: check why this test fails
       # assert_redirected_to root_path
     end
 
@@ -29,19 +31,19 @@ module Reporting
       get reporting_operators_path
 
       assert_response :success
-      assert_select 'h1', "Statistiques associations"
+      assert_select 'h1', 'Statistiques associations'
       assert_select '.test-operator-count', count: 2
     end
 
     test 'get index.xls as god works' do
-      skip "failing test on CI but passing locally" if ENV.fetch('CI') == 'true'
+      skip 'failing test on CI but passing locally' if ENV.fetch('CI') == 'true'
       god = create(:god)
       sign_in(god)
       get reporting_operators_path(format: :xlsx)
       assert_response :success
     end
 
-    test 'PATCH #update as god success'  do
+    test 'PATCH #update as god success' do
       god = create(:god)
       operator_1 = create(:operator, target_count: 0)
       sign_in(god)

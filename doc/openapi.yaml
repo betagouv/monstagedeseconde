@@ -14,7 +14,7 @@ security:
 tags:
 - name: developers
   description: Operations accessibles aux développeurs disposant d'une clé API. Celle-ci
-    peut être fournie sur demande à l'adresse email contact @ stagedeseconde.education.gouv.fr
+    peut être fournie sur demande à l'adresse email contact @ 1eleve1stage.education.gouv.fr
 paths:
   /internship_offers:
     get:
@@ -50,7 +50,7 @@ paths:
       tags:
       - developers
       summary: ajoute une offre de stage d'un partenaire aux offres proposées en propre
-        par les équipes Mon stage de seconde
+        par les équipes 1élève1stage
       description: |
         Les offres de stages décrits ci-dessous décrivent les offres réservées aux classes de **seconde générale et technologique**
       operationId: internship_offers
@@ -161,7 +161,7 @@ paths:
       tags:
       - developers
       summary: met à jour une offre de stage d'un partenaire aux offres proposées
-        en propre par les équipes Mon stage de seconde
+        en propre par les équipes 1élève1stage
       description: |
         Mise à jour des offres . Possibilité de désactiver son offre en passant le paramètre published_at à null
       operationId: internship_offers_updatte

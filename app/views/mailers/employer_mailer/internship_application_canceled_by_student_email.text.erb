@@ -3,7 +3,7 @@ Bonjour,
 <%= "#{@internship_application.student.presenter.formal_name}" %> a annulé sa candidature pour le stage "<%= @internship_application.internship_offer.title %>".
 
 Voici le motif de l’annulation :
-<%= @internship_application.canceled_by_student_message_tmp.gsub("\n", "</br>").html_safe %>
+<%= @internship_application.canceled_by_student_message.gsub("\n", "</br>").html_safe %>
 
 À bientôt,
-L'équipe Mon stage de 2de.
+L'équipe 1élève1stage.

@@ -7,10 +7,10 @@
 # * canceled_by_student_message (on internship_application aasm transition canceled_by_student)
 class InternshipApplicationAasmMessageBuilder
   # "exposed" attributes
-  delegate :approved_message_tmp,
-           :rejected_message_tmp,
-           :canceled_by_employer_message_tmp,
-           :canceled_by_student_message_tmp,
+  delegate :approved_message,
+           :rejected_message,
+           :canceled_by_employer_message,
+           :canceled_by_student_message,
            to: :internship_application
 
   MAP_TARGET_TO_BUTTON_COLOR = {
@@ -33,11 +33,11 @@ class InternshipApplicationAasmMessageBuilder
   #
 
   MAP_TARGET_TO_FIELD_ATTRIBUTE = {
-    employer_validate!: :validated_by_employer_message_tmp,
-    approve!: :approved_message_tmp,
-    cancel_by_employer!: :canceled_by_employer_message_tmp,
-    cancel_by_student!: :canceled_by_student_message_tmp,
-    reject!: :rejected_message_tmp
+    employer_validate!: :validated_by_employer_message,
+    approve!: :approved_message,
+    cancel_by_employer!: :canceled_by_employer_message,
+    cancel_by_student!: :canceled_by_student_message,
+    reject!: :rejected_message
   }.freeze
 
   def associated_text_field

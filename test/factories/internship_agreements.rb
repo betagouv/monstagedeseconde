@@ -7,40 +7,44 @@ FactoryBot.define do
     school_representative_email { FFaker::Internet.email }
     school_representative_role { 'Principal de lycée' }
     student_school { internship_application.student.school.name }
-    student_address { "#{FFaker::Address.street_address} #{internship_application.student.school.zipcode} #{internship_application.student.school.city}" }
+    student_address do
+      "#{FFaker::Address.street_address} #{internship_application.student.school.zipcode} #{internship_application.student.school.city}"
+    end
     student_refering_teacher_full_name { FFaker::NameFR.name }
     student_refering_teacher_email { FFaker::Internet.email }
     student_refering_teacher_phone { FFaker::PhoneNumberFR.mobile_phone_number }
     student_phone { '+330325254575' }
     siret { FFaker::CompanyFR.siret }
     student_full_name { internship_application.student.presenter.full_name }
-    student_legal_representative_full_name {  FFaker::NameFR.name }
+    student_legal_representative_full_name { FFaker::NameFR.name }
     student_legal_representative_phone { FFaker::PhoneNumberFR.mobile_phone_number }
-    student_legal_representative_email{ FFaker::Internet.email }
-    student_legal_representative_2_full_name {  FFaker::NameFR.name }
+    student_legal_representative_email { FFaker::Internet.email }
+    student_legal_representative_2_full_name { FFaker::NameFR.name }
     student_legal_representative_2_phone { FFaker::PhoneNumberFR.mobile_phone_number }
-    student_legal_representative_2_email{ FFaker::Internet.email }
-    student_class_room { '2de A'}
+    student_legal_representative_2_email { FFaker::Internet.email }
+    student_class_room { '2de A' }
     organisation_representative_full_name { 'DGSE' }
     tutor_role { 'Responsable financier' }
     tutor_full_name { FFaker::NameFR.name }
     tutor_email { FFaker::Internet.email }
-    date_range { "du 10/10/2020 au 15/10/2020" }
-    activity_scope_tmp { 'Accueil clients' }
-    activity_preparation_tmp { 'Appel téléphonique'}
+    date_range { 'du 10/10/2020 au 15/10/2020' }
+    activity_scope { 'Accueil clients' }
+    activity_preparation { 'Appel téléphonique' }
     aasm_state { 'draft' }
     weekly_hours { ['9:00', '17:00'] }
     weekly_lunch_break { '1h dans la cantine. Repas fourni.' }
-    activity_rating_tmp { "Après concertation, le tuteur appelera le professeur principal vers 17h le lundi et au moins un autre jour de la semaine choisi ensemble. L'élève n'est pas convié à cet échange.<br/>A ceci se rajoute le rapport de stage"}
-    activity_learnings_tmp { 'Communication orale' }
+    activity_rating do
+      "Après concertation, le tuteur appelera le professeur principal vers 17h le lundi et au moins un autre jour de la semaine choisi ensemble. L'élève n'est pas convié à cet échange.<br/>A ceci se rajoute le rapport de stage"
+    end
+    activity_learnings { 'Communication orale' }
     uuid { SecureRandom.uuid }
 
     before(:create) do |ia|
       academy_region = AcademyRegion.find_or_create_by(name: 'Ile-de-France')
-      academy = Academy.find_or_create_by(name: 'Paris', email_domain: 'ac-paris.fr', academy_region: academy_region)
-      department = Department.create(code: '75', name: 'Paris', academy: academy)
+      academy = Academy.find_or_create_by(name: 'Paris', email_domain: 'ac-paris.fr', academy_region:)
+      department = Department.create(code: '75', name: 'Paris', academy:)
     end
-    
+
     trait :created_by_system do
       skip_validations_for_system { true }
     end
@@ -69,13 +73,11 @@ FactoryBot.define do
         create(:signature,
                internship_agreement: ia,
                signatory_role: 'employer',
-               user_id: ia.employer.id,
-              )
+               user_id: ia.employer.id)
         create(:signature,
                internship_agreement: ia,
                signatory_role: 'school_manager',
-               user_id: ia.school_manager.id,
-              )
+               user_id: ia.school_manager.id)
       end
     end
   end

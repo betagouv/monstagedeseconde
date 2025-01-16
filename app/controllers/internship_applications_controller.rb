@@ -2,7 +2,7 @@
 
 class InternshipApplicationsController < ApplicationController
   before_action :persist_login_param, only: %i[new]
-  before_action :authenticate_user!, except: %i[update]
+  before_action :authenticate_user!
   before_action :set_internship_offer
 
   def index
@@ -18,6 +18,12 @@ class InternshipApplicationsController < ApplicationController
       internship_offer_type: 'InternshipOffer',
       student: current_user
     )
+    @available_weeks = @internship_application.selectable_weeks
+
+    return unless @available_weeks.empty?
+
+    redirect_to internship_offer_path(@internship_offer),
+                alert: "Votre établissement a déclaré des semaines de stage et aucune semaine n'est compatible avec cette offre de stage."
   end
 
   # alias for draft
@@ -26,41 +32,25 @@ class InternshipApplicationsController < ApplicationController
     authorize! :submit_internship_application, @internship_application
   end
 
-  # alias for submit/update
-  def update
-    @internship_application = @internship_offer.internship_applications.find_by(uuid: params[:uuid])
-    authorize! :submit_internship_application, @internship_application
-
-    destination = dashboard_students_internship_applications_path(student_id: current_user.id, notice_banner: true)
-    if params[:transition] == 'submit!'
-      @internship_application.submit!
-      @internship_application.save!
-    else
-      @internship_application.update(update_internship_application_params)
-      destination = internship_offer_internship_application_path(@internship_offer, uuid: @internship_application.uuid)
-    end
-    redirect_to destination
-  rescue AASM::InvalidTransition
-    redirect_to dashboard_students_internship_applications_path(current_user, uuid: @internship_application.uuid),
-                flash: { warning: 'Votre candidature avait déjà été soumise' }
-  rescue ActiveRecord::RecordInvalid
-    flash[:error] = 'Erreur dans la saisie de votre candidature'
-    render 'internship_applications/show'
-  end
-
   # students can apply for one internship_offer
   def create
     set_internship_offer
     authorize! :apply, @internship_offer
 
+    if params[:internship_application][:week_ids].present?
+      params[:internship_application][:week_ids] =
+        params[:internship_application][:week_ids].split(',')
+    end
+
     appli_params = { user_id: current_user.id }.merge(create_internship_application_params)
     appli_params = sanitizing_params(appli_params)
     @internship_application = InternshipApplication.new(appli_params)
+    destination = dashboard_students_internship_applications_path(student_id: current_user.id, notice_banner: true)
+
     if @internship_application.save
-      redirect_to internship_offer_internship_application_path(@internship_offer,
-                                                             uuid: @internship_application.uuid)
+      redirect_to destination
     else
-      Rails.logger.error(@internship_application.errors.full_messages)
+      log_error(object: @internship_application)
       render 'new', status: :bad_request
     end
   end
@@ -108,7 +98,9 @@ class InternshipApplicationsController < ApplicationController
         redirect_to dashboard_candidatures_path,
                     flash: { success: 'La candidature a été transmise avec succès' }
       else
-        target_path = edit_transfer_internship_offer_internship_application_path(@internship_application.internship_offer, uuid: @internship_application.uuid)
+        target_path = edit_transfer_internship_offer_internship_application_path(
+          @internship_application.internship_offer, uuid: @internship_application.uuid
+        )
         flash_error_message = "Les adresses emails suivantes sont invalides : #{faulty_emails.join(', ')}" \
                               ". Aucun transfert n'a été effectué, aucun email n'a été émis."
         redirect_to(target_path, flash: { danger: flash_error_message }) and return
@@ -137,14 +129,15 @@ class InternshipApplicationsController < ApplicationController
   def update_internship_application_params
     params.require(:internship_application)
           .permit(
-            :motivation_tmp,
+            :motivation,
             :student_phone,
             :student_email,
+            week_ids: [],
             student_attributes: %i[
               email
               phone
-              resume_other_tmp
-              resume_languages_tmp
+              resume_other
+              resume_languages
             ]
           )
   end
@@ -175,21 +168,21 @@ class InternshipApplicationsController < ApplicationController
     params.require(:internship_application)
           .permit(
             :type,
-            :week_id,
             :internship_offer_id,
             :internship_offer_type,
-            :motivation_tmp,
+            :motivation,
             :student_phone,
             :student_email,
             :student_address,
             :student_legal_representative_full_name,
             :student_legal_representative_email,
             :student_legal_representative_phone,
+            week_ids: [],
             student_attributes: %i[
               email
               phone
-              resume_other_tmp
-              resume_languages_tmp
+              resume_other
+              resume_languages
             ]
           )
   end

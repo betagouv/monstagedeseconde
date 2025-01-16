@@ -96,7 +96,7 @@ tbody.internship-agreement
             = form.label "same_daily_hours" do
               span.mb-2.fr-label = "Horaires journaliers de l’élève"
               = form.rg2a_required_content_tag
-            = render partial: "dashboard/stepper/practical_infos/daily_hours",
+            = render partial: "dashboard/stepper/plannings/daily_hours",
                      locals: { form: form, disabled: disabled }
 
       .row.mt-0
@@ -105,7 +105,7 @@ tbody.internship-agreement
         - content = "Activités prévues"
         - filled_by = ["l'entreprise"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :activity_scope_tmp,
+                 locals: { field: :activity_scope,
                            form: form,
                            text_label: label,
                            title: title,
@@ -127,7 +127,7 @@ tbody.internship-agreement
         - content = "Vous pouvez préciser en quoi les activités proposées permettent de développer la compétence indiquée."
         - filled_by = ["l'entreprise"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :skills_observe_tmp,
+                 locals: { field: :skills_observe,
                            input_type: :text_area,
                            limit: 1_000,
                            rows: 5,
@@ -146,7 +146,7 @@ tbody.internship-agreement
         - content = "Vous pouvez préciser en quoi les activités proposées permettent de développer la compétence indiquée."
         - filled_by = ["l'entreprise"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :skills_communicate_tmp,
+                 locals: { field: :skills_communicate,
                            input_type: :text_area,
                            limit: 1_000,
                            rows: 5,
@@ -165,7 +165,7 @@ tbody.internship-agreement
         - content = "Vous pouvez préciser en quoi les activités proposées permettent de développer la compétence indiquée."
         - filled_by = ["l'entreprise"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :skills_understand_tmp,
+                 locals: { field: :skills_understand,
                            input_type: :text_area,
                            limit: 1_000,
                            rows: 5,form: form,
@@ -183,7 +183,7 @@ tbody.internship-agreement
         - content = "Vous pouvez préciser en quoi les activités proposées permettent de développer la compétence indiquée."
         - filled_by = ["l'entreprise"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :skills_motivation_tmp,
+                 locals: { field: :skills_motivation,
                            form: form,
                            input_type: :text_area,
                            limit: 1_500,
