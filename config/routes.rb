@@ -117,6 +117,7 @@ Rails.application.routes.draw do
     get '/utilisateurs/identifier', to: 'users#identify_user'
     post '/utilisateurs/anonymiser', to: 'users#anonymize_user'
 
+
     namespace :api, path: 'api' do
       # TO DO : fix this redirect
       # match '/*path', via: %i[get post put delete], to: redirect { |path_params, _req|
@@ -283,6 +284,7 @@ Rails.application.routes.draw do
   get '/referents', to: 'pages#statistician_landing'
   get '/maintenance_estivale', to: 'pages#maintenance_estivale'
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
+  post '/waiting_list', to: 'pages#waiting_list'
 
   # Redirects
   # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
