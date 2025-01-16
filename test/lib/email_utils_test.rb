@@ -32,7 +32,7 @@ class EmailUtilsTest < ActiveSupport::TestCase
   end
 
   test '.formatted_email' do
-    assert_equal '"1Élève1Stage" <contact@stagedeseconde.education.gouv.fr>',
-                 EmailUtils.formatted_email('contact@stagedeseconde.education.gouv.fr')
+    assert_equal '"1Élève1Stage" <contact@1eleve1stage.education.gouv.fr>',
+                 EmailUtils.formatted_email('contact@1eleve1stage.education.gouv.fr')
   end
 end
