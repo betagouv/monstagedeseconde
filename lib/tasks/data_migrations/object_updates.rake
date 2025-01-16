@@ -227,4 +227,23 @@ namespace :data_migrations do
       end
     end
   end
+
+  desc 'add missing grades to weekly offers when missing'
+  task 'add_missing_grades_to_weekly_offers': :environment do
+    # at the time it is played this task consider all older offers are seconde offers
+    PrettyConsole.announce_task('add missing grades to weekly offers when missing') do
+      counter = 0
+      InternshipOffers::WeeklyFramed.kept.each do |offer|
+        next unless offer.grades.empty?
+
+        counter += 1
+        offer.grades << Grade.seconde
+        print '.'
+      end
+      puts '================================'
+      puts "counter : #{counter}"
+      puts '================================'
+      puts ''
+    end
+  end
 end
