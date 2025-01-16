@@ -30,6 +30,8 @@ FactoryBot.define do
     aasm_state { 'published' }
     hidden_duplicate { false }
     handicap_accessible { false }
+    workspace_conditions { FFaker::Lorem.paragraph }
+    workspace_accessibility { FFaker::Lorem.paragraph }
     daily_hours do
       {
         'lundi' => ['09:00', '17:00'],
