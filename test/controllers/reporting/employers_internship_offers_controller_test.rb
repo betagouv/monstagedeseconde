@@ -146,7 +146,7 @@ module Reporting
 
       get reporting_dashboards_path
       assert_response :success
-      assert_select 'title', 'Statistiques - Tableau de bord | Stages de 2de'
+      assert_select 'title', 'Statistiques - Tableau de bord | 1Elève1Stage'
     end
 
     test 'GET #index as statistician fails ' \

@@ -27,7 +27,7 @@ module Dashboard
         @internship_application.read!(current_user) if @internship_application.submitted?
         redirect_to dashboard_internship_offer_internship_application_path(
           @internship_application.internship_offer,
-          @internship_application
+          uuid: @internship_application.uuid
         )
       rescue ActiveRecord::RecordInvalid => e
         redirect_back fallback_location: current_user.custom_dashboard_path,
@@ -100,7 +100,7 @@ module Dashboard
       end
 
       def fetch_internship_application
-        @internship_application = InternshipApplication.find(params[:id])
+        @internship_application = InternshipApplication.find_by(uuid: params[:uuid])
       end
 
       def filter_by_week_or_application_date(internship_offer, params_order)

@@ -694,6 +694,8 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
+    workspace_conditions text DEFAULT ''::text,
+    workspace_accessibility text DEFAULT ''::text,
     contact_phone character varying(20),
     internship_address_manual_enter boolean DEFAULT false
 );
@@ -1557,7 +1559,9 @@ CREATE TABLE public.internship_offers (
     entreprise_coordinates public.geography(Point,4326),
     period integer DEFAULT 0 NOT NULL,
     rep boolean DEFAULT false,
-    qpv boolean DEFAULT false
+    qpv boolean DEFAULT false,
+    workspace_conditions text DEFAULT ''::text,
+    workspace_accessibility text DEFAULT ''::text
 );
 
 
@@ -4832,6 +4836,7 @@ SET search_path TO "$user", public;
 INSERT INTO "schema_migrations" (version) VALUES
 ('20250115174742'),
 ('20250114094329'),
+('20250107105855'),
 ('20250107100940'),
 ('20250106175910'),
 ('20241223095629'),
