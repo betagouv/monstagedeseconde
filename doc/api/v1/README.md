@@ -38,7 +38,7 @@ L'api est disponible sur ```/api/v1``` sur les environnements de pré production
 
 *Les APIs sont ouvertes uniquement aux acteurs concernés.*
 
-**Merci d'effectuer une demande par mail** ([support](mailto:contact@stagedeseconde.education.gouv.fr)) pour créer un compte API.
+**Merci d'effectuer une demande par mail** ([support](mailto:contact@1eleve1stage.education.gouv.fr)) pour créer un compte API.
 
 Une fois le compte créé, le token d'API pourra être récupéré via notre interface web. Il est différent selon l'environnement de pré production ou production.
 

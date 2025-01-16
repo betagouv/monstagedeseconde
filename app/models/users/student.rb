@@ -4,6 +4,8 @@ module Users
   class Student < User
     include StudentAdmin
 
+    BITLY_STUDENT_WELCOME_URL = 'https://bit.ly/4athP2e' # internship_offers_url in production
+
     belongs_to :school, optional: true
     belongs_to :class_room, optional: true
     belongs_to :grade, optional: true
@@ -30,9 +32,9 @@ module Users
     validate :validate_school_presence_at_creation
 
     # Callbacks
-    after_create :welcome_new_student,
-                 :set_reminders,
-                 :clean_phone_or_email_when_empty
+    after_create :set_reminders,
+                 :clean_phone_or_email_when_empty,
+                 :welcome_new_student
 
     def student? = true
 
@@ -123,7 +125,12 @@ module Users
                      class_room_id: nil,
                      resume_other: nil,
                      resume_educational_background: nil,
-                     resume_languages: nil)
+                     resume_languages: nil,
+                     gender: nil,
+                     address: nil,
+                     legal_representative_full_name: nil,
+                     legal_representative_phone: nil,
+                     legal_representative_email: nil)
       update_columns(phone: 'NA') unless phone.nil?
       internship_applications.map(&:anonymize)
     end
@@ -132,6 +139,13 @@ module Users
       return unless new_record? && school.blank?
 
       errors.add(:school, :blank)
+    end
+
+    def resend_confirmation_phone_token
+      return unless phone.present?
+
+      message = "Votre code de validation : #{phone_token}"
+      SendSmsJob.perform_later(user: self, message:)
     end
 
     def presenter
@@ -182,20 +196,11 @@ module Users
     end
 
     def welcome_new_student
-      # url_options = default_search_options.merge(host: ENV.fetch('HOST'))
-      # target_url = Rails.application
-      #                   .routes
-      #                   .url_helpers
-      #                   .internship_offers_url(**url_options)
-      # shrinked_url = UrlShrinker.short_url( url: target_url, user_id: id )
-      shrinked_url = 'https://bit.ly/4athP2e' # internship_offers_url in production
-      if phone.present?
-        message = I18n.t('devise.sms.welcome_student', shrinked_url:)
-        SendSmsJob.perform_later(user: self, message:)
-      else
-        StudentMailer.welcome_email(student: self, shrinked_url:)
-                     .deliver_later
-      end
+      return if email.blank?
+      return if phone.present?
+
+      StudentMailer.welcome_email(student: self, shrinked_url: BITLY_STUDENT_WELCOME_URL)
+                   .deliver_later
     end
 
     def set_reminders

@@ -1,6 +1,6 @@
 module EmailUtils
   def self.env_host
-    ENV.fetch('HOST') { 'https://stagedeseconde.1jeune1solution.gouv.fr' }
+    ENV.fetch('HOST') { 'https://1eleve1stage.education.gouv.fr' }
   end
 
   def self.domain
@@ -8,7 +8,7 @@ module EmailUtils
   end
 
   def self.from
-    'contact@stagedeseconde.education.gouv.fr'
+    'contact@1eleve1stage.education.gouv.fr'
   end
 
   def self.formatted_from
@@ -16,7 +16,7 @@ module EmailUtils
   end
 
   def self.reply_to
-    'contact@stagedeseconde.education.gouv.fr'
+    'contact@1eleve1stage.education.gouv.fr'
   end
 
   def self.formatted_reply_to

@@ -1,6 +1,6 @@
 wb = xlsx_package.workbook
 
-wb.add_worksheet(name: "Candidatures - #{@current_area&.name || 'toutes'}") do |sheet|
+wb.add_worksheet(name: "Candidatures - #{@current_area&.name&.truncate(15) || 'toutes'}") do |sheet|
   # headers
   sheet.add_row(
     [ "Prénom de l'élève",
@@ -39,9 +39,9 @@ wb.add_worksheet(name: "Candidatures - #{@current_area&.name || 'toutes'}") do |
       application.has_been("rejected").present? ? localize(application.has_been("rejected").created_at, format: "%d %B %Y") : "N/A", #date de refus
       application.has_been("expired").present? ? localize(application.has_been("expired").created_at, format: "%d %B %Y") : "N/A", #date d'expiration
       application.has_been("cancelled").present? ? localize(application.has_been("cancelled").created_at, format: "%d %B %Y") : "N/A", #date d'annulation
-      application.has_been("accepted").present? ? application.has_been("accepted").author.presenter.full_name : "N/A", #acceptée par
-      application.has_been("rejected").present? ? application.has_been("rejected").author.presenter.full_name : "N/A", #refusée par
-      application.has_been("cancelled").present? ? application.has_been("cancelled").author.presenter.full_name : "N/A", #annulée par
+      application.has_been("accepted").present? ? application.has_been("accepted").author.try(:presenter).try(:full_name) : "N/A", #acceptée par
+      application.has_been("rejected").present? ? application.has_been("rejected").author.try(:presenter).try(:full_name) : "N/A", #refusée par
+      application.has_been("cancelled").present? ? application.has_been("cancelled").author.try(:presenter).try(:full_name) : "N/A", #annulée par
       application.id
   ])
   end

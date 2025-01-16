@@ -20,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -34,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+-- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -48,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -681,7 +681,7 @@ ALTER SEQUENCE public.detailed_crafts_id_seq OWNED BY public.detailed_crafts.id;
 
 CREATE TABLE public.entreprises (
     id bigint NOT NULL,
-    siret character varying(14) NOT NULL,
+    siret character varying(14),
     is_public boolean DEFAULT false NOT NULL,
     employer_name character varying(150) NOT NULL,
     employer_chosen_name character varying(150),
@@ -694,7 +694,9 @@ CREATE TABLE public.entreprises (
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
     workspace_conditions text DEFAULT ''::text,
-    workspace_accessibility text DEFAULT ''::text
+    workspace_accessibility text DEFAULT ''::text,
+    contact_phone character varying(20),
+    internship_address_manual_enter boolean DEFAULT false
 );
 
 
@@ -966,9 +968,9 @@ CREATE TABLE public.internship_agreements (
     student_refering_teacher_phone character varying(20),
     student_legal_representative_email character varying(100),
     student_refering_teacher_email character varying(100),
-    student_legal_representative_full_name character varying(100),
+    student_legal_representative_full_name character varying(180),
     student_refering_teacher_full_name character varying(100),
-    student_legal_representative_phone character varying(50),
+    student_legal_representative_phone character varying(20),
     student_legal_representative_2_full_name character varying(100),
     student_legal_representative_2_email character varying(100),
     student_legal_representative_2_phone character varying(20),
@@ -1152,7 +1154,7 @@ ALTER SEQUENCE public.internship_applications_id_seq OWNED BY public.internship_
 CREATE TABLE public.internship_occupations (
     id bigint NOT NULL,
     title character varying(150) NOT NULL,
-    description character varying(500) NOT NULL,
+    description character varying(1500) NOT NULL,
     street character varying(200) NOT NULL,
     zipcode character varying(5) NOT NULL,
     city character varying(50) NOT NULL,
@@ -1160,8 +1162,7 @@ CREATE TABLE public.internship_occupations (
     coordinates public.geography(Point,4326),
     employer_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    internship_address_manual_enter boolean DEFAULT false
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -1485,7 +1486,7 @@ ALTER SEQUENCE public.internship_offer_weeks_id_seq OWNED BY public.internship_o
 CREATE TABLE public.internship_offers (
     id bigint NOT NULL,
     title character varying(150),
-    description character varying(500),
+    description character varying(1500),
     max_candidates integer DEFAULT 1 NOT NULL,
     internship_offer_weeks_count integer DEFAULT 0 NOT NULL,
     tutor_name character varying(150),
@@ -1503,7 +1504,7 @@ CREATE TABLE public.internship_offers (
     employer_name character varying(150),
     employer_id bigint,
     school_id bigint,
-    employer_description character varying(250),
+    employer_description character varying(1500),
     sector_id bigint,
     blocked_weeks_count integer DEFAULT 0 NOT NULL,
     total_applications_count integer DEFAULT 0 NOT NULL,
@@ -1555,6 +1556,7 @@ CREATE TABLE public.internship_offers (
     employer_chosen_name character varying(250),
     entreprise_full_address character varying(200),
     entreprise_coordinates public.geography(Point,4326),
+    period integer DEFAULT 0 NOT NULL,
     rep boolean DEFAULT false,
     qpv boolean DEFAULT false,
     workspace_conditions text DEFAULT ''::text,
@@ -1960,7 +1962,9 @@ CREATE TABLE public.schools (
     department_id bigint,
     agreement_conditions text,
     level character varying(100) DEFAULT 'lycee'::character varying NOT NULL,
-    school_type public.school_category DEFAULT 'college'::public.school_category NOT NULL
+    school_type public.school_category DEFAULT 'college'::public.school_category NOT NULL,
+    voie_generale boolean,
+    voie_techno boolean
 );
 
 
@@ -2052,12 +2056,46 @@ ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
 
 --
 -- Name: task_records; Type: TABLE; Schema: public; Owner: -
+<<<<<<< HEAD
+=======
 --
 
 CREATE TABLE public.task_records (
     version character varying NOT NULL
 );
 
+
+--
+-- Name: task_registers; Type: TABLE; Schema: public; Owner: -
+>>>>>>> review
+--
+
+CREATE TABLE public.task_records (
+    version character varying NOT NULL
+);
+
+<<<<<<< HEAD
+=======
+
+--
+-- Name: task_registers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.task_registers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: task_registers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
+
+>>>>>>> review
 
 --
 -- Name: team_member_invitations; Type: TABLE; Schema: public; Owner: -
@@ -2262,7 +2300,9 @@ CREATE TABLE public.users (
     resume_educational_background text,
     resume_other text,
     resume_languages text,
-    grade_id bigint
+    grade_id bigint,
+    ine character varying(15),
+    active_at timestamp(6) without time zone
 );
 
 
@@ -4779,8 +4819,20 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+<<<<<<< HEAD
 ('20250107105855'),
+=======
+('20250114094329'),
+('20250107100940'),
+('20250106175910'),
+('20241223095629'),
+>>>>>>> review
 ('20241220134854'),
+('20241217104101'),
+('20241213131559'),
+('20241204173244'),
+('20241204164257'),
+('20241204150852'),
 ('20241115093512'),
 ('20241113151423'),
 ('20241105172654'),
@@ -5184,4 +5236,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
-

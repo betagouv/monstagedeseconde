@@ -2,7 +2,7 @@ div class="fr-card #{employers_only? ? 'disabled_tab' : ''}"
   .fr-card__body
     .fr-card__content
       h3.fr-h4
-        | lève de seconde
+        | Élèves de 4e, 3e et 2de
         br
         |< générale
         br
@@ -12,8 +12,8 @@ div class="fr-card #{employers_only? ? 'disabled_tab' : ''}"
     .fr-card__footer
       ul.fr-btns-group
         li
-          - path = employers_only? ? '#' : new_identity_path(as: 'Student')
-          - label = employers_only? ? 'Inscription à venir' : 'Inscription'
+          - path = employers_only? ? '#' :  @educonnect_url
+          - label = employers_only? ? 'Inscription à venir' : "Inscription via ÉduConnect"
           - klass = employers_only? ? 'fr-btn--tertiary' : 'fr-btn--secondary'
           = link_to label, path, class: "fr-btn #{klass}", disabled: employers_only?
   .fr-card__header

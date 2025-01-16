@@ -10,7 +10,7 @@ module ApplicationHelper
   end
 
   def helpdesk_url
-    'https://zammad.incubateur.anct.gouv.fr/help/fr-fr/3-professionnels'
+    'https://uneleveunstage.crisp.help/fr/'
   end
 
   def custom_dashboard_controller?(user:)
@@ -44,10 +44,6 @@ module ApplicationHelper
     current_page?(root_path)
   end
 
-  def employers_only?
-    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
-  end
-
   # def in_dashboard?
   #   request.path.include?('dashboard') || request.path.include?('tableau-de-bord')
   # end
@@ -64,7 +60,7 @@ module ApplicationHelper
     if content_for?(:page_title)
       content_for :page_title
     else
-      default = 'Stages de 2de'
+      default = '1Elève1Stage'
       i18n_key = "#{controller_path.tr('/', '.')}.#{action_name}.page_title"
       dyn_page_name = t(i18n_key, default: default)
       dyn_page_name == default ? default : "#{dyn_page_name} | #{default}"

@@ -145,6 +145,26 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
     assert_select('a', text: employer_3.current_area.name, count: 0)
   end
 
+  test "Employers can edit a both school_track internship offer" do
+    travel_to(Date.new(2024, 3, 1)) do
+      employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer, :both_school_tracks_internship_offer, employer:)
+      internship_offer.weeks = internship_offer.weeks - [SchoolTrack::Seconde.first_week] # second week only
+      internship_offer.save
+
+      sign_in(employer)
+      visit edit_dashboard_internship_offer_path(internship_offer)
+      find('legend', text: "Sur quelle période proposez-vous ce stage pour les lycéens ?")
+      assert find('input#period_field_week_2', visible: false).checked?
+      find('input[name="internship_offer[employer_chosen_name]"]').fill_in(with: 'NewCompany')
+
+      click_on "Publier l'offre"
+
+      wait_form_submitted
+      assert(/NewCompany/.match?(internship_offer.reload.employer_name))
+    end
+  end
+
   test 'Employers users shall not be pushed to home when no agreement in list' do
     employer = create(:employer)
     sign_in(employer)

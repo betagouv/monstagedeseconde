@@ -51,6 +51,20 @@ class PagesController < ApplicationController
     @resources = get_resources('student')
   end
 
+  def maintenance_estivale
+    @waiting_list_entry = WaitingListEntry.new
+  end
+
+  def waiting_list
+    @waiting_list_entry = WaitingListEntry.new(waiting_list_params)
+    if @waiting_list_entry.save
+      message = 'Votre e-mail a été ajouté à la liste d\'attente.'
+    else
+      message = 'Une erreur est survenue lors de l\'ajout de votre e-mail à la liste d\'attente.'
+    end
+    redirect_to '/maintenance_estivale.html', notice: message
+  end
+
   def maintenance_messaging
     hash = {
       subject: "Message de la page de maintenance de #{user_params[:name]}",
@@ -65,6 +79,10 @@ class PagesController < ApplicationController
 
   def user_params
     params.require(:user).permit(:name, :email, :message)
+  end
+
+  def waiting_list_params
+    params.require(:waiting_list_entry).permit(:email)
   end
 
   private
@@ -136,8 +154,9 @@ class PagesController < ApplicationController
 
       grouped_by_category.transform_values! do |category_docs|
         category_docs.map do |doc|
+          url = doc.fragments['url']&.url || doc.fragments['file']&.url
           {
-            url: doc.href,
+            url: url,
             title: doc['resource.title'].as_text
           }
         end

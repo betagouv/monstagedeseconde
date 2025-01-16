@@ -18,6 +18,7 @@ FactoryBot.define do
     internship_offer_area { create(:area, employer_id: employer.id, employer_type: 'User') }
     street { '1 rue du poulet' }
     zipcode { '75001' }
+    internship_address_manual_enter { false }
     city { 'Paris' }
     employer_name { 'Octo' }
     department { Department.find_by(code: '75') }

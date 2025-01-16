@@ -28,6 +28,36 @@ module InternshipApplications
       assert_redirected_to root_path
     end
 
+    test 'GET #new internship application as student with no weeks available redirects to offer path with alert' do
+      travel_to Time.zone.local(2025, 3, 1) do
+        internship_offer = create(:weekly_internship_offer_3eme)
+        school = create(:school, school_type: 'college')
+        week = Week.selectable_on_school_year.first # first week of school year, in the past
+        school.weeks << week
+        student = create(:student, school:, class_room: create(:class_room, school:))
+        sign_in(student)
+
+        get(new_internship_offer_internship_application_path(internship_offer))
+        assert_redirected_to internship_offer_path(internship_offer),
+                             alert: "Votre établissement a déclaré des semaines de stage et aucune semaine n'est compatible avec cette offre de stage."
+      end
+    end
+
+    test 'GET #new internship application as student with no weeks set by the school works' do
+      travel_to Time.zone.local(2025, 3, 1) do
+        internship_offer = create(:weekly_internship_offer_3eme)
+        school = create(:school, school_type: 'college')
+        school.weeks = []
+        student = create(:student, school:, class_room: create(:class_room, school:))
+        sign_in(student)
+
+        get(new_internship_offer_internship_application_path(internship_offer))
+        assert_response :success
+        assert_select 'p.test-missing-school-weeks',
+                      text: "Attention, vérifiez bien que les dates de stage proposées dans l'annonce \ncorrespondent à vos dates de stage. Votre chef d'établissement n'a en \neffet pas renseigné les semaines de stage de votre établissement."
+      end
+    end
+
     test 'POST #create internship application as student with email and no phone' do
       internship_offer = create(:weekly_internship_offer_3eme)
       school = create(:school)

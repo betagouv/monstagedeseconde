@@ -78,6 +78,9 @@ class Ability
 
   def student_abilities(user:)
     can :look_for_offers, User
+    can :resend_confirmation_phone_token, User do |user|
+      user.phone.present? && user.student?
+    end
     can :sign_with_sms, User
     can :show, :account
     can :change, ClassRoom do |class_room|
@@ -179,7 +182,7 @@ class Ability
     as_employers_like(user:)
     as_employers_signatory_abilities(user:)
     as_account_user(user:)
-    can %i[sign_with_sms choose_function subscribe_to_webinar], User
+    can %i[sign_with_sms choose_function], User
     can :see_minister_video, User
   end
 
@@ -191,6 +194,9 @@ class Ability
   end
 
   def as_employers_like(user:)
+    can :subscribe_to_webinar, User do
+      ENV.fetch('WEBINAR_URL', nil).present?
+    end
     can_manage_teams(user:)
     can_manage_areas(user:)
     can %i[index], Acl::InternshipOfferDashboard

@@ -60,4 +60,8 @@ export default class extends Controller {
     this.coordinatesAreFilled = false;
     this.checkValidation();
   }
+
+  disconnect(){
+    detach(EVENT_LIST.COORDINATES_CHANGED,this.coordinatesChanged.bind(this));
+  }
 }
