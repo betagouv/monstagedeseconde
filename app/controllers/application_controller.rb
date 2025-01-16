@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'uri'
 class ApplicationController < ActionController::Base
   include Turbo::Redirection
 
@@ -103,7 +104,7 @@ class ApplicationController < ActionController::Base
   def check_host_for_redirection
     return unless request.host == 'stagedeseconde.1jeune1solution.gouv.fr/'
 
-    redirect_to ('https://1eleve1stage.education.gouv.fr' + request.fullpath), status: :moved_permanently,
-                                                                               allow_other_host: true
+    redirect_to 'https://1eleve1stage.education.gouv.fr', status: :moved_permanently,
+                                                          allow_other_host: true
   end
 end
