@@ -15,7 +15,7 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
     student = create(:student, confirmed_at: nil)
     get new_user_confirmation_path
     assert_response :success
-    assert_select 'title', 'Confirmation | Stages de 2de'
+    assert_select 'title', 'Confirmation | 1Elève1Stage'
   end
 
   test 'CREATE#user_confirmation by phone with wrong phone' do

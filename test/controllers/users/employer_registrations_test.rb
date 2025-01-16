@@ -6,7 +6,7 @@ class EmployerRegistrationsTest < ActionDispatch::IntegrationTest
   include ThirdPartyTestHelpers
 
   def assert_employer_form_rendered
-    assert_select 'title', "Inscription | Stages de 2de"
+    assert_select 'title', 'Inscription | 1Elève1Stage'
     assert_select 'input', value: 'Employer', hidden: 'hidden'
     assert_select 'label', /Adresse électronique/
     assert_select 'label', /Créer un mot de passe/
@@ -16,7 +16,7 @@ class EmployerRegistrationsTest < ActionDispatch::IntegrationTest
   test 'GET new as a Employer' do
     captcha_stub do
       get new_user_registration_path(as: 'Employer')
-      
+
       assert_response :success
       assert_employer_form_rendered
     end
@@ -39,7 +39,7 @@ class EmployerRegistrationsTest < ActionDispatch::IntegrationTest
     assert created_employer.current_area.is_a?(InternshipOfferArea)
   end
 
-  test "post should not subscribe when confirmation is sent" do
+  test 'post should not subscribe when confirmation is sent' do
     assert_no_difference('Users::Employer.count') do
       post user_registration_path(params: { user: { email: 'madame@accor.fr',
                                                     confirmation_email: 'madame@accor.fr',
@@ -53,10 +53,9 @@ class EmployerRegistrationsTest < ActionDispatch::IntegrationTest
                                                     accept_terms: '1' } })
     end
     assert_redirected_to root_path
-    notice = "Votre inscription a bien été prise en compte. " \
-             "Vous recevrez un email de confirmation dans " \
-             "les prochaines minutes."
+    notice = 'Votre inscription a bien été prise en compte. ' \
+             'Vous recevrez un email de confirmation dans ' \
+             'les prochaines minutes.'
     assert_equal notice, flash[:notice]
   end
-
 end
