@@ -110,7 +110,6 @@ module Dashboard
         internship_applications = InternshipApplications::WeeklyFramed.includes(*includings)
                                                                       .includes(student: [*student_includings])
                                                                       .where(internship_offer:)
-                                                                      .not_drafted
         if params_order == ORDER_WITH_INTERNSHIP_DATE
           internship_applications.order(
             'internship_applications.updated_at ASC'

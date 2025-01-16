@@ -19,4 +19,11 @@ class ClassRoom < ApplicationRecord
   def to_s
     name
   end
+
+  def archive
+    update_columns(
+      name: 'NA',
+      school_id: nil
+    )
+  end
 end

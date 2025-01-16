@@ -5,7 +5,7 @@ def populate_applications
   offers.first(4).each do |offer|
     puts "offer #{offer.id} receives an application from first stud"
     application = InternshipApplications::WeeklyFramed.new(
-      aasm_state: offer.id.to_i.even? ? :drafted : :submitted,
+      aasm_state: :submitted,
       submitted_at: 10.days.ago,
       student: students.first,
       motivation: 'Au taquet',

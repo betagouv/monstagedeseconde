@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'application_system_test_case'
-require 'sidekiq/testing' 
+require 'sidekiq/testing'
 
 class ManagePlanningsTest < ApplicationSystemTestCase
   include Devise::Test::IntegrationHelpers
@@ -16,7 +16,7 @@ class ManagePlanningsTest < ApplicationSystemTestCase
 
       sign_in(employer)
       visit new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
-      fill_in_planning_form(with_seconde: false)
+      fill_in_planning_form(with_seconde: false, with_troisieme: true)
       # TODO: schools management
       # execute_script('document.querySelector("input[name=\'is_reserved\']").click()')
       # fill_in "Commune ou nom de l'établissement pour lequel le stage est reservé",
@@ -91,7 +91,9 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_equal 'test de lunch break', planning.lunch_break
       assert SchoolTrack::Seconde.first_week.id.in?(planning.weeks.pluck(:id))
       refute SchoolTrack::Seconde.second_week.id.in?(planning.weeks.pluck(:id))
-      refute SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year.pluck(:id).any? { |id| id.in?(planning.weeks.pluck(:id)) }
+      refute(SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year.pluck(:id).any? do |id|
+        id.in?(planning.weeks.pluck(:id))
+      end)
       assert_equal ['08:00', '15:00'], planning.weekly_hours
 
       internship_offer = InternshipOffer.last
@@ -106,7 +108,9 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_equal Coordinates.paris[:longitude], internship_offer.entreprise_coordinates.longitude
       assert SchoolTrack::Seconde.first_week.id.in?(internship_offer.weeks.pluck(:id))
       refute SchoolTrack::Seconde.second_week.id.in?(internship_offer.weeks.pluck(:id))
-      refute SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year.pluck(:id).any? { |id| id.in?(internship_offer.weeks.pluck(:id)) }
+      refute(SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year.pluck(:id).any? do |id|
+        id.in?(internship_offer.weeks.pluck(:id))
+      end)
       assert_equal '75012', internship_offer.zipcode
       assert_equal 'Paris', internship_offer.city
       refute internship_offer.is_public
@@ -127,7 +131,8 @@ class ManagePlanningsTest < ApplicationSystemTestCase
         with_seconde: true,
         max_candidates: 4,
         first_week: true,
-        all_year_long: true )
+        all_year_long: true
+      )
       # TODO: schools management
       # execute_script('document.querySelector("input[name=\'is_reserved\']").click()')
       # fill_in "Commune ou nom de l'établissement pour lequel le stage est reservé",
@@ -150,7 +155,9 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_equal 'test de lunch break', planning.lunch_break
       assert SchoolTrack::Seconde.first_week.id.in?(planning.weeks.pluck(:id))
       refute SchoolTrack::Seconde.second_week.id.in?(planning.weeks.pluck(:id))
-      assert SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year.pluck(:id)[1..-1].all? { |id| id.in?(planning.weeks.pluck(:id)) }
+      assert(SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year.pluck(:id)[1..-1].all? do |id|
+        id.in?(planning.weeks.pluck(:id))
+      end)
       assert_equal ['08:00', '15:00'], planning.weekly_hours
 
       internship_offer = InternshipOffer.last
@@ -165,7 +172,9 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_equal Coordinates.paris[:longitude], internship_offer.entreprise_coordinates.longitude
       assert SchoolTrack::Seconde.first_week.id.in?(internship_offer.weeks.pluck(:id))
       refute SchoolTrack::Seconde.second_week.id.in?(internship_offer.weeks.pluck(:id))
-      assert SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year.pluck(:id)[1..-1].all? { |id| id.in?(internship_offer.weeks.pluck(:id)) }
+      assert(SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year.pluck(:id)[1..-1].all? do |id|
+        id.in?(internship_offer.weeks.pluck(:id))
+      end)
       assert_equal '75012', internship_offer.zipcode
       assert_equal 'Paris', internship_offer.city
       refute internship_offer.is_public

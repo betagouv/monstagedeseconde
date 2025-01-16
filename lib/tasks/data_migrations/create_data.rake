@@ -204,8 +204,10 @@ namespace :data_migrations do
       end
       school_params[:coordinates] = { longitude: longitude, latitude: latitude }
 
-      contract_code = complementary_data[:secteur_prive_code_type_contrat]
-      school_params.merge!(contract_code: contract_code) if contract_code.present?
+      if complementary_data.present?
+        contract_code = complementary_data[:secteur_prive_code_type_contrat].presence
+        school_params.merge!(contract_code: contract_code) if contract_code.present?
+      end
 
       School.find_by(code_uai: school_params[:code_uai]).present? && next
 

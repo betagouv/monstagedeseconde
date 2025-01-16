@@ -207,7 +207,7 @@ class EmployerMailer < ApplicationMailer
     @title       = 'Finalisez la publication de votre offre de stage.'
     @bonjour     = "Bonjour #{@employer.presenter.full_name},"
     @paragraph_1 = "Nous avons remarqué que votre offre de stage intitulée #{internship_offer.title} " \
-                   "a été initiée sur 1élève1stage, mais reste enregistrée " \
+                   'a été initiée sur 1élève1stage, mais reste enregistrée ' \
                    'en tant que brouillon.'
     @paragraph_2 = 'Pour publier votre offre, suivez ces étapes simples :'
     @paragraph3_items = [
@@ -220,7 +220,7 @@ class EmployerMailer < ApplicationMailer
     @paragraph_4 = "Si l'offre n'est plus d'actualité ou si vous avez changé d'avis, " \
                    'vous pouvez la supprimer depuis l’étape 4.'
     @paragraph_5 = 'Nous sommes à votre disposition pour toute aide ou question. ' \
-                   "N'hésitez pas à nous contacter sur contact@stagedeseconde.education.gouv.fr"
+                   "N'hésitez pas à nous contacter sur contact@1eleve1stage.education.gouv.fr"
 
     send_email(to: @employer.email, subject:)
   end
