@@ -693,6 +693,7 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
+    contact_phone character varying(20),
     internship_address_manual_enter boolean DEFAULT false
 );
 
@@ -965,9 +966,9 @@ CREATE TABLE public.internship_agreements (
     student_refering_teacher_phone character varying(20),
     student_legal_representative_email character varying(100),
     student_refering_teacher_email character varying(100),
-    student_legal_representative_full_name character varying(100),
+    student_legal_representative_full_name character varying(180),
     student_refering_teacher_full_name character varying(100),
-    student_legal_representative_phone character varying(50),
+    student_legal_representative_phone character varying(20),
     student_legal_representative_2_full_name character varying(100),
     student_legal_representative_2_email character varying(100),
     student_legal_representative_2_phone character varying(20),
@@ -1545,7 +1546,6 @@ CREATE TABLE public.internship_offers (
     lunch_break text,
     contact_phone character varying(20),
     handicap_accessible boolean DEFAULT false,
-    period integer DEFAULT 0 NOT NULL,
     school_year integer DEFAULT 0 NOT NULL,
     mother_id integer DEFAULT 0,
     internship_occupation_id bigint,
@@ -2048,6 +2048,15 @@ CREATE SEQUENCE public.signatures_id_seq
 --
 
 ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
+
+
+--
+-- Name: task_records; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.task_records (
+    version character varying NOT NULL
+);
 
 
 --
@@ -2768,13 +2777,6 @@ ALTER TABLE ONLY public.signatures ALTER COLUMN id SET DEFAULT nextval('public.s
 
 
 --
--- Name: task_registers id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.task_registers ALTER COLUMN id SET DEFAULT nextval('public.task_registers_id_seq'::regclass);
-
-
---
 -- Name: team_member_invitations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3219,14 +3221,6 @@ ALTER TABLE ONLY public.sectors
 
 ALTER TABLE ONLY public.signatures
     ADD CONSTRAINT signatures_pkey PRIMARY KEY (id);
-
-
---
--- Name: task_registers task_registers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.task_registers
-    ADD CONSTRAINT task_registers_pkey PRIMARY KEY (id);
 
 
 --
@@ -3845,13 +3839,6 @@ CREATE INDEX index_internship_offers_on_internship_offer_info_id ON public.inter
 --
 
 CREATE INDEX index_internship_offers_on_organisation_id ON public.internship_offers USING btree (organisation_id);
-
-
---
--- Name: index_internship_offers_on_period; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internship_offers_on_period ON public.internship_offers USING btree (period);
 
 
 --
@@ -4839,6 +4826,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20241204150852'),
 ('20241115093512'),
 ('20241113151423'),
+('20241105172654'),
+('20241105171942'),
 ('20241105092317'),
 ('20241101100649'),
 ('20241031131640'),
