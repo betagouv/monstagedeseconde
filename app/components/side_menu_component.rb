@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class SideMenuComponent < ApplicationComponent
-  delegate :employers_only?, to: :helpers
-
   def initialize(candidatures_notice:,
                  agreements_notice:,
                  agreements_authorization:,
@@ -13,12 +11,12 @@ class SideMenuComponent < ApplicationComponent
     @agreements_notice = agreements_notice
     @agreements_authorization = agreements_authorization
     @current_page_offers = current_page_offers
-    @current_page_candidatures = current_page_candidatures
+    @current_page_candidatures = ENV['EMPLOYERS_ONLY'] == 'true' ? current_page_offers : current_page_candidatures
     @current_page_agreements = current_page_agreements
   end
 
   def link_options(menu_item)
-    link_options = { class: 'fr-sidemenu__link' }
+    link_options = { class: "fr-sidemenu__link #{ENV['EMPLOYERS_ONLY'] == 'true' && menu_item[:label] != 'Offres de stage' ? 'text-muted before-null' : ''}" }
     link_options.merge!({ 'aria-current': 'page' }) if menu_item[:current_page]
     link_options
   end
@@ -37,12 +35,11 @@ class SideMenuComponent < ApplicationComponent
         current_page: @current_page_offers
       }
     ]
-    # return if employers_only?
 
     @menu_collection << [
       {
         label: 'Candidatures',
-        path: helpers.dashboard_candidatures_path,
+        path: ENV['EMPLOYERS_ONLY'] == 'true' ? helpers.dashboard_internship_offers_path : helpers.dashboard_candidatures_path,
         notice: @candidatures_notice,
         authorization: true,
         current_page: @current_page_candidatures

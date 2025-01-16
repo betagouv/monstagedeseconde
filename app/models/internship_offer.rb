@@ -4,10 +4,11 @@ require 'sti_preload'
 class InternshipOffer < ApplicationRecord
   GUARD_PERIOD = 5.days
   PAGE_SIZE = 30
-  EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT = 250
+  # TODO : most probably to be the same field.
+  EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT = 1500
+  DESCRIPTION_MAX_CHAR_COUNT = 1500
   MAX_CANDIDATES_HIGHEST = 6_000
   TITLE_MAX_CHAR_COUNT = 150
-  DESCRIPTION_MAX_CHAR_COUNT = 500
   DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description
                             employer_name street zipcode city department entreprise_coordinates
                             employer_chosen_name all_year_long period grade_ids week_ids
@@ -38,7 +39,7 @@ class InternshipOffer < ApplicationRecord
   include Discard::Model
   include PgSearch::Model
 
-  attr_accessor :republish, :grade_college, :grade_2e, :all_year_long, :period, :internship_type, :shall_publish
+  attr_accessor :republish, :grade_college, :grade_2e, :all_year_long, :period_field, :internship_type, :shall_publish
 
   # Other associations not defined in StepperProxy
   has_many :internship_applications, as: :internship_offer,
