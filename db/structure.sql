@@ -2056,8 +2056,6 @@ ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
 
 --
 -- Name: task_records; Type: TABLE; Schema: public; Owner: -
-<<<<<<< HEAD
-=======
 --
 
 CREATE TABLE public.task_records (
@@ -2067,15 +2065,12 @@ CREATE TABLE public.task_records (
 
 --
 -- Name: task_registers; Type: TABLE; Schema: public; Owner: -
->>>>>>> review
 --
 
 CREATE TABLE public.task_records (
     version character varying NOT NULL
 );
 
-<<<<<<< HEAD
-=======
 
 --
 -- Name: task_registers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
@@ -2095,7 +2090,6 @@ CREATE SEQUENCE public.task_registers_id_seq
 
 ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
 
->>>>>>> review
 
 --
 -- Name: team_member_invitations; Type: TABLE; Schema: public; Owner: -
@@ -4819,14 +4813,11 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-<<<<<<< HEAD
 ('20250107105855'),
-=======
 ('20250114094329'),
 ('20250107100940'),
 ('20250106175910'),
 ('20241223095629'),
->>>>>>> review
 ('20241220134854'),
 ('20241217104101'),
 ('20241213131559'),
