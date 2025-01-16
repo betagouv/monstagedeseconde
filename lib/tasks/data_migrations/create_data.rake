@@ -569,23 +569,38 @@ namespace :data_migrations do
     end
   end
 
+  desc 'add_missing_grades_to_former_internship_offers'
+  task :add_missing_grades_to_former_internship_offers, [] => :environment do
+    PrettyConsole.announce_task('Adding missing grades to former internship offers') do
+      InternshipOffer.kept.find_each do |offer|
+        next if offer.grades.include?(Grade.seconde)
+
+        offer.grades = [Grade.seconde]
+        offer.save
+        print '.'
+      end
+    end
+  end
+
   desc 'used when migrating 2024 to 2025'
   task :offers_renewed, [] => :environment do |args|
     PrettyConsole.announce_task('Renewing internship offers') do
       # in storage/tmp/offers_to_renew.csv there a list of emails of employers which offers have to be renewed
       CSV.foreach(Rails.root.join('storage/tmp/offers_to_renew_from_email.csv')) do |row|
         email = row[0]
-        employer = Employer.find_by(email: email)
+        employer = Users::Employer.find_by(email: email)
         next if employer.nil?
 
         employer.internship_offers
                 .kept
                 .where(hidden_duplicate: false)
                 .find_each do |offer|
+          puts offer.grades
           next unless offer.grades.include?(Grade.seconde)
 
           weeks_to_add = []
           new_internship_offer = offer.dup
+
           if new_internship_offer.period == 0
             weeks_to_add << SchoolTrack::Seconde.both_weeks
           elsif new_internship_offer.period == 1
@@ -595,16 +610,15 @@ namespace :data_migrations do
           end
           new_internship_offer.weeks = weeks_to_add.flatten
           new_internship_offer.grades = [Grade.seconde]
-          new_internship_offer.weekly_hours = weekly_hours
+          new_internship_offer.weekly_hours = offer.weekly_hours
           new_internship_offer.published_at = Date.today
           new_internship_offer.aasm_state = 'published'
           new_internship_offer.save
 
           offer.hidden_duplicate = true
-          offer.weeks = weeks & Week.of_past_school_years || []
-          offer.published_at = nil
-          offer.aasm_state = 'splitted'
+          offer.weeks = offer.weeks & Week.of_past_school_years || []
           offer.save
+          offer.unpublish!
         end
       end
     end
