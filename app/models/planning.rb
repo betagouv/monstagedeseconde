@@ -28,7 +28,7 @@ class Planning < ApplicationRecord
                 :specific_weeks,
                 :grade_college,
                 :grade_2e,
-                :period,
+                :period_field,
                 :internship_type
 
   def weeks_count

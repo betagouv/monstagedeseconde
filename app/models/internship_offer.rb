@@ -39,7 +39,7 @@ class InternshipOffer < ApplicationRecord
   include Discard::Model
   include PgSearch::Model
 
-  attr_accessor :republish, :grade_college, :grade_2e, :all_year_long, :period, :internship_type, :shall_publish
+  attr_accessor :republish, :grade_college, :grade_2e, :all_year_long, :period_field, :internship_type, :shall_publish
 
   # Other associations not defined in StepperProxy
   has_many :internship_applications, as: :internship_offer,

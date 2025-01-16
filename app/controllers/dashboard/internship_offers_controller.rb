@@ -224,7 +224,7 @@ module Dashboard
                     :entreprise_street, :entreprise_zipcode, :grade_2e, :grade_college,
                     :group_id, :internship_address_manual_enter,
                     :is_public, :lunch_break, :max_candidates, :max_students_per_group,
-                    :period, :published_at, :region, :renewed, :republish, :school_id,
+                    :period,:period_field, :published_at, :region, :renewed, :republish, :school_id,
                     :sector_id, :shall_publish, :siret, :street, :title, :type,
                     :user_update, :verb, :zipcode, entreprise_coordinates: {}, coordinates: {},
                     week_ids: [], grade_ids: [], daily_hours:{}, weekly_hours: [] )
