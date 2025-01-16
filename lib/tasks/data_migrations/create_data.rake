@@ -599,6 +599,7 @@ namespace :data_migrations do
                 .find_each do |offer|
           puts offer.grades
           next unless offer.grades.include?(Grade.seconde)
+          next if offer.weeks.empty? || offer.weeks.none? { |week| week.year == 2024 }
 
           weeks_to_add = []
           new_internship_offer = offer.dup
@@ -618,9 +619,16 @@ namespace :data_migrations do
           new_internship_offer.save
 
           offer.hidden_duplicate = true
-          offer.weeks = offer.weeks & Week.of_past_school_years || []
-          offer.save
-          offer.unpublish!
+          offer.weeks = offer.weeks & Week.of_past_school_years
+          if offer.weeks.empty?
+            CSV.open(Rails.root.join('storage/tmp/errors_when_duplicating_offers.csv'), 'a') do |csv|
+              csv << [offer.id, email, offer.grades.map(&:name).join(', ')]
+            end
+          else
+            offer.save
+            offer.unpublish! unless offer.unpublished?
+            print '.'
+          end
         end
       end
     end

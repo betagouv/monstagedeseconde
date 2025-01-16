@@ -205,21 +205,21 @@ namespace :data_migrations do
       second_week_2024 = SchoolTrack::Seconde.second_week(year: 2024)
 
       older_offers.where(period: 0).find_each do |offer|
-        next if offer.weeks.present?
+        next if offer.weeks.present? && offer.weeks.map(&:id).sort == [first_week_2024.id, second_week_2024.id].sort
 
         offer.weeks = [first_week_2024, second_week_2024]
         offer.save
         print('.')
       end
       older_offers.where(period: 1).find_each do |offer|
-        next if offer.weeks.present?
+        next if offer.weeks.present? && offer.weeks.first.id == first_week_2024.id
 
         offer.weeks = [first_week_2024]
         offer.save
         print('.')
       end
       older_offers.where(period: 2).find_each do |offer|
-        next if offer.weeks.present?
+        next if offer.weeks.present? && offer.weeks.first.id == second_week_2024.id
 
         offer.weeks = [second_week_2024]
         offer.save
