@@ -103,7 +103,7 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
     visit dashboard_students_internship_applications_path(student, internship_application.internship_offer)
     url = dashboard_students_internship_application_path(
       student_id: student.id,
-      id: internship_application.id
+      uuid: internship_application.uuid
     )
     assert page.has_selector?("a[href='#{url}']", count: 1)
     visit url

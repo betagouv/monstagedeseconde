@@ -7,9 +7,9 @@ class EmployerMailer < ApplicationMailer
     recipients_email        = internship_application.filter_notified_emails
     @prez_application       = @internship_application.presenter(internship_application.internship_offer.employer)
     @url = dashboard_internship_offer_internship_application_url(
-      @internship_offer,
-      @internship_application
-    )
+          @internship_offer,
+          uuid: @internship_application.uuid
+        )
     @url_more_options = "#{@url}?sgid=#{@internship_application.to_sgid}"
     @url_accept       = "#{@url_more_options}&opened_modal=accept"
     @url_refuse       = "#{@url_more_options}&opened_modal=refuse"
@@ -33,7 +33,7 @@ class EmployerMailer < ApplicationMailer
     @employer              = @internship_offer.employer
     @url = dashboard_internship_offer_internship_applications_url(
       internship_offer_id: @internship_offer.id,
-      id: internship_application.id,
+      uuid: internship_application.uuid,
       mtm_campaign: "Offreur - Convention Ready to Edit#internship-application-#{internship_application.id}"
     ).html_safe
 
@@ -109,7 +109,7 @@ class EmployerMailer < ApplicationMailer
     @message                = message
     @url = dashboard_internship_offer_internship_application_url(
       internship_offer_id: @internship_offer.id,
-      id: @internship_application.id,
+      uuid: @internship_application.uuid,
       token: @internship_application.access_token
     ).html_safe
 
