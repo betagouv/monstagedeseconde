@@ -37,6 +37,13 @@ class Week < ApplicationRecord
     end
   }
 
+  scope :of_past_school_years, lambda {
+    turning_point = Week.current_year_start_week
+    where('year < ?', turning_point.year).or(
+      where('year = ?', turning_point.year).where('number < ?', turning_point.number)
+    )
+  }
+
   scope :from_date_for_current_year, lambda { |from:|
     by_year(year: from.year).where('number > :from_week', from_week: from.cweek)
   }
@@ -112,6 +119,10 @@ class Week < ApplicationRecord
     where('number >= ?', first_week_of_september).where(year: school_year)
                                                  .or(where('number <= ?', first_day_of_july_week).where(year: school_year + 1))
   }
+
+  def self.current_year_start_week
+    Week.fetch_from(date: SchoolYear::Current.new.beginning_of_period)
+  end
 
   def self.both_school_track_weeks
     [

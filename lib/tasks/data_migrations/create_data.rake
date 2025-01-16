@@ -293,7 +293,7 @@ namespace :data_migrations do
       "Provence-Alpes-Côte d'Azur"
     ].each do |academy_region_name|
       next if AcademyRegion.find_by(name: academy_region_name)
-  
+
       AcademyRegion.create!(name: academy_region_name)
       print ' .'
     end
@@ -571,6 +571,68 @@ namespace :data_migrations do
     end
   end
 
+  desc 'add_missing_grades_to_former_internship_offers'
+  task :add_missing_grades_to_former_internship_offers, [] => :environment do
+    PrettyConsole.announce_task('Adding missing grades to former internship offers') do
+      InternshipOffer.kept.find_each do |offer|
+        next if offer.grades.include?(Grade.seconde)
+
+        offer.grades = [Grade.seconde]
+        offer.save
+        print '.'
+      end
+    end
+  end
+
+  desc 'used when migrating 2024 to 2025'
+  task :offers_renewed, [] => :environment do |args|
+    PrettyConsole.announce_task('Renewing internship offers') do
+      # in storage/tmp/offers_to_renew.csv there a list of emails of employers which offers have to be renewed
+      CSV.foreach(Rails.root.join('storage/tmp/offers_to_renew_from_email.csv')) do |row|
+        email = row[0]
+        employer = Users::Employer.find_by(email: email)
+        next if employer.nil?
+
+        employer.internship_offers
+                .kept
+                .where(hidden_duplicate: false)
+                .find_each do |offer|
+          puts offer.grades
+          next unless offer.grades.include?(Grade.seconde)
+          next if offer.weeks.empty? || offer.weeks.none? { |week| week.year == 2024 }
+
+          weeks_to_add = []
+          new_internship_offer = offer.dup
+
+          if new_internship_offer.period == 0
+            weeks_to_add << SchoolTrack::Seconde.both_weeks
+          elsif new_internship_offer.period == 1
+            weeks_to_add << SchoolTrack::Seconde.first_week
+          elsif new_internship_offer.period == 2
+            weeks_to_add << SchoolTrack::Seconde.second_weeks
+          end
+          new_internship_offer.weeks = weeks_to_add.flatten
+          new_internship_offer.grades = [Grade.seconde]
+          new_internship_offer.weekly_hours = offer.weekly_hours
+          new_internship_offer.published_at = Date.today
+          new_internship_offer.aasm_state = 'published'
+          new_internship_offer.save
+
+          offer.hidden_duplicate = true
+          offer.weeks = offer.weeks & Week.of_past_school_years
+          if offer.weeks.empty?
+            CSV.open(Rails.root.join('storage/tmp/errors_when_duplicating_offers.csv'), 'a') do |csv|
+              csv << [offer.id, email, offer.grades.map(&:name).join(', ')]
+            end
+          else
+            offer.save
+            offer.unpublish! unless offer.unpublished?
+            print '.'
+          end
+        end
+      end
+    end
+  end
 
   # ===============================================
   # Crafts section

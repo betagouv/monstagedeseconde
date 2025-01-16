@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -2067,8 +2068,13 @@ CREATE TABLE public.task_records (
 -- Name: task_registers; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.task_records (
-    version character varying NOT NULL
+CREATE TABLE public.task_registers (
+    task_name character varying(250),
+    used_environment character varying(150),
+    played_at timestamp(6) without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    id bigint NOT NULL
 );
 
 
@@ -2776,6 +2782,13 @@ ALTER TABLE ONLY public.signatures ALTER COLUMN id SET DEFAULT nextval('public.s
 
 
 --
+-- Name: task_registers id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.task_registers ALTER COLUMN id SET DEFAULT nextval('public.task_registers_id_seq'::regclass);
+
+
+--
 -- Name: team_member_invitations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3220,6 +3233,14 @@ ALTER TABLE ONLY public.sectors
 
 ALTER TABLE ONLY public.signatures
     ADD CONSTRAINT signatures_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: task_registers task_registers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.task_registers
+    ADD CONSTRAINT task_registers_pkey PRIMARY KEY (id);
 
 
 --
@@ -4813,8 +4834,9 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20250107105855'),
+('20250115174742'),
 ('20250114094329'),
+('20250107105855'),
 ('20250107100940'),
 ('20250106175910'),
 ('20241223095629'),
