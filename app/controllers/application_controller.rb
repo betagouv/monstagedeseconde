@@ -77,6 +77,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def strip_content(string)
+    string.split("\n")
+          .map { |line| line = ActionController::Base.helpers.strip_tags(line).strip }
+          .join("\n")
+  end
+
   def log_error(object:, controller: self)
     Rails.logger.error("#{controller.class.name} error: #{object.errors.full_messages.join(', ')}")
   end

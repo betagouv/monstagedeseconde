@@ -7,6 +7,7 @@ module Dashboard::Stepper
     before_action :fetch_planning, only: %i[edit update]
     before_action :fetch_entreprise, only: %i[new create]
     before_action :fetch_internship_occupation, only: %i[new edit create]
+    before_action :sanitize_content, only: %i[create update]
 
     DEFAULT_SCHOOL_RADIUS = 60_000 # 60km
 
@@ -122,6 +123,13 @@ module Dashboard::Stepper
 
     def fetch_internship_occupation
       @internship_occupation ||= @entreprise&.internship_occupation || @planning&.entreprise&.internship_occupation
+    end
+
+    def sanitize_content
+      return unless planning_params[:lunch_break].present?
+
+      planning_params[:lunch_break] =
+        strip_content(planning_params[:lunch_break])
     end
   end
 end

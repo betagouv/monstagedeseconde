@@ -3,6 +3,7 @@ module Dashboard::Stepper
     # step 2
     before_action :authenticate_user!
     before_action :fetch_entreprise, only: %i[edit update]
+    before_action :sanitize_content, only: %i[create update]
 
     def new
       @entreprise = Entreprise.new(internship_occupation_id: params[:internship_occupation_id])
@@ -97,6 +98,18 @@ module Dashboard::Stepper
     def fetch_entreprise
       id = params[:id] || params[:entreprise_id]
       @entreprise = Entreprise.find(id)
+    end
+
+    def sanitize_content
+      if entreprise_params[:workspace_conditions].present?
+        entreprise_params[:workspace_conditions] =
+          strip_content(entreprise_params[:workspace_conditions])
+      end
+
+      return unless entreprise_params[:workspace_accessibility].present?
+
+      entreprise_params[:workspace_accessibility] =
+        strip_content(entreprise_params[:workspace_accessibility])
     end
   end
 end
