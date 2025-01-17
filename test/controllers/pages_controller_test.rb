@@ -9,7 +9,7 @@ class PagesTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_template 'pages/home'
-    assert_select 'title', 'Accueil | Stages de 2de'
+    assert_select 'title', 'Accueil | 1Elève1Stage'
   end
 
   test 'GET home after too many requests' do
@@ -34,35 +34,35 @@ class PagesTest < ActionDispatch::IntegrationTest
     get les_10_commandements_d_une_bonne_offre_path
     assert_response :success
     assert_template 'pages/les_10_commandements_d_une_bonne_offre'
-    assert_select 'title', 'Les 10 commandements pour une bonne offre | Stages de 2de'
+    assert_select 'title', 'Les 10 commandements pour une bonne offre | 1Elève1Stage'
   end
 
   test 'GET pages#mentions_legales works' do
     get mentions_legales_path
     assert_response :success
     assert_template 'pages/mentions_legales'
-    assert_select 'title', 'Mentions légales | Stages de 2de'
+    assert_select 'title', 'Mentions légales | 1Elève1Stage'
   end
 
   test 'GET pages#conditions_d_utilisation works' do
     get conditions_d_utilisation_path
     assert_response :success
     assert_template 'pages/conditions_d_utilisation'
-    assert_select 'title', "Conditions d'utilisation | Stages de 2de"
+    assert_select 'title', "Conditions d'utilisation | 1Elève1Stage"
   end
 
   test 'GET pages#contact works' do
     get contact_path
     assert_response :success
     assert_template 'pages/contact'
-    assert_select 'title', 'Contact | Stages de 2de'
+    assert_select 'title', 'Contact | 1Elève1Stage'
   end
 
   test 'GET pages#accessibilite works' do
     get accessibilite_path
     assert_response :success
     assert_template 'pages/accessibilite'
-    assert_select 'title', 'Accessibilité | Stages de 2de'
+    assert_select 'title', 'Accessibilité | 1Elève1Stage'
   end
 
   test '#register_to_webinar fails when not referent' do

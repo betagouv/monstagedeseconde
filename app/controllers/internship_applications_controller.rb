@@ -28,7 +28,7 @@ class InternshipApplicationsController < ApplicationController
 
   # alias for draft
   def show
-    @internship_application = @internship_offer.internship_applications.find(params[:id])
+    @internship_application = @internship_offer.internship_applications.find_by(uuid: params[:uuid])
     authorize! :submit_internship_application, @internship_application
   end
 
@@ -57,7 +57,7 @@ class InternshipApplicationsController < ApplicationController
 
   def completed
     set_internship_offer
-    @internship_application = @internship_offer.internship_applications.find(params[:id])
+    @internship_application = @internship_offer.internship_applications.find_by(uuid: params[:uuid])
     authorize! :submit_internship_application, @internship_application
 
     @suggested_offers = Finders::InternshipOfferConsumer.new(
@@ -72,12 +72,12 @@ class InternshipApplicationsController < ApplicationController
   end
 
   def edit_transfer
-    @internship_application = InternshipApplication.find(params[:id])
+    @internship_application = InternshipApplication.find_by(uuid: params[:uuid])
     authorize! :transfer, @internship_application
   end
 
   def transfer
-    @internship_application = InternshipApplication.find(params[:id])
+    @internship_application = InternshipApplication.find_by(uuid: params[:uuid])
     authorize! :transfer, @internship_application
     # send email to the invited employer
     if transfer_params[:destinations].present?
@@ -99,7 +99,7 @@ class InternshipApplicationsController < ApplicationController
                     flash: { success: 'La candidature a été transmise avec succès' }
       else
         target_path = edit_transfer_internship_offer_internship_application_path(
-          @internship_application.internship_offer, @internship_application
+          @internship_application.internship_offer, uuid: @internship_application.uuid
         )
         flash_error_message = "Les adresses emails suivantes sont invalides : #{faulty_emails.join(', ')}" \
                               ". Aucun transfert n'a été effectué, aucun email n'a été émis."

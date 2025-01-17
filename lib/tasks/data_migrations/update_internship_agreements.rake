@@ -1,13 +1,11 @@
-require 'pretty_console.rb'
+require 'pretty_console'
 
 namespace :data_migrations do
   desc 'Add accents and fix typos in group names'
   task fill_daily_hours_in_internship_agreements: :environment do
     PrettyConsole.announce_task(task) do
       InternshipAgreement.kept
-                         .where.not(aasm_state: :drafted)
                          .each do |agreement|
-        
         daily_hours_reference = agreement.internship_offer.daily_hours
         weekly_hours_reference = agreement.internship_offer.weekly_hours
 

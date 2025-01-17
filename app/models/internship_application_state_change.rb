@@ -8,6 +8,6 @@ class InternshipApplicationStateChange < ApplicationRecord
   private
 
   def from_state_presence
-    errors.add(:from_state, 'doit être présent') if from_state.blank? && to_state != 'drafted'
+    errors.add(:from_state, 'doit être présent') if from_state.blank? && to_state != 'submitted'
   end
 end

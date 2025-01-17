@@ -1,0 +1,7 @@
+  [
+  // "0 3 * * * $ROOT/clevercloud/crons/pending_internship_applications_mailing.sh",
+  // "0 9 * * * $ROOT/clevercloud/crons/students_internship_application_reminders.sh", // Students receive reminders every day for their pending applications
+  // "0 8 * * 1,4 $ROOT/clevercloud/crons/employers_pending_internship_applications_reminders.sh", // Employers receive global reminders on Monday and Thursday for submitted and read_by_employer applications
+  // "0 8 * * 1,3,5 $ROOT/clevercloud/crons/students_pending_internship_application_sms_reminders.sh",
+  ]
+

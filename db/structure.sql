@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -20,7 +21,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -34,7 +35,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+-- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -48,7 +49,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -693,6 +694,8 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
+    workspace_conditions text DEFAULT ''::text,
+    workspace_accessibility text DEFAULT ''::text,
     contact_phone character varying(20),
     internship_address_manual_enter boolean DEFAULT false
 );
@@ -1152,7 +1155,7 @@ ALTER SEQUENCE public.internship_applications_id_seq OWNED BY public.internship_
 CREATE TABLE public.internship_occupations (
     id bigint NOT NULL,
     title character varying(150) NOT NULL,
-    description character varying(500) NOT NULL,
+    description character varying(1500) NOT NULL,
     street character varying(200) NOT NULL,
     zipcode character varying(5) NOT NULL,
     city character varying(50) NOT NULL,
@@ -1484,7 +1487,7 @@ ALTER SEQUENCE public.internship_offer_weeks_id_seq OWNED BY public.internship_o
 CREATE TABLE public.internship_offers (
     id bigint NOT NULL,
     title character varying(150),
-    description character varying(500),
+    description character varying(1500),
     max_candidates integer DEFAULT 1 NOT NULL,
     internship_offer_weeks_count integer DEFAULT 0 NOT NULL,
     tutor_name character varying(150),
@@ -1502,7 +1505,7 @@ CREATE TABLE public.internship_offers (
     employer_name character varying(150),
     employer_id bigint,
     school_id bigint,
-    employer_description character varying(250),
+    employer_description character varying(1500),
     sector_id bigint,
     blocked_weeks_count integer DEFAULT 0 NOT NULL,
     total_applications_count integer DEFAULT 0 NOT NULL,
@@ -1554,8 +1557,11 @@ CREATE TABLE public.internship_offers (
     employer_chosen_name character varying(250),
     entreprise_full_address character varying(200),
     entreprise_coordinates public.geography(Point,4326),
+    period integer DEFAULT 0 NOT NULL,
     rep boolean DEFAULT false,
-    qpv boolean DEFAULT false
+    qpv boolean DEFAULT false,
+    workspace_conditions text DEFAULT ''::text,
+    workspace_accessibility text DEFAULT ''::text
 );
 
 
@@ -2063,13 +2069,14 @@ CREATE TABLE public.task_records (
 --
 
 CREATE TABLE public.task_registers (
-    id bigint NOT NULL,
     task_name character varying(250),
     used_environment character varying(150),
     played_at timestamp(6) without time zone,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    id bigint NOT NULL
 );
+
 
 --
 -- Name: task_registers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
@@ -2775,6 +2782,13 @@ ALTER TABLE ONLY public.signatures ALTER COLUMN id SET DEFAULT nextval('public.s
 
 
 --
+-- Name: task_registers id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.task_registers ALTER COLUMN id SET DEFAULT nextval('public.task_registers_id_seq'::regclass);
+
+
+--
 -- Name: team_member_invitations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3219,6 +3233,14 @@ ALTER TABLE ONLY public.sectors
 
 ALTER TABLE ONLY public.signatures
     ADD CONSTRAINT signatures_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: task_registers task_registers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.task_registers
+    ADD CONSTRAINT task_registers_pkey PRIMARY KEY (id);
 
 
 --
@@ -4812,14 +4834,18 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250115174742'),
+('20250114094329'),
+('20250107105855'),
+('20250107100940'),
 ('20250106175910'),
 ('20241223095629'),
 ('20241220134854'),
+('20241217104101'),
+('20241213131559'),
 ('20241204173244'),
 ('20241204164257'),
 ('20241204150852'),
-('20241217104101'),
-('20241213131559'),
 ('20241115093512'),
 ('20241113151423'),
 ('20241105172654'),
@@ -5223,4 +5249,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
-

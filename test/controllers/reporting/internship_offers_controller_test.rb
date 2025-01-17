@@ -56,7 +56,7 @@ module Reporting
       create(:weekly_internship_offer_2nde)
       get reporting_internship_offers_path
       assert_response :success
-      assert_select 'title', 'Statistiques des offres | Stages de 2de'
+      assert_select 'title', 'Statistiques des offres | 1Elève1Stage'
     end
 
     test 'GET #index as statistician success ' \

@@ -162,6 +162,8 @@ module Builders
         entreprise_chosen_full_address: entreprise.entreprise_chosen_full_address,
         entreprise_coordinates: entreprise.entreprise_coordinates,
         contact_phone: entreprise.contact_phone,
+        workspace_conditions: entreprise.workspace_conditions,
+        workspace_accessibility: entreprise.workspace_accessibility,
         internship_address_manual_enter: entreprise.internship_address_manual_enter
       }
     end

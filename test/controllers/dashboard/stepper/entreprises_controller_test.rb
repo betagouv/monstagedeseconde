@@ -39,7 +39,9 @@ module Dashboard::Stepper
               entreprise_coordinates_latitude: '48.85',
               contact_phone: '0123456789',
               is_public: false,
-              sector_id: sector.id
+              sector_id: sector.id,
+              workspace_conditions: 'Environnement de travail',
+              workspace_accessibility: 'Accessibilité du poste'
             }
           }
         )
@@ -59,6 +61,8 @@ module Dashboard::Stepper
       assert_equal 2.35, entreprise.entreprise_coordinates.longitude
       assert_equal 48.85, entreprise.entreprise_coordinates.latitude
       assert entreprise.updated_entreprise_full_address
+      assert_equal 'Environnement de travail', entreprise.workspace_conditions
+      assert_equal 'Accessibilité du poste', entreprise.workspace_accessibility
     end
 
     test 'POST create with faulty payload fails gracefully' do

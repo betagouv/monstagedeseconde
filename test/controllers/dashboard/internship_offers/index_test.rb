@@ -25,7 +25,7 @@ module Dashboard::InternshipOffers
       sign_in(employer)
       get dashboard_internship_offers_path
       assert_response :success
-      assert_select 'title', 'Mes offres | Stages de 2de'
+      assert_select 'title', 'Mes offres | 1Elève1Stage'
       assert_presence_of(internship_offer:)
     end
 
