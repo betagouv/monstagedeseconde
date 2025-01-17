@@ -145,14 +145,29 @@
                   span.fr-icon-info-fill.text-blue-info aria-hidden="true"
                 small.text-blue-info.fr-mx-1w
                   | L’adresse du siège peut être différente de l’adresse où se déroulera le stage.
-          
+          div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
+            .col-12
+              - label = "Numéro de téléphone du dépositaire *"
+              - hint = "Ce numéro ne sera pas communiqué aux candidats."
+              = render 'inputs/dsfr_input_field',
+                        field: :contact_phone,
+                        f: form,
+                        label: label,
+                        required: true,
+                        title: label,
+                        object: form.object,
+                        hint: hint,
+                        pattern: phone_pattern,
+                        maxlength: 20,
+                        value: resource&.contact_phone
+
           .row class="fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               .fr-h6
                 | Les informations liées à votre environnement de travail
               .small
                 | Afin de mieux informer les élèves, nous vous proposons de préciser brièvement et si vous le souhaitez les conditions d’accueil dans vos locaux en répondant à ces deux questions
-          div data-controller="character-count" data-character-count-max-value="1000" class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}" 
+          div data-controller="character-count" data-character-count-max-value="1000" class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               = form.label :workspace_conditions, class: 'fr-label' do
                 = "Décrivez l'environnement de travail dans lequel l'élève va évoluer (open space, niveau sonore, luminosité…)"
@@ -166,13 +181,13 @@
                   | 0/1000 caractères
                 .fr-message.fr-message--error.d-none data-character-count-target="error"
                   | Le texte ne doit pas dépasser 1000 caractères
-          div data-controller="character-count" data-character-count-max-value="1000" class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}" 
+          div data-controller="character-count" data-character-count-max-value="1000" class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               = form.label :workspace_accessibility, class: 'fr-label' do
                 = "Parlez-nous de l’accessibilité du poste (déplacement dans les locaux, informations sonores et/ou visuelles, présence d’un ascenseur…)"
-              = form.text_area :workspace_accessibility, 
-                class: 'fr-input', 
-                rows: 3, 
+              = form.text_area :workspace_accessibility,
+                class: 'fr-input',
+                rows: 3,
                 maxlength: 1000,
                 data: {:'character_count_target' => "input", :'action' => "input->character-count#updateCounter"}
               .fr-messages-group aria-live="polite"

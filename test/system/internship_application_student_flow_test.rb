@@ -89,25 +89,27 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
 
   test 'student with approved application can see employer\'s address' do
     skip 'failing test on CI but passing locally' if ENV.fetch('CI') == 'true'
-    school = create(:school, :with_school_manager)
-    student = create(:student,
-                     school:,
-                     class_room: create(:class_room, school:))
-    internship_application = create(
-      :weekly_internship_application,
-      :approved,
-      student:
-    )
-    sign_in(student)
-    visit '/'
-    visit dashboard_students_internship_applications_path(student, internship_application.internship_offer)
-    url = dashboard_students_internship_application_path(
-      student_id: student.id,
-      uuid: internship_application.uuid
-    )
-    assert page.has_selector?("a[href='#{url}']", count: 1)
-    visit url
-    find('.row .col-12 .fr-pl-1w.blue-france', text: '1 rue du poulet 75001 Paris')
+    prismic_straight_stub do
+      school = create(:school, :with_school_manager)
+      student = create(:student,
+                       school:,
+                       class_room: create(:class_room, school:))
+      internship_application = create(
+        :weekly_internship_application,
+        :approved,
+        student:
+      )
+      sign_in(student)
+      visit '/'
+      visit dashboard_students_internship_applications_path(student, internship_application.internship_offer)
+      url = dashboard_students_internship_application_path(
+        student_id: student.id,
+        id: internship_application.id
+      )
+      assert page.has_selector?("a[href='#{url}']", count: 1)
+      visit url
+      find('.row .col-12 .fr-pl-1w.blue-france', text: '1 rue du poulet 75001 Paris')
+    end
   end
 
   test 'student with submittted application can not see employer\'s address' do
@@ -127,13 +129,15 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
   end
 
   test 'when an employer tries to access application forms, she fails' do
-    employer = create(:employer)
-    internship_offer = create(:weekly_internship_offer_2nde)
-    visit internship_offer_path(internship_offer.id)
-    first(:link, 'Postuler').click
-    fill_in('Adresse électronique', with: employer.email)
-    fill_in('Mot de passe', with: employer.password)
-    click_button('Se connecter')
-    assert page.has_selector?('span#alert-text', text: "Vous n'êtes pas autorisé à effectuer cette action.")
+    prismic_straight_stub do
+      employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde)
+      visit internship_offer_path(internship_offer.id)
+      first(:link, 'Postuler').click
+      fill_in('Adresse électronique', with: employer.email)
+      fill_in('Mot de passe', with: employer.password)
+      click_button('Se connecter')
+      assert page.has_selector?('span#alert-text', text: "Vous n'êtes pas autorisé à effectuer cette action.")
+    end
   end
 end
