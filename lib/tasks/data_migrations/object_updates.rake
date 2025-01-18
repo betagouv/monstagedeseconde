@@ -251,7 +251,7 @@ namespace :data_migrations do
   task 'fix_internship_offers': :environment do
     PrettyConsole.announce_task('transit from draft to unpublish on every internship_offer') do
       counter = 0
-      offers = Rails.env.development? ? InternshipOffers::WeeklyFramed.kept.where(school_id: nil) : InternshipOffers::WeeklyFramed.kept
+      offers = Rails.env.development? ? InternshipOffer.kept.where(school_id: nil) : InternshipOffer.kept
       offers.find_each do |offer|
         saved_offer = offer.dup
         conditions = offer.lunch_break.nil? ||
@@ -321,7 +321,7 @@ namespace :data_migrations do
   task 'from_draft_to_unpublish': :environment do
     PrettyConsole.announce_task('transit from draft to unpublish on every internship_offer') do
       counter = 0
-      offers = Rails.env.development? ? InternshipOffer.where(school_id: nil) : InternshipOffer
+      offers = Rails.env.development? ? InternshipOffer.kept.where(school_id: nil) : InternshipOffer.kept
       puts '================================'
       puts " offers.where(aasm_state: 'drafted').count: #{offers.where(aasm_state: 'drafted').count}"
       puts '================================'
