@@ -200,12 +200,13 @@ module Dashboard
           find(selector).native.send_keys('Je ne suis plus disponible')
           click_button 'Confirmer'
           assert_equal 'canceled_by_student', internship_application.reload.aasm_state
+          click_button 'Fermer' # flash message is closed
           click_link 'Connexion' # demonstrates user is not logged in
         end
       end
 
       test 'quick decision process with approving' do
-        travel_to Date.new(2024, 10, 1) do
+        travel_to Date.new(2025, 3, 1) do
           school = create(:school)
           student = create(:student,
                            school:,
@@ -226,9 +227,8 @@ module Dashboard
           click_button 'Choisir ce stage'
           click_button 'Confirmer'
           assert_equal 'approved', internship_application.reload.aasm_state
-          within('.fr-header__tools-links') do
-            click_link 'Connexion' # demonstrates user is not logged in
-          end
+          click_button 'Fermer' # flash message is closed
+          click_link 'Connexion' # demonstrates user is not logged in
         end
       end
 
