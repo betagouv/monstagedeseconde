@@ -251,13 +251,34 @@ namespace :data_migrations do
   task 'fix_internship_offers': :environment do
     PrettyConsole.announce_task('transit from draft to unpublish on every internship_offer') do
       counter = 0
-      offers =  Rails.env.development? ? InternshipOffer.kept.where(school_id: nil) : InternshipOffer.kept
+      offers = Rails.env.development? ? InternshipOffers::WeeklyFramed.kept.where(school_id: nil) : InternshipOffers::WeeklyFramed.kept
       offers.find_each do |offer|
         saved_offer = offer.dup
-        conditions = offer.employer_name.length > 80 ||
+        conditions = offer.lunch_break.nil? ||
+                     offer.lunch_break.length < 8 ||
+                     offer.lunch_break.length > 200 ||
+                     offer.employer_name.length > 80 ||
+                     offer.contact_phone.blank? ||
+                     offer.contact_phone.length > 20 ||
+                     !offer.contact_phone.match?(/^\+?(\d{2,3}\s?)?(\d{1,2}\s?){3,4}\d{2}$/) ||
                      offer.grades.empty? ||
                      offer.weeks.empty?
         if conditions
+          if offer.is_a?(InternshipOffers::WeeklyFramed)
+            offer.lunch_break = 'A définir précisément' if offer.lunch_break.nil?
+            offer.lunch_break = offer.lunch_break.ljust(8, '.') if offer.lunch_break.length < 8
+            offer.lunch_break = offer.lunch_break.truncate(200, omission: '...') if offer.lunch_break.length > 200
+            offer.contact_phone = '0606060606' if offer.contact_phone.blank?
+            offer.contact_phone = offer.contact_phone.strip
+            unless offer.contact_phone.match?(/^\+?(\d{2,3}\s?)?(\d{1,2}\s?){3,4}\d{2}$/)
+              offer.contact_phone = User.sanitize_mobile_phone_number(offer.contact_phone)
+            end
+            if offer.contact_phone.length > 20
+              offer.contact_phone = offer.contact_phone.strip.truncate(20,
+                                                                       omission: '...')
+            end
+          end
+
           offer.employer_name = offer.employer_name.truncate(80, omission: '...') if offer.employer_name.length > 80
           offer.grades = [Grade.seconde] if offer.grades.empty?
           if offer.weeks.empty?
@@ -277,64 +298,22 @@ namespace :data_migrations do
             puts '================================'
             puts ''
           end
-          if offer.employer_name != saved_offer.employer_name ||
+          if offer.lunch_break != saved_offer.lunch_break ||
+             offer.employer_name != saved_offer.employer_name ||
+             offer.contact_phone != saved_offer.contact_phone ||
              offer.grades != saved_offer.grades ||
              offer.weeks != saved_offer.weeks
+            offer.save!
             print 'x'
-            offer.save!
-            counter += 1
-          else
-            print 'o'
-          end
-        else
-          print '-'
-        end
-      end
-      PrettyConsole.say_in_cyan "offers updated : #{counter}"
-      # phase InternshipOffers::WeeklyFramed
-      counter = 0
-      offers = Rails.env.development? ? InternshipOffers::WeeklyFramed.kept.where(school_id: nil) : InternshipOffers::WeeklyFramed.kept
-      offers.find_each do |offer|
-        saved_offer = offer.dup
-        conditions = offer.lunch_break.nil? ||
-                     offer.lunch_break.length < 8 ||
-                     offer.lunch_break.length > 200 ||
-                     offer.contact_phone.blank? ||
-                     offer.contact_phone.length > 20 ||
-                     !offer.contact_phone.match?(/^\+?(\d{2,3}\s?)?(\d{1,2}\s?){3,4}\d{2}$/)
-        if conditions
-          offer.lunch_break = 'A définir précisément' if offer.lunch_break.nil?
-          offer.lunch_break = offer.lunch_break.ljust(8, '.') if offer.lunch_break.length < 8
-          offer.lunch_break = offer.lunch_break.truncate(200, omission: '...') if offer.lunch_break.length > 200
-          offer.contact_phone = '0606060606' if offer.contact_phone.blank?
-          offer.contact_phone = offer.contact_phone.strip
-          unless offer.contact_phone.match?(/^\+?(\d{2,3}\s?)?(\d{1,2}\s?){3,4}\d{2}$/)
-            offer.contact_phone = User.sanitize_mobile_phone_number(offer.contact_phone)
-          end
-          if offer.contact_phone.length > 20
-            offer.contact_phone = offer.contact_phone.strip.truncate(20, omission: '...')
-          end
-
-          unless offer.valid?
-            puts '================================'
-            puts "offer.id : #{offer.id}"
-            puts "offer.errors.full_messages : #{offer.errors.full_messages}"
-            puts '================================'
-            puts ''
-          end
-          if offer.lunch_break != saved_offer.lunch_break ||
-             offer.contact_phone != saved_offer.contact_phone
-            PrettyConsole.print_in_green 'x'
-            offer.save!
             counter += 1
           else
             PrettyConsole.print_in_green 'o'
           end
         else
-          PrettyConsole.print_in_green '-'
+          PrettyConsole.print_in_yellow '-'
         end
       end
-      PrettyConsole.say_in_green "offers updated : #{counter}"
+      PrettyConsole.say_in_cyan "offers updated : #{counter}"
     end
   end
 
