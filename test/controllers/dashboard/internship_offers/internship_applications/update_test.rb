@@ -465,7 +465,7 @@ module InternshipOffers::InternshipApplications
 
       patch(dashboard_internship_offer_internship_application_path(internship_application.internship_offer, uuid: internship_application.uuid),
             params: { transition: :cancel_by_employer!,
-                      internship_application: { canceled_by_employer_message_tmp: 'OK' } })
+                      internship_application: { canceled_by_employer_message: 'OK' } })
 
       internship_application.reload
       assert_equal 'OK', internship_application.canceled_by_employer_message
@@ -480,7 +480,7 @@ module InternshipOffers::InternshipApplications
 
       patch(dashboard_internship_offer_internship_application_path(internship_application.internship_offer, uuid: internship_application.uuid),
             params: { transition: :cancel_by_student!,
-                      internship_application: { canceled_by_employer_message_tmp: 'OK' } })
+                      internship_application: { canceled_by_employer_message: 'OK' } })
 
       internship_application.reload
       assert_equal 'OK', internship_application.canceled_by_employer_message
