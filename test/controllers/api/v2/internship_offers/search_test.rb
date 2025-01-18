@@ -45,7 +45,8 @@ module Api
           @token = json_response['token']
 
           offer_1 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.tours, city: 'Tours')
-          offer_2 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.paris, city: 'Paris')
+          offer_2 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.paris, city: 'Paris',
+                                                          remote_id: 'paris_id')
           offer_3 = create(:weekly_internship_offer_2nde, :unpublished, coordinates: Coordinates.bordeaux,
                                                                         city: 'Bordeaux')
 
@@ -64,6 +65,7 @@ module Api
             # since api order is id: :desc
             assert_equal 'Paris', json_response['internshipOffers'][0]['city']
             assert_equal 'Tours', json_response['internshipOffers'][1]['city']
+            assert_equal 'paris_id', json_response['internshipOffers'][0]['remote_id']
           end
         end
       end
