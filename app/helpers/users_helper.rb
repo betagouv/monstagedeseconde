@@ -23,11 +23,11 @@ module UsersHelper
   end
 
   def phone_pattern
-    '^\+?(\d{2,3}\s?)?(\d{2}\s?){3,4}\d{2}$'
+    '^\+?(\d{2,3}\s?)?(\d{1,2}\s?){3,4}\d{2}$'
   end
 
   def field_phone_pattern
-    '\A\+?(\d{2,3}\s?)?(\d{2}\s?){3,4}\d{2}\z'
+    '\A\+?(\d{2,3}\s?)?(\d{1,2}\s?){3,4}\d{2}\z'
   end
 
   def mail_pattern

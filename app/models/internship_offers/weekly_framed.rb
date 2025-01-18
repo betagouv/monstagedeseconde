@@ -22,7 +22,7 @@ module InternshipOffers
               numericality: { only_integer: true,
                               greater_than: 0,
                               less_than_or_equal_to: MAX_CANDIDATES_HIGHEST }
-    validates :lunch_break, length: { minimum: 10, maximum: 200 }
+    validates :lunch_break, length: { minimum: 8, maximum: 200 }
     validate :schedules_check
 
     after_initialize :init

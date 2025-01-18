@@ -221,10 +221,16 @@ class InternshipOffer < ApplicationRecord
 
   aasm do
     state :published, initial: true
-    state :removed,
+    state :drafted,
+          :removed,
           :unpublished,
           :need_to_be_updated,
           :splitted
+
+    event :draft do
+      transitions from: %i[published unpublished need_to_be_updated],
+                  to: :drafted
+    end
 
     event :publish do
       transitions from: %i[unpublished need_to_be_updated],
@@ -244,7 +250,7 @@ class InternshipOffer < ApplicationRecord
     end
 
     event :unpublish do
-      transitions from: %i[published need_to_be_updated],
+      transitions from: %i[published need_to_be_updated drafted],
                   to: :unpublished, after: proc { |*_args|
                                              update!(published_at: nil)
                                            }
@@ -339,7 +345,6 @@ class InternshipOffer < ApplicationRecord
     self.first_date = ordered_weeks.first&.week_date
     self.last_date = ordered_weeks.last&.week_date&.+ 4.days
   end
-
 
   def shown_as_masked?
     !published?
