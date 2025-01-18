@@ -215,7 +215,7 @@ module Dashboard
 
     def internship_offer_params
       params.require(:internship_offer)
-            .permit(:academy, :aasm_state, :city,
+            .permit(:academy, :aasm_state, :city, :contact_phone,
                     :department, :description, :employer_chosen_name, :employer_id,
                     :employer_name, :employer_type, :entreprise_chosen_full_address,
                     :entreprise_city,

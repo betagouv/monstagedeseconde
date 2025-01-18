@@ -12,7 +12,7 @@ class InternshipOffer < ApplicationRecord
   DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description
                             employer_name street zipcode city department entreprise_coordinates
                             employer_chosen_name all_year_long period grade_ids week_ids
-                            entreprise_full_address internship_offer_area_id
+                            entreprise_full_address internship_offer_area_id contact_phone
                             is_public group school_id coordinates first_date last_date
                             siret internship_address_manual_enter lunch_break daily_hours
                             weekly_hours rep qpv].freeze
