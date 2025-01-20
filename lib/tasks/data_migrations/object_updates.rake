@@ -338,22 +338,21 @@ namespace :data_migrations do
   desc 'update schools where department is missing'
   task 'update_schools_department': :environment do
     PrettyConsole.announce_task('update schools where department is missing') do
-      file_location = Rails.root.join('db/data_imports/sources_EN/Liste_etablissements.csv')
       counter = 0
-      CSV.foreach(file_location, 'r', headers: true, header_converters: :symbol, col_sep: ';').each do |row|
+      School.all.each do |school|
         counter += 1
 
-        code_uai = row[:uai]
-        school = School.find_by(code_uai: code_uai)
-        next if school.nil?
-        next if school.department.present?
-
-        code_postal = row[:code_postal]&.to_s&.strip
-        department = Department.find_by(code: code_postal.slice(0, 2))
-        next if department.nil?
-
-        school.update!(department_id: department.id)
-        print '.'
+        if school.department.present?
+          print 'o'
+        else
+          department = Department.fetch_by_zipcode(zipcode: school.zipcode)
+          if department.nil?
+            print 'x'
+          else
+            school.update!(department_id: department.id)
+            print '.'
+          end
+        end
       end
       PrettyConsole.say_in_cyan "counter of schools updated : #{counter}"
     end
