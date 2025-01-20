@@ -83,6 +83,7 @@ module Dashboard
       @internship_offer.all_year_long = @internship_offer.all_year_long? # ? strange ... removal seems possible
       @internship_offer.entreprise_chosen_full_address = @internship_offer.entreprise_full_address
       @republish = true
+      @duplication = false
     end
 
     def update
