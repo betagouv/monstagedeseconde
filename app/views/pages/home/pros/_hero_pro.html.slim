@@ -19,7 +19,7 @@ header.container-xl.px-0
               .row
                 .col-12
                   span.fr-text
-                    | Proposez des stages d’observation aux élèves et participez à leur découverte du monde professionnel tout en valorisant votre secteur d’activité.
+                    | Proposez des stages d'observation aux élèves et participez à leur découverte du monde professionnel tout en valorisant votre secteur d'activité.
 
           .col-lg-6.col-md-12.px-0.d-flex.align-items-center
             = image_tag asset_pack_path('media/images/homepage/1eleve1stage_tag.png'),
@@ -34,9 +34,13 @@ header.container-xl.px-0
               .fr-mt-1w.fr-mb-4w.header-cartel.fr-px-6v.fr-py-1w
                 p.blue-france
                   strong
-                    = link_to ENV.fetch('HOME_PROS_STUDENTS_LINK_LABEL', "Vous êtes en 4ème, 3e ou 2nde générale ou technologique ?"),
-                              "https://forms.sbc36.com/62553f47462f0e1887f81bfe/xtszW7joSFu4cBSfyOLMdw/form.html",
-                              target: '_blank',
-                              class: 'fr-raw-link'
+                    = link_to "https://forms.sbc36.com/62553f47462f0e1887f81bfe/xtszW7joSFu4cBSfyOLMdw/form.html", target: '_blank', class: 'fr-raw-link' do
+                      | Vous êtes en 4
+                      sup e
+                      | , 3
+                      sup e
+                      |  ou 2
+                      sup de
+                      |  générale ou technologique ?
                 p.default-grey
-                  = "L'ouverture du service est prévue le #{ENV.fetch 'STUDENTS_OPENING_DAY','3 février 2024'}."
+                  = "L'ouverture du service est prévue en février 2025."
