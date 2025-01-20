@@ -17,6 +17,9 @@ module StepperProxy
       validates :description,
                 length: { maximum: InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT }
       validates :title, length: { maximum: 150 }
+      validates :street, length: { maximum: 200 }
+      validates :zipcode, length: { maximum: 5 }
+      validates :city, length: { maximum: 50 }
 
       def set_department
         self.department = Department.lookup_by_zipcode(zipcode: zipcode)
