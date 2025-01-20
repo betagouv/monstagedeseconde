@@ -334,4 +334,27 @@ namespace :data_migrations do
       PrettyConsole.say_in_cyan "counter of draft updated : #{counter}"
     end
   end
+
+  desc 'update schools where department is missing'
+  task 'update_schools_department': :environment do
+    PrettyConsole.announce_task('update schools where department is missing') do
+      counter = 0
+      School.all.each do |school|
+        counter += 1
+
+        if school.department.present?
+          print 'o'
+        else
+          department = Department.fetch_by_zipcode(zipcode: school.zipcode)
+          if department.nil?
+            print 'x'
+          else
+            school.update!(department_id: department.id)
+            print '.'
+          end
+        end
+      end
+      PrettyConsole.say_in_cyan "counter of schools updated : #{counter}"
+    end
+  end
 end
