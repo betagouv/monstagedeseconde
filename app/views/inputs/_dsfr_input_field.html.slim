@@ -6,6 +6,7 @@
 - pattern ||= ''
 - title ||= ''
 - type ||= 'text'
+- maxlength ||= nil
 - disabled ||= false
 - readonly ||= false
 - name ||= "#{f.object_name}[#{field}]"
@@ -33,6 +34,7 @@
              name: name,
              title: title,
              **(pattern.present? ? { pattern: pattern } : {}),
+             **(maxlength.present? ? { maxlength: maxlength } : {}),
              **options)
 - elsif object.errors[field].present?
   .fr-input-group.fr-input-group--error
@@ -56,6 +58,7 @@
              name: name,
              title: title,
              **(pattern.present? ? { pattern: pattern } : {}),
+             **(maxlength.present? ? { maxlength: maxlength } : {}),
              **options)
     p.fr-error-text id="text-input-error-desc-error-#{field}"
       - field_name = t("activerecord.attributes.#{object.class.name.underscore}.#{field}")
@@ -80,4 +83,5 @@
                    disabled: disabled,
                    readonly: readonly,
                    **(pattern.present? ? { pattern: pattern } : {}),
+                   **(maxlength.present? ? { maxlength: maxlength } : {}),
                    **options)
