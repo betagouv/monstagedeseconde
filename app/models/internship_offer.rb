@@ -50,6 +50,7 @@ class InternshipOffer < ApplicationRecord
   belongs_to :planning, optional: true
   belongs_to :employer, polymorphic: true, optional: true
   belongs_to :internship_offer_area, optional: true, touch: true
+  belongs_to :internship_offer, optional: true, foreign_key: 'mother_id'
 
   has_many :favorites
   has_many :users, through: :favorites
