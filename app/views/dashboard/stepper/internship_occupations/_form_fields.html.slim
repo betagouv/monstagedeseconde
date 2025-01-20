@@ -23,7 +23,8 @@
                         title: 'intitulé du stage',
                         object: form.object,
                         field_type: :text_field,
-                        options: { data: { action: "input->mandatory-fields-with-coordinates#fieldChange input->fill-card#offerTitleChanged",
+                        options: { maxlength: 150,
+                                   data: { action: "input->mandatory-fields-with-coordinates#fieldChange input->fill-card#offerTitleChanged",
                                            :'mandatory-fields-with-coordinates-target' => "mandatoryField",
                                            :'fill-card-target' => "offerTitleInput"} }
               .fr-alert.fr-alert--info
