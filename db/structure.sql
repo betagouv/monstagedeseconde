@@ -1553,7 +1553,7 @@ CREATE TABLE public.internship_offers (
     internship_occupation_id bigint,
     entreprise_id bigint,
     planning_id bigint,
-    employer_chosen_name character varying(250),
+    employer_chosen_name character varying(150),
     entreprise_full_address character varying(200),
     entreprise_coordinates public.geography(Point,4326),
     period integer DEFAULT 0 NOT NULL,
@@ -4849,6 +4849,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250120101004'),
 ('20250120090347'),
 ('20250115174742'),
 ('20250114094329'),
