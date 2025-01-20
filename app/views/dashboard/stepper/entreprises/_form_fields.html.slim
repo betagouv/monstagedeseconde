@@ -113,7 +113,8 @@
                         readonly: true,
                         title: label,
                         object: form.object,
-                        value: resource&.employer_name
+                        value: resource&.employer_name,
+                        maxlength: 150
           div class="row fr-mt-3w bloc-tooggle hide-when-manual #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               - label = "Indiquez le nom de l'enseigne de l'établissement d'accueil, si elle diffère de la raison sociale"
@@ -124,9 +125,10 @@
                         required: false,
                         title: label,
                         object: form.object,
+                        maxlength: 150,
                         value: resource&.employer_name,
-                        options: { data: { :'fill-card-target' => "employerNameInput",
-                                         action: "input->fill-card#employerNameChanged"} }
+                        options: { data: { :'fill-card-target' => "employerNameInput",;
+                                           action: "input->fill-card#employerNameChanged" } }
           div class="row fr-mt-3w show-when-manual bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               = form.hidden_field :entreprise_full_address, value: resource&.entreprise_full_address
