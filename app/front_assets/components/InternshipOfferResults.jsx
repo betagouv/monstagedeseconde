@@ -256,6 +256,15 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
       
       { !isMobile() && (<div className="col-5 map-container">
           <div className="">
+          <div className="fr-notice fr-notice--info">
+            <div className="fr-container">
+              <div className="fr-notice__body fr-mx-3v">
+                <p className="fr-notice__title title-banner">
+                  La carte affiche uniquement les 30 premiers résultats visibles sur cette page.
+                </p>
+              </div>
+            </div>
+          </div>
             <MapContainer center={center} zoom={13} scrollWheelZoom={false}>
               <TileLayer
                 url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
