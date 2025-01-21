@@ -89,27 +89,25 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
 
   test 'student with approved application can see employer\'s address' do
     skip 'failing test on CI but passing locally' if ENV.fetch('CI') == 'true'
-    prismic_straight_stub do
-      school = create(:school, :with_school_manager)
-      student = create(:student,
-                       school:,
-                       class_room: create(:class_room, school:))
-      internship_application = create(
-        :weekly_internship_application,
-        :approved,
-        student:
-      )
-      sign_in(student)
-      visit '/'
-      visit dashboard_students_internship_applications_path(student, internship_application.internship_offer)
-      url = dashboard_students_internship_application_path(
-        student_id: student.id,
-        id: internship_application.id
-      )
-      assert page.has_selector?("a[href='#{url}']", count: 1)
-      visit url
-      find('.row .col-12 .fr-pl-1w.blue-france', text: '1 rue du poulet 75001 Paris')
-    end
+    school = create(:school, :with_school_manager)
+    student = create(:student,
+                     school:,
+                     class_room: create(:class_room, school:))
+    internship_application = create(
+      :weekly_internship_application,
+      :approved,
+      student:
+    )
+    sign_in(student)
+    visit '/'
+    visit dashboard_students_internship_applications_path(student, internship_application.internship_offer)
+    url = dashboard_students_internship_application_path(
+      student_id: student.id,
+      uuid: internship_application.uuid
+    )
+    assert page.has_selector?("a[href='#{url}']", count: 1)
+    visit url
+    find('.row .col-12 .fr-pl-1w.blue-france', text: '1 rue du poulet 75001 Paris')
   end
 
   test 'student with submittted application can not see employer\'s address' do
