@@ -3,7 +3,7 @@ set -x
 set -a
 source .env
 set +a
-target='production'
+target='old_production'
 git remote -vvv | grep $target | grep 'clever'
 
 if [ ! $? -eq 0 ]; then
