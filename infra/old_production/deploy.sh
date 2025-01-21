@@ -19,11 +19,11 @@ if [ ! -f "$SSH_PRIV" ]; then
   exit 1;
 fi;
 
-git checkout master
-if [ ! $? -eq 0 ]; then
-  echo 'Wrong branch; you should be on master branch'
-  exit 1;
-fi;
+# git checkout master
+# if [ ! $? -eq 0 ]; then
+#   echo 'Wrong branch; you should be on master branch'
+#   exit 1;
+# fi;
 
 # git pull origin master
 git push $target last_commit:master
