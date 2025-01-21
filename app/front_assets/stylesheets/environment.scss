@@ -6,9 +6,12 @@
   border-top: 3px solid rgba($red, .5);
 }
 
-.staging .fr-header__body,
-.development .fr-header__body {
+.staging .fr-header__body {
   background-color: rgba($yellow, .5);
+}
+
+.development .fr-header__body {
+  background-color: rgba($purple, .15 );
 }
 
 .review .fr-header__body {
