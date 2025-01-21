@@ -217,6 +217,7 @@ export default function AddressInput({
               className="fr-input"
               value={street}
               type="text"
+              maxLength="200"
               name={`${resourceName}[street]`}
               id={`${resourceName}_street`}
               readOnly

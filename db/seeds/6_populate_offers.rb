@@ -2,6 +2,7 @@ def populate_internship_offers
   current_school_year = SchoolYear::Current.new.beginning_of_period
   weeks = SchoolTrack::Seconde.both_weeks
   weeks += Week.selectable_from_now_until_end_of_school_year
+  # TODO period is ignored for InternshipOffers::WeeklyFramed
   # public sector
   # 1
   InternshipOffers::WeeklyFramed.create!(

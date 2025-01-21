@@ -11,9 +11,7 @@
     <%= csp_meta_tag %>
     <%= action_cable_meta_tag %>
     <meta name="turbo-visit-control" content="reload">
-    <%if URI(request.original_url).host == "stagedeseconde.recette.1jeune1solution.gouv.fr" %>
-      <%= favicon_link_tag asset_pack_path('media/images/favicons/favicon-staging.png')%>
-    <%elsif Rails.env.production? %>
+    <%if Rails.env.production? %>
       <%= favicon_link_tag asset_pack_path('media/images/favicon.png') %>
     <%elsif Rails.env.development? %>
       <%= favicon_link_tag asset_pack_path('media/images/favicons/favicon-development.png')  %>
@@ -26,6 +24,7 @@
     <%= stylesheet_link_tag "https://unpkg.com/leaflet@1.8.0/dist/leaflet.css", media: "all" %>
     <%= javascript_pack_tag "application.js", defer: true, 'data-turbo-track': "reload" %>
     <%= javascript_include_tag "https://unpkg.com/leaflet@1.8.0/dist/leaflet.js", integrity: "sha384-4Dmmo81xejNChaqLOci80VhUcuEAD5pXpCtqtizmdgWEzdETh3zrJvzOhU4T79cN", crossorigin: "anonymous" %>
+    <%= render partial: "layouts/analytics" %>
   </head>
 
   <body class="<%= env_class_name %> <%= body_class_name %>">
@@ -54,7 +53,6 @@
 
     <div class="<%= agreement_form? ? "d-none" : "" %>"  >
       <%= render 'layouts/footer' %>
-      <%= render partial: "layouts/analytics" %>
     </div>
 
     <dialog id="turbo-confirm">

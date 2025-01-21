@@ -4,14 +4,15 @@ require 'sti_preload'
 class InternshipOffer < ApplicationRecord
   GUARD_PERIOD = 5.days
   PAGE_SIZE = 30
-  EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT = 250
+  # TODO : most probably to be the same field.
+  EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT = 1500
+  DESCRIPTION_MAX_CHAR_COUNT = 1500
   MAX_CANDIDATES_HIGHEST = 6_000
   TITLE_MAX_CHAR_COUNT = 150
-  DESCRIPTION_MAX_CHAR_COUNT = 500
   DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description
                             employer_name street zipcode city department entreprise_coordinates
                             employer_chosen_name all_year_long period grade_ids week_ids
-                            entreprise_full_address internship_offer_area_id
+                            entreprise_full_address internship_offer_area_id contact_phone
                             is_public group school_id coordinates first_date last_date
                             siret internship_address_manual_enter lunch_break daily_hours
                             weekly_hours rep qpv].freeze
@@ -38,7 +39,7 @@ class InternshipOffer < ApplicationRecord
   include Discard::Model
   include PgSearch::Model
 
-  attr_accessor :republish, :grade_college, :grade_2e, :all_year_long, :period, :internship_type, :shall_publish
+  attr_accessor :republish, :grade_college, :grade_2e, :all_year_long, :period_field, :internship_type, :shall_publish
 
   # Other associations not defined in StepperProxy
   has_many :internship_applications, as: :internship_offer,
@@ -49,6 +50,7 @@ class InternshipOffer < ApplicationRecord
   belongs_to :planning, optional: true
   belongs_to :employer, polymorphic: true, optional: true
   belongs_to :internship_offer_area, optional: true, touch: true
+  belongs_to :internship_offer, optional: true, foreign_key: 'mother_id'
 
   has_many :favorites
   has_many :users, through: :favorites
@@ -238,10 +240,16 @@ class InternshipOffer < ApplicationRecord
 
   aasm do
     state :published, initial: true
-    state :removed,
+    state :drafted,
+          :removed,
           :unpublished,
           :need_to_be_updated,
           :splitted
+
+    event :draft do
+      transitions from: %i[published unpublished need_to_be_updated],
+                  to: :drafted
+    end
 
     event :publish do
       transitions from: %i[unpublished need_to_be_updated],
@@ -261,7 +269,7 @@ class InternshipOffer < ApplicationRecord
     end
 
     event :unpublish do
-      transitions from: %i[published need_to_be_updated],
+      transitions from: %i[published need_to_be_updated drafted],
                   to: :unpublished, after: proc { |*_args|
                                              update!(published_at: nil)
                                            }
@@ -355,34 +363,6 @@ class InternshipOffer < ApplicationRecord
     ordered_weeks = weeks.to_a.sort_by(&:id)
     self.first_date = ordered_weeks.first&.week_date
     self.last_date = ordered_weeks.last&.week_date&.+ 4.days
-  end
-
-  #
-  # inherited
-  #
-  # def duplicate
-  #   internship_offer = super
-  #   internship_offer.week_ids = week_ids
-  #   internship_offer
-  # end
-
-  def split_in_two
-    print '.'
-
-    internship_offer = duplicate
-    internship_offer.remaining_seats_count = max_candidates
-    internship_offer.employer = employer
-    unless internship_offer.valid?
-      raise StandardError.new "##{internship_offer.errors.full_messages} - on #{internship_offer.errors.full_messages}"
-    end
-
-    internship_offer.save
-
-    self.hidden_duplicate = true
-    split!
-    save!
-
-    internship_offer
   end
 
   def shown_as_masked?

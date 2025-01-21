@@ -83,6 +83,7 @@ module Dashboard
       @internship_offer.all_year_long = @internship_offer.all_year_long? # ? strange ... removal seems possible
       @internship_offer.entreprise_chosen_full_address = @internship_offer.entreprise_full_address
       @republish = true
+      @duplication = false
     end
 
     def update
@@ -215,7 +216,7 @@ module Dashboard
 
     def internship_offer_params
       params.require(:internship_offer)
-            .permit(:academy, :aasm_state, :city,
+            .permit(:academy, :aasm_state, :city, :contact_phone,
                     :department, :description, :employer_chosen_name, :employer_id,
                     :employer_name, :employer_type, :entreprise_chosen_full_address,
                     :entreprise_city,
@@ -224,10 +225,10 @@ module Dashboard
                     :entreprise_street, :entreprise_zipcode, :grade_2e, :grade_college,
                     :group_id, :internship_address_manual_enter,
                     :is_public, :lunch_break, :max_candidates, :max_students_per_group,
-                    :period, :published_at, :region, :renewed, :republish, :school_id,
-                    :sector_id, :shall_publish, :siret, :street, :title, :type,
-                    :user_update, :verb, :zipcode, entreprise_coordinates: {}, coordinates: {},
-                    week_ids: [], grade_ids: [], daily_hours:{}, weekly_hours: [] )
+                    :period, :period_field, :published_at, :region, :renewed, :republish, :school_id,
+                    :sector_id, :shall_publish, :siret, :street, :title, :type, :workspace_conditions,
+                    :workspace_accessibility, :user_update, :verb, :zipcode, entreprise_coordinates: {}, coordinates: {},
+                                                                             week_ids: [], grade_ids: [], daily_hours: {}, weekly_hours: [])
     end
 
     def set_internship_offer

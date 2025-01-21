@@ -6,7 +6,7 @@ class EmailUtilsTest < ActiveSupport::TestCase
     local_host = ENV['HOST']
 
     ENV['HOST'] = nil
-    assert_equal  'https://stagedeseconde.1jeune1solution.gouv.fr', EmailUtils.env_host
+    assert_equal  'https://1eleve1stage.education.gouv.fr', EmailUtils.env_host
 
     ENV['HOST'] = 'https://review.example.com'
     assert_equal  'https://review.example.com', EmailUtils.env_host
@@ -32,7 +32,7 @@ class EmailUtilsTest < ActiveSupport::TestCase
   end
 
   test '.formatted_email' do
-    assert_equal '"1Élève1Stage" <contact@stagedeseconde.education.gouv.fr>',
-                 EmailUtils.formatted_email('contact@stagedeseconde.education.gouv.fr')
+    assert_equal '"1Élève1Stage" <contact@1eleve1stage.education.gouv.fr>',
+                 EmailUtils.formatted_email('contact@1eleve1stage.education.gouv.fr')
   end
 end

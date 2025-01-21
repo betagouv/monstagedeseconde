@@ -45,6 +45,7 @@ class ManageEntreprisesTest < ApplicationSystemTestCase
     visit new_dashboard_stepper_entreprise_path(internship_occupation_id: internship_occupation.id)
     fill_in_entreprise_manual_form(group:, sector:)
     find('p.fr-card__desc[data-write-summary-card-target="employerNameOutput"]', text: 'Mairie de Saint-Ouen-l’Aumône')
+    fill_in('Numéro de téléphone du dépositaire *', with: '0130131313')
     find("button[type='submit']").click
     find('#alert-success', text: "Les informations de l'entreprise ont bien été enregistrées")
 

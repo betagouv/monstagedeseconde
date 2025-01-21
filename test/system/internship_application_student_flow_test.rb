@@ -129,7 +129,7 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
     visit dashboard_students_internship_applications_path(student, internship_application.internship_offer)
     url = dashboard_students_internship_application_path(
       student_id: student.id,
-      id: internship_application.id
+      uuid: internship_application.uuid
     )
     assert page.has_selector?("a[href='#{url}']", count: 1)
     visit url
@@ -153,13 +153,15 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
   end
 
   test 'when an employer tries to access application forms, she fails' do
-    employer = create(:employer)
-    internship_offer = create(:weekly_internship_offer_2nde)
-    visit internship_offer_path(internship_offer.id)
-    first(:link, 'Postuler').click
-    fill_in('Adresse électronique', with: employer.email)
-    fill_in('Mot de passe', with: employer.password)
-    click_button('Se connecter')
-    assert page.has_selector?('span#alert-text', text: "Vous n'êtes pas autorisé à effectuer cette action.")
+    prismic_straight_stub do
+      employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde)
+      visit internship_offer_path(internship_offer.id)
+      first(:link, 'Postuler').click
+      fill_in('Adresse électronique', with: employer.email)
+      fill_in('Mot de passe', with: employer.password)
+      click_button('Se connecter')
+      assert page.has_selector?('span#alert-text', text: "Vous n'êtes pas autorisé à effectuer cette action.")
+    end
   end
 end

@@ -166,4 +166,21 @@ module ThirdPartyTestHelpers
         'rne' => '0590121X'
       }.to_json, headers: {})
   end
+
+  def prismic_stub(body_content)
+    headers = {
+      'Accept': 'application/json',
+      'Accept-Encoding': 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+      'User-Agent': 'Ruby'
+    }
+    stub_request(:get, "#{ENV.fetch('PRISMIC_URL')}?access_token=#{ENV.fetch('PRISMIC_API_KEY')}")
+      .with(headers: headers)
+      .to_return(status: 200, body: body_content, headers: {})
+  end
+
+  def prismic_straight_stub(&block)
+    PagesController.stub_any_instance(:get_resources, []) do
+      PagesController.stub_any_instance(:get_faqs, [], &block)
+    end
+  end
 end

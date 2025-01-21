@@ -14,24 +14,13 @@ FactoryBot.define do
       "+330#{rand(6..7)}#{FFaker::PhoneNumberFR.mobile_phone_number[2..-1]}".gsub(' ', '')
     end
 
-    trait :drafted do
-      aasm_state { :drafted }
-      after(:create) do |application|
-        create(:internship_application_state_change,
-               internship_application: application,
-               from_state: nil,
-               to_state: 'drafted',
-               author: application.student)
-      end
-    end
-
     trait :submitted do
       aasm_state { :submitted }
       submitted_at { 3.days.ago }
       after(:create) do |application|
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: 'drafted',
+               from_state: '',
                to_state: 'submitted',
                author: application.student)
       end
@@ -46,6 +35,19 @@ FactoryBot.define do
                internship_application: application,
                from_state: 'submitted',
                to_state: 'read_by_employer',
+               author: application.internship_offer.employer)
+      end
+    end
+
+    trait :transfered do
+      aasm_state { :transfered }
+      submitted_at { 20.days.ago }
+      read_at { 12.days.ago }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'submitted',
+               to_state: 'transfered',
                author: application.internship_offer.employer)
       end
     end

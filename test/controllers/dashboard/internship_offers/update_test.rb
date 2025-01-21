@@ -68,7 +68,9 @@ module Dashboard::InternshipOffers
                 all_year_long: '1',
                 is_public: false,
                 group_id: new_group.id,
-                daily_hours: { 'lundi' => %w[10h 12h] }
+                daily_hours: { 'lundi' => %w[10h 12h] },
+                workspace_conditions: 'Environnement de travail 2',
+                workspace_accessibility: 'Accessibilité du poste 2'
               }
             })
 
@@ -78,6 +80,8 @@ module Dashboard::InternshipOffers
                    internship_offer.reload.title,
                    'can\'t update internship_offer title')
       assert_equal %w[10h 12h], internship_offer.reload.daily_hours['lundi']
+      assert_equal 'Environnement de travail 2', internship_offer.reload.workspace_conditions
+      assert_equal 'Accessibilité du poste 2', internship_offer.reload.workspace_accessibility
     end
 
     test 'PATCH #update as employer owning internship_offer ' \
@@ -137,7 +141,7 @@ module Dashboard::InternshipOffers
               is_public: false,
               group_id: new_group.id,
               daily_hours: { 'lundi' => %w[10h 12h] }
-      }}.deep_symbolize_keys)
+            } }.deep_symbolize_keys)
       assert_redirected_to(dashboard_internship_offers_path(origine: 'dashboard'),
                            'redirection should point to updated offer')
 

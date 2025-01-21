@@ -183,7 +183,7 @@ class Ability
     as_employers_like(user:)
     as_employers_signatory_abilities(user:)
     as_account_user(user:)
-    can %i[sign_with_sms choose_function subscribe_to_webinar], User
+    can %i[sign_with_sms choose_function], User
     can :see_minister_video, User
   end
 
@@ -195,6 +195,9 @@ class Ability
   end
 
   def as_employers_like(user:)
+    can :subscribe_to_webinar, User do
+      ENV.fetch('WEBINAR_URL', nil).present?
+    end
     can_manage_teams(user:)
     can_manage_areas(user:)
     can %i[index], Acl::InternshipOfferDashboard
@@ -207,12 +210,6 @@ class Ability
     end
     can %i[create see_tutor], InternshipOffer
     can %i[read update discard publish], InternshipOffer, employer_id: user.team_members_ids
-    # legacy_abilities for stepper
-    # can %i[create], InternshipOfferInfo
-    # can %i[create], HostingInfo
-    # can %i[create], PracticalInfo
-    # can %i[create], Organisation
-    # new_abilities for stepper
     can %i[create], InternshipOccupation
     can %i[create], Entreprise do |entreprise|
       entreprise.internship_occupation.employer_id == user.id
@@ -220,12 +217,6 @@ class Ability
     can %i[create], Planning do |planning|
       planning.entreprise.internship_occupation.employer_id == user.id
     end
-    # legacy_abilities for stepper
-    # can %i[update edit renew], InternshipOfferInfo, employer_id: user.team_members_ids
-    # can %i[update edit renew], HostingInfo, employer_id: user.team_members_ids
-    # can %i[update edit renew], PracticalInfo, employer_id: user.team_members_ids
-    # can %i[update edit], Organisation, employer_id: user.team_members_ids
-    # new_abilities for stepper
     can %i[update edit renew], InternshipOccupation, employer_id: user.team_members_ids
     can %i[update edit renew], Entreprise do |entreprise|
       entreprise.internship_occupation.employer_id.in?(user.team_members_ids)

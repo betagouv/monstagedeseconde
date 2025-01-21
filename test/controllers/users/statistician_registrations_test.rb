@@ -8,7 +8,7 @@ class StatisticianRegistrationsTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select 'input', value: 'PrefectureStatistician', hidden: 'hidden'
-    assert_select 'title', "Inscription | Stages de 2de"
+    assert_select 'title', 'Inscription | 1Elève1Stage'
 
     assert_select 'label', /Prénom/
     assert_select 'label', /Nom/
@@ -25,7 +25,7 @@ class StatisticianRegistrationsTest < ActionDispatch::IntegrationTest
                                                     last_name: 'artement',
                                                     password: 'okokok1Max!!',
                                                     type: 'Users::PrefectureStatistician',
-                                                    accept_terms: '1' }})
+                                                    accept_terms: '1' } })
     end
   end
 
