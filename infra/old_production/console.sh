@@ -10,4 +10,4 @@ if [ ! -f "$SSH_PRIV" ]; then
   exit 1;
 fi;
 
-ssh -t ssh@sshgateway-clevercloud-customers.services.clever-cloud.com $CLEVER_APP_PROD_ID
+ssh -t ssh@sshgateway-clevercloud-customers.services.clever-cloud.com $OLD_CLEVER_APP_PROD_ID
