@@ -82,7 +82,7 @@ module Finders
     def grade_id_query(query)
       query.merge(
         InternshipOffer.joins(:grades)
-                       .where(grades: { id: use_params(:grade_id) })
+                       .where(grades: OpenStruct.new(ids: use_params(:grade_id)))
       )
     end
 
@@ -91,7 +91,6 @@ module Finders
     end
 
     def week_ids_query(query)
-      go = OpenStruct.new(ids: use_params(:week_ids))
       query.merge(InternshipOffer.by_weeks(weeks: OpenStruct.new(ids: use_params(:week_ids))))
     end
 

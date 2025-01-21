@@ -236,4 +236,35 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
       assert_selector('.test-city', text: internship_offer.city, count: 0)
     end
   end
+
+  test 'search by school track filters the offers' do
+    travel_to Date.new(2024, 12, 26) do
+      internship_offer_1 = create(:weekly_internship_offer_2nde, city: 'Paris')
+      internship_offer_2 = create(:weekly_internship_offer_3eme, city: 'Bordeaux')
+      assert_equal Grade.seconde, internship_offer_1.grades.first
+      assert_equal Grade.seconde, internship_offer_1.grades.last
+      assert_equal Grade.troisieme, internship_offer_2.grades.first
+      assert_equal Grade.troisieme, internship_offer_2.grades.last
+      assert_equal 1, internship_offer_1.grades.count
+      assert_equal 1, internship_offer_2.grades.count
+      InternshipOffer.stub :nearby, InternshipOffer.all do
+        InternshipOffer.stub :by_weeks, InternshipOffer.all do
+          visit internship_offers_path
+          click_button 'Rechercher'
+          assert_selector('.test-city', text: internship_offer_1.city, count: 1)
+          assert_selector('.test-city', text: internship_offer_2.city, count: 1)
+
+          select 'seconde générale et technologique', from: 'Filière'
+          click_button 'Rechercher'
+          assert_selector('.test-city', text: internship_offer_1.city, count: 1)
+          assert_selector('.test-city', text: internship_offer_2.city, count: 0)
+
+          select 'troisieme générale', from: 'Filière'
+          click_button 'Rechercher'
+          assert_selector('.test-city', text: internship_offer_1.city, count: 0)
+          assert_selector('.test-city', text: internship_offer_2.city, count: 1)
+        end
+      end
+    end
+  end
 end

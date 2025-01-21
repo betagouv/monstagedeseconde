@@ -599,4 +599,33 @@ class IndexTest < ActionDispatch::IntegrationTest
       sign_out(employer)
     end
   end
+
+  test 'method determine_school_weeks' do
+    school = create(:school)
+    student = create(:student, :troisieme, school: school)
+    foundable_internship_offer = create(:weekly_internship_offer_3eme)
+    refute student.school.off_constraint_school_weeks(student.grade).empty?
+    travel_to(Date.new(2025, 3, 1)) do
+      sign_in(student)
+      get internship_offers_path(school_year: 2025, format: :json)
+      assert_response :success
+      assert_json_presence_of(json_response, foundable_internship_offer)
+    end
+  end
+  test 'method determine_school_weeks for visitor' do
+    foundable_internship_offer = create(:weekly_internship_offer_3eme)
+    travel_to(Date.new(2025, 3, 1)) do
+      get internship_offers_path(school_year: 2025, format: :json)
+      assert_response :success
+      assert_json_presence_of(json_response, foundable_internship_offer)
+    end
+  end
+
+  test 'GET  #index as visitor filters by grade' do
+    assert false
+  end
+
+  test 'GET #index as visitor filters by weeks' do
+    assert false
+  end
 end

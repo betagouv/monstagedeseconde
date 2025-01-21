@@ -20,13 +20,16 @@ namespace :data_migrations do
     omogen = Services::Omogen.new
 
     departments = AcademyRegion.find_by(name: academy_region_name).departments
-
     departments.each do |department|
       schools << School.where('LEFT(zipcode, 2) = ?', department.code[0..1])
     end
     schools.flatten!
     # puts schools.map(&:code_uai)
+    counter = 0
     schools.each do |school|
+      counter += 1
+      next if counter > 1 # one imported school
+
       sleep 0.3
       data = omogen.sygne_import_by_schools(school.code_uai)&.symbolize_keys
       schools_data << data

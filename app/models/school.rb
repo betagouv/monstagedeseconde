@@ -184,7 +184,9 @@ class School < ApplicationRecord
     department.academy.email_domain
   end
 
-  def school_weeks(grade)
+  def off_constraint_school_weeks(grade)
+    return Week.both_school_track_selectable_weeks if grade.nil?
+
     case grade.short_name
     when 'troisieme', 'quatrieme'
       SchoolTrack::Troisieme
