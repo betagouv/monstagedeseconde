@@ -20,16 +20,16 @@ module Finders
     end
 
     def available_offers(max_distance: MAX_RADIUS_SEARCH_DISTANCE)
-      student_query = kept_published_future_offers_query.ignore_already_applied(user:) # Whatever application status !!!
-      return student_query if user.school.nil?
+      students_query = kept_published_future_offers_query.ignore_already_applied(user:) # Whatever application status !!!
+      return students_query if user.school.nil?
 
       school_latitude  = user.school.coordinates&.latitude
       school_longitude = user.school.coordinates&.longitude
-      return student_query if school_latitude.nil? || school_longitude.nil?
+      return students_query if school_latitude.nil? || school_longitude.nil?
 
-      student_query.nearby_and_ordered(latitude: school_latitude,
-                                       longitude: school_longitude,
-                                       radius: max_distance)
+      students_query.nearby_and_ordered(latitude: school_latitude,
+                                        longitude: school_longitude,
+                                        radius: max_distance)
     end
 
     private
