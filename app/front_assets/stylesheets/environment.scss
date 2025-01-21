@@ -6,18 +6,18 @@
   border-top: 3px solid rgba($red, .5);
 }
 
+
+
 .staging .fr-header__body {
-  background-color: rgba($yellow, .5);
+  background-color: rgba($yellow, .35);
 }
 
 .development .fr-header__body {
-  background-color: rgba($purple, .15 );
+  background-color: rgba($purple, .15);
 }
 
 .review .fr-header__body {
-  background-color: rgba($teal, .5);
+  background-color: rgba($purple, .35);
 }
 
-.recette .fr-header__body {
-  background-color: rgba($orange, .5);
-}
+
