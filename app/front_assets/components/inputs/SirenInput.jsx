@@ -98,7 +98,10 @@ export default function SirenInput({
     const inputEntrepriseAddress = document.getElementById( `${resourceName}_entreprise_chosen_full_address` );
     inputEntrepriseAddress.required = true;
     inputEntrepriseAddress.removeAttribute("readonly");
-  };
+    inputEntrepriseName.addEventListener('keyup', (event) => {
+      broadcast(employerNameChanged({ employerName: event.target.value }));
+    });
+  }
 
   const isAValidSiret = (siret) => {
     if (siret.length != 14 || isNaN(siret)) {
@@ -248,14 +251,14 @@ export default function SirenInput({
                   ></span>
                 </small>
                 <small className="text-blue-info fr-mx-1w">
-                  Société introuvable ?
+                  Structure introuvable ?
                 </small>
                 <a
                   href="#manual-input"
-                  className="pl-2 small text-blue-info"
+                  className="small text-blue-info"
                   onClick={openManual}
                 >
-                  Ajouter une société manuellement
+                  Ajouter votre structure manuellement
                 </a>
               </div>
               <div

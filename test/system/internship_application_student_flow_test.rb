@@ -17,6 +17,49 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
     assert_select 'a', text: 'Je postule', count: 0
   end
 
+  test 'student in troisieme cannot submit an application when school have choosen weeks in the past' do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: 'college')
+      week_1 = Week.selectable_on_school_year.first
+      week_2 = Week.selectable_on_school_year.second
+      school.weeks = [week_1, week_2]
+      student = create(:student, school:, class_room: create(:class_room, school:))
+      internship_offer = create(:weekly_internship_offer_3eme, weeks: [week_1, week_2])
+
+      sign_in(student)
+      visit internship_offer_path(internship_offer)
+      assert_select 'a', text: 'Postuler', count: 0
+      all('a', text: 'Postuler').first.click
+      assert page.has_content?('Votre établissement a déclaré des semaines de stage et aucune semaine n\'est compatible avec cette offre de stage.')
+    end
+  end
+  test 'student in troisieme cannot see a intenship_offer for secondes' do
+    travel_to Time.zone.local(2025, 3, 1) do
+      week_1 = Week.selectable_on_school_year.first
+      week_2 = Week.selectable_on_school_year.second
+      school = create(:school, school_type: 'college', weeks: [week_1, week_2])
+      student = create(:student, :troisieme, school:, class_room: create(:class_room, school:))
+      internship_offer = create(:weekly_internship_offer_3eme, weeks: [week_1, week_2])
+      internship_offer_seconde = create(:weekly_internship_offer_2nde)
+
+      InternshipOffer.stub :nearby, InternshipOffer.all do
+        InternshipOffer.stub :by_weeks, InternshipOffer.all do
+          sign_in(student)
+          visit internship_offer_path(internship_offer_seconde)
+          all('button', text: 'Postuler')[0].disabled?
+          all('p.fr-badge.fr-badge--warning', text: 'Offre incompatible avec votre classe'.upcase)[0].visible?
+
+          visit internship_offer_path(internship_offer)
+          all('a', text: 'Postuler')[0].visible?
+
+          visit internship_offers_path
+          assert_equal internship_offer.title, find('h4 .h5').text
+          assert_select 'h4 .h5', text: internship_offer_seconde.title, count: 0
+        end
+      end
+    end
+  end
+
   test 'student with no class_room can submit an application when school have not choosen week' do
     if ENV['RUN_BRITTLE_TEST']
       weeks = Week.selectable_from_now_until_end_of_school_year.to_a.first(2)

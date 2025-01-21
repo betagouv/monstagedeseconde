@@ -42,6 +42,8 @@ FactoryBot.define do
     weekly_hours { [] }
     lunch_break { '12:00-13:00 avec le repas que vous apporterez' }
     grades { Grade.all }
+    rep { false }
+    qpv { false }
 
     trait :public do
       is_public { true }
@@ -75,6 +77,7 @@ FactoryBot.define do
     end
 
     trait :troisieme_generale_internship_offer do
+      sequence(:title) { |n| "Stage de 3eme - #{n}" }
       weeks { Week.troisieme_selectable_weeks }
       grades { [Grade.troisieme] }
       first_date { weeks.first.monday }
@@ -130,6 +133,14 @@ FactoryBot.define do
     trait :with_public_group do
       is_public { true }
       group { create(:group, is_public: true) }
+    end
+
+    trait :with_rep do
+      rep { true }
+    end
+
+    trait :with_qpv do
+      qpv { true }
     end
 
     # Seconde :

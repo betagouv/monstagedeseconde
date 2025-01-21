@@ -15,7 +15,7 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
     student = create(:student, confirmed_at: nil)
     get new_user_confirmation_path
     assert_response :success
-    assert_select 'title', "Confirmation | Stages de 2de"
+    assert_select 'title', 'Confirmation | Stages de 2de'
   end
 
   test 'CREATE#user_confirmation by phone with wrong phone' do
@@ -30,10 +30,22 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
                   html: '<strong>Téléphone mobile</strong> : Votre numéro de téléphone est inconnu'
   end
 
+  test 'CREATE#user_confirmation by phone with right phone' do
+    phone = '+330600110011'
+    create(:student, phone: phone,
+                     email: nil,
+                     confirmed_at: nil)
+    assert_enqueued_jobs 1, only: SendSmsJob do
+      post user_confirmation_path(user: { channel: :phone, phone: phone })
+    end
+    assert_select '.fr-alert.fr-alert--error',
+                  html: '<strong>Téléphone mobile</strong> : Votre numéro de téléphone est inconnu', count: 0
+  end
+
   test 'CREATE#user_confirmation by email' do
     student = create(:employer, phone: nil,
-                               email: 'fourcade.m@gmail.com',
-                               confirmed_at: nil)
+                                email: 'fourcade.m@gmail.com',
+                                confirmed_at: nil)
     assert_enqueued_emails 1 do
       post user_confirmation_path(user: { channel: :email, email: student.email })
     end

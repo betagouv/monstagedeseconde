@@ -44,7 +44,7 @@
               - else
                 fieldset.fr-fieldset#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
                   legend.label
-                    | Votre entreprise est une structure publique ? *
+                    | Vous êtes une structure publique ? *
                   div.fr-fieldset__element
                     div.fr-radio-group
                       = form.radio_button :is_public,
@@ -72,7 +72,7 @@
           #ministry-choice.row.fr-mt-3w.bloc-tooggle.d-none [data-ministry-fields-target="groupNamePublic"]
             .col-12
               = form.label :group_id, class: 'fr-label' do
-                = "Type d’employeur public *"
+                = "Type d’employeur public"
 
               = form.select :group_id,
                             options_for_select(options_for_public_groups, resource.group.try(:id)),
@@ -83,7 +83,7 @@
           div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               = form.label :sector_id , class: 'fr-label'do
-                = "Secteur d'activité"
+                = "Indiquez le secteur d'activité de votre structure"
               = form.select :sector_id,
                             options_from_collection_for_select(Sector.all.order(:name), :id, :name, resource.sector_id),
                             { prompt: sectors_options_for_default },

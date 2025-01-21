@@ -175,7 +175,9 @@ module Builders
         employer_id: planning.employer_id,
         lunch_break: planning.lunch_break,
         weeks: planning.weeks,
-        grades: planning.grades
+        grades: planning.grades,
+        rep: planning.rep,
+        qpv: planning.qpv
       }
     end
 

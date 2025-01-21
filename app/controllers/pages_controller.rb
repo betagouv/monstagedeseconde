@@ -136,8 +136,9 @@ class PagesController < ApplicationController
 
       grouped_by_category.transform_values! do |category_docs|
         category_docs.map do |doc|
+          url = doc.fragments['url']&.url || doc.fragments['file']&.url
           {
-            url: doc.href,
+            url: url,
             title: doc['resource.title'].as_text
           }
         end

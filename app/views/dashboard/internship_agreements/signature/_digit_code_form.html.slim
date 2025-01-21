@@ -1,10 +1,9 @@
 #otp-signatures data-controller='digit-code' data-digit-code-position-value="0" data-digit-code-target="codeContainer"
   .fr-mb-1w.d-flex.flex-row 
     - 6.times do |i|
-      = form.text_field :code,
+      = form.text_field "digit-code-target-#{i}",
                         class: 'digit-code-size',
                         id: "user-code-#{i}",
-                        name: "[user]digit-code-target-#{i}",
                         maxlength: 1,
                         data: {:"digit-code-target" => 'code',
                               :action =>'keyup->digit-code#onKeyUp'}

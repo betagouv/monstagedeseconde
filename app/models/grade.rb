@@ -1,5 +1,7 @@
 class Grade < ApplicationRecord
   # frozen_string_literal: true
+  #
+  ACCEPTED_DISPOSITIF_CODES = %w[102 103 104 110 131 166 167 200 210].freeze
 
   # Attributes
   # id: integer, not null, primary key
@@ -61,5 +63,24 @@ class Grade < ApplicationRecord
 
   def self.fetch_by_short_name(short_names)
     Grade.where(short_name: short_names)
+  end
+
+  def self.code_mef_ok?(code_mef:)
+    return true if code_mef[0..2].in?(ACCEPTED_DISPOSITIF_CODES)
+
+    false
+  end
+
+  def self.grade_by_mef(code_mef:)
+    case code_mef[0..2]
+    when '102', '166'
+      Grade.find_by(short_name: 'quatrieme')
+    when '103', '104', '110', '131', '167'
+      Grade.find_by(short_name: 'troisieme')
+    when '200', '210'
+      Grade.find_by(short_name: 'seconde')
+    else
+      nil
+    end
   end
 end

@@ -14,7 +14,7 @@ class InternshipOffer < ApplicationRecord
                             entreprise_full_address internship_offer_area_id
                             is_public group school_id coordinates first_date last_date
                             siret internship_address_manual_enter lunch_break daily_hours
-                            weekly_hours ].freeze
+                            weekly_hours rep qpv].freeze
 
   include StiPreload
   include AASM
@@ -214,6 +214,24 @@ class InternshipOffer < ApplicationRecord
                                    .end_of_period
                                    .year
     where(school_year: next_year)
+  }
+
+  scope :troisieme_or_quatrieme, lambda {
+    joins(:grades).where(grades: { id: Grade.troisieme_et_quatrieme.ids })
+  }
+
+  scope :seconde, lambda {
+    joins(:grades).where(grades: { id: Grade.seconde.id })
+  }
+
+  scope :with_grade, lambda { |user|
+    return all if user.nil?
+
+    if user.grade_id == Grade.seconde.id
+      seconde
+    else
+      troisieme_or_quatrieme
+    end
   }
 
   scope :by_department, ->(departments) { where(department: departments) }

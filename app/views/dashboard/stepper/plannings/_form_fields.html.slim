@@ -28,45 +28,80 @@
         .row
           .col-12
             hr
-        .row
-          .col-12
-            .d-none.fr-alert.fr-alert--error.fr-alert--sm data-grade-target="alertContainer"
-              p Vous devez sélectionner au moins un public parmi les lycéens et les collégiens
-            = render 'inputs/dsfr_checkbox_field',
-              form: form,
-              field: :grade_2e,
-              title: '',
-              label: 'Lycéens de 2de générale et technologique',
-              options: { data: {:'grade-target' => 'grade2e',
-                                action: 'grade#onClick click->select-weeks#onGrade2ndeClick' ,
-                                :'select-weeks-target' => 'grade2e' } }
-        .row data-grade-target="secondeContainer"
-          .col-12
-            = render '/dashboard/stepper/plannings/seconde_period_radio_buttons_fields',
-                    form: form,
-                    resource: form.object
-        .row
-          .col-12
-            hr
-        - klass = resource.class.to_s.split("s::").first
-        .row data-controller="planning-candidates" data-planning-candidates-base-type-value="#{klass}"
-          .col-12
-            = render '/dashboard/stepper/plannings/collective_or_individual_radio_buttons',
-                     form: form,
-                     resource: form.object
-        .row
-          .col-12
-            = render '/dashboard/stepper/plannings/daily_hours',
-                     form: form,
-                     resource: form.object
-        .row
-          .col-12
-            = react_component("ReservedSchoolInput",
-                              props: { label: "Commune ou nom de l'établissement pour lequel le stage est reservé",
-                                      required: false,
-                                      resourceName: form.object_name,
-                                      selectClassRoom: false,
-                                      existingSchool: form.object&.school&.as_json})
+    .row
+      .col-6
+        .d-none.fr-alert.fr-alert--error.fr-alert--sm data-grade-target="alertContainer"
+          p Vous devez sélectionner au moins un public parmi les lycéens et les collégiens
+        = render 'inputs/dsfr_checkbox_field',
+          form: form,
+          field: :grade_2e,
+          title: '',
+          label: 'Lycéens de 2de générale et technologique',
+          options: { data: {:'grade-target' => 'grade2e',
+                            action: 'grade#onClick click->select-weeks#onGrade2ndeClick' ,
+                            :'select-weeks-target' => 'grade2e' } }
+    .row data-grade-target="secondeContainer"
+      .col-6
+        = render '/dashboard/stepper/plannings/seconde_period_radio_buttons_fields',
+                form: form,
+                resource: form.object
+    .row
+      .col-6
+        hr
+    - klass = resource.class.to_s.split("s::").first
+    .row data-controller="planning-candidates" data-planning-candidates-base-type-value="#{klass}"
+      .col-6
+        = render '/dashboard/stepper/plannings/collective_or_individual_radio_buttons',
+                  form: form,
+                  resource: form.object
+    .row
+      .col-6
+        = render '/dashboard/stepper/plannings/daily_hours',
+                  form: form,
+                  resource: form.object
+      .col-6
+        .fr-alert.fr-alert--info
+            h3.fr-alert__title
+              |
+                Les élèves peuvent-ils être accueillis en séquence d’observation
+                en dehors des horaires et jours de leur emploi du temps scolaire ?
+            p
+              |
+                La séquence d’observation ne doit pas forcément s’aligner sur l’emploi
+                du temps scolaire des élèves. L’accueil dans la structure doit se
+                faire dans la limite des durées maximales de travail hebdomadaires
+                de 35 heures et quotidiennes de 7 heures. Les repos quotidiens de
+                l’élève sont respectivement de 12 heures consécutives au minimum
+                pour les élèves de plus de 16 ans et de 14 heures minimum pour
+                les moins de 16 ans. Le repos hebdomadaire est de 2 jours consécutifs
+                pour tous les élèves. Dès lors que le temps de présence
+                quotidien atteint 4 heures 30, l’élève doit bénéficier
+                d’un temps de pause de 30 minutes consécutives minimum.
+    .row
+      .col-6
+        = react_component("ReservedSchoolInput",
+                          props: { label: "Commune ou nom de l'établissement pour lequel le stage est reservé",
+                                  required: false,
+                                  resourceName: form.object_name,
+                                  selectClassRoom: false,
+                                  existingSchool: form.object&.school&.as_json})
+    .row
+      .col-6
+        = render 'inputs/dsfr_checkbox_field',
+          form: form,
+          field: :rep,
+          title: nil,
+          label: 'Ce stage est réservé aux établissements REP ou REP+ ?',
+          options: {}
+
+    .row
+      .col-6
+        = render 'inputs/dsfr_checkbox_field',
+          form: form,
+          field: :qpv,
+          title: nil,
+          label: 'Ce stage est réservé aux établissements QPV ?',
+          options: {}
 
     - if submit_button
       .fr-mt-6w
