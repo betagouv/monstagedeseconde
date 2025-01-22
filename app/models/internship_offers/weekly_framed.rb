@@ -13,12 +13,16 @@ module InternshipOffers
     validates :street,
               :city,
               presence: true
+    validates :contact_phone,
+              format: { with: Regexp.new(ApplicationController.helpers.field_phone_pattern),
+                        message: 'Le numéro de téléphone doit être composé de 10 chiffres' },
+              unless: :from_api?
 
     validates :max_candidates,
               numericality: { only_integer: true,
                               greater_than: 0,
                               less_than_or_equal_to: MAX_CANDIDATES_HIGHEST }
-    validates :lunch_break, length: { minimum: 10, maximum: 200 }
+    validates :lunch_break, length: { minimum: 8, maximum: 250 }
     validate :schedules_check
 
     after_initialize :init
@@ -76,6 +80,40 @@ module InternshipOffers
           published_at: nil
         )
       end
+    end
+
+    def has_weeks_in_the_past?
+      start_week = Week.current_year_start_week
+      weeks.any? { |week| week.number < start_week.number && week.year <= start_week.year }
+    end
+
+    # TODO
+    # make a before and after block to be reused
+
+    def has_weeks_in_the_future?
+      start_week = Week.current_year_start_week
+      weeks.any? { |week| week.number >= start_week.number && week.year >= start_week.year }
+    end
+
+    def has_weeks_in_the_past_and_in_the_future?
+      has_weeks_in_the_past? && has_weeks_in_the_future?
+    end
+
+    def split_in_two
+      new_internship_offer = dup
+
+      new_internship_offer.hidden_duplicate = false
+      new_internship_offer.mother_id = id
+      new_internship_offer.weeks = weeks & Week.weeks_of_school_year(school_year: Week.current_year_start_week.year)
+      new_internship_offer.grades = grades
+      new_internship_offer.weekly_hours = weekly_hours
+      new_internship_offer.save
+
+      self.hidden_duplicate = true
+      self.weeks = weeks & Week.of_past_school_years
+      self.published_at = nil
+      self.aasm_state = 'splitted'
+      save && new_internship_offer
     end
 
     def schedules_check

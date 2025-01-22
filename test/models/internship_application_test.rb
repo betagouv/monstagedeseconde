@@ -418,6 +418,18 @@ class InternshipApplicationTest < ActiveSupport::TestCase
                  InternshipApplication::PENDING_STATES
   end
 
+  test 'expirable scope' do
+    internship_application_1 = create(:weekly_internship_application, :submitted, submitted_at: 5.days.ago)
+    internship_application_2 = create(:weekly_internship_application, :submitted, submitted_at: 10.days.ago)
+    internship_application_3 = create(:weekly_internship_application, :submitted, submitted_at: 40.days.ago)
+    internship_application_4 = create(:weekly_internship_application, :transfered, submitted_at: 25.days.ago,
+                                                                                   transfered_at: 25.days.ago)
+    internship_application_5 = create(:weekly_internship_application, :transfered, submitted_at: 50.days.ago,
+                                                                                   transfered_at: 40.days.ago)
+    assert_equal [internship_application_3.id, internship_application_5.id].sort,
+                 InternshipApplication.expirable.ids.sort
+  end
+
   test '.order_by_aasm_state_for_student' do
     skip 'This test is flaky, it fails on CI' if ENV['CI'] == 'true'
     internship_application_1 = nil

@@ -2,6 +2,7 @@ def populate_internship_offers
   current_school_year = SchoolYear::Current.new.beginning_of_period
   weeks = SchoolTrack::Seconde.both_weeks
   weeks += Week.selectable_from_now_until_end_of_school_year
+  # TODO: period is ignored for InternshipOffers::WeeklyFramed
   # public sector
   # 1
   InternshipOffers::WeeklyFramed.create!(
@@ -363,6 +364,8 @@ def populate_internship_offers
   )
 
   # 13
+  former_year = current_year - 1
+  weeks = SchoolTrack::Seconde.both_weeks(year: former_year)
   InternshipOffers::WeeklyFramed.create!(
     employer: Users::Employer.first,
     contact_phone: '+33637607156',
@@ -382,7 +385,7 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude] },
     employer_name: Group.is_paqte.second.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: Week.selectable_from_now_until_end_of_school_year,
+    weeks: weeks,
     lunch_break: "L'élève doit prévoir son repas de midi",
     entreprise_full_address: '12, rue de la Serpe, 37000 Tours',
     grades: Grade.all

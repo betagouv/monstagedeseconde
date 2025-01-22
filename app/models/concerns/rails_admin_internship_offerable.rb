@@ -10,13 +10,13 @@ module RailsAdminInternshipOfferable
         scopes %i[kept discarded]
         field :title
         field :employer
-        field :period do
-          def label = 'Période de stage'
+        # field :period do
+        #   def label = 'Période de stage'
 
-          def pretty_value
-            bindings[:object].period_label
-          end
-        end
+        #   def pretty_value
+        #     bindings[:object].period_label
+        #   end
+        # end
         field :department
         field :zipcode
         field :employer_name
@@ -56,7 +56,7 @@ module RailsAdminInternshipOfferable
         field :title
         field :description
         field :sector
-        field :period
+        # field :period
         field :max_candidates
         field :tutor_name
         field :tutor_phone

@@ -23,6 +23,7 @@ module PrettyConsole
     define_singleton_method(
       "say_in_#{color}".to_sym,
       proc do |str|
+        puts ''
         puts express_in_color(enhance_str(str), color)
       end
     )
@@ -30,6 +31,7 @@ module PrettyConsole
     define_singleton_method(
       "say_in_#{color}_loudly".to_sym,
       proc do |str|
+        puts ''
         puts express_in_color(enhance_str(bold(str)), color)
       end
     )

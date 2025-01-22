@@ -23,7 +23,7 @@ class UserTest < ActiveSupport::TestCase
     student = create(:student, email: 'test@test.com', first_name: 'Toto', last_name: 'Tata',
                                current_sign_in_ip: '127.0.0.1', last_sign_in_ip: '127.0.0.1', birth_date: '01/01/2000',
                                gender: 'm', class_room_id: class_room.id,
-                               resume_other: 'chocolat', resume_languages: 'FR', phone: '+330600110011')
+                               resume_other: 'chocolat', resume_languages: 'FR', phone: '+330700110011')
     internship_application = create(
       :weekly_internship_application,
       student:,
@@ -38,10 +38,10 @@ class UserTest < ActiveSupport::TestCase
       student.anonymize
     end
 
-    assert_equal 'm', student.gender
-    assert_nil internship_application.reload.motivation
-    assert_nil internship_application.student_phone
-    assert_nil internship_application.student_email
+    assert_nil student.gender
+    assert_equal 'NA', internship_application.reload.motivation
+    assert_equal '+330600110011', internship_application.student_phone
+    assert_equal 'NA', internship_application.student_email
     assert_nil student.class_room_id
 
     assert_not_equal 'test@test.com', student.email
@@ -51,7 +51,7 @@ class UserTest < ActiveSupport::TestCase
     assert_not_equal '127.0.0.1', student.last_sign_in_ip
     assert_not_equal '01/01/2000', student.birth_date
 
-    assert_equal 'm', student.gender
+    assert_nil student.gender
     assert_nil student.class_room_id
     assert_not_equal 'chocolat', student.resume_other
     assert_not_equal 'chocolat', student.resume_languages
@@ -71,7 +71,7 @@ class UserTest < ActiveSupport::TestCase
       student.anonymize
     end
 
-    assert_equal 'm', student.gender
+    assert_nil student.gender
     assert_nil student.class_room_id
 
     assert_not_equal '', student.email

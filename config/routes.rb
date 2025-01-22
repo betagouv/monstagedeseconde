@@ -87,7 +87,7 @@ Rails.application.routes.draw do
       collection do
         get :search, path: 'recherche'
       end
-      resources :internship_applications, path: 'candidatures', only: %i[new create index show update] do
+      resources :internship_applications, path: 'candidatures', only: %i[new create index show update], param: :uuid do
         member do
           get :edit_transfer
           post :transfer
@@ -205,7 +205,7 @@ Rails.application.routes.draw do
 
       resources :internship_offers, path: 'offres-de-stage', except: %i[show] do
         resources :internship_applications, path: 'candidatures', only: %i[update index show],
-                                            module: 'internship_offers' do
+                                            module: 'internship_offers', param: :uuid do
           patch :set_to_read, on: :member
           get :school_details, on: :member
         end
@@ -228,7 +228,7 @@ Rails.application.routes.draw do
       end
 
       namespace :students, path: '/:student_id/' do
-        resources :internship_applications, path: 'candidatures', only: %i[index show edit update] do
+        resources :internship_applications, path: 'candidatures', only: %i[index show edit update], param: :uuid do
           post :resend_application, on: :member
         end
       end
@@ -283,6 +283,7 @@ Rails.application.routes.draw do
   get '/referents', to: 'pages#statistician_landing'
   get '/maintenance_estivale', to: 'pages#maintenance_estivale'
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
+  post '/waiting_list', to: 'pages#waiting_list'
 
   # Redirects
   # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)

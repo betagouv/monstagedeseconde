@@ -52,8 +52,13 @@ module Dashboard
     end
 
     def filter_by_area
+      authorize! :index, InternshipOfferArea
       current_user.current_area_id_memorize(params[:id])
-      redirect_to dashboard_candidatures_path
+      if current_user.internship_applications.any?
+        redirect_to dashboard_candidatures_path
+      else
+        redirect_to dashboard_internship_offers_path
+      end
     end
 
     def update

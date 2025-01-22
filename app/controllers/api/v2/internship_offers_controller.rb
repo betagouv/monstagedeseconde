@@ -140,7 +140,8 @@ module Api
             sector: internship_offer.sector.name,
             handicap_accessible: internship_offer.handicap_accessible,
             period: internship_offer.period,
-            weeks: internship_offer.weeks_api_formatted
+            weeks: internship_offer.weeks_api_formatted,
+            remote_id: internship_offer.remote_id
           }
         end
       end

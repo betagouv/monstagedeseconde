@@ -7,9 +7,9 @@ class EmployerMailer < ApplicationMailer
     recipients_email        = internship_application.filter_notified_emails
     @prez_application       = @internship_application.presenter(internship_application.internship_offer.employer)
     @url = dashboard_internship_offer_internship_application_url(
-      @internship_offer,
-      @internship_application
-    )
+          @internship_offer,
+          uuid: @internship_application.uuid
+        )
     @url_more_options = "#{@url}?sgid=#{@internship_application.to_sgid}"
     @url_accept       = "#{@url_more_options}&opened_modal=accept"
     @url_refuse       = "#{@url_more_options}&opened_modal=refuse"
@@ -33,7 +33,7 @@ class EmployerMailer < ApplicationMailer
     @employer              = @internship_offer.employer
     @url = dashboard_internship_offer_internship_applications_url(
       internship_offer_id: @internship_offer.id,
-      id: internship_application.id,
+      uuid: internship_application.uuid,
       mtm_campaign: "Offreur - Convention Ready to Edit#internship-application-#{internship_application.id}"
     ).html_safe
 
@@ -109,7 +109,7 @@ class EmployerMailer < ApplicationMailer
     @message                = message
     @url = dashboard_internship_offer_internship_application_url(
       internship_offer_id: @internship_offer.id,
-      id: @internship_application.id,
+      uuid: @internship_application.uuid,
       token: @internship_application.access_token
     ).html_safe
 
@@ -207,7 +207,7 @@ class EmployerMailer < ApplicationMailer
     @title       = 'Finalisez la publication de votre offre de stage.'
     @bonjour     = "Bonjour #{@employer.presenter.full_name},"
     @paragraph_1 = "Nous avons remarqué que votre offre de stage intitulée #{internship_offer.title} " \
-                   "a été initiée sur 1élève1stage, mais reste enregistrée " \
+                   'a été initiée sur 1élève1stage, mais reste enregistrée ' \
                    'en tant que brouillon.'
     @paragraph_2 = 'Pour publier votre offre, suivez ces étapes simples :'
     @paragraph3_items = [
@@ -220,7 +220,7 @@ class EmployerMailer < ApplicationMailer
     @paragraph_4 = "Si l'offre n'est plus d'actualité ou si vous avez changé d'avis, " \
                    'vous pouvez la supprimer depuis l’étape 4.'
     @paragraph_5 = 'Nous sommes à votre disposition pour toute aide ou question. ' \
-                   "N'hésitez pas à nous contacter sur contact@stagedeseconde.education.gouv.fr"
+                   "N'hésitez pas à nous contacter sur contact@1eleve1stage.education.gouv.fr"
 
     send_email(to: @employer.email, subject:)
   end

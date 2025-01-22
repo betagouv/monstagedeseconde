@@ -96,7 +96,7 @@ class GodMailer < ApplicationMailer
     @name = hash[:name]
     @subject = hash[:subject]
     @reply_to = hash[:email]
-    @to = "contact@stagedeseconde.education.gouv.fr"
+    @to = "contact@1eleve1stage.education.gouv.fr"
     @message = hash[:message]
 
     send_email( to: @to,

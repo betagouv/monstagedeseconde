@@ -70,7 +70,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'unpublish navigation and republish after' do
-    travel_to Date.new(2021, 10, 1) do
+    travel_to Date.new(2025, 3, 1) do
       employer = create(:employer)
       internship_offer = create(:weekly_internship_offer_2nde,
                                 employer:,

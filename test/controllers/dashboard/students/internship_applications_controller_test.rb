@@ -28,7 +28,7 @@ module Dashboard
         sign_in(school_manager)
         get dashboard_students_internship_applications_path(student)
         assert_response :success
-        assert_select 'title', 'Mes candidatures | Stages de 2de'
+        assert_select 'title', 'Mes candidatures | 1Elève1Stage'
         assert_select 'h1.h2.mb-3', text: student.name
         assert_select 'a[href=?]', dashboard_school_class_room_students_path(school, class_room)
         assert_select 'h2.h4', text: 'Aucun stage'
@@ -43,6 +43,9 @@ module Dashboard
         sign_in(school_manager)
         get dashboard_students_internship_applications_path(student_id: student.id)
         assert_response :success
+        assert_select 'a[href=?]',
+                      dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
+                                                                             uuid: internship_application.uuid, transition: :signed!)
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'stage validé'
       end
 
@@ -55,6 +58,9 @@ module Dashboard
         sign_in(main_teacher)
         get dashboard_students_internship_applications_path(student)
         assert_response :success
+        assert_select 'a[href=?]',
+                      dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
+                                                                             uuid: internship_application.uuid, transition: :signed!)
         assert_select '.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'stage validé'
       end
 
@@ -95,8 +101,8 @@ module Dashboard
       test 'GET internship_applications#show not connected responds with redirection' do
         student = create(:student)
         internship_application = create(:weekly_internship_application, student:)
-        get dashboard_students_internship_application_path(student,
-                                                           internship_application)
+        get dashboard_students_internship_applications_path(student_id: student.id,
+                                                           uuid: internship_application.uuid)
         assert_response :redirect
       end
 
@@ -113,7 +119,7 @@ module Dashboard
                                         })
 
         get dashboard_students_internship_application_path(student_id: student.id,
-                                                           id: internship_application.id)
+                                                           uuid: internship_application.uuid)
         assert_response :success
 
         assert_template 'dashboard/students/internship_applications/show'
@@ -126,7 +132,7 @@ module Dashboard
         internship_application = create(:weekly_internship_application, student:)
 
         get dashboard_students_internship_application_path(student_id: student.id,
-                                                           id: internship_application.id)
+                                                           uuid: internship_application.uuid)
         assert_response :success
         assert_select '.fr-badge.fr-badge--no-icon', text: "Sans réponse de l'entreprise"
       end
@@ -142,7 +148,7 @@ module Dashboard
         assert_changes -> { internship_application.reload.dunning_letter_count } do
           post resend_application_dashboard_students_internship_application_path(
             student_id: internship_application.student.id,
-            id: internship_application.id
+            uuid: internship_application.uuid
           ), params: {}
         end
         assert_equal 1, internship_application.reload.dunning_letter_count
@@ -164,7 +170,7 @@ module Dashboard
           get dashboard_students_internship_application_path(
             sgid:,
             student_id: student.id,
-            id: internship_application.id
+            uuid: internship_application.uuid
           )
           assert_equal 1, internship_application.reload.magic_link_tracker
         end
@@ -172,11 +178,11 @@ module Dashboard
           get dashboard_students_internship_application_path(
             sgid:,
             student_id: student.id,
-            id: internship_application.id
+            uuid: internship_application.uuid
           )
           assert_redirected_to dashboard_students_internship_application_path(
             student_id: student.id,
-            id: internship_application.id
+            uuid: internship_application.uuid
           )
           assert_equal 2, internship_application.reload.magic_link_tracker
         end

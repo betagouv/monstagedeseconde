@@ -17,7 +17,7 @@ class TeacherRegistrationsTest < ActionDispatch::IntegrationTest
       get new_user_registration_path(as: 'SchoolManagement')
 
       assert_response :success
-      assert_select 'title', 'Inscription | Stages de 2de'
+      assert_select 'title', 'Inscription | 1Elève1Stage'
       assert_teacher_form_rendered
     end
   end
@@ -31,7 +31,7 @@ class TeacherRegistrationsTest < ActionDispatch::IntegrationTest
                                                     last_name: 'Fourcade',
                                                     accept_terms: '1' } })
       assert_response 200
-      assert_select 'title', 'Création de compte | Stages de 2de'
+      assert_select 'title', 'Création de compte | 1Elève1Stage'
       assert_teacher_form_rendered
     end
   end

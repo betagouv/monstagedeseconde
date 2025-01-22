@@ -16,11 +16,11 @@ module StepperProxy
                     :entreprise_coordinates_latitude
 
       validates :employer_chosen_name,
-                length: { maximum: 80 },
+                length: { maximum: 150 },
                 allow_blank: true
       validates :employer_name,
                 presence: true,
-                length: { maximum: 80 }
+                length: { maximum: 150 }
       validates :entreprise_coordinates,
                 exclusion: { in: [geo_point_factory(latitude: 0, longitude: 0)] },
                 unless: -> { internship_address_manual_enter }
