@@ -72,6 +72,11 @@ module Presenters
       end
     end
 
+    def available_weeks_count
+      count = internship_offer.weeks.count
+      "#{count} #{'semaine'.pluralize(count)} #{'disponible'.pluralize(count)}"
+    end
+
     private
 
     attr_reader :internship_offer

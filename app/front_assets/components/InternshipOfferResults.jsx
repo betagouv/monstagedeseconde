@@ -168,7 +168,7 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
                       </div>)
                   }
                   { !isLoading && (internshipOffersSeats == 0) &&
-                    (<p>Aucune offre répondant à vos critères n’est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
+                    (<p>Aucune offre répondant à vos critères n'est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
                   }
                 </div>
                 {
@@ -268,7 +268,7 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
             <MapContainer center={center} zoom={13} scrollWheelZoom={false}>
               <TileLayer
                 url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">'
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               />
               <MarkerClusterGroup>
                 {
