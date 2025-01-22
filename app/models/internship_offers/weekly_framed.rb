@@ -130,10 +130,6 @@ module InternshipOffers
       save! && new_internship_offer
     end
 
-    def mother
-      InternshipOffer.find_by(id: mother_id)
-    end
-
     def child
       InternshipOffer.find_by(mother_id: id)
     end
