@@ -12,7 +12,7 @@ class InternshipOffer < ApplicationRecord
   DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description
                             employer_name street zipcode city department entreprise_coordinates
                             employer_chosen_name all_year_long period grade_ids week_ids
-                            entreprise_full_address internship_offer_area_id
+                            entreprise_full_address internship_offer_area_id contact_phone
                             is_public group school_id coordinates first_date last_date
                             siret internship_address_manual_enter lunch_break daily_hours
                             weekly_hours rep qpv].freeze
@@ -50,6 +50,7 @@ class InternshipOffer < ApplicationRecord
   belongs_to :planning, optional: true
   belongs_to :employer, polymorphic: true, optional: true
   belongs_to :internship_offer_area, optional: true, touch: true
+  belongs_to :internship_offer, optional: true, foreign_key: 'mother_id'
 
   has_many :favorites
   has_many :users, through: :favorites
@@ -221,10 +222,16 @@ class InternshipOffer < ApplicationRecord
 
   aasm do
     state :published, initial: true
-    state :removed,
+    state :drafted,
+          :removed,
           :unpublished,
           :need_to_be_updated,
           :splitted
+
+    event :draft do
+      transitions from: %i[published unpublished need_to_be_updated],
+                  to: :drafted
+    end
 
     event :publish do
       transitions from: %i[unpublished need_to_be_updated],
@@ -244,7 +251,7 @@ class InternshipOffer < ApplicationRecord
     end
 
     event :unpublish do
-      transitions from: %i[published need_to_be_updated],
+      transitions from: %i[published need_to_be_updated drafted],
                   to: :unpublished, after: proc { |*_args|
                                              update!(published_at: nil)
                                            }
@@ -339,7 +346,6 @@ class InternshipOffer < ApplicationRecord
     self.first_date = ordered_weeks.first&.week_date
     self.last_date = ordered_weeks.last&.week_date&.+ 4.days
   end
-
 
   def shown_as_masked?
     !published?

@@ -3,7 +3,7 @@ require 'test_helper'
 module Services
   class SyncEmailCampaignsTest < ActiveSupport::TestCase
     test 'add_contact should destroy contact when contact does exist' do
-      expected_result = { "result" => "ok" }
+      expected_result = { 'result' => 'ok' }
       fake_list_id = 42
       user = User.new(email: 'test@free.fr')
       sync = Services::SyncEmailCampaigns.new
@@ -13,7 +13,7 @@ module Services
       fake_fetch_list_id.expect :call,
                                 fake_list_id,
                                 [],
-                                list_name: 'newsletter'
+                                list_name: 'Newsletter - 1E1S'
       fake_search_result = Minitest::Mock.new
       fake_search_result.expect :call,
                                 nil,
@@ -27,12 +27,12 @@ module Services
       # fake_deliver_later_with_additional_delay = Minitest::Mock.new
       # fake_deliver_later_with_additional_delay.expect :call, nil, [], wait: 1.second
 
-# ArgumentError: mocked method :deliver_later expects 1 arguments, got []
+      # ArgumentError: mocked method :deliver_later expects 1 arguments, got []
       sync.stub :fetch_list_id, fake_fetch_list_id do
         sync.stub :search_contact_by_email, fake_search_result do
           sync.stub :add_contact_to_list, fake_add_contact_to_list do
             # sync.stub :deliver_later_with_additional_delay, fake_deliver_later_with_additional_delay do
-              assert_equal expected_result, sync.add_contact(user: user)
+            assert_equal expected_result, sync.add_contact(user: user)
             # end
           end
         end
@@ -49,11 +49,11 @@ module Services
       fake_fetch_list_id.expect :call,
                                 fake_list_id,
                                 [],
-                                list_name: 'newsletter'
+                                list_name: 'Newsletter - 1E1S'
 
       fake_search_contact_by_email = Minitest::Mock.new
       fake_search_contact_by_email.expect :call,
-                                          "something",
+                                          'something',
                                           [],
                                           email: user.email,
                                           list_id: fake_list_id
@@ -65,9 +65,9 @@ module Services
       end
     end
 
-    test "remove existing contact should be ok" do
+    test 'remove existing contact should be ok' do
       service = Services::SyncEmailCampaigns
-      search_search_result =  ["a" "something"]
+      search_search_result = ['a' + 'something']
       expected_delete_result = OpenStruct.new(code: 200)
 
       service.stub_any_instance(:fetch_list_id, 42) do
@@ -79,11 +79,11 @@ module Services
       end
     end
 
-    test "remove contact from inexistant_list should fail" do
+    test 'remove contact from inexistant_list should fail' do
       service = Services::SyncEmailCampaigns
       expected_delete_result = OpenStruct.new(code: 200)
 
-      service.stub_any_instance(:fetch_list_id, "") do
+      service.stub_any_instance(:fetch_list_id, '') do
         service.stub_any_instance(:search_contact_by_email, nil) do
           service.stub_any_instance(:delete_contact_from_list, expected_delete_result) do
             assert_equal :unexisting_list, service.new.remove_contact(email: 'fake@free.fr')
@@ -92,7 +92,7 @@ module Services
       end
     end
 
-    test "remove unexisting contact from should fail" do
+    test 'remove unexisting contact from should fail' do
       service = Services::SyncEmailCampaigns
       expected_delete_result = OpenStruct.new(code: 200)
 

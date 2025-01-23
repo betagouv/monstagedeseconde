@@ -21,7 +21,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+-- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -49,7 +49,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+-- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -694,10 +694,10 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
-    workspace_conditions text DEFAULT ''::text,
-    workspace_accessibility text DEFAULT ''::text,
     contact_phone character varying(20),
-    internship_address_manual_enter boolean DEFAULT false
+    internship_address_manual_enter boolean DEFAULT false,
+    workspace_conditions text DEFAULT ''::text,
+    workspace_accessibility text DEFAULT ''::text
 );
 
 
@@ -1550,18 +1550,18 @@ CREATE TABLE public.internship_offers (
     contact_phone character varying(20),
     handicap_accessible boolean DEFAULT false,
     school_year integer DEFAULT 0 NOT NULL,
-    mother_id integer DEFAULT 0,
     internship_occupation_id bigint,
     entreprise_id bigint,
     planning_id bigint,
-    employer_chosen_name character varying(250),
+    employer_chosen_name character varying(150),
     entreprise_full_address character varying(200),
     entreprise_coordinates public.geography(Point,4326),
     period integer DEFAULT 0 NOT NULL,
     rep boolean DEFAULT false,
     qpv boolean DEFAULT false,
     workspace_conditions text DEFAULT ''::text,
-    workspace_accessibility text DEFAULT ''::text
+    workspace_accessibility text DEFAULT ''::text,
+    mother_id bigint
 );
 
 
@@ -3855,6 +3855,13 @@ CREATE INDEX index_internship_offers_on_internship_offer_info_id ON public.inter
 
 
 --
+-- Name: index_internship_offers_on_mother_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offers_on_mother_id ON public.internship_offers USING btree (mother_id);
+
+
+--
 -- Name: index_internship_offers_on_organisation_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4329,6 +4336,14 @@ ALTER TABLE ONLY public.url_shrinkers
 
 ALTER TABLE ONLY public.team_member_invitations
     ADD CONSTRAINT fk_rails_16e04ba94e FOREIGN KEY (inviter_id) REFERENCES public.users(id);
+
+
+--
+-- Name: internship_offers fk_rails_184cd765dd; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offers
+    ADD CONSTRAINT fk_rails_184cd765dd FOREIGN KEY (mother_id) REFERENCES public.internship_offers(id);
 
 
 --
@@ -4834,6 +4849,8 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250120101004'),
+('20250120090347'),
 ('20250115174742'),
 ('20250114094329'),
 ('20250107105855'),

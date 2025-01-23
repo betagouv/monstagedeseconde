@@ -18,7 +18,8 @@ module Services
       when Net::HTTPSuccess
         [JSON.parse(response.body)['imageb64'], JSON.parse(response.body)['uuid']]
       else
-        raise "Failed to get captcha image: #{response.message}"
+        Rails.logger.error "Failed to get captcha image: #{response.message}"
+        [nil, nil]
       end
     end
 

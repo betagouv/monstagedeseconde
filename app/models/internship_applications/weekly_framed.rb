@@ -1,14 +1,12 @@
 module InternshipApplications
   # wraps weekly logic
   class WeeklyFramed < InternshipApplication
-
     after_save :update_all_counters
 
-    validates :student, uniqueness: { scope: [:internship_offer_id, :week_id] }
+    validates :student, uniqueness: { scope: %i[internship_offer_id week_id] }
 
     before_validation :at_most_one_application_per_student?, on: :create
     before_validation :internship_offer_has_spots_left?, on: :create
-
 
     def approvable?
       return false unless internship_offer.has_spots_left?
@@ -22,10 +20,10 @@ module InternshipApplications
 
     def at_most_one_application_per_student?
       if internship_offer
-          .internship_applications
-          .where(user_id: user_id)
-          .count
-          .positive?
+         .internship_applications
+         .where(user_id: user_id)
+         .count
+         .positive?
 
         errors.add(:user_id, :duplicate)
       end

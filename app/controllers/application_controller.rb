@@ -108,9 +108,9 @@ class ApplicationController < ActionController::Base
   end
 
   def check_host_for_redirection
-    # return unless request.host == 'stagedeseconde.1jeune1solution.gouv.fr/'
+    return unless request.host == 'stagedeseconde.1jeune1solution.gouv.fr/'
 
-    # redirect_to 'https://1eleve1stage.education.gouv.fr', status: :moved_permanently,
-    # allow_other_host: true
+    redirect_to 'https://1eleve1stage.education.gouv.fr', status: :moved_permanently,
+                                                          allow_other_host: true
   end
 end

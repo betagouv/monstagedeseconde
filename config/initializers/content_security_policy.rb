@@ -10,16 +10,16 @@ Rails.application.configure do
     policy.font_src    :self, :https, :data
     policy.img_src     :self, :https, :data
     policy.object_src  :none
-    policy.script_src  :self, :https
-    policy.style_src   :self, :https
+    policy.script_src :self, :https, "'unsafe-inline'", -> { ENV.fetch('MATOMO_URL', '').gsub(%r{/js/.*}, '') }
+    policy.style_src   :self, :https, "'unsafe-inline'"
     policy.frame_src   :none, 'https://plugins.crisp.chat', 'https://uneleveunstage.crisp.help'
     # Specify URI for violation reports
     # policy.report_uri "/csp-violation-report-endpoint"
   end
 
   # Generate session nonces for permitted importmap, inline scripts, and inline styles.
-  config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
-  config.content_security_policy_nonce_directives = %w[script-src style-src]
+  # config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
+  # config.content_security_policy_nonce_directives = %w[script-src style-src]
 
   # Report violations without enforcing the policy.
   # config.content_security_policy_report_only = true
