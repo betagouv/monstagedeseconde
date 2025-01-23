@@ -46,11 +46,16 @@ class CallbacksController < ApplicationController
     state = params[:state]
     nonce = params[:nonce]
 
-    user_info = Services::EduconnectConnection.new(code, state, nonce).get_user_info
+    educonnect = Services::EduconnectConnection.new(code, state, nonce)
+    user_info = educonnect.get_user_info
     redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
     student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
-    redirect_to root_path, alert: 'Connexion non autorisée pour cet élève.' and return unless student.present?
+    unless student.present?
+      educonnect.logout
+      session.delete(:state)
+      redirect_to root_path, alert: 'Connexion non autorisée pour cet élève.' and return
+    end
 
     student.confirmed_at = Time.now
     student.save

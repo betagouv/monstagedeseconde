@@ -25,6 +25,10 @@ module Services
       {}
     end
 
+    def logout
+      make_request(:get, "#{ENV.fetch('EDUCONNECT_URL')}/idp/profile/oidc/logout")
+    end
+
     private
 
     def get_token
