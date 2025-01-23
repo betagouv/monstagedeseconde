@@ -153,6 +153,8 @@ module Users
         nonce: SecureRandom.uuid
       }
 
+      cookies[:state] = oauth_params[:state]
+
       ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
     end
   end
