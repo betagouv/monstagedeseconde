@@ -26,7 +26,7 @@ module Finders
     end
 
     def all_with_grade(user)
-      if user.student? && user.grade.present?
+      if user.present? && user.student? && user.grade.present?
         finder.base_query.with_grade(student.grade)
       else
         finder.base_query
