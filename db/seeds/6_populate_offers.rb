@@ -364,7 +364,7 @@ def populate_internship_offers
   )
 
   # 13
-  current_year = SchoolTrack::Seconde.current_year
+  current_year = SchoolTrack::Seconde.current_year.to_i
   former_year = current_year - 1
   weeks = SchoolTrack::Seconde.both_weeks(year: former_year)
   InternshipOffers::WeeklyFramed.create!(
