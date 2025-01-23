@@ -229,11 +229,7 @@ class InternshipOffer < ApplicationRecord
   scope :with_grade, lambda { |user|
     return all if user.nil?
 
-    if user.grade_id == Grade.seconde.id
-      seconde
-    else
-      troisieme_or_quatrieme
-    end
+    user.grade_id == Grade.seconde.id ? seconde : troisieme_or_quatrieme
   }
 
   scope :by_department, ->(departments) { where(department: departments) }

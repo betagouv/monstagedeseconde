@@ -66,13 +66,12 @@ class InternshipOffersController < ApplicationController
                              longitude
                              city
                              radius
-                             keyword
-                             period]
+                             keyword]
     if current_user_or_visitor.god? ||
        current_user_or_visitor.statistician?
       common_query_params += [:school_year]
     end
-    params.permit(*common_query_params, sector_ids: [])
+    params.permit(*common_query_params, sector_ids: [], week_ids: [])
   end
 
   def check_internship_offer_is_not_discarded_or_redirect
@@ -110,9 +109,9 @@ class InternshipOffersController < ApplicationController
         :longitude,
         :radius,
         :keyword,
-        :period,
         :school_year,
-        sector_ids: []
+        sector_ids: [],
+        week_ids: []
       ),
       user: current_user_or_visitor
     )
@@ -129,13 +128,13 @@ class InternshipOffersController < ApplicationController
       priority_offers = Finders::InternshipOfferConsumer.new(
         params: params.permit(*priority),
         user: current_user_or_visitor
-      ).all.to_a
+      ).all_with_grade(current_user).to_a
 
       if priority_offers.count < 5 && priority == %i[latitude longitude radius]
         priority_offers = Finders::InternshipOfferConsumer.new(
           params: params.permit(*priority).merge(radius: Nearbyable::DEFAULT_NEARBY_RADIUS_IN_METER + 40_000),
           user: current_user_or_visitor
-        ).all.to_a
+        ).all_with_grade(current_user).to_a
       end
 
       alternative_offers << priority_offers
@@ -145,8 +144,8 @@ class InternshipOffersController < ApplicationController
     end
 
     if alternative_offers.count < 5
-      alternative_offers += InternshipOffer.with_grade(current_user)
-                                           .uncompleted
+      alternative_offers += InternshipOffer.uncompleted
+                                           .with_grade(current_user)
                                            .last(5 - alternative_offers.count)
       alternative_offers = alternative_offers.uniq
     end

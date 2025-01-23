@@ -59,6 +59,38 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
       end
     end
   end
+  test 'student in seconde cannot see a intenship_offer for troisiemes' do
+    travel_to Time.zone.local(2025, 3, 1) do
+      weeks = Week.selectable_from_now_until_end_of_school_year.to_a.first(2)
+      school = create(:school, school_type: 'lycee', weeks: weeks)
+      student = create(:student, :seconde, school:, class_room: create(:class_room, school:))
+      internship_offer_troisieme = create(:weekly_internship_offer_3eme, weeks:)
+      internship_offer_seconde = create(:weekly_internship_offer_2nde)
+      assert InternshipOffer.seconde.ids.include?(internship_offer_seconde.id)
+      assert InternshipOffer.troisieme_or_quatrieme.ids.include?(internship_offer_troisieme.id)
+      assert_equal 'Stage de 3eme - 1', internship_offer_troisieme.title
+
+      InternshipOffer.stub :nearby, InternshipOffer.all do
+        InternshipOffer.stub :by_weeks, InternshipOffer.all do
+          sign_in(student)
+          visit internship_offer_path(internship_offer_troisieme)
+          all('button', text: 'Postuler')[0].disabled?
+          all('p.fr-badge.fr-badge--warning', text: 'Offre incompatible avec votre classe'.upcase)[0].visible?
+
+          visit internship_offer_path(internship_offer_seconde)
+          all('a', text: 'Postuler')[0].visible?
+
+          visit internship_offers_path
+          find '.fr-h4.fr-mt-4w.fr-mb-1w.blue-france',
+               text: 'Je recherche une offre de stage de seconde générale et technologique'
+
+          assert_equal internship_offer_seconde.title, find('.h5').text
+          find '.h5', text: internship_offer_seconde.title, count: 1
+          assert_select '.h5', text: internship_offer_troisieme.title, count: 0
+        end
+      end
+    end
+  end
 
   test 'student with no class_room can submit an application when school have not choosen week' do
     if ENV['RUN_BRITTLE_TEST']
