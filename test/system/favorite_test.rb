@@ -26,7 +26,7 @@ class SchoolsTest < ApplicationSystemTestCase
 
   test 'can add favorite as a student' do
     internship_offer = create(:weekly_internship_offer_2nde)
-    student = create(:student)
+    student = create(:student, :seconde)
     sign_in student
     visit internship_offers_path
     # June_flower

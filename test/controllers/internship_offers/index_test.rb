@@ -201,7 +201,7 @@ class IndexTest < ActionDispatch::IntegrationTest
 
       school = create(:school)
       class_room = create(:class_room, school:)
-      student = create(:student, school:, class_room:)
+      student = create(:student, :seconde, school:, class_room:)
       internship_offer_with_application = create(
         :weekly_internship_offer_2nde,
         max_candidates: 2,
@@ -243,10 +243,10 @@ class IndexTest < ActionDispatch::IntegrationTest
 
   test 'GET #index as student. ignores internship offers not published' do
     travel_to(Date.new(2024, 3, 1)) do
-      api_internship_offer         = create(:api_internship_offer_2nde)
+      api_internship_offer         = create(:api_internship_offer_3eme)
       internship_offer_published   = create(:weekly_internship_offer_3eme)
       internship_offer_unpublished = create(:weekly_internship_offer_3eme, :unpublished)
-      student = create(:student)
+      student = create(:student, :troisieme)
       sign_in(student)
       InternshipOffer.stub :nearby, InternshipOffer.all do
         InternshipOffer.stub :by_weeks, InternshipOffer.all do
@@ -345,7 +345,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     # Api offers are ordered by creation date, so we can't test pagination with cities
     travel_to(Date.new(2024, 3, 1)) do
       # Student school is in Paris
-      sign_in(create(:student))
+      sign_in(create(:student, :seconde))
       internship_offers = InternshipOffer::PAGE_SIZE.times.map do
         create(:api_internship_offer_2nde, coordinates: Coordinates.bordeaux, city: 'Bordeaux')
       end
@@ -417,7 +417,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     travel_to(Date.new(2024, 3, 1)) do
       week = Week.find_by(year: 2019, number: 10)
       school_at_paris = create(:school, :at_paris)
-      student = create(:student, school: school_at_paris)
+      student = create(:student, :seconde, school: school_at_paris)
       internship_offer_at_paris = create(:weekly_internship_offer_2nde,
                                          coordinates: Coordinates.paris)
       internship_offer_at_bordeaux = create(:weekly_internship_offer_2nde,
@@ -439,7 +439,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   test 'GET #index as student ignores internship_offer farther than 60 km nearby school coordinates' do
     week = Week.find_by(year: 2019, number: 10)
     school_at_bordeaux = create(:school, :at_bordeaux)
-    student = create(:student, school: school_at_bordeaux)
+    student = create(:student, :troisieme, school: school_at_bordeaux)
     create(:weekly_internship_offer_3eme, coordinates: Coordinates.paris)
 
     InternshipOffer.stub :by_weeks, InternshipOffer.all do

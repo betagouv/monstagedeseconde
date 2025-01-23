@@ -8,7 +8,6 @@ module Finders
              :previous_from,
              :all,
              :all_without_page,
-             :all_with_grade,
              to: :listable_query_builder
 
     def base_query

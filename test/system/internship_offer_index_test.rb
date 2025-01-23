@@ -17,7 +17,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
 
   test 'navigation & interaction works' do
     school = create(:school)
-    student = create(:student, school:)
+    student = create(:student, :seconde, school:)
     internship_offer = create(:weekly_internship_offer_2nde)
     sign_in(student)
     InternshipOffer.stub :nearby, InternshipOffer.all do
@@ -39,7 +39,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
         create(:weekly_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris, zipcode: '75000')
         create(:api_internship_offer, city: 'Paris', coordinates: Coordinates.paris, zipcode: '75000')
       end
-      student = create(:student)
+      student = create(:student, :seconde)
       assert_equal 'Paris', student.school.city
       sign_in(student)
       visit internship_offers_path
@@ -61,7 +61,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
       2.times do
         create(:weekly_internship_offer_2nde, city: 'Montmorency', coordinates: Coordinates.montmorency)
       end
-      student = create(:student)
+      student = create(:student, :seconde)
       assert_equal 'Paris', student.school.city
       sign_in(student)
       visit internship_offers_path(latitude: 48.8589, longitude: 2.347, city: 'paris', radius: 5_000)

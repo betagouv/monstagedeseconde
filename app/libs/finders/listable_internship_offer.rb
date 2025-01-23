@@ -25,14 +25,6 @@ module Finders
       finder.base_query_without_page
     end
 
-    def all_with_grade(user)
-      if user.present? && user.student? && user.grade.present?
-        finder.base_query.with_grade(student.grade)
-      else
-        finder.base_query
-      end
-    end
-
     private
 
     attr_reader :finder
