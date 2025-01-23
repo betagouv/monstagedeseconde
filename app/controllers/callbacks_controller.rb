@@ -40,7 +40,7 @@ class CallbacksController < ApplicationController
   end
 
   def educonnect
-    return unless cookies[:state] == params[:state]
+    redirect_to root_path, alert: 'Jeton invalide' and return unless cookies[:state] == params[:state]
 
     code = params[:code]
     state = params[:state]
@@ -55,7 +55,8 @@ class CallbacksController < ApplicationController
     student.confirmed_at = Time.now
     student.save
 
-    sign_in_and_redirect student, event: :authentication
+    sign_in(student)
+    redirect_to after_sign_in_path_for(student), notice: 'Vous êtes bien connecté'
   end
 
   def get_role(role)
