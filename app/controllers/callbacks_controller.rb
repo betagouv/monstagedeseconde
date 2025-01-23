@@ -5,7 +5,7 @@ class CallbacksController < ApplicationController
       state = params[:state]
 
       user_info = Services::FimConnection.new(code, state).get_user_info
-      redirect_to root_path, notice: 'Connexion impossible' unless user_info.present?
+      redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
       unless School.exists?(code_uai: user_info['rne'])
         redirect_to root_path, alert: "Établissement non trouvé (UAI: #{user_info['rne']})" and return
@@ -37,6 +37,25 @@ class CallbacksController < ApplicationController
     else
       redirect_to root_path, alert: 'State invalide'
     end
+  end
+
+  def educonnect
+    return unless cookies[:state] == params[:state]
+
+    code = params[:code]
+    state = params[:state]
+    nonce = params[:nonce]
+
+    user_info = Services::EduconnectConnection.new(code, state, nonce).get_user_info
+    redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
+
+    student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
+    redirect_to root_path, alert: 'Connexion non autorisée pour cet élève.' and return unless student.present?
+
+    student.confirmed_at = Time.now
+    student.save
+
+    sign_in_and_redirect student, event: :authentication
   end
 
   def get_role(role)

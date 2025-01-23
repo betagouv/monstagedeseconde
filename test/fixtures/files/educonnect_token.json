@@ -1,0 +1,7 @@
+{
+  "access_token": "token_educonnect",
+  "scope": "openid ect.scope.cnx ect.scope.stage",
+  "id_token": "abc123",
+  "token_type": "Bearer",
+  "expires_in": 600
+}

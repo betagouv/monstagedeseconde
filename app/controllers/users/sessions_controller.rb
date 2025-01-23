@@ -147,11 +147,13 @@ module Users
       oauth_params = {
         redirect_uri: ENV['EDUCONNECT_REDIRECT_URI'],
         client_id: ENV['EDUCONNECT_CLIENT_ID'],
-        scope: 'openid profile email stage',
+        scope: 'openid profile ect.scope.cnx ect.scope.stage',
         response_type: 'code',
         state: SecureRandom.uuid,
         nonce: SecureRandom.uuid
       }
+
+      ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
     end
   end
 end
