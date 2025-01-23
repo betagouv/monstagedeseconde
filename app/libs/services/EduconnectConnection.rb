@@ -6,8 +6,8 @@ module Services
       @code = code
       @state = state
       @nonce = nonce
+      @id_token = ''
       @token = get_token
-      @id_token = get_id_token
     end
 
     def get_user_info
