@@ -168,6 +168,29 @@ class Week < ApplicationRecord
       week_date.end_of_week < Date.new(year, 9, 1)
   end
 
+  scope :before, lambda { |date:|
+    where('year < ?', date.year).or(
+      where('year = ?', date.year).where('number < ?', date.cweek)
+    )
+  }
+
+  scope :after, lambda { |date:|
+    where('year > ?', date.year).or(
+      where('year = ?', date.year).where('number > ?', date.cweek)
+    )
+  }
+  scope :before_week, lambda { |week:|
+    where('year < ?', week.year).or(
+      where('year = ?', week.year).where('number < ?', week.number)
+    )
+  }
+
+  scope :after_week, lambda { |week:|
+    where('year > ?', week.year).or(
+      where('year = ?', week.year).where('number > ?', week.number)
+    )
+  }
+
   def <(other)
     year < other.year || (year == other.year && number < other.number)
   end
