@@ -6,7 +6,6 @@ module Services
       @code = code
       @state = state
       @nonce = nonce
-      @id_token = ''
       @token = get_token
     end
 
@@ -26,12 +25,14 @@ module Services
       {}
     end
 
-    def logout
+    def self.logout(id_token)
+      session.delete(:state)
       make_request(
         :get,
         "#{ENV.fetch('EDUCONNECT_URL')}/idp/profile/oidc/logout",
-        headers: { 'Authorization' => "Bearer #{@id_token}" }
+        headers: { 'Authorization' => "Bearer #{id_token}" }
       )
+      session.delete(:id_token)
     end
 
     private
@@ -54,7 +55,7 @@ module Services
         body: URI.encode_www_form(body)
       )
 
-      @id_token = JSON.parse(response.body)['id_token']
+      session[:id_token] = JSON.parse(response.body)['id_token']
 
       JSON.parse(response.body)['access_token']
     rescue JSON::ParserError => e

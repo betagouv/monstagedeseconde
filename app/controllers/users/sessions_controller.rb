@@ -3,6 +3,8 @@
 module Users
   class SessionsController < Devise::SessionsController
     include Phonable
+    include EduconnectLogout
+
     before_action :configure_sign_in_params, only: %i[new create]
     after_action :remove_notice, only: %i[destroy create]
     after_action :switch_back, only: %i[destroy]
