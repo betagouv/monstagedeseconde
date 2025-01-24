@@ -2,6 +2,8 @@ require 'json'
 
 module Services
   class EduconnectConnection
+    attr_reader :id_token
+
     def initialize(code, state, nonce)
       @code = code
       @state = state
