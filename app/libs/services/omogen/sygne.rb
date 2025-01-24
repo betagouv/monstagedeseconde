@@ -93,6 +93,20 @@ module Services::Omogen
     #  "dateDebSco"=>"2023-09-05",
     #  "adhesionTransport"=>false
     # }
+    #
+    # temporary method to import only 3 students for test purpose
+    def sygne_import_by_schools_little(code_uai)
+      counter = 0
+      MEFSTAT4_CODES.each do |niveau|
+        students = sygne_eleves(code_uai, niveau: niveau)
+        students.each do |student|
+          next if counter > 2
+
+          student.make_student
+          counter += 1
+        end
+      end
+    end
 
     def sygne_import_by_schools(code_uai)
       MEFSTAT4_CODES.each do |niveau|
