@@ -55,9 +55,20 @@ class CallbacksController < ApplicationController
     redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
     student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
+    school = School.find_by(code_uai: user_info['FrEduCtEleveUAI'])
+
+    unless school.present?
+      educonnect.logout
+      session.delete(:id_token)
+      session.delete(:state)
+      redirect_to root_path, alert: 'Établissement scolaire non répertorié sur 1 élève, 1 stage (UAI: #{user_info['FrEduCtEleveUAI']}).' and return
+    end
+
     unless student.present?
       educonnect.logout
-      redirect_to root_path, alert: 'Connexion non autorisée pour cet élève.' and return
+      session.delete(:id_token)
+      session.delete(:state)
+      redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
     end
 
     student.confirmed_at = Time.now

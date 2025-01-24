@@ -28,7 +28,7 @@ module Services
       {}
     end
 
-    def self.logout
+    def logout
       make_request(
         :get,
         "#{ENV.fetch('EDUCONNECT_URL')}/idp/profile/oidc/logout",
@@ -58,6 +58,7 @@ module Services
 
       parsed_response = JSON.parse(response.body)
       @id_token = parsed_response['id_token']
+
       parsed_response['access_token']
     rescue JSON::ParserError => e
       Rails.logger.error("Failed to parse Educonnect response: #{e.message}")
