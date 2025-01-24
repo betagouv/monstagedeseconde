@@ -237,9 +237,6 @@ class InternshipOffer < ApplicationRecord
       transitions from: %i[unpublished need_to_be_updated],
                   to: :published, after: proc { |*_args|
                                            update!("published_at": Time.now.utc)
-                                           if employer.internship_offers.count == 1
-                                             UpdateHubspotContactJob.perform_later(employer_id)
-                                           end
                                          }
     end
 
