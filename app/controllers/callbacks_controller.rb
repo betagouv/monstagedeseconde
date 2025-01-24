@@ -61,7 +61,8 @@ class CallbacksController < ApplicationController
       educonnect.logout
       session.delete(:id_token)
       session.delete(:state)
-      redirect_to root_path, alert: 'Établissement scolaire non répertorié sur 1 élève, 1 stage (UAI: #{user_info['FrEduCtEleveUAI']}).' and return
+      redirect_to root_path,
+                  alert: "Établissement scolaire non répertorié sur 1 élève, 1 stage (UAI: #{user_info['FrEduCtEleveUAI']})." and return
     end
 
     unless student.present?
