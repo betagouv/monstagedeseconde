@@ -60,7 +60,7 @@ class CallbacksController < ApplicationController
       redirect_to root_path, alert: 'Connexion non autorisée pour cet élève.' and return
     end
 
-    student.confim!
+    student.confirm!
 
     sign_in(student)
     redirect_to after_sign_in_path_for(student), notice: 'Vous êtes bien connecté'
