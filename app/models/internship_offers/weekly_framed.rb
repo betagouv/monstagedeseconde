@@ -4,12 +4,15 @@ module InternshipOffers
   class WeeklyFramed < InternshipOffer
     include RailsAdminInternshipOfferable
 
-    after_initialize :init
-    before_create :reverse_academy_by_zipcode
-
     # TODO: remove following since inherited
     attr_accessor :republish
 
+    #---------------------
+    after_initialize :init
+    before_create :reverse_academy_by_zipcode
+    before_save :copy_entreprise_full_address
+    after_commit :split_in_two, if: :to_be_splitted?
+    #---------------------
     validates :street,
               :city,
               presence: true
@@ -25,10 +28,11 @@ module InternshipOffers
     validates :lunch_break, length: { minimum: 8, maximum: 250 }
     validate :schedules_check
 
-    after_initialize :init
-    before_create :reverse_academy_by_zipcode
-    before_save :copy_entreprise_full_address
-
+    #---------------------
+    has_one :mother,
+            class_name: 'InternshipOffer',
+            foreign_key: 'mother_id',
+            dependent: :nullify
     #---------------------
     # fullfilled scope isolates those offers that have reached max_candidates
     #---------------------
@@ -82,9 +86,20 @@ module InternshipOffers
       end
     end
 
+    def to_be_splitted?
+      if hidden_duplicate?
+        false
+      elsif mother_id.present?
+        mother = InternshipOffer.find_by(mother_id: mother_id)
+        mother.splitted?
+      else
+        has_weeks_in_the_past? && has_weeks_in_the_future?
+      end
+    end
+
     def has_weeks_in_the_past?
       start_week = Week.current_year_start_week
-      weeks.any? { |week| week.number < start_week.number && week.year <= start_week.year }
+      weeks.any? { |week| week.id.in?(Week.before_week(week: start_week).ids) }
     end
 
     # TODO
@@ -92,11 +107,7 @@ module InternshipOffers
 
     def has_weeks_in_the_future?
       start_week = Week.current_year_start_week
-      weeks.any? { |week| week.number >= start_week.number && week.year >= start_week.year }
-    end
-
-    def has_weeks_in_the_past_and_in_the_future?
-      has_weeks_in_the_past? && has_weeks_in_the_future?
+      weeks.any? { |week| week.id.in?(Week.after_week(week: start_week).ids) }
     end
 
     def split_in_two
@@ -107,13 +118,21 @@ module InternshipOffers
       new_internship_offer.weeks = weeks & Week.weeks_of_school_year(school_year: Week.current_year_start_week.year)
       new_internship_offer.grades = grades
       new_internship_offer.weekly_hours = weekly_hours
-      new_internship_offer.save
+      new_internship_offer.save!
+      # stats have to exist before intenship_applications is moved
+      new_internship_offer.internship_applications = []
+      new_internship_offer.save!
+      new_internship_offer.publish! unless new_internship_offer.published?
 
       self.hidden_duplicate = true
       self.weeks = weeks & Week.of_past_school_years
       self.published_at = nil
       self.aasm_state = 'splitted'
-      save && new_internship_offer
+      save! && new_internship_offer
+    end
+
+    def child
+      InternshipOffer.find_by(mother_id: id)
     end
 
     def schedules_check
