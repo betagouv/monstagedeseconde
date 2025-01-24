@@ -39,7 +39,7 @@ namespace :data_migrations do
     PrettyConsole.announce_task 'Importing 3 students only' do
       school = School.where(city: 'Lille').first
       schools_data = []
-      omogen = Services::Omogen.new
+      omogen = Services::Omogen::Sygne.new
       PrettyConsole.say_in_cyan "Importing students from #{school.name} ##{school.code_uai}  #{school.id}"
 
       data = omogen.sygne_import_by_schools_little(school.code_uai)&.symbolize_keys
