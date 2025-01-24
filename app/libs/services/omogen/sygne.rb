@@ -15,7 +15,7 @@ module Services::Omogen
       http.use_ssl = true if uri.scheme == 'https'
 
       request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
+      request['Authorization'] = "Bearer #{token}"
       request['Code-Application'] = 'FRE'
       request['Code-RNE'] = '0595121W'
       request['Compression-Zip'] = 'non'
@@ -39,7 +39,7 @@ module Services::Omogen
       http.use_ssl = true if uri.scheme == 'https'
 
       request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
+      request['Authorization'] = "Bearer #{token}"
       request['Code-Application'] = 'FRE'
       request['Code-RNE'] = '0595121W'
       request['Compression-Zip'] = 'non'
@@ -53,7 +53,7 @@ module Services::Omogen
       http.use_ssl = true if uri.scheme == 'https'
 
       request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
+      request['Authorization'] = "Bearer #{token}"
 
       response = http.request(request)
 
@@ -166,17 +166,20 @@ module Services::Omogen
       @token = get_oauth_token
     end
 
+    attr_reader :token
+
     private
 
     def sygne_eleves_request(uri)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
 
-      request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
-      request['Compression-Zip'] = 'non'
+      request = Net::HTTP::Get.new(uri, headers)
+      http.request(request)
+    end
 
-      response = http.request(request)
+    def headers
+      { 'Authorization': "Bearer #{token}", 'Compression-Zip': 'non' }
     end
 
     def sygne_responsables_request(ine = '001291528AA')
@@ -187,10 +190,7 @@ module Services::Omogen
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
 
-      request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
-      request['Compression-Zip'] = 'non'
-
+      request = Net::HTTP::Get.new(uri, headers)
       http.request(request)
     end
   end
