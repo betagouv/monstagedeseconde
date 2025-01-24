@@ -26,13 +26,11 @@ module Services
     end
 
     def self.logout(id_token)
-      session.delete(:state)
       make_request(
         :get,
         "#{ENV.fetch('EDUCONNECT_URL')}/idp/profile/oidc/logout",
         headers: { 'Authorization' => "Bearer #{id_token}" }
       )
-      session.delete(:id_token)
     end
 
     private

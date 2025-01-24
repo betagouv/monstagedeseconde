@@ -6,6 +6,8 @@ module EduconnectLogout
       Rails.logger.info('Logging out from Educonnect')
       response = Services::EduconnectConnection.logout(session[:id_token])
       Rails.logger.info("Response logout: #{response.inspect}")
+      session.delete(:id_token)
+      session.delete(:state)
     end
 
     super
