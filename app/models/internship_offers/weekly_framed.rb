@@ -122,6 +122,7 @@ module InternshipOffers
       # stats have to exist before intenship_applications is moved
       new_internship_offer.internship_applications = []
       new_internship_offer.save!
+      new_internship_offer.publish! unless new_internship_offer.published?
 
       self.hidden_duplicate = true
       self.weeks = weeks & Week.of_past_school_years
