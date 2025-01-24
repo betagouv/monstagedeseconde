@@ -47,6 +47,10 @@ class CallbacksController < ApplicationController
     nonce = params[:nonce]
 
     educonnect = Services::EduconnectConnection.new(code, state, nonce)
+
+    session[:id_token] = educonnect.id_token
+    session[:state] = state
+
     user_info = educonnect.get_user_info
     redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 

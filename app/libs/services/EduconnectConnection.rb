@@ -6,6 +6,7 @@ module Services
       @code = code
       @state = state
       @nonce = nonce
+      @id_token = ''
       @token = get_token
     end
 
@@ -53,13 +54,13 @@ module Services
         body: URI.encode_www_form(body)
       )
 
-      session[:id_token] = JSON.parse(response.body)['id_token']
-
-      JSON.parse(response.body)['access_token']
+      parsed_response = JSON.parse(response.body)
+      @id_token = parsed_response['id_token']
+      parsed_response['access_token']
     rescue JSON::ParserError => e
       Rails.logger.error("Failed to parse Educonnect response: #{e.message}")
       Rails.logger.error("Response body: #{response&.body.inspect}")
-      nil
+      { access_token: nil, id_token: nil }
     end
 
     def make_request(method, url, headers: {}, body: nil)
