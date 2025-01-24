@@ -26,11 +26,11 @@ module Services
       {}
     end
 
-    def self.logout(id_token)
+    def self.logout
       make_request(
         :get,
         "#{ENV.fetch('EDUCONNECT_URL')}/idp/profile/oidc/logout",
-        headers: { 'Authorization' => "Bearer #{id_token}" }
+        headers: { 'Authorization' => "Bearer #{@id_token}" }
       )
     end
 
