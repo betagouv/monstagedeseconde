@@ -227,9 +227,7 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :with_grade, lambda { |user|
-    return all if user.nil?
-
-    user.grade_id == Grade.seconde.id ? seconde : troisieme_or_quatrieme
+    joins(:grades).where(grades: { id: user.try(:grade_id) || Grade.all.ids })
   }
 
   scope :by_department, ->(departments) { where(department: departments) }

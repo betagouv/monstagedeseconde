@@ -73,18 +73,17 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
 
   test 'search by grade works for visitors' do
     travel_to Date.new(2024, 9, 1) do
-      seconde_weeks = SchoolTrack::Seconde.both_weeks
-      internship_offer = create(:weekly_internship_offer_2nde, weeks: seconde_weeks)
-      visit internship_offers_path
-      Grade.all.each do |grade|
-        select grade.name, from: 'Filière'
+      5.times do
+        create(:weekly_internship_offer_2nde, weeks: SchoolTrack::Seconde.both_weeks, city: 'Paris')
       end
+      internship_offer = create(:weekly_internship_offer_2nde, weeks: SchoolTrack::Seconde.both_weeks, city: 'Bordeaux')
+      visit internship_offers_path
       select 'troisieme générale', from: 'Filière'
       click_button 'Rechercher'
       assert_no_selector('.test-city', text: internship_offer.city)
-      select 'seconde générale', from: 'Filière'
+      select 'seconde générale et technologique', from: 'Filière'
       click_button 'Rechercher'
-      assert_selector('.test-city', text: internship_offer.city)
+      find('.test-city', text: 'Bordeaux')
     end
   end
   test 'search by grade works for students' do

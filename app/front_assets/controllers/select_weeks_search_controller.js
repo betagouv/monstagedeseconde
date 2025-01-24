@@ -1,7 +1,4 @@
-import $ from "jquery";
 import { Controller } from "stimulus";
-// import { toggleContainer } from "../utils/dom";
-
 
 export default class extends Controller {
   static targets = [
@@ -36,28 +33,40 @@ export default class extends Controller {
       el.addEventListener("change", this.handleCheckboxesChanges.bind(this));
     });
     this.handleCheckboxesChanges();
-    this.setInitialScores();
+  }
+
+  connect() {
+    this.resetScores();
+    this.setScoresFromCheckBoxes();
+    this.repaintScores();
+  }
+
+  handleOneCheckboxChange(event) {
+    this.handleCheckboxesChanges(event);
+    this.updateMonthScore(event);
+    this.repaintScores();
   }
 
   disconnect() {
     this.detachEventListeners();
   }
 
-  setInitialScores() {
-    this.monthList().forEach((key) => {
-      const monthContentSelector = document.querySelectorAll(`.${key}`)[0];
-      if (monthContentSelector) {
-        this.scores[key] = parseInt(monthContentSelector.innerHTML.replace(/\D/g, ""), 10);
-      }
-    });
+  // private
+
+  // on week checked
+  handleCheckboxesChanges(event) {
+    this.hasNoCheckboxChecked()
+      ? this.onNoWeekSelected()
+      : this.checkboxesContainerTarget.classList.remove("is-invalid");
   }
+
 
   hasNoCheckboxChecked() {
     const selectedCheckbox = $(this.weekCheckboxesTargets).filter(":checked");
     return selectedCheckbox.length === 0;
   }
 
-    // ui helpers
+  // ui helpers
   onNoWeekSelected() {
     const $checkboxesContainer = $(this.checkboxesContainerTarget);
     $checkboxesContainer.addClass("is-invalid");
@@ -74,30 +83,29 @@ export default class extends Controller {
     this.repaintScores();
   }
 
-  // on week checked
-  handleCheckboxesChanges(event) {
-    this.hasNoCheckboxChecked()
-      ? this.onNoWeekSelected()
-      : this.checkboxesContainerTarget.classList.remove("is-invalid");;
-  }
-
-  handleOneCheckboxChange(event) {
-    this.handleCheckboxesChanges(event);
-    this.setMonthScore(event);
-    this.repaintScores();
-  }
-
-  setMonthScore(event) {
+  updateMonthScore(event) {
     if (event == undefined) return;
 
     const htmlBox = event.target;
     const classList = htmlBox.parentNode.classList;
     this.monthList().forEach((monthName) => {
       if (classList.contains(monthName)) {
-        this.scores[monthName] += htmlBox.checked ? 1 : -1; // action is check or uncheck;
+        this.scores[monthName] += htmlBox.checked ? 1 : -1; // action consists in checking or unchecking;
       }
     });
   }
+
+  setScoresFromCheckBoxes = () => {
+    console.log(this.monthList());
+    this.monthList().forEach((monthName) => {
+      const rightSideMonthSections = document.querySelectorAll(
+        `.fr-checkbox-group.${monthName} input[type="checkbox"]`
+      );
+      rightSideMonthSections.forEach((elt) => {
+        this.scores[monthName] += elt.checked ? 1 : 0;
+      });
+    });
+  };
 
   repaintScores() {
     this.monthList().forEach((monthName) => {
@@ -111,7 +119,7 @@ export default class extends Controller {
     });
   }
 
-  monthList() { return Object.keys(this.scores); }
+  monthList = () =>  ( Object.keys(this.scores) );
 
   switchHtmlClasses(element, score) {
     const classList = element.classList;
@@ -135,15 +143,9 @@ export default class extends Controller {
   //   });
   // }
 
-  // resetScores() {
-  //   this.monthList().forEach((key) => {
-  //     this.scores[key] = 0;
-  //   });
-  // }
-
-  // setWeeksMesssage(totalScore) {
-  //   const semaines = this.totalScore();
-  //   let weeksCount = (semaines > 1) ? totalScore + " semaines proposées" : totalScore + " semaine proposée";
-  //   return weeksCount;
-  // }
+  resetScores() {
+    this.monthList().forEach((key) => {
+      this.scores[key] = 0;
+    });
+  }
 }

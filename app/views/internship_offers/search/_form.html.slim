@@ -28,19 +28,19 @@ div [class="test-search-container #{has_white_bg ? 'search-container fr-pt-2w' :
                                    longitude: params[:longitude],
                                    radius: params[:radius],
                                    whiteBg: has_white_bg } )
-
       / School_track filter
       .form-group.mb-md-0.col-12.col-md
         .fr-select-group
           - grade_options = Grade.options_for_select(current_user)
           = form.label :grade_id, "Filière", class: "fr-label"
           = form.select :grade_id,
-                        options_for_select(grade_options, params[:grade]),
+                        options_for_select(grade_options, params[:grade_id]),
                         grade_options.count > 1 ? { include_blank: "Toutes les filières" } : {},
                         class: "fr-select almost-fitting",
                         title: "Recherche par filière",
                         :'aria-label' => "Recherche par filière",
-                        data: { action: "change->search-form#submitOnChange" }
+                        data: { action: "change->search-form#onChangeGrade" ,
+                                :'search-form-target' => 'grade' }
       / weeks filter
       .form-group.mb-md-0.col-12.col-md data-controller='toggle-panel' data-toggle-panel-on-value="false"
         div data-action='click->toggle-panel#onToggle'
