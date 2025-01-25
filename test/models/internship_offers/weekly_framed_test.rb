@@ -252,6 +252,7 @@ module InternshipsOffers
           assert internship_offer.weeks.include?(SchoolTrack::Seconde.first_week(year: 2024))
           refute internship_offer.weeks.include?(SchoolTrack::Seconde.first_week)
           assert_equal internship_application, internship_offer.internship_applications.first
+          assert_equal stored_offer.internship_offer_area.id, living_offer.internship_offer_area.id
         end
       end
     end
