@@ -132,7 +132,18 @@ module Services::Omogen
         end
       when Net::HTTPNotFound
         puts response.body
-        Rails.logger.error "Failed to get sygne eleves : #{response.message}"
+        error_message = "Failed to get sygne eleves  - HTTPNotFound - #{response.message}"
+        Rails.logger.error error_message
+        raise error_message
+      when Net::HTTPForbidden
+        error_message = "Failed to get sygne eleves - 403 - Forbidden Access | #{response.try(:message)}"
+        Rails.logger.error error_message
+        raise error_message
+      else
+        puts response
+        error_message = "Failed to get sygne eleves | #{response.try(:message)}"
+        Rails.logger.error error_message
+        raise error_message
       end
       students
     end
