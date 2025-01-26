@@ -46,9 +46,9 @@ class CallbacksController < ApplicationController
     state = params[:state]
     nonce = params[:nonce]
 
-    Rails.logger.info("Code: #{code}")
-    Rails.logger.info("State: #{state}")
-    Rails.logger.info("Nonce: #{nonce}")
+    Rails.logger.info("Educonnect callback received with code present: #{code.present?}")
+    Rails.logger.info("Educonnect callback received with state present: #{state.present?}")
+    Rails.logger.info("Educonnect callback received with nonce present: #{nonce.present?}")
 
     educonnect = Services::EduconnectConnection.new(code, state, nonce)
 
