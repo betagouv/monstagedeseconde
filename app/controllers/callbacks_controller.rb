@@ -84,9 +84,17 @@ class CallbacksController < ApplicationController
 
     Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
 
-    sign_in(student)
+    # begin
+    #   Rails.logger.info("Attempting to sign in student: #{student.id}")
+    #   sign_in(student)
+    #   Rails.logger.info("Sign in successful")
+    # rescue StandardError => e
+    #   Rails.logger.error("Failed to sign in student: #{e.message}")
+    #   Rails.logger.error(e.backtrace.join("\n"))
+    #   return redirect_to root_path, alert: 'Erreur lors de la connexion'
+    # end
 
-    Rails.logger.info("Student signed in")
+    Rails.logger.info("Student signed in successfully: #{student_signed_in?}")
 
     redirect_to root_path, notice: 'Vous êtes bien connecté'
     
