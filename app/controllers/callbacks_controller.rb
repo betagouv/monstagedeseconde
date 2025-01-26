@@ -77,9 +77,13 @@ class CallbacksController < ApplicationController
       redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
     end
 
-    student.confirmed_at = Time.now
-    student.save
+    if student.confirmed_at.blank?
+      student.confirmed_at = Time.now
+      student.save
+    end
 
+    Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
+    
     sign_in(student)
     redirect_to after_sign_in_path_for(student), notice: 'Vous êtes bien connecté'
   end
