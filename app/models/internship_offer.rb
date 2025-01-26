@@ -9,13 +9,13 @@ class InternshipOffer < ApplicationRecord
   DESCRIPTION_MAX_CHAR_COUNT = 1500
   MAX_CANDIDATES_HIGHEST = 6_000
   TITLE_MAX_CHAR_COUNT = 150
-  DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description
+  DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description employer_id
                             employer_name street zipcode city department entreprise_coordinates
                             employer_chosen_name all_year_long period grade_ids week_ids
                             entreprise_full_address internship_offer_area_id contact_phone
                             is_public group school_id coordinates first_date last_date
                             siret internship_address_manual_enter lunch_break daily_hours
-                            weekly_hours rep qpv].freeze
+                            max_candidates max_students_per_group weekly_hours rep qpv].freeze
 
   include StiPreload
   include AASM
@@ -251,7 +251,7 @@ class InternshipOffer < ApplicationRecord
     end
 
     event :unpublish do
-      transitions from: %i[published need_to_be_updated drafted],
+      transitions from: %i[published need_to_be_updated drafted splitted drafted],
                   to: :unpublished, after: proc { |*_args|
                                              update!(published_at: nil)
                                            }
@@ -347,10 +347,6 @@ class InternshipOffer < ApplicationRecord
     self.last_date = ordered_weeks.last&.week_date&.+ 4.days
   end
 
-  def shown_as_masked?
-    !published?
-  end
-
   def departement
     Department.lookup_by_zipcode(zipcode:)
   end
@@ -433,8 +429,10 @@ class InternshipOffer < ApplicationRecord
 
   def generate_offer_from_attributes(white_list)
     offer = InternshipOffer.new(attributes.slice(*white_list))
-    offer.weeks = weeks
     offer.grades = grades
+    offer.mother_id = id
+    unpublish! if has_weeks_before_school_year_start? && published_at.present?
+    offer.published_at = nil
     offer
   end
 

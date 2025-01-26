@@ -207,8 +207,16 @@ class Ability
     can :duplicate, InternshipOffer do |internship_offer|
       duplicable?(internship_offer:, user:)
     end
+    can :publish, InternshipOffer do |internship_offer|
+      internship_offer.employer_id == user.id &&
+        internship_offer.last_date > SchoolYear::Current.new.beginning_of_period
+    end
     can %i[create see_tutor], InternshipOffer
-    can %i[read update discard publish], InternshipOffer, employer_id: user.team_members_ids
+    can %i[read discard], InternshipOffer, employer_id: user.team_members_ids
+    can %i[update], InternshipOffer do |internship_offer|
+      internship_offer.employer_id.in?(user.team_members_ids) &&
+        internship_offer.has_weeks_after_school_year_start?
+    end
     can %i[create], InternshipOccupation
     can %i[create], Entreprise do |entreprise|
       entreprise.internship_occupation.employer_id == user.id
@@ -580,14 +588,8 @@ class Ability
   end
 
   def duplicable?(internship_offer:, user:)
-    main_condition = internship_offer.persisted? &&
-                     internship_offer.employer_id == user.id
-    if main_condition
-      school_year_start = SchoolYear::Current.new.beginning_of_period
-      internship_offer.last_date > school_year_start
-    else
-      false
-    end
+    internship_offer.persisted? &&
+      internship_offer.employer_id == user.id
   end
 
   def read_employer_name?(internship_offer:)
