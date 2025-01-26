@@ -52,8 +52,8 @@ class CallbacksController < ApplicationController
 
     educonnect = Services::EduconnectConnection.new(code, state, nonce)
 
-    # session[:id_token] = educonnect.id_token
-    # session[:state] = state
+    session[:id_token] = educonnect.id_token
+    session[:state] = state
 
     Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
 
@@ -84,7 +84,7 @@ class CallbacksController < ApplicationController
 
     Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
 
-    # sign_in(student)
+    sign_in(student)
 
     Rails.logger.info("Student signed in")
 
