@@ -86,7 +86,7 @@ class CallbacksController < ApplicationController
 
     begin
       Rails.logger.info("Starting sign in process...")
-      Rails.logger.info("Student details - ID: #{student.id}, Email: #{student.email}, Status: #{student.status}")
+      Rails.logger.info("Student details - ID: #{student.id}, Email: #{student.email}")
       
       # Vérifier que l'utilisateur est valide avant la connexion
       unless student.valid?
