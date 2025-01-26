@@ -85,12 +85,24 @@ class CallbacksController < ApplicationController
     Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
 
     begin
-      Rails.logger.info("Attempting to sign in student: #{student.id}")
-      sign_in(student)
-      Rails.logger.info("Sign in successful")
+      Rails.logger.info("Starting sign in process...")
+      Rails.logger.info("Student details - ID: #{student.id}, Email: #{student.email}, Status: #{student.status}")
+      
+      # Vérifier que l'utilisateur est valide avant la connexion
+      unless student.valid?
+        Rails.logger.error("Student validation failed: #{student.errors.full_messages}")
+        return redirect_to root_path, alert: 'Erreur de validation utilisateur'
+      end
+
+      # Essayer de créer la session avec plus de détails en cas d'erreur
+      Devise.sign_out_all_scopes ? sign_in(student, scope: :user) : sign_in(student)
+      
+      Rails.logger.info("Sign in successful - Session ID: #{session.id}")
+      Rails.logger.info("Current user signed in: #{current_user&.id}")
     rescue StandardError => e
-      Rails.logger.error("Failed to sign in student: #{e.message}")
-      Rails.logger.error(e.backtrace.join("\n"))
+      Rails.logger.error("Failed to sign in student - Error type: #{e.class}")
+      Rails.logger.error("Error message: #{e.message}")
+      Rails.logger.error("Backtrace:\n#{e.backtrace.join("\n")}")
       return redirect_to root_path, alert: 'Erreur lors de la connexion'
     end
 
