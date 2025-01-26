@@ -89,7 +89,7 @@ class CallbacksController < ApplicationController
     Rails.logger.info("Student signed in")
 
     redirect_to root_path, notice: 'Vous êtes bien connecté'
-    # redirect_to after_sign_in_path_for(student), notice: 'Vous êtes bien connecté'
+    
   end
 
   def get_role(role)
