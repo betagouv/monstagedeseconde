@@ -46,16 +46,25 @@ class CallbacksController < ApplicationController
     state = params[:state]
     nonce = params[:nonce]
 
+    Rails.logger.info("Code: #{code}")
+    Rails.logger.info("State: #{state}")
+    Rails.logger.info("Nonce: #{nonce}")
+
     educonnect = Services::EduconnectConnection.new(code, state, nonce)
 
     session[:id_token] = educonnect.id_token
     session[:state] = state
+
+    Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
 
     user_info = educonnect.get_user_info
     redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
     student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
     school = School.find_by(code_uai: user_info['FrEduCtEleveUAI'])
+
+    Rails.logger.info("School: #{school.inspect}")
+    Rails.logger.info("Student: #{student.inspect}")
 
     unless school.present?
       handle_educonnect_logout(educonnect)
