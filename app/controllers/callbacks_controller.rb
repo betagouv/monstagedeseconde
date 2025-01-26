@@ -83,8 +83,11 @@ class CallbacksController < ApplicationController
     end
 
     Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
-    
+
     sign_in(student)
+    
+    Rails.logger.info("Student signed in")
+
     redirect_to after_sign_in_path_for(student), notice: 'Vous êtes bien connecté'
   end
 
