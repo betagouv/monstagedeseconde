@@ -148,6 +148,13 @@ a.leaflet-control-zoom-out {
 
 .leaflet-container {
   height: calc(100vh - 130px) !important;
+  z-index: 9;
+}
+
+.weeks-list {
+  .custom-control-checkbox-list{
+    overflow-x: hidden;
+  }
 }
 
 @include media-breakpoint-up(xs) {

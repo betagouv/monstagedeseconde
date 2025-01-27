@@ -100,9 +100,6 @@ module InternshipOffers
       weeks.any? { |week| week.id.in?(Week.before_week(week: start_week).ids) }
     end
 
-    # TODO
-    # make a before and after block to be reused
-
     def has_weeks_after_school_year_start?
       start_week = Week.current_year_start_week
       weeks.any? { |week| week.id.in?(Week.after_week(week: start_week).ids) }

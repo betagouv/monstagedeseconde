@@ -3,6 +3,7 @@
 module Users
   class Student < User
     include StudentAdmin
+    include UserWithSchool
 
     BITLY_STUDENT_WELCOME_URL = 'https://bit.ly/4athP2e' # internship_offers_url in production
 

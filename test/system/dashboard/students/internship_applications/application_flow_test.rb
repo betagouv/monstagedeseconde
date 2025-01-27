@@ -9,7 +9,7 @@ module Dashboard
       test 'first and uniq test before submitting when email was missing' do
         school = create(:school, :with_school_manager)
         employer, internship_offer = create_employer_and_offer_2nde
-        student = create(:student, phone: '+2620625852585', school:, email: nil)
+        student = create(:student, :seconde, phone: '+2620625852585', school:, email: nil)
         new_email = 'tests@free.fr'
 
         sign_in(student)
@@ -32,7 +32,7 @@ module Dashboard
         employer, internship_offer = create_employer_and_offer_2nde
         second_internship_offer = create(:weekly_internship_offer_2nde, employer:)
         former_student_email = 'test@free.fr'
-        student = create(:student, :registered_with_phone)
+        student = create(:student, :seconde, :registered_with_phone)
         internship_application = create(:weekly_internship_application,
                                         :submitted,
                                         internship_offer:,
@@ -51,7 +51,7 @@ module Dashboard
         employer, internship_offer = create_employer_and_offer_2nde
         second_internship_offer = create(:weekly_internship_offer_2nde, employer:)
         former_student_phone = '+330623055441'
-        student = create(:student)
+        student = create(:student, :seconde)
         assert_nil student.phone
         internship_application = create(:weekly_internship_application,
                                         :submitted,

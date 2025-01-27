@@ -161,7 +161,7 @@ module InternshipOffers
         current = create(:weekly_internship_offer_2nde, title: 'current')
         next_in_page = create(:weekly_internship_offer_2nde, title: 'next')
         # next_out = create(:weekly_internship_offer_2nde, title: 'next_out')
-        student = create(:student, school: create(:school))
+        student = create(:student, :seconde, school: create(:school))
 
         InternshipOffer.stub :nearby, InternshipOffer.all do
           sign_in(student)
@@ -179,7 +179,7 @@ module InternshipOffers
         current = create(:weekly_internship_offer_2nde, title: 'current')
         next_in_page = create(:weekly_internship_offer_2nde, title: 'next')
         next_out = create(:weekly_internship_offer_2nde, title: 'next_out')
-        student = create(:student, school: create(:school))
+        student = create(:student, :seconde, school: create(:school))
 
         InternshipOffer.stub :nearby, InternshipOffer.all do
           InternshipOffer.stub :by_weeks, InternshipOffer.all do
@@ -199,7 +199,7 @@ module InternshipOffers
         previous_out = create(:weekly_internship_offer_2nde, title: 'previous_out')
         previous_in_page = create(:weekly_internship_offer_2nde, title: 'previous')
         current = create(:weekly_internship_offer_2nde, title: 'current')
-        student = create(:student, school: create(:school))
+        student = create(:student, :seconde, school: create(:school))
 
         InternshipOffer.stub :nearby, InternshipOffer.all do
           InternshipOffer.stub :by_weeks, InternshipOffer.all do
@@ -219,7 +219,7 @@ module InternshipOffers
         previous_in_page = create(:weekly_internship_offer_2nde, title: 'previous')
         current = create(:weekly_internship_offer_2nde, title: 'current')
         next_in_page = create(:weekly_internship_offer_2nde, title: 'next')
-        student = create(:student, school: create(:school))
+        student = create(:student, :seconde, school: create(:school))
 
         InternshipOffer.stub :nearby, InternshipOffer.all do
           InternshipOffer.stub :by_weeks, InternshipOffer.all do
