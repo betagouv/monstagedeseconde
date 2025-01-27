@@ -274,7 +274,8 @@ def populate_internship_offers
   InternshipOffers::WeeklyFramed.create!(
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
-    max_candidates: 5,
+    max_candidates: 1,
+    max_students_per_group: 1,
     period: [0, 1, 2].sample,
     sector: Sector.first,
     group: Group.is_private.first,
