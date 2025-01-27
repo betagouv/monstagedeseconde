@@ -2287,7 +2287,6 @@ CREATE TABLE public.users (
     survey_answered boolean DEFAULT false,
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
-    hubspot_id character varying(15),
     academy_id integer,
     academy_region_id integer,
     address character varying(300),
@@ -4849,6 +4848,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250124164746'),
 ('20250120101004'),
 ('20250120090347'),
 ('20250115174742'),

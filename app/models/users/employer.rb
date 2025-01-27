@@ -42,7 +42,6 @@ module Users
 
     def after_confirmation
       super
-      UpdateHubspotContactJob.perform_later(self.id)
     end
   end
 end
