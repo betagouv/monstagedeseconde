@@ -117,10 +117,69 @@ module Services::Omogen
       end
     end
 
+    def sygne_schools(code_uai = '0590116F')
+      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves)")
+      schools_in_data = []
+      response = sygne_eleves(uri)
+      case response
+      when Net::HTTPSuccess
+        puts response.body
+        JSON.parse(response.body)
+        puts '================================'
+        puts "code_uai : #{code_uai}"
+        puts '================================'
+        puts ''
+        schools_in_data << JSON.parse(response.body)
+      when Net::HTTPNotFound
+        puts response.body
+        Rails.logger.error "Failed to get sygne eleves : #{response.message}"
+      end
+      puts '================================'
+      puts 'schools_in_data'
+      puts '================================'
+      schools_in_data.each do |school|
+        puts school
+      end
+      schools_in_data
+    end
+
+    def sygne_responsables(ine = '001291528AA')
+      # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
+      uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
+      puts uri
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true if uri.scheme == 'https'
+
+      request = Net::HTTP::Get.new(uri.request_uri)
+      request['Authorization'] = "Bearer #{@token}"
+      request['Compression-Zip'] = 'non'
+
+      puts 'request', request
+      puts 'uri', uri
+      puts '----'
+
+      response = http.request(request)
+
+      case response
+      when Net::HTTPSuccess
+        JSON.parse(response.body).map do |responsable|
+          {
+            name: responsable['nomFamille'],
+            first_name: responsable['prenom'],
+            email: responsable['email'],
+            phone: responsable['telephonePersonnel'],
+            address: format_address(responsable['adrResidenceResp']),
+            level: responsable['codeNiveauResponsabilite'],
+            sexe: responsable['codeCivilite'] == '1' ? 'M' : 'F'
+          }
+        end
+      end
+    end
+
     def sygne_eleves(code_uai, niveau:)
       students = []
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
-
       response = sygne_eleves_request(uri)
       case response
       when Net::HTTPSuccess
@@ -193,7 +252,7 @@ module Services::Omogen
       { 'Authorization': "Bearer #{token}", 'Compression-Zip': 'non' }
     end
 
-    def sygne_responsables_request(ine = '001291528AA')
+    def sygne_responsables_request
       # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
       uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
       puts uri

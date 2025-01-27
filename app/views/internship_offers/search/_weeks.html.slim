@@ -1,0 +1,52 @@
+- current_weeks = school_weeks
+div data-controller='select-weeks-search'
+  .row.fr-mb-1w.weeks-list data-select-weeks-search-target='checkboxesContainer'
+    .col-12
+      .d-flex
+        .small-interline.fr-text--sm.border-right.month-lane
+          - Presenters::WeekList.new(weeks: current_weeks).month_split.each do |month_num, weeks|
+            - month_name = Presenters::WeekList::MONTH_LIST[month_num - 9][:name]
+            - score = (weeks & preselected_weeks).size
+            - klass = score > 0 ? 'blue-france strong bold' : 'fr-hint-text'
+            - content = score > 0 ? "#{month_name} (#{score})" : month_name
+            p class="fr-text--sm #{klass} #{month_name} month-score" data-select-weeks-search-target='monthScore'
+              = content
+
+        .flex-fill.weeks-list
+          .custom-control-checkbox-list
+            - Presenters::WeekList.new(weeks: current_weeks).month_split.each do |month_num, weeks|
+              - month_name = Presenters::WeekList::MONTH_LIST[month_num - 9][:name]
+              - year = weeks.first.year
+              div class="fr-text--xs fr-mb-1w #{month_name} month-title"
+                strong
+                  = "#{month_name} #{year}"
+                - weeks.each do |week|
+                  div class="fr-checkbox-group fr-checkbox-group--sm position-relative pr-3 #{month_name}"
+                    - # prevent removing weeks with application by showing a disable checkbox (not submitted to server)
+                    - # keep reference of checkbox id for easier labelling
+                    - checkbox_id = "#{form.object_name}_week_ids_#{week.id}_checkbox"
+                    - # also add an id for hidden field for two reason, avoid conflict, testing
+                    - hidden_id = "#{form.object_name}_week_ids_#{week.id}_hidden"
+                    - checked = week.id.in?(params[:week_ids].to_a.map(&:to_i))
+                    - options =  { multiple: true,
+                                  id: checkbox_id,
+                                  data: {:"select-weeks-search-target" => 'weekCheckboxes',
+                                          action: 'change->select-weeks-search#handleOneCheckboxChange'} }
+                    - options.merge!({checked: checked})
+                    
+                    = form.check_box :week_ids, options, week.id
+                    = form.label :"week_id", for: checkbox_id, class: "fr-label fr-text--sm fr-mb-1v" do
+                      span class="dates-column #{week.in_the_past? ? 'text-grey-disabled' : ''}"
+                        = week.human_shortest
+                hr.fr-mb-1v.fr-ml-n2w
+    - if current_user.present? && ( (current_user.student? && current_user.troisieme_or_quatrieme?) || current_user.school_management? )
+      .col-12
+        .fr-notice.fr-notice--info
+          .fr-container
+            .fr-notice__body
+              p
+                span.fr-notice__title
+                  |Les semaines ouvertes par votre établissement sont automatiquement cochées.
+              button#button-1299.fr-btn--close.fr-btn[title="Masquer le message" onclick="const notice = this.parentNode.parentNode.parentNode; notice.parentNode.removeChild(notice)"]
+                | Masquer le message
+            

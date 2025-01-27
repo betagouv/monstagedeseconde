@@ -71,16 +71,19 @@ module Finders
         sector_ids
         week_ids
         school_year
-      ].each do |sym_key|
-        query = send("#{sym_key}_query", query) if use_params(sym_key)
-      end
+        grade_id
+      ].each { |attr| query = send("#{attr}_query", query) if use_params(attr) }
+
       query = hide_duplicated_offers_query(query) unless user.god?
       query = nearby_query(query) if coordinate_params
       query
     end
 
-    def period_query(query)
-      use_params(:period) ? query.merge(InternshipOffer.where(period: use_params(:period))) : query
+    def grade_id_query(query)
+      query.merge(
+        InternshipOffer.joins(:grades)
+                       .where(grades: Grade.where(id: use_params(:grade_id)))
+      )
     end
 
     def sector_ids_query(query)
@@ -109,17 +112,5 @@ module Finders
     def hide_duplicated_offers_query(query)
       query.merge(query.where(hidden_duplicate: false))
     end
-
-    protected
-
-    # def weekly_framed_scopes(scope, args = nil)
-    #   if args.nil?
-    #     InternshipOffers::WeeklyFramed.send(scope)
-    #       .or(InternshipOffers::Api.send(scope))
-    #   else
-    #     InternshipOffers::WeeklyFramed.send(scope, **args)
-    #       .or(InternshipOffers::Api.send(scope, **args))
-    #   end
-    # end
   end
 end

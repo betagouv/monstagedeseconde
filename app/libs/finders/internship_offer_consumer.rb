@@ -9,7 +9,7 @@ module Finders
         Users::Employer.name => :visitor_query,
         Users::Visitor.name => :visitor_query,
         Users::SchoolManagement.name => :school_management_query,
-        Users::Student.name => :school_members_query,
+        Users::Student.name => :student_query,
         Users::PrefectureStatistician.name => :statistician_query,
         Users::MinistryStatistician.name => :ministry_statistician_query,
         Users::EducationStatistician.name => :statistician_query,
@@ -20,16 +20,16 @@ module Finders
     end
 
     def available_offers(max_distance: MAX_RADIUS_SEARCH_DISTANCE)
-      student_query = kept_published_future_offers_query.ignore_already_applied(user:) # Whatever application status !!!
-      return student_query if user.school.nil?
+      students_query = kept_published_future_offers_query.ignore_already_applied(user:) # Whatever application status !!!
+      return students_query if user.school.nil?
 
       school_latitude  = user.school.coordinates&.latitude
       school_longitude = user.school.coordinates&.longitude
-      return student_query if school_latitude.nil? || school_longitude.nil?
+      return students_query if school_latitude.nil? || school_longitude.nil?
 
-      student_query.nearby_and_ordered(latitude: school_latitude,
-                                       longitude: school_longitude,
-                                       radius: max_distance)
+      students_query.nearby_and_ordered(latitude: school_latitude,
+                                        longitude: school_longitude,
+                                        radius: max_distance)
     end
 
     private
@@ -58,6 +58,15 @@ module Finders
 
     def school_members_query
       school_management_query.ignore_already_applied(user:)
+    end
+
+    def student_query
+      case user.try(:grade).try(:id)
+      when Grade.seconde.id
+        school_members_query.seconde
+      else
+        school_members_query.troisieme_or_quatrieme
+      end
     end
 
     def statistician_query
