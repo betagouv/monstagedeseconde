@@ -1,8 +1,9 @@
 def populate_internship_offers
   current_school_year = SchoolYear::Current.new.beginning_of_period
-  weeks = SchoolTrack::Seconde.both_weeks
-  weeks += Week.selectable_from_now_until_end_of_school_year
-  # TODO period is ignored for InternshipOffers::WeeklyFramed
+  seconde_weeks = SchoolTrack::Seconde.both_weeks
+  troisieme_weeks = Week.selectable_from_now_until_end_of_school_year
+  all_weeks = seconde_weeks + troisieme_weeks
+  # TODO: period is ignored for InternshipOffers::WeeklyFramed
   # public sector
   # 1
   InternshipOffers::WeeklyFramed.create!(
@@ -14,7 +15,7 @@ def populate_internship_offers
     sector: Sector.first,
     group: Group.is_paqte.first,
     is_public: false,
-    title: 'Stage assistant.e ressources humaines - Service des recrutements',
+    title: '(all) Stage assistant.e ressources humaines - Service des recrutements',
     description: 'Vous assistez la responsable de secteur dans la gestion du recrutement des intervenant.e.s à domicile et la gestion des contrats de celles et ceux en contrat avec des particulier-employeurs.',
     employer_description: "Du Temps pour moi est une agence mandataire de garde d'enfants à domicile. Notre activité consister à aider les familles de la métropole lilloise à trouver leur intervenant(e) à domicile.",
     employer_website: 'http://www.dtpm.fr/',
@@ -24,7 +25,7 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude] },
     employer_name: Group.is_paqte.first.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: weeks,
+    weeks: all_weeks,
     grades: Grade.all,
     entreprise_full_address: '56 rue d\'Entraigues , Tours',
     lunch_break: "L'élève doit prévoir son repas de midi"
@@ -40,7 +41,7 @@ def populate_internship_offers
     sector: Sector.first,
     group: Group.is_paqte.first,
     is_public: false,
-    title: 'Stage avec deux segments de date, bugfix',
+    title: '(all) Stage de métrologie - scanner',
     description: 'Scanner metrology est une entreprise unique en son genre'.truncate(249),
     employer_description: 'Scanner metrology a été fondée par le laureat Recherche et Company 2016'.truncate(249),
     employer_website: 'https://www.asml.com/en/careers',
@@ -50,7 +51,7 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.verneuil[:latitude], longitude: Coordinates.verneuil[:longitude] },
     employer_name: Group.is_paqte.first.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: weeks,
+    weeks: all_weeks,
     grades: Grade.all,
     entreprise_full_address: '2 Allée de la Garenne, 78480 Verneuil-sur-Seine',
     lunch_break: "L'élève doit prévoir son repas de midi"
@@ -66,7 +67,7 @@ def populate_internship_offers
     sector: Sector.second,
     group: Group.is_public.last,
     is_public: true,
-    title: 'Observation du métier de chef de service - Ministère',
+    title: '(all) Observation du métier de chef de service - Ministère',
     description: 'Découvrez les réunions et comment se prennent les décisions au plus haut niveau mais aussi tous les interlocuteurs de notre société qui intéragissent avec nos services ',
     employer_description: 'De multiples méthodes de travail et de prises de décisions seront observées',
     street: '18 rue Damiens',
@@ -75,7 +76,7 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: Group.is_public.last.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: Week.selectable_from_now_until_end_of_school_year,
+    weeks: all_weeks.last(10),
     grades: Grade.all,
     entreprise_full_address: '18 rue Damiens, 75012 Paris',
     lunch_break: "L'élève doit prévoir son repas de midi"
@@ -91,7 +92,7 @@ def populate_internship_offers
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
-    title: 'Stage assistant.e banque et assurance',
+    title: '(3e) Stage assistant.e banque et assurance',
     description: 'Vous assistez la responsable de secteur dans la gestion du recrutement des intervenant.e.s à domicile et la gestion des contrats de celles et ceux en contrat avec des particulier-employeurs.',
     employer_description: "Du Temps pour moi est une agence mandataire de garde d'enfants à domicile. Notre activité consister à aider les familles de la métropole lilloise à trouver leur intervenant(e) à domicile pour la garde de leurs enfants de 0 à 16 ans.",
     employer_website: 'http://www.dtpm.fr/',
@@ -101,8 +102,8 @@ def populate_internship_offers
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Du temps pour moi',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: Week.selectable_from_now_until_end_of_school_year,
-    grades: Grade.all,
+    weeks: troisieme_weeks,
+    grades: [Grade.troisieme],
     entreprise_full_address: '128 rue brancion, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi"
   )
@@ -117,7 +118,7 @@ def populate_internship_offers
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
-    title: '(non publiée) Stage assistant.e banque et assurance',
+    title: '(2de) (non publiée) Stage assistant.e banque et assurance',
     description: 'Vous assistez la responsable de secteur dans la gestion du recrutement des intervenant.e.s à domicile et la gestion des contrats de celles et ceux en contrat avec des particulier-employeurs.',
     employer_description: "Du Temps pour moi est une agence mandataire de garde d'enfants à domicile. Notre activité consister à aider les familles de la métropole lilloise à trouver leur intervenant(e) à domicile pour la garde de leurs enfants de 0 à 16 ans.",
     employer_website: 'http://www.dtpm.fr/',
@@ -128,8 +129,8 @@ def populate_internship_offers
     employer_name: 'Du temps pour moi',
     max_candidates: 7,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: weeks,
-    grades: Grade.all,
+    weeks: seconde_weeks,
+    grades: [Grade.seconde],
     entreprise_full_address: '128 rue brancion, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi"
   )
@@ -143,7 +144,7 @@ def populate_internship_offers
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
-    title: 'Stage editeur - A la recherche du temps passé par les collaborateurs',
+    title: '(2de) Stage editeur - A la recherche du temps passé par les collaborateurs',
     description: 'Vous assistez la responsable de secteur dans la gestion des projets internes touchant à la gestion des contrats.',
     employer_description: "Du Temps pour moi est une agence mandataire de garde d'enfants à domicile. Notre activité consister à aider les familles de la métropole lilloise à trouver leur intervenant(e) à domicile pour la garde de leurs enfants de 0 à 16 ans.",
     employer_website: 'http://www.dtpm.fr/',
@@ -153,8 +154,8 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: 'Editegis',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: weeks,
-    grades: Grade.all,
+    weeks: seconde_weeks,
+    grades: [Grade.seconde],
     entreprise_full_address: '129 rue brancion, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi"
   )
@@ -169,7 +170,7 @@ def populate_internship_offers
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
-    title: 'Observation du métier d\'enseignant de mathématique - Lycée Jean Moulin',
+    title: '(3e) Observation du métier d\'enseignant de mathématique - Lycée Jean Moulin',
     description: 'Vous assistez au cours de mathématiques de 2de générale du lycée Jean Moulin',
     employer_description: 'Le métier de professeur de mathématiques consiste à enseigner les mathématiques aux élèves de lycée. Il peut également enseigner dans le supérieur. Il peut être amené à participer à des projets pédagogiques et à encadrer des élèves.',
     street: '56 rue d\'Entraigues , Tours',
@@ -178,8 +179,8 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude] },
     employer_name: 'Education Nationale',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: weeks,
-    grades: Grade.all,
+    weeks: troisieme_weeks,
+    grades: [Grade.troisieme],
     entreprise_full_address: '56 rue d\'Entraigues , 37000 Tours',
     lunch_break: "L'élève doit prévoir son repas de midi"
   )
@@ -194,7 +195,7 @@ def populate_internship_offers
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
-    title: "API - Observation du métier d'Administrateur de systèmes informatiques - IBM SERVICES CENTER",
+    title: "2de - API - Observation du métier d'Administrateur de systèmes informatiques - IBM SERVICES CENTER",
     description: "Venez découvrir le métier d'administrateur systèmes ! Vous observerez comment nos administrateurs garantissent aux clients le bon fonctionnement etc.",
     employer_description: "Le centre de service IBM de Lille délivre des services d'infrastructure informatique.",
     street: '128 rue brancion',
@@ -205,8 +206,8 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: 'IBM',
     internship_offer_area_id: area_id,
-    weeks: Week.selectable_from_now_until_end_of_school_year,
-    grades: Grade.all,
+    weeks: seconde_weeks,
+    grades: [Grade.seconde],
     entreprise_full_address: '128 rue brancion, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi"
   )
@@ -221,7 +222,7 @@ def populate_internship_offers
     sector: Sector.first,
     group: Group.is_public.first,
     is_public: false,
-    title: "Découverte des métiers administratifs de l'Education nationale",
+    title: "(all) Découverte des métiers administratifs de l'Education nationale",
     description: "La Direction des Services de l'Education Nationale de Seine-et-Marne (DSDEN) se compose de plusieurs services répartis sur 11 étages. Ses 240 agents  ...",
     employer_description: "Le centre de service IBM de Lille délivre des services d'infrastructure informatique.",
     tutor_name: 'Martin Fourcade',
@@ -236,7 +237,7 @@ def populate_internship_offers
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Ministère de l\'Education Nationale',
     internship_offer_area_id: area_id,
-    weeks: Week.selectable_from_now_until_end_of_school_year,
+    weeks: all_weeks,
     grades: Grade.all,
     entreprise_full_address: '128 rue brancion, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi"
@@ -252,7 +253,7 @@ def populate_internship_offers
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
-    title: 'Découverte des services douaniers de Valenciennes',
+    title: '(all) Découverte des services douaniers de Valenciennes',
     description: description,
     employer_description: 'La douane assure des missions fiscales et de lutte contre les trafics illicites et la criminalité organisée.',
     employer_website: 'http://www.prefectures-regions.gouv.fr/hauts-de-france/Region-et-institutions/Organisation-administrative-de-la-region/Les-services-de-l-Etat-en-region/Direction-interregionale-des-douanes/Direction-interregionale-des-douanes',
@@ -262,7 +263,7 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.montmorency[:latitude], longitude: Coordinates.montmorency[:longitude] },
     employer_name: 'Douanes Assistance Corp.',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: weeks,
+    weeks: all_weeks,
     grades: Grade.all,
     entreprise_full_address: '2 rue jean moulin, 95160 Montmorency',
     lunch_break: "L'élève doit prévoir son repas de midi"
@@ -278,7 +279,7 @@ def populate_internship_offers
     sector: Sector.first,
     group: Group.is_private.first,
     is_public: false,
-    title: 'Découverte du travail de gestionnaire en ligne',
+    title: '(3e) Découverte du travail de gestionnaire en ligne',
     description: description,
     employer_description: 'Le métier de gestionnaire consiste à optimiser les ressources de la MetaBoutShop en spéculant sur des valeurs mobilières',
     street: '2 Allée de la Garenne',
@@ -287,8 +288,8 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.verneuil[:latitude], longitude: Coordinates.verneuil[:longitude] },
     employer_name: 'MetaBoutShop',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: weeks,
-    grades: Grade.all,
+    weeks: troisieme_weeks,
+    grades: [Grade.troisieme],
     entreprise_full_address: '2 Allée de la Garenne, 78480 Verneuil-sur-Seine',
     lunch_break: "L'élève doit prévoir son repas de midi"
   )
@@ -318,7 +319,7 @@ def populate_internship_offers
     group: Group.is_private.first,
     is_public: false,
     school_year: 2023,
-    title: 'Découverte du travail de trader',
+    title: '(3e) Découverte du travail de trader',
     description: description,
     employer_description: 'Le métier de trader consiste à optimiser les ressources de la banque Oyonnax Corp. en spéculant sur des valeurs mobilières',
     tutor_name: 'Martin Fourcade',
@@ -331,8 +332,8 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: 'Oyonnax Corp.',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: weeks,
-    grades: Grade.all,
+    weeks: troisieme_weeks,
+    grades: [Grade.troisieme],
     entreprise_full_address: '128 rue brancion, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi"
   )
@@ -347,7 +348,7 @@ def populate_internship_offers
     sector: Sector.fourth,
     group: Group.is_paqte.second,
     is_public: false,
-    title: 'Stage concessionnaire automobile',
+    title: '(2de) Stage concessionnaire automobile',
     description: "Vous assistez la responsable de la concession automobile, aux ventes de véhicules, et observez les manipulations nécessaires pour la logistique et l'approvisionnement des véhicules.",
     employer_description: 'Un concessionnaire offre un service de qualité et, pour ses clients, la fierté de posséder un véhicule de qualité.',
     employer_website: 'http://www.dtpm.fr/',
@@ -357,13 +358,16 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.bordeaux[:latitude], longitude: Coordinates.bordeaux[:longitude] },
     employer_name: Group.is_paqte.second.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: Week.selectable_from_now_until_end_of_school_year,
-    grades: Grade.all,
+    weeks: seconde_weeks,
+    grades: [Grade.seconde],
     entreprise_full_address: '30 rue Jean Soula, 33000 Bordeaux',
     lunch_break: "L'élève doit prévoir son repas de midi"
   )
 
   # 13
+  current_year = SchoolTrack::Seconde.current_year.to_i
+  former_year = current_year - 1
+  weeks = SchoolTrack::Seconde.both_weeks(year: former_year)
   InternshipOffers::WeeklyFramed.create!(
     employer: Users::Employer.first,
     contact_phone: '+33637607156',
@@ -373,7 +377,7 @@ def populate_internship_offers
     sector: Sector.second,
     group: nil,
     is_public: false,
-    title: 'Stage cordonnerie',
+    title: '(2de) Stage cordonnerie',
     description: "Vous observez le métier et la gestion de la clientèle d'une cordonnnerie.",
     employer_description: 'Un artisan fier de son métier.',
     employer_website: nil,
@@ -383,10 +387,10 @@ def populate_internship_offers
     coordinates: { latitude: Coordinates.tours[:latitude], longitude: Coordinates.tours[:longitude] },
     employer_name: Group.is_paqte.second.name,
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: Week.selectable_from_now_until_end_of_school_year,
+    weeks: weeks,
     lunch_break: "L'élève doit prévoir son repas de midi",
     entreprise_full_address: '12, rue de la Serpe, 37000 Tours',
-    grades: Grade.all
+    grades: [Grade.seconde]
   )
 
   # 14
@@ -398,7 +402,7 @@ def populate_internship_offers
     sector: Sector.first,
     group: Group.is_public.first,
     is_public: false,
-    title: "Découverte des métiers administratifs de l'Education nationale",
+    title: "(3e) Découverte des métiers administratifs de l'Education nationale",
     description: "La Direction des Services de l'Education Nationale de Seine-et-Marne (DSDEN) se compose de plusieurs services répartis sur 11 étages. Ses 240 agents  ...",
     employer_description: "Le centre de service IBM de Lille délivre des services d'infrastructure informatique.",
     street: '128 rue brancion',
@@ -409,14 +413,12 @@ def populate_internship_offers
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Ministère de l\'Education Nationale',
     internship_offer_area_id: area_id,
-    weeks: Week.selectable_from_now_until_end_of_school_year,
+    weeks: troisieme_weeks,
     lunch_break: "L'élève doit prévoir son repas de midi",
-    grades: Grade.all
+    grades: [Grade.troisieme]
   )
 
   # 15 older school year
-  current_year = SchoolTrack::Seconde.current_year
-  former_year = current_year - 1
   weeks = SchoolTrack::Seconde.both_weeks(year: former_year)
   weeks += Week.of_previous_school_year
   InternshipOffers::Api.create!(
@@ -426,7 +428,7 @@ def populate_internship_offers
     sector: Sector.first,
     group: Group.is_public.first,
     is_public: false,
-    title: "2023 : Découverte des métiers administratifs de l'Education nationale",
+    title: "(all) 2023 : Découverte des métiers administratifs de l'Education nationale ",
     description: "La Direction des Services de l'Education Nationale de Seine-et-Marne (DSDEN) se compose de plusieurs services répartis sur 11 étages. Ses 240 agents  ...",
     employer_description: "Le centre de service IBM de Lille délivre des services d'infrastructure informatique.",
     street: '128 rue brancion',

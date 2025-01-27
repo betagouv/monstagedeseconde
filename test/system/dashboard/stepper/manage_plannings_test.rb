@@ -150,6 +150,7 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       end
 
       planning = Planning.last
+      refute planning.maintenance_conditions?
       assert_equal entreprise.id, planning.entreprise_id
       assert_equal Grade.all.map(&:id).sort, planning.grades.map(&:id).sort
       assert_equal 'test de lunch break', planning.lunch_break

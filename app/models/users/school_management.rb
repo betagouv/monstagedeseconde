@@ -9,6 +9,7 @@ module Users
   class SchoolManagement < User
     include SchoolManagementAdmin
     include Signatorable
+    include UserWithSchool
 
     validates :first_name,
               :last_name,
@@ -19,7 +20,6 @@ module Users
                                           message: :accept_terms,
                                           on: :create
 
-    belongs_to :school, optional: true
     belongs_to :class_room, optional: true
     has_many :students, through: :school
     has_many :main_teachers, through: :school
@@ -49,7 +49,8 @@ module Users
     end
 
     def custom_dashboard_paths
-      array = school.present? ? [url_helpers.dashboard_school_class_rooms_path(school)] : []
+      # TODO: fix this : url_helpers.dashboard_school_class_rooms_path(school)
+      array = school.present? ? [url_helpers.root_path] : []
       array << after_sign_in_path
       array
     rescue ActionController::UrlGenerationError
@@ -107,7 +108,8 @@ module Users
     end
 
     def custom_dashboard_path
-      url_helpers.dashboard_school_class_rooms_path(school)
+      # TODO: fix this : url_helpers.dashboard_school_class_rooms_path(school)
+      url_helpers.root_path
     end
 
     def pending_agreements_actions_count

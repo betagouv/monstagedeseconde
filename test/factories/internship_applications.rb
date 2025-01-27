@@ -39,6 +39,19 @@ FactoryBot.define do
       end
     end
 
+    trait :transfered do
+      aasm_state { :transfered }
+      submitted_at { 20.days.ago }
+      read_at { 12.days.ago }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'submitted',
+               to_state: 'transfered',
+               author: application.internship_offer.employer)
+      end
+    end
+
     trait :expired do
       aasm_state { :expired }
       submitted_at { 19.days.ago }

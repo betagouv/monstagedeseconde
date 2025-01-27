@@ -3,6 +3,8 @@
 module Users
   class SessionsController < Devise::SessionsController
     include Phonable
+    include EduconnectLogout
+
     before_action :configure_sign_in_params, only: %i[new create]
     after_action :remove_notice, only: %i[destroy create]
     after_action :switch_back, only: %i[destroy]
@@ -26,7 +28,12 @@ module Users
       allowed_profiles_when_employers_only = current_user.try(:employer?) ||
                                              current_user.try(:operator?) ||
                                              current_user.try(:god?)
-      redirect_to root_path and return if employers_only? && !allowed_profiles_when_employers_only
+
+      if employers_only? && !allowed_profiles_when_employers_only
+        sign_out current_user if user_signed_in?
+        redirect_to root_path,
+                    notice: 'Vous n\'avez pas les permissions nécessaires pour accéder à cette page' and return
+      end
 
       if by_phone? && fetch_user_by_phone.try(:valid_password?, params[:user][:password])
         user = fetch_user_by_phone
@@ -142,11 +149,15 @@ module Users
       oauth_params = {
         redirect_uri: ENV['EDUCONNECT_REDIRECT_URI'],
         client_id: ENV['EDUCONNECT_CLIENT_ID'],
-        scope: 'openid profile email stage',
+        scope: 'openid profile ect.scope.cnx ect.scope.stage',
         response_type: 'code',
         state: SecureRandom.uuid,
         nonce: SecureRandom.uuid
       }
+
+      cookies[:state] = oauth_params[:state]
+
+      ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
     end
   end
 end

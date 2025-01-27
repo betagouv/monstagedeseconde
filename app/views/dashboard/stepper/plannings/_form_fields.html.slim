@@ -49,7 +49,7 @@
       .col-6
         hr
     - klass = resource.class.to_s.split("s::").first
-    .row data-controller="planning-candidates" data-planning-candidates-base-type-value="#{klass}"
+    .row data-controller="planning-candidates"
       .col-6
         = render '/dashboard/stepper/plannings/collective_or_individual_radio_buttons',
                   form: form,
