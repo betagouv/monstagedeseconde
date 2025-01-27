@@ -272,7 +272,7 @@ class InternshipOffer < ApplicationRecord
     event :split do
       transitions from: %i[published need_to_be_updated unpublished],
                   to: :splitted, after: proc { |*_args|
-                                          # update!(published_at: nil) TODO
+                                          # update!(published_at: nil)
                                         }
     end
 
@@ -554,7 +554,14 @@ class InternshipOffer < ApplicationRecord
   end
 
   def user_update?
-    # user_update == 'true'
+  end
+
+  def maintenance_conditions?
+    byebug
+    return true if hidden_duplicate
+    return true if published_at.nil?
+
+    false
   end
 
   def weeks_api_formatted
