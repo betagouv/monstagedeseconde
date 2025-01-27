@@ -168,7 +168,7 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
                       </div>)
                   }
                   { !isLoading && (internshipOffersSeats == 0) &&
-                    (<p>Aucune offre répondant à vos critères n’est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
+                    (<p>Aucune offre répondant à vos critères n'est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
                   }
                 </div>
                 {
@@ -256,10 +256,19 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
       
       { !isMobile() && (<div className="col-5 map-container">
           <div className="">
+          <div className="fr-notice fr-notice--info">
+            <div className="fr-container">
+              <div className="fr-notice__body fr-mx-3v">
+                <p className="fr-notice__title title-banner">
+                  La carte affiche uniquement les 30 premiers résultats visibles sur cette page.
+                </p>
+              </div>
+            </div>
+          </div>
             <MapContainer center={center} zoom={13} scrollWheelZoom={false}>
               <TileLayer
                 url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">'
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               />
               <MarkerClusterGroup>
                 {
