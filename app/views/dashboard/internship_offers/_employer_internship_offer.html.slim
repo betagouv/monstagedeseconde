@@ -20,7 +20,7 @@ tr class="test-internship-offer test-internship-offer-#{employer_internship_offe
       = render partial: "dashboard/internship_offers/toggle_publish_form",
               locals: { internship_offer: employer_internship_offer }
     - else
-      .label.fr-mr-10w = 'Masqué'
+      .label.text-left = "Archivée. Dupliquez l'annonce pour la republier"
   td.text-center.align-middle.applications
     .d-flex.justify-content-start
       = link_to(internship_offer_path(employer_internship_offer, origin: 'dashboard'),
