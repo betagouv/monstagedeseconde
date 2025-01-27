@@ -40,7 +40,7 @@ class CallbacksController < ApplicationController
   end
 
   def educonnect
-    redirect_to root_path, alert: 'Jeton invalide' and return unless cookies[:state] == params[:state]
+    # redirect_to root_path, alert: 'Jeton invalide' and return unless cookies[:state] == params[:state]
 
     code = params[:code]
     state = params[:state]
@@ -77,10 +77,14 @@ class CallbacksController < ApplicationController
       redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
     end
 
-    if student.confirmed_at.blank?
-      student.confirmed_at = Time.now
-      student.save
-    end
+    
+    student.confirm
+    student.save
+
+    # if student.confirmed_at.blank?
+    #   student.confirmed_at = Time.now
+    #   student.save
+    # end
 
     Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
 
@@ -95,7 +99,8 @@ class CallbacksController < ApplicationController
       end
 
       # Essayer de créer la session avec plus de détails en cas d'erreur
-      Devise.sign_out_all_scopes ? sign_in(student, scope: :user) : sign_in(student)
+      # Devise.sign_out_all_scopes ? sign_in(student, scope: :user) : sign_in(student)
+      sign_in(student)
       
       Rails.logger.info("Sign in successful - Session ID: #{session.id}")
       Rails.logger.info("Current user signed in: #{current_user&.id}")

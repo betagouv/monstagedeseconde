@@ -20,7 +20,9 @@ module Services
       )
 
       return {} if response.body.blank?
-
+      
+      puts "response.body: #{response.body}"
+      
       JSON.parse(response.body)
     rescue JSON::ParserError => e
       Rails.logger.error("Failed to parse Educonnect response: #{e.message}")

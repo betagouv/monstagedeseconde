@@ -151,7 +151,7 @@ module Users
         client_id: ENV['EDUCONNECT_CLIENT_ID'],
         scope: 'openid profile ect.scope.cnx ect.scope.stage',
         response_type: 'code',
-        state: SecureRandom.uuid,
+        state: 'abc' # SecureRandom.uuid,
         nonce: SecureRandom.uuid
       }
 
