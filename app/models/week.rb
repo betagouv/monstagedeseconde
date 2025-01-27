@@ -25,7 +25,7 @@ class Week < ApplicationRecord
     elsif current_date.cweek == 53 && current_date.month == 1
       where('year >= ?', current_date.year)
     else
-      where('number >= ?', current_date.cweek).where('year >= ?', current_date.year).or(where('year > ?', current_date.year))
+      after(date: current_date)
     end
   }
 
@@ -33,15 +33,12 @@ class Week < ApplicationRecord
     if Date.current.cweek == 53 && Date.current.month == 1
       where('year >= ?', Date.current.year)
     else
-      where('number > ?', Date.current.cweek).where('year >= ?', Date.current.year).or(where('year > ?', Date.current.year))
+      after(date: Date.current)
     end
   }
 
   scope :of_past_school_years, lambda {
-    turning_point = Week.current_year_start_week
-    where('year < ?', turning_point.year).or(
-      where('year = ?', turning_point.year).where('number < ?', turning_point.number)
-    )
+    after_week(week: Week.current_year_start_week)
   }
 
   scope :from_date_for_current_year, lambda { |from:|
@@ -56,6 +53,29 @@ class Week < ApplicationRecord
     number = date.cweek
     year = number == 53 ? date.year - 1 : date.year
     find_by(number:, year:)
+  }
+
+  scope :before, lambda { |date:|
+    where('year < ?', date.year).or(
+      where('year = ?', date.year).where('number < ?', date.cweek)
+    )
+  }
+
+  scope :after, lambda { |date:|
+    where('year > ?', date.year).or(
+      where('year = ?', date.year).where('number > ?', date.cweek)
+    )
+  }
+  scope :before_week, lambda { |week:|
+    where('year < ?', week.year).or(
+      where('year = ?', week.year).where('number < ?', week.number)
+    )
+  }
+
+  scope :after_week, lambda { |week:|
+    where('year > ?', week.year).or(
+      where('year = ?', week.year).where('number > ?', week.number)
+    )
   }
 
   scope :selectable_from_now_until_end_of_school_year, lambda {
@@ -118,29 +138,6 @@ class Week < ApplicationRecord
 
     where('number >= ?', first_week_of_september).where(year: school_year)
                                                  .or(where('number <= ?', first_day_of_july_week).where(year: school_year + 1))
-  }
-
-  scope :before, lambda { |date:|
-    where('year < ?', date.year).or(
-      where('year = ?', date.year).where('number < ?', date.cweek)
-    )
-  }
-
-  scope :after, lambda { |date:|
-    where('year > ?', date.year).or(
-      where('year = ?', date.year).where('number > ?', date.cweek)
-    )
-  }
-  scope :before_week, lambda { |week:|
-    where('year < ?', week.year).or(
-      where('year = ?', week.year).where('number < ?', week.number)
-    )
-  }
-
-  scope :after_week, lambda { |week:|
-    where('year > ?', week.year).or(
-      where('year = ?', week.year).where('number > ?', week.number)
-    )
   }
 
   def self.current_year_start_week
