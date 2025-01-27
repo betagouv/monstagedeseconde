@@ -2,35 +2,38 @@ require 'json'
 
 module Services
   class EduconnectConnection
-    def initialize(code, state)
+    attr_reader :id_token
+
+    def initialize(code, state, nonce)
       @code = code
       @state = state
+      @nonce = nonce
+      @id_token = ''
       @token = get_token
     end
 
     def get_user_info
-      headers = {
-        'Authorization' => "Bearer #{@token}",
-        'Content-Type' => 'application/json'
-      }
+      response = make_request(
+        :get,
+        "#{ENV.fetch('EDUCONNECT_URL')}/idp/profile/oidc/userinfo",
+        headers: auth_headers
+      )
 
-      url = "#{ENV.fetch('EDUCONNECT_URL')}/idp/profile/oidc/userinfo"
-      uri = URI(url)
-
-      # Créer une requête HTTP complète
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if uri.scheme == 'https'
-
-      request = Net::HTTP::Get.new(uri)
-      headers.each { |key, value| request[key] = value }
-
-      response = http.request(request)
-      puts "Response: #{response}"
-      puts "Response body: #{response.body}"
-
-      raise "Failed to get user info: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
+      return {} if response.body.blank?
 
       JSON.parse(response.body)
+    rescue JSON::ParserError => e
+      Rails.logger.error("Failed to parse Educonnect response: #{e.message}")
+      Rails.logger.error("Response body: #{response&.body.inspect}")
+      {}
+    end
+
+    def logout
+      make_request(
+        :get,
+        "#{ENV.fetch('EDUCONNECT_URL')}/idp/profile/oidc/logout",
+        headers: { 'Authorization' => "Bearer #{@id_token}" }
+      )
     end
 
     private
@@ -42,28 +45,52 @@ module Services
         code: @code,
         grant_type: 'authorization_code',
         redirect_uri: ENV.fetch('EDUCONNECT_REDIRECT_URI'),
-        scope: 'openid stage profile email', # Ordre corrigé des scopes
         state: @state,
-        nonce: SecureRandom.uuid
+        nonce: @nonce
       }
 
-      url = "#{ENV.fetch('EDUCONNECT_URL')}/idp/profile/oidc/token"
+      response = make_request(
+        :post,
+        "#{ENV.fetch('EDUCONNECT_URL')}/idp/profile/oidc/token",
+        headers: { 'Content-Type' => 'application/x-www-form-urlencoded' },
+        body: URI.encode_www_form(body)
+      )
+
+      parsed_response = JSON.parse(response.body)
+      @id_token = parsed_response['id_token']
+
+      parsed_response['access_token']
+    rescue JSON::ParserError => e
+      Rails.logger.error("Failed to parse Educonnect response: #{e.message}")
+      Rails.logger.error("Response body: #{response&.body.inspect}")
+      { access_token: nil, id_token: nil }
+    end
+
+    def make_request(method, url, headers: {}, body: nil)
       uri = URI(url)
-
       http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if uri.scheme == 'https'
+      http.use_ssl = uri.scheme == 'https'
 
-      request = Net::HTTP::Post.new(uri)
-      request['Content-Type'] = 'application/x-www-form-urlencoded'
-      request.body = URI.encode_www_form(body)
+      request = "Net::HTTP::#{method.to_s.capitalize}".constantize.new(uri)
+      headers.each { |key, value| request[key] = value }
+      request.body = body if body
 
-      puts "Request body: #{request.body}" # Pour debug
+      Rails.logger.info("Making #{method.upcase} request to #{url}")
       response = http.request(request)
-      puts "Response: #{response.body}"
 
-      raise "Failed to get token: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
+      unless response.is_a?(Net::HTTPSuccess)
+        Rails.logger.error("Educonnect request failed: Status: #{response.code}, Body: #{response.body.inspect}")
+        return OpenStruct.new(body: '')
+      end
 
-      JSON.parse(response.body)['access_token']
+      response
+    end
+
+    def auth_headers
+      {
+        'Authorization' => "Bearer #{@token}",
+        'Content-Type' => 'application/json'
+      }
     end
   end
 end

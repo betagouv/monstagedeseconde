@@ -102,7 +102,7 @@ def populate_internship_offers
     coordinates: { latitude: 48.866667, longitude: 2.333333 },
     employer_name: 'Du temps pour moi',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks:troisieme_weeks,
+    weeks: troisieme_weeks,
     grades: [Grade.troisieme],
     entreprise_full_address: '128 rue brancion, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi"
@@ -419,7 +419,6 @@ def populate_internship_offers
   )
 
   # 15 older school year
-  
   weeks = SchoolTrack::Seconde.both_weeks(year: former_year)
   weeks += Week.of_previous_school_year
   InternshipOffers::Api.create!(

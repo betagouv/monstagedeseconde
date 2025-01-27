@@ -183,4 +183,42 @@ module ThirdPartyTestHelpers
       PagesController.stub_any_instance(:get_faqs, [], &block)
     end
   end
+
+  def educonnect_token_stub
+    stub_request(:post, ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/token')
+      .with(
+        body: {
+          'client_id' => ENV['EDUCONNECT_CLIENT_ID'],
+          'client_secret' => ENV['EDUCONNECT_CLIENT_SECRET'],
+          'code' => '123456',
+          'grant_type' => 'authorization_code',
+          'redirect_uri' => ENV['EDUCONNECT_REDIRECT_URI'],
+          'state' => 'abc',
+          'nonce' => 'def'
+        }
+      )
+      .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_token.json'), headers: {})
+  end
+
+  def educonnect_userinfo_stub
+    stub_request(:get, ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/userinfo')
+      .with(
+        headers: {
+          'Authorization' => 'Bearer token_educonnect',
+          'Content-Type' => 'application/json'
+        }
+      )
+      .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_userinfo.json'), headers: {})
+  end
+
+  def educonnect_userinfo_unknown_stub
+    stub_request(:get, ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/userinfo')
+      .with(
+        headers: {
+          'Authorization' => 'Bearer token_educonnect',
+          'Content-Type' => 'application/json'
+        }
+      )
+      .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_userinfo_unknown.json'), headers: {})
+  end
 end

@@ -193,7 +193,8 @@ module InternshipsOffers
       travel_to(Date.new(2021, 2, 1)) do # next year
         internship_offer.weeks << Week.seconde_selectable_weeks.last
 
-        new_internship_offer = internship_offer.split_in_two
+        internship_offer.save
+        new_internship_offer = internship_offer.child
 
         assert internship_offer.hidden_duplicate
         refute internship_offer.published?
@@ -205,26 +206,23 @@ module InternshipsOffers
       end
     end
 
-    test '#split_in_two fail unless offer is a 2nde offer' do
-      internship_offer = create(:weekly_internship_offer_3eme, max_candidates: 10)
-      assert_no_changes -> { 'InternshipOffer.count' } do
-        internship_offer.split_in_two
-      end
-    end
-
     test '#split_in_two' do
       travel_to Date.new(2025, 1, 1) do
         school = create(:school, :lycee)
-        weeks = [SchoolTrack::Seconde.first_week(year: 2024), SchoolTrack::Seconde.first_week]
-        internship_offer = create(:weekly_internship_offer_2nde,
-                                  weeks: weeks,
+        internship_application = create(:weekly_internship_application)
+        internship_offer = internship_application.internship_offer
+        assert_changes -> { InternshipOffer.count }, from: 1, to: 2 do
+          # following weeks will trigger the split
+          weeks = [SchoolTrack::Seconde.first_week(year: 2024), SchoolTrack::Seconde.first_week]
+          internship_offer.update(weeks: weeks,
                                   school: school,
                                   max_candidates: 10,
                                   period: 1)
-        assert_equal 10, internship_offer.max_candidates
-        assert_equal 10, internship_offer.remaining_seats_count
-        assert_changes -> { InternshipOffer.count }, from: 1, to: 2 do
-          new_internship_offer = internship_offer.split_in_two
+          assert_equal internship_application.reload, internship_offer.internship_applications.first
+
+          assert_equal 10, internship_offer.max_candidates
+          assert_equal 10, internship_offer.remaining_seats_count
+          new_internship_offer = InternshipOffer.find_by(mother_id: internship_offer.id)
 
           stored_offer = InternshipOffer.find_by(hidden_duplicate: true)
           living_offer = InternshipOffer.find_by(hidden_duplicate: false)
@@ -237,6 +235,8 @@ module InternshipsOffers
 
           assert_equal 10, new_internship_offer.max_candidates
           assert_equal 10, new_internship_offer.remaining_seats_count
+          assert new_internship_offer.published?
+          assert_equal [], new_internship_offer.internship_applications
           assert_equal stored_offer.id, new_internship_offer.mother_id
           assert_equal school, new_internship_offer.school
 
@@ -245,6 +245,14 @@ module InternshipsOffers
           assert_equal [SchoolTrack::Seconde.first_week.id], new_internship_offer.weeks.ids
           assert_equal [SchoolTrack::Seconde.first_week(year: 2024).id], stored_offer.weeks.ids
           assert_equal new_internship_offer.employer.id, stored_offer.employer.id
+
+          internship_offer.reload
+          assert internship_offer.hidden_duplicate
+          assert internship_offer.splitted?
+          assert internship_offer.weeks.include?(SchoolTrack::Seconde.first_week(year: 2024))
+          refute internship_offer.weeks.include?(SchoolTrack::Seconde.first_week)
+          assert_equal internship_application, internship_offer.internship_applications.first
+          assert_equal stored_offer.internship_offer_area.id, living_offer.internship_offer_area.id
         end
       end
     end

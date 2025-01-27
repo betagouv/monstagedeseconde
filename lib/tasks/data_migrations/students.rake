@@ -37,6 +37,20 @@ namespace :data_migrations do
     end
   end
 
+  desc 'import 3 students only'
+  task import_three_students: :environment do |task|
+    PrettyConsole.announce_task 'Importing 3 students only' do
+      school = School.where(city: 'Lille').first
+      schools_data = []
+      omogen = Services::Omogen::Sygne.new
+      PrettyConsole.say_in_cyan "Importing students from #{school.name} uai:#{school.code_uai}  ##{school.id}"
+
+      data = omogen.sygne_import_by_schools_little(school.code_uai)&.symbolize_keys
+      schools_data << data
+      puts "----------------- #{school.code_uai} -----------------"
+    end
+  end
+
   desc 'get students of France from omogen and sygne'
   task import_students_data: :environment do |task|
     School.all.find_each(batch_size: 5) do |school|

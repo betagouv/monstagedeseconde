@@ -15,7 +15,7 @@ module Services::Omogen
       http.use_ssl = true if uri.scheme == 'https'
 
       request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
+      request['Authorization'] = "Bearer #{token}"
       request['Code-Application'] = 'FRE'
       request['Code-RNE'] = '0595121W'
       request['Compression-Zip'] = 'non'
@@ -39,7 +39,7 @@ module Services::Omogen
       http.use_ssl = true if uri.scheme == 'https'
 
       request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
+      request['Authorization'] = "Bearer #{token}"
       request['Code-Application'] = 'FRE'
       request['Code-RNE'] = '0595121W'
       request['Compression-Zip'] = 'non'
@@ -53,7 +53,7 @@ module Services::Omogen
       http.use_ssl = true if uri.scheme == 'https'
 
       request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
+      request['Authorization'] = "Bearer #{token}"
 
       response = http.request(request)
 
@@ -93,6 +93,20 @@ module Services::Omogen
     #  "dateDebSco"=>"2023-09-05",
     #  "adhesionTransport"=>false
     # }
+    #
+    # temporary method to import only 3 students for test purpose
+    def sygne_import_by_schools_little(code_uai)
+      counter = 0
+      MEFSTAT4_CODES.each do |niveau|
+        students = sygne_eleves(code_uai, niveau: niveau)
+        students.each do |student|
+          next if counter > 2
+
+          student.make_student
+          counter += 1
+        end
+      end
+    end
 
     def sygne_import_by_schools(code_uai)
       MEFSTAT4_CODES.each do |niveau|
@@ -177,7 +191,18 @@ module Services::Omogen
         end
       when Net::HTTPNotFound
         puts response.body
-        Rails.logger.error "Failed to get sygne eleves : #{response.message}"
+        error_message = "Failed to get sygne eleves  - HTTPNotFound - #{response.message}"
+        Rails.logger.error error_message
+        raise error_message
+      when Net::HTTPForbidden
+        error_message = "Failed to get sygne eleves - 403 - Forbidden Access | #{response.try(:message)}"
+        Rails.logger.error error_message
+        raise error_message
+      else
+        puts response
+        error_message = "Failed to get sygne eleves | #{response.try(:message)}"
+        Rails.logger.error error_message
+        raise error_message
       end
       students
     end
@@ -211,17 +236,20 @@ module Services::Omogen
       @token = get_oauth_token
     end
 
+    attr_reader :token
+
     private
 
     def sygne_eleves_request(uri)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
 
-      request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
-      request['Compression-Zip'] = 'non'
+      request = Net::HTTP::Get.new(uri, headers)
+      http.request(request)
+    end
 
-      response = http.request(request)
+    def headers
+      { 'Authorization': "Bearer #{token}", 'Compression-Zip': 'non' }
     end
 
     def sygne_responsables_request
@@ -232,10 +260,7 @@ module Services::Omogen
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
 
-      request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
-      request['Compression-Zip'] = 'non'
-
+      request = Net::HTTP::Get.new(uri, headers)
       http.request(request)
     end
   end

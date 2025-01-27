@@ -1,0 +1,13 @@
+{
+  "FrEduCtDateConnexion": "2025-01-22 10:36:11.979",
+  "sub": "abcdef",
+  "FrEduCtPersonAffiliation": [
+    "eleve2d"
+  ],
+  "FrEduOrigAuth": "ECT",
+  "FrEduCtEleveUAI": "0379142G",
+  "given_name": "John",
+  "FrEduCtEleveINE": "1234567890",
+  "family_name": "DOE",
+  "FrEduCtEleveNiveau": "2211"
+}

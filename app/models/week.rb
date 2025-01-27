@@ -120,6 +120,29 @@ class Week < ApplicationRecord
                                                  .or(where('number <= ?', first_day_of_july_week).where(year: school_year + 1))
   }
 
+  scope :before, lambda { |date:|
+    where('year < ?', date.year).or(
+      where('year = ?', date.year).where('number < ?', date.cweek)
+    )
+  }
+
+  scope :after, lambda { |date:|
+    where('year > ?', date.year).or(
+      where('year = ?', date.year).where('number > ?', date.cweek)
+    )
+  }
+  scope :before_week, lambda { |week:|
+    where('year < ?', week.year).or(
+      where('year = ?', week.year).where('number < ?', week.number)
+    )
+  }
+
+  scope :after_week, lambda { |week:|
+    where('year > ?', week.year).or(
+      where('year = ?', week.year).where('number > ?', week.number)
+    )
+  }
+
   def self.current_year_start_week
     Week.fetch_from(date: SchoolYear::Current.new.beginning_of_period)
   end
