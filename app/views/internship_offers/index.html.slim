@@ -19,26 +19,6 @@
                                       default_values: params,
                                       form_id: :desktop_internship_offers_index_search_form }
 
-          div
-            - text = "De nouvelles offres sont proposées chaque jour, revenez régulièrement pour trouver celle qui vous convient."
-            / mobile banner
-            .fr-hidden-sm.mobile
-              / = render 'layouts/more_offers_to_come_banner'
-              .fr-sm-mx-2w.fr-md-mx-0
-                .fr-notice.fr-notice--info
-                  .fr-container
-                    .fr-notice__body
-                      p.fr-notice__title.title-banner
-                        = text
-            /desktop banner
-            .fr-hidden.fr-unhidden-sm
-              .fr-sm-mx-2w.fr-md-mx-0
-                .fr-notice.fr-notice--info
-                  .fr-container
-                    .fr-notice__body.fr-mx-3v
-                      p.fr-notice__title.title-banner
-                        = text
-
 .actions.d-flex.d-stick.d-md-none.py-2
   = link_to search_internship_offers_path(params.permit(:city, :latitude, :longitude, :radius, :keyword, :period)),
             class: 'fr-btn btn-block-mobile',
