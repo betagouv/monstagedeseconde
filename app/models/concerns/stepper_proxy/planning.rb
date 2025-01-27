@@ -64,7 +64,9 @@ module StepperProxy
       end
 
       def all_year_long?
-        Week.selectable_from_now_until_end_of_school_year.in?(weeks)
+        all_troisieme_weeks = SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
+        offer_week_list = weeks & SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
+        all_troisieme_weeks[1..-1].map(&:id).sort == offer_week_list.map(&:id).sort
       end
 
       private

@@ -16,8 +16,11 @@ tr class="test-internship-offer test-internship-offer-#{employer_internship_offe
   td.text-center.align-middle.remaining_seats data-head="#{cols[:remaining_seats_count].gsub('&nbsp;', ' ').gsub('<br />', ' ')}"
     = employer_internship_offer.remaining_seats_count
   td.text-center data-head="#{cols[:published_at].gsub('&nbsp;', ' ').gsub('<br />', ' ')}"
-    = render partial: "dashboard/internship_offers/toggle_publish_form",
-             locals: { internship_offer: employer_internship_offer }
+    - if can?(:update, employer_internship_offer)
+      = render partial: "dashboard/internship_offers/toggle_publish_form",
+              locals: { internship_offer: employer_internship_offer }
+    - else
+      .label.text-left = "Archivée. Dupliquez l'annonce pour la republier"
   td.text-center.align-middle.applications
     .d-flex.justify-content-start
       = link_to(internship_offer_path(employer_internship_offer, origin: 'dashboard'),
