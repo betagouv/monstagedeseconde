@@ -557,7 +557,6 @@ class InternshipOffer < ApplicationRecord
   end
 
   def maintenance_conditions?
-    byebug
     return true if hidden_duplicate
     return true if published_at.nil?
 
