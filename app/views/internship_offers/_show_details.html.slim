@@ -10,8 +10,9 @@
   .col-12
     h2.h4.fr-mb-2w Informations sur le stage
   .col-12.pb-2w
-    .reboot-trix-content
-      = internship_offer.description.gsub("\n", "<br>").html_safe
+    - internship_offer.description.split('\n').each do |description_line|
+      p.text-wrap.text-break
+        = strip_tags description_line
 
 .row.fr-pt-3w.thin-line-below
   .col-12
@@ -20,23 +21,24 @@
   .col-12.fr-pb-2
     = Presenters::InternshipOffer.new(internship_offer).internship_week_description
     .fr-my-2w
-      = "Pause déjeuner : #{internship_offer.lunch_break}" if internship_offer.lunch_break
+      = "Pause déjeuner : #{internship_offer.lunch_break.split('\n').join}" if internship_offer.lunch_break
     - unless hidden_parts
       .row.d-block.d-sm-none
         .col-12.fr-py-2w.internship-offer-side-description
           = render "internship_offers/show_side_details", internship_offer: internship_offer
-  .col-12.fr-pb-2   
+  .col-12.fr-pb-2
     - if internship_offer.workspace_conditions.present?
       .fr-my-2w
         h2.h4.fr-mb-2w Environnement de travail
         .fr-my-2w
-          p.text-wrap.text-break= internship_offer.workspace_conditions
+          - internship_offer.workspace_conditions.split('\n').each do |conditions|
+            p.text-wrap.text-break = strip_tags conditions
     - if internship_offer.workspace_accessibility.present?
       .fr-my-2w
       h2.h4.fr-mb-2w Accessibilité du poste
       .fr-my-2w
-        p.text-wrap.text-break= internship_offer.workspace_accessibility
-        
+        - internship_offer.workspace_accessibility.split('\n').each do |accessibility|
+          p.text-wrap.text-break = strip_tags accessibility
 
 .row.fr-pt-3w
   .col-12
@@ -49,10 +51,10 @@
         .col-12
           .fr-pl-1w.blue-france
             = Presenters::Address.new(instance: internship_offer).full_address
-    .row.fr-my-1w
-      .col-12
-        .mt-2.test-description
-          = internship_offer.employer_description
+    / .row.fr-my-1w
+    /   .col-12
+    /     .mt-2.test-description
+    /       = internship_offer.employer_description
 
     .row
       .col-12.fr-my-1w
