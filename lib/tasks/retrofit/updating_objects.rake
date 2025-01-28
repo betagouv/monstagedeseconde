@@ -13,20 +13,26 @@ namespace :retrofit do
   end
 
   desc 'split older offers when they have weeks in the past and in the future'
-  task splitting_old_internship_offers: :environment do |task|
+  task split_old_internship_offers: :environment do |task|
     PrettyConsole.announce_task(task) do
-      InternshipOffers::WeeklyFramed.kept.each do |offer|
-        next if offer.hidden_duplicate
-        next if offer.mother_id.present? && offer.splitted?
+      counter = 0
+      counter_dup = 0
+      InternshipOffers::WeeklyFramed.kept
+                                    .where(hidden_duplicate: false)
+                                    .each do |offer|
+        counter += 1
+        next if counter > 2
         next unless offer.has_weeks_after_school_year_start? && offer.has_weeks_before_school_year_start?
 
-        new_internship_offer = offerf.dup
+        new_internship_offer = offer.dup
+        print "."
+        counter_dup += 1
 
         new_internship_offer.hidden_duplicate = false
-        new_internship_offer.mother_id = id
-        new_internship_offer.weeks = weeks & Week.weeks_of_school_year(school_year: Week.current_year_start_week.year)
-        new_internship_offer.grades = grades
-        new_internship_offer.weekly_hours = weekly_hours
+        new_internship_offer.mother_id = offer.id
+        new_internship_offer.weeks = offer.weeks & Week.weeks_of_school_year(school_year: Week.current_year_start_week.year)
+        new_internship_offer.grades = offer.grades
+        new_internship_offer.weekly_hours = offer.weekly_hours
         new_internship_offer.save!
         # stats have to exist before intenship_applications is moved
         new_internship_offer.internship_applications = []
@@ -39,6 +45,8 @@ namespace :retrofit do
         offer.aasm_state = 'unpublished'
         save! && new_internship_offer
       end
+      puts "#{counter_dup} offers have been duplicated"
+      PrettyConsole.say_in_green "#{counter} offers have been processed"
     end
   end
 end
