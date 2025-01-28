@@ -2,14 +2,9 @@
 
 - content_for(:custom_header) do
   
-  .container-monstage-fluid-hero
+  .container-monstage
     .container-monstage.homepage.visible.container-search.d-none.d-sm-block
-      .row
-        .col-lg-8.col-md-12
-          .d-flex.flex-row
-            .blue-france.sub-hero
-              .fr-h4.fr-mt-4w.fr-mb-1w.blue-france
-                | Je recherche une offre de stage de seconde générale et technologique
+      
       .row.no-gutters.search-offers
         .col-12
           .search-offer-bloc.fr-p-2w.d-none.d-sm-block
@@ -26,10 +21,7 @@
             data: { :"test-id" => 'mobile-search-button' }
     = search_button_label
 
-.fr-test-internship-offers-container.with-grey-background.fr-pt-6w
-  .fr-pt-6w
-    = react_component("InternshipOfferResults",
-                    props: { sectors: @sectors.to_a,
-                            title: internship_offer_results_title(current_user),
-                            searchParams: @params})
+.fr-test-internship-offers-container.with-grey-background
+  = react_component("InternshipOfferResults",
+                    props: { searchParams: @params })
 

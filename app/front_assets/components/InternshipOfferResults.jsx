@@ -29,16 +29,16 @@ const defaultPointerIcon = new L.Icon({
   popupAnchor: [0, -60], // changed popup position
 });
 
-const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
+const InternshipOfferResults = ({ count, searchParams }) => {
   // const [map, setMap] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [paginateLinks, setPaginateLinks] = useState(null);
   const [internshipOffers, setInternshipOffers] = useState([]);
-  const [showSectors, setShowSectors] = useState(false);
-  const [isSuggestion, setIsSuggestion] = useState(false);
+  // const [showSectors, setShowSectors] = useState(false);
+  // const [isSuggestion, setIsSuggestion] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [newDataFetched, setNewDataFetched] = useState(false);
-  const [selectedSectors, setSelectedSectors] = useState(searchParams['sector_ids'] || []);
+  // const [selectedSectors, setSelectedSectors] = useState(searchParams['sector_ids'] || []);
   const [internshipOffersSeats, setInternshipOffersSeats] = useState(0);
   const [notify, setNotify] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
@@ -73,17 +73,17 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
     // setSelectedOffer(null);
   };
 
-  const getSectorsSelected = () => {
-    const sectors = [];
-    var clist = document.getElementsByClassName("checkbox-sector");
-    for (var i = 0; i < clist.length; ++i) {
-      if (clist[i].checked) {
-        sectors.push(clist[i].getAttribute('data-sector-id'));
-      };
-    };
-    setSelectedSectors(sectors);
-    return sectors;
-  }
+  // const getSectorsSelected = () => {
+  //   const sectors = [];
+  //   var clist = document.getElementsByClassName("checkbox-sector");
+  //   for (var i = 0; i < clist.length; ++i) {
+  //     if (clist[i].checked) {
+  //       sectors.push(clist[i].getAttribute('data-sector-id'));
+  //     };
+  //   };
+  //   setSelectedSectors(sectors);
+  //   return sectors;
+  // }
 
   const fetchtInternshipOffers = () => {
     setIsLoading(true);
@@ -92,20 +92,21 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
       .fail(fetchFail);
   };
 
-  const updateSectors = () => {
-    if (!isMobile()) {
-      document.getElementById("fr-modal-filter").classList.remove("fr-modal--opened");
-      document.getElementById("filter-sectors-button").setAttribute('data-fr-opened', false);
-    }
-    const newParams = { ...params, page: 1, sector_ids: getSectorsSelected() };
-    setParams(newParams);
-  };
+  // const updateSectors = () => {
+  //   if (!isMobile()) {
+  //     document.getElementById("fr-modal-filter").classList.remove("fr-modal--opened");
+  //     document.getElementById("filter-sectors-button").setAttribute('data-fr-opened', false);
+  //   }
+  //   const newParams = { ...params, page: 1, sector_ids: getSectorsSelected() };
+  //   setParams(newParams);
+  // };
 
   const fetchDone = (result) => {
+    console.log(result);
     setInternshipOffers(result['internshipOffers']);
     setPaginateLinks(result['pageLinks']);
     setInternshipOffersSeats(result['seats']);
-    setIsSuggestion(result['isSuggestion']);
+    // setIsSuggestion(result['isSuggestion']);
 
     setIsLoading(false);
     setNewDataFetched(true);
@@ -123,13 +124,13 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
     // setRequestError('Une erreur est survenue, veuillez ré-essayer plus tard.');
   };
 
-  const clearSectors = () => {
-    setShowSectors(false);
-    var checkboxes = document.getElementsByClassName("checkbox-sector");
-    for (var checkbox of checkboxes) {
-      checkbox.checked = false;
-    }
-  };
+  // const clearSectors = () => {
+  //   setShowSectors(false);
+  //   var checkboxes = document.getElementsByClassName("checkbox-sector");
+  //   for (var checkbox of checkboxes) {
+  //     checkbox.checked = false;
+  //   }
+  // };
 
   const sendNotification = (message) => {
     setNotify(true);
@@ -158,12 +159,12 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
                   {
                     isLoading ? (
                       <div className="row fr-mb-2w">
-                        <TitleLoader/>
+                        <TitleLoader />
                       </div>
                     ) : (
                       <div className="h4 mb-0" id="internship-offers-count">
                         <div className="strong">
-                          {title}
+                        {internshipOffersSeats} stages disponibles
                         </div>
                       </div>)
                   }
@@ -171,7 +172,7 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
                     (<p>Aucune offre répondant à vos critères n'est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
                   }
                 </div>
-                {
+                {/* {
                   !isMobile() && (
                   <div className="col-4 text-right px-0">
                     <button className="fr-btn fr-btn--secondary fr-icon-filter-line fr-btn--icon-left" data-fr-opened="false" aria-controls="fr-modal-filter" id="filter-sectors-button">
@@ -184,7 +185,7 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
                     </button>
                   </div>
                   )
-                }
+                } */}
               </div>
 
               <div> {/* Cards */}
@@ -205,44 +206,17 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
                     <div>
                       <div className="row">
                         {
-                          isSuggestion ? (
-                            <div className='col'>
-                              {
-                                internshipOffers.length > 0 ? (
-                                  <div>
-                                    <div className='search-no-result fr-mt-2w fr-mb-4w'></div>
-                                    <div className='row'>
-                                      {
-                                        internshipOffers.map((internshipOffer, i) => (
-                                          <InternshipOfferCard
-                                            internshipOffer={internshipOffer}
-                                            key={internshipOffer.id}
-                                            index={i}
-                                            handleMouseOut={handleMouseOut}
-                                            handleMouseOver={(value) => {handleMouseOver(value)}}
-                                            sendNotification={(message) => {sendNotification(message)}}
-                                            threeByRow={true}
-                                            />
-                                        ))
-                                      }
-                                    </div>
-                                  </div>
-                                ) : ''
-                              }
-                            </div>
-                          ) : (
-                            internshipOffers.map((internshipOffer, i) => (
-                              <InternshipOfferCard
-                                internshipOffer={internshipOffer}
-                                key={internshipOffer.id}
-                                index={i}
-                                handleMouseOut={handleMouseOut}
-                                handleMouseOver={(value) => {handleMouseOver(value)}}
-                                sendNotification={(message) => {sendNotification(message)}}
-                                threeByRow={true}
-                                />
-                            ))
-                          )
+                          internshipOffers.map((internshipOffer, i) => (
+                            <InternshipOfferCard
+                              internshipOffer={internshipOffer}
+                              key={internshipOffer.id}
+                              index={i}
+                              handleMouseOut={handleMouseOut}
+                              handleMouseOver={(value) => {handleMouseOver(value)}}
+                              sendNotification={(message) => {sendNotification(message)}}
+                              threeByRow={true}
+                              />
+                          ))
                         }
                     </div>
                     <div>{paginateLinks ? <Paginator paginateLinks={paginateLinks} /> : ''}</div>
@@ -261,6 +235,9 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
               <div className="fr-notice__body fr-mx-3v">
                 <p className="fr-notice__title title-banner">
                   La carte affiche uniquement les 30 premiers résultats visibles sur cette page.
+                </p>
+                <p>
+                  Pour afficher les résultats suivants, cliquez sur la page suivante.
                 </p>
               </div>
             </div>
@@ -306,7 +283,7 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
       )}
       </div>
 
-      {
+      {/* {
         !isMobile() &&
         (
           <FilterModal
@@ -316,7 +293,7 @@ const InternshipOfferResults = ({ count, sectors, title, searchParams }) => {
           selectedSectors={selectedSectors}
           />
         )
-      }
+      } */}
     </div>
   );
 };
