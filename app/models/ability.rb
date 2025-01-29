@@ -196,6 +196,7 @@ class Ability
     can :subscribe_to_webinar, User do
       ENV.fetch('WEBINAR_URL', nil).present?
     end
+    can :edit_password, User
     can_manage_teams(user:)
     can_manage_areas(user:)
     can %i[index], Acl::InternshipOfferDashboard
