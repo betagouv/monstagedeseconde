@@ -16,7 +16,7 @@ namespace :sys do
     text = File.read(file)
     is_in_prod = !text.match?(/# url: \<\%\= ENV.fetch\(\'CLEVER_PRODUCTION_COPY_CONNEXION_URI\'\)/)
     if is_in_prod
-      PrettyConsole.puts_in_red 'Database is in production'
+      PrettyConsole.puts_in_red 'Database is a copy of production'
     else
       PrettyConsole.puts_in_green 'Database is local'
     end
