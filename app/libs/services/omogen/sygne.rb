@@ -215,7 +215,7 @@ module Services::Omogen
         return nil unless responsibles.is_a?(Array) && responsibles.any?
 
         responsibles.sort_by! { |responsible| responsible[:codeNiveauResponsabilite] }
-        SygneResponsible.new(responsibles.first)
+        Services::Omogen::SygneResponsible.new(responsibles.first)
       else
         puts response
         raise "Failed to get sygne eleves : #{response.message}"
@@ -252,10 +252,9 @@ module Services::Omogen
       { 'Authorization': "Bearer #{token}", 'Compression-Zip': 'non' }
     end
 
-    def sygne_responsables_request
+    def sygne_responsables_request(ine)
       # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
-      uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
-      puts uri
+      uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables") 
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
