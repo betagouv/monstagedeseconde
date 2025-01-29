@@ -14,7 +14,6 @@
 
 # Ignore all logfiles and tempfiles.
 /log/*
-/lib/tasks/intern/*
 /tmp/*
 !/log/.keep
 !/tmp/.keep
