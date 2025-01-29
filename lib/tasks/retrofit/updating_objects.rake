@@ -21,7 +21,6 @@ namespace :retrofit do
                                     .where(hidden_duplicate: false)
                                     .each do |offer|
         counter += 1
-        next if counter > 2
         next unless offer.has_weeks_after_school_year_start? && offer.has_weeks_before_school_year_start?
 
         new_internship_offer = offer.dup
@@ -40,10 +39,10 @@ namespace :retrofit do
         new_internship_offer.publish! unless new_internship_offer.published?
 
         offer.hidden_duplicate = true
-        offer.weeks = weeks & Week.of_past_school_years
+        offer.weeks = offer.weeks & Week.of_past_school_years
         offer.published_at = nil
         offer.aasm_state = 'unpublished'
-        save! && new_internship_offer
+        offer.save!
       end
       puts "#{counter_dup} offers have been duplicated"
       PrettyConsole.say_in_green "#{counter} offers have been processed"
