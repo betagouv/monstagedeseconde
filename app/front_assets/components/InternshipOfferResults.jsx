@@ -6,12 +6,12 @@ import activeMarker from '../images/active_pin.svg';
 import defaultMarker from '../images/default_pin.svg';
 import InternshipOfferCard from './InternshipOfferCard';
 import CardLoader from './CardLoader';
-import FilterModal from './search_internship_offer/FilterModal';
 import Paginator from './search_internship_offer/Paginator';
 import TitleLoader from './TitleLoader';
 import { endpoints } from '../utils/api';
 import { isMobile } from '../utils/responsive';
 import FlashMessage from './FlashMessage';
+import SearchForm from './search_internship_offer/SearchForm';
 
 const center = [48.866669, 2.33333];
 
@@ -142,31 +142,36 @@ const InternshipOfferResults = ({ count, searchParams }) => {
   };
 
   return (
-    <div className="results-container no-x-scroll">
-      { notify ? (
-        <FlashMessage
-          message={notificationMessage}
-          display={notify}
-          hideNotification={hideNotification}
-        />
-      ) : '' }
-      <div className="row fr-mx-0 fr-px-3v no-x-scroll">
-        <div className={`${isMobile() ? 'col-12 px-0' : 'col-7 px-3'} d-flex flex-row-reverse no-x-scroll`} style={{ overflowY: 'scroll' }}>
-          
-            <div className="results-col results-row no-x-scroll hide-scrollbar fr-mt-2w fr-mx-1w">
+    <div className="results-container">
+      {notify && <FlashMessage message={notificationMessage} display={notify} hideNotification={hideNotification} />}
+      
+      <div className="row fr-mx-0 fr-px-3v">
+        {/* Colonne des résultats */}
+        <div className={`${isMobile() ? 'col-12 px-0' : 'col-7 px-3'}`}>
+          <div className="scrollable-content d-flex justify-content-end">
+            <div className="results-col fr-mt-2w fr-mx-1w">
               <div className="row fr-py-2w mx-0 ">
-                <div className="col-8 px-0">
+                <div className="col-12 px-0">
                   {
                     isLoading ? (
                       <div className="row fr-mb-2w">
                         <TitleLoader />
                       </div>
                     ) : (
-                      <div className="h4 mb-0" id="internship-offers-count">
-                        <div className="strong">
-                        {internshipOffersSeats} stages disponibles
+                      <>
+                        <SearchForm 
+                          defaultValues={searchParams}
+                          onSearch={(newParams) => {
+                            console.log('Search params:', newParams);
+                          }}
+                        />
+                        <div className="h4 mb-0" id="internship-offers-count">
+                          <div className="strong">
+                            {internshipOffersSeats} stages disponibles
+                          </div>
                         </div>
-                      </div>)
+                      </>
+                    )
                   }
                   { !isLoading && (internshipOffersSeats == 0) &&
                     (<p>Aucune offre répondant à vos critères n'est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
@@ -225,62 +230,56 @@ const InternshipOfferResults = ({ count, searchParams }) => {
                 }
               </div>
             </div>
-          
+          </div>
         </div>
-      
-      { !isMobile() && (<div className="col-5 map-container">
-          <div className="">
-          <div className="fr-notice fr-notice--info">
-            <div className="fr-container">
-              <div className="fr-notice__body fr-mx-3v">
-                <p className="fr-notice__title title-banner">
-                  La carte affiche uniquement les 30 premiers résultats visibles sur cette page.
-                </p>
-                <p>
-                  Pour afficher les résultats suivants, cliquez sur la page suivante.
-                </p>
-              </div>
+
+        {/* Colonne de la carte */}
+        {!isMobile() && (
+          <div className="col-5 map-wrapper">
+            <div className="map-sticky-container">
+              <MapContainer 
+                center={center} 
+                zoom={13} 
+                scrollWheelZoom={false}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                />
+                <MarkerClusterGroup>
+                  {
+                    internshipOffers.length ? (
+                      internshipOffers.map((internshipOffer) => (
+                        <Marker
+                          icon={
+                            internshipOffer.id === selectedOffer ? pointerIcon : defaultPointerIcon
+                          }
+                          position={[internshipOffer.lat, internshipOffer.lon]}
+                          key={internshipOffer.id}
+                        >
+                          <Popup className='popup-custom'>
+                            <a href={internshipOffer.link}>
+                              <div className="img">
+                                <img className="fr-responsive-img" src={internshipOffer.image} alt="image"></img>
+                              </div>
+                              <div className="content fr-p-2w">
+                                <p className="fr-card__detail">{internshipOffer.employer_name}</p>
+                                <h6 className="title">
+                                  {internshipOffer.title}
+                                </h6>
+                              </div>
+                            </a>
+                          </Popup>
+                        </Marker>
+                      ))
+                    ) : ('')
+                  }
+                </MarkerClusterGroup>
+                <ClickMap internshipOffers={internshipOffers} recenterMap={newDataFetched} />
+              </MapContainer>
             </div>
           </div>
-            <MapContainer center={center} zoom={13} scrollWheelZoom={false}>
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              />
-              <MarkerClusterGroup>
-                {
-                  internshipOffers.length ? (
-                    internshipOffers.map((internshipOffer) => (
-                      <Marker
-                        icon={
-                          internshipOffer.id === selectedOffer ? pointerIcon : defaultPointerIcon
-                        }
-                        position={[internshipOffer.lat, internshipOffer.lon]}
-                        key={internshipOffer.id}
-                      >
-                        <Popup className='popup-custom'>
-                          <a href={internshipOffer.link}>
-                            <div className="img">
-                              <img className="fr-responsive-img" src={internshipOffer.image} alt="image"></img>
-                            </div>
-                            <div className="content fr-p-2w">
-                              <p className="fr-card__detail">{internshipOffer.employer_name}</p>
-                              <h6 className="title">
-                                {internshipOffer.title}
-                              </h6>
-                            </div>
-                          </a>
-                        </Popup>
-                      </Marker>
-                    ))
-                  ) : ('')
-                }
-              </MarkerClusterGroup>
-              <ClickMap internshipOffers={internshipOffers} recenterMap={newDataFetched} />
-            </MapContainer>
-          </div>
-        </div>
-      )}
+        )}
       </div>
 
       {/* {

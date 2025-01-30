@@ -93,10 +93,10 @@ const InternshipOfferCard = ({
             {internshipOffer.fits_for_troisieme_or_quatrieme && (
               <>
                 <li>
-                  <div className="fr-tag fr-mr-1w">3ème</div>
+                  <div className="fr-tag fr-mr-1w">3e</div>
                 </li>
                 <li>
-                  <div className="fr-tag fr-mr-1w">4ème</div>
+                  <div className="fr-tag fr-mr-1w">4e</div>
                 </li>
               </>
             )}
