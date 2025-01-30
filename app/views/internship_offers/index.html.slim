@@ -1,7 +1,7 @@
 - content_for(:canonical_url, params[:page] ? internship_offers_url(page: params[:page]) : internship_offers_url)
 
 - content_for(:custom_header) do
-  .fr-notice.fr-notice--info
+  .fr-notice.fr-notice--info.d-none.d-md-block
     .fr-container
       .fr-notice__body.fr-mx-3v
         p.fr-notice__title.title-banner

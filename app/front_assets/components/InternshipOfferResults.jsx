@@ -11,7 +11,7 @@ import TitleLoader from './TitleLoader';
 import { endpoints } from '../utils/api';
 import { isMobile } from '../utils/responsive';
 import FlashMessage from './FlashMessage';
-import SearchForm from './search_internship_offer/SearchForm';
+import CityInput from './search_internship_offer/CityInput';
 
 const center = [48.866669, 2.33333];
 
@@ -65,6 +65,16 @@ const InternshipOfferResults = ({ count, searchParams }) => {
     return null;
   };
 
+  const handleSubmit = (formData) => {
+    const searchParams = {
+      city: formData.city || '',
+      latitude: formData.latitude || '',
+      longitude: formData.longitude || '',
+      radius: formData.radius || '30'
+    };
+    setParams(searchParams);
+  };
+
   const handleMouseOver = (data) => {
     setSelectedOffer(data);
   };
@@ -102,7 +112,6 @@ const InternshipOfferResults = ({ count, searchParams }) => {
   // };
 
   const fetchDone = (result) => {
-    console.log(result);
     setInternshipOffers(result['internshipOffers']);
     setPaginateLinks(result['pageLinks']);
     setInternshipOffersSeats(result['seats']);
@@ -146,8 +155,28 @@ const InternshipOfferResults = ({ count, searchParams }) => {
       {notify && <FlashMessage message={notificationMessage} display={notify} hideNotification={hideNotification} />}
       
       <div className="row fr-mx-0 fr-px-3v">
-        {/* Colonne des résultats */}
         <div className={`${isMobile() ? 'col-12 px-0' : 'col-7 px-3'}`}>
+          
+          {/* SEARCH FORM */}
+          <div className="search-offer-bloc fr-pl-0 fr-pr-2w fr-py-2w d-none d-md-block">
+            <form onSubmit={handleSubmit} id="desktop_internship_offers_index_search_form">
+              <div className="row">
+                <div className="col-md-9 fr-mx-0 fr-px-0">
+                  <CityInput
+                    city={searchParams.city}
+                    latitude={searchParams.latitude}
+                    longitude={searchParams.longitude}
+                    radius={searchParams.radius}
+                    whiteBg="false"
+                  />
+                </div>
+                <div className="col-md-3 d-flex justify-content-end align-items-end">
+                  <button type="submit" className="fr-btn fr-btn--icon-left fr-icon-search-line">Rechercher</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          
           <div className="scrollable-content d-flex justify-content-end">
             <div className="results-col fr-mt-2w fr-mx-1w">
               <div className="row fr-py-2w mx-0 ">
@@ -159,12 +188,6 @@ const InternshipOfferResults = ({ count, searchParams }) => {
                       </div>
                     ) : (
                       <>
-                        <SearchForm 
-                          defaultValues={searchParams}
-                          onSearch={(newParams) => {
-                            console.log('Search params:', newParams);
-                          }}
-                        />
                         <div className="h4 mb-0" id="internship-offers-count">
                           <div className="strong">
                             {internshipOffersSeats} stages disponibles
@@ -210,7 +233,7 @@ const InternshipOfferResults = ({ count, searchParams }) => {
                   ) : (
                     <div>
                       <div className="row">
-                        {
+                          {
                           internshipOffers.map((internshipOffer, i) => (
                             <InternshipOfferCard
                               internshipOffer={internshipOffer}

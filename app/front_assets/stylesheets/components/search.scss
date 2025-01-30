@@ -40,6 +40,14 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+.search-offer-bloc {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  width: calc(14.28571% + 570px) !important;
+  margin-left: auto;
+}
 
 .results-container {
   .results-col {
