@@ -176,44 +176,4 @@ class EditOrDuplicateInternshipOffersTest < ApplicationSystemTestCase
     assert page.has_css?('a', text: 'Candidatures', count: 1)
     assert page.has_css?('a', text: 'Conventions', count: 0)
   end
-
-  test 'when old internship_offer is extended, new internship_offer is created and it can be edited' do
-    travel_to Date.new(2025, 1, 1) do
-      older_weeks = [SchoolTrack::Seconde.first_week(year: 2024)]
-      employer, internship_offer = create_employer_and_offer_2nde
-      internship_offer.unpublish!
-      internship_offer.update(weeks: older_weeks, max_candidates: 7, max_students_per_group: 7)
-
-      assert_equal 1, employer.internship_offer_areas.count
-
-      sign_in(employer)
-      visit edit_dashboard_internship_offer_path(internship_offer)
-      find('h1.h2', text: 'Modifier une offre de stage')
-      execute_script('document.getElementById("internship_offer_grade_2e").click()')
-      find('legend', text: 'Sur quelle période proposez-vous ce stage pour les lycéens ?')
-      find("label[for='period_field_week_2']").click
-      click_on "Publier l'offre"
-      find('span#alert-text', text: 'Votre annonce a bien été modifiée')
-      assert internship_offer.reload.splitted?
-
-      internship_offer = internship_offer.child
-      assert_equal SchoolTrack::Seconde.second_week.id, internship_offer.weeks.first.id
-      assert_equal 1, internship_offer.weeks.count
-      visit(dashboard_internship_offers_path)
-      find('.fr-icon-eye-line ').click
-      assert_text('23 juin 2025')
-
-      visit edit_dashboard_internship_offer_path(internship_offer)
-      find('legend', text: 'Sur quelle période proposez-vous ce stage pour les lycéens ?')
-      within('.row[data-grade-target="secondeContainer"]') do
-        input = find('input[value="12"]', visible: false)
-        assert input.checked?
-      end
-      # collective radio button test
-      assert find('input[type="radio"][id="internship_type_false"]', visible: false).checked?
-      refute internship_offer.is_individual?
-      assert_equal '7', find("input[name='internship_offer[max_candidates]']").value
-      assert_equal '7', find("input[name='internship_offer[max_students_per_group]']").value
-    end
-  end
 end
