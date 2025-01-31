@@ -29,7 +29,7 @@ module Finders
 
       students_query.nearby_and_ordered(latitude: school_latitude,
                                         longitude: school_longitude,
-                                        radius: MAX_RADIUS_SEARCH_DISTANCE)
+                                        radius: max_distance)
     end
 
     private

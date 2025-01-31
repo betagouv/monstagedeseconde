@@ -310,24 +310,24 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as student with InternshipOffers::Api, returns paginated content' do
-    travel_to(Date.new(2024, 3, 1)) do
+    travel_to(Date.new(2025, 3, 1)) do
       internship_offers = InternshipOffer::PAGE_SIZE.times.map do
         create(:api_internship_offer_3eme)
       end
       create(:api_internship_offer_3eme, coordinates: Coordinates.bordeaux, city: 'Bordeaux')
       sign_in(create(:student))
-      InternshipOffer.stub :by_weeks, InternshipOffer.all do
-        InternshipOffer.stub :in_the_future, InternshipOffer.all do
-          get internship_offers_path, params: { format: :json }
-          json_response.first[1].each do |internship_offer|
-            assert_equal 'Paris', internship_offer['city']
-          end
-          assert_equal InternshipOffer::PAGE_SIZE, json_response.first[1].count
-
-          get internship_offers_path(page: 2, format: :json)
-          assert_equal 1, json_response.first[1].count
-          assert_equal 'Bordeaux', json_response.first[1][0]['city']
+      
+      InternshipOffer.stub :in_the_future, InternshipOffer.all do
+        get internship_offers_path, params: { format: :json }
+        json_response.first[1].each do |internship_offer|
+          assert_equal 'Paris', internship_offer['city']
         end
+        assert_equal InternshipOffer::PAGE_SIZE, json_response.first[1].count
+
+        get internship_offers_path(page: 2, format: :json)
+
+        assert_equal 1, json_response.first[1].count
+        assert_equal 'Bordeaux', json_response.first[1][0]['city']
       end
     end
   end
@@ -348,10 +348,10 @@ class IndexTest < ActionDispatch::IntegrationTest
 
       get internship_offers_path(latitude: Coordinates.verneuil[:latitude],
                                  longitude: Coordinates.verneuil[:longitude],
-                                 radius: 5_000, # default radius of 60km
+                                 radius: 5_000,
                                  format: :json)
       assert_json_presence_of(json_response, internship_offer_at_verneuil)
-      assert_json_presence_of(json_response, internship_offer_at_paris)
+      assert_json_absence_of(json_response, internship_offer_at_paris)
     end
   end
 

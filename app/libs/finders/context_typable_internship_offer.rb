@@ -42,11 +42,9 @@ module Finders
     end
 
     def radius_params
-      # return Nearbyable::DEFAULT_NEARBY_RADIUS_IN_METER unless params.key?(:radius)
+      return Nearbyable::DEFAULT_NEARBY_RADIUS_IN_METER unless params.key?(:radius)
 
-      # params[:radius]
-
-      MAX_RADIUS_SEARCH_DISTANCE
+      params[:radius]
     end
 
     def school_year_param

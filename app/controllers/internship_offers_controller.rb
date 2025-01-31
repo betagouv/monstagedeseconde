@@ -29,7 +29,7 @@ class InternshipOffersController < ApplicationController
         data = {
           internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
-          seats: calculate_seats(@internship_offers),
+          seats: calculate_seats(@internship_offers)
           # isSuggestion: @is_suggestion
         }
         current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
