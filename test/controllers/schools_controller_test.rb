@@ -34,6 +34,9 @@ class SchoolsControllerTest < ActionDispatch::IntegrationTest
       zipcode: '75001',
       city: 'Paris',
       visible: 1,
+      school_type: 'lycee',
+      voie_generale: true,
+      voie_techno: false,
       coordinates: {
         latitude: 48.866667,
         longitude: 2.333333
@@ -52,5 +55,8 @@ class SchoolsControllerTest < ActionDispatch::IntegrationTest
     assert_equal school.city, 'Paris'
     assert_equal school.visible, true
     assert_equal school.legal_status, 'Privé sous contrat'
+    assert_equal school.school_type, 'lycee'
+    assert_equal school.voie_generale, true
+    assert_equal school.voie_techno, false
   end
 end

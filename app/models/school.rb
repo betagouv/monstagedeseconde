@@ -30,6 +30,7 @@ class School < ApplicationRecord
     '99' => 'SANS OBJET'
   }
   VALID_TYPE_PARAMS = %w[rep rep_plus qpv qpv_proche].freeze
+  SCHOOL_TYPES = %w[college lycee].freeze
 
   scope :with_manager, lambda {
                          left_joins(:school_manager)

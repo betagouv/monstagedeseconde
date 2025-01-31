@@ -50,6 +50,26 @@
                   {prompt: ""},
                   { class: "fr-select col-lg-6" }
 
+    .form-group
+      = f.label :school_type, class: 'fr-label' do
+        = "Type de l'établissement"
+        = f.rg2a_required_content_tag
+
+      - collection = School::SCHOOL_TYPES.map{ |type| [type.capitalize, type] }
+      = f.select :school_type,
+                  options_for_select(collection),
+                  {prompt: ""},
+                  { class: "fr-select col-lg-6" }
+    
+    .form-group
+      .fr-checkbox-group.fr-checkbox-group--sm
+        = f.check_box :voie_generale
+        = f.label :voie_generale, 'Voie générale', class: 'fr-label'
+
+    .form-group
+      .fr-checkbox-group.fr-checkbox-group--sm
+        = f.check_box :voie_techno
+        = f.label :voie_techno, 'Voie techno', class: 'fr-label'
 
     .form-group.mt-4
        .fr-checkbox-group.fr-checkbox-group--sm

@@ -11,7 +11,7 @@ class SchoolsController < ApplicationController
   def create
     authorize! :new, School
     @school = School.new(school_params)
-    department =  Department.fetch_by_zipcode(zipcode: @school.zipcode)
+    department = Department.fetch_by_zipcode(zipcode: @school.zipcode)
     @school.department = department
     if @school.save
       redirect_to rails_admin_path, flash: { success: 'Etablissement créé !' }
@@ -34,6 +34,10 @@ class SchoolsController < ApplicationController
             :visible,
             :contract_code,
             :is_public,
-            coordinates: {})
+            :school_type,
+            :voie_generale,
+            :voie_techno,
+            coordinates: {}
+          )
   end
 end
