@@ -74,4 +74,28 @@ namespace :sys do
   #             "-f #{reset_file_name}")
   #   end
   # end
+  #
+  desc 'kill 20 sidekiq processes from their task name'
+  task :kill_sidekiq, [:task_name] => :environment do |t, args|
+    PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
+      Sidekiq::ScheduledSet.new.first(20).each do |job|
+        next unless job.args.first['job_class'] == args.task_name
+
+        job.delete
+        print '.'
+      end
+    end
+  end
+
+  desc 'kill all sidekiq processes from their task name'
+  task :kill_sidekiq, [:task_name] => :environment do |t, args|
+    PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
+      Sidekiq::ScheduledSet.new.each do |job|
+        next unless job.args.first['job_class'] == args.task_name
+
+        job.delete
+        print '.'
+      end
+    end
+  end
 end
