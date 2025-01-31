@@ -84,7 +84,7 @@ module Services::Omogen
 
       @school = School.find_by(code_uai: code_uai)
       @grade = Grade.grade_by_mef(code_mef: code_mef)
-      @responsible = Services::Omogen::Sygne.new.sygne_responsable(ine)
+      @responsible = Services::Omogen::Sygne.new.sygne_responsable(@ine)
     end
 
     def gender
