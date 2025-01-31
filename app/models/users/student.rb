@@ -35,8 +35,7 @@ module Users
 
     # Callbacks
     after_create :set_reminders,
-                 :clean_phone_or_email_when_empty,
-                 :welcome_new_student
+                 :clean_phone_or_email_when_empty # , :welcome_new_student
 
     def student? = true
 
