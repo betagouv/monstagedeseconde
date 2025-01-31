@@ -2,6 +2,7 @@
 
 module Users
   class Student < User
+    before_save :skip_confirmation!
     include StudentAdmin
     include UserWithSchool
 
