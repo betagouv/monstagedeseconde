@@ -25,6 +25,7 @@ namespace :sys do
   task :db_prod, [] => :environment do
     file = Rails.root.join('config/database.yml')
     text = File.read(file)
+    text = text.gsub(/#(?: #)*/, '#')
     new_contents = text.gsub(/# url: <%= ENV.fetch\('CLEVER_PRODUCTION_COPY_CONNEXION_URI'\)/,
                              "url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI')")
     File.open(file, 'w') { |f| f.puts new_contents }
