@@ -28,7 +28,7 @@ class NavbarTest < ActionDispatch::IntegrationTest
                           class_room: create(:class_room, school: @school))
     sign_in(main_teacher)
     get main_teacher.custom_dashboard_path
-    assert_select('li a.fr-link.text-decoration-none.active', count: 1)
+    assert_select('li a.fr-link.text-decoration-none.active', text: 'Accueil', count: 1)
     assert_select('li a.fr-link.mr-4', text: 'Accueil', count: 1)
     assert_select('li a.fr-link.mr-4', text: 'Ma classe', count: 1)
     assert_select('li a.fr-link.mr-4', text: 'Mon profil', count: 1)
@@ -37,13 +37,12 @@ class NavbarTest < ActionDispatch::IntegrationTest
   end
 
   test 'other' do
+    skip "since no 'other' status anymore"
     other = create(:other, school: @school)
     create(:class_room, school: @school)
     sign_in(other)
     get other.custom_dashboard_path
 
-    assert_select('#classes-panel a[href=?]',
-                  new_dashboard_school_class_room_path)
     assert_select('a.small.fr-raw-link.fr-tag.fr-tag--sm[href=?]',
                   dashboard_school_class_room_students_path(@school, @school.class_rooms.first))
     assert_select('li a.fr-link.text-decoration-none.active', text: 'Mon établissement', count: 1)
@@ -69,7 +68,7 @@ class NavbarTest < ActionDispatch::IntegrationTest
     sign_in(school_manager)
     get school_manager.custom_dashboard_path
 
-    assert_select('li a.fr-link.text-decoration-none.active', count: 1)
+    assert_select('li a.fr-link.text-decoration-none.active', text: 'Accueil', count: 1)
     assert_select('li a.fr-link.text-decoration-none.active', text: 'Mon établissement', count: 1)
     assert_select('li a.fr-link.mr-4', text: 'Accueil', count: 1)
     assert_select('li a.fr-link.mr-4', text: 'Mon établissement', count: 1)
@@ -96,7 +95,8 @@ class NavbarTest < ActionDispatch::IntegrationTest
                      class_room: create(:class_room, school: @school))
     sign_in(teacher)
     get teacher.custom_dashboard_path
-    assert_select('li a.fr-link.text-decoration-none.active', count: 1)
+
+    assert_select('li a.fr-link.text-decoration-none.active', text: 'Accueil', count: 1)
     assert_select('li a.fr-link.text-decoration-none.active', text: 'Ma classe', count: 1)
     assert_select('li a.fr-link.mr-4', text: 'Accueil', count: 1)
     assert_select('li a.fr-link.mr-4', text: 'Ma classe', count: 1)

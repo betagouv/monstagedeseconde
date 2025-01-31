@@ -7,8 +7,11 @@ module Users
   #   teacher (any teacher can check & help students [they can choose class_room])
   #   other (involve psychologists, teacher assistants etc...)
   class SchoolManagement < User
+    before_save :skip_confirmation!
+
     include SchoolManagementAdmin
     include Signatorable
+    include UserWithSchool
 
     validates :first_name,
               :last_name,
@@ -19,7 +22,6 @@ module Users
                                           message: :accept_terms,
                                           on: :create
 
-    belongs_to :school, optional: true
     belongs_to :class_room, optional: true
     has_many :students, through: :school
     has_many :main_teachers, through: :school

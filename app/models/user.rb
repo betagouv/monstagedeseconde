@@ -264,6 +264,8 @@ class User < ApplicationRecord
   def team_members = User.none
   def custom_dashboard_path = Rails.application.routes.url_helpers.root_path
 
+  def compute_weeks_lists = [Week.both_school_track_selectable_weeks, Week.both_school_track_selectable_weeks]
+
   def just_created?
     created_at < Time.now + 3.seconds
   end
@@ -308,7 +310,7 @@ class User < ApplicationRecord
   def password_complexity
     return unless password.present?
 
-    unless password =~ /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?_&])/
+    unless password =~ /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?_&:])/
       errors.add :password, 'doit inclure au moins une minuscule, une majuscule, un chiffre et un caractère spécial'
     end
     return if password.length >= 12

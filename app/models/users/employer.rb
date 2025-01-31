@@ -10,6 +10,7 @@ module Users
 
     def custom_dashboard_path
       return custom_candidatures_path if internship_applications.submitted.any?
+
       url_helpers.dashboard_internship_offers_path
     end
 
@@ -29,8 +30,8 @@ module Users
       'Mon compte'
     end
 
-    def employer? ; true end
-    def agreement_signatorable? ; true end
+    def employer? = true
+    def agreement_signatorable? = true
 
     def signatory_role
       Signature.signatory_roles[:employer]

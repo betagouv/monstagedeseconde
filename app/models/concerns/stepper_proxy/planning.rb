@@ -26,7 +26,7 @@ module StepperProxy
                                 greater_than: 0,
                                 less_than_or_equal_to: :max_candidates,
                                 message: "Le nombre maximal d'élèves par groupe ne peut pas dépasser le nombre maximal d'élèves attendus dans l'année" }
-      validates :weeks, presence: true
+      validates :weeks, presence: true, on: :update, unless: :maintenance_conditions?
       # if not API, validate enough weeks
       validate :enough_weeks unless :from_api
       validate :at_least_one_grade
@@ -64,7 +64,9 @@ module StepperProxy
       end
 
       def all_year_long?
-        Week.selectable_from_now_until_end_of_school_year.in?(weeks)
+        all_troisieme_weeks = SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
+        offer_week_list = weeks & SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
+        all_troisieme_weeks[1..-1].map(&:id).sort == offer_week_list.map(&:id).sort
       end
 
       private

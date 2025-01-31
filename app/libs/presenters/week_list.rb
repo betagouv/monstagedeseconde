@@ -89,7 +89,13 @@ module Presenters
 
     def initialize(weeks:)
       @weeks = weeks
-      @first_week, @last_week = weeks.minmax_by(&:id)
+      if weeks.present? && weeks.size > 1
+        @first_week, @last_week = weeks.minmax_by(&:id)
+      elsif weeks.present? && weeks.size == 1
+        @first_week = @last_week = weeks.first
+      else
+        @first_week = @last_week = nil
+      end
     end
   end
 end

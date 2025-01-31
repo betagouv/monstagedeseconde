@@ -2,16 +2,12 @@
 
 require 'application_system_test_case'
 
-class ManageInternshipOffersTest < ApplicationSystemTestCase
+class EditOrDuplicateInternshipOffersTest < ApplicationSystemTestCase
   include Devise::Test::IntegrationHelpers
-
+  include TeamAndAreasHelper
   def wait_form_submitted
     find('.alert-sticky')
   end
-
-  # def fill_in_trix_editor(id, with:)
-  #   find(:xpath, "//trix-editor[@id='#{id}']").click.set(with)
-  # end
 
   test 'Employer can edit internship offer' do
     travel_to(Date.new(2024, 3, 1)) do
@@ -145,7 +141,7 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
     assert_select('a', text: employer_3.current_area.name, count: 0)
   end
 
-  test "Employers can edit a both school_track internship offer" do
+  test 'Employers can edit a both school_track internship offer' do
     travel_to(Date.new(2024, 3, 1)) do
       employer = create(:employer)
       internship_offer = create(:weekly_internship_offer, :both_school_tracks_internship_offer, employer:)
@@ -154,7 +150,7 @@ class ManageInternshipOffersTest < ApplicationSystemTestCase
 
       sign_in(employer)
       visit edit_dashboard_internship_offer_path(internship_offer)
-      find('legend', text: "Sur quelle période proposez-vous ce stage pour les lycéens ?")
+      find('legend', text: 'Sur quelle période proposez-vous ce stage pour les lycéens ?')
       assert find('input#period_field_week_2', visible: false).checked?
       find('input[name="internship_offer[employer_chosen_name]"]').fill_in(with: 'NewCompany')
 

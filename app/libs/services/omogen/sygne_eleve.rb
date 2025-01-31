@@ -42,6 +42,7 @@ module Services::Omogen
         legal_representative_full_name: "#{responsible.civility} #{responsible.first_name} #{responsible.last_name}",
         legal_representative_email: responsible.email,
         legal_representative_phone: responsible.phone,
+        accept_terms: true,
         email: "#{ine}@#{school.code_uai}.fr"
       )
       student.password = "#{ine}#{school.code_uai}!zZtest"
@@ -84,7 +85,7 @@ module Services::Omogen
 
       @school = School.find_by(code_uai: code_uai)
       @grade = Grade.grade_by_mef(code_mef: code_mef)
-      @responsible = Services::Omogen::Sygne.new.sygne_responsable(ine)
+      @responsible = Services::Omogen::Sygne.new.sygne_responsable(@ine)
     end
 
     def gender

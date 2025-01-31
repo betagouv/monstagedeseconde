@@ -30,6 +30,7 @@ class School < ApplicationRecord
     '99' => 'SANS OBJET'
   }
   VALID_TYPE_PARAMS = %w[rep rep_plus qpv qpv_proche].freeze
+  SCHOOL_TYPES = %w[college lycee].freeze
 
   scope :with_manager, lambda {
                          left_joins(:school_manager)
@@ -182,6 +183,17 @@ class School < ApplicationRecord
 
   def email_domain_name
     department.academy.email_domain
+  end
+
+  def off_constraint_school_weeks(grade)
+    return Week.both_school_track_selectable_weeks if grade.nil?
+
+    case grade.short_name
+    when 'troisieme', 'quatrieme'
+      SchoolTrack::Troisieme
+    when 'seconde'
+      SchoolTrack::Seconde
+    end.selectable_from_now_until_end_of_school_year
   end
 
   private

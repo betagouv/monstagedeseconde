@@ -154,106 +154,43 @@ module InternshipsOffers
     end
 
     test 'duplicate' do
-      internship_offer = create(:weekly_internship_offer_2nde, description: 'abc',
-                                                               employer_description: 'def')
-      duplicated_internship_offer = internship_offer.duplicate
-      assert internship_offer.description.present?
-      assert duplicated_internship_offer.description.present?
-      assert_equal internship_offer.description.strip,
-                   duplicated_internship_offer.description.strip
+      travel_to Date.new(2024, 1, 1) do
+        internship_offer = create(:weekly_internship_offer_2nde,
+                                  description: 'abc',
+                                  employer_description: 'def',
+                                  weeks: SchoolTrack::Seconde.both_weeks(year: 2023),
+                                  published_at: nil,
+                                  max_candidates: 7,
+                                  max_students_per_group: 7)
+        assert_equal 7, internship_offer.remaining_seats_count
+        application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
+        application.employer_validate!
+        application.approve!
+        assert_equal 6, internship_offer.reload.remaining_seats_count
+        duplicated_internship_offer = internship_offer.duplicate
+        assert internship_offer.description.present?
+        assert duplicated_internship_offer.description.present?
+        assert_equal internship_offer.description.strip,
+                    duplicated_internship_offer.description.strip
+        assert_equal internship_offer.internship_offer_area_id, duplicated_internship_offer.internship_offer_area_id
+        assert_equal duplicated_internship_offer.mother_id, internship_offer.id
+        assert_equal duplicated_internship_offer.max_candidates, internship_offer.max_candidates
+        assert_equal duplicated_internship_offer.max_students_per_group, internship_offer.max_students_per_group
+        assert_equal 6, internship_offer.remaining_seats_count
+        # assert_equal 7, duplicated_internship_offer.remaining_seats_count not working since it's a new record
+        assert_equal [], duplicated_internship_offer.internship_applications
+        assert_equal [Grade.seconde], internship_offer.grades
+        assert_equal [Grade.seconde], duplicated_internship_offer.grades
+        assert_equal [], duplicated_internship_offer.weeks
+        assert_equal duplicated_internship_offer.employer_id, internship_offer.employer_id
+        assert internship_offer.unpublished?
+        assert_nil duplicated_internship_offer.published_at
+      end
     end
 
     test 'default max_candidates' do
       assert_equal 1, InternshipOffers::WeeklyFramed.new.max_candidates
       assert_equal 1, InternshipOffers::WeeklyFramed.new(max_candidates: '').max_candidates
-    end
-
-    test '#split_in_two with weeks on current and next year' do
-      internship_offer = nil
-      travel_to(Date.new(2020, 2, 1)) do
-        within_2_weeks_week = Week.find_by(year: Week.current.year, number: Week.current.number + 2)
-        first_week_of_next_year = Week.find_by(year: Week.current.year + 1, number: Week.current.number)
-        internship_offer = create(
-          :weekly_internship_offer_3eme,
-          max_candidates: 10,
-          max_students_per_group: 10
-        )
-        assert_equal 10, internship_offer.max_candidates
-        assert_equal 10, internship_offer.reload.remaining_seats_count
-
-        internship_application = create(:weekly_internship_application, internship_offer:,
-                                                                        aasm_state: :submitted)
-        internship_application.employer_validate!
-        internship_application.approve!
-
-        assert_equal 10, internship_offer.max_candidates
-        assert_equal 9, internship_offer.reload.remaining_seats_count
-      end
-
-      travel_to(Date.new(2021, 2, 1)) do # next year
-        internship_offer.weeks << Week.seconde_selectable_weeks.last
-
-        internship_offer.save
-        new_internship_offer = internship_offer.child
-
-        assert internship_offer.hidden_duplicate
-        refute internship_offer.published?
-
-        assert_equal 10, new_internship_offer.max_candidates
-        assert_equal 10, new_internship_offer.remaining_seats_count
-        refute new_internship_offer.hidden_duplicate
-        assert new_internship_offer.published?
-      end
-    end
-
-    test '#split_in_two' do
-      travel_to Date.new(2025, 1, 1) do
-        school = create(:school, :lycee)
-        internship_application = create(:weekly_internship_application)
-        internship_offer = internship_application.internship_offer
-        assert_changes -> { InternshipOffer.count }, from: 1, to: 2 do
-          # following weeks will trigger the split
-          weeks = [SchoolTrack::Seconde.first_week(year: 2024), SchoolTrack::Seconde.first_week]
-          internship_offer.update(weeks: weeks,
-                                  school: school,
-                                  max_candidates: 10,
-                                  period: 1)
-          assert_equal internship_application.reload, internship_offer.internship_applications.first
-
-          assert_equal 10, internship_offer.max_candidates
-          assert_equal 10, internship_offer.remaining_seats_count
-          new_internship_offer = InternshipOffer.find_by(mother_id: internship_offer.id)
-
-          stored_offer = InternshipOffer.find_by(hidden_duplicate: true)
-          living_offer = InternshipOffer.find_by(hidden_duplicate: false)
-          refute_nil stored_offer.id
-          refute_nil living_offer.id
-          assert_equal living_offer.id, new_internship_offer.id
-
-          assert_equal 10, internship_offer.max_candidates
-          assert_equal 10, internship_offer.remaining_seats_count
-
-          assert_equal 10, new_internship_offer.max_candidates
-          assert_equal 10, new_internship_offer.remaining_seats_count
-          assert new_internship_offer.published?
-          assert_equal [], new_internship_offer.internship_applications
-          assert_equal stored_offer.id, new_internship_offer.mother_id
-          assert_equal school, new_internship_offer.school
-
-          assert_equal [Grade.seconde.id], new_internship_offer.grades.ids
-          assert_equal [Grade.seconde.id], living_offer.grades.ids
-          assert_equal [SchoolTrack::Seconde.first_week.id], new_internship_offer.weeks.ids
-          assert_equal [SchoolTrack::Seconde.first_week(year: 2024).id], stored_offer.weeks.ids
-          assert_equal new_internship_offer.employer.id, stored_offer.employer.id
-
-          internship_offer.reload
-          assert internship_offer.hidden_duplicate
-          assert internship_offer.splitted?
-          assert internship_offer.weeks.include?(SchoolTrack::Seconde.first_week(year: 2024))
-          refute internship_offer.weeks.include?(SchoolTrack::Seconde.first_week)
-          assert_equal internship_application, internship_offer.internship_applications.first
-        end
-      end
     end
   end
 end

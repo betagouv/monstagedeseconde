@@ -25,6 +25,7 @@ class PagesController < ApplicationController
   def student_landing
     @faqs = get_faqs('student')
     @resources = get_resources('student')
+    @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
   end
 
   def pro_landing
@@ -35,6 +36,7 @@ class PagesController < ApplicationController
   def school_management_landing
     @faqs = get_faqs('education')
     @resources = get_resources('education')
+    @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
   end
 
   def statistician_landing

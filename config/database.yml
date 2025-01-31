@@ -26,6 +26,7 @@ development:
   database: monstage
   read_timeout: 1
   write_timeout: 1
+  # url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI') { ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI', '') }.sub(/^postgres(ql)?/, "postgis") %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.

@@ -1,5 +1,7 @@
 - if can?(:supply_offers, current_user)
-  div [data-controller='mandatory-fields grade select-weeks' data-mandatory-fields-minimum-length-value="8"]
+  div [data-controller='mandatory-fields grade select-weeks' 
+       data-mandatory-fields-minimum-length-value="8"
+       data-grade-initial-grades-value="#{resource.grades.compact&.map(&:short_name).join(',')}"]
     = form.hidden_field :type, value: resource.type, data: { :"planning-candidates-target" => "type" } unless resource.is_a?(Planning)
     .row
       .col-md-6.order-md-2.order-1.d-none.d-md-block
@@ -49,7 +51,7 @@
       .col-6
         hr
     - klass = resource.class.to_s.split("s::").first
-    .row data-controller="planning-candidates" data-planning-candidates-base-type-value="#{klass}"
+    .row data-controller="planning-candidates"
       .col-6
         = render '/dashboard/stepper/plannings/collective_or_individual_radio_buttons',
                   form: form,

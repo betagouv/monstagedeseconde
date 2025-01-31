@@ -7,3 +7,4 @@ production:
   - mailers
   - batches
   - default
+  - data_import

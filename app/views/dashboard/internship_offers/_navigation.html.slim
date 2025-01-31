@@ -5,28 +5,37 @@
                 locals: { internship_offer: @internship_offer }
   .col-4.d-print-none
     .d-flex.justify-content-start
-      - if can?(:publish, @internship_offer)
-        - if can?(:discard, @internship_offer)
+      - if can?(:discard, @internship_offer)
+        .fr-mx-1w
+          button.fr-mr-1w.fr-btn.fr-icon-delete-line.fr-btn--icon.fr-btn--secondary.test-discard-button data-fr-opened="false" aria-controls="discard-internship-offer-modal"
+      - if internship_offer.published?
+        - if can?(:update, @internship_offer)
+          .fr-mx-1w data-turbo="false"
+            = link_to '',
+                      edit_dashboard_internship_offer_path(@internship_offer.to_param),
+                      class: 'fr-btn fr-icon-edit-fill test-edit-button'
+        - if can?(:renew, @internship_offer) || can?(:duplicate, @internship_offer)
           .fr-mx-1w
-            button.fr-mr-1w.fr-btn.fr-icon-delete-line.fr-btn--icon.fr-btn--secondary.test-discard-button data-fr-opened="false" aria-controls="discard-internship-offer-modal"
-        - if internship_offer.shown_as_masked?
+            = link_to new_dashboard_internship_offer_path(duplicate_id: @internship_offer.to_param, show_resume: false),
+                      class: 'fr-btn fr-btn--icon fr-btn--secondary test-duplicate-button' do
+                        = inline_svg_pack_tag('media/images/icons/file_copy_line.svg',
+                                              class: 'fr-mx-n1v',
+                                              alt: 'Dupliquez cette offre de stage')
+      - else # unpublished
+        - if can?(:update, @internship_offer)
           = link_to 'Modifier',
-                     edit_dashboard_internship_offer_path(id: @internship_offer.id),
-                     class: 'fr-btn fr-btn--secondary fr-mr-2w'
+                    edit_dashboard_internship_offer_path(id: @internship_offer.id),
+                    class: 'fr-btn fr-btn--secondary fr-mr-2w'
+        - if can?(:duplicate, @internship_offer)
+          .fr-mx-1w
+            = link_to new_dashboard_internship_offer_path(duplicate_id: @internship_offer.to_param, show_resume: false),
+                      class: 'fr-btn fr-btn--icon fr-btn--secondary test-duplicate-button' do
+                        = inline_svg_pack_tag('media/images/icons/file_copy_line.svg',
+                                              class: 'fr-mx-n1v',
+                                              alt: 'Dupliquez cette offre de stage')
+        - if can?(:publish, @internship_offer)
           = button_to 'Publier',
                       publish_dashboard_internship_offer_path(@internship_offer),
                       data: { turbo: false },
                       class: 'fr-btn',
                       disabled: @internship_offer.requires_updates?
-        - else
-          - if can?(:update, @internship_offer)
-            .fr-mx-1w data-turbo="false"
-              = link_to '',
-                        edit_dashboard_internship_offer_path(@internship_offer.to_param),
-                        class: 'fr-btn fr-icon-edit-fill test-edit-button'
-          - if can?(:renew, @internship_offer) || can?(:duplicate, @internship_offer)
-            .fr-mx-1w
-              = link_to '',
-                        new_dashboard_internship_offer_path(duplicate_id: @internship_offer.to_param, show_resume: false),
-                        class: 'fr-btn fr-icon-file-add-line fr-btn--icon fr-btn--secondary test-duplicate-button'
-          
