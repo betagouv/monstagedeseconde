@@ -173,10 +173,12 @@ module Services::Omogen
       case response
       when Net::HTTPSuccess
         # puts response.body
-        # puts JSON.parse(response.body)
-        data_student = JSON.parse(response.body, symbolize_names: true)
-        if data_student.fetch(:codeMef, false) && Grade.code_mef_ok?(code_mef: data_student[:codeMef])
-          students << SygneEleve.new(data_student)
+        puts JSON.parse(response.body)
+        data_students = JSON.parse(response.body, symbolize_names: true)
+        data_students.each do |data_student|
+          if data_student.fetch(:codeMef, false) && Grade.code_mef_ok?(code_mef: data_student[:codeMef])
+            students << SygneEleve.new(data_student)
+          end
         end
       when Net::HTTPNotFound
         puts response.body
