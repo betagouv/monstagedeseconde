@@ -34,8 +34,7 @@ module Users
 
     # Callbacks
     before_save :skip_confirmation!
-    after_create :set_reminders,
-                 :clean_phone_or_email_when_empty # , :welcome_new_student
+    after_create :clean_phone_or_email_when_empty # , :welcome_new_student :set_reminders
 
     def student? = true
 

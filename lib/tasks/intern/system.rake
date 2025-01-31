@@ -90,12 +90,20 @@ namespace :sys do
   desc 'kill all sidekiq processes from their task name on default queue'
   task :kill_sidekiq, [:task_name] => :environment do |t, args|
     PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
+      counter = 0
+      not_treated = 0
       Sidekiq::ScheduledSet.new.each do |job|
-        next unless job.args.first['job_class'] == args.task_name
-
-        job.delete
-        print '.'
+        if job.args.first['job_class'] == args.task_name
+          counter += 1
+          job.delete
+          print '.'
+          PrettyConsole.puts_in_green " #{counter} |" if counter % 100 == 0
+        else
+          not_treated += 1
+          print ' 100 |' if not_treated % 100 == 0
+        end
       end
+      PrettyConsole.say_in_yellow "#{counter} jobs deleted | #{not_treated} jobs not treated"
     end
   end
 end
