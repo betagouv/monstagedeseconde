@@ -123,20 +123,11 @@ module Services::Omogen
       response = sygne_eleves(uri)
       case response
       when Net::HTTPSuccess
-        puts response.body
-        JSON.parse(response.body)
-        puts '================================'
-        puts "code_uai : #{code_uai}"
-        puts '================================'
-        puts ''
         schools_in_data << JSON.parse(response.body)
       when Net::HTTPNotFound
         puts response.body
         Rails.logger.error "Failed to get sygne eleves : #{response.message}"
       end
-      puts '================================'
-      puts 'schools_in_data'
-      puts '================================'
       schools_in_data.each do |school|
         puts school
       end
@@ -154,10 +145,6 @@ module Services::Omogen
       request = Net::HTTP::Get.new(uri.request_uri)
       request['Authorization'] = "Bearer #{@token}"
       request['Compression-Zip'] = 'non'
-
-      puts 'request', request
-      puts 'uri', uri
-      puts '----'
 
       response = http.request(request)
 
@@ -254,7 +241,7 @@ module Services::Omogen
 
     def sygne_responsables_request(ine)
       # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
-      uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables") 
+      uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
