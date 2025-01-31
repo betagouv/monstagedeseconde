@@ -234,16 +234,10 @@ class InternshipOffer < ApplicationRecord
 
   aasm do
     state :published, initial: true
-    state :drafted,
-          :removed,
+    state :removed,
           :unpublished,
           :need_to_be_updated,
           :splitted
-
-    event :draft do
-      transitions from: %i[published unpublished need_to_be_updated],
-                  to: :drafted
-    end
 
     event :publish do
       transitions from: %i[unpublished need_to_be_updated],
@@ -260,7 +254,7 @@ class InternshipOffer < ApplicationRecord
     end
 
     event :unpublish do
-      transitions from: %i[published need_to_be_updated drafted splitted drafted],
+      transitions from: %i[published need_to_be_updated splitted],
                   to: :unpublished, after: proc { |*_args|
                                              update!(published_at: nil)
                                            }

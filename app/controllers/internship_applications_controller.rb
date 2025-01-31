@@ -26,7 +26,6 @@ class InternshipApplicationsController < ApplicationController
                 alert: "Votre établissement a déclaré des semaines de stage et aucune semaine n'est compatible avec cette offre de stage."
   end
 
-  # alias for draft
   def show
     @internship_application = @internship_offer.internship_applications.find_by(uuid: params[:uuid])
     authorize! :submit_internship_application, @internship_application

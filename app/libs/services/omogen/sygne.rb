@@ -72,7 +72,7 @@ module Services::Omogen
     end
 
     # Sygne eleves
-    #  {
+    #  [{
     #  "ine"=>"001291528AA",
     #  "nom"=>"SABABADICHETTY",
     #  "prenom"=>"Felix",
@@ -92,7 +92,7 @@ module Services::Omogen
     #  "libelleLongStatut"=>"SCOLAIRE",
     #  "dateDebSco"=>"2023-09-05",
     #  "adhesionTransport"=>false
-    # }
+    # }]
     #
     # temporary method to import only 3 students for test purpose
     def sygne_import_by_schools_little(code_uai)
@@ -130,9 +130,7 @@ module Services::Omogen
         puts response.body
         Rails.logger.error "Failed to get sygne eleves : #{response.message}"
       end
-      schools_in_data.each do |school|
-        puts school
-      end
+      print 'x'
       schools_in_data
     end
 
@@ -173,7 +171,7 @@ module Services::Omogen
       case response
       when Net::HTTPSuccess
         # puts response.body
-        puts JSON.parse(response.body)
+        # puts JSON.parse(response.body)
         data_students = JSON.parse(response.body, symbolize_names: true)
         data_students.each do |data_student|
           if data_student.fetch(:codeMef, false) && Grade.code_mef_ok?(code_mef: data_student[:codeMef])
