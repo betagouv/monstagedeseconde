@@ -76,7 +76,7 @@ namespace :sys do
   # end
   #
   desc 'kill 20 sidekiq processes from their task name on default queue'
-  task :kill_sidekiq, [:task_name] => :environment do |t, args|
+  task :kill_sidekiq_twenty, [:task_name] => :environment do |t, args|
     PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
       Sidekiq::ScheduledSet.new.first(20).each do |job|
         next unless job.args.first['job_class'] == args.task_name
