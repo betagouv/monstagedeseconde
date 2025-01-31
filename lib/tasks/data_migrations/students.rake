@@ -56,7 +56,7 @@ namespace :data_migrations do
     end
   end
 
-  desc 'import 30 students only'
+  desc 'import 3 students only'
   task import_three_students: :environment do |task|
     PrettyConsole.announce_task 'Importing 3 students only' do
       school = School.where(city: 'Lille').first

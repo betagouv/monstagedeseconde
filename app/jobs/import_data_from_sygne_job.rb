@@ -1,5 +1,5 @@
 class ImportDataFromSygneJob < ActiveJob::Base
-  queue_as :default
+  queue_as :data_import
 
   def perform(school)
     omogen = Services::Omogen::Sygne.new

@@ -112,7 +112,9 @@ module Services::Omogen
       MEFSTAT4_CODES.each do |niveau|
         students = sygne_eleves(code_uai, niveau: niveau)
         students.each do |student|
-          student.make_student
+          ActiveRecord::Base.transaction do
+            student.make_student
+          end
         end
       end
     end
