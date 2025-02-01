@@ -339,4 +339,17 @@ namespace :data_migrations do
       PrettyConsole.say_in_cyan "counter of schools updated : #{counter}"
     end
   end
+
+  desc 'obfuscate readable students ine at setup' do
+    task 'obfuscate_email': :environment do
+      Users::Student.kept
+                    .where('created_at < ?', DateTime.new(2025, 1, 31, 19, 20))
+                    .where.not(ine: nil)
+                    .find_each do |student|
+        scrambled_ine = Digest::SHA1.hexdigest(student.ine)
+        student.update_columns(email: "#{scrambled_ine}@#{student.school.code_uai}.fr")
+        print '.'
+      end
+    end
+  end
 end
