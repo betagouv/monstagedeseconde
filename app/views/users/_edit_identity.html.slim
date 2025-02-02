@@ -13,21 +13,18 @@
     = render 'layouts/form_errors', resource: current_user, resource_name: :user
 
     .row
+      - options = { class: 'fr-input', required: true , maxlength: 85 }
+      - options.merge!(readonly: true, class: 'fr-input text-grey-disabled') if current_user.try(:student?)
       .col-md-6.col-xs-12
         .form-group
           = f.label :first_name, class: 'fr-label', for: 'user_first_name' do
             = 'Prénom *'
-          = f.text_field :first_name,
-                         class: 'fr-input',
-            required: true
+          = f.text_field :first_name, **options
       .col-md-6.col-xs-12
         .form-group
           = f.label :last_name, class: 'fr-label', for: 'user_last_name' do
             = 'Nom *'
-          = f.text_field :last_name,
-                         class: 'fr-input',
-                         maxlength: 85,
-                         required: true
+          = f.text_field :last_name, **options
     .row
       .col-md-6.col-xs-12
         .fr-input-group.fr-my-1w
@@ -38,18 +35,25 @@
           - if current_user.pending_reconfirmation?
             span.fr-hint-text
               |Cet email n'est pas encore confirmé : veuillez consulter vos emails
+          - common_options = { class: 'fr-input',
+                               maxlength: 100,
+                               required: true,
+                               data: {action: 'change->profile#onBlurEmailInput',
+                                     :"profile-target" => 'emailInput'}}
           - if current_user.pending_reconfirmation?
-            = f.text_field :unconfirmed_email,
-                            { class: 'fr-input',
-                              maxlength: 100,
-                              required: true,
-                              disabled: true }
+            = f.text_field :unconfirmed_email, { class: 'fr-input',
+                                                 maxlength: 100,
+                                                 required: true,
+                                                 disabled: true }
+          - elsif current_user.student? && current_user.ine.present?
+            - scrambled_ine = Digest::SHA1.hexdigest(current_user.ine)
+            - scrambled_email = "#{scrambled_ine}@#{current_user.try(:school).try(:code_uai)}.fr"
+            - value = current_user.email == scrambled_email ? '' : current_user.email
+            = f.text_field :email, value: value, **common_options
+          - elsif current_user.statistician?
+            = f.text_field :email, readonly: true, **common_options
           - else
-            = f.text_field :email,
-                            { class: 'fr-input',
-                              maxlength: 100,
-                              required: true,
-                              data: {action: 'change->profile#onBlurEmailInput', :"profile-target" => 'emailInput'}}.merge(current_user.statistician? ? { readonly: true } : {})
+            = f.text_field :email,**common_options
 
       - if current_user.ministry_statistician?
         .col-md-6.col-xs-12
@@ -79,7 +83,16 @@
                       {  },
                       { class: "fr-select", value: current_user.department }.merge(can?(:change, :department) ? {} : {disabled: true})
 
-      - if current_user.try(:school) && current_user.school.class_rooms.any? && can?(:change, current_user.school.class_rooms.first)
+      - if current_user.student?
+        .col-md-6.col-xs-12
+          .fr-input-group.fr-my-1w
+            = f.label :class_room, class: 'fr-label', for: 'user_class_room' do
+              = 'Classe'
+            = f.text_field :class_room,
+                            class: 'fr-input text-grey-disabled',
+                            readonly: true
+                            value: current_user.try(:class_room).try(:name)
+      - if current_user.teacher?  && current_user.school.class_rooms.any?
         .col-md-6.col-xs-12
           .fr-input-group.fr-my-1w
             = f.label :class_room_id, class: 'fr-label', for: 'user_class_room_id_1' do
@@ -88,7 +101,8 @@
                        options_from_collection_for_select(current_user.school.class_rooms, :id, :name, current_user.class_room_id),
                        { prompt: class_rooms_options_for_default },
                        id: 'user_class_room_id_1',
-                       class: "fr-select"
+                       class: "fr-select text-grey-disabled",
+                       readonly: true
 
       - if can?(:choose_role, current_user)
         .col-md-6.col-xs-12
@@ -137,14 +151,16 @@
                                 placeholder: "ex : 0623456789",
                                 :'aria-label' => "[Numéro de téléphone]"
 
-    - if current_user.is_a?(Users::Student)
+    - if current_user.try(:student?)
       .row.fr-my-3w
         .col-md-6.col-xs-12
           .fr-input-group.fr-my-1w
             = f.label :birth_date, class: 'fr-label', for: 'user_birth_date' do
               = 'Date de naissance *'
-            = f.date_field :birth_date, class: 'fr-input', required: true
-
+            = f.date_field :birth_date,
+                           readonly: true,
+                           class: 'fr-input text-grey-disabled',
+                           required: true
 
     .row
       .col-md-6.col-xs-12

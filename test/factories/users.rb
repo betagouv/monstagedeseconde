@@ -20,6 +20,7 @@ FactoryBot.define do
 
     # Student
     factory :student, class: 'Users::Student', parent: :user do
+      ine { "1#{rand(10.pow(8))}#{('A'..'Z').to_a.sample}#{('A'..'Z').to_a.sample}" }
       type { 'Users::Student' }
 
       first_name { FFaker::NameFR.first_name.capitalize }

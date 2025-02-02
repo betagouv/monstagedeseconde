@@ -88,6 +88,7 @@ module Users
     def school_manager? = role == 'school_manager'
     def admin_officer? = role == 'admin_officer'
     def cpe? = role == 'cpe'
+    def teacher? = role == 'teacher' || role == 'main_teacher'
 
     def school_manager
       try(:school).try(:school_manager)
