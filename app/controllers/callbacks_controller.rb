@@ -50,6 +50,7 @@ class CallbacksController < ApplicationController
     Rails.logger.info("Educonnect callback received with state present: #{state.present?}")
     Rails.logger.info("Educonnect callback received with nonce present: #{nonce.present?}")
 
+    return redirect_to root_path, alert: 'Code invalide' and return unless code.present?
     educonnect = Services::EduconnectConnection.new(code, state, nonce)
 
     session[:id_token] = educonnect.id_token
