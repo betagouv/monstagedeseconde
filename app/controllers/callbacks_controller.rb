@@ -50,7 +50,9 @@ class CallbacksController < ApplicationController
     Rails.logger.info("Educonnect callback received with state present: #{state.present?}")
     Rails.logger.info("Educonnect callback received with nonce present: #{nonce.present?}")
 
-    return redirect_to root_path, alert: 'Code invalide' and return unless code.present?
+    #  TO TO : remove this line - test only
+    return redirect_to root_path, alert: 'Please check logs and finish process manually'
+
     educonnect = Services::EduconnectConnection.new(code, state, nonce)
 
     session[:id_token] = educonnect.id_token
@@ -78,7 +80,6 @@ class CallbacksController < ApplicationController
       redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
     end
 
-    
     student.confirm
     student.save
 
@@ -90,9 +91,9 @@ class CallbacksController < ApplicationController
     Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
 
     begin
-      Rails.logger.info("Starting sign in process...")
+      Rails.logger.info('Starting sign in process...')
       Rails.logger.info("Student details - ID: #{student.id}, Email: #{student.email}")
-      
+
       # Vérifier que l'utilisateur est valide avant la connexion
       unless student.valid?
         Rails.logger.error("Student validation failed: #{student.errors.full_messages}")
@@ -102,7 +103,7 @@ class CallbacksController < ApplicationController
       # Essayer de créer la session avec plus de détails en cas d'erreur
       # Devise.sign_out_all_scopes ? sign_in(student, scope: :user) : sign_in(student)
       sign_in(student)
-      
+
       Rails.logger.info("Sign in successful - Session ID: #{session.id}")
       Rails.logger.info("Current user signed in: #{current_user&.id}")
     rescue StandardError => e
@@ -115,7 +116,6 @@ class CallbacksController < ApplicationController
     Rails.logger.info("Student signed in successfully: #{user_signed_in?}")
 
     redirect_to root_path, notice: 'Vous êtes bien connecté'
-    
   end
 
   def get_role(role)
@@ -146,13 +146,11 @@ class CallbacksController < ApplicationController
   private
 
   def handle_educonnect_logout(educonnect)
-    begin
-      educonnect.logout
-    rescue StandardError => e
-      Rails.logger.error("Failed to logout from Educonnect: #{e.message}")
-    ensure
-      session.delete(:id_token)
-      session.delete(:state)
-    end
+    educonnect.logout
+  rescue StandardError => e
+    Rails.logger.error("Failed to logout from Educonnect: #{e.message}")
+  ensure
+    session.delete(:id_token)
+    session.delete(:state)
   end
 end
