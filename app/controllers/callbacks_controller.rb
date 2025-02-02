@@ -50,8 +50,8 @@ class CallbacksController < ApplicationController
     Rails.logger.info("Educonnect callback received with state present: #{state.present?}")
     Rails.logger.info("Educonnect callback received with nonce present: #{nonce.present?}")
 
-    #  TO TO : remove this line - test only
-    return redirect_to root_path, alert: 'Please check logs and finish process manually'
+    #  TO TO : remove this line - dev only
+    # return redirect_to root_path, alert: 'Please check logs and finish process manually' unless Rails.env.development?
 
     educonnect = Services::EduconnectConnection.new(code, state, nonce)
 
