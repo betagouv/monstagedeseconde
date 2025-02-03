@@ -1,10 +1,10 @@
-footer#footer.fr-footer role="contentinfo" data-controller='footer'
+footer#footer.fr-footer role="contentinfo"
   .fr-footer__top.fr-px-2w
     .fr-container
       .row
         - klass = employers_only? ? 'disabled_tab' : '' 
         .col-12.col-md-3
-          .fr-footer__top-column
+          .fr-footer__top-column data-controller='logout'
             div class="title fr-text--sm fr-mb-1w #{klass}"
               = "Élèves"
             - path = employers_only? ? '#' : eleves_path
@@ -13,6 +13,7 @@ footer#footer.fr-footer role="contentinfo" data-controller='footer'
             .fr-py-1w = link_to "Trouver un stage", path, class: "fr-raw-link fr-text--sm link #{klass}"
             .fr-py-1w = link_to "Découvrir le dispositif", path_anchor, class: "fr-raw-link fr-text--sm link #{klass}"
             .fr-py-1w = link_to "Ressources utiles", path_resources, class: "fr-raw-link fr-text--sm link #{klass}"
+            .fr-py-1w = link_to "Déconnexion Educonnect", ENV['EDUCONNECT_LOGOUT_URL'], class: "fr-raw-link fr-text--sm link educonnect-logout #{klass}"
         .col-12.col-md-3
           .fr-footer__top-column
             .title.fr-text--sm.fr-mb-1w = "Professionnels"
