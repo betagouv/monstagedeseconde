@@ -38,19 +38,6 @@ namespace :cleaning do
     end
   end
 
-  desc '[cron] split offers when they have weeks in the past and in the future'
-  task :split_offers, [] => :environment do |args|
-    PrettyConsole.announce_task('Splitting offers when they have weeks in the past and in the future') do
-      InternshipOffers::WeeklyFramed.kept
-                                    .where(hidden_duplicate: false)
-                                    .find_each do |offer|
-        next unless offer.has_weeks_in_the_past_and_in_the_future?
-
-        SplitOfferJob.perform_later(internship_offer_id: offer.id)
-      end
-    end
-  end
-
   desc "anonymize and delete what should be after school year's end"
   task year_end: %i[anonymize_internship_agreements
                     archive_students

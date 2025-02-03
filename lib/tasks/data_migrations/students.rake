@@ -40,15 +40,11 @@ namespace :data_migrations do
     # invoke as : rake "data_migrations:department_data[Loiret]"
     department_name = args.department_name
     PrettyConsole.announce_task "Importing #{department_name}'s schools" do
-      schools_data = []
-      omogen = Services::Omogen::Sygne.new
       department = Department.find_by(name: department_name)
-
       schools = School.where('LEFT(zipcode, 2) = ?', department.code[0..1]).to_a
       counter = 0
       schools.each do |school|
-        data = omogen.sygne_import_by_schools(school.code_uai)&.symbolize_keys
-        schools_data << data
+        ImportDataFromSygneJob.perform_now(school)
         puts "----------------- #{school.code_uai} -----------------"
         counter += 1
       end
@@ -56,16 +52,26 @@ namespace :data_migrations do
     end
   end
 
+  desc 'import a school'
+  task import_school: :environment do |task|
+    PrettyConsole.announce_task 'Importing lycée Pasteur' do
+      school = School.where(city: 'Lille').first
+      omogen = Services::Omogen::Sygne.new
+      PrettyConsole.say_in_cyan "Importing students from #{school.name} uai:#{school.code_uai}  ##{school.id}"
+
+      omogen.sygne_import_by_schools(school.code_uai)
+      puts "----------------- #{school.code_uai} -----------------"
+    end
+  end
+
   desc 'import 3 students only'
   task import_three_students: :environment do |task|
     PrettyConsole.announce_task 'Importing 3 students only' do
       school = School.where(city: 'Lille').first
-      schools_data = []
       omogen = Services::Omogen::Sygne.new
       PrettyConsole.say_in_cyan "Importing students from #{school.name} uai:#{school.code_uai}  ##{school.id}"
 
-      data = omogen.sygne_import_by_schools_little(school.code_uai)&.symbolize_keys
-      schools_data << data
+      omogen.sygne_import_by_schools_little(school.code_uai)
       puts "----------------- #{school.code_uai} -----------------"
     end
   end

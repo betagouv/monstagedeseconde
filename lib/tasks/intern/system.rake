@@ -25,6 +25,7 @@ namespace :sys do
   task :db_prod, [] => :environment do
     file = Rails.root.join('config/database.yml')
     text = File.read(file)
+    text = text.gsub(/#(?: #)*/, '#')
     new_contents = text.gsub(/# url: <%= ENV.fetch\('CLEVER_PRODUCTION_COPY_CONNEXION_URI'\)/,
                              "url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI')")
     File.open(file, 'w') { |f| f.puts new_contents }
@@ -73,4 +74,36 @@ namespace :sys do
   #             "-f #{reset_file_name}")
   #   end
   # end
+  #
+  desc 'kill 20 sidekiq processes from their task name on default queue'
+  task :kill_sidekiq_twenty, [:task_name] => :environment do |t, args|
+    PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
+      Sidekiq::ScheduledSet.new.first(20).each do |job|
+        next unless job.args.first['job_class'] == args.task_name
+
+        job.delete
+        print '.'
+      end
+    end
+  end
+
+  desc 'kill all sidekiq processes from their task name on default queue'
+  task :kill_sidekiq, [:task_name] => :environment do |t, args|
+    PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
+      counter = 0
+      not_treated = 0
+      Sidekiq::ScheduledSet.new.each do |job|
+        if job.args.first['job_class'] == args.task_name
+          counter += 1
+          job.delete
+          print '.'
+          PrettyConsole.puts_in_green " #{counter} |" if counter % 100 == 0
+        else
+          not_treated += 1
+          print ' 100 |' if not_treated % 100 == 0
+        end
+      end
+      PrettyConsole.say_in_yellow "#{counter} jobs deleted | #{not_treated} jobs not treated"
+    end
+  end
 end
