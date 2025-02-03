@@ -191,9 +191,9 @@ class InternshipOffer < ApplicationRecord
     joins(:stats).where(at_stats[:remaining_seats_count].gt(0))
   }
 
-  scope :filter_when_max_candidates_reached, lambda {
-    uncompleted
-  }
+  # scope :filter_when_max_candidates_reached, lambda {
+  #   uncompleted
+  # }
 
   # scope :specific_school_year, lambda { |school_year:|
   #   week_ids = Week.weeks_of_school_year(school_year:).pluck(:id)

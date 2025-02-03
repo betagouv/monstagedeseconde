@@ -8,9 +8,9 @@ module Weekable
 
     delegate :select_text_method, :human_select_text_method, to: :week
 
-    scope :filter_when_max_candidates_reached, lambda { |max_candidates:|
-      where('blocked_applications_count < :max_candidates', max_candidates: max_candidates)
-    }
+    # scope :filter_when_max_candidates_reached, lambda { |max_candidates:|
+    #   where('blocked_applications_count < :max_candidates', max_candidates: max_candidates)
+    # }
 
     scope :by_weeks, lambda { |weeks:|
       where(week: weeks)
