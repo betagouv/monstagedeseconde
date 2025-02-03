@@ -44,6 +44,8 @@ namespace :data_migrations do
       schools = School.where('LEFT(zipcode, 2) = ?', department.code[0..1]).to_a
       counter = 0
       schools.each do |school|
+        next if school.full_imported
+
         ImportDataFromSygneJob.perform_now(school)
         puts "----------------- #{school.code_uai} -----------------"
         counter += 1
@@ -59,6 +61,7 @@ namespace :data_migrations do
       PrettyConsole.say_in_cyan "Importing students from #{school.name} uai:#{school.code_uai}  ##{school.id}"
       ImportDataFromSygneJob.perform_now(school)
       puts "----------------- #{school.code_uai} -----------------"
+      school.update(full_imported: true)
     end
   end
 
@@ -77,6 +80,8 @@ namespace :data_migrations do
   desc 'get students of France from omogen and sygne'
   task import_students_data: :environment do |task|
     School.all.find_each(batch_size: 5) do |school|
+      next if school.full_imported
+
       ImportDataFromSygneJob.perform_now(school)
       sleep 0.3
     end
