@@ -19,17 +19,10 @@
                   th.col-4.align-self-end
                     small Statut de la recherche
                   th.col-2.align-self-end
-                    small Classe
+                    small Inscrit 
                   th.col-2.text-center.align-self-end
                     small Accéder aux candidatures
               tbody= render partial: "dashboard/schools/users/student",
                             collection: @students, locals: {}
 
-        .row
-          .col-6
-            = link_to "Ajouter des élèves à cette classe", new_dashboard_school_class_room_student_path(@school, @class_room), class: 'fr-btn fr-btn--secondary'
-          .col-6.text-right
-            = button_tag 'Enregistrer les modifications',
-                        disabled: true,
-                        class: 'fr-btn fr-icon-save-line fr-btn--icon-left',
-                        data: { 'target': 'students.submitButton' }
+       
