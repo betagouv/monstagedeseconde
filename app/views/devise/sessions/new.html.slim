@@ -89,7 +89,7 @@ main#content[role="main"
               ul.fr-btns-group
                 li
                   = link_to "Créer un compte",
-                            (params[:as].present? ? new_identity_path(as: params[:as]) : users_choose_profile_path),
+                            users_choose_profile_path,
                             class: "fr-btn fr-btn--secondary"
 
               hr.fr-mb-0
