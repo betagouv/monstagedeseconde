@@ -33,6 +33,14 @@ class ApplicationController < ActionController::Base
     stored_location_for(resource) || resource.reload.after_sign_in_path || super
   end
 
+  def after_sign_out_path_for(resource_or_scope)
+    if resource_or_scope == :user && @signed_out_user&.student?
+      root_path(logout: :educonnect)
+    else
+      super
+    end
+  end
+
   def current_user_or_visitor
     current_user || Users::Visitor.new
   end
