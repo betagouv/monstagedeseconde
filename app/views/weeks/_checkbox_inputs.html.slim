@@ -1,5 +1,5 @@
 - preselect_all = preselect_all_weeks?(form.object)
-- is_all_year_long = form.object.all_year_long?
+- is_all_year_long = form.object.all_year_long
 - allow_select_all = !form.object.is_fully_editable?
 - error = form.object.errors[:all_year_long].any?
 - latitude = form.object.coordinates&.latitude

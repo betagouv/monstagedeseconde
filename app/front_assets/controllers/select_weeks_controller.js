@@ -66,6 +66,16 @@ export default class extends Controller {
     this.detachEventListeners();
   }
 
+  connect() {
+    if (this.allYearLongTarget.checked) {
+      this.showAllYearLong();
+    } else {
+      $(".custom-control-checkbox-list").removeClass("d-none");
+      toggleContainer(this.checkboxesContainerTarget, true);
+      this.computeMonthScore();
+    }
+  }
+
   fetchSchoolsNearby() {
     // fetch(endpoints.apiSchoolsNearby(event.detail), { method: "POST" })
     const body = {
