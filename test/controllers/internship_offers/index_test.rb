@@ -80,6 +80,29 @@ class IndexTest < ActionDispatch::IntegrationTest
     assert_empty json_response['internshipOffers']
   end
 
+  # test 'GET #index ignore default radius in suggestions' do
+  #   offer_paris_1 = create(
+  #     :weekly_internship_offer_3eme,
+  #     title: 'Vendeur'
+  #   )
+  #   5.times { create(:weekly_internship_offer_3eme, title: 'prof de dessin') }
+
+  #   get internship_offers_path(
+  #     keyword: 'avocat',
+  #     radius: Nearbyable::DEFAULT_NEARBY_RADIUS_IN_METER,
+  #     longitude: Coordinates.bordeaux[:longitude],
+  #     latitude: Coordinates.bordeaux[:latitude],
+  #     format: :json
+  #   )
+
+  #   assert_response :success
+  #   assert_json_absence_of(json_response, offer_paris_1)
+  #   InternshipOffer.last(5).each do |offer|
+  #     assert_json_presence_of(json_response, offer)
+  #   end
+  #   refute json_response['internshipOffers']
+  # end
+
   test 'GET #index withParis location as Visitor returns 3 offers' do
     offer_paris_1 = create(
       :weekly_internship_offer_3eme,
@@ -120,6 +143,42 @@ class IndexTest < ActionDispatch::IntegrationTest
     assert_json_presence_of(json_response, offer_paris_2)
     assert_json_presence_of(json_response, offer_paris_3)
   end
+
+  # test 'GET #index with wrong keyword and wrong weeks as Visitor returns no results with weeks suggestions' do
+  #   offer_paris_1 = create(
+  #     :weekly_internship_offer_3eme,
+  #     title: 'Vendeur'
+  #   )
+  #   offer_paris_2 = create(
+  #     :weekly_internship_offer_3eme,
+  #     title: 'Comptable'
+  #   )
+  #   # not displayed
+  #   offer_paris_3 = create(
+  #     :weekly_internship_offer_3eme,
+  #     title: 'Infirmier'
+  #   )
+  #   offer_bordeaux_1 = create(
+  #     :weekly_internship_offer_3eme,
+  #     title: 'Infirmier',
+  #     city: 'Bordeaux',
+  #     coordinates: Coordinates.bordeaux
+  #   )
+  #   offer_bordeaux_2 = create(
+  #     :weekly_internship_offer_3eme,
+  #     title: 'Infirmier',
+  #     city: 'Bordeaux',
+  #     coordinates: Coordinates.bordeaux
+  #   )
+
+  #   get internship_offers_path(
+  #     keyword: 'avocat',
+  #     format: :json
+  #   )
+
+  #     assert_response :success
+  #     assert json_response['isSuggestion']
+  # end
 
   test 'GET #index canonical links works' do
     get internship_offers_path(latitude: 44.8378, longitude: -0.579512)
@@ -316,7 +375,7 @@ class IndexTest < ActionDispatch::IntegrationTest
       end
       create(:api_internship_offer_3eme, coordinates: Coordinates.bordeaux, city: 'Bordeaux')
       sign_in(create(:student))
-      
+
       InternshipOffer.stub :in_the_future, InternshipOffer.all do
         get internship_offers_path, params: { format: :json }
         json_response.first[1].each do |internship_offer|
@@ -451,7 +510,47 @@ class IndexTest < ActionDispatch::IntegrationTest
     assert_select 'a[href=?]',
                   internship_offer_url(discarded_internship_offer), 0
   end
+  # test 'GET #index as Visitor with search keyword find internship offer' do
+  #   travel_to(Date.new(2024, 3, 1)) do
+  #     keyword = 'foobar'
+  #     foundable_internship_offer = create(:weekly_internship_offer_2nde,
+  #                                         title: keyword)
+  #     ignored_internship_offer = create(:weekly_internship_offer_2nde, title: 'bom')
 
+  #     dictionnary_api_call_stub
+  #     SyncInternshipOfferKeywordsJob.perform_now
+
+  #     get internship_offers_path(keyword:, format: :json)
+  #     assert_response :success
+  #     assert_json_presence_of(json_response, foundable_internship_offer)
+  #     assert_json_absence_of(json_response, ignored_internship_offer)
+  #   end
+  # end
+
+  # test 'GET #index as Visitor with search keyword find internship offer filtered by grade' do
+  #   travel_to(Date.new(2024, 3, 1)) do
+  #     foundable_internship_offer = create(:weekly_internship_offer_2nde)
+  #     ignored_internship_offer = create(:weekly_internship_offer_3eme)
+
+  #     get internship_offers_path(grade_id: Grade.seconde.id, format: :json)
+  #     assert_response :success
+  #     assert_json_presence_of(json_response, foundable_internship_offer)
+  #     assert_json_absence_of(json_response, ignored_internship_offer)
+  #   end
+  # end
+  # test 'GET #index as Visitor with search keyword find internship offer filtered by weeks' do
+  #   travel_to(Date.new(2024, 3, 1)) do
+  #     weeks = [Week.selectable_from_now_until_end_of_school_year.second]
+  #     foundable_internship_offer = create(:weekly_internship_offer_2nde, weeks:)
+  #     weeks_other = [Week.selectable_from_now_until_end_of_school_year.third]
+  #     ignored_internship_offer = create(:weekly_internship_offer_3eme, weeks: weeks_other)
+
+  #     get internship_offers_path(week_ids: weeks.map(&:id), format: :json)
+  #     assert_response :success
+  #     assert_json_presence_of(json_response, foundable_internship_offer)
+  #     assert_json_absence_of(json_response, ignored_internship_offer)
+  #   end
+  # end
   test 'search with school years works' do
     employer = create(:employer)
     sign_in(employer)
@@ -520,4 +619,12 @@ class IndexTest < ActionDispatch::IntegrationTest
       assert_json_presence_of(json_response, foundable_internship_offer)
     end
   end
+
+  # test 'GET  #index as visitor filters by grade' do
+  #   assert false
+  # end
+
+  # test 'GET #index as visitor filters by weeks' do
+  #   assert false
+  # end
 end
