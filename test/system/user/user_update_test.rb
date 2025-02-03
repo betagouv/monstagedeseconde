@@ -31,6 +31,20 @@ class UserUpdateTest < ApplicationSystemTestCase
     assert success_message == 'Compte mis à jour avec succès.'
   end
 
+  test 'student cannot update his password' do
+    student = create(:student, phone: '+330623042585')
+    sign_in(student)
+    visit account_path
+    assert_select("button[aria-controls='password-panel']", count: 0)
+  end
+
+  test 'school_manager cannot update his password' do
+    school_manager = create(:school_manager, school: create(:school))
+    sign_in(school_manager)
+    visit account_path
+    assert_select("button[aria-controls='password-panel']", count: 0)
+  end
+
   test 'student will not update his phone number with a badly formatted phone number' do
     student = create(:student)
     sign_in(student)

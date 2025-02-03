@@ -13,13 +13,13 @@ namespace :data_migrations do
     end
   end
 
-  desc 'get department of north of France'
-  task north_data: :environment do |task|
-    academy_region_name = 'Hauts-de-France'
+  desc 'import students with sygne from a region'
+  task :region_data, [:academy_region_name] => :environment do |task, args|
+    # invoke as : rake "data_migrations:region_data[Normandie]"
     schools_data = []
-    omogen = Services::Omogen.new
-
-    departments = AcademyRegion.find_by(name: academy_region_name).departments
+    schools = []
+    omogen = Services::Omogen::Sygne.new
+    departments = AcademyRegion.find_by(name: args.academy_region_name).departments
     departments.each do |department|
       schools << School.where('LEFT(zipcode, 2) = ?', department.code[0..1])
     end
@@ -28,12 +28,31 @@ namespace :data_migrations do
     counter = 0
     schools.each do |school|
       counter += 1
-      next if counter > 1 # one imported school
-
-      sleep 0.3
       data = omogen.sygne_import_by_schools(school.code_uai)&.symbolize_keys
       schools_data << data
       puts "----------------- #{school.code_uai} -----------------"
+    end
+    puts "----------------- #{counter} écoles importées -----------------"
+  end
+
+  desc 'import students with sygne from a department'
+  task :department_data, %i[department_name] => :environment do |task, args|
+    # invoke as : rake "data_migrations:department_data[Loiret]"
+    department_name = args.department_name
+    PrettyConsole.announce_task "Importing #{department_name}'s schools" do
+      schools_data = []
+      omogen = Services::Omogen::Sygne.new
+      department = Department.find_by(name: department_name)
+
+      schools = School.where('LEFT(zipcode, 2) = ?', department.code[0..1]).to_a
+      counter = 0
+      schools.each do |school|
+        data = omogen.sygne_import_by_schools(school.code_uai)&.symbolize_keys
+        schools_data << data
+        puts "----------------- #{school.code_uai} -----------------"
+        counter += 1
+      end
+      PrettyConsole.say_in_cyan "Imported #{counter} schools"
     end
   end
 

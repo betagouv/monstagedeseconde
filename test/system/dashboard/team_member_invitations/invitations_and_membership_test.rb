@@ -118,6 +118,14 @@ module Dashboard::TeamMemberInvitations
       find('.h2[aria-level="1"][role="heading"]', text: 'Édition de la convention de stage')
     end
 
+    test 'can access to it password change form' do
+      employer= create(:employer)
+      sign_in(employer)
+      visit account_path
+      find("button[aria-controls='password-panel']").click
+      visit account_path
+    end
+
     ## ============= Operators ===================
 
     test 'as operator, team member can invite a new team member' do
@@ -125,6 +133,8 @@ module Dashboard::TeamMemberInvitations
       operator_1 = create(:user_operator)
       operator_2 = create(:user_operator)
       sign_in(operator_1)
+      visit account_path
+      find("button[aria-controls='password-panel']").click
       visit account_path
       click_link 'équipe'.capitalize
       find('a', text: "Inviter un membre de l'équipe").click
@@ -230,6 +240,8 @@ module Dashboard::TeamMemberInvitations
       statistician_1 = create(:statistician)
       statistician_2 = create(:statistician)
       sign_in(statistician_1)
+      visit account_path
+      find("button[aria-controls='password-panel']").click
       visit account_path
       click_link 'équipe'.capitalize
       find('a', text: "Inviter un membre de l'équipe").click
