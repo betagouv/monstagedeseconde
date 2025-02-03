@@ -55,11 +55,9 @@ namespace :data_migrations do
   desc 'import a school'
   task import_school: :environment do |task|
     PrettyConsole.announce_task 'Importing lycée Pasteur' do
-      school = School.where(city: 'Lille').first
-      omogen = Services::Omogen::Sygne.new
+      school = School.where(city: 'Lille').third
       PrettyConsole.say_in_cyan "Importing students from #{school.name} uai:#{school.code_uai}  ##{school.id}"
-
-      omogen.sygne_import_by_schools(school.code_uai)
+      ImportDataFromSygneJob.perform_now(school)
       puts "----------------- #{school.code_uai} -----------------"
     end
   end
