@@ -1,6 +1,5 @@
   [
     "0 6 * * * $ROOT/clevercloud/crons/internship_offers_unpublish.sh",
-    "0 5 * * * $ROOT/clevercloud/crons/split_offers.sh",
     "0 3 * * 2,5 $ROOT/clevercloud/crons/internship_application_expirers.sh",
     "0 4 * * 1 $ROOT/clevercloud/crons/confidentiality_cleaning.sh",
     "0 8 * * 1 $ROOT/clevercloud/crons/kpi_mailing.sh",
