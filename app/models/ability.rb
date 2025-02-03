@@ -82,9 +82,6 @@ class Ability
     end
     can :sign_with_sms, User
     can :show, :account
-    can :change, ClassRoom do |class_room|
-      class_room.school_id == user.school_id
-    end
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
     can :apply, InternshipOffer do |internship_offer|
@@ -113,7 +110,6 @@ class Ability
     can %i[show
            update
            choose_school
-           choose_class_room
            choose_gender_and_birthday
            register_with_phone], User
     can_read_dashboard_students_internship_applications(user:)
@@ -158,7 +154,6 @@ class Ability
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
       edit_student_address
-      edit_student_class_room
       edit_student_full_name
       edit_student_phone
       edit_student_legal_representative_email
@@ -460,10 +455,6 @@ class Ability
     end
     can_read_dashboard_students_internship_applications(user:)
 
-    can :change, ClassRoom do |class_room|
-      class_room.school_id == user.school_id && !user.school_manager?
-    end
-
     can_manage_school(user:) do
       can %i[edit update], School
       can %i[manage_school_users
@@ -554,10 +545,6 @@ class Ability
   def can_manage_school(user:)
     can %i[
       show
-      edit
-      update
-      create
-      destroy
       manage_school_users
       index
     ], ClassRoom do |class_room|
