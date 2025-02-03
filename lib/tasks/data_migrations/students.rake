@@ -16,9 +16,9 @@ namespace :data_migrations do
   desc 'import students with sygne from a region'
   task :region_data, [:academy_region_name] => :environment do |task, args|
     # invoke as : rake "data_migrations:region_data[Normandie]"
-    schools_data = []
+    # schools_data = []
     schools = []
-    omogen = Services::Omogen::Sygne.new
+    # omogen = Services::Omogen::Sygne.new
     departments = AcademyRegion.find_by(name: args.academy_region_name).departments
     departments.each do |department|
       schools << School.where('LEFT(zipcode, 2) = ?', department.code[0..1])
@@ -27,9 +27,10 @@ namespace :data_migrations do
     # puts schools.map(&:code_uai)
     counter = 0
     schools.each do |school|
+      next if school.full_imported
+
       counter += 1
-      data = omogen.sygne_import_by_schools(school.code_uai)&.symbolize_keys
-      schools_data << data
+      ImportDataFromSygneJob.perform_now(school)
       puts "----------------- #{school.code_uai} -----------------"
     end
     puts "----------------- #{counter} écoles importées -----------------"
@@ -84,6 +85,21 @@ namespace :data_migrations do
 
       ImportDataFromSygneJob.perform_now(school)
       sleep 0.3
+    end
+  end
+
+  desc 'update full_imported schools a posteriori from students import'
+  task update_full_imported_schools: :environment do |task|
+    Users::Student.kept
+                  .joins(:school)
+                  .select('DISTINCT school_id')
+                  .map { |obj| obj.school_id }
+                  .uniq
+                  .each do |school_id|
+      school = School.find(school_id)
+      next if school.nil?
+
+      school.update(full_imported: true)
     end
   end
 end
