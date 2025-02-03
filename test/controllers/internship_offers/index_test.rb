@@ -620,12 +620,4 @@ class IndexTest < ActionDispatch::IntegrationTest
       assert_json_presence_of(json_response, foundable_internship_offer)
     end
   end
-
-  test 'GET  #index as visitor filters by grade' do
-    assert false
-  end
-
-  test 'GET #index as visitor filters by weeks' do
-    assert false
-  end
 end

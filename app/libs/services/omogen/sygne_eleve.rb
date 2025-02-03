@@ -28,8 +28,9 @@ module Services::Omogen
                 :date_deb_sco, :adhesion_transport, :grade, :school, :responsible
 
     def make_student
-      return  if Users::Student.find_by(ine: ine)
+      return if Users::Student.find_by(ine: ine)
 
+      scrambled_ine = Digest::SHA1.hexdigest(ine)
       student = ::Users::Student.new(
         ine: ine,
         first_name: prenom,
@@ -42,7 +43,8 @@ module Services::Omogen
         legal_representative_full_name: "#{responsible.civility} #{responsible.first_name} #{responsible.last_name}",
         legal_representative_email: responsible.email,
         legal_representative_phone: responsible.phone,
-        email: "#{ine}@#{school.code_uai}.fr"
+        accept_terms: true,
+        email: "#{scrambled_ine}@#{school.code_uai}.fr"
       )
       student.password = "#{ine}#{school.code_uai}!zZtest"
       puts student.errors.full_messages unless student.save
@@ -84,7 +86,7 @@ module Services::Omogen
 
       @school = School.find_by(code_uai: code_uai)
       @grade = Grade.grade_by_mef(code_mef: code_mef)
-      @responsible = Services::Omogen::Sygne.new.sygne_responsable(ine)
+      @responsible = Services::Omogen::Sygne.new.sygne_responsable(@ine)
     end
 
     def gender

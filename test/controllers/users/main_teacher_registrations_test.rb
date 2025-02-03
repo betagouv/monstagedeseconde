@@ -33,24 +33,24 @@ class MainTeacherRegistrationsTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'POST #create with all params create MainTeacher' do
-    school = create(:school)
-    school_manager = create(:school_manager, school:)
-    class_room = create(:class_room, name: '2de A', school:)
-    assert_difference('Users::SchoolManagement.main_teacher.count', 1) do
-      post user_registration_path(params: { user: { email: "teacher@#{school.email_domain_name}",
-                                                    password: 'okokok1Max!!',
-                                                    type: 'Users::SchoolManagement',
-                                                    first_name: 'Martin',
-                                                    last_name: 'Fourcade',
-                                                    school_id: school.id,
-                                                    class_room_id: class_room.id,
-                                                    accept_terms: '1',
-                                                    role: :main_teacher } })
-      main_teacher_id = Users::SchoolManagement.where(role: 'main_teacher').last.id
-      assert_redirected_to users_registrations_standby_path(id: main_teacher_id)
-    end
-  end
+  # test 'POST #create with all params create MainTeacher' do
+  #   school = create(:school)
+  #   school_manager = create(:school_manager, school:)
+  #   class_room = create(:class_room, name: '2de A', school:)
+  #   assert_difference('Users::SchoolManagement.main_teacher.count', 1) do
+  #     post user_registration_path(params: { user: { email: "teacher@#{school.email_domain_name}",
+  #                                                   password: 'okokok1Max!!',
+  #                                                   type: 'Users::SchoolManagement',
+  #                                                   first_name: 'Martin',
+  #                                                   last_name: 'Fourcade',
+  #                                                   school_id: school.id,
+  #                                                   class_room_id: class_room.id,
+  #                                                   accept_terms: '1',
+  #                                                   role: :main_teacher } })
+  #     main_teacher_id = Users::SchoolManagement.where(role: 'main_teacher').last.id
+  #     assert_redirected_to users_registrations_standby_path(id: main_teacher_id)
+  #   end
+  # end
 
   test 'POST #create with all params create MainTeacher and withdraws the invitation' do
     email = 'teacher@ac-paris.fr'

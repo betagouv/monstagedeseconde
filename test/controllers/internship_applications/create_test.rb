@@ -325,10 +325,10 @@ module InternshipApplications
       student_1 = create(:student, school:, class_room:)
       student_2 = create(:student, school:, class_room:)
 
-      a1 = create(:weekly_internship_application,
-                  :approved,
-                  internship_offer:,
-                  student: student_1)
+      create(:weekly_internship_application,
+             :approved,
+             internship_offer:,
+             student: student_1)
 
       sign_in(student_2)
 

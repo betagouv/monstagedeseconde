@@ -14,13 +14,13 @@ module Presenters
       end
 
       def total_student_with_zero_application
-        with_application_statuses = %i[submitted approved ]
+        with_application_statuses = %i[submitted approved]
         with_application = track_student_with_listed_status(listed_status: with_application_statuses)
         rest_of_class_room_size(reject_list: with_application)
       end
 
       def total_student_with_zero_internship
-        with_internship_status = %i[approved ]
+        with_internship_status = %i[approved]
         with_internship = track_student_with_listed_status(listed_status: with_internship_status)
         rest_of_class_room_size(reject_list: with_internship)
       end
@@ -28,6 +28,7 @@ module Presenters
       private
 
       attr_reader :class_room
+
       def initialize(class_room:)
         @class_room = class_room
       end
@@ -37,10 +38,9 @@ module Presenters
                       .joins(:class_room, :internship_applications)
                       .where(class_room: { id: class_room.id })
                       .where(internship_applications: { aasm_state: listed_status })
-
       end
 
-      def rest_of_class_room_size(reject_list: )
+      def rest_of_class_room_size(reject_list:)
         Users::Student.kept
                       .joins(:class_room)
                       .where(class_room: { id: class_room.id })

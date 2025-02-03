@@ -72,7 +72,7 @@ module Services::Omogen
     end
 
     # Sygne eleves
-    #  {
+    #  [{
     #  "ine"=>"001291528AA",
     #  "nom"=>"SABABADICHETTY",
     #  "prenom"=>"Felix",
@@ -92,7 +92,7 @@ module Services::Omogen
     #  "libelleLongStatut"=>"SCOLAIRE",
     #  "dateDebSco"=>"2023-09-05",
     #  "adhesionTransport"=>false
-    # }
+    # }]
     #
     # temporary method to import only 3 students for test purpose
     def sygne_import_by_schools_little(code_uai)
@@ -112,7 +112,9 @@ module Services::Omogen
       MEFSTAT4_CODES.each do |niveau|
         students = sygne_eleves(code_uai, niveau: niveau)
         students.each do |student|
-          student.make_student
+          ActiveRecord::Base.transaction do
+            student.make_student
+          end
         end
       end
     end
@@ -123,23 +125,12 @@ module Services::Omogen
       response = sygne_eleves(uri)
       case response
       when Net::HTTPSuccess
-        puts response.body
-        JSON.parse(response.body)
-        puts '================================'
-        puts "code_uai : #{code_uai}"
-        puts '================================'
-        puts ''
         schools_in_data << JSON.parse(response.body)
       when Net::HTTPNotFound
         puts response.body
         Rails.logger.error "Failed to get sygne eleves : #{response.message}"
       end
-      puts '================================'
-      puts 'schools_in_data'
-      puts '================================'
-      schools_in_data.each do |school|
-        puts school
-      end
+      print 'x'
       schools_in_data
     end
 
@@ -154,10 +145,6 @@ module Services::Omogen
       request = Net::HTTP::Get.new(uri.request_uri)
       request['Authorization'] = "Bearer #{@token}"
       request['Compression-Zip'] = 'non'
-
-      puts 'request', request
-      puts 'uri', uri
-      puts '----'
 
       response = http.request(request)
 
@@ -185,9 +172,11 @@ module Services::Omogen
       when Net::HTTPSuccess
         # puts response.body
         # puts JSON.parse(response.body)
-        data_student = JSON.parse(response.body, symbolize_names: true)
-        if data_student.fetch(:codeMef, false) && Grade.code_mef_ok?(code_mef: data_student[:codeMef])
-          students << SygneEleve.new(data_student)
+        data_students = JSON.parse(response.body, symbolize_names: true)
+        data_students.each do |data_student|
+          if data_student.fetch(:codeMef, false) && Grade.code_mef_ok?(code_mef: data_student[:codeMef])
+            students << SygneEleve.new(data_student)
+          end
         end
       when Net::HTTPNotFound
         puts response.body
@@ -254,7 +243,7 @@ module Services::Omogen
 
     def sygne_responsables_request(ine)
       # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
-      uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables") 
+      uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'

@@ -23,8 +23,6 @@ module Builders
                                 )
       internship_offer = model.new(**internship_attributes)
       internship_offer.save!
-      DraftedInternshipOfferJob.set(wait: 1.week)
-                               .perform_later(internship_offer_id: internship_offer.id)
       callback.on_success.try(:call, internship_offer)
     rescue ArgumentError => e
       Rails.logger.error "Impossible de créer cette offre. offreur: #{user.id} | #{e&.message}"
@@ -44,8 +42,6 @@ module Builders
           .except(:employer_id)
       )
       internship_offer.save!
-      DraftedInternshipOfferJob.set(wait: 1.week)
-                               .perform_later(internship_offer_id: internship_offer.id)
       callback.on_success.try(:call, internship_offer)
     rescue ActiveRecord::RecordInvalid => e
       callback.on_failure.try(:call, e.record)

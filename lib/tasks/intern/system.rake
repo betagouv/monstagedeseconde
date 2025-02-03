@@ -1,20 +1,19 @@
 require 'pretty_console'
 
 namespace :sys do
-
   def db_file_name
     "storage/tmp/#{Date.today}_1E1S_prod.dump"
   end
 
   def reset_file_name
-    "storage/tmp/reset_1E1S_prod_copy.sql"
+    'storage/tmp/reset_1E1S_prod_copy.sql'
   end
 
   desc "test database to check if it is production's copy"
-  task :is_prod , [] => :environment do
+  task :is_prod, [] => :environment do
     file = Rails.root.join('config/database.yml')
     text = File.read(file)
-    is_in_prod = !text.match?(/# url: \<\%\= ENV.fetch\(\'CLEVER_PRODUCTION_COPY_CONNEXION_URI\'\)/)
+    is_in_prod = !text.match?(/# url: <%= ENV.fetch\('CLEVER_PRODUCTION_COPY_CONNEXION_URI'\)/)
     if is_in_prod
       PrettyConsole.puts_in_red 'Database is a copy of production'
     else
@@ -23,20 +22,23 @@ namespace :sys do
   end
 
   desc 'uncomment url in database.yml to switch database from local to production copy'
-  task :db_prod , [] => :environment do
+  task :db_prod, [] => :environment do
     file = Rails.root.join('config/database.yml')
     text = File.read(file)
-    new_contents = text.gsub(/# url: \<\%\= ENV.fetch\(\'CLEVER_PRODUCTION_COPY_CONNEXION_URI\'\)/ , "url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI')")
+    text = text.gsub(/#(?: #)*/, '#')
+    new_contents = text.gsub(/# url: <%= ENV.fetch\('CLEVER_PRODUCTION_COPY_CONNEXION_URI'\)/,
+                             "url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI')")
     File.open(file, 'w') { |f| f.puts new_contents }
   end
 
   desc 'comment url in database.yml to switch database from production copy to local'
-  task :db_local , [] => :environment do
-      file = Rails.root.join('config/database.yml')
-      text = File.read(file)
-      new_contents = text.gsub(/url: \<\%\= ENV.fetch\(\'CLEVER_PRODUCTION_COPY_CONNEXION_URI\'\)/ , "# url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI')")
-      File.open(file, 'w') { |f| f.puts new_contents }
-      puts 'Database is now local'
+  task :db_local, [] => :environment do
+    file = Rails.root.join('config/database.yml')
+    text = File.read(file)
+    new_contents = text.gsub(/url: <%= ENV.fetch\('CLEVER_PRODUCTION_COPY_CONNEXION_URI'\)/,
+                             "# url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI')")
+    File.open(file, 'w') { |f| f.puts new_contents }
+    puts 'Database is now local'
   end
 
   desc 'download a production database copy to filesystem'
@@ -45,7 +47,7 @@ namespace :sys do
       PrettyConsole.puts_in_cyan 'File already exists'
     else
       PrettyConsole.announce_task 'Downloading production database' do
-        system("pg_dump -c --clean --if-exists -Fc --encoding=UTF-8 --no-owner --no-password  " \
+        system('pg_dump -c --clean --if-exists -Fc --encoding=UTF-8 --no-owner --no-password  ' \
         "-d #{ENV['PRODUCTION_DATABASE_URI']} > #{db_file_name}")
       end
     end
@@ -72,4 +74,36 @@ namespace :sys do
   #             "-f #{reset_file_name}")
   #   end
   # end
+  #
+  desc 'kill 20 sidekiq processes from their task name on default queue'
+  task :kill_sidekiq_twenty, [:task_name] => :environment do |t, args|
+    PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
+      Sidekiq::ScheduledSet.new.first(20).each do |job|
+        next unless job.args.first['job_class'] == args.task_name
+
+        job.delete
+        print '.'
+      end
+    end
+  end
+
+  desc 'kill all sidekiq processes from their task name on default queue'
+  task :kill_sidekiq, [:task_name] => :environment do |t, args|
+    PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
+      counter = 0
+      not_treated = 0
+      Sidekiq::ScheduledSet.new.each do |job|
+        if job.args.first['job_class'] == args.task_name
+          counter += 1
+          job.delete
+          print '.'
+          PrettyConsole.puts_in_green " #{counter} |" if counter % 100 == 0
+        else
+          not_treated += 1
+          print ' 100 |' if not_treated % 100 == 0
+        end
+      end
+      PrettyConsole.say_in_yellow "#{counter} jobs deleted | #{not_treated} jobs not treated"
+    end
+  end
 end
