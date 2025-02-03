@@ -10,8 +10,8 @@
       - if current_user.student?
         h1.h2.mb-3.text-dark
           | Mes candidatures
-        p 
-          | Sur cette page, vous trouverez toutes les offres de stage auxquelles vous 
+        p
+          | Sur cette page, vous trouverez toutes les offres de stage auxquelles vous
           | avez postulé. Les offres qui nécessitent une action de votre part apparaissent en premier.
         - if params[:notice_banner]
           = render 'notice_banner'
@@ -39,20 +39,20 @@
       - if (current_user.student? || current_user.is_a?(Users::SchoolManagement)) && current_user.internship_applications.approved.count.positive?
         .fr-tabs.fr-tabs--centered.fr-tabs--secondary.fr-mb-2w
           ul.fr-tabs__list aria-label=("Candidatures") role="tablist"
-            li 
+            li
               button id="approved-internship-applications" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="true" aria-controls="approved-internship-applications-panel"
                 | Votre stage validé
-                
+
           #approved-internship-applications-panel.fr-tabs__panel.fr-tabs__panel--selected role="tabpanel" aria-labelledby="approved-internship-applications" tabindex="0"
             = render partial: "dashboard/students/internship_applications/student_internship_application",
                     collection: @approved_internship_applications
-      
+
       .fr-tabs.fr-tabs--centered.fr-tabs--secondary.fr-my-2w
         ul.fr-tabs__list aria-label=("Candidatures") role="tablist"
-          li 
+          li
             button id="submitted-internship-applications" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="#{@validated_internship_applications.blank?}" aria-controls="submitted-internship-applications-panel"
               | Envoyées, en attente de réponse
-          li 
+          li
             button id="validated-internship-applications" class="fr-tabs__tab" tabindex="1" role="tab" aria-selected="#{@validated_internship_applications.present?}" aria-controls="validated-internship-applications-panel"
               | Acceptées par l’offreur, à confirmer par l’élève
           li
@@ -61,9 +61,9 @@
           li
             button id="refused-internship-applications" class="fr-tabs__tab" tabindex="2" role="tab" aria-selected="false" aria-controls="refused-internship-applications-panel"
               | Refusées
-          li 
+          li
             button id="validated-internship-applications" class="fr-tabs__tab" tabindex="4" role="tab" aria-selected="false" aria-controls="expired-internship-applications-panel"
-              | Expirées 
+              | Expirées
 
         #submitted-internship-applications-panel.fr-tabs__panel.fr-tabs__panel--selected role="tabpanel" aria-labelledby="submitted-internship-applications" tabindex="0"
           = render partial: "dashboard/students/internship_applications/student_internship_application",
@@ -80,7 +80,7 @@
         #expired-internship-applications-panel.fr-tabs__panel role="tabpanel" aria-labelledby="expired-internship-applications" tabindex="4"
           = render partial: "dashboard/students/internship_applications/student_internship_application",
               collection: @expired_internship_applications
-        
+
     - unless current_user.with_2_weeks_internships_approved?
       .row
         .col-12

@@ -1,41 +1,37 @@
-#school-panel.fr-tabs__panel.fr-tabs__panel--selected aria-labelledby="tabpanel-school" role="tabpanel" tabindex="0" 
+#school-panel.fr-tabs__panel.fr-tabs__panel--selected aria-labelledby="tabpanel-school" role="tabpanel" tabindex="0"
   h1.h2.mb-3 Mon établissement
 
-  = form_with model: current_user,
-              scope: :user,
-              url: account_path,
-              data: { turbo: false },
-              local: true,
-              method: :patch do |f|
-    = f.rg2a_explain_required_asterisk
-    = render 'layouts/form_errors', resource: current_user, resource_name: :user
-
-    - if current_user.respond_to?(:school)
-      .row
-        .col-md-6.col-xs-12
-          .form-group.fr-mb-4w
-            label.fr-label for="user_school_city"
-              | Établissement ou commune
-              = f.rg2a_required_content_tag
-            = react_component("SearchSchool", props: { classes: 'col-12 fr-input',
-                                                      required: true,
-                                                      label: 'Établissement ou commune',
-                                                      resourceName: :user,
-                                                      selectClassRoom: @current_user.try(:school) && @current_user.school.class_rooms.any? && can?(:change, @current_user.school.class_rooms.first) ? true : false,
-                                                      existingSchool: @current_user.try(:school).try(:as_json),
-                                                      existingClassRoom: @current_user.try(:class_room)})
-
-    - if can?(:choose_operator, :sign_up)
-      .row
-        .col-md-6.col-xs-12
-          .form-group
-            = f.label :operator, class: 'fr-label',for: 'user_operator_id'
-              | Opérateur
-              = f.rg2a_required_content_tag
-            = f.select :operator_id, options_from_collection_for_select(Operator.all, :id, :name, current_user.operator), { prompt: operator_options_for_default }, class: "fr-select", disabled: true
-
-    .row.fr-mt-4w
+  - if current_user.respond_to?(:school)
+    .row
       .col-md-6.col-xs-12
-        .actions.d-flex.d-sm-block
-          = f.submit 'Enregistrer', class: 'fr-btn btn-block'
-    
+        .form-group.fr-mb-4w
+          label.fr-label for="user_school"
+            | Établissement
+          = text_field :user, 
+                       :school,
+                       class: 'fr-input ',
+                       value: current_user.school.name,
+                       readonly: true,
+                       id: 'user_school'
+    .row
+      .col-md-6.col-xs-12
+        .form-group.fr-mb-4w
+          label.fr-label for="user_class_room"
+            | Classe
+          = text_field :user,
+                       :user_class_room,
+                       class: 'fr-input',
+                       value: current_user.class_room.name,
+                       readonly: true,
+                       id: 'user_school'
+
+  - if can?(:choose_operator, :sign_up)
+    .row
+      .col-md-6.col-xs-12
+        .form-group
+          = f.label :operator, class: 'fr-label',for: 'user_operator_id'
+            | Opérateur
+            = f.rg2a_required_content_tag
+          = f.select :operator_id, options_from_collection_for_select(Operator.all, :id, :name, current_user.operator), { prompt: operator_options_for_default }, class: "fr-select", disabled: true
+
+
