@@ -82,7 +82,8 @@ module Builders
         weekly_lunch_break: internship_offer&.lunch_break,
         employer_name: internship_offer.employer_name,
         employer_contact_email: internship_offer.employer.email,
-        internship_address: "#{internship_offer.street}, #{internship_offer.zipcode} #{internship_offer.city}"
+        internship_address: "#{internship_offer.street}, #{internship_offer.zipcode} #{internship_offer.city}",
+        entreprise_address: internship_offer.entreprise_full_address
       }
     end
 
@@ -105,10 +106,11 @@ module Builders
         student_refering_teacher_phone: User.sanitize_mobile_phone_number(main_teacher&.phone, '+330'),
         student_phone: User.sanitize_mobile_phone_number(student.phone, '+330'),
         student_full_name: student.name,
-        student_class_room:,
-        legal_status: student.school.legal_status
+        student_class_room: student_class_room,
+        student_birth_date: student.birth_date,
+        legal_status: student.school.legal_status,
+        delegation_date: student.school.try(:delegation_date)
       }
-      # student_class_room is not used ...
     end
 
     def check_soft_saving(params)

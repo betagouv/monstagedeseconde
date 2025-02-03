@@ -12,6 +12,22 @@ tbody.internship-agreement
         .col-8= render "layouts/form_errors", resource: resource
 
       .row.mt-0
+        - label = "Date de délibération du Conseil d’administration approuvant la convention-type"
+        - title = "Date de délibération du Conseil d’administration approuvant la convention-type :"
+        - filled_by = ["le chef d'établissement"]
+        - prompt = "Sélectionner le statut de l'établissement"
+        = render partial: 'dashboard/internship_agreements/date_field_element',
+                 locals: { field: :delegation_date,
+                           form: form,
+                           text_label: label,
+                           title: title,
+                           filled_by: filled_by,
+                           disabled: disabled,
+                           value: resource.school.delegation_date,
+                           prompt: prompt,
+                           required: true }
+
+      .row.mt-0
         - label = "L’établissement d’enseignement scolaire, représenté par"
         - title = "Note au chef d'établissement :"
         - content = "Nom et prénom du chef d'etablissement"
@@ -42,21 +58,7 @@ tbody.internship-agreement
                            disabled: disabled,
                            value: resource.legal_status,
                            prompt: prompt }
-      .row.mt-0
-        - label = "Date de délibération du Conseil d’administration approuvant la convention-type"
-        - title = "Date de délibération du Conseil d’administration approuvant la convention-type :"
-        - filled_by = ["le chef d'établissement"]
-        - prompt = "Sélectionner le statut de l'établissement"
-        = render partial: 'dashboard/internship_agreements/date_field_element',
-                 locals: { field: :delegation_date,
-                           form: form,
-                           text_label: label,
-                           title: title,
-                           filled_by: filled_by,
-                           disabled: disabled,
-                           value: resource.school.delegation_date,
-                           prompt: prompt,
-                           required: false }
+     
 
       .row.mt-0
         - label = "Courriel du chef d'établissement ou de son représentant"
@@ -72,39 +74,53 @@ tbody.internship-agreement
                            content: content,
                            filled_by: filled_by,
                            disabled: disabled }
-
+      
       .row.mt-0
-        - label = "Numéro de téléphone du chef d'établissement"
+        - label = "Établissement d'origine"
         - title = "Note au chef d'établissement :"
-        - content = "Numéro de téléphone du chef d'établissement"
+        - content = "Adresse de l'etablissement d'origine de(e) élève(s)"
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :school_representative_phone,
+                 locals: { field: :student_school,
                            form: form,
+                           limit: 300,
                            text_label: label,
-                           title: title,
                            content: content,
-                           filled_by: filled_by,
-                           pattern: phone_pattern,
-                           disabled: disabled }
-
-      .row.mt-0
-        - label = "Fonction du chef d'établissement ou de son représentant"
-        - title = "Note au chef d'établissement :"
-        - content = "Fonction du chef d'établissement ou de son représentant"
-        - filled_by = ["le chef d'établissement"]
-        = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :school_representative_role,
-                           form: form,
-                           limit: 200,
-                           text_label: label,
                            title: title,
-                           content: content,
                            filled_by: filled_by,
                            disabled: disabled }
+      / .row.mt-0
+      /   - label = "Numéro de téléphone du chef d'établissement"
+      /   - title = "Note au chef d'établissement :"
+      /   - content = "Numéro de téléphone du chef d'établissement"
+      /   - filled_by = ["le chef d'établissement"]
+      /   = render partial: 'dashboard/internship_agreements/text_field_element',
+      /            locals: { field: :school_representative_phone,
+      /                      form: form,
+      /                      text_label: label,
+      /                      title: title,
+      /                      content: content,
+      /                      filled_by: filled_by,
+      /                      pattern: phone_pattern,
+      /                      disabled: disabled }
+
+      / .row.mt-0
+      /   - label = "Fonction du chef d'établissement ou de son représentant"
+      /   - title = "Note au chef d'établissement :"
+      /   - content = "Fonction du chef d'établissement ou de son représentant"
+      /   - filled_by = ["le chef d'établissement"]
+      /   = render partial: 'dashboard/internship_agreements/text_field_element',
+      /            locals: { field: :school_representative_role,
+      /                      form: form,
+      /                      limit: 200,
+      /                      text_label: label,
+      /                      title: title,
+      /                      content: content,
+      /                      filled_by: filled_by,
+      /                      disabled: disabled }
 
       .row.mt-0
-        - label = "Nom et prénom du professeur référent (professeur principal par défaut)"
+        - label = "Nom et prénom de l’enseignant chargé d’assurer le suivi de séquence d’observation en milieu professionnel (professeur principal par défaut)"
         - title = "Note au chef d'établissement :"
         - content = "Le champ est prérempli avec le nom et le prénom du professeur principal s'il s'est inscrit. Ce champ obligatoire peut être modifié."
         - filled_by = ["le chef d'établissement"]
@@ -119,7 +135,7 @@ tbody.internship-agreement
                            disabled: disabled }
 
       .row.mt-0
-        - label = "Email du professeur référent"
+        - label = "Courriel de l’enseignant chargé d’assurer le suivi de séquence d’observation en milieu professionnel (professeur principal par défaut)"
         - title = "Note au chef d'établissement :"
         - content = "Le champ est prérempli avec l'email du professeur principal s'il s'est inscrit. Ce champ obligatoire peut être modifié."
         - filled_by = ["le chef d'établissement"]
@@ -133,25 +149,25 @@ tbody.internship-agreement
                            filled_by: filled_by,
                            disabled: disabled }
 
-      .row.mt-0
-        - label = "Numéro de téléphone du professeur référent"
-        - title = "Note au chef d'établissement :"
-        - content = "Numéro de téléphone du professeur principal."
-        - filled_by = ["le chef d'établissement"]
-        = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_refering_teacher_phone,
-                           form: form,
-                           text_label: label,
-                           title: title,
-                           content: content,
-                           filled_by: filled_by,
-                           pattern: phone_pattern,
-                           disabled: disabled }
+      / .row.mt-0
+      /   - label = "Numéro de téléphone du professeur référent"
+      /   - title = "Note au chef d'établissement :"
+      /   - content = "Numéro de téléphone du professeur principal."
+      /   - filled_by = ["le chef d'établissement"]
+      /   = render partial: 'dashboard/internship_agreements/text_field_element',
+      /            locals: { field: :student_refering_teacher_phone,
+      /                      form: form,
+      /                      text_label: label,
+      /                      title: title,
+      /                      content: content,
+      /                      filled_by: filled_by,
+      /                      pattern: phone_pattern,
+      /                      disabled: disabled }
 
       .row.mt-0
-        - label = "Nom de l’élève ou des élèves concerné(s)"
+        - label = "Nom de l’élève concerné"
         - title = "Note au chef d'établissement :"
-        - content = "Nom(s) et prénom(s) de(s) l'élève(s) effectuant le stage."
+        - content = "Nom et prénom de l'élève effectuant le stage."
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
                  locals: { field: :student_full_name,
@@ -161,7 +177,33 @@ tbody.internship-agreement
                            title: title,
                            filled_by: filled_by,
                            disabled: disabled }
+      .row.mt-0
+        - label = "Date de naissance de l’élève"
+        - title = "Note au chef d'établissement :"
+        - content = "Date de naissance de l'élève effectuant le stage."
+        - filled_by = ["le chef d'établissement"]
+        = render partial: 'dashboard/internship_agreements/text_field_element',
+                 locals: { field: :student_birth_date,
+                           form: form,
+                           text_label: label,
+                           content: content,
+                           title: title,
+                           filled_by: filled_by,
+                           disabled: disabled }
 
+      .row.mt-0
+        - label = "Classe de l'élève"
+        - title = "Note au chef d'établissement :"
+        - content = "Classe de l'élève effectuant le stage."
+        - filled_by = ["le chef d'établissement"]
+        = render partial: 'dashboard/internship_agreements/text_field_element',
+                 locals: { field: :student_class_room,
+                           form: form,
+                           text_label: label,
+                           content: content,
+                           title: title,
+                           filled_by: filled_by,
+                           disabled: disabled }
       .row.mt-0
         - label = "Adresse personnelle complète de l'élève"
         - title = "Note au chef d'établissement :"
@@ -283,40 +325,57 @@ tbody.internship-agreement
                            disabled: disabled,
                            pattern: phone_pattern,
                            required: false}
-
+      
       .row.mt-0
-        - label = "Établissement"
+        - label = "Existence d’un Projet d’Accueil Individualisé pour raison de santé (PAI) à prendre en compte (facultatif) :"
         - title = "Note au chef d'établissement :"
-        - content = "Adresse de l'etablissement d'origine de(e) élève(s)"
+        - choices = [['oui', 'true'], ['non', 'false']]
         - filled_by = ["le chef d'établissement"]
-        = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_school,
+        = render partial: 'dashboard/internship_agreements/radio_button_element',
+                 locals: { field: :pai_project,
                            form: form,
-                           limit: 300,
-                           text_label: label,
-                           content: content,
+                           radio_label: label,
                            title: title,
+                           choices: choices,
+                           content: content,
                            filled_by: filled_by,
                            disabled: disabled }
-
+      
       .row.mt-0
-        - label = "Modalités d’évaluation de la séquence d’observation " \
-                  "en milieu professionnel"
-        - title = "Note au professeur principal :"
-        - content = "Critères d'évaluations"
+        - label = "Si oui, la trousse emportée est celle :"
+        - title = "Note au chef d'établissement :"
+        - choices = [['de la famille', 'true'], ['de l\'établissement', 'false']]
         - filled_by = ["le chef d'établissement"]
-        = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :activity_rating,
-                           field_type: :text_area,
-                           rows: 4,
-                           limit: 1_000,
+        = render partial: 'dashboard/internship_agreements/radio_button_element',
+                 locals: { field: :pai_trousse_family,
                            form: form,
-                           text_label: label,
+                           radio_label: label,
                            title: title,
-                           content: content ,
+                           choices: choices,
+                           content: content,
                            filled_by: filled_by,
-                           disabled: disabled,
-                           required: false }
+                           disabled: disabled }
+      
+      
+      
+      / .row.mt-0
+      /   - label = "Modalités d’évaluation de la séquence d’observation " \
+      /             "en milieu professionnel"
+      /   - title = "Note au professeur principal :"
+      /   - content = "Critères d'évaluations"
+      /   - filled_by = ["le chef d'établissement"]
+      /   = render partial: 'dashboard/internship_agreements/text_field_element',
+      /            locals: { field: :activity_rating,
+      /                      field_type: :text_area,
+      /                      rows: 4,
+      /                      limit: 1_000,
+      /                      form: form,
+      /                      text_label: label,
+      /                      title: title,
+      /                      content: content ,
+      /                      filled_by: filled_by,
+      /                      disabled: disabled,
+      /                      required: false }
 
         .col-12.fr-py-3w
           .fr-hint.small

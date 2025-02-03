@@ -1,7 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -694,10 +693,10 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
-    contact_phone character varying(20),
-    internship_address_manual_enter boolean DEFAULT false,
     workspace_conditions text DEFAULT ''::text,
-    workspace_accessibility text DEFAULT ''::text
+    workspace_accessibility text DEFAULT ''::text,
+    internship_address_manual_enter boolean DEFAULT false,
+    contact_phone character varying(20)
 );
 
 
@@ -969,7 +968,7 @@ CREATE TABLE public.internship_agreements (
     student_refering_teacher_phone character varying(20),
     student_legal_representative_email character varying(100),
     student_refering_teacher_email character varying(100),
-    student_legal_representative_full_name character varying(180),
+    student_legal_representative_full_name character varying(100),
     student_refering_teacher_full_name character varying(100),
     student_legal_representative_phone character varying(20),
     student_legal_representative_2_full_name character varying(100),
@@ -993,7 +992,11 @@ CREATE TABLE public.internship_agreements (
     skills_observe text,
     skills_communicate text,
     skills_understand text,
-    skills_motivation text
+    skills_motivation text,
+    entreprise_address character varying,
+    student_birth_date date,
+    pai_project boolean,
+    pai_trousse_family boolean
 );
 
 
@@ -1556,11 +1559,11 @@ CREATE TABLE public.internship_offers (
     employer_chosen_name character varying(150),
     entreprise_full_address character varying(200),
     entreprise_coordinates public.geography(Point,4326),
-    period integer DEFAULT 0 NOT NULL,
     rep boolean DEFAULT false,
     qpv boolean DEFAULT false,
     workspace_conditions text DEFAULT ''::text,
     workspace_accessibility text DEFAULT ''::text,
+    period integer DEFAULT 0 NOT NULL,
     mother_id bigint
 );
 
@@ -4849,6 +4852,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250128213823'),
 ('20250120101004'),
 ('20250120090347'),
 ('20250115174742'),
@@ -4861,8 +4865,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20241217104101'),
 ('20241213131559'),
 ('20241204173244'),
-('20241204164257'),
-('20241204150852'),
 ('20241115093512'),
 ('20241113151423'),
 ('20241105172654'),

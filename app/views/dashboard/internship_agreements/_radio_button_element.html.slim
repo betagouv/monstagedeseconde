@@ -1,0 +1,19 @@
+- edit_enable = can?("edit_#{field}".to_sym, form.object)
+
+- hint ||= ''
+- title ||= ''
+- radio_label ||= ''
+- choices ||= [['oui', 'oui'], ['non', 'non']]
+- required = required.nil?
+- input_type ||= :radio_button
+
+.col-12.pt-3
+  .fr-fieldset.fr-fieldset--inline
+    legend= form.label field, radio_label, class: 'fr-label fr-fieldset__legend fr-text--regular'
+    .fr-fieldset__content
+      - choices.each do |text, value|
+        .fr-radio-group.fr-radio-group--sm
+          = form.radio_button field, value, id: "select-#{field}-#{value}", class: 'fr-radio'
+          = form.label field, text.capitalize, class: 'fr-label fr-mb-0', for: "select-#{field}-#{value}"
+    - if hint.present?
+      .fr-hint-text= hint
