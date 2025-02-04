@@ -89,7 +89,7 @@ class StudentMailer < ApplicationMailer
     @token = token
 
     mail(to: @student.email,
-         subject: 'Votre inscription sur stagedeseconde.1jeune1solution.gouv.fr')
+         subject: 'Votre inscription sur 1eleve1stage.education.gouv.fr')
   end
 
   def internship_application_validated_by_employer_email(internship_application:)

@@ -1,4 +1,4 @@
-Pour diffuser des offres sur la plateforme [1élève1stage](https://stagedeseconde.1jeune1solution.gouv.fr/), une API est mise à disposition pour :
+Pour diffuser des offres sur la plateforme [1élève1stage](https://1eleve1stage.education.gouv.fr/), une API est mise à disposition pour :
 
 * les associations
 * les collectivités
@@ -32,7 +32,7 @@ Il s'agit d'une API REST qui permet les opérations suivantes :
 # Environnements
 L'api est disponible sur ```/api/v1``` sur les environnements de pré production et de production. Soit les ```baseURL``` suivantes
   * En pré production : https://stagedeseconde.recette.1jeune1solution.gouv.fr/api/v1
-  * En production : https://stagedeseconde.1jeune1solution.gouv.fr/api/v1
+  * En production : https://1eleve1stage.education.gouv.fr/api/v1
 
 # Authentification
 
@@ -50,15 +50,15 @@ L'utilisation est limitée à 100 appels par minute, au-delà une erreur 429 est
 
 ### Comment récuperer mon token d'authentification
 
-[Se connecter](https://stagedeseconde.1jeune1solution.gouv.fr/utilisateurs/connexion) avec votre compte opérateur
+[Se connecter](https://1eleve1stage.education.gouv.fr/utilisateurs/connexion) avec votre compte opérateur
 
 ![](screenshots/login.png)
 
-Depuis la page [Mon profil](https://stagedeseconde.1jeune1solution.gouv.fr/mon-compte), se rendre sur la page API
+Depuis la page [Mon profil](https://1eleve1stage.education.gouv.fr/mon-compte), se rendre sur la page API
 
 ![](screenshots/logged.png)
 
-Depuis la page [API](https://stagedeseconde.1jeune1solution.gouv.fr/mon-compte/api), récupérer le token
+Depuis la page [API](https://1eleve1stage.education.gouv.fr/mon-compte/api), récupérer le token
 
 ![](screenshots/api.png)
 
@@ -394,7 +394,7 @@ set -x
 
 # usage: rename env.sample env.sh
 
-MONSTAGEDESECONDE_ENV=https://stagedeseconde.1jeune1solution.gouv.fr/api
+MONSTAGEDESECONDE_ENV=https://1eleve1stage.education.gouv.fr/api
 MONSTAGEDESECONDE_TOKEN=foobarbaz
 ```
 
