@@ -2,7 +2,7 @@
 staging:
   :concurrency: 3
 production:
-  :concurrency: 7
+  :concurrency: 12
 :queues:
   - mailers
   - batches
