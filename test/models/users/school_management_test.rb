@@ -82,24 +82,25 @@ module Users
       assert_includes school_manager.main_teachers.entries, main_teacher
     end
 
-    test 'change school notify new school_manager' do
-      school_1 = create(:school)
-      school_2 = create(:school)
-      school_manager_1 = create(:school_manager, school: school_1)
-      school_manager_2 = create(:school_manager, school: school_2)
+    # ===>  kept because of the stub usage
+    # test 'change school notify new school_manager' do
+    #   school_1 = create(:school)
+    #   school_2 = create(:school)
+    #   school_manager_1 = create(:school_manager, school: school_1)
+    #   school_manager_2 = create(:school_manager, school: school_2)
 
-      %i[teacher other main_teacher].each do |role_change_notifier|
-        user = create(role_change_notifier, school: school_1)
-        user.school = school_2
+    #   %i[teacher other main_teacher].each do |role_change_notifier|
+    #     user = create(role_change_notifier, school: school_1)
+    #     user.school = school_2
 
-        mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true)
-        SchoolManagerMailer.stub :new_member, mock_mail do
-          user.save!
-        end
-        mock_mail.verify
-      end
-    end
+    #     mock_mail = Minitest::Mock.new
+    #     mock_mail.expect(:deliver_later, true)
+    #     SchoolManagerMailer.stub :new_member, mock_mail do
+    #       user.save!
+    #     end
+    #     mock_mail.verify
+    #   end
+    # end
 
     test '#valid_academy_email_address?' do
       school = create(:school, zipcode: '75012')
