@@ -74,7 +74,7 @@ module InternshipOffers
 
     # TODO: belongs_to a task not a model
     def self.update_older_internship_offers
-      to_be_unpublished = where(aasm_state: %i[published need_to_be_updated])
+      to_be_unpublished = where(aasm_state: %i[published need_to_be_updated splitted])
                           .where('last_date < ?', Week.current_year_start_week.monday).to_a
       to_be_unpublished.each do |offer|
         print '.'

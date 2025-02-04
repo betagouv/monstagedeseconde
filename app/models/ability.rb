@@ -346,7 +346,9 @@ class Ability
            export_reporting_dashboard_data
            see_reporting_schools
            see_reporting_enterprises
-           check_his_statistics], User
+           check_his_statistics], User do
+             !employers_only?
+           end
     can :read_employer_name, InternshipOffer do |internship_offer|
       read_employer_name?(internship_offer:)
     end
@@ -613,5 +615,9 @@ class Ability
     else
       true
     end
+  end
+
+  def employers_only?
+    ENV.fetch('EMPLOYERS_ONLY', 'false') == 'true'
   end
 end

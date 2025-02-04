@@ -149,6 +149,52 @@ module Api
         assert_in_delta Time.now.to_i, @internship_offer.reload.published_at.to_i, 2
         assert_equal true, @internship_offer.published?
       end
+
+      test 'PATCH #update as operator can modify internship_offer sector' do
+        sector = create(:sector, name: 'Informatique')
+        puts @internship_offer.sector.name
+        puts @internship_offer.sector.name
+
+        patch api_v2_internship_offer_path(
+          id: @internship_offer.remote_id,
+          params: {
+            token: "Bearer #{@token}",
+            internship_offer: {
+              sector_uuid: Sector.find_by(name: 'Informatique').uuid
+            }
+          }
+        )
+        assert_response :success
+        assert_equal Sector.find_by(name: 'Informatique').uuid, @internship_offer.reload.sector.uuid
+        puts
+      end
+
+      test 'PATCH #update as operator can modify internship_offer grades from 3eme to seconde' do
+        patch api_v2_internship_offer_path(
+          id: @internship_offer.remote_id,
+          params: {
+            token: "Bearer #{@token}",
+            internship_offer: {
+              grades: [Grade.find_by(short_name: 'seconde').short_name]
+            }
+          }
+        )
+        assert_response :success
+        assert_equal ['seconde'], @internship_offer.reload.grades.map(&:short_name)
+      end
+      test 'PATCH #update as operator can modify internship_offer grades from 3eme to seconde + 3eme' do
+        patch api_v2_internship_offer_path(
+          id: @internship_offer.remote_id,
+          params: {
+            token: "Bearer #{@token}",
+            internship_offer: {
+              grades: %w[seconde troisieme]
+            }
+          }
+        )
+        assert_response :success
+        assert_equal %w[troisieme seconde], @internship_offer.reload.grades.map(&:short_name)
+      end
     end
   end
 end

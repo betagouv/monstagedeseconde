@@ -24,7 +24,7 @@ namespace :retrofit do
         next unless offer.has_weeks_after_school_year_start? && offer.has_weeks_before_school_year_start?
 
         new_internship_offer = offer.dup
-        print "."
+        print '.'
         counter_dup += 1
 
         new_internship_offer.hidden_duplicate = false

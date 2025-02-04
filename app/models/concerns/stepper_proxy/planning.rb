@@ -71,6 +71,8 @@ module StepperProxy
 
       private
 
+      def maintenance_conditions? = false
+
       def set_default_values
         self.max_candidates ||= 1
         self.max_students_per_group ||= 1
