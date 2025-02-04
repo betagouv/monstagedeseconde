@@ -31,7 +31,7 @@ namespace :data_migrations do
         next if school.full_imported
 
         counter += 1
-        ImportDataFromSygneJob.perform_now(school)
+        ImportDataFromSygneJob.perform_later(school)
         puts "----------------- #{school.code_uai} -----------------"
       end
       puts "----------------- #{counter} écoles importées -----------------"
@@ -49,7 +49,7 @@ namespace :data_migrations do
       schools.each do |school|
         next if school.full_imported
 
-        ImportDataFromSygneJob.perform_now(school)
+        ImportDataFromSygneJob.perform_later(school)
         puts "----------------- #{school.code_uai} -----------------"
         counter += 1
       end
@@ -62,7 +62,7 @@ namespace :data_migrations do
     PrettyConsole.announce_task 'Importing lycée Pasteur' do
       school = School.where(city: 'Lille').third
       PrettyConsole.say_in_cyan "Importing students from #{school.name} uai:#{school.code_uai}  ##{school.id}"
-      ImportDataFromSygneJob.perform_now(school)
+      ImportDataFromSygneJob.perform_later(school)
       puts "----------------- #{school.code_uai} -----------------"
       school.update(full_imported: true)
     end
