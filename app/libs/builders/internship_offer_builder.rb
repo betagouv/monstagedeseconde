@@ -78,10 +78,10 @@ module Builders
     def update(instance:, params:)
       yield callback if block_given?
       authorize :update, instance
-      instance.assign_attributes(params)
       if from_api?
         instance.attributes = preprocess_api_params(params)
       else
+        instance.assign_attributes(params)
         instance = Dto::PlanningAdapter.new(instance:, params:, current_user: user)
                                        .manage_planning_associations
                                        .instance
