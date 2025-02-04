@@ -43,7 +43,7 @@ module Dashboard::InternshipOffers
           max_candidates: 1
         )
         get edit_dashboard_internship_offer_path(internship_offer.to_param)
-        assert_response :success
+        assert_redirected_to root_path
       end
     end
 

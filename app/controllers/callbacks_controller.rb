@@ -46,39 +46,39 @@ class CallbacksController < ApplicationController
     state = params[:state]
     nonce = params[:nonce]
 
-    Rails.logger.info("Educonnect callback received with code present: #{code.present?}")
-    Rails.logger.info("Educonnect callback received with state present: #{state.present?}")
-    Rails.logger.info("Educonnect callback received with nonce present: #{nonce.present?}")
+    # Rails.logger.info("Educonnect callback received with code present: #{code.present?}")
+    # Rails.logger.info("Educonnect callback received with state present: #{state.present?}")
+    # Rails.logger.info("Educonnect callback received with nonce present: #{nonce.present?}")
 
     #  TO TO : remove this line - dev only
     # return redirect_to root_path, alert: 'Please check logs and finish process manually' unless Rails.env.development?
 
     educonnect = Services::EduconnectConnection.new(code, state, nonce)
 
-    session[:id_token] = educonnect.id_token
-    session[:state] = state
+    # session[:id_token] = educonnect.id_token
+    # session[:state] = state
 
-    Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
+    # Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
 
-    user_info = educonnect.get_user_info
-    redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
+    # user_info = educonnect.get_user_info
+    # redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
-    student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
-    school = School.find_by(code_uai: user_info['FrEduCtEleveUAI'])
+    # student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
+    # school = School.find_by(code_uai: user_info['FrEduCtEleveUAI'])
 
-    Rails.logger.info("School: #{school.inspect}")
-    Rails.logger.info("Student: #{student.inspect}")
+    # Rails.logger.info("School: #{school.inspect}")
+    # Rails.logger.info("Student: #{student.inspect}")
 
-    unless school.present?
-      handle_educonnect_logout(educonnect)
-      redirect_to root_path,
-                  alert: "Établissement scolaire non répertorié sur 1 élève, 1 stage (UAI: #{user_info['FrEduCtEleveUAI']})." and return
-    end
+    # unless school.present?
+    #   handle_educonnect_logout(educonnect)
+    #   redirect_to root_path,
+    #               alert: "Établissement scolaire non répertorié sur 1 élève, 1 stage (UAI: #{user_info['FrEduCtEleveUAI']})." and return
+    # end
 
-    unless student.present?
-      handle_educonnect_logout(educonnect)
-      redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
-    end
+    # unless student.present?
+    #   handle_educonnect_logout(educonnect)
+    #   redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
+    # end
 
     student.confirm
     student.save
@@ -88,7 +88,7 @@ class CallbacksController < ApplicationController
     #   student.save
     # end
 
-    Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
+    # Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
 
     begin
       Rails.logger.info('Starting sign in process...')
@@ -113,7 +113,7 @@ class CallbacksController < ApplicationController
       return redirect_to root_path, alert: 'Erreur lors de la connexion'
     end
 
-    Rails.logger.info("Student signed in successfully: #{user_signed_in?}")
+    # Rails.logger.info("Student signed in successfully: #{user_signed_in?}")
 
     redirect_to root_path, notice: 'Vous êtes bien connecté'
   end

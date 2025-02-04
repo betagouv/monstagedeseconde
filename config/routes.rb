@@ -62,8 +62,8 @@ Rails.application.routes.draw do
                                                              as: 'resend_confirmation_phone_token'
     end
 
-    resources :identities, path: 'identites', only: %i[new create]
     unless when_employers_only
+      resources :identities, path: 'identites', only: %i[new create]
       resources :url_shrinkers, path: 'c', only: %i[] do
         get :o, on: :member
       end
@@ -237,16 +237,14 @@ Rails.application.routes.draw do
     # ------------------ DASHBOARD END ------------------
   end
   # ------------------ SCOPE END ------------------
-  unless when_employers_only
-    namespace :reporting, path: 'reporting' do
-      get '/dashboards', to: 'dashboards#index'
+  namespace :reporting, path: 'reporting' do
+    get '/dashboards', to: 'dashboards#index'
 
-      get '/schools', to: 'schools#index'
-      get '/employers_internship_offers', to: 'internship_offers#employers_offers'
-      get 'internship_offers', to: 'internship_offers#index'
-      get 'operators', to: 'operators#index'
-      put 'operators', to: 'operators#update'
-    end
+    get '/schools', to: 'schools#index'
+    get '/employers_internship_offers', to: 'internship_offers#employers_offers'
+    get 'internship_offers', to: 'internship_offers#index'
+    get 'operators', to: 'operators#index'
+    put 'operators', to: 'operators#update'
   end
 
   get 'api_address_proxy/search', to: 'api_address_proxy#search', as: :api_address_proxy_search

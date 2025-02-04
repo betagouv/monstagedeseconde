@@ -171,7 +171,7 @@ def populate_agreements
                                                     .new_from_application(troisieme_applications_offers[0])
   agreement_0.school_manager_accept_terms = true
   agreement_0.employer_accept_terms = false
-  agreement_0.aasm_state = :draft
+  agreement_0.aasm_state = :read_by_employer
   agreement_0.save!
 
   agreement_1 = Builders::InternshipAgreementBuilder.new(user: troisieme_applications_offers[1].internship_offer.employer)

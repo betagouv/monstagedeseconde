@@ -81,36 +81,41 @@ class AbilityTest < ActiveSupport::TestCase
   end
 
   test 'Employer' do
-    employer = create(:employer)
-    another_employer = create(:employer)
-    internship_offer = create(:weekly_internship_offer_2nde, employer:)
-    alt_internship_offer = create(:weekly_internship_offer_2nde, employer: another_employer)
-    internship_offer_api = create(:api_internship_offer_3eme, employer:)
-    internship_application = create(:weekly_internship_application, internship_offer:)
-    internship_application_other = create(:weekly_internship_application, internship_offer: alt_internship_offer)
-    internship_agreement = create(:internship_agreement, :created_by_system,
-                                  internship_application:)
-    ability = Ability.new(employer)
+    travel_to Date.new(2025, 1, 1) do
+      employer = create(:employer)
+      another_employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde, employer:)
+      old_internship_offer = create(:weekly_internship_offer_2nde, employer:, created_at: 1.year.ago,
+                                                                   weeks: [SchoolTrack::Seconde.first_week(year: 2024)])
+      assert old_internship_offer.employer == employer
+      alt_internship_offer = create(:weekly_internship_offer_2nde, employer: another_employer)
+      internship_offer_api = create(:api_internship_offer_3eme, employer:)
+      internship_application = create(:weekly_internship_application, internship_offer:)
+      internship_application_other = create(:weekly_internship_application, internship_offer: alt_internship_offer)
+      internship_agreement = create(:internship_agreement, :created_by_system,
+                                    internship_application:)
+      ability = Ability.new(employer)
 
-    assert(ability.can?(:choose_function, User.new),
-           'employers can declare their role in their organisation')
-    assert(ability.can?(:subscribe_to_webinar, User.new),
-           'employers can subscribe to webinars')
-    assert(ability.can?(:supply_offers, employer), 'employers are to be able to supply offers')
-    assert(ability.can?(:create, InternshipOffer.new),
-           'employers should be able to create internships')
-    assert(ability.cannot?(:update, InternshipOffer.new),
-           'employers should not be able to update internship offer not belonging to him')
-    assert(ability.can?(:update, InternshipOffer.new(employer:)),
-           'employers should be able to update internships offer that belongs to him')
+      assert(ability.can?(:choose_function, User.new),
+             'employers can declare their role in their organisation')
+      assert(ability.can?(:subscribe_to_webinar, User.new),
+             'employers can subscribe to webinars')
+      assert(ability.can?(:supply_offers, employer), 'employers are to be able to supply offers')
+      assert(ability.can?(:create, InternshipOffer.new),
+             'employers should be able to create internships')
+      refute(ability.can?(:update, InternshipOffer.new),
+              'employers should not be able to update internship offer not belonging to him')
+      refute(ability.can?(:udpate, old_internship_offer), 'Offer can only be duplicated')
+      assert(ability.can?(:update, internship_offer),
+             'employers should be able to update internships offer that belongs to him')
 
-    assert(ability.cannot?(:discard, InternshipOffer.new),
-           'employers should be able to discard internships offer not belonging to him')
-    assert(ability.can?(:discard, InternshipOffer.new(employer:)),
-           'employers should be able to discard internships offer that belongs to him')
-    assert(ability.can?(:index, Acl::InternshipOfferDashboard.new(user: employer)),
-           'employers should be able to index InternshipOfferDashboard')
-    %i[
+      assert(ability.cannot?(:discard, InternshipOffer.new),
+             'employers should be able to discard internships offer not belonging to him')
+      assert(ability.can?(:discard, InternshipOffer.new(employer:)),
+             'employers should be able to discard internships offer that belongs to him')
+      assert(ability.can?(:index, Acl::InternshipOfferDashboard.new(user: employer)),
+             'employers should be able to index InternshipOfferDashboard')
+      %i[
       create
       edit
       edit_organisation_representative_role
@@ -125,14 +130,15 @@ class AbilityTest < ActiveSupport::TestCase
       edit_tutor_full_name
       edit_weekly_hours
       update
-    ].each do |meth|
+      ].each do |meth|
       assert(ability.can?(meth, internship_agreement), "Employer fail: #{meth}")
+      end
+      internship_agreement.update_columns(aasm_state: :started_to_sign)
+      assert(ability.can?(:sign_with_sms, User))
+      assert(ability.can?(:sign_internship_agreements, internship_agreement.reload), 'Signature fails')
+      assert(ability.can?(:transfer, internship_application.reload), 'Transfer my own application fails')
+      refute(ability.can?(:transfer, internship_application_other.reload), 'Transfer my own application fails')
     end
-    internship_agreement.update_columns(aasm_state: :started_to_sign)
-    assert(ability.can?(:sign_with_sms, User))
-    assert(ability.can?(:sign_internship_agreements, internship_agreement.reload), 'Signature fails')
-    assert(ability.can?(:transfer, internship_application.reload), 'Transfer my own application fails')
-    refute(ability.can?(:transfer, internship_application_other.reload), 'Transfer my own application fails')
   end
 
   test 'God' do

@@ -4,6 +4,9 @@ div id="pub_status_#{dom_id @internship_offer}"
       p.fr-badge.fr-badge--success.fr-mb-0 Offre publiée
       span.internship_offer-published_at.fr-text--lg.fr-mx-2w.fr-mb-0.blue-france
         = "depuis le #{l(internship_offer.published_at, format: :human_mm_dd)}"
+  - elsif internship_offer.last_date < Week.current_year_start_week.monday
+    p.fr-badge.fr-badge--warning
+      = "Offre archivée"
   - else
     p.fr-badge.fr-badge--warning
       = "Offre masquée"

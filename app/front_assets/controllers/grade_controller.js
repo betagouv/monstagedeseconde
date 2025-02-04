@@ -8,6 +8,7 @@ export default class extends Controller {
     "troisiemeContainer",
     "secondeContainer",
   ];
+  static values = { initialGrades: String };
 
   gradeCollegeTargetConnected() {
     this.onClick();
@@ -25,8 +26,20 @@ export default class extends Controller {
     toggleContainer(this.troisiemeContainerTarget, gradeCollegeChecked);
     toggleContainer(this.secondeContainerTarget, grade2eChecked);
     // At least One Choice Between 3e/4e and 2e
-    if (event =! undefined) {
+    if ((event = !undefined)) {
       toggleContainer(this.alertContainerTarget, noGradesChecked);
     }
+  }
+
+  connect() {
+    this.initialGradesValue.split(",").forEach((grade) => {
+      if (grade === "troisieme" || grade === "quatrieme") {
+        this.gradeCollegeTarget.checked = true;
+      }
+      if (grade === "seconde") {
+        this.grade2eTarget.checked = true;
+      }
+    });
+    this.onClick();
   }
 }

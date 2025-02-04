@@ -19,7 +19,6 @@ div [data-planning-target='weeksContainer'
     - if render_employer_components
       .row
         .col-12
-            - checked = !!form.object.all_year_long
             = render 'inputs/dsfr_rich_radio_field',
               form: form,
               error: error,
@@ -28,7 +27,7 @@ div [data-planning-target='weeksContainer'
               hint: 'Les élèves pourront candidater toute l’année à votre offre.',
               icon: 'fr-icon-calendar-2-fill',
               value: true,
-              checked: checked,
+              checked: is_all_year_long,
               options: { data: { "select-weeks-target": "allYearLong",
                                 action: "change->select-weeks#showAllYearLong" } }
             = render 'inputs/dsfr_rich_radio_field',
@@ -39,10 +38,10 @@ div [data-planning-target='weeksContainer'
               hint: 'Les élèves avec des dates de stages communes pourront candidater.',
               icon: 'fr-icon-calendar-line',
               value: false,
-              checked: !checked,
+              checked: !is_all_year_long,
               options: { data:{ action: "change->select-weeks#showSpecificWeeks" } }
 
-    div data-select-weeks-target="checkboxesContainer" class="weeks-months weeks-container-active #{preselect_all ? 'd-none' : ''}" 
+    div data-select-weeks-target="checkboxesContainer" class="weeks-months weeks-container-active #{preselect_all ? 'd-none' : ''}"
       .row
         .col-12.fr-text--sm.fr-strong.w-100
           .d-flex
@@ -50,7 +49,7 @@ div [data-planning-target='weeksContainer'
             .ml-auto
               button type="button" class="fr-mr-1w fr-btn fr-btn--tertiary fr-btn--sm" data-action="click->select-weeks#unSelectThemAll"
                 | Tout décocher
-      .row.fr-mb-1w.weeks-list 
+      .row.fr-mb-1w.weeks-list
         .col-12
           .d-flex
             .small-interline.fr-text--sm.border-right.month-lane
@@ -78,10 +77,10 @@ div [data-planning-target='weeksContainer'
                       - # also add an id for hidden field for two reason, avoid conflict, testing
                       - hidden_id = "#{form.object_name}_week_ids_#{week.id}_hidden"
                       - options =  { multiple: true,
-                                    id: checkbox_id,
-                                    data: {:"select-weeks-target" => 'weekCheckboxes',
+                                     id: checkbox_id,
+                                     data: {:"select-weeks-target" => 'weekCheckboxes',
                                             action: 'change->select-weeks#handleOneCheckboxChange'} }
-                      - options.merge!({checked: true}) if preselect_all
+                      - options.merge!({checked: true}) if preselect_all || week.in?(form.object.weeks)
                       = form.check_box :week_ids, options, week.id, false
                       = form.label :"week_id", for: checkbox_id, class: 'fr-label fr-text--sm fr-mb-1v w-100' do
                         span.w-50

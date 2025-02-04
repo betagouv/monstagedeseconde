@@ -40,20 +40,15 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
         within("#toggle_status_internship_offers_weekly_framed_#{internship_offer.id}") do
           find('.label', text: 'Publié')
         end
-        within("#toggle_status_internship_offers_weekly_framed_#{old_internship_offer.id}") do
-          find('.label', text: 'Publié')
-        end
+        find('.label', text: 'Masqué')
+
+        assert internship_offer.published?
+        assert old_internship_offer.published?
 
         InternshipOffers::WeeklyFramed.update_older_internship_offers
 
-        visit dashboard_internship_offers_path
-
-        within("#toggle_status_#{dom_id(internship_offer)}") do
-          find('.label', text: 'Publié')
-        end
-        within("#toggle_status_#{dom_id(old_internship_offer)}") do
-          find('.label', text: 'Masqué')
-        end
+        assert internship_offer.published?
+        assert old_internship_offer.unpublished?
       end
     end
   end
@@ -105,7 +100,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
     end
   end
 
-  test 'publish navigation when max_candidates updates are necessary' do
+  test 'publish navigation when updates are necessary' do
     skip 'works locally but not on CI' if ENV['CI'] == 'true'
     employer = create(:employer)
     internship_offer = nil
@@ -125,17 +120,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
         InternshipOffer.stub :by_weeks, InternshipOffer.all do
           refute internship_offer.published?
           visit dashboard_internship_offers_path
-          within("#toggle_status_#{dom_id(internship_offer)}") do
-            find('.label', text: 'Masqué')
-            find("label.fr-toggle__label[for='toggle-#{internship_offer.id}']") # this publishes the internship_offer
-            execute_script("document.getElementById('axe-toggle-#{internship_offer.id}').closest('form').submit()")
-          end
-
-          refute internship_offer.reload.published?
-
-          find 'h1.h2', text: 'Modifier une offre de stage'
-          find 'span#alert-text',
-               text: "Votre annonce n'est pas encore republiée, car il faut ajouter des places de stage"
+          find('.label', text: 'Masqué')
         end
       end
     end

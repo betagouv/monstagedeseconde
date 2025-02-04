@@ -97,7 +97,7 @@ module Dashboard
       def fetch_user_internship_applications
         InternshipApplications::WeeklyFramed.where(
           internship_offer_id: current_user.internship_offers.ids
-        ).where(aasm_state: valid_states) # not drafted
+        ).where(aasm_state: valid_states)
       end
 
       def fetch_internship_application

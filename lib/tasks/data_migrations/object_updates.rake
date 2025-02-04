@@ -317,24 +317,6 @@ namespace :data_migrations do
     end
   end
 
-  desc 'transit from draft to unpublish on every internship_offer'
-  task 'from_draft_to_unpublish': :environment do
-    PrettyConsole.announce_task('transit from draft to unpublish on every internship_offer') do
-      counter = 0
-      offers = Rails.env.development? ? InternshipOffer.kept.where(school_id: nil) : InternshipOffer.kept
-      puts '================================'
-      puts " offers.where(aasm_state: 'drafted').count: #{offers.where(aasm_state: 'drafted').count}"
-      puts '================================'
-      puts ''
-      offers.drafted.find_each do |offer|
-        offer.unpublish!
-        counter += 1
-        print '.'
-      end
-      PrettyConsole.say_in_cyan "counter of draft updated : #{counter}"
-    end
-  end
-
   desc 'update schools where department is missing'
   task 'update_schools_department': :environment do
     PrettyConsole.announce_task('update schools where department is missing') do
@@ -355,6 +337,19 @@ namespace :data_migrations do
         end
       end
       PrettyConsole.say_in_cyan "counter of schools updated : #{counter}"
+    end
+  end
+
+  desc 'obfuscate readable students ine at setup' do
+    task 'obfuscate_email': :environment do
+      Users::Student.kept
+                    .where('created_at < ?', DateTime.new(2025, 1, 31, 19, 20))
+                    .where.not(ine: nil)
+                    .find_each do |student|
+        scrambled_ine = Digest::SHA1.hexdigest(student.ine)
+        student.update_columns(email: "#{scrambled_ine}@#{student.school.code_uai}.fr")
+        print '.'
+      end
     end
   end
 end
