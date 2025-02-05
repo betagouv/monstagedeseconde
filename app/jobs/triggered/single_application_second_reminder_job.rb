@@ -7,7 +7,7 @@ module Triggered
       # ReminderReset : tag to use to find commmented jobs for students reminders
       student = Users::Student.find(student_id)
       return nil unless student&.kept?
-      
+
       notify_with_channel(student) if notifiable?(student, 5)
     end
 
@@ -28,9 +28,9 @@ module Triggered
     end
 
     def send_sms_to_student(student)
-      content =  "Pas de réponse à votre candidature ? Les employeurs peuvent être lents" \
-                 " à répondre. Continuez à postuler pour maximiser vos chances de trouver" \
-                 " le stage idéal sur stagedeseconde.1jeune1solution.gouv.fr"
+      content =  'Pas de réponse à votre candidature ? Les employeurs peuvent être lents' \
+                 ' à répondre. Continuez à postuler pour maximiser vos chances de trouver' \
+                 ' le stage idéal sur 1eleve1stage.education.gouv.fr'
       SendSmsJob.new.perform(user: student, message: content)
     end
   end

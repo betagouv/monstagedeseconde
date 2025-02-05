@@ -8,7 +8,6 @@ const InternshipOfferCard = ({
   handleMouseOut,
   index,
   sendNotification,
-  threeByRow
   }) => {
 
     const [isFavorite, setIsFavorite] = useState(internshipOffer.is_favorite);
@@ -78,18 +77,28 @@ const InternshipOfferCard = ({
         {/* puts elements at the opposite on a line */}
         <div className="d-flex justify-content-between">
           <ul className="fr-badges-group fr-p-2w">
-            <li>
+            <li className="fr-mb-1w">
               <div className="fr-tag fr-mr-1w">
                 <span className="fr-icon-calendar-line fr-mr-1w"></span>
-                1 semaine disponible
+                {internshipOffer.available_weeks_count}
               </div>
             </li>
-            <li>
-              <div className="fr-tag fr-mr-1w">4ème</div>
-            </li>
-            <li>
-              <div className="fr-tag">3ème</div>
-            </li>
+            
+            {internshipOffer.fits_for_seconde && (
+              <li className="fr-mb-1w">
+                <div className="fr-tag fr-mr-1w">2de</div>
+              </li>
+            )}
+            {internshipOffer.fits_for_troisieme_or_quatrieme && (
+              <>
+                <li className="fr-mb-1w">
+                  <div className="fr-tag fr-mr-1w">3e</div>
+                </li>
+                <li className="fr-mb-1w">
+                  <div className="fr-tag fr-mr-1w">4e</div>
+                </li>
+              </>
+            )}
           </ul>
           { internshipOffer.logged_in && internshipOffer.can_manage_favorite &&
               <span className={`fr-mx-2w fr-my-2w heart-${isFavorite ? 'full' : 'empty'}`}

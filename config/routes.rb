@@ -44,6 +44,8 @@ Rails.application.routes.draw do
                                          as: 'users_choose_profile'
       get 'utilisateurs/choisir_connexion', to: 'users/sessions#choose_connection',
                                             as: 'users_choose_connection'
+      get 'utilisateurs/choisir_connexion_test', to: 'users/sessions#choose_connection_test',
+                                                 as: 'users_choose_connection_test'
       get '/utilisateurs/inscriptions/en-attente', to: 'users/registrations#confirmation_standby',
                                                    as: 'users_registrations_standby'
       get '/utilisateurs/inscriptions/referent-en-attente', to: 'users/registrations#statistician_standby',

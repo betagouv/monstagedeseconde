@@ -6,6 +6,7 @@ module Users
     include EduconnectLogout
 
     before_action :configure_sign_in_params, only: %i[new create]
+    before_action :verify_test_access_code, only: :choose_connection_test
     after_action :remove_notice, only: %i[destroy create]
     after_action :switch_back, only: %i[destroy]
 
@@ -63,6 +64,11 @@ module Users
     end
 
     def choose_connection
+      @fim_url = build_fim_url
+      @educonnect_url = build_educonnect_url
+    end
+
+    def choose_connection_test
       @fim_url = build_fim_url
       @educonnect_url = build_educonnect_url
     end
@@ -158,6 +164,12 @@ module Users
       cookies[:state] = oauth_params[:state]
 
       ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
+    end
+
+    def verify_test_access_code
+      return if params[:access_code] == ENV['TEST_ACCESS_CODE']
+
+      redirect_to root_path, alert: 'Accès non autorisé'
     end
   end
 end

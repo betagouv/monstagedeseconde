@@ -22,14 +22,15 @@ class InternshipOffersController < ApplicationController
       format.json do
         @internship_offers = finder.all.includes(:sector, :employer)
 
-        @is_suggestion = @internship_offers.to_a.count.zero?
-        @internship_offers = alternative_internship_offers if @is_suggestion
+        # @is_suggestion = @internship_offers.to_a.count.zero?
+        # @internship_offers = alternative_internship_offers if @is_suggestion
 
         @params = query_params
         data = {
           internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
-          isSuggestion: @is_suggestion
+          seats: calculate_seats(@internship_offers)
+          # isSuggestion: @is_suggestion
         }
         current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
         render json: data, status: 200
@@ -112,11 +113,11 @@ class InternshipOffersController < ApplicationController
         :latitude,
         :longitude,
         :radius,
-        :keyword,
-        :school_year,
-        :grade_id,
-        week_ids: [],
-        sector_ids: []
+        # :keyword,
+        # :school_year,
+        # :grade_id,
+        # week_ids: [],
+        # sector_ids: []
       ),
       user: current_user_or_visitor
     )
@@ -185,7 +186,10 @@ class InternshipOffersController < ApplicationController
         is_favorite: !!current_user && internship_offer.is_favorite?(current_user),
         logged_in: !!current_user,
         can_manage_favorite: can?(:create, Favorite),
-        can_read_employer_name: can?(:read_employer_name, internship_offer)
+        can_read_employer_name: can?(:read_employer_name, internship_offer),
+        fits_for_seconde: internship_offer.fits_for_seconde?,
+        fits_for_troisieme_or_quatrieme: internship_offer.fits_for_troisieme_or_quatrieme?,
+        available_weeks_count: internship_offer.presenter.available_weeks_count
       }
     end
   end
@@ -205,7 +209,7 @@ class InternshipOffersController < ApplicationController
     }
   end
 
-  def calculate_seats
-    @internship_offers_all_without_page.pluck(:max_candidates).sum
+  def calculate_seats(internship_offers)
+    internship_offers.pluck(:max_candidates).sum
   end
 end

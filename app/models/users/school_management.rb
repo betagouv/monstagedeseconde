@@ -109,11 +109,6 @@ module Users
                            .filtering_discarded_students
     end
 
-    def custom_dashboard_path
-      # TODO: fix this : url_helpers.dashboard_school_class_rooms_path(school)
-      url_helpers.root_path
-    end
-
     def pending_agreements_actions_count
       part1 = internship_agreements_query.where(aasm_state: %i[completed_by_employer started_by_school_manager])
       part2 = internship_agreements_query.signatures_started
