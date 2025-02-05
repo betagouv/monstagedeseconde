@@ -35,8 +35,10 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource_or_scope)
-    Rails.logger.info('----- Signout path for -----')
-    if resource_or_scope == :user && session.delete(:was_student)
+    Rails.logger.info("----- Signout path for: #{resource_or_scope.inspect} -----")
+    Rails.logger.info("----- Was student?: #{session[:was_student]} -----")
+
+    if resource_or_scope.to_s == 'user' && session.delete(:was_student)
       Rails.logger.info('----- Logout educonnect -----')
       root_path(logout: :educonnect)
     else
