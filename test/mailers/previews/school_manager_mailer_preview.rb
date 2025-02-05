@@ -1,10 +1,4 @@
 class SchoolManagerMailerPreview < ActionMailer::Preview
-
-  def new_member
-    SchoolManagerMailer.new_member(school_manager: school_manager,
-                                   member: fetch_teacher)
-  end
-
   def notify_others_signatures_started_email
     SchoolManagerMailer.notify_others_signatures_started_email(
       internship_agreement: InternshipAgreement.first
@@ -23,7 +17,6 @@ class SchoolManagerMailerPreview < ActionMailer::Preview
     )
   end
 
-
   private
 
   def school_manager
@@ -33,5 +26,4 @@ class SchoolManagerMailerPreview < ActionMailer::Preview
   def fetch_teacher
     Users::SchoolManagement.find_by(role: 'teacher')
   end
-
 end

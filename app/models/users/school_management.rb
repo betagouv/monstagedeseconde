@@ -33,9 +33,6 @@ module Users
     validate :official_uai_email_address, on: :create, if: :school_manager?
     validate :official_email_address, on: :create
 
-    before_update :notify_school_manager, if: :notifiable?
-    after_create :notify_school_manager, if: :notifiable?
-
     def custom_dashboard_path
       if school.present?
         return url_helpers.dashboard_school_class_room_students_path(school, class_room) if induced_teacher?
@@ -146,14 +143,6 @@ module Users
     # notify
     def notifiable?
       school_id_changed? && school_id? && !school_manager?
-    end
-
-    def notify_school_manager
-      return unless school.school_manager.present?
-
-      SchoolManagerMailer.new_member(school_manager: school.school_manager,
-                                     member: self)
-                         .deliver_later
     end
 
     def official_uai_email_address?

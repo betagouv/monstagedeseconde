@@ -5,25 +5,6 @@ class UserMailer < ApplicationMailer
     mail(to: recipient_email, subject: 'Confirmation - suppression de votre compte')
   end
 
-  def missing_school_manager_warning_email(offer:, student:)
-    school = student.school
-    return if school.nil?
-
-    @student_prez = student.presenter
-    @offer_prez = offer.presenter
-    @school_manager_email = made_school_manager_email(school)
-    @url = rails_pathes.new_user_registration_url(
-      host: ENV['HOST'],
-      as: 'SchoolManagement',
-      email: @school_manager_email,
-      user_role: 'school_manager'
-    )
-    send_email(
-      to: @school_manager_email,
-      subject: 'Une convention de stage vous attend.'
-    )
-  end
-
   def export_offers(user, params)
     recipient_email = user.email
     if user.ministry_statistician?
