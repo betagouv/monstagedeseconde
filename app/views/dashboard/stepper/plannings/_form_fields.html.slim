@@ -51,7 +51,7 @@
       .col-6
         hr
     - klass = resource.class.to_s.split("s::").first
-    .row data-controller="planning-candidates"
+    .row 
       .col-6
         = render '/dashboard/stepper/plannings/collective_or_individual_radio_buttons',
                   form: form,
@@ -93,7 +93,7 @@
           form: form,
           field: :rep,
           title: nil,
-          label: 'Ce stage est réservé aux établissements REP ou REP+ ?',
+          label: 'Ce stage est réservé aux établissements du réseau d\'éducation prioritaire (REP) ?',
           options: {}
 
     .row
@@ -102,7 +102,7 @@
           form: form,
           field: :qpv,
           title: nil,
-          label: 'Ce stage est réservé aux établissements QPV ?',
+          label: 'Ce stage est réservé aux établissements des quartiers prioritaires de la ville (QPV) ?',
           options: {}
 
     - if submit_button

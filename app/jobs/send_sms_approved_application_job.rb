@@ -4,9 +4,9 @@ class SendSmsApprovedApplicationJob < ApplicationJob
   queue_as :default
 
   def perform(phone)
-    content = "Votre candidature à un stage a été acceptée. Connectez-vous à" \
-              " stagedeseconde.1jeune1solution.gouv.fr et contactez l'employeur pour " \
-              "signer votre convention de stage."
+    content = 'Votre candidature à un stage a été acceptée. Connectez-vous à' \
+              " 1eleve1stage.education.gouv.fr et contactez l'employeur pour " \
+              'signer votre convention de stage.'
 
     Services::SmsSender.new(phone_number: phone, content: content)
                        .perform
