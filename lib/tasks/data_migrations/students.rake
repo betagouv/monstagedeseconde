@@ -107,4 +107,32 @@ namespace :data_migrations do
     end
     PrettyConsole.say_in_cyan "Updated #{counter} schools"
   end
+
+  desc 'double ine students delete'
+  task double_ine_delete: :environment do |task|
+    PrettyConsole.announce_task 'Deleting double ine students' do
+      counter = 0
+      Users::Student.group(:ine)
+                    .having('count(ine) > 1')
+                    .pluck(:ine)
+                    .each do |ine|
+        students = Users::Student.kept.where(ine: ine)
+        students.first.delete
+        print '.'
+      end
+       PrettyConsole.say_in_cyan "Deleted #{counter} students"
+    end
+  end
+
+  desc 'get doublon of values in a table on ine column'
+  task :doublon, [] => :environment do |t, args|
+    PrettyConsole.announce_task "Looking for doublon in users" do
+      sql = "SELECT ine, COUNT(ine) FROM users GROUP BY ine HAVING COUNT(ine) > 1"
+      result = ActiveRecord::Base.connection.execute(sql)
+      puts "Found #{result.count} doublons"
+      result.each do |row|
+        puts row.to_s
+      end
+    end
+  end
 end
