@@ -45,9 +45,6 @@ class PagesController < ApplicationController
   end
 
   def home
-    if params[:logout] == 'educonnect'
-      redirect_to ENV['EDUCONNECT_LOGOUT_URL'], allow_other_host: true, status: :see_other
-    end
     @faqs = get_faqs('student')
   end
 
