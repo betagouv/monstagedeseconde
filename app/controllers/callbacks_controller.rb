@@ -55,40 +55,40 @@ class CallbacksController < ApplicationController
 
     educonnect = Services::EduconnectConnection.new(code, state, nonce)
 
-    # session[:id_token] = educonnect.id_token
-    # session[:state] = state
+    session[:id_token] = educonnect.id_token
+    session[:state] = state
 
-    # Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
+    Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
 
-    # user_info = educonnect.get_user_info
-    # redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
+    user_info = educonnect.get_user_info
+    redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
-    # student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
-    # school = School.find_by(code_uai: user_info['FrEduCtEleveUAI'])
+    student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
+    school = School.find_by(code_uai: user_info['FrEduCtEleveUAI'])
 
-    # Rails.logger.info("School: #{school.inspect}")
-    # Rails.logger.info("Student: #{student.inspect}")
+    Rails.logger.info("School: #{school.inspect}")
+    Rails.logger.info("Student: #{student.inspect}")
 
-    # unless school.present?
-    #   handle_educonnect_logout(educonnect)
-    #   redirect_to root_path,
-    #               alert: "Établissement scolaire non répertorié sur 1 élève, 1 stage (UAI: #{user_info['FrEduCtEleveUAI']})." and return
-    # end
+    unless school.present?
+      handle_educonnect_logout(educonnect)
+      redirect_to root_path,
+                  alert: "Établissement scolaire non répertorié sur 1 élève, 1 stage (UAI: #{user_info['FrEduCtEleveUAI']})." and return
+    end
 
-    # unless student.present?
-    #   handle_educonnect_logout(educonnect)
-    #   redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
-    # end
+    unless student.present?
+      handle_educonnect_logout(educonnect)
+      redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
+    end
 
     student.confirm
     student.save
 
-    # if student.confirmed_at.blank?
-    #   student.confirmed_at = Time.now
-    #   student.save
-    # end
+    if student.confirmed_at.blank?
+      student.confirmed_at = Time.now
+      student.save
+    end
 
-    # Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
+    Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
 
     begin
       Rails.logger.info('Starting sign in process...')
