@@ -36,10 +36,11 @@ class ApplicationController < ActionController::Base
 
   def after_sign_out_path_for(resource_or_scope)
     Rails.logger.info("----- Signout path for: #{resource_or_scope.inspect} -----")
-    Rails.logger.info("----- Was student?: #{session[:was_student]} -----")
+    Rails.logger.info("----- Was student?: #{cookies[:was_student]} -----")
 
-    if resource_or_scope.to_s == 'user' && session.delete(:was_student)
+    if cookies[:was_student]
       Rails.logger.info('----- Logout educonnect -----')
+      cookies.delete(:was_student)
       root_path(logout: :educonnect)
     else
       super
@@ -124,7 +125,7 @@ class ApplicationController < ActionController::Base
   def store_user_type_before_logout
     return unless current_user
 
-    session[:was_student] = current_user.student?
-    Rails.logger.info("User type stored before logout: student=#{session[:was_student]}")
+    cookies[:was_student] = current_user.student?
+    Rails.logger.info("User type stored before logout: student=#{cookies[:was_student]}")
   end
 end
