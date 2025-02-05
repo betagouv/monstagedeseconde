@@ -5,6 +5,10 @@ namespace :sys do
     "storage/tmp/#{Date.today}_1E1S_prod.dump"
   end
 
+  def db_file_name_sql
+    "storage/tmp/#{Date.today}_1E1S_prod.sql"
+  end
+
   def reset_file_name
     'storage/tmp/reset_1E1S_prod_copy.sql'
   end
@@ -53,6 +57,19 @@ namespace :sys do
     end
   end
 
+  desc 'download a production database copy to filesystem with sql format'
+  task :dl_prod_sql, [] => :environment do
+    if File.exist?(db_file_name_sql)
+      PrettyConsole.puts_in_cyan 'File already exists'
+    else
+      PrettyConsole.announce_task 'Downloading production database' do
+        system('pg_dump -c --clean --if-exists -Fp --encoding=UTF-8 --no-owner --no-password  ' \
+        "-d #{ENV['PRODUCTION_DATABASE_URI']} > #{db_file_name_sql}")
+      end
+    end
+  end
+
+
   desc 'uplaod a local production database copy to CleverCloud'
   task :upl_prod, [] => :environment do
     PrettyConsole.announce_task 'Downloading production database' do
@@ -61,6 +78,18 @@ namespace :sys do
               "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
               "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
               "-f #{db_file_name}")
+    end
+  end
+
+  desc 'uplaod a local production database copy to CleverCloud with sql format'
+  task :upl_prod_sql, [] => :environment do
+    PrettyConsole.announce_task 'Downloading production database' do
+      system("psql  -h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
+              "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
+              "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
+              "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
+              "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
+              "-f #{db_file_name_sql}")
     end
   end
 
@@ -75,17 +104,6 @@ namespace :sys do
   #   end
   # end
   #
-  desc 'kill 20 sidekiq processes from their task name on default queue'
-  task :kill_sidekiq_twenty, [:task_name] => :environment do |t, args|
-    PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
-      Sidekiq::ScheduledSet.new.first(20).each do |job|
-        next unless job.args.first['job_class'] == args.task_name
-
-        job.delete
-        print '.'
-      end
-    end
-  end
 
   desc 'kill all sidekiq processes from their task name on default queue'
   task :kill_sidekiq, [:task_name] => :environment do |t, args|
