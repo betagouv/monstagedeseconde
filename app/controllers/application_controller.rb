@@ -120,6 +120,8 @@ class ApplicationController < ActionController::Base
   end
 
   def store_user_type_before_logout
+    Rails.logger.info('----- Store user type before logout -----')
+    Rails.logger.info("Current user: #{current_user.try(:inspect)}")
     session[:was_student] = current_user&.student? if current_user
   end
 end
