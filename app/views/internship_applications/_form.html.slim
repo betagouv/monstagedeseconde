@@ -95,7 +95,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     options: { required: true},
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
-      - if f.object.student.phone.present? || f.object.student.phone.present?
+      - if f.object.student_phone.present? || f.object.student.phone.present?
         .row.fr-my-2w
           .col-12
             = render '/inputs/dsfr_input_field',
@@ -109,8 +109,6 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     pattern: phone_pattern,
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
-            = f.hidden_field :student_phone,
-                            value: f.object.student_phone || f.object.student.phone
       - else
         .row.fr-m-n2w.fr-mb-3w
           .col-xs-12.col-sm-6
