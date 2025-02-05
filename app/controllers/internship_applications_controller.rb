@@ -47,7 +47,7 @@ class InternshipApplicationsController < ApplicationController
     destination = dashboard_students_internship_applications_path(student_id: current_user.id, notice_banner: true)
 
     if @internship_application.save
-      save_legal_representative_data(@internship_application)
+      save_personal_data(@internship_application)
       redirect_to destination
     else
       log_error(object: @internship_application)
@@ -132,6 +132,9 @@ class InternshipApplicationsController < ApplicationController
             :motivation,
             :student_phone,
             :student_email,
+            :student_legal_representative_full_name,
+            :student_legal_representative_email,
+            :student_legal_representative_phone,
             week_ids: [],
             student_attributes: %i[
               email
@@ -191,17 +194,21 @@ class InternshipApplicationsController < ApplicationController
     session[:as] = params[:as]
   end
 
-  def save_legal_representative_data(internship_application)
+  def save_personal_data(internship_application)
     student = internship_application.student
     no_change = student.legal_representative_full_name == internship_application.student_legal_representative_full_name &&
                 student.legal_representative_email == internship_application.student_legal_representative_email &&
                 student.legal_representative_phone == internship_application.student_legal_representative_phone &&
+                student.email == internship_application.student_email &&
+                student.phone == internship_application.student_phone &&
                 student.address == internship_application.student_address
     return if no_change
 
     student.legal_representative_full_name = internship_application.student_legal_representative_full_name
     student.legal_representative_email = internship_application.student_legal_representative_email
     student.legal_representative_phone = internship_application.student_legal_representative_phone
+    student.email = internship_application.student_email
+    student.phone = internship_application.student_phone
     student.address = internship_application.student_address
 
     student.save
