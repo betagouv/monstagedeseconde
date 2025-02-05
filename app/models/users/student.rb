@@ -148,6 +148,17 @@ module Users
       SendSmsJob.perform_later(user: self, message:)
     end
 
+    def valid_transition?(transition)
+      %w[ submit!
+          submit
+          approve!
+          approve
+          reject!
+          reject
+          cancel_by_student!
+          cancel_by_student].include?(transition)
+    end
+
     def presenter
       Presenters::Student.new(self)
     end

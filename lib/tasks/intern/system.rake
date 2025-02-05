@@ -56,10 +56,9 @@ namespace :sys do
   desc 'uplaod a local production database copy to CleverCloud'
   task :upl_prod, [] => :environment do
     PrettyConsole.announce_task 'Downloading production database' do
-      system("psql -c -h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
+      system("pg_restore -h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
               "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
               "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
-              "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
               "-f #{db_file_name}")
     end
   end
