@@ -14,7 +14,7 @@
 
     .row
       - options = { class: 'fr-input', required: true , maxlength: 85 }
-      - options.merge!(readonly: true, class: 'fr-input text-grey-disabled') if current_user.try(:student?)
+      - options.merge!(readonly: true, class: 'fr-input text-grey-disabled') if current_user.try(:student?) || current_user.try(:school_management?)
       .col-md-6.col-xs-12
         .form-group
           = f.label :first_name, class: 'fr-label', for: 'user_first_name' do
