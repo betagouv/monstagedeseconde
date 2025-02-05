@@ -232,6 +232,7 @@ class User < ApplicationRecord
   def operator? = false
   def school_management? = false
   def school_manager_like? = false
+  def teacher? = false
   def god? = false
   def employer_like? = false
   def can_sign?(internship_agreement)= false

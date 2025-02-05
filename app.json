@@ -1,7 +1,7 @@
 {
   "name": "1élève1stage",
   "description": "Help students to find quality internships",
-  "website": "https://stagedeseconde.1jeune1solution.gouv.fr/",
+  "website": "https://1eleve1stage.education.gouv.fr/",
 
   "repository": "https://github.com/betagouv/monstagedeseconde",
 
@@ -35,7 +35,7 @@
         "WEB_CONCURRENCY": 1,
         "CONVENTION_ENABLED": true,
         "YARN_PRODUCTION": false,
-        "WEBINAR_URL": "https://webinar.stagedeseconde.1jeune1solution.gouv.fr/"
+        "WEBINAR_URL": "https://webinar.1eleve1stage.education.gouv.fr/"
       },
       "addons": [
         {

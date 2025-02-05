@@ -85,6 +85,7 @@ module Users
     def school_manager? = role == 'school_manager'
     def admin_officer? = role == 'admin_officer'
     def cpe? = role == 'cpe'
+    def teacher? = role == 'teacher' || role == 'main_teacher'
 
     def school_manager
       try(:school).try(:school_manager)
@@ -104,11 +105,6 @@ module Users
     def internship_agreements_query
       internship_agreements.kept
                            .filtering_discarded_students
-    end
-
-    def custom_dashboard_path
-      # TODO: fix this : url_helpers.dashboard_school_class_rooms_path(school)
-      url_helpers.root_path
     end
 
     def pending_agreements_actions_count
