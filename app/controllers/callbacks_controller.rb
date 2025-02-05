@@ -61,6 +61,8 @@ class CallbacksController < ApplicationController
     Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
 
     user_info = educonnect.get_user_info
+    Rails.logger.info("User info: #{user_info.inspect}")
+
     redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
     student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
