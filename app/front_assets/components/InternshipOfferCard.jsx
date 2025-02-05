@@ -8,7 +8,6 @@ const InternshipOfferCard = ({
   handleMouseOut,
   index,
   sendNotification,
-  threeByRow
   }) => {
 
     const [isFavorite, setIsFavorite] = useState(internshipOffer.is_favorite);
@@ -78,7 +77,7 @@ const InternshipOfferCard = ({
         {/* puts elements at the opposite on a line */}
         <div className="d-flex justify-content-between">
           <ul className="fr-badges-group fr-p-2w">
-            <li>
+            <li className="fr-mb-1w">
               <div className="fr-tag fr-mr-1w">
                 <span className="fr-icon-calendar-line fr-mr-1w"></span>
                 {internshipOffer.available_weeks_count}
@@ -86,16 +85,16 @@ const InternshipOfferCard = ({
             </li>
             
             {internshipOffer.fits_for_seconde && (
-              <li>
+              <li className="fr-mb-1w">
                 <div className="fr-tag fr-mr-1w">2de</div>
               </li>
             )}
             {internshipOffer.fits_for_troisieme_or_quatrieme && (
               <>
-                <li>
+                <li className="fr-mb-1w">
                   <div className="fr-tag fr-mr-1w">3e</div>
                 </li>
-                <li>
+                <li className="fr-mb-1w">
                   <div className="fr-tag fr-mr-1w">4e</div>
                 </li>
               </>

@@ -45,8 +45,14 @@
   padding-right: 0;
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
+  background-color: #f6f6f6;
+  .almost-fitting {
+    width: 100%;
+  }
+}
+
+.search-offer-col {
   width: calc(14.28571% + 570px) !important;
-  margin-left: auto;
 }
 
 .results-container {
@@ -68,6 +74,7 @@
 
 .map-wrapper {
   position: relative;
+  
 }
 
 .map-sticky-container {
