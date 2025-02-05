@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
   before_action :check_for_maintenance
   before_action :employers_only_redirect
   before_action :throttle_ip_requests
+  before_action :store_user_type_before_logout
 
   # TODO: Remove following line
   default_form_builder Rg2aFormBuilder
@@ -35,7 +36,7 @@ class ApplicationController < ActionController::Base
 
   def after_sign_out_path_for(resource_or_scope)
     Rails.logger.info('----- Signout path for -----')
-    if resource_or_scope == :user && @signed_out_user&.student?
+    if resource_or_scope == :user && session.delete(:was_student)
       Rails.logger.info('----- Logout educonnect -----')
       root_path(logout: :educonnect)
     else
@@ -116,5 +117,9 @@ class ApplicationController < ActionController::Base
 
     redirect_to 'https://1eleve1stage.education.gouv.fr', status: :moved_permanently,
                                                           allow_other_host: true
+  end
+
+  def store_user_type_before_logout
+    session[:was_student] = current_user&.student? if current_user
   end
 end
