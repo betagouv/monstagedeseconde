@@ -305,7 +305,7 @@ class InternshipApplication < ApplicationRecord
     end
 
     event :expire do
-      transitions from: %i[submitted read_by_employer validated_by_employer],
+      transitions from: %i[submitted read_by_employer validated_by_employer transfered],
                   to: :expired,
                   after: proc { |user, *_args|
                            update!(expired_at: Time.now.utc)
