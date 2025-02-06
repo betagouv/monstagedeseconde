@@ -26,7 +26,7 @@
   - if can?(:edit_password, current_user)
     = render "edit_password"
 
-  = render "edit_school"
+  = render "edit_school" if can?(:choose_school, current_user)
 
   = render "edit_api" if can?(:show, :api_token)
 
