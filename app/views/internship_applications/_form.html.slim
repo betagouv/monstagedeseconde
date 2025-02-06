@@ -23,12 +23,12 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
           = render partial: "internship_applications/forms/student_missing_school_weeks"
         .fr-select-group
           = label_tag :week_id, 'Quelle semaine ?', class: 'required fr-label'
-          
+
           = select_tag :week_id,
                       options_from_collection_for_select(@available_weeks, :id, :human_select_text_method, @internship_application.week_ids.try(:first)),
                       { prompt: 'Choisir une semaine',
                         class: "fr-select",
-                        data: {:'internship-application-form-target' => "weekSelect", 
+                        data: {:'internship-application-form-target' => "weekSelect",
                               action: "change->internship-application-form#updateWeekId"},
                         required: true }
       - elsif current_user.seconde_gt?
@@ -49,22 +49,21 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
         = label_tag :period, 'Période de stage',
                   class: 'fr-label fr-hint',
                   style: 'color: #929292'
-        
+
         = select_tag :period,
                     options_for_select(period_options,
                                     @internship_application.internship_offer.period),
                     { prompt: 'Choisissez une période',
                       class: "fr-select",
-                      data: {:'internship-application-form-target' => "periodSelect", 
+                      data: {:'internship-application-form-target' => "periodSelect",
                             action: "change->internship-application-form#updatePeriod"},
                     }
-        
+
       div class="form-group fr-mt-2w"
         = f.label :motivation,
                   class: 'fr-label',
                   for: 'internship_application_motivation'
           | Pourquoi ce stage me motive ?
-          = f.rg2a_required_content_tag
           small.form-text.text-muted Relisez-vous pour éviter les fautes.
         = f.text_area :motivation,
                       class: "fr-input col-12",
@@ -90,13 +89,13 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     object: f.object,
                     value: f.object.student_email || f.object.student.email || f.object.previous_student_email,
                     label: "Adresse électronique (email)",
-                    required: true,
                     pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
                     hint: "Veuillez saisir une adresse email valide, sans espace ni majuscule.",
                     title: 'Adresse électronique',
+                    options: { required: true},
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
-      - if f.object.student.phone.present? || f.object.student.phone.present?
+      - if f.object.student_phone.present? || f.object.student.phone.present?
         .row.fr-my-2w
           .col-12
             = render '/inputs/dsfr_input_field',
@@ -110,16 +109,13 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     pattern: phone_pattern,
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
-            = f.hidden_field :student_phone,
-                            value: f.object.student_phone || f.object.student.phone
       - else
         .row.fr-m-n2w.fr-mb-3w
           .col-xs-12.col-sm-6
             .form-group.phone
               = label_tag 'Numéro de mobile', '', class: 'fr-label'
-              = label_tag :student_phone, for: 'phone-input', class: 'fr-label' do
+              = label_tag :student_phone, for: 'phone-input', class: 'fr-label'
                 = 'Numéro de mobile'
-                = f.rg2a_required_content_tag
               - registered_value = f.object.student_phone || f.object.student.phone || f.object.previous_student_phone
               = react_component("CountryPhoneSelect",
                                 props: { name: "#{f.object_name}[student_phone]",
@@ -130,65 +126,61 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
       .row.fr-m-n2w.fr-mb-3w
         .col-12
           .form-group.phone
-            = label_tag 'Votre adresse postale complète', '', class: 'fr-label' do
-              = f.rg2a_required_content_tag
+            = label_tag 'Votre adresse postale complète', '', class: 'fr-label'
             = render '/inputs/dsfr_input_field',
                     field: :student_address,
                     f: f,
                     object: f.object,
                     value: f.object.student_address ||f.object.student.address,
                     label: "Votre adresse postale complète",
-                    required: true,
+                    options: { required: true,
+                               maxlength: 300 },
                     title: 'Adresse',
-                    maxlength: 300,
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
       .row.fr-m-n2w.fr-mb-3w
         .col-12
           .form-group.phone
-            = label_tag 'Nom et prénom de votre représentant légal', '', class: 'fr-label' do
-              = f.rg2a_required_content_tag
+            = label_tag 'Nom et prénom de votre représentant légal', '', class: 'fr-label'
             = render '/inputs/dsfr_input_field',
                     field: :student_legal_representative_full_name,
                     f: f,
                     object: f.object,
                     value: f.object.student_legal_representative_full_name ||f.object.student.legal_representative_full_name,
                     label: "Nom et prénom de votre représentant légal",
-                    required: true,
-                    maxlength: 180,
+                    options: { required: true,
+                               maxlength: 180 },
                     title: 'Représentant légal',
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
       .row.fr-m-n2w.fr-mb-3w
         .col-12
           .form-group.phone
-            = label_tag 'Adresse email de votre représentant légal', '', class: 'fr-label' do
-              = f.rg2a_required_content_tag
+            = label_tag 'Adresse email de votre représentant légal', '', class: 'fr-label'
             = render '/inputs/dsfr_input_field',
                     field: :student_legal_representative_email,
                     f: f,
                     object: f.object,
                     value: f.object.student_legal_representative_email ||f.object.student.legal_representative_email,
                     label: "Adresse électronique de votre représentant légal",
-                    required: true,
                     pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
-                    maxlength: 100,
+                    options: { required: true,
+                               maxlength: 100 },
                     title: 'Adresse électronique',
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
       .row.fr-m-n2w.fr-mb-3w
         .col-12
           .form-group.phone
-            = label_tag 'Numéro de téléphone de votre représentant légal', '', class: 'fr-label' do
-              = f.rg2a_required_content_tag
+            = label_tag 'Numéro de téléphone de votre représentant légal', '', class: 'fr-label'
             = render '/inputs/dsfr_input_field',
                     field: :student_legal_representative_phone,
                     f: f,
                     object: f.object,
                     value: f.object.student_legal_representative_phone ||f.object.student.legal_representative_phone,
                     label: "Numéro de téléphone de votre représentant légal",
-                    required: true,
-                    maxlength: 20,
+                    options: { required: true,
+                               maxlength: 20 },
                     title: 'Téléphone',
                     pattern: phone_pattern,
                     data: {:'mandatory-fields-target' => "mandatoryField",
@@ -219,7 +211,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     | Relisez-vous avant d'envoyer votre candidature
                 p
                   = 'Êtes-vous sûr de vouloir envoyer cette candidature ?'
-        
+
               .fr-modal__footer
                 ul.fr-btns-group.fr-btns-group--right.fr-btns-group--inline-lg
                   li

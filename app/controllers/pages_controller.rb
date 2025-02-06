@@ -59,11 +59,11 @@ class PagesController < ApplicationController
 
   def waiting_list
     @waiting_list_entry = WaitingListEntry.new(waiting_list_params)
-    if @waiting_list_entry.save
-      message = 'Votre e-mail a été ajouté à la liste d\'attente.'
-    else
-      message = 'Une erreur est survenue lors de l\'ajout de votre e-mail à la liste d\'attente.'
-    end
+    message = if @waiting_list_entry.save
+                'Votre e-mail a été ajouté à la liste d\'attente.'
+              else
+                'Une erreur est survenue lors de l\'ajout de votre e-mail à la liste d\'attente.'
+              end
     redirect_to '/maintenance_estivale.html', notice: message
   end
 

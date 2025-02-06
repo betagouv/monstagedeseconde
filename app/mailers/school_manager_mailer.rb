@@ -1,15 +1,6 @@
 # frozen_string_literal: true
 
 class SchoolManagerMailer < ApplicationMailer
-  def new_member(school_manager:, member:)
-    @school_manager = school_manager
-    @member_presenter = member.presenter
-    @school_manager_presenter = school_manager.presenter
-
-    mail(subject: "Nouveau #{@member_presenter.role_name}: #{@member_presenter.full_name}",
-         to: school_manager.email)
-  end
-
   def internship_agreement_completed_by_employer_email(internship_agreement:)
     @internship_application = internship_agreement.internship_application
     @internship_offer      = @internship_application.internship_offer

@@ -1965,7 +1965,8 @@ CREATE TABLE public.schools (
     level character varying(100) DEFAULT 'lycee'::character varying NOT NULL,
     school_type public.school_category DEFAULT 'college'::public.school_category NOT NULL,
     voie_generale boolean,
-    voie_techno boolean
+    voie_techno boolean,
+    full_imported boolean DEFAULT false
 );
 
 
@@ -4848,6 +4849,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250203163502'),
 ('20250124164746'),
 ('20250120101004'),
 ('20250120090347'),

@@ -109,8 +109,6 @@ class Ability
 
     can %i[show
            update
-           choose_school
-           choose_gender_and_birthday
            register_with_phone], User
     can_read_dashboard_students_internship_applications(user:)
     can(:read_employer_name, InternshipOffer) do |internship_offer|
