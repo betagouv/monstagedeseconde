@@ -90,7 +90,7 @@ div [data-planning-target='weeksContainer'
                           - weeks_count = @school_weeks.fetch(key, 0)
                           span.w-50
                             .fr-tag.fr-fi-info-line.fr-tag--sm.fr-tag--icon-left
-                              = "#{weeks_count}+  #{'collège'.pluralize(weeks_count)} #{'disponible'.pluralize(weeks_count)}"
+                              = "#{weeks_count}+  #{%w(collège disponible).map{ |word| word.pluralize(weeks_count)}.join(' ')}"
 
                     div.position-absolute.badge-week-density.rounded.d-none data-select-weeks-target='inputWeekLegend' data-week-id=week.id
                       | ?

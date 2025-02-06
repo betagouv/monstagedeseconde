@@ -35,11 +35,11 @@ Rails.application.routes.draw do
       passwords: 'users/passwords'
     }
 
-    get '/auth/fim/callback', to: 'callbacks#fim', as: 'fim_callback'
-    get '/auth/educonnect/callback', to: 'callbacks#educonnect', as: 'educonnect_callback'
-    # get '/auth/failure', to: 'sessions#failure'
-
+    
     devise_scope :user do
+      get '/auth/fim/callback', to: 'callbacks#fim', as: 'fim_callback'
+      get '/auth/educonnect/callback', to: 'callbacks#educonnect', as: 'educonnect_callback'
+      # get '/auth/failure', to: 'sessions#failure'
       get 'utilisateurs/choisir_profil', to: 'users/registrations#choose_profile',
                                          as: 'users_choose_profile'
       get 'utilisateurs/choisir_connexion', to: 'users/sessions#choose_connection',

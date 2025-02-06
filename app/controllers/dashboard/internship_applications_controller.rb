@@ -19,12 +19,11 @@ module Dashboard
       begin
         ActiveRecord::Base.transaction do
           @internship_applications.each do |internship_application|
-            unless valid_transition?(params[:transition])
+            unless current_user.valid_transition?(params[:transition])
               raise ArgumentError, "Transition non autorisée: #{params[:transition]}"
             end
 
             internship_application.public_send(params[:transition], current_user)
-
             internship_application.update!(rejected_message: params[:rejection_message])
           end
         end
@@ -34,13 +33,6 @@ module Dashboard
       rescue StandardError => e
         redirect_to dashboard_candidatures_path, alert: "Erreur lors de la modification des candidatures: #{e.message}"
       end
-    end
-
-    private
-
-    def valid_transition?(transition)
-      allowed_transitions = %w[approve reject cancel employer_validate]
-      allowed_transitions.include?(transition)
     end
   end
 end

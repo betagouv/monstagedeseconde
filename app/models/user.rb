@@ -232,6 +232,7 @@ class User < ApplicationRecord
   def operator? = false
   def school_management? = false
   def school_manager_like? = false
+  def teacher? = false
   def god? = false
   def employer_like? = false
   def can_sign?(internship_agreement)= false
@@ -239,6 +240,7 @@ class User < ApplicationRecord
   def needs_to_see_modal? = false
   def has_offers_to_apply_to? = false
   def with_2_weeks_internships_approved? = false
+  def valid_transition? = false
 
   def fetch_current_area_notification = nil
   def create_signature_phone_token = nil

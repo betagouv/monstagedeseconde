@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
   before_action :check_for_maintenance
   before_action :employers_only_redirect
   before_action :throttle_ip_requests
+  before_action :store_user_type_before_logout
 
   # TODO: Remove following line
   default_form_builder Rg2aFormBuilder
@@ -31,6 +32,19 @@ class ApplicationController < ActionController::Base
     session[:show_student_reminder_modal] = true if resource.needs_to_see_modal?
 
     stored_location_for(resource) || resource.reload.after_sign_in_path || super
+  end
+
+  def after_sign_out_path_for(resource_or_scope)
+    Rails.logger.info("----- Signout path for: #{resource_or_scope.inspect} -----")
+    Rails.logger.info("----- Was student?: #{cookies[:was_student]} -----")
+
+    if cookies[:was_student]
+      Rails.logger.info('----- Logout educonnect -----')
+      cookies.delete(:was_student)
+      root_path(logout: :educonnect)
+    else
+      super
+    end
   end
 
   def current_user_or_visitor
@@ -106,5 +120,12 @@ class ApplicationController < ActionController::Base
 
     redirect_to 'https://1eleve1stage.education.gouv.fr', status: :moved_permanently,
                                                           allow_other_host: true
+  end
+
+  def store_user_type_before_logout
+    return unless current_user
+
+    cookies[:was_student] = current_user.student?
+    Rails.logger.info("User type stored before logout: student=#{cookies[:was_student]}")
   end
 end

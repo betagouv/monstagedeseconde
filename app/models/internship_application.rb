@@ -365,16 +365,11 @@ class InternshipApplication < ApplicationRecord
     }
 
     create_agreement if employer.agreement_signatorable?
-    if main_teacher.present?
-      deliver_later_with_additional_delay do
-        MainTeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
-      end
+    return unless main_teacher.present?
+
+    deliver_later_with_additional_delay do
+      MainTeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
     end
-
-    return unless missing_school_manager?
-
-    UserMailer.missing_school_manager_warning_email(offer: internship_offer, student:)
-              .deliver_later
   end
 
   def missing_school_manager?
