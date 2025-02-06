@@ -18,6 +18,7 @@ class InternshipApplicationsController < ApplicationController
       internship_offer_type: 'InternshipOffer',
       student: current_user
     )
+    assign_responsible_data_to_current_user unless responsible_data_present?
     @available_weeks = @internship_application.selectable_weeks
 
     return unless @available_weeks.empty?
@@ -212,5 +213,30 @@ class InternshipApplicationsController < ApplicationController
     student.address = internship_application.student_address
 
     student.save
+  end
+
+  def assign_responsible_data_to_current_user
+    responsible = fetch_responsible_data
+    return if responsible.blank?
+
+    current_user.legal_representative_full_name = "#{responsible.civility} #{responsible.first_name} #{responsible.last_name}"
+    current_user.legal_representative_email = responsible.email
+    current_user.legal_representative_phone = responsible.phone
+    current_user.save
+  end
+
+  def fetch_responsible_data
+    return unless current_user.student? && current_user.ine.present?
+
+    omogen = Services::Omogen::Sygne.new
+    return if omogen.blank?
+
+    omogen.sygne_responsable(current_user.ine)
+  end
+
+  def responsible_data_present?
+    current_user.legal_representative_full_name.present? &&
+      current_user.legal_representative_email.present? &&
+      current_user.legal_representative_phone.present?
   end
 end
