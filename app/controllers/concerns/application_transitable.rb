@@ -7,7 +7,7 @@ module ApplicationTransitable
     def update
       authenticate_user! unless params[:sgid].present? || params[:token].present?
       authorize_through_sgid? || authorize_through_token? || authorize!(:update, @internship_application)
-      if valid_transition?
+      if current_user.valid_transition?(params[:transition])
         # action happens here
         @internship_application.send(params[:transition].to_sym, current_user)
         @internship_application.update!(optional_internship_application_params)
@@ -65,18 +65,6 @@ module ApplicationTransitable
       else
         'Candidature mise à jour avec succès.'
       end
-    end
-
-    def valid_transition?
-      %w[
-        submit!
-        read!
-        employer_validate!
-        approve!
-        reject!
-        cancel_by_employer!
-        cancel_by_student!
-      ].include?(params[:transition])
     end
 
     def optional_internship_application_params

@@ -109,8 +109,15 @@ module Services::Omogen
     end
 
     def sygne_import_by_schools(code_uai)
+      puts '================================'
+      puts "school with code_uai : #{code_uai}"
+      puts '================================'
+      puts ''
       MEFSTAT4_CODES.each do |niveau|
+        t0 = Time.now
         students = sygne_eleves(code_uai, niveau: niveau)
+        t1 = Time.now
+        puts "Time to get students through sygne_eleve api request: #{t1 - t0} seconds"
         students.each do |student|
           ActiveRecord::Base.transaction do
             student.make_student

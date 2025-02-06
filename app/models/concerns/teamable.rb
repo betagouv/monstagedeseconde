@@ -41,6 +41,20 @@ module Teamable
     has_many :internship_applications, through: :kept_internship_offers
     has_many :internship_agreements, through: :internship_applications
 
+    def valid_transition?(transition)
+      %w[ read!
+          read
+          employer_validate!
+          employer_validate
+          transfer!
+          transfer
+          reject!
+          reject
+          cancel_by_employer!
+          cancel_by_employer]
+        .include?(transition)
+    end
+
     def personal_internship_offers
       InternshipOffer.where(employer_id: id)
     end

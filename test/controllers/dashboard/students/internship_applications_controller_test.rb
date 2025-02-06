@@ -102,7 +102,7 @@ module Dashboard
         student = create(:student)
         internship_application = create(:weekly_internship_application, student:)
         get dashboard_students_internship_applications_path(student_id: student.id,
-                                                           uuid: internship_application.uuid)
+                                                            uuid: internship_application.uuid)
         assert_response :redirect
       end
 
@@ -186,6 +186,27 @@ module Dashboard
           )
           assert_equal 2, internship_application.reload.magic_link_tracker
         end
+      end
+
+      test 'student cannot validate his own application' do
+        internship_application = create(:weekly_internship_application, :submitted, student: create(:student))
+        sign_in(internship_application.student)
+        patch(
+          dashboard_internship_offer_internship_application_path(
+            internship_application.internship_offer,
+            uuid: internship_application.uuid
+          ),
+          params: { transition: :employer_validate }
+        )
+        refute internship_application.reload.validated_by_employer?
+        patch(
+          dashboard_internship_offer_internship_application_path(
+            internship_application.internship_offer,
+            uuid: internship_application.uuid
+          ),
+          params: { transition: :approve }
+        )
+        refute internship_application.reload.approved?
       end
     end
   end

@@ -183,7 +183,7 @@ class EmployerMailer < ApplicationMailer
     @hello    = "#{@employer.presenter.formal_name},"
     @header   = 'Votre compte sera supprimé dans 14 jours : '
     @content  = 'nous avons effectivement constaté que votre participation ' \
-                'à la plateforme stagedeseconde.1jeune1solution.gouv.fr ' \
+                'à la plateforme 1eleve1stage.education.gouv.fr ' \
                 'est très faible depuis deux ans.<br/> ' \
                 "La suppression de votre compte n'est naturellement pas notre souhait, " \
                 'car votre participation ' \

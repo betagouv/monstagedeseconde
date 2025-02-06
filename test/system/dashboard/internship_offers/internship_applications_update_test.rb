@@ -88,7 +88,8 @@ module Dashboard::InternshipOffers
         internship_application = create(:weekly_internship_application, :submitted, internship_offer:, student:)
         sign_in(employer)
 
-        visit dashboard_internship_offer_internship_application_path(internship_offer, uuid: internship_application.uuid)
+        visit dashboard_internship_offer_internship_application_path(internship_offer,
+                                                                     uuid: internship_application.uuid)
         click_on 'Accepter'
         find('#accepter-button').click
         assert internship_application.reload.validated_by_employer?
@@ -114,7 +115,8 @@ module Dashboard::InternshipOffers
         sign_out(other_student)
 
         sign_in(employer)
-        visit dashboard_internship_offer_internship_application_path(internship_offer, uuid: other_internship_application.uuid)
+        visit dashboard_internship_offer_internship_application_path(internship_offer,
+                                                                     uuid: other_internship_application.uuid)
         assert_select('button', text: 'Accepter', count: 0)
       end
     end
@@ -131,7 +133,8 @@ module Dashboard::InternshipOffers
                                           internship_offer: internship_offer_2, student:)
 
         sign_in(employer_2)
-        visit dashboard_internship_offer_internship_application_path(internship_offer_2, uuid: internship_application_2.uuid)
+        visit dashboard_internship_offer_internship_application_path(internship_offer_2,
+                                                                     uuid: internship_application_2.uuid)
         click_on 'Accepter'
         find('#accepter-button').click
         assert internship_application_2.reload.validated_by_employer?
@@ -169,7 +172,8 @@ module Dashboard::InternshipOffers
       assert_match(/La candidature a été transmise avec succès/, find('div.alert.alert-success').text)
       sign_out(employer)
       # in mail
-      visit dashboard_internship_offer_internship_application_path(internship_offer, uuid: internship_application.uuid, token: internship_application.reload.access_token)
+      visit dashboard_internship_offer_internship_application_path(internship_offer, uuid: internship_application.uuid,
+                                                                                     token: internship_application.reload.access_token)
       find('button[data-toggle="modal"][data-fr-js-modal-button="true"]', text: 'Accepter')
       find('button[data-toggle="modal"][data-fr-js-modal-button="true"]', text: 'Refuser')
     end
@@ -186,6 +190,35 @@ module Dashboard::InternshipOffers
       text_area.send_keys('Test')
       click_on 'Envoyer'
       assert_match(/Transférer une candidature/, find('h1').text)
+    end
+
+    test "employer cannot read another's employer's applications" do
+      employer1, internship_offer1 = create_employer_and_offer_2nde
+      employer2, internship_offer2 = create_employer_and_offer_2nde
+      internship_application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer1)
+      sign_in(employer2)
+      visit dashboard_internship_offer_internship_application_path(internship_offer1, uuid: internship_application.uuid)
+      assert_match(/Vous n'êtes pas autorisé à effectuer cette action/, find('#alert-text').text)
+      visit dashboard_internship_offer_internship_application_path(internship_offer2, uuid: internship_application.uuid)
+      assert_match(/Vous n'êtes pas autorisé à effectuer cette action/, find('#alert-text').text)
+      sign_in(employer1)
+      visit dashboard_internship_offer_internship_application_path(internship_offer1, uuid: internship_application.uuid)
+      find('h2.h3',
+           text: "Candidature de #{internship_application.student.first_name} #{internship_application.student.last_name}")
+    end
+
+    test "student cannot read another's employer's applications" do
+      internship_application = create(:weekly_internship_application, :submitted, student: create(:student))
+      other_student = create(:student)
+      sign_in(internship_application.student)
+      visit dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
+                                                                   uuid: internship_application.uuid)
+      find('h1.h3', text: "L'offre de stage")
+      logout(internship_application.student)
+      sign_in(other_student)
+      visit dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
+                                                                   uuid: internship_application.uuid)
+      assert_match(/Vous n'êtes pas autorisé à effectuer cette action/, find('#alert-text').text)
     end
   end
 end
