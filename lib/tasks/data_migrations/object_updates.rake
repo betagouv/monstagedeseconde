@@ -352,4 +352,33 @@ namespace :data_migrations do
       end
     end
   end
+
+  desc 'update lycees with qpv information'
+  task 'update_lycees_qpv': :environment do
+    # have every school kind formerly set to qpv to update school qpv field
+    PrettyConsole.announce_task('update lycees with qpv information') do
+      School.where(rep_kind: 'qpv').find_each do |school|
+        school.update!(qpv: true, rep_kind: '')
+        print '.'
+      end
+    end
+    PrettyConsole.announce_task('update lycees with qpv information') do
+      file_location = Rails.root.join('db/data_imports/sources_EN/LYCEE_220524_simplified.csv')
+      line_nr = 0
+      CSV.foreach(file_location, headers: { col_sep: ';' }).each do |row|
+        fields = row.to_s.split(';')
+        code_uai = fields.second.strip
+        # rep = fields[3].upcase.strip == 'OUI'
+        # rep_plus = fields[4].upcase.strip == 'OUI'
+        qpv = fields[5].upcase.strip == 'DANS QP'
+
+        school = School.find_by(code_uai: code_uai)
+        next if school.nil? || school.qpv
+
+        school.update!(qpv: qpv) if qpv
+        print '.'
+        line_nr += 1
+      end
+    end
+  end
 end
