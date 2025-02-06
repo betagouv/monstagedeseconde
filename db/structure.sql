@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -8,419 +9,6 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
-
---
--- Name: public; Type: SCHEMA; Schema: -; Owner: -
---
-
--- *not* creating schema, since initdb creates it
-
-
---
--- Name: tiger; Type: SCHEMA; Schema: -; Owner: -
---
-
-CREATE SCHEMA tiger;
-
-
---
--- Name: tiger_data; Type: SCHEMA; Schema: -; Owner: -
---
-
-CREATE SCHEMA tiger_data;
-
-
---
--- Name: topology; Type: SCHEMA; Schema: -; Owner: -
---
-
-CREATE SCHEMA topology;
-
-
---
--- Name: SCHEMA topology; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON SCHEMA topology IS 'PostGIS Topology schema';
-
-
---
--- Name: plcoffee; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plcoffee WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plcoffee; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION plcoffee IS 'PL/CoffeeScript (v8) trusted procedural language';
-
-
---
--- Name: plls; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plls WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plls; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION plls IS 'PL/LiveScript (v8) trusted procedural language';
-
-
---
--- Name: plv8; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plv8 WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plv8; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION plv8 IS 'PL/JavaScript (v8) trusted procedural language';
-
-
---
--- Name: adminpack; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION adminpack IS 'administrative functions for PostgreSQL';
-
-
---
--- Name: autoinc; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS autoinc WITH SCHEMA public;
-
-
---
--- Name: EXTENSION autoinc; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION autoinc IS 'functions for autoincrementing fields';
-
-
---
--- Name: btree_gin; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS btree_gin WITH SCHEMA public;
-
-
---
--- Name: EXTENSION btree_gin; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION btree_gin IS 'support for indexing common datatypes in GIN';
-
-
---
--- Name: btree_gist; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
-
-
---
--- Name: EXTENSION btree_gist; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION btree_gist IS 'support for indexing common datatypes in GiST';
-
-
---
--- Name: citext; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public;
-
-
---
--- Name: EXTENSION citext; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION citext IS 'data type for case-insensitive character strings';
-
-
---
--- Name: cube; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS cube WITH SCHEMA public;
-
-
---
--- Name: EXTENSION cube; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION cube IS 'data type for multidimensional cubes';
-
-
---
--- Name: dblink; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA public;
-
-
---
--- Name: EXTENSION dblink; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION dblink IS 'connect to other PostgreSQL databases from within a database';
-
-
---
--- Name: dict_int; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS dict_int WITH SCHEMA public;
-
-
---
--- Name: EXTENSION dict_int; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION dict_int IS 'text search dictionary template for integers';
-
-
---
--- Name: dict_xsyn; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS dict_xsyn WITH SCHEMA public;
-
-
---
--- Name: EXTENSION dict_xsyn; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION dict_xsyn IS 'text search dictionary template for extended synonym processing';
-
-
---
--- Name: earthdistance; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS earthdistance WITH SCHEMA public;
-
-
---
--- Name: EXTENSION earthdistance; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION earthdistance IS 'calculate great-circle distances on the surface of the Earth';
-
-
---
--- Name: file_fdw; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA public;
-
-
---
--- Name: EXTENSION file_fdw; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION file_fdw IS 'foreign-data wrapper for flat file access';
-
-
---
--- Name: fuzzystrmatch; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS fuzzystrmatch WITH SCHEMA public;
-
-
---
--- Name: EXTENSION fuzzystrmatch; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION fuzzystrmatch IS 'determine similarities and distance between strings';
-
-
---
--- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
-
-
---
--- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
-
-
---
--- Name: insert_username; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS insert_username WITH SCHEMA public;
-
-
---
--- Name: EXTENSION insert_username; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION insert_username IS 'functions for tracking who changed a table';
-
-
---
--- Name: intagg; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS intagg WITH SCHEMA public;
-
-
---
--- Name: EXTENSION intagg; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION intagg IS 'integer aggregator and enumerator (obsolete)';
-
-
---
--- Name: intarray; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS intarray WITH SCHEMA public;
-
-
---
--- Name: EXTENSION intarray; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION intarray IS 'functions, operators, and index support for 1-D arrays of integers';
-
-
---
--- Name: isn; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS isn WITH SCHEMA public;
-
-
---
--- Name: EXTENSION isn; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION isn IS 'data types for international product numbering standards';
-
-
---
--- Name: lo; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS lo WITH SCHEMA public;
-
-
---
--- Name: EXTENSION lo; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION lo IS 'Large Object maintenance';
-
-
---
--- Name: ltree; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS ltree WITH SCHEMA public;
-
-
---
--- Name: EXTENSION ltree; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION ltree IS 'data type for hierarchical tree-like structures';
-
-
---
--- Name: moddatetime; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS moddatetime WITH SCHEMA public;
-
-
---
--- Name: EXTENSION moddatetime; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION moddatetime IS 'functions for tracking last modification time';
-
-
---
--- Name: pageinspect; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pageinspect WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pageinspect; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION pageinspect IS 'inspect the contents of database pages at a low level';
-
-
---
--- Name: pg_buffercache; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pg_buffercache WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pg_buffercache; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION pg_buffercache IS 'examine the shared buffer cache';
-
-
---
--- Name: pg_freespacemap; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pg_freespacemap WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pg_freespacemap; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION pg_freespacemap IS 'examine the free space map (FSM)';
-
-
---
--- Name: pg_stat_statements; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pg_stat_statements WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pg_stat_statements; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION pg_stat_statements IS 'track planning and execution statistics of all SQL statements executed';
-
 
 --
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
@@ -434,48 +22,6 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 --
 
 -- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
-
-
---
--- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
-
-
---
--- Name: pgrowlocks; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pgrowlocks WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pgrowlocks; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION pgrowlocks IS 'show row-level locking information';
-
-
---
--- Name: pgstattuple; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pgstattuple WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pgstattuple; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION pgstattuple IS 'show tuple-level statistics';
 
 
 --
@@ -493,132 +39,6 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 
 
 --
--- Name: postgis_raster; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS postgis_raster WITH SCHEMA public;
-
-
---
--- Name: EXTENSION postgis_raster; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION postgis_raster IS 'PostGIS raster types and functions';
-
-
---
--- Name: postgis_tiger_geocoder; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder WITH SCHEMA tiger;
-
-
---
--- Name: EXTENSION postgis_tiger_geocoder; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION postgis_tiger_geocoder IS 'PostGIS tiger geocoder and reverse geocoder';
-
-
---
--- Name: postgis_topology; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;
-
-
---
--- Name: EXTENSION postgis_topology; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION postgis_topology IS 'PostGIS topology spatial types and functions';
-
-
---
--- Name: postgres_fdw; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS postgres_fdw WITH SCHEMA public;
-
-
---
--- Name: EXTENSION postgres_fdw; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION postgres_fdw IS 'foreign-data wrapper for remote PostgreSQL servers';
-
-
---
--- Name: refint; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS refint WITH SCHEMA public;
-
-
---
--- Name: EXTENSION refint; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION refint IS 'functions for implementing referential integrity (obsolete)';
-
-
---
--- Name: seg; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS seg WITH SCHEMA public;
-
-
---
--- Name: EXTENSION seg; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION seg IS 'data type for representing line segments or floating-point intervals';
-
-
---
--- Name: sslinfo; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS sslinfo WITH SCHEMA public;
-
-
---
--- Name: EXTENSION sslinfo; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION sslinfo IS 'information about SSL certificates';
-
-
---
--- Name: tablefunc; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS tablefunc WITH SCHEMA public;
-
-
---
--- Name: EXTENSION tablefunc; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION tablefunc IS 'functions that manipulate whole tables, including crosstab';
-
-
---
--- Name: tcn; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS tcn WITH SCHEMA public;
-
-
---
--- Name: EXTENSION tcn; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION tcn IS 'Triggered change notifications';
-
-
---
 -- Name: unaccent; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -630,48 +50,6 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 --
 
 -- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
-
-
---
--- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
-
-
---
--- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
-
-
---
--- Name: vector; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA public;
-
-
---
--- Name: EXTENSION vector; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION vector IS 'vector data type and ivfflat and hnsw access methods';
-
-
---
--- Name: xml2; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS xml2 WITH SCHEMA public;
-
-
---
--- Name: EXTENSION xml2; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION xml2 IS 'XPath querying and XSLT';
 
 
 --
@@ -859,7 +237,9 @@ CREATE TABLE public.academies (
     id bigint NOT NULL,
     name character varying(40),
     email_domain character varying(100),
-    academy_region_id integer
+    academy_region_id integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -1047,16 +427,6 @@ ALTER SEQUENCE public.active_storage_variant_records_id_seq OWNED BY public.acti
 
 
 --
--- Name: annee_scolaire_3; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.annee_scolaire_3 (
-    jour timestamp without time zone,
-    annee_scolaire text
-);
-
-
---
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1107,7 +477,7 @@ ALTER SEQUENCE public.area_notifications_id_seq OWNED BY public.area_notificatio
 
 CREATE TABLE public.class_rooms (
     id bigint NOT NULL,
-    name character varying(40),
+    name character varying(50),
     school_id bigint,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -1240,7 +610,7 @@ CREATE TABLE public.departments (
     name character varying(40),
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    academy_id bigint
+    academy_id integer
 );
 
 
@@ -1590,14 +960,14 @@ CREATE TABLE public.internship_agreements (
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
     siret character varying(14),
-    tutor_role character varying(500),
-    tutor_email character varying(80),
-    organisation_representative_role character varying(500),
-    student_address character varying(250),
-    student_phone character varying(200),
-    school_representative_phone character varying(100),
-    student_refering_teacher_phone character varying(100),
-    student_legal_representative_email character varying(180),
+    tutor_role character varying(150),
+    tutor_email character varying(85),
+    organisation_representative_role character varying(150),
+    student_address character varying(170),
+    student_phone character varying(20),
+    school_representative_phone character varying(20),
+    student_refering_teacher_phone character varying(20),
+    student_legal_representative_email character varying(100),
     student_refering_teacher_email character varying(100),
     student_legal_representative_full_name character varying(100),
     student_refering_teacher_full_name character varying(100),
@@ -1609,12 +979,12 @@ CREATE TABLE public.internship_agreements (
     school_representative_email character varying(100),
     discarded_at timestamp(6) without time zone,
     lunch_break text,
-    organisation_representative_email character varying,
-    legal_status character varying,
+    organisation_representative_email character varying(70),
+    legal_status character varying(20),
     delegation_date date,
-    internship_address character varying,
-    employer_name character varying,
-    employer_contact_email character varying,
+    internship_address character varying(500),
+    employer_name character varying(180),
+    employer_contact_email character varying(71),
     uuid uuid DEFAULT gen_random_uuid() NOT NULL,
     activity_scope text,
     activity_preparation text,
@@ -1739,7 +1109,7 @@ CREATE TABLE public.internship_applications (
     type character varying(100) DEFAULT 'InternshipApplications::WeeklyFramed'::character varying,
     internship_offer_id bigint NOT NULL,
     applicable_type character varying(100),
-    internship_offer_type character varying NOT NULL,
+    internship_offer_type character varying(50) NOT NULL,
     week_id bigint,
     student_phone character varying(20),
     student_email character varying(100),
@@ -1751,15 +1121,15 @@ CREATE TABLE public.internship_applications (
     access_token character varying(20),
     transfered_at timestamp(6) without time zone,
     student_address character varying(300),
-    student_legal_representative_full_name character varying,
-    student_legal_representative_email character varying,
-    student_legal_representative_phone character varying,
+    student_legal_representative_full_name character varying(150),
+    student_legal_representative_email character varying(109),
+    student_legal_representative_phone character varying(50),
+    uuid uuid DEFAULT gen_random_uuid() NOT NULL,
     motivation text,
     rejected_message text,
     canceled_by_employer_message text,
     canceled_by_student_message text,
-    approved_message text,
-    uuid uuid DEFAULT gen_random_uuid() NOT NULL
+    approved_message text
 );
 
 
@@ -2127,7 +1497,7 @@ CREATE TABLE public.internship_offers (
     tutor_name character varying(150),
     tutor_phone character varying(20),
     tutor_email character varying(100),
-    employer_website character varying(750),
+    employer_website character varying(560),
     street character varying(500),
     zipcode character varying(5),
     city character varying(50),
@@ -2158,7 +1528,7 @@ CREATE TABLE public.internship_offers (
     group_id bigint,
     first_date date NOT NULL,
     last_date date NOT NULL,
-    type character varying,
+    type character varying(40),
     search_tsv tsvector,
     aasm_state character varying(100),
     internship_offer_info_id bigint,
@@ -2167,7 +1537,7 @@ CREATE TABLE public.internship_offers (
     tutor_id bigint,
     new_daily_hours jsonb DEFAULT '{}'::jsonb,
     daterange daterange GENERATED ALWAYS AS (daterange(first_date, last_date)) STORED,
-    siret character varying,
+    siret character varying(14),
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     total_female_applications_count integer DEFAULT 0 NOT NULL,
     total_female_approved_applications_count integer DEFAULT 0,
@@ -2183,7 +1553,6 @@ CREATE TABLE public.internship_offers (
     lunch_break text,
     contact_phone character varying(20),
     handicap_accessible boolean DEFAULT false,
-    period integer DEFAULT 0 NOT NULL,
     school_year integer DEFAULT 0 NOT NULL,
     internship_occupation_id bigint,
     entreprise_id bigint,
@@ -2345,8 +1714,8 @@ CREATE TABLE public.organisations (
     street character varying(200) NOT NULL,
     zipcode character varying(5) NOT NULL,
     city character varying(50) NOT NULL,
-    employer_website character varying,
-    employer_description text,
+    employer_website character varying(560),
+    employer_description character varying(250),
     coordinates public.geography(Point,4326),
     department character varying(40) DEFAULT ''::character varying NOT NULL,
     is_public boolean DEFAULT false NOT NULL,
@@ -2355,7 +1724,7 @@ CREATE TABLE public.organisations (
     updated_at timestamp(6) without time zone NOT NULL,
     employer_id integer,
     siren character varying(9),
-    siret character varying,
+    siret character varying(14),
     is_paqte boolean,
     manual_enter boolean DEFAULT false
 );
@@ -2539,17 +1908,6 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: school_geo; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.school_geo (
-    code_etablissement text,
-    latitude double precision,
-    longitude double precision
-);
-
-
---
 -- Name: school_internship_weeks; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2589,7 +1947,6 @@ CREATE TABLE public.schools (
     id bigint NOT NULL,
     name character varying(150) DEFAULT ''::character varying NOT NULL,
     city character varying(50) DEFAULT ''::character varying NOT NULL,
-    department character varying(40),
     zipcode character varying(5),
     code_uai character varying(10),
     coordinates public.geography(Point,4326),
@@ -2597,7 +1954,7 @@ CREATE TABLE public.schools (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     city_tsv tsvector,
-    kind character varying(50),
+    rep_kind character varying(50),
     visible boolean DEFAULT true,
     internship_agreement_online boolean DEFAULT false,
     fetched_school_phone character varying(20),
@@ -2613,7 +1970,8 @@ CREATE TABLE public.schools (
     school_type public.school_category DEFAULT 'college'::public.school_category NOT NULL,
     voie_generale boolean,
     voie_techno boolean,
-    full_imported boolean DEFAULT false
+    full_imported boolean DEFAULT false,
+    qpv boolean DEFAULT false
 );
 
 
@@ -2643,7 +2001,7 @@ ALTER SEQUENCE public.schools_id_seq OWNED BY public.schools.id;
 CREATE TABLE public.sectors (
     id bigint NOT NULL,
     name character varying(50),
-    external_url character varying(300) DEFAULT ''::character varying NOT NULL,
+    external_url character varying(200) DEFAULT ''::character varying NOT NULL,
     uuid character varying(50) DEFAULT ''::character varying NOT NULL
 );
 
@@ -2704,16 +2062,25 @@ ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
 
 
 --
+-- Name: task_records; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.task_records (
+    version character varying NOT NULL
+);
+
+
+--
 -- Name: task_registers; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.task_registers (
-    id bigint NOT NULL,
     task_name character varying(250),
     used_environment character varying(150),
     played_at timestamp(6) without time zone,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    id bigint NOT NULL
 );
 
 
@@ -2812,7 +2179,7 @@ ALTER SEQUENCE public.tutors_id_seq OWNED BY public.tutors.id;
 
 CREATE TABLE public.url_shrinkers (
     id bigint NOT NULL,
-    original_url character varying(370),
+    original_url character varying(380),
     url_token character varying(6),
     click_count integer DEFAULT 0,
     user_id bigint NOT NULL,
@@ -2926,8 +2293,8 @@ CREATE TABLE public.users (
     survey_answered boolean DEFAULT false,
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
-    academy_id bigint,
-    academy_region_id bigint,
+    academy_id integer,
+    academy_region_id integer,
     address character varying(300),
     legal_representative_full_name character varying(100),
     legal_representative_email character varying(109),
@@ -3975,13 +3342,6 @@ CREATE INDEX idx_on_internship_application_id_e95b0b9dbb ON public.internship_ap
 
 
 --
--- Name: index_academies_on_academy_region_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_academies_on_academy_region_id ON public.academies USING btree (academy_region_id);
-
-
---
 -- Name: index_action_text_rich_texts_uniqueness; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4511,13 +3871,6 @@ CREATE INDEX index_internship_offers_on_mother_id ON public.internship_offers US
 --
 
 CREATE INDEX index_internship_offers_on_organisation_id ON public.internship_offers USING btree (organisation_id);
-
-
---
--- Name: index_internship_offers_on_period; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internship_offers_on_period ON public.internship_offers USING btree (period);
 
 
 --
@@ -5505,9 +4858,10 @@ ALTER TABLE ONLY public.class_rooms
 -- PostgreSQL database dump complete
 --
 
-SET search_path TO "$user", public, topology;
+SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250206101850'),
 ('20250205085007'),
 ('20250203163502'),
 ('20250128213823'),
@@ -5526,6 +4880,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20241204173244'),
 ('20241115093512'),
 ('20241113151423'),
+('20241105172654'),
+('20241105171942'),
 ('20241105092317'),
 ('20241101100649'),
 ('20241031131640'),
@@ -5548,6 +4904,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240918144248'),
 ('20240916160037'),
 ('20240827145706'),
+('20240808094927'),
 ('20240719095729'),
 ('20240712080757'),
 ('20240711083454'),
@@ -5557,7 +4914,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240701150709'),
 ('20240701075037'),
 ('20240628150306'),
+('20240627152436'),
 ('20240626133711'),
+('20240624201910'),
+('20240620123704'),
 ('20240612074103'),
 ('20240606131313'),
 ('20240531101222'),
@@ -5571,6 +4931,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240410115028'),
 ('20240410114806'),
 ('20240410114637'),
+('20240405101512'),
 ('20240405094938'),
 ('20240404071148'),
 ('20240403131643'),
