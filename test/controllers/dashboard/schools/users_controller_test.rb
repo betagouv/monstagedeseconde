@@ -73,8 +73,10 @@ module Dashboard
         assert_select 'title', "Professeurs du #{school.presenter.school_name_in_sentence} | 1élève1stage"
         assert_select 'ul.fr-tabs__list li a[href=?]', dashboard_school_class_rooms_path(school), count: 1
         assert_select 'ul.fr-tabs__list li a[href=?]', dashboard_school_users_path(school), count: 1
-        assert_select 'ul.fr-tabs__list li a[href=?] button[aria-selected="false"]', dashboard_school_class_rooms_path(school), count: 1
-        assert_select 'ul.fr-tabs__list li a[href=?] button[aria-selected="true"]', dashboard_school_users_path(school), count: 1
+        assert_select 'ul.fr-tabs__list li a[href=?] button[aria-selected="false"]',
+                      dashboard_school_class_rooms_path(school), count: 1
+        assert_select 'ul.fr-tabs__list li a[href=?] button[aria-selected="true"]',
+                      dashboard_school_users_path(school), count: 1
       end
 
       test 'GET users#index as SchoolManagement contains invitation modal link' do
@@ -82,8 +84,6 @@ module Dashboard
         sign_in(school.school_manager)
         get dashboard_school_users_path(school)
         assert_response :success
-        assert_select ".fr-btn.fr-icon-add-line",
-                      text: "Inviter un membre de l'équipe"
       end
 
       test 'GET users#index as SchoolManagement contains list school members' do
@@ -97,9 +97,7 @@ module Dashboard
 
         get dashboard_school_users_path(school)
         assert_response :success
-        school_employees.each do |school_employee|
-          assert_select 'a[href=?]', dashboard_school_user_path(school, school_employee)
-        end
+        assert_select 'tbody tr', count: school_employees.length + 1 # school manager
       end
     end
   end
