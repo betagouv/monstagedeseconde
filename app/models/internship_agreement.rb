@@ -34,14 +34,12 @@ class InternshipAgreement < ApplicationRecord
 
   with_options if: :enforce_school_manager_validations? do
     validates :school_representative_full_name,
-              :school_representative_phone,
               :school_representative_role,
               :school_representative_email,
               :student_full_name,
               :student_school,
               :student_refering_teacher_full_name,
               :student_refering_teacher_email,
-              :student_refering_teacher_phone,
               :student_address,
               :student_phone,
               :student_legal_representative_full_name,
@@ -49,9 +47,7 @@ class InternshipAgreement < ApplicationRecord
               :student_legal_representative_phone,
               presence: true
     validate :valid_trix_school_manager_fields
-    validates :school_representative_phone,
-              :student_refering_teacher_phone,
-              :student_phone,
+    validates :student_phone,
               :student_legal_representative_phone,
               format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
                         message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
@@ -64,13 +60,16 @@ class InternshipAgreement < ApplicationRecord
               :siret,
               :tutor_full_name,
               :tutor_role,
-              :tutor_email,
+              :entreprise_address,
               presence: true
     validate :valid_trix_employer_fields
     validate :valid_working_hours_fields
   end
 
   # validate :at_least_one_validated_terms
+
+  # Callbacks
+  after_save :save_delegation_date
 
   aasm do
     state :draft, initial: true
@@ -390,5 +389,11 @@ class InternshipAgreement < ApplicationRecord
       field :school_manager_accept_terms
       field :employer_accept_terms
     end
+  end
+
+  def save_delegation_date
+    return unless student.school.delegation_date.blank?
+
+    student.school.update(delegation_date: delegation_date)
   end
 end

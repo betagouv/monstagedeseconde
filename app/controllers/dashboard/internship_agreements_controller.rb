@@ -10,26 +10,6 @@ module Dashboard
       )
     end
 
-    def create
-      internship_agreement_builder.create(params: internship_agreement_params) do |on|
-        on.success do |created_internship_agreement|
-          redirect_to current_user.custom_agreements_path,
-                      flash: { success: 'La convention a été créée.' }
-        end
-        on.failure do |failed_internship_agreement|
-          @internship_agreement = failed_internship_agreement || InternshipAgreement.new(
-            internship_application_id: params[:internship_application_id]
-          )
-          render :new, status: :bad_request
-        end
-      end
-    rescue ActionController::ParameterMissing => e
-      @internship_agreement = InternshipAgreement.new(
-        internship_application_id: params[:internship_application_id]
-      )
-      render :new, status: :bad_request
-    end
-
     def edit
       authorize! :update, @internship_agreement
     end
@@ -152,9 +132,12 @@ module Dashboard
               :student_legal_representative_2_email,
               :student_legal_representative_2_phone,
               :siret,
+              :student_birth_date,
+              :pai_project,
+              :pai_trousse_family,
               :tutor_full_name,
               :tutor_role,
-              :tutor_email,
+              :entreprise_address,
               :lunch_break,
               :weekly_lunch_break,
               weekly_hours: [],

@@ -164,7 +164,10 @@ class Ability
       edit_student_legal_representative_2_email
       edit_student_legal_representative_2_full_name
       edit_student_legal_representative_2_phone
+      edit_student_birth_date
       edit_student_school
+      edit_pai_project
+      edit_pai_trousse_family
       see_intro
       update
     ], InternshipAgreement do |agreement|
@@ -267,6 +270,7 @@ class Ability
       edit_siret
       edit_tutor_full_name
       edit_weekly_hours
+      edit_entreprise_address
       sign
       sign_internship_agreements
     ], InternshipAgreement do |agreement|

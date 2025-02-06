@@ -123,7 +123,10 @@ module Dashboard::InternshipAgreements
           school_representative_full_name: new_school_representative_full_name,
           school_manager_event: 'start_by_school_manager',
           delegation_date: Date.today,
-          legal_status: 'Public'
+          legal_status: 'Public',
+          entreprise_address: '123 rue de la paix 75000 Paris',
+          pai_project: 'true',
+          pai_trousse_family: 'true'
         }
       }
       sign_in(school_manager)
@@ -138,6 +141,10 @@ module Dashboard::InternshipAgreements
                    'can\'t update internship_agreement legal status')
       assert_equal(Date.today, internship_agreement.reload.delegation_date,
                    'can\'t update internship_agreement delegation date')
+      assert_equal(true, internship_agreement.reload.pai_project,
+                   'can\'t update internship_agreement pai_project')
+      assert_equal(true, internship_agreement.reload.pai_trousse_family,
+                   'can\'t update internship_agreement pai_trousse_family')
     end
 
     test 'PATCH #update as school manager owning students updates internship_agreement with missing school_manager_event' do
@@ -203,7 +210,8 @@ module Dashboard::InternshipAgreements
         patch_url = dashboard_internship_agreement_path(uuid: internship_agreement.uuid)
         params = { 'internship_agreement' => {
           school_manager_event: 'complete',
-          school_representative_full_name: 'badoo'
+          school_representative_full_name: 'badoo',
+          entreprise_address: '123 rue de la paix 75000 Paris'
         } }
         patch(patch_url, params: params)
         assert_redirected_to dashboard_internship_agreements_path
