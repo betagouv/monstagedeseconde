@@ -17,5 +17,5 @@ if [ ! -f "$SSH_PRIV" ]; then
   exit 1;
 fi;
 
-git push $target educonnect:master -f
+git push $target review:master
 
