@@ -242,6 +242,7 @@ fr:
       internship_agreement: &internship_agreement_fields
         internship_application: Candidature
         school_manager_accept_terms: Validée par CE
+        entreprise_address: Adresse de l'entreprise
         employer_accept_terms: Validée par l'employeur
         main_teacher_accept_terms: Validée par le professeur principal
         date_range: Dates du stage
@@ -256,6 +257,7 @@ fr:
         student_refering_teacher_phone: Numéro de téléphone du professeur référent
         student_legal_representative_phone: Numéro de téléphone du représentant légal de l'élève
         tutor_full_name: Nom du tuteur
+        tutor_email: Email du tuteur
         daily_hours: Horaires journaliers
         weekly_hours: Horaires
         daily_lunch_break: Horaires journaliers pause déjeuner
