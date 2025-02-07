@@ -353,9 +353,8 @@ namespace :data_migrations do
     end
   end
 
-  desc 'update lycees with qpv information'
-  task 'update_lycees_qpv': :environment do
-    # have every school kind formerly set to qpv to update school qpv field
+  desc 'update lycees and colleges with qpv information'
+  task 'update_schools_qpv': :environment do
     PrettyConsole.announce_task('update lycees with qpv information') do
       School.where(rep_kind: 'qpv').find_each do |school|
         school.update!(qpv: true, rep_kind: '')
@@ -364,7 +363,7 @@ namespace :data_migrations do
     end
     PrettyConsole.announce_task('update lycees with qpv information') do
       file_location = Rails.root.join('db/data_imports/sources_EN/LYCEE_220524_simplified.csv')
-      line_nr = 0
+      counter = 0
       CSV.foreach(file_location, headers: { col_sep: ';' }).each do |row|
         fields = row.to_s.split(';')
         code_uai = fields.second.strip
@@ -372,13 +371,32 @@ namespace :data_migrations do
         # rep_plus = fields[4].upcase.strip == 'OUI'
         qpv = fields[5].upcase.strip == 'DANS QP'
 
-        school = School.find_by(code_uai: code_uai)
-        next if school.nil? || school.qpv
+        school = School.find_by(code_uai: code_uai, qpv: false)
+        next if school.nil?
 
-        school.update!(qpv: qpv) if qpv
+        school.update!(qpv: qpv)
         print '.'
-        line_nr += 1
+        counter += 1
       end
+      PrettyConsole.say_in_cyan "counter of lycees updated : #{counter}"
+    end
+    PrettyConsole.announce_task('update colleges with qpv information') do
+      file_location = Rails.root.join('db/data_imports/sources_EN/fr-colleges-qpv.csv')
+      counter = 0
+      CSV.foreach(file_location, headers: { col_sep: ';' }).each do |row|
+        fields = row.to_s.split(';')
+        code_uai = fields.first.strip
+        qpv = fields.second.upcase.strip == 'DANS UN QPV'
+        next unless qpv
+
+        school = School.find_by(code_uai: code_uai, qpv: false)
+        next if school.nil?
+
+        school.update!(qpv: qpv)
+        print '.'
+        counter += 1
+      end
+      PrettyConsole.say_in_cyan "counter of colleges updated : #{counter}"
     end
   end
 end
