@@ -5,6 +5,10 @@ class CallbacksController < ApplicationController
       state = params[:state]
 
       user_info = Services::FimConnection.new(code, state).get_user_info
+      Rails.logger.info('--------------')
+      Rails.logger.info('FIM Connection')
+      Rails.logger.info("User info FIM : #{user_info.inspect}")
+      Rails.logger.info('--------------')
       redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
       unless School.exists?(code_uai: user_info['rne'])
@@ -60,6 +64,9 @@ class CallbacksController < ApplicationController
 
     redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
+    if user_info['FrEduCtPersonAffiliation'] == 'resp2d' # resp2d = Responsable légal
+
+    end
     student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
     school = School.find_by(code_uai: user_info['FrEduCtEleveUAI'])
 
