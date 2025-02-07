@@ -27,11 +27,10 @@ tr class="test-student-#{student.id}"
   td.col-2
     .row
       .col-12
-        = select_tag "student_#{student.id}",
-                     options_from_collection_for_select(student.school.class_rooms, :id, :name, student.class_room_id),
-                     prompt: 'Cet élève ne fait pas partie de mon établissement' ,
-                     class: "fr-select",
-                     data: { action: 'change->students#selectStudentClassRoom' }
+        - if student.confirmed_at.present?
+          p.fr-badge.fr-badge--success.fr-badge--no-icon.fr-mb-0 Oui
+        - else
+          p.fr-badge.fr-badge--error.fr-badge--no-icon.fr-mb-0 Non
   td.col-2.text-center
     - if student.internship_applications.present?
       = link_to dashboard_students_internship_applications_path(student) ,
