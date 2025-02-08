@@ -22,11 +22,10 @@
             = reason
 
   - else
-    - path = employers_only? ? '#' :  "#{ENV['EDUCONNECT_URL']}/idp/profile/SAML2/Redirect/SSO?execution=e1s1"
+    - path = employers_only? ? '#' :  visitor_apply_path
     .d-flex
-      = link_to 'Postuler',
-                path,
-                class: "fr-btn fr-btn--icon-left fr-icon-edit-fill"
+      = form_with url: path, method: :post, data: { turbo: false } do
+        = submit_tag 'Postuler', class: "fr-btn fr-btn--icon-left fr-icon-edit-fill"
 
   .fr-mx-5w
     - if(user_signed_in? && can?(:create, Favorite))

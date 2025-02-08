@@ -35,7 +35,6 @@ Rails.application.routes.draw do
       passwords: 'users/passwords'
     }
 
-    
     devise_scope :user do
       get '/auth/fim/callback', to: 'callbacks#fim', as: 'fim_callback'
       get '/auth/educonnect/callback', to: 'callbacks#educonnect', as: 'educonnect_callback'
@@ -273,6 +272,7 @@ Rails.application.routes.draw do
   post '/newsletter', to: 'newsletter#subscribe'
   get '/inscription-permanence', to: 'pages#register_to_webinar'
   get '/recherche-entreprises', to: 'pages#search_companies'
+  post '/visitor_apply', to: 'pages#visitor_apply'
   # TODO
   # To be removed after june 2023
   get '/register_to_webinar', to: 'pages#register_to_webinar'
