@@ -29,7 +29,7 @@ class School < ApplicationRecord
     '31' => 'CONTRAT ASSOCIATION PARTIE DES CLASSES',
     '99' => 'SANS OBJET'
   }
-  VALID_TYPE_PARAMS = %w[rep rep_plus qpv qpv_proche].freeze
+  VALID_TYPE_PARAMS = %w[rep rep_plus].freeze
   SCHOOL_TYPES = %w[college lycee].freeze
 
   scope :with_manager, lambda {
@@ -105,6 +105,7 @@ class School < ApplicationRecord
           School::VALID_TYPE_PARAMS
         end
       end
+      field :qpv
       field :code_uai
 
       field :coordinates do

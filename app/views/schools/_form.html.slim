@@ -60,7 +60,25 @@
                   options_for_select(collection),
                   {prompt: ""},
                   { class: "fr-select col-lg-6" }
-    
+    .form-group
+      = f.label :rep_kind, class: 'fr-label' do
+        = "REP/REP+"
+
+      - collection = [['REP', 'rep'], ['REP+', 'rep_plus'], ['ni REP, ni REP+', '']]
+      = f.select :rep_kind,
+                  options_for_select(collection),
+                  {},
+                  { class: "fr-select col-lg-6" }
+    .form-group
+      = f.label :qpv, class: 'fr-label' do
+        = "QPV"
+
+      - collection = [['qpv', 'true'], ['pas en qpv', 'false'], ['je ne sais pas', 'false']]
+      = f.select :qpv,
+                  options_for_select(collection),
+                  {},
+                  { class: "fr-select col-lg-6" }
+
     .form-group
       .fr-checkbox-group.fr-checkbox-group--sm
         = f.check_box :voie_generale

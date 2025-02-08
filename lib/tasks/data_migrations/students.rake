@@ -120,18 +120,18 @@ namespace :data_migrations do
         students.first.delete
         print '.'
       end
-       PrettyConsole.say_in_cyan "Deleted #{counter} students"
+      PrettyConsole.say_in_cyan "Deleted #{counter} students"
     end
   end
 
   desc 'get doublon of values in a table on ine column'
   task :doublon, [] => :environment do |t, args|
-    PrettyConsole.announce_task "Looking for doublon in users" do
-      sql = "SELECT ine, COUNT(ine) FROM users GROUP BY ine HAVING COUNT(ine) > 1"
+    PrettyConsole.announce_task 'Looking for doublon in users' do
+      sql = 'SELECT ine, COUNT(ine) FROM users GROUP BY ine HAVING COUNT(ine) > 1'
       result = ActiveRecord::Base.connection.execute(sql)
       puts "Found #{result.count} doublons"
       result.each do |row|
-        puts row.to_s
+        puts row
       end
     end
   end
