@@ -43,9 +43,6 @@ module Services::Omogen
         accept_terms: true,
         email: "#{scrambled_ine}@#{school.code_uai}.fr"
       )
-      # "#{responsible.civility} #{responsible.first_name} #{responsible.last_name}",
-      # legal_representative_email: responsible.email,
-      # legal_representative_phone: responsible.phone,
       student.password = "#{ine}#{school.code_uai}!zZtest"
       puts student.errors.full_messages unless student.save
     end

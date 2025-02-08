@@ -143,8 +143,8 @@ module Services::Omogen
 
     def sygne_responsables(ine = '001291528AA')
       # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
+
       uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
-      puts uri
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
@@ -154,6 +154,42 @@ module Services::Omogen
       request['Compression-Zip'] = 'non'
 
       response = http.request(request)
+      # [{ 'email' => 't-t@hotmail.fr',
+      #    'nomFamille' => 't PPPEPF',
+      #    'rcar' => 't-dgfdsq',
+      #    'codeCivilite' => 't',
+      #    'prenom' => 't-ffd',
+      #    'codePcs' => 'tfds',
+      #    'accepteSms' => 'tfsqdf',
+      #    'codeLienEleveResponsable' => 'tfdsqf',
+      #    'codeNiveauResponsabilite' => 'tfdsq',
+      #    'percoitAides' => 'tfsdq',
+      #    'paieFraisScolaires' => 'tfqsd',
+      #    'telephonePortable' => 'dfqdf',
+      #    'divulgationAdresse' => 'tfsdqfq',
+      #    'adrResidenceResp' => { 't' => 't', 'codePostal' => 't', 'codePays' => 't',
+      #                            'adresseLigne3' => 't RUE DE LA FONTAINE', 'libelleCommune' => 't' },
+      #    'libelleLienEleveResponsable' => 't',
+      #    'libelleNiveauResponsabilite' => 't LEGAL',
+      #    'libellePcs' => 't artisan-commerçant-chef entrepr' },
+      #  { 'email' => 't@hotmail.fr',
+      #    'nomFamille' => 't',
+      #    'rcar' => 't-fdfds',
+      #    'codeCivilite' => 't',
+      #    'prenom' => 't',
+      #    'codePcs' => 't',
+      #    'accepteSms' => 't',
+      #    'codeLienEleveResponsable' => 't',
+      #    'codeNiveauResponsabilite' => 't',
+      #    'percoitAides' => 't',
+      #    'paieFraisScolaires' => 't',
+      #    'telephonePortable' => 'tffdsfq',
+      #    'divulgationAdresse' => 't',
+      #    'adrResidenceResp' => { 't' => 't', 'codePostal' => 't', 'codePays' => 't',
+      #                            'adresseLigne2' => 't fsdqfsq', 'adresseLigne3' => 't', 'libelleCommune' => 't' },
+      #    'libelleLienEleveResponsable' => 't',
+      #    'libelleNiveauResponsabilite' => 't LEGAL',
+      #    'libellePcs' => 't' }]
 
       case response
       when Net::HTTPSuccess
@@ -257,6 +293,10 @@ module Services::Omogen
 
       request = Net::HTTP::Get.new(uri, headers)
       http.request(request)
+    end
+
+    def format_address(address_hash)
+      "#{address_hash[:adresseLigne1]}, #{address_hash[:adresseLigne2]} #{address_hash[:codePostal]} #{address_hash[:libelleCommune]}"
     end
   end
 end

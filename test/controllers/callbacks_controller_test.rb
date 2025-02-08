@@ -63,12 +63,19 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
   test 'should get educonnect token and confirm student user' do
     educonnect_token_stub
     educonnect_userinfo_stub
+    stub_omogen_auth
+    stub_sygne_reponsible('1234567890')
+    stub_logout_educonnect
 
     get educonnect_callback_path, params: { code: @code, state: @state, nonce: @nonce }
 
     @student.reload
     assert_response :redirect
     refute_nil @student.confirmed_at
+    # assert_equal '07509232q', @student.school.code_uai # always change ?
+    assert_equal 'I*************@email.co', @student.legal_representative_email
+    assert_equal 'Mme Frederic CHIERICI', @student.legal_representative_full_name
+    assert_equal '0506070809', @student.legal_representative_phone
   end
 
   test 'should get educonnect token and does not logged in user if student is unknown' do
