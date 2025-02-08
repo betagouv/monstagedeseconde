@@ -3,19 +3,21 @@
 module Presenters
   class SchoolKind
     def to_s
-      case kind
-      when 'rep_plus' then 'REP+'
-      when 'rep' then 'REP'
-      when 'qpv', 'qpv_proche' then 'QPV'
-      else '?'
-      end
+      desc = '?'
+      desc = 'REP+' if rep_kind == 'rep_plus'
+      desc = 'REP' if rep_kind == 'rep'
+      return desc unless qpv
+
+      desc == '?' ? 'QPV' : "#{desc} (QPV)"
     end
 
     private
 
-    attr_reader :kind
-    def initialize(kind:)
-      @kind = kind
+    attr_reader :rep_kind, :qpv
+
+    def initialize(rep_kind:, qpv:)
+      @rep_kind = rep_kind
+      @qpv = qpv
     end
   end
 end
