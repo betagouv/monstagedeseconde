@@ -4,7 +4,7 @@ module Dashboard::Stepper
   # Step 1 of internship offer creation: fill in company info
   class InternshipOccupationsController < ApplicationController
     before_action :authenticate_user!
-    before_action :clean_params, only: %i[create update]
+    before_action :clean_params, :sanitize_content, only: %i[create update]
     before_action :fetch_internship_occupation, only: %i[edit update]
 
     # render step 1
@@ -92,6 +92,13 @@ module Dashboard::Stepper
       internship_occupation_params[:street] =
         [internship_occupation_params[:street],
          internship_occupation_params[:street_complement]].compact_blank.join(' - ')
+    end
+
+    def sanitize_content
+      return unless internship_occupation_params[:description].present?
+
+      internship_occupation_params[:description] =
+        strip_content(internship_occupation_params[:description])
     end
   end
 end
