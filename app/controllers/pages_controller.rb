@@ -18,6 +18,12 @@ class PagesController < ApplicationController
                 allow_other_host: true
   end
 
+  def visitor_apply
+    puts 'visitor_apply'
+    redirect_to users_choose_connection_path,
+                flash: { success: 'Connectez-vous pour postuler aux stages' }
+  end
+
   def offers_with_sector
     InternshipOffer.includes([:sector])
   end

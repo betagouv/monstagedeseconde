@@ -62,7 +62,7 @@ class GenerateInternshipAgreement < Prawn::Document
 
   def intro
     #  set size to 10
-    @pdf.font_size 9
+    @pdf.font_size 8.5
     paraphing(
       'Vu le Code du travail, et notamment son article L. 4153-1 ; ' \
       'le Code de l\'éducation, et notamment ses articles L. 124-1, L. 134-9, ' \
@@ -146,11 +146,12 @@ class GenerateInternshipAgreement < Prawn::Document
       "pour garantir sa responsabilité civile chaque fois qu'elle sera engagée (en "\
       'application des articles 1240 à 1242 du Code civil) :'
     )
+    @pdf.move_up 10
     html_formating "<div style='margin-left: 25'>- soit en souscrivant une assurance particulière "\
       "garantissant sa responsabilité civile en cas de faute imputable à l'entreprise ou à "\
       "l'organisme d'accueil à l'égard de l'élève ;"
 
-    @pdf.move_down 5
+    # @pdf.move_down 5
     html_formating "<div style='margin-left: 25'>- soit en ajoutant à son contrat déjà souscrit "\
       "au titre de la \“responsabilité civile entreprise\” ou de la \“responsabilité"\
       "civile professionnelle\” un avenant relatif à l'accueil d'élèves."
@@ -200,10 +201,9 @@ class GenerateInternshipAgreement < Prawn::Document
 
   def article_9
     paraphing("Article 9 - La présente convention est signée pour la durée d'une séquence d'observation en milieu professionnel, fixée à :")
+    @pdf.move_up 10
     html_formating "<div style='margin-left: 25'>-  5 jours consécutifs ou non, pour les élèves scolarisés en collège (facultatif en quatrième, obligatoire en troisième) ;</div>"
-    @pdf.move_down 5
     html_formating "<div style='margin-left: 25'>-  une (si deux lieux différents) ou deux semaines consécutives, pour les élèves scolarisés en seconde générale ou technologique durant le dernier mois de l'année scolaire.</div>"
-    @pdf.move_down 10
   end
 
   def article_bonus
@@ -224,35 +224,36 @@ class GenerateInternshipAgreement < Prawn::Document
       "Date de naissance : #{student.presenter.birth_date} \n"\
       "Classe : #{dotting student&.class_room&.name}"
     )
-
-    paraphing('Existence d’un Projet d’Accueil Individualisé pour raison de santé (PAI) à prendre en compte : '\
-      "#{@internship_agreement.pai_project ? 'OUI' : 'NON'}")
-    paraphing('Si oui, la trousse emportée est celle : '\
-      "#{@internship_agreement.pai_trousse_family ? 'De la famille' : 'De l\'établissement'}")
+    if @internship_agreement.pai_project
+      paraphing('Existence d’un Projet d’Accueil Individualisé pour raison de santé (PAI) à prendre en compte : '\
+        "#{@internship_agreement.pai_project ? 'OUI' : 'NON'}")
+      paraphing('Si oui, la trousse emportée est celle : '\
+        "#{@internship_agreement.pai_trousse_family ? 'De la famille' : 'De l\'établissement'}")
+    end
 
     @pdf.text 'Prénom, nom et coordonnées électronique et téléphonique des représentants légaux :'
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.student_legal_representative_full_name} </div>"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.student_legal_representative_email} </div>"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.student_legal_representative_phone} </div>"
+    @pdf.text "#{@internship_agreement.student_legal_representative_full_name}, " \
+      "#{@internship_agreement.student_legal_representative_email}, " \
+      "#{@internship_agreement.student_legal_representative_phone}"
     @pdf.move_down 5
     @pdf.text "Prénom, nom du chef(fe) d'établissement, adresse postale et électronique du lieu de scolarisation dont relève l'élève :"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_representative_full_name} </div>"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_representative_role} </div>"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_manager.try(:email)} </div>"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.school_representative_phone} </div>"
+    @pdf.text "#{@internship_agreement.school_representative_full_name}, " \
+      "#{@internship_agreement.school_representative_role}, " \
+      "#{@internship_agreement.school_manager.try(:email)}, " \
+      "#{@internship_agreement.school_representative_phone}"
     @pdf.move_down 5
     @pdf.text "Statut de l'établissement scolaire : #{@internship_agreement.legal_status.try(:capitalize)}"
     @pdf.move_down 5
     @pdf.text "Prénom, nom du tuteur ou du responsable de l'accueil en milieu professionnel et sa qualité :"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.tutor_full_name} </div>"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.tutor_role} </div>"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.tutor_email} </div>"
+    @pdf.text "#{@internship_agreement.tutor_full_name}, " \
+      "#{@internship_agreement.tutor_role}, " \
+      "#{@internship_agreement.tutor_email}"
     @pdf.move_down 5
-    @pdf.text 'Prénom et nom et coordonnées électronique et téléphonique du ou (des) enseignant(s) '\
-      "référent(s) chargé(s) du suivi de la séquence d'observation en milieu professionnel :"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.student_refering_teacher_full_name} </div>"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.student_refering_teacher_email} </div>"
-    html_formating "<div style='margin-left: 35'> #{@internship_agreement.student_refering_teacher_phone} </div>"
+    @pdf.text 'Prénom et nom et coordonnées de l\'enseignant '\
+      "référent chargé du suivi de la séquence d'observation en milieu professionnel :"
+    @pdf.text "#{@internship_agreement.student_refering_teacher_full_name}, " \
+      "#{@internship_agreement.student_refering_teacher_email}, " \
+      "#{@internship_agreement.student_refering_teacher_phone}"
     @pdf.move_down 5
     paraphing_bold("Dates de la séquence d'observation en milieu professionnel :")
     @pdf.move_up 10
@@ -372,16 +373,16 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.table([[
                  image_from(signature: download_image_and_signature(signatory_role: 'employer')),
                  image_from(signature: download_image_and_signature(signatory_role: 'school_manager'))
-               ]], cell_style: { border_width: 0, height: 70 },
+               ]], cell_style: { border_width: 0, height: 80 },
                    column_widths: [@pdf.bounds.width / 2, @pdf.bounds.width / 2])
 
-    @pdf.move_down 15
+    @pdf.move_down 10
     @pdf.text 'Vu et pris connaissance,'
-    @pdf.move_down 15
+    @pdf.move_down 10
     @pdf.table([['L’enseignant (ou les enseignants) éventuellement', 'L’enseignant (ou les enseignants) éventuellement']],
                cell_style: { border_width: 0 },
                column_widths: [@pdf.bounds.width / 2, @pdf.bounds.width / 2])
-    @pdf.move_down 35
+    @pdf.move_down 50
     @pdf.text 'Le responsable de l’accueil en milieu professionnel'
   end
 

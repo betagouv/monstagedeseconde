@@ -694,10 +694,10 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
-    workspace_conditions text DEFAULT ''::text,
-    workspace_accessibility text DEFAULT ''::text,
+    contact_phone character varying(20),
     internship_address_manual_enter boolean DEFAULT false,
-    contact_phone character varying(20)
+    workspace_conditions text DEFAULT ''::text,
+    workspace_accessibility text DEFAULT ''::text
 );
 
 
@@ -1560,11 +1560,11 @@ CREATE TABLE public.internship_offers (
     employer_chosen_name character varying(150),
     entreprise_full_address character varying(200),
     entreprise_coordinates public.geography(Point,4326),
+    period integer DEFAULT 0 NOT NULL,
     rep boolean DEFAULT false,
     qpv boolean DEFAULT false,
     workspace_conditions text DEFAULT ''::text,
     workspace_accessibility text DEFAULT ''::text,
-    period integer DEFAULT 0 NOT NULL,
     mother_id bigint
 );
 
@@ -4878,6 +4878,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20241217104101'),
 ('20241213131559'),
 ('20241204173244'),
+('20241204164257'),
+('20241204150852'),
 ('20241115093512'),
 ('20241113151423'),
 ('20241105172654'),

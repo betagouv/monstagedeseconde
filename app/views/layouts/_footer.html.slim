@@ -14,6 +14,7 @@ footer#footer.fr-footer role="contentinfo"
             .fr-py-1w = link_to "Découvrir le dispositif", path_anchor, class: "fr-raw-link fr-text--sm link #{klass}"
             .fr-py-1w = link_to "Ressources utiles", path_resources, class: "fr-raw-link fr-text--sm link #{klass}"
             .fr-py-1w = link_to "Déconnexion Educonnect", ENV['EDUCONNECT_LOGOUT_URL'], class: "fr-raw-link fr-text--sm link educonnect-logout #{klass}" if params[:logout] == 'educonnect'
+            .fr-py-1w = link_to "Déconnexion Hub Agent", ENV['FIM_LOGOUT_URL'], class: "fr-raw-link fr-text--sm link fim-logout #{klass}" if params[:logout] == 'fim'
         .col-12.col-md-3
           .fr-footer__top-column
             .title.fr-text--sm.fr-mb-1w = "Professionnels"
