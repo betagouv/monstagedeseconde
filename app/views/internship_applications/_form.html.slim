@@ -83,11 +83,14 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
 
       .row.fr-mt-2w.fr-mb-3w
         .col-12
+          - scrambled_ine = Digest::SHA1.hexdigest(current_user.try(:ine))
+          - scrambled_email = "#{scrambled_ine}@#{current_user.try(:school).try(:code_uai)}.fr".downcase
+          - account_email = f.object.student.email == scrambled_email ? '' : f.object.student.email
           = render '/inputs/dsfr_input_field',
                     field: :student_email,
                     f: f,
                     object: f.object,
-                    value: f.object.student_email || f.object.student.email || f.object.previous_student_email,
+                    value:  f.object.student_email || account_email || f.object.previous_student_email,
                     label: "Adresse électronique (email)",
                     pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
                     hint: "Veuillez saisir une adresse email valide, sans espace ni majuscule.",

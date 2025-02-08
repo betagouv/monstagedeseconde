@@ -11,6 +11,7 @@ class SchoolsController < ApplicationController
   def create
     authorize! :new, School
     @school = School.new(school_params)
+
     department = Department.fetch_by_zipcode(zipcode: @school.zipcode)
     @school.department = department
     if @school.save
@@ -35,6 +36,8 @@ class SchoolsController < ApplicationController
             :contract_code,
             :is_public,
             :school_type,
+            :rep_kind,
+            :qpv,
             :voie_generale,
             :voie_techno,
             coordinates: {}
