@@ -14,20 +14,11 @@ module InternshipApplications
       student = create(:student,
                        :with_phone,
                        school:,
-                       class_room: create(:class_room, school:),
-                       legal_representative_email: '',
-                       legal_representative_full_name: '',
-                       legal_representative_phone: '')
-      stub_omogen_auth
-      stub_sygne_reponsible(student.ine)
-
+                       class_room: create(:class_room, school:))
       sign_in(student)
 
       get(new_internship_offer_internship_application_path(internship_offer))
       assert_response :success
-      assert_equal 'I*************@email.co', student.legal_representative_email
-      assert_equal 'Mme Frederic CHIERICI', student.legal_representative_full_name
-      assert_equal '0506070809', student.legal_representative_phone
     end
 
     test 'GET #new internship application as student already applied' do

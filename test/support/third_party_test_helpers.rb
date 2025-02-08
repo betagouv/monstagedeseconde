@@ -222,6 +222,20 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_userinfo_unknown.json'), headers: {})
   end
 
+  def stub_logout_educonnect
+    stub_request(:get, "#{ENV['EDUCONNECT_URL']}/idp/profile/oidc/logout")
+      .with(
+        headers: {
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization' => 'Bearer abc123',
+          'Host' => URI(ENV['EDUCONNECT_URL']).host,
+          'User-Agent' => 'Ruby'
+        }
+      )
+      .to_return(status: 200, body: '', headers: {})
+  end
+
   def stub_omogen_auth
     stub_request(:post, ENV['OMOGEN_OAUTH_URL'])
       .with(
@@ -238,40 +252,6 @@ module ThirdPartyTestHelpers
   end
 
   def stub_sygne_reponsible(ine)
-    expected_response =
-      [
-        { nomFamille: 'BADEZ',
-          prenom: 'Claudette',
-          email: 'O*************@email.co',
-          telephonePersonnel: '0405060708',
-          adrResidenceResp: { adresseLigne1: '4, rue du Muguet',
-                              adresseLigne2: 'Le Banel',
-                              codePostal: '12110',
-                              libelleCommune: 'AUBIN' },
-          address: '4, rue du Muguet, Le Banel 12110 AUBIN',
-          codeNiveauResponsabilite: '3',
-          codeCivilite: 'F' },
-        { nomFamille: 'CHIERICI',
-          prenom: 'Frederic',
-          email: 'I*************@email.co',
-          telephonePersonnel: '0506070809',
-          adrResidenceResp: { adresseLigne1: '4, rue du Muguet',
-                              adresseLigne2: 'Le Banel',
-                              codePostal: '12110',
-                              libelleCommune: 'AUBIN' },
-          codeNiveauResponsabilite: '1',
-          codeCivilite: 'F' },
-        { nomFamille: 'GROHIN',
-          prenom: 'Juliette',
-          email: 'G*************@email.co',
-          adrResidenceResp: { adresseLigne1: '4, rue du Muguet',
-                              adresseLigne2: 'Le Banel',
-                              codePostal: '12110',
-                              libelleCommune: 'AUBIN' },
-          telephonePersonnel: '0506070819',
-          codeNiveauResponsabilite: '1',
-          codeCivilite: 'M' }
-      ].to_json
     stub_request(:get, "#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
       .with(
         headers: {
@@ -283,6 +263,6 @@ module ThirdPartyTestHelpers
           'User-Agent' => 'Ruby'
         }
       )
-      .to_return(status: 200, body: expected_response, headers: {})
+      .to_return(status: 200, body: File.read('test/fixtures/files/signe_responsible.json'), headers: {})
   end
 end
