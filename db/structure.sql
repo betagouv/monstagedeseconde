@@ -1,7 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -1954,7 +1953,7 @@ CREATE TABLE public.schools (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     city_tsv tsvector,
-    kind character varying(50),
+    rep_kind character varying(50),
     visible boolean DEFAULT true,
     internship_agreement_online boolean DEFAULT false,
     fetched_school_phone character varying(20),
@@ -1970,7 +1969,8 @@ CREATE TABLE public.schools (
     school_type public.school_category DEFAULT 'college'::public.school_category NOT NULL,
     voie_generale boolean,
     voie_techno boolean,
-    full_imported boolean DEFAULT false
+    full_imported boolean DEFAULT false,
+    qpv boolean DEFAULT false
 );
 
 
@@ -4860,6 +4860,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250206101850'),
 ('20250205085007'),
 ('20250203163502'),
 ('20250128213823'),

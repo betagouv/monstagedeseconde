@@ -69,7 +69,6 @@ namespace :sys do
     end
   end
 
-
   desc 'uplaod a local production database copy to CleverCloud'
   task :upl_prod, [] => :environment do
     PrettyConsole.announce_task 'Downloading production database' do
@@ -104,12 +103,34 @@ namespace :sys do
   # end
   #
 
-  desc 'kill all sidekiq processes from their task name on default queue'
-  task :kill_sidekiq, [:task_name] => :environment do |t, args|
+  desc 'kill all sidekiq processes from their task name on Scheduled queue'
+  task :kill_scheduled_sidekiq, [:task_name] => :environment do |t, args|
     PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
       counter = 0
       not_treated = 0
       Sidekiq::ScheduledSet.new.each do |job|
+        puts job.args.first
+        if job.args.first['job_class'] == args.task_name
+          counter += 1
+          job.delete
+          print '.'
+          PrettyConsole.puts_in_green " #{counter} |" if counter % 100 == 0
+        else
+          not_treated += 1
+          print ' 100 |' if not_treated % 100 == 0
+        end
+      end
+      PrettyConsole.say_in_yellow "#{counter} jobs deleted | #{not_treated} jobs not treated"
+    end
+  end
+
+  desc 'kill all sidekiq processes from their task name on Retries queue'
+  task :kill_retries_sidekiq, [:task_name] => :environment do |t, args|
+    PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
+      counter = 0
+      not_treated = 0
+      Sidekiq::RetrySet.new.each do |job|
+        puts job.args.first
         if job.args.first['job_class'] == args.task_name
           counter += 1
           job.delete

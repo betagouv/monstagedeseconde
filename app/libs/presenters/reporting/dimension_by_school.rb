@@ -10,8 +10,7 @@ module Presenters
                    total_main_teacher_count
                    current_total_approved_internship_applications_count
                    human_school_manager
-                   full_address
-                   ].freeze
+                   full_address].freeze
 
       def self.metrics
         [].concat(ATTRS, METHODS)
@@ -36,7 +35,7 @@ module Presenters
       end
 
       def human_kind
-        Presenters::SchoolKind.new(kind: instance.kind).to_s
+        Presenters::SchoolKind.new(rep_kind: instance.rep_kind, qpv: instance.qpv).to_s
       end
 
       def full_address
@@ -46,6 +45,7 @@ module Presenters
       private
 
       attr_reader :instance, :params
+
       def initialize(instance, params)
         @instance = instance
         @params = params
