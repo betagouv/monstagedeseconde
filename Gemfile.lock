@@ -299,6 +299,7 @@ GEM
       ruby-progressbar
     minitest-retry (0.2.3)
       minitest (>= 5.0)
+    minitest-stub-const (0.6)
     minitest-stub_any_instance (1.0.3)
     msgpack (1.7.5)
     multi_json (1.15.0)
@@ -635,6 +636,7 @@ DEPENDENCIES
   mime-types
   minitest-reporters
   minitest-retry
+  minitest-stub-const
   minitest-stub_any_instance
   ovh-rest
   pg
