@@ -99,6 +99,11 @@ module Users
     end
     alias troisieme_or_quatrieme? troisieme_ou_quatrieme?
 
+    def belongs_to_qpv_school? = school.qpv?
+    def belongs_to_rep_school? = school.rep_kind == 'rep'
+    def belongs_to_rep_plus_school? = school.rep_kind == 'rep_plus'
+    def belongs_to_rep_or_rep_plus_school? = school.rep_kind&.in?(%w[rep rep_plus])
+
     def main_teacher
       return nil if try(:class_room).nil?
 

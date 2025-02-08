@@ -111,6 +111,7 @@ group :test do
   # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'capybara-screenshot'
   gem 'minitest-stub_any_instance'
+  gem 'minitest-stub-const'
   gem 'rails-controller-testing'
   gem 'webdrivers'
 end
