@@ -22,7 +22,10 @@
             = reason
 
   - else
-    = render "internship_applications/call_to_action/visitor", internship_offer: internship_offer
+    - path = employers_only? ? '#' :  visitor_apply_path
+    .d-flex
+      = form_with url: path, method: :post, data: { turbo: false } do
+        = submit_tag 'Postuler', class: "fr-btn fr-btn--icon-left fr-icon-edit-fill"
 
   .fr-mx-5w
     - if(user_signed_in? && can?(:create, Favorite))

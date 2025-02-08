@@ -46,13 +46,6 @@ class CallbacksController < ApplicationController
     state = params[:state]
     nonce = params[:nonce]
 
-    # Rails.logger.info("Educonnect callback received with code present: #{code.present?}")
-    # Rails.logger.info("Educonnect callback received with state present: #{state.present?}")
-    # Rails.logger.info("Educonnect callback received with nonce present: #{nonce.present?}")
-
-    #  TO TO : remove this line - dev only
-    # return redirect_to root_path, alert: 'Please check logs and finish process manually' unless Rails.env.development?
-
     educonnect = Services::EduconnectConnection.new(code, state, nonce)
 
     session[:id_token] = educonnect.id_token
@@ -61,7 +54,9 @@ class CallbacksController < ApplicationController
     Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
 
     user_info = educonnect.get_user_info
-    Rails.logger.info("User info: #{user_info.inspect}")
+    Rails.logger.info('--------------')
+    Rails.logger.info("Educonnect User info: #{user_info.inspect}")
+    Rails.logger.info('--------------')
 
     redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
@@ -115,7 +110,7 @@ class CallbacksController < ApplicationController
       return redirect_to root_path, alert: 'Erreur lors de la connexion'
     end
 
-    # Rails.logger.info("Student signed in successfully: #{user_signed_in?}")
+    Rails.logger.info("Student signed in successfully: #{student.id} studentID")
 
     redirect_to root_path, notice: 'Vous êtes bien connecté'
   end

@@ -27,12 +27,10 @@ module Dto
       return if !params_offer_for_seconde? && !params_offer_for_troisieme_or_quatrieme? # grades is unchanged
 
       instance.grades = []
-      if params_offer_for_troisieme_or_quatrieme?
-        instance.grades.append Grade.troisieme_et_quatrieme.to_a
-      end
-      if params_offer_for_seconde?
-        instance.grades.append Grade.seconde
-      end
+      instance.grades.append Grade.troisieme_et_quatrieme.to_a if params_offer_for_troisieme_or_quatrieme?
+      return unless params_offer_for_seconde?
+
+      instance.grades.append Grade.seconde
     end
 
     def manage_weeks
@@ -56,12 +54,8 @@ module Dto
 
     def manage_seconde_weeks
       weeks = []
-      if period_field.in?([PERIOD[:two_weeks], PERIOD[:first_week]])
-        weeks << SchoolTrack::Seconde.first_week
-      end
-      if period_field.in?([PERIOD[:two_weeks], PERIOD[:second_week]])
-        weeks << SchoolTrack::Seconde.second_week
-      end
+      weeks << SchoolTrack::Seconde.first_week if period_field.in?([PERIOD[:two_weeks], PERIOD[:first_week]])
+      weeks << SchoolTrack::Seconde.second_week if period_field.in?([PERIOD[:two_weeks], PERIOD[:second_week]])
       add_weeks_to_planning(weeks)
     end
 

@@ -57,6 +57,9 @@ module Users
     end
 
     def destroy
+      if cookies[:user_type] == 'school_management'
+
+      end
       super do
         cookies.delete(:_monstage_session)
         cookies.delete(:_ms2gt_manage_session)
@@ -64,11 +67,13 @@ module Users
     end
 
     def choose_connection
+      @state = generate_state
       @fim_url = build_fim_url
       @educonnect_url = build_educonnect_url
     end
 
     def choose_connection_test
+      @state = generate_state
       @fim_url = build_fim_url
       @educonnect_url = build_educonnect_url
     end
@@ -142,7 +147,7 @@ module Users
         client_id: ENV['FIM_CLIENT_ID'],
         scope: 'openid profile email stage',
         response_type: 'code',
-        state: SecureRandom.uuid,
+        state: @state,
         nonce: SecureRandom.uuid
       }
 
@@ -157,7 +162,7 @@ module Users
         client_id: ENV['EDUCONNECT_CLIENT_ID'],
         scope: 'openid profile ect.scope.cnx ect.scope.stage',
         response_type: 'code',
-        state: 'abc', # SecureRandom.uuid,
+        state: @state,
         nonce: SecureRandom.uuid
       }
 
@@ -170,6 +175,12 @@ module Users
       return if params[:access_code] == ENV['TEST_ACCESS_CODE']
 
       redirect_to root_path, alert: 'Accès non autorisé'
+    end
+
+    def generate_state
+      state = SecureRandom.uuid
+      cookies[:state] = state
+      state
     end
   end
 end

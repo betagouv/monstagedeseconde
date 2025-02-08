@@ -35,7 +35,6 @@ Rails.application.routes.draw do
       passwords: 'users/passwords'
     }
 
-    
     devise_scope :user do
       get '/auth/fim/callback', to: 'callbacks#fim', as: 'fim_callback'
       get '/auth/educonnect/callback', to: 'callbacks#educonnect', as: 'educonnect_callback'
@@ -172,29 +171,27 @@ Rails.application.routes.draw do
                                                       as: :update_multiple_internship_applications
 
       resources :internship_agreements, path: 'conventions-de-stage', except: %i[destroy], param: :uuid
-      unless when_employers_only
-        resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
-          member do
-            post 'start_signing'
-            post 'reset_phone_number'
-            post 'resend_sms_code'
-            post 'signature_code_validate'
-            post 'handwrite_sign'
-          end
+      resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
+        member do
+          post 'start_signing'
+          post 'reset_phone_number'
+          post 'resend_sms_code'
+          post 'signature_code_validate'
+          post 'handwrite_sign'
         end
+      end
 
-        resources :schools, path: 'ecoles', only: %i[index edit update show] do
-          resources :invitations, only: %i[new create index destroy], module: 'schools'
-          get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
-          resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
+      resources :schools, path: 'ecoles', only: %i[index edit update show] do
+        resources :invitations, only: %i[new create index destroy], module: 'schools'
+        get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
+        resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
 
-          resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy],
-                                  module: 'schools' do
-            resources :students, path: 'eleves', only: %i[update index new create], module: 'class_rooms'
-          end
-          put '/update_students_by_group', to: 'schools/students#update_by_group', module: 'schools'
-          get '/information', to: 'schools#information', module: 'schools'
+        resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy],
+                                module: 'schools' do
+          resources :students, path: 'eleves', only: %i[update index new create], module: 'class_rooms'
         end
+        put '/update_students_by_group', to: 'schools/students#update_by_group', module: 'schools'
+        get '/information', to: 'schools#information', module: 'schools'
       end
 
       resources :internship_offer_areas, path: 'espaces', except: %i[show] do
@@ -273,6 +270,7 @@ Rails.application.routes.draw do
   post '/newsletter', to: 'newsletter#subscribe'
   get '/inscription-permanence', to: 'pages#register_to_webinar'
   get '/recherche-entreprises', to: 'pages#search_companies'
+  post '/visitor_apply', to: 'pages#visitor_apply'
   # TODO
   # To be removed after june 2023
   get '/register_to_webinar', to: 'pages#register_to_webinar'
