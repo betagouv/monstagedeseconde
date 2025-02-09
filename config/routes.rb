@@ -191,7 +191,6 @@ Rails.application.routes.draw do
           resources :students, path: 'eleves', only: %i[update index new create], module: 'class_rooms'
         end
         put '/update_students_by_group', to: 'schools/students#update_by_group', module: 'schools'
-        get '/information', to: 'schools#information', module: 'schools'
       end
 
       resources :internship_offer_areas, path: 'espaces', except: %i[show] do
@@ -271,6 +270,7 @@ Rails.application.routes.draw do
   get '/inscription-permanence', to: 'pages#register_to_webinar'
   get '/recherche-entreprises', to: 'pages#search_companies'
   post '/visitor_apply', to: 'pages#visitor_apply'
+  get '/educonnect_deconnexion_responsable', to: 'pages#educonnect_logout_responsible'
   # TODO
   # To be removed after june 2023
   get '/register_to_webinar', to: 'pages#register_to_webinar'
