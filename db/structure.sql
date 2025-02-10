@@ -4049,6 +4049,13 @@ CREATE INDEX index_schools_on_city_tsv ON public.schools USING gin (city_tsv);
 
 
 --
+-- Name: index_schools_on_code_uai; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_schools_on_code_uai ON public.schools USING btree (code_uai);
+
+
+--
 -- Name: index_schools_on_coordinates; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4861,6 +4868,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250209100322'),
 ('20250206101850'),
 ('20250205085007'),
 ('20250203163502'),

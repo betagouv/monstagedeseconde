@@ -15,7 +15,7 @@ class School < ApplicationRecord
   has_many :weeks, through: :school_internship_weeks
   belongs_to :department, optional: true
 
-  has_rich_text :agreement_conditions_rich_text
+  # has_rich_text :agreement_conditions_rich_text
 
   validates :city, :name, :code_uai, presence: true
   validates :code_uai, uniqueness: { message: 'Ce code UAI est déjà utilisé, le lycée est déjà enregistré' }
