@@ -33,7 +33,7 @@ module Users
     validate :validate_school_presence_at_creation
 
     # Callbacks
-    before_save :skip_confirmation!
+    # before_save :skip_confirmation!
     after_create :clean_phone_or_email_when_empty # , :welcome_new_student :set_reminders
 
     def student? = true

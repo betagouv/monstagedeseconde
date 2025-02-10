@@ -9,7 +9,7 @@ module Presenters
 
       def total_student_confirmed
         Users::Student.where(id: class_room_students_ids)
-                      .confirmed
+                      .where.not(confirmed_at: nil)
                       .size
       end
 
