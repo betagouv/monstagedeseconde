@@ -532,7 +532,7 @@ module Api
         }
         stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=148&lon=14').to_return(geocoder_response)
 
-        travel_to(Date.new(2018, 3, 1)) do
+        travel_to(Date.new(2025, 3, 1)) do
           assert_difference('InternshipOffer.count', 1) do
             post api_v1_internship_offers_path(
               params: {
