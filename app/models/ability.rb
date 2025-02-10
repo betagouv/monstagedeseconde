@@ -619,8 +619,6 @@ class Ability
   end
 
   def authorized_ip?
-    return true unless Rails.env.production?
-
-    cookies[:authorized_ip] == 'true'
+    session[:authorized_ip] == true
   end
 end
