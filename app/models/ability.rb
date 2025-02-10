@@ -619,7 +619,6 @@ class Ability
   end
 
   def authorized_ip?
-    authorized_ip_list = ENV.fetch('AUTHORIZED_IPS', '').strip.split(/\s+/)
-    request&.ip&.in?(authorized_ip_list)
+    cookies[:authorized_ip] == 'true'
   end
 end

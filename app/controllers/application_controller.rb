@@ -63,7 +63,12 @@ class ApplicationController < ActionController::Base
 
   def authorized_ip?
     authorized_ip_list = ENV.fetch('AUTHORIZED_IPS', '').strip.split(/\s+/)
-    request&.ip&.in?(authorized_ip_list)
+    if request&.ip&.in?(authorized_ip_list)
+      cookies[:authorized_ip] = true
+      true
+    else
+      false
+    end
   end
 
   def user_presenter
