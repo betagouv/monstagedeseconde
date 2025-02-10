@@ -21,6 +21,7 @@ class InternshipOffersController < ApplicationController
       end
       format.json do
         @internship_offers = finder.all.includes(:sector, :employer)
+        @internship_offers_seats = finder.all_without_page.map(&:max_candidates).sum
 
         # @is_suggestion = @internship_offers.to_a.count.zero?
         # @internship_offers = alternative_internship_offers if @is_suggestion
@@ -29,7 +30,7 @@ class InternshipOffersController < ApplicationController
         data = {
           internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
-          seats: calculate_seats(@internship_offers)
+          seats: @internship_offers_seats
           # isSuggestion: @is_suggestion
         }
         current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
@@ -112,7 +113,7 @@ class InternshipOffersController < ApplicationController
         :page,
         :latitude,
         :longitude,
-        :radius,
+        :radius
         # :keyword,
         # :school_year,
         # :grade_id,
@@ -207,9 +208,5 @@ class InternshipOffersController < ApplicationController
       isLastPage: offers.last_page?,
       pageUrlBase: url_for(query_params.except('page'))
     }
-  end
-
-  def calculate_seats(internship_offers)
-    internship_offers.pluck(:max_candidates).sum
   end
 end

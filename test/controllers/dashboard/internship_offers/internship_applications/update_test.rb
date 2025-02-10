@@ -181,7 +181,7 @@ module InternshipOffers::InternshipApplications
           ),
           params: { transition: :approve! }
         )
-        assert_redirected_to internship_application.internship_offer.employer.custom_candidatures_path(tab: :approve!)
+        assert_redirected_to dashboard_internship_offers_path
       end
       assert_equal 1, InternshipAgreement.count
     end
