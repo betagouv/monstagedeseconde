@@ -607,6 +607,13 @@ class Ability
   end
 
   def employers_only?
-    ENV.fetch('EMPLOYERS_ONLY', 'false') == 'true'
+    return false if authorized_ip?
+
+    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
+  end
+
+  def authorized_ip?
+    authorized_ip_list = ENV.fetch('AUTHORIZED_IPS', '').split(' ')
+    true if request.remote_ip.in?(authorized_ip_list)
   end
 end
