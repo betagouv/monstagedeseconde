@@ -179,18 +179,19 @@ module Users
       # seconde only from now on
       return true if internship_applications.empty? || internship_applications.approved.empty?
       return false if troisieme_ou_quatrieme? && internship_applications.approved.size > 0
-      # there is at least one approved application
+
+      # student is seconde
       return false if with_2_weeks_internships_approved?
       return false if internship_offer.nil?
 
+      # second student with one and only one week already approved
       approved_offers_week_ids = internship_applications.approved.map(&:weeks).flatten.map(&:id).uniq
-      official_weeks_ids = SchoolTrack::Seconde.both_weeks.map(&:id)
-      targeted_week_id = (internship_offer.weeks.map(&:id) & official_weeks_ids)
-      unless (approved_offers_week_ids - official_weeks_ids).empty? && (targeted_week_id - official_weeks_ids).empty?
-        raise "out of bound week for seconde student #{id} and offer #{internship_offer.id}"
-      end
+      official_seconde_weeks_ids = SchoolTrack::Seconde.both_weeks.map(&:id)
 
-      official_weeks_ids - approved_offers_week_ids == targeted_week_id
+      internship_offer_seconde_week_ids = (internship_offer.weeks.map(&:id) & official_seconde_weeks_ids)
+      student_free_week_id = official_seconde_weeks_ids - approved_offers_week_ids
+
+      student_free_week_id == internship_offer_seconde_week_ids
     end
 
     def log_search_history(search_params)
@@ -221,6 +222,10 @@ module Users
     def clean_phone_or_email_when_empty
       update_columns(phone: nil) if phone.blank?
       update_columns(email: nil) if email.blank?
+    end
+
+    def fake_email?
+      email.present? && email.split('@').last == "#{school.code_uai}.fr"
     end
   end
 end
