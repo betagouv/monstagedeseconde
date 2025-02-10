@@ -4,25 +4,21 @@ module Presenters
   module Dashboard
     class ClassRoomStats
       def total_student
-        class_room.students.kept.size
+        class_room_students_ids.count
       end
 
       def total_student_confirmed
-        class_room.students.kept
-                  .select(&:confirmed?)
-                  .size
+        Users::Student.where(id: class_room_students_ids)
+                      .confirmed
+                      .size
       end
 
       def total_student_with_zero_application
-        with_application_statuses = %i[submitted approved]
-        with_application = track_student_with_listed_status(listed_status: with_application_statuses)
-        rest_of_class_room_size(reject_list: with_application)
+        zero_application_students_with_status(status: %i[submitted approved])
       end
 
       def total_student_with_zero_internship
-        with_internship_status = %i[approved]
-        with_internship = track_student_with_listed_status(listed_status: with_internship_status)
-        rest_of_class_room_size(reject_list: with_internship)
+        zero_application_students_with_status(status: %i[approved])
       end
 
       private
@@ -33,19 +29,26 @@ module Presenters
         @class_room = class_room
       end
 
+      def zero_application_students_with_status(status:)
+        rest_of_class_room_size(
+          reject_list: track_student_with_listed_status(listed_status: status)
+        )
+      end
+
+      def class_room_students_ids
+        Rails.cache.fetch("class_room_students_ids_#{class_room.id}") do
+          class_room.students.kept.ids
+        end
+      end
+
       def track_student_with_listed_status(listed_status: [])
-        Users::Student.kept
-                      .joins(:class_room, :internship_applications)
-                      .where(class_room: { id: class_room.id })
+        Users::Student.where(id: class_room_students_ids)
+                      .joins(:internship_applications)
                       .where(internship_applications: { aasm_state: listed_status })
       end
 
       def rest_of_class_room_size(reject_list:)
-        Users::Student.kept
-                      .joins(:class_room)
-                      .where(class_room: { id: class_room.id })
-                      .where.not(id: reject_list.ids.uniq)
-                      .size
+        class_room_students_ids.count - reject_list.ids.uniq.count
       end
     end
   end

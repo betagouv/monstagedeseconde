@@ -1,5 +1,6 @@
 - class_room_stats = Presenters::Dashboard::ClassRoomStats.new(class_room: class_room)
-
+- zero_application_students_count = class_room_stats.total_student_with_zero_application
+- zero_internship_students_count = class_room_stats.total_student_with_zero_internship
 tr class="test-class-room-#{class_room.id}"
   td.class-room-name.align-middle data-head="#{cols[0]}"
     .row.no-gutters
@@ -13,7 +14,7 @@ tr class="test-class-room-#{class_room.id}"
                       class: 'fr-raw-link fr-text--sm  fr-ml-2w blue-france',
                       aria: {label: "Modifier la classe de #{class_room.name}"} do
               span.fr-icon-edit-fill
-              
+
           - if can?(:destroy, ClassRoom) && class_room.students.count.zero?
             = link_to dashboard_school_class_room_path(school, class_room),
                       class: 'fr-raw-link fr-text--sm blue-france fr-ml-1w',
@@ -26,12 +27,14 @@ tr class="test-class-room-#{class_room.id}"
         = link_to 'Voir le détail',
                   dashboard_school_class_room_students_path(school, class_room),
                   class: 'small fr-raw-link'
-
+  
   td.align-middle.text-sm-center data-head="#{cols[2]}"
     span class='total_student_with_zero_application'
-      = class_room_stats.total_student_with_zero_application
+      / |0
+      = zero_application_students_count
   td.align-middle.text-sm-center data-head="#{cols[3]}"
     span class='total_student_with_zero_internship'
-      = class_room_stats.total_student_with_zero_internship
-    
+      / |0
+      = zero_internship_students_count
+
 
