@@ -614,8 +614,6 @@ class Ability
 
   def authorized_ip?
     authorized_ip_list = ENV.fetch('AUTHORIZED_IPS', '').split(' ')
-    true if request.remote_ip.in?(authorized_ip_list)
-
-    false
+    request.remote_ip.in?(authorized_ip_list)
   end
 end
