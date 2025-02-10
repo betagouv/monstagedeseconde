@@ -11,10 +11,10 @@ module Dashboard
                           .keys
                           .map(&:pluralize)
                           .map(&:to_sym)
-        @school_employee_collection = roles.inject([]) {|whole, role|
-          whole += @school.send(role).kept
-        }
-        @school_employee_collection += [@school.school_manager]
+        @school_employee_collection = roles.inject([]) do |whole, role|
+          whole + @school.send(role).kept
+        end
+        @school_employee_collection += [@school.school_manager] unless @school.school_manager.discarded?
         @school_employee_collection.compact!
 
         school_employees = current_user.school.users

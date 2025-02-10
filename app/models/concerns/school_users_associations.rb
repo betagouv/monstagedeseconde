@@ -2,13 +2,14 @@ module SchoolUsersAssociations
   extend ActiveSupport::Concern
 
   included do
-    has_many :users
+    has_many :users, -> { kept }
+    has_many :all_users, class_name: 'User'
 
     has_many :students, dependent: :nullify,
-                      class_name: 'Users::Student'
+                        class_name: 'Users::Student'
 
     has_many :school_managements, dependent: :nullify,
-                                class_name: 'Users::SchoolManagement'
+                                  class_name: 'Users::SchoolManagement'
 
     has_one :school_manager, -> { where(role: :school_manager) },
             class_name: 'Users::SchoolManagement'

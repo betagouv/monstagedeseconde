@@ -969,7 +969,7 @@ CREATE TABLE public.internship_agreements (
     student_refering_teacher_phone character varying(20),
     student_legal_representative_email character varying(100),
     student_refering_teacher_email character varying(100),
-    student_legal_representative_full_name character varying(180),
+    student_legal_representative_full_name character varying(100),
     student_refering_teacher_full_name character varying(100),
     student_legal_representative_phone character varying(20),
     student_legal_representative_2_full_name character varying(100),
