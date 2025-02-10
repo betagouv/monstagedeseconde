@@ -63,12 +63,7 @@ class ApplicationController < ActionController::Base
 
   def authorized_ip?
     authorized_ip_list = ENV.fetch('AUTHORIZED_IPS', '').strip.split(/\s+/)
-    logger.debug '================================'
-    logger.debug "request.remote_ip : #{request.remote_ip}"
-    logger.debug "request.ip : #{request.ip}"
-    logger.debug '================================'
-    logger.debug ''
-    request&.remote_ip&.in?(authorized_ip_list)
+    request&.ip&.in?(authorized_ip_list)
   end
 
   def user_presenter

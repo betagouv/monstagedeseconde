@@ -613,7 +613,7 @@ class Ability
   end
 
   def authorized_ip?
-    authorized_ip_list = ENV.fetch('AUTHORIZED_IPS', '').split(' ')
-    request.remote_ip.in?(authorized_ip_list)
+    authorized_ip_list = ENV.fetch('AUTHORIZED_IPS', '').strip.split(/\s+/)
+    request&.ip&.in?(authorized_ip_list)
   end
 end
