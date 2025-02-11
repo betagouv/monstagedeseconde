@@ -69,8 +69,16 @@ RailsAdmin.config do |config|
     new
     bulk_delete
     show
-    edit
-    delete
+    edit do
+      except %w[School
+                InternshipOfferKeyword
+                Users::SchoolManagement]
+    end
+    delete do
+      except %w[School
+                InternshipOfferKeyword
+                Users::SchoolManagement]
+    end
 
     switch_user do
       except ['Users::God']

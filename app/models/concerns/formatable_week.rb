@@ -110,6 +110,10 @@ module FormatableWeek
       I18n.localize(week_date.end_of_week - 2.days, format: :human_mm_dd).strip
     end
 
+    def end_of_working_week_with_year
+      I18n.localize(week_date.end_of_week - 2.days, format: :human_mm_dd_yyyy).strip
+    end
+
     def end_of_week_with_years
       I18n.localize(week_date.end_of_week, format: :default).strip
     end

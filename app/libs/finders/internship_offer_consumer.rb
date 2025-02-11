@@ -50,9 +50,10 @@ module Finders
 
     def school_management_query
       common_filter do
-        light_kept_published_future_offers_query.ignore_internship_restricted_to_other_schools(
-          school_id: user.school_id
-        )
+        light_kept_published_future_offers_query.filtered_by_qpv_and_rep(user:)
+                                                .ignore_internship_restricted_to_other_schools(
+                                                  school_id: user.school_id
+                                                )
       end
     end
 
@@ -80,7 +81,9 @@ module Finders
     end
 
     def visitor_query
-      common_filter { light_kept_published_future_offers_query }
+      common_filter do
+        light_kept_published_future_offers_query.filtered_by_qpv_and_rep(user:)
+      end
     end
   end
 end
