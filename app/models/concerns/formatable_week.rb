@@ -37,6 +37,13 @@ module FormatableWeek
         .join(' ')
     end
 
+    def very_long_working_week_select_text_method
+      ['du', beginning_of_week_with_year_long, 'au', end_of_working_week_with_year]
+        .map(&:to_s)
+        .map(&:strip)
+        .join(' ')
+    end
+
     def human_select_text_method
       ['Semaine du', beginning_of_week, 'au', end_of_week]
         .map(&:to_s)
