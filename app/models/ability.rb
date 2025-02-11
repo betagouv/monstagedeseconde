@@ -619,6 +619,8 @@ class Ability
   end
 
   def authorized_ip?
+    return true if Rails.env.development? || Rails.env.test?
+
     session[:authorized_ip] == true
   end
 end
