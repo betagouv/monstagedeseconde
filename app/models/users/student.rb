@@ -116,6 +116,17 @@ module Users
       available_offers(max_distance:).any?
     end
 
+    def add_responsible_data
+      responsible = Services::Omogen::Sygne.new.try(:sygne_responsable, ine)
+      return self if responsible.blank?
+
+      self.legal_representative_full_name = "#{responsible.civility} #{responsible.first_name} #{responsible.last_name}"
+      self.legal_representative_email = responsible.email
+      self.legal_representative_phone = responsible.phone
+      save
+      self
+    end
+
     def anonymize(send_email: true)
       super(send_email:)
 

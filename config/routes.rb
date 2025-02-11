@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'sidekiq/web'
-when_employers_only = ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
 root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
                      'maintenance_estivale'
-                   elsif when_employers_only
+                   elsif @employers_only
                      'pro_landing'
                    else
                      'home'
@@ -63,7 +62,7 @@ Rails.application.routes.draw do
                                                              as: 'resend_confirmation_phone_token'
     end
 
-    unless when_employers_only
+    unless @employers_only
       resources :identities, path: 'identites', only: %i[new create]
       resources :url_shrinkers, path: 'c', only: %i[] do
         get :o, on: :member
@@ -274,10 +273,10 @@ Rails.application.routes.draw do
   # TODO
   # To be removed after june 2023
   get '/register_to_webinar', to: 'pages#register_to_webinar'
-  get '/eleves', to: when_employers_only ? 'pages#home' : 'pages#student_landing'
+  get '/eleves', to: @employers_only ? 'pages#home' : 'pages#student_landing'
   get '/professionnels', to: 'pages#pro_landing'
   get '/partenaires_regionaux', to: 'pages#regional_partners_index'
-  get '/equipe-pedagogique', to: when_employers_only ? 'pages#home' : 'pages#school_management_landing'
+  get '/equipe-pedagogique', to: @employers_only ? 'pages#home' : 'pages#school_management_landing'
   get '/referents', to: 'pages#statistician_landing'
   get '/maintenance_estivale', to: 'pages#maintenance_estivale'
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
