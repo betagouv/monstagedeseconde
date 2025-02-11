@@ -93,6 +93,10 @@ class PagesController < ApplicationController
     params.require(:waiting_list_entry).permit(:email)
   end
 
+  def educonnect_logout_responsible
+    Rails.logger.info 'Educonnect logout responsible page'
+  end
+
   private
 
   def link_resolver
