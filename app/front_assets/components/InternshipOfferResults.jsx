@@ -194,7 +194,7 @@ const InternshipOfferResults = ({ count, searchParams }) => {
                       <>
                         <div className="h4 mb-0" id="internship-offers-count">
                           <div className="strong">
-                            {internshipOffersSeats} stages disponibles
+                            {internshipOffersSeats} stage{internshipOffersSeats > 1 ? 's' : ''} disponible{internshipOffersSeats > 1 ? 's' : ''}
                           </div>
                         </div>
                       </>
