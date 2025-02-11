@@ -17,8 +17,8 @@ module SearchInternshipOfferHelpers
     find('#input-search-by-city-or-zipcode').fill_in(with: '').fill_in(with:)
     return if with.empty?
 
-    sleep 2
-    find('#test-input-location-container #downshift-1-item-0', wait: 3).click
+    # sleep 2
+    find('#test-input-location-container #downshift-0-item-0', wait: 3).click
     assert_equal expect,
                  find('#test-input-location-container #input-search-by-city-or-zipcode').value,
                  'click on list view does not fill location input'
