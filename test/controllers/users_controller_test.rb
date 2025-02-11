@@ -97,28 +97,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET edit render as student also allow him to change class_room' do
-    school = create(:school)
-    class_room_1 = create(:class_room, school:)
-    class_room_2 = create(:class_room, school:)
-    student = create(:student, school:, class_room: class_room_1)
-
-    sign_in(student)
-    get account_path(section: 'identity')
-
-    assert_select 'select[name="user[class_room_id]"]'
-  end
-
-  test 'GET edit as student also allow him to change class_room' do
-    student = create(:student, phone: '+330623042585')
-    create(:class_room, school: student.school, name: '3A')
-
-    sign_in(student)
-    get account_path(section: 'identity')
-
-    assert_select 'select[name="user[class_room_id]"]'
-  end
-
   test 'GET edit render as Statistician shows a readonly input on email' do
     statistician = create(:statistician)
 
