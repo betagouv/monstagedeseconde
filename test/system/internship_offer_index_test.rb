@@ -7,12 +7,12 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   include ::ApiTestHelpers
 
   def assert_presence_of(internship_offer:)
-    assert_selector "a[data-test-id='#{internship_offer.id}']",
+    assert_selector "div[data-test-id='#{internship_offer.id}']",
                     count: 1
   end
 
   def assert_absence_of(internship_offer:)
-    assert_no_selector "a[data-test-id='#{internship_offer.id}']"
+    assert_no_selector "div[data-test-id='#{internship_offer.id}']"
   end
 
   test 'navigation & interaction works' do
@@ -30,45 +30,87 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'pagination of internship_offers index is ok with api or weekly offers' do
-    travel_to Date.new(2025, 3, 1) do
-      2.times do
-        create(:weekly_internship_offer_2nde, city: 'Chatillon', coordinates: Coordinates.chatillon)
-      end
-      (InternshipOffer::PAGE_SIZE / 2).times do
-        create(:weekly_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris, zipcode: '75000')
-        create(:api_internship_offer, city: 'Paris', coordinates: Coordinates.paris, zipcode: '75000')
-      end
-      student = create(:student, :seconde)
-      assert_equal 'Paris', student.school.city
-      sign_in(student)
-      visit internship_offers_path
-      click_button 'Rechercher'
-      sleep 1
-      selector = '.fr-text.fr-py-1w.test-city.fr-text--sm.fr-text--grey-425'
-      within('.fr-test-internship-offers-container') do
-        assert_selector(selector, text: 'Paris', count: InternshipOffer::PAGE_SIZE - 2, wait: 5) # -2 because of the Chatillon offers
-      end
-      click_link 'Page suivante'
-      within('.fr-test-internship-offers-container') do
-        assert_selector(selector, text: 'Paris', count: 2, wait: 2)
+    # test is ok, code is wrong : Chatillon should come last
+    InternshipOffer.stub_const(:PAGE_SIZE, 2) do
+      travel_to Date.new(2025, 3, 1) do
+        2.times do
+          create(:weekly_internship_offer_2nde, city: 'Chatillon', coordinates: Coordinates.chatillon, zipcode: '92320')
+        end
+        (InternshipOffer::PAGE_SIZE / 2).times do
+          create(:weekly_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris, zipcode: '75000')
+          create(:api_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris, zipcode: '75000')
+        end
+        # PAGE_SIZE+ 2 offers now
+        student = create(:student, :seconde)
+        assert_equal 'Paris', student.school.city
+        sign_in(student)
+        visit internship_offers_path
+        click_button 'Rechercher'
+        selector = '.fr-text.fr-py-1w.test-city.fr-text--sm.fr-text--grey-425'
+        within('.fr-test-internship-offers-container') do
+          assert_selector(selector, text: 'Paris', count: InternshipOffer::PAGE_SIZE, wait: 2)
+        end
+        click_link 'Page suivante'
+        within('.fr-test-internship-offers-container') do
+          assert_selector(selector, text: 'Chatillon', count: 2, wait: 2)
+        end
       end
     end
   end
 
-  # test 'recommandation is shown when no offer is available' do
-  #   travel_to Date.new(2024, 9, 1) do
-  #     2.times do
-  #       create(:weekly_internship_offer_2nde, city: 'Montmorency', coordinates: Coordinates.montmorency)
-  #     end
-  #     student = create(:student, :seconde)
-  #     assert_equal 'Paris', student.school.city
-  #     sign_in(student)
-  #     visit internship_offers_path(latitude: 48.8589, longitude: 2.347, city: 'paris', radius: 5_000)
-  #     # there are no offers in Paris
-  #     assert_selector('.test-city', text: 'Montmorency',
-  #                                   count: 2, wait: 2)
-  #   end
-  # end
+  test 'reserved qpv offers are shown to students from qpv schools' do
+    travel_to Date.new(2024, 9, 1) do
+      school = create(:school, qpv: true)
+      student = create(:student, school: school, grade: Grade.seconde)
+      other_student = create(:student, grade: Grade.seconde)
+      internship_offer = create(:weekly_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris,
+                                                               zipcode: '75000', qpv: true)
+      sign_in(student)
+      visit internship_offers_path
+      click_button 'Rechercher'
+      assert_presence_of(internship_offer: internship_offer)
+      sign_out(student)
+
+      sign_in(other_student)
+      visit internship_offers_path
+      click_button 'Rechercher'
+      assert_absence_of(internship_offer: internship_offer)
+    end
+  end
+  test 'reserved rep/rep_plus offers are shown to students from rep or rep_plus schools' do
+    travel_to Date.new(2024, 9, 1) do
+      school = create(:school, rep_kind: 'rep')
+      student = create(:student, school: school, grade: Grade.seconde)
+      other_student = create(:student, grade: Grade.seconde)
+      internship_offer = create(:weekly_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris,
+                                                               zipcode: '75000', rep: true)
+      sign_in(student)
+      visit internship_offers_path
+      click_button 'Rechercher'
+      assert_presence_of(internship_offer: internship_offer)
+      sign_out(student)
+
+      sign_in(other_student)
+      visit internship_offers_path
+      click_button 'Rechercher'
+      assert_absence_of(internship_offer: internship_offer)
+    end
+  end
+
+  test 'recommandation is shown when no offer is available' do
+    travel_to Date.new(2024, 9, 1) do
+      2.times do
+        create(:weekly_internship_offer_2nde, city: 'Montmorency', coordinates: Coordinates.montmorency)
+      end
+      student = create(:student, :seconde)
+      assert_equal 'Paris', student.school.city
+      sign_in(student)
+      visit internship_offers_path(latitude: 48.8589, longitude: 2.347, city: 'paris', radius: 5_000)
+      # there are no offers in Paris
+      assert_selector('.test-city', text: 'Montmorency',
+                                    count: 2, wait: 2)
+    end
+  end
 
   # test 'search by grade works for visitors' do
   #   travel_to Date.new(2024, 9, 1) do
