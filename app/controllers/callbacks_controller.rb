@@ -86,6 +86,7 @@ class CallbacksController < ApplicationController
       redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
     end
 
+    student = student.add_responsible_data unless student.legal_representative_full_name.present?
     student.confirm
     student.save
 

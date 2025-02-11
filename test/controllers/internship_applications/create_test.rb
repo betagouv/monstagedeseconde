@@ -6,11 +6,15 @@ module InternshipApplications
   class CreateTest < ActionDispatch::IntegrationTest
     include Devise::Test::IntegrationHelpers
     include ActionMailer::TestHelper
+    include ThirdPartyTestHelpers
 
-    test 'GET #new internship application as student' do
+    test 'GET #new internship application as student with no former responsible details' do
       internship_offer = create(:weekly_internship_offer_3eme)
       school = create(:school)
-      student = create(:student, :with_phone, school:, class_room: create(:class_room, school:))
+      student = create(:student,
+                       :with_phone,
+                       school:,
+                       class_room: create(:class_room, school:))
       sign_in(student)
 
       get(new_internship_offer_internship_application_path(internship_offer))

@@ -221,4 +221,48 @@ module ThirdPartyTestHelpers
       )
       .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_userinfo_unknown.json'), headers: {})
   end
+
+  def stub_logout_educonnect
+    stub_request(:get, "#{ENV['EDUCONNECT_URL']}/idp/profile/oidc/logout")
+      .with(
+        headers: {
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization' => 'Bearer abc123',
+          'Host' => URI(ENV['EDUCONNECT_URL']).host,
+          'User-Agent' => 'Ruby'
+        }
+      )
+      .to_return(status: 200, body: '', headers: {})
+  end
+
+  def stub_omogen_auth
+    stub_request(:post, ENV['OMOGEN_OAUTH_URL'])
+      .with(
+        body: { 'client_id' => ENV['OMOGEN_CLIENT_ID'], 'client_secret' => ENV['OMOGEN_CLIENT_SECRET'],
+                'grant_type' => 'client_credentials' },
+        headers: {
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'Host' => URI(ENV['OMOGEN_OAUTH_URL']).host,
+          'User-Agent' => 'Ruby'
+        }
+      ).to_return(status: 200, body: { token: 'token' }.to_json, headers: {})
+  end
+
+  def stub_sygne_reponsible(ine)
+    stub_request(:get, "#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
+      .with(
+        headers: {
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization' => 'Bearer',
+          'Compression-Zip' => 'non',
+          'Host' => URI(ENV['SYGNE_URL']).host,
+          'User-Agent' => 'Ruby'
+        }
+      )
+      .to_return(status: 200, body: File.read('test/fixtures/files/signe_responsible.json'), headers: {})
+  end
 end
