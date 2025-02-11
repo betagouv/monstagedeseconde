@@ -15,7 +15,7 @@ module Presenters
         if is_first
           week.beginning_of_week_with_year_long
         elsif is_last
-          week.end_of_week_with_years_long
+          week.end_of_working_week_with_year
         else
           week.very_long_select_text_method
         end
