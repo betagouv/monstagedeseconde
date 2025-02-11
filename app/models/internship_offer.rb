@@ -232,6 +232,18 @@ class InternshipOffer < ApplicationRecord
 
   scope :by_department, ->(departments) { where(department: departments) }
 
+  scope :without_qpv, -> { where(qpv: false) }
+  scope :without_rep, -> { where(rep: false) }
+  scope :filtered_with_qpv, ->(user:) { user.student? && user.belongs_to_qpv_school? ? all : where(qpv: false) }
+  scope :filtered_with_rep, lambda { |user:|
+    user.student? && user.belongs_to_rep_or_rep_plus_school? ? all : where(rep: false)
+  }
+  scope :filtered_by_qpv_and_rep, ->(user:) { filtered_with_qpv(user:).filtered_with_rep(user:) }
+
+  # -------------------------
+  # States
+  # ----------------
+
   aasm do
     state :published, initial: true
     state :removed,
