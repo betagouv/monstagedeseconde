@@ -77,7 +77,7 @@ export default class extends Controller {
     localStorage.removeItem('close_school_manager')
   }
 
-  signupConnected() {
+  connect() {
     const emailHintElement = this.emailHintTarget;
     const emailInputElement = this.emailInputTarget;
     const $hint = $(emailHintElement);
