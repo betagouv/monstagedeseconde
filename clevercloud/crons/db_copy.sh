@@ -7,5 +7,6 @@ if [[ "$INSTANCE_NUMBER" != "0" ]]; then
 fi
 
 cd ${APP_HOME}
-
+mkdir -p storage/tmp
+chmod 777 storage/tmp
 bundle exec rails sys:dl_upl_prod_sql
