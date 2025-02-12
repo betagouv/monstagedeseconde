@@ -148,7 +148,7 @@ namespace :sys do
 
   desc 'download an upload a sql copy of the production database'
   task :dl_upl_prod_sql, [] => :environment do
-    if Rails.env.production?
+    if Rails.env.staging?
       Rake::Task['sys:dl_prod_sql'].invoke
       Rake::Task['sys:upl_prod_sql'].invoke
     end
