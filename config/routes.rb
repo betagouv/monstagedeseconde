@@ -269,7 +269,8 @@ Rails.application.routes.draw do
   get '/inscription-permanence', to: 'pages#register_to_webinar'
   get '/recherche-entreprises', to: 'pages#search_companies'
   post '/visitor_apply', to: 'pages#visitor_apply'
-  get '/educonnect_deconnexion_responsable', to: 'pages#educonnect_logout_responsible'
+  get '/educonnect_deconnexion_responsable', to: 'pages#educonnect_logout_responsible',
+                                             as: :educonnect_logout_responsible
   # TODO
   # To be removed after june 2023
   get '/register_to_webinar', to: 'pages#register_to_webinar'
