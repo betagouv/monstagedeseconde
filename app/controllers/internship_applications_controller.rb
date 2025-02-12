@@ -208,9 +208,9 @@ class InternshipApplicationsController < ApplicationController
     student.legal_representative_email = internship_application.student_legal_representative_email
     student.legal_representative_phone = internship_application.student_legal_representative_phone
     if student.fake_email?
-      student.update_columns(email: internship_application.student_email)
+      student.update_column(:email, internship_application.student_email.downcase)
     else
-      student.email = internship_application.student_email
+      student.email = internship_application.student_email.downcase
     end
     student.phone = internship_application.student_phone
     student.address = internship_application.student_address

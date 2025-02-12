@@ -19,8 +19,9 @@ class UsersController < ApplicationController
 
   def update
     authorize! :update, current_user
+    user_params[:email] = user_params[:email].downcase if user_params[:email].present?
     if current_user.fake_email? && user_params[:email].present?
-      current_user.update_columns(email: user_params[:email])
+      current_user.update_column(:email, user_params[:email])
       current_user.update!(user_params.except(:email))
     elsif user_params[:email].present?
       current_user.update!(user_params)
