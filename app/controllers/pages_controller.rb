@@ -29,9 +29,13 @@ class PagesController < ApplicationController
   end
 
   def student_landing
-    @faqs = get_faqs('student')
-    @resources = get_resources('student')
-    @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    if employers_only?
+      redirect_to root_path
+    else
+      @faqs = get_faqs('student')
+      @resources = get_resources('student')
+      @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    end
   end
 
   def pro_landing
@@ -40,9 +44,17 @@ class PagesController < ApplicationController
   end
 
   def school_management_landing
-    @faqs = get_faqs('education')
-    @resources = get_resources('education')
-    @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    if employers_only?
+      puts '===== + = + = + ========='
+      puts 'BIG FAT TEST  '
+      puts '===== + = + = + ========='
+      puts ''
+      redirect_to root_path
+    else
+      @faqs = get_faqs('education')
+      @resources = get_resources('education')
+      @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    end
   end
 
   def statistician_landing
