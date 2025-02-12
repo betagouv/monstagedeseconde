@@ -4,7 +4,13 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @school = create(:school, code_uai: '0590121L')
-    @student = create(:student, ine: '1234567890', confirmed_at: nil)
+    @student = create(:student,
+                      ine: '1234567890',
+                      confirmed_at: nil,
+                      school: @school,
+                      legal_representative_email: nil,
+                      legal_representative_full_name: nil,
+                      legal_representative_phone: nil)
     @code = '123456'
     @state = 'abc'
     @nonce = 'def'
@@ -38,7 +44,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     fim_token_stub(@code)
     fim_teacher_userinfo_stub
 
-    get fim_callback_path, params: { code: @code, state: @state }
+    get fim_callback_path, params: { code: @code, state: @state, nonce: @nonce }
 
     assert_response :redirect
     assert_equal 1, User.count
@@ -66,6 +72,8 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     stub_omogen_auth
     stub_sygne_reponsible('1234567890')
     stub_logout_educonnect
+
+    puts "school uai : #{@school.code_uai}"
 
     get educonnect_callback_path, params: { code: @code, state: @state, nonce: @nonce }
 

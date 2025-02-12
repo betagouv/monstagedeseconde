@@ -83,8 +83,8 @@ module ThirdPartyTestHelpers
           'grant_type' => 'authorization_code',
           'redirect_uri' => ENV['FIM_REDIRECT_URI'],
           'scope' => 'openid stage profile email',
-          'state' => /.*/,
-          'nonce' => /.*/
+          'state' => 'abc',
+          'nonce' => 'def'
         },
         headers: {
           'Accept' => '*/*',
