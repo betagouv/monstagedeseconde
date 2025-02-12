@@ -14,6 +14,7 @@ module Presenters
     def self.from_school(school)
       school.class_rooms
             .order(:name)
+            .select { |class_room| class_room.name.present? }
     end
 
     def self.students_without_class_room(school)
