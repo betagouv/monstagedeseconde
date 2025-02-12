@@ -20,8 +20,11 @@ class InternshipOffersController < ApplicationController
         @params = query_params.merge(sector_ids: params[:sector_ids])
       end
       format.json do
+        t0 = Time.now
+        @internship_offers_seats = 0
         @internship_offers = finder.all.includes(:sector, :employer)
-        @internship_offers_seats = finder.all_without_page.map(&:max_candidates).sum
+        # seats
+        @internship_offers_seats = @internship_offers.sum(&:max_candidates)
 
         # @is_suggestion = @internship_offers.to_a.count.zero?
         # @internship_offers = alternative_internship_offers if @is_suggestion
@@ -34,6 +37,8 @@ class InternshipOffersController < ApplicationController
           # isSuggestion: @is_suggestion
         }
         current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
+        t1 = Time.now
+        Rails.logger.info("Search took #{t1 - t0} seconds")
         render json: data, status: 200
       end
     end

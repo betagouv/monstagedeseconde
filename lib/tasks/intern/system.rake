@@ -1,12 +1,16 @@
 require 'pretty_console'
 
 namespace :sys do
+  def timestamp
+    DateTime.now.to_s.gsub(/:/, '_').split(/\+/).first
+  end
+
   def db_file_name
-    "storage/tmp/#{Date.today}_1E1S_prod.dump"
+    "storage/tmp/#{timestamp}_1E1S_prod.dump"
   end
 
   def db_file_name_sql
-    "storage/tmp/#{Date.today}_1E1S_prod.sql"
+    "storage/tmp/#{timestamp}_1E1S_prod.sql"
   end
 
   def reset_file_name
