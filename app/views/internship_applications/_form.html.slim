@@ -59,7 +59,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                         value: @internship_application.internship_offer.period,
                         data: {:'internship-application-form-target' => "periodSelect",
                               action: "change->internship-application-form#updatePeriod"},
-                              required: true, 
+                              required: true,
                               disabled: true }
 
       div class="form-group fr-mt-2w"
@@ -99,14 +99,14 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     options: { required: true},
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
-      - if f.object.student_phone.present? || f.object.student.phone.present?
+      - if f.object.student.phone.present? || f.object.student_phone.present?
         .row.fr-my-2w
           .col-12
             = render '/inputs/dsfr_input_field',
                     field: :student_phone,
                     f: f,
                     object: f.object,
-                    value: f.object.student_phone || f.object.student.phone || f.object.previous_student_phone,
+                    value:  f.object.student.phone || f.object.student_phone || f.object.previous_student_phone,
                     label: "Numéro de portable élève ou responsable légal",
                     required: true,
                     title: 'Numéro de mobile',

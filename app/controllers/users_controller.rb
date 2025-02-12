@@ -19,7 +19,14 @@ class UsersController < ApplicationController
 
   def update
     authorize! :update, current_user
-    current_user.update!(user_params)
+    if current_user.fake_email? && user_params[:email].present?
+      current_user.update_columns(email: user_params[:email])
+      current_user.update!(user_params.except(:email))
+    elsif user_params[:email].present?
+      current_user.update!(user_params)
+    else
+      current_user.update!(user_params.except(:email))
+    end
     redirect_back fallback_location: account_path,
                   flash: { success: current_flash_message }
   rescue ActiveRecord::RecordInvalid

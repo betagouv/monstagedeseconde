@@ -241,7 +241,7 @@ module Users
     end
 
     def fake_email?
-      email.present? && email.split('@').last == "#{school.code_uai}.fr"
+      email.present? && email.split('@').last.downcase == "#{school.code_uai}.fr".downcase
     end
   end
 end
