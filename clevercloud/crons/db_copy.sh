@@ -1,5 +1,6 @@
 #!/bin/bash -l
 #see: https://www.clever-cloud.com/doc/tools/crons/
+set -x
 
 if [[ "$INSTANCE_NUMBER" != "0" ]]; then
     echo "Instance number is ${INSTANCE_NUMBER}. Stop here."
