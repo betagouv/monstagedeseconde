@@ -13,7 +13,8 @@ import { isMobile } from '../utils/responsive';
 import FlashMessage from './FlashMessage';
 import CityInput from './search_internship_offer/CityInput';
 
-const center = [48.866669, 2.33333];
+// France center
+const center = [46.603354, 1.888334];
 
 const pointerIcon = new L.Icon({
   iconUrl: activeMarker,
@@ -265,7 +266,7 @@ const InternshipOfferResults = ({ count, searchParams }) => {
             <div className="map-sticky-container">
               <MapContainer 
                 center={center} 
-                zoom={13} 
+                zoom={6} 
                 scrollWheelZoom={false}
               >
                 <TileLayer

@@ -36,7 +36,7 @@ class InternshipApplicationsController < ApplicationController
     set_internship_offer
     authorize! :apply, @internship_offer
 
-    if params[:internship_application][:week_ids].present?
+    if params[:internship_application][:week_ids].present? && params[:internship_application][:week_ids].include?(',')
       params[:internship_application][:week_ids] =
         params[:internship_application][:week_ids].split(',')
     end
