@@ -152,9 +152,24 @@ namespace :sys do
 
   desc 'download an upload a sql copy of the production database'
   task :dl_upl_prod_sql, [] => :environment do
-    if Rails.env.staging?
-      Rake::Task['sys:dl_prod_sql'].invoke
-      Rake::Task['sys:upl_prod_sql'].invoke
+    if Rails.env.staging? || Rails.env.development?
+      chosen_db_name = db_file_name_sql
+      PrettyConsole.announce_task 'Downloading production database' do
+        system('pg_dump -c --clean --if-exists -Fp --encoding=UTF-8 --no-owner --no-password  ' \
+        "-d #{ENV['PRODUCTION_DATABASE_URI']} > #{chosen_db_name}")
+      end
+
+      PrettyConsole.announce_task 'Downloading production database' do
+        system("PGPASSWORD=#{ENV['CLEVER_PRODUCTION_COPY_DB_PASSWORD']} psql " \
+                "-h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
+                "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
+                "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
+                "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
+                "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
+                "-f #{chosen_db_name}")
+      end
+    else
+      PrettyConsole.puts_in_red 'You cannot run this task only wiht dev or staging environment'
     end
   end
 end
