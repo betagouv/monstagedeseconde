@@ -8,7 +8,7 @@ module Dashboard
     def index
       authorize! :index, School
       query = School
-      query = query.all if params[:visible].blank? || params[:kind].blank?
+      query = query.all if params[:visible].blank? || params[:rep_kind].blank?
       query = query.where(visible: parsed_visible_param) if params[:visible].present?
       query = query.where(rep_kind: parsed_kind_param) if internship_weeks_params[:rep_kind].present?
       query = query.where(qpv: internship_weeks_params[:qpv]) if internship_weeks_params[:qpv].present?
