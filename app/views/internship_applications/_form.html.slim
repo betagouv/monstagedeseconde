@@ -16,7 +16,9 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
     = f.hidden_field :internship_offer_type
 
     fieldset.mb-4
-      = f.hidden_field :week_ids, data: {:'internship-application-form-target' => "weekIds"}
+       
+      - if current_user.troisieme_ou_quatrieme?
+        = f.hidden_field :week_ids, data: {:'internship-application-form-target' => "weekIds"}
 
       - if current_user.troisieme_ou_quatrieme?
         - unless current_user.school.has_weeks_on_current_year?
@@ -49,7 +51,9 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
           = label_tag :period, 'Période de stage',
                   class: 'fr-label fr-hint',
                   style: 'color: #929292'
-
+          
+          = f.hidden_field :week_ids, value: period_value
+          
           = select_tag :period,
                       options_for_select(period_options,
                                       @internship_application.internship_offer.period),
