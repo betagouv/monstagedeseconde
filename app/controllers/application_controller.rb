@@ -56,12 +56,9 @@ class ApplicationController < ActionController::Base
   end
 
   def employers_only?
-    @employers_only = if authorized_ip?
-                        false
-                      else
-                        ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
-                      end
-    @employers_only
+    return false if authorized_ip?
+
+    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
   end
 
   def authorized_ip?

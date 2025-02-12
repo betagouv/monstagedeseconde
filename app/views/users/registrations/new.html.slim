@@ -1,5 +1,5 @@
-- if params[:identity_token]
-  = render 'identities/register'
+/ - if params[:identity_token]
+/   = render 'identities/register'
 - else
   - errors = Presenters::Error.new(errors: resource.errors) if resource&.errors&.any?
   - as = params[:as]
