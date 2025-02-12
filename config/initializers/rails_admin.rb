@@ -60,6 +60,7 @@ RailsAdmin.config do |config|
   config.actions do
     dashboard do
       show_in_navigation false
+      statistics false
     end
     root :kpi do
       show_in_navigation false
@@ -120,7 +121,6 @@ RailsAdmin.config do |config|
     'Tranformer un compte' => '/utilisateurs/transform_input',
     'Stats' => stats_path,
     'Sidekiq' => '/sidekiq',
-    'Zammad (Support)' => 'https://monstage.zammad.com',
     'AB Testing' => '/split'
   }
 end
