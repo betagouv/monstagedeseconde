@@ -1,5 +1,5 @@
   [
-    "*/15 * * * *$ROOT/clevercloud/crons/db_copy.sh",
+    "*/15 * * * * $ROOT/clevercloud/crons/db_copy.sh",
     "0 6 * * * $ROOT/clevercloud/crons/internship_offers_unpublish.sh",
     "0 3 * * 2,5 $ROOT/clevercloud/crons/internship_application_expirers.sh",
     "0 4 * * 1 $ROOT/clevercloud/crons/confidentiality_cleaning.sh",
