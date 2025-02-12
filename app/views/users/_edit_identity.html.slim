@@ -46,7 +46,7 @@
                                                  required: true,
                                                  disabled: true }
           - elsif current_user.student? && current_user.ine.present?
-            - value = current_user.fake_email? '' : current_user.email
+            - value = current_user.fake_email? ? '' : current_user.email
             = f.text_field :email, value: value, **common_options
           - elsif current_user.statistician?
             = f.text_field :email, readonly: true, **common_options
