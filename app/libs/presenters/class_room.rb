@@ -9,12 +9,10 @@ module Presenters
       Null.instance
     end
 
-
-
     def self.from_school(school)
       school.class_rooms
             .order(:name)
-            .select { |class_room| class_room.name.present? }
+            .select { |class_room| class_room.try(:name).present? }
     end
 
     def self.students_without_class_room(school)
