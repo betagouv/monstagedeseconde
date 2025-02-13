@@ -197,8 +197,8 @@ class InternshipOffersController < ApplicationController
         can_manage_favorite: can?(:create, Favorite),
         can_read_employer_name: can?(:read_employer_name, internship_offer),
         fits_for_seconde: internship_offer.fits_for_seconde?,
-        fits_for_troisieme_or_quatrieme: internship_offer.fits_for_troisieme_or_quatrieme?
-        # available_weeks_count: internship_offer.presenter.available_weeks_count
+        fits_for_troisieme_or_quatrieme: internship_offer.fits_for_troisieme_or_quatrieme?,
+        available_weeks_count: internship_offer.presenter.available_weeks_count
       }
     end
   end
