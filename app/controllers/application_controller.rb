@@ -56,21 +56,7 @@ class ApplicationController < ActionController::Base
   end
 
   def employers_only?
-    return false if authorized_ip?
-
     ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
-  end
-
-  def authorized_ip?
-    return true if session[:authorized_ip]
-
-    authorized_ip_list = ENV.fetch('AUTHORIZED_IPS', '').strip.split(/\s+/)
-    if request&.ip&.in?(authorized_ip_list)
-      session[:authorized_ip] = true
-      true
-    else
-      false
-    end
   end
 
   def user_presenter
