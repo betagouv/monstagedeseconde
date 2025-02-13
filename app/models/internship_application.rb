@@ -19,7 +19,7 @@ class InternshipApplication < ApplicationRecord
     expired
     canceled_by_student_confirmation
     canceled_by_student
-    rejected14
+    rejected
     expired_by_student
     canceled_by_employer
     submitted
