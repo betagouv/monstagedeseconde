@@ -36,9 +36,13 @@ class InternshipApplicationsController < ApplicationController
     set_internship_offer
     authorize! :apply, @internship_offer
 
-    if params[:internship_application][:week_ids].present? && params[:internship_application][:week_ids].include?(',')
-      params[:internship_application][:week_ids] =
-        params[:internship_application][:week_ids].split(',')
+    if params[:internship_application][:week_ids].present?
+      if params[:internship_application][:week_ids].is_a?(String)
+        params[:internship_application][:week_ids] = [params[:internship_application][:week_ids]]
+      end
+      if params[:internship_application][:week_ids].include?(',')
+        params[:internship_application][:week_ids] = params[:internship_application][:week_ids].split(',')
+      end
     end
 
     appli_params = { user_id: current_user.id }.merge(create_internship_application_params)
