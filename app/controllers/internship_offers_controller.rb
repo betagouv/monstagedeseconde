@@ -26,14 +26,7 @@ class InternshipOffersController < ApplicationController
                                    .includes(:sector, :employer)
 
         # seats
-        # Rails.cache.fetch("total_offers_#{current_user_or_visitor.try(:id)}", expires_in: 2.minutes) do
-        # @internship_offers_seats = 12 # finder.all_without_page.pluck(:max_candidates).sum
-        # InternshipOffer.in_the_future.pluck(:max_candidates).sum
-        # end
-
-        puts '--------------------------------'
-        puts params
-        puts '--------------------------------'
+        # @internship_offers_seats = finder.all_without_page.pluck(:max_candidates).sum
 
         sql = if params[:latitude].present? && params[:longitude].present?
                 <<-SQL
