@@ -22,12 +22,69 @@ class InternshipOffersController < ApplicationController
       format.json do
         t0 = Time.now
         @internship_offers_seats = 0
-        @internship_offers = finder.all.includes(:sector)
+        @internship_offers = finder.all
+                                   .includes(:sector, :employer)
 
         # seats
         # Rails.cache.fetch("total_offers_#{current_user_or_visitor.try(:id)}", expires_in: 2.minutes) do
-        @internship_offers_seats = finder.all_without_page.pluck(:max_candidates).sum
+        # @internship_offers_seats = 12 # finder.all_without_page.pluck(:max_candidates).sum
+        # InternshipOffer.in_the_future.pluck(:max_candidates).sum
         # end
+
+        puts '--------------------------------'
+        puts params
+        puts '--------------------------------'
+
+        sql = if params[:latitude].present? && params[:longitude].present?
+                <<-SQL
+            SELECT SUM(internship_offers.max_candidates)
+            FROM internship_offers
+            INNER JOIN internship_offer_stats#{' '}
+              ON internship_offer_stats.internship_offer_id = internship_offers.id
+            WHERE internship_offer_stats.remaining_seats_count > 0
+              AND last_date > '2025-02-13 12:23:21.417042'
+              AND last_date <= '2025-08-06'
+              AND internship_offers.discarded_at IS NULL
+              AND internship_offers.aasm_state = 'published'
+              AND internship_offers.qpv = FALSE
+              AND internship_offers.rep = FALSE
+              AND internship_offers.hidden_duplicate = FALSE
+              AND (
+                6371 * acos(
+                  cos(radians($1)) *#{' '}
+                  cos(radians(ST_Y(coordinates::geometry))) *#{' '}
+                  cos(radians(ST_X(coordinates::geometry)) - radians($2)) +#{' '}
+                  sin(radians($1)) *#{' '}
+                  sin(radians(ST_Y(coordinates::geometry)))
+                ) * 1000
+              ) <= $3
+                SQL
+              else
+                <<-SQL
+            SELECT SUM(internship_offers.max_candidates)
+            FROM internship_offers
+            INNER JOIN internship_offer_stats#{' '}
+              ON internship_offer_stats.internship_offer_id = internship_offers.id
+            WHERE internship_offer_stats.remaining_seats_count > 0
+              AND last_date > '2025-02-13 12:23:21.417042'
+              AND last_date <= '2025-08-06'
+              AND internship_offers.discarded_at IS NULL
+              AND internship_offers.aasm_state = 'published'
+              AND internship_offers.qpv = FALSE
+              AND internship_offers.rep = FALSE
+              AND internship_offers.hidden_duplicate = FALSE
+                SQL
+              end
+
+        @internship_offers_seats = if params[:latitude].present? && params[:longitude].present?
+                                     ActiveRecord::Base.connection.exec_query(
+                                       sql,
+                                       'SQL',
+                                       [params[:latitude].to_f, params[:longitude].to_f, params[:radius].to_i]
+                                     ).first['sum'] || 0
+                                   else
+                                     ActiveRecord::Base.connection.exec_query(sql).first['sum'] || 0
+                                   end
 
         # @is_suggestion = @internship_offers.to_a.count.zero?
         # @internship_offers = alternative_internship_offers if @is_suggestion
