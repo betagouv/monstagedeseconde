@@ -503,7 +503,7 @@ class InternshipApplication < ApplicationRecord
     options = Rails.configuration.action_mailer.default_url_options
     target = dashboard_students_internship_application_url(
       student_id: student.id,
-      id:,
+      uuid:,
       **options
     )
     target = "#{target}?student_id=#{student.id}"
