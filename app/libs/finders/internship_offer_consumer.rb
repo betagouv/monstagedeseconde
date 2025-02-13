@@ -36,7 +36,6 @@ module Finders
 
     def light_kept_published_offers_query
       InternshipOffer.kept
-                     .includes(:sector, :weeks, :internship_offer_weeks, :grades)
                      .published
                      .with_seats
     end
