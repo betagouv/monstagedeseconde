@@ -22,11 +22,11 @@ class InternshipOffersController < ApplicationController
       format.json do
         t0 = Time.now
         @internship_offers_seats = 0
-        @internship_offers = finder.all.includes(:sector, :employer)
+        @internship_offers = finder.all.includes(:sector)
 
         # seats
         # Rails.cache.fetch("total_offers_#{current_user_or_visitor.try(:id)}", expires_in: 2.minutes) do
-        @internship_offers_seats = finder.all_without_page.map(&:max_candidates).sum
+        @internship_offers_seats = finder.all_without_page.pluck(:max_candidates).sum
         # end
 
         # @is_suggestion = @internship_offers.to_a.count.zero?
@@ -197,8 +197,8 @@ class InternshipOffersController < ApplicationController
         can_manage_favorite: can?(:create, Favorite),
         can_read_employer_name: can?(:read_employer_name, internship_offer),
         fits_for_seconde: internship_offer.fits_for_seconde?,
-        fits_for_troisieme_or_quatrieme: internship_offer.fits_for_troisieme_or_quatrieme?,
-        available_weeks_count: internship_offer.presenter.available_weeks_count
+        fits_for_troisieme_or_quatrieme: internship_offer.fits_for_troisieme_or_quatrieme?
+        # available_weeks_count: internship_offer.presenter.available_weeks_count
       }
     end
   end
