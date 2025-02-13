@@ -22,11 +22,13 @@ class InternshipOffersController < ApplicationController
       format.json do
         t0 = Time.now
         @internship_offers_seats = 0
-        @internship_offers = finder.all.includes(:sector, :employer)
+        @internship_offers = finder.all.includes(:sector, :employer, :weeks, internship_offer_weeks: :week,
+                                                                             internship_offer_grades: :grade)
+
         # seats
-        Rails.cache.fetch("total_offers_#{current_user_or_visitor.try(:id)}", expires_in: 2.minutes) do
-          @internship_offers_seats = finder.all_without_page.map(&:max_candidates).sum
-        end
+        # Rails.cache.fetch("total_offers_#{current_user_or_visitor.try(:id)}", expires_in: 2.minutes) do
+        @internship_offers_seats = finder.all_without_page.map(&:max_candidates).sum
+        # end
 
         # @is_suggestion = @internship_offers.to_a.count.zero?
         # @internship_offers = alternative_internship_offers if @is_suggestion
