@@ -613,14 +613,6 @@ class Ability
   end
 
   def employers_only?
-    return false if authorized_ip?
-
     ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
-  end
-
-  def authorized_ip?
-    return true if Rails.env.development? || Rails.env.test?
-
-    session[:authorized_ip] == true
   end
 end
