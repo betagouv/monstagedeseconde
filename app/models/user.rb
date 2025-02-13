@@ -245,6 +245,7 @@ class User < ApplicationRecord
   def belongs_to_rep_school? = false
   def belongs_to_rep_plus_school? = false
   def belongs_to_rep_or_rep_plus_school? = false
+  def fake_emails? = false
 
   def fetch_current_area_notification = nil
   def create_signature_phone_token = nil
