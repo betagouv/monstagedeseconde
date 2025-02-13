@@ -24,7 +24,7 @@ class InternshipOffersController < ApplicationController
         @internship_offers_seats = 0
         @internship_offers = finder.all.includes(:sector, :employer)
         # seats
-        @internship_offers_seats = @internship_offers.sum(&:max_candidates)
+        @internship_offers_seats = finder.all_without_page.map(&:max_candidates).sum
 
         # @is_suggestion = @internship_offers.to_a.count.zero?
         # @internship_offers = alternative_internship_offers if @is_suggestion
