@@ -22,8 +22,7 @@ class InternshipOffersController < ApplicationController
       format.json do
         t0 = Time.now
         @internship_offers_seats = 0
-        @internship_offers = finder.all.includes(:sector, :employer, :weeks, internship_offer_weeks: :week,
-                                                                             internship_offer_grades: :grade)
+        @internship_offers = finder.all.includes(:sector, :employer)
 
         # seats
         # Rails.cache.fetch("total_offers_#{current_user_or_visitor.try(:id)}", expires_in: 2.minutes) do
