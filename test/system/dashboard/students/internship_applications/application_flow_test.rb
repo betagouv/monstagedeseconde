@@ -67,6 +67,67 @@ module Dashboard
         # form_student_value = find('input[name="internship_application[student_phone]"]').value.gsub(/\s+/, '')
         # assert_equal former_student_phone, form_student_value
       end
+
+      test '2nde student faulty application fails gracefully' do
+        school = create(:school, :with_school_manager)
+        employer, internship_offer = create_employer_and_offer_2nde
+        student = create(:student, :seconde, phone: '+2620625852585', school:, email: nil)
+        # new_email = 'tests@free.fr'
+        sign_in(student)
+        visit internship_offers_path
+        click_on internship_offer.title
+        all('.fr-btn', text: 'Postuler').first.click
+        find('#internship_application_motivation', visible: false).set('Le dev ça motive')
+        # fill_in 'Adresse électronique (email)', with: new_email
+        click_on 'Valider ma candidature'
+        click_on 'Envoyer ma candidature'
+        find('.fr-alert--error strong', text: 'Contact email')
+        find('.fr-alert--error ', text: "n'est pas valide")
+      end
+
+      test '3eme student faulty application fails gracefully' do
+        travel_to Date.new(2024, 9, 3) do
+          employer, internship_offer = create_employer_and_offer_3eme
+          school = create(:school, :with_school_manager, weeks: internship_offer.weeks)
+          student = create(:student, :troisieme, school:, phone: '+2620625852585', email: nil)
+          assert student.grade.troisieme_ou_quatrieme?
+          assert student.grade == Grade.troisieme
+          refute_equal [], (student.school.weeks & internship_offer.weeks).to_a
+          # new_email = 'tests@free.fr'
+          sign_in(student)
+          visit internship_offer_path(internship_offer)
+          all('.fr-btn', text: 'Postuler').first.click
+          find('#internship_application_motivation', visible: false).set('Le dev ça motive')
+          # fill_in 'Adresse électronique (email)', with: new_email
+          click_on 'Valider ma candidature'
+          click_on 'Envoyer ma candidature'
+          find('.fr-alert--error strong', text: 'Contact email')
+          find('.fr-alert--error ', text: "n'est pas valide")
+        end
+      end
+
+      test '3eme student faulty application (phone format) fails gracefully' do
+        travel_to Date.new(2024, 9, 3) do
+          employer, internship_offer = create_employer_and_offer_3eme
+          school = create(:school, :with_school_manager, weeks: internship_offer.weeks)
+          student = create(:student, :troisieme, school:, phone: '+2620625852585', email: nil)
+          assert student.grade.troisieme_ou_quatrieme?
+          assert student.grade == Grade.troisieme
+          refute_equal [], (student.school.weeks & internship_offer.weeks).to_a
+          # new_email = 'tests@free.fr'
+          sign_in(student)
+          visit internship_offer_path(internship_offer)
+          all('.fr-btn', text: 'Postuler').first.click
+          find('#internship_application_motivation', visible: false).set('Le dev ça motive')
+          fill_in 'Numéro de portable élève ou responsable légal', with: '1' * 15
+          byebug
+          # fill_in 'Adresse électronique (email)', with: new_email
+          click_on 'Valider ma candidature'
+          click_on 'Envoyer ma candidature'
+          find('.fr-alert--error strong', text: 'Contact email')
+          find('.fr-alert--error ', text: "n'est pas valide")
+        end
+      end
     end
   end
 end

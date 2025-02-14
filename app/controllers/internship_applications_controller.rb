@@ -54,6 +54,7 @@ class InternshipApplicationsController < ApplicationController
       save_personal_data(@internship_application)
       redirect_to destination
     else
+      @available_weeks = @internship_application.selectable_weeks
       log_error(object: @internship_application)
       render 'new', status: :bad_request
     end

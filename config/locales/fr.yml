@@ -460,6 +460,7 @@ fr:
       internship_application:
         student: Élève
         internship_offer: Offre
+        weeks: Semaines
         aasm_state:
           one: État
           drafted: brouillon
