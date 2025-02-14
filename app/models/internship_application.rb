@@ -101,7 +101,7 @@ class InternshipApplication < ApplicationRecord
     extended_duration = InternshipApplication::EXTENDED_DURATION + simple_duration
     expiration_not_extended_states.where('submitted_at < :date', date: simple_duration.ago).or(
       transfered.where('transfered_at < :date', date: extended_duration.ago)
-    )
+    ).joins(:student).where(student: { discarded_at: nil })
   }
 
   scope :filtering_discarded_students, lambda {
