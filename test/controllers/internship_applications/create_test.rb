@@ -372,7 +372,8 @@ module InternshipApplications
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
           student_email: 'julie@ms3e.fr',
-          student_phone: valid_phone_number
+          student_phone: valid_phone_number,
+          week_ids: [internship_offer.weeks.first.id]
         }
       }
 
@@ -388,7 +389,7 @@ module InternshipApplications
       student = student.reload
       assert_equal valid_phone_number, created_internship_application.student_phone
       assert_equal 'julie@ms3e.fr', created_internship_application.student_email
-      assert_nil student.phone # unchanged
+      assert_equal valid_phone_number, student.phone # changed
       assert_equal 'marc@ms3e.fr', student.email # unchanged
     end
 
@@ -439,7 +440,8 @@ module InternshipApplications
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
           student_email: student_2.email,
-          student_phone: '0600000000'
+          student_phone: '0600000000',
+          week_ids: [internship_offer.weeks.first.id]
         }
       }
 
