@@ -16,16 +16,12 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
     = f.hidden_field :internship_offer_type
 
     fieldset.mb-4
-       
       - if current_user.troisieme_ou_quatrieme?
         = f.hidden_field :week_ids, data: {:'internship-application-form-target' => "weekIds"}
-
-      - if current_user.troisieme_ou_quatrieme?
         - unless current_user.school.has_weeks_on_current_year?
           = render partial: "internship_applications/forms/student_missing_school_weeks"
         .fr-select-group
           = label_tag :week_id, 'Quelle semaine ?', class: 'required fr-label'
-
           = select_tag :week_id,
                       options_from_collection_for_select(@available_weeks, :id, :human_select_text_method, @internship_application.week_ids.try(:first)),
                       { prompt: 'Choisir une semaine',
@@ -51,9 +47,9 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
           = label_tag :period, 'Période de stage',
                   class: 'fr-label fr-hint',
                   style: 'color: #929292'
-          
+
           = f.hidden_field :week_ids, value: period_value
-          
+
           = select_tag :period,
                       options_for_select(period_options,
                                       @internship_application.internship_offer.period),
@@ -62,9 +58,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                         disabled: true,
                         value: @internship_application.internship_offer.period,
                         data: {:'internship-application-form-target' => "periodSelect",
-                              action: "change->internship-application-form#updatePeriod"},
-                              required: true,
-                              disabled: true }
+                              action: "change->internship-application-form#updatePeriod"}}
 
       div class="form-group fr-mt-2w"
         = f.label :motivation,
@@ -100,7 +94,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
                     hint: "Veuillez saisir une adresse email valide, sans espace ni majuscule.",
                     title: 'Adresse électronique',
-                    options: { required: true},
+                    options: { required: true },
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
       - if f.object.student.phone.present? || f.object.student_phone.present?
@@ -112,9 +106,9 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     object: f.object,
                     value:  f.object.student.phone || f.object.student_phone || f.object.previous_student_phone,
                     label: "Numéro de portable élève ou responsable légal",
-                    required: true,
-                    title: 'Numéro de mobile',
                     pattern: phone_pattern,
+                    title: 'Numéro de mobile',
+                    options: { required: true },
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
       - else
