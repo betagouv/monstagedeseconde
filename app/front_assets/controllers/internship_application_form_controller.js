@@ -20,7 +20,7 @@ export default class extends Controller {
     if (selectedValue) {
       $(this.weekIdsTarget).attr('name', 'internship_application[week_ids][]').val(selectedValue);
     } else {
-      $(this.weekIdsTarget).val('');
+      $(this.weekIdsTarget).val([]);
     }
   }
 

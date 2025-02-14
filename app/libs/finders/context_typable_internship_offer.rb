@@ -65,9 +65,9 @@ module Finders
     end
 
     def common_filter
+      # keyword
       query = yield
       %i[
-        keyword
         sector_ids
         week_ids
         school_year
