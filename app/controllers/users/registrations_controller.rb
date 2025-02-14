@@ -18,7 +18,9 @@ module Users
     end
 
     def choose_profile
+      @state = generate_state
       @fim_url = build_fim_url
+      @educonnect_url = build_educonnect_url
     end
 
     def confirmation_standby
@@ -316,6 +318,27 @@ module Users
       cookies[:state] = oauth_params[:state]
 
       ENV['FIM_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
+    end
+
+    def build_educonnect_url
+      oauth_params = {
+        redirect_uri: ENV['EDUCONNECT_REDIRECT_URI'],
+        client_id: ENV['EDUCONNECT_CLIENT_ID'],
+        scope: 'openid profile ect.scope.cnx ect.scope.stage',
+        response_type: 'code',
+        state: @state,
+        nonce: SecureRandom.uuid
+      }
+
+      cookies[:state] = oauth_params[:state]
+
+      ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
+    end
+
+    def generate_state
+      state = SecureRandom.uuid
+      cookies[:state] = state
+      state
     end
   end
 end
