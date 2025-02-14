@@ -93,11 +93,17 @@ module InternshipApplications
       start_date = Date.new(2020, 3, 1)
       internship_application = nil
       travel_to start_date do
+        student = create(:student)
         weeks = Week.selectable_from_now_until_end_of_school_year.first(2).first(1)
         internship_offer = create(:weekly_internship_offer_2nde)
         internship_application = create(:weekly_internship_application, :submitted,
                                         internship_offer:,
                                         submitted_at: start_date)
+        create(:weekly_internship_application, :submitted,
+               internship_offer:,
+               student: student,
+               submitted_at: start_date)
+        student.anonymize(send_email: false)
         assert_equal 0, InternshipApplication.expirable.count
       end
       travel_to start_date + InternshipApplication::EXPIRATION_DURATION + 7.days do
