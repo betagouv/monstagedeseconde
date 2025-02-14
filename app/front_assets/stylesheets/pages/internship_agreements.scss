@@ -92,14 +92,14 @@ $custom-grey: rgb(51,51,51);
 .required-form-field {
   background: url("../images/yellow_sign.svg") no-repeat top right;
 }
-.trix-header-vanisher {
-  trix-toolbar{
-    display: none;
-  }
-  trix-editor:read-only{
-    background-color: $secondary;
-  }
-}
+// .trix-header-vanisher {
+//   trix-toolbar{
+//     display: none;
+//   }
+//   trix-editor:read-only{
+//     background-color: $secondary;
+//   }
+// }
 .dot {
   display: inline-block;
   &.dot-success{
