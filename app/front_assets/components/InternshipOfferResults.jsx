@@ -195,7 +195,7 @@ const InternshipOfferResults = ({ count, searchParams }) => {
                       <>
                         <div className="h4 mb-0" id="internship-offers-count">
                           <div className="strong">
-                            {internshipOffersSeats} stage{internshipOffersSeats > 1 ? 's' : ''} disponible{internshipOffersSeats > 1 ? 's' : ''}
+                            {internshipOffersSeats.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} stage{internshipOffersSeats > 1 ? 's' : ''} disponible{internshipOffersSeats > 1 ? 's' : ''}
                           </div>
                         </div>
                       </>

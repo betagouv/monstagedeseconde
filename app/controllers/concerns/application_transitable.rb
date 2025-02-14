@@ -25,9 +25,12 @@ module ApplicationTransitable
           redirect_path = current_user ? current_user.custom_candidatures_path(extra_parameter) : root_path
           redirect_to redirect_path, flash: { success: update_flash_message }
         end
-      else
+      elsif current_user
         redirect_back fallback_location: current_user.custom_dashboard_path,
-                      flash: { success: 'Impossible de traiter votre requête, veuillez contacter notre support' }
+                      flash: { notice: 'Impossible de traiter votre requête, veuillez contacter notre support' }
+      else
+        redirect_back fallback_location: root_path,
+                      flash: { notice: 'Impossible de traiter votre requête, veuillez contacter notre support' }
       end
     rescue AASM::InvalidTransition => e
       redirect_back fallback_location: current_user ? current_user.custom_dashboard_path || root_path : root_path,

@@ -133,6 +133,67 @@ module InternshipOffers::InternshipApplications
       assert_equal 1, InternshipAgreement.count
     end
 
+    # test patch when student click on the link in the email to approve
+    test 'PATCH #update with approve! when student click on the link in the email to approve and is not signed in' do
+      internship_application = create(:weekly_internship_application, :validated_by_employer)
+      sgid = internship_application.to_sgid(expires_in: InternshipApplication::MAGIC_LINK_EXPIRATION_DELAY).to_s
+
+      params = { transition: :approve!,
+                 sgid: sgid,
+                 student_id: internship_application.student.id,
+                 internship_offer_id: internship_application.internship_offer.id,
+                 uuid: internship_application.uuid }
+
+      assert_changes -> { InternshipAgreement.count }, from: 0, to: 1 do
+        patch(
+          dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
+                                                                 uuid: internship_application.uuid), params: params
+        )
+      end
+
+      assert_redirected_to root_path
+    end
+    test 'PATCH #update with approve! when student click on the link in the email to approve and is not signed in and wrong sgid' do
+      internship_application = create(:weekly_internship_application, :validated_by_employer)
+      sgid = 'abc'
+
+      params = { transition: :approve!,
+                 sgid: sgid,
+                 student_id: internship_application.student.id,
+                 internship_offer_id: internship_application.internship_offer.id,
+                 uuid: internship_application.uuid }
+
+      assert_no_changes -> { InternshipAgreement.count } do
+        patch(
+          dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
+                                                                 uuid: internship_application.uuid), params: params
+        )
+      end
+
+      assert_redirected_to root_path
+      assert_equal "Vous n'êtes pas autorisé à effectuer cette action.", flash[:danger]
+    end
+    test 'PATCH #update with coucou! when student click on the link in the email and is not signed in' do
+      internship_application = create(:weekly_internship_application, :validated_by_employer)
+      sgid = internship_application.to_sgid(expires_in: InternshipApplication::MAGIC_LINK_EXPIRATION_DELAY).to_s
+
+      params = { transition: :coucou!,
+                 sgid: sgid,
+                 student_id: internship_application.student.id,
+                 internship_offer_id: internship_application.internship_offer.id,
+                 uuid: internship_application.uuid }
+
+      assert_no_changes -> { InternshipAgreement.count } do
+        patch(
+          dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
+                                                                 uuid: internship_application.uuid), params: params
+        )
+      end
+
+      assert_redirected_to root_path
+      assert_equal 'Impossible de traiter votre requête, veuillez contacter notre support', flash[:notice]
+    end
+
     test 'PATCH #update with approve! when employer is an operator it does not create internship agreement' do
       school = create(:school, :with_school_manager)
       class_room = create(:class_room, school:)
