@@ -84,7 +84,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
 
       .row.fr-mt-2w.fr-mb-3w
         .col-12
-          - student_email = f.object.student.fake_email? ? '' : f.object.student_email || f.object.previous_student_email
+          - student_email = f.object.student.fake_email? ? '' : f.object.student_email || f.object.previous_student_email || (current_user.student? && current_user.email)
           = render '/inputs/dsfr_input_field',
                     field: :student_email,
                     f: f,
