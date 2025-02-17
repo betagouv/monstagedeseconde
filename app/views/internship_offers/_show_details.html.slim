@@ -10,15 +10,9 @@
     .col-sm-8.col-lg-12
       .fr-pl-1w
         h2.h4.fr-mb-2w Période
-        - week_list = Presenters::WeekList.new(weeks: internship_offer.weeks)
-        - week_lists = week_list.split_weeks_in_trunks
-        - week_lists.each do |wlist|
-          .d-none.d-sm-block
-            span.badge.badge-pill.badge-secondary.mr-2.mt-2
-              = wlist.to_range_as_str
-          .d-block.d-sm-none
-            div.badge-pill.badge-secondary.mr-2.mt-2.py-2
-              = wlist.to_range_as_str
+        .fr-tag.fr-icon-calendar-fill.fr-tag--icon-left
+          .fr-mr-2w.period-label-test
+            = Presenters::WeekList.new(weeks: internship_offer.weeks).split_range_string.join(" ")
 
 .row.fr-pt-3w
   .col-12
