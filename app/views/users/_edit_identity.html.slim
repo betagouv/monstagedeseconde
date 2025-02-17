@@ -88,7 +88,7 @@
               = 'Classe'
             = f.text_field :class_room,
                             class: 'fr-input text-grey-disabled',
-                            readonly: true
+                            readonly: true,
                             value: current_user.try(:class_room).try(:name)
       - if current_user.teacher?  && current_user.school.class_rooms.any?
         .col-md-6.col-xs-12
