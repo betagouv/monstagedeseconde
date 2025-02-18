@@ -573,7 +573,8 @@ class Ability
   end
 
   def application_related_to_team?(user:, internship_application:)
-    internship_application.internship_offer.employer_id == user.team_id
+    author_id = internship_application.internship_offer.employer_id
+    user.team.id_in_team?(author_id)
   end
 
   def offer_belongs_to_team?(user:, internship_offer:)
