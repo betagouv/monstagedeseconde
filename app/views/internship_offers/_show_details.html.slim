@@ -5,6 +5,14 @@
   .col-12
     h1.h3.text-dark role="heading" aria-level="1"
       = internship_offer.title
+- if hidden_parts
+  .row
+    .col-sm-8.col-lg-12
+      .fr-pl-1w
+        h2.h4.fr-mb-2w Période
+        .fr-tag.fr-icon-calendar-fill.fr-tag--icon-left
+          .fr-mr-2w.period-label-test
+            = Presenters::WeekList.new(weeks: internship_offer.weeks).split_range_string.join(" ")
 
 .row.fr-pt-3w
   .col-12
@@ -25,7 +33,7 @@
       .row.d-block.d-sm-none
         .col-12.fr-py-2w.internship-offer-side-description
           = render "internship_offers/show_side_details", internship_offer: internship_offer
-  .col-12.fr-pb-2   
+  .col-12.fr-pb-2
     - if internship_offer.workspace_conditions.present?
       .fr-my-2w
         h2.h4.fr-mb-2w Environnement de travail
@@ -36,7 +44,6 @@
       h2.h4.fr-mb-2w Accessibilité du poste
       .fr-my-2w
         p.text-wrap.text-break= internship_offer.workspace_accessibility
-        
 
 .row.fr-pt-3w
   .col-12

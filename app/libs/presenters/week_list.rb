@@ -79,7 +79,7 @@ module Presenters
 
     def render_by_collapsing_date_from_first_to_last_week
       [
-        "Disponible sur #{weeks.size} semaines :",
+        "Disponible sur #{weeks.size} semaines : ",
         yield(is_first: true, is_last: false, week: first_week),
         " → #{yield(is_first: false, is_last: true, week: last_week)}"
       ].join.gsub(/\s+/, ' ').html_safe

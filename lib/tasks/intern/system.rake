@@ -154,6 +154,10 @@ namespace :sys do
   task :dl_upl_prod_sql, [] => :environment do
     if Rails.env.staging? || Rails.env.development?
       chosen_db_name = db_file_name_sql
+      puts '================================'
+      PrettyConsole.puts_in_cyan "producing chosen_db_name : #{chosen_db_name}"
+      puts '================================'
+      puts ''
       PrettyConsole.announce_task 'Downloading production database' do
         system('pg_dump -c --clean --if-exists -Fp --encoding=UTF-8 --no-owner --no-password  ' \
         "-d #{ENV['PRODUCTION_DATABASE_URI']} > #{chosen_db_name}")
@@ -169,7 +173,7 @@ namespace :sys do
                 "-f #{chosen_db_name}")
       end
     else
-      PrettyConsole.puts_in_red 'You cannot run this task only wiht dev or staging environment'
+      PrettyConsole.puts_in_red 'You cannot run this task only with dev or staging environment'
     end
   end
 end
