@@ -210,12 +210,11 @@ class IndexTest < ActionDispatch::IntegrationTest
         title: 'offer with_application'
       )
 
-      internship_application = create(
-        :internship_application,
-        internship_offer: internship_offer_with_application,
-        aasm_state: 'approved',
-        student:
-      )
+      create(:internship_application,
+             weeks: internship_offer_with_application.weeks,
+             internship_offer: internship_offer_with_application,
+             aasm_state: 'approved',
+             student:)
 
       assert_equal 2, InternshipOffers::WeeklyFramed.count
       assert_equal 1, InternshipApplication.count
@@ -318,8 +317,10 @@ class IndexTest < ActionDispatch::IntegrationTest
                                                   school:))
     internship_offer = create(:weekly_internship_offer_3eme,
                               max_candidates:)
-    internship_application = create(:internship_application,
-                                    internship_offer:, aasm_state: 'approved')
+    create(:internship_application,
+           weeks: internship_offer.weeks.last(2),
+           student:,
+           internship_offer:, aasm_state: 'approved')
 
     sign_in(student)
     InternshipOffer.stub :nearby, InternshipOffer.all do
