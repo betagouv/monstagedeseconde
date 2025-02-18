@@ -38,12 +38,8 @@ class InternshipApplicationsController < ApplicationController
 
     if params[:internship_application][:week_ids].present?
       week_ids = params[:internship_application][:week_ids]
-      if week_ids.is_a?(String)
-        params[:internship_application][:week_ids] = [week_ids]
-      end
-      if week_ids.include?(',')
-        params[:internship_application][:week_ids] = week_ids.split(',')
-      end
+      params[:internship_application][:week_ids] = [week_ids] if week_ids.is_a?(String)
+      params[:internship_application][:week_ids] = week_ids.split(',') if week_ids.include?(',')
     end
 
     appli_params = { user_id: current_user.id }.merge(create_internship_application_params)

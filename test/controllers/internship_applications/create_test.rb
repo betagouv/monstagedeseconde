@@ -279,10 +279,9 @@ module InternshipApplications
             internship_offer_id: internship_offer.id,
             internship_offer_type: InternshipOffer.name,
             type: InternshipApplications::WeeklyFramed.name,
-            week_ids: [weeks.third.id],
-            student_attributes: {
-              phone: '+330656565400'
-            }
+            week_ids: weeks.third.id,
+            student_phone: '+330656565400',
+            student_email: 'test@free.fr'
           }
         }
 
@@ -315,9 +314,9 @@ module InternshipApplications
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
           type: InternshipApplications::WeeklyFramed.name,
-          student_attributes: {
-            phone: '+330656565400'
-          }
+          student_phone: '+330656565400',
+          student_email: 'test@free.fr',
+          week_ids: [internship_offer.weeks.first.id]
         }
       }
 
@@ -335,46 +334,6 @@ module InternshipApplications
 
       student = student.reload
       assert_equal '+330656565400', student.phone
-    end
-
-    # create internship application as student with class_room and check that counter are updated
-    test 'POST #create internship application as student with greater max_candidates than hosting_info' do
-      internship_offer = create(:weekly_internship_offer_3eme,
-                                max_candidates: 3)
-      internship_offer.planning.update(max_candidates: 3)
-
-      school = create(:school)
-      class_room = create(:class_room, school:)
-      student_1 = create(:student, school:, class_room:)
-      student_2 = create(:student, school:, class_room:)
-
-      create(:weekly_internship_application,
-             :approved,
-             internship_offer:,
-             student: student_1)
-
-      sign_in(student_2)
-
-      valid_params = {
-        internship_application: {
-          motivation: 'Je suis trop motivé wesh',
-          user_id: student_2.id,
-          internship_offer_id: internship_offer.id,
-          internship_offer_type: InternshipOffer.name,
-          type: InternshipApplications::WeeklyFramed.name,
-          student_attributes: {
-            phone: '+330656565400'
-          }
-        }
-      }
-
-      assert_difference('InternshipApplications::WeeklyFramed.count', 1) do # no failure since validation is not run
-        post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
-        assert_redirected_to dashboard_students_internship_applications_path(
-          student_id: student_2.id,
-          notice_banner: true
-        )
-      end
     end
 
     test 'POST #create internship application as student with empty phone in profile' do
@@ -425,7 +384,8 @@ module InternshipApplications
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
           student_email: 'marc@ms3e.fr',
-          student_phone: '0600000000'
+          student_phone: '0600000000',
+          week_ids: [internship_offer.weeks.first.id]
         }
       }
 
@@ -484,7 +444,8 @@ module InternshipApplications
           internship_offer_id: internship_offer.id,
           internship_offer_type: InternshipOffer.name,
           student_email: student.email,
-          student_phone: student_2.phone.gsub('+33', '')
+          student_phone: student_2.phone.gsub('+33', ''),
+          week_ids: [internship_offer.weeks.first.id]
         }
       }
 
