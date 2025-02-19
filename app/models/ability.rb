@@ -242,7 +242,8 @@ class Ability
       read_employer_name?(internship_offer:)
     end
     can %i[show transfer update], InternshipApplication do |internship_application|
-      application_related_to_team?(user:, internship_application:)
+      internship_application.internship_offer.employer_id == user.id || application_related_to_team?(user:,
+                                                                                                     internship_application:)
     end
   end
 

@@ -62,7 +62,7 @@ module Dashboard
 
       # magic_link_tracker is not updated here
       def show
-        authorize! :show, @internship_application
+        authorize! :show, @internship_application if current_user
         if params[:sgid].present?
           internship_application = InternshipApplication.from_sgid(params[:sgid])
           if internship_application.nil?
