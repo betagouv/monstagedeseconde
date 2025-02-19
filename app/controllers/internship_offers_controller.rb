@@ -76,9 +76,9 @@ class InternshipOffersController < ApplicationController
                                        [params[:latitude].to_f, params[:longitude].to_f, params[:radius].to_i]
                                      ).first['sum'] || 0
                                    else
-                                     ActiveRecord::Base.connection.exec_query(sql).first['sum'] || 0
+                                     #  ActiveRecord::Base.connection.exec_query(sql).first['sum'] || 0
+                                     1
                                    end
-
         # @is_suggestion = @internship_offers.to_a.count.zero?
         # @internship_offers = alternative_internship_offers if @is_suggestion
 
