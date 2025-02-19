@@ -191,7 +191,7 @@ const InternshipOfferResults = ({ count, searchParams }) => {
                       <div className="row fr-mb-2w">
                         <TitleLoader />
                       </div>
-                    ) : (
+                    ) : params.latitude != 0 && params.longitude!=0 && (
                       <>
                         <div className="h4 mb-0" id="internship-offers-count">
                           <div className="strong">
