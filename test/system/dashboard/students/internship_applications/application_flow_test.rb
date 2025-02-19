@@ -120,7 +120,6 @@ module Dashboard
           all('.fr-btn', text: 'Postuler').first.click
           find('#internship_application_motivation', visible: false).set('Le dev ça motive')
           fill_in 'Numéro de portable élève ou responsable légal', with: '1' * 15
-          byebug
           # fill_in 'Adresse électronique (email)', with: new_email
           click_on 'Valider ma candidature'
           click_on 'Envoyer ma candidature'
@@ -145,14 +144,14 @@ module Dashboard
         assert_text 'Disponible sur 2 semaines : 16 juin 2025 → 27 juin 2025'
       end
 
-      test "2nde student 2 weeks long application is shown as 2 " \
-           "weeks long both in the employer dashboard" do
-            employer, internship_offer = create_employer_and_offer_2nde
-            school = create(:school, :lycee, :with_school_manager)
-            student = create(:student, :seconde, school: school, email: 'test@free.fr', phone: '+330620554411')
-            internship_offer.update!(weeks: Week.both_school_track_selectable_weeks)
-            create(:internship_application, :both_june_weeks , :submitted, internship_offer:, student:)
-            sign_in(student)
+      test '2nde student 2 weeks long application is shown as 2 ' \
+           'weeks long both in the employer dashboard' do
+        employer, internship_offer = create_employer_and_offer_2nde
+        school = create(:school, :lycee, :with_school_manager)
+        student = create(:student, :seconde, school: school, email: 'test@free.fr', phone: '+330620554411')
+        internship_offer.update!(weeks: Week.both_school_track_selectable_weeks)
+        create(:internship_application, :both_june_weeks, :submitted, internship_offer:, student:)
+        sign_in(student)
         sign_in(employer)
         visit dashboard_candidatures_path
         click_link 'Répondre'
@@ -176,14 +175,14 @@ module Dashboard
         assert_text 'Disponible la semaine du 16 juin 2025 au 20 juin 2025'
       end
 
-      test "As employer with 1 week long application, it is shown as 1 " \
+      test 'As employer with 1 week long application, it is shown as 1 ' \
            "week long both in the employer's dashboard" do
-            employer, internship_offer = create_employer_and_offer_2nde
-            school = create(:school, :lycee, :with_school_manager)
-            student = create(:student, :seconde, school: school, email: 'test@free.fr', phone: '+330620554411')
-            internship_offer.update!(weeks: [SchoolTrack::Seconde.first_week])
-            create(:internship_application, :first_june_week , :submitted, internship_offer:, student:)
-            sign_in(student)
+        employer, internship_offer = create_employer_and_offer_2nde
+        school = create(:school, :lycee, :with_school_manager)
+        student = create(:student, :seconde, school: school, email: 'test@free.fr', phone: '+330620554411')
+        internship_offer.update!(weeks: [SchoolTrack::Seconde.first_week])
+        create(:internship_application, :first_june_week, :submitted, internship_offer:, student:)
+        sign_in(student)
         sign_in(employer)
         visit dashboard_candidatures_path
         click_link 'Répondre'
