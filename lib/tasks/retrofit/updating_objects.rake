@@ -48,4 +48,43 @@ namespace :retrofit do
       PrettyConsole.say_in_green "#{counter} offers have been processed"
     end
   end
+
+  desc "17/02/2025 - update applications related to seconde's internship offers set on two weeks"
+  task set_two_weeks_according_to_offer: :environment do |task|
+    PrettyConsole.announce_task(task) do
+      counter = 0
+      limit_week_id = 337
+      offer_ids = InternshipOffers::WeeklyFramed.kept
+                                                .shown_to_employer
+                                                .joins(:weeks, :internship_applications)
+                                                .where('weeks.id > ?', limit_week_id)
+                                                .group('internship_offers.id')
+                                                .having('count(weeks.id) = 2')
+                                                .count
+                                                .keys
+      puts offer_ids.count
+      puts offer_ids[counter] if counter%50 == 0
+      puts "----------"
+
+      # search for internship_applications related to offer_ids that have only one week related
+      InternshipApplication.joins(:weekly_internship_offer, :weeks)
+                           .where(internship_offer_id: offer_ids)
+                           .where('weeks.id > ?', limit_week_id)
+                           .group('internship_applications.id')
+                           .having('count(weeks.id) = 1')
+                           .pluck(:id)
+                           .each do |application_id|
+        puts application_id if counter % 30 == 0
+        application = InternshipApplication.find_by(id: application_id)
+        if application.nil?
+          PrettyConsole.say_in_red "application_id: #{application_id} not found"
+          next
+        end
+        application.weeks = SchoolTrack::Seconde.both_weeks
+        counter += 1
+        puts application.id if counter%50 == 0
+      end
+      PrettyConsole.say_in_green "#{counter} applications have been processed"
+    end
+  end
 end
