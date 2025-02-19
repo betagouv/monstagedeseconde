@@ -31,7 +31,7 @@ class InternshipApplication < ApplicationRecord
   NOT_MODIFIABLE_STATES = %w[submitted read_by_employer transfered validated_by_employer approved]
   RE_APPROVABLE_STATES = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
   VALID_TRANSITIONS = %w[read transfer employer_validate approve approve! cancel_by_student_confirmation reject
-                         reject! cancel_by_employer cancel_by_student expire expire_by_student]
+                         reject! cancel_by_employer cancel_by_student cancel_by_student! expire expire_by_student]
 
   attr_accessor :sgid
 
