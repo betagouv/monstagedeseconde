@@ -150,12 +150,13 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'PATCH edit as student cannot nullify his email' do
-    error_message = '<strong>Courriel</strong> : Il faut conserver un email valide pour assurer la continuité du service</div>'
     student = create(:student, phone: '+330623042585', email: 'test@test.fr')
     sign_in(student)
+    original_email = student.email
 
     patch(account_path, params: { user: { email: '' } })
-    refute student.reload.unconfirmed_email == ''
+
+    assert_equal original_email, student.reload.email
     assert_template 'users/edit'
     assert_select '.fr-alert.fr-alert--error strong', html: 'Courriel'
     assert_select '.fr-alert.fr-alert--error',
