@@ -66,7 +66,7 @@ module Finders
       when Grade.seconde.id
         school_members_query.seconde_only
       else
-        school_members_query.troisieme_or_quatrieme_only
+        school_members_query.troisieme_or_quatrieme
       end
     end
 
