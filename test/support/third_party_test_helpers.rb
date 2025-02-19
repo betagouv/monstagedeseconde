@@ -73,25 +73,18 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: '', headers: {})
   end
 
-  def fim_token_stub(code)
-    stub_request(:post, 'https://hub-pr2.phm.education.gouv.fr/idp/profile/oidc/token')
+  def fim_token_stub
+    stub_request(:post, ENV['FIM_URL'] + '/idp/profile/oidc/token')
       .with(
         body: {
           'client_id' => ENV['FIM_CLIENT_ID'],
           'client_secret' => ENV['FIM_CLIENT_SECRET'],
-          'code' => code,
+          'code' => '123456',
           'grant_type' => 'authorization_code',
           'redirect_uri' => ENV['FIM_REDIRECT_URI'],
           'scope' => 'openid stage profile email',
           'state' => 'abc',
           'nonce' => 'def'
-        },
-        headers: {
-          'Accept' => '*/*',
-          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Content-Type' => 'application/x-www-form-urlencoded',
-          'Host' => 'hub-pr2.phm.education.gouv.fr',
-          'User-Agent' => 'Ruby'
         }
       )
       .to_return(status: 200, body: {
@@ -222,7 +215,7 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_userinfo_unknown.json'), headers: {})
   end
 
-  def stub_logout_educonnect
+  def educonnect_logout_stub
     stub_request(:get, "#{ENV['EDUCONNECT_URL']}/idp/profile/oidc/logout")
       .with(
         headers: {

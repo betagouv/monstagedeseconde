@@ -3,8 +3,8 @@ class CallbacksController < ApplicationController
     if cookies[:state] == params[:state]
       code = params[:code]
       state = params[:state]
-
-      user_info = Services::FimConnection.new(code, state).get_user_info
+      nonce = params[:nonce]
+      user_info = Services::FimConnection.new(code, state, nonce).get_user_info
       Rails.logger.info('--------------')
       Rails.logger.info('FIM Connection')
       Rails.logger.info("User info FIM : #{user_info.inspect}")
