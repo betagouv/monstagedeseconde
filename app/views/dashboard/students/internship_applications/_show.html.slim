@@ -59,6 +59,7 @@
           .fr-px-1w
             = render "internship_offers/show_details",
                       internship_offer: internship_offer,
+                      internship_application: internship_application,
                       hidden_parts: true
     - if can?(:read_employer_data, internship_application)
       = render 'dashboard/internship_offers/internship_applications/employer_contact',

@@ -29,9 +29,13 @@ class PagesController < ApplicationController
   end
 
   def student_landing
-    @faqs = get_faqs('student')
-    @resources = get_resources('student')
-    @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    if employers_only?
+      redirect_to root_path
+    else
+      @faqs = get_faqs('student')
+      @resources = get_resources('student')
+      @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    end
   end
 
   def pro_landing
@@ -40,9 +44,17 @@ class PagesController < ApplicationController
   end
 
   def school_management_landing
-    @faqs = get_faqs('education')
-    @resources = get_resources('education')
-    @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    if employers_only?
+      puts '===== + = + = + ========='
+      puts 'BIG FAT TEST  '
+      puts '===== + = + = + ========='
+      puts ''
+      redirect_to root_path
+    else
+      @faqs = get_faqs('education')
+      @resources = get_resources('education')
+      @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    end
   end
 
   def statistician_landing
@@ -93,6 +105,10 @@ class PagesController < ApplicationController
     params.require(:waiting_list_entry).permit(:email)
   end
 
+  def educonnect_logout_responsible
+    Rails.logger.info 'Educonnect logout responsible page'
+  end
+
   private
 
   def link_resolver
@@ -110,36 +126,42 @@ class PagesController < ApplicationController
   def get_faqs(tag)
     return [] if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
 
-    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
+    Rails.cache.fetch("prismic_faqs_#{tag}", expires_in: 1.hour) do
+      api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
 
-    begin
-      response = api.query([
-                             Prismic::Predicates.at('document.type', 'faq'),
-                             Prismic::Predicates.at('document.tags', [tag])
-                           ],
-                           { 'orderings' => '[my.faq.order]' })
-    rescue StandardError => e
-      puts "Error: #{e}"
-      return
+      begin
+        response = api.query([
+                               Prismic::Predicates.at('document.type', 'faq'),
+                               Prismic::Predicates.at('document.tags', [tag])
+                             ],
+                             { 'orderings' => '[my.faq.order]' })
+      rescue StandardError => e
+        Rails.logger.error "Error fetching Prismic FAQs: #{e}"
+        return []
+      end
+
+      serialize_faq(response.results)
     end
-
-    serialize_faq(response.results)
   end
 
   def get_resources(tag)
-    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
+    return [] if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
 
-    begin
-      response = api.query([
-                             Prismic::Predicates.at('document.type', 'resource'),
-                             Prismic::Predicates.at('document.tags', [tag])
-                           ])
-    rescue StandardError => e
-      puts "Error: #{e}"
-      return
+    Rails.cache.fetch("prismic_resources_#{tag}", expires_in: 1.hour) do
+      api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
+
+      begin
+        response = api.query([
+                               Prismic::Predicates.at('document.type', 'resource'),
+                               Prismic::Predicates.at('document.tags', [tag])
+                             ])
+      rescue StandardError => e
+        Rails.logger.error "Error fetching Prismic Resources: #{e}"
+        return []
+      end
+
+      serialize_resource(response.results)
     end
-
-    serialize_resource(response.results)
   end
 
   def serialize_faq(results)

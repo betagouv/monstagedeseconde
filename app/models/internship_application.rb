@@ -30,6 +30,8 @@ class InternshipApplication < ApplicationRecord
   ]
   NOT_MODIFIABLE_STATES = %w[submitted read_by_employer transfered validated_by_employer approved]
   RE_APPROVABLE_STATES = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
+  VALID_TRANSITIONS = %w[read transfer employer_validate approve approve! cancel_by_student_confirmation reject
+                         reject! cancel_by_employer cancel_by_student cancel_by_student! expire expire_by_student]
 
   attr_accessor :sgid
 
@@ -65,11 +67,10 @@ class InternshipApplication < ApplicationRecord
             format: {
               with: /\A\+?(33|262|594|596|687|689)?\s?0?(6|7)\s?(\d{2,3}\s?){1,3}\d{2,3}\z/,
               message: 'Veuillez modifier le numéro de téléphone mobile'
-            },
-            allow_blank: true
+            }
   validates :student_email,
-            format: { with: Devise.email_regexp },
-            allow_blank: true
+            format: { with: Devise.email_regexp }
+  validates :weeks, presence: true
 
   # Callbacks
   before_create :set_submitted_at
@@ -100,7 +101,7 @@ class InternshipApplication < ApplicationRecord
     extended_duration = InternshipApplication::EXTENDED_DURATION + simple_duration
     expiration_not_extended_states.where('submitted_at < :date', date: simple_duration.ago).or(
       transfered.where('transfered_at < :date', date: extended_duration.ago)
-    )
+    ).joins(:student).where(student: { discarded_at: nil })
   }
 
   scope :filtering_discarded_students, lambda {
@@ -417,7 +418,7 @@ class InternshipApplication < ApplicationRecord
       available_weeks = if student.school.has_weeks_on_current_year?
                           Week.selectable_from_now_until_end_of_school_year & internship_offer.weeks & student.school.weeks
                         else
-                          Week.selectable_from_now_until_end_of_school_year & internship_offer.weeks
+                          Week.troisieme_selectable_weeks & internship_offer.weeks
                         end
     end
     available_weeks
@@ -501,7 +502,7 @@ class InternshipApplication < ApplicationRecord
     options = Rails.configuration.action_mailer.default_url_options
     target = dashboard_students_internship_application_url(
       student_id: student.id,
-      id:,
+      uuid:,
       **options
     )
     target = "#{target}?student_id=#{student.id}"

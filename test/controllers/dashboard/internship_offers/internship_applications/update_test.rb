@@ -19,7 +19,7 @@ module InternshipOffers::InternshipApplications
         user_id: student.id
       )
       assert school.school_manager.present?
-      sign_in(internship_offer.employer)
+      sign_in(student)
 
       # since no main_teacher and mails to school_manager and employer are delivered later(they are queued)
       assert_enqueued_emails 1 do
@@ -30,14 +30,13 @@ module InternshipOffers::InternshipApplications
           ),
           params: { transition: :approve! }
         )
-        assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :approve!)
+        assert_redirected_to dashboard_students_internship_applications_path(student)
       end
       assert_equal 1, InternshipAgreement.count
       assert_equal internship_application.id,
                    InternshipAgreement.first.internship_application.id
       follow_redirect!
-      validation_text = 'Candidature mise à jour avec succès. ' \
-                        'Vous pouvez renseigner la convention dès maintenant.'
+      validation_text = 'Candidature acceptée !'
       assert_select('#alert-text', text: validation_text)
       assert_equal true, InternshipApplication.last.approved?
       assert_equal 1, InternshipAgreement.count
@@ -54,7 +53,7 @@ module InternshipOffers::InternshipApplications
         user_id: student.id
       )
       refute school.school_manager.present?
-      sign_in(internship_offer.employer)
+      sign_in(internship_application.student)
 
       assert_changes -> { InternshipAgreement.count }, from: 0, to: 1 do
         patch(
@@ -64,14 +63,13 @@ module InternshipOffers::InternshipApplications
           ),
           params: { transition: :approve! }
         )
-        assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :approve!)
+        assert_redirected_to dashboard_students_internship_applications_path(student)
       end
       assert_equal 1, InternshipAgreement.count
       assert_equal internship_application.id,
                    InternshipAgreement.first.internship_application.id
       follow_redirect!
-      validation_text = 'Candidature mise à jour avec succès. ' \
-                        'Vous pouvez renseigner la convention dès maintenant.'
+      validation_text = 'Candidature acceptée !'
       assert_select('#alert-text', text: validation_text)
       assert_equal true, InternshipApplication.last.approved?
       assert_equal 1, InternshipAgreement.count
@@ -91,7 +89,7 @@ module InternshipOffers::InternshipApplications
       sign_in(internship_application.internship_offer.employer)
 
       assert_enqueued_emails 0 do
-        params = { transition: :approve! }
+        params = { transition: :employer_validate! }
         patch(
           dashboard_internship_offer_internship_application_path(
             internship_application.internship_offer,
@@ -99,15 +97,14 @@ module InternshipOffers::InternshipApplications
           ),
           params: params
         )
-        assert_redirected_to internship_application.internship_offer.employer.custom_candidatures_path(tab: :approve!)
+        assert_redirected_to dashboard_internship_offers_path
       end
       assert_equal 0, InternshipAgreement.count
-      assert_equal 'approved', internship_application.reload.aasm_state
+      assert_equal 'validated_by_employer', internship_application.reload.aasm_state
       assert_equal 'read_by_employer', internship_application.state_changes.first.from_state
-      assert_equal 'approved', internship_application.state_changes.last.to_state
+      assert_equal 'validated_by_employer', internship_application.state_changes.last.to_state
       assert_equal internship_application.internship_offer.employer.id,
                    internship_application.state_changes.last.author_id
-      assert_equal 'Users::Employer', internship_application.state_changes.last.author_type
     end
 
     test 'PATCH #update with approve! when employer is a statistician that can sign agreements , it does create internship agreement' do
@@ -123,7 +120,7 @@ module InternshipOffers::InternshipApplications
       employer.becomes(Users::PrefectureStatistician)
       employer.update(agreement_signatorable: true)
 
-      sign_in(employer)
+      sign_in(student)
 
       assert_enqueued_emails 1 do
         patch(
@@ -131,9 +128,70 @@ module InternshipOffers::InternshipApplications
                                                                  uuid: internship_application.uuid),
           params: { transition: :approve! }
         )
-        assert_redirected_to employer.custom_candidatures_path(tab: :approve!)
+        assert_redirected_to dashboard_students_internship_applications_path(student)
       end
       assert_equal 1, InternshipAgreement.count
+    end
+
+    # test patch when student click on the link in the email to approve
+    test 'PATCH #update with approve! when student click on the link in the email to approve and is not signed in' do
+      internship_application = create(:weekly_internship_application, :validated_by_employer)
+      sgid = internship_application.to_sgid(expires_in: InternshipApplication::MAGIC_LINK_EXPIRATION_DELAY).to_s
+
+      params = { transition: :approve!,
+                 sgid: sgid,
+                 student_id: internship_application.student.id,
+                 internship_offer_id: internship_application.internship_offer.id,
+                 uuid: internship_application.uuid }
+
+      assert_changes -> { InternshipAgreement.count }, from: 0, to: 1 do
+        patch(
+          dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
+                                                                 uuid: internship_application.uuid), params: params
+        )
+      end
+
+      assert_redirected_to root_path
+    end
+    test 'PATCH #update with approve! when student click on the link in the email to approve and is not signed in and wrong sgid' do
+      internship_application = create(:weekly_internship_application, :validated_by_employer)
+      sgid = 'abc'
+
+      params = { transition: :approve!,
+                 sgid: sgid,
+                 student_id: internship_application.student.id,
+                 internship_offer_id: internship_application.internship_offer.id,
+                 uuid: internship_application.uuid }
+
+      assert_no_changes -> { InternshipAgreement.count } do
+        patch(
+          dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
+                                                                 uuid: internship_application.uuid), params: params
+        )
+      end
+
+      assert_redirected_to root_path
+      assert_equal "Vous n'êtes pas autorisé à effectuer cette action.", flash[:danger]
+    end
+    test 'PATCH #update with coucou! when student click on the link in the email and is not signed in' do
+      internship_application = create(:weekly_internship_application, :validated_by_employer)
+      sgid = internship_application.to_sgid(expires_in: InternshipApplication::MAGIC_LINK_EXPIRATION_DELAY).to_s
+
+      params = { transition: :coucou!,
+                 sgid: sgid,
+                 student_id: internship_application.student.id,
+                 internship_offer_id: internship_application.internship_offer.id,
+                 uuid: internship_application.uuid }
+
+      assert_no_changes -> { InternshipAgreement.count } do
+        patch(
+          dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
+                                                                 uuid: internship_application.uuid), params: params
+        )
+      end
+
+      assert_redirected_to root_path
+      assert_equal 'Impossible de traiter votre requête, veuillez contacter notre support', flash[:notice]
     end
 
     test 'PATCH #update with approve! when employer is an operator it does not create internship agreement' do
@@ -171,9 +229,9 @@ module InternshipOffers::InternshipApplications
         :validated_by_employer,
         user_id: student.id
       )
-      sign_in(internship_application.internship_offer.employer)
+      sign_in(student)
 
-      assert_enqueued_emails 2 do # Student receives email + School Manager receives email
+      assert_enqueued_emails 1 do
         patch(
           dashboard_internship_offer_internship_application_path(
             internship_application.internship_offer,
@@ -181,18 +239,18 @@ module InternshipOffers::InternshipApplications
           ),
           params: { transition: :approve! }
         )
-        assert_redirected_to internship_application.internship_offer.employer.custom_candidatures_path(tab: :approve!)
+        assert_redirected_to dashboard_students_internship_applications_path(student)
       end
       assert_equal 1, InternshipAgreement.count
     end
 
-    test 'PATCH #update with approve! and a custom message transition sends email' do
+    test 'PATCH #update with employer_validate and a custom message transition sends email' do
       school = create(:school, :with_school_manager)
       class_room = create(:class_room, school:)
       student = create(:student, school:, class_room:)
       internship_application = create(
         :weekly_internship_application,
-        :validated_by_employer,
+        :read_by_employer,
         user_id: student.id
       )
       internship_offer = internship_application.internship_offer
@@ -200,24 +258,19 @@ module InternshipOffers::InternshipApplications
       sign_in(internship_offer.employer)
 
       assert_enqueued_emails 1 do
-        assert_changes -> { InternshipAgreement.all.count },
-                       from: 0,
-                       to: 1 do
-          update_url = dashboard_internship_offer_internship_application_path(
-            internship_offer,
-            uuid: internship_application.uuid
-          )
-          patch(update_url, params: {
-                  transition: :approve!,
-                  internship_application: { approved_message: 'OK' }
-                })
-          assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :approve!)
-        end
+        update_url = dashboard_internship_offer_internship_application_path(
+          internship_offer,
+          uuid: internship_application.uuid
+        )
+        patch(update_url, params: {
+                transition: :employer_validate!
+              })
+        assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :employer_validate!)
       end
+
       internship_application.reload
 
-      assert_equal 'OK', internship_application.approved_message
-      assert InternshipApplication.last.approved?
+      assert InternshipApplication.last.validated_by_employer?
     end
 
     test 'PATCH #update with employer_validate! sends email and job' do
@@ -321,7 +374,7 @@ module InternshipOffers::InternshipApplications
       )
       internship_offer = internship_application.internship_offer
 
-      sign_in(internship_offer.employer)
+      sign_in(student)
 
       assert_enqueued_emails 4 do # 3 others applications emails + 1 for new agreement
         assert_changes -> { InternshipAgreement.all.count },
@@ -335,7 +388,7 @@ module InternshipOffers::InternshipApplications
                   transition: :approve!,
                   internship_application: { approved_message: 'OK' }
                 })
-          assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :approve!)
+          assert_redirected_to dashboard_students_internship_applications_path(student)
         end
       end
       internship_application.reload
@@ -389,15 +442,15 @@ module InternshipOffers::InternshipApplications
           uuid: internship_application.uuid
         )
         patch(update_url, params: {
-                transition: :approve!,
+                transition: :reject!,
                 internship_application: { rejected_message: 'OK' }
               })
-        assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :approve!)
+        assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :reject!)
       end
       internship_application.reload
 
       assert_equal 'OK', internship_application.rejected_message
-      assert InternshipApplication.last.approved?
+      assert InternshipApplication.last.rejected?
     end
 
     test 'PATCH #update with cancel_by_employer! send email, change aasm_state' do
@@ -476,14 +529,14 @@ module InternshipOffers::InternshipApplications
     test 'PATCH when application is approved #update with cancel_by_student! delete agreement' do
       internship_application = create(:weekly_internship_application, :approved)
       assert internship_application.internship_agreement
-      sign_in(internship_application.internship_offer.employer)
+      sign_in(internship_application.student)
 
       patch(dashboard_internship_offer_internship_application_path(internship_application.internship_offer, uuid: internship_application.uuid),
             params: { transition: :cancel_by_student!,
-                      internship_application: { canceled_by_employer_message: 'OK' } })
+                      internship_application: { canceled_by_student_message: 'OK' } })
 
       internship_application.reload
-      assert_equal 'OK', internship_application.canceled_by_employer_message
+      assert_equal 'OK', internship_application.canceled_by_student_message
       assert internship_application.canceled_by_student?
       assert_nil internship_application.internship_agreement
     end

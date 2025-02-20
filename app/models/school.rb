@@ -15,7 +15,7 @@ class School < ApplicationRecord
   has_many :weeks, through: :school_internship_weeks
   belongs_to :department, optional: true
 
-  has_rich_text :agreement_conditions_rich_text
+  # has_rich_text :agreement_conditions_rich_text
 
   validates :city, :name, :code_uai, presence: true
   validates :code_uai, uniqueness: { message: 'Ce code UAI est déjà utilisé, le lycée est déjà enregistré' }
@@ -84,7 +84,12 @@ class School < ApplicationRecord
           "#{school.city} – CP #{school.zipcode} (#{school.department.name})"
         end
       end
-      field :school_manager
+      field :school_manager do
+        pretty_value do
+          school = bindings[:object]
+          school.school_manager.try(:presenter).try(:full_name)
+        end
+      end
       field :city do
         visible false
       end
@@ -100,7 +105,7 @@ class School < ApplicationRecord
     edit do
       field :name
       field :visible
-      field :kind, :enum do
+      field :rep_kind, :enum do
         enum do
           School::VALID_TYPE_PARAMS
         end
@@ -131,7 +136,7 @@ class School < ApplicationRecord
     show do
       field :name
       field :visible
-      field :kind
+      field :rep_kind
       field :street
       field :zipcode
       field :city
@@ -146,7 +151,7 @@ class School < ApplicationRecord
       field :zipcode
       field :city
       field :department
-      field :kind
+      field :rep_kind
       field :school_manager, :string do
         export_value do
           bindings[:object].school_manager.try(:name)

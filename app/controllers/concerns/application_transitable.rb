@@ -7,7 +7,12 @@ module ApplicationTransitable
     def update
       authenticate_user! unless params[:sgid].present? || params[:token].present?
       authorize_through_sgid? || authorize_through_token? || authorize!(:update, @internship_application)
-      if current_user.valid_transition?(params[:transition])
+      transition_valid = if current_user
+                           current_user.valid_transition?(params[:transition])
+                         else
+                           InternshipApplication::VALID_TRANSITIONS.include?(params[:transition])
+                         end
+      if transition_valid
         # action happens here
         @internship_application.send(params[:transition].to_sym, current_user)
         @internship_application.update!(optional_internship_application_params)
@@ -20,9 +25,12 @@ module ApplicationTransitable
           redirect_path = current_user ? current_user.custom_candidatures_path(extra_parameter) : root_path
           redirect_to redirect_path, flash: { success: update_flash_message }
         end
-      else
+      elsif current_user
         redirect_back fallback_location: current_user.custom_dashboard_path,
-                      flash: { success: 'Impossible de traiter votre requête, veuillez contacter notre support' }
+                      flash: { notice: 'Impossible de traiter votre requête, veuillez contacter notre support' }
+      else
+        redirect_back fallback_location: root_path,
+                      flash: { notice: 'Impossible de traiter votre requête, veuillez contacter notre support' }
       end
     rescue AASM::InvalidTransition => e
       redirect_back fallback_location: current_user ? current_user.custom_dashboard_path || root_path : root_path,

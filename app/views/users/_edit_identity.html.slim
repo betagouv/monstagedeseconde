@@ -46,9 +46,7 @@
                                                  required: true,
                                                  disabled: true }
           - elsif current_user.student? && current_user.ine.present?
-            - scrambled_ine = Digest::SHA1.hexdigest(current_user.ine)
-            - scrambled_email = "#{scrambled_ine}@#{current_user.try(:school).try(:code_uai)}.fr".downcase
-            - value = current_user.email == scrambled_email ? '' : current_user.email
+            - value = current_user.fake_email? ? '' : current_user.email
             = f.text_field :email, value: value, **common_options
           - elsif current_user.statistician?
             = f.text_field :email, readonly: true, **common_options
@@ -90,7 +88,7 @@
               = 'Classe'
             = f.text_field :class_room,
                             class: 'fr-input text-grey-disabled',
-                            readonly: true
+                            readonly: true,
                             value: current_user.try(:class_room).try(:name)
       - if current_user.teacher?  && current_user.school.class_rooms.any?
         .col-md-6.col-xs-12

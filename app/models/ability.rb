@@ -85,6 +85,12 @@ class Ability
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
     can :apply, InternshipOffer do |internship_offer|
+      ## can apply if ##
+      # - user has the right grade
+      # - user has not already applied to the same offer
+      # - user has not already approved applications for the same offer's weeks
+      # - offer is not reserved to an other school
+
       internship_offer.grades.include?(user.grade) &&
         !user.internship_applications.exists?(internship_offer_id: internship_offer.id) && # user has not already applied
         user.other_approved_applications_compatible?(internship_offer:) &&
@@ -236,7 +242,8 @@ class Ability
       read_employer_name?(internship_offer:)
     end
     can %i[show transfer update], InternshipApplication do |internship_application|
-      application_related_to_team?(user:, internship_application:)
+      internship_application.internship_offer.employer_id == user.id || application_related_to_team?(user:,
+                                                                                                     internship_application:)
     end
   end
 
@@ -567,7 +574,8 @@ class Ability
   end
 
   def application_related_to_team?(user:, internship_application:)
-    internship_application.internship_offer.employer_id == user.team_id
+    author_id = internship_application.internship_offer.employer_id
+    user.team.id_in_team?(author_id)
   end
 
   def offer_belongs_to_team?(user:, internship_offer:)
@@ -607,6 +615,6 @@ class Ability
   end
 
   def employers_only?
-    ENV.fetch('EMPLOYERS_ONLY', 'false') == 'true'
+    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
   end
 end

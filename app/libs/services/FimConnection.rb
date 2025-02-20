@@ -2,9 +2,10 @@ require 'json'
 
 module Services
   class FimConnection
-    def initialize(code, state)
+    def initialize(code, state, nonce)
       @code = code
       @state = state
+      @nonce = nonce
       @token = get_token
     end
 
@@ -63,7 +64,7 @@ module Services
         redirect_uri: ENV.fetch('FIM_REDIRECT_URI'),
         scope: 'openid stage profile email',
         state: @state,
-        nonce: SecureRandom.uuid
+        nonce: @nonce
       }
 
       url = "#{ENV.fetch('FIM_URL')}/idp/profile/oidc/token"

@@ -20,8 +20,65 @@ class InternshipOffersController < ApplicationController
         @params = query_params.merge(sector_ids: params[:sector_ids])
       end
       format.json do
-        @internship_offers = finder.all.includes(:sector, :employer)
+        t0 = Time.now
+        @internship_offers_seats = 0
+        @internship_offers = finder.all
+                                   .includes(:sector, :employer)
 
+        # seats
+        # @internship_offers_seats = finder.all_without_page.pluck(:max_candidates).sum
+
+        sql = if params[:latitude].present? && params[:longitude].present?
+                <<-SQL
+            SELECT SUM(internship_offers.max_candidates)
+            FROM internship_offers
+            INNER JOIN internship_offer_stats#{' '}
+              ON internship_offer_stats.internship_offer_id = internship_offers.id
+            WHERE internship_offer_stats.remaining_seats_count > 0
+              AND last_date > '2025-02-13 12:23:21.417042'
+              AND last_date <= '2025-08-06'
+              AND internship_offers.discarded_at IS NULL
+              AND internship_offers.aasm_state = 'published'
+              AND internship_offers.qpv = FALSE
+              AND internship_offers.rep = FALSE
+              AND internship_offers.hidden_duplicate = FALSE
+              AND (
+                6371 * acos(
+                  cos(radians($1)) *#{' '}
+                  cos(radians(ST_Y(coordinates::geometry))) *#{' '}
+                  cos(radians(ST_X(coordinates::geometry)) - radians($2)) +#{' '}
+                  sin(radians($1)) *#{' '}
+                  sin(radians(ST_Y(coordinates::geometry)))
+                ) * 1000
+              ) <= $3
+                SQL
+              else
+                <<-SQL
+            SELECT SUM(internship_offers.max_candidates)
+            FROM internship_offers
+            INNER JOIN internship_offer_stats#{' '}
+              ON internship_offer_stats.internship_offer_id = internship_offers.id
+            WHERE internship_offer_stats.remaining_seats_count > 0
+              AND last_date > '2025-02-13 12:23:21.417042'
+              AND last_date <= '2025-08-06'
+              AND internship_offers.discarded_at IS NULL
+              AND internship_offers.aasm_state = 'published'
+              AND internship_offers.qpv = FALSE
+              AND internship_offers.rep = FALSE
+              AND internship_offers.hidden_duplicate = FALSE
+                SQL
+              end
+
+        @internship_offers_seats = if params[:latitude].present? && params[:longitude].present?
+                                     ActiveRecord::Base.connection.exec_query(
+                                       sql,
+                                       'SQL',
+                                       [params[:latitude].to_f, params[:longitude].to_f, params[:radius].to_i]
+                                     ).first['sum'] || 0
+                                   else
+                                     #  ActiveRecord::Base.connection.exec_query(sql).first['sum'] || 0
+                                     1
+                                   end
         # @is_suggestion = @internship_offers.to_a.count.zero?
         # @internship_offers = alternative_internship_offers if @is_suggestion
 
@@ -29,10 +86,12 @@ class InternshipOffersController < ApplicationController
         data = {
           internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
-          seats: calculate_seats(@internship_offers)
+          seats: @internship_offers_seats
           # isSuggestion: @is_suggestion
         }
         current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
+        t1 = Time.now
+        Rails.logger.info("Search took #{t1 - t0} seconds")
         render json: data, status: 200
       end
     end
@@ -112,7 +171,7 @@ class InternshipOffersController < ApplicationController
         :page,
         :latitude,
         :longitude,
-        :radius,
+        :radius
         # :keyword,
         # :school_year,
         # :grade_id,
@@ -207,9 +266,5 @@ class InternshipOffersController < ApplicationController
       isLastPage: offers.last_page?,
       pageUrlBase: url_for(query_params.except('page'))
     }
-  end
-
-  def calculate_seats(internship_offers)
-    internship_offers.pluck(:max_candidates).sum
   end
 end

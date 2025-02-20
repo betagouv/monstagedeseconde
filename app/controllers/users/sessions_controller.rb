@@ -57,9 +57,6 @@ module Users
     end
 
     def destroy
-      if cookies[:user_type] == 'school_management'
-
-      end
       super do
         cookies.delete(:_monstage_session)
         cookies.delete(:_ms2gt_manage_session)

@@ -1,12 +1,16 @@
 require 'pretty_console'
 
 namespace :sys do
+  def timestamp
+    DateTime.now.to_s.gsub(/:/, '_').split(/\+/).first
+  end
+
   def db_file_name
-    "storage/tmp/#{Date.today}_1E1S_prod.dump"
+    "storage/tmp/#{timestamp}_1E1S_prod.dump"
   end
 
   def db_file_name_sql
-    "storage/tmp/#{Date.today}_1E1S_prod.sql"
+    "storage/tmp/#{timestamp}_1E1S_prod.sql"
   end
 
   def reset_file_name
@@ -82,7 +86,8 @@ namespace :sys do
   desc 'uplaod a local production database copy to CleverCloud with sql format'
   task :upl_prod_sql, [] => :environment do
     PrettyConsole.announce_task 'Downloading production database' do
-      system("psql  -h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
+      system("PGPASSWORD=#{ENV['CLEVER_PRODUCTION_COPY_DB_PASSWORD']} psql " \
+              "-h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
               "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
               "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
               "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
@@ -142,6 +147,33 @@ namespace :sys do
         end
       end
       PrettyConsole.say_in_yellow "#{counter} jobs deleted | #{not_treated} jobs not treated"
+    end
+  end
+
+  desc 'download an upload a sql copy of the production database'
+  task :dl_upl_prod_sql, [] => :environment do
+    if Rails.env.staging? || Rails.env.development?
+      chosen_db_name = db_file_name_sql
+      puts '================================'
+      PrettyConsole.puts_in_cyan "producing chosen_db_name : #{chosen_db_name}"
+      puts '================================'
+      puts ''
+      PrettyConsole.announce_task 'Downloading production database' do
+        system('pg_dump -c --clean --if-exists -Fp --encoding=UTF-8 --no-owner --no-password  ' \
+        "-d #{ENV['PRODUCTION_DATABASE_URI']} > #{chosen_db_name}")
+      end
+
+      PrettyConsole.announce_task 'Downloading production database' do
+        system("PGPASSWORD=#{ENV['CLEVER_PRODUCTION_COPY_DB_PASSWORD']} psql " \
+                "-h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
+                "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
+                "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
+                "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
+                "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
+                "-f #{chosen_db_name}")
+      end
+    else
+      PrettyConsole.puts_in_red 'You cannot run this task only with dev or staging environment'
     end
   end
 end

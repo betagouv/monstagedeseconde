@@ -44,5 +44,11 @@ module Users
     def after_confirmation
       super
     end
+
+    def password_complexity
+      return if persisted? && created_at < Date.new(2024, 8, 1)
+
+      super
+    end
   end
 end

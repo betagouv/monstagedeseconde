@@ -2,6 +2,7 @@ require 'application_system_test_case'
 
 class AccountEditTest < ApplicationSystemTestCase
   include Devise::Test::IntegrationHelpers
+  include ActionMailer::TestHelper
 
   test 'as a student, I cannot see my scrambled email' do
     student = create(:student)
@@ -86,5 +87,28 @@ class AccountEditTest < ApplicationSystemTestCase
 
   test 'as a teacher, I can update all accounts fields but the email' do
     skip 'waiting an answer for class room choosing'
+  end
+
+  test 'as a student with fake_email, I can update my email without confirmation' do
+    school = create(:school)
+    student = create(:student, school: school, email: "test@#{school.code_uai}.fr")
+    sign_in(student)
+    visit account_path
+    fill_in('user[email]', with: 'test@free.fr')
+    assert_enqueued_emails 0 do
+      click_on 'Enregistrer mes informations'
+    end
+    student.reload
+    assert_equal 'test@free.fr', student.email
+    assert_nil student.unconfirmed_email
+    #  2nd change
+    visit account_path
+    fill_in('user[email]', with: 'testo@free.fr')
+    assert_enqueued_emails 1 do
+      click_on 'Enregistrer mes informations'
+    end
+    student.reload
+    assert_equal 'test@free.fr', student.email
+    assert_equal 'testo@free.fr', student.unconfirmed_email
   end
 end

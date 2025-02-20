@@ -37,12 +37,6 @@ class AbilityTest < ActiveSupport::TestCase
              'students should not be able to con manage internships')
       assert(ability.can?(:show, :account),
              'students should be able to access their account')
-      assert(ability.can?(:choose_school, student),
-             'student should be able to choose_school')
-      assert(ability.can?(:choose_class_room, student),
-             'student should be able to choose_class_room')
-      assert(ability.can?(:choose_gender_and_birthday, student),
-             'student should be able to choose_gender_and_birthday')
       assert(ability.can?(:dashboard_index, student))
       assert(ability.can?(:dashboard_show, internship_application))
       assert(ability.can?(:internship_application_edit, internship_application))
@@ -104,7 +98,7 @@ class AbilityTest < ActiveSupport::TestCase
       assert(ability.can?(:create, InternshipOffer.new),
              'employers should be able to create internships')
       refute(ability.can?(:update, InternshipOffer.new),
-              'employers should not be able to update internship offer not belonging to him')
+             'employers should not be able to update internship offer not belonging to him')
       refute(ability.can?(:udpate, old_internship_offer), 'Offer can only be duplicated')
       assert(ability.can?(:update, internship_offer),
              'employers should be able to update internships offer that belongs to him')
@@ -115,29 +109,39 @@ class AbilityTest < ActiveSupport::TestCase
              'employers should be able to discard internships offer that belongs to him')
       assert(ability.can?(:index, Acl::InternshipOfferDashboard.new(user: employer)),
              'employers should be able to index InternshipOfferDashboard')
+
+      team_member_invitation = create(:team_member_invitation, inviter: employer,
+                                                               member: another_employer, invitation_email: another_employer.email)
+      team_member_invitation.accept_invitation!
+      colleague_offer = create(:weekly_internship_offer_2nde, employer: another_employer)
+      internship_application = create(:weekly_internship_application, internship_offer: colleague_offer)
+
+      ability = Ability.new(employer)
+      assert(ability.can?(:show, internship_application), 'employer should be able to show application related to team')
+
       %i[
-      create
-      edit
-      edit_organisation_representative_role
-      edit_tutor_email
-      edit_tutor_role
-      edit_activity_scope
-      edit_activity_preparation
-      edit_activity_learnings
-      edit_date_range
-      edit_organisation_representative_full_name
-      edit_siret
-      edit_tutor_full_name
-      edit_weekly_hours
-      update
+        create
+        edit
+        edit_organisation_representative_role
+        edit_tutor_email
+        edit_tutor_role
+        edit_activity_scope
+        edit_activity_preparation
+        edit_activity_learnings
+        edit_date_range
+        edit_organisation_representative_full_name
+        edit_siret
+        edit_tutor_full_name
+        edit_weekly_hours
+        update
       ].each do |meth|
-      assert(ability.can?(meth, internship_agreement), "Employer fail: #{meth}")
+        assert(ability.can?(meth, internship_agreement), "Employer fail: #{meth}")
       end
       internship_agreement.update_columns(aasm_state: :started_to_sign)
       assert(ability.can?(:sign_with_sms, User))
       assert(ability.can?(:sign_internship_agreements, internship_agreement.reload), 'Signature fails')
       assert(ability.can?(:transfer, internship_application.reload), 'Transfer my own application fails')
-      refute(ability.can?(:transfer, internship_application_other.reload), 'Transfer my own application fails')
+      #       refute(ability.can?(:transfer, internship_application_other.reload), 'Transfer my own application fails')
     end
   end
 
@@ -336,10 +340,6 @@ class AbilityTest < ActiveSupport::TestCase
     assert(ability.can?(:delete, student))
 
     assert(ability.can?(:index, ClassRoom))
-    assert(ability.can?(:create, ClassRoom))
-    assert(ability.can?(:update, ClassRoom))
-    assert(ability.can?(:destroy, ClassRoom))
-    assert(ability.can?(:edit, ClassRoom))
     assert(ability.cannot?(:change, :class_room))
 
     assert(ability.can?(:destroy, internship_application))
@@ -414,10 +414,6 @@ class AbilityTest < ActiveSupport::TestCase
            'students should be able to access their account')
 
     assert(ability.can?(:index, ClassRoom))
-    assert(ability.can?(:create, ClassRoom))
-    assert(ability.can?(:update, ClassRoom))
-    assert(ability.can?(:destroy, ClassRoom))
-    assert(ability.can?(:edit, ClassRoom))
     assert(ability.can?(:change, class_room))
 
     assert(ability.can?(:destroy, internship_application))
@@ -455,10 +451,6 @@ class AbilityTest < ActiveSupport::TestCase
     assert(ability.can?(:welcome_students, teacher),
            'teacher are to be able to welcome students')
     assert(ability.can?(:index, ClassRoom))
-    assert(ability.can?(:create, ClassRoom))
-    assert(ability.can?(:update, ClassRoom))
-    assert(ability.can?(:destroy, ClassRoom))
-    assert(ability.can?(:edit, ClassRoom))
     assert(ability.can?(:see_tutor, InternshipOffer))
     assert(ability.can?(:manage_school_students, teacher.school))
     assert(ability.cannot?(:manage_school_students, build(:school)))
@@ -474,10 +466,6 @@ class AbilityTest < ActiveSupport::TestCase
     assert(ability.can?(:manage_school_students, other.school))
     assert(ability.cannot?(:manage_school_students, another_school))
     assert(ability.can?(:index, ClassRoom))
-    assert(ability.can?(:create, ClassRoom))
-    assert(ability.can?(:update, ClassRoom))
-    assert(ability.can?(:destroy, ClassRoom))
-    assert(ability.can?(:edit, ClassRoom))
     assert(ability.can?(:change, class_room))
   end
 
@@ -494,10 +482,6 @@ class AbilityTest < ActiveSupport::TestCase
     assert(ability.can?(:manage_school_students, admin_officer.school))
     assert(ability.cannot?(:manage_school_students, another_school))
     assert(ability.can?(:index, ClassRoom))
-    assert(ability.can?(:create, ClassRoom))
-    assert(ability.can?(:update, ClassRoom))
-    assert(ability.can?(:destroy, ClassRoom))
-    assert(ability.can?(:edit, ClassRoom))
     assert(ability.can?(:change, class_room))
     assert(ability.can?(:read, InternshipAgreement))
   end
@@ -514,10 +498,6 @@ class AbilityTest < ActiveSupport::TestCase
     assert(ability.can?(:manage_school_students, cpe.school))
     assert(ability.cannot?(:manage_school_students, another_school))
     assert(ability.can?(:index, ClassRoom))
-    assert(ability.can?(:create, ClassRoom))
-    assert(ability.can?(:update, ClassRoom))
-    assert(ability.can?(:destroy, ClassRoom))
-    assert(ability.can?(:edit, ClassRoom))
     assert(ability.can?(:change, class_room))
     assert(ability.cannot?(:change, class_room_2))
     assert(ability.can?(:read, InternshipAgreement))

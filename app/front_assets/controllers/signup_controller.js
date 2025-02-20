@@ -77,7 +77,7 @@ export default class extends Controller {
     localStorage.removeItem('close_school_manager')
   }
 
-  signupConnected() {
+  connect() {
     const emailHintElement = this.emailHintTarget;
     const emailInputElement = this.emailInputTarget;
     const $hint = $(emailHintElement);
@@ -210,19 +210,19 @@ export default class extends Controller {
   }
 
   isPwdLengthOk(password) {
-    return this.lengthTarget.style.color = password.length >= 12
+    return password.length >= 12
   }
   isPwdUppercaseOk(password) {
-    return this.uppercaseTarget.style.color = /[A-Z]/.test(password)
+    return /[A-Z]/.test(password)
   }
   isPwdLowercaseOk(password) {
-    return this.lowercaseTarget.style.color = /[a-z]/.test(password)
+    return /[a-z]/.test(password)
   }
   isPwdNumberOk(password) {
-    return this.numberTarget.style.color = /[0-9]/.test(password)
+    return /[0-9]/.test(password)
   }
   isPwdSpecialCharOk(password) {
-    return this.specialTarget.style.color = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password)
+    return /[!@#$%^&*()_+\-=\[\]{};':"\\|,\.<>\/\?]+/.test(password);
   }
 
 

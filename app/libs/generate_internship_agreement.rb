@@ -36,7 +36,7 @@ class GenerateInternshipAgreement < Prawn::Document
     article_7
     article_8
     article_9
-    article_bonus
+    # article_bonus
 
     annexe_a
     annexe_b
@@ -206,13 +206,13 @@ class GenerateInternshipAgreement < Prawn::Document
     html_formating "<div style='margin-left: 25'>-  une (si deux lieux différents) ou deux semaines consécutives, pour les élèves scolarisés en seconde générale ou technologique durant le dernier mois de l'année scolaire.</div>"
   end
 
-  def article_bonus
-    return unless @internship_agreement.student.school.agreement_conditions_rich_text.present?
+  # def article_bonus
+  #   return unless @internship_agreement.student.school.agreement_conditions_rich_text.present?
 
-    headering('Art 10 .')
-    html_formating "<div style=''>#{@internship_agreement.student.school.agreement_conditions_rich_text.body.html_safe}</div>"
-    @pdf.move_down 30
-  end
+  #   headering('Art 10 .')
+  #   html_formating "<div style=''>#{@internship_agreement.student.school.agreement_conditions_rich_text.body.html_safe}</div>"
+  #   @pdf.move_down 30
+  # end
 
   def annexe_a
     titleing('Titre II : Dispositions particulières')

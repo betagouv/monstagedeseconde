@@ -60,6 +60,7 @@ RailsAdmin.config do |config|
   config.actions do
     dashboard do
       show_in_navigation false
+      statistics false
     end
     root :kpi do
       show_in_navigation false
@@ -69,8 +70,16 @@ RailsAdmin.config do |config|
     new
     bulk_delete
     show
-    edit
-    delete
+    edit do
+      except %w[School
+                InternshipOfferKeyword
+                Users::SchoolManagement]
+    end
+    delete do
+      except %w[School
+                InternshipOfferKeyword
+                Users::SchoolManagement]
+    end
 
     switch_user do
       except ['Users::God']
@@ -112,7 +121,6 @@ RailsAdmin.config do |config|
     'Tranformer un compte' => '/utilisateurs/transform_input',
     'Stats' => stats_path,
     'Sidekiq' => '/sidekiq',
-    'Zammad (Support)' => 'https://monstage.zammad.com',
     'AB Testing' => '/split'
   }
 end

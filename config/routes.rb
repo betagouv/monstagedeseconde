@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'sidekiq/web'
-when_employers_only = ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
 root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
                      'maintenance_estivale'
-                   elsif when_employers_only
+                   elsif ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
                      'pro_landing'
                    else
                      'home'
@@ -63,11 +62,9 @@ Rails.application.routes.draw do
                                                              as: 'resend_confirmation_phone_token'
     end
 
-    unless when_employers_only
-      resources :identities, path: 'identites', only: %i[new create]
-      resources :url_shrinkers, path: 'c', only: %i[] do
-        get :o, on: :member
-      end
+    # resources :identities, path: 'identites', only: %i[new create]
+    resources :url_shrinkers, path: 'c', only: %i[] do
+      get :o, on: :member
     end
 
     resources :coded_crafts, only: [] do
@@ -191,7 +188,6 @@ Rails.application.routes.draw do
           resources :students, path: 'eleves', only: %i[update index new create], module: 'class_rooms'
         end
         put '/update_students_by_group', to: 'schools/students#update_by_group', module: 'schools'
-        get '/information', to: 'schools#information', module: 'schools'
       end
 
       resources :internship_offer_areas, path: 'espaces', except: %i[show] do
@@ -271,13 +267,15 @@ Rails.application.routes.draw do
   get '/inscription-permanence', to: 'pages#register_to_webinar'
   get '/recherche-entreprises', to: 'pages#search_companies'
   post '/visitor_apply', to: 'pages#visitor_apply'
+  get '/educonnect_deconnexion_responsable', to: 'pages#educonnect_logout_responsible',
+                                             as: :educonnect_logout_responsible
   # TODO
   # To be removed after june 2023
   get '/register_to_webinar', to: 'pages#register_to_webinar'
-  get '/eleves', to: when_employers_only ? 'pages#home' : 'pages#student_landing'
+  get '/eleves', to: 'pages#student_landing'
   get '/professionnels', to: 'pages#pro_landing'
   get '/partenaires_regionaux', to: 'pages#regional_partners_index'
-  get '/equipe-pedagogique', to: when_employers_only ? 'pages#home' : 'pages#school_management_landing'
+  get '/equipe-pedagogique', to: 'pages#school_management_landing'
   get '/referents', to: 'pages#statistician_landing'
   get '/maintenance_estivale', to: 'pages#maintenance_estivale'
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'

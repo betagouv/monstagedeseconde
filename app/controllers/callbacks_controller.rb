@@ -3,8 +3,8 @@ class CallbacksController < ApplicationController
     if cookies[:state] == params[:state]
       code = params[:code]
       state = params[:state]
-
-      user_info = Services::FimConnection.new(code, state).get_user_info
+      nonce = params[:nonce]
+      user_info = Services::FimConnection.new(code, state, nonce).get_user_info
       Rails.logger.info('--------------')
       Rails.logger.info('FIM Connection')
       Rails.logger.info("User info FIM : #{user_info.inspect}")
@@ -64,8 +64,9 @@ class CallbacksController < ApplicationController
 
     redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
-    if user_info['FrEduCtPersonAffiliation'] == 'resp2d' # resp2d = Responsable légal
-      redirect_to root_path, alert: 'Seuls les élèves de 4e, 3e et 2de peuvent se connecter.' and return
+    if user_info['FrEduCtPersonAffiliation'] == ['resp2d'] # resp2d = Responsable légal
+      redirect_to educonnect_logout_responsible_path,
+                  alert: 'Seuls les élèves de 4e, 3e et 2de peuvent se connecter.' and return
     end
 
     student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
@@ -85,6 +86,7 @@ class CallbacksController < ApplicationController
       redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
     end
 
+    student = student.add_responsible_data unless student.legal_representative_full_name.present?
     student.confirm
     student.save
 

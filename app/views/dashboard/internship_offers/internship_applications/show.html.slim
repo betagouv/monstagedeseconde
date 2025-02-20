@@ -70,7 +70,8 @@
       .grey-container-application.with-grey-background
         h2.h4.fr-mb-4w = @internship_application.internship_offer.title
         p.fr-icon-calendar-line.fr-btn--icon-left
-          = "Période : <strong>#{@internship_application.internship_offer.current_period_label}</strong>".html_safe
+          - week_list = Presenters::WeekList.new(weeks: @internship_application.weeks)
+          = "<strong>#{week_list.to_range_as_str}</strong>".html_safe
         h4.h5 Motivations
         p.fr-mb-2w = @internship_application.motivation || "Non communiquées"
 

@@ -177,7 +177,7 @@ module Dashboard
       end
 
       test 'quick decision process with canceling' do
-        travel_to Date.new(2024, 10, 1) do
+        travel_to Date.new(2025, 3, 1) do
           school = create(:school)
           student = create(:student,
                            school:,
