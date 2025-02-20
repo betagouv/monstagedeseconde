@@ -225,7 +225,6 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       internship_occupation = create(:internship_occupation, city: 'Paris', zipcode: '75001',
                                                              coordinates: Coordinates.paris)
       entreprise = create(:entreprise, internship_occupation:)
-      byebug
       expected_hash = { "school-week-36": 1 }
       assert_equal expected_hash, School.nearby_school_weeks(
         latitude: internship_occupation.coordinates.latitude,

@@ -67,6 +67,35 @@ module Dashboard
         # form_student_value = find('input[name="internship_application[student_phone]"]').value.gsub(/\s+/, '')
         # assert_equal former_student_phone, form_student_value
       end
+
+      test 'student with validated application on first week can apply on second week' do
+        application = create(:weekly_internship_application, :first_june_week, :approved)
+        internship_offer = create(:weekly_internship_offer_2nde, :week_2)
+        student = application.student
+        sign_in(student)
+        visit internship_offer_path(internship_offer)
+        all('a', text: 'Postuler').first.click
+        assert_text 'Votre candidature'
+      end
+      test 'student with validated application on second week can apply on first week' do
+        application = create(:weekly_internship_application, :second_june_week, :approved)
+        internship_offer = create(:weekly_internship_offer_2nde, :week_1)
+        student = application.student
+        sign_in(student)
+        visit internship_offer_path(internship_offer)
+        all('a', text: 'Postuler').first.click
+        assert_text 'Votre candidature'
+      end
+      test 'student with validated application on second week can apply on first week with a 3e-2e offer' do
+        skip 'waiting for PO decision'
+        application = create(:weekly_internship_application, :second_june_week, :approved)
+        internship_offer = create(:weekly_internship_offer)
+        student = application.student
+        sign_in(student)
+        visit internship_offer_path(internship_offer)
+        all('a', text: 'Postuler').first.click
+        assert_text 'Votre candidature'
+      end
     end
   end
 end
