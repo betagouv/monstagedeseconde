@@ -15,6 +15,7 @@ module Presenters
 
     def formal_school_name
       return '' unless school
+
       "#{school.name} à #{school.city} (Code U.A.I: #{school.code_uai})"
     end
 
@@ -67,18 +68,22 @@ module Presenters
     end
 
     def forbidden_application_reason(internship_offer)
-      return "Vous avez déjà postulé à cette offre" if student.internship_applications.exists?(internship_offer_id: internship_offer.id)
+      if student.internship_applications.exists?(internship_offer_id: internship_offer.id)
+        return 'Vous avez déjà postulé à cette offre'
+      end
+      return 'Offre incompatible avec votre classe' unless student.grade.id.in?(internship_offer.grades.ids)
+
       if student.with_2_weeks_internships_approved?
-        "Vous avez déjà validé un stage pour les deux semaines"
+        'Vous avez déjà validé un stage pour les deux semaines'
       else
-        "Stage déjà validé sur cette semaine"
+        'Stage déjà validé sur cette semaine'
       end
     end
 
     private
 
     def anonymized_message
-      "Non communiqué (Donnée anonymisée)"
+      'Non communiqué (Donnée anonymisée)'
     end
   end
 end

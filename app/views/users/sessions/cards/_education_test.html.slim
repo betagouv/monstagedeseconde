@@ -1,0 +1,22 @@
+div class="fr-card"
+  .fr-card__body
+    .fr-card__content
+      h3.fr-h4
+        | Équipe
+        br
+
+        |< pédagogique
+        br
+        |
+      p.fr-text
+        | Inscrivez votre établissement et accompagnez vos élèves dans leurs recherches.
+    .fr-card__footer
+      ul.fr-btns-group
+        li
+          - path = @fim_url
+          - label = 'Connexion - Éducation Nationale'
+          - klass = 'fr-btn--secondary'
+          = link_to label, path, class: "fr-btn #{klass}"
+  .fr-card__header
+    .fr-ml-4w.fr-mt-5w
+      .fr-badge.fr-badge--info.fr-badge--no-icon éducation

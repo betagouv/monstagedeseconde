@@ -47,7 +47,7 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_equal planning.id, internship_offer.planning_id
       assert_equal employer.id, internship_offer.employer_id
       assert_equal 10, internship_offer.max_candidates
-      assert_equal 1, internship_offer.max_students_per_group
+      assert_equal 10, internship_offer.max_students_per_group
       assert_equal 'test de lunch break', internship_offer.lunch_break
       assert_equal Coordinates.paris[:latitude], internship_offer.coordinates.latitude
       assert_equal Coordinates.paris[:longitude], internship_offer.coordinates.longitude
@@ -150,6 +150,7 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       end
 
       planning = Planning.last
+      refute planning.maintenance_conditions?
       assert_equal entreprise.id, planning.entreprise_id
       assert_equal Grade.all.map(&:id).sort, planning.grades.map(&:id).sort
       assert_equal 'test de lunch break', planning.lunch_break
@@ -164,7 +165,7 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_equal planning.id, internship_offer.planning_id
       assert_equal employer.id, internship_offer.employer_id
       assert_equal 4, internship_offer.max_candidates
-      assert_equal 1, internship_offer.max_students_per_group
+      assert_equal 4, internship_offer.max_students_per_group
       assert_equal 'test de lunch break', internship_offer.lunch_break
       assert_equal Coordinates.paris[:latitude], internship_offer.coordinates.latitude
       assert_equal Coordinates.paris[:longitude], internship_offer.coordinates.longitude
@@ -224,6 +225,12 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       internship_occupation = create(:internship_occupation, city: 'Paris', zipcode: '75001',
                                                              coordinates: Coordinates.paris)
       entreprise = create(:entreprise, internship_occupation:)
+      expected_hash = { "school-week-36": 1 }
+      assert_equal expected_hash, School.nearby_school_weeks(
+        latitude: internship_occupation.coordinates.latitude,
+        longitude: internship_occupation.coordinates.longitude,
+        radius: 60_000
+      )
       assert internship_occupation.coordinates.latitude == Coordinates.paris[:latitude]
       assert internship_occupation.coordinates.longitude == Coordinates.paris[:longitude]
       sign_in(internship_occupation.employer)

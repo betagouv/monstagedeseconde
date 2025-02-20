@@ -5,6 +5,7 @@ module StepperProxy
     included do
       # belongs_to :group, optional: true
       # TODO
+      # normalizes :contact_phone, with: ->(contact_phone) { User.sanitize_mobile_phone_number(contact_phone) }
       belongs_to :group, -> { where is_public: true }, optional: true
       belongs_to :sector
 

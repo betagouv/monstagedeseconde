@@ -33,7 +33,7 @@ module InternshipApplicationCountersHooks
     # it counts the applications approved for each internship offer week.
     #---------------------------------------
 
-    # Note: if a week is associated to an application that reaches the aasm_state of :approved,
+    # NOTE: if a week is associated to an application that reaches the aasm_state of :approved,
     # and if that week in not listed in internship_offer_weeks,
     # then next counter could appear as bugged (see commit ad80245), but it is not
 

@@ -317,24 +317,6 @@ namespace :data_migrations do
     end
   end
 
-  desc 'transit from draft to unpublish on every internship_offer'
-  task 'from_draft_to_unpublish': :environment do
-    PrettyConsole.announce_task('transit from draft to unpublish on every internship_offer') do
-      counter = 0
-      offers = Rails.env.development? ? InternshipOffer.kept.where(school_id: nil) : InternshipOffer.kept
-      puts '================================'
-      puts " offers.where(aasm_state: 'drafted').count: #{offers.where(aasm_state: 'drafted').count}"
-      puts '================================'
-      puts ''
-      offers.drafted.find_each do |offer|
-        offer.unpublish!
-        counter += 1
-        print '.'
-      end
-      PrettyConsole.say_in_cyan "counter of draft updated : #{counter}"
-    end
-  end
-
   desc 'update schools where department is missing'
   task 'update_schools_department': :environment do
     PrettyConsole.announce_task('update schools where department is missing') do
@@ -355,6 +337,66 @@ namespace :data_migrations do
         end
       end
       PrettyConsole.say_in_cyan "counter of schools updated : #{counter}"
+    end
+  end
+
+  desc 'obfuscate readable students ine at setup' do
+    task 'obfuscate_email': :environment do
+      Users::Student.kept
+                    .where('created_at < ?', DateTime.new(2025, 1, 31, 19, 20))
+                    .where.not(ine: nil)
+                    .find_each do |student|
+        scrambled_ine = Digest::SHA1.hexdigest(student.ine)
+        student.update_columns(email: "#{scrambled_ine}@#{student.school.code_uai}.fr")
+        print '.'
+      end
+    end
+  end
+
+  desc 'update lycees and colleges with qpv information'
+  task 'update_schools_qpv': :environment do
+    PrettyConsole.announce_task('update lycees with qpv information') do
+      School.where(rep_kind: 'qpv').find_each do |school|
+        school.update!(qpv: true, rep_kind: '')
+        print '.'
+      end
+    end
+    PrettyConsole.announce_task('update lycees with qpv information') do
+      file_location = Rails.root.join('db/data_imports/sources_EN/LYCEE_220524_simplified.csv')
+      counter = 0
+      CSV.foreach(file_location, headers: { col_sep: ';' }).each do |row|
+        fields = row.to_s.split(';')
+        code_uai = fields.second.strip
+        # rep = fields[3].upcase.strip == 'OUI'
+        # rep_plus = fields[4].upcase.strip == 'OUI'
+        qpv = fields[5].upcase.strip == 'DANS QP'
+
+        school = School.find_by(code_uai: code_uai, qpv: false)
+        next if school.nil?
+
+        school.update!(qpv: qpv)
+        print '.'
+        counter += 1
+      end
+      PrettyConsole.say_in_cyan "counter of lycees updated : #{counter}"
+    end
+    PrettyConsole.announce_task('update colleges with qpv information') do
+      file_location = Rails.root.join('db/data_imports/sources_EN/fr-colleges-qpv.csv')
+      counter = 0
+      CSV.foreach(file_location, headers: { col_sep: ';' }).each do |row|
+        fields = row.to_s.split(';')
+        code_uai = fields.first.strip
+        qpv = fields.second.upcase.strip == 'DANS UN QPV'
+        next unless qpv
+
+        school = School.find_by(code_uai: code_uai, qpv: false)
+        next if school.nil?
+
+        school.update!(qpv: qpv)
+        print '.'
+        counter += 1
+      end
+      PrettyConsole.say_in_cyan "counter of colleges updated : #{counter}"
     end
   end
 end

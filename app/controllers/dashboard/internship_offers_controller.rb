@@ -216,7 +216,7 @@ module Dashboard
 
     def internship_offer_params
       params.require(:internship_offer)
-            .permit(:academy, :aasm_state, :city, :contact_phone,
+            .permit(:academy, :aasm_state, :city, :contact_phone, :all_year_long,
                     :department, :description, :employer_chosen_name, :employer_id,
                     :employer_name, :employer_type, :entreprise_chosen_full_address,
                     :entreprise_city,
@@ -224,7 +224,7 @@ module Dashboard
                     :entreprise_full_address,
                     :entreprise_street, :entreprise_zipcode, :grade_2e, :grade_college,
                     :group_id, :internship_address_manual_enter,
-                    :is_public, :lunch_break, :max_candidates, :max_students_per_group,
+                    :is_public, :lunch_break, :max_candidates,
                     :period, :period_field, :published_at, :region, :renewed, :republish, :school_id,
                     :sector_id, :shall_publish, :siret, :street, :title, :type, :workspace_conditions,
                     :workspace_accessibility, :user_update, :verb, :zipcode, entreprise_coordinates: {}, coordinates: {},

@@ -4,12 +4,14 @@ module InternshipOffers
   class WeeklyFramed < InternshipOffer
     include RailsAdminInternshipOfferable
 
-    after_initialize :init
-    before_create :reverse_academy_by_zipcode
-
     # TODO: remove following since inherited
     attr_accessor :republish
 
+    #---------------------
+    after_initialize :init
+    before_create :reverse_academy_by_zipcode
+    before_save :copy_entreprise_full_address
+    #---------------------
     validates :street,
               :city,
               presence: true
@@ -25,10 +27,11 @@ module InternshipOffers
     validates :lunch_break, length: { minimum: 8, maximum: 250 }
     validate :schedules_check
 
-    after_initialize :init
-    before_create :reverse_academy_by_zipcode
-    before_save :copy_entreprise_full_address
-
+    #---------------------
+    has_one :mother,
+            class_name: 'InternshipOffer',
+            foreign_key: 'mother_id',
+            dependent: :nullify
     #---------------------
     # fullfilled scope isolates those offers that have reached max_candidates
     #---------------------
@@ -69,11 +72,22 @@ module InternshipOffers
                            .count
     end
 
+    # TODO: belongs_to a task not a model
     def self.update_older_internship_offers
-      to_be_unpublished = published.where('last_date < ?', Time.now.utc).to_a
-      to_be_unpublished += published.joins(:stats).where('internship_offer_stats.remaining_seats_count < 1').to_a
-      to_be_unpublished.uniq.each do |offer|
+      to_be_unpublished = where(aasm_state: %i[published need_to_be_updated splitted])
+                          .where('last_date < ?', Week.current_year_start_week.monday).to_a
+      to_be_unpublished.each do |offer|
         print '.'
+        # skip missing weeks validation and silent unpublishing
+        offer.update_columns(
+          aasm_state: 'unpublished',
+          published_at: nil
+        )
+      end
+      to_be_updated = published.joins(:stats).where('internship_offer_stats.remaining_seats_count < 1').to_a
+      to_be_updated += published.where('last_date < ?', Time.now.utc).to_a
+      to_be_updated.each do |offer|
+        print '|'
         # skip missing weeks validation
         offer.update_columns(
           aasm_state: 'need_to_be_updated',
@@ -82,38 +96,18 @@ module InternshipOffers
       end
     end
 
-    def has_weeks_in_the_past?
+    def has_weeks_before_school_year_start?
       start_week = Week.current_year_start_week
-      weeks.any? { |week| week.number < start_week.number && week.year <= start_week.year }
+      weeks.any? { |week| week.id.in?(Week.before_week(week: start_week).ids) }
     end
 
-    # TODO
-    # make a before and after block to be reused
-
-    def has_weeks_in_the_future?
+    def has_weeks_after_school_year_start?
       start_week = Week.current_year_start_week
-      weeks.any? { |week| week.number >= start_week.number && week.year >= start_week.year }
+      weeks.any? { |week| week.id.in?(Week.after_week(week: start_week).ids) }
     end
 
-    def has_weeks_in_the_past_and_in_the_future?
-      has_weeks_in_the_past? && has_weeks_in_the_future?
-    end
-
-    def split_in_two
-      new_internship_offer = dup
-
-      new_internship_offer.hidden_duplicate = false
-      new_internship_offer.mother_id = id
-      new_internship_offer.weeks = weeks & Week.weeks_of_school_year(school_year: Week.current_year_start_week.year)
-      new_internship_offer.grades = grades
-      new_internship_offer.weekly_hours = weekly_hours
-      new_internship_offer.save
-
-      self.hidden_duplicate = true
-      self.weeks = weeks & Week.of_past_school_years
-      self.published_at = nil
-      self.aasm_state = 'splitted'
-      save && new_internship_offer
+    def child
+      InternshipOffer.find_by(mother_id: id)
     end
 
     def schedules_check

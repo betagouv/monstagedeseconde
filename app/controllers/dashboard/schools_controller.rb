@@ -8,9 +8,10 @@ module Dashboard
     def index
       authorize! :index, School
       query = School
-      query = query.all if params[:visible].blank? || params[:kind].blank?
+      query = query.all if params[:visible].blank? || params[:rep_kind].blank?
       query = query.where(visible: parsed_visible_param) if params[:visible].present?
-      query = query.where(kind: parsed_kind_param) if params[:kind].present?
+      query = query.where(rep_kind: parsed_kind_param) if internship_weeks_params[:rep_kind].present?
+      query = query.where(qpv: internship_weeks_params[:qpv]) if internship_weeks_params[:qpv].present?
       query = query.order(zipcode: :desc)
       @schools = query.entries
     end
@@ -44,10 +45,6 @@ module Dashboard
       redirect_to dashboard_school_class_rooms_path(@school)
     end
 
-    def information
-      @school = School.find(params.require(:school_id))
-    end
-
     private
 
     def set_school
@@ -67,20 +64,25 @@ module Dashboard
     end
 
     def parsed_kind_param
-      return params[:kind] if School::VALID_TYPE_PARAMS.include?(params[:kind])
+      if School::VALID_TYPE_PARAMS.include?(internship_weeks_params[:rep_kind])
+        return internship_weeks_params[:rep_kind]
+      end
 
       raise 'unknown kind'
     end
 
     def god_internship_weeks_params
-      params.require(:school).permit(:zipcode,
-                                     :city,
-                                     :street,
-                                     :name,
-                                     :visible,
-                                     :agreement_conditions_rich_text,
-                                     coordinates: {},
-                                     week_ids: [])
+      params.require(:school)
+            .permit(:zipcode,
+                    :city,
+                    :street,
+                    :name,
+                    :visible,
+                    :rep_kind,
+                    :qpv,
+                    :agreement_conditions_rich_text,
+                    coordinates: {},
+                    week_ids: [])
     end
 
     def school_manager_internship_weeks_params

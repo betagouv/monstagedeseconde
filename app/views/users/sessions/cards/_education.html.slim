@@ -14,7 +14,7 @@ div class="fr-card #{employers_only? ? 'disabled_tab' : ''}"
       ul.fr-btns-group
         li
           - path = employers_only? ? '#' :  @fim_url
-          - label = employers_only? ? 'Connexion à venir' : '"Connexion - Éducation Nationale"'
+          - label = employers_only? ? 'Connexion à venir' : 'Connexion - Éducation Nationale'
           - klass = employers_only? ? 'fr-btn--tertiary' : 'fr-btn--secondary'
           = link_to label, path, class: "fr-btn #{klass}", disabled: employers_only?
   .fr-card__header

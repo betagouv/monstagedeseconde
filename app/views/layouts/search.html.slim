@@ -25,8 +25,7 @@ html lang="fr"
           = render "layouts/navbar"
           .container-homepage
             .container-monstage
-              = render 'pages/home/search_top_nav'
-          = render 'layouts/webinar_banner' if can?(:subscribe_to_webinar, current_user_or_visitor)
+              = render 'pages/home/top_nav'
       = content_for(:custom_header)
       .container-x
         = render 'layouts/flash'

@@ -73,25 +73,18 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: '', headers: {})
   end
 
-  def fim_token_stub(code)
-    stub_request(:post, 'https://hub-pr2.phm.education.gouv.fr/idp/profile/oidc/token')
+  def fim_token_stub
+    stub_request(:post, ENV['FIM_URL'] + '/idp/profile/oidc/token')
       .with(
         body: {
           'client_id' => ENV['FIM_CLIENT_ID'],
           'client_secret' => ENV['FIM_CLIENT_SECRET'],
-          'code' => code,
+          'code' => '123456',
           'grant_type' => 'authorization_code',
           'redirect_uri' => ENV['FIM_REDIRECT_URI'],
           'scope' => 'openid stage profile email',
-          'state' => /.*/,
-          'nonce' => /.*/
-        },
-        headers: {
-          'Accept' => '*/*',
-          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Content-Type' => 'application/x-www-form-urlencoded',
-          'Host' => 'hub-pr2.phm.education.gouv.fr',
-          'User-Agent' => 'Ruby'
+          'state' => 'abc',
+          'nonce' => 'def'
         }
       )
       .to_return(status: 200, body: {
@@ -182,5 +175,87 @@ module ThirdPartyTestHelpers
     PagesController.stub_any_instance(:get_resources, []) do
       PagesController.stub_any_instance(:get_faqs, [], &block)
     end
+  end
+
+  def educonnect_token_stub
+    stub_request(:post, ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/token')
+      .with(
+        body: {
+          'client_id' => ENV['EDUCONNECT_CLIENT_ID'],
+          'client_secret' => ENV['EDUCONNECT_CLIENT_SECRET'],
+          'code' => '123456',
+          'grant_type' => 'authorization_code',
+          'redirect_uri' => ENV['EDUCONNECT_REDIRECT_URI'],
+          'state' => 'abc',
+          'nonce' => 'def'
+        }
+      )
+      .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_token.json'), headers: {})
+  end
+
+  def educonnect_userinfo_stub
+    stub_request(:get, ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/userinfo')
+      .with(
+        headers: {
+          'Authorization' => 'Bearer token_educonnect',
+          'Content-Type' => 'application/json'
+        }
+      )
+      .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_userinfo.json'), headers: {})
+  end
+
+  def educonnect_userinfo_unknown_stub
+    stub_request(:get, ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/userinfo')
+      .with(
+        headers: {
+          'Authorization' => 'Bearer token_educonnect',
+          'Content-Type' => 'application/json'
+        }
+      )
+      .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_userinfo_unknown.json'), headers: {})
+  end
+
+  def educonnect_logout_stub
+    stub_request(:get, "#{ENV['EDUCONNECT_URL']}/idp/profile/oidc/logout")
+      .with(
+        headers: {
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization' => 'Bearer abc123',
+          'Host' => URI(ENV['EDUCONNECT_URL']).host,
+          'User-Agent' => 'Ruby'
+        }
+      )
+      .to_return(status: 200, body: '', headers: {})
+  end
+
+  def stub_omogen_auth
+    stub_request(:post, ENV['OMOGEN_OAUTH_URL'])
+      .with(
+        body: { 'client_id' => ENV['OMOGEN_CLIENT_ID'], 'client_secret' => ENV['OMOGEN_CLIENT_SECRET'],
+                'grant_type' => 'client_credentials' },
+        headers: {
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'Host' => URI(ENV['OMOGEN_OAUTH_URL']).host,
+          'User-Agent' => 'Ruby'
+        }
+      ).to_return(status: 200, body: { token: 'token' }.to_json, headers: {})
+  end
+
+  def stub_sygne_reponsible(ine)
+    stub_request(:get, "#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
+      .with(
+        headers: {
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization' => 'Bearer',
+          'Compression-Zip' => 'non',
+          'Host' => URI(ENV['SYGNE_URL']).host,
+          'User-Agent' => 'Ruby'
+        }
+      )
+      .to_return(status: 200, body: File.read('test/fixtures/files/signe_responsible.json'), headers: {})
   end
 end

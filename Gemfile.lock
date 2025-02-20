@@ -299,6 +299,7 @@ GEM
       ruby-progressbar
     minitest-retry (0.2.3)
       minitest (>= 5.0)
+    minitest-stub-const (0.6)
     minitest-stub_any_instance (1.0.3)
     msgpack (1.7.5)
     multi_json (1.15.0)
@@ -311,7 +312,7 @@ GEM
     nested_form (0.3.2)
     net-http (0.6.0)
       uri
-    net-imap (0.5.2)
+    net-imap (0.5.6)
       date
       net-protocol
     net-pop (0.1.2)
@@ -380,7 +381,7 @@ GEM
     puma (6.5.0)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.1.8)
+    rack (3.1.10)
     rack-protection (4.1.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
@@ -635,6 +636,7 @@ DEPENDENCIES
   mime-types
   minitest-reporters
   minitest-retry
+  minitest-stub-const
   minitest-stub_any_instance
   ovh-rest
   pg

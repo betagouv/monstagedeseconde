@@ -40,6 +40,20 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+.search-offer-bloc {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  background-color: #f6f6f6;
+  .almost-fitting {
+    width: 100%;
+  }
+}
+
+.search-offer-col {
+  width: calc(14.28571% + 570px) !important;
+}
 
 .results-container {
   .results-col {
@@ -49,22 +63,39 @@
       overflow-x: hidden;
     }
   }
+  position: relative;
+  min-height: 100vh;
+}
 
-  .no-x-scroll {
-    overflow-x: hidden !important;
-  }
+.scrollable-content {
+  overflow-y: auto;
+  padding-right: 1rem;
+}
 
-  .results-row {
-    overflow: hidden;
-  }
+.map-wrapper {
+  position: relative;
+  
+}
 
-  .map-container {
-    height: calc(100vh - 130px);
-  }
+.map-sticky-container {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
 
-  .fr-card__content {
-    padding-bottom: 2rem !important;
-  }
+.leaflet-container {
+  width: 100% !important;
+  height: 100vh !important;
+  z-index: 9;
+}
+
+/* Masquer les styles en conflit */
+.results-row {
+  overflow: visible !important;
+}
+
+.map-container {
+  height: 100vh;
 }
 
 .heart-full {
@@ -146,8 +177,10 @@ a.leaflet-control-zoom-out {
   z-index: 5000 !important;
 }
 
-.leaflet-container {
-  height: calc(100vh - 130px) !important;
+.weeks-list {
+  .custom-control-checkbox-list{
+    overflow-x: hidden;
+  }
 }
 
 @include media-breakpoint-up(xs) {

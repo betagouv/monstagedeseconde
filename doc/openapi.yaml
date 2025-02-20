@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: API pour la création d'offres de stage sur https://stagedeseconde.1jeune1solution.gouv.fr/
+  title: API pour la création d'offres de stage sur https://1eleve1stage.education.gouv.fr/
   description: API pour la création d'offres de stages à destination des élèves de
     seconde générale et technologique
   contact:
@@ -22,7 +22,7 @@ paths:
       - developers
       summary: liste (index) les offres déposées
       description: |
-        Les offres retournées représentent l'ensemble des offres du site https://stagedeseconde.1jeune1solution.gouv.fr/ .
+        Les offres retournées représentent l'ensemble des offres du site https://1eleve1stage.education.gouv.fr/ .
       operationId: internship_offers_index
       responses:
         "200":
@@ -108,7 +108,7 @@ paths:
       tags:
       - developers
       summary: Supprime une offre de stage d'un partenaire des offres proposées sur
-        le site https://stagedeseconde.1jeune1solution.gouv.fr/
+        le site https://1eleve1stage.education.gouv.fr/
       description: |
         Suppression des offres
       operationId: internship_offers_delete

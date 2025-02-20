@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
   before_action :check_for_maintenance
   before_action :employers_only_redirect
   before_action :throttle_ip_requests
+  before_action :store_user_type_before_logout
 
   # TODO: Remove following line
   default_form_builder Rg2aFormBuilder
@@ -31,6 +32,23 @@ class ApplicationController < ActionController::Base
     session[:show_student_reminder_modal] = true if resource.needs_to_see_modal?
 
     stored_location_for(resource) || resource.reload.after_sign_in_path || super
+  end
+
+  def after_sign_out_path_for(resource_or_scope)
+    Rails.logger.info("----- Signout path for: #{resource_or_scope.inspect} -----")
+    Rails.logger.info("----- User type was : #{cookies[:user_type]} -----")
+
+    if cookies[:user_type] == 'student'
+      Rails.logger.info('----- Logout educonnect -----')
+      cookies.delete(:user_type)
+      root_path(logout: :educonnect)
+    elsif cookies[:user_type] == 'school_management'
+      Rails.logger.info('----- Logout fim -----')
+      cookies.delete(:user_type)
+      root_path(logout: :fim)
+    else
+      super
+    end
   end
 
   def current_user_or_visitor
@@ -108,9 +126,23 @@ class ApplicationController < ActionController::Base
   end
 
   def check_host_for_redirection
-    return unless request.host == 'stagedeseconde.1jeune1solution.gouv.fr/'
+    return unless request.host == '1eleve1stage.education.gouv.fr/'
 
     redirect_to 'https://1eleve1stage.education.gouv.fr', status: :moved_permanently,
                                                           allow_other_host: true
+  end
+
+  def store_user_type_before_logout
+    return unless current_user
+
+    cookies[:user_type] = case current_user
+                          when Users::Student
+                            'student'
+                          when Users::SchoolManagement
+                            'school_management'
+                          else
+                            'other'
+                          end
+    Rails.logger.info("User type stored before logout: #{cookies[:user_type]}")
   end
 end

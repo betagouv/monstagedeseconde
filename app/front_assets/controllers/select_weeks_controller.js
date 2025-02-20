@@ -1,15 +1,7 @@
 import $ from "jquery";
-import { add, Controller } from "stimulus";
-import { fetch } from "whatwg-fetch";
+import { Controller } from "stimulus";
 import { showElement, hideElement, toggleContainer } from "../utils/dom";
-import {
-  attach,
-  detach,
-  weeksCountChanged,
-  broadcast,
-  EVENT_LIST,
-} from "../utils/events";
-import { endpoints } from "../utils/api";
+import { weeksCountChanged, broadcast, } from "../utils/events";
 
 // @schools [School, School, School]
 // return {weekId: [school, ...]}
@@ -72,6 +64,16 @@ export default class extends Controller {
 
   disconnect() {
     this.detachEventListeners();
+  }
+
+  connect() {
+    if (this.allYearLongTarget.checked) {
+      this.showAllYearLong();
+    } else {
+      $(".custom-control-checkbox-list").removeClass("d-none");
+      toggleContainer(this.checkboxesContainerTarget, true);
+      this.computeMonthScore();
+    }
   }
 
   fetchSchoolsNearby() {

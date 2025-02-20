@@ -993,7 +993,11 @@ CREATE TABLE public.internship_agreements (
     skills_observe text,
     skills_communicate text,
     skills_understand text,
-    skills_motivation text
+    skills_motivation text,
+    entreprise_address character varying,
+    student_birth_date date,
+    pai_project boolean,
+    pai_trousse_family boolean
 );
 
 
@@ -1950,7 +1954,7 @@ CREATE TABLE public.schools (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     city_tsv tsvector,
-    kind character varying(50),
+    rep_kind character varying(50),
     visible boolean DEFAULT true,
     internship_agreement_online boolean DEFAULT false,
     fetched_school_phone character varying(20),
@@ -1965,7 +1969,9 @@ CREATE TABLE public.schools (
     level character varying(100) DEFAULT 'lycee'::character varying NOT NULL,
     school_type public.school_category DEFAULT 'college'::public.school_category NOT NULL,
     voie_generale boolean,
-    voie_techno boolean
+    voie_techno boolean,
+    full_imported boolean DEFAULT false,
+    qpv boolean DEFAULT false
 );
 
 
@@ -2173,7 +2179,7 @@ ALTER SEQUENCE public.tutors_id_seq OWNED BY public.tutors.id;
 
 CREATE TABLE public.url_shrinkers (
     id bigint NOT NULL,
-    original_url character varying(380),
+    original_url character varying(650),
     url_token character varying(6),
     click_count integer DEFAULT 0,
     user_id bigint NOT NULL,
@@ -2287,7 +2293,6 @@ CREATE TABLE public.users (
     survey_answered boolean DEFAULT false,
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
-    hubspot_id character varying(15),
     academy_id integer,
     academy_region_id integer,
     address character varying(300),
@@ -4044,6 +4049,13 @@ CREATE INDEX index_schools_on_city_tsv ON public.schools USING gin (city_tsv);
 
 
 --
+-- Name: index_schools_on_code_uai; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_schools_on_code_uai ON public.schools USING btree (code_uai);
+
+
+--
 -- Name: index_schools_on_coordinates; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4174,6 +4186,13 @@ CREATE INDEX index_users_on_email ON public.users USING btree (email);
 --
 
 CREATE INDEX index_users_on_grade_id ON public.users USING btree (grade_id);
+
+
+--
+-- Name: index_users_on_ine; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_users_on_ine ON public.users USING btree (ine);
 
 
 --
@@ -4849,6 +4868,13 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250213110533'),
+('20250209100322'),
+('20250206101850'),
+('20250205085007'),
+('20250203163502'),
+('20250128213823'),
+('20250124164746'),
 ('20250120101004'),
 ('20250120090347'),
 ('20250115174742'),

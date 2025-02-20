@@ -16,55 +16,55 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
     = f.hidden_field :internship_offer_type
 
     fieldset.mb-4
-      = f.hidden_field :week_ids, data: {:'internship-application-form-target' => "weekIds"}
-
       - if current_user.troisieme_ou_quatrieme?
+        = f.hidden_field :week_ids, data: {:'internship-application-form-target' => "weekIds"}
         - unless current_user.school.has_weeks_on_current_year?
           = render partial: "internship_applications/forms/student_missing_school_weeks"
         .fr-select-group
           = label_tag :week_id, 'Quelle semaine ?', class: 'required fr-label'
-          
           = select_tag :week_id,
                       options_from_collection_for_select(@available_weeks, :id, :human_select_text_method, @internship_application.week_ids.try(:first)),
                       { prompt: 'Choisir une semaine',
                         class: "fr-select",
-                        data: {:'internship-application-form-target' => "weekSelect", 
+                        data: {:'internship-application-form-target' => "weekSelect",
                               action: "change->internship-application-form#updateWeekId"},
                         required: true }
       - elsif current_user.seconde_gt?
-        - period_options = [ \
-          [ \
-            Presenters::WeekList.new(weeks: SchoolTrack::Seconde.both_weeks).to_range_as_str, \
-            SchoolTrack::Seconde.both_weeks.map(&:id).join(',') \
-          ], \
-          [ \
-            Presenters::WeekList.new(weeks: [SchoolTrack::Seconde.first_week]).to_range_as_str, \
-            SchoolTrack::Seconde.first_week.id \
-          ], \
-          [ \
-            Presenters::WeekList.new(weeks: [SchoolTrack::Seconde.second_week]).to_range_as_str, \
-            SchoolTrack::Seconde.second_week.id \
-          ] \
-        ]
-        = label_tag :period, 'Période de stage',
+        - if @internship_application.internship_offer.two_weeks_long?
+          - period_text = Presenters::WeekList.new(weeks: SchoolTrack::Seconde.both_weeks).to_range_as_str
+          - period_value = SchoolTrack::Seconde.both_weeks.map(&:id).join(',')
+          - period_options = [[period_text, period_value]]
+        - elsif (@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks) == [SchoolTrack::Seconde.first_week]
+          - period_text = Presenters::WeekList.new(weeks: [SchoolTrack::Seconde.first_week]).to_range_as_str
+          - period_value = SchoolTrack::Seconde.first_week.id
+          - period_options = [[period_text, period_value]]
+        - elsif (@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks) == [SchoolTrack::Seconde.second_week]
+          - period_text = Presenters::WeekList.new(weeks: [SchoolTrack::Seconde.second_week]).to_range_as_str
+          - period_value = SchoolTrack::Seconde.second_week.id
+          - period_options = [[period_text, period_value]]
+
+        - if period_options.present?
+          = label_tag :period, 'Période de stage',
                   class: 'fr-label fr-hint',
                   style: 'color: #929292'
-        
-        = select_tag :period,
-                    options_for_select(period_options,
-                                    @internship_application.internship_offer.period),
-                    { prompt: 'Choisissez une période',
-                      class: "fr-select",
-                      data: {:'internship-application-form-target' => "periodSelect", 
-                            action: "change->internship-application-form#updatePeriod"},
-                    }
-        
+
+          = f.hidden_field :week_ids, value: period_value
+
+          = select_tag :period,
+                      options_for_select(period_options,
+                                      @internship_application.internship_offer.period),
+                      { class: "fr-select",
+                        required: true,
+                        disabled: true,
+                        value: @internship_application.internship_offer.period,
+                        data: {:'internship-application-form-target' => "periodSelect",
+                              action: "change->internship-application-form#updatePeriod"}}
+
       div class="form-group fr-mt-2w"
         = f.label :motivation,
                   class: 'fr-label',
                   for: 'internship_application_motivation'
           | Pourquoi ce stage me motive ?
-          = f.rg2a_required_content_tag
           small.form-text.text-muted Relisez-vous pour éviter les fautes.
         = f.text_area :motivation,
                       class: "fr-input col-12",
@@ -79,47 +79,45 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
           .h4 Informations personnelles
 
           .fr-alert.fr-alert--info
-            p.fr-mb-0 Ces informations seront utilisées pour le remplissage de la convention de stage dématérialisée et ne seront pas transmises directement à l’entreprise.
+            p.fr-mb-0 Ces informations seront utilisées pour le remplissage de la convention de stage dématérialisée et ne seront pas transmises directement à l'entreprise.
 
 
       .row.fr-mt-2w.fr-mb-3w
         .col-12
+          - student_email = f.object.student.fake_email? ? '' : f.object.student_email || f.object.previous_student_email || (current_user.student? && current_user.email)
           = render '/inputs/dsfr_input_field',
                     field: :student_email,
                     f: f,
                     object: f.object,
-                    value: f.object.student_email || f.object.student.email || f.object.previous_student_email,
+                    value:  student_email,
                     label: "Adresse électronique (email)",
-                    required: true,
                     pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
                     hint: "Veuillez saisir une adresse email valide, sans espace ni majuscule.",
                     title: 'Adresse électronique',
+                    options: { required: true },
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
-      - if f.object.student.phone.present? || f.object.student.phone.present?
+      - if f.object.student.phone.present? || f.object.student_phone.present?
         .row.fr-my-2w
           .col-12
             = render '/inputs/dsfr_input_field',
                     field: :student_phone,
                     f: f,
                     object: f.object,
-                    value: f.object.student_phone || f.object.student.phone || f.object.previous_student_phone,
+                    value:  f.object.student.phone || f.object.student_phone || f.object.previous_student_phone,
                     label: "Numéro de portable élève ou responsable légal",
-                    required: true,
-                    title: 'Numéro de mobile',
                     pattern: phone_pattern,
+                    title: 'Numéro de mobile',
+                    options: { required: true },
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
-            = f.hidden_field :student_phone,
-                            value: f.object.student_phone || f.object.student.phone
       - else
         .row.fr-m-n2w.fr-mb-3w
           .col-xs-12.col-sm-6
             .form-group.phone
               = label_tag 'Numéro de mobile', '', class: 'fr-label'
-              = label_tag :student_phone, for: 'phone-input', class: 'fr-label' do
+              = label_tag :student_phone, for: 'phone-input', class: 'fr-label'
                 = 'Numéro de mobile'
-                = f.rg2a_required_content_tag
               - registered_value = f.object.student_phone || f.object.student.phone || f.object.previous_student_phone
               = react_component("CountryPhoneSelect",
                                 props: { name: "#{f.object_name}[student_phone]",
@@ -130,65 +128,61 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
       .row.fr-m-n2w.fr-mb-3w
         .col-12
           .form-group.phone
-            = label_tag 'Votre adresse postale complète', '', class: 'fr-label' do
-              = f.rg2a_required_content_tag
+            = label_tag 'Votre adresse postale complète', '', class: 'fr-label'
             = render '/inputs/dsfr_input_field',
                     field: :student_address,
                     f: f,
                     object: f.object,
                     value: f.object.student_address ||f.object.student.address,
                     label: "Votre adresse postale complète",
-                    required: true,
+                    options: { required: true,
+                               maxlength: 300 },
                     title: 'Adresse',
-                    maxlength: 300,
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
       .row.fr-m-n2w.fr-mb-3w
         .col-12
           .form-group.phone
-            = label_tag 'Nom et prénom de votre représentant légal', '', class: 'fr-label' do
-              = f.rg2a_required_content_tag
+            = label_tag 'Nom et prénom de votre représentant légal', '', class: 'fr-label'
             = render '/inputs/dsfr_input_field',
                     field: :student_legal_representative_full_name,
                     f: f,
                     object: f.object,
                     value: f.object.student_legal_representative_full_name ||f.object.student.legal_representative_full_name,
                     label: "Nom et prénom de votre représentant légal",
-                    required: true,
-                    maxlength: 180,
+                    options: { required: true,
+                               maxlength: 180 },
                     title: 'Représentant légal',
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
       .row.fr-m-n2w.fr-mb-3w
         .col-12
           .form-group.phone
-            = label_tag 'Adresse email de votre représentant légal', '', class: 'fr-label' do
-              = f.rg2a_required_content_tag
+            = label_tag 'Adresse email de votre représentant légal', '', class: 'fr-label'
             = render '/inputs/dsfr_input_field',
                     field: :student_legal_representative_email,
                     f: f,
                     object: f.object,
                     value: f.object.student_legal_representative_email ||f.object.student.legal_representative_email,
                     label: "Adresse électronique de votre représentant légal",
-                    required: true,
                     pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
-                    maxlength: 100,
+                    options: { required: true,
+                               maxlength: 100 },
                     title: 'Adresse électronique',
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
       .row.fr-m-n2w.fr-mb-3w
         .col-12
           .form-group.phone
-            = label_tag 'Numéro de téléphone de votre représentant légal', '', class: 'fr-label' do
-              = f.rg2a_required_content_tag
+            = label_tag 'Numéro de téléphone de votre représentant légal', '', class: 'fr-label'
             = render '/inputs/dsfr_input_field',
                     field: :student_legal_representative_phone,
                     f: f,
                     object: f.object,
                     value: f.object.student_legal_representative_phone ||f.object.student.legal_representative_phone,
                     label: "Numéro de téléphone de votre représentant légal",
-                    required: true,
-                    maxlength: 20,
+                    options: { required: true,
+                               maxlength: 20 },
                     title: 'Téléphone',
                     pattern: phone_pattern,
                     data: {:'mandatory-fields-target' => "mandatoryField",
@@ -219,7 +213,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     | Relisez-vous avant d'envoyer votre candidature
                 p
                   = 'Êtes-vous sûr de vouloir envoyer cette candidature ?'
-        
+
               .fr-modal__footer
                 ul.fr-btns-group.fr-btns-group--right.fr-btns-group--inline-lg
                   li

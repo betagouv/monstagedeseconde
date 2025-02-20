@@ -16,7 +16,12 @@ def populate_schools
     next if uai.nil?
     next if School.find_by(code_uai: uai)
 
-    school = School.new(school_params(col_hash:, cells:).merge({ school_type: :lycee }))
+    params = school_params(col_hash:, cells:).merge!({ school_type: :lycee })
+    params.merge!({ qpv: true }) if line_nr % 10 == 0
+    params.merge!({ rep_kind: 'rep' }) if line_nr % 7 == 0
+    params.merge!({ rep_kind: 'rep_plus' }) if line_nr % 17 == 0
+
+    school = School.new(params)
     if school.valid?
       school.save
       print '.'
@@ -48,10 +53,13 @@ def populate_schools
       department: Department.fetch_by_zipcode(zipcode: row['zipcode']),
       zipcode: row['zipcode'],
       coordinates: geo_point_factory_array(JSON.parse(row['coordinates'])['coordinates'])
-      )
-      print '-'
-    end
-    puts ''
+    )
+    print '-'
+    school.update(qpv: true) if i % 10 == 0
+    school.update(rep_kind: 'rep') if i % 7 == 0
+    school.update(rep_kind: 'rep_plus') if i % 17 == 0
+  end
+  puts ''
   puts 'Done with creating schools(collèges)'
 end
 

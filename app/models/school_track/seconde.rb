@@ -26,7 +26,7 @@ module SchoolTrack
     end
 
     def self.both_weeks(year: current_year)
-      [first_week(year:), second_week(year:)]
+      Week.from_date_to_date(from: first_monday(year:) - 7.days, to: last_friday(year:))
     end
 
     def self.last_june_friday(year: current_year)
@@ -67,6 +67,10 @@ module SchoolTrack
         )
       end
       hash
+    end
+
+    def self.selectable_from_now_until_end_of_school_year
+      both_weeks.where('id >= ?', Week.current.id)
     end
   end
 end

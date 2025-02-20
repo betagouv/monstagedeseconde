@@ -8,17 +8,15 @@ module Finders
     end
 
     def pending_internship_applications_actions_count
-      pending_states = %i[draft read_by_employer submitted]
+      pending_states = %i[read_by_employer submitted]
       internship_offer_ids = user.internship_offers&.kept&.ids
       return 0 if internship_offer_ids.blank?
 
-      InternshipApplications::WeeklyFramed.where( internship_offer_id: internship_offer_ids )
+      InternshipApplications::WeeklyFramed.where(internship_offer_id: internship_offer_ids)
                                           .where(aasm_state: pending_states)
                                           .filtering_discarded_students
                                           .count
-
     end
-
 
     def agreements_count
       user.internship_agreements.kept.count

@@ -10,9 +10,12 @@ Rails.application.configure do
     policy.font_src    :self, :https, :data
     policy.img_src     :self, :https, :data
     policy.object_src  :none
-    policy.script_src :self, :https, "'unsafe-inline'", -> { ENV.fetch('MATOMO_URL', '').gsub(%r{/js/.*}, '') }
+    policy.script_src :self, :https, "'connect-src'", "'unsafe-inline'", lambda {
+      ENV.fetch('MATOMO_URL', '').gsub(%r{/js/.*}, '')
+    }
+    policy.connect_src :self, :https
     policy.style_src   :self, :https, "'unsafe-inline'"
-    policy.frame_src   :none, 'https://plugins.crisp.chat', 'https://uneleveunstage.crisp.help'
+    policy.frame_src   'https://plugins.crisp.chat', 'https://uneleveunstage.crisp.help', ENV['METABASE_SITE_URL']
     # Specify URI for violation reports
     # policy.report_uri "/csp-violation-report-endpoint"
   end

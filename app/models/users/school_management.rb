@@ -7,8 +7,11 @@ module Users
   #   teacher (any teacher can check & help students [they can choose class_room])
   #   other (involve psychologists, teacher assistants etc...)
   class SchoolManagement < User
+    before_save :skip_confirmation!
+
     include SchoolManagementAdmin
     include Signatorable
+    include UserWithSchool
 
     validates :first_name,
               :last_name,
@@ -19,7 +22,6 @@ module Users
                                           message: :accept_terms,
                                           on: :create
 
-    belongs_to :school, optional: true
     belongs_to :class_room, optional: true
     has_many :students, through: :school
     has_many :main_teachers, through: :school
@@ -30,9 +32,6 @@ module Users
     validates :school, presence: true, on: :create
     validate :official_uai_email_address, on: :create, if: :school_manager?
     validate :official_email_address, on: :create
-
-    before_update :notify_school_manager, if: :notifiable?
-    after_create :notify_school_manager, if: :notifiable?
 
     def custom_dashboard_path
       if school.present?
@@ -86,6 +85,7 @@ module Users
     def school_manager? = role == 'school_manager'
     def admin_officer? = role == 'admin_officer'
     def cpe? = role == 'cpe'
+    def teacher? = role == 'teacher' || role == 'main_teacher'
 
     def school_manager
       try(:school).try(:school_manager)
@@ -105,11 +105,6 @@ module Users
     def internship_agreements_query
       internship_agreements.kept
                            .filtering_discarded_students
-    end
-
-    def custom_dashboard_path
-      # TODO: fix this : url_helpers.dashboard_school_class_rooms_path(school)
-      url_helpers.root_path
     end
 
     def pending_agreements_actions_count
@@ -148,14 +143,6 @@ module Users
     # notify
     def notifiable?
       school_id_changed? && school_id? && !school_manager?
-    end
-
-    def notify_school_manager
-      return unless school.school_manager.present?
-
-      SchoolManagerMailer.new_member(school_manager: school.school_manager,
-                                     member: self)
-                         .deliver_later
     end
 
     def official_uai_email_address?

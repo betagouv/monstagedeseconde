@@ -1,4 +1,4 @@
-To post offers on the [1élève1stage](https://stagedeseconde.1jeune1solution.gouv.fr/) platform, an API is available for:
+To post offers on the [1élève1stage](https://1eleve1stage.education.gouv.fr/) platform, an API is available for:
 
 * Associations
 * Local Authorities
@@ -32,8 +32,8 @@ This is a REST API that allows the following operations:
 
 # Environnments
 The API is available at /api in both pre-production and production environments, with the following baseURLs:
-  * Pre production : https://stagedeseconde.recette.1jeune1solution.gouv.fr/api
-  * Production : https://stagedeseconde.1jeune1solution.gouv.fr/api
+  * Pre production : https://staging.1eleve1stage.education.gouv.fr/api
+  * Production : https://1eleve1stage.education.gouv.fr/api
 
 # Authentication
 
@@ -51,15 +51,15 @@ Usage is limited to 100 calls per minute; exceeding this will return a 429 error
 
 ### How to Retrieve Your Authentication Token
 
-[Login](https://stagedeseconde.1jeune1solution.gouv.fr/utilisateurs/connexion) with your operator account
+[Login](https://1eleve1stage.education.gouv.fr/utilisateurs/connexion) with your operator account
 
 ![](screenshots/login.png)
 
-From the [My profile](https://stagedeseconde.1jeune1solution.gouv.fr/mon-compte) page, go to the API page.
+From the [My profile](https://1eleve1stage.education.gouv.fr/mon-compte) page, go to the API page.
 
 ![](screenshots/logged.png)
 
-From the [API](https://stagedeseconde.1jeune1solution.gouv.fr/mon-compte/api) page, retrieve the token.
+From the [API](https://1eleve1stage.education.gouv.fr/mon-compte/api) page, retrieve the token.
 
 ![](screenshots/api.png)
 
@@ -394,7 +394,7 @@ set -x
 
 # usage: rename env.sample env.sh
 
-MONSTAGEDESECONDE_ENV=https://stagedeseconde.1jeune1solution.gouv.fr/api
+MONSTAGEDESECONDE_ENV=https://1eleve1stage.education.gouv.fr/api
 MONSTAGEDESECONDE_TOKEN=foobarbaz
 ```
 

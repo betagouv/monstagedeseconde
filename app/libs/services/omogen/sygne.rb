@@ -15,7 +15,7 @@ module Services::Omogen
       http.use_ssl = true if uri.scheme == 'https'
 
       request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
+      request['Authorization'] = "Bearer #{token}"
       request['Code-Application'] = 'FRE'
       request['Code-RNE'] = '0595121W'
       request['Compression-Zip'] = 'non'
@@ -39,7 +39,7 @@ module Services::Omogen
       http.use_ssl = true if uri.scheme == 'https'
 
       request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
+      request['Authorization'] = "Bearer #{token}"
       request['Code-Application'] = 'FRE'
       request['Code-RNE'] = '0595121W'
       request['Compression-Zip'] = 'non'
@@ -53,7 +53,7 @@ module Services::Omogen
       http.use_ssl = true if uri.scheme == 'https'
 
       request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
+      request['Authorization'] = "Bearer #{token}"
 
       response = http.request(request)
 
@@ -72,7 +72,7 @@ module Services::Omogen
     end
 
     # Sygne eleves
-    #  {
+    #  [{
     #  "ine"=>"001291528AA",
     #  "nom"=>"SABABADICHETTY",
     #  "prenom"=>"Felix",
@@ -92,13 +92,117 @@ module Services::Omogen
     #  "libelleLongStatut"=>"SCOLAIRE",
     #  "dateDebSco"=>"2023-09-05",
     #  "adhesionTransport"=>false
-    # }
-
-    def sygne_import_by_schools(code_uai)
+    # }]
+    #
+    # temporary method to import only 3 students for test purpose
+    def sygne_import_by_schools_little(code_uai)
+      counter = 0
       MEFSTAT4_CODES.each do |niveau|
         students = sygne_eleves(code_uai, niveau: niveau)
         students.each do |student|
+          next if counter > 2
+
           student.make_student
+          counter += 1
+        end
+      end
+    end
+
+    def sygne_import_by_schools(code_uai)
+      puts '================================'
+      puts "school with code_uai : #{code_uai}"
+      puts '================================'
+      puts ''
+      MEFSTAT4_CODES.each do |niveau|
+        t0 = Time.now
+        students = sygne_eleves(code_uai, niveau: niveau)
+        t1 = Time.now
+        puts "Time to get students through sygne_eleve api request: #{t1 - t0} seconds"
+        students.each do |student|
+          ActiveRecord::Base.transaction do
+            student.make_student
+          end
+        end
+      end
+    end
+
+    def sygne_schools(code_uai = '0590116F')
+      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves)")
+      schools_in_data = []
+      response = sygne_eleves(uri)
+      case response
+      when Net::HTTPSuccess
+        schools_in_data << JSON.parse(response.body)
+      when Net::HTTPNotFound
+        puts response.body
+        Rails.logger.error "Failed to get sygne eleves : #{response.message}"
+      end
+      print 'x'
+      schools_in_data
+    end
+
+    def sygne_responsables(ine = '001291528AA')
+      # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
+
+      uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true if uri.scheme == 'https'
+
+      request = Net::HTTP::Get.new(uri.request_uri)
+      request['Authorization'] = "Bearer #{@token}"
+      request['Compression-Zip'] = 'non'
+
+      response = http.request(request)
+      # [{ 'email' => 't-t@hotmail.fr',
+      #    'nomFamille' => 't PPPEPF',
+      #    'rcar' => 't-dgfdsq',
+      #    'codeCivilite' => 't',
+      #    'prenom' => 't-ffd',
+      #    'codePcs' => 'tfds',
+      #    'accepteSms' => 'tfsqdf',
+      #    'codeLienEleveResponsable' => 'tfdsqf',
+      #    'codeNiveauResponsabilite' => 'tfdsq',
+      #    'percoitAides' => 'tfsdq',
+      #    'paieFraisScolaires' => 'tfqsd',
+      #    'telephonePortable' => 'dfqdf',
+      #    'divulgationAdresse' => 'tfsdqfq',
+      #    'adrResidenceResp' => { 't' => 't', 'codePostal' => 't', 'codePays' => 't',
+      #                            'adresseLigne3' => 't RUE DE LA FONTAINE', 'libelleCommune' => 't' },
+      #    'libelleLienEleveResponsable' => 't',
+      #    'libelleNiveauResponsabilite' => 't LEGAL',
+      #    'libellePcs' => 't artisan-commerçant-chef entrepr' },
+      #  { 'email' => 't@hotmail.fr',
+      #    'nomFamille' => 't',
+      #    'rcar' => 't-fdfds',
+      #    'codeCivilite' => 't',
+      #    'prenom' => 't',
+      #    'codePcs' => 't',
+      #    'accepteSms' => 't',
+      #    'codeLienEleveResponsable' => 't',
+      #    'codeNiveauResponsabilite' => 't',
+      #    'percoitAides' => 't',
+      #    'paieFraisScolaires' => 't',
+      #    'telephonePortable' => 'tffdsfq',
+      #    'divulgationAdresse' => 't',
+      #    'adrResidenceResp' => { 't' => 't', 'codePostal' => 't', 'codePays' => 't',
+      #                            'adresseLigne2' => 't fsdqfsq', 'adresseLigne3' => 't', 'libelleCommune' => 't' },
+      #    'libelleLienEleveResponsable' => 't',
+      #    'libelleNiveauResponsabilite' => 't LEGAL',
+      #    'libellePcs' => 't' }]
+
+      case response
+      when Net::HTTPSuccess
+        JSON.parse(response.body).map do |responsable|
+          {
+            name: responsable['nomFamille'],
+            first_name: responsable['prenom'],
+            email: responsable['email'],
+            phone: responsable['telephonePersonnel'],
+            address: format_address(responsable['adrResidenceResp']),
+            level: responsable['codeNiveauResponsabilite'],
+            sexe: responsable['codeCivilite'] == '1' ? 'M' : 'F'
+          }
         end
       end
     end
@@ -106,19 +210,31 @@ module Services::Omogen
     def sygne_eleves(code_uai, niveau:)
       students = []
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
-
       response = sygne_eleves_request(uri)
       case response
       when Net::HTTPSuccess
         # puts response.body
         # puts JSON.parse(response.body)
-        data_student = JSON.parse(response.body, symbolize_names: true)
-        if data_student.fetch(:codeMef, false) && Grade.code_mef_ok?(code_mef: data_student[:codeMef])
-          students << SygneEleve.new(data_student)
+        data_students = JSON.parse(response.body, symbolize_names: true)
+        data_students.each do |data_student|
+          if data_student.fetch(:codeMef, false) && Grade.code_mef_ok?(code_mef: data_student[:codeMef])
+            students << SygneEleve.new(data_student)
+          end
         end
       when Net::HTTPNotFound
         puts response.body
-        Rails.logger.error "Failed to get sygne eleves : #{response.message}"
+        error_message = "Failed to get sygne eleves  - HTTPNotFound - #{response.message}"
+        Rails.logger.error error_message
+        raise error_message
+      when Net::HTTPForbidden
+        error_message = "Failed to get sygne eleves - 403 - Forbidden Access | #{response.try(:message)}"
+        Rails.logger.error error_message
+        raise error_message
+      else
+        puts response
+        error_message = "Failed to get sygne eleves | #{response.try(:message)}"
+        Rails.logger.error error_message
+        raise error_message
       end
       students
     end
@@ -131,7 +247,7 @@ module Services::Omogen
         return nil unless responsibles.is_a?(Array) && responsibles.any?
 
         responsibles.sort_by! { |responsible| responsible[:codeNiveauResponsabilite] }
-        SygneResponsible.new(responsibles.first)
+        Services::Omogen::SygneResponsible.new(responsibles.first)
       else
         puts response
         raise "Failed to get sygne eleves : #{response.message}"
@@ -152,32 +268,35 @@ module Services::Omogen
       @token = get_oauth_token
     end
 
+    attr_reader :token
+
     private
 
     def sygne_eleves_request(uri)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
 
-      request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
-      request['Compression-Zip'] = 'non'
-
-      response = http.request(request)
+      request = Net::HTTP::Get.new(uri, headers)
+      http.request(request)
     end
 
-    def sygne_responsables_request(ine = '001291528AA')
+    def headers
+      { 'Authorization': "Bearer #{token}", 'Compression-Zip': 'non' }
+    end
+
+    def sygne_responsables_request(ine)
       # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
       uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
-      puts uri
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
 
-      request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
-      request['Compression-Zip'] = 'non'
-
+      request = Net::HTTP::Get.new(uri, headers)
       http.request(request)
+    end
+
+    def format_address(address_hash)
+      "#{address_hash[:adresseLigne1]}, #{address_hash[:adresseLigne2]} #{address_hash[:codePostal]} #{address_hash[:libelleCommune]}"
     end
   end
 end

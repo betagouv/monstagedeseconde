@@ -62,6 +62,7 @@ module Dashboard
 
       # magic_link_tracker is not updated here
       def show
+        authorize! :show, @internship_application if current_user
         if params[:sgid].present?
           internship_application = InternshipApplication.from_sgid(params[:sgid])
           if internship_application.nil?
@@ -96,7 +97,7 @@ module Dashboard
       def fetch_user_internship_applications
         InternshipApplications::WeeklyFramed.where(
           internship_offer_id: current_user.internship_offers.ids
-        ).where(aasm_state: valid_states) # not drafted
+        ).where(aasm_state: valid_states)
       end
 
       def fetch_internship_application

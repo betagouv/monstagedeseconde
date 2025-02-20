@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'sidekiq/web'
-when_employers_only = ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
 root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
                      'maintenance_estivale'
-                   elsif when_employers_only
+                   elsif ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
                      'pro_landing'
                    else
                      'home'
@@ -35,15 +34,16 @@ Rails.application.routes.draw do
       passwords: 'users/passwords'
     }
 
-    get '/auth/fim/callback', to: 'callbacks#fim', as: 'fim_callback'
-    get '/auth/educonnect/callback', to: 'callbacks#educonnect', as: 'educonnect_callback'
-    # get '/auth/failure', to: 'sessions#failure'
-
     devise_scope :user do
+      get '/auth/fim/callback', to: 'callbacks#fim', as: 'fim_callback'
+      get '/auth/educonnect/callback', to: 'callbacks#educonnect', as: 'educonnect_callback'
+      # get '/auth/failure', to: 'sessions#failure'
       get 'utilisateurs/choisir_profil', to: 'users/registrations#choose_profile',
                                          as: 'users_choose_profile'
       get 'utilisateurs/choisir_connexion', to: 'users/sessions#choose_connection',
                                             as: 'users_choose_connection'
+      get 'utilisateurs/choisir_connexion_test', to: 'users/sessions#choose_connection_test',
+                                                 as: 'users_choose_connection_test'
       get '/utilisateurs/inscriptions/en-attente', to: 'users/registrations#confirmation_standby',
                                                    as: 'users_registrations_standby'
       get '/utilisateurs/inscriptions/referent-en-attente', to: 'users/registrations#statistician_standby',
@@ -62,11 +62,9 @@ Rails.application.routes.draw do
                                                              as: 'resend_confirmation_phone_token'
     end
 
-    resources :identities, path: 'identites', only: %i[new create]
-    unless when_employers_only
-      resources :url_shrinkers, path: 'c', only: %i[] do
-        get :o, on: :member
-      end
+    # resources :identities, path: 'identites', only: %i[new create]
+    resources :url_shrinkers, path: 'c', only: %i[] do
+      get :o, on: :member
     end
 
     resources :coded_crafts, only: [] do
@@ -170,29 +168,26 @@ Rails.application.routes.draw do
                                                       as: :update_multiple_internship_applications
 
       resources :internship_agreements, path: 'conventions-de-stage', except: %i[destroy], param: :uuid
-      unless when_employers_only
-        resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
-          member do
-            post 'start_signing'
-            post 'reset_phone_number'
-            post 'resend_sms_code'
-            post 'signature_code_validate'
-            post 'handwrite_sign'
-          end
+      resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
+        member do
+          post 'start_signing'
+          post 'reset_phone_number'
+          post 'resend_sms_code'
+          post 'signature_code_validate'
+          post 'handwrite_sign'
         end
+      end
 
-        resources :schools, path: 'ecoles', only: %i[index edit update show] do
-          resources :invitations, only: %i[new create index destroy], module: 'schools'
-          get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
-          resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
+      resources :schools, path: 'ecoles', only: %i[index edit update show] do
+        resources :invitations, only: %i[new create index destroy], module: 'schools'
+        get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
+        resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
 
-          resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy],
-                                  module: 'schools' do
-            resources :students, path: 'eleves', only: %i[update index new create], module: 'class_rooms'
-          end
-          put '/update_students_by_group', to: 'schools/students#update_by_group', module: 'schools'
-          get '/information', to: 'schools#information', module: 'schools'
+        resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy],
+                                module: 'schools' do
+          resources :students, path: 'eleves', only: %i[update index new create], module: 'class_rooms'
         end
+        put '/update_students_by_group', to: 'schools/students#update_by_group', module: 'schools'
       end
 
       resources :internship_offer_areas, path: 'espaces', except: %i[show] do
@@ -237,16 +232,14 @@ Rails.application.routes.draw do
     # ------------------ DASHBOARD END ------------------
   end
   # ------------------ SCOPE END ------------------
-  unless when_employers_only
-    namespace :reporting, path: 'reporting' do
-      get '/dashboards', to: 'dashboards#index'
+  namespace :reporting, path: 'reporting' do
+    get '/dashboards', to: 'dashboards#index'
 
-      get '/schools', to: 'schools#index'
-      get '/employers_internship_offers', to: 'internship_offers#employers_offers'
-      get 'internship_offers', to: 'internship_offers#index'
-      get 'operators', to: 'operators#index'
-      put 'operators', to: 'operators#update'
-    end
+    get '/schools', to: 'schools#index'
+    get '/employers_internship_offers', to: 'internship_offers#employers_offers'
+    get 'internship_offers', to: 'internship_offers#index'
+    get 'operators', to: 'operators#index'
+    put 'operators', to: 'operators#update'
   end
 
   get 'api_address_proxy/search', to: 'api_address_proxy#search', as: :api_address_proxy_search
@@ -273,13 +266,16 @@ Rails.application.routes.draw do
   post '/newsletter', to: 'newsletter#subscribe'
   get '/inscription-permanence', to: 'pages#register_to_webinar'
   get '/recherche-entreprises', to: 'pages#search_companies'
+  post '/visitor_apply', to: 'pages#visitor_apply'
+  get '/educonnect_deconnexion_responsable', to: 'pages#educonnect_logout_responsible',
+                                             as: :educonnect_logout_responsible
   # TODO
   # To be removed after june 2023
   get '/register_to_webinar', to: 'pages#register_to_webinar'
-  get '/eleves', to: when_employers_only ? 'pages#home' : 'pages#student_landing'
+  get '/eleves', to: 'pages#student_landing'
   get '/professionnels', to: 'pages#pro_landing'
   get '/partenaires_regionaux', to: 'pages#regional_partners_index'
-  get '/equipe-pedagogique', to: when_employers_only ? 'pages#home' : 'pages#school_management_landing'
+  get '/equipe-pedagogique', to: 'pages#school_management_landing'
   get '/referents', to: 'pages#statistician_landing'
   get '/maintenance_estivale', to: 'pages#maintenance_estivale'
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'

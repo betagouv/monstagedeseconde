@@ -23,8 +23,6 @@ module Builders
                                 )
       internship_offer = model.new(**internship_attributes)
       internship_offer.save!
-      DraftedInternshipOfferJob.set(wait: 1.week)
-                               .perform_later(internship_offer_id: internship_offer.id)
       callback.on_success.try(:call, internship_offer)
     rescue ArgumentError => e
       Rails.logger.error "Impossible de créer cette offre. offreur: #{user.id} | #{e&.message}"
@@ -44,8 +42,6 @@ module Builders
           .except(:employer_id)
       )
       internship_offer.save!
-      DraftedInternshipOfferJob.set(wait: 1.week)
-                               .perform_later(internship_offer_id: internship_offer.id)
       callback.on_success.try(:call, internship_offer)
     rescue ActiveRecord::RecordInvalid => e
       callback.on_failure.try(:call, e.record)
@@ -82,10 +78,10 @@ module Builders
     def update(instance:, params:)
       yield callback if block_given?
       authorize :update, instance
-      instance.assign_attributes(params)
       if from_api?
         instance.attributes = preprocess_api_params(params)
       else
+        instance.assign_attributes(params)
         instance = Dto::PlanningAdapter.new(instance:, params:, current_user: user)
                                        .manage_planning_associations
                                        .instance
@@ -171,7 +167,7 @@ module Builders
     def preprocess_planning_to_params(planning)
       {
         max_candidates: planning.max_candidates,
-        max_students_per_group: planning.max_students_per_group,
+        max_students_per_group: planning.max_candidates,
         weekly_hours: planning.weekly_hours,
         daily_hours: planning.daily_hours,
         school_id: planning.school_id,

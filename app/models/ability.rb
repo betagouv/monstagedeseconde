@@ -72,7 +72,6 @@ class Ability
             anonymize_user
             transform_user], User
     can :manage, Operator
-    can :see_minister_video, User
     can :read_employer_name, InternshipOffer
   end
 
@@ -83,13 +82,17 @@ class Ability
     end
     can :sign_with_sms, User
     can :show, :account
-    can :change, ClassRoom do |class_room|
-      class_room.school_id == user.school_id
-    end
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
     can :apply, InternshipOffer do |internship_offer|
-      !user.internship_applications.exists?(internship_offer_id: internship_offer.id) && # user has not already applied
+      ## can apply if ##
+      # - user has the right grade
+      # - user has not already applied to the same offer
+      # - user has not already approved applications for the same offer's weeks
+      # - offer is not reserved to an other school
+
+      internship_offer.grades.include?(user.grade) &&
+        !user.internship_applications.exists?(internship_offer_id: internship_offer.id) && # user has not already applied
         user.other_approved_applications_compatible?(internship_offer:) &&
         (!internship_offer.reserved_to_school? || internship_offer.school_id == user.school_id)
     end
@@ -112,9 +115,6 @@ class Ability
 
     can %i[show
            update
-           choose_school
-           choose_class_room
-           choose_gender_and_birthday
            register_with_phone], User
     can_read_dashboard_students_internship_applications(user:)
     can(:read_employer_name, InternshipOffer) do |internship_offer|
@@ -158,7 +158,6 @@ class Ability
       edit_student_refering_teacher_email
       edit_student_refering_teacher_phone
       edit_student_address
-      edit_student_class_room
       edit_student_full_name
       edit_student_phone
       edit_student_legal_representative_email
@@ -167,7 +166,10 @@ class Ability
       edit_student_legal_representative_2_email
       edit_student_legal_representative_2_full_name
       edit_student_legal_representative_2_phone
+      edit_student_birth_date
       edit_student_school
+      edit_pai_project
+      edit_pai_trousse_family
       see_intro
       update
     ], InternshipAgreement do |agreement|
@@ -183,7 +185,6 @@ class Ability
     as_employers_signatory_abilities(user:)
     as_account_user(user:)
     can %i[sign_with_sms choose_function], User
-    can :see_minister_video, User
   end
 
   def as_account_user(user:)
@@ -197,6 +198,7 @@ class Ability
     can :subscribe_to_webinar, User do
       ENV.fetch('WEBINAR_URL', nil).present?
     end
+    can :edit_password, User
     can_manage_teams(user:)
     can_manage_areas(user:)
     can %i[index], Acl::InternshipOfferDashboard
@@ -207,8 +209,16 @@ class Ability
     can :duplicate, InternshipOffer do |internship_offer|
       duplicable?(internship_offer:, user:)
     end
+    can :publish, InternshipOffer do |internship_offer|
+      internship_offer.employer_id == user.id &&
+        internship_offer.last_date > SchoolYear::Current.new.beginning_of_period
+    end
     can %i[create see_tutor], InternshipOffer
-    can %i[read update discard publish], InternshipOffer, employer_id: user.team_members_ids
+    can %i[read discard], InternshipOffer, employer_id: user.team_members_ids
+    can %i[update], InternshipOffer do |internship_offer|
+      internship_offer.employer_id.in?(user.team_members_ids) &&
+        internship_offer.has_weeks_after_school_year_start?
+    end
     can %i[create], InternshipOccupation
     can %i[create], Entreprise do |entreprise|
       entreprise.internship_occupation.employer_id == user.id
@@ -223,17 +233,17 @@ class Ability
     can %i[update edit renew], Planning do |planning|
       planning.entreprise.internship_occupation.employer_id.in?(user.team_members_ids)
     end
-    can %i[index update], InternshipApplication
-    can %i[update_multiple], InternshipApplication do |internship_applications|
+    can %i[index update_multiple], InternshipApplication do |internship_applications|
       internship_applications.all? do |internship_application|
-        internship_application.internship_offer.employer_id == user.team_id
+        application_related_to_team?(user:, internship_application:)
       end
     end
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)
     end
-    can %i[show transfer], InternshipApplication do |internship_application|
-      internship_application.internship_offer.employer_id == user.team_id
+    can %i[show transfer update], InternshipApplication do |internship_application|
+      internship_application.internship_offer.employer_id == user.id || application_related_to_team?(user:,
+                                                                                                     internship_application:)
     end
   end
 
@@ -263,6 +273,7 @@ class Ability
       edit_siret
       edit_tutor_full_name
       edit_weekly_hours
+      edit_entreprise_address
       sign
       sign_internship_agreements
     ], InternshipAgreement do |agreement|
@@ -339,7 +350,9 @@ class Ability
            export_reporting_dashboard_data
            see_reporting_schools
            see_reporting_enterprises
-           check_his_statistics], User
+           check_his_statistics], User do
+             !employers_only?
+           end
     can :read_employer_name, InternshipOffer do |internship_offer|
       read_employer_name?(internship_offer:)
     end
@@ -451,10 +464,6 @@ class Ability
     end
     can_read_dashboard_students_internship_applications(user:)
 
-    can :change, ClassRoom do |class_room|
-      class_room.school_id == user.school_id && !user.school_manager?
-    end
-
     can_manage_school(user:) do
       can %i[edit update], School
       can %i[manage_school_users
@@ -545,10 +554,6 @@ class Ability
   def can_manage_school(user:)
     can %i[
       show
-      edit
-      update
-      create
-      destroy
       manage_school_users
       index
     ], ClassRoom do |class_room|
@@ -568,6 +573,15 @@ class Ability
     yield if block_given?
   end
 
+  def application_related_to_team?(user:, internship_application:)
+    author_id = internship_application.internship_offer.employer_id
+    user.team.id_in_team?(author_id)
+  end
+
+  def offer_belongs_to_team?(user:, internship_offer:)
+    internship_offer.employer_id == user.team_id
+  end
+
   def renewable?(internship_offer:, user:)
     main_condition = internship_offer.persisted? &&
                      internship_offer.employer_id == user.id
@@ -580,14 +594,8 @@ class Ability
   end
 
   def duplicable?(internship_offer:, user:)
-    main_condition = internship_offer.persisted? &&
-                     internship_offer.employer_id == user.id
-    if main_condition
-      school_year_start = SchoolYear::Current.new.beginning_of_period
-      internship_offer.last_date > school_year_start
-    else
-      false
-    end
+    internship_offer.persisted? &&
+      internship_offer.employer_id == user.id
   end
 
   def read_employer_name?(internship_offer:)
@@ -604,5 +612,9 @@ class Ability
     else
       true
     end
+  end
+
+  def employers_only?
+    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
   end
 end

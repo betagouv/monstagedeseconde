@@ -91,7 +91,6 @@ module Dashboard::Stepper
               :grade_2e,
               :lunch_break,
               :max_candidates,
-              :max_students_per_group,
               :period_field,
               :school_id,
               :rep,

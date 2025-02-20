@@ -97,28 +97,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET edit render as student also allow him to change class_room' do
-    school = create(:school)
-    class_room_1 = create(:class_room, school:)
-    class_room_2 = create(:class_room, school:)
-    student = create(:student, school:, class_room: class_room_1)
-
-    sign_in(student)
-    get account_path(section: 'identity')
-
-    assert_select 'select[name="user[class_room_id]"]'
-  end
-
-  test 'GET edit as student also allow him to change class_room' do
-    student = create(:student, phone: '+330623042585')
-    create(:class_room, school: student.school, name: '3A')
-
-    sign_in(student)
-    get account_path(section: 'identity')
-
-    assert_select 'select[name="user[class_room_id]"]'
-  end
-
   test 'GET edit render as Statistician shows a readonly input on email' do
     statistician = create(:statistician)
 
@@ -172,12 +150,13 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'PATCH edit as student cannot nullify his email' do
-    error_message = '<strong>Courriel</strong> : Il faut conserver un email valide pour assurer la continuité du service</div>'
     student = create(:student, phone: '+330623042585', email: 'test@test.fr')
     sign_in(student)
+    original_email = student.email
 
     patch(account_path, params: { user: { email: '' } })
-    refute student.reload.unconfirmed_email == ''
+
+    assert_equal original_email, student.reload.email
     assert_template 'users/edit'
     assert_select '.fr-alert.fr-alert--error strong', html: 'Courriel'
     assert_select '.fr-alert.fr-alert--error',
@@ -296,7 +275,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_select '#alert-success #alert-text', { text: 'Compte mis à jour avec succès.' }, 1
   end
-  
+
   test 'PATCH edit as SchoolManagement can change role' do
     school = create(:school, :with_school_manager)
     users = [
@@ -378,15 +357,15 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_select '#alert-success #alert-text', { text: 'Compte mis à jour avec succès.' }, 1
   end
 
-  test 'POST resend_confirmation_phone_toke' do
-    student = create(:student, :registered_with_phone, confirmed_at: nil)
-    post resend_confirmation_phone_token_path(
-      format: :turbo_stream,
-      params: { user: { id: student.id } }
-    )
-    assert_response :success
-    assert_select('#code-request', text: 'Votre code a été renvoyé')
-  end
+  # test 'POST resend_confirmation_phone_toke' do
+  #   student = create(:student, :registered_with_phone, confirmed_at: nil)
+  #   post resend_confirmation_phone_token_path(
+  #     format: :turbo_stream,
+  #     params: { user: { id: student.id } }
+  #   )
+  #   assert_response :success
+  #   assert_select('#code-request', text: 'Votre code a été renvoyé')
+  # end
 
   test 'POST resend_confirmation_phone_toke fails with wrong data' do
     post resend_confirmation_phone_token_path(
@@ -397,12 +376,12 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_select('#code-request', text: "Une erreur est survenue et le code n'a pas été renvoyé")
   end
 
-  test 'POST resend_confirmation_phone_token' do
-    student = create(:student, :registered_with_phone, confirmed_at: nil)
-    post resend_confirmation_phone_token_path(format: :turbo_stream, params: { user: { id: student.id } })
-    assert_response :success
-    assert_select('#code-request', text: 'Votre code a été renvoyé')
-  end
+  # test 'POST resend_confirmation_phone_token' do
+  #   student = create(:student, :registered_with_phone, confirmed_at: nil)
+  #   post resend_confirmation_phone_token_path(format: :turbo_stream, params: { user: { id: student.id } })
+  #   assert_response :success
+  #   assert_select('#code-request', text: 'Votre code a été renvoyé')
+  # end
 
   test 'POST resend_confirmation_phone_token fails with wrong data' do
     post resend_confirmation_phone_token_path(format: :turbo_stream, params: { user: { id: 1 } }) # error

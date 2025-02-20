@@ -11,12 +11,6 @@ module SchoolManagementAdmin
 
         scopes(UserAdmin::DEFAULT_SCOPES)
       end
-
-      edit do
-        fields(*UserAdmin::DEFAULT_EDIT_FIELDS)
-        field :school
-        field :role
-      end
     end
   end
 end

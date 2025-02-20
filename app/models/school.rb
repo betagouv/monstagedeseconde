@@ -15,7 +15,7 @@ class School < ApplicationRecord
   has_many :weeks, through: :school_internship_weeks
   belongs_to :department, optional: true
 
-  has_rich_text :agreement_conditions_rich_text
+  # has_rich_text :agreement_conditions_rich_text
 
   validates :city, :name, :code_uai, presence: true
   validates :code_uai, uniqueness: { message: 'Ce code UAI est déjà utilisé, le lycée est déjà enregistré' }
@@ -29,7 +29,8 @@ class School < ApplicationRecord
     '31' => 'CONTRAT ASSOCIATION PARTIE DES CLASSES',
     '99' => 'SANS OBJET'
   }
-  VALID_TYPE_PARAMS = %w[rep rep_plus qpv qpv_proche].freeze
+  VALID_TYPE_PARAMS = %w[rep rep_plus].freeze
+  SCHOOL_TYPES = %w[college lycee].freeze
 
   scope :with_manager, lambda {
                          left_joins(:school_manager)
@@ -47,13 +48,13 @@ class School < ApplicationRecord
                                             .pluck(:school_id))
   }
 
-  scope :internship_weeks, lambda { |latitude:, longitude:, radius:|
-                             joins(school_internship_weeks: :week)
-                               .nearby(latitude:, longitude:, radius:)
-                           }
+  scope :internship_weeks_nearby, lambda { |latitude:, longitude:, radius:|
+    joins(school_internship_weeks: :week)
+      .nearby(latitude:, longitude:, radius:)
+  }
 
   def self.nearby_school_weeks(latitude:, longitude:, radius:)
-    internship_weeks(latitude:, longitude:, radius:)
+    internship_weeks_nearby(latitude:, longitude:, radius:)
       .pluck(:week_id)
       .tally
       .transform_keys { |week_id| "school-week-#{week_id}".to_sym }
@@ -83,7 +84,12 @@ class School < ApplicationRecord
           "#{school.city} – CP #{school.zipcode} (#{school.department.name})"
         end
       end
-      field :school_manager
+      field :school_manager do
+        pretty_value do
+          school = bindings[:object]
+          school.school_manager.try(:presenter).try(:full_name)
+        end
+      end
       field :city do
         visible false
       end
@@ -99,11 +105,12 @@ class School < ApplicationRecord
     edit do
       field :name
       field :visible
-      field :kind, :enum do
+      field :rep_kind, :enum do
         enum do
           School::VALID_TYPE_PARAMS
         end
       end
+      field :qpv
       field :code_uai
 
       field :coordinates do
@@ -129,7 +136,7 @@ class School < ApplicationRecord
     show do
       field :name
       field :visible
-      field :kind
+      field :rep_kind
       field :street
       field :zipcode
       field :city
@@ -144,7 +151,7 @@ class School < ApplicationRecord
       field :zipcode
       field :city
       field :department
-      field :kind
+      field :rep_kind
       field :school_manager, :string do
         export_value do
           bindings[:object].school_manager.try(:name)
@@ -182,6 +189,17 @@ class School < ApplicationRecord
 
   def email_domain_name
     department.academy.email_domain
+  end
+
+  def off_constraint_school_weeks(grade)
+    return Week.both_school_track_selectable_weeks if grade.nil?
+
+    case grade.short_name
+    when 'troisieme', 'quatrieme'
+      SchoolTrack::Troisieme
+    when 'seconde'
+      SchoolTrack::Seconde
+    end.selectable_from_now_until_end_of_school_year
   end
 
   private

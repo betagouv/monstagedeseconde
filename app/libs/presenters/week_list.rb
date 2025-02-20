@@ -15,9 +15,9 @@ module Presenters
         if is_first
           week.beginning_of_week_with_year_long
         elsif is_last
-          week.end_of_week_with_years_long
+          week.end_of_working_week_with_year
         else
-          week.very_long_select_text_method
+          week.very_long_working_week_select_text_method
         end
       end
     end
@@ -79,7 +79,7 @@ module Presenters
 
     def render_by_collapsing_date_from_first_to_last_week
       [
-        "Disponible sur #{weeks.size} semaines :",
+        "Disponible sur #{weeks.size} semaines : ",
         yield(is_first: true, is_last: false, week: first_week),
         " → #{yield(is_first: false, is_last: true, week: last_week)}"
       ].join.gsub(/\s+/, ' ').html_safe
@@ -89,7 +89,13 @@ module Presenters
 
     def initialize(weeks:)
       @weeks = weeks
-      @first_week, @last_week = weeks.minmax_by(&:id)
+      if weeks.present? && weeks.size > 1
+        @first_week, @last_week = weeks.minmax_by(&:id)
+      elsif weeks.present? && weeks.size == 1
+        @first_week = @last_week = weeks.first
+      else
+        @first_week = @last_week = nil
+      end
     end
   end
 end

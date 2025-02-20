@@ -19,10 +19,10 @@ class EmailUtilsTest < ActiveSupport::TestCase
 
     assert_equal 'localhost', EmailUtils.domain if Rails.env.development?
 
-    ENV['HOST'] = 'https://stagedeseconde.recette.1jeune1solution.gouv.fr'
+    ENV['HOST'] = 'https://staging.1eleve1stage.education.gouv.fr'
     assert_equal  'gouv.fr', EmailUtils.domain
 
-    ENV['HOST'] = 'https://stagedeseconde.1jeune1solution.gouv.fr'
+    ENV['HOST'] = 'https://1eleve1stage.education.gouv.fr'
     assert_equal  'gouv.fr', EmailUtils.domain
 
     ENV['HOST'] = nil

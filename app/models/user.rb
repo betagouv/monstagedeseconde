@@ -232,6 +232,7 @@ class User < ApplicationRecord
   def operator? = false
   def school_management? = false
   def school_manager_like? = false
+  def teacher? = false
   def god? = false
   def employer_like? = false
   def can_sign?(internship_agreement)= false
@@ -239,6 +240,12 @@ class User < ApplicationRecord
   def needs_to_see_modal? = false
   def has_offers_to_apply_to? = false
   def with_2_weeks_internships_approved? = false
+  def valid_transition? = false
+  def belongs_to_qpv_school? = false
+  def belongs_to_rep_school? = false
+  def belongs_to_rep_plus_school? = false
+  def belongs_to_rep_or_rep_plus_school? = false
+  def fake_email? = false
 
   def fetch_current_area_notification = nil
   def create_signature_phone_token = nil
@@ -263,6 +270,8 @@ class User < ApplicationRecord
   def available_offers = InternshipOffer.none
   def team_members = User.none
   def custom_dashboard_path = Rails.application.routes.url_helpers.root_path
+
+  def compute_weeks_lists = [Week.both_school_track_selectable_weeks, Week.both_school_track_selectable_weeks]
 
   def just_created?
     created_at < Time.now + 3.seconds
@@ -308,7 +317,7 @@ class User < ApplicationRecord
   def password_complexity
     return unless password.present?
 
-    unless password =~ /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?_&])/
+    unless password =~ /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?_&:])/
       errors.add :password, 'doit inclure au moins une minuscule, une majuscule, un chiffre et un caractère spécial'
     end
     return if password.length >= 12

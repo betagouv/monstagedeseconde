@@ -1,16 +1,19 @@
 = render 'layouts/breadcrumb', links: [ ['', "Formulaire de contact"] ]
-.fr-notice.fr-notice--info.fr-my-2w
-  .fr-container
-    .fr-notice__body
-      .fr-notice__title
-        p.fr-mb-0
-          = " "
-          | Avant de contacter
-          = " "
-          strong le support de la plateforme 1élève1stage
-          |, merci de vérifier si la réponse à votre question est présente dans notre
-          = " "
-          = link_to "centre d'aide", helpdesk_url, title: "Centre d'aide de la plateforme 1élève1stage"
+
+.fr-callout.fr-icon-information-line
+  h3.fr-callout__title En cas de problème lié à la connexion sur la plateforme
+  p.fr-py-1w.fr-callout__text
+    strong &#x2192; Pour les élèves
+    | : contactez votre établissement scolaire.
+  p.fr-py-1w.fr-callout__text
+    strong &#x2192; Pour les équipes pédagogiques
+    | : contactez votre chef d'établissement.
+  p.fr-py-1w.fr-callout__text
+    strong &#x2192; Pour les chefs d'établissement
+    | : contactez votre guichet académique.
+  p.fr-py-4w.fr-callout__text
+    | Avant de contacter le support, merci de vérifier si la réponse à votre question est présente dans notre
+    = link_to "centre d'aide.", 'https://uneleveunstage.crisp.help/fr/', target: '_blank'
 
 #feedback-form
   iframe[
