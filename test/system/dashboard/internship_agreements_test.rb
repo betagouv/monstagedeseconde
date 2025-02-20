@@ -73,7 +73,9 @@ module Dashboard
         find('div.actions', text: "Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.")
       end
       find('a.button-component-cta-button', text: 'Valider ma convention').click
-      fill_in "Fonction du représentant de l'entreprise", with: 'CEO'
+      within('.test-employer-role') do
+        fill_in 'En qualité de', with: 'CEO'
+      end
       fill_in "Adresse email du responsable de l'accueil en milieu professionnel", with: 'tuteur@free.fr'
       select('08:00', from: 'internship_agreement_weekly_hours_start')
       select('16:00', from: 'internship_agreement_weekly_hours_end')
@@ -94,7 +96,9 @@ module Dashboard
       end
       find('a.button-component-cta-button', text: 'Valider ma convention').click
       find("input[name='internship_agreement[organisation_representative_full_name]']")
-      fill_in "Fonction du représentant de l'entreprise", with: 'CEO'
+      within('.test-employer-role') do
+        fill_in 'En qualité de', with: 'CEO'
+      end
       fill_in "Adresse email du responsable de l'accueil en milieu professionnel", with: 'tuteur@free.fr'
       fill_in "Nom de l'entreprise", with: 'Corporation'
       fill_in 'Adresse email de contact', with: 'corp@mail.com'
@@ -147,7 +151,9 @@ module Dashboard
       end
       find('a.button-component-cta-button', text: 'Valider ma convention').click
       find("input[name='internship_agreement[organisation_representative_full_name]']")
-      fill_in "Fonction du représentant de l'entreprise", with: 'CEO'
+      within('.test-employer-role') do
+        fill_in 'En qualité de', with: 'CEO'
+      end
       fill_in "Nom de l'entreprise", with: 'Corporation'
       fill_in 'Adresse email de contact', with: 'corp@mail.com'
       fill_in 'Adresse du lieu du stage', with: '1 rue de la paix'
