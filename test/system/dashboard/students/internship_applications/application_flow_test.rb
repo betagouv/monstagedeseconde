@@ -87,7 +87,7 @@ module Dashboard
         all('a', text: 'Postuler').first.click
         assert_text 'Votre candidature'
       end
-      
+
       test 'student with validated application on second week can apply on first week with a 3e-2e offer' do
         skip 'waiting for PO decision'
         application = create(:weekly_internship_application, :second_june_week, :approved)
@@ -98,7 +98,7 @@ module Dashboard
         all('a', text: 'Postuler').first.click
         assert_text 'Votre candidature'
       end
-      
+
       test '2nde student faulty application fails gracefully' do
         school = create(:school, :with_school_manager)
         employer, internship_offer = create_employer_and_offer_2nde
