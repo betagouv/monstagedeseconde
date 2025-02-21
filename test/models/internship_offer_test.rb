@@ -90,6 +90,21 @@ class InternshipOfferTest < ActiveSupport::TestCase
     end
   end
 
+  test 'targeted_grades enum' do
+    internship_offer = create(:weekly_internship_offer_2nde, :week_1)
+    assert_equal 'seconde_only', internship_offer.targeted_grades
+    internship_offer.grades << Grade.troisieme_et_quatrieme
+    internship_offer.save
+    assert_equal 'seconde_troisieme_or_quatrieme', internship_offer.targeted_grades
+
+    internship_offer = create(:weekly_internship_offer_3eme)
+    internship_offer.save
+    assert_equal 'troisieme_or_quatrieme', internship_offer.targeted_grades
+    internship_offer.grades << [Grade.seconde, Grade.quatrieme]
+    internship_offer.save
+    assert_equal 'seconde_troisieme_or_quatrieme', internship_offer.targeted_grades
+  end
+
   # test '.period_labels' do
   #   assert_equal '2 semaines (du 17 au 28 juin 2024)',
   #                InternshipOffer.period_labels(school_year: 2024)[:full_time]
