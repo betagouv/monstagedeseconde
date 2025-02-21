@@ -399,4 +399,28 @@ namespace :data_migrations do
       PrettyConsole.say_in_cyan "counter of colleges updated : #{counter}"
     end
   end
+
+  desc '2025-02-21 update internship_offer with targeted_grades'
+  task 'update_internship_offers_targeted_grades': :environment do
+    PrettyConsole.announce_task('update internship_offer with targeted_grades') do
+      seconde_troisieme_or_quatrieme_grades = Grade.all.sort_by(&:id).map(&:id)
+      troisieme_or_quatrieme_grades = Grade.troisieme_et_quatrieme.map(&:id)
+      seconde_only_grade = Grade.seconde.id
+
+      InternshipOffer.find_each do |offer|
+        sorted_grade_ids = offer.grades.sort_by(&:id).map(&:id)
+        next if sorted_grade_ids == seconde_only_grade # default value, nothing to do
+
+        if sorted_grade_ids == seconde_troisieme_or_quatrieme_grades
+          offer.targeted_grades = 'seconde_troisieme_or_quatrieme'
+        elsif sorted_grade_ids == troisieme_or_quatrieme_grades
+          offer.targeted_grades = 'troisieme_or_quatrieme'
+        else
+          Rails.logger.error("Unknown grade_ids: #{offer.grade_ids} for offer_id: #{offer.id}")
+        end
+        offer.save
+        print '.'
+      end
+    end
+  end
 end

@@ -74,6 +74,19 @@ CREATE TYPE public.school_category AS ENUM (
 
 
 --
+-- Name: targeted_grades; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.targeted_grades AS ENUM (
+    'seconde_only',
+    'troisieme_only',
+    'quatrieme_only',
+    'troisieme_or_quatrieme',
+    'seconde_troisieme_or_quatrieme'
+);
+
+
+--
 -- Name: user_role; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -1565,7 +1578,8 @@ CREATE TABLE public.internship_offers (
     qpv boolean DEFAULT false,
     workspace_conditions text DEFAULT ''::text,
     workspace_accessibility text DEFAULT ''::text,
-    mother_id bigint
+    mother_id bigint,
+    targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades
 );
 
 
@@ -3923,6 +3937,13 @@ CREATE INDEX index_internship_offers_on_sector_id ON public.internship_offers US
 
 
 --
+-- Name: index_internship_offers_on_targeted_grades; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offers_on_targeted_grades ON public.internship_offers USING btree (targeted_grades);
+
+
+--
 -- Name: index_internship_offers_on_tutor_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4868,6 +4889,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250221090138'),
 ('20250213110533'),
 ('20250209100322'),
 ('20250206101850'),
