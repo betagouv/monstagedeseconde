@@ -76,7 +76,8 @@ class InternshipOffer < ApplicationRecord
   before_save :sync_first_and_last_date,
               :reverse_academy_by_zipcode,
               :make_sure_area_is_set,
-              :entreprise_used_name
+              :entreprise_used_name,
+              :update_targeted_grades
 
   before_create :preset_published_at_to_now
   after_commit :sync_internship_offer_keywords
@@ -222,10 +223,9 @@ class InternshipOffer < ApplicationRecord
     joins(:grades).where(grades: { id: Grade.troisieme_et_quatrieme.ids })
   }
 
-
   scope :seconde_only, lambda {
     joins(:grades).where(grades: { id: Grade.seconde.id })
-    .where.not(grades: { id: Grade.troisieme_et_quatrieme.ids })
+                  .where.not(grades: { id: Grade.troisieme_et_quatrieme.ids })
   }
 
   scope :with_grade, lambda { |user|
@@ -584,5 +584,23 @@ class InternshipOffer < ApplicationRecord
     Rails.logger.warn('default internship_offer_area with ' \
                          "internship_offer_id: #{id} and " \
                          "employer_id: #{employer_id}")
+  end
+
+  private
+
+  def update_targeted_grades
+    return unless grades.any?
+
+    sorted_grade_ids = grades.sort_by(&:id).map(&:id)
+
+    if sorted_grade_ids == Grade.all.sort_by(&:id).map(&:id)
+      self.targeted_grades = 'seconde_troisieme_or_quatrieme'
+    elsif sorted_grade_ids == Grade.troisieme_et_quatrieme.map(&:id)
+      self.targeted_grades = 'troisieme_or_quatrieme'
+    elsif sorted_grade_ids == [Grade.seconde.id]
+      self.targeted_grades = 'seconde_only'
+    else
+      Rails.logger.error("Unknown grade_ids: #{grade_ids} for ##{id}")
+    end
   end
 end

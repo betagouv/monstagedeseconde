@@ -45,10 +45,6 @@ class PagesController < ApplicationController
 
   def school_management_landing
     if employers_only?
-      puts '===== + = + = + ========='
-      puts 'BIG FAT TEST  '
-      puts '===== + = + = + ========='
-      puts ''
       redirect_to root_path
     else
       @faqs = get_faqs('education')
