@@ -405,9 +405,10 @@ namespace :data_migrations do
     PrettyConsole.announce_task('update internship_offer with targeted_grades') do
       seconde_troisieme_or_quatrieme_grades = Grade.all.sort_by(&:id).map(&:id)
       troisieme_or_quatrieme_grades = Grade.troisieme_et_quatrieme.map(&:id)
-      seconde_only_grade = Grade.seconde.id
+      seconde_only_grade = [Grade.seconde.id]
 
-      InternshipOffer.find_each do |offer|
+      InternshipOffer.where('updated_at > ?', Date.new(2024,8,1))
+                     .find_each do |offer|
         sorted_grade_ids = offer.grades.sort_by(&:id).map(&:id)
         next if sorted_grade_ids == seconde_only_grade # default value, nothing to do
 
