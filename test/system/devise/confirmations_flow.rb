@@ -4,7 +4,7 @@ require 'application_system_test_case'
 
 class ConfirmationFlowTest < ApplicationSystemTestCase
   test 'ask notification confirmed with email' do
-    password = 'kikoolol'
+    password = 'kikoolol;A5C13'
     email = 'fourcade.m@gmail.com'
     user = create(:student, email: email,
                             password: password,
@@ -24,7 +24,7 @@ class ConfirmationFlowTest < ApplicationSystemTestCase
   end
 
   test 'ask notification confirmed with phone' do
-    password = 'kikoolol'
+    password = 'kikoolol;A5C13'
     phone = '+330637607756'
     user = create(:student, email: nil,
                             phone: phone,
