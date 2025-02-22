@@ -15,118 +15,119 @@ function CompanyCityInput({
   latitude: defaultLatitude,
   longitude: defaultLongitude,
   whiteBg: whiteBg }) {
-  const searchParams = new URLSearchParams(window.location.search);
+    const search_debounce_time = 660;
+    const searchParams = new URLSearchParams(window.location.search);
 
-  const [cityOrZipcode, setCity] = useState(searchParams.get('city') || defaultCity || "");
-  const [latitude, setLatitude] = useState(searchParams.get('latitude') || defaultLatitude || "");
-  const [longitude, setLongitude] = useState(searchParams.get('longitude') || defaultLongitude || "");
-  // const [whiteBg, setWhiteBg] = useState(searchParams.get('whiteBg') || defaultWhiteBg || true);
-  const [searchResults, setSearchResults] = useState([]);
-  const [cityDebounced] = useDebounce(cityOrZipcode, 1000);
-  const [focus, setFocus] = useState(null);
-  const inputChange = (event) => {
-    setCity(event.target.value);
-    if (event.target.value == "") {
-      setLatitude("")
-      setLongitude("")
+    const [cityOrZipcode, setCity] = useState(searchParams.get('city') || defaultCity || "");
+    const [latitude, setLatitude] = useState(searchParams.get('latitude') || defaultLatitude || "");
+    const [longitude, setLongitude] = useState(searchParams.get('longitude') || defaultLongitude || "");
+    // const [whiteBg, setWhiteBg] = useState(searchParams.get('whiteBg') || defaultWhiteBg || true);
+    const [searchResults, setSearchResults] = useState([]);
+    const [cityDebounced] = useDebounce(cityOrZipcode, search_debounce_time);
+    const [focus, setFocus] = useState(null);
+    const inputChange = (event) => {
+      setCity(event.target.value);
+      if (event.target.value == "") {
+        setLatitude("")
+        setLongitude("")
+      }
+    };
+    const endpoint = new URL('https://geo.api.gouv.fr/communes');
+    const setLocation = (item) => {
+      if (item) {
+        setCity(item.nom);
+        setLatitude(item.centre.coordinates[1]);
+        setLongitude(item.centre.coordinates[0]);
+        updateLocation();
+      }
+    };
+
+    const updateLocation = () => {
+      const event = new Event('change', { bubbles: true });
+      const city = document.querySelector('input[name="city"]');
+      city.value = cityOrZipcode;
+      city.dispatchEvent(event);
+    };
+
+    const isZipcode = (str) => {
+      return (str.length == 5 && !isNaN(str))
     }
-  };
-  const endpoint = new URL('https://geo.api.gouv.fr/communes');
-  const setLocation = (item) => {
-    if (item) {
-      setCity(item.nom);
-      setLatitude(item.centre.coordinates[1]);
-      setLongitude(item.centre.coordinates[0]);
-      updateLocation();
-    }
-  };
 
-  const updateLocation = () => {
-    const event = new Event('change', { bubbles: true });
-    const city = document.querySelector('input[name="city"]');
-    city.value = cityOrZipcode;
-    city.dispatchEvent(event);
-  };
+    const searchCityByNameOrByZipcode = () => {
+      isZipcode(cityOrZipcode) ? searchByZipcode(cityOrZipcode) : searchCityByName(cityOrZipcode);
+    };
 
-  const isZipcode = (str) => {
-    return (str.length == 5 && !isNaN(str))
-  }
+    const manageResults = (results) => {
+      setSearchResults(results);
+      setLocation(results[0]);
+      removeDisabled();
+    };
 
-  const searchCityByNameOrByZipcode = () => {
-    isZipcode(cityOrZipcode) ? searchByZipcode(cityOrZipcode) : searchCityByName(cityOrZipcode);
-  };
+    const removeDisabled = () => {
+      document.querySelectorAll('[data-mandatory-fields-target]').forEach((element) => {
+        element.removeAttribute('disabled');
+      });
+    };
 
-  const manageResults = (results) => {
-    setSearchResults(results);
-    setLocation(results[0]);
-    removeDisabled();
-  };
-
-  const removeDisabled = () => {
-    document.querySelectorAll('[data-mandatory-fields-target]').forEach((element) => {
-      element.removeAttribute('disabled');
-    });
-  };
-
-  const searchCityByName = () => {
-    const searchParams = new URLSearchParams();
-
-    searchParams.append('nom', cityOrZipcode);
-    searchParams.append('fields', ['nom', 'centre', 'departement', 'codesPostaux'].join(','));
-    searchParams.append('limit', 10);
-    searchParams.append('boost', 'population');
-    endpoint.search = searchParams.toString();
-    fetch(endpoint)
-      .then((response) => response.json())
-      .then(manageResults);
-  };
-  // zipcodes represent a set of communes referenced with a code.
-  // This set represents an area that have a center from which a radius can be used for other search criteria
-  const searchByZipcode = (zipcode) => {
-    const searchParams = new URLSearchParams();
-
-    searchParams.append('codePostal', zipcode);
-    endpoint.search = searchParams.toString();
-
-    fetch(endpoint)
-      .then((response) => response.json())
-      .then((jsonResponse) => searchByCode(jsonResponse[0]))
-  };
-
-  const searchByCode = (responseWithCode) => {
-    if (responseWithCode == undefined || responseWithCode.code == undefined) {
-      setCity(cityOrZipcode + " : code postal invalide")
-    } else {
-      const code = responseWithCode.code
+    const searchCityByName = () => {
       const searchParams = new URLSearchParams();
 
-      searchParams.append('code', code);
-      searchParams.append('nom', responseWithCode.nom);
-      searchParams.append('fields', ['nom', 'centre', 'departement', 'codesPostaux', 'code'].join(','));
+      searchParams.append('nom', cityOrZipcode);
+      searchParams.append('fields', ['nom', 'centre', 'departement', 'codesPostaux'].join(','));
       searchParams.append('limit', 10);
       searchParams.append('boost', 'population');
+      endpoint.search = searchParams.toString();
+      fetch(endpoint)
+        .then((response) => response.json())
+        .then(manageResults);
+    };
+    // zipcodes represent a set of communes referenced with a code.
+    // This set represents an area that have a center from which a radius can be used for other search criteria
+    const searchByZipcode = (zipcode) => {
+      const searchParams = new URLSearchParams();
+
+      searchParams.append('codePostal', zipcode);
       endpoint.search = searchParams.toString();
 
       fetch(endpoint)
         .then((response) => response.json())
-        .then(manageResults);
-    }
-  };
+        .then((jsonResponse) => searchByCode(jsonResponse[0]))
+    };
 
-  const codePostauxSample = (codes) => {
-    let zipcode = ""
-    if (codes.length == undefined || codes.length === 0) { return zipcode; }
-    if (codes.length >= 1) { zipcode = codes[0]; }
-    if (codes.length >= 2) { zipcode += ", " + codes[1]; }
-    if (codes.length > 2) { zipcode += ", ... " }
-    return `(${zipcode})`;
-  };
+    const searchByCode = (responseWithCode) => {
+      if (responseWithCode == undefined || responseWithCode.code == undefined) {
+        setCity(cityOrZipcode + " : code postal invalide")
+      } else {
+        const code = responseWithCode.code
+        const searchParams = new URLSearchParams();
 
-  useEffect(() => {
-    if (cityDebounced && cityDebounced.length > 3) {
-      searchCityByNameOrByZipcode(cityDebounced);
-    }
-  }, [cityDebounced]);
+        searchParams.append('code', code);
+        searchParams.append('nom', responseWithCode.nom);
+        searchParams.append('fields', ['nom', 'centre', 'departement', 'codesPostaux', 'code'].join(','));
+        searchParams.append('limit', 10);
+        searchParams.append('boost', 'population');
+        endpoint.search = searchParams.toString();
+
+        fetch(endpoint)
+          .then((response) => response.json())
+          .then(manageResults);
+      }
+    };
+
+    const codePostauxSample = (codes) => {
+      let zipcode = ""
+      if (codes.length == undefined || codes.length === 0) { return zipcode; }
+      if (codes.length >= 1) { zipcode = codes[0]; }
+      if (codes.length >= 2) { zipcode += ", " + codes[1]; }
+      if (codes.length > 2) { zipcode += ", ... " }
+      return `(${zipcode})`;
+    };
+
+    useEffect(() => {
+      if (cityDebounced && cityDebounced.length > 3) {
+        searchCityByNameOrByZipcode(cityDebounced);
+      }
+    }, [cityDebounced]);
 
   return (
 
