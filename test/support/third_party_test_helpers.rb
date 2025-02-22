@@ -244,13 +244,13 @@ module ThirdPartyTestHelpers
       ).to_return(status: 200, body: { access_token: 'token' }.to_json, headers: {})
   end
 
-  def stub_sygne_responsible(ine)
+  def stub_sygne_responsible(ine:, token:)
     stub_request(:get, "#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
       .with(
         headers: {
           'Accept' => '*/*',
           'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Authorization' => 'Bearer',
+          'Authorization' => "Bearer #{token}",
           'Compression-Zip' => 'non',
           'Host' => URI(ENV['SYGNE_URL']).host,
           'User-Agent' => 'Ruby'
