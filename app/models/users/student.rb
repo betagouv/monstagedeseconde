@@ -55,7 +55,7 @@ module Users
     end
 
     def to_s
-      "#{super}, in school: #{school&.zipcode}"
+      "#{super}, élève dans l'établissement #{school&.name}, #{school&.city}"
     end
 
     def after_sign_in_path
