@@ -241,10 +241,10 @@ module ThirdPartyTestHelpers
           'Host' => URI(ENV['OMOGEN_OAUTH_URL']).host,
           'User-Agent' => 'Ruby'
         }
-      ).to_return(status: 200, body: { token: 'token' }.to_json, headers: {})
+      ).to_return(status: 200, body: { access_token: 'token' }.to_json, headers: {})
   end
 
-  def stub_sygne_reponsible(ine)
+  def stub_sygne_responsible(ine)
     stub_request(:get, "#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
       .with(
         headers: {
@@ -257,5 +257,42 @@ module ThirdPartyTestHelpers
         }
       )
       .to_return(status: 200, body: File.read('test/fixtures/files/signe_responsible.json'), headers: {})
+  end
+
+  def stub_sygne_eleves(code_uai:, niveau:, token:)
+    Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
+      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
+      expected_response = [{
+        'ine' => '001291528AA',
+        'nom' => 'SABABADICHETTY',
+        'prenom' => 'Felix',
+        'dateNaissance' => '2003-05-28',
+        'codeSexe' => '1',
+        'codeUai' => '0590116F',
+        'anneeScolaire' => 2023,
+        'niveau' => '2212',
+        'libelleNiveau' => '1ERE G-T',
+        'codeMef' => '20110019110',
+        'libelleLongMef' => 'PREMIERE GENERALE',
+        'codeMefRatt' => '20110019110',
+        'classe' => '3E4',
+        'codeRegime' => '2',
+        'libelleRegime' => 'DP DAN',
+        'codeStatut' => 'ST',
+        'libelleLongStatut' => 'SCOLAIRE',
+        'dateDebSco' => '2023-09-05',
+        'adhesionTransport' => false
+      }].to_json
+      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
+      headers = {
+        'Accept' => '*/*',
+        'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+        'Authorization' => "Bearer #{token}",
+        'Compression-Zip' => 'non',
+        'User-Agent' => 'Ruby'
+      }
+      stub_request(:get, uri).with(headers:)
+                             .to_return(status: 200, body: expected_response, headers: {})
+    end
   end
 end

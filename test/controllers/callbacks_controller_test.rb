@@ -74,7 +74,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     educonnect_token_stub
     educonnect_userinfo_stub
     stub_omogen_auth
-    stub_sygne_reponsible('1234567890')
+    stub_sygne_responsible('1234567890')
     educonnect_logout_stub
 
     puts "school uai : #{@school.code_uai}"
