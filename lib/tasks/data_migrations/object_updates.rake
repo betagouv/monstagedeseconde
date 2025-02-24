@@ -404,7 +404,7 @@ namespace :data_migrations do
   task 'update_internship_offers_targeted_grades': :environment do
     PrettyConsole.announce_task('update internship_offer with targeted_grades') do
       seconde_troisieme_or_quatrieme_grades = Grade.all.ids.sort
-      seconde_or_troisieme = [Grade.seconde.id, Grade.troisieme.id].sort
+      seconde_or_troisieme_grades = [Grade.seconde.id, Grade.troisieme.id].sort
       troisieme_or_quatrieme_grades = Grade.troisieme_et_quatrieme.ids.sort
       seconde_only_grade = [Grade.seconde.id]
 
@@ -415,15 +415,14 @@ namespace :data_migrations do
         sorted_grade_ids = offer.grades.ids.sort
         next if sorted_grade_ids == seconde_only_grade # default value, nothing to do
 
-        if sorted_grade_ids == seconde_troisieme_or_quatrieme_grades
+        case sorted_grade_ids
+        when seconde_troisieme_or_quatrieme_grades, seconde_or_troisieme_grades
           offer.targeted_grades = 'seconde_troisieme_or_quatrieme'
-        elsif sorted_grade_ids == seconde_or_troisieme
-          offer.targeted_grades = 'seconde_troisieme_or_quatrieme'
-        elsif sorted_grade_ids == troisieme_or_quatrieme_grades
+        when troisieme_or_quatrieme_grades
           offer.targeted_grades = 'troisieme_or_quatrieme'
         else
           Rails.logger.error("Unknown grade_ids: #{offer.grade_ids} for offer_id: #{offer.id}")
-          puts("Unknown grade_ids: #{offer.grade_ids} for offer_id: #{offer.id}")
+          puts("Unknown grade_ids: #{offer.sorted_grade_ids} for offer_id: #{offer.id}")
         end
         offer.save
         print '.'
