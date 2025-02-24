@@ -591,11 +591,13 @@ class InternshipOffer < ApplicationRecord
   def update_targeted_grades
     return unless grades.any?
 
-    sorted_grade_ids = grades.sort_by(&:id).map(&:id)
+    sorted_grade_ids = grades.ids.sort
 
-    if sorted_grade_ids == Grade.all.sort_by(&:id).map(&:id)
+    if sorted_grade_ids == Grade.all.ids.sort
       self.targeted_grades = 'seconde_troisieme_or_quatrieme'
-    elsif sorted_grade_ids == Grade.troisieme_et_quatrieme.map(&:id)
+    elsif sorted_grade_ids == [Grade.troisieme.id, Grade.seconde.id].sort
+      self.targeted_grades = 'seconde_troisieme_or_quatrieme'
+    elsif sorted_grade_ids == Grade.troisieme_et_quatrieme.map(&:id).sort
       self.targeted_grades = 'troisieme_or_quatrieme'
     elsif sorted_grade_ids == [Grade.seconde.id]
       self.targeted_grades = 'seconde_only'
