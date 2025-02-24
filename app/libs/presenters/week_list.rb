@@ -57,6 +57,30 @@ module Presenters
       weeks.empty?
     end
 
+    def str_weeks_display
+      troisieme_weeks = weeks & Week.troisieme_selectable_weeks
+      seconde_weeks = weeks & Week.seconde_selectable_weeks
+      label_troisieme_weeks = nil
+      label_seconde_weeks = nil
+
+      if troisieme_weeks.present?
+        troisieme_week_list = self.class.new(weeks: troisieme_weeks)
+        label_troisieme_weeks = "Disponible une semaine du #{troisieme_week_list.first_week.beginning_of_week_abr} au #{troisieme_week_list.last_week.end_of_working_week_with_year}"
+      end
+
+      if seconde_weeks.present?
+        second_week_list = self.class.new(weeks: seconde_weeks)
+        if seconde_weeks.count == 2
+        # label_seconde_weeks = "Disponible pour un stage de 2 semaines du #{first_week.monday} au #{last_week.friday}"
+          label_seconde_weeks = "Disponible pour un stage de 2 semaines"
+        elsif seconde_weeks.count == 1
+          label_seconde_weeks = "Disponible pour une semaine de stage "
+        end
+        label_seconde_weeks = "#{label_seconde_weeks} du #{second_week_list.first_week.beginning_of_week_abr} au #{second_week_list.last_week.end_of_working_week_with_year}"
+      end
+      [ label_troisieme_weeks, label_seconde_weeks ].compact
+    end
+
     def split_range_string
       to_range_as_str.split(/(\d*\s?semaines?\s?:?)/)
     end

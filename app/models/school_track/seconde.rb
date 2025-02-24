@@ -12,7 +12,7 @@ module SchoolTrack
 
     def self.period_labels(school_year:)
       period_collection(school_year:).transform_values do |time_frame|
-        prefix = time_frame[:end] - time_frame[:start] > 10 ? '2 semaines' : '1 semaine'
+        prefix = time_frame[:end] - time_frame[:start] > 10 ? ' stage de 2 semaines' : 'stage de 1 semaine'
         "#{prefix} (du #{time_frame[:start]} au #{time_frame[:end]} #{time_frame[:month]} #{time_frame[:year]})"
       end
     end
