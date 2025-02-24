@@ -404,15 +404,18 @@ namespace :data_migrations do
   task 'update_internship_offers_targeted_grades': :environment do
     PrettyConsole.announce_task('update internship_offer with targeted_grades') do
       seconde_troisieme_or_quatrieme_grades = Grade.all.sort_by(&:id).map(&:id)
+      seconde_or_troisieme = [Grade.seconde.id, Grade.troisieme.id].sort
       troisieme_or_quatrieme_grades = Grade.troisieme_et_quatrieme.map(&:id)
       seconde_only_grade = [Grade.seconde.id]
 
-      InternshipOffer.where('updated_at > ?', Date.new(2024,8,1))
+      InternshipOffer.where('updated_at > ?', Date.new(2024, 8, 1))
                      .find_each do |offer|
         sorted_grade_ids = offer.grades.sort_by(&:id).map(&:id)
         next if sorted_grade_ids == seconde_only_grade # default value, nothing to do
 
         if sorted_grade_ids == seconde_troisieme_or_quatrieme_grades
+          offer.targeted_grades = 'seconde_troisieme_or_quatrieme'
+        elsif sorted_grade_ids == seconde_or_troisieme
           offer.targeted_grades = 'seconde_troisieme_or_quatrieme'
         elsif sorted_grade_ids == troisieme_or_quatrieme_grades
           offer.targeted_grades = 'troisieme_or_quatrieme'
