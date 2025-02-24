@@ -403,14 +403,16 @@ namespace :data_migrations do
   desc '2025-02-21 update internship_offer with targeted_grades'
   task 'update_internship_offers_targeted_grades': :environment do
     PrettyConsole.announce_task('update internship_offer with targeted_grades') do
-      seconde_troisieme_or_quatrieme_grades = Grade.all.sort_by(&:id).map(&:id)
+      seconde_troisieme_or_quatrieme_grades = Grade.all.ids.sort
       seconde_or_troisieme = [Grade.seconde.id, Grade.troisieme.id].sort
-      troisieme_or_quatrieme_grades = Grade.troisieme_et_quatrieme.map(&:id)
+      troisieme_or_quatrieme_grades = Grade.troisieme_et_quatrieme.ids.sort
       seconde_only_grade = [Grade.seconde.id]
 
       InternshipOffer.where('updated_at > ?', Date.new(2024, 8, 1))
                      .find_each do |offer|
-        sorted_grade_ids = offer.grades.sort_by(&:id).map(&:id)
+        next if offer.grades.empty?
+
+        sorted_grade_ids = offer.grades.ids.sort
         next if sorted_grade_ids == seconde_only_grade # default value, nothing to do
 
         if sorted_grade_ids == seconde_troisieme_or_quatrieme_grades
@@ -421,6 +423,7 @@ namespace :data_migrations do
           offer.targeted_grades = 'troisieme_or_quatrieme'
         else
           Rails.logger.error("Unknown grade_ids: #{offer.grade_ids} for offer_id: #{offer.id}")
+          puts("Unknown grade_ids: #{offer.grade_ids} for offer_id: #{offer.id}")
         end
         offer.save
         print '.'
