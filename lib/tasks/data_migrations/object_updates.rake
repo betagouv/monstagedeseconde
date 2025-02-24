@@ -421,8 +421,8 @@ namespace :data_migrations do
         when troisieme_or_quatrieme_grades
           offer.targeted_grades = 'troisieme_or_quatrieme'
         else
-          Rails.logger.error("Unknown grade_ids: #{offer.grade_ids} for offer_id: #{offer.id}")
-          puts("Unknown grade_ids: #{offer.sorted_grade_ids} for offer_id: #{offer.id}")
+          Rails.logger.error("Unknown grade_ids: #{sorted_grade_ids} for offer_id: #{offer.id}")
+          puts("Unknown grade_ids: #{sorted_grade_ids} for offer_id: #{offer.id}")
         end
         offer.save
         print '.'
