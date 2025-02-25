@@ -8,9 +8,8 @@ class Group < ApplicationRecord
     is_public.nil? ? all : where(is_public: is_public)
   }
   has_many :internship_offers
-  has_many :organisations
   has_many :ministry_groups
-  
+
   has_many :user_groups
   has_many :users, through: :user_groups, dependent: :destroy, inverse_of: :groups
 
@@ -24,6 +23,5 @@ class Group < ApplicationRecord
       field :is_public
       field :is_paqte
     end
-
   end
 end
