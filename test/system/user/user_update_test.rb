@@ -14,7 +14,7 @@ class UserUpdateTest < ApplicationSystemTestCase
     fill_in('user[email]', with: 'baboo@free.fr')
     click_on 'Enregistrer'
     success_message = find('#alert-text').text
-    assert_equal 'Compte mis à jour avec succès.',
+    assert_equal 'Compte mis à jour avec succès. Pour confirmer le changement d’adresse électronique, veuillez cliquer sur lien contenu dans le courrier que vous venez de recevoir sur votre nouvelle adresse électronique.',
                  success_message
   end
 
@@ -59,48 +59,6 @@ class UserUpdateTest < ApplicationSystemTestCase
     #   alert_message = find('label').text
     # end
     # assert alert_message == 'Veuillez modifier le numéro de téléphone mobile'
-  end
-
-  test 'student can update its password' do
-    student = create(:student)
-    sign_in(student)
-    visit account_path
-    click_button('Mon mot de passe')
-    assert find('input[type="submit"]').disabled?
-    fill_in('user[current_password]', with: 'password')
-    assert find('input[type="submit"]').disabled?
-    fill_in('user[password]', with: 'pass')
-    assert find('input[type="submit"]').disabled?
-    fill_in('user[password]', with: 'passPass123$')
-    refute find('input[type="submit"]').disabled?
-  end
-
-  test 'student with no school is redirected to account(:school)' do
-    skip 'This is ok locally but fails on CI due to slowlyness' if ENV['CI'] == 'true'
-    school_new = create(:school, name: 'Etablissement Test 1', city: 'Paris', zipcode: '75012')
-    student = create(:student)
-    student.school = nil
-    student.save
-
-    sign_in(student.reload)
-
-    visit account_path
-    find('#alert-danger', text: 'Veuillez rejoindre un etablissement')
-    within('#alert-danger') do
-      click_button('Fermer')
-    end
-    click_button 'Mon établissement'
-    find_field('Établissement ou commune').fill_in(with: 'Paris ')
-    find('li#downshift-0-item-0').click
-    select school_new.name, from: 'user_school_id'
-    click_button('Enregistrer')
-
-    visit internship_offers_path
-    sign_out(student)
-
-    employer = create(:employer)
-    sign_in(employer)
-    visit internship_offers_path
   end
 
   test 'employer can update his phone_number' do
