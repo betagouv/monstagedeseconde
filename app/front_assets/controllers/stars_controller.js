@@ -35,7 +35,7 @@ export default class extends Controller {
   connect() {
     this.channelParams = {
       channel: "ScoreChannel",
-      uid: Math.random().toString(36),
+      uid: Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, '0')).join(''),
     };
     this.wssClient = ActionCable.createConsumer("/cable");
     this.evaluator = this.wssClient.subscriptions.create(this.channelParams, {
