@@ -186,6 +186,7 @@ import './homepage/partenaires/logo-femmes-numerique.png'
 import './homepage/partenaires/logo-myfuture.png'
 import './homepage/partenaires/logo-medef.png'
 import './homepage/partenaires/logo-decathlon.png'
+import './homepage/partenaires/logo-arpejeh.png'
 
 import './homepage/partenaires/involved_companies/airfrance.png'
 import './homepage/partenaires/involved_companies/bonduelle.png'
