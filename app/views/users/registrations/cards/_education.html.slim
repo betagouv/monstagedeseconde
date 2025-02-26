@@ -1,4 +1,4 @@
-div class="fr-card #{employers_only? ? 'disabled_tab' : ''}"
+div class="fr-card"
   .fr-card__body
     .fr-card__content
       h3.fr-h4
@@ -12,10 +12,9 @@ div class="fr-card #{employers_only? ? 'disabled_tab' : ''}"
     .fr-card__footer
       ul.fr-btns-group
         li
-          - path = employers_only? ? '#' : @fim_url
-          - label = employers_only? ? 'Inscription à venir' : "Inscription via l'éducation nationale"
-          - klass = employers_only? ? 'fr-btn--tertiary' : 'fr-btn--secondary'
-          = link_to label, path, class: "fr-btn #{klass}", disabled: employers_only?
+          = link_to "Inscription via l'éducation nationale",
+                    @fim_url,
+                    class: "fr-btn fr-btn--secondary"
   .fr-card__header
     .fr-ml-4w.fr-mt-5w
       .fr-badge.fr-badge--info.fr-badge--no-icon éducation

@@ -28,19 +28,3 @@ header.container-xl.px-0
         .row.fr-my-1w
           .col-12
             = link_to 'Déposer une offre de stage', new_user_registration_path(as: 'Employer'), class: 'fr-btn'
-        - if employers_only?
-          .row.fr-mb-3w
-            .col-12
-              .fr-mt-1w.fr-mb-4w.header-cartel.fr-px-6v.fr-py-1w
-                p.blue-france
-                  strong
-                    = link_to "https://forms.sbc30.net/62553f47462f0e1887f81bfe/xtszW7joSFu4cBSfyOLMdw/form.html", target: '_blank', class: 'fr-raw-link' do
-                      | Vous êtes en 4
-                      sup e
-                      | , 3
-                      sup e
-                      |  ou 2
-                      sup de
-                      |  générale ou technologique ?
-                p.default-grey
-                  = "L'ouverture du service est prévue en février 2025."

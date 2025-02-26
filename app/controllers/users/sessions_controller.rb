@@ -25,17 +25,6 @@ module Users
     end
 
     def create
-      # TODO : withdraw next line after employers_only function removal
-      allowed_profiles_when_employers_only = current_user.try(:employer?) ||
-                                             current_user.try(:operator?) ||
-                                             current_user.try(:god?)
-
-      if employers_only? && !allowed_profiles_when_employers_only
-        sign_out current_user if user_signed_in?
-        redirect_to root_path,
-                    notice: 'Vous n\'avez pas les permissions nécessaires pour accéder à cette page' and return
-      end
-
       if by_phone? && fetch_user_by_phone.try(:valid_password?, params[:user][:password])
         user = fetch_user_by_phone
         if user.student?
