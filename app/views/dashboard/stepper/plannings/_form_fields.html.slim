@@ -4,6 +4,7 @@
        data-grade-initial-grades-value="#{resource.grades.compact&.map(&:short_name).join(',')}"]
     = form.hidden_field :type, value: resource.type, data: { :"planning-candidates-target" => "type" } unless resource.is_a?(Planning)
     .row
+      .col-12= form.rg2a_explain_required_asterisk(p_class_name: "mb-0")
       .col-md-6.order-md-2.order-1.d-none.d-md-block
         - if form.object.new_record? && !duplication
           = render 'dashboard/stepper/summary_card', form: form
