@@ -30,30 +30,26 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
   end
 
   test 'pagination of internship_offers index is ok with api or weekly offers' do
-    skip 'test is ok, code is wrong : Chatillon should come last ?'
-    InternshipOffer.stub_const(:PAGE_SIZE, 2) do
-      travel_to Date.new(2025, 3, 1) do
-        2.times do
-          create(:weekly_internship_offer_2nde, city: 'Chatillon', coordinates: Coordinates.chatillon, zipcode: '92320')
-        end
-        (InternshipOffer::PAGE_SIZE / 2).times do
-          create(:weekly_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris, zipcode: '75000')
-          create(:api_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris, zipcode: '75000')
-        end
-        # PAGE_SIZE+ 2 offers now
-        student = create(:student, :seconde)
-        assert_equal 'Paris', student.school.city
-        sign_in(student)
-        visit internship_offers_path
-        click_button 'Rechercher'
-        selector = '.fr-text.fr-py-1w.test-city.fr-text--sm.fr-text--grey-425'
-        within('.fr-test-internship-offers-container') do
-          assert_selector(selector, text: 'Paris', count: InternshipOffer::PAGE_SIZE, wait: 2)
-        end
-        click_link 'Page suivante'
-        within('.fr-test-internship-offers-container') do
-          assert_selector(selector, text: 'Chatillon', count: 2, wait: 2)
-        end
+    travel_to Date.new(2025, 3, 1) do
+      2.times do
+        create(:weekly_internship_offer_2nde, city: 'Chatillon', coordinates: Coordinates.chatillon)
+      end
+      (InternshipOffer::PAGE_SIZE / 2).times do
+        create(:weekly_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris, zipcode: '75000')
+        create(:api_internship_offer, city: 'Paris', coordinates: Coordinates.paris, zipcode: '75000')
+      end
+      student = create(:student, :seconde)
+      assert_equal 'Paris', student.school.city
+      sign_in(student)
+      params = { latitude: 48.8589, longitude: 2.347, city: 'paris', radius: 60_000 }
+      visit internship_offers_path(params)
+      click_button 'Rechercher'
+      sleep 1
+      selector = '.test-city'
+      assert_selector(selector, text: 'Paris', count: 30, wait: 4)
+      click_link 'Page suivante'
+      within('.fr-test-internship-offers-container') do
+        assert_selector(selector, text: 'Chatillon', count: 2, wait: 1.5)
       end
     end
   end

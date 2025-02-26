@@ -76,7 +76,8 @@ module Dashboard
       within('.test-employer-role') do
         fill_in 'En qualité de', with: 'CEO'
       end
-      fill_in "Adresse email du responsable de l'accueil en milieu professionnel", with: 'tuteur@free.fr'
+      fill_in 'Nom et prénom du tuteur ou du responsable de l’accueil en milieu professionnel', with: 'Gerard Lernomand'
+      find('input#internship_agreement_tutor_role').set('Chef d\'atelier')
       select('08:00', from: 'internship_agreement_weekly_hours_start')
       select('16:00', from: 'internship_agreement_weekly_hours_end')
       fill_in('Pause déjeuner', with: "un repas à la cantine d'entreprise")
@@ -155,9 +156,9 @@ module Dashboard
         fill_in 'En qualité de', with: 'CEO'
       end
       fill_in "Nom de l'entreprise", with: 'Corporation'
-      fill_in 'Adresse email de contact', with: 'corp@mail.com'
-      fill_in 'Adresse du lieu du stage', with: '1 rue de la paix'
-      fill_in "Adresse email du responsable de l'accueil en milieu professionnel", with: 'tuteur@free.fr'
+      find('input#internship_agreement_entreprise_address').set('1 rue de la paix')
+      fill_in 'Nom et prénom du tuteur ou du responsable de l’accueil en milieu professionnel', with: 'Gerard Lernomand'
+      find('input#internship_agreement_tutor_role').set('Chef d\'atelier')
       execute_script("document.getElementById('weekly_planning').checked = false;")
       execute_script("document.getElementById('daily-planning-container').classList.remove('d-none');")
       select('08:00', from: 'internship_agreement_daily_hours_lundi_start')
@@ -170,12 +171,11 @@ module Dashboard
                         "textarea[name='internship_agreement[lunch_break]']").native.send_keys('un repas à la cantine bien chaud')
       # Missing lunch break indications on thursday and friday
       # samedi is avoided on purpose
+      fill_in('Adresse complète du lieu du stage', with: '1 rue de la paix')
       click_button('Valider la convention')
-      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: 'Valider la convention')
       find("button[data-action='click->internship-agreement-form#completeByEmployer']",
            text: 'Valider la convention').click
-      alert_text = all('.fr-alert.fr-alert--error').first.text
-      assert_equal alert_text, 'Planning hebdomadaire : Veuillez compléter les horaires et repas de la semaine de stage'
+      assert_text 'Planning hebdomadaire : Veuillez compléter les horaires et repas de la semaine de stage'
     end
 
     test 'employer reads internship agreement table with correct indications - status: completed_by_employer /' do
