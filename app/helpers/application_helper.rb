@@ -70,7 +70,7 @@ module ApplicationHelper
   def regions_list
     [
       { name: 'Myfuture',
-        url: 'https://www.myfuture.fr/',
+        url: 'https://myfutu.re/',
         logo: 'logo-myfuture.png',
         alt: 'logo de Myfuture' },
       { name: 'MEDEF',
