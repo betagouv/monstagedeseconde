@@ -3,31 +3,32 @@
     = form.hidden_field :employer_id, value: current_user.id
     - if resource.id
       = form.hidden_field :id, value: resource.id
-    .row [data-controller='mandatory-fields-with-coordinates fill-card stars'
+    div [data-controller='mandatory-fields-with-coordinates fill-card stars'
           data-mandatory-fields-with-coordinates-minimum-length-value="6"
           data-mandatory-fields-with-coordinates-maximum-length-value="#{InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT}"
           data-mandatory-fields-with-coordinates-no-event-check-value="#{resource.id.present?}"]
-      .col-md-6
-        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
-          .col-12
-            fieldset aria-labelledby="presentation"
-              legend.fr-h6 Le ou les métiers que vous proposez d'observer :
-            .form-group.fr-my-2w
-              = render 'inputs/dsfr_input_field',
-                        f: form,
-                        field: :title,
-                        label: "Indiquez le ou les métiers qui seront observables par l'élève",
-                        placeholder: "Observation du métier de comptable",
-                        aria: {labelledby: 'label_internship_occupation_title'},
-                        required: false,
-                        title: 'intitulé du stage',
-                        object: form.object,
-                        field_type: :text_field,
-                        options: { maxlength: 150,
-                                   data: { action: "input->mandatory-fields-with-coordinates#fieldChange input->fill-card#offerTitleChanged",
-                                           :'mandatory-fields-with-coordinates-target' => "mandatoryField",
-                                           :'fill-card-target' => "offerTitleInput",
-                                           :'stars-target' => 'title'} }
+      .row
+        .col-md-6
+          .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+            .col-12
+              fieldset aria-labelledby="presentation"
+                legend.fr-h6 Le ou les métiers que vous proposez d'observer :
+              .form-group.fr-my-2w
+                = render 'inputs/dsfr_input_field',
+                          f: form,
+                          field: :title,
+                          label: "Indiquez le ou les métiers qui seront observables par l'élève",
+                          placeholder: "Observation du métier de comptable",
+                          aria: {labelledby: 'label_internship_occupation_title'},
+                          required: false,
+                          title: 'intitulé du stage',
+                          object: form.object,
+                          field_type: :text_field,
+                          options: { maxlength: 150,
+                                    data: { action: "input->mandatory-fields-with-coordinates#fieldChange input->fill-card#offerTitleChanged",
+                                            :'mandatory-fields-with-coordinates-target' => "mandatoryField",
+                                            :'fill-card-target' => "offerTitleInput",
+                                            :'stars-target' => 'title'} }
               .fr-alert.fr-alert--info
                 h3.fr-alert__title Conseil
                 p
@@ -39,84 +40,99 @@
                   |
                     Les 50 premiers caractères de cette zone de texte apparaîtront
                     comme titre de votre offre : soyez explicite et concis !
-        .row.bloc-tooggle class="fr-mb-4w ('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))"
-          .col-12
-            - max_length = InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
-            .form-group.fr-my-2w [data-controller='max-length-input'
-                                  data-max-length-input-target="group"
-                                  data-max-length-input-limit-value="#{max_length}"]
-              = render 'inputs/dsfr_input_field',
-                        f: form,
-                        field: :description,
-                        label: "Décrivez les activités qui seront proposées à l’élève",
-                        aria: {labelledby: 'label_internship_occupation_description'},
-                        required: false,
-                        title: 'Activités prévues au cours du stage',
-                        object: form.object,
-                        options: { rows: 5 ,
-                                   data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
-                                           :'mandatory-fields-with-coordinates-target' => "mandatoryField",
-                                           :'stars-target' => 'description',
-                                           action: 'input->stars#onBlurDescriptionInput'}},
-                        field_type: :text_area
-              .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
-                |La description est trop longue
-              small.form-text data-max-length-input-target="charCount"
-            p#score-info.fr-badge.fr-badge--info.fr-mt-1w.fr-mr-2w
-              span data-stars-target='score'
-            span.fr-icon-star-fill.fr-mr-1w data-stars-target='star1'
-            span.fr-icon-star-fill.fr-mr-1w data-stars-target='star2'
-            span.fr-icon-star-fill.fr-mr-1w data-stars-target='star3'
-            span.fr-icon-star-fill.fr-mr-1w data-stars-target='star4'
-            span.fr-icon-star-fill.fr-mr-1w data-stars-target='star5'
-        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
-          .col-12
-            .fr-alert.fr-alert--info
-              h3.fr-alert__title Conseil
-              p
-                |
-                  Ce paragraphe est très important car il va permettre à l'élève
-                  de se projeter dans son futur stage. Il est important d'utiliser
-                  des mots simples. N'hésitez pas à ajouter des détails.
-              p
-                |
-                  Les élèves ne peuvent accéder aux machines, appareils ou produits dont l'usage
-                  est proscrit aux mineurs par les articles D. 4153-15 à D. 4153-37 du code du travail.
-                  Ils ne peuvent ni procéder à des manœuvres ou manipulations sur d'autres machines,
-                  produits ou appareils de production ni effectuer des travaux légers
-                  autorisés aux mineurs par ce même code.
-        .row.fr-mt-2w
-        .row.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
-          .col-12
-            fieldset aria-labelledby="presentation"
-              legend.fr-h6 Le lieu où se déroulera le stage :
-            - currentLatitude     = resource.coordinates.try(:lat).try(:to_f)
-            - currentLongitude    = resource.coordinates.try(:lng).try(:to_f)
-            - currentLatitude   ||= resource.coordinates.try(:latitude).try(:to_f)
-            - currentLongitude  ||= resource.coordinates.try(:longitude).try(:to_f)
-
-            = react_component("AddressInput",
-                              props: { resourceName: form.object_name,
-                                       currentStreet: resource.street,
-                                       currentCity: resource.city,
-                                       currentZipcode: resource.zipcode,
-                                       currentLatitude: ,
-                                       currentLongitude: ,
-                                       currentFullAddress: resource.formatted_autocomplete_address,
-                                       addressFieldsVisible: !resource.id.nil?,
-                                       isDuplication: @duplication,
-                                       editMode: @edit_mode})
-
-        - if submit_button
-          .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+        .col-md-6
+          - if resource.new_record? && show_resume
+            = render 'dashboard/stepper/summary_card', form: form
+      .row
+        .col-6
+          .row.bloc-tooggle class="fr-mb-4w ('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))"
             .col-12
-              .fr-mt-3w
-                = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
-                = button_tag :submit,
-                            class: 'fr-btn',
-                            data: { :'mandatory-fields-with-coordinates-target' => "disabledField",
-                                    :'internship_occupation-form-target' => "submitButton"} do
-                  = "Suivant "
-      .col-md-6
-        - if resource.new_record? && show_resume
-          = render 'dashboard/stepper/summary_card', form: form
+              - max_length = InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
+              .form-group.fr-my-2w [data-controller='max-length-input'
+                                    data-max-length-input-target="group"
+                                    data-max-length-input-limit-value="#{max_length}"]
+                = render 'inputs/dsfr_input_field',
+                          f: form,
+                          field: :description,
+                          label: "Décrivez les activités qui seront proposées à l’élève",
+                          aria: {labelledby: 'label_internship_occupation_description'},
+                          required: false,
+                          title: 'Activités prévues au cours du stage',
+                          object: form.object,
+                          options: { rows: 5 ,
+                                    data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
+                                            :'mandatory-fields-with-coordinates-target' => "mandatoryField",
+                                            :'stars-target' => 'description',
+                                            action: 'input->stars#onBlurDescriptionInput'}},
+                          field_type: :text_area
+                .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
+                  |La description est trop longue
+                small.form-text data-max-length-input-target="charCount"
+              p#score-info.fr-badge.fr-badge--info.fr-mt-1w.fr-mr-2w
+                span data-stars-target='score'
+              span.fr-icon-star-fill.fr-mr-1w data-stars-target='star1'
+              span.fr-icon-star-fill.fr-mr-1w data-stars-target='star2'
+              span.fr-icon-star-fill.fr-mr-1w data-stars-target='star3'
+              span.fr-icon-star-fill.fr-mr-1w data-stars-target='star4'
+              span.fr-icon-star-fill.fr-mr-1w data-stars-target='star5'
+        .col-6 data-stars-target="recommendationPanel" 
+          .fr-alert.fr-alert--info.fr-mt-13v
+            h3.fr-alert__title Les bonnes pratiques du descriptif de stage
+            p
+              ul
+                li
+                    |Décrivez en détail les activités que vous réservez aux élèves.
+                li
+                    |Évitez les acronymes et les termes techniques.
+                li
+                    |Soyez attentif à l'orthographe et à la grammaire.
+                li
+                  |
+                    Pour ce stage d'observation, vous ne devrez attendre
+                    aucun travail de production de la part d'un élève.
+
+    .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+      .col-6
+        .fr-alert.fr-alert--info
+          h3.fr-alert__title Ce que la loi stipule
+          p
+            |
+              Les élèves ne peuvent accéder aux machines, appareils ou produits dont l'usage
+              est proscrit aux mineurs par les articles D. 4153-15 à D. 4153-37 du code du travail.
+              Ils ne peuvent ni procéder à des manœuvres ou manipulations sur d'autres machines,
+              produits ou appareils de production ni effectuer des travaux légers
+              autorisés aux mineurs par ce même code.
+    .row.fr-mt-2w
+    .row.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+      .col-6
+        fieldset aria-labelledby="presentation"
+          legend.fr-h6 Le lieu où se déroulera le stage :
+        - currentLatitude     = resource.coordinates.try(:lat).try(:to_f)
+        - currentLongitude    = resource.coordinates.try(:lng).try(:to_f)
+        - currentLatitude   ||= resource.coordinates.try(:latitude).try(:to_f)
+        - currentLongitude  ||= resource.coordinates.try(:longitude).try(:to_f)
+
+        = react_component("AddressInput",
+                          props: { resourceName: form.object_name,
+                                    currentStreet: resource.street,
+                                    currentCity: resource.city,
+                                    currentZipcode: resource.zipcode,
+                                    currentLatitude: ,
+                                    currentLongitude: ,
+                                    currentFullAddress: resource.formatted_autocomplete_address,
+                                    addressFieldsVisible: !resource.id.nil?,
+                                    isDuplication: @duplication,
+                                    editMode: @edit_mode})
+
+    - if submit_button
+      .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+        .col-12
+          .fr-mt-3w
+            = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
+            = button_tag :submit,
+                        class: 'fr-btn',
+                        data: { :'mandatory-fields-with-coordinates-target' => "disabledField",
+                                :'internship_occupation-form-target' => "submitButton",
+                                :'stars-target' => 'validationButton'} do
+              = "Suivant "
+
