@@ -6,13 +6,7 @@ export default class extends Controller {
     "title",
     "description",
     "score",
-    "star1",
-    "star2",
-    "star3",
-    "star4",
-    "star5",
-    "recommendationPanel",
-    "validationButton"
+    "recommendationPanel"
   ];
 
   onBlurDescriptionInput(event) {
@@ -26,14 +20,6 @@ export default class extends Controller {
     }
   }
 
-  showStars(score) {
-    this.star1Target.style.color = score >= 1 ? "orange" : "black";
-    this.star2Target.style.color = score >= 6 ? "orange" : "black";
-    this.star3Target.style.color = score >= 10 ? "orange" : "black";
-    this.star4Target.style.color = score >= 14 ? "orange" : "black";
-    this.star5Target.style.color = score >= 18.5 ? "orange" : "black";
-  }
-
   connect() {
     this.channelParams = {
       channel: "ScoreChannel",
@@ -45,17 +31,9 @@ export default class extends Controller {
     this.evaluator = this.wssClient.subscriptions.create(this.channelParams, {
       received: (data) => {
         const score = parseFloat(data.score, 10).toFixed(2);
-        this.scoreTarget.innerHTML = score + "/20";
-        this.showStars(score);
         const good_enough = (score > 12);
         const panelClassList = this.recommendationPanelTarget.children[0].classList;
-        if (good_enough) {
-          panelClassList.add('fr-alert--success');
-          panelClassList.remove('fr-alert--info');
-        } else {
-          panelClassList.remove('fr-alert--success');
-          panelClassList.add('fr-alert--info');
-        }
+        toggleContainer(this.recommendationPanelTarget, !good_enough);
       }
     });
   }
