@@ -22,7 +22,7 @@ class SygneImportTest < ActiveSupport::TestCase
   test 'student import fails with wrong codeMef' do
     stub_omogen_auth
     omogen = Services::Omogen::Sygne.new
-    stub_sygne_eleves(code_uai: @code_uai, niveau: '0000', token: omogen.token)
+    stub_sygne_eleves(code_uai: @code_uai, token: omogen.token)
     assert_no_difference 'Users::Student.count' do
       omogen.sygne_import_by_schools(@code_uai)
     end

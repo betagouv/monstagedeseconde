@@ -259,7 +259,7 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: File.read('test/fixtures/files/signe_responsible.json'), headers: {})
   end
 
-  def stub_sygne_eleves(code_uai:, niveau:, token:)
+  def stub_sygne_eleves(code_uai:, token:)
     Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
       expected_response = [{

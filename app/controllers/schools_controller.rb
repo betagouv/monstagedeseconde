@@ -15,6 +15,7 @@ class SchoolsController < ApplicationController
     department = Department.fetch_by_zipcode(zipcode: @school.zipcode)
     @school.department = department
     if @school.save
+      ImportDataFromSygneJob.perform_later(@school)
       redirect_to rails_admin_path, flash: { success: 'Etablissement créé !' }
     else
       flash[:error] = "Erreur lors de la validation des informations : #{@school.errors.full_messages}"

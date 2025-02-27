@@ -2,6 +2,8 @@ require 'test_helper'
 
 class SchoolsControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
+  include ThirdPartyTestHelpers
+  include ActiveJob::TestHelper
 
   test 'GET new not logged redirects to sign in' do
     get new_school_path
@@ -23,6 +25,9 @@ class SchoolsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'POST #create as god redirects to admin' do
+    stub_omogen_auth
+    omogen = Services::Omogen::Sygne.new
+
     god = create(:god)
     sign_in(god)
     school_params = {
@@ -43,8 +48,12 @@ class SchoolsControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_difference('School.count', 1) do
-      post schools_path(school: school_params)
+    stub_sygne_eleves(code_uai: school_params[:code_uai], token: omogen.token)
+
+    assert_enqueued_with(job: ImportDataFromSygneJob) do
+      assert_difference('School.count', 1) do
+        post schools_path(school: school_params)
+      end
     end
     school = School.last
     assert_redirected_to rails_admin_path
