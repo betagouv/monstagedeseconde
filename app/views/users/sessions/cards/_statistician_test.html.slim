@@ -7,9 +7,10 @@ div class="fr-card"
         | Vous êtes référent d’administration centrale ou en académie. Accédez aux statistiques et à vos outils de pilotage.
     .fr-card__footer
       ul.fr-btns-group
-          = link_to 'Connexion',
-                    new_user_session_path(as: 'Statistician'),
-                    class: "fr-btn fr-btn--secondary"
+          - path = new_user_session_path(as: 'Statistician')
+          - label = 'Connexion'
+          - klass = 'fr-btn--secondary'
+          = link_to label, path, class: "fr-btn #{klass}", disabled: employers_only?
 
   .fr-card__header
     .fr-ml-4w.fr-mt-5w

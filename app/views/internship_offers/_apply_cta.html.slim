@@ -22,8 +22,9 @@
             = reason
 
   - else
+    - path = employers_only? ? '#' :  visitor_apply_path
     .d-flex
-      = form_with url: visitor_apply_path, method: :post, data: { turbo: false } do
+      = form_with url: path, method: :post, data: { turbo: false } do
         = submit_tag 'Postuler', class: "fr-btn fr-btn--icon-left fr-icon-edit-fill"
 
   .fr-mx-5w

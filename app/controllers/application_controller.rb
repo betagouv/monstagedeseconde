@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
   before_action :check_for_holidays_maintenance_page
   before_action :check_school_requested
   before_action :check_for_maintenance
+  before_action :employers_only_redirect
   before_action :throttle_ip_requests
   before_action :store_user_type_before_logout
 
@@ -54,13 +55,23 @@ class ApplicationController < ActionController::Base
     current_user || Users::Visitor.new
   end
 
+  def employers_only?
+    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
+  end
+
   def user_presenter
     @user_presenter ||= Presenters::User.new(current_user_or_visitor)
   end
-  helper_method :user_presenter, :current_user_or_visitor
+  helper_method :user_presenter, :current_user_or_visitor, :employers_only?
 
   def check_for_maintenance
     redirect_to '/maintenance.html' if ENV['MAINTENANCE_MODE'] == 'true'
+  end
+
+  def employers_only_redirect
+    return unless employers_only? && request.path == '/'
+
+    redirect_to professionnels_path
   end
 
   def throttle_ip_requests

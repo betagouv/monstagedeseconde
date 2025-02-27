@@ -3,6 +3,8 @@
 require 'sidekiq/web'
 root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
                      'maintenance_estivale'
+                   elsif ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
+                     'pro_landing'
                    else
                      'home'
                    end
