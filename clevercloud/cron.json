@@ -4,6 +4,7 @@
     "0 3 * * 2,5 $ROOT/clevercloud/crons/internship_application_expirers.sh",
     "0 4 * * 1 $ROOT/clevercloud/crons/confidentiality_cleaning.sh",
     "0 8 * * 1 $ROOT/clevercloud/crons/kpi_mailing.sh",
-    "0 5 31 7 * $ROOT/clevercloud/crons/year_end_cleaning.sh"
+    "0 5 31 7 * $ROOT/clevercloud/crons/year_end_cleaning.sh",
+    "0 2 * * * $ROOT/clevercloud/crons/cegid_crawler.sh"
   ]
 
