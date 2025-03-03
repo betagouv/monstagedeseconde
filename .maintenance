@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr" data-fr-scheme="system">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Site en maintenance</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.9.3/dist/dsfr.min.css">
+</head>
+
+<body>
+    <div class="fr-container fr-mt-8w fr-mb-8w">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                <div class="fr-card fr-p-4w fr-card--shadow">
+                    <div class="fr-card__body">
+                        <h1 class="fr-card__title fr-mb-3w">
+                            Site en maintenance
+                        </h1>
+                        <p class="fr-text--lg fr-mb-3w">
+                            Notre site est actuellement en maintenance.
+                        </p>
+                        <p>
+                            Nous effectuons des travaux d'amélioration. Le service sera rétabli dans les plus brefs délais.
+                        </p>
+                        <p class="fr-mt-3w">
+                            Nous vous remercions de votre compréhension.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.9.3/dist/dsfr.module.min.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.9.3/dist/dsfr.nomodule.min.js"></script>
+</body>
+</html>
