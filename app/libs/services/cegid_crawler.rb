@@ -53,7 +53,7 @@ module Services
       permalink = offer_data['apply_url']
       lunch_break = 'Repas sur place'
 
-      uri = URI("#{ENV['API_BASE_URL']}/api/v2/internship_offers")
+      uri = URI("#{ENV['HOST']}/api/v2/internship_offers")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = uri.scheme == 'https'
 
