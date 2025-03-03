@@ -19,20 +19,19 @@ module Services
     end
 
     def fetch_and_create_offers_decathlon
-      @data['ads'].first(5).each do |offer_data|
+      @data['ads'].each do |offer_data|
         process_offer(offer_data)
       end
-      
-      remove_old_offers
+
+      remove_old_offers('Decathlon')
     end
 
     def process_offer(offer_data)
-      puts offer_data
-      @token = get_token_from_decathlon
+      @token = get_token_from_operator('Decathlon')
       remote_id = offer_data['reference']
-      
+
       return if InternshipOffer.exists?(remote_id: remote_id)
-      
+
       title = offer_data['title']
       description = sanitize_html(offer_data['description'])[0..500]
       employer_name = offer_data.dig('brand', 'name')
@@ -43,7 +42,6 @@ module Services
       street = offer_data.dig('address', 'parts', 'street')
       city = offer_data.dig('address', 'parts', 'city')
       zipcode = offer_data.dig('address', 'parts', 'zip')
-      department = find_department(offer_data.dig('address', 'parts', 'zip'))
       sector_uuid = Sector.find_by(name: 'Commerce et distribution').uuid
       remote_id = offer_data['reference']
       max_candidates = 1
@@ -51,7 +49,7 @@ module Services
       grades = %w[seconde troisieme]
       weeks = InternshipOffers::Api.mandatory_seconde_weeks
       daily_hours = { "lundi": ['9:00', '17:00'], "mardi": ['9:00', '17:00'], "mercredi": ['9:00', '17:00'],
-                        "jeudi": ['9:00', '17:00'], "vendredi": ['9:00', '17:00'] }
+                      "jeudi": ['9:00', '17:00'], "vendredi": ['9:00', '17:00'] }
       permalink = offer_data['apply_url']
       lunch_break = 'Repas sur place'
 
@@ -62,7 +60,7 @@ module Services
       request = Net::HTTP::Post.new(uri.path)
       request['Authorization'] = "Bearer #{@token}"
       request['Content-Type'] = 'application/json'
-      
+
       payload = {
         internship_offer: {
           title: title,
@@ -101,25 +99,43 @@ module Services
 
     def sanitize_html(html)
       return nil if html.nil?
+
       ActionController::Base.helpers.sanitize(html, tags: %w[p b i u li ul ol br])
     end
 
     def parse_datetime(datetime_str)
       DateTime.parse(datetime_str)
-    rescue
+    rescue StandardError
       nil
-    end
-
-    def find_department(zipcode)
-      return nil unless zipcode
-      Department.find_by(code: zipcode[0..1])
     end
 
     def coordinates_from_position
       lat = @data.dig('address', 'position', 'lat')
       lon = @data.dig('address', 'position', 'lon')
+
+      # if no lat and lon use Geocoder
+      if lat.nil? || lon.nil?
+        address_parts = []
+        street = @data.dig('address', 'parts', 'street')
+        zipcode = @data.dig('address', 'parts', 'zip')
+        city = @data.dig('address', 'parts', 'city')
+
+        address_parts << street if street.present?
+        address_parts << zipcode if zipcode.present?
+        address_parts << city if city.present?
+
+        return nil if address_parts.empty?
+
+        address = address_parts.join(', ')
+        coordinates = Geocoder.search(address).first&.coordinates
+        return nil unless coordinates
+
+        lat = coordinates[0]
+        lon = coordinates[1]
+      end
+
       return nil unless lat && lon
-      
+
       RGeo::Geographic.spherical_factory(srid: 4326).point(lon.to_f, lat.to_f)
     end
 
@@ -127,24 +143,26 @@ module Services
       [@data.dig('entity', 'public_name'), @data.dig('brand', 'name')].compact.first
     end
 
-    def get_token_from_decathlon
-      operator = Operator.find_by(name: 'Decathlon')
+    def get_token_from_operator(operator_name)
+      operator = Operator.find_by(name: operator_name)
       user = operator.operators.first
       JwtAuth.encode(user_id: user.id)
     end
 
-    def remove_old_offers
+    def remove_old_offers(operator_name)
       remote_ids = @data['ads'].map { |ad| ad['reference'] }
 
-      decathlon_operator = Operator.find_by(name: 'Decathlon').operators.first
-      decathlon_offers = InternshipOffer.where(employer_id: decathlon_operator.id)
+      operator = Operator.find_by(name: operator_name)
+      offers = InternshipOffer.where(employer_id: operator.id)
 
-      decathlon_offers.each do |offer|
+      offers.each do |offer|
         unless remote_ids.include?(offer.remote_id)
           offer.destroy
           puts "Offer #{offer.remote_id} removed"
         end
       end
+
+      puts "Total offers removed: #{offers.count}"
     end
   end
 end
