@@ -11,7 +11,7 @@ module Services
       if response && response.respond_to?(:code) && status?(200, response)
         score_response = JSON.parse(response.body)
         # score is between -1 and 1
-        ((score_response['score'] + 1) * 10) + 0.5 # mark between 0 and 20
+        ((score_response['score'] + 1) * 10) # mark between 0 and 20
       else
         log_failure(response)
         -1

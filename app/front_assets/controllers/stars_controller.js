@@ -5,9 +5,9 @@ export default class extends Controller {
   static targets = [
     "title",
     "description",
-    "score",
     "recommendationPanel"
   ];
+  goodEnoughScore = 12;
 
   onBlurDescriptionInput(event) {
     const description = event.target.value;
@@ -31,9 +31,10 @@ export default class extends Controller {
     this.evaluator = this.wssClient.subscriptions.create(this.channelParams, {
       received: (data) => {
         const score = parseFloat(data.score, 10).toFixed(2);
-        const good_enough = (score > 12);
+        const good_enough = (score > this.goodEnoughScore);
         const panelClassList = this.recommendationPanelTarget.children[0].classList;
         toggleContainer(this.recommendationPanelTarget, !good_enough);
+        console.log("Received score: " + score);
       }
     });
   }
