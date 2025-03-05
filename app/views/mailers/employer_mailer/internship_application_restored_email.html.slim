@@ -1,0 +1,20 @@
+p style=p_styles
+  | Bonjour,
+  br
+  => @student_prez.formal_name
+  | a restauré sa candidature pour le stage
+  => @internship_application.internship_offer.title
+  |.
+
+p style=p_styles
+  | Voici le motif de la restauration :
+  br
+  => @internship_application.restored_by_student_message.gsub("\n", "<br>").html_safe
+= render partial: "mailers/blue_call_to_action",
+          locals: { href: @url,
+                    label: "Voir la candidature" }
+
+p style=p_styles
+  | À bientôt,
+  br
+  | L'équipe 1élève1stage

@@ -182,7 +182,6 @@ module Dashboard
         student = create(:student, :seconde, school: school, email: 'test@free.fr', phone: '+330620554411')
         internship_offer.update!(weeks: Week.both_school_track_selectable_weeks)
         create(:internship_application, :both_june_weeks, :submitted, internship_offer:, student:)
-        sign_in(student)
         sign_in(employer)
         visit dashboard_candidatures_path
         click_link 'Répondre'
@@ -213,12 +212,80 @@ module Dashboard
         student = create(:student, :seconde, school: school, email: 'test@free.fr', phone: '+330620554411')
         internship_offer.update!(weeks: [SchoolTrack::Seconde.first_week])
         create(:internship_application, :first_june_week, :submitted, internship_offer:, student:)
-        sign_in(student)
         sign_in(employer)
         visit dashboard_candidatures_path
         click_link 'Répondre'
         find('.h5', text: "Informations sur l'élève")
         assert_text 'Disponible la semaine du 16 juin 2025 au 20 juin 2025'
+      end
+
+      test 'As student, I can restore an application I have rejected, but once only' do
+        internship_application = create(:weekly_internship_application, :first_june_week, :submitted)
+        student = internship_application.student
+        internship_application.cancel_by_student!
+        sign_in(student)
+        visit dashboard_students_internship_applications_path(student_id: student.id)
+        find('button[aria-controls="canceled-internship-applications-panel"]', text: 'Annulées').click
+        click_button 'Restaurer'
+        find('textarea').set('Je me suis trompé')
+        within('dialog') { click_button 'Restaurer ma candidature' }
+        find 'span#alert-text', text: 'Candidature mise à jour avec succès.'
+        find('.h5.internship-offer-title', text: 'Stage de 2de - 1')
+        assert_equal 'Je me suis trompé', internship_application.reload.restore_message
+
+        click_link 'Voir'
+        find('button', text: 'Annuler la candidature').click
+        find('dialog textarea').set('Je me suis trompé')
+        within('dialog') { click_button "Confirmer l'annulation" }
+        find('button[aria-controls="canceled-internship-applications-panel"]', text: 'Annulées').click
+        assert_no_button 'Restaurer'
+      end
+
+      test 'As student, I cannot restore an application I have rejected, if I have an approved application' do
+        create(:weekly_internship_application, :both_june_weeks, :approved)
+        internship_application = create(:weekly_internship_application, :first_june_week, :submitted)
+        student = internship_application.student
+        internship_application.cancel_by_student!
+        sign_in(student)
+        visit dashboard_students_internship_applications_path(student_id: student.id)
+        find('button[aria-controls="canceled-internship-applications-panel"]', text: 'Annulées').click
+        assert_no_button 'Restaurer'
+      end
+
+      test 'As student, I cannot restore an application the employer has rejected' do
+        internship_application = create(:weekly_internship_application, :first_june_week, :rejected)
+        student = internship_application.student
+        sign_in(student)
+        visit dashboard_students_internship_applications_path(student_id: student.id)
+        find('button[aria-controls="refused-internship-applications-panel"]', text: 'Refusées').click
+        assert_no_button 'Restaurer'
+      end
+
+      test 'As employer, I can see a restored application once validated by me' do
+        internship_application = create(:weekly_internship_application, :first_june_week, :restored)
+
+        employer = internship_application.internship_offer.employer
+        employer.current_area_id = internship_application.internship_offer.internship_offer_area_id
+        employer.save!
+        sign_in employer
+        visit dashboard_candidatures_path
+        find('.h5.internship-offer-title', text: 'Stage de 2de - 1')
+        assert_text 'Candidature restaurée'
+      end
+
+      test 'As employer, I can see a restored application with a standard "nouveau" label' do
+        internship_application = create(:weekly_internship_application, :first_june_week, :submitted)
+        internship_application.cancel_by_student!
+        internship_application.restore!
+        refute internship_application.has_ever_been?(%i[approved validated_by_employer])
+
+        employer = internship_application.internship_offer.employer
+        employer.current_area_id = internship_application.internship_offer.internship_offer_area_id
+        employer.save!
+        sign_in employer
+        visit dashboard_candidatures_path
+        find('td.col-title', text: 'Stage de 2de - 1')
+        assert_text 'NOUVEAU'
       end
     end
   end

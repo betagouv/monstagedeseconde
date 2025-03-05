@@ -106,8 +106,8 @@
               .col-11
                 span.font-weight-bold  Motif 
                 p.small=  @internship_application.response_message || "Non communiqué"
-        
-        / - if @internship_application.is_re_approvable? || @internship_application.is_modifiable? 
+
+        - if @internship_application.is_re_approvable? || @internship_application.is_modifiable?
           .fr-callout.fr-icon-information-line.fr-mt-4w.fr-mb-4w
             h3.fr-callout__title
               = callout_title(@internship_application)

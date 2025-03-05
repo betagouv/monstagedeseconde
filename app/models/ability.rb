@@ -106,6 +106,7 @@ class Ability
     end
     can(:cancel, InternshipApplication) do |internship_application|
       ok_canceling = %w[ submitted
+                         restored
                          read_by_employer
                          validated_by_employer
                          approved
@@ -119,6 +120,13 @@ class Ability
     can_read_dashboard_students_internship_applications(user:)
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)
+    end
+    can(:restore, InternshipApplication) do |internship_application|
+      # restored_at makes the application restorable only once
+      internship_application.student.id == user.id &&
+        !internship_application.student.has_found_her_internships? &&
+        internship_application.aasm_state.in?(InternshipApplication::RESTORABLE_STATES) &&
+        internship_application.restored_at.nil?
     end
   end
 
