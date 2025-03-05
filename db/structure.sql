@@ -1180,7 +1180,8 @@ CREATE TABLE public.internship_occupations (
     coordinates public.geography(Point,4326),
     employer_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    ia_score integer
 );
 
 
@@ -1579,7 +1580,8 @@ CREATE TABLE public.internship_offers (
     workspace_conditions text DEFAULT ''::text,
     workspace_accessibility text DEFAULT ''::text,
     mother_id bigint,
-    targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades
+    targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades,
+    ia_score integer
 );
 
 
@@ -4889,6 +4891,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250225122347'),
 ('20250221090138'),
 ('20250213110533'),
 ('20250209100322'),
