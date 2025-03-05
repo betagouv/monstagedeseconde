@@ -181,5 +181,36 @@ module Users
         assert student.with_2_weeks_internships_approved?
       end
     end
+
+    test '#has_found_her_internships? when student seconde' do
+      student = create(:student, grade: Grade.seconde)
+      internship_offer_1 = create(:weekly_internship_offer_2nde, :week_1)
+      internship_offer_2 = create(:weekly_internship_offer_2nde, :week_2)
+      internship_application = create(
+        :weekly_internship_application,
+        :validated_by_employer,
+        student:,
+        internship_offer: internship_offer_1
+      )
+      refute student.has_found_her_internships?
+      internship_application.approve!
+      refute student.has_found_her_internships?
+      create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_2)
+      assert student.has_found_her_internships?
+    end
+
+    test '#has_found_her_internships? when student troisieme' do
+      student = create(:student, grade: Grade.troisieme)
+      internship_offer_1 = create(:weekly_internship_offer_3eme)
+      internship_application = create(
+        :weekly_internship_application,
+        :validated_by_employer,
+        student:,
+        internship_offer: internship_offer_1
+      )
+      refute student.has_found_her_internships?
+      internship_application.approve!
+      assert student.has_found_her_internships?
+    end
   end
 end

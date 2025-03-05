@@ -5,12 +5,14 @@
 # * rejected_message (on internship_application aasm transition rejected)
 # * canceled_by_employer_message (on internship_application aasm transition canceled_by_employer)
 # * canceled_by_student_message (on internship_application aasm transition canceled_by_student)
+# * restore_message (on internship_application aasm transition restore)
 class InternshipApplicationAasmMessageBuilder
   # "exposed" attributes
   delegate :approved_message,
            :rejected_message,
            :canceled_by_employer_message,
            :canceled_by_student_message,
+           :restore_message,
            to: :internship_application
 
   MAP_TARGET_TO_BUTTON_COLOR = {
@@ -18,7 +20,8 @@ class InternshipApplicationAasmMessageBuilder
     approve!: '',
     cancel_by_employer!: 'fr-btn--secondary',
     cancel_by_student!: 'fr-btn--secondary',
-    reject!: 'fr-btn--secondary'
+    reject!: 'fr-btn--secondary',
+    restore!: 'fr-btn--tertiary'
   }.freeze
 
   def target_action_color
@@ -37,7 +40,8 @@ class InternshipApplicationAasmMessageBuilder
     approve!: :approved_message,
     cancel_by_employer!: :canceled_by_employer_message,
     cancel_by_student!: :canceled_by_student_message,
-    reject!: :rejected_message
+    reject!: :rejected_message,
+    restore!: :restore_message
   }.freeze
 
   def associated_text_field

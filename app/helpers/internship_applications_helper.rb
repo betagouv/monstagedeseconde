@@ -38,10 +38,10 @@ module InternshipApplicationsHelper
     "Un email sera envoyé à l’élève lui indiquant que vous souhaitez \
     #{internship_application.is_re_approvable? ? 'retenir' : 'refuser'} \
     sa candidature."
-    + " Il devra ensuite confirmer sa participation au stage." if internship_application.is_re_approvable?
+    + ' Il devra ensuite confirmer sa participation au stage.' if internship_application.is_re_approvable?
   end
 
   def callout_btn_title(internship_application)
-    (internship_application.is_re_approvable? ? "Retenir" : "Refuser" ) + " cette candidature"
+    (internship_application.is_re_approvable? ? 'Retenir' : 'Refuser') + ' cette candidature'
   end
 end

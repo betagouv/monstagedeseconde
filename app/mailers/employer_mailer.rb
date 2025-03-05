@@ -196,4 +196,21 @@ class EmployerMailer < ApplicationMailer
     @url       = new_user_session_url
     send_email(to: @employer.email, subject:)
   end
+
+  def internship_application_restored_email(internship_application:)
+    @internship_application = internship_application
+    recipients_email        = internship_application.employer.email
+    @internship_offer       = internship_application.internship_offer
+    @employer_prez = @internship_offer.employer.presenter
+    @student_prez  = internship_application.student.presenter
+    @url = dashboard_internship_offer_internship_application_url(
+      internship_offer_id: @internship_offer.id,
+      uuid: @internship_application.uuid
+    ).html_safe
+
+    send_email(
+      to: recipients_email,
+      subject: 'Une candidature été restaurée par un élève'
+    )
+  end
 end

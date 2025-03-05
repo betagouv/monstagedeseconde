@@ -27,11 +27,35 @@ module Presenters
     end
 
     def human_state
+      # label stands for badge content
+      # action_label stands for action button content
       action_path = { path: internship_application_path }
-      case internship_application.aasm_state
+      case internship_application.aasm_state.to_s
       when 'submitted'
         label = reader.student? || reader.school_management? ? "Sans réponse de l'entreprise" : 'nouveau'
         action_label = reader.student? ? 'Voir' : 'Répondre'
+        action_level = reader.student? ? 'tertiary' : 'primary'
+        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Reçues, en attente de réponse'
+        { label:,
+          badge: 'info',
+          tab:,
+          actions: [action_path.merge(label: action_label, level: action_level)] }
+      when 'restored'
+        states_with_notice = %w[read_by_employer transfered validated_by_employer]
+        action_label = if reader.student?
+                         'Voir'
+                       elsif internship_application.has_ever_been?(states_with_notice)
+                         'Candidature restaurée - répondre'
+                       else
+                         'Répondre'
+                       end
+        label = if reader.student?
+                  "sans réponse de l'entreprise"
+                elsif internship_application.has_ever_been?(states_with_notice)
+                  'candidature restaurée'
+                else
+                  'nouveau'
+                end
         action_level = reader.student? ? 'tertiary' : 'primary'
         tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Reçues, en attente de réponse'
         { label:,
@@ -156,7 +180,7 @@ module Presenters
            color: 'primary',
            level: 'tertiary' }]
 
-      when 'canceled_by_employer', 'rejected', 'cancelled_by_student', 'expired', 'canceled_by_student_confirmation'
+      when 'canceled_by_employer', 'rejected', 'canceled_by_student', 'expired', 'canceled_by_student_confirmation'
         []
 
       else

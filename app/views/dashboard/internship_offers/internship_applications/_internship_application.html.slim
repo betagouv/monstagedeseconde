@@ -2,7 +2,11 @@
   .col.bg-light.pb-3
     .row.no-gutters.internship_application.bg-light.my-3.py-3
       .col-1.col-sm-1.text-center
-        a.d-block.btn-link href="#internship-application-#{internship_application.id}" data-action="click->internship-application-index#toggle" data-internship-application-index-target="linkIconContainer" title="Afficher le détail de la candidature de #{internship_application.student.name}" data-turbo="false"
+        a.d-block.btn-link [href="#internship-application-#{internship_application.id}"
+                            data-action="click->internship-application-index#toggle"
+                            data-internship-application-index-target="linkIconContainer"
+                            title="Afficher le détail de la candidature de #{internship_application.student.name}"
+                            data-turbo="false"]
           - if internship_application.submitted?
             span.text-danger.fr-icon--lg.fr-icon-arrow-right-s-line aria-hidden="true"
           - else
@@ -15,7 +19,7 @@
             = "A postulé "
           span.font-weight-bold
             = " le #{localize(internship_application.created_at, format: "%d %B")}"
-    
+
     .row.no-gutters.mt-3
       .col-10.grey-on-grey
         span.fr-fi-calendar-line.fr-fi--sm
@@ -91,6 +95,4 @@
           - if internship_application.approved?
             = render "dashboard/internship_offers/internship_applications/actions/cancel",
                       internship_application: internship_application
-
-
 

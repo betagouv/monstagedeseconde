@@ -13,31 +13,31 @@ div data-controller="internship-application-index"
         - if can?(:flip_notification, notification)
           = render 'dashboard/internship_offer_areas/area_notifications/flip_notification',
                     area_notification: notification
-      
-    .d-flex.justify-content-end 
+
+    .d-flex.justify-content-end
       .div
         .fr-mb-2w.d-flex.justify-content-end.fr-mr-2w
           .fr-dropdown.position-relative
-            = button_tag type: "button", 
-              class: "fr-btn fr-btn--secondary fr-hidden fr-dropdown__btn", 
-              aria: { controls: "dropdownMenu", expanded: "false" }, 
+            = button_tag type: "button",
+              class: "fr-btn fr-btn--secondary fr-hidden fr-dropdown__btn",
+              aria: { controls: "dropdownMenu", expanded: "false" },
               data: { target: "internship-application-index.bulkActionButton", action: 'click->internship-application-index#toggleDropdown' } do
                 | Action groupée
                 i.fr-icon-arrow-down-s-line.fr-icon--right aria-hidden="true"
-            
+
             .fr-menu2.fr-hidden#dropdownMenu role="menu" aria-label="Action groupée" aria-expanded="false" aria-haspopup="true" data-internship-application-index-target="dropdownMenu"
               ul.fr-menu__list
                 li.list-group-item.py-2
                   = link_to "#", class: "fr-menu__link fr-raw-link", role: "menuitem", data: { action: "click->internship-application-index#openAcceptationModal" } do
                     span.fr-icon-check-line.fr-icon--sm.fr-mr-1v aria-hidden="true"
-                    | Accepter 
+                    | Accepter
                     span[data-internship-application-index-target="selectedCount"] 0
                     |  candidatures
 
                 li.list-group-item.py-2
                   = link_to "#", class: "fr-menu__link fr-raw-link", role: "menuitem", data: { action: "click->internship-application-index#openRejectionModal" } do
                     span.fr-icon-close-line.fr-icon--sm.fr-mr-1v aria-hidden="true"
-                    | Refuser 
+                    | Refuser
                     span[data-internship-application-index-target="selectedCount"] 0
                     |  candidatures
 

@@ -28,8 +28,8 @@ div
             - prez = internship_application.presenter(current_user)
             tr
               td
-                = check_box_tag "selected_applications[]", internship_application.id, false, 
-                                  class: 'fr-checkbox', 
+                = check_box_tag "selected_applications[]", internship_application.id, false,
+                                  class: 'fr-checkbox',
                                   data: { action: 'change->internship-application-index#toggleCheckbox', target: 'internship-application-index.applicationCheckbox' }
               td.col-name
                 = prez.student.presenter.full_name
@@ -56,11 +56,11 @@ div
                                     :'toggle-activate-type-param' => 'form' },
                             class: 'fr-raw-link fr-text--sm d-flex' do
                     - if internship_application.expired?
-                      | Voir 
+                      | Voir
                     - else
                       span.fr-icon-mail-line.fr-icon--sm.fr-mr-1v aria-hidden="true"
                       |Répondre
-  
+
   .modal-container
     = render partial: 'dashboard/internship_offers/internship_applications/actions/multiple_update', locals: { modal_id: 'acceptation-modal',
       modal_target: 'acceptationModal',
@@ -70,7 +70,7 @@ div
       description: "En confirmant cette action, les élèves seront notifiés de votre acceptation. Ils devront à leur tour confirmer leur volonté de participer au stage afin qu'une convention soit générée.",
       submit_text: "Confirmer l'acceptation",
       url: dashboard_update_multiple_internship_applications_path}
-    
+
     = render partial: 'dashboard/internship_offers/internship_applications/actions/multiple_update', locals: { modal_id: 'rejection-modal',
       modal_target: 'rejectionModal',
       close_action: 'closeRejectionModal',
