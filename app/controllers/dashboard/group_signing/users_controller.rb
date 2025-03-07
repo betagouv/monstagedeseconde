@@ -98,7 +98,8 @@ module Dashboard
         end
       end
 
-      def signature_code_validate
+      def
+      def(signature_code_validate)
         authorize! :sign_internship_agreements, InternshipAgreement
 
         @agreement_ids = user_params[:agreement_ids]

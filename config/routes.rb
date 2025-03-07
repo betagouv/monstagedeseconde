@@ -175,10 +175,16 @@ Rails.application.routes.draw do
           post 'resend_sms_code'
           post 'signature_code_validate'
           post 'handwrite_sign'
+          get 'school_management_signnature'
+          post 'school_management_sign'
+          get 'school_management_group_sign'
+          get 'school_management_group_sign'
         end
       end
 
       resources :schools, path: 'ecoles', only: %i[index edit update show] do
+        get :edit_signature, on: :member
+        patch :update_signature, on: :member
         resources :invitations, only: %i[new create index destroy], module: 'schools'
         get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
         resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'

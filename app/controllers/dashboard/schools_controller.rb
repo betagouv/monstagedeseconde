@@ -32,11 +32,27 @@ module Dashboard
                     flash: { success: 'Etablissement mis à jour avec succès' })
       end
     rescue ActiveRecord::RecordInvalid
+      puts 'record invalid'
+      puts @school.errors.full_messages
       @available_weeks = Week.selectable_on_school_year
       render :edit, status: :bad_request
     rescue ActionController::ParameterMissing
+      puts 'parameter missing'
+      puts @school.errors.full_messages
       @available_weeks = Week.selectable_on_school_year
       render :edit, status: :unprocessable_entity
+    end
+
+    def edit_signature
+      authorize! :edit_signature, School
+      @school = School.find(params.require(:id))
+      render layout: false if turbo_frame_request?
+    end
+
+    def update_signature
+      authorize! :update_signature, School
+      @school.update!(signature: true)
+      redirect_to dashboard_school_class_rooms_path(@school)
     end
 
     def show
@@ -80,13 +96,14 @@ module Dashboard
                     :visible,
                     :rep_kind,
                     :qpv,
+                    :signature,
                     :agreement_conditions_rich_text,
                     coordinates: {},
                     week_ids: [])
     end
 
     def school_manager_internship_weeks_params
-      params.require(:school).permit(:agreement_conditions_rich_text, week_ids: [])
+      params.require(:school).permit(:agreement_conditions_rich_text, :signature, week_ids: [])
     end
   end
 end
