@@ -88,11 +88,14 @@ class EmployerMailerPreview < ActionMailer::Preview
     EmployerMailer.cleaning_notification_email(employer.id)
   end
 
-  def drafted_internship_offer_email
-    internship_offer = InternshipOffers::WeeklyFramed.drafted&.first ||
-                       create(:weekly_internship_offer, :drafted)
-    EmployerMailer.drafted_internship_offer_email(
-      internship_offer:
+  def internship_application_restored_email
+    internship_application = InternshipApplication.first
+
+    EmployerMailer.internship_application_restored_email(
+      internship_application:,
+      employer_id: internship_application.employer.id,
+      email: 'test@free.fr',
+      message: 'Candidature restaurée'
     )
   end
 end

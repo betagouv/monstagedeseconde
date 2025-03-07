@@ -540,5 +540,20 @@ module InternshipOffers::InternshipApplications
       assert internship_application.canceled_by_student?
       assert_nil internship_application.internship_agreement
     end
+
+    test 'PATCH when application is canceled_by_student #update with restore' do
+      internship_application = create(:weekly_internship_application, :canceled_by_student)
+      sign_in(internship_application.student)
+
+      patch(dashboard_internship_offer_internship_application_path(internship_application.internship_offer, uuid: internship_application.uuid),
+            params: { transition: :restore!,
+                      internship_application: { restore_message: 'OK' } })
+
+      internship_application.reload
+      assert_equal 'OK', internship_application.restore_message
+
+      assert internship_application.restored?
+      assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
+    end
   end
 end

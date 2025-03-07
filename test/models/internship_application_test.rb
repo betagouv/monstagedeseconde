@@ -414,7 +414,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test '::PENDING_STATES' do
-    assert_equal %w[submitted read_by_employer transfered validated_by_employer],
+    assert_equal %w[submitted restored read_by_employer transfered validated_by_employer],
                  InternshipApplication::PENDING_STATES
   end
 
@@ -501,5 +501,11 @@ class InternshipApplicationTest < ActiveSupport::TestCase
 
       assert_equal internship_offer.weeks, internship_application.selectable_weeks
     end
+  end
+
+  test 'restore factory' do
+    internship_application = create(:weekly_internship_application, :restored)
+    assert_equal 'restored', internship_application.aasm_state
+    assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
   end
 end
