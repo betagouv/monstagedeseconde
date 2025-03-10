@@ -21,7 +21,7 @@
                 url: start_signing_dashboard_user_path(id: current_user.id),
                 method: :post)  do |fg|
 
-      table.table.table-hover.table-rg2a.internship-agreements-list
+      table.table.table-hover.table-rg2a.internship-agreements-list.fr-my-4w
         thead
           tr.d-flex.leight-grey.row
             th.col-sm-3
@@ -51,10 +51,13 @@
       .row
         .col-12.text-right
           - if current_user.school_management?
-            = link_to 'Signer en groupe', dashboard_school_management_group_signing_users_path,
+            / add hidden input with ids
+            = hidden_field_tag 'agreement_ids'
+            = button_to 'Signer en groupe', school_management_group_signature_dashboard_user_path(current_user),
                         class: "fr-btn fr-mb-2w fr-px-4w",
                         disabled: true,
-                        'data-group-signing-target': "schoolManagementSignGroup"
+                        'data-group-signing-target': "generalCta",
+                        data: { turbo: true }
           - else
             = fg.button 'Signer',
                         type: 'submit',

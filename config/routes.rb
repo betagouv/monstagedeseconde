@@ -167,7 +167,10 @@ Rails.application.routes.draw do
       post 'internship_applications/update_multiple', to: 'internship_applications#update_multiple',
                                                       as: :update_multiple_internship_applications
 
-      resources :internship_agreements, path: 'conventions-de-stage', except: %i[destroy], param: :uuid
+      resources :internship_agreements, path: 'conventions-de-stage', except: %i[destroy], param: :uuid do
+        get 'school_management_signature', on: :member
+        post 'school_management_sign', on: :member
+      end
       resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
         member do
           post 'start_signing'
@@ -175,10 +178,8 @@ Rails.application.routes.draw do
           post 'resend_sms_code'
           post 'signature_code_validate'
           post 'handwrite_sign'
-          get 'school_management_signnature'
-          post 'school_management_sign'
-          get 'school_management_group_sign'
-          get 'school_management_group_sign'
+          post 'school_management_group_signature'
+          post 'school_management_group_sign'
         end
       end
 

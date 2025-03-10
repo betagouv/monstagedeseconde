@@ -51,8 +51,12 @@ module Dashboard
 
     def update_signature
       authorize! :update_signature, School
-      @school.update!(signature: true)
-      redirect_to dashboard_school_class_rooms_path(@school)
+      @school = School.find(params.require(:id))
+      if @school.update(signature_params)
+        redirect_to dashboard_internship_agreements_path, flash: { success: 'Signature mise à jour avec succès' }
+      else
+        render :edit_signature, status: :unprocessable_entity
+      end
     end
 
     def show
@@ -104,6 +108,10 @@ module Dashboard
 
     def school_manager_internship_weeks_params
       params.require(:school).permit(:agreement_conditions_rich_text, :signature, week_ids: [])
+    end
+
+    def signature_params
+      params.require(:school).permit(:signature)
     end
   end
 end
