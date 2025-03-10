@@ -468,7 +468,9 @@ class Ability
       can %i[edit update], School
       can %i[manage_school_users
              manage_school_students
-             manage_school_internship_agreements], School do |school|
+             manage_school_internship_agreements
+             edit_signature
+             update_signature], School do |school|
         school.id == user.school_id
       end
     end
