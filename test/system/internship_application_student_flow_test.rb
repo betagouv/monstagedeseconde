@@ -65,8 +65,8 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
       student = create(:student, :seconde, school:, class_room: create(:class_room, school:))
       internship_offer_troisieme = create(:weekly_internship_offer_3eme, weeks:, title: 'Stage de 3eme - 1')
       internship_offer_seconde = create(:weekly_internship_offer_2nde, title: 'Stage de 2nde - 1')
-      assert InternshipOffer.seconde.ids.include?(internship_offer_seconde.id)
-      assert InternshipOffer.troisieme_or_quatrieme.ids.include?(internship_offer_troisieme.id)
+      assert InternshipOffer.seconde_only.ids.include?(internship_offer_seconde.id)
+      assert InternshipOffer.troisieme_or_quatrieme_only.ids.include?(internship_offer_troisieme.id)
       assert_equal 'Stage de 3eme - 1', internship_offer_troisieme.title
 
       InternshipOffer.stub :nearby, InternshipOffer.all do

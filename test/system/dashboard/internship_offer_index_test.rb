@@ -40,15 +40,15 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
         within("#toggle_status_internship_offers_weekly_framed_#{internship_offer.id}") do
           find('.label', text: 'Publié')
         end
-        find('.label', text: 'Masqué')
+        find('.label', text: "Archivée. Dupliquez l'annonce pour la republier")
 
         assert internship_offer.published?
         assert old_internship_offer.published?
 
         InternshipOffers::WeeklyFramed.update_older_internship_offers
 
-        assert internship_offer.published?
-        assert old_internship_offer.unpublished?
+        assert internship_offer.reload.published?
+        assert old_internship_offer.reload.unpublished?
       end
     end
   end
@@ -114,13 +114,13 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
       create(:weekly_internship_application, :approved, internship_offer:)
     end
     travel_to Date.new(2025, 9, 1) do
-      internship_offer.need_update! # due to cron job and max_candidates too low
+      InternshipOffers::WeeklyFramed.update_older_internship_offers # due to cron job and max_candidates too low
       sign_in(employer)
       InternshipOffer.stub :nearby, InternshipOffer.all do
         InternshipOffer.stub :by_weeks, InternshipOffer.all do
-          refute internship_offer.published?
+          refute internship_offer.reload.published?
           visit dashboard_internship_offers_path
-          find('.label', text: 'Masqué')
+          find('.label', text: "Archivée. Dupliquez l'annonce pour la republier")
         end
       end
     end

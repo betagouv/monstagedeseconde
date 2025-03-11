@@ -223,9 +223,16 @@ class InternshipOffer < ApplicationRecord
     joins(:grades).where(grades: { id: Grade.troisieme_et_quatrieme.ids })
   }
 
-  scope :seconde_only, lambda {
+  scope :troisieme_or_quatrieme_only, lambda {
+    troisieme_or_quatrieme.where.not(grades: { id: Grade.seconde.id })
+  }
+
+  scope :seconde, lambda {
     joins(:grades).where(grades: { id: Grade.seconde.id })
-                  .where.not(grades: { id: Grade.troisieme_et_quatrieme.ids })
+  }
+
+  scope :seconde_only, lambda {
+    seconde.where.not(grades: { id: Grade.troisieme_et_quatrieme.ids })
   }
 
   scope :with_grade, lambda { |user|
