@@ -41,8 +41,8 @@ div data-controller="internship-application-index"
                     span[data-internship-application-index-target="selectedCount"] 0
                     |  candidatures
     .d-flex.flex-row-reverse
-      button.fr-btn.fr-btn--secondary.fr-btn--icon-left.fr-icon-file-download-fill[data-fr-opened="false" aria-controls="fr-modal-2"]
-        |Exporter les offres
+      button.fr-btn.fr-btn--secondary.fr-btn--icon-left.fr-icon-file-download-fill[data-fr-opened="false" aria-controls="fr-modal-applications-export"]
+        |Exporter les candidatures
 
     .fr-tabs.dashboard
       ul.fr-tabs__list[role="tablist" aria-label="[Candidatures par type]"]
@@ -93,17 +93,17 @@ div data-controller="internship-application-index"
                                         tabindex="0"]
         = render 'dashboard/internship_offers/internship_applications/expired',
                 internship_applications: @expired_internship_applications
-    dialog#fr-modal-2.fr-modal[aria-labelledby="fr-modal-2-title" role="dialog"]
+    dialog#fr-modal-applications-export.fr-modal[aria-labelledby="fr-modal-applications-export-title" role="dialog"]
       .fr-container.fr-container--fluid.fr-container-md
         .fr-grid-row.fr-grid-row--center
           .fr-col-12.fr-col-md-8.fr-col-lg-6
             .fr-modal__body
               .fr-modal__header
-                button.fr-btn--close.fr-btn[aria-controls="fr-modal-2"]
+                button.fr-btn--close.fr-btn[aria-controls="fr-modal-applications-export"]
                   | Fermer
               .fr-modal__content
 
-                h1#fr-modal-2-title.fr-modal__title
+                h1#fr-modal-applications-export-title.fr-modal__title
                   span.fr-icon-arrow-right-line.fr-icon--lg
                   |  Exporter les candidatures
                 p
@@ -119,5 +119,5 @@ div data-controller="internship-application-index"
                   = link_to "J'accepte cet engagement",
                             dashboard_candidatures_path(format: 'xlsx'),
                             class: 'fr-btn fr-btn--secondary fr-mb-2w fr-btn--icon-left fr-icon-file-download-fill'
-                  button.fr-btn.fr-icon-checkbox-circle-line.fr-btn--icon-left
+                  button.fr-btn.fr-icon-checkbox-circle-line.fr-btn--icon-left[aria-controls="fr-modal-applications-export"]
                     | Annuler
