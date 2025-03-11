@@ -10,6 +10,11 @@ module Presenters
     delegate :canceled_by_employer_message, to: :internship_application
     delegate :rejected_message, to: :internship_application
 
+    SUBMITTED_LIKE_STATES = %w[submitted
+                             restored
+                             read_by_employer
+                             transfered].freeze
+
     def expires_in
       start = internship_application.updated_at
       finish = start + ::InternshipApplication::EXPIRATION_DURATION
@@ -197,7 +202,7 @@ module Presenters
     end
 
     def ok_for_employer_validation?
-      current_state_in_list?(ok_for_employer_validation_states)
+      current_state_in_list?(SUBMITTED_LIKE_STATES)
     end
 
     def with_employer_explanation?
@@ -283,10 +288,6 @@ module Presenters
          transfered
          validated_by_employer
          approved]
-    end
-
-    def ok_for_employer_validation_states
-      %w[submitted transfered read_by_employer]
     end
   end
 end
