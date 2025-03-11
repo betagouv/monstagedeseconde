@@ -18,9 +18,11 @@ class CallbacksController < ApplicationController
       user = User.find_or_initialize_by(email: user_info['email'])
 
       if user.persisted?
+        Rails.logger.info("FIM : User already exists: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
         sign_in(user)
         redirect_to root_path, notice: 'Vous êtes bien connecté'
       else
+        Rails.logger.info("FIM : User does not exist: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
         user.first_name = user_info['given_name']
         user.last_name = user_info['family_name']
         user.email = user_info['email']
@@ -32,13 +34,16 @@ class CallbacksController < ApplicationController
         user.confirmed_at = Time.now
 
         if user.save
+          Rails.logger.info("FIM :User saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
           sign_in_and_redirect user, event: :authentication
         else
+          Rails.logger.error("FIM : User not saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']} : #{user.errors.full_messages}")
           puts user.errors.full_messages
           redirect_to root_path, alert: 'Erreur lors de la création de l\'utilisateur'
         end
       end
     else
+      Rails.logger.error("FIM : State invalide: #{params[:state]}")
       redirect_to root_path, alert: 'State invalide'
     end
   end
