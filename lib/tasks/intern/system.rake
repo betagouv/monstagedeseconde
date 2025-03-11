@@ -172,6 +172,7 @@ namespace :sys do
                 "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
                 "-f #{chosen_db_name}")
       end
+      File.delete(chosen_db_name)
     else
       PrettyConsole.puts_in_red 'You cannot run this task only with dev or staging environment'
     end
