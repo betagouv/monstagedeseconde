@@ -502,4 +502,71 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       assert_equal internship_offer.weeks, internship_application.selectable_weeks
     end
   end
+
+  test '#cancel_all_pending_applications for student 3eme' do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: 'college')
+      week_1 = Week.selectable_on_school_year.first
+      internship_offer_1 = create(:weekly_internship_offer_3eme, weeks: [week_1])
+      week_2 = Week.selectable_on_school_year.second
+      internship_offer_2 = create(:weekly_internship_offer_3eme, weeks: [week_2])
+      school.weeks = [week_1, week_2]
+      student = create(:student, :troisieme, school:)
+      internship_application_1 = create(:weekly_internship_application,
+                                        :validated_by_employer,
+                                        student:,
+                                        internship_offer: internship_offer_1, weeks: [week_1])
+      internship_application_2 = create(:weekly_internship_application,
+                                        :validated_by_employer,
+                                        student:,
+                                        internship_offer: internship_offer_2, weeks: [week_2])
+
+      assert_changes -> { internship_application_2.reload.aasm_state },
+                     from: 'validated_by_employer',
+                     to: 'canceled_by_student_confirmation' do
+        internship_application_1.approve!
+      end
+    end
+  end
+  test '#cancel_all_pending_applications for student 2nde' do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: 'lycee')
+      week_1 = Week.seconde_weeks.first
+      week_2 = Week.seconde_weeks.second
+      internship_offer_1 = create(:weekly_internship_offer_2nde, weeks: [week_1])
+      internship_offer_1_bis = create(:weekly_internship_offer_2nde, weeks: [week_1])
+      internship_offer_2 = create(:weekly_internship_offer_2nde, weeks: [week_2])
+      internship_offer_3 = create(:weekly_internship_offer_2nde, weeks: [week_1, week_2])
+      school.weeks = [week_1, week_2]
+      student = create(:student, :seconde, school:)
+      internship_application_1 = create(:weekly_internship_application,
+                                        :validated_by_employer,
+                                        student:,
+                                        internship_offer: internship_offer_1, weeks: [week_1])
+      internship_application_2 = create(:weekly_internship_application,
+                                        :validated_by_employer,
+                                        student:,
+                                        internship_offer: internship_offer_2, weeks: [week_2])
+      internship_application_3 = create(:weekly_internship_application,
+                                        :validated_by_employer,
+                                        student:,
+                                        internship_offer: internship_offer_3, weeks: [week_1, week_2])
+      internship_application_4 = create(:weekly_internship_application,
+                                        :validated_by_employer,
+                                        student:,
+                                        internship_offer: internship_offer_1_bis, weeks: [week_1])
+
+      assert_changes -> { internship_application_3.reload.aasm_state },
+                     from: 'validated_by_employer',
+                     to: 'canceled_by_student_confirmation' do
+        assert_changes -> { internship_application_4.reload.aasm_state },
+                       from: 'validated_by_employer',
+                       to: 'canceled_by_student_confirmation' do
+          assert_no_changes -> { internship_application_2.reload.aasm_state } do
+            internship_application_1.approve!
+          end
+        end
+      end
+    end
+  end
 end

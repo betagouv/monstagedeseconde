@@ -338,11 +338,11 @@ class InternshipOffer < ApplicationRecord
   end
 
   def seconde_school_track_week_1?
-    weeks & SchoolTrack::Seconde.both_weeks == SchoolTrack::Seconde.first_week
+    weeks & SchoolTrack::Seconde.both_weeks == [SchoolTrack::Seconde.first_week]
   end
 
   def seconde_school_track_week_2?
-    weeks & SchoolTrack::Seconde.both_weeks == SchoolTrack::Seconde.second_week
+    weeks & SchoolTrack::Seconde.both_weeks == [SchoolTrack::Seconde.second_week]
   end
 
   def fits_for_seconde?
