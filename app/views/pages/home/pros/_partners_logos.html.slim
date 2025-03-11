@@ -1,7 +1,7 @@
 .d-flex.align-content-start.flex-wrap.fr-pb-2w.fr-pt-4w
   - regions_list.each do |region|
     .logo-card.fr-mb-3w
-      .header.d-flex.align-items-center
+      .header.d-flex.align-items-center.d-flex.justify-content-center
         = image_tag asset_pack_path("media/images/homepage/partenaires/#{region[:logo]}"),
                     alt: region[:alt]
       .body
