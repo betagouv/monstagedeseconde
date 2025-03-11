@@ -168,6 +168,32 @@ module Dashboard
         end
       end
 
+      def school_management_group_signature
+        redirect_to dashboard_internship_agreements_path and return unless params[:ids].present?
+
+        params[:ids].split(',').each do |id|
+          internship_agreement = current_user.internship_agreements.find(id)
+          authorize! :sign_internship_agreements, internship_agreement
+        end
+
+        @internship_agreements = current_user.internship_agreements.where(id: params[:ids])
+      end
+
+      def school_management_group_sign
+        return unless params[:ids].present?
+
+        params[:ids].split(',').each do |id|
+          internship_agreement = current_user.internship_agreements.find(id)
+          authorize! :sign_internship_agreements, internship_agreement
+          next unless internship_agreement.signatures_started?
+
+          internship_agreement.signatures_finalize!
+        end
+
+        redirect_to dashboard_internship_agreements_path,
+                    flash: { success: 'Les conventions ont été signées.' }
+      end
+
       private
 
       def starting_path(current_user)

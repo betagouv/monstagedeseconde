@@ -7,9 +7,21 @@
   tabindex="0"]
 
   .row
-    .col-12
-      h1.h3
-        | Éditer, imprimer et signez vos conventions dématérialisées
+    .col-8
+      h1.h4
+        | Éditer, imprimer et signez vos conventions dématérialisées.
+    .col-4.text-right
+      - if @school.signature.present?
+        = link_to 'Signature ajoutée',
+                  edit_signature_dashboard_school_path(@school),
+                  class: 'fr-btn fr-btn--sm fr-fi-info-line fr-btn--icon-left fr-btn--secondary fr-raw-link fr-text-default--success',
+                  data: { turbo_frame: "modal" }
+
+      - else
+        = link_to 'Ajouter votre signature',
+                  edit_signature_dashboard_school_path(@school),
+                  class: 'fr-btn fr-btn--sm fr-fi-info-line fr-btn--icon-left fr-btn--secondary fr-raw-link',
+                  data: { turbo_frame: "modal" }
 
   = render partial: 'dashboard/internship_agreements/internship_agreements_list',
              locals: {internship_agreements: @internship_agreements}
