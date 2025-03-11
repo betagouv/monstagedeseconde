@@ -154,16 +154,23 @@ namespace :sys do
   task :dl_upl_prod_sql, [] => :environment do
     if Rails.env.staging? || Rails.env.development?
       chosen_db_name = db_file_name_sql
-      puts '================================'
-      PrettyConsole.puts_in_cyan "producing chosen_db_name : #{chosen_db_name}"
-      puts '================================'
-      puts ''
       PrettyConsole.announce_task 'Downloading production database' do
+        unless Dir.exist?('storage/tmp')
+          PrettyConsole.announce_task 'Creating directory' do
+            system('mkdir -p storage/tmp')
+            system('chmod 777 storage/tmp')
+            system("chmod +R #{chosen_db_name}")
+          end
+        end
+        puts '================================'
+        PrettyConsole.puts_in_cyan "producing chosen_db_name : #{chosen_db_name}"
+        puts '================================'
+        puts ''
         system('pg_dump -c --clean --if-exists -Fp --encoding=UTF-8 --no-owner --no-password  ' \
         "-d #{ENV['PRODUCTION_DATABASE_URI']} > #{chosen_db_name}")
       end
 
-      PrettyConsole.announce_task 'Downloading production database' do
+      PrettyConsole.announce_task 'Uploading production database' do
         system("PGPASSWORD=#{ENV['CLEVER_PRODUCTION_COPY_DB_PASSWORD']} psql " \
                 "-h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
                 "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
@@ -172,7 +179,9 @@ namespace :sys do
                 "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
                 "-f #{chosen_db_name}")
       end
-      File.delete(chosen_db_name)
+      PrettyConsole.announce_task "Removing file #{chosen_db_name}" do
+        system("rm  #{chosen_db_name}")
+      end
     else
       PrettyConsole.puts_in_red 'You cannot run this task only with dev or staging environment'
     end
