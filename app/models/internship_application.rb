@@ -36,8 +36,8 @@ class InternshipApplication < ApplicationRecord
     validated_by_employer
     approved
   ]
-  # NOT_MODIFIABLE_STATES = %w[submitted read_by_employer transfered validated_by_employer approved]
-  # RE_APPROVABLE_STATES = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
+  NOT_MODIFIABLE_STATES = %w[submitted restored read_by_employer transfered validated_by_employer approved]
+  RE_APPROVABLE_STATES = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
   VALID_TRANSITIONS = %w[
     read
     transfer
@@ -424,19 +424,19 @@ class InternshipApplication < ApplicationRecord
     student.school && student.school.school_manager.nil?
   end
 
-  # def is_modifiable?
-  #   NOT_MODIFIABLE_STATES.exclude?(aasm_state)
-  # end
+  def is_modifiable?
+    NOT_MODIFIABLE_STATES.exclude?(aasm_state)
+  end
 
-  # def is_re_approvable?
-  #   # Temporary
-  #   return false
-  #   # Temporary
-  #   # false if student is anonymised or student has an approved application
-  #   return false if student.anonymized? || student.internship_applications.where(aasm_state: 'approved').any?
+  def is_re_approvable?
+    # Temporary
+    return false
+    # Temporary
+    # false if student is anonymised or student has an approved application
+    return false if student.anonymized? || student.internship_applications.where(aasm_state: 'approved').any?
 
-  #   RE_APPROVABLE_STATES.include?(aasm_state)
-  # end
+    RE_APPROVABLE_STATES.include?(aasm_state)
+  end
 
   def self.from_sgid(sgid)
     GlobalID::Locator.locate_signed(sgid)
