@@ -141,7 +141,12 @@ module Api
             handicap_accessible: internship_offer.handicap_accessible,
             period: internship_offer.period,
             weeks: internship_offer.weeks_api_formatted,
-            remote_id: internship_offer.remote_id
+            remote_id: internship_offer.remote_id,
+            is_public: internship_offer.is_public,
+            employer_website: internship_offer.employer_website,
+            employer_description: internship_offer.employer_description,
+            grades: internship_offer.grades_api_formatted,
+            permalink: internship_offer.permalink
           }
         end
       end
