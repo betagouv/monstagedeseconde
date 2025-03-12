@@ -132,6 +132,8 @@ module Api
             url: internship_offer_url(internship_offer,
                                       query_params.merge({ utm_source: current_api_user.operator.name })),
             city: internship_offer.city.capitalize,
+            zipcode: internship_offer.zipcode,
+            street: internship_offer.street,
             date_start: I18n.localize(internship_offer.first_date, format: :human_mm_dd_yyyy),
             date_end: I18n.localize(internship_offer.last_date, format: :human_mm_dd_yyyy),
             latitude: internship_offer.coordinates.latitude,
