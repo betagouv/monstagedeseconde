@@ -9,7 +9,7 @@ p style=p_styles
 p style=p_styles
   | Voici le motif de la restauration :
   br
-  => @internship_application.restored_by_student_message.gsub("\n", "<br>").html_safe
+  => @internship_application.restored_message.gsub("\n", "<br>").html_safe
 = render partial: "mailers/blue_call_to_action",
           locals: { href: @url,
                     label: "Voir la candidature" }

@@ -83,7 +83,7 @@ class InternshipApplication < ApplicationRecord
   # has_rich_text :rejected_message
   # has_rich_text :canceled_by_employer_message
   # has_rich_text :canceled_by_student_message
-  # has_rich_text :restore_message
+  # has_rich_text :restored_message
   # has_rich_text :motivation
 
   paginates_per PAGE_SIZE
@@ -342,7 +342,7 @@ class InternshipApplication < ApplicationRecord
                   to: :restored,
                   after: proc { |user, *_args|
                            update!(restored_at: Time.now.utc)
-                           if has_ever_been?(%w[approved validated_by_employer])
+                           if has_ever_been?(%w[approved read_by_employer validated_by_employer])
                              deliver_later_with_additional_delay do
                                EmployerMailer.internship_application_restored_email(internship_application: self)
                              end
@@ -621,7 +621,11 @@ class InternshipApplication < ApplicationRecord
   end
 
   def response_message
-    rejected_message || approved_message || canceled_by_employer_message || canceled_by_student_message
+    rejected_message ||
+      approved_message ||
+      canceled_by_employer_message ||
+      canceled_by_student_message ||
+      restored_message
   end
 
   def has_been(state)

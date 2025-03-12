@@ -80,7 +80,7 @@ module ApplicationTransitable
                                                canceled_by_employer_message
                                                canceled_by_student_message
                                                rejected_message
-                                               restore_message
+                                               restored_message
                                                type
                                                aasm_state
                                                sgid])

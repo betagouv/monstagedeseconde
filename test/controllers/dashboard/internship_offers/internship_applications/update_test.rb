@@ -496,6 +496,57 @@ module InternshipOffers::InternshipApplications
       assert_select('#alert-text', text: 'Candidature mise à jour avec succès.')
     end
 
+    test 'PATCH #update with restore send email, change aasm_state' do
+      student = create(:student)
+      internship_application = create(:weekly_internship_application, :canceled_by_student, student:)
+
+      sign_in(internship_application.student)
+
+      assert_enqueued_emails 0 do
+        patch(
+          dashboard_internship_offer_internship_application_path(
+            internship_application.internship_offer, uuid: internship_application.uuid
+          ),
+          params: { transition: :restore!,
+                    internship_application: { restored_message: 'OK' } }
+        )
+        assert_redirected_to dashboard_students_internship_applications_path(student)
+      end
+      internship_application.reload
+
+      assert_equal 'OK', internship_application.restored_message
+      assert internship_application.restored?
+
+      follow_redirect!
+      assert_select('#alert-text', text: 'Candidature mise à jour avec succès.')
+    end
+
+    test 'PATCH #update with restore send email, once read, change aasm_state' do
+      student = create(:student)
+      internship_application = create(:weekly_internship_application, :read_by_employer, student:)
+      internship_application.cancel_by_student!
+
+      sign_in(internship_application.student)
+
+      assert_enqueued_emails 1 do
+        patch(
+          dashboard_internship_offer_internship_application_path(
+            internship_application.internship_offer, uuid: internship_application.uuid
+          ),
+          params: { transition: :restore!,
+                    internship_application: { restored_message: 'OK' } }
+        )
+        assert_redirected_to dashboard_students_internship_applications_path(student)
+      end
+      internship_application.reload
+
+      assert_equal 'OK', internship_application.restored_message
+      assert internship_application.restored?
+
+      follow_redirect!
+      assert_select('#alert-text', text: 'Candidature mise à jour avec succès.')
+    end
+
     test 'PATCH #update with lol! fails gracefully' do
       internship_application = create(:weekly_internship_application, :approved)
 
@@ -547,10 +598,10 @@ module InternshipOffers::InternshipApplications
 
       patch(dashboard_internship_offer_internship_application_path(internship_application.internship_offer, uuid: internship_application.uuid),
             params: { transition: :restore!,
-                      internship_application: { restore_message: 'OK' } })
+                      internship_application: { restored_message: 'OK' } })
 
       internship_application.reload
-      assert_equal 'OK', internship_application.restore_message
+      assert_equal 'OK', internship_application.restored_message
 
       assert internship_application.restored?
       assert internship_application.has_ever_been?(%i[submitted canceled_by_student])

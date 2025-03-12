@@ -1144,7 +1144,7 @@ CREATE TABLE public.internship_applications (
     canceled_by_student_message text,
     approved_message text,
     restored_at timestamp(6) without time zone,
-    restore_message text
+    restored_message text
 );
 
 

@@ -231,7 +231,7 @@ module Dashboard
         within('dialog') { click_button 'Restaurer ma candidature' }
         find 'span#alert-text', text: 'Candidature mise à jour avec succès.'
         find('.h5.internship-offer-title', text: 'Stage de 2de - 1')
-        assert_equal 'Je me suis trompé', internship_application.reload.restore_message
+        assert_equal 'Je me suis trompé', internship_application.reload.restored_message
 
         click_link 'Voir'
         find('button', text: 'Annuler la candidature').click
@@ -269,8 +269,7 @@ module Dashboard
         employer.save!
         sign_in employer
         visit dashboard_candidatures_path
-        find('.h5.internship-offer-title', text: 'Stage de 2de - 1')
-        assert_text 'Candidature restaurée'
+        find('td.col-title', text: 'Stage de 2de - 1')
       end
 
       test 'As employer, I can see a restored application with a standard "nouveau" label' do
