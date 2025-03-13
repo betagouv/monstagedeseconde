@@ -11,9 +11,9 @@ module Presenters
     delegate :rejected_message, to: :internship_application
 
     SUBMITTED_LIKE_STATES = %w[submitted
-                             restored
-                             read_by_employer
-                             transfered].freeze
+                               restored
+                               read_by_employer
+                               transfered].freeze
 
     def expires_in
       start = internship_application.updated_at
@@ -279,11 +279,12 @@ module Presenters
     end
 
     def ok_for_transfer_states
-      %w[submitted read_by_employer]
+      %w[submitted restored read_by_employer]
     end
 
     def ok_for_reject_states
       %w[submitted
+         restored
          read_by_employer
          transfered
          validated_by_employer
