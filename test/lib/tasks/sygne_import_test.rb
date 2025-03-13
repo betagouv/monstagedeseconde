@@ -2,12 +2,14 @@ require 'test_helper'
 
 class SygneImportTest < ActiveSupport::TestCase
   Monstage::Application.load_tasks
+  include ThirdPartyTestHelpers
 
   setup do
     @code_uai = '0590116F'
     create(:school, code_uai: @code_uai)
-    uri = URI(ENV['OMOGEN_OAUTH_URL'])
-    stub_request(:post, uri).to_return(body: { access_token: 'token' }.to_json)
+    stub_omogen_auth
+    # uri = URI(ENV['OMOGEN_OAUTH_URL'])
+    # stub_request(:post, uri).to_return(body: { access_token: 'token' }.to_json)
     @headers = {
       'Accept' => '*/*',
       'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
@@ -18,64 +20,44 @@ class SygneImportTest < ActiveSupport::TestCase
   end
 
   test 'student import fails with wrong codeMef' do
-    Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
-      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves?niveau=#{niveau}")
-      expected_response = {
-        'ine' => '001291528AA',
-        'nom' => 'SABABADICHETTY',
-        'prenom' => 'Felix',
-        'dateNaissance' => '2003-05-28',
-        'codeSexe' => '1',
-        'codeUai' => '0590116F',
-        'anneeScolaire' => 2023,
-        'niveau' => '2212',
-        'libelleNiveau' => '1ERE G-T',
-        'codeMef' => '20110019110',
-        'libelleLongMef' => 'PREMIERE GENERALE',
-        'codeMefRatt' => '20110019110',
-        'classe' => '3E4',
-        'codeRegime' => '2',
-        'libelleRegime' => 'DP DAN',
-        'codeStatut' => 'ST',
-        'libelleLongStatut' => 'SCOLAIRE',
-        'dateDebSco' => '2023-09-05',
-        'adhesionTransport' => false
-      }.to_json
-      stub_request(:get, uri).with(headers: @headers)
-                             .to_return(status: 200, body: expected_response, headers: {})
-    end
-
+    stub_omogen_auth
     omogen = Services::Omogen::Sygne.new
+    stub_sygne_eleves(code_uai: @code_uai, token: omogen.token)
     assert_no_difference 'Users::Student.count' do
       omogen.sygne_import_by_schools(@code_uai)
     end
   end
-  test 'student import is ok with correct' do
+
+  test 'student import is ok with correct codeMef' do
     ine = '001291528AA'
+
     Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves?niveau=#{niveau}")
-      expected_response = {
-        'ine' => ine,
-        'nom' => 'SABABADICHETTY',
-        'prenom' => 'Felix',
-        'dateNaissance' => '2003-05-28',
-        'codeSexe' => '1',
-        'codeUai' => '0590116F',
-        'anneeScolaire' => 2023,
-        'niveau' => '2212',
-        'libelleNiveau' => '1ERE G-T',
-        'codeMef' => '20010019110', # correct codeMef
-        'libelleLongMef' => 'PREMIERE GENERALE',
-        'codeMefRatt' => '20010019110',
-        'classe' => '2E2',
-        'codeRegime' => '2',
-        'libelleRegime' => 'DP DAN',
-        'codeStatut' => 'ST',
-        'libelleLongStatut' => 'SCOLAIRE',
-        'dateDebSco' => '2023-09-05',
-        'adhesionTransport' => false
-      }
-
+      expected_response = [{}]
+      if Services::Omogen::Sygne::MEFSTAT4_CODES.first == niveau
+        expected_response =
+          [{
+            'ine' => ine,
+            'nom' => 'SABABADICHETTY',
+            'prenom' => 'Felix',
+            'dateNaissance' => '2003-05-28',
+            'codeSexe' => '1',
+            'codeUai' => '0590116F',
+            'anneeScolaire' => 2023,
+            'niveau' => '2212',
+            'libelleNiveau' => '1ERE G-T',
+            'codeMef' => '20010019110', # correct codeMef
+            'libelleLongMef' => 'PREMIERE GENERALE',
+            'codeMefRatt' => '20010019110',
+            'classe' => '2E2',
+            'codeRegime' => '2',
+            'libelleRegime' => 'DP DAN',
+            'codeStatut' => 'ST',
+            'libelleLongStatut' => 'SCOLAIRE',
+            'dateDebSco' => '2023-09-05',
+            'adhesionTransport' => false
+          }]
+      end
       stub_request(:get, uri).with(headers: @headers)
                              .to_return(
                                status: 200,

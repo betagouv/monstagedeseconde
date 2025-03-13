@@ -51,9 +51,9 @@ module StepperProxy
         all_troisieme_weeks[1..-1].map(&:id).sort == offer_week_list.map(&:id).sort
       end
 
-      private
-
       def maintenance_conditions? = false
+
+      private
 
       def set_default_values
         self.max_candidates ||= 1

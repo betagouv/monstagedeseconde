@@ -157,7 +157,7 @@ function CityInput({
                   className: 'fr-input almost-fitting',
                   name: 'city',
                   id: 'input-search-by-city-or-zipcode',
-                  placeholder: '',
+                  placeholder: 'Choisissez une commune dans la liste',
                   maxLength: "50",
                   "aria-label": "Autour de",
                   onFocus: (event) => {
@@ -182,22 +182,23 @@ function CityInput({
                     <input id="radius" type="hidden" name='radius' value={radius} />
                   )}
                   {isOpen
-                    ? searchResults.map((item, index) => (
-                      <li
-                        {...getItemProps({
-                          className: `py-2 px-3 listview-item ${highlightedIndex === index ? 'highlighted-listview-item' : ''
-                            }`,
-                          key: item.code,
-                          index,
-                          item,
-                          style: {
-                            fontWeight: selectedItem === item ? 'bold' : 'normal',
-                          },
-                        })}
-                      >
-                        {`${item.nom} ${codePostauxSample(item.codesPostaux)}`}
-                      </li>
-                    ))
+                    ? searchResults.length > 0 ? 
+                      searchResults.map((item, index) => (
+                        <li
+                          {...getItemProps({
+                            className: `py-2 px-3 listview-item ${highlightedIndex === index ? 'highlighted-listview-item' : ''
+                              }`,
+                            key: item.code,
+                            index,
+                            item,
+                            style: {
+                              fontWeight: selectedItem === item ? 'bold' : 'normal',
+                            },
+                          })}
+                        >
+                          {`${item.nom} ${codePostauxSample(item.codesPostaux)}`}
+                        </li>
+                      )) : (<li className='fr-p-1w'>Choisissez un nom de ville ou un code postal</li>)
                     : null}
                 </ul>
               </div>

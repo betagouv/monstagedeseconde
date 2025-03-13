@@ -69,10 +69,17 @@ namespace :migrations do
     else
       ActiveRecord::Base.transaction do
         # skip emails sending from user existence test
-        user.becomes!(Users::EducationStatistician)
+        user = user.becomes!(Users::EducationStatistician)
+        user.department = short_zipcode
+        unless user.valid?
+          puts '================================'
+          puts "user.errors.full_messages : #{user.errors.full_messages}"
+          puts '================================'
+          puts ''
+        end
         user.save!
         message = "User email: #{user.email} is now an education statistician " \
-                  "in #{short_zipcode} department"
+                  "in zipcode: #{short_zipcode} department"
         PrettyConsole.puts_in_green message
         user.agreement_signatorable = signatorable
         # Following line will trigger internship_agreement creations fo internship_offers which end_date is in the future
@@ -80,6 +87,12 @@ namespace :migrations do
 
         new_user = User.find_by(email: email)
         PrettyConsole.say_in_yellow('Invalid Object') and raise 'invalid migration' unless new_user.valid?
+
+        puts '================================'
+        puts "new_user.email : #{new_user.email}"
+        puts "new_user.type : #{new_user.type}"
+        puts '================================'
+        puts ''
 
         if signatorable
           PrettyConsole.say_in_heavy_white 'as user is agreement signatorable, it may have created internship_agreements'

@@ -21,7 +21,7 @@ module InternshipApplications
       internship_application = create(:weekly_internship_application)
       get dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
                                                                  uuid: internship_application.uuid)
-      assert_redirected_to root_path
+      assert_redirected_to user_session_path
     end
 
     test 'GET #show redirects to root_path when token is wrong' do

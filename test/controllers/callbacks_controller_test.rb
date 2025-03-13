@@ -15,7 +15,9 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     @state = 'abc'
     @nonce = 'def'
     get root_path
+    stub_omogen_auth
     cookies[:state] = @state
+    @omogen = Services::Omogen::Sygne.new
   end
 
   test 'should get fim token and create SchoolManager user' do
@@ -73,8 +75,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
   test 'should get educonnect token and confirm student user' do
     educonnect_token_stub
     educonnect_userinfo_stub
-    stub_omogen_auth
-    stub_sygne_reponsible('1234567890')
+    stub_sygne_responsible(ine: '1234567890', token: @omogen.token)
     educonnect_logout_stub
 
     puts "school uai : #{@school.code_uai}"

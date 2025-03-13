@@ -1,27 +1,32 @@
 = render 'layouts/breadcrumb', links: [ ['', "Formulaire de contact"] ]
-
-.fr-callout.fr-icon-information-line
-  h3.fr-callout__title En cas de problème lié à la connexion sur la plateforme
-  p.fr-py-1w.fr-callout__text
-    strong &#x2192; Pour les élèves
-    | : contactez votre établissement scolaire.
-  p.fr-py-1w.fr-callout__text
-    strong &#x2192; Pour les équipes pédagogiques
-    | : contactez votre chef d'établissement.
-  p.fr-py-1w.fr-callout__text
-    strong &#x2192; Pour les chefs d'établissement
-    | : contactez votre guichet académique.
-  p.fr-py-4w.fr-callout__text
-    | Avant de contacter le support, merci de vérifier si la réponse à votre question est présente dans notre
-    = link_to "centre d'aide.", 'https://uneleveunstage.crisp.help/fr/', target: '_blank'
+.fr-container
+  h1.fr-h1 Formulaire de contact
 
 #feedback-form
-  iframe[
-    title="Contact Form"
-    src="https://plugins.crisp.chat/urn:crisp.im:contact-form:0/contact/2fc021ef-fea8-4807-89d6-8777bb26db9c"
-    referrerpolicy="origin"
-    sandbox="allow-forms allow-popups allow-scripts allow-same-origin"
-    width="100%"
-    height="600px"
-    frameborder="0"
-  ]
+  .fr-container
+    .row
+      .col-12.col-md-6
+        iframe[
+          title="Contact Form"
+          src="https://plugins.crisp.chat/urn:crisp.im:contact-form:0/contact/2fc021ef-fea8-4807-89d6-8777bb26db9c"
+          referrerpolicy="origin"
+          sandbox="allow-forms allow-popups allow-scripts allow-same-origin"
+          width="100%"
+          height="600px"
+          frameborder="0"
+        ]
+      .col-12.col-md-6
+        .fr-callout.fr-icon-information-line
+          h3.fr-callout__title En cas de problème lié à la connexion sur la plateforme
+          p.fr-py-1w.fr-callout__text
+            strong &#x2192; Pour les élèves
+            | : contactez votre établissement scolaire.
+          p.fr-py-1w.fr-callout__text
+            strong &#x2192; Pour les équipes pédagogiques
+            | : contactez votre chef d'établissement.
+          p.fr-py-1w.fr-callout__text
+            strong &#x2192; Pour les chefs d'établissement
+            | : contactez votre guichet académique.
+          p.fr-py-4w.fr-callout__text
+            | Avant de contacter le support, merci de vérifier si la réponse à votre question est présente dans notre 
+            = link_to "centre d'aide.", 'https://uneleveunstage.crisp.help/fr/', target: '_blank'

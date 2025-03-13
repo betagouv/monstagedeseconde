@@ -5,7 +5,8 @@ export default class extends Controller {
   static targets = ['maxLengthMessage', 'group', 'charCount'];
 
   static values = {
-    limit: Number
+    limit: Number,
+    minLength: Number
   }
 
 
@@ -15,7 +16,7 @@ export default class extends Controller {
 
     inputField.addEventListener('input', _e => {
       const stringLength = inputField.value.length;
-      this.charCountTarget.innerText = `${stringLength} caractères / ${limit}`;
+      this.charCountTarget.innerText = `${stringLength} caractères / ${limit} - minimum ${this.minLengthValue} caractères`;
 
       if (stringLength >= limit) {
         this.maxLengthMessageTarget.classList.remove('d-none');

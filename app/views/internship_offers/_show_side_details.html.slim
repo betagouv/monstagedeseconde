@@ -14,9 +14,10 @@
           = internship_offer.school.name
 .row.thin-line-below
   .col-12.fr-py-2w
-    .fr-tag.fr-icon-calendar-fill.fr-tag--icon-left
-      .fr-mr-2w.period-label-test
-        = Presenters::WeekList.new(weeks: internship_offer.weeks).split_range_string.join(" ")
+    - Presenters::WeekList.new(weeks: internship_offer.weeks).str_weeks_display.each do |label|
+      .fr-tag.fr-icon-calendar-fill.fr-tag--icon-left.fr-mt-1w
+        .fr-mr-2w.period-label-test
+          = label
 
 .row
   .col-12.fr-py-2w

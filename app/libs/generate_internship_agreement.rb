@@ -379,7 +379,7 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.move_down 10
     @pdf.text 'Vu et pris connaissance,'
     @pdf.move_down 10
-    @pdf.table([['L’enseignant (ou les enseignants) éventuellement', 'L’enseignant (ou les enseignants) éventuellement']],
+    @pdf.table([['Les parents ou les responsables légaux', 'L’enseignant (ou les enseignants) éventuellement']],
                cell_style: { border_width: 0 },
                column_widths: [@pdf.bounds.width / 2, @pdf.bounds.width / 2])
     @pdf.move_down 50

@@ -1,66 +1,70 @@
 - if can?(:supply_offers, current_user)
-  div [data-controller='mandatory-fields grade select-weeks' 
+  div [data-controller='mandatory-fields grade select-weeks'
        data-mandatory-fields-minimum-length-value="8"
        data-grade-initial-grades-value="#{resource.grades.compact&.map(&:short_name).join(',')}"]
     = form.hidden_field :type, value: resource.type, data: { :"planning-candidates-target" => "type" } unless resource.is_a?(Planning)
+    = form.hidden_field :school_id, value: form.object.school_id
     .row
       .col-md-6.order-md-2.order-1.d-none.d-md-block
         - if form.object.new_record? && !duplication
           = render 'dashboard/stepper/summary_card', form: form
       .col-md-6.order-md-1.order-2
-        = form.hidden_field :school_id, value: form.object.school_id
+        / Secondes
         .row
           .col-12
+            .d-none.fr-alert.fr-alert--error.fr-alert--sm data-grade-target="alertContainer"
+              p Vous devez sélectionner au moins un public parmi les lycéens et les collégiens
             = render 'inputs/dsfr_checkbox_field',
               form: form,
-              field: :grade_college,
-              title: 'Votre offre sera proposée aux élèves des niveaux suivants :',
-              label: 'Collégiens (4ème et 3ème)',
-              extra_header_classes: 'fr-h6',
-              options: { data: {:'grade-target' => 'gradeCollege',
-                                action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick' ,
-                                :'select-weeks-target' => 'gradeCollege'  } }
-
-        .row data-grade-target="troisiemeContainer"
+              field: :grade_2e,
+              title: '',
+              label: 'Lycéens de 2de générale et technologique',
+              options: { data: {:'grade-target' => 'grade2e',
+                                action: 'grade#onClick click->select-weeks#onGrade2ndeClick' ,
+                                :'select-weeks-target' => 'grade2e' } }
+        .row data-grade-target="secondeContainer"
           .col-12
-            = render partial: "weeks/checkbox_inputs",
-                              locals: { current_weeks: @available_weeks,
-                                        form: form,
-                                        render_employer_components: true }
-        .row
-          .col-12
-            hr
+            = render '/dashboard/stepper/plannings/seconde_period_radio_buttons_fields',
+                    form: form,
+                    resource: form.object
     .row
       .col-6
-        .d-none.fr-alert.fr-alert--error.fr-alert--sm data-grade-target="alertContainer"
-          p Vous devez sélectionner au moins un public parmi les lycéens et les collégiens
+        hr
+    / Troisiemes
+    .row
+      .col-6
         = render 'inputs/dsfr_checkbox_field',
           form: form,
-          field: :grade_2e,
-          title: '',
-          label: 'Lycéens de 2de générale et technologique',
-          options: { data: {:'grade-target' => 'grade2e',
-                            action: 'grade#onClick click->select-weeks#onGrade2ndeClick' ,
-                            :'select-weeks-target' => 'grade2e' } }
-    .row data-grade-target="secondeContainer"
+          field: :grade_college,
+          title: 'Votre offre sera proposée aux élèves des niveaux suivants :',
+          label: 'Collégiens (4ème et 3ème)',
+          extra_header_classes: 'fr-h6',
+          options: { data: {:'grade-target' => 'gradeCollege',
+                            action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick' ,
+                            :'select-weeks-target' => 'gradeCollege'  } }
+
+    .row data-grade-target="troisiemeContainer"
       .col-6
-        = render '/dashboard/stepper/plannings/seconde_period_radio_buttons_fields',
-                form: form,
-                resource: form.object
+        = render partial: "weeks/checkbox_inputs",
+                          locals: { current_weeks: @available_weeks,
+                                    form: form,
+                                    render_employer_components: true }
     .row
       .col-6
         hr
     - klass = resource.class.to_s.split("s::").first
-    .row 
-      .col-6
-        = render '/dashboard/stepper/plannings/collective_or_individual_radio_buttons',
-                  form: form,
-                  resource: form.object
     .row
       .col-6
-        = render '/dashboard/stepper/plannings/daily_hours',
-                  form: form,
-                  resource: form.object
+        .row
+          .col-12
+            = render '/dashboard/stepper/plannings/collective_or_individual_radio_buttons',
+                      form: form,
+                      resource: form.object
+        .row
+          .col-12
+            = render '/dashboard/stepper/plannings/daily_hours',
+                      form: form,
+                      resource: form.object
       .col-6
         .fr-alert.fr-alert--info
             h3.fr-alert__title
@@ -79,7 +83,7 @@
                 pour tous les élèves. Dès lors que le temps de présence
                 quotidien atteint 4 heures 30, l’élève doit bénéficier
                 d’un temps de pause de 30 minutes consécutives minimum.
-    .row
+    .row.fr-mt-6w
       .col-6
         = react_component("ReservedSchoolInput",
                           props: { label: "Commune ou nom de l'établissement pour lequel le stage est reservé",
@@ -87,23 +91,37 @@
                                   resourceName: form.object_name,
                                   selectClassRoom: false,
                                   existingSchool: form.object&.school&.as_json})
-    .row
+    .row.fr-mt-6w
       .col-6
-        = render 'inputs/dsfr_checkbox_field',
-          form: form,
-          field: :rep,
-          title: nil,
-          label: 'Ce stage est réservé aux établissements du réseau d\'éducation prioritaire (REP) ?',
-          options: {}
+        .row
+          .col-12
+            = render 'inputs/dsfr_checkbox_field',
+              form: form,
+              field: :rep,
+              title: nil,
+              label: 'Ce stage est réservé aux établissements du réseau d\'éducation prioritaire (REP) ?',
+              options: {}
 
-    .row
+        .row
+          .col-12
+            = render 'inputs/dsfr_checkbox_field',
+              form: form,
+              field: :qpv,
+              title: nil,
+              label: 'Ce stage est réservé aux établissements des quartiers prioritaires de la ville (QPV) ?',
+              options: {}
       .col-6
-        = render 'inputs/dsfr_checkbox_field',
-          form: form,
-          field: :qpv,
-          title: nil,
-          label: 'Ce stage est réservé aux établissements des quartiers prioritaires de la ville (QPV) ?',
-          options: {}
+        .fr-alert.fr-alert--info
+            h3.fr-alert__title
+              |
+                Egalité des chances
+            p
+              |
+                Pour concrétiser votre engagement en faveur de l'égalité des chances,
+                pour valoriser votre démarche RSE, vous pouvez  privilégier l’accueil d'élèves
+                des collèges en éducation prioritaire (EP) ou de d’élèves en lycées
+                en quartiers prioritaires de la ville (QPV) : seuls ces élèves
+                peuvent candidater à votre offre
 
     - if submit_button
       .fr-mt-6w
