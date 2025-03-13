@@ -21,11 +21,9 @@ class School < ApplicationRecord
   validates :city, :name, :code_uai, presence: true
   validates :code_uai, uniqueness: { message: 'Ce code UAI est déjà utilisé, le lycée est déjà enregistré' }
   validates :zipcode, zipcode: { country_code: :fr }
-  validates :signature,
-            content_type: { in: ['image/png', 'image/jpeg', 'application/pdf'],
-                            message: 'doit être un fichier PNG, JPEG ou PDF' },
-            size: { less_than: 20.megabytes },
-            if: -> { signature.attached? }
+  validates :signature, attached: true, content_type: %i[png jpg jpeg pdf],
+                        size: { less_than: 20.megabytes },
+                        if: -> { signature.attached? }
 
   before_save :set_legal_status
 

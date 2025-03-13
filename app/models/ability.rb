@@ -174,10 +174,6 @@ class Ability
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
     end
-    can :sign_internship_agreements, InternshipAgreement do |agreement|
-      agreement.internship_application.student.school_id == user.school_id &&
-        agreement.signatures_started?
-    end
     can :create, Signature do |signature|
       signature.internship_agreement.school_manager == user.id
     end
@@ -523,6 +519,10 @@ class Ability
       update
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
+    end
+    can :sign_internship_agreements, InternshipAgreement do |agreement|
+      agreement.internship_application.student.school_id == user.school_id &&
+        agreement.signatures_started?
     end
   end
 

@@ -46,8 +46,10 @@ module Dashboard
     end
 
     def update_signature
+      redirect_to dashboard_internship_agreements_path and return unless params.dig(:school, :signature).present?
+
       authorize! :update_signature, School
-      @school = School.find(params.require(:id))
+      @school = School.find(params.require(:id))$
       if @school.update(signature_params)
         redirect_to dashboard_internship_agreements_path, flash: { success: 'Signature mise à jour avec succès' }
       else

@@ -378,7 +378,7 @@ class GenerateInternshipAgreement < Prawn::Document
 
     @pdf.table([[
                  image_from(signature: download_image_and_signature(signatory_role: 'employer')),
-                 image_from(signature: download_school_signature)
+                 @internship_agreement.signed_by_all? ? image_from(signature: download_school_signature) : ''
                ]], cell_style: { border_width: 0, height: 80 },
                    column_widths: [@pdf.bounds.width / 2, @pdf.bounds.width / 2])
 
