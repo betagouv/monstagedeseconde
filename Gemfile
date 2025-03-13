@@ -33,6 +33,7 @@ gem 'slim-rails'
 gem 'split', require: 'split/dashboard'
 gem 'uglifier'
 gem 'view_component'
+gem 'vite_rails'
 gem 'webpacker'
 
 # background jobs

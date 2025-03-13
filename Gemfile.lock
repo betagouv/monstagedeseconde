@@ -180,6 +180,7 @@ GEM
       dotenv (= 3.1.6)
       railties (>= 6.1)
     drb (2.2.1)
+    dry-cli (1.2.0)
     email_inquire (0.11.0)
       damerau-levenshtein (~> 1.2)
     erubi (1.13.0)
@@ -569,6 +570,15 @@ GEM
       activesupport (>= 5.2.0, < 8.1)
       concurrent-ruby (~> 1.0)
       method_source (~> 1.0)
+    vite_rails (3.0.19)
+      railties (>= 5.1, < 9)
+      vite_ruby (~> 3.0, >= 3.2.2)
+    vite_ruby (3.9.1)
+      dry-cli (>= 0.7, < 2)
+      logger (~> 1.6)
+      mutex_m
+      rack-proxy (~> 0.6, >= 0.6.1)
+      zeitwerk (~> 2.2)
     warden (1.2.9)
       rack (>= 2.0.9)
     webdrivers (5.3.1)
@@ -678,6 +688,7 @@ DEPENDENCIES
   uglifier
   validates_zipcode
   view_component
+  vite_rails
   webdrivers
   webmock
   webpacker
