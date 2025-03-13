@@ -566,6 +566,10 @@ class InternshipOffer < ApplicationRecord
     false
   end
 
+  def grades_api_formatted
+    grades.map(&:short_name)
+  end
+
   def weeks_api_formatted
     Presenters::WeekList.new(weeks: weeks).to_api_formatted
   end
