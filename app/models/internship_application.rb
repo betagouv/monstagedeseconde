@@ -10,9 +10,16 @@ class InternshipApplication < ApplicationRecord
   EXPIRATION_DURATION = 15.days
   EXTENDED_DURATION = 15.days
   MAGIC_LINK_EXPIRATION_DELAY = 5.days
-  RECEIVED_STATES = %w[submitted read_by_employer expired transfered]
-  PENDING_STATES = RECEIVED_STATES + %w[validated_by_employer] - %w[expired]
-  REJECTED_STATES = %w[rejected canceled_by_employer canceled_by_student canceled_by_student_confirmation]
+  SUBMITTED_LIKE_STATES = %w[submitted
+                             restored
+                             read_by_employer
+                             transfered]
+  RECEIVED_STATES = SUBMITTED_LIKE_STATES + %w[expired]
+  PENDING_STATES = SUBMITTED_LIKE_STATES + %w[validated_by_employer]
+  CANCELED_STATES = %w[canceled_by_employer
+                       canceled_by_student
+                       canceled_by_student_confirmation]
+  REJECTED_STATES = CANCELED_STATES + %w[rejected]
   EXPIRED_STATES = %w[expired expired_by_student]
   APPROVED_STATES = %w[approved validated_by_employer]
   ORDERED_STATES_INDEX = %w[
@@ -23,15 +30,33 @@ class InternshipApplication < ApplicationRecord
     expired_by_student
     canceled_by_employer
     submitted
+    restored
     read_by_employer
     transfered
     validated_by_employer
     approved
   ]
-  NOT_MODIFIABLE_STATES = %w[submitted read_by_employer transfered validated_by_employer approved]
+  NOT_MODIFIABLE_STATES = %w[submitted restored read_by_employer transfered validated_by_employer approved]
   RE_APPROVABLE_STATES = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
-  VALID_TRANSITIONS = %w[read transfer employer_validate approve approve! cancel_by_student_confirmation reject
-                         reject! cancel_by_employer cancel_by_student cancel_by_student! expire expire_by_student]
+  VALID_TRANSITIONS = %w[
+    read
+    transfer
+    employer_validate
+    approve
+    approve!
+    cancel_by_student_confirmation
+    reject
+    reject!
+    cancel_by_employer
+    cancel_by_student
+    cancel_by_student!
+    expire
+    expire_by_student
+    restore
+    restore!
+  ]
+
+  RESTORABLE_STATES = %w[canceled_by_student canceled_by_student_confirmation]
 
   attr_accessor :sgid
 
@@ -58,6 +83,7 @@ class InternshipApplication < ApplicationRecord
   # has_rich_text :rejected_message
   # has_rich_text :canceled_by_employer_message
   # has_rich_text :canceled_by_student_message
+  # has_rich_text :restored_message
   # has_rich_text :motivation
 
   paginates_per PAGE_SIZE
@@ -185,10 +211,11 @@ class InternshipApplication < ApplicationRecord
           :expired_by_student,
           :canceled_by_employer,
           :canceled_by_student,
+          :restored,
           :canceled_by_student_confirmation
 
     event :read do
-      transitions from: :submitted, to: :read_by_employer,
+      transitions from: %i[submitted restored], to: :read_by_employer,
                   after: proc { |user, *_args|
                            update!("read_at": Time.now.utc)
                            record_state_change(user, {})
@@ -196,7 +223,7 @@ class InternshipApplication < ApplicationRecord
     end
 
     event :transfer do
-      transitions from: %i[submitted read_by_employer],
+      transitions from: %i[submitted restored read_by_employer],
                   to: :transfered,
                   after: proc { |user, *_args|
                            update!("transfered_at": Time.now.utc)
@@ -207,6 +234,7 @@ class InternshipApplication < ApplicationRecord
     event :employer_validate do
       from_states = %i[read_by_employer
                        submitted
+                       restored
                        transfered
                        cancel_by_employer
                        rejected]
@@ -234,6 +262,7 @@ class InternshipApplication < ApplicationRecord
 
     event :cancel_by_student_confirmation do
       from_states = %i[submitted
+                       restored
                        read_by_employer
                        transfered
                        validated_by_employer ]
@@ -251,6 +280,7 @@ class InternshipApplication < ApplicationRecord
     event :reject do
       from_states = %i[read_by_employer
                        submitted
+                       restored
                        transfered
                        validated_by_employer ]
       transitions from: from_states,
@@ -268,6 +298,7 @@ class InternshipApplication < ApplicationRecord
 
     event :cancel_by_employer do
       from_states = %i[submitted
+                       restored
                        read_by_employer
                        transfered
                        validated_by_employer
@@ -288,6 +319,7 @@ class InternshipApplication < ApplicationRecord
 
     event :cancel_by_student do
       from_states = %i[submitted
+                       restored
                        read_by_employer
                        validated_by_employer
                        approved]
@@ -305,8 +337,23 @@ class InternshipApplication < ApplicationRecord
                          }
     end
 
+    event :restore do
+      transitions from: RESTORABLE_STATES.map(&:to_sym),
+                  to: :restored,
+                  after: proc { |user, *_args|
+                           update!(restored_at: Time.now.utc)
+                           if has_ever_been?(%w[approved read_by_employer validated_by_employer])
+                             deliver_later_with_additional_delay do
+                               EmployerMailer.internship_application_restored_email(internship_application: self)
+                             end
+                           end
+                           record_state_change(user, {})
+                         }
+    end
+
     event :expire do
-      transitions from: %i[submitted read_by_employer validated_by_employer transfered],
+      from_states = %i[submitted restored read_by_employer validated_by_employer transfered]
+      transitions from: from_states,
                   to: :expired,
                   after: proc { |user, *_args|
                            update!(expired_at: Time.now.utc)
@@ -382,7 +429,10 @@ class InternshipApplication < ApplicationRecord
   end
 
   def is_re_approvable?
-    # false if sutdent is anonymised or student has an approved application
+    # Temporary
+    return false
+    # Temporary
+    # false if student is anonymised or student has an approved application
     return false if student.anonymized? || student.internship_applications.where(aasm_state: 'approved').any?
 
     RE_APPROVABLE_STATES.include?(aasm_state)
@@ -571,12 +621,26 @@ class InternshipApplication < ApplicationRecord
   end
 
   def response_message
-    rejected_message || approved_message || canceled_by_employer_message || canceled_by_student_message
+    rejected_message ||
+      approved_message ||
+      canceled_by_employer_message ||
+      canceled_by_student_message ||
+      restored_message
   end
 
   def has_been(state)
-    state_changes.select { |state_change| state_change.to_state == state }.last
+    state_changes.select { |state_change| state_change.to_state.to_s == state.to_s }.last
   end
+
+  def has_ever_been?(states)
+    if states.is_a?(Array)
+      states.any? { |state| has_been(state).present? }
+    else
+      has_been(states).present?
+    end
+  end
+
+  protected
 
   private
 
