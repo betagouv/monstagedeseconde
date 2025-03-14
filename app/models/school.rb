@@ -14,12 +14,16 @@ class School < ApplicationRecord
   has_many :school_internship_weeks, dependent: :destroy
   has_many :weeks, through: :school_internship_weeks
   belongs_to :department, optional: true
+  has_one_attached :signature
 
   # has_rich_text :agreement_conditions_rich_text
 
   validates :city, :name, :code_uai, presence: true
   validates :code_uai, uniqueness: { message: 'Ce code UAI est déjà utilisé, le lycée est déjà enregistré' }
   validates :zipcode, zipcode: { country_code: :fr }
+  validates :signature, attached: true, content_type: %i[png jpg jpeg pdf],
+                        size: { less_than: 20.megabytes },
+                        if: -> { signature.attached? }
 
   before_save :set_legal_status
 

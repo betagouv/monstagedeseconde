@@ -39,6 +39,24 @@ module Dashboard
       render :edit, status: :unprocessable_entity
     end
 
+    def edit_signature
+      authorize! :edit_signature, School
+      @school = School.find(params.require(:id))
+      render layout: false if turbo_frame_request?
+    end
+
+    def update_signature
+      redirect_to dashboard_internship_agreements_path and return unless params.dig(:school, :signature).present?
+
+      authorize! :update_signature, School
+      @school = School.find(params.require(:id))
+      if @school.update(signature_params)
+        redirect_to dashboard_internship_agreements_path, flash: { success: 'Signature mise à jour avec succès' }
+      else
+        render :edit_signature, status: :unprocessable_entity
+      end
+    end
+
     def show
       authorize! :edit, School
       @available_weeks = Week.selectable_on_school_year
@@ -80,13 +98,18 @@ module Dashboard
                     :visible,
                     :rep_kind,
                     :qpv,
+                    :signature,
                     :agreement_conditions_rich_text,
                     coordinates: {},
                     week_ids: [])
     end
 
     def school_manager_internship_weeks_params
-      params.require(:school).permit(:agreement_conditions_rich_text, week_ids: [])
+      params.require(:school).permit(:agreement_conditions_rich_text, :signature, week_ids: [])
+    end
+
+    def signature_params
+      params.require(:school).permit(:signature)
     end
   end
 end
