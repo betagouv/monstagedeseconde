@@ -26,7 +26,7 @@
         }
       },
       "scripts": {
-        "postdeploy": "bundle exec bin/rails db:schema:load db:migrate db:seed infra:notify_deployed"
+        "postdeploy": "./vendor/heroku_deploy_script.sh"
       },
       "env": {
         "RAILS_ENV": "review",

@@ -104,7 +104,19 @@ module ApplicationHelper
       { name: 'OPCO EP',
         url: 'https://www.opcoep.fr/',
         logo: 'logo-opco-ep.png',
-        alt: 'logo de OPCO EP' }
+        alt: 'logo de OPCO EP' },
+      { name: 'ONISEP',
+        url: 'https://www.onisep.fr/',
+        logo: 'logo-onisep.png',
+        alt: 'logo de ONISEP' },
+      { name: 'OPCO 2i',
+        url: 'https://www.opco2i.fr/',
+        logo: 'logo-opco-2i.png',
+        alt: 'logo de OPCO 2i' },
+      { name: 'Université des Métiers du Nucléaire',
+        url: 'https://www.monavenirdanslenucleaire.fr/',
+        logo: 'logo-univ-metiers-nucleaire.png',
+        alt: 'logo de l\'Université des métiers du nucléaire' }
     ]
   end
 

@@ -85,7 +85,7 @@
           - opts.merge!(opened_modal: params[:opened_modal]) if params[:opened_modal].present?
           = render "dashboard/internship_offers/internship_applications/actions/employer_decisions", **opts
 
-    .fr-ml-11w.rg2a-width-100.w-100.
+    .fr-ml-11w.rg2a-width-100.w-100
       - if @internship_application.is_modifiable? || %w(validated_by_employer approved).include?(@internship_application.aasm_state)
         .fr-card.fr-px-2w
           .fr-card-body
@@ -106,8 +106,8 @@
               .col-11
                 span.font-weight-bold  Motif 
                 p.small=  @internship_application.response_message || "Non communiqué"
-        
-        - if @internship_application.is_re_approvable? || @internship_application.is_modifiable? 
+
+        - if @internship_application.is_re_approvable? || @internship_application.is_modifiable?
           .fr-callout.fr-icon-information-line.fr-mt-4w.fr-mb-4w
             h3.fr-callout__title
               = callout_title(@internship_application)
@@ -139,7 +139,7 @@
                 token: nil,
                 opened_modal: defined?(opened_modal) ? opened_modal == 'refuse' : false
 
-        
+
 - else
   .row
     .col-12

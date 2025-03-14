@@ -414,7 +414,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test '::PENDING_STATES' do
-    assert_equal %w[submitted read_by_employer transfered validated_by_employer],
+    assert_equal %w[submitted restored read_by_employer transfered validated_by_employer],
                  InternshipApplication::PENDING_STATES
   end
 
@@ -528,6 +528,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       end
     end
   end
+
   test '#cancel_all_pending_applications for student 2nde' do
     travel_to Time.zone.local(2025, 3, 1) do
       school = create(:school, school_type: 'lycee')
@@ -568,5 +569,10 @@ class InternshipApplicationTest < ActiveSupport::TestCase
         end
       end
     end
+  end
+  test 'restore factory' do
+    internship_application = create(:weekly_internship_application, :restored)
+    assert_equal 'restored', internship_application.aasm_state
+    assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
   end
 end

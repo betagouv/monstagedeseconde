@@ -119,8 +119,10 @@ module Api
             longitude: internship_offer.coordinates.longitude,
             image: view_context.asset_pack_url("media/images/sectors/#{internship_offer.sector.cover}"),
             sector: internship_offer.sector.name,
-            handicap_accessible: internship_offer.handicap_accessible,
-            period: internship_offer.period
+            period: internship_offer.period,
+            is_public: internship_offer.is_public,
+            employer_website: internship_offer.employer_website,
+            employer_description: internship_offer.employer_description
           }
         end
       end

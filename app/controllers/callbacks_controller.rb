@@ -15,7 +15,7 @@ class CallbacksController < ApplicationController
         redirect_to root_path, alert: "Établissement non trouvé (UAI: #{user_info['rne']})" and return
       end
 
-      user = User.find_or_initialize_by(email: user_info['email'])
+      user = User.find_or_initialize_by(email: user_info['email'].downcase)
 
       if user.persisted?
         Rails.logger.info("FIM : User already exists: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
