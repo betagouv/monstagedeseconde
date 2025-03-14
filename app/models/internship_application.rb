@@ -40,14 +40,18 @@ class InternshipApplication < ApplicationRecord
   RE_APPROVABLE_STATES = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
   VALID_TRANSITIONS = %w[
     read
+    read!
     transfer
+    transfer!
     employer_validate
+    employer_validate!
     approve
     approve!
     cancel_by_student_confirmation
     reject
     reject!
     cancel_by_employer
+    cancel_by_employer!
     cancel_by_student
     cancel_by_student!
     expire
