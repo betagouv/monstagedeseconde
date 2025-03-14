@@ -573,6 +573,7 @@ class InternshipApplication < ApplicationRecord
   def cancel_all_pending_applications
     applications_to_cancel = student.internship_applications
                                     .where(aasm_state: InternshipApplication::PENDING_STATES)
+                                    .where.not(id: id)
     if student.seconde_gt?
       if internship_offer.seconde_school_track_week_1?
         applications_to_cancel = applications_to_cancel.select do |application|
