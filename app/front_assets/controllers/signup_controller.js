@@ -40,10 +40,6 @@ export default class extends Controller {
     channel: String,
   };
 
-  initialize() {
-    (localStorage.getItem('channel') === 'phone') ? this.checkPhone() : this.checkEmail();
-  }
-
   // on change email address, ensure user is shown academia address requirement when neeeded
   refreshEmailFieldLabel(event) {
     let labelText = "Adresse électronique"
@@ -82,9 +78,6 @@ export default class extends Controller {
     const emailInputElement = this.emailInputTarget;
     const $hint = $(emailHintElement);
     const $input = $(emailInputElement);
-    if (localStorage.getItem('channel') !== undefined) {
-      this.channelValue = localStorage.getItem('channel');
-    }
 
     this.cleanLocalStorageWithSchoolManager();
 
@@ -225,60 +218,10 @@ export default class extends Controller {
     return /[!@#$%^&*()_+\-=\[\]{};':"\\|,\.<>\/\?]+/.test(password);
   }
 
-
-  checkChannel() {
-    switch (this.channelValue) {
-      case 'email':
-        this.checkEmail();
-        break;
-      case 'phone':
-        this.checkPhone();
-        break;
-      default:
-        return;
-    }
-  }
-
-  checkEmail() {
-    this.emailRadioButtonTarget.checked = true
-    this.displayField(this.phoneInputTarget, this.phoneBlocTarget, this.emailBlocTarget, 'email')
-  }
-
-  checkPhone() {
-    this.phoneRadioButtonTarget.checked = true
-    this.displayField(this.emailInputTarget, this.emailBlocTarget, this.phoneBlocTarget, 'phone')
-  }
-
-  displayField(fieldToClean, fieldToHide, fieldToDisplay, channel) {
-    this.clean(fieldToClean);
-    this.hide(fieldToHide)
-    this.show(fieldToDisplay);
-    this.channelValue = channel;
-    localStorage.setItem('channel', channel)
-  }
-  clean(fieldToClean) {
-    $(fieldToClean).val('');
-  }
-
-  hide(fieldToHide) {
-    $(fieldToHide).hide();
-    $(fieldToHide).addClass('d-none');
-  }
-
-  show(fieldToDisplay) {
-    $(fieldToDisplay).hide();
-    $(fieldToDisplay).removeClass('d-none');
-    $(fieldToDisplay).slideDown();
-  }
-
-  focusPhone() {
-    $('#phone-input').focus()
-  }
-
   updateGrade(event) {
     const gradeId = parseInt(event.target.value)
     let gradeName
-    
+
     switch(gradeId) {
       case 3:
         gradeName = "quatrieme"
@@ -296,9 +239,9 @@ export default class extends Controller {
 
   updateSearchSchoolGrade(grade) {
     // Find the SearchSchool React component and update its grade
-    const event = new CustomEvent('gradeChanged', { 
+    const event = new CustomEvent('gradeChanged', {
       detail: { grade: grade },
-      bubbles: true 
+      bubbles: true
     })
     this.element.dispatchEvent(event)
   }

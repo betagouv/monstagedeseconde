@@ -23,7 +23,7 @@
             autocomplete: "new-password", 
             class: "fr-password__input fr-input fr-password__input fr-input", 
             required: true,
-            pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]{12,}$',
+            pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{12,}$',
             data: { action: "password#checkFullPassword", :"password-target" => "passwordInput" }
           
           #password-input-messages.fr-messages-group aria-live="assertive"

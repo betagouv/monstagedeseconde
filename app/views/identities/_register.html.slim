@@ -2,9 +2,7 @@
 - error_status = errors.count.positive?
 - incipit = user_presenter.subscription_incipit(as: "Student")
 
-main#content[role="main"
-             data-controller="signup"
-             data-signup-channel-value="#{@resource_channel}"]
+main#content role="main" data-controller="signup"
 
   .fr-container.fr-container--fluid
     .fr-grid-row.fr-grid-row-gutters.fr-grid-row--center
@@ -56,7 +54,7 @@ main#content[role="main"
                                          class: "fr-password__input fr-input fr-password__input fr-input #{error_tag.present? ? 'fr-input--error' : ''}",
                                          required: true,
                                          maxlength: 70,
-                                         pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]{12,}$',
+                                         pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{12,}$',
                                          data: { action: "signup#checkPassword", :"signup-target" => "passwordInput" }
                       = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :password)
                     #password-input-messages.fr-messages-group aria-live="assertive"
