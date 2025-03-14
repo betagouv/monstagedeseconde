@@ -43,7 +43,7 @@ module Presenters
     end
 
     def internship_daily_description
-      %w[lundi mardi mercredi jeudi vendredi].map do |day|
+      %w[lundi mardi mercredi jeudi vendredi samedi].map do |day|
         hours = internship_offer.daily_hours&.[](day) || []
         next if hours.blank? || hours.size != 2
 
