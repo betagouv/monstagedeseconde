@@ -42,12 +42,15 @@
     "regenerator-runtime": "^0.13.3",
     "signature_pad": "^4.0.5",
     "stimulus": "3",
+    "stimulus-vite-helpers": "^3.1.0",
     "trix": "^2.1.12",
     "url-search-params-polyfill": "^8.0.0",
     "use-debounce": "5",
+    "vite-plugin-stimulus-hmr": "^3.0.0",
     "whatwg-fetch": "^3.2.0"
   },
   "devDependencies": {
+    "@rollup/plugin-inject": "^5.0.5",
     "@types/leaflet": "^1.7.11",
     "babel-eslint": "^10.0.2",
     "eslint": "^7.3.1",
@@ -60,6 +63,7 @@
     "pa11y-ci": "^3.0.1",
     "prettier": "^2.0.4",
     "prop-types": "^15.7.2",
+    "sass-embedded": "^1.85.1",
     "vite": "^5.0.0",
     "vite-plugin-ruby": "^5.1.0",
     "vnu-jar": "^20.3.16",
