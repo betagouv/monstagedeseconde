@@ -10,7 +10,7 @@ html lang="fr"
     = action_cable_meta_tag
     meta name="turbo-visit-control" content="reload"
     meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    = favicon_link_tag asset_pack_path('media/images/favicon.png')
+    = favicon_link_tag vite_asset_path('images/favicon.png')
     = stylesheet_link_tag "https://unpkg.com/leaflet@1.8.0/dist/leaflet.css", media: "all"
     = vite_javascript_tag "application.js", defer: true, 'data-turbo-track': "reload"
     = javascript_include_tag "https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"

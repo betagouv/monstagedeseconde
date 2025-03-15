@@ -7,7 +7,7 @@ div.fr-container.fr-px-0 style="overflow: hidden;"
             h4.fr-mb-2w Félicitations, c'est ici que vous retrouvez toutes vos candidatures.
     .row
       .d-none.d-md-block.col-12.col-sm-3.fr-mb-sm-0
-        = image_tag asset_pack_path("media/images/internship_applications/#{current_user.gender == 'f' ? 'girl' : 'boy'}.svg"), alt: 'jeune eleve', class: 'image-character'
+        = image_tag vite_asset_path("media/images/internship_applications/#{current_user.gender == 'f' ? 'girl' : 'boy'}.svg"), alt: 'jeune eleve', class: 'image-character'
       .col-12.col-sm-3.fr-px-2w
         .h1.text-center.d-none.d-md-block 1
         .fr-text--lead.text-blue-france

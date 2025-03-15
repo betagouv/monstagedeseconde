@@ -6,7 +6,7 @@
   = f.hidden_field :id, value: operator.id
   = f.hidden_field :school_year, value: params[:school_year] || SchoolYear.current_school_year
   .td.align-middle.bl-1.bc-light
-    = image_tag asset_pack_path("media/images/homepage/partenaires/#{operator.logo}"),
+    = image_tag vite_asset_path("media/images/homepage/partenaires/#{operator.logo}"),
             alt: "#{operator.logo.gsub(/-/, ' ').gsub(/\.(jpg|png)$/, '')}",
             height: 30 if operator.logo.present?
     span.ml-2= operator.name
