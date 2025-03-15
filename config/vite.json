@@ -1,7 +1,7 @@
 {
   "all": {
-    "sourceCodeDir": "app/javascript",
-    "watchAdditionalPaths": []
+    "sourceCodeDir": "app/front_assets",
+    "watchAdditionalPaths": ["app/components/**/*"]
   },
   "development": {
     "autoBuild": true,
