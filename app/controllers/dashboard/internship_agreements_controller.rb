@@ -90,7 +90,12 @@ module Dashboard
 
     def school_management_sign
       authorize! :sign_internship_agreements, @internship_agreement
-      @internship_agreement.signatures_finalize!
+      
+      if @internship_agreement.signatures_started?
+        @internship_agreement.signatures_finalize!
+      else
+        @internship_agreement.sign!
+      end
 
       redirect_to dashboard_internship_agreements_path,
                   flash: { success: 'La convention a été signée.' }

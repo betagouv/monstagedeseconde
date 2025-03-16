@@ -9,6 +9,7 @@
                        method: :post,
                        local: true,
                        data: { turbo: false } do |f|
+              = hidden_field_tag :ids, params[:ids]
               .fr-modal__header
                 = link_to dashboard_internship_agreements_path,
                         class: "fr-link--close fr-link fr-raw-link",
@@ -44,7 +45,7 @@
                     .fr-mt-2w
                       p Aperçu de votre signature
                       .fr-upload-preview
-                        = image_tag @internship_agreements.first.student.school.signature
+                        = image_tag @internship_agreements.first.student.school.signature, class: "img-fluid", style: "max-height: 192px;"
 
               .fr-modal__footer
                 ul.fr-btns-group.fr-btns-group--right.fr-btns-group--inline-reverse.fr-btns-group--inline-lg.fr-btns-group--icon-left

@@ -180,14 +180,17 @@ module Dashboard
       end
 
       def school_management_group_sign
-        return unless params[:ids].present?
+        redirect_to dashboard_internship_agreements_path and return unless params[:ids].present?
 
         params[:ids].split(',').each do |id|
           internship_agreement = current_user.internship_agreements.find(id)
           authorize! :sign_internship_agreements, internship_agreement
-          next unless internship_agreement.signatures_started?
-
-          internship_agreement.signatures_finalize!
+          
+          if internship_agreement.signatures_started?
+            internship_agreement.signatures_finalize!
+          else
+            internship_agreement.sign!
+          end
         end
 
         redirect_to dashboard_internship_agreements_path,
