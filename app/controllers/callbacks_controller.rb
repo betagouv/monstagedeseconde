@@ -20,7 +20,7 @@ class CallbacksController < ApplicationController
       if user.persisted?
         Rails.logger.info("FIM : User already exists: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
         sign_in(user)
-        redirect_to root_path, notice: 'Vous êtes bien connecté'
+        redirect_to user.custom_dashboard_path, notice: 'Vous êtes bien connecté'
       else
         Rails.logger.info("FIM : User does not exist: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
         user.first_name = user_info['given_name']
