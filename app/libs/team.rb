@@ -19,9 +19,7 @@ class Team
     if team_size <= 2
       team_members.each { |member| member.destroy }
     else
-      if team_member.member_is_owner?
-        @team_owner_id = change_owner(collection: team_members)
-      end
+      @team_owner_id = change_owner(collection: team_members) if team_member.member_is_owner?
       team_member.destroy
       set_team_members
     end
@@ -64,6 +62,7 @@ class Team
 
   #----------------------------------
   private
+
   #----------------------------------
 
   def team_creation_time?
@@ -90,7 +89,7 @@ class Team
     team_owner = User.kept.find(team_owner_id)
     return if team_owner.nil?
 
-    #Following is team creation time !
+    # Following is team creation time !
     TeamMemberInvitation.create!(
       member_id: team_owner_id,
       inviter_id: team_owner_id,
@@ -103,6 +102,14 @@ class Team
     team_members.map(&:member_id)
                 .reject { |id| id == team_owner_id }
                 .first
+  end
+
+  def user_areas
+    InternshipOfferArea.where(employer_id: user.team.db_members.pluck(:id))
+  end
+
+  def areas_representants
+    user_areas.map { |area| area.employer }
   end
 
   def team_homonymes_harmonize
@@ -127,7 +134,6 @@ class Team
     end
   end
 
-
   # all areas are now shared, team_members exist and notifications should be settled
   def create_default_notifications
     user.team_areas.each do |area|
@@ -136,7 +142,7 @@ class Team
 
         search_or_create_attributes_hash = {
           user_id: team_member.member_id,
-          internship_offer_area_id: area.id,
+          internship_offer_area_id: area.id
         }
         next unless AreaNotification.find_by(search_or_create_attributes_hash).nil?
 
@@ -156,11 +162,11 @@ class Team
   end
 
   def set_team_members
-    if team_owner_id.nil?
-      @team_members = TeamMemberInvitation.none
-    else
-      @team_members = accepted_invitations_query.where(inviter_id: team_owner_id)
-    end
+    @team_members = if team_owner_id.nil?
+                      TeamMemberInvitation.none
+                    else
+                      accepted_invitations_query.where(inviter_id: team_owner_id)
+                    end
   end
 
   def accepted_invitations_query
