@@ -182,12 +182,12 @@ module Dashboard
       def school_management_group_sign
         redirect_to dashboard_internship_agreements_path and return unless params[:ids].present?
 
-        update_school_signature if params[:internship_agreement][:signature].present?
+        update_school_signature if params[:internship_agreement]&.[](:signature).present?
 
         params[:ids].split(',').each do |id|
           internship_agreement = current_user.internship_agreements.find(id)
           authorize! :sign_internship_agreements, internship_agreement
-          update_school_signature if params[:internship_agreement][:signature].present?
+          update_school_signature if params[:internship_agreement]&.[](:signature).present?
 
           Signature.create(internship_agreement: internship_agreement,
                            signatory_role: 'school_manager',
