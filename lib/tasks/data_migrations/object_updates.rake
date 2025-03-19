@@ -63,6 +63,7 @@ namespace :data_migrations do
                                   rejected_message
                                   canceled_by_employer_message
                                   canceled_by_student_message
+                                  restored_message
                                   approved_message]]
       # rich_text_resume_other
       # rich_text_resume_languages

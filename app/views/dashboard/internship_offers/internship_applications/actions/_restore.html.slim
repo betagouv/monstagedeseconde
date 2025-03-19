@@ -1,0 +1,10 @@
+= render "dashboard/internship_offers/internship_applications/action_modal",
+          internship_application:internship_application,
+          aasm_target: :restore!,
+          modal_opener_label: 'Restaurer ma candidature',
+          subtitle: "Motif de la restauration de cette candidature (obligatoire)",
+          message: "<strong>Attention</strong> : vous ne pourrez restaurer cette candidature qu'une seule fois",
+          rich_text: true,
+          modal_id: "restore-internship-application-#{internship_application.id}",
+          fa_icon: "fr-btn--sm fr-icon-refresh-line",
+          opened_modal: false
