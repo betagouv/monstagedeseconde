@@ -144,4 +144,34 @@ namespace :migrations do
       end
     end
   end
+
+  desc 'Migrate academy user to region_academy statistician'
+  task :from_academy_to_region_academy, [:email] => :environment do |t, args|
+    # Use it this way:
+    # ======================================
+    #   bundle exec rake "migrations:from_academy_to_region_academy[test@free.fr]"
+    # ======================================
+    email = args.email
+    user = User.find_by(email: email)
+
+    if user.nil? || !user.academy_statistician?
+      PrettyConsole.puts_in_red 'User not found or not an academy statistician'
+    else
+      academy = user.academy
+      academy_region = academy.academy_region
+      unless academy.nil? || academy_region.nil?
+        ActiveRecord::Base.transaction do
+          # skip emails sending from user existence test
+          user.academy_region = academy_region
+          user.becomes!(Users::AcademyRegionStatistician)
+          user.save!
+          message = "User email: #{user.email} is now an academy_region statistician " \
+                    "in #{academy_region.name}"
+          PrettyConsole.puts_in_green message
+          # Following line will trigger internship_agreement creations fo internship_offers which end_date is in the future
+          user.save!
+        end
+      end
+    end
+  end
 end
