@@ -220,5 +220,17 @@ module Dashboard::InternshipOffers
                                                                    uuid: internship_application.uuid)
       assert_match(/Vous n'êtes pas autorisé à effectuer cette action/, find('#alert-text').text)
     end
+
+    test 'employer cannot redeem an internship_application' do
+      employer, internship_offer = create_employer_and_offer_2nde
+      internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
+      internship_application.cancel_by_student!
+      sign_in(employer)
+      visit dashboard_internship_offer_internship_application_path(internship_offer, uuid: internship_application.uuid)
+      assert_text "Candidature annulée par l'élève"
+      assert internship_application.reload.canceled_by_student?
+      refute internship_application.is_re_approvable?
+      assert false
+    end
   end
 end

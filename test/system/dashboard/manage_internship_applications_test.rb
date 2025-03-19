@@ -7,6 +7,7 @@ module Dashboard
     AASM_STATES = %i[submitted
                      expired
                      approved
+                     restored
                      rejected
                      canceled_by_employer
                      canceled_by_student ].freeze
