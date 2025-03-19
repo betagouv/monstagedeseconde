@@ -90,6 +90,7 @@ module Dashboard
 
     def school_management_sign
       authorize! :sign_internship_agreements, @internship_agreement
+      update_school_signature if params[:internship_agreement][:signature].present?
 
       Signature.create(internship_agreement: @internship_agreement,
                        signatory_role: 'school_manager',
@@ -205,6 +206,11 @@ module Dashboard
 
     def set_internship_agreement
       @internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
+    end
+
+    def update_school_signature
+      @internship_agreement.student.school.signature = params[:internship_agreement][:signature]
+      @internship_agreement.student.school.save
     end
   end
 end
