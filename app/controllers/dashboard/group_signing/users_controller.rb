@@ -168,6 +168,41 @@ module Dashboard
         end
       end
 
+      def school_management_group_signature
+        redirect_to dashboard_internship_agreements_path and return unless params[:ids].present?
+
+        params[:ids].split(',').each do |id|
+          internship_agreement = current_user.internship_agreements.find(id)
+          authorize! :sign_internship_agreements, internship_agreement
+        end
+
+        @internship_agreements = current_user.internship_agreements.where(id: params[:ids])
+      end
+
+      def school_management_group_sign
+        redirect_to dashboard_internship_agreements_path and return unless params[:ids].present?
+
+        params[:ids].split(',').each do |id|
+          internship_agreement = current_user.internship_agreements.find(id)
+          authorize! :sign_internship_agreements, internship_agreement
+          Signature.create(internship_agreement: internship_agreement,
+                           signatory_role: 'school_manager',
+                           user_id: current_user.id,
+                           signatory_ip: request.remote_ip,
+                           signature_date: Time.now,
+                           signature_phone_number: '0111223344')
+
+          if internship_agreement.signatures_started?
+            internship_agreement.signatures_finalize!
+          else
+            internship_agreement.sign!
+          end
+        end
+
+        redirect_to dashboard_internship_agreements_path,
+                    flash: { success: 'Les conventions ont été signées.' }
+      end
+
       private
 
       def starting_path(current_user)

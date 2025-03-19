@@ -78,6 +78,9 @@ gem 'dalli'
 gem 'dotenv-rails', require: 'dotenv/load'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
+# Active Storage validations
+gem 'active_storage_validations'
+
 group :development, :test do
   gem 'debug'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

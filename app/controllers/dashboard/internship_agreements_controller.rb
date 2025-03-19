@@ -2,7 +2,8 @@ module Dashboard
   # WIP, not yet implemented, will host agreement signing
   class InternshipAgreementsController < ApplicationController
     before_action :authenticate_user!
-    before_action :set_internship_agreement, only: %i[edit update show]
+    before_action :set_internship_agreement,
+                  only: %i[edit update show school_management_signature school_management_sign]
 
     def new
       @internship_agreement = internship_agreement_builder.new_from_application(
@@ -81,6 +82,30 @@ module Dashboard
       #           .filtering_discarded_students
       #           .approved
       #           .select { |ia| ia.student.school.school_manager.nil? }
+    end
+
+    def school_management_signature
+      authorize! :sign_internship_agreements, @internship_agreement
+    end
+
+    def school_management_sign
+      authorize! :sign_internship_agreements, @internship_agreement
+
+      Signature.create(internship_agreement: @internship_agreement,
+                       signatory_role: 'school_manager',
+                       user_id: current_user.id,
+                       signatory_ip: request.remote_ip,
+                       signature_date: Time.now,
+                       signature_phone_number: '0111223344')
+
+      if @internship_agreement.signatures_started?
+        @internship_agreement.signatures_finalize!
+      else
+        @internship_agreement.sign!
+      end
+
+      redirect_to dashboard_internship_agreements_path,
+                  flash: { success: 'La convention a été signée.' }
     end
 
     private

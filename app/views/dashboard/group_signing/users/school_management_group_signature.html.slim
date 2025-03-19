@@ -1,0 +1,58 @@
+= turbo_frame_tag "modal" do
+  .fr-modal.fr-modal--opened
+    .fr-container.fr-container--fluid.fr-container-md
+      .fr-grid-row.fr-grid-row--center
+        .fr-col-12.fr-col-md-9.fr-col-lg-8
+          .fr-modal__body
+            = form_with model: @internship_agreements,
+                       url: school_management_group_sign_dashboard_user_path(current_user),
+                       method: :post,
+                       local: true,
+                       data: { turbo: false } do |f|
+              = hidden_field_tag :ids, params[:ids]
+              .fr-modal__header
+                = link_to dashboard_internship_agreements_path,
+                        class: "fr-link--close fr-link fr-raw-link",
+                        aria: { controls: "modal" },
+                        title: "Fermer",
+                        data: { turbo_frame: "_top" } do
+                  | Fermer
+              
+              .fr-modal__content
+                h1.fr-modal__title
+                  span.fr-fi-arrow-right-line.fr-fi--lg
+                  | Signez les conventions de stage
+                p
+                  | Vous vous apprêtez à signer en ligne ces conventions de stage. Votre signature manuscrite sera ajoutée.
+                
+                hr.fr-mb-0
+
+                  - if @internship_agreements.reject { |a| a.student.school.signature.present? }.any?
+                    .fr-upload-group
+                      p.fr-label
+                        | Joignez votre fichier
+                        br
+                        span.fr-hint-text
+                          | (PNG, JPG/JPEG et PDF acceptés jusqu'à 20 Mo)
+                      = f.file_field :signature, 
+                                    class: "fr-upload", 
+                                    accept: "image/png,image/jpeg,application/pdf",
+                                    "data-fr-label": "Ajouter un fichier"
+                    
+                    hr.fr-mb-0
+
+                  - else
+                    .fr-mt-2w
+                      p Aperçu de votre signature
+                      .fr-upload-preview
+                        = image_tag @internship_agreements.first.student.school.signature, class: "img-fluid", style: "max-height: 192px;"
+
+              .fr-modal__footer
+                ul.fr-btns-group.fr-btns-group--right.fr-btns-group--inline-reverse.fr-btns-group--inline-lg.fr-btns-group--icon-left
+                  li
+                    = f.submit "Confirmer", class: "fr-btn"
+                  li
+                    = link_to "Annuler", 
+                            dashboard_internship_agreements_path, 
+                            class: "fr-btn fr-btn--secondary",
+                            data: { turbo_frame: "_top" } 
