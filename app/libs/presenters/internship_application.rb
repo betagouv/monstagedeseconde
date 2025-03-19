@@ -99,14 +99,14 @@ module Presenters
           tab:,
           actions: [action_path.merge(label: action_label, level: action_level)] }
       when 'canceled_by_employer'
-        label = reader.student? || reader.school_management? ? 'annulée par l\'entreprise' : 'refusée'
+        # label = reader.student? || reader.school_management? ? 'annulée par l\'entreprise' : 'refusée'
         tab = 'Annulées'
         { label: 'refusée par l\'entreprise',
           badge: 'error',
           tab:,
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
       when 'rejected'
-        label = reader.student? || reader.school_management? ? 'refusée par l\'entreprise' : 'refusée'
+        # label = reader.student? || reader.school_management? ? 'refusée par l\'entreprise' : 'refusée'
         tab = 'Refusées'
         { label: 'refusée par l\'entreprise',
           badge: 'error',
