@@ -36,8 +36,7 @@ class InternshipApplication < ApplicationRecord
     validated_by_employer
     approved
   ]
-  NOT_MODIFIABLE_STATES = %w[submitted restored read_by_employer transfered validated_by_employer approved]
-  RE_APPROVABLE_STATES = %w[rejected canceled_by_employer canceled_by_student expired_by_student expired]
+  RE_APPROVABLE_STATES = %w[rejected canceled_by_employer expired]
   VALID_TRANSITIONS = %w[
     read
     transfer
@@ -236,8 +235,10 @@ class InternshipApplication < ApplicationRecord
                        submitted
                        restored
                        transfered
-                       cancel_by_employer
-                       rejected]
+                       canceled_by_employer
+                       rejected
+                       expired_by_student
+                       expired]
       transitions from: from_states,
                   to: :validated_by_employer,
                   after: proc { |user, *_args|
@@ -425,15 +426,14 @@ class InternshipApplication < ApplicationRecord
   end
 
   def is_modifiable?
-    NOT_MODIFIABLE_STATES.exclude?(aasm_state)
+    aasm_state.in?( %w[expired rejected canceled_by_employer expired_by_student])
   end
 
   def is_re_approvable?
-    # Temporary
-    return false
-    # Temporary
     # false if student is anonymised or student has an approved application
-    return false if student.anonymized? || student.internship_applications.where(aasm_state: 'approved').any?
+    return false if student.anonymized? || 
+      student.internship_applications.where(aasm_state: 'approved').any? ||
+      internship_offer.remaining_seats_count.zero?
 
     RE_APPROVABLE_STATES.include?(aasm_state)
   end

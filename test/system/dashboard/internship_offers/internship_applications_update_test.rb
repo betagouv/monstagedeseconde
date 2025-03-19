@@ -228,6 +228,9 @@ module Dashboard::InternshipOffers
       sign_in(employer)
       visit dashboard_internship_offer_internship_application_path(internship_offer, uuid: internship_application.uuid)
       assert_text "Candidature annulée par l'élève"
+      assert internship_application.reload.canceled_by_student?
+      refute internship_application.is_re_approvable?
+      assert false
     end
   end
 end
