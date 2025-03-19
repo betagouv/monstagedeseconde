@@ -6,7 +6,8 @@ class InternshipOffer < ApplicationRecord
   PAGE_SIZE = 30
   # TODO : most probably to be the same field.
   EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT = 1500
-  DESCRIPTION_MAX_CHAR_COUNT = 1500
+  EMPLOYER_DESCRIPTION_MIN_CHAR_COUNT = 10
+  DESCRIPTION_MAX_CHAR_COUNT = EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
   MAX_CANDIDATES_HIGHEST = 6_000
   TITLE_MAX_CHAR_COUNT = 150
   DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description employer_id
@@ -345,11 +346,11 @@ class InternshipOffer < ApplicationRecord
   end
 
   def seconde_school_track_week_1?
-    weeks & SchoolTrack::Seconde.both_weeks == SchoolTrack::Seconde.first_week
+    weeks & SchoolTrack::Seconde.both_weeks == [SchoolTrack::Seconde.first_week]
   end
 
   def seconde_school_track_week_2?
-    weeks & SchoolTrack::Seconde.both_weeks == SchoolTrack::Seconde.second_week
+    weeks & SchoolTrack::Seconde.both_weeks == [SchoolTrack::Seconde.second_week]
   end
 
   def fits_for_seconde?
@@ -571,6 +572,10 @@ class InternshipOffer < ApplicationRecord
     return true if published_at.nil?
 
     false
+  end
+
+  def grades_api_formatted
+    grades.map(&:short_name)
   end
 
   def weeks_api_formatted

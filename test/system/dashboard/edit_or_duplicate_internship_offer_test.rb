@@ -17,11 +17,13 @@ class EditOrDuplicateInternshipOffersTest < ApplicationSystemTestCase
       sign_in(employer)
       visit edit_dashboard_internship_offer_path(internship_offer)
       find('input[name="internship_offer[employer_chosen_name]"]').fill_in(with: 'NewCompany')
+      fill_in("Nombre total d'élèves que vous souhaitez accueillir sur la période de stage", with: 10)
 
       click_on "Publier l'offre"
 
       wait_form_submitted
       assert(/NewCompany/.match?(internship_offer.reload.employer_name))
+      assert_equal 10, internship_offer.max_candidates
     end
   end
 

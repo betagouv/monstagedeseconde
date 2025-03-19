@@ -28,5 +28,12 @@ module InternshipApplicationAasmMessageBuilders
       ''
     end
     alias on_rejected_message on_canceled_by_student_message
+
+    def on_restored_message
+      <<~HTML.strip
+        <p>Bonjour #{student.presenter.formal_name},</p>
+        <p>Votre candidature pour le stage "#{internship_offer.title}" est restaurée .</p>
+      HTML
+    end
   end
 end

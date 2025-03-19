@@ -10,6 +10,11 @@ module Presenters
     delegate :canceled_by_employer_message, to: :internship_application
     delegate :rejected_message, to: :internship_application
 
+    SUBMITTED_LIKE_STATES = %w[submitted
+                               restored
+                               read_by_employer
+                               transfered].freeze
+
     def expires_in
       start = internship_application.updated_at
       finish = start + ::InternshipApplication::EXPIRATION_DURATION
@@ -27,11 +32,35 @@ module Presenters
     end
 
     def human_state
+      # label stands for badge content
+      # action_label stands for action button content
       action_path = { path: internship_application_path }
-      case internship_application.aasm_state
+      case internship_application.aasm_state.to_s
       when 'submitted'
         label = reader.student? || reader.school_management? ? "Sans réponse de l'entreprise" : 'nouveau'
         action_label = reader.student? ? 'Voir' : 'Répondre'
+        action_level = reader.student? ? 'tertiary' : 'primary'
+        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Reçues, en attente de réponse'
+        { label:,
+          badge: 'info',
+          tab:,
+          actions: [action_path.merge(label: action_label, level: action_level)] }
+      when 'restored'
+        states_with_notice = %w[read_by_employer transfered validated_by_employer]
+        action_label = if reader.student?
+                         'Voir'
+                       elsif internship_application.has_ever_been?(states_with_notice)
+                         'Candidature restaurée - répondre'
+                       else
+                         'Répondre'
+                       end
+        label = if reader.student?
+                  "sans réponse de l'entreprise"
+                elsif internship_application.has_ever_been?(states_with_notice)
+                  'candidature restaurée'
+                else
+                  'nouveau'
+                end
         action_level = reader.student? ? 'tertiary' : 'primary'
         tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Reçues, en attente de réponse'
         { label:,
@@ -70,14 +99,14 @@ module Presenters
           tab:,
           actions: [action_path.merge(label: action_label, level: action_level)] }
       when 'canceled_by_employer'
-        label = reader.student? || reader.school_management? ? 'annulée par l\'entreprise' : 'refusée'
+        # label = reader.student? || reader.school_management? ? 'annulée par l\'entreprise' : 'refusée'
         tab = 'Annulées'
         { label: 'refusée par l\'entreprise',
           badge: 'error',
           tab:,
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
       when 'rejected'
-        label = reader.student? || reader.school_management? ? 'refusée par l\'entreprise' : 'refusée'
+        # label = reader.student? || reader.school_management? ? 'refusée par l\'entreprise' : 'refusée'
         tab = 'Refusées'
         { label: 'refusée par l\'entreprise',
           badge: 'error',
@@ -156,7 +185,7 @@ module Presenters
            color: 'primary',
            level: 'tertiary' }]
 
-      when 'canceled_by_employer', 'rejected', 'cancelled_by_student', 'expired', 'canceled_by_student_confirmation'
+      when 'canceled_by_employer', 'rejected', 'canceled_by_student', 'expired', 'canceled_by_student_confirmation'
         []
 
       else
@@ -173,7 +202,7 @@ module Presenters
     end
 
     def ok_for_employer_validation?
-      current_state_in_list?(ok_for_employer_validation_states)
+      current_state_in_list?(SUBMITTED_LIKE_STATES)
     end
 
     def with_employer_explanation?
@@ -250,19 +279,16 @@ module Presenters
     end
 
     def ok_for_transfer_states
-      %w[submitted read_by_employer]
+      %w[submitted restored read_by_employer]
     end
 
     def ok_for_reject_states
       %w[submitted
+         restored
          read_by_employer
          transfered
          validated_by_employer
          approved]
-    end
-
-    def ok_for_employer_validation_states
-      %w[submitted transfered read_by_employer]
     end
   end
 end

@@ -16,14 +16,12 @@ module Dashboard
                                                    .includes(:internship_offer, :student, :weeks)
                                                    .order_by_aasm_state_for_student
                                                    .order(created_at: :desc)
-        @submitted_internship_applications = @internship_applications.where(aasm_state: %w[submitted read_by_employer
-                                                                                           transfered])
-        @validated_internship_applications = @internship_applications.where(aasm_state: 'validated_by_employer')
-        @approved_internship_applications = @internship_applications.where(aasm_state: 'approved')
-        @canceled_internship_applications = @internship_applications.where(aasm_state: %w[canceled_by_student
-                                                                                          canceled_by_employer canceled_by_student_confirmation])
-        @rejected_internship_applications = @internship_applications.where(aasm_state: 'rejected')
-        @expired_internship_applications = @internship_applications.where(aasm_state: %w[expired expired_by_student])
+        @submitted_internship_applications = @internship_applications.where(aasm_state: InternshipApplication::SUBMITTED_LIKE_STATES)
+        @validated_internship_applications = @internship_applications.validated_by_employer
+        @approved_internship_applications  = @internship_applications.approved
+        @canceled_internship_applications  = @internship_applications.where(aasm_state: InternshipApplication::CANCELED_STATES)
+        @rejected_internship_applications  = @internship_applications.rejected
+        @expired_internship_applications   = @internship_applications.where(aasm_state: InternshipApplication::EXPIRED_STATES)
       end
 
       # 0 no magic link - status quo - default value
