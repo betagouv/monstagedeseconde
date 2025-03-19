@@ -90,7 +90,7 @@ module Dashboard
 
     def school_management_sign
       authorize! :sign_internship_agreements, @internship_agreement
-      update_school_signature if params[:internship_agreement][:signature].present?
+      update_school_signature if params.dig(:internship_agreement, :signature).present?
 
       Signature.create(internship_agreement: @internship_agreement,
                        signatory_role: 'school_manager',
