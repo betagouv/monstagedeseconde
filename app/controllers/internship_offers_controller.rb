@@ -240,7 +240,7 @@ class InternshipOffersController < ApplicationController
         date_end: I18n.localize(internship_offer.last_date, format: :human_mm_dd_yyyy),
         lat: internship_offer.coordinates.latitude,
         lon: internship_offer.coordinates.longitude,
-        image: view_context.asset_pack_path("media/images/sectors/#{internship_offer.sector.cover}"),
+        image: view_context.vite_asset_path("media/images/sectors/#{internship_offer.sector.cover}"),
         sector: internship_offer.sector.name,
         is_favorite: !!current_user && internship_offer.is_favorite?(current_user),
         logged_in: !!current_user,

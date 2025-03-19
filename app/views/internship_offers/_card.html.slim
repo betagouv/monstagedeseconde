@@ -19,7 +19,7 @@
         .fr-pt-4w= internship_offer.employer_name
   .fr-card__header
     .fr-card__img
-      = image_tag asset_pack_path("media/images/sectors/#{internship_offer.sector.cover}"), class: 'fr-responsive-img', alt: 'secteur'
+      = image_tag vite_asset_path("media/images/sectors/#{internship_offer.sector.cover}"), class: 'fr-responsive-img', alt: 'secteur'
     ul.fr-badges-group
       li
         .fr-badge.fr-badge--warning.fr-badge--no-icon = internship_offer.sector.name

@@ -12,19 +12,30 @@
     <%= action_cable_meta_tag %>
     <meta name="turbo-visit-control" content="reload">
     <%if Rails.env.production? %>
-      <%= favicon_link_tag asset_pack_path('media/images/favicon.png') %>
+      <%= favicon_link_tag vite_asset_path('images/favicon.png') %>
     <%elsif Rails.env.development? %>
-      <%= favicon_link_tag asset_pack_path('media/images/favicons/favicon-development.png')  %>
+      <%= favicon_link_tag vite_asset_path('images/favicons/favicon-development.png')  %>
     <%elsif Rails.env.review? %>
-      <%= favicon_link_tag asset_pack_path('media/images/favicons/favicon-heroku.png') %>
+      <%= favicon_link_tag vite_asset_path('images/favicons/favicon-heroku.png') %>
     <%elsif Rails.env.staging? %>
-      <%= favicon_link_tag asset_pack_path('media/images/favicons/favicon-staging.png')%>
+      <%= favicon_link_tag vite_asset_path('images/favicons/favicon-staging.png')%>
     <%end%>
-    <%= stylesheet_pack_tag "application.css", media: "all", 'data-turbo-track': "reload" %>
     <%= stylesheet_link_tag "https://unpkg.com/leaflet@1.8.0/dist/leaflet.css", media: "all" %>
-    <%= javascript_pack_tag "application.js", defer: true, 'data-turbo-track': "reload" %>
+    <%= vite_javascript_tag "application.js", defer: true, 'data-turbo-track': "reload" %>
     <%= javascript_include_tag "https://unpkg.com/leaflet@1.8.0/dist/leaflet.js", integrity: "sha384-4Dmmo81xejNChaqLOci80VhUcuEAD5pXpCtqtizmdgWEzdETh3zrJvzOhU4T79cN", crossorigin: "anonymous" %>
     <%= render partial: "layouts/analytics" %>
+    <%= vite_client_tag %>
+    <%= vite_javascript_tag 'application' %>
+    <!--
+      If using a TypeScript entrypoint file:
+        vite_typescript_tag 'application'
+
+      If using a .jsx or .tsx entrypoint, add the extension:
+        vite_javascript_tag 'application.jsx'
+
+      Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
+    -->
+
   </head>
 
   <body class="<%= env_class_name %> <%= body_class_name %>">
