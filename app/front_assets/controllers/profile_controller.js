@@ -9,12 +9,8 @@ export default class extends Controller {
     'emailExplanation',
     'emailInput',
     'rolelInput',
-    'phoneInput',
     'label',
     'emailBloc',
-    'phoneBloc',
-    'emailRadioButton',
-    'phoneRadioButton',
     'passwordHint',
     'passwordInput',
     'passwordConfirmationHint',
@@ -25,10 +21,6 @@ export default class extends Controller {
     channel: String,
   };
 
-  initialize() {
-    // set default per specification
-    this.show(this.emailBlocTarget)
-  }
 
   // on change email address, ensure user is shown academia address requirement when neeeded
   refreshEmailFieldLabel(event) {
@@ -47,7 +39,7 @@ export default class extends Controller {
   // check email address formatting on email input blur (14yo student, not always good with email)
   onBlurEmailInput(event) {
     const email = event.target.value;
-    if (email.length > 2) {
+    if (email.length > 4) {
       this.validator.perform('validate', {
         email,
         uid: this.channelParams.uid,
@@ -99,10 +91,6 @@ export default class extends Controller {
         }
       },
     });
-
-    setTimeout(() => {
-      this.checkChannel();
-    }, 100);
   }
 
   disconnect() {
@@ -147,52 +135,5 @@ export default class extends Controller {
       $input.attr('class', 'form-control is-valid');
       $hint.attr('class', 'd-none');
     }
-  }
-
-  checkChannel() {
-    switch (this.channelValue) {
-      case 'email':
-        this.checkEmail();
-        break;
-      case 'phone':
-        this.checkPhone();
-        break;
-      default:
-        return;
-    }
-  }
-
-  checkEmail() {
-    this.emailRadioButtonTarget.checked = true
-    this.displayField(this.phoneInputTarget, this.phoneBlocTarget, this.emailBlocTarget, 'email')
-  }
-
-  checkPhone() {
-    this.phoneRadioButtonTarget.checked = true
-    this.displayField(this.emailInputTarget, this.emailBlocTarget, this.phoneBlocTarget, 'phone')
-  }
-
-  displayField(fieldToClean, fieldToHide, fieldToDisplay, channel) {
-    this.clean(fieldToClean);
-    this.hide(fieldToHide)
-    this.show(fieldToDisplay);
-    this.channelValue = channel;
-  }
-  clean(fieldToClean) {
-    $(fieldToClean).val('');
-  }
-
-  hide(fieldToHide) {
-    toggleContainer(fieldToHide, false);
-  }
-
-  show(fieldToDisplay) {
-    $(fieldToDisplay).hide();
-    $(fieldToDisplay).removeClass('d-none');
-    $(fieldToDisplay).slideDown();
-  }
-
-  focusPhone() {
-    $('#phone-input').focus()
   }
 }
