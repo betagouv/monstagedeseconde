@@ -6,6 +6,7 @@ def student_maker(school:, class_room:, grade: :troisieme)
   grades = [Grade.troisieme, Grade.seconde]
   email = "#{first_name.gsub(/[éèê]/, 'e')}.#{last_name.gsub(/[éèê]/, 'e')}@ms2e.fr"
   Users::Student.new(
+    ine: make_ine,
     first_name:,
     last_name:,
     email:,
@@ -17,6 +18,12 @@ def student_maker(school:, class_room:, grade: :troisieme)
     grade_id: (grade == :troisieme ? grades.first : grades.shuffle.sample).id,
     class_room:
   )
+end
+
+def make_ine
+  numbers = (0..9).to_a.sample(9).join
+  letters = %w[A B C D E F G H J].sample(2).join
+  "#{numbers}#{letters}"
 end
 
 def password_value
