@@ -31,7 +31,7 @@ h1.h2.mb-4
           tabindex="1"]
           | Personnels
 
-      - if @school.school_type == 'college'
+      - if @school.school_type == 'college' || @school.school_type == 'college_lycee'
         li
           - path = edit_dashboard_school_path(@school)
           = link_to path do 

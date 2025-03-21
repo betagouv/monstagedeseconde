@@ -68,4 +68,24 @@ class SchoolsControllerTest < ActionDispatch::IntegrationTest
     assert_equal school.voie_generale, true
     assert_equal school.voie_techno, false
   end
+
+  test 'update school signature with image' do
+    school = create(:school, :with_school_manager)
+    sign_in(school.school_manager)
+    patch dashboard_school_path(school),
+          params: { school: { signature: fixture_file_upload('signature.png', 'image/png') } }
+    assert_redirected_to dashboard_school_class_rooms_path(school.id)
+    school.reload
+    assert_equal 'signature.png', school.signature.filename.to_s
+  end
+
+  test 'update school signature with no image' do
+    school = create(:school, :with_school_manager)
+    sign_in(school.school_manager)
+    patch dashboard_school_path(school), params: { school: { signature: nil } }
+    assert_redirected_to dashboard_school_class_rooms_path(school.id)
+
+    school.reload
+    assert_not school.signature.attached?
+  end
 end

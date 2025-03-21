@@ -21,10 +21,12 @@
     = form.label :email, class: 'fr-label' do
       span data-profile-target="label"= current_user.school_manager? ? 'Adresse électronique académique' : 'Adresse électronique (e-mail)'
       = form.rg2a_required_content_tag
+    - form_data = { action: 'change->profile#onBlurEmailInput', :"profile-target" => 'emailInput'}
+    - form_data.merge!({ readonly: true } ) if current_user.is_a?(Users::PrefectureStatistician)
     = form.text_field :email, { class: 'fr-input',
                                 maxlength: 100,
                                 required: true,
-                                data: {action: 'change->profile#onBlurEmailInput', :"profile-target" => 'emailInput'}}.merge(current_user.is_a?(Users::PrefectureStatistician) ? { readonly: true } : {})
+                                data: form_data }
     small.d-none data-profile-target="emailHint"
   .col-6
     .form-group.fr-select-group--disabled

@@ -149,6 +149,11 @@ table tr {
   }
 }
 
+.internship-application-row {
+  .fr-fieldset__content {
+    margin-top: 0 !important ;
+  }
+}
 // media phone
 @media (max-width: 767px) {
   .success-banner {

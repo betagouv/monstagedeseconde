@@ -426,14 +426,14 @@ class InternshipApplication < ApplicationRecord
   end
 
   def is_modifiable?
-    aasm_state.in?( %w[expired rejected canceled_by_employer expired_by_student])
+    aasm_state.in?(%w[expired rejected canceled_by_employer expired_by_student])
   end
 
   def is_re_approvable?
     # false if student is anonymised or student has an approved application
-    return false if student.anonymized? || 
-      student.internship_applications.where(aasm_state: 'approved').any? ||
-      internship_offer.remaining_seats_count.zero?
+    return false if student.anonymized? ||
+                    student.internship_applications.where(aasm_state: 'approved').any? ||
+                    internship_offer.remaining_seats_count.zero?
 
     RE_APPROVABLE_STATES.include?(aasm_state)
   end

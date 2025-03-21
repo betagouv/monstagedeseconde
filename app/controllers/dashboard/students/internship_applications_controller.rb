@@ -24,9 +24,9 @@ module Dashboard
         @expired_internship_applications   = @internship_applications.where(aasm_state: InternshipApplication::EXPIRED_STATES)
       end
 
-      # 0 no magic link - status quo - default value
-      # 1 magic link successfully clicked
-      # 2 magic link clicked but expired
+      # 0: no magic magic_link_tracker - status quo - default value is 0
+      # 1: magic_link_tracker successfully clicked
+      # 2: magic_link_tracker clicked but expired
       def show
         @prez_application = Presenters::InternshipApplication.new(@internship_application, current_user)
         if params[:sgid].present? && magic_fetch_student&.student? && magic_fetch_student.id == @current_student.id
