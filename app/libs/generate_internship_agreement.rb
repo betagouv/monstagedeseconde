@@ -21,6 +21,12 @@ class GenerateInternshipAgreement < Prawn::Document
     fit: [PAGE_WIDTH / 4, PAGE_WIDTH / 4]
   }
 
+  SCHOOL_SIGNATURE_OPTIONS = {
+    position: :center,
+    vposition: :center,
+    fit: [60, 60]
+  }
+
   def call
     header
     title
@@ -372,7 +378,7 @@ class GenerateInternshipAgreement < Prawn::Document
 
     @pdf.table([[
                  image_from(signature: download_image_and_signature(signatory_role: 'employer')),
-                 image_from(signature: download_image_and_signature(signatory_role: 'school_manager'))
+                 @internship_agreement.signed_by?(user: @internship_agreement.school.school_manager) ? image_from(signature: download_school_signature) : ''
                ]], cell_style: { border_width: 0, height: 80 },
                    column_widths: [@pdf.bounds.width / 2, @pdf.bounds.width / 2])
 
@@ -416,7 +422,7 @@ class GenerateInternshipAgreement < Prawn::Document
       ],
       signature_part: [
         [image_from(signature: download_image_and_signature(signatory_role: 'school_manager')),
-         image_from(signature: download_image_and_signature(signatory_role: 'employer')),
+         '@internship_agreement.school.try(:signature).try(:url)',
          '',
          '',
          '',
@@ -509,7 +515,13 @@ class GenerateInternshipAgreement < Prawn::Document
   private
 
   def image_from(signature:)
-    signature.nil? ? '' : { image: signature.local_signature_image_file_path }.merge(SIGNATURE_OPTIONS)
+    return '' if signature.nil?
+
+    if signature.is_a?(OpenStruct)
+      { image: signature.local_signature_image_file_path }.merge(SCHOOL_SIGNATURE_OPTIONS)
+    else
+      { image: signature.local_signature_image_file_path }.merge(SIGNATURE_OPTIONS)
+    end
   end
 
   def download_image_and_signature(signatory_role:)
@@ -611,5 +623,21 @@ class GenerateInternshipAgreement < Prawn::Document
 
   def enc(str)
     str ? str.encode('Windows-1252', 'UTF-8', undef: :replace, invalid: :replace) : ''
+  end
+
+  def download_school_signature
+    return nil unless @internship_agreement.school&.signature&.attached?
+
+    begin
+      # Créer un objet qui répond à local_signature_image_file_path
+      # en utilisant directement le blob d'Active Storage
+      OpenStruct.new(
+        local_signature_image_file_path: @internship_agreement.school.signature.blob.service.path_for(@internship_agreement.school.signature.key)
+      )
+    rescue StandardError => e
+      Rails.logger.error "Error accessing school signature: #{e.message}"
+      Rails.logger.error "School ID: #{@internship_agreement.school.id}"
+      nil
+    end
   end
 end

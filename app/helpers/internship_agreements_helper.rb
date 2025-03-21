@@ -16,7 +16,7 @@ module InternshipAgreementsHelper
     # 32 => 08:00
     # 33 => 08:15
     # 72 => 18:00
-    hours_maker(range: (32..72).to_a)
+    hours_maker(range: (32..80).to_a)
   end
 
   def hours_maker(range: )

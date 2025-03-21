@@ -152,7 +152,6 @@ class Ability
       read
       create
       edit
-      sign_internship_agreements
       edit_activity_rating
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
@@ -476,7 +475,9 @@ class Ability
       can %i[edit update], School
       can %i[manage_school_users
              manage_school_students
-             manage_school_internship_agreements], School do |school|
+             manage_school_internship_agreements
+             edit_signature
+             update_signature], School do |school|
         school.id == user.school_id
       end
     end
@@ -526,6 +527,10 @@ class Ability
       update
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
+    end
+    can :sign_internship_agreements, InternshipAgreement do |agreement|
+      agreement.internship_application.student.school_id == user.school_id &&
+        (agreement.validated? || (agreement.signatures_started? && agreement.signatures.where(signatory_role: 'school_manager').none?))
     end
   end
 
