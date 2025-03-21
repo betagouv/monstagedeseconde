@@ -252,5 +252,20 @@ module Users
     def fake_email?
       email.present? && email.split('@').last.downcase == "#{school.code_uai}.fr".downcase
     end
+
+    rails_admin do
+      weight 1
+
+      list do
+        field :ine
+      end
+
+      show do
+        fields(:ine)
+      end
+      export do
+        fields(:ine)
+      end
+    end
   end
 end
