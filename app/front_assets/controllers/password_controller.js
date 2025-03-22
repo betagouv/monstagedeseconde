@@ -1,6 +1,4 @@
 import { Controller } from 'stimulus';
-import { checkPasswordCommon } from '../utils/events';
-import $ from 'jquery';
 
 export default class extends Controller {
   static targets = [

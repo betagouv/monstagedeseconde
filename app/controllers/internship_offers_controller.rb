@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class InternshipOffersController < ApplicationController
+  # content_security_policy false, only: :index
   layout 'search', only: :index
 
   with_options only: [:show] do

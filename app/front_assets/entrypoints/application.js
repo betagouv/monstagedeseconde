@@ -31,8 +31,10 @@ import "~/utils";
 import '~/controllers';
 
 // css
-import '~/stylesheets/variables.scss'
-import '~/stylesheets/screen.scss'
+//-----------------------------------
+import '~/stylesheets/variables.scss';
+import '~/stylesheets/screen.scss';
+import '~/stylesheets/rails_admin.scss';
 
 import '@gouvfr/dsfr/dist/dsfr.css';
 import '@gouvfr/dsfr/dist/utility/icons/icons-system/icons-system.css';
@@ -45,11 +47,15 @@ import '@gouvfr/dsfr/dist/utility/colors/colors.css';
 import '@gouvfr/dsfr/dist/utility/icons/icons-map/icons-map.css';
 import '@gouvfr/dsfr/dist/utility/colors/colors.css';
 
+// js
+//-----------------------------------
 import '@gouvfr/dsfr/dist/dsfr.module.js';
-// const controllers = import.meta.glob('./**/*_controller.js', { eager: true })
-// registerControllers(application, controllers)
+// import "rails_admin/src/rails_admin/base.js";
 
-import ReservedSchoolInput from "~/components/ReservedSchoolInput";
+
+// jsx
+//-----------------------------------
+// import ReservedSchoolInput from "~/components/ReservedSchoolInput";
 // import InternshipOfferResults from "components/InternshipOfferResults";
 // import InternshipOfferFavorites from "components/InternshipOfferFavorites";
 // import InternshipOfferCard from "components/InternshipOfferCard";
@@ -59,10 +65,12 @@ import ReservedSchoolInput from "~/components/ReservedSchoolInput";
 // import SearchSchoolByName from "components/SearchSchoolByName";
 // import Map from "components/Map";
 
-// import CityInput from "components/search_internship_offer/CityInput";
+// import CityInput from "components/search_internship_offer/CityInput.jsx";
+// import "~/components/**/*.jsx";
+import "~/components/search_internship_offer/CityInput.jsx";
 // import CompanyCityInput from "components/search_internship_offer/CompanyCityInput";
 // import KeywordInput from "components/search_internship_offer/KeywordInput";
-// import DistanceIcon from "components/icons/DistanceIcon";
+import "~/components/icons/DistanceIcon";
 
 // import FullAddressInput from "components/inputs/FullAddressInput";
 // import SirenInput from "components/inputs/SirenInput";
@@ -102,3 +110,47 @@ import ReservedSchoolInput from "~/components/ReservedSchoolInput";
 
 // Example: Import a stylesheet in app/frontend/index.css
 // import '~/index.css'
+
+//react on rails
+// import ReactOnRails from 'react-on-rails'
+// import ReservedSchoolInput from "~/components/ReservedSchoolInput.jsx";
+// import InternshipOfferResults from "~/components/InternshipOfferResults";
+// import InternshipOfferFavorites from "~/components/InternshipOfferFavorites";
+// import InternshipOfferCard from "~/components/InternshipOfferCard";
+// import InternshipOfferFavoriteButton from "~/components/InternshipOfferFavoriteButton";
+// import FlashMessage from "~/components/FlashMessage";
+// import SearchSchool from "~/components/SearchSchool";
+// import SearchSchoolByName from "~/components/SearchSchoolByName";
+// import Map from "~/components/Map";
+
+// import CityInput from "~/components/search_internship_offer/CityInput";
+// import CompanyCityInput from "~/components/search_internship_offer/CompanyCityInput";
+// import KeywordInput from "~/components/search_internship_offer/KeywordInput";
+// import DistanceIcon from "~/components/icons/DistanceIcon";
+
+// import FullAddressInput from "~/components/inputs/FullAddressInput";
+// import SirenInput from "~/components/inputs/SirenInput";
+// import CountryPhoneSelect from "~/components/inputs/CountryPhoneSelect";
+// import AddressInput from "~/components/inputs/AddressInput";
+// import RomeInput from "~/components/inputs/RomeInput";
+// ReactOnRails.register({
+//   AddressInput,
+//   CityInput,
+//   CompanyCityInput,
+//   CountryPhoneSelect,
+//   DistanceIcon,
+//   FlashMessage,
+//   FullAddressInput,
+//   InternshipOfferCard,
+//   InternshipOfferFavoriteButton,
+//   InternshipOfferFavorites,
+//   InternshipOfferResults,
+//   KeywordInput,
+//   Map,
+//   ReservedSchoolInput,
+//   RomeInput,
+//   SearchSchool,
+//   SearchSchoolByName,
+//   SirenInput 
+// });
+// -----------------
