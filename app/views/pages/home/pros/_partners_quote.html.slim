@@ -1,0 +1,18 @@
+div data-controller="quote-carousel"
+  .fr-py-3w
+    - @quotes.each do |quote|
+      figure.fr-quote.fr-quote--column.fr-my-0 data-quote-carousel-target="quote"
+        blockquote
+          p style="font-size: 24px"
+           = "« #{quote[:quote]} »"
+        figcaption
+          p.fr-quote__author.fr-mb-1v= quote[:author]
+          ul.fr-quote__source.fr-mb-1v
+            li
+              cite= quote[:author_background]
+
+    .fr-btns-group.fr-btns-group--inline.fr-mt-2w
+      button.fr-btn.fr-btn--secondary.fr-mr-2w type="button" data-action="click->quote-carousel#previous"
+        i.fr-icon-arrow-left-s-line.fr-mr-1v aria-hidden="true"
+      button.fr-btn.fr-btn--secondary type="button" data-action="click->quote-carousel#next"
+        i.fr-icon-arrow-right-s-line.fr-ml-1v aria-hidden="true"

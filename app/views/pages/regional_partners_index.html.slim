@@ -3,13 +3,12 @@
   = render 'layouts/navbar', home_nav_bar: true
 .fr-container
   = render 'pages/home/top_nav'
-.container-homepage.light-blue-background.fr-px-2w
-  .container-monstage.light-blue-background
-    .fr-container
-      .fr-py-2w
-        = render 'layouts/breadcrumb',
-          links: [['', 'Nos partenaires']]
-        = render 'pages/home/pros/partners_header'
+.container-homepage.light-blue-background
+  .fr-container
+    .fr-py-2w
+      = render 'layouts/breadcrumb',
+        links: [['', 'Nos partenaires']]
+      = render 'pages/home/pros/partners_header'
 .container-homepage.fr-px-2w
   .container-monstage
     = render 'pages/home/pros/partners_logos'
@@ -19,6 +18,9 @@
 .container-homepage.fr-px-2w
   .container-monstage.fr-py-4w
     = render 'pages/home/pros/api_section'
+.container-homepage.light-blue-background.fr-px-2w
+  .container-monstage.quote-pro-lp.fr-py-4w
+    = render 'pages/home/pros/partners_quote'
 .container-homepage.fr-px-2w
   .container-monstage
     .d-none.d-md-block
