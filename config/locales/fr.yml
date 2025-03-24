@@ -167,6 +167,7 @@ fr:
         current_approved_internship_applications_count: Candidatures acceptées
         full_address: "Adresse de l'établissement"
         full_weeks: Semaines
+        signature: Signature de l'établissement
       internship_occupation: &internship_occupations_fields
         title: Intitulé
         description: Description
@@ -463,7 +464,6 @@ fr:
         weeks: Semaines
         aasm_state:
           one: État
-          drafted: brouillon
           submitted: envoyée
           approved: acceptée
           rejected: refusée
@@ -474,7 +474,8 @@ fr:
           canceled_by_student: annulée par l'élève
           canceled_by_student_confirmation: L'élève a choisi un autre stage
           convention_signed: convention signée
-          read_by_employer: Lu par l'employeur
+          read_by_employer: lu par l'employeur
+          restored: restaurée
         student_phone: Contact téléphone
         student_email: Contact email
         user_id: Elève

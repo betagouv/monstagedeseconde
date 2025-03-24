@@ -101,10 +101,8 @@ module Teamable
     end
 
     def pending_agreements_actions_count
-      part1 = internship_agreements.where(aasm_state: InternshipAgreement::EMPLOYERS_PENDING_STATES)
-      part2 = internship_agreements.signatures_started
-                                   .joins(:signatures)
-                                   .where.not(signatures: { signatory_role: :employer })
+      part1 = internship_agreements.kept.where(aasm_state: InternshipAgreement::EMPLOYERS_PENDING_STATES)
+      part2 = internship_agreements.kept.signatures_started.joins(:signatures).where.not(signatures: { signatory_role: :employer })
       [part1, part2].compact.map(&:count).sum
     end
 

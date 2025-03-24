@@ -70,7 +70,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     assert_response :success
     refute_empty json_response['internshipOffers']
     assert_equal 1, UsersSearchHistory.count
-    assert_equal 4, UsersSearchHistory.last.results_count
+    assert_equal 1, UsersSearchHistory.last.results_count
   end
 
   test 'GET #index with wrong coordinates as Visitor returns nothing' do

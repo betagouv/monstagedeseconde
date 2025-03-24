@@ -59,7 +59,7 @@
     .row.fr-my-1w
       .col-12
         .mt-2.test-description
-          = internship_offer.employer_description
+          = internship_offer.employer_description.gsub("\n", "<br>").html_safe if internship_offer.employer_description.present?
 
     .row
       .col-12.fr-my-1w

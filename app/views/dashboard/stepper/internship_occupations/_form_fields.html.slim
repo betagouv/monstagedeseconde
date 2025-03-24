@@ -17,7 +17,7 @@
               = render 'inputs/dsfr_input_field',
                         f: form,
                         field: :title,
-                        label: "Indiquez le ou les métiers qui seront observables par l'élève",
+                        label: "Indiquez le ou les métiers qui seront observables par l'élève *",
                         placeholder: "Observation du métier de comptable",
                         aria: {labelledby: 'label_internship_occupation_title'},
                         required: false,
@@ -42,13 +42,16 @@
         .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
           .col-12
             - max_length = InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
+            - min_length = InternshipOffer::EMPLOYER_DESCRIPTION_MIN_CHAR_COUNT
             .form-group.fr-my-2w [data-controller='max-length-input'
                                   data-max-length-input-target="group"
-                                  data-max-length-input-limit-value="#{max_length}"]
+                                  data-max-length-input-limit-value="#{max_length}"
+                                  data-max-length-input-min-length-value="#{min_length}"]
               = render 'inputs/dsfr_input_field',
                         f: form,
                         field: :description,
-                        label: "Décrivez les activités qui seront proposées à l’élève",
+                        label: "Décrivez les activités qui seront proposées à l’élève *",
+                        placeholder: "10 caractères minimum",
                         aria: {labelledby: 'label_internship_occupation_description'},
                         required: false,
                         title: 'Activités prévues au cours du stage',
