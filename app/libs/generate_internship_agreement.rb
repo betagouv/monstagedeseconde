@@ -378,7 +378,7 @@ class GenerateInternshipAgreement < Prawn::Document
 
     @pdf.table([[
                  image_from(signature: download_image_and_signature(signatory_role: 'employer')),
-                 @internship_agreement.signatures.exists?(signatory_role: 'school_manager') ? image_from(signature: download_school_signature) : ''
+                 image_from(signature: download_image_and_signature(signatory_role: 'school_manager'))
                ]], cell_style: { border_width: 0, height: 80 },
                    column_widths: [@pdf.bounds.width / 2, @pdf.bounds.width / 2])
 
@@ -525,12 +525,25 @@ class GenerateInternshipAgreement < Prawn::Document
   end
 
   def download_image_and_signature(signatory_role:)
+    if signatory_role == 'school_manager' && @internship_agreement.school.signature.attached?
+      begin
+        signature_data = @internship_agreement.school.signature.download
+        return OpenStruct.new(
+          local_signature_image_file_path: StringIO.new(signature_data)
+        )
+      rescue StandardError => e
+        Rails.logger.error "Error processing school signature: #{e.message}"
+        return nil
+      end
+    end
+
     signature = @internship_agreement.signature_by_role(signatory_role:)
     return nil if signature.nil?
+
     # When local images stay in the configurated storage directory
     return signature if Rails.application.config.active_storage.service == :local
 
-    # When on external storage service , they are to be donwloaded
+    # When on external storage service, they are to be downloaded
     img = signature.signature_image.try(:download) if signature.signature_image.attached?
     return nil if img.nil?
 
@@ -632,7 +645,7 @@ class GenerateInternshipAgreement < Prawn::Document
       # Créer un objet qui répond à local_signature_image_file_path
       # en utilisant directement le blob d'Active Storage
       OpenStruct.new(
-        local_signature_image_file_path: @internship_agreement.school.signature.blob.service.path_for(@internship_agreement.school.signature.key)
+        local_signature_image_file_path: @internship_agreement.school.signature.url
       )
     rescue StandardError => e
       Rails.logger.error "Error accessing school signature: #{e.message}"
