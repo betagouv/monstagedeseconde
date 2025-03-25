@@ -205,7 +205,8 @@ class PagesController < ApplicationController
     engaged_partners = api.query([
                                    Prismic::Predicates.at('document.type', 'partner'),
                                    Prismic::Predicates.at('my.partner.category', 'engaged_partner')
-                                 ])
+                                 ],
+                                 { 'orderings' => '[my.partner.name]' })
     puts "engaged_partners: #{engaged_partners.inspect}"
 
     engaged_partners.results.map do |doc|
