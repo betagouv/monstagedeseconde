@@ -189,6 +189,7 @@ import './homepage/partenaires/logo-arpejeh.png'
 import './homepage/partenaires/logo-onisep.png'
 import './homepage/partenaires/logo-opco-2i.png'
 import './homepage/partenaires/logo-univ-metiers-nucleaire.png'
+import './homepage/partenaires/header-partners.png'
 
 import './homepage/partenaires/involved_companies/airfrance.png'
 import './homepage/partenaires/involved_companies/bonduelle.png'

@@ -1,8 +1,13 @@
 .mx-lg-0.fr-mx-2w.fr-py-4w
-  .fr-h3.blue-france Nos entreprises engagées
+  .fr-h3 Merci aux entreprises engagées
+  p.fr-py-1w Découvrez ci-dessous les différentes entreprises engagées dans le dispositif.
+  .fr-mt-2w
+    = link_to "Rejoignez les entreprises engagées",
+                contact_path,
+                class: "fr-btn fr-btn--secondary"
   .d-flex.align-content-start.flex-wrap
-    - involved_partners_logos.each do |partner|
+    - @engaged_partners.each do |partner|
       .involved_partner_logo.fr-mb-1w
-        = image_tag asset_pack_path("media/images/homepage/partenaires/involved_companies/#{partner[:logo_img]}"),
-                                     alt: partner[:alt],
+        = image_tag partner[:logo],
+                                     alt: partner[:name],
                                      class: 'fr-mr-6w fr-mt-3v'
