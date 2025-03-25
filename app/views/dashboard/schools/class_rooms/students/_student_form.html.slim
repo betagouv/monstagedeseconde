@@ -1,5 +1,5 @@
 
-.fr data-controller="signup" data-signup-channel-value="phone"
+.fr data-controller="signup"
   = form_with(model: @student,
               scope: 'user',
               data: { turbo: false },
@@ -25,12 +25,15 @@
                          maxlength: 85
 
     .fr-mt-1w
-      = render "users/select_channel",
-                          label: "L'élève se connectera",
-                          form: f,
-                          resource: @student,
-                          chan: @student.channel,
-                          phone: "Par téléphone (SMS)"
+      = f.text_field :email,
+                     class: 'fr-input',
+                     type: :email,
+                     maxlength: "100",
+                     name: "user[email]",
+                     pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
+                     autofocus: true,
+                     placeholder:"ex: nom@domaine.fr",
+                     id: 'user_email'
     .row.fr-my-1w
       .col-md-12.col-xs-12
         .fr-input-group

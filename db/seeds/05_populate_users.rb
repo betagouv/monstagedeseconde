@@ -25,6 +25,7 @@ end
 
 def populate_users
   class_room = ClassRoom.first
+  other_class_room = ClassRoom.second
 
   with_class_name_for_defaults(
     Users::Employer.new(
@@ -60,7 +61,7 @@ def populate_users
                                                            email: "main_teacher_no_class_room@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
   with_class_name_for_defaults(Users::SchoolManagement.new(role: 'other',
                                                            email: "other@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
-  with_class_name_for_defaults(Users::SchoolManagement.new(role: 'teacher',
+  with_class_name_for_defaults(Users::SchoolManagement.new(role: 'teacher', class_room: other_class_room,
                                                            email: "teacher@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
   with_class_name_for_defaults(Users::SchoolManagement.new(role: 'cpe',
                                                            email: "cpe@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
