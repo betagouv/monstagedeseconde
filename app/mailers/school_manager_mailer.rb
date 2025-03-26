@@ -46,7 +46,7 @@ class SchoolManagerMailer < ApplicationMailer
     @internship_offer      = internship_application.internship_offer
     student                = internship_application.student
     @prez_stud             = student.presenter
-    @school_manager        = internship_agreement.school_manager
+    @school_manager        = internship_agreement.school_manager || User.find(internship_agreement.signature_by_role(signatory_role: 'school_manager').user_id)
     @employer              = internship_agreement.employer
     @url = dashboard_internship_agreements_url(
       id: internship_agreement.id,
