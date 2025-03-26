@@ -6,8 +6,11 @@ p style=p_styles
 
 p style=p_styles
   = "Bonne nouvelle! La convention de stage de #{@prez_stud.full_name}, intitulée " \
-    "#{@internship_offer.title} vient d'être " \
-    "signée par le chef d'établissement, #{@school_manager.presenter.formal_name}"
+    "#{@internship_offer.title} vient d'être "
+  - if @school_manager.present?
+    = "signée par le chef d'établissement, #{@school_manager.presenter.formal_name}"
+  - else
+    = "signée par le chef d'établissement"
 p style=p_styles
   |
     Il ne manque désormais que votre signature. A votre tour de signer !
