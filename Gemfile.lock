@@ -231,6 +231,9 @@ GEM
       domain_name (~> 0.5)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
+    image_processing (1.14.0)
+      mini_magick (>= 4.9.5, < 6)
+      ruby-vips (>= 2.0.17, < 3)
     inline_svg (1.10.0)
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
@@ -299,6 +302,9 @@ GEM
       logger
       mime-types-data (~> 3.2015)
     mime-types-data (3.2025.0318)
+    mini_magick (5.2.0)
+      benchmark
+      logger
     mini_mime (1.1.5)
     minitest (5.25.5)
     minitest-reporters (1.7.1)
@@ -509,6 +515,9 @@ GEM
       ansi
       ast
     ruby-progressbar (1.13.0)
+    ruby-vips (2.2.3)
+      ffi (~> 1.12)
+      logger
     ruby2_keywords (0.0.5)
     rubystats (0.4.1)
       matrix
@@ -645,6 +654,7 @@ DEPENDENCIES
   ffi-rzmq
   foreman
   geocoder
+  image_processing (~> 1.2)
   inline_svg
   jupyter_on_rails
   jwt
