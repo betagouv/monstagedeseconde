@@ -76,4 +76,20 @@ class InternshipApplicationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal internship_application.aasm_state, 'submitted'
     assert_nil internship_application.access_token
   end
+
+  test 'PATCH update application from transfered to validated_by_employer' do
+    employer = create(:employer)
+    internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
+    internship_application = create(:weekly_internship_application, :transfered, internship_offer: internship_offer)
+    internship_application.generate_token
+
+    assert_no_difference('ActionMailer::Base.deliveries.count') do
+      patch dashboard_internship_offer_internship_application_path(internship_offer, uuid: internship_application.uuid),
+            params: { token: internship_application.access_token, sgid: '', transition: 'employer_validate!' }
+    end
+
+    internship_application.reload
+
+    assert_equal internship_application.aasm_state, 'validated_by_employer'
+  end
 end
