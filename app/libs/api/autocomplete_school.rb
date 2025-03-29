@@ -30,16 +30,22 @@ module Api
 
     attr_reader :term, :grade, :limit, :result, :school_type
 
-    def initialize(term:, limit:, grade: 'seconde')
+    def initialize(term:, limit:, grade: nil)
       @term = term
       @grade = grade
-      @school_type = @grade == 'seconde' ? 'lycee' : 'college'
+      @school_type = if grade == 'seconde'
+                        'lycee'
+                      elsif grade == 'troisieme'
+                        'college'
+                      else
+                        nil
+                      end
       @limit = limit
-      @result = Api::School.autocomplete_by_name_or_city(term: term)
-                           .where(visible: true)
-                           .where(school_type: school_type)
-                           .includes(:class_rooms)
-                           .limit(limit)
+
+      query = Api::School.autocomplete_by_name_or_city(term: term)
+                         .where(visible: true)
+      query = query.where(school_type: school_type) if grade.present?
+      @result = query.includes(:class_rooms).limit(limit)
     end
 
     def append_result(list:, item:, sort_by:)
