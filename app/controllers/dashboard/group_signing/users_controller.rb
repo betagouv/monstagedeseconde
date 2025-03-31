@@ -187,6 +187,11 @@ module Dashboard
         params[:ids].split(',').each do |id|
           internship_agreement = current_user.internship_agreements.find(id)
           authorize! :sign_internship_agreements, internship_agreement
+          if internship_agreement.school.signature.blank?
+            redirect_to dashboard_internship_agreements_path,
+                        flash: { danger: 'Vous devez d\'abord importer la signature du chef d\'établissement. Avant de signer la convention.' } and return
+          end
+
           update_school_signature if params.dig(:internship_agreement, :signature).present?
 
           Signature.create(internship_agreement: internship_agreement,
