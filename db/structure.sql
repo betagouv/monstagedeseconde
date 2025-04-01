@@ -1984,7 +1984,6 @@ CREATE TABLE public.schools (
     contract_code character varying(3),
     department_id bigint,
     agreement_conditions text,
-    level character varying(100) DEFAULT 'lycee'::character varying NOT NULL,
     school_type public.school_category DEFAULT 'college'::public.school_category NOT NULL,
     voie_generale boolean,
     voie_techno boolean,
@@ -4893,6 +4892,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250320155003'),
 ('20250313105632'),
 ('20250304162138'),
 ('20250225122347'),

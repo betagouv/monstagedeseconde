@@ -136,49 +136,50 @@ export default function SearchSchool({
           highlightedIndex,
           selectedItem,
         }) => (
-          <div id="header-search" className="custom-label-container fr-search-bar fr-mr-6w" role="search">
+          <div id="header-search" className="custom-label-container fr-mr-6w" role="search">
             <label
              {...getLabelProps({ className: 'fr-label', htmlFor: `${resourceName}_school_city` })}
             >
               {label}
             </label>
-            <input
-              {...getInputProps({
-                onChange: inputChange,
-                value: currentCityString(),
-                className: `fr-input fr-mb-2w ${classes || ''} ${
-                  autocompleteNoResult ? '' : 'rounded-0'
-                }`,
-                id: `${resourceName}_school_city`,
-                placeholder: search_label,
-                name: `${resourceName}[school][city]`,
-                required: required,
-              })}
-            />
-            {!currentRequest && (
-              <button
-                type="button"
-                title={search_label}
-                className={`fr-btn btn-clear-city ml-1 ${
-                  autocompleteNoResult ? '' : 'rounded-0'
-                }`}
-                onClick={onResetSearch}
-                aria-label="Réinitialiser la recherche"
-              >
-                <span className="fr-icon-arrow-go-back-fill fr-icon--sm" aria-hidden="true"></span>
-              </button>
-            )}
-            {currentRequest && (
-              <button
-                type="button"
-                title={search_label}
-                className="fr-btn btn-clear-city"
-                onClick={onResetSearch}
-                aria-label="Réinitialiser la recherche"
-              >
-              <span className="fr-icon-close-line"></span>
-              </button>
-            )}
+            <div className='d-flex'>
+              <input
+                {...getInputProps({
+                  onChange: inputChange,
+                  value: currentCityString(),
+                  className: `fr-input fr-mb-2w w-100 ${classes || ''} ${
+                    autocompleteNoResult ? '' : 'rounded-0'
+                  }`,
+                  id: `${resourceName}_school_city`,
+                  placeholder: search_label,
+                  name: `${resourceName}[school][city]`,
+                  required: required,
+                })}
+              />
+              {!currentRequest && (
+                <button
+                  type="button"
+                  title={search_label}
+                  className={`fr-btn flex-shrink-1 btn-clear-city fr-icon fr-icon-delete-line ml-1 ${
+                    autocompleteNoResult ? '' : 'rounded-0'
+                  }`}
+                  onClick={onResetSearch}
+                  aria-label="Réinitialiser la recherche"
+                >
+                </button>
+              )}
+              {currentRequest && (
+                <button
+                  type="button"
+                  title={search_label}
+                  className="fr-btn btn-clear-city flex-shrink-1"
+                  onClick={onResetSearch}
+                  aria-label="Réinitialiser la recherche"
+                >
+                  <span className="fr-icon-close-line"></span>
+                </button>
+              )}
+            </div>
 
 
             <div className="search-in-place bg-white shadow">
@@ -289,9 +290,7 @@ export default function SearchSchool({
     const handleGradeChange = (event) => {
       setGrade(event.detail.grade)
     }
-    
     document.addEventListener('gradeChanged', handleGradeChange)
-    
     return () => {
       document.removeEventListener('gradeChanged', handleGradeChange)
     }
