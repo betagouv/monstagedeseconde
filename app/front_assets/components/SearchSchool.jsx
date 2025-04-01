@@ -267,7 +267,7 @@ export default function SearchSchool({
                 {autocompleteNoResult && (
                   <li className="list-group-item list-group-item-info small">
                     Aucun résultat pour votre recherche. Assurez-vous que l’établissement renseigné
-                    est un lycée général ou technologique.
+                    est un lycée général ou technologique ou un collège.
                   </li>
                 )}
               </ul>
