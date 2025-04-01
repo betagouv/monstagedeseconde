@@ -34,7 +34,7 @@ export default function SearchSchool({
   const [schoolsInCitySuggestions, setSchoolsInCitySuggestions] = useState([]);
   const [classRoomsSuggestions, setClassRoomsSuggestions] = useState(null);
 
-  const [grade, setGrade] = useState('seconde');
+  const [grade, setGrade] = useState(null);
 
   const currentCityString = () => {
     if (city === null || city === undefined) {
