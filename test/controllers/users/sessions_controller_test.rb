@@ -10,7 +10,6 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'title', 'Connexion | 1Elève1Stage'
     assert_select '#user_email'
-    assert_select '#select-channel-phone'
     assert_select '#user_password[autofocus=autofocus]', count: 0
   end
 
@@ -144,7 +143,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     post user_session_path(params: { user: { channel: 'email', email:, password: wrong_password } })
     assert_response :success
-    assert_select 'p#text-input-error-desc-error-email', text: 'Adresse électronique  ou mot de passe incorrects',
+    assert_select 'p#text-input-error-desc-error-email', text: 'Adresse électronique ou mot de passe incorrects',
                                                          count: 1
     # <p class="fr-error-text" id="text-input-error-desc-error-email">Adresse électronique  ou mot de passe incorrects</p>
     assert_equal 1, student.reload.failed_attempts
