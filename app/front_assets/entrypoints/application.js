@@ -26,57 +26,46 @@ import "core-js/stable";
 import "regenerator-runtime/runtime";
 import 'bootstrap';
 import "~/utils";
+import '@gouvfr/dsfr/dist/dsfr.module.js';
+import "rails_admin/src/rails_admin/base.js";
 
 //Stimulus started from index.js included file
 import '~/controllers';
 
 // css
 //-----------------------------------
+// import '~/stylesheets/rails_admin.scss';
 import '~/stylesheets/variables.scss';
 import '~/stylesheets/screen.scss';
-import '~/stylesheets/rails_admin.scss';
-
-import '@gouvfr/dsfr/dist/dsfr.css';
-import '@gouvfr/dsfr/dist/utility/icons/icons-system/icons-system.css';
-import '@gouvfr/dsfr/dist/utility/icons/icons-user/icons-user.css';
-import '@gouvfr/dsfr/dist/utility/icons/icons-business/icons-business.css';
-import '@gouvfr/dsfr/dist/utility/icons/icons-design/icons-design.css';
-import '@gouvfr/dsfr/dist/utility/icons/icons-document/icons-document.css';
-import '@gouvfr/dsfr/dist/utility/icons/icons-media/icons-media.css';
-import '@gouvfr/dsfr/dist/utility/colors/colors.css';
-import '@gouvfr/dsfr/dist/utility/icons/icons-map/icons-map.css';
-import '@gouvfr/dsfr/dist/utility/colors/colors.css';
-
-// js
-//-----------------------------------
-import '@gouvfr/dsfr/dist/dsfr.module.js';
-// import "rails_admin/src/rails_admin/base.js";
-
+import '~/stylesheets/dsfr.scss';
+import '@view_components/user_hideable_component.scss';
+import '@view_components/internship_agreements/button_component.scss';
 
 // jsx
+//import.meta.glob('~/components/**/*.jsx', { eager: true })
 //-----------------------------------
-// import ReservedSchoolInput from "~/components/ReservedSchoolInput";
-// import InternshipOfferResults from "components/InternshipOfferResults";
-// import InternshipOfferFavorites from "components/InternshipOfferFavorites";
-// import InternshipOfferCard from "components/InternshipOfferCard";
-// import InternshipOfferFavoriteButton from "components/InternshipOfferFavoriteButton";
-// import FlashMessage from "components/FlashMessage";
-// import SearchSchool from "components/SearchSchool";
-// import SearchSchoolByName from "components/SearchSchoolByName";
-// import Map from "components/Map";
+import ReservedSchoolInput from "~/components/ReservedSchoolInput";
+import InternshipOfferResults from "~/components/InternshipOfferResults";
+import InternshipOfferFavorites from "~/components/InternshipOfferFavorites";
+import InternshipOfferCard from "~/components/InternshipOfferCard";
+import InternshipOfferFavoriteButton from "~/components/InternshipOfferFavoriteButton";
+import FlashMessage from "~/components/FlashMessage";
+import SearchSchool from "~/components/SearchSchool";
+import SearchSchoolByName from "~/components/SearchSchoolByName";
+import Map from "~/components/Map";
 
-// import CityInput from "components/search_internship_offer/CityInput.jsx";
-// import "~/components/**/*.jsx";
-import "~/components/search_internship_offer/CityInput.jsx";
-// import CompanyCityInput from "components/search_internship_offer/CompanyCityInput";
-// import KeywordInput from "components/search_internship_offer/KeywordInput";
-import "~/components/icons/DistanceIcon";
+import CityInput from "~/components/search_internship_offer/CityInput.jsx";
+import RadiusInput from '~/components/search_internship_offer/RadiusInput';
+import CompanyCityInput from "~/components/search_internship_offer/CompanyCityInput";
+import KeywordInput from "~/components/search_internship_offer/KeywordInput";
+import DistanceIcon from "~/components/icons/DistanceIcon.jsx";
 
-// import FullAddressInput from "components/inputs/FullAddressInput";
-// import SirenInput from "components/inputs/SirenInput";
-// import CountryPhoneSelect from "components/inputs/CountryPhoneSelect";
-// import AddressInput from "components/inputs/AddressInput";
-// import RomeInput from "components/inputs/RomeInput";
+import FullAddressInput from "~/components/inputs/FullAddressInput";
+import SirenInput from "~/components/inputs/SirenInput";
+import CountryPhoneSelect from "~/components/inputs/CountryPhoneSelect";
+import AddressInput from "~/components/inputs/AddressInput";
+import SchoolSelectInput from "~/components/search_school/SchoolSelectInput";
+import RomeInput from "~/components/inputs/RomeInput";
 // import '@popperjs/core';
 
 // import '@hotwired/turbo-rails';
@@ -93,8 +82,6 @@ import "~/components/icons/DistanceIcon";
 
 // import '../bootapp';
 // import '../leaflet-providers';
-
-// import '../utils/zammad_form';
 
 // import '../utils/confirm';
 // import '../components/internship_agreements/button_component.scss'
