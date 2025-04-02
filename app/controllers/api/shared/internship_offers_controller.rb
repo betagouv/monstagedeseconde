@@ -55,8 +55,8 @@ module Api
           internshipOffersPerPage: InternshipOffer::PAGE_SIZE,
           totalPages: @internship_offers.total_pages,
           currentPage: @internship_offers.current_page,
-          nextPage: @internship_offers.next_page ? search_api_v1_internship_offers_url(query_params.merge({ page: @internship_offers.next_page })) : nil,
-          prevPage: @internship_offers.prev_page ? search_api_v1_internship_offers_url(query_params.merge({ page: @internship_offers.prev_page })) : nil,
+          nextPage: @internship_offers.next_page ? url_for(query_params.except('page').merge({ page: @internship_offers.next_page })) : nil,
+          prevPage: @internship_offers.prev_page ? url_for(query_params.except('page').merge({ page: @internship_offers.prev_page })) : nil,
           isFirstPage: @internship_offers.first_page?,
           isLastPage: @internship_offers.last_page?,
           pageUrlBase: url_for(query_params.except('page'))

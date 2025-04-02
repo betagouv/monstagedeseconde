@@ -113,4 +113,15 @@ class EmployerMailerTest < ActionMailer::TestCase
     assert_equal 'Imprimez et signez la convention de stage.', email.subject
     refute_email_spammyness(email)
   end
+
+  test 'email informs employer when application is restored and it was read before' do
+    internship_application = create(:weekly_internship_application, :restored, restored_message: 'message')
+    employer = internship_application.internship_offer.employer
+    email = EmployerMailer.internship_application_restored_email(internship_application: internship_application)
+    email.deliver_now
+    assert_emails 1
+    assert_includes email.to, employer.email
+    assert_equal 'Une candidature été restaurée par un élève', email.subject
+    refute_email_spammyness(email)
+  end
 end

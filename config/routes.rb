@@ -167,7 +167,10 @@ Rails.application.routes.draw do
       post 'internship_applications/update_multiple', to: 'internship_applications#update_multiple',
                                                       as: :update_multiple_internship_applications
 
-      resources :internship_agreements, path: 'conventions-de-stage', except: %i[destroy], param: :uuid
+      resources :internship_agreements, path: 'conventions-de-stage', except: %i[destroy], param: :uuid do
+        get 'school_management_signature', on: :member
+        post 'school_management_sign', on: :member
+      end
       resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
         member do
           post 'start_signing'
@@ -175,10 +178,14 @@ Rails.application.routes.draw do
           post 'resend_sms_code'
           post 'signature_code_validate'
           post 'handwrite_sign'
+          post 'school_management_group_signature'
+          post 'school_management_group_sign'
         end
       end
 
       resources :schools, path: 'ecoles', only: %i[index edit update show] do
+        get :edit_signature, on: :member
+        patch :update_signature, on: :member
         resources :invitations, only: %i[new create index destroy], module: 'schools'
         get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
         resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
@@ -274,7 +281,7 @@ Rails.application.routes.draw do
   get '/register_to_webinar', to: 'pages#register_to_webinar'
   get '/eleves', to: 'pages#student_landing'
   get '/professionnels', to: 'pages#pro_landing'
-  get '/partenaires_regionaux', to: 'pages#regional_partners_index'
+  get '/partenaires', to: 'pages#regional_partners_index', as: :partners
   get '/equipe-pedagogique', to: 'pages#school_management_landing'
   get '/referents', to: 'pages#statistician_landing'
   get '/maintenance_estivale', to: 'pages#maintenance_estivale'

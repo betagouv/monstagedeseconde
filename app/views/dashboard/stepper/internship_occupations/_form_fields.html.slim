@@ -17,7 +17,7 @@
                 = render 'inputs/dsfr_input_field',
                           f: form,
                           field: :title,
-                          label: "Indiquez le ou les métiers qui seront observables par l'élève",
+                          label: "Indiquez le ou les métiers qui seront observables par l'élève *",
                           placeholder: "Observation du métier de comptable",
                           aria: {labelledby: 'label_internship_occupation_title'},
                           required: false,
@@ -54,7 +54,8 @@
                 = render 'inputs/dsfr_input_field',
                           f: form,
                           field: :description,
-                          label: "Décrivez les activités qui seront proposées à l’élève",
+                          label: "Décrivez les activités qui seront proposées à l’élève *",
+                          placeholder: "10 caractères minimum",
                           aria: {labelledby: 'label_internship_occupation_description'},
                           required: false,
                           title: 'Activités prévues au cours du stage',
@@ -74,11 +75,11 @@
             p
               ul
                 li
-                    |Décrivez en détail les activités que vous réservez aux élèves.
+                  |Décrivez en détail les activités que vous réservez aux élèves.
                 li
-                    |Évitez les acronymes et les termes techniques.
+                  |Évitez les acronymes et les termes techniques.
                 li
-                    |Soyez attentif à l'orthographe et à la grammaire.
+                  |Soyez attentif à l'orthographe et à la grammaire.
                 li
                   |
                     Pour ce stage d'observation, vous ne devrez attendre
@@ -107,15 +108,15 @@
 
         = react_component("AddressInput",
                           props: { resourceName: form.object_name,
-                                    currentStreet: resource.street,
-                                    currentCity: resource.city,
-                                    currentZipcode: resource.zipcode,
-                                    currentLatitude: ,
-                                    currentLongitude: ,
-                                    currentFullAddress: resource.formatted_autocomplete_address,
-                                    addressFieldsVisible: !resource.id.nil?,
-                                    isDuplication: @duplication,
-                                    editMode: @edit_mode})
+                                   currentStreet: resource.street,
+                                   currentCity: resource.city,
+                                   currentZipcode: resource.zipcode,
+                                   currentLatitude: ,
+                                   currentLongitude: ,
+                                   currentFullAddress: resource.formatted_autocomplete_address,
+                                   addressFieldsVisible: !resource.id.nil?,
+                                   isDuplication: @duplication,
+                                   editMode: @edit_mode})
 
     - if submit_button
       .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))

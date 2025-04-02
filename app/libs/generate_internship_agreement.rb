@@ -21,6 +21,12 @@ class GenerateInternshipAgreement < Prawn::Document
     fit: [PAGE_WIDTH / 4, PAGE_WIDTH / 4]
   }
 
+  SCHOOL_SIGNATURE_OPTIONS = {
+    position: :center,
+    vposition: :center,
+    fit: [60, 60]
+  }
+
   def call
     header
     title
@@ -372,14 +378,14 @@ class GenerateInternshipAgreement < Prawn::Document
 
     @pdf.table([[
                  image_from(signature: download_image_and_signature(signatory_role: 'employer')),
-                 image_from(signature: download_image_and_signature(signatory_role: 'school_manager'))
+                 @internship_agreement.signature_by_role(signatory_role: 'school_manager') ? image_from(signature: download_image_and_signature(signatory_role: 'school_manager')) : ''
                ]], cell_style: { border_width: 0, height: 80 },
                    column_widths: [@pdf.bounds.width / 2, @pdf.bounds.width / 2])
 
     @pdf.move_down 10
     @pdf.text 'Vu et pris connaissance,'
     @pdf.move_down 10
-    @pdf.table([['L’enseignant (ou les enseignants) éventuellement', 'L’enseignant (ou les enseignants) éventuellement']],
+    @pdf.table([['Les parents ou les responsables légaux', 'L’enseignant (ou les enseignants) éventuellement']],
                cell_style: { border_width: 0 },
                column_widths: [@pdf.bounds.width / 2, @pdf.bounds.width / 2])
     @pdf.move_down 50
@@ -416,7 +422,7 @@ class GenerateInternshipAgreement < Prawn::Document
       ],
       signature_part: [
         [image_from(signature: download_image_and_signature(signatory_role: 'school_manager')),
-         image_from(signature: download_image_and_signature(signatory_role: 'employer')),
+         '@internship_agreement.school.try(:signature).try(:url)',
          '',
          '',
          '',
@@ -509,16 +515,35 @@ class GenerateInternshipAgreement < Prawn::Document
   private
 
   def image_from(signature:)
-    signature.nil? ? '' : { image: signature.local_signature_image_file_path }.merge(SIGNATURE_OPTIONS)
+    return '' if signature.nil?
+
+    if signature.is_a?(OpenStruct)
+      { image: signature.local_signature_image_file_path }.merge(SCHOOL_SIGNATURE_OPTIONS)
+    else
+      { image: signature.local_signature_image_file_path }.merge(SIGNATURE_OPTIONS)
+    end
   end
 
   def download_image_and_signature(signatory_role:)
+    if signatory_role == 'school_manager' && @internship_agreement.school.signature.attached?
+      begin
+        signature_data = @internship_agreement.school.signature.download
+        return OpenStruct.new(
+          local_signature_image_file_path: StringIO.new(signature_data)
+        )
+      rescue StandardError => e
+        Rails.logger.error "Error processing school signature: #{e.message}"
+        return nil
+      end
+    end
+
     signature = @internship_agreement.signature_by_role(signatory_role:)
     return nil if signature.nil?
+
     # When local images stay in the configurated storage directory
     return signature if Rails.application.config.active_storage.service == :local
 
-    # When on external storage service , they are to be donwloaded
+    # When on external storage service, they are to be downloaded
     img = signature.signature_image.try(:download) if signature.signature_image.attached?
     return nil if img.nil?
 
@@ -611,5 +636,21 @@ class GenerateInternshipAgreement < Prawn::Document
 
   def enc(str)
     str ? str.encode('Windows-1252', 'UTF-8', undef: :replace, invalid: :replace) : ''
+  end
+
+  def download_school_signature
+    return nil unless @internship_agreement.school&.signature&.attached?
+
+    begin
+      # Créer un objet qui répond à local_signature_image_file_path
+      # en utilisant directement le blob d'Active Storage
+      OpenStruct.new(
+        local_signature_image_file_path: @internship_agreement.school.signature.url
+      )
+    rescue StandardError => e
+      Rails.logger.error "Error accessing school signature: #{e.message}"
+      Rails.logger.error "School ID: #{@internship_agreement.school.id}"
+      nil
+    end
   end
 end

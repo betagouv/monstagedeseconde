@@ -143,6 +143,7 @@ module Users
                      resume_educational_background: nil,
                      resume_languages: nil,
                      gender: nil,
+                     ine: nil,
                      address: nil,
                      legal_representative_full_name: nil,
                      legal_representative_phone: nil,
@@ -171,6 +172,8 @@ module Users
           approve
           reject!
           reject
+          restore
+          restore!
           cancel_by_student!
           cancel_by_student].include?(transition)
     end
@@ -210,6 +213,12 @@ module Users
       student_free_week_id == internship_offer_seconde_week_ids
     end
 
+    def has_found_her_internships?
+      return true if troisieme_ou_quatrieme? && internship_applications.approved.count.positive?
+
+      with_2_weeks_internships_approved?
+    end
+
     def log_search_history(search_params)
       search_history = UsersSearchHistory.new(
         keywords: search_params[:keyword],
@@ -242,6 +251,21 @@ module Users
 
     def fake_email?
       email.present? && email.split('@').last.downcase == "#{school.code_uai}.fr".downcase
+    end
+
+    rails_admin do
+      weight 1
+
+      list do
+        field :ine
+      end
+
+      show do
+        fields(:ine)
+      end
+      export do
+        fields(:ine)
+      end
     end
   end
 end

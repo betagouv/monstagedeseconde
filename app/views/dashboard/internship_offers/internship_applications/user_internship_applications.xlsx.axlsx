@@ -5,6 +5,7 @@ wb.add_worksheet(name: "Candidatures - #{@current_area&.name&.truncate(15) || 't
   sheet.add_row(
     [ "Prénom de l'élève",
       "Nom de l'élève",
+      "Genre",
       "Niveau de l'élève",
       "Établissement de l'élève",
       "Ville de l'établissement",
@@ -28,7 +29,8 @@ wb.add_worksheet(name: "Candidatures - #{@current_area&.name&.truncate(15) || 't
     sheet.add_row([
       application.student.first_name,
       application.student.last_name,
-      application.student.grade,
+      application.student.gender.upcase,
+      application.student.grade.name,
       application.student.school.name,
       application.student.school.city,
       application.student.school.department.code,
@@ -45,5 +47,4 @@ wb.add_worksheet(name: "Candidatures - #{@current_area&.name&.truncate(15) || 't
       application.id
   ])
   end
-  
 end

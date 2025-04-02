@@ -82,7 +82,7 @@ function RenderSchoolSelectInput({
               >
                 {!selectedSchool && (
                   <option key="school-null" selected disabled>
-                    -- Veuillez choisir un lycée --
+                    -- Veuillez choisir un établissement --
                   </option>
                 )}
 

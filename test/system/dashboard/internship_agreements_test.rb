@@ -76,7 +76,6 @@ module Dashboard
       within('.test-employer-role') do
         fill_in 'En qualité de', with: 'CEO'
       end
-      fill_in "Adresse email du responsable de l'accueil en milieu professionnel", with: 'tuteur@free.fr'
       select('08:00', from: 'internship_agreement_weekly_hours_start')
       select('16:00', from: 'internship_agreement_weekly_hours_end')
       fill_in('Pause déjeuner', with: "un repas à la cantine d'entreprise")
@@ -99,10 +98,8 @@ module Dashboard
       within('.test-employer-role') do
         fill_in 'En qualité de', with: 'CEO'
       end
-      fill_in "Adresse email du responsable de l'accueil en milieu professionnel", with: 'tuteur@free.fr'
       fill_in "Nom de l'entreprise", with: 'Corporation'
-      fill_in 'Adresse email de contact', with: 'corp@mail.com'
-      fill_in 'Adresse du lieu du stage', with: '1 rue de la paix'
+      fill_in 'Adresse complète du lieu du stage', with: '1 rue de la paix'
       find('label', text: 'Les horaires seront les mêmes sur toute la période de stage')
       execute_script("document.getElementById('weekly_planning').checked = false;")
       execute_script("document.getElementById('daily-planning-container').classList.remove('d-none');")
@@ -155,9 +152,7 @@ module Dashboard
         fill_in 'En qualité de', with: 'CEO'
       end
       fill_in "Nom de l'entreprise", with: 'Corporation'
-      fill_in 'Adresse email de contact', with: 'corp@mail.com'
-      fill_in 'Adresse du lieu du stage', with: '1 rue de la paix'
-      fill_in "Adresse email du responsable de l'accueil en milieu professionnel", with: 'tuteur@free.fr'
+      fill_in 'Adresse complète du lieu du stage', with: '1 rue de la paix'
       execute_script("document.getElementById('weekly_planning').checked = false;")
       execute_script("document.getElementById('daily-planning-container').classList.remove('d-none');")
       select('08:00', from: 'internship_agreement_daily_hours_lundi_start')

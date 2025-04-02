@@ -14,12 +14,25 @@ class School < ApplicationRecord
   has_many :school_internship_weeks, dependent: :destroy
   has_many :weeks, through: :school_internship_weeks
   belongs_to :department, optional: true
+  has_one_attached :signature
 
   # has_rich_text :agreement_conditions_rich_text
 
   validates :city, :name, :code_uai, presence: true
   validates :code_uai, uniqueness: { message: 'Ce code UAI est déjà utilisé, le lycée est déjà enregistré' }
   validates :zipcode, zipcode: { country_code: :fr }
+  validates :signature,
+            content_type: {
+              in: ['image/jpeg', 'image/png'],
+              message: 'doit être au format JPEG, JPG ou PNG'
+            },
+            if: -> { signature.attached? }
+  validates :signature,
+            size: {
+              less_than: 5.megabytes,
+              message: 'doit être inférieure à 5 Mo'
+            },
+            if: -> { signature.attached? }
 
   before_save :set_legal_status
 
@@ -100,37 +113,6 @@ class School < ApplicationRecord
         visible false
       end
       scopes %i[all with_manager without_manager]
-    end
-
-    edit do
-      field :name
-      field :visible
-      field :rep_kind, :enum do
-        enum do
-          School::VALID_TYPE_PARAMS
-        end
-      end
-      field :qpv
-      field :code_uai
-
-      field :coordinates do
-        partial 'autocomplete_address'
-      end
-
-      field :class_rooms
-
-      field :street do
-        partial 'void'
-      end
-      field :zipcode do
-        partial 'void'
-      end
-      field :city do
-        partial 'void'
-      end
-      field :department do
-        partial 'void'
-      end
     end
 
     show do
