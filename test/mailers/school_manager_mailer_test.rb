@@ -20,7 +20,9 @@ class SchoolManagerMailerTest < ActionMailer::TestCase
     internship_agreement = create(:internship_agreement, :validated)
     school_manager = internship_agreement.school_manager
     email = SchoolManagerMailer.notify_others_signatures_started_email(
-      internship_agreement: internship_agreement
+      internship_agreement: internship_agreement,
+      employer: internship_agreement.employer,
+      school_management: internship_agreement.school_management_representative
     )
     assert_includes email.to, school_manager.email
     assert_nil email.cc
@@ -31,7 +33,9 @@ class SchoolManagerMailerTest < ActionMailer::TestCase
     internship_agreement = create(:internship_agreement, :validated)
     school_manager = internship_agreement.school_manager
     email = SchoolManagerMailer.notify_others_signatures_finished_email(
-      internship_agreement: internship_agreement
+      internship_agreement: internship_agreement,
+      employer: internship_agreement.employer,
+      school_management: internship_agreement.school_management_representative
     )
     assert_includes email.to, school_manager.email
     assert_nil email.cc

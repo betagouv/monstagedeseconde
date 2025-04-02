@@ -146,6 +146,16 @@ class School < ApplicationRecord
     school_type == 'college'
   end
 
+  def management_representative
+    school_management_users = Users::SchoolManagement.kept.where(school_id: id)
+    return nil if school_management_users.empty?
+
+    %w[admin_officer school_manager cpe other].each do |role|
+      return school_management_users.find_by(role: role) if school_management_users.any? { |user| user.role == role }
+    end
+    nil
+  end
+
   def presenter
     Presenters::School.new(self)
   end

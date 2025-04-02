@@ -89,7 +89,7 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[draft started_by_employer],
                   to: :completed_by_employer,
                   after: proc { |*_args|
-                           notify_school_manager_of_employer_completion(self)
+                           notify_school_management_of_employer_completion(self)
                          }
     end
 
@@ -232,23 +232,6 @@ class InternshipAgreement < ApplicationRecord
       (weekly_lunch_break.present? || lunch_break.present?)
   end
 
-  def roles_not_signed_yet
-    Signature.signatory_roles.keys - roles_already_signed
-  end
-
-  def signature_by_role(signatory_role:)
-    return nil if signatures.blank?
-
-    signatures.find_by(signatory_role:)
-  end
-
-  def signature_image_attached?(signatory_role:)
-    signature = signature_by_role(signatory_role:)
-    return signature.signature_image.attached? if signature && signature.signature_image
-
-    false
-  end
-
   def ready_to_sign?(user:)
     aasm_state.to_s.in?(%w[validated signatures_started]) && \
       !signed_by?(user:) && \
@@ -258,8 +241,8 @@ class InternshipAgreement < ApplicationRecord
   def signed_by?(user:)
     return false if user.nil?
 
-    if user.is_employer_like?
-      signatures.pluck(:user_id).include?(user.team.id)
+    if user.employer_like? && user.team.alive?
+      signatures.pluck(:user_id).any? { |userid| user.team.id_in_team?(userid) }
     else
       signatures.pluck(:user_id).include?(user.id)
     end
@@ -281,7 +264,7 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def roles_not_signed_yet
-    Signature.signatory_roles.keys - roles_already_signed
+    [school_management_representative.role, 'employer'] - roles_already_signed
   end
 
   def signature_by_role(signatory_role:)
@@ -295,12 +278,6 @@ class InternshipAgreement < ApplicationRecord
     return signature.signature_image.attached? if signature && signature.signature_image
 
     false
-  end
-
-  def signed_by?(user:)
-    return false if user.nil?
-
-    signatures.pluck(:user_id).include?(user.id)
   end
 
   def archive
@@ -334,6 +311,14 @@ class InternshipAgreement < ApplicationRecord
     discard! unless discarded?
   end
 
+  def school_management_representative
+    signatory_representative = signatures.find_by(signatory_role: Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE)
+    return signatory_representative.signator unless signatory_representative.nil?
+    return school.management_representative if school.management_representative
+
+    nil
+  end
+
   private
 
   def notify_employer_school_manager_completed(agreement)
@@ -342,10 +327,13 @@ class InternshipAgreement < ApplicationRecord
     ).deliver_later
   end
 
+  # Notify the school manager and employer that the agreement is ready to be signed
   def notify_others_signatures_started(agreement)
     roles_not_signed_yet.each do |role|
       mailer_map[role.to_sym].notify_others_signatures_started_email(
-        internship_agreement: agreement
+        internship_agreement: agreement,
+        employer: employer,
+        school_management: school_management_representative
       ).deliver_later
     end
   end
@@ -354,12 +342,14 @@ class InternshipAgreement < ApplicationRecord
     every_signature_but_mine.each do |signature|
       role = signature.signatory_role.to_sym
       mailer_map[role].notify_others_signatures_finished_email(
-        internship_agreement: agreement
+        internship_agreement: agreement,
+        employer: employer,
+        school_management: school_management_representative
       ).deliver_later
     end
   end
 
-  def notify_school_manager_of_employer_completion(agreement)
+  def notify_school_management_of_employer_completion(agreement)
     SchoolManagerMailer.internship_agreement_completed_by_employer_email(
       internship_agreement: agreement
     ).deliver_later
@@ -377,8 +367,11 @@ class InternshipAgreement < ApplicationRecord
 
   def mailer_map
     {
+      employer: EmployerMailer,
       school_manager: SchoolManagerMailer,
-      employer: EmployerMailer
+      cpe: SchoolManagerMailer,
+      admin_officer: SchoolManagerMailer,
+      other: SchoolManagerMailer
     }
   end
 

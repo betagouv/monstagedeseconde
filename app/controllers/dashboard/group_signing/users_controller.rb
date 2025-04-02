@@ -195,11 +195,11 @@ module Dashboard
           update_school_signature if params.dig(:internship_agreement, :signature).present?
 
           Signature.create(internship_agreement: internship_agreement,
-                           signatory_role: 'school_manager',
+                           signatory_role: user.role,
                            user_id: current_user.id,
                            signatory_ip: request.remote_ip,
                            signature_date: Time.now,
-                           signature_phone_number: '0111223344')
+                           signature_phone_number: user.try(:phone))
 
           if internship_agreement.signatures_started?
             internship_agreement.signatures_finalize!
