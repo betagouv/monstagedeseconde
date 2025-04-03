@@ -145,6 +145,9 @@ export default function SirenInput({
 
     const ministry = document.getElementById("ministry-choice");
     const ministryClassList = ministry.classList;
+    const sectorBloc = document.getElementById("sector-choice-block");
+    const sectorBlocClassList = sectorBloc.classList;
+    const sector = document.getElementById("sector-choice");
     // TODO pub/sub with broadcasting would be better
     // because both jsx components and stimulus send events to the containers (show/hide)
     ministryClassList.add("d-none"); // default
@@ -154,9 +157,27 @@ export default function SirenInput({
       const hiddenField = document.getElementById("hidden-public-private-field").children[0];
       hiddenField.value = is_public;
       toggleContainer(hiddenField, true);
+      
       if (is_public) {
         ministry.removeAttribute("style");
         ministryClassList.remove("d-none");
+        
+        // For public establishments
+
+        sectorBlocClassList.add("d-none");
+        // Safely check and select "Fonction publique" option
+        if (sector && sector.options) {
+          for (let i = 0; i < sector.options.length; i++) {
+            if (sector.options[i].text.toLowerCase().includes('fonction publique')) {
+              sector.value = sector.options[i].value;
+              break;
+            }
+          }
+        }
+      } else {
+        // For private companies
+        sectorBlocClassList.remove("d-none");
+        sector.value = "";
       }
     }
   };
