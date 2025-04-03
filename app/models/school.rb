@@ -116,6 +116,7 @@ class School < ApplicationRecord
     end
 
     show do
+      field :code_uai
       field :name
       field :visible
       field :rep_kind

@@ -74,7 +74,8 @@ def populate_users
                                                            email: "cpe@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
   with_class_name_for_defaults(Users::SchoolManagement.new(role: 'admin_officer',
                                                            email: "admin_officer@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
-  Users::SchoolManagement.create(
+  Users::SchoolManagement.create( role: 'admin_officer', first_name: 'Pierre', last_name: "Hamon-AdminOfficer", accept_terms: true, grade_id: Grade.troisieme.id, confirmed_at: Time.now.utc, current_sign_in_at: 2.days.ago, last_sign_in_at: 12.days.ago, school_id: find_college_during_test.id, email: "admin_officer@#{find_default_school_during_test.email_domain_name}", password: password_value )
+  u = Users::SchoolManagement.new(
     role: 'admin_officer',
     first_name: 'Pierre',
     last_name: "Hamon-AdminOfficer",
@@ -84,9 +85,12 @@ def populate_users
     current_sign_in_at: 2.days.ago,
     last_sign_in_at: 12.days.ago,
     school_id: find_college_during_test.id,
-    email: "admin_officer@#{find_default_school_during_test.email_domain_name}",
+    email: "admin_officer_hamon@#{find_default_school_during_test.email_domain_name}",
     password: password_value
-)
+  )
+  puts u.errors.full_messages unless u.valid?
+  u.save!
+
 
   Operator.all.map do |operator|
     with_class_name_for_defaults(Users::Operator.new(email: "#{operator.name.parameterize}@ms2e.fr",
@@ -116,9 +120,10 @@ def populate_users
 end
 
 def populate_students
-  class_room_1 = ClassRoom.first
-  class_room_2 = ClassRoom.second
-  class_room_3 = ClassRoom.third
+  class_rooms = find_default_school_during_test.class_rooms
+  class_room_1 = class_rooms.first
+  class_room_2 = class_rooms.second
+  class_room_3 = class_rooms.third
 
   school = class_room_1.school
 
@@ -128,7 +133,7 @@ def populate_students
                                                   gender: 'm', confirmed_at: 2.days.ago, grade: Grade.seconde)).save!
   with_class_name_for_defaults(Users::Student.new(ine: make_ine, email: 'student_other@ms2e.fr', password: password_value,
                                                   first_name: 'Mohammed', last_name: 'Rivière', school: find_default_school_during_test,
-                                                  class_room: ClassRoom.first, birth_date: 14.years.ago,
+                                                  class_room: class_rooms.first, birth_date: 14.years.ago,
                                                   gender: 'm', confirmed_at: 2.days.ago, grade: Grade.seconde)).save!
   # sans classe
   with_class_name_for_defaults(Users::Student.new(ine: make_ine, email: 'enzo@ms2e.fr', password: password_value, first_name: 'Enzo',
