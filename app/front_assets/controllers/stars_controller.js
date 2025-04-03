@@ -7,11 +7,14 @@ export default class extends Controller {
     "description",
     "recommendationPanel"
   ];
-  goodEnoughScore = 12;
+  // 20 is the max score
+  goodEnoughScore = 12; 
 
   onBlurDescriptionInput(event) {
     const description = event.target.value;
-    if (description.length > 8 && description.length % 3 == 0) {
+    if (description.length > 10 && description.length % 50 == 0) {
+      // convention over configuration: score method is to be found in this.channelParams.channel model
+      // i.e. ScoreChannel
       this.evaluator.perform("score", {
         description: description,
         title: this.titleTarget.value || "",
@@ -34,7 +37,6 @@ export default class extends Controller {
         const good_enough = (score > this.goodEnoughScore);
         const panelClassList = this.recommendationPanelTarget.children[0].classList;
         toggleContainer(this.recommendationPanelTarget, !good_enough);
-        console.log("Received score: " + score);
       }
     });
   }

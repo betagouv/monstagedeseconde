@@ -61,7 +61,6 @@ module Services
     end
 
     def default_headers
-      # 'Content-Type': 'application/x-www-form-urlencoded',
       {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
