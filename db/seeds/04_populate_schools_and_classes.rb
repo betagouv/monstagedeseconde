@@ -117,6 +117,8 @@ def populate_class_rooms
   end
   puts ''
   PrettyConsole.say_in_yellow 'Done with creating class_rooms'
+  college = find_college_during_test
+  ClassRoom.find_or_create_by(name: '3e A', school: college, grade: Grade.troisieme)
 end
 
 def update_schools_with_public_private_info
