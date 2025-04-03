@@ -45,6 +45,10 @@ def find_default_school_during_test
   School.find_by_code_uai('0752694W') # school at Paris, school name : Camille Claudel.
 end
 
+def find_college_during_test
+  School.find_by(code_uai: '0755030K') # name: "Collège Daniel Mayer"
+end
+
 ActiveSupport::Notifications.subscribe(/seed/) do |event|
   PrettyConsole.puts_in_blue "#{event.name} done! #{event.duration}"
 end
