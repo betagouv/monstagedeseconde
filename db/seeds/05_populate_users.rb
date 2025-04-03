@@ -74,6 +74,19 @@ def populate_users
                                                            email: "cpe@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
   with_class_name_for_defaults(Users::SchoolManagement.new(role: 'admin_officer',
                                                            email: "admin_officer@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
+  Users::SchoolManagement.create(
+    role: 'admin_officer',
+    first_name: 'Pierre',
+    last_name: "Hamon-AdminOfficer",
+    accept_terms: true,
+    grade_id: Grade.troisieme.id,
+    confirmed_at: Time.now.utc,
+    current_sign_in_at: 2.days.ago,
+    last_sign_in_at: 12.days.ago,
+    school_id: find_college_during_test.id,
+    email: "admin_officer@#{find_default_school_during_test.email_domain_name}",
+    password: password_value
+)
 
   Operator.all.map do |operator|
     with_class_name_for_defaults(Users::Operator.new(email: "#{operator.name.parameterize}@ms2e.fr",
@@ -138,6 +151,9 @@ def populate_students
   with_class_name_for_defaults(Users::Student.new(ine: make_ine, email: 'alexandrine@ms2e.fr', password: password_value,
                                                   first_name: 'Alexandrine', last_name: 'Chotin', school: missing_school_manager_school, birth_date: 14.years.ago,
                                                   gender: 'f', confirmed_at: 2.days.ago, class_room: class_room_3, grade: Grade.troisieme)).save!
+  with_class_name_for_defaults(Users::Student.new(ine: make_ine, email: 'yvan@ms2e.fr', password: password_value,
+                                                  first_name: 'Yvan', last_name: 'Duhamel', school: find_college_during_test, birth_date: 14.years.ago,
+                                                  gender: 'f', confirmed_at: 2.days.ago, class_room: find_college_during_test.class_rooms.first, grade: Grade.troisieme)).save!
 end
 
 call_method_with_metrics_tracking(%i[
