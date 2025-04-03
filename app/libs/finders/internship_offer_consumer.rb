@@ -64,9 +64,9 @@ module Finders
     def student_query
       case user.try(:grade).try(:id)
       when Grade.seconde.id
-        school_members_query.seconde_only
+        school_members_query.seconde_only.order(qpv: :desc)
       else
-        school_members_query.troisieme_or_quatrieme
+        school_members_query.troisieme_or_quatrieme.order(qpv: :desc)
       end
     end
 
@@ -82,7 +82,7 @@ module Finders
 
     def visitor_query
       common_filter do
-        light_kept_published_future_offers_query.filtered_by_qpv_and_rep(user:)
+        light_kept_published_future_offers_query
       end
     end
   end
