@@ -663,6 +663,7 @@ DEPENDENCIES
   listen
   lograge
   mime-types
+  mini_magick
   minitest-reporters
   minitest-retry
   minitest-stub-const
