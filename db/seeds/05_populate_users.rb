@@ -74,11 +74,10 @@ def populate_users
                                                            email: "cpe@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
   with_class_name_for_defaults(Users::SchoolManagement.new(role: 'admin_officer',
                                                            email: "admin_officer@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
-  Users::SchoolManagement.create( role: 'admin_officer', first_name: 'Pierre', last_name: "Hamon-AdminOfficer", accept_terms: true, grade_id: Grade.troisieme.id, confirmed_at: Time.now.utc, current_sign_in_at: 2.days.ago, last_sign_in_at: 12.days.ago, school_id: find_college_during_test.id, email: "admin_officer@#{find_default_school_during_test.email_domain_name}", password: password_value )
-  u = Users::SchoolManagement.new(
+  Users::SchoolManagement.create(
     role: 'admin_officer',
     first_name: 'Pierre',
-    last_name: "Hamon-AdminOfficer",
+    last_name: 'Hamon-AdminOfficer',
     accept_terms: true,
     grade_id: Grade.troisieme.id,
     confirmed_at: Time.now.utc,
@@ -90,7 +89,6 @@ def populate_users
   )
   puts u.errors.full_messages unless u.valid?
   u.save!
-
 
   Operator.all.map do |operator|
     with_class_name_for_defaults(Users::Operator.new(email: "#{operator.name.parameterize}@ms2e.fr",

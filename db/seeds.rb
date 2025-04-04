@@ -48,6 +48,10 @@ def find_college_during_test
   School.find_by(code_uai: '0755030K') # name: "Collège Daniel Mayer"
 end
 
+def find_college_during_test
+  School.find_by(code_uai: '0755030K') # name: "Collège Daniel Mayer"
+end
+
 ActiveSupport::Notifications.subscribe(/seed/) do |event|
   PrettyConsole.puts_in_blue "#{event.name} done! #{event.duration}"
 end
