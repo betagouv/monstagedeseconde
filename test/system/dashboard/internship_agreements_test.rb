@@ -220,8 +220,10 @@ module Dashboard
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:internship_agreement, internship_application:,
                                                            aasm_state: :signatures_started)
-      create(:signature, internship_agreement:, signatory_role: :employer,
-                         user_id: internship_agreement.employer.id)
+      create(:signature,
+             :employer,
+             internship_agreement:,
+             user_id: internship_agreement.employer.id)
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
@@ -236,8 +238,10 @@ module Dashboard
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:internship_agreement, internship_application:,
                                                            aasm_state: :signatures_started)
-      create(:signature, internship_agreement:, signatory_role: :school_manager,
-                         user_id: internship_agreement.school_manager.id)
+      create(:signature,
+             :school_manager,
+             internship_agreement:,
+             user_id: internship_agreement.school_manager.id)
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
@@ -252,8 +256,10 @@ module Dashboard
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:internship_agreement, internship_application:,
                                                            aasm_state: :signed_by_all)
-      create(:signature, internship_agreement:, signatory_role: :school_manager,
-                         user_id: internship_agreement.school_manager.id)
+      create(:signature,
+             :school_manager,
+             internship_agreement:,
+             user_id: internship_agreement.school_manager.id)
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
@@ -328,8 +334,10 @@ module Dashboard
 
     test 'school_manager reads internship agreement table with correct indications - status: signatures_started with employer' do
       internship_agreement = create(:internship_agreement, aasm_state: :signatures_started)
-      create(:signature, internship_agreement:, signatory_role: :employer,
-                         user_id: internship_agreement.employer.id)
+      create(:signature,
+             :employer,
+             internship_agreement:,
+             user_id: internship_agreement.employer.id)
       sign_in(internship_agreement.school_manager.reload)
       visit dashboard_internship_agreements_path
 
@@ -342,8 +350,10 @@ module Dashboard
 
     test 'school_manager reads internship agreement table with correct indications - status: signatures_started with school_manager' do
       internship_agreement = create(:internship_agreement, aasm_state: :signatures_started)
-      create(:signature, internship_agreement:, signatory_role: :school_manager,
-                         user_id: internship_agreement.school_manager.id)
+      create(:signature,
+             :school_manager,
+             internship_agreement:,
+             user_id: internship_agreement.school_manager.id)
       sign_in(internship_agreement.school_manager)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
@@ -430,8 +440,10 @@ module Dashboard
 
     test 'admin_officer reads internship agreement table with correct indications - status: signatures_started with employer' do
       internship_agreement = create(:internship_agreement, aasm_state: :signatures_started)
-      create(:signature, internship_agreement:, signatory_role: :employer,
-                         user_id: internship_agreement.employer.id)
+      create(:signature,
+             :employer,
+             internship_agreement:,
+             user_id: internship_agreement.employer.id)
       admin_officer = create(:admin_officer, school: internship_agreement.school)
       sign_in(admin_officer)
       visit dashboard_internship_agreements_path
@@ -443,8 +455,10 @@ module Dashboard
 
     test 'admin_officer reads internship agreement table with correct indications - status: signatures_started with school_manager' do
       internship_agreement = create(:internship_agreement, aasm_state: :signatures_started)
-      create(:signature, internship_agreement:, signatory_role: :school_manager,
-                         user_id: internship_agreement.school_manager.id)
+      create(:signature,
+             :school_manager,
+             internship_agreement:,
+             user_id: internship_agreement.school_manager.id)
       admin_officer = create(:admin_officer, school: internship_agreement.school)
       assert Signature.first.signatory_role == 'school_manager'
       sign_in(admin_officer)
@@ -558,8 +572,10 @@ module Dashboard
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:internship_agreement, aasm_state: :signatures_started,
                                                            internship_application:)
-      create(:signature, internship_agreement:, signatory_role: :employer,
-                         user_id: internship_agreement.employer.id)
+      create(:signature,
+             :employer,
+             internship_agreement:,
+             user_id: internship_agreement.employer.id)
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
@@ -577,8 +593,10 @@ module Dashboard
       internship_agreement = create(:internship_agreement, aasm_state: :signatures_started,
                                                            internship_application:)
       school_manager = internship_agreement.internship_application.student.school.school_manager
-      create(:signature, internship_agreement:, signatory_role: :school_manager,
-                         user_id: school_manager.id)
+      create(:signature,
+             :school_manager,
+             internship_agreement:,
+             user_id: school_manager.id)
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do

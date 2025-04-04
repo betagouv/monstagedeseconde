@@ -42,9 +42,8 @@ module Finders
           internship_application: InternshipApplication.all.to_a[index]
         )
       end
-      create(
-        :signature,
-        signatory_role: 'school_manager', # test specfic case
+      create( :signature,
+        :school_manager, # test specfic case
         internship_agreement_id: InternshipAgreement.find_by(aasm_state: :signatures_started).id
       )
       tab_value = TabSchoolManager.new(school: school).pending_agreements_count
@@ -79,7 +78,7 @@ module Finders
       end
       create(
         :signature,
-        signatory_role: 'employer', # test specfic case
+        :employer, # test specfic case
         internship_agreement_id: InternshipAgreement.find_by(aasm_state: :signatures_started).id
       )
       tab_value = TabSchoolManager.new(school: school).pending_agreements_count

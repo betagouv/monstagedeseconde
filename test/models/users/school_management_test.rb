@@ -113,5 +113,22 @@ module Users
       refute build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school:).valid?
       refute build(:school_manager, email: 'ce.1122334x@ac-test.fr', school:).valid?
     end
+
+    test '#management_representative' do
+      school = create(:school)
+      assert_nil school.management_representative
+      create(:main_teacher, school:)
+      assert_nil school.management_representative
+      create(:teacher, school:)
+      assert_nil school.management_representative
+      other = create(:other, school:)
+      assert_equal other.id, school.management_representative.id
+      cpe = create(:cpe, school:)
+      assert_equal cpe.id, school.management_representative.id
+      admin_officer = create(:admin_officer, school:)
+      assert_equal admin_officer.id, school.management_representative.id
+      create(:school_manager, school:)
+      assert_equal admin_officer.id, school.management_representative.id
+    end
   end
 end
