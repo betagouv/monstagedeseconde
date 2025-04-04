@@ -77,16 +77,16 @@ def populate_users
   Users::SchoolManagement.create(
     role: 'admin_officer',
     first_name: 'Pierre',
-    last_name: "Hamon-AdminOfficer",
+    last_name: 'Hamon-AdminOfficer',
     accept_terms: true,
     grade_id: Grade.troisieme.id,
     confirmed_at: Time.now.utc,
     current_sign_in_at: 2.days.ago,
     last_sign_in_at: 12.days.ago,
     school_id: find_college_during_test.id,
-    email: "admin_officer@#{find_default_school_during_test.email_domain_name}",
+    email: "admin_officer_hamon@#{find_default_school_during_test.email_domain_name}",
     password: password_value
-)
+  )
 
   Operator.all.map do |operator|
     with_class_name_for_defaults(Users::Operator.new(email: "#{operator.name.parameterize}@ms2e.fr",
