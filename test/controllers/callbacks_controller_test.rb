@@ -78,8 +78,6 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     stub_sygne_responsible(ine: '1234567890', token: @omogen.token)
     educonnect_logout_stub
 
-    puts "school uai : #{@school.code_uai}"
-
     get educonnect_callback_path, params: { code: @code, state: @state, nonce: @nonce }
 
     @student.reload
