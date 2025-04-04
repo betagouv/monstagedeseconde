@@ -62,7 +62,9 @@
         </div>
       </form>
     </dialog>
-    <% if current_user && current_user.pending_invitation_to_a_team.present? %>
+    <% if current_user && 
+          current_user.pending_invitation_to_a_team.present? && 
+          current_user.reset_password_token.nil? %>
       <%= render 'dashboard/team_member_invitations/dialog_form' %>
     <% end %>
   </body>
