@@ -162,6 +162,7 @@ Rails.application.routes.draw do
     namespace :dashboard, path: 'tableau-de-bord' do
       resources :team_member_invitations, path: 'invitation-equipes', only: %i[create index new destroy] do
         patch :join, to: 'team_member_invitations#join', on: :member
+        get :resend_invitation, to: 'team_member_invitations#resend_invitation', on: :member
       end
 
       post 'internship_applications/update_multiple', to: 'internship_applications#update_multiple',

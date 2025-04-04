@@ -35,3 +35,7 @@ h1.fr-h3.fr-mt-2w.fr-mb-1w Votre équipe
                           method: :delete,
                           data: { confirm: "Êtes-vous sûr de vouloir supprimer #{prez.full_name} de votre équipe ?" } do
                   span.fr-fi-delete-line
+              - if team_member_invitation.pending_invitation?
+                = link_to resend_invitation_dashboard_team_member_invitation_path(team_member_invitation.id),
+                          class: 'fr-btn fr-btn--sm' do
+                  | Renvoyer l'invitation
