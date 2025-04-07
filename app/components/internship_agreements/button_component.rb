@@ -74,8 +74,8 @@ module InternshipAgreements
     end
 
     def user_signed_condition?
-      if current_user.school_manager? || current_user.admin_officer?
-        @internship_agreement.signed_by_school?
+      if current_user.role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE)
+        @internship_agreement.signed_by_school_management?
       elsif current_user.employer_like?
         @internship_agreement.signed_by_team_member?(user: current_user)
       else

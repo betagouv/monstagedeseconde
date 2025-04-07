@@ -255,10 +255,6 @@ class InternshipAgreement < ApplicationRecord
     user.team.db_members.any? { |member| signed_by?(user: member) }
   end
 
-  def signed_by_school?
-    signatures.pluck(:signatory_role).include?('school_manager')
-  end
-
   def presenter(user:)
     Presenters::InternshipAgreement.new(self, user)
   end
@@ -317,6 +313,10 @@ class InternshipAgreement < ApplicationRecord
     return school.management_representative if school.management_representative
 
     nil
+  end
+
+  def signed_by_school_management?
+    signatures.any? { |signature| signature.signatory_role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE) }
   end
 
   private

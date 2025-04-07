@@ -18,7 +18,6 @@ class Signature < ApplicationRecord
   validates :signatory_role, inclusion: { in: signatory_roles.values }
   validates :signatory_ip,
             :signature_date,
-            :signature_image,
             :internship_agreement_id,
             :user_id,
             presence: true
@@ -26,6 +25,9 @@ class Signature < ApplicationRecord
             presence: true,
             if: :employer_signatory_role?,
             format: { with: /\A\+?[0-9]{10,}\z/, message: 'doit contenir au moins 10 chiffres' }
+  validates :signature_image,
+            presence: true,
+            if: :employer_signatory_role?
 
   validate :no_double_signature?
 

@@ -378,7 +378,7 @@ class GenerateInternshipAgreement < Prawn::Document
 
     @pdf.table([[
                  image_from(signature: download_image_and_signature(signatory_role: 'employer')),
-                 @internship_agreement.signature_by_role(signatory_role: 'school_manager') ? image_from(signature: download_image_and_signature(signatory_role: 'school_manager')) : ''
+                 @internship_agreement.signed_by_school_management? ? image_from(signature: download_image_and_signature(signatory_role: 'school_manager')) : ''
                ]], cell_style: { border_width: 0, height: 80 },
                    column_widths: [@pdf.bounds.width / 2, @pdf.bounds.width / 2])
 
@@ -525,7 +525,7 @@ class GenerateInternshipAgreement < Prawn::Document
   end
 
   def download_image_and_signature(signatory_role:)
-    if signatory_role == 'school_manager' && @internship_agreement.school.signature.attached?
+    if signatory_role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE) && @internship_agreement.school.signature.attached?
       begin
         signature_data = @internship_agreement.school.signature.download
         return OpenStruct.new(
