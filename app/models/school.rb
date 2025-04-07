@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'mini_magick'
+require 'tempfile'
+
 class School < ApplicationRecord
   include Nearbyable
   include Zipcodable
@@ -23,8 +26,8 @@ class School < ApplicationRecord
   validates :zipcode, zipcode: { country_code: :fr }
   validates :signature,
             content_type: {
-              in: ['image/jpeg', 'image/png'],
-              message: 'doit être au format JPEG, JPG ou PNG'
+              in: ['image/jpeg', 'image/png', 'application/pdf'],
+              message: 'doit être au format JPEG, PNG ou PDF'
             },
             if: -> { signature.attached? }
   validates :signature,
@@ -34,7 +37,9 @@ class School < ApplicationRecord
             },
             if: -> { signature.attached? }
 
+  # Callbacks
   before_save :set_legal_status
+  after_commit :convert_pdf_to_png, if: :needs_pdf_conversion?
 
   CONTRACT_CODES = {
     '10' => 'HORS CONTRAT',
@@ -210,5 +215,37 @@ class School < ApplicationRecord
 
   def set_legal_status
     self.legal_status = contract_label
+  end
+
+  def needs_pdf_conversion?
+    signature.attached? && signature.content_type == 'application/pdf'
+  end
+
+  def convert_pdf_to_png
+    return unless signature.attached? && signature.content_type == 'application/pdf'
+
+    begin
+      temp_pdf = Tempfile.new(['signature', '.pdf'])
+      temp_pdf.binmode
+      temp_pdf.write(signature.download)
+      temp_pdf.close
+
+      # Convert to PNG
+      image = MiniMagick::Image.new(temp_pdf.path)
+      image.format 'png'
+
+      # Reattach as PNG
+      signature.attach(
+        io: StringIO.new(image.to_blob),
+        filename: signature.filename.to_s.sub('.pdf', '.png'),
+        content_type: 'image/png'
+      )
+    rescue StandardError => e
+      Rails.logger.error "Erreur lors de la conversion PDF->PNG: #{e.message}"
+      errors.add(:signature, "n'a pas pu être convertie en PNG")
+    ensure
+      # Cleanup
+      temp_pdf.unlink if temp_pdf
+    end
   end
 end
