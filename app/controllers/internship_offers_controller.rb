@@ -23,6 +23,10 @@ class InternshipOffersController < ApplicationController
         @internship_offers_seats = 0
         @internship_offers = finder.all
                                    .includes(:sector, :employer)
+        # QPV order
+        if current_user.student? && current_user.school.try(:qpv)
+          @internship_offers = @internship_offers.reorder('qpv DESC NULLS LAST')
+        end
 
         sql = if params[:latitude].present? && params[:longitude].present?
                 <<-SQL
