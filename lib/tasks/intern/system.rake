@@ -17,18 +17,6 @@ namespace :sys do
     'storage/tmp/reset_1E1S_prod_copy.sql'
   end
 
-  desc "test database to check if it is production's copy"
-  task :is_prod, [] => :environment do
-    file = Rails.root.join('config/database.yml')
-    text = File.read(file)
-    is_in_prod = !text.match?(/# url: <%= ENV.fetch\('CLEVER_PRODUCTION_COPY_CONNEXION_URI'\)/)
-    if is_in_prod
-      PrettyConsole.puts_in_red 'Database is a copy of production'
-    else
-      PrettyConsole.puts_in_green 'Database is local'
-    end
-  end
-
   desc 'uncomment url in database.yml to switch database from local to production copy'
   task :db_prod, [] => :environment do
     file = Rails.root.join('config/database.yml')
@@ -73,9 +61,9 @@ namespace :sys do
     end
   end
 
-  desc 'uplaod a local production database copy to CleverCloud'
+  desc 'upload a local production database copy to CleverCloud'
   task :upl_prod, [] => :environment do
-    PrettyConsole.announce_task 'Downloading production database' do
+    PrettyConsole.announce_task 'Uploading production database dump' do
       system("pg_restore -h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
               "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
               "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
@@ -184,6 +172,40 @@ namespace :sys do
       end
     else
       PrettyConsole.puts_in_red 'You cannot run this task only with dev or staging environment'
+    end
+  end
+
+  desc 'download an upload a sql copy of the production database'
+  task :dl_upl_prod, [] => :environment do
+    if Rails.env.development?
+      chosen_db_name = db_file_name
+      PrettyConsole.announce_task 'Downloading production database' do
+        unless Dir.exist?('storage/tmp')
+          PrettyConsole.announce_task 'Creating directory' do
+            system('mkdir -p storage/tmp')
+            system('chmod 777 storage/tmp')
+            system("chmod +R #{chosen_db_name}")
+          end
+        end
+        puts '================================'
+        PrettyConsole.puts_in_cyan "producing chosen_db_name (dump): #{chosen_db_name}"
+        puts '================================'
+        puts ''
+        system('pg_dump -c --clean --if-exists -Fc --encoding=UTF-8 --no-owner --no-password  ' \
+        "-d #{ENV['PRODUCTION_DATABASE_URI']} > #{db_file_name}")
+      end
+
+      PrettyConsole.announce_task 'Uploading production database' do
+        # system("pg_restore -h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
+        #         "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
+        #         "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
+        #         "-f #{db_file_name}")
+      end
+      PrettyConsole.announce_task "Removing file #{chosen_db_name}" do
+        system("rm  #{chosen_db_name}")
+      end
+    else
+      PrettyConsole.puts_in_red 'You cannot run this task only with dev or environment'
     end
   end
 end
