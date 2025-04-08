@@ -106,6 +106,7 @@ class Ability
     end
     can(:cancel, InternshipApplication) do |internship_application|
       ok_canceling = %w[ submitted
+                         restored
                          read_by_employer
                          validated_by_employer
                          approved
@@ -119,6 +120,13 @@ class Ability
     can_read_dashboard_students_internship_applications(user:)
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)
+    end
+    can(:restore, InternshipApplication) do |internship_application|
+      # restored_at makes the application restorable only once
+      internship_application.student.id == user.id &&
+        !internship_application.student.has_found_her_internships? &&
+        internship_application.aasm_state.in?(InternshipApplication::RESTORABLE_STATES) &&
+        internship_application.restored_at.nil?
     end
   end
 
@@ -144,7 +152,6 @@ class Ability
       read
       create
       edit
-      sign_internship_agreements
       edit_activity_rating
       edit_financial_conditions_rich_text
       edit_legal_terms_rich_text
@@ -468,7 +475,9 @@ class Ability
       can %i[edit update], School
       can %i[manage_school_users
              manage_school_students
-             manage_school_internship_agreements], School do |school|
+             manage_school_internship_agreements
+             edit_signature
+             update_signature], School do |school|
         school.id == user.school_id
       end
     end
@@ -519,7 +528,12 @@ class Ability
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
     end
+    can :sign_internship_agreements, InternshipAgreement do |agreement|
+      agreement.internship_application.student.school_id == user.school_id &&
+        (agreement.validated? || (agreement.signatures_started? && !agreement.signed_by_school_management?))
+    end
   end
+
 
   private
 

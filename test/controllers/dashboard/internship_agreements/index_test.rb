@@ -42,6 +42,79 @@ module Dashboard::InternshipOffers
       assert_select('td.actions', text: 'Remplir ma convention')
     end
 
+    test 'GET #index as school_manager when employer dit not complete the internship agreement' do
+      school = create(:school, :with_school_manager)
+      employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
+      internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
+      internship_application.student.update(school_id: school.id)
+      InternshipAgreement.last.update(aasm_state: 'draft')
+
+      sign_in(school.school_manager)
+      get dashboard_internship_agreements_path
+      assert_response :success
+      assert_select('td.actions', text: 'En attente')
+    end
+
+    test 'GET #index as school_manager when employer did complete the internship agreement' do
+      school = create(:school, :with_school_manager)
+      employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
+      internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
+      internship_application.student.update(school_id: school.id)
+
+      InternshipAgreement.last.update(aasm_state: 'completed_by_employer')
+
+      sign_in(school.school_manager)
+      get dashboard_internship_agreements_path
+      assert_response :success
+      assert_select('td.actions', text: 'Remplir ma convention')
+    end
+    test 'GET #index as school_manager when employer signed the internship agreement' do
+      school = create(:school, :with_school_manager)
+      employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
+      internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
+      internship_application.student.update(school_id: school.id)
+
+      InternshipAgreement.last.update(aasm_state: 'signatures_started')
+      create(:signature, :employer, internship_agreement: InternshipAgreement.last)
+
+      sign_in(school.school_manager)
+      get dashboard_internship_agreements_path
+      assert_response :success
+      assert_select('td.actions', text: 'Signer en ligne')
+    end
+    test 'GET #index as school_manager when school manager signed the internship agreement' do
+      school = create(:school, :with_school_manager)
+      employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
+      internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
+      internship_application.student.update(school_id: school.id)
+
+      InternshipAgreement.last.update(aasm_state: 'signatures_started')
+      create(:signature, :school_manager, internship_agreement: InternshipAgreement.last)
+
+      sign_in(school.school_manager)
+      get dashboard_internship_agreements_path
+      assert_response :success
+      assert_select('td.actions', text: 'ImprimerDéjà signée')
+    end
+    test 'GET #index as school_manager when everyone signed the internship agreement' do
+      school = create(:school, :with_school_manager)
+      employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
+      internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
+      internship_application.student.update(school_id: school.id)
+
+      InternshipAgreement.last.update(aasm_state: 'signed_by_all')
+
+      sign_in(school.school_manager)
+      get dashboard_internship_agreements_path
+      assert_response :success
+      assert_select('td.actions', text: 'Télécharger le PDF')
+    end
+
     test 'GET #index as teacher ' do
       school = create(:school, :with_school_manager)
       teacher = create(:teacher, school: school)

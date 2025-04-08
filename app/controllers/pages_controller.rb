@@ -105,6 +105,12 @@ class PagesController < ApplicationController
     Rails.logger.info 'Educonnect logout responsible page'
   end
 
+  def regional_partners_index
+    @main_partners = get_main_partners
+    @engaged_partners = get_engaged_partners
+    @quotes = get_quotes
+  end
+
   private
 
   def link_resolver
@@ -166,6 +172,63 @@ class PagesController < ApplicationController
         question: doc['faq.question'].as_text,
         answer: doc['faq.answer'].as_html(link_resolver),
         url: doc['faq.url'].try(:as_text)
+      }
+    end
+  end
+
+  def get_main_partners
+    return [] if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
+
+    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
+    main_partners = api.query([
+                                Prismic::Predicates.at('document.type', 'partner'),
+                                Prismic::Predicates.at('my.partner.category', 'main_partner')
+                              ],
+                              { 'orderings' => '[my.partner.rank]' })
+
+    puts "main_partners: #{main_partners.inspect}"
+
+    main_partners.results.map do |doc|
+      {
+        name: doc['partner.name'].as_text,
+        logo: doc['partner.logo'].url,
+        url: doc['partner.url'].as_text,
+        rank: doc['partner.rank']
+      }
+    end
+  end
+
+  def get_engaged_partners
+    return [] if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
+
+    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
+    engaged_partners = api.query([
+                                   Prismic::Predicates.at('document.type', 'partner'),
+                                   Prismic::Predicates.at('my.partner.category', 'engaged_partner')
+                                 ],
+                                 { 'orderings' => '[my.partner.name]' })
+    puts "engaged_partners: #{engaged_partners.inspect}"
+
+    engaged_partners.results.map do |doc|
+      {
+        name: doc['partner.name'].as_text,
+        logo: doc['partner.logo'].url,
+        url: doc['partner.url'].as_text,
+        rank: doc['partner.rank']
+      }
+    end
+  end
+
+  def get_quotes
+    return [] if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
+
+    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
+    response = api.query([Prismic::Predicates.at('document.type', 'quote')])
+    @quotes = response.results.map do |doc|
+      {
+        quote: doc['quote.text'].as_text,
+        author: doc['quote.author'].as_text,
+        author_background: doc['quote.author_background'].as_text
       }
     end
   end

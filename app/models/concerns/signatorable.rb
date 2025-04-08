@@ -59,7 +59,7 @@ module Signatorable
     end
 
     def show_code
-      return "" if signature_phone_token.nil?
+      return '' if signature_phone_token.nil?
 
       [signature_phone_token[0..2], signature_phone_token[3..-1]].join(' ')
     end
@@ -74,13 +74,13 @@ module Signatorable
       InternshipAgreement.kept
                          .joins(:signatures)
                          .where(id: internship_agreement_id)
-                         .where(signatures: {user_id: id})
+                         .where(signatures: { user_id: id })
                          .exists?
     end
 
     def can_sign?(internship_agreement)
       if school_management?
-        school_manager? && internship_agreement.school.id == school_id
+        internship_agreement.school.id == school_id
       else
         internship_agreement.school.id == school_id ||
           internship_agreement.employer.id.in?(team_members_ids)

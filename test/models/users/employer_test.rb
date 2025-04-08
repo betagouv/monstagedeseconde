@@ -50,8 +50,8 @@ module Users
       refute employer.already_signed?(internship_agreement_id: internship_agreement_1.id)
       refute employer.already_signed?(internship_agreement_id: internship_agreement_2.id)
       create(:signature,
+             :employer,
              internship_agreement: internship_agreement_1,
-             signatory_role: :employer,
              user_id: employer.id)
       assert employer.already_signed?(internship_agreement_id: internship_agreement_1.id)
       refute employer.already_signed?(internship_agreement_id: internship_agreement_2.id)
@@ -136,9 +136,8 @@ module Users
           internship_application: InternshipApplication.all.to_a[index]
         )
       end
-      create(
-        :signature,
-        signatory_role: 'employer',
+      create( :signature,
+        :employer,
         internship_agreement_id: InternshipAgreement.find_by(aasm_state: :signatures_started).id
       )
       assert_equal 3, employer.pending_agreements_actions_count
@@ -169,9 +168,8 @@ module Users
           internship_application: InternshipApplication.all.to_a[index]
         )
       end
-      create(
-        :signature,
-        signatory_role: 'school_manager',
+      create( :signature,
+        :school_manager,
         internship_agreement_id: InternshipAgreement.find_by(aasm_state: :signatures_started).id
       )
       assert_equal 4, employer.pending_agreements_actions_count

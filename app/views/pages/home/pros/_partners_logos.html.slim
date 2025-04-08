@@ -1,12 +1,21 @@
+.row 
+  .col-12
+    h1.h2.text-dark.fr-mt-4w Nos principaux partenaires
+    p.fr-py-2w Découvrez ci-dessous les plateformes de nos différents partenaires.
+    .fr-mt-2w
+      = link_to "Rejoignez nos partenaires",
+                contact_path,
+                class: "fr-btn"
+
 .d-flex.align-content-start.flex-wrap.fr-pb-2w.fr-pt-4w
-  - regions_list.each do |region|
+  - @main_partners.each do |partner|
     .logo-card.fr-mb-3w
-      .header.d-flex.align-items-center
-        = image_tag asset_pack_path("media/images/homepage/partenaires/#{region[:logo]}"),
-                    alt: region[:alt]
+      .header.d-flex.align-items-center.d-flex.justify-content-center
+        = image_tag partner[:logo],
+                    alt: partner[:name]
       .body
-        = link_to region[:name],
-                  region[:url],
+        = link_to partner[:name],
+                  partner[:url],
                   target: "_blank",
                   class: 'fr-raw-link'
                   

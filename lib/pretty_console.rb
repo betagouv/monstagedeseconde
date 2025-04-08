@@ -88,7 +88,7 @@ module PrettyConsole
     yield
     end_time = Time.now
     puts ''
-    puts_in_blue_loudly "-------- Task completed. Took #{end_time - start_time} * seconds"
+    puts_in_blue_loudly "--------  [#{Rails.try(:env)}] Task completed. Took #{end_time - start_time} seconds"
     puts_in_green "-- end #{label} ----"
   end
 

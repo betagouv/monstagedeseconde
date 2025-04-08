@@ -25,6 +25,7 @@
     <%= javascript_pack_tag "application.js", defer: true, 'data-turbo-track': "reload" %>
     <%= javascript_include_tag "https://unpkg.com/leaflet@1.8.0/dist/leaflet.js", integrity: "sha384-4Dmmo81xejNChaqLOci80VhUcuEAD5pXpCtqtizmdgWEzdETh3zrJvzOhU4T79cN", crossorigin: "anonymous" %>
     <%= render partial: "layouts/analytics" %>
+    <%= turbo_frame_tag "modal" %>
   </head>
 
   <body class="<%= env_class_name %> <%= body_class_name %>">
@@ -61,7 +62,9 @@
         </div>
       </form>
     </dialog>
-    <% if current_user && current_user.pending_invitation_to_a_team.present? %>
+    <% if current_user && 
+          current_user.pending_invitation_to_a_team.present? && 
+          current_user.reset_password_token.nil? %>
       <%= render 'dashboard/team_member_invitations/dialog_form' %>
     <% end %>
   </body>

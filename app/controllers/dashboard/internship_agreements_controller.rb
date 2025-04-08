@@ -2,7 +2,8 @@ module Dashboard
   # WIP, not yet implemented, will host agreement signing
   class InternshipAgreementsController < ApplicationController
     before_action :authenticate_user!
-    before_action :set_internship_agreement, only: %i[edit update show]
+    before_action :set_internship_agreement,
+                  only: %i[edit update show school_management_signature school_management_sign]
 
     def new
       @internship_agreement = internship_agreement_builder.new_from_application(
@@ -81,6 +82,37 @@ module Dashboard
       #           .filtering_discarded_students
       #           .approved
       #           .select { |ia| ia.student.school.school_manager.nil? }
+    end
+
+    def school_management_signature
+      authorize! :sign_internship_agreements, @internship_agreement
+    end
+
+    def school_management_sign
+      authorize! :sign_internship_agreements, @internship_agreement
+      if params.dig(
+        :internship_agreement, :signature
+      ).blank? && @internship_agreement.school.signature.blank?
+        redirect_to dashboard_internship_agreements_path,
+                    flash: { danger: 'Vous devez d\'abord importer la signature du chef d\'établissement. Avant de signer la convention.' } and return
+      end
+
+      update_school_signature if params.dig(:internship_agreement, :signature).present?
+
+      Signature.create!(internship_agreement: @internship_agreement,
+                        signatory_role: current_user.role,
+                        user_id: current_user.id,
+                        signatory_ip: request.remote_ip,
+                        signature_date: Time.now,
+                        signature_phone_number: current_user.try(:phone))
+      if @internship_agreement.signatures_started?
+        @internship_agreement.signatures_finalize!
+      else
+        @internship_agreement.sign!
+      end
+
+      redirect_to dashboard_internship_agreements_path,
+                  flash: { success: 'La convention a été signée.' }
     end
 
     private
@@ -180,6 +212,11 @@ module Dashboard
 
     def set_internship_agreement
       @internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
+    end
+
+    def update_school_signature
+      @internship_agreement.student.school.signature = params[:internship_agreement][:signature]
+      @internship_agreement.student.school.save
     end
   end
 end

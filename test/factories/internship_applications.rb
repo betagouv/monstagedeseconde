@@ -26,6 +26,28 @@ FactoryBot.define do
       end
     end
 
+    trait :restored do
+      aasm_state { :restored }
+      submitted_at { 3.days.ago }
+      after(:create) do |application|
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: '',
+               to_state: 'submitted',
+               author: application.student)
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'submitted',
+               to_state: 'canceled_by_student',
+               author: application.student)
+        create(:internship_application_state_change,
+               internship_application: application,
+               from_state: 'canceled_by_student',
+               to_state: 'restored',
+               author: application.student)
+      end
+    end
+
     trait :read_by_employer do
       aasm_state { :read_by_employer }
       submitted_at { 3.days.ago }

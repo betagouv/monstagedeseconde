@@ -168,6 +168,50 @@ module Dashboard
         end
       end
 
+      def school_management_group_signature
+        redirect_to dashboard_internship_agreements_path and return unless params[:ids].present?
+
+        params[:ids].split(',').each do |id|
+          internship_agreement = current_user.internship_agreements.find(id)
+          authorize! :sign_internship_agreements, internship_agreement
+        end
+
+        @internship_agreements = current_user.internship_agreements.where(id: params[:ids])
+      end
+
+      def school_management_group_sign
+        redirect_to dashboard_internship_agreements_path and return unless params[:ids].present?
+
+        update_school_signature if params[:internship_agreement]&.[](:signature).present?
+
+        params[:ids].split(',').each do |id|
+          internship_agreement = current_user.internship_agreements.find(id)
+          authorize! :sign_internship_agreements, internship_agreement
+          if internship_agreement.school.signature.blank?
+            redirect_to dashboard_internship_agreements_path,
+                        flash: { danger: 'Vous devez d\'abord importer la signature du chef d\'établissement. Avant de signer la convention.' } and return
+          end
+
+          update_school_signature if params.dig(:internship_agreement, :signature).present?
+
+          Signature.create(internship_agreement: internship_agreement,
+                           signatory_role: current_user.role,
+                           user_id: current_user.id,
+                           signatory_ip: request.remote_ip,
+                           signature_date: Time.now,
+                           signature_phone_number: current_user.try(:phone))
+
+          if internship_agreement.signatures_started?
+            internship_agreement.signatures_finalize!
+          else
+            internship_agreement.sign!
+          end
+        end
+
+        redirect_to dashboard_internship_agreements_path,
+                    flash: { success: 'Les conventions ont été signées.' }
+      end
+
       private
 
       def starting_path(current_user)
@@ -197,6 +241,12 @@ module Dashboard
 
       def user_params
         params.require(:user).permit(*allowed_params)
+      end
+
+      def update_school_signature
+        school = current_user.school
+        school.signature = params[:internship_agreement][:signature]
+        school.save
       end
     end
   end

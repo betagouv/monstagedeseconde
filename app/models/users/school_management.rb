@@ -79,13 +79,16 @@ module Users
 
     def signatory_role
       Signature.signatory_roles[:school_manager] if role == 'school_manager'
+      Signature.signatory_roles[:cpe] if role == 'cpe'
+      Signature.signatory_roles[:other] if role == 'other'
+      Signature.signatory_roles[:admin_officer] if role == 'admin_officer'
     end
 
     def school_management? = true
     def school_manager? = role == 'school_manager'
     def admin_officer? = role == 'admin_officer'
     def cpe? = role == 'cpe'
-    def teacher? = role == 'teacher' || role == 'main_teacher'
+    def teacher? = %w[teacher main_teacher].include?(role)
 
     def school_manager
       try(:school).try(:school_manager)

@@ -47,8 +47,8 @@ module Dashboard::Users
       sign_in(school_manager)
 
       visit dashboard_internship_agreements_path
-      click_on 'Ajouter aux signatures'
-      click_on 'Signer'
+      click_on 'Signer en ligne'
+      click_on 'Ajoutez votre signature'
 
       find('input#phone_suffix').set('0612345678')
       if ENV['RUN_BRITTLE_TEST']

@@ -113,7 +113,7 @@ module ApplicationHelper
         url: 'https://www.opco2i.fr/',
         logo: 'logo-opco-2i.png',
         alt: 'logo de OPCO 2i' },
-      { name: 'Université des métiers du nucléaire',
+      { name: 'Université des Métiers du Nucléaire',
         url: 'https://www.monavenirdanslenucleaire.fr/',
         logo: 'logo-univ-metiers-nucleaire.png',
         alt: 'logo de l\'Université des métiers du nucléaire' }

@@ -23,11 +23,13 @@ export default function SirenInput({
   const [siret, setSiret] = useState(currentSiret || "");
   const [searchResults, setSearchResults] = useState([]);
   const [debouncedSiret, setDebouncedSiret] = useState(siret);
+  const [employerNameStr, setEmployerNameStr] = useState(currentSiret);
   const [internshipAddressManualEnter, setInternshipAddressManualEnter] =
     useState(currentManualEnter || false);
 
   const inputChange = (event) => {
     setSiret(event.target.value);
+    setEmployerNameStr(event.target.value);
   };
 
   const searchCompanyBySiret = (siret) => {
@@ -131,6 +133,7 @@ export default function SirenInput({
     const addressConcatenated = `${street} ${zipcode} ${city}`.trim();
     searchCoordinatesByAddress(addressConcatenated);
     const employerName = selection.uniteLegale.denominationUniteLegale;
+    setEmployerNameStr(employerName);
 
     setValueById( `${resourceName}_entreprise_full_address`, addressConcatenated );
     setValueById( `${resourceName}_entreprise_chosen_full_address`, addressConcatenated );
@@ -142,20 +145,56 @@ export default function SirenInput({
 
     const ministry = document.getElementById("ministry-choice");
     const ministryClassList = ministry.classList;
+    const sectorBloc = document.getElementById("sector-choice-block");
+    const sectorBlocClassList = sectorBloc.classList;
+    const sector = document.getElementById("sector-choice");
     // TODO pub/sub with broadcasting would be better
-    // because both jsx and stimulus send events to the containers (show/hide)
+    // because both jsx components and stimulus send events to the containers (show/hide)
     ministryClassList.add("d-none"); // default
     // is_public is known when user seached by name and unknown when user searched by siret
     if (is_public != undefined) {
       toggleContainerById("public-private-radio-buttons", false);
-      const hiddenField = document.getElementById("hidden-public-private-field") .children[0];
+      const hiddenField = document.getElementById("hidden-public-private-field").children[0];
       hiddenField.value = is_public;
       toggleContainer(hiddenField, true);
+      
       if (is_public) {
         ministry.removeAttribute("style");
         ministryClassList.remove("d-none");
+        
+        // For public establishments
+
+        sectorBlocClassList.add("d-none");
+        // Safely check and select "Fonction publique" option
+        if (sector && sector.options) {
+          for (let i = 0; i < sector.options.length; i++) {
+            if (sector.options[i].text.toLowerCase().includes('fonction publique')) {
+              sector.value = sector.options[i].value;
+              break;
+            }
+          }
+        }
+      } else {
+        // For private companies
+        sectorBlocClassList.remove("d-none");
+        sector.value = "";
       }
     }
+  };
+  
+  const clearImmediate = () => {
+    setEmployerNameStr('');
+    setSiret("");
+    setSearchResults([]);
+    setValueById(`${resourceName}_siret`, "");
+    setValueById(`${resourceName}_presentation_siret`, "");
+    setValueById(`${resourceName}_employer_name`, "");
+    setValueById(`${resourceName}_entreprise_full_address`, "");
+    setValueById(`${resourceName}_entreprise_chosen_full_address`, "");
+    setValueById(`${resourceName}_entreprise_coordinates_longitude`, "");
+    setValueById(`${resourceName}_entreprise_coordinates_latitude`, "");
+    show_form(false);
+    broadcast(employerNameChanged({ employerName: "" }));
   };
 
   const show_form = (show) => {
@@ -225,23 +264,30 @@ export default function SirenInput({
                 })}
               >
                 Indiquez le nom ou le SIRET de la structure d’accueil *
-                {railsEnv === "development"
+                { railsEnv === "development"
                   ? " (dev only : 21950572400209)"
-                  : ""}
+                  : "" }
               </label>
-              <div className="input-group input-siren">
-                <input
-                  {...getInputProps({
-                    onChange: inputChange,
-                    value: currentSiret,
-                    className: "fr-input",
-                    maxLength: 140,
-                    id: `${resourceName}_siren`,
-                    placeholder:
-                      "Rechercher par nom ou par SIRET(14 caractères)",
-                    name: `${resourceName}[siren]`,
-                  })}
-                />
+              <div className="d-flex flew-row">
+                <div className="input-group input-siren">
+                  <input
+                    {...getInputProps({
+                      onChange: inputChange,
+                      value: employerNameStr,
+                      className: "fr-input",
+                      maxLength: 140,
+                      id: `${resourceName}_siren`,
+                      placeholder:
+                        "Rechercher par nom ou par SIRET(14 caractères)",
+                      name: `${resourceName}[siren]`,
+                    })}
+                  />
+                </div>
+                <div>
+                  <button className="fr-btn fr-btn--secondary fr-icon-delete-line"
+                          onClick={clearImmediate}>
+                  </button>
+                </div>
               </div>
               <div className="mt-2 d-flex align-items-center">
                 <small>

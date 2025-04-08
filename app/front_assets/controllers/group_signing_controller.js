@@ -62,6 +62,7 @@ export default class extends Controller {
       }
     });
     this.repaintGeneralCta(event);
+    this.updateParamsSignaturesUrl();
   }
 
   withCheckbox(element, agreementId) {
@@ -84,9 +85,28 @@ export default class extends Controller {
     this.addCounter(1);
     this.signingButtonsAction(agreementId, this.disable);
   }
+
   removeFromList(agreementId) {
     this.addCounter(-1);
     this.signingButtonsAction(agreementId, this.enable);
+  }
+
+  // function to check all the checkboxes checked and add to the general cta a array of ids to the url
+  updateParamsSignaturesUrl() {
+    const ids = this.addCheckBoxTargets.filter(element => element.checked)
+                    .map(element => element.getAttribute('data-group-signing-id-param'));
+    const form = this.generalCtaTarget.closest('form');
+    const baseUrl = form.getAttribute('action');
+    const newUrl = baseUrl.split('?')[0] + '?ids=' + ids.join(',');
+    form.setAttribute('action', newUrl);
+  }
+
+  checkAllCheckboxes() {
+    this.addCheckBoxTargets.forEach(element => {
+      if (element.checked) {
+        this.addToList(element.getAttribute('data-group-signing-id-param'));
+      }
+    });
   }
 
   signingButtonsAction(agreementId, fn) {
