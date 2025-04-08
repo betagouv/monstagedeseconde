@@ -196,10 +196,10 @@ namespace :sys do
       end
 
       PrettyConsole.announce_task 'Uploading production database' do
-        # system("pg_restore -h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
-        #         "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
-        #         "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
-        #         "-f #{db_file_name}")
+        system("pg_restore -h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
+                "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
+                "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
+                "-f #{db_file_name}")
       end
       PrettyConsole.announce_task "Removing file #{chosen_db_name}" do
         system("rm  #{chosen_db_name}")
