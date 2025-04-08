@@ -78,7 +78,7 @@ module Dashboard::InternshipOffers
       internship_application.student.update(school_id: school.id)
 
       InternshipAgreement.last.update(aasm_state: 'signatures_started')
-      create(:signature, internship_agreement: InternshipAgreement.last, signatory_role: 'employer')
+      create(:signature, :employer, internship_agreement: InternshipAgreement.last)
 
       sign_in(school.school_manager)
       get dashboard_internship_agreements_path
@@ -93,7 +93,7 @@ module Dashboard::InternshipOffers
       internship_application.student.update(school_id: school.id)
 
       InternshipAgreement.last.update(aasm_state: 'signatures_started')
-      signature = create(:signature, internship_agreement: InternshipAgreement.last, signatory_role: 'school_manager')
+      create(:signature, :school_manager, internship_agreement: InternshipAgreement.last)
 
       sign_in(school.school_manager)
       get dashboard_internship_agreements_path

@@ -12,6 +12,7 @@ FactoryBot.define do
     department { Department.find_by(code: '75') }
     rep_kind { '' }
     qpv { false }
+    signature {Rack::Test::UploadedFile.new('test/fixtures/files/signature.png', 'image/png')}
 
     is_public { true }
     contract_code { '99' }
@@ -22,6 +23,10 @@ FactoryBot.define do
       city { 'Paris' }
       name { 'Parisian school' }
       coordinates { Coordinates.paris }
+    end
+
+    trait :without_signature do
+      signature { nil }
     end
 
     trait :at_bordeaux do
