@@ -391,6 +391,6 @@ class InternshipAgreement < ApplicationRecord
   def save_delegation_date
     return unless student.school.delegation_date.blank?
 
-    student.school.update(delegation_date: delegation_date)
+    student.school.reload.update(delegation_date: delegation_date)
   end
 end
