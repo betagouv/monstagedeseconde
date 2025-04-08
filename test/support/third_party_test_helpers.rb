@@ -1,4 +1,29 @@
 module ThirdPartyTestHelpers
+
+  def headers_with_token(token: , uri: )
+    {
+     'Accept'=>'application/json',
+     'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+     'Authorization'=>"Bearer #{token}",
+     'Content-Type'=>'application/json',
+     'Host'=> URI(uri).host,
+     'User-Agent'=>'Ruby'
+    }
+  end
+  
+  def expected_token_response(token: 'token')
+    {status: 200, body: { access_token: token }.to_json, headers: {}}
+  end
+
+  def headers_with_host(uri:)
+    {
+      'Accept' => '*/*',
+      'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+      'Host' => URI(uri).host,
+      'User-Agent' => 'Ruby'
+    }
+  end
+
   def bitly_stub
     stub_request(:post, 'https://api-ssl.bitly.com/v4/shorten')
       .with(
@@ -284,15 +309,43 @@ module ThirdPartyTestHelpers
         'adhesionTransport' => false
       }].to_json
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
-      headers = {
-        'Accept' => '*/*',
-        'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-        'Authorization' => "Bearer #{token}",
-        'Compression-Zip' => 'non',
-        'User-Agent' => 'Ruby'
-      }
-      stub_request(:get, uri).with(headers:)
+      stub_request(:get, uri).with(headers: headers_with_token(token: , uri: ))
                              .to_return(status: 200, body: expected_response, headers: {})
     end
+  end
+
+  def base_score_uri
+    ENV['SCORE_API_URL']
+  end
+
+  def stub_score_auth_token
+    uri = URI "#{base_score_uri}/login"
+    body = {
+      username: ENV.fetch('SCORE_API_USER'),
+      password: ENV.fetch('SCORE_API_PASSWORD')
+    }
+    stub_request(:post, uri)
+      .with(body:, headers: headers_with_host(uri: uri))
+      .to_return(expected_token_response)
+  end
+
+  def stub_description_score(instance:, token: 'token', score: 0)
+    stub_score_auth_token
+    uri = URI("#{base_score_uri}/score")
+    body = {
+       aasm_state: instance.aasm_state,
+       description: instance.description,
+       discarded_at: nil,
+       employer_name: "",
+       id: 0,
+       index: 10000,
+       norma: instance.description,
+       :'sectors- sector_id → name' => "",
+       title: instance.title
+    }
+    expected_return = {status: 200, body: { score: score }, headers: {}}
+    stub_request(:post, uri)
+      .with(body: body, headers: headers_with_token(token: token, uri: uri))
+      .to_return({status: 200, body: { score: score }.to_json, headers: {}})
   end
 end
