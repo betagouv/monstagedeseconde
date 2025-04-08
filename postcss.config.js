@@ -1,12 +1,16 @@
-module.exports = {
+import postcssImport from 'postcss-import';
+import postcssFlexbugsFixes from 'postcss-flexbugs-fixes';
+import postcssPresetEnv from 'postcss-preset-env';
+
+export default {
   plugins: [
-    require('postcss-import'),
-    require('postcss-flexbugs-fixes'),
-    require('postcss-preset-env')({
+    postcssImport,
+    postcssFlexbugsFixes,
+    postcssPresetEnv({
       autoprefixer: {
-        flexbox: 'no-2009'
+        flexbox: 'no-2009',
       },
-      stage: 3
+      stage: 3,
     }),
-  ]
-}
+  ],
+};
