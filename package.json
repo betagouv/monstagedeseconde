@@ -59,7 +59,6 @@
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.3",
     "pa11y-ci": "^3.0.1",
-    "postcss": "^8.5.3",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-import": "^16.1.0",
     "postcss-nested": "^7.0.2",
@@ -73,5 +72,8 @@
   },
   "resolutions": {
     "rails_admin/@fortawesome/fontawesome-free": "^5.15.0"
+  },
+  "peerDependencies": {
+    "postcss": "^8.5.3"
   }
 }
