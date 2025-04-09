@@ -48,6 +48,7 @@ default: &default
     - .module.scss
     - .module.css
     - .png
+    - .pcss
     - .svg
     - .gif
     - .jpeg
