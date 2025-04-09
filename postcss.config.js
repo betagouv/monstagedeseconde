@@ -14,7 +14,7 @@
 //     }),
 //   ],
 // };
-export default {};
+module.exports = { plugins: [] };
 // module.exports = {
 //   plugins: [
 //     require('postcss-import'),
