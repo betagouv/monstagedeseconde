@@ -49,11 +49,11 @@
     "stimulus": "3",
     "url-search-params-polyfill": "^8.0.0",
     "use-debounce": "5",
-    "whatwg-fetch": "^3.2.0"
+    "whatwg-fetch": "^3.2.0",
+    "@types/postcss-preset-env": "^7.7.0"
   },
   "devDependencies": {
     "@types/leaflet": "^1.7.11",
-    "@types/postcss-preset-env": "^7.7.0",
     "babel-eslint": "^10.0.2",
     "eslint": "^7.3.1",
     "eslint-config-airbnb": "^18.0.1",
