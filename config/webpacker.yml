@@ -48,6 +48,7 @@ default: &default
     - .module.scss
     - .module.css
     - .png
+    - .pcss
     - .svg
     - .gif
     - .jpeg
@@ -68,7 +69,7 @@ development:
     host: localhost
     port: 3035
     public: localhost:3035
-    hmr: false
+    hmr: true
     # Inline should be set to true if using HMR
     inline: true
     overlay: true
