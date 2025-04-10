@@ -1,43 +1,40 @@
-require "test_helper"
+require 'test_helper'
 
 class TeamMemberInvitationTest < ActiveSupport::TestCase
-  test "aasm_state default" do
+  test 'aasm_state default' do
     team_member_invitation = TeamMemberInvitation.new
-    assert_equal team_member_invitation.aasm_state, "pending_invitation"
+    assert_equal team_member_invitation.aasm_state, 'pending_invitation'
   end
 
-  test "aasm_state accepted_invitation" do
+  test 'aasm_state accepted_invitation' do
     employer = create(:employer)
     invitee_employer = create(:employer)
     team_member_invitation = create(:team_member_invitation,
-                         inviter_id: employer.id,
-                         member_id: invitee_employer.id,
-                         invitation_email: invitee_employer.email
-    )
+                                    inviter_id: employer.id,
+                                    member_id: invitee_employer.id,
+                                    invitation_email: invitee_employer.email)
     assert 1, employer.team.team_size
     team_member_invitation.accept_invitation!
-    assert_equal team_member_invitation.aasm_state, "accepted_invitation"
+    assert_equal team_member_invitation.aasm_state, 'accepted_invitation'
     assert 2, employer.team.team_size
     assert 2, invitee_employer.team.team_size
     assert_equal 2, TeamMemberInvitation.all.count
   end
 
-  test "no fusion between teams" do
+  test 'no fusion between teams' do
     employer = create(:employer)
     invitee_employer = create(:employer)
     team_member_invitation = create(:team_member_invitation,
-                         inviter_id: employer.id,
-                         member_id: invitee_employer.id,
-                         invitation_email: invitee_employer.email
-    )
+                                    inviter_id: employer.id,
+                                    member_id: invitee_employer.id,
+                                    invitation_email: invitee_employer.email)
     team_member_invitation.accept_invitation!
     employer_2 = create(:employer)
     invitee_employer_2 = create(:employer)
     team_member_invitation = create(:team_member_invitation,
-                         inviter_id: employer_2.id,
-                         member_id: invitee_employer_2.id,
-                         invitation_email: invitee_employer_2.email
-    )
+                                    inviter_id: employer_2.id,
+                                    member_id: invitee_employer_2.id,
+                                    invitation_email: invitee_employer_2.email)
     team_member_invitation.accept_invitation!
     assert 2, employer_2.team.team_size
     assert 2, invitee_employer_2.team.team_size
@@ -48,10 +45,9 @@ class TeamMemberInvitationTest < ActiveSupport::TestCase
     employer = create(:employer)
     invitee_employer = create(:employer)
     team_member_invitation = create(:team_member_invitation,
-                         inviter_id: employer.id,
-                         member_id: invitee_employer.id,
-                         invitation_email: invitee_employer.email
-    )
+                                    inviter_id: employer.id,
+                                    member_id: invitee_employer.id,
+                                    invitation_email: invitee_employer.email)
     team_member_invitation.refuse_invitation!
     refute employer.team.alive?
     assert employer.team.not_exists?
@@ -61,9 +57,26 @@ class TeamMemberInvitationTest < ActiveSupport::TestCase
   test 'team does not exist with a sole user' do
     employer = create(:employer)
     team_member_invitation = create(:team_member_invitation,
-                         inviter_id: employer.id,
-                         member_id: nil,
-                         invitation_email: 'testo@mail.fr')
+                                    inviter_id: employer.id,
+                                    member_id: nil,
+                                    invitation_email: 'testo@mail.fr')
     assert employer.team.not_exists?
+  end
+
+  test 'uniqness with invitation_email when using different cases ' do
+    employer = create(:employer)
+    invitee_employer = create(:employer)
+    team_member_invitation = create(:team_member_invitation,
+                                    inviter_id: employer.id,
+                                    member_id: invitee_employer.id,
+                                    invitation_email: invitee_employer.email)
+    assert team_member_invitation.valid?
+    team_member_invitation_2 = build(:team_member_invitation,
+                                     inviter_id: employer.id,
+                                     member_id: invitee_employer.id,
+                                     invitation_email: invitee_employer.email.upcase)
+    refute team_member_invitation_2.valid?
+    assert_equal 'id du membre Vous avez déjà invité ce membre dans votre équipe',
+                 team_member_invitation_2.errors.full_messages.first
   end
 end
