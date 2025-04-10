@@ -24,7 +24,7 @@ class InternshipOffersController < ApplicationController
         @internship_offers = finder.all
                                    .includes(:sector, :employer)
         # QPV order
-        if current_user.student? && current_user.school.try(:qpv)
+        if current_user_or_visitor.student? && current_user.school.try(:qpv)
           @internship_offers = @internship_offers.reorder('qpv DESC NULLS LAST')
         end
 
