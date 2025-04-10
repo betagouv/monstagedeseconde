@@ -175,7 +175,7 @@ namespace :sys do
     end
   end
 
-  desc 'download an upload a sql copy of the production database'
+  desc 'download an upload a production database dump'
   task :dl_upl_prod, [] => :environment do
     if Rails.env.development?
       chosen_db_name = db_file_name
