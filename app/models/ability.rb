@@ -297,7 +297,7 @@ class Ability
       condition = if user.team.alive?
                     user.team.id_in_team?(team_member_invitation.member_id)
                   else
-                    user == team_member_invitation.inviter_id
+                    user.id == team_member_invitation.inviter_id
                   end
       team_member_invitation.member_id != user.id && condition
     end
