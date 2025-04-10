@@ -63,8 +63,8 @@ namespace :retrofit do
                                                 .count
                                                 .keys
       puts offer_ids.count
-      puts offer_ids[counter] if counter%50 == 0
-      puts "----------"
+      puts offer_ids[counter] if counter % 50 == 0
+      puts '----------'
 
       # search for internship_applications related to offer_ids that have only one week related
       InternshipApplication.joins(:weekly_internship_offer, :weeks)
@@ -82,9 +82,33 @@ namespace :retrofit do
         end
         application.weeks = SchoolTrack::Seconde.both_weeks
         counter += 1
-        puts application.id if counter%50 == 0
+        puts application.id if counter % 50 == 0
       end
       PrettyConsole.say_in_green "#{counter} applications have been processed"
+    end
+  end
+
+  desc '10/04/2025 - update offers of private entreprises with non null group_id'
+  task nullify_group_id: :environment do |task|
+    PrettyConsole.announce_task(task) do
+      counter = 0
+      InternshipOffers::WeeklyFramed.kept
+                                    .where(is_public: false)
+                                    .where.not(group_id: nil)
+                                    .each do |internship_offer|
+        internship_offer.update_columns(group_id: nil)
+        counter += 1
+      end
+      PrettyConsole.say_in_green "#{counter} offers have been processed"
+      # ***********************************
+      counter = 0
+      Entreprise.where(is_public: false)
+                .where.not(group_id: nil)
+                .each do |entreprise|
+        entreprise.update_columns(group_id: nil)
+        counter += 1
+      end
+      PrettyConsole.say_in_green "#{counter} entreprises have been processed"
     end
   end
 end

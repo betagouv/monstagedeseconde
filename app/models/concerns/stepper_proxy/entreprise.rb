@@ -26,6 +26,10 @@ module StepperProxy
                 exclusion: { in: [geo_point_factory(latitude: 0, longitude: 0)] },
                 unless: -> { internship_address_manual_enter }
       validates :is_public, inclusion: [true, false]
+      validates :group_id,
+                presence: true,
+                if: -> { is_public }
+      validate :no_group_id_when_private
 
       def entreprise_coordinates=(coordinates)
         case coordinates
@@ -51,6 +55,13 @@ module StepperProxy
 
       def entreprise_used_name
         self.employer_name = employer_chosen_name.presence || employer_name
+      end
+
+      def no_group_id_when_private
+        return unless group_id.present?
+        return unless is_public
+
+        errors.add(:group_id, 'Le ministère doit être vide pour une entreprise privée')
       end
     end
   end
