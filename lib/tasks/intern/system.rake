@@ -179,6 +179,7 @@ namespace :sys do
   task :dl_upl_prod, [] => :environment do
     if Rails.env.development?
       chosen_db_name = db_file_name
+
       PrettyConsole.announce_task 'Downloading production database' do
         unless Dir.exist?('storage/tmp')
           PrettyConsole.announce_task 'Creating directory' do
@@ -196,10 +197,12 @@ namespace :sys do
       end
 
       PrettyConsole.announce_task 'Uploading production database' do
-        system("pg_restore -h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
-                "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
-                "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
-                "-f #{db_file_name}")
+        system("PGPASSWORD=#{ENV['CLEVER_PRODUCTION_COPY_DB_PASSWORD']} pg_restore " \
+               "-h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
+               "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
+               "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
+               "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
+               "#{chosen_db_name}")
       end
       PrettyConsole.announce_task "Removing file #{chosen_db_name}" do
         system("rm  #{chosen_db_name}")
