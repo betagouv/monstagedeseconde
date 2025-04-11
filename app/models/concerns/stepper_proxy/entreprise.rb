@@ -29,7 +29,9 @@ module StepperProxy
       validates :group_id,
                 presence: true,
                 if: -> { is_public }
-      validate :group_id_presence
+      validates :group_id,
+                absence: true,
+                if: -> { !is_public }
 
       def entreprise_coordinates=(coordinates)
         case coordinates
@@ -55,14 +57,6 @@ module StepperProxy
 
       def entreprise_used_name
         self.employer_name = employer_chosen_name.presence || employer_name
-      end
-
-      def group_id_presence
-        if is_public && group_id.blank?
-          errors.add(:group_id, 'Le ministère doit être rempli pour une entreprise publique')
-        elsif group_id.present? && !is_public
-          errors.add(:group_id, 'Le ministère doit être vide pour une entreprise privée')
-        end
       end
     end
   end
