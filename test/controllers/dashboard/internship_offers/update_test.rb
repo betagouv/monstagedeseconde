@@ -133,13 +133,11 @@ module Dashboard::InternshipOffers
       statistician = create(:statistician)
       internship_offer.update(employer_id: statistician.id)
       new_title = 'new title'
-      new_group = create(:group, is_public: false, name: 'woop')
       sign_in(statistician)
       patch(dashboard_internship_offer_path(internship_offer.to_param),
             params: { internship_offer: {
               title: new_title,
               is_public: false,
-              group_id: new_group.id,
               daily_hours: { 'lundi' => %w[10h 12h] }
             } }.deep_symbolize_keys)
       assert_redirected_to(dashboard_internship_offers_path(origine: 'dashboard'),

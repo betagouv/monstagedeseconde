@@ -340,7 +340,6 @@ module ThirdPartyTestHelpers
       'sectors- sector_id → name': '',
       title: instance.title
     }
-    expected_return = { status: 200, body: { score: score }, headers: {} }
     stub_request(:post, uri)
       .with(body: body, headers: headers_with_token(token: token, uri: uri))
       .to_return({ status: 200, body: { score: score }.to_json, headers: {} })

@@ -80,7 +80,6 @@ module Reporting
         :weekly_internship_offer_3eme,
         :troisieme_generale_internship_offer,
         max_candidates: 20,
-        group: private_group,
         is_public: false
       )
 

@@ -46,8 +46,8 @@
                 fieldset.fr-fieldset#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
                   legend.label
                     | Vous êtes une structure publique ? *
-                  div.fr-fieldset__element
-                    div.fr-radio-group
+                  .fr-fieldset__element
+                    .fr-radio-group
                       = form.radio_button :is_public,
                                           true,
                                           class: '',
@@ -57,8 +57,8 @@
                                    'Oui',
                                    class: 'fr-label',
                                    data: { action: 'ministry-fields#handleClickIsPublic' }
-                  div.fr-fieldset__element
-                    div.fr-radio-group
+                  .fr-fieldset__element
+                    .fr-radio-group
                       = form.radio_button :is_public,
                                           false,
                                           class: '',
@@ -69,7 +69,7 @@
                                    class: 'fr-label',
                                    data: { action: 'ministry-fields#handleClickIsPublic' }
 
-                  div.fr-messages-group#radio-hint-messages aria-live="assertive"
+                  .fr-messages-group#radio-hint-messages aria-live="assertive"
           #ministry-choice.row.fr-mt-3w.bloc-tooggle.d-none [data-ministry-fields-target="groupNamePublic"]
             .col-12
               = form.label :group_id, class: 'fr-label' do
@@ -77,11 +77,11 @@
 
               = form.select :group_id,
                             options_for_select(options_for_public_groups, resource.group.try(:id)),
-                            {  },
-                            class: "fr-select ",
+                            { prompt: 'type employeur public' },
+                            class: "fr-select",
                             required: false,
                             :'data-ministry-fields-target' => 'selectGroupName'
-          div#sector-choice-block class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
+          #sector-choice-block class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               = form.label :sector_id , class: 'fr-label'do
                 = "Indiquez le secteur d'activité de votre structure *"
