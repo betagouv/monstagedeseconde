@@ -68,7 +68,7 @@ module Dashboard
 
     def resend_invitation
       @team_member_invitation.send_invitation
-      redirect_to dashboard_team_member_invitations_path, flash: { success: 'Invitation renvoyée avec succès' }
+      redirect_to dashboard_team_member_invitations_path, notice: 'Invitation renvoyée avec succès'
     end
 
     attr_accessor :check_result, :accept_invitation
