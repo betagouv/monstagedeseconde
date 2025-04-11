@@ -1,7 +1,7 @@
 module Dashboard
   class TeamMemberInvitationsController < ApplicationController
     before_action :authenticate_user!
-    before_action :fetch_invitation, only: %i[destroy join]
+    before_action :fetch_invitation, only: %i[destroy join resend_invitation]
     before_action :authorize_member_inviting
 
     def index
@@ -64,6 +64,11 @@ module Dashboard
       redirect_to dashboard_team_member_invitations_path, flash: { success: message }
     rescue ActiveRecord::RecordInvalid
       render :new, status: :bad_request
+    end
+
+    def resend_invitation
+      @team_member_invitation.send_invitation
+      redirect_to dashboard_team_member_invitations_path, notice: 'Invitation renvoyée avec succès'
     end
 
     attr_accessor :check_result, :accept_invitation
