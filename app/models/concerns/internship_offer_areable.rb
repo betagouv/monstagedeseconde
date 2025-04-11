@@ -3,6 +3,7 @@ module InternshipOfferAreable
 
   included do
     after_create_commit :create_default_internship_offer_area
+    after_save :make_sure_current_area_is_set
 
     has_many :area_notifications, dependent: :destroy
     belongs_to :current_area,
@@ -46,7 +47,7 @@ module InternshipOfferAreable
       area = InternshipOfferArea.create(
         name: name,
         employer_type: 'User',
-        employer_id: self.id
+        employer_id: id
       )
       self.current_area_id = area.id
       save if confirmed?
@@ -54,10 +55,17 @@ module InternshipOfferAreable
 
     # ------------  private ------------
     private
+
     # ----------------------------------
 
     def latest_area_id
       internship_offer_areas.order(updated_at: :desc).first.id
+    end
+
+    def make_sure_current_area_is_set
+      return if current_area_id
+
+      initializing_current_area
     end
   end
 end

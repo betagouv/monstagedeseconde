@@ -169,6 +169,10 @@ module Teamable
       users.compact
     end
 
+    def came_from_invitation?
+      TeamMemberInvitation.where(invitation_email: email).any?
+    end
+
     def pending_invitation_to_a_team
       TeamMemberInvitation.with_pending_invitations.find_by(invitation_email: email)
     end
