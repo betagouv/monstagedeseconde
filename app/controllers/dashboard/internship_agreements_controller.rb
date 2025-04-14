@@ -90,15 +90,21 @@ module Dashboard
 
     def school_management_sign
       authorize! :sign_internship_agreements, @internship_agreement
+      if params.dig(
+        :internship_agreement, :signature
+      ).blank? && @internship_agreement.school.signature.blank?
+        redirect_to dashboard_internship_agreements_path,
+                    flash: { danger: 'Vous devez d\'abord importer la signature du chef d\'établissement. Avant de signer la convention.' } and return
+      end
+
       update_school_signature if params.dig(:internship_agreement, :signature).present?
 
-      Signature.create(internship_agreement: @internship_agreement,
-                       signatory_role: 'school_manager',
-                       user_id: current_user.id,
-                       signatory_ip: request.remote_ip,
-                       signature_date: Time.now,
-                       signature_phone_number: '0111223344')
-
+      Signature.create!(internship_agreement: @internship_agreement,
+                        signatory_role: current_user.role,
+                        user_id: current_user.id,
+                        signatory_ip: request.remote_ip,
+                        signature_date: Time.now,
+                        signature_phone_number: current_user.try(:phone))
       if @internship_agreement.signatures_started?
         @internship_agreement.signatures_finalize!
       else

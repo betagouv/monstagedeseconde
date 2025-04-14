@@ -62,14 +62,14 @@ class EmployerMailer < ApplicationMailer
     )
   end
 
-  def notify_others_signatures_started_email(internship_agreement:)
+  def notify_others_signatures_started_email(internship_agreement:, employer:, school_management:)
     internship_application = internship_agreement.internship_application
     recipients_email       = internship_application.filter_notified_emails
     @internship_offer      = internship_application.internship_offer
     student                = internship_application.student
     @prez_stud             = student.presenter
-    @employer              = @internship_offer.employer
-    @school_manager        = internship_agreement.school_manager
+    @employer              = employer
+    @school_manager        = school_management
     @url = dashboard_internship_agreements_url(
       id: internship_agreement.id,
       mtm_campaign: 'Offreur - Convention Ready to Sign'
@@ -81,14 +81,14 @@ class EmployerMailer < ApplicationMailer
     )
   end
 
-  def notify_others_signatures_finished_email(internship_agreement:)
+  def notify_others_signatures_finished_email(internship_agreement:, employer:, school_management:)
     internship_application = internship_agreement.internship_application
     recipients_email       = internship_application.filter_notified_emails
     @internship_offer      = internship_application.internship_offer
     student                = internship_application.student
     @prez_stud             = student.presenter
     @employer              = @internship_offer.employer
-    @school_manager        = internship_agreement.school_manager
+    @school_manager        = school_management
     @url = dashboard_internship_agreements_url(
       id: internship_agreement.id,
       mtm_campaign: 'Offreur - Convention Ready to Sign'

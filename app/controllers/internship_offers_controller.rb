@@ -16,7 +16,6 @@ class InternshipOffersController < ApplicationController
 
     respond_to do |format|
       format.html do
-        @sectors = Sector.order(:name).to_a
         @params = query_params.merge(sector_ids: params[:sector_ids])
       end
       format.json do
@@ -24,9 +23,10 @@ class InternshipOffersController < ApplicationController
         @internship_offers_seats = 0
         @internship_offers = finder.all
                                    .includes(:sector, :employer)
-
-        # seats
-        # @internship_offers_seats = finder.all_without_page.pluck(:max_candidates).sum
+        # QPV order
+        if current_user&.student? && current_user&.school&.try(:qpv)
+          @internship_offers = @internship_offers.reorder('qpv DESC NULLS LAST')
+        end
 
         sql = if params[:latitude].present? && params[:longitude].present?
                 <<-SQL
@@ -79,15 +79,12 @@ class InternshipOffersController < ApplicationController
                                      #  ActiveRecord::Base.connection.exec_query(sql).first['sum'] || 0
                                      1
                                    end
-        # @is_suggestion = @internship_offers.to_a.count.zero?
-        # @internship_offers = alternative_internship_offers if @is_suggestion
 
         @params = query_params
         data = {
           internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
           seats: @internship_offers_seats
-          # isSuggestion: @is_suggestion
         }
         current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
         t1 = Time.now
@@ -248,7 +245,9 @@ class InternshipOffersController < ApplicationController
         can_read_employer_name: can?(:read_employer_name, internship_offer),
         fits_for_seconde: internship_offer.fits_for_seconde?,
         fits_for_troisieme_or_quatrieme: internship_offer.fits_for_troisieme_or_quatrieme?,
-        available_weeks_count: internship_offer.presenter.available_weeks_count
+        available_weeks_count: internship_offer.presenter.available_weeks_count,
+        qpv: internship_offer.qpv,
+        is_authenticated: !!current_user
       }
     end
   end

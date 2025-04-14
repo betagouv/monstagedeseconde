@@ -36,13 +36,13 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
       = prez.inline_status_label
 
   td.rg2a-width-50.col-sm-3.d-sm-flex.align-items-center.text-center.actions
-    - if current_user.school_management? && can?(:sign_internship_agreements, internship_agreement)
-        = link_to school_management_signature_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
-                  class: 'fr-link',
-                  data: { turbo_frame: "modal" } do
-          | Signer en ligne
-          span.fr-fi-arrow-right-line
-    - elsif current_user.school_management? && internship_agreement.signed_by_all?
+    / - if current_user.school_management? && can?(:sign_internship_agreements, internship_agreement)
+    /     = link_to school_management_signature_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
+    /               class: 'fr-link',
+    /               data: { turbo_frame: "modal" } do
+    /       | Signer en ligne
+    /       span.fr-fi-arrow-right-line
+    - if current_user.school_management? && internship_agreement.signed_by_all?
       = link_to 'Télécharger le PDF', dashboard_internship_agreement_path(uuid: internship_agreement.uuid, format: :pdf)
     - else 
       = render(InternshipAgreements::ButtonComponent.new( internship_agreement: internship_agreement,

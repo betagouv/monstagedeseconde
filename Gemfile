@@ -81,6 +81,9 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 # Active Storage validations
 gem 'active_storage_validations'
 
+# Pour le traitement des images
+gem 'image_processing', '~> 1.2'
+gem 'mini_magick'
 group :development, :test do
   gem 'debug'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -109,10 +109,6 @@ module Services::Omogen
     end
 
     def sygne_import_by_schools(code_uai)
-      puts '================================'
-      puts "school with code_uai : #{code_uai}"
-      puts '================================'
-      puts ''
       MEFSTAT4_CODES.each do |niveau|
         students = sygne_eleves(code_uai, niveau: niveau)
         students.each do |student|

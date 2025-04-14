@@ -9,7 +9,7 @@ class SchoolManagerMailer < ApplicationMailer
     entreprise             = is_public ? "L'administration publique" : "L'entreprise"
     @entreprise            = "#{entreprise} #{@internship_offer.employer_name}"
     @prez_stud             = student.presenter
-    @school_manager        = student.school&.school_manager
+    @school_manager        = internship_agreement.school_management_representative
     @week                  = @internship_application.internship_offer.period
     @prez_application = Presenters::InternshipApplication.new(@internship_application, @school_manager)
     @url = dashboard_internship_agreements_url(
@@ -17,19 +17,19 @@ class SchoolManagerMailer < ApplicationMailer
       mtm_campaign: 'SchoolManager - Convention To Fill In'
     ).html_safe
 
-    to = @school_manager&.email
+    to = @school_manager.try(:email)
     subject = 'Vous avez une convention de stage à renseigner.'
 
     send_email(to:, subject:)
   end
 
-  def notify_others_signatures_started_email(internship_agreement:)
+  def notify_others_signatures_started_email(internship_agreement:, employer:, school_management:)
     internship_application = internship_agreement.internship_application
     @internship_offer      = internship_application.internship_offer
     student                = internship_application.student
     @prez_stud             = student.presenter
-    @school_manager        = internship_agreement.school_manager
-    @employer              = internship_agreement.employer
+    @school_manager        = school_management
+    @employer              = employer
     @url = dashboard_internship_agreements_url(
       id: internship_agreement.id,
       mtm_campaign: 'SchoolManager - Convention Ready to Sign'
@@ -41,12 +41,12 @@ class SchoolManagerMailer < ApplicationMailer
     )
   end
 
-  def notify_others_signatures_finished_email(internship_agreement:)
+  def notify_others_signatures_finished_email(internship_agreement:, employer:, school_management:)
     internship_application = internship_agreement.internship_application
     @internship_offer      = internship_application.internship_offer
     student                = internship_application.student
     @prez_stud             = student.presenter
-    @school_manager        = internship_agreement.school_manager
+    @school_manager        = school_management
     @employer              = internship_agreement.employer
     @url = dashboard_internship_agreements_url(
       id: internship_agreement.id,

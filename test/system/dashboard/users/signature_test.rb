@@ -324,5 +324,30 @@ module Dashboard
         assert general_check_box.checked?
       end
     end
+
+    test 'admin_officer signs when no school signature formerly exists and employer has signed already' do
+      internship_agreement = create(:internship_agreement, :signatures_started)
+      create(:signature, :employer, internship_agreement:)
+      school = internship_agreement.school
+      school.signature.purge
+      refute school.signature.attached?
+      admin_officer = create(:admin_officer, school: )
+      sign_in(admin_officer)
+
+      visit dashboard_internship_agreements_path
+      click_button('Ajouter aux signatures')
+      click_button('Signer')
+      click_button('Confirmer')
+      find("span#alert-text", text: "Vous devez d'abord importer la signature du chef d'établissement. Avant de signer la convention.")
+      school.signature.attach(io: File.open('test/fixtures/files/signature.png'),
+                              filename: 'signature.png',
+                              content_type: 'image/png')
+      visit dashboard_internship_agreements_path
+      click_button('Ajouter aux signatures')
+      click_button('Signer')
+      click_button('Confirmer')
+      find("span#alert-text", text: "Les conventions ont été signées.")
+      assert_equal 2, Signature.count
+    end
   end
 end

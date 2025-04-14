@@ -1,4 +1,28 @@
 module ThirdPartyTestHelpers
+  def headers_with_token(token:, uri:)
+    {
+      'Accept' => '*/*',
+      'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+      'Authorization' => "Bearer #{token}",
+      'Compression-Zip' => 'non',
+      'Host' => URI(uri).host,
+      'User-Agent' => 'Ruby'
+    }
+  end
+
+  def expected_token_response(token: 'token')
+    { status: 200, body: { access_token: token }.to_json, headers: {} }
+  end
+
+  def headers_with_host(uri:)
+    {
+      'Accept' => '*/*',
+      'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+      'Host' => URI(uri).host,
+      'User-Agent' => 'Ruby'
+    }
+  end
+
   def bitly_stub
     stub_request(:post, 'https://api-ssl.bitly.com/v4/shorten')
       .with(
@@ -10,8 +34,7 @@ module ThirdPartyTestHelpers
           'Content-Type' => 'application/json',
           'User-Agent' => 'Ruby Bitly/2.0.1'
         }
-      )
-      .to_return(status: 200, body: '', headers: {})
+      ).to_return(status: 200, body: '', headers: {})
   end
 
   def sms_stub
@@ -259,9 +282,8 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: File.read('test/fixtures/files/signe_responsible.json'), headers: {})
   end
 
-  def stub_sygne_eleves(code_uai:, token:)
+  def stub_sygne_eleves(code_uai:, token:, code_mef: '10310019110')
     Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
-      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
       expected_response = [{
         'ine' => '001291528AA',
         'nom' => 'SABABADICHETTY',
@@ -272,9 +294,9 @@ module ThirdPartyTestHelpers
         'anneeScolaire' => 2023,
         'niveau' => '2212',
         'libelleNiveau' => '1ERE G-T',
-        'codeMef' => '20110019110',
+        'codeMef' => code_mef,
         'libelleLongMef' => 'PREMIERE GENERALE',
-        'codeMefRatt' => '20110019110',
+        'codeMefRatt' => code_mef,
         'classe' => '3E4',
         'codeRegime' => '2',
         'libelleRegime' => 'DP DAN',
@@ -284,15 +306,43 @@ module ThirdPartyTestHelpers
         'adhesionTransport' => false
       }].to_json
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
-      headers = {
-        'Accept' => '*/*',
-        'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-        'Authorization' => "Bearer #{token}",
-        'Compression-Zip' => 'non',
-        'User-Agent' => 'Ruby'
-      }
-      stub_request(:get, uri).with(headers:)
+      stub_request(:get, uri).with(headers: headers_with_token(token:, uri:))
                              .to_return(status: 200, body: expected_response, headers: {})
     end
+  end
+
+  def base_score_uri
+    ENV['SCORE_API_URL']
+  end
+
+  def stub_score_auth_token
+    uri = URI "#{base_score_uri}/login"
+    body = {
+      username: ENV.fetch('SCORE_API_USER'),
+      password: ENV.fetch('SCORE_API_PASSWORD')
+    }
+    stub_request(:post, uri)
+      .with(body:, headers: headers_with_host(uri: uri))
+      .to_return(expected_token_response)
+  end
+
+  def stub_description_score(instance:, token: 'token', score: 0)
+    stub_score_auth_token
+    uri = URI("#{base_score_uri}/score")
+    body = {
+      aasm_state: instance.aasm_state,
+      description: instance.description,
+      discarded_at: nil,
+      employer_name: '',
+      id: 0,
+      index: 10_000,
+      norma: instance.description,
+      'sectors- sector_id → name': '',
+      title: instance.title
+    }
+    expected_return = { status: 200, body: { score: score }, headers: {} }
+    stub_request(:post, uri)
+      .with(body: body, headers: headers_with_token(token: token, uri: uri))
+      .to_return({ status: 200, body: { score: score }.to_json, headers: {} })
   end
 end

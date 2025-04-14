@@ -58,7 +58,10 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 
 CREATE TYPE public.agreement_signatory_role AS ENUM (
     'employer',
-    'school_manager'
+    'school_manager',
+    'other',
+    'cpe',
+    'admin_officer'
 );
 
 
@@ -1984,7 +1987,6 @@ CREATE TABLE public.schools (
     contract_code character varying(3),
     department_id bigint,
     agreement_conditions text,
-    level character varying(100) DEFAULT 'lycee'::character varying NOT NULL,
     school_type public.school_category DEFAULT 'college'::public.school_category NOT NULL,
     voie_generale boolean,
     voie_techno boolean,
@@ -2055,7 +2057,7 @@ CREATE TABLE public.signatures (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     signatory_role public.agreement_signatory_role,
-    signature_phone_number character varying(20) NOT NULL,
+    signature_phone_number character varying,
     user_id bigint
 );
 
@@ -4900,7 +4902,10 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250402090857'),
+('20250402083055'),
 ('20250321164727'),
+('20250320155003'),
 ('20250313105632'),
 ('20250304162138'),
 ('20250225122347'),

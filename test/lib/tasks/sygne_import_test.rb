@@ -22,7 +22,7 @@ class SygneImportTest < ActiveSupport::TestCase
   test 'student import fails with wrong codeMef' do
     stub_omogen_auth
     omogen = Services::Omogen::Sygne.new
-    stub_sygne_eleves(code_uai: @code_uai, token: omogen.token)
+    stub_sygne_eleves(code_uai: @code_uai, token: omogen.token, code_mef: 'wrong_code')
     assert_no_difference 'Users::Student.count' do
       omogen.sygne_import_by_schools(@code_uai)
     end
@@ -31,40 +31,7 @@ class SygneImportTest < ActiveSupport::TestCase
   test 'student import is ok with correct codeMef' do
     ine = '001291528AA'
 
-    Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
-      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves?niveau=#{niveau}")
-      expected_response = [{}]
-      if Services::Omogen::Sygne::MEFSTAT4_CODES.first == niveau
-        expected_response =
-          [{
-            'ine' => ine,
-            'nom' => 'SABABADICHETTY',
-            'prenom' => 'Felix',
-            'dateNaissance' => '2003-05-28',
-            'codeSexe' => '1',
-            'codeUai' => '0590116F',
-            'anneeScolaire' => 2023,
-            'niveau' => '2212',
-            'libelleNiveau' => '1ERE G-T',
-            'codeMef' => '20010019110', # correct codeMef
-            'libelleLongMef' => 'PREMIERE GENERALE',
-            'codeMefRatt' => '20010019110',
-            'classe' => '2E2',
-            'codeRegime' => '2',
-            'libelleRegime' => 'DP DAN',
-            'codeStatut' => 'ST',
-            'libelleLongStatut' => 'SCOLAIRE',
-            'dateDebSco' => '2023-09-05',
-            'adhesionTransport' => false
-          }]
-      end
-      stub_request(:get, uri).with(headers: @headers)
-                             .to_return(
-                               status: 200,
-                               body: expected_response.to_json,
-                               headers: {}
-                             )
-    end
+    stub_sygne_eleves(code_uai: @code_uai, token: Services::Omogen::Sygne.new.token)
     uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
     expected_response = [
       { nomFamille: 'BADEZ',

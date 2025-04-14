@@ -13,6 +13,40 @@ export default class extends Controller {
   handleClickIsPublic(event) {
     const isPublic = event.target.value === "true";
     this.toggleGroupNames(isPublic);
+    if (isPublic) {
+      this.selectPublicSectorAndHide();
+    } else {
+      this.selectPrivateSectorAndShow();
+    }
+  }
+
+  selectPublicSectorAndHide() {
+    const selectElement = document.querySelector('#sector-choice');
+    const option = selectElement.querySelector('option[value="Fonction publique"]');
+
+    if (selectElement) {
+      const option = Array.from(selectElement.options).find(option => option.text === 'Fonction publique');
+      if (option) {
+        option.selected = true;
+      }
+    }
+
+    const sectorChoiceBlock = document.querySelector('#sector-choice-block');
+    if (sectorChoiceBlock) {
+      sectorChoiceBlock.hidden = true;
+    }
+  }
+
+  selectPrivateSectorAndShow() {
+    const sectorChoiceBlock = document.querySelector('#sector-choice-block');
+    if (sectorChoiceBlock) {
+      sectorChoiceBlock.hidden = false;
+    }
+
+    const selectElement = document.querySelector('#sector-choice');
+    if (selectElement) {
+      selectElement.value = '';
+    }
   }
 
   async isElementLoaded(selector) {

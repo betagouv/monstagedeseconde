@@ -61,7 +61,7 @@ module Builders
                                                .manage_planning_associations
                                                .instance
       end
-      internship_offer.internship_offer_area_id = user.current_area_id
+      internship_offer.internship_offer_area_id ||= user.current_area_id
       internship_offer.aasm_state = 'published' if internship_offer.may_publish?
       internship_offer.save!
       callback.on_success.try(:call, internship_offer)

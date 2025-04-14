@@ -530,9 +530,10 @@ class Ability
     end
     can :sign_internship_agreements, InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id &&
-        (agreement.validated? || (agreement.signatures_started? && agreement.signatures.where(signatory_role: 'school_manager').none?))
+        (agreement.validated? || (agreement.signatures_started? && !agreement.signed_by_school_management?))
     end
   end
+
 
   private
 

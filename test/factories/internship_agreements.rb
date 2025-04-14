@@ -71,12 +71,12 @@ FactoryBot.define do
       aasm_state { 'signed_by_all' }
       after(:create) do |ia|
         create(:signature,
+               :employer,
                internship_agreement: ia,
-               signatory_role: 'employer',
                user_id: ia.employer.id)
         create(:signature,
+               :school_manager,
                internship_agreement: ia,
-               signatory_role: 'school_manager',
                user_id: ia.school_manager.id)
       end
     end
