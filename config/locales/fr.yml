@@ -736,7 +736,7 @@ fr:
   admin:
     actions:
       publish:
-        menu: 'publish/unpublish'
+        menu: 'Publier / Dépublier'
         success: 'Offre publiée avec succès'
         title: 'Publier cette offre'
       unpublish:
@@ -814,7 +814,7 @@ fr:
     actions:
       publish:
         success: 'Offre publiée avec succès'
-        error: "Erreur lors de la publication de l'offre"
+        error: "Erreur lors de la publication/dépublication de l'offre. Demandez à un administrateur"
       unpublish:
         success: 'Offre dépubliée avec succès'
         error: "Erreur lors de la dépublication de l'offre"

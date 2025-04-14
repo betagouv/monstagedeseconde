@@ -16,7 +16,7 @@ module RailsAdmin
         end
 
         register_instance_option :link_icon do
-          bindings[:object].published? ? 'fas fa-eye' : 'fas fa-eye-slash'
+          bindings[:object].published? ? 'fas fa-eye-slash' : 'fas fa-eye'
         end
 
         # You may or may not want pjax for your action
@@ -26,12 +26,14 @@ module RailsAdmin
 
         register_instance_option :controller do
           proc do
-            if @object.unpublished?
+            if @object.may_publish?
               @object.publish!
               flash[:success] = t('flash.actions.publish.success')
-            else
+            elsif @object.may_unpublish?
               @object.unpublish!
               flash[:success] = t('flash.actions.unpublish.success')
+            else
+              flash[:error] = t('flash.actions.publish.error')
             end
             redirect_to index_path(model_name: 'internship_offers~weekly_framed')
           end
