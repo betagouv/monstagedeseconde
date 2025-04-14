@@ -43,9 +43,7 @@ module Dashboard
       flash = {}
       if @team_member_invitation.pending_invitation?
         action = params[:commit] == 'Oui' ? :accept_invitation! : :refuse_invitation!
-        @member = User.where(email: @team_member_invitation.invitation_email).first
-
-        destroy_member_offer_area if @member.came_from_invitation?
+        @team_member_invitation.destroy_member_original_offer_area
         @team_member_invitation.send(action)
       else
         state = @team_member_invitation.refused_invitation? ? 'refusée' : 'acceptée'
@@ -97,40 +95,6 @@ module Dashboard
     def team_member_invitation_params
       params.require(:team_member_invitation)
             .permit(:invitation_email)
-    end
-
-    def destroy_member_offer_area
-      area = InternshipOfferArea.where(employer_id: @member.id).first
-      return if area.internship_offers.any?
-
-      if area
-        Rails.logger.info "Users avec cette zone: #{User.where(current_area_id: area.id).count}"
-        Rails.logger.info "Associations: #{area.class.reflect_on_all_associations.map(&:name)}"
-
-        # Mettre à jour les utilisateurs
-        User.where(current_area_id: area.id).update_all(
-          current_area_id: @team_member_invitation.inviter.current_area_id
-        )
-
-        area.area_notifications.destroy_all
-
-        # Essayer de forcer la suppression avec destroy!
-        begin
-          area.reload # Recharger pour être sûr d'avoir les dernières données
-          unless area.destroy
-            Rails.logger.error "Échec normal: #{area.errors.full_messages}"
-            # Forcer avec destroy! pour voir l'erreur complète
-            area.destroy!
-          end
-        rescue StandardError => e
-          Rails.logger.error "Erreur de suppression: #{e.full_message}"
-          # En dernier recours, essayer delete
-          area.delete
-        end
-      end
-
-      @member.current_area_id = @team_member_invitation.inviter.current_area_id
-      @member.save!
     end
 
     def set_valid_current_area
