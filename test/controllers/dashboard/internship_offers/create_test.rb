@@ -20,7 +20,7 @@ module Dashboard::InternshipOffers
         params = internship_offer
                  .attributes
                  .merge('type' => InternshipOffers::WeeklyFramed.name,
-                        'coordinates' => {latitude: 1, longitude: 1},
+                        'coordinates' => { latitude: 1, longitude: 1 },
                         'school_id' => school.id,
                         'description' => '<div>description</div>',
                         'employer_description' => 'hop+employer_description',
@@ -29,9 +29,8 @@ module Dashboard::InternshipOffers
                         'max_candidates' => 1,
                         'employer_id' => internship_offer.employer_id,
                         'employer_type' => 'Users::Employer')
-                  .deep_symbolize_keys
-               assert_difference('InternshipOffer.count', 1) do
-
+                 .deep_symbolize_keys
+        assert_difference('InternshipOffer.count', 1) do
           post(dashboard_internship_offers_path,
                params: { internship_offer: params })
         end
@@ -40,6 +39,75 @@ module Dashboard::InternshipOffers
         assert_equal employer, created_internship_offer.employer
         assert_equal params[:max_candidates], created_internship_offer.max_candidates
         assert_equal params[:max_candidates], created_internship_offer.remaining_seats_count
+        assert_redirected_to internship_offer_path(created_internship_offer, stepper: true)
+      end
+    end
+    test 'POST #create  - duplicate - InternshipOffers::WeeklyFramed as employer creates the post' do
+      travel_to(Date.new(2025, 3, 1)) do
+        school = create(:school)
+        employer = create(:employer)
+        original_internship_offer = create(:weekly_internship_offer_3eme, employer:)
+
+        sign_in(original_internship_offer.employer)
+        params = original_internship_offer
+                 .attributes
+                 .merge('type' => InternshipOffers::WeeklyFramed.name,
+                        'coordinates' => { latitude: 1, longitude: 1 },
+                        'school_id' => school.id,
+                        'description' => '<div>description</div>',
+                        'employer_description' => 'hop+employer_description',
+                        'week_ids' => original_internship_offer.weeks.ids,
+                        'grade_ids' => original_internship_offer.grades.ids,
+                        'max_candidates' => 1,
+                        'employer_id' => original_internship_offer.employer_id,
+                        'duplicate_id' => original_internship_offer.id,
+                        'employer_type' => 'Users::Employer')
+                 .deep_symbolize_keys
+        assert_difference('InternshipOffer.count', 1) do
+          post(dashboard_internship_offers_path,
+               params: { internship_offer: params })
+        end
+        created_internship_offer = InternshipOffer.last
+        assert_equal original_internship_offer.title, created_internship_offer.title
+        assert_equal original_internship_offer.employer, created_internship_offer.employer
+        assert_equal original_internship_offer.max_candidates, created_internship_offer.max_candidates
+        assert_equal original_internship_offer.remaining_seats_count, created_internship_offer.remaining_seats_count
+        assert_redirected_to internship_offer_path(created_internship_offer, stepper: true)
+      end
+    end
+    test 'POST #create  - duplicate  and change internship_offer_area_id - InternshipOffers::WeeklyFramed as employer creates the post' do
+      travel_to(Date.new(2025, 3, 1)) do
+        school = create(:school)
+        employer = create(:employer)
+        original_internship_offer = create(:weekly_internship_offer_3eme, employer:)
+        internship_offer_area = create(:internship_offer_area, employer:)
+
+        sign_in(original_internship_offer.employer)
+        params = original_internship_offer
+                 .attributes
+                 .merge('type' => InternshipOffers::WeeklyFramed.name,
+                        'coordinates' => { latitude: 1, longitude: 1 },
+                        'school_id' => school.id,
+                        'description' => '<div>description</div>',
+                        'employer_description' => 'hop+employer_description',
+                        'week_ids' => original_internship_offer.weeks.ids,
+                        'grade_ids' => original_internship_offer.grades.ids,
+                        'max_candidates' => 1,
+                        'employer_id' => original_internship_offer.employer_id,
+                        'duplicate_id' => original_internship_offer.id,
+                        'internship_offer_area_id' => internship_offer_area.id,
+                        'employer_type' => 'Users::Employer')
+                 .deep_symbolize_keys
+        assert_difference('InternshipOffer.count', 1) do
+          post(dashboard_internship_offers_path,
+               params: { internship_offer: params })
+        end
+        created_internship_offer = InternshipOffer.last
+        assert_equal original_internship_offer.title, created_internship_offer.title
+        assert_equal original_internship_offer.employer, created_internship_offer.employer
+        assert_equal original_internship_offer.max_candidates, created_internship_offer.max_candidates
+        assert_equal original_internship_offer.remaining_seats_count, created_internship_offer.remaining_seats_count
+        assert_equal internship_offer_area, created_internship_offer.internship_offer_area
         assert_redirected_to internship_offer_path(created_internship_offer, stepper: true)
       end
     end
@@ -54,7 +122,7 @@ module Dashboard::InternshipOffers
                  .attributes
                  .merge('type' => InternshipOffers::WeeklyFramed.name,
                         'group' => employer.ministries.first,
-                        'coordinates' => {latitude: 1, longitude: 1 },
+                        'coordinates' => { latitude: 1, longitude: 1 },
                         'week_ids' => internship_offer.weeks.map(&:id),
                         'grade_ids' => internship_offer.grades.map(&:id),
                         'school_id' => school.id,

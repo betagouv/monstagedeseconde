@@ -223,7 +223,7 @@ module Dashboard
                     :entreprise_coordinates_longitude, :entreprise_coordinates_latitude,
                     :entreprise_full_address,
                     :entreprise_street, :entreprise_zipcode, :grade_2e, :grade_college,
-                    :group_id, :internship_address_manual_enter,
+                    :group_id, :internship_address_manual_enter, :internship_offer_area_id,
                     :is_public, :lunch_break, :max_candidates,
                     :period, :period_field, :published_at, :region, :renewed, :republish, :school_id,
                     :sector_id, :shall_publish, :siret, :street, :title, :type, :workspace_conditions,
