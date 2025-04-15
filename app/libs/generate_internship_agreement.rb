@@ -1,5 +1,6 @@
 require 'cgi'
 require 'open-uri'
+require 'mini_magick'
 include ApplicationHelper
 
 class GenerateInternshipAgreement < Prawn::Document
@@ -527,9 +528,16 @@ class GenerateInternshipAgreement < Prawn::Document
   def download_image_and_signature(signatory_role:)
     if signatory_role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE) && @internship_agreement.school.signature.attached?
       begin
+        # Download the signature
         signature_data = @internship_agreement.school.signature.download
+
+        # Convert to non-interlaced PNG
+        image = MiniMagick::Image.read(signature_data)
+        image.format 'png'
+        image.interlace 'none' # Disable interlacing
+
         return OpenStruct.new(
-          local_signature_image_file_path: StringIO.new(signature_data)
+          local_signature_image_file_path: StringIO.new(image.to_blob)
         )
       rescue StandardError => e
         Rails.logger.error "Error processing school signature: #{e.message}"
