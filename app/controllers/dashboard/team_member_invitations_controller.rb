@@ -30,7 +30,7 @@ module Dashboard
       when :already_in_team
         flash = { warning: 'Ce collaborateur fait déjà partie de l\'équipe' }
       when :in_another_team
-        flash = { alert: "Ce collaborateur fait déjà partie d’une équipe sur mon stage à l'école. Il ne pourra pas rejoindre votre équipe" }
+        flash = { alert: "Ce collaborateur fait déjà partie d'une équipe sur mon stage à l'école. Il ne pourra pas rejoindre votre équipe" }
       else
         render(:new, status: :bad_request) and return
       end
@@ -43,6 +43,7 @@ module Dashboard
       flash = {}
       if @team_member_invitation.pending_invitation?
         action = params[:commit] == 'Oui' ? :accept_invitation! : :refuse_invitation!
+        @team_member_invitation.destroy_member_original_offer_area
         @team_member_invitation.send(action)
       else
         state = @team_member_invitation.refused_invitation? ? 'refusée' : 'acceptée'
@@ -53,6 +54,7 @@ module Dashboard
 
     def destroy
       authorize! :destroy, @team_member_invitation
+      @member = @team_member_invitation.member
       message = 'Membre d\'équipe supprimé avec succès.'
       if @team_member_invitation.not_in_a_team?
         @team_member_invitation.destroy
@@ -61,6 +63,7 @@ module Dashboard
         message = "#{message} Votre équipe a été dissoute" if team.team_size <= 2
         team.remove_member
       end
+      set_valid_current_area
       redirect_to dashboard_team_member_invitations_path, flash: { success: message }
     rescue ActiveRecord::RecordInvalid
       render :new, status: :bad_request
@@ -97,6 +100,18 @@ module Dashboard
     def team_member_invitation_params
       params.require(:team_member_invitation)
             .permit(:invitation_email)
+    end
+
+    def set_valid_current_area
+      # if the member has no current area, initialize one
+      former_area = InternshipOfferArea.where(employer_id: @member.id).first
+      if former_area.nil?
+        @member.initializing_current_area
+      else
+        # set the current area to the first own area
+        @member.current_area_id = former_area.id
+        @member.save!
+      end
     end
   end
 end
