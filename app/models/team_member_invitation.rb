@@ -1,14 +1,16 @@
 class TeamMemberInvitation < ApplicationRecord
-    # id bigint NOT NULL,
-    # created_at timestamp(6) without time zone NOT NULL,
-    # updated_at timestamp(6) without time zone NOT NULL,
-    # inviter_id bigint NOT NULL,
-    # member_id bigint,
-    # invitation_email character varying(150) NOT NULL,
-    # invitation_refused_at timestamp(6) without time zone,
-    # aasm_state character varying DEFAULT 'pending_invitation'::character varying
+  # id bigint NOT NULL,
+  # created_at timestamp(6) without time zone NOT NULL,
+  # updated_at timestamp(6) without time zone NOT NULL,
+  # inviter_id bigint NOT NULL,
+  # member_id bigint,
+  # invitation_email character varying(150) NOT NULL,
+  # invitation_refused_at timestamp(6) without time zone,
+  # aasm_state character varying DEFAULT 'pending_invitation'::character varying
+
   include AASM
-   # Relations
+  normalizes :invitation_email, with: ->(invitation_email) { invitation_email.downcase }
+  # Relations
   belongs_to :inviter,
              class_name: 'User'
   belongs_to :member,
@@ -18,7 +20,7 @@ class TeamMemberInvitation < ApplicationRecord
   # Validations
   validates :member_id,
             uniqueness: { scope: %i[inviter_id invitation_email],
-                          message: "Vous avez déjà invité ce membre dans votre équipe" },
+                          message: 'Vous avez déjà invité ce membre dans votre équipe' },
             on: :create
 
   validates :invitation_email,
@@ -38,14 +40,13 @@ class TeamMemberInvitation < ApplicationRecord
     event :accept_invitation, after: :after_accepted_invitation do
       transitions from: %i[pending_invitation],
                   to: :accepted_invitation
-
     end
     event :refuse_invitation do
       transitions from: :pending_invitation,
                   to: :refused_invitation,
                   after: proc { |*_args|
-        update(invitation_refused_at: Time.now, member_id: nil)
-      }
+                    update(invitation_refused_at: Time.now, member_id: nil)
+                  }
     end
   end
 
@@ -72,7 +73,7 @@ class TeamMemberInvitation < ApplicationRecord
   end
 
   def member_is_inviter?
-    self.member_id == self.inviter_id
+    member_id == inviter_id
   end
   alias member_is_owner? member_is_inviter?
 
@@ -81,19 +82,19 @@ class TeamMemberInvitation < ApplicationRecord
     team_member_ids = team.team_members.map(&:member_id)
     # reject my invitations to my team
     TeamMemberInvitation.pending_invitation
-              .where(inviter_id: member_id)
-              .where(member_id: team_member_ids)
-              .each do |pending_member|
-                pending_member.destroy
-              end
+                        .where(inviter_id: member_id)
+                        .where(member_id: team_member_ids)
+                        .each do |pending_member|
+      pending_member.destroy
+    end
 
     # refuse invitations to me
     TeamMemberInvitation.pending_invitation
-              .where.not(inviter_id: team_member_ids)
-              .where(invitation_email: invitation_email)
-              .each do |pending_member|
-                pending_member.refuse_invitation!
-              end
+                        .where.not(inviter_id: team_member_ids)
+                        .where(invitation_email: invitation_email)
+                        .each do |pending_member|
+      pending_member.refuse_invitation!
+    end
   end
 
   def team_owner_id
@@ -115,7 +116,4 @@ class TeamMemberInvitation < ApplicationRecord
   def after_accepted_invitation
     team.activate_member
   end
-
-
-
 end
