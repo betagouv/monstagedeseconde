@@ -17,7 +17,7 @@ div id="toggle_status_#{dom_id(internship_offer)}" name="toggle_status_#{dom_id(
            data-toggle-activate-type-param='form']
         .label
           = status_label
-        .toggle-swap
+        div
           = render 'toggle_publish_element',
                     published: published,
                     id: id,
@@ -25,7 +25,7 @@ div id="toggle_status_#{dom_id(internship_offer)}" name="toggle_status_#{dom_id(
   - else
     .toggle-block.text-left.d-flex data-action='change->toggle-activate#toggle' data-toggle-activate-type-param='alink'
       .label = status_label
-      .toggle-swap
+      div
         = link_to dashboard_internship_offer_path(internship_offer.id, internship_offer: { aasm_state: toggled_aasm_state, published_at: toggled_published_at }),
                   class: '',
                   data: { turbo: true },
