@@ -104,7 +104,7 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[completed_by_employer started_by_school_manager],
                   to: :validated,
                   after: proc { |*_args|
-                           notify_employer_school_manager_completed(self)
+                           notify_employer_school_manager_completed
                          }
     end
 
@@ -112,7 +112,7 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[validated signatures_started],
                   to: :signatures_started,
                   after: proc { |*_args|
-                           notify_others_signatures_started(self)
+                           notify_others_signatures_started
                          }
     end
 
@@ -321,17 +321,17 @@ class InternshipAgreement < ApplicationRecord
 
   private
 
-  def notify_employer_school_manager_completed(agreement)
+  def notify_employer_school_manager_completed
     EmployerMailer.school_manager_finished_notice_email(
-      internship_agreement: agreement
+      internship_agreement: self
     ).deliver_later
   end
 
   # Notify the school manager and employer that the agreement is ready to be signed
-  def notify_others_signatures_started(agreement)
+  def notify_others_signatures_started
     roles_not_signed_yet.each do |role|
       mailer_map[role.to_sym].notify_others_signatures_started_email(
-        internship_agreement: agreement,
+        internship_agreement: self,
         employer: employer,
         school_management: school_management_representative
       ).deliver_later
