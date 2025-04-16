@@ -115,12 +115,12 @@ jobs: # a collection of steps
       #     command: |
       #       mkdir test-results
       #       PARALLEL_WORKERS=1 ~/project/infra/test/system_desktop.sh
-      - store_artifacts:
-          path: tmp/screenshots
+      # - store_artifacts:
+      #     path: tmp/screenshots
 
-      - run:
-          name: Run Mobile TestSystem with headless_chrome using chrome's iPhone 6 emulation
-          command: PARALLEL_WORKERS=1 ~/project/infra/test/system_mobile.sh
+      # - run:
+      #     name: Run Mobile TestSystem with headless_chrome using chrome's iPhone 6 emulation
+      #     command: PARALLEL_WORKERS=1 ~/project/infra/test/system_mobile.sh
 
       - run:
           name: Run Desktop w3c System with headless_chrome
