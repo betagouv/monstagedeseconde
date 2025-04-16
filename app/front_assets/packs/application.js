@@ -40,9 +40,6 @@ import Dropdown from 'bootstrap'
 import Modal from 'bootstrap'
 import Tooltip from 'bootstrap'
 
-import "trix";
-import "@rails/actiontext";
-
 import 'url-search-params-polyfill';
 
 import '../bootapp';

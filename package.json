@@ -32,24 +32,24 @@
     "popper.js": "^1.15.0",
     "raf": "^3.4.1",
     "rails-ujs": "^5.2.2",
-    "rails_admin": "3.1.2",
+    "rails_admin": "3.3.0",
     "react": "^18.2.0",
     "react-content-loader": "^6.2.0",
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.0.0",
     "react-leaflet-cluster": "^2.0.0",
     "react-on-rails": "12.0.5-beta.0",
-    "react-phone-input-2": "mfo/react-phone-input-2",
+    "react-phone-input-2": "2.15.1",
     "regenerator-runtime": "^0.13.3",
     "signature_pad": "^4.0.5",
     "stimulus": "3",
-    "trix": "^2.1.12",
     "url-search-params-polyfill": "^8.0.0",
     "use-debounce": "5",
     "whatwg-fetch": "^3.2.0"
   },
   "devDependencies": {
     "@types/leaflet": "^1.7.11",
+    "@types/postcss-preset-env": "^7.7.0",
     "babel-eslint": "^10.0.2",
     "eslint": "^7.3.1",
     "eslint-config-airbnb": "^18.0.1",
@@ -59,15 +59,21 @@
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.3",
     "pa11y-ci": "^3.0.1",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-import": "^16.1.0",
+    "postcss-nested": "^7.0.2",
     "prettier": "^2.0.4",
     "prop-types": "^15.7.2",
     "vnu-jar": "^20.3.16",
     "webpack-dev-server": "3.11.0"
   },
   "engines": {
-    "node": "18.x"
+    "node": "22.x"
   },
   "resolutions": {
     "rails_admin/@fortawesome/fontawesome-free": "^5.15.0"
+  },
+  "peerDependencies": {
+    "postcss": "^8.5.3"
   }
 }

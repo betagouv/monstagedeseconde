@@ -9,13 +9,12 @@ div class="fr-card #{employers_only? ? 'disabled_tab' : ''}"
         |< et technologique
       p.fr-text
         | Postulez et suivez vos candidatures pour trouver un stage.
-    .fr-card__footer
+    .fr-card__footer.connection-footer-card
       ul.fr-btns-group
         li
-          - path = employers_only? ? '#' : @educonnect_url
-          - label = employers_only? ? 'Connexion à venir' : 'Connexion - ÉduConnect'
-          - klass = employers_only? ? 'fr-btn--tertiary' : 'fr-btn--secondary'
-          = link_to label, path, class: "fr-btn #{klass}", disabled: employers_only?
+          = link_to 'Connexion - ÉduConnect', @educonnect_url, class: "fr-btn fr-btn--secondary"
+      .text-center.fr-mt-2w
+        = link_to "Je ne parviens pas à me connecter", ENV['EDUCONNECT_HELP_URL']
   .fr-card__header
     .fr-ml-4w.fr-mt-5w
       .fr-badge.fr-badge--purple-glycine.fr-badge--no-icon élève

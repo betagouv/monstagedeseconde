@@ -17,15 +17,15 @@ namespace :sys do
     'storage/tmp/reset_1E1S_prod_copy.sql'
   end
 
-  desc "test database to check if it is production's copy"
-  task :is_prod, [] => :environment do
+  desc 'which db is in use ?'
+  task :db_in_use, [] => :environment do
     file = Rails.root.join('config/database.yml')
     text = File.read(file)
-    is_in_prod = !text.match?(/# url: <%= ENV.fetch\('CLEVER_PRODUCTION_COPY_CONNEXION_URI'\)/)
-    if is_in_prod
-      PrettyConsole.puts_in_red 'Database is a copy of production'
+    content_to_search = 'url: <%= ENV.fetch(\'CLEVER_PRODUCTION_COPY_CONNEXION_URI\')'
+    if text.include?(content_to_search)
+      PrettyConsole.puts_in_red 'Database in use is production copy'
     else
-      PrettyConsole.puts_in_green 'Database is local'
+      PrettyConsole.puts_in_green 'Database in use is local'
     end
   end
 

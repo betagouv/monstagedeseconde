@@ -10,13 +10,10 @@ div class="fr-card #{employers_only? ? 'disabled_tab' : ''}"
         |
       p.fr-text
         | Vous êtes personnel de direction, chef d’établissement ou professeur, inscrivez votre établissement et accompagnez vos élèves dans leurs recherches.
-    .fr-card__footer
+    .fr-card__footer.connection-footer-card
       ul.fr-btns-group
         li
-          - path = employers_only? ? '#' :  @fim_url
-          - label = employers_only? ? 'Connexion à venir' : 'Connexion - Éducation Nationale'
-          - klass = employers_only? ? 'fr-btn--tertiary' : 'fr-btn--secondary'
-          = link_to label, path, class: "fr-btn #{klass}", disabled: employers_only?
+          = link_to 'Connexion - Éducation Nationale', @fim_url, class: "fr-btn fr-btn--secondary"
   .fr-card__header
     .fr-ml-4w.fr-mt-5w
       .fr-badge.fr-badge--info.fr-badge--no-icon éducation
