@@ -653,7 +653,7 @@ class InternshipApplication < ApplicationRecord
     internship_offer.internship_offer_area
                     .area_notifications
                     .find_by(user_id: employer.id)
-                    .notify
+                    .try(:notify)
   end
 
   def internship_agreement_creation_allowed?

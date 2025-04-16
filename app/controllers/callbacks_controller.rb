@@ -5,10 +5,10 @@ class CallbacksController < ApplicationController
       state = params[:state]
       nonce = params[:nonce]
       user_info = Services::FimConnection.new(code, state, nonce).get_user_info
-      Rails.logger.info('--------------')
-      Rails.logger.info('FIM Connection')
-      Rails.logger.info("User info FIM : #{user_info.inspect}")
-      Rails.logger.info('--------------')
+      # Rails.logger.info('--------------')
+      # Rails.logger.info('FIM Connection')
+      # Rails.logger.info("User info FIM : #{user_info.inspect}")
+      # Rails.logger.info('--------------')
       redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
       unless School.exists?(code_uai: user_info['rne'])
@@ -18,11 +18,11 @@ class CallbacksController < ApplicationController
       user = User.find_or_initialize_by(email: user_info['email'].downcase)
 
       if user.persisted?
-        Rails.logger.info("FIM : User already exists: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
+        # Rails.logger.info("FIM : User already exists: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
         sign_in(user)
         redirect_to user.custom_dashboard_path, notice: 'Vous êtes bien connecté'
       else
-        Rails.logger.info("FIM : User does not exist: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
+        # Rails.logger.info("FIM : User does not exist: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
         user.first_name = user_info['given_name']
         user.last_name = user_info['family_name']
         user.email = user_info['email']
@@ -34,16 +34,16 @@ class CallbacksController < ApplicationController
         user.confirmed_at = Time.now
 
         if user.save
-          Rails.logger.info("FIM :User saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
+          # Rails.logger.info("FIM :User saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
           sign_in_and_redirect user, event: :authentication
         else
-          Rails.logger.error("FIM : User not saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']} : #{user.errors.full_messages}")
+          # Rails.logger.error("FIM : User not saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']} : #{user.errors.full_messages}")
           puts user.errors.full_messages
           redirect_to root_path, alert: 'Erreur lors de la création de l\'utilisateur'
         end
       end
     else
-      Rails.logger.error("FIM : State invalide: #{params[:state]}")
+      # Rails.logger.error("FIM : State invalide: #{params[:state]}")
       redirect_to root_path, alert: 'State invalide'
     end
   end
@@ -60,12 +60,12 @@ class CallbacksController < ApplicationController
     session[:id_token] = educonnect.id_token
     session[:state] = state
 
-    Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
+    # Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
 
     user_info = educonnect.get_user_info
-    Rails.logger.info('--------------')
-    Rails.logger.info("Educonnect User info: #{user_info.inspect}")
-    Rails.logger.info('--------------')
+    # Rails.logger.info('--------------')
+    # Rails.logger.info("Educonnect User info: #{user_info.inspect}")
+    # Rails.logger.info('--------------')
 
     redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
@@ -77,8 +77,8 @@ class CallbacksController < ApplicationController
     student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
     school = School.find_by(code_uai: user_info['FrEduCtEleveUAI'])
 
-    Rails.logger.info("School: #{school.inspect}")
-    Rails.logger.info("Student: #{student.inspect}")
+    # Rails.logger.info("School: #{school.inspect}")
+    # Rails.logger.info("Student: #{student.inspect}")
 
     unless school.present?
       handle_educonnect_logout(educonnect)
@@ -100,11 +100,11 @@ class CallbacksController < ApplicationController
       student.save
     end
 
-    Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
+    # Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
 
     begin
-      Rails.logger.info('Starting sign in process...')
-      Rails.logger.info("Student details - ID: #{student.id}, Email: #{student.email}")
+      # Rails.logger.info('Starting sign in process...')
+      # Rails.logger.info("Student details - ID: #{student.id}, Email: #{student.email}")
 
       # Vérifier que l'utilisateur est valide avant la connexion
       unless student.valid?

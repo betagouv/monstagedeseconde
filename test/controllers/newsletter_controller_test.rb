@@ -2,12 +2,11 @@ require 'test_helper'
 
 class NewsletterControllerTest < ActionDispatch::IntegrationTest
   test 'post should not subscribe when email is faulty' do
-    test_email = 'test@free@.fr'
+    invalid_email = 'test@free@.fr'
 
-    post newsletter_path, params: { email: test_email }
+    post newsletter_path, params: { email: invalid_email }
     assert_redirected_to root_path
-    skip 'TODO: fix this test flash message does not work'
-    assert_equal "Votre email a l'air erroné", flash[:warning]
+    assert_equal "Votre email a l'air erroné", flash[:alert]
   end
 
   test 'post should subscribe' do

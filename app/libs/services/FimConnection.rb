@@ -45,8 +45,8 @@ module Services
       headers.each { |key, value| request[key] = value }
 
       response = http.request(request)
-      puts "Response: #{response}"
-      puts "Response body: #{response.body}"
+      # puts "Response: #{response}"
+      # puts "Response body: #{response.body}"
 
       raise "Failed to get user info: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
 
@@ -77,9 +77,9 @@ module Services
       request['Content-Type'] = 'application/x-www-form-urlencoded'
       request.body = URI.encode_www_form(body)
 
-      puts "Request body: #{request.body}" # Pour debug
+      # puts "Request body: #{request.body}" # Pour debug
       response = http.request(request)
-      puts "Response: #{response.body}"
+      # puts "Response: #{response.body}"
 
       raise "Failed to get token: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
 

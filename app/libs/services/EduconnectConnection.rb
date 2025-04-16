@@ -20,13 +20,13 @@ module Services
       )
 
       return {} if response.body.blank?
-      
-      puts "response.body: #{response.body}"
-      
+
+      # puts "response.body: #{response.body}"
+
       JSON.parse(response.body)
     rescue JSON::ParserError => e
-      Rails.logger.error("Failed to parse Educonnect response: #{e.message}")
-      Rails.logger.error("Response body: #{response&.body.inspect}")
+      # Rails.logger.error("Failed to parse Educonnect response: #{e.message}")
+      # Rails.logger.error("Response body: #{response&.body.inspect}")
       {}
     end
 
@@ -63,8 +63,8 @@ module Services
 
       parsed_response['access_token']
     rescue JSON::ParserError => e
-      Rails.logger.error("Failed to parse Educonnect response: #{e.message}")
-      Rails.logger.error("Response body: #{response&.body.inspect}")
+      # Rails.logger.error("Failed to parse Educonnect response: #{e.message}")
+      # Rails.logger.error("Response body: #{response&.body.inspect}")
       { access_token: nil, id_token: nil }
     end
 
