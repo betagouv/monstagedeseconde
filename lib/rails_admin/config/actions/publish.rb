@@ -16,7 +16,7 @@ module RailsAdmin
         end
 
         register_instance_option :link_icon do
-          bindings[:object].published? ? 'fas fa-eye-slash' : 'fas fa-eye'
+          bindings[:object].published? ? 'fas fa-eye' : 'fas fa-eye-slash'
         end
 
         # You may or may not want pjax for your action
