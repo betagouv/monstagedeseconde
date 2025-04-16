@@ -21,11 +21,11 @@ namespace :sys do
   task :db_in_use, [] => :environment do
     file = Rails.root.join('config/database.yml')
     text = File.read(file)
-    content_to_search = 'url: <%= ENV.fetch(\'CLEVER_PRODUCTION_COPY_CONNEXION_URI\')'
+    content_to_search = '# url: <%= ENV.fetch(\'CLEVER_PRODUCTION_COPY_CONNEXION_URI\')'
     if text.include?(content_to_search)
-      PrettyConsole.puts_in_red 'Database in use is production copy'
-    else
       PrettyConsole.puts_in_green 'Database in use is local'
+    else
+      PrettyConsole.puts_in_red 'Database in use is production copy'
     end
   end
 
@@ -46,7 +46,6 @@ namespace :sys do
     new_contents = text.gsub(/url: <%= ENV.fetch\('CLEVER_PRODUCTION_COPY_CONNEXION_URI'\)/,
                              "# url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI')")
     File.open(file, 'w') { |f| f.puts new_contents }
-    puts 'Database is now local'
   end
 
   desc 'download a production database copy to filesystem'
