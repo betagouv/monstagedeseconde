@@ -1,4 +1,5 @@
 require 'pretty_console'
+require 'csv'
 
 namespace :retrofit do
   desc 'updating empty strings from students_emails to nil'
@@ -63,8 +64,8 @@ namespace :retrofit do
                                                 .count
                                                 .keys
       puts offer_ids.count
-      puts offer_ids[counter] if counter%50 == 0
-      puts "----------"
+      puts offer_ids[counter] if counter % 50 == 0
+      puts '----------'
 
       # search for internship_applications related to offer_ids that have only one week related
       InternshipApplication.joins(:weekly_internship_offer, :weeks)
@@ -82,9 +83,40 @@ namespace :retrofit do
         end
         application.weeks = SchoolTrack::Seconde.both_weeks
         counter += 1
-        puts application.id if counter%50 == 0
+        puts application.id if counter % 50 == 0
       end
       PrettyConsole.say_in_green "#{counter} applications have been processed"
+    end
+  end
+
+  desc '15/04/2025 - update offers from public offers without group_id'
+  task set_private_group_id: :environment do |task|
+    PrettyConsole.announce_task(task) do
+      if Rails.env.production? || Rails.env.development?
+        counter = 0
+        resource_file_location = 'db/data_imports/missing_group_id_for_private_offers.csv'
+        CSV.foreach(resource_file_location, 'r', headers: true, header_converters: :symbol, col_sep: ';').each do |row|
+          offer = InternshipOffers::WeeklyFramed.find_by(id: row[:id])
+          next if offer.nil?
+          next if offer.group_id.present?
+
+          group = Group.find_by(name: row[:type_employeur])
+          print '.'
+
+          if group.nil?
+            PrettyConsole.puts_in_red(row[:type_employeur])
+            PrettyConsole.say_in_red "group_id not found for offer_id: #{offer.id}"
+            next
+          end
+          offer.update!(group_id: group.id)
+          counter += 1
+          puts offer.id if counter % 10 == 0
+          print '.' unless counter % 10 == 0
+        end
+      else
+        PrettyConsole.say_in_yellow 'This task should be run in production or development environment'
+      end
+      PrettyConsole.say_in_green "#{counter} offers have been processed"
     end
   end
 end
