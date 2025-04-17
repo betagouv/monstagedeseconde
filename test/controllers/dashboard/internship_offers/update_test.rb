@@ -30,17 +30,16 @@ module Dashboard::InternshipOffers
 
     test 'PATCH #update with title as employer owning internship_offer updates internship_offer' \
          'even if dates are missing in the future since it is not published' do
-      internship_offer = create(:weekly_internship_offer_2nde)
+      internship_offer = create(:weekly_internship_offer_2nde, :with_public_group)
       new_title = 'new title'
-      new_group = create(:group, is_public: false, name: 'woop')
+      new_group = create(:group, is_public: true, name: 'woop')
       sign_in(internship_offer.employer)
       patch(dashboard_internship_offer_path(internship_offer.to_param),
             params: { internship_offer: {
               title: new_title,
               week_ids: [weeks(:week_2019_1).id],
-              is_public: false,
+              is_public: true,
               published_at: nil,
-              group_id: new_group.id,
               daily_hours: { 'lundi' => %w[10h 12h] }
 
             } })
@@ -54,7 +53,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'PATCH #update successfully with title as employer owning internship_offer updates internship_offer' do
-      internship_offer = create(:weekly_internship_offer_2nde)
+      internship_offer = create(:weekly_internship_offer_2nde, :with_public_group)
       new_title = 'new title'
       new_group = create(:group, is_public: false, name: 'woop')
       sign_in(internship_offer.employer)
@@ -66,7 +65,6 @@ module Dashboard::InternshipOffers
                 grade_college: '1',
                 grade_2e: '0',
                 all_year_long: '1',
-                is_public: false,
                 group_id: new_group.id,
                 daily_hours: { 'lundi' => %w[10h 12h] },
                 workspace_conditions: 'Environnement de travail 2',
@@ -129,7 +127,7 @@ module Dashboard::InternshipOffers
     end
 
     test 'PATCH #update as statistician owning internship_offer updates internship_offer' do
-      internship_offer = create(:weekly_internship_offer_2nde)
+      internship_offer = create(:weekly_internship_offer_2nde, :with_public_group)
       statistician = create(:statistician)
       internship_offer.update(employer_id: statistician.id)
       new_title = 'new title'
@@ -137,7 +135,6 @@ module Dashboard::InternshipOffers
       patch(dashboard_internship_offer_path(internship_offer.to_param),
             params: { internship_offer: {
               title: new_title,
-              is_public: false,
               daily_hours: { 'lundi' => %w[10h 12h] }
             } }.deep_symbolize_keys)
       assert_redirected_to(dashboard_internship_offers_path(origine: 'dashboard'),
