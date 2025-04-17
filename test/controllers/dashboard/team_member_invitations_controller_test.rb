@@ -1,4 +1,4 @@
-require "test_helper"
+require 'test_helper'
 
 class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
@@ -9,13 +9,13 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
 
   # -------Invitations
 
-  test "add team member" do
+  test 'add team member' do
     employer_1 = create(:employer)
     employer_2 = create(:employer)
     sign_in employer_1
     get new_dashboard_team_member_invitation_path
     assert_response :success
-    assert_difference "TeamMemberInvitation.count", 1 do
+    assert_difference 'TeamMemberInvitation.count', 1 do
       post dashboard_team_member_invitations_path,
            params: { team_member_invitation: { invitation_email: employer_2.email } }
     end
@@ -26,13 +26,13 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
     refute_equal employer_2.id, TeamMemberInvitation.first.member_id
   end
 
-  test "add team member when not created yet" do
+  test 'add team member when not created yet' do
     employer_1 = create(:employer)
     employer_2 = build(:employer)
     sign_in employer_1
     get new_dashboard_team_member_invitation_path
     assert_response :success
-    assert_difference "TeamMemberInvitation.count", 1 do
+    assert_difference 'TeamMemberInvitation.count', 1 do
       post dashboard_team_member_invitations_path,
            params: { team_member_invitation: { invitation_email: employer_2.email } }
     end
@@ -40,7 +40,7 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Membre d'équipe invité avec succès", flash[:success]
   end
 
-  test "add team member that is already invited" do
+  test 'add team member that is already invited' do
     employer_1 = create(:employer)
     employer_2 = create(:employer)
     team_member_invitation = create :team_member_invitation,
@@ -50,15 +50,15 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
     sign_in employer_1
     get new_dashboard_team_member_invitation_path
     assert_response :success
-    assert_difference "TeamMemberInvitation.count", 0 do
+    assert_difference 'TeamMemberInvitation.count', 0 do
       post dashboard_team_member_invitations_path,
            params: { team_member_invitation: { invitation_email: employer_2.email } }
     end
     assert_redirected_to dashboard_team_member_invitations_path
-    assert_equal "Ce collaborateur est déjà invité", flash[:warning]
+    assert_equal 'Ce collaborateur est déjà invité', flash[:warning]
   end
 
-  test "add team member that is already a member of another team" do
+  test 'add team member that is already a member of another team' do
     employer_1 = create(:employer)
     employer_2 = create(:employer)
     employer_3 = create(:employer)
@@ -66,33 +66,66 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
     sign_in employer_1
     get new_dashboard_team_member_invitation_path
     assert_response :success
-    assert_difference "TeamMemberInvitation.count", 0 do
+    assert_difference 'TeamMemberInvitation.count', 0 do
       post dashboard_team_member_invitations_path,
            params: { team_member_invitation: { invitation_email: employer_2.email } }
     end
     assert_redirected_to dashboard_team_member_invitations_path
-    assert_equal "Ce collaborateur fait déjà partie d’une équipe sur mon stage à l'école. Il ne pourra pas rejoindre votre équipe", flash[:alert]
+    assert_equal "Ce collaborateur fait déjà partie d'une équipe sur mon stage à l'école. Il ne pourra pas rejoindre votre équipe",
+                 flash[:alert]
   end
 
   # ------- Accept/refuse
-    # ------- Accept
-  test "invitation accepted" do
+  # ------- Accept
+  test 'invitation accepted it delete the previous memeber area' do
     employer_1 = create(:employer, first_name: 'Jules', last_name: 'Verne')
     employer_2 = create(:employer, first_name: 'Hector', last_name: 'Malot')
     team_member_invitation = create(:team_member_invitation,
-                         inviter: employer_1,
-                         member: employer_2,
-                         invitation_email: employer_2.email)
+                                    inviter: employer_1,
+                                    member: employer_2,
+                                    invitation_email: employer_2.email)
+    area_2 = employer_2.current_area
     sign_in employer_2
+
     get new_dashboard_team_member_invitation_path
+
     assert_response :success
-    # assert_no_difference "TeamMemberInvitation.count" do
-    assert_changes "TeamMemberInvitation.count", from:1 , to: 2 do
-      patch join_dashboard_team_member_invitation_path( id: team_member_invitation.id),
-                                                        params: { id: team_member_invitation.id, commit: "Oui" }
+
+    assert_changes 'TeamMemberInvitation.count', from: 1, to: 2 do
+      assert_changes 'InternshipOfferArea.count', from: 2, to: 1 do
+        patch join_dashboard_team_member_invitation_path(id: team_member_invitation.id),
+              params: { id: team_member_invitation.id, commit: 'Oui' }
+      end
     end
+
+    employer_2.reload
     assert_redirected_to dashboard_team_member_invitations_path
-    assert_equal team_member_invitation.reload.aasm_state, "accepted_invitation"
+    assert_equal team_member_invitation.reload.aasm_state, 'accepted_invitation'
+    assert_equal employer_2.current_area_id, employer_1.current_area_id
+  end
+  test 'invitation accepted it does not delete the previous member area if it has offers' do
+    employer_1 = create(:employer, first_name: 'Jules', last_name: 'Verne')
+    employer_2 = create(:employer, first_name: 'Hector', last_name: 'Malot')
+    create(:internship_offer, employer: employer_2, internship_offer_area: employer_2.current_area)
+    team_member_invitation = create(:team_member_invitation,
+                                    inviter: employer_1,
+                                    member: employer_2,
+                                    invitation_email: employer_2.email)
+    area_2 = employer_2.current_area
+    assert_equal 1, area_2.internship_offers.count
+    sign_in employer_2
+
+    assert_changes 'TeamMemberInvitation.count', from: 1, to: 2 do
+      assert_no_difference 'InternshipOfferArea.count' do
+        patch join_dashboard_team_member_invitation_path(id: team_member_invitation.id),
+              params: { id: team_member_invitation.id, commit: 'Oui' }
+      end
+    end
+
+    employer_2.reload
+    assert_redirected_to dashboard_team_member_invitations_path
+    assert_equal team_member_invitation.reload.aasm_state, 'accepted_invitation'
+    assert_equal employer_2.current_area_id, area_2.id
   end
 
   test 'when two employers of different team invite a third one, ignored invitation is refused' do
@@ -110,13 +143,13 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
     sign_in employer_3
     get new_dashboard_team_member_invitation_path
     assert_response :success
-    assert_difference "TeamMemberInvitation.count", 1 do
-      patch join_dashboard_team_member_invitation_path( id: team_member_1.id),
-            params: { id: team_member_1.id, commit: "Oui" }
+    assert_difference 'TeamMemberInvitation.count', 1 do
+      patch join_dashboard_team_member_invitation_path(id: team_member_1.id),
+            params: { id: team_member_1.id, commit: 'Oui' }
     end
     assert_redirected_to dashboard_team_member_invitations_path
-    assert_equal "accepted_invitation", team_member_1.reload.aasm_state
-    assert_equal "refused_invitation", team_member_2.reload.aasm_state
+    assert_equal 'accepted_invitation', team_member_1.reload.aasm_state
+    assert_equal 'refused_invitation', team_member_2.reload.aasm_state
   end
 
   test 'when two employers of different teams invite each other, ignored invitation is deleted' do
@@ -133,18 +166,18 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
     sign_in employer_2
     get new_dashboard_team_member_invitation_path
     assert_response :success
-    assert_no_difference "TeamMemberInvitation.count" do
+    assert_no_difference 'TeamMemberInvitation.count' do
       patch join_dashboard_team_member_invitation_path(id: team_member_1.id),
-                                                       params: { id: team_member_1.id, commit: "Oui" }
+            params: { id: team_member_1.id, commit: 'Oui' }
     end
     assert_redirected_to dashboard_team_member_invitations_path
-    assert_equal team_member_1.reload.aasm_state, "accepted_invitation"
+    assert_equal team_member_1.reload.aasm_state, 'accepted_invitation'
     assert_nil TeamMemberInvitation.find_by(id: team_member_2.id)
   end
 
-  test "when an employer of the team invites a user that has accepted " \
-       "invitation in between, it gets a special flash message telling him" \
-       " it is already accepted" do
+  test 'when an employer of the team invites a user that has accepted ' \
+       'invitation in between, it gets a special flash message telling him' \
+       ' it is already accepted' do
     employer_1 = create(:employer)
     employer_2 = create(:employer)
     employer_3 = create(:employer)
@@ -162,31 +195,32 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
                         .accept_invitation!
     get new_dashboard_team_member_invitation_path
     assert_response :success
-      patch join_dashboard_team_member_invitation_path( id: team_member_1.id),
-            params: { id: team_member_2.id, commit: "Oui" }
+    patch join_dashboard_team_member_invitation_path(id: team_member_1.id),
+          params: { id: team_member_2.id, commit: 'Oui' }
     assert_redirected_to dashboard_team_member_invitations_path
-    assert_equal "accepted_invitation", team_member_1.reload.aasm_state
-    assert_equal "refused_invitation", team_member_2.reload.aasm_state
+    assert_equal 'accepted_invitation', team_member_1.reload.aasm_state
+    assert_equal 'refused_invitation', team_member_2.reload.aasm_state
     assert_equal "L'invitation a déjà été acceptée", flash[:warning]
   end
 
-    # ------- Refuse
-  test "invitation refused" do
+  # ------- Refuse
+  test 'invitation refused' do
     employer_1 = create(:employer)
     employer_2 = create(:employer)
-    team_member_invitation = create(:team_member_invitation, inviter: employer_1, member: employer_2, invitation_email: employer_2.email)
+    team_member_invitation = create(:team_member_invitation, inviter: employer_1, member: employer_2,
+                                                             invitation_email: employer_2.email)
     sign_in employer_1
     get new_dashboard_team_member_invitation_path
     assert_response :success
-    assert_difference "TeamMemberInvitation.count", 0 do
-       patch join_dashboard_team_member_invitation_path( id: team_member_invitation.id),
-           params: { id: team_member_invitation.id, commit: "Non"}
+    assert_difference 'TeamMemberInvitation.count', 0 do
+      patch join_dashboard_team_member_invitation_path(id: team_member_invitation.id),
+            params: { id: team_member_invitation.id, commit: 'Non' }
     end
     assert_redirected_to dashboard_team_member_invitations_path
-    assert_equal team_member_invitation.reload.aasm_state, "refused_invitation"
+    assert_equal team_member_invitation.reload.aasm_state, 'refused_invitation'
   end
   # ------- END : Accept/refuse ------------
-  test "delete team member with 2 people in team" do
+  test 'delete team member with 2 people in team' do
     employer_1 = create(:employer)
     employer_2 = create(:employer)
     employer_3 = create(:employer)
@@ -196,10 +230,10 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
            member: employer_2,
            invitation_email: employer_2.email)
     team_member_invitation = create(:team_member_invitation,
-           :accepted_invitation,
-           inviter: employer_1,
-           member: employer_1,
-           invitation_email: employer_2.email)
+                                    :accepted_invitation,
+                                    inviter: employer_1,
+                                    member: employer_1,
+                                    invitation_email: employer_2.email)
     # Unused context
     create(:team_member_invitation,
            inviter: employer_1,
@@ -212,14 +246,14 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
     sign_in employer_2
     get new_dashboard_team_member_invitation_path
     assert_response :success
-    assert_difference "TeamMemberInvitation.count", -2 do
+    assert_difference 'TeamMemberInvitation.count', -2 do
       delete dashboard_team_member_invitation_path(team_member_invitation)
     end
     assert_redirected_to dashboard_team_member_invitations_path
     assert_equal "Membre d'équipe supprimé avec succès. Votre équipe a été dissoute", flash[:success]
   end
 
-  test "delete team member with 3 people in team" do
+  test 'delete team member with 3 people in team' do
     employer_1 = create(:employer)
     employer_2 = create(:employer)
     employer_3 = create(:employer)
@@ -228,11 +262,12 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
            inviter: employer_1,
            member: employer_2,
            invitation_email: employer_2.email)
+    # add employer_1 to the team
     team_member_invitation = create(:team_member_invitation,
-           :accepted_invitation,
-           inviter: employer_1,
-           member: employer_1,
-           invitation_email: employer_2.email)
+                                    :accepted_invitation,
+                                    inviter: employer_1,
+                                    member: employer_1,
+                                    invitation_email: employer_2.email)
     create(:team_member_invitation,
            :accepted_invitation, # team with 3 people
            inviter: employer_1,
@@ -242,10 +277,51 @@ class TeamMemberInvitationControllerTest < ActionDispatch::IntegrationTest
     sign_in employer_2
     get new_dashboard_team_member_invitation_path
     assert_response :success
-    assert_difference "TeamMemberInvitation.count", -1 do
+    assert_difference 'TeamMemberInvitation.count', -1 do
       delete dashboard_team_member_invitation_path(team_member_invitation)
     end
     assert_redirected_to dashboard_team_member_invitations_path
     assert_equal "Membre d'équipe supprimé avec succès.", flash[:success]
+  end
+  test 'delete team member when the deleted member was invited \
+       so does not have his own area' do
+    employer_1 = create(:employer)
+    employer_2 = create(:employer)
+    team_member_invitation_1 = create(:team_member_invitation,
+                                      :accepted_invitation,
+                                      inviter: employer_1,
+                                      member: employer_2,
+                                      invitation_email: employer_2.email)
+
+    team_member_invitation = create(:team_member_invitation,
+                                    :accepted_invitation,
+                                    inviter: employer_1,
+                                    member: employer_1,
+                                    invitation_email: employer_2.email)
+
+    team_member_invitation_2 = create(:team_member_invitation,
+                                      inviter: employer_1,
+                                      invitation_email: 'employer_3@email.com')
+
+    employer_3 = create(:employer, first_name: 'Hector', last_name: 'Invited', email: 'employer_3@email.com')
+
+    sign_in employer_1
+
+    patch join_dashboard_team_member_invitation_path(id: team_member_invitation_2.id),
+          params: { id: team_member_invitation_2.id, commit: 'Oui' }
+
+    employer_3.reload
+    assert_equal employer_3.current_area_id, employer_1.current_area_id
+
+    sign_in employer_1
+    get new_dashboard_team_member_invitation_path
+    assert_response :success
+    assert_difference 'TeamMemberInvitation.count', -1 do
+      delete dashboard_team_member_invitation_path(team_member_invitation_2) # remove employer_3
+    end
+    employer_3.reload
+    assert_redirected_to dashboard_team_member_invitations_path
+    assert_equal "Membre d'équipe supprimé avec succès.", flash[:success]
+    refute_equal employer_3.current_area_id, employer_1.current_area_id
   end
 end

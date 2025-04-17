@@ -109,9 +109,49 @@ class TeamMemberInvitation < ApplicationRecord
     invitation_refused_at.present?
   end
 
+  def destroy_member_original_offer_area
+    member = fetch_invitee_in_db
+
+    destroy_member_offer_area(member) if member.came_from_invitation?
+  end
+
   private
 
   def after_accepted_invitation
     team.activate_member
+  end
+
+  def destroy_member_offer_area(member)
+    area = InternshipOfferArea.where(employer_id: member.id).first
+    return if area.internship_offers.any?
+
+    if area
+      Rails.logger.info "Users avec cette zone: #{User.where(current_area_id: area.id).count}"
+      Rails.logger.info "Associations: #{area.class.reflect_on_all_associations.map(&:name)}"
+
+      # Mettre à jour les utilisateurs
+      User.where(current_area_id: area.id).update_all(
+        current_area_id: inviter.current_area_id
+      )
+
+      area.area_notifications.destroy_all
+
+      # Essayer de forcer la suppression avec destroy!
+      begin
+        area.reload # Recharger pour être sûr d'avoir les dernières données
+        unless area.destroy
+          Rails.logger.error "Échec normal: #{area.errors.full_messages}"
+          # Forcer avec destroy! pour voir l'erreur complète
+          area.destroy!
+        end
+      rescue StandardError => e
+        Rails.logger.error "Erreur de suppression: #{e.full_message}"
+        # En dernier recours, essayer delete
+        area.delete
+      end
+    end
+
+    member.current_area_id = inviter.current_area_id
+    member.save!
   end
 end

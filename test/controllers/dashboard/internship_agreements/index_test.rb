@@ -83,7 +83,7 @@ module Dashboard::InternshipOffers
       sign_in(school.school_manager)
       get dashboard_internship_agreements_path
       assert_response :success
-      assert_select('td.actions', text: 'Signer en ligne')
+      assert_select('td.actions', text: 'ImprimerAjouter aux signatures')
     end
     test 'GET #index as school_manager when school manager signed the internship agreement' do
       school = create(:school, :with_school_manager)
