@@ -8,7 +8,8 @@
   .d-flex.align-content-start.flex-wrap
     - @engaged_partners.each do |partner|
       .involved_partner_logo.fr-mb-1w
-        = link_to partner[:url], class: 'fr-raw-link' do
-          = image_tag partner[:logo],
+        - if partner[:logo].present? && partner[:url].present?
+          = link_to partner[:url], class: 'fr-raw-link' do
+            = image_tag partner[:logo],
                                      alt: partner[:name],
                                      class: 'fr-mr-6w fr-mt-3v'
