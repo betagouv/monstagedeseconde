@@ -124,4 +124,31 @@ class EmployerMailerTest < ActionMailer::TestCase
     assert_equal 'Une candidature été restaurée par un élève', email.subject
     refute_email_spammyness(email)
   end
+
+  test 'as a team member, with notifications off, it should send an email' do
+    internship_offer_2nde = create_internship_offer_visible_by_two(create(:employer), create(:employer))
+    internship_application = create(:weekly_internship_application, :approved,
+                                    internship_offer: internship_offer_2nde)
+    internship_application.cancel_by_student!
+    internship_application.restored_message = ''
+    employer = internship_application.internship_offer.employer
+    area_id = internship_offer_2nde.internship_offer_area_id
+    AreaNotification.find_by(user_id: employer.id,
+                             internship_offer_area_id: area_id)
+                    .update(notify: false)
+
+    assert_emails 1 do
+      internship_application.restore!
+    end
+  end
+  test 'as a team member, with notifications on, it should send not send any email when never been approved in the past' do
+    internship_offer_2nde = create_internship_offer_visible_by_two(create(:employer), create(:employer))
+    internship_application = create(:weekly_internship_application, :canceled_by_student,
+                                    internship_offer: internship_offer_2nde)
+    internship_application.restored_message = ''
+
+    assert_emails 0 do
+      internship_application.restore!
+    end
+  end
 end
