@@ -26,13 +26,10 @@ module StepperProxy
                 exclusion: { in: [geo_point_factory(latitude: 0, longitude: 0)] },
                 unless: -> { internship_address_manual_enter }
       validates :is_public, inclusion: [true, false]
-      # TODO
-      # validates :group_id,
-      #           presence: true,
-      #           if: -> { is_public }
+
       validates :group_id,
                 absence: true,
-                if: -> { !is_public }
+                unless: -> { is_public }
 
       def entreprise_coordinates=(coordinates)
         case coordinates

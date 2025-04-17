@@ -20,7 +20,6 @@ FactoryBot.define do
     end
 
     trait :public do
-      is_public { true }
     end
   end
 end

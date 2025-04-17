@@ -6,6 +6,15 @@ class EntrepriseTest < ActiveSupport::TestCase
     assert entreprise.valid?
     assert_equal Coordinates.paris[:latitude], entreprise.entreprise_coordinates.latitude
     assert_equal Coordinates.paris[:longitude], entreprise.entreprise_coordinates.longitude
+    assert entreprise.is_public
+    refute_nil entreprise.group_id
+  end
+
+  test 'factory private entreprise build' do
+    entreprise = build(:entreprise, :private)
+    assert entreprise.valid?
+    refute entreprise.is_public
+    assert_nil entreprise.group_id
   end
 
   test 'factory create' do
