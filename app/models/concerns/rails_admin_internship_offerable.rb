@@ -23,6 +23,17 @@ module RailsAdminInternshipOfferable
         field :group
         field :is_public
         field :created_at
+        field :publishing_status do
+          def label = 'Statut'
+
+          def pretty_value
+            if bindings[:object].published?
+              'Publiée'
+            else
+              'Non publiée'
+            end
+          end
+        end
       end
 
       show do
@@ -46,9 +57,6 @@ module RailsAdminInternshipOfferable
         field :employer
         field :internship_offer_area do
           label 'Espace'
-        end
-        field :organisation do
-          label 'Groupe ou institution'
         end
       end
 

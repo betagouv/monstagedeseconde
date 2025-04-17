@@ -445,7 +445,7 @@ fr:
         period: Période de stage
         organisation:
           group: Groupe ou institution de tutelle
-        
+
         internship_occupation: Métiers observés et localisation du stage
           # title: Intitulé
           # description: Description
@@ -735,6 +735,12 @@ fr:
               taken: 'Vous ne pouvez pas postuler deux fois à la même offre'
   admin:
     actions:
+      publish:
+        menu: 'Publier / Dépublier'
+        success: 'Offre publiée avec succès'
+        title: 'Publier cette offre'
+      unpublish:
+        success: 'Offre dépubliée avec succès'
       switch_user:
         menu: 'Se connecter avec ce compte'
         title: 'Connexion en tant que...'
@@ -747,7 +753,7 @@ fr:
         no_records: Aucun résultat
       delete:
         done: 'utilisateur anonymisé avec succès'
-    flash: 
+    flash:
       successful: 'Opération effectuée avec succès'
     misc:
       root_navigation:
@@ -804,7 +810,14 @@ fr:
     teacher: "Professeur"
     main_teacher: "Professeur principal"
     other: "Autre fonction"
-
+  flash:
+    actions:
+      publish:
+        success: 'Offre publiée avec succès'
+        error: "Erreur lors de la publication/dépublication de l'offre. Demandez à un administrateur"
+      unpublish:
+        success: 'Offre dépubliée avec succès'
+        error: "Erreur lors de la dépublication de l'offre"
   enum:
     roles:
       admin_officer: "Responsable administratif"
@@ -816,7 +829,7 @@ fr:
 
   date:
     day_names: [Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi]
-  
+
   time:
     formats:
       long_with_time: "%d/%m/%Y à %Hh%M"
