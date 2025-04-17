@@ -89,6 +89,30 @@ namespace :retrofit do
     end
   end
 
+  desc '10/04/2025 - update offers of private entreprises with non null group_id'
+  task nullify_group_id: :environment do |task|
+    PrettyConsole.announce_task(task) do
+      counter = 0
+      InternshipOffers::WeeklyFramed.kept
+                                    .where(is_public: false)
+                                    .where.not(group_id: nil)
+                                    .each do |internship_offer|
+        internship_offer.update_columns(group_id: nil)
+        counter += 1
+      end
+      PrettyConsole.say_in_green "#{counter} offers have been processed"
+      # ***********************************
+      counter = 0
+      Entreprise.where(is_public: false)
+                .where.not(group_id: nil)
+                .each do |entreprise|
+        entreprise.update_columns(group_id: nil)
+        counter += 1
+      end
+      PrettyConsole.say_in_green "#{counter} entreprises have been processed"
+    end
+  end
+
   desc '15/04/2025 - update offers from public offers without group_id'
   task set_private_group_id: :environment do |task|
     PrettyConsole.announce_task(task) do

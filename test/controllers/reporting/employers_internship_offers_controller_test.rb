@@ -15,6 +15,7 @@ module Reporting
       paqte_group = create(:group, is_paqte: true)
       public_internship_offer = create(
         :weekly_internship_offer_3eme, # public internship by default
+        :with_public_group,
         zipcode: 75_012 # Paris
       )
       public_internship_offer = create(
@@ -24,7 +25,6 @@ module Reporting
       private_internship_offer = create(
         :weekly_internship_offer_3eme,
         :with_private_employer_group,
-        group: paqte_group,
         max_candidates: 10,
         zipcode: 60_580
       ) # 10 paqte(private) Oise
@@ -131,8 +131,8 @@ module Reporting
       private_internship_offer = create(
         :weekly_internship_offer_3eme,
         :with_private_employer_group,
-        group: paqte_group,
         max_candidates: 10,
+        group: nil,
         zipcode: 60_580
       ) # 10 paqte(private) Oise
       private_internship_offer_no_group = create(

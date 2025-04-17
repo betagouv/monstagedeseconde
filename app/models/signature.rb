@@ -10,7 +10,14 @@ class Signature < ApplicationRecord
     other: 'other'
   }
 
-  SCHOOL_MANAGEMENT_SIGNATORY_ROLE = %w[school_manager cpe admin_officer other].freeze
+  SCHOOL_MANAGEMENT_SIGNATORY_ROLE = %w[
+    school_manager
+    cpe
+    admin_officer
+    other
+    teacher
+    main_teacher
+  ].freeze
   REQUESTED_SIGNATURES_COUNT = 2
 
   belongs_to :internship_agreement

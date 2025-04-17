@@ -443,6 +443,8 @@ fr:
         contact_email: Courriel du contact
         contact_phone: Téléphone du contact
         period: Période de stage
+        group_id: type d'employeur
+        group: Ministère
         organisation:
           group: Groupe ou institution de tutelle
 
