@@ -206,14 +206,17 @@ class PagesController < ApplicationController
                                    Prismic::Predicates.at('document.type', 'partner'),
                                    Prismic::Predicates.at('my.partner.category', 'engaged_partner')
                                  ],
-                                 { 'orderings' => '[my.partner.name]' })
+                                 {
+                                   'orderings' => '[my.partner.name]',
+                                   'pageSize' => 100
+                                 })
     puts "engaged_partners: #{engaged_partners.inspect}"
 
     engaged_partners.results.map do |doc|
       {
         name: doc['partner.name'].as_text,
-        logo: doc['partner.logo'].url,
-        url: doc['partner.url'].as_text,
+        logo: doc['partner.logo'].try(:url),
+        url: doc['partner.url'].try(:as_text),
         rank: doc['partner.rank']
       }
     end

@@ -15,10 +15,12 @@
         Pour changer votre mot de passe, nous devons d’abord vérifier votre identité.
         Pour cela rappelez-nous l’adresse électronique associé à votre compte.
         </p>
+      <%= f.label :email%>  
       <%= f.rg2a_explain_required_asterisk %>
       <%= f.text_field :email,
                        class: 'fr-input',
                        required: true,
+                       :'aria-label' => "Adresse électronique",
                        type: :email,
                        maxlength: "100",
                        name: "user[email]",

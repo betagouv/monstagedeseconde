@@ -82,6 +82,8 @@ module Users
       Signature.signatory_roles[:cpe] if role == 'cpe'
       Signature.signatory_roles[:other] if role == 'other'
       Signature.signatory_roles[:admin_officer] if role == 'admin_officer'
+      Signature.signatory_roles[:teacher] if role == 'teacher'
+      Signature.signatory_roles[:main_teacher] if role == 'main_teacher'
     end
 
     def school_management? = true

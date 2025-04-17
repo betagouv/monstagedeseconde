@@ -118,9 +118,9 @@ module Users
       school = create(:school)
       assert_nil school.management_representative
       create(:main_teacher, school:)
-      assert_nil school.management_representative
+      assert_equal school.main_teachers.first.id, school.management_representative.id
       create(:teacher, school:)
-      assert_nil school.management_representative
+      assert_equal school.main_teachers.first.id, school.management_representative.id
       other = create(:other, school:)
       assert_equal other.id, school.management_representative.id
       cpe = create(:cpe, school:)
