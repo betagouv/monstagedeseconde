@@ -93,8 +93,7 @@ namespace :retrofit do
   task nullify_group_id: :environment do |task|
     PrettyConsole.announce_task(task) do
       counter = 0
-      InternshipOffers::WeeklyFramed.kept
-                                    .where(is_public: false)
+      InternshipOffers::WeeklyFramed.where(is_public: false)
                                     .where.not(group_id: nil)
                                     .each do |internship_offer|
         internship_offer.update_columns(group_id: nil)
