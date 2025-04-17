@@ -10,7 +10,7 @@ div data-controller='select-weeks'
         legend= "Établissement (#{@school.rep_kind})"
 
         .form-group
-          = f.label :name, class: 'fr-label' do
+          = f.label :name, class: 'fr-label', for: 'school_name' do
             = "Nom de l'établissement"
             = f.rg2a_required_content_tag
 
