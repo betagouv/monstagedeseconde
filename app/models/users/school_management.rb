@@ -35,7 +35,7 @@ module Users
 
     def custom_dashboard_path
       if school.present?
-        return url_helpers.dashboard_school_class_room_students_path(school, class_room) if induced_teacher?
+        return url_helpers.dashboard_school_class_room_path(school, class_room) if induced_teacher?
 
         return url_helpers.dashboard_school_path(school)
       end
