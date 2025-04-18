@@ -311,19 +311,7 @@ $sortLinkOffset: 15px;
 .toggle-block{
   display: flex;
   .label{
-    display: block;
     width: 70px;
-    padding-top: 12px;
-  }
-  .toggle-swap{
-    display: block;
-    width: 70px;
-    height: 50px;
-    top: 35px;
-    .fr-toggle label{
-      top: -40px;
-      left: 0px;
-    }
   }
 }
 
