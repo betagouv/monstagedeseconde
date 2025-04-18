@@ -27,6 +27,10 @@ module StepperProxy
                 unless: -> { internship_address_manual_enter }
       validates :is_public, inclusion: [true, false]
 
+      validates :group_id,
+                absence: true,
+                unless: -> { is_public }
+
       def entreprise_coordinates=(coordinates)
         case coordinates
         when Hash

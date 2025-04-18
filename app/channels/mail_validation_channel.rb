@@ -15,10 +15,6 @@ class MailValidationChannel < ApplicationCable::Channel
     status = email_inquire.status
     replacement = email_inquire.replacement
 
-    if email_inquire.valid? && role == 'school_manager'
-      status = :invalid unless Academy.all.map(&:domain_email).include?(email_inquire.email.split('@').last)
-    end
-
     ActionCable.server.broadcast(uid, {
                                    email: email,
                                    status: status,

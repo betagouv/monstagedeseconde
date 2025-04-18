@@ -4,6 +4,12 @@
   /  add select tag with the school name, all dasabled
   .row.fr-my-2w
     .col-md-6.col-xs-12
-      = select_tag 'school_name', options_from_collection_for_select([current_user.school], :id, :name), class: 'fr-select', disabled: true
+      .fr-select-group
+        = select_tag 'school_name', 
+                    options_from_collection_for_select([current_user.school], :id, :name), 
+                    class: 'fr-select', 
+                    disabled: true,
+                    'aria-label': 'Nom de l\'établissement',
+                    'aria-describedby': 'school_name-hint-text'
 
     

@@ -28,9 +28,9 @@ class RailsAdmin::Config::Fields::Types::Json
     value
   end
 end
-
-require Rails.root.join('lib', 'rails_admin', 'config', 'actions', 'kpi.rb')
-require Rails.root.join('lib', 'rails_admin', 'config', 'actions', 'switch_user.rb')
+%w[kpi.rb switch_user.rb publish.rb].each do |action|
+  require Rails.root.join('lib', 'rails_admin', 'config', 'actions', action)
+end
 stats_path = "/reporting/dashboards?school_year=#{SchoolYear::Current.new.beginning_of_period.year}"
 
 RailsAdmin.config do |config|
@@ -86,6 +86,9 @@ RailsAdmin.config do |config|
     end
 
     export
+    publish do
+      only ['InternshipOffers::WeeklyFramed']
+    end
   end
 
   config.default_items_per_page = 50
@@ -102,8 +105,6 @@ RailsAdmin.config do |config|
                               InternshipApplication
                               InternshipAgreement
                               Operator
-                              Organisation
-                              Tutor
                               Users::Student
                               Users::SchoolManagement
                               Users::PrefectureStatistician

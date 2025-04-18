@@ -27,16 +27,23 @@
               - if resource.id
                 = form.hidden_field :id, value: resource.id
               .hide-when-manual
+                / span = "#{resource.try(:errors).try(:any?)} [onSubmitError]"
+                / br
+                / span = "#{resource.try(:is_public)} [lastPublicValue]"
                 = react_component("SirenInput",
                                   props: { resourceName: resource_name,
                                           presentationLabel: "L'administration",
                                           currentSiren: resource.siret,
                                           railsEnv: Rails.env,
                                           newRecord: resource.new_record? && !duplication,
-                                          currentManualEnter: resource.internship_address_manual_enter })
+                                          currentManualEnter: resource.internship_address_manual_enter,
+                                          onSubmitError: resource.try(:errors).try(:any?),
+                                          lastPublicValue: resource.try(:is_public) })
 
           #hidden-public-private-field.d-none
-            input type='hidden' name='entreprise[is_public]'
+            input [type='hidden'
+                   name='entreprise[is_public]'
+                   value="#{resource&.is_public}"]
           div class= "row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'})"
             #public-private-radio-buttons.bloc-tooggle.col-12
               div class=('d-none' if request.fullpath.include?('entreprises/nouveau'))
@@ -46,8 +53,8 @@
                 fieldset.fr-fieldset#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
                   legend.label
                     | Vous êtes une structure publique ? *
-                  div.fr-fieldset__element
-                    div.fr-radio-group
+                  .fr-fieldset__element
+                    .fr-radio-group
                       = form.radio_button :is_public,
                                           true,
                                           class: '',
@@ -57,8 +64,8 @@
                                    'Oui',
                                    class: 'fr-label',
                                    data: { action: 'ministry-fields#handleClickIsPublic' }
-                  div.fr-fieldset__element
-                    div.fr-radio-group
+                  .fr-fieldset__element
+                    .fr-radio-group
                       = form.radio_button :is_public,
                                           false,
                                           class: '',
@@ -69,7 +76,7 @@
                                    class: 'fr-label',
                                    data: { action: 'ministry-fields#handleClickIsPublic' }
 
-                  div.fr-messages-group#radio-hint-messages aria-live="assertive"
+                  .fr-messages-group#radio-hint-messages aria-live="assertive"
           #ministry-choice.row.fr-mt-3w.bloc-tooggle.d-none [data-ministry-fields-target="groupNamePublic"]
             .col-12
               = form.label :group_id, class: 'fr-label' do
@@ -77,11 +84,11 @@
 
               = form.select :group_id,
                             options_for_select(options_for_public_groups, resource.group.try(:id)),
-                            {  },
-                            class: "fr-select ",
+                            { prompt: 'type employeur public' },
+                            class: "fr-select",
                             required: false,
                             :'data-ministry-fields-target' => 'selectGroupName'
-          div#sector-choice-block class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
+          #sector-choice-block class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               = form.label :sector_id , class: 'fr-label'do
                 = "Indiquez le secteur d'activité de votre structure *"
@@ -207,7 +214,7 @@
                   edit_dashboard_stepper_internship_occupation_path(id: resource.internship_occupation_id, show_resume: show_resume ),
                   class: 'fr-btn fr-btn--secondary fr-mr-3w'
         = button_tag :submit,
-                    class: 'fr-btn',
-                    :'data-entreprise-form-target' => "submitButton",
-                    :'data-mandatory-fileds-target' => "disabledField"  do
+                     class: 'fr-btn',
+                     :'data-entreprise-form-target' => "submitButton",
+                     :'data-mandatory-fileds-target' => "disabledField"  do
           = "Suivant "
