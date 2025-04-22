@@ -1,6 +1,6 @@
 .toggle-block.text-left.d-flex data-action='change->toggle-activate#toggle' data-toggle-activate-type-param='alink'
   = turbo_frame_tag dom_id(area_notification) do
-    .toggle-swap
+    div
       = link_to flip_dashboard_internship_offer_area_area_notification_path(internship_offer_area_id: internship_offer_area.id, id: area_notification.id, dashboard: true),
                 class: '',
                 method: :patch,
