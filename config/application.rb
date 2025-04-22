@@ -1,6 +1,6 @@
-require_relative "boot"
+require_relative 'boot'
 
-require "rails/all"
+require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -14,7 +14,7 @@ module Monstage
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w(assets tasks))
+    config.autoload_lib(ignore: %w[assets tasks])
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -42,19 +42,18 @@ module Monstage
 
     config.public_file_server.enabled = true
 
-    config.action_mailer.delivery_job = "ActionMailer::MailDeliveryJob"
+    config.action_mailer.delivery_job = 'ActionMailer::MailDeliveryJob'
 
-    config.action_view.field_error_proc = Proc.new { |html_tag, instance| html_tag }
+    config.action_view.field_error_proc = proc { |html_tag, instance| html_tag }
 
     config.active_record.schema_format = :sql
 
     config.middleware.use Rack::Deflater
 
-
-    config.exceptions_app = self.routes
+    config.exceptions_app = routes
 
     config.action_view.form_with_generates_remote_forms = false
-    
+
     config.action_view.image_loading = :lazy
   end
 end
