@@ -19,6 +19,8 @@ export default function SirenInput({
   railsEnv,
   newRecord,
   currentManualEnter,
+  onSubmitError,
+  lastPublicValue
 }) {
   const [siret, setSiret] = useState(currentSiret || "");
   const [searchResults, setSearchResults] = useState([]);
@@ -26,6 +28,8 @@ export default function SirenInput({
   const [employerNameStr, setEmployerNameStr] = useState(currentSiret);
   const [internshipAddressManualEnter, setInternshipAddressManualEnter] =
     useState(currentManualEnter || false);
+  const [isFaulty, setFaulty] = useState(onSubmitError || false);
+  const [formerPublicValue, setFormerPublicValue] = useState(lastPublicValue || false);
 
   const inputChange = (event) => {
     setSiret(event.target.value);
@@ -126,6 +130,7 @@ export default function SirenInput({
 
   const onChange = (selection) => {
     show_form(true);
+    // is_public is known when user searched by name and unknown when user searched by siret
     const is_public = selection.is_public;
     const zipcode = selection.adresseEtablissement.codePostalEtablissement;
     const city = selection.adresseEtablissement.libelleCommuneEtablissement;
@@ -137,9 +142,9 @@ export default function SirenInput({
 
     setValueById( `${resourceName}_entreprise_full_address`, addressConcatenated );
     setValueById( `${resourceName}_entreprise_chosen_full_address`, addressConcatenated );
-    setValueById(`${resourceName}_siret`, selection.siret);
+    setValueById( `${resourceName}_siret`, selection.siret);
     setValueById( `${resourceName}_presentation_siret`, siretPresentation(selection.siret) );
-    setValueById(`${resourceName}_employer_name`, employerName);
+    setValueById( `${resourceName}_employer_name`, employerName);
 
     broadcast(employerNameChanged({ employerName }));
 
@@ -151,17 +156,17 @@ export default function SirenInput({
     // TODO pub/sub with broadcasting would be better
     // because both jsx components and stimulus send events to the containers (show/hide)
     ministryClassList.add("d-none"); // default
-    // is_public is known when user seached by name and unknown when user searched by siret
+
     if (is_public != undefined) {
       toggleContainerById("public-private-radio-buttons", false);
       const hiddenField = document.getElementById("hidden-public-private-field").children[0];
       hiddenField.value = is_public;
       toggleContainer(hiddenField, true);
-      
+
       if (is_public) {
         ministry.removeAttribute("style");
         ministryClassList.remove("d-none");
-        
+
         // For public establishments
 
         sectorBlocClassList.add("d-none");
@@ -180,8 +185,12 @@ export default function SirenInput({
         sector.value = "";
       }
     }
+    if (isFaulty && formerPublicValue){
+      ministry.removeAttribute("style");
+      ministryClassList.remove("d-none");
+    }
   };
-  
+
   const clearImmediate = () => {
     setEmployerNameStr('');
     setSiret("");
@@ -211,7 +220,7 @@ export default function SirenInput({
   useEffect(() => {
     const timerId = setTimeout(() => {
       setDebouncedSiret(siret);
-    }, 750); // 750 ms
+    }, 500); // 500 ms
 
     return () => {
       clearTimeout(timerId);

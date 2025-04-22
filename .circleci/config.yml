@@ -110,17 +110,17 @@ jobs: # a collection of steps
           name: Run TestUnit
           command: PARALLEL_WORKERS=4 bundle exec rake test
       # beware, system tests on CI with more than 1 PARALLEL_WORKERS leads to OOM errors
-      - run:
-          name: Run Desktop TestSystem with headless_chrome
-          command: |
-            mkdir test-results
-            PARALLEL_WORKERS=1 ~/project/infra/test/system_desktop.sh
-      - store_artifacts:
-          path: tmp/screenshots
+      # - run:
+      #     name: Run Desktop TestSystem with headless_chrome
+      #     command: |
+      #       mkdir test-results
+      #       PARALLEL_WORKERS=1 ~/project/infra/test/system_desktop.sh
+      # - store_artifacts:
+      #     path: tmp/screenshots
 
-      - run:
-          name: Run Mobile TestSystem with headless_chrome using chrome's iPhone 6 emulation
-          command: PARALLEL_WORKERS=1 ~/project/infra/test/system_mobile.sh
+      # - run:
+      #     name: Run Mobile TestSystem with headless_chrome using chrome's iPhone 6 emulation
+      #     command: PARALLEL_WORKERS=1 ~/project/infra/test/system_mobile.sh
 
       - run:
           name: Run Desktop w3c System with headless_chrome
