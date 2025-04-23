@@ -159,11 +159,8 @@ export default function SirenInput({
 
     if (is_public != undefined) {
       toggleContainerById("public-private-radio-buttons", false);
-      const hiddenField = document.getElementById("hidden-public-private-field").children[0];
-      hiddenField.value = is_public;
-      toggleContainer(hiddenField, true);
-
-      if (is_public) {
+      if(is_public){
+        document.getElementById("entreprise_is_public_true").checked = true;
         ministry.removeAttribute("style");
         ministryClassList.remove("d-none");
 
@@ -181,6 +178,7 @@ export default function SirenInput({
         }
       } else {
         // For private companies
+        document.getElementById("entreprise_is_public_false").checked = true;
         sectorBlocClassList.remove("d-none");
         sector.value = "";
       }

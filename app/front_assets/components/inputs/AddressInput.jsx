@@ -41,14 +41,14 @@ export default function AddressInput({
   const resetField = (e) => {
     e.stopPropagation();
     setFields(undefined);
-    broadcastReset();
     setAddressFieldsVisibility(false)
+    broadcastReset();
   };
 
   const broadcastReset = () => {
     broadcast(cityChanged({ city: "" }));
     broadcast(zipcodeChanged({ zipcode: "" }));
-    broadcast(newCoordinatesChanged({ latitude: 0, longitude: 0 }));
+    broadcast(newCoordinatesChanged({ latitude: 0, longitude: 0 })); 
   };
 
   const setFields = (item) => {
@@ -83,7 +83,7 @@ export default function AddressInput({
     fetch(endpoints.apiSearchAddress({ fullAddress }))
       .then((response) => response.json())
       .then((json) => {
-        setQueryString(json.query);
+        setQueryString(json.query); //for unknown reason, the query is not returned anymore
         setSearchResults(json.features);
       });
   };
@@ -94,7 +94,7 @@ export default function AddressInput({
   };
 
   useEffect(() => {
-    if (fullAddressDebounced && fullAddressDebounced.length > 2) {
+    if (fullAddressDebounced && fullAddressDebounced.length > 3) {
       searchCityByAddress()
     }
   }, [fullAddressDebounced]);
@@ -162,7 +162,7 @@ export default function AddressInput({
                       className: 'p-0 m-0',
                     })}
                   >
-                    { isOpen && (queryString === fullAddress) && (searchResults !== undefined) && searchResults.map((item, index) => (
+                    { isOpen && (searchResults !== undefined) && searchResults.map((item, index) => (
                         <li
                           {...getItemProps({
                             className: `py-2 px-3 listview-item ${
