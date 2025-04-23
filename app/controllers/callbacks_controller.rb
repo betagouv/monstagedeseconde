@@ -91,9 +91,7 @@ class CallbacksController < ApplicationController
       redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
     end
 
-    unless student.legal_representative_full_name.present? && Rails.env.production?
-      student = student.add_responsible_data
-    end
+    student = student.add_responsible_data if student.legal_representative_full_name.blank? && Rails.env.production?
     student.confirm
     student.save
 
