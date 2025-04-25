@@ -8,21 +8,3 @@
     font-weight: 800;
   }
 }
-
-.both-desktop-and-mobile {
-  position: relative;
-
-  .confirm-desktop {
-    position: absolute;
-    height: 80%;
-    top: 20px;
-  }
-
-  .confirm-mobile {
-    z-index: 2;
-    position: absolute;
-    top: 73px;
-    left: 72%;
-    width: 26%;
-  }
-}

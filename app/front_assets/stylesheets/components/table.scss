@@ -20,11 +20,6 @@
       display: block;
     }
     &:hover {
-      .btn-hoverable-none{
-        transition: opacity .4s ease;
-        color: var(--text-action-high-blue-france);
-        background-color: var(--background-action-low-blue-france-active);
-      }
       .btn-hoverable {
         opacity: 1;
       }
@@ -85,19 +80,6 @@ table.table-scrollable {
 
 .tfoot {
   display: table-footer-group;
-}
-
-.fr-tag-rounded  {
-  padding-top: 0.4rem;
-  line-height: 2.5rem;
-  vertical-align: middle;
-  height: 2.5rem;
-  width: 2.5rem;
-  border-radius: 50%;
-  color: white;
-  background-color: $blue-france;
-
-  &:active{color: $blue-france;};
 }
 
 .fr-table table{
