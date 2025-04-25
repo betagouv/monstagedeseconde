@@ -84,6 +84,7 @@ gem 'active_storage_validations'
 # Pour le traitement des images
 gem 'image_processing', '~> 1.2'
 gem 'mini_magick'
+gem 'stringio', '3.1.7' # temporary
 group :development, :test do
   gem 'debug'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
