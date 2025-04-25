@@ -68,9 +68,6 @@ From the [API](https://1eleve1stage.education.gouv.fr/mon-compte/api) page, retr
 
 # Data Structures and References
 
-## Swagger
-To test the API and understand its functionality, a [swagger](https://app-e29a97fc-5386-434f-bf9d-8f813c68f838.cleverapps.io/docs/) is available.
-
 ## Internship Offers
 
 The internship offers described below are reserved for general and technological high school classes.
