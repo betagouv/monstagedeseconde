@@ -10,6 +10,7 @@ module Dto
       check_grades
       map_sector_uuid_to_sector
       assign_offer_to_current_api_user
+      check_fields_size
       params
     end
 
@@ -55,6 +56,24 @@ module Dto
         params[:coordinates] = { 'latitude' => coordinates[0], 'longitude' => coordinates[1] } unless coordinates.empty?
       end
       params
+    end
+
+    def shrink_factory(field, size)
+      field = field.to_sym unless field.is_a? Symbol
+      params[field] = params[field].truncate(size) if params[field].present?
+    end
+
+    def shrink_fields_size
+      shrink_factory(:title, 150)
+      shrink_factory(:description, 1500)
+      shrink_factory(:street, 500)
+      shrink_factory(:zipcode, 5)
+      shrink_factory(:city, 50)
+      shrink_factory(:department, 40)
+      shrink_factory(:contact_phone, 20)
+      shrink_factory(:employer_name, 150)
+      shrink_factory(:employer_chosen_name, 150)
+      shrink_factory(:entreprise_full_address, 200)
     end
 
     def check_grades
