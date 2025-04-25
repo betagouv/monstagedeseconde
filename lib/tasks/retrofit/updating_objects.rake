@@ -113,11 +113,12 @@ namespace :retrofit do
   end
 
   desc '24/04/2025 - update offers from public offers without group_id'
-  task set_private_group_id: :environment do |task|
+  task :set_private_group_id, [:filename] => :environment do |task, args|
     PrettyConsole.announce_task(task) do
       if Rails.env.production? || Rails.env.development?
         counter = 0
-        resource_file_location = 'db/data_imports/group_id_update_2.csv'
+        resource_file_location = "db/data_imports/#{args[:filename]}"
+        # use with rake "retrofit:whitelist_dedoubling[email@domain.fr, Ministry, id_to_remove]"
         CSV.foreach(resource_file_location, 'r', headers: true, header_converters: :symbol, col_sep: ';').each do |row|
           id = row[:id]
           offer = InternshipOffers::WeeklyFramed.find_by(id: row[:id].to_i)
