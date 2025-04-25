@@ -97,14 +97,14 @@ module Builders
         internship_agreement_id: internship_agreement_id,
         user: user
       )
-      img = (params[:signature_image]).split(',')[1]
+      img = params[:signature_image].split(',')[1]
       img = Base64.decode64 img
 
       File.open(signature_file_path, 'wb') { |f| f.write img } && true
     end
 
     def image_from(params:)
-      img = (params[:signature_image]).split(',')[1]
+      img = params[:signature_image].split(',')[1]
       Base64.decode64 img
     end
 
