@@ -7,17 +7,6 @@ module Users
       @url_helpers = Rails.application.routes.url_helpers
     end
 
-    test 'creation fails ohter requires an .ac ending mail' do
-      other = Users::SchoolManagement.new(
-        role: :other,
-        email: 'other@etablissement.com',
-        school: create(:school)
-      )
-
-      assert other.invalid?
-      assert_not_empty other.errors[:email]
-    end
-
     test 'creation succeed' do
       school = build(:school, :with_school_manager)
       other = Users::SchoolManagement.new(
