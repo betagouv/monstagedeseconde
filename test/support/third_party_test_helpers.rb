@@ -65,7 +65,13 @@ module ThirdPartyTestHelpers
       .with(fim_headers)
       .to_return(status: 200, body: fim_return_body.merge({
                                                             'FrEduFonctAdm' => 'DIR',
-                                                            'rne' => '0590121L'
+                                                            'rne' => '0590121L',
+                                                            'FrEduRneResp' => %w[
+                                                              0590121L
+                                                              0590121X
+                                                              0590121Y
+                                                              0590121Z
+                                                            ]
                                                           }).to_json, headers: {})
   end
 
@@ -74,7 +80,13 @@ module ThirdPartyTestHelpers
       .with(fim_headers)
       .to_return(status: 200, body: fim_return_body.merge({
                                                             'FrEduFonctAdm' => 'ENS',
-                                                            'rne' => '0590121L'
+                                                            'rne' => '0590121L',
+                                                            'FrEduRneResp' => %w[
+                                                              0590121L
+                                                              0590121X
+                                                              0590121Y
+                                                              0590121Z
+                                                            ]
                                                           }).to_json, headers: {})
   end
 
@@ -83,7 +95,13 @@ module ThirdPartyTestHelpers
       .with(fim_headers)
       .to_return(status: 200, body: fim_return_body.merge({
                                                             'FrEduFonctAdm' => 'ADF',
-                                                            'rne' => '0590121L'
+                                                            'rne' => '0590121L',
+                                                            'FrEduRneResp' => %w[
+                                                              0590121L
+                                                              0590121X
+                                                              0590121Y
+                                                              0590121Z
+                                                            ]
                                                           }).to_json, headers: {})
   end
 
@@ -92,7 +110,10 @@ module ThirdPartyTestHelpers
       .with(fim_headers)
       .to_return(status: 200, body: fim_return_body.merge({
                                                             'FrEduFonctAdm' => 'ENS',
-                                                            'rne' => '0590121X'
+                                                            'rne' => '0590121A',
+                                                            'FrEduRneResp' => [
+                                                              '0590121A'
+                                                            ]
                                                           }).to_json, headers: {})
   end
 

@@ -45,6 +45,7 @@ namespace :data_migrations do
     PrettyConsole.announce_task "Importing #{department_name}'s schools" do
       department = Department.find_by(name: department_name)
       schools = School.where('LEFT(zipcode, 2) = ?', department.code[0..1]).to_a
+      puts "schools: #{schools.count}"
       counter = 0
       schools.each do |school|
         next if school.full_imported

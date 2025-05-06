@@ -20,22 +20,31 @@ module Reporting
       end
     end
 
+    has_many :school_managers, -> { where(role: :school_manager) },
+            through: :user_schools,
+            source: :user,
+            class_name: 'Users::SchoolManagement'
+
+    def school_manager
+      school_managers.first
+    end
+
     scope :count_with_school_manager, lambda {
-      joins(:school_manager)
+      joins(:school_managers)
         .distinct('schools.id')
         .count
     }
 
     scope :with_school_manager, lambda {
-      left_joins(:school_manager)
+      left_joins(:school_managers)
         .group('schools.id')
     }
 
     scope :without_school_manager, lambda {
-      where.missing(:school_manager)
+      where.missing(:school_managers)
     }
 
-    scope :with_manager_simply, lambda { joins(:school_manager) }
+    scope :with_manager_simply, lambda { joins(:school_managers) }
 
     scope :by_subscribed_school, ->(subscribed_school:)  {
       case subscribed_school.to_s
