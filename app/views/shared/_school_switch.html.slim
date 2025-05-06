@@ -1,9 +1,7 @@
-
 - if current_user.schools.count > 1
-  = "currrent school #{current_user.current_school.name}"
   .fr-select-group
     = form_tag school_switches_path, method: :post do
       .fr-btns
-        - current_user.schools.each do |school|
+        - current_user.schools.to_a.delete_if { |school| school.id == current_user.current_school.id }.each do |school|
           div.fr-mt-2w= button_tag type: 'submit', name: 'school_id', value: school.id, class: "fr-btn #{'fr-btn--secondary' if school == current_user.current_school}"
             | Voir les classes du #{school.name}
