@@ -16,7 +16,7 @@ def student_maker(school:, class_room:, grade: :troisieme)
     gender: (['m'] * 4 + ['f'] * 4 + ['np']).sample,
     confirmed_at: 2.days.ago,
     grade_id: (grade == :troisieme ? grades.first : grades.shuffle.sample).id,
-    class_room:
+    class_room: class_room
   )
 end
 
@@ -62,13 +62,11 @@ def populate_users
                                                   phone: '+330623655541'
                                                 ))
   school_manager.save!
-  with_class_name_for_defaults(Users::SchoolManagement.new(role: 'main_teacher', class_room:,
+  with_class_name_for_defaults(Users::SchoolManagement.new(role: 'main_teacher', class_room: find_default_school_during_test.class_rooms.first,
                                                            email: "main_teacher@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
-  with_class_name_for_defaults(Users::SchoolManagement.new(role: 'main_teacher',
-                                                           email: "main_teacher_no_class_room@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
   with_class_name_for_defaults(Users::SchoolManagement.new(role: 'other',
                                                            email: "other@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
-  with_class_name_for_defaults(Users::SchoolManagement.new(role: 'teacher', class_room: other_class_room,
+  with_class_name_for_defaults(Users::SchoolManagement.new(role: 'teacher', class_room: find_default_school_during_test.class_rooms.second,
                                                            email: "teacher@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!
   with_class_name_for_defaults(Users::SchoolManagement.new(role: 'cpe',
                                                            email: "cpe@#{find_default_school_during_test.email_domain_name}", password: password_value, school: find_default_school_during_test)).save!

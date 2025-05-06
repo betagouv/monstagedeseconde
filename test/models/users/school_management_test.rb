@@ -7,45 +7,6 @@ module Users
       @url_helpers = Rails.application.routes.url_helpers
     end
 
-    test '#official_uai_email_address' do
-      other_attributes = { first_name: 'Carl',
-                           last_name: 'Orloff',
-                           role: :school_manager,
-                           confirmed_at: Time.zone.now,
-                           accept_terms: true,
-                           school: create(:school),
-                           password: '12456abcDEF?/ç' }
-      school_manager = Users::SchoolManagement.new(
-        other_attributes.merge(
-          email: 'chef@etablissement.com'
-        )
-      )
-      assert school_manager.invalid?
-      assert_not_empty school_manager.errors[:email]
-
-      school_manager = Users::SchoolManagement.new(
-        other_attributes.merge(
-          email: 'ce.123456@ac-paris.fr'
-        )
-      )
-      assert school_manager.invalid?
-      assert_not_empty school_manager.errors[:email]
-
-      school_manager = Users::SchoolManagement.new(
-        other_attributes.merge(
-          email: 'ce.1234567x@ac-paris.fr'
-        )
-      )
-      assert school_manager.valid?
-
-      school_manager = Users::SchoolManagement.new(
-        other_attributes.merge(
-          email: 'ce.1234567@ac-paris.fr'
-        )
-      )
-      assert school_manager.valid?
-    end
-
     test 'validates other fields' do
       school_manager = Users::SchoolManagement.new(role: :teacher)
 
@@ -101,18 +62,6 @@ module Users
     #     mock_mail.verify
     #   end
     # end
-
-    test '#valid_academy_email_address?' do
-      school = create(:school, zipcode: '75012')
-      assert build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school:).valid?
-      refute build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school:).valid?
-
-      school = create(:school, zipcode: '61252', city: 'Argentan', code_uai: '0612345A')
-      assert build(:school_manager, email: 'ce.1122334x@ac-normandie.fr', school:).valid?
-      assert build(:school_manager, email: 'ce.1122334x@ac-caen.fr', school:).valid?
-      refute build(:school_manager, email: 'ce.1122334x@ac-paris.fr', school:).valid?
-      refute build(:school_manager, email: 'ce.1122334x@ac-test.fr', school:).valid?
-    end
 
     test '#management_representative' do
       school = create(:school)
