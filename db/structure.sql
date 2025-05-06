@@ -4210,13 +4210,6 @@ CREATE INDEX index_user_schools_on_user_id ON public.user_schools USING btree (u
 
 
 --
--- Name: index_user_schools_on_user_id_and_school_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_user_schools_on_user_id_and_school_id ON public.user_schools USING btree (user_id, school_id);
-
-
---
 -- Name: index_users_internship_offers_histories_on_internship_offer_id; Type: INDEX; Schema: public; Owner: -
 --
 
