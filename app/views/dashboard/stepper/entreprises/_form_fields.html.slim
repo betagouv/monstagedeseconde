@@ -84,16 +84,15 @@
                             class: "fr-select",
                             required: false,
                             :'data-ministry-fields-target' => 'selectGroupName'
-          #sector-choice-block class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
+          #entreprise_sector_id-block class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
-              = form.label :sector_id , class: 'fr-label'do
+              = form.label :sector_id , class: 'fr-label' do
                 = "Indiquez le secteur d'activité de votre structure *"
               = form.select :sector_id,
                             options_from_collection_for_select(Sector.all.order(:name), :id, :name, resource.sector_id),
                             { prompt: sectors_options_for_default },
                             class: "fr-select",
                             required: true,
-                            id: "sector-choice",
                             data: { :'fill-card-target' => "sectorInput",
                                     :'mandatory-fields-target' => "mandatoryField",
                                     data: { action: "input->mandatory-fields#fieldChange change->fill-card#sectorChanged"}}

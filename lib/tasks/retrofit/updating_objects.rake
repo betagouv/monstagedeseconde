@@ -112,26 +112,46 @@ namespace :retrofit do
     end
   end
 
-  desc '15/04/2025 - update offers from public offers without group_id'
-  task set_private_group_id: :environment do |task|
+  desc '24/04/2025 - update offers from public offers without group_id'
+  task :set_private_group_id, [:filename] => :environment do |task, args|
     PrettyConsole.announce_task(task) do
       if Rails.env.production? || Rails.env.development?
         counter = 0
-        resource_file_location = 'db/data_imports/missing_group_id_for_private_offers.csv'
+        resource_file_location = "db/data_imports/#{args[:filename]}"
+        # use with rake "retrofit:whitelist_dedoubling[email@domain.fr, Ministry, id_to_remove]"
         CSV.foreach(resource_file_location, 'r', headers: true, header_converters: :symbol, col_sep: ';').each do |row|
-          offer = InternshipOffers::WeeklyFramed.find_by(id: row[:id])
+          id = row[:id]
+          offer = InternshipOffers::WeeklyFramed.find_by(id: row[:id].to_i)
+          entreprise = offer.try(:entreprise)
           next if offer.nil?
-          next if offer.group_id.present?
+          next unless %w[VRAI FAUX].include?(row[:is_public])
 
-          group = Group.find_by(name: row[:type_employeur])
-          print '.'
-
-          if group.nil?
-            PrettyConsole.puts_in_red(row[:type_employeur])
-            PrettyConsole.say_in_red "group_id not found for offer_id: #{offer.id}"
-            next
+          group_id = nil
+          is_public = row[:is_public] == 'VRAI'
+          if is_public
+            group = Group.find_by(name: row[:type_employeur])
+            if group.nil?
+              error = "Group not found for type_employeur: #{row[:type_employeur]} and offer_id: #{offer.id}"
+              PrettyConsole.puts_in_red(error)
+              next
+            end
+            group_id = group.id
+            is_offer_to_update = offer.group_id.nil? || offer.group_id != group_id
+            is_entreprise_to_update = if entreprise.nil?
+                                        false
+                                      else
+                                        entreprise.group_id.nil? || entreprise.group_id != group_id
+                                      end
+            next unless is_offer_to_update || is_entreprise_to_update
+          else
+            is_offer_to_update = offer.group_id.present?
+            is_entreprise_to_update = entreprise.nil? ? false : entreprise.group_id.present?
+            next unless is_offer_to_update || is_entreprise_to_update
           end
-          offer.update!(group_id: group.id)
+
+          offer.update_columns(group_id: group_id, is_public: is_public)
+          entreprise.update_columns(group_id: group_id, is_public: true) unless entreprise.nil?
+
           counter += 1
           puts offer.id if counter % 10 == 0
           print '.' unless counter % 10 == 0
