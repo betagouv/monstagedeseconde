@@ -1,7 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -35,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+-- COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 
 
 --
@@ -2125,6 +2124,7 @@ CREATE SEQUENCE public.task_registers_id_seq
 ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
 
 
+
 --
 -- Name: team_member_invitations; Type: TABLE; Schema: public; Owner: -
 --
@@ -2848,6 +2848,7 @@ ALTER TABLE ONLY public.signatures ALTER COLUMN id SET DEFAULT nextval('public.s
 ALTER TABLE ONLY public.task_registers ALTER COLUMN id SET DEFAULT nextval('public.task_registers_id_seq'::regclass);
 
 
+
 --
 -- Name: team_member_invitations id; Type: DEFAULT; Schema: public; Owner: -
 --
@@ -3308,6 +3309,7 @@ ALTER TABLE ONLY public.signatures
 
 ALTER TABLE ONLY public.task_registers
     ADD CONSTRAINT task_registers_pkey PRIMARY KEY (id);
+
 
 
 --
@@ -4210,6 +4212,13 @@ CREATE INDEX index_user_schools_on_user_id ON public.user_schools USING btree (u
 
 
 --
+-- Name: index_user_schools_on_user_id_and_school_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_user_schools_on_user_id_and_school_id ON public.user_schools USING btree (user_id, school_id);
+
+
+--
 -- Name: index_users_internship_offers_histories_on_internship_offer_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4989,6 +4998,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250424000000'),
 ('20250423092552'),
 ('20250422100745'),
 ('20250415143650'),
