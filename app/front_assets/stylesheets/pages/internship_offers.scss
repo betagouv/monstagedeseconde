@@ -117,7 +117,7 @@ table.employer tbody tr td.title {
   height: 35px;
 }
 // sorting headers for dashboard/internship_offers#index
-$sortLinkOffset: 15px;
+// $sortLinkOffset: 15px;
 .sort-links{
   $sort-arrow-height: 15px;
   display: inline-block;
@@ -159,17 +159,6 @@ $sortLinkOffset: 15px;
   background-color: var(--background-default-grey-hover);
 }
 
-// sort links container
-.min-width-20{
-  width: 20px;
-  position: relative;
-  left: 5px;
-}
-.min-width-10 {
-  width: 10px;
-  position: relative;
-  left: 5px;
-}
 
 // navigation arrows on internship_offers#index
 .list-item{
@@ -183,21 +172,8 @@ $sortLinkOffset: 15px;
   font-size: 2rem;
 }
 
-.first-advice, .second-advice, .third-advice{
-  width: 31%;
-  margin : 8px 24px;
-}
-
 .container-downshift{position: relative;}
 
-.card-title-std-height{
-  height: 3.5rem;
-}
-@include media-breakpoint-up(sm) {
-  .img-card-maxima{
-    height: 170px;
-  }
-}
 // custom dimension table for dashboard/internship_offers#index
 @include media-breakpoint-up(sm) {
   .table-dashboard-internship-offers {
@@ -266,11 +242,6 @@ $sortLinkOffset: 15px;
 .popup-custom {
   a.leaflet-popup-close-button {
     display: none !important;
-  }
-
-  .leaflet-popup-content {
-    width: 250px;
-    margin: 0 !important;
   }
 
   .title a {
