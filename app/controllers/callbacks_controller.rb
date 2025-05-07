@@ -41,7 +41,6 @@ class CallbacksController < ApplicationController
           Rails.logger.info("FIM :User saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
           sign_in_and_redirect user, event: :authentication
         else
-          byebug
           Rails.logger.error("FIM : User not saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']} : #{user.errors.full_messages}")
           puts user.errors.full_messages
           redirect_to root_path, alert: 'Erreur lors de la création de l\'utilisateur'
@@ -175,11 +174,10 @@ class CallbacksController < ApplicationController
     new_schools = School.where(code_uai: user_info['FrEduRneResp'])
     existing_school_ids = user.school_ids
     schools_to_add = new_schools.reject { |school| existing_school_ids.include?(school.id) }
-    
-    if schools_to_add.any?
-      user.schools << schools_to_add
-      user.save
-    end
+
+    return unless schools_to_add.any?
+
+    user.schools << schools_to_add
+    user.save
   end
 end
-
