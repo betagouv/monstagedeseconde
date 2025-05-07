@@ -36,7 +36,11 @@ class CallbacksController < ApplicationController
         user.accept_terms = true
 
         if user.save
-          other_schools = School.where(code_uai: user_info['FrEduRneResp']).where.not(id: user.school_id)
+          # user_info['FrEduRneResp'] is an array of UAI codes or an array of strings with UAI codes before the first $
+          # we need to convert it to an array of UAI codes
+          uai_codes = user_info['FrEduRneResp'].map { |uai| uai.split('$').first }
+          other_schools = School.where(code_uai: uai_codes).where.not(id: user.school_id)
+          Rails.logger.info("FIM : Other schools to add: #{other_schools.map(&:code_uai)}")
           user.schools << other_schools
           Rails.logger.info("FIM :User saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
           sign_in_and_redirect user, event: :authentication
@@ -171,7 +175,9 @@ class CallbacksController < ApplicationController
   end
 
   def update_schools(user, user_info)
-    new_schools = School.where(code_uai: user_info['FrEduRneResp'])
+    uai_codes = user_info['FrEduRneResp'].map { |uai| uai.split('$').first }
+    new_schools = School.where(code_uai: uai_codes)
+    Rails.logger.info("FIM : New schools to add: #{new_schools.map(&:code_uai)}")
     existing_school_ids = user.school_ids
     schools_to_add = new_schools.reject { |school| existing_school_ids.include?(school.id) }
 
