@@ -1,6 +1,5 @@
 @import "./variables";
 @import "./bootstrap/bootstrap";
-@import "./bootstrap/nav_item";
 
 @import './layout/header';
 @import './layout/footer';
@@ -8,9 +7,6 @@
 
 @import './rg2a';
 @import './environment';
-
-@import './effects/scroll';
-
 
 @import './components/autocomplete';
 @import './components/agenda';

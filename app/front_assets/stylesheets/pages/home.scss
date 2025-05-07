@@ -207,17 +207,6 @@ p.fr-card__desc.std-height {
         padding-bottom: 0px;
     }
 }
-.grey-container-fluid{
-  background-color: $blue-france-975;
-  padding: 0;
-  margin: 0;
-}
-.partenaires-regionaux{
-  .partner-btn{
-    min-width: 300px;
-    margin: 0 10px;
-  }
-}
 
 .d-flex.ccm {
     .ccm-card {
@@ -231,9 +220,6 @@ p.fr-card__desc.std-height {
     }
 }
 
-.red-frame {
-    border: 2px solid red;
-}
 .visible{
     overflow: visible;
 }
@@ -268,16 +254,6 @@ p.fr-card__desc.std-height {
     }
 }
 @media (min-width: 768px) {
-    .bg-student-hero-image {
-        background-image: url('../images/homepage/hero-illustration.svg');
-        background-repeat: no-repeat;
-        background-position: right bottom;
-    }
-    .bg-home-hero-image {
-        background-image: url('../images/homepage/hero-illustration.svg');
-        background-repeat: no-repeat;
-        background-position: right bottom;
-    }
 
     .fr-tile-left-top-img .fr-tile__img {
         align-items: start;
@@ -294,12 +270,6 @@ p.fr-card__desc.std-height {
         padding-left: 0 !important;
         padding-right: 0 !important;
     }
-}
-
-.bg-school-management-hero-image {
-    background-image: url('../images/homepage/school-management.svg');
-    background-repeat: no-repeat;
-    background-position: right bottom;
 }
 
 .fr-card-with-arrow::before {
@@ -417,20 +387,7 @@ img.covering {
     font-weight: bolder;
 }
 
-.video-wrapper {
-    position: relative;
-    margin: 0 auto;
-    max-width: 475px;
-    max-height: 475px;
-}
-
 .video-ministry {
-    .video-ministry-wrapper {
-        position: relative;
-        margin: 0 auto;
-        max-width: 1200px;
-
-    }
 
     .video-ministry-responsive {
         position: relative;
@@ -445,25 +402,6 @@ img.covering {
         padding-top: 56.25%;
         margin: auto;
     }
-
-    .video-ministry-responsive-item {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: 0;
-    }
-}
-
-.video-shadow-frame {
-    position: absolute;
-    margin: 0 auto;
-    top: 0;
-    left: 0;
-    width: 450px;
-    height: 450px;
 }
 
 .video-shadow {
@@ -489,15 +427,6 @@ img.covering {
     margin: auto;
 }
 
-.video-responsive-item {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-}
 @include media-breakpoint-up(md) {
     .sticky-top-customed {
         @supports (position: sticky) {
@@ -558,14 +487,6 @@ img.covering {
         border-radius: 0;
     }
 
-    .ms3e-blurry-badge {
-        background: none;
-    }
-    .h1-text-hero {
-        line-height: 150%;
-        padding: 1rem;
-    }
-
     .flex-md-reverse-column {
         flex-direction: column-reverse;
         .flex-md-column {
@@ -600,16 +521,6 @@ img.covering {
     right: -1.5rem;
 }
 
-
-.fr-btn-white {
-    background-color: #fff;
-    color: #100090;
-    border-color: #100090;
-}
-
-.fadded {
-    opacity: 0.5 !important;
-}
 .fr-btns-group:where(:not(.fr-btns-group--sm):not(.fr-btns-group--lg)):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class*=" fr-fi-"],
 .fr-btns-group:where(:not(.fr-btns-group--sm):not(.fr-btns-group--lg)):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class*=" fr-icon-"],
 .fr-btns-group:where(:not(.fr-btns-group--sm):not(.fr-btns-group--lg)):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class^=fr-fi-],
