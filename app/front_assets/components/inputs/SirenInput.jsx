@@ -150,7 +150,7 @@ export default function SirenInput({
 
     const ministry = document.getElementById("ministry-choice");
     const ministryClassList = ministry.classList;
-    const sectorBloc = document.getElementById("sector-choice-block");
+    const sectorBloc = document.getElementById("entreprise_sector_id-block");
     const sectorBlocClassList = sectorBloc.classList;
     const sector = document.getElementById("sector-choice");
     // TODO pub/sub with broadcasting would be better
@@ -270,7 +270,7 @@ export default function SirenInput({
                   htmlFor: `${resourceName}_siren`,
                 })}
               >
-                Indiquez le nom ou le SIRET de la structure d’accueil *
+                Indiquez le nom ou le SIRET de la structure d'accueil *
                 { railsEnv === "development"
                   ? " (dev only : 21950572400209)"
                   : "" }

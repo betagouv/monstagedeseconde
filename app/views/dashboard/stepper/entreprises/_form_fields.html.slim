@@ -89,10 +89,11 @@
               = form.label :sector_id , class: 'fr-label' do
                 = "Indiquez le secteur d'activité de votre structure *"
               = form.select :sector_id,
-                            options_from_collection_for_select(Sector.all.order(:name), :id, :name, resource.sector_id),
+                            options_from_collection_for_select(Sector.all.order(:name).where.not(name: 'Fonction publique'), :id, :name, resource.sector_id),
                             { prompt: sectors_options_for_default },
                             class: "fr-select",
-                            required: true,
+                            required: false,
+                            id: "sector-choice",
                             data: { :'fill-card-target' => "sectorInput",
                                     :'mandatory-fields-target' => "mandatoryField",
                                     data: { action: "input->mandatory-fields#fieldChange change->fill-card#sectorChanged"}}
