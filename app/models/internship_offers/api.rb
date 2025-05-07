@@ -3,6 +3,7 @@
 module InternshipOffers
   class Api < InternshipOffer
     MAX_CALLS_PER_MINUTE = 100
+    EMPLOYER_DESCRIPTION_MAX_SIZE = 275
 
     # TODO: set a constant here if possible
     def self.mandatory_seconde_weeks
@@ -68,6 +69,7 @@ module InternshipOffers
     validates :remote_id, uniqueness: { scope: :employer_id }
     validates :permalink, presence: true,
                           format: { without: /.*(test|staging).*/i, message: 'Le lien ne doit pas renvoyer vers un environnement de test.' }
+    validates :employer_description, presence: true, length: { maximum: EMPLOYER_DESCRIPTION_MAX_SIZE }
 
     scope :uncompleted_with_max_candidates, lambda {
       where('1=1')

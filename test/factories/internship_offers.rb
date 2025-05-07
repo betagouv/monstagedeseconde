@@ -112,7 +112,7 @@ FactoryBot.define do
 
     trait :api_internship_offer do
       permalink { 'https://google.fr' }
-      description { 'Lorem ipsum dolor api' }
+      employer_description { 'Lorem ipsum dolor api' }
       sequence(:remote_id) { |n| n }
       employer { create(:user_operator) }
       internship_offer_area { employer.current_area }

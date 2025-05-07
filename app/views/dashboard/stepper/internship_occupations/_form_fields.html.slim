@@ -5,7 +5,7 @@
       = form.hidden_field :id, value: resource.id
     div [data-controller='mandatory-fields-with-coordinates fill-card stars'
           data-mandatory-fields-with-coordinates-minimum-length-value="6"
-          data-mandatory-fields-with-coordinates-maximum-length-value="#{InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT}"
+          data-mandatory-fields-with-coordinates-maximum-length-value="#{InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT}"
           data-mandatory-fields-with-coordinates-no-event-check-value="#{resource.id.present?}"]
       .row
         .col-12= form.rg2a_explain_required_asterisk(p_class_name: "mb-0")
@@ -48,7 +48,7 @@
         .col-6
           .row.bloc-tooggle class="fr-mb-4w ('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))"
             .col-12
-              - max_length = InternshipOffer::EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
+              - max_length = InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT
               .form-group.fr-my-2w [data-controller='max-length-input'
                                     data-max-length-input-target="group"
                                     data-max-length-input-limit-value="#{max_length}"]
