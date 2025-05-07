@@ -4,6 +4,8 @@
   - unaffected_students = Presenters::ClassRoom.students_without_class_room(@school)
 
   #classes-panel.fr-tabs__panel.fr-tabs__panel--selected aria-labelledby="tabpanel-404" role="tabpanel" tabindex="0"
+    = render 'shared/school_switch'
+    
     - if unaffected_students.present?
       div data-controller='students'
         = form_tag(dashboard_school_update_students_by_group_path(@school.id), method: 'put', class: 'd-block py-3') do

@@ -293,6 +293,8 @@ Rails.application.routes.draw do
   # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
   get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/#{id}', status: 302)
 
+  resources :school_switches, only: [:create]
+
   root to: "pages##{root_destination}"
 
   get '/400', to: 'errors#bad_request'
