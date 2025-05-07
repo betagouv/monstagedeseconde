@@ -191,7 +191,10 @@ class CallbacksController < ApplicationController
   end
 
   def get_uai_codes(user_info)
-    field = user_info['FrEduRneResp'] == 'X' ? user_info['FrEduRne'] : user_info['FrEduRneResp']
-    field.map { |uai| uai.split('$').first }
+    if user_info['FrEduRneResp'] == 'X'
+      user_info['FrEduRne'].map { |uai| uai.split('$').first }
+    else
+      user_info['FrEduRneResp'].map { |uai| uai.split('$').first }
+    end
   end
 end
