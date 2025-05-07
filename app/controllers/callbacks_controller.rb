@@ -192,8 +192,11 @@ class CallbacksController < ApplicationController
 
   def get_uai_codes(user_info)
     if user_info['FrEduRneResp'].nil? || user_info['FrEduRneResp'] == 'X'
-      Rails.logger.error("FIM : FrEduRne is nil : #{user_info.inspect}") if user_info['FrEduRne'].nil?
-      user_info['FrEduRne'].map { |uai| uai.split('$').first }
+      return user_info['FrEduRne'].map { |uai| uai.split('$').first } unless user_info['FrEduRne'].nil?
+
+      Rails.logger.error("FIM : FrEduRne is nil : #{user_info.inspect}")
+      [user_info['rne']]
+
     else
       user_info['FrEduRneResp'].map { |uai| uai.split('$').first }
     end
