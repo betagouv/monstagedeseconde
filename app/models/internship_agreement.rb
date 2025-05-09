@@ -315,8 +315,16 @@ class InternshipAgreement < ApplicationRecord
     nil
   end
 
+  def signatory_roles
+    signatures.pluck(:signatory_role)
+  end
+
+  def school_management_signatory_role
+    (signatory_roles & Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE)&.first
+  end
+
   def signed_by_school_management?
-    signatures.any? { |signature| signature.signatory_role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE) }
+    school_management_signatory_role.present?
   end
 
   private
@@ -371,7 +379,9 @@ class InternshipAgreement < ApplicationRecord
       school_manager: SchoolManagerMailer,
       cpe: SchoolManagerMailer,
       admin_officer: SchoolManagerMailer,
-      other: SchoolManagerMailer
+      other: SchoolManagerMailer,
+      teacher: SchoolManagerMailer,
+      main_teacher: SchoolManagerMailer
     }
   end
 

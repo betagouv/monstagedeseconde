@@ -19,7 +19,6 @@ class Ability
       when 'Users::SchoolManagement'
         common_school_management_abilities(user:)
         school_manager_abilities(user:) if user.school_manager?
-        admin_officer_abilities(user:) if user.admin_officer?
       end
 
       shared_signed_in_user_abilities(user:)
@@ -127,12 +126,6 @@ class Ability
         !internship_application.student.has_found_her_internships? &&
         internship_application.aasm_state.in?(InternshipApplication::RESTORABLE_STATES) &&
         internship_application.restored_at.nil?
-    end
-  end
-
-  def admin_officer_abilities(user:)
-    can :create, Signature do |signature|
-      signature.internship_agreement.student.school == user.school
     end
   end
 
@@ -532,8 +525,10 @@ class Ability
       agreement.internship_application.student.school_id == user.school_id &&
         (agreement.validated? || (agreement.signatures_started? && !agreement.signed_by_school_management?))
     end
+    can :create, Signature do |signature|
+      signature.internship_agreement.student.school.id == user.school.id
+    end
   end
-
 
   private
 
