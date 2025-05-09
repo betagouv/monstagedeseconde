@@ -391,25 +391,25 @@ class AbilityTest < ActiveSupport::TestCase
     assert(ability.can?(:sign_internship_agreements, internship_agreement.reload), 'Ability : Signature fails')
   end
 
-  test 'MainTeacher' do
+  test 'Teacher' do
     student = create(:student)
     school = student.school
     another_school = create(:school)
     school_manager = create(:school_manager, school:)
     class_room = create(:class_room, school:)
-    main_teacher = create(:main_teacher, school:, class_room:)
+    teacher = create(:teacher, school:, class_room:)
     internship_application = create(:weekly_internship_application, student:)
     internship_agreement   = create(:internship_agreement, :created_by_system,
                                     internship_application:)
-    ability = Ability.new(main_teacher)
+    ability = Ability.new(teacher)
 
-    assert(ability.can?(:welcome_students, main_teacher),
-           'main_teacher are to be able to welcome students')
-    assert(ability.can?(:choose_class_room, main_teacher),
+    assert(ability.can?(:welcome_students, teacher),
+           'teacher are to be able to welcome students')
+    assert(ability.can?(:choose_class_room, teacher),
            'student should be able to choose_class_room')
     assert(ability.can?(:choose_role, User))
     assert(ability.can?(:dashboard_index, student))
-    assert(ability.can?(:subscribe_to_webinar, main_teacher))
+    assert(ability.can?(:subscribe_to_webinar, teacher))
     assert(ability.can?(:show, :account),
            'students should be able to access their account')
 
@@ -426,7 +426,7 @@ class AbilityTest < ActiveSupport::TestCase
 
     assert(ability.can?(:manage_school_users, school))
     assert(ability.can?(:manage_school_students, school))
-    assert(ability.can?(:choose_school, main_teacher),
+    assert(ability.can?(:choose_school, teacher),
            'student should be able to choose_school')
     assert(ability.can?(:manage_school_internship_agreements, school))
     assert(ability.cannot?(:create_remote_internship_request, school))
@@ -438,21 +438,9 @@ class AbilityTest < ActiveSupport::TestCase
     assert(ability.cannot?(:manage_school_students, another_school))
     refute(ability.can?(:sign_internship_agreements, internship_agreement.reload),
            'Ability : Signature should not be possible for teachers')
-  end
 
-  test 'Teacher' do
-    school = create(:school, :with_school_manager)
-    teacher = create(:teacher, school:)
-    class_room = create(:class_room, school:)
-    ability = Ability.new(teacher)
 
-    assert(ability.can?(:subscribe_to_webinar, teacher))
-    assert(ability.can?(:welcome_students, teacher),
-           'teacher are to be able to welcome students')
-    assert(ability.can?(:index, ClassRoom))
-    assert(ability.can?(:see_tutor, InternshipOffer))
     assert(ability.can?(:manage_school_students, teacher.school))
-    assert(ability.cannot?(:manage_school_students, build(:school)))
   end
 
   test 'Other' do

@@ -74,7 +74,7 @@ FactoryBot.define do
       factory :student_with_class_room_3e, class: 'Users::Student', parent: :student do
         class_room { create(:class_room, :troisieme) }
         after(:create) do |student|
-          create(:main_teacher, class_room: student.class_room, school: student.school)
+          create(:teacher, class_room: student.class_room, school: student.school)
         end
         grade { Grade.troisieme }
       end
@@ -82,7 +82,7 @@ FactoryBot.define do
       factory :student_with_class_room_2nde, class: 'Users::Student', parent: :student do
         class_room { create(:class_room, :seconde) }
         after(:create) do |student|
-          create(:main_teacher, class_room: student.class_room, school: student.school)
+          create(:teacher, class_room: student.class_room, school: student.school)
         end
         grade { Grade.seconde }
       end
@@ -120,23 +120,6 @@ FactoryBot.define do
         # Create UserSchool association
         UserSchool.create!(user: school_manager, school: school_manager.school) unless UserSchool.exists?(
           user: school_manager, school: school_manager.school
-        )
-      end
-    end
-
-    factory :main_teacher, class: 'Users::SchoolManagement', parent: :user do
-      school
-      type { 'Users::SchoolManagement' }
-      role { 'main_teacher' }
-
-      first_name { 'Madame' }
-      last_name { 'Labutte' }
-
-      sequence(:email) { |n| "labutte.#{n}@#{school.email_domain_name}" }
-      after(:create) do |main_teacher|
-        main_teacher.update!(school: main_teacher.school)
-        UserSchool.create!(user: main_teacher, school: main_teacher.school) unless UserSchool.exists?(
-          user: main_teacher, school: main_teacher.school
         )
       end
     end

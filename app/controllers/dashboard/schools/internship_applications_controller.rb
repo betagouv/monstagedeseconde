@@ -8,7 +8,7 @@ module Dashboard
       def index
         authorize! :manage_school_internship_agreements, @school
         applications_for_school_managers if current_user.role == 'school_manager'
-        applications_for_main_teachers   if current_user.role == 'main_teacher'
+        applications_for_teachers        if current_user.role == 'teacher'
       end
 
       def applications_for_school_managers
@@ -18,7 +18,7 @@ module Dashboard
         end
       end
 
-      def applications_for_main_teachers
+      def applications_for_teachers
         @applications_by_class_room ||= group_by_class_room do
           InternshipApplication.approved
                                .through_teacher(teacher: current_user)

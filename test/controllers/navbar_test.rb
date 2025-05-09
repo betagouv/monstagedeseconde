@@ -22,21 +22,6 @@ class NavbarTest < ActionDispatch::IntegrationTest
     assert_select('li a.fr-link.mr-4', text: 'Mon compte', count: 1)
   end
 
-  test 'main_teacher' do
-    main_teacher = create(:main_teacher,
-                          school: @school,
-                          class_room: create(:class_room, school: @school))
-    sign_in(main_teacher)
-    get dashboard_school_class_rooms_path(@school)
-
-    assert_select('li a.fr-link.text-decoration-none', text: 'Accueil', count: 1)
-    assert_select('li a.fr-link.mr-4', text: 'Accueil', count: 1)
-    assert_select('li a.fr-link.mr-4', text: 'Ma classe', count: 1)
-    assert_select('li a.fr-link.mr-4', text: 'Mon profil', count: 1)
-    assert_select('li a.fr-link.mr-4', text: 'Espaces', count: 0)
-    assert_select('li a.fr-link.mr-4', text: 'équipe'.capitalize, count: 0)
-  end
-
   test 'other' do
     skip "since no 'other' status anymore"
     other = create(:other, school: @school)

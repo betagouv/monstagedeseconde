@@ -11,7 +11,7 @@ module Users
       department = Department.find_by(code: '75')
       school = build(:school, :with_school_manager, department:)
       teacher = Users::SchoolManagement.new(
-        role: :main_teacher,
+        role: :teacher,
         email: "jeanne@#{school.email_domain_name}",
         password: 'tototo1Max!!',
         first_name: 'Jeanne',

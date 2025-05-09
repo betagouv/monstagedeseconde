@@ -151,7 +151,7 @@ module Dashboard
               :internship_address,
               :employer_contact_email,
               :school_manager_event,
-              :main_teacher_accept_terms,
+              :teacher_accept_terms,
               :student_refering_teacher_full_name,
               :student_refering_teacher_email,
               :student_refering_teacher_phone,

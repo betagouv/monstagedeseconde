@@ -411,17 +411,17 @@ class InternshipApplication < ApplicationRecord
   end
 
   def student_approval_notifications
-    main_teacher = student.main_teacher
+    teacher = student.teacher
     arg_hash = {
       internship_application: self,
-      main_teacher:
+      teacher: teacher
     }
 
     create_agreement if employer.agreement_signatorable?
-    return unless main_teacher.present?
+    return unless teacher.present?
 
     deliver_later_with_additional_delay do
-      MainTeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
+      TeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
     end
   end
 
@@ -451,9 +451,9 @@ class InternshipApplication < ApplicationRecord
   end
 
   def after_employer_validation_notifications
-    if type == 'InternshipApplications::WeeklyFramed' && student.main_teacher.present?
+    if type == 'InternshipApplications::WeeklyFramed' && student.teacher.present?
       deliver_later_with_additional_delay do
-        MainTeacherMailer.internship_application_validated_by_employer_email(self)
+        TeacherMailer.internship_application_validated_by_employer_email(self)
       end
     end
     if student.email.present?

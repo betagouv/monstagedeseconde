@@ -42,7 +42,7 @@ module Presenters
     end
 
     def staff
-      %i[main_teachers teachers others].map do |role|
+      %i[teachers others].map do |role|
         school.send(role).kept.includes(:school)
       end.flatten
     end

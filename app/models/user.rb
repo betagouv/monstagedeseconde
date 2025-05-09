@@ -30,7 +30,6 @@ class User < ApplicationRecord
   enum role: {
     school_manager: 'school_manager',
     teacher: 'teacher',
-    main_teacher: 'main_teacher',
     cpe: 'cpe',
     admin_officer: 'admin_officer',
     other: 'other'

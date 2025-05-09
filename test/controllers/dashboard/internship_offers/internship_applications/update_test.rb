@@ -21,7 +21,7 @@ module InternshipOffers::InternshipApplications
       assert school.school_manager.present?
       sign_in(student)
 
-      # since no main_teacher and mails to school_manager and employer are delivered later(they are queued)
+      # since no teacher and mails to school_manager and employer are delivered later(they are queued)
       assert_enqueued_emails 1 do
         patch(
           dashboard_internship_offer_internship_application_path(

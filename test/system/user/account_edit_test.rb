@@ -95,6 +95,7 @@ class AccountEditTest < ApplicationSystemTestCase
     sign_in(student)
     visit account_path
     fill_in('user[email]', with: 'test@free.fr')
+    byebug
     assert_enqueued_emails 0 do
       click_on 'Enregistrer mes informations'
     end

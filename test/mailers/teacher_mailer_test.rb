@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class MainTeacherMailerTest < ActionMailer::TestCase
+class TeacherMailerTest < ActionMailer::TestCase
   include EmailSpamEuristicsAssertions
 
   test '#internship_application_approved_with_no_agreement_email' do
@@ -14,19 +14,19 @@ class MainTeacherMailerTest < ActionMailer::TestCase
                                     :approved,
                                     internship_offer: internship_offer,
                                     user_id: student.id)
-    main_teacher = create(:main_teacher, class_room: , school:)
+    teacher = create(:teacher, class_room:, school:)
     # internship_application.approve!
-    email = MainTeacherMailer.internship_application_approved_with_no_agreement_email(
+    email = TeacherMailer.internship_application_approved_with_no_agreement_email(
       internship_application:,
-      main_teacher:
+      teacher:
     )
     assert_includes 'Un de vos élèves a été accepté à un stage', email.subject
-    assert_includes email.to, main_teacher.email
+    assert_includes email.to, teacher.email
     assert_nil email.cc
     refute_email_spammyness(email)
   end
 
-  test '#internship_application_approved_with_no_agreement_email sent to all main_teachers' do
+  test '#internship_application_approved_with_no_agreement_email sent to all teachers' do
     school = create(:school, :with_school_manager)
     student = create(:student_with_class_room_3e, school: school)
     class_room = student.class_room
@@ -35,16 +35,16 @@ class MainTeacherMailerTest < ActionMailer::TestCase
                                     :approved,
                                     internship_offer: internship_offer,
                                     user_id: student.id)
-    main_teacher   = create(:main_teacher, class_room: , school: )
-    main_teacher_2 = create(:main_teacher, class_room: , school: )
+    teacher   = create(:teacher, class_room:, school:)
+    teacher_2 = create(:teacher, class_room:, school:)
     # internship_application.approve!
-    email = MainTeacherMailer.internship_application_approved_with_no_agreement_email(
+    email = TeacherMailer.internship_application_approved_with_no_agreement_email(
       internship_application: internship_application,
-      main_teacher: main_teacher
+      teacher: teacher
     )
     assert_includes 'Un de vos élèves a été accepté à un stage', email.subject
-    assert_includes email.to, main_teacher.email
-    assert_includes email.to, main_teacher_2.email
+    assert_includes email.to, teacher.email
+    assert_includes email.to, teacher_2.email
     assert_nil email.cc
     refute_email_spammyness(email)
   end
