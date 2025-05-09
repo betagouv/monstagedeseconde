@@ -171,7 +171,7 @@ namespace :retrofit do
         resource_file_location = 'db/data_imports/07_05_2025_data_bc.csv'
         CSV.foreach(resource_file_location, 'r', headers: true, header_converters: :symbol, col_sep: ';').each do |row|
           id = row[:id].to_i
-          offer = InternshipOffers::WeeklyFramed.find_by(id: id)
+          offer = InternshipOffer.find_by(id: id)
           entreprise = offer.try(:entreprise)
           next if offer.nil?
 
