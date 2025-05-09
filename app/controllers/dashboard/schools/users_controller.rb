@@ -11,6 +11,7 @@ module Dashboard
                           .keys
                           .map(&:pluralize)
                           .map(&:to_sym)
+
         @school_employee_collection = roles.inject([]) do |whole, role|
           whole + @school.send(role).kept
         end

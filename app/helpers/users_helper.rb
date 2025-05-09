@@ -12,7 +12,6 @@ module UsersHelper
   def user_roles_without_school_manager_to_select
     roles = {
       teacher: 'teacher',
-      main_teacher: 'main_teacher',
       other: 'other',
       cpe: 'cpe',
       admin_officer: 'admin_officer'

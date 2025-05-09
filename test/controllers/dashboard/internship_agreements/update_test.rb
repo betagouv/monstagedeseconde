@@ -16,17 +16,17 @@ module Dashboard::InternshipAgreements
       assert_redirected_to new_user_session_path
     end
 
-    # As Main Teacher
-    test 'PATCH #update as main teacher' do
+    # As Teacher
+    test 'PATCH #update as teacher' do
       school                 = create(:school, :with_school_manager)
       class_room             = create(:class_room, school: school)
       other_class_room       = create(:class_room, school: school)
       student                = create(:student, school: school, class_room: class_room)
-      main_teacher           = create(:main_teacher, school: school, class_room: other_class_room)
+      teacher                = create(:teacher, school: school, class_room: other_class_room)
       internship_application = create(:weekly_internship_application, :approved, user_id: student.id)
       internship_agreement   = create(:internship_agreement, employer_accept_terms: true,
                                                              internship_application: internship_application)
-      sign_in main_teacher
+      sign_in teacher
       patch dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
             params: { internship_agreement: { student_class_room: 'a' } }
       assert_redirected_to dashboard_internship_agreements_path
@@ -46,7 +46,7 @@ module Dashboard::InternshipAgreements
       school = create(:school, :with_school_manager)
       class_room = create(:class_room, school: school)
       student = create(:student, school: school, class_room: class_room)
-      create(:main_teacher, school: school, class_room: class_room)
+      create(:teacher, school: school, class_room: class_room)
       internship_application = create(:weekly_internship_application, :submitted, user_id: student.id)
       internship_agreement = create(:internship_agreement, :created_by_system,
                                     internship_application: internship_application)
@@ -77,7 +77,7 @@ module Dashboard::InternshipAgreements
       school     = create(:school, :with_school_manager)
       class_room = create(:class_room, school: school)
       student    = create(:student, school: school, class_room: class_room)
-      create(:main_teacher, school: school, class_room: class_room)
+      create(:teacher, school: school, class_room: class_room)
       internship_application = create(:weekly_internship_application, :submitted, user_id: student.id)
       internship_agreement   = create(:internship_agreement,
                                       :created_by_system,

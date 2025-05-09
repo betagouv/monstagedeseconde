@@ -43,7 +43,7 @@ export default class extends Controller {
   // on change email address, ensure user is shown academia address requirement when neeeded
   refreshEmailFieldLabel(event) {
     let labelText = "Adresse électronique"
-    if (["school_manager", "teacher", "main_teacher", "other"].includes(event.target.value)) {
+    if (["school_manager", "teacher", "other"].includes(event.target.value)) {
       labelText = "Adresse électronique académique";
       this.emailLabelTarget.innerText = labelText;
       // margin adjusting

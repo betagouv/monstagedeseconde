@@ -44,7 +44,7 @@ module Finders
     #                                   :approved,
     #                                   student: student)
     #   create(:internship_agreement, internship_application: internship_application,
-    #                                 main_teacher_accept_terms: false,
+    #                                 teacher_accept_terms: false,
     #                                 employer_accept_terms: true)
     #   tab_main_teacher = TabMainTeacher.new(main_teacher: main_teacher)
     #   assert_equal 1, tab_main_teacher.pending_agreements_count
@@ -60,7 +60,7 @@ module Finders
     #                                   :approved)
     #   create(:internship_agreement, internship_application: internship_application,
     #                                 employer_accept_terms: false,
-    #                                 main_teacher_accept_terms: true)
+    #                                 teacher_accept_terms: true)
     #   tab_main_teacher = TabMainTeacher.new(main_teacher: main_teacher)
     #   assert_equal 0, tab_main_teacher.pending_agreements_count
     # end
@@ -75,7 +75,7 @@ module Finders
     #                                   :approved,
     #                                   student: student)
     #   create(:internship_agreement, internship_application: internship_application,
-    #                                 main_teacher_accept_terms: true)
+    #                                 teacher_accept_terms: true)
     #   tab_main_teacher = TabMainTeacher.new(main_teacher: main_teacher)
     #   assert_equal 0, tab_main_teacher.pending_agreements_count
     # end

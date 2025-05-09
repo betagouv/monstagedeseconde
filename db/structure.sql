@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -20,7 +21,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -34,7 +35,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -48,7 +49,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -711,10 +712,10 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
-    workspace_conditions text DEFAULT ''::text,
-    workspace_accessibility text DEFAULT ''::text,
+    contact_phone character varying(20),
     internship_address_manual_enter boolean DEFAULT false,
-    contact_phone character varying(20)
+    workspace_conditions text DEFAULT ''::text,
+    workspace_accessibility text DEFAULT ''::text
 );
 
 
@@ -811,7 +812,8 @@ CREATE TABLE public.groups (
     name character varying(150),
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    is_paqte boolean
+    is_paqte boolean,
+    visible boolean DEFAULT true
 );
 
 
@@ -972,7 +974,7 @@ CREATE TABLE public.internship_agreements (
     employer_accept_terms boolean DEFAULT false,
     weekly_hours text[] DEFAULT '{}'::text[],
     daily_hours jsonb DEFAULT '{}'::jsonb,
-    main_teacher_accept_terms boolean DEFAULT false,
+    teacher_accept_terms boolean DEFAULT false,
     school_delegation_to_sign_delivered_at date,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
@@ -986,9 +988,9 @@ CREATE TABLE public.internship_agreements (
     student_refering_teacher_phone character varying(20),
     student_legal_representative_email character varying(100),
     student_refering_teacher_email character varying(100),
-    student_legal_representative_full_name character varying(100),
+    student_legal_representative_full_name character varying(180),
     student_refering_teacher_full_name character varying(100),
-    student_legal_representative_phone character varying(50),
+    student_legal_representative_phone character varying(20),
     student_legal_representative_2_full_name character varying(100),
     student_legal_representative_2_email character varying(100),
     student_legal_representative_2_phone character varying(20),
@@ -1580,11 +1582,11 @@ CREATE TABLE public.internship_offers (
     employer_chosen_name character varying(150),
     entreprise_full_address character varying(200),
     entreprise_coordinates public.geography(Point,4326),
+    period integer DEFAULT 0 NOT NULL,
     rep boolean DEFAULT false,
     qpv boolean DEFAULT false,
     workspace_conditions text DEFAULT ''::text,
     workspace_accessibility text DEFAULT ''::text,
-    period integer DEFAULT 0 NOT NULL,
     mother_id bigint,
     targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades,
     ia_score integer
@@ -2124,7 +2126,6 @@ CREATE SEQUENCE public.task_registers_id_seq
 ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
 
 
-
 --
 -- Name: team_member_invitations; Type: TABLE; Schema: public; Owner: -
 --
@@ -2361,8 +2362,7 @@ CREATE TABLE public.users (
     resume_languages text,
     grade_id bigint,
     ine character varying(15),
-    active_at timestamp(6) without time zone,
-    school_ids text[] DEFAULT '{}'::text[]
+    active_at timestamp(6) without time zone
 );
 
 
@@ -2848,7 +2848,6 @@ ALTER TABLE ONLY public.signatures ALTER COLUMN id SET DEFAULT nextval('public.s
 ALTER TABLE ONLY public.task_registers ALTER COLUMN id SET DEFAULT nextval('public.task_registers_id_seq'::regclass);
 
 
-
 --
 -- Name: team_member_invitations id; Type: DEFAULT; Schema: public; Owner: -
 --
@@ -3311,7 +3310,6 @@ ALTER TABLE ONLY public.task_registers
     ADD CONSTRAINT task_registers_pkey PRIMARY KEY (id);
 
 
-
 --
 -- Name: team_member_invitations team_member_invitations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
@@ -3593,6 +3591,13 @@ CREATE INDEX index_favorites_on_user_id ON public.favorites USING btree (user_id
 --
 
 CREATE UNIQUE INDEX index_favorites_on_user_id_and_internship_offer_id ON public.favorites USING btree (user_id, internship_offer_id);
+
+
+--
+-- Name: index_groups_on_visible; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_groups_on_visible ON public.groups USING btree (visible);
 
 
 --
@@ -4331,13 +4336,6 @@ CREATE INDEX index_users_on_school_id ON public.users USING btree (school_id);
 
 
 --
--- Name: index_users_on_school_ids; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_users_on_school_ids ON public.users USING gin (school_ids);
-
-
---
 -- Name: index_users_on_unlock_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4998,9 +4996,10 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250508084920'),
+('20250507135948'),
 ('20250424000000'),
 ('20250423092552'),
-('20250422100745'),
 ('20250415143650'),
 ('20250414094208'),
 ('20250402090857'),
@@ -5030,6 +5029,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20241217104101'),
 ('20241213131559'),
 ('20241204173244'),
+('20241204164257'),
+('20241204150852'),
 ('20241115093512'),
 ('20241113151423'),
 ('20241105172654'),
@@ -5092,7 +5093,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240402150446'),
 ('20240326113043'),
 ('20240321160820'),
-('20240321000000'),
 ('20240320170403'),
 ('20240316135712'),
 ('20240315100413'),
