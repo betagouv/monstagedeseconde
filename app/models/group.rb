@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Group < ApplicationRecord
+
+  scope :visible, -> { where(visible: true) }
   scope :is_public, -> { where(is_public: true) }
   scope :is_private, -> { where(is_public: false) }
   scope :is_paqte, -> { where(is_paqte: true) }
@@ -22,6 +24,12 @@ class Group < ApplicationRecord
       field :name
       field :is_public
       field :is_paqte
+      field :visible
+    end
+
+    edit do
+      field :name
+      field :is_public
     end
   end
 end

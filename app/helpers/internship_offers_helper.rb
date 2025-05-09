@@ -38,7 +38,7 @@ module InternshipOffersHelper
   end
 
   def options_for_public_groups
-    Group.is_public.map do |group|
+    Group.visible.is_public.map do |group|
       [
         group.name,
         group.id,

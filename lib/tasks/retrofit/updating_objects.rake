@@ -112,8 +112,9 @@ namespace :retrofit do
     end
   end
 
-  desc '24/04/2025 - update offers from public offers without group_id'
-  task :set_private_group_id, [:filename] => :environment do |task, args|
+  desc '15/04/2025 - update offers from public offers without group_id'
+  task set_private_group_id: :environment do |task|
+    chambre_consulaire_id = 15
     PrettyConsole.announce_task(task) do
       if Rails.env.production? || Rails.env.development?
         counter = 0
@@ -156,10 +157,22 @@ namespace :retrofit do
           puts offer.id if counter % 10 == 0
           print '.' unless counter % 10 == 0
         end
+
+        counter_extra_entreprises = 0
+        Entreprise.where(is_public: true)
+                  .where(group_id: nil)
+                  .each do |entreprise|
+          entreprise.update_columns(group_id: chambre_consulaire_id)
+          counter_extra_entreprises += 1
+          print '.'
+          puts entreprise.id if counter_extra_entreprises % 10 == 0
+          print '.' unless counter_extra_entreprises % 10 == 0
+        end
+        PrettyConsole.say_in_green "#{counter} offers and entreprises have been processed"
+        PrettyConsole.say_in_green "#{counter_extra_entreprises} extra public entreprises have been processed"
       else
         PrettyConsole.say_in_yellow 'This task should be run in production or development environment'
       end
-      PrettyConsole.say_in_green "#{counter} offers have been processed"
     end
   end
 
