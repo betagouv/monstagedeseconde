@@ -270,7 +270,7 @@ export default function SirenInput({
                   htmlFor: `${resourceName}_siren`,
                 })}
               >
-                Indiquez le nom ou le SIRET de la structure d’accueil *
+                Indiquez le nom ou le SIRET de la structure d'accueil *
                 { railsEnv === "development"
                   ? " (dev only : 21950572400209)"
                   : "" }
