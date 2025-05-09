@@ -174,4 +174,29 @@ namespace :migrations do
       end
     end
   end
+
+  desc 'Migrate ministry statistician user to departmental statistician'
+  task :from_ministry_to_departmental, %i[email department_2_chars] => :environment do |t, args|
+    # Use it this way:
+    # ======================================
+    # bundle exec rake "migrations:from_ministry_to_departmental[test@free.fr,67000]"
+    # ======================================
+    email = args.email
+    department_2_chars = args.department_2_chars
+    user = User.find_by(email: email)
+
+    if user.nil? || !user.ministry_statistician? || department_2_chars.nil?
+      PrettyConsole.puts_in_red 'User not found or not a ministry statistician or department not found'
+    else
+      ActiveRecord::Base.transaction do
+        user.becomes!(Users::PrefectureStatistician)
+        user.department = department_2_chars
+        user.save!
+        message = "User email: #{user.email} is now a departmental statistician " \
+                  "in department #{department_2_chars}"
+        PrettyConsole.puts_in_green message
+        # Following line will trigger internship_agreement creations fo internship_offers which end_date is in the future
+      end
+    end
+  end
 end
