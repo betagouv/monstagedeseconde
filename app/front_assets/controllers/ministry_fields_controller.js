@@ -20,10 +20,9 @@ export default class extends Controller {
     }
   }
 
-  checkIfSectorChoiceIsPublic() {
-    const selectElement = document.querySelector('#sector-choice');
-    const option = selectElement.querySelector('option[value="Fonction publique"]');
-    if (option) {
+  checkIfIsPublic() {
+    const isPublic = document.querySelector('#internship_offer_is_public_true').checked;
+    if (isPublic) {
       this.selectPublicSectorAndHide();
     } else {
       this.selectPrivateSectorAndShow();
@@ -95,6 +94,6 @@ export default class extends Controller {
   }
 
   connect() {
-    this.checkIfSectorChoiceIsPublic();
+    this.checkIfIsPublic();
   }
 }
