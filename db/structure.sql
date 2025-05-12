@@ -1,7 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -35,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+-- COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 
 
 --
@@ -712,10 +711,10 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
-    contact_phone character varying(20),
-    internship_address_manual_enter boolean DEFAULT false,
     workspace_conditions text DEFAULT ''::text,
-    workspace_accessibility text DEFAULT ''::text
+    workspace_accessibility text DEFAULT ''::text,
+    internship_address_manual_enter boolean DEFAULT false,
+    contact_phone character varying(20)
 );
 
 
@@ -1581,11 +1580,11 @@ CREATE TABLE public.internship_offers (
     employer_chosen_name character varying(150),
     entreprise_full_address character varying(200),
     entreprise_coordinates public.geography(Point,4326),
-    period integer DEFAULT 0 NOT NULL,
     rep boolean DEFAULT false,
     qpv boolean DEFAULT false,
     workspace_conditions text DEFAULT ''::text,
     workspace_accessibility text DEFAULT ''::text,
+    period integer DEFAULT 0 NOT NULL,
     mother_id bigint,
     targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades,
     ia_score integer
@@ -2125,6 +2124,7 @@ CREATE SEQUENCE public.task_registers_id_seq
 ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
 
 
+
 --
 -- Name: team_member_invitations; Type: TABLE; Schema: public; Owner: -
 --
@@ -2262,6 +2262,38 @@ ALTER SEQUENCE public.user_groups_id_seq OWNED BY public.user_groups.id;
 
 
 --
+-- Name: user_schools; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_schools (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    school_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: user_schools_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.user_schools_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: user_schools_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.user_schools_id_seq OWNED BY public.user_schools.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2329,7 +2361,8 @@ CREATE TABLE public.users (
     resume_languages text,
     grade_id bigint,
     ine character varying(15),
-    active_at timestamp(6) without time zone
+    active_at timestamp(6) without time zone,
+    school_ids text[] DEFAULT '{}'::text[]
 );
 
 
@@ -2815,6 +2848,7 @@ ALTER TABLE ONLY public.signatures ALTER COLUMN id SET DEFAULT nextval('public.s
 ALTER TABLE ONLY public.task_registers ALTER COLUMN id SET DEFAULT nextval('public.task_registers_id_seq'::regclass);
 
 
+
 --
 -- Name: team_member_invitations id; Type: DEFAULT; Schema: public; Owner: -
 --
@@ -2841,6 +2875,13 @@ ALTER TABLE ONLY public.url_shrinkers ALTER COLUMN id SET DEFAULT nextval('publi
 --
 
 ALTER TABLE ONLY public.user_groups ALTER COLUMN id SET DEFAULT nextval('public.user_groups_id_seq'::regclass);
+
+
+--
+-- Name: user_schools id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_schools ALTER COLUMN id SET DEFAULT nextval('public.user_schools_id_seq'::regclass);
 
 
 --
@@ -3270,6 +3311,7 @@ ALTER TABLE ONLY public.task_registers
     ADD CONSTRAINT task_registers_pkey PRIMARY KEY (id);
 
 
+
 --
 -- Name: team_member_invitations team_member_invitations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
@@ -3300,6 +3342,14 @@ ALTER TABLE ONLY public.url_shrinkers
 
 ALTER TABLE ONLY public.user_groups
     ADD CONSTRAINT user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_schools user_schools_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_schools
+    ADD CONSTRAINT user_schools_pkey PRIMARY KEY (id);
 
 
 --
@@ -4148,6 +4198,27 @@ CREATE INDEX index_user_groups_on_user_id ON public.user_groups USING btree (use
 
 
 --
+-- Name: index_user_schools_on_school_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_user_schools_on_school_id ON public.user_schools USING btree (school_id);
+
+
+--
+-- Name: index_user_schools_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_user_schools_on_user_id ON public.user_schools USING btree (user_id);
+
+
+--
+-- Name: index_user_schools_on_user_id_and_school_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_user_schools_on_user_id_and_school_id ON public.user_schools USING btree (user_id, school_id);
+
+
+--
 -- Name: index_users_internship_offers_histories_on_internship_offer_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4257,6 +4328,13 @@ CREATE INDEX index_users_on_role ON public.users USING btree (role);
 --
 
 CREATE INDEX index_users_on_school_id ON public.users USING btree (school_id);
+
+
+--
+-- Name: index_users_on_school_ids; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_school_ids ON public.users USING gin (school_ids);
 
 
 --
@@ -4394,6 +4472,14 @@ ALTER TABLE ONLY public.team_member_invitations
 
 
 --
+-- Name: user_schools fk_rails_176db57c4b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_schools
+    ADD CONSTRAINT fk_rails_176db57c4b FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: internship_offers fk_rails_184cd765dd; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4439,6 +4525,14 @@ ALTER TABLE ONLY public.team_member_invitations
 
 ALTER TABLE ONLY public.users_internship_offers_histories
     ADD CONSTRAINT fk_rails_24c68739d8 FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+
+
+--
+-- Name: user_schools fk_rails_2a059e4b44; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_schools
+    ADD CONSTRAINT fk_rails_2a059e4b44 FOREIGN KEY (school_id) REFERENCES public.schools(id);
 
 
 --
@@ -4904,6 +4998,9 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250424000000'),
+('20250423092552'),
+('20250422100745'),
 ('20250415143650'),
 ('20250414094208'),
 ('20250402090857'),
@@ -4933,8 +5030,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20241217104101'),
 ('20241213131559'),
 ('20241204173244'),
-('20241204164257'),
-('20241204150852'),
 ('20241115093512'),
 ('20241113151423'),
 ('20241105172654'),
@@ -4997,6 +5092,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240402150446'),
 ('20240326113043'),
 ('20240321160820'),
+('20240321000000'),
 ('20240320170403'),
 ('20240316135712'),
 ('20240315100413'),
@@ -5338,3 +5434,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
+

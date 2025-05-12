@@ -7,9 +7,13 @@ p style=p_styles
   |.
 
 p style=p_styles
-  | Voici le motif de la restauration :
-  br
-  => @internship_application.restored_message.gsub("\n", "<br>").html_safe
+  - if @internship_application.restored_message.present?
+    | Voici le motif de la restauration :
+    br
+    => @internship_application.restored_message.gsub("\n", "<br>").html_safe
+  - else
+    | La candidature a été restaurée.
+
 = render partial: "mailers/blue_call_to_action",
           locals: { href: @url,
                     label: "Voir la candidature" }

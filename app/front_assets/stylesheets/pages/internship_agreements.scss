@@ -77,21 +77,7 @@ $custom-grey: rgb(51,51,51);
 .input-group-custom{
   position: relative;
 }
-.input-helper{
-  display: flex;
-  position: absolute;
-  height: 40px;
-  width: 40px;
-  top: 4px;
-  right: -55px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  font-size: 1.3rem;
-}
-.required-form-field {
-  background: url("../images/yellow_sign.svg") no-repeat top right;
-}
+
 // .trix-header-vanisher {
 //   trix-toolbar{
 //     display: none;

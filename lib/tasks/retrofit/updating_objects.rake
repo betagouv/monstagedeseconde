@@ -162,4 +162,81 @@ namespace :retrofit do
       PrettyConsole.say_in_green "#{counter} offers have been processed"
     end
   end
+
+  desc '09/054/2025 - update offers from public offers without group_id'
+  task fix_offers_groups: :environment do |task|
+    PrettyConsole.announce_task(task) do
+      if Rails.env.production? || Rails.env.development?
+        counter = 0
+        resource_file_location = 'db/data_imports/07_05_2025_data_bc.csv'
+        CSV.foreach(resource_file_location, 'r', headers: true, header_converters: :symbol, col_sep: ';').each do |row|
+          id = row[:id].to_i
+          offer = InternshipOffer.find_by(id: id)
+          entreprise = offer.try(:entreprise)
+          next if offer.nil?
+
+          # sector update
+          if row[:secteur] != offer.sector.name
+            new_sector = Sector.find_by(name: row[:secteur])
+            if new_sector
+              offer.sector_id = new_sector.id
+              offer.save
+              PrettyConsole.print_in_yellow '.'
+            else
+              PrettyConsole.puts_in_red "#{row[:secteur]} does not exist :/"
+            end
+          else
+            PrettyConsole.print_in_cyan '.'
+          end
+
+          # public private treatment
+          next unless %w[VRAI FAUX].include?(row[:public])
+
+          group_id = nil
+          is_public = row[:public] == 'VRAI'
+          is_offer_to_update = true
+          is_entreprise_to_update = true
+          if offer.is_public == is_public
+            if is_public
+              group = Group.find_by(name: row[:public_employer_type])
+              if group.nil?
+                error = "Group not found for type_employeur: #{row[:type_employeur]} and offer_id: #{offer.id}"
+                PrettyConsole.puts_in_red(error)
+                next
+              end
+              group_id = group.id
+              is_offer_to_update = offer.group_id.nil? || offer.group_id != group_id
+              is_entreprise_to_update = if entreprise.nil?
+                                          false
+                                        else
+                                          entreprise.group_id.nil? || entreprise.group_id != group_id
+                                        end
+            else
+              is_offer_to_update = offer.group_id.present?
+              is_entreprise_to_update = entreprise.nil? ? false : entreprise.group_id.present?
+            end
+            next unless is_offer_to_update || is_entreprise_to_update
+          elsif is_public
+            group = Group.find_by(name: row[:public_employer_type])
+            if group.nil?
+              error = "Group not found for type_employeur: #{row[:type_employeur]} and offer_id: #{offer.id}"
+              PrettyConsole.puts_in_red(error)
+              next
+            end
+            group_id = group.id
+          else
+            group_id = nil
+          end
+          offer.update_columns(group_id: group_id, is_public: is_public)
+          entreprise.update_columns(group_id: group_id, is_public: is_public) unless entreprise.nil?
+          counter += 1
+          print '|'
+        end
+
+      else
+        PrettyConsole.say_in_yellow 'This task should be run in production or development environment'
+      end
+      PrettyConsole.say_in_green "#{counter} offers have been processed"
+    end
+  end
 end

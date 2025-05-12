@@ -33,7 +33,7 @@ Il s'agit d'une API REST qui permet les opérations suivantes :
 
 # Environnements
 L'api est disponible sur ```/api/v2``` sur les environnements de pré production et de production. Soit les ```baseURL``` suivantes
-  * En pré production : https://recette.1eleve1stage.education.gouv.fr/api/v2
+  * En pré production : https://staging.1eleve1stage.education.gouv.fr/api/v2
   * En production : https://1eleve1stage.education.gouv.fr/api/v2
 
 # Authentification

@@ -88,6 +88,7 @@ module Dashboard::Stepper
       @entreprise.entreprise_coordinates = { longitude: entreprise_params[:entreprise_coordinates_longitude],
                                              latitude: entreprise_params[:entreprise_coordinates_latitude] }
       @entreprise.entreprise_full_address = entreprise_params[:entreprise_chosen_full_address]
+      @entreprise.sector_id = Sector.find_by(name: 'Fonction publique').id if entreprise_params[:is_public]
     end
 
     def set_updated_address_flag

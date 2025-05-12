@@ -331,14 +331,15 @@ module Dashboard
       school = internship_agreement.school
       school.signature.purge
       refute school.signature.attached?
-      admin_officer = create(:admin_officer, school: )
+      admin_officer = create(:admin_officer, school:)
       sign_in(admin_officer)
 
       visit dashboard_internship_agreements_path
       click_button('Ajouter aux signatures')
       click_button('Signer')
       click_button('Confirmer')
-      find("span#alert-text", text: "Vous devez d'abord importer la signature du chef d'établissement. Avant de signer la convention.")
+      find('span#alert-text',
+           text: "Vous devez d'abord importer la signature du chef d'établissement. Avant de signer la convention.")
       school.signature.attach(io: File.open('test/fixtures/files/signature.png'),
                               filename: 'signature.png',
                               content_type: 'image/png')
@@ -346,8 +347,67 @@ module Dashboard
       click_button('Ajouter aux signatures')
       click_button('Signer')
       click_button('Confirmer')
-      find("span#alert-text", text: "Les conventions ont été signées.")
+      find('span#alert-text', text: 'Les conventions ont été signées.')
       assert_equal 2, Signature.count
+    end
+
+    test 'teacher signs when school no signature formerly exists and employer has signed already' do
+      internship_agreement = create(:internship_agreement, :signatures_started)
+      create(:signature, :employer, internship_agreement:)
+      school = internship_agreement.school
+      class_room = internship_agreement.student.class_room
+      teacher = create(:teacher, school:, class_room:)
+      school.signature.purge
+      sign_in(teacher)
+
+      visit dashboard_internship_agreements_path
+      click_button('Ajouter aux signatures')
+      click_button('Signer')
+      click_button('Confirmer')
+      find('span#alert-text',
+           text: "Vous devez d'abord importer la signature du chef d'établissement. Avant de signer la convention.")
+      school.signature.attach(io: File.open('test/fixtures/files/signature.png'),
+                              filename: 'signature.png',
+                              content_type: 'image/png')
+      visit dashboard_internship_agreements_path
+      click_button('Ajouter aux signatures')
+      click_button('Signer')
+      click_button('Confirmer')
+      find('span#alert-text', text: 'Les conventions ont été signées.')
+      assert_equal 2, Signature.count
+    end
+
+    test 'main_teacher signs when school signature formerly exists and employer has signed already' do
+      internship_agreement = create(:internship_agreement, :signatures_started)
+      create(:signature, :employer, internship_agreement:)
+      school = internship_agreement.school
+      class_room = internship_agreement.student.class_room
+      main_teacher = create(:main_teacher, school:, class_room:)
+      sign_in(main_teacher)
+
+      visit dashboard_internship_agreements_path
+      click_button('Ajouter aux signatures')
+      click_button('Signer')
+      click_button('Confirmer')
+      find('span#alert-text', text: 'Les conventions ont été signées.')
+      assert_equal 2, Signature.count
+    end
+
+    test 'main_teacher signs when school signature formerly exists and employer has NOT signed already' do
+      internship_agreement = create(:internship_agreement, :validated)
+      school = internship_agreement.school
+      class_room = internship_agreement.student.class_room
+      main_teacher = create(:main_teacher, school:, class_room:)
+      sign_in(main_teacher)
+
+      visit dashboard_internship_agreements_path
+      click_button('Ajouter aux signatures')
+      click_button('Signer')
+      click_button('Confirmer')
+      find('span#alert-text', text: 'Les conventions ont été signées.')
+      assert_equal 1, Signature.count
+      assert internship_agreement.reload.signatures_started?
+      assert page.has_content?("Le chef d'établissement a déjà signé. En attente de la signature de l’employeur")
     end
   end
 end

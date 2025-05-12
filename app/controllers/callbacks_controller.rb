@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CallbacksController < ApplicationController
   def fim
     if cookies[:state] == params[:state]
@@ -5,45 +7,49 @@ class CallbacksController < ApplicationController
       state = params[:state]
       nonce = params[:nonce]
       user_info = Services::FimConnection.new(code, state, nonce).get_user_info
-      # Rails.logger.info('--------------')
-      # Rails.logger.info('FIM Connection')
-      # Rails.logger.info("User info FIM : #{user_info.inspect}")
-      # Rails.logger.info('--------------')
+      Rails.logger.info('--------------')
+      Rails.logger.info('FIM Connection')
+      Rails.logger.info("User info FIM : #{user_info.inspect}")
+      Rails.logger.info('--------------')
       redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
       unless School.exists?(code_uai: user_info['rne'])
         redirect_to root_path, alert: "Établissement non trouvé (UAI: #{user_info['rne']})" and return
       end
 
-      user = User.find_or_initialize_by(email: user_info['email'].downcase)
+      user = Users::SchoolManagement.find_or_initialize_by(email: user_info['email'].downcase)
 
       if user.persisted?
-        # Rails.logger.info("FIM : User already exists: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
+        Rails.logger.info("FIM : User already exists: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
+        update_schools(user, user_info)
         sign_in(user)
         redirect_to user.custom_dashboard_path, notice: 'Vous êtes bien connecté'
       else
-        # Rails.logger.info("FIM : User does not exist: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
+        Rails.logger.info("FIM : User does not exist: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
         user.first_name = user_info['given_name']
         user.last_name = user_info['family_name']
-        user.email = user_info['email']
+        user.email = user_info['email'].downcase
         user.password = make_password
-        user.type = 'Users::SchoolManagement'
         user.role = get_role(user_info['FrEduFonctAdm'])
         user.school_id = get_school_id(user_info['rne'])
-
         user.confirmed_at = Time.now
+        user.accept_terms = true
 
         if user.save
-          # Rails.logger.info("FIM :User saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
+          uai_codes = get_uai_codes(user_info)
+          other_schools = get_schools(uai_codes).where.not(id: user.school_id)
+          Rails.logger.info("FIM : New schools to add: #{other_schools.map(&:code_uai)}")
+          user.schools << other_schools
+          Rails.logger.info("FIM :User saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
           sign_in_and_redirect user, event: :authentication
         else
-          # Rails.logger.error("FIM : User not saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']} : #{user.errors.full_messages}")
+          Rails.logger.error("FIM : User not saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']} : #{user.errors.full_messages}")
           puts user.errors.full_messages
           redirect_to root_path, alert: 'Erreur lors de la création de l\'utilisateur'
         end
       end
     else
-      # Rails.logger.error("FIM : State invalide: #{params[:state]}")
+      Rails.logger.error("FIM : State invalide: #{params[:state]}")
       redirect_to root_path, alert: 'State invalide'
     end
   end
@@ -164,5 +170,35 @@ class CallbacksController < ApplicationController
   ensure
     session.delete(:id_token)
     session.delete(:state)
+  end
+
+  def update_schools(user, user_info)
+    uai_codes = get_uai_codes(user_info)
+    new_schools = get_schools(uai_codes)
+    existing_school_ids = user.school_ids
+    schools_to_add = new_schools.reject { |school| existing_school_ids.include?(school.id) }
+
+    return unless schools_to_add.any?
+
+    user.schools << schools_to_add
+    user.save
+  end
+
+  def get_schools(uai_codes)
+    new_schools = School.where(code_uai: uai_codes)
+    Rails.logger.info("FIM : Schools to add: #{new_schools.map(&:code_uai)}")
+    new_schools
+  end
+
+  def get_uai_codes(user_info)
+    if user_info['FrEduRneResp'].nil? || user_info['FrEduRneResp'] == 'X'
+      return user_info['FrEduRne'].map { |uai| uai.split('$').first } unless user_info['FrEduRne'].nil?
+
+      Rails.logger.error("FIM : FrEduRne is nil : #{user_info.inspect}")
+      [user_info['rne']]
+
+    else
+      user_info['FrEduRneResp'].map { |uai| uai.split('$').first }
+    end
   end
 end

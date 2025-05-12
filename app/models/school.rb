@@ -200,6 +200,30 @@ class School < ApplicationRecord
     end.selectable_from_now_until_end_of_school_year
   end
 
+  def school_manager
+    school_managers.first
+  end
+
+  def main_teacher
+    main_teachers.first
+  end
+
+  def teacher
+    teachers.first
+  end
+
+  def other
+    others.first
+  end
+
+  def cpe
+    cpes.first
+  end
+
+  def admin_officer
+    admin_officers.first
+  end
+
   private
 
   def contract_label

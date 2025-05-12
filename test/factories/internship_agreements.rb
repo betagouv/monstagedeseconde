@@ -67,6 +67,27 @@ FactoryBot.define do
     trait :signatures_started do
       aasm_state { 'signatures_started' }
     end
+
+    trait :signed_by_employer_only do
+      aasm_state { 'signatures_started' }
+      after(:create) do |ia|
+        create(:signature,
+               :employer,
+               internship_agreement: ia,
+               user_id: ia.employer.id)
+      end
+    end
+
+    trait :signed_by_school_manager_only do
+      aasm_state { 'signatures_started' }
+      after(:create) do |ia|
+        create(:signature,
+               :school_manager,
+               internship_agreement: ia,
+               user_id: ia.school_manager.id)
+      end
+    end
+
     trait :signed_by_all do
       aasm_state { 'signed_by_all' }
       after(:create) do |ia|
