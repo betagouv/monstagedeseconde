@@ -84,7 +84,7 @@
                             class: "fr-select",
                             required: false,
                             :'data-ministry-fields-target' => 'selectGroupName'
-          #entreprise_sector_id-block class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
+          #entreprise_sector_id-block class="row fr-mt-3w bloc-tooggle #{(form.object.persisted? && !form.object.is_public) ? '' : 'd-none'}"
             .col-12
               = form.label :sector_id , class: 'fr-label' do
                 = "Indiquez le secteur d'activité de votre structure *"
