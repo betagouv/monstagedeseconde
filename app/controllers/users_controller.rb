@@ -18,7 +18,6 @@ class UsersController < ApplicationController
   end
 
   def update
-    byebug
     if user_params[:email]&.blank? && !current_user.fake_email?
       current_user.errors.add(:email, :blank,
                               message: 'Il faut conserver un email valide pour assurer la continuité du service')

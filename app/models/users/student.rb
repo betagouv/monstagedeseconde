@@ -250,7 +250,6 @@ module Users
     end
 
     def fake_email?
-      byebug
       email.present? && email.split('@').last.downcase == "#{school.code_uai}.fr".downcase
     end
 
