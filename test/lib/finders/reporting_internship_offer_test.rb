@@ -18,7 +18,7 @@ module Finders
     end
 
     test '.total with dimension params group offers' do
-      create(:weekly_internship_offer_2nde, group: nil)
+      create(:weekly_internship_offer_2nde, :with_public_group)
       finder = ReportingInternshipOffer.new(params: { dimension: :group })
       assert_equal(1,
                    finder.total,
@@ -44,21 +44,20 @@ module Finders
       zipcode = '60000'
       far_far_away_zipcode = '33000'
       create(:weekly_internship_offer_2nde, zipcode:)
-      finder = ReportingInternshipOffer.new(params: { academy: Academy.academy_name_by_zipcode(zipcode: ) })
+      finder = ReportingInternshipOffer.new(params: { academy: Academy.academy_name_by_zipcode(zipcode:) })
       assert_equal(1, finder.total)
       create(:weekly_internship_offer_2nde, zipcode: far_far_away_zipcode)
       assert_equal(1, finder.total, 'should not find offers not in academy')
     end
 
     test '.total with is_public params filters offers by public' do
-      private_group = create(:group, is_public: false)
-      public_group = create(:group, is_public: true)
-      create(:weekly_internship_offer_2nde, is_public: public_group.is_public, group: public_group)
-      finder = ReportingInternshipOffer.new(params: { is_public: private_group.is_public })
+      public_group = create(:group, :public)
+      create(:weekly_internship_offer_2nde, is_public: true, group: public_group)
+      finder = ReportingInternshipOffer.new(params: { is_public: false })
       assert_equal(0,
                    finder.total,
                    'should not find offers in a public group')
-      create(:weekly_internship_offer_2nde, is_public: private_group.is_public, group: private_group)
+      create(:weekly_internship_offer_2nde, is_public: false)
       assert_equal(1,
                    finder.total,
                    'should find offers in a private group')

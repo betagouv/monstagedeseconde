@@ -19,6 +19,8 @@ export default function SirenInput({
   railsEnv,
   newRecord,
   currentManualEnter,
+  onSubmitError,
+  lastPublicValue
 }) {
   const [siret, setSiret] = useState(currentSiret || "");
   const [searchResults, setSearchResults] = useState([]);
@@ -26,6 +28,8 @@ export default function SirenInput({
   const [employerNameStr, setEmployerNameStr] = useState(currentSiret);
   const [internshipAddressManualEnter, setInternshipAddressManualEnter] =
     useState(currentManualEnter || false);
+  const [isFaulty, setFaulty] = useState(onSubmitError || false);
+  const [formerPublicValue, setFormerPublicValue] = useState(lastPublicValue || false);
 
   const inputChange = (event) => {
     setSiret(event.target.value);
@@ -55,7 +59,7 @@ export default function SirenInput({
         }
       })
       .catch((err) => {
-        document.getElementById("siren-error").classList.remove("d-none");
+        toggleContainerById("siren-error", true);
       });
   };
 
@@ -126,6 +130,7 @@ export default function SirenInput({
 
   const onChange = (selection) => {
     show_form(true);
+    // is_public is known when user searched by name and unknown when user searched by siret
     const is_public = selection.is_public;
     const zipcode = selection.adresseEtablissement.codePostalEtablissement;
     const city = selection.adresseEtablissement.libelleCommuneEtablissement;
@@ -137,31 +142,28 @@ export default function SirenInput({
 
     setValueById( `${resourceName}_entreprise_full_address`, addressConcatenated );
     setValueById( `${resourceName}_entreprise_chosen_full_address`, addressConcatenated );
-    setValueById(`${resourceName}_siret`, selection.siret);
+    setValueById( `${resourceName}_siret`, selection.siret);
     setValueById( `${resourceName}_presentation_siret`, siretPresentation(selection.siret) );
-    setValueById(`${resourceName}_employer_name`, employerName);
+    setValueById( `${resourceName}_employer_name`, employerName);
 
     broadcast(employerNameChanged({ employerName }));
 
     const ministry = document.getElementById("ministry-choice");
     const ministryClassList = ministry.classList;
-    const sectorBloc = document.getElementById("sector-choice-block");
+    const sectorBloc = document.getElementById(`${resourceName}_sector_id-block`);
     const sectorBlocClassList = sectorBloc.classList;
-    const sector = document.getElementById("sector-choice");
+    const sector = document.getElementById(`${resourceName}_sector_id`);
     // TODO pub/sub with broadcasting would be better
     // because both jsx components and stimulus send events to the containers (show/hide)
     ministryClassList.add("d-none"); // default
-    // is_public is known when user seached by name and unknown when user searched by siret
+
     if (is_public != undefined) {
       toggleContainerById("public-private-radio-buttons", false);
-      const hiddenField = document.getElementById("hidden-public-private-field").children[0];
-      hiddenField.value = is_public;
-      toggleContainer(hiddenField, true);
-      
-      if (is_public) {
+      if(is_public){
+        document.getElementById("entreprise_is_public_true").checked = true;
         ministry.removeAttribute("style");
         ministryClassList.remove("d-none");
-        
+
         // For public establishments
 
         sectorBlocClassList.add("d-none");
@@ -176,12 +178,17 @@ export default function SirenInput({
         }
       } else {
         // For private companies
+        document.getElementById("entreprise_is_public_false").checked = true;
         sectorBlocClassList.remove("d-none");
         sector.value = "";
       }
     }
+    if (isFaulty && formerPublicValue){
+      ministry.removeAttribute("style");
+      ministryClassList.remove("d-none");
+    }
   };
-  
+
   const clearImmediate = () => {
     setEmployerNameStr('');
     setSiret("");
@@ -211,7 +218,7 @@ export default function SirenInput({
   useEffect(() => {
     const timerId = setTimeout(() => {
       setDebouncedSiret(siret);
-    }, 750); // 750 ms
+    }, 600); // 600 ms
 
     return () => {
       clearTimeout(timerId);
@@ -263,7 +270,7 @@ export default function SirenInput({
                   htmlFor: `${resourceName}_siren`,
                 })}
               >
-                Indiquez le nom ou le SIRET de la structure d’accueil *
+                Indiquez le nom ou le SIRET de la structure d'accueil *
                 { railsEnv === "development"
                   ? " (dev only : 21950572400209)"
                   : "" }

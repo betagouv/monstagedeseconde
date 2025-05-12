@@ -456,7 +456,8 @@ class InternshipOffer < ApplicationRecord
     offer = InternshipOffer.new(attributes.slice(*white_list))
     offer.grades = grades
     offer.mother_id = id
-    unpublish! if has_weeks_before_school_year_start? && published_at.present?
+    # if not from api and has weeks before school year start and published_at is present
+    unpublish! if !from_api? && has_weeks_before_school_year_start? && published_at.present?
     offer.published_at = nil
     offer
   end

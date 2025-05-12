@@ -19,6 +19,10 @@ class Entreprise < ApplicationRecord
   validates :contact_phone,
             format: { with: Regexp.new(ApplicationController.helpers.field_phone_pattern),
                       message: 'Le numéro de téléphone doit être composé de 10 chiffres' }
+  # validate :group_id_presence_for_public_entreprise
+  with_options if: :is_public do
+    validates :group_id, presence: { message: 'Le ministère de tutelle est requis pour une entreprise publique' }
+  end
 
   def entreprise_coordinates=(geolocation)
     case geolocation

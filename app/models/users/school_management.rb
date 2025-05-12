@@ -8,10 +8,12 @@ module Users
   #   other (involve psychologists, teacher assistants etc...)
   class SchoolManagement < User
     before_save :skip_confirmation!
+    after_create :create_school_profiles
 
     include SchoolManagementAdmin
     include Signatorable
     include UserWithSchool
+    include SchoolSwitchable
 
     validates :first_name,
               :last_name,
@@ -30,15 +32,11 @@ module Users
     has_many :internship_agreements, through: :internship_applications
 
     validates :school, presence: true, on: :create
-    validate :official_uai_email_address, on: :create, if: :school_manager?
-    validate :official_email_address, on: :create
+    # validate :official_uai_email_address, on: :create, if: :school_manager?
+    # validate :official_email_address, on: :create
 
     def custom_dashboard_path
-      if school.present?
-        return url_helpers.dashboard_school_class_room_students_path(school, class_room) if induced_teacher?
-
-        return url_helpers.dashboard_school_path(school)
-      end
+      return url_helpers.dashboard_school_path(current_school) if school.present?
 
       url_helpers.account_path
     end
@@ -82,6 +80,8 @@ module Users
       Signature.signatory_roles[:cpe] if role == 'cpe'
       Signature.signatory_roles[:other] if role == 'other'
       Signature.signatory_roles[:admin_officer] if role == 'admin_officer'
+      Signature.signatory_roles[:teacher] if role == 'teacher'
+      Signature.signatory_roles[:main_teacher] if role == 'main_teacher'
     end
 
     def school_management? = true
@@ -120,6 +120,19 @@ module Users
     alias team_pending_agreements_actions_count pending_agreements_actions_count
 
     private
+
+    def create_school_profiles
+      return unless school_manager? && school.present?
+
+      # Créer l'association avec l'établissement actuel si elle n'existe pas
+      UserSchool.create!(user: self, school: school) unless UserSchool.exists?(user: self, school: school)
+
+      # Pour les school_managers, créer des associations avec les établissements liés
+      nil unless school_manager?
+      # Ici, vous pouvez ajouter la logique pour trouver les écoles liées
+      # Par exemple, via une table de relations entre écoles ou un service externe
+      # Pour l'instant, nous ne créons que l'association avec l'école actuelle
+    end
 
     # validators
     def official_email_address

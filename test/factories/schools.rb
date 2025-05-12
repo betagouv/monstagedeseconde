@@ -42,7 +42,9 @@ FactoryBot.define do
     end
 
     trait :with_school_manager do
-      school_manager { build(:school_manager) }
+      after(:create) do |school|
+        create(:school_manager, school: school)
+      end
     end
 
     trait :lycee do

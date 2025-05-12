@@ -27,6 +27,9 @@ module StepperProxy
                 unless: -> { internship_address_manual_enter }
       validates :is_public, inclusion: [true, false]
 
+      with_options unless: :is_public do
+        validates :group_id, absence: { message: "Il n'y a pas de ministère à associer à une entreprise privée" }
+      end
       def entreprise_coordinates=(coordinates)
         case coordinates
         when Hash

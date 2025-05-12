@@ -405,12 +405,12 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     offer = create_internship_offer_visible_by_two(employer_1, employer_2)
     internship_application = create(:weekly_internship_application, internship_offer: offer)
 
-    assert_equal 2, internship_application.filter_notified_emails.count
+    assert_equal 2, internship_application.filtered_notification_emails.count
 
     # update : employer_1 no longer receives notifications
     area_notification = employer_1.fetch_current_area_notification
     area_notification.update_column(:notify, false)
-    assert_equal [employer_2.email], internship_application.filter_notified_emails
+    assert_equal [employer_2.email], internship_application.filtered_notification_emails
   end
 
   test '::PENDING_STATES' do
@@ -574,5 +574,24 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     internship_application = create(:weekly_internship_application, :restored)
     assert_equal 'restored', internship_application.aasm_state
     assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
+  end
+
+  test 'as a team member, with notifications off, I should not receive any ' \
+       'email when the internship application is restored' do
+    employer_1 = create(:employer)
+    employer_2 = create(:employer)
+    internship_offer_2nde = create_internship_offer_visible_by_two(employer_1, employer_2)
+    internship_application = create(:weekly_internship_application, :approved,
+                                    internship_offer: internship_offer_2nde)
+    internship_application.cancel_by_student!
+    internship_application.restored_message = ''
+    employer = internship_application.internship_offer.employer
+    assert_equal employer_1.id, employer.id
+    area_id = internship_offer_2nde.internship_offer_area_id
+    AreaNotification.find_by(user_id: employer_1.id,
+                             internship_offer_area_id: area_id)
+                    .update(notify: false)
+    # test private method filtered_notification_emails
+    assert_equal [employer_2.email], internship_application.send(:filtered_notification_emails)
   end
 end

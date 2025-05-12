@@ -11,7 +11,7 @@ class User < ApplicationRecord
   has_many :favorites
   has_many :url_shrinkers
 
-  attr_accessor :phone_prefix, :phone_suffix, :statistician_type
+  attr_accessor :phone_prefix, :phone_suffix, :statistician_type, :current_school_id
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable,

@@ -112,8 +112,16 @@ FactoryBot.define do
       school
       type { 'Users::SchoolManagement' }
       role { Users::SchoolManagement.roles[:school_manager] }
-
       sequence(:email) { |n| "ce.#{'%07d' % n}#{('a'..'z').to_a.sample}@#{school.email_domain_name}" }
+
+      after(:create) do |school_manager|
+        # Ensure the school_manager is associated with the school
+        school_manager.update!(school: school_manager.school)
+        # Create UserSchool association
+        UserSchool.create!(user: school_manager, school: school_manager.school) unless UserSchool.exists?(
+          user: school_manager, school: school_manager.school
+        )
+      end
     end
 
     factory :main_teacher, class: 'Users::SchoolManagement', parent: :user do
@@ -125,6 +133,12 @@ FactoryBot.define do
       last_name { 'Labutte' }
 
       sequence(:email) { |n| "labutte.#{n}@#{school.email_domain_name}" }
+      after(:create) do |main_teacher|
+        main_teacher.update!(school: main_teacher.school)
+        UserSchool.create!(user: main_teacher, school: main_teacher.school) unless UserSchool.exists?(
+          user: main_teacher, school: main_teacher.school
+        )
+      end
     end
 
     factory :teacher, class: 'Users::SchoolManagement', parent: :user do
@@ -133,6 +147,12 @@ FactoryBot.define do
       role { 'teacher' }
 
       sequence(:email) { |n| "labotte.#{n}@#{school.email_domain_name}" }
+      after(:create) do |teacher|
+        teacher.update!(school: teacher.school)
+        UserSchool.create!(user: teacher, school: teacher.school) unless UserSchool.exists?(
+          user: teacher, school: teacher.school
+        )
+      end
     end
 
     factory :other, class: 'Users::SchoolManagement', parent: :user do
@@ -141,6 +161,12 @@ FactoryBot.define do
       role { 'other' }
 
       sequence(:email) { |n| "lautre.#{n}@#{school.email_domain_name}" }
+      after(:create) do |other|
+        other.update!(school: other.school)
+        UserSchool.create!(user: other, school: other.school) unless UserSchool.exists?(
+          user: other, school: other.school
+        )
+      end
     end
 
     factory :admin_officer, class: 'Users::SchoolManagement', parent: :user do
@@ -149,6 +175,12 @@ FactoryBot.define do
       role { 'admin_officer' }
 
       sequence(:email) { |n| "resp_admin.#{n}@#{school.email_domain_name}" }
+      after(:create) do |admin_officer|
+        admin_officer.update!(school: admin_officer.school)
+        UserSchool.create!(user: admin_officer, school: admin_officer.school) unless UserSchool.exists?(
+          user: admin_officer, school: admin_officer.school
+        )
+      end
     end
 
     factory :cpe, class: 'Users::SchoolManagement', parent: :user do
@@ -157,6 +189,12 @@ FactoryBot.define do
       role { 'cpe' }
 
       sequence(:email) { |n| "cpe.#{n}@#{school.email_domain_name}" }
+      after(:create) do |cpe|
+        cpe.update!(school: cpe.school)
+        UserSchool.create!(user: cpe, school: cpe.school) unless UserSchool.exists?(
+          user: cpe, school: cpe.school
+        )
+      end
     end
 
     factory :statistician,

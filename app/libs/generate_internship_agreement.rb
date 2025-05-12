@@ -1,5 +1,6 @@
 require 'cgi'
 require 'open-uri'
+require 'mini_magick'
 include ApplicationHelper
 
 class GenerateInternshipAgreement < Prawn::Document
@@ -372,22 +373,22 @@ class GenerateInternshipAgreement < Prawn::Document
     end
     @pdf.move_down 15
 
-    @pdf.table([["La/le responsable de l'organisme d'accueil", "La/le chef(fe) d'établissement"]],
+    headers = ["La/le responsable de l'organisme d'accueil", "La/le chef(fe) d'établissement"]
+    column_widths = [@pdf.bounds.width / headers.size] * headers.size
+    @pdf.table([headers],
                cell_style: { border_width: 0 },
-               column_widths: [@pdf.bounds.width / 2, @pdf.bounds.width / 2])
-
-    @pdf.table([[
-                 image_from(signature: download_image_and_signature(signatory_role: 'employer')),
-                 @internship_agreement.signed_by_school_management? ? image_from(signature: download_image_and_signature(signatory_role: 'school_manager')) : ''
-               ]], cell_style: { border_width: 0, height: 80 },
-                   column_widths: [@pdf.bounds.width / 2, @pdf.bounds.width / 2])
+               column_widths: column_widths)
+    image1 = image_from(signature: download_image_and_signature(signatory_role: 'employer'))
+    image2 = @internship_agreement.signed_by_school_management? ? image_from(signature: download_image_and_signature(signatory_role: @internship_agreement.school_management_signatory_role)) : ''
+    @pdf.table([[image1, image2]], cell_style: { border_width: 0, height: 80 },
+                                   column_widths: column_widths)
 
     @pdf.move_down 10
     @pdf.text 'Vu et pris connaissance,'
     @pdf.move_down 10
     @pdf.table([['Les parents ou les responsables légaux', 'L’enseignant (ou les enseignants) éventuellement']],
                cell_style: { border_width: 0 },
-               column_widths: [@pdf.bounds.width / 2, @pdf.bounds.width / 2])
+               column_widths: column_widths)
     @pdf.move_down 50
     @pdf.text 'Le responsable de l’accueil en milieu professionnel'
   end
@@ -527,9 +528,20 @@ class GenerateInternshipAgreement < Prawn::Document
   def download_image_and_signature(signatory_role:)
     if signatory_role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE) && @internship_agreement.school.signature.attached?
       begin
+        # Download the signature
         signature_data = @internship_agreement.school.signature.download
+        puts '================================'
+        puts "signature_data : #{signature_data}"
+        puts '================================'
+        puts ''
+
+        # Convert to non-interlaced PNG
+        image = MiniMagick::Image.read(signature_data)
+        image.format 'png'
+        image.interlace 'none' # Disable interlacing
+
         return OpenStruct.new(
-          local_signature_image_file_path: StringIO.new(signature_data)
+          local_signature_image_file_path: StringIO.new(image.to_blob)
         )
       rescue StandardError => e
         Rails.logger.error "Error processing school signature: #{e.message}"
