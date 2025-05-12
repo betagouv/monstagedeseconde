@@ -36,12 +36,13 @@ class CallbacksController < ApplicationController
         user.accept_terms = true
 
         if user.save
-          other_schools = School.where(code_uai: user_info['FrEduRneResp']).where.not(id: user.school_id)
+          uai_codes = get_uai_codes(user_info)
+          other_schools = get_schools(uai_codes).where.not(id: user.school_id)
+          Rails.logger.info("FIM : New schools to add: #{other_schools.map(&:code_uai)}")
           user.schools << other_schools
           Rails.logger.info("FIM :User saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
           sign_in_and_redirect user, event: :authentication
         else
-          byebug
           Rails.logger.error("FIM : User not saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']} : #{user.errors.full_messages}")
           puts user.errors.full_messages
           redirect_to root_path, alert: 'Erreur lors de la création de l\'utilisateur'
@@ -172,14 +173,32 @@ class CallbacksController < ApplicationController
   end
 
   def update_schools(user, user_info)
-    new_schools = School.where(code_uai: user_info['FrEduRneResp'])
+    uai_codes = get_uai_codes(user_info)
+    new_schools = get_schools(uai_codes)
     existing_school_ids = user.school_ids
     schools_to_add = new_schools.reject { |school| existing_school_ids.include?(school.id) }
-    
-    if schools_to_add.any?
-      user.schools << schools_to_add
-      user.save
+
+    return unless schools_to_add.any?
+
+    user.schools << schools_to_add
+    user.save
+  end
+
+  def get_schools(uai_codes)
+    new_schools = School.where(code_uai: uai_codes)
+    Rails.logger.info("FIM : Schools to add: #{new_schools.map(&:code_uai)}")
+    new_schools
+  end
+
+  def get_uai_codes(user_info)
+    if user_info['FrEduRneResp'].nil? || user_info['FrEduRneResp'] == 'X'
+      return user_info['FrEduRne'].map { |uai| uai.split('$').first } unless user_info['FrEduRne'].nil?
+
+      Rails.logger.error("FIM : FrEduRne is nil : #{user_info.inspect}")
+      [user_info['rne']]
+
+    else
+      user_info['FrEduRneResp'].map { |uai| uai.split('$').first }
     end
   end
 end
-
