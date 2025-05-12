@@ -20,6 +20,16 @@ export default class extends Controller {
     }
   }
 
+  checkIfSectorChoiceIsPublic() {
+    const selectElement = document.querySelector('#sector-choice');
+    const option = selectElement.querySelector('option[value="Fonction publique"]');
+    if (option) {
+      this.selectPublicSectorAndHide();
+    } else {
+      this.selectPrivateSectorAndShow();
+    }
+  }
+
   selectPublicSectorAndHide() {
     const selectElement = document.querySelector('#sector-choice');
     const option = selectElement.querySelector('option[value="Fonction publique"]');
@@ -31,9 +41,14 @@ export default class extends Controller {
       }
     }
 
+    // hide the sector choice block
     const sectorChoiceBlock = document.querySelector('#sector-choice-block');
+    const sectorChoice = document.querySelector('#entreprise_sector_id-block');
     if (sectorChoiceBlock) {
       sectorChoiceBlock.hidden = true;
+    }
+    if (sectorChoice) {
+      sectorChoice.hidden = true;
     }
   }
 
@@ -42,10 +57,15 @@ export default class extends Controller {
     if (sectorChoiceBlock) {
       sectorChoiceBlock.hidden = false;
     }
-
+    
+    // show the sector choice block
     const selectElement = document.querySelector('#sector-choice');
+    const sectorChoice = document.querySelector('#entreprise_sector_id-block');
     if (selectElement) {
       selectElement.value = '';
+    }
+    if (sectorChoice) {
+      sectorChoice.hidden = false;
     }
   }
 
@@ -71,7 +91,10 @@ export default class extends Controller {
   }
 
   groupNamePublicTargetConnected(element) {
-    console.log("public: " + this.isEntreprisePublicValue);
     this.toggleGroupNames(!!this.isEntreprisePublicValue);
+  }
+
+  connect() {
+    this.checkIfSectorChoiceIsPublic();
   }
 }
