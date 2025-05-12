@@ -59,7 +59,7 @@ export default function SirenInput({
         }
       })
       .catch((err) => {
-        document.getElementById("siren-error").classList.remove("d-none");
+        toggleContainerById("siren-error", true);
       });
   };
 
@@ -150,9 +150,9 @@ export default function SirenInput({
 
     const ministry = document.getElementById("ministry-choice");
     const ministryClassList = ministry.classList;
-    const sectorBloc = document.getElementById("sector-choice-block");
+    const sectorBloc = document.getElementById(`${resourceName}_sector_id-block`);
     const sectorBlocClassList = sectorBloc.classList;
-    const sector = document.getElementById("sector-choice");
+    const sector = document.getElementById(`${resourceName}_sector_id`);
     // TODO pub/sub with broadcasting would be better
     // because both jsx components and stimulus send events to the containers (show/hide)
     ministryClassList.add("d-none"); // default
@@ -218,7 +218,7 @@ export default function SirenInput({
   useEffect(() => {
     const timerId = setTimeout(() => {
       setDebouncedSiret(siret);
-    }, 500); // 500 ms
+    }, 600); // 600 ms
 
     return () => {
       clearTimeout(timerId);
@@ -270,7 +270,7 @@ export default function SirenInput({
                   htmlFor: `${resourceName}_siren`,
                 })}
               >
-                Indiquez le nom ou le SIRET de la structure d’accueil *
+                Indiquez le nom ou le SIRET de la structure d'accueil *
                 { railsEnv === "development"
                   ? " (dev only : 21950572400209)"
                   : "" }

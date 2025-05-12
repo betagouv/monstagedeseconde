@@ -6,6 +6,10 @@ module Dashboard::Stepper
   class EntreprisesControllerTest < ActionDispatch::IntegrationTest
     include Devise::Test::IntegrationHelpers
 
+    setup do
+      Sector.create(name: 'Fonction publique')
+    end
+
     test 'GET new not logged redirects to sign in' do
       get new_dashboard_stepper_entreprise_path
       assert_redirected_to user_session_path
