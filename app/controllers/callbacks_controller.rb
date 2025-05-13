@@ -104,11 +104,6 @@ class CallbacksController < ApplicationController
     student.confirm
     student.save
 
-    if student.confirmed_at.blank?
-      student.confirmed_at = Time.now
-      student.save
-    end
-
     # Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
 
     begin
