@@ -63,7 +63,7 @@ module Dashboard
       authorize! :index, InternshipAgreement
       if current_user.employer_like?
         @internship_offers = current_user.internship_offers
-                                         .includes([:weeks, { school: :school_manager }])
+                                         .includes([:weeks, { school: :school_managers }])
       end
       @internship_agreements = current_user.internship_agreements
                                            .filtering_discarded_students
@@ -72,7 +72,7 @@ module Dashboard
                                              { internship_application: [
                                                { student: :school },
                                                { internship_offer: [:employer, :sector, :stats, :weeks,
-                                                                    { school: :school_manager }] }
+                                                                    { school: :school_managers }] }
                                              ] }
                                            )
       #  .reject { |a| a.student.school.school_manager.nil? }
