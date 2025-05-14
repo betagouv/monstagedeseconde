@@ -1,5 +1,6 @@
 module Users
   class AcademyRegionStatistician < Statistician
+    include Signatorable
 
     METABASE_DASHBOARD_ID = 30
 
@@ -7,20 +8,10 @@ module Users
 
     validates :academy_region_id, presence: true
 
-    
-    def dashboard_name
-      'Statistiques'
-    end
-
-    def academy_region_statistician? ; true end
-
-    def departments
-      academy_region.departments
-    end
-
-    def presenter
-      Presenters::PrefectureStatistician.new(self)
-    end
+    def dashboard_name = 'Statistiques'
+    def academy_region_statistician? = true
+    def departments = academy_region.departments
+    def presenter = Presenters::PrefectureStatistician.new(self)
 
     def custom_dashboard_path
       url_helpers.reporting_dashboards_path(
@@ -30,7 +21,7 @@ module Users
     end
 
     rails_admin do
-      navigation_label "Référents"
+      navigation_label 'Référents'
       list do
         field :first_name do
           label 'Prénom'
@@ -43,7 +34,7 @@ module Users
         end
         field :academy_region do
           label 'Régon académique'
-          pretty_value { bindings[:object]&.academy_region&.name}
+          pretty_value { bindings[:object]&.academy_region&.name }
         end
         field :statistician_validation do
           label 'Validation'
@@ -57,6 +48,10 @@ module Users
         end
         field :statistician_validation do
           label 'Validation'
+        end
+        field :agreement_signatorable do
+          label 'Signataire des conventions'
+          help 'Si le V est coché en vert, le signataire doit signer TOUTES les conventions'
         end
       end
 
