@@ -94,7 +94,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
                     hint: "Veuillez saisir une adresse email valide, sans espace ni majuscule.",
                     title: 'Adresse électronique',
-                    options: { required: true },
+                    options: { required: true , maxlength: 100},
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
       - if f.object.student.phone.present? || f.object.student_phone.present?
@@ -151,7 +151,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     value: f.object.student_legal_representative_full_name ||f.object.student.legal_representative_full_name,
                     label: "Nom et prénom de votre représentant légal",
                     options: { required: true,
-                               maxlength: 180 },
+                               maxlength: 100 },
                     title: 'Représentant légal',
                     data: {:'mandatory-fields-target' => "mandatoryField",
                              action: "input->mandatory-fields#fieldChange"}
