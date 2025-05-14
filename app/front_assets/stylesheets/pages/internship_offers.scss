@@ -374,3 +374,23 @@ table.employer tbody tr td.title {
 .sector {
   font-size: 0.875rem !important;
 }
+
+.immersion-facilitee-card.fr-callout {
+  transition: background 0.2s;
+  --border-default-blue-france: #009099;
+}
+
+.immersion-facilitee-card.fr-callout:hover {
+  background: #006A6F !important;
+  color: #fff;
+}
+
+.immersion-facilitee-card.fr-callout:hover .fr-callout__title,
+.immersion-facilitee-card.fr-callout:hover p,
+.immersion-facilitee-card.fr-callout:hover a {
+  color: #fff !important;
+}
+
+.immersion-facilitee-card.fr-callout:hover a.fr-link {
+  color: #fff !important;
+}
