@@ -4,4 +4,4 @@ tr.test-school-count
   td= school.total_student_with_confirmation_count
   td= render partial: 'reporting/schools/table/td/school_manager',
                                    locals: { has_school_manager: school.school_manager? }
-  td= school.total_main_teacher_count
+  td= school.total_teacher_count

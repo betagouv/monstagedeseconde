@@ -12,26 +12,26 @@ module Dashboard
       #
       test 'DELETE #destroy not signed in' do
         school = create(:school, :with_school_manager)
-        main_teacher = create(:main_teacher, school: school)
+        teacher = create(:teacher, school: school)
 
-        delete dashboard_school_user_path(school, main_teacher)
+        delete dashboard_school_user_path(school, teacher)
         assert_redirected_to new_user_session_path
       end
 
-      test 'DELETE #destroy as main_teacher fails' do
+      test 'DELETE #destroy as teacher fails' do
         school = create(:school, :with_school_manager)
-        main_teacher = create(:main_teacher, school: school)
-        sign_in(main_teacher)
-        delete dashboard_school_user_path(school, main_teacher)
+        teacher = create(:teacher, school: school)
+        sign_in(teacher)
+        delete dashboard_school_user_path(school, teacher)
         assert_redirected_to root_path
       end
 
       test 'DELETE #destroy as SchoolManagement succeed' do
         school = create(:school, :with_school_manager)
-        main_teacher = create(:main_teacher, school: school)
+        teacher = create(:teacher, school: school)
         sign_in(school.school_manager)
-        assert_changes -> { main_teacher.reload.school } do
-          delete dashboard_school_user_path(school, main_teacher)
+        assert_changes -> { teacher.reload.school } do
+          delete dashboard_school_user_path(school, teacher)
         end
         assert_redirected_to dashboard_school_users_path(school)
       end
@@ -90,7 +90,6 @@ module Dashboard
         school = create(:school, :with_school_manager)
         sign_in(school.school_manager)
         school_employees = [
-          create(:main_teacher, school: school),
           create(:teacher, school: school),
           create(:other, school: school)
         ]
