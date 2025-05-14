@@ -14,7 +14,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     assert_select '.fr-alert.fr-alert--error'
     assert_select '.fr-alert.fr-alert--error',
                   count: 1,
-                  text: 'Clé de réinitialisation du mot de passe : Veuillez faire une nouvelle demande de changement de mot de passe, cette demande a expirée'
+                  text: 'Clé de réinitialisation du mot de passe : Veuillez faire une nouvelle demande de changement de mot de passe, cette demande a expiré.'
   end
 
   test 'POST create by email' do
