@@ -5,7 +5,7 @@
 
   #classes-panel.fr-tabs__panel.fr-tabs__panel--selected aria-labelledby="tabpanel-404" role="tabpanel" tabindex="0"
     = render 'shared/school_switch'
-    
+
     - if unaffected_students.present?
       div data-controller='students'
         = form_tag(dashboard_school_update_students_by_group_path(@school.id), method: 'put', class: 'd-block py-3') do
@@ -41,20 +41,24 @@
                                     class: 'fr-raw-link student-action',
                                     data: {confirm: 'Cette action va supprimer un élève de votre établissement, confirmez-vous ?'} do
                             span.fr-icon-close-line
-       
+
     .row.mt-3
-      .col-12.fr-table.fr-table-blue.fr-table--white
-        table
-          - cols = ["Classe",
-                    "Élèves sans candidature",
-                    "Élèves sans stage"]
-          thead
-            tr.tr-blue
-              - cols.map.with_index do |col, i|
-                th class="align-top #{i.zero? ? '' : 'text-center'}" style="width: 20%"
-                  small= col
-          tbody
-            - Presenters::ClassRoom.from_school(@school).each do |class_rooms|
-              = render partial: "class_rooms/class_room",
-                      collection: Array(class_rooms),
-                      locals: { school: @school, cols: cols }
+      .col-12
+        .fr-table--lg.fr-table.fr-table id="table-lg-component"
+          .fr-table__wrapper
+            .fr-table__container
+              .fr-table__content
+                table id="table-lg"
+                  - cols = ["Classe",
+                            "Élèves sans candidature",
+                            "Élèves sans stage"]
+                  thead
+                    tr
+                      - cols.each_with_index do |col, i|
+                        th class="align-top #{i.zero? ? 'fr-pl-4w' : 'text-center'}" scope="col"
+                          small = col
+                  tbody
+                    - Presenters::ClassRoom.from_school(@school).each do |class_rooms|
+                      = render partial: "class_rooms/class_room",
+                              collection: Array(class_rooms),
+                              locals: { school: @school, cols: cols }
