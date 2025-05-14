@@ -4,7 +4,7 @@ module Api
   module Shared
     class InternshipOffersController < ApiBaseController
       before_action :authenticate_api_user!
-      before_action :throttle_api_requests
+      before_action :throttle_api_requests_for_offers
 
       def index
         @internship_offers = current_api_user.personal_internship_offers.kept.order(id: :desc).page(params[:page])
@@ -65,6 +65,10 @@ module Api
 
       def serialize_sector_ids(sectors)
         sectors.map { |sector_uuid| Sector.find_by(uuid: sector_uuid).id }
+      end
+
+      def throttle_api_requests_for_offers
+        throttle_api_requests "internship_offers", InternshipOffers::Api::MAX_CALLS_PER_MINUTE
       end
     end
   end
