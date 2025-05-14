@@ -98,6 +98,9 @@ export default function SirenInput({
     const inputEntrepriseName = document.getElementById( `${resourceName}_employer_name` );
     inputEntrepriseName.required = true;
     inputEntrepriseName.removeAttribute("readonly");
+    // hide the ministry choice block
+    const ministry = document.getElementById("ministry-choice");
+    ministry.hidden = true;
 
     const labelEntrepriseAddress = document.querySelector( `label[for='${resourceName}_entreprise_chosen_full_address']` );
     labelEntrepriseAddress.innerHTML = "Saisissez l'adresse du siège de votre établissement *";
