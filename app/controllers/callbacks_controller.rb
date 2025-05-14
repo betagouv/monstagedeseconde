@@ -208,17 +208,20 @@ class CallbacksController < ApplicationController
   end
 
   def update_classroom(student, edu_connect_school)
-    Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
-      school_students = Services::Omogen::Sygne.new.sygne_eleves(student.school.code_uai, niveau: niveau).to_a
-      break unless school_students.present?
+    catch :class_room_updated do
+      Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
+        school_students = Services::Omogen::Sygne.new.sygne_eleves(student.school.code_uai, niveau: niveau).to_a
+        break unless school_students.present?
 
-      school_students.compact.each do |school_student|
-        next unless student.ine == school_student.ine
+        school_students.compact.each do |school_student|
+          next unless student.ine == school_student.ine
 
-        class_room = ClassRoom.find_by(school: edu_connect_school, name: school_student.classe)
-        next if class_room.nil?
+          class_room = ClassRoom.find_by(school: edu_connect_school, name: school_student.classe)
+          next if class_room.nil?
 
-        student.update_columns(class_room_id: class_room.id)
+          student.update_columns(class_room_id: class_room.id)
+          throw :class_room_updated
+        end
       end
     end
   end
