@@ -210,10 +210,10 @@ class CallbacksController < ApplicationController
   def update_classroom(student, edu_connect_school)
     catch :class_room_updated do
       Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
-        school_students = Services::Omogen::Sygne.new.sygne_eleves(student.school.code_uai, niveau: niveau).to_a
+        all_school_students = Services::Omogen::Sygne.new.sygne_eleves(student.school.code_uai, niveau: niveau).to_a
         next unless school_students.present?
 
-        school_students.compact.each do |school_student|
+        all_school_students.compact.each do |school_student|
           next unless student.ine == school_student.ine
 
           class_room = ClassRoom.find_by(school: edu_connect_school, name: school_student.classe)
