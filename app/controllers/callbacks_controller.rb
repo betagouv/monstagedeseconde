@@ -94,7 +94,7 @@ class CallbacksController < ApplicationController
     end
 
     if student.present?
-      check_for_school_update(student, school)
+      check_for_school_update(student, school) if ENV.fetch('STUDENT_UPDATE_FEATURE', false) == 'true'
     else
       handle_educonnect_logout(educonnect)
       redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
@@ -215,21 +215,29 @@ class CallbacksController < ApplicationController
       Rails.logger.error("Backtrace:\n#{e.backtrace.join("\n")}")
       return nil
     end
-    catch :class_room_updated do
-      Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
-        all_school_students = omogen.sygne_eleves(student.school.code_uai, niveau: niveau)
-        next unless all_school_students.present?
+    begin
+      # Attempt to update the class room
+      # This will throw :class_room_updated if a class room is found and updated
+      catch :class_room_updated do
+        Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
+          all_school_students = omogen.sygne_eleves(student.school.code_uai, niveau: niveau)
+          next unless all_school_students.present?
 
-        all_school_students.to_a.compact.each do |school_student|
-          next unless student.ine == school_student.ine
+          all_school_students.to_a.compact.each do |school_student|
+            next unless student.ine == school_student.ine
 
-          class_room = ClassRoom.find_by(school: edu_connect_school, name: school_student.classe)
-          next if class_room.nil?
+            class_room = ClassRoom.find_by(school: edu_connect_school, name: school_student.classe)
+            next if class_room.nil?
 
-          student.update_columns(class_room_id: class_room.id)
-          throw :class_room_updated
+            student.update_columns(class_room_id: class_room.id)
+            throw :class_room_updated
+          end
         end
       end
+    rescue RuntimeError => e
+      Rails.logger.error("Failed to use Services::Omogen::Sygne in update_class_room: #{e.message}")
+      Rails.logger.error("Backtrace:\n#{e.backtrace.join("\n")}")
+      nil
     end
   end
 end
