@@ -202,11 +202,6 @@ class CallbacksController < ApplicationController
 
   def check_for_school_update(student, edu_connect_school)
     return unless student.school_id != edu_connect_school.id
-    Rails.logger.info '================================'
-    Rails.logger.info " : #{edu_connect_school.id} - #{edu_connect_school.id}"
-    Rails.logger.info " : #{student.school_id} - #{student.school_id}"
-    Rails.logger.info '================================'
-    Rails.logger.info ''
 
     student.update_columns(school_id: edu_connect_school.id)
     update_classroom(student, edu_connect_school)
