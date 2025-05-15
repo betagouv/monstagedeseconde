@@ -254,7 +254,12 @@ module Services::Omogen
                                        client_id: ENV['OMOGEN_CLIENT_ID'],
                                        client_secret: ENV['OMOGEN_CLIENT_SECRET']
                                      })
-      JSON.parse(response.body)['access_token']
+      case response
+      when Net::HTTPSuccess
+        JSON.parse(response.body)['access_token']
+      else
+        raise "Failed to get OAuth token: #{response.message}"
+      end
     end
 
     def initialize
