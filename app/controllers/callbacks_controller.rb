@@ -208,12 +208,19 @@ class CallbacksController < ApplicationController
   end
 
   def update_classroom(student, edu_connect_school)
+    begin
+      omogen = Services::Omogen::Sygne.new
+    rescue RuntimeError => e
+      Rails.logger.error("Failed to initialize Services::Omogen::Sygne: #{e.message}")
+      Rails.logger.error("Backtrace:\n#{e.backtrace.join("\n")}")
+      return nil
+    end
     catch :class_room_updated do
       Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
-        all_school_students = Services::Omogen::Sygne.new.sygne_eleves(student.school.code_uai, niveau: niveau).to_a
-        next unless school_students.present?
+        all_school_students = omogen.sygne_eleves(student.school.code_uai, niveau: niveau)
+        next unless all_school_students.present?
 
-        all_school_students.compact.each do |school_student|
+        all_school_students.to_a.compact.each do |school_student|
           next unless student.ine == school_student.ine
 
           class_room = ClassRoom.find_by(school: edu_connect_school, name: school_student.classe)
