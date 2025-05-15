@@ -191,10 +191,10 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: File.read('test/fixtures/files/signe_responsible.json'), headers: {})
   end
 
-  def stub_sygne_eleves(code_uai:, token:, code_mef: '10310019110')
+  def stub_sygne_eleves(code_uai:, token:, code_mef: '10310019110', ine: '001291528AA')
     Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
       expected_response = [{
-        'ine' => '001291528AA',
+        'ine' => ine,
         'nom' => 'SABABADICHETTY',
         'prenom' => 'Felix',
         'dateNaissance' => '2003-05-28',
@@ -214,8 +214,9 @@ module ThirdPartyTestHelpers
         'dateDebSco' => '2023-09-05',
         'adhesionTransport' => false
       }].to_json
+      expected_response = [].to_json unless niveau == '2115'
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
-      stub_request(:get, uri).with(headers: headers_with_token(token:, uri:))
+      stub_request(:get, uri).with(headers: headers_with_token(token: token, uri: uri))
                              .to_return(status: 200, body: expected_response, headers: {})
     end
   end

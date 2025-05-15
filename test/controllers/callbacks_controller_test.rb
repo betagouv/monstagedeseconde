@@ -137,4 +137,28 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     assert_nil @student.confirmed_at
   end
+
+  test 'as a registered student in a specific school, in a class room,' \
+  ' I connect to Educonnect and my school and class_room get updated from Sygne data' do
+    @student.destroy
+    former_school = create(:school, code_uai: '9590121X')
+    former_class_room = create(:class_room, name: 'Former Class Room', school: former_school)
+    create(:class_room, name: '3E4', school: @school)
+    student = create(:student, ine: '1234567890', school: former_school, class_room: former_class_room)
+    assert_equal '9590121X', student.school.code_uai
+    assert_equal 'Former Class Room', student.class_room.name
+
+    educonnect_token_stub
+    educonnect_userinfo_stub
+    stub_omogen_auth
+    stub_sygne_eleves(code_uai: '0590121L', token: @omogen.token, ine: '1234567890')
+    stub_sygne_responsible(ine: '1234567890', token: @omogen.token)
+
+    get educonnect_callback_path, params: { code: @code, state: @state, nonce: @nonce }
+
+    student.reload
+    assert_response :redirect
+    assert_equal '0590121L', student.school.code_uai
+    assert_equal '3E4', student.class_room.name
+  end
 end
