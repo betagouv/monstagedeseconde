@@ -211,7 +211,7 @@ class CallbacksController < ApplicationController
     catch :class_room_updated do
       Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
         school_students = Services::Omogen::Sygne.new.sygne_eleves(student.school.code_uai, niveau: niveau).to_a
-        break unless school_students.present?
+        next unless school_students.present?
 
         school_students.compact.each do |school_student|
           next unless student.ine == school_student.ine
