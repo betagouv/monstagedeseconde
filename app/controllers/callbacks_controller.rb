@@ -88,11 +88,14 @@ class CallbacksController < ApplicationController
 
     unless school.present?
       handle_educonnect_logout(educonnect)
-      redirect_to root_path,
-                  alert: "Établissement scolaire non répertorié sur 1 élève, 1 stage (UAI: #{user_info['FrEduCtEleveUAI']})." and return
+      alert_message = 'Établissement scolaire non répertorié sur 1 élève, 1 stage ' \
+                      "(UAI: #{user_info['FrEduCtEleveUAI']})."
+      redirect_to root_path, alert: alert_message and return
     end
 
-    unless student.present?
+    if student.present?
+      check_for_school_update(student, school)
+    else
       handle_educonnect_logout(educonnect)
       redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
     end
@@ -100,11 +103,6 @@ class CallbacksController < ApplicationController
     student = student.add_responsible_data if student.legal_representative_full_name.blank? && !Rails.env.staging?
     student.confirm
     student.save
-
-    if student.confirmed_at.blank?
-      student.confirmed_at = Time.now
-      student.save
-    end
 
     # Rails.logger.info("Student confirmed at: #{student.confirmed_at}")
 
@@ -199,6 +197,32 @@ class CallbacksController < ApplicationController
 
     else
       user_info['FrEduRneResp'].map { |uai| uai.split('$').first }
+    end
+  end
+
+  def check_for_school_update(student, edu_connect_school)
+    return unless student.school_id != edu_connect_school.id
+
+    student.update_columns(school_id: edu_connect_school.id)
+    update_classroom(student, edu_connect_school)
+  end
+
+  def update_classroom(student, edu_connect_school)
+    catch :class_room_updated do
+      Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
+        all_school_students = Services::Omogen::Sygne.new.sygne_eleves(student.school.code_uai, niveau: niveau).to_a
+        next unless school_students.present?
+
+        all_school_students.compact.each do |school_student|
+          next unless student.ine == school_student.ine
+
+          class_room = ClassRoom.find_by(school: edu_connect_school, name: school_student.classe)
+          next if class_room.nil?
+
+          student.update_columns(class_room_id: class_room.id)
+          throw :class_room_updated
+        end
+      end
     end
   end
 end

@@ -87,10 +87,10 @@ gem 'mini_magick'
 
 group :development, :test do
   gem 'debug'
+  gem 'stringio', '3.1.7'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'pry-byebug'
-  gem 'stringio', '3.1.7'
 end
 
 group :development do
