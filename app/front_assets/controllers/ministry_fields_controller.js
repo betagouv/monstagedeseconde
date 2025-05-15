@@ -40,6 +40,10 @@ export default class extends Controller {
       }
     }
 
+    // show the ministry choice block
+    const ministry = document.getElementById("ministry-choice");
+    ministry.hidden = false;
+
     // hide the sector choice block
     const sectorChoiceBlock = document.querySelector('#sector-choice-block');
     const sectorChoice = document.querySelector('#entreprise_sector_id-block');
@@ -56,7 +60,13 @@ export default class extends Controller {
     if (sectorChoiceBlock) {
       sectorChoiceBlock.hidden = false;
     }
-    
+
+    // set ministry group to ''
+    const ministryGroup = document.querySelector('#group-choice');
+    if (ministryGroup) {
+      ministryGroup.value = '';
+    }
+
     // show the sector choice block
     const selectElement = document.querySelector('#sector-choice');
     const sectorChoice = document.querySelector('#entreprise_sector_id-block');
@@ -90,10 +100,10 @@ export default class extends Controller {
   }
 
   groupNamePublicTargetConnected(element) {
-    this.toggleGroupNames(!!this.isEntreprisePublicValue);
+    // this.toggleGroupNames(!!this.isEntreprisePublicValue);
   }
 
   connect() {
-    this.checkIfIsPublic();
+    // this.checkIfIsPublic(); 
   }
 }

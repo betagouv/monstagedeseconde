@@ -80,7 +80,7 @@
 
               = form.select :group_id,
                             options_for_select(options_for_public_groups, resource.group.try(:id)),
-                            { prompt: 'type employeur public' },
+                            { prompt: 'Sélectionnez un ministère' },
                             class: "fr-select",
                             required: false,
                             :'data-ministry-fields-target' => 'selectGroupName'
