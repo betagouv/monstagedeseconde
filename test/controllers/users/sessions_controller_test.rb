@@ -5,6 +5,22 @@ require 'test_helper'
 class SessionsControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
+  test 'admin login triggers magic link and does not sign in' do
+    @admin = create(:god, password: 'Password123!', password_confirmation: 'Password123!')
+
+    perform_enqueued_jobs do
+      post user_session_path, params: {
+        user: { email: @admin.email, password: 'Password123!' }
+      }
+    end
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_match 'Un lien de connexion a été envoyé à votre adresse email.', response.body
+
+    # Admin is not logged in
+    assert_not is_logged_in?
+  end
+
   test 'GET works' do
     get new_user_session_path
     assert_response :success
@@ -184,5 +200,11 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     sign_in(student)
     delete destroy_user_session_path
     assert_nil cookies['_ms2gt_manage_session']
+  end
+
+  private
+
+  def is_logged_in?
+    !session['warden.user.user.key'].blank?
   end
 end

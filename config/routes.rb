@@ -259,6 +259,7 @@ Rails.application.routes.draw do
   patch 'mon-compte', to: 'users#update'
   patch 'account_password', to: 'users#update_password'
   patch 'answer_survey', to: 'users#answer_survey'
+  get '/magic_link', to: 'magic_links#show', as: :magic_link
 
   get '/accessibilite', to: 'pages#accessibilite'
   get '/conditions-d-utilisation', to: 'pages#conditions_d_utilisation'
