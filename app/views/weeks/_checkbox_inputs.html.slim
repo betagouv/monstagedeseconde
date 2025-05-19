@@ -17,29 +17,27 @@ div [data-planning-target='weeksContainer'
       | Sur quelle période proposez-vous ce stage pour les collégiens ?
       span.fr-hint-text
     - if render_employer_components
-      .row
-        .col-12
-            = render 'inputs/dsfr_rich_radio_field',
-              form: form,
-              error: error,
-              field: :all_year_long,
-              label: "Toute l'année",
-              hint: 'Les élèves pourront candidater toute l’année à votre offre.',
-              icon: 'fr-icon-calendar-2-fill',
-              value: true,
-              checked: is_all_year_long,
-              options: { data: { "select-weeks-target": "allYearLong",
-                                action: "change->select-weeks#showAllYearLong" } }
-            = render 'inputs/dsfr_rich_radio_field',
-              form: form,
-              error: error,
-              field: :all_year_long,
-              label: "Une ou plusieurs semaines spécifiques",
-              hint: 'Les élèves avec des dates de stages communes pourront candidater.',
-              icon: 'fr-icon-calendar-line',
-              value: false,
-              checked: !is_all_year_long,
-              options: { data:{ action: "change->select-weeks#showSpecificWeeks" } }
+      = render 'inputs/dsfr_rich_radio_field',
+        form: form,
+        error: error,
+        field: :all_year_long,
+        label: "Toute l'année",
+        hint: 'Les élèves pourront candidater toute l’année à votre offre.',
+        icon: 'fr-icon-calendar-2-fill',
+        value: true,
+        checked: is_all_year_long,
+        options: { data: { "select-weeks-target": "allYearLong",
+                          action: "change->select-weeks#showAllYearLong" } }
+      = render 'inputs/dsfr_rich_radio_field',
+        form: form,
+        error: error,
+        field: :all_year_long,
+        label: "Une ou plusieurs semaines spécifiques",
+        hint: 'Les élèves avec des dates de stages communes pourront candidater.',
+        icon: 'fr-icon-calendar-line',
+        value: false,
+        checked: !is_all_year_long,
+        options: { data:{ action: "change->select-weeks#showSpecificWeeks" } }
 
     div data-select-weeks-target="checkboxesContainer" class="weeks-months weeks-container-active #{preselect_all ? 'd-none' : ''}"
       .row

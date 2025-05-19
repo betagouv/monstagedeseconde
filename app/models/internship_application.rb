@@ -79,7 +79,6 @@ class InternshipApplication < ApplicationRecord
   delegate :employer, to: :internship_offer
   delegate :remaining_seats_count, to: :internship_offer
 
-  after_save :update_all_counters
   accepts_nested_attributes_for :student, update_only: true
 
   # has_rich_text :approved_message
@@ -102,6 +101,7 @@ class InternshipApplication < ApplicationRecord
   validates :weeks, presence: true
 
   # Callbacks
+  after_save :update_all_counters
   before_create :set_submitted_at
   after_create :notify_users
   after_save :update_student_profile
@@ -221,7 +221,7 @@ class InternshipApplication < ApplicationRecord
       transitions from: %i[submitted restored], to: :read_by_employer,
                   after: proc { |user, *_args|
                            update!("read_at": Time.now.utc)
-                           record_state_change(user, {})
+                           record_state_change user
                          }
     end
 
@@ -230,7 +230,7 @@ class InternshipApplication < ApplicationRecord
                   to: :transfered,
                   after: proc { |user, *_args|
                            update!("transfered_at": Time.now.utc)
-                           record_state_change(user, {})
+                           record_state_change user
                          }
     end
 
@@ -250,7 +250,7 @@ class InternshipApplication < ApplicationRecord
                     reload
                     after_employer_validation_notifications
                     CancelValidatedInternshipApplicationJob.set(wait: 15.days).perform_later(internship_application_id: id)
-                    record_state_change(user, {})
+                    record_state_change user
                   }
     end
 
@@ -261,7 +261,7 @@ class InternshipApplication < ApplicationRecord
                     update!("approved_at": Time.now.utc)
                     student_approval_notifications
                     cancel_all_pending_applications
-                    record_state_change(user, {})
+                    record_state_change user
                   }
     end
 
@@ -278,7 +278,7 @@ class InternshipApplication < ApplicationRecord
                       # Employer need to be notified
                       EmployerMailer.internship_application_approved_for_an_other_internship_offer_email(internship_application: self).deliver_later
                     end
-                    record_state_change(user, {})
+                    record_state_change user
                   }
     end
 
@@ -297,7 +297,7 @@ class InternshipApplication < ApplicationRecord
                                StudentMailer.internship_application_rejected_email(internship_application: self)
                              end
                            end
-                           record_state_change(user, {})
+                           record_state_change user
                          }
     end
 
@@ -318,7 +318,7 @@ class InternshipApplication < ApplicationRecord
                              end
                            end
                            internship_agreement&.destroy
-                           record_state_change(user, {})
+                           record_state_change user
                          }
     end
 
@@ -338,7 +338,7 @@ class InternshipApplication < ApplicationRecord
                              )
                            end
                            internship_agreement&.destroy
-                           record_state_change(user, {})
+                           record_state_change user
                          }
     end
 
@@ -352,7 +352,7 @@ class InternshipApplication < ApplicationRecord
                                EmployerMailer.internship_application_restored_email(internship_application: self)
                              end
                            end
-                           record_state_change(user, {})
+                           record_state_change user
                          }
     end
 
@@ -364,7 +364,7 @@ class InternshipApplication < ApplicationRecord
                            update!(expired_at: Time.now.utc)
                            # notitify_student
                            Triggered::StudentExpiredInternshipApplicationsNotificationJob.perform_later(self)
-                           record_state_change(user, {})
+                           record_state_change user
                          }
     end
 
@@ -373,7 +373,7 @@ class InternshipApplication < ApplicationRecord
                   to: :expired_by_student,
                   after: proc { |user, *_args|
                            update!(expired_at: Time.now.utc)
-                           record_state_change(user, {})
+                           record_state_change user
                          }
     end
   end

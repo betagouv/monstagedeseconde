@@ -5,11 +5,12 @@ class InternshipOffer < ApplicationRecord
   GUARD_PERIOD = 5.days
   PAGE_SIZE = 30
   # TODO : most probably to be the same field.
-  EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT = 1500
-  EMPLOYER_DESCRIPTION_MIN_CHAR_COUNT = 10
-  DESCRIPTION_MAX_CHAR_COUNT = EMPLOYER_DESCRIPTION_MAX_CHAR_COUNT
+  DESCRIPTION_MAX_CHAR_COUNT = 1500
   MAX_CANDIDATES_HIGHEST = 6_000
   TITLE_MAX_CHAR_COUNT = 150
+  EMPLOYER_NAME_MAX_CHAR_COUNT = 150
+  STREET_MAX_CHAR_COUNT = 500
+  ZIPCODE_SIZE = 5
   DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description employer_id
                             employer_name street zipcode city department entreprise_coordinates
                             employer_chosen_name all_year_long period grade_ids week_ids
@@ -105,10 +106,21 @@ class InternshipOffer < ApplicationRecord
   delegate :update_need, to: :stats, allow_nil: true
 
   # Validations
-  validate :check_missing_seats, if: :user_update?, on: :update
+  validates :title, presence: true, length: { maximum: TITLE_MAX_CHAR_COUNT }
+  validates :employer_name, presence: true, length: { maximum: EMPLOYER_NAME_MAX_CHAR_COUNT }
+  validates :description, presence: true, length: { maximum: DESCRIPTION_MAX_CHAR_COUNT }
   validates :max_candidates, numericality: { only_integer: true,
                                              greater_than: 0,
                                              less_than_or_equal_to: InternshipOffer::MAX_CANDIDATES_HIGHEST }
+  validates :street, :city, presence: true, length: { maximum: STREET_MAX_CHAR_COUNT }
+  validates :zipcode, presence: true, length: { maximum: ZIPCODE_SIZE }
+  validates :coordinates, presence: true
+  validate :check_missing_seats, if: :user_update?, on: :update
+
+  # TODO : remove this validation when we will have a better way to manage it
+  # validate :check_for_missing_seats
+
+  # Associations
 
   # Scopes
 

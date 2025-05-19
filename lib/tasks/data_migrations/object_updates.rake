@@ -439,4 +439,20 @@ namespace :data_migrations do
       puts 'done.'
     end
   end
+  
+  desc '2025-02-21 move MESR group option to MENSR'
+  task 'update_mesr_group_option': :environment do
+    PrettyConsole.announce_task('update mesr group option') do
+      mesr_group  = Group.find_by(name: "Ministère de l’Enseignement supérieur et de la Recherche")
+      mesr_group_id  = mesr_group.id
+      mensr_group_id = Group.find_by(name: "Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche").id
+      InternshipOffer.where('updated_at > ?', Date.new(2024, 8, 1))
+                     .find_each do |offer|
+        next unless offer.group_id == mesr_group_id
+
+        offer.update(group_id: mensr_group_id)
+        print '.'
+      end
+    end
+  end
 end

@@ -249,3 +249,9 @@
     padding-right: 1rem !important ;
   }
 }
+
+div[data-grade-target=secondeContainer]{
+  .fr-radio-group{
+    line-height: 24px;
+  }
+}

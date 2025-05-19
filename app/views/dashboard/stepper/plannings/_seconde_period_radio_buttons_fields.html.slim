@@ -15,8 +15,8 @@ p.fr-badge.fr-badge--error.d-none data-grade-target="alertContainer"
 fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend radio-hint-messages"
   legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-text--lg font-weight-bold" id="radio-hint-legend"
     | Sur quelle période proposez-vous ce stage pour les lycéens ?
-  .fr-form-group.fr-ml-1v
-    .fr-radio-group.fr-py-1w
+  .fr-fieldset__element
+    .fr-radio-group.fr-pb-1v
       = form.radio_button :period_field,
                           2,
                           id: 'period_field_full_time',
@@ -27,7 +27,7 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
       = form.label :period_field,
                     labels[:full_time],
                     for: 'period_field_full_time'
-    .fr-radio-group.fr-py-1w
+    .fr-radio-group.fr-py-1v
       = form.radio_button :period_field,
                           11,
                           id: 'period_field_week_1',
@@ -39,7 +39,7 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
                     labels[:week_1],
                     for: 'period_field_week_1'
 
-    .fr-radio-group.fr-py-1w
+    .fr-radio-group.fr-pt-1v
       = form.radio_button :period_field,
                           12,
                           id: 'period_field_week_2',

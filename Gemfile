@@ -20,9 +20,6 @@ gem 'activerecord-postgis-adapter', '>= 8.0.1'
 
 # don't bump until fixed, https://github.com/Casecommons/pg_search/issues/446
 gem 'pg_search', '2.3.2' # pg search for autocomplete
-gem 'prawn'
-gem 'prawn-styled-text'
-gem 'prawn-table'
 
 # front end
 gem 'browser'
@@ -34,6 +31,10 @@ gem 'split', require: 'split/dashboard'
 gem 'uglifier'
 gem 'view_component'
 gem 'webpacker'
+# -- pdf
+gem 'prawn'
+gem 'prawn-styled-text'
+gem 'prawn-table'
 
 # background jobs
 gem 'sidekiq', '< 8'
@@ -87,10 +88,10 @@ gem 'mini_magick'
 
 group :development, :test do
   gem 'debug'
+  gem 'stringio', '3.1.7'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'pry-byebug'
-  gem 'stringio', '3.1.7'
 end
 
 group :development do

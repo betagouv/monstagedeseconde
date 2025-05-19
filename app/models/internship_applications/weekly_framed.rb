@@ -3,10 +3,10 @@ module InternshipApplications
   class WeeklyFramed < InternshipApplication
     after_save :update_all_counters
 
-    validates :student, uniqueness: { scope: %i[internship_offer_id week_id] }
-
     before_validation :at_most_one_application_per_student?, on: :create
     before_validation :internship_offer_has_spots_left?, on: :create
+
+    validates :student, uniqueness: { scope: %i[internship_offer_id week_id] }
 
     def approvable?
       return false unless internship_offer.has_spots_left?

@@ -282,19 +282,7 @@ table.employer tbody tr td.title {
 .toggle-block{
   display: flex;
   .label{
-    display: block;
     width: 70px;
-    padding-top: 12px;
-  }
-  .toggle-swap{
-    display: block;
-    width: 70px;
-    height: 50px;
-    top: 35px;
-    .fr-toggle label{
-      top: -40px;
-      left: 0px;
-    }
   }
 }
 
@@ -337,7 +325,6 @@ table.employer tbody tr td.title {
     display: flex;
     .sidemenu-box-left {
       display: block;
-      width: 140px;
       padding-left: 0;
       text-align: left;
     }
@@ -385,4 +372,24 @@ table.employer tbody tr td.title {
 
 .sector {
   font-size: 0.875rem !important;
+}
+
+.immersion-facilitee-card.fr-callout {
+  transition: background 0.2s;
+  --border-default-blue-france: #009099;
+}
+
+.immersion-facilitee-card.fr-callout:hover {
+  background: #006A6F !important;
+  color: #fff;
+}
+
+.immersion-facilitee-card.fr-callout:hover .fr-callout__title,
+.immersion-facilitee-card.fr-callout:hover p,
+.immersion-facilitee-card.fr-callout:hover a {
+  color: #fff !important;
+}
+
+.immersion-facilitee-card.fr-callout:hover a.fr-link {
+  color: #fff !important;
 }
