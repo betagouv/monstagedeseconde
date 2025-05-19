@@ -2,6 +2,7 @@ class ConfigureFlipperForMaintenanceModes < ActiveRecord::Migration[7.1]
   def up
     return if Rails.env.test?
 
+    Flipper.enable(:student_update_feature)
     Flipper.enable(:holidays_maintenance)
     Flipper.enable(:maintenance_mode)
 
