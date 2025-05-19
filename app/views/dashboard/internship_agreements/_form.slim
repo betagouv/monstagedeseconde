@@ -95,7 +95,7 @@ tbody.internship-agreement
         - content = "Nom(s) et prénom(s) de(s) l'élève(s) effectuant le stage."
         - filled_by = ["le chef d'établissement"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
-                 locals: { field: :student_full_name, form: form, text_label: label, content: content, title: title, filled_by: filled_by}
+                 locals: { field: :student_full_name, form: form, text_label: label, content: content, title: title, filled_by: filled_by, limit: 100}
       .row.mt-0
         - label = "Classe :"
         - title = "Note destinée au professeur principal :"

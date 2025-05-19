@@ -20,7 +20,7 @@ export default class extends Controller {
     }
   }
 
-  checkIfIsPublic() {
+  checkIfSectorChoiceIsPublic() {
     const publicRadioButton = document.querySelector('.public-radio-button-true');
     const isPublic =  publicRadioButton ? publicRadioButton.checked : false;
     if (isPublic) {
@@ -114,6 +114,6 @@ export default class extends Controller {
   }
 
   connect() {
-    this.checkIfIsPublic(); 
+    this.checkIfSectorChoiceIsPublic();
   }
 }

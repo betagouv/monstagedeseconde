@@ -8,6 +8,7 @@ module InternshipOffers
       @default_params = {
         title: 'foo bar baz meh',
         description: 'bar bat fdate fd fdfd',
+        employer_description: 'a fd bar bat fdate fd fdfd',
         employer_name: 'baz',
         'coordinates' => { latitude: 1, longitude: 1 },
         street: '7 rue du puits',

@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -34,7 +35,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+-- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -811,7 +812,8 @@ CREATE TABLE public.groups (
     name character varying(150),
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    is_paqte boolean
+    is_paqte boolean,
+    visible boolean DEFAULT true
 );
 
 
@@ -2124,7 +2126,6 @@ CREATE SEQUENCE public.task_registers_id_seq
 ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
 
 
-
 --
 -- Name: team_member_invitations; Type: TABLE; Schema: public; Owner: -
 --
@@ -2848,7 +2849,6 @@ ALTER TABLE ONLY public.signatures ALTER COLUMN id SET DEFAULT nextval('public.s
 ALTER TABLE ONLY public.task_registers ALTER COLUMN id SET DEFAULT nextval('public.task_registers_id_seq'::regclass);
 
 
-
 --
 -- Name: team_member_invitations id; Type: DEFAULT; Schema: public; Owner: -
 --
@@ -3311,7 +3311,6 @@ ALTER TABLE ONLY public.task_registers
     ADD CONSTRAINT task_registers_pkey PRIMARY KEY (id);
 
 
-
 --
 -- Name: team_member_invitations team_member_invitations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
@@ -3593,6 +3592,13 @@ CREATE INDEX index_favorites_on_user_id ON public.favorites USING btree (user_id
 --
 
 CREATE UNIQUE INDEX index_favorites_on_user_id_and_internship_offer_id ON public.favorites USING btree (user_id, internship_offer_id);
+
+
+--
+-- Name: index_groups_on_visible; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_groups_on_visible ON public.groups USING btree (visible);
 
 
 --
@@ -4998,6 +5004,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250509153105'),
 ('20250424000000'),
 ('20250423092552'),
 ('20250422100745'),
@@ -5434,4 +5441,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
-

@@ -12,6 +12,7 @@ import { endpoints } from '../utils/api';
 import { isMobile } from '../utils/responsive';
 import FlashMessage from './FlashMessage';
 import CityInput from './search_internship_offer/CityInput';
+import ImmersionFaciliteeCard from './ImmersionFaciliteeCard';
 
 // France center
 const center = [46.603354, 1.888334];
@@ -251,7 +252,10 @@ const InternshipOfferResults = ({ count, searchParams }) => {
                           ))
                         }
                     </div>
-                    <div>{paginateLinks ? <Paginator paginateLinks={paginateLinks} /> : ''}</div>
+                    <div>
+                      {paginateLinks ? <Paginator paginateLinks={paginateLinks} /> : ''}
+                    </div>
+                    {paginateLinks.isLastPage && <ImmersionFaciliteeCard />}
                   </div>
                   )
                 }

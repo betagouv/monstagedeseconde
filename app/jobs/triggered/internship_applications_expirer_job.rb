@@ -19,7 +19,7 @@ module Triggered
 
     def update_and_expire_expirable(ids)
       InternshipApplication.where(id: ids)
-                           .each(&:expire!)
+                           .each(&:expire_without_validation!)
     end
   end
 end
