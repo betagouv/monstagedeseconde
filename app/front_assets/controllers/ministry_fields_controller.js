@@ -21,7 +21,8 @@ export default class extends Controller {
   }
 
   checkIfIsPublic() {
-    const isPublic = document.querySelector('#internship_offer_is_public_true').checked;
+    const publicRadioButton = document.querySelector('.public-radio-button-true');
+    const isPublic =  publicRadioButton ? publicRadioButton.checked : false;
     if (isPublic) {
       this.selectPublicSectorAndHide();
     } else {
@@ -43,38 +44,47 @@ export default class extends Controller {
     // show the ministry choice block
     const ministry = document.getElementById("ministry-choice");
     ministry.hidden = false;
+    // set required to true to the entreprise_group_id
+    const entrepriseGroup = document.querySelector('#group-choice');
+    if (entrepriseGroup) {
+      entrepriseGroup.required = true;
+    }
 
     // hide the sector choice block
-    const sectorChoiceBlock = document.querySelector('#sector-choice-block');
-    const sectorChoice = document.querySelector('#entreprise_sector_id-block');
+
+    const sectorChoiceBlock = document.querySelector('#entreprise_sector_id-block');
     if (sectorChoiceBlock) {
       sectorChoiceBlock.hidden = true;
     }
     if (sectorChoice) {
       sectorChoice.hidden = true;
     }
+    // set required to false to the sector-choice
+    const sectorChoice = document.querySelector('#sector-choice');
+    if (sectorChoice) {
+      sectorChoice.required = false;
+    }
   }
 
   selectPrivateSectorAndShow() {
-    const sectorChoiceBlock = document.querySelector('#sector-choice-block');
+    // set ministry group to '' and required to false
+    const ministryGroup = document.querySelector('#group-choice');
+    if (ministryGroup) {
+      ministryGroup.value = '';
+      ministryGroup.required = false;
+    }
+
+    // show the sector choice block
+    const sectorChoiceBlock = document.querySelector('#entreprise_sector_id-block');
     if (sectorChoiceBlock) {
       sectorChoiceBlock.hidden = false;
     }
 
-    // set ministry group to ''
-    const ministryGroup = document.querySelector('#group-choice');
-    if (ministryGroup) {
-      ministryGroup.value = '';
-    }
-
-    // show the sector choice block
-    const selectElement = document.querySelector('#sector-choice');
-    const sectorChoice = document.querySelector('#entreprise_sector_id-block');
-    if (selectElement) {
-      selectElement.value = '';
-    }
+    // set required to true to the sector-choice
+    const sectorChoice = document.querySelector('#sector-choice');
     if (sectorChoice) {
-      sectorChoice.hidden = false;
+      sectorChoice.required = true;
+      sectorChoice.value = '';
     }
   }
 
@@ -104,6 +114,6 @@ export default class extends Controller {
   }
 
   connect() {
-    // this.checkIfIsPublic(); 
+    this.checkIfIsPublic(); 
   }
 }
