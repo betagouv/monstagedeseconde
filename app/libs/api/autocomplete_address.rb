@@ -1,7 +1,7 @@
 module Api
   class AutocompleteAddress
     # see: https://geo.api.gouv.fr/adresse
-    API_ENDPOINT = 'https://api-adresse.data.gouv.fr/search'
+    API_ENDPOINT = 'https://data.geopf.fr/geocodage/search'
 
     def self.search(params:)
       uri = URI(API_ENDPOINT)
