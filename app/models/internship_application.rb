@@ -37,6 +37,7 @@ class InternshipApplication < ApplicationRecord
     approved
   ]
   RE_APPROVABLE_STATES = %w[rejected canceled_by_employer expired]
+  CANCELABLE_STATES = %w[submitted read_by_employer transfered validated_by_employer approved]
   VALID_TRANSITIONS = %w[
     read
     read!
@@ -440,6 +441,10 @@ class InternshipApplication < ApplicationRecord
                     internship_offer.remaining_seats_count.zero?
 
     RE_APPROVABLE_STATES.include?(aasm_state)
+  end
+
+  def is_cancelable?
+    CANCELABLE_STATES.include?(aasm_state)
   end
 
   def self.from_sgid(sgid)
