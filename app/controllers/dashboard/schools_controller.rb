@@ -39,12 +39,6 @@ module Dashboard
       render :edit, status: :unprocessable_entity
     end
 
-    def edit_signature
-      authorize! :edit_signature, School
-      @school = School.find(params.require(:id))
-      render layout: false if turbo_frame_request?
-    end
-
     def update_signature
       redirect_to dashboard_internship_agreements_path and return unless params.dig(:school, :signature).present?
 
