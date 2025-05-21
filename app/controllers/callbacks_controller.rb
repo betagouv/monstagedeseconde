@@ -94,7 +94,7 @@ class CallbacksController < ApplicationController
     end
 
     if student.present?
-      check_for_school_update(student, school) if ENV.fetch('STUDENT_UPDATE_FEATURE', false) == 'true'
+      check_for_school_update(student, school) if Flipper.enabled?(:student_update_feature)
     else
       handle_educonnect_logout(educonnect)
       redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return

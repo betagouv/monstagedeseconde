@@ -7,7 +7,7 @@ module Users
 
     before_action :configure_sign_in_params, only: %i[new create]
     before_action :verify_test_access_code, only: :choose_connection_test
-    after_action :remove_notice, only: %i[destroy create]
+    # after_action :remove_notice, only: %i[destroy create]
     after_action :switch_back, only: %i[destroy]
 
     def new
@@ -34,6 +34,15 @@ module Users
         sign_out current_user if user_signed_in?
         redirect_to root_path,
                     notice: 'Vous n\'avez pas les permissions nécessaires pour accéder à cette page' and return
+      end
+
+      # 2FA Magic link pour les admins
+      user = fetch_user_by_email
+      if user&.is_a?(Users::God) && user.valid_password?(params[:user][:password])
+        sign_out user if user_signed_in?
+        token = JwtAuth.encode({ user_id: user.id }, 15.minutes.from_now)
+        GodMailer.magic_link_login(user, token).deliver_later
+        redirect_to root_path, notice: 'Un lien de connexion a été envoyé à votre adresse email.' and return
       end
 
       if by_phone? && fetch_user_by_phone.try(:valid_password?, params[:user][:password])
@@ -112,9 +121,9 @@ module Users
 
     private
 
-    def remove_notice
-      flash.delete(:notice)
-    end
+    # def remove_notice
+    #   flash.delete(:notice)
+    # end
 
     def confirmed?
       return false if params[:check_confirmation].nil? || params[:id].nil?

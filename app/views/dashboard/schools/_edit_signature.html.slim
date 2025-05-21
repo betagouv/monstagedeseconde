@@ -1,0 +1,65 @@
+
+dialog#edit-signature aria-labelledby="fr-modal__title" role="dialog"  class="fr-modal"
+  .fr-container.fr-container--fluid.fr-container-md
+    .fr-grid-row.fr-grid-row--center
+      .fr-col-12.fr-col-md-9.fr-col-lg-8.text-left
+        .fr-modal__body
+          = form_with model: [:dashboard, @school],
+                      url: update_signature_dashboard_school_path(@school),
+                      method: :patch,
+                      local: true,
+                      data: { turbo: false } do |f|
+            .fr-modal__header
+              = link_to dashboard_internship_agreements_path,
+                      class: "fr-link--close fr-link fr-raw-link",
+                      aria: { controls: "edit-signature" },
+                      title: "Fermer",
+                      data: { turbo_frame: "_top", turbo: false } do
+                | Fermer
+
+            .fr-modal__content
+              h1.fr-modal__title
+                span.fr-fi-arrow-right-line.fr-fi--lg
+                | Ajoutez la signature de votre établissement
+              p
+                | En ajoutant votre signature, celle-ci apparaîtra automatiquement sur toutes les conventions de stage signées sur 1 élève 1 stage. Vous pouvez la modifier à tout moment, si nécessaire.
+
+              hr.fr-mb-0
+
+              .fr-upload-group data-controller="preview-image"
+                p.fr-label
+                  | Joignez votre fichier
+                  br
+                  span.fr-hint-text
+                    | (PNG, JPG/JPEG et PDF acceptés jusqu'à 5 Mo)
+                .d-flex.justify-content-start.align-items-center.gap-2
+                  = f.file_field :signature,
+                                class: "fr-upload w-auto",
+                                accept: "image/png,image/jpeg,application/pdf",
+                                "data-fr-label": "Ajouter un fichier",
+                                "data-preview-image-target": "input",
+                                "data-action": "change->preview-image#preview"
+
+                  = link_to '#',
+                            class: 'fr-text-default--danger text-danger fr-raw-link',
+                            id: 'delete-signature',
+                            data: { action: "click->preview-image#clear" } do
+                    span.fr-icon-delete-line
+
+              hr.fr-mb-0
+
+                .fr-mt-2w#preview-container
+                  p Aperçu de votre signature
+                  .fr-upload-preview data-preview-image-target="preview"
+                    - if @school.signature.present?
+                      = image_tag @school.signature, class: "img-fluid", style: "max-height: 192px;"
+
+              .fr-modal__footer
+                ul.fr-btns-group.fr-btns-group--right.fr-btns-group--inline-reverse.fr-btns-group--inline-lg.fr-btns-group--icon-left
+                  li
+                    = f.submit "Confirmer", class: "fr-btn"
+                  li
+                    = link_to "Annuler",
+                            dashboard_internship_agreements_path,
+                            class: "fr-btn fr-btn--secondary",
+                            data: { turbo_frame: "_top" }

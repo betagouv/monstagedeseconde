@@ -65,7 +65,7 @@ class ApplicationController < ActionController::Base
   helper_method :user_presenter, :current_user_or_visitor, :employers_only?
 
   def check_for_maintenance
-    redirect_to '/maintenance.html' if ENV['MAINTENANCE_MODE'] == 'true'
+    redirect_to '/maintenance.html' if Flipper.enabled?(:maintenance_mode)
   end
 
   def employers_only_redirect
@@ -114,12 +114,12 @@ class ApplicationController < ActionController::Base
   end
 
   def check_for_holidays_maintenance_page
-    return unless ENV.fetch('HOLIDAYS_MAINTENANCE', 'false') == 'true' && !maintenance_redirection_exception?
+    return unless Flipper.enabled?(:holidays_maintenance) && !holidays_maintenance_redirection_exception?
 
     redirect_to '/maintenance_estivale.html' and return
   end
 
-  def maintenance_redirection_exception?
+  def holidays_maintenance_redirection_exception?
     allowed_paths = %w[/maintenance_estivale.html /contact.html /waiting_list]
     request.path.in?(allowed_paths) ||
       (request.path == '/waiting_list' && request.post?)

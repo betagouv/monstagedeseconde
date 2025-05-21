@@ -12,11 +12,15 @@ root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
 Rails.application.routes.draw do
   # ------------------ SCOPE START ------------------
   scope(path_names: { new: 'nouveau', edit: 'modification' }) do
-    authenticate :user, ->(u) { u.is_a?(Users::God) } do
+    authenticate :user, ->(u) { u.god? } do
+      # sidekiq
       mount Sidekiq::Web => '/sidekiq'
       match '/split' => Split::Dashboard,
             anchor: false,
             via: %i[get post delete]
+
+      # flipper
+      mount Flipper::UI.app(Flipper) => '/admin/flipper'
     end
 
     mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
@@ -185,7 +189,6 @@ Rails.application.routes.draw do
       end
 
       resources :schools, path: 'ecoles', only: %i[index edit update show] do
-        get :edit_signature, on: :member
         patch :update_signature, on: :member
         resources :invitations, only: %i[new create index destroy], module: 'schools'
         get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
@@ -259,6 +262,7 @@ Rails.application.routes.draw do
   patch 'mon-compte', to: 'users#update'
   patch 'account_password', to: 'users#update_password'
   patch 'answer_survey', to: 'users#answer_survey'
+  get '/magic_link', to: 'magic_links#show', as: :magic_link
 
   get '/accessibilite', to: 'pages#accessibilite'
   get '/conditions-d-utilisation', to: 'pages#conditions_d_utilisation'
