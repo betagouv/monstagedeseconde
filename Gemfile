@@ -48,6 +48,10 @@ gem 'rails_admin_aasm'
 gem 'rails_admin-i18n'
 
 # instrumentation
+gem 'flipper'
+gem 'flipper-active_record'
+gem 'flipper-active_support_cache_store'
+gem 'flipper-ui'
 gem 'geocoder'
 gem 'lograge'
 gem 'ovh-rest'

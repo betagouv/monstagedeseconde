@@ -1,5 +1,8 @@
+
 = turbo_frame_tag "modal" do
-  .fr-modal.fr-modal--opened
+  button class="invisible"  aria-controls="school-management-signature" data-fr-opened="true">
+    |Titre de modale simple
+  #school-management-signature.fr-modal
     .fr-container.fr-container--fluid.fr-container-md
       .fr-grid-row.fr-grid-row--center
         .fr-col-12.fr-col-md-9.fr-col-lg-8
@@ -17,16 +20,13 @@
                         title: "Fermer",
                         data: { turbo_frame: "_top" } do
                   | Fermer
-              
               .fr-modal__content
                 h1.fr-modal__title
                   span.fr-fi-arrow-right-line.fr-fi--lg
                   | Signez les conventions de stage
                 p
                   | Vous vous apprêtez à signer en ligne ces conventions de stage. Votre signature manuscrite sera ajoutée.
-                
                 hr.fr-mb-0
-
                   - if @internship_agreements.reject { |a| a.student.school.signature.present? }.any?
                     .fr-upload-group data-controller="preview-image"
                       p.fr-label
@@ -35,13 +35,12 @@
                         span.fr-hint-text
                           | (PNG, JPG/JPEG et PDF acceptés jusqu'à 5 Mo)
                       .d-flex.justify-content-start.align-items-center.gap-2
-                        = f.file_field :signature, 
-                                      class: "fr-upload w-auto", 
-                                      accept: "image/png,image/jpeg,application/pdf",
-                                      "data-fr-label": "Ajouter un fichier",
-                                      "data-preview-image-target": "input",
-                                      "data-action": "change->preview-image#preview"
-                      
+                        = f.file_field :signature,
+                                       class: "fr-upload w-auto",
+                                       accept: "image/png,image/jpeg,application/pdf",
+                                       "data-fr-label": "Ajouter un fichier",
+                                       "data-preview-image-target": "input",
+                                       "data-action": "change->preview-image#preview"
                         = link_to '#',
                               class: 'fr-text-default--danger text-danger fr-raw-link',
                               id: 'delete-signature',
@@ -61,7 +60,7 @@
                   li
                     = f.submit "Confirmer", class: "fr-btn"
                   li
-                    = link_to "Annuler", 
-                            dashboard_internship_agreements_path, 
+                    = link_to "Annuler",
+                            dashboard_internship_agreements_path,
                             class: "fr-btn fr-btn--secondary",
-                            data: { turbo_frame: "_top" } 
+                            data: { turbo_frame: "_top" }
