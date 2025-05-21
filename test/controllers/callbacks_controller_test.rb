@@ -143,7 +143,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     @student.destroy
     former_school = create(:school, code_uai: '9590121X')
     former_class_room = create(:class_room, name: 'Former Class Room', school: former_school)
-    create(:class_room, name: '3E4', school: @school)
+    create(:class_room, name: '3E4', school: @school) # will be used when updating the student
     student = create(:student, ine: '1234567890', school: former_school, class_room: former_class_room)
     assert_equal '9590121X', student.school.code_uai
     assert_equal 'Former Class Room', student.class_room.name
@@ -156,8 +156,8 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
 
     get educonnect_callback_path, params: { code: @code, state: @state, nonce: @nonce }
 
-    student.reload
     assert_response :redirect
+    student.reload
     assert_equal '0590121L', student.school.code_uai
     assert_equal '3E4', student.class_room.name
   end
