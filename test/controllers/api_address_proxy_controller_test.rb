@@ -3,7 +3,7 @@ require 'test_helper'
 
 class ApiAddressProxyControllerTest < ActionDispatch::IntegrationTest
   test 'search forward args to AutocompleteAddress' do
-    expected_endpoint = "https://api-adresse.data.gouv.fr/search?limit=10&q=paris"
+    expected_endpoint = "https://data.geopf.fr/geocodage/search?limit=10&q=paris"
     expected_response = {
       status: 200,
       body: {hello: :world}.to_json

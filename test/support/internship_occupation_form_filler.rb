@@ -9,7 +9,7 @@ module InternshipOccupationFormFiller
             12-rue-taine-paris.json]
       )
     ).to_json
-    expected_endpoint = 'https://api-adresse.data.gouv.fr/search?q=12+rue+taine+paris&limit=10'
+    expected_endpoint = 'https://data.geopf.fr/geocodage/search?q=12+rue+taine+paris&limit=10'
     expected_response = { status: 200, body: body }
     stub_request(:get, expected_endpoint).to_return(expected_response)
 
