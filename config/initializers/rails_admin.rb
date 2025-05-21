@@ -122,6 +122,7 @@ RailsAdmin.config do |config|
     'Tranformer un compte' => '/utilisateurs/transform_input',
     'Stats' => stats_path,
     'Sidekiq' => '/sidekiq',
+    'Feature flip' => '/admin/flipper/',
     'AB Testing' => '/split'
   }
 end
