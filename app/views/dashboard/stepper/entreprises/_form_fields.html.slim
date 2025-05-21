@@ -53,7 +53,7 @@
                     .fr-radio-group
                       = form.radio_button :is_public,
                                           true,
-                                          class: '',
+                                          class: 'public-radio-button-true',
                                           required: true,
                                           data: { action: 'ministry-fields#handleClickIsPublic' }
                       = form.label :is_public_true,
@@ -80,8 +80,9 @@
 
               = form.select :group_id,
                             options_for_select(options_for_public_groups, resource.group.try(:id)),
-                            { prompt: 'type employeur public' },
+                            { prompt: 'Sélectionnez un ministère' },
                             class: "fr-select",
+                            id: "group-choice",
                             required: false,
                             :'data-ministry-fields-target' => 'selectGroupName'
           #entreprise_sector_id-block class="row fr-mt-3w bloc-tooggle #{(form.object.persisted? && !form.object.is_public) ? '' : 'd-none'}"

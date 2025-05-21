@@ -33,6 +33,7 @@ module Dashboard::InternshipOffers
       internship_offer = create(:weekly_internship_offer_2nde, :with_public_group)
       new_title = 'new title'
       new_group = create(:group, is_public: true, name: 'woop')
+      create(:sector, name: 'Fonction publique')
       sign_in(internship_offer.employer)
       patch(dashboard_internship_offer_path(internship_offer.to_param),
             params: { internship_offer: {
@@ -242,6 +243,7 @@ module Dashboard::InternshipOffers
                                   weeks: Week.troisieme_selectable_weeks,
                                   employer:,
                                   max_candidates: 1)
+        create(:sector, name: 'Fonction publique')
         sign_in(employer)
         switching_params = {
           grade_college: '0',
