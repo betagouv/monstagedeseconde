@@ -25,7 +25,7 @@ class PagesTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET home when maintenance mode is on' do
-    ENV['MAINTENANCE_MODE'] = 'true'
+    Flipper.enable(:maintenance_mode)
     get root_path
     assert_redirected_to '/maintenance.html'
   end

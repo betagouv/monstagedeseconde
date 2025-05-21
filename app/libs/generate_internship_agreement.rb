@@ -544,7 +544,7 @@ class GenerateInternshipAgreement < Prawn::Document
         Rails.logger.error "Error downloading school signature: #{e.message} for  #{@internship_agreement.school.id}"
         return nil
       rescue StandardError => e
-        Rails.logger.error "Error processing school signature: #{e.message}"
+        Rails.logger.error "Error processing school signature: #{e.message} for  #{@internship_agreement.school.id}"
         return nil
       end
     end

@@ -2,7 +2,7 @@
 dialog#edit-signature aria-labelledby="fr-modal__title" role="dialog"  class="fr-modal"
   .fr-container.fr-container--fluid.fr-container-md
     .fr-grid-row.fr-grid-row--center
-      .fr-col-12.fr-col-md-9.fr-col-lg-8
+      .fr-col-12.fr-col-md-9.fr-col-lg-8.text-left
         .fr-modal__body
           = form_with model: [:dashboard, @school],
                       url: update_signature_dashboard_school_path(@school),
