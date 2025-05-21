@@ -540,11 +540,8 @@ class GenerateInternshipAgreement < Prawn::Document
         return OpenStruct.new(
           local_signature_image_file_path: StringIO.new(image.to_blob)
         )
-      rescue Aws::S3::Bucket::Errors::ServiceError => e
-        Rails.logger.error "Error downloading school signature: #{e.message} for  #{@internship_agreement.school.id}"
-        return nil
       rescue StandardError => e
-        Rails.logger.error "Error processing school signature: #{e.message}"
+        Rails.logger.error "Error processing school signature: #{e.message} for  #{@internship_agreement.school.id}"
         return nil
       end
     end
