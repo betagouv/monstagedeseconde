@@ -189,7 +189,6 @@ Rails.application.routes.draw do
       end
 
       resources :schools, path: 'ecoles', only: %i[index edit update show] do
-        get :edit_signature, on: :member
         patch :update_signature, on: :member
         resources :invitations, only: %i[new create index destroy], module: 'schools'
         get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
