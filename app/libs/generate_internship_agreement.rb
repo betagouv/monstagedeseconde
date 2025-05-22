@@ -378,10 +378,10 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.table([headers],
                cell_style: { border_width: 0 },
                column_widths: column_widths)
+
     image1 = image_from(signature: download_image_and_signature(signatory_role: 'employer'))
     image2 = @internship_agreement.signed_by_school_management? ? image_from(signature: download_image_and_signature(signatory_role: @internship_agreement.school_management_signatory_role)) : ''
-    @pdf.table([[image1, image2]], cell_style: { border_width: 0, height: 80 },
-                                   column_widths: column_widths)
+    @pdf.table([[image1, image2]], cell_style: { border_width: 0, height: 80 }, column_widths: column_widths)
 
     @pdf.move_down 10
     @pdf.text 'Vu et pris connaissance,'
@@ -519,11 +519,8 @@ class GenerateInternshipAgreement < Prawn::Document
   def image_from(signature:)
     return '' if signature.nil?
 
-    if signature.is_a?(OpenStruct)
-      { image: signature.local_signature_image_file_path }.merge(SCHOOL_SIGNATURE_OPTIONS)
-    else
-      { image: signature.local_signature_image_file_path }.merge(SIGNATURE_OPTIONS)
-    end
+    merge_options = signature.is_a?(OpenStruct) ? SCHOOL_SIGNATURE_OPTIONS : SIGNATURE_OPTIONS
+    { image: signature.local_signature_image_file_path }.merge(merge_options)
   end
 
   def download_image_and_signature(signatory_role:)
@@ -533,9 +530,10 @@ class GenerateInternshipAgreement < Prawn::Document
         signature_data = @internship_agreement.school.signature.download
 
         # Convert to non-interlaced PNG
-        image = MiniMagick::Image.read(signature_data)
-        image.format 'png'
-        image.interlace 'none' # Disable interlacing
+        image = MiniMagick::Image.read(signature_data) do |img|
+          img.format 'png'
+          img.interlace 'none' # Disable interlacing
+        end
 
         return OpenStruct.new(
           local_signature_image_file_path: StringIO.new(image.to_blob)
