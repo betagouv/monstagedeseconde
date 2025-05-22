@@ -43,7 +43,6 @@ module Product
         create(:student),
         school_manager,
         create(:teacher, school: school_manager.school),
-        create(:main_teacher, school: school_manager.school),
         create(:other, school: school_manager.school)
       ].each do |user|
         role = user.class.name.demodulize.downcase
@@ -96,7 +95,6 @@ module Product
       school = create(:school)
       school_manager = create(:school_manager, school: school)
       create(:teacher, school: school)
-      create(:main_teacher, school: school)
       create(:other, school: school)
 
       sign_in(school_manager)

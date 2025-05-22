@@ -36,15 +36,12 @@ class SchoolTest < ActiveSupport::TestCase
 
     student = create(:student, school:)
     school_manager = create(:school_manager, school:)
-    main_teacher = create(:main_teacher, school:)
     teacher = create(:teacher, school:)
 
     assert_equal [student], school.students.all
-    assert_equal [main_teacher], school.main_teachers.all
     assert_equal [teacher], school.teachers.all
     assert_equal school_manager, school.school_manager
     assert_includes school.users, student
-    assert_includes school.users, main_teacher
     assert_includes school.users, teacher
     assert_includes school.users, school_manager
   end
@@ -60,12 +57,6 @@ class SchoolTest < ActiveSupport::TestCase
     assert school.has_staff?
   end
 
-  test 'has_staff with only main_teacher' do
-    school = create(:school, :with_school_manager)
-    main_teacher = create(:main_teacher, school:)
-    assert school.has_staff?
-  end
-
   test 'has_staff with only other' do
     school = create(:school, :with_school_manager)
     other = create(:other, school:)
@@ -74,7 +65,6 @@ class SchoolTest < ActiveSupport::TestCase
 
   test 'has_staff with all kind of staff' do
     school = create(:school, :with_school_manager)
-    main_teacher = create(:main_teacher, school:)
     other = create(:other, school:)
     teacher = create(:teacher, school:)
     assert school.has_staff?

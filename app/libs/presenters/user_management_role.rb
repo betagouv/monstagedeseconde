@@ -15,7 +15,6 @@ module Presenters
       school_manager: "Chef d'établissement",
       teacher: 'Professeur',
       other: 'Autres fonctions',
-      main_teacher: 'Professeur principal',
       cpe: 'CPE',
       admin_officer: 'Responsable administratif'
     }
@@ -48,8 +47,6 @@ module Presenters
           ROLE_TRANSLATOR[:teacher]
         when :other
           ROLE_TRANSLATOR[:other]
-        when :main_teacher
-          ROLE_TRANSLATOR[:main_teacher]
         when :cpe
           ROLE_TRANSLATOR[:cpe]
         when :admin_officer
@@ -77,7 +74,7 @@ module Presenters
     def dashboard_name_link
       if user.school &&
          user.class_room &&
-         user.role == 'main_teacher'
+         user.role == 'teacher'
         return url_helpers.dashboard_school_class_room_students_path(school_id: user.school.id, class_room_id: user.class_room.id)
       elsif user.school
         return url_helpers.dashboard_school_path(user.school)

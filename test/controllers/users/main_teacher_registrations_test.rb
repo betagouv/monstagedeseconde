@@ -5,7 +5,7 @@ require 'test_helper'
 class MainTeacherRegistrationsTest < ActionDispatch::IntegrationTest
   include ThirdPartyTestHelpers
 
-  def assert_main_teacher_form_rendered
+  def assert_teacher_form_rendered
     assert_select 'input', value: 'SchoolManagement', hidden: 'hidden'
     assert_select 'label', /Adresse électronique/
     assert_select 'label', /Créer un mot de passe/
@@ -17,19 +17,19 @@ class MainTeacherRegistrationsTest < ActionDispatch::IntegrationTest
       get new_user_registration_path(as: 'SchoolManagement')
 
       assert_response :success
-      assert_main_teacher_form_rendered
+      assert_teacher_form_rendered
     end
   end
 
   test 'POST #create with missing params fails creation' do
-    assert_difference('Users::SchoolManagement.main_teacher.count', 0) do
+    assert_difference('Users::SchoolManagement.teacher.count', 0) do
       post user_registration_path(params: { user: { email: 'madame@accor.fr',
                                                     password: 'okokok1Max!!',
                                                     type: 'Users::SchoolManagement',
                                                     first_name: 'Martin',
                                                     last_name: 'Fourcade' } })
       assert_response 200
-      assert_main_teacher_form_rendered
+      assert_teacher_form_rendered
     end
   end
 
@@ -52,14 +52,14 @@ class MainTeacherRegistrationsTest < ActionDispatch::IntegrationTest
   #   end
   # end
 
-  test 'POST #create with all params create MainTeacher and withdraws the invitation' do
+  test 'POST #create with all params create Teacher and withdraws the invitation' do
     email = 'teacher@ac-paris.fr'
     school = create(:school)
     school_manager = create(:school_manager, school:)
     create(:invitation, email:, user_id: school_manager.id)
     class_room = create(:class_room, name: '2de A', school:)
     assert_equal 1, Invitation.count
-    assert_difference('Users::SchoolManagement.main_teacher.count', 1) do
+    assert_difference('Users::SchoolManagement.teacher.count', 1) do
       post user_registration_path(params: { user: { email:,
                                                     password: 'okokok1Max!!',
                                                     type: 'Users::SchoolManagement',
@@ -68,7 +68,7 @@ class MainTeacherRegistrationsTest < ActionDispatch::IntegrationTest
                                                     school_id: school.id,
                                                     class_room_id: class_room.id,
                                                     accept_terms: '1',
-                                                    role: :main_teacher } })
+                                                    role: :teacher } })
     end
     assert_equal 0, Invitation.count
   end

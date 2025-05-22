@@ -83,8 +83,8 @@ module Reporting
            .positive?
     end
 
-    def total_main_teacher_count
-      users.select { |user| user.main_teacher? }
+    def total_teacher_count
+      users.select { |user| user.teacher? }
            .size
     end
 
