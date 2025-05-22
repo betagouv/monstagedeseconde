@@ -94,10 +94,7 @@
                             { prompt: sectors_options_for_default },
                             class: "fr-select",
                             required: false,
-                            id: "sector-choice",
-                            data: { :'fill-card-target' => "sectorInput",
-                                    :'mandatory-fields-target' => "mandatoryField",
-                                    data: { action: "input->mandatory-fields#fieldChange change->fill-card#sectorChanged"}}
+                            id: "sector-choice"
           div class="row fr-mt-3w hide-when-manual bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               = render 'inputs/dsfr_input_field',
