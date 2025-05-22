@@ -772,9 +772,6 @@ fr:
         "Tableaux de suivis"
     scopes:
       all: "Tous"
-      school:
-        with_manager: "Avec chef d'établissement"
-        without_manager: "Sans chef d'établissement"
       user:
         kept: Actifs
         discarded: Supprimés

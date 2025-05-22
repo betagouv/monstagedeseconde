@@ -55,10 +55,6 @@ class School < ApplicationRecord
                            .group('schools.id')
                            .having('count(users.id) > 0')
                        }
-  scope :without_manager, lambda {
-    left_joins(:school_manager).group('schools.id')
-                               .having('count(users.id) = 0')
-  }
 
   scope :with_school_manager, lambda {
     School.where(id: Users::SchoolManagement.kept
@@ -117,7 +113,6 @@ class School < ApplicationRecord
       field :zipcode do
         visible false
       end
-      scopes %i[all with_manager without_manager]
     end
 
     show do
