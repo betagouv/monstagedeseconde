@@ -38,7 +38,7 @@ module Users
 
       # 2FA Magic link pour les admins
       user = fetch_user_by_email
-      if user&.is_a?(Users::God) && user.valid_password?(params[:user][:password])
+      if user&.is_a?(Users::God) && user.valid_password?(params[:user][:password]) && Rails.env.production?
         sign_out user if user_signed_in?
         token = JwtAuth.encode({ user_id: user.id }, 15.minutes.from_now)
         GodMailer.magic_link_login(user, token).deliver_later

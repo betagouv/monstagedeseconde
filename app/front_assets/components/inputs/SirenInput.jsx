@@ -98,6 +98,9 @@ export default function SirenInput({
     const inputEntrepriseName = document.getElementById( `${resourceName}_employer_name` );
     inputEntrepriseName.required = true;
     inputEntrepriseName.removeAttribute("readonly");
+    // hide the ministry choice block
+    const ministry = document.getElementById("ministry-choice");
+    ministry.hidden = true;
 
     const labelEntrepriseAddress = document.querySelector( `label[for='${resourceName}_entreprise_chosen_full_address']` );
     labelEntrepriseAddress.innerHTML = "Saisissez l'adresse du siège de votre établissement *";
@@ -152,7 +155,7 @@ export default function SirenInput({
     const ministryClassList = ministry.classList;
     const sectorBloc = document.getElementById(`${resourceName}_sector_id-block`);
     const sectorBlocClassList = sectorBloc.classList;
-    const sector = document.getElementById(`${resourceName}_sector_id`);
+    const sector = document.getElementById(`sector-choice`);
     // TODO pub/sub with broadcasting would be better
     // because both jsx components and stimulus send events to the containers (show/hide)
     ministryClassList.add("d-none"); // default
@@ -176,6 +179,8 @@ export default function SirenInput({
             }
           }
         }
+        // remove required attribute from sector input
+        sector.removeAttribute("required");
       } else {
         // For private companies
         document.getElementById("entreprise_is_public_false").checked = true;
