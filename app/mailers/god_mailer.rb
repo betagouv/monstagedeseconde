@@ -109,4 +109,14 @@ class GodMailer < ApplicationMailer
     @magic_link = magic_link_url(token: token)
     mail(to: @user.email, subject: 'Votre lien de connexion sécurisé')
   end
+
+  def debug_info(info:, source:)
+    recipients = Users::God.all.map(&:email)
+    @subject = 'Debug info - info technique'
+    @info = info
+    @source = source
+    send_email(to: recipients,
+               subject: @subject,
+               reply_to: recipients.first)
+  end
 end
