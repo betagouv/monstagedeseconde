@@ -286,6 +286,12 @@ module Dashboard
         find('td.col-title', text: 'Stage de 2de - 1')
         assert_text 'NOUVEAU'
       end
+      test "As employer, I cannot restore any application targetting a student who's got its internship validated" do
+        internship_application = create(:weekly_internship_application, :both_june_weeks, :approved)
+        internship_application2 = create(:weekly_internship_application, :first_june_week, :rejected,
+                                         student: internship_application.student)
+        refute internship_application2.may_restore?
+      end
     end
   end
 end
