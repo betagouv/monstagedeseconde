@@ -108,7 +108,7 @@
                 span.font-weight-bold  Motif 
                 p.small=  @internship_application.response_message
 
-        - if @internship_application.is_re_approvable? || @internship_application.is_modifiable? || @internship_application.is_cancelable?
+        - if @internship_application.is_re_approvable? || @internship_application.is_modifiable? || @internship_application.cancelable?
           .fr-callout.fr-icon-information-line.fr-mt-4w.fr-mb-4w
             h3.fr-callout__title
               = callout_title(@internship_application)
@@ -126,7 +126,7 @@
                 fa_icon: "fr-icon-check-line",
                 token: nil,
                 opened_modal: defined?(opened_modal) ? opened_modal == 'accept' : false
-            - elsif @internship_application.is_modifiable? || @internship_application.aasm_state.in?(%w(canceled_by_student  approved))
+            - elsif @internship_application.rejectable?
               = render "dashboard/internship_offers/internship_applications/action_modal",
                 internship_application: @internship_application,
                 aasm_target: :reject!,
@@ -140,7 +140,7 @@
                 token: nil,
                 opened_modal: defined?(opened_modal) ? opened_modal == 'refuse' : false
 
-            - if @internship_application.is_cancelable?
+            - if @internship_application.cancelable?
               = render "dashboard/internship_offers/internship_applications/action_modal",
                 internship_application: @internship_application,
                 aasm_target: :cancel_by_employer!,

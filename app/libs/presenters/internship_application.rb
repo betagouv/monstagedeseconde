@@ -198,7 +198,7 @@ module Presenters
     end
 
     def ok_for_reject?
-      current_state_in_list?(ok_for_reject_states)
+      internship_application.rejectable?
     end
 
     def ok_for_employer_validation?
@@ -280,15 +280,6 @@ module Presenters
 
     def ok_for_transfer_states
       %w[submitted restored read_by_employer]
-    end
-
-    def ok_for_reject_states
-      %w[submitted
-         restored
-         read_by_employer
-         transfered
-         validated_by_employer
-         approved]
     end
   end
 end

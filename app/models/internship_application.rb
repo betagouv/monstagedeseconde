@@ -37,7 +37,8 @@ class InternshipApplication < ApplicationRecord
     approved
   ]
   RE_APPROVABLE_STATES = %w[rejected canceled_by_employer expired]
-  CANCELABLE_STATES = %w[submitted read_by_employer transfered validated_by_employer approved]
+  REJECTABLE_STATES = %w[submitted read_by_employer transfered]
+  CANCELABLE_STATES = %w[restored validated_by_employer approved]
   VALID_TRANSITIONS = %w[
     read
     read!
@@ -286,9 +287,7 @@ class InternshipApplication < ApplicationRecord
     event :reject do
       from_states = %i[read_by_employer
                        submitted
-                       restored
-                       transfered
-                       validated_by_employer ]
+                       transfered]
       transitions from: from_states,
                   to: :rejected,
                   after: proc { |user, *_args|
@@ -303,10 +302,7 @@ class InternshipApplication < ApplicationRecord
     end
 
     event :cancel_by_employer do
-      from_states = %i[submitted
-                       restored
-                       read_by_employer
-                       transfered
+      from_states = %i[restored
                        validated_by_employer
                        approved ]
       transitions from: from_states,
@@ -434,6 +430,10 @@ class InternshipApplication < ApplicationRecord
     aasm_state.in?(%w[expired rejected canceled_by_employer expired_by_student])
   end
 
+  def rejectable?
+    REJECTABLE_STATES.include?(aasm_state)
+  end
+
   def is_re_approvable?
     # false if student is anonymised or student has an approved application
     return false if student.anonymized? ||
@@ -443,7 +443,7 @@ class InternshipApplication < ApplicationRecord
     RE_APPROVABLE_STATES.include?(aasm_state)
   end
 
-  def is_cancelable?
+  def cancelable?
     CANCELABLE_STATES.include?(aasm_state)
   end
 
