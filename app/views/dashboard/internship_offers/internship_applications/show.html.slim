@@ -126,7 +126,7 @@
                 fa_icon: "fr-icon-check-line",
                 token: nil,
                 opened_modal: defined?(opened_modal) ? opened_modal == 'accept' : false
-            - elsif @internship_application.is_modifiable? || @internship_application.aasm_state.in?(%w(canceled_by_student  approved))
+            - elsif @internship_application.is_rejectable?
               = render "dashboard/internship_offers/internship_applications/action_modal",
                 internship_application: @internship_application,
                 aasm_target: :reject!,
