@@ -1,6 +1,7 @@
 module Services
   class Notifier
     def broadcast_admins(info)
+      # either all God::Users or a specific user in DEBUG_EMAIL_RECIPIENTS env var
       return unless Flipper.enabled?(flipper_feature.to_sym, user)
 
       GodMailer.debug_info(info: info, source: flipper_feature.to_s).deliver_later

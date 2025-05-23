@@ -111,7 +111,8 @@ class GodMailer < ApplicationMailer
   end
 
   def debug_info(info:, source:)
-    recipients = Users::God.all.map(&:email)
+    env_recipients = ENV.fetch('DEBUG_EMAIL_RECIPIENTS', '').split(',').map(&:strip).compact
+    recipients = env_recipients.empty? ? Users::God.all.map(&:email) : env_recipients
     @subject = 'Debug info - info technique'
     @info = info
     @source = source
