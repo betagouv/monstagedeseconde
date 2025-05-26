@@ -22,6 +22,8 @@ class CallbacksController < ApplicationController
       if user.persisted?
         Rails.logger.info("FIM : User already exists: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
         update_schools(user, user_info)
+        user.fim_user_info = user_info
+        user.save if user.changed?
         sign_in(user)
         redirect_to user.custom_dashboard_path, notice: 'Vous êtes bien connecté'
       else
@@ -34,6 +36,7 @@ class CallbacksController < ApplicationController
         user.school_id = get_school_id(user_info['rne'])
         user.confirmed_at = Time.now
         user.accept_terms = true
+        user.fim_user_info = user_info
 
         if user.save
           uai_codes = get_uai_codes(user_info)

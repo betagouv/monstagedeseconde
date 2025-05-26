@@ -1,7 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -2190,6 +2189,7 @@ CREATE SEQUENCE public.task_registers_id_seq
 ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
 
 
+
 --
 -- Name: team_member_invitations; Type: TABLE; Schema: public; Owner: -
 --
@@ -2427,7 +2427,9 @@ CREATE TABLE public.users (
     grade_id bigint,
     ine character varying(15),
     active_at timestamp(6) without time zone,
-    school_ids text[] DEFAULT '{}'::text[]
+    school_ids text[] DEFAULT '{}'::text[],
+    user_info jsonb DEFAULT '{}'::jsonb,
+    fim_user_info jsonb
 );
 
 
@@ -5112,6 +5114,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250526084703'),
 ('20250516153906'),
 ('20250516101824'),
 ('20250509153105'),
@@ -5174,6 +5177,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240916160037'),
 ('20240827145706'),
 ('20240808094927'),
+('20240801000000'),
 ('20240719095729'),
 ('20240712080757'),
 ('20240711083454'),
