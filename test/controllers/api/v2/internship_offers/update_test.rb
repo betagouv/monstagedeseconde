@@ -8,10 +8,12 @@ module Api
       include ApiTestHelpers
 
       setup do
-        @operator = create(:user_operator)
-        post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-        @token = json_response['token']
-        @internship_offer = create(:api_internship_offer_3eme, employer: @operator)
+        travel_to Date.new(2025, 5, 11) do
+          @operator = create(:user_operator)
+          post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
+          @token = json_response['token']
+          @internship_offer = create(:api_internship_offer_3eme, employer: @operator)
+        end
       end
 
       test 'PATCH #update without token renders :unauthorized payload' do
@@ -24,17 +26,19 @@ module Api
       end
 
       test 'PATCH #update as operator fails with invalid payload respond with :unprocessable_entity' do
-        documents_as(endpoint: :'v2/internship_offers/update', state: :unprocessable_entity_bad_payload) do
-          patch api_v2_internship_offer_path(
-            id: @internship_offer.remote_id,
-            params: {
-              token: "Bearer #{@token}"
-            }
-          )
+        travel_to Time.zone.local(2025, 5, 11) do
+          documents_as(endpoint: :'v2/internship_offers/update', state: :unprocessable_entity_bad_payload) do
+            patch api_v2_internship_offer_path(
+              id: @internship_offer.remote_id,
+              params: {
+                token: "Bearer #{@token}"
+              }
+            )
+          end
+          assert_response :unprocessable_entity
+          assert_equal 'BAD_PAYLOAD', json_response['code']
+          assert_equal 'param is missing or the value is empty: internship_offer', json_error
         end
-        assert_response :unprocessable_entity
-        assert_equal 'BAD_PAYLOAD', json_response['code']
-        assert_equal 'param is missing or the value is empty: internship_offer', json_error
       end
 
       test 'PATCH #update an internship_offer which does not belongs to current auth operator' do
@@ -59,141 +63,156 @@ module Api
       end
 
       test 'PATCH #update as operator fails with invalid remote_id' do
-        documents_as(endpoint: :'v2/internship_offers/update', state: :not_found) do
-          patch api_v2_internship_offer_path(
-            id: 'foo',
-            params: {
-              token: "Bearer #{@token}",
-              internship_offer: {
-                description: 'a' * (InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT + 2)
+        travel_to Time.zone.local(2025, 5, 11) do
+          # JwtAuth.stub(:encode, { user_id: @operator.id }, @token.to_json) do
+          documents_as(endpoint: :'v2/internship_offers/update', state: :not_found) do
+            patch api_v2_internship_offer_path(
+              id: 'foo',
+              params: {
+                token: "Bearer #{@token}",
+                internship_offer: {
+                  description: 'a' * (InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT + 2)
+                }
               }
-            }
-          )
+            )
+          end
+          assert_response :not_found
+          assert_equal 'NOT_FOUND', json_response['code']
+          assert_equal "can't find internship_offer with this remote_id", json_error
         end
-        assert_response :not_found
-        assert_equal 'NOT_FOUND', json_response['code']
-        assert_equal "can't find internship_offer with this remote_id", json_error
       end
 
       test 'PATCH #update as operator fails with invalid data respond with :bad_request' do
-        documents_as(endpoint: :'v2/internship_offers/update', state: :bad_request) do
-          patch api_v2_internship_offer_path(
-            id: @internship_offer.remote_id,
-            params: {
-              token: "Bearer #{@token}",
-              internship_offer: {
-                description: 'a' * (InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT + 2)
+        travel_to Time.zone.local(2025, 3, 1) do
+          documents_as(endpoint: :'v2/internship_offers/update', state: :bad_request) do
+            patch api_v2_internship_offer_path(
+              id: @internship_offer.remote_id,
+              params: {
+                token: "Bearer #{@token}",
+                internship_offer: {
+                  description: 'a' * (InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT + 2)
+                }
               }
-            }
-          )
+            )
+          end
+          assert_response :bad_request
+          assert_equal 'VALIDATION_ERROR', json_response['code']
+          assert_equal ['Description too long, allowed up 500 chars'],
+                       json_error['description'],
+                       'bad description error '
         end
-        assert_response :bad_request
-        assert_equal 'VALIDATION_ERROR', json_response['code']
-        assert_equal ['Description too long, allowed up 500 chars'],
-                     json_error['description'],
-                     'bad description error '
       end
 
       test 'PATCH #update as operator works to internship_offers' do
-        new_title = 'hellow'
+        travel_to Time.zone.local(2025, 5, 11) do
+          new_title = 'hellow'
 
-        documents_as(endpoint: :'v2/internship_offers/update', state: :ok) do
+          documents_as(endpoint: :'v2/internship_offers/update', state: :ok) do
+            patch api_v2_internship_offer_path(
+              id: @internship_offer.remote_id,
+              params: {
+                token: "Bearer #{@token}",
+                internship_offer: {
+                  title: new_title,
+                  max_candidates: 2,
+                  published_at: nil,
+                  is_public: true,
+                  handicap_accessible: true,
+                  period: 2
+                }
+              }
+            )
+          end
+          assert_response :success
+          assert_equal new_title, @internship_offer.reload.title
+          assert_equal 2, @internship_offer.max_candidates
+          assert_equal JSON.parse(@internship_offer.to_json), json_response
+          assert @internship_offer.reload.is_public
+          assert @internship_offer.reload.handicap_accessible
+        end
+      end
+
+      test 'PATCH #update as operator unpublish/republish internship_offers' do
+        travel_to Time.zone.local(2025, 3, 1) do
           patch api_v2_internship_offer_path(
             id: @internship_offer.remote_id,
             params: {
               token: "Bearer #{@token}",
               internship_offer: {
-                title: new_title,
-                max_candidates: 2,
-                published_at: nil,
-                is_public: true,
-                handicap_accessible: true,
-                period: 2
+                published_at: nil
               }
             }
           )
+          assert_response :success
+          assert_nil @internship_offer.reload.published_at
+          refute @internship_offer.published?
+
+          new_publication_date = Time.now.utc
+          patch api_v2_internship_offer_path(
+            id: @internship_offer.remote_id,
+            params: {
+              token: "Bearer #{@token}",
+              internship_offer: {
+                published_at: new_publication_date
+              }
+            }
+          )
+          assert_response :success
+          assert_in_delta Time.now.to_i, @internship_offer.reload.published_at.to_i, 2
+          assert_equal true, @internship_offer.published?
         end
-        assert_response :success
-        assert_equal new_title, @internship_offer.reload.title
-        assert_equal 2, @internship_offer.max_candidates
-        assert_equal JSON.parse(@internship_offer.to_json), json_response
-        assert @internship_offer.reload.is_public
-        assert @internship_offer.reload.handicap_accessible
-      end
-
-      test 'PATCH #update as operator unpublish/republish internship_offers' do
-        patch api_v2_internship_offer_path(
-          id: @internship_offer.remote_id,
-          params: {
-            token: "Bearer #{@token}",
-            internship_offer: {
-              published_at: nil
-            }
-          }
-        )
-        assert_response :success
-        assert_nil @internship_offer.reload.published_at
-        refute @internship_offer.published?
-
-        new_publication_date = Time.now.utc
-        patch api_v2_internship_offer_path(
-          id: @internship_offer.remote_id,
-          params: {
-            token: "Bearer #{@token}",
-            internship_offer: {
-              published_at: new_publication_date
-            }
-          }
-        )
-        assert_response :success
-        assert_in_delta Time.now.to_i, @internship_offer.reload.published_at.to_i, 2
-        assert_equal true, @internship_offer.published?
       end
 
       test 'PATCH #update as operator can modify internship_offer sector' do
-        sector = create(:sector, name: 'Informatique')
-        puts @internship_offer.sector.name
-        puts @internship_offer.sector.name
+        travel_to Time.zone.local(2025, 3, 1) do
+          sector = create(:sector, name: 'Informatique')
+          puts @internship_offer.sector.name
+          puts @internship_offer.sector.name
 
-        patch api_v2_internship_offer_path(
-          id: @internship_offer.remote_id,
-          params: {
-            token: "Bearer #{@token}",
-            internship_offer: {
-              sector_uuid: Sector.find_by(name: 'Informatique').uuid
+          patch api_v2_internship_offer_path(
+            id: @internship_offer.remote_id,
+            params: {
+              token: "Bearer #{@token}",
+              internship_offer: {
+                sector_uuid: Sector.find_by(name: 'Informatique').uuid
+              }
             }
-          }
-        )
-        assert_response :success
-        assert_equal Sector.find_by(name: 'Informatique').uuid, @internship_offer.reload.sector.uuid
-        puts
+          )
+          assert_response :success
+          assert_equal Sector.find_by(name: 'Informatique').uuid, @internship_offer.reload.sector.uuid
+          puts
+        end
       end
 
       test 'PATCH #update as operator can modify internship_offer grades from 3eme to seconde' do
-        patch api_v2_internship_offer_path(
-          id: @internship_offer.remote_id,
-          params: {
-            token: "Bearer #{@token}",
-            internship_offer: {
-              grades: [Grade.find_by(short_name: 'seconde').short_name]
+        travel_to Time.zone.local(2025, 3, 1) do
+          patch api_v2_internship_offer_path(
+            id: @internship_offer.remote_id,
+            params: {
+              token: "Bearer #{@token}",
+              internship_offer: {
+                grades: [Grade.find_by(short_name: 'seconde').short_name]
+              }
             }
-          }
-        )
-        assert_response :success
-        assert_equal ['seconde'], @internship_offer.reload.grades.map(&:short_name)
+          )
+          assert_response :success
+          assert_equal ['seconde'], @internship_offer.reload.grades.map(&:short_name)
+        end
       end
       test 'PATCH #update as operator can modify internship_offer grades from 3eme to seconde + 3eme' do
-        patch api_v2_internship_offer_path(
-          id: @internship_offer.remote_id,
-          params: {
-            token: "Bearer #{@token}",
-            internship_offer: {
-              grades: %w[seconde troisieme]
+        travel_to Time.zone.local(2025, 3, 1) do
+          patch api_v2_internship_offer_path(
+            id: @internship_offer.remote_id,
+            params: {
+              token: "Bearer #{@token}",
+              internship_offer: {
+                grades: %w[seconde troisieme]
+              }
             }
-          }
-        )
-        assert_response :success
-        assert_equal %w[troisieme seconde], @internship_offer.reload.grades.map(&:short_name)
+          )
+          assert_response :success
+          assert_equal %w[troisieme seconde], @internship_offer.reload.grades.map(&:short_name)
+        end
       end
     end
   end

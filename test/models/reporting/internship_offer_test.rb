@@ -23,23 +23,25 @@ class ReportingInternshipOfferTest < ActiveSupport::TestCase
   end
 
   test '.dimension_by_sector sum max_candidates' do
-    sector_a = create(:sector, name: 'Agriculture')
-    sector_b = create(:sector, name: 'Filière bois')
-    create(:weekly_internship_offer_3eme,
-           sector: sector_a,
-           max_candidates: 3)
-    create(:weekly_internship_offer_3eme,
-           sector: sector_a,
-           max_candidates: 1)
-    create(:weekly_internship_offer_3eme,
-           sector: sector_b,
-           max_candidates: 10)
+    travel_to Date.new(2023, 10, 1) do
+      sector_a = create(:sector, name: 'Agriculture')
+      sector_b = create(:sector, name: 'Filière bois')
+      create(:weekly_internship_offer_3eme,
+             sector: sector_a,
+             max_candidates: 3)
+      create(:weekly_internship_offer_3eme,
+             sector: sector_a,
+             max_candidates: 1)
+      create(:weekly_internship_offer_3eme,
+             sector: sector_b,
+             max_candidates: 10)
 
-    results = Reporting::InternshipOffer.dimension_by_sector
-    first_sectored_report = results[0]
-    last_sectored_report = results[1]
+      results = Reporting::InternshipOffer.dimension_by_sector
+      first_sectored_report = results[0]
+      last_sectored_report = results[1]
 
-    assert_equal 4, first_sectored_report.total_report_count
-    assert_equal 10, last_sectored_report.total_report_count
+      assert_equal 4, first_sectored_report.total_report_count
+      assert_equal 10, last_sectored_report.total_report_count
+    end
   end
 end

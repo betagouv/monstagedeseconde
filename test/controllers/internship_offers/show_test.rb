@@ -143,15 +143,17 @@ module InternshipOffers
     end
 
     test 'GET #show as Student a message when he cannot apply to a reserved internship offer' do
-      student = create(:student, school: create(:school))
-      other_school = create(:school)
-      internship_offer = create(:weekly_internship_offer_3eme, school: other_school, max_candidates: 5)
-      sign_in(student)
-      get internship_offer_path(internship_offer)
+      travel_to Date.new(2023, 10, 1) do
+        student = create(:student, school: create(:school))
+        other_school = create(:school)
+        internship_offer = create(:weekly_internship_offer_3eme, school: other_school, max_candidates: 5)
+        sign_in(student)
+        get internship_offer_path(internship_offer)
 
-      assert_match "Offre réservée à l'établissement", response.body
-      assert_match internship_offer.school.name, response.body
-      assert_select '#new_internship_application', 0
+        assert_match "Offre réservée à l'établissement", response.body
+        assert_match internship_offer.school.name, response.body
+        assert_select '#new_internship_application', 0
+      end
     end
 
     test 'GET #show as Student shows next/previous navigation in list' do

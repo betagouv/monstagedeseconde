@@ -90,13 +90,15 @@ module Dashboard
 
       test 'student with validated application on second week can apply on first week with a 3e-2e offer' do
         skip 'waiting for PO decision'
-        application = create(:weekly_internship_application, :second_june_week, :approved)
-        internship_offer = create(:weekly_internship_offer)
-        student = application.student
-        sign_in(student)
-        visit internship_offer_path(internship_offer)
-        all('a', text: 'Postuler').first.click
-        assert_text 'Votre candidature'
+        travel_to Date.new(2023, 10, 1) do
+          application = create(:weekly_internship_application, :second_june_week, :approved)
+          internship_offer = create(:weekly_internship_offer)
+          student = application.student
+          sign_in(student)
+          visit internship_offer_path(internship_offer)
+          all('a', text: 'Postuler').first.click
+          assert_text 'Votre candidature'
+        end
       end
 
       test '2nde student faulty application fails gracefully' do

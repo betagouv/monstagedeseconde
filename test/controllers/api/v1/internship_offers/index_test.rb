@@ -47,60 +47,64 @@ module Api
       # end
 
       test 'GET #index only returns operators offers' do
-        user_1 = create(:user_operator)
-        user_2 = create(:user_operator)
+        travel_to Date.new(2023, 10, 1) do
+          user_1 = create(:user_operator)
+          user_2 = create(:user_operator)
 
-        offer_1     = create(:api_internship_offer_3eme, employer: user_1)
-        offer_1_bis = create(:api_internship_offer_3eme, employer: user_1)
-        offer_2     = create(:api_internship_offer_3eme, employer: user_2)
+          offer_1     = create(:api_internship_offer_3eme, employer: user_1)
+          offer_1_bis = create(:api_internship_offer_3eme, employer: user_1)
+          offer_2     = create(:api_internship_offer_3eme, employer: user_2)
 
-        documents_as(endpoint: :'internship_offers/index', state: :success) do
-          get api_v1_internship_offers_path(
-            params: {
-              token: "Bearer #{user_1.api_token}",
-              page: 1
-            }
-          )
+          documents_as(endpoint: :'internship_offers/index', state: :success) do
+            get api_v1_internship_offers_path(
+              params: {
+                token: "Bearer #{user_1.api_token}",
+                page: 1
+              }
+            )
 
-          assert_response :success
-          assert_equal 2, json_response['internshipOffers'].count
-          assert_equal 2, json_response['pagination']['totalInternshipOffers']
-          assert_equal 1, json_response['pagination']['totalPages']
-          assert_equal true, json_response['pagination']['isFirstPage']
+            assert_response :success
+            assert_equal 2, json_response['internshipOffers'].count
+            assert_equal 2, json_response['pagination']['totalInternshipOffers']
+            assert_equal 1, json_response['pagination']['totalPages']
+            assert_equal true, json_response['pagination']['isFirstPage']
+          end
         end
       end
 
       test 'GET #index only returns operators offers not discarded' do
-        user = create(:user_operator)
+        travel_to Date.new(2023, 10, 1) do
+          user = create(:user_operator)
 
-        offer_1 = create(:api_internship_offer_3eme, employer: user)
-        offer_2 = create(:api_internship_offer_3eme, employer: user)
+          offer_1 = create(:api_internship_offer_3eme, employer: user)
+          offer_2 = create(:api_internship_offer_3eme, employer: user)
 
-        # Delete the first offer
-        delete api_v1_internship_offer_path(
-          id: offer_1.remote_id,
-          params: {
-            token: "Bearer #{user.api_token}"
-          }
-        )
-
-        offer_1.reload
-        assert offer_1.discarded?
-
-        # Get only the second offer
-        documents_as(endpoint: :'internship_offers/index', state: :success) do
-          get api_v1_internship_offers_path(
+          # Delete the first offer
+          delete api_v1_internship_offer_path(
+            id: offer_1.remote_id,
             params: {
-              token: "Bearer #{user.api_token}",
-              page: 1
+              token: "Bearer #{user.api_token}"
             }
           )
 
-          assert_response :success
-          assert_equal 1, json_response['internshipOffers'].count
-          assert_equal 1, json_response['pagination']['totalInternshipOffers']
-          assert_equal 1, json_response['pagination']['totalPages']
-          assert_equal true, json_response['pagination']['isFirstPage']
+          offer_1.reload
+          assert offer_1.discarded?
+
+          # Get only the second offer
+          documents_as(endpoint: :'internship_offers/index', state: :success) do
+            get api_v1_internship_offers_path(
+              params: {
+                token: "Bearer #{user.api_token}",
+                page: 1
+              }
+            )
+
+            assert_response :success
+            assert_equal 1, json_response['internshipOffers'].count
+            assert_equal 1, json_response['pagination']['totalInternshipOffers']
+            assert_equal 1, json_response['pagination']['totalPages']
+            assert_equal true, json_response['pagination']['isFirstPage']
+          end
         end
       end
     end

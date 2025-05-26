@@ -200,17 +200,19 @@ module Users
     end
 
     test '#has_found_her_internships? when student troisieme' do
-      student = create(:student, grade: Grade.troisieme)
-      internship_offer_1 = create(:weekly_internship_offer_3eme)
-      internship_application = create(
-        :weekly_internship_application,
-        :validated_by_employer,
-        student:,
-        internship_offer: internship_offer_1
-      )
-      refute student.has_found_her_internships?
-      internship_application.approve!
-      assert student.has_found_her_internships?
+      travel_to Date.new(2023, 10, 1) do
+        student = create(:student, grade: Grade.troisieme)
+        internship_offer_1 = create(:weekly_internship_offer_3eme)
+        internship_application = create(
+          :weekly_internship_application,
+          :validated_by_employer,
+          student:,
+          internship_offer: internship_offer_1
+        )
+        refute student.has_found_her_internships?
+        internship_application.approve!
+        assert student.has_found_her_internships?
+      end
     end
   end
 end
