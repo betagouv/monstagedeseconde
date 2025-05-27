@@ -354,7 +354,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def two_weeks_long?
-    weeks & SchoolTrack::Seconde.both_weeks == SchoolTrack::Seconde.both_weeks
+    Set.new(weeks.map(&:id)) == Set.new(SchoolTrack::Seconde.both_weeks.map(&:id))
   end
 
   def seconde_school_track_week_1?
