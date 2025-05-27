@@ -1,0 +1,947 @@
+id;secteur;public;public_employer_type
+64980;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+64981;Services postaux;FAUX;
+64982;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+64983;Santé;FAUX;
+64984;Automobile;FAUX;
+64985;Fonction publique;VRAI;Ministère de l'Intérieur
+64986;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+64988;Logistique et transport;FAUX;
+64990;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+64991;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+64992;Logistique et transport;FAUX;
+64993;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+64994;Agriculture;FAUX;
+64995;Sport;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+64996;Santé;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+64997;Enseignement;VRAI;Ministère de l’Agriculture et de la Souveraineté alimentaire
+64998;Services postaux;FAUX;
+64999;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65000;Social;FAUX;
+65001;Enseignement;FAUX;
+65002;Banque et assurance;FAUX;
+65003;Fonction publique;FAUX;
+65004;Industrie, ingénierie industrielle;FAUX;
+65005;Santé;VRAI;Fonction publique hospitalière (FPH)
+65006;Santé;VRAI;Fonction publique hospitalière (FPH)
+65007;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65008;Santé;VRAI;Fonction publique hospitalière (FPH)
+65009;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65010;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65011;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65012;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65013;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65014;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65015;Social;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65016;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65017;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65018;Fonction publique;FAUX;
+65019;Fonction publique;FAUX;
+65020;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65021;Culture et patrimoine;VRAI;Ministère de la Culture
+65022;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65023;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65024;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65026;Agriculture;VRAI;Ministère de l’Agriculture et de la Souveraineté alimentaire
+65027;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65028;Culture et patrimoine;FAUX;
+65029;Culture et patrimoine;FAUX;
+65030;Culture et patrimoine;FAUX;
+65031;Enseignement;VRAI;Chambre consulaire
+65032;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65033;Agriculture;VRAI;Ministère de l’Agriculture et de la Souveraineté alimentaire
+65034;Enseignement;FAUX;
+65035;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65036;Fonction publique;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65037;Sport;FAUX;
+65038;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65039;Bâtiment et travaux publics (BTP);VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65040;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65041;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65042;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65043;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65044;Fonction publique;FAUX;
+65045;Électronique;FAUX;
+65046;Hôtellerie, restauration;FAUX;
+65047;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65048;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65049;Commerce et distribution;FAUX;
+65050;Hôtellerie, restauration;FAUX;
+65051;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65052;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65053;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65054;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65055;Enseignement;FAUX;
+65056;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65057;Commerce et distribution;FAUX;
+65058;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65059;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65060;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65061;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65062;Hôtellerie, restauration;FAUX;
+65063;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65064;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65065;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65066;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65067;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65068;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65069;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65070;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65071;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65072;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65073;Commerce et distribution;FAUX;
+65074;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65075;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65076;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65077;Sport;FAUX;
+65078;Droit et justice;FAUX;
+65079;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65080;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65081;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65082;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65083;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65084;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65085;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65086;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65087;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65088;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65089;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65090;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65091;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65092;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65093;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65094;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65095;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65096;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65097;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65098;Agriculture;FAUX;
+65099;Industrie, ingénierie industrielle;FAUX;
+65100;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65101;Industrie, ingénierie industrielle;FAUX;
+65102;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65103;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65104;Droit et justice;FAUX;
+65105;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65106;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65107;Enseignement;FAUX;
+65108;Environnement;FAUX;
+65109;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65110;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65111;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65112;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65113;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65114;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65115;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65116;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65117;Sécurité;FAUX;
+65118;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65119;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65120;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65121;Fonction publique;VRAI;Ministère de l'Intérieur
+65122;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65123;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65124;Énergie;FAUX;
+65125;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65126;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65127;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65128;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65129;Énergie;FAUX;
+65130;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65131;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65132;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65133;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65134;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65135;Environnement;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65137;Enseignement;FAUX;
+65138;Santé;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65139;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65140;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65141;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65142;Fonction publique;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65143;Culture et patrimoine;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65144;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65145;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65146;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65148;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65149;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65150;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65151;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65152;Armée - Défense;VRAI;Ministère des Armées
+65153;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65154;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65155;Armée - Défense;VRAI;Ministère des Armées
+65156;Fonction publique;VRAI;Ministère de l'Intérieur
+65157;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65158;Énergie;FAUX;
+65159;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65161;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65162;Industrie, ingénierie industrielle;FAUX;
+65163;Industrie, ingénierie industrielle;FAUX;
+65164;Enseignement;FAUX;
+65165;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65166;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65167;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65168;Armée - Défense;VRAI;Ministère de l'Intérieur
+65169;Enseignement;FAUX;
+65170;Enseignement;FAUX;
+65171;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65172;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65173;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65174;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65175;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65176;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65177;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65178;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65179;Enseignement;FAUX;
+65180;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65181;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65182;Enseignement;FAUX;
+65183;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65184;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65185;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65188;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65189;Culture et patrimoine;VRAI;Ministère de la Culture
+65190;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65191;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65192;Fonction publique;VRAI;Ministère de l'Intérieur
+65193;Informatique et réseaux;VRAI;Ministère de l'Intérieur
+65194;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65195;Comptabilité, gestion, ressources humaines;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65196;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65197;Énergie;FAUX;
+65199;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65200;Enseignement;FAUX;
+65201;Comptabilité, gestion, ressources humaines;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65206;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65207;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65208;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65209;Fonction publique;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65210;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65211;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65212;Hôtellerie, restauration;FAUX;
+65213;Agriculture;VRAI;Ministère de l'Intérieur
+65214;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65215;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65216;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65217;Banque et assurance;FAUX;
+65218;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65220;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65221;Comptabilité, gestion, ressources humaines;VRAI;Ministère de la Culture
+65222;Comptabilité, gestion, ressources humaines;FAUX;
+65223;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65224;Comptabilité, gestion, ressources humaines;FAUX;
+65225;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65227;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65228;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65229;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65230;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65231;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65232;Hôtellerie, restauration;FAUX;
+65233;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65234;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65235;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65236;Santé;FAUX;
+65237;Enseignement;FAUX;
+65238;Enseignement;FAUX;
+65239;Sécurité;VRAI;Ministère de l'Intérieur
+65240;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65242;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65243;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65244;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65245;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65246;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65247;Électronique;FAUX;
+65248;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65249;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65250;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65251;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65252;Enseignement;FAUX;
+65253;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65254;Commerce et distribution;FAUX;
+65255;Enseignement;VRAI;Ministère de l’Enseignement supérieur et de la Recherche
+65256;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65257;Commerce et distribution;FAUX;
+65258;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65259;Commerce et distribution;FAUX;
+65260;Commerce et distribution;FAUX;
+65261;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65262;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65263;Communication;FAUX;
+65264;Communication;FAUX;
+65265;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65266;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65267;Enseignement;FAUX;
+65268;Enseignement;FAUX;
+65269;Enseignement;FAUX;
+65270;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65271;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65272;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65273;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65274;Agriculture;FAUX;
+65275;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65276;Agriculture;FAUX;
+65277;Énergie;FAUX;
+65278;Industrie, ingénierie industrielle;FAUX;
+65279;Industrie, ingénierie industrielle;FAUX;
+65280;Énergie;FAUX;
+65281;Arts du spectacle;FAUX;
+65282;Enseignement;FAUX;
+65283;Enseignement;FAUX;
+65284;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65285;Fonction publique;FAUX;
+65286;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65287;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65288;Enseignement;FAUX;
+65289;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65290;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65291;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65292;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65293;Agriculture;FAUX;
+65297;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65298;Commerce et distribution;FAUX;
+65299;Filiere bois;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65300;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65301;Filiere bois;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65302;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65303;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65304;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65305;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65306;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65308;Comptabilité, gestion, ressources humaines;FAUX;
+65309;Agriculture;VRAI;Ministère de l’Agriculture et de la Souveraineté alimentaire
+65310;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65311;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65312;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65314;Agriculture;FAUX;
+65315;Bâtiment et travaux publics (BTP);VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65316;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65317;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65318;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65319;Enseignement;VRAI;Ministère de l’Enseignement supérieur et de la Recherche
+65320;Fonction publique;FAUX;
+65321;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65322;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65323;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65324;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65325;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65326;Fonction publique;FAUX;
+65327;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65328;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65329;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65330;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65331;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65332;Enseignement;FAUX;
+65333;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65334;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65335;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65336;Recherche;FAUX;
+65337;Social;FAUX;
+65338;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65339;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65340;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65341;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65342;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65343;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65344;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65345;Bâtiment et travaux publics (BTP);FAUX;
+65347;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65348;Enseignement;FAUX;
+65349;Énergie;FAUX;
+65350;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65351;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65352;Énergie;FAUX;
+65353;Énergie;FAUX;
+65354;Enseignement;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65355;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65356;Comptabilité, gestion, ressources humaines;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65357;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65358;Banque et assurance;FAUX;
+65359;Social;FAUX;
+65360;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65361;Bâtiment et travaux publics (BTP);FAUX;
+65362;Énergie;FAUX;
+65363;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65364;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65365;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65366;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65367;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65368;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65369;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65370;Agriculture;VRAI;Ministère de l’Agriculture et de la Souveraineté alimentaire
+65371;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65372;Enseignement;VRAI;Ministère de l’Enseignement supérieur et de la Recherche
+65373;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65374;Comptabilité, gestion, ressources humaines;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65375;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65376;Santé;VRAI;Ministère de l’Agriculture et de la Souveraineté alimentaire
+65377;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65378;Banque et assurance;FAUX;
+65379;Fonction publique;VRAI;Ministère de l'Intérieur
+65380;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65381;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65382;Fonction publique;VRAI;Ministère de l'Intérieur
+65383;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65384;Fonction publique;VRAI;Ministère de l'Intérieur
+65385;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65386;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65387;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65388;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65389;Hôtellerie, restauration;FAUX;
+65390;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65391;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65392;Fonction publique;FAUX;
+65393;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65394;Électronique;VRAI;Ministère des Armées
+65395;Sécurité;VRAI;Ministère de l'Intérieur
+65396;Fonction publique;FAUX;
+65397;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65398;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65399;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65400;Sécurité;VRAI;Ministère de l'Intérieur
+65401;Conseil et audit;VRAI;Chambre consulaire
+65402;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65403;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65404;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65405;Industrie chimique;FAUX;
+65406;Santé;FAUX;
+65407;Enseignement;FAUX;
+65408;Fonction publique;FAUX;
+65409;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65410;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65411;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65412;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65413;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65414;Santé;VRAI;Fonction publique hospitalière (FPH)
+65415;Santé;VRAI;Ministère des Armées
+65416;Santé;VRAI;Ministère des Armées
+65417;Enseignement;FAUX;
+65418;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65419;Commerce et distribution;FAUX;
+65420;Comptabilité, gestion, ressources humaines;FAUX;
+65421;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65422;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65423;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65424;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65425;Logistique et transport;FAUX;
+65426;Commerce et distribution;FAUX;
+65427;Commerce et distribution;FAUX;
+65428;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65429;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65431;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65432;Énergie;FAUX;
+65433;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65434;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65435;Énergie;FAUX;
+65436;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65437;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65438;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65439;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65441;Fonction publique;FAUX;
+65442;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65444;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65445;Banque et assurance;FAUX;
+65446;Fonction publique;VRAI;Ministère de l'Intérieur
+65447;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65448;Énergie;FAUX;
+65449;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65450;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65451;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65452;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65453;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65454;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65455;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65456;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65457;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65458;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65460;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65461;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65462;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65463;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65464;Sécurité;VRAI;Ministère de l'Intérieur
+65465;Fonction publique;FAUX;
+65466;Armée - Défense;VRAI;Ministère de l'Intérieur
+65467;Tourisme;FAUX;
+65468;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65469;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65470;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65471;Armée - Défense;VRAI;Ministère de l'Intérieur
+65472;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65473;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65485;Droit et justice;FAUX;
+65486;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65487;Enseignement;FAUX;
+65488;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65489;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65490;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65491;Enseignement;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65492;Comptabilité, gestion, ressources humaines;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65493;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65494;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65495;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65498;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65499;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65500;Sport;FAUX;
+65501;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65502;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65503;Maintenance;FAUX;
+65504;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65505;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65506;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65507;Sécurité;VRAI;Ministère de l'Intérieur
+65508;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65509;Commerce et distribution;FAUX;
+65510;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65511;Bâtiment et travaux publics (BTP);FAUX;
+65513;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65515;Agriculture;FAUX;
+65517;Environnement;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65518;Enseignement;FAUX;
+65519;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65520;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65521;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65522;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65523;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65524;Comptabilité, gestion, ressources humaines;VRAI;Chambre consulaire
+65525;Social;FAUX;
+65526;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65527;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65528;Fonction publique;VRAI;Chambre consulaire
+65529;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65530;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65531;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65532;Fonction publique;VRAI;Ministère de l'Intérieur
+65533;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65534;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65535;Fonction publique;VRAI;Ministère de l'Intérieur
+65536;Comptabilité, gestion, ressources humaines;FAUX;
+65537;Fonction publique;FAUX;
+65538;Sécurité;VRAI;Ministère de l'Intérieur
+65539;Fonction publique;VRAI;Ministère de l'Intérieur
+65540;Informatique et réseaux;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65541;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65542;Banque et assurance;FAUX;
+65543;Informatique et réseaux;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65544;Fonction publique;VRAI;Ministère de l'Intérieur
+65545;Fonction publique;FAUX;
+65546;Informatique et réseaux;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65547;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65548;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65549;Sécurité;VRAI;Ministère de l'Intérieur
+65550;Sécurité;VRAI;Ministère de l'Intérieur
+65551;Agriculture;FAUX;
+65552;Fonction publique;FAUX;
+65553;Comptabilité, gestion, ressources humaines;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65554;Communication;VRAI;Ministère de l'Intérieur
+65555;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65556;Sport;FAUX;
+65557;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65558;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65559;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65560;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65561;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65562;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65563;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65564;Industrie, ingénierie industrielle;FAUX;
+65565;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65566;Armée - Défense;VRAI;Ministère des Armées
+65567;Social;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65568;Commerce et distribution;FAUX;
+65569;Armée - Défense;VRAI;Ministère des Armées
+65570;Social;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65571;Agriculture;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65572;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65573;Communication;FAUX;
+65574;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65575;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65576;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65577;Social;VRAI;Ministère de l'Action publique, de la Fonction publique et de la Simplification
+65578;Social;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65579;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65580;Fonction publique;VRAI;Ministère de l'Intérieur
+65581;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65582;Agriculture;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65583;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65584;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65585;Électronique;FAUX;
+65586;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65587;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65588;Commerce et distribution;FAUX;
+65589;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65590;Agriculture;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65591;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65592;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65594;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65595;Agriculture;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65596;Agriculture;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65597;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65598;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65600;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65602;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65603;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65604;Fonction publique;VRAI;Ministère de la Culture
+65605;Commerce et distribution;FAUX;
+65606;Agriculture;VRAI;Ministère de l’Agriculture et de la Souveraineté alimentaire
+65607;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65608;Comptabilité, gestion, ressources humaines;FAUX;
+65609;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65610;Enseignement;FAUX;
+65611;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65612;Automobile;FAUX;
+65613;Fonction publique;VRAI;Ministère de la Culture
+65614;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65615;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65616;Agriculture;VRAI;Ministère de l’Agriculture et de la Souveraineté alimentaire
+65617;Automobile;FAUX;
+65618;Commerce et distribution;FAUX;
+65619;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65620;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65621;Agriculture;VRAI;Ministère de l'Intérieur
+65622;Enseignement;VRAI;Ministère de l’Enseignement supérieur et de la Recherche
+65623;Fonction publique;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65624;Informatique et réseaux;FAUX;
+65625;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65626;Agriculture;VRAI;Ministère de l’Agriculture et de la Souveraineté alimentaire
+65627;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65628;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65629;Comptabilité, gestion, ressources humaines;FAUX;
+65630;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65631;Social;FAUX;
+65632;Industrie alimentaire;FAUX;
+65633;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65635;Agriculture;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65636;Agriculture;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65637;Agriculture;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65638;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65640;Fonction publique;VRAI;Ministère de la Culture
+65641;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65642;Agriculture;VRAI;Ministère de l'Intérieur
+65643;Industrie chimique;FAUX;
+65644;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65645;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65646;Fonction publique;VRAI;Ministère de l’Enseignement supérieur et de la Recherche
+65647;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65648;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65649;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65650;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65651;Fonction publique;VRAI;Ministère de l’Enseignement supérieur et de la Recherche
+65652;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65653;Agriculture;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65654;Agriculture;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65655;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65656;Comptabilité, gestion, ressources humaines;FAUX;
+65657;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65658;Agriculture;VRAI;Ministère de l'Intérieur
+65659;Comptabilité, gestion, ressources humaines;FAUX;
+65660;Sécurité;FAUX;
+65662;Bâtiment et travaux publics (BTP);FAUX;
+65663;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65664;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65665;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65666;Fonction publique;VRAI;Ministère de l'Intérieur
+65667;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65668;Agriculture;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65669;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65670;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65671;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65672;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65673;Comptabilité, gestion, ressources humaines;FAUX;
+65674;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65675;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65676;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65677;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65678;Comptabilité, gestion, ressources humaines;FAUX;
+65679;Comptabilité, gestion, ressources humaines;FAUX;
+65680;Environnement;FAUX;
+65681;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65682;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65683;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65684;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65685;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65686;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65687;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65688;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65689;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65690;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65691;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65692;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65693;Droit et justice;VRAI;
+65694;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65695;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65697;Enseignement;VRAI;
+65698;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65699;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65700;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65701;Fonction publique;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65702;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65703;Commerce et distribution;FAUX;
+65704;Communication;FAUX;
+65705;Commerce et distribution;FAUX;
+65706;Armée - Défense;FAUX;
+65708;Agriculture;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65709;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65711;Énergie;FAUX;
+65712;Énergie;FAUX;
+65713;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65714;Énergie;FAUX;
+65715;Comptabilité, gestion, ressources humaines;FAUX;
+65716;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65717;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65718;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65719;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65720;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65721;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65722;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65723;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65724;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65725;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65726;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65727;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65728;Commerce et distribution;FAUX;
+65729;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65730;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65731;Automobile;FAUX;
+65732;Commerce et distribution;FAUX;
+65733;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65734;Banque et assurance;FAUX;
+65735;Automobile;FAUX;
+65736;Commerce et distribution;FAUX;
+65737;Commerce et distribution;FAUX;
+65738;Automobile;FAUX;
+65739;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65740;Commerce et distribution;FAUX;
+65741;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65742;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65743;Commerce et distribution;FAUX;
+65744;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65745;Automobile;FAUX;
+65746;Banque et assurance;FAUX;
+65747;Fonction publique;VRAI;Ministère de l’Enseignement supérieur et de la Recherche
+65748;Commerce et distribution;FAUX;
+65749;Agriculture;VRAI;Ministère de l’Enseignement supérieur et de la Recherche
+65750;Commerce et distribution;FAUX;
+65751;Commerce et distribution;FAUX;
+65752;Banque et assurance;FAUX;
+65754;Droit et justice;VRAI;
+65755;Commerce et distribution;FAUX;
+65758;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65759;Comptabilité, gestion, ressources humaines;FAUX;
+65760;Fonction publique;VRAI;Ministère de l'Intérieur
+65761;Fonction publique;VRAI;Ministère de l'Intérieur
+65762;Fonction publique;VRAI;Ministère de la Culture
+65763;Agriculture;VRAI;Ministère de l'Intérieur
+65764;Bâtiment et travaux publics (BTP);FAUX;
+65765;Sécurité;VRAI;Ministère de l'Intérieur
+65766;Agriculture;VRAI;Ministère de l'Intérieur
+65767;Comptabilité, gestion, ressources humaines;VRAI;Ministère de l'Intérieur
+65768;Enseignement;FAUX;
+65769;Enseignement;FAUX;
+65770;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65771;Sécurité;VRAI;Ministère de l'Intérieur
+65772;Droit et justice;FAUX;
+65774;Social;FAUX;
+65775;Fonction publique;VRAI;Ministère de l’Enseignement supérieur et de la Recherche
+65776;Commerce et distribution;FAUX;
+65777;Commerce et distribution;FAUX;
+65778;Enseignement;VRAI;Ministère de la Culture
+65779;Social;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65780;Social;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65781;Banque et assurance;FAUX;
+65782;Commerce et distribution;FAUX;
+65783;Banque et assurance;FAUX;
+65784;Agriculture;VRAI;Ministère de l'Intérieur
+65785;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65786;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65787;Comptabilité, gestion, ressources humaines;FAUX;
+65788;Santé;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65790;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65791;Fonction publique;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65792;Enseignement;FAUX;
+65793;Agriculture;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65794;Hôtellerie, restauration;FAUX;
+65795;Enseignement;FAUX;
+65796;Fonction publique;VRAI;Ministère de la Culture
+65797;Agriculture;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65798;Industrie chimique;FAUX;
+65799;Agriculture;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65800;Agriculture;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65801;Agriculture;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65802;Hôtellerie, restauration;FAUX;
+65803;Énergie;FAUX;
+65804;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65805;Agriculture;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65806;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65807;Énergie;FAUX;
+65808;Culture et patrimoine;VRAI;Ministère de la Culture
+65809;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65810;Fonction publique;VRAI;Ministère de la Culture
+65811;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65812;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65813;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65814;Hôtellerie, restauration;FAUX;
+65815;Fonction publique;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65816;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65817;Social;FAUX;
+65818;Social;FAUX;
+65819;Fonction publique;VRAI;Ministère des Armées
+65820;Social;FAUX;
+65821;Communication;FAUX;
+65822;Social;FAUX;
+65823;Agriculture;VRAI;Fonction publique hospitalière (FPH)
+65824;Social;FAUX;
+65825;Social;FAUX;
+65826;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65827;Informatique et réseaux;FAUX;
+65828;Santé;VRAI;Fonction publique hospitalière (FPH)
+65829;Culture et patrimoine;VRAI;Ministère de la Culture
+65831;Agriculture;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65832;Banque et assurance;FAUX;
+65835;Social;FAUX;
+65836;Social;FAUX;
+65838;Agriculture;VRAI;Ministère des Armées
+65839;Agriculture;VRAI;Ministère des Armées
+65840;Conseil et audit;FAUX;
+65841;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65842;Fonction publique;VRAI;Ministère de l'Intérieur
+65843;Agriculture;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65844;Agriculture;VRAI;Ministère des Armées
+65845;Logistique et transport;FAUX;
+65847;Logistique et transport;FAUX;
+65848;Logistique et transport;FAUX;
+65849;Logistique et transport;FAUX;
+65851;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65852;Culture et patrimoine;FAUX;
+65853;Agriculture;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65854;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65855;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65857;Agriculture;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65858;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65859;Commerce et distribution;FAUX;
+65860;Commerce et distribution;FAUX;
+65861;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65862;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65863;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65864;Communication;FAUX;
+65865;Enseignement;FAUX;
+65866;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65867;Agriculture;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65868;Social;FAUX;
+65869;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65871;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65872;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65873;Fonction publique;VRAI;Ministère des Armées
+65875;Enseignement;FAUX;
+65876;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65877;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65878;Social;FAUX;
+65879;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65881;Automobile;FAUX;
+65882;Automobile;FAUX;
+65883;Social;FAUX;
+65884;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65885;Social;FAUX;
+65886;Fonction publique;VRAI;Ministère de l'Intérieur
+65887;Industrie alimentaire;FAUX;
+65888;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65889;Conseil et audit;FAUX;
+65890;Enseignement;FAUX;
+65891;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65892;Agriculture;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65893;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65894;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65896;Agriculture;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65897;Enseignement;FAUX;
+65898;Agriculture;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65899;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65900;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65901;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65902;Agriculture;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65903;Fonction publique;VRAI;Ministère de l'Intérieur
+65905;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65906;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65907;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65908;Social;FAUX;
+65909;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65910;Comptabilité, gestion, ressources humaines;FAUX;
+65911;Bâtiment et travaux publics (BTP);FAUX;
+65912;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65913;Agriculture;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65914;Agriculture;FAUX;
+65915;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65916;Agriculture;VRAI;Ministère des Armées
+65917;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65918;Social;FAUX;
+65919;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65920;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65921;Agriculture;VRAI;Ministère des Armées
+65922;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65923;Culture et patrimoine;VRAI;Ministère de la Culture
+65924;Social;FAUX;
+65925;Santé;FAUX;
+65926;Droit et justice;FAUX;
+65927;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65928;Recherche;FAUX;
+65929;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65930;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65931;Bien-être;FAUX;
+65932;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65933;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65934;Fonction publique;VRAI;Ministère des Armées
+65935;Fonction publique;VRAI;Ministère des Armées
+65936;Fonction publique;VRAI;Ministère des Armées
+65937;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65938;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65939;Énergie;FAUX;
+65940;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65941;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65942;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65943;Fonction publique;VRAI;Ministère de l’Enseignement supérieur et de la Recherche
+65944;Agriculture;VRAI;Ministère des Armées
+65945;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65946;Logistique et transport;FAUX;
+65947;Logistique et transport;FAUX;
+65948;Fonction publique;VRAI;Ministère de l’Enseignement supérieur et de la Recherche
+65949;Logistique et transport;FAUX;
+65950;Logistique et transport;FAUX;
+65951;Logistique et transport;FAUX;
+65952;Logistique et transport;FAUX;
+65953;Logistique et transport;FAUX;
+65954;Commerce et distribution;FAUX;
+65955;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65956;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65957;Énergie;FAUX;
+65958;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65959;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65960;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65961;Agriculture;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65962;Agriculture;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65963;Fonction publique;VRAI;Ministère des Armées
+65964;Agriculture;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65965;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65966;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65967;Agriculture;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65968;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65969;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65970;Fonction publique;VRAI;Ministère de l'Intérieur
+65971;Social;FAUX;
+65972;Fonction publique;VRAI;Ministère des Armées
+65973;Agriculture;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65974;Agriculture;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65975;Agriculture;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles
+65976;Commerce et distribution;FAUX;
+65977;Fonction publique;VRAI;Ministère des Armées
+65978;Armée - Défense;FAUX;
+65979;Commerce et distribution;FAUX;
+65980;Fonction publique;VRAI;Ministère des Armées
+65981;Agriculture;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65982;Enseignement;FAUX;
+65983;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65984;Commerce et distribution;FAUX;
+65985;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65986;Fonction publique;VRAI;Ministère des Armées
+65987;Commerce et distribution;FAUX;
+65988;Agriculture;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
+65989;Commerce et distribution;FAUX;
+65990;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
+65991;Fonction publique;VRAI;Premier ministre
+65992;Commerce et distribution;FAUX;
+65993;Fonction publique;VRAI;Premier ministre

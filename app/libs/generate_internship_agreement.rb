@@ -378,10 +378,10 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.table([headers],
                cell_style: { border_width: 0 },
                column_widths: column_widths)
+
     image1 = image_from(signature: download_image_and_signature(signatory_role: 'employer'))
     image2 = @internship_agreement.signed_by_school_management? ? image_from(signature: download_image_and_signature(signatory_role: @internship_agreement.school_management_signatory_role)) : ''
-    @pdf.table([[image1, image2]], cell_style: { border_width: 0, height: 80 },
-                                   column_widths: column_widths)
+    @pdf.table([[image1, image2]], cell_style: { border_width: 0, height: 80 }, column_widths: column_widths)
 
     @pdf.move_down 10
     @pdf.text 'Vu et pris connaissance,'
@@ -393,83 +393,84 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.text 'Le responsable de l’accueil en milieu professionnel'
   end
 
-  def signature_data
-    { header: [[
-      "Le chef d'établissement - #{school_manager.try(:presenter).try(:formal_name)}",
-      "Le responsable de l'organisme d'accueil - #{employer.presenter.formal_name}",
-      "L'élève",
-      'Parents ou responsables légaux',
-      'Le professeur référent',
-      "Le référent en charge de l'élève à sein de l'organisme d'accueil"
-    ]],
-      body: [
-        [''] * 6,
-        [
-          "Nom et prénom : #{school_manager.try(:presenter).try(:formal_name)}",
-          "Nom et prénom : #{employer.presenter.formal_name}",
-          "Nom et prénom : #{student.presenter.formal_name}",
-          "Nom et prénom : #{dotting(@internship_agreement.student_legal_representative_full_name)}",
-          "Nom et prénom : #{dotting(@internship_agreement.student_refering_teacher_full_name)}",
-          "Nom et prénom : #{'.' * 58}"
-        ],
-        [
-          signature_date_str(signatory_role: 'school_manager'),
-          signature_date_str(signatory_role: 'employer'),
-          "Signé le : #{'.' * 70}",
-          "Signé le : #{'.' * 70}",
-          "Signé le : #{'.' * 70}",
-          "Signé le : #{'.' * 70}"
-        ]
-      ],
-      signature_part: [
-        [image_from(signature: download_image_and_signature(signatory_role: 'school_manager')),
-         '@internship_agreement.school.try(:signature).try(:url)',
-         '',
-         '',
-         '',
-         '']
-      ] }
-  end
+  # def signature_data
+  #   { header: [[
+  #     "Le chef d'établissement - #{school_manager.try(:presenter).try(:formal_name)}",
+  #     "Le responsable de l'organisme d'accueil - #{employer.presenter.formal_name}",
+  #     "L'élève",
+  #     'Parents ou responsables légaux',
+  #     'Le professeur référent',
+  #     "Le référent en charge de l'élève à sein de l'organisme d'accueil"
+  #   ]],
+  #     body: [
+  #       [''] * 6,
+  #       [
+  #         "Nom et prénom : #{school_manager.try(:presenter).try(:formal_name)}",
+  #         "Nom et prénom : #{employer.presenter.formal_name}",
+  #         "Nom et prénom : #{student.presenter.formal_name}",
+  #         "Nom et prénom : #{dotting(@internship_agreement.student_legal_representative_full_name)}",
+  #         "Nom et prénom : #{dotting(@internship_agreement.student_refering_teacher_full_name)}",
+  #         "Nom et prénom : #{'.' * 58}"
+  #       ],
+  #       [
+  #         signature_date_str(signatory_role: 'school_manager'),
+  #         signature_date_str(signatory_role: 'employer'),
+  #         "Signé le : #{'.' * 70}",
+  #         "Signé le : #{'.' * 70}",
+  #         "Signé le : #{'.' * 70}",
+  #         "Signé le : #{'.' * 70}"
+  #       ]
+  # ],
+  # signature_part: [
+  #   [image_from(signature: download_image_and_signature(signatory_role: 'school_manager')),
+  #    '@internship_agreement.school.try(:signature).try(:url)',
+  #    '',
+  #    '',
+  #    '',
+  #    '']
+  # ]
+  # ]}
+  # end
 
-  def signature_table_header(slice:)
-    table_data = slice_by_two(signature_data[:header], slice:)
-    @pdf.table(
-      table_data,
-      row_colors: ['F0F0F0'],
-      column_widths: [PAGE_WIDTH / 2] * 2,
-      cell_style: { size: 10 }
-    ) do |t|
-      t.cells.border_color = 'cccccc'
-      t.cells.align = :center
-    end
-  end
+  # def signature_table_header(slice:)
+  #   table_data = split_in_two(signature_data[:header], slice:)
+  #   @pdf.table(
+  #     table_data,
+  #     row_colors: ['F0F0F0'],
+  #     column_widths: [PAGE_WIDTH / 2] * 2,
+  #     cell_style: { size: 10 }
+  #   ) do |t|
+  #     t.cells.border_color = 'cccccc'
+  #     t.cells.align = :center
+  #   end
+  # end
 
-  def signature_table_body(slice:)
-    table_data = slice_by_two(signature_data[:body], slice:)
+  # def signature_table_body(slice:)
+  #   table_data = split_in_two(signature_data[:body], slice:)
 
-    @pdf.table(
-      table_data,
-      row_colors: ['FFFFFF'],
-      column_widths: [PAGE_WIDTH / 2] * 2
-    ) do |t|
-      t.cells.borders = %i[left right]
-      t.cells.border_color = 'cccccc'
-      t.cells.height = 20
-    end
-  end
+  #   @pdf.table(
+  #     table_data,
+  #     row_colors: ['FFFFFF'],
+  #     column_widths: [PAGE_WIDTH / 2] * 2
+  #   ) do |t|
+  #     t.cells.borders = %i[left right]
+  #     t.cells.border_color = 'cccccc'
+  #     t.cells.height = 20
+  #   end
+  # end
 
-  def signature_table_signature(slice:)
-    table_data = slice_by_two(signature_data[:signature_part], slice:)
-    @pdf.table(
-      table_data,
-      row_colors: ['FFFFFF'],
-      column_widths: [PAGE_WIDTH / 2] * 2
-    ) do |t|
-      t.cells.borders = %i[left right]
-      t.cells.border_color = 'cccccc'
-      t.cells.height = 100
-    end
-  end
+  # def signature_table_signature(slice:)
+  #   table_data = split_in_two(signature_data[:signature_part], slice:)
+  #   @pdf.table(
+  #     table_data,
+  #     row_colors: ['FFFFFF'],
+  #     column_widths: [PAGE_WIDTH / 2] * 2
+  #   ) do |t|
+  #     t.cells.borders = %i[left right]
+  #     t.cells.border_color = 'cccccc'
+  #     t.cells.height = 100
+  #   end
+  # end
 
   def signature_table_footer
     @pdf.table(
@@ -518,11 +519,8 @@ class GenerateInternshipAgreement < Prawn::Document
   def image_from(signature:)
     return '' if signature.nil?
 
-    if signature.is_a?(OpenStruct)
-      { image: signature.local_signature_image_file_path }.merge(SCHOOL_SIGNATURE_OPTIONS)
-    else
-      { image: signature.local_signature_image_file_path }.merge(SIGNATURE_OPTIONS)
-    end
+    merge_options = signature.is_a?(OpenStruct) ? SCHOOL_SIGNATURE_OPTIONS : SIGNATURE_OPTIONS
+    { image: signature.local_signature_image_file_path }.merge(merge_options)
   end
 
   def download_image_and_signature(signatory_role:)
@@ -530,21 +528,18 @@ class GenerateInternshipAgreement < Prawn::Document
       begin
         # Download the signature
         signature_data = @internship_agreement.school.signature.download
-        puts '================================'
-        puts "signature_data : #{signature_data}"
-        puts '================================'
-        puts ''
 
         # Convert to non-interlaced PNG
-        image = MiniMagick::Image.read(signature_data)
-        image.format 'png'
-        image.interlace 'none' # Disable interlacing
+        image = MiniMagick::Image.read(signature_data) do |img|
+          img.format 'png'
+          img.interlace 'none' # Disable interlacing
+        end
 
         return OpenStruct.new(
           local_signature_image_file_path: StringIO.new(image.to_blob)
         )
       rescue StandardError => e
-        Rails.logger.error "Error processing school signature: #{e.message}"
+        Rails.logger.error "Error processing school signature: #{e.message} for  #{@internship_agreement.school.id}"
         return nil
       end
     end
@@ -638,7 +633,7 @@ class GenerateInternshipAgreement < Prawn::Document
     internship_agreement.referent_teacher
   end
 
-  def slice_by_two(array, slice:)
+  def split_in_two(array, slice:)
     table_data = []
     array.each do |row|
       table_data << row.each_slice(2).to_a[slice]
