@@ -29,7 +29,7 @@ h1.fr-h3.fr-mt-2w.fr-mb-1w Votre équipe
               - status = team_member_invitation.presenter(current_user).status
               span class="fr-badge fr-badge--no-icon fr-badge--#{status[:type]}"
                 = status[:label]
-            td
+            td.d-flex.justify-content-around
               - if can?(:destroy, team_member_invitation)
                 = link_to dashboard_team_member_invitation_path(team_member_invitation),
                           method: :delete,
