@@ -46,10 +46,34 @@ module Dashboard
         redirect_back fallback_location: root_path, status: :bad_request
       end
 
+      def claim_school_management
+        authorize! :claim_school_management, @school
+        target_user = User.find_by(id: params[:id], discarded_at: nil)
+        if target_user.nil?
+          redirect_to dashboard_school_users_path(@school),
+                      flash: { error: "L'utilisateur ciblé n'existe pas." }
+          return
+        end
+        manage_school_managers(target_user)
+        redirect_to dashboard_school_users_path(@school),
+                    flash: { success: "Vous avez êtes le chef de l'établissement #{target_user.school.name}. C'est votre nom qui figure sur les conventions de stage" }
+      rescue StandardError => e
+        redirect_to dashboard_school_users_path(@school),
+                    flash: { error: "Une erreur est survenue: #{e.message}" }
+      end
+
       private
 
       def user_params
         params.require(:user)
+      end
+
+      def manage_school_managers(target_user)
+        other_school_managers = @school.school_managers.where.not(id: target_user.id)
+        other_school_managers.each do |school_manager|
+          school_manager.update!(role: 'admin_officer')
+        end
+        target_user.update!(role: 'school_manager') unless target_user.school_manager?
       end
     end
   end
