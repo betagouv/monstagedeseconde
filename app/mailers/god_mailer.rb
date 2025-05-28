@@ -107,6 +107,6 @@ class GodMailer < ApplicationMailer
   def magic_link_login(user, token)
     @user = user
     @magic_link = magic_link_url(token: token)
-    mail(to: @user.email, subject: 'Votre lien de connexion sécurisé')
+    send_email(to: @user.email, subject: 'Votre lien de connexion sécurisé')
   end
 end

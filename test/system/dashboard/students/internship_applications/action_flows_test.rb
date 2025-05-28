@@ -7,28 +7,30 @@ module Dashboard
       include TeamAndAreasHelper
 
       test 'student can browse his internship_applications' do
-        school = create(:school, :with_school_manager)
-        student = create(:student, :when_applying, school:)
-        internship_applications = [
-          { submitted: create(:weekly_internship_application, :submitted,
-                              internship_offer: create(:weekly_internship_offer_2nde), student:) },
-          { approved: create(:weekly_internship_application, :approved,
-                             internship_offer: create(:weekly_internship_offer_2nde), student:) },
-          { validated_by_employer: create(:weekly_internship_application, :validated_by_employer,
-                                          internship_offer: create(:weekly_internship_offer), student:) }
-        ]
-        sign_in(student)
-        visit '/'
-        click_on 'Candidatures'
-        internship_applications.each do |elem|
-          _aasm_state, internship_application = elem.first
-          badge = internship_application.presenter(student).human_state
-          find('.fr-tabs__tab', text: badge[:tab])
-          click_on badge[:tab]
-          find('.internship-application-status .h5.internship-offer-title',
-               text: internship_application.internship_offer.title)
-          find("a#show_link_#{internship_application.id}", text: badge[:actions].first[:label]).click
-          find('a span.fr-icon-arrow-left-line', text: 'toutes mes candidatures').click
+        travel_to Date.new(2023, 10, 1) do
+          school = create(:school, :with_school_manager)
+          student = create(:student, :when_applying, school:)
+          internship_applications = [
+            { submitted: create(:weekly_internship_application, :submitted,
+                                internship_offer: create(:weekly_internship_offer_2nde), student:) },
+            { approved: create(:weekly_internship_application, :approved,
+                               internship_offer: create(:weekly_internship_offer_2nde), student:) },
+            { validated_by_employer: create(:weekly_internship_application, :validated_by_employer,
+                                            internship_offer: create(:weekly_internship_offer), student:) }
+          ]
+          sign_in(student)
+          visit '/'
+          click_on 'Candidatures'
+          internship_applications.each do |elem|
+            _aasm_state, internship_application = elem.first
+            badge = internship_application.presenter(student).human_state
+            find('.fr-tabs__tab', text: badge[:tab])
+            click_on badge[:tab]
+            find('.internship-application-status .h5.internship-offer-title',
+                 text: internship_application.internship_offer.title)
+            find("a#show_link_#{internship_application.id}", text: badge[:actions].first[:label]).click
+            find('a span.fr-icon-arrow-left-line', text: 'toutes mes candidatures').click
+          end
         end
       end
 

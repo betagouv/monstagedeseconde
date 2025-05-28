@@ -439,7 +439,6 @@ class Ability
       choose_statistician_type
       supply_offers
       subscribe_to_webinar
-      choose_to_sign_agreements
     ], User
 
     can %i[see_reporting_dashboard

@@ -2,7 +2,7 @@
 # - they share the same inviter_id (and then team_owner_id)
 # - team_member is nil if invitation is pending or refused
 # - team_member is not nil when invitation is accepted
-# - team_members list those invitation that where accepted (TODO : rename to accepted_members)
+# - team_members list those invitation that where accepted
 class Team
   def activate_member
     return if db_user.nil?
@@ -19,7 +19,7 @@ class Team
     if team_size <= 2
       team_members.each { |member| member.destroy }
     else
-      @team_owner_id = change_owner(collection: team_members) if team_member.member_is_owner?
+      @team_owner_id = change_owner! if team_member.member_is_owner?
       team_member.destroy
       set_team_members
     end
@@ -27,9 +27,9 @@ class Team
 
   def self.remove_member_by_id(db_id)
     @team_member = TeamMemberInvitation.find_by(member_id: db_id)
-    return if @team_member.nil?
-
-    Team.new(@team_member).remove_member
+    @team_member&.tap do |member|
+      Team.new(member).remove_member
+    end
   end
 
   def alive?
@@ -62,7 +62,6 @@ class Team
 
   #----------------------------------
   private
-
   #----------------------------------
 
   def team_creation_time?
@@ -73,9 +72,9 @@ class Team
     @db_user ||= User.kept.find_by(email: team_member.invitation_email)
   end
 
-  def change_owner(collection:)
+  def change_owner!
     target_id = fetch_another_owner_id
-    collection.each do |member|
+    team_members.each do |member|
       next if member.member_id == target_id
 
       member.update!(inviter_id: target_id)
@@ -86,7 +85,7 @@ class Team
   def add_owner
     # if ever team_owner is anonymized in between the time he sent the
     # invitation and the time the new member accepts it : kept is the keyword
-    team_owner = User.kept.find(team_owner_id)
+    team_owner = User.kept.find_by(id: team_owner_id)
     return if team_owner.nil?
 
     # Following is team creation time !

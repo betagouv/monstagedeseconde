@@ -1,5 +1,6 @@
 module Services
-  class ImmersionFacile < ApiRequestsHelper
+  class ImmersionFacile
+    include ApiRequestsHelper
     IMMERSION_FACILE_ENDPOINT_URL = "#{ENV['IMMERSION_FACILE_API_URL']}/search".freeze
 
     # sample of json response : {
@@ -46,7 +47,8 @@ module Services
     # ]
 
     def perform
-      response = get_request
+      uri = URI("#{IMMERSION_FACILE_ENDPOINT_URL}?#{query_string}")
+      response = get_request(uri, default_headers)
       if response.nil? || !response.respond_to?(:body)
         error_message = 'Faulty request : consider contacting developper'
         Rails.logger.error(error_message)
@@ -66,10 +68,6 @@ module Services
                       "#{response} for immmersion-" \
                       "facilitée with #{city} search"
       Rails.logger.error(error_message)
-    end
-
-    def get_request_uri
-      URI("#{IMMERSION_FACILE_ENDPOINT_URL}?#{query_string}")
     end
 
     def query_string

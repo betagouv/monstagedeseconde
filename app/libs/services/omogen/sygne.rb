@@ -1,6 +1,6 @@
 module Services::Omogen
-  # Manage Captcha services
   class Sygne
+    include ::Services::ApiRequestsHelper
     # 2434 : 3E SEGPA
     # 2115 : 4EME
     # 2116 : 3EME
@@ -11,18 +11,13 @@ module Services::Omogen
     def net_synchro
       uri = URI(ENV['NET_SYNCHRO_URL'])
 
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if uri.scheme == 'https'
-
-      request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{token}"
-      request['Code-Application'] = 'FRE'
-      request['Code-RNE'] = '0595121W'
-      request['Compression-Zip'] = 'non'
-      request['Contexte-Annee-Scolaire'] = '2021'
-      request['Perimetre-Applicatif'] = 'A09'
-
-      response = http.request(request)
+      response = perform_http_request(uri, {
+                                        'Code-Application' => 'FRE',
+                                        'Code-RNE' => '0595121W',
+                                        'Compression-Zip' => 'non',
+                                        'Contexte-Annee-Scolaire' => '2021',
+                                        'Perimetre-Applicatif' => 'A09'
+                                      })
 
       case response
       when Net::HTTPSuccess
@@ -47,26 +42,12 @@ module Services::Omogen
 
     def sygne_status
       uri = URI(ENV['SYGNE_URL'] + '/version')
-      puts uri
-
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if uri.scheme == 'https'
-
-      request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{token}"
-
-      response = http.request(request)
+      response = perform_http_request(uri)
 
       case response
       when Net::HTTPSuccess
-        puts response.body
         response.body
       else
-        puts response
-        puts response.body
-        puts response.code
-        puts response.message
-
         raise "Failed to get sygne status : #{response.message}"
       end
     end
@@ -96,33 +77,17 @@ module Services::Omogen
     #
     # temporary method to import only 3 students for test purpose
     def sygne_import_by_schools_little(code_uai)
-      counter = 0
-      MEFSTAT4_CODES.each do |niveau|
-        students = sygne_eleves(code_uai, niveau: niveau)
-        students.each do |student|
-          next if counter > 2
-
-          student.make_student
-          counter += 1
-        end
-      end
+      process_mefstat4_codes(code_uai, limit: 3)
     end
 
     def sygne_import_by_schools(code_uai)
-      MEFSTAT4_CODES.each do |niveau|
-        students = sygne_eleves(code_uai, niveau: niveau)
-        students.each do |student|
-          ActiveRecord::Base.transaction do
-            student.make_student
-          end
-        end
-      end
+      process_mefstat4_codes(code_uai)
     end
 
     def sygne_schools(code_uai = '0590116F')
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves)")
       schools_in_data = []
-      response = sygne_eleves(uri)
+      response = get_request(uri, get_default_headers)
       case response
       when Net::HTTPSuccess
         schools_in_data << JSON.parse(response.body)
@@ -138,15 +103,8 @@ module Services::Omogen
       # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
 
       uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
+      response = perform_http_request(uri, { 'Compression-Zip' => 'non' })
 
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if uri.scheme == 'https'
-
-      request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{@token}"
-      request['Compression-Zip'] = 'non'
-
-      response = http.request(request)
       # [{ 'email' => 't-t@hotmail.fr',
       #    'nomFamille' => 't PPPEPF',
       #    'rcar' => 't-dgfdsq',
@@ -203,7 +161,7 @@ module Services::Omogen
     def sygne_eleves(code_uai, niveau:)
       students = []
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
-      response = sygne_eleves_request(uri)
+      response = get_request(uri, default_headers)
       case response
       when Net::HTTPSuccess
         # puts response.body
@@ -233,7 +191,8 @@ module Services::Omogen
     end
 
     def sygne_responsable(ine)
-      response = sygne_responsables_request(ine)
+      uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
+      response = get_request(uri, default_headers)
       case response
       when Net::HTTPSuccess
         responsibles = JSON.parse(response.body, symbolize_names: true)
@@ -247,50 +206,48 @@ module Services::Omogen
       end
     end
 
-    def get_oauth_token
-      uri = URI(ENV['OMOGEN_OAUTH_URL'])
-      response = Net::HTTP.post_form(uri, {
-                                       grant_type: 'client_credentials',
-                                       client_id: ENV['OMOGEN_CLIENT_ID'],
-                                       client_secret: ENV['OMOGEN_CLIENT_SECRET']
-                                     })
-      case response
-      when Net::HTTPSuccess
-        JSON.parse(response.body)['access_token']
-      else
-        raise "Failed to get OAuth token: #{response.message}"
-      end
-    end
-
     def initialize
-      @token = get_oauth_token
+      @token = fetch_oauth_token
     end
 
     attr_reader :token
 
     private
 
-    def sygne_eleves_request(uri)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if uri.scheme == 'https'
-
-      request = Net::HTTP::Get.new(uri, headers)
-      http.request(request)
+    def perform_http_request(uri, additional_headers = {})
+      get_request(uri, default_headers).merge(additional_headers)
     end
 
-    def headers
+    def default_headers
       { 'Authorization': "Bearer #{token}", 'Compression-Zip': 'non' }
     end
 
-    def sygne_responsables_request(ine)
-      # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
-      uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
+    def process_mefstat4_codes(code_uai, limit: nil)
+      counter = 0
+      MEFSTAT4_CODES.each do |niveau|
+        students = sygne_eleves(code_uai, niveau: niveau)
+        students.each do |student|
+          break if limit && counter >= limit
 
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if uri.scheme == 'https'
+          ActiveRecord::Base.transaction { student.make_student }
+          counter += 1
+        end
+      end
+    end
 
-      request = Net::HTTP::Get.new(uri, headers)
-      http.request(request)
+    def fetch_oauth_token
+      response = post_form_request(url: ENV['OMOGEN_OAUTH_URL'],
+                                   params: {
+                                     grant_type: 'client_credentials',
+                                     client_id: ENV['OMOGEN_CLIENT_ID'],
+                                     client_secret: ENV['OMOGEN_CLIENT_SECRET']
+                                   })
+      case response
+      when Net::HTTPSuccess
+        JSON.parse(response.body)['access_token']
+      else
+        raise "Failed to get OAuth token: #{response.message}"
+      end
     end
 
     def format_address(address_hash)

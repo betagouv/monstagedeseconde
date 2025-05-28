@@ -1,6 +1,7 @@
 module Services
   # Manage Captcha services
   class Captcha
+    extend ApiRequestsHelper
     def self.generate
       token = get_oauth_token
       type_captcha = 'alphanumerique4to6LightCaptchaFR' # easy FR 4 to 6
@@ -40,13 +41,15 @@ module Services
     end
 
     def self.get_oauth_token
-      uri = URI(ENV['PISTE_OAUTH_URL'])
-      response = Net::HTTP.post_form(uri, {
-                                       grant_type: 'client_credentials',
-                                       client_id: ENV['CAPTCHA_CLIENT_ID'],
-                                       client_secret: ENV['CAPTCHA_CLIENT_SECRET'],
-                                       scope: 'piste.captchetat'
-                                     })
+      response = post_form_request(
+        url: ENV['PISTE_OAUTH_URL'],
+        params: {
+          grant_type: 'client_credentials',
+          client_id: ENV['CAPTCHA_CLIENT_ID'],
+          client_secret: ENV['CAPTCHA_CLIENT_SECRET'],
+          scope: 'piste.captchetat'
+        }
+      )
       JSON.parse(response.body)['access_token']
     end
   end
