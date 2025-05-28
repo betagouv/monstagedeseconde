@@ -190,9 +190,12 @@ Rails.application.routes.draw do
 
       resources :schools, path: 'ecoles', only: %i[index edit update show] do
         patch :update_signature, on: :member
+
         resources :invitations, only: %i[new create index destroy], module: 'schools'
         get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
-        resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
+        resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools' do
+          patch :claim_school_management, on: :member
+        end
 
         resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy],
                                 module: 'schools' do

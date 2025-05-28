@@ -35,7 +35,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :redirect
     assert_equal 'Users::SchoolManagement', User.last.type
-    assert_equal 'school_manager', User.last.role
+    assert_equal 'admin_officer', User.last.role
     assert_equal '0590121L', User.last.school.code_uai
   end
   test 'should get fim token and does not create user if school is not found' do

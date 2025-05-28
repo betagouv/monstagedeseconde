@@ -134,11 +134,13 @@ class CallbacksController < ApplicationController
     redirect_to root_path, notice: 'Vous êtes bien connecté'
   end
 
+  # DIR = Directeur d'établissement, ADF = Agent de direction,
+  # everyone is to be admin_officer until someone says he is school_manager
+  # this get_role method is used at creattion of user time
+  # and not afterwards, so it is not used to update the role
   def get_role(role)
     case role
-    when 'DIR'
-      'school_manager'
-    when 'ADF'
+    when 'DIR', 'ADF'
       'admin_officer'
     when 'ENS'
       'teacher'
