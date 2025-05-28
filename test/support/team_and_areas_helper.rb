@@ -43,11 +43,13 @@ module TeamAndAreasHelper
   end
 
   def create_employer_and_offer_3eme
-    employer = create(:employer)
-    offer = create(:weekly_internship_offer_3eme,
-                   employer: employer,
-                   internship_offer_area_id: employer.current_area_id)
-    [employer, offer]
+    travel_to Date.new(2023, 10, 1) do
+      employer = create(:employer)
+      offer = create(:weekly_internship_offer_3eme,
+                     employer: employer,
+                     internship_offer_area_id: employer.current_area_id)
+      [employer, offer]
+    end
   end
 
   def create_user_operator_and_api_offer(operator_id)

@@ -39,58 +39,62 @@ module Api
       end
 
       test 'GET #index only returns operators offers' do
-        user_1 = @operator
-        user_2 = create(:user_operator)
+        travel_to Date.new(2023, 10, 1) do
+          user_1 = @operator
+          user_2 = create(:user_operator)
 
-        offer_1     = create(:api_internship_offer_3eme, employer: user_1)
-        offer_1_bis = create(:api_internship_offer_3eme, employer: user_1)
-        offer_2     = create(:api_internship_offer_3eme, employer: user_2)
+          offer_1     = create(:api_internship_offer_3eme, employer: user_1)
+          offer_1_bis = create(:api_internship_offer_3eme, employer: user_1)
+          offer_2     = create(:api_internship_offer_3eme, employer: user_2)
 
-        documents_as(endpoint: :'v2/internship_offers/index', state: :success) do
-          get api_v2_internship_offers_path(
-            params: {
-              token: "Bearer #{@token}",
-              page: 1
-            }
-          )
+          documents_as(endpoint: :'v2/internship_offers/index', state: :success) do
+            get api_v2_internship_offers_path(
+              params: {
+                token: "Bearer #{@token}",
+                page: 1
+              }
+            )
 
-          assert_response :success
-          assert_equal 2, json_response['internshipOffers'].count
-          assert_equal 2, json_response['pagination']['totalInternshipOffers']
-          assert_equal 1, json_response['pagination']['totalPages']
-          assert_equal true, json_response['pagination']['isFirstPage']
+            assert_response :success
+            assert_equal 2, json_response['internshipOffers'].count
+            assert_equal 2, json_response['pagination']['totalInternshipOffers']
+            assert_equal 1, json_response['pagination']['totalPages']
+            assert_equal true, json_response['pagination']['isFirstPage']
+          end
         end
       end
 
       test 'GET #index only returns operators offers not discarded' do
-        offer_1 = create(:api_internship_offer_3eme, employer: @operator)
-        offer_2 = create(:api_internship_offer_3eme, employer: @operator)
+        travel_to Date.new(2023, 10, 1) do
+          offer_1 = create(:api_internship_offer_3eme, employer: @operator)
+          offer_2 = create(:api_internship_offer_3eme, employer: @operator)
 
-        # Delete the first offer
-        delete api_v2_internship_offer_path(
-          id: offer_1.remote_id,
-          params: {
-            token: "Bearer #{@token}"
-          }
-        )
-
-        offer_1.reload
-        assert offer_1.discarded?
-
-        # Get only the second offer
-        documents_as(endpoint: :'v2/internship_offers/index', state: :success) do
-          get api_v2_internship_offers_path(
+          # Delete the first offer
+          delete api_v2_internship_offer_path(
+            id: offer_1.remote_id,
             params: {
-              token: "Bearer #{@token}",
-              page: 1
+              token: "Bearer #{@token}"
             }
           )
 
-          assert_response :success
-          assert_equal 1, json_response['internshipOffers'].count
-          assert_equal 1, json_response['pagination']['totalInternshipOffers']
-          assert_equal 1, json_response['pagination']['totalPages']
-          assert_equal true, json_response['pagination']['isFirstPage']
+          offer_1.reload
+          assert offer_1.discarded?
+
+          # Get only the second offer
+          documents_as(endpoint: :'v2/internship_offers/index', state: :success) do
+            get api_v2_internship_offers_path(
+              params: {
+                token: "Bearer #{@token}",
+                page: 1
+              }
+            )
+
+            assert_response :success
+            assert_equal 1, json_response['internshipOffers'].count
+            assert_equal 1, json_response['pagination']['totalInternshipOffers']
+            assert_equal 1, json_response['pagination']['totalPages']
+            assert_equal true, json_response['pagination']['isFirstPage']
+          end
         end
       end
     end

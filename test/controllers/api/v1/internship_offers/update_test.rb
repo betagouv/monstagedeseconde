@@ -8,8 +8,10 @@ module Api
       include ApiTestHelpers
 
       setup do
-        @operator = create(:user_operator)
-        @internship_offer = create(:api_internship_offer_3eme, employer: @operator)
+        travel_to Date.new(2023, 10, 1) do
+          @operator = create(:user_operator)
+          @internship_offer = create(:api_internship_offer_3eme, employer: @operator)
+        end
       end
 
       test 'PATCH #update without token renders :unauthorized payload' do

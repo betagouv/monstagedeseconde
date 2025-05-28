@@ -2,89 +2,53 @@ import { Controller } from 'stimulus';
 
 export default class extends Controller {
   static targets = ['code', 'button', 'codeContainer'];
-  static values = { position: Number }
+  static values = { position: Number };
 
   onKeyUp(event) {
     event.preventDefault();
-    if (event.key == 'Shift') { return; } 
-    const isBackKey = (event.key == 'Backspace' || event.key == 'ArrowLeft');
-    (isBackKey) ? this.eraseBack(event) : this.enterKey(event);
-    this.setFocus(event);
+    if (event.key === 'Shift') return;
+    const isBackKey = event.key === 'Backspace' || event.key === 'ArrowLeft';
+    isBackKey ? this.handleBackKey(event) : this.handleForwardKey(event);
+    this.updateFocus(event);
   }
 
-  // private
-
-  eraseBack(event) {
-    this.eraseCurrentKey(event)
-    if (this.firstPosition()) { return; }
-    this.moveBackward(event);
+  handleBackKey(event) {
+    this.clearCurrentKey(event);
+    if (!this.isFirstPosition()) this.moveFocus(event, -1);
   }
 
-  enterKey(event) {
-    this.isNumericKeyOrShiftKey(event) ? this.withNumericKey(event) : this.eraseCurrentKey();
-  }
-
-  withNumericKey(event) {
-    this.validateEnteredValue(event);
-    if (this.lastPosition()) {
-      this.enableAll();
-      this.enableForm();
+  handleForwardKey(event) {
+    if (this.isNumericKey(event)) {
+      this.assignKey(event);
+      this.isLastPosition() ? this.enableForm() : this.moveFocus(event, 1);
     } else {
-      this.moveForward(event);
+      this.clearCurrentKey(event);
     }
   }
 
-  moveForward(event) { this.move(event, +1) }
-  moveBackward(event) {
-    this.move(event, -1);
-    this.codeContainerTarget.classList.remove('finished');
-  }
-  move(event, val) { this.positionValue += val; this.enableCurrent(event); }
-  firstPosition() { return this.positionValue == 0; }
-  lastPosition() { return this.positionValue == this.codeTargets.length - 1; }
+  isNumericKey(event) { return /^\d$/.test(event.key); }
 
-  currentCodeTarget() { return this.codeTargets[this.positionValue]; }
-  parseCodes(fn, event = undefined) { fn(this.currentCodeTarget(), event); }
+  assignKey(event) { this.currentCodeTarget().value = event.key; }
 
-  assignKey(element, event) { element.value = event.key; }
-  validateEnteredValue(event) { this.parseCodes(this.assignKey, event); }
+  clearCurrentKey(event) { this.currentCodeTarget().value = ''; }
 
-  clearKey(element) { element.value = ''; }
-  eraseCurrentKey(event) { this.parseCodes(this.clearKey, event); }
-
-  enableField(element) { element.removeAttribute('disabled'); }
-  enableCurrent(event) {
-    this.disableAll(); this.parseCodes(this.enableField, event);
+  moveFocus(event, direction) { this.positionValue += direction; this.updateFocus(event);
   }
 
-  fieldFocus(element) { element.focus(); }
-  setFocus(event) { this.parseCodes(this.fieldFocus, event); }
-
-  disableAll() {
-    this.codeTargets.forEach(element => { element.setAttribute('disabled', true); });
-  }
-  enableAll() {
-    this.codeTargets.forEach(element => { element.removeAttribute('disabled') });
-  }
-
-  isNumericKeyOrShiftKey(event) {
-    const isInteger = /^\d+$/.test(event.key);
-    const isShiftKey = event.shiftKey;
-    const capitals = /^[A-Z]$/.test(event.key);
-    return (isInteger || isShiftKey) && !capitals;
+  updateFocus(event) {
+    this.disableAllFields();
+    this.enableField(this.currentCodeTarget());
+    this.currentCodeTarget().focus();
   }
 
   enableForm() {
     this.buttonTarget.removeAttribute('disabled');
     this.codeContainerTarget.classList.add('finished');
-    // window.setTimeout(() => {this.buttonTarget.focus()}, 150);
   }
 
-  codeTargetConnected() {
-    this.codeTargets.forEach((element, index) => {
-      element.value = '';
-      index === 0 ? element.focus() : element.setAttribute('disabled', true); 
-    });
-    this.buttonTarget.setAttribute('disabled', true);
-  }
+  disableAllFields() { this.codeTargets.forEach(field => field.setAttribute('disabled', true)); }
+  enableField(field) { field.removeAttribute('disabled'); }
+  currentCodeTarget() { return this.codeTargets[this.positionValue]; }
+  isFirstPosition() { return this.positionValue === 0; }
+  isLastPosition() { return this.positionValue === this.codeTargets.length - 1; }
 }

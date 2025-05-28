@@ -54,33 +54,35 @@ module Dashboard::InternshipOffers
     end
 
     test 'PATCH #update successfully with title as employer owning internship_offer updates internship_offer' do
-      internship_offer = create(:weekly_internship_offer_2nde, :with_public_group)
-      new_title = 'new title'
-      new_group = create(:group, is_public: false, name: 'woop')
-      sign_in(internship_offer.employer)
-      patch(dashboard_internship_offer_path(internship_offer.to_param),
-            params: {
-              internship_offer: {
-                title: new_title,
-                week_ids: Week.troisieme_selectable_weeks.map(&:id),
-                grade_college: '1',
-                grade_2e: '0',
-                all_year_long: '1',
-                group_id: new_group.id,
-                daily_hours: { 'lundi' => %w[10h 12h] },
-                workspace_conditions: 'Environnement de travail 2',
-                workspace_accessibility: 'Accessibilité du poste 2'
-              }
-            })
+      travel_to Date.new(2023, 10, 1) do
+        internship_offer = create(:weekly_internship_offer_2nde, :with_public_group)
+        new_title = 'new title'
+        new_group = create(:group, is_public: false, name: 'woop')
+        sign_in(internship_offer.employer)
+        patch(dashboard_internship_offer_path(internship_offer.to_param),
+              params: {
+                internship_offer: {
+                  title: new_title,
+                  week_ids: Week.troisieme_selectable_weeks.map(&:id),
+                  grade_college: '1',
+                  grade_2e: '0',
+                  all_year_long: '1',
+                  group_id: new_group.id,
+                  daily_hours: { 'lundi' => %w[10h 12h] },
+                  workspace_conditions: 'Environnement de travail 2',
+                  workspace_accessibility: 'Accessibilité du poste 2'
+                }
+              })
 
-      assert_redirected_to(dashboard_internship_offers_path(origine: 'dashboard'))
+        assert_redirected_to(dashboard_internship_offers_path(origine: 'dashboard'))
 
-      assert_equal(new_title,
-                   internship_offer.reload.title,
-                   'can\'t update internship_offer title')
-      assert_equal %w[10h 12h], internship_offer.reload.daily_hours['lundi']
-      assert_equal 'Environnement de travail 2', internship_offer.reload.workspace_conditions
-      assert_equal 'Accessibilité du poste 2', internship_offer.reload.workspace_accessibility
+        assert_equal(new_title,
+                     internship_offer.reload.title,
+                     'can\'t update internship_offer title')
+        assert_equal %w[10h 12h], internship_offer.reload.daily_hours['lundi']
+        assert_equal 'Environnement de travail 2', internship_offer.reload.workspace_conditions
+        assert_equal 'Accessibilité du poste 2', internship_offer.reload.workspace_accessibility
+      end
     end
 
     test 'PATCH #update as employer owning internship_offer ' \

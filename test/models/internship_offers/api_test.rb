@@ -65,10 +65,12 @@ module InternshipOffers
     end
 
     test 'is_public does not changes' do
-      internship_offer = create(:api_internship_offer_3eme, is_public: true)
-      internship_offer.title = 'booboop'
-      internship_offer.save!
-      assert InternshipOffer.pluck(:is_public).all?
+      travel_to Date.new(2023, 10, 1) do
+        internship_offer = create(:api_internship_offer_3eme, is_public: true)
+        internship_offer.title = 'booboop'
+        internship_offer.save!
+        assert InternshipOffer.pluck(:is_public).all?
+      end
     end
   end
 end
