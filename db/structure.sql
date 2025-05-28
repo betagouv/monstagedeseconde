@@ -2189,6 +2189,7 @@ CREATE SEQUENCE public.task_registers_id_seq
 ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
 
 
+
 --
 -- Name: team_member_invitations; Type: TABLE; Schema: public; Owner: -
 --
@@ -2426,7 +2427,9 @@ CREATE TABLE public.users (
     grade_id bigint,
     ine character varying(15),
     active_at timestamp(6) without time zone,
-    school_ids text[] DEFAULT '{}'::text[]
+    school_ids text[] DEFAULT '{}'::text[],
+    user_info jsonb DEFAULT '{}'::jsonb,
+    fim_user_info jsonb
 );
 
 
