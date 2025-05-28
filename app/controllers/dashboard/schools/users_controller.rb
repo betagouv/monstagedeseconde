@@ -55,8 +55,10 @@ module Dashboard
           return
         end
         manage_school_managers(target_user)
-        redirect_to dashboard_school_users_path(@school),
-                    flash: { success: "Vous avez êtes le chef de l'établissement #{target_user.school.name}. C'est votre nom qui figure sur les conventions de stage" }
+        f_name = target_user.presenter.short_civil_full_name
+        success_message = "#{f_name} est le chef de l'établissement #{target_user.school.name}." \
+                          " C'est son nom qui figure sur les conventions de stage."
+        redirect_to dashboard_school_users_path(@school), flash: { success: success_message }
       rescue StandardError => e
         redirect_to dashboard_school_users_path(@school),
                     flash: { error: "Une erreur est survenue: #{e.message}" }
