@@ -18,7 +18,6 @@ class Signature < ApplicationRecord
     admin_officer
     other
     teacher
-    main_teacher
   ].freeze
   
   REQUESTED_SIGNATURES_COUNT = 2

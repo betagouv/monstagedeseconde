@@ -17,19 +17,19 @@ module Presenters
       assert_equal url_helpers.internship_offers_path, employer.presenter.default_internship_offers_path
     end
 
-    test '.default_internship_offers_path with main_teacher having no school returns to all offers' do
+    test '.default_internship_offers_path with teacher having no school returns to all offers' do
       school_manager = create(:school_manager)
-      main_teacher = create(:main_teacher, school: school_manager.school)
-      main_teacher.update!(school_id: nil, class_room_id: nil)
-      assert_equal url_helpers.internship_offers_path, main_teacher.presenter.default_internship_offers_path
+      teacher = create(:teacher, school: school_manager.school)
+      teacher.update!(school_id: nil, class_room_id: nil)
+      assert_equal url_helpers.internship_offers_path, teacher.presenter.default_internship_offers_path
     end
 
-    test '.default_internship_offers_path with main_teacher having a school returns to offers prefiltered for his school' do
+    test '.default_internship_offers_path with teacher having a school returns to offers prefiltered for his school' do
       school_manager = create(:school_manager)
-      main_teacher = create(:main_teacher, school: school_manager.school)
+      teacher = create(:teacher, school: school_manager.school)
 
       assert_equal url_helpers.internship_offers_path(school_manager.default_search_options),
-                   main_teacher.presenter.default_internship_offers_path
+                   teacher.presenter.default_internship_offers_path
     end
 
     test '.default_internship_offers_path includes expected params' do

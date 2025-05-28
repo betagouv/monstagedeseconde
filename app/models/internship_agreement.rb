@@ -1,13 +1,8 @@
-# Agreements can be created/modified by two kind of user
-# - employer, allowed to manage following fields: TODO
-# - school_manager, allowed to manage following fields: TODO
-# - main_teacher, allowed to manage following fields: TODO
-#
 # to switch/branch validation, we use an home made mechanism
 # which requires either one of those fields:
 # - enforce_employer_validation : forcing employer validations
 # - enforce_school_manager_validations : forcing school_manager validations
-# - enforce_main_teacher_validations : forcing main_teacher validations
+# - enforce_teacher_validations : forcing main_teacher validations
 #
 # only use dedicated builder to CRUD those objects
 class InternshipAgreement < ApplicationRecord
@@ -25,10 +20,10 @@ class InternshipAgreement < ApplicationRecord
 
   attr_accessor :enforce_school_manager_validations,
                 :enforce_employer_validations,
-                :enforce_main_teacher_validations,
+                :enforce_teacher_validations,
                 :skip_validations_for_system
 
-  with_options if: :enforce_main_teacher_validations? do
+  with_options if: :enforce_teacher_validations? do
     validates :student_class_room, presence: true
   end
 
@@ -144,13 +139,13 @@ class InternshipAgreement < ApplicationRecord
 
   def at_least_one_validated_terms
     return true if skip_validations_for_system
-    return true if [school_manager_accept_terms, employer_accept_terms, main_teacher_accept_terms].any?
+    return true if [school_manager_accept_terms, employer_accept_terms, teacher_accept_terms].any?
 
     if [enforce_employer_validations?,
-        enforce_main_teacher_validations?,
+        enforce_teacher_validations?,
         enforce_school_manager_validations?].none?
       %i[
-        main_teacher_accept_terms
+        teacher_accept_terms
         school_manager_accept_terms
         employer_accept_terms
       ].each do |term|
@@ -159,8 +154,8 @@ class InternshipAgreement < ApplicationRecord
     end
   end
 
-  def enforce_main_teacher_validations?
-    enforce_main_teacher_validations == true
+  def enforce_teacher_validations?
+    enforce_teacher_validations == true
   end
 
   def enforce_school_manager_validations?
@@ -173,7 +168,7 @@ class InternshipAgreement < ApplicationRecord
 
   def confirmed_by?(user:)
     return school_manager_accept_terms? if user.school_manager?
-    return main_teacher_accept_terms? if user.main_teacher?
+    return teacher_accept_terms? if user.teacher?
     return employer_accept_terms? if user.employer?
 
     raise ArgumentError, "#{user.type} does not support accept terms yet "

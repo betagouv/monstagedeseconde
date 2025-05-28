@@ -25,7 +25,7 @@ export default class extends Controller {
   // on change email address, ensure user is shown academia address requirement when neeeded
   refreshEmailFieldLabel(event) {
     $(this.labelTarget).text(
-      ["school_manager", "teacher", "main_teacher", "other"].includes(event.target.value) ?
+      ["school_manager", "teacher", "other"].includes(event.target.value) ?
       "Adresse électronique académique" :
       'Adresse électronique (e-mail)'
     );

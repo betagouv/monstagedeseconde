@@ -16,10 +16,6 @@ module SchoolUsersAssociations
              through: :user_schools,
              source: :user,
              class_name: 'Users::SchoolManagement'
-    has_many :main_teachers, -> { where(role: :main_teacher) },
-             through: :user_schools,
-             source: :user,
-             class_name: 'Users::SchoolManagement'
     has_many :teachers, -> { where(role: :teacher) },
              through: :user_schools,
              source: :user,

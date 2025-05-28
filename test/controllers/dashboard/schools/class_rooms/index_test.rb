@@ -24,7 +24,6 @@ module Dashboard
       test 'GET class_rooms#index as school school employees works' do
         school = create(:school)
         roles = [create(:school_manager, school: school),
-                 create(:main_teacher, school: school),
                  create(:other, school: school),
                  create(:teacher, school: school)]
         roles.map do |role|
@@ -52,7 +51,6 @@ module Dashboard
         class_room_without_student = create(:class_room, school: school,
                                                          students: [])
         roles = [create(:school_manager, school: school),
-                 create(:main_teacher, school: school),
                  create(:other, school: school),
                  create(:teacher, school: school)]
         roles.map do |user|
@@ -77,7 +75,6 @@ module Dashboard
           create(:class_room, school: school)
         ]
         roles = [create(:school_manager, school: school),
-                 create(:main_teacher, school: school),
                  create(:other, school: school),
                  create(:teacher, school: school)]
         roles.map do |role|
