@@ -208,7 +208,7 @@ class AbilityTest < ActiveSupport::TestCase
       refute ability.can?(:see_reporting_associations, User)
       refute ability.can?(:see_reporting_enterprises, User)
 
-      refute(ability.can?(:edit, InternshipAgreement))
+      assert(ability.can?(:edit, InternshipAgreement))
       refute(ability.can?(:create, InternshipAgreement))
       refute(ability.can?(:update, InternshipAgreement))
 
