@@ -263,6 +263,12 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: { score: score }.to_json, headers: {})
   end
 
+  def stub_admin_login
+    stub_request(:get, ENV['FIM_URL'] + '/idp/profile/oidc/token')
+      .with(fim_headers)
+      .to_return(status: 200, body: { access_token: 'token' }.to_json, headers: {})
+  end
+
   private
 
   def bitly_headers
