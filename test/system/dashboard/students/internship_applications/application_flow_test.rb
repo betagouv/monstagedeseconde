@@ -90,13 +90,15 @@ module Dashboard
 
       test 'student with validated application on second week can apply on first week with a 3e-2e offer' do
         skip 'waiting for PO decision'
-        application = create(:weekly_internship_application, :second_june_week, :approved)
-        internship_offer = create(:weekly_internship_offer)
-        student = application.student
-        sign_in(student)
-        visit internship_offer_path(internship_offer)
-        all('a', text: 'Postuler').first.click
-        assert_text 'Votre candidature'
+        travel_to Date.new(2023, 10, 1) do
+          application = create(:weekly_internship_application, :second_june_week, :approved)
+          internship_offer = create(:weekly_internship_offer)
+          student = application.student
+          sign_in(student)
+          visit internship_offer_path(internship_offer)
+          all('a', text: 'Postuler').first.click
+          assert_text 'Votre candidature'
+        end
       end
 
       test '2nde student faulty application fails gracefully' do
@@ -285,6 +287,12 @@ module Dashboard
         visit dashboard_candidatures_path
         find('td.col-title', text: 'Stage de 2de - 1')
         assert_text 'NOUVEAU'
+      end
+      test "As employer, I cannot restore any application targetting a student who's got its internship validated" do
+        internship_application = create(:weekly_internship_application, :both_june_weeks, :approved)
+        internship_application2 = create(:weekly_internship_application, :first_june_week, :rejected,
+                                         student: internship_application.student)
+        refute internship_application2.may_restore?
       end
     end
   end

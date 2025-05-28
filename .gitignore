@@ -41,6 +41,7 @@ yarn-debug.log*
 .yarn/*
 .yarnrc
 .env
+.old_env
 .cursorrules
 
 /doc/env.sh

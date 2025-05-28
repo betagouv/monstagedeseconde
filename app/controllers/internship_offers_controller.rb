@@ -19,10 +19,10 @@ class InternshipOffersController < ApplicationController
         @params = query_params.merge(sector_ids: params[:sector_ids])
       end
       format.json do
-        t0 = Time.now
         @internship_offers_seats = 0
         @internship_offers = finder.all
                                    .includes(:sector, :employer)
+
         # QPV order
         if current_user&.student? && current_user&.school&.try(:qpv)
           @internship_offers = @internship_offers.reorder('qpv DESC NULLS LAST')
@@ -69,7 +69,7 @@ class InternshipOffersController < ApplicationController
                 SQL
               end
 
-        @internship_offers_seats = if params[:latitude].present? && params[:longitude].present?
+        @internship_offers_seats = if params[:longitude].present? && params[:latitude].present?
                                      ActiveRecord::Base.connection.exec_query(
                                        sql,
                                        'SQL',
@@ -87,8 +87,6 @@ class InternshipOffersController < ApplicationController
           seats: @internship_offers_seats
         }
         current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
-        t1 = Time.now
-        Rails.logger.info("Search took #{t1 - t0} seconds")
         render json: data, status: 200
       end
     end
@@ -177,47 +175,6 @@ class InternshipOffersController < ApplicationController
       ),
       user: current_user_or_visitor
     )
-  end
-
-  def alternative_internship_offers
-    priorities = [
-      %i[latitude longitude radius], # 1
-      [:keyword] # 2
-    ]
-
-    alternative_offers = []
-    priorities.each do |priority|
-      priority_offers = Finders::InternshipOfferConsumer.new(
-        params: params.permit(*priority),
-        user: current_user_or_visitor
-      ).all.with_grade(current_user_or_visitor).to_a
-
-      if priority_offers.count < 5 && priority == %i[latitude longitude radius]
-        priority_offers = Finders::InternshipOfferConsumer.new(
-          params: params.permit(*priority).merge(radius: Nearbyable::DEFAULT_NEARBY_RADIUS_IN_METER + 40_000),
-          user: current_user_or_visitor
-        ).all.with_grade(current_user_or_visitor).to_a
-      end
-
-      alternative_offers << priority_offers
-
-      alternative_offers = alternative_offers.flatten.uniq
-      break if alternative_offers.count > 5
-    end
-
-    if alternative_offers.count < 5
-      alternative_offers += InternshipOffer.uncompleted
-                                           .with_grade(current_user_or_visitor)
-                                           .last(5 - alternative_offers.count)
-      alternative_offers = alternative_offers.uniq
-    end
-
-    if params[:latitude].present?
-      alternative_offers.sort_by { |offer| offer.distance_from(params[:latitude], params[:longitude]) }.first(5)
-    else
-      alternative_offers.first(5)
-    end
-    alternative_offers
   end
 
   def increment_internship_offer_view_count
