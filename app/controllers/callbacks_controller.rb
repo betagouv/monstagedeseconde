@@ -69,9 +69,11 @@ class CallbacksController < ApplicationController
     # Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
 
     user_info = educonnect.get_user_info
+
     # Rails.logger.info('--------------')
     # Rails.logger.info("Educonnect User info: #{user_info.inspect}")
     # Rails.logger.info('--------------')
+    #
 
     redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
@@ -82,6 +84,14 @@ class CallbacksController < ApplicationController
 
     student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
     school = School.find_by(code_uai: user_info['FrEduCtEleveUAI'])
+
+    # Flipper debug by actor
+    notifier = Services::Notifier.new(flipper_feature: :educonnect_debug, user: current_user)
+    notifier.broadcast_admins({ user_info: user_info.inspect,
+                                school: school.inspect,
+                                student: student.inspect,
+                                time: Time.now })
+    #  --- Flipper debug
 
     # Rails.logger.info("School: #{school.inspect}")
     # Rails.logger.info("Student: #{student.inspect}")
