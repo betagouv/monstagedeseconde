@@ -18,13 +18,15 @@ module Dashboard::InternshipOffers
     end
 
     test 'GET #edit as employer owning internship_offer renders success' do
-      employer = create(:employer)
-      sign_in(employer)
-      internship_offer = create(:weekly_internship_offer_3eme, employer:,
-                                                               max_candidates: 2)
-      get edit_dashboard_internship_offer_path(internship_offer.to_param)
-      assert_select "#internship_offer_max_candidates[value=#{internship_offer.max_candidates}]", count: 1
-      assert_response :success
+      travel_to Date.new(2023, 10, 1) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_3eme, employer:,
+                                                                 max_candidates: 2)
+        get edit_dashboard_internship_offer_path(internship_offer.to_param)
+        assert_select "#internship_offer_max_candidates[value=#{internship_offer.max_candidates}]", count: 1
+        assert_response :success
+      end
     end
 
     test 'GET #edit post offer render selectable week of past year' do

@@ -1,9 +1,10 @@
 module Services
-  class DescriptionScoring < ApiRequestsHelper
+  class DescriptionScoring
+    include ApiRequestsHelper
     SCORE_API_URL = "#{ENV['SCORE_API_URL']}".freeze
 
     def perform
-      response = post_request(body: body)
+      response = post_request(body: body, uri: URI("#{SCORE_API_URL}/score"))
       if response.nil? || !response.respond_to?(:body)
         error_message = 'Faulty request : consider contacting developper'
         Rails.logger.error(error_message)
@@ -24,10 +25,6 @@ module Services
       error_message = "Error #{response.try(:code)} with message: " \
                       "#{response} for description-scoring "
       Rails.logger.error(error_message)
-    end
-
-    def post_request_uri
-      URI("#{SCORE_API_URL}/score")
     end
 
     def body
