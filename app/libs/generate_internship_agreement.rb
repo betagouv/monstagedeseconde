@@ -526,18 +526,8 @@ class GenerateInternshipAgreement < Prawn::Document
   def download_image_and_signature(signatory_role:)
     if signatory_role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE) && @internship_agreement.school.signature.attached?
       begin
-        # Download the signature
         signature_data = @internship_agreement.school.signature.download
-
-        # Convert to non-interlaced PNG
-        image = MiniMagick::Image.read(signature_data) do |img|
-          img.format 'png'
-          img.interlace 'none' # Disable interlacing
-        end
-
-        return OpenStruct.new(
-          local_signature_image_file_path: StringIO.new(image.to_blob)
-        )
+        return process_signature_image(signature_data)
       rescue StandardError => e
         Rails.logger.error "Error processing school signature: #{e.message} for  #{@internship_agreement.school.id}"
         return nil
@@ -554,11 +544,26 @@ class GenerateInternshipAgreement < Prawn::Document
     img = signature.signature_image.try(:download) if signature.signature_image.attached?
     return nil if img.nil?
 
+    # Convertir en PNG non entrelacé
+    processed_signature = process_signature_image(img)
+    return processed_signature if processed_signature
+
+    # fallback : enregistrer tel quel (non recommandé)
     File.open(signature.local_signature_image_file_path, 'wb') { |f| f.write(img) }
     signature
   rescue ActiveStorage::FileNotFoundError
     Rails.logger.error "Signature image not found for #{signatory_role} for internship agreement #{internship_agreement.id}"
     nil
+  end
+
+  def process_signature_image(image_data)
+    image = MiniMagick::Image.read(image_data) do |img|
+      img.format 'png'
+      img.interlace 'none'
+    end
+    OpenStruct.new(
+      local_signature_image_file_path: StringIO.new(image.to_blob)
+    )
   end
 
   def signature_date_str(signatory_role:)
