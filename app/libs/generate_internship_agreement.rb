@@ -520,7 +520,17 @@ class GenerateInternshipAgreement < Prawn::Document
     return '' if signature.nil?
 
     merge_options = signature.is_a?(OpenStruct) ? SCHOOL_SIGNATURE_OPTIONS : SIGNATURE_OPTIONS
-    { image: signature.local_signature_image_file_path }.merge(merge_options)
+    image_source = signature.local_signature_image_file_path
+
+    # Si c'est un StringIO, Prawn accepte, sinon c'est un chemin
+    if image_source.is_a?(StringIO)
+      { image: image_source }.merge(merge_options)
+    elsif image_source.is_a?(String) && File.exist?(image_source)
+      { image: image_source }.merge(merge_options)
+    else
+      # Fichier absent ou type inconnu
+      ''
+    end
   end
 
   def download_image_and_signature(signatory_role:)
