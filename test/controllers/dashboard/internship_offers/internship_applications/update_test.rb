@@ -423,7 +423,7 @@ module InternshipOffers::InternshipApplications
                    InternshipApplication.last.state_changes.last.author
     end
 
-    test 'PATCH #update with reject! and a custom message transition sends email' do
+    test 'PATCH #update with cancel_by_employer! and a custom message transition sends email' do
       school = create(:school, :with_school_manager)
       class_room = create(:class_room, school:)
       student = create(:student, school:, class_room:)
@@ -442,15 +442,14 @@ module InternshipOffers::InternshipApplications
           uuid: internship_application.uuid
         )
         patch(update_url, params: {
-                transition: :reject!,
-                internship_application: { rejected_message: 'OK' }
+                transition: :cancel_by_employer!,
+                internship_application: { canceled_by_employer_message: 'OK' }
               })
-        assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :reject!)
+        assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :cancel_by_employer!)
       end
       internship_application.reload
 
-      assert_equal 'OK', internship_application.rejected_message
-      assert InternshipApplication.last.rejected?
+      assert InternshipApplication.last.canceled_by_employer?
     end
 
     test 'PATCH #update with cancel_by_employer! send email, change aasm_state' do

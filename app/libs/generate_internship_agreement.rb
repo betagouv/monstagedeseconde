@@ -379,9 +379,10 @@ class GenerateInternshipAgreement < Prawn::Document
                cell_style: { border_width: 0 },
                column_widths: column_widths)
 
-    image1 = image_from(signature: download_image_and_signature(signatory_role: 'employer'))
-    image2 = @internship_agreement.signed_by_school_management? ? image_from(signature: download_image_and_signature(signatory_role: @internship_agreement.school_management_signatory_role)) : ''
-    @pdf.table([[image1, image2]], cell_style: { border_width: 0, height: 80 }, column_widths: column_widths)
+    employer_signature = image_from(signature: download_image_and_signature(signatory_role: 'employer'))
+    school_manager_signature = image_from(signature: school_manager_signature)
+    @pdf.table([[employer_signature, school_manager_signature]], cell_style: { border_width: 0, height: 80 },
+                                                                 column_widths: column_widths)
 
     @pdf.move_down 10
     @pdf.text 'Vu et pris connaissance,'
@@ -674,5 +675,9 @@ class GenerateInternshipAgreement < Prawn::Document
       Rails.logger.error "School ID: #{@internship_agreement.school.id}"
       nil
     end
+  end
+
+  def school_manager_signature
+    @internship_agreement.signed_by_school_management? ? download_school_signature : 'coucou'
   end
 end
