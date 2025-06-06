@@ -62,10 +62,11 @@ class Signature < ApplicationRecord
   end
 
   def attach_signature!(io:, filename:, content_type:)
-    unless File.exist?(local_signature_image_file_path) &&
-           MIME::Types.type_for(local_signature_image_file_path).first.try(:media_type) == 'image'
+    image = MiniMagick::Image.read(io.read)
+    io.rewind
 
-      raise ArgumentError, "L'image au format png n'a pas été trouvée"
+    unless image.mime_type.start_with?('image/')
+      raise ArgumentError, "Le fichier n'est pas une image (type détecté : #{image.mime_type})"
     end
 
     signature_image.attach(io: io,
