@@ -51,7 +51,7 @@ module Presenters
     end
 
     def str_weeks_display
-      troisieme_weeks = weeks & Week.troisieme_selectable_weeks
+      troisieme_weeks = weeks & Week.selectable_from_now_until_next_school_year # TODO: remove this in july 2025
       seconde_weeks = weeks & Week.seconde_selectable_weeks
       label_troisieme_weeks = nil
       label_seconde_weeks = nil
