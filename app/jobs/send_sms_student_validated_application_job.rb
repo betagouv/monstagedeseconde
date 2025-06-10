@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SendSmsStudentValidatedApplicationJob < ApplicationJob
-  queue_as :default
+  queue_as :critical
 
   def perform(internship_application_id:)
     internship_application = InternshipApplication.find(internship_application_id)
