@@ -37,6 +37,9 @@ class InternshipApplication < ApplicationRecord
     approved
   ]
   RE_APPROVABLE_STATES = %w[rejected canceled_by_employer expired]
+  CANCELLABLE_BY_EMPLOYER_STATES = %w[validated_by_employer approved]
+  REJECTABLE_BY_EMPLOYER_STATES = %w[read_by_employer submitted restored transfered]
+  DECLINABLE_STATES = CANCELLABLE_BY_EMPLOYER_STATES + REJECTABLE_BY_EMPLOYER_STATES
   VALID_TRANSITIONS = %w[
     read
     read!
@@ -283,12 +286,7 @@ class InternshipApplication < ApplicationRecord
     end
 
     event :reject do
-      from_states = %i[read_by_employer
-                       submitted
-                       restored
-                       transfered
-                       validated_by_employer ]
-      transitions from: from_states,
+      transitions from: REJECTABLE_BY_EMPLOYER_STATES,
                   to: :rejected,
                   after: proc { |user, *_args|
                            update!("rejected_at": Time.now.utc)
@@ -302,13 +300,7 @@ class InternshipApplication < ApplicationRecord
     end
 
     event :cancel_by_employer do
-      from_states = %i[submitted
-                       restored
-                       read_by_employer
-                       transfered
-                       validated_by_employer
-                       approved ]
-      transitions from: from_states,
+      transitions from: CANCELLABLE_BY_EMPLOYER_STATES,
                   to: :canceled_by_employer,
                   after: proc { |user, *_args|
                            update!("canceled_at": Time.now.utc)
@@ -431,6 +423,18 @@ class InternshipApplication < ApplicationRecord
 
   def is_modifiable?
     aasm_state.in?(%w[expired rejected canceled_by_employer expired_by_student])
+  end
+
+  def is_declinable?
+    DECLINABLE_STATES.include?(aasm_state)
+  end
+
+  def is_cancellable_by_employer?
+    CANCELLABLE_BY_EMPLOYER_STATES.include?(aasm_state)
+  end
+
+  def is_rejectable_by_employer?
+    REJECTABLE_BY_EMPLOYER_STATES.include?(aasm_state)
   end
 
   def is_re_approvable?

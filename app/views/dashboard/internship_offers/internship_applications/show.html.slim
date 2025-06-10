@@ -1,4 +1,3 @@
-
 - if current_user
   - content_for(:page_title, "#{t(".page_title", name: @internship_application.student.presenter.full_name)} | 1élève1stage")
   - presenter = @internship_application.presenter(current_user)
@@ -108,13 +107,13 @@
                 span.font-weight-bold  Motif 
                 p.small=  @internship_application.response_message
 
-        - if @internship_application.is_re_approvable? || @internship_application.is_modifiable?
+        - if @internship_application.is_re_approvable? || @internship_application.is_cancellable_by_employer?
           .fr-callout.fr-icon-information-line.fr-mt-4w.fr-mb-4w
             h3.fr-callout__title
               = callout_title(@internship_application)
             - if @internship_application.is_re_approvable?
               p.fr-callout__text
-                | Un email sera envoyé à l’élève lui indiquant que vous souhaitez retenir sa candidature. Il devra ensuite confirmer sa participation au stage.
+                | Un email sera envoyé à l'élève lui indiquant que vous souhaitez retenir sa candidature. Il devra ensuite confirmer sa participation au stage.
               = render "dashboard/internship_offers/internship_applications/action_modal",
                 internship_application:@internship_application,
                 aasm_target: :employer_validate!,
@@ -126,13 +125,14 @@
                 fa_icon: "fr-icon-check-line",
                 token: nil,
                 opened_modal: defined?(opened_modal) ? opened_modal == 'accept' : false
-            - elsif @internship_application.is_modifiable? || @internship_application.aasm_state.in?(%w(canceled_by_student  approved))
+          
+            - elsif @internship_application.is_cancellable_by_employer?
               = render "dashboard/internship_offers/internship_applications/action_modal",
                 internship_application: @internship_application,
-                aasm_target: :reject!,
-                modal_opener_label: 'Refuser cette candidature',
-                subtitle: 'Motif de refus de stage*',
-                message: "En cliquant sur “refuser”, vous confirmez que vous ne souhaitez " \
+                aasm_target: :cancel_by_employer!,
+                modal_opener_label: 'Annuler cette candidature',
+                subtitle: 'Motif d\'annulation de stage*',
+                message: "En cliquant sur 'annuler', vous confirmez que vous ne souhaitez " \
                                     "pas prendre cet élève en stage. Celui-ci sera informé de votre décision.",
                 rich_text: true,
                 modal_id: "reject-internship-application-#{@internship_application.id}",

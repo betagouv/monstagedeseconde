@@ -283,12 +283,7 @@ module Presenters
     end
 
     def ok_for_reject_states
-      %w[submitted
-         restored
-         read_by_employer
-         transfered
-         validated_by_employer
-         approved]
+      ::InternshipApplication::REJECTABLE_BY_EMPLOYER_STATES
     end
   end
 end
