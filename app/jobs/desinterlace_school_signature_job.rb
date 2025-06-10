@@ -27,6 +27,6 @@ class DesinterlaceSchoolSignatureJob < ApplicationJob
       )
     end
   ensure
-    downloaded_file.close!
+    downloaded_file.close! if downloaded_file
   end
 end
