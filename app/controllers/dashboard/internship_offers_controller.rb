@@ -74,7 +74,7 @@ module Dashboard
 
     def edit
       authorize! :update, @internship_offer
-      @available_weeks = Week.both_school_track_selectable_weeks
+      @available_weeks = Week.selectable_from_now_until_next_school_year # Week.both_school_track_selectable_weeks TODO: remove this in july 2025
       set_internship_offer_attributes(@internship_offer)
       @republish = true
       @duplication = false
