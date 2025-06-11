@@ -4,7 +4,12 @@
 - error = form.object.errors[:all_year_long].any?
 - latitude = form.object.coordinates&.latitude
 - longitude = form.object.coordinates&.longitude
-- current_weeks = Week.troisieme_selectable_weeks if current_weeks.blank?
+- puts "current_weeks: #{current_weeks.count}"
+- current_weeks = Week.selectable_from_now_until_next_school_year if current_weeks.blank? # TODO: remove this in july 2025
+- puts "current_weeks: #{current_weeks.count}"
+- puts "current_weeks: #{current_weeks.count}"
+- puts "current_weeks: #{current_weeks.count}"
+- puts "current_weeks: #{current_weeks.count}"
 - current_weeks = current_weeks.reject { |week| week.id.in?(SchoolTrack::Seconde.both_weeks.map(&:id))}
 div [data-planning-target='weeksContainer'
      data-select-weeks-skip-validation-value="false"
