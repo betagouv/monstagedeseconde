@@ -208,9 +208,9 @@ class AbilityTest < ActiveSupport::TestCase
       refute ability.can?(:see_reporting_associations, User)
       refute ability.can?(:see_reporting_enterprises, User)
 
-      refute(ability.can?(:edit, InternshipAgreement))
-      refute(ability.can?(:create, InternshipAgreement))
-      refute(ability.can?(:update, InternshipAgreement))
+      assert(ability.can?(:edit, InternshipAgreement))
+      assert(ability.can?(:create, InternshipAgreement))
+      assert(ability.can?(:update, InternshipAgreement))
 
       statistician = create(:statistician, agreement_signatorable: true)
       ability = Ability.new(statistician)
