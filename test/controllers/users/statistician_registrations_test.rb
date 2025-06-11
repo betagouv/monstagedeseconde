@@ -30,8 +30,8 @@ class StatisticianRegistrationsTest < ActionDispatch::IntegrationTest
   end
 
   test 'when agreement_signatorable goes from false to true a job is launched' do
-    statistician = create(:statistician)
-    assert statistician.agreement_signatorable
+    statistician = create(:statistician, agreement_signatorable: false)
+    assert_not statistician.agreement_signatorable
     assert_enqueued_with(job: AgreementsAPosterioriJob) do
       statistician.update(agreement_signatorable: true)
     end
