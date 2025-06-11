@@ -5,6 +5,9 @@
     = form.hidden_field :type, value: resource.type, data: { :"planning-candidates-target" => "type" } unless resource.is_a?(Planning)
     = form.hidden_field :school_id, value: form.object.school_id
     .row
+      .col-12
+        h3.fr-h6
+          | Votre offre sera proposée aux élèves des niveaux suivants :
       .col-12= form.rg2a_explain_required_asterisk(p_class_name: "mb-0")
       .col-md-6.order-md-2.order-1.d-none.d-md-block
         - if form.object.new_record? && !duplication
@@ -37,7 +40,7 @@
         = render 'inputs/dsfr_checkbox_field',
           form: form,
           field: :grade_college,
-          title: 'Votre offre sera proposée aux élèves des niveaux suivants :',
+          title: '',
           label: 'Collégiens (4ème et 3ème)',
           extra_header_classes: 'fr-h6',
           options: { data: {:'grade-target' => 'gradeCollege',
