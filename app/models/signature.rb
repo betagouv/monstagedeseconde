@@ -62,7 +62,16 @@ class Signature < ApplicationRecord
   end
 
   def attach_signature!(io:, filename:, content_type:)
-    signature_image.attach(io: io, filename: filename, content_type: content_type)
+    image = MiniMagick::Image.read(io.read)
+    io.rewind
+
+    unless image.type.downcase.in?(%w[jpeg jpg png gif bmp tiff webp])
+      raise ArgumentError, "Le fichier n'est pas une image reconnue (type détecté : #{image.type})"
+    end
+
+    signature_image.attach(io: io,
+                           filename: filename,
+                           content_type: content_type) && true
   end
 
   def presenter
