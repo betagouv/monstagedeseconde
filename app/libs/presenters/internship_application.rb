@@ -101,15 +101,15 @@ module Presenters
       when 'canceled_by_employer'
         # label = reader.student? || reader.school_management? ? 'annulée par l\'entreprise' : 'refusée'
         tab = 'Annulées'
-        { label: 'refusée par l\'entreprise',
+        { label: 'annulée par l\'employeur',
           badge: 'error',
           tab:,
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
       when 'rejected'
         # label = reader.student? || reader.school_management? ? 'refusée par l\'entreprise' : 'refusée'
         tab = 'Refusées'
-        { label: 'refusée par l\'entreprise',
-          badge: 'error',
+        { label: 'refusée par l\'employeur',
+          badge: 'warning',
           tab:,
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
       when 'canceled_by_student'
