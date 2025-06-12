@@ -38,10 +38,7 @@ module Dashboard
                           end
 
       @available_weeks = Week.both_school_track_selectable_weeks
-      @internship_offer.grade_college = @internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
-      @internship_offer.grade_2e = @internship_offer.fits_for_seconde? ? '1' : '0'
-      @internship_offer.all_year_long = @internship_offer.all_year_long?
-      @internship_offer.entreprise_chosen_full_address = @internship_offer.entreprise_full_address
+      set_internship_offer_attributes(@internship_offer)
     end
 
     # duplication submit
@@ -77,11 +74,8 @@ module Dashboard
 
     def edit
       authorize! :update, @internship_offer
-      @available_weeks = Week.both_school_track_selectable_weeks
-      @internship_offer.grade_college = @internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
-      @internship_offer.grade_2e = @internship_offer.fits_for_seconde? ? '1' : '0'
-      @internship_offer.all_year_long = @internship_offer.all_year_long? # ? strange ... removal seems possible
-      @internship_offer.entreprise_chosen_full_address = @internship_offer.entreprise_full_address
+      @available_weeks = Week.selectable_from_now_until_next_school_year # Week.both_school_track_selectable_weeks TODO: remove this in july 2025
+      set_internship_offer_attributes(@internship_offer)
       @republish = true
       @duplication = false
     end
@@ -89,6 +83,11 @@ module Dashboard
     def update
       authorize! :update, @internship_offer
       @available_weeks = Week.troisieme_selectable_weeks # TODO : check if it's the right weeks
+      if internship_offer_params[:is_public] == 'true'
+        params[:internship_offer][:sector_id] = Sector.find_by(name: 'Fonction publique').try(:id)
+      else
+        params[:internship_offer][:group_id] = nil
+      end
       internship_offer_builder.update(instance: @internship_offer,
                                       params: internship_offer_params) do |on|
         on.success do |_updated_internship_offer|
@@ -233,6 +232,13 @@ module Dashboard
 
     def set_internship_offer
       @internship_offer = InternshipOffer.find(params[:id])
+    end
+
+    def set_internship_offer_attributes(internship_offer)
+      internship_offer.grade_college = internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
+      internship_offer.grade_2e = internship_offer.fits_for_seconde? ? '1' : '0'
+      internship_offer.all_year_long = internship_offer.all_year_long?
+      internship_offer.entreprise_chosen_full_address = internship_offer.entreprise_full_address
     end
   end
 end

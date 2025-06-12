@@ -53,7 +53,7 @@
                     .fr-radio-group
                       = form.radio_button :is_public,
                                           true,
-                                          class: '',
+                                          class: 'public-radio-button-true',
                                           required: true,
                                           data: { action: 'ministry-fields#handleClickIsPublic' }
                       = form.label :is_public_true,
@@ -80,8 +80,9 @@
 
               = form.select :group_id,
                             options_for_select(options_for_public_groups, resource.group.try(:id)),
-                            { prompt: 'type employeur public' },
+                            { prompt: 'Sélectionnez un employeur public' },
                             class: "fr-select",
+                            id: "group-choice",
                             required: false,
                             :'data-ministry-fields-target' => 'selectGroupName'
           #entreprise_sector_id-block class="row fr-mt-3w bloc-tooggle #{(form.object.persisted? && !form.object.is_public) ? '' : 'd-none'}"
@@ -93,10 +94,7 @@
                             { prompt: sectors_options_for_default },
                             class: "fr-select",
                             required: false,
-                            id: "sector-choice",
-                            data: { :'fill-card-target' => "sectorInput",
-                                    :'mandatory-fields-target' => "mandatoryField",
-                                    data: { action: "input->mandatory-fields#fieldChange change->fill-card#sectorChanged"}}
+                            id: "sector-choice"
           div class="row fr-mt-3w hide-when-manual bloc-tooggle #{form.object.persisted? ? '' : 'd-none'}"
             .col-12
               = render 'inputs/dsfr_input_field',

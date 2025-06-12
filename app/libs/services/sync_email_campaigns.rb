@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Services
-  class SyncEmailCampaigns < ApiRequestsHelper
+  class SyncEmailCampaigns
+    include ApiRequestsHelper
     require 'net/https'
 
     SARBACANE_HOST = 'https://sarbacaneapis.com/v1'

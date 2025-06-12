@@ -30,7 +30,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                               action: "change->internship-application-form#updateWeekId"},
                         required: true }
       - elsif current_user.seconde_gt?
-        - if @internship_application.internship_offer.two_weeks_long?
+        - if @internship_application.internship_offer.two_weeks_long? || ((@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks).map(&:id) == SchoolTrack::Seconde.both_weeks.map(&:id))
           - period_text = Presenters::WeekList.new(weeks: SchoolTrack::Seconde.both_weeks).to_range_as_str
           - period_value = SchoolTrack::Seconde.both_weeks.map(&:id).join(',')
           - period_options = [[period_text, period_value]]

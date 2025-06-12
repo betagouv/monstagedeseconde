@@ -20,7 +20,7 @@ module Dashboard::Stepper
       )
       authorize! :create, @planning
       @internship_occupation = @entreprise.internship_occupation
-      @available_weeks = @planning.available_weeks || []
+      @available_weeks = Week.selectable_from_now_until_next_school_year # @planning.available_weeks || []
       @school_weeks = School.nearby_school_weeks(
         latitude: @internship_occupation.coordinates.latitude,
         longitude: @internship_occupation.coordinates.longitude,

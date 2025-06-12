@@ -1,17 +1,16 @@
 module Users
   class AcademyStatistician < Statistician
-
     METABASE_DASHBOARD_ID = 30
 
     belongs_to :academy
 
     validates :academy_id, presence: true
-    
+
     def dashboard_name
       'Statistiques'
     end
 
-    def academy_statistician? ; true end
+    def academy_statistician? = true
 
     def presenter
       Presenters::PrefectureStatistician.new(self)
@@ -29,7 +28,7 @@ module Users
     end
 
     rails_admin do
-      navigation_label "Référents"
+      navigation_label 'Référents'
       list do
         field :first_name do
           label 'Prénom'
@@ -42,7 +41,7 @@ module Users
         end
         field :academy do
           label 'Académie'
-          pretty_value { bindings[:object]&.academy&.name}
+          pretty_value { bindings[:object]&.academy&.name }
         end
         field :statistician_validation do
           label 'Validation'
@@ -56,6 +55,10 @@ module Users
         end
         field :statistician_validation do
           label 'Validation'
+        end
+        field :agreement_signatorable do
+          label 'Signataire des conventions'
+          help 'Si le V est coché en vert, le signataire doit signer TOUTES les conventions'
         end
       end
 

@@ -20,7 +20,7 @@ class Week < ApplicationRecord
 
   scope :from_now, lambda {
     current_date = Date.current
-    if current_date.cweek == 53 && current_date.month == 12
+    if end_of_year_week?(current_date)
       where('number = ?', 53).where('year = ?', current_date.year).or(where('year > ?', current_date.year))
     elsif current_date.cweek == 53 && current_date.month == 1
       where('year >= ?', current_date.year)
@@ -28,6 +28,10 @@ class Week < ApplicationRecord
       after(date: current_date)
     end
   }
+
+  def self.end_of_year_week?(date)
+    date.cweek == 53 && date.month == 12
+  end
 
   scope :in_the_future, lambda {
     if Date.current.cweek == 53 && Date.current.month == 1
@@ -79,7 +83,7 @@ class Week < ApplicationRecord
   }
 
   scope :selectable_from_now_until_end_of_school_year, lambda {
-    school_year = SchoolYear::Floating.new(date: Date.today)
+    school_year = SchoolYear::Floating.new(date: Date.current)
 
     from_date_to_date(from: school_year.updated_beginning_of_period,
                       to: school_year.end_of_period)
@@ -134,7 +138,7 @@ class Week < ApplicationRecord
 
   scope :weeks_of_school_year, lambda { |school_year:|
     first_week_of_september = Date.new(school_year, 9, 1).cweek
-    first_day_of_july_week  = Date.new(school_year + 1, SchoolYear::Base::MONTH_OF_YEAR_SHIFT, SchoolYear::Base::MONTH_OF_YEAR_SHIFT).cweek
+    first_day_of_july_week ||= Date.new(school_year + 1, SchoolYear::Base::MONTH_OF_YEAR_SHIFT, SchoolYear::Base::MONTH_OF_YEAR_SHIFT).cweek
 
     where('number >= ?', first_week_of_september).where(year: school_year)
                                                  .or(where('number <= ?', first_day_of_july_week).where(year: school_year + 1))
