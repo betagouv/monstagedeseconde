@@ -50,8 +50,10 @@ module UserAdmin
         field :failed_attempts do
           label 'Nombre de tentatives'
         end
-
         field :sign_in_count
+        field :current_sign_in_at do
+          label 'Dernière connexion'
+        end
       end
 
       export do

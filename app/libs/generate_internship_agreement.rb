@@ -379,9 +379,10 @@ class GenerateInternshipAgreement < Prawn::Document
                cell_style: { border_width: 0 },
                column_widths: column_widths)
 
-    image1 = image_from(signature: download_image_and_signature(signatory_role: 'employer'))
-    image2 = @internship_agreement.signed_by_school_management? ? image_from(signature: download_image_and_signature(signatory_role: @internship_agreement.school_management_signatory_role)) : ''
-    @pdf.table([[image1, image2]], cell_style: { border_width: 0, height: 80 }, column_widths: column_widths)
+    employer_signature_img = image_from(signature: download_image_and_signature(signatory_role: 'employer'))
+    school_manager_signature_img = image_from(signature: school_manager_signature)
+    @pdf.table([[employer_signature_img, school_manager_signature_img]], cell_style: { border_width: 0, height: 80 },
+                                                                         column_widths: column_widths)
 
     @pdf.move_down 10
     @pdf.text 'Vu et pris connaissance,'
@@ -520,45 +521,60 @@ class GenerateInternshipAgreement < Prawn::Document
     return '' if signature.nil?
 
     merge_options = signature.is_a?(OpenStruct) ? SCHOOL_SIGNATURE_OPTIONS : SIGNATURE_OPTIONS
-    { image: signature.local_signature_image_file_path }.merge(merge_options)
+
+    # On attend toujours un StringIO (jamais un chemin local)
+    if signature.respond_to?(:signature_image_file_path) && signature.signature_image_file_path.is_a?(StringIO)
+      { image: signature.signature_image_file_path }.merge(merge_options)
+    else
+      ''
+    end
   end
 
   def download_image_and_signature(signatory_role:)
-    if signatory_role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE) && @internship_agreement.school.signature.attached?
-      begin
-        # Download the signature
-        signature_data = @internship_agreement.school.signature.download
+    # Cas des signatures de l'école (school management)
+    # if signatory_role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE) && @internship_agreement.school.signature.attached?
+    #   begin
+    #     signature_data = @internship_agreement.school.signature.download
+    #     image = MiniMagick::Image.read(signature_data) do |img|
+    #       img.format 'png'
+    #       img.interlace 'none'
+    #     end
+    #     return OpenStruct.new(
+    #       signature_image_file_path: StringIO.new(image.to_blob)
+    #     )
+    #   rescue StandardError => e
+    #     Rails.logger.error "Error processing school signature: #{e.message} for  #{@internship_agreement.school.id}"
+    #     return nil
+    #   end
+    # end
 
-        # Convert to non-interlaced PNG
-        image = MiniMagick::Image.read(signature_data) do |img|
-          img.format 'png'
-          img.interlace 'none' # Disable interlacing
-        end
-
-        return OpenStruct.new(
-          local_signature_image_file_path: StringIO.new(image.to_blob)
-        )
-      rescue StandardError => e
-        Rails.logger.error "Error processing school signature: #{e.message} for  #{@internship_agreement.school.id}"
-        return nil
-      end
-    end
-
+    # Cas des signatures employer
     signature = @internship_agreement.signature_by_role(signatory_role:)
-    return nil if signature.nil?
+    return nil if signature.nil? || !signature.signature_image.attached?
 
-    # When local images stay in the configurated storage directory
-    return signature if Rails.application.config.active_storage.service == :local
+    begin
+      signature_data = signature.signature_image.download
+      image = MiniMagick::Image.read(signature_data) do |img|
+        img.format 'png'
+        img.interlace 'none'
+      end
+      OpenStruct.new(
+        signature_image_file_path: StringIO.new(image.to_blob)
+      )
+    rescue StandardError => e
+      Rails.logger.error "Error processing signature for #{signatory_role}: #{e.message} for internship agreement #{@internship_agreement.id}"
+      nil
+    end
+  end
 
-    # When on external storage service, they are to be downloaded
-    img = signature.signature_image.try(:download) if signature.signature_image.attached?
-    return nil if img.nil?
-
-    File.open(signature.local_signature_image_file_path, 'wb') { |f| f.write(img) }
-    signature
-  rescue ActiveStorage::FileNotFoundError
-    Rails.logger.error "Signature image not found for #{signatory_role} for internship agreement #{internship_agreement.id}"
-    nil
+  def process_signature_image(image_data)
+    image = MiniMagick::Image.read(image_data) do |img|
+      img.format 'png'
+      img.interlace 'none'
+    end
+    OpenStruct.new(
+      signature_image_file_path: StringIO.new(image.to_blob)
+    )
   end
 
   def signature_date_str(signatory_role:)
@@ -652,11 +668,30 @@ class GenerateInternshipAgreement < Prawn::Document
       # Créer un objet qui répond à local_signature_image_file_path
       # en utilisant directement le blob d'Active Storage
       OpenStruct.new(
-        local_signature_image_file_path: @internship_agreement.school.signature.url
+        signature_image_file_path: @internship_agreement.school.signature.url
       )
     rescue StandardError => e
       Rails.logger.error "Error accessing school signature: #{e.message}"
       Rails.logger.error "School ID: #{@internship_agreement.school.id}"
+      nil
+    end
+  end
+
+  def school_manager_signature
+    return '' unless @internship_agreement.signed_by_school_management?
+
+    begin
+      signature_data = @internship_agreement.school.signature.download
+      image = MiniMagick::Image.read(signature_data) do |img|
+        img.format 'png'
+        img.interlace 'none'
+      end
+
+      OpenStruct.new(
+        signature_image_file_path: StringIO.new(image.to_blob)
+      )
+    rescue StandardError => e
+      Rails.logger.error "Error processing school signature: #{e.message} for  #{@internship_agreement.school.id}"
       nil
     end
   end

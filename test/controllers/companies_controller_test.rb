@@ -63,7 +63,7 @@ class CompaniesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Votre message a bien été envoyé', flash[:notice]
   end
 
-  test 'POST contact send contac to Immersion Facilitée but return 400 error' do
+  test 'POST contact send contact to Immersion Facilitée but return 400 error' do
     company_params = {
       id: 1234,
       location_id: 1234,

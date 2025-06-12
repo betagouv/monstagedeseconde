@@ -1,6 +1,6 @@
-= render 'layouts/breadcrumb',
-          links: [ [dashboard_students_internship_applications_path(@internship_application.student), 'Mes candidatures'],
-                   ['', 'Je Postule'] ]
+- links = generate_breadcrumb_links( [dashboard_students_internship_applications_path(@internship_application.student), 'Mes candidatures'],
+                                     'Je Postule' )
+= render 'layouts/breadcrumb', links: links
 .fr-container
   .fr-callout.mt-0.mb-5
     p.fr-callout__text

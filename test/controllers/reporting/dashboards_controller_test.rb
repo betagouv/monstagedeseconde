@@ -47,45 +47,47 @@ module Reporting
 
     test 'GET #index as ministry statistician counts ' \
          'offers of his own administration' do
-      ministry_statistician = create(:ministry_statistician)
-      ministry_groups = ministry_statistician.ministries
-      ministry_group = ministry_groups.first
-      public_group = create(:public_group)
-      private_group = create(:private_group)
-      strict_beginning_year = SchoolYear::Current.new.strict_beginning_of_period.year
-      current_year = strict_beginning_year
-      last_year = current_year - 1
+      travel_to Date.new(2023, 10, 1) do
+        ministry_statistician = create(:ministry_statistician)
+        ministry_groups = ministry_statistician.ministries
+        ministry_group = ministry_groups.first
+        public_group = create(:public_group)
+        private_group = create(:private_group)
+        strict_beginning_year = SchoolYear::Current.new.strict_beginning_of_period.year
+        current_year = strict_beginning_year
+        last_year = current_year - 1
 
-      assert ministry_group.is_public,
-             'ministry_statistician associated group should have been public'
-      # ministry internship offer with 1
-      first_offer = create(
-        :weekly_internship_offer_3eme,
-        :troisieme_generale_internship_offer,
-        group: ministry_group,
-        is_public: true
-      )
+        assert ministry_group.is_public,
+               'ministry_statistician associated group should have been public'
+        # ministry internship offer with 1
+        first_offer = create(
+          :weekly_internship_offer_3eme,
+          :troisieme_generale_internship_offer,
+          group: ministry_group,
+          is_public: true
+        )
 
-      # private independant internship_offer with 10
-      create(
-        :weekly_internship_offer_3eme,
-        :troisieme_generale_internship_offer,
-        max_candidates: 10,
-        group: nil,
-        is_public: false
-      )
+        # private independant internship_offer with 10
+        create(
+          :weekly_internship_offer_3eme,
+          :troisieme_generale_internship_offer,
+          max_candidates: 10,
+          group: nil,
+          is_public: false
+        )
 
-      # private internship offer with 20
-      create(
-        :weekly_internship_offer_3eme,
-        :troisieme_generale_internship_offer,
-        max_candidates: 20,
-        is_public: false
-      )
+        # private internship offer with 20
+        create(
+          :weekly_internship_offer_3eme,
+          :troisieme_generale_internship_offer,
+          max_candidates: 20,
+          is_public: false
+        )
 
-      sign_in(ministry_statistician)
-      get reporting_dashboards_path
-      assert_response 200
+        sign_in(ministry_statistician)
+        get reporting_dashboards_path
+        assert_response 200
+      end
     end
   end
 end

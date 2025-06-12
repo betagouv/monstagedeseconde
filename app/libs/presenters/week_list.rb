@@ -11,7 +11,7 @@ module Presenters
             .rotate(8).freeze
 
     def to_range_as_str
-      to_range do |is_first:, is_last:, week:|
+      format_weeks do |is_first:, is_last:, week:|
         if is_first
           week.beginning_of_week_with_year_long
         elsif is_last
@@ -23,14 +23,7 @@ module Presenters
     end
 
     def to_range(&block)
-      case weeks.size
-      when 0
-        ''
-      when 1
-        render_first_week_only(&block)
-      else
-        render_by_collapsing_date_from_first_to_last_week(&block)
-      end
+      format_weeks(&block)
     end
 
     def split_weeks_in_trunks(basic: false)
@@ -58,7 +51,7 @@ module Presenters
     end
 
     def str_weeks_display
-      troisieme_weeks = weeks & Week.troisieme_selectable_weeks
+      troisieme_weeks = weeks & Week.selectable_from_now_until_next_school_year # TODO: remove this in july 2025
       seconde_weeks = weeks & Week.seconde_selectable_weeks
       label_troisieme_weeks = nil
       label_seconde_weeks = nil
@@ -71,14 +64,14 @@ module Presenters
       if seconde_weeks.present?
         second_week_list = self.class.new(weeks: seconde_weeks)
         if seconde_weeks.count == 2
-        # label_seconde_weeks = "Disponible pour un stage de 2 semaines du #{first_week.monday} au #{last_week.friday}"
-          label_seconde_weeks = "Disponible pour un stage de 2 semaines"
+          # label_seconde_weeks = "Disponible pour un stage de 2 semaines du #{first_week.monday} au #{last_week.friday}"
+          label_seconde_weeks = 'Disponible pour un stage de 2 semaines'
         elsif seconde_weeks.count == 1
-          label_seconde_weeks = "Disponible pour une semaine de stage "
+          label_seconde_weeks = 'Disponible pour une semaine de stage '
         end
         label_seconde_weeks = "#{label_seconde_weeks} du #{second_week_list.first_week.beginning_of_week_abr} au #{second_week_list.last_week.end_of_working_week_with_year}"
       end
-      [ label_troisieme_weeks, label_seconde_weeks ].compact
+      [label_troisieme_weeks, label_seconde_weeks].compact
     end
 
     def split_range_string
@@ -94,16 +87,30 @@ module Presenters
 
     protected
 
-    def render_first_week_only
-      [
-        'Disponible la semaine ',
-        yield(is_first: false, is_last: false, week: first_week).strip
-      ].join.gsub(/\s+/, ' ').html_safe
+    def format_weeks(&block)
+      case weeks.size
+      when 0
+        ''
+      when 1
+        render_week_range(
+          prefix: 'Disponible la semaine ',
+          first_week: first_week,
+          last_week: first_week,
+          &block
+        )
+      else
+        render_week_range(
+          prefix: "Disponible sur #{weeks.size} semaines : ",
+          first_week: first_week,
+          last_week: last_week,
+          &block
+        )
+      end
     end
 
-    def render_by_collapsing_date_from_first_to_last_week
+    def render_week_range(prefix:, first_week:, last_week:, &block)
       [
-        "Disponible sur #{weeks.size} semaines : ",
+        prefix,
         yield(is_first: true, is_last: false, week: first_week),
         " → #{yield(is_first: false, is_last: true, week: last_week)}"
       ].join.gsub(/\s+/, ' ').html_safe
@@ -113,9 +120,10 @@ module Presenters
 
     def initialize(weeks:)
       @weeks = weeks
+      @single_week = weeks.try(:size) == 1
       if weeks.present? && weeks.size > 1
         @first_week, @last_week = weeks.minmax_by(&:id)
-      elsif weeks.present? && weeks.size == 1
+      elsif @single_week
         @first_week = @last_week = weeks.first
       else
         @first_week = @last_week = nil

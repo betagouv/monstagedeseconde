@@ -148,4 +148,15 @@ module ApplicationHelper
       { logo_img: 'univ-rennes.png', alt: 'univ rennes logo' }
     ]
   end
+
+  # Helper method to generate breadcrumb links
+  def generate_breadcrumb_links(*links)
+    links.map do |link|
+      if link.is_a?(Array)
+        { path: link[0], name: link[1] }
+      else
+        { path: '', name: link }
+      end
+    end
+  end
 end

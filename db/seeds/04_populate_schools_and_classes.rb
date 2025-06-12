@@ -11,6 +11,7 @@ def populate_schools
     next if line_nr.zero?
 
     cells = row.to_s.split(';')
+    cells[6] = cells[6].split(',').reverse.join(',') if cells[6].present? # reverse to match longitude, latitude order
 
     uai = cells[col_hash[:uai]]
     next if uai.nil?

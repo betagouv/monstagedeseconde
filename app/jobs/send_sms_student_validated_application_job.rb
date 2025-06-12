@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SendSmsStudentValidatedApplicationJob < ApplicationJob
-  queue_as :default
+  queue_as :critical
 
   def perform(internship_application_id:)
     internship_application = InternshipApplication.find(internship_application_id)
@@ -10,9 +10,8 @@ class SendSmsStudentValidatedApplicationJob < ApplicationJob
 
     if phone.present?
       message = 'Votre candidature pour le stage ' \
-                "de #{internship_application.internship_offer.title} " \
-                'a été acceptée. Vous pouvez maintenant la confirmer ' \
-                "sur 1élève1stage : #{url}"
+                "chez #{internship_application.internship_offer.employer_name.truncate(60)} " \
+                'a été acceptée. RDV sur 1élève1stage pour valider.'
 
       Services::SmsSender.new(phone_number: phone, content: message)
                          .perform
