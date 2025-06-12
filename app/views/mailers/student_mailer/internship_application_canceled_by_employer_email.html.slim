@@ -1,5 +1,6 @@
 p style=head_styles
-  = "Candidature au stage \"#{@internship_application.internship_offer.title}\" annulée..."
+  = "#{@internship_application.internship_offer.employer_name} a annulé votre candidature au stage \"#{@internship_application.internship_offer.title}\" pour le motif suivant :"
+br
 
 = @internship_application.canceled_by_employer_message&.gsub("\n", "<br>")&.html_safe
 

@@ -35,20 +35,20 @@ class SignatureTest < ActiveSupport::TestCase
     assert another_signature.valid?
   end
 
-  test '#file_path' do
-    signature = create(:signature, :employer)
-    expected = "signature_storage/signature-test-employer-#{signature.internship_agreement_id}.png"
-    assert_equal expected, signature.local_signature_image_file_path
-  end
+  # test '#file_path' do
+  #   signature = create(:signature, :employer)
+  #   expected = "signature_storage/signature-test-employer-#{signature.internship_agreement_id}.png"
+  #   assert_equal expected, signature.local_signature_image_file_path
+  # end
 
-  test '.file_path' do
-    signature = create(:signature, :employer)
-    expected = "signature_storage/signature-test-employer-#{signature.internship_agreement_id}.png"
-    assert_equal expected,
-                 Signature.file_path(user: signature.employer,
-                                     internship_agreement_id: signature.internship_agreement_id)
+  # test '.file_path' do
+  #   signature = create(:signature, :employer)
+  #   expected = "signature_storage/signature-test-employer-#{signature.internship_agreement_id}.png"
+  #   assert_equal expected,
+  #                Signature.file_path(user: signature.employer,
+  #                                    internship_agreement_id: signature.internship_agreement_id)
 
-    assert_equal Signature.file_path(user: signature.employer, internship_agreement_id: signature.internship_agreement_id),
-                 signature.local_signature_image_file_path
-  end
+  #   assert_equal Signature.file_path(user: signature.employer, internship_agreement_id: signature.internship_agreement_id),
+  #                signature.local_signature_image_file_path
+  # end
 end

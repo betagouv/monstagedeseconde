@@ -37,6 +37,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Users::SchoolManagement', User.last.type
     assert_equal 'admin_officer', User.last.role
     assert_equal '0590121L', User.last.school.code_uai
+    assert_not_nil User.last.fim_user_info
   end
   test 'should get fim token and does not create user if school is not found' do
     fim_token_stub
@@ -125,6 +126,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'I*************@email.co', @student.legal_representative_email
     assert_equal 'Mme Frederic CHIERICI', @student.legal_representative_full_name
     assert_equal '0506070809', @student.legal_representative_phone
+    assert_nil @student.fim_user_info
   end
 
   test 'should get educonnect token and does not logged in user if student is unknown' do

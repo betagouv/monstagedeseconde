@@ -4,22 +4,26 @@ require 'test_helper'
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
-
+  include ThirdPartyTestHelpers
   test 'admin login triggers magic link and does not sign in' do
     travel_to Date.new(2023, 10, 1) do
-      @admin = create(:god, password: 'Password123!', password_confirmation: 'Password123!')
+      Rails.stub(:env, ActiveSupport::StringInquirer.new('production')) do
+        prismic_straight_stub do
+          @admin = create(:god, password: 'Password123!', password_confirmation: 'Password123!')
 
-      perform_enqueued_jobs do
-        post user_session_path, params: {
-          user: { email: @admin.email, password: 'Password123!' }
-        }
+          perform_enqueued_jobs do
+            post user_session_path, params: {
+              user: { email: @admin.email, password: 'Password123!' }
+            }
+          end
+          assert_redirected_to root_path
+          follow_redirect!
+          assert_match 'Un lien de connexion a été envoyé à votre adresse email.', response.body
+
+          # Admin is not logged in
+          assert_not is_logged_in?
+        end
       end
-      assert_redirected_to root_path
-      follow_redirect!
-      assert_match 'Un lien de connexion a été envoyé à votre adresse email.', response.body
-
-      # Admin is not logged in
-      assert_not is_logged_in?
     end
   end
 
