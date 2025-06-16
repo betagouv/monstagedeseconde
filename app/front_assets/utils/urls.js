@@ -1,6 +1,20 @@
 import { Turbo } from "@hotwired/turbo-rails";
 import $ from 'jquery';
 
+export const fetchSearchParamsFromUrl = () => {
+  return new URLSearchParams(window.location.search);
+}
+
+export const addParamToSearchParams = (param, paramValue) => {
+  const searchParams = new URLSearchParams(window.location.search);
+  if (paramValue.length === 0) {
+    searchParams.delete(param);
+  } else {
+    searchParams.set(param, paramValue);
+  }
+  return searchParams;
+}
+
 export const changeURLFromEvent = (event, param) => {
   visitURLWithParam(param, $(event.target).val());
 }

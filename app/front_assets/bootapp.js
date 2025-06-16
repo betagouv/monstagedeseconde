@@ -25,6 +25,7 @@ import SearchSchoolByName from "components/SearchSchoolByName";
 import Map from "components/Map";
 
 import CityInput from "components/search_internship_offer/CityInput";
+import GradeInput from "components/search_internship_offer/GradeInput";
 import CompanyCityInput from "components/search_internship_offer/CompanyCityInput";
 import KeywordInput from "components/search_internship_offer/KeywordInput";
 import DistanceIcon from "components/icons/DistanceIcon";
@@ -43,6 +44,7 @@ ReactOnRails.register({
   DistanceIcon,
   FlashMessage,
   FullAddressInput,
+  GradeInput,
   InternshipOfferCard,
   InternshipOfferFavoriteButton,
   InternshipOfferFavorites,
@@ -53,5 +55,5 @@ ReactOnRails.register({
   RomeInput,
   SearchSchool,
   SearchSchoolByName,
-  SirenInput 
+  SirenInput
 });
