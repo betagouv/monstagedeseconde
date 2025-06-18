@@ -8,7 +8,7 @@ module EmailUtils
   end
 
   def self.from
-    'contact@1eleve1stage.education.gouv.fr'
+    'ne-pas-repondre@1eleve1stage.education.gouv.fr'
   end
 
   def self.formatted_from
@@ -16,7 +16,7 @@ module EmailUtils
   end
 
   def self.reply_to
-    'contact@1eleve1stage.education.gouv.fr'
+    'ne-pas-repondre@1eleve1stage.education.gouv.fr'
   end
 
   def self.formatted_reply_to
