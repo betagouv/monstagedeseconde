@@ -29,5 +29,27 @@ module Presenters
       assert [2, 3] == month_split.keys
       assert_equal 5, month_split.values.flatten.count
     end
+
+    test '#detailed_attributes' do
+      weeks = Week.where(year: 2019).order(number: :asc).first(10).last(5)
+      week_list = Presenters::WeekList.new(weeks:)
+
+      detailed_attributes = week_list.detailed_attributes
+
+      assert_equal 5, detailed_attributes.count
+      assert_equal([6, 7, 8, 9, 10], detailed_attributes.map { |week| week[:id] })
+      assert_equal([6, 7, 8, 9, 10], detailed_attributes.map { |week| week[:number] })
+      assert_equal([2, 2, 2, 2, 3], detailed_attributes.map { |week| week[:month] })
+      assert_equal(%w[Février Février Février Février Mars], detailed_attributes.map do |week|
+        week[:monthName]
+      end)
+      assert_equal([2019, 2019, 2019, 2019, 2019], detailed_attributes.map { |week| week[:year] })
+      assert_equal(%w[2019-02-04 2019-02-11 2019-02-18 2019-02-25 2019-03-04], detailed_attributes.map do |week|
+        week[:start_date]
+      end)
+      assert_equal(%w[2019-02-08 2019-02-15 2019-02-22 2019-03-01 2019-03-08], detailed_attributes.map do |week|
+        week[:end_date]
+      end)
+    end
   end
 end

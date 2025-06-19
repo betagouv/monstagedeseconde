@@ -12,8 +12,9 @@ import { endpoints } from '../utils/api';
 import { isMobile } from '../utils/responsive';
 import FlashMessage from './FlashMessage';
 import CityInput from './search_internship_offer/CityInput';
-import ImmersionFaciliteeCard from './ImmersionFaciliteeCard';
 import GradeInput from './search_internship_offer/GradeInput';
+import WeekInput from './search_internship_offer/WeekInput';
+import ImmersionFaciliteeCard from './ImmersionFaciliteeCard';
 
 // France center
 const center = [46.603354, 1.888334];
@@ -32,7 +33,12 @@ const defaultPointerIcon = new L.Icon({
   popupAnchor: [0, -60], // changed popup position
 });
 
-const InternshipOfferResults = ({ count, searchParams }) => {
+const InternshipOfferResults = ({
+    searchParams,
+    preselectedWeeksList,
+    schoolWeeksList,
+    secondeWeekIds
+  }) => {
   // const [map, setMap] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [paginateLinks, setPaginateLinks] = useState(null);
@@ -46,13 +52,14 @@ const InternshipOfferResults = ({ count, searchParams }) => {
   const [notify, setNotify] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [params, setParams] = useState(searchParams);
+  const [gradeId, setGradeId] = useState(searchParams.grade_id);
 
   useEffect(() => {
     fetchtInternshipOffers();
   }, [params]);
 
   const ClickMap = ({ internshipOffers, recenterMap }) => {
-    if (isMobile()) { return null };
+    if (isMobile()) {return null };
 
     if (internshipOffers.length && recenterMap) {
       const map = useMap();
@@ -64,17 +71,19 @@ const InternshipOfferResults = ({ count, searchParams }) => {
       // L.tileLayer.provider('CartoDB.Positron').addTo(map); MAP STYLE
     }
 
-    setNewDataFetched(false);
+    setTimeout(() => setNewDataFetched(false), 100);
     return null;
   };
 
   const handleSubmit = (formData) => {
+    console.log('formData: ', formData);
     const searchParams = {
       city: formData.city || '',
       latitude: formData.latitude || '',
       longitude: formData.longitude || '',
       radius: formData.radius || '30',
-      gradeId: formData.gradeId || '',
+      grade_id: formData.grade_id || '',
+      week_ids: formData.week_ids || [],
     };
     setParams(searchParams);
   };
@@ -119,6 +128,8 @@ const InternshipOfferResults = ({ count, searchParams }) => {
     setInternshipOffers(result['internshipOffers']);
     setPaginateLinks(result['pageLinks']);
     setInternshipOffersSeats(result['seats']);
+
+    console.log('result: ', result);
     // setIsSuggestion(result['isSuggestion']);
 
     setIsLoading(false);
@@ -155,54 +166,62 @@ const InternshipOfferResults = ({ count, searchParams }) => {
   };
 
   return (
-    <div className="results-container">
+    <div className="">
+      {/* SEARCH FORM */}
+      <div className="fr-container">
+        <form onSubmit={handleSubmit} id="desktop_internship_offers_index_search_form">
+          <div className="row fr-py-4w">
+            <div className="col-12">
+              <div className="d-flex">
+                <div className="fr-px-2w flex-fill align-self-end ">
+                  <CityInput
+                    city={searchParams.city}
+                    latitude={searchParams.latitude}
+                    longitude={searchParams.longitude}
+                    radius={searchParams.radius}
+                    whiteBg="false"
+                  />
+                </div>
+                <div className="fr-px-2w flex-fill align-self-end">
+                  <GradeInput
+                    setGradeId={setGradeId}
+                    gradeId={gradeId}
+                    whiteBackground="true"
+                  />
+                </div>
+                <div className="fr-px-2w flex-fill align-self-end">
+                  <WeekInput
+                    preselectedWeeksList={preselectedWeeksList}
+                    schoolWeeksList={schoolWeeksList}
+                    studentGradeId={searchParams.grade_id}
+                    gradeId={gradeId}
+                    setGradeId={setGradeId}
+                    whiteBg="false"
+                  />
+                </div>
+                <div className="flex-shrink-1 align-self-end">
+                  <button type="submit" className="fr-btn fr-btn--icon-left fr-icon-search-line">Rechercher</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+       <div className="results-container search-offer-bloc">
       {notify && <FlashMessage message={notificationMessage} display={notify} hideNotification={hideNotification} />}
-
       <div className="row fr-mx-0 fr-px-0">
         <div className={`${isMobile() ? 'col-12 px-1w' : 'col-7 px-0'}`}>
 
-          {/* SEARCH FORM */}
-          <div className="search-offer-bloc fr-pl-0 fr-pr-2w fr-py-2w d-none d-md-block">
-            <div className="d-flex justify-content-end">
-              <div className="search-offer-col fr-py-2w" style={{ width: '600px' }}>
-                <form onSubmit={handleSubmit} id="desktop_internship_offers_index_search_form">
-                  <div className="row">
-                    <div className="col-md-4 fr-mx-0 fr-px-0">
-                      <CityInput
-                        city={searchParams.city}
-                        latitude={searchParams.latitude}
-                        longitude={searchParams.longitude}
-                        radius={searchParams.radius}
-                        whiteBg="false"
-                      />
-                    </div>
-                    <div className="col-md-4 fr-mx-0 fr-px-0">
-                      <GradeInput
-                        studentGradeId={searchParams.studentGradeId}
-                        studentGrade={searchParams.studentGrade}
-                        whiteBg="false"
-                      />
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <div className="d-flex justify-content-end">
-              <div className="col-md-3 d-flex justify-content-end align-items-end">
-                <button type="submit" className="fr-btn fr-btn--icon-left fr-icon-search-line">Rechercher</button>
-              </div>
-            </div>
-
-            <div className="scrollable-content d-flex justify-content-end">
-              <div className="results-col fr-mt-2w fr-mx-1w">
-                <div className="row fr-py-2w mx-0 ">
-                  <div className="col-12 px-0">
-                    {
+          <div className="scrollable-content d-flex justify-content-end">
+            <div className="results-col fr-mt-2w fr-mx-1w">
+              <div className="row fr-py-2w mx-0 ">
+                <div className="col-12 px-0">
+                  {
                       isLoading ? (
                         <div className="row fr-mb-2w">
                           <TitleLoader />
                         </div>
-                      ) : params.latitude != 0 && params.longitude != 0 && (
+                      ) : params.latitude != 0 && params.longitude!=0 && (
                         <>
                           <div className="h4 mb-0" id="internship-offers-count">
                             <div className="strong">
@@ -212,61 +231,61 @@ const InternshipOfferResults = ({ count, searchParams }) => {
                         </>
                       )
                     }
-                    {!isLoading && (internshipOffersSeats == 0) &&
-                      (<p>Aucune offre répondant à vos critères n'est disponible.<br />Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
+                    { !isLoading && (internshipOffersSeats == 0) &&
+                      (<p>Aucune offre répondant à vos critères n'est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
                     }
                   </div>
                   {/* {
-                  !isMobile() && (
-                  <div className="col-4 text-right px-0">
-                    <button className="fr-btn fr-btn--secondary fr-icon-filter-line fr-btn--icon-left" data-fr-opened="false" aria-controls="fr-modal-filter" id="filter-sectors-button">
-                      Secteur d'activité
-                      {
-                        selectedSectors.length > 0 ? (
-                          <p className="fr-badge fr-badge--success fr-badge--no-icon fr-m-1w">{selectedSectors.length}</p>
-                        ) : ''
-                      }
-                    </button>
-                  </div>
-                  )
-                } */}
+                    !isMobile() && (
+                    <div className="col-4 text-right px-0">
+                      <button className="fr-btn fr-btn--secondary fr-icon-filter-line fr-btn--icon-left" data-fr-opened="false" aria-controls="fr-modal-filter" id="filter-sectors-button">
+                        Secteur d'activité
+                        {
+                          selectedSectors.length > 0 ? (
+                            <p className="fr-badge fr-badge--success fr-badge--no-icon fr-m-1w">{selectedSectors.length}</p>
+                          ) : ''
+                        }
+                      </button>
+                    </div>
+                    )
+                  } */}
                 </div>
 
                 <div> {/* Cards */}
                   {
-                    (isLoading) ? (
-                      <div className="row">
+                    (isLoading )?  (
+                    <div className="row">
                         <div className={`col-${isMobile() ? '12' : '6'}`}>
-                          <CardLoader />
-                        </div>
-                        <div className={`col-${isMobile() ? '12' : '6'}`}>
-                          <CardLoader />
-                        </div>
-                        <div className={`col-${isMobile() ? '12' : '6'}`}>
-                          <CardLoader />
-                        </div>
+                        <CardLoader />
                       </div>
+                        <div className={`col-${isMobile() ? '12' : '6'}`}>
+                        <CardLoader />
+                      </div>
+                        <div className={`col-${isMobile() ? '12' : '6'}`}>
+                        <CardLoader />
+                      </div>
+                    </div>
                     ) : (
                       <div>
                         <div className="row">
-                          {
+                            {
                             internshipOffers.map((internshipOffer, i) => (
                               <InternshipOfferCard
                                 internshipOffer={internshipOffer}
                                 key={internshipOffer.id}
                                 index={i}
                                 handleMouseOut={handleMouseOut}
-                                handleMouseOver={(value) => { handleMouseOver(value) }}
-                                sendNotification={(message) => { sendNotification(message) }}
-                              />
+                                handleMouseOver={(value) => {handleMouseOver(value)}}
+                                sendNotification={(message) => {sendNotification(message)}}
+                                />
                             ))
                           }
-                        </div>
-                        <div>
-                          {paginateLinks ? <Paginator paginateLinks={paginateLinks} /> : ''}
-                        </div>
-                        {paginateLinks.isLastPage && <ImmersionFaciliteeCard />}
                       </div>
+                      <div>
+                        {(paginateLinks && paginateLinks.totalPages != 0) ? <Paginator paginateLinks={paginateLinks} /> : ''}
+                      </div>
+                      {(paginateLinks.isLastPage || paginateLinks.totalPages === 0) && <ImmersionFaciliteeCard />}
+                    </div>
                     )
                   }
                 </div>
@@ -324,18 +343,19 @@ const InternshipOfferResults = ({ count, searchParams }) => {
         </div>
 
         {/* {
-        !isMobile() &&
-        (
-          <FilterModal
-          sectors={sectors}
-          updateSectors={updateSectors}
-          clearSectors={clearSectors}
-          selectedSectors={selectedSectors}
-          />
-        )
-      } */}
+          !isMobile() &&
+          (
+            <FilterModal
+            sectors={sectors}
+            updateSectors={updateSectors}
+            clearSectors={clearSectors}
+            selectedSectors={selectedSectors}
+            />
+          )
+        } */}
       </div>
-      );
+    </div>
+  );
 };
 
-      export default InternshipOfferResults;
+export default InternshipOfferResults;

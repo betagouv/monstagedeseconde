@@ -6,13 +6,18 @@ export const fetchSearchParamsFromUrl = () => {
 }
 
 export const addParamToSearchParams = (param, paramValue) => {
-  const searchParams = new URLSearchParams(window.location.search);
+  const searchParams = fetchSearchParamsFromUrl();
   if (paramValue.length === 0) {
     searchParams.delete(param);
   } else {
     searchParams.set(param, paramValue);
   }
   return searchParams;
+}
+
+// it updates url without reloading the page
+export const updateURLWithParam = (searchParams) => {
+  window.history.replaceState({}, '', `${window.location.pathname}?${searchParams.toString()}`);
 }
 
 export const changeURLFromEvent = (event, param) => {
@@ -56,13 +61,13 @@ export const turboVisitsWithSearchParams = (searchParams) => {
 }
 
 export const clearParamAndVisits = (param_name )=> {
-  const searchParams = new URLSearchParams(window.location.search);
+  const searchParams = fetchSearchParamsFromUrl();
   searchParams.delete(param_name)
   turboVisitsWithSearchParams(searchParams)
 }
 
 export const getParamValueFromUrl = (param) => {
-  const searchParams = new URLSearchParams(window.location.search);
+  const searchParams = fetchSearchParamsFromUrl();
   for (const [key, value] of searchParams.entries()) {
     if (key === param) { return value }
   }
@@ -72,7 +77,7 @@ export const getParamValueFromUrl = (param) => {
 // private
 
 const clear = (list) => {
-  const searchParams = new URLSearchParams(window.location.search);
+  const searchParams = fetchSearchParamsFromUrl();
   for (var i = 0; i < list.length; i++) {
     searchParams.delete(list[i])
   }
@@ -80,7 +85,7 @@ const clear = (list) => {
 }
 
 const clearAllParams = () => {
-  const searchParams = new URLSearchParams(window.location.search);
+  const searchParams = fetchSearchParamsFromUrl();
   let list = []
   for (var key of searchParams.keys()) { list.push(key) }
   return clear(list);

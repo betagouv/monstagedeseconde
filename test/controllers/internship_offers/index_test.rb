@@ -25,15 +25,18 @@ class IndexTest < ActionDispatch::IntegrationTest
   def create_offers
     offer_paris_1 = create(
       :weekly_internship_offer_3eme,
-      title: 'Vendeur'
+      title: 'Vendeur',
+      coordinates: Coordinates.paris
     )
     offer_paris_2 = create(
       :weekly_internship_offer_3eme,
-      title: 'Comptable'
+      title: 'Comptable',
+      coordinates: Coordinates.paris
     )
     offer_paris_3 = create(
       :weekly_internship_offer_3eme,
-      title: 'Infirmier'
+      title: 'Infirmier',
+      coordinates: Coordinates.paris
     )
     offer_bordeaux_1 = create(
       :weekly_internship_offer_3eme,
@@ -68,12 +71,13 @@ class IndexTest < ActionDispatch::IntegrationTest
   test 'GET #index with no params as Student returns all offers' do
     travel_to Date.new(2023, 10, 1) do
       create_offers
-      sign_in(create(:student))
+      student = create(:student, school: create(:school, city: 'Paris', coordinates: Coordinates.paris))
+      sign_in(student)
       get internship_offers_path(format: :json)
       assert_response :success
       refute_empty json_response['internshipOffers']
       assert_equal 1, UsersSearchHistory.count
-      assert_equal 1, UsersSearchHistory.last.results_count
+      assert_equal 4, UsersSearchHistory.last.results_count
     end
   end
 

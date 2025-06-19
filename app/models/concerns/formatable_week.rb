@@ -81,6 +81,8 @@ module FormatableWeek
     alias_method :to_date, :week_date
     alias_method :monday, :week_date
 
+    def friday = week_date + 4.days
+
     def beginning_of_week(format: :human_mm_dd)
       I18n.localize(week_date.beginning_of_week, format:).strip
     end

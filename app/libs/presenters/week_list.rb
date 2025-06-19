@@ -83,6 +83,19 @@ module Presenters
            .join(', ')
     end
 
+    def detailed_attributes
+      weeks.map do |week|
+        {
+          id: week.id,
+          number: week.number,
+          month: week.month_number,
+          monthName: MONTHS[week.month_number - 1],
+          year: week.year,
+          label: week.human_shortest
+        }
+      end
+    end
+
     attr_reader :weeks, :first_week, :last_week
 
     protected
