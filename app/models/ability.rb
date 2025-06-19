@@ -19,6 +19,7 @@ class Ability
       when 'Users::SchoolManagement'
         common_school_management_abilities(user:)
         school_manager_abilities(user:) if user.school_manager?
+        admin_officer_abilities(user:) if user.admin_officer?
       end
 
       shared_signed_in_user_abilities(user:)
@@ -136,6 +137,10 @@ class Ability
       invitation.school.id == user.school_id
     end
 
+    can :claim_school_management, School do |school|
+      user.school && user.school.id == school.id
+    end
+
     can_manage_school(user:) do
       can [:delete], User do |managed_user_from_school|
         managed_user_from_school.school_id == user.school_id
@@ -177,6 +182,12 @@ class Ability
     end
     can :create, Signature do |signature|
       signature.internship_agreement.school_manager == user.id
+    end
+  end
+
+  def admin_officer_abilities(user:)
+    can :claim_school_management, School do |school|
+      user&.school.id == school&.id
     end
   end
 
