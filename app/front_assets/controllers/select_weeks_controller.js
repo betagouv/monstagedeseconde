@@ -243,6 +243,7 @@ export default class extends Controller {
     return this.computeTroisiemeScore() + this.computeSecondeScore();
   }
 
+  // checked weeks count
   computeTroisiemeScore() {
     if (!this.gradeCollegeTarget.checked) return 0;
 
@@ -255,6 +256,7 @@ export default class extends Controller {
     return troisiemeScore;
   }
 
+  // checked weeks count
   computeSecondeScore() {
     if (!this.grade2eTarget.checked)  return 0;
 
