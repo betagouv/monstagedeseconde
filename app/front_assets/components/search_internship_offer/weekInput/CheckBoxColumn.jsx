@@ -6,7 +6,7 @@ function CheckBoxColumn({
   schoolWeeksList,
   monthIncludedInSchoolWeeksList,
   handleWeekCheck,
-  weekIds
+  weekIds,
 }) {
   return (
     <>
@@ -27,10 +27,11 @@ function CheckBoxColumn({
               return (
                 <div key={weekIndex} className="custom-control custom-checkbox">
                   <input
+                    key={week.id}
                     type="checkbox"
                     className="custom-control-input"
                     id={`week-${week.id}`}
-                    name={'week_ids[]'}
+                    name={`week_ids`}
                     checked={isChecked}
                     value={week.id}
                     onChange={handleWeekCheck.bind(this, week)}

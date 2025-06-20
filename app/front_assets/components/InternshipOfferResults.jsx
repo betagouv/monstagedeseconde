@@ -10,11 +10,10 @@ import Paginator from './search_internship_offer/Paginator';
 import TitleLoader from './TitleLoader';
 import { endpoints } from '../utils/api';
 import { isMobile } from '../utils/responsive';
+import { fetchSearchParamsFromUrl, turboVisitsWithSearchParams} from '../utils/urls';
 import FlashMessage from './FlashMessage';
-import CityInput from './search_internship_offer/CityInput';
-import GradeInput from './search_internship_offer/GradeInput';
-import WeekInput from './search_internship_offer/WeekInput';
 import ImmersionFaciliteeCard from './ImmersionFaciliteeCard';
+import SearchBar from './search_internship_offer/SearchBar';
 
 // France center
 const center = [46.603354, 1.888334];
@@ -55,7 +54,7 @@ const InternshipOfferResults = ({
   const [gradeId, setGradeId] = useState(searchParams.grade_id);
 
   useEffect(() => {
-    fetchtInternshipOffers();
+    fetchInternshipOffers();
   }, [params]);
 
   const ClickMap = ({ internshipOffers, recenterMap }) => {
@@ -75,17 +74,8 @@ const InternshipOfferResults = ({
     return null;
   };
 
-  const handleSubmit = (formData) => {
-    console.log('formData: ', formData);
-    const searchParams = {
-      city: formData.city || '',
-      latitude: formData.latitude || '',
-      longitude: formData.longitude || '',
-      radius: formData.radius || '30',
-      grade_id: formData.grade_id || '',
-      week_ids: formData.week_ids || [],
-    };
-    setParams(searchParams);
+  const handleSubmit = () => {
+    turboVisitsWithSearchParams(fetchSearchParamsFromUrl());
   };
 
   const handleMouseOver = (data) => {
@@ -108,7 +98,7 @@ const InternshipOfferResults = ({
   //   return sectors;
   // }
 
-  const fetchtInternshipOffers = () => {
+  const fetchInternshipOffers = () => {
     setIsLoading(true);
     $.ajax({ type: 'GET', url: endpoints['searchInternshipOffers'](), data: params })
       .done(fetchDone)
@@ -169,43 +159,22 @@ const InternshipOfferResults = ({
     <div className="">
       {/* SEARCH FORM */}
       <div className="fr-container">
-        <form onSubmit={handleSubmit} id="desktop_internship_offers_index_search_form">
+        <div id="desktop_internship_offers_index_search_form">
           <div className="row fr-py-4w">
             <div className="col-12">
-              <div className="d-flex">
-                <div className="fr-px-2w flex-fill align-self-end ">
-                  <CityInput
-                    city={searchParams.city}
-                    latitude={searchParams.latitude}
-                    longitude={searchParams.longitude}
-                    radius={searchParams.radius}
-                    whiteBg="false"
-                  />
-                </div>
-                <div className="fr-px-2w flex-fill align-self-end">
-                  <GradeInput
-                    setGradeId={setGradeId}
-                    gradeId={gradeId}
-                    whiteBackground="true"
-                  />
-                </div>
-                <div className="fr-px-2w flex-fill align-self-end">
-                  <WeekInput
-                    preselectedWeeksList={preselectedWeeksList}
-                    schoolWeeksList={schoolWeeksList}
-                    studentGradeId={searchParams.grade_id}
-                    gradeId={gradeId}
-                    setGradeId={setGradeId}
-                    whiteBg="false"
-                  />
-                </div>
-                <div className="flex-shrink-1 align-self-end">
-                  <button type="submit" className="fr-btn fr-btn--icon-left fr-icon-search-line">Rechercher</button>
-                </div>
-              </div>
+              <SearchBar
+                searchParams={searchParams}
+                setGradeId={setGradeId}
+                gradeId={gradeId}   
+                preselectedWeeksList={preselectedWeeksList}
+                schoolWeeksList={schoolWeeksList}
+                secondeWeekIds={secondeWeekIds}
+                params={params}
+                setParam={setParams}
+              />
             </div>
           </div>
-        </form>
+        </div>
       </div>
        <div className="results-container search-offer-bloc">
       {notify && <FlashMessage message={notificationMessage} display={notify} hideNotification={hideNotification} />}
@@ -216,12 +185,11 @@ const InternshipOfferResults = ({
             <div className="results-col fr-mt-2w fr-mx-1w">
               <div className="row fr-py-2w mx-0 ">
                 <div className="col-12 px-0">
-                  {
-                      isLoading ? (
-                        <div className="row fr-mb-2w">
-                          <TitleLoader />
-                        </div>
-                      ) : params.latitude != 0 && params.longitude!=0 && (
+                  { isLoading ? (
+                    <div className="row fr-mb-2w">
+                      <TitleLoader />
+                    </div>
+                    ) : params.latitude != 0 && params.longitude!=0 && (
                         <>
                           <div className="h4 mb-0" id="internship-offers-count">
                             <div className="strong">
@@ -230,11 +198,11 @@ const InternshipOfferResults = ({
                           </div>
                         </>
                       )
-                    }
-                    { !isLoading && (internshipOffersSeats == 0) &&
-                      (<p>Aucune offre répondant à vos critères n'est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
-                    }
-                  </div>
+                  }
+                  { !isLoading && (internshipOffersSeats == 0) &&
+                    (<p>Aucune offre répondant à vos critères n'est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
+                  }
+                </div>
                   {/* {
                     !isMobile() && (
                     <div className="col-4 text-right px-0">

@@ -4,6 +4,7 @@ import { getMonthName }  from '../../../utils/months';
 function MonthColumn({
   monthIncludedInSchoolWeeksList,
   monthScore,
+  gradeId,
 }) {
   return(
     <div>
@@ -14,7 +15,7 @@ function MonthColumn({
           <div key={index} className={withBoldPresentation}>
             {getMonthName(month.month - 1)}
             <span className='month-monthScore'>
-              {scoreOfMonth === 0 ? '' : ` (${scoreOfMonth})`}
+              {((scoreOfMonth === 0 ) || (scoreOfMonth === undefined)) ? '' : ` (${scoreOfMonth})`}
             </span>
           </div>
         )})
