@@ -16,10 +16,11 @@ class InternshipOffersController < ApplicationController
     @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
     @preselected_weeks_list_array = Presenters::WeekList.new(weeks: @preselected_weeks_list.to_a).detailed_attributes
     @seconde_week_ids = SchoolTrack::Seconde.both_weeks.map(&:id)
+    @student_grade_id = current_user&.student? ? current_user.grade_id : nil
 
     respond_to do |format|
       format.html do
-        @params = query_params.merge(week_ids: params[:week_ids])
+        @params = search_query_params.merge(week_ids: params[:week_ids])
       end
       format.json do
         @internship_offers_seats = 0
@@ -31,7 +32,7 @@ class InternshipOffersController < ApplicationController
           @internship_offers = @internship_offers.reorder('qpv DESC NULLS LAST')
         end
 
-        @params = query_params
+        @params = search_query_params
 
         @internship_offers_seats_count = @internship_offers.empty? ? 0 : seats_finder.all_without_page.sum(:max_candidates).values.sum
         data = {
@@ -70,7 +71,7 @@ class InternshipOffersController < ApplicationController
     @internship_offer = InternshipOffer.find(params[:id])
   end
 
-  def query_params
+  def search_query_params
     common_query_params =  %i[city grade_id latitude longitude page radius format]
     common_query_params += [:school_year] if current_user_or_visitor.god? || current_user_or_visitor.statistician?
     params.permit(*common_query_params, week_ids: [])
@@ -105,14 +106,14 @@ class InternshipOffersController < ApplicationController
 
   def finder
     @finder ||= Finders::InternshipOfferConsumer.new(
-      params: query_params,
+      params: search_query_params,
       user: current_user_or_visitor
     )
   end
 
   def seats_finder
     @seats_finder ||= Finders::InternshipOfferConsumer.new(
-      params: query_params,
+      params: search_query_params,
       user: current_user_or_visitor,
       seats_search: true
     )
@@ -129,7 +130,7 @@ class InternshipOffersController < ApplicationController
         title: internship_offer.title.truncate(44),
         description: internship_offer.description.to_s,
         employer_name: internship_offer.employer_name,
-        link: internship_offer_path(internship_offer, query_params),
+        link: internship_offer_path(internship_offer, search_query_params),
         city: internship_offer.city.capitalize,
         date_start: I18n.localize(internship_offer.first_date, format: :human_mm_dd_yyyy),
         date_end: I18n.localize(internship_offer.last_date, format: :human_mm_dd_yyyy),
@@ -159,7 +160,7 @@ class InternshipOffersController < ApplicationController
       prevPage: offers.present? ? offers.prev_page : nil,
       isFirstPage: offers.present? ? offers.first_page? : false,
       isLastPage: offers.present? ? offers.last_page? : false,
-      pageUrlBase: url_for(query_params.except('page'))
+      pageUrlBase: url_for(search_query_params.except('page'))
     }
   end
 end
