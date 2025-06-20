@@ -4,6 +4,7 @@ import Downshift from 'downshift';
 import RadiusInput from './RadiusInput';
 import { fetch } from 'whatwg-fetch';
 import { endpoints} from '../../utils/api';
+import { addParamToSearchParams, updateURLWithParam } from '../../utils/urls';
 
 const COMPONENT_FOCUS_LABEL = 'location';
 
@@ -41,6 +42,14 @@ function CityInput({
       setCity(item.nom);
       setLatitude(item.centre.coordinates[1]);
       setLongitude(item.centre.coordinates[0]);
+      const cityParams = addParamToSearchParams('city', item.nom);
+      updateURLWithParam(cityParams);
+      const latitudeParams = addParamToSearchParams('latitude', item.centre.coordinates[1]);
+      updateURLWithParam(latitudeParams);
+      const longitudeParams = addParamToSearchParams('longitude', item.centre.coordinates[0]);
+      updateURLWithParam(longitudeParams);
+      const radiusParams = addParamToSearchParams('radius', radius);
+      updateURLWithParam(radiusParams);
     }
   };
 
