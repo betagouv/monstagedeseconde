@@ -62,10 +62,9 @@
                           title: 'Activités prévues au cours du stage',
                           object: form.object,
                           options: { rows: 5 ,
-                                    data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
+                                    data: { action: "input->mandatory-fields-with-coordinates#fieldChange input->stars#onChangeInput",
                                             :'mandatory-fields-with-coordinates-target' => "mandatoryField",
-                                            :'stars-target' => 'description',
-                                            action: 'input->stars#onChangeInput'}},
+                                            :'stars-target' => 'description'}},
                           field_type: :text_area
                 .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
                   |La description est trop longue
