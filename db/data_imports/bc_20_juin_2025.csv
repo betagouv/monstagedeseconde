@@ -7436,7 +7436,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 43997;Bâtiment et travaux publics (BTP);FAUX;;
 43998;Bâtiment et travaux publics (BTP);FAUX;;
 43999;Culture et patrimoine;FAUX;;
-44000;Bâtiment et travaux publics (BTP);VRAI;;CULTURE
+44000;Bâtiment et travaux publics (BTP);VRAI;;Ministère de la Culture
 44001;Bâtiment et travaux publics (BTP);FAUX;;
 44002;Bâtiment et travaux publics (BTP);FAUX;;
 44003;Bâtiment et travaux publics (BTP);FAUX;;
@@ -17526,12 +17526,12 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 55384;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55385;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55386;Conseil et audit;VRAI;Chambre consulaire;Chambre consulaire
-58242;Enseignement;VRAI;;chambre consulaire
+58242;Enseignement;VRAI;;Chambre consulaire
 55388;Conseil et audit;VRAI;Chambre consulaire;Chambre consulaire
 55390;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55395;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55396;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-58244;Enseignement;VRAI;;chambre consulaire
+58244;Enseignement;VRAI;;Chambre consulaire
 55399;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55401;Santé;VRAI;Fonction publique hospitalière (FPH);Fonction publique hospitalière (FPH)
 55402;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -17539,7 +17539,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 55404;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55407;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles;Ministère du Travail, de la Santé, des Solidarités et des Familles
 55408;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-58250;Enseignement;VRAI;;chambre consulaire
+58250;Enseignement;VRAI;;Chambre consulaire
 55412;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55415;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55416;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -17762,7 +17762,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 55724;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55725;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55726;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-58251;Enseignement;VRAI;;chambre consulaire
+58251;Enseignement;VRAI;;Chambre consulaire
 55729;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55730;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55731;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -17803,7 +17803,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 55782;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55783;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55784;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-65031;Enseignement;VRAI;;chambre consulaire
+65031;Enseignement;VRAI;;Chambre consulaire
 55786;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55789;Enseignement;VRAI;;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55790;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -17886,8 +17886,8 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 55878;Fonction publique;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
 55879;Enseignement;VRAI;;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55880;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-58253;Enseignement;VRAI;;chambre consulaire
-65713;Fonction publique;VRAI;;chambre consulaire
+58253;Enseignement;VRAI;;Chambre consulaire
+65713;Fonction publique;VRAI;;Chambre consulaire
 55889;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55892;Enseignement;VRAI;;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 55894;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -18864,7 +18864,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 57301;Enseignement;VRAI;;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57302;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57303;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-52031;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+52031;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57305;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57308;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57309;Hôtellerie, restauration;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements);Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
@@ -18874,7 +18874,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 57313;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57314;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57315;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements);Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
-52039;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+52039;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57318;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57319;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57320;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -19034,8 +19034,8 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 57558;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57559;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57560;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-52423;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
-52424;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+52423;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+52424;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57571;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57572;Social;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements);Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57578;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -19068,7 +19068,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 57686;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57687;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57689;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-52428;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+52428;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57693;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57694;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57695;Fonction publique;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
@@ -19109,7 +19109,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 57742;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57744;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57746;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-52003;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+52003;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57748;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57749;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57751;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -19178,7 +19178,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 57849;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57850;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57851;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-51923;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+51923;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57853;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57855;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57856;Armée - Défense;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
@@ -19190,7 +19190,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 57862;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements);Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57863;Informatique et réseaux;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57864;Informatique et réseaux;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-53392;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+53392;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57866;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57867;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57868;Informatique et réseaux;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -19203,7 +19203,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 57876;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57879;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57882;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-52022;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+52022;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57885;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57887;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57888;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -19229,16 +19229,16 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 57912;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57914;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57915;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-66636;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
-57222;Maintenance;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+66636;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+57222;Maintenance;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57918;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57919;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
-54930;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
-57242;Maintenance;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+54930;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+57242;Maintenance;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57922;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57923;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-53900;Sport;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
-54750;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+53900;Sport;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+54750;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 57927;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57928;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 57929;Armée - Défense;VRAI;Ministère des Armées;Ministère des Armées
@@ -19439,8 +19439,8 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 58164;Fonction publique;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
 58165;Fonction publique;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
 58167;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-56855;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
-62991;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+56855;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+62991;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 58171;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58172;Fonction publique;VRAI;Ministère des Armées;Ministère des Armées
 58174;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -19493,23 +19493,23 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 58239;Recherche;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58240;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58241;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-66012;Comptabilité, gestion, ressources humaines;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+66012;Comptabilité, gestion, ressources humaines;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 58243;Fonction publique;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
-51914;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+51914;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 58245;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58246;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58248;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-51997;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
-65602;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+51997;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65602;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 58252;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-65558;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65558;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 58254;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58255;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
 58256;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles;Ministère du Travail, de la Santé, des Solidarités et des Familles
 58257;Recherche;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58258;Comptabilité, gestion, ressources humaines;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58259;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles;Ministère du Travail, de la Santé, des Solidarités et des Familles
-65560;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65560;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 58261;Informatique et réseaux;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
 58262;Environnement;VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
 58263;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -19519,7 +19519,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 58267;Informatique et réseaux;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
 58269;Culture et patrimoine;VRAI;Ministère de la Culture;Ministère de la Culture
 58270;Enseignement;VRAI;Ministère de l’Agriculture et de la Souveraineté alimentaire;Ministère de l’Agriculture et de la Souveraineté alimentaire
-65630;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65630;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 58272;Fonction publique;VRAI;Ministère des Armées;Ministère des Armées
 58273;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58274;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -19805,7 +19805,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 58707;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58711;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58719;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-65607;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+65607;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 58723;Fonction publique;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
 58724;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements);Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 58727;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -19884,7 +19884,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 58831;Fonction publique;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
 58834;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58836;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements);Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
-58890;Fonction publique;VRAI;;collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
+58890;Fonction publique;VRAI;;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 58839;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58840;Fonction publique;VRAI;;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 58841;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -20209,7 +20209,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 59409;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 59411;Armée - Défense;VRAI;Ministère des Armées;Ministère des Armées
 59417;Fonction publique;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
-65036;Fonction publique;VRAI;;ministère de la transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65036;Fonction publique;VRAI;;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
 59419;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 59426;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 59429;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -20566,7 +20566,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 59931;Armée - Défense;VRAI;Ministère des Armées;Ministère des Armées
 56111;Social;VRAI;;Ministère du Travail, de la Santé, des Solidarités et des Familles
 59933;Armée - Défense;VRAI;Ministère des Armées;Ministère des Armées
-66243;Enseignement;VRAI;;ministère de l'éducation nationale, de l'Enseignement supérieur et de la Recherche
+66243;Enseignement;VRAI;;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 59935;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 59937;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 59939;Fonction publique;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
@@ -20821,7 +20821,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 61650;Logistique et transport;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements);Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 61653;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
 61656;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
-58722;Enseignement;VRAI;;ministère de l'éducation nationale, de l'Enseignement supérieur et de la Recherche
+58722;Enseignement;VRAI;;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 61662;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
 61664;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles;Ministère du Travail, de la Santé, des Solidarités et des Familles
 61667;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles;Ministère du Travail, de la Santé, des Solidarités et des Familles
@@ -20833,7 +20833,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 61680;Social;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles;Ministère du Travail, de la Santé, des Solidarités et des Familles
 61686;Fonction publique;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
 61687;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
-54741;Enseignement;VRAI;;ministère de l'éducation nationale, de l'Enseignement supérieur et de la Recherche
+54741;Enseignement;VRAI;;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 61693;Fonction publique;VRAI;Ministère du Travail, de la Santé, des Solidarités et des Familles;Ministère du Travail, de la Santé, des Solidarités et des Familles
 61695;Fonction publique;VRAI;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
 61698;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -21115,9 +21115,9 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 62201;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 62203;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 59535;Fonction publique;VRAI;;Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique
-66536;Fonction publique;VRAI;;ministère de la transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+66536;Fonction publique;VRAI;;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
 62206;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements);Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
-65142;Fonction publique;VRAI;;ministère de la transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
+65142;Fonction publique;VRAI;;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
 62208;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 62209;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 66606;Fonction publique;VRAI;;Ministère de l’Agriculture et de la Souveraineté alimentaire
@@ -22540,7 +22540,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 64758;Fonction publique;VRAI;;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 61903;Armée - Défense;VRAI;;Ministère des Armées
 64761;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-67268;Droit et justice;VRAI;;ministère de la justice
+67268;Droit et justice;VRAI;;Ministère de la Justice
 64763;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 64764;Fonction publique;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
 64765;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -22557,7 +22557,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 64780;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 64781;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 64782;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-61384;Droit et justice;VRAI;;ministère de la justice
+61384;Droit et justice;VRAI;;Ministère de la Justice
 64785;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 64787;Social;VRAI;;Ministère du Travail, de la Santé, des Solidarités et des Familles
 64790;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -22730,7 +22730,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 65033;Agriculture;VRAI;Ministère de l’Agriculture et de la Souveraineté alimentaire;Ministère de l’Agriculture et de la Souveraineté alimentaire
 65034;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65035;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-62261;Fonction publique;VRAI;;Ministère de la culture
+62261;Fonction publique;VRAI;;Ministère de la Culture
 65038;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65039;Bâtiment et travaux publics (BTP);VRAI;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche;Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche
 65040;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -22815,7 +22815,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 65139;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65140;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65141;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-62518;Fonction publique;VRAI;;Ministère de la culture
+62518;Fonction publique;VRAI;;Ministère de la Culture
 65143;Culture et patrimoine;VRAI;;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65144;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65145;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -22824,10 +22824,10 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 65149;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65150;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65151;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-62517;Fonction publique;VRAI;;Ministère de la culture
+62517;Fonction publique;VRAI;;Ministère de la Culture
 65153;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65154;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-62516;Fonction publique;VRAI;;Ministère de la culture
+62516;Fonction publique;VRAI;;Ministère de la Culture
 65156;Fonction publique;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
 65157;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65159;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -22855,7 +22855,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 65184;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65185;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65189;Culture et patrimoine;VRAI;Ministère de la Culture;Ministère de la Culture
-53723;Fonction publique;VRAI;;Ministère de la culture
+53723;Fonction publique;VRAI;;Ministère de la Culture
 65191;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65192;Sécurité;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
 65193;Informatique et réseaux;VRAI;Ministère de l'Intérieur;Ministère de l'Intérieur
@@ -22935,7 +22935,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 65304;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65305;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65306;Fonction publique;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-61393;Droit et justice;VRAI;;ministère de la justice
+61393;Droit et justice;VRAI;;Ministère de la Justice
 65310;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65311;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65312;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
@@ -23119,7 +23119,7 @@ id;secteur;public;public_employer_type_ref;public_employer_type
 65557;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 63122;Fonction publique;VRAI;;Premier ministre
 65559;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
-59344;Enseignement;VRAI;;ministère de l'éducation nationale, de l'Enseignement supérieur et de la Recherche
+59344;Enseignement;VRAI;;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
 65561;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements);Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 65562;Fonction publique;VRAI;Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements);Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)
 65563;Enseignement;VRAI;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche;Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche
