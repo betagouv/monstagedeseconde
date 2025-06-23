@@ -421,7 +421,7 @@ namespace :retrofit do
                  else
                    File.open(args[:csv_path])
                  end
-        CSV.new(csv_io, headers: true, header_converters: :symbol, col_sep: ',').each do |row|
+        CSV.new(csv_io, headers: true, header_converters: :symbol, col_sep: ';').each do |row|
           id = row[:id].to_i
           offer = InternshipOffer.find_by(id: id)
           next if offer.nil?
