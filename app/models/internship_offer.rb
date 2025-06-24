@@ -264,7 +264,7 @@ class InternshipOffer < ApplicationRecord
 
   # -------------------------
   # States
-  # ----------------
+  # -------------------------
 
   aasm do
     state :published, initial: true

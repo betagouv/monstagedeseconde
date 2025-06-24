@@ -64,7 +64,7 @@ module Finders
     def student_query
       case user.try(:grade).try(:id)
       when Grade.seconde.id
-        school_members_query.seconde_only.order(qpv: :desc)
+        school_members_query.seconde.order(qpv: :desc)
       else
         school_members_query.troisieme_or_quatrieme.order(qpv: :desc)
       end
