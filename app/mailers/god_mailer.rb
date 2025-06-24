@@ -109,4 +109,15 @@ class GodMailer < ApplicationMailer
     @magic_link = magic_link_url(token: token)
     send_email(to: @user.email, subject: 'Votre lien de connexion sécurisé')
   end
+
+  def debug_info(info:, source:)
+    env_recipients = ENV.fetch('DEBUG_EMAIL_RECIPIENTS', '').split(',').map(&:strip).compact
+    recipients = env_recipients.empty? ? Users::God.all.map(&:email) : env_recipients
+    @subject = 'Debug info - info technique'
+    @info = info
+    @source = source
+    send_email(to: recipients,
+               subject: @subject,
+               reply_to: recipients.first)
+  end
 end
