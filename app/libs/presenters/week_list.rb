@@ -5,10 +5,10 @@ module Presenters
   class WeekList
     MONTHS = %w[Janvier Février Mars Avril Mai Juin Juillet Aout Septembre Octobre Novembre Décembre].freeze
 
-    # [ {month: 9, name: 'Septembre'} ,{ month: 10, }...]
     MONTH_LIST =
       MONTHS.each_with_index.map { |month, index| { month: index + 1, name: month } }
             .rotate(8).freeze
+    # ==> [ {month: 9, name: 'Septembre'} ,{ month: 10, }...]
 
     def to_range_as_str
       format_weeks do |is_first:, is_last:, week:|

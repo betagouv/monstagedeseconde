@@ -190,10 +190,10 @@ module Dashboard::InternshipOffers
       end
     end
 
-    test 'PATCH #republish as employer with missing weeks and seats' do
-      travel_to Date.new(2024, 9, 1) do
-        weeks = Week.selectable_from_now_until_end_of_school_year.first(1)
-      end
+    test 'PATCH #republish as employer with selectable_from_now_until_end_of_school_year and seats' do
+      # travel_to Date.new(2024, 9, 1) do
+      #   weeks = Week.selectable_from_now_until_end_of_school_year.first(1)
+      # end
       travel_to Date.new(2023, 10, 1) do
         employer = create(:employer)
         internship_offer = create(:weekly_internship_offer_2nde,

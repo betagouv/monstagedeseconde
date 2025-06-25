@@ -26,7 +26,7 @@ module SchoolTrack
     end
 
     def self.both_weeks(year: current_year)
-      Week.from_date_to_date(from: first_monday(year:) - 7.days, to: last_friday(year:))
+      Week.from_date_to_date(from: first_monday(year:), to: last_friday(year:))
     end
 
     def self.last_june_friday(year: current_year)

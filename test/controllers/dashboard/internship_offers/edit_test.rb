@@ -34,8 +34,8 @@ module Dashboard::InternshipOffers
         employer = create(:employer)
         school_year_n_minus_one = SchoolYear::Floating.new_by_year(year: Date.today.year - 1)
 
-        first_week = Week.find_by(year: school_year_n_minus_one.beginning_of_period.year,
-                                  number: school_year_n_minus_one.beginning_of_period.cweek)
+        first_week = Week.find_by(year: school_year_n_minus_one.offers_beginning_of_period.year,
+                                  number: school_year_n_minus_one.offers_beginning_of_period.cweek)
 
         sign_in(employer)
         internship_offer = create(

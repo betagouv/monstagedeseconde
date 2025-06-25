@@ -181,7 +181,7 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :within_current_year, lambda {
-    last_date = SchoolYear::Current.new.end_of_period + GUARD_PERIOD
+    last_date = SchoolYear::Current.new.offers_end_of_period
     in_the_future.where('last_date <= :last_date', last_date:)
   }
 
@@ -227,7 +227,7 @@ class InternshipOffer < ApplicationRecord
   scope :with_weeks_next_year, lambda {
     next_year = SchoolYear::Current.new
                                    .next_year
-                                   .end_of_period
+                                   .deposit_end_of_period
                                    .year
     where(school_year: next_year)
   }

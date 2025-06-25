@@ -1,5 +1,5 @@
 def populate_internship_offers
-  current_school_year = SchoolYear::Current.new.beginning_of_period
+  current_school_year = SchoolYear::Current.new.offers_beginning_of_period
   seconde_weeks = SchoolTrack::Seconde.both_weeks
   troisieme_weeks = Week.selectable_from_now_until_end_of_school_year
   all_weeks = seconde_weeks + troisieme_weeks
