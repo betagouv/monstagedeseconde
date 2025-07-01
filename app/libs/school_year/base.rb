@@ -49,12 +49,33 @@ module SchoolYear
       SchoolYear::Floating.new_by_year(year: end_of_period.year)
     end
 
+    def self.current_year
+      date.year
+      # case current_month
+      # when january_to_june
+      #   date.year
+      # when june_to_december
+      #   date.year + 1
+      # end
+    end
+
+    def current_year
+      date.year
+      # case current_month
+      # when january_to_june
+      #   date.year
+      # when june_to_december
+      #   date.year + 1
+      # end
+    end
+
     attr_reader :date
 
     protected
 
-    def current_year
-      date.year
+
+    def self.current_month
+      date.month
     end
 
     def current_month
