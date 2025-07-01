@@ -3,7 +3,7 @@
 module SchoolYear
   class Base
     YEAR_START          = 2019
-    MONTH_OF_YEAR_SHIFT = 7
+    MONTH_OF_YEAR_SHIFT = 8
     DAY_OF_YEAR_SHIFT   = 1
     SEPTEMBER = 9
     FIRST = 1
@@ -33,10 +33,6 @@ module SchoolYear
       9..12
     end
 
-    def june_to_december
-      MONTH_OF_YEAR_SHIFT..12
-    end
-
     # def between_june_to_august?
     #   june_to_august.member?(current_month)
     # end
@@ -49,33 +45,16 @@ module SchoolYear
       SchoolYear::Floating.new_by_year(year: end_of_period.year)
     end
 
-    def self.current_year
-      date.year
-      # case current_month
-      # when january_to_june
-      #   date.year
-      # when june_to_december
-      #   date.year + 1
-      # end
-    end
-
-    def current_year
-      date.year
-      # case current_month
-      # when january_to_june
-      #   date.year
-      # when june_to_december
-      #   date.year + 1
-      # end
+    def june_to_december
+      6..12
     end
 
     attr_reader :date
 
     protected
 
-
-    def self.current_month
-      date.month
+    def current_year
+      date.year
     end
 
     def current_month
