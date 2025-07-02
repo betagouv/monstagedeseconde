@@ -53,12 +53,6 @@ class Week < ApplicationRecord
     by_year(year: to.year).where('number <= :to_week', to_week: to.cweek)
   }
 
-  scope :fetch_from, lambda { |date:|
-    number = date.cweek
-    year = number == 53 ? date.year - 1 : date.year
-    find_by(number:, year:)
-  }
-
   scope :before, lambda { |date:|
     where('year < ?', date.year).or(
       where('year = ?', date.year).where('number < ?', date.cweek)
@@ -143,6 +137,12 @@ class Week < ApplicationRecord
     where('number >= ?', first_week_of_september).where(year: school_year)
                                                  .or(where('number <= ?', first_day_of_july_week).where(year: school_year + 1))
   }
+
+  def self.fetch_from(date:)
+    number = date.cweek
+    year = number == 53 ? date.year - 1 : date.year
+    find_by(number:, year:)
+  end
 
   def self.current_year_start_week
     Week.fetch_from(date: SchoolYear::Current.new.beginning_of_period)
