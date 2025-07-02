@@ -99,6 +99,43 @@ module Dashboard
         assert_response :success
         assert_select 'tbody tr', count: school_employees.length + 1 # school manager
       end
+
+      test 'PATCH claim_school_management as SchoolManagement with 2 ' \
+           'admin_officers make the admin_officer become school_manager' do
+        school = create(:school)
+        admin_officer_1 = create(:admin_officer, school: school)
+        admin_officer_2 = create(:admin_officer, school: school)
+        sign_in(admin_officer_1)
+        patch claim_school_management_dashboard_school_user_path(school_id: school.id, id: admin_officer_2.id)
+        assert_redirected_to dashboard_school_users_path(school)
+        assert_equal 'admin_officer', admin_officer_1.reload.role
+        assert_equal 'school_manager', admin_officer_2.reload.role
+      end
+
+      test 'PATCH claim_school_management as SchoolManagement with 2 ' \
+           'admin_officers make the admin_officer become school_manager - self claiming' do
+        school = create(:school)
+        admin_officer_1 = create(:admin_officer, school: school)
+        admin_officer_2 = create(:admin_officer, school: school)
+        sign_in(admin_officer_1)
+        patch claim_school_management_dashboard_school_user_path(school_id: school.id, id: admin_officer_1.id)
+        assert_redirected_to dashboard_school_users_path(school)
+        assert_equal 'school_manager', admin_officer_1.reload.role
+        assert_equal 'admin_officer', admin_officer_2.reload.role
+      end
+
+      test 'PATCH claim_school_management as SchoolManagement when current_user is teacher with ' \
+           'admin_officers make the admin_officer become school_manager - self claiming' do
+        school = create(:school)
+        admin_officer_1 = create(:admin_officer, school: school)
+        admin_officer_2 = create(:admin_officer, school: school)
+        teacher = create(:teacher, school: school)
+        sign_in(teacher)
+        patch claim_school_management_dashboard_school_user_path(school_id: school.id, id: admin_officer_1.id)
+        assert_redirected_to dashboard_school_users_path(school)
+        assert_equal 'admin_officer', admin_officer_1.reload.role
+        assert_equal 'admin_officer', admin_officer_2.reload.role
+      end
     end
   end
 end
