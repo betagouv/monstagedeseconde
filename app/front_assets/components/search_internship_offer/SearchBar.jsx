@@ -11,6 +11,7 @@ const SearchBar = ({
   preselectedWeeksList,
   schoolWeeksList,
   secondeWeekIds,
+  troisiemeWeekIds,
   studentGradeId,
   params,
   setParam
@@ -27,8 +28,8 @@ const SearchBar = ({
   }
   // HTML
   return (
-    <div className="d-flex">
-      <div className="fr-px-2w flex-fill align-self-end ">
+    <div className="d-flex" >
+      <div className="align-self-end" style={{ flex: 3 }}>
         <CityInput
           city={searchParams.city}
           latitude={searchParams.latitude}
@@ -37,7 +38,7 @@ const SearchBar = ({
           whiteBg="false"
         />
       </div>
-      <div className="fr-px-2w flex-fill align-self-end">
+      <div className="align-self-end" style={{ flex: 3 }}>
         <GradeInput
           gradeId={gradeId}
           whiteBackground="true"
@@ -45,13 +46,14 @@ const SearchBar = ({
           onGradeIdChange={onGradeIdChange}
         />
       </div>
-      <div className="fr-px-2w flex-fill align-self-end">
+      <div className="align-self-end" style={{ flex: 2}}>
         <WeekInput
           preselectedWeeksList={preselectedWeeksList}
           schoolWeeksList={schoolWeeksList}
           gradeId={gradeId}
           whiteBg="false"
           secondeWeekIds={secondeWeekIds}
+          troisiemeWeekIds={troisiemeWeekIds}
           studentGradeId={studentGradeId}
         />
       </div>

@@ -15,9 +15,9 @@ module Presenters
         if is_first
           week.beginning_of_week_with_year_long
         elsif is_last
-          week.end_of_working_week_with_year
+          week.end_of_week_with_years_long
         else
-          week.very_long_working_week_select_text_method
+          week.very_long_week_select_text_method
         end
       end
     end
@@ -26,6 +26,8 @@ module Presenters
       format_weeks(&block)
     end
 
+    # when basic , it returns an array of weeks array
+    # when not basic it returns a list of WeekList objects
     def split_weeks_in_trunks(basic: false)
       container = []
       week_list = weeks.dup.to_a.sort_by(&:id)
@@ -50,16 +52,15 @@ module Presenters
       weeks.empty?
     end
 
-    def str_weeks_display
-      troisieme_weeks = weeks & Week.selectable_from_now_until_next_school_year # TODO: remove this in july 2025
-      seconde_weeks = weeks & Week.seconde_selectable_weeks
+    def str_weeks_display(ripping_of_the_past: true)
+      #byebug
+
+      troisieme_weeks = weeks & (ripping_of_the_past ? Week.troisieme_selectable_weeks : Week.troisieme_weeks)
+      seconde_weeks = weeks & (ripping_of_the_past ? Week.seconde_selectable_weeks : Week.seconde_weeks)
       label_troisieme_weeks = nil
       label_seconde_weeks = nil
 
-      if troisieme_weeks.present?
-        troisieme_week_list = self.class.new(weeks: troisieme_weeks)
-        label_troisieme_weeks = "Disponible une semaine du #{troisieme_week_list.first_week.beginning_of_week_abr} au #{troisieme_week_list.last_week.end_of_working_week_with_year}"
-      end
+      label_troisieme_weeks = self.class.new(weeks: troisieme_weeks).to_s if troisieme_weeks.present?
 
       if seconde_weeks.present?
         second_week_list = self.class.new(weeks: seconde_weeks)
@@ -85,12 +86,13 @@ module Presenters
 
     def detailed_attributes
       weeks.map do |week|
+        between_two_years = week.monday.year != week.friday.year
         {
           id: week.id,
           number: week.number,
           month: week.month_number,
           monthName: MONTHS[week.month_number - 1],
-          year: week.year,
+          year: between_two_years ? week.monday.year : week.friday.year,
           label: week.human_shortest
         }
       end

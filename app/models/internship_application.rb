@@ -477,6 +477,20 @@ class InternshipApplication < ApplicationRecord
     Week.selectable_from_now_until_end_of_school_year & available_weeks
   end
 
+  # def selectable_weeks
+  #   available_weeks = []
+  #   if student.seconde_gt?
+  #     available_weeks = internship_offer.weeks
+  #   elsif student.troisieme_or_quatrieme?
+  #     available_weeks = if student.school.has_weeks_on_current_year?
+  #                         Week.selectable_from_now_until_end_of_school_year & internship_offer.weeks & student.school.weeks
+  #                       else
+  #                         Week.troisieme_selectable_weeks & internship_offer.weeks
+  #                       end
+  #   end
+  #   available_weeks
+  # end
+
   def generate_token
     return if access_token.present?
 

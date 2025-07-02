@@ -36,7 +36,8 @@ const InternshipOfferResults = ({
     searchParams,
     preselectedWeeksList,
     schoolWeeksList,
-    secondeWeekIds
+    secondeWeekIds,
+    troisiemeWeekIds,
   }) => {
   // const [map, setMap] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
@@ -119,7 +120,6 @@ const InternshipOfferResults = ({
     setPaginateLinks(result['pageLinks']);
     setInternshipOffersSeats(result['seats']);
 
-    console.log('result: ', result);
     // setIsSuggestion(result['isSuggestion']);
 
     setIsLoading(false);
@@ -169,6 +169,7 @@ const InternshipOfferResults = ({
                 preselectedWeeksList={preselectedWeeksList}
                 schoolWeeksList={schoolWeeksList}
                 secondeWeekIds={secondeWeekIds}
+                troisiemeWeekIds={troisiemeWeekIds}
                 params={params}
                 setParam={setParams}
               />

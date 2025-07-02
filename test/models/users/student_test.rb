@@ -59,7 +59,7 @@ module Users
 
     test '#has_offers_to_apply_to?' do
       travel_to Date.new(2024, 9, 1) do
-        weeks_till_end = Week.selectable_from_now_until_end_of_school_year
+        # Week.selectable_from_now_until_end_of_school_year
         school         = create(:school, :with_school_manager)
         student        = create(:student, :troisieme, school:)
         refute student.has_offers_to_apply_to?

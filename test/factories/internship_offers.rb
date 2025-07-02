@@ -80,18 +80,18 @@ FactoryBot.define do
 
     trait :troisieme_generale_internship_offer do
       sequence(:title) { |n| "Stage de 3eme - #{n}" }
-      weeks { Week.troisieme_selectable_weeks }
+      weeks { Week.selectable_on_school_year }
       grades { [Grade.troisieme] }
       first_date { weeks.first.monday }
-      last_date { weeks.last.monday + 5.days }
+      last_date { weeks.last.friday }
       targeted_grades { :troisieme_or_quatrieme }
     end
 
     trait :both_school_tracks_internship_offer do
-      weeks { Week.both_school_track_weeks }
+      weeks { Week.selectable_on_school_year }
       grades { [Grade.seconde, Grade.troisieme] }
-      first_date { Week.troisieme_selectable_weeks.first.monday }
-      last_date { SchoolTrack::Seconde.current_period_data.dig(:full_time, :end_day) }
+      first_date { weeks.first.monday }
+      last_date { weeks.last.friday }
       targeted_grades { :seconde_troisieme_or_quatrieme }
     end
 

@@ -75,12 +75,13 @@ module Dashboard::Stepper
     test 'post a valid planning troisieme form' do
       travel_to Date.new(2025, 1, 1) do
         employer = create(:employer)
+        week_ids = Week.troisieme_selectable_weeks.map(&:id)
+        assert_equal 21, week_ids.count
         school = create(:school, city: 'Paris', zipcode: '75001')
         internship_occupation = create(:internship_occupation, employer:)
         entreprise = create(:entreprise, internship_occupation:)
 
         assert entreprise.internship_occupation.present?
-        week_ids = Week.troisieme_selectable_weeks.map(&:id)
 
         sign_in(employer)
         planning = {
@@ -88,7 +89,7 @@ module Dashboard::Stepper
           grade_college: '1',
           grade_2e: '0',
           max_candidates: 20,
-          week_ids:,
+          week_ids: week_ids,
           period: '11',
           lunch_break: 'test de lunch break',
           daily_hours: {
@@ -123,7 +124,7 @@ module Dashboard::Stepper
             assert_equal school.id, planning.school_id
             assert_equal '08:00', planning.daily_hours['lundi'].first
             assert_equal employer.id, planning.employer_id
-            assert_equal SchoolTrack::Troisieme.last_week_of_may.id, planning.weeks.to_a.sort_by(&:id).last.id
+            assert_equal Week.troisieme_selectable_weeks.last.id, planning.weeks.to_a.sort_by(&:id).last.id
           end
         end
       end

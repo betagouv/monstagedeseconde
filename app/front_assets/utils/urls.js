@@ -27,6 +27,16 @@ export const addParamToSearchParams = (param, paramValue) => {
   return searchParams;
 }
 
+export const removeParam = (param_name) => {
+  if (param_name && param_name.length > 2 && param_name.endsWith('[]')) {
+    // if param_name ends with '[]', it is an array parameter, we remove the '[]' part
+    param_name = param_name.slice(0, -2); 
+  }
+  const searchParams = fetchSearchParamsFromUrl();
+  searchParams.delete(param_name);
+  return searchParams;
+}
+
 // it updates url without reloading the page
 export const updateURLWithParam = (searchParams) => {
   window.history.replaceState({}, '', `${window.location.pathname}?${searchParams.toString()}`);
@@ -72,10 +82,10 @@ export const turboVisitsWithSearchParams = (searchParams) => {
   );
 }
 
+
+
 export const clearParamAndVisits = (param_name )=> {
-  const searchParams = fetchSearchParamsFromUrl();
-  searchParams.delete(param_name)
-  turboVisitsWithSearchParams(searchParams)
+  turboVisitsWithSearchParams(removeParam(param_name));
 }
 
 export const getParamValueFromUrl = (param) => {

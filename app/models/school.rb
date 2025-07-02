@@ -83,7 +83,7 @@ class School < ApplicationRecord
   end
 
   def has_weeks_on_current_year?
-    weeks.selectable_on_school_year.exists?
+    weeks.try(:selectable_on_school_year).try(:exists?)
   end
 
   rails_admin do

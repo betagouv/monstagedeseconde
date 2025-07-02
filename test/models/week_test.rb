@@ -32,6 +32,7 @@ class WeekTest < ActiveSupport::TestCase
 
   test 'scope from_now at the end of the year' do
     travel_to(Date.new(2020, 12, 31)) do
+      # https://fr.wikipedia.org/wiki/Semaine_53, 2020 is a year with 53 weeks
       assert Week.from_now.count > 52
       ordered_weeks = Week.from_now.order(:year, :number)
       assert_equal 53, ordered_weeks.first.number
@@ -43,25 +44,24 @@ class WeekTest < ActiveSupport::TestCase
     travel_to(Date.new(2021, 1, 7)) do
       refute Week.current.ahead_of_school_year_start?
     end
-    travel_to(Date.new(2021, 5, 1)) do
+    travel_to(Date.new(2021, 5, 27)) do # monday
       refute Week.current.ahead_of_school_year_start?
     end
-    travel_to(Date.new(2021, 5, 31)) do
+    travel_to(Date.new(2021, 5, 31)) do # monday
       assert Week.current.ahead_of_school_year_start?
     end
-    travel_to(Date.new(2021, 6, 1)) do
-      assert Week.current.ahead_of_school_year_start?
-    end
-    travel_to(Date.new(2021, 9, 1)) do
+    travel_to(Date.new(2021, 9, 1)) do # wednesday
       refute Week.current.ahead_of_school_year_start?
     end
-    travel_to(Date.new(2021, 9, 10)) do
+    travel_to(Date.new(2021, 9, 10)) do # friday
       refute Week.current.ahead_of_school_year_start?
     end
   end
 
   test '#beginning_of_week' do
-    weeks = Week.selectable_on_school_year
-    assert_equal '2 sept.', weeks.first.beginning_of_week(format: :human_dd_mm)
+    travel_to(Date.new(2024, 9, 2)) do
+      weeks = Week.selectable_on_school_year
+      assert_equal '2 sept.', weeks.first.beginning_of_week(format: :human_dd_mm)
+    end
   end
 end

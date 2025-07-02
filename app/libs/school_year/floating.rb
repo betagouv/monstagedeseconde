@@ -15,11 +15,11 @@ module SchoolYear
     end
 
     def shift_day(year:)
-      Date.new(year, MONTH_OF_YEAR_SHIFT, DAY_OF_YEAR_SHIFT)
+      Date.new(year, MONTH_OF_YEAR_SHIFT, FIRST)
     end
 
     def self.shift_day(year:)
-      Date.new(year, MONTH_OF_YEAR_SHIFT, DAY_OF_YEAR_SHIFT)
+      Date.new(year, MONTH_OF_YEAR_SHIFT, FIRST)
     end
 
     attr_reader :date

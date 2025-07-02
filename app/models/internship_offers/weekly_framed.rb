@@ -75,7 +75,7 @@ module InternshipOffers
     # TODO: belongs_to a task not a model
     def self.update_older_internship_offers
       to_be_unpublished = where(aasm_state: %i[published need_to_be_updated splitted])
-                          .where('last_date < ?', Week.current_year_start_week.monday).to_a
+                          .where('last_date < ?', SchoolYear::Current.new.offers_beginning_of_period).to_a
       to_be_unpublished.each do |offer|
         print '.'
         # skip missing weeks validation and silent unpublishing
@@ -98,7 +98,7 @@ module InternshipOffers
 
     def has_weeks_before_school_year_start?
       start_week = Week.current_year_start_week
-      weeks.any? { |week| week.id.in?(Week.before_week(week: start_week).ids) }
+      weeks.any? { |week| week.id.in?(Week.strictly_before_wee(week: start_week).ids) }
     end
 
     def has_weeks_after_school_year_start?

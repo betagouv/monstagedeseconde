@@ -1,5 +1,5 @@
 def populate_week_reference
-  first_year = 2019
+  first_year = 2023
   last_year = Time.now.year + 1
 
   first_week = 1
@@ -7,9 +7,7 @@ def populate_week_reference
 
   first_year.upto(last_year) do |year|
     first_week.upto(last_week) do |week| # number of the week
-      if week == last_week
-        Date.commercial(year, week, 1)
-      end
+      Date.commercial(year, week, 1) if week == last_week
 
       Week.create!(year: year, number: week)
     rescue ArgumentError
@@ -29,7 +27,7 @@ def populate_month_reference
   end
 end
 
-call_method_with_metrics_tracking([
-  :populate_month_reference,
-  :populate_week_reference
-])
+call_method_with_metrics_tracking(%i[
+                                    populate_month_reference
+                                    populate_week_reference
+                                  ])

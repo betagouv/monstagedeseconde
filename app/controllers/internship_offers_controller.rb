@@ -15,7 +15,8 @@ class InternshipOffersController < ApplicationController
     @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
     @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
     @preselected_weeks_list_array = Presenters::WeekList.new(weeks: @preselected_weeks_list.to_a).detailed_attributes
-    @seconde_week_ids = SchoolTrack::Seconde.both_weeks.map(&:id)
+    @seconde_week_ids = Week.seconde_weeks.map(&:id)
+    @troisieme_week_ids = Week.troisieme_selectable_weeks.map(&:id)
     @student_grade_id = current_user&.student? ? current_user.grade_id : nil
 
     respond_to do |format|
@@ -72,7 +73,7 @@ class InternshipOffersController < ApplicationController
   end
 
   def search_query_params
-    common_query_params =  %i[city grade_id latitude longitude page radius format]
+    common_query_params =  %i[city grade_id latitude longitude page radius]
     common_query_params += [:school_year] if current_user_or_visitor.god? || current_user_or_visitor.statistician?
     params.permit(*common_query_params, week_ids: [])
   end

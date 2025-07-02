@@ -4,13 +4,13 @@ import { getMonthName }  from '../../../utils/months';
 function CheckBoxColumn({
   monthScore,
   schoolWeeksList,
-  monthIncludedInSchoolWeeksList,
+  monthDetailedList,
   handleWeekCheck,
   weekIds,
 }) {
   return (
     <>
-      {monthIncludedInSchoolWeeksList().map((month, index) => (
+      {monthDetailedList().map((month, index) => (
         <div className={`flex flex-column month-name ${month.monthName}`} key={index}>
           <div>
             {/* month and year */}
@@ -19,11 +19,11 @@ function CheckBoxColumn({
             </strong>
           </div>
           {/* checkboxes and labels */}
-          <div>
+          <div className='week-checkboxes'>
             {schoolWeeksList.filter(week => week.monthName === month.monthName).map((week, weekIndex) => {
               const weekScore = monthScore[week.monthName];
               const isChecked = weekIds.includes(week.id);
-              const withBoldPresentation = weekScore > 0 && isChecked ? 'strong blue-france' : 'fr-hint-text';
+              const withBoldPresentation = weekScore > 0 && isChecked ? 'strong blue-france' : 'silenced';
               return (
                 <div key={weekIndex} className="custom-control custom-checkbox">
                   <input

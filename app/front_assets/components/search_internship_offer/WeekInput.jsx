@@ -5,6 +5,7 @@ import {
   addParamToSearchParams,
   updateURLWithParam,
   parseArrayValueFromUrl,
+  removeParam
 } from "../../utils/urls";
 import MonthColumn from "./weekInput/MonthColumn";
 import CheckBoxColumn from "./weekInput/CheckBoxColumn";
@@ -15,76 +16,41 @@ function WeekInput({
   schoolWeeksList,
   gradeId,
   secondeWeekIds,
+  troisiemeWeekIds,
   studentGradeId,
   params,
   setParams,
 }) {
-  // state variables
-  const [monthScore, setMonthScore] = useState([]);
-  const [weekIds, setWeekIds] = useState([]);
-  const [weekPlaceholder, setWeekPlaceholder] = useState( "Choisissez une option" );
-  const [weeksToParse, setWeeksToParse] = useState([]);
   const gradeIdSeconde = "1";
   const gradeIdTroisieme = "2";
+  // state variables
+  const [monthScore, setMonthScore] = useState({});
+  const [weekIds, setWeekIds] = useState([]);
+  const [weekPlaceholder, setWeekPlaceholder] = useState( "Choisissez une option" );
+  const [weeksToParse, setWeeksToParse] = useState(schoolWeeksList);
+  console.log('schoolWeeksList', schoolWeeksList);
 
-  // initialization and triggers
+  // initialization and triggers at each render
   useEffect(() => {
-    const weekIdsFromUrl = parseArrayValueFromUrl("week_ids[]");
-    setWeekIds(
-      weekIdsFromUrl.length > 0 ? sanitizeWeekIds(weekIdsFromUrl) : []
-    );
-    monthIncludedInSchoolWeeksList(gradeId).forEach((month) => {
-      preselectedWeeksList.forEach((week) => {
-        if (
-          weekIdsFromUrl.length > 0 &&
-          week.monthName === month.monthName &&
-          weekIdsFromUrl.includes(week.id)
-        ) {
-          setMonthScore((prevScore) => ({
-            ...prevScore,
-            [week.monthName]: (prevScore[week.monthName] || 0) + 1,
-          }));
-        }
-      });
-    });
-
-    setWeekPlaceholder(semainesStr(totalWeeksCount));
+    updateWeekIdsFromUrl();
   }, []);
 
+  // only at gradeId change and on initial render
   useEffect(() => {
-    const searchParams = addParamToSearchParams("week_ids[]", weekIds);
-    updateURLWithParam(searchParams);
-    setWeekPlaceholder(semainesStr(totalWeeksCount));
-  }, [weekIds]);
-
-  useEffect(() => {
-    console.log('----------------')
-    console.log("gradeId", gradeId);
-    console.log("secondeWeekIds", secondeWeekIds);
-    switch (gradeId) {
-      case gradeIdSeconde:
-        console.log("en seconde");
-        // filter schoolWeeksList with secondeWeekIds
-        setWeeksToParse(
-          schoolWeeksList.filter((week) =>
-            secondeWeekIds.includes(week.id)
-          )
-        );
-        break;
-      case gradeIdTroisieme:
-        console.log("en troisieme");
-        // filter schoolWeeksList without secondeWeekIds
-        setWeeksToParse(
-          schoolWeeksList.filter((week) =>
-            troisiemeWeekIds.includes(week.id)
-          )
-        );
-        break;
-    }
-    setWeekPlaceholder(semainesStr(totalWeeksCount));
+    // updateURLWithParam(removeParam("week_ids[]"));
+    // updateWeekIdsFromUrl();
+    limitWeeksToParse(gradeId);
+    setMonthScoreFromUrl();
+    updateToggleButtonText();
   }, [gradeId]);
 
   // helpers
+  const weekIdsFromUrl = () => { return sanitizeWeekIds(parseArrayValueFromUrl("week_ids[]")); };
+  const updateWeekIdsFromUrl = () => {
+        if (weekIdsFromUrl().length > 0) {
+      setWeekIds([...weekIds, ...weekIdsFromUrl()]);
+    }
+  }
   const sanitizeWeekIds = (ids) => {
     if (Array.isArray(ids) && ids.length === 0) {
       return [];
@@ -112,39 +78,96 @@ function WeekInput({
     }
     return [];
   };
-
-  const totalWeeksCount = Object.values(monthScore).reduce(
-    (acc, score) => acc + score,
-    0
-  );
-
   const uniq = (value, index, array) => {
     return array.indexOf(value) === index;
   };
 
-  const semainesStr = (count) => {
-    if (count === 0) {
-      return "Choisir une option";
-    } else if (count === 1) {
-      return "1 semaine";
-    } else if (count > 1 && count < 5) {
-      return `${count} semaines`;
-    } else {
-      return "-";
+  const limitWeeksToParse = (gradeId) => {
+    console.log('schoolWeeksList', schoolWeeksList)
+    console.log('secondeWeekIds', secondeWeekIds ); // Ensure the last week has December as month
+    switch (gradeId) {
+      case gradeIdSeconde:
+        // filter schoolWeeksList with secondeWeekIds
+        setWeeksToParse(
+          schoolWeeksList.filter((week) =>
+            secondeWeekIds.includes(week.id)
+          )
+        );
+        break;
+      case gradeIdTroisieme:
+        // filter schoolWeeksList without secondeWeekIds
+        setWeeksToParse(
+          schoolWeeksList.filter((week) =>
+            troisiemeWeekIds.includes(week.id)
+          )
+        );
+        break;
+      default:
+        setWeeksToParse(schoolWeeksList);
+        break;
     }
+  }
+
+  const setMonthScoreFromUrl = () => {
+    monthDetailedList().forEach((month) => {
+      // Ensure each month starts with a score of at least 0
+      setMonthScore((prevScore) => ({
+        ...prevScore,
+        [month.monthName]: 0,
+      }));
+
+      preselectedWeeksList.forEach((week) => {
+        if (
+          weekIdsFromUrl().length > 0 &&
+          week.monthName === month.monthName &&
+          weekIdsFromUrl().includes(week.id)
+        ) {
+          setMonthScore((prevScore) => ({
+        ...prevScore,
+        [week.monthName]: (prevScore[week.monthName] || 0) + 1,
+          }));
+        }
+      });
+    });
+    updateToggleButtonText();
   };
 
-  const monthIncludedInSchoolWeeksList = () => {
+  const updateToggleButtonText = () => {
+    let text = '-';
+    const weeksCount =weekIdsFromUrl().length;
+
+    if(weeksCount === 0 || weeksCount == undefined) {
+      text = 'Choisir une option';
+    } else if(weeksCount === 1) {
+      text = "1 semaine";
+    } else if (weeksCount > 1) {
+      text = `${weeksCount} semaines`;
+    } else { text = '? semaines'; }
+    setWeekPlaceholder(text);
+  };
+
+  const monthDetailedList = () => {
     let monthList = [];
+    const seenMonths = new Set();
+    console.log('weeksToParse', weeksToParse);
     weeksToParse.forEach((week) => {
-      if (!weeksToParse.some((month) => month.monthName === week.monthName)) {
+      if ( week.month === 12) {
+        console.log("week", week);
+      }
+      const key = `${week.monthName}-${week.year}`;
+      if (!seenMonths.has(key)) {
+        seenMonths.add(key);
         monthList.push({
+          key: key,
           monthName: week.monthName,
           month: week.month,
           year: week.year,
         });
       }
     });
+    console.log('-----------')
+    console.log('monthList', monthList);
+    console.log('-----------')
     return monthList;
   };
 
@@ -164,14 +187,18 @@ function WeekInput({
       : weekIds.filter((id) => id !== week.id);
     setWeekIds(newWeekIds);
 
+    const searchParams = addParamToSearchParams("week_ids[]", newWeekIds);
+    updateURLWithParam(searchParams);
+
     // Update the monthScore state
-    const newScore = { ...monthScore };
-    const increment = shallBeAddedToWeekList ? 1 : -1;
-    newScore[week.monthName] = (newScore[week.monthName] || 0) + increment;
-    setMonthScore((prevScore) => ({
-      ...prevScore,
-      [week.monthName]: newScore[week.monthName],
-    }));
+    // const newScore = { ...monthScore };
+    // const increment = shallBeAddedToWeekList ? 1 : -1;
+    // newScore[week.monthName] = (newScore[week.monthName] || 0) + increment;
+    // setMonthScore((prevScore) => ({
+    //   ...prevScore,
+    //   [week.monthName]: newScore[week.monthName],
+    // }));
+        setMonthScoreFromUrl();
   };
 
   const toggleSearchPanel = (e) => {
@@ -209,7 +236,7 @@ function WeekInput({
         <div className="d-flex">
           <div className=" small-interline fr-text--sm border-right month-lane">
             <MonthColumn
-              monthIncludedInSchoolWeeksList={monthIncludedInSchoolWeeksList}
+              monthDetailedList={monthDetailedList}
               monthScore={monthScore}
               secondeWeekIds={secondeWeekIds}
               gradeId={gradeId}
@@ -220,7 +247,7 @@ function WeekInput({
               <CheckBoxColumn
                 monthScore={monthScore}
                 schoolWeeksList={schoolWeeksList}
-                monthIncludedInSchoolWeeksList={monthIncludedInSchoolWeeksList}
+                monthDetailedList={monthDetailedList}
                 handleWeekCheck={handleWeekCheck}
                 weekIds={weekIds}
                 secondeWeekIds={secondeWeekIds}
