@@ -58,14 +58,19 @@ module Dashboard::InternshipOffers
     end
 
     test 'GET #edit with disabled fields if applications exist' do
-      employer = create(:employer)
-      sign_in(employer)
-      internship_offer = create(:weekly_internship_offer_2nde, employer:,
-                                                               internship_offer_area: employer.current_area)
-      internship_application = create(:weekly_internship_application,
-                                      :submitted,
-                                      internship_offer:)
-      travel_to(weeks.select { |w| w.year == 2024 }.first.week_date - 1.week) do
+      internship_application = nil
+      travel_to(Date.new(2023, 9, 7)) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_2nde,
+                                  employer:,
+                                  internship_offer_area: employer.current_area)
+        internship_application = create(:weekly_internship_application,
+                                        :submitted,
+                                        internship_offer: internship_offer)
+      end
+      travel_to(internship_application.weeks.select { |w| w.year == 2024 }.first.week_date - 1.week) do
+        refute internship_application.nil?
         get edit_dashboard_internship_offer_path(internship_application.internship_offer.to_param)
         assert_response :success
         assert_select 'input#internship_offer_max_candidates'
@@ -73,21 +78,23 @@ module Dashboard::InternshipOffers
     end
 
     test 'GET #edit with default fields' do
-      employer = create(:employer)
-      sign_in(employer)
-      internship_offer = create(:weekly_internship_offer_2nde, is_public: true,
-                                                               max_candidates: 1,
-                                                               employer:)
+      travel_to Date.new(2023, 10, 1) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_2nde, is_public: true,
+                                                                 max_candidates: 1,
+                                                                 employer:)
 
-      get edit_dashboard_internship_offer_path(internship_offer.to_param)
-      assert_response :success
-      assert_select 'title', "Offre de stage '#{internship_offer.title}' | 1élève1stage"
+        get edit_dashboard_internship_offer_path(internship_offer.to_param)
+        assert_response :success
+        assert_select 'title', "Offre de stage '#{internship_offer.title}' | 1élève1stage"
 
-      # TO DO : check if relevant
-      # assert_select '#internship_type_true[checked]', count: 1
-      # assert_select '#internship_type_false[checked]', count: 0
+        # TO DO : check if relevant
+        # assert_select '#internship_type_true[checked]', count: 1
+        # assert_select '#internship_type_false[checked]', count: 0
 
-      assert_select 'a.btn-back[href=?]', dashboard_internship_offers_path
+        assert_select 'a.btn-back[href=?]', dashboard_internship_offers_path
+      end
     end
   end
 end

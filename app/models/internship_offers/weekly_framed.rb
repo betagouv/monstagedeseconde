@@ -98,7 +98,7 @@ module InternshipOffers
 
     def has_weeks_before_school_year_start?
       start_week = Week.current_year_start_week
-      weeks.any? { |week| week.id.in?(Week.strictly_before_wee(week: start_week).ids) }
+      weeks.any? { |week| week.id.in?(Week.strictly_before_week(week: start_week).ids) }
     end
 
     def has_weeks_after_school_year_start?

@@ -372,8 +372,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index as student keeps internship_offers having ' \
-       'as less than blocked_applications_count as max_candidates number' do
+  test 'GET #index as student keeps internship_offers having as less than blocked_applications_count as max_candidates number' do
     travel_to Time.zone.local(2025, 3, 1) do
       max_candidates = 2
       internship_offer = create(:weekly_internship_offer_3eme,

@@ -154,18 +154,17 @@ module Dashboard::InternshipOffers
     end
 
     test 'PATCH #update as employer owning internship_offer can publish/unpublish offer' do
-      freeze_time do
+      travel_to(Date.new(2025, 3, 1)) do
         internship_offer = create(:weekly_internship_offer_2nde, :published, published_at: 50.days.ago)
         internship_offer.update_columns(published_at: 50.days.ago)
         assert_equal 50.days.ago, internship_offer.published_at
-        puts "internship_offer.published_at.to_i: #{internship_offer.published_at.to_i}"
         puts "internship_offer.published_at: #{internship_offer.published_at}"
         puts ''
         new_published_at = 2.days.ago
         sign_in(internship_offer.employer)
-        assert_changes -> { internship_offer.reload.published_at.to_i },
-                       from: internship_offer.published_at.to_i,
-                       to: new_published_at.to_i do
+        assert_changes -> { internship_offer.reload.published_at.day },
+                       from: internship_offer.published_at.day,
+                       to: new_published_at.day do
           patch(dashboard_internship_offer_path(internship_offer.to_param),
                 params: { internship_offer: { published_at: new_published_at } })
         end

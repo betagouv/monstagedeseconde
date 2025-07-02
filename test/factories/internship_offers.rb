@@ -25,7 +25,7 @@ FactoryBot.define do
     coordinates { Coordinates.paris }
     entreprise_coordinates { Coordinates.paris }
     entreprise_full_address { '1 rue du poulet, 75001 Paris' }
-    weeks { Week.both_school_track_weeks }
+    weeks { Week.both_school_tracks_weeks }
     siret { '11122233300000' }
     aasm_state { 'published' }
     hidden_duplicate { false }

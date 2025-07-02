@@ -39,7 +39,7 @@ class Week < ApplicationRecord
   }
 
   scope :both_school_tracks_weeks, lambda {
-    Week.where(id: [troisieme_weeks, seconde_weeks].map(&:ids).flatten.uniq)
+    where(id: [troisieme_weeks, seconde_weeks].map(&:ids).flatten.uniq)
   }
 
   scope :both_school_track_selectable_weeks, lambda {
