@@ -18,7 +18,6 @@ const SearchBar = ({
   schoolWeeksList,
   secondeWeekIds,
   troisiemeWeekIds,
-  studentGradeId,
 }) => {
   const gradeIdSeconde = "1";
   const gradeIdTroisieme = "2";
@@ -45,8 +44,7 @@ const SearchBar = ({
 
   const updateWeekIdsFromUrl = (gradeId) => {
     // filteredWeekIds is the intersection between weekIdsFromUrl() and troisiemeWeekIds or SecondeWeeksIds according to gradeId's value
-    const WeekIdsGrandContainer =
-      gradeId === gradeIdSeconde ? secondeWeekIds : troisiemeWeekIds;
+    const WeekIdsGrandContainer = gradeId === gradeIdSeconde ? secondeWeekIds : troisiemeWeekIds;
     const filteredWeekIds = WeekIdsGrandContainer.filter((id) =>
       weekIdsFromUrl().includes(id)
     );
@@ -177,13 +175,9 @@ const SearchBar = ({
       return;
     }
     // update weekIds and monthScore based on the week being in the former list of weekIds or not
-    const wasChecked = weekIds.includes(week.id);
-    const shallBeAddedToWeekList = !wasChecked;
-
-    // Update the weekIds state
-    const newWeekIds = shallBeAddedToWeekList
-      ? [...weekIds, week.id]
-      : weekIds.filter((id) => id !== week.id);
+    const newWeekIds = weekIds.includes(week.id)
+      ? weekIds.filter((id) => id !== week.id)
+      : [...weekIds, week.id];
     setWeekIds(newWeekIds);
     const searchParams = addParamToSearchParams("week_ids[]", newWeekIds);
     updateURLWithParam(searchParams);
@@ -217,7 +211,6 @@ const SearchBar = ({
     updateWeekIdsFromUrl(gradeId);
     limitWeeksToParse(gradeId);
     setMonthScoreFromUrl();
-    updateToggleButtonText();
   }
 
   // HTML
@@ -236,25 +229,20 @@ const SearchBar = ({
         <GradeInput
           gradeId={gradeId}
           whiteBackground="true"
-          studentGradeId={studentGradeId}
           onGradeIdChange={onGradeIdChange}
         />
       </div>
       <div className="align-self-end" style={{ flex: 2 }}>
         <WeekInput
-          preselectedWeeksList={preselectedWeeksList}
-          schoolWeeksList={schoolWeeksList}
-          gradeId={gradeId}
-          whiteBg="false"
-          secondeWeekIds={secondeWeekIds}
-          troisiemeWeekIds={troisiemeWeekIds}
-          studentGradeId={studentGradeId}
           monthDetailedList={monthDetailedList}
           monthScore={monthScore}
+          schoolWeeksList={schoolWeeksList}
           handleWeekCheck={handleWeekCheck}
           weekIds={weekIds}
+          gradeId={gradeId}
+          whiteBg="false"
           weekPlaceholder={weekPlaceholder}
-        />
+          />
       </div>
       <div className="flex-shrink-1 align-self-end">
         <button

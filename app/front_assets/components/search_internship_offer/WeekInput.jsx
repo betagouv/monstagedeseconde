@@ -6,13 +6,9 @@ import MonthColumn from "./weekInput/MonthColumn";
 import CheckBoxColumn from "./weekInput/CheckBoxColumn";
 
 function WeekInput({
-  preselectedWeeksList,
   schoolWeeksList,
   gradeId,
   whiteBg = "false",
-  secondeWeekIds,
-  troisiemeWeekIds,
-  studentGradeId,
   monthDetailedList,
   monthScore,
   handleWeekCheck,
@@ -57,19 +53,16 @@ function WeekInput({
             <MonthColumn
               monthDetailedList={monthDetailedList}
               monthScore={monthScore}
-              secondeWeekIds={secondeWeekIds}
-              gradeId={gradeId}
             />
           </div>
           <div className=" flex-fill weeks-list">
             <div className="custom-control-checkbox-list">
               <CheckBoxColumn
+                monthDetailedList={monthDetailedList}
                 monthScore={monthScore}
                 schoolWeeksList={schoolWeeksList}
-                monthDetailedList={monthDetailedList}
                 handleWeekCheck={handleWeekCheck}
                 weekIds={weekIds}
-                secondeWeekIds={secondeWeekIds}
                 gradeId={gradeId}
               />
             </div>

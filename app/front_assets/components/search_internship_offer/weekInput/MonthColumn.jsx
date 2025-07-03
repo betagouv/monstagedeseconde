@@ -4,7 +4,6 @@ import { getMonthName }  from '../../../utils/months';
 function MonthColumn({
   monthDetailedList,
   monthScore,
-  gradeId,
 }) {
   return(
     <div>
