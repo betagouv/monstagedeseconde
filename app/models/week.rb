@@ -38,6 +38,10 @@ class Week < ApplicationRecord
     from_date_to_date(**from_now_to_end_of_current_troisieme_year_limits)
   }
 
+  scope :deposit_troisieme_weeks, lambda {
+    from_date_to_date(**current_year_deposit_limits)
+  }
+
   scope :both_school_tracks_weeks, lambda {
     where(id: [troisieme_weeks, seconde_weeks].map(&:ids).flatten.uniq)
   }

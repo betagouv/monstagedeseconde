@@ -28,10 +28,6 @@ export const addParamToSearchParams = (param, paramValue) => {
 }
 
 export const removeParam = (param_name) => {
-  if (param_name && param_name.length > 2 && param_name.endsWith('[]')) {
-    // if param_name ends with '[]', it is an array parameter, we remove the '[]' part
-    param_name = param_name.slice(0, -2); 
-  }
   const searchParams = fetchSearchParamsFromUrl();
   searchParams.delete(param_name);
   return searchParams;

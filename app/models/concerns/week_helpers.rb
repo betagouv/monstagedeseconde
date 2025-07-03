@@ -170,12 +170,12 @@ module WeekHelpers
     end
 
     # -- deposit weeks --
-    def from_now_to_end_of_current_year_deposit_limits
-      current_school_year.from_now_to_end_of_current_year_deposit_limits
-    end
-
     def current_year_deposit_limits
       current_school_year.current_year_deposit_limits
+    end
+
+    def from_now_to_end_of_current_year_deposit_limits
+      current_school_year.from_now_to_end_of_current_year_deposit_limits
     end
 
     def current

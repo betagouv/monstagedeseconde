@@ -8,6 +8,7 @@ function CheckBoxColumn({
   handleWeekCheck,
   weekIds,
 }) {
+  useEffect(() => { }, [weekIds])
   return (
     <>
       {monthDetailedList().map((month, index) => (

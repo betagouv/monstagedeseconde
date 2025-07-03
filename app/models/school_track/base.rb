@@ -4,7 +4,7 @@ module SchoolTrack
     SWITCH_DAY = SchoolYear::Current::FIRST
 
     def self.current_year
-      delta = Date.today.month <= SWITCH_MONTH ? 0 : 1
+      delta = Date.today < Date.new(Date.today.year, SWITCH_MONTH, SWITCH_DAY) ? 0 : 1
       Date.today.year + delta
     end
   end

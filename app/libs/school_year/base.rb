@@ -60,15 +60,15 @@ module SchoolYear
     # ------------- deposit limits -------------
 
     def current_year_deposit_limits
-      from = first_monday_after(deposit_beginning_of_period)
-      to   = last_friday_before(deposit_end_of_period)
+      from = deposit_beginning_of_period
+      to   = deposit_end_of_period
 
       { from: from, to: to }
     end
 
     def from_now_to_end_of_current_year_deposit_limits
-      from = [first_monday_after(date), first_monday_after(deposit_beginning_of_period)].max
-      to = last_friday_before(deposit_end_of_period)
+      from = [date, deposit_beginning_of_period].max
+      to = deposit_end_of_period
 
       { from: from, to: to }
     end

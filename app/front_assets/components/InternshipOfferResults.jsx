@@ -10,7 +10,6 @@ import Paginator from './search_internship_offer/Paginator';
 import TitleLoader from './TitleLoader';
 import { endpoints } from '../utils/api';
 import { isMobile } from '../utils/responsive';
-import { fetchSearchParamsFromUrl, turboVisitsWithSearchParams} from '../utils/urls';
 import FlashMessage from './FlashMessage';
 import ImmersionFaciliteeCard from './ImmersionFaciliteeCard';
 import SearchBar from './search_internship_offer/SearchBar';
@@ -52,7 +51,7 @@ const InternshipOfferResults = ({
   const [notify, setNotify] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [params, setParams] = useState(searchParams);
-  const [gradeId, setGradeId] = useState(searchParams.grade_id);
+
 
   useEffect(() => {
     fetchInternshipOffers();
@@ -73,10 +72,6 @@ const InternshipOfferResults = ({
 
     setTimeout(() => setNewDataFetched(false), 100);
     return null;
-  };
-
-  const handleSubmit = () => {
-    turboVisitsWithSearchParams(fetchSearchParamsFromUrl());
   };
 
   const handleMouseOver = (data) => {
@@ -164,14 +159,10 @@ const InternshipOfferResults = ({
             <div className="col-12">
               <SearchBar
                 searchParams={searchParams}
-                setGradeId={setGradeId}
-                gradeId={gradeId}   
                 preselectedWeeksList={preselectedWeeksList}
                 schoolWeeksList={schoolWeeksList}
                 secondeWeekIds={secondeWeekIds}
                 troisiemeWeekIds={troisiemeWeekIds}
-                params={params}
-                setParam={setParams}
               />
             </div>
           </div>
