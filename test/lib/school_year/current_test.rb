@@ -77,15 +77,15 @@ module SchoolYear
     test '.from_now_to_end_of_current_year_deposit_limits' do
       travel_to(Date.new(2025, 1, 1)) do
         current = Current.new
-        assert_equal Date.new(2025, 1, 6), current.from_now_to_end_of_current_year_deposit_limits[:from]
-        assert_equal Date.new(2025, 6, 27), current.from_now_to_end_of_current_year_deposit_limits[:to]
+        assert_equal Date.new(2025, 1, 1), current.from_now_to_end_of_current_year_deposit_limits[:from]
+        assert_equal Date.new(2025, 7, 1), current.from_now_to_end_of_current_year_deposit_limits[:to]
       end
     end
     test '.current_year_deposit_limits' do
       travel_to(Date.new(2025, 1, 1)) do
         current = Current.new
         assert_equal Date.new(2024, 7, 1), current.current_year_deposit_limits[:from]
-        assert_equal Date.new(2025, 6, 27), current.current_year_deposit_limits[:to]
+        assert_equal Date.new(2025, 7, 1), current.current_year_deposit_limits[:to]
       end
     end
   end

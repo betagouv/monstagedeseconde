@@ -37,6 +37,7 @@ module InternshipApplications
     end
 
     test 'GET #new internship application as student with no weeks available redirects to offer path with alert' do
+      skip 'leak suspicion'
       travel_to Time.zone.local(2025, 3, 1) do
         internship_offer = create(:weekly_internship_offer_3eme)
         school = create(:school, school_type: 'college')

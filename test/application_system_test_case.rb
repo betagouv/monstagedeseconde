@@ -35,7 +35,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   include Html5Validator
 
   def setup
-    stub_request(:any, /data.geopf.fr\/geocodage/)
+    stub_request(:any, %r{data.geopf.fr/geocodage})
       .to_return(status: 200, body: File.read(Rails.root.join(*%w[test
                                                                   fixtures
                                                                   files

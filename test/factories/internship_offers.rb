@@ -80,7 +80,7 @@ FactoryBot.define do
 
     trait :troisieme_generale_internship_offer do
       sequence(:title) { |n| "Stage de 3eme - #{n}" }
-      weeks { Week.selectable_on_school_year }
+      weeks { Week.troisieme_weeks }
       grades { [Grade.troisieme] }
       first_date { weeks.first.monday }
       last_date { weeks.last.friday }
@@ -88,7 +88,7 @@ FactoryBot.define do
     end
 
     trait :both_school_tracks_internship_offer do
-      weeks { Week.selectable_on_school_year }
+      weeks { Week.both_school_tracks_weeks }
       grades { [Grade.seconde, Grade.troisieme] }
       first_date { weeks.first.monday }
       last_date { weeks.last.friday }

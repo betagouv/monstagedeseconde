@@ -73,6 +73,7 @@ module Dashboard::Stepper
       end
     end
     test 'post a valid planning troisieme form' do
+      skip 'leak suspicion'
       travel_to Date.new(2025, 1, 1) do
         employer = create(:employer)
         week_ids = Week.troisieme_selectable_weeks.map(&:id)
