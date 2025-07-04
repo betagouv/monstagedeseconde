@@ -163,6 +163,7 @@ const InternshipOfferResults = ({
                 schoolWeeksList={schoolWeeksList}
                 secondeWeekIds={secondeWeekIds}
                 troisiemeWeekIds={troisiemeWeekIds}
+                origin='search'
               />
             </div>
           </div>

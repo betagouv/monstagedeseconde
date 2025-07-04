@@ -3,6 +3,7 @@ import CityInput from "./CityInput";
 import GradeInput from "./GradeInput";
 import WeekInput from "./WeekInput";
 import {
+  path,
   fetchSearchParamsFromUrl,
   getParamValueFromUrl,
   turboVisitsWithSearchParams,
@@ -18,6 +19,7 @@ const SearchBar = ({
   schoolWeeksList,
   secondeWeekIds,
   troisiemeWeekIds,
+  origin,
 }) => {
   const gradeIdSeconde = "1";
   const gradeIdTroisieme = "2";
@@ -25,7 +27,7 @@ const SearchBar = ({
   // state variables
   const [monthScore, setMonthScore] = useState({});
   const [weekIds, setWeekIds] = useState([]);
-  const [gradeId, setGradeId] = useState(searchParams.grade_id);
+  const [gradeId, setGradeId] = useState(searchParams.grade_id || 0);
   const [weekPlaceholder, setWeekPlaceholder] = useState(
     "Choisissez une option"
   );
@@ -185,7 +187,11 @@ const SearchBar = ({
   };
 
   const handleSubmit = () => {
-    turboVisitsWithSearchParams(fetchSearchParamsFromUrl());
+    if(origin == 'homeStudent'){
+      Turbo.visit( `${window.location.origin}${'/offres-de-stage'}?${fetchSearchParamsFromUrl()}`)
+    } else if(origin === 'search'){
+      turboVisitsWithSearchParams(fetchSearchParamsFromUrl());
+    }
   };
 
   const onGradeIdChange = (event) => {
