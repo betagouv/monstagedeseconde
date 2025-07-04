@@ -325,7 +325,7 @@ module Api
       end
 
       test 'POST #create as operator without max_candidates works and set up remaing_seats_count to 1' do
-        week_instances = [weeks(:week_2019_1), weeks(:week_2019_2)]
+        week_instances = [weeks(:week_2024_1), weeks(:week_2024_2)]
         sector = create(:sector, uuid: SecureRandom.uuid)
         title = 'title'
         description = 'description'
@@ -341,7 +341,7 @@ module Api
         sector_uuid = sector.uuid
         remote_id = 'test'
         permalink = 'http://monsite.com'
-        weeks = %w[2025-W19 2025-W20]
+        weeks = %w[2025-W24 2025-W20]
         grades = ['troisieme']
 
         assert_difference('InternshipOffer.count', 1) do

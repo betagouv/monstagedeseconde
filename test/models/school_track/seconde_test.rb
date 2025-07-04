@@ -19,8 +19,8 @@ module SchoolTrack
         assert_equal Seconde.both_weeks, [Seconde.first_week, Seconde.second_week]
         assert_equal Date.new(2025, 6, 16), Seconde.first_week.monday
         assert_equal Date.new(2025, 6, 27), Seconde.second_week.friday
-        assert_equal 338, Seconde.both_weeks.first.id
-        assert_equal 339, Seconde.both_weeks.last.id
+        assert_equal 129, Seconde.both_weeks.first.id
+        assert_equal 130, Seconde.both_weeks.last.id
       end
     end
   end

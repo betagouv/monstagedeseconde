@@ -1,6 +1,6 @@
 require 'pretty_console'
 def populate_week_reference
-  first_year = 2024
+  first_year = 2023
   last_year = Time.now.year + 2
 
   first_week = 1
