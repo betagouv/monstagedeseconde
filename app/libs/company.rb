@@ -1,6 +1,6 @@
 class Company
   def self.contact_message(with_carriage_return: false)
-    current_year = SchoolYear::Current.new.end_of_period.year
+    current_year = SchoolYear::Current.new.deposit_end_of_period.year
     dates_data = SchoolTrack::Seconde.period_collection(school_year: current_year)[:full_time]
 
     'Bonjour,' \

@@ -7,11 +7,11 @@ module Reporting
       @operators = Operator.order(:name)
       respond_to do |format|
         format.xlsx do
-          @school_year = params[:school_year] || SchoolYear::Current.new.beginning_of_period.year
+          @school_year = params[:school_year] || SchoolYear::Current.new.offers_beginning_of_period.year
           response.headers['Content-Disposition'] = %(attachment; filename="#{export_filename('assocations')}.xlsx")
         end
         format.html do
-          params[:school_year] ||= SchoolYear::Current.new.beginning_of_period.year
+          params[:school_year] ||= SchoolYear::Current.new.offers_beginning_of_period.year
         end
       end
     end

@@ -1,9 +1,9 @@
 class CounterUpdaterJob < ActiveJob::Base
   queue_as :default
 
-  def perform(year: 2022 )
-    school_year = SchoolYear::Floating.new(date: Date.new(year,9,1))
-    beginning_of_school_year = school_year.beginning_of_period
+  def perform(year: 2022)
+    school_year = SchoolYear::Floating.new(date: Date.new(year, 9, 1))
+    beginning_of_school_year = school_year.offers_beginning_of_period
     internship_offers = InternshipOffer.kept
                                        .where('first_date >= ? ', beginning_of_school_year)
                                        .where('last_date < ? ', beginning_of_school_year + 1.year)

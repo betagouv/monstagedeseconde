@@ -39,10 +39,10 @@ module Dto
       troisieme_and_seconde = !troisieme_only && !seconde_only
       if seconde_only
         manage_seconde_weeks
-        remove_troisieme_weeks
+        keep_weeks(:seconde_only)
       elsif troisieme_only
         manage_troisieme_weeks
-        remove_seconde_weeks
+        keep_weeks(:troisieme_only)
       elsif troisieme_and_seconde
         manage_troisieme_weeks
         manage_seconde_weeks
@@ -52,7 +52,22 @@ module Dto
     def remove_seconde_weeks = reject_weeks(Week.seconde_weeks)
     def remove_troisieme_weeks = reject_weeks(Week.troisieme_weeks)
 
+    def keep_weeks(kept_type)
+      case kept_type
+      when :seconde_only
+        instance.weeks = instance.weeks.reject do |week|
+          !week.id.in?(Week.seconde_weeks.map(&:id))
+        end
+      when :troisieme_only
+        instance.weeks = instance.weeks.reject do |week|
+          week.id.in?(Week.seconde_weeks.map(&:id))
+        end
+      end
+    end
+
     def manage_seconde_weeks
+      return if period_field.blank? && instance.persisted?
+
       weeks = []
       weeks << SchoolTrack::Seconde.first_week if period_field.in?([PERIOD[:two_weeks], PERIOD[:first_week]])
       weeks << SchoolTrack::Seconde.second_week if period_field.in?([PERIOD[:two_weeks], PERIOD[:second_week]])
@@ -65,6 +80,8 @@ module Dto
     end
 
     def add_weeks_to_planning(weeks)
+      return if weeks.empty?
+
       instance.week_ids = (instance.weeks << weeks).uniq.map(&:id)
     end
 

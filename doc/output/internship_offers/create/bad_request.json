@@ -26,17 +26,14 @@
     "employer_name": [
       "Missing employer_name"
     ],
-    "weeks": [
-      "Missing weeks"
-    ],
-    "grades": [
-      "Vous devez sélectionner au moins une classe"
-    ],
     "remote_id": [
       "Missing remote_id"
     ],
     "permalink": [
       "Missing permalink"
+    ],
+    "employer_description": [
+      "doit être rempli(e)"
     ]
   }
 }

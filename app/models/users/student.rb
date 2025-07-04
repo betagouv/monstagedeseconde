@@ -197,7 +197,7 @@ module Users
       # one week internship only for troisieme and quatrieme
       # seconde only from now on
       return true if internship_applications.empty? || internship_applications.approved.empty?
-      return false if troisieme_ou_quatrieme? && internship_applications.approved.size > 0
+      return false if troisieme_ou_quatrieme? && internship_applications.approved.size.positive?
 
       # student is seconde
       return false if with_2_weeks_internships_approved?

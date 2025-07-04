@@ -28,10 +28,6 @@ class Grade < ApplicationRecord
     short_name == 'seconde'
   end
 
-  def troisieme_or_quatrieme?
-    short_name.in?(%w[troisieme quatrieme])
-  end
-
   def self.troisieme
     fetch_by_short_name('troisieme').first
   end
@@ -42,6 +38,10 @@ class Grade < ApplicationRecord
 
   def self.troisieme_et_quatrieme
     fetch_by_short_name(%w[troisieme quatrieme])
+  end
+
+  def seconde_or_troisieme_or_quatrieme?
+    seconde? || troisieme_or_quatrieme?
   end
 
   def self.seconde

@@ -90,7 +90,7 @@ module InternshipApplications
     end
 
     test 'scope :expirable' do
-      start_date = Date.new(2020, 3, 1)
+      start_date = Date.new(2025, 3, 1)
       internship_application = nil
       travel_to start_date do
         student = create(:student)

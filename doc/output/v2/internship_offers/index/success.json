@@ -1,6 +1,6 @@
 {
   "pagination": {
-    "totalInternshipOffers": 2,
+    "totalInternshipOffers": 1,
     "internshipOffersPerPage": 30,
     "totalPages": 1,
     "currentPage": 1,
@@ -12,38 +12,31 @@
   },
   "internshipOffers": [
     {
-      "id": 143,
-      "title": "Stage de 2de - 8",
-      "description": "Lorem ipsum dolor api",
+      "id": 73,
+      "title": "Stage de 3eme - 2",
+      "description": "Lorem ipsum dolor",
       "employer_name": "Octo",
-      "url": "http://www.example.com/offres-de-stage/143?page=1&utm_source=operator-3",
+      "url": "http://www.example.com/offres-de-stage/73?page=1&utm_source=operator-3",
       "city": "Paris",
-      "date_start": " 2 décembre 2024",
-      "date_end": "30 mai 2025",
+      "zipcode": "75001",
+      "street": "1 rue du poulet",
+      "date_start": " 1 septembre 2025",
+      "date_end": "29 mai 2026",
       "latitude": 48.866667,
       "longitude": 2.333333,
       "image": "http://www.example.com/packs-test/media/images/sectors/default_sector-e1b60d1832d3ebc2a8ccff663f1a8dd8.svg",
-      "sector": "secteur-20",
+      "sector": "secteur-63",
       "handicap_accessible": false,
       "period": 0,
-      "weeks": "du 02/12/2024 au 08/12/2024, du 09/12/2024 au 15/12/2024, du 16/12/2024 au 22/12/2024, du 23/12/2024 au 29/12/2024, du 30/12/2024 au 05/01/2025, du 06/01/2025 au 12/01/2025, du 13/01/2025 au 19/01/2025, du 20/01/2025 au 26/01/2025, du 27/01/2025 au 02/02/2025, du 03/02/2025 au 09/02/2025, du 10/02/2025 au 16/02/2025, du 17/02/2025 au 23/02/2025, du 24/02/2025 au 02/03/2025, du 03/03/2025 au 09/03/2025, du 10/03/2025 au 16/03/2025, du 17/03/2025 au 23/03/2025, du 24/03/2025 au 30/03/2025, du 31/03/2025 au 06/04/2025, du 07/04/2025 au 13/04/2025, du 14/04/2025 au 20/04/2025, du 21/04/2025 au 27/04/2025, du 28/04/2025 au 04/05/2025, du 05/05/2025 au 11/05/2025, du 12/05/2025 au 18/05/2025, du 19/05/2025 au 25/05/2025, du 26/05/2025 au 01/06/2025"
-    },
-    {
-      "id": 142,
-      "title": "Stage de 2de - 7",
-      "description": "Lorem ipsum dolor api",
-      "employer_name": "Octo",
-      "url": "http://www.example.com/offres-de-stage/142?page=1&utm_source=operator-3",
-      "city": "Paris",
-      "date_start": " 2 décembre 2024",
-      "date_end": "30 mai 2025",
-      "latitude": 48.866667,
-      "longitude": 2.333333,
-      "image": "http://www.example.com/packs-test/media/images/sectors/default_sector-e1b60d1832d3ebc2a8ccff663f1a8dd8.svg",
-      "sector": "secteur-18",
-      "handicap_accessible": false,
-      "period": 0,
-      "weeks": "du 02/12/2024 au 08/12/2024, du 09/12/2024 au 15/12/2024, du 16/12/2024 au 22/12/2024, du 23/12/2024 au 29/12/2024, du 30/12/2024 au 05/01/2025, du 06/01/2025 au 12/01/2025, du 13/01/2025 au 19/01/2025, du 20/01/2025 au 26/01/2025, du 27/01/2025 au 02/02/2025, du 03/02/2025 au 09/02/2025, du 10/02/2025 au 16/02/2025, du 17/02/2025 au 23/02/2025, du 24/02/2025 au 02/03/2025, du 03/03/2025 au 09/03/2025, du 10/03/2025 au 16/03/2025, du 17/03/2025 au 23/03/2025, du 24/03/2025 au 30/03/2025, du 31/03/2025 au 06/04/2025, du 07/04/2025 au 13/04/2025, du 14/04/2025 au 20/04/2025, du 21/04/2025 au 27/04/2025, du 28/04/2025 au 04/05/2025, du 05/05/2025 au 11/05/2025, du 12/05/2025 au 18/05/2025, du 19/05/2025 au 25/05/2025, du 26/05/2025 au 01/06/2025"
+      "weeks": "du 01/09/2025 au 05/09/2025, du 08/09/2025 au 12/09/2025, du 15/09/2025 au 19/09/2025, du 22/09/2025 au 26/09/2025, du 29/09/2025 au 03/10/2025, du 06/10/2025 au 10/10/2025, du 13/10/2025 au 17/10/2025, du 20/10/2025 au 24/10/2025, du 27/10/2025 au 31/10/2025, du 03/11/2025 au 07/11/2025, du 10/11/2025 au 14/11/2025, du 17/11/2025 au 21/11/2025, du 24/11/2025 au 28/11/2025, du 01/12/2025 au 05/12/2025, du 08/12/2025 au 12/12/2025, du 15/12/2025 au 19/12/2025, du 22/12/2025 au 26/12/2025, du 29/12/2025 au 02/01/2026, du 05/01/2026 au 09/01/2026, du 12/01/2026 au 16/01/2026, du 19/01/2026 au 23/01/2026, du 26/01/2026 au 30/01/2026, du 02/02/2026 au 06/02/2026, du 09/02/2026 au 13/02/2026, du 16/02/2026 au 20/02/2026, du 23/02/2026 au 27/02/2026, du 02/03/2026 au 06/03/2026, du 09/03/2026 au 13/03/2026, du 16/03/2026 au 20/03/2026, du 23/03/2026 au 27/03/2026, du 30/03/2026 au 03/04/2026, du 06/04/2026 au 10/04/2026, du 13/04/2026 au 17/04/2026, du 20/04/2026 au 24/04/2026, du 27/04/2026 au 01/05/2026, du 04/05/2026 au 08/05/2026, du 11/05/2026 au 15/05/2026, du 18/05/2026 au 22/05/2026, du 25/05/2026 au 29/05/2026",
+      "remote_id": "2",
+      "is_public": true,
+      "employer_website": null,
+      "employer_description": "Lorem ipsum dolor api",
+      "grades": [
+        "troisieme"
+      ],
+      "permalink": "https://google.fr"
     }
   ]
 }

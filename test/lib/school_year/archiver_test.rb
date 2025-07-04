@@ -8,8 +8,8 @@ module SchoolYear
       internship_offer = nil
       next_week        = nil
       final_week_id    = 0
-      preparation_date = Date.new(2021, 1, 31)
-      execution_date   = Date.new(2021, 8, 15)
+      preparation_date = Date.new(2025, 1, 31)
+      execution_date   = Date.new(2025, 8, 15)
 
       travel_to preparation_date do
         next_week = Week.next

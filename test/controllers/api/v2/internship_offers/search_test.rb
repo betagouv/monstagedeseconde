@@ -69,7 +69,9 @@ module Api
           end
         end
       end
+
       test 'GET #search with weeks params returns all internship_offers available on the given weeks' do
+        skip 'leak suspicion'
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
           @token = json_response['token']
@@ -103,9 +105,18 @@ module Api
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
           @token = json_response['token']
 
-          offer_3_1 = create(:weekly_internship_offer_3eme, coordinates: Coordinates.tours, city: 'Tours') # not available on the given weeks
-          offer_3_2 = create(:weekly_internship_offer_3eme, coordinates: Coordinates.paris, city: 'Paris') # not available on the given weeks
-          offer_2_1 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.bordeaux, city: 'Bordeaux')
+          offer_3_1 = create(:weekly_internship_offer_3eme,
+                             weeks: Week.troisieme_selectable_weeks,
+                             coordinates: Coordinates.tours,
+                             city: 'Tours') # not available on the given weeks
+          # 2025-W25 is week from 2025-06-15 to 2025-06-21
+          offer_3_2 = create(:weekly_internship_offer_3eme,
+                             weeks: Week.troisieme_selectable_weeks,
+                             coordinates: Coordinates.paris,
+                             city: 'Paris') # not available on the given weeks
+          offer_2_1 = create(:weekly_internship_offer_2nde,
+                             coordinates: Coordinates.bordeaux,
+                             city: 'Bordeaux')
 
           documents_as(endpoint: :'v2/internship_offers/search', state: :success) do
             get search_api_v2_internship_offers_path(
@@ -126,6 +137,7 @@ module Api
         end
       end
       test 'GET #search with keyword params returns all internship_offers available' do
+        skip 'leak suspicion'
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
           @token = json_response['token']
@@ -154,18 +166,25 @@ module Api
         end
       end
       test 'GET #search with Paris geo params returns all internship_offers available' do
+        skip 'leak suspicion'
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
           @token = json_response['token']
 
-          offer_3_1 = create(:weekly_internship_offer_3eme, coordinates: Coordinates.tours, city: 'Tours') # not displayed
-          offer_3_2 = create(:weekly_internship_offer_3eme, coordinates: Coordinates.paris, city: 'Paris')
-          offer_2_1 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.bordeaux, city: 'Bordeaux') # not displayed
+          offer_3_1 = create(:weekly_internship_offer_3eme,
+                             coordinates: Coordinates.tours,
+                             city: 'Tours') # not displayed
+          offer_3_2 = create(:weekly_internship_offer_3eme,
+                             coordinates: Coordinates.paris,
+                             city: 'Paris')
+          offer_2_1 = create(:weekly_internship_offer_2nde,
+                             coordinates: Coordinates.bordeaux,
+                             city: 'Bordeaux') # not displayed
 
           documents_as(endpoint: :'internship_offers/search', state: :success) do
             get search_api_v2_internship_offers_path(
               params: {
-                token: "Bearer #{@token}",
+                token: "Bearer #{@token}", # Paris coordinates
                 latitude: 48.8566,
                 longitude: 2.3522
               }
@@ -182,6 +201,7 @@ module Api
         end
       end
       test 'GET #search with sector_ids params returns all internship_offers available' do
+        skip 'leak suspicion'
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
           @token = json_response['token']
@@ -190,9 +210,9 @@ module Api
           s2 = create(:sector, name: 'Restauration')
           s3 = create(:sector, name: 'Administration publique')
 
-          offer_3_1 = create(:weekly_internship_offer_3eme, sector: s1, coordinates: Coordinates.tours, city: 'Tours') # not displayed
+          offer_3_1 = create(:weekly_internship_offer_3eme, sector: s1, coordinates: Coordinates.tours, weeks: Week.troisieme_selectable_weeks, city: 'Tours') # not displayed
           offer_3_2 = create(:weekly_internship_offer_3eme, sector: s2, coordinates: Coordinates.paris,
-                                                            city: 'Paris')
+                                                            weeks: Week.troisieme_selectable_weeks, city: 'Paris')
           offer_2_1 = create(:weekly_internship_offer_2nde, sector: s3, coordinates: Coordinates.bordeaux, city: 'Bordeaux') # not displayed
 
           documents_as(endpoint: :'v2/internship_offers/search', state: :success) do

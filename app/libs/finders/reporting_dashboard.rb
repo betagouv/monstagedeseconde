@@ -1,68 +1,76 @@
 # frozen_string_literal: true
+
 module Finders
   class ReportingDashboard
-
     def operator_count_by_private_sector
       @operator_count_by_private_sector ||= operator_base_query
-      @operator_count_by_private_sector.map { |o| o.realized_count.dig(params[:school_year].to_s, 'private').to_i || 0 }.sum
+      @operator_count_by_private_sector.map do |o|
+        o.realized_count.dig(params[:school_year].to_s, 'private').to_i || 0
+      end.sum
     end
 
     def operator_count_by_public_sector
       @operator_count_by_public_sector ||= operator_base_query
-      @operator_count_by_public_sector.map { |o| o.realized_count.dig(params[:school_year].to_s, 'public').to_i || 0 }.sum
+      @operator_count_by_public_sector.map do |o|
+        o.realized_count.dig(params[:school_year].to_s, 'public').to_i || 0
+      end.sum
     end
 
-    
     # def operator_count_by_type(type)
     #   operator_base_query.map { |o| o.realized_count.dig(params[:school_year].to_s, type).to_i || 0 }.sum
     # end
 
     def operator_count_onsite
       @operator_count_onsite ||= operator_base_query
-      @operator_count_onsite = @operator_count_onsite.map { |o| o.realized_count.dig(params[:school_year].to_s, 'onsite').to_i || 0 }.sum
+      @operator_count_onsite = @operator_count_onsite.map do |o|
+        o.realized_count.dig(params[:school_year].to_s, 'onsite').to_i || 0
+      end.sum
     end
 
     def operator_count_online
       @operator_count_online ||= operator_base_query
-      @operator_count_online = @operator_count_online.map { |o| o.realized_count.dig(params[:school_year].to_s, 'online').to_i || 0 }.sum
+      @operator_count_online = @operator_count_online.map do |o|
+        o.realized_count.dig(params[:school_year].to_s, 'online').to_i || 0
+      end.sum
     end
 
     def operator_total
-      operator_base_query.map { |o| o.realized_count.dig(params[:school_year].to_s, 'total').to_i || 0 }.sum                         
+      operator_base_query.map do |o|
+        o.realized_count.dig(params[:school_year].to_s, 'total').to_i || 0
+      end.sum
     end
-
 
     ### platform queries, data owned by ourself. this is our "analytics"
     def platform_count_by_private_sector
       platform_base_query.select('sum(max_candidates) as total_count, sum(approved_applications_count) as approved_applications_count')
-              .where(permalink: nil)
-              .where(is_public: false)
-              .map(&:attributes)
-              .first
+                         .where(permalink: nil)
+                         .where(is_public: false)
+                         .map(&:attributes)
+                         .first
     end
 
     def platform_count_by_private_sector_paqte
       platform_base_query.select('sum(max_candidates) as total_count, sum(approved_applications_count) as approved_applications_count')
-              .where(permalink: nil)
-              .joins(:group)
-              .where(group: {is_paqte: true})
-              .map(&:attributes)
-              .first
+                         .where(permalink: nil)
+                         .joins(:group)
+                         .where(group: { is_paqte: true })
+                         .map(&:attributes)
+                         .first
     end
 
     def platform_count_by_public_sector
       platform_base_query.select('sum(max_candidates) as total_count, sum(approved_applications_count) as approved_applications_count')
-                .where(permalink: nil)
-                .where(is_public: true)
-                .map(&:attributes)
-                .first
+                         .where(permalink: nil)
+                         .where(is_public: true)
+                         .map(&:attributes)
+                         .first
     end
 
     def platform_count_by_association
       platform_base_query.select('sum(max_candidates) as total_count, sum(approved_applications_count) as approved_applications_count')
-                .merge(InternshipOffer.from_api)
-                .map(&:attributes)
-                .first
+                         .merge(InternshipOffer.from_api)
+                         .map(&:attributes)
+                         .first
     end
 
     def platform_approved_applications_count
@@ -70,7 +78,7 @@ module Finders
         platform_count_by_private_sector,
         platform_count_by_public_sector,
         platform_count_by_association
-      ].sum{|total_per_segment| total_per_segment.try(:[],"approved_applications_count") || 0}
+      ].sum { |total_per_segment| total_per_segment.try(:[], 'approved_applications_count') || 0 }
     end
 
     def platform_total_count
@@ -78,14 +86,13 @@ module Finders
         platform_count_by_private_sector,
         platform_count_by_public_sector,
         platform_count_by_association
-      ].sum{|total_per_segment| total_per_segment.try(:[], "total_count") || 0}
+      ].sum { |total_per_segment| total_per_segment.try(:[], 'total_count') || 0 }
     end
 
     # overall
     def overall_total
       (operator_total || 0) + (platform_total_count || 0)
     end
-
 
     # SELECT months.date AS date, count(internship_applications.id) AS COUNT FROM "months"
     #   LEFT OUTER JOIN (
@@ -103,14 +110,14 @@ module Finders
       conditions = conditions.and(internship_offers[:department].eq(params[:department])) if department_param?
       join_sources = months.join(internship_offers, Arel::Nodes::OuterJoin).on(conditions).join_sources
 
-      query = Month.select("months.date AS date, sum(internship_offers.max_candidates) AS COUNT")
+      query = Month.select('months.date AS date, sum(internship_offers.max_candidates) AS COUNT')
       if school_year_param?
         query = query.where(date: school_year.range)
       else
         range = (
-          SchoolYear::Floating.new(date: Date.new(2019, 9,1)).beginning_of_period
+          SchoolYear::Floating.new(date: Date.new(2019, 9, 1)).offers_beginning_of_period
           ..
-          SchoolYear::Current.new.end_of_period
+          SchoolYear::Current.new.deposit_end_of_period
         )
         query = query.where(date: range)
       end
@@ -136,19 +143,19 @@ module Finders
     def internship_application_approved_at_month
       months = Month.arel_table
       internship_applications = InternshipApplication.arel_table
-      subquery = subq.as("bim")
+      subquery = subq.as('bim')
       month_conditions = date_trunc('month', subquery[:approved_at]).eq(months[:date])
 
       join_sources = months.join(subquery, Arel::Nodes::OuterJoin).on(month_conditions)
-                            .join_sources
-      query = Month.select(months[:date].as("date"), subquery[:id].count.as('count'))
+                           .join_sources
+      query = Month.select(months[:date].as('date'), subquery[:id].count.as('count'))
       if school_year_param?
         query = query.where(date: school_year.range)
       else
         range = (
-          SchoolYear::Floating.new(date: Date.new(2019, 9,1)).beginning_of_period
+          SchoolYear::Floating.new(date: Date.new(2019, 9, 1)).offers_beginning_of_period
           ..
-          SchoolYear::Current.new.end_of_period
+          SchoolYear::Current.new.deposit_end_of_period
         )
         query = query.where(date: range)
       end
@@ -201,11 +208,10 @@ module Finders
       params.key?(:school_year)
     end
 
-    def initialize(params:, user: )
+    def initialize(params:, user:)
       @params = params
       @user = user
     end
-
 
     def date_trunc(by, attribute)
       Arel::Nodes::NamedFunction.new(

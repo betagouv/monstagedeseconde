@@ -21,9 +21,9 @@ module Reporting
     end
 
     has_many :school_managers, -> { where(role: :school_manager) },
-            through: :user_schools,
-            source: :user,
-            class_name: 'Users::SchoolManagement'
+             through: :user_schools,
+             source: :user,
+             class_name: 'Users::SchoolManagement'
 
     def school_manager
       school_managers.first
@@ -44,9 +44,9 @@ module Reporting
       where.missing(:school_managers)
     }
 
-    scope :with_manager_simply, lambda { joins(:school_managers) }
+    scope :with_manager_simply, -> { joins(:school_managers) }
 
-    scope :by_subscribed_school, ->(subscribed_school:)  {
+    scope :by_subscribed_school, lambda { |subscribed_school:|
       case subscribed_school.to_s
       when 'true'
         with_manager_simply
@@ -65,12 +65,12 @@ module Reporting
 
     def total_student_with_confirmation_count
       students_not_anonymized.select(&:confirmed_at?)
-              .size
+                             .size
     end
 
     def total_student_confirmed
       students_not_anonymized.select(&:confirmed?)
-              .size
+                             .size
     end
 
     def total_student_count
@@ -90,8 +90,14 @@ module Reporting
 
     def total_approved_internship_applications_count(school_year:)
       query = internship_applications.approved
-      query = query.where("internship_applications.created_at >= ?", SchoolYear::Floating.new_by_year(year: school_year.to_i).beginning_of_period) if school_year
-      query = query.where("internship_applications.created_at <= ?", SchoolYear::Floating.new_by_year(year: school_year.to_i).end_of_period) if school_year
+      if school_year
+        query = query.where('internship_applications.created_at >= ?',
+                            SchoolYear::Floating.new_by_year(year: school_year.to_i).offers_beginning_of_period)
+      end
+      if school_year
+        query = query.where('internship_applications.created_at <= ?',
+                            SchoolYear::Floating.new_by_year(year: school_year.to_i).deposit_end_of_period)
+      end
       query.size
     end
 

@@ -82,7 +82,7 @@ module Dashboard
 
     def update
       authorize! :update, @internship_offer
-      @available_weeks = Week.troisieme_selectable_weeks # TODO : check if it's the right weeks
+      @available_weeks = Week.selectable_on_school_year
       if internship_offer_params[:is_public] == 'true'
         params[:internship_offer][:sector_id] = Sector.find_by(name: 'Fonction publique').try(:id)
       else

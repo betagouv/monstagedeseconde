@@ -25,15 +25,15 @@ header.container-xl.px-0
             | de 4
             sup e
             | , 3
-            sup e 
+            sup e
             | , et 2
             sup de
             |  générale et technologique.
           .fr-text.blue-france
-            .row 
+            .row
               .col-12
                 span.font-weight-bold
-                  | 1élève1stage 
+                  | 1élève1stage
                 | offre aux élèves la possibilité de réaliser des stages d’observation de qualité. Elle facilite les interactions entre les écoles et les entreprises, permettant une première expérience dans le monde professionnel.
         .col-lg-6.col-md-12.px-0.d-flex.align-items-center
           = image_tag asset_pack_path('media/images/homepage/1eleve1stage_tag.png'),
@@ -56,11 +56,14 @@ header.container-xl.px-0
                 .fr-tabs__content-item.active#offers-search-tab
                   .row
                     .col-12
-                      = render partial: "internship_offers/search/form",
-                                locals: { render_as_partial: true,
-                                          url: internship_offers_path,
-                                          default_values: user_presenter.default_search_options,
-                                          form_id: :home_search_form }
+                      == react_component("SearchBar",
+                                          props: { searchParams: @params,
+                                                  preselectedWeeksList: @preselected_weeks_list_array,
+                                                  schoolWeeksList: @school_weeks_list_array,
+                                                  secondeWeekIds: @seconde_week_ids,
+                                                  troisiemeWeekIds: @troisieme_week_ids,
+                                                  studentGradeId: @student_grade_id,
+                                                  origin: 'homeStudent'})
         .actions.d-stick.d-md-none.p-2.fitting
           = link_to internship_offers_path(current_user_or_visitor.default_search_options),
                     class: 'fr-btn fr-icon-search-line fr-btn--icon-right fr-px-11w',
@@ -81,12 +84,12 @@ header.container-xl.px-0
 /             | Élèves de 4ème, 3ème et 2de générale
 /           .fr-h3.blue-france
 /               | et technologique, trouvez ici un stage de qualité.
-/         .row 
+/         .row
 /           .col-12.col-md-6
 /             p Nullam mauris pellentesque nunc arcu a donec vulputate amet. Urna quis enim curabitur vitae adipiscing quam augue nisi sit. Duis libero at id neque eu in tincidunt et ultrices turpis.
 
 /         .row.fr-my-3w
-/           .col-12 
+/           .col-12
 /             = link_to 'Trouver un stage', internship_offers_path(current_user_or_visitor.default_search_options), class: 'fr-btn fr-btn--icon-right fr-icon-search-line'
 
 

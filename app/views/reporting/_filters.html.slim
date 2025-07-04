@@ -6,7 +6,7 @@ fieldset
       - if filters.dig(view_tab, :by_school_name)
         = render partial: "reporting/filters/by_school_name", locals: { schools: @schools}
       - if filters.dig(view_tab, :by_school_year)
-        - years = (SchoolYear::Base::YEAR_START..SchoolYear::Current.new.beginning_of_period.year).to_a
+        - years = (SchoolYear::Base::YEAR_START..SchoolYear::Current.new.offers_beginning_of_period.year).to_a
         - options = years.map { |year| [ "#{year}/#{year+1}", year] }
         .col-md-3.col-12
           .form-group

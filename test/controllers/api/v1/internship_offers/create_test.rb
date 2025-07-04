@@ -297,7 +297,7 @@ module Api
 
       test 'POST #create as operator without max_candidates works and set up remaing_seats_count to 1' do
         operator = create(:user_operator, api_token: SecureRandom.uuid)
-        week_instances = [weeks(:week_2019_1), weeks(:week_2019_2)]
+        week_instances = [weeks(:week_2025_1), weeks(:week_2025_2)]
         sector = create(:sector, uuid: SecureRandom.uuid)
         title = 'title'
         description = 'description'

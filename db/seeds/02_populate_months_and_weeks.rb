@@ -1,23 +1,29 @@
+require 'pretty_console'
 def populate_week_reference
-  first_year = 2019
-  last_year = Time.now.year + 1
+  first_year = 2023
+  last_year = Time.now.year + 2
 
   first_week = 1
-  last_week = 53 # A 53 week exisits! https://fr.wikipedia.org/wiki/Semaine_53
+  max_weeks = 53
 
   first_year.upto(last_year) do |year|
-    first_week.upto(last_week) do |week| # number of the week
-      if week == last_week
-        Date.commercial(year, week, 1)
-      end
+    PrettyConsole.say_in_yellow("year: #{year} - adding weeks...")
+    # Determine the number of weeks in the year (52 or 53) safely
+    weeks_in_year = begin
+      Date.commercial(year, max_weeks, 1)
+      53
+    rescue Date::Error
+      52
+    end
 
-      Week.create!(year: year, number: week)
-    rescue ArgumentError
-      puts "no week #{week} for year #{year}"
+    first_week.upto(weeks_in_year) do |week|
+      Week.find_or_create_by(year: year, number: week)
+      print('.')
     rescue ActiveRecord::RecordNotUnique
       puts "week #{week} - #{year} already exists"
     end
   end
+  PrettyConsole.say_in_blue('done with weeks adding')
 end
 
 def populate_month_reference
@@ -29,7 +35,7 @@ def populate_month_reference
   end
 end
 
-call_method_with_metrics_tracking([
-  :populate_month_reference,
-  :populate_week_reference
-])
+call_method_with_metrics_tracking(%i[
+                                    populate_month_reference
+                                    populate_week_reference
+                                  ])

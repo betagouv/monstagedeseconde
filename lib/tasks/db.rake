@@ -17,4 +17,19 @@ namespace :db do
       File.write(filename, sql)
     end
   end
+  namespace :seed do
+    desc 'create weeks fixture file'
+    task weeks: :environment do
+      weeks = Week.all
+      File.open(Rails.root.join('test/fixtures/weeks_test.yml'), 'w') do |f|
+        weeks.each do |week|
+          f.write("week_#{week.year}_#{week.number}:\n")
+          f.write("  number: #{week.number}\n")
+          f.write("  year: #{week.year}\n")
+          f.write("  id: #{week.id}\n")
+          f.write("\n")
+        end
+      end
+    end
+  end
 end

@@ -51,6 +51,9 @@
   background-color: #585858;
   border: #585858;
 }
+.bolder {
+  font-weight: bolder;
+}
 
 // .toggle-radio {
 // 	margin: 0 0 1.5rem;
@@ -254,4 +257,8 @@ div[data-grade-target=secondeContainer]{
   .fr-radio-group{
     line-height: 24px;
   }
+}
+.silent-month, .week-checkboxes label.silenced {
+  color: var(--gray-dark)!important;
+  font-size: 0.8rem;
 }

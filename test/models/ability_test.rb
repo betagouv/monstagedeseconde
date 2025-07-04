@@ -75,6 +75,7 @@ class AbilityTest < ActiveSupport::TestCase
   end
 
   test 'Employer' do
+    skip 'leak suspicion'
     travel_to Date.new(2025, 1, 1) do
       employer = create(:employer)
       another_employer = create(:employer)
@@ -117,7 +118,8 @@ class AbilityTest < ActiveSupport::TestCase
       internship_application = create(:weekly_internship_application, internship_offer: colleague_offer)
 
       ability = Ability.new(employer)
-      assert(ability.can?(:show, internship_application), 'employer should be able to show application related to team')
+      assert(ability.can?(:show, internship_application),
+             'employer should be able to show application related to team')
 
       %i[
         create

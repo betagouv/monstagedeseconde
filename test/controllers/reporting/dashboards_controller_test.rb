@@ -53,7 +53,7 @@ module Reporting
         ministry_group = ministry_groups.first
         public_group = create(:public_group)
         private_group = create(:private_group)
-        strict_beginning_year = SchoolYear::Current.new.strict_beginning_of_period.year
+        strict_beginning_year = SchoolYear::Current.new.offers_beginning_of_period.year
         current_year = strict_beginning_year
         last_year = current_year - 1
 
