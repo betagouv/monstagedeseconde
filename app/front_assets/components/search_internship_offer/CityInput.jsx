@@ -149,8 +149,8 @@ function CityInput({
           selectedItem,
           openMenu,
         }) => (
-          <div>
-            <label {...getLabelProps({ className: `almost-fitting ${(whiteBg) ? 'fr-label' : 'font-weight-lighter'}`, htmlFor: "input-search-by-city-or-zipcode" })}>
+          <div className='fr-input-group mb-md-0 col-md '>
+            <label {...getLabelProps({ className: `${(whiteBg) ? 'fr-label' : 'font-weight-lighter'}`, htmlFor: "input-search-by-city-or-zipcode" })}>
                    Commune ou code postal
             </label>
             <div
@@ -163,7 +163,7 @@ function CityInput({
                 {...getInputProps({
                   onChange: inputChange,
                   value: inputValue,
-                  className: 'fr-input almost-fitting',
+                  className: 'fr-input',
                   name: 'city',
                   id: 'input-search-by-city-or-zipcode',
                   placeholder: 'Choisissez une commune dans la liste',

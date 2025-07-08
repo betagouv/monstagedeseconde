@@ -34,7 +34,13 @@
   width: 598px;
   height: 397px;
   background-color: white;
+
+  @media (max-width: 576px) {
+      width: 350px;
+      height: 320px;
+   }
 }
+
 button.select-like{
     display: block;
     width: 100%;

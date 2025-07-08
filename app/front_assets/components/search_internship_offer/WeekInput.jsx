@@ -30,15 +30,15 @@ function WeekInput({
   // HTML
   return (
     <div
-      className={`form-group mb-md-0 col-12 col-md ${
+      className={`fr-input-group mb-md-0 col-md ${
         whiteBg ? "bg-white" : ""
       }`}
     >
-      <label className="form-label" htmlFor="weeks-search-panel">
-        <span className="d-none d-md-inline">Dates de stage</span>
+      <label className="fr-label" htmlFor="weeks-search-panel">
+        <span className="">Dates de stage</span>
       </label>
       <input
-        className="select-like almost-fitting fr-btn fr-icon-arrow-down-s-line fr-btn--icon-right fr-select"
+        className="select-like fr-btn fr-icon-arrow-down-s-line fr-btn--icon-right fr-select"
         title="Recherche par semaine"
         aria-label="Recherche par semaine"
         placeholder={weekPlaceholder}

@@ -221,44 +221,51 @@ const SearchBar = ({
 
   // HTML
   return (
-    <div className="d-flex">
-      <div className="align-self-end" style={{ flex: 3 }}>
-        <CityInput
-          city={searchParams.city}
-          latitude={searchParams.latitude}
-          longitude={searchParams.longitude}
-          radius={searchParams.radius}
-          whiteBg="false"
-        />
+    <>
+      <div className="fr-my-2w fr-hidden-md w-100 text-center ">
+        <h1 className='h4 '>
+          Recherche de stage
+        </h1>
       </div>
-      <div className="align-self-end" style={{ flex: 3 }}>
-        <GradeInput
-          gradeId={gradeId}
-          whiteBackground="true"
-          onGradeIdChange={onGradeIdChange}
-        />
-      </div>
-      <div className="align-self-end" style={{ flex: 2 }}>
-        <WeekInput
-          monthDetailedList={monthDetailedList}
-          monthScore={monthScore}
-          schoolWeeksList={schoolWeeksList}
-          handleWeekCheck={handleWeekCheck}
-          weekIds={weekIds}
-          gradeId={gradeId}
-          whiteBg="false"
-          weekPlaceholder={weekPlaceholder}
+      <div className="fr-grid-row fr-sm-mt-n2w">
+        <div className="fr-col-sm-12 w-100 fr-col-lg-4 fr-sm-mt-n2w fr-mt-2w" >
+          <CityInput
+            city={searchParams.city}
+            latitude={searchParams.latitude}
+            longitude={searchParams.longitude}
+            radius={searchParams.radius}
+            whiteBg="false"
           />
+        </div>
+        <div className="fr-col-sm-12 w-100 fr-col-lg-3 fr-sm-mt-n2w fr-mt-2w" >
+          <GradeInput
+            gradeId={gradeId}
+            whiteBackground="true"
+            onGradeIdChange={onGradeIdChange}
+          />
+        </div>
+        <div className="fr-col-sm-12 w-100 fr-col-lg-3 fr-sm-mt-n2w fr-mt-2w" >
+          <WeekInput
+            monthDetailedList={monthDetailedList}
+            monthScore={monthScore}
+            schoolWeeksList={schoolWeeksList}
+            handleWeekCheck={handleWeekCheck}
+            weekIds={weekIds}
+            gradeId={gradeId}
+            whiteBg="false"
+            weekPlaceholder={weekPlaceholder}
+          />
+        </div>
+        <div className="fr-col-sm-12 w-100 fr-col-lg-2 fr-hidden fr-unhidden-md">
+          <button
+            onClick={handleSubmit}
+            className="fr-btn fr-btn--icon-left fr-icon-search-line fr-mt-6w fr-mr-1w"
+          >
+            Rechercher
+          </button>
+        </div>
       </div>
-      <div className="flex-shrink-1 align-self-end">
-        <button
-          onClick={handleSubmit}
-          className="fr-btn fr-btn--icon-left fr-icon-search-line"
-        >
-          Rechercher
-        </button>
-      </div>
-    </div>
+    </>
   );
 };
 export default SearchBar;

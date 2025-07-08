@@ -14,10 +14,10 @@ function GradeInput({
 
   return (
     // <div className={`form-group mb-md-0 col-12 col-md ${whiteBg ? 'bg-white' : ''}`}>
-    <div className={`form-group mb-md-0 col-12 col-md `}>
+    <div className={`fr-input-group mb-md-0 col-12 col-md `}>
       <label htmlFor="grade_id">Filière</label>
       <select 
-        className="fr-select almost-fitting"
+        className="fr-select fr-mt-1v"
         title="Recherche par filière"
         aria-label="Recherche par filière"
         name="grade_id"
