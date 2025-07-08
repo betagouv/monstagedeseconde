@@ -35,7 +35,7 @@ function WeekInput({
       }`}
     >
       <label className="form-label" htmlFor="weeks-search-panel">
-        <span className="d-none d-md-inline">Semaines</span>
+        <span className="d-none d-md-inline">Dates de stage</span>
       </label>
       <input
         className="select-like almost-fitting fr-btn fr-icon-arrow-down-s-line fr-btn--icon-right fr-select"

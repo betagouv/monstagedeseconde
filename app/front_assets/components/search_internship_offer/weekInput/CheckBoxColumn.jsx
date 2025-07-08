@@ -13,7 +13,7 @@ function CheckBoxColumn({
     <>
       {monthDetailedList().map((month, index) => (
         <div className={`flex flex-column month-name ${month.monthName}`} key={index}>
-          <div>
+          <div className='fr-mb-2w'>
             {/* month and year */}
             <strong>
               {getMonthName(month.month - 1)} {month.year}
@@ -47,9 +47,8 @@ function CheckBoxColumn({
               );
             })}
           </div>
-          {/* hr */}
           <div>
-            <hr />
+            <hr className='fr-mb-0' />
           </div>
         </div>
       ))}

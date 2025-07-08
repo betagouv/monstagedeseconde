@@ -26,8 +26,8 @@ function GradeInput({
         onChange={onGradeIdChange}>
         <option value="">Toutes les filières</option>
         <option value="1">2de générale et technologique</option>
-        <option value="2">3e générale</option>
-        <option value="3">4e générale</option>
+        <option value="2">3e</option>
+        <option value="3">4e</option>
       </select>
     </div>
   );
