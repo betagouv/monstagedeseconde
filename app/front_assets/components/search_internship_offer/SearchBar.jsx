@@ -10,7 +10,7 @@ import {
   addParamToSearchParams,
   updateURLWithParam,
   parseArrayValueFromUrl,
-  removeParam,
+  removeParam
 } from "../../utils/urls";
 
 const SearchBar = ({
@@ -19,6 +19,7 @@ const SearchBar = ({
   schoolWeeksList,
   secondeWeekIds,
   troisiemeWeekIds,
+  studentGradeId,
   origin,
 }) => {
   const gradeIdSeconde = "1";
@@ -26,8 +27,8 @@ const SearchBar = ({
   const gradeIdQuatrieme = "3";
   // state variables
   const [monthScore, setMonthScore] = useState({});
-  const [weekIds, setWeekIds] = useState([]);
-  const [gradeId, setGradeId] = useState(searchParams.grade_id || 0);
+  const [weekIds, setWeekIds] = useState(schoolWeeksList || []);
+  const [gradeId, setGradeId] = useState(studentGradeId || searchParams.grade_id || 0);
   const [weekPlaceholder, setWeekPlaceholder] = useState(
     "Choisissez une option"
   );
@@ -87,6 +88,7 @@ const SearchBar = ({
   };
 
   const limitWeeksToParse = (gradeId) => {
+    debugger;
     switch (gradeId) {
       case gradeIdSeconde:
         // filter schoolWeeksList with secondeWeekIds
@@ -207,6 +209,10 @@ const SearchBar = ({
 
   // initialization
   useEffect(() => {
+    debugger;
+    // set url with week_ids
+    updateURLWithParam(addParamToSearchParams('week_ids[]', weekIds.map(w => w.id)))
+
     const urlGradeId = getParamValueFromUrl("grade_id");
     setGradeId(urlGradeId);
     onGradeChangeAndInitialization(urlGradeId);
@@ -214,10 +220,17 @@ const SearchBar = ({
 
   // common part
   const onGradeChangeAndInitialization = (gradeId) => {
-    updateWeekIdsFromUrl(gradeId);
+    updateWeekIdsFromUrl(gradeId)
+    
     limitWeeksToParse(gradeId);
     setMonthScoreFromUrl();
   }
+
+  const uncheckAllWeeks = () => {
+    setWeekIds([]);
+    updateURLWithParam(removeParam("week_ids[]"));
+    setMonthScoreFromUrl();
+  };
 
   // HTML
   return (
@@ -242,6 +255,7 @@ const SearchBar = ({
             gradeId={gradeId}
             whiteBackground="true"
             onGradeIdChange={onGradeIdChange}
+            studentGradeId={studentGradeId}
           />
         </div>
         <div className="fr-col-sm-12 w-100 fr-col-lg-3 fr-sm-mt-n2w fr-mt-2w" >
@@ -254,6 +268,8 @@ const SearchBar = ({
             gradeId={gradeId}
             whiteBg="false"
             weekPlaceholder={weekPlaceholder}
+            studentGradeId={studentGradeId}
+            uncheckAllWeeks={uncheckAllWeeks}
           />
         </div>
         <div className="fr-col-sm-12 w-100 fr-col-lg-2 fr-hidden fr-unhidden-md">

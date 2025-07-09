@@ -13,7 +13,9 @@ function WeekInput({
   monthScore,
   handleWeekCheck,
   weekIds,
-  weekPlaceholder
+  weekPlaceholder,
+  uncheckAllWeeks,
+  studentGradeId = null
 }) {
 
   const toggleSearchPanel = (e) => {
@@ -48,6 +50,14 @@ function WeekInput({
       />
 
       <div className="weeks-search-panel fr-hidden" id="weeks-search-panel">
+
+        <div className='fr-mr-1w text-right'>
+          <button
+            className='fr-btn fr-btn--sm fr-btn--tertiary'
+            onClick={uncheckAllWeeks}>
+            Tout décocher
+          </button>
+        </div>
         <div className="d-flex">
           <div className=" small-interline fr-text--sm border-right month-lane">
             <MonthColumn
@@ -64,6 +74,8 @@ function WeekInput({
                 handleWeekCheck={handleWeekCheck}
                 weekIds={weekIds}
                 gradeId={gradeId}
+                studentGradeId={studentGradeId}
+                uncheckAllWeeks={uncheckAllWeeks}
               />
             </div>
           </div>

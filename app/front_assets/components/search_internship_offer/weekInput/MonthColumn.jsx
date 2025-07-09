@@ -6,7 +6,7 @@ function MonthColumn({
   monthScore,
 }) {
   return(
-    <div>
+    <div className='fr-mt-1v'>
       { monthDetailedList().map((month, index) => {
         const withBoldPresentation = monthScore[month.monthName] > 0 ? 'strong blue-france' : 'silent-month';
         const scoreOfMonth = monthScore[month.monthName]

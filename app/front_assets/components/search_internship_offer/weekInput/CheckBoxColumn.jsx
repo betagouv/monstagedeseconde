@@ -7,6 +7,7 @@ function CheckBoxColumn({
   monthDetailedList,
   handleWeekCheck,
   weekIds,
+  studentGradeId = null
 }) {
   useEffect(() => { }, [weekIds])
   return (

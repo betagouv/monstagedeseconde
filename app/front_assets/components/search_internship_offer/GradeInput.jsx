@@ -4,16 +4,26 @@ import { addParamToSearchParams, updateURLWithParam } from '../../utils/urls';
 function GradeInput({
   gradeId,
   whiteBackground = true,
-  onGradeIdChange
+  onGradeIdChange,
+  studentGradeId
 }) {
 
   // let searchParams = fetchSearchParamsFromUrl();
   const [whiteBg, setWhiteBg] = useState(whiteBackground);
 
+  // Define all grade options
+  const gradeOptions = [
+    { value: "1", label: "2de générale et technologique" },
+    { value: "2", label: "3e" },
+    { value: "3", label: "4e" }
+  ];
 
+  // Filter options based on studentGradeId
+  const filteredOptions = studentGradeId
+    ? gradeOptions.filter(option => option.value === String(studentGradeId))
+    : gradeOptions;
 
   return (
-    // <div className={`form-group mb-md-0 col-12 col-md ${whiteBg ? 'bg-white' : ''}`}>
     <div className={`fr-input-group mb-md-0 col-12 col-md `}>
       <label htmlFor="grade_id">Filière</label>
       <select 
@@ -23,11 +33,14 @@ function GradeInput({
         name="grade_id"
         id="grade_id"
         value={gradeId}
-        onChange={onGradeIdChange}>
-        <option value="">Toutes les filières</option>
-        <option value="1">2de générale et technologique</option>
-        <option value="2">3e</option>
-        <option value="3">4e</option>
+        onChange={onGradeIdChange}
+      >
+        {!studentGradeId && (
+          <option value="">Toutes les filières</option>
+        )}
+        {filteredOptions.map(option => (
+          <option key={option.value} value={option.value}>{option.label}</option>
+        ))}
       </select>
     </div>
   );

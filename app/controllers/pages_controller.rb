@@ -47,7 +47,6 @@ class PagesController < ApplicationController
     else
       @faqs = get_faqs('student')
       @resources = get_resources('student')
-      @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
     end
   end
 

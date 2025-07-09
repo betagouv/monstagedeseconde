@@ -94,7 +94,7 @@ export const getParamValueFromUrl = (param) => {
 
 export const parseArrayValueFromUrl = (param) => {
   // example : latitude=&longitude=&city=&radius=60000&week_ids=340&week_ids=339
-  // it is to return [339,340] as a sorted array
+  // it is to return [339,340] as a sorted array when 'week_ids[]' given
   // if param is not found, it returns an empty array
   // if param is found with one value, it returns an array with one value
   // if param is found with multiple values, it returns an array with all values
