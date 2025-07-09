@@ -157,26 +157,21 @@ def update_schools_with_public_private_info
   PrettyConsole.say_in_yellow 'Done with updating schools(lycées)'
 end
 
-def find_default_school_during_test(school_type = 'lycee')
+def find_default_school_during_test(school_type = :lycee)
   # code_uai: "0753268V"
   # school at Paris, Lycée polyvalent Jean Lurçat - Site Gobelins;48 avenue des Gobelins
   School.where(school_type:, city: 'Paris').first
 end
 
-def missing_school_manager_school
-  # school at Paris (Lavoisier)
-  School.find_by_code_uai('0750656F')
-end
-
 # used for application
-def populate_school_weeks
-  school = find_default_school_during_test
+# def populate_school_weeks
+#   school = find_default_school_during_test
 
-  # used to test matching between internship_offers.weeks and existing school_weeks
-  other_schools = School.nearby(latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude],
-                                radius: 60_000).limit(4)
-                        .where.not(id: school.id)
-end
+#   # used to test matching between internship_offers.weeks and existing school_weeks
+#   other_schools = School.nearby(latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude],
+#                                 radius: 60_000).limit(4)
+#                         .where.not(id: school.id)
+# end
 
 # Troisiemes
 
@@ -189,34 +184,40 @@ def populate_class_rooms_3eme
 end
 
 def missing_school_manager_school
-  School.find_by_code_uai('0755030K') # school at Paris, school name : Daniel Mayer.
+  School.find_by_code_uai('0755030K') # school at Paris, school name : collège Daniel Mayer.
 end
 
-# used for application
-def populate_school_weeks
-  school = find_default_school_during_test
-  # used for application
-  school.weeks = Week.selectable_on_school_year.limit(5) + Week.from_date_for_current_year(from: Date.today).limit(1)
+def populate_school_weeks(type = :lycee)
+  weeks =  if type == :college
+                   Week.troisieme_selectable_weeks.first(2) + Week.troisieme_selectable_weeks.first(24).last(2)
+                 else # :lycee
+                   Week.seconde_selectable_weeks
+                 end
+  school = find_default_school_during_test(type)
+  school.weeks = weeks
   school.save!
 
+  return if type == :lycee
+
+  # Troisiemes
   # used to test matching between internship_offers.weeks and existing school_weeks
   other_schools = School.nearby(latitude: Coordinates.paris[:latitude],
                                 longitude: Coordinates.paris[:longitude],
                                 radius: 60_000)
                         .where.not(id: school.id)
+                        .where(school_type: type)
                         .limit(4)
   other_schools.each.with_index do |another_school, i|
-    another_school.update!(weeks: Week.selectable_on_school_year.limit(i + 1))
+    another_school.update!(weeks: Week.troisieme_selectable_weeks.limit(i + 1))
   end
-  missing_school_manager_school.update!(weeks: Week.selectable_on_school_year.limit(3))
+  missing_school_manager_school.update!(weeks: weeks)
 end
-# Troisiemes
 
-call_method_with_metrics_tracking(%i[
-                                    populate_schools
-                                    populate_class_rooms
-                                    populate_school_weeks
-                                    update_schools_with_public_private_info
-                                    populate_class_rooms_3eme
-                                    populate_school_weeks
+call_method_with_metrics_tracking([
+                                    :populate_schools,
+                                    :populate_class_rooms,
+                                    %i[populate_school_weeks lycee],
+                                    :update_schools_with_public_private_info,
+                                    :populate_class_rooms_3eme,
+                                    %i[populate_school_weeks college]
                                   ])

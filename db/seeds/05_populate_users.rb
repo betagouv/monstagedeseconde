@@ -123,33 +123,34 @@ def populate_students
 
   with_class_name_for_defaults(Users::Student.new(ine: make_ine, email: 'student@ms2e.fr', password: password_value,
                                                   first_name: 'Abdelaziz', last_name: 'Benzedine',
-                                                  school: find_default_school_during_test, birth_date: 14.years.ago,
+                                                  school: find_default_school_during_test, birth_date: 15.years.ago,
                                                   gender: 'm', confirmed_at: 2.days.ago, grade: Grade.seconde)).save!
   with_class_name_for_defaults(Users::Student.new(ine: make_ine, email: 'student_other@ms2e.fr', password: password_value,
                                                   first_name: 'Mohammed', last_name: 'Rivière', school: find_default_school_during_test,
-                                                  class_room: class_rooms.first, birth_date: 14.years.ago,
+                                                  class_room: class_rooms.first, birth_date: 15.years.ago,
                                                   gender: 'm', confirmed_at: 2.days.ago, grade: Grade.seconde)).save!
   # sans classe
   with_class_name_for_defaults(Users::Student.new(ine: make_ine, email: 'enzo@ms2e.fr', password: password_value, first_name: 'Enzo',
-                                                  last_name: 'Clerc', school:, birth_date: 14.years.ago,
+                                                  last_name: 'Clerc', school:, birth_date: 15.years.ago,
                                                   gender: 'm', confirmed_at: 3.days.ago, grade: Grade.seconde)).save!
 
   5.times { with_class_name_for_defaults(student_maker(school:, class_room: class_room_1)).save! }
 
   2.times { with_class_name_for_defaults(student_maker(school:, class_room: class_room_2)).save! }
   with_class_name_for_defaults(Users::Student.new(ine: make_ine, email: 'louis@ms2e.fr', password: password_value,
-                                                  first_name: 'Louis', last_name: 'Tardieu', school:, birth_date: 14.years.ago,
-                                                  gender: 'np', confirmed_at: 2.days.ago, class_room: class_room_2, grade: Grade.troisieme)).save!
+                                                  first_name: 'Louis', last_name: 'Tardieu', school:, birth_date: 15.years.ago,
+                                                  gender: 'np', confirmed_at: 2.days.ago, class_room: class_room_2, grade: Grade.seconde)).save!
   with_class_name_for_defaults(Users::Student.new(ine: make_ine, email: 'leon@ms2e.fr', password: password_value, first_name: 'Leon',
-                                                  last_name: 'Luanco', school:, birth_date: 14.years.ago,
-                                                  gender: 'm', confirmed_at: 2.days.ago, class_room: class_room_2, grade: Grade.troisieme)).save!
+                                                  last_name: 'Luanco', school:, birth_date: 15.years.ago,
+                                                  gender: 'm', confirmed_at: 2.days.ago, class_room: class_room_2, grade: Grade.seconde)).save!
   2.times { with_class_name_for_defaults(student_maker(school:, class_room: class_room_3)).save! }
   with_class_name_for_defaults(Users::Student.new(ine: make_ine, email: 'raphaelle@ms2e.fr', password: password_value,
-                                                  first_name: 'Raphaëlle', last_name: 'Mesnard', school: missing_school_manager_school, birth_date: 14.years.ago,
-                                                  gender: 'f', confirmed_at: 2.days.ago, class_room: class_room_3, grade: Grade.troisieme)).save!
+                                                  first_name: 'Raphaëlle', last_name: 'Mesnard', school: missing_school_manager_school, birth_date: 15.years.ago,
+                                                  gender: 'f', confirmed_at: 2.days.ago, class_room: class_room_3, grade: Grade.seconde)).save!
+  # collèges
   with_class_name_for_defaults(Users::Student.new(ine: make_ine, email: 'alexandrine@ms2e.fr', password: password_value,
-                                                  first_name: 'Alexandrine', last_name: 'Chotin', school: missing_school_manager_school, birth_date: 14.years.ago,
-                                                  gender: 'f', confirmed_at: 2.days.ago, class_room: class_room_3, grade: Grade.troisieme)).save!
+                                                  first_name: 'Alexandrine', last_name: 'Chotin', school: find_college_during_test, birth_date: 14.years.ago,
+                                                  gender: 'f', confirmed_at: 2.days.ago, class_room: find_college_during_test.class_rooms.first, grade: Grade.troisieme)).save!
   with_class_name_for_defaults(Users::Student.new(ine: make_ine, email: 'yvan@ms2e.fr', password: password_value,
                                                   first_name: 'Yvan', last_name: 'Duhamel', school: find_college_during_test, birth_date: 14.years.ago,
                                                   gender: 'f', confirmed_at: 2.days.ago, class_room: find_college_during_test.class_rooms.first, grade: Grade.troisieme)).save!

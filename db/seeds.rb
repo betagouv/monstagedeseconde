@@ -25,7 +25,7 @@ def with_class_name_for_defaults(object)
   object.first_name ||= FFaker::NameFR.first_name
   object.last_name ||= "#{FFaker::NameFR.last_name}-#{Presenters::UserManagementRole.new(user: object).role}"
   object.accept_terms = true
-  object.grade = Grade.seconde if object.student?
+  object.grade ||= grade if object.student?
   object.confirmed_at = Time.now.utc
   object.current_sign_in_at = 2.days.ago
   object.last_sign_in_at = 12.days.ago
@@ -34,8 +34,15 @@ end
 
 def call_method_with_metrics_tracking(methods)
   methods.each do |method_name|
-    ActiveSupport::Notifications.instrument "seed.#{method_name}" do
-      send(method_name)
+    if method_name.is_a?(Symbol)
+      ActiveSupport::Notifications.instrument "seed.#{method_name}" do
+        send(method_name)
+      end
+    elsif method_name.is_a?(Array)
+      real_method_name = method_name.shift
+      ActiveSupport::Notifications.instrument "seed.#{real_method_name}" do
+        send(real_method_name, *method_name)
+      end
     end
   end
 end
