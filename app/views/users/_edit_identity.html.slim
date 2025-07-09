@@ -148,6 +148,16 @@
                                 name: "user[phone_suffix]",
                                 placeholder: "ex : 0623456789",
                                 :'aria-label' => "[Numéro de téléphone]"
+      - if current_user.student? || current_user.school_management?
+        .col-md-6.col-xs-12
+          .fr-input-group.fr-my-1w
+            = f.label :class_name, class: 'fr-label', for: 'user_class_name' do
+              = "Nom de mon établissement"
+              / = current_user.school.id
+            = f.text_field :class_name,
+                           class: 'fr-input text-grey-disabled',
+                           readonly: true,
+                           value: current_user.school.try(:name)
 
     - if current_user.try(:student?)
       .row.fr-my-3w
