@@ -4,5 +4,20 @@ tr
   td = prez.email
   td = prez.role_name
   td
-    p.fr-badge.fr-badge--sm.fr-mt-2w.fr-badge--success
-      = "inscrit"
+    - if can?(:claim_school_management, @school)
+      .row
+        .col-4
+          p.fr-badge.fr-badge--sm.fr-mt-2w.fr-badge--success
+            = "inscrit"
+        .col-8
+          = form_with model: current_user,
+                url: claim_school_management_dashboard_school_user_path(school_id: @school.id,id: school_employee.id),
+                class: 'user-hideable-component col-12',
+                data: {turbo: false},
+                method: :PATCH do |f|
+            button.fr-btn.fr-btn--tertiary.fr-btn--icon.fr-btn--sm type='submit'
+              | est chef d'établissement
+    - else 
+      p.fr-badge.fr-badge--sm.fr-mt-2w.fr-badge--success
+        = "inscrit"
+

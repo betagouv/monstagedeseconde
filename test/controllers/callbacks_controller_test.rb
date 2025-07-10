@@ -35,7 +35,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :redirect
     assert_equal 'Users::SchoolManagement', User.last.type
-    assert_equal 'school_manager', User.last.role
+    assert_equal 'admin_officer', User.last.role
     assert_equal '0590121L', User.last.school.code_uai
     assert_not_nil User.last.fim_user_info
   end
