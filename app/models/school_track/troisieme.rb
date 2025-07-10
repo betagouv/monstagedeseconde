@@ -1,18 +1,22 @@
 module SchoolTrack
   class Troisieme < Base
-    LAST_DAY_OF_MAY = 31
-    MAY = 5
-
-    def self.last_week_of_may(year: current_year)
-      Week.fetch_from(date: Date.new(year, MAY, LAST_DAY_OF_MAY))
+    def self.first_week(year: current_year)
+      SchoolYear::Floating.new_by_year(year: year).offers_beginning_of_period_week
     end
 
-    def self.first_week(year: current_year)
-      Week.fetch_from(date: Date.new(current_year - 1, 9, 6))
+    def self.last_week_of_june(year: current_year)
+      SchoolYear::Floating.new_by_year(year: year).offers_end_of_period_week
+    end
+
+    def self.last_week(year: current_year)
+      last_week_of_june(year: current_year)
     end
 
     def self.selectable_on_school_year_weeks
-      Week.where(id: (first_week.id..last_week_of_may.id).to_a)
+      start_id = first_week.id
+      end_id = last_week.id
+
+      Week.where(id: (start_id..end_id))
     end
 
     def self.selectable_from_now_until_end_of_school_year

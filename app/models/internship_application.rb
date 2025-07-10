@@ -187,7 +187,7 @@ class InternshipApplication < ApplicationRecord
   }
 
   scope :current_school_year, lambda {
-    where(created_at: SchoolYear::Current.new.beginning_of_period..SchoolYear::Current.new.end_of_period)
+    where(created_at: SchoolYear::Current.new.offers_beginning_of_period..SchoolYear::Current.new.offers_end_of_period)
   }
 
   #
@@ -470,18 +470,26 @@ class InternshipApplication < ApplicationRecord
   end
 
   def selectable_weeks
-    available_weeks = []
-    if student.seconde_gt?
-      available_weeks = internship_offer.weeks
-    elsif student.troisieme_or_quatrieme?
-      available_weeks = if student.school.has_weeks_on_current_year?
-                          Week.selectable_from_now_until_end_of_school_year & internship_offer.weeks & student.school.weeks
-                        else
-                          Week.troisieme_selectable_weeks & internship_offer.weeks
-                        end
+    available_weeks = internship_offer.weeks
+    if student.troisieme_or_quatrieme? && student.school.has_weeks_on_current_year?
+      available_weeks = internship_offer.weeks & student.school.weeks.in_the_future
     end
-    available_weeks
+    Week.selectable_from_now_until_end_of_school_year & available_weeks
   end
+
+  # def selectable_weeks
+  #   available_weeks = []
+  #   if student.seconde_gt?
+  #     available_weeks = internship_offer.weeks
+  #   elsif student.troisieme_or_quatrieme?
+  #     available_weeks = if student.school.has_weeks_on_current_year?
+  #                         Week.selectable_from_now_until_end_of_school_year & internship_offer.weeks & student.school.weeks
+  #                       else
+  #                         Week.troisieme_selectable_weeks & internship_offer.weeks
+  #                       end
+  #   end
+  #   available_weeks
+  # end
 
   def generate_token
     return if access_token.present?

@@ -1,5 +1,5 @@
 fieldset
-  - years = (SchoolYear::Base::YEAR_START..SchoolYear::Current.new.beginning_of_period.year).to_a
+  - years = (SchoolYear::Base::YEAR_START..SchoolYear::Current.new.offers_beginning_of_period.year).to_a
   - options = years.map { |year| [ "#{year}/#{year+1}", year] }
   .row
     .col-4

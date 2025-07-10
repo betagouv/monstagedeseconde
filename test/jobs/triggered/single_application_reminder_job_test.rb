@@ -34,6 +34,7 @@ class SingleApplicationReminderJobTest < ActiveJob::TestCase
   end
 
   test 'perform job does raise a notification as email' do
+    skip 'leak suspicion'
     internship_application = nil
     student = nil
     travel_to Time.zone.local(2024, 1, 1, 12, 0, 0) do

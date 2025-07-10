@@ -149,8 +149,8 @@ module Reporting
       end
     end
 
-    test 'GET #index.xlsx as statistician success ' \
-         'when department params match his departement_name' do
+    test 'GET #index.xlsx as statistician success when department params match his departement_name' do
+      # skip 'leak suspicion'
       god = create(:god)
       create(:weekly_internship_offer_2nde)
       create(:api_internship_offer_2nde)

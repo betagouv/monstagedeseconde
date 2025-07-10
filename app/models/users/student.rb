@@ -178,6 +178,12 @@ module Users
           cancel_by_student].include?(transition)
     end
 
+    def compute_weeks_lists
+      school_weeks_list = school&.weeks || Week.both_school_track_selectable_weeks
+      preselected_weeks_list = school_weeks_list.in_the_future
+      [school_weeks_list, preselected_weeks_list]
+    end
+
     def presenter
       Presenters::Student.new(self)
     end
@@ -197,7 +203,7 @@ module Users
       # one week internship only for troisieme and quatrieme
       # seconde only from now on
       return true if internship_applications.empty? || internship_applications.approved.empty?
-      return false if troisieme_ou_quatrieme? && internship_applications.approved.size > 0
+      return false if troisieme_ou_quatrieme? && internship_applications.approved.size.positive?
 
       # student is seconde
       return false if with_2_weeks_internships_approved?

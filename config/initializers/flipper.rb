@@ -97,4 +97,5 @@ end
 # Flipper.register(:school_management) { |actor| actor.school_management? }
 # Flipper.enable_group(:secrets, :admins)
 
+# Flipper.enable :application_inhibited
 # Flipper.enable :holidays_maintenance
