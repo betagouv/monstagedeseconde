@@ -118,8 +118,7 @@ def populate_class_rooms
   end
   puts ''
   PrettyConsole.say_in_yellow 'Done with creating class_rooms'
-  college = find_college_during_test
-  ClassRoom.find_or_create_by(name: '3e A', school: college, grade: Grade.troisieme)
+  ClassRoom.find_or_create_by(name: '3e A', school: a_parisian_college, grade: Grade.troisieme)
 end
 
 def update_schools_with_public_private_info
@@ -157,7 +156,7 @@ def update_schools_with_public_private_info
   PrettyConsole.say_in_yellow 'Done with updating schools(lycées)'
 end
 
-def find_default_school_during_test(school_type = :lycee)
+def a_parisian_lycee(school_type = :lycee)
   # code_uai: "0753268V"
   # school at Paris, Lycée polyvalent Jean Lurçat - Site Gobelins;48 avenue des Gobelins
   School.where(school_type:, city: 'Paris').first
@@ -165,7 +164,7 @@ end
 
 # used for application
 # def populate_school_weeks
-#   school = find_default_school_during_test
+#   school = a_parisian_lycee
 
 #   # used to test matching between internship_offers.weeks and existing school_weeks
 #   other_schools = School.nearby(latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude],
@@ -176,7 +175,7 @@ end
 # Troisiemes
 
 def populate_class_rooms_3eme
-  school = find_default_school_during_test(:college)
+  school = a_parisian_college
 
   ClassRoom.create(name: '3e A', school:)
   ClassRoom.create(name: '3e B', school:)
@@ -193,7 +192,7 @@ def populate_school_weeks(type = :lycee)
                  else # :lycee
                    Week.seconde_selectable_weeks
                  end
-  school = find_default_school_during_test(type)
+  school = a_parisian_lycee(type)
   school.weeks = weeks
   school.save!
 
