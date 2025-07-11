@@ -169,7 +169,8 @@ module Users
         scope: 'openid profile ect.scope.cnx ect.scope.stage',
         response_type: 'code',
         state: @state,
-        nonce: SecureRandom.uuid
+        nonce: SecureRandom.uuid,
+        acr_values: 'eleve'
       }
 
       cookies[:state] = oauth_params[:state]
