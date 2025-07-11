@@ -53,8 +53,6 @@ module Presenters
     end
 
     def str_weeks_display(ripping_of_the_past: true)
-      #byebug
-
       troisieme_weeks = weeks & (ripping_of_the_past ? Week.troisieme_selectable_weeks : Week.troisieme_weeks)
       seconde_weeks = weeks & (ripping_of_the_past ? Week.seconde_selectable_weeks : Week.seconde_weeks)
       label_troisieme_weeks = nil

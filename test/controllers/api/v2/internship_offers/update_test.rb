@@ -12,7 +12,7 @@ module Api
           @operator = create(:user_operator)
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
           @token = json_response['token']
-          @internship_offer = create(:api_internship_offer_3eme, employer: @operator)
+          @internship_offer = create(:api_internship_offer_3eme, employer: @operator, is_public: false)
         end
       end
 
@@ -165,22 +165,18 @@ module Api
 
       test 'PATCH #update as operator can modify internship_offer sector' do
         travel_to Time.zone.local(2025, 3, 1) do
-          sector = create(:sector, name: 'Informatique')
-          puts @internship_offer.sector.name
-          puts @internship_offer.sector.name
 
           patch api_v2_internship_offer_path(
             id: @internship_offer.remote_id,
             params: {
               token: "Bearer #{@token}",
               internship_offer: {
-                sector_uuid: Sector.find_by(name: 'Informatique').uuid
+                sector_uuid: Sector.find_by(name: 'Sport').uuid
               }
             }
           )
           assert_response :success
-          assert_equal Sector.find_by(name: 'Informatique').uuid, @internship_offer.reload.sector.uuid
-          puts
+          assert_equal Sector.find_by(name: 'Sport').uuid, @internship_offer.reload.sector.uuid
         end
       end
 

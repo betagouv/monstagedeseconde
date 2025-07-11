@@ -1,0 +1,203 @@
+sector_0:
+  name: Agroéquipement
+  uuid: s1
+
+sector_1:
+  name: Architecture, urbanisme et paysage
+  uuid: s2
+
+sector_2:
+  name: Armée - Défense
+  uuid: s3
+
+sector_3:
+  name: Art et design
+  uuid: s4
+
+sector_4:
+  name: Artisanat d'art
+  uuid: s5
+
+sector_5:
+  name: Arts du spectacle
+  uuid: s6
+
+sector_6:
+  name: Audiovisuel
+  uuid: s7
+
+sector_7:
+  name: Automobile
+  uuid: s8
+
+sector_8:
+  name: Banque et assurance
+  uuid: s9
+
+sector_9:
+  name: Bâtiment et travaux publics (BTP)
+  uuid: s10
+
+sector_10:
+  name: Bien-être
+  uuid: s11
+
+sector_11:
+  name: Commerce et distribution
+  uuid: s12
+
+sector_12:
+  name: Communication
+  uuid: s13
+
+sector_13:
+  name: Comptabilité, gestion, ressources humaines
+  uuid: s14
+
+sector_14:
+  name: Conseil et audit
+  uuid: s15
+
+sector_15:
+  name: Construction aéronautique, ferroviaire et navale
+  uuid: s16
+
+sector_16:
+  name: Culture et patrimoine
+  uuid: s17
+
+sector_17:
+  name: Droit et justice
+  uuid: s18
+
+sector_18:
+  name: Édition, librairie, bibliothèque
+  uuid: s19
+
+sector_19:
+  name: Électronique
+  uuid: s20
+
+sector_20:
+  name: Énergie
+  uuid: s21
+
+sector_21:
+  name: Enseignement
+  uuid: s22
+
+sector_22:
+  name: Environnement
+  uuid: s23
+
+sector_23:
+  name: Filiere bois
+  uuid: s24
+
+sector_24:
+  name: Fonction publique
+  uuid: s25
+
+sector_25:
+  name: Hôtellerie, restauration
+  uuid: s26
+
+sector_26:
+  name: Immobilier, transactions immobilières
+  uuid: s27
+
+sector_27:
+  name: Industrie alimentaire
+  uuid: s28
+
+sector_28:
+  name: Industrie chimique
+  uuid: s29
+
+sector_29:
+  name: Industrie, ingénierie industrielle
+  uuid: s30
+
+sector_30:
+  name: Informatique et réseaux
+  uuid: s31
+
+sector_31:
+  name: Jeu vidéo
+  uuid: s32
+
+sector_32:
+  name: Journalisme
+  uuid: s33
+
+sector_33:
+  name: Logistique et transport
+  uuid: s34
+
+sector_34:
+  name: Maintenance
+  uuid: s35
+
+sector_35:
+  name: Marketing, publicité
+  uuid: s36
+
+sector_36:
+  name: Mécanique
+  uuid: s37
+
+sector_37:
+  name: Métiers d'art
+  uuid: s38
+
+sector_38:
+  name: Mode
+  uuid: s39
+
+sector_39:
+  name: Papiers Cartons
+  uuid: s40
+
+sector_40:
+  name: Paramédical
+  uuid: s41
+
+sector_41:
+  name: Recherche
+  uuid: s42
+
+sector_42:
+  name: Santé
+  uuid: s43
+
+sector_43:
+  name: Sécurité
+  uuid: s44
+
+sector_44:
+  name: Services postaux
+  uuid: s45
+
+sector_45:
+  name: Social
+  uuid: s46
+
+sector_46:
+  name: Sport
+  uuid: s47
+
+sector_47:
+  name: Tourisme
+  uuid: s48
+
+sector_48:
+  name: Traduction, interprétation
+  uuid: s49
+
+sector_49:
+  name: Verre, béton, céramique
+  uuid: s50
+
+sector_50:
+  name: Agriculture
+  uuid: s51
