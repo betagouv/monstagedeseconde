@@ -4,21 +4,27 @@ require 'test_helper'
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
-
+  include ThirdPartyTestHelpers
   test 'admin login triggers magic link and does not sign in' do
-    @admin = create(:god, password: 'Password123!', password_confirmation: 'Password123!')
+    travel_to Date.new(2023, 10, 1) do
+      Rails.stub(:env, ActiveSupport::StringInquirer.new('production')) do
+        prismic_straight_stub do
+          @admin = create(:god, password: 'Password123!', password_confirmation: 'Password123!')
 
-    perform_enqueued_jobs do
-      post user_session_path, params: {
-        user: { email: @admin.email, password: 'Password123!' }
-      }
+          perform_enqueued_jobs do
+            post user_session_path, params: {
+              user: { email: @admin.email, password: 'Password123!' }
+            }
+          end
+          assert_redirected_to root_path
+          follow_redirect!
+          assert_match 'Un lien de connexion a été envoyé à votre adresse email.', response.body
+
+          # Admin is not logged in
+          assert_not is_logged_in?
+        end
+      end
     end
-    assert_redirected_to root_path
-    follow_redirect!
-    assert_match 'Un lien de connexion a été envoyé à votre adresse email.', response.body
-
-    # Admin is not logged in
-    assert_not is_logged_in?
   end
 
   test 'GET works' do
@@ -134,21 +140,23 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as Student with a pending internship_application' do
-    student = create(:student, password: 'okokok1Max!!')
-    internship_offer = create(:weekly_internship_offer_3eme)
-    internship_application = create(:weekly_internship_application, :validated_by_employer,
-                                    student:,
-                                    internship_offer:)
+    travel_to Date.new(2023, 10, 1) do
+      student = create(:student, password: 'okokok1Max!!')
+      internship_offer = create(:weekly_internship_offer_3eme)
+      internship_application = create(:weekly_internship_application, :validated_by_employer,
+                                      student:,
+                                      internship_offer:)
 
-    post user_session_path(params: { user: { channel: 'email',
-                                             email: student.email,
-                                             password: 'okokok1Max!!' } })
+      post user_session_path(params: { user: { channel: 'email',
+                                               email: student.email,
+                                               password: 'okokok1Max!!' } })
 
-    follow_redirect!
-    assert_response :success
-    assert response.body.include? 'Une de vos candidatures a été acceptée'
-    assert_select 'a[href=?]',
-                  dashboard_students_internship_application_path(student_id: student.id, uuid: internship_application.uuid), 1
+      follow_redirect!
+      assert_response :success
+      assert response.body.include? 'Une de vos candidatures a été acceptée'
+      assert_select 'a[href=?]',
+                    dashboard_students_internship_application_path(student_id: student.id, uuid: internship_application.uuid), 1
+    end
   end
 
   test 'lock account' do

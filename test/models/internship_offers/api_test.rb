@@ -5,42 +5,48 @@ require 'test_helper'
 module InternshipOffers
   class ApiTest < ActiveSupport::TestCase
     setup do
-      @default_params = {
-        title: 'foo bar baz meh',
-        description: 'bar bat fdate fd fdfd',
-        employer_description: 'a fd bar bat fdate fd fdfd',
-        employer_name: 'baz',
-        'coordinates' => { latitude: 1, longitude: 1 },
-        street: '7 rue du puits',
-        remote_id: 1,
-        employer: create(:employer),
-        zipcode: '60580',
-        city: 'Coye la foret',
-        sector: create(:sector),
-        permalink: 'https://google.fr',
-        grades: Grade.all,
-        weeks: Week.selectable_from_now_until_end_of_school_year
-      }
+      travel_to Date.new(2023, 10, 1) do
+        @default_params = {
+          title: 'foo bar baz meh',
+          description: 'bar bat fdate fd fdfd',
+          employer_description: 'a fd bar bat fdate fd fdfd',
+          employer_name: 'baz',
+          'coordinates' => { latitude: 1, longitude: 1 },
+          street: '7 rue du puits',
+          remote_id: 1,
+          employer: create(:employer),
+          zipcode: '60580',
+          city: 'Coye la foret',
+          sector: create(:sector),
+          permalink: 'https://google.fr',
+          grades: Grade.all,
+          weeks: Week.selectable_from_now_until_end_of_school_year
+        }
+      end
     end
 
     test 'duplicate remote id same employer invalid instance' do
-      operator = create(:user_operator)
-      internship_offer = InternshipOffers::Api.create(@default_params.merge(remote_id: 1,
-                                                                            employer: operator))
-      internship_offer_bis = InternshipOffers::Api.create(@default_params.merge(remote_id: 1,
-                                                                                employer: operator))
-      validity = internship_offer.valid?
-      assert internship_offer.valid?
-      assert internship_offer_bis.invalid?
+      travel_to Date.new(2023, 10, 1) do
+        operator = create(:user_operator)
+        internship_offer = InternshipOffers::Api.create(@default_params.merge(remote_id: 1,
+                                                                              employer: operator))
+        internship_offer_bis = InternshipOffers::Api.create(@default_params.merge(remote_id: 1,
+                                                                                  employer: operator))
+        validity = internship_offer.valid?
+        assert internship_offer.valid?
+        assert internship_offer_bis.invalid?
+      end
     end
 
     test 'duplicate remote id different employer does invalid instance' do
-      assert InternshipOffers::Api.create(@default_params.merge(remote_id: 1,
-                                                                employer: create(:user_operator)))
-                                  .valid?
-      assert InternshipOffers::Api.create(@default_params.merge(remote_id: 1,
-                                                                employer: create(:user_operator)))
-                                  .valid?
+      travel_to Date.new(2023, 10, 1) do
+        assert InternshipOffers::Api.create(@default_params.merge(remote_id: 1,
+                                                                  employer: create(:user_operator)))
+                                    .valid?
+        assert InternshipOffers::Api.create(@default_params.merge(remote_id: 1,
+                                                                  employer: create(:user_operator)))
+                                    .valid?
+      end
     end
 
     test '.as_json' do
@@ -65,10 +71,12 @@ module InternshipOffers
     end
 
     test 'is_public does not changes' do
-      internship_offer = create(:api_internship_offer_3eme, is_public: true)
-      internship_offer.title = 'booboop'
-      internship_offer.save!
-      assert InternshipOffer.pluck(:is_public).all?
+      travel_to Date.new(2023, 10, 1) do
+        internship_offer = create(:api_internship_offer_3eme, is_public: true)
+        internship_offer.title = 'booboop'
+        internship_offer.save!
+        assert InternshipOffer.pluck(:is_public).all?
+      end
     end
   end
 end

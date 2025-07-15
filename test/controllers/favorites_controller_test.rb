@@ -16,17 +16,19 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET index when logged in it renders the user s favorites' do
-    student = create(:student)
-    other_student = create(:student)
-    fav_1 = create(:favorite, user: student)
-    fav_2 = create(:favorite, user: student)
-    fav_3 = create(:favorite, user: other_student)
-    sign_in(student)
+    travel_to Date.new(2023, 10, 1) do
+      student = create(:student)
+      other_student = create(:student)
+      fav_1 = create(:favorite, user: student)
+      fav_2 = create(:favorite, user: student)
+      fav_3 = create(:favorite, user: other_student)
+      sign_in(student)
 
-    get favorites_path
+      get favorites_path
 
-    assert_response :success
-    assert_equal student.favorites.count, 2
+      assert_response :success
+      assert_equal student.favorites.count, 2
+    end
   end
 
   test 'GET index when logged in with no fav it renders the page' do

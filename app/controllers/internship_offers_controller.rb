@@ -13,82 +13,35 @@ class InternshipOffersController < ApplicationController
 
   def index
     @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
+    @preselected_weeks_list_array = Presenters::WeekList.new(weeks: @preselected_weeks_list.to_a).detailed_attributes
+    @seconde_week_ids = Week.seconde_weeks.map(&:id)
+    @troisieme_week_ids = Week.troisieme_selectable_weeks.map(&:id)
+    @student_grade_id = current_user&.student? ? current_user.grade_id : nil
 
     respond_to do |format|
       format.html do
-        @params = query_params.merge(sector_ids: params[:sector_ids])
+        @params = search_query_params.merge(week_ids: params[:week_ids])
       end
       format.json do
-        t0 = Time.now
         @internship_offers_seats = 0
         @internship_offers = finder.all
                                    .includes(:sector, :employer)
-        # QPV order
+
+        # QPV order destroys the former internship offers distance order from school
         if current_user&.student? && current_user&.school&.try(:qpv)
           @internship_offers = @internship_offers.reorder('qpv DESC NULLS LAST')
         end
 
-        sql = if params[:latitude].present? && params[:longitude].present?
-                <<-SQL
-            SELECT SUM(internship_offers.max_candidates)
-            FROM internship_offers
-            INNER JOIN internship_offer_stats#{' '}
-              ON internship_offer_stats.internship_offer_id = internship_offers.id
-            WHERE internship_offer_stats.remaining_seats_count > 0
-              AND last_date > '2025-02-13 12:23:21.417042'
-              AND last_date <= '2025-08-06'
-              AND internship_offers.discarded_at IS NULL
-              AND internship_offers.aasm_state = 'published'
-              AND internship_offers.qpv = FALSE
-              AND internship_offers.rep = FALSE
-              AND internship_offers.hidden_duplicate = FALSE
-              AND (
-                6371 * acos(
-                  cos(radians($1)) *#{' '}
-                  cos(radians(ST_Y(coordinates::geometry))) *#{' '}
-                  cos(radians(ST_X(coordinates::geometry)) - radians($2)) +#{' '}
-                  sin(radians($1)) *#{' '}
-                  sin(radians(ST_Y(coordinates::geometry)))
-                ) * 1000
-              ) <= $3
-                SQL
-              else
-                <<-SQL
-            SELECT SUM(internship_offers.max_candidates)
-            FROM internship_offers
-            INNER JOIN internship_offer_stats#{' '}
-              ON internship_offer_stats.internship_offer_id = internship_offers.id
-            WHERE internship_offer_stats.remaining_seats_count > 0
-              AND last_date > '2025-02-13 12:23:21.417042'
-              AND last_date <= '2025-08-06'
-              AND internship_offers.discarded_at IS NULL
-              AND internship_offers.aasm_state = 'published'
-              AND internship_offers.qpv = FALSE
-              AND internship_offers.rep = FALSE
-              AND internship_offers.hidden_duplicate = FALSE
-                SQL
-              end
+        @params = search_query_params
 
-        @internship_offers_seats = if params[:latitude].present? && params[:longitude].present?
-                                     ActiveRecord::Base.connection.exec_query(
-                                       sql,
-                                       'SQL',
-                                       [params[:latitude].to_f, params[:longitude].to_f, params[:radius].to_i]
-                                     ).first['sum'] || 0
-                                   else
-                                     #  ActiveRecord::Base.connection.exec_query(sql).first['sum'] || 0
-                                     1
-                                   end
-
-        @params = query_params
+        @internship_offers_seats_count = @internship_offers.empty? ? 0 : seats_finder.all_without_page.sum(:max_candidates).values.sum
         data = {
           internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
-          seats: @internship_offers_seats
+          seats: @internship_offers_seats_count
         }
         current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
-        t1 = Time.now
-        Rails.logger.info("Search took #{t1 - t0} seconds")
         render json: data, status: 200
       end
     end
@@ -119,20 +72,10 @@ class InternshipOffersController < ApplicationController
     @internship_offer = InternshipOffer.find(params[:id])
   end
 
-  def query_params
-    common_query_params = %i[page
-                             latitude
-                             longitude
-                             city
-                             radius
-                             keyword
-                             grade_id
-                             period]
-    if current_user_or_visitor.god? ||
-       current_user_or_visitor.statistician?
-      common_query_params += [:school_year]
-    end
-    params.permit(*common_query_params, sector_ids: [], week_ids: [])
+  def search_query_params
+    common_query_params =  %i[city grade_id latitude longitude page radius]
+    common_query_params += [:school_year] if current_user_or_visitor.god? || current_user_or_visitor.statistician?
+    params.permit(*common_query_params, week_ids: [])
   end
 
   def check_internship_offer_is_not_discarded_or_redirect
@@ -164,60 +107,17 @@ class InternshipOffersController < ApplicationController
 
   def finder
     @finder ||= Finders::InternshipOfferConsumer.new(
-      params: params.permit(
-        :page,
-        :latitude,
-        :longitude,
-        :radius
-        # :keyword,
-        # :school_year,
-        # :grade_id,
-        # week_ids: [],
-        # sector_ids: []
-      ),
+      params: search_query_params,
       user: current_user_or_visitor
     )
   end
 
-  def alternative_internship_offers
-    priorities = [
-      %i[latitude longitude radius], # 1
-      [:keyword] # 2
-    ]
-
-    alternative_offers = []
-    priorities.each do |priority|
-      priority_offers = Finders::InternshipOfferConsumer.new(
-        params: params.permit(*priority),
-        user: current_user_or_visitor
-      ).all.with_grade(current_user_or_visitor).to_a
-
-      if priority_offers.count < 5 && priority == %i[latitude longitude radius]
-        priority_offers = Finders::InternshipOfferConsumer.new(
-          params: params.permit(*priority).merge(radius: Nearbyable::DEFAULT_NEARBY_RADIUS_IN_METER + 40_000),
-          user: current_user_or_visitor
-        ).all.with_grade(current_user_or_visitor).to_a
-      end
-
-      alternative_offers << priority_offers
-
-      alternative_offers = alternative_offers.flatten.uniq
-      break if alternative_offers.count > 5
-    end
-
-    if alternative_offers.count < 5
-      alternative_offers += InternshipOffer.uncompleted
-                                           .with_grade(current_user_or_visitor)
-                                           .last(5 - alternative_offers.count)
-      alternative_offers = alternative_offers.uniq
-    end
-
-    if params[:latitude].present?
-      alternative_offers.sort_by { |offer| offer.distance_from(params[:latitude], params[:longitude]) }.first(5)
-    else
-      alternative_offers.first(5)
-    end
-    alternative_offers
+  def seats_finder
+    @seats_finder ||= Finders::InternshipOfferConsumer.new(
+      params: search_query_params,
+      user: current_user_or_visitor,
+      seats_search: true
+    )
   end
 
   def increment_internship_offer_view_count
@@ -231,7 +131,7 @@ class InternshipOffersController < ApplicationController
         title: internship_offer.title.truncate(44),
         description: internship_offer.description.to_s,
         employer_name: internship_offer.employer_name,
-        link: internship_offer_path(internship_offer, query_params),
+        link: internship_offer_path(internship_offer, search_query_params),
         city: internship_offer.city.capitalize,
         date_start: I18n.localize(internship_offer.first_date, format: :human_mm_dd_yyyy),
         date_end: I18n.localize(internship_offer.last_date, format: :human_mm_dd_yyyy),
@@ -254,16 +154,14 @@ class InternshipOffersController < ApplicationController
 
   def page_links
     offers = @internship_offers
-    return nil if offers.to_a.size < 1 || @is_suggestion
-
     {
-      totalPages: offers.total_pages,
-      currentPage: offers.current_page,
-      nextPage: offers.next_page,
-      prevPage: offers.prev_page,
-      isFirstPage: offers.first_page?,
-      isLastPage: offers.last_page?,
-      pageUrlBase: url_for(query_params.except('page'))
+      totalPages: offers.present? ? offers.total_pages : 0,
+      currentPage: offers.present? ? offers.current_page : nil,
+      nextPage: offers.present? ? offers.next_page : nil,
+      prevPage: offers.present? ? offers.prev_page : nil,
+      isFirstPage: offers.present? ? offers.first_page? : false,
+      isLastPage: offers.present? ? offers.last_page? : false,
+      pageUrlBase: url_for(search_query_params.except('page'))
     }
   end
 end

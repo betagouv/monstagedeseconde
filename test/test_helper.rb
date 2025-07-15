@@ -80,9 +80,12 @@ end
 class ActionDispatch::IntegrationTest
   def after_teardown
     super
+    puts "Cleaning up storage at: #{ActiveStorage::Blob.service.root}" if ENV.fetch('VERBOSE', false) == 'true'
     FileUtils.rm_rf(ActiveStorage::Blob.service.root)
+    puts 'Flushing Sidekiq Redis' if ENV.fetch('VERBOSE', false) == 'true'
     Sidekiq.redis(&:flushdb)
   end
+
   parallelize_setup do |i|
     ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"
   end

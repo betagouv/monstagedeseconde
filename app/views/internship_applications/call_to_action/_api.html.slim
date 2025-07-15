@@ -1,16 +1,35 @@
 .actions.d-flex.d-sm-block.mb-0.justify-content-center data-controller="internship-offer"
   .mb-1.text-muted.small.d-none.d-sm-block
     = "Offre publiée par #{operator_name(internship_offer)}"
-  - if current_user.nil?
-    .actions.d-flex.text-center
+  .actions.d-flex.text-center
+    - if current_user.nil? && Flipper.enabled?(:application_inhibited)
       = link_to internship_offer.permalink,
-                class: 'fr-btn',
+            class: 'fr-btn disabled',
+            target: "_blank",
+            rel: "external noopener noreferrer",
+            title: "Je postule sur #{operator_name(internship_offer)} (nouvelle fenêtre)",
+            tabindex: -1,
+            aria: { disabled: true },
+            onclick: "return false;" do
+        = "Postuler sur #{operator_name(internship_offer)}"
+    - elsif current_user.nil?
+      = link_to internship_offer.permalink,
+              class: 'fr-btn',
+              target: "_blank",
+              rel: "external noopener noreferrer",
+              title: "Je postule sur #{operator_name(internship_offer)} (nouvelle fenêtre)" do
+        = "Postuler sur #{operator_name(internship_offer)}"
+    - elsif current_user.student? && Flipper.enabled?(:application_inhibited)
+      = link_to internship_offer.permalink,
+                class: 'fr-btn disabled',
                 target: "_blank",
                 rel: "external noopener noreferrer",
-                title: "Je postule sur #{operator_name(internship_offer)} (nouvelle fenêtre)" do
+                title: "Je postule sur #{operator_name(internship_offer)} (nouvelle fenêtre)",
+                tabindex: -1,
+                aria: { disabled: true },
+                onclick: "return false;" do
         = "Postuler sur #{operator_name(internship_offer)}"
-  - elsif current_user.student?
-    .actions.d-flex.text-center
+    - elsif current_user.student?
       = link_to internship_offer.permalink,
                 class: 'fr-btn',
                 target: "_blank",
@@ -18,4 +37,3 @@
                 title: "Je postule sur #{operator_name(internship_offer)} (nouvelle fenêtre)",
                 data: { action: 'click->internship-offer#applyCount', target: 'internship-offer.applyButton', internshipOfferId: internship_offer.id, userId: current_user.id, turbo: false } do
         = "Postuler sur #{operator_name(internship_offer)}"
-  

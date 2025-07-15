@@ -101,15 +101,15 @@ module Presenters
       when 'canceled_by_employer'
         # label = reader.student? || reader.school_management? ? 'annulée par l\'entreprise' : 'refusée'
         tab = 'Annulées'
-        { label: 'refusée par l\'entreprise',
+        { label: 'annulée par l\'employeur',
           badge: 'error',
           tab:,
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
       when 'rejected'
         # label = reader.student? || reader.school_management? ? 'refusée par l\'entreprise' : 'refusée'
         tab = 'Refusées'
-        { label: 'refusée par l\'entreprise',
-          badge: 'error',
+        { label: 'refusée par l\'employeur',
+          badge: 'warning',
           tab:,
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
       when 'canceled_by_student'
@@ -198,7 +198,7 @@ module Presenters
     end
 
     def ok_for_reject?
-      current_state_in_list?(ok_for_reject_states)
+      internship_application.rejectable?
     end
 
     def ok_for_employer_validation?
@@ -280,15 +280,6 @@ module Presenters
 
     def ok_for_transfer_states
       %w[submitted restored read_by_employer]
-    end
-
-    def ok_for_reject_states
-      %w[submitted
-         restored
-         read_by_employer
-         transfered
-         validated_by_employer
-         approved]
     end
   end
 end

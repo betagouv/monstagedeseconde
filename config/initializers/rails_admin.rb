@@ -31,7 +31,7 @@ end
 %w[kpi.rb switch_user.rb publish.rb].each do |action|
   require Rails.root.join('lib', 'rails_admin', 'config', 'actions', action)
 end
-stats_path = "/reporting/dashboards?school_year=#{SchoolYear::Current.new.beginning_of_period.year}"
+stats_path = "/reporting/dashboards?school_year=#{SchoolYear::Current.new.offers_beginning_of_period.year}"
 
 RailsAdmin.config do |config|
   config.asset_source = :webpacker

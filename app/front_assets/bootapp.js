@@ -25,15 +25,19 @@ import SearchSchoolByName from "components/SearchSchoolByName";
 import Map from "components/Map";
 
 import CityInput from "components/search_internship_offer/CityInput";
+import GradeInput from "components/search_internship_offer/GradeInput";
+import WeekInput from "components/search_internship_offer/WeekInput";
 import CompanyCityInput from "components/search_internship_offer/CompanyCityInput";
 import KeywordInput from "components/search_internship_offer/KeywordInput";
+import SearchBar from "components/search_internship_offer/SearchBar";
+
 import DistanceIcon from "components/icons/DistanceIcon";
 
-import FullAddressInput from "components/inputs/FullAddressInput";
-import SirenInput from "components/inputs/SirenInput";
-import CountryPhoneSelect from "components/inputs/CountryPhoneSelect";
 import AddressInput from "components/inputs/AddressInput";
+import CountryPhoneSelect from "components/inputs/CountryPhoneSelect";
+import FullAddressInput from "components/inputs/FullAddressInput";
 import RomeInput from "components/inputs/RomeInput";
+import SirenInput from "components/inputs/SirenInput";
 
 ReactOnRails.register({
   AddressInput,
@@ -43,6 +47,7 @@ ReactOnRails.register({
   DistanceIcon,
   FlashMessage,
   FullAddressInput,
+  GradeInput,
   InternshipOfferCard,
   InternshipOfferFavoriteButton,
   InternshipOfferFavorites,
@@ -50,8 +55,10 @@ ReactOnRails.register({
   KeywordInput,
   Map,
   ReservedSchoolInput,
-  RomeInput,
   SearchSchool,
   SearchSchoolByName,
-  SirenInput 
+  SirenInput,
+  RomeInput,
+  WeekInput,
+  SearchBar
 });

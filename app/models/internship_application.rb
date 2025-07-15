@@ -37,6 +37,8 @@ class InternshipApplication < ApplicationRecord
     approved
   ]
   RE_APPROVABLE_STATES = %w[rejected canceled_by_employer expired]
+  REJECTABLE_STATES = %w[submitted read_by_employer transfered]
+  CANCELABLE_STATES = %w[restored validated_by_employer approved]
   VALID_TRANSITIONS = %w[
     read
     read!
@@ -70,8 +72,8 @@ class InternshipApplication < ApplicationRecord
   belongs_to :student, class_name: 'Users::Student',
                        foreign_key: 'user_id'
   has_one :internship_agreement
-  has_many :state_changes, class_name: 'InternshipApplicationStateChange'
-  has_many :internship_application_weeks
+  has_many :state_changes, class_name: 'InternshipApplicationStateChange', dependent: :destroy
+  has_many :internship_application_weeks, dependent: :destroy
   has_many :weeks, through: :internship_application_weeks
 
   delegate :update_all_counters, to: :internship_application_counter_hook
@@ -185,7 +187,7 @@ class InternshipApplication < ApplicationRecord
   }
 
   scope :current_school_year, lambda {
-    where(created_at: SchoolYear::Current.new.beginning_of_period..SchoolYear::Current.new.end_of_period)
+    where(created_at: SchoolYear::Current.new.offers_beginning_of_period..SchoolYear::Current.new.offers_end_of_period)
   }
 
   #
@@ -285,9 +287,7 @@ class InternshipApplication < ApplicationRecord
     event :reject do
       from_states = %i[read_by_employer
                        submitted
-                       restored
-                       transfered
-                       validated_by_employer ]
+                       transfered]
       transitions from: from_states,
                   to: :rejected,
                   after: proc { |user, *_args|
@@ -302,10 +302,7 @@ class InternshipApplication < ApplicationRecord
     end
 
     event :cancel_by_employer do
-      from_states = %i[submitted
-                       restored
-                       read_by_employer
-                       transfered
+      from_states = %i[restored
                        validated_by_employer
                        approved ]
       transitions from: from_states,
@@ -433,6 +430,10 @@ class InternshipApplication < ApplicationRecord
     aasm_state.in?(%w[expired rejected canceled_by_employer expired_by_student])
   end
 
+  def rejectable?
+    REJECTABLE_STATES.include?(aasm_state)
+  end
+
   def is_re_approvable?
     # false if student is anonymised or student has an approved application
     return false if student.anonymized? ||
@@ -440,6 +441,10 @@ class InternshipApplication < ApplicationRecord
                     internship_offer.remaining_seats_count.zero?
 
     RE_APPROVABLE_STATES.include?(aasm_state)
+  end
+
+  def cancelable?
+    CANCELABLE_STATES.include?(aasm_state)
   end
 
   def self.from_sgid(sgid)
@@ -465,18 +470,26 @@ class InternshipApplication < ApplicationRecord
   end
 
   def selectable_weeks
-    available_weeks = []
-    if student.seconde_gt?
-      available_weeks = internship_offer.weeks
-    elsif student.troisieme_or_quatrieme?
-      available_weeks = if student.school.has_weeks_on_current_year?
-                          Week.selectable_from_now_until_end_of_school_year & internship_offer.weeks & student.school.weeks
-                        else
-                          Week.troisieme_selectable_weeks & internship_offer.weeks
-                        end
+    available_weeks = internship_offer.weeks
+    if student.troisieme_or_quatrieme? && student.school.has_weeks_on_current_year?
+      available_weeks = internship_offer.weeks & student.school.weeks.in_the_future
     end
-    available_weeks
+    Week.selectable_from_now_until_end_of_school_year & available_weeks
   end
+
+  # def selectable_weeks
+  #   available_weeks = []
+  #   if student.seconde_gt?
+  #     available_weeks = internship_offer.weeks
+  #   elsif student.troisieme_or_quatrieme?
+  #     available_weeks = if student.school.has_weeks_on_current_year?
+  #                         Week.selectable_from_now_until_end_of_school_year & internship_offer.weeks & student.school.weeks
+  #                       else
+  #                         Week.troisieme_selectable_weeks & internship_offer.weeks
+  #                       end
+  #   end
+  #   available_weeks
+  # end
 
   def generate_token
     return if access_token.present?

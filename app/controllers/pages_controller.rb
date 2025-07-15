@@ -28,13 +28,25 @@ class PagesController < ApplicationController
     InternshipOffer.includes([:sector])
   end
 
+  def search_query_params
+    common_query_params = %i[city grade_id latitude longitude page radius]
+    common_query_params += [:school_year] if current_user_or_visitor.god? || current_user_or_visitor.statistician?
+    params.permit(*common_query_params, week_ids: [])
+  end
+
   def student_landing
+    @params = search_query_params
+    @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
+    @preselected_weeks_list_array = Presenters::WeekList.new(weeks: @preselected_weeks_list.to_a).detailed_attributes
+    @seconde_week_ids = Week.seconde_weeks.map(&:id)
+    @troisieme_week_ids = Week.troisieme_selectable_weeks.map(&:id)
+    @student_grade_id = current_user&.student? ? current_user.grade_id : nil
     if employers_only?
       redirect_to root_path
     else
       @faqs = get_faqs('student')
       @resources = get_resources('student')
-      @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
     end
   end
 

@@ -1,10 +1,10 @@
 - model = @planning
 - method = :patch
 - url = dashboard_stepper_planning_path(@planning)
+- links = generate_breadcrumb_links( [dashboard_internship_offers_path, 'Mes offres de stage'],
+                                     'Déposer une offre de stage' )
+= render 'layouts/breadcrumb', links: links
 
-= render 'layouts/breadcrumb',
-          links: [ [dashboard_internship_offers_path, 'Mes offres de stage'],
-                   ['', 'Déposer une offre de stage']]
 .row.fr-my-3w
   .col-12
     h1.h2 Déposer une offre de stage
@@ -16,5 +16,5 @@
              submit_button: true ,
              model: model,
              method: method,
-             url: url, 
+             url: url,
              duplication: false

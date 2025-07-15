@@ -48,18 +48,37 @@ module Builders
           signature.errors.add('id', 'Le code n\'a pas été validé ')
           raise ActiveRecord::RecordInvalid, signature
         end
+        data_url = params[:signature_image]
+        raise ArgumentError, 'Invalid signature image' unless data_url =~ /^data:(.*?);base64,(.*)$/
 
-        signature.attach_signature! &&
+        content_type = ::Regexp.last_match(1) # "image/png"
+        base64_data = ::Regexp.last_match(2)
+        decoded_data = Base64.decode64(base64_data)
+        uploaded_file = StringIO.new(decoded_data).tap(&:rewind)
+
+        signature.attach_signature!(
+          io: uploaded_file,
+          filename: "signature_employer_#{signature.internship_agreement_id}.png",
+          content_type: content_type
+        ) &&
           signature.save! &&
           agreement_sign(signature.reload) &&
-          signature.config_clean_local_signature_file &&
           signatures << signature
+        # signature.config_clean_local_signature_file &&
       end
 
       callback.on_success.try(:call, signatures)
     rescue ActiveRecord::RecordInvalid => e
+      puts '--------------------------------'
+      puts 'handwrite_sign record invalid'
+      puts e.record
+      puts '--------------------------------'
       callback.on_failure.try(:call, e.record)
     rescue ArgumentError => e
+      puts '--------------------------------'
+      puts 'handwrite_sign argument error'
+      puts e
+      puts '--------------------------------'
       callback.on_argument_error.try(:call, e)
     end
 

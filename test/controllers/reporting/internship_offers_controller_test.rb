@@ -7,42 +7,44 @@ module Reporting
     include Devise::Test::IntegrationHelpers
 
     setup do
-      @sector_agri = create(:sector, name: 'Agriculture')
-      @sector_wood = create(:sector, name: 'Filière bois')
-      @student_male2 = create(:student, :registered_with_phone, :male)
-      @student_male1 = create(:student, :registered_with_phone, :male)
-      @student_female1 = create(:student, :registered_with_phone, :female)
-      @group_with_no_offer = create(:group, name: 'no offer', is_public: false)
-      # # Following will be discarded
-      @internship_offer_agri_0 = create(:weekly_internship_offer_3eme,
-                                        sector: @sector_agri,
-                                        max_candidates: 1,
-                                        discarded_at: Date.today)
-      @internship_offer_agri_1 = create(:weekly_internship_offer_3eme,
-                                        sector: @sector_agri,
-                                        max_candidates: 1)
-      @internship_offer_agri_2 = create(:weekly_internship_offer_3eme,
-                                        sector: @sector_agri,
-                                        max_candidates: 1)
-      @internship_offer_wood = create(:weekly_internship_offer_3eme,
-                                      sector: @sector_wood,
-                                      max_candidates: 10)
-      create(:weekly_internship_application,
-             :submitted,
-             internship_offer: @internship_offer_agri_1,
-             student: @student_female1)
-      create(:weekly_internship_application,
-             :submitted,
-             internship_offer: @internship_offer_agri_1,
-             student: @student_male1)
-      create(:weekly_internship_application,
-             :submitted,
-             internship_offer: @internship_offer_agri_2,
-             student: @student_male2)
-      create(:weekly_internship_application,
-             :approved,
-             internship_offer: @internship_offer_agri_1,
-             student: @student_male2)
+      travel_to Date.new(2023, 10, 1) do
+        @sector_agri = create(:sector, name: 'Agriculture')
+        @sector_wood = create(:sector, name: 'Filière bois')
+        @student_male2 = create(:student, :registered_with_phone, :male)
+        @student_male1 = create(:student, :registered_with_phone, :male)
+        @student_female1 = create(:student, :registered_with_phone, :female)
+        @group_with_no_offer = create(:group, name: 'no offer', is_public: false)
+        # # Following will be discarded
+        @internship_offer_agri_0 = create(:weekly_internship_offer_3eme,
+                                          sector: @sector_agri,
+                                          max_candidates: 1,
+                                          discarded_at: Date.today)
+        @internship_offer_agri_1 = create(:weekly_internship_offer_3eme,
+                                          sector: @sector_agri,
+                                          max_candidates: 1)
+        @internship_offer_agri_2 = create(:weekly_internship_offer_3eme,
+                                          sector: @sector_agri,
+                                          max_candidates: 1)
+        @internship_offer_wood = create(:weekly_internship_offer_3eme,
+                                        sector: @sector_wood,
+                                        max_candidates: 10)
+        create(:weekly_internship_application,
+               :submitted,
+               internship_offer: @internship_offer_agri_1,
+               student: @student_female1)
+        create(:weekly_internship_application,
+               :submitted,
+               internship_offer: @internship_offer_agri_1,
+               student: @student_male1)
+        create(:weekly_internship_application,
+               :submitted,
+               internship_offer: @internship_offer_agri_2,
+               student: @student_male2)
+        create(:weekly_internship_application,
+               :approved,
+               internship_offer: @internship_offer_agri_1,
+               student: @student_male2)
+      end
     end
 
     test 'GET #index not logged fails' do
@@ -147,8 +149,8 @@ module Reporting
       end
     end
 
-    test 'GET #index.xlsx as statistician success ' \
-         'when department params match his departement_name' do
+    test 'GET #index.xlsx as statistician success when department params match his departement_name' do
+      # skip 'leak suspicion'
       god = create(:god)
       create(:weekly_internship_offer_2nde)
       create(:api_internship_offer_2nde)

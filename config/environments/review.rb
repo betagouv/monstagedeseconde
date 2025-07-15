@@ -4,9 +4,9 @@ require 'rest_client'
 require 'json'
 
 Rails.application.configure do
-  HOST = ENV.fetch("HOST") {
+  HOST = ENV.fetch('HOST') do
     "https://#{ENV.fetch('HEROKU_APP_NAME')}.herokuapp.com"
-  }
+  end
 
   # Verifies that versions and hashed value of the package contents in the project's package.json
   config.webpacker.check_yarn_integrity = false
@@ -35,10 +35,9 @@ Rails.application.configure do
   config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
 
   config.public_file_server.headers = {
-    "Cache-Control" => "public, s-maxage=31536000, max-age=15552000",
-    "Expires"       => 1.year.from_now.to_formatted_s(:rfc822)
+    'Cache-Control' => 'public, s-maxage=31536000, max-age=15552000',
+    'Expires' => 1.year.from_now.to_formatted_s(:rfc822)
   }
-
 
   # Compress JavaScripts and CSS.
   # config.assets.js_compressor = :uglifier
@@ -58,7 +57,7 @@ Rails.application.configure do
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
   # config.active_storage.service = :clevercloud
-  config.active_storage.service = :local
+  config.active_storage.service = :clevercloud
 
   # Mount Action Cable outside main process or domain
   host_uri = URI(HOST)
@@ -66,7 +65,7 @@ Rails.application.configure do
 
   config.action_cable.mount_path = nil
   config.action_cable.url = "wss://#{host_uri.host}"
-  config.action_cable.allowed_request_origins = [ host_uri.to_s ]
+  config.action_cable.allowed_request_origins = [host_uri.to_s]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
@@ -81,7 +80,7 @@ Rails.application.configure do
   # Use a different cache store in production.
 
   config.cache_store = :redis_cache_store,
-                       { url: ENV.fetch("REDIS_URL") , :'maxmemory-policy' => "allkeys-lfu" }
+                       { url: ENV.fetch('REDIS_URL'), 'maxmemory-policy': 'allkeys-lfu' }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
@@ -124,7 +123,7 @@ Rails.application.configure do
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
- # ----------------------------
+  # ----------------------------
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true

@@ -118,11 +118,13 @@ module InternshipsOffers
     end
 
     test '.reverse_academy_by_zipcode works on create and save' do
-      internship_offer = build(:weekly_internship_offer_3eme, zipcode: '75015')
-      assert_changes -> { internship_offer.academy },
-                     from: '',
-                     to: 'Académie de Paris' do
-        internship_offer.save
+      travel_to Date.new(2023, 10, 1) do
+        internship_offer = build(:weekly_internship_offer_3eme, zipcode: '75015')
+        assert_changes -> { internship_offer.academy },
+                       from: '',
+                       to: 'Académie de Paris' do
+          internship_offer.save
+        end
       end
     end
 
@@ -171,7 +173,7 @@ module InternshipsOffers
         assert internship_offer.description.present?
         assert duplicated_internship_offer.description.present?
         assert_equal internship_offer.description.strip,
-                    duplicated_internship_offer.description.strip
+                     duplicated_internship_offer.description.strip
         assert_equal internship_offer.internship_offer_area_id, duplicated_internship_offer.internship_offer_area_id
         assert_equal duplicated_internship_offer.mother_id, internship_offer.id
         assert_equal duplicated_internship_offer.max_candidates, internship_offer.max_candidates

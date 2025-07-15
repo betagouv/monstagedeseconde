@@ -1,12 +1,14 @@
 module Services
-  class SmsSender < ApiRequestsHelper
+  class SmsSender
+    include ApiRequestsHelper
     LINK_MOBILITY_SENDING_ENDPOINT_URL = 'https://europe.ipx.com/restapi/v1/sms/send'.freeze
 
     def perform
       if no_sms_mode?
         treat_no_sms_message
       else
-        response = get_request
+        uri = URI("#{LINK_MOBILITY_SENDING_ENDPOINT_URL}?#{making_body.to_query}")
+        response = get_request(uri, default_headers)
         if response.nil? || !response.respond_to?(:body)
           error_message = 'Link Mobility error: response is ko | phone_number: ' \
                           "#{@phone_number} | content: #{@content}"
@@ -49,10 +51,6 @@ module Services
                       " '#{@phone_number}', with content '#{@content}'"
       Rails.logger.error(error_message)
       false
-    end
-
-    def get_request_uri
-      URI("#{LINK_MOBILITY_SENDING_ENDPOINT_URL}?#{making_body.to_query}")
     end
 
     def making_body

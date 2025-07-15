@@ -1,5 +1,13 @@
 .d-flex
-  = link_to new_internship_offer_internship_application_path(internship_offer_id: internship_offer.id, as: 'Student'),
-            data: {turbo: 'false'},
-            class: 'fr-btn fr-btn--icon-left fr-icon-edit-fill' do
-    | Postuler
+  - if Flipper.enabled? :application_inhibited
+    = link_to '#',
+              tabindex: -1,
+              aria: { disabled: true },
+              onclick: "return false;" ,
+              class: 'fr-btn fr-btn--icon-left fr-icon-edit-fill disabled' do
+      | Postuler
+  - else
+    = link_to new_internship_offer_internship_application_path(internship_offer_id: internship_offer.id, as: 'Student'),
+              data: {turbo: 'false'},
+              class: 'fr-btn fr-btn--icon-left fr-icon-edit-fill' do
+      | Postuler
