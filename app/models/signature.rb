@@ -19,7 +19,7 @@ class Signature < ApplicationRecord
     other
     teacher
   ].freeze
-  
+
   REQUESTED_SIGNATURES_COUNT = 2
 
   belongs_to :internship_agreement
@@ -51,14 +51,6 @@ class Signature < ApplicationRecord
 
   #----------------------------------------------------------------------------
 
-  def local_signature_image_file_path
-    "#{SIGNATURE_STORAGE_DIR}/#{signature_file_name}"
-  end
-
-  def signature_file_name
-    "signature-#{Rails.env}-#{signatory_role}-#{internship_agreement_id}.png"
-  end
-
   def signatures_count
     Signature.where(internship_agreement_id: internship_agreement_id)
              .count
@@ -68,24 +60,17 @@ class Signature < ApplicationRecord
     signatures_count == REQUESTED_SIGNATURES_COUNT && employer_signed?
   end
 
-  def config_clean_local_signature_file
-    return true if Rails.application.config.active_storage.service == :local
+  def attach_signature!(io:, filename:, content_type:)
+    image = MiniMagick::Image.read(io.read)
+    io.rewind
 
-    return unless signature_image.attached? && File.exist?(local_signature_image_file_path)
-
-    File.delete(local_signature_image_file_path)
-  end
-
-  def attach_signature!
-    unless File.exist?(local_signature_image_file_path) &&
-           MIME::Types.type_for(local_signature_image_file_path).first.try(:media_type) == 'image'
-
-      raise ArgumentError, "L'image au format png n'a pas été trouvée"
+    unless image.type.downcase.in?(%w[jpeg jpg png gif bmp tiff webp])
+      raise ArgumentError, "Le fichier n'est pas une image reconnue (type détecté : #{image.type})"
     end
 
-    signature_image.attach(io: File.open(local_signature_image_file_path),
-                           filename: signature_file_name,
-                           content_type: 'image/png') && true
+    signature_image.attach(io: io,
+                           filename: filename,
+                           content_type: content_type) && true
   end
 
   def presenter

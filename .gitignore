@@ -11,6 +11,7 @@
 # Ignore the default SQLite database.
 /db/*.sqlite3
 /db/*.sqlite3-journal
+/db/data_imports/flipper_files/*
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -41,6 +42,7 @@ yarn-debug.log*
 .yarn/*
 .yarnrc
 .env
+.old_env
 .cursorrules
 
 /doc/env.sh

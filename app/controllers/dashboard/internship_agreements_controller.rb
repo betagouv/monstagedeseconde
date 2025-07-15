@@ -52,9 +52,10 @@ module Dashboard
             filename: "Convention_de_stage_#{ext_file_name}.pdf",
             type: 'application/pdf',
             disposition: 'inline'
-          ) && @internship_agreement.signatures.each do |signature|
-                 signature.config_clean_local_signature_file
-               end
+          )
+          # && @internship_agreement.signatures.each do |signature|
+          #  signature.config_clean_local_signature_file
+          #  end
         end
       end
     end

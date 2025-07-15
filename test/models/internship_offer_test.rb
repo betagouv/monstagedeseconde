@@ -91,25 +91,41 @@ class InternshipOfferTest < ActiveSupport::TestCase
   end
 
   test 'targeted_grades enum' do
+    travel_to Date.new(2023, 10, 1) do
+      internship_offer = create(:weekly_internship_offer_2nde, :week_1)
+      assert_equal 'seconde_only', internship_offer.targeted_grades
+      internship_offer.grades << Grade.troisieme_et_quatrieme
+      internship_offer.save
+      assert_equal 'seconde_troisieme_or_quatrieme', internship_offer.targeted_grades
+
+      internship_offer = create(:weekly_internship_offer_3eme)
+      internship_offer.save
+      assert_equal 'troisieme_or_quatrieme', internship_offer.targeted_grades
+      internship_offer.grades << [Grade.seconde, Grade.quatrieme]
+      internship_offer.save
+      assert_equal 'seconde_troisieme_or_quatrieme', internship_offer.targeted_grades
+
+      internship_offer = create(:weekly_internship_offer_3eme)
+      internship_offer.save
+      assert_equal 'troisieme_or_quatrieme', internship_offer.targeted_grades
+      internship_offer.grades << [Grade.seconde]
+      internship_offer.save
+      assert_equal 'seconde_troisieme_or_quatrieme', internship_offer.targeted_grades
+    end
+  end
+
+  test '.two_weeks_long?' do
+    # 2 weeks test
+    internship_offer = create(:weekly_internship_offer_2nde, :both_weeks)
+    assert internship_offer.two_weeks_long?
+
+    # First week test
     internship_offer = create(:weekly_internship_offer_2nde, :week_1)
-    assert_equal 'seconde_only', internship_offer.targeted_grades
-    internship_offer.grades << Grade.troisieme_et_quatrieme
-    internship_offer.save
-    assert_equal 'seconde_troisieme_or_quatrieme', internship_offer.targeted_grades
+    refute internship_offer.two_weeks_long?
 
-    internship_offer = create(:weekly_internship_offer_3eme)
-    internship_offer.save
-    assert_equal 'troisieme_or_quatrieme', internship_offer.targeted_grades
-    internship_offer.grades << [Grade.seconde, Grade.quatrieme]
-    internship_offer.save
-    assert_equal 'seconde_troisieme_or_quatrieme', internship_offer.targeted_grades
-
-    internship_offer = create(:weekly_internship_offer_3eme)
-    internship_offer.save
-    assert_equal 'troisieme_or_quatrieme', internship_offer.targeted_grades
-    internship_offer.grades << [Grade.seconde]
-    internship_offer.save
-    assert_equal 'seconde_troisieme_or_quatrieme', internship_offer.targeted_grades
+    # Second week test
+    internship_offer = create(:weekly_internship_offer_2nde, :week_2)
+    refute internship_offer.two_weeks_long?
   end
 
   # test '.period_labels' do

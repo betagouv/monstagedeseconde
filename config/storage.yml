@@ -7,7 +7,6 @@ clevercloud:
   endpoint: <%= ENV.fetch('CELLAR_ADDON_ENDPOINT') %>
   force_path_style: true
 
-
 local:
   service: Disk
   root: <%= Rails.root.join("storage/tmp/signatures") %>

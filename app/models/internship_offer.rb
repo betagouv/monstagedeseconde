@@ -27,11 +27,6 @@ class InternshipOffer < ApplicationRecord
   include FindableWeek
   include Zipcodable
 
-  # Legacy now
-  # include StepperProxy::InternshipOfferInfo
-  # include StepperProxy::Organisation
-  # include StepperProxy::HostingInfo
-  # include StepperProxy::PracticalInfo
   # New stepper models
   include StepperProxy::InternshipOccupation
   include StepperProxy::Entreprise
@@ -41,7 +36,13 @@ class InternshipOffer < ApplicationRecord
   include Discard::Model
   include PgSearch::Model
 
-  attr_accessor :republish, :grade_college, :grade_2e, :all_year_long, :period_field, :internship_type, :shall_publish
+  attr_accessor :republish,
+                :grade_college,
+                :grade_2e,
+                :all_year_long,
+                :period_field,
+                :internship_type,
+                :shall_publish
 
   # Other associations not defined in StepperProxy
   has_many :internship_applications, as: :internship_offer,
@@ -75,8 +76,8 @@ class InternshipOffer < ApplicationRecord
   # Callbacks
   after_initialize :init
 
-  before_save :sync_first_and_last_date,
-              :reverse_academy_by_zipcode,
+  before_save :sync_first_and_last_date, unless: :still_unpublished?
+  before_save :reverse_academy_by_zipcode,
               :make_sure_area_is_set,
               :entreprise_used_name,
               :update_targeted_grades
@@ -181,7 +182,7 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :within_current_year, lambda {
-    last_date = SchoolYear::Current.new.end_of_period + GUARD_PERIOD
+    last_date = SchoolYear::Current.new.offers_end_of_period
     in_the_future.where('last_date <= :last_date', last_date:)
   }
 
@@ -227,7 +228,7 @@ class InternshipOffer < ApplicationRecord
   scope :with_weeks_next_year, lambda {
     next_year = SchoolYear::Current.new
                                    .next_year
-                                   .end_of_period
+                                   .deposit_end_of_period
                                    .year
     where(school_year: next_year)
   }
@@ -264,7 +265,7 @@ class InternshipOffer < ApplicationRecord
 
   # -------------------------
   # States
-  # ----------------
+  # -------------------------
 
   aasm do
     state :published, initial: true
@@ -294,6 +295,7 @@ class InternshipOffer < ApplicationRecord
                                            }
     end
 
+    # TODO: nothing like this in production anymore : to be removed
     event :split do
       transitions from: %i[published need_to_be_updated unpublished],
                   to: :splitted, after: proc { |*_args|
@@ -312,6 +314,10 @@ class InternshipOffer < ApplicationRecord
   # -------------------------
   # Methods
   # -------------------------
+
+  def still_unpublished?
+    unpublished? || need_to_be_updated? || splitted?
+  end
 
   def self.period_labels(school_year:)
     SchoolTrack::Seconde.period_labels(school_year:)
@@ -354,7 +360,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def two_weeks_long?
-    weeks & SchoolTrack::Seconde.both_weeks == SchoolTrack::Seconde.both_weeks
+    Set.new(weeks.map(&:id)) == Set.new(SchoolTrack::Seconde.both_weeks.map(&:id))
   end
 
   def seconde_school_track_week_1?

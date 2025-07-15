@@ -184,7 +184,7 @@ FactoryBot.define do
             class: 'Users::PrefectureStatistician',
             parent: :user do
       type { 'Users::PrefectureStatistician' }
-      agreement_signatorable { false }
+      agreement_signatorable { true }
       department { '60' }
       statistician_validation { true }
     end

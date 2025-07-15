@@ -21,6 +21,29 @@ module StudentAdmin
         field :school
         field :gender
       end
+
+      show do
+        field(:ine)
+        fields(*UserAdmin::DEFAULT_FIELDS)
+        field :confirmation_sent_at do
+          date_format 'KO'
+          strftime_format '%d/%m/%Y'
+        end
+
+        field :phone
+        field :school do
+          visible do
+            bindings[:object].respond_to?(:school)
+          end
+        end
+        field :failed_attempts do
+          label 'Nombre de tentatives'
+        end
+        field :sign_in_count
+        field :current_sign_in_at do
+          label 'Dernière connexion'
+        end
+      end
     end
   end
 end

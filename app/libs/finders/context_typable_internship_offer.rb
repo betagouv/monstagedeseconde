@@ -10,27 +10,25 @@ module Finders
              :all_without_page,
              to: :listable_query_builder
 
-    def base_query
-      send(mapping_user_type.fetch(user.type))
-        .group(:id)
-        .includes(:sector)
-        .page(params[:page])
-    end
-
     def base_query_without_page
       send(mapping_user_type.fetch(user.type))
         .group(:id)
         .includes(:sector)
     end
 
+    def base_query
+      base_query_without_page.page(params[:page])
+    end
+
     private
 
     attr_accessor :params
-    attr_reader :user, :listable_query_builder
+    attr_reader :user, :listable_query_builder, :seats_search
 
-    def initialize(user:, params:)
+    def initialize(user:, params:, seats_search: false)
       @user = user
       @params = params
+      @seats_search = seats_search
       @listable_query_builder = Finders::ListableInternshipOffer.new(finder: self)
     end
 
@@ -64,8 +62,8 @@ module Finders
       true
     end
 
-    def common_filter
-      query = yield
+    def common_field_filter(with_distance_order: true)
+      query ||= yield
       %i[
         keyword
         sector_ids
@@ -75,8 +73,14 @@ module Finders
       ].each { |attr| query = send("#{attr}_query", query) if use_params(attr) }
 
       query = hide_duplicated_offers_query(query) unless user.god?
-      query = nearby_query(query) if coordinate_params
+      if coordinate_params
+        query = with_distance_order ? nearby_query(query) : nearby_query_without_order(query)
+      end
       query
+    end
+
+    def common_filter(&block)
+      common_field_filter(with_distance_order: !seats_search, &block)
     end
 
     def grade_id_query(query)
@@ -106,6 +110,13 @@ module Finders
       proximity_query = InternshipOffer.nearby_and_ordered(latitude: coordinate_params.latitude,
                                                            longitude: coordinate_params.longitude,
                                                            radius: radius_params)
+      query.merge(proximity_query)
+    end
+
+    def nearby_query_without_order(query)
+      proximity_query = InternshipOffer.nearby(latitude: coordinate_params.latitude,
+                                               longitude: coordinate_params.longitude,
+                                               radius: radius_params)
       query.merge(proximity_query)
     end
 

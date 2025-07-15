@@ -1,6 +1,6 @@
 {
   "title": "hellow",
-  "description": "Lorem ipsum dolor api",
+  "description": "Lorem ipsum dolor",
   "max_candidates": 2,
   "employer_website": null,
   "street": "1 rue du poulet",
@@ -8,8 +8,8 @@
   "city": "Paris",
   "is_public": true,
   "employer_name": "Octo",
-  "employer_description": null,
-  "remote_id": "2",
+  "employer_description": "Lorem ipsum dolor api",
+  "remote_id": "1",
   "permalink": "https://google.fr",
   "published_at": null,
   "formatted_coordinates": {
@@ -17,8 +17,7 @@
     "longitude": 2.333333
   },
   "weeks": [
-    "2025-W26",
-    "2025-W25"
+    "2025-W26"
   ],
   "grades": [
     "seconde"

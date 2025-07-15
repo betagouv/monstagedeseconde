@@ -18,37 +18,47 @@ def geo_point_factory_array(coordinates_as_array)
   factory.point(*coordinates_as_array)
 end
 
-def with_class_name_for_defaults(object)
-  # user = User.find_by_email(object.email) || User.find_by_phone(object.phone)
-  # return user if user.present?
+def random_extra_attributes(object)
+  return if object.valid? && object.persisted?
 
   object.first_name ||= FFaker::NameFR.first_name
   object.last_name ||= "#{FFaker::NameFR.last_name}-#{Presenters::UserManagementRole.new(user: object).role}"
   object.accept_terms = true
-  object.grade = Grade.seconde if object.student?
-  object.confirmed_at = Time.now.utc
-  object.current_sign_in_at = 2.days.ago
-  object.last_sign_in_at = 12.days.ago
+  object.confirmed_at = (1..24).to_a.sample.hours.ago
+  object.current_sign_in_at = (2..5).to_a.sample.days.ago
+  object.last_sign_in_at = (12..16).to_a.sample.days.ago
+  if object.student?
+    object.gender ||= (['m'] * 4 + ['f'] * 4 + ['np']).sample
+    if object.grade.present?
+      type = object.grade == Grade.seconde ? :lycee : :college
+      object.class_room ||= random_class_room(type: type)
+      object.birth_date ||= (object.grade == Grade.troisieme ? 14 : 15).years.ago
+    end
+  end
+
   object
 end
 
 def call_method_with_metrics_tracking(methods)
   methods.each do |method_name|
-    ActiveSupport::Notifications.instrument "seed.#{method_name}" do
-      send(method_name)
+    if method_name.is_a?(Symbol)
+      ActiveSupport::Notifications.instrument "seed.#{method_name}" do
+        send(method_name)
+      end
+    elsif method_name.is_a?(Array)
+      real_method_name = method_name.shift
+      ActiveSupport::Notifications.instrument "seed.#{real_method_name}" do
+        send(real_method_name, *method_name)
+      end
     end
   end
 end
 
-def find_default_school_during_test
+def a_parisian_lycee
   School.find_by_code_uai('0753268V') # school at Paris, school name : Lycée polyvalent Jean Lurçat.
 end
 
-def find_college_during_test
-  School.find_by(code_uai: '0755030K') # name: "Collège Daniel Mayer"
-end
-
-def find_college_during_test
+def a_parisian_college
   School.find_by(code_uai: '0755030K') # name: "Collège Daniel Mayer"
 end
 

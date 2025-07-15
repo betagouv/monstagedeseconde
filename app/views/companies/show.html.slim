@@ -1,8 +1,7 @@
 .container-monstage
   .fr-px-1w
-    = render 'layouts/breadcrumb',
-            links: [ [companies_path, 'Rechercher une entreprise'],
-                    ['', @company['name']] ]
+    - links = generate_breadcrumb_links( [companies_path, 'Rechercher une entreprise'], @company['name'] )
+    = render 'layouts/breadcrumb', links: links
   .row
     .col-12.col-md-4
       .fr-px-1w

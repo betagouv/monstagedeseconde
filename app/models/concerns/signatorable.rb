@@ -1,15 +1,13 @@
 module Signatorable
   extend ActiveSupport::Concern
   included do
-    SIGNATURE_PHONE_TOKEN_LIFETIME ||= 2 # minutes
+    SIGNATURE_PHONE_TOKEN_LIFETIME ||= 5 # minutes
 
     def create_signature_phone_token
       return false if school_management? && !school_manager?
 
       update(signature_phone_token: format('%06d', rand(999_999)),
              signature_phone_token_expires_at: SIGNATURE_PHONE_TOKEN_LIFETIME.minutes.from_now)
-      # update(signature_phone_token: format('%06d', 111_111),
-      #        signature_phone_token_expires_at: SIGNATURE_PHONE_TOKEN_LIFETIME.minutes.from_now)
     end
 
     def send_signature_sms_token

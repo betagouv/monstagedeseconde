@@ -55,10 +55,6 @@ class School < ApplicationRecord
                            .group('schools.id')
                            .having('count(users.id) > 0')
                        }
-  scope :without_manager, lambda {
-    left_joins(:school_manager).group('schools.id')
-                               .having('count(users.id) = 0')
-  }
 
   scope :with_school_manager, lambda {
     School.where(id: Users::SchoolManagement.kept
@@ -87,7 +83,7 @@ class School < ApplicationRecord
   end
 
   def has_weeks_on_current_year?
-    weeks.selectable_on_school_year.exists?
+    weeks.try(:selectable_on_school_year).try(:exists?)
   end
 
   rails_admin do
@@ -117,7 +113,6 @@ class School < ApplicationRecord
       field :zipcode do
         visible false
       end
-      scopes %i[all with_manager without_manager]
     end
 
     show do
@@ -166,13 +161,15 @@ class School < ApplicationRecord
     Presenters::School.new(self)
   end
 
-  def default_search_options
-    {
+  def default_search_options(user)
+    school_params = {
       city:,
       latitude: coordinates.lat,
       longitude: coordinates.lon,
       radius: Nearbyable::DEFAULT_NEARBY_RADIUS_IN_METER
     }
+    school_params.merge!(grade_id: user.grade_id) if user.grade_id.present?
+    school_params
   end
 
   def has_staff?

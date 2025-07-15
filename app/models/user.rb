@@ -63,7 +63,7 @@ class User < ApplicationRecord
   def channel = :email
 
   def default_search_options
-    has_relationship?(:school) ? school.default_search_options : {}
+    has_relationship?(:school) ? school.default_search_options(self) : {}
   end
 
   def has_relationship?(relationship)

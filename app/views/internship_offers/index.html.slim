@@ -6,26 +6,20 @@
       .fr-notice__body.fr-mx-3v
         p.fr-notice__title.title-banner
           | La carte affiche uniquement les 30 premiers résultats visibles sur cette page. Pour voir les suivants, cliquez sur la page suivante.
-  / .container-monstage
-  /   .container-monstage.homepage.visible.container-search.d-none.d-sm-block
-      
-  /     .row.no-gutters.search-offers
-  /       .col-12
-  /         .search-offer-bloc.fr-p-2w.d-none.d-sm-block
-  /           = render partial: "internship_offers/search/form",
-  /                           locals: { render_as_partial: true,
-  /                                     url: internship_offers_path,
-  /                                     default_values: params,
-  /                                     form_id: :desktop_internship_offers_index_search_form }
 
 .actions.d-flex.d-stick.d-md-none.py-2
-  = link_to search_internship_offers_path(params.permit(:city, :latitude, :longitude, :radius, :keyword, :period)),
+  = link_to search_internship_offers_path(params.permit(:city, :latitude, :longitude, :radius, :keyword, :period, :grade_id, week_ids: [])),
             class: 'fr-btn btn-block-mobile',
             title: "Lancer la recherche",
             data: { :"test-id" => 'mobile-search-button' }
     = search_button_label
-
 .fr-test-internship-offers-container
   = react_component("InternshipOfferResults",
-                    props: { searchParams: @params })
+                    props: { searchParams: @params,
+                             preselectedWeeksList: @preselected_weeks_list_array,
+                             schoolWeeksList: @school_weeks_list_array,
+                             secondeWeekIds: @seconde_week_ids,
+                             troisiemeWeekIds: @troisieme_week_ids,
+                             studentGradeId: @student_grade_id,
+                             origin: 'search' })
 

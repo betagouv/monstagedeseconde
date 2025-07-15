@@ -2407,7 +2407,7 @@ CREATE TABLE public.users (
     signature_phone_token_checked_at timestamp(6) without time zone,
     employer_role character varying(150),
     subscribed_to_webinar_at timestamp(6) without time zone DEFAULT NULL::timestamp without time zone,
-    agreement_signatorable boolean DEFAULT false,
+    agreement_signatorable boolean DEFAULT true,
     created_by_teacher boolean DEFAULT false,
     survey_answered boolean DEFAULT false,
     current_area_id bigint,
@@ -2426,7 +2426,10 @@ CREATE TABLE public.users (
     resume_languages text,
     grade_id bigint,
     ine character varying(15),
-    active_at timestamp(6) without time zone
+    active_at timestamp(6) without time zone,
+    school_ids text[] DEFAULT '{}'::text[],
+    user_info jsonb DEFAULT '{}'::jsonb,
+    fim_user_info jsonb
 );
 
 
@@ -5104,6 +5107,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250526084703'),
 ('20250516153906'),
 ('20250516101824'),
 ('20250514170128'),
@@ -5170,6 +5174,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240916160037'),
 ('20240827145706'),
 ('20240808094927'),
+('20240801000000'),
 ('20240719095729'),
 ('20240712080757'),
 ('20240711083454'),
@@ -5188,6 +5193,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240531101222'),
 ('20240531100023'),
 ('20240527081911'),
+('20240526141500'),
 ('20240514132852'),
 ('20240513094706'),
 ('20240417085118'),
