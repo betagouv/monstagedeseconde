@@ -250,23 +250,23 @@ class PagesController < ApplicationController
 
   def serialize_resource(results)
     # Group by school level
-    grouped_by_school = results.group_by { |doc| doc['resource.school_level'].as_text }
+    # grouped_by_school = results.group_by { |doc| doc['resource.school_level'].as_text }
 
-    grouped_by_school.transform_values! do |docs|
-      # Group by category
-      grouped_by_category = docs.group_by { |doc| doc['resource.category'].as_text }
+    # results.transform_values! do |docs|
+    # Group by category
+    grouped_by_category = results.group_by { |doc| doc['resource.category'].as_text }
 
-      grouped_by_category.transform_values! do |category_docs|
-        category_docs.map do |doc|
-          url = doc.fragments['url']&.url || doc.fragments['file']&.url
-          {
-            url: url,
-            title: doc['resource.title'].as_text
-          }
-        end
+    grouped_by_category.transform_values! do |category_docs|
+      category_docs.map do |doc|
+        url = doc.fragments['url']&.url || doc.fragments['file']&.url
+        {
+          url: url,
+          title: doc['resource.title'].as_text
+        }
       end
     end
+    # end
 
-    grouped_by_school
+    # grouped_by_school
   end
 end
