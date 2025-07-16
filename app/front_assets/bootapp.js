@@ -23,6 +23,7 @@ import FlashMessage from "components/FlashMessage";
 import SearchSchool from "components/SearchSchool";
 import SearchSchoolByName from "components/SearchSchoolByName";
 import Map from "components/Map";
+import SchoolList from "components/SchoolList";
 
 import CityInput from "components/search_internship_offer/CityInput";
 import GradeInput from "components/search_internship_offer/GradeInput";

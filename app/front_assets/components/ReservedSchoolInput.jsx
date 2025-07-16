@@ -1,66 +1,109 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import SearchSchool from './SearchSchool';
-import SchoolPropType from '../prop_types/school';
+import React, { useEffect, useState } from "react";
+import SearchSchool from "./SearchSchool";
+import SchoolList from "./SchoolList";
+import {
+  updateURLWithParam,
+  addParamToSearchParams,
+  getParamValueFromUrl,
+} from "../utils/urls"; // Assuming this is the correct import path
+// import { updateURLWithParam } from "../utils/url"; // Assuming this is for translations, but not used in the current code
 
-class ReservedSchoolInput extends React.Component {
-  static propTypes = {
-    classes: PropTypes.string,
-    label: PropTypes.string.isRequired,
-    required: PropTypes.bool.isRequired,
-    resourceName: PropTypes.string.isRequired,
-    selectClassRoom: PropTypes.bool.isRequired,
-    existingSchool: PropTypes.objectOf(SchoolPropType),
-    existingClassRoom: PropTypes.objectOf(PropTypes.object),
+export default function ReservedSchoolInput({
+  classes,
+  label,
+  required,
+  resourceName,
+  selectClassRoom,
+  existingSchool,
+  existingClassRoom,
+}) {
+  const [checked, setChecked] = useState(!!existingSchool);
+  const [schoolList, setSchoolList] = useState([]);
+
+  const toggleChange = () => {
+    setChecked((prevChecked) => !prevChecked);
   };
 
-  static defaultProps = {
-    classes: null,
-    existingSchool: null,
-    existingClassRoom: null,
+  const addSchoolToSchoolList = ({ schoolId, schoolName}) => {
+    // check for duplicates
+    if (schoolList.some((school) => school.id === schoolId)) {
+      console.warn(`School with id ${schoolId} is already in the list.`);
+      return;
+    }
+    setSchoolList((prevList) => [
+      ...prevList,
+      { name: schoolName, id: schoolId },
+    ]);
   };
 
-  state = {
-    checked: null,
-  };
-
-  componentDidMount() {
-    this.setState({ checked: !!this.props.existingSchool });
-  }
-
-  toggleChange = (_event) => {
-    const { checked } = this.state;
-    this.setState({ checked: !checked });
-  };
-
-  render() {
-    const { existingSchool, resourceName } = this.props;
-    const { checked } = this.state;
-    const checkedOrHasExistingSchool = (checked === true) || (checked === null && existingSchool);
-    return (
-      <>
-        <div className="fr-checkbox-group test-school-reserved" onClick={this.toggleChange}>
-          <input
-            type="checkbox"
-            name="is_reserved"
-            value="true"
-            aria-labelledby="is_reserved_label"
-            checked={checkedOrHasExistingSchool}
-          />
-          <label htmlFor="is_reserved" id="is_reserved_label">
-            <span className="ml-1 font-weight-normal">
-              Ce stage est réservé à un seul établissement ?
-            </span>
-            <small className="form-text text-muted">
-              Les stages réservés ne seront proposés qu'aux élèves de l'établissement sélectionné.
-            </small>
-          </label>
-        </div>
-        {checkedOrHasExistingSchool ? <SearchSchool {...this.props} />
-                                    : <input type="hidden" value="" name={`${resourceName}[school_id]`} />
-        }
-      </>
+  const removeSchoolFromList = (schoolId) => {
+    const lesserSchoolIdsList = schoolList.filter(
+      (school) => school.id !== schoolId
     );
-  }
+
+    setSchoolList(lesserSchoolIdsList);
+    addParamToSearchParams("school_ids[]", lesserSchoolIdsList.map((school) => school.id));
+    updateURLWithParam(
+      addParamToSearchParams("school_ids[]", lesserSchoolIdsList.map((school) => school.id))
+    );
+  };
+
+
+  return (
+    <>
+      <input type='hidden'
+        name={`${resourceName}[school_ids]`}
+        value={schoolList.map(school => school.id).join(",")}
+      />
+      {/* <input type='text'
+        readOnly
+        name={`${resourceName}[school_ids]`}
+        value={schoolList.map(school => school.id).join(",")}
+      /> */}
+      <br/>
+      <div className="fr-checkbox-group test-school-reserved">
+        <input
+          type="checkbox"
+          id={`${resourceName}_is_reserved`}
+          name="is_reserved"
+          value="true"
+          aria-labelledby={`${resourceName}_is_reserved_label`}
+          checked={checked}
+          onChange={toggleChange}
+        />
+        <label
+          htmlFor={`${resourceName}_is_reserved`}
+          id={`${resourceName}_is_reserved_label`}
+        >
+          <span className="ml-1 font-weight-normal">
+            Ce stage est réservé à un ou plusieurs établissements ?
+          </span>
+          <small className="form-text text-muted">
+            Les stages réservés ne seront proposés qu'aux élèves de
+            l'établissement sélectionné.
+          </small>
+        </label>
+      </div>
+      {checked ? (
+        <div>
+          <SchoolList
+            schools={schoolList}
+            removeSchoolFromList={removeSchoolFromList}
+          />
+          <SearchSchool
+            classes={classes}
+            label={label}
+            required={required}
+            resourceName={resourceName}
+            selectClassRoom={selectClassRoom}
+            existingSchool={existingSchool}
+            existingClassRoom={existingClassRoom}
+            addSchoolToSchoolList={addSchoolToSchoolList}
+          />
+        </div>
+      ) : (
+        <input type="hidden" value="" name={`${resourceName}[school_ids]`} />
+      )}
+    </>
+  );
 }
-export default ReservedSchoolInput;

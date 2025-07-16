@@ -98,7 +98,8 @@ module Dashboard::Stepper
               :weeks_count,
               daily_hours: {},
               weekly_hours: [],
-              week_ids: []
+              week_ids: [],
+              school_ids: []
             )
     end
 

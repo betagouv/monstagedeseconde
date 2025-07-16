@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import $ from 'jquery';
 import { useDebounce } from 'use-debounce';
 import Downshift from 'downshift';
@@ -18,6 +17,7 @@ export default function SearchSchool({
   selectClassRoom, // PropTypes.bool.isRequired
   existingSchool, // PropTypes.objectOf(SchoolPropType)
   existingClassRoom, // PropTypes.objectOf(PropTypes.object)
+  addSchoolToSchoolList
 }) {
   const [currentRequest, setCurrentRequest] = useState(null);
   const [requestError, setRequestError] = useState(null);
@@ -35,6 +35,7 @@ export default function SearchSchool({
   const [classRoomsSuggestions, setClassRoomsSuggestions] = useState(null);
 
   const [grade, setGrade] = useState(null);
+  const [isAddingHintShown, setIsAddingHintShown] = useState(false);
 
   const currentCityString = () => {
     if (city === null || city === undefined) {
@@ -109,6 +110,9 @@ export default function SearchSchool({
     setChosenCity(selectedItem);
     setAutocompleteCitySuggestions({});
     setSearchSchoolsSuggestions([]);
+    // addSchoolToSchoolList({ schoolId: selectedItem.id, schoolName: selectedItem.name });
+    // onResetSearch();
+    if(!isAddingHintShown) {setIsAddingHintShown(true);}
   };
 
   const inputChange = (event) => {
@@ -272,6 +276,7 @@ export default function SearchSchool({
                 )}
               </ul>
             </div>
+            
           </div>
         )}
       </Downshift>
@@ -301,17 +306,24 @@ export default function SearchSchool({
       {renderAutocompleteInput()}
       {city !== null && (
         <>
-          {
-            <SchoolSelectInput
-              setClassRoomsSuggestions={setClassRoomsSuggestions}
-              selectedSchool={selectedSchool}
-              setSelectedSchool={setSelectedSchool}
-              schoolsInCitySuggestions={schoolsInCitySuggestions}
-              resourceName={resourceName}
-              existingSchool={existingSchool}
-              classes={classes}
-            />
-          }
+          <SchoolSelectInput
+            setClassRoomsSuggestions={setClassRoomsSuggestions}
+            selectedSchool={selectedSchool}
+            setSelectedSchool={setSelectedSchool}
+            schoolsInCitySuggestions={schoolsInCitySuggestions}
+            resourceName={resourceName}
+            existingSchool={existingSchool}
+            classes={classes}
+            addSchoolToSchoolList={addSchoolToSchoolList}
+            onResetSearch={onResetSearch}
+            setIsAddingHintShown={setIsAddingHintShown}
+          />
+         {(isAddingHintShown) &&(
+            <small className="text-muted">
+              Vous pouvez ajouter plusieurs établissements à ce stage en recommançant une recherche.
+              ci-dessus.
+            </small>
+          )}
           {selectClassRoom && (
             <ClassRoomInput
               selectedClassRoom={selectedClassRoom}
