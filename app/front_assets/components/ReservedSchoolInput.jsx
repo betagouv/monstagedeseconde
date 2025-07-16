@@ -4,7 +4,6 @@ import SchoolList from "./SchoolList";
 import {
   updateURLWithParam,
   addParamToSearchParams,
-  getParamValueFromUrl,
 } from "../utils/urls"; // Assuming this is the correct import path
 // import { updateURLWithParam } from "../utils/url"; // Assuming this is for translations, but not used in the current code
 
@@ -19,12 +18,24 @@ export default function ReservedSchoolInput({
 }) {
   const [checked, setChecked] = useState(!!existingSchool);
   const [schoolList, setSchoolList] = useState([]);
+  const [showSchoolAddingHint, setShowSchoolAddingHint] = useState(false);
+
+  useEffect(() => {
+    if (schoolList.length > 0) {
+      setShowSchoolAddingHint(true);
+    }
+  }, [schoolList]);
 
   const toggleChange = () => {
     setChecked((prevChecked) => !prevChecked);
   };
 
   const addSchoolToSchoolList = ({ schoolId, schoolName}) => {
+    // check for nulls or undefined values
+    if (!schoolId || !schoolName) {
+      console.error("addSchoolToSchoolList called with invalid parameters", { schoolId, schoolName });
+      return;
+    }
     // check for duplicates
     if (schoolList.some((school) => school.id === schoolId)) {
       console.warn(`School with id ${schoolId} is already in the list.`);
@@ -99,6 +110,7 @@ export default function ReservedSchoolInput({
             existingSchool={existingSchool}
             existingClassRoom={existingClassRoom}
             addSchoolToSchoolList={addSchoolToSchoolList}
+            showSchoolAddingHint={showSchoolAddingHint}
           />
         </div>
       ) : (

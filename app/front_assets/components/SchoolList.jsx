@@ -9,7 +9,7 @@ export default function SchoolList({
     <ul className='fr-badges-group fr-mb-2w'>
       {schools.map(school => (
         <li key={`school-${school.id}`}>
-          <div className='fr-badge fr-badge--sm'>
+          <div className='fr-badge fr-badge--info fr-badge--sm fr-badge--no-icon'>
             {school.name}
             <span
               className="fr-link__icon fr-icon-delete-line fr-icon--sm fr-ml-1v"

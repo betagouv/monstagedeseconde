@@ -17,7 +17,8 @@ export default function SearchSchool({
   selectClassRoom, // PropTypes.bool.isRequired
   existingSchool, // PropTypes.objectOf(SchoolPropType)
   existingClassRoom, // PropTypes.objectOf(PropTypes.object)
-  addSchoolToSchoolList
+  addSchoolToSchoolList,
+  showSchoolAddingHint
 }) {
   const [currentRequest, setCurrentRequest] = useState(null);
   const [requestError, setRequestError] = useState(null);
@@ -35,7 +36,8 @@ export default function SearchSchool({
   const [classRoomsSuggestions, setClassRoomsSuggestions] = useState(null);
 
   const [grade, setGrade] = useState(null);
-  const [isAddingHintShown, setIsAddingHintShown] = useState(false);
+
+
 
   const currentCityString = () => {
     if (city === null || city === undefined) {
@@ -110,9 +112,11 @@ export default function SearchSchool({
     setChosenCity(selectedItem);
     setAutocompleteCitySuggestions({});
     setSearchSchoolsSuggestions([]);
-    // addSchoolToSchoolList({ schoolId: selectedItem.id, schoolName: selectedItem.name });
-    // onResetSearch();
-    if(!isAddingHintShown) {setIsAddingHintShown(true);}
+    if((selectedItem.id != undefined) && (selectedItem.name != undefined )) {
+      addSchoolToSchoolList({ schoolId: selectedItem.id, schoolName: selectedItem.name });
+      onResetSearch();
+    }
+    
   };
 
   const inputChange = (event) => {
@@ -304,6 +308,11 @@ export default function SearchSchool({
   return (
     <div className="autocomplete-school-container">
       {renderAutocompleteInput()}
+      {(showSchoolAddingHint) && (
+        <small className="text-muted">
+          Vous pouvez réserver ce stage à plusieurs établissements en recommançant une recherche.
+        </small>
+      )}
       {city !== null && (
         <>
           <SchoolSelectInput
@@ -316,15 +325,9 @@ export default function SearchSchool({
             classes={classes}
             addSchoolToSchoolList={addSchoolToSchoolList}
             onResetSearch={onResetSearch}
-            setIsAddingHintShown={setIsAddingHintShown}
           />
-         {(isAddingHintShown) &&(
-            <small className="text-muted">
-              Vous pouvez ajouter plusieurs établissements à ce stage en recommançant une recherche.
-              ci-dessus.
-            </small>
-          )}
-          {selectClassRoom && (
+          
+          {/* {selectClassRoom && (
             <ClassRoomInput
               selectedClassRoom={selectedClassRoom}
               classRoomsSuggestions={classRoomsSuggestions}
@@ -332,7 +335,7 @@ export default function SearchSchool({
               existingClassRoom={existingClassRoom}
               classes={classes}
             />
-          )}
+          )} */}
         </>
       )}
     </div>

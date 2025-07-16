@@ -56,6 +56,7 @@ ReactOnRails.register({
   KeywordInput,
   Map,
   ReservedSchoolInput,
+  SchoolList,
   SearchSchool,
   SearchSchoolByName,
   SirenInput,

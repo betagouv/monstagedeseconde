@@ -10,7 +10,6 @@ function RenderSchoolSelectInput({
   classes,
   addSchoolToSchoolList,
   onResetSearch,
-  setIsAddingHintShown
 }) {
   const isWaitingCitySelection =
     schoolsInCitySuggestions.length === 0 && !selectedSchool && !existingSchool;
@@ -33,12 +32,10 @@ function RenderSchoolSelectInput({
     const school = schoolsInCitySuggestions.find(
       (school) => school.id === parseInt(school_id, 10)
     );
-    console.log(school)
     // setSelectedSchool(school);
     setClassRoomsSuggestions(school.class_rooms);
     addSchoolToSchoolList({ schoolId: school_id, schoolName: school.name });
     onResetSearch();
-    if(!isAddingHintShown) {setIsAddingHintShown(true);}
   };
 
 
