@@ -88,7 +88,6 @@ const SearchBar = ({
   };
 
   const limitWeeksToParse = (gradeId) => {
-    debugger;
     switch (gradeId) {
       case gradeIdSeconde:
         // filter schoolWeeksList with secondeWeekIds
@@ -209,7 +208,6 @@ const SearchBar = ({
 
   // initialization
   useEffect(() => {
-    debugger;
     // set url with week_ids
     updateURLWithParam(addParamToSearchParams('week_ids[]', weekIds.map(w => w.id)))
 
