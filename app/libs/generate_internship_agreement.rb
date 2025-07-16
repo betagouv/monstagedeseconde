@@ -531,6 +531,27 @@ class GenerateInternshipAgreement < Prawn::Document
   end
 
   def download_image_and_signature(signatory_role:)
+    if signatory_role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE) && @internship_agreement.school.signature.attached?
+      begin
+        # Download the signature
+        signature_data = @internship_agreement.school.signature.download
+
+        # Convert to non-interlaced PNG
+        image = MiniMagick::Image.read(signature_data)
+        image.format 'png'
+        image.interlace 'none' # Disable interlacing
+
+        return OpenStruct.new(
+          local_signature_image_file_path: StringIO.new(image.to_blob)
+        )
+      rescue Aws::S3::Bucket::Errors::ServiceError => e
+        Rails.logger.error "Error downloading school signature: #{e.message} for  #{@internship_agreement.school.id}"
+        return nil
+      rescue StandardError => e
+        Rails.logger.error "Error processing school signature: #{e.message} for  #{@internship_agreement.school.id}"
+        return nil
+      end
+    end
     # Cas des signatures de l'école (school management)
     # if signatory_role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE) && @internship_agreement.school.signature.attached?
     #   begin
