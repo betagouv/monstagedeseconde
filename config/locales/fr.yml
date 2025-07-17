@@ -14,7 +14,7 @@ fr:
     registrations:
       captcha_error: "Le captcha est incorrect, veuillez réessayer."
       user:
-        signed_up_but_not_approved: Votre compte est bien créé mais vous ne pouvez pas vous connecter tant que votre professeur principal ne l'a pas validé.
+        signed_up_but_not_approved: Votre compte est bien créé mais vous ne pouvez pas vous connecter tant qu'un de vos professeurs ne l'a pas validé.
         signed_up_but_unconfirmed: Un message d'activation vous a été envoyé par email. Veuillez suivre les instructions qu'il contient.
     failure:
       unconfirmed: "Un message d’activation vous a été envoyé par courrier électronique. Veuillez suivre les instructions qu’il contient."
