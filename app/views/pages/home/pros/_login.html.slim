@@ -1,0 +1,25 @@
+/ Breadcrumb
+.fr-pt-2w
+  = render 'layouts/breadcrumb', links: [['professionels_path', 'Professionnels'], ['', 'Mon espace professionnel']]
+
+h1.h2.mb-2 Mon espace professionnel
+
+.row.position-relative.align-items-start.mb-4.border-bottom
+  .col-md-6.d-flex.flex-column
+    p.mb-4
+      | Un compte unique et sécurisé pour déposer et gérer vos offres de stage, suivre vos candidatures et signer à vos conventions.
+    .mb-2
+      = link_to 'Connexion', @login_url, class: 'fr-btn fr-mr-2w'
+      = link_to 'Créer un compte', @signup_url, class: 'fr-btn fr-btn--secondary'
+
+  .d-none.d-md-block
+    .vertical-separator
+    .ou-separator.fr-mt-2w OU
+
+  .col-md-6.d-flex.flex-column.align-items-md-start.align-items-center.fr-pl-4w
+    p.mb-2.text-md-start
+      | Connectez-vous avec 
+      strong ProConnect
+      |  et accédez à votre espace avec votre identité professionnelle sécurisée.
+    .fr-my-3w
+      = dsfr_proconnect_button(target: "#")

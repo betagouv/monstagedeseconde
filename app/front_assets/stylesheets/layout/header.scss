@@ -1,4 +1,3 @@
-
 .custom-navbar {
   position: relative;
 }
@@ -38,3 +37,92 @@
   }
 }
 
+.dropdown-menu {
+  background: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  min-width: 220px;
+  padding: 0.25rem 0;
+  margin-top: -1rem !important;
+}
+
+.dropdown-menu li:not(:last-child) {
+  border-bottom: 1px solid #E5E5E5; /* ou #dddddd selon ta charte DSFR */
+  margin-bottom: 0; /* optionnel, pour éviter un espace supplémentaire */
+}
+
+/* Lignes du menu */
+.dropdown-item {
+  color: #000091 !important;
+  padding: 2px 1rem;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Icône DSFR */
+.dropdown-item i.fr-icon-settings-line {
+  color: #000091;
+  font-size: 1;
+  background: none !important;
+  border: none !important;
+  margin-right: 0.5rem;
+}
+
+/* Hover effet DSFR */
+.dropdown-item:hover, .dropdown-item:focus {
+  background: #f5f5fe !important;
+  color: #000091 !important;
+}
+
+/* Bouton principal */
+.btn.btn-link.dropdown-toggle {
+  background: #f5f5fe !important;
+  color: #000091 !important;
+  border: none;
+  box-shadow: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem 0.25rem 0 0;
+}
+
+.top-nav-container {
+  overflow-x: hidden !important;
+  // add gray barre bottom
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.divider-full-width {
+  width: 100vw;
+  height: 1px;
+  background: #dee2e6;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.vertical-separator {
+  position: absolute;
+  left: 50%;
+  top: 0px; // ajuste selon le padding/hauteur de ton bloc
+  height: calc(100% - 0px); // ajuste pour ne pas dépasser le contenu
+  width: 1px;
+  background: #B0B0B0;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.ou-separator {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff; // ou la couleur de fond de ta page
+  color: #888;
+  padding: 0 0.75rem;
+  font-size: 1rem;
+  z-index: 2;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}

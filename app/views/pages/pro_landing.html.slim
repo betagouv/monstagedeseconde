@@ -2,8 +2,12 @@
   = render 'layouts/navbar', home_nav_bar: true
 .fr-container
   = render 'pages/home/top_nav'
-.container-monstage-fluid-hero.mx-0.pro-hero
-  = render 'pages/home/pros/hero_pro'
+/ .container-monstage-fluid-hero.mx-0.pro-hero
+/   = render 'pages/home/pros/hero_pro'
+.divider-full-width
+.container-homepage
+  .container-monstage
+    = render 'pages/home/pros/login'
 .container-homepage.fr-px-2w
   .container-monstage
     = render 'pages/home/howitworks_pro'
