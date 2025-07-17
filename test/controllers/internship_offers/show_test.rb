@@ -9,23 +9,6 @@ module InternshipOffers
     #
     # School Manager
     #
-    # test 'GET #show as SchoolManagement does not display application when internship_offer is not reserved to school' do
-    #   school = create(:school, :with_school_manager)
-    #   class_room = create(:class_room, school: school)
-    #   student = create(:student, class_room: class_room, school: school)
-    #   main_teacher = create(:main_teacher, class_room: class_room, school: school)
-
-    #   sign_in(main_teacher)
-    #   internship_offer = create(:weekly_internship_offer_2nde)
-    #   get internship_offer_path(internship_offer)
-
-    #   assert_response :success
-    #   assert_select 'title', "Offre de stage '#{internship_offer.title}' | 1élève1stage"
-    #   assert_select 'form[id=?]', 'new_internship_application', count: 0
-    #   assert_select 'strong.tutor_name', text: internship_offer.tutor_name
-    #   assert_select 'ul li.tutor_phone', text: "Portable : #{internship_offer.tutor_phone}"
-    #   assert_select "a.tutor_email[href=\"mailto:#{internship_offer.tutor_email}\"]",
-    #                 text: internship_offer.tutor_email
     # end
 
     #

@@ -2,7 +2,6 @@
 # which requires either one of those fields:
 # - enforce_employer_validation : forcing employer validations
 # - enforce_school_manager_validations : forcing school_manager validations
-# - enforce_teacher_validations : forcing main_teacher validations
 #
 # only use dedicated builder to CRUD those objects
 class InternshipAgreement < ApplicationRecord
@@ -375,8 +374,7 @@ class InternshipAgreement < ApplicationRecord
       cpe: SchoolManagerMailer,
       admin_officer: SchoolManagerMailer,
       other: SchoolManagerMailer,
-      teacher: SchoolManagerMailer,
-      main_teacher: SchoolManagerMailer
+      teacher: SchoolManagerMailer
     }
   end
 

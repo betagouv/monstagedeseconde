@@ -113,13 +113,6 @@ def populate_users
   # --- SchoolManagement : other roles ---
   # -- seconde / lycée
   users << Users::SchoolManagement.new(
-    role: 'main_teacher',
-    class_room: a_parisian_college.class_rooms.first,
-    email: "main_teacher_college@#{a_parisian_college.email_domain_name}",
-    password: password_value,
-    school: a_parisian_college
-  )
-  users << Users::SchoolManagement.new(
     role: 'other',
     email: "other_college@#{a_parisian_college.email_domain_name}",
     password: password_value,

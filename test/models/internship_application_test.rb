@@ -120,23 +120,6 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     end
   end
 
-  # test 'transition from validated_by_employer to approved creates the internship_agreement' do
-  #   internship_application = create(:weekly_internship_application, :validated_by_employer)
-  #   create(:main_teacher,
-  #          class_room: internship_application.student.class_room,
-  #          school: internship_application.student.school
-  #   )
-
-  #   internship_application.stub :create_agreement, nil do
-  #     mock_mail_to_main_teacher = Minitest::Mock.new
-  #     mock_mail_to_main_teacher.expect(:deliver_later, true, [] , wait: 1.second)
-
-  #     TeacherMailer.stub :internship_application_approved_with_agreement_email, mock_mail_to_main_teacher do
-  #       internship_application.approve!
-  #     end
-  #     mock_mail_to_main_teacher.verify
-  #   end
-  # end
 
   test 'transition from submited to approved does not send approved email to student w/o email' do
     student = create(:student, phone: '+330611223944', email: nil)
@@ -245,29 +228,6 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     # end
   end
 
-  test 'transition from submited to approved sends an email to main_teacher when no agreement is possible' do
-    # TO BE CONFIRMED there's no case where agreement is not possible anymore
-
-    # school = create(:school)
-    # class_room = create(:class_room, school: school)
-    # student = build(:student, class_room: class_room)
-    # create(:school_manager, school: school)
-    # create(:main_teacher, class_room: class_room, school: school)
-
-    # internship_application = create(:weekly_internship_application, :submitted, student: student)
-
-    # mock_mail_to_main_teacher = Minitest::Mock.new
-    # mock_mail_to_main_teacher.expect(:deliver_later, true)
-
-    # InternshipApplication.stub_any_instance(:accepted_student_notify, nil) do
-    #   TeacherMailer.stub(:internship_application_approved_with_no_agreement_email,
-    #                             mock_mail_to_main_teacher) do
-    #     internship_application.save
-    #     internship_application.approve!
-    #   end
-    #   mock_mail_to_main_teacher.verify
-    # end
-  end
 
   test 'transition from submited to approved create internship_agreement for student' do
     internship_offer = create(:weekly_internship_offer_2nde)
