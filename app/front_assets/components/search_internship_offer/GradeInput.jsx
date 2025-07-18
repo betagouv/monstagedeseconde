@@ -25,18 +25,18 @@ function GradeInput({
 
   return (
     <div className={`fr-input-group mb-md-0 col-12 col-md `}>
-      <label htmlFor="grade_id">Filière</label>
+      <label htmlFor="grade_id">Niveau de classe</label>
       <select 
         className="fr-select fr-mt-1v"
-        title="Recherche par filière"
-        aria-label="Recherche par filière"
+        title="Recherche par niveau"
+        aria-label="Recherche par niveau"
         name="grade_id"
         id="grade_id"
         value={gradeId}
         onChange={onGradeIdChange}
       >
         {!studentGradeId && (
-          <option value="">Toutes les filières</option>
+          <option value="">Choisir sa classe</option>
         )}
         {filteredOptions.map(option => (
           <option key={option.value} value={option.value}>{option.label}</option>
