@@ -43,7 +43,6 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   min-width: 220px;
   padding: 0.25rem 0;
-  margin-top: -1rem !important;
 }
 
 .dropdown-menu li:not(:last-child) {
@@ -51,10 +50,9 @@
   margin-bottom: 0; /* optionnel, pour éviter un espace supplémentaire */
 }
 
-/* Lignes du menu */
 .dropdown-item {
   color: #000091 !important;
-  padding: 2px 1rem;
+  padding: 0.75rem 1rem;
   background: transparent;
   border: none;
   display: flex;
@@ -63,7 +61,6 @@
   font-size: 0.875rem;
 }
 
-/* Icône DSFR */
 .dropdown-item i.fr-icon-settings-line {
   color: #000091;
   font-size: 1;
@@ -72,13 +69,11 @@
   margin-right: 0.5rem;
 }
 
-/* Hover effet DSFR */
 .dropdown-item:hover, .dropdown-item:focus {
   background: #f5f5fe !important;
   color: #000091 !important;
 }
 
-/* Bouton principal */
 .btn.btn-link.dropdown-toggle {
   background: #f5f5fe !important;
   color: #000091 !important;
@@ -90,7 +85,6 @@
 
 .top-nav-container {
   overflow-x: hidden !important;
-  // add gray barre bottom
   border-bottom: 1px solid #E5E5E5;
 }
 
@@ -105,8 +99,8 @@
 .vertical-separator {
   position: absolute;
   left: 50%;
-  top: 0px; // ajuste selon le padding/hauteur de ton bloc
-  height: calc(100% - 0px); // ajuste pour ne pas dépasser le contenu
+  top: 0px;
+  height: calc(100% - 0px);
   width: 1px;
   background: #B0B0B0;
   transform: translateX(-50%);
@@ -118,7 +112,7 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background: #fff; // ou la couleur de fond de ta page
+  background: #fff;
   color: #888;
   padding: 0 0.75rem;
   font-size: 1rem;
