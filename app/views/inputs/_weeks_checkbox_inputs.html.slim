@@ -19,7 +19,7 @@ div [data-internship-offer-infos-target='weeksContainer'
 
         = label_tag 'all_year_long', class: 'custom-control-label fr-label' do
           | Toute l'année scolaire
-          = " #{SchoolYear::Current.new.beginning_of_period.year}-#{SchoolYear::Current.new.end_of_period.year}"
+          = " #{SchoolYear::Current.new.offers_beginning_of_period.year}-#{SchoolYear::Current.new.deposit_end_of_period.year}"
 
         = check_box_tag 'specific_weeks',
                         false,

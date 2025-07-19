@@ -5,6 +5,13 @@
     - if can?(:apply, internship_offer) && internship_offer.has_spots_left?
       - if internship_offer.already_applied_by_student?(current_user)
         = button_to 'Déjà postulé', '', class: 'fr-btn', disabled: true
+      - elsif Flipper.enabled? :application_inhibited
+        = link_to 'Postuler',
+                  '#',
+                  class: 'fr-btn fr-icon-edit-fill fr-btn--icon-left disabled',
+                  tabindex: -1,
+                  aria: { disabled: true },
+                  onclick: "return false;" 
       - else
         = link_to 'Postuler',
                   new_internship_offer_internship_application_path(internship_offer_id: internship_offer.id),
@@ -22,7 +29,7 @@
             = reason
 
   - else
-    - path = employers_only? ? '#' :  visitor_apply_path
+    - path = (employers_only? || Flipper.enabled?(:application_inhibited)) ? '#' :  visitor_apply_path
     .d-flex
       = form_with url: path, method: :post, data: { turbo: false } do
         = submit_tag 'Postuler', class: "fr-btn fr-btn--icon-left fr-icon-edit-fill"

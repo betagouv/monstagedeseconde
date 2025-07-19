@@ -1,7 +1,5 @@
 module SchoolTrack
   class Seconde < Base
-    # hash computing two last week of june hash with year as key where year starts from 2022 to 2029
-
     def self.current_period_data
       period_collection(school_year: current_year)
     end
@@ -26,14 +24,14 @@ module SchoolTrack
     end
 
     def self.both_weeks(year: current_year)
-      Week.from_date_to_date(from: first_monday(year:) - 7.days, to: last_friday(year:))
+      Week.from_date_to_date(from: first_monday(year:), to: last_friday(year:))
     end
 
     def self.last_june_friday(year: current_year)
-      last_day_of_june = Date.new(year, 6, 30)
-      wday = last_day_of_june.wday
+      last_day_of_period = Date.new(year, SWITCH_MONTH, SWITCH_DAY) - 1.day
+      wday = last_day_of_period.wday
       offset = wday >= 5 ? wday - 5 : wday + 2
-      last_day_of_june.days_ago(offset)
+      last_day_of_period.days_ago(offset)
     end
 
     def self.last_friday(year: current_year)

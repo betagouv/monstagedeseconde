@@ -4,6 +4,7 @@ import Downshift from 'downshift';
 import RadiusInput from './RadiusInput';
 import { fetch } from 'whatwg-fetch';
 import { endpoints} from '../../utils/api';
+import { addParamToSearchParams, updateURLWithParam } from '../../utils/urls';
 
 const COMPONENT_FOCUS_LABEL = 'location';
 
@@ -41,6 +42,14 @@ function CityInput({
       setCity(item.nom);
       setLatitude(item.centre.coordinates[1]);
       setLongitude(item.centre.coordinates[0]);
+      const cityParams = addParamToSearchParams('city', item.nom);
+      updateURLWithParam(cityParams);
+      const latitudeParams = addParamToSearchParams('latitude', item.centre.coordinates[1]);
+      updateURLWithParam(latitudeParams);
+      const longitudeParams = addParamToSearchParams('longitude', item.centre.coordinates[0]);
+      updateURLWithParam(longitudeParams);
+      const radiusParams = addParamToSearchParams('radius', radius);
+      updateURLWithParam(radiusParams);
     }
   };
 
@@ -140,8 +149,8 @@ function CityInput({
           selectedItem,
           openMenu,
         }) => (
-          <div>
-            <label {...getLabelProps({ className: `almost-fitting ${(whiteBg) ? 'fr-label' : 'font-weight-lighter'}`, htmlFor: "input-search-by-city-or-zipcode" })}>
+          <div className='fr-input-group mb-md-0 col-md '>
+            <label {...getLabelProps({ className: `${(whiteBg) ? 'fr-label' : 'font-weight-lighter'}`, htmlFor: "input-search-by-city-or-zipcode" })}>
                    Commune ou code postal
             </label>
             <div
@@ -154,7 +163,7 @@ function CityInput({
                 {...getInputProps({
                   onChange: inputChange,
                   value: inputValue,
-                  className: 'fr-input almost-fitting',
+                  className: 'fr-input',
                   name: 'city',
                   id: 'input-search-by-city-or-zipcode',
                   placeholder: 'Choisissez une commune dans la liste',

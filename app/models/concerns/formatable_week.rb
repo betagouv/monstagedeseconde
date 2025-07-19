@@ -81,6 +81,11 @@ module FormatableWeek
     alias_method :to_date, :week_date
     alias_method :monday, :week_date
 
+    def friday = week_date + 4.days
+
+    # possibility to change friday against sunday here
+    def end_of_week_friday = friday
+
     def beginning_of_week(format: :human_mm_dd)
       I18n.localize(week_date.beginning_of_week, format:).strip
     end
@@ -105,36 +110,39 @@ module FormatableWeek
       I18n.localize(week_date.beginning_of_week, format: :human_dd_mm).strip
     end
 
+    # --- end of week methods ---
+
     def end_of_week(format: :human_mm_dd)
-      I18n.localize(week_date.end_of_week, format:).strip
+      I18n.localize(end_of_week_friday, format:).strip
     end
 
+    # These two are the same !
     def end_of_week_abr
-      I18n.localize(week_date.end_of_week, format: :human_dd_mm).strip
+      I18n.localize(end_of_week_friday, format: :human_dd_mm).strip
     end
 
     def end_of_working_week
-      I18n.localize(week_date.end_of_week - 2.days, format: :human_mm_dd).strip
+      I18n.localize(end_of_week_friday, format: :human_mm_dd_yyyy).strip
     end
 
     def end_of_working_week_with_year
-      I18n.localize(week_date.end_of_week - 2.days, format: :human_mm_dd_yyyy).strip
+      I18n.localize(end_of_week_friday, format: :human_mm_dd_yyyy).strip
     end
 
     def end_of_week_with_years
-      I18n.localize(week_date.end_of_week, format: :default).strip
+      I18n.localize(end_of_week_friday, format: :default).strip
     end
 
     def end_of_week_with_years_long
-      I18n.localize(week_date.end_of_week, format: :human_mm_dd_yyyy).strip
+      I18n.localize(end_of_week_friday, format: :human_mm_dd_yyyy).strip
     end
 
     def friday_of_week_with_years_long
-      I18n.localize(week_date + 4, format: :human_mm_dd_yyyy).strip
+      I18n.localize(friday, format: :human_mm_dd_yyyy).strip
     end
 
     def end_of_week_with_short_month_years_long
-      I18n.localize(week_date.end_of_week, format: :human_dd_short_mm_yyyy).strip
+      I18n.localize(end_of_week_friday, format: :human_dd_short_mm_yyyy).strip
     end
 
     def month_number
@@ -143,15 +151,6 @@ module FormatableWeek
       return monday.month if monday.month == wednesday.month
 
       wednesday.month
-    end
-
-    def month_number
-      monday = week_date.beginning_of_week
-      tuesday = monday + 1.day
-      wednesday = tuesday + 1.day
-      return monday.month if monday.month == tuesday.month && tuesday.month == wednesday.month
-
-      (monday + 4.days).month
     end
   end
 end

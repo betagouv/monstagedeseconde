@@ -7,8 +7,9 @@ module Api
     def self.search_by_siret(siret:)
       check_token
       uri = URI("#{API_ENDPOINT}/#{siret}")
+      token = ENV['API_SIRENE_TOKEN']
       headers = {
-        'Authorization': "Bearer #{@token}",
+        'Authorization': "Bearer #{token}",
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       }

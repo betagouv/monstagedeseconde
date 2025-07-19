@@ -2189,7 +2189,6 @@ CREATE SEQUENCE public.task_registers_id_seq
 ALTER SEQUENCE public.task_registers_id_seq OWNED BY public.task_registers.id;
 
 
-
 --
 -- Name: team_member_invitations; Type: TABLE; Schema: public; Owner: -
 --

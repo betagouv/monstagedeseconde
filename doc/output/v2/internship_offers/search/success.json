@@ -1,51 +1,42 @@
 {
   "pagination": {
-    "totalInternshipOffers": 2,
+    "totalInternshipOffers": 31,
     "internshipOffersPerPage": 30,
-    "totalPages": 1,
-    "currentPage": 1,
+    "totalPages": 2,
+    "currentPage": 2,
     "nextPage": null,
-    "prevPage": null,
-    "isFirstPage": true,
+    "prevPage": "http://www.example.com/api/v2/internship_offers/search?page=1",
+    "isFirstPage": false,
     "isLastPage": true,
     "pageUrlBase": "http://www.example.com/api/v2/internship_offers/search"
   },
   "internshipOffers": [
     {
-      "id": 103,
-      "title": "Stage de 2de - 2",
+      "id": 44,
+      "title": "Stage de 2de - 11",
       "description": "Lorem ipsum dolor weekly_internship_offer",
       "employer_name": "Octo",
-      "url": "http://www.example.com/offres-de-stage/103?utm_source=operator-1",
+      "url": "http://www.example.com/offres-de-stage/44?page=2&utm_source=operator-5",
       "city": "Paris",
+      "zipcode": "75001",
+      "street": "1 rue du poulet",
       "date_start": "16 juin 2025",
       "date_end": "20 juin 2025",
       "latitude": 48.866667,
       "longitude": 2.333333,
       "image": "http://www.example.com/packs-test/media/images/sectors/default_sector-e1b60d1832d3ebc2a8ccff663f1a8dd8.svg",
-      "sector": "secteur-4",
+      "sector": "secteur-26",
       "handicap_accessible": false,
       "period": 0,
-      "weeks": "du 16/06/2025 au 22/06/2025",
-      "remote_id": "paris_id"
-    },
-    {
-      "id": 102,
-      "title": "Stage de 2de - 1",
-      "description": "Lorem ipsum dolor weekly_internship_offer",
-      "employer_name": "Octo",
-      "url": "http://www.example.com/offres-de-stage/102?utm_source=operator-1",
-      "city": "Tours",
-      "date_start": "16 juin 2025",
-      "date_end": "20 juin 2025",
-      "latitude": 47.394144,
-      "longitude": 0.68484,
-      "image": "http://www.example.com/packs-test/media/images/sectors/default_sector-e1b60d1832d3ebc2a8ccff663f1a8dd8.svg",
-      "sector": "secteur-2",
-      "handicap_accessible": false,
-      "period": 0,
-      "weeks": "du 16/06/2025 au 22/06/2025",
-      "remote_id": null
+      "weeks": "du 16/06/2025 au 20/06/2025",
+      "remote_id": null,
+      "is_public": true,
+      "employer_website": null,
+      "employer_description": null,
+      "grades": [
+        "seconde"
+      ],
+      "permalink": null
     }
   ]
 }

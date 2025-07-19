@@ -57,8 +57,8 @@ module Reporting
       left =  InternshipOffer.arel_table[:daterange]
       right = Arel::Nodes::SqlLiteral.new(
         format("daterange '[%s,%s)'", # see: https://www.postgresql.org/docs/13/rangetypes.html#RANGETYPES-IO
-               school_year.beginning_of_period.strftime('%Y-%m-%d'), # use current year beginning for range opening
-               school_year.next_year.beginning_of_period.strftime('%Y-%m-%d')) # use next year beginning for range ending
+               school_year.offers_beginning_of_period.strftime('%Y-%m-%d'), # use current year beginning for range opening
+               school_year.next_year.offers_beginning_of_period.strftime('%Y-%m-%d')) # use next year beginning for range ending
       )
       Arel::Nodes::InfixOperation.new('&&', left, right)
     end

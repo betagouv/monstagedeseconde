@@ -11,8 +11,8 @@ import TitleLoader from './TitleLoader';
 import { endpoints } from '../utils/api';
 import { isMobile } from '../utils/responsive';
 import FlashMessage from './FlashMessage';
-import CityInput from './search_internship_offer/CityInput';
 import ImmersionFaciliteeCard from './ImmersionFaciliteeCard';
+import SearchBar from './search_internship_offer/SearchBar';
 
 // France center
 const center = [46.603354, 1.888334];
@@ -31,7 +31,14 @@ const defaultPointerIcon = new L.Icon({
   popupAnchor: [0, -60], // changed popup position
 });
 
-const InternshipOfferResults = ({ count, searchParams }) => {
+const InternshipOfferResults = ({
+    searchParams,
+    preselectedWeeksList,
+    schoolWeeksList,
+    secondeWeekIds,
+    troisiemeWeekIds,
+    studentGradeId
+  }) => {
   // const [map, setMap] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [paginateLinks, setPaginateLinks] = useState(null);
@@ -44,10 +51,11 @@ const InternshipOfferResults = ({ count, searchParams }) => {
   const [internshipOffersSeats, setInternshipOffersSeats] = useState(0);
   const [notify, setNotify] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
-  const[params, setParams] = useState(searchParams);
+  const [params, setParams] = useState(searchParams);
+
 
   useEffect(() => {
-    fetchtInternshipOffers();
+    fetchInternshipOffers();
   }, [params]);
 
   const ClickMap = ({ internshipOffers, recenterMap }) => {
@@ -63,18 +71,8 @@ const InternshipOfferResults = ({ count, searchParams }) => {
       // L.tileLayer.provider('CartoDB.Positron').addTo(map); MAP STYLE
     }
 
-    setNewDataFetched(false);
+    setTimeout(() => setNewDataFetched(false), 100);
     return null;
-  };
-
-  const handleSubmit = (formData) => {
-    const searchParams = {
-      city: formData.city || '',
-      latitude: formData.latitude || '',
-      longitude: formData.longitude || '',
-      radius: formData.radius || '30'
-    };
-    setParams(searchParams);
   };
 
   const handleMouseOver = (data) => {
@@ -97,7 +95,7 @@ const InternshipOfferResults = ({ count, searchParams }) => {
   //   return sectors;
   // }
 
-  const fetchtInternshipOffers = () => {
+  const fetchInternshipOffers = () => {
     setIsLoading(true);
     $.ajax({ type: 'GET', url: endpoints['searchInternshipOffers'](), data: params })
       .done(fetchDone)
@@ -117,6 +115,7 @@ const InternshipOfferResults = ({ count, searchParams }) => {
     setInternshipOffers(result['internshipOffers']);
     setPaginateLinks(result['pageLinks']);
     setInternshipOffersSeats(result['seats']);
+
     // setIsSuggestion(result['isSuggestion']);
 
     setIsLoading(false);
@@ -153,177 +152,171 @@ const InternshipOfferResults = ({ count, searchParams }) => {
   };
 
   return (
-    <div className="results-container">
-      {notify && <FlashMessage message={notificationMessage} display={notify} hideNotification={hideNotification} />}
-      
-      <div className="row fr-mx-0 fr-px-0">
-        <div className={`${isMobile() ? 'col-12 px-1w' : 'col-7 px-0'}`}>
-          
-          {/* SEARCH FORM */}
-          <div className="search-offer-bloc fr-pl-0 fr-pr-2w fr-py-2w d-none d-md-block">
-            <div className="d-flex justify-content-end">
-              <div className="search-offer-col fr-py-2w" style={{ width: '600px' }}>
-                <form onSubmit={handleSubmit} id="desktop_internship_offers_index_search_form">
-                  <div className="row">
-                    <div className="col-md-9 fr-mx-0 fr-px-0">
-                      <CityInput
-                        city={searchParams.city}
-                        latitude={searchParams.latitude}
-                        longitude={searchParams.longitude}
-                        radius={searchParams.radius}
-                        whiteBg="false"
-                      />
-                    </div>
-                    <div className="col-md-3 d-flex justify-content-end align-items-end">
-                      <button type="submit" className="fr-btn fr-btn--icon-left fr-icon-search-line">Rechercher</button>
-                    </div>
-                  </div>
-                </form>
-              </div>
+    <div className="">
+      {/* SEARCH FORM */}
+      <div className="fr-container">
+        <div id="desktop_internship_offers_index_search_form">
+          <div className="row fr-py-4w">
+            <div className="col-12">
+              <SearchBar
+                searchParams={searchParams}
+                preselectedWeeksList={preselectedWeeksList}
+                schoolWeeksList={schoolWeeksList}
+                secondeWeekIds={secondeWeekIds}
+                troisiemeWeekIds={troisiemeWeekIds}
+                origin='search'
+                studentGradeId={studentGradeId}
+              />
             </div>
           </div>
-          
+        </div>
+      </div>
+       <div className="results-container search-offer-bloc">
+      {notify && <FlashMessage message={notificationMessage} display={notify} hideNotification={hideNotification} />}
+      <div className="row fr-mx-0 fr-px-0">
+        <div className={`${isMobile() ? 'col-12 px-1w' : 'col-7 px-0'}`}>
+
           <div className="scrollable-content d-flex justify-content-end">
             <div className="results-col fr-mt-2w fr-mx-1w">
               <div className="row fr-py-2w mx-0 ">
                 <div className="col-12 px-0">
-                  {
-                    isLoading ? (
-                      <div className="row fr-mb-2w">
-                        <TitleLoader />
-                      </div>
+                  { isLoading ? (
+                    <div className="row fr-mb-2w">
+                      <TitleLoader />
+                    </div>
                     ) : params.latitude != 0 && params.longitude!=0 && (
-                      <>
-                        <div className="h4 mb-0" id="internship-offers-count">
-                          <div className="strong">
-                            {internshipOffersSeats.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} stage{internshipOffersSeats > 1 ? 's' : ''} disponible{internshipOffersSeats > 1 ? 's' : ''}
+                        <>
+                          <div className="h4 mb-0" id="internship-offers-count">
+                            <div className="strong">
+                              {internshipOffersSeats.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} stage{internshipOffersSeats > 1 ? 's' : ''} disponible{internshipOffersSeats > 1 ? 's' : ''}
+                            </div>
                           </div>
-                        </div>
-                      </>
-                    )
+                        </>
+                      )
                   }
                   { !isLoading && (internshipOffersSeats == 0) &&
                     (<p>Aucune offre répondant à vos critères n'est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
                   }
                 </div>
-                {/* {
-                  !isMobile() && (
-                  <div className="col-4 text-right px-0">
-                    <button className="fr-btn fr-btn--secondary fr-icon-filter-line fr-btn--icon-left" data-fr-opened="false" aria-controls="fr-modal-filter" id="filter-sectors-button">
-                      Secteur d'activité
-                      {
-                        selectedSectors.length > 0 ? (
-                          <p className="fr-badge fr-badge--success fr-badge--no-icon fr-m-1w">{selectedSectors.length}</p>
-                        ) : ''
-                      }
-                    </button>
-                  </div>
-                  )
-                } */}
-              </div>
-
-              <div> {/* Cards */}
-                {
-                  (isLoading )?  (
-                  <div className="row">
-                      <div className={`col-${isMobile() ? '12' : '6'}`}>
-                      <CardLoader />
-                    </div>
-                      <div className={`col-${isMobile() ? '12' : '6'}`}>
-                      <CardLoader />
-                    </div>
-                      <div className={`col-${isMobile() ? '12' : '6'}`}>
-                      <CardLoader />
-                    </div>
-                  </div>
-                  ) : (
-                    <div>
-                      <div className="row">
-                          {
-                          internshipOffers.map((internshipOffer, i) => (
-                            <InternshipOfferCard
-                              internshipOffer={internshipOffer}
-                              key={internshipOffer.id}
-                              index={i}
-                              handleMouseOut={handleMouseOut}
-                              handleMouseOver={(value) => {handleMouseOver(value)}}
-                              sendNotification={(message) => {sendNotification(message)}}
-                              />
-                          ))
+                  {/* {
+                    !isMobile() && (
+                    <div className="col-4 text-right px-0">
+                      <button className="fr-btn fr-btn--secondary fr-icon-filter-line fr-btn--icon-left" data-fr-opened="false" aria-controls="fr-modal-filter" id="filter-sectors-button">
+                        Secteur d'activité
+                        {
+                          selectedSectors.length > 0 ? (
+                            <p className="fr-badge fr-badge--success fr-badge--no-icon fr-m-1w">{selectedSectors.length}</p>
+                          ) : ''
                         }
+                      </button>
                     </div>
-                    <div>
-                      {paginateLinks ? <Paginator paginateLinks={paginateLinks} /> : ''}
+                    )
+                  } */}
+                </div>
+
+                <div> {/* Cards */}
+                  {
+                    (isLoading )?  (
+                    <div className="row">
+                        <div className={`col-${isMobile() ? '12' : '6'}`}>
+                        <CardLoader />
+                      </div>
+                        <div className={`col-${isMobile() ? '12' : '6'}`}>
+                        <CardLoader />
+                      </div>
+                        <div className={`col-${isMobile() ? '12' : '6'}`}>
+                        <CardLoader />
+                      </div>
                     </div>
-                    {paginateLinks.isLastPage && <ImmersionFaciliteeCard />}
-                  </div>
-                  )
-                }
+                    ) : (
+                      <div>
+                        <div className="row">
+                            {
+                            internshipOffers.map((internshipOffer, i) => (
+                              <InternshipOfferCard
+                                internshipOffer={internshipOffer}
+                                key={internshipOffer.id}
+                                index={i}
+                                handleMouseOut={handleMouseOut}
+                                handleMouseOver={(value) => {handleMouseOver(value)}}
+                                sendNotification={(message) => {sendNotification(message)}}
+                                />
+                            ))
+                          }
+                      </div>
+                      <div>
+                        {(paginateLinks && paginateLinks.totalPages != 0) ? <Paginator paginateLinks={paginateLinks} /> : ''}
+                      </div>
+                      {(paginateLinks.isLastPage || paginateLinks.totalPages === 0) && <ImmersionFaciliteeCard />}
+                    </div>
+                    )
+                  }
+                </div>
               </div>
             </div>
           </div>
+
+          {/* Colonne de la carte */}
+          {!isMobile() && (
+            <div className="col-5 map-wrapper fr-mx-0 fr-px-0">
+              <div className="map-sticky-container">
+                <MapContainer
+                  center={center}
+                  zoom={6}
+                  scrollWheelZoom={false}
+                >
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                  />
+                  <MarkerClusterGroup>
+                    {
+                      internshipOffers.length ? (
+                        internshipOffers.map((internshipOffer) => (
+                          <Marker
+                            icon={
+                              internshipOffer.id === selectedOffer ? pointerIcon : defaultPointerIcon
+                            }
+                            position={[internshipOffer.lat, internshipOffer.lon]}
+                            key={internshipOffer.id}
+                          >
+                            <Popup className='popup-custom'>
+                              <a href={internshipOffer.link}>
+                                <div className="img">
+                                  <img className="fr-responsive-img" src={internshipOffer.image} alt="image"></img>
+                                </div>
+                                <div className="content fr-p-2w">
+                                  <p className="fr-card__detail">{internshipOffer.employer_name}</p>
+                                  <h6 className="title">
+                                    {internshipOffer.title}
+                                  </h6>
+                                </div>
+                              </a>
+                            </Popup>
+                          </Marker>
+                        ))
+                      ) : ('')
+                    }
+                  </MarkerClusterGroup>
+                  <ClickMap internshipOffers={internshipOffers} recenterMap={newDataFetched} />
+                </MapContainer>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Colonne de la carte */}
-        {!isMobile() && (
-          <div className="col-5 map-wrapper fr-mx-0 fr-px-0">
-            <div className="map-sticky-container">
-              <MapContainer 
-                center={center} 
-                zoom={6} 
-                scrollWheelZoom={false}
-              >
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                />
-                <MarkerClusterGroup>
-                  {
-                    internshipOffers.length ? (
-                      internshipOffers.map((internshipOffer) => (
-                        <Marker
-                          icon={
-                            internshipOffer.id === selectedOffer ? pointerIcon : defaultPointerIcon
-                          }
-                          position={[internshipOffer.lat, internshipOffer.lon]}
-                          key={internshipOffer.id}
-                        >
-                          <Popup className='popup-custom'>
-                            <a href={internshipOffer.link}>
-                              <div className="img">
-                                <img className="fr-responsive-img" src={internshipOffer.image} alt="image"></img>
-                              </div>
-                              <div className="content fr-p-2w">
-                                <p className="fr-card__detail">{internshipOffer.employer_name}</p>
-                                <h6 className="title">
-                                  {internshipOffer.title}
-                                </h6>
-                              </div>
-                            </a>
-                          </Popup>
-                        </Marker>
-                      ))
-                    ) : ('')
-                  }
-                </MarkerClusterGroup>
-                <ClickMap internshipOffers={internshipOffers} recenterMap={newDataFetched} />
-              </MapContainer>
-            </div>
-          </div>
-        )}
+        {/* {
+          !isMobile() &&
+          (
+            <FilterModal
+            sectors={sectors}
+            updateSectors={updateSectors}
+            clearSectors={clearSectors}
+            selectedSectors={selectedSectors}
+            />
+          )
+        } */}
       </div>
-
-      {/* {
-        !isMobile() &&
-        (
-          <FilterModal
-          sectors={sectors}
-          updateSectors={updateSectors}
-          clearSectors={clearSectors}
-          selectedSectors={selectedSectors}
-          />
-        )
-      } */}
     </div>
   );
 };

@@ -322,6 +322,8 @@ GEM
       logger
     mini_mime (1.1.5)
     minitest (5.25.5)
+    minitest-fail-fast (0.1.0)
+      minitest (~> 5)
     minitest-reporters (1.7.1)
       ansi
       builder
@@ -687,6 +689,7 @@ DEPENDENCIES
   lograge
   mime-types
   mini_magick
+  minitest-fail-fast
   minitest-reporters
   minitest-retry
   minitest-stub-const

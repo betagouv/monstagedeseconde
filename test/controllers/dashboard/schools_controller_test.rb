@@ -39,7 +39,7 @@ module Dashboard
       patch(dashboard_school_path(school.to_param),
             params: {
               school: {
-                weeks_ids: [weeks(:week_2019_1).id, weeks(:week_2019_2).id]
+                weeks_ids: [weeks(:week_2025_1).id, weeks(:week_2025_2).id]
               }
             })
       assert_redirected_to user_session_path
@@ -51,7 +51,7 @@ module Dashboard
       patch(dashboard_school_path(school.to_param),
             params: {
               school: {
-                weeks_ids: [weeks(:week_2019_1).id, weeks(:week_2019_2).id]
+                weeks_ids: [weeks(:week_2025_1).id, weeks(:week_2025_2).id]
               }
             })
       assert_redirected_to root_path

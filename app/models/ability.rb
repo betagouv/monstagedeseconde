@@ -211,7 +211,7 @@ class Ability
     end
     can :publish, InternshipOffer do |internship_offer|
       internship_offer.employer_id == user.id &&
-        internship_offer.last_date > SchoolYear::Current.new.beginning_of_period
+        internship_offer.last_date > SchoolYear::Current.new.offers_beginning_of_period
     end
     can %i[create see_tutor], InternshipOffer
     can %i[read discard], InternshipOffer, employer_id: user.team_members_ids
@@ -594,7 +594,7 @@ class Ability
     main_condition = internship_offer.persisted? &&
                      internship_offer.employer_id == user.id
     if main_condition
-      school_year_start = SchoolYear::Current.new.beginning_of_period
+      school_year_start = SchoolYear::Current.new.offers_beginning_of_period
       internship_offer.last_date <= school_year_start
     else
       false

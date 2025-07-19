@@ -20,6 +20,9 @@ require 'support/team_and_areas_helper'
 require 'minitest/retry'
 require 'webmock/minitest'
 require 'sidekiq/testing'
+if ENV.fetch('FAIL_FAST', false) == 'true'
+  require 'minitest/fail_fast'
+end
 
 # these two lines should be withdrawn whenever the ChromeDriver is ok
 # https://stackoverflow.com/questions/70967207/selenium-chromedriver-cannot-construct-keyevent-from-non-typeable-key/70971698#70971698
@@ -80,9 +83,12 @@ end
 class ActionDispatch::IntegrationTest
   def after_teardown
     super
+    puts "Cleaning up storage at: #{ActiveStorage::Blob.service.root}" if ENV.fetch('VERBOSE', false) == 'true'
     FileUtils.rm_rf(ActiveStorage::Blob.service.root)
+    puts 'Flushing Sidekiq Redis' if ENV.fetch('VERBOSE', false) == 'true'
     Sidekiq.redis(&:flushdb)
   end
+
   parallelize_setup do |i|
     ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"
   end

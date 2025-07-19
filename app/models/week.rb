@@ -3,130 +3,71 @@
 # Calendar weeks
 class Week < ApplicationRecord
   include FormatableWeek
+  include WeekHelpers
   WORKING_WEEK_DURATION = 5
   has_many :internship_applications, dependent: :destroy,
                                      foreign_key: :week_id
 
-  scope :from_date_to_date, lambda { |from:, to:|
-    query = from_date_for_current_year(from:)
-    return query.to_date_for_current_year(to:) if from.year == to.year
+  # def self.end_of_year_week?(date)
+  #   date.cweek == 53 && date.month == 12
+  # end
 
-    query.or(to_date_for_current_year(to:))
-  }
-
-  scope :by_year, lambda { |year:|
-    where(year:)
-  }
-
-  scope :from_now, lambda {
-    current_date = Date.current
-    if end_of_year_week?(current_date)
-      where('number = ?', 53).where('year = ?', current_date.year).or(where('year > ?', current_date.year))
-    elsif current_date.cweek == 53 && current_date.month == 1
-      where('year >= ?', current_date.year)
-    else
-      after(date: current_date)
-    end
-  }
-
-  def self.end_of_year_week?(date)
-    date.cweek == 53 && date.month == 12
-  end
-
-  scope :in_the_future, lambda {
-    if Date.current.cweek == 53 && Date.current.month == 1
-      where('year >= ?', Date.current.year)
-    else
-      after(date: Date.current)
-    end
-  }
-
+  # not used anymore
   scope :of_past_school_years, lambda {
-    after_week(week: Week.current_year_start_week)
+    strictly_after_week(week: Week.current_year_start_week)
   }
 
-  scope :from_date_for_current_year, lambda { |from:|
-    by_year(year: from.year).where('number > :from_week', from_week: from.cweek)
-  }
-
-  scope :to_date_for_current_year, lambda { |to:|
-    by_year(year: to.year).where('number <= :to_week', to_week: to.cweek)
-  }
-
-  scope :fetch_from, lambda { |date:|
-    number = date.cweek
-    year = number == 53 ? date.year - 1 : date.year
-    find_by(number:, year:)
-  }
-
-  scope :before, lambda { |date:|
-    where('year < ?', date.year).or(
-      where('year = ?', date.year).where('number < ?', date.cweek)
-    )
-  }
-
-  scope :after, lambda { |date:|
-    where('year > ?', date.year).or(
-      where('year = ?', date.year).where('number > ?', date.cweek)
-    )
-  }
-  scope :before_week, lambda { |week:|
-    where('year < ?', week.year).or(
-      where('year = ?', week.year).where('number < ?', week.number)
-    )
-  }
-
-  scope :after_week, lambda { |week:|
-    where('year > ?', week.year).or(
-      where('year = ?', week.year).where('number > ?', week.number)
-    )
-  }
-
-  scope :selectable_from_now_until_end_of_school_year, lambda {
-    school_year = SchoolYear::Floating.new(date: Date.current)
-
-    from_date_to_date(from: school_year.updated_beginning_of_period,
-                      to: school_year.end_of_period)
-  }
-
-  scope :selectable_from_now_until_next_school_year, lambda {
-    school_year = SchoolYear::Floating.new(date: Date.today)
-    next_year = SchoolYear::Floating.new(date: Date.today + 1.year)
-
-    from_date_to_date(from: school_year.updated_beginning_of_period,
-                      to: school_year.end_of_period).or(
-                        from_date_to_date(from: next_year.beginning_of_period,
-                                          to: next_year.end_of_period)
-                      )
-  }
-
-  scope :selectable_on_next_school_year, lambda {
-    n = Week.current.ahead_of_school_year_start? ? 0 : 1
-    school_year = SchoolYear::Floating.new(date: Date.today + n.year)
-
-    from_date_to_date(from: school_year.beginning_of_period,
-                      to: school_year.end_of_period)
-  }
-
-  scope :of_previous_school_year, lambda {
-    school_year = SchoolYear::Floating.new(date: Date.today)
-    weeks_of_school_year(school_year: school_year.strict_beginning_of_period.year - 1)
+  # TODO: update this name to 'of_current_school_year'
+  scope :selectable_on_school_year, lambda {
+    from_date_to_date(**current_year_limits)
   }
 
   scope :selectable_for_school_year, lambda { |school_year:|
-    weeks_of_school_year(school_year: school_year.strict_beginning_of_period.year)
+    weeks_of_school_year(school_year: school_year.offers_beginning_of_period.year)
+  }
+
+  scope :selectable_from_now_until_end_of_school_year, lambda {
+    from_date_to_date(**from_now_to_end_of_current_year_limits)
+  }
+
+  scope :troisieme_weeks, lambda {
+    from_date_to_date(**current_troisieme_year_limits)
+  }
+
+  scope :troisieme_selectable_weeks, lambda {
+    from_date_to_date(**from_now_to_end_of_current_troisieme_year_limits)
+  }
+
+  scope :deposit_troisieme_weeks, lambda {
+    from_date_to_date(**current_year_deposit_limits)
+  }
+
+  scope :both_school_tracks_weeks, lambda {
+    where(id: [troisieme_weeks, seconde_weeks].map(&:ids).flatten.uniq)
+  }
+
+  scope :both_school_track_selectable_weeks, lambda {
+    both_school_tracks_weeks.in_the_future
+  }
+
+  scope :selectable_from_now_until_next_school_year, lambda {
+    from_now_to_end_of_current_year_limits => { from:, to: }
+    from_date_to_date(from: from, to: to + 1.year)
+  }
+
+  scope :selectable_on_next_school_year, lambda {
+    current_year_limits => { from:, to: }
+    from_date_to_date(from: from + 1.year, to: to + 1.year)
+  }
+
+  scope :of_previous_school_year, lambda {
+    current_year_limits => { from:, to: }
+    from_date_to_date(from: from - 1.year, to: to - 1.year)
   }
 
   # scope :selectable_on_specific_school_year, lambda { |school_year:|
-  #   weeks_of_school_year(school_year: school_year.beginning_of_period.year)
+  #   weeks_of_school_year(school_year: school_year.offers_beginning_of_period.year)
   # }
-
-  scope :selectable_on_school_year, lambda {
-    school_year = SchoolYear::Current.new
-
-    from_date_to_date(from: school_year.beginning_of_period,
-                      to: school_year.end_of_period)
-  }
 
   scope :selectable_on_school_year_when_editing, lambda {
     if Week.current.ahead_of_school_year_start?
@@ -145,26 +86,7 @@ class Week < ApplicationRecord
   }
 
   def self.current_year_start_week
-    Week.fetch_from(date: SchoolYear::Current.new.beginning_of_period)
-  end
-
-  def self.both_school_track_weeks
-    [
-      SchoolTrack::Troisieme.selectable_on_school_year_weeks,
-      SchoolTrack::Seconde.both_weeks
-    ].flatten
-  end
-
-  def self.both_school_track_selectable_weeks
-    selectable_from_now_until_end_of_school_year.where(id: both_school_track_weeks.map(&:id))
-  end
-
-  def self.troisieme_weeks
-    SchoolTrack::Troisieme.selectable_on_school_year_weeks
-  end
-
-  def self.troisieme_selectable_weeks
-    selectable_from_now_until_end_of_school_year.where(id: troisieme_weeks.map(&:id))
+    current_school_year.offers_beginning_of_period_week
   end
 
   def self.seconde_weeks
@@ -172,32 +94,25 @@ class Week < ApplicationRecord
   end
 
   def self.seconde_selectable_weeks
-    selectable_from_now_until_end_of_school_year.where(id: seconde_weeks.map(&:id))
+    seconde_weeks.in_the_future
   end
 
   WEEK_DATE_FORMAT = '%d/%m/%Y'
 
-  def self.current
-    fetch_from(date: Date.today)
-  end
-
-  def self.next
-    fetch_from(date: Date.today + 1.week)
-  end
-
   def ahead_of_school_year_start?
     return false if number > 50 && number < 2 # week 53 justifies this
 
-    week_date.beginning_of_week >= Date.new(year, 5, 31) &&
-      week_date.end_of_week < Date.new(year, 9, 1)
+    just_after_troisieme_end_of_period = first_monday_after(Date.new(year, SchoolYear::Base::MONTH_OF_3EME_YEAR_END,
+                                                                     SchoolYear::Base::FIRST)) - 1.week
+    school_year_start = last_friday_before(Date.new(year, SchoolYear::Base::SEPTEMBER,
+                                                    SchoolYear::Base::FIRST)) + 3.days
+
+    week_date.beginning_of_week >= just_after_troisieme_end_of_period &&
+      week_date.end_of_week < school_year_start
   end
 
   def in_the_past?
     week_date.end_of_week < Date.current
-  end
-
-  def <(other)
-    year < other.year || (year == other.year && number < other.number)
   end
 
   rails_admin do
@@ -205,9 +120,5 @@ class Week < ApplicationRecord
       field :number
       field :year
     end
-  end
-
-  def consecutive_to?(other_week)
-    id.to_i == other_week.id.to_i + 1
   end
 end
