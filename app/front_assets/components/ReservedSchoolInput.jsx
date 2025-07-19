@@ -13,17 +13,18 @@ export default function ReservedSchoolInput({
   required,
   resourceName,
   selectClassRoom,
-  existingSchool,
+  existingSchools,
   existingClassRoom,
 }) {
-  const [checked, setChecked] = useState(!!existingSchool);
-  const [schoolList, setSchoolList] = useState([]);
+  const [checked, setChecked] = useState(existingSchools.length > 0);
+  const [schoolList, setSchoolList] = useState(existingSchools || []);
   const [showSchoolAddingHint, setShowSchoolAddingHint] = useState(false);
 
   useEffect(() => {
     if (schoolList.length > 0) {
       setShowSchoolAddingHint(true);
     }
+
   }, [schoolList]);
 
   const toggleChange = () => {
@@ -62,15 +63,14 @@ export default function ReservedSchoolInput({
 
   return (
     <>
-      <input type='hidden'
-        name={`${resourceName}[school_ids]`}
-        value={schoolList.map(school => school.id).join(",")}
-      />
-      {/* <input type='text'
-        readOnly
-        name={`${resourceName}[school_ids]`}
-        value={schoolList.map(school => school.id).join(",")}
-      /> */}
+      {schoolList.map(school => (
+        <input
+          type='hidden'
+          name={`${resourceName}[school_ids][]`}
+          key={`school-id-${school.id}`}
+          value={school.id}
+        />
+      ))}
       <br/>
       <div className="fr-checkbox-group test-school-reserved">
         <input
@@ -107,7 +107,7 @@ export default function ReservedSchoolInput({
             required={required}
             resourceName={resourceName}
             selectClassRoom={selectClassRoom}
-            existingSchool={existingSchool}
+            existingSchools={existingSchools}
             existingClassRoom={existingClassRoom}
             addSchoolToSchoolList={addSchoolToSchoolList}
             showSchoolAddingHint={showSchoolAddingHint}

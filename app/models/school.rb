@@ -16,6 +16,8 @@ class School < ApplicationRecord
   has_many :dedicated_internship_offers, foreign_key: :school_id, dependent: :nullify, class_name: 'InternshipOffer'
   has_many :school_internship_weeks, dependent: :destroy
   has_many :weeks, through: :school_internship_weeks
+  has_many :reserved_schools
+  has_many :internship_offers, through: :reserved_schools
   belongs_to :department, optional: true
   has_one_attached :signature
 

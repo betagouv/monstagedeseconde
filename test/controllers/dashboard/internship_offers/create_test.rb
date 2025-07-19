@@ -13,7 +13,7 @@ module Dashboard::InternshipOffers
 
     test 'POST #create (duplicate) /InternshipOffers::WeeklyFramed as employer creates the post' do
       travel_to(Date.new(2024, 3, 1)) do
-        school = create(:school)
+        schools = [create(:school), create(:school)]
         employer = create(:employer)
         internship_offer = build(:weekly_internship_offer_3eme, employer:)
         sign_in(internship_offer.employer)
@@ -21,7 +21,7 @@ module Dashboard::InternshipOffers
                  .attributes
                  .merge('type' => InternshipOffers::WeeklyFramed.name,
                         'coordinates' => { latitude: 1, longitude: 1 },
-                        'school_id' => school.id,
+                        'school_ids' => schools.map(&:id),
                         'description' => '<div>description</div>',
                         'employer_description' => 'hop+employer_description',
                         'week_ids' => internship_offer.weeks.ids,
@@ -39,6 +39,9 @@ module Dashboard::InternshipOffers
         assert_equal employer, created_internship_offer.employer
         assert_equal params[:max_candidates], created_internship_offer.max_candidates
         assert_equal params[:max_candidates], created_internship_offer.remaining_seats_count
+        assert_equal params[:school_ids], created_internship_offer.schools.map(&:id)
+        assert_equal params[:week_ids], created_internship_offer.weeks.map(&:id)
+        assert_equal params[:grade_ids], created_internship_offer.grades.map(&:id)
         assert_redirected_to internship_offer_path(created_internship_offer, stepper: true)
       end
     end

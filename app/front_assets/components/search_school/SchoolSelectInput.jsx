@@ -5,7 +5,7 @@ function RenderSchoolSelectInput({
   setSelectedSchool,
   selectedSchool,
   schoolsInCitySuggestions,
-  existingSchool,
+  existingSchools,
   resourceName,
   classes,
   addSchoolToSchoolList,
@@ -22,6 +22,7 @@ function RenderSchoolSelectInput({
       {school.name}
     </option>
   );
+  const existingSchool = existingSchools.length === 0 ? undefined : existingSchools.slice(-1)[0];
 
   const selectSchool = (school_id) => {
     if (!school_id) {

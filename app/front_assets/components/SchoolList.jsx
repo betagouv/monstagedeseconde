@@ -6,7 +6,7 @@ export default function SchoolList({
   removeSchoolFromList
 }) {
   return(
-    <ul className='fr-badges-group fr-mb-2w'>
+    <ul className='fr-badges-group'>
       {schools.map(school => (
         <li key={`school-${school.id}`}>
           <div className='fr-badge fr-badge--info fr-badge--sm fr-badge--no-icon'>

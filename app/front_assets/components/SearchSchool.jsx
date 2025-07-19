@@ -10,13 +10,13 @@ import { endpoints } from '../utils/api';
 const StartAutocompleteAtLength = 2;
 
 export default function SearchSchool({
-  classes, // PropTypes.string
-  label, // PropTypes.string.isRequired
-  required, // PropTypes.bool.isRequired
-  resourceName, // PropTypes.string.isRequired
-  selectClassRoom, // PropTypes.bool.isRequired
-  existingSchool, // PropTypes.objectOf(SchoolPropType)
-  existingClassRoom, // PropTypes.objectOf(PropTypes.object)
+  classes,
+  label,
+  required,
+  resourceName,
+  selectClassRoom,
+  existingSchools,
+  existingClassRoom,
   addSchoolToSchoolList,
   showSchoolAddingHint
 }) {
@@ -43,8 +43,8 @@ export default function SearchSchool({
     if (city === null || city === undefined) {
       return '';
     }
-    return city.length === 0 && existingSchool
-      ? existingSchool.city
+    return city.length === 0 && existingSchools.length > 0
+      ? existingSchools.slice(-1)[0].city
       : city.replace(/<b>/g, '').replace(/<\/b>/g, '');
   };
 
@@ -116,7 +116,7 @@ export default function SearchSchool({
       addSchoolToSchoolList({ schoolId: selectedItem.id, schoolName: selectedItem.name });
       onResetSearch();
     }
-    
+
   };
 
   const inputChange = (event) => {
@@ -280,7 +280,6 @@ export default function SearchSchool({
                 )}
               </ul>
             </div>
-            
           </div>
         )}
       </Downshift>
@@ -310,7 +309,7 @@ export default function SearchSchool({
       {renderAutocompleteInput()}
       {(showSchoolAddingHint) && (
         <small className="text-muted">
-          Vous pouvez réserver ce stage à plusieurs établissements en recommançant une recherche.
+          Vous pouvez réserver ce stage à plusieurs établissements en recommençant une recherche.
         </small>
       )}
       {city !== null && (
@@ -321,13 +320,13 @@ export default function SearchSchool({
             setSelectedSchool={setSelectedSchool}
             schoolsInCitySuggestions={schoolsInCitySuggestions}
             resourceName={resourceName}
-            existingSchool={existingSchool}
+            existingSchools={existingSchools}
             classes={classes}
             addSchoolToSchoolList={addSchoolToSchoolList}
             onResetSearch={onResetSearch}
           />
-          
-          {/* {selectClassRoom && (
+
+          {selectClassRoom && (
             <ClassRoomInput
               selectedClassRoom={selectedClassRoom}
               classRoomsSuggestions={classRoomsSuggestions}
@@ -335,7 +334,7 @@ export default function SearchSchool({
               existingClassRoom={existingClassRoom}
               classes={classes}
             />
-          )} */}
+          )}
         </>
       )}
     </div>

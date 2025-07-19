@@ -1870,6 +1870,38 @@ ALTER SEQUENCE public.planning_grades_id_seq OWNED BY public.planning_grades.id;
 
 
 --
+-- Name: planning_reserved_schools; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.planning_reserved_schools (
+    id bigint NOT NULL,
+    planning_id bigint NOT NULL,
+    school_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: planning_reserved_schools_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.planning_reserved_schools_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: planning_reserved_schools_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.planning_reserved_schools_id_seq OWNED BY public.planning_reserved_schools.id;
+
+
+--
 -- Name: planning_weeks; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2906,6 +2938,13 @@ ALTER TABLE ONLY public.planning_grades ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
+-- Name: planning_reserved_schools id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_reserved_schools ALTER COLUMN id SET DEFAULT nextval('public.planning_reserved_schools_id_seq'::regclass);
+
+
+--
 -- Name: planning_weeks id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3372,6 +3411,14 @@ ALTER TABLE ONLY public.organisations
 
 ALTER TABLE ONLY public.planning_grades
     ADD CONSTRAINT planning_grades_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: planning_reserved_schools planning_reserved_schools_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_reserved_schools
+    ADD CONSTRAINT planning_reserved_schools_pkey PRIMARY KEY (id);
 
 
 --
@@ -4228,6 +4275,20 @@ CREATE INDEX index_planning_grades_on_planning_id ON public.planning_grades USIN
 
 
 --
+-- Name: index_planning_reserved_schools_on_planning_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_planning_reserved_schools_on_planning_id ON public.planning_reserved_schools USING btree (planning_id);
+
+
+--
+-- Name: index_planning_reserved_schools_on_school_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_planning_reserved_schools_on_school_id ON public.planning_reserved_schools USING btree (school_id);
+
+
+--
 -- Name: index_planning_weeks_on_planning_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4881,6 +4942,14 @@ ALTER TABLE ONLY public.entreprises
 
 
 --
+-- Name: planning_reserved_schools fk_rails_74c560c462; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_reserved_schools
+    ADD CONSTRAINT fk_rails_74c560c462 FOREIGN KEY (planning_id) REFERENCES public.plannings(id);
+
+
+--
 -- Name: internship_applications fk_rails_75752a1ac2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5086,6 +5155,14 @@ ALTER TABLE ONLY public.internship_offers
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT fk_rails_d5a5bff5c3 FOREIGN KEY (academy_region_id) REFERENCES public.academy_regions(id);
+
+
+--
+-- Name: planning_reserved_schools fk_rails_d6800a0532; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_reserved_schools
+    ADD CONSTRAINT fk_rails_d6800a0532 FOREIGN KEY (school_id) REFERENCES public.schools(id);
 
 
 --

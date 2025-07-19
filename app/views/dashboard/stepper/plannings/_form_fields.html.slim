@@ -88,13 +88,13 @@
                 quotidien atteint 4 heures 30, l’élève doit bénéficier
                 d’un temps de pause de 30 minutes consécutives minimum.
     .row.fr-mt-6w
-      .col-6
+      #reserved-school-component.col-6
         = react_component("ReservedSchoolInput",
-                          props: { label: "Saisissez la commune ou les noms des établissements pour lequel le stage est reservé",
+                          props: { label: "Saisissez la ou les communes ou noms des établissements pour lequel le stage est reservé",
                                    required: false,
                                    resourceName: form.object_name,
                                    selectClassRoom: false,
-                                   existingSchool: form.object&.school&.as_json})
+                                   existingSchools: form.object&.schools&.as_json})
     .row.fr-mt-6w
       .col-6
         .row

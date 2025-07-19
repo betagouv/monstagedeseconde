@@ -214,7 +214,6 @@ class IndexTest < ActionDispatch::IntegrationTest
       sign_in(student)
       get internship_offers_path, params: { format: :json }
       assert_response :success
-      # byebug
       assert_equal qpv_offer.id, json_response['internshipOffers'].first['id']
       assert_equal offer_1.id, json_response['internshipOffers'].second['id']
       assert_equal offer_2.id, json_response['internshipOffers'].third['id']

@@ -28,14 +28,11 @@ module InternshipOffers
     validate :schedules_check
 
     #---------------------
+    # mother comes from duplication
     has_one :mother,
             class_name: 'InternshipOffer',
             foreign_key: 'mother_id',
             dependent: :nullify
-    has_many :reserved_schools,
-             dependent: :destroy
-    has_many :schools,
-             through: :reserved_schools
     #---------------------
     # fullfilled scope isolates those offers that have reached max_candidates
     #---------------------

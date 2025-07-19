@@ -170,11 +170,11 @@ module Builders
         max_students_per_group: planning.max_candidates,
         weekly_hours: planning.weekly_hours,
         daily_hours: planning.daily_hours,
-        school_id: planning.school_id,
         employer_id: planning.employer_id,
         lunch_break: planning.lunch_break,
         weeks: planning.weeks,
         grades: planning.grades,
+        schools: planning.schools,
         rep: planning.rep,
         qpv: planning.qpv
       }
