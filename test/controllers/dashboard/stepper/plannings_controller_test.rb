@@ -15,6 +15,7 @@ module Dashboard::Stepper
       travel_to Date.new(2025, 1, 1) do
         employer = create(:employer)
         school = create(:school, city: 'Paris', zipcode: '75001')
+        schools=[school , create(:school, city: 'Cergy-Pontoise', zipcode: '95000')]
         internship_occupation = create(:internship_occupation, employer:)
         entreprise = create(:entreprise, internship_occupation:)
 
@@ -38,7 +39,7 @@ module Dashboard::Stepper
             'jeudi' => ['10:00', '15:00'],
             'vendredi' => ['11:00', '16:00']
           },
-          school_id: school.id,
+          school_ids: schools.map(&:id),
           rep: true,
           qpv: true
         }
@@ -51,8 +52,10 @@ module Dashboard::Stepper
             )
             internship_offer = InternshipOffer.last
             assert internship_offer.persisted?
+            assert_equal schools.map(&:id).sort, internship_offer.schools.map(&:id).sort
             assert_redirected_to internship_offer_path(internship_offer.id, origine: 'dashboard', stepper: true)
             assert_match(/Votre offre est publiée/, flash[:notice])
+
 
             planning = Planning.last
             assert_equal 1, planning.weeks_count
@@ -62,7 +65,7 @@ module Dashboard::Stepper
             assert_equal 1, planning.grades.count, 'should have 2 grades'
             assert_equal 1, planning.max_candidates / planning.max_students_per_group
             assert_equal week_ids, [planning.weeks.first.id]
-            assert_equal school.id, planning.school_id
+            assert_equal schools.map(&:id).sort, planning.schools.map(&:id).sort
             assert_equal '08:00', planning.daily_hours['lundi'].first
             assert_equal employer.id, planning.employer_id
             assert_equal SchoolTrack::Seconde.first_week.id, planning.weeks.first.id
@@ -72,6 +75,7 @@ module Dashboard::Stepper
         end
       end
     end
+
     test 'post a valid planning troisieme form' do
       skip 'leak suspicion'
       travel_to Date.new(2025, 1, 1) do

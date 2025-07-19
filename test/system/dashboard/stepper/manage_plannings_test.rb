@@ -7,6 +7,10 @@ class ManagePlanningsTest < ApplicationSystemTestCase
   include Devise::Test::IntegrationHelpers
   include PlanningFormFiller
 
+  setup do
+    2.times { create(:school, city: 'Paris', zipcode: '75012') }
+  end
+
   test 'can create a planning with grade troisieme / quatrieme only' do
     travel_to Date.new(2025, 1, 1) do
       entreprise = create(:entreprise, :private)
@@ -68,7 +72,8 @@ class ManagePlanningsTest < ApplicationSystemTestCase
 
       sign_in(employer)
       visit new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
-      fill_in_planning_form(with_troisieme: false, max_candidates: 1, first_week: true)
+      fill_in_planning_form(with_troisieme: false, max_candidates: 1, first_week: true,
+                            school_ids: School.all.first(2).pluck(:id))
       # TODO: schools management
       # execute_script('document.querySelector("input[name=\'is_reserved\']").click()')
       # fill_in "Commune ou nom de l'établissement pour lequel le stage est reservé",
@@ -131,7 +136,8 @@ class ManagePlanningsTest < ApplicationSystemTestCase
         with_seconde: true,
         max_candidates: 4,
         first_week: true,
-        all_year_long: true
+        all_year_long: true,
+        school_ids: School.all.first(2).pluck(:id)
       )
       # TODO: schools management
       # execute_script('document.querySelector("input[name=\'is_reserved\']").click()')
