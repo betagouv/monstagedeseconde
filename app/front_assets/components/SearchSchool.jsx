@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import $ from 'jquery';
-import { useDebounce } from 'use-debounce';
 import Downshift from 'downshift';
-import SchoolPropType from '../prop_types/school';
 import SchoolSelectInput from './search_school/SchoolSelectInput';
 import ClassRoomInput from './search_school/ClassRoomInput';
 import { endpoints } from '../utils/api';
@@ -113,7 +111,13 @@ export default function SearchSchool({
     setAutocompleteCitySuggestions({});
     setSearchSchoolsSuggestions([]);
     if((selectedItem.id != undefined) && (selectedItem.name != undefined )) {
-      addSchoolToSchoolList({ schoolId: selectedItem.id, schoolName: selectedItem.name });
+      addSchoolToSchoolList(
+        { schoolId: selectedItem.id,
+          schoolName: selectedItem.name,
+          schoolQpv: selectedItem.qpv,
+          schoolRepKind: selectedItem.rep_kind
+        },
+      );
       onResetSearch();
     }
 

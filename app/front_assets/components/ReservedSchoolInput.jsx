@@ -31,10 +31,10 @@ export default function ReservedSchoolInput({
     setChecked((prevChecked) => !prevChecked);
   };
 
-  const addSchoolToSchoolList = ({ schoolId, schoolName}) => {
+  const addSchoolToSchoolList = ({ schoolId, schoolName, schoolQpv=false, schoolRepKind=''}) => {
     // check for nulls or undefined values
     if (!schoolId || !schoolName) {
-      console.error("addSchoolToSchoolList called with invalid parameters", { schoolId, schoolName });
+      console.error("addSchoolToSchoolList called with invalid parameters", { schoolId, schoolName, schoolQpv, schoolRepKind});
       return;
     }
     // check for duplicates
@@ -44,7 +44,7 @@ export default function ReservedSchoolInput({
     }
     setSchoolList((prevList) => [
       ...prevList,
-      { name: schoolName, id: schoolId },
+      { name: schoolName, id: schoolId, qpv: schoolQpv, rep_kind: schoolRepKind },
     ]);
   };
 

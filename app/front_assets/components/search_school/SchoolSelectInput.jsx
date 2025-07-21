@@ -35,7 +35,12 @@ function RenderSchoolSelectInput({
     );
     // setSelectedSchool(school);
     setClassRoomsSuggestions(school.class_rooms);
-    addSchoolToSchoolList({ schoolId: school_id, schoolName: school.name });
+    addSchoolToSchoolList({
+      schoolId: school_id,
+      schoolName: school.name,
+      schoolQpv: school.qpv,
+      schoolRepKind: school.rep_kind
+    });
     onResetSearch();
   };
 
@@ -43,7 +48,6 @@ function RenderSchoolSelectInput({
   return (
     <div className={`${isWaitingCitySelection ? "opacity-05" : ""}`}>
       {isWaitingCitySelection && (
-        
         <div className="fr-mt-2w">
           <label className="fr-label" htmlFor={`${resourceName}_school_name`}>
             Établissement
