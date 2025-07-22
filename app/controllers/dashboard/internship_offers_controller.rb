@@ -8,6 +8,8 @@ module Dashboard
 
     helper_method :order_direction
 
+    DEFAULT_RADIUS_TO_SCHOOLS_IN_KM = 60
+
     def index
       @internship_offer_areas = current_user.internship_offer_areas if current_user.employer_like?
       authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
@@ -76,6 +78,15 @@ module Dashboard
       authorize! :update, @internship_offer
       @available_weeks = Week.selectable_from_now_until_next_school_year # Week.both_school_track_selectable_weeks TODO: remove this in july 2025
       set_internship_offer_attributes(@internship_offer)
+      @school_weeks = {}
+      if @internship_offer.internship_occupation.present?
+        location_and_radius = {
+          latitude: @internship_offer.internship_occupation.coordinates.latitude,
+          longitude: @internship_offer.internship_occupation.coordinates.longitude,
+          radius: DEFAULT_RADIUS_TO_SCHOOLS_IN_KM * 1_000
+        }
+        @school_weeks = School.nearby_school_weeks(**location_and_radius)
+      end
       @republish = true
       @duplication = false
     end
