@@ -77,16 +77,18 @@
               | Admin
 
       - else
-        li
-          - active = current_page?(internship_offers_path) && !request.url.include?('origine=dashboard') ? 'active' : ''
-          / = link_to 'Recherche',
-          /           user_presenter.default_internship_offers_path,
-          /           class: "fr-link text-decoration-none mr-4 #{active}"
-        li
-          = link_to 'Connexion',
-                    users_choose_connection_path,
-                    class: "fr-link fr-icon-account-line text-decoration-none #{current_controller?(:sessions) ? 'active' : ''}"
-        li
-          = link_to 'Inscription',
-                new_user_registration_path,
-                class: "fr-link fr-icon-user-add-line text-decoration-none href#{current_controller?(:registrations) ? 'active' : ''}"
+      li.dropdown.position-relative data-controller="dropdown"
+        button.fr-link.d-flex.align-items-center.gap-2 type="button" aria-haspopup="true" aria-expanded="false" data-action="click->dropdown#toggle"
+          i.fr-icon-account-line.me-2.fr-mr-1w
+          | Mon espace
+          i.fr-icon-arrow-down-s-line.ms-1
+        ul.dropdown-menu.shadow.rounded-3.mt-0.position-absolute.start-0 data-dropdown-target="menu" style="display: none; min-width: 220px;"
+            li
+              = link_to 'Je suis un élève', eleves_path, class: 'dropdown-item d-flex align-items-center gap-2'
+            li
+              = link_to 'Je suis un offreur', professionnels_path, class: 'dropdown-item d-flex align-items-center gap-2'
+            li
+              = link_to 'Je suis un établissement', equipe_pedagogique_path, class: 'dropdown-item d-flex align-items-center gap-2'
+            li
+              = link_to 'Je suis un référent', referents_path, class: 'dropdown-item d-flex align-items-center gap-2'
+          

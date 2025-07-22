@@ -1,0 +1,14 @@
+/ Breadcrumb
+.fr-pt-2w
+  = render 'layouts/breadcrumb', links: [['professionels_path', 'Professionnels'], ['', 'Mon espace référent']]
+
+h1.h2.fr-mb-2w Mon espace référent
+
+.row.position-relative.align-items-start.fr-mb-4w.border-bottom
+  .col-md-8.d-flex.flex-column
+    p.fr-mb-4w
+      | Un compte unique et sécurisé pour accéder aux statistiques et à vos outils de pilotage de votre académie ou de votre administration centrale.
+    .fr-pb-4w
+      = link_to 'Connexion', new_user_session_path(as: 'Statistician'), class: 'fr-btn fr-mr-2w'
+      = link_to 'Créer un compte', new_user_registration_path(as: 'Statistician'), class: 'fr-btn fr-btn--secondary'
+

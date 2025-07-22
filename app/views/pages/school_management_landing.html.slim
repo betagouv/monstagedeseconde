@@ -2,8 +2,12 @@
   = render 'layouts/navbar', home_nav_bar: true
 .fr-container
   = render 'pages/home/top_nav'
-.container-monstage-fluid-hero.mx-0.education-hero
+/ .container-monstage-fluid-hero.mx-0.education-hero
   = render 'pages/home/school_management/hero'
+.divider-full-width
+.container-homepage
+  .container-monstage
+    = render 'pages/home/school_management/login'
 .container-homepage
   .container-monstage
     = render 'pages/home/school_management/howitworks'

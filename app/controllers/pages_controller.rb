@@ -42,6 +42,7 @@ class PagesController < ApplicationController
     @seconde_week_ids = Week.seconde_weeks.map(&:id)
     @troisieme_week_ids = Week.troisieme_selectable_weeks.map(&:id)
     @student_grade_id = current_user&.student? ? current_user.grade_id : nil
+    @educonnect_url = build_educonnect_url
     if employers_only?
       redirect_to root_path
     else
@@ -62,6 +63,7 @@ class PagesController < ApplicationController
       @faqs = get_faqs('education')
       @resources = get_resources('education')
       @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+      @fim_url = build_fim_url
     end
   end
 
@@ -268,5 +270,42 @@ class PagesController < ApplicationController
     # end
 
     # grouped_by_school
+  end
+
+  def build_educonnect_url
+    oauth_params = {
+      redirect_uri: ENV['EDUCONNECT_REDIRECT_URI'],
+      client_id: ENV['EDUCONNECT_CLIENT_ID'],
+      scope: 'openid profile ect.scope.cnx ect.scope.stage',
+      response_type: 'code',
+      state: @state,
+      nonce: SecureRandom.uuid,
+      acr_values: 'eleve'
+    }
+
+    cookies[:state] = oauth_params[:state]
+
+    ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
+  end
+
+  def build_fim_url
+    oauth_params = {
+      redirect_uri: ENV['FIM_REDIRECT_URI'],
+      client_id: ENV['FIM_CLIENT_ID'],
+      scope: 'openid profile email stage',
+      response_type: 'code',
+      state: SecureRandom.uuid,
+      nonce: SecureRandom.uuid
+    }
+
+    cookies[:state] = oauth_params[:state]
+
+    ENV['FIM_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
+  end
+
+  def generate_state
+    state = SecureRandom.uuid
+    cookies[:state] = state
+    state
   end
 end
