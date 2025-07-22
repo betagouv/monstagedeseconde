@@ -36,7 +36,7 @@ function GradeInput({
         onChange={onGradeIdChange}
       >
         {!studentGradeId && (
-          <option value="">Choisissez une classe</option>
+          <option value="">Toutes les classes</option>
         )}
         {filteredOptions.map(option => (
           <option key={option.value} value={option.value}>{option.label}</option>
