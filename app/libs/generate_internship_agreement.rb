@@ -265,6 +265,10 @@ class GenerateInternshipAgreement < Prawn::Document
     paraphing_bold("Dates de la séquence d'observation en milieu professionnel :")
     @pdf.move_up 10
     paraphing("La séquence d'observation en milieu professionnel se déroule #{@internship_agreement.date_range.downcase} inclus.")
+    @pdf.move_down 10
+    paraphing_bold("Lieu de la séquence d'observation en milieu professionnel :")
+    @pdf.move_up 10
+    paraphing("La séquence d'observation en milieu professionnel se déroule à l'adresse suivante : #{@internship_agreement.internship_address}.")
 
     # paraphing("Lieu de la séquence d'observation en milieu professionnel :")
     # paraphing(@internship_agreement.internship_address)
