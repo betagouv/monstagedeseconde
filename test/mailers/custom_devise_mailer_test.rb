@@ -4,12 +4,11 @@ class CustomDeviseMailerTest < ActionMailer::TestCase
   include EmailSpamEuristicsAssertions
 
   test '.confirmation_instructions attaches authorisation-parentale.pdf' \
-       ' for students & main_teachers' do
+       ' for students & teachers' do
     school = create(:school)
     school_manager = create(:school_manager, school: school)
     roles = [create(:employer),
              create(:god),
-             create(:main_teacher, school: school),
              create(:user_operator),
              create(:other, school: school),
              create(:statistician),

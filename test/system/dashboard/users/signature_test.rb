@@ -377,13 +377,13 @@ module Dashboard
       assert_equal 2, Signature.count
     end
 
-    test 'main_teacher signs when school signature formerly exists and employer has signed already' do
+    test 'teacher signs when school signature formerly exists and employer has signed already' do
       internship_agreement = create(:internship_agreement, :signatures_started)
       create(:signature, :employer, internship_agreement:)
       school = internship_agreement.school
       class_room = internship_agreement.student.class_room
-      main_teacher = create(:main_teacher, school:, class_room:)
-      sign_in(main_teacher)
+      teacher = create(:teacher, school:, class_room:)
+      sign_in(teacher)
 
       visit dashboard_internship_agreements_path
       click_button('Ajouter aux signatures')
@@ -393,12 +393,12 @@ module Dashboard
       assert_equal 2, Signature.count
     end
 
-    test 'main_teacher signs when school signature formerly exists and employer has NOT signed already' do
+    test 'teacher signs when school signature formerly exists and employer has NOT signed already' do
       internship_agreement = create(:internship_agreement, :validated)
       school = internship_agreement.school
       class_room = internship_agreement.student.class_room
-      main_teacher = create(:main_teacher, school:, class_room:)
-      sign_in(main_teacher)
+      teacher = create(:teacher, school:, class_room:)
+      sign_in(teacher)
 
       visit dashboard_internship_agreements_path
       click_button('Ajouter aux signatures')

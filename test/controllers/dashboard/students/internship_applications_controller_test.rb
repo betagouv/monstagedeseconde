@@ -53,9 +53,9 @@ module Dashboard
         school = create(:school, :with_school_manager)
         class_room = create(:class_room, school:)
         student = create(:student, school:, class_room:)
-        main_teacher = create(:main_teacher, school:, class_room:)
+        teacher = create(:teacher, school:, class_room:)
         internship_application = create(:weekly_internship_application, :approved, student:)
-        sign_in(main_teacher)
+        sign_in(teacher)
         get dashboard_students_internship_applications_path(student)
         assert_response :success
         assert_select 'a[href=?]',

@@ -6,7 +6,6 @@ class Invitation < ApplicationRecord
 
   enum role: {
     teacher: 'Professeur',
-    main_teacher: 'Professeur principal',
     other: 'Autre',
     cpe: 'CPE',
     admin_officer: 'Responsable administratif'
