@@ -109,4 +109,17 @@ class GodMailer < ApplicationMailer
     @magic_link = magic_link_url(token: token)
     send_email(to: @user.email, subject: 'Votre lien de connexion sécurisé')
   end
+
+  def export_offers_department(department_code:, offers_count:, csv_data:, filename:)
+    @department_code = department_code
+    @offers_count = offers_count
+    @filename = filename
+
+    attachments[filename] = { mime_type: 'text/csv', content: csv_data }
+
+    mail(
+      to: ENV['TEAM_EMAIL'],
+      subject: "Export offres préfixe postal #{department_code} - #{Date.current.strftime('%d/%m/%Y')}"
+    )
+  end
 end
