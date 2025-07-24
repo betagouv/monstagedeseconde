@@ -1,23 +1,15 @@
-.container-homepage
-  = render 'layouts/navbar', home_nav_bar: true
 .fr-container.top-nav-container
   = render 'pages/home/top_nav'
 .divider-full-width
-.container-monstage-fluid-hero.student-hero
-  .mx-0
-    = render 'pages/home/students/hero_student'
-.container-homepage
+.container-homepage.fr-px-2w
   .container-monstage
-    = render 'pages/home/students/howitworks'
+    = render 'pages/home/students/login'
 .container-homepage.fr-px-2w
   .container-monstage
     = render 'pages/home/everyone/usefull_resources'
 .container-home
   .container-monstage
     = render 'pages/home/students/faq'
-.container-homepage.fr-py-4w.border-top
-  .container-monstage
-    = render 'pages/home/everyone/become_partner'
 .container-monstage.homepage
   .d-none.d-md-block
     = render 'pages/home/elevator'

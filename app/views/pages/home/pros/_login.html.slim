@@ -4,7 +4,7 @@
 
 h1.h2.mb-2 Mon espace professionnel
 
-.row.position-relative.align-items-start.mb-4.border-bottom
+.row.position-relative.align-items-start.fr-mb-4w.fr-pb-4w.border-bottom
   .col-md-6.d-flex.flex-column
     p.mb-4
       | Un compte unique et sécurisé pour déposer et gérer vos offres de stage, suivre vos candidatures et signer à vos conventions.
@@ -12,14 +12,14 @@ h1.h2.mb-2 Mon espace professionnel
       = link_to 'Connexion', new_user_session_path(as: 'Employer'), class: 'fr-btn fr-mr-2w'
       = link_to 'Créer un compte', new_user_registration_path(as: 'Employer'), class: 'fr-btn fr-btn--secondary'
 
-  .d-none.d-md-block
-    .vertical-separator
-    .ou-separator.fr-mt-2w OU
+  / .d-none.d-md-block
+  /   .vertical-separator
+  /   .ou-separator.fr-mt-2w OU
 
-  .col-md-6.d-flex.flex-column.align-items-md-start.align-items-center.fr-pl-4w
-    p.mb-2.text-md-start
-      | Connectez-vous avec 
-      strong ProConnect
-      |  et accédez à votre espace avec votre identité professionnelle sécurisée.
-    .fr-my-3w
-      = dsfr_proconnect_button(target: "#")
+  / .col-md-6.d-flex.flex-column.align-items-md-start.align-items-center.fr-pl-4w
+  /   p.mb-2.text-md-start
+  /     | Connectez-vous avec 
+  /     strong ProConnect
+  /     |  et accédez à votre espace avec votre identité professionnelle sécurisée.
+  /   .fr-my-3w
+  /     = dsfr_proconnect_button(target: "#")
