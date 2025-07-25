@@ -177,8 +177,8 @@ module ApplicationHelper
           current_list_ordered = nil
         end
 
-        # Ajouter le paragraphe (sauf s'il est vide)
-        html_parts << "<p>#{block.text}</p>" unless block.text.blank?
+        # Ajouter le paragraphe avec traitement des spans (liens)
+        html_parts << "<p>#{process_text_with_spans(block.text, block.spans)}</p>" unless block.text.blank?
 
       when Prismic::Fragments::StructuredText::Block::ListItem
         # Démarrer une nouvelle liste ou continuer la liste en cours
@@ -191,7 +191,9 @@ module ApplicationHelper
           current_list_ordered = block.ordered
         end
 
-        current_list_items << block.text unless block.text.blank?
+        # Traiter le texte avec les spans (liens) pour les éléments de liste
+        processed_text = process_text_with_spans(block.text, block.spans)
+        current_list_items << processed_text unless block.text.blank?
       end
     end
 
@@ -202,6 +204,59 @@ module ApplicationHelper
   end
 
   private
+
+  def process_text_with_spans(text, spans)
+    return text if spans.blank?
+
+    # Trier les spans par position de début
+    sorted_spans = spans.sort_by(&:start)
+
+    # Construire le HTML avec les liens
+    result = ''
+    last_end = 0
+
+    sorted_spans.each do |span|
+      # Ajouter le texte avant le span
+      result += text[last_end...span.start] if span.start > last_end
+
+      # Traiter le span selon son type
+      case span
+      when Prismic::Fragments::StructuredText::Span::Hyperlink
+        link_text = text[span.start...span.end]
+        link_attributes = build_link_attributes(span.link)
+        result += "<a #{link_attributes}>#{link_text}</a>"
+      else
+        # Pour les autres types de spans, ajouter le texte tel quel
+        result += text[span.start...span.end]
+      end
+
+      last_end = span.end
+    end
+
+    # Ajouter le texte restant après le dernier span
+    result += text[last_end..-1] if last_end < text.length
+
+    result
+  end
+
+  def build_link_attributes(link)
+    attributes = []
+
+    case link
+    when Prismic::Fragments::WebLink
+      # S'assurer que l'URL est correctement échappée
+      safe_url = h(link.url.to_s)
+      attributes << "href=\"#{safe_url}\""
+      attributes << "target=\"#{link.target}\"" if link.target.present?
+      attributes << 'rel="noopener noreferrer"' if link.target == '_blank'
+    when Prismic::Fragments::DocumentLink
+      # Pour les liens internes vers d'autres documents Prismic
+      safe_url = h(link.url.to_s)
+      attributes << "href=\"#{safe_url}\""
+    end
+
+    attributes.join(' ')
+  end
 
   def build_list_html(list_items, ordered)
     return '' if list_items.empty?
