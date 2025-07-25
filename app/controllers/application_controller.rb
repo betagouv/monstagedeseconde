@@ -17,6 +17,7 @@ class ApplicationController < ActionController::Base
   before_action :employers_only_redirect
   before_action :throttle_ip_requests
   before_action :store_user_type_before_logout
+  before_action :get_banner_message
 
   # TODO: Remove following line
   default_form_builder Rg2aFormBuilder
@@ -105,6 +106,16 @@ class ApplicationController < ActionController::Base
     Rails.logger.error("#{controller.class.name} error: #{object.errors.full_messages.join(', ')}")
   end
 
+  def get_banner_message
+    if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
+      @banner_message = nil
+    else
+      api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
+      response = api.query([Prismic::Predicates.at('document.type', 'top_banner')])
+      @banner_message = response.results.first
+    end
+  end
+
   private
 
   def check_school_requested
@@ -144,5 +155,14 @@ class ApplicationController < ActionController::Base
                             'other'
                           end
     Rails.logger.info("User type stored before logout: #{cookies[:user_type]}")
+  end
+
+  def build_list_html(list_items, ordered)
+    return '' if list_items.empty?
+
+    tag = ordered ? 'ol' : 'ul'
+    items_html = list_items.map { |item| "<li>#{item}</li>" }.join("\n")
+
+    "<#{tag}>\n#{items_html}\n</#{tag}>"
   end
 end
