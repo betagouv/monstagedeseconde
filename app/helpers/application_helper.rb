@@ -159,4 +159,56 @@ module ApplicationHelper
       end
     end
   end
+
+  def prismic_structured_text_to_html(prismic_fragment)
+    return '' if prismic_fragment.blank? || prismic_fragment.blocks.blank?
+
+    html_parts = []
+    current_list_items = []
+    current_list_ordered = nil
+
+    prismic_fragment.blocks.each do |block|
+      case block
+      when Prismic::Fragments::StructuredText::Block::Paragraph
+        # Fermer la liste en cours si elle existe
+        if current_list_items.any?
+          html_parts << build_list_html(current_list_items, current_list_ordered)
+          current_list_items = []
+          current_list_ordered = nil
+        end
+
+        # Ajouter le paragraphe (sauf s'il est vide)
+        html_parts << "<p>#{block.text}</p>" unless block.text.blank?
+
+      when Prismic::Fragments::StructuredText::Block::ListItem
+        # Démarrer une nouvelle liste ou continuer la liste en cours
+        if current_list_items.empty?
+          current_list_ordered = block.ordered
+        elsif current_list_ordered != block.ordered
+          # Si le type de liste change, fermer la précédente et en démarrer une nouvelle
+          html_parts << build_list_html(current_list_items, current_list_ordered)
+          current_list_items = []
+          current_list_ordered = block.ordered
+        end
+
+        current_list_items << block.text unless block.text.blank?
+      end
+    end
+
+    # Fermer la dernière liste si elle existe
+    html_parts << build_list_html(current_list_items, current_list_ordered) if current_list_items.any?
+
+    html_parts.join("\n").html_safe
+  end
+
+  private
+
+  def build_list_html(list_items, ordered)
+    return '' if list_items.empty?
+
+    tag = ordered ? 'ol' : 'ul'
+    items_html = list_items.map { |item| "<li>#{item}</li>" }.join("\n")
+
+    "<#{tag}>\n#{items_html}\n</#{tag}>"
+  end
 end
