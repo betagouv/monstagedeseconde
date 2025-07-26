@@ -46,7 +46,7 @@ module StepperProxy
       end
 
       def all_year_long?
-        all_troisieme_weeks = SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
+        all_troisieme_weeks = Week.selectable_from_now_until_next_school_year # TODO: remove un july 2025 SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
         offer_week_list = weeks & SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
         return true if all_troisieme_weeks.empty?
 
