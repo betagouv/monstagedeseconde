@@ -52,7 +52,7 @@
 
 .dropdown-item {
   color: #000091 !important;
-  padding: 0.75rem 1rem;
+  padding: 12px 16px;
   background: transparent;
   border: none;
   display: flex;
@@ -123,4 +123,9 @@
 
 .no-border-bottom {
   border-bottom: none !important;
+}
+
+
+.new-fr-hr {
+  border-top: 1px solid #dee2e6 !important;
 }

@@ -2,15 +2,16 @@
 .fr-pt-2w
   = render 'layouts/breadcrumb', links: [['professionels_path', 'Professionnels'], ['', 'Mon espace professionnel']]
 
-h1.h2.mb-2 Mon espace professionnel
+.fr-login_block
+  h2.fr-h2.mb-2 Mon espace professionnel
 
-.row.position-relative.align-items-start.fr-mb-4w.fr-pb-4w.border-bottom
-  .col-md-6.d-flex.flex-column
-    p.mb-4
-      | Un compte unique et sécurisé pour déposer et gérer vos offres de stage, suivre vos candidatures et signer à vos conventions.
-    .mb-2
-      = link_to 'Connexion', new_user_session_path(as: 'Employer'), class: 'fr-btn fr-mr-2w'
-      = link_to 'Créer un compte', new_user_registration_path(as: 'Employer'), class: 'fr-btn fr-btn--secondary'
+  .row.position-relative.align-items-start
+    .col-md-6.d-flex.flex-column
+      p.mb-4
+        | Un compte unique et sécurisé pour déposer et gérer vos offres de stage, suivre vos candidatures et signer à vos conventions.
+      .mb-2
+        = link_to 'Connexion', new_user_session_path(as: 'Employer'), class: 'fr-btn fr-mr-2w'
+        = link_to 'Créer un compte', new_user_registration_path(as: 'Employer'), class: 'fr-btn fr-btn--secondary'
 
   / .d-none.d-md-block
   /   .vertical-separator
@@ -23,3 +24,5 @@ h1.h2.mb-2 Mon espace professionnel
   /     |  et accédez à votre espace avec votre identité professionnelle sécurisée.
   /   .fr-my-3w
   /     = dsfr_proconnect_button(target: "#")
+
+.new-fr-hr.fr-mt-4w.fr-mb-4w

@@ -11,12 +11,10 @@
           li
             = link_to 'Admin', current_user.custom_dashboard_path, class: "fr-link text-decoration-none mr-4"
           li.dropdown.position-relative data-controller="dropdown"
-            button.fr-link.d-flex.align-items-center.gap-2 type="button" aria-haspopup="true" aria-expanded="false" data-action="click->dropdown#toggle"
-              i.fr-icon-account-line.me-2.fr-mr-1w
+            = link_to '#', class: 'fr-btn fr-btn--secondary fr-icon-account-line fr-btn--icon-left', aria_haspopup: 'true', aria_expanded: 'false', data: { action: 'click->dropdown#toggle' } do
               | Mon espace
-              i.fr-icon-arrow-down-s-line.ms-1
             ul.dropdown-menu.shadow.rounded-3.mt-0.position-absolute.start-0 data-dropdown-target="menu" style="display: none; min-width: 280px;"
-              li.fr-px-3w
+              li.fr-px-2w.fr-py-2w
                 .fw-bold = current_user.presenter.full_name
                 .text-muted.small = current_user.email
               li.no-border-bottom
@@ -31,19 +29,17 @@
           li
             = link_to 'Candidatures', dashboard_students_internship_applications_path(student_id: current_user.id), class: 'fr-link text-decoration-none mr-4'
           li.dropdown.position-relative data-controller="dropdown"
-            button.fr-link.d-flex.align-items-center.gap-2 type="button" aria-haspopup="true" aria-expanded="false" data-action="click->dropdown#toggle"
-              i.fr-icon-account-line.me-2.fr-mr-1w
+            = link_to '#', class: 'fr-btn fr-btn--secondary fr-icon-account-line fr-btn--icon-left', aria_haspopup: 'true', aria_expanded: 'false', data: { action: 'click->dropdown#toggle' } do
               | Mon espace
-              i.fr-icon-arrow-down-s-line.ms-1
             ul.dropdown-menu.shadow.rounded-3.mt-0.position-absolute.start-0 data-dropdown-target="menu" style="display: none; min-width: 280px;"
-              li.fr-px-3w
+              li.fr-px-2w.fr-py-2w
                 .fw-bold = current_user.presenter.name
                 .text-muted.small = current_user.email
               li
                 = link_to 'Favoris', favorites_path, class: 'dropdown-item d-flex align-items-center'
               li.no-border-bottom
                 = link_to 'Mon profil', account_path, class: 'dropdown-item d-flex align-items-center'
-              li.text-center.fr-px-2w.fr-mt-1w
+              li.text-center.fr-px-2w.fr-mt-2w
                 = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--secondary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
          
         
@@ -54,17 +50,15 @@
           li
             = link_to 'Candidatures', dashboard_internship_agreements_path, class: 'fr-link text-decoration-none mr-4'
           li.dropdown.position-relative data-controller="dropdown"
-            button.fr-link.d-flex.align-items-center.gap-2 type="button" aria-haspopup="true" aria-expanded="false" data-action="click->dropdown#toggle"
-              i.fr-icon-account-line.me-2.fr-mr-1w
+            = link_to '#', class: 'fr-btn fr-btn--secondary fr-icon-account-line fr-btn--icon-left', aria_haspopup: 'true', aria_expanded: 'false', data: { action: 'click->dropdown#toggle' } do
               | Mon espace
-              i.fr-icon-arrow-down-s-line.ms-1
             ul.dropdown-menu.shadow.rounded-3.mt-0.position-absolute.start-0 data-dropdown-target="menu" style="display: none; min-width: 280px;"
-              li.fr-px-3w
+              li.fr-px-2w.fr-py-2w
                 .fw-bold = current_user.presenter.full_name
                 .text-muted.small = current_user.email
               li.no-border-bottom
                 = link_to 'Mon profil', account_path, class: "dropdown-item d-flex align-items-center"
-              li.text-center.fr-px-2w.fr-mt-1w
+              li.text-center.fr-px-2w.fr-mt-2w
                 = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--secondary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
         
         / Statistician
@@ -74,17 +68,15 @@
           li
             = link_to 'Mes offres', dashboard_internship_offers_path, class: 'fr-link text-decoration-none mr-4'
           li.dropdown.position-relative data-controller="dropdown"
-            button.fr-link.d-flex.align-items-center.gap-2 type="button" aria-haspopup="true" aria-expanded="false" data-action="click->dropdown#toggle"
-              i.fr-icon-account-line.me-2.fr-mr-1w
+            = link_to '#', class: 'fr-btn fr-btn--secondary fr-icon-account-line fr-btn--icon-left', aria_haspopup: 'true', aria_expanded: 'false', data: { action: 'click->dropdown#toggle' } do
               | Mon espace
-              i.fr-icon-arrow-down-s-line.ms-1
             ul.dropdown-menu.shadow.rounded-3.mt-0.position-absolute.start-0 data-dropdown-target="menu" style="display: none; min-width: 280px;"
-              li.fr-px-3w
+              li.fr-px-2w.fr-py-2w
                 .fw-bold = current_user.presenter.full_name
                 .text-muted.small = current_user.email
               li.no-border-bottom
                 = link_to 'Mon profil', account_path, class: "dropdown-item d-flex align-items-center"
-              li.text-center.fr-px-2w.fr-mt-1w
+              li.text-center.fr-px-2w.fr-mt-2w
                 = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--secondary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
         
         / Employer
@@ -97,12 +89,10 @@
           li
             = link_to 'Candidatures', dashboard_candidatures_path, class: 'fr-link text-decoration-none mr-4'
           li.dropdown.position-relative data-controller="dropdown"
-            button.fr-link.d-flex.align-items-center.gap-2 type="button" aria-haspopup="true" aria-expanded="false" data-action="click->dropdown#toggle"
-              i.fr-icon-account-line.me-2.fr-mr-1w
+            = link_to '#', class: 'fr-btn fr-btn--secondary fr-icon-account-line fr-btn--icon-left', aria_haspopup: 'true', aria_expanded: 'false', data: { action: 'click->dropdown#toggle' } do
               | Mon espace
-              i.fr-icon-arrow-down-s-line.ms-1
             ul.dropdown-menu.shadow.rounded-3.mt-0.position-absolute.start-0 data-dropdown-target="menu" style="display: none; min-width: 280px;"
-              li.fr-px-3w
+              li.fr-px-2w.fr-py-2w
                 .fw-bold = current_user.presenter.full_name
                 .text-muted.small = current_user.email
               li
@@ -111,15 +101,13 @@
                 = link_to 'Equipe', dashboard_team_member_invitations_path, class: "dropdown-item d-flex align-items-center"
               li.no-border-bottom
                 = link_to 'Mon profil', account_path, class: "dropdown-item d-flex align-items-center"
-              li.text-center.fr-px-2w.fr-mt-1w
+              li.text-center.fr-px-2w.fr-mt-2w
                 = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--secondary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
 
       - else
         li.dropdown.position-relative data-controller="dropdown"
-          button.fr-link.d-flex.align-items-center.gap-2 type="button" aria-haspopup="true" aria-expanded="false" data-action="click->dropdown#toggle"
-            i.fr-icon-account-line.me-2.fr-mr-1w
+          = link_to '#', class: 'fr-btn fr-btn--secondary fr-icon-account-line fr-btn--icon-left', aria_haspopup: 'true', aria_expanded: 'false', data: { action: 'click->dropdown#toggle' } do
             | Mon espace
-            i.fr-icon-arrow-down-s-line.ms-1
           ul.dropdown-menu.shadow.rounded-3.mt-0.position-absolute.start-0 data-dropdown-target="menu" style="display: none; min-width: 220px;"
               li
                 = link_to 'Je suis un élève', student_login_path, class: 'dropdown-item d-flex align-items-center gap-2'
