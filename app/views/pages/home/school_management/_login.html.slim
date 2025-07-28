@@ -1,0 +1,23 @@
+/ Breadcrumb
+.fr-pt-2w
+  = render 'layouts/breadcrumb', links: [['school_management_path', 'Equipes pédagogiques'], ['', 'Mon espace établissement']]
+
+.fr-login_block
+  / Titre principal
+  h2.fr-h2.mb-2 Mon espace établissement
+
+  .row.position-relative.align-items-start
+    .col-md-8.d-flex.flex-column
+      p.mb-4
+        | Un compte unique et sécurisé pour accompagner vos élèves dans leurs rechercheset au long de cette première immersion dans le monde professionnel.
+      .mb-2
+        = link_to 'Connexion via le Hub de fedération MENJS', @fim_url, class: 'fr-btn fr-mr-2w'
+        
+      / alert info
+      .fr-alert.fr-alert--info.fr-mt-3w
+        p
+          | Vous êtes un établissement et vous souhaitez proposer des offres de stage ? 
+          = link_to 'En tant qu’offreur ', professionnels_path, class: 'fr-link'
+          |> en utilisant une autre adresse email.
+
+.new-fr-hr.fr-mt-4w.fr-mb-4w

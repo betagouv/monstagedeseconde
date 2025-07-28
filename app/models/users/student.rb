@@ -179,7 +179,7 @@ module Users
     end
 
     def compute_weeks_lists
-      school_weeks_list = school&.weeks || Week.both_school_track_selectable_weeks
+      school_weeks_list = school&.weeks.presence || Week.both_school_track_selectable_weeks
       preselected_weeks_list = school_weeks_list.in_the_future
       [school_weeks_list, preselected_weeks_list]
     end

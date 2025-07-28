@@ -1,0 +1,24 @@
+.fr-pt-2w
+  = render 'layouts/breadcrumb', links: [['eleves_path', 'Élèves'], ['', 'Mon espace élève'] ]
+
+.fr-login_block
+  p.fr-badge.fr-badge--info
+    | Élèves de 4e, 3e et 2de générale et technologique
+
+  h2.fr-h2.mb-2
+    | Mon espace élève
+
+  p.mb-4
+    | Un compte unique pour postuler aux offres de stage, suivre vos candidatures et accéder à vos conventions.
+    br
+    | Connectez-vous avec 
+    strong ÉduConnect
+    | , et accédez à votre espace sur 1élève1stage.
+
+  div.d-flex.align-items-center.gap-4.fr-mt-4w
+    = link_to 'Connexion avec ÉduConnect', @educonnect_url, class: 'fr-btn fr-btn--primary fr-mr-2w', style: 'min-width: 260px;'
+    = link_to ENV['EDUCONNECT_HELP_URL'], class: 'fr-link fr-icon-question-line ms-3 fr-raw-link', style: 'color: #000091; font-weight: 500;' do 
+      span.fr-icon-question-line.fr-mr-1w
+      | Je ne parviens pas à me connecter
+
+.new-fr-hr.fr-mt-4w.fr-mb-4w
