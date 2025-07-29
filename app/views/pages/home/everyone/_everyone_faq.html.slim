@@ -4,12 +4,11 @@
   .row.fr-py-3w
     - @faqs.each do |faq|
       .col-md-4.col-12-xs.d-flex.align-items-stretch.fr-mb-2w
-
-        .fr-tile.fr-tile--horizontal.fr-enlarge-link
-          .fr-tile__body
-            .fr-tile__content
+        .fr-tile.fr-tile--horizontal.fr-enlarge-link.fr-tuile--sm
+          .fr-tile__body.fr-pr-4w
+            .fr-tile__content.align-content-top
               .fr-tile__start
-                p.fr-badge.fr-badge--green-menthe Élèves
+                p.fr-badge.fr-badge--green-menthe.fr-badge--sm Élèves
               h3.fr-tile__title
                 = link_to faq[:question], faq[:url], target: '_blank'
           .fr-tile__header

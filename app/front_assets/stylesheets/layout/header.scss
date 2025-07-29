@@ -140,7 +140,8 @@
 
 @media (min-width: 48em) {
   .fr-tile--horizontal .fr-tile__body {
-    margin: 1rem !important;
+    margin: 0.5rem !important;
+    padding: 0 !important;
   }
 }
 
@@ -157,3 +158,52 @@
     position: absolute;
     right: 2rem;
 }
+
+.fr-tile--sm {
+  padding: 1.5rem 1.5em 1.75rem !important;
+}
+
+.fr-tile__body {
+  flex: 1 1 auto;
+  height: 100%;
+  order: 2;
+}
+
+.fr-tile--horizontal {
+  align-items: flex-start;
+  flex-direction: row;
+  justify-content: center;
+  text-align: left;
+}
+
+.fr-tile--header {
+  order: 1;
+  margin-right: 1rem;
+}
+
+// Classe pour aligner le contenu en haut tout en gardant la même hauteur
+.align-content-top {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  height: 100% !important;
+}
+
+// Résoudre le problème de superposition icône/texte dans les tuiles horizontales
+.fr-tile--horizontal .fr-tile__body {
+  padding-right: 2rem !important;
+  margin-right: 1rem !important;
+}
+
+.fr-tile--horizontal .fr-tile__pictogram {
+  margin-left: 1rem !important;
+  flex-shrink: 0 !important;
+}
+
+// Assurer que le contenu ne déborde pas
+.fr-tile--horizontal .fr-tile__content {
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+
