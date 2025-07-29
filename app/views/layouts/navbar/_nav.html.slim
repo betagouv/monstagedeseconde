@@ -20,7 +20,7 @@
               li.no-border-bottom
                 = link_to 'Mon profil', account_path, class: 'dropdown-item d-flex align-items-center'
               li.text-center.fr-px-2w.fr-mt-1w
-                = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--secondary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
+                = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--tertiary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
          
         / Student
         - if current_user.is_a?(Users::Student)
@@ -40,7 +40,7 @@
               li.no-border-bottom
                 = link_to 'Mon profil', account_path, class: 'dropdown-item d-flex align-items-center'
               li.text-center.fr-px-2w.fr-mt-2w
-                = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--secondary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
+                = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--tertiary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
          
         
         / School management
@@ -59,7 +59,7 @@
               li.no-border-bottom
                 = link_to 'Mon profil', account_path, class: "dropdown-item d-flex align-items-center"
               li.text-center.fr-px-2w.fr-mt-2w
-                = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--secondary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
+                = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--tertiary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
         
         / Statistician
         - if current_user.is_a?(Users::Statistician)
@@ -77,7 +77,7 @@
               li.no-border-bottom
                 = link_to 'Mon profil', account_path, class: "dropdown-item d-flex align-items-center"
               li.text-center.fr-px-2w.fr-mt-2w
-                = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--secondary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
+                = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--tertiary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
         
         / Employer
         - if current_user.is_a?(Users::Employer)
@@ -102,7 +102,7 @@
               li.no-border-bottom
                 = link_to 'Mon profil', account_path, class: "dropdown-item d-flex align-items-center"
               li.text-center.fr-px-2w.fr-mt-2w
-                = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--secondary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
+                = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--tertiary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
 
       - else
         li.dropdown.position-relative data-controller="dropdown"

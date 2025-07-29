@@ -126,6 +126,8 @@ import './homepage/school-management.svg';
 import './homepage/accueillir-un-stagiaire.svg';
 import './homepage/link-step-1-2.svg';
 import './homepage/link-step-2-3.svg';
+import './homepage/school.svg';
+import './homepage/application.svg';
 
 import  './homepage/everyone/ms2e-stamp-medium.png'
 import  './homepage/students/spin-vector.svg'

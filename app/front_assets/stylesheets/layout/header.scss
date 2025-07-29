@@ -125,7 +125,35 @@
   border-bottom: none !important;
 }
 
-
 .new-fr-hr {
   border-top: 1px solid #dee2e6 !important;
+}
+
+
+.fr-header__tools .fr-btn:hover {
+  color: inherit !important;
+}
+
+.fr-tile {
+  padding: 1rem !important;
+}
+
+@media (min-width: 48em) {
+  .fr-tile--horizontal .fr-tile__body {
+    margin: 1rem !important;
+  }
+}
+
+.fr-tile.fr-enlarge-button .fr-tile__title a:after, 
+.fr-tile.fr-enlarge-button .fr-tile__title a:before, 
+.fr-tile.fr-enlarge-button .fr-tile__title button:after, 
+.fr-tile.fr-enlarge-button .fr-tile__title button:before, 
+.fr-tile.fr-enlarge-link .fr-tile__title a:after, 
+.fr-tile.fr-enlarge-link .fr-tile__title a:before, 
+.fr-tile.fr-enlarge-link .fr-tile__title button:after, 
+.fr-tile.fr-enlarge-link .fr-tile__title button:before {
+    --icon-size: 1.5rem;
+    bottom: 2.25rem;
+    position: absolute;
+    right: 2rem;
 }
