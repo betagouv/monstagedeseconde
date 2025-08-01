@@ -20,22 +20,22 @@ const Map = ({ internshipOffer }) => {
   useEffect(() => {  
   }, []);
 
+  const position = [internshipOffer.lat, internshipOffer.lon];
+
   return (
     <div className="row fr-my-2w">
       <div className="col-12 map-container-offer">
-        <MapContainer center={[internshipOffer.lat, internshipOffer.lon]} zoom={13} scrollWheelZoom={false}>
+        <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
           <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           />
           <MarkerClusterGroup>
             <Marker
-              icon={
-                defaultPointerIcon
-              }
-              position={[internshipOffer.lat, internshipOffer.lon]}
+              icon={ defaultPointerIcon }
+              position={position}
               key={internshipOffer.id}
-            >
-            </Marker>
+            />
           </MarkerClusterGroup>
         </MapContainer>
       </div>
