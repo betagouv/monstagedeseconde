@@ -1,4 +1,3 @@
-
 .custom-navbar {
   position: relative;
 }
@@ -36,5 +35,175 @@
   .nav-link {
     color: $gray-600;
   }
+}
+
+.dropdown-menu {
+  background: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  min-width: 220px;
+  padding: 0.25rem 0;
+}
+
+.dropdown-menu li:not(:last-child) {
+  border-bottom: 1px solid #E5E5E5; /* ou #dddddd selon ta charte DSFR */
+  margin-bottom: 0; /* optionnel, pour éviter un espace supplémentaire */
+}
+
+.dropdown-item {
+  color: #000091 !important;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.dropdown-item i.fr-icon-settings-line {
+  color: #000091;
+  font-size: 1;
+  background: none !important;
+  border: none !important;
+  margin-right: 0.5rem;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+  background: #f5f5fe !important;
+  color: #000091 !important;
+}
+
+.btn.btn-link.dropdown-toggle {
+  background: #f5f5fe !important;
+  color: #000091 !important;
+  border: none;
+  box-shadow: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem 0.25rem 0 0;
+}
+
+.top-nav-container {
+  overflow-x: hidden !important;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.divider-full-width {
+  width: 100vw;
+  height: 1px;
+  background: #dee2e6;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.vertical-separator {
+  position: absolute;
+  left: 50%;
+  top: 0px;
+  height: calc(100% - 0px);
+  width: 1px;
+  background: #B0B0B0;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.ou-separator {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  color: #888;
+  padding: 0 0.75rem;
+  font-size: 1rem;
+  z-index: 2;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.no-border-bottom {
+  border-bottom: none !important;
+}
+
+.new-fr-hr {
+  border-top: 1px solid #dee2e6 !important;
+}
+
+
+.fr-header__tools .fr-btn:hover {
+  color: inherit !important;
+}
+
+.fr-tile {
+  padding: 1rem !important;
+}
+
+@media (min-width: 48em) {
+  .fr-tile--horizontal .fr-tile__body {
+    margin: 0.5rem !important;
+    padding: 0 !important;
+  }
+}
+
+.fr-tile.fr-enlarge-button .fr-tile__title a:after, 
+.fr-tile.fr-enlarge-button .fr-tile__title a:before, 
+.fr-tile.fr-enlarge-button .fr-tile__title button:after, 
+.fr-tile.fr-enlarge-button .fr-tile__title button:before, 
+.fr-tile.fr-enlarge-link .fr-tile__title a:after, 
+.fr-tile.fr-enlarge-link .fr-tile__title a:before, 
+.fr-tile.fr-enlarge-link .fr-tile__title button:after, 
+.fr-tile.fr-enlarge-link .fr-tile__title button:before {
+    --icon-size: 1.5rem;
+    bottom: 2.25rem;
+    position: absolute;
+    right: 2rem;
+}
+
+.fr-tile--sm {
+  padding: 1.5rem 1.5em 1.75rem !important;
+}
+
+.fr-tile__body {
+  flex: 1 1 auto;
+  height: 100%;
+  order: 2;
+}
+
+.fr-tile--horizontal {
+  align-items: flex-start;
+  flex-direction: row;
+  justify-content: center;
+  text-align: left;
+}
+
+.fr-tile--header {
+  order: 1;
+  margin-right: 1rem;
+}
+
+// Classe pour aligner le contenu en haut tout en gardant la même hauteur
+.align-content-top {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  height: 100% !important;
+}
+
+// Résoudre le problème de superposition icône/texte dans les tuiles horizontales
+.fr-tile--horizontal .fr-tile__body {
+  padding-right: 2rem !important;
+  margin-right: 1rem !important;
+}
+
+.fr-tile--horizontal .fr-tile__pictogram {
+  margin-left: 1rem !important;
+  flex-shrink: 0 !important;
+}
+
+// Assurer que le contenu ne déborde pas
+.fr-tile--horizontal .fr-tile__content {
+  min-width: 0 !important;
+  flex: 1 !important;
 }
 

@@ -265,6 +265,10 @@ class GenerateInternshipAgreement < Prawn::Document
     paraphing_bold("Dates de la séquence d'observation en milieu professionnel :")
     @pdf.move_up 10
     paraphing("La séquence d'observation en milieu professionnel se déroule #{@internship_agreement.date_range.downcase} inclus.")
+    @pdf.move_down 10
+    paraphing_bold("Lieu de la séquence d'observation en milieu professionnel :")
+    @pdf.move_up 10
+    paraphing("La séquence d'observation en milieu professionnel se déroule à l'adresse suivante : #{@internship_agreement.internship_address}.")
 
     # paraphing("Lieu de la séquence d'observation en milieu professionnel :")
     # paraphing(@internship_agreement.internship_address)
@@ -531,6 +535,27 @@ class GenerateInternshipAgreement < Prawn::Document
   end
 
   def download_image_and_signature(signatory_role:)
+    if signatory_role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE) && @internship_agreement.school.signature.attached?
+      begin
+        # Download the signature
+        signature_data = @internship_agreement.school.signature.download
+
+        # Convert to non-interlaced PNG
+        image = MiniMagick::Image.read(signature_data)
+        image.format 'png'
+        image.interlace 'none' # Disable interlacing
+
+        return OpenStruct.new(
+          local_signature_image_file_path: StringIO.new(image.to_blob)
+        )
+      rescue Aws::S3::Bucket::Errors::ServiceError => e
+        Rails.logger.error "Error downloading school signature: #{e.message} for  #{@internship_agreement.school.id}"
+        return nil
+      rescue StandardError => e
+        Rails.logger.error "Error processing school signature: #{e.message} for  #{@internship_agreement.school.id}"
+        return nil
+      end
+    end
     # Cas des signatures de l'école (school management)
     # if signatory_role.in?(Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE) && @internship_agreement.school.signature.attached?
     #   begin

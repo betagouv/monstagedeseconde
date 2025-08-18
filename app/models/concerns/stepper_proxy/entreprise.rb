@@ -10,6 +10,7 @@ module StepperProxy
       belongs_to :sector
 
       before_validation :clean_siret, unless: -> { internship_address_manual_enter }
+      before_save :public_entreprise_sector_settings, if: -> { is_public }
       before_save :entreprise_used_name
 
       attr_accessor :entreprise_chosen_full_address,
@@ -30,6 +31,7 @@ module StepperProxy
       with_options unless: :is_public do
         validates :group_id, absence: { message: "Il n'y a pas de ministère à associer à une entreprise privée" }
       end
+
       def entreprise_coordinates=(coordinates)
         case coordinates
         when Hash
@@ -54,6 +56,10 @@ module StepperProxy
 
       def entreprise_used_name
         self.employer_name = employer_chosen_name.presence || employer_name
+      end
+
+      def public_entreprise_sector_settings
+        self.sector = Sector.find_by(name: 'Fonction publique')
       end
     end
   end

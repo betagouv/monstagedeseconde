@@ -11,9 +11,9 @@ FactoryBot.define do
     contact_phone { '+330612345678' }
     max_candidates { 1 }
     blocked_weeks_count { 0 }
-    sector { create(:sector) }
     school_year { SchoolYear::Current.year_in_june }
     is_public { true }
+    sector { is_public ? Sector.find_by(name: 'Fonction publique') : create(:sector, name: FFaker::Lorem.word) }
     group { is_public ? create(:group, is_public: true) : nil }
     internship_offer_area { create(:area, employer_id: employer.id, employer_type: 'User') }
     street { '1 rue du poulet' }
@@ -49,7 +49,10 @@ FactoryBot.define do
 
     trait :public do
       is_public { true }
-      group { create(:group, is_public: true) }
+    end
+
+    trait :private do
+      is_public { false }
     end
 
     trait :published do

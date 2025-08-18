@@ -11,8 +11,8 @@ class ReportingInternshipOfferTest < ActiveSupport::TestCase
   test '.dimension_by_sector group by sector_name' do
     sector_a = create(:sector, name: 'Agriculture')
     sector_b = create(:sector, name: 'Filière bois')
-    2.times { create(:weekly_internship_offer_2nde, sector: sector_a) }
-    create(:weekly_internship_offer_2nde, sector: sector_b)
+    2.times { create(:weekly_internship_offer_2nde, :private, sector: sector_a) }
+    create(:weekly_internship_offer_2nde, :private, sector: sector_b)
 
     results = Reporting::InternshipOffer.dimension_by_sector
     first_sectored_report = results[0]
@@ -24,15 +24,18 @@ class ReportingInternshipOfferTest < ActiveSupport::TestCase
 
   test '.dimension_by_sector sum max_candidates' do
     travel_to Date.new(2023, 10, 1) do
-      sector_a = create(:sector, name: 'Agriculture')
-      sector_b = create(:sector, name: 'Filière bois')
+      sector_a = Sector.find_by(name: 'Agriculture')
+      sector_b = Sector.find_by(name: 'Filiere bois')
       create(:weekly_internship_offer_3eme,
+            :private,
              sector: sector_a,
              max_candidates: 3)
       create(:weekly_internship_offer_3eme,
+            :private,
              sector: sector_a,
              max_candidates: 1)
       create(:weekly_internship_offer_3eme,
+            :private,
              sector: sector_b,
              max_candidates: 10)
 

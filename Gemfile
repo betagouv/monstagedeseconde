@@ -24,6 +24,7 @@ gem 'pg_search', '2.3.2' # pg search for autocomplete
 # front end
 gem 'browser'
 gem 'caxlsx_rails'
+gem 'dsfr-view-components'
 gem 'inline_svg'
 gem 'react_on_rails'
 gem 'slim-rails'
