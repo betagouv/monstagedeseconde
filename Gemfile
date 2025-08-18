@@ -24,6 +24,7 @@ gem 'pg_search', '2.3.2' # pg search for autocomplete
 # front end
 gem 'browser'
 gem 'caxlsx_rails'
+gem 'dsfr-view-components'
 gem 'inline_svg'
 gem 'react_on_rails'
 gem 'slim-rails'
@@ -118,6 +119,7 @@ group :test do
   gem 'webmock'
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara'
+  gem 'minitest-fail-fast'
   gem 'minitest-reporters'
   gem 'minitest-retry'
   gem 'selenium-webdriver'

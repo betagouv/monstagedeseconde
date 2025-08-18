@@ -288,10 +288,14 @@ Rails.application.routes.draw do
   # To be removed after june 2023
   get '/register_to_webinar', to: 'pages#register_to_webinar'
   get '/eleves', to: 'pages#student_landing'
+  get '/eleves/connexion', to: 'pages#student_login', as: :student_login
   get '/professionnels', to: 'pages#pro_landing'
+  get '/professionnels/connexion', to: 'pages#pro_login', as: :pro_login
   get '/partenaires', to: 'pages#regional_partners_index', as: :partners
   get '/equipe-pedagogique', to: 'pages#school_management_landing'
+  get '/equipe-pedagogique/connexion', to: 'pages#school_management_login', as: :school_management_login
   get '/referents', to: 'pages#statistician_landing'
+  get '/referents/connexion', to: 'pages#statistician_login', as: :statistician_login
   get '/maintenance_estivale', to: 'pages#maintenance_estivale'
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
   post '/waiting_list', to: 'pages#waiting_list'

@@ -11,9 +11,9 @@ FactoryBot.define do
     contact_phone { '+330612345678' }
     max_candidates { 1 }
     blocked_weeks_count { 0 }
-    sector { create(:sector) }
     school_year { SchoolYear::Current.year_in_june }
     is_public { true }
+    sector { is_public ? Sector.find_by(name: 'Fonction publique') : create(:sector, name: FFaker::Lorem.word) }
     group { is_public ? create(:group, is_public: true) : nil }
     internship_offer_area { create(:area, employer_id: employer.id, employer_type: 'User') }
     street { '1 rue du poulet' }
@@ -25,7 +25,7 @@ FactoryBot.define do
     coordinates { Coordinates.paris }
     entreprise_coordinates { Coordinates.paris }
     entreprise_full_address { '1 rue du poulet, 75001 Paris' }
-    weeks { Week.both_school_track_weeks }
+    weeks { Week.both_school_tracks_weeks }
     siret { '11122233300000' }
     aasm_state { 'published' }
     hidden_duplicate { false }
@@ -49,7 +49,10 @@ FactoryBot.define do
 
     trait :public do
       is_public { true }
-      group { create(:group, is_public: true) }
+    end
+
+    trait :private do
+      is_public { false }
     end
 
     trait :published do
@@ -80,18 +83,18 @@ FactoryBot.define do
 
     trait :troisieme_generale_internship_offer do
       sequence(:title) { |n| "Stage de 3eme - #{n}" }
-      weeks { Week.troisieme_selectable_weeks }
+      weeks { Week.troisieme_weeks }
       grades { [Grade.troisieme] }
       first_date { weeks.first.monday }
-      last_date { weeks.last.monday + 5.days }
+      last_date { weeks.last.friday }
       targeted_grades { :troisieme_or_quatrieme }
     end
 
     trait :both_school_tracks_internship_offer do
-      weeks { Week.both_school_track_weeks }
+      weeks { Week.both_school_tracks_weeks }
       grades { [Grade.seconde, Grade.troisieme] }
-      first_date { Week.troisieme_selectable_weeks.first.monday }
-      last_date { SchoolTrack::Seconde.current_period_data.dig(:full_time, :end_day) }
+      first_date { weeks.first.monday }
+      last_date { weeks.last.friday }
       targeted_grades { :seconde_troisieme_or_quatrieme }
     end
 

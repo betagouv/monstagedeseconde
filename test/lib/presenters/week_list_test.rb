@@ -2,9 +2,9 @@ require 'test_helper'
 module Presenters
   class WeekListTest < ActiveSupport::TestCase
     test '#first_joined_weeks' do
-      first_weeks_trunck  = Week.where(year: 2019).order(number: :asc).first(3)
-      second_weeks_trunck = [Week.where(year: 2020).order(number: :asc).last,
-                             Week.find_by(year: 2021, number: 1)]
+      first_weeks_trunck  = Week.where(year: 2024).order(number: :asc).first(3)
+      second_weeks_trunck = [Week.where(year: 2025).order(number: :asc).last,
+                             Week.find_by(year: 2026, number: 1)]
       weeks = first_weeks_trunck + second_weeks_trunck
 
       wl_1 = Presenters::WeekList.new(weeks: first_weeks_trunck)
@@ -20,7 +20,7 @@ module Presenters
     end
 
     test '#month_split' do
-      weeks = Week.where(year: 2019).order(number: :asc).first(10).last(5)
+      weeks = Week.where(year: 2024).order(number: :asc).first(10).last(5)
       week_list = Presenters::WeekList.new(weeks:)
 
       month_split = week_list.month_split
@@ -28,6 +28,22 @@ module Presenters
       assert_equal 2, month_split.count
       assert [2, 3] == month_split.keys
       assert_equal 5, month_split.values.flatten.count
+    end
+
+    test '#detailed_attributes' do
+      weeks = Week.where(year: 2025).order(number: :asc).first(10).last(5)
+      week_list = Presenters::WeekList.new(weeks:)
+
+      detailed_attributes = week_list.detailed_attributes
+
+      assert_equal 5, detailed_attributes.count
+      assert_equal([110, 111, 112, 113, 114], detailed_attributes.map { |week| week[:id] })
+      assert_equal([6, 7, 8, 9, 10], detailed_attributes.map { |week| week[:number] })
+      assert_equal([2, 2, 2, 2, 3], detailed_attributes.map { |week| week[:month] })
+      assert_equal(%w[Février Février Février Février Mars], detailed_attributes.map do |week|
+        week[:monthName]
+      end)
+      assert_equal([2025] * 5, detailed_attributes.map { |week| week[:year] })
     end
   end
 end

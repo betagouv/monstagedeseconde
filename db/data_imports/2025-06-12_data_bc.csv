@@ -1,0 +1,904 @@
+"id";"secteur";"public";"public_employer_type"
+66710;"Bâtiment et travaux publics (BTP)";FAUX;
+66711;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+66712;"Santé";FAUX;
+66713;"Comptabilité, gestion, ressources humaines";FAUX;
+66714;"Énergie";FAUX;
+66715;"Comptabilité, gestion, ressources humaines";FAUX;
+66716;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66717;"Comptabilité, gestion, ressources humaines";FAUX;
+66718;"Commerce et distribution";FAUX;
+66719;"Énergie";FAUX;
+66720;"Logistique et transport";FAUX;
+66722;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66723;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66725;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66726;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66727;"Logistique et transport";FAUX;
+66728;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66730;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66731;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66732;"Culture et patrimoine";FAUX;
+66733;"Enseignement";FAUX;
+66734;"Artisanat d'art";FAUX;
+66735;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66736;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66737;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66738;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66739;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66740;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66741;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66742;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66743;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66744;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66745;"Bâtiment et travaux publics (BTP)";FAUX;
+66746;"Agriculture";VRAI;"Ministère de l’Agriculture et de la Souveraineté alimentaire"
+66747;"Commerce et distribution";FAUX;
+66748;"Enseignement";FAUX;
+66749;"Énergie";FAUX;
+66750;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66751;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66752;"Fonction publique";VRAI;"Ministère de la Culture"
+66753;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66754;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66755;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66756;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66757;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66758;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66759;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66760;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66761;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66762;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66763;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66764;"Artisanat d'art";FAUX;
+66765;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66766;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66767;"Social";FAUX;
+66768;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66769;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66770;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66771;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66772;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66773;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66774;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66775;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66776;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66777;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66778;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66779;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66780;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66781;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66782;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66784;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66785;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66786;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66787;"Agriculture";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+66788;"Santé";FAUX;
+66789;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66790;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66791;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66792;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66793;"Industrie, ingénierie industrielle";FAUX;
+66794;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66795;"Commerce et distribution";FAUX;
+66796;"Santé";FAUX;
+66797;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+66798;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+66799;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66800;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66801;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66802;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66804;"Paramédical";FAUX;
+66809;"Logistique et transport";FAUX;
+66810;"Logistique et transport";FAUX;
+66811;"Logistique et transport";FAUX;
+66812;"Logistique et transport";FAUX;
+66813;"Logistique et transport";FAUX;
+66814;"Logistique et transport";FAUX;
+66815;"Logistique et transport";FAUX;
+66816;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66817;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66818;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66819;"Énergie";FAUX;
+66820;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66821;"Santé";FAUX;
+66822;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66823;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66824;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66825;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66826;"Social";FAUX;
+66828;"Social";FAUX;
+66829;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66832;"Santé";FAUX;
+66833;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66834;"Enseignement";FAUX;
+66835;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+66836;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66837;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66839;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66840;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66841;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66842;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66843;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66844;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66845;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66846;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66847;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66848;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66849;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66850;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66851;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66852;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66853;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66854;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66855;"Fonction publique";VRAI;"Ministère de la Culture"
+66856;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66857;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66858;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66859;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66860;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66861;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66862;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66863;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66865;"Armées - Défense";VRAI;"Ministère des Armées"
+66866;"Banque et assurance";FAUX;
+66867;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66869;"Social";FAUX;
+66871;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66872;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66873;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66874;"Commerce et distribution";FAUX;
+66875;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+66876;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66877;"Banque et assurance";FAUX;
+66878;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+66879;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66880;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66881;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66882;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66883;"Fonction publique";VRAI;"Ministère de la Culture"
+66884;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66885;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+66886;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66887;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66888;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66889;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66890;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66891;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+66892;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+66894;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+66895;"Social";FAUX;
+66896;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+66897;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66898;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66899;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+66900;"Droit et justice";VRAI;"Ministère de l'Intérieur"
+66901;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66902;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66904;"Banque et assurance";FAUX;
+66905;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+66906;"Communication";FAUX;
+66907;"Bâtiment et travaux publics (BTP)";FAUX;
+66908;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66909;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66910;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66911;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66912;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66913;"Commerce et distribution";FAUX;
+66914;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66915;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66916;"Fonction publique";VRAI;"Ministère de l'Action publique, de la Fonction publique et de la Simplification"
+66917;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66918;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66919;"Santé";FAUX;
+66920;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66921;"Logistique et transport";FAUX;
+66922;"Logistique et transport";FAUX;
+66923;"Logistique et transport";FAUX;
+66924;"Logistique et transport";FAUX;
+66925;"Paramédical";FAUX;
+66926;"Sport";FAUX;
+66927;"Conseil et audit";FAUX;
+66928;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66929;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66930;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66931;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66932;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66933;"Audiovisuel";FAUX;
+66935;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66936;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66937;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66938;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66939;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66940;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66941;"Énergie";FAUX;
+66942;"Énergie";FAUX;
+66943;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66944;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66945;"Sport";FAUX;
+66946;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66947;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66949;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66951;"Comptabilité, gestion, ressources humaines";VRAI;
+66952;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66953;"Sécurité";FAUX;
+66954;"Informatique et réseaux";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+66955;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66957;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66958;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66959;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+66960;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66962;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+66963;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66964;"Armée - Défense";VRAI;"Ministère des Armées"
+66965;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66966;"Énergie";FAUX;
+66967;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66968;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66969;"Fonction publique";VRAI;"Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche"
+66970;"Fonction publique";VRAI;"Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche"
+66971;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66972;"Fonction publique";VRAI;"Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche"
+66973;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66974;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66975;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66976;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66977;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66978;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66979;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66980;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66981;"Commerce et distribution";FAUX;
+66982;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66983;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66984;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66985;"Santé";FAUX;
+66986;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+66987;"Fonction publique";VRAI;"Ministère de l’Agriculture et de la Souveraineté alimentaire"
+66988;"Santé";FAUX;
+66989;"Santé";FAUX;
+66990;"Santé";FAUX;
+66991;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66992;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66993;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66994;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+66995;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66996;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+66997;"Environnement";FAUX;
+66998;"Santé";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+66999;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67000;"Environnement";FAUX;
+67001;"Énergie";FAUX;
+67002;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67003;"Banque et assurance";FAUX;
+67004;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67006;"Environnement";FAUX;
+67007;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67008;"Environnement";FAUX;
+67013;"Environnement";FAUX;
+67014;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67016;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67018;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67019;"Environnement";FAUX;
+67020;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67021;"Informatique et réseaux";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67022;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67023;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67024;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67025;"Bâtiment et travaux publics (BTP)";FAUX;
+67026;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67027;"Automobile";FAUX;
+67028;"Social";FAUX;
+67029;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67030;"Bien-être";FAUX;
+67031;"Social";FAUX;
+67032;"Commerce et distribution";FAUX;
+67033;"Social";FAUX;
+67034;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67035;"Social";FAUX;
+67036;"Hôtellerie, restauration";FAUX;
+67037;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67038;"Fonction publique";VRAI;"Ministère des armées"
+67039;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67040;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67041;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67042;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67043;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67044;"Énergie";FAUX;
+67045;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67046;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67047;"Industrie, ingénierie industrielle";FAUX;
+67049;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67050;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67051;"Enseignement";FAUX;
+67053;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67054;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67055;"Fonction publique";VRAI;"Premier ministre"
+67056;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67057;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67058;"Fonction publique";VRAI;"Premier ministre"
+67059;"Fonction publique";VRAI;"Premier ministre"
+67060;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67061;"Fonction publique";VRAI;"Ministère de la Culture"
+67062;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67063;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67064;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67065;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67066;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67067;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67068;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67069;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67070;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67071;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67072;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67074;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67077;"Fonction publique";VRAI;"Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche"
+67078;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67079;"Immobilier, transactions immobilières";FAUX;
+67080;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67081;"Fonction publique";FAUX;
+67082;"Commerce et distribution";FAUX;
+67083;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67084;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67085;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67086;"Fonction publique";VRAI;"Ministère de l’Agriculture et de la Souveraineté alimentaire"
+67087;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67088;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67090;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67091;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67092;"Tourisme";FAUX;
+67093;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67094;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67095;"Informatique et réseaux";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67096;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67097;"Commerce et distribution";FAUX;
+67098;"Énergie";FAUX;
+67099;"Comptabilité, gestion, ressources humaines";FAUX;
+67100;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67101;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67102;"Commerce et distribution";FAUX;
+67103;"Culture et patrimoine";FAUX;
+67104;"Comptabilité, gestion, ressources humaines";FAUX;
+67105;"Conseil et audit";FAUX;
+67106;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67107;"Énergie";FAUX;
+67108;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67109;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67110;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67111;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67112;"Agriculture";FAUX;
+67113;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67114;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67115;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67116;"Arts du spectacle";FAUX;
+67117;"Logistique et transport";FAUX;
+67118;"Banque et assurance";FAUX;
+67119;"Banque et assurance";FAUX;
+67120;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67121;"Logistique et transport";FAUX;
+67122;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67123;"Comptabilité, gestion, ressources humaines";FAUX;
+67124;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67125;"Enseignement";FAUX;
+67126;"Social";FAUX;
+67127;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67128;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67129;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67130;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67131;"Bien-être";FAUX;
+67132;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67133;"Comptabilité, gestion, ressources humaines";VRAI;"Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche"
+67134;"Industrie, ingénierie industrielle";FAUX;
+67135;"Comptabilité, gestion, ressources humaines";FAUX;
+67137;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67138;"Bâtiment et travaux publics (BTP)";FAUX;
+67139;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67140;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67141;"Fonction publique";VRAI;"Fonction publique hospitalière (FPH)"
+67142;"Commerce et distribution";FAUX;
+67143;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67144;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67145;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67148;"Maintenance";FAUX;
+67149;"Maintenance";FAUX;
+67150;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67151;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67152;"Hôtellerie, restauration";FAUX;
+67153;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67154;"Hôtellerie, restauration";FAUX;
+67155;"Environnement";VRAI;"Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche"
+67156;"Énergie";FAUX;
+67157;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67158;"Comptabilité, gestion, ressources humaines";VRAI;"Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche"
+67159;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67160;"Énergie";FAUX;
+67161;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67162;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67163;"Informatique et réseaux";FAUX;
+67164;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67166;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67167;"Automobile";FAUX;
+67168;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67169;"Armée - Défense";VRAI;"Ministère de l'Intérieur"
+67170;"Paramédical";FAUX;
+67171;"Fonction publique";VRAI;"Ministère de l'Action publique, de la Fonction publique et de la Simplification"
+67172;"Commerce et distribution";FAUX;
+67173;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67174;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67175;"Fonction publique";VRAI;"Ministère de la Culture"
+67176;"Droit et justice";VRAI;"Ministère de l'Intérieur"
+67177;"Énergie";FAUX;
+67178;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67179;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67180;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67181;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67182;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67183;"Énergie";FAUX;
+67184;"Banque et assurance";FAUX;
+67185;"Banque et assurance";FAUX;
+67186;"Banque et assurance";FAUX;
+67187;"Banque et assurance";FAUX;
+67188;"Hôtellerie, restauration";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67189;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67190;"Environnement";FAUX;
+67191;"Environnement";FAUX;
+67192;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67193;"Énergie";FAUX;
+67194;"Environnement";FAUX;
+67195;"Environnement";FAUX;
+67196;"Environnement";FAUX;
+67197;"Environnement";FAUX;
+67198;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67199;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67200;"Immobilier, transactions immobilières";FAUX;
+67201;"Immobilier, transactions immobilières";FAUX;
+67202;"Arts du spectacle";FAUX;
+67203;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67204;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67205;"Enseignement";FAUX;
+67206;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67207;"Logistique et transport";FAUX;
+67208;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67210;"Informatique et réseaux";FAUX;
+67211;"Informatique et réseaux";FAUX;
+67212;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67213;"Banque et assurance";FAUX;
+67214;"Banque et assurance";FAUX;
+67215;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67216;"Armée - Défense";VRAI;"Ministère des Armées"
+67217;"Enseignement";FAUX;
+67218;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67219;"Fonction publique";VRAI;"Ministère de la Culture"
+67220;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67221;"Social";FAUX;
+67224;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67225;"Commerce et distribution";FAUX;
+67226;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67227;"Informatique et réseaux";FAUX;
+67228;"Informatique et réseaux";FAUX;
+67213;"Banque et assurance";FAUX;
+67214;"Banque et assurance";FAUX;
+67215;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67216;"Armée - Défense";VRAI;"Ministère des Armées"
+67217;"Enseignement";FAUX;
+67218;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67219;"Fonction publique";VRAI;"Ministère de la Culture"
+67220;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67221;"Social";FAUX;
+67224;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67225;"Commerce et distribution";FAUX;
+67226;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67227;"Informatique et réseaux";FAUX;
+67228;"Informatique et réseaux";FAUX;
+67229;"Conseil et audit";FAUX;
+67230;"Énergie";FAUX;
+67231;"Énergie";FAUX;
+67232;"Énergie";FAUX;
+67233;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67234;"Agriculture";FAUX;
+67235;"Santé";FAUX;
+67237;"Agriculture";FAUX;
+67238;"Santé";FAUX;
+67239;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67240;"Industrie, ingénierie industrielle";FAUX;
+67242;"Automobile";FAUX;
+67243;"Santé";FAUX;
+67244;"Banque et assurance";FAUX;
+67247;"Santé";FAUX;
+67248;"Sport";FAUX;
+67249;"Culture et patrimoine";FAUX;
+67250;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67251;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67252;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67253;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67254;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67255;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67256;"Commerce et distribution";FAUX;
+67257;"Commerce et distribution";FAUX;
+67258;"Hôtellerie, restauration";FAUX;
+67259;"Sport";FAUX;
+67261;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67263;"Industrie, ingénierie industrielle";FAUX;
+67264;"Énergie";FAUX;
+67265;"Industrie, ingénierie industrielle";FAUX;
+67266;"Industrie, ingénierie industrielle";FAUX;
+67267;"Santé";FAUX;
+67268;"Droit et justice";VRAI;"Ministère de la justice"
+67269;"Industrie, ingénierie industrielle";FAUX;
+67270;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67271;"Industrie, ingénierie industrielle";FAUX;
+67272;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67273;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67274;"Commerce et distribution";FAUX;
+67275;"Comptabilité, gestion, ressources humaines";FAUX;
+67276;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67277;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67278;"Commerce et distribution";FAUX;
+67281;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67282;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67283;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67284;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67285;"Enseignement";FAUX;
+67286;"Enseignement";FAUX;
+67287;"Enseignement";FAUX;
+67288;"Enseignement";FAUX;
+67289;"Enseignement";FAUX;
+67290;"Enseignement";FAUX;
+67291;"Enseignement";FAUX;
+67292;"Enseignement";FAUX;
+67293;"Enseignement";FAUX;
+67294;"Enseignement";FAUX;
+67298;"Santé";FAUX;
+67299;"Enseignement";FAUX;
+67300;"Santé";FAUX;
+67301;"Énergie";FAUX;
+67302;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67303;"Énergie";FAUX;
+67304;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67305;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67306;"Environnement";FAUX;
+67307;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67310;"Fonction publique";VRAI;"Ministère des Armées"
+67311;"Fonction publique";VRAI;"Ministère des Armées"
+67312;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67313;"Fonction publique";VRAI;"Ministère de la Culture"
+67314;"Commerce et distribution";FAUX;
+67315;"Hôtellerie, restauration";FAUX;
+67316;"Commerce et distribution";FAUX;
+67317;"Commerce et distribution";FAUX;
+67318;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67319;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67320;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67322;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67323;"Agriculture";VRAI;"Ministère de l’Agriculture et de la Souveraineté alimentaire"
+67324;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67325;"Énergie";FAUX;
+67326;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67327;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67329;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67330;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67331;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67332;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67333;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67334;"Fonction publique";VRAI;"Ministère des Sports, de la Jeunesse et de la Vie associative"
+67335;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67336;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67337;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67338;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67339;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67340;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67341;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67343;"Social";FAUX;
+67344;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67345;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67346;"Fonction publique";VRAI;"Ministère de l'Action publique, de la Fonction publique et de la Simplification"
+67347;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67348;"Architecture, urbanisme et paysage";FAUX;
+67349;"Construction aéronautique, ferroviaire et navale";FAUX;
+67350;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67351;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67352;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67353;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67354;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67355;"Enseignement";FAUX;
+67356;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67357;"Enseignement";FAUX;
+67358;"Industrie, ingénierie industrielle";FAUX;
+67359;"Banque et assurance";FAUX;
+67360;"Enseignement";FAUX;
+67361;"Banque et assurance";FAUX;
+67362;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67363;"Fonction publique";VRAI;"Ministère de la Culture"
+67364;"Banque et assurance";FAUX;
+67365;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67366;"Banque et assurance";FAUX;
+67368;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67369;"Banque et assurance";FAUX;
+67370;"Banque et assurance";FAUX;
+67371;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67372;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67373;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67374;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67377;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67378;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67382;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67383;"Bâtiment et travaux publics (BTP)";FAUX;
+67384;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67385;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67387;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67388;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67389;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67390;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67391;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67392;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67393;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67394;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67395;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67396;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67398;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67400;"Informatique et réseaux";FAUX;
+67401;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67402;"Social";FAUX;
+67403;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67404;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67405;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67406;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67407;"Mécanique";FAUX;
+67410;"Mécanique";FAUX;
+67411;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67412;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67413;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67414;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67415;"Conseil et audit";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67416;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67417;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67418;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67419;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67420;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67421;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67422;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67423;"Énergie";FAUX;
+67424;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67425;"Industrie, ingénierie industrielle";FAUX;
+67426;"Industrie alimentaire";FAUX;
+67427;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67428;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67429;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67430;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67431;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67432;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67433;"Fonction publique";VRAI;"Ministère des Armées"
+67434;"Conseil et audit";FAUX;
+67436;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67437;"Fonction publique";VRAI;"Ministère de la Culture"
+67438;"Santé";VRAI;"Fonction publique hospitalière (FPH)"
+67439;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67440;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67441;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67444;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67445;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67446;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67447;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67448;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67449;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67450;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67452;"Enseignement";FAUX;
+67453;"Enseignement";FAUX;
+67454;"Enseignement";FAUX;
+67455;"Enseignement";FAUX;
+67456;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67458;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67459;"Communication";FAUX;
+67460;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67473;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67474;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67475;"Fonction publique";VRAI;"Chambre consulaire"
+67476;"Fonction publique";VRAI;"Chambre consulaire"
+67478;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67479;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67480;"Communication";FAUX;
+67481;"Industrie, ingénierie industrielle";FAUX;
+67482;"Logistique et transport";FAUX;
+67483;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67484;"Commerce et distribution";FAUX;
+67485;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67486;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67487;"Comptabilité, gestion, ressources humaines";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67488;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67490;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67493;"Social";FAUX;
+67494;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67495;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67496;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67497;"Banque et assurance";FAUX;
+67498;"Commerce et distribution";FAUX;
+67499;"Automobile";FAUX;
+67500;"Agriculture";VRAI;"Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche"
+67502;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67503;"Logistique et transport";FAUX;
+67504;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67505;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67506;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67507;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67508;"Logistique et transport";FAUX;
+67510;"Industrie, ingénierie industrielle";FAUX;
+67511;"Commerce et distribution";FAUX;
+67512;"Industrie, ingénierie industrielle";FAUX;
+67513;"Santé";FAUX;
+67518;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67519;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67520;"Logistique et transport";FAUX;
+67521;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67522;"Santé";FAUX;
+67523;"Santé";FAUX;
+67524;"Sport";FAUX;
+67525;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67526;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67527;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67528;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67529;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67530;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67531;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67532;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67533;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67534;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67537;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67538;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67539;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67542;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67543;"Informatique et réseaux";FAUX;
+67544;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67546;"Agroéquipement";FAUX;
+67547;"Fonction publique";VRAI;"Premier ministre"
+67549;"Industrie, ingénierie industrielle";FAUX;
+67550;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67551;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67552;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67553;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67554;"Social";FAUX;
+67555;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67556;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67557;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67559;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67560;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67561;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67562;"Santé";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67563;"Fonction publique";VRAI;"Ministère de l’Agriculture et de la Souveraineté alimentaire"
+67564;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67565;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67566;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67567;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67568;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67569;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67570;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67571;"Énergie";FAUX;
+67572;"Industrie, ingénierie industrielle";FAUX;
+67573;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67574;"Social";FAUX;
+67575;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67576;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67578;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67579;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67580;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67581;"Enseignement";FAUX;
+67582;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67583;"Social";FAUX;
+67584;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67585;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67586;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67587;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67588;"Fonction publique";VRAI;"Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche"
+67590;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67591;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67592;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67593;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67596;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67597;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67599;"Industrie, ingénierie industrielle";FAUX;
+67600;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67601;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67602;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67603;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67604;"Comptabilité, gestion, ressources humaines";FAUX;
+67605;"Fonction publique";VRAI;"Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche"
+67606;"Culture et patrimoine";FAUX;
+67607;"Commerce et distribution";FAUX;
+67608;"Artisanat d'art";FAUX;
+67609;"Industrie, ingénierie industrielle";FAUX;
+67610;"Commerce et distribution";FAUX;
+67611;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67612;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67613;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67615;"Comptabilité, gestion, ressources humaines";FAUX;
+67616;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67617;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67618;"Social";FAUX;
+67619;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67620;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67621;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67622;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67623;"Énergie";FAUX;
+67624;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67625;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67626;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67627;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67628;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67629;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67630;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67631;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67632;"Banque et assurance";FAUX;
+67633;"Commerce et distribution";FAUX;
+67634;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67635;"Tourisme";FAUX;
+67640;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67641;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67642;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67643;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67645;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67646;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67647;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67648;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67649;"Commerce et distribution";FAUX;
+67650;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67651;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67653;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67654;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67655;"Commerce et distribution";FAUX;
+67656;"Industrie, ingénierie industrielle";FAUX;
+67657;"Commerce et distribution";FAUX;
+67658;"Fonction publique";VRAI;"Ministère des Armées"
+67659;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67660;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67661;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67662;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67663;"Paramédical";FAUX;
+67664;"Fonction publique";VRAI;"Ministère de la Transition écologique, de la Biodiversité, de la Forêt, de la Mer et de la Pêche"
+67665;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67666;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67667;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67668;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67669;"Énergie";FAUX;
+67670;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67671;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67672;"Fonction publique";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67673;"Comptabilité, gestion, ressources humaines";FAUX;
+67675;"Commerce et distribution";FAUX;
+67676;"Industrie, ingénierie industrielle";FAUX;
+67677;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67678;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67679;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67680;"Santé";FAUX;
+67681;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67682;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67683;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67684;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67685;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67686;"Fonction publique";VRAI;"Ministère de l'Intérieur"
+67687;"Fonction publique";VRAI;"Ministère de l'Économie, des Finances et de la Souveraineté industrielle et numérique"
+67688;"Agriculture";FAUX;
+67689;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67690;"Banque et assurance";FAUX;
+67691;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67692;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67693;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67694;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67695;"Commerce et distribution";FAUX;
+67696;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67697;"Commerce et distribution";FAUX;
+67698;"Commerce et distribution";FAUX;
+67699;"Commerce et distribution";FAUX;
+67700;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67701;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67702;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67703;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67704;"Fonction publique";VRAI;"Collectivité territoriale (communes, départements, régions, leurs regroupements et leurs établissements)"
+67705;"Énergie";FAUX;
+67706;"Banque et assurance";FAUX;
+67707;"Banque et assurance";FAUX;
+67709;"Banque et assurance";FAUX;
+67710;"Banque et assurance";FAUX;
+67711;"Enseignement";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67712;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67713;"Social";VRAI;"Ministère du Travail, de la Santé, des Solidarités et des Familles"
+67714;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67715;"Fonction publique";VRAI;"Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche"
+67716;"Fonction publique";VRAI;"Ministère de l'Intérieur"

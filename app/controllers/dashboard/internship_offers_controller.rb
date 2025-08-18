@@ -82,7 +82,7 @@ module Dashboard
 
     def update
       authorize! :update, @internship_offer
-      @available_weeks = Week.troisieme_selectable_weeks # TODO : check if it's the right weeks
+      @available_weeks = Week.selectable_on_school_year
       if internship_offer_params[:is_public] == 'true'
         params[:internship_offer][:sector_id] = Sector.find_by(name: 'Fonction publique').try(:id)
       else
@@ -235,10 +235,10 @@ module Dashboard
     end
 
     def set_internship_offer_attributes(internship_offer)
-      internship_offer.grade_college = internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
-      internship_offer.grade_2e = internship_offer.fits_for_seconde? ? '1' : '0'
-      internship_offer.all_year_long = internship_offer.all_year_long?
-      internship_offer.entreprise_chosen_full_address = internship_offer.entreprise_full_address
+      @internship_offer.grade_college = internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
+      @internship_offer.grade_2e = internship_offer.fits_for_seconde? ? '1' : '0'
+      @internship_offer.all_year_long = internship_offer.all_year_long?
+      @internship_offer.entreprise_chosen_full_address = internship_offer.entreprise_full_address
     end
   end
 end

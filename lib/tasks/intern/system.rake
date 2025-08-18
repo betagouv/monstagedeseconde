@@ -90,7 +90,6 @@ namespace :sys do
               "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
               "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
               "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
-              "-d #{ENV['CLEVER_PRODUCTION_COPY_DB_NAME']} " \
               "-f #{db_file_name_sql}")
     end
   end
