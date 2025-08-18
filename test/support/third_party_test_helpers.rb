@@ -134,6 +134,11 @@ module ThirdPartyTestHelpers
     end
   end
 
+  def banner_message_stub
+    stub_request(:get, "#{ENV.fetch('PRISMIC_URL')}?access_token=#{ENV.fetch('PRISMIC_API_KEY')}")
+      .to_return(status: 200, body: '{"refs": [{"id": "master", "ref": "master", "label": "Master", "isMasterRef": true}], "results": []}', headers: { 'Content-Type' => 'application/json' })
+  end
+
   def educonnect_token_stub
     stub_request(:post, ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/token')
       .with(

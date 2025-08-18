@@ -142,7 +142,7 @@ const SearchBar = ({
     const weeksCount = weekIdsFromUrl().length;
 
     if (weeksCount === 0 || weeksCount == undefined) {
-      text = "Choisir une option";
+      text = "Choisissez une semaine";
     } else if (weeksCount === 1) {
       text = "1 semaine";
     } else if (weeksCount > 1) {
