@@ -107,16 +107,20 @@ class ApplicationController < ActionController::Base
   end
 
   def get_banner_message
-    if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
-      @banner_message = nil
-    else
-      api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
-      response = api.query([Prismic::Predicates.at('document.type', 'top_banner')])
-      @banner_message = response.results.first
-    end
+    @banner_message = if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
+                        nil
+                      else
+                        message_from_prismic
+                      end
   end
 
   private
+
+  def message_from_prismic
+    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
+    response = api.query([Prismic::Predicates.at('document.type', 'top_banner')])
+    response.results.first
+  end
 
   def check_school_requested
     return unless current_user && current_user.missing_school?
