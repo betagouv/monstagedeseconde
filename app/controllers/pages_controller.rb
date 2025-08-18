@@ -125,6 +125,25 @@ class PagesController < ApplicationController
     @quotes = get_quotes
   end
 
+  def student_login
+    @faqs = get_faqs('student')
+    @resources = get_resources('student')
+    @educonnect_url = build_educonnect_url
+  end
+
+  def pro_login
+    @faqs = get_faqs('pro')
+  end
+
+  def statistician_login
+    @faqs = get_faqs('statistician')
+  end
+
+  def school_management_login
+    @faqs = get_faqs('education')
+    @fim_url = build_fim_url
+  end
+
   private
 
   def link_resolver
