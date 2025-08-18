@@ -20,9 +20,6 @@ module Api
       end
 
       test 'GET #index returns sectors' do
-        create(:sector, name: 'Agriculture')
-        create(:sector, name: 'Agroalimentaire')
-        create(:sector, name: 'Architecture')
 
         documents_as(endpoint: :'v2/sectors/index', state: :success) do
           get api_v2_sectors_path(
@@ -31,7 +28,7 @@ module Api
             }
           )
           assert_response :success
-          assert_equal 3, json_response['sectors'].count
+          assert_equal 51, json_response['sectors'].count
         end
       end
 

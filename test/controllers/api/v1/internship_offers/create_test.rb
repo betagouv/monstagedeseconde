@@ -97,7 +97,7 @@ module Api
 
       test 'POST #create as operator works to internship_offers' do
         operator = create(:user_operator, api_token: SecureRandom.uuid)
-        sector = create(:sector, uuid: SecureRandom.uuid)
+        sector = Sector.find_by(name: 'Fonction publique')
         title = 'title'
         description = 'description'
         employer_name = 'employer_name'

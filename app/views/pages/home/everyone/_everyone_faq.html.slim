@@ -1,20 +1,19 @@
-.mx-lg-0.fr-mx-2w.fr-py-4w
+.mx-lg-0.fr-mx-2w.fr-pb-4w
   h3.fr-pt-3w Questions fréquentes
 
   .row.fr-py-3w
     - @faqs.each do |faq|
       .col-md-4.col-12-xs.d-flex.align-items-stretch.fr-mb-2w
-        .fr-card.fr-enlarge-link.without-arrow
-          .fr-card__body.fr-pt-2w
-            .fr-card__content
-              h3.fr-card__title.fr-mb-2w.blue-france
-                = link_to faq[:question], faq[:url], class: 'fr-raw-link'
-              .fr-card__desc= faq[:answer].gsub(/<\/?pre>/, '').html_safe
-          .fr-card__header.fr-my-4w
-            ul.fr-badges-group.fr-p-4w
-              li
-                p.fr-badge.fr-badge--green-menthe élèves
-
+        .fr-tile.fr-tile--horizontal.fr-enlarge-link.fr-tile--sm
+          .fr-tile__body.fr-pr-4w
+            .fr-tile__content.align-content-top
+              .fr-tile__start
+                p.fr-badge.fr-badge--green-menthe.fr-badge--sm Élèves
+              h3.fr-tile__title
+                = link_to faq[:question], faq[:url], target: '_blank'
+          .fr-tile__header
+            .fr-tile__pictogram
+              = image_tag asset_pack_path('media/images/homepage/school.svg'), alt: "Élèves", width: '40px', height: '40px'
 
   .row.fr-my-3w
     .col-12.text-center
