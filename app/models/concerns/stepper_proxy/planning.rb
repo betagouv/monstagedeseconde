@@ -8,14 +8,17 @@ module StepperProxy
       before_save :set_default_values
 
       # Associations
+      has_many :internship_offer_weeks
+      has_many :weeks, through: :internship_offer_weeks
+
       has_many :planning_grades,
                dependent: :destroy,
                class_name: 'PlanningGrade',
                foreign_key: :planning_id
       has_many :grades, through: :planning_grades
-      has_many :internship_offer_weeks
-      has_many :weeks, through: :internship_offer_weeks
-      belongs_to :school, optional: true
+
+
+
 
       # Validations
       validates :max_candidates,
