@@ -54,9 +54,8 @@ def populate_sectors
     "Verre, béton, céramique" => "s50",
     "Agriculture" => "s51"
   }.map do |sector_name, sector_uuid|
-    next if Sector.find_by(name: sector_name)
 
-    Sector.create!(name: sector_name, uuid: sector_uuid)
+    Sector.find_or_create_by(name: sector_name, uuid: sector_uuid)
     print "."
   end
 end

@@ -7,9 +7,8 @@ import { endpoints } from "../../utils/api";
 import { employerNameChanged, broadcast } from "../../utils/events";
 import {
   setValueById,
-  toggleContainer,
-  toggleContainers,
-  toggleContainerById,
+  toggleHideContainers,
+  toggleHideContainerById,
 } from "../../utils/dom";
 
 // see: https://geo.api.gouv.fr/adresse
@@ -59,7 +58,7 @@ export default function SirenInput({
         }
       })
       .catch((err) => {
-        toggleContainerById("siren-error", true);
+        toggleHideContainerById("siren-error", true);
       });
   };
 
@@ -88,10 +87,10 @@ export default function SirenInput({
 
   const setOpenManual = () => {
     setInternshipAddressManualEnter(true);
-    toggleContainers(document.querySelectorAll(".bloc-tooggle"), true);
+    toggleHideContainers(document.querySelectorAll(".bloc-tooggle"), true);
     setValueById(`${resourceName}_internship_address_manual_enter`, true);
-    toggleContainers(document.querySelectorAll(".show-when-manual"), true);
-    toggleContainers(document.querySelectorAll(".hide-when-manual"), false);
+    toggleHideContainers(document.querySelectorAll(".show-when-manual"), true);
+    toggleHideContainers(document.querySelectorAll(".hide-when-manual"), false);
 
     const labelEntrepriseName = document.querySelector( `label[for='${resourceName}_employer_name']` );
     labelEntrepriseName.innerHTML = "Saisissez le nom (raison sociale) de votre établissement *";
@@ -155,21 +154,21 @@ export default function SirenInput({
     const ministryClassList = ministry.classList;
     const sectorBloc = document.getElementById(`${resourceName}_sector_id-block`);
     const sectorBlocClassList = sectorBloc.classList;
-    const sector = document.getElementById(`sector-choice`);
+    const sector = document.getElementById(`${resourceName}_sector_id`);
     // TODO pub/sub with broadcasting would be better
     // because both jsx components and stimulus send events to the containers (show/hide)
-    ministryClassList.add("d-none"); // default
+    ministryClassList.add("fr-hidden"); // default
 
     if (is_public != undefined) {
-      toggleContainerById("public-private-radio-buttons", false);
+      toggleHideContainerById("public-private-radio-buttons", false);
       if(is_public){
         document.getElementById("entreprise_is_public_true").checked = true;
         ministry.removeAttribute("style");
-        ministryClassList.remove("d-none");
+        ministryClassList.remove("fr-hidden");
 
         // For public establishments
 
-        sectorBlocClassList.add("d-none");
+        sectorBlocClassList.add("fr-hidden");
         // Safely check and select "Fonction publique" option
         if (sector && sector.options) {
           for (let i = 0; i < sector.options.length; i++) {
@@ -183,14 +182,14 @@ export default function SirenInput({
         sector.removeAttribute("required");
       } else {
         // For private companies
-        document.getElementById("entreprise_is_public_false").checked = true;
-        sectorBlocClassList.remove("d-none");
+        document.getElementById(`${resourceName}_is_public_false`).checked = true;
+        sectorBlocClassList.remove("fr-hidden");
         sector.value = "";
       }
     }
     if (isFaulty && formerPublicValue){
       ministry.removeAttribute("style");
-      ministryClassList.remove("d-none");
+      ministryClassList.remove("fr-hidden");
     }
   };
 
@@ -210,14 +209,9 @@ export default function SirenInput({
   };
 
   const show_form = (show) => {
-    const blocs = document.querySelectorAll(".bloc-tooggle");
-    blocs.forEach((bloc) => {
-      if (show) {
-        bloc.classList.remove("d-none");
-      } else {
-        bloc.classList.add("d-none");
-      }
-    });
+    toggleHideContainers(document.querySelectorAll(".bloc-tooggle"), show)
+    // hide Siren helper
+    // toggleHideContainerById("input-siren", show && !newRecord);
   };
 
   useEffect(() => {
@@ -231,7 +225,7 @@ export default function SirenInput({
   }, [siret]);
 
   useEffect(() => {
-    document.getElementById("siren-error").classList.add("d-none");
+    document.getElementById("siren-error").classList.add("fr-hidden");
 
     const cleanSiret = siret.replace(/\s/g, "");
     const cleanSiretIsNumeric = /^\d{2,}$/.test(cleanSiret);
@@ -247,7 +241,7 @@ export default function SirenInput({
   // initialization
   useEffect(() => {
     show_form(!newRecord);
-    if (internshipAddressManualEnter) { setOpenManual(); }
+    if (internshipAddressManualEnter || !newRecord) { setOpenManual(); }
   }, []);
 
   return (
@@ -320,7 +314,7 @@ export default function SirenInput({
                 </a>
               </div>
               <div
-                className="alerte alert-danger siren-error p-2 mt-2 d-none"
+                className="alerte alert-danger siren-error p-2 mt-2 fr-hidden"
                 id="siren-error"
                 role="alert"
               >

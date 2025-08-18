@@ -1,24 +1,11 @@
-<div class="fr-notice fr-notice--info d-none d-sm-block">
-  <div class="fr-container" >
-    <div class="fr-notice__body" >
-      <p class="fr-notice__title fr-mb-0">
-        <%# Entreprises, administrations, partenaires... notre équipe se tient à votre disposition pour répondre à vos questions sur la plateforme. Inscrivez-vous à nos prochains webinaires en cliquant 
-        <%#= link_to 'sur ce lien',
-                    ENV['WEBINAR_URL'],
-                    target: '_blank' %>
-        <ul class="fr-list fr-list--bullet fr-mb-0">
-          <li>
-            <strong>
-            Entreprises, administrations, partenaires... notre équipe se tient à votre disposition pour répondre à vos questions sur la plateforme. Les webinaires reprendront à partir de septembre.
-            </strong>
-          </li>
-          <li>
-            <strong>
-            Elèves, la période de candidature est actuellement close. Rendez-vous au 1er septembre pour la réouverture.
-            </strong>
-          </li>
-        </ul>
-      </p>
+<% if @banner_message['top_banner.visible'].value %>
+  <div class="fr-notice fr-notice--info d-none d-sm-block">
+    <div class="fr-container" >
+      <div class="fr-notice__body" >
+        <div class="fr-notice__title fr-mb-0">
+          <%= prismic_structured_text_to_html(@banner_message['top_banner.text']) %>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+<% end %>
