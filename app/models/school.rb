@@ -151,7 +151,7 @@ class School < ApplicationRecord
     school_management_users = Users::SchoolManagement.kept.where(school_id: id)
     return nil if school_management_users.empty?
 
-    %w[admin_officer school_manager cpe other main_teacher teacher].each do |role|
+    %w[admin_officer school_manager cpe other teacher].each do |role|
       return school_management_users.find_by(role: role) if school_management_users.any? { |user| user.role == role }
     end
     nil
@@ -173,7 +173,7 @@ class School < ApplicationRecord
   end
 
   def has_staff?
-    users.where("role = 'teacher' or role = 'main_teacher' or role = 'other'")
+    users.where(role: ['teacher', 'other'])
          .count
          .positive?
   end
@@ -199,10 +199,6 @@ class School < ApplicationRecord
 
   def school_manager
     school_managers.first
-  end
-
-  def main_teacher
-    main_teachers.first
   end
 
   def teacher

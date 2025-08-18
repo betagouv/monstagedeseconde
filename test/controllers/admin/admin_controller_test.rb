@@ -8,7 +8,6 @@ module Admin
       school = create(:school)
       school_manager = create(:school_manager, school: school)
       roles = [create(:employer),
-               create(:main_teacher, school: school),
                create(:user_operator),
                create(:other, school: school),
                create(:statistician),

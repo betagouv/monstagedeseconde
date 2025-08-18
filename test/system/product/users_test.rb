@@ -101,7 +101,6 @@ module Product
         create(:student),
         school_manager,
         create(:teacher, school: school_manager.school),
-        create(:main_teacher, school: school_manager.school),
         create(:other, school: school_manager.school)
       ].each do |user|
         role = user.class.name.demodulize.downcase

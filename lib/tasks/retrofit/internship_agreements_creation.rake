@@ -21,13 +21,13 @@ namespace :retrofit do
 
         PrettyConsole.puts_in_yellow "Creating internship agreement for #{internship_application.student.presenter.full_name}"
         student      = internship_application.student
-        main_teacher = student.main_teacher
-        arg_hash     = {internship_application: internship_application, main_teacher: main_teacher}
+        teacher = student.teacher
+        arg_hash     = {internship_application: internship_application, teacher: teacher}
 
         if internship_application.type == "InternshipApplications::WeeklyFramed"
           internship_application.create_agreement
-          if main_teacher.present?
-            MainTeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
+          if teacher.present?
+            TeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
                              .deliver_later
           end
         end

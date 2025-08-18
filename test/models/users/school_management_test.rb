@@ -33,14 +33,15 @@ module Users
       assert school_manager.valid?
     end
 
-    test 'has_many main_teachers' do
+    test 'has_many teachers' do
       school = create(:school)
       school_manager = create(:school_manager, school:)
-      main_teacher = create(:main_teacher, school:)
+      teacher = create(:teacher, school:)
 
       school_manager.reload
 
-      assert_includes school_manager.main_teachers.entries, main_teacher
+      assert_includes school_manager.teachers.entries, teacher
+      assert_equal 1, school_manager.teachers.count
     end
 
     # ===>  kept because of the stub usage
@@ -66,10 +67,8 @@ module Users
     test '#management_representative' do
       school = create(:school)
       assert_nil school.management_representative
-      create(:main_teacher, school:)
-      assert_equal school.main_teachers.first.id, school.management_representative.id
       create(:teacher, school:)
-      assert_equal school.main_teachers.first.id, school.management_representative.id
+      assert_equal school.teachers.first.id, school.management_representative.id
       other = create(:other, school:)
       assert_equal other.id, school.management_representative.id
       cpe = create(:cpe, school:)

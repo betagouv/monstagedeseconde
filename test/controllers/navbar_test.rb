@@ -24,16 +24,6 @@ class NavbarTest < ActionDispatch::IntegrationTest
     assert_select('li a.dropdown-item', text: 'Mon profil', count: 1)
   end
 
-  test 'main_teacher' do
-    main_teacher = create(:main_teacher,
-                          school: @school,
-                          class_room: create(:class_room, school: @school))
-    sign_in(main_teacher)
-    get dashboard_school_class_rooms_path(@school)
-    assert_select('li a.fr-btn', text: 'Mon espace', count: 1)
-    assert_select('li a.dropdown-item', text: 'Mon profil', count: 1)
-  end
-
   test 'other' do
     skip "since no 'other' status anymore"
     other = create(:other, school: @school)

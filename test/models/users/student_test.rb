@@ -39,22 +39,22 @@ module Users
       assert_nil user.phone_token_validity
     end
 
-    test '#main_teacher' do
-      school                     = create(:school)
+    test '#teacher' do
+      school = create(:school)
       school_with_school_manager = create(:school, :with_school_manager)
 
       student_no_class_room = build(:student, class_room: nil)
       assert_nil student_no_class_room.class_room
-      assert_nil student_no_class_room.main_teacher
+      assert_nil student_no_class_room.teacher
 
       class_room = create(:class_room, school:)
       student_with_class_room = build(:student, class_room:)
-      assert_nil student_with_class_room.main_teacher
+      assert_nil student_with_class_room.teacher
 
-      main_teacher   = create(:main_teacher, class_room:, school: school_with_school_manager)
-      main_teacher_2 = create(:main_teacher, class_room:, school: school_with_school_manager)
-      student        = create(:student, class_room:, school: school_with_school_manager)
-      assert_equal main_teacher.id, student.main_teacher.id
+      teacher   = create(:teacher, class_room:, school: school_with_school_manager)
+      teacher_2 = create(:teacher, class_room:, school: school_with_school_manager)
+      student = create(:student, class_room:, school: school_with_school_manager)
+      assert_equal teacher.id, student.teacher.id
     end
 
     test '#has_offers_to_apply_to?' do
