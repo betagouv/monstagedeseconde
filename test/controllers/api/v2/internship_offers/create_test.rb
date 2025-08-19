@@ -257,6 +257,7 @@ module Api
           assert_equal true, internship_offer.handicap_accessible
           assert_equal ['troisieme'], json_response['grades']
           assert_equal 2, internship_offer.weeks.count
+          assert_equal true, internship_offer.open_data
         end
       end
       test 'POST #create when wrong weeks for seconde offer returns 422' do
@@ -552,6 +553,63 @@ module Api
           end
           internship_offer = InternshipOffers::Api.first
           assert_equal 'N/A', internship_offer.street
+        end
+      end
+
+      test 'POST #create as operator with open_data false creates the internship offer with open_data false' do
+        @operator.operator.update(open_data: false)
+
+        sector = Sector.find_by(name: 'Fonction publique')
+        title = 'title'
+        description = 'description'
+        employer_name = 'employer_name'
+        employer_description = 'employer_description'
+        employer_website = 'http://google.fr'
+        coordinates = { latitude: 1, longitude: 1 }
+        street = "Avenue de l'opéra"
+        zipcode = '75002'
+        city = 'Paris'
+        siret = FFaker::CompanyFR.siret
+        sector_uuid = sector.uuid
+        remote_id = 'test'
+        permalink = 'http://monsite.com'
+        grades = %w[seconde troisieme]
+        weeks = InternshipOffers::Api.mandatory_seconde_weeks
+        daily_hours = { "lundi": ['9:00', '17:00'], "mardi": ['9:00', '17:00'], "mercredi": ['9:00', '17:00'],
+                        "jeudi": ['9:00', '17:00'], "vendredi": ['9:00', '17:00'] }
+        assert_difference('InternshipOffer.count', 1) do
+          documents_as(endpoint: :'v2/internship_offers/create', state: :created) do
+            post api_v2_internship_offers_path(
+              params: {
+                token: "Bearer #{@token}",
+                internship_offer: {
+                  title:,
+                  description:,
+                  employer_name:,
+                  employer_description:,
+                  employer_website:,
+                  siret:,
+                  'coordinates' => coordinates,
+                  street:,
+                  zipcode:,
+                  city:,
+                  sector_uuid:,
+                  remote_id:,
+                  max_candidates: 2,
+                  is_public: true,
+                  daily_hours:,
+                  permalink:,
+                  lunch_break: 'Repas sur place',
+                  grades:,
+                  weeks:
+                }
+              }
+            )
+          end
+          assert_response :created
+
+          internship_offer = InternshipOffers::Api.first
+          assert_equal false, internship_offer.open_data
         end
       end
     end

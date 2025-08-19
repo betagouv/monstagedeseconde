@@ -5,6 +5,7 @@ FactoryBot.define do
     sequence(:name) { |n| "operator-#{n}" }
     api_full_access { false }
     target_count { 0 }
+    open_data { true }
     masked_data { false }
     realized_count do
       {

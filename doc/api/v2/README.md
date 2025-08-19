@@ -50,6 +50,8 @@ Ce token devra être présent à chaque requête.
 
 L'utilisation est limitée à 100 appels par minute, au-delà une erreur 429 est renvoyée.
 
+Vous avez la possibilité lors de la création de votre compte, de préciser si vous souhaitez que l'ensemble de vos offres soient retournées via la fonction recherche de l'API pour les autres partenaires. Par défaut toutes les offres sont publiques et visibles par les autres partenaires utilisant l'API.
+
 ### Comment récuperer mon token d'authentification
 
 Un token d'authentification est nécessaire pour accéder aux endpoints de l'API.

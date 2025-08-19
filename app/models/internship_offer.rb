@@ -262,6 +262,7 @@ class InternshipOffer < ApplicationRecord
     user.student? && user.belongs_to_rep_or_rep_plus_school? ? all : where(rep: false)
   }
   scope :filtered_by_qpv_and_rep, ->(user:) { filtered_with_qpv(user:).filtered_with_rep(user:) }
+  scope :open_data, -> { where(open_data: true) }
 
   # -------------------------
   # States

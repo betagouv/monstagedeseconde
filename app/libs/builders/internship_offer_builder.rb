@@ -63,6 +63,7 @@ module Builders
       end
       internship_offer.internship_offer_area_id ||= user.current_area_id
       internship_offer.aasm_state = 'published' if internship_offer.may_publish?
+      internship_offer.open_data = user.operator.open_data if from_api?
       internship_offer.save!
       callback.on_success.try(:call, internship_offer)
     rescue ActiveRecord::RecordInvalid => e
