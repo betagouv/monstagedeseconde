@@ -123,6 +123,13 @@ export default function SearchSchool({
 
   };
 
+  const schoolNameComputed = (school) => {
+  if (!school) return '';
+
+  const rep_wording = school.rep_kind === 'rep_plus' ? ' [REP+]' : school.rep_kind === 'rep' ? ' [REP]' : '';
+    return (school.pg_search_highlight_name || school.name) + (school.qpv ? ' [QPV]' : '') + rep_wording;
+  };
+
   const inputChange = (event) => {
     setCity(event.target.value);
     if (event.target.value === '') { onResetSearch()}
@@ -254,7 +261,7 @@ export default function SearchSchool({
                             >
                               <span
                                 dangerouslySetInnerHTML={{
-                                  __html: currentSchool.pg_search_highlight_name || currentSchool.name,
+                                  __html: schoolNameComputed(currentSchool),
                                 }}
                               />
                               <br />
@@ -328,6 +335,7 @@ export default function SearchSchool({
             classes={classes}
             addSchoolToSchoolList={addSchoolToSchoolList}
             onResetSearch={onResetSearch}
+            schoolNameComputed={schoolNameComputed}
           />
 
           {selectClassRoom && (

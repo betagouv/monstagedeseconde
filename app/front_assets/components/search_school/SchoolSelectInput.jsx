@@ -10,6 +10,7 @@ function RenderSchoolSelectInput({
   classes,
   addSchoolToSchoolList,
   onResetSearch,
+  schoolNameComputed
 }) {
   const isWaitingCitySelection =
     schoolsInCitySuggestions.length === 0 && !selectedSchool && !existingSchool;
@@ -37,7 +38,7 @@ function RenderSchoolSelectInput({
     setClassRoomsSuggestions(school.class_rooms);
     addSchoolToSchoolList({
       schoolId: school_id,
-      schoolName: school.name,
+      schoolName: schoolNameComputed(school),
       schoolQpv: school.qpv,
       schoolRepKind: school.rep_kind
     });
