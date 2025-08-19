@@ -403,7 +403,6 @@ fr:
         first_date: Premier jour
         last_date: Dernier jour
         daterange: Plage de disponibilité
-        supplied_applications: Nbr. de candidatures par stages
         submitted_application_count: Nbr. de candidatures soumises
         rejected_application_count: Nbr. de candidatures refusées
         total_report_count: Nbr. d'offres proposées

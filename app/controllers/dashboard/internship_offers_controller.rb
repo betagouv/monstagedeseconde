@@ -153,6 +153,19 @@ module Dashboard
       end
     end
 
+    def unpublish
+      @internship_offer = InternshipOffer.find(params[:id])
+      authorize! :update, @internship_offer
+      if @internship_offer.may_unpublish?
+        @internship_offer.unpublish!
+        redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
+                    flash: { success: 'Votre annonce a bien été dépubliée' }
+      else
+        redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
+                    flash: { warning: 'Votre annonce n\'a pas pu être dépubliée' }
+      end
+    end
+
     def republish
       anchor = 'max_candidates_fields'
       warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places et des semaines de stage"

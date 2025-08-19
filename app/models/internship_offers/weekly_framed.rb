@@ -67,7 +67,7 @@ module InternshipOffers
       published? ? 'oui' : 'non'
     end
 
-    def supplied_applications
+    def approved_applications_count
       InternshipApplication.where(internship_offer_id: id)
                            .where(aasm_state: %w[approved convention_signed])
                            .count

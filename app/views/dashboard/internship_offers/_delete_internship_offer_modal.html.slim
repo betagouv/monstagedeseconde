@@ -1,4 +1,4 @@
-dialog.fr-modal id="discard-internship-offer-modal" role="dialog"
+dialog.fr-modal id="discard-internship-offer-modal" role="dialog" data-controller="offer-discard"
   .fr-container.fr-container--fluid.fr-container-md
     .fr-grid-row.fr-grid-row--center
       .fr-col-12.fr-col-md-8.fr-col-lg-6
@@ -10,10 +10,28 @@ dialog.fr-modal id="discard-internship-offer-modal" role="dialog"
             h1#fr-modal-2-title.fr-modal__title
               |  Supprimer l'offre
             p
-              | En confirmant cette action l’offre n’apparaitra plus sur votre tableau de bord.
-          .fr-modal__footer
-            = button_to "Confirmer",
+              |Pourquoi souhaitez-vous supprimer cette offre ?
+            p
+              select.fr-select.fr-select--lg[
+                name="internship_offer[discard_reason]"
+                id="internship_offer_discard_reason"
+                data-offer-discard-target='reason'
+                data-action="change->offer-discard#onChange"]
+
+
+                option(value="") Sélectionnez une raison
+                option(value="duplicate") Offre dupliquée
+                option(value="no_longer_needed") J’ai pourvu cette offre et je ne souhaite plus qu’elle apparaisse sur 1 élève 1 stage
+                option(value="other") Autre - offre créé par erreur
+          .fr-modal__footer.fr-hidden data-offer-discard-target='unpublishBlock'
+            = button_to "Masquer",
+                        unpublish_dashboard_internship_offer_path(internship_offer),
+                        class: "fr-btn",
+                        data: {turbo: false}
+
+          .fr-modal__footer.fr-hidden data-offer-discard-target='softDeleteBlock'
+            = button_to "Supprimer",
                         dashboard_internship_offer_path(internship_offer),
                         class: "fr-btn",
-                        data: {turbo: false, 'test-delete-id': "delete-#{dom_id(internship_offer)}" },
+                        data: {turbo: false, 'test-delete-id': "delete-#{dom_id(internship_offer)}",:'offer-discard-target' => "submitButton" },
                         method: :delete

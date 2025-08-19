@@ -63,7 +63,7 @@ module InternshipApplications
         get(new_internship_offer_internship_application_path(internship_offer))
         assert_response :success
         assert_select 'p.test-missing-school-weeks',
-                      text: "Attention, vérifiez bien que les dates de stage proposées dans l'annonce \ncorrespondent à vos dates de stage. Votre chef d'établissement n'a en \neffet pas renseigné les semaines de stage de votre établissement."
+                      text: "Attention, vérifiez bien que les dates de stage proposées dans l'annonce correspondent à vos dates de stage. Votre chef d'établissement n'a en effet pas renseigné les semaines de stage de votre établissement."
       end
     end
 
