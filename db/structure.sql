@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -1037,7 +1038,7 @@ CREATE TABLE public.internship_agreements (
     employer_accept_terms boolean DEFAULT false,
     weekly_hours text[] DEFAULT '{}'::text[],
     daily_hours jsonb DEFAULT '{}'::jsonb,
-    main_teacher_accept_terms boolean DEFAULT false,
+    teacher_accept_terms boolean DEFAULT false,
     school_delegation_to_sign_delivered_at date,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
@@ -1869,6 +1870,38 @@ ALTER SEQUENCE public.planning_grades_id_seq OWNED BY public.planning_grades.id;
 
 
 --
+-- Name: planning_reserved_schools; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.planning_reserved_schools (
+    id bigint NOT NULL,
+    planning_id bigint NOT NULL,
+    school_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: planning_reserved_schools_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.planning_reserved_schools_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: planning_reserved_schools_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.planning_reserved_schools_id_seq OWNED BY public.planning_reserved_schools.id;
+
+
+--
 -- Name: planning_weeks; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1983,6 +2016,38 @@ CREATE SEQUENCE public.practical_infos_id_seq
 --
 
 ALTER SEQUENCE public.practical_infos_id_seq OWNED BY public.practical_infos.id;
+
+
+--
+-- Name: reserved_schools; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.reserved_schools (
+    id bigint NOT NULL,
+    internship_offer_id bigint NOT NULL,
+    school_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: reserved_schools_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.reserved_schools_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: reserved_schools_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.reserved_schools_id_seq OWNED BY public.reserved_schools.id;
 
 
 --
@@ -2873,6 +2938,13 @@ ALTER TABLE ONLY public.planning_grades ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
+-- Name: planning_reserved_schools id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_reserved_schools ALTER COLUMN id SET DEFAULT nextval('public.planning_reserved_schools_id_seq'::regclass);
+
+
+--
 -- Name: planning_weeks id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2891,6 +2963,13 @@ ALTER TABLE ONLY public.plannings ALTER COLUMN id SET DEFAULT nextval('public.pl
 --
 
 ALTER TABLE ONLY public.practical_infos ALTER COLUMN id SET DEFAULT nextval('public.practical_infos_id_seq'::regclass);
+
+
+--
+-- Name: reserved_schools id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reserved_schools ALTER COLUMN id SET DEFAULT nextval('public.reserved_schools_id_seq'::regclass);
 
 
 --
@@ -3335,6 +3414,14 @@ ALTER TABLE ONLY public.planning_grades
 
 
 --
+-- Name: planning_reserved_schools planning_reserved_schools_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_reserved_schools
+    ADD CONSTRAINT planning_reserved_schools_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: planning_weeks planning_weeks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3356,6 +3443,14 @@ ALTER TABLE ONLY public.plannings
 
 ALTER TABLE ONLY public.practical_infos
     ADD CONSTRAINT practical_infos_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: reserved_schools reserved_schools_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reserved_schools
+    ADD CONSTRAINT reserved_schools_pkey PRIMARY KEY (id);
 
 
 --
@@ -4180,6 +4275,20 @@ CREATE INDEX index_planning_grades_on_planning_id ON public.planning_grades USIN
 
 
 --
+-- Name: index_planning_reserved_schools_on_planning_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_planning_reserved_schools_on_planning_id ON public.planning_reserved_schools USING btree (planning_id);
+
+
+--
+-- Name: index_planning_reserved_schools_on_school_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_planning_reserved_schools_on_school_id ON public.planning_reserved_schools USING btree (school_id);
+
+
+--
 -- Name: index_planning_weeks_on_planning_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4219,6 +4328,20 @@ CREATE INDEX index_plannings_on_school_id ON public.plannings USING btree (schoo
 --
 
 CREATE INDEX index_practical_infos_on_coordinates ON public.practical_infos USING gist (coordinates);
+
+
+--
+-- Name: index_reserved_schools_on_internship_offer_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_reserved_schools_on_internship_offer_id ON public.reserved_schools USING btree (internship_offer_id);
+
+
+--
+-- Name: index_reserved_schools_on_school_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_reserved_schools_on_school_id ON public.reserved_schools USING btree (school_id);
 
 
 --
@@ -4779,6 +4902,14 @@ ALTER TABLE ONLY public.internship_offer_infos
 
 
 --
+-- Name: reserved_schools fk_rails_654a23d8dc; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reserved_schools
+    ADD CONSTRAINT fk_rails_654a23d8dc FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+
+
+--
 -- Name: internship_application_weeks fk_rails_664e7390e4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4808,6 +4939,14 @@ ALTER TABLE ONLY public.user_groups
 
 ALTER TABLE ONLY public.entreprises
     ADD CONSTRAINT fk_rails_6efe4d9b92 FOREIGN KEY (sector_id) REFERENCES public.sectors(id);
+
+
+--
+-- Name: planning_reserved_schools fk_rails_74c560c462; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_reserved_schools
+    ADD CONSTRAINT fk_rails_74c560c462 FOREIGN KEY (planning_id) REFERENCES public.plannings(id);
 
 
 --
@@ -4856,6 +4995,14 @@ ALTER TABLE ONLY public.internship_offers
 
 ALTER TABLE ONLY public.internship_application_state_changes
     ADD CONSTRAINT fk_rails_8ab7e06756 FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
+
+
+--
+-- Name: reserved_schools fk_rails_8da999fe9e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.reserved_schools
+    ADD CONSTRAINT fk_rails_8da999fe9e FOREIGN KEY (school_id) REFERENCES public.schools(id);
 
 
 --
@@ -5011,6 +5158,14 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: planning_reserved_schools fk_rails_d6800a0532; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.planning_reserved_schools
+    ADD CONSTRAINT fk_rails_d6800a0532 FOREIGN KEY (school_id) REFERENCES public.schools(id);
+
+
+--
 -- Name: users_internship_offers_histories fk_rails_da8186a772; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5113,10 +5268,14 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250715103501'),
 ('20250526084703'),
 ('20250516153906'),
 ('20250516101824'),
+('20250514170128'),
 ('20250509153105'),
+('20250508084920'),
+('20250507135948'),
 ('20250424000000'),
 ('20250423092552'),
 ('20250422100745'),

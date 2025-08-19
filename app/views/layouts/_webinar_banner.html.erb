@@ -1,4 +1,4 @@
-<% if @banner_message['top_banner.visible'].value %>
+<% if @banner_message&.[]('top_banner.visible')&.value %>
   <div class="fr-notice fr-notice--info d-none d-sm-block">
     <div class="fr-container" >
       <div class="fr-notice__body" >

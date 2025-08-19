@@ -48,7 +48,7 @@
     .form-group
       = form.label :class_room_id, class: 'fr-label' do
         = 'Classe'
-        = form.rg2a_required_content_tag unless current_user.main_teacher?
+        = form.rg2a_required_content_tag unless current_user.teacher?
       = form.select :class_room_id,
                  options_from_collection_for_select(current_user.school.class_rooms, :id, :name, current_user.class_room_id),
                  { prompt: class_rooms_options_for_default },

@@ -7,7 +7,7 @@ module Presenters
                  code_uai
                  human_kind].freeze
       METHODS = %i[total_student_count
-                   total_main_teacher_count
+                   total_teacher_count
                    current_total_approved_internship_applications_count
                    human_school_manager
                    full_address].freeze

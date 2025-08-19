@@ -1,23 +1,29 @@
-# TODO: remove sti_preload if not mandatory
-# require 'sti_preload'
+# Following is specific to planning and shall not be part of internship_offer
 class Planning < ApplicationRecord
   include StepperProxy::Planning
 
-  # Following is specific to planning and shall not be part of internship_offer
 
   # Relations
   belongs_to :entreprise
+  has_one :internship_offer, dependent: :destroy
+
   has_many :planning_weeks,
            dependent: :destroy,
            foreign_key: :planning_id,
            inverse_of: :planning
   has_many :weeks, through: :planning_weeks
+
   has_many :planning_grades,
            dependent: :destroy,
            foreign_key: :planning_id,
            inverse_of: :planning
   has_many :grades, through: :planning_grades
-  has_one :internship_offer, dependent: :destroy
+
+  has_many :planning_reserved_schools,
+           dependent: :destroy,
+           foreign_key: :planning_id,
+           inverse_of: :planning
+  has_many :schools, through: :planning_reserved_schools
 
   # Callbacks
 

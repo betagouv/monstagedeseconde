@@ -76,8 +76,10 @@
     - if can?(:read_employer_name, internship_offer)
       .row
         .col-12
+          - work_location = internship_offer&.internship_occupation.presence
+          - internship_work_place_coordinates = work_location && work_location.coordinates ? work_location.coordinates : internship_offer.coordinates
           = react_component("Map",
-                      props: { internshipOffer: { id: internship_offer.id, lat: internship_offer.coordinates.latitude, lon: internship_offer.coordinates.longitude } })
+                      props: { internshipOffer: { id: internship_offer.id, lat: internship_work_place_coordinates.latitude, lon: internship_work_place_coordinates.longitude } })
 - unless hidden_parts
   .row
     .col-12

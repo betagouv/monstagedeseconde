@@ -93,7 +93,7 @@ class Ability
       internship_offer.grades.include?(user.grade) &&
         !user.internship_applications.exists?(internship_offer_id: internship_offer.id) && # user has not already applied
         user.other_approved_applications_compatible?(internship_offer:) &&
-        (!internship_offer.reserved_to_school? || internship_offer.school_id == user.school_id)
+        (!internship_offer.reserved_to_schools? || user.school_id.in?(internship_offer.schools.pluck(:id)))
     end
     can %i[submit_internship_application update show internship_application_edit],
         InternshipApplication do |internship_application|

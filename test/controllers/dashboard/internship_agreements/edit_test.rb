@@ -64,14 +64,6 @@ module Dashboard::InternshipOffers
       assert_response :success
     end
 
-    # As Main Teacher
-    test 'GET #edit as main teacher if belong to school' do
-      internship_agreement = create(:internship_agreement, employer_accept_terms: true)
-      sign_in(create(:main_teacher, school: internship_agreement.internship_application.student.school))
-      get edit_dashboard_internship_agreement_path(uuid: internship_agreement.uuid)
-      assert_response :success
-    end
-
     # As Other
     test 'GET #edit as other if belong to school' do
       internship_agreement = create(:internship_agreement, employer_accept_terms: true)

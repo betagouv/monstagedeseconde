@@ -1,4 +1,4 @@
-import { Turbo } from "@hotwired/turbo-rails";
+import { Turbo } from '@hotwired/turbo-rails';
 import $ from 'jquery';
 
 export const fetchSearchParamsFromUrl = () => {
@@ -15,7 +15,7 @@ export const addParamToSearchParams = (param, paramValue) => {
       searchParams.delete(param);
     } else {
       searchParams.delete(param);
-      paramValue.forEach(value => searchParams.append(param, value));
+      paramValue.forEach((value) => searchParams.append(param, value));
     }
   } else {
     if (!paramValue || paramValue.length === 0) {
@@ -27,19 +27,15 @@ export const addParamToSearchParams = (param, paramValue) => {
   return searchParams;
 }
 
-export const removeParam = (param_name) => {
+export const removeParam = (paramName) => {
   const searchParams = fetchSearchParamsFromUrl();
-  searchParams.delete(param_name);
+  searchParams.delete(paramName);
   return searchParams;
 }
 
 // it updates url without reloading the page
 export const updateURLWithParam = (searchParams) => {
   window.history.replaceState({}, '', `${window.location.pathname}?${searchParams.toString()}`);
-}
-
-export const changeURLFromEvent = (event, param) => {
-  visitURLWithParam(param, $(event.target).val());
 }
 
 export const visitURLWithParam = (param, paramValue) => {
@@ -52,6 +48,10 @@ export const visitURLWithParam = (param, paramValue) => {
     searchParams.set(param, paramValue);
   }
   turboVisitsWithSearchParams(searchParams)
+}
+
+export const changeURLFromEvent = (event, param) => {
+  visitURLWithParam(param, $(event.target).val());
 }
 
 export const visitURLWithOneParam = (param, paramValue) => {
@@ -77,8 +77,6 @@ export const turboVisitsWithSearchParams = (searchParams) => {
     `${window.location.origin}${window.location.pathname}?${searchParams.toString()}`,
   );
 }
-
-
 
 export const clearParamAndVisits = (param_name )=> {
   turboVisitsWithSearchParams(removeParam(param_name));

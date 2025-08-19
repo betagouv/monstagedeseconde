@@ -33,7 +33,7 @@ module Api
     def as_json(options = {})
       super(options.merge(only: %i[id name department zipcode],
                           methods: %i[class_rooms] +
-                                   %i[name city]) do |key, default, options|
+                                   %i[name city qpv rep_kind]) do |key, default, options|
                                      default + options
                                    end)
     end

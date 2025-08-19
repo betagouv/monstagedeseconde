@@ -88,13 +88,13 @@
                 quotidien atteint 4 heures 30, l’élève doit bénéficier
                 d’un temps de pause de 30 minutes consécutives minimum.
     .row.fr-mt-6w
-      .col-6
+      #reserved-school-component.col-6
         = react_component("ReservedSchoolInput",
-                          props: { label: "Commune ou nom de l'établissement pour lequel le stage est reservé",
+                          props: { label: "Saisissez la ou les communes ou noms des établissements pour lequel le stage est reservé",
                                    required: false,
                                    resourceName: form.object_name,
                                    selectClassRoom: false,
-                                   existingSchool: form.object&.school&.as_json})
+                                   existingSchools: form.object&.schools&.as_json})
     .row.fr-mt-6w
       .col-6
         .row
@@ -103,7 +103,7 @@
               form: form,
               field: :rep,
               title: nil,
-              label: 'Ce stage est réservé aux établissements du réseau d\'éducation prioritaire (REP) ?',
+              label: 'Ce stage est réservé aux collèges classés en éducation prioritaire (REP et REP+) ?',
               options: {}
 
         .row
@@ -112,7 +112,7 @@
               form: form,
               field: :qpv,
               title: nil,
-              label: 'Ce stage est réservé aux établissements des quartiers prioritaires de la ville (QPV) ?',
+              label: 'Ce stage est réservé aux lycées en quartiers prioritaires de la ville (QPV) ?',
               options: {}
       .col-6
         .fr-alert.fr-alert--info
@@ -123,7 +123,7 @@
               |
                 Pour concrétiser votre engagement en faveur de l'égalité des chances,
                 pour valoriser votre démarche RSE, vous pouvez  privilégier l’accueil d'élèves
-                des collèges en éducation prioritaire (EP) ou de d’élèves en lycées
+                des collèges en éducation prioritaire (EP) ou d’élèves des lycées
                 en quartiers prioritaires de la ville (QPV) : seuls ces élèves
                 peuvent candidater à votre offre
 
