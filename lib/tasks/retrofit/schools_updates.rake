@@ -65,4 +65,21 @@ namespace :retrofit do
       end
     end
   end
+
+  desc 'migrating school_id from school to reserved_schools'
+  task :migrate_school_id => :environment do
+    PrettyConsole.announce_task 'Switching schools to reserved schools' do
+      InternshipOffers::WeeklyFramed.kept.find_each do |offer|
+        next if offer.school_id.nil?
+
+        ReservedSchool.find_or_create_by!(
+          school_id: offer.school_id,
+          internship_offer_id: offer.id
+        )
+        PrettyConsole.print_in_green '.'
+      end
+      puts ''
+      PrettyConsole.print_in_cyan 'Done with migrating school_id to reserved_schools'
+    end
+  end
 end

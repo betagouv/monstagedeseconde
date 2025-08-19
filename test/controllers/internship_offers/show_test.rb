@@ -9,23 +9,6 @@ module InternshipOffers
     #
     # School Manager
     #
-    # test 'GET #show as SchoolManagement does not display application when internship_offer is not reserved to school' do
-    #   school = create(:school, :with_school_manager)
-    #   class_room = create(:class_room, school: school)
-    #   student = create(:student, class_room: class_room, school: school)
-    #   main_teacher = create(:main_teacher, class_room: class_room, school: school)
-
-    #   sign_in(main_teacher)
-    #   internship_offer = create(:weekly_internship_offer_2nde)
-    #   get internship_offer_path(internship_offer)
-
-    #   assert_response :success
-    #   assert_select 'title', "Offre de stage '#{internship_offer.title}' | 1élève1stage"
-    #   assert_select 'form[id=?]', 'new_internship_application', count: 0
-    #   assert_select 'strong.tutor_name', text: internship_offer.tutor_name
-    #   assert_select 'ul li.tutor_phone', text: "Portable : #{internship_offer.tutor_phone}"
-    #   assert_select "a.tutor_email[href=\"mailto:#{internship_offer.tutor_email}\"]",
-    #                 text: internship_offer.tutor_email
     # end
 
     #
@@ -155,12 +138,13 @@ module InternshipOffers
       travel_to Date.new(2023, 10, 1) do
         student = create(:student, school: create(:school))
         other_school = create(:school)
-        internship_offer = create(:weekly_internship_offer_3eme, school: other_school, max_candidates: 5)
+        internship_offer = create(:weekly_internship_offer_3eme, schools: [other_school], max_candidates: 5)
+
         sign_in(student)
         get internship_offer_path(internship_offer)
 
-        assert_match "Offre réservée à l'établissement", response.body
-        assert_match internship_offer.school.name, response.body
+        assert_match 'Offre réservée à l&#39;établissement', response.body
+        assert_match internship_offer.schools.first.name, response.body
         assert_select '#new_internship_application', 0
       end
     end

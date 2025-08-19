@@ -81,7 +81,7 @@
           = render partial: "dashboard/students/internship_applications/student_internship_application",
               collection: @expired_internship_applications
 
-    - unless current_user.with_2_weeks_internships_approved?
+    - unless current_user.with_2_weeks_internships_approved? || !current_user.student?
       .row
         .col-12
           = link_to "Rechercher un autre stage",

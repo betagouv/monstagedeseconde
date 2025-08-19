@@ -34,12 +34,12 @@ module Api
       @term = term
       @grade = grade
       @school_type = if grade == 'seconde'
-                        'lycee'
-                      elsif grade == 'troisieme'
-                        'college'
-                      else
-                        nil
-                      end
+                       'lycee'
+                     elsif grade == 'troisieme'
+                       'college'
+                     else
+                       nil
+                     end
       @limit = limit
 
       query = Api::School.autocomplete_by_name_or_city(term: term)

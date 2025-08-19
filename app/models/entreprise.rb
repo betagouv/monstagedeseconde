@@ -24,21 +24,6 @@ class Entreprise < ApplicationRecord
     validates :group_id, presence: { message: 'Le ministère de tutelle est requis pour une entreprise publique' }
   end
 
-  def entreprise_coordinates=(geolocation)
-    case geolocation
-    when Hash
-      if geolocation[:latitude]
-        super(geo_point_factory(latitude: geolocation[:latitude], longitude: geolocation[:longitude]))
-      else
-        super(geo_point_factory(latitude: geolocation['latitude'], longitude: geolocation['longitude']))
-      end
-    when RGeo::Geographic::SphericalPointImpl
-      super(geolocation)
-    else
-      nil
-    end
-  end
-
   def is_fully_editable? = true
 
   def presenter

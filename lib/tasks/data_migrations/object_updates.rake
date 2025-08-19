@@ -431,6 +431,15 @@ namespace :data_migrations do
     end
   end
 
+  desc '2025-05-07 main_teacher --> teacher'
+  task 'update_main_teacher_to_teacher': :environment do
+    PrettyConsole.announce_task('update main_teacher to teacher') do
+      Users::SchoolManagement.where(main_teacher: true)
+                             .update_columns(main_teacher: false, teacher: true)
+      puts 'done.'
+    end
+  end
+  
   desc '2025-02-21 move MESR group option to MENSR'
   task 'update_mesr_group_option': :environment do
     PrettyConsole.announce_task('update mesr group option') do

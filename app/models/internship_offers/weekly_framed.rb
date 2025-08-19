@@ -28,6 +28,7 @@ module InternshipOffers
     validate :schedules_check
 
     #---------------------
+    # mother comes from duplication
     has_one :mother,
             class_name: 'InternshipOffer',
             foreign_key: 'mother_id',

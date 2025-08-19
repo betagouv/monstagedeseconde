@@ -6,13 +6,13 @@ module PlanningFormFiller
     max_candidates: 10,
     first_week: false,
     second_week: false,
-    both_weeks: true
+    both_weeks: true,
+    school_ids: []
   )
     # default values are all checked
     execute_script('document.getElementById("planning_grade_college").click()') unless with_troisieme
     execute_script('document.getElementById("planning_all_year_long_true").click()') unless all_year_long
     execute_script('document.getElementById("planning_grade_2e").click()') unless with_seconde
-
     # TODO: update weeks automatically
     legend = 'Sur quelle période proposez-vous ce stage pour les lycéens ?'
     # order matters
@@ -26,5 +26,12 @@ module PlanningFormFiller
     find('#planning_weekly_hours_start').select('08:00')
     find('#planning_weekly_hours_end').select('15:00')
     fill_in 'Pause déjeuner', with: 'test de lunch break'
+    return if school_ids.empty?
+
+    execute_script('document.getElementById("planning_is_reserved_label").click()')
+
+    school_ids.each do |school_id|
+      execute_script("var input = document.createElement('input'); input.setAttribute('type', 'hidden'); input.setAttribute('name', 'planning[school_ids][]'); input.setAttribute('value', '#{school_id}'); document.getElementById('reserved-school-component').appendChild(input);")
+    end
   end
 end

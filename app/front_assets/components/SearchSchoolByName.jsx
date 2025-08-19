@@ -6,7 +6,7 @@ import { endpoints } from '../utils/api';
 
 const StartAutocompleteAtLength = 2;
 
-export default function SearchSchool({
+export default function SearchSchoolByName({
   classes, // PropTypes.string
   label, // PropTypes.string.isRequired
   required, // PropTypes.bool.isRequired
