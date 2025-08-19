@@ -90,7 +90,7 @@ export default function ReservedSchoolInput({
             Ce stage est réservé à un ou plusieurs établissements ?
           </span>
           <small className="form-text text-muted">
-            Les stages réservés ne seront proposés qu'aux élèves des établissements sélectionnés.
+            Seuls les élèves des établissements sélectionnés peuvent y candidater .
           </small>
         </label>
       </div>
