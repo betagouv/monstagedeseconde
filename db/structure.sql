@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -711,10 +712,10 @@ CREATE TABLE public.entreprises (
     entreprise_full_address character varying(200),
     sector_id bigint NOT NULL,
     updated_entreprise_full_address boolean DEFAULT false,
-    contact_phone character varying(20),
-    internship_address_manual_enter boolean DEFAULT false,
     workspace_conditions text DEFAULT ''::text,
-    workspace_accessibility text DEFAULT ''::text
+    workspace_accessibility text DEFAULT ''::text,
+    internship_address_manual_enter boolean DEFAULT false,
+    contact_phone character varying(20)
 );
 
 
@@ -1645,11 +1646,11 @@ CREATE TABLE public.internship_offers (
     employer_chosen_name character varying(150),
     entreprise_full_address character varying(200),
     entreprise_coordinates public.geography(Point,4326),
-    period integer DEFAULT 0 NOT NULL,
     rep boolean DEFAULT false,
     qpv boolean DEFAULT false,
     workspace_conditions text DEFAULT ''::text,
     workspace_accessibility text DEFAULT ''::text,
+    period integer DEFAULT 0 NOT NULL,
     mother_id bigint,
     targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades,
     ia_score integer
@@ -4568,6 +4569,13 @@ CREATE INDEX index_users_on_school_id ON public.users USING btree (school_id);
 
 
 --
+-- Name: index_users_on_school_ids; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_school_ids ON public.users USING gin (school_ids);
+
+
+--
 -- Name: index_users_on_unlock_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5270,6 +5278,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20250507135948'),
 ('20250424000000'),
 ('20250423092552'),
+('20250422100745'),
 ('20250415143650'),
 ('20250414094208'),
 ('20250402090857'),
@@ -5299,8 +5308,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20241217104101'),
 ('20241213131559'),
 ('20241204173244'),
-('20241204164257'),
-('20241204150852'),
 ('20241115093512'),
 ('20241113151423'),
 ('20241105172654'),
@@ -5365,6 +5372,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240402150446'),
 ('20240326113043'),
 ('20240321160820'),
+('20240321000000'),
 ('20240320170403'),
 ('20240316135712'),
 ('20240315100413'),
