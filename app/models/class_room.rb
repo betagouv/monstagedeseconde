@@ -7,13 +7,14 @@ class ClassRoom < ApplicationRecord
                       dependent: :nullify
   has_many :school_managements, class_name: 'Users::SchoolManagement',
                                 dependent: :nullify do
-    def main_teachers
-      where(role: :main_teacher)
+
+    def teachers
+      where(role: :teacher)
     end
   end
 
-  def main_teacher
-    school_managements&.main_teachers&.first
+  def teacher
+    school_managements&.teachers&.first
   end
 
   def to_s

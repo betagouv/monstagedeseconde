@@ -8,14 +8,17 @@ module StepperProxy
       before_save :set_default_values
 
       # Associations
+      has_many :internship_offer_weeks
+      has_many :weeks, through: :internship_offer_weeks
+
       has_many :planning_grades,
                dependent: :destroy,
                class_name: 'PlanningGrade',
                foreign_key: :planning_id
       has_many :grades, through: :planning_grades
-      has_many :internship_offer_weeks
-      has_many :weeks, through: :internship_offer_weeks
-      belongs_to :school, optional: true
+
+
+
 
       # Validations
       validates :max_candidates,
@@ -46,7 +49,7 @@ module StepperProxy
       end
 
       def all_year_long?
-        all_troisieme_weeks = SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
+        all_troisieme_weeks = Week.selectable_from_now_until_next_school_year # TODO: remove un july 2025 SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
         offer_week_list = weeks & SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
         return true if all_troisieme_weeks.empty?
 

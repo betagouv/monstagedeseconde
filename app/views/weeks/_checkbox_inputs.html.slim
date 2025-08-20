@@ -4,7 +4,7 @@
 - error = form.object.errors[:all_year_long].any?
 - latitude = form.object.coordinates&.latitude
 - longitude = form.object.coordinates&.longitude
-- current_weeks = Week.selectable_from_now_until_next_school_year if current_weeks.blank? # TODO: remove this in july 2025
+- current_weeks = current_user.compute_weeks_lists.first
 - current_weeks = current_weeks.reject { |week| week.id.in?(SchoolTrack::Seconde.both_weeks.map(&:id))}
 
 div [data-planning-target='weeksContainer'
@@ -100,4 +100,4 @@ div [data-planning-target='weeksContainer'
           .col-12
             hr
 
-        .form-text.text-danger.d-none data-select-weeks-target="hint" Veuillez saisir au moins une semaine de stage
+        .form-text.fr-mx-3w.text-danger.d-none data-select-weeks-target="hint" Veuillez saisir au moins une semaine de stage

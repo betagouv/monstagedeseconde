@@ -3,7 +3,6 @@
 module Users
   # involve all adults in school. each are 'roled'
   #   school_manager (first registered, validated due to ac-xxx.fr email)
-  #   main_teacher (track and help students in one class)
   #   teacher (any teacher can check & help students [they can choose class_room])
   #   other (involve psychologists, teacher assistants etc...)
   class SchoolManagement < User
@@ -26,7 +25,7 @@ module Users
 
     belongs_to :class_room, optional: true
     has_many :students, through: :school
-    has_many :main_teachers, through: :school
+    has_many :teachers, through: :school
     has_many :invitations, class_name: 'Invitation', foreign_key: 'user_id', inverse_of: :author
     has_many :internship_applications, through: :students
     has_many :internship_agreements, through: :internship_applications
@@ -81,15 +80,13 @@ module Users
       Signature.signatory_roles[:other] if role == 'other'
       Signature.signatory_roles[:admin_officer] if role == 'admin_officer'
       Signature.signatory_roles[:teacher] if role == 'teacher'
-      Signature.signatory_roles[:main_teacher] if role == 'main_teacher'
     end
 
     def school_management? = true
     def school_manager? = role == 'school_manager'
     def admin_officer? = role == 'admin_officer'
     def cpe? = role == 'cpe'
-    def teacher? = %w[teacher main_teacher].include?(role)
-
+    def teacher? = role == 'teacher'
     def school_manager
       try(:school).try(:school_manager)
     end

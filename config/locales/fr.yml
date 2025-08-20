@@ -2,7 +2,7 @@ fr:
   errors:
     messages:
       accept_terms: "Veuillez accepter les conditions d'utilisation"
-      main_teacher_accept_terms: "Veuillez accepter les conditions d'utilisation de la signature"
+      teacher_accept_terms: "Veuillez accepter les conditions d'utilisation de la signature"
       school_manager_accept_terms: "Veuillez accepter les conditions d'utilisation de la signature"
       employer_accept_terms: "Veuillez accepter les conditions d'utilisation de la signature"
       not_saved:
@@ -14,7 +14,7 @@ fr:
     registrations:
       captcha_error: "Le captcha est incorrect, veuillez réessayer."
       user:
-        signed_up_but_not_approved: Votre compte est bien créé mais vous ne pouvez pas vous connecter tant que votre professeur principal ne l'a pas validé.
+        signed_up_but_not_approved: Votre compte est bien créé mais vous ne pouvez pas vous connecter tant qu'un de vos professeurs ne l'a pas validé.
         signed_up_but_unconfirmed: Un message d'activation vous a été envoyé par email. Veuillez suivre les instructions qu'il contient.
     failure:
       unconfirmed: "Un message d’activation vous a été envoyé par courrier électronique. Veuillez suivre les instructions qu’il contient."
@@ -87,9 +87,6 @@ fr:
       users/employer:
         one: Employeur
         other: Employeurs
-      users/main_teacher:
-        one: Professeur principal
-        other: professeurs principaux
       users/teacher:
         one: Professeur
         other: Professeurs
@@ -160,7 +157,7 @@ fr:
           one: Semaine de stage
           other: Semaines de stage
         total_student_count: Elèves
-        total_main_teacher_count: Profs. Principaux
+        total_teacher_count: Profs.
         human_school_manager: Chef d'établissement inscrit
         total_approved_internship_applications_count: Candidatures acceptées
         current_total_approved_internship_applications_count: Candidatures acceptées
@@ -245,7 +242,7 @@ fr:
         school_manager_accept_terms: Validée par CE
         entreprise_address: Adresse de l'entreprise
         employer_accept_terms: Validée par l'employeur
-        main_teacher_accept_terms: Validée par le professeur principal
+        teacher_accept_terms: Validée par le professeur principal
         date_range: Dates du stage
         organisation_representative_full_name: Nom de l'employeur
         organisation_representative_role: Fonction de l'employeur
@@ -292,16 +289,6 @@ fr:
               not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           cpe:
-            draft: En attente de l'offreur.
-            started_by_employer: En attente de l'offreur.
-            completed_by_employer: Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.
-            started_by_school_manager: Votre convention est remplie, mais pas validée.
-            validated: Votre convention est prête.
-            signatures_started:
-              already_signed: Le chef d'établissement a déjà signé. En attente de la signature de l’employeur.
-              not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
-            signed_by_all: Signée par toutes les parties.
-          main_teacher:
             draft: En attente de l'offreur.
             started_by_employer: En attente de l'offreur.
             completed_by_employer: Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.
@@ -502,7 +489,6 @@ fr:
         roles:
           teacher: Professeur
           school_manager: Chef d'établissement
-          main_teacher: Professeur principal
           other: Autre
 
       user:
@@ -517,7 +503,6 @@ fr:
         first_name: Prénom
         gender: Sexe
         last_name: Nom
-        main_teacher: "Professeur principal"
         operator: Association
         other: "Autres fonctions"
         phone: Téléphone mobile
@@ -817,7 +802,6 @@ fr:
     employer: "Entreprise"
     school_manager: "Chef d'établissement"
     teacher: "Professeur"
-    main_teacher: "Professeur principal"
     other: "Autre fonction"
   flash:
     actions:
@@ -833,7 +817,6 @@ fr:
       cpe: "CPE"
       school_manager: "Chef d'établissement"
       teacher: "Professeur"
-      main_teacher: "Professeur principal"
       other: "Autre fonction"
 
   date:

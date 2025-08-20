@@ -52,9 +52,9 @@ module Presenters
       weeks.empty?
     end
 
-    def str_weeks_display(ripping_of_the_past: true)
-      troisieme_weeks = weeks & (ripping_of_the_past ? Week.troisieme_selectable_weeks : Week.troisieme_weeks)
-      seconde_weeks = weeks & (ripping_of_the_past ? Week.seconde_selectable_weeks : Week.seconde_weeks)
+    def str_weeks_display(ripping_off_the_past: true)
+      troisieme_weeks = weeks & (ripping_off_the_past ? Week.troisieme_selectable_weeks : Week.troisieme_weeks)
+      seconde_weeks = weeks & (ripping_off_the_past ? Week.seconde_selectable_weeks : Week.seconde_weeks)
       label_troisieme_weeks = nil
       label_seconde_weeks = nil
 

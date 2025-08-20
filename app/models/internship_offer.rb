@@ -58,16 +58,25 @@ class InternshipOffer < ApplicationRecord
   has_many :favorites
   has_many :users, through: :favorites
   has_many :users_internship_offers_histories, dependent: :destroy
+
   has_many :internship_offer_weeks,
            dependent: :destroy,
            foreign_key: :internship_offer_id,
            inverse_of: :internship_offer
   has_many :weeks, through: :internship_offer_weeks
+
   has_many :internship_offer_grades,
            dependent: :destroy,
            foreign_key: :internship_offer_id,
            inverse_of: :internship_offer
   has_many :grades, through: :internship_offer_grades
+
+  has_many :reserved_schools,
+            dependent: :destroy,
+            class_name: 'ReservedSchool',
+            foreign_key: :internship_offer_id,
+            inverse_of: :internship_offer
+  has_many :schools, through: :reserved_schools
 
   has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy
 
@@ -344,8 +353,8 @@ class InternshipOffer < ApplicationRecord
     presenter.first_monday
   end
 
-  def reserved_to_school?
-    school.present?
+  def reserved_to_schools?
+    schools.present?
   end
   # def last_monday
   #   I18n.l internship_offer_weeks.last.week.week_date,

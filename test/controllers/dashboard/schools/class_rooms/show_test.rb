@@ -26,8 +26,8 @@ module Dashboard
       test 'GET class_rooms#show as SchoolManagement with weeks declared contains key navigations links' do
         school = create(:school, :with_school_manager)
         class_room = create(:class_room, school: school)
-        main_teacher = create(:main_teacher, school: school, class_room: class_room)
-        sign_in(main_teacher)
+        teacher = create(:teacher, school: school, class_room: class_room)
+        sign_in(teacher)
 
         get dashboard_school_class_room_students_path(school, class_room)
         assert_response :success

@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import $ from 'jquery';
-import { useDebounce } from 'use-debounce';
 import Downshift from 'downshift';
-import SchoolPropType from '../prop_types/school';
 import SchoolSelectInput from './search_school/SchoolSelectInput';
 import ClassRoomInput from './search_school/ClassRoomInput';
 import { endpoints } from '../utils/api';
@@ -11,13 +8,15 @@ import { endpoints } from '../utils/api';
 const StartAutocompleteAtLength = 2;
 
 export default function SearchSchool({
-  classes, // PropTypes.string
-  label, // PropTypes.string.isRequired
-  required, // PropTypes.bool.isRequired
-  resourceName, // PropTypes.string.isRequired
-  selectClassRoom, // PropTypes.bool.isRequired
-  existingSchool, // PropTypes.objectOf(SchoolPropType)
-  existingClassRoom, // PropTypes.objectOf(PropTypes.object)
+  classes,
+  label,
+  required,
+  resourceName,
+  selectClassRoom,
+  existingSchools,
+  existingClassRoom,
+  addSchoolToSchoolList,
+  showSchoolAddingHint
 }) {
   const [currentRequest, setCurrentRequest] = useState(null);
   const [requestError, setRequestError] = useState(null);
@@ -36,12 +35,14 @@ export default function SearchSchool({
 
   const [grade, setGrade] = useState(null);
 
+
+
   const currentCityString = () => {
     if (city === null || city === undefined) {
       return '';
     }
-    return city.length === 0 && existingSchool
-      ? existingSchool.city
+    return city.length === 0 && existingSchools.length > 0
+      ? existingSchools.slice(-1)[0].city
       : city.replace(/<b>/g, '').replace(/<\/b>/g, '');
   };
 
@@ -109,6 +110,24 @@ export default function SearchSchool({
     setChosenCity(selectedItem);
     setAutocompleteCitySuggestions({});
     setSearchSchoolsSuggestions([]);
+    if((selectedItem.id != undefined) && (selectedItem.name != undefined )) {
+      addSchoolToSchoolList(
+        { schoolId: selectedItem.id,
+          schoolName: selectedItem.name,
+          schoolQpv: selectedItem.qpv,
+          schoolRepKind: selectedItem.rep_kind
+        },
+      );
+      onResetSearch();
+    }
+
+  };
+
+  const schoolNameComputed = (school) => {
+  if (!school) return '';
+
+  const rep_wording = school.rep_kind === 'rep_plus' ? ' [REP+]' : school.rep_kind === 'rep' ? ' [REP]' : '';
+    return (school.pg_search_highlight_name || school.name) + (school.qpv ? ' [QPV]' : '') + rep_wording;
   };
 
   const inputChange = (event) => {
@@ -242,7 +261,7 @@ export default function SearchSchool({
                             >
                               <span
                                 dangerouslySetInnerHTML={{
-                                  __html: currentSchool.pg_search_highlight_name || currentSchool.name,
+                                  __html: schoolNameComputed(currentSchool),
                                 }}
                               />
                               <br />
@@ -299,19 +318,26 @@ export default function SearchSchool({
   return (
     <div className="autocomplete-school-container">
       {renderAutocompleteInput()}
+      {(showSchoolAddingHint) && (
+        <small className="text-muted">
+          Vous pouvez réserver ce stage à plusieurs établissements en recommençant une recherche.
+        </small>
+      )}
       {city !== null && (
         <>
-          {
-            <SchoolSelectInput
-              setClassRoomsSuggestions={setClassRoomsSuggestions}
-              selectedSchool={selectedSchool}
-              setSelectedSchool={setSelectedSchool}
-              schoolsInCitySuggestions={schoolsInCitySuggestions}
-              resourceName={resourceName}
-              existingSchool={existingSchool}
-              classes={classes}
-            />
-          }
+          <SchoolSelectInput
+            setClassRoomsSuggestions={setClassRoomsSuggestions}
+            selectedSchool={selectedSchool}
+            setSelectedSchool={setSelectedSchool}
+            schoolsInCitySuggestions={schoolsInCitySuggestions}
+            resourceName={resourceName}
+            existingSchools={existingSchools}
+            classes={classes}
+            addSchoolToSchoolList={addSchoolToSchoolList}
+            onResetSearch={onResetSearch}
+            schoolNameComputed={schoolNameComputed}
+          />
+
           {selectClassRoom && (
             <ClassRoomInput
               selectedClassRoom={selectedClassRoom}

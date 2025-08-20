@@ -15,7 +15,6 @@ class DeviseMailerPreview < ActionMailer::Preview
 
   %w[school_manager
      teacher
-     main_teacher
      other].map do |role|
     define_method(:"confirmation_instructions_#{role.downcase}") do
       CustomDeviseMailer.confirmation_instructions(

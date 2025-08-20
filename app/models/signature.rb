@@ -8,8 +8,7 @@ class Signature < ApplicationRecord
     cpe: 'cpe',
     admin_officer: 'admin_officer',
     other: 'other',
-    teacher: 'teacher',
-    main_teacher: 'main_teacher'
+    teacher: 'teacher'
   }
 
   SCHOOL_MANAGEMENT_SIGNATORY_ROLE = %w[
@@ -18,7 +17,6 @@ class Signature < ApplicationRecord
     admin_officer
     other
     teacher
-    main_teacher
   ].freeze
 
   REQUESTED_SIGNATURES_COUNT = 2

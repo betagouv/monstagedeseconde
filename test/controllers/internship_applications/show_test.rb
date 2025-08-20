@@ -40,11 +40,11 @@ module InternshipApplications
         school = create(:school, :with_school_manager)
         class_room = create(:class_room, school:)
         student = create(:student, class_room:, school:)
-        main_teacher = create(:main_teacher, class_room:, school:)
+        teacher = create(:teacher, class_room:, school:)
         internship_offer = create(:weekly_internship_offer_3eme)
         internship_application = create(:weekly_internship_application, :submitted, internship_offer:,
                                                                                     student:)
-        sign_in(main_teacher)
+        sign_in(teacher)
         get internship_offer_internship_application_path(internship_offer,
                                                          uuid: internship_application.uuid)
         assert_response :success
