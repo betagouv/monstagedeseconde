@@ -27,11 +27,10 @@
                                               class: 'fr-mx-n1v',
                                               alt: 'Dupliquez cette offre de stage')
         - if can?(:unpublish, @internship_offer)
-          - if @internship_offer.published?
-            = button_to 'Masquer',
-                        unpublish_dashboard_internship_offer_path(@internship_offer),
-                        data: { turbo: false },
-                        class: 'fr-btn fr-btn--secondary'
+          = button_to 'Masquer',
+                      unpublish_dashboard_internship_offer_path(@internship_offer),
+                      data: { turbo: false },
+                      class: 'fr-btn fr-btn--secondary'
       - else # unpublished
         - if can?(:update, @internship_offer)
           = link_to 'Modifier',

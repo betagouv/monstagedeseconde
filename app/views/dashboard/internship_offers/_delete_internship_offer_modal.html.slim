@@ -20,9 +20,8 @@ dialog.fr-modal id="discard-internship-offer-modal" role="dialog" data-controlle
 
 
                 option(value="") Sélectionnez une raison
-                option(value="duplicate") Offre dupliquée
                 option(value="no_longer_needed") J’ai pourvu cette offre et je ne souhaite plus qu’elle apparaisse sur 1 élève 1 stage
-                option(value="other") Autre - offre créé par erreur
+                option(value="other")  Autre motif (ex : offre créée par erreur)
           .fr-modal__footer.fr-hidden data-offer-discard-target='unpublishBlock'
             = button_to "Masquer",
                         unpublish_dashboard_internship_offer_path(internship_offer),
