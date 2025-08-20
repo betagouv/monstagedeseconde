@@ -213,6 +213,9 @@ class Ability
       internship_offer.employer_id == user.id &&
         internship_offer.last_date > SchoolYear::Current.new.offers_beginning_of_period
     end
+    can :unpublish, InternshipOffer do |internship_offer|
+      internship_offer.employer_id == user.id && internship_offer.published?
+    end
     can %i[create see_tutor], InternshipOffer
     can %i[read discard], InternshipOffer, employer_id: user.team_members_ids
     can %i[update], InternshipOffer do |internship_offer|

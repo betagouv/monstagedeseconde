@@ -92,45 +92,58 @@ module Reporting
         assert_equal 1, retrieve_html_value('test-total-female-applications', 'test-approved-applications', response)
         assert_equal 0, retrieve_html_value('test-total-no-gender-applications', 'test-approved-applications', response)
         assert_equal 1, retrieve_html_value('test-male-approved-applications', 'test-approved-applications', response)
-        assert_equal 0, retrieve_html_value('test-female-approved-applications', 'test-male-approved-applications', response)
-        assert_equal 0, retrieve_html_value('test-no-gender-approved-applications', 'test-male-approved-applications', response)
+        assert_equal 0,
+                     retrieve_html_value('test-female-approved-applications', 'test-male-approved-applications',
+                                         response)
+        assert_equal 0,
+                     retrieve_html_value('test-no-gender-approved-applications', 'test-male-approved-applications',
+                                         response)
 
         get reporting_internship_offers_path(department: department_name, dimension: 'group')
         assert_response :success
         assert_equal 1, retrieve_html_value('test-total-report', 'test-total-applications', response)
-        assert_equal "4", css_select('tfoot td.test-total-applications').first.text
-        assert_equal "3", css_select('tfoot td.test-total-male-applications').first.text
-        assert_equal "1", css_select('tfoot td.test-total-female-applications').first.text
-        assert_equal "1", css_select('tfoot td.test-approved-applications').first.text
-        assert_equal "0", css_select('tfoot td.test-total-no-gender-applications').first.text
-        assert_equal "1", css_select('tfoot td.test-male-approved-applications').first.text
-        assert_equal "0", css_select('tfoot td.test-female-approved-applications').first.text
-        assert_equal "0", css_select('tfoot td.test-no-gender-approved-applications').first.text
+        assert_equal '4', css_select('tfoot td.test-total-applications').first.text
+        assert_equal '3', css_select('tfoot td.test-total-male-applications').first.text
+        assert_equal '1', css_select('tfoot td.test-total-female-applications').first.text
+        assert_equal '1', css_select('tfoot td.test-approved-applications').first.text
+        assert_equal '0', css_select('tfoot td.test-total-no-gender-applications').first.text
+        assert_equal '1', css_select('tfoot td.test-male-approved-applications').first.text
+        assert_equal '0', css_select('tfoot td.test-female-approved-applications').first.text
+        assert_equal '0', css_select('tfoot td.test-no-gender-approved-applications').first.text
         # null
         assert_equal 0, retrieve_html_value('test-total-report-null', 'test-total-applications', response)
         assert_equal 0, retrieve_html_value('test-total-applications-null', 'test-total-male-applications', response)
-        assert_equal 0, retrieve_html_value('test-total-male-applications-null', 'test-total-female-applications', response)
-        assert_equal 0, retrieve_html_value('test-total-female-applications-null', 'test-approved-applications', response)
-        assert_equal 0, retrieve_html_value('test-approved-applications-null', 'test-custom-track-approved-applications', response)
-        assert_equal 0, retrieve_html_value('test-male-approved-applications-null', 'test-approved-applications', response)
-        assert_equal 0, retrieve_html_value('test-female-approved-applications-null', 'test-male-approved-applications', response)
-        assert_equal 0, retrieve_html_value('test-no-gender-approved-applications-null', 'test-male-approved-applications', response)
+        assert_equal 0,
+                     retrieve_html_value('test-total-male-applications-null', 'test-total-female-applications',
+                                         response)
+        assert_equal 0,
+                     retrieve_html_value('test-total-female-applications-null', 'test-approved-applications', response)
+        assert_equal 0,
+                     retrieve_html_value('test-approved-applications-null', 'test-custom-track-approved-applications',
+                                         response)
+        assert_equal 0,
+                     retrieve_html_value('test-male-approved-applications-null', 'test-approved-applications', response)
+        assert_equal 0,
+                     retrieve_html_value('test-female-approved-applications-null', 'test-male-approved-applications',
+                                         response)
+        assert_equal 0,
+                     retrieve_html_value('test-no-gender-approved-applications-null',
+                                         'test-male-approved-applications', response)
 
         get reporting_internship_offers_path(department: department_name, is_public: false, dimension: 'group')
         assert_response :success
-        puts '--- writing html in debug_file.html ---'
-        puts ''
-        html = Nokogiri::HTML(response.body)
-        File.open('debug_file.html', 'w+') { |f| f.write html } 
-        puts '----------------------------------------'
         assert_equal 12, retrieve_html_value('test-total-report', 'test-total-applications', response)
         assert_equal 4, retrieve_html_value('test-total-applications', 'test-total-male-applications', response)
         assert_equal 3, retrieve_html_value('test-total-male-applications', 'test-total-female-applications', response)
         assert_equal 1, retrieve_html_value('test-total-female-applications', 'test-approved-applications', response)
         assert_equal 0, retrieve_html_value('test-total-no-gender-applications', 'test-approved-applications', response)
         assert_equal 1, retrieve_html_value('test-male-approved-applications', 'test-approved-applications', response)
-        assert_equal 0, retrieve_html_value('test-female-approved-applications', 'test-male-approved-applications', response)
-        assert_equal 0, retrieve_html_value('test-no-gender-approved-applications', 'test-male-approved-applications', response)
+        assert_equal 0,
+                     retrieve_html_value('test-female-approved-applications', 'test-male-approved-applications',
+                                         response)
+        assert_equal 0,
+                     retrieve_html_value('test-no-gender-approved-applications', 'test-male-approved-applications',
+                                         response)
         assert_select('test-total-report-null', false)
         assert_select('test-total-applications-null', false)
         assert_select('test-total-male-applications-null', false)

@@ -282,5 +282,19 @@ module Dashboard::InternshipOffers
         assert_equal 1, internship_offer.weeks.count
       end
     end
+    test 'POST #unpublished as employer owning internship_offer' do
+      travel_to Date.new(2024, 9, 1) do
+        employer = create(:employer)
+        internship_offer = create(:weekly_internship_offer_3eme,
+                                  weeks: Week.troisieme_selectable_weeks,
+                                  employer:,
+                                  max_candidates: 1)
+        sign_in(employer)
+        refute internship_offer.unpublished?
+        post unpublish_dashboard_internship_offer_path(internship_offer)
+        assert_redirected_to dashboard_internship_offers_path(origine: 'dashboard')
+        assert internship_offer.reload.unpublished?
+      end
+    end
   end
 end
