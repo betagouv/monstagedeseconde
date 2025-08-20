@@ -31,6 +31,9 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
+# e2e tests
+/e2e/node_modules
+
 .DS_Store
 .idea
 .vscode
