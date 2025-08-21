@@ -16,19 +16,13 @@ module Presenters
       nil
     end
 
-    def role_name
-      translator = I18n.t('activerecord.attributes.invitation.roles')
-      translator[role.to_sym]
-    end
-
-    attr_reader :email, :role, :first_name, :last_name, :author, :sent_at
+    attr_reader :email, :first_name, :last_name, :author, :sent_at
 
     private
 
     def initialize(invitation)
       @invitation     = invitation
       @email          = @invitation.email
-      @role           = @invitation.role
       @first_name     = @invitation.first_name
       @last_name      = @invitation.last_name
       @sent_at        = @invitation.sent_at

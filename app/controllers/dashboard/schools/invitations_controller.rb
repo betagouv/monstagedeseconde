@@ -15,17 +15,15 @@ module Dashboard
 
       def create
         authorize! :create_invitation, Invitation
-        if already_in_staff?(params, current_user)
+        if text_alert.present?
           redirect_to(
-              dashboard_school_users_path(school_id: fetch_school_id),
-              alert: "La personne que vous voulez inviter est déjà " \
-                     "inscrite ou en cours d'inscription"
+            dashboard_school_users_path(school_id: fetch_school_id),
+            alert: "La personne que vous voulez inviter est déjà #{text_alert}"
           ) and return
         end
 
-        @invitation = current_user.invitations.build(invitation_params)
-        @invitation.sent_at = Time.now
-        if @invitation.save && invite_staff(invitation: @invitation, from: current_user)
+        @invitation = make_invitation
+        if @invitation.save! && invite_staff(invitation: @invitation, from: current_user)
           success_message = "un message d'invitation à " \
                             "#{@invitation.first_name} #{@invitation.last_name} " \
                             "vient d'être envoyé"
@@ -50,7 +48,7 @@ module Dashboard
 
       def resend_invitation
         authorize! :create_invitation, Invitation
-        invite_staff(invitation: @invitation, from: @invitation.author )
+        invite_staff(invitation: @invitation, from: @invitation.author)
         redirect_to dashboard_school_users_path,
                     notice: 'Votre invitation a été renvoyée'
       end
@@ -61,6 +59,30 @@ module Dashboard
       end
 
       private
+
+      def make_invitation
+        current_user_uai = current_user&.school&.code_uai
+        @invitation = current_user.invitations
+                                  .build(invitation_params)
+        @invitation.sent_at = Time.now
+      end
+
+      def text_alert
+        text_alert = ''
+        text_alert = 'inscrite' if already_in_staff?(params, current_user)
+        text_alert = 'invitée' if already_invited?(params)
+        text_alert
+      end
+
+      def already_in_staff?(params, manager)
+        staff = ::Users::SchoolManagement.find_by_email(invitation_params[:email])
+
+        staff&.school == manager.school
+      end
+
+      def already_invited?(params)
+        Invitation.exists?(email: invitation_params[:email])
+      end
 
       def invitation_params
         params.require(:invitation)
@@ -76,12 +98,6 @@ module Dashboard
 
       def set_invitation
         @invitation = Invitation.find params[:id]
-      end
-
-      def already_in_staff?(params, manager)
-        staff = ::Users::SchoolManagement.find_by_email(invitation_params[:email])
-
-        staff&.school == manager.school
       end
     end
   end

@@ -7,18 +7,8 @@ module Dashboard
 
       def index
         authorize! :manage_school_users, @school
-        roles = Invitation.roles
-                          .keys
-                          .map(&:pluralize)
-                          .map(&:to_sym)
 
-        @school_employee_collection = roles.inject([]) do |whole, role|
-          whole + @school.send(role).kept
-        end
-        @school_employee_collection += [@school.school_manager] unless @school.school_manager.try(:discarded?)
-        @school_employee_collection.compact!
-
-        school_employees = current_user.school.users
+        school_employees = current_user.school.school_managements
 
         @invitations = Invitation.for_people_with_no_account_in(school_id: @school.id)
                                  .invited_by(user_id: school_employees.pluck(:id))
