@@ -110,7 +110,7 @@ group :development do
   gem 'activerecord-explain-analyze'
   gem 'ffi-rzmq'
   gem 'jupyter_on_rails'
-  gem 'letter_opener'
+  gem 'letter_opener_web'
   gem 'spring', '3.0.0'
 end
 
