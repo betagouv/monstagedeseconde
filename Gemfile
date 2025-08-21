@@ -122,7 +122,7 @@ group :test do
   gem 'minitest-fail-fast'
   gem 'minitest-reporters'
   gem 'minitest-retry'
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '>= 4.8'
   # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'capybara-screenshot'
   gem 'minitest-stub_any_instance'
