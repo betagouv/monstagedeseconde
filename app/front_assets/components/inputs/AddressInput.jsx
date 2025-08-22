@@ -104,7 +104,7 @@ export default function AddressInput({
   }, [latitude, longitude]);
 
   return (
-    <div>
+    <div className="address-input-container">
       <div className="form-group" id="test-input-full-address">
         <div className="container-downshift">
           <Downshift

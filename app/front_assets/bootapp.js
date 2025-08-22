@@ -39,6 +39,7 @@ import CountryPhoneSelect from "components/inputs/CountryPhoneSelect";
 import FullAddressInput from "components/inputs/FullAddressInput";
 import RomeInput from "components/inputs/RomeInput";
 import SirenInput from "components/inputs/SirenInput";
+import MapInput from "components/inputs/MapInput";
 
 ReactOnRails.register({
   AddressInput,
@@ -55,6 +56,7 @@ ReactOnRails.register({
   InternshipOfferResults,
   KeywordInput,
   Map,
+  MapInput,
   ReservedSchoolInput,
   SchoolList,
   SearchSchool,
