@@ -215,9 +215,12 @@ Rails.application.routes.draw do
           patch :set_to_read, on: :member
           get :school_details, on: :member
         end
-        post :publish, on: :member
-        post :remove, on: :member
-        patch :republish, to: 'internship_offers#republish', on: :member
+        member do
+          post :publish
+          post :unpublish
+          post :remove
+          patch :republish, to: 'internship_offers#republish'
+        end
       end
 
       namespace :stepper, path: 'etapes' do

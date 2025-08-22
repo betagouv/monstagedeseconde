@@ -15,19 +15,19 @@ export default function MapInput({ resourceName, currentLatitude, currentLongitu
   const [validAddress, setValidAddress] = useState(false);
   const [validatedAddress, setValidatedAddress] = useState(false);
 
-  // Coordonnées par défaut (centre de la France)
+  // default coordinates (centre de la France)
   const defaultLatitude = 46.603354;
   const defaultLongitude = 1.888334;
 
   const handleMapClick = async (e) => {
     const { lat, lng } = e.latlng;
 
-    // Supprimer l'ancien marqueur s'il existe
+    // remove old marker if it exists
     if (markerRef.current) {
       markerRef.current.remove();
     }
 
-    // Créer une icône personnalisée avec l'image importée
+    // create a custom icon with the imported image
     const customIcon = L.icon({
       iconUrl: defaultMarker,
       iconSize: [32, 32],
@@ -35,21 +35,19 @@ export default function MapInput({ resourceName, currentLatitude, currentLongitu
       popupAnchor: [0, -32]
     });
 
-    // Ajouter un nouveau marqueur avec l'icône personnalisée
     markerRef.current = L.marker([lat, lng], { icon: customIcon }).addTo(e.target);
 
-    // Mettre à jour les coordonnées
     setSelectedLatitude(lat);
     setSelectedLongitude(lng);
 
-    // Récupérer l'adresse depuis les coordonnées
+    // get address from coordinates
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`
       );
       const data = await response.json();
       console.log(data);
-      // Extraire les informations d'adresse
+      
       const address = data.address || {};
       console.log('address :', address);
       console.log('address road :', address.road);
@@ -81,8 +79,8 @@ export default function MapInput({ resourceName, currentLatitude, currentLongitu
       if (data.display_name) {
         // Diffuser les changements
         broadcast(newCoordinatesChanged({ latitude: lat, longitude: lng }));
-        broadcast(cityChanged({ city: city }));
-        broadcast(zipcodeChanged({ zipcode: zipcode }));
+        broadcast(cityChanged({ city: addressCity }));
+        broadcast(zipcodeChanged({ zipcode: addressPostcode }));
       }
     } catch (error) {
       console.error("Erreur lors de la récupération de l'adresse:", error);
@@ -95,7 +93,7 @@ export default function MapInput({ resourceName, currentLatitude, currentLongitu
     const initialLat = selectedLatitude || currentLatitude || defaultLatitude;
     const initialLng = selectedLongitude || currentLongitude || defaultLongitude;
 
-    // Créer la carte
+    // create the map
     const map = L.map(mapRef.current, {
       zoomControl: true,
       scrollWheelZoom: true,
@@ -110,7 +108,7 @@ export default function MapInput({ resourceName, currentLatitude, currentLongitu
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    // Ajouter un marqueur initial si des coordonnées existent
+    // add initial marker if coordinates exist
     if (currentLatitude && currentLongitude) {
       const customIcon = L.icon({
         iconUrl: defaultMarker,
@@ -121,10 +119,9 @@ export default function MapInput({ resourceName, currentLatitude, currentLongitu
       markerRef.current = L.marker([currentLatitude, currentLongitude], { icon: customIcon }).addTo(map);
     }
 
-    // Gérer le clic sur la carte
     map.on('click', handleMapClick);
 
-    // Forcer le recalcul de la taille de la carte
+    // force the size recalculation of the map
     setTimeout(() => {
       map.invalidateSize();
     }, 100);
@@ -151,7 +148,7 @@ export default function MapInput({ resourceName, currentLatitude, currentLongitu
 
   const validateLocation = () => {
     if (selectedLatitude && selectedLongitude) {      
-      // Fermer la carte seulement après validation
+      // close the map only after validation
       setMapVisible(false);
       setValidatedAddress(true);
 
@@ -313,7 +310,7 @@ export default function MapInput({ resourceName, currentLatitude, currentLongitu
             />
           </div>
 
-          {/* Champs cachés pour les coordonnées */}
+          {/* hidden fields for coordinates */}
           <input
             id={`${resourceName}_coordinates_latitude`}
             value={selectedLatitude}

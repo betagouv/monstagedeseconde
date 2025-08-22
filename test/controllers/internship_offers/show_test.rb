@@ -106,7 +106,7 @@ module InternshipOffers
         employer = InternshipOffer.last.employer
 
         get internship_offer_path(offer)
-        assert_select('.period-label-test', text: 'Disponible pour une semaine de stage  du 17 juin au 21 juin 2024')
+        assert_select('.period-label-test', text: 'Disponible pour une semaine de stage du 17 juin au 21 juin 2024')
       end
     end
 

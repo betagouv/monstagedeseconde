@@ -509,10 +509,6 @@ class InternshipOffer < ApplicationRecord
     end
   end
 
-  # def with_applications?
-  #   self.internship_applications.count.positive?
-  # end
-
   def weekly_planning?
     weekly_hours.any?(&:present?)
   end

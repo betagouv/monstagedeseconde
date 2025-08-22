@@ -128,7 +128,7 @@ module Dashboard
     end
 
     def destroy
-      authorize! :update, @internship_offer
+      authorize! :discard, @internship_offer
       internship_offer_builder.discard(instance: @internship_offer) do |on|
         on.success do
           redirect_to(dashboard_internship_offers_path,
@@ -150,6 +150,19 @@ module Dashboard
         @internship_offer.publish! unless @internship_offer.published?
         redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
                     flash: { success: 'Votre annonce a bien été publiée' }
+      end
+    end
+
+    def unpublish
+      @internship_offer = InternshipOffer.find(params[:id])
+      authorize! :update, @internship_offer
+      if @internship_offer.may_unpublish?
+        @internship_offer.unpublish!
+        redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
+                    flash: { success: 'Votre annonce a bien été dépubliée' }
+      else
+        redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
+                    flash: { warning: 'Votre annonce n\'a pas pu être dépubliée' }
       end
     end
 

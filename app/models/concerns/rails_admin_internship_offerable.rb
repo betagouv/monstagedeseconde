@@ -98,7 +98,7 @@ module RailsAdminInternshipOfferable
         field :city
         field :sector_name
         field :is_public
-        field :supplied_applications
+        field :approved_applications_count
         field :visible
         field :created_at
         field :updated_at
