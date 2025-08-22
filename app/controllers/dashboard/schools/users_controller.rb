@@ -8,10 +8,10 @@ module Dashboard
       def index
         authorize! :manage_school_users, @school
 
-        school_employees = current_user.school.school_managements
+        @school_employees = current_user.school.school_managements
 
         @invitations = Invitation.for_people_with_no_account_in(school_id: @school.id)
-                                 .invited_by(user_id: school_employees.pluck(:id))
+                                 .invited_by(user_id: @school_employees.pluck(:id))
                                  .order(created_at: :desc)
       end
 

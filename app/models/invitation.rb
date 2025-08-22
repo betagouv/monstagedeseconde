@@ -3,7 +3,7 @@ class Invitation < ApplicationRecord
   belongs_to :user, class_name: 'Users::SchoolManagement', foreign_key: 'user_id', inverse_of: :invitations
 
   # Callbacks
-  before_save :check_academies
+  before_save :check_same_academies
   belongs_to :author,
              class_name: 'Users::SchoolManagement',
              foreign_key: 'user_id'
@@ -45,17 +45,21 @@ class Invitation < ApplicationRecord
   # validators
   def official_email_address
     return unless email.present?
+    return if email.split('@').second.in?(Academy.email_domains)
 
-    return if email.split('@').second != school.department.email_domain
     errors.add(
       :email,
       "L'adresse email utilisée doit être officielle.<br>ex: XXXX@ac-academie.fr".html_safe
     )
   end
 
-  def check_academies
-    return unless email.split('@').second == user.school.email_domain_name
+  def check_same_academies
+    return if same_academy_domain
 
     errors.add(:email, "L'académie dans l'adresse email doit correspondre à celle de celui qui vous a invité")
+  end
+
+  def same_academy_domain
+    email.split('@').second == user.school.email_domain_name
   end
 end

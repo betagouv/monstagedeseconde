@@ -25,7 +25,7 @@ module Dashboard
         end
 
         @invitation = make_invitation
-        if @invitation.save! && invite_staff(invitation: @invitation, from: current_user)
+        if @invitation.save && invite_staff(invitation: @invitation, from: current_user)
           success_message = "un message d'invitation à " \
                             "#{@invitation.first_name} #{@invitation.last_name} " \
                             "vient d'être envoyé"

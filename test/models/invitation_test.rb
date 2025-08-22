@@ -8,7 +8,6 @@ class InvitationTest < ActiveSupport::TestCase
       last_name: 'Picasso',
       email: 'pablo@ac-paris.fr',
       user_id: school_manager.id,
-      role: 'teacher'
     }
     invitation = Invitation.new(params)
     assert invitation.valid?
@@ -24,8 +23,7 @@ class InvitationTest < ActiveSupport::TestCase
     params = {
       last_name: 'Pablo',
       email: 'pablo@ac-paris.fr',
-      user_id: school_manager.id,
-      role: 'teacher'
+      user_id: school_manager.id
     }
     invitation = Invitation.new(params)
     refute invitation.valid?
@@ -36,8 +34,7 @@ class InvitationTest < ActiveSupport::TestCase
     params = {
       first_name: 'Pablo',
       email: 'pablo@ac-paris.fr',
-      user_id: school_manager.id,
-      role: 'teacher'
+      user_id: school_manager.id
     }
     invitation = Invitation.new(params)
     refute invitation.valid?
@@ -48,8 +45,7 @@ class InvitationTest < ActiveSupport::TestCase
     params = {
       first_name: 'Pablo',
       last_name: 'Picasso',
-      user_id: school_manager.id,
-      role: 'teacher'
+      user_id: school_manager.id
     }
     invitation = Invitation.new(params)
     refute invitation.valid?
@@ -61,19 +57,6 @@ class InvitationTest < ActiveSupport::TestCase
       first_name: 'Pablo',
       last_name: 'Picasso',
       email: 'pabloac-paris.fr',
-      user_id: school_manager.id,
-      role: 'teacher'
-    }
-    invitation = Invitation.new(params)
-    refute invitation.valid?
-  end
-
-  test '#save when missing parameter role' do
-    school_manager = create(:school_manager)
-    params = {
-      first_name: 'Pablo',
-      last_name: 'Picasso',
-      email: 'pablo@ac-paris.fr',
       user_id: school_manager.id
     }
     invitation = Invitation.new(params)
