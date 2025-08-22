@@ -19,8 +19,7 @@ class PagesController < ApplicationController
   end
 
   def visitor_apply
-    puts 'visitor_apply'
-    redirect_to users_choose_connection_path,
+    redirect_to student_login_path,
                 flash: { success: 'Connectez-vous pour postuler aux stages' }
   end
 
