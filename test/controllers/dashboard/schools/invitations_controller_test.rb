@@ -11,8 +11,7 @@ module Dashboard
           first_name: 'Pablo',
           last_name: 'Picasso',
           email: 'pablo@ac-paris.fr',
-          user_id: school_manager.id,
-          role: 'teacher'
+          user_id: school_manager.id
         }
 
         sign_in(school_manager)
@@ -33,8 +32,7 @@ module Dashboard
           first_name: teacher.first_name,
           last_name: teacher.last_name,
           email: teacher.email,
-          user_id: school_manager.id,
-          role: 'teacher'
+          user_id: school_manager.id
         }
 
         sign_in(school_manager)
@@ -53,8 +51,7 @@ module Dashboard
           first_name: teacher.first_name,
           last_name: teacher.last_name,
           email: teacher.email,
-          user_id: school_manager.id,
-          role: 'teacher'
+          user_id: school_manager.id
         }
 
         sign_in(school_manager)
@@ -74,8 +71,7 @@ module Dashboard
           first_name: "Louis",
           last_name: "Malle",
           email: "louis.malle@ac-paris.fr",
-          user_id: school_manager_2.id,
-          role: 'teacher'
+          user_id: school_manager_2.id
         }
 
         sign_in(school_manager_1)

@@ -110,7 +110,7 @@ group :development do
   gem 'activerecord-explain-analyze'
   gem 'ffi-rzmq'
   gem 'jupyter_on_rails'
-  gem 'letter_opener'
+  gem 'letter_opener_web'
   gem 'spring', '3.0.0'
 end
 
@@ -122,7 +122,7 @@ group :test do
   gem 'minitest-fail-fast'
   gem 'minitest-reporters'
   gem 'minitest-retry'
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '>= 4.8'
   # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'capybara-screenshot'
   gem 'minitest-stub_any_instance'

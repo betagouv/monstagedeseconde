@@ -1,22 +1,62 @@
-- content_for :page_title, "#{t(".page_title", name: @school.presenter.school_name_in_sentence)} | 1élève1stage"
+- content_for :page_title, "#{t(".page_title", name: @school.presenter.school_name_in_sentence)} | 1Élève1Stage"
 = render 'layouts/breadcrumb', links: [ [dashboard_school_path(@school.id), current_user.dashboard_name],
                                         ['', 'Personnels']]
 = render layout: 'dashboard/schools/common_head' do
   #users-panel.fr-tabs__panel.fr-tabs__panel--selected aria-labelledby="tabpanel-404" role="tabpanel" tabindex="0"
-    
-    .fr-table.fr-table--layout-fixed.fr-table--no-caption
-      table
-        thead
-          tr
-            th Nom
-            th Email
-            th Fonction
-            th Statut
-        tbody
-          - @invitations.each do |invitation|
-            = render partial: "dashboard/schools/users/invited_school_employee",
-                    locals: { invitation: invitation }
-          - unless @school_employee_collection.empty?
-            = render partial: "dashboard/schools/users/school_employee",
-                     collection: @school_employee_collection
+    - if can?(:create_invitation, Invitation)
+      .row
+        .col-12
+          .fr-alert.fr-alert--info
+            p.fr-alert__title Inviter un membre de l'équipe
+            p
+              |
+                Les personnels de l'établissement sont listés ci-dessous et s'ajoutent ici
+                au fur et à mesure de leur usage de la plateforme 1éleve1stage.
+              strong
+                |  Aucune action n'est à entreprendre pour les personnels de votre établissement.
+            p
+              |
+                L'invitation d'un membre de l'équipe vise à intégrer des personnels travaillant
+                dans l'établissement, mais rattaché administrativement à un autre établissement,
+                non éligible au dispositif 1éleve1stage, comme cela peut être le cas de certains
+                Responsables du Bureau Des Entreprises.
+
+
+      .text-right.fr-my-4w
+        = link_to "Inviter un membre de l'équipe",
+                  new_dashboard_school_invitation_path(@school.id),
+                  class: 'fr-btn fr-icon fr-btn--icon-left fr-btn--md fr-icon-add-line'
+
+        - if @invitations.blank? && @school_employees.blank?
+          .fr-alert.fr-alert--info
+            p.fr-alert__title Aucun membre dans l'équipe
+            p Aucun membre de l'équipe n'est rattaché à cet établissement.
+        - else
+          - if @invitations.present?
+            .fr-table.fr-table--layout-fixed.fr-table--no-caption
+              table
+                thead
+                  tr
+                    th Personnes invitées
+                    th Email
+                    th Statut
+                    th Action
+                tbody
+                  - @invitations.each do |invitation|
+                    = render partial: "dashboard/schools/users/invited_school_employee",
+                          locals: { invitation: invitation }
+          - if @school_employees.present?
+            .fr-table.fr-table--layout-fixed.fr-table--no-caption
+              table
+                thead
+                  tr
+                    th Nom
+                    th Email
+                    th Fonction
+                    th Statut
+                tbody
+                  - @school_employees.each do |school_employee|
+                    = render partial: "dashboard/schools/users/school_employee",
+                            locals: { school_employee: school_employee }
+
 

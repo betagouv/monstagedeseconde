@@ -47,7 +47,7 @@ module InternshipApplications
       get dashboard_internship_offer_internship_applications_path(internship_application.internship_offer)
       assert_response :success
 
-      assert_select 'title', 'Mes candidatures | 1Elève1Stage'
+      assert_select 'title', 'Mes candidatures | 1Élève1Stage'
       assert_select '.h4.mb-0', "#{internship_application.student.name}"
       assert_select '.font-weight-bold', "le #{I18n.localize(internship_application.created_at, format: '%d %B')}"
       assert_select '.student-name', student.name

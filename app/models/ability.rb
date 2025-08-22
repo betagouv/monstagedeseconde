@@ -131,7 +131,6 @@ class Ability
 
   def school_manager_abilities(user:)
     can %i[list_invitations
-           create_invitation
            destroy_invitation], Invitation do |invitation|
       invitation.school.id == user.school_id
     end
@@ -447,9 +446,12 @@ class Ability
 
   def common_school_management_abilities(user:)
     can %i[list_invitations
-           create_invitation
            destroy_invitation], Invitation do |invitation|
       invitation.school.id == user.school_id
+    end
+    can %i[create_invitation], Invitation do |invitation|
+      invitation.school.id == user.school_id &&
+        (user.school_manager? || user.admin_officer?)
     end
 
     can %i[

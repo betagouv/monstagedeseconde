@@ -3,8 +3,8 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
   include ThirdPartyTestHelpers
 
   setup do
-    lille_academy = create(:academy, email_domain: 'ac-lille.fr')
-    nord = Department.create(code: '59', name: 'Nord', academy: lille_academy)
+    lille_academy = Academy.find_by(name: 'Académie de Lille')
+    nord = Department.find_by(code: '59')
     @school = create(:school, code_uai: '0590121L', zipcode: '59000', department: nord)
     @school2 = create(:school, code_uai: '0590121X', zipcode: '59000', department: nord)
     @school3 = create(:school, code_uai: '0590121Y', zipcode: '59000', department: nord)
@@ -16,6 +16,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
                       legal_representative_email: nil,
                       legal_representative_full_name: nil,
                       legal_representative_phone: nil)
+    
     @code = '123456'
     @state = 'abc'
     @nonce = 'def'
@@ -24,6 +25,8 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     cookies[:state] = @state
     @omogen = Services::Omogen::Sygne.new
   end
+
+  #  FIM PART
 
   test 'should get fim token and create SchoolManager user' do
     fim_token_stub
@@ -63,6 +66,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'teacher', User.last.role
     assert_equal '0590121L', User.last.school.code_uai
   end
+
   test 'should get fim token and create Teacher user with 3 schools' do
     fim_token_stub
     fim_teacher_userinfo_stub
@@ -110,6 +114,36 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'admin_officer', User.last.role
     assert_equal '0590121L', User.last.school.code_uai
   end
+
+  test 'should get fim token and create admin_officer role user with a school_officer of a different school when invited' do
+    invitee_email = 'nathalie.dupont@ac-lille.fr'
+    other_school = create(:school, code_uai: '01255552P', city: 'Lille', zipcode: '59000', name: 'Lycée de Lille')
+    other_school_admin = create(:school_manager, school: other_school, email: 'pierre.durand@ac-lille.fr')
+    invitation = Invitation.create!(
+      first_name: 'Nathalie',
+      last_name: 'Dupont',
+      email: invitee_email,
+      user: other_school_admin,
+      sent_at: 2.days.ago
+    )
+    # school_manager = invitation.author
+    fim_token_stub
+    fim_admin_userinfo_stub
+
+    assert_difference 'User.count', 1 do
+      get fim_callback_path, params: { code: @code, state: @state, nonce: @nonce }
+    end
+
+    assert_response :redirect
+    registered_user = User.last
+    assert_equal 'Users::SchoolManagement', registered_user.type
+    assert_equal 'admin_officer', registered_user.role
+    assert_equal '01255552P', registered_user.school.code_uai
+    assert_equal '0590121L', registered_user.fim_user_info['original_rne']
+    assert_equal invitee_email, registered_user.email
+  end
+
+  # EDUCONNECT PART
 
   test 'should get educonnect token and confirm student user' do
     educonnect_token_stub

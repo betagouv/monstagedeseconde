@@ -19,7 +19,7 @@ module Reporting
       get reporting_schools_path(department: statistician.department_name, group: 'public',
                                  department: statistician.department_name)
       assert_response :success
-      assert_select 'title', 'Statistiques sur les établissements | 1Elève1Stage'
+      assert_select 'title', 'Statistiques sur les établissements | 1Élève1Stage'
     end
 
     test 'get index.xlsx as Statistician' \

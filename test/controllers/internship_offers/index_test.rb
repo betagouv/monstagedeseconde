@@ -49,7 +49,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   test 'GET #index as "Users::Visitor" works and has a page title' do
     get internship_offers_path
     assert_response :success
-    assert_select 'title', 'Recherche de stages | 1Elève1Stage'
+    assert_select 'title', 'Recherche de stages | 1Élève1Stage'
   end
 
   test 'GET #index with coordinates as "Users::Visitor" works' do
