@@ -5,6 +5,8 @@ module Dashboard
       before_action :set_invitation, only: %i[destroy resend_invitation]
 
       def index
+        authorize! :list_invitations, Invitation
+        @invitations = current_user.invitations
       end
 
       def new
@@ -61,10 +63,11 @@ module Dashboard
       private
 
       def make_invitation
-        current_user_uai = current_user&.school&.code_uai
+        @current_user_uai = current_user.school_code_uai
+
         @invitation = current_user.invitations
-                                  .build(invitation_params)
-        @invitation.sent_at = Time.now
+                                  .build(invitation_params.merge(sent_at: Time.now))
+        @invitation
       end
 
       def text_alert

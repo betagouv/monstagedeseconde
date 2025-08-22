@@ -1,4 +1,4 @@
-require "test_helper"
+require 'test_helper'
 
 class InvitationTest < ActiveSupport::TestCase
   test '#save' do
@@ -16,7 +16,6 @@ class InvitationTest < ActiveSupport::TestCase
     assert_equal 'Pablo', invitation.first_name
     assert_equal 'Picasso', invitation.last_name
     assert_equal 'pablo@ac-paris.fr', invitation.email
-    assert_equal 'teacher', invitation.role
     assert_equal school_manager.id, invitation.user_id
   end
 
@@ -74,7 +73,7 @@ class InvitationTest < ActiveSupport::TestCase
     params = {
       first_name: 'Pablo',
       last_name: 'Picasso',
-      email:'pablo@ac-paris.fr',
+      email: 'pablo@ac-paris.fr',
       user_id: school_manager.id
     }
     invitation = Invitation.new(params)
@@ -90,7 +89,6 @@ class InvitationTest < ActiveSupport::TestCase
       first_name: 'Pablo',
       last_name: 'Picasso',
       email: 'pablo@acaris.fr',
-      role: 'teacher',
     }
     invitation = school_manager.invitations.build(params)
     refute invitation.valid?

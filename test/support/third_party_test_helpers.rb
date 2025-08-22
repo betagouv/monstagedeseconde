@@ -96,6 +96,7 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: fim_return_body.merge({
                                                             'FrEduFonctAdm' => 'ADF',
                                                             'rne' => '0590121L',
+                                                            'email' => 'nathalie.dupont@ac-lille.fr',
                                                             'FrEduRneResp' => %w[
                                                               0590121L
                                                               0590121X

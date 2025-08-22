@@ -30,15 +30,11 @@ class CallbacksController < ApplicationController
         sign_in(user)
         redirect_to user.custom_dashboard_path, notice: 'Vous êtes bien connecté'
       else
+        initial_user_info_rne = ''
         if user_invited
+          initial_user_info_rne = user_info['rne']
           inviter_uai_code = Invitation.find_by(email: user_info_email).inviter_school_uai_code
-          if get_uai_codes(user_info).include?(inviter_uai_code)
-            user_info['rne'] = inviter_uai_code
-          else
-            Rails.logger.error("FIM : User invited but UAI code mismatch: #{inviter_uai_code} not in #{get_uai_codes(user_info)}")
-            alert = 'Les codes UAI de votre compte ne correspondent pas à celui de la personne qui vous a invité'
-            redirect_to root_path, alert: alert and return
-          end
+          user_info['rne'] = inviter_uai_code
         end
 
         Rails.logger.info("FIM : User does not exist: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
@@ -50,6 +46,7 @@ class CallbacksController < ApplicationController
         user.school_id = get_school_id(user_info['rne'])
         user.confirmed_at = Time.now
         user.accept_terms = true
+        user_info.merge!('original_rne' => initial_user_info_rne) if initial_user_info_rne.present?
         user.fim_user_info = user_info
 
         if user.save
@@ -208,13 +205,13 @@ class CallbacksController < ApplicationController
   def get_uai_codes(user_info)
     rne_resp = user_info['FrEduRneResp']
     if rne_resp.nil? || rne_resp == 'X'
-      return user_info['FrEduRne'].map(&:first_string_before_separator) unless user_info['FrEduRne'].nil?
+      return user_info['FrEduRne'].map{|s| first_string_before_separator(s)} unless user_info['FrEduRne'].nil?
 
       Rails.logger.error("FIM : FrEduRne is nil : #{user_info.inspect}")
       [user_info['rne']]
 
     else
-      rne_resp.map(&:first_string_before_separator)
+      rne_resp.map{|s| first_string_before_separator(s)}
     end
   end
 

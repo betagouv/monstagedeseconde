@@ -1,6 +1,6 @@
 class Invitation < ApplicationRecord
   # Associations
-  belongs_to :user, class_name: 'Users::SchoolManagement', foreign_key: 'user_id'
+  belongs_to :user, class_name: 'Users::SchoolManagement', foreign_key: 'user_id', inverse_of: :invitations
 
   # Callbacks
   before_save :check_academies
@@ -17,8 +17,7 @@ class Invitation < ApplicationRecord
             :email,
             :user_id,
             presence: true
-  validates :email, uniqueness: { scope: :inviter_school_uai_code,
-                                  message: 'a déjà été invité' }
+  validates :email, uniqueness: { message: 'a déjà été invité' }
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP,
                               message: 'doit être une adresse email valide' }
 
@@ -47,8 +46,7 @@ class Invitation < ApplicationRecord
   def official_email_address
     return unless email.present?
 
-    return unless email.split('@').second != school.email_domain_name
-
+    return if email.split('@').second != school.department.email_domain
     errors.add(
       :email,
       "L'adresse email utilisée doit être officielle.<br>ex: XXXX@ac-academie.fr".html_safe
