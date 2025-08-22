@@ -1,7 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -1653,7 +1652,8 @@ CREATE TABLE public.internship_offers (
     period integer DEFAULT 0 NOT NULL,
     mother_id bigint,
     targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades,
-    ia_score integer
+    ia_score integer,
+    open_data boolean DEFAULT true
 );
 
 
@@ -1769,7 +1769,8 @@ CREATE TABLE public.operators (
     updated_at timestamp without time zone DEFAULT '2021-05-06 08:22:40.384734'::timestamp without time zone NOT NULL,
     api_full_access boolean DEFAULT false,
     realized_count json DEFAULT '{}'::json,
-    masked_data boolean DEFAULT false
+    masked_data boolean DEFAULT false,
+    open_data boolean DEFAULT true
 );
 
 
@@ -5268,7 +5269,6 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20250715103501'),
 ('20250526084703'),
 ('20250516153906'),
 ('20250516101824'),
