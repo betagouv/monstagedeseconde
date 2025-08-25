@@ -12,7 +12,7 @@ module Api
         params[:sector_ids] = format_sector_ids(params[:sectors]) if params[:sectors]
         params[:grades] = format_grades(params[:grades]) if params[:grades]
 
-        @internship_offers = finder.all.includes(%i[sector internship_offer_weeks]).order(id: :desc)
+        @internship_offers = finder.all.open_data.includes(%i[sector internship_offer_weeks]).order(id: :desc)
         if @current_api_user.operator.departments.any?
           @internship_offers = @internship_offers.by_department(@current_api_user.operator.departments.map(&:name))
         end

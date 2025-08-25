@@ -46,6 +46,7 @@ FactoryBot.define do
     grades { Grade.all }
     rep { false }
     qpv { false }
+    open_data { true }
 
     trait :public do
       is_public { true }
