@@ -113,12 +113,6 @@
                                    addressFieldsVisible: !resource.id.nil?,
                                    isDuplication: @duplication,
                                    editMode: @edit_mode})
-        
-        
-        = react_component("MapInput",
-                          props: { resourceName: form.object_name,
-                                   currentLatitude: ,
-                                   currentLongitude: })
 
     - if submit_button
       .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
