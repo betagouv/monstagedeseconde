@@ -125,4 +125,9 @@ RailsAdmin.config do |config|
     'Feature flip' => '/admin/flipper/',
     'AB Testing' => '/split'
   }
+  if Rails.env.review? || Rails.env.development?
+    config.navigation_static_links.merge!(
+      'RAZ donnees de review' => '/reset_review_data/new'
+    )
+  end
 end

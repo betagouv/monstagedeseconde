@@ -1,0 +1,60 @@
+.message-box{
+  h2{
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: $blue-france;
+    line-height: 1.35rem;
+  }
+  h2:last-of-type{
+    font-size: 1.5rem;
+    color: black;
+    margin-top: 2rem;
+    font-weight: bold;
+
+  }
+  p{
+    font-size: 0.8rem;
+    color: #7581a0;
+    line-height: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  p:last-child{
+    margin-bottom: 0;
+    color: black;
+    line-height: 2rem;
+  }
+
+}
+.progress-bar{
+  line-height: 2rem;
+  margin-top: 2rem;
+  height: 28x;
+  background-color:$blue-france;
+  border-radius: 3px;
+  overflow: hidden;
+  .progress-bar__fill{
+    height: 100%;
+    width: 0%;
+    background-color: $blue-france;
+    color: rgb(34, 141, 82);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: width 0.5s ease-in-out;
+  }
+}
+.message-box.treatment-error{
+
+  p:last-child{
+    background-color: #ffe6e6;
+    border: 1px solid #d80303;
+    color: #700101;
+    padding: 1rem;
+    border-radius: 5px;
+  }
+  h2 {
+    line-height: 3 rem;
+    font-size: 2rem;
+  }
+}
