@@ -55,24 +55,6 @@ module Services
       puts "  🚀 Vitesse moyenne: #{(archived_count / total_time * 60).round(1)} étudiants/minute" if total_time > 0
     end
     
-    private
-    
-    def self.format_duration(seconds)
-      return "0s" if seconds < 1
-      
-      hours = (seconds / 3600).to_i
-      minutes = ((seconds % 3600) / 60).to_i
-      secs = (seconds % 60).to_i
-      
-      if hours > 0
-        "#{hours}h #{minutes}m #{secs}s"
-      elsif minutes > 0
-        "#{minutes}m #{secs}s"
-      else
-        "#{secs}s"
-      end
-    end
-
     def self.archive_school_managements
       Users::SchoolManagement.kept
                       .in_batches(of: 100)
@@ -103,6 +85,24 @@ module Services
     def self.archive_class_rooms
       ClassRoom.in_batches(of: 100)
                .each_record(&:archive)
+    end
+    
+    private
+    
+    def self.format_duration(seconds)
+      return "0s" if seconds < 1
+      
+      hours = (seconds / 3600).to_i
+      minutes = ((seconds % 3600) / 60).to_i
+      secs = (seconds % 60).to_i
+      
+      if hours > 0
+        "#{hours}h #{minutes}m #{secs}s"
+      elsif minutes > 0
+        "#{minutes}m #{secs}s"
+      else
+        "#{secs}s"
+      end
     end
   end
 end
