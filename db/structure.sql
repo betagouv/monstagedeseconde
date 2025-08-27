@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -714,7 +715,8 @@ CREATE TABLE public.entreprises (
     workspace_conditions text DEFAULT ''::text,
     workspace_accessibility text DEFAULT ''::text,
     internship_address_manual_enter boolean DEFAULT false,
-    contact_phone character varying(20)
+    contact_phone character varying(20),
+    code_ape character varying
 );
 
 
@@ -1653,7 +1655,8 @@ CREATE TABLE public.internship_offers (
     mother_id bigint,
     targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades,
     ia_score integer,
-    open_data boolean DEFAULT true
+    open_data boolean DEFAULT true,
+    code_ape character varying
 );
 
 
@@ -5269,6 +5272,9 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250827064009'),
+('20250818081652'),
+('20250715103501'),
 ('20250526084703'),
 ('20250516153906'),
 ('20250516101824'),
@@ -5714,3 +5720,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
+

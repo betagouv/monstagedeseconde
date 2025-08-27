@@ -47,6 +47,7 @@ FactoryBot.define do
     rep { false }
     qpv { false }
     open_data { true }
+    code_ape { '81.10Z' }
 
     trait :public do
       is_public { true }

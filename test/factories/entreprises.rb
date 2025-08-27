@@ -13,6 +13,7 @@ FactoryBot.define do
     contact_phone { FFaker::PhoneNumberFR.phone_number }
     workspace_conditions { FFaker::Lorem.paragraph }
     workspace_accessibility { FFaker::Lorem.paragraph }
+    code_ape { '81.10Z' }
 
     trait :private do
       is_public { false }

@@ -90,7 +90,6 @@ export default class extends Controller {
   }
 
   connect() {
-    debugger;
     this.publicPrivateAction(this.isEntreprisePublicValue);
   }
 }

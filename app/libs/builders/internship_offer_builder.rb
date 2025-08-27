@@ -161,7 +161,8 @@ module Builders
         contact_phone: entreprise.contact_phone,
         workspace_conditions: entreprise.workspace_conditions,
         workspace_accessibility: entreprise.workspace_accessibility,
-        internship_address_manual_enter: entreprise.internship_address_manual_enter
+        internship_address_manual_enter: entreprise.internship_address_manual_enter,
+        code_ape: entreprise.code_ape
       }
     end
 

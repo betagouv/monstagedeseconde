@@ -78,7 +78,8 @@ module Dashboard::Stepper
               :internship_address_manual_enter,
               :workspace_conditions,
               :workspace_accessibility,
-              :internship_address_manual_enter
+              :internship_address_manual_enter,
+              :code_ape
             )
     end
 

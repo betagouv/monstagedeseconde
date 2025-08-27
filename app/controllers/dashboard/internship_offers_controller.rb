@@ -250,7 +250,7 @@ module Dashboard
                     :is_public, :lunch_break, :max_candidates,
                     :period, :period_field, :published_at, :region, :renewed, :republish, :school_id,
                     :sector_id, :shall_publish, :siret, :street, :title, :type, :workspace_conditions,
-                    :workspace_accessibility, :user_update, :verb, :zipcode,
+                    :workspace_accessibility, :user_update, :verb, :zipcode, :code_ape,
                     entreprise_coordinates: {}, coordinates: {},
                     week_ids: [], grade_ids: [], daily_hours: {}, weekly_hours: [], school_ids: [])
     end

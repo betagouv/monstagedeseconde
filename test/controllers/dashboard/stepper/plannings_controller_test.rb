@@ -17,7 +17,7 @@ module Dashboard::Stepper
         school = create(:school, city: 'Paris', zipcode: '75001')
         schools=[school , create(:school, city: 'Cergy-Pontoise', zipcode: '95000')]
         internship_occupation = create(:internship_occupation, employer:)
-        entreprise = create(:entreprise, internship_occupation:)
+        entreprise = create(:entreprise, internship_occupation:, code_ape: '99.XXX')
 
         assert entreprise.internship_occupation.present?
         week_ids = [SchoolTrack::Seconde.first_week.id]
@@ -55,6 +55,7 @@ module Dashboard::Stepper
             assert_equal schools.map(&:id).sort, internship_offer.schools.map(&:id).sort
             assert_redirected_to internship_offer_path(internship_offer.id, origine: 'dashboard', stepper: true)
             assert_match(/Votre offre est publiée/, flash[:notice])
+            assert_equal '99.XXX', internship_offer.code_ape
 
 
             planning = Planning.last
