@@ -25,6 +25,7 @@
               = form.hidden_field :entreprise_coordinates, value: { latitude: latitude, longitude: longitude }
               = form.hidden_field :internship_address_manual_enter, value: false
               = form.hidden_field :siret, value: resource&.siret || ''
+              = form.hidden_field :code_ape, value: resource&.code_ape || ''
               - if resource.id
                 = form.hidden_field :id, value: resource.id
               .hide-when-manual
