@@ -61,6 +61,12 @@ module Services
                       .each_record(&:archive)
     end
 
+    def self.archive_school_managements
+      Users::SchoolManagement.kept
+                      .in_batches(of: 100)
+                      .each_record(&:archive)
+    end
+
     def self.delete_invitations
       Invitation.in_batches(of: 100)
                 .each_record(&:destroy)
