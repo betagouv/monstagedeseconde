@@ -119,6 +119,12 @@ module Users
     end
     alias team_pending_agreements_actions_count pending_agreements_actions_count
 
+    def anonymize(send_email: false)
+      super(send_email:)
+
+      update_columns(fim_user_info: nil)
+    end
+
     private
 
     def create_school_profiles
