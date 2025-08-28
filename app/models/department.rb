@@ -14,6 +14,8 @@ class Department < ApplicationRecord
   has_many :operators, through: :departments_operators
   has_many :schools, foreign_key: :department_id
 
+  delegate :email_domain, to: :academy
+
   def self.fetch_by_zipcode(zipcode:)
     code = key_for_lookup(zipcode: zipcode)
     Department.find_by(code: code)

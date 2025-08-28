@@ -1686,7 +1686,6 @@ CREATE TABLE public.invitations (
     email character varying(70),
     first_name character varying(60),
     last_name character varying(60),
-    role character varying(50),
     user_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -5269,6 +5268,8 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250820143152'),
+('20250715103501'),
 ('20250526084703'),
 ('20250516153906'),
 ('20250516101824'),

@@ -6,7 +6,7 @@ class EmployerRegistrationsTest < ActionDispatch::IntegrationTest
   include ThirdPartyTestHelpers
 
   def assert_employer_form_rendered
-    assert_select 'title', 'Inscription | 1Elève1Stage'
+    assert_select 'title', 'Inscription | 1Élève1Stage'
     assert_select 'input', value: 'Employer', hidden: 'hidden'
     assert_select 'label', /Adresse électronique/
     assert_select 'label', /Créer un mot de passe/
