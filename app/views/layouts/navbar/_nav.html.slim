@@ -108,7 +108,9 @@
             | Mon espace
           ul.dropdown-menu.shadow.rounded-3.mt-0.position-absolute.start-0 data-dropdown-target="menu" style="display: none; min-width: 220px;"
               li
-                = link_to 'Je suis un élève', student_login_path, class: 'dropdown-item d-flex align-items-center gap-2'
+                - klass = Flipper.enabled?(:disable_students_connexion_button) ? "disabled dropdown-item d-flex align-items-center gap-2" : 'dropdown-item d-flex align-items-center gap-2'
+                - link = Flipper.enabled?(:disable_students_connexion_button) ? '#' : student_login_path
+                = link_to 'Je suis un élève', link, class: klass
               li
                 = link_to 'Je suis un offreur', pro_login_path, class: 'dropdown-item d-flex align-items-center gap-2'
               li
