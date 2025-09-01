@@ -30,19 +30,7 @@
                       maxlength: 100,
                       required: true}
 
-  .fr-select-group
-    = form.label :role,
-                  class: 'fr-label'
-      | Fonction
-    = form.select :role,
-                  Invitation.roles.zip.map(&:flatten).map(&:reverse),
-                  {prompt: 'Sélectionnez une option'},
-                  {class: "fr-select #{'fr-select--error' if @invitation.errors[:role].present?}'}"}
-    - if @invitation.errors[:role].present?
-      p.fr-error-text id="select-error-desc-error-role"
-        = "Fonction : "
-        = @invitation.errors[:role].join(', ').html_safe
-  .actions
+  .actions.fr-mb-14w.fr-mt-6w
     .row
       .col-12
         = link_to 'Précédent',

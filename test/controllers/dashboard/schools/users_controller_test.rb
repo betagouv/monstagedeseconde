@@ -70,7 +70,7 @@ module Dashboard
 
         get dashboard_school_users_path(school)
         assert_response :success
-        assert_select 'title', "Professeurs du #{school.presenter.school_name_in_sentence} | 1élève1stage"
+        assert_select 'title', "Professeurs du #{school.presenter.school_name_in_sentence} | 1Élève1Stage"
         assert_select 'ul.fr-tabs__list li a[href=?]', dashboard_school_class_rooms_path(school), count: 1
         assert_select 'ul.fr-tabs__list li a[href=?]', dashboard_school_users_path(school), count: 1
         assert_select 'ul.fr-tabs__list li a[href=?] button[aria-selected="false"]',
@@ -88,13 +88,18 @@ module Dashboard
 
       test 'GET users#index as SchoolManagement contains list school members' do
         school = create(:school, :with_school_manager)
-        sign_in(school.school_manager)
         school_employees = [
           create(:teacher, school: school),
           create(:other, school: school)
         ]
+        sign_in(school.school_manager)
 
         get dashboard_school_users_path(school)
+        puts '--- writing html in debug_file.html ---'
+        puts ''
+        html = Nokogiri::HTML(response.body)
+        File.open('debug_file.html', 'w+') { |f| f.write html } 
+        puts '----------------------------------------'
         assert_response :success
         assert_select 'tbody tr', count: school_employees.length + 1 # school manager
       end

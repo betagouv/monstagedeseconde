@@ -1653,7 +1653,8 @@ CREATE TABLE public.internship_offers (
     period integer DEFAULT 0 NOT NULL,
     mother_id bigint,
     targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades,
-    ia_score integer
+    ia_score integer,
+    open_data boolean DEFAULT true
 );
 
 
@@ -1686,7 +1687,6 @@ CREATE TABLE public.invitations (
     email character varying(70),
     first_name character varying(60),
     last_name character varying(60),
-    role character varying(50),
     user_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -1769,7 +1769,8 @@ CREATE TABLE public.operators (
     updated_at timestamp without time zone DEFAULT '2021-05-06 08:22:40.384734'::timestamp without time zone NOT NULL,
     api_full_access boolean DEFAULT false,
     realized_count json DEFAULT '{}'::json,
-    masked_data boolean DEFAULT false
+    masked_data boolean DEFAULT false,
+    open_data boolean DEFAULT true
 );
 
 
@@ -2493,7 +2494,8 @@ CREATE TABLE public.users (
     active_at timestamp(6) without time zone,
     school_ids text[] DEFAULT '{}'::text[],
     user_info jsonb DEFAULT '{}'::jsonb,
-    fim_user_info jsonb
+    fim_user_info jsonb,
+    created_by_system boolean DEFAULT false NOT NULL
 );
 
 
@@ -5268,7 +5270,10 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250901102600'),
 ('20250826120000'),
+('20250820143152'),
+('20250818081652'),
 ('20250715103501'),
 ('20250526084703'),
 ('20250516153906'),

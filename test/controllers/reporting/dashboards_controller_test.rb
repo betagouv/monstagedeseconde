@@ -16,7 +16,7 @@ module Reporting
       sign_in(god)
       get reporting_dashboards_path
       assert_response :success
-      assert_select 'title', 'Statistiques - Tableau de bord | 1Elève1Stage'
+      assert_select 'title', 'Statistiques - Tableau de bord | 1Élève1Stage'
     end
 
     test 'GET #index as statistician success ' \

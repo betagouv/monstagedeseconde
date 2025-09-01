@@ -13,11 +13,14 @@ class CallbacksController < ApplicationController
       Rails.logger.info('--------------')
       redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 
-      unless School.exists?(code_uai: user_info['rne'])
+      user_info_email = user_info['email'].downcase
+      user_invited = Invitation.exists?(email: user_info_email)
+
+      unless School.exists?(code_uai: user_info['rne']) || user_invited
         redirect_to root_path, alert: "Établissement non trouvé (UAI: #{user_info['rne']})" and return
       end
 
-      user = Users::SchoolManagement.find_or_initialize_by(email: user_info['email'].downcase)
+      user = Users::SchoolManagement.find_or_initialize_by(email: user_info_email)
 
       if user.persisted?
         Rails.logger.info("FIM : User already exists: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
@@ -27,15 +30,23 @@ class CallbacksController < ApplicationController
         sign_in(user)
         redirect_to user.custom_dashboard_path, notice: 'Vous êtes bien connecté'
       else
+        initial_user_info_rne = ''
+        if user_invited
+          initial_user_info_rne = user_info['rne']
+          inviter_uai_code = Invitation.find_by(email: user_info_email).inviter_school_uai_code
+          user_info['rne'] = inviter_uai_code
+        end
+
         Rails.logger.info("FIM : User does not exist: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
         user.first_name = user_info['given_name']
         user.last_name = user_info['family_name']
-        user.email = user_info['email'].downcase
+        user.email = user_info_email
         user.password = make_password
         user.role = get_role(user_info['FrEduFonctAdm'])
         user.school_id = get_school_id(user_info['rne'])
         user.confirmed_at = Time.now
         user.accept_terms = true
+        user_info.merge!('original_rne' => initial_user_info_rne) if initial_user_info_rne.present?
         user.fim_user_info = user_info
 
         if user.save
@@ -192,15 +203,20 @@ class CallbacksController < ApplicationController
   end
 
   def get_uai_codes(user_info)
-    if user_info['FrEduRneResp'].nil? || user_info['FrEduRneResp'] == 'X'
-      return user_info['FrEduRne'].map { |uai| uai.split('$').first } unless user_info['FrEduRne'].nil?
+    rne_resp = user_info['FrEduRneResp']
+    if rne_resp.nil? || rne_resp == 'X'
+      return user_info['FrEduRne'].map{|s| first_string_before_separator(s)} unless user_info['FrEduRne'].nil?
 
       Rails.logger.error("FIM : FrEduRne is nil : #{user_info.inspect}")
       [user_info['rne']]
 
     else
-      user_info['FrEduRneResp'].map { |uai| uai.split('$').first }
+      rne_resp.map{|s| first_string_before_separator(s)}
     end
+  end
+
+  def first_string_before_separator(string, separator = '$')
+    string.split(separator).first
   end
 
   def check_for_school_update(student, edu_connect_school)

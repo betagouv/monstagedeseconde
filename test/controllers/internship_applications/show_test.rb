@@ -14,7 +14,7 @@ module InternshipApplications
         get internship_offer_internship_application_path(internship_offer,
                                                          uuid: internship_application.uuid)
         assert_response :success
-        assert_select 'title', 'Ma candidature | 1Elève1Stage'
+        assert_select 'title', 'Ma candidature | 1Élève1Stage'
 
         assert_select "form[action=\"#{internship_offer_internship_application_path(internship_offer,
                                                                                     uuid: internship_application.uuid, transition: :submit!)}\"]"

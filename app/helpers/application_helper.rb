@@ -60,7 +60,7 @@ module ApplicationHelper
     if content_for?(:page_title)
       content_for :page_title
     else
-      default = '1Elève1Stage'
+      default = '1Élève1Stage'
       i18n_key = "#{controller_path.tr('/', '.')}.#{action_name}.page_title"
       dyn_page_name = t(i18n_key, default: default)
       dyn_page_name == default ? default : "#{dyn_page_name} | #{default}"

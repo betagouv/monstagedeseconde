@@ -337,7 +337,7 @@ module Api
         end
       end
 
-      test 'GET #search with coordinates and radius params returns all internship_offers available in the radis' do
+      test 'GET #search with coordinates and radius params returns all internship_offers available and open_data true in the radius' do
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
           @token = json_response['token']
@@ -347,6 +347,8 @@ module Api
           offer_2 = create(:weekly_internship_offer_2nde, city: 'Le Bouscat',
                                                           coordinates: { latitude: 44.865, longitude: -0.6033 })
           offer_3 = create(:weekly_internship_offer_2nde, :unpublished)
+          offer_4 = create(:weekly_internship_offer_2nde, city: 'Bordeaux',
+                                                          coordinates: { latitude: 44.8624, longitude: -0.5848 }, open_data: false)
 
           documents_as(endpoint: :'v2/internship_offers/search', state: :success) do
             get search_api_v2_internship_offers_path(
