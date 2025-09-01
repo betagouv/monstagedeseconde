@@ -187,7 +187,7 @@ module Services::Omogen
         Rails.logger.error error_message
         raise error_message
       end
-      students.compact
+      students
     end
 
     def sygne_responsable(ine)
@@ -229,8 +229,10 @@ module Services::Omogen
         students.each do |student|
           break if limit && counter >= limit
 
-          ActiveRecord::Base.transaction { student.make_student }
-          counter += 1
+          ActiveRecord::Base.transaction do
+            success = student.make_student
+            counter += 1 if limit && success
+          end
         end
       end
     end
