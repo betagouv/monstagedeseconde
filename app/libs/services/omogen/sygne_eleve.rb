@@ -45,7 +45,13 @@ module Services::Omogen
         email: "#{scrambled_ine}@#{school.code_uai}.fr"
       )
       student.password = "#{ine}#{school.code_uai}!zZtest"
-      puts student.errors.full_messages unless student.save
+      if student.valid?
+        student.save
+        true
+      else
+        puts student.errors.full_messages
+        false
+      end
     end
 
     def class_room
