@@ -187,7 +187,7 @@ module Services::Omogen
         Rails.logger.error error_message
         raise error_message
       end
-      students
+      students.compact
     end
 
     def sygne_responsable(ine)
