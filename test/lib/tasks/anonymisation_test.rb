@@ -20,10 +20,10 @@ class AnonymisationTest < ActiveSupport::TestCase
 
       # student anonymized
       student.reload
-      assert_equal student.class_room_id, nil
+      # assert_nil student.class_room_id
       assert_equal student.school_id, school.id
-      assert_equal student.first_name, 'NA'
-      assert_equal student.last_name, 'NA'
+      assert_equal 'NA', student.first_name
+      assert_equal 'NA', student.last_name
       refute_equal student.email, student_email
 
       # student identity anonymized

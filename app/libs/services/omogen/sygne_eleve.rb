@@ -41,6 +41,7 @@ module Services::Omogen
         class_room_id: class_room.id,
         grade_id: grade.id,
         accept_terms: true,
+        created_by_system: true,
         email: "#{scrambled_ine}@#{school.code_uai}.fr"
       )
       student.password = "#{ine}#{school.code_uai}!zZtest"
