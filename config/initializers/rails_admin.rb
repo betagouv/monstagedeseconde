@@ -127,7 +127,7 @@ RailsAdmin.config do |config|
   }
   if Rails.env.review? || Rails.env.development?
     config.navigation_static_links.merge!(
-      'RAZ donnees de review' => '/reset_review_data/new'
+      'Reset des données de review' => '/reset_review_data/new'
     )
   end
 end

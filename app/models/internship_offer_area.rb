@@ -2,11 +2,13 @@ class InternshipOfferArea < ApplicationRecord
   belongs_to :employer,
              polymorphic: true
 
-  has_many :users,
+  has_one :user,
            foreign_key: 'current_area_id',
            class_name: 'User',
-           inverse_of: :internship_offer_area
-  has_many :internship_offers
+           inverse_of: :curent_area,
+           dependent: :destroy
+
+  has_many :internship_offers, dependent: :destroy, inverse_of: :internship_offer_area
   has_many :area_notifications, dependent: :destroy
 
   validates :employer_id, :name, presence: true
@@ -37,15 +39,18 @@ class InternshipOfferArea < ApplicationRecord
                                    .where(internship_offer_area_id: id))
   end
 
-  def destroy
+  def soft_destroy
     return if collegues_offers_in_area.any?
 
     target_area = team_sibling_area_sample
     return if target_area.nil?
-    if employer.internship_offers.any?
-      move_remaining_offers_to(target_area: target_area)
-    end
+
+    move_remaining_offers_to(target_area: target_area) if employer.internship_offers.any?
     move_user_references_to_area(target_area_id: target_area.id)
+    destroy
+  end
+
+  def destroy
     super
   end
 

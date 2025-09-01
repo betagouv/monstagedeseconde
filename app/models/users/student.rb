@@ -18,6 +18,7 @@ module Users
       end
     end
     has_many :internship_agreements, through: :internship_applications
+    has_many :favorites, foreign_key: 'user_id', dependent: :destroy
     has_many :internship_offers, through: :favorites
 
     scope :without_class_room, -> { where(class_room_id: nil, anonymized: false) }
@@ -35,6 +36,9 @@ module Users
     # Callbacks
     # before_save :skip_confirmation!
     after_create :clean_phone_or_email_when_empty # , :welcome_new_student :set_reminders
+
+    scope :troisieme, -> { where(grade: Grade.troisieme) }
+    scope :seconde, -> { where(grade: Grade.seconde) }
 
     def student? = true
 

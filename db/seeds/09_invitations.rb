@@ -1,16 +1,19 @@
-# def populate_invitations
-#   Invitation.create!(
-#     first_name: 'Nestor',
-#     last_name: 'Burma',
-#     email: 'invited_nestor@ac-paris.fr',
-#     role: 'teacher',
-#     user_id: fetch_school_manager.id,
-#     sent_at: 2.days.ago
-#   )
-# end
+def populate_invitations
+  author = Users::SchoolManagement.all.first
+  if author.present?
+    invitation = author.invitations.build(
+      first_name: 'Julie',
+      last_name: 'Durand',
+      email: "julie.durand@#{author.school.email_domain_name}",
+      role: 'teacher',
+      sent_at: Time.current
+    )
+    invitation.save!
+  else
+    puts '------------'
+    puts "School manager with email #{lycee_school_manager_email} not found. Invitation not created."
+    puts '------------'
+  end
+end
 
-# def fetch_school_manager
-#   Users::SchoolManagement.find_by(role: 'school_manager')
-# end
-
-# call_method_with_metrics_tracking([:populate_invitations])
+call_method_with_metrics_tracking([:populate_invitations])

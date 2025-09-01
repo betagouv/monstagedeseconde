@@ -63,7 +63,7 @@ class InternshipApplication < ApplicationRecord
 
   RESTORABLE_STATES = %w[canceled_by_student canceled_by_student_confirmation]
 
-  attr_accessor :sgid
+  attr_accessor :sgid, :skip_callback_with_review_rebuild
 
   belongs_to :weekly_internship_offer,
              class_name: 'InternshipOffers::WeeklyFramed',
@@ -71,7 +71,7 @@ class InternshipApplication < ApplicationRecord
   belongs_to :internship_offer, polymorphic: true
   belongs_to :student, class_name: 'Users::Student',
                        foreign_key: 'user_id'
-  has_one :internship_agreement
+  has_one :internship_agreement, dependent: :destroy
   has_many :state_changes, class_name: 'InternshipApplicationStateChange', dependent: :destroy
   has_many :internship_application_weeks, dependent: :destroy
   has_many :weeks, through: :internship_application_weeks
@@ -105,7 +105,7 @@ class InternshipApplication < ApplicationRecord
   # Callbacks
   after_save :update_all_counters
   before_create :set_submitted_at
-  after_create :notify_users
+  after_create :notify_users, unless: :skip_callback_with_review_rebuild
   after_save :update_student_profile
 
   #
@@ -250,8 +250,10 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |user, *_args|
                     update!("validated_by_employer_at": Time.now.utc, aasm_state: :validated_by_employer)
                     reload
-                    after_employer_validation_notifications
-                    CancelValidatedInternshipApplicationJob.set(wait: 15.days).perform_later(internship_application_id: id)
+                    unless skip_callback_with_review_rebuild
+                      after_employer_validation_notifications
+                      CancelValidatedInternshipApplicationJob.set(wait: 15.days).perform_later(internship_application_id: id)
+                    end
                     record_state_change user
                   }
     end
@@ -261,7 +263,7 @@ class InternshipApplication < ApplicationRecord
                   to: :approved,
                   after: proc { |user, *_args|
                     update!("approved_at": Time.now.utc)
-                    student_approval_notifications
+                    student_approval_notifications unless skip_callback_with_review_rebuild
                     cancel_all_pending_applications
                     record_state_change user
                   }

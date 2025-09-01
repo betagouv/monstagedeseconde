@@ -11,7 +11,7 @@ class User < ApplicationRecord
   has_many :favorites
   has_many :url_shrinkers
 
-  attr_accessor :phone_prefix, :phone_suffix, :statistician_type, :current_school_id
+  attr_accessor :phone_prefix, :phone_suffix, :statistician_type, :current_school_id, :skip_callback_with_review_rebuild
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable,
@@ -21,7 +21,7 @@ class User < ApplicationRecord
   include DelayedDeviseEmailSender
 
   before_validation :concatenate_and_clean
-  after_create :send_sms_token
+  after_create :send_sms_token, unless: :skip_callback_with_review_rebuild
 
   # school_managements includes different roles
   # Everyone should register with ac-xxx.fr email
@@ -142,7 +142,7 @@ class User < ApplicationRecord
   end
 
   def destroy
-    anonymize
+    Rails.env.review? || Rails.env.development? ? super : anonymize
   end
 
   def reset_password_by_phone

@@ -136,6 +136,15 @@ class InternshipAgreement < ApplicationRecord
       .where(internship_application: { users: { discarded_at: nil } })
   }
 
+  scope :troisieme_grades, lambda {
+    joins(internship_application: { student: :grade })
+      .where(grades: { id: Grade.troisieme.id })
+  }
+  scope :seconde_grades, lambda {
+    joins(internship_application: { student: :grade })
+      .where(grades: { id: Grade.seconde.id })
+  }
+
   def at_least_one_validated_terms
     return true if skip_validations_for_system
     return true if [school_manager_accept_terms, employer_accept_terms, teacher_accept_terms].any?

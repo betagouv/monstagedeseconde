@@ -172,6 +172,6 @@ uai;type_etab;nom_etablissement;adresse;code_postal;commune;position;voie_genera
 0781883Y;Lycée;Lycée Dumont d'Urville;2 avenue de Franche-Comté;78310.0;Maurepas;48.76423591028176, 1.9521663410362289;1.0;1.0;1.0;;630.0;True;2022.0;472.0;181.0;both;472.0;181.0
 0783293F;Lycée;Lycée Les Châtaigniers;11 bis avenue Jean Jaurès;78000.0;Versailles;48.81688127983218, 2.1441671016364316;1.0;1.0;0.0;;151.0;True;2022.0;151.0;59.0;both;151.0;59.0
 0783283V;Lycée;Lycée l'Ermitage;18 rue des Côtes;78600.0;Maisons-Laffitte;48.942790721901126, 2.1452723270924445;1.0;0.0;0.0;;293.0;True;2022.0;293.0;101.0;both;293.0;101.0
-0171428K;Lycée;Lycée de la mer et du littoral;Rue William Bertrand;17560.0;Bourcefranc-le-Chapus;45.84674464949382, -1.1570495790048279;1.0;1.0;1.0;;670.0;True;2022.0;557.0;211.0;both;557.0;211.0
-0761713Z;Lycée;Lycée privé La Providence Nicolas Barré;6 rue Neuvillette;76240.0;Le Mesnil-Esnard;49.40660036193264, 1.140139211030241;1.0;1.0;0.0;;491.0;True;2022.0;491.0;171.0;both;491.0;171.0
-0071351F;Lycée;Lycée polyvalent Xavier Mallet;rue Frédéric Mistral;7400.0;Le Teil;44.537699356914565, 4.689608488338841;1.0;1.0;1.0;;612.0;True;2022.0;390.0;135.0;both;390.0;135.0
+0754030Y;Lycée;Lycée privé polyvalent Albert de Mun;2 rue d'Olivet;75007.0;Paris;48.8497226239239, 2.319715372444925;0.0;1.0;1.0;;794.0;True;2022.0;446.0;125.0;both;446.0;125.0
+0371418R;Lycée;Lycée Jacques de Vaucanson;1 rue Jules Vedrines;37081.0;Tours;47.423381355457785, 0.70658040667596;1.0;1.0;0.0;;1093.0;True;2022.0;1093.0;401.0;both;1093.0;401.0
+0755709Y;Lycée;Lycée privé Sainte-Louise;29 rue des Envierges;75020.0;Paris;48.87240932537487, 2.387962592730769;1.0;0.0;0.0;;406.0;True;2022.0;406.0;172.0;both;406.0;172.0

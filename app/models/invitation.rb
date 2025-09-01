@@ -19,8 +19,8 @@ class Invitation < ApplicationRecord
 
   validate  :official_email_address
 
-  scope :for_people_with_no_account_in, ->(school_id:) {
-    where.not( email: Users::SchoolManagement.kept
+  scope :for_people_with_no_account_in, lambda { |school_id:|
+    where.not(email: Users::SchoolManagement.kept
                                              .where(school_id: school_id)
                                              .pluck(:email))
   }
@@ -37,11 +37,11 @@ class Invitation < ApplicationRecord
   def official_email_address
     return unless email.present?
 
-    if email.split('@').second != school.email_domain_name
-      errors.add(
-        :email,
-        "L'adresse email utilisée doit être officielle.<br>ex: XXXX@ac-academie.fr".html_safe
-      )
-    end
+    return if email.split('@').second == school.email_domain_name
+
+    errors.add(
+      :email,
+      "L'adresse email utilisée doit être officielle.<br>ex: XXXX@ac-academie.fr".html_safe
+    )
   end
 end

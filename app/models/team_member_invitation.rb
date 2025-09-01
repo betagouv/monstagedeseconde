@@ -139,10 +139,10 @@ class TeamMemberInvitation < ApplicationRecord
       # Essayer de forcer la suppression avec destroy!
       begin
         area.reload # Recharger pour être sûr d'avoir les dernières données
-        unless area.destroy
+        unless area.soft_destroy
           Rails.logger.error "Échec normal: #{area.errors.full_messages}"
           # Forcer avec destroy! pour voir l'erreur complète
-          area.destroy!
+          area.soft_destroy
         end
       rescue StandardError => e
         Rails.logger.error "Erreur de suppression: #{e.full_message}"
