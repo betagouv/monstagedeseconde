@@ -116,7 +116,7 @@ class User < ApplicationRecord
   end
 
   def anonymize(send_email: true)
-    return if anonymized && !discarded_at.nil?
+    return if anonymized && discarded_at.present?
 
     # Remove all personal information
     email_for_job = email.dup
@@ -195,7 +195,7 @@ class User < ApplicationRecord
   end
 
   def send_confirmation_instructions
-    return if created_by_teacher || statistician?
+    return if created_by_teacher || created_by_system || statistician?
 
     super
   end
