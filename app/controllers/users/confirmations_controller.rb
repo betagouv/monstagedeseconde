@@ -6,7 +6,8 @@ module Users
     def create
       if by_phone?
         fetch_user_by_phone
-        return if @user.try(:created_by_teacher)
+        return if @user.try(:created_by_teacher) || @user.try(:created_by_system)
+
         if @user&.student?
           SendSmsJob.perform_later(
             user: fetch_user_by_phone,
@@ -17,8 +18,8 @@ module Users
           redirect_to users_registrations_standby_path(id: @user.id)
         elsif @user.nil?
           self.resource = resource_class.new
-          self.resource.phone = safe_phone_param
-          self.resource.errors.add(:phone, 'Votre numéro de téléphone est inconnu')
+          resource.phone = safe_phone_param
+          resource.errors.add(:phone, 'Votre numéro de téléphone est inconnu')
           render 'devise/confirmations/new'
         end
         return
@@ -49,7 +50,7 @@ module Users
 
     # The path used after sign up for inactive accounts.
     def after_confirmation_path_for(_resource_name, resource)
-      parameter = resource.phone.present? ? {phone: resource.phone} : {email: resource.email}
+      parameter = resource.phone.present? ? { phone: resource.phone } : { email: resource.email }
       new_user_session_path(**parameter)
     end
   end
