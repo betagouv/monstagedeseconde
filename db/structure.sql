@@ -2492,7 +2492,8 @@ CREATE TABLE public.users (
     active_at timestamp(6) without time zone,
     school_ids text[] DEFAULT '{}'::text[],
     user_info jsonb DEFAULT '{}'::jsonb,
-    fim_user_info jsonb
+    fim_user_info jsonb,
+    created_by_system boolean DEFAULT false NOT NULL
 );
 
 
@@ -4745,7 +4746,7 @@ ALTER TABLE ONLY public.internship_offers
 --
 
 ALTER TABLE ONLY public.area_notifications
-    ADD CONSTRAINT fk_rails_2194cad748 FOREIGN KEY (internship_offer_area_id) REFERENCES public.internship_offer_areas(id);
+    ADD CONSTRAINT fk_rails_2194cad748 FOREIGN KEY (internship_offer_area_id) REFERENCES public.internship_offer_areas(id) ON DELETE CASCADE;
 
 
 --
@@ -4777,7 +4778,7 @@ ALTER TABLE ONLY public.user_schools
 --
 
 ALTER TABLE ONLY public.internship_offer_grades
-    ADD CONSTRAINT fk_rails_2cc542d77a FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+    ADD CONSTRAINT fk_rails_2cc542d77a FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id) ON DELETE CASCADE;
 
 
 --
@@ -5049,7 +5050,7 @@ ALTER TABLE ONLY public.active_storage_variant_records
 --
 
 ALTER TABLE ONLY public.internship_offers
-    ADD CONSTRAINT fk_rails_9bcd71f8ef FOREIGN KEY (internship_offer_area_id) REFERENCES public.internship_offer_areas(id);
+    ADD CONSTRAINT fk_rails_9bcd71f8ef FOREIGN KEY (internship_offer_area_id) REFERENCES public.internship_offer_areas(id) ON DELETE CASCADE;
 
 
 --
@@ -5177,7 +5178,7 @@ ALTER TABLE ONLY public.users_internship_offers_histories
 --
 
 ALTER TABLE ONLY public.internship_offer_stats
-    ADD CONSTRAINT fk_rails_e13d61cd66 FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+    ADD CONSTRAINT fk_rails_e13d61cd66 FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id) ON DELETE CASCADE;
 
 
 --
@@ -5249,7 +5250,7 @@ ALTER TABLE ONLY public.organisations
 --
 
 ALTER TABLE ONLY public.internship_offer_weeks
-    ADD CONSTRAINT fk_rails_f36a7226ee FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+    ADD CONSTRAINT fk_rails_f36a7226ee FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id) ON DELETE CASCADE;
 
 
 --
@@ -5267,7 +5268,10 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250901102600'),
+('20250826120000'),
 ('20250820143152'),
+('20250818081652'),
 ('20250715103501'),
 ('20250526084703'),
 ('20250516153906'),
