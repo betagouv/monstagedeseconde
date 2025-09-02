@@ -34,6 +34,7 @@ module Teamable
              -> { merge(InternshipOffers::WeeklyFramed.kept) },
              class_name: 'InternshipOffers::WeeklyFramed',
              foreign_key: 'employer_id'
+             
 
     has_many :internship_applications, through: :kept_internship_offers
     has_many :internship_agreements, through: :internship_applications

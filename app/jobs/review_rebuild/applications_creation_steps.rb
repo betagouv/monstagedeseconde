@@ -73,7 +73,7 @@ module ReviewRebuild
           weeks: [targeted_offer.weeks.first]
         )
       end
-      approve_applications(InternshipApplication.order(created_at: :desc).first(3))
+      approve_applications(InternshipApplication.order(id: :desc).first(3))
       # -----------
       student = college_standard_students.second
       targeted_offer = paris_offers.troisieme_or_quatrieme.third
