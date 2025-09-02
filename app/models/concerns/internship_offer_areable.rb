@@ -55,7 +55,6 @@ module InternshipOfferAreable
 
     # ------------  private ------------
     private
-
     # ----------------------------------
 
     def latest_area_id

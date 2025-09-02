@@ -1315,8 +1315,8 @@ ALTER SEQUENCE public.internship_offer_areas_id_seq OWNED BY public.internship_o
 
 CREATE TABLE public.internship_offer_grades (
     id bigint NOT NULL,
-    grade_id bigint NOT NULL,
     internship_offer_id bigint NOT NULL,
+    grade_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -5052,7 +5052,7 @@ ALTER TABLE ONLY public.active_storage_variant_records
 --
 
 ALTER TABLE ONLY public.internship_offers
-    ADD CONSTRAINT fk_rails_9bcd71f8ef FOREIGN KEY (internship_offer_area_id) REFERENCES public.internship_offer_areas(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_9bcd71f8ef FOREIGN KEY (internship_offer_area_id) REFERENCES public.internship_offer_areas(id);
 
 
 --
@@ -5270,8 +5270,8 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250902084046'),
 ('20250901102600'),
-('20250826120000'),
 ('20250820143152'),
 ('20250818081652'),
 ('20250715103501'),

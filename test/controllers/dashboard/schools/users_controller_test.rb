@@ -95,11 +95,6 @@ module Dashboard
         sign_in(school.school_manager)
 
         get dashboard_school_users_path(school)
-        puts '--- writing html in debug_file.html ---'
-        puts ''
-        html = Nokogiri::HTML(response.body)
-        File.open('debug_file.html', 'w+') { |f| f.write html } 
-        puts '----------------------------------------'
         assert_response :success
         assert_select 'tbody tr', count: school_employees.length + 1 # school manager
       end

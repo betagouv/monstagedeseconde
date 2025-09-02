@@ -303,6 +303,9 @@ Rails.application.routes.draw do
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
   post '/waiting_list', to: 'pages#waiting_list'
 
+  authenticate :user, ->(u) { u.god? } do
+    resources :reset_review_data, only: %i[new create] if Rails.env.review? || Rails.env.development?
+  end
   # Redirects
   # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
   get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/#{id}', status: 302)

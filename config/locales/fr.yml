@@ -745,6 +745,10 @@ fr:
         title: 'Key Performance Indicators'
         breadcrumb: KPI
         menu: KPI
+      reset_review_data:
+        title: 'Reset des données de la plateforme review'
+        breadcrumb: 'Data Review Reset'
+        menu: 'Reset des données de la plateforme review'
       index:
         no_records: Aucun résultat
       delete:

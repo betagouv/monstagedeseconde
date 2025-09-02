@@ -6,5 +6,4 @@ class UsersInternshipOffersHistory < ActiveRecord::Base
   # relations
   belongs_to :user
   belongs_to :internship_offer
-  
 end

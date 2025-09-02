@@ -1,0 +1,10 @@
+.container data-controller="progress" data-progress-job-id-value=@job_id
+  h1.fr-mt-4w Reset des données de review
+
+  = form_with url: reset_review_data_path, method: :post do |f|
+    = hidden_field_tag :job_id, @job_id
+    = f.submit "Lancer le reset des données de review",
+               class: "fr-btn fr-btn--primary fr-my-2w",
+               data: { progress_target: "button" , action: "click->progress#handleButtonState" }
+    .progress-bar.fr-hidden[data-progress-target="bar"] Démarrez la tâche !
+  .fr-my-4w.message-box[data-progress-target="details"]

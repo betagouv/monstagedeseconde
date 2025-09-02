@@ -26,7 +26,11 @@ module Users
     belongs_to :class_room, optional: true
     has_many :students, through: :school
     has_many :teachers, through: :school
-    has_many :invitations, class_name: 'Invitation', foreign_key: 'user_id', inverse_of: :author
+    has_many :invitations,
+             class_name: 'Invitation',
+             foreign_key: 'user_id',
+             inverse_of: :author,
+             dependent: :destroy
     has_many :internship_applications, through: :students
     has_many :internship_agreements, through: :internship_applications
 

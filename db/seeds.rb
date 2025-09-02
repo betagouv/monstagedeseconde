@@ -63,7 +63,7 @@ def a_parisian_college
 end
 
 ActiveSupport::Notifications.subscribe(/seed/) do |event|
-  PrettyConsole.puts_in_blue "#{event.name} done! #{event.duration}"
+  PrettyConsole.puts_in_cyan "#{event.name} done! #{event.duration}"
 end
 
 def prevent_sidekiq_to_run_job_after_seed_loaded
