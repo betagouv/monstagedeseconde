@@ -7,9 +7,13 @@ class RebuildReviewJobTest < ActiveJob::TestCase
     expected_broadcasts_in_method = 3
     # Prepare a spy for ActionCable.server.broadcast
     broadcasted = []
-    ActionCable.server.stub(:broadcast, ->(channel, data) { broadcasted << [channel, data] }) do
-      assert_enqueued_jobs 0 do
-        RebuildReviewJob.new.perform(job_id)
+    RebuildReviewJob.stub_any_instance(:remove_steps, nil) do
+      RebuildReviewJob.stub_any_instance(:creation_steps, nil) do
+        ActionCable.server.stub(:broadcast, ->(channel, data) { broadcasted << [channel, data] }) do
+          assert_enqueued_jobs 0 do
+            RebuildReviewJob.new.perform(job_id)
+          end
+        end
       end
     end
 
