@@ -5,7 +5,6 @@ def populate_invitations
       first_name: 'Julie',
       last_name: 'Durand',
       email: "julie.durand@#{author.school.email_domain_name}",
-      role: 'teacher',
       sent_at: Time.current
     )
     invitation.save!
