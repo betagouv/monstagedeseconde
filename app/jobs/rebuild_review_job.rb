@@ -44,15 +44,15 @@ class RebuildReviewJob < ApplicationJob
     # creation steps
     [:employers, 'Création des employeurs', 7, 'addition'],
     [:users_operators, 'Création des opérateurs', 7, 'addition'],
-    [:extra_areas, 'Création des espaces supplémentaires - non fait', 0, 'addition'],
     [:students, 'Création des élèves', 155, 'addition'],
-    [:users_school_management, 'Création des équipes pédagogiques', 3, 'addition'],
+    [:users_school_management, 'Création des équipes pédagogiques', 69, 'addition'],
     [:api_offers, 'Création des offres API', 12, 'addition'],
     [:offers, 'Création des offres', 30, 'addition'],
-    [:applications, 'Création des candidatures', 50, 'addition'],
+    [:applications, 'Création des candidatures', 69, 'addition'],
     [:agreements, 'Création des conventions', 8, 'addition'],
     [:finalization, 'Finalisation du processus de reconstruction', 0, 'addition']
   ].freeze
+  # [:extra_areas, 'Création des espaces supplémentaires - non fait', 0, 'addition'],
   # [:invitation, "Création d'une invitation", 1, 'addition'],
   # [:team, "Création d'une équipe", 1, 'addition'],
 
@@ -62,7 +62,7 @@ class RebuildReviewJob < ApplicationJob
     @total ||= STEPS.sum { |step| step[2] }
     @rebuilt_steps_hash = STEPS.each_with_object({}) do |step, hash|
       sym = step[0].to_sym
-      text = step[1]
+      text = "#{step[1]} : terminée"
       duration = step[2]
       time_value = @total.zero? ? 0 : (duration.to_f / @total * 100).round(2)
       hash[sym] = { text => time_value }
@@ -133,10 +133,10 @@ class RebuildReviewJob < ApplicationJob
   def creation_steps
     addition_steps = STEPS.select { |step| step[3] == 'addition' }
     addition_steps.each do |step|
-      show_time do
+      # show_time do
         send("create_#{step[0]}".to_sym)
         broadcast_info(step[0])
-      end
+      # end
     end
   end
 

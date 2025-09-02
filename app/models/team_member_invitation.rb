@@ -134,15 +134,16 @@ class TeamMemberInvitation < ApplicationRecord
         current_area_id: inviter.current_area_id
       )
 
+      # TODO destroy_all on collection, this is to be verified
       area.area_notifications.destroy_all
 
       # Essayer de forcer la suppression avec destroy!
       begin
         area.reload # Recharger pour être sûr d'avoir les dernières données
-        unless area.soft_destroy
+        unless area.destroy
           Rails.logger.error "Échec normal: #{area.errors.full_messages}"
           # Forcer avec destroy! pour voir l'erreur complète
-          area.soft_destroy
+          area.destroy
         end
       rescue StandardError => e
         Rails.logger.error "Erreur de suppression: #{e.full_message}"

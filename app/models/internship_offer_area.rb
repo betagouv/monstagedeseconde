@@ -5,7 +5,6 @@ class InternshipOfferArea < ApplicationRecord
   has_one :user,
            foreign_key: 'current_area_id',
            class_name: 'User',
-           inverse_of: :current_area,
            dependent: :nullify
 
   has_many :internship_offers,

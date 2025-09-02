@@ -20,7 +20,8 @@ class InternshipAgreement < ApplicationRecord
   attr_accessor :enforce_school_manager_validations,
                 :enforce_employer_validations,
                 :enforce_teacher_validations,
-                :skip_validations_for_system
+                :skip_validations_for_system,
+                :skip_notifications_when_system_creation
 
   with_options if: :enforce_teacher_validations? do
     validates :student_class_room, presence: true
@@ -98,7 +99,7 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[completed_by_employer started_by_school_manager],
                   to: :validated,
                   after: proc { |*_args|
-                           notify_employer_school_manager_completed
+                           notify_employer_school_manager_completed unless skip_notifications_when_system_creation
                          }
     end
 

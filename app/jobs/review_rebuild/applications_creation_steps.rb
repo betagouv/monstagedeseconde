@@ -50,7 +50,7 @@ module ReviewRebuild
       )
       # -----------
       student = college_standard_students.first
-      targeted_offer = paris_offers.second
+      targeted_offer = paris_offers.troisieme_or_quatrieme.first
       application_maker(
         student: student,
         targeted_offer: targeted_offer,
@@ -99,7 +99,6 @@ module ReviewRebuild
         weeks: [targeted_offer.weeks.second]
       )
       InternshipApplication.last(2).each { |app| app.reject! }
-      info("Created applications for 3eme #{InternshipApplication.all.pluck(:aasm_state)}")
     end
 
     # Logic for creating applications for 2de
@@ -164,7 +163,6 @@ module ReviewRebuild
         weeks: [targeted_offer.weeks.second]
       )
       InternshipApplication.last(2).each { |app| app.reject! }
-      info("Created applications for 3eme #{InternshipApplication.all.pluck(:aasm_state)}")
     end
 
     # -- helpers
