@@ -114,8 +114,8 @@ class RebuildReviewJob < ApplicationJob
     User.where.not(current_area_id: nil).update_all(current_area_id: nil)
 
     broadcast_info(:areas_removal)
-    InternshipOfferArea.delete_all
     InternshipOffer.destroy_all
+    InternshipOfferArea.delete_all
 
     broadcast_info(:stepper_classes_removal)
     InternshipOccupation.destroy_all

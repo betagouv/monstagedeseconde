@@ -8,12 +8,17 @@ class InternshipOfferArea < ApplicationRecord
            inverse_of: :current_area,
            dependent: :nullify
 
-  has_many :internship_offers, dependent: :destroy, inverse_of: :internship_offer_area
+  has_many :internship_offers,
+           inverse_of: :internship_offer_area,
+           dependent: :nullify
+
   has_many :area_notifications, dependent: :destroy
 
   validates :employer_id, :name, presence: true
 
   validate :name_uniqueness_in_team
+
+  # write a migration file that removes cascade delete in structure.sql between internship_offer_areas and internship_offers
 
   def team_sibling_areas
     return InternshipOfferArea.none if employer.team.not_exists?
