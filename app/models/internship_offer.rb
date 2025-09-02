@@ -55,8 +55,9 @@ class InternshipOffer < ApplicationRecord
   belongs_to :internship_offer_area, optional: true, touch: true, inverse_of: :internship_offers
   belongs_to :internship_offer, optional: true, foreign_key: 'mother_id'
 
-  # has_many :favorites
-  # has_many :users, through: :favorites
+  # TODO : why, the 2 next lines ?
+  has_many :favorites
+  has_many :users, through: :favorites
   has_many :users_internship_offers_histories, dependent: :destroy
 
   has_many :internship_offer_weeks,

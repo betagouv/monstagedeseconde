@@ -7,8 +7,7 @@ class Entreprise < ApplicationRecord
   has_one :planning,
           dependent: :destroy,
           foreign_key: :entreprise_id,
-          inverse_of: :entreprise,
-          dependent: :destroy
+          inverse_of: :entreprise
 
   # Validations
   validates :siret,

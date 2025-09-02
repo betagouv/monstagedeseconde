@@ -17,8 +17,6 @@ class InternshipOfferArea < ApplicationRecord
 
   validate :name_uniqueness_in_team
 
-  # write a migration file that removes cascade delete in structure.sql between internship_offer_areas and internship_offers
-
   def team_sibling_areas
     return InternshipOfferArea.none if employer.team.not_exists?
 
