@@ -4748,7 +4748,7 @@ ALTER TABLE ONLY public.internship_offers
 --
 
 ALTER TABLE ONLY public.area_notifications
-    ADD CONSTRAINT fk_rails_2194cad748 FOREIGN KEY (internship_offer_area_id) REFERENCES public.internship_offer_areas(id);
+    ADD CONSTRAINT fk_rails_2194cad748 FOREIGN KEY (internship_offer_area_id) REFERENCES public.internship_offer_areas(id) ON DELETE CASCADE;
 
 
 --
@@ -4780,7 +4780,7 @@ ALTER TABLE ONLY public.user_schools
 --
 
 ALTER TABLE ONLY public.internship_offer_grades
-    ADD CONSTRAINT fk_rails_2cc542d77a FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+    ADD CONSTRAINT fk_rails_2cc542d77a FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id) ON DELETE CASCADE;
 
 
 --
