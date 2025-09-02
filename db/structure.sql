@@ -1310,6 +1310,38 @@ ALTER SEQUENCE public.internship_offer_areas_id_seq OWNED BY public.internship_o
 
 
 --
+-- Name: internship_offer_grades; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.internship_offer_grades (
+    id bigint NOT NULL,
+    internship_offer_id bigint NOT NULL,
+    grade_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: internship_offer_grades_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.internship_offer_grades_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: internship_offer_grades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.internship_offer_grades_id_seq OWNED BY public.internship_offer_grades.id;
+
+
+--
 -- Name: internship_offer_info_weeks; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2817,6 +2849,13 @@ ALTER TABLE ONLY public.internship_offer_areas ALTER COLUMN id SET DEFAULT nextv
 
 
 --
+-- Name: internship_offer_grades id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offer_grades ALTER COLUMN id SET DEFAULT nextval('public.internship_offer_grades_id_seq'::regclass);
+
+
+--
 -- Name: internship_offer_info_weeks id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3270,6 +3309,14 @@ ALTER TABLE ONLY public.internship_occupations
 
 ALTER TABLE ONLY public.internship_offer_areas
     ADD CONSTRAINT internship_offer_areas_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: internship_offer_grades internship_offer_grades_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offer_grades
+    ADD CONSTRAINT internship_offer_grades_pkey PRIMARY KEY (id);
 
 
 --
@@ -3905,6 +3952,20 @@ CREATE INDEX index_internship_occupations_on_employer_id ON public.internship_oc
 --
 
 CREATE INDEX index_internship_offer_areas_on_employer ON public.internship_offer_areas USING btree (employer_type, employer_id);
+
+
+--
+-- Name: index_internship_offer_grades_on_grade_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offer_grades_on_grade_id ON public.internship_offer_grades USING btree (grade_id);
+
+
+--
+-- Name: index_internship_offer_grades_on_internship_offer_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offer_grades_on_internship_offer_id ON public.internship_offer_grades USING btree (internship_offer_id);
 
 
 --
@@ -4715,6 +4776,14 @@ ALTER TABLE ONLY public.user_schools
 
 
 --
+-- Name: internship_offer_grades fk_rails_2cc542d77a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offer_grades
+    ADD CONSTRAINT fk_rails_2cc542d77a FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+
+
+--
 -- Name: planning_grades fk_rails_30cc61e8d2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5115,6 +5184,14 @@ ALTER TABLE ONLY public.internship_offer_stats
 
 
 --
+-- Name: internship_offer_grades fk_rails_e960458274; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offer_grades
+    ADD CONSTRAINT fk_rails_e960458274 FOREIGN KEY (grade_id) REFERENCES public.grades(id);
+
+
+--
 -- Name: schools fk_rails_e97840dde7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5193,6 +5270,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250902084046'),
 ('20250901102600'),
 ('20250820143152'),
 ('20250818081652'),

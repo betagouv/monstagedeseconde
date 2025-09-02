@@ -62,23 +62,20 @@ class InternshipOffer < ApplicationRecord
   has_many :internship_offer_weeks,
            dependent: :destroy,
            foreign_key: :internship_offer_id,
-           inverse_of: :internship_offer,
-           dependent: :destroy
+           inverse_of: :internship_offer
   has_many :weeks, through: :internship_offer_weeks
 
   has_many :internship_offer_grades,
            dependent: :destroy,
            foreign_key: :internship_offer_id,
            inverse_of: :internship_offer,
-            dependent: :destroy
   has_many :grades, through: :internship_offer_grades
 
   has_many :reserved_schools,
             dependent: :destroy,
             class_name: 'ReservedSchool',
             foreign_key: :internship_offer_id,
-            inverse_of: :internship_offer,
-            dependent: :destroy
+            inverse_of: :internship_offer
   has_many :schools, through: :reserved_schools
 
   has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy
