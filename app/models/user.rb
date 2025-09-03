@@ -8,8 +8,9 @@ class User < ApplicationRecord
   include ActiveModel::Dirty
   include PhoneComputation
 
+  # TODO: move the following to student or just remove
   has_many :favorites
-  has_many :url_shrinkers
+  has_many :url_shrinkers, dependent: :destroy
 
   attr_accessor :phone_prefix, :phone_suffix, :statistician_type, :current_school_id, :skip_callback_with_review_rebuild
 
