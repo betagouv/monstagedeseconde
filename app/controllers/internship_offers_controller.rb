@@ -35,7 +35,7 @@ class InternshipOffersController < ApplicationController
 
         @params = search_query_params
 
-        @internship_offers_seats_count = @internship_offers.empty? ? 0 : seats_finder.all_without_page.sum(:max_candidates).values.sum
+        @internship_offers_seats_count = @internship_offers.empty? ? 0 : seats_finder.all_without_page.pluck(:max_candidates).sum
         data = {
           internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
