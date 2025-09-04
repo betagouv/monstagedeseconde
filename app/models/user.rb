@@ -143,7 +143,7 @@ class User < ApplicationRecord
   end
 
   def destroy
-    Rails.env.review? || Rails.env.development? ? super : anonymize
+    ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true' ? super : anonymize
   end
 
   def reset_password_by_phone

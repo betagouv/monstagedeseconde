@@ -107,7 +107,7 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[validated signatures_started],
                   to: :signatures_started,
                   after: proc { |*_args|
-                           notify_others_signatures_started
+                           notify_others_signatures_started unless skip_notifications_when_system_creation
                          }
     end
 
@@ -115,7 +115,7 @@ class InternshipAgreement < ApplicationRecord
       transitions from: [:signatures_started],
                   to: :signed_by_all,
                   after: proc { |*_args|
-                           notify_others_signatures_finished(self)
+                           notify_others_signatures_finished(self) unless skip_notifications_when_system_creation
                          }
     end
   end
