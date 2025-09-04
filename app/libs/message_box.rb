@@ -1,5 +1,5 @@
 class MessageBox
-  TYPES = %w[info error clear header].freeze # headers are never removed
+  TYPES = %w[info error clear header temporaire].freeze # headers are never removed
 
   def add_message(message_content:, time_value: 0, type: 'info')
     check_values(message_content: message_content, time_value: time_value, type: type)
@@ -10,6 +10,8 @@ class MessageBox
       time_value = 0
     elsif type == 'clear'
       @messages = clear_infos
+    else
+      @messages = clear_temporaries
     end
     append(message_content: message_content, time_value: time_value, type: type)
   end
@@ -22,6 +24,11 @@ class MessageBox
 
   def broadcast_info(message_content:, time_value: 0)
     add_message(message_content: message_content, time_value: time_value, type: 'info')
+    broadcast_progress
+  end
+
+  def broadcast_temporary_info(message_content:)
+    add_message(message_content: message_content, time_value: 0, type: 'temporaire')
     broadcast_progress
   end
 
@@ -52,11 +59,15 @@ class MessageBox
       raise ArgumentError,
             'Time value must be a Numeric'
     end
-    raise ArgumentError, "Type must be 'info', 'error', or 'clear'" unless type.in?(TYPES)
+    raise ArgumentError, "Type must be 'info', 'error', 'temporaire', or 'clear'" unless type.in?(TYPES)
   end
 
   def clear_infos
     @messages = @messages.select { |msg| msg[:type] == 'header' }
+  end
+
+  def clear_temporaries
+    @messages = @messages.reject { |msg| msg[:type] == 'temporaire' }
   end
 
   def keep_error_and_show_errors

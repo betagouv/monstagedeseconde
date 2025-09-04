@@ -16,8 +16,8 @@ module ReviewRebuild
           first_name: 'Amina',
           last_name: 'Moussa',
           phone: '+330622345678' },
-        { email: 'veronique.chottin@du-temps-pour-moi.com',
-          first_name: 'Véronique',
+        { email: 'virginie.chottin@du-temps-pour-moi.com',
+          first_name: 'Virginie',
           last_name: 'Chottin',
           phone: '+330622345679' }
       ]

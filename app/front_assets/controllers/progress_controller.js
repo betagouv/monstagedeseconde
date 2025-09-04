@@ -54,7 +54,9 @@ export default class extends Controller {
       if (item.type === 'header' || item.type === undefined) {
         this.detailsTarget.innerHTML += `<h2 class='message_header'>${item.message_content}</h2>`
       } else if (item.type === 'info') {
-        this.detailsTarget.innerHTML += `<p> [${item.type.toUpperCase()}] ${item.message_content}</p>`
+        this.detailsTarget.innerHTML += `<p> [${item.type.toUpperCase()}] ${item.message_content} : terminée</p>`
+      } else if (item.type === 'temporaire') {
+        this.detailsTarget.innerHTML += `<p> [${item.type.toUpperCase()}] ${item.message_content} ... en cours ...</p>`
       } else if (item.type === 'error') {
         this.barTarget.classList.add('fr-hidden')
         this.detailsTarget.classList.add('treatment-error')

@@ -15,23 +15,53 @@ module ReviewRebuild
         iag.start_by_school_manager!
         iag.finalize!
       end
-      InternshipAgreement.troisieme_grades.first(2).each do |agreement|
-        Signature.new(signatory_role: 'school_manager',
-                      user_id: agreement.school_manager.id,
-                      signature_date: Time.current,
-                      signatory_ip: FFaker::Internet.ip_v4_address,
-                      signature_phone_number: '+33123456789',
-                      internship_agreement: agreement).save!
-      end
+      agreement = InternshipAgreement.troisieme_grades.first
+      Signature.new(common_attributes(agreement, 'school_manager'))
+               .save!
+      agreement.sign!
 
-      InternshipAgreement.seconde_grades.first(2).each do |agreement|
-        Signature.new(signatory_role: 'school_manager',
-                      user_id: agreement.school_manager.id,
-                      signature_date: Time.current,
-                      signatory_ip: FFaker::Internet.ip_v4_address,
-                      signature_phone_number: '+33123456789',
-                      internship_agreement: agreement).save!
-      end
+      agreement = InternshipAgreement.troisieme_grades.second
+      Signature.new(common_attributes(agreement, 'employer'))
+               .save!
+      agreement.sign!
+
+      agreement = InternshipAgreement.seconde_grades.first
+      Signature.new(common_attributes(agreement, 'school_manager'))
+               .save!
+      agreement.sign!
+
+      agreement = InternshipAgreement.seconde_grades.second
+      Signature.new(common_attributes(agreement, 'employer'))
+               .save!
+      agreement.sign!
+
+      # --- pair signing
+      agreement = InternshipAgreement.seconde_grades.third
+      Signature.new(common_attributes(agreement, 'school_manager'))
+               .save!
+      agreement.sign!
+
+      Signature.new(common_attributes(agreement, 'employer'))
+               .save!
+      agreement.sign!
+      # agreement.signatures_finalize!
+    end
+
+    def common_attributes(agreement, signatory_role)
+      hash = {
+        signature_image: Rack::Test::UploadedFile.new('test/fixtures/files/signature.png', 'image/png'),
+        signature_date: Time.current,
+        signatory_ip: FFaker::Internet.ip_v4_address,
+        signature_phone_number: '+33123456789',
+        internship_agreement: agreement
+      }
+      hash[:signatory_role] = signatory_role
+      hash[:user_id] = if signatory_role == 'school_manager'
+                         agreement.school_manager.id
+                       else
+                         agreement.employer.id
+                       end
+      hash
     end
   end
 end

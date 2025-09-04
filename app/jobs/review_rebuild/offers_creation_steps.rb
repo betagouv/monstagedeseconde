@@ -188,7 +188,7 @@ module ReviewRebuild
         street: '128 rue brancion',
         zipcode: '75015',
         city: 'Paris',
-        coordinates: { latitude: 48.866667, longitude: 2.333333 },
+        coordinates: { latitude: 48.82914668864281, longitude: 2.301552087890998 },
         employer_name: 'Du temps pour moi',
         internship_offer_area_id: fourth_employer_area_id,
         weeks: troisieme_weeks,
@@ -315,13 +315,13 @@ module ReviewRebuild
         is_public: false,
         title: '(2de-3e) Stage marketing',
         description: 'Le stage proposé consiste à assister les équipes du magasin dans la construction d\'un plan marketing à même de supplanter tous les autres fleuristes de Paris. Vaincre ou mourir !',
-        employer_description: "Justin fleuriste",
+        employer_description: 'Justin fleuriste',
         employer_website: 'http://www.fleuriste-du marais.fr/',
         street: '25 rue Legendre',
         zipcode: '75017',
         city: 'Paris',
         coordinates: { latitude: 48.88409591622411, longitude: 2.314062726519731 },
-        employer_name: "Les fleuristes du marais" ,
+        employer_name: 'Les fleuristes du marais',
         max_candidates: 17,
         internship_offer_area_id: first_employer_area_id,
         weeks: all_weeks,
@@ -330,8 +330,31 @@ module ReviewRebuild
         lunch_break: "L'élève doit prévoir son repas de midi",
         published_at: nil
       })
+      description = " Présentation des services de la direction régionale de la banque Acme Corp. (banque de dépôt). - Présentation des principes secondaires du métier. - Immersion au sein d’une équipe d'admiistrateurs de comptes de la banque. Proposition de gestion de portefeuille de clients en fin de stage, avec les conseils du tuteur'. Le métier de trader consiste à optimiser les ressources de la banque Oyonnax Corp. en spéculant sur des valeurs mobilières "
+
+      data_array << ({ # 11 Paris - 3
+        max_candidates: 2,
+        employer: first_employer,
+        contact_phone: '+33637607756',
+        sector: service_sector,
+        is_public: false,
+        school_year: 2025,
+        title: '(3e) Découverte du travail de trader',
+        description: description,
+        street: '12 rue Abel',
+        zipcode: '75015',
+        city: 'Paris',
+        coordinates: { latitude: 48.84702901622884, longitude: 2.375131193980671 },
+        employer_name: 'Oyonnax Corp.',
+        internship_offer_area_id: first_employer_area_id,
+        weeks: troisieme_weeks,
+        grades: [Grade.troisieme],
+        entreprise_full_address: '12 rue Abel, 75012 paris',
+        lunch_break: "L'élève doit prévoir son repas de midi"
+      })
       data_array.each do |data|
-        offer = InternshipOffers::WeeklyFramed.new(data)
+        data.merge!(weekly_hours: ['08:30', '17:00'])
+        offer = InternshipOffers::WeeklyFramed.new(**data)
         raise StandardError, offer.errors.full_messages.to_sentence unless offer.valid?
 
         offer.save!

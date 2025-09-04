@@ -58,22 +58,25 @@ module ReviewRebuild
       )
       # --- end of submitted
 
-      student = college_qpv_students.second
-      targeted_offer = paris_offers.troisieme_or_quatrieme.second
+      student_2 = college_qpv_students.second
+      targeted_offer_2 = paris_offers.troisieme_or_quatrieme.second
       # approved
       application_maker(
-        student: student,
-        targeted_offer: targeted_offer,
-        weeks: [targeted_offer.weeks.first]
+        student: student_2,
+        targeted_offer: targeted_offer_2,
+        weeks: [targeted_offer_2.weeks.first]
       )
+      raise "that's it" if student.id.in?(college_qpv_students[5..12].map(&:id))
+      raise "that's it 2" if student_2.id.in?(college_qpv_students[5..12].map(&:id))
+
       college_qpv_students[5..12].each do |stu|
         application_maker(
           student: stu,
-          targeted_offer: targeted_offer,
+          targeted_offer: targeted_offer_2,
           weeks: [targeted_offer.weeks.first]
         )
       end
-      approve_applications(InternshipApplication.order(id: :desc).first(3))
+      approve_applications(InternshipApplication.order(id: :desc).first(4))
       # -----------
       student = college_standard_students.second
       targeted_offer = paris_offers.troisieme_or_quatrieme.third
@@ -136,7 +139,7 @@ module ReviewRebuild
           weeks: [targeted_offer.weeks.first]
         )
       end
-      approve_applications(InternshipApplication.order(created_at: :desc).first(3))
+      approve_applications(InternshipApplication.order(created_at: :desc).first(4))
       # -----------
       student = lycee_standard_students.second
       targeted_offer = paris_offers.seconde.last

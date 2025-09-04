@@ -42,15 +42,14 @@ class RebuildReviewJob < ApplicationJob
     [:users_school_management_removal, 'Suppression des équipes pédagogiques', 1, 'removal'],
 
     # creation steps
-    [:employers, 'Création des employeurs', 7, 'addition'],
-    [:users_operators, 'Création des opérateurs', 7, 'addition'],
-    [:students, 'Création des élèves', 155, 'addition'],
-    [:users_school_management, 'Création des équipes pédagogiques', 69, 'addition'],
-    [:api_offers, 'Création des offres API', 12, 'addition'],
+    [:employers, 'Création des employeurs', 8, 'addition'],
+    [:users_operators, 'Création des opérateurs', 6, 'addition'],
+    [:students, 'Création des élèves', 157, 'addition'],
+    [:users_school_management, 'Création des équipes pédagogiques', 42, 'addition'],
+    [:api_offers, 'Création des offres API', 10, 'addition'],
     [:offers, 'Création des offres', 30, 'addition'],
     [:applications, 'Création des candidatures', 69, 'addition'],
-    [:agreements, 'Création des conventions', 8, 'addition'],
-    [:finalization, 'Finalisation du processus de reconstruction', 0, 'addition']
+    [:agreements, 'Création des conventions', 15, 'addition']
   ].freeze
   # [:extra_areas, 'Création des espaces supplémentaires - non fait', 0, 'addition'],
   # [:invitation, "Création d'une invitation", 1, 'addition'],
@@ -62,7 +61,7 @@ class RebuildReviewJob < ApplicationJob
     @total ||= STEPS.sum { |step| step[2] }
     @rebuilt_steps_hash = STEPS.each_with_object({}) do |step, hash|
       sym = step[0].to_sym
-      text = "#{step[1]} : terminée"
+      text = step[1]
       duration = step[2]
       time_value = @total.zero? ? 0 : (duration.to_f / @total * 100).round(2)
       hash[sym] = { text => time_value }
@@ -134,8 +133,9 @@ class RebuildReviewJob < ApplicationJob
     addition_steps = STEPS.select { |step| step[3] == 'addition' }
     addition_steps.each do |step|
       # show_time do
-        send("create_#{step[0]}".to_sym)
-        broadcast_info(step[0])
+      broadcast_temporary_info(step[0])
+      send("create_#{step[0]}".to_sym)
+      broadcast_info(step[0])
       # end
     end
   end
@@ -144,12 +144,20 @@ class RebuildReviewJob < ApplicationJob
   # generic broadcasting methods
 
   def broadcast_info(sym)
+    text = steps_input_text(sym)
+    time_value = @rebuilt_steps_hash[sym].values.first
+    message_box.broadcast_info(message_content: text, time_value: time_value)
+  end
+
+  def broadcast_temporary_info(sym)
+    text = steps_input_text(sym)
+    message_box.broadcast_temporary_info(message_content: text)
+  end
+
+  def steps_input_text(sym)
     raise ArgumentError, 'Invalid step symbol' unless @rebuilt_steps_hash.key?(sym)
 
-    text = @rebuilt_steps_hash[sym].keys.first
-    time_value = @rebuilt_steps_hash[sym].values.first
-
-    message_box.broadcast_info(message_content: text, time_value: time_value)
+    @rebuilt_steps_hash[sym].keys.first
   end
 
   def broadcast_error(text)

@@ -54,27 +54,27 @@ module ReviewRebuild
       # ---------------
       students_data = []
 
-      students_data << { school_number: '1', email: 'eugenie.grandet@yahoo.com', gender: 'f', first_name: 'Eugénie ',
+      students_data << { school_number: '1', email: 'eugenie.grandet@yahoo.com', gender: 'f', first_name: 'Eugénie',
                          last_name: 'Grandet', seconde: false }
-      students_data << { school_number: '1', email: 'prince.lepetit@la_poste.fr', gender: 'np', first_name: 'Prince ',
+      students_data << { school_number: '1', email: 'prince.lepetit@la_poste.fr', gender: 'np', first_name: 'Prince',
                          last_name: 'Lepetit', seconde: false }
       students_data << { school_number: '1', email: 'fabrice.deldongo@train-italia.it', gender: 'm',
-                         first_name: 'Fabrice ', last_name: 'DelDongo', seconde: false }
+                         first_name: 'Fabrice', last_name: 'DelDongo', seconde: false }
       students_data << { school_number: '1', email: 'sheherazade.shariar@alibaba.ir', gender: 'f',
-                         first_name: 'Sheherazade ', last_name: 'Shariar', seconde: false }
-      students_data << { school_number: '1', email: 'edmond.dantes@france-plot.fr', gender: 'm', first_name: 'Edmond ',
+                         first_name: 'Sheherazade', last_name: 'Shariar', seconde: false }
+      students_data << { school_number: '1', email: 'edmond.dantes@france-plot.fr', gender: 'm', first_name: 'Edmond',
                          last_name: 'Dantès', seconde: false }
       students_data << { school_number: '1', email: 'marguerite.gauthier@interflora.fr', gender: 'f',
-                         first_name: 'Marguerite ', last_name: 'Gauthier', seconde: false }
+                         first_name: 'Marguerite', last_name: 'Gauthier', seconde: false }
       students_data << { school_number: '1', email: 'gilgamesh.uruk@transage.ir', gender: 'm',
-                         first_name: 'Gilgamesh ', last_name: 'Uruk', seconde: false }
-      students_data << { school_number: '1', email: 'oliver.twist@educ.gov.uk', gender: 'm', first_name: 'Oliver ',
+                         first_name: 'Gilgamesh', last_name: 'Uruk', seconde: false }
+      students_data << { school_number: '1', email: 'oliver.twist@educ.gov.uk', gender: 'm', first_name: 'Oliver',
                          last_name: 'Twist', seconde: false }
-      students_data << { school_number: '1', email: 'jane.eyre@blind-light.com', gender: 'f', first_name: 'Jane ',
+      students_data << { school_number: '1', email: 'jane.eyre@blind-light.com', gender: 'f', first_name: 'Jane',
                          last_name: 'Eyre', seconde: false }
 
       gmail_students_data_troisieme = []
-      gmail_students_data_troisieme << { school_number: '1', first_name: 'Fabrice ', last_name: 'Peutiot', gender: 'm' }
+      gmail_students_data_troisieme << { school_number: '1', first_name: 'Fabrice', last_name: 'Peutiot', gender: 'm' }
       gmail_students_data_troisieme << { school_number: '2', first_name: 'Amina', last_name: 'Souali', gender: 'f' }
       gmail_students_data_troisieme << { school_number: '1', first_name: 'Theo', last_name: 'Caprizzi', gender: 'm' }
       gmail_students_data_troisieme << { school_number: '2', first_name: 'Sarah', last_name: 'Block', gender: 'f' }
@@ -112,31 +112,31 @@ module ReviewRebuild
       # ---------------
       # 2de
       # ---------------
-      students_data << { school_number: '1', email: 'willy.wonka@haribo.com', gender: 'm', first_name: 'Willy ',
+      students_data << { school_number: '1', email: 'willy.wonka@haribo.com', gender: 'm', first_name: 'Willy',
                          last_name: 'Wonka', seconde: true }
-      students_data << { school_number: '1', email: 'causette.tenardier@chanel.fr', gender: 'f', first_name: 'Causette ',
+      students_data << { school_number: '1', email: 'causette.tenardier@chanel.fr', gender: 'f', first_name: 'Causette',
                          last_name: 'Tenardier', seconde: true }
-      students_data << { school_number: '1', email: 'harry.potter@paraquantique.org', gender: 'm', first_name: 'Harry ',
+      students_data << { school_number: '1', email: 'harry.potter@paraquantique.org', gender: 'm', first_name: 'Harry',
                          last_name: 'Potter', seconde: true }
-      students_data << { school_number: '1', email: 'anna.karenine@meetic.fr', gender: 'f', first_name: 'Anna ',
+      students_data << { school_number: '1', email: 'anna.karenine@meetic.fr', gender: 'f', first_name: 'Anna',
                          last_name: 'Karenine', seconde: true }
-      students_data << { school_number: '1', email: 'vernon.subutex@europhonics.uk', gender: 'm', first_name: 'Vernon ',
+      students_data << { school_number: '1', email: 'vernon.subutex@europhonics.uk', gender: 'm', first_name: 'Vernon',
                          last_name: 'Subutex', seconde: true }
-      students_data << { school_number: '1', email: 'manon.lescaut@discover.fr', gender: 'f', first_name: 'Manon ',
+      students_data << { school_number: '1', email: 'manon.lescaut@discover.fr', gender: 'f', first_name: 'Manon',
                          last_name: 'Lescaut', seconde: true }
-      students_data << { school_number: '1', email: 'elisabeth.bennet@austin.eu', gender: 'f', first_name: 'Elizabeth ',
+      students_data << { school_number: '1', email: 'elisabeth.bennet@austin.eu', gender: 'f', first_name: 'Elizabeth',
                          last_name: 'Bennet', seconde: true }
-      students_data << { school_number: '1', email: 'robinson.crusoe@lonely-planet.com', gender: 'm', first_name: 'Robinson ',
+      students_data << { school_number: '1', email: 'robinson.crusoe@lonely-planet.com', gender: 'm', first_name: 'Robinson',
                          last_name: 'Crusoe', seconde: true }
 
       gmail_students_data_seconde = []
       gmail_students_data_seconde << { school_number: '3', first_name: 'Nathalie', last_name: 'Sauvage', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Amhmed ', last_name: 'Moussa', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Brigitte ', last_name: 'Renaud', gender: 'f' }
+      gmail_students_data_seconde << { school_number: '1', first_name: 'Amhmed', last_name: 'Moussa', gender: 'm' }
+      gmail_students_data_seconde << { school_number: '1', first_name: 'Brigitte', last_name: 'Renaud', gender: 'f' }
       gmail_students_data_seconde << { school_number: '1', first_name: 'Paul', last_name: 'Beauvois', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Celina ', last_name: 'Alves', gender: 'f' }
+      gmail_students_data_seconde << { school_number: '1', first_name: 'Celina', last_name: 'Alves', gender: 'f' }
       gmail_students_data_seconde << { school_number: '1', first_name: 'Michel', last_name: 'Palandin', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Alizee ', last_name: 'Martin', gender: 'f' }
+      gmail_students_data_seconde << { school_number: '1', first_name: 'Alizee', last_name: 'Martin', gender: 'f' }
       gmail_students_data_seconde << { school_number: '1', first_name: 'Patrick', last_name: 'Vasseur', gender: 'm' }
       gmail_students_data_seconde << { school_number: '1', first_name: 'Aline', last_name: 'Mazzeri', gender: 'f' }
       gmail_students_data_seconde << { school_number: '1', first_name: 'Emile', last_name: 'Grondin', gender: 'm' }
@@ -151,7 +151,7 @@ module ReviewRebuild
       gmail_students_data_seconde << { school_number: '2', first_name: 'Jeanne', last_name: 'Lopes', gender: 'f' }
       gmail_students_data_seconde << { school_number: '3', first_name: 'Olivier', last_name: 'Riviere', gender: 'm' }
       gmail_students_data_seconde << { school_number: '3', first_name: 'Elise', last_name: 'Michaud', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '3', first_name: 'Elie ', last_name: 'Alves', gender: 'm' }
+      gmail_students_data_seconde << { school_number: '3', first_name: 'Elie', last_name: 'Alves', gender: 'm' }
       gmail_students_data_seconde << { school_number: '3', first_name: 'Lorraine', last_name: 'Cordier', gender: 'f' }
       gmail_students_data_seconde << { school_number: '3', first_name: 'Charles', last_name: 'Regnier', gender: 'm' }
       gmail_students_data_seconde << { school_number: '3', first_name: 'Suzanne', last_name: 'Chretien', gender: 'f' }
@@ -339,12 +339,12 @@ module ReviewRebuild
     def lycee_rep        = School.find_by(code_uai: uai_code_lycee_rep)
     def college_rep      = School.find_by(code_uai: uai_code_college_rep)
 
-    def lycee_qpv_students        = Users::Student.seconde.where(school: lycee_qpv)
-    def college_qpv_students      = Users::Student.troisieme.where(school: college_qpv)
-    def lycee_standard_students   = Users::Student.seconde.where(school: lycee_standard)
-    def college_standard_students = Users::Student.troisieme.where(school: college_standard)
-    def lycee_rep_students        = Users::Student.seconde.where(school: lycee_rep)
-    def college_rep_students      = Users::Student.troisieme.where(school: college_rep)
+    def lycee_qpv_students        = Users::Student.where(school: lycee_qpv).order(id: :desc).to_a
+    def college_qpv_students      = Users::Student.where(school: college_qpv).order(id: :desc).to_a
+    def lycee_standard_students   = Users::Student.where(school: lycee_standard).order(id: :desc).to_a
+    def college_standard_students = Users::Student.where(school: college_standard).order(id: :desc).to_a
+    def lycee_rep_students        = Users::Student.where(school: lycee_rep).order(id: :desc).to_a
+    def college_rep_students      = Users::Student.where(school: college_rep).order(id: :desc).to_a
 
     def ine
       %w[
