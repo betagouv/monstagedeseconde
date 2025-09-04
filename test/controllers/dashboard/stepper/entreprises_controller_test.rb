@@ -45,7 +45,8 @@ module Dashboard::Stepper
               is_public: false,
               sector_id: sector.id,
               workspace_conditions: 'Environnement de travail',
-              workspace_accessibility: 'Accessibilité du poste'
+              workspace_accessibility: 'Accessibilité du poste',
+              code_ape: '99.XXX'
             }
           }
         )
@@ -67,6 +68,7 @@ module Dashboard::Stepper
       assert entreprise.updated_entreprise_full_address
       assert_equal 'Environnement de travail', entreprise.workspace_conditions
       assert_equal 'Accessibilité du poste', entreprise.workspace_accessibility
+      assert_equal '99.XXX', entreprise.code_ape
     end
 
     test 'POST create with faulty payload fails gracefully' do

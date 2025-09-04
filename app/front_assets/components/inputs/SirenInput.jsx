@@ -147,6 +147,13 @@ export default function SirenInput({
     setValueById( `${resourceName}_siret`, selection.siret);
     setValueById( `${resourceName}_presentation_siret`, siretPresentation(selection.siret) );
     setValueById( `${resourceName}_employer_name`, employerName);
+    
+    // Set the code APE if available in the selection
+    if (selection.codeApe) {
+      setCodeApe(selection.codeApe);
+    } else {
+      console.log('no code APE found');
+    }
 
     broadcast(employerNameChanged({ employerName }));
 
@@ -204,6 +211,7 @@ export default function SirenInput({
     setValueById(`${resourceName}_entreprise_chosen_full_address`, "");
     setValueById(`${resourceName}_entreprise_coordinates_longitude`, "");
     setValueById(`${resourceName}_entreprise_coordinates_latitude`, "");
+    setValueById(`${resourceName}_code_ape`, "");
     show_form(false);
     broadcast(employerNameChanged({ employerName: "" }));
   };
@@ -213,6 +221,10 @@ export default function SirenInput({
     // hide Siren helper
     // toggleHideContainerById("input-siren", show && !newRecord);
   };
+
+  const setCodeApe = (codeApe) => {
+    setValueById(`${resourceName}_code_ape`, codeApe);
+  }
 
   useEffect(() => {
     const timerId = setTimeout(() => {
