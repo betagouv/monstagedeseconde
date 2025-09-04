@@ -8,10 +8,11 @@ class User < ApplicationRecord
   include ActiveModel::Dirty
   include PhoneComputation
 
+  # TODO: move the following to student or just remove
   has_many :favorites
-  has_many :url_shrinkers
+  has_many :url_shrinkers, dependent: :destroy
 
-  attr_accessor :phone_prefix, :phone_suffix, :statistician_type, :current_school_id
+  attr_accessor :phone_prefix, :phone_suffix, :statistician_type, :current_school_id, :skip_callback_with_review_rebuild
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable,
@@ -21,7 +22,7 @@ class User < ApplicationRecord
   include DelayedDeviseEmailSender
 
   before_validation :concatenate_and_clean
-  after_create :send_sms_token
+  after_create :send_sms_token, unless: :skip_callback_with_review_rebuild
 
   # school_managements includes different roles
   # Everyone should register with ac-xxx.fr email
@@ -116,7 +117,7 @@ class User < ApplicationRecord
   end
 
   def anonymize(send_email: true)
-    return if anonymized && !discarded_at.nil?
+    return if anonymized && discarded_at.present?
 
     # Remove all personal information
     email_for_job = email.dup
@@ -142,7 +143,7 @@ class User < ApplicationRecord
   end
 
   def destroy
-    anonymize
+    ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true' ? super : anonymize
   end
 
   def reset_password_by_phone
@@ -195,7 +196,7 @@ class User < ApplicationRecord
   end
 
   def send_confirmation_instructions
-    return if created_by_teacher || statistician?
+    return if created_by_teacher || created_by_system || statistician?
 
     super
   end

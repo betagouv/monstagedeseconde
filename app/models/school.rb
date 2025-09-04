@@ -175,7 +175,7 @@ class School < ApplicationRecord
   end
 
   def has_staff?
-    users.where(role: ['teacher', 'other'])
+    users.where(role: %w[teacher other])
          .count
          .positive?
   end

@@ -10,6 +10,7 @@ root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
                    end
 
 Rails.application.routes.draw do
+  mount LetterOpenerWeb::Engine, at: '/letter_opener', as: 'letter_opener' if Rails.env.development?
   # ------------------ SCOPE START ------------------
   scope(path_names: { new: 'nouveau', edit: 'modification' }) do
     authenticate :user, ->(u) { u.god? } do
@@ -300,6 +301,9 @@ Rails.application.routes.draw do
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
   post '/waiting_list', to: 'pages#waiting_list'
 
+  authenticate :user, ->(u) { u.god? } do
+    resources :reset_review_data, only: %i[new create] if ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true'
+  end
   # Redirects
   # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
   get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/#{id}', status: 302)

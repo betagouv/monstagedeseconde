@@ -65,7 +65,6 @@ namespace :data_migrations do
       PrettyConsole.say_in_cyan "Importing students from #{school.name} uai:#{school.code_uai}  ##{school.id}"
       ImportDataFromSygneJob.perform_later(school)
       puts "----------------- #{school.code_uai} -----------------"
-      school.update(full_imported: true)
     end
   end
 

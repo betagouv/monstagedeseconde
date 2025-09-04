@@ -21,6 +21,10 @@ class Academy < ApplicationRecord
     Academy.find_by(name: academy).email_domain
   end
 
+  def self.email_domains
+    Academy.pluck(:email_domain)
+  end
+
   rails_admin do
     weight 16
     navigation_label 'Divers'

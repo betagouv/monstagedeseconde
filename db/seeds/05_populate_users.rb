@@ -238,7 +238,6 @@ def populate_students
     last_name: 'Mesnard',
     school: missing_school_manager_school,
     gender: 'f',
-    school: college,
     class_room: random_class_room(type: :college),
     grade: Grade.troisieme
   )
@@ -250,7 +249,6 @@ def populate_students
     last_name: 'Chotin',
     school: a_parisian_college,
     gender: 'f',
-    school: college,
     class_room: random_class_room(type: :college),
     grade: Grade.troisieme
   )
@@ -262,7 +260,6 @@ def populate_students
     last_name: 'Duhamel',
     school: a_parisian_college,
     gender: 'f',
-    school: college,
     class_room: random_class_room(type: :college),
     grade: Grade.troisieme
   )

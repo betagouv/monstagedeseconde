@@ -15,16 +15,13 @@ module Teamable
     has_many :internship_offer_areas,
              as: :employer,
              class_name: 'InternshipOfferArea',
-             foreign_key: 'employer_id'
+             foreign_key: 'employer_id',
+             inverse_of: :employer
 
     has_many :area_notifications,
              through: :internship_offer_areas,
-             as: :employer
-
-    has_one :internship_offer_area,
-            as: :employer,
-            class_name: 'InternshipOfferArea',
-            foreign_key: 'current_area_id'
+             as: :employer,
+             dependent: :destroy
 
     has_many :internship_offers,
              through: :internship_offer_areas,
@@ -37,6 +34,7 @@ module Teamable
              -> { merge(InternshipOffers::WeeklyFramed.kept) },
              class_name: 'InternshipOffers::WeeklyFramed',
              foreign_key: 'employer_id'
+             
 
     has_many :internship_applications, through: :kept_internship_offers
     has_many :internship_agreements, through: :internship_applications
@@ -72,7 +70,7 @@ module Teamable
         area.area_notifications.where(user_id: id).to_a.each do |notif|
           notif.destroy
         end
-        area.destroy
+        area.soft_destroy
       end
     end
 

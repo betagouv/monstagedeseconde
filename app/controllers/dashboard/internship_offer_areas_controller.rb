@@ -124,26 +124,26 @@ module Dashboard
 
         ActiveRecord::Base.transaction do
           @internship_offer_area.internship_offers.each do |offer|
-            offer.internship_applications.destroy_all
+            offer.internship_applications.map(&:soft_destroy)
             offer.anonymize
           end
           # update all users with the area in current_area_id, to the user current_area_id
           User.where(current_area_id: @internship_offer_area.id).update_all(current_area_id: current_user.current_area_id)
           # update all internship_offer with the area in internship_offer_area_id, to the user current_area_id
           InternshipOffer.where(internship_offer_area_id: @internship_offer_area.id).update_all(internship_offer_area_id: current_user.current_area_id)
-          @internship_offer_area.destroy!
+          @internship_offer_area.soft_destroy
         end
 
       elsif current_user.internship_offer_areas.count == 1
 
-        @internship_offer_area.destroy!
+        @internship_offer_area.soft_destroy
       else
         move_internship_offers_to_specific_area(params)
         clean_user_references_to_area(
           target_area_id: target_area.id || form_target_area_id,
           to_be_removed_area_id: @internship_offer_area
         )
-        @internship_offer_area.destroy!
+        @internship_offer_area.soft_destroy
       end
       redirect_to dashboard_internship_offer_areas_path,
                   flash: { success: 'Espace supprimé avec succès.' }

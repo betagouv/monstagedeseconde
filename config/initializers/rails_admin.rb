@@ -125,4 +125,9 @@ RailsAdmin.config do |config|
     'Feature flip' => '/admin/flipper/',
     'AB Testing' => '/split'
   }
+  if ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true' && !Rails.env.production?
+    config.navigation_static_links.merge!(
+      'Reset des données de review' => '/reset_review_data/new'
+    )
+  end
 end

@@ -47,7 +47,7 @@ fr:
         other: Espaces
       internship_offers/weekly_framed:
         one: Offre pour la 2de
-        other: Offres pour la 2de
+        other: Offres 'en propre'
       internship_offers/api:
         one: Offre API
         other: Offres API
@@ -745,6 +745,10 @@ fr:
         title: 'Key Performance Indicators'
         breadcrumb: KPI
         menu: KPI
+      reset_review_data:
+        title: 'Reset des données de la plateforme review'
+        breadcrumb: 'Data Review Reset'
+        menu: 'Reset des données de la plateforme review'
       index:
         no_records: Aucun résultat
       delete:

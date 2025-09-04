@@ -26,13 +26,19 @@ module Users
     belongs_to :class_room, optional: true
     has_many :students, through: :school
     has_many :teachers, through: :school
-    has_many :invitations, class_name: 'Invitation', foreign_key: 'user_id', inverse_of: :author
+    has_many :invitations,
+             class_name: 'Invitation',
+             foreign_key: 'user_id',
+             inverse_of: :author,
+             dependent: :destroy
     has_many :internship_applications, through: :students
     has_many :internship_agreements, through: :internship_applications
 
     validates :school, presence: true, on: :create
     # validate :official_uai_email_address, on: :create, if: :school_manager?
     # validate :official_email_address, on: :create
+
+    delegate :code_uai, to: :school, prefix: true, allow_nil: true
 
     def custom_dashboard_path
       return url_helpers.dashboard_school_path(current_school) if school.present?
@@ -87,6 +93,7 @@ module Users
     def admin_officer? = role == 'admin_officer'
     def cpe? = role == 'cpe'
     def teacher? = role == 'teacher'
+
     def school_manager
       try(:school).try(:school_manager)
     end
@@ -115,6 +122,12 @@ module Users
       [part1, part2].compact.map(&:count).sum
     end
     alias team_pending_agreements_actions_count pending_agreements_actions_count
+
+    def anonymize(send_email: false)
+      super(send_email:)
+
+      update_columns(fim_user_info: nil)
+    end
 
     private
 

@@ -32,18 +32,11 @@ module Users
       url_helpers.account_path
     end
 
-    def dashboard_name
-      'Mes offres'
-    end
-
+    def dashboard_name = 'Mes offres'
     def invitation_email = nil
-
-    def operator? ; true end
-    def employer_like? ; true end
-
-    def presenter
-      Presenters::Operator.new(self)
-    end
+    def operator? = true
+    def employer_like? = true
+    def presenter = Presenters::Operator.new(self)
 
     private
 

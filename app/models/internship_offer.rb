@@ -52,9 +52,10 @@ class InternshipOffer < ApplicationRecord
   belongs_to :entreprise, optional: true
   belongs_to :planning, optional: true
   belongs_to :employer, polymorphic: true, optional: true
-  belongs_to :internship_offer_area, optional: true, touch: true
+  belongs_to :internship_offer_area, optional: true, touch: true, inverse_of: :internship_offers
   belongs_to :internship_offer, optional: true, foreign_key: 'mother_id'
 
+  # TODO : why, the 2 next lines ?
   has_many :favorites
   has_many :users, through: :favorites
   has_many :users_internship_offers_histories, dependent: :destroy
@@ -63,12 +64,14 @@ class InternshipOffer < ApplicationRecord
            dependent: :destroy,
            foreign_key: :internship_offer_id,
            inverse_of: :internship_offer
+
   has_many :weeks, through: :internship_offer_weeks
 
   has_many :internship_offer_grades,
            dependent: :destroy,
            foreign_key: :internship_offer_id,
            inverse_of: :internship_offer
+
   has_many :grades, through: :internship_offer_grades
 
   has_many :reserved_schools,
@@ -76,6 +79,7 @@ class InternshipOffer < ApplicationRecord
             class_name: 'ReservedSchool',
             foreign_key: :internship_offer_id,
             inverse_of: :internship_offer
+
   has_many :schools, through: :reserved_schools
 
   has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy

@@ -20,7 +20,8 @@ class InternshipAgreement < ApplicationRecord
   attr_accessor :enforce_school_manager_validations,
                 :enforce_employer_validations,
                 :enforce_teacher_validations,
-                :skip_validations_for_system
+                :skip_validations_for_system,
+                :skip_notifications_when_system_creation
 
   with_options if: :enforce_teacher_validations? do
     validates :student_class_room, presence: true
@@ -98,7 +99,7 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[completed_by_employer started_by_school_manager],
                   to: :validated,
                   after: proc { |*_args|
-                           notify_employer_school_manager_completed
+                           notify_employer_school_manager_completed unless skip_notifications_when_system_creation
                          }
     end
 
@@ -106,7 +107,7 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[validated signatures_started],
                   to: :signatures_started,
                   after: proc { |*_args|
-                           notify_others_signatures_started
+                           notify_others_signatures_started unless skip_notifications_when_system_creation
                          }
     end
 
@@ -114,7 +115,7 @@ class InternshipAgreement < ApplicationRecord
       transitions from: [:signatures_started],
                   to: :signed_by_all,
                   after: proc { |*_args|
-                           notify_others_signatures_finished(self)
+                           notify_others_signatures_finished(self) unless skip_notifications_when_system_creation
                          }
     end
   end
@@ -134,6 +135,15 @@ class InternshipAgreement < ApplicationRecord
   scope :filtering_discarded_students, lambda {
     joins(internship_application: :student)
       .where(internship_application: { users: { discarded_at: nil } })
+  }
+
+  scope :troisieme_grades, lambda {
+    joins(internship_application: { student: :grade })
+      .where(grades: { id: Grade.troisieme.id })
+  }
+  scope :seconde_grades, lambda {
+    joins(internship_application: { student: :grade })
+      .where(grades: { id: Grade.seconde.id })
   }
 
   def at_least_one_validated_terms

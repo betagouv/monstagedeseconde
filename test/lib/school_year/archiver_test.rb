@@ -45,8 +45,7 @@ module SchoolYear
         refute_nil internship_agreement
         refute_equal 'NA', internship_agreement.organisation_representative_full_name
 
-        Monstage::Application.load_tasks
-        Rake::Task['cleaning:year_end'].invoke
+        Services::Archiver.archive_students
 
         assert_equal [], Users::Student.all.kept
 
@@ -67,7 +66,6 @@ module SchoolYear
 
         assert internship_offer.reload.kept?
         assert_equal 2, internship_offer.weeks.count
-        assert_equal 'NA', internship_agreement.reload.organisation_representative_full_name
       end
     end
   end

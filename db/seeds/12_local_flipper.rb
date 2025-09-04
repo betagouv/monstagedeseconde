@@ -6,6 +6,7 @@ def import_flipper_local_file
   seed = Flipper.new(Flipper::Adapters::Memory.new)
   seed.disable(:holidays_maintenance)
   seed.disable(:application_inhibited)
+  seed.disable(:disable_students_connexion_button)
   # keep following lines commented out, they are for future use
   # seed.enable_percentage_of_time(:verbose_logging, 5)
   # seed.enable_percentage_of_actors(:new_feature, 5)
