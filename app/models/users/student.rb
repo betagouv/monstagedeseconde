@@ -183,7 +183,8 @@ module Users
     end
 
     def compute_weeks_lists
-      school_weeks_list = school&.weeks.presence || Week.both_school_track_selectable_weeks
+      school_weeks_list = school&.weeks.presence
+      school_weeks_list ||= (grade == Grade.seconde) ? Week.seconde_weeks : Week.troisieme_weeks
       preselected_weeks_list = school_weeks_list.in_the_future
       [school_weeks_list, preselected_weeks_list]
     end

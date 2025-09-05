@@ -1,26 +1,20 @@
 module SchoolTrack
   class Troisieme < Base
-    def self.first_week(year: current_year)
-      SchoolYear::Floating.new_by_year(year: year).offers_beginning_of_period_week
+    def self.selectable_on_school_year_weeks(year: current_year)
+      limits_hash = SchoolYear::Floating.new_by_year(year: year).from_now_to_end_of_current_troisieme_year_limits
+      Week.from_date_to_date(**limits_hash)
     end
 
-    def self.last_week_of_june(year: current_year)
-      SchoolYear::Floating.new_by_year(year: year).offers_end_of_period_week
+    def self.first_week(year: current_year)
+      self.selectable_on_school_year_weeks(year: current_year).first
     end
 
     def self.last_week(year: current_year)
-      last_week_of_june(year: current_year)
-    end
-
-    def self.selectable_on_school_year_weeks
-      start_id = first_week.id
-      end_id = last_week.id
-
-      Week.where(id: (start_id..end_id))
+      self.selectable_on_school_year_weeks(year: current_year).last
     end
 
     def self.selectable_from_now_until_end_of_school_year
-      selectable_on_school_year_weeks.where('id >= ?', Week.current.id)
+      selectable_on_school_year_weeks.where("id >= ?", Week.current.id)
     end
   end
 end
