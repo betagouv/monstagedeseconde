@@ -5,20 +5,20 @@ module Users
     include StudentAdmin
     include UserWithSchool
 
-    BITLY_STUDENT_WELCOME_URL = 'https://bit.ly/4athP2e' # internship_offers_url in production
+    BITLY_STUDENT_WELCOME_URL = "https://bit.ly/4athP2e" # internship_offers_url in production
 
     belongs_to :school, optional: true
     belongs_to :class_room, optional: true
     belongs_to :grade, optional: true
 
     has_many :internship_applications, dependent: :destroy,
-                                       foreign_key: 'user_id' do
+                                       foreign_key: "user_id" do
       def weekly_framed
         where(type: InternshipApplications::WeeklyFramed.name)
       end
     end
     has_many :internship_agreements, through: :internship_applications
-    has_many :favorites, foreign_key: 'user_id', dependent: :destroy
+    has_many :favorites, foreign_key: "user_id", dependent: :destroy
     has_many :internship_offers, through: :favorites
 
     scope :without_class_room, -> { where(class_room_id: nil, anonymized: false) }
@@ -79,11 +79,11 @@ module Users
     end
 
     def dashboard_name
-      'Candidatures'
+      "Candidatures"
     end
 
     def default_account_section
-      'resume'
+      "resume"
     end
 
     def school_manager_email
@@ -101,11 +101,12 @@ module Users
     def troisieme_ou_quatrieme?
       grade.in?(Grade.troisieme_et_quatrieme)
     end
+
     alias troisieme_or_quatrieme? troisieme_ou_quatrieme?
 
     def belongs_to_qpv_school? = school.qpv?
-    def belongs_to_rep_school? = school.rep_kind == 'rep'
-    def belongs_to_rep_plus_school? = school.rep_kind == 'rep_plus'
+    def belongs_to_rep_school? = school.rep_kind == "rep"
+    def belongs_to_rep_plus_school? = school.rep_kind == "rep_plus"
     def belongs_to_rep_or_rep_plus_school? = school.rep_kind&.in?(%w[rep rep_plus])
 
     def teacher
@@ -152,7 +153,7 @@ module Users
                      legal_representative_full_name: nil,
                      legal_representative_phone: nil,
                      legal_representative_email: nil)
-      update_columns(phone: 'NA') unless phone.nil?
+      update_columns(phone: "NA") unless phone.nil?
       internship_applications.map(&:anonymize)
     end
 
@@ -179,7 +180,7 @@ module Users
           restore
           restore!
           cancel_by_student!
-          cancel_by_student].include?(transition)
+          cancel_by_student ].include?(transition)
     end
 
     def compute_weeks_lists
@@ -238,7 +239,7 @@ module Users
         city: search_params[:city],
         radius: search_params[:radius],
         results_count: search_params[:results_count]&.to_i || 0,
-        user: self
+        user: self,
       )
       search_history.save
     end
@@ -261,7 +262,7 @@ module Users
     end
 
     def fake_email?
-      email.present? && email.split('@').last.downcase == "#{school.code_uai}.fr".downcase
+      email.present? && email.split("@").last.downcase == "#{school.code_uai}.fr".downcase
     end
 
     rails_admin do

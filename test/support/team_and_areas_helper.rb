@@ -25,7 +25,7 @@ module TeamAndAreasHelper
         AreaNotification.find_or_create_by(
           user_id: employer.id,
           internship_offer_area_id: area.id,
-          notify: true
+          notify: true,
         )
       end
     end

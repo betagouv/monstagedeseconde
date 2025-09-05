@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InternshipOffersController < ApplicationController
-  layout 'search', only: :index
+  layout "search", only: :index
 
   with_options only: [:show] do
     before_action :set_internship_offer,
@@ -30,7 +30,7 @@ class InternshipOffersController < ApplicationController
 
         # QPV order destroys the former internship offers distance order from school
         if current_user&.student? && current_user&.school&.try(:qpv)
-          @internship_offers = @internship_offers.reorder('qpv DESC NULLS LAST')
+          @internship_offers = @internship_offers.reorder("qpv DESC NULLS LAST")
         end
 
         @params = search_query_params
@@ -39,7 +39,7 @@ class InternshipOffersController < ApplicationController
         data = {
           internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
-          seats: @internship_offers_seats_count
+          seats: @internship_offers_seats_count,
         }
         current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
         render json: data, status: 200
@@ -73,7 +73,7 @@ class InternshipOffersController < ApplicationController
   end
 
   def search_query_params
-    common_query_params =  %i[city grade_id latitude longitude page radius]
+    common_query_params = %i[city grade_id latitude longitude page radius]
     common_query_params += [:school_year] if current_user_or_visitor.god? || current_user_or_visitor.statistician?
     params.permit(*common_query_params, week_ids: [])
   end
@@ -84,20 +84,20 @@ class InternshipOffersController < ApplicationController
     redirect_to(
       user_presenter.default_internship_offers_path,
       flash: {
-        warning: "Cette offre a été supprimée et n'est donc plus accessible"
-      }
+        warning: "Cette offre a été supprimée et n'est donc plus accessible",
+      },
     )
   end
 
   def check_internship_offer_is_published_or_redirect
-    from_email = [params[:origin], params[:origine]].include?('email')
+    from_email = [params[:origin], params[:origine]].include?("email")
     authenticate_user! if current_user.nil? && from_email
     return if can?(:create, @internship_offer)
     return if @internship_offer.published?
 
     redirect_to(
       user_presenter.default_internship_offers_path,
-      flash: { warning: "Cette offre n'est plus disponible" }
+      flash: { warning: "Cette offre n'est plus disponible" },
     )
   end
 
@@ -108,7 +108,7 @@ class InternshipOffersController < ApplicationController
   def finder
     @finder ||= Finders::InternshipOfferConsumer.new(
       params: search_query_params,
-      user: current_user_or_visitor
+      user: current_user_or_visitor,
     )
   end
 
@@ -116,7 +116,7 @@ class InternshipOffersController < ApplicationController
     @seats_finder ||= Finders::InternshipOfferConsumer.new(
       params: search_query_params,
       user: current_user_or_visitor,
-      seats_search: true
+      seats_search: true,
     )
   end
 
@@ -147,7 +147,7 @@ class InternshipOffersController < ApplicationController
         fits_for_troisieme_or_quatrieme: internship_offer.fits_for_troisieme_or_quatrieme?,
         available_weeks_count: internship_offer.presenter.available_weeks_count,
         qpv: internship_offer.qpv,
-        is_authenticated: !!current_user
+        is_authenticated: !!current_user,
       }
     end
   end
@@ -161,7 +161,7 @@ class InternshipOffersController < ApplicationController
       prevPage: offers.present? ? offers.prev_page : nil,
       isFirstPage: offers.present? ? offers.first_page? : false,
       isLastPage: offers.present? ? offers.last_page? : false,
-      pageUrlBase: url_for(search_query_params.except('page'))
+      pageUrlBase: url_for(search_query_params.except("page")),
     }
   end
 end

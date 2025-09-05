@@ -29,7 +29,7 @@
             = reason
 
   - else
-    - path = (employers_only? || Flipper.enabled?(:application_inhibited)) ? '#' :  visitor_apply_path
+    - path = (employers_only? || Flipper.enabled?(:application_inhibited)) ? '#' : visitor_apply_path
     .d-flex
       = form_with url: path, method: :post, data: { turbo: false } do
         = submit_tag 'Postuler', class: "fr-btn fr-btn--icon-left fr-icon-edit-fill"
