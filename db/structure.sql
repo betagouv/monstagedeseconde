@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -523,101 +524,6 @@ ALTER SEQUENCE public.class_rooms_id_seq OWNED BY public.class_rooms.id;
 
 
 --
--- Name: coded_crafts; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.coded_crafts (
-    id bigint NOT NULL,
-    name character varying(255) NOT NULL,
-    ogr_code integer NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    detailed_craft_id bigint NOT NULL,
-    search_tsv tsvector
-);
-
-
---
--- Name: coded_crafts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.coded_crafts_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: coded_crafts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.coded_crafts_id_seq OWNED BY public.coded_crafts.id;
-
-
---
--- Name: craft_fields; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.craft_fields (
-    id bigint NOT NULL,
-    name character varying(255) NOT NULL,
-    letter character varying(1) NOT NULL
-);
-
-
---
--- Name: craft_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.craft_fields_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: craft_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.craft_fields_id_seq OWNED BY public.craft_fields.id;
-
-
---
--- Name: crafts; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.crafts (
-    id bigint NOT NULL,
-    name character varying(255) NOT NULL,
-    number character varying(5) NOT NULL,
-    craft_field_id bigint NOT NULL
-);
-
-
---
--- Name: crafts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.crafts_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: crafts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.crafts_id_seq OWNED BY public.crafts.id;
-
-
---
 -- Name: departments; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -658,39 +564,6 @@ CREATE TABLE public.departments_operators (
     department_id bigint NOT NULL,
     operator_id bigint NOT NULL
 );
-
-
---
--- Name: detailed_crafts; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.detailed_crafts (
-    id bigint NOT NULL,
-    name character varying(120) NOT NULL,
-    number character varying NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    craft_id bigint NOT NULL
-);
-
-
---
--- Name: detailed_crafts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.detailed_crafts_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: detailed_crafts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.detailed_crafts_id_seq OWNED BY public.detailed_crafts.id;
 
 
 --
@@ -2710,38 +2583,10 @@ ALTER TABLE ONLY public.class_rooms ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- Name: coded_crafts id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.coded_crafts ALTER COLUMN id SET DEFAULT nextval('public.coded_crafts_id_seq'::regclass);
-
-
---
--- Name: craft_fields id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.craft_fields ALTER COLUMN id SET DEFAULT nextval('public.craft_fields_id_seq'::regclass);
-
-
---
--- Name: crafts id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.crafts ALTER COLUMN id SET DEFAULT nextval('public.crafts_id_seq'::regclass);
-
-
---
 -- Name: departments id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.departments ALTER COLUMN id SET DEFAULT nextval('public.departments_id_seq'::regclass);
-
-
---
--- Name: detailed_crafts id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.detailed_crafts ALTER COLUMN id SET DEFAULT nextval('public.detailed_crafts_id_seq'::regclass);
 
 
 --
@@ -3153,43 +2998,11 @@ ALTER TABLE ONLY public.class_rooms
 
 
 --
--- Name: coded_crafts coded_crafts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.coded_crafts
-    ADD CONSTRAINT coded_crafts_pkey PRIMARY KEY (id);
-
-
---
--- Name: craft_fields craft_fields_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.craft_fields
-    ADD CONSTRAINT craft_fields_pkey PRIMARY KEY (id);
-
-
---
--- Name: crafts crafts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.crafts
-    ADD CONSTRAINT crafts_pkey PRIMARY KEY (id);
-
-
---
 -- Name: departments departments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.departments
     ADD CONSTRAINT departments_pkey PRIMARY KEY (id);
-
-
---
--- Name: detailed_crafts detailed_crafts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.detailed_crafts
-    ADD CONSTRAINT detailed_crafts_pkey PRIMARY KEY (id);
 
 
 --
@@ -3676,41 +3489,6 @@ CREATE INDEX index_class_rooms_on_school_id ON public.class_rooms USING btree (s
 
 
 --
--- Name: index_coded_crafts_on_detailed_craft_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_coded_crafts_on_detailed_craft_id ON public.coded_crafts USING btree (detailed_craft_id);
-
-
---
--- Name: index_coded_crafts_on_ogr_code; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_coded_crafts_on_ogr_code ON public.coded_crafts USING btree (ogr_code);
-
-
---
--- Name: index_coded_crafts_on_search_tsv; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_coded_crafts_on_search_tsv ON public.coded_crafts USING gin (search_tsv);
-
-
---
--- Name: index_craft_fields_on_letter; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_craft_fields_on_letter ON public.craft_fields USING btree (letter);
-
-
---
--- Name: index_crafts_on_craft_field_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_crafts_on_craft_field_id ON public.crafts USING btree (craft_field_id);
-
-
---
 -- Name: index_departments_on_academy_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3729,13 +3507,6 @@ CREATE INDEX index_departments_operators_on_department_id_and_operator_id ON pub
 --
 
 CREATE INDEX index_departments_operators_on_operator_id_and_department_id ON public.departments_operators USING btree (operator_id, department_id);
-
-
---
--- Name: index_detailed_crafts_on_craft_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_detailed_crafts_on_craft_id ON public.detailed_crafts USING btree (craft_id);
 
 
 --
@@ -4628,13 +4399,6 @@ CREATE UNIQUE INDEX uniq_applications_per_internship_offer_week ON public.intern
 
 
 --
--- Name: coded_crafts sync_coded_crafts_tsv; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER sync_coded_crafts_tsv BEFORE INSERT OR UPDATE ON public.coded_crafts FOR EACH ROW EXECUTE FUNCTION tsvector_update_trigger('search_tsv', 'public.fr', 'name');
-
-
---
 -- Name: internship_offers sync_internship_offers_tsv; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -4749,7 +4513,7 @@ ALTER TABLE ONLY public.internship_offers
 --
 
 ALTER TABLE ONLY public.area_notifications
-    ADD CONSTRAINT fk_rails_2194cad748 FOREIGN KEY (internship_offer_area_id) REFERENCES public.internship_offer_areas(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_2194cad748 FOREIGN KEY (internship_offer_area_id) REFERENCES public.internship_offer_areas(id);
 
 
 --
@@ -4781,7 +4545,7 @@ ALTER TABLE ONLY public.user_schools
 --
 
 ALTER TABLE ONLY public.internship_offer_grades
-    ADD CONSTRAINT fk_rails_2cc542d77a FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_2cc542d77a FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
 
 
 --
@@ -5089,14 +4853,6 @@ ALTER TABLE ONLY public.area_notifications
 
 
 --
--- Name: detailed_crafts fk_rails_ac5911bdc8; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.detailed_crafts
-    ADD CONSTRAINT fk_rails_ac5911bdc8 FOREIGN KEY (craft_id) REFERENCES public.crafts(id);
-
-
---
 -- Name: internship_offers fk_rails_ae76931d64; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5217,22 +4973,6 @@ ALTER TABLE ONLY public.planning_grades
 
 
 --
--- Name: coded_crafts fk_rails_ee4381e499; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.coded_crafts
-    ADD CONSTRAINT fk_rails_ee4381e499 FOREIGN KEY (detailed_craft_id) REFERENCES public.detailed_crafts(id);
-
-
---
--- Name: crafts fk_rails_efc358dba3; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.crafts
-    ADD CONSTRAINT fk_rails_efc358dba3 FOREIGN KEY (craft_field_id) REFERENCES public.craft_fields(id);
-
-
---
 -- Name: internship_offers fk_rails_efcf9ec504; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5271,6 +5011,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250908073523'),
 ('20250902084046'),
 ('20250901102600'),
 ('20250827064009'),
@@ -5722,4 +5463,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
-

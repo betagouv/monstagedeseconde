@@ -72,13 +72,7 @@ Rails.application.routes.draw do
       get :o, on: :member
     end
 
-    resources :coded_crafts, only: [] do
-      collection do
-        post :search
-      end
-    end
-
-    resources :schools, path: 'ecoles', only: %i[new create]
+    resources :schools, path: "ecoles", only: %i[new create]
 
     resources :internship_offer_keywords, only: [] do
       collection do
@@ -139,9 +133,6 @@ Rails.application.routes.draw do
             post :search
           end
         end
-        resources :coded_crafts, only: [] do
-          get :search, on: :collection
-        end
         resources :sectors, only: :index
       end
 
@@ -155,9 +146,6 @@ Rails.application.routes.draw do
             post :nearby
             post :search
           end
-        end
-        resources :coded_crafts, only: [] do
-          get :search, on: :collection
         end
         resources :sectors, only: :index
       end
