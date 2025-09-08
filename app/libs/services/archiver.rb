@@ -16,10 +16,10 @@ module Services
       puts "⚡ Taille de batch : #{batch_size} (optimisé pour #{Rails.env})"
 
       Users::Student.kept
-                    .select(:id, :created_at, :updated_at) # Optimisation : sélectionner seulement les champs nécessaires
+                    .select(:id, :created_at, :updated_at, :anonymized, :email, :first_name, :last_name, :phone, :current_sign_in_ip, :last_sign_in_ip, :discarded_at) # Include fields needed for anonymization
                     .in_batches(of: batch_size)
                     .each_with_index do |batch, batch_index|
-        puts "📦 Traitement du batch #{batch_index + 1} (#{batch.count} étudiants)"
+        puts "📦 Traitement du batch #{batch_index + 1} (#{batch_size} étudiants)"
 
         # Optimisation : process in parallel if possible
         batch.each_with_index do |student, index_in_batch|
