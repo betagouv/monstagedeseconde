@@ -136,8 +136,6 @@ fr:
         activity_scope: Objectifs du stage
         weekly_planning: Planning hebdomadaire
         same_daily_planning: Horaires quotidiens
-      practical_info:
-        contact_phone: Votre numéro de téléphone de correspondance
       school:
         name: Nom
         kind: Type
@@ -196,36 +194,11 @@ fr:
         weekly_hours: Horaires
         max_students_per_group: Nbr. max d'élèves par groupe
         grades: Niveaux ciblés
-      organisation: &organisation_fields
-        employer_name: Employeur
-        employer_description: Description de l'employeur
-        employer_website: Site web de l'employeur
-        is_public: Secteur public
-        group: Groupe ou institution
-        street: Adresse du lieu de stage
-        zipcode: Code postal
-        city: Commune
-        coordinates: Coordonnées GPS
-        siren: Code Siren
-      hosting_info:
-        period: Période de stage
       operator: &operator_fields
         name: Nom
         target_count: Objectif annuel
-      internship_offer_info: &internship_offer_info_fields
-        title: Intitulé
-        description: Description
-        sector: Secteur
-        max_candidates: Nbr. max de candidats accueillis sur le stage
-        sector_id: Secteurs professionnels
-        daily_hours: Horaires journaliers
-        daily_lunch_break: Pause déjeuner par jour
-        weekly_lunch_break: Pause déjeuner
-      tutor: &tutor_fields
-        tutor_name: Nom du tuteur
-        tutor_phone: Téléphone du tuteur
-        tutor_email: Email du tuteur
-        tutor_role: Fonction du tuteur
+
+
       internship_offer_area:
         name : Nom d'espace
       team_member_invitation:
@@ -374,9 +347,6 @@ fr:
         signatory_role: signataire
 
       internship_offer:
-        <<: *organisation_fields
-        <<: *internship_offer_info_fields
-        <<: *tutor_fields
         <<: *internship_occupations_fields
         <<: *entreprises_fields
         <<: *planning_fields
@@ -441,8 +411,6 @@ fr:
         period: Période de stage
         group_id: type d'employeur
         group: Ministère
-        organisation:
-          group: Groupe ou institution de tutelle
 
         internship_occupation: Métiers observés et localisation du stage
           # title: Intitulé
@@ -569,22 +537,6 @@ fr:
               blank: "Veuillez saisir la fonction du représentant de l'établissement scolaire"
             student_class_room:
               blank: "Veuillez saisir la classe de l'élève"
-        organisation:
-          attributes: &organisation_errors
-            employer_name:
-              blank: "Veuillez saisir le nom de l'employeur"
-            employer_description:
-              too_long: La description doit faire au maximum 250 caractères
-            coordinates:
-              blank: "Veuillez saisir et sélectionner une adresse avec l'outil de complétion automatique"
-            zipcode:
-              blank: "Veuillez renseigner le code postal de l'employeur"
-            street:
-              blank: "Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage"
-            city:
-              blank: "Veuillez renseigner la commune l'employeur"
-            public:
-              inclusion: "Veuillez choisir une institution de tutelle pour cette offre de stage"
         partner:
           attributes: &partner_errors
             target_count: Objectif annuel

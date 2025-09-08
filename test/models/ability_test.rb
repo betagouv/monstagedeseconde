@@ -124,7 +124,6 @@ class AbilityTest < ActiveSupport::TestCase
       %i[
         create
         edit
-        edit_organisation_representative_role
         edit_tutor_email
         edit_tutor_role
         edit_activity_scope

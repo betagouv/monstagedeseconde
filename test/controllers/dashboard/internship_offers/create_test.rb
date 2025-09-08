@@ -165,10 +165,6 @@ module Dashboard::InternshipOffers
                     html: /Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage/)
       assert_select('.fr-alert.fr-alert--error', html: /Veuillez renseigner la commune l'employeur/)
 
-      assert_select '#internship_offer_organisation_attributes_is_public_true[checked]',
-                    count: 0 # "ensure user select kind of group"
-      assert_select '#internship_offer_organisation_attributes_is_public_false[checked]',
-                    count: 0 # "ensure user select kind of group"
       assert_select '.form-group-select-group.d-none', count: 0
 
       assert_select '.form-group-select-max-candidates.d-none', count: 0
