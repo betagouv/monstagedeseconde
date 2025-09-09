@@ -32,20 +32,20 @@ module Builders
     end
 
     # TODO : is this still used ?
-    def update_from_stepper(internship_offer, user:, planning:)
-      yield callback if block_given?
-      authorize :update, model
-      internship_offer.update(
-        {}.merge(preprocess_internship_occupation_to_params(planning.entreprise.internship_occupation))
-          .merge(preprocess_entreprise_to_params(planning.entreprise))
-          .merge(preprocess_planning_to_params(planning))
-          .except(:employer_id)
-      )
-      internship_offer.save!
-      callback.on_success.try(:call, internship_offer)
-    rescue ActiveRecord::RecordInvalid => e
-      callback.on_failure.try(:call, e.record)
-    end
+    # def update_from_stepper(internship_offer, user:, planning:)
+    #   yield callback if block_given?
+    #   authorize :update, model
+    #   internship_offer.update(
+    #     {}.merge(preprocess_internship_occupation_to_params(planning.entreprise.internship_occupation))
+    #       .merge(preprocess_entreprise_to_params(planning.entreprise))
+    #       .merge(preprocess_planning_to_params(planning))
+    #       .except(:employer_id)
+    #   )
+    #   internship_offer.save!
+    #   callback.on_success.try(:call, internship_offer)
+    # rescue ActiveRecord::RecordInvalid => e
+    #   callback.on_failure.try(:call, e.record)
+    # end
 
     # called by internship_offers#create (duplicate), api/internship_offers#create
     def create(params:)

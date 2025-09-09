@@ -477,17 +477,18 @@ class GenerateInternshipAgreement < Prawn::Document
   #   end
   # end
 
-  def signature_table_footer
-    @pdf.table(
-      [[''] * 2],
-      row_colors: ['FFFFFF'],
-      column_widths: [PAGE_WIDTH / 2] * 2,
-      cell_style: { size: 8, color: '555555' }
-    ) do |t|
-      t.cells.borders = %i[left right bottom]
-      t.cells.border_color = 'cccccc'
-    end
-  end
+  # not used
+  # def signature_table_footer
+  #   @pdf.table(
+  #     [[''] * 2],
+  #     row_colors: ['FFFFFF'],
+  #     column_widths: [PAGE_WIDTH / 2] * 2,
+  #     cell_style: { size: 8, color: '555555' }
+  #   ) do |t|
+  #     t.cells.borders = %i[left right bottom]
+  #     t.cells.border_color = 'cccccc'
+  #   end
+  # end
 
   def page_number
     string = '<page> / <total>'
@@ -592,15 +593,16 @@ class GenerateInternshipAgreement < Prawn::Document
     end
   end
 
-  def process_signature_image(image_data)
-    image = MiniMagick::Image.read(image_data) do |img|
-      img.format 'png'
-      img.interlace 'none'
-    end
-    OpenStruct.new(
-      signature_image_file_path: StringIO.new(image.to_blob)
-    )
-  end
+  # not used
+  # def process_signature_image(image_data)
+  #   image = MiniMagick::Image.read(image_data) do |img|
+  #     img.format 'png'
+  #     img.interlace 'none'
+  #   end
+  #   OpenStruct.new(
+  #     signature_image_file_path: StringIO.new(image.to_blob)
+  #   )
+  # end
 
   def signature_date_str(signatory_role:)
     if @internship_agreement.signature_image_attached?(signatory_role:)
