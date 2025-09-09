@@ -13,11 +13,12 @@ module ApplicationHelper
     'https://uneleveunstage.crisp.help/fr/'
   end
 
-  def custom_dashboard_controller?(user:)
-    user.custom_dashboard_paths
-        .map { |path| current_page?(path) }
-        .any?
-  end
+  # not used
+  # def custom_dashboard_controller?(user:)
+  #   user.custom_dashboard_paths
+  #       .map { |path| current_page?(path) }
+  #       .any?
+  # end
 
   def account_controller?(user:)
     [

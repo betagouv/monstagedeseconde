@@ -352,6 +352,8 @@ fr:
         <<: *planning_fields
 
         id: Identifiant unique de l'offre
+        sector: Secteur
+        zipcode: Code postal
         internship_offer_weeks: Semaines ouvertes aux stages
         human_is_public: Public/Privé
         human_max_candidates: Nombre max d'élèves accueillis sur l'année
@@ -541,9 +543,69 @@ fr:
           attributes: &partner_errors
             target_count: Objectif annuel
 
-        internship_offer_info:
-          attributes: &internship_offer_info_errors
+        internship_offer_area:
+          attributes:
+            base:
+              only_one_left: "Une personne au moins doit être notifiée des candidatures"
+            name:
+              blank: "Veuillez saisir un nom d'espace"
+              invalid: "Ce nom d'espace est incorrect"
+              taken: "Ce nom d'espace est déjà utilisé"
+
+
+        internship_occupation:
+          attributes: &internship_occupation_errors
             title:
+              blank: "Veuillez saisir le titre de l'offre de stage"
+            description:
+              blank: "Veuillez saisir une description pour cette offre de stage"
+            street:
+              blank: "Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage"
+            city:
+              blank: "Veuillez saisir le nom de commune de l'offre de stage"
+            zipcode:
+              blank: "Veuillez saisir le code postal de l'offre de stage"
+              invalid: "Le code postal semble incorrect"
+
+        entreprise:
+          attributes: &entreprise_errors
+            max_candidates:
+              not_a_number: "Veuillez saisir un nombre de candidats par stage"
+            is_public:
+              blank: "Le stage doit être soit public ou privé"
+            sector:
+              required: "Veuillez choisir un secteur pour l'offre de stage"
+            siret:
+              blank: "Veuillez saisir le SIRET de l'entreprise"
+              invalid: "Le SIRET doit contenir 14 chiffres"
+            is_public:
+              blank: "Veuillez choisir le secteur de l'entreprise"
+
+        planning:
+          attributes: &planning_errors
+            max_candidates:
+              not_a_number: "Veuillez saisir un nombre de candidats par stage"
+            daily_hours:
+              blank: "Veuillez saisir les horaires journaliers"
+            daily_lunch_break:
+              blank: "Veuillez saisir la pause déjeuner journalière"
+            weekly_lunch_break:
+              blank: "Veuillez saisir la pause déjeuner hebdomadaire"
+            weekly_hours:
+              blank: "Veuillez saisir les horaires hebdomadaires"
+            grades:
+              required: "Veuillez choisir au moins un niveau d'études"
+            weeks:
+              blank: Veuillez saisir des semaines de stage
+
+        internship_offer:
+          attributes:
+            <<: *internship_occupation_errors
+            <<: *entreprise_errors
+            <<: *planning_errors
+            employer:
+              required: Veuillez choisir un compte responsable de l'offre
+              title:
               blank: "Veuillez saisir le titre de l'offre de stage"
             max_candidates:
               not_a_number: "Veuillez saisir un nombre de candidats par stage"
@@ -556,33 +618,13 @@ fr:
               required: "Veuillez choisir un secteur pour l'offre de stage"
             weeks:
               blank: Veuillez saisir des semaines de stage
-        internship_offer_area:
-          attributes:
-            base:
-              only_one_left: "Une personne au moins doit être notifiée des candidatures"
-            name:
-              blank: "Veuillez saisir un nom d'espace"
-              invalid: "Ce nom d'espace est incorrect"
-              taken: "Ce nom d'espace est déjà utilisé"
+            zipcode:
+              blank: "Veuillez renseigner le code postal de l'employeur"
+            employer_name:
+              blank: "Veuillez saisir le nom de l'employeur"
+            entreprise_full_address:
+              blank: "Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage"
 
-
-        tutor:
-          attributes: &tutor_errors
-            tutor_name:
-              blank: "Veuillez saisir un tuteur pour l'offre de stage"
-            tutor_phone:
-              blank: "Veuillez saisir le numéro de téléphone du tuteur de l'offre de stage"
-            tutor_email:
-              blank: "Veuillez saisir l'adresse électronique du tuteur de l'offre de stage"
-
-        internship_offer:
-          attributes:
-            <<: *organisation_errors
-            <<: *internship_offer_info_errors
-            <<: *tutor_errors
-
-            employer:
-              required: Veuillez choisir un compte responsable de l'offre
         internship_offers/weekly_framed:
           attributes:
             contact_phone:

@@ -163,7 +163,7 @@ module Dashboard::InternshipOffers
       assert_select('.fr-alert.fr-alert--error', html: /Veuillez saisir le nom de l'employeur/)
       assert_select('.fr-alert.fr-alert--error',
                     html: /Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage/)
-      assert_select('.fr-alert.fr-alert--error', html: /Veuillez renseigner la commune l'employeur/)
+      assert_select('.fr-alert.fr-alert--error', html: /Veuillez saisir le nom de commune de l'offre de stage/)
 
       assert_select '.form-group-select-group.d-none', count: 0
 

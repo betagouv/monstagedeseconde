@@ -143,6 +143,8 @@ module Dashboard
               :skills_understand,
               :skilles_motivation,
               :legal_terms_rich_text,
+              :organisation_representative_full_name,
+              :organisation_representative_role,
               :school_manager_accept_terms,
               :employer_accept_terms,
               :employer_event,
