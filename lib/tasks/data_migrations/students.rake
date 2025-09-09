@@ -68,21 +68,6 @@ namespace :data_migrations do
     end
   end
 
-  desc 'import a specific school'
-  task :import_specific_school, [:code_uai] => :environment do |task, args|
-    # invoke as : rake "data_migrations:import_specific_school[<code_uai>]"
-    PrettyConsole.announce_task 'Importing specific school' do
-      school = School.find_by(code_uai: args.code_uai)
-      if school
-        PrettyConsole.say_in_cyan "Importing students from #{school.name} uai:#{school.code_uai}  ##{school.id}"
-        ImportDataFromSygneJob.perform_later(school)
-        puts "----------------- #{school.code_uai} -----------------"
-      else
-        PrettyConsole.say_in_red "School with uai #{args.code_uai} not found"
-      end
-    end
-  end
-
   desc 'import 3 students only'
   task import_three_students: :environment do |task|
     PrettyConsole.announce_task 'Importing 3 students only' do
