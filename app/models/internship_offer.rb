@@ -17,7 +17,8 @@ class InternshipOffer < ApplicationRecord
                             entreprise_full_address internship_offer_area_id contact_phone
                             is_public group school_id coordinates first_date last_date
                             siret internship_address_manual_enter lunch_break daily_hours
-                            max_candidates max_students_per_group weekly_hours rep qpv].freeze
+                            max_candidates max_students_per_group weekly_hours rep qpv
+                            workspace_conditions workspace_accessibility].freeze
 
   include StiPreload
   include AASM
@@ -486,8 +487,10 @@ class InternshipOffer < ApplicationRecord
 
   def generate_offer_from_attributes(white_list)
     offer = InternshipOffer.new(attributes.slice(*white_list))
+
     offer.grades = grades
     offer.mother_id = id
+    offer.week_ids = week_ids
     # if not from api and has weeks before school year start and published_at is present
     unpublish! if !from_api? && has_weeks_before_school_year_start? && published_at.present?
     offer.published_at = nil
