@@ -71,7 +71,21 @@ module Services
       # Optimisation maximale : update_all en une seule requête
       archived_count = Users::Student.kept.update_all(
         discarded_at: Time.current,
-        updated_at: Time.current
+        birth_date: nil,
+        current_sign_in_ip: nil,
+        last_sign_in_ip: nil,
+        class_room_id: nil,
+        resume_other: nil,
+        resume_educational_background: nil,
+        resume_languages: nil,
+        gender: nil,
+        ine: nil,
+        address: nil,
+        legal_representative_full_name: nil,
+        legal_representative_phone: nil,
+        legal_representative_email: nil,
+        phone: 'NA',
+        email: "archived_student_#{Random.hex(8)}@archived.local"
       )
 
       total_time = Time.current - start_time
