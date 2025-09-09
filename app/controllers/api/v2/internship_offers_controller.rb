@@ -45,6 +45,7 @@ module Api
             format_week_ids(params[:internship_offer][:weeks])
         end
 
+        check_params_validity if params[:internship_offer] && params[:internship_offer][:weeks] && params[:internship_offer][:grades]
         internship_offer_builder.update(instance: InternshipOffer.find_by!(remote_id: params[:id]),
                                         params: update_internship_offer_params) do |on|
           on.success(&method(:render_ok))
