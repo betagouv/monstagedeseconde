@@ -595,6 +595,10 @@ class InternshipOffer < ApplicationRecord
     Presenters::WeekList.new(weeks: weeks).to_api_formatted
   end
 
+  def created_during_former_year?
+    last_date < Week.current_year_start_week.monday
+  end
+
   protected
 
   def make_sure_area_is_set
