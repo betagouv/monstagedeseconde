@@ -24,23 +24,24 @@
               = form.hidden_field :internship_occupation_id, value: resource.internship_occupation_id
               = form.hidden_field :entreprise_coordinates, value: { latitude: latitude, longitude: longitude }
               = form.hidden_field :internship_address_manual_enter, value: false
-              = form.hidden_field :siret, value: resource&.siret || ''
+              = form.hidden_field :siret, value: resource&.siret || '' unless resource.persisted?
               = form.hidden_field :code_ape, value: resource&.code_ape || ''
               - if resource.id
                 = form.hidden_field :id, value: resource.id
-              .hide-when-manual
-                / span = "#{resource.try(:errors).try(:any?)} [onSubmitError]"
-                / br
-                / span = "#{resource.try(:is_public)} [lastPublicValue]"
-                = react_component("SirenInput",
-                                  props: { resourceName: resource_name,
-                                          presentationLabel: "L'administration",
-                                          currentSiren: resource.siret,
-                                          railsEnv: Rails.env,
-                                          newRecord: resource.new_record? && !duplication,
-                                          currentManualEnter: resource.internship_address_manual_enter,
-                                          onSubmitError: resource.try(:errors).try(:any?),
-                                          lastPublicValue: resource.try(:is_public) })
+              - unless resource.persisted?
+                .hide-when-manual
+                  / span = "#{resource.try(:errors).try(:any?)} [onSubmitError]"
+                  / br
+                  / span = "#{resource.try(:is_public)} [lastPublicValue]"
+                  = react_component("SirenInput",
+                                    props: { resourceName: resource_name,
+                                            presentationLabel: "L'administration",
+                                            currentSiren: resource.siret,
+                                            railsEnv: Rails.env,
+                                            newRecord: resource.new_record? && !duplication,
+                                            currentManualEnter: resource.internship_address_manual_enter,
+                                            onSubmitError: resource.try(:errors).try(:any?),
+                                            lastPublicValue: resource.try(:is_public) })
 
           div class= "row fr-mt-3w bloc-tooggle #{edition_mode ? '' : 'fr-hidden'})"
             #public-private-radio-buttons.bloc-tooggle.col-12
@@ -98,7 +99,19 @@
                             { prompt: sectors_options_for_default },
                             class: "fr-select sector_list",
                             required: false
-          div class="row fr-mt-3w hide-when-manual bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
+          - if resource.persisted?
+            div class="row fr-mt-3w"
+              .col-12
+                = render 'inputs/dsfr_input_field',
+                          field: :siret,
+                          f: form,
+                          label: "SIRET *",
+                          required: true,
+                          readonly: false,
+                          title: 'SIRET',
+                          object: form.object,
+                          value: resource.presenter.formal_siret
+          div class="row fr-mt-3w hide-when-manual bloc-tooggle fr-hidden"
             .col-12
               = render 'inputs/dsfr_input_field',
                         field: :presentation_siret,
