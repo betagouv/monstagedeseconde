@@ -110,8 +110,8 @@
                           readonly: false,
                           title: 'SIRET',
                           object: form.object,
-                          value: resource.presenter.formal_siret,
-                          pattern: '^(\d\s*){14}$' 
+                          value: resource.siret,
+                          pattern: '^(\d{14})$' 
           div class="row fr-mt-3w hide-when-manual bloc-tooggle fr-hidden"
             .col-12
               = render 'inputs/dsfr_input_field',
