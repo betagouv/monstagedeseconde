@@ -3,7 +3,8 @@
 # used in internships#index
 module InternshipOffersHelper
   def preselect_all_weeks?(object)
-    return false unless object.try(:new_record?)
+    is_duplication = instance_variable_defined?(:@duplication) ? !!@duplication : false
+    return false unless object.try(:new_record?) && !is_duplication
 
     preselectable_classes = [
       InternshipOffer,
