@@ -3,7 +3,7 @@
     = render 'set_up', current_user: @current_user
   - else
     header.header-account
-      h1.h2.text-center = current_user
+      / h1.h2.text-center = current_user
 
     .body
       = form_with(model: resource,
