@@ -99,7 +99,7 @@
                             { prompt: sectors_options_for_default },
                             class: "fr-select sector_list",
                             required: false
-          - if resource.persisted?
+          - if resource.persisted? || @duplication
             div class="row fr-mt-3w"
               .col-12
                 = render 'inputs/dsfr_input_field',
@@ -110,7 +110,8 @@
                           readonly: false,
                           title: 'SIRET',
                           object: form.object,
-                          value: resource.presenter.formal_siret
+                          value: resource.presenter.formal_siret,
+                          pattern: '^(\d\s*){14}$' 
           div class="row fr-mt-3w hide-when-manual bloc-tooggle fr-hidden"
             .col-12
               = render 'inputs/dsfr_input_field',
@@ -129,7 +130,7 @@
                         field: :employer_name,
                         f: form,
                         label: label,
-                        readonly: true,
+                        readonly: !resource.persisted?,
                         title: label,
                         object: form.object,
                         value: resource&.employer_name,
