@@ -13,6 +13,9 @@ class InternshipOffersController < ApplicationController
 
   def index
     @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    @preselected_weeks_list = @preselected_weeks_list.where(id: params[:week_ids]) if params[:week_ids].present?
+    @school_weeks_list ||= Week.none
+    @preselected_weeks_list ||= Week.none
     @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
     @preselected_weeks_list_array = Presenters::WeekList.new(weeks: @preselected_weeks_list.to_a).detailed_attributes
     @seconde_week_ids = Week.seconde_weeks.map(&:id)
