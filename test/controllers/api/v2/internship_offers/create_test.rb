@@ -180,6 +180,8 @@ module Api
         assert_equal 0, internship_offer.period # default value 2 weeks
         assert_equal 2, internship_offer.grades.count
         assert_equal 2, internship_offer.weeks.count
+        assert_equal false, internship_offer.rep
+        assert_equal false, internship_offer.qpv
 
         assert_equal permalink, internship_offer.permalink
 
@@ -207,6 +209,8 @@ module Api
           grades = ['troisieme']
           weeks = %w[2025-W21 2025-W22]
           permalink = 'http://monsite.com'
+          rep = true
+          qpv = true
 
           geocoder_response = {
             status: 200,
@@ -240,7 +244,9 @@ module Api
                     grades:,
                     weeks:,
                     permalink:,
-                    handicap_accessible: true
+                    handicap_accessible: true,
+                    rep:,
+                    qpv:
                   }
                 }
               )
@@ -258,6 +264,8 @@ module Api
           assert_equal ['troisieme'], json_response['grades']
           assert_equal 2, internship_offer.weeks.count
           assert_equal true, internship_offer.open_data
+          assert_equal true, internship_offer.rep
+          assert_equal true, internship_offer.qpv
         end
       end
       test 'POST #create when wrong weeks for seconde offer returns 422' do

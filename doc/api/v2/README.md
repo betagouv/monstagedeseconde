@@ -110,6 +110,8 @@ Les offres de stages décrits ci-dessous décrivent les offres réservées aux c
     max_candidates: le nombre de candidat possible sur ce stage
     published_at: date de publication de l'offre
     is_public: Secteur public ou privé
+    rep: Offre réservée aux collégiens d'un établissement classé REP ou REP+
+    qpv: Offre réservée aux lycéens d'un établissement situé à proximité d'un Quartier Priotaire de la Ville
   }
 }
 ```
@@ -264,6 +266,8 @@ En plus de ses erreurs transverses, les erreurs spécifiques à un appel seront 
 * **is_public** *(boolean, optional)*: true|false
 * **lunch_break** *(text, optional entre 11 et 500 caractères)
 * **weeks** *(array, required)*: les semaines pendant lesquelles l'offre est accessible, voir [référentiel](#ref-weeks)
+* **rep** (boolean, optional)*: true|false
+* **qpv** (boolean, optional)*: true|false
 
 
 ### Exemple curl

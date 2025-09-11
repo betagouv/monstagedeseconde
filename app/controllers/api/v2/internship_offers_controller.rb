@@ -76,6 +76,8 @@ module Api
                 :period,
                 :handicap_accessible,
                 :lunch_break,
+                :rep,
+                :qpv,
                 grades: [],
                 week_ids: [],
                 daily_hours: {},
@@ -103,6 +105,8 @@ module Api
                 :period,
                 :lunch_break,
                 :handicap_accessible,
+                :rep,
+                :qpv,
                 grades: [],
                 week_ids: [],
                 daily_hours: {},
@@ -148,7 +152,9 @@ module Api
             employer_website: internship_offer.employer_website,
             employer_description: internship_offer.employer_description,
             grades: internship_offer.grades_api_formatted,
-            permalink: internship_offer.permalink
+            permalink: internship_offer.permalink,
+            rep: internship_offer.rep,
+            qpv: internship_offer.qpv
           }
         end
       end
