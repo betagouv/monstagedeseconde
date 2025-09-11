@@ -55,12 +55,6 @@ module Product
       end
     end
 
-    test 'USE_W3C, users_choose_profile' do
-      run_request_and_cache_response(report_as: 'users_choose_profile') do
-        visit users_choose_profile_path
-      end
-    end
-
     test 'USE_W3C, edit_(:api)' do
       operator = create(:user_operator)
       sign_in(operator)

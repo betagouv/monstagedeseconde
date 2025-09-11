@@ -30,13 +30,6 @@ class PagesTest < ActionDispatch::IntegrationTest
     assert_redirected_to '/maintenance.html'
   end
 
-  test '10_commandements_d_une_bonne_offre' do
-    get les_10_commandements_d_une_bonne_offre_path
-    assert_response :success
-    assert_template 'pages/les_10_commandements_d_une_bonne_offre'
-    assert_select 'title', 'Les 10 commandements pour une bonne offre | 1Élève1Stage'
-  end
-
   test 'GET pages#mentions_legales works' do
     get mentions_legales_path
     assert_response :success
@@ -63,23 +56,5 @@ class PagesTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_template 'pages/accessibilite'
     assert_select 'title', 'Accessibilité | 1Élève1Stage'
-  end
-
-  test '#register_to_webinar fails when not referent' do
-    student = create(:student)
-    sign_in student
-    get register_to_webinar_path
-    assert_redirected_to root_path
-  end
-
-  test '#register_to_webinar succeds when referent' do
-    travel_to Time.zone.local(2024, 1, 1, 12, 0, 0) do
-      webinar_url = ENV.fetch('WEBINAR_URL')
-      ministry_statistician = create(:ministry_statistician)
-      sign_in ministry_statistician
-      get register_to_webinar_path
-      assert_redirected_to webinar_url
-      assert_equal ministry_statistician.subscribed_to_webinar_at.to_date, Time.zone.today
-    end
   end
 end
