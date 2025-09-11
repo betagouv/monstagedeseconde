@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 module InternshipApplicationsHelper
-  def is_resume_empty?(internship_application)
-    !has_resume_other?(internship_application) &&
-      !has_resume_languages?(internship_application)
-  end
 
   def has_resume_other?(internship_application)
     internship_application.student
@@ -34,14 +30,16 @@ module InternshipApplicationsHelper
     end
   end
 
-  def callout_text(internship_application)
-    "Un email sera envoyé à l’élève lui indiquant que vous souhaitez \
-    #{internship_application.is_re_approvable? ? 'retenir' : 'refuser'} \
-    sa candidature."
-    + ' Il devra ensuite confirmer sa participation au stage.' if internship_application.is_re_approvable?
-  end
-
-  def callout_btn_title(internship_application)
-    (internship_application.is_re_approvable? ? 'Retenir' : 'Refuser') + ' cette candidature'
-  end
+  # not used
+  # def callout_text(internship_application)
+  #   "Un email sera envoyé à l’élève lui indiquant que vous souhaitez \
+  #   #{internship_application.is_re_approvable? ? 'retenir' : 'refuser'} \
+  #   sa candidature."
+  #   + ' Il devra ensuite confirmer sa participation au stage.' if internship_application.is_re_approvable?
+  # end
+  
+  # not used
+  # def callout_btn_title(internship_application)
+  #   (internship_application.is_re_approvable? ? 'Retenir' : 'Refuser') + ' cette candidature'
+  # end
 end

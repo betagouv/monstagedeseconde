@@ -48,11 +48,11 @@ module Users
       :phone
     end
 
-    def has_zero_internship_application?
-      internship_applications.all
-                             .size
-                             .zero?
-    end
+    # def has_zero_internship_application?
+    #   internship_applications.all
+    #                          .size
+    #                          .zero?
+    # end
 
     def age
       ((Time.zone.now - birth_date.to_time) / 1.year.seconds).floor

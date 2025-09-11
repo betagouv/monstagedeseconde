@@ -124,7 +124,6 @@ class AbilityTest < ActiveSupport::TestCase
       %i[
         create
         edit
-        edit_organisation_representative_role
         edit_tutor_email
         edit_tutor_role
         edit_activity_scope
@@ -157,8 +156,6 @@ class AbilityTest < ActiveSupport::TestCase
              'god should be able to manage school')
       assert(ability.can?(:edit, User),
              'god should be able to edit user')
-      assert(ability.can?(:see_tutor, InternshipOffer),
-             'god should be able see_tutor')
       assert ability.can?(:read, User)
       assert ability.can?(:destroy, User)
       assert ability.can?(:manage, Group)

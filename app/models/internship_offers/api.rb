@@ -5,7 +5,6 @@ module InternshipOffers
     MAX_CALLS_PER_MINUTE = 100
     EMPLOYER_DESCRIPTION_MAX_SIZE = 275
 
-    # TODO: set a constant here if possible
     def self.mandatory_seconde_weeks
       SchoolTrack::Seconde.both_weeks.map do |week|
         "#{week.year}-W#{week.number.to_s.rjust(2, '0')}"

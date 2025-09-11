@@ -26,17 +26,18 @@ module InternshipOffersHelper
   #   opts
   # end
 
-  def options_for_groups
-    Group.all.map do |group|
-      [
-        group.name,
-        group.id,
-        {
-          'data-organisation-form-target' => 'groupNamePublic'
-        }
-      ]
-    end
-  end
+  # not used
+  # def options_for_groups
+  #   Group.all.map do |group|
+  #     [
+  #       group.name,
+  #       group.id,
+  #       {
+  #         'data-organisation-form-target' => 'groupNamePublic'
+  #       }
+  #     ]
+  #   end
+  # end
 
   def options_for_public_groups
     Group.visible.is_public.map do |group|
@@ -50,24 +51,25 @@ module InternshipOffersHelper
     end
   end
 
-  def internship_offer_results_title(user)
-    default_label = "Rechercher un stage d'observation"
-    return default_label if user.nil? || user.is_a?(Users::Visitor)
-    return default_label unless user.student?
-    return default_label if user.grade.nil?
+  # not used
+  # def internship_offer_results_title(user)
+  #   default_label = "Rechercher un stage d'observation"
+  #   return default_label if user.nil? || user.is_a?(Users::Visitor)
+  #   return default_label unless user.student?
+  #   return default_label if user.grade.nil?
 
-    case user.grade.short_name
-    when :quatrieme
-      'Rechercher un stage de 4ème'
-    when :troisieme
-      'Rechercher un stage de 3ème'
-    when :seconde
-      'Rechercher un stage de seconde'
-    else
-      Rails.logger.error "Unknown grade: #{user.grade}"
-      default_label
-    end
-  end
+  #   case user.grade.short_name
+  #   when :quatrieme
+  #     'Rechercher un stage de 4ème'
+  #   when :troisieme
+  #     'Rechercher un stage de 3ème'
+  #   when :seconde
+  #     'Rechercher un stage de seconde'
+  #   else
+  #     Rails.logger.error "Unknown grade: #{user.grade}"
+  #     default_label
+  #   end
+  # end
 
   def operator_name(internship_offer)
     internship_offer.employer.operator.name
@@ -89,16 +91,17 @@ module InternshipOffersHelper
     )
   end
 
-  def back_to_internship_offers_from_internship_offer_path(current_user, url)
-    if url.include?('dashboard') && [Users::Employer, Users::Operator,
-                                     Users::PrefectureStatistician].include?(current_user.class)
-      return dashboard_internship_offers_path
-    end
+  # not used
+  # def back_to_internship_offers_from_internship_offer_path(current_user, url)
+  #   if url.include?('dashboard') && [Users::Employer, Users::Operator,
+  #                                    Users::PrefectureStatistician].include?(current_user.class)
+  #     return dashboard_internship_offers_path
+  #   end
 
-    default_params = {}
+  #   default_params = {}
 
-    internship_offers_path(default_params.merge(forwardable_params))
-  end
+  #   internship_offers_path(default_params.merge(forwardable_params))
+  # end
 
   def listable_internship_offer_path(internship_offer, options = {})
     return '' unless internship_offer

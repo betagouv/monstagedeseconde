@@ -23,9 +23,10 @@ class PagesController < ApplicationController
                 flash: { success: 'Connectez-vous pour postuler aux stages' }
   end
 
-  def offers_with_sector
-    InternshipOffer.includes([:sector])
-  end
+  # not used
+  #def offers_with_sector
+  #   InternshipOffer.includes([:sector])
+  # end
 
   def search_query_params
     common_query_params = %i[city grade_id latitude longitude page radius]

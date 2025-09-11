@@ -72,16 +72,6 @@ export const endpoints = {
     return endpoint;
   },
 
-  // @get
-  apiRomeQuery: ({keyword}) => {
-    const endpoint = new URL(`${host}/api/v2/coded_crafts/search`);
-    const searchParams = new URLSearchParams();
-
-    searchParams.append('keyword', keyword);
-    endpoint.search = searchParams.toString();
-    console.log(endpoint);
-    return endpoint;
-  },
 
   // @get
   searchInternshipOffers: () => {
