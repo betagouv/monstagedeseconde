@@ -54,7 +54,7 @@ module Users
           @current_ability = Ability.new(resource)
         end
       else
-        redirect_to users_choose_profile_path(options)
+        redirect_to pro_login_path(options)
       end
     end
 
