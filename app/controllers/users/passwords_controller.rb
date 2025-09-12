@@ -20,20 +20,17 @@ module Users
     end
 
     def edit
-      @current_user = User.with_reset_password_token(params['reset_password_token'])
+      @current_user = User.find_by_reset_password_token(params['reset_password_token'])
       @teacher = User.find(params['teacher_id']) if params['teacher_id'].present?
       super
     end
 
     def update
-      current_user = User.with_reset_password_token(params['user']['reset_password_token'])
-      if current_user && current_user.created_by_teacher
-        current_user.password = params['user']['password']
-        current_user.save
-        current_user.confirm if current_user.confirmed_at.nil?
-        redirect_to new_user_session_path, flash: { success: 'Mot de passe enregistré !' }
-      else
-        super
+      super
+      
+      # Remove the token after successful update
+      if resource.persisted? && resource.errors.empty?
+        resource.update(reset_password_token: nil, reset_password_sent_at: nil)
       end
     end
 
