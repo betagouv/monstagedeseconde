@@ -8,8 +8,8 @@ dialog id="modal-inappropriate-offer" class="fr-modal" aria-labelledby="modal-in
 
           .fr-modal__content data-controller="mandatory-fields" data-mandatory-fields-minimum-length-value="10"
             h2 id="modal-inappropriate-offer-title" class="fr-modal__title"
-              span class="fr-icon-quill-pen-line fr-icon--lg" aria-hidden="true"
-              |Signaler une offre inappropriée
+              span class="fr-icon-flag-line  fr-icon--lg" aria-hidden="true"
+              =" Signaler une offre inappropriée"
             = form_with url: flag_internship_offer_path(internship_offer),
                         scope: :inappropriate_offer,
                         method: :post,
