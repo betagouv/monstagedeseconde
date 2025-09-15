@@ -165,6 +165,15 @@ fr:
         full_address: "Adresse de l'établissement"
         full_weeks: Semaines
         signature: Signature de l'établissement
+      inappropriate_offer:
+        internship_offer: Offre de stage
+        details: Détails
+        grounds:
+          suspicious_content: Contenu suspect
+          inappropriate_content: Contenu inapproprié
+          incorrect_address: Adresse incorrecte
+          false_or_misleading_information: Informations fausses ou trompeuses
+          other: Autre
       internship_occupation: &internship_occupations_fields
         title: Intitulé
         description: Description

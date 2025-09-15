@@ -66,6 +66,31 @@ class InternshipOffersController < ApplicationController
     @internship_offer.log_apply(current_user)
   end
 
+  def flag
+    @internship_offer = InternshipOffer.find(params[:id])
+    offer_and_userid_parameters = {
+      internship_offer_id: @internship_offer.id,
+      user_id: current_user_or_visitor&.id
+    }
+    parameters =  flag_params.merge(offer_and_userid_parameters)
+    existing_report = InappropriateOffer.find_by(offer_and_userid_parameters)
+    if current_user.present? && existing_report
+      alert = "Vous avez déjà signalé cette offre comme inappropriée."
+      return redirect_to internship_offer_path(@internship_offer), alert: alert
+    else
+      new_report = InappropriateOffer.new(parameters)
+      if new_report.valid?
+        new_report.save
+        GodMailer.offer_was_flagged(new_report).deliver_later
+        notice = "Merci, votre signalement a bien été pris en compte. Notre équipe l’examinera sous 48h."
+        redirect_to internship_offer_path(@internship_offer, sans_signalement: true), notice: notice
+      else
+        @inappropriate_offer = new_report
+        return render :show
+      end
+    end
+  end
+
   private
 
   def set_internship_offer
@@ -163,5 +188,10 @@ class InternshipOffersController < ApplicationController
       isLastPage: offers.present? ? offers.last_page? : false,
       pageUrlBase: url_for(search_query_params.except("page")),
     }
+  end
+
+  def flag_params
+    params.require(:inappropriate_offer)
+          .permit(:id, :ground, :details)
   end
 end
