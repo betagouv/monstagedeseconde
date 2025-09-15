@@ -69,60 +69,6 @@ module ApplicationHelper
     end
   end
 
-  # not used
-  # def regions_list
-  #   [
-  #     { name: 'Myfuture',
-  #       url: 'https://myfutu.re/',
-  #       logo: 'logo-myfuture.png',
-  #       alt: 'logo de Myfuture' },
-  #     { name: 'MEDEF',
-  #       url: 'https://www.medef.com/fr/',
-  #       logo: 'logo-medef.png',
-  #       alt: 'logo du MEDEF' },
-  #     { name: 'Decathlon',
-  #       url: 'https://www.decathlon.fr/',
-  #       logo: 'logo-decathlon.png',
-  #       alt: 'logo de Décathlon' },
-  #     { name: 'Destination Métier',
-  #       url: 'https://www.destination-metier.fr/',
-  #       logo: 'logo-destination-metier.png',
-  #       alt: 'logo de Destination Métier' },
-  #     { name: 'Femmes@Numérique',
-  #       url: 'https://www.femmes-numerique.fr/',
-  #       logo: 'logo-femmes-numerique.png',
-  #       alt: 'logo de Femmes Numérique' },
-  #     { name: 'France Travail ',
-  #       url: 'https://www.france-travail.fr/',
-  #       logo: 'logo-france-travail.png',
-  #       alt: 'logo de France Travail' },
-  #     { name: 'Arpejeh',
-  #       url: 'https://www.arpejeh.com/',
-  #       logo: 'logo-arpejeh.png',
-  #       alt: 'logo de Arpejeh' },
-  #     { name: 'UIMM Savoie',
-  #       url: 'https://ui-savoie.com/',
-  #       logo: 'logo-uimm-savoie.png',
-  #       alt: 'logo de UIMM Savoie' },
-  #     { name: 'OPCO EP',
-  #       url: 'https://www.opcoep.fr/',
-  #       logo: 'logo-opco-ep.png',
-  #       alt: 'logo de OPCO EP' },
-  #     { name: 'ONISEP',
-  #       url: 'https://www.onisep.fr/',
-  #       logo: 'logo-onisep.png',
-  #       alt: 'logo de ONISEP' },
-  #     { name: 'OPCO 2i',
-  #       url: 'https://www.opco2i.fr/',
-  #       logo: 'logo-opco-2i.png',
-  #       alt: 'logo de OPCO 2i' },
-  #     { name: 'Université des Métiers du Nucléaire',
-  #       url: 'https://www.monavenirdanslenucleaire.fr/',
-  #       logo: 'logo-univ-metiers-nucleaire.png',
-  #       alt: 'logo de l\'Université des métiers du nucléaire' }
-  #   ]
-  # end
-
   def involved_partners_logos
     [
       { logo_img: 'airfrance.png', alt: 'airfrance logo' },
