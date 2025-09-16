@@ -118,7 +118,9 @@ module Api
                   published_at: nil,
                   is_public: true,
                   handicap_accessible: true,
-                  period: 2
+                  period: 2,
+                  rep: true,
+                  qpv: true
                 }
               }
             )
@@ -129,6 +131,8 @@ module Api
           assert_equal JSON.parse(@internship_offer.to_json), json_response
           assert @internship_offer.reload.is_public
           assert @internship_offer.reload.handicap_accessible
+          assert_equal true, @internship_offer.rep
+          assert_equal true, @internship_offer.qpv
         end
       end
 
