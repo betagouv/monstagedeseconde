@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-
+  include Rails.application.routes.url_helpers
+  
   def env_class_name
     return 'development' if Rails.env.development?
     return 'review' if Rails.env.staging? || Rails.env.review?
@@ -22,16 +23,12 @@ module ApplicationHelper
 
   def account_controller?(user:)
     [
-      current_page?( routes_helper.account_path),
-      current_page?( routes_helper.account_path(section: :resume)),
-      current_page?( routes_helper.account_path(section: :api)),
-      current_page?( routes_helper.account_path(section: :identity)),
-      current_page?( routes_helper.account_path(section: :school))
+      current_page?(account_path),
+      current_page?(account_path(section: :resume)),
+      current_page?(account_path(section: :api)),
+      current_page?(account_path(section: :identity)),
+      current_page?(account_path(section: :school))
     ].any?
-  end
-
-  def routes_helper
-    Rails.application.routes.url_helpers
   end
 
   def onboarding_flow?
@@ -46,7 +43,7 @@ module ApplicationHelper
   end
 
   def homepage?
-    current_page?(routes_helper.root_path)
+    current_page?(root_path)
   end
 
   # def in_dashboard?
