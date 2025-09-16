@@ -98,8 +98,8 @@ const InternshipOfferResults = ({
   const fetchInternshipOffers = () => {
     setIsLoading(true);
     $.ajax({ type: 'GET', url: endpoints['searchInternshipOffers'](), data: params })
-      .done(fetchDone)
-      .fail(fetchFail);
+     .done(fetchDone)
+     .fail(fetchFail);
   };
 
   // const updateSectors = () => {
@@ -231,8 +231,7 @@ const InternshipOfferResults = ({
                     ) : (
                       <div>
                         <div className="row">
-                            {
-                            internshipOffers.map((internshipOffer, i) => (
+                          { internshipOffers.map((internshipOffer, i) => (
                               <InternshipOfferCard
                                 internshipOffer={internshipOffer}
                                 key={internshipOffer.id}
@@ -241,9 +240,8 @@ const InternshipOfferResults = ({
                                 handleMouseOver={(value) => {handleMouseOver(value)}}
                                 sendNotification={(message) => {sendNotification(message)}}
                                 />
-                            ))
-                          }
-                      </div>
+                            )) }
+                        </div>
                       <div>
                         {(paginateLinks && paginateLinks.totalPages != 0) ? <Paginator paginateLinks={paginateLinks} /> : ''}
                       </div>
