@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  include Rails.application.routes.url_helpers
   
   def env_class_name
     return 'development' if Rails.env.development?
