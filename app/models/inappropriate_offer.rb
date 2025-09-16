@@ -1,4 +1,5 @@
 class InappropriateOffer < ApplicationRecord
+  include AdminInappropriateOfferable
   MIN_DETAILS_LENGTH = 10
   MAX_DETAILS_LENGTH = 350
 
