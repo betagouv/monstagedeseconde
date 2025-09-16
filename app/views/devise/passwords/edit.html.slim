@@ -3,7 +3,7 @@
     = render 'set_up', current_user: @current_user
   - else
     header.header-account
-      h1.h2.text-center = current_user
+      / h1.h2.text-center = current_user
 
     .body
       = form_with(model: resource,
@@ -32,7 +32,7 @@
               li.fr-message.fr-message--info data-password-target="lowercase" 1 minuscule
               li.fr-message.fr-message--info data-password-target="uppercase" 1 majuscule 
               li.fr-message.fr-message--info data-password-target="number" 1 chiffre
-              li.fr-message.fr-message--info data-password-target="special" 1 caractère spécial
+              li.fr-message.fr-message--info data-password-target="special" 1 caractère spécial parmi &nbsp; <div class="fr-badge fr-badge--info fr-badge--no-icon"> @ $ ! % * ? _ & : ; </div>
               
 
         .actions.d-flex.d-sm-block.text-center.fr-mt-1w

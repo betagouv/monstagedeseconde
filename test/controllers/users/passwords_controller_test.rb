@@ -17,6 +17,47 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
                   text: 'Clé de réinitialisation du mot de passe : Veuillez faire une nouvelle demande de changement de mot de passe, cette demande a expiré.'
   end
 
+  test 'POST update 2 times with valid token succeeds and then fails gracefully' do
+    employer = create(:employer)
+    raw_token, hashed_token = Devise.token_generator.generate(User, :reset_password_token)
+    employer.update!(
+      reset_password_token: hashed_token,
+      reset_password_sent_at: Time.current
+    )
+    
+    put user_password_path, params: {
+      user: {
+        password: 'Password123!',
+        reset_password_token: raw_token
+      }
+    }
+
+    # Check that there is no error
+    assert_select '.fr-alert.fr-alert--error', count: 0
+    assert_equal flash.notice, 'Votre mot de passe a bien été modifié. Vous êtes maintenant connecté(e).'
+
+    # Logout
+    delete destroy_user_session_path
+
+    # Vérifier que l'utilisateur est bien déconnecté
+    assert_response :redirect
+    
+  
+    # 2nd time - using the same token (should fail)
+    put user_password_path, params: {
+      user: {
+        password: 'Password123!',
+        reset_password_token: raw_token
+      }
+    }
+    
+    
+    assert_select '.fr-alert.fr-alert--error', count: 1
+    assert_select '.fr-alert.fr-alert--error',
+                  count: 1,
+                  text: 'Clé de réinitialisation du mot de passe : Veuillez faire une nouvelle demande de changement de mot de passe, cette demande a expiré.'
+  end
+
   test 'POST create by email' do
     student = create(:student)
     assert_enqueued_emails 1 do
