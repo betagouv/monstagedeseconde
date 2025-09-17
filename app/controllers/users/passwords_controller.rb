@@ -38,17 +38,5 @@ module Users
 
     def set_up
     end
-
-    def update_by_phone
-      if fetch_user_by_phone.try(:check_phone_token?, params[:phone_token])
-        @user.update(password: params[:password])
-        sign_in @user
-        @user.confirm_by_phone!
-        redirect_to @user.after_sign_in_path, flash: { success: I18n.t('devise.passwords.updated') }
-      else
-        redirect_to(phone_edit_password_path(phone: safe_phone_param),
-                    flash: { alert: 'Le téléphone mobile ou le code est invalide.' })
-      end
-    end
   end
 end

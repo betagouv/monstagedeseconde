@@ -93,23 +93,6 @@ module Users
       flash.delete(:notice) if params.dig(:user, :statistician_type).present?
     end
 
-    def phone_validation
-      if fetch_user_by_phone.try(:check_phone_token?, params[:phone_token])
-        @user.confirm_by_phone!
-        message = { success: I18n.t('devise.confirmations.confirmed') }
-        redirect_to(
-          new_user_session_path(phone: @user.phone),
-          flash: message
-        )
-      else
-        err_message = { alert: I18n.t('devise.confirmations.unconfirmed') }
-        redirect_to(
-          users_registrations_phone_standby_path(phone: params[:phone]),
-          flash: err_message
-        )
-      end
-    end
-
     def statistician_standby
     end
 
