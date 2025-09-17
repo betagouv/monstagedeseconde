@@ -67,29 +67,26 @@
                 .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
                   |La description est trop longue
                 small.form-text data-max-length-input-target="charCount"
-        / .col-6 
-        /   .fr-alert.fr-alert--info.fr-mt-13v
-        /     h3.fr-alert__title Les bonnes pratiques du descriptif de stage
-        /     p
-        /       ul
-        /         li
-        /           |Décrivez précisément les activités que vous proposerez aux élèves.
-        /         li
-        /           |Ces activités permettent aux élèves d’observer, de découvrir vos métiers, votre structure et ne doivent pas être un travail en autonomie qu’un salarié pourrait réaliser.
-        /         li
-        /           |Évitez les acronymes, les sigles et les termes techniques. Soyez attentif à l'orthographe et à la grammaire.
 
     .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
       .col-6
         .fr-alert.fr-alert--info
-          h3.fr-alert__title Ce que la loi stipule
+          h3.fr-alert__title Les bonnes pratiques du descriptif de stage
           p
             |
-              Les élèves ne peuvent accéder aux machines, appareils ou produits dont l'usage
-              est proscrit aux mineurs par les articles D. 4153-15 à D. 4153-37 du code du travail.
-              Ils ne peuvent ni procéder à des manœuvres ou manipulations sur d'autres machines,
-              produits ou appareils de production ni effectuer des travaux légers
-              autorisés aux mineurs par ce même code.
+              Décrivez précisément les activités que vous proposerez aux élèves. Ces activités permettent
+              aux élèves d’observer, de découvrir vos métiers, votre structure et ne doivent
+              pas être un travail en autonomie qu’un salarié pourrait réaliser. Évitez 
+              les acronymes, les sigles et les termes techniques.
+              Soyez attentif à l'orthographe et à la grammaire.
+          p
+            |
+              Ce que la loi stipule Les élèves ne peuvent accéder aux machines, appareils ou
+              produits dont l'usage est proscrit aux mineurs par les articles D. 4153-15 à
+              D. 4153-37 du code du travail. Ils ne peuvent ni procéder à des manœuvres ou
+              manipulations sur d'autres machines, produits ou appareils de production 
+              ni effectuer des travaux légers autorisés aux mineurs par ce même code.
+              
     .row.fr-mt-2w
     .row.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
       .col-6
