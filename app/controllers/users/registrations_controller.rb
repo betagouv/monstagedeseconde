@@ -40,7 +40,6 @@ module Users
     def new
       @captcha_image, @captcha_uuid = Services::Captcha.generate if %w[Employer SchoolManagement
                                                                        Statistician].include?(params[:as])
-      @resource_channel = resource_channel
       options = {}
       if params.dig(:user, :targeted_offer_id)
         options = options.merge(

@@ -32,15 +32,6 @@ main#content role="main" data-controller="signup"
                   = f.hidden_field :type
                   = f.hidden_field :targeted_offer_id, value: params[:targeted_offer_id]
                   = f.hidden_field :identity_token, value: params[:identity_token]
-                - if can?(:choose_school, resource)
-                  .fr-mx-1w
-                    = render "users/select_channel",
-                             label: "Comment souhaitez-vous vous connecter ?",
-                             form: f,
-                             resource: resource,
-                             chan: @resource_channel,
-                             error_status: error_status,
-                             phone: "Par téléphone (SMS)"
 
                 .fr-fieldset__element
                   - error_tag = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :password)
