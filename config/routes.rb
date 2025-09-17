@@ -57,7 +57,6 @@ Rails.application.routes.draw do
                                                              as: 'resend_confirmation_phone_token'
     end
 
-    # resources :identities, path: 'identites', only: %i[new create]
     resources :url_shrinkers, path: 'c', only: %i[] do
       get :o, on: :member
     end
