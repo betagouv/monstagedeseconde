@@ -17,12 +17,6 @@ module Users
       redirect_to after_inactive_sign_up_path_for(resource)
     end
 
-    def choose_profile
-      @state = generate_state
-      @fim_url = build_fim_url
-      @educonnect_url = build_educonnect_url
-    end
-
     def confirmation_standby
       flash.delete(:notice)
       @confirmable_user = ::User.find_by(id: params[:id]) if params[:id].present?
