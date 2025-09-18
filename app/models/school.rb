@@ -219,6 +219,12 @@ class School < ApplicationRecord
     admin_officers.first
   end
 
+  def rep_or_rep_plus?
+    !rep_kind.nil?
+  end
+
+  def qpv? = qpv
+
   private
 
   def contract_label

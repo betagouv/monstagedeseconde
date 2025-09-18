@@ -374,5 +374,62 @@ module InternshipOffers
       get internship_offer_path(api_internship_offer)
       assert_response :success
     end
+
+    test 'student of a qpv school can apply to a qpv reserved offer' do
+      travel_to Date.new(2023, 10, 1) do
+        student = create(:student, :seconde, school: create(:school, qpv: true))
+        internship_offer = create(:weekly_internship_offer_2nde, qpv: true, max_candidates: 5)
+
+        sign_in(student)
+        get internship_offer_path(internship_offer)
+
+        assert_select 'a.fr-btn.fr-icon-edit-fill.fr-btn--icon-left', 4
+        # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
+      end
+    end
+
+    test 'student of a no qpv school cannot apply to a qpv reserved offer' do
+      travel_to Date.new(2023, 10, 1) do
+        student = create(:student, :seconde, school: create(:school, qpv: false))
+        internship_offer = create(:weekly_internship_offer_2nde, qpv: true, max_candidates: 5)
+
+        sign_in(student)
+        get internship_offer_path(internship_offer)
+        puts '--- writing html in debug_file.html ---'
+        puts ''
+        html = Nokogiri::HTML(response.body)
+        File.open('debug_file.html', 'w+') { |f| f.write html }
+        puts '----------------------------------------'
+
+        # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
+        assert_select 'a.fr-btn.fr-icon-edit-fill.fr-btn--icon-left', 0
+      end
+    end
+
+    test 'student of a rep school can apply to a reserved offer' do
+      travel_to Date.new(2023, 10, 1) do
+        student = create(:student, :troisieme, school: create(:school, rep_kind: 'rep'))
+        internship_offer = create(:weekly_internship_offer_3eme, rep: true, max_candidates: 5)
+
+        sign_in(student)
+        get internship_offer_path(internship_offer)
+
+        assert_select 'a.fr-btn.fr-icon-edit-fill.fr-btn--icon-left', 4
+        # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
+      end
+    end
+
+    test 'student of a no rep school cannot apply to a rep reserved offer' do
+      travel_to Date.new(2023, 10, 1) do
+        student = create(:student, :troisieme, school: create(:school, rep_kind: nil))
+        internship_offer = create(:weekly_internship_offer_3eme, rep: true, max_candidates: 5)
+
+        sign_in(student)
+        get internship_offer_path(internship_offer)
+
+        # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
+        assert_select 'a.fr-btn.fr-icon-edit-fill.fr-btn--icon-left', 0
+      end
+    end
   end
 end
