@@ -145,7 +145,6 @@ module Users
                      last_sign_in_ip: nil,
                      class_room_id: nil,
                      resume_other: nil,
-                     resume_educational_background: nil,
                      resume_languages: nil,
                      gender: nil,
                      ine: nil,

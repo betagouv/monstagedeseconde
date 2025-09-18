@@ -11,13 +11,6 @@ class PagesController < ApplicationController
                               search_companies
                               maintenance_estivale]
 
-  def register_to_webinar
-    authorize! :subscribe_to_webinar, current_user
-    current_user.update(subscribed_to_webinar_at: Time.zone.now)
-    redirect_to WEBINAR_URL,
-                allow_other_host: true
-  end
-
   def visitor_apply
     redirect_to student_login_path,
                 flash: { success: 'Connectez-vous pour postuler aux stages' }

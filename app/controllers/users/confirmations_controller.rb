@@ -6,7 +6,7 @@ module Users
     def create
       if by_phone?
         fetch_user_by_phone
-        return if @user.try(:created_by_teacher) || @user.try(:created_by_system)
+        return if @user.try(:created_by_system)
 
         if @user&.student?
           SendSmsJob.perform_later(

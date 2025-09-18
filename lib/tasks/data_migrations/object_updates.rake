@@ -132,8 +132,7 @@ namespace :data_migrations do
 
     # ===================
     fields = [
-      [Users::Student, %i[resume_educational_background
-                          resume_other
+      [Users::Student, %i[resume_other
                           resume_languages]]
     ]
 
