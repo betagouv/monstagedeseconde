@@ -63,9 +63,10 @@ module Presenters
       url_helpers.dashboard_students_internship_applications_path(student_id: user.id)
     end
 
-    def validated_by_employer_applications_count
-      student.internship_applications.validated_by_employer.count
-    end
+    # not used
+    # def validated_by_employer_applications_count
+    #   student.internship_applications.validated_by_employer.count
+    # end
 
     def forbidden_application_reason(internship_offer)
       if student.internship_applications.exists?(internship_offer_id: internship_offer.id)

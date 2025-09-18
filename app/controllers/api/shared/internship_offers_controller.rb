@@ -63,9 +63,10 @@ module Api
         }
       end
 
-      def serialize_sector_ids(sectors)
-        sectors.map { |sector_uuid| Sector.find_by(uuid: sector_uuid).id }
-      end
+      # not used
+      # def serialize_sector_ids(sectors)
+      #   sectors.map { |sector_uuid| Sector.find_by(uuid: sector_uuid).id }
+      # end
 
       def throttle_api_requests_for_offers
         throttle_api_requests "internship_offers", InternshipOffers::Api::MAX_CALLS_PER_MINUTE

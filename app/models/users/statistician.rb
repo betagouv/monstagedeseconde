@@ -12,8 +12,6 @@ module Users
 
     has_many :internship_applications, through: :kept_internship_offers
     has_many :internship_agreements, through: :internship_applications
-    has_many :tutors
-    has_many :internship_offer_infos
 
     belongs_to :academy_region, optional: true, class_name: 'AcademyRegion', foreign_key: 'academy_region_id'
 

@@ -83,14 +83,15 @@ class StudentMailer < ApplicationMailer
          subject: 'Une de vos candidatures a été acceptée')
   end
 
-  def account_created_by_teacher(student:, teacher:, token:)
-    @student = student
-    @teacher = teacher
-    @token = token
+  # not used
+  # def account_created_by_teacher(student:, teacher:, token:)
+  #   @student = student
+  #   @teacher = teacher
+  #   @token = token
 
-    mail(to: @student.email,
-         subject: 'Votre inscription sur 1eleve1stage.education.gouv.fr')
-  end
+  #   mail(to: @student.email,
+  #        subject: 'Votre inscription sur 1eleve1stage.education.gouv.fr')
+  # end
 
   def internship_application_validated_by_employer_email(internship_application:)
     @internship_application = internship_application

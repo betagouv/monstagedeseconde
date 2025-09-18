@@ -37,7 +37,6 @@ import DistanceIcon from "components/icons/DistanceIcon";
 import AddressInput from "components/inputs/AddressInput";
 import CountryPhoneSelect from "components/inputs/CountryPhoneSelect";
 import FullAddressInput from "components/inputs/FullAddressInput";
-import RomeInput from "components/inputs/RomeInput";
 import SirenInput from "components/inputs/SirenInput";
 
 ReactOnRails.register({
@@ -60,7 +59,6 @@ ReactOnRails.register({
   SearchSchool,
   SearchSchoolByName,
   SirenInput,
-  RomeInput,
   WeekInput,
   SearchBar
 });
