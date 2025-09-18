@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   include Phonable
   before_action :authenticate_user!
   skip_before_action :check_school_requested,
-                     only: %i[edit update answer_survey]
+                     only: %i[edit update]
 
   def edit
     authorize! :update, current_user
@@ -54,11 +54,6 @@ class UsersController < ApplicationController
     end
   rescue ActiveRecord::RecordInvalid
     render :edit, status: :bad_request
-  end
-
-  def answer_survey
-    current_user.update(survey_answered: true)
-    render json: 'Survey answered', status: 200
   end
 
   def transform_input
@@ -177,8 +172,7 @@ class UsersController < ApplicationController
                                  :academy_region_id,
                                  :employer_role,
                                  :phone_or_email,
-                                 :anonymize_with_email,
-                                 banners: {})
+                                 :anonymize_with_email)
   end
 
   def current_section

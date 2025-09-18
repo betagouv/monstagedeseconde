@@ -259,7 +259,6 @@ Rails.application.routes.draw do
   get 'mon-compte(/:section)', to: 'users#edit', as: 'account'
   patch 'mon-compte', to: 'users#update'
   patch 'account_password', to: 'users#update_password'
-  patch 'answer_survey', to: 'users#answer_survey'
   get '/magic_link', to: 'magic_links#show', as: :magic_link
 
   get '/accessibilite', to: 'pages#accessibilite'
@@ -273,7 +272,6 @@ Rails.application.routes.draw do
   get '/operators', to: 'pages#operators'
   get '/politique-de-confidentialite', to: 'pages#politique_de_confidentialite'
   post '/newsletter', to: 'newsletter#subscribe'
-  get '/inscription-permanence', to: 'pages#register_to_webinar'
   get '/recherche-entreprises', to: 'pages#search_companies'
   post '/visitor_apply', to: 'pages#visitor_apply'
   get '/educonnect_deconnexion_responsable', to: 'pages#educonnect_logout_responsible',
