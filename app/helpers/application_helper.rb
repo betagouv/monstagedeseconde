@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  
   def env_class_name
     return 'development' if Rails.env.development?
     return 'review' if Rails.env.staging? || Rails.env.review?

@@ -46,8 +46,15 @@ const SearchBar = ({
   };
 
   const updateWeekIdsFromUrl = (gradeId) => {
+    let WeekIdsGrandContainer;
+    if (gradeId === undefined) {
+      WeekIdsGrandContainer = [...secondeWeekIds, ...troisiemeWeekIds];
+    } else if (gradeId === gradeIdSeconde) {
+      WeekIdsGrandContainer = secondeWeekIds;
+    } else {
+      WeekIdsGrandContainer = troisiemeWeekIds;
+    }
     // filteredWeekIds is the intersection between weekIdsFromUrl() and troisiemeWeekIds or SecondeWeeksIds according to gradeId's value
-    const WeekIdsGrandContainer = gradeId === gradeIdSeconde ? secondeWeekIds : troisiemeWeekIds;
     const filteredWeekIds = WeekIdsGrandContainer.filter((id) =>
       weekIdsFromUrl().includes(id)
     );
@@ -208,8 +215,6 @@ const SearchBar = ({
 
   // initialization
   useEffect(() => {
-    // set url with week_ids
-    updateURLWithParam(addParamToSearchParams('week_ids[]', weekIds.map(w => w.id)))
 
     const urlGradeId = getParamValueFromUrl("grade_id");
     setGradeId(urlGradeId);
@@ -219,7 +224,6 @@ const SearchBar = ({
   // common part
   const onGradeChangeAndInitialization = (gradeId) => {
     updateWeekIdsFromUrl(gradeId)
-    
     limitWeeksToParse(gradeId);
     setMonthScoreFromUrl();
   }

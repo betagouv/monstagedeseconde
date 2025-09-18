@@ -5,7 +5,7 @@ require 'test_helper'
 class RegistrationsControllerTest < ActionDispatch::IntegrationTest
   test 'GET new redirects if no type is chosen' do
     get new_user_registration_path
-    assert_redirected_to users_choose_profile_path
+    assert_redirected_to pro_login_path
   end
 
   test 'POST #registrations as statistician whitelisted' do
@@ -53,15 +53,6 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     post user_registration_path(user: data)
 
     assert_redirected_to statistician_standby_path(id: Users::EducationStatistician.last.id)
-  end
-
-  test 'GET #choose_profile' do
-    get users_choose_profile_path
-    assert_select 'title', 'Création de compte | 1Élève1Stage'
-    # assert_select 'a[href=?]', '/identites/nouveau?as=Student'
-    assert_select 'a[href=?]', '/utilisateurs/inscription?as=Employer'
-    # assert_select 'a[href=?]', '/utilisateurs/inscription?as=SchoolManagement'
-    # assert_select 'a[href=?]', '/utilisateurs/inscription?as=Statistician'
   end
 
   test 'GET #registrations_standby as student using path?id=#id with pending account' do
