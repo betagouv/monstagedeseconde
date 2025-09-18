@@ -28,8 +28,7 @@ div class="hoverable-row-with-btn bb-1 bc-light row" id="#{dom_id internship_off
       .d-none.d-sm-block.col-sm-4.text-right.align-self-center
         - if can?(:apply, internship_offer)
           = render partial: 'internship_offers/apply_cta',
-                   locals: {internship_offer: internship_offer}
-
+                   locals: { internship_offer: internship_offer }
           br
         = link_to "Voir l'annonce", listable_internship_offer_path(internship_offer, origine: 'search'),
                   class: 'fr-link fr-icon-eye-line fr-link--icon-left fr-raw-link'

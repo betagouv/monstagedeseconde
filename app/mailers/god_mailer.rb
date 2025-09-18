@@ -117,9 +117,20 @@ class GodMailer < ApplicationMailer
 
     attachments[filename] = { mime_type: 'text/csv', content: csv_data }
 
-    mail(
+    send_email(
       to: ENV['TEAM_EMAIL'],
       subject: "Export offres préfixe postal #{department_code} - #{Date.current.strftime('%d/%m/%Y')}"
+    )
+  end
+
+  def offer_was_flagged(inappropriate_offer)
+    @inappropriate_offer = inappropriate_offer
+    @internship_offer = inappropriate_offer.internship_offer
+    @fr_ground = InappropriateOffer.options_for_ground[@inappropriate_offer.ground.to_s]
+    @user = inappropriate_offer.user
+    send_email(
+      to: ENV['TEAM_EMAIL'],
+      subject: "Offre signalée : [#{@fr_ground}] - #{@internship_offer.title} (##{@inappropriate_offer.id})"
     )
   end
 end

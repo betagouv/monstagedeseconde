@@ -92,6 +92,7 @@ Rails.application.routes.draw do
         end
       end
       member do
+        post :flag
         post :apply_count
       end
     end

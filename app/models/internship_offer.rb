@@ -84,6 +84,7 @@ class InternshipOffer < ApplicationRecord
   has_many :schools, through: :reserved_schools
 
   has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy
+  has_one :inappropriate_offer, dependent: :destroy
 
   # accepts_nested_attributes_for :organisation, allow_destroy: true
 

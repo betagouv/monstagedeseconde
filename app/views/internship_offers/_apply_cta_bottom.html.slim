@@ -8,14 +8,14 @@
       - elsif Flipper.enabled? :application_inhibited
         = link_to 'Postuler',
                   '#',
-                  class: 'fr-btn fr-icon-draft-line  fr-btn--icon-left disabled',
+                  class: 'fr-btn fr-icon-draft-line fr-btn--icon-left disabled',
                   tabindex: -1,
                   aria: { disabled: true },
                   onclick: "return false;"
       - else
         = link_to 'Postuler',
                   new_internship_offer_internship_application_path(internship_offer_id: internship_offer.id),
-                  class: 'fr-btn fr-icon-draft-line  fr-btn--icon-left',
+                  class: 'fr-btn fr-icon-draft-line fr-btn--icon-left',
                   data: { action: 'click->internship-offer#applyCount', target: 'internship-offer.applyButton', internshipOfferId: internship_offer.id, userId: current_user.id, turbo: false }
 
     - else
@@ -23,7 +23,7 @@
       div
         = button_to 'Postuler',
                     '',
-                    class: 'fr-btn fr-btn--icon-left fr-icon-draft-line ',
+                    class: 'fr-btn fr-btn--icon-left fr-icon-draft-line',
                     disabled: true
         br
         - reason = current_user.presenter.forbidden_application_reason(internship_offer)
@@ -34,7 +34,7 @@
     - path = (employers_only? || Flipper.enabled?(:application_inhibited)) ? '#' : visitor_apply_path
     .d-flex
       = form_with url: path, method: :post, data: { turbo: false } do
-        = submit_tag 'Postuler', class: "fr-btn fr-btn--icon-left fr-icon-draft-line "
+        = submit_tag 'Postuler', class: "fr-btn fr-btn--icon-left fr-icon-draft-line"
 
   - if(user_signed_in? && can?(:create, Favorite))
     .fr-ml-5w
@@ -43,6 +43,7 @@
                         props: { internshipOffer: { id: internship_offer.id,
                                                     is_favorite: is_favorite,
                                                     isDisabled: !can?(:create, Favorite) }})
+  .ml-auto = render('internship_offers/sig_link')
 
 
 
