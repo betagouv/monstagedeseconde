@@ -30,7 +30,8 @@ export default class extends Controller {
     ministry.hidden = false;
     // set required to true to the entreprise_group_id
     const entrepriseGroup = document.querySelector("#group-choice");
-    if (entrepriseGroup) {
+    const ministryVisible = !['d-none', 'hidden', 'fr-hidden'].some(className => ministry.classList.contains(className));
+    if (entrepriseGroup && ministryVisible) {
       entrepriseGroup.required = true;
     }
 
