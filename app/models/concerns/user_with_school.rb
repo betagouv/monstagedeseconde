@@ -26,5 +26,7 @@ module UserWithSchool
 
       weeks_chosen_by_school
     end
+
+    def in_a_school? = school.present?
   end
 end

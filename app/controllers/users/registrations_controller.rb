@@ -40,7 +40,6 @@ module Users
     def new
       @captcha_image, @captcha_uuid = Services::Captcha.generate if %w[Employer SchoolManagement
                                                                        Statistician].include?(params[:as])
-      @resource_channel = resource_channel
       options = {}
       if params.dig(:user, :targeted_offer_id)
         options = options.merge(
@@ -69,7 +68,7 @@ module Users
             Statistician].include?(params[:as]) && !check_captcha(params[:user][:captcha],
                                                                   params[:user][:captcha_uuid])
         flash[:alert] = I18n.t('devise.registrations.captcha_error')
-        redirect_to_register_page(params[:as])
+        redirect_to new_user_registration_path(as: params[:as])
         return
       end
       %i[honey_pot_checking
@@ -78,7 +77,6 @@ module Users
         (check_proc.call and return) if check_proc.respond_to?(:call)
       end
       params[:user].delete(:confirmation_email) if params.dig(:user, :confirmation_email)
-      params[:user] = merge_identity(params) if params.dig(:user, :identity_token)
       # students only
       clean_phone_param
       super do |resource|
@@ -92,23 +90,6 @@ module Users
         resource.save
       end
       flash.delete(:notice) if params.dig(:user, :statistician_type).present?
-    end
-
-    def phone_validation
-      if fetch_user_by_phone.try(:check_phone_token?, params[:phone_token])
-        @user.confirm_by_phone!
-        message = { success: I18n.t('devise.confirmations.confirmed') }
-        redirect_to(
-          new_user_session_path(phone: @user.phone),
-          flash: message
-        )
-      else
-        err_message = { alert: I18n.t('devise.confirmations.unconfirmed') }
-        redirect_to(
-          users_registrations_phone_standby_path(phone: params[:phone]),
-          flash: err_message
-        )
-      end
     end
 
     def statistician_standby
@@ -248,18 +229,6 @@ module Users
       resource
     end
 
-    def merge_identity(params)
-      identity = Identity.find_by_token(params[:user][:identity_token])
-
-      params[:user].merge(first_name: identity.first_name,
-                          last_name: identity.last_name,
-                          birth_date: identity.birth_date,
-                          school_id: identity.school_id,
-                          class_room_id: identity.class_room_id,
-                          gender: identity.gender,
-                          grade_id: identity.grade.id)
-    end
-
     def honey_pot_checking(params)
       return unless params[:user][:confirmation_email].present?
 
@@ -295,14 +264,6 @@ module Users
 
     def check_captcha(captcha, captcha_uuid)
       Services::Captcha.verify(captcha, captcha_uuid)
-    end
-
-    def redirect_to_register_page(resource)
-      if resource == 'Student'
-        redirect_to new_user_identity_path(as: params[:as])
-      else
-        redirect_to new_user_registration_path(as: params[:as])
-      end
     end
 
     def build_fim_url

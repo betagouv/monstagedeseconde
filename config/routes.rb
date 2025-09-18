@@ -49,19 +49,14 @@ Rails.application.routes.draw do
                                                             as: 'statistician_standby'
       get '/utilisateurs/inscriptions/en-attente-telephone', to: 'users/registrations#confirmation_phone_standby',
                                                              as: 'users_registrations_phone_standby'
-      post '/utilisateurs/inscriptions/validation-telephone', to: 'users/registrations#phone_validation',
-                                                              as: 'phone_validation'
       get '/utilisateurs/mot-de-passe/modification-par-telephone', to: 'users/passwords#edit_by_phone',
                                                                    as: 'phone_edit_password'
-      put '/utilisateurs/mot-de-passe/update_by_phone', to: 'users/passwords#update_by_phone',
-                                                        as: 'phone_update_password'
       get '/utilisateurs/mot-de-passe/initialisation', to: 'users/passwords#set_up',
                                                        as: 'set_up_password'
       post '/utilisateurs/renvoyer-le-code-de-confirmation', to: 'users/registrations#resend_confirmation_phone_token',
                                                              as: 'resend_confirmation_phone_token'
     end
 
-    # resources :identities, path: 'identites', only: %i[new create]
     resources :url_shrinkers, path: 'c', only: %i[] do
       get :o, on: :member
     end

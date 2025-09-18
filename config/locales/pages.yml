@@ -87,7 +87,7 @@ fr:
         page_title: "Ajouter un espace"
       edit:
         page_title: "Destinataire des notifications"
-      index: 
+      index:
         page_title: Liste de mes espaces
   internship_applications:
     show:
@@ -144,12 +144,7 @@ fr:
     schools:
       index:
         page_title: "Statistiques sur les établissements"
-    
-  identities:
-    new:
-      page_title: "Inscription élève - etape 1 sur 2"
-    edit:
-      page_title: "Modification inscription élève"
+
   users:
     confirmations:
       new:
