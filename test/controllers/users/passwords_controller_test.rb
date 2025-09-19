@@ -65,22 +65,4 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
       assert_redirected_to new_user_session_path
     end
   end
-
-  test 'POST create by phone' do
-    student = create(:student, email: nil, phone: '+330637607756')
-    assert_enqueued_jobs 1, only: SendSmsJob do
-      post user_password_path, params: { user: { channel: :phone, phone: student.phone } }
-      assert_redirected_to phone_edit_password_path(phone: student.phone)
-    end
-  end
-
-  test 'PUT update by phone' do
-    new_password = 'newpassword1L!'
-    student = create(:student, email: nil, phone: '+330637607756')
-    refute student.nil?
-    student.create_phone_token
-    params = { phone: student.phone, phone_token: student.phone_token, password: new_password }
-    put phone_update_password_path, params: params
-    assert User.last.valid_password?(new_password)
-  end
 end
