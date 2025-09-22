@@ -1,7 +1,7 @@
-- classes = 'd-flex justify-content-center fr-btn ml-2 fr-high-buttons text-center btn-block'
+- classes = 'd-flex justify-content-center fr-btn ml-2 fr-high-buttons text-center'
 .row
   .col-sm-12.mb-1
-    - primary_button_classes = "fr-btn btn-block ml-2 text-center fr-mb-1w"
+    - primary_button_classes = "fr-btn ml-2 text-center fr-mb-1w"
     
     - if second_label[:status] == 'disabled'
       = link_to second_label[:text], '', class: "#{primary_button_classes} disabled"

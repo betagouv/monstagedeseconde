@@ -38,8 +38,7 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
     .actions.d-flex.d-sm-block
       = render(InternshipAgreements::SignatureStatusComponent.new( internship_agreement: internship_agreement))
 
-  td.col-sm-2 style='background-color: #f5f5f5;'
-  td.d-sm-flex.align-items-center.text-center.actions style='width: auto; white-space: nowrap;'
+  td.col-sm-2.d-sm-flex.align-items-center.justify-content-center.actions style='padding: 10px; min-width: 230px;'
     / - if current_user.school_management? && can?(:sign_internship_agreements, internship_agreement)
     /     = link_to school_management_signature_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
     /               class: 'fr-link',
