@@ -8,8 +8,21 @@ class Signature < ApplicationRecord
     cpe: 'cpe',
     admin_officer: 'admin_officer',
     other: 'other',
-    teacher: 'teacher'
+    teacher: 'teacher',
+    student: 'student',
+    legal_representative: 'legal_representative'
   }
+
+  FR_SIGNATORY_ROLE = {
+    school_manager: "Responsable de l'établissement",
+    employer: "Représentant de l'entreprise",
+    cpe: 'CPE',
+    admin_officer: 'Gestionnaire',
+    other: 'Autre',
+    teacher: 'Enseignant',
+    student: 'Élève',
+    legal_representative: 'Représentant légal'
+  }.freeze
 
   SCHOOL_MANAGEMENT_SIGNATORY_ROLE = %w[
     school_manager
@@ -19,7 +32,8 @@ class Signature < ApplicationRecord
     teacher
   ].freeze
 
-  REQUESTED_SIGNATURES_COUNT = 2
+  # REQUESTED_SIGNATURES_COUNT = 4
+  REQUESTED_SIGNATURES_COUNT = 3
 
   belongs_to :internship_agreement
   belongs_to :signator, class_name: 'User', foreign_key: 'user_id'
@@ -95,5 +109,19 @@ class Signature < ApplicationRecord
     return false unless internship_agreement.signatures.any?
 
     internship_agreement.signatures.pluck(:signatory_role).include?('employer')
+  end
+
+  def student_signed?
+    return false if internship_agreement.discarded?
+    return false unless internship_agreement.signatures.any?
+
+    internship_agreement.signatures.pluck(:signatory_role).include?('student')
+  end
+
+  def school_management_signed?
+    return false if internship_agreement.discarded?
+    return false unless internship_agreement.signatures.any?
+
+    internship_agreement.signatures.pluck(:signatory_role).include?('student')
   end
 end

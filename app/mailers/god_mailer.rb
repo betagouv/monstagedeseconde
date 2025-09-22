@@ -122,4 +122,42 @@ class GodMailer < ApplicationMailer
       subject: "Export offres préfixe postal #{department_code} - #{Date.current.strftime('%d/%m/%Y')}"
     )
   end
+
+  def notify_others_signatures_started_email(internship_agreement:, missing_signatures_recipients:, last_signature: )
+    @internship_agreement  = internship_agreement
+    internship_application = internship_agreement.internship_application
+    @internship_offer      = internship_application.internship_offer
+    student                = internship_application.student
+    @prez_stud             = student.presenter
+    @employer              = internship_agreement.employer
+    @school_manager        = internship_agreement.school_management_representative
+    @last_signature        = last_signature
+    @last_signature_role   = I18n.t("active_record.models.#{last_signature.signatory_role.humanize.downcase}")
+    @url = dashboard_internship_agreements_url(
+      id: internship_agreement.id,
+    ).html_safe
+
+    send_email(
+      to: missing_signatures_recipients,
+      subject: 'Une convention de stage attend votre signature'
+    )
+  end
+
+  def notify_others_signatures_finished_email(internship_agreement:)
+    internship_application = internship_agreement.internship_application
+    student  = internship_application.student
+    @internship_offer      = internship_application.internship_offer
+    @prez_stud             = student.presenter
+    @employer              = @internship_offer.employer
+    @school_manager        = internship_agreement.school_manager
+    recipients_email       = internship_application.filtered_notification_emails + [internship_agreement.school_management_representative.email, student.email]
+    @url = dashboard_internship_agreements_url(
+      id: internship_agreement.id,
+    ).html_safe
+
+    send_email(
+      to: recipients_email,
+      subject: 'Une convention de stage est signée par tous'
+    )
+  end
 end

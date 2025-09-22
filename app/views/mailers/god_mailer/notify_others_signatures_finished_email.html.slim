@@ -1,0 +1,20 @@
+p style=head_styles
+  = "Signatures d'une convention de stage"
+
+p style=p_styles
+  = "Bonjour," 
+
+p style=p_styles
+  = "Concernant la convention de stage de <strong>#{@prez_stud.full_name}</strong>, " \
+    "la convention de stage a été signée par l'ensemble des parties:".html_safe
+ul 
+p style=p_styles
+  | Elle se trouve disponible à la lecture ou à l'impression.
+= render partial: "mailers/blue_call_to_action",
+          locals: { href: @url,
+                    label: "Voir la convention signée" }
+
+p style=p_styles
+  | À bientôt,
+p style=p_styles
+  | L'équipe 1élève1stage

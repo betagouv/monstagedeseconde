@@ -4,7 +4,8 @@ class SchoolManagerMailerPreview < ActionMailer::Preview
     SchoolManagerMailer.notify_others_signatures_started_email(
       internship_agreement: agreement,
       employer: agreement.employer,
-      school_management: agreement.school_manager
+      school_management: agreement.school_manager,
+      student: agreement.student
     )
   end
 
@@ -13,7 +14,8 @@ class SchoolManagerMailerPreview < ActionMailer::Preview
     SchoolManagerMailer.notify_others_signatures_finished_email(
       internship_agreement: agreement,
       employer: agreement.employer,
-      school_management: agreement.school_manager
+      school_management: agreement.school_manager,
+      student: agreement.student
     )
   end
 

@@ -1,0 +1,36 @@
+- @prez = internship_agreement.presenter(user: current_user)
+- status_hash = @prez.human_state
+.row
+  .col-12
+    .internship-application-status.d-flex.flex-column.align-items-start
+      div class="fr-badge fr-badge--#{status_hash[:badge]} fr-badge--no-icon"
+        = status_hash[:label]
+      .h5.internship-offer-title.fr-mt-2w.text-dark
+        = @prez.internship_offer_title
+      .fr-mt-3v
+        .text-muted.fr-text--xs.fr-mb-0
+          = @prez.internship_offer.employer_name
+      .internship-application-location
+        .d-flex
+          .fr-text--xs.fr-mb-0
+            = @prez.internship_offer_address
+      .fr-mt-0
+        p.fr-tag.fr-tag--sm
+          = @prez.str_weeks
+      .action.fr-mt-4w
+        .d-flex
+          = link_to "Voir la convention (PDF)",
+                    dashboard_internship_agreement_path(uuid: @internship_agreement.uuid, format: :pdf),
+                    class: "fr-btn fr-btn--sm fr-btn-secondary",
+                    target: "_blank"
+          - if @prez.signed?
+            = link_to "Vous avez déjà signé la convention",
+                      '#',
+                      class: "fr-btn fr-btn--tertiary fr-btn--sm fr-ml-2w fr-btn--icon-left fr-icon-check-line green-box",
+                      disabled: true
+          - else
+             = button_to "Signer la convention de stage",
+                         dashboard_students_sign_internship_agreement_path(uuid: @internship_agreement.uuid),
+                         method: :get,
+                         data: { turbo: false },
+                         class: "fr-btn fr-btn--sm fr-ml-2w"
