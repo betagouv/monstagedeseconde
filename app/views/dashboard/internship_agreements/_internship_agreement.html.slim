@@ -1,6 +1,6 @@
 - prez = internship_agreement.presenter(user: current_user)
 tr class="d-sm-flex internship-application-row student-application-#{internship_agreement.id} internship-agreement-to-sign"
-  td.pt-3.pb-0.py-sm-2.rg2a-width-100.col-sm-3.d-sm-flex.align-items-center data-head="Élève"
+  td.pt-3.pb-0.py-sm-2.rg2a-width-100.col-sm-1.d-sm-flex.align-items-center data-head="Élève"
     .fr-form-group
       .fr-fieldset.fr-fieldset--inline
         .fr-fieldset__content
@@ -18,8 +18,9 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
                                                       false
 
 
-            label.fr-label.align-self-center for="#{id}"
-              = prez.student_name
+            label.fr-label.align-self-center for="#{id}" .
+  td.pt-0.pb-3.py-sm-2.rg2a-width-100.col-sm-2.d-flex.flex-column.justify-content-center.align-items-start data-head="#{internship_agreement.internship_application.internship_offer.title}"
+    == prez.student_name
   td.pt-0.pb-3.py-sm-2.rg2a-width-100.col-sm-2.d-flex.flex-column.justify-content-center.align-items-start data-head="#{internship_agreement.internship_application.internship_offer.title}"
     div= link_to '#',
               data: { toggle: 'modal',
@@ -33,11 +34,12 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
     .actions.d-flex.d-sm-block
       = prez.inline_status_label
 
-  td.rg2a-width-100.col-sm-3.d-sm-flex.align-items-center.text-left data-head="Signature en ligne"
+  td.rg2a-width-100.col-sm-3.d-sm-flex.align-items-center.text-left.fr-py-2w data-head="Signature en ligne"
     .actions.d-flex.d-sm-block
       = render(InternshipAgreements::SignatureStatusComponent.new( internship_agreement: internship_agreement))
 
-  td.rg2a-width-50.col-sm-2.d-sm-flex.align-items-center.text-center.actions
+  td.col-sm-2 style='background-color: #f5f5f5;'
+  td.d-sm-flex.align-items-center.text-center.actions style='width: auto; white-space: nowrap;'
     / - if current_user.school_management? && can?(:sign_internship_agreements, internship_agreement)
     /     = link_to school_management_signature_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
     /               class: 'fr-link',
