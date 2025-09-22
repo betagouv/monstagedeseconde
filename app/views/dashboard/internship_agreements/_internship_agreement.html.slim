@@ -18,7 +18,8 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
                                                       false
 
 
-            label.fr-label.align-self-center for="#{id}" .
+            label.fr-label.align-self-center for="#{id}"
+              span style='color: white;' .
   td.pt-0.pb-3.py-sm-2.rg2a-width-100.col-sm-2.d-flex.flex-column.justify-content-center.align-items-start data-head="#{internship_agreement.internship_application.internship_offer.title}"
     == prez.student_name
   td.pt-0.pb-3.py-sm-2.rg2a-width-100.col-sm-2.d-flex.flex-column.justify-content-center.align-items-start data-head="#{internship_agreement.internship_application.internship_offer.title}"
@@ -30,7 +31,7 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
     div.fr-mt-2w= prez.employer_name
 
  
-  td.rg2a-width-100.col-sm-2.d-sm-flex.align-items-center.text-left data-head="Statut"
+  td.rg2a-width-100.col-sm-2.d-sm-flex.align-items-center.text-left data-head="Statut" style='word-wrap: break-word; white-space: normal;'
     .actions.d-flex.d-sm-block
       = prez.inline_status_label
 
@@ -38,7 +39,7 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
     .actions.d-flex.d-sm-block
       = render(InternshipAgreements::SignatureStatusComponent.new( internship_agreement: internship_agreement))
 
-  td.col-sm-2.d-sm-flex.align-items-center.justify-content-center.actions style='padding: 10px; min-width: 230px;'
+  td.col-sm-2.d-sm-flex.align-items-center.justify-content-center.actions style='padding: 15px; min-width: 220px;'
     / - if current_user.school_management? && can?(:sign_internship_agreements, internship_agreement)
     /     = link_to school_management_signature_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
     /               class: 'fr-link',

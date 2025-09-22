@@ -1,7 +1,7 @@
-- classes = 'd-flex justify-content-center fr-btn ml-2 fr-high-buttons text-center'
+- classes = 'd-flex justify-content-center fr-btn ml-2 fr-high-buttons text-center btn-block'
 .row
   .col-sm-12.mb-1
-    - primary_button_classes = "fr-btn ml-2 text-center fr-mb-1w"
+    - primary_button_classes = "fr-btn btn-block ml-2 text-center fr-mb-1w"
     
     - if second_label[:status] == 'disabled'
       = link_to second_label[:text], '', class: "#{primary_button_classes} disabled"
@@ -18,7 +18,7 @@
       = link_to dashboard_internship_agreement_path(uuid: internship_agreement.uuid, format: :pdf),
                 target: "_blank",
                 style: 'max-width: none;',
-                class: "#{classes} fr-btn--secondary",
+                class: "#{classes} fr-btn--secondary btn-block",
                 data: { test: "active-internship-agreement-progress-#{internship_agreement.id}" } do
         = label[:text]
     - elsif on_going_process?
