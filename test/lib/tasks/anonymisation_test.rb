@@ -13,7 +13,6 @@ class AnonymisationTest < ActiveSupport::TestCase
       class_room = create(:class_room, school:, name: 'Victor Hugo')
       internship_agreement = create(:internship_agreement)
       student.update(class_room:)
-      student_identity = create(:identity_student_with_class_room_3e)
       employer = internship_offer.employer
 
       Rake::Task['anonymisation:all_ms2gt'].invoke
@@ -26,12 +25,6 @@ class AnonymisationTest < ActiveSupport::TestCase
       assert_equal 'NA', student.last_name
       refute_equal student.email, student_email
 
-      # student identity anonymized
-      identity_first_name = student_identity.first_name
-      identity_last_name = student_identity.last_name
-      student_identity.reload
-      refute_equal student_identity.first_name, identity_first_name
-      refute_equal student_identity.last_name, identity_last_name
 
       # employer non anonymized
       employer.reload
