@@ -33,8 +33,7 @@ dialog id="modal-inappropriate-offer" class="fr-modal" aria-labelledby="modal-in
                               class: 'fr-input',
                               rows: 4,
                               data: { :'char-counter-target' => 'field',
-                                     action: 'input->char-counter#updateCharCount',
-                                     action: "input->mandatory-fields#fieldChange",
+                                     action: 'input->char-counter#updateCharCount input->mandatory-fields#fieldChange',
                                      :'mandatory-fields-target' => "mandatoryField"}
                 .fr-alert.fr-my-2v.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-char-counter-target="alertMessage"
                   = "La description ne pas dépasser #{InappropriateOffer::MAX_DETAILS_LENGTH} caractères"

@@ -424,7 +424,7 @@ module InternshipOffers
         sign_in(student)
         get internship_offer_path(internship_offer)
 
-        assert_select 'a.fr-btn.fr-icon-edit-fill.fr-btn--icon-left', 4
+        assert_select 'a.fr-btn.fr-icon-draft-line.fr-btn--icon-left', 4
         # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
       end
     end
@@ -436,14 +436,9 @@ module InternshipOffers
 
         sign_in(student)
         get internship_offer_path(internship_offer)
-        puts '--- writing html in debug_file.html ---'
-        puts ''
-        html = Nokogiri::HTML(response.body)
-        File.open('debug_file.html', 'w+') { |f| f.write html }
-        puts '----------------------------------------'
 
         # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
-        assert_select 'a.fr-btn.fr-icon-edit-fill.fr-btn--icon-left', 0
+        assert_select 'a.fr-btn.fr-icon-draft-line.fr-btn--icon-left', 0
       end
     end
 
@@ -455,7 +450,13 @@ module InternshipOffers
         sign_in(student)
         get internship_offer_path(internship_offer)
 
-        assert_select 'a.fr-btn.fr-icon-edit-fill.fr-btn--icon-left', 4
+        puts '--- writing html in debug_file.html ---'
+        puts ''
+        html = Nokogiri::HTML(response.body)
+        File.open('debug_file.html', 'w+') { |f| f.write html } 
+        puts '----------------------------------------'
+
+        assert_select 'a.fr-btn.fr-icon-draft-line.fr-btn--icon-left', 4
         # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
       end
     end
@@ -469,7 +470,7 @@ module InternshipOffers
         get internship_offer_path(internship_offer)
 
         # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
-        assert_select 'a.fr-btn.fr-icon-edit-fill.fr-btn--icon-left', 0
+        assert_select 'a.fr-btn.fr-icon-draft-line.fr-btn--icon-left', 0
       end
     end
   end
