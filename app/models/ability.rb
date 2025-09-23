@@ -90,12 +90,19 @@ class Ability
       # - user has not already applied to the same offer
       # - user has not already approved applications for the same offer's weeks
       # - offer is not reserved to an other school
+      # - offer is published
+      # - offer is reserved to a rep school and user is from a rep school
+      # - offer is reserved to a qpv school and user is from a qpv school
 
       internship_offer.grades.include?(user.grade) &&
         !user.internship_applications.exists?(internship_offer_id: internship_offer.id) && # user has not already applied
         user.other_approved_applications_compatible?(internship_offer:) &&
-        (!internship_offer.reserved_to_schools? || user.school_id.in?(internship_offer.schools.pluck(:id)))
+        internship_offer.published? &&
+        (!internship_offer.reserved_to_schools? || user.school_id.in?(internship_offer.schools.pluck(:id))) &&
+        (!internship_offer.rep  || user.school.rep_or_rep_plus?) &&
+        (!internship_offer.qpv || user.school.qpv?)
     end
+
     can %i[submit_internship_application update show internship_application_edit],
         InternshipApplication do |internship_application|
       internship_application.student.id == user.id
@@ -560,8 +567,6 @@ class Ability
   def can_create_and_manage_account(user:)
     can :show, :account
     can %i[show edit update], User
-    can [:choose_school], :sign_up
-    can :choose_school, User, id: user.id
     yield if block_given?
   end
 

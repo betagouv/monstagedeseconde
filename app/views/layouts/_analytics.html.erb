@@ -2,12 +2,12 @@
 <% matomo_other_env_site_id = '3' %>
 
 <% if Rails.env.production? %>
-  <!-- Matomo Tag Manager -->
+  <!-- Matomo Tag Manager %>
   <script type="text/javascript">
   var _mtm = window._mtm = window._mtm || [];
   _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
   var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
   g.type='text/javascript'; g.async=true; g.src='<%= ENV.fetch('MATOMO_URL')%>'; s.parentNode.insertBefore(g,s);
-  </script>
-  <!-- End Matomo Tag Manager -->
+  </script> %>
+  End Matomo Tag Manager -->
 <% end %>

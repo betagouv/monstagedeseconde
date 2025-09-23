@@ -561,7 +561,7 @@ class InternshipApplication < ApplicationRecord
     target = dashboard_students_internship_application_url(
       student_id: student.id,
       uuid:,
-      **options,
+      **options
     )
     target = "#{target}?student_id=#{student.id}"
     target = "#{target}&sgid=#{sgid}" if sgid

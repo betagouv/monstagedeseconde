@@ -529,15 +529,6 @@ fr:
         zipcode: Code postal
         grade: Niveau
 
-      identity:
-        first_name: Prénom
-        last_name: Nom
-        gender: Sexe
-        school: "Etablissement"
-        class_room: "Classe"
-        birth_date: Date de naissance
-        grade: Niveau
-
       week:
         number: Numéro de semaine
         year: Année
@@ -698,20 +689,6 @@ fr:
               taken: "Un compte est déjà associé à ce numéro de téléphone"
             reset_password_token:
               invalid: 'Veuillez faire une nouvelle demande de changement de mot de passe, cette demande a expiré.'
-
-        identity:
-          attributes:
-            first_name:
-              blank: Veuillez saisir un prénom
-            last_name:
-              blank: Veuillez saisir un nom de famille
-            birth_date:
-              blank: "Veuillez saisir votre date de naissance"
-            school:
-              blank: 'Veuillez saisir votre établissement scolaire'
-              required: 'Veuillez saisir votre établissement scolaire'
-            gender:
-              blank: Veuillez faire un choix parmi les options de genres proposés
 
         users/user_management:
           attributes:

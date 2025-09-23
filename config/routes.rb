@@ -42,32 +42,21 @@ Rails.application.routes.draw do
     devise_scope :user do
       get '/auth/fim/callback', to: 'callbacks#fim', as: 'fim_callback'
       get '/auth/educonnect/callback', to: 'callbacks#educonnect', as: 'educonnect_callback'
-      # get '/auth/failure', to: 'sessions#failure'
-      get 'utilisateurs/choisir_profil', to: 'users/registrations#choose_profile',
-                                         as: 'users_choose_profile'
-      get 'utilisateurs/choisir_connexion', to: 'users/sessions#choose_connection',
-                                            as: 'users_choose_connection'
-      get 'utilisateurs/choisir_connexion_test', to: 'users/sessions#choose_connection_test',
-                                                 as: 'users_choose_connection_test'
+      get '/auth/failure', to: 'sessions#failure'
       get '/utilisateurs/inscriptions/en-attente', to: 'users/registrations#confirmation_standby',
                                                    as: 'users_registrations_standby'
       get '/utilisateurs/inscriptions/referent-en-attente', to: 'users/registrations#statistician_standby',
                                                             as: 'statistician_standby'
       get '/utilisateurs/inscriptions/en-attente-telephone', to: 'users/registrations#confirmation_phone_standby',
                                                              as: 'users_registrations_phone_standby'
-      post '/utilisateurs/inscriptions/validation-telephone', to: 'users/registrations#phone_validation',
-                                                              as: 'phone_validation'
       get '/utilisateurs/mot-de-passe/modification-par-telephone', to: 'users/passwords#edit_by_phone',
                                                                    as: 'phone_edit_password'
-      put '/utilisateurs/mot-de-passe/update_by_phone', to: 'users/passwords#update_by_phone',
-                                                        as: 'phone_update_password'
       get '/utilisateurs/mot-de-passe/initialisation', to: 'users/passwords#set_up',
                                                        as: 'set_up_password'
       post '/utilisateurs/renvoyer-le-code-de-confirmation', to: 'users/registrations#resend_confirmation_phone_token',
                                                              as: 'resend_confirmation_phone_token'
     end
 
-    # resources :identities, path: 'identites', only: %i[new create]
     resources :url_shrinkers, path: 'c', only: %i[] do
       get :o, on: :member
     end
@@ -277,7 +266,6 @@ Rails.application.routes.draw do
   get '/documents-utiles', to: 'pages#documents_utiles'
   get '/javascript-required', to: 'pages#javascript_required'
   get '/mentions-legales', to: 'pages#mentions_legales'
-  get '/les-10-commandements-d-une-bonne-offre', to: 'pages#les_10_commandements_d_une_bonne_offre'
   get '/operators', to: 'pages#operators'
   get '/politique-de-confidentialite', to: 'pages#politique_de_confidentialite'
   post '/newsletter', to: 'newsletter#subscribe'
@@ -286,9 +274,6 @@ Rails.application.routes.draw do
   post '/visitor_apply', to: 'pages#visitor_apply'
   get '/educonnect_deconnexion_responsable', to: 'pages#educonnect_logout_responsible',
                                              as: :educonnect_logout_responsible
-  # TODO
-  # To be removed after june 2023
-  get '/register_to_webinar', to: 'pages#register_to_webinar'
   get '/eleves', to: 'pages#student_landing'
   get '/eleves/connexion', to: 'pages#student_login', as: :student_login
   get '/professionnels', to: 'pages#pro_landing'
@@ -301,6 +286,8 @@ Rails.application.routes.draw do
   get '/maintenance_estivale', to: 'pages#maintenance_estivale'
   post '/maintenance_messaging', to: 'pages#maintenance_messaging'
   post '/waiting_list', to: 'pages#waiting_list'
+  get '/utilisateurs/choisir_profil', to: redirect('/professionnels/connexion')
+  get '/utilisateurs/choisir_connexion', to: redirect('/professionnels/connexion')
 
   authenticate :user, ->(u) { u.god? } do
     resources :reset_review_data, only: %i[new create] if ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true'

@@ -17,6 +17,8 @@ FactoryBot.define do
     phone_password_reset_count { 0 }
     last_phone_password_reset { 10.days.ago }
     grade_id { nil }
+    reset_password_token { nil }
+    reset_password_sent_at { nil }
 
     # Student
     factory :student, class: 'Users::Student', parent: :user do
