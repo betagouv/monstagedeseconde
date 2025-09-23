@@ -363,6 +363,18 @@ class InternshipAgreement < ApplicationRecord
     recipients
   end
 
+
+  def student_signed?
+    return false if discarded?
+    return false unless signatures.any?
+
+    signatures.pluck(:signatory_role).include?('student')
+  end
+
+  def student_signature
+    signature_by_role(signatory_role: 'student')
+  end
+
   private
 
   def notify_employer_school_manager_completed

@@ -111,12 +111,6 @@ class Signature < ApplicationRecord
     internship_agreement.signatures.pluck(:signatory_role).include?('employer')
   end
 
-  def student_signed?
-    return false if internship_agreement.discarded?
-    return false unless internship_agreement.signatures.any?
-
-    internship_agreement.signatures.pluck(:signatory_role).include?('student')
-  end
 
   def school_management_signed?
     return false if internship_agreement.discarded?
