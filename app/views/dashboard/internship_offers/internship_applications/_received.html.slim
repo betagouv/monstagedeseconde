@@ -10,9 +10,13 @@ div
           th[scope="col"]
             | Intitulé du stage
           th[scope="col"]
-            | Candidature annulée
+            | Candidature expirée
             br/
             | dans
+            button.fr-btn.fr-btn--tooltip[aria-describedby="tooltip" type="button"]
+              | infobulle
+            span.fr-tooltip.fr-placement[id="tooltip" role="tooltip"]
+              | Une candidature expirée pourra toujours être réactivée par la suite.
           th[scope="col"]
             | Statut
           th[scope="col"]
