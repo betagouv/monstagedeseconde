@@ -58,8 +58,7 @@ module Dashboard
           school_id: @class_room.school_id,
           grade: @class_room.grade,
           class_room_id: @class_room.id,
-          password: make_password,
-          created_by_teacher: true
+          password: make_password
         )
       end
 
