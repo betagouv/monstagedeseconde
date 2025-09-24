@@ -156,13 +156,6 @@ class User < ApplicationRecord
     phone_token.present? && Time.now < phone_token_validity
   end
 
-  def confirm_by_phone!
-    update(phone_token: nil,
-           phone_token_validity: nil,
-           confirmed_at: Time.now,
-           phone_password_reset_count: 0)
-  end
-
   def save_phone_user(user_params)
     return true if phone && phone == clean_phone_number(user_params)
     return false if clean_phone_number(user_params).blank?
@@ -231,6 +224,7 @@ class User < ApplicationRecord
   def belongs_to_rep_plus_school? = false
   def belongs_to_rep_or_rep_plus_school? = false
   def fake_email? = false
+  def in_a_school? = false
 
   def fetch_current_area_notification = nil
   def create_signature_phone_token = nil

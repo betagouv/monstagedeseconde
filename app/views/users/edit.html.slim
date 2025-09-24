@@ -14,7 +14,7 @@
     - if can?(:edit_password, current_user)
       li role="presentation"
         button#password.fr-tabs__tab aria-controls="password-panel" aria-selected="false" role="tab" tabindex="2"  Mon mot de passe
-    - if can?(:choose_school, current_user)
+    - if current_user.in_a_school?
       li role="presentation"
         button#school.fr-tabs__tab aria-controls="school-panel" aria-selected="false" role="tab" tabindex="3"  Mon établissement
     - if can?(:show, :api_token)
@@ -26,7 +26,7 @@
   - if can?(:edit_password, current_user)
     = render "edit_password"
 
-  = render "edit_school" if can?(:choose_school, current_user)
+  = render "edit_school" if current_user.in_a_school?
 
   = render "edit_api" if can?(:show, :api_token)
 
