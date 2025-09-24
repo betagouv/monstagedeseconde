@@ -35,6 +35,8 @@ module InternshipOffers::InternshipApplications
       assert_equal 1, InternshipAgreement.count
       assert_equal internship_application.id,
                    InternshipAgreement.first.internship_application.id
+      assert_equal "Du #{internship_application.weeks.first.monday.strftime('%d/%m/%Y')} au #{internship_application.weeks.last.friday.strftime('%d/%m/%Y')}",
+                   InternshipAgreement.first.date_range
       follow_redirect!
       validation_text = 'Candidature acceptée !'
       assert_select('#alert-text', text: validation_text)

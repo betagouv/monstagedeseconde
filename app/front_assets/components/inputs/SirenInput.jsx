@@ -95,12 +95,19 @@ export default function SirenInput({
     const labelEntrepriseName = document.querySelector( `label[for='${resourceName}_employer_name']` );
     labelEntrepriseName.innerHTML = "Saisissez le nom (raison sociale) de votre établissement *";
     const inputEntrepriseName = document.getElementById( `${resourceName}_employer_name` );
+    const sectorBloc = document.getElementById(`${resourceName}_sector_id-block`);
     inputEntrepriseName.required = true;
     inputEntrepriseName.removeAttribute("readonly");
-    // hide the ministry choice block
+    // hide the ministry choice block only if not public
     const ministry = document.getElementById("ministry-choice");
-    ministry.hidden = true;
-
+    if (!lastPublicValue) {
+      ministry.hidden = true;
+      sectorBloc.hidden = false;
+    } else {
+      ministry.removeAttribute("hidden");
+      sectorBloc.hidden = true;
+    }
+    
     const labelEntrepriseAddress = document.querySelector( `label[for='${resourceName}_entreprise_chosen_full_address']` );
     labelEntrepriseAddress.innerHTML = "Saisissez l'adresse du siège de votre établissement *";
     const inputEntrepriseAddress = document.getElementById( `${resourceName}_entreprise_chosen_full_address` );
@@ -172,6 +179,7 @@ export default function SirenInput({
         document.getElementById("entreprise_is_public_true").checked = true;
         ministry.removeAttribute("style");
         ministryClassList.remove("fr-hidden");
+        ministry.removeAttribute("hidden");
 
         // For public establishments
 

@@ -238,6 +238,10 @@ module Presenters
       WeekList.new(weeks:).to_s
     end
 
+    def date_range
+      "Du #{internship_application.weeks.first.monday.strftime('%d/%m/%Y')} au #{internship_application.weeks.last.friday.strftime('%d/%m/%Y')}"
+    end
+
     attr_reader :internship_application,
                 :student,
                 :internship_offer,

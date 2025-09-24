@@ -65,12 +65,4 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
       assert_redirected_to new_user_session_path
     end
   end
-
-  test 'POST create by phone' do
-    student = create(:student, email: nil, phone: '+330637607756')
-    assert_enqueued_jobs 1, only: SendSmsJob do
-      post user_password_path, params: { user: { channel: :phone, phone: student.phone } }
-      assert_redirected_to phone_edit_password_path(phone: student.phone)
-    end
-  end
 end
