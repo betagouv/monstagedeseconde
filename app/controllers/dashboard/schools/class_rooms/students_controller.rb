@@ -14,29 +14,6 @@ module Dashboard
                                .order(:last_name, :first_name)
       end
 
-      def new
-        authorize! :manage_school_students, current_user.school
-
-        @class_room = @school.class_rooms.find(params.require(:class_room_id))
-        @student = ::Users::Student.new
-        @students = @class_room.students.kept
-                               .order(:created_at)
-      end
-
-      def create
-        authorize! :manage_school_students, current_user.school
-        @class_room = @school.class_rooms.find(params.require(:class_room_id))
-        @student = ::Users::Student.new(formatted_student_params)
-        if @student.save
-          redirect_to new_dashboard_school_class_room_student_path(@class_room.school, @class_room),
-                      notice: 'Elève créé !'
-        else
-          Rails.logger.info @student.errors.full_messages
-          redirect_to new_dashboard_school_class_room_student_path(@class_room.school, @class_room),
-                      flash: { danger: 'Erreur : Elève non créé.' }
-        end
-      end
-
       private
 
       def student_params
