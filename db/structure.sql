@@ -1,7 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -1276,8 +1275,8 @@ ALTER SEQUENCE public.internship_offer_areas_id_seq OWNED BY public.internship_o
 
 CREATE TABLE public.internship_offer_grades (
     id bigint NOT NULL,
-    internship_offer_id bigint NOT NULL,
     grade_id bigint NOT NULL,
+    internship_offer_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -2427,16 +2426,12 @@ CREATE TABLE public.users (
     phone_password_reset_count integer DEFAULT 0,
     last_phone_password_reset timestamp without time zone,
     anonymized boolean DEFAULT false NOT NULL,
-    banners jsonb DEFAULT '{}'::jsonb,
     targeted_offer_id integer,
     signature_phone_token character varying(10),
     signature_phone_token_expires_at timestamp(6) without time zone,
     signature_phone_token_checked_at timestamp(6) without time zone,
     employer_role character varying(150),
-    subscribed_to_webinar_at timestamp(6) without time zone DEFAULT NULL::timestamp without time zone,
     agreement_signatorable boolean DEFAULT true,
-    created_by_teacher boolean DEFAULT false,
-    survey_answered boolean DEFAULT false,
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
     academy_id integer,
@@ -2448,7 +2443,6 @@ CREATE TABLE public.users (
     failed_attempts integer DEFAULT 0 NOT NULL,
     unlock_token character varying(64),
     locked_at timestamp(6) without time zone,
-    resume_educational_background text,
     resume_other text,
     resume_languages text,
     grade_id bigint,
@@ -4667,7 +4661,7 @@ ALTER TABLE ONLY public.internship_offers
 --
 
 ALTER TABLE ONLY public.area_notifications
-    ADD CONSTRAINT fk_rails_2194cad748 FOREIGN KEY (internship_offer_area_id) REFERENCES public.internship_offer_areas(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_2194cad748 FOREIGN KEY (internship_offer_area_id) REFERENCES public.internship_offer_areas(id);
 
 
 --
@@ -4699,7 +4693,7 @@ ALTER TABLE ONLY public.user_schools
 --
 
 ALTER TABLE ONLY public.internship_offer_grades
-    ADD CONSTRAINT fk_rails_2cc542d77a FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_2cc542d77a FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
 
 
 --
@@ -5083,7 +5077,7 @@ ALTER TABLE ONLY public.users_internship_offers_histories
 --
 
 ALTER TABLE ONLY public.internship_offer_stats
-    ADD CONSTRAINT fk_rails_e13d61cd66 FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_e13d61cd66 FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
 
 
 --
@@ -5155,7 +5149,7 @@ ALTER TABLE ONLY public.organisations
 --
 
 ALTER TABLE ONLY public.internship_offer_weeks
-    ADD CONSTRAINT fk_rails_f36a7226ee FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_f36a7226ee FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
 
 
 --
@@ -5173,6 +5167,8 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250918093304'),
+('20250917192024'),
 ('20250917144238'),
 ('20250902084046'),
 ('20250901102600'),

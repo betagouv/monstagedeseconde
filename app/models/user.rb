@@ -189,7 +189,7 @@ class User < ApplicationRecord
   end
 
   def send_confirmation_instructions
-    return if created_by_teacher || created_by_system || statistician?
+    return if created_by_system || statistician?
 
     super
   end
@@ -200,7 +200,7 @@ class User < ApplicationRecord
     if add_email_to_phone_account?
       confirm
     else
-      unless @skip_confirmation_notification || created_by_teacher || statistician?
+      unless @skip_confirmation_notification || statistician?
         devise_mailer.update_email_instructions(self, @raw_confirmation_token, { to: unconfirmed_email })
                      .deliver_later
       end
