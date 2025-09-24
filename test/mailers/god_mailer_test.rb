@@ -23,7 +23,7 @@ class GodMailerTest < ActionMailer::TestCase
     email.deliver_now
     assert_emails 1
     assert_equal [EmailUtils.from], email.from
-    expected_recipients = internship_agreement.internship_application.filtered_notification_emails + [ internship_agreement.internship_application.student.email]
+    expected_recipients = internship_agreement.internship_application.employers_filtered_by_notifications_emails + [ internship_agreement.internship_application.student.email]
     assert_equal expected_recipients.sort, email.to.sort
     refute_email_spammyness(email)
   end
@@ -38,7 +38,10 @@ class GodMailerTest < ActionMailer::TestCase
     email.deliver_now
     assert_emails 1
     assert_equal [EmailUtils.from], email.from
-    expected_recipients = internship_agreement.internship_application.filtered_notification_emails + [internship_agreement.school_management_representative.email, internship_agreement.internship_application.student.email]
+    expected_recipients = internship_agreement.internship_application.employers_filtered_by_notifications_emails + [
+      internship_agreement.school_management_representative.email,
+      internship_agreement.internship_application.student.email,
+      internship_agreement.student_representative]
     assert_equal expected_recipients.sort, email.to.sort
     refute_email_spammyness(email)
   end

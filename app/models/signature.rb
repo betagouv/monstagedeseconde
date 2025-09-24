@@ -70,7 +70,7 @@ class Signature < ApplicationRecord
   end
 
   def all_signed?
-    signatures_count == REQUESTED_SIGNATURES_COUNT && employer_signed?
+    signatures_count == REQUESTED_SIGNATURES_COUNT && internship_agreement.employer_signed?
   end
 
   def attach_signature!(io:, filename:, content_type:)
@@ -102,20 +102,5 @@ class Signature < ApplicationRecord
 
   def employer_signatory_role?
     signatory_role == 'employer'
-  end
-
-  def employer_signed?
-    return false if internship_agreement.discarded?
-    return false unless internship_agreement.signatures.any?
-
-    internship_agreement.signatures.pluck(:signatory_role).include?('employer')
-  end
-
-
-  def school_management_signed?
-    return false if internship_agreement.discarded?
-    return false unless internship_agreement.signatures.any?
-
-    internship_agreement.signatures.pluck(:signatory_role).include?('student')
   end
 end

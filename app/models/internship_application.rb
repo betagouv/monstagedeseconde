@@ -601,7 +601,7 @@ class InternshipApplication < ApplicationRecord
     end
   end
 
-  def filtered_notification_emails
+  def employers_filtered_by_notifications_emails
     original_employer = internship_offer.employer
     return [original_employer.email] unless original_employer.employer_like?
     return [original_employer.email] if original_employer.team.not_exists?

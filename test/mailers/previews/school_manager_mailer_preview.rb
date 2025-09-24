@@ -9,15 +9,15 @@ class SchoolManagerMailerPreview < ActionMailer::Preview
     )
   end
 
-  def notify_others_signatures_finished_email
-    agreement = InternshipAgreement.first
-    SchoolManagerMailer.notify_others_signatures_finished_email(
-      internship_agreement: agreement,
-      employer: agreement.employer,
-      school_management: agreement.school_manager,
-      student: agreement.student
-    )
-  end
+  # def notify_others_signatures_finished_email
+  #   agreement = InternshipAgreement.first
+  #   SchoolManagerMailer.notify_others_signatures_finished_email(
+  #     internship_agreement: agreement,
+  #     employer: agreement.employer,
+  #     school_management: agreement.school_manager,
+  #     student: agreement.student
+  #   )
+  # end
 
   def notify_school_management_of_employer_completion_email
     SchoolManagerMailer.internship_agreement_completed_by_employer_email(

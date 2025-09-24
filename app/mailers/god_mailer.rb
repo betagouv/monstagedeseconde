@@ -150,7 +150,8 @@ class GodMailer < ApplicationMailer
     @prez_stud             = student.presenter
     @employer              = @internship_offer.employer
     @school_manager        = internship_agreement.school_manager
-    recipients_email       = internship_application.filtered_notification_emails + [internship_agreement.school_management_representative.email, student.email]
+    recipients_email       = recipients_email_for_signature(internship_agreement: internship_agreement)
+    @internship_agreement  = internship_agreement
     @url = dashboard_internship_agreements_url(
       id: internship_agreement.id,
     ).html_safe
@@ -159,5 +160,64 @@ class GodMailer < ApplicationMailer
       to: recipients_email,
       subject: 'Une convention de stage est signée par tous'
     )
+  end
+
+  def notify_signatures_can_start_email(internship_agreement:)
+    internship_application = internship_agreement.internship_application
+    recipients_email       = internship_application.employers_filtered_by_notifications_emails(with_legal_representatives: false)
+    @internship_offer      = internship_application.internship_offer
+    student                = internship_application.student
+    @prez_stud             = student.presenter
+    @employer              = @internship_offer.employer
+    @school_manager        = internship_agreement.school_manager
+    @url = dashboard_internship_agreements_url(
+      id: internship_agreement.id,
+    ).html_safe
+
+    send_email(
+      to: recipients_email,
+      subject: 'Imprimez et signez la convention de stage.'
+    )
+  end
+
+  def notify_student_legal_representatives_can_sign_email(internship_agreement:)
+    internship_application = internship_agreement.internship_application
+    recipients_email       = legal_representatives_emails(internship_agreement)
+    @internship_offer      = internship_application.internship_offer
+    student                = internship_application.student
+    @prez_stud             = student.presenter
+    @employer              = @internship_offer.employer
+    @school_manager        = internship_agreement.school_manager
+    @url = dashboard_students_legal_representative_sign_internship_agreement_url(
+      uuid: internship_agreement.uuid,
+      student_token: student.to_sgid.to_s,
+      student_id: student.id,
+      host: ENV['HOST']
+    ).html_safe
+
+    send_email(
+      to: recipients_email,
+      subject: 'Imprimez et signez la convention de stage.'
+    )
+  end
+
+  def recipients_email_for_signature(internship_agreement:, with_legal_representatives: true)
+    internship_application = internship_agreement.internship_application
+    student                = internship_application.student
+    recipients_email       = internship_application.employers_filtered_by_notifications_emails + [
+      internship_agreement.school_management_representative.email,
+      student.email
+    ]
+
+    recipients_email += legal_representatives_emails(internship_agreement) if with_legal_representatives
+
+    recipients_email.compact.uniq
+  end
+
+  def legal_representatives_emails(internship_agreement)
+    emails = []
+    emails << internship_agreement.student_legal_representative_email if internship_agreement.student_legal_representative_email.present?
+    emails << internship_agreement.student_legal_representative_2_email if internship_agreement.student_legal_representative_2_email.present?
+    emails.uniq
   end
 end

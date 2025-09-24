@@ -232,6 +232,7 @@ Rails.application.routes.draw do
           post :resend_application, on: :member
         end
         get 'internship_agreements/:uuid/sign', to: 'internship_agreements#sign', as: :sign_internship_agreement
+        get 'internship_agreements/:uuid/legal_representative_sign', to: 'internship_agreements#legal_representative_sign', as: :legal_representative_sign_internship_agreement
       end
       get 'candidatures', to: 'internship_offers/internship_applications#user_internship_applications'
     end

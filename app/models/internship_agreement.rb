@@ -7,6 +7,7 @@
 class InternshipAgreement < ApplicationRecord
   include AASM
   include Discard::Model
+  include InternshipAgreementSignaturable
 
   MIN_PRESENCE_DAYS = 4
   EMPLOYERS_PENDING_STATES = %i[draft started_by_employer signed_by_employer validated].freeze
@@ -100,7 +101,7 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[completed_by_employer started_by_school_manager],
                   to: :validated,
                   after: proc { |*_args|
-                           notify_employer_school_manager_completed unless skip_notifications_when_system_creation
+                           notify_signatures_enabled unless skip_notifications_when_system_creation
                          }
     end
 
@@ -238,56 +239,12 @@ class InternshipAgreement < ApplicationRecord
       (weekly_lunch_break.present? || lunch_break.present?)
   end
 
-  def ready_to_sign?(user:)
-    aasm_state.to_s.in?(%w[validated signatures_started]) && \
-      !signed_by?(user:) && \
-      user.can_sign?(self)
-  end
-
-  def signed_by?(user:)
-    return false if user.nil?
-
-    if user.employer_like? && user.team.alive?
-      signatures.pluck(:user_id).any? { |userid| user.team.id_in_team?(userid) }
-    else
-      signatures.pluck(:user_id).include?(user.id)
-    end
-  end
-
-  def signed_by_team_member?(user:)
-    return false if user.nil?
-    return signed_by?(user: user) if user.team.nil? || user.team.not_exists?
-
-    user.team.db_members.any? { |member| signed_by?(user: member) }
-  end
-
   def presenter(user:)
     Presenters::InternshipAgreement.new(self, user)
   end
 
   def roles_not_signed_yet
-    [school_management_representative.role, 'employer', 'student'] - roles_already_signed
-  end
-
-  def signature_by_role(signatory_role:)
-    return nil if signatures.blank?
-
-    signatures.find_by(signatory_role:)
-  end
-
-  def roles_not_signed_yet_blank?
-    roles_not_signed_yet.blank?
-  end
-
-  def roles_not_signed_yet_present?
-    roles_not_signed_yet.present?
-  end
-
-  def signature_image_attached?(signatory_role:)
-    signature = signature_by_role(signatory_role:)
-    return signature.signature_image.attached? if signature && signature.signature_image
-
-    false
+    [school_management_representative.role, 'employer', 'student', 'legal_representative'] - roles_already_signed
   end
 
   def archive
@@ -329,56 +286,22 @@ class InternshipAgreement < ApplicationRecord
     nil
   end
 
-  def signatory_roles
-    signatures.pluck(:signatory_role)
-  end
+  # def generate_legal_representative_token!
+  #   return if legal_representative_token.present?
 
-  def school_management_signatory_role
-    (signatory_roles & Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE)&.first
-  end
-
-  def signed_by_school_management?
-    school_management_signatory_role.present?
-  end
-
-  def notify_others_signatures_started
-    GodMailer.notify_others_signatures_started_email(
-      internship_agreement: self,
-      missing_signatures_recipients: missing_signatures_recipients,
-      last_signature: signatures.last
-    ).deliver_later
-  end
-
-  def missing_signatures_recipients
-    recipients = []
-    if roles_not_signed_yet.include?('employer')
-      recipients << employer.email if employer
-    end
-    if (roles_not_signed_yet & Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE).any?
-      recipients << school_management_representative.email if school_management_representative
-    end
-    if roles_not_signed_yet.include?('student')
-      recipients << student.email if student
-    end
-    recipients
-  end
-
-
-  def student_signed?
-    return false if discarded?
-    return false unless signatures.any?
-
-    signatures.pluck(:signatory_role).include?('student')
-  end
-
-  def student_signature
-    signature_by_role(signatory_role: 'student')
-  end
+  #   begin
+  #     self.legal_representative_token = SecureRandom.hex(16)
+  #   end while self.class.exists?(legal_representative_token:)
+  #   save!(validate: false)
+  # end
 
   private
 
-  def notify_employer_school_manager_completed
-    EmployerMailer.school_manager_finished_notice_email(
+  def notify_signatures_enabled
+    GodMailer.notify_signatures_can_start_email(
+      internship_agreement: self
+    ).deliver_later
+    GodMailer.notify_student_legal_representatives_can_sign_email(
       internship_agreement: self
     ).deliver_later
   end
@@ -394,11 +317,6 @@ class InternshipAgreement < ApplicationRecord
     SchoolManagerMailer.internship_agreement_completed_by_employer_email(
       internship_agreement: agreement
     ).deliver_later
-  end
-
-  def roles_already_signed
-    Signature.where(internship_agreement_id: id)
-             .pluck(:signatory_role)
   end
 
   rails_admin do
