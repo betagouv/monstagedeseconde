@@ -23,7 +23,7 @@ module InternshipAgreements
     end
 
     def user_info(signatory_role:)
-      employer_signed = @internship_agreement.signature_by_role(signatory_role: signatory_role)
+      employer_signed = @internship_agreement.signatures.pluck(:signatory_role).include?(signatory_role)
       color = employer_signed ? 'green' : 'grey'
       icon = employer_signed ? 'fr-icon-check-line' : 'fr-icon-close-line'
       {icon: icon, color: color}
