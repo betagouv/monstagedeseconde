@@ -150,4 +150,26 @@ namespace :data_migrations do
       end
     end
   end
+
+  desc 'import students from school with no students'
+  task :import_students_from_empty_schools, [:limit] => :environment do |task, args|
+    # invoke as : rake "data_migrations:import_students_from_empty_schools[<limit>]"
+    PrettyConsole.announce_task 'Importing students from schools with no students' do
+      missing_students_schools = School.without_students
+      missing_students_schools.update(full_imported: false)
+      puts "Found #{missing_students_schools.count} schools with no students"
+      limit = args.limit
+      raise 'Please provide a limit' if limit.nil?
+      counter = 0
+
+      School.without_students.find_each do |school|
+        next unless limit.present?
+        next if counter > limit.to_i
+        PrettyConsole.say_in_cyan "Importing students from #{school.name} uai:#{school.code_uai}  ##{school.id}"
+        ImportDataFromSygneJob.perform_later(school)
+        puts "----------------- #{school.code_uai} -----------------"
+        counter += 1
+      end
+    end
+  end
 end
