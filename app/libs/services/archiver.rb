@@ -114,11 +114,6 @@ module Services
                          .each_record(&:archive)
     end
 
-    def self.archive_identities
-      Identity.in_batches(of: 100)
-              .each_record(&:archive)
-    end
-
     def self.archive_internship_offers
       InternshipOffer.in_batches(of: 100)
                      .each_record(&:archive)

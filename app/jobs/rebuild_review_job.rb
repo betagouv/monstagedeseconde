@@ -117,6 +117,7 @@ class RebuildReviewJob < ApplicationJob
     InternshipOfferArea.delete_all
 
     broadcast_info(:stepper_classes_removal)
+    Entreprise.destroy_all
     InternshipOccupation.destroy_all
 
     broadcast_info(:employers_removal)

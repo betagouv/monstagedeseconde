@@ -25,19 +25,13 @@ module ApplicationHelper
       current_page?(account_path),
       current_page?(account_path(section: :resume)),
       current_page?(account_path(section: :api)),
-      current_page?(account_path(section: :identity)),
       current_page?(account_path(section: :school))
     ].any?
-  end
-
-  def onboarding_flow?
-    devise_controller? && request.path.include?('identity_id')
   end
 
   def body_class_name
     class_names = []
     class_names.push('homepage fr-px-0') if homepage?
-    class_names.push('onboarding-flow') if onboarding_flow?
     class_names.join(' ')
   end
 
