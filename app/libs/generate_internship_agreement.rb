@@ -385,8 +385,9 @@ class GenerateInternshipAgreement < Prawn::Document
 
     employer_signature_img = image_from(signature: download_image_and_signature(signatory_role: 'employer'))
     school_manager_signature_img = image_from(signature: school_manager_signature)
-    @pdf.table([[employer_signature_img, school_manager_signature_img]], cell_style: { border_width: 0, height: 80 },
-                                                                         column_widths: column_widths)
+    signatures_array = [employer_signature_img, school_manager_signature_img]
+
+    @pdf.table([signatures_array], cell_style: { border_width: 0, height: 80 }, column_widths: column_widths)
 
     @pdf.move_down 10
     @pdf.text 'Vu et pris connaissance,'
@@ -394,8 +395,20 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.table([['Les parents ou les responsables légaux', 'L’enseignant (ou les enseignants) éventuellement']],
                cell_style: { border_width: 0 },
                column_widths: column_widths)
-    @pdf.move_down 50
-    @pdf.text 'Le responsable de l’accueil en milieu professionnel'
+    @pdf.move_down 40
+    @pdf.table([['L\'élève', '']],
+               cell_style: { border_width: 0 },
+               column_widths: column_widths)
+    # @pdf.move_down 10
+    if @internship_agreement.student_signed?
+      student_signature_txt = "#{@internship_agreement.student.presenter.full_name} "
+      signatures_txt = [student_signature_txt]
+      student_signature_timing = "a signé électroniquement le : #{@internship_agreement.student_signature.signature_date.strftime('%d/%m/%Y à %Hh%M')}"
+      signatures_timing_txt = [student_signature_timing]
+      @pdf.table([signatures_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
+      @pdf.table([signatures_timing_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
+    end
+    # @pdf.text 'Le responsable de l’accueil en milieu professionnel'
   end
 
   # def signature_data

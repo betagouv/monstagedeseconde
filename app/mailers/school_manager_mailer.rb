@@ -23,24 +23,6 @@ class SchoolManagerMailer < ApplicationMailer
     send_email(to:, subject:)
   end
 
-  def notify_others_signatures_started_email(internship_agreement:, employer:, school_management:)
-    internship_application = internship_agreement.internship_application
-    @internship_offer      = internship_application.internship_offer
-    student                = internship_application.student
-    @prez_stud             = student.presenter
-    @school_manager        = school_management
-    @employer              = employer
-    @url = dashboard_internship_agreements_url(
-      id: internship_agreement.id,
-      mtm_campaign: 'SchoolManager - Convention Ready to Sign'
-    ).html_safe
-
-    send_email(
-      to: @school_manager.try(:email),
-      subject: 'Une convention de stage est prête à être signée !'
-    )
-  end
-
   def notify_others_signatures_finished_email(internship_agreement:, employer:, school_management:)
     internship_application = internship_agreement.internship_application
     @internship_offer      = internship_application.internship_offer

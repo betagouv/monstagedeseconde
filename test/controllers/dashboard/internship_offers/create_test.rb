@@ -45,6 +45,7 @@ module Dashboard::InternshipOffers
         assert_redirected_to internship_offer_path(created_internship_offer, stepper: true)
       end
     end
+
     test 'POST #create  - duplicate - InternshipOffers::WeeklyFramed as employer creates the post' do
       travel_to(Date.new(2025, 3, 1)) do
         school = create(:school)

@@ -21,6 +21,13 @@ FactoryBot.define do
       signatory_role { Signature.signatory_roles[:employer] }
     end
 
+    trait :student do
+      after(:build) do |signature|
+        signature.user_id = signature.internship_agreement.student.id
+      end
+      signatory_role { Signature.signatory_roles[:student] }
+    end
+
     trait :admin_officer do
       signatory_role { Signature.signatory_roles[:admin_officer] }
     end

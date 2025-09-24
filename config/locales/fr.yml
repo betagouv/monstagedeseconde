@@ -28,7 +28,7 @@ fr:
         one: Notification
         other: Notifications
       entreprise:
-        one: Entreprise ou admindistration
+        one: Entreprise ou administration
         other: Entreprises ou administrations
       grade:
         one: Niveau
@@ -278,6 +278,10 @@ fr:
           signed: Signée
           read_by_employer: Lu par l'employeur
         status:
+          student:
+            validated: En attentes de signatures
+            signatures_started: Partiellement signée
+            signed_by_all: Signée par toutes les parties.
           admin_officer:
             draft: En attente de l'offreur.
             started_by_employer: En attente de l'offreur.
@@ -706,6 +710,8 @@ fr:
               blank: Veuillez renseigner vos motivations
             student:
               taken: 'Vous ne pouvez pas postuler deux fois à la même offre'
+        signature:
+  student: "Élève"
   admin:
     actions:
       publish:

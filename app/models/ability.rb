@@ -134,6 +134,10 @@ class Ability
         internship_application.aasm_state.in?(InternshipApplication::RESTORABLE_STATES) &&
         internship_application.restored_at.nil?
     end
+
+    can %i[read show update sign], InternshipAgreement do |internship_agreement|
+      internship_agreement.student.id == user.id
+    end
   end
 
   def school_manager_abilities(user:)
@@ -177,6 +181,7 @@ class Ability
       edit_pai_project
       edit_pai_trousse_family
       see_intro
+      show
       update
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
@@ -262,6 +267,7 @@ class Ability
       read
       index
       edit
+      show
       update
       edit_organisation_representative_role
       edit_employer_name
@@ -528,6 +534,7 @@ class Ability
       edit_student_legal_representative_2_phone
       edit_student_school
       see_intro
+      show
       update
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
