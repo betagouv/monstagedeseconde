@@ -978,46 +978,6 @@ ALTER SEQUENCE public.hosting_infos_id_seq OWNED BY public.hosting_infos.id;
 
 
 --
--- Name: identities; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.identities (
-    id bigint NOT NULL,
-    user_id bigint,
-    first_name character varying(82),
-    last_name character varying(82),
-    school_id bigint,
-    class_room_id bigint,
-    birth_date date,
-    gender character varying DEFAULT 'np'::character varying,
-    token character varying(50),
-    anonymized boolean DEFAULT false,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    grade_id bigint
-);
-
-
---
--- Name: identities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.identities_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: identities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.identities_id_seq OWNED BY public.identities.id;
-
-
---
 -- Name: internship_agreements; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2801,13 +2761,6 @@ ALTER TABLE ONLY public.hosting_infos ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- Name: identities id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.identities ALTER COLUMN id SET DEFAULT nextval('public.identities_id_seq'::regclass);
-
-
---
 -- Name: internship_agreements id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3254,14 +3207,6 @@ ALTER TABLE ONLY public.hosting_info_weeks
 
 ALTER TABLE ONLY public.hosting_infos
     ADD CONSTRAINT hosting_infos_pkey PRIMARY KEY (id);
-
-
---
--- Name: identities identities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.identities
-    ADD CONSTRAINT identities_pkey PRIMARY KEY (id);
 
 
 --
@@ -3827,34 +3772,6 @@ CREATE INDEX index_hosting_info_weeks_on_week_id ON public.hosting_info_weeks US
 --
 
 CREATE INDEX index_hosting_infos_on_period ON public.hosting_infos USING btree (period);
-
-
---
--- Name: index_identities_on_class_room_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_identities_on_class_room_id ON public.identities USING btree (class_room_id);
-
-
---
--- Name: index_identities_on_grade_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_identities_on_grade_id ON public.identities USING btree (grade_id);
-
-
---
--- Name: index_identities_on_school_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_identities_on_school_id ON public.identities USING btree (school_id);
-
-
---
--- Name: index_identities_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_identities_on_user_id ON public.identities USING btree (user_id);
 
 
 --
@@ -4873,14 +4790,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: identities fk_rails_5373344100; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.identities
-    ADD CONSTRAINT fk_rails_5373344100 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
 -- Name: internship_offer_weeks fk_rails_5b8648c95e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5070,14 +4979,6 @@ ALTER TABLE ONLY public.internship_offer_info_weeks
 
 ALTER TABLE ONLY public.internship_offers
     ADD CONSTRAINT fk_rails_aaa97f3a41 FOREIGN KEY (sector_id) REFERENCES public.sectors(id);
-
-
---
--- Name: identities fk_rails_ab66e55058; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.identities
-    ADD CONSTRAINT fk_rails_ab66e55058 FOREIGN KEY (grade_id) REFERENCES public.grades(id);
 
 
 --
@@ -5272,6 +5173,7 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20250917192024'),
+('20250917144238'),
 ('20250902084046'),
 ('20250901102600'),
 ('20250827064009'),
@@ -5723,4 +5625,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
-

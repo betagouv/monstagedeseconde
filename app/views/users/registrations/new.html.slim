@@ -1,314 +1,310 @@
-- if params[:identity_token]
-  = render 'identities/register'
-- else
-  - errors = Presenters::Error.new(errors: resource.errors) if resource&.errors&.any?
-  - as = params[:as]
-  - incipit = user_presenter.subscription_incipit(as: as)
+- errors = Presenters::Error.new(errors: resource.errors) if resource&.errors&.any?
+- as = params[:as]
+- incipit = user_presenter.subscription_incipit(as: as)
 
-  main#content role="main" data-controller="signup"
-
-    .fr-container.fr-container--fluid
-      .fr-grid-row.fr-grid-row-gutters.fr-grid-row--center
-        .fr-col-12.fr-col-md-10.fr-col-lg-8
-          .fr-container.fr-px-md-0
-            .fr-grid-row.fr-grid-row-gutters.fr-grid-row--left
-              = render 'layouts/breadcrumb', links: [ ['', incipit[:title]]]
-          .fr-container.fr-background-alt--grey.fr-px-md-0.fr-py-10v.fr-py-md-14v
-            .fr-grid-row.fr-grid-row-gutters.fr-grid-row--left.fr-mx-3w.fr-px-xs-2v.fr-px-sm-10v.fr-px-md-27v
-              .text-left
-                h1#subcription-title.fr-h4
-                  = incipit[:title]
-                p.fr-mt-6v
-                  = incipit[:subtitle]
-                p.fr-my-w.text-muted.fr-mt-6v
-                  small
-                    | Sauf mention contraire, tous les champs sont obligatoires.
-                p
-                  = render "layouts/form_errors", resource: resource, resource_name: :user
-            fieldset#subscription-form.fr-mx-2w.fr-px-xs-2v.fr-px-sm-10v.fr-px-md-27v[aria-labelledby="subscription-title"]
-              legend
-              = form_with(model: resource,
-                          scope: resource_name,
-                          data: { turbo: false },
-                          local: true,
-                          url: registration_path(resource_name, as: resource.type.demodulize),
-                          id: "new_user") do |f|
-                - if user_presenter.show_when_subscribe?(as: as, field: :school)
-                  .fr-fieldset__element
-                    .fr-input-group.fr-mb-2v
-                      label.fr-label for="user_school_city"
-                        | Établissement ou commune
-                      = react_component("SearchSchool",
-                                        props: { classes: "col-12",
-                                                  label: 'Établissement ou commune',
-                                                  required: true,
-                                                  resourceName: :user,
-                                                  selectClassRoom: can?(:choose_class_room, resource),
-                                                  existingSchool: resource&.school&.as_json,
-                                                  existingClassRoom: resource.try(:class_room).try(:as_json),
-                                      })
-                .fr-mt-1w
-                  = render partial: "users/registrations/input_field",
-                          locals: { f: f,
-                                    field_label: "Prénom",
-                                    field: :first_name,
-                                    resource: resource,
-                                    resource_name: resource_name,
-                                    maxlength: 85,
-                                    value: resource&.first_name || params[:first_name],
-                                    option: { required: true },
-                                    errors: errors }
+main#content role="main" data-controller="signup"
+  .fr-container.fr-container--fluid
+    .fr-grid-row.fr-grid-row-gutters.fr-grid-row--center
+      .fr-col-12.fr-col-md-10.fr-col-lg-8
+        .fr-container.fr-px-md-0
+          .fr-grid-row.fr-grid-row-gutters.fr-grid-row--left
+            = render 'layouts/breadcrumb', links: [ ['', incipit[:title]]]
+        .fr-container.fr-background-alt--grey.fr-px-md-0.fr-py-10v.fr-py-md-14v
+          .fr-grid-row.fr-grid-row-gutters.fr-grid-row--left.fr-mx-3w.fr-px-xs-2v.fr-px-sm-10v.fr-px-md-27v
+            .text-left
+              h1#subcription-title.fr-h4
+                = incipit[:title]
+              p.fr-mt-6v
+                = incipit[:subtitle]
+              p.fr-my-w.text-muted.fr-mt-6v
+                small
+                  | Sauf mention contraire, tous les champs sont obligatoires.
+              p
+                = render "layouts/form_errors", resource: resource, resource_name: :user
+          fieldset#subscription-form.fr-mx-2w.fr-px-xs-2v.fr-px-sm-10v.fr-px-md-27v[aria-labelledby="subscription-title"]
+            legend
+            = form_with(model: resource,
+                        scope: resource_name,
+                        data: { turbo: false },
+                        local: true,
+                        url: registration_path(resource_name, as: resource.type.demodulize),
+                        id: "new_user") do |f|
+              - if user_presenter.show_when_subscribe?(as: as, field: :school)
+                .fr-fieldset__element
+                  .fr-input-group.fr-mb-2v
+                    label.fr-label for="user_school_city"
+                      | Établissement ou commune
+                    = react_component("SearchSchool",
+                                      props: { classes: "col-12",
+                                                label: 'Établissement ou commune',
+                                                required: true,
+                                                resourceName: :user,
+                                                selectClassRoom: can?(:choose_class_room, resource),
+                                                existingSchool: resource&.school&.as_json,
+                                                existingClassRoom: resource.try(:class_room).try(:as_json),
+                                    })
+              .fr-mt-1w
                 = render partial: "users/registrations/input_field",
-                         locals: { f: f,
-                                   field_label: "Nom",
-                                   field: :last_name,
-                                   value: resource&.last_name || params[:last_name],
-                                   maxlength: 85,
-                                   resource: resource,
-                                   resource_name: resource_name,
-                                   option: { required: true },
-                                   errors: errors }
-                - if as == "Statistician"
-                  .fr-mt-3w.fr-ml-1w
-                    p Vous êtes référent :
-                    #radio-hint.fr-fieldset
-                      .fr-fieldset__element
-                        .fr-radio-group
-                          = f.radio_button :statistician_type,
-                                            "AcademyRegionStatistician",
-                                            id: 'user_statistician_academy_region',
-                                            class: "fr-radio__input",
-                                            required: true,
-                                            data: { action: "change->signup#onMinistryTypeChange" }
-                          label.fr-label[for="user_statistician_academy_region"]
-                            | Région Académique
-                      .fr-fieldset__element
-                        .fr-radio-group
-                          = f.radio_button :statistician_type,
-                                            "AcademyStatistician",
-                                            id: 'user_statistician_academy',
-                                            class: "fr-radio__input",
-                                            required: true,
-                                            data: { action: "change->signup#onMinistryTypeChange" }
-                          label.fr-label[for="user_statistician_academy"]
-                            | Académie
-                      .fr-fieldset__element
-                        .fr-radio-group
-                          = f.radio_button :statistician_type,
-                                            "EducationStatistician",
-                                            id: 'user_statistician_education',
-                                            class: "fr-radio__input",
-                                            required: true,
-                                            data: { action: "change->signup#onMinistryTypeChange" }
-                          label.fr-label[for="user_statistician_education"]
-                            | DSDEN
-                      .fr-fieldset__element
-                        .fr-radio-group
-                          = f.radio_button :statistician_type,
-                                            "MinistryStatistician",
-                                            id: 'user_statistician_ministry_type',
-                                            class: "fr-radio__input",
-                                            required: true,
-                                            data: { action: "change->signup#onMinistryTypeChange" }
-                          label.fr-label[for="user_statistician_ministry_type"]
-                            | Administration centrale
+                        locals: { f: f,
+                                  field_label: "Prénom",
+                                  field: :first_name,
+                                  resource: resource,
+                                  resource_name: resource_name,
+                                  maxlength: 85,
+                                  value: resource&.first_name || params[:first_name],
+                                  option: { required: true },
+                                  errors: errors }
+              = render partial: "users/registrations/input_field",
+                        locals: { f: f,
+                                  field_label: "Nom",
+                                  field: :last_name,
+                                  value: resource&.last_name || params[:last_name],
+                                  maxlength: 85,
+                                  resource: resource,
+                                  resource_name: resource_name,
+                                  option: { required: true },
+                                  errors: errors }
+              - if as == "Statistician"
+                .fr-mt-3w.fr-ml-1w
+                  p Vous êtes référent :
+                  #radio-hint.fr-fieldset
+                    .fr-fieldset__element
+                      .fr-radio-group
+                        = f.radio_button :statistician_type,
+                                          "AcademyRegionStatistician",
+                                          id: 'user_statistician_academy_region',
+                                          class: "fr-radio__input",
+                                          required: true,
+                                          data: { action: "change->signup#onMinistryTypeChange" }
+                        label.fr-label[for="user_statistician_academy_region"]
+                          | Région Académique
+                    .fr-fieldset__element
+                      .fr-radio-group
+                        = f.radio_button :statistician_type,
+                                          "AcademyStatistician",
+                                          id: 'user_statistician_academy',
+                                          class: "fr-radio__input",
+                                          required: true,
+                                          data: { action: "change->signup#onMinistryTypeChange" }
+                        label.fr-label[for="user_statistician_academy"]
+                          | Académie
+                    .fr-fieldset__element
+                      .fr-radio-group
+                        = f.radio_button :statistician_type,
+                                          "EducationStatistician",
+                                          id: 'user_statistician_education',
+                                          class: "fr-radio__input",
+                                          required: true,
+                                          data: { action: "change->signup#onMinistryTypeChange" }
+                        label.fr-label[for="user_statistician_education"]
+                          | DSDEN
+                    .fr-fieldset__element
+                      .fr-radio-group
+                        = f.radio_button :statistician_type,
+                                          "MinistryStatistician",
+                                          id: 'user_statistician_ministry_type',
+                                          class: "fr-radio__input",
+                                          required: true,
+                                          data: { action: "change->signup#onMinistryTypeChange" }
+                        label.fr-label[for="user_statistician_ministry_type"]
+                          | Administration centrale
 
-                      .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-academy-region
-                        .row
-                          .col-lg-8.col-12
-                            / select field academy region
-                            label.fr-label[for="user_academy_region_id"]
-                              |Choisissez votre région académique
-                            = f.select :academy_region_id,
-                                       options_for_select(AcademyRegion.all.map { |academy_region| [academy_region.name, academy_region.id] },
-                                       resource.try(:academy_region)), { prompt: "Régions académiques" },
-                                       { class: "fr-select", required: false, data: { "signup-target": 'academyRegionSelect'  } }
+                    .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-academy-region
+                      .row
+                        .col-lg-8.col-12
+                          / select field academy region
+                          label.fr-label[for="user_academy_region_id"]
+                            |Choisissez votre région académique
+                          = f.select :academy_region_id,
+                                      options_for_select(AcademyRegion.all.map { |academy_region| [academy_region.name, academy_region.id] },
+                                      resource.try(:academy_region)), { prompt: "Régions académiques" },
+                                      { class: "fr-select", required: false, data: { "signup-target": 'academyRegionSelect'  } }
 
-                      .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-academy
-                        .row
-                          .col-lg-8.col-12
-                            / select field academy
-                            label.fr-label[for="user_academy_id"]
-                              |Choisissez votre académie
-                            = f.select :academy_id,
-                                       options_for_select(Academy.all.map { |academy| [academy.name, academy.id] },
-                                       resource.try(:academy)), { prompt: "Académies" },
-                                       { class: "fr-select", required: false, data: { "signup-target": 'academySelect'  } }
+                    .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-academy
+                      .row
+                        .col-lg-8.col-12
+                          / select field academy
+                          label.fr-label[for="user_academy_id"]
+                            |Choisissez votre académie
+                          = f.select :academy_id,
+                                      options_for_select(Academy.all.map { |academy| [academy.name, academy.id] },
+                                      resource.try(:academy)), { prompt: "Académies" },
+                                      { class: "fr-select", required: false, data: { "signup-target": 'academySelect'  } }
 
-                      .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-department
-                        .row
-                          .col-lg-6.col-12
-                            / select field department
-                            label.fr-label[for="user_department"]
-                              |Choisissez votre département
-                            = f.select :department,
-                                       options_for_select(Department.all.map { |department| ["#{department.code} - #{department.name}", department.code] },
-                                       resource.try(:department)), { prompt: "Départements" },
-                                       { class: "fr-select", required: false, data: { "signup-target": 'departmentSelect'  } }
+                    .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-department
+                      .row
+                        .col-lg-6.col-12
+                          / select field department
+                          label.fr-label[for="user_department"]
+                            |Choisissez votre département
+                          = f.select :department,
+                                      options_for_select(Department.all.map { |department| ["#{department.code} - #{department.name}", department.code] },
+                                      resource.try(:department)), { prompt: "Départements" },
+                                      { class: "fr-select", required: false, data: { "signup-target": 'departmentSelect'  } }
 
-                      .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-ministry
-                        .row
-                          .col-lg-8.col-12
-                            / select field ministry
-                            label.fr-label[for="user_group_id"]
-                              |Choisissez le ministère correspondant
-                            = f.select :group_id,
-                                       options_for_select(Group.is_public.all.map { |group| [group.name,group.id] }, resource.try(:group_id)),
-                                       { prompt: "Ministères" },
-                                       { class: "fr-select", required: false, data: { "signup-target": 'ministrySelect' } }
+                    .fr-fieldset__element.fr-mt-3w.fr-mb-2v.d-none#statistician-ministry
+                      .row
+                        .col-lg-8.col-12
+                          / select field ministry
+                          label.fr-label[for="user_group_id"]
+                            |Choisissez le ministère correspondant
+                          = f.select :group_id,
+                                      options_for_select(Group.is_public.all.map { |group| [group.name,group.id] }, resource.try(:group_id)),
+                                      { prompt: "Ministères" },
+                                      { class: "fr-select", required: false, data: { "signup-target": 'ministrySelect' } }
 
-                - if user_presenter.show_when_subscribe?(as: as, field: :role)
-                  .fr-fieldset__element
-                    - error_tag  = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :role) if errors.present?
-                    div class="fr-input-group fr-mb-2v #{error_tag.present? ? 'fr-input-group--error' : ''}"
-                      label.fr-label for="user_role" class="#{error_tag.present? ? 'fr-label--error' : ''}"
-                        |Fonction
-                      = f.select :role,
-                          options_from_collection_for_select(user_roles_to_select, :value, :text, resource.role),
-                          { prompt: "Choisissez une fonction" },
-                          { class: "fr-select",
-                                    required: true,
-                                    data: { action: "change->signup#refreshEmailFieldLabel", :'signup-target' => "roleInput" } }
-                      .fr-message.fr-message--info.fr-mt-1w
-                        / span.fr-icon-info-fill.fr-icon--sm aria-hidden="true"
-                        span
-                          | Seule la fonction 
-                          span.font-weight-bold Chef d'établissement 
-                          | est autorisée à procéder à 
-                          | la signature en ligne des conventions. Toutes les autres fonctions 
-                          | peuvent cependant remplir et éditer les conventions, mais ne 
-                          | peuvent pas les signer en ligne.
-                      = error_tag
-                - if user_presenter.show_when_subscribe?(as: as, field: :employer_role)
-                  = render partial: "users/registrations/input_field",
-                          locals: { f: f,
-                                    field_label: "Fonction au sein de l'entreprise",
-                                    field: :employer_role,
-                                    resource: resource,
-                                    resource_name: resource_name,
-                                    option: {required: true, maxlength: 150},
-                                    errors: errors }
-
+              - if user_presenter.show_when_subscribe?(as: as, field: :role)
                 .fr-fieldset__element
-                  - error_tag = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :email) if errors.present?
-                  div class="fr-input-group #{error_tag.present? ? 'fr-input-group--error' : ''}"
-                    label.fr-label [for="user_email" data-signup-target="emailLabel"]
-                      |Adresse électronique
-                    p.fr-message.fr-mt-n2v[data-signup-target="emailExplanation"]
-                      |Format attendu : nom@domaine.fr
-                    = f.email_field :email,
-                          class: "fr-input",
-                          value: resource.email.blank? ? params[:email] : resource.email,
-                          placeholder: "ex: nom@domaine.fr",
-                          autofocus: params[:email].blank? ,
-                          :'aria-describedby' => "user_email",
-                          type: "email",
-                          maxlength: 100,
-                          pattern: Devise.email_regexp,
-                          autocomplete: "on",
-                          data: {action: 'change->signup#onBlurEmailInput', :"signup-target" => 'emailInput'}
-                    p.fr-message.fr-message--error.d-none[data-signup-target="emailHint"]
-                - # <% following avoids javascript errors
-                span[data-signup-target="emailBloc"]
-                span[data-signup-target="emailRadioButton"]
-                span[data-signup-target="phoneInput"]
-                span[data-signup-target="phoneBloc"]
-
-                .fr-fieldset__element
-                  - error_tag = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :password) if errors.present?
-                  div id="password_group" class="fr-password fr-my-2v #{error_tag.present? ? 'fr-input-group--error' :''}" data-signup-target="passwordGroup"
-                    label id="password-group" class="fr-label #{error_tag.present? ? 'fr-label--error' : ''}" for="user_password"
-                      |Créer un mot de passe
-                    .fr-input-wrap
-                      = f.password_field :password,
-                                         :'aria-describedby' => "user_password-messages",
-                                         autocomplete: "new-password",
-                                         class: "fr-password__input fr-input fr-password__input fr-input #{error_tag.present? ? 'fr-input--error' : ''}",
-                                         required: true,
-                                         maxlength: 70,
-                                         data: { action: "signup#checkPassword", :"signup-target" => "passwordInput" }
-                      #password-input-messages.fr-messages-group aria-live="assertive"
-                        ul.fr-pl-0
-                          li.fr-message.fr-message--info data-signup-target="length" 12 caractères
-                          li.fr-message.fr-message--info data-signup-target="lowercase" 1 minuscule
-                          li.fr-message.fr-message--info data-signup-target="uppercase" 1 majuscule
-                          li.fr-message.fr-message--info data-signup-target="number" 1 chiffre
-                          li.fr-message.fr-message--info data-signup-target="special" 1 caractère spécial parmi &nbsp; <div class="fr-badge fr-badge--info fr-badge--no-icon"> @ $ ! % * ? _ & : ; </div>
-
-                      = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :password) if errors.present?
-                    #user_password-messages.fr-messages-group[aria-live="assertive"]
-
-                    .fr-password__checkbox.fr-checkbox-group.fr-checkbox-group--sm
-                      input[aria-label="Afficher le mot de passe"
-                            id="user_password-show"
-                            type="checkbox"
-                            aria-describedby="user_password-show-messages"]
-                      label.fr-password__checkbox.fr-label[for="user_password-show"]
-                        |  Afficher
-                    #user_password-show-messages.fr-messages-group[aria-live="assertive"]
-                      p[data-signup-target="passwordHint"]
-
-
-                - if can?(:choose_operator, :sign_up)
-                  .fr-fieldset__element
-                    - error_tag  = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :operator_id) if errors.present?
-                    div class="fr-input-group fr-my-2v #{error_tag.present? ? 'fr-input-group--error' : ''}"
-                      label#operator-select-label.fr-label for="user_operator" class="#{error_tag.present? ? 'fr-label--error' : ''}"
-                        |Opérateur
-                      = f.select :operator_id,
-                          options_from_collection_for_select(Operator.all, :id, :name, resource.operator),
-                          { prompt: operator_options_for_default },
-                          class: "fr-select",
-                          :'aria-labelledby' => 'operator-select-label'
-                      = error_tag
-                .fr-fieldset__element.fr-mt-3w
-                  - error_tag  = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :accept_terms) if errors.present?
-                  div class="fr-checkbox-group fr-my-2v #{error_tag.present? ? 'fr-input-group--error' : ''}"
-                    = f.check_box :accept_terms
-                    label.fr-label for="user_accept_terms"
-                      -link = link_to "conditions d'utilisation",
-                                      conditions_d_utilisation_path,
-                                      target: "_blank",
-                                      title: "conditions d'utilisation (nouvelle fenêtre)",
-                                      rel: "external noopener noreferrer",
-                                      class: "font-weight-normal"
-                      = "J'accepte les&nbsp;#{link} .".html_safe
-                      p
-                        = link_to "Lire la Politique de confidentialité",
-                                  politique_de_confidentialite_path,
-                                  title: "Lire la Politique de confidentialité (nouvelle fenètre)",
-                                  target: "_blank",
-                                  rel: "external noopener noreferrer",
-                                  class: "font-weight-normal"
-                        span.font-weight-normal
-                          = " pour connaître les modalités d'utilisations de mes informations récoltées."
+                  - error_tag  = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :role) if errors.present?
+                  div class="fr-input-group fr-mb-2v #{error_tag.present? ? 'fr-input-group--error' : ''}"
+                    label.fr-label for="user_role" class="#{error_tag.present? ? 'fr-label--error' : ''}"
+                      |Fonction
+                    = f.select :role,
+                        options_from_collection_for_select(user_roles_to_select, :value, :text, resource.role),
+                        { prompt: "Choisissez une fonction" },
+                        { class: "fr-select",
+                                  required: true,
+                                  data: { action: "change->signup#refreshEmailFieldLabel", :'signup-target' => "roleInput" } }
+                    .fr-message.fr-message--info.fr-mt-1w
+                      / span.fr-icon-info-fill.fr-icon--sm aria-hidden="true"
+                      span
+                        | Seule la fonction 
+                        span.font-weight-bold Chef d'établissement 
+                        | est autorisée à procéder à 
+                        | la signature en ligne des conventions. Toutes les autres fonctions 
+                        | peuvent cependant remplir et éditer les conventions, mais ne 
+                        | peuvent pas les signer en ligne.
                     = error_tag
-                - if %w(Employer SchoolManagement Statistician).include?(params['as'])
-                  .fr-col-12
-                    hr.fr-mb-0
-                    .fr-text
-                      | Pour valider la création de votre compte, tapez les caractères que vous voyez sur cette image
-                    .fr-my-1w
-                      - if @captcha_image.present?
-                        = image_tag @captcha_image, alt: "Captcha", class: "fr-mt-2w fr-mb-2w"
-                      - else
-                        p.fr-mt-2w.fr-mb-2w
-                          .fr-alert.fr-alert--error
-                            p
-                              |> Le captcha n'a pas pu être affiché. Merci de recharger la page en 
-                              = link_to 'cliquant ici', request.fullpath, class: "fr-link"
-                    - if @captcha_image.present?
-                      .actions
-                        = f.hidden_field :captcha_uuid, value: @captcha_uuid
-                        .row
-                          .col-12.col-lg-6
-                            = f.text_field :captcha, as: :string, label: false, input_html: { autocomplete: "off" }, class: "fr-input fr-mb-2v", required: true
+              - if user_presenter.show_when_subscribe?(as: as, field: :employer_role)
+                = render partial: "users/registrations/input_field",
+                        locals: { f: f,
+                                  field_label: "Fonction au sein de l'entreprise",
+                                  field: :employer_role,
+                                  resource: resource,
+                                  resource_name: resource_name,
+                                  option: {required: true, maxlength: 150},
+                                  errors: errors }
 
-                .col-12.col-lg-6
-                  = f.submit "Valider",
-                        class: "fr-btn fr-mx-2w",
-                        disabled: @captcha_image.nil?,
-                        id: "test-create-user",
-                        :'data-signup-target' => "submitButton"
+              .fr-fieldset__element
+                - error_tag = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :email) if errors.present?
+                div class="fr-input-group #{error_tag.present? ? 'fr-input-group--error' : ''}"
+                  label.fr-label [for="user_email" data-signup-target="emailLabel"]
+                    |Adresse électronique
+                  p.fr-message.fr-mt-n2v[data-signup-target="emailExplanation"]
+                    |Format attendu : nom@domaine.fr
+                  = f.email_field :email,
+                        class: "fr-input",
+                        value: resource.email.blank? ? params[:email] : resource.email,
+                        placeholder: "ex: nom@domaine.fr",
+                        autofocus: params[:email].blank? ,
+                        :'aria-describedby' => "user_email",
+                        type: "email",
+                        maxlength: 100,
+                        pattern: Devise.email_regexp,
+                        autocomplete: "on",
+                        data: {action: 'change->signup#onBlurEmailInput', :"signup-target" => 'emailInput'}
+                  p.fr-message.fr-message--error.d-none[data-signup-target="emailHint"]
+              - # <% following avoids javascript errors
+              span[data-signup-target="emailBloc"]
+              span[data-signup-target="emailRadioButton"]
+              span[data-signup-target="phoneInput"]
+              span[data-signup-target="phoneBloc"]
+
+              .fr-fieldset__element
+                - error_tag = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :password) if errors.present?
+                div id="password_group" class="fr-password fr-my-2v #{error_tag.present? ? 'fr-input-group--error' :''}" data-signup-target="passwordGroup"
+                  label id="password-group" class="fr-label #{error_tag.present? ? 'fr-label--error' : ''}" for="user_password"
+                    |Créer un mot de passe
+                  .fr-input-wrap
+                    = f.password_field :password,
+                                        :'aria-describedby' => "user_password-messages",
+                                        autocomplete: "new-password",
+                                        class: "fr-password__input fr-input fr-password__input fr-input #{error_tag.present? ? 'fr-input--error' : ''}",
+                                        required: true,
+                                        maxlength: 70,
+                                        data: { action: "signup#checkPassword", :"signup-target" => "passwordInput" }
+                    #password-input-messages.fr-messages-group aria-live="assertive"
+                      ul.fr-pl-0
+                        li.fr-message.fr-message--info data-signup-target="length" 12 caractères
+                        li.fr-message.fr-message--info data-signup-target="lowercase" 1 minuscule
+                        li.fr-message.fr-message--info data-signup-target="uppercase" 1 majuscule
+                        li.fr-message.fr-message--info data-signup-target="number" 1 chiffre
+                        li.fr-message.fr-message--info data-signup-target="special" 1 caractère spécial parmi &nbsp; <div class="fr-badge fr-badge--info fr-badge--no-icon"> @ $ ! % * ? _ & : ; </div>
+
+                    = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :password) if errors.present?
+                  #user_password-messages.fr-messages-group[aria-live="assertive"]
+
+                  .fr-password__checkbox.fr-checkbox-group.fr-checkbox-group--sm
+                    input[aria-label="Afficher le mot de passe"
+                          id="user_password-show"
+                          type="checkbox"
+                          aria-describedby="user_password-show-messages"]
+                    label.fr-password__checkbox.fr-label[for="user_password-show"]
+                      |  Afficher
+                  #user_password-show-messages.fr-messages-group[aria-live="assertive"]
+                    p[data-signup-target="passwordHint"]
+
+
+              - if can?(:choose_operator, :sign_up)
+                .fr-fieldset__element
+                  - error_tag  = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :operator_id) if errors.present?
+                  div class="fr-input-group fr-my-2v #{error_tag.present? ? 'fr-input-group--error' : ''}"
+                    label#operator-select-label.fr-label for="user_operator" class="#{error_tag.present? ? 'fr-label--error' : ''}"
+                      |Opérateur
+                    = f.select :operator_id,
+                        options_from_collection_for_select(Operator.all, :id, :name, resource.operator),
+                        { prompt: operator_options_for_default },
+                        class: "fr-select",
+                        :'aria-labelledby' => 'operator-select-label'
+                    = error_tag
+              .fr-fieldset__element.fr-mt-3w
+                - error_tag  = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :accept_terms) if errors.present?
+                div class="fr-checkbox-group fr-my-2v #{error_tag.present? ? 'fr-input-group--error' : ''}"
+                  = f.check_box :accept_terms
+                  label.fr-label for="user_accept_terms"
+                    -link = link_to "conditions d'utilisation",
+                                    conditions_d_utilisation_path,
+                                    target: "_blank",
+                                    title: "conditions d'utilisation (nouvelle fenêtre)",
+                                    rel: "external noopener noreferrer",
+                                    class: "font-weight-normal"
+                    = "J'accepte les&nbsp;#{link} .".html_safe
+                    p
+                      = link_to "Lire la Politique de confidentialité",
+                                politique_de_confidentialite_path,
+                                title: "Lire la Politique de confidentialité (nouvelle fenètre)",
+                                target: "_blank",
+                                rel: "external noopener noreferrer",
+                                class: "font-weight-normal"
+                      span.font-weight-normal
+                        = " pour connaître les modalités d'utilisations de mes informations récoltées."
+                  = error_tag
+              - if %w(Employer SchoolManagement Statistician).include?(params['as'])
+                .fr-col-12
+                  hr.fr-mb-0
+                  .fr-text
+                    | Pour valider la création de votre compte, tapez les caractères que vous voyez sur cette image
+                  .fr-my-1w
+                    - if @captcha_image.present?
+                      = image_tag @captcha_image, alt: "Captcha", class: "fr-mt-2w fr-mb-2w"
+                    - else
+                      p.fr-mt-2w.fr-mb-2w
+                        .fr-alert.fr-alert--error
+                          p
+                            |> Le captcha n'a pas pu être affiché. Merci de recharger la page en 
+                            = link_to 'cliquant ici', request.fullpath, class: "fr-link"
+                  - if @captcha_image.present?
+                    .actions
+                      = f.hidden_field :captcha_uuid, value: @captcha_uuid
+                      .row
+                        .col-12.col-lg-6
+                          = f.text_field :captcha, as: :string, label: false, input_html: { autocomplete: "off" }, class: "fr-input fr-mb-2v", required: true
+
+              .col-12.col-lg-6
+                = f.submit "Valider",
+                      class: "fr-btn fr-mx-2w",
+                      disabled: @captcha_image.nil?,
+                      id: "test-create-user",
+                      :'data-signup-target' => "submitButton"
 
 
