@@ -83,7 +83,7 @@ module Dashboard::InternshipOffers
       sign_in(school.school_manager)
       get dashboard_internship_agreements_path
       assert_response :success
-      assert_select('td.actions', text: 'ImprimerAjouter aux signatures')
+      assert_select('td.actions', text: 'SignerTélécharger')
     end
     test 'GET #index as school_manager when school manager signed the internship agreement' do
       school = create(:school, :with_school_manager)
@@ -98,7 +98,7 @@ module Dashboard::InternshipOffers
       sign_in(school.school_manager)
       get dashboard_internship_agreements_path
       assert_response :success
-      assert_select('td.actions', text: 'ImprimerDéjà signée')
+      assert_select('td.actions', text: 'Déjà signéeTélécharger')
     end
     test 'GET #index as school_manager when everyone signed the internship agreement' do
       school = create(:school, :with_school_manager)
@@ -112,7 +112,7 @@ module Dashboard::InternshipOffers
       sign_in(school.school_manager)
       get dashboard_internship_agreements_path
       assert_response :success
-      assert_select('td.actions', text: 'Télécharger le PDF')
+      assert_select('td.actions', text: 'Signée de tousTélécharger')
     end
 
     test 'GET #index as teacher ' do
