@@ -105,6 +105,7 @@ RailsAdmin.config do |config|
                               InternshipApplication
                               InternshipAgreement
                               Operator
+                              InappropriateOffer
                               Users::Student
                               Users::SchoolManagement
                               Users::PrefectureStatistician

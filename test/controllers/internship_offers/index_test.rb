@@ -671,10 +671,6 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  # test 'GET  #index as visitor filters by grade' do
-  #   assert false
-  # end
-
   # test 'GET #index as visitor filters by weeks' do
   #   assert false
   # end

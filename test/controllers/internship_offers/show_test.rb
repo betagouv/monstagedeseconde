@@ -375,6 +375,47 @@ module InternshipOffers
       assert_response :success
     end
 
+    test 'GET #flag an offer as a visitor' do
+      travel_to(Date.new(2024, 3, 1)) do
+        offer = create(:weekly_internship_offer_2nde)
+        post flag_internship_offer_path(offer),
+            params: {
+              inappropriate_offer: {
+                ground: 'inappropriate_content',
+                details: 'Ce stage est inapproprié'
+              }
+            }
+        follow_redirect!
+        last_flag = InappropriateOffer.last
+        assert_equal 'inappropriate_content', last_flag.ground
+        assert_equal 'Ce stage est inapproprié', last_flag.details
+        assert_nil last_flag.user
+      end
+    end
+
+    test 'GET #flag an offer as a student' do
+      travel_to(Date.new(2024, 3, 1)) do
+        offer = create(:weekly_internship_offer_2nde)
+        student = create(:student)
+        sign_in(student)
+        post flag_internship_offer_path(offer),
+            params: {
+              inappropriate_offer: {
+                ground: 'inappropriate_content',
+                details: 'Ce stage est inapproprié',
+                user_id: student.id
+              }
+            }
+        follow_redirect!
+        success_message = "Merci, votre signalement a bien été pris en compte. Notre équipe l’examinera sous 48h."
+        assert_select '#alert-text', text: success_message
+        last_flag = InappropriateOffer.last
+        assert_equal 'inappropriate_content', last_flag.ground
+        assert_equal 'Ce stage est inapproprié', last_flag.details
+        assert_equal student.id, last_flag.user_id
+      end
+    end
+    
     test 'student of a qpv school can apply to a qpv reserved offer' do
       travel_to Date.new(2023, 10, 1) do
         student = create(:student, :seconde, school: create(:school, qpv: true))
@@ -383,7 +424,7 @@ module InternshipOffers
         sign_in(student)
         get internship_offer_path(internship_offer)
 
-        assert_select 'a.fr-btn.fr-icon-edit-fill.fr-btn--icon-left', 4
+        assert_select 'a.fr-btn.fr-icon-draft-line.fr-btn--icon-left', 4
         # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
       end
     end
@@ -395,14 +436,9 @@ module InternshipOffers
 
         sign_in(student)
         get internship_offer_path(internship_offer)
-        puts '--- writing html in debug_file.html ---'
-        puts ''
-        html = Nokogiri::HTML(response.body)
-        File.open('debug_file.html', 'w+') { |f| f.write html }
-        puts '----------------------------------------'
 
         # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
-        assert_select 'a.fr-btn.fr-icon-edit-fill.fr-btn--icon-left', 0
+        assert_select 'a.fr-btn.fr-icon-draft-line.fr-btn--icon-left', 0
       end
     end
 
@@ -414,7 +450,13 @@ module InternshipOffers
         sign_in(student)
         get internship_offer_path(internship_offer)
 
-        assert_select 'a.fr-btn.fr-icon-edit-fill.fr-btn--icon-left', 4
+        puts '--- writing html in debug_file.html ---'
+        puts ''
+        html = Nokogiri::HTML(response.body)
+        File.open('debug_file.html', 'w+') { |f| f.write html } 
+        puts '----------------------------------------'
+
+        assert_select 'a.fr-btn.fr-icon-draft-line.fr-btn--icon-left', 4
         # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
       end
     end
@@ -428,7 +470,7 @@ module InternshipOffers
         get internship_offer_path(internship_offer)
 
         # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
-        assert_select 'a.fr-btn.fr-icon-edit-fill.fr-btn--icon-left', 0
+        assert_select 'a.fr-btn.fr-icon-draft-line.fr-btn--icon-left', 0
       end
     end
   end
