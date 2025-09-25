@@ -14,7 +14,9 @@ class CountryPhoneSelect extends React.Component {
   render() {
     let inputProps = {
       name: this.props.name,
-      id: 'phone-input'
+      id: 'phone-input',
+      'data-mandatory-fields-target': 'mandatoryField',
+      'data-action': 'input->mandatory-fields#fieldChange'
     }
     if (this.props.withTarget) {
       inputProps = { ...inputProps, 'data-signup-target': 'phoneInput' };
