@@ -76,7 +76,9 @@ module Dashboard::InternshipOffers
                   group_id: new_group.id,
                   daily_hours: { 'lundi' => %w[10h 12h] },
                   workspace_conditions: 'Environnement de travail 2',
-                  workspace_accessibility: 'Accessibilité du poste 2'
+                  workspace_accessibility: 'Accessibilité du poste 2',
+                  qpv: true,
+                  rep: false
                 }
               })
 
@@ -88,6 +90,8 @@ module Dashboard::InternshipOffers
         assert_equal %w[10h 12h], internship_offer.reload.daily_hours['lundi']
         assert_equal 'Environnement de travail 2', internship_offer.reload.workspace_conditions
         assert_equal 'Accessibilité du poste 2', internship_offer.reload.workspace_accessibility
+        assert_equal true, internship_offer.reload.qpv
+        assert_equal false, internship_offer.reload.rep
       end
     end
 
