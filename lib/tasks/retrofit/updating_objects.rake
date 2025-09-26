@@ -19,7 +19,6 @@ namespace :retrofit do
       counter = 0
       counter_dup = 0
       InternshipOffers::WeeklyFramed.kept
-                                    .where(hidden_duplicate: false)
                                     .each do |offer|
         counter += 1
         next unless offer.has_weeks_after_school_year_start? && offer.has_weeks_before_school_year_start?
@@ -28,7 +27,6 @@ namespace :retrofit do
         print '.'
         counter_dup += 1
 
-        new_internship_offer.hidden_duplicate = false
         new_internship_offer.mother_id = offer.id
         new_internship_offer.weeks = offer.weeks & Week.weeks_of_school_year(school_year: Week.current_year_start_week.year)
         new_internship_offer.grades = offer.grades
@@ -39,7 +37,6 @@ namespace :retrofit do
         new_internship_offer.save!
         new_internship_offer.publish! unless new_internship_offer.published?
 
-        offer.hidden_duplicate = true
         offer.weeks = offer.weeks & Week.of_past_school_years
         offer.published_at = nil
         offer.aasm_state = 'unpublished'
@@ -56,7 +53,6 @@ namespace :retrofit do
       counter = 0
       limit_week_id = 337
       offer_ids = InternshipOffers::WeeklyFramed.kept
-                                                .shown_to_employer
                                                 .joins(:weeks, :internship_applications)
                                                 .where('weeks.id > ?', limit_week_id)
                                                 .group('internship_offers.id')

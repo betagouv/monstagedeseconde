@@ -1383,9 +1383,6 @@ CREATE TABLE public.internship_offers (
     description character varying(1500),
     max_candidates integer DEFAULT 1 NOT NULL,
     internship_offer_weeks_count integer DEFAULT 0 NOT NULL,
-    tutor_name character varying(150),
-    tutor_phone character varying(20),
-    tutor_email character varying(100),
     employer_website character varying(560),
     street character varying(500),
     zipcode character varying(5),
@@ -1400,20 +1397,12 @@ CREATE TABLE public.internship_offers (
     school_id bigint,
     employer_description character varying(1500),
     sector_id bigint,
-    blocked_weeks_count integer DEFAULT 0 NOT NULL,
-    total_applications_count integer DEFAULT 0 NOT NULL,
-    approved_applications_count integer DEFAULT 0 NOT NULL,
     employer_type character varying(30),
     department character varying(40) DEFAULT ''::character varying NOT NULL,
     academy character varying(50) DEFAULT ''::character varying NOT NULL,
-    total_male_applications_count integer DEFAULT 0 NOT NULL,
     remote_id character varying(60),
     permalink character varying(200),
-    view_count integer DEFAULT 0 NOT NULL,
-    submitted_applications_count integer DEFAULT 0 NOT NULL,
-    rejected_applications_count integer DEFAULT 0 NOT NULL,
     published_at timestamp without time zone,
-    total_male_approved_applications_count integer DEFAULT 0,
     group_id bigint,
     first_date date NOT NULL,
     last_date date NOT NULL,
@@ -1425,13 +1414,7 @@ CREATE TABLE public.internship_offers (
     daterange daterange GENERATED ALWAYS AS (daterange(first_date, last_date)) STORED,
     siret character varying(14),
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
-    total_female_applications_count integer DEFAULT 0 NOT NULL,
-    total_female_approved_applications_count integer DEFAULT 0,
-    max_students_per_group integer DEFAULT 1 NOT NULL,
     internship_address_manual_enter boolean DEFAULT false,
-    tutor_role character varying(150),
-    remaining_seats_count integer DEFAULT 0,
-    hidden_duplicate boolean DEFAULT false,
     daily_hours jsonb,
     internship_offer_area_id bigint,
     lunch_break text,
@@ -1451,7 +1434,6 @@ CREATE TABLE public.internship_offers (
     period integer DEFAULT 0 NOT NULL,
     mother_id bigint,
     targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades,
-    ia_score integer,
     open_data boolean DEFAULT true,
     code_ape character varying
 );
@@ -4024,13 +4006,6 @@ CREATE INDEX internship_offer_keywords_trgm ON public.internship_offer_keywords 
 
 
 --
--- Name: not_blocked_by_weeks_count_index; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX not_blocked_by_weeks_count_index ON public.internship_offers USING btree (internship_offer_weeks_count, blocked_weeks_count);
-
-
---
 -- Name: uniq_applications_per_internship_offer_week; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4586,6 +4561,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250925072900'),
 ('20250918093304'),
 ('20250917192024'),
 ('20250917144238'),
@@ -5043,3 +5019,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
+

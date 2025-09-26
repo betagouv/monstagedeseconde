@@ -236,10 +236,6 @@ class InternshipOffer < ApplicationRecord
     where(school_year:)
   }
 
-  scope :shown_to_employer, lambda {
-    where(hidden_duplicate: false)
-  }
-
   scope :with_weeks_next_year, lambda {
     next_year = SchoolYear::Current.new
                                    .next_year
@@ -434,10 +430,6 @@ class InternshipOffer < ApplicationRecord
 
   def anonymize
     fields_to_reset = {
-      tutor_name: 'NA',
-      tutor_phone: 'NA',
-      tutor_email: 'NA',
-      tutor_role: 'NA',
       title: 'NA',
       description: 'NA',
       employer_website: 'NA',
@@ -601,7 +593,6 @@ class InternshipOffer < ApplicationRecord
   end
 
   def maintenance_conditions?
-    return true if hidden_duplicate
     return true if published_at.nil?
 
     false
