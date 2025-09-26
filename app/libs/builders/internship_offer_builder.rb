@@ -169,7 +169,6 @@ module Builders
     def preprocess_planning_to_params(planning)
       {
         max_candidates: planning.max_candidates,
-        max_students_per_group: planning.max_candidates,
         weekly_hours: planning.weekly_hours,
         daily_hours: planning.daily_hours,
         employer_id: planning.employer_id,

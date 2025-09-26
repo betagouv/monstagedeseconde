@@ -268,7 +268,6 @@ module Dashboard::InternshipOffers
           grade_college: '0',
           grade_2e: '1',
           max_candidates: 20,
-          max_students_per_group: 20,
           week_ids: [SchoolTrack::Seconde.first_week.id],
           period: '11'
         }
@@ -276,7 +275,6 @@ module Dashboard::InternshipOffers
         patch dashboard_internship_offer_path(internship_offer.to_param), params: params
         assert_redirected_to dashboard_internship_offers_path(origine: 'dashboard')
         assert_equal 20, internship_offer.reload.max_candidates
-        assert_equal 20, internship_offer.max_students_per_group
         assert_equal [Grade.seconde], internship_offer.grades
         assert_equal SchoolTrack::Seconde.first_week.id, internship_offer.weeks.first.id
         assert_equal 1, internship_offer.weeks.count

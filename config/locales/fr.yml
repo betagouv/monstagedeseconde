@@ -194,7 +194,6 @@ fr:
         lunch_break: Pause déjeuner
         weekly_lunch_break: Pause déjeuner
         weekly_hours: Horaires
-        max_students_per_group: Nbr. max d'élèves par groupe
         grades: Niveaux ciblés
       organisation: &organisation_fields
         employer_name: Employeur

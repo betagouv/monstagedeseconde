@@ -5142,6 +5142,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250926121253'),
 ('20250925072900'),
 ('20250918093304'),
 ('20250917192024'),

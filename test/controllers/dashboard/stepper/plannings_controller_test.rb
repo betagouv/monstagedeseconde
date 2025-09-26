@@ -28,7 +28,6 @@ module Dashboard::Stepper
           grade_college: '0',
           grade_2e: '1',
           max_candidates: 2,
-          max_students_per_group: 2,
           week_ids:,
           period: '11',
           lunch_break: 'test de lunch break',
@@ -61,10 +60,8 @@ module Dashboard::Stepper
             planning = Planning.last
             assert_equal 1, planning.weeks_count
             assert_equal 2, planning.max_candidates
-            assert_equal 2, planning.max_students_per_group, 'should have 2 students per group'
             assert_equal 'test de lunch break', planning.lunch_break
             assert_equal 1, planning.grades.count, 'should have 2 grades'
-            assert_equal 1, planning.max_candidates / planning.max_students_per_group
             assert_equal week_ids, [planning.weeks.first.id]
             assert_equal schools.map(&:id).sort, planning.schools.map(&:id).sort
             assert_equal '08:00', planning.daily_hours['lundi'].first
@@ -122,10 +119,8 @@ module Dashboard::Stepper
             planning = Planning.last
             assert_equal 21, planning.weeks_count
             assert_equal 20, planning.max_candidates
-            assert_equal 20, planning.max_students_per_group, 'should have 2 students per group'
             assert_equal 'test de lunch break', planning.lunch_break
             assert_equal 2, planning.grades.count, 'should have 2 grades'
-            assert_equal 1, planning.max_candidates / planning.max_students_per_group
             assert_equal week_ids.sort, planning.weeks.map(&:id).sort
             assert_equal school.id, planning.school_id
             assert_equal '08:00', planning.daily_hours['lundi'].first
