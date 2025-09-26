@@ -110,7 +110,6 @@ FactoryBot.define do
 
     trait :weekly_internship_offer do
       description { 'Lorem ipsum dolor weekly_internship_offer' }
-      remaining_seats_count { max_candidates }
     end
 
     trait :api_internship_offer do
