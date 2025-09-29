@@ -224,7 +224,7 @@ class School < ApplicationRecord
   end
 
   def rep_or_rep_plus?
-    !rep_kind.nil?
+    rep_kind.in?(%w[rep rep_plus])
   end
 
   def qpv? = qpv
