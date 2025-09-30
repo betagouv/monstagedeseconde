@@ -164,7 +164,7 @@ class GodMailer < ApplicationMailer
 
   def notify_signatures_can_start_email(internship_agreement:)
     internship_application = internship_agreement.internship_application
-    recipients_email       = internship_application.employers_filtered_by_notifications_emails(with_legal_representatives: false)
+    recipients_email       = recipients_email_for_signature(internship_agreement: internship_agreement, with_legal_representatives: false)
     @internship_offer      = internship_application.internship_offer
     student                = internship_application.student
     @prez_stud             = student.presenter
@@ -188,11 +188,10 @@ class GodMailer < ApplicationMailer
     @prez_stud             = student.presenter
     @employer              = @internship_offer.employer
     @school_manager        = internship_agreement.school_manager
-    @url = dashboard_students_legal_representative_sign_internship_agreement_url(
+    @url = new_dashboard_students_internship_agreement_url(
       uuid: internship_agreement.uuid,
       student_token: student.to_sgid.to_s,
-      student_id: student.id,
-      host: ENV['HOST']
+      student_id: student.id
     ).html_safe
 
     send_email(
@@ -218,6 +217,6 @@ class GodMailer < ApplicationMailer
     emails = []
     emails << internship_agreement.student_legal_representative_email if internship_agreement.student_legal_representative_email.present?
     emails << internship_agreement.student_legal_representative_2_email if internship_agreement.student_legal_representative_2_email.present?
-    emails.uniq
+    emails.uniq.compact
   end
 end

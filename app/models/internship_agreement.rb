@@ -98,7 +98,7 @@ class InternshipAgreement < ApplicationRecord
     # validate is a reserved keyword and finalize is used instead.
     # Means the agreement is ready to be signed by one of the parties
     event :finalize do
-      transitions from: %i[completed_by_employer started_by_school_manager],
+      transitions from: %i[completed_by_employer started_by_school_manager validated],
                   to: :validated,
                   after: proc { |*_args|
                            notify_signatures_enabled unless skip_notifications_when_system_creation
@@ -243,10 +243,6 @@ class InternshipAgreement < ApplicationRecord
     Presenters::InternshipAgreement.new(self, user)
   end
 
-  def roles_not_signed_yet
-    [school_management_representative.role, 'employer', 'student', 'legal_representative'] - roles_already_signed
-  end
-
   def archive
     fields_to_reset = {
       organisation_representative_full_name: 'NA',
@@ -294,6 +290,14 @@ class InternshipAgreement < ApplicationRecord
   #   end while self.class.exists?(legal_representative_token:)
   #   save!(validate: false)
   # end
+
+  def notify_others_signatures_started
+    GodMailer.notify_others_signatures_started_email(
+      internship_agreement: self,
+      missing_signatures_recipients: missing_signatures_recipients,
+      last_signature: signatures.last
+    ).deliver_later
+  end
 
   private
 

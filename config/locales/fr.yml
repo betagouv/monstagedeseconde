@@ -24,9 +24,15 @@ fr:
       welcome_student: "Bienvenue sur 1élève1stage. Commencez votre recherche ici : %{shrinked_url}"
   activerecord:
     models:
+      legal_representative:  Représentant légal
+      school_manager: Chef d'établissement
+      employer: Employeur
       area_notification:
         one: Notification
         other: Notifications
+      employer:
+        one: Employeur
+        other: Employeurs
       entreprise:
         one: Entreprise ou administration
         other: Entreprises ou administrations
@@ -60,6 +66,9 @@ fr:
       internship_applications/weekly_framed:
         one: Candidature
         other: Candidatures
+      legal_representative:
+        one: Représentant légal
+        other: Représentants légaux
       operator:
         one: Association
         other: Associations
@@ -72,6 +81,9 @@ fr:
       school:
         one: Établissement
         other: Établissements
+      school_manager:
+        one: Chef d'établissement
+        other: Chefs d'établissement
       team_member_invitation:
         one: Membre de l'équipe
         other: Membres de l'équipe
@@ -123,6 +135,7 @@ fr:
       week:
         one: Semaine
         other: Semaines
+
 
     attributes:
       area_notification:

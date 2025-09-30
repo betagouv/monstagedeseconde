@@ -70,7 +70,7 @@ class Signature < ApplicationRecord
   end
 
   def all_signed?
-    signatures_count == REQUESTED_SIGNATURES_COUNT && internship_agreement.employer_signed?
+    signatures_count == REQUESTED_SIGNATURES_COUNT && internship_agreement.signed_by_employer?
   end
 
   def attach_signature!(io:, filename:, content_type:)
@@ -97,7 +97,7 @@ class Signature < ApplicationRecord
                             .pluck(:signatory_role)
     return unless signed_roles.include?(signatory_role)
 
-    errors.add(:signatory_role, "#{I18n.t signatory_role} a déjà signé")
+    errors.add(:signatory_role, "#{FR_SIGNATORY_ROLE[signatory_role.to_sym]} a déjà signé")
   end
 
   def employer_signatory_role?

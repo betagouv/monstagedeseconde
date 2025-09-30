@@ -231,8 +231,10 @@ Rails.application.routes.draw do
         resources :internship_applications, path: 'candidatures', only: %i[index show edit update], param: :uuid do
           post :resend_application, on: :member
         end
-        get 'internship_agreements/:uuid/sign', to: 'internship_agreements#sign', as: :sign_internship_agreement
-        get 'internship_agreements/:uuid/legal_representative_sign', to: 'internship_agreements#legal_representative_sign', as: :legal_representative_sign_internship_agreement
+        resources :internship_agreements, path: 'conventions-de-stage', only: %i[new], param: :uuid do
+          get :sign, on: :member
+          post :legal_representative_sign, on: :member
+        end
       end
       get 'candidatures', to: 'internship_offers/internship_applications#user_internship_applications'
     end

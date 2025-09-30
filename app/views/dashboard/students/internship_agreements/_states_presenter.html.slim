@@ -23,14 +23,14 @@
                     dashboard_internship_agreement_path(uuid: @internship_agreement.uuid, format: :pdf),
                     class: "fr-btn fr-btn--sm fr-btn-secondary",
                     target: "_blank"
-          - if @prez.signed?
+          - if @prez.signed_by_student?
             = link_to "Vous avez déjà signé la convention",
                       '#',
                       class: "fr-btn fr-btn--tertiary fr-btn--sm fr-ml-2w fr-btn--icon-left fr-icon-check-line green-box",
                       disabled: true
           - else
              = button_to "Signer la convention de stage",
-                         dashboard_students_sign_internship_agreement_path(uuid: @internship_agreement.uuid),
+                         sign_dashboard_students_internship_agreement_path(uuid: @internship_agreement.uuid),
                          method: :get,
                          data: { turbo: false },
                          class: "fr-btn fr-btn--sm fr-ml-2w"

@@ -61,8 +61,12 @@ module Presenters
       common_status_label(translation_path)
     end
 
-    def signed?
-      ::Signature.where(internship_agreement_id: internship_agreement.id, user_id: reader.id).exists?
+    def signed_by_student?
+      ::Signature.where(
+        internship_agreement_id: internship_agreement.id,
+        user_id: reader.id,
+        signatory_role: 'student'
+      ).exists?
     end
 
     def human_state

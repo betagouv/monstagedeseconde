@@ -8,13 +8,19 @@ module ReviewRebuild
         iag = iag_builder.new_from_application(application)
         iag.skip_notifications_when_system_creation = true
         info(iag.errors.full_messages.to_sentence) unless iag.valid?
+        iag.student_legal_representative_full_name = 'Lise Collado'
+        iag.student_legal_representative_email = 'lise.collado@orange.fr'
+        iag.student_legal_representative_2_full_name = 'Frédéric Tolenado'
+        iag.student_legal_representative_2_email = 'frederic.tolenado@free.fr'
         iag.save! if iag.valid?
       end
-      InternshipAgreement.all.each do |iag|
+      internship_agreements = InternshipAgreement.all.to_a
+      internship_agreements[0..-2].each do |iag|
         iag.complete!
         iag.start_by_school_manager!
         iag.finalize!
       end
+
       agreement = InternshipAgreement.troisieme_grades.first
       Signature.new(common_attributes(agreement, 'school_manager'))
                .save!
@@ -34,6 +40,9 @@ module ReviewRebuild
       Signature.new(common_attributes(agreement, 'employer'))
                .save!
       agreement.sign!
+      Signature.new(common_attributes(agreement, 'legal_representative'))
+               .save!
+      agreement.sign!
 
       # --- pair signing
       agreement = InternshipAgreement.seconde_grades.third
@@ -42,6 +51,10 @@ module ReviewRebuild
       agreement.sign!
 
       Signature.new(common_attributes(agreement, 'employer'))
+               .save!
+      agreement.sign!
+
+      Signature.new(common_attributes(agreement, 'student'))
                .save!
       agreement.sign!
     end
@@ -57,8 +70,12 @@ module ReviewRebuild
       hash[:signatory_role] = signatory_role
       hash[:user_id] = if signatory_role == 'school_manager'
                          agreement.school_manager.id
-                       else
+                       elsif signatory_role == 'employer'
                          agreement.employer.id
+                       elsif signatory_role == 'student'
+                         agreement.student.id
+                       elsif signatory_role == 'legal_representative'
+                         agreement.student.id
                        end
       hash
     end

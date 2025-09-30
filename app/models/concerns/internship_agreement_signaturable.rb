@@ -2,6 +2,10 @@ module InternshipAgreementSignaturable
   extend ActiveSupport::Concern
 
   included do
+    def roles_not_signed_yet
+      [school_management_representative.role, 'employer', 'student', 'legal_representative'] - roles_already_signed
+    end
+
     def signature_by_role(signatory_role:)
       return nil if signatures.blank?
 
@@ -21,14 +25,6 @@ module InternshipAgreementSignaturable
       return signature.signature_image.attached? if signature && signature.signature_image
 
       false
-    end
-
-    def notify_others_signatures_started
-      GodMailer.notify_others_signatures_started_email(
-        internship_agreement: self,
-        missing_signatures_recipients: missing_signatures_recipients,
-        last_signature: signatures.last
-      ).deliver_later
     end
 
     def missing_signatures_recipients
@@ -66,7 +62,7 @@ module InternshipAgreementSignaturable
     end
 
     # --- student
-    def student_signed?
+    def signed_by_student?
       return false if discarded?
       return false unless signatures.any?
 
@@ -86,7 +82,7 @@ module InternshipAgreementSignaturable
       (signatory_roles & Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE)&.first
     end
     # --- employer
-    def employer_signed?
+    def signed_by_employer?
       return false if discarded?
       return false unless signatures.any?
 
@@ -101,11 +97,14 @@ module InternshipAgreementSignaturable
     end
 
     # --- legal representative
-    def legal_representative_signed?
-      return false if discarded?
+    def signed_by_legal_representative?
       return false unless signatures.any?
 
       signatures.pluck(:signatory_role).include?('legal_representative')
+    end
+
+    def student_legal_representative_signature
+      signed_by_legal_representative? && signature_by_role(signatory_role: 'legal_representative')
     end
 
     private

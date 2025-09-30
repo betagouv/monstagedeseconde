@@ -40,9 +40,33 @@ class GodMailerTest < ActionMailer::TestCase
     assert_equal [EmailUtils.from], email.from
     expected_recipients = internship_agreement.internship_application.employers_filtered_by_notifications_emails + [
       internship_agreement.school_management_representative.email,
-      internship_agreement.internship_application.student.email,
-      internship_agreement.student_representative]
+      internship_agreement.internship_application.student.email] +
+      GodMailer.new.legal_representatives_emails(internship_agreement)
     assert_equal expected_recipients.sort, email.to.sort
     refute_email_spammyness(email)
+  end
+
+  test 'notify_signatures_enabled launches two emails' do
+    internship_agreement = create(:internship_agreement, :started_by_school_manager)
+    create(:signature, :school_manager, internship_agreement: internship_agreement)
+    create(:signature, :employer, internship_agreement: internship_agreement)
+    create(:signature, :student, internship_agreement: internship_agreement)
+
+    assert_emails 2 do
+      internship_agreement.finalize!
+    end
+    # First email to all parties except legal representatives
+    email1 = ActionMailer::Base.deliveries[-2]
+    assert_equal [EmailUtils.from], email1.from
+    expected_recipients1 = internship_agreement.internship_application.employers_filtered_by_notifications_emails + [
+      internship_agreement.school_management_representative.email,
+      internship_agreement.internship_application.student.email]
+    assert_equal expected_recipients1.sort, email1.to.sort
+    assert_equal 'Imprimez et signez la convention de stage.', email1.subject
+    refute_email_spammyness(email1) 
+    # Second email to legal representatives
+    email2 = ActionMailer::Base.deliveries[-1]
+    assert_equal internship_agreement.student_legal_representative_email, email2.to.first
+    assert_equal [EmailUtils.from], email2.from
   end
 end

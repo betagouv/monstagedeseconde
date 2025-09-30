@@ -381,7 +381,10 @@ class GenerateInternshipAgreement < Prawn::Document
     column_widths = [@pdf.bounds.width / headers.size] * headers.size
     @pdf.table([headers],
                cell_style: { border_width: 0 },
-               column_widths: column_widths)
+               column_widths: column_widths) do |t|
+      t.cells.align = :left
+      t.cells.font_style = :bold
+    end
 
     employer_signature_img = image_from(signature: download_image_and_signature(signatory_role: 'employer'))
     school_manager_signature_img = image_from(signature: school_manager_signature)
@@ -389,18 +392,31 @@ class GenerateInternshipAgreement < Prawn::Document
 
     @pdf.table([signatures_array], cell_style: { border_width: 0, height: 80 }, column_widths: column_widths)
 
-    @pdf.move_down 10
-    @pdf.text 'Vu et pris connaissance,'
-    @pdf.move_down 10
+    # @pdf.move_down 10
+    # @pdf.text 'Vu et pris connaissance,'
+    # @pdf.move_down 10
     @pdf.table([['Les parents ou les responsables légaux', 'L’enseignant (ou les enseignants) éventuellement']],
                cell_style: { border_width: 0 },
-               column_widths: column_widths)
-    @pdf.move_down 40
+               column_widths: column_widths) do |t|
+      t.cells.align = :left
+      t.cells.font_style = :bold
+    end
+    if @internship_agreement.signed_by_legal_representative?
+      student_legal_representative_signature_txt = "#{@internship_agreement.student_legal_representative_full_name}"
+      signatures_txt = [student_legal_representative_signature_txt, '']
+      student_legal_representative_signature_timing = "a signé électroniquement le : #{@internship_agreement.student_legal_representative_signature.signature_date.strftime('%d/%m/%Y à %Hh%M')}"
+      signatures_timing_txt = [student_legal_representative_signature_timing]
+      @pdf.table([signatures_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
+      @pdf.table([signatures_timing_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
+    end
     @pdf.table([['L\'élève', '']],
                cell_style: { border_width: 0 },
-               column_widths: column_widths)
+               column_widths: column_widths) do |t|
+      t.cells.align = :left
+      t.cells.font_style = :bold
+    end
     # @pdf.move_down 10
-    if @internship_agreement.student_signed?
+    if @internship_agreement.signed_by_student?
       student_signature_txt = "#{@internship_agreement.student.presenter.full_name} "
       signatures_txt = [student_signature_txt]
       student_signature_timing = "a signé électroniquement le : #{@internship_agreement.student_signature.signature_date.strftime('%d/%m/%Y à %Hh%M')}"
@@ -410,6 +426,7 @@ class GenerateInternshipAgreement < Prawn::Document
     end
     # @pdf.text 'Le responsable de l’accueil en milieu professionnel'
   end
+
 
   # def signature_data
   #   { header: [[

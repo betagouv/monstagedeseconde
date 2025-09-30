@@ -83,7 +83,7 @@ class Ability
     can :show, :account
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
-    can :apply, InternshipOffer do |internship_offer|
+    can %i[apply], InternshipOffer do |internship_offer|
       ## can apply if ##
       # - user has the right grade
       # - user has not already applied to the same offer

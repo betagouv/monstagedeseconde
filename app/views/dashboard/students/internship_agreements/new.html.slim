@@ -1,0 +1,61 @@
+h1.fr-my-4w ="Espace de signature de la convention de stage destiné aux responsables légaux de #{@internship_agreement.student.presenter.full_name}"
+- if @internship_agreement.signed_by_legal_representative?
+  .fr-alert.fr-alert--success.fr-mb-4w role="alert"
+    = image_tag "icons/ri-check-line.svg", class: "fr-icon--sm fr-icon--inline fr-mr-1w", alt: ""
+    | La convention de stage a déjà été signée par #{@internship_agreement.signatures.find_by(signatory_role: :legal_representative).student_legal_representative_full_name}
+  .fr-mb-4w.d-flex.justify-content-between.fr-mb-16w
+    .fr-mt-2w
+      = link_to "Télécharger la convention de stage (PDF)",
+                dashboard_internship_agreement_path(uuid: @internship_agreement.uuid, format: :pdf),
+                class: "fr-btn fr-btn--sm fr-mt-2w",
+                target: "_blank"
+      = link_to "Retour à l'accueil",
+                root_path,
+                class: "fr-btn fr-btn--sm fr-btn--secondary fr-ml-2w"
+- else
+  .fr-callout.fr-mt-2w
+    h3.fr-callout__title Vous êtes sur le point de signer la convention de stage de votre enfant.
+    p.fr-callout__text Merci de bien vouloir vérifier les informations suivantes avant de procéder à la signature.
+    p.fr-callout__text  Vous trouverez ci-dessous le lien de téléchargement de la convention de stage de l'élève dont vous avez la charge.
+    p
+      = link_to "Voir la convention (PDF)",
+                dashboard_internship_agreement_path(uuid: @internship_agreement.uuid, format: :pdf),
+                class: "fr-btn fr-btn--sm fr-btn--secondary",
+                target: "_blank"
+
+  = form_with model: Signature.new,
+              url: legal_representative_sign_dashboard_students_internship_agreement_path(uuid: @internship_agreement.uuid),
+              method: :post,
+              data: { turbo: false },
+              local: true do |f|
+    .fr-mb-3w
+      = f.hidden_field :uuid, value: params[:uuid]
+      = f.hidden_field :student_id, value: params[:student_id]
+      = f.label :student_legal_representative_full_name,
+                "Prénom et nom du responsable légal signataire de la convention de stage",
+                class: "fr-label"
+      - if @internship_agreement.student_legal_representative_full_name.present? && @internship_agreement.student_legal_representative_2_full_name.present?
+        = f.select :student_legal_representative_full_name,
+                  options_for_select([[@internship_agreement.student_legal_representative_full_name, @internship_agreement.student_legal_representative_full_name], [@internship_agreement.student_legal_representative_2_full_name, @internship_agreement.student_legal_representative_2_full_name]]),
+                  { include_blank: 'Sélectionner' },
+                  class: "fr-select"
+      - elsif @internship_agreement.student_legal_representative_full_name.present? && @internship_agreement.student_legal_representative_2_full_name.blank?
+        = f.text_field :student_legal_representative_full_name,
+                    value: @internship_agreement.student_legal_representative_full_name,
+                    class: "fr-input",
+                    readonly: true
+      - elsif @internship_agreement.student_legal_representative_full_name.blank? && @internship_agreement.student_legal_representative_2_full_name.present?
+        = f.text_field :student_legal_representative_full_name,
+                    value: @internship_agreement.student_legal_representative_2_full_name,
+                    class: "fr-input",
+                    readonly: true
+      - else
+        = f.text_field :student_legal_representative_full_name,
+                    value: @internship_agreement.student_legal_representative_full_name,
+                    class: "fr-input"
+
+      - if @internship_agreement.errors[:student_legal_representative_full_name].any?
+        .fr-error-text = @internship_agreement.errors[:student_legal_representative_full_name].first
+    .fr-mb-16w
+      = f.submit "Je signe d'un clic la convention de stage",
+                class: "fr-btn fr-btn--sm fr-btn-primary"
