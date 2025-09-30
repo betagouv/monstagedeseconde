@@ -46,19 +46,16 @@ module Dashboard
                signature: {
                  uuid: internship_agreement.uuid,
                  student_id: student.id,
-                 student_token: student_token,
+                 access_token: internship_agreement.access_token,
                  student_legal_representative_full_name: internship_agreement.student_legal_representative_full_name
                }
              }
         # email is asynchronously sent when creating the signature
-        assert_redirected_to dashboard_students_internship_applications_path(
-          student_id: student.id,
-          uuid: internship_agreement.uuid
-        )
+        assert_redirected_to root_path
         follow_redirect!
         assert_select('.alert', text: 'Vous avez bien signé la convention de stage Fermer ×')
         assert_equal 1, internship_agreement.reload.signatures.count
-        assert_equal 'legal_representative', internship_agreement.signatures.first.signatory_role
+        assert_equal 'student_legal_representative', internship_agreement.signatures.first.signatory_role
         assert_equal 'signatures_started', internship_agreement.aasm_state
       rescue StandardError => e
         flunk "Exception raised: #{e.message}\n#{e.backtrace.join("\n")}"

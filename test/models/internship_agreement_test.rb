@@ -8,12 +8,12 @@ class InternshipAgreementTest < ActiveSupport::TestCase
 
   test '#roles_not_signed_yet' do
     internship_agreement = create(:internship_agreement, aasm_state: :validated)
-    assert_equal %w[school_manager employer student],
+    assert_equal %w[school_manager employer student student_legal_representative],
                  internship_agreement.roles_not_signed_yet
     create(:signature,
            :school_manager,
            internship_agreement_id: internship_agreement.id)
-    assert_equal %w[employer student],
+    assert_equal %w[employer student student_legal_representative],
                  internship_agreement.roles_not_signed_yet
   end
 
@@ -115,9 +115,12 @@ class InternshipAgreementTest < ActiveSupport::TestCase
            internship_agreement_id: internship_agreement.id)
     assert_equal [],
                  internship_agreement.missing_signatures_recipients
-                 
+    create(:signature,
+           :student_legal_representative,
+           internship_agreement_id: internship_agreement.id,
+           user_id: internship_agreement.student.id)
+
     internship_agreement.sign!
     assert internship_agreement.reload.signed_by_all?
-
   end
 end
