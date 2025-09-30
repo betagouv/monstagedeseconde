@@ -61,4 +61,25 @@ export default class extends Controller {
     }
   }
 
+  showFeedback() {
+    // Hide the button
+    this.buttonTarget.style.display = 'none';
+    
+    const successSpan = document.createElement('span');
+    successSpan.innerHTML = '<span class="fr-icon-clipboard-line" aria-hidden="true"></span> Lien copié !';
+    successSpan.classList.add('fr-text--sm', 'copied-success');
+    successSpan.style.marginLeft = '0.5rem';
+    
+    // Insert span after the button
+    this.buttonTarget.parentNode.insertBefore(successSpan, this.buttonTarget.nextSibling);
+    
+    // Restore button and remove span after 2 seconds
+    setTimeout(() => {
+      this.buttonTarget.style.display = '';
+      if (successSpan && successSpan.parentNode) {
+        successSpan.parentNode.removeChild(successSpan);
+      }
+    }, 2000)
+  }
+
 }
