@@ -10,7 +10,7 @@ class Signature < ApplicationRecord
     other: 'other',
     teacher: 'teacher',
     student: 'student',
-    legal_representative: 'legal_representative'
+    student_legal_representative: 'student_legal_representative'
   }
 
   FR_SIGNATORY_ROLE = {
@@ -21,7 +21,7 @@ class Signature < ApplicationRecord
     other: 'Autre',
     teacher: 'Enseignant',
     student: 'Élève',
-    legal_representative: 'Représentant légal'
+    student_legal_representative: 'Représentant légal'
   }.freeze
 
   SCHOOL_MANAGEMENT_SIGNATORY_ROLE = %w[

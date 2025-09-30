@@ -3,7 +3,7 @@ module InternshipAgreementSignaturable
 
   included do
     def roles_not_signed_yet
-      [school_management_representative.role, 'employer', 'student', 'legal_representative'] - roles_already_signed
+      [school_management_representative.role, 'employer', 'student', 'student_legal_representative'] - roles_already_signed
     end
 
     def signature_by_role(signatory_role:)
@@ -100,11 +100,11 @@ module InternshipAgreementSignaturable
     def signed_by_legal_representative?
       return false unless signatures.any?
 
-      signatures.pluck(:signatory_role).include?('legal_representative')
+      signatures.pluck(:signatory_role).include?('student_legal_representative')
     end
 
     def student_legal_representative_signature
-      signed_by_legal_representative? && signature_by_role(signatory_role: 'legal_representative')
+      signed_by_legal_representative? && signature_by_role(signatory_role: 'student_legal_representative')
     end
 
     private

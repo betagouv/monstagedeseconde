@@ -40,7 +40,7 @@ module ReviewRebuild
       Signature.new(common_attributes(agreement, 'employer'))
                .save!
       agreement.sign!
-      Signature.new(common_attributes(agreement, 'legal_representative'))
+      Signature.new(common_attributes(agreement, 'student_legal_representative'))
                .save!
       agreement.sign!
 
@@ -74,7 +74,7 @@ module ReviewRebuild
                          agreement.employer.id
                        elsif signatory_role == 'student'
                          agreement.student.id
-                       elsif signatory_role == 'legal_representative'
+                       elsif signatory_role == 'student_legal_representative'
                          agreement.student.id
                        end
       hash

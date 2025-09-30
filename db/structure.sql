@@ -65,7 +65,7 @@ CREATE TYPE public.agreement_signatory_role AS ENUM (
     'teacher',
     'main_teacher',
     'student',
-    'legal_representative'
+    'student_legal_representative'
 );
 
 

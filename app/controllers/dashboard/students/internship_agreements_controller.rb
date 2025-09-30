@@ -43,7 +43,7 @@ module Dashboard::Students
         redirect_to root_path, alert: 'Un représentant légal a déjà signé cette convention de stage' and return
       else
         Signature.create!(internship_agreement: @internship_agreement,
-                          signatory_role: 'legal_representative',
+                          signatory_role: 'student_legal_representative',
                           user_id: current_user.id,
                           student_legal_representative_full_name: legal_representative_sign_internship_agreement_params[:student_legal_representative_full_name],
                           signatory_ip: request.remote_ip,

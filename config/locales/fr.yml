@@ -24,7 +24,7 @@ fr:
       welcome_student: "Bienvenue sur 1élève1stage. Commencez votre recherche ici : %{shrinked_url}"
   activerecord:
     models:
-      legal_representative:  Représentant légal
+      sudent_legal_representative:  Représentant légal
       school_manager: Chef d'établissement
       employer: Employeur
       area_notification:
@@ -66,7 +66,7 @@ fr:
       internship_applications/weekly_framed:
         one: Candidature
         other: Candidatures
-      legal_representative:
+      student_legal_representative:
         one: Représentant légal
         other: Représentants légaux
       operator:
