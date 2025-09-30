@@ -190,7 +190,7 @@ class GodMailer < ApplicationMailer
     @school_manager        = internship_agreement.school_manager
     @url = new_dashboard_students_internship_agreement_url(
       uuid: internship_agreement.uuid,
-      student_token: student.to_sgid.to_s,
+      access_token: internship_agreement.access_token || '' ,
       student_id: student.id
     ).html_safe
 

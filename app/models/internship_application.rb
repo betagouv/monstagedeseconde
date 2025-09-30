@@ -7,6 +7,7 @@ class InternshipApplication < ApplicationRecord
   include StiPreload
   include AASM
   include Rails.application.routes.url_helpers
+  include Tokenable
   PAGE_SIZE = 10
   EXPIRATION_DURATION = 15.days
   EXTENDED_DURATION = 15.days
@@ -480,13 +481,6 @@ class InternshipApplication < ApplicationRecord
       weeks &= SchoolTrack::Seconde.both_weeks
     end
     weeks
-  end
-
-  def generate_token
-    return if access_token.present?
-
-    self.access_token = SecureRandom.hex(10)
-    save
   end
 
   def create_agreement

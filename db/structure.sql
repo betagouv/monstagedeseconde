@@ -886,7 +886,8 @@ CREATE TABLE public.internship_agreements (
     entreprise_address character varying,
     student_birth_date date,
     pai_project boolean,
-    pai_trousse_family boolean
+    pai_trousse_family boolean,
+    access_token character varying
 );
 
 
@@ -3328,6 +3329,13 @@ CREATE INDEX index_inappropriate_offers_on_user_id ON public.inappropriate_offer
 
 
 --
+-- Name: index_internship_agreements_on_access_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_internship_agreements_on_access_token ON public.internship_agreements USING btree (access_token);
+
+
+--
 -- Name: index_internship_agreements_on_discarded_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4590,6 +4598,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250930160935'),
 ('20250930094414'),
 ('20250924123333'),
 ('20250918161534'),

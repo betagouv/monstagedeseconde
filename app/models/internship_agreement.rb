@@ -8,6 +8,7 @@ class InternshipAgreement < ApplicationRecord
   include AASM
   include Discard::Model
   include InternshipAgreementSignaturable
+  include Tokenable
 
   MIN_PRESENCE_DAYS = 4
   EMPLOYERS_PENDING_STATES = %i[draft started_by_employer signed_by_employer validated].freeze
@@ -15,6 +16,8 @@ class InternshipAgreement < ApplicationRecord
 
   belongs_to :internship_application
   has_many :signatures, dependent: :destroy
+
+  after_create :generate_token, unless: :access_token?
 
   # beware, complementary_terms_rich_text/lega_terms_rich_text are recopy from school.internship_agreement_presets.*
   #         it must stay a recopy and not a direct link (must live separatery)

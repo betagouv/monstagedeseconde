@@ -38,9 +38,23 @@ module Dashboard
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
         internship_agreement = create(:internship_agreement, :validated, internship_application: internship_application)
-        get legal_representative_sign_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id, student_token: student_token)
+        assert_not_nil internship_agreement.student_legal_representative_full_name
+        assert_not_nil internship_agreement.student_legal_representative_email
+        sign_in(student)
+        post legal_representative_sign_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id), 
+             params: {
+               signature: {
+                 uuid: internship_agreement.uuid,
+                 student_id: student.id,
+                 student_token: student_token,
+                 student_legal_representative_full_name: internship_agreement.student_legal_representative_full_name
+               }
+             }
         # email is asynchronously sent when creating the signature
-        assert_redirected_to dashboard_students_internship_applications_path(student_id: student.id)
+        assert_redirected_to dashboard_students_internship_applications_path(
+          student_id: student.id,
+          uuid: internship_agreement.uuid
+        )
         follow_redirect!
         assert_select('.alert', text: 'Vous avez bien signé la convention de stage Fermer ×')
         assert_equal 1, internship_agreement.reload.signatures.count

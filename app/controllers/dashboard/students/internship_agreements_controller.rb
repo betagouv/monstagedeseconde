@@ -1,17 +1,20 @@
 module Dashboard::Students
   class InternshipAgreementsController < ApplicationController
+    include EduconnectLogout
     layout 'student_legal_representative_layout', only: %i[new]
     before_action :authenticate_user!, only: %i[sign legal_representative_sign]
     before_action :fetch_internship_agreement
 
     def new
-      student_token = params[:student_token]
-      student = GlobalID::Locator.locate_signed(student_token) if student_token
-      redirect_to root_path and return if student.nil?
+      access_token = params[:access_token]
+      internship_agreement = InternshipAgreement.find_by(access_token: access_token)
+      redirect_to root_path and return if internship_agreement.nil?
 
-      sign_in(student) if student != current_user
-      authorize! :legal_representative_sign, @internship_agreement
-      render :new, params: { student_id: student.id , uuid: params[:uuid] }
+      render :new, params: { 
+        student_id: internship_agreement.student.id ,
+        uuid: params[:uuid],
+        access_token: access_token
+      }
     end
 
     def sign
@@ -31,9 +34,10 @@ module Dashboard::Students
     end
 
     def legal_representative_sign
-      student = GlobalID::Locator.locate_signed(legal_representative_sign_internship_agreement_params[:student_token])
-      sign_in(student) if student.present?
-      authorize! :legal_representative_sign, @internship_agreement
+      access_token = legal_representative_sign_internship_agreement_params[:access_token]
+      @internship_agreement = InternshipAgreement.find_by(access_token: access_token)
+      # student = internship_agreement.student
+      redirect_to root_path and return unless @internship_agreement.present?
 
       if @internship_agreement.signed_by_legal_representative?
         redirect_to root_path, alert: 'Un représentant légal a déjà signé cette convention de stage' and return
@@ -46,18 +50,19 @@ module Dashboard::Students
                           signature_date: Time.now)
 
         @internship_agreement.sign! if @internship_agreement.may_sign?
-        sign_out_and_redirect(current_user)
+        @internship_agreement.access_token = nil
+        @internship_agreement.save
         redirect_to root_path, notice: 'Vous avez bien signé la convention de stage' and return
       end
     rescue ActiveRecord::RecordNotFound
-      redirect_to root_path, alert: 'Convention introuvable'
+      redirect_to root_path, alert: 'Convention introuvable' and return
     end
 
     private
 
     def legal_representative_sign_internship_agreement_params
       params.require(:signature)
-            .permit(:uuid, :token, :student_token, :student_legal_representative_full_name)
+            .permit(:uuid, :access_token, :student_id, :student_legal_representative_full_name)
     end
 
     def fetch_internship_agreement
