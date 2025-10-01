@@ -101,7 +101,7 @@ class InternshipAgreement < ApplicationRecord
     # validate is a reserved keyword and finalize is used instead.
     # Means the agreement is ready to be signed by one of the parties
     event :finalize do
-      transitions from: %i[completed_by_employer started_by_school_manager validated],
+      transitions from: %i[completed_by_employer started_by_school_manager],
                   to: :validated,
                   after: proc { |*_args|
                            notify_signatures_enabled unless skip_notifications_when_system_creation
