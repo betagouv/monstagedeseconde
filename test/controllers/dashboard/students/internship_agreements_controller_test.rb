@@ -38,6 +38,7 @@ module Dashboard
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
         internship_agreement = create(:internship_agreement, :validated, internship_application: internship_application)
+        refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
         sign_in(student)
@@ -57,6 +58,10 @@ module Dashboard
         assert_equal 1, internship_agreement.reload.signatures.count
         assert_equal 'student_legal_representative', internship_agreement.signatures.first.signatory_role
         assert_equal 'signatures_started', internship_agreement.aasm_state
+        last_signature = Signature.last
+        assert_equal last_signature.student_legal_representative_full_name, internship_agreement.student_legal_representative_full_name
+        assert_equal last_signature.user_id, student.id
+        assert_nil  internship_agreement.access_token
       rescue StandardError => e
         flunk "Exception raised: #{e.message}\n#{e.backtrace.join("\n")}"
       end

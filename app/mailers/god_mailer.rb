@@ -219,7 +219,7 @@ class GodMailer < ApplicationMailer
     emails << internship_agreement.student_legal_representative_2_email if internship_agreement.student_legal_representative_2_email.present?
     emails.uniq.compact
   end
-  
+
   def offer_was_flagged(inappropriate_offer)
     @inappropriate_offer = inappropriate_offer
     @internship_offer = inappropriate_offer.internship_offer
