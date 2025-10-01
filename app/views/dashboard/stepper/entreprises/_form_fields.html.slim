@@ -231,3 +231,15 @@
                      :'data-entreprise-form-target' => "submitButton",
                      :'data-mandatory-fileds-target' => "disabledField"  do
           = "Suivant "
+
+/ Modal DSFR Tally
+.fr-modal id="manual-input-modal" aria-labelledby="modal-manual-input-title" role="dialog" data-fr-opened="false"
+  .fr-container.fr-container--fluid.fr-container-md
+    .fr-grid-row.fr-grid-row-gutters.fr-grid-row--center
+      .fr-col-12.fr-col-md-10.fr-col-lg-8
+        .fr-modal__body
+          .fr-modal__header
+            button.fr-link--close.fr-link aria-controls="manual-input-modal" data-fr-opened="false"
+              | Fermer
+          .fr-modal__content style="padding: 0; height: 80vh; min-height: 500px;"
+            iframe src="https://tally.so/r/wzP1jZ" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0" title="Dépot d'offre par siret" style="min-height: 500px; border: 1px solid #ccc; background: white;"
