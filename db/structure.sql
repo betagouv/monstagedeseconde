@@ -83,6 +83,19 @@ CREATE TYPE public.inappropriate_ground AS ENUM (
 
 
 --
+-- Name: inappropriate_ground; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.inappropriate_ground AS ENUM (
+    'suspicious_content',
+    'inappropriate_content',
+    'incorrect_address',
+    'false_or_misleading_information',
+    'other'
+);
+
+
+--
 -- Name: school_category; Type: TYPE; Schema: public; Owner: -
 --
 

@@ -72,6 +72,7 @@ class Ability
             transform_user], User
     can :manage, Operator
     can :read_employer_name, InternshipOffer
+    can :manage, InappropriateOffer
   end
 
   def student_abilities(user:)

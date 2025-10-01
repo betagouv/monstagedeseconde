@@ -1,0 +1,22 @@
+h1 Une offre a été signalée comme inapppropriée
+
+p Bonjour,
+p Voici les détails du signalement
+
+p 
+  ul
+    li Motif: #{@fr_ground}
+    li Détails du signalement: #{@inappropriate_offer.details}
+    - if @user.present?
+      li Utilisateur ayant signalé l'offre: #{@user.presenter.full_name} - #{@user.email} (##{@user.id})
+    - else
+      li Utilisateur ayant signalé l'offre: Anonyme
+    li Offre concernée: #{@internship_offer.title} (##{@internship_offer.id})
+    li URL de l'offre: #{internship_offer_url(@internship_offer)}
+    li Description de l'offre: #{@internship_offer.description}
+
+
+p
+  | Cordialement,
+  br
+  | L'équipe 1élève1stage
