@@ -7,6 +7,7 @@ class ResetReviewDataController < ApplicationController
   end
 
   def create
+    authorize! :manage, :rebuild_review_job
     job_id = params[:job_id]
     redirect_to root_path unless ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true' || Rails.env.production?
 

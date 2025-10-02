@@ -127,7 +127,7 @@ main#content role="main" data-controller="signup"
               ul.fr-btns-group
                 li
                   = link_to "Créer un compte",
-                            pro_login_path,
+                            new_user_registration_path(as: params[:as]),
                             class: "fr-btn fr-btn--secondary"
 
               hr.fr-mb-0

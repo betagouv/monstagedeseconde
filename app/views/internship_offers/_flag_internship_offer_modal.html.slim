@@ -1,0 +1,44 @@
+dialog id="modal-inappropriate-offer" class="fr-modal" aria-labelledby="modal-inappropriate-offer-title" aria-modal="true"
+  div class="fr-container fr-container--fluid fr-container-md"
+    div class="fr-grid-row fr-grid-row--center"
+      div class="fr-col-12 fr-col-md-8 fr-col-lg-6"
+        div class="fr-modal__body"
+          div class="fr-modal__header"
+            button aria-controls="modal-inappropriate-offer" title="Fermer" type="button" class="fr-btn--close fr-btn" Fermer
+
+          .fr-modal__content data-controller="mandatory-fields" data-mandatory-fields-minimum-length-value="10"
+            h2 id="modal-inappropriate-offer-title" class="fr-modal__title"
+              span class="fr-icon-flag-line  fr-icon--lg" aria-hidden="true"
+              =" Signaler une offre inappropriée"
+            = form_with url: flag_internship_offer_path(internship_offer),
+                        scope: :inappropriate_offer,
+                        method: :post,
+                        data: { turbo: false } do |f|
+              .fr-mb-2w
+                = f.label :ground,
+                          'Motif du signalement',
+                          class: 'fr-label'
+                = f.select :ground,
+                  options_for_select(InappropriateOffer.options_for_select),
+                      {},
+                      class: 'fr-select'
+              .fr-mb-2w [data-controller="char-counter"
+                         data-char-counter-max-length-value="350" ]
+                = f.label :details,
+                          "Détails <span class=\"fr-hint fr-text--sm\">(#{InappropriateOffer::MIN_DETAILS_LENGTH} caractères minimum)</span>".html_safe,
+                          class: 'fr-label fr-mt-2v'
+                .fr-hint.fr-text--sm.fr-mt-1v
+                  =""
+                = f.text_area :details,
+                              class: 'fr-input',
+                              rows: 4,
+                              data: { :'char-counter-target' => 'field',
+                                     action: 'input->char-counter#updateCharCount input->mandatory-fields#fieldChange',
+                                     :'mandatory-fields-target' => "mandatoryField"}
+                .fr-alert.fr-my-2v.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-char-counter-target="alertMessage"
+                  = "La description ne pas dépasser #{InappropriateOffer::MAX_DETAILS_LENGTH} caractères"
+                small.form-text data-char-counter-target="currentCount"
+                  | 0 caractères / 350
+              = f.submit 'Envoyer',
+                         class: 'fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left',
+                         data: { :'mandatory-fields-target' => "disabledField"}

@@ -39,7 +39,7 @@ module Dashboard::InternshipOffers
         assert_equal employer, created_internship_offer.employer
         assert_equal params[:max_candidates], created_internship_offer.max_candidates
         assert_equal params[:max_candidates], created_internship_offer.remaining_seats_count
-        assert_equal params[:school_ids], created_internship_offer.schools.map(&:id)
+        assert_equal params[:school_ids].sort, created_internship_offer.schools.map(&:id).sort
         assert_equal params[:week_ids], created_internship_offer.weeks.map(&:id)
         assert_equal params[:grade_ids], created_internship_offer.grades.map(&:id)
         assert_redirected_to internship_offer_path(created_internship_offer, stepper: true)
