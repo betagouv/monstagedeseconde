@@ -193,11 +193,7 @@ module Dashboard
                            signature_date: Time.now,
                            signature_phone_number: current_user.try(:phone))
 
-          if internship_agreement.signatures_started?
-            internship_agreement.signatures_finalize!
-          else
-            internship_agreement.sign!
-          end
+          internship_agreement.sign!
         end
 
         redirect_to dashboard_internship_agreements_path,

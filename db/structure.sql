@@ -62,7 +62,9 @@ CREATE TYPE public.agreement_signatory_role AS ENUM (
     'cpe',
     'admin_officer',
     'teacher',
-    'main_teacher'
+    'main_teacher',
+    'student',
+    'legal_representative'
 );
 
 
@@ -4586,6 +4588,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250918161534'),
 ('20250918093304'),
 ('20250917192024'),
 ('20250917144238'),

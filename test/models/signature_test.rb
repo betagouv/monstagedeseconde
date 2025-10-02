@@ -24,6 +24,7 @@ class SignatureTest < ActiveSupport::TestCase
     signature = create(:signature, :employer)
     refute signature.all_signed?
     create(:signature, :school_manager, internship_agreement_id: signature.internship_agreement_id)
+    create(:signature, :student, internship_agreement_id: signature.internship_agreement_id)
     assert signature.all_signed?
   end
 

@@ -62,44 +62,6 @@ class EmployerMailer < ApplicationMailer
     )
   end
 
-  def notify_others_signatures_started_email(internship_agreement:, employer:, school_management:)
-    internship_application = internship_agreement.internship_application
-    recipients_email       = internship_application.filtered_notification_emails
-    @internship_offer      = internship_application.internship_offer
-    student                = internship_application.student
-    @prez_stud             = student.presenter
-    @employer              = employer
-    @school_manager        = school_management
-    @url = dashboard_internship_agreements_url(
-      id: internship_agreement.id,
-      mtm_campaign: 'Offreur - Convention Ready to Sign'
-    ).html_safe
-
-    send_email(
-      to: recipients_email,
-      subject: 'Une convention de stage attend votre signature'
-    )
-  end
-
-  def notify_others_signatures_finished_email(internship_agreement:, employer:, school_management:)
-    internship_application = internship_agreement.internship_application
-    recipients_email       = internship_application.filtered_notification_emails
-    @internship_offer      = internship_application.internship_offer
-    student                = internship_application.student
-    @prez_stud             = student.presenter
-    @employer              = @internship_offer.employer
-    @school_manager        = school_management
-    @url = dashboard_internship_agreements_url(
-      id: internship_agreement.id,
-      mtm_campaign: 'Offreur - Convention Ready to Sign'
-    ).html_safe
-
-    send_email(
-      to: @employer.email,
-      subject: 'Dernière ligne droite pour la convention de stage'
-    )
-  end
-
   def transfer_internship_application_email(internship_application:, employer_id:, email:, message:)
     @internship_application = internship_application
     @internship_offer       = internship_application.internship_offer

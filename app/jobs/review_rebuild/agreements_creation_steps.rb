@@ -44,7 +44,6 @@ module ReviewRebuild
       Signature.new(common_attributes(agreement, 'employer'))
                .save!
       agreement.sign!
-      # agreement.signatures_finalize!
     end
 
     def common_attributes(agreement, signatory_role)
