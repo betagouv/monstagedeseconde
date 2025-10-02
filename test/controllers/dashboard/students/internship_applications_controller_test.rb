@@ -113,7 +113,6 @@ module Dashboard
         internship_application = create(:weekly_internship_application, {
                                           student:,
                                           aasm_state: :approved,
-                                          convention_signed_at: 1.days.ago,
                                           approved_at: 1.days.ago,
                                           validated_by_employer_at: 1.days.ago,
                                           submitted_at: 2.days.ago
