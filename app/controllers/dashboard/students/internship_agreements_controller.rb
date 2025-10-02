@@ -7,11 +7,11 @@ module Dashboard::Students
 
     def new
       access_token = params[:access_token]
-      internship_agreement = InternshipAgreement.find_by(access_token: access_token)
-      redirect_to root_path and return if internship_agreement.nil?
+      @internship_agreement = InternshipAgreement.find_by(access_token: access_token)
+      redirect_to root_path and return if @internship_agreement.nil?
 
-      render :new, params: { 
-        student_id: internship_agreement.student.id ,
+      render :new, params: {
+        student_id: @internship_agreement.student.id ,
         uuid: params[:uuid],
         access_token: access_token
       }
