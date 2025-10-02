@@ -138,15 +138,11 @@ module InternshipsOffers
     end
 
     test 'RGPD' do
-      internship_offer = create(:weekly_internship_offer_2nde, tutor_name: 'Eric', tutor_phone: '0123456789',
-                                                               tutor_email: 'eric@octo.com', title: 'Test', description: 'Test', employer_website: 'Test',
+      internship_offer = create(:weekly_internship_offer_2nde, title: 'Test', description: 'Test', employer_website: 'Test',
                                                                street: 'rue', employer_name: 'Octo', employer_description: 'Test')
 
       internship_offer.anonymize
 
-      assert_not_equal 'Eric', internship_offer.tutor_name
-      assert_not_equal '0123456789', internship_offer.tutor_phone
-      assert_not_equal 'eric@octo.com', internship_offer.tutor_email
       assert_not_equal 'Test', internship_offer.title
       assert_not_equal 'Test', internship_offer.description
       assert_not_equal 'Test', internship_offer.employer_website

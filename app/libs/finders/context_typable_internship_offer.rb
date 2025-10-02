@@ -72,7 +72,6 @@ module Finders
         grade_id
       ].each { |attr| query = send("#{attr}_query", query) if use_params(attr) }
 
-      query = hide_duplicated_offers_query(query) unless user.god?
       if coordinate_params
         query = with_distance_order ? nearby_query(query) : nearby_query_without_order(query)
       end
@@ -118,10 +117,6 @@ module Finders
                                                longitude: coordinate_params.longitude,
                                                radius: radius_params)
       query.merge(proximity_query)
-    end
-
-    def hide_duplicated_offers_query(query)
-      query.merge(query.where(hidden_duplicate: false))
     end
   end
 end
