@@ -38,7 +38,8 @@ class UserMailer < ApplicationMailer
     end
   end
 
-  def made_school_manager_email(school)
-    "ce.#{school.code_uai.downcase}@#{school.email_domain_name}"
-  end
+  # not used
+  # def made_school_manager_email(school)
+  #   "ce.#{school.code_uai.downcase}@#{school.email_domain_name}"
+  # end
 end
