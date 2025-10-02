@@ -10,9 +10,14 @@ div
           th[scope="col"]
             | Intitulé du stage
           th[scope="col"]
-            | Candidature annulée
+            | Candidature expirée
             br/
             | dans
+            button.fr-btn.fr-btn--tooltip[aria-describedby="tooltip" type="button"]
+              | infobulle
+            span.fr-tooltip.fr-placement[id="tooltip" role="tooltip"]
+              | Une candidature expirée pourra toujours être réactivée par la suite. 
+              = link_to "Voir comment.", "https://docs.numerique.gouv.fr/docs/b222be3e-654e-48f5-90d2-4fb0585a0236/", class: 'fr-link fr-text--sm'
           th[scope="col"]
             | Statut
           th[scope="col"]
