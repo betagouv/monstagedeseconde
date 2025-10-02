@@ -839,13 +839,11 @@ CREATE TABLE public.internship_agreements (
     student_class_room character varying(50),
     student_school character varying(150),
     tutor_full_name character varying(275),
-    doc_date date,
     school_manager_accept_terms boolean DEFAULT false,
     employer_accept_terms boolean DEFAULT false,
     weekly_hours text[] DEFAULT '{}'::text[],
     daily_hours jsonb DEFAULT '{}'::jsonb,
     teacher_accept_terms boolean DEFAULT false,
-    school_delegation_to_sign_delivered_at date,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
     siret character varying(14),
@@ -1826,9 +1824,6 @@ CREATE TABLE public.schools (
     rep_kind character varying(50),
     visible boolean DEFAULT true,
     internship_agreement_online boolean DEFAULT false,
-    fetched_school_phone character varying(20),
-    fetched_school_address character varying(300),
-    fetched_school_email character varying(100),
     legal_status character varying(20),
     delegation_date date,
     is_public boolean DEFAULT true,
@@ -1839,7 +1834,17 @@ CREATE TABLE public.schools (
     voie_generale boolean,
     voie_techno boolean,
     full_imported boolean DEFAULT false,
-    qpv boolean DEFAULT false
+    qpv boolean DEFAULT false,
+    contact_phone character varying(20),
+    contact_email character varying(120),
+    web character varying(255),
+    code_nature character varying(3),
+    code_type_contrat_prive character varying(100),
+    ministere_tutelle character varying(80),
+    lycee_des_metiers boolean,
+    lycee_militaire boolean,
+    lycee_agricole boolean,
+    segpa boolean
 );
 
 
@@ -4598,6 +4603,8 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251001162458'),
+('20251001145652'),
 ('20250930160935'),
 ('20250930094414'),
 ('20250924123333'),

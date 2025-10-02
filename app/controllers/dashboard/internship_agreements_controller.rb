@@ -131,7 +131,6 @@ module Dashboard
               :organisation_representative_full_name,
               :organisation_representative_role,
               :date_range,
-              :doc_date,
               :activity_scope,
               :activity_preparation,
               :activity_learnings,

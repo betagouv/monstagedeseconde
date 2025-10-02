@@ -291,7 +291,6 @@ fr:
         activity_learnings_rich_text: Compétences visées
         legal_terms_rich_text: Conditions complémentaires
         student_school: Établissement de l'élève
-        doc_date: Date du document
         weekly_planning: Planning hebdomadaire
         aasm_state:
           one: Statut
