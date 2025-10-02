@@ -431,8 +431,6 @@ class AbilityTest < ActiveSupport::TestCase
 
     assert(ability.can?(:manage_school_users, school))
     assert(ability.can?(:manage_school_students, school))
-    assert(ability.can?(:choose_school, teacher),
-           'student should be able to choose_school')
     assert(ability.can?(:manage_school_internship_agreements, school))
     assert(ability.cannot?(:create_remote_internship_request, school))
 

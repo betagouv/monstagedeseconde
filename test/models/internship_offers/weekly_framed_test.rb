@@ -183,7 +183,7 @@ module InternshipsOffers
         assert_equal [], duplicated_internship_offer.internship_applications
         assert_equal [Grade.seconde], internship_offer.grades
         assert_equal [Grade.seconde], duplicated_internship_offer.grades
-        assert_equal [], duplicated_internship_offer.weeks
+        assert_equal internship_offer.weeks, duplicated_internship_offer.weeks
         assert_equal duplicated_internship_offer.employer_id, internship_offer.employer_id
         assert internship_offer.unpublished?
         assert_nil duplicated_internship_offer.published_at

@@ -8,7 +8,6 @@ namespace :year_end do
               InternshipApplication,
               InternshipAgreement,
               User,
-              Identity,
               AcademyRegion,
               Academy,
               ClassRoom,

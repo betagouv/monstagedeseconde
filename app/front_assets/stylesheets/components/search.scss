@@ -78,11 +78,12 @@
   top: 0;
   height: 100vh;
 }
-
-.leaflet-container {
-  width: 100% !important;
-  height: 100vh !important;
-  z-index: 9;
+.map-container-offer {
+  .leaflet-container {
+    width: 100% !important;
+    height: 100vh !important;
+    z-index: 9;
+  }
 }
 
 /* Masquer les styles en conflit */

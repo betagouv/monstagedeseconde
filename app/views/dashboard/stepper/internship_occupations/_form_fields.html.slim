@@ -3,7 +3,7 @@
     = form.hidden_field :employer_id, value: current_user.id
     - if resource.id
       = form.hidden_field :id, value: resource.id
-    div [data-controller='mandatory-fields-with-coordinates fill-card stars'
+    div [data-controller='mandatory-fields-with-coordinates fill-card'
           data-mandatory-fields-with-coordinates-minimum-length-value="6"
           data-mandatory-fields-with-coordinates-maximum-length-value="#{InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT}"
           data-mandatory-fields-with-coordinates-no-event-check-value="#{resource.id.present?}"]
@@ -21,15 +21,14 @@
                           label: "Indiquez le ou les métiers qui seront observables par l'élève *",
                           placeholder: "Observation du métier de comptable",
                           aria: {labelledby: 'label_internship_occupation_title'},
-                          required: false,
+                          required: true,
                           title: 'intitulé du stage',
                           object: form.object,
                           field_type: :text_field,
                           options: { maxlength: 150,
                                     data: { action: "input->mandatory-fields-with-coordinates#fieldChange input->fill-card#offerTitleChanged",
                                             :'mandatory-fields-with-coordinates-target' => "mandatoryField",
-                                            :'fill-card-target' => "offerTitleInput",
-                                            :'stars-target' => 'title'} }
+                                            :'fill-card-target' => "offerTitleInput"} }
               .fr-alert.fr-alert--info
                 h3.fr-alert__title Conseil
                 p
@@ -58,40 +57,37 @@
                           label: "Décrivez les activités qui seront proposées à l’élève *",
                           placeholder: "10 caractères minimum",
                           aria: {labelledby: 'label_internship_occupation_description'},
-                          required: false,
+                          required: true,
                           title: 'Activités prévues au cours du stage',
                           object: form.object,
                           options: { rows: 5 ,
-                                    data: { action: "input->mandatory-fields-with-coordinates#fieldChange input->stars#onChangeInput",
-                                            :'mandatory-fields-with-coordinates-target' => "mandatoryField",
-                                            :'stars-target' => 'description'}},
+                                    data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
+                                            :'mandatory-fields-with-coordinates-target' => "mandatoryField"}},
                           field_type: :text_area
                 .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
                   |La description est trop longue
                 small.form-text data-max-length-input-target="charCount"
-        .col-6 data-stars-target="recommendationPanel" 
-          .fr-alert.fr-alert--info.fr-mt-13v
-            h3.fr-alert__title Les bonnes pratiques du descriptif de stage
-            p
-              ul
-                li
-                  |Décrivez précisément les activités que vous proposerez aux élèves.
-                li
-                  |Ces activités permettent aux élèves d’observer, de découvrir vos métiers, votre structure et ne doivent pas être un travail en autonomie qu’un salarié pourrait réaliser.
-                li
-                  |Évitez les acronymes, les sigles et les termes techniques. Soyez attentif à l'orthographe et à la grammaire.
 
     .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
       .col-6
         .fr-alert.fr-alert--info
+          h3.fr-alert__title Les bonnes pratiques du descriptif de stage
+          p
+            |
+              Décrivez précisément les activités que vous proposerez aux élèves. Ces activités permettent
+              aux élèves d’observer, de découvrir vos métiers, votre structure et ne doivent
+              pas être un travail en autonomie qu’un salarié pourrait réaliser. Évitez
+              les acronymes, les sigles et les termes techniques.
+              Soyez attentif à l'orthographe et à la grammaire.
           h3.fr-alert__title Ce que la loi stipule
           p
             |
-              Les élèves ne peuvent accéder aux machines, appareils ou produits dont l'usage
-              est proscrit aux mineurs par les articles D. 4153-15 à D. 4153-37 du code du travail.
-              Ils ne peuvent ni procéder à des manœuvres ou manipulations sur d'autres machines,
-              produits ou appareils de production ni effectuer des travaux légers
-              autorisés aux mineurs par ce même code.
+              Les élèves ne peuvent accéder aux machines, appareils ou
+              produits dont l'usage est proscrit aux mineurs par les articles D. 4153-15 à
+              D. 4153-37 du code du travail. Ils ne peuvent ni procéder à des manœuvres ou
+              manipulations sur d'autres machines, produits ou appareils de production
+              ni effectuer des travaux légers autorisés aux mineurs par ce même code.
+
     .row.fr-mt-2w
     .row.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
       .col-6
@@ -122,7 +118,6 @@
             = button_tag :submit,
                         class: 'fr-btn',
                         data: { :'mandatory-fields-with-coordinates-target' => "disabledField",
-                                :'internship_occupation-form-target' => "submitButton",
-                                :'stars-target' => 'validationButton'} do
+                                :'internship_occupation-form-target' => "submitButton"} do
               = "Suivant "
 

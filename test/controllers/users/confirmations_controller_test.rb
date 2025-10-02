@@ -4,30 +4,22 @@ require 'test_helper'
 
 class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
   test 'GET confirmation by email with with valid token and not confirmed user' do
-    student = create(:student, confirmed_at: nil, confirmation_token: 'abc')
-    get user_confirmation_path(confirmation_token: student.confirmation_token)
-    assert_redirected_to new_user_session_path(email: student.email)
+    employer = create(:employer)
+    employer.confirmed_at = nil
+    employer.confirmation_token = 'abc'
+    employer.save
+
+    get user_confirmation_path(confirmation_token: employer.confirmation_token)
+    assert_redirected_to new_user_session_path(email: employer.email)
     follow_redirect!
     assert_select('#alert-success #alert-text', text: 'Votre compte est bien confirmé. Vous pouvez vous connecter.')
   end
 
   test 'GET#new_user_confirmation' do
-    student = create(:student, confirmed_at: nil)
+    employer = create(:employer, confirmed_at: nil)
     get new_user_confirmation_path
     assert_response :success
     assert_select 'title', 'Confirmation | 1Élève1Stage'
-  end
-
-  test 'CREATE#user_confirmation by phone with right phone' do
-    phone = '+330600110011'
-    create(:student, phone: phone,
-                     email: nil,
-                     confirmed_at: nil)
-    assert_enqueued_jobs 1, only: SendSmsJob do
-      post user_confirmation_path(user: { channel: :phone, phone: phone })
-    end
-    assert_select '.fr-alert.fr-alert--error',
-                  html: '<strong>Téléphone mobile</strong> : Votre numéro de téléphone est inconnu', count: 0
   end
 
   test 'CREATE#user_confirmation by email' do

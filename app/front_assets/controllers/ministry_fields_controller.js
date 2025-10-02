@@ -25,15 +25,19 @@ export default class extends Controller {
     // set public state
     this.isEntreprisePublicValue = true;
 
+    // MINISTRY
     // show the ministry choice block
-    const ministry = document.getElementById("ministry-choice");
-    ministry.hidden = false;
+    this.groupNamePublicTarget.classList.remove("fr-hidden");
+    this.groupNamePublicTarget.removeAttribute("hidden");
+
     // set required to true to the entreprise_group_id
     const entrepriseGroup = document.querySelector("#group-choice");
-    if (entrepriseGroup) {
+    const ministryVisible = !['d-none', 'hidden', 'fr-hidden'].some(className => ministry.classList.contains(className));
+    if (entrepriseGroup && ministryVisible) {
       entrepriseGroup.required = true;
     }
 
+    // SECTOR
     // set required to false to the sector_id
     const selectElement = document.querySelector(".sector_list");
     if (selectElement) {
@@ -53,6 +57,10 @@ export default class extends Controller {
       ministryGroup.value = "";
       ministryGroup.required = false;
     }
+
+    // show the sector choice block
+    this.sectorBlockTarget.classList.remove("fr-hidden");
+    this.sectorBlockTarget.removeAttribute("hidden");
 
     // set required to true to the sector_id
     const sectorChoice = document.querySelector("#sector_id");

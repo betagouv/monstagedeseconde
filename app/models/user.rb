@@ -22,7 +22,6 @@ class User < ApplicationRecord
   include DelayedDeviseEmailSender
 
   before_validation :concatenate_and_clean
-  after_create :send_sms_token, unless: :skip_callback_with_review_rebuild
 
   # school_managements includes different roles
   # Everyone should register with ac-xxx.fr email
@@ -149,33 +148,12 @@ class User < ApplicationRecord
   def reset_password_by_phone
     return unless phone_password_reset_count < MAX_DAILY_PHONE_RESET || last_phone_password_reset < 1.day.ago
 
-    send_sms_token
     update(phone_password_reset_count: phone_password_reset_count + 1,
            last_phone_password_reset: Time.now)
   end
 
-  def send_sms_token
-    return unless phone.present?
-
-    create_phone_token
-    message = "Votre code d'activation d'inscription, valide pendant 1h, est : #{phone_token}"
-    SendSmsJob.perform_later(user: self, message:)
-  end
-
-  def create_phone_token
-    update(phone_token: format('%04d', rand(10_000)),
-           phone_token_validity: 1.hour.from_now)
-  end
-
   def phone_confirmable?
     phone_token.present? && Time.now < phone_token_validity
-  end
-
-  def confirm_by_phone!
-    update(phone_token: nil,
-           phone_token_validity: nil,
-           confirmed_at: Time.now,
-           phone_password_reset_count: 0)
   end
 
   def save_phone_user(user_params)
@@ -196,7 +174,7 @@ class User < ApplicationRecord
   end
 
   def send_confirmation_instructions
-    return if created_by_teacher || created_by_system || statistician?
+    return if created_by_system || statistician?
 
     super
   end
@@ -207,7 +185,7 @@ class User < ApplicationRecord
     if add_email_to_phone_account?
       confirm
     else
-      unless @skip_confirmation_notification || created_by_teacher || statistician?
+      unless @skip_confirmation_notification || statistician?
         devise_mailer.update_email_instructions(self, @raw_confirmation_token, { to: unconfirmed_email })
                      .deliver_later
       end
@@ -246,6 +224,7 @@ class User < ApplicationRecord
   def belongs_to_rep_plus_school? = false
   def belongs_to_rep_or_rep_plus_school? = false
   def fake_email? = false
+  def in_a_school? = false
 
   def fetch_current_area_notification = nil
   def create_signature_phone_token = nil

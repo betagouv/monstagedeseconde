@@ -69,6 +69,10 @@ class School < ApplicationRecord
       .nearby(latitude:, longitude:, radius:)
   }
 
+  scope :without_students, lambda {
+    left_joins(class_rooms: :students).where(students: { id: nil }).distinct
+  }
+
   def self.nearby_school_weeks(latitude:, longitude:, radius:)
     internship_weeks_nearby(latitude:, longitude:, radius:)
       .pluck(:week_id)
@@ -218,6 +222,12 @@ class School < ApplicationRecord
   def admin_officer
     admin_officers.first
   end
+
+  def rep_or_rep_plus?
+    rep_kind.in?(%w[rep rep_plus])
+  end
+
+  def qpv? = qpv
 
   private
 

@@ -17,7 +17,7 @@ Rails.application.configure do
     policy.style_src   :self, :https, "'unsafe-inline'"
     policy.frame_src   'https://plugins.crisp.chat', 'https://uneleveunstage.crisp.help', ENV['METABASE_SITE_URL']
     if Rails.env.development?
-      policy.frame_src :self, 'http://localhost:3000'
+      policy.frame_src :self, 'http://localhost:3000', 'https://plugins.crisp.chat', 'https://uneleveunstage.crisp.help', ENV['METABASE_SITE_URL']
     end
     # Specify URI for violation reports
     # policy.report_uri "/csp-violation-report-endpoint"

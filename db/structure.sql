@@ -68,6 +68,19 @@ CREATE TYPE public.agreement_signatory_role AS ENUM (
 
 
 --
+-- Name: inappropriate_ground; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.inappropriate_ground AS ENUM (
+    'suspicious_content',
+    'inappropriate_content',
+    'incorrect_address',
+    'false_or_misleading_information',
+    'other'
+);
+
+
+--
 -- Name: school_category; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -774,31 +787,25 @@ ALTER SEQUENCE public.groups_id_seq OWNED BY public.groups.id;
 
 
 --
--- Name: identities; Type: TABLE; Schema: public; Owner: -
+-- Name: inappropriate_offers; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.identities (
+CREATE TABLE public.inappropriate_offers (
     id bigint NOT NULL,
+    internship_offer_id bigint NOT NULL,
     user_id bigint,
-    first_name character varying(82),
-    last_name character varying(82),
-    school_id bigint,
-    class_room_id bigint,
-    birth_date date,
-    gender character varying DEFAULT 'np'::character varying,
-    token character varying(50),
-    anonymized boolean DEFAULT false,
+    details text,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    grade_id bigint
+    ground public.inappropriate_ground NOT NULL
 );
 
 
 --
--- Name: identities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: inappropriate_offers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.identities_id_seq
+CREATE SEQUENCE public.inappropriate_offers_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -807,10 +814,10 @@ CREATE SEQUENCE public.identities_id_seq
 
 
 --
--- Name: identities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: inappropriate_offers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.identities_id_seq OWNED BY public.identities.id;
+ALTER SEQUENCE public.inappropriate_offers_id_seq OWNED BY public.inappropriate_offers.id;
 
 
 --
@@ -1112,8 +1119,8 @@ ALTER SEQUENCE public.internship_offer_areas_id_seq OWNED BY public.internship_o
 
 CREATE TABLE public.internship_offer_grades (
     id bigint NOT NULL,
-    internship_offer_id bigint NOT NULL,
     grade_id bigint NOT NULL,
+    internship_offer_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -2136,16 +2143,12 @@ CREATE TABLE public.users (
     phone_password_reset_count integer DEFAULT 0,
     last_phone_password_reset timestamp without time zone,
     anonymized boolean DEFAULT false NOT NULL,
-    banners jsonb DEFAULT '{}'::jsonb,
     targeted_offer_id integer,
     signature_phone_token character varying(10),
     signature_phone_token_expires_at timestamp(6) without time zone,
     signature_phone_token_checked_at timestamp(6) without time zone,
     employer_role character varying(150),
-    subscribed_to_webinar_at timestamp(6) without time zone DEFAULT NULL::timestamp without time zone,
     agreement_signatorable boolean DEFAULT true,
-    created_by_teacher boolean DEFAULT false,
-    survey_answered boolean DEFAULT false,
     current_area_id bigint,
     statistician_validation boolean DEFAULT false,
     academy_id integer,
@@ -2157,7 +2160,6 @@ CREATE TABLE public.users (
     failed_attempts integer DEFAULT 0 NOT NULL,
     unlock_token character varying(64),
     locked_at timestamp(6) without time zone,
-    resume_educational_background text,
     resume_other text,
     resume_languages text,
     grade_id bigint,
@@ -2429,10 +2431,10 @@ ALTER TABLE ONLY public.groups ALTER COLUMN id SET DEFAULT nextval('public.group
 
 
 --
--- Name: identities id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: inappropriate_offers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.identities ALTER COLUMN id SET DEFAULT nextval('public.identities_id_seq'::regclass);
+ALTER TABLE ONLY public.inappropriate_offers ALTER COLUMN id SET DEFAULT nextval('public.inappropriate_offers_id_seq'::regclass);
 
 
 --
@@ -2816,11 +2818,11 @@ ALTER TABLE ONLY public.groups
 
 
 --
--- Name: identities identities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: inappropriate_offers inappropriate_offers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.identities
-    ADD CONSTRAINT identities_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.inappropriate_offers
+    ADD CONSTRAINT inappropriate_offers_pkey PRIMARY KEY (id);
 
 
 --
@@ -3302,31 +3304,24 @@ CREATE INDEX index_groups_on_visible ON public.groups USING btree (visible);
 
 
 --
--- Name: index_identities_on_class_room_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_inappropriate_offers_on_ground; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_identities_on_class_room_id ON public.identities USING btree (class_room_id);
-
-
---
--- Name: index_identities_on_grade_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_identities_on_grade_id ON public.identities USING btree (grade_id);
+CREATE INDEX index_inappropriate_offers_on_ground ON public.inappropriate_offers USING btree (ground);
 
 
 --
--- Name: index_identities_on_school_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_inappropriate_offers_on_internship_offer_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_identities_on_school_id ON public.identities USING btree (school_id);
+CREATE INDEX index_inappropriate_offers_on_internship_offer_id ON public.inappropriate_offers USING btree (internship_offer_id);
 
 
 --
--- Name: index_identities_on_user_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_inappropriate_offers_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_identities_on_user_id ON public.identities USING btree (user_id);
+CREATE INDEX index_inappropriate_offers_on_user_id ON public.inappropriate_offers USING btree (user_id);
 
 
 --
@@ -4266,14 +4261,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: identities fk_rails_5373344100; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.identities
-    ADD CONSTRAINT fk_rails_5373344100 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
 -- Name: internship_offer_weeks fk_rails_5b8648c95e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4458,14 +4445,6 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
--- Name: identities fk_rails_ab66e55058; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.identities
-    ADD CONSTRAINT fk_rails_ab66e55058 FOREIGN KEY (grade_id) REFERENCES public.grades(id);
-
-
---
 -- Name: area_notifications fk_rails_ab915cf6e4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4542,7 +4521,7 @@ ALTER TABLE ONLY public.users_internship_offers_histories
 --
 
 ALTER TABLE ONLY public.internship_offer_stats
-    ADD CONSTRAINT fk_rails_e13d61cd66 FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_e13d61cd66 FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
 
 
 --
@@ -4590,7 +4569,7 @@ ALTER TABLE ONLY public.internship_offers
 --
 
 ALTER TABLE ONLY public.internship_offer_weeks
-    ADD CONSTRAINT fk_rails_f36a7226ee FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_f36a7226ee FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
 
 
 --
@@ -4608,6 +4587,10 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250918093304'),
+('20250917192024'),
+('20250917144238'),
+('20250910125515'),
 ('20250908115748'),
 ('20250908073523'),
 ('20250902084046'),

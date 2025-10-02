@@ -6,15 +6,9 @@ module Users
     def create
       if by_phone?
         fetch_user_by_phone
-        return if @user.try(:created_by_teacher) || @user.try(:created_by_system)
+        return if @user.try(:created_by_system)
 
-        if @user&.student?
-          SendSmsJob.perform_later(
-            user: fetch_user_by_phone,
-            message: "Votre code de validation : #{fetch_user_by_phone.phone_token}"
-          )
-          redirect_to users_registrations_phone_standby_path(phone: fetch_user_by_phone.phone)
-        elsif @user&.employer? || @user&.school_management?
+        if @user&.employer? 
           redirect_to users_registrations_standby_path(id: @user.id)
         elsif @user.nil?
           self.resource = resource_class.new
