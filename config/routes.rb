@@ -167,6 +167,7 @@ Rails.application.routes.draw do
         get 'school_management_signature', on: :member
         post 'school_management_sign', on: :member
       end
+
       resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
         member do
           post 'start_signing'
@@ -230,6 +231,10 @@ Rails.application.routes.draw do
       namespace :students, path: '/:student_id/' do
         resources :internship_applications, path: 'candidatures', only: %i[index show edit update], param: :uuid do
           post :resend_application, on: :member
+        end
+        resources :internship_agreements, path: 'conventions-de-stage', only: %i[new], param: :uuid do
+          get :sign, on: :member
+          post :legal_representative_sign, on: :member
         end
       end
       get 'candidatures', to: 'internship_offers/internship_applications#user_internship_applications'

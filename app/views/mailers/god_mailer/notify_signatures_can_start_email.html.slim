@@ -1,5 +1,5 @@
 p style=head_styles
-  ="La convention de votre #{@prez_stud.sing_feminine("futur")} stagiaire est prête ..."
+  | Une convention est prête à être signée !
 
 p style=p_styles
   | Bonjour,
@@ -7,14 +7,14 @@ p style=p_styles
 p style=p_styles
   = "La convention de stage de #{@prez_stud.full_name}, pour le stage " \
     "#{@internship_offer.title} a été complétée et validée " \
-    "par le chef d’établissement."
+    "par le chef d’établissement. Elle est désormais prête pour la signature."
 
 p style=p_styles
   | Pour y accéder directement, vous pouvez cliquer sur le bouton ci-dessous.
 
 = render partial: "mailers/blue_call_to_action",
-        locals: { href: @url,
-                  label: "Imprimer la convention de stage" }
+         locals: { href: @url,
+                   label: "Signer la convention de stage" }
 
 p style=p_styles
   | Vous pouvez désormais signer la convention, directement en ligne.
