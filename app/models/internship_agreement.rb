@@ -302,13 +302,23 @@ class InternshipAgreement < ApplicationRecord
     ).deliver_later
   end
 
+  def legal_representative_emails?
+    emails = []
+    emails << student_legal_representative_email if student_legal_representative_email.present?
+    emails << student_legal_representative_2_email if student_legal_representative_2_email.present?
+    emails.uniq.compact.any?
+  end
+
+  def notify_student_legal_representatives_can_sign_email
+    GodMailer.notify_student_legal_representatives_can_sign_email(
+      internship_agreement: self
+    ).deliver_later
+  end
+
   private
 
   def notify_signatures_enabled
     GodMailer.notify_signatures_can_start_email(
-      internship_agreement: self
-    ).deliver_later
-    GodMailer.notify_student_legal_representatives_can_sign_email(
       internship_agreement: self
     ).deliver_later
   end

@@ -6,10 +6,18 @@ module Dashboard::Students
     before_action :fetch_internship_agreement
 
     def new
+      #anyone can access this page and layout
+      # but only with a valid access_token and if not already signed by legal representative
       access_token = params[:access_token]
+      if access_token.blank? || @internship_agreement.signed_by_legal_representative?
+        full_name = @internship_agreement.signatures.find_by(signatory_role: 'student_legal_representative')&.student_legal_representative_full_name
+        redirect_to root_path, alert: "La convention de stage a déjà été signée par #{full_name}" and return
+      end
+      # verification through access_token
       @internship_agreement = InternshipAgreement.find_by(access_token: access_token)
-      redirect_to root_path and return if @internship_agreement.nil?
-
+      if @internship_agreement.nil?
+        redirect_to root_path, alert: "Convention introuvable" and return
+      end
       render :new, params: {
         student_id: @internship_agreement.student.id ,
         uuid: params[:uuid],
@@ -19,6 +27,10 @@ module Dashboard::Students
 
     def sign
       authorize! :sign, @internship_agreement
+      if @internship_agreement.signed_by_student?
+        redirect_to dashboard_students_internship_applications_path(student_id: current_user.id),
+                  alert: 'Vous avez déjà signé cette convention de stage' and return
+      end
       Signature.create!(internship_agreement: @internship_agreement,
                         signatory_role: 'student',
                         user_id: current_user.id,
@@ -26,8 +38,12 @@ module Dashboard::Students
                         signature_date: Time.now)
 
       @internship_agreement.sign! if @internship_agreement.may_sign?
-      redirect_to dashboard_students_internship_applications_path(student_id: current_user.id),
-                  notice: 'Vous avez bien signé la convention de stage'
+      if current_user.student?
+        redirect_to legal_representative_email_check_dashboard_students_internship_agreement_path(uuid: @internship_agreement.uuid, student_id: current_user.id), notice: 'Votre signature a été validée' and return
+      else
+        redirect_to dashboard_students_internship_applications_path(student_id: current_user.id),
+                    notice: 'Vous avez bien signé la convention de stage' and return
+      end
     rescue ActiveRecord::RecordNotFound
       redirect_to dashboard_students_internship_applications_path(student_id: current_user.id),
                   alert: 'Convention introuvable'
@@ -36,12 +52,14 @@ module Dashboard::Students
     def legal_representative_sign
       access_token = legal_representative_sign_internship_agreement_params[:access_token]
       @internship_agreement = InternshipAgreement.find_by(access_token: access_token)
-      # student = internship_agreement.student
-      redirect_to root_path and return unless @internship_agreement.present?
-
-      if @internship_agreement.signed_by_legal_representative?
-        redirect_to root_path, alert: 'Un représentant légal a déjà signé cette convention de stage' and return
+      if @internship_agreement.nil?
+        redirect_to root_path, alert: 'Convention introuvable' and return
+      elsif @internship_agreement.signed_by_legal_representative? || access_token.nil?
+        alert_msg = "Le représentant légal #{@internship_agreement.student_legal_representative_full_name} " \
+                    "a déjà signé cette convention de stage"
+        redirect_to root_path, alert: alert_msg and return
       else
+        authorize! :sign, @internship_agreement
         Signature.create!(internship_agreement: @internship_agreement,
                           signatory_role: 'student_legal_representative',
                           user_id: current_user.id,
@@ -58,6 +76,25 @@ module Dashboard::Students
       redirect_to root_path, alert: 'Convention introuvable' and return
     end
 
+    def legal_representative_email_check
+      authorize! :student_sign, @internship_agreement
+      @internship_agreement.notify_student_legal_representatives_can_sign_email
+    end
+
+    def email_checked
+      authorize! :student_sign, @internship_agreement
+      # student signature now only
+       Signature.create!(internship_agreement: @internship_agreement,
+                          signatory_role: 'student',
+                          user_id: current_user.id,
+                          signatory_ip: request.remote_ip,
+                          signature_date: Time.now)
+      @internship_agreement.sign! if @internship_agreement.may_sign?
+      @internship_agreement.notify_student_legal_representatives_can_sign_email
+      redirect_to dashboard_students_internship_applications_path(student_id: current_user.id),
+                  notice: 'Votre signature a été validée. Un email a été envoyé aux responsables légaux pour les inviter à signer la convention de stage.'
+    end
+
     private
 
     def legal_representative_sign_internship_agreement_params
@@ -66,7 +103,7 @@ module Dashboard::Students
     end
 
     def fetch_internship_agreement
-      @internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
+      @internship_agreement ||= InternshipAgreement.find_by(uuid: params[:uuid])
     end
   end
 end

@@ -233,8 +233,12 @@ Rails.application.routes.draw do
           post :resend_application, on: :member
         end
         resources :internship_agreements, path: 'conventions-de-stage', only: %i[new], param: :uuid do
-          get :sign, on: :member
-          post :legal_representative_sign, on: :member
+          member do
+            get :sign
+            post :legal_representative_sign
+            get :legal_representative_email_check
+            post :email_checked
+          end
         end
       end
       get 'candidatures', to: 'internship_offers/internship_applications#user_internship_applications'

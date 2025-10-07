@@ -736,6 +736,7 @@ fr:
               taken: 'Vous ne pouvez pas postuler deux fois à la même offre'
         signature:
   student: "Élève"
+  student legal representative: "Représentant légal"
   admin:
     actions:
       publish:
