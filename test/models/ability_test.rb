@@ -11,8 +11,11 @@ class AbilityTest < ActiveSupport::TestCase
            'visitors should be lured into thinking that they can apply directly')
     assert(ability.cannot?(:manage, InternshipOffer.new),
            'visitors should not be able to con manage internships')
+    internship_offer = create(:api_internship_offer_3eme, :published, qpv: true)
+    assert(ability.cannot?(:apply, internship_offer),
+           'visitors should not be able to apply for internship offers when dedicated to qpv students')
   end
-
+  
   test 'Student' do
     travel_to Date.new(2024, 9, 1) do
       internship_offer = create(:weekly_internship_offer_3eme)

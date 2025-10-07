@@ -28,7 +28,10 @@ class Ability
   end
 
   def visitor_abilities
-    can %i[read apply], InternshipOffer
+    can %i[read apply], InternshipOffer do |internship_offer|
+      internship_offer.published? && (!internship_offer.from_api? || !internship_offer.rep_or_qpv?)
+    end
+
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)
     end

@@ -12,13 +12,23 @@
             aria: { disabled: true },
             onclick: "return false;" do
         = "Postuler sur #{operator_name(internship_offer)}"
-    - elsif current_user.nil?
+    - elsif current_user.nil? && can?( :apply, current_user_or_visitor)
       = link_to internship_offer.permalink,
               class: 'fr-btn',
               target: "_blank",
               rel: "external noopener noreferrer",
               title: "Je postule sur #{operator_name(internship_offer)} (nouvelle fenêtre)" do
         = "Postuler sur #{operator_name(internship_offer)}"
+    - elsif current_user.nil? && cannot?(:apply, current_user_or_visitor)
+      = link_to internship_offer.permalink,
+              class: 'fr-btn disabled',
+              target: "_blank",
+              rel: "external noopener noreferrer",
+              title: "Je postule sur #{operator_name(internship_offer)} (nouvelle fenêtre)",
+              tabindex: -1,
+              aria: { disabled: true },
+              onclick: "return false;" do
+        = "Postuler sur #{operator_name(internship_offer)}" 
     - elsif current_user.student? && Flipper.enabled?(:application_inhibited)
       = link_to internship_offer.permalink,
                 class: 'fr-btn disabled',

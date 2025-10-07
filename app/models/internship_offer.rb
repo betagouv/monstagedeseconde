@@ -406,6 +406,10 @@ class InternshipOffer < ApplicationRecord
     self.last_date = ordered_weeks.last&.week_date&.+ 4.days
   end
 
+  def rep_or_qpv?
+    rep || qpv
+  end
+
   def departement
     Department.lookup_by_zipcode(zipcode:)
   end
