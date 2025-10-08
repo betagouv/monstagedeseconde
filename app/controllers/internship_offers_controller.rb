@@ -32,8 +32,19 @@ class InternshipOffersController < ApplicationController
                                    .includes(:sector, :employer)
 
         # QPV order destroys the former internship offers distance order from school
-        if current_user&.student? && current_user&.school&.try(:qpv)
-          @internship_offers = @internship_offers.reorder("qpv DESC NULLS LAST")
+        if current_user&.student?
+          if current_user&.school&.try(:qpv)
+            @internship_offers = @internship_offers.reorder("qpv DESC NULLS LAST")
+          elsif current_user&.school&.try(:rep_kind).present?
+            # get rep offers (sans pagination)
+            rep_offers = finder.all_without_page.includes(:sector, :employer).where(rep: true)
+            # get non rep offers (sans pagination)
+            non_rep_offers = finder.all_without_page.includes(:sector, :employer).where(rep: false)
+
+            combined_offers = rep_offers.to_a + non_rep_offers.to_a
+            # Paginate the combined array
+            @internship_offers = Kaminari.paginate_array(combined_offers).page(params[:page]).per(InternshipOffer::PAGE_SIZE)
+          end
         end
 
         @params = search_query_params
