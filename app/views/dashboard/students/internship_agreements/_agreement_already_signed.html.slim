@@ -1,10 +1,10 @@
 .fr-alert.fr-alert--success.fr-mb-4w role="alert"
-  = image_tag "icons/ri-check-line.svg", class: "fr-icon--sm fr-icon--inline fr-mr-1w", alt: ""
-  | La convention de stage a déjà été signée par #{@internship_agreement.signatures.find_by(signatory_role: :student_legal_representative).student_legal_representative_full_name}
+  span aria-hidden="true" class="fr-icon-check-line" alt=""
+  | La convention de stage a déjà été signée par #{internship_agreement.signatures.find_by(signatory_role: :student_legal_representative).student_legal_representative_full_name}
 .fr-mb-4w.d-flex.justify-content-between.fr-mb-16w
   .fr-mt-2w
     = link_to "Télécharger la convention de stage (PDF)",
-              dashboard_internship_agreement_path(uuid: @internship_agreement.uuid, format: :pdf),
+              upload_dashboard_internship_agreement_path(uuid: internship_agreement.uuid, format: :pdf),
               class: "fr-btn fr-btn--sm fr-mt-2w",
               target: "_blank"
     = link_to "Retour à l'accueil",

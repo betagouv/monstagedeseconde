@@ -22,9 +22,10 @@
               class: "fr-label"
     - if @internship_agreement.student_legal_representative_full_name.present? && @internship_agreement.student_legal_representative_2_full_name.present?
       = f.select :student_legal_representative_full_name,
-                options_for_select([[@internship_agreement.student_legal_representative_full_name, @internship_agreement.student_legal_representative_full_name], [@internship_agreement.student_legal_representative_2_full_name, @internship_agreement.student_legal_representative_2_full_name]]),
-                { include_blank: 'Sélectionner' },
-                class: "fr-select"
+                 options_for_select([[@internship_agreement.student_legal_representative_full_name, @internship_agreement.student_legal_representative_full_name], [@internship_agreement.student_legal_representative_2_full_name, @internship_agreement.student_legal_representative_2_full_name]]),
+                 { include_blank: 'Sélectionner' },
+                 class: "fr-select",
+                 required: true
     - elsif @internship_agreement.student_legal_representative_full_name.present? && @internship_agreement.student_legal_representative_2_full_name.blank?
       = f.text_field :student_legal_representative_full_name,
                   value: @internship_agreement.student_legal_representative_full_name,

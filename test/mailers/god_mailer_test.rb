@@ -52,11 +52,11 @@ class GodMailerTest < ActionMailer::TestCase
     create(:signature, :employer, internship_agreement: internship_agreement)
     create(:signature, :student, internship_agreement: internship_agreement)
 
-    assert_emails 2 do
+    assert_emails 1 do
       internship_agreement.finalize!
     end
     # First email to all parties except legal representatives
-    email1 = ActionMailer::Base.deliveries[-2]
+    email1 = ActionMailer::Base.deliveries[-1]
     assert_equal [EmailUtils.from], email1.from
     expected_recipients1 = internship_agreement.internship_application.employers_filtered_by_notifications_emails + [
       internship_agreement.school_management_representative.email,
@@ -64,9 +64,23 @@ class GodMailerTest < ActionMailer::TestCase
     assert_equal expected_recipients1.sort, email1.to.sort
     assert_equal 'Imprimez et signez la convention de stage.', email1.subject
     refute_email_spammyness(email1) 
-    # Second email to legal representatives
+  end
+
+  test 'notify legal representatives if needed when signatures enabled' do
+    internship_agreement = create(:internship_agreement, :started_by_school_manager)
+    create(:signature, :school_manager, internship_agreement: internship_agreement)
+    create(:signature, :employer, internship_agreement: internship_agreement)
+    create(:signature, :student, internship_agreement: internship_agreement)
+
+    assert_emails 1 do
+      internship_agreement.notify_student_legal_representatives_can_sign_email
+    end
+    # Second email to legal representatives if any
     email2 = ActionMailer::Base.deliveries[-1]
-    assert_equal internship_agreement.student_legal_representative_email, email2.to.first
     assert_equal [EmailUtils.from], email2.from
+    expected_recipients2 = GodMailer.new.legal_representatives_emails(internship_agreement)
+    assert_equal expected_recipients2.sort, email2.to.sort
+    assert_equal 'Imprimez et signez la convention de stage.', email2.subject
+    refute_email_spammyness(email2) 
   end
 end

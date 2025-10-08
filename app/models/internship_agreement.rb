@@ -285,15 +285,6 @@ class InternshipAgreement < ApplicationRecord
     nil
   end
 
-  # def generate_legal_representative_token!
-  #   return if legal_representative_token.present?
-
-  #   begin
-  #     self.legal_representative_token = SecureRandom.hex(16)
-  #   end while self.class.exists?(legal_representative_token:)
-  #   save!(validate: false)
-  # end
-
   def notify_others_signatures_started
     GodMailer.notify_others_signatures_started_email(
       internship_agreement: self,

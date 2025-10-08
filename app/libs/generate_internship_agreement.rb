@@ -402,7 +402,8 @@ class GenerateInternshipAgreement < Prawn::Document
       t.cells.font_style = :bold
     end
     if @internship_agreement.signed_by_legal_representative?
-      student_legal_representative_signature_txt = "#{@internship_agreement.student_legal_representative_full_name}"
+      signator_full_name = @internship_agreement.signature_by_role(signatory_role: 'student_legal_representative').try(:student_legal_representative_full_name)
+      student_legal_representative_signature_txt = signator_full_name
       signatures_txt = [student_legal_representative_signature_txt, '']
       student_legal_representative_signature_timing = "a signé électroniquement le : #{@internship_agreement.student_legal_representative_signature.signature_date.strftime('%d/%m/%Y à %Hh%M')}"
       signatures_timing_txt = [student_legal_representative_signature_timing]

@@ -1,7 +1,7 @@
 module Dashboard::Students
   class InternshipAgreementsController < ApplicationController
     include EduconnectLogout
-    layout 'student_legal_representative_layout', only: %i[new]
+    layout 'no_link_layout', only: %i[new]
     before_action :authenticate_user!, only: %i[sign legal_representative_sign]
     before_action :fetch_internship_agreement
 
@@ -9,9 +9,12 @@ module Dashboard::Students
       #anyone can access this page and layout
       # but only with a valid access_token and if not already signed by legal representative
       access_token = params[:access_token]
-      if access_token.blank? || @internship_agreement.signed_by_legal_representative?
-        full_name = @internship_agreement.signatures.find_by(signatory_role: 'student_legal_representative')&.student_legal_representative_full_name
-        redirect_to root_path, alert: "La convention de stage a déjà été signée par #{full_name}" and return
+      if @internship_agreement.signed_by_legal_representative?
+        render :new,
+               params: {
+                 student_id: @internship_agreement.student.id,
+                 uuid: params[:uuid]
+               } and return
       end
       # verification through access_token
       @internship_agreement = InternshipAgreement.find_by(access_token: access_token)
@@ -70,7 +73,8 @@ module Dashboard::Students
         @internship_agreement.sign! if @internship_agreement.may_sign?
         @internship_agreement.access_token = nil
         @internship_agreement.save
-        redirect_to root_path, notice: 'Vous avez bien signé la convention de stage' and return
+        redirect_to new_dashboard_students_internship_agreement_path(uuid: @internship_agreement.uuid),
+                    notice: 'Vous avez bien signé la convention de stage' and return
       end
     rescue ActiveRecord::RecordNotFound
       redirect_to root_path, alert: 'Convention introuvable' and return
@@ -78,7 +82,7 @@ module Dashboard::Students
 
     def legal_representative_email_check
       authorize! :student_sign, @internship_agreement
-      @internship_agreement.notify_student_legal_representatives_can_sign_email
+      # @internship_agreement.notify_student_legal_representatives_can_sign_email
     end
 
     def email_checked
