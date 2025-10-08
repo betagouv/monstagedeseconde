@@ -32,6 +32,7 @@ class Ability
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)
     end
+    can :share, InternshipOffer
   end
 
   def god_abilities
@@ -83,6 +84,7 @@ class Ability
     can :show, :account
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
+    can :share, InternshipOffer
     can :apply, InternshipOffer do |internship_offer|
       ## can apply if ##
       # - user has the right grade
