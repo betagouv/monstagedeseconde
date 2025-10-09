@@ -37,13 +37,7 @@ module RailsAdminInternshipOfferable
       end
 
       show do
-        exclude_fields :total_applications_count,
-                       :approved_applications_count,
-                       :total_male_applications_count,
-                       :total_female_applications_count,
-                       :submitted_applications_count,
-                       :rejected_applications_count,
-                       :tutor
+        exclude_fields :tutor
         field :employer_email do
           def label
             "Email de l'employeur"

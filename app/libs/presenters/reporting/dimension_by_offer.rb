@@ -21,11 +21,7 @@ module Presenters
                    full_employer
                    full_address
                    full_school
-                   full_year
-                   submitted_applications_count
-                   rejected_applications_count
-                   approved_applications_count
-                   view_count].freeze
+                   full_year].freeze
 
       def self.metrics
         [].concat(ATTRS, METHODS)

@@ -184,14 +184,14 @@ module Dashboard::InternshipOffers
       travel_to(Date.new(2024, 9, 1)) do
         internship_offer_1 = create(:weekly_internship_offer_3eme,
                                     max_candidates: 2,
-                                    remaining_seats_count: 2,
                                     internship_offer_area_id: employer.current_area_id,
                                     employer:)
+        internship_offer_1.stats.update(remaining_seats_count: 2)
         internship_offer_2 = create(:weekly_internship_offer_3eme,
                                     max_candidates: 1,
-                                    remaining_seats_count: 1,
                                     internship_offer_area_id: employer.current_area_id,
                                     employer:)
+        internship_offer_2.stats.update(remaining_seats_count: 1)
         sign_in(employer)
         get dashboard_internship_offers_path(order: :remaining_seats_count, direction: :desc)
         assert_select 'a[href=?]',
@@ -218,10 +218,10 @@ module Dashboard::InternshipOffers
 
     test 'GET #index with order success with all valid column' do
       employer = create(:employer)
-      internship_offer_1 = create(:weekly_internship_offer_2nde, view_count: 2,
-                                                                 employer:)
-      internship_offer_2 = create(:weekly_internship_offer_2nde, view_count: 1,
-                                                                 employer:)
+      internship_offer_1 = create(:weekly_internship_offer_2nde, employer:)
+      internship_offer_1.stats.update(view_count: 2)
+      internship_offer_2 = create(:weekly_internship_offer_2nde, employer:)
+      internship_offer_2.stats.update(view_count: 1)
       sign_in(employer)
       Dashboard::InternshipOffersController::VALID_ORDER_COLUMNS.map do |column|
         get dashboard_internship_offers_path(order: column, direction: :desc)
