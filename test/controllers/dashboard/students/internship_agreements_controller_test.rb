@@ -19,9 +19,9 @@ module Dashboard
         sign_in(student)
         get sign_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id)
         # email is asynchronously sent when creating the signature
-        assert_redirected_to legal_representative_email_check_dashboard_students_internship_agreement_path(student_id: student.id, uuid: internship_agreement.uuid)
+        assert_redirected_to dashboard_students_internship_applications_path(student_id: student.id)
         follow_redirect!
-        assert_select('.alert', text: 'Votre signature a été validée Fermer ×')
+        assert_select('.alert', text: 'Vous avez bien signé la convention de stage. Un email a été envoyé aux responsables légaux pour les inviter à signer la convention de stage. Fermer ×')
         assert_equal 1, internship_agreement.reload.signatures.count
         assert_equal 'student', internship_agreement.signatures.first.signatory_role
         assert_equal 'signatures_started', internship_agreement.aasm_state
@@ -201,22 +201,50 @@ module Dashboard
         flunk "Exception raised: #{e.message}\n#{e.backtrace.join("\n")}"
       end
 
-      test 'legal_representative_email_check' do
+      test 'new with invalid token' do
         school = create(:school, :with_school_manager)
         student = create(:student, school: school)
+        student_token = student.to_sgid.to_s
 
         e_, internship_offer = create_employer_and_offer_2nde
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
         internship_agreement = create(:internship_agreement, :validated, internship_application: internship_application)
-        sign_in(student)
-        get legal_representative_email_check_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id)
-        assert_response :success
-        assert_select 'h1', text: "Votre signature est validée"
+        refute_nil internship_agreement.access_token
+        assert_not_nil internship_agreement.student_legal_representative_full_name
+        assert_not_nil internship_agreement.student_legal_representative_email
+
+        get new_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid,
+                                                             access_token: 'invalid_token',
+                                                             student_id: student.id)
+        assert_redirected_to root_path
+        follow_redirect!
+        assert_select('.alert', text: 'Convention introuvable Fermer ×')
       rescue StandardError => e
         flunk "Exception raised: #{e.message}\n#{e.backtrace.join("\n")}"
       end
 
+      test 'new when already signed by legal representative' do
+        school = create(:school, :with_school_manager)
+        student = create(:student, school: school)
+        student_token = student.to_sgid.to_s
+
+        e_, internship_offer = create_employer_and_offer_2nde
+        internship_application = create(:weekly_internship_application, :approved, student: student,
+                                                                                    internship_offer: internship_offer)
+        internship_agreement = create(:internship_agreement, :validated, internship_application: internship_application)
+        create(:signature, :student_legal_representative, internship_agreement: internship_agreement, user_id: student.id)
+        internship_agreement.sign!
+        assert_not_nil internship_agreement.student_legal_representative_full_name
+        assert_not_nil internship_agreement.student_legal_representative_email
+
+        get new_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid,
+                                                             access_token: internship_agreement.access_token,
+                                                             student_id: student.id)
+        assert_response :success
+        assert_select 'h1', text: "Espace de signature de la convention de stage destiné aux responsables légaux de #{student.presenter.full_name}"
+        assert_select '.fr-alert', text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}"
+      end
     end
   end
 end

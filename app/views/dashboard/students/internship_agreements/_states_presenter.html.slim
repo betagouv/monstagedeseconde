@@ -21,7 +21,7 @@
         .d-flex
           = link_to "Voir la convention (PDF)",
                     dashboard_internship_agreement_path(uuid: @internship_agreement.uuid, format: :pdf),
-                    class: "fr-btn fr-btn--sm fr-btn-secondary",
+                    class: "fr-btn fr-btn--sm fr-btn--secondary",
                     target: "_blank"
           - if @prez.signed_by_student?
             = link_to "Vous avez déjà signé la convention",
@@ -30,7 +30,32 @@
                       disabled: true
           - else
              = button_to "Signer la convention de stage",
-                         legal_representative_email_check_dashboard_students_internship_agreement_path(uuid: @internship_agreement.uuid, student_id: current_user.id),
+                         sign_dashboard_students_internship_agreement_path(uuid: @internship_agreement.uuid, student_id: current_user.id),
                          method: :get,
                          data: { turbo: false },
                          class: "fr-btn fr-btn--sm fr-ml-2w"
+- if !@internship_agreement.signed_by_legal_representative? && @prez.signed_by_student?
+  .row.fr-my-4w
+    .fr-callout
+      h3.fr-callout__title Signature des responsables légaux
+      p.fr-callout__text
+        |
+          La demande va être envoyée aux adresses mails de votre ou vos responsable(s) légal(aux).
+          Si ces adresses ne sont plus valides ou n’existent pas, RDV sur cette page pour
+          consulter la marche à suivre pour la mettre à jour.
+
+  h2.h3 Liste des emails des responsables légaux
+  - if @internship_agreement.legal_representative_emails?
+    ul
+      - if @internship_agreement.student_legal_representative_email.present?
+        li = " Responsable légal : #{@internship_agreement&.student_legal_representative_full_name} - #{@internship_agreement.student_legal_representative_email}"
+      - if @internship_agreement.student_legal_representative_2_email.present?
+        li = " Responsable légal 2 : #{@internship_agreement&.student_legal_representative_2_full_name} - #{@internship_agreement.student_legal_representative_2_email}"
+
+    / p.fr-my-4w
+    /   = button_to 'Je confirme que ces emails sont valides et je signe la convention de stage',
+    /               email_checked_dashboard_students_internship_agreement_path( student_id: current_user.id, uuid: @internship_agreement.uuid),
+    /               data: { turbo: false },
+    /               class: 'fr-btn fr-btn--sm'
+  - else
+    p.fr-my-4w Aucun email de représentant légal n'est enregistré, consultez ci-dessus la marche à suivre pour mettre à jours ces éléments

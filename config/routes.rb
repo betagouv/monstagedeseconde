@@ -239,8 +239,6 @@ Rails.application.routes.draw do
           member do
             get :sign
             post :legal_representative_sign
-            get :legal_representative_email_check
-            post :email_checked
           end
         end
       end

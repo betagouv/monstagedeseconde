@@ -30,7 +30,7 @@
           = link_to "Rechercher un stage", user_presenter.default_internship_offers_path, class: 'fr-btn my-1 px-5'
   - else
     .d-flex.flex-column.fr-py-4w
-      - if current_user.student? && current_user.internship_applications.validated_by_employer.count.positive?
+      - if current_user.student? && current_user.internship_applications.validated_by_employer.count.positive? && !@internship_agreement.present?
         .row
           .col-12.col-md-6.fr-mb-2w
             .fr-alert.fr-alert--info
@@ -53,8 +53,8 @@
                     collection: @approved_internship_applications
           - if @internship_agreement.present?
             #internship-agreement-panel.fr-tabs__panel.fr-tabs__panel--selected role="tabpanel" aria-labelledby="internship-agreement" tabindex="1"
-              = render partial: "dashboard/students/internship_agreements/student_internship_agreement",
-                        internship_agreement: @internship_agreement
+              = render 'dashboard/students/internship_agreements/states_presenter',
+                       internship_agreement: @internship_agreement
 
       .fr-tabs.fr-tabs--centered.fr-tabs--secondary.fr-my-2w
         ul.fr-tabs__list aria-label=("Candidatures") role="tablist"
