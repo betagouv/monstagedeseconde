@@ -43,7 +43,7 @@ namespace :schools do
     PrettyConsole.say_in_green "Le nombre d'établissements créés dans l'année scolaire courante est de #{new_schools.count}"
   end
 
-  desc analyze_class_rooms
+  desc 'analyze_class_rooms'
   task :analyze_class_rooms, [:limit] => :environment do |task, args|
     limit = args.limit.to_i || 100
     class_rooms = ClassRoom.all.includes(:students)
