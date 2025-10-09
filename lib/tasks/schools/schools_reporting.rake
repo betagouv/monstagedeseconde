@@ -39,8 +39,35 @@ namespace :schools do
                         .map do |sco|
       sco[4] = sco[4].strftime('%d/%m/%Y')
       sco.join(',')
-    end.join('
-')
+    end.join('')
     PrettyConsole.say_in_green "Le nombre d'établissements créés dans l'année scolaire courante est de #{new_schools.count}"
+  end
+
+  desc 'analyze_class_rooms'
+  task :analyze_class_rooms, [:limit] => :environment do |task, args|
+    limit = args.limit.to_i || 100
+    class_rooms = ClassRoom.all.includes(:students)
+    total_students = 0
+    total_class_rooms = class_rooms.count
+    class_rooms_without_students = 0
+    counter = 0
+    class_rooms.in_batches.each_with_index do |class_room, index|
+      counter += 1
+      break if counter > limit
+      if class_room.students.empty?
+        class_rooms_without_students += 1
+        PrettyConsole.puts_in_red("La classe #{class_room.name} (#{class_room.id}) n'a pas d'élève , école: #{class_room.school.name} #{class_room.school.code_uai}")
+      end
+      total_students += class_room.students.count
+    end
+    average_students_per_class_room = if total_class_rooms.positive?
+                                        total_students.to_f / total_class_rooms
+                                      else
+                                        0
+                                      end
+    PrettyConsole.say_in_green "Le nombre total de classes est de #{total_class_rooms}"
+    PrettyConsole.say_in_green "Le nombre total d'élèves est de #{total_students}"
+    PrettyConsole.say_in_green "Le nombre de classes sans élèves est de #{class_rooms_without_students}"
+    PrettyConsole.say_in_green "Le nombre moyen d'élèves par classe est de #{average_students_per_class_room.round(2)}"
   end
 end
