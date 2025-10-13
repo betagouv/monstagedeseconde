@@ -186,6 +186,7 @@ class InternshipOffersController < ApplicationController
         fits_for_troisieme_or_quatrieme: internship_offer.fits_for_troisieme_or_quatrieme?,
         available_weeks_count: internship_offer.presenter.available_weeks_count,
         qpv: internship_offer.qpv,
+        rep: internship_offer.rep,
         is_authenticated: !!current_user,
       }
     end

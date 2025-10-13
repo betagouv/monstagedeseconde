@@ -77,7 +77,7 @@ const InternshipOfferCard = ({
         {/* puts elements at the opposite on a line */}
         <div className="d-flex justify-content-between">
           <ul className="fr-badges-group fr-p-2w">
-            {internshipOffer.qpv && (
+            {(internshipOffer.qpv || internshipOffer.rep) && (
               <>
                 <li className="fr-mb-1w">
                   <div className="fr-tag fr-mr-1w">
