@@ -11,6 +11,7 @@ root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
 
 Rails.application.routes.draw do
   mount LetterOpenerWeb::Engine, at: '/letter_opener', as: 'letter_opener' if Rails.env.development?
+  mount Scalar::UI, at: '/doc_api'
   # ------------------ SCOPE START ------------------
   scope(path_names: { new: 'nouveau', edit: 'modification' }) do
     authenticate :user, ->(u) { u.god? } do
