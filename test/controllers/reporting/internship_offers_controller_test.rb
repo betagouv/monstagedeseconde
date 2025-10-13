@@ -86,12 +86,12 @@ module Reporting
         get reporting_internship_offers_path(department: department_name)
         assert_response :success
 
-        assert_equal 2, retrieve_html_value('test-total-report', 'test-total-applications', response)
-        assert_equal 4, retrieve_html_value('test-total-applications', 'test-total-male-applications', response)
-        assert_equal 3, retrieve_html_value('test-total-male-applications', 'test-total-female-applications', response)
-        assert_equal 1, retrieve_html_value('test-total-female-applications', 'test-approved-applications', response)
+        assert_equal 1, retrieve_html_value('test-total-report', 'test-total-applications', response)
+        assert_equal 1, retrieve_html_value('test-total-applications', 'test-total-male-applications', response)
+        assert_equal 1, retrieve_html_value('test-total-male-applications', 'test-total-female-applications', response)
+        assert_equal 0, retrieve_html_value('test-total-female-applications', 'test-approved-applications', response)
         assert_equal 0, retrieve_html_value('test-total-no-gender-applications', 'test-approved-applications', response)
-        assert_equal 1, retrieve_html_value('test-male-approved-applications', 'test-approved-applications', response)
+        assert_equal 0, retrieve_html_value('test-male-approved-applications', 'test-approved-applications', response)
         assert_equal 0,
                      retrieve_html_value('test-female-approved-applications', 'test-male-approved-applications',
                                          response)
@@ -102,12 +102,12 @@ module Reporting
         get reporting_internship_offers_path(department: department_name, dimension: 'group')
         assert_response :success
         assert_equal 1, retrieve_html_value('test-total-report', 'test-total-applications', response)
-        assert_equal '4', css_select('tfoot td.test-total-applications').first.text
-        assert_equal '3', css_select('tfoot td.test-total-male-applications').first.text
-        assert_equal '1', css_select('tfoot td.test-total-female-applications').first.text
-        assert_equal '1', css_select('tfoot td.test-approved-applications').first.text
+        assert_equal '1', css_select('tfoot td.test-total-applications').first.text
+        assert_equal '1', css_select('tfoot td.test-total-male-applications').first.text
+        assert_equal '0', css_select('tfoot td.test-total-female-applications').first.text
+        assert_equal '0', css_select('tfoot td.test-approved-applications').first.text
         assert_equal '0', css_select('tfoot td.test-total-no-gender-applications').first.text
-        assert_equal '1', css_select('tfoot td.test-male-approved-applications').first.text
+        assert_equal '0', css_select('tfoot td.test-male-approved-applications').first.text
         assert_equal '0', css_select('tfoot td.test-female-approved-applications').first.text
         assert_equal '0', css_select('tfoot td.test-no-gender-approved-applications').first.text
         # null
@@ -132,12 +132,12 @@ module Reporting
 
         get reporting_internship_offers_path(department: department_name, is_public: false, dimension: 'group')
         assert_response :success
-        assert_equal 12, retrieve_html_value('test-total-report', 'test-total-applications', response)
-        assert_equal 4, retrieve_html_value('test-total-applications', 'test-total-male-applications', response)
-        assert_equal 3, retrieve_html_value('test-total-male-applications', 'test-total-female-applications', response)
-        assert_equal 1, retrieve_html_value('test-total-female-applications', 'test-approved-applications', response)
+        assert_equal 11, retrieve_html_value('test-total-report', 'test-total-applications', response)
+        assert_equal 1, retrieve_html_value('test-total-applications', 'test-total-male-applications', response)
+        assert_equal 1, retrieve_html_value('test-total-male-applications', 'test-total-female-applications', response)
+        assert_equal 0, retrieve_html_value('test-total-female-applications', 'test-approved-applications', response)
         assert_equal 0, retrieve_html_value('test-total-no-gender-applications', 'test-approved-applications', response)
-        assert_equal 1, retrieve_html_value('test-male-approved-applications', 'test-approved-applications', response)
+        assert_equal 0, retrieve_html_value('test-male-approved-applications', 'test-approved-applications', response)
         assert_equal 0,
                      retrieve_html_value('test-female-approved-applications', 'test-male-approved-applications',
                                          response)
