@@ -47,7 +47,7 @@ namespace :schools do
   task :analyze_class_rooms, [:limit] => :environment do |task, args|
     limit = args.limit.to_i || 100
     total_students = 0
-    total_class_rooms = class_rooms.count
+    total_class_rooms = ClassRoom.all.count
     class_rooms_without_students = 0
     counter = 0
     ClassRoom.find_each do |class_room|
