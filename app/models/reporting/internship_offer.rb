@@ -93,13 +93,11 @@ module Reporting
 
     scope :dimension_offer, lambda {
       select('internship_offers.*')
-        .where('internship_offers.published_at IS NOT NULL')
         .joins('INNER JOIN internship_offer_stats ON internship_offer_stats.internship_offer_id = internship_offers.id')
     }
 
     scope :dimension_by_sector, lambda {
       select('sector_id', *aggregate_functions_to_sql_select)
-        .where('internship_offers.published_at IS NOT NULL')
         .joins('INNER JOIN internship_offer_stats ON internship_offer_stats.internship_offer_id = internship_offers.id')
         .includes(:sector)
         .group(:sector_id)
@@ -108,7 +106,6 @@ module Reporting
 
     scope :dimension_by_group, lambda {
       select('group_id', *aggregate_functions_to_sql_select)
-        .where('internship_offers.published_at IS NOT NULL')
         .joins('INNER JOIN internship_offer_stats ON internship_offer_stats.internship_offer_id = internship_offers.id')
         .includes(:group)
         .group(:group_id)
@@ -117,7 +114,6 @@ module Reporting
 
     scope :dimension_by_detailed_typology, lambda { |detailed_typology:|
       select('group_id', 'sum(max_candidates) as total_report_count')
-        .where('internship_offers.published_at IS NOT NULL')
         .group(:group_id)
         .order(:group_id)
     }
