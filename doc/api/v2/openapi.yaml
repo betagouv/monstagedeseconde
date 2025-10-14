@@ -101,7 +101,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/inline_response_422'
       security:
-      - bearerAuth: []
+        - bearerAuth: []
       x-swagger-router-controller: Developers
   /internship_offers/{remote_id}:
     delete:
@@ -301,10 +301,15 @@ components:
       - sector_uuid
       - street
       - title
+      - grades
+      - weeks
+      - qpv
+      - rep
       type: object
       properties:
         remote_id:
           type: string
+          maxLength: 60
           description: Identifiant de l'offre de stage chez le partenaire
           example: A156548-H
         description:
@@ -313,9 +318,11 @@ components:
           description: Description de l'offre de stage
         title:
           type: string
+          maxLength: 150
           example: Stage d'observation du métier de chef de service
         employer_name:
           type: string
+          maxLength: 150
           example: BNP Paribas
         employer_description:
           maxLength: 275
@@ -323,37 +330,38 @@ components:
           example: "Créateur de lotions, de parfums et de produits cosmétiques, embaumeur"
         street:
           type: string
+          maxLength: 500
           example: 16 rue de la paix
         city:
           type: string
+          maxLength: 50
           example: Paris
         zipcode:
           type: string
+          maxLength: 5
           example: "75001"
         employer_website:
           type: string
+          maxLength: 560
           example: http://www.acnee-corporation.fr
         lunch_break:
           type: string
+          maxLength: 500
           description: Horaires de pause déjeuner
           example: 12h-14h
         daily_hours:
           $ref: '#/components/schemas/InternshipOffer_daily_hours'
         coordinates:
           $ref: '#/components/schemas/InternshipOffer_coordinates'
-        period:
-          type: integer
-          description: Semaines de stage proposées où 0 => 2 semaines - du 17 au 28
-            juin 2024; 1 => 1 semaine - du 17 au 21 juin 2024; 2 => 1 semaine - du
-            24 au 28 juin 2024
-          example: 1
-          enum:
-          - 0
-          - 1
-          - 2
+        grades:
+          type: array
+          description: Liste des classes dont les élèves peuvent postuler à l'offre de stage
+          items:
+            $ref: '#/components/schemas/Grade'
         permalink:
           type: string
           description: Site de l'employeur
+          maxLength: 200
           example: http://www.stagechezemployeur.fr
         max_candidates:
           type: integer
@@ -367,10 +375,27 @@ components:
           example: true
         sector_uuid:
           $ref: '#/components/schemas/Sector'
+        rep:
+          type: boolean
+          description: "true si l'offre de stage est réservée à des collèges en rep ou rep plus"
+          example: true
+        qpv:
+          type: boolean
+          description: "true si l'offre de stage est réservée à des établissements en qpv"
+          example: true
+        weeks: 
+          type: array
+          items:
+            type: string
+            format: <annee_scolaire>-W<no_de_semaine>
+          description: Liste des semaines pendant lesquelles l'offre de stage est disponible
+          example:
+            - 2023-W12
+            - 2023-W13
       description: offre de stage
       example:
         remote_id: A123-12
-        period: 0
+        grade: ['seconde', 'troisieme']
         city: Paris
         coordinates:
           latitude: 48.866667
@@ -390,6 +415,11 @@ components:
           id: 1
         street: 16 rue de la paix
         is_public: true
+        rep: false
+        qpv: true
+        weeks: 
+          - 2023-W12
+          - 2023-W13
         permalink: http://www.stagechezemployeur.fr
         daily_hours:
           type: object
@@ -438,6 +468,16 @@ components:
             type: string
             format: date-time
       - $ref: '#/components/schemas/InternshipOffer'
+      description: Offre de stage à mettre à jour. Pour désactiver une offre, passer le paramètre published_at à null
+    Grade:
+      type: string
+      enum:
+        - seconde
+        - troisieme
+        - quatrieme
+      example:
+        - seconde
+        - troisieme
     Sector:
       type: object
       properties:
@@ -567,39 +607,48 @@ components:
         lundi:
           type: array
           example:
-          - "9:00"
-          - "18:00"
+            - "9:00"
+            - "18:00"
           items:
             type: string
         mardi:
           type: array
           example:
-          - "9:00"
-          - "18:00"
+            - "9:00"
+            - "18:00"
           items:
             type: string
         mercredi:
           type: array
           example:
-          - "9:00"
-          - "18:00"
+            - "9:00"
+            - "18:00"
           items:
             type: string
         jeudi:
           type: array
           example:
-          - "9:00"
-          - "18:00"
+            - "9:00"
+            - "18:00"
           items:
             type: string
         vendredi:
           type: array
           example:
-          - "9:00"
-          - "18:00"
+            - "9:00"
+            - "18:00"
           items:
             type: string
-      description: Horaires de stage
+      description: Horaires quotidiens de stage
+    Week:
+      type: array
+      properties:
+        type: string
+        format: <annee_scolaire>-W<no_de_semaine>
+        example: 2023-W12
+      items:
+        type: string
+      description: Semaine pendant laquelle l'offre de stage est disponible
   responses:
     Unauthorized:
       description: l'authentification a échoué
