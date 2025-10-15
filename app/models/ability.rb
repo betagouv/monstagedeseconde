@@ -36,7 +36,7 @@ class Ability
   end
 
   def god_abilities
-    can :show, :account
+    can :show, :account, :rebuild_review_job
     can :manage, School
     can :manage, Sector
     can :manage, Academy
