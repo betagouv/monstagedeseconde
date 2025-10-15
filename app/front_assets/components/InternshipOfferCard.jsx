@@ -81,7 +81,7 @@ const InternshipOfferCard = ({
               <>
                 <li className="fr-mb-1w">
                   <div className="fr-tag fr-mr-1w">
-                    {internshipOffer.is_authenticated ? 'Offre réservée pour vous' : 'Offre réservée à certains établissements'}
+                    {(internshipOffer.is_authenticated && internshipOffer.is_student) ? 'Offre réservée pour vous' : 'Offre réservée à certains établissements'}
                   </div>
                 </li>
               </>

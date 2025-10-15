@@ -188,6 +188,7 @@ class InternshipOffersController < ApplicationController
         qpv: internship_offer.qpv,
         rep: internship_offer.rep,
         is_authenticated: !!current_user,
+        is_student: current_user&.student?,
       }
     end
   end
