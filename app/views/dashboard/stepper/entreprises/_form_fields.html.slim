@@ -46,36 +46,35 @@
           div class= "row fr-mt-3w bloc-tooggle #{edition_mode ? '' : 'fr-hidden'})"
             #public-private-radio-buttons.bloc-tooggle.col-12
               div class=('fr-hidden' if request.fullpath.include?('entreprises/nouveau'))
-              - if current_user.ministry_statistician?
-                = form.hidden_field :is_public, value: true
-              - else
-                fieldset.fr-fieldset#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
-                  legend.label
-                    | Vous êtes une structure publique ? *
-                  .fr-fieldset__element
-                    .fr-radio-group
-                      = form.radio_button :is_public,
-                                          true,
-                                          class: 'public-radio-button-true',
-                                          required: true,
-                                          data: { action: 'ministry-fields#handleClickIsPublic' }
-                      = form.label :is_public_true,
-                                   'Oui',
-                                   class: 'fr-label',
-                                   data: { action: 'ministry-fields#handleClickIsPublic' }
-                  .fr-fieldset__element
-                    .fr-radio-group
-                      = form.radio_button :is_public,
-                                          false,
-                                          class: '',
-                                          required: true,
-                                          data: { action: 'ministry-fields#handleClickIsPublic' }
-                      = form.label :is_public_false,
-                                   'Non',
-                                   class: 'fr-label',
-                                   data: { action: 'ministry-fields#handleClickIsPublic' }
-
-                  .fr-messages-group#radio-hint-messages aria-live="assertive"
+              / - if current_user.ministry_statistician?
+              /   = form.hidden_field :is_public, value: true
+              / - else
+              fieldset.fr-fieldset#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
+                legend.label
+                  | Vous êtes une structure publique ? *
+                .fr-fieldset__element
+                  .fr-radio-group
+                    = form.radio_button :is_public,
+                                        true,
+                                        class: 'public-radio-button-true',
+                                        required: true,
+                                        data: { action: 'ministry-fields#handleClickIsPublic' }
+                    = form.label :is_public_true,
+                                 'Oui',
+                                 class: 'fr-label',
+                                 data: { action: 'ministry-fields#handleClickIsPublic' }
+                .fr-fieldset__element
+                  .fr-radio-group
+                    = form.radio_button :is_public,
+                                        false,
+                                        class: '',
+                                        required: true,
+                                        data: { action: 'ministry-fields#handleClickIsPublic' }
+                    = form.label :is_public_false,
+                                 'Non',
+                                 class: 'fr-label',
+                                 data: { action: 'ministry-fields#handleClickIsPublic' }
+                .fr-messages-group#radio-hint-messages aria-live="assertive"
           #ministry-choice.row.fr-mt-3w.bloc-tooggle[data-ministry-fields-target="groupNamePublic"]
             .col-12
               = form.label :group_id, class: 'fr-label' do
@@ -93,7 +92,7 @@
                id="#{resource.class.name.split('::').first.gsub(/s\Z/, '').underscore}_sector_id-block" ]
             .col-12
               = form.label :sector_id , class: 'fr-label' do
-                = "Indiquez le secteur d'activité de votre structure * #{resource.sector&.name} #{form.object.persisted? && !form.object.is_public}"
+                = "Indiquez le secteur d'activité de votre structure *"
               = form.select :sector_id,
                             options_from_collection_for_select(Sector.all.order(:name).where.not(name: 'Fonction publique'), :id, :name, resource&.sector&.id),
                             { prompt: sectors_options_for_default },
