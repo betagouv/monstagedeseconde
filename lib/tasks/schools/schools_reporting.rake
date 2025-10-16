@@ -46,12 +46,11 @@ namespace :schools do
   desc 'analyze_class_rooms'
   task :analyze_class_rooms, [:limit] => :environment do |task, args|
     limit = args.limit.to_i || 100
-    class_rooms = ClassRoom.all.includes(:students)
     total_students = 0
-    total_class_rooms = class_rooms.count
+    total_class_rooms = ClassRoom.all.count
     class_rooms_without_students = 0
     counter = 0
-    class_rooms.in_batches.each_with_index do |class_room, index|
+    ClassRoom.find_each do |class_room|
       counter += 1
       break if counter > limit
       if class_room.students.empty?
