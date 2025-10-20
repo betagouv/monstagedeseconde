@@ -13,6 +13,7 @@ Il s'agit d'une API REST qui permet les opérations suivantes :
 - Supprimer une offre de stage sur 1élève1stage
 - Récupérer ses offres de stage postées sur 1élève1stage
 - Rechercher des offres de stage sur 1élève1stage
+- Créer une candidature à une offre de stage
 
 # Table des matières
 - [Environnements](#environnements)
@@ -28,6 +29,7 @@ Il s'agit d'une API REST qui permet les opérations suivantes :
   - [Recheche d'offres](#ref-search-internship-offer)
   - [Modification d'une offre](#ref-modify-internship-offer)
   - [Suppression d'une offre](#ref-destroy-internship-offer)
+  - [Créer une candidature](#ref-create-internship-application)
 - [Premiers pas et exemples](#premiers-pas-et-exemples)
 
 
@@ -408,3 +410,78 @@ curl -H "Authorization: Bearer foobarbaz" \
 ### Erreurs
 
 - 404, Not Found. Aucune offre n'a été trouvée avec le ```remote_id``` spécifié
+
+### <a name="ref-create-internship-application"></a>
+## Créer une candidature
+
+**url** : ```#{baseURL}/internship_offers/:internship_offer_id/internship_applications```
+
+**method** : POST
+
+*Paramètres d'url* :
+
+* **internship_offer_id** *(integer, required)* : L'identifiant de l'offre de stage
+
+*Paramètres de body :*
+
+* **internship_application.student_phone** *(string, required)* : Le numéro de téléphone de l'élève (format français, ex: 0611223344 ou +33611223344)
+* **internship_application.student_email** *(string, required)* : L'email de l'élève
+* **internship_application.week_ids** *(array, required)* : Les identifiants des semaines pour lesquelles l'élève candidate
+* **internship_application.motivation** *(text, optional)* : La lettre de motivation de l'élève
+* **internship_application.student_address** *(string, optional)* : L'adresse de l'élève
+* **internship_application.student_legal_representative_full_name** *(string, optional)* : Le nom complet du représentant légal
+* **internship_application.student_legal_representative_email** *(string, optional)* : L'email du représentant légal
+* **internship_application.student_legal_representative_phone** *(string, optional)* : Le téléphone du représentant légal
+
+**Note** : Cette API nécessite une authentification en tant qu'élève (Users::Student). Les opérateurs et autres types d'utilisateurs ne peuvent pas créer de candidatures via l'API.
+
+### Exemple curl
+
+``` bash
+curl -H "Authorization: Bearer $API_TOKEN" \
+     -H "Accept: application/json" \
+     -H "Content-type: application/json" \
+     -X POST \
+     -d '{"internship_application": {
+           "student_phone": "0611223344",
+           "student_email": "eleve@example.com",
+           "week_ids": [1, 2, 3],
+           "motivation": "Je suis très motivé pour ce stage...",
+           "student_address": "123 rue de la République, 75001 Paris",
+           "student_legal_representative_full_name": "Jean Dupont",
+           "student_legal_representative_email": "parent@example.com",
+           "student_legal_representative_phone": "0612345678"
+         }}' \
+     -vvv \
+     $ENV/api/v2/internship_offers/123/internship_applications
+```
+
+### Réponse en cas de succès (201 Created)
+
+``` json
+{
+  "id": 456,
+  "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "internship_offer_id": 123,
+  "student_id": 789,
+  "aasm_state": "submitted",
+  "submitted_at": "2025-10-16T12:00:00Z",
+  "motivation": "Je suis très motivé pour ce stage...",
+  "student_phone": "0611223344",
+  "student_email": "eleve@example.com",
+  "student_address": "123 rue de la République, 75001 Paris",
+  "student_legal_representative_full_name": "Jean Dupont",
+  "student_legal_representative_email": "parent@example.com",
+  "student_legal_representative_phone": "0612345678",
+  "weeks": ["2025-W20", "2025-W21", "2025-W22"],
+  "created_at": "2025-10-16T12:00:00Z",
+  "updated_at": "2025-10-16T12:00:00Z"
+}
+```
+
+### Erreurs
+
+- 400, Bad Request. Paramètres manquants ou invalides
+- 403, Forbidden. Seuls les élèves peuvent créer des candidatures
+- 404, Not Found. L'offre de stage n'existe pas
+- 422, Unprocessable Entity. Les données de la candidature ne sont pas valides (ex: email invalide, numéro de téléphone incorrect, semaines non disponibles)
