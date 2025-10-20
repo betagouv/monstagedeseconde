@@ -17,29 +17,15 @@
     = f.hidden_field :uuid, value: params[:uuid]
     = f.hidden_field :student_id, value: params[:student_id]
     = f.hidden_field :access_token, value: params[:access_token]
+    = f.hidden_field :student_legal_representative_nr, value: params[:student_legal_representative_nr]
     = f.label :student_legal_representative_full_name,
               "Prénom et nom du responsable légal signataire de la convention de stage",
               class: "fr-label"
-    - if @internship_agreement.student_legal_representative_full_name.present? && @internship_agreement.student_legal_representative_2_full_name.present?
-      = f.select :student_legal_representative_full_name,
-                 options_for_select([[@internship_agreement.student_legal_representative_full_name, @internship_agreement.student_legal_representative_full_name], [@internship_agreement.student_legal_representative_2_full_name, @internship_agreement.student_legal_representative_2_full_name]]),
-                 { include_blank: 'Sélectionner' },
-                 class: "fr-select",
-                 required: true
-    - elsif @internship_agreement.student_legal_representative_full_name.present? && @internship_agreement.student_legal_representative_2_full_name.blank?
+    .w-50
       = f.text_field :student_legal_representative_full_name,
-                  value: @internship_agreement.student_legal_representative_full_name,
-                  class: "fr-input",
-                  readonly: true
-    - elsif @internship_agreement.student_legal_representative_full_name.blank? && @internship_agreement.student_legal_representative_2_full_name.present?
-      = f.text_field :student_legal_representative_full_name,
-                  value: @internship_agreement.student_legal_representative_2_full_name,
-                  class: "fr-input",
-                  readonly: true
-    - else
-      = f.text_field :student_legal_representative_full_name,
-                  value: @internship_agreement.student_legal_representative_full_name,
-                  class: "fr-input"
+                     class: "fr-input",
+                     value: params[:student_legal_representative_nr].to_i == 1 ? @internship_agreement.student_legal_representative_full_name : @internship_agreement.student_legal_representative_2_full_name,
+                     readonly: true
 
     - if @internship_agreement.errors[:student_legal_representative_full_name].any?
       .fr-error-text = @internship_agreement.errors[:student_legal_representative_full_name].first

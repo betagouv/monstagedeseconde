@@ -41,8 +41,9 @@
       p.fr-callout__text
         |
           La demande va être envoyée aux adresses mails de votre ou vos responsable(s) légal(aux).
-          Si ces adresses ne sont plus valides ou n’existent pas, RDV sur cette page pour
-          consulter la marche à suivre pour la mettre à jour.
+          Si ces adresses ne sont plus valides ou n’existent pas, RDV sur
+        = link_to "https://docs.numerique.gouv.fr/docs/45c0457b-c846-416d-94dc-83f76b8407b8/", " cette page",  class: "fr-link", target: "_blank"
+        | pour consulter la marche à suivre pour la mettre à jour.
 
   h2.h3 Liste des emails des responsables légaux
   - if @internship_agreement.legal_representative_emails?

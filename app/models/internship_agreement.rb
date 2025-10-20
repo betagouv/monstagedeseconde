@@ -108,7 +108,13 @@ class InternshipAgreement < ApplicationRecord
                          }
     end
 
-    event :sign do
+    # helper
+    # event :back_to_started_by_school_manager do
+    #   transitions from: %i[signatures_started validated],
+    #               to: :started_by_school_manager
+    # end
+
+    event :sign do # sign after signature creation !
       transitions from: %i[validated signatures_started],
                   to: :signatures_started,
                   guard: :roles_not_signed_yet_present?,
@@ -300,18 +306,29 @@ class InternshipAgreement < ApplicationRecord
     emails.uniq.compact.any?
   end
 
-  def notify_student_legal_representatives_can_sign_email
-    GodMailer.notify_student_legal_representatives_can_sign_email(
-      internship_agreement: self
-    ).deliver_later
+  def legal_representative_data
+    hash = { }
+     if student_legal_representative_email.present? && student_legal_representative_full_name.present?
+       hash[:student_legal_representative] = {email: student_legal_representative_email, nr: 1}
+     end
+     if student_legal_representative_2_email.present? && student_legal_representative_2_full_name.present?
+       hash[:student_legal_representative_2] = {email: student_legal_representative_2_email, nr: 2}
+     end
+    hash
   end
-
+  
   private
 
   def notify_signatures_enabled
     GodMailer.notify_signatures_can_start_email(
       internship_agreement: self
     ).deliver_later
+    legal_representative_data.values.each do |representative|
+      GodMailer.notify_student_legal_representatives_can_sign_email(
+        internship_agreement: self,
+        representative: representative
+      ).deliver_later
+    end
   end
 
   def notify_others_signatures_finished(agreement)

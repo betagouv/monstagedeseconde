@@ -61,8 +61,10 @@ module Dashboard
         refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
+        assert_not_nil internship_agreement.student_legal_representative_2_full_name
+        assert_not_nil internship_agreement.student_legal_representative_2_email
         sign_in(student)
-        post legal_representative_sign_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id),
+        post legal_representative_sign_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id, student_legal_representative_nr: '1'),
              params: {
                signature: {
                  uuid: internship_agreement.uuid,
@@ -99,7 +101,7 @@ module Dashboard
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
         sign_in(student)
-        post legal_representative_sign_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id),
+        post legal_representative_sign_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id, student_legal_representative_nr: '1'),
              params: {
                signature: {
                  uuid: internship_agreement.uuid,
