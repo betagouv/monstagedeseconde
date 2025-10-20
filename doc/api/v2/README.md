@@ -13,7 +13,9 @@ Il s'agit d'une API REST qui permet les opérations suivantes :
 - Supprimer une offre de stage sur 1élève1stage
 - Récupérer ses offres de stage postées sur 1élève1stage
 - Rechercher des offres de stage sur 1élève1stage
+- Afficher le formulaire de nouvelle candidature
 - Créer une candidature à une offre de stage
+- Récupérer les candidatures d'un utilisateur
 
 # Table des matières
 - [Environnements](#environnements)
@@ -29,7 +31,9 @@ Il s'agit d'une API REST qui permet les opérations suivantes :
   - [Recheche d'offres](#ref-search-internship-offer)
   - [Modification d'une offre](#ref-modify-internship-offer)
   - [Suppression d'une offre](#ref-destroy-internship-offer)
+  - [Formulaire nouvelle candidature](#ref-new-internhsip-offer)
   - [Créer une candidature](#ref-create-internship-application)
+  - [Récupérer des candidatures](#ref-create-internship-application)
 - [Premiers pas et exemples](#premiers-pas-et-exemples)
 
 
@@ -411,6 +415,47 @@ curl -H "Authorization: Bearer foobarbaz" \
 
 - 404, Not Found. Aucune offre n'a été trouvée avec le ```remote_id``` spécifié
 
+<!-- creer la section new internship application -->
+
+### <a name="ref-new-internship-application"></a>
+## Formulaire de candidature
+
+**url** : ```#{baseURL}/internship_offers/:internship_offer_id/internship_applications/nouveau```
+
+**method** : GET
+
+*Paramètres d'url* :
+
+* **internship_offer_id** *(integer, required)* : L'identifiant de l'offre de stage
+
+**Note** : Cette API nécessite une authentification en tant qu'élève (Users::Student). Les opérateurs et autres types d'utilisateurs ne peuvent pas créer de candidatures via l'API.
+
+### Exemple curl
+
+``` bash
+curl -H "Authorization: Bearer $API_TOKEN" \
+     -H "Accept: application/json" \
+     -H "Content-type: application/json" \
+     -X GET \
+     -vvv \
+     $ENV/api/v2/internship_offers/123/internship_applications/nouveau
+```
+
+### Réponse en cas de succès (201 Created)
+
+``` json
+{
+  "student_phone": "+33600112233",
+  "student_email": "julie@email.com",
+  "representative_full_name": "Paul Lachant",
+  "representative_email": "plachant@email.com",
+  "representative_phone": "",
+  "weeks": [{"id"=>178, "label"=>"Semaine du 25 mai au 29 mai", "selected"=>false}],
+  "motivation": ""
+}
+```
+
+
 ### <a name="ref-create-internship-application"></a>
 ## Créer une candidature
 
@@ -485,3 +530,62 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 - 403, Forbidden. Seuls les élèves peuvent créer des candidatures
 - 404, Not Found. L'offre de stage n'existe pas
 - 422, Unprocessable Entity. Les données de la candidature ne sont pas valides (ex: email invalide, numéro de téléphone incorrect, semaines non disponibles)
+
+
+### <a name="ref-index-internship-application"></a>
+## Récuper des candidatures
+
+**url** : ```#{baseURL}/internship_offers/:internship_offer_id/internship_applications```
+
+**method** : GET
+
+*Paramètres d'url* :
+
+* **internship_offer_id** *(integer, required)* : L'identifiant de l'offre de stage
+
+**Note** : Cette API nécessite une authentification en tant qu'élève (Users::Student) ou en tant qu'offreur. Les opérateurs et autres types d'utilisateurs ne peuvent pas créer de candidatures via l'API.
+
+### Exemple curl
+
+``` bash
+curl -H "Authorization: Bearer $API_TOKEN" \
+     -H "Accept: application/json" \
+     -H "Content-type: application/json" \
+     -X GET \
+     -vvv \
+     $ENV/api/v2/internship_offers/123/internship_applications
+```
+
+### Réponse en cas de succès (201 Created)
+
+``` json
+[{
+  "id": 456,
+  "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "internship_offer_id": 123,
+  "student_id": 789,
+  "aasm_state": "submitted",
+  "submitted_at": "2025-10-16T12:00:00Z",
+  "motivation": "Je suis très motivé pour ce stage...",
+  "student_phone": "0611223344",
+  "student_email": "eleve@example.com",
+  "student_address": "123 rue de la République, 75001 Paris",
+  "student_legal_representative_full_name": "Jean Dupont",
+  "student_legal_representative_email": "parent@example.com",
+  "student_legal_representative_phone": "0612345678",
+  "weeks": ["2025-W20", "2025-W21", "2025-W22"],
+  "created_at": "2025-10-16T12:00:00Z",
+  "updated_at": "2025-10-16T12:00:00Z"
+},
+...
+]
+```
+
+### Erreurs
+
+- 400, Bad Request. Paramètres manquants ou invalides
+- 403, Forbidden. Seuls les élèves peuvent créer des candidatures
+- 404, Not Found. L'offre de stage n'existe pas
+- 422, Unprocessable Entity. Les données de la candidature ne sont pas valides (ex: email invalide, numéro de téléphone incorrect, semaines non disponibles)
+
+

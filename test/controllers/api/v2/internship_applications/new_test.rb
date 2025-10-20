@@ -49,6 +49,8 @@ module Api
 
           assert_response :success
 
+          puts json_response.inspect
+
           assert_equal @student.phone, json_response['student_phone']
           assert_equal @student.email, json_response['student_email']
           assert_equal @student.legal_representative_full_name, json_response['representative_full_name']
