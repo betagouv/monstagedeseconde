@@ -88,6 +88,16 @@ FactoryBot.define do
       end
     end
 
+    trait :signed_by_student_only do
+      aasm_state { 'signatures_started' }
+      after(:create) do |ia|
+        create(:signature,
+               :student,
+               internship_agreement: ia,
+               user_id: ia.student.id)
+      end
+    end
+
     trait :signed_by_all do
       aasm_state { 'signed_by_all' }
       after(:create) do |ia|

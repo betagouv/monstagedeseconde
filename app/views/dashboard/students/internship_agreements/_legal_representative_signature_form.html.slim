@@ -1,0 +1,34 @@
+.fr-callout.fr-mt-2w
+  h3.fr-callout__title Vous êtes sur le point de signer la convention de stage de votre enfant.
+  p.fr-callout__text Merci de bien vouloir vérifier les informations suivantes avant de procéder à la signature.
+  p.fr-callout__text  Vous trouverez ci-dessous le lien de téléchargement de la convention de stage de l'élève dont vous êtes responsable.
+  p
+    = link_to "Voir la convention (PDF)",
+              dashboard_internship_agreement_path(uuid: @internship_agreement.uuid, format: :pdf),
+              class: "fr-btn fr-btn--sm fr-btn--secondary",
+              target: "_blank"
+
+= form_with model: Signature.new,
+            url: legal_representative_sign_dashboard_students_internship_agreement_path(uuid: @internship_agreement.uuid),
+            method: :post,
+            data: { turbo: false },
+            local: true do |f|
+  .fr-mb-3w
+    = f.hidden_field :uuid, value: params[:uuid]
+    = f.hidden_field :student_id, value: params[:student_id]
+    = f.hidden_field :access_token, value: params[:access_token]
+    = f.hidden_field :student_legal_representative_nr, value: params[:student_legal_representative_nr]
+    = f.label :student_legal_representative_full_name,
+              "Prénom et nom du responsable légal signataire de la convention de stage",
+              class: "fr-label"
+    .w-50
+      = f.text_field :student_legal_representative_full_name,
+                     class: "fr-input",
+                     value: params[:student_legal_representative_nr].to_i == 1 ? @internship_agreement.student_legal_representative_full_name : @internship_agreement.student_legal_representative_2_full_name,
+                     readonly: true
+
+    - if @internship_agreement.errors[:student_legal_representative_full_name].any?
+      .fr-error-text = @internship_agreement.errors[:student_legal_representative_full_name].first
+  .fr-mb-16w
+    = f.submit "Je signe d'un clic la convention de stage",
+              class: "fr-btn fr-btn--sm fr-btn-primary"
