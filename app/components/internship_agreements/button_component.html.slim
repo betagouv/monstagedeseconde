@@ -1,33 +1,29 @@
-- classes = 'd-flex justify-content-center fr-btn ml-2 fr-high-buttons text-center btn-block'
-.row
-  .col-sm-12.mb-1
-    - primary_button_classes = "fr-btn btn-block ml-2 text-center fr-mb-1w"
-    
-    - if second_label[:status] == 'disabled'
-      = link_to second_label[:text], '', class: "#{primary_button_classes} disabled"
-    - elsif second_label[:status] != 'hidden' && (internship_agreement.validated? || internship_agreement.signatures_started?)
-      button class="#{primary_button_classes}" data-group-signing-target="signingButton" data-group-signing-id-param="#{internship_agreement.id}" data-action="group-signing#toggleFromButton"
-        = second_label[:text]
+- classes = 'd-flex justify-content-center fr-btn fr-high-buttons text-center'
 
-  .col-sm-12.mb-1
-    - if label[:status] == 'disabled'
-      = link_to label[:text],
-                '',
-                class: "#{classes} disabled"
-    - elsif started_or_signed?
-      = link_to dashboard_internship_agreement_path(uuid: internship_agreement.uuid, format: :pdf),
-                target: "_blank",
-                style: 'max-width: none;',
-                class: "#{classes} fr-btn--secondary btn-block",
-                data: { test: "active-internship-agreement-progress-#{internship_agreement.id}" } do
-        = label[:text]
-    - elsif on_going_process?
-      = link_to edit_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
-                class: "#{classes} #{(label[:status] == 'secondary_cta') ? 'fr-btn--secondary' : ''}" do
-        = label[:text]
-    - else
-      = link_to '', class: "#{classes} fr-btn--secondary disabled" do
-        = "url to define - #{label[:text]}"
+- primary_button_classes = "fr-btn text-center fr-mr-1w"
+- if second_label[:status] == 'disabled'
+  = link_to second_label[:text], '', class: "#{primary_button_classes} disabled"
+- elsif second_label[:status] != 'hidden' && (internship_agreement.validated? || internship_agreement.signatures_started?)
+  button class="#{primary_button_classes}" data-group-signing-target="signingButton" data-group-signing-id-param="#{internship_agreement.id}" data-action="group-signing#toggleFromButton"
+    = second_label[:text]
+
+- if label[:status] == 'disabled'
+  = link_to label[:text],
+            '',
+            class: "#{classes} disabled"
+- elsif started_or_signed?
+  = link_to dashboard_internship_agreement_path(uuid: internship_agreement.uuid, format: :pdf),
+            target: "_blank",
+            class: "#{classes} fr-btn--secondary",
+            data: { test: "active-internship-agreement-progress-#{internship_agreement.id}" } do
+    = label[:text]
+- elsif on_going_process?
+  = link_to edit_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
+            class: "#{classes} #{(label[:status] == 'secondary_cta') ? 'fr-btn--secondary' : ''}" do
+    = label[:text]
+- else
+  = link_to '', class: "#{full_width_classes} fr-btn--secondary disabled" do
+  = "url inconnue - #{label[:text]}"
 
 
 
