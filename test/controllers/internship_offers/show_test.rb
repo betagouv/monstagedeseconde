@@ -450,12 +450,6 @@ module InternshipOffers
         sign_in(student)
         get internship_offer_path(internship_offer)
 
-        puts '--- writing html in debug_file.html ---'
-        puts ''
-        html = Nokogiri::HTML(response.body)
-        File.open('debug_file.html', 'w+') { |f| f.write html } 
-        puts '----------------------------------------'
-
         assert_select 'a.fr-btn.fr-icon-draft-line.fr-btn--icon-left', 4
         # assert_match 'Offre réservée aux élèves des quartiers prioritaires de la ville', response.body
       end

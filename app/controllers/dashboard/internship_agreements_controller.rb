@@ -3,7 +3,7 @@ module Dashboard
   class InternshipAgreementsController < ApplicationController
     before_action :authenticate_user!
     before_action :set_internship_agreement,
-                  only: %i[edit update show school_management_signature school_management_sign]
+                  only: %i[edit update show school_management_signature school_management_sign upload]
 
     def new
       @internship_agreement = internship_agreement_builder.new_from_application(
@@ -39,7 +39,7 @@ module Dashboard
     end
 
     def show
-      authorize! :update, @internship_agreement
+      authorize! :show, @internship_agreement
       respond_to do |format|
         format.html
         format.pdf do
@@ -53,9 +53,24 @@ module Dashboard
             type: 'application/pdf',
             disposition: 'inline'
           )
-          # && @internship_agreement.signatures.each do |signature|
-          #  signature.config_clean_local_signature_file
-          #  end
+        end
+      end
+    end
+
+    def upload
+      respond_to do |format|
+        format.html
+        format.pdf do
+          ext_file_name = @internship_agreement.internship_application
+                                               .student
+                                               .presenter
+                                               .full_name_camel_case
+          send_data(
+            GenerateInternshipAgreement.new(@internship_agreement.id).call.render,
+            filename: "Convention_de_stage_#{ext_file_name}.pdf",
+            type: 'application/pdf',
+            disposition: 'inline'
+          )
         end
       end
     end
@@ -106,11 +121,7 @@ module Dashboard
                         signatory_ip: request.remote_ip,
                         signature_date: Time.now,
                         signature_phone_number: current_user.try(:phone))
-      if @internship_agreement.signatures_started?
-        @internship_agreement.signatures_finalize!
-      else
-        @internship_agreement.sign!
-      end
+      @internship_agreement.sign!
 
       redirect_to dashboard_internship_agreements_path,
                   flash: { success: 'La convention a été signée.' }
@@ -133,7 +144,6 @@ module Dashboard
               :student_full_name,
               :student_class_room,
               :date_range,
-              :doc_date,
               :activity_scope,
               :activity_preparation,
               :activity_learnings,
@@ -188,7 +198,7 @@ module Dashboard
       when 'started_by_employer' then 'La convention a été enregistrée.'
       when 'completed_by_employer' then "La convention a été envoyée au chef d'établissement."
       when 'started_by_school_manager' then 'La convention a été enregistrée.'
-      when 'validated' then 'La convention est validée, le fichier pdf de la convention est maintenant disponible.'
+      when 'validated' then "La convention est validée, le fichier pdf de la convention est maintenant disponible. Un mail a été envoyé à l'offreur, à l'élève et à ses responsables légaux."
       else
         'La convention a été enregistrée.'
       end

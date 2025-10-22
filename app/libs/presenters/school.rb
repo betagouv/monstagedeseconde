@@ -26,21 +26,6 @@ module Presenters
       end
     end
 
-    def fetched_phone
-      fetch_details if school.fetched_school_phone.nil?
-      school.fetched_school_phone
-    end
-
-    def fetched_address
-      fetch_details if school.fetched_school_address.nil?
-      school.fetched_school_address
-    end
-
-    def fetched_email
-      fetch_details if school.fetched_school_email.nil?
-      school.fetched_school_email
-    end
-
     def staff
       %i[teachers others].map do |role|
         school.send(role).kept.includes(:school)
@@ -51,11 +36,6 @@ module Presenters
 
     def start_with_lycee_or_college?
       school.name.match(/^\s*(Lycée|Collège|Lycee|College).*/)
-    end
-
-    def fetch_details
-      Services::SchoolDirectory.new(school:).school_data_search
-      school.reload
     end
 
     attr_accessor :school

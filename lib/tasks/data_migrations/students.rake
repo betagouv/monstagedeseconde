@@ -74,6 +74,8 @@ namespace :data_migrations do
     PrettyConsole.announce_task 'Importing specific school' do
       school = School.find_by(code_uai: args.code_uai)
       if school
+        school.full_imported = false
+        school.save!
         PrettyConsole.say_in_cyan "Importing students from #{school.name} uai:#{school.code_uai}  ##{school.id}"
         ImportDataFromSygneJob.perform_later(school)
         puts "----------------- #{school.code_uai} -----------------"

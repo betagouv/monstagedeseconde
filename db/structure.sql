@@ -63,7 +63,9 @@ CREATE TYPE public.agreement_signatory_role AS ENUM (
     'cpe',
     'admin_officer',
     'teacher',
-    'main_teacher'
+    'main_teacher',
+    'student',
+    'student_legal_representative'
 );
 
 
@@ -837,13 +839,11 @@ CREATE TABLE public.internship_agreements (
     student_class_room character varying(50),
     student_school character varying(150),
     tutor_full_name character varying(275),
-    doc_date date,
     school_manager_accept_terms boolean DEFAULT false,
     employer_accept_terms boolean DEFAULT false,
     weekly_hours text[] DEFAULT '{}'::text[],
     daily_hours jsonb DEFAULT '{}'::jsonb,
     teacher_accept_terms boolean DEFAULT false,
-    school_delegation_to_sign_delivered_at date,
     daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
     siret character varying(14),
@@ -884,7 +884,8 @@ CREATE TABLE public.internship_agreements (
     entreprise_address character varying,
     student_birth_date date,
     pai_project boolean,
-    pai_trousse_family boolean
+    pai_trousse_family boolean,
+    access_token character varying
 );
 
 
@@ -1119,8 +1120,8 @@ ALTER SEQUENCE public.internship_offer_areas_id_seq OWNED BY public.internship_o
 
 CREATE TABLE public.internship_offer_grades (
     id bigint NOT NULL,
-    grade_id bigint NOT NULL,
     internship_offer_id bigint NOT NULL,
+    grade_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -1823,9 +1824,6 @@ CREATE TABLE public.schools (
     rep_kind character varying(50),
     visible boolean DEFAULT true,
     internship_agreement_online boolean DEFAULT false,
-    fetched_school_phone character varying(20),
-    fetched_school_address character varying(300),
-    fetched_school_email character varying(100),
     legal_status character varying(20),
     delegation_date date,
     is_public boolean DEFAULT true,
@@ -1836,7 +1834,17 @@ CREATE TABLE public.schools (
     voie_generale boolean,
     voie_techno boolean,
     full_imported boolean DEFAULT false,
-    qpv boolean DEFAULT false
+    qpv boolean DEFAULT false,
+    contact_phone character varying(20),
+    contact_email character varying(120),
+    web character varying(255),
+    code_nature character varying(3),
+    code_type_contrat_prive character varying(100),
+    ministere_tutelle character varying(80),
+    lycee_des_metiers boolean,
+    lycee_militaire boolean,
+    lycee_agricole boolean,
+    segpa boolean
 );
 
 
@@ -1903,7 +1911,8 @@ CREATE TABLE public.signatures (
     updated_at timestamp(6) without time zone NOT NULL,
     signatory_role public.agreement_signatory_role,
     signature_phone_number character varying,
-    user_id bigint
+    user_id bigint,
+    student_legal_representative_full_name character varying(150) DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -3325,6 +3334,13 @@ CREATE INDEX index_inappropriate_offers_on_user_id ON public.inappropriate_offer
 
 
 --
+-- Name: index_internship_agreements_on_access_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_internship_agreements_on_access_token ON public.internship_agreements USING btree (access_token);
+
+
+--
 -- Name: index_internship_agreements_on_discarded_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4521,7 +4537,7 @@ ALTER TABLE ONLY public.users_internship_offers_histories
 --
 
 ALTER TABLE ONLY public.internship_offer_stats
-    ADD CONSTRAINT fk_rails_e13d61cd66 FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+    ADD CONSTRAINT fk_rails_e13d61cd66 FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id) ON DELETE CASCADE;
 
 
 --
@@ -4569,7 +4585,7 @@ ALTER TABLE ONLY public.internship_offers
 --
 
 ALTER TABLE ONLY public.internship_offer_weeks
-    ADD CONSTRAINT fk_rails_f36a7226ee FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+    ADD CONSTRAINT fk_rails_f36a7226ee FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id) ON DELETE CASCADE;
 
 
 --
@@ -4587,6 +4603,12 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251001162458'),
+('20251001145652'),
+('20250930160935'),
+('20250930094414'),
+('20250924123333'),
+('20250918161534'),
 ('20250918093304'),
 ('20250917192024'),
 ('20250917144238'),

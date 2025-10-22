@@ -144,9 +144,13 @@ Rails.application.routes.draw do
                                                       as: :update_multiple_internship_applications
 
       resources :internship_agreements, path: 'conventions-de-stage', except: %i[destroy], param: :uuid do
-        get 'school_management_signature', on: :member
-        post 'school_management_sign', on: :member
+        member do
+          get 'school_management_signature'
+          post 'school_management_sign'
+          get 'upload'
+        end
       end
+
       resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
         member do
           post 'start_signing'
@@ -204,6 +208,12 @@ Rails.application.routes.draw do
       namespace :students, path: '/:student_id/' do
         resources :internship_applications, path: 'candidatures', only: %i[index show edit update], param: :uuid do
           post :resend_application, on: :member
+        end
+        resources :internship_agreements, path: 'conventions-de-stage', only: %i[new], param: :uuid do
+          member do
+            get :sign
+            post :legal_representative_sign
+          end
         end
       end
       get 'candidatures', to: 'internship_offers/internship_applications#user_internship_applications'

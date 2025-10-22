@@ -12,7 +12,14 @@ module Services
 
     def fetch_data
       uri = URI(ENV['CEGID_DECATHLON_URL'])
-      response = Net::HTTP.get_response(uri)
+      http = Net::HTTP.new(uri.host, uri.port)
+      
+      if uri.scheme == 'https'
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
+      
+      response = http.get(uri.path)
       return unless response.is_a?(Net::HTTPSuccess)
 
       JSON.parse(response.body)
@@ -55,7 +62,11 @@ module Services
 
       uri = URI("#{ENV['HOST']}/api/v2/internship_offers")
       http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = uri.scheme == 'https'
+      
+      if uri.scheme == 'https'
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE # Désactiver la vérification SSL pour les certificats auto-signés
+      end
 
       request = Net::HTTP::Post.new(uri.path)
       request['Authorization'] = "Bearer #{@token}"
@@ -159,6 +170,7 @@ module Services
 
       offers.each do |offer|
         unless remote_ids.include?(offer.remote_id)
+          offer.internship_applications.destroy_all
           offer.destroy
           puts "Offer #{offer.remote_id} removed"
         end

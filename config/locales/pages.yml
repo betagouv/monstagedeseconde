@@ -14,6 +14,7 @@ fr:
       planning:
         new:
           page_title: "Déposer une offre de stage : Ajouter les informations sur le planning"
+        page_title: "Entreprise"
     internship_offers:
       create:
         page_title: "Mes offres"
@@ -69,6 +70,9 @@ fr:
           page_title: "Mes candidatures"
         show:
           page_title: "Candidature '%{name}'"
+      internship_agreements:
+        new:
+          page_title: 'Signature de la convention de stage'
     internship_applications:
       index:
         page_title: "Conventions de stage"
