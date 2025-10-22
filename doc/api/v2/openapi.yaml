@@ -16,6 +16,37 @@ tags:
   description: Operations accessibles aux développeurs disposant d'une clé API. Celle-ci
     peut être fournie sur demande à l'adresse email contact @ 1eleve1stage.education.gouv.fr
 paths:
+  /internship_offers/{id}/internship_applications:
+    post:
+      tags:
+      - developers
+      summary: Permet à un élève de postuler à une offre de stage
+      description: |
+        Permet à un élève de postuler à une offre de stage en fournissant les informations
+        nécessaires.
+      operationId: create_internship_application
+      parameters:
+      - name: id
+        in: path
+        description: Identifiant de l'offre de stage
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      requestBody:
+        $ref: '#/components/requestBodies/InternshipApplication'
+      responses:
+        "201":
+          description: Candidature créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternshipApplication'
+      security:
+        - bearerAuth: []
+      x-swagger-router-controller: Developers
   /internship_offers:
     get:
       tags:
@@ -285,6 +316,44 @@ paths:
       x-swagger-router-controller: Developers
 components:
   schemas:
+    InternshipApplication:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        student_id:
+          type: integer
+          example: 1
+        internship_offer_id:
+          type: integer
+          example: 1
+        motivation:
+          type: string
+          maxLength: 1500
+          example: Je souhaite faire ce stage pour découvrir le métier de développeur
+        student_legal_representative_full_name:
+          type: string
+          maxLength: 150
+          example: Jean Dupont
+        student_legal_representative_email:
+          type: string
+          format: email
+          maxLength: 109
+          example: jean.dupont@example.com
+        student_legal_representative_phone:
+          type: string
+          maxLength: 50
+          example: "+330612345678"
+        week_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Week'
+          description: Liste des identifiants des semaines pour lesquelles l'élève postule
+          example:
+            - 2023-W9
+            - 2023-W10
+      description: Candidature à une offre de stage
     InternshipOffers:
       type: array
       items:
@@ -383,7 +452,7 @@ components:
           type: boolean
           description: "true si l'offre de stage est réservée à des établissements en qpv"
           example: true
-        weeks: 
+        weeks:
           type: array
           items:
             type: string
@@ -417,7 +486,7 @@ components:
         is_public: true
         rep: false
         qpv: true
-        weeks: 
+        weeks:
           - 2023-W12
           - 2023-W13
         permalink: http://www.stagechezemployeur.fr
@@ -477,7 +546,6 @@ components:
         - quatrieme
       example:
         - seconde
-        - troisieme
     Sector:
       type: object
       properties:
@@ -641,7 +709,6 @@ components:
             type: string
       description: Horaires quotidiens de stage
     Week:
-      type: array
       properties:
         type: string
         format: <annee_scolaire>-W<no_de_semaine>
