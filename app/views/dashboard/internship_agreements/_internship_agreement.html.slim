@@ -24,12 +24,12 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
     = prez.student_name
   td.pt-0.pb-3.py-sm-2.rg2a-width-100.col-sm-2.d-flex.flex-column.justify-content-center.align-items-start data-head="#{internship_agreement.internship_application.internship_offer.title}"
     div = link_to '#',
-                class: 'overflow-x-visible text-wrap fr-raw-link',
-                style: 'white-space: normal; word-break: break-word;',
-              data: { toggle: 'modal',
-                      target: "##{show_application_modal_id(internship_agreement.internship_application)}",
-                      turbo: false },
-              target: '_blank' do
+                  class: 'overflow-x-visible text-wrap fr-raw-link',
+                  style: 'white-space: normal; word-break: break-word;',
+                  data: { toggle: 'modal',
+                          target: "##{show_application_modal_id(internship_agreement.internship_application)}",
+                          turbo: false },
+                  target: '_blank' do
       span = prez.internship_offer_title.truncate(38)
     .fr-mt-2w
       = prez.employer_name
@@ -42,7 +42,7 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
     .actions.d-flex.d-sm-block
       = render(InternshipAgreements::SignatureStatusComponent.new( internship_agreement: internship_agreement))
 
-  td.col.d-sm-flex.align-items-center.justify-content-center.actions
+  td.col.d-sm-flex.align-items-center.justify-content-center.actions.flex-column
     / - if current_user.school_management? && can?(:sign_internship_agreements, internship_agreement)
     /     = link_to school_management_signature_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
     /               class: 'fr-link',

@@ -1,5 +1,5 @@
 #agreement-button-panel [
-  class="margin-to-header #{(current_user.employer_like?) ? 'fr-tabs__panel fr-tabs__panel--selected' : ''}"
+  class="#{(current_user.employer_like?) ? 'fr-tabs__panel fr-tabs__panel--selected' : ''} "
   aria-labelled-by="agreement-button"
   role="tabpanel"
   tabindex="0"]
@@ -21,7 +21,7 @@
                 url: start_signing_dashboard_user_path(id: current_user.id),
                 method: :post)  do |fg|
 
-      .fr-table.fr-table--bordered.fr-mb-4w
+      .fr-table.fr-table--bordered.fr-mb-4w.fr-mx-n4w
         .fr-table__wrapper
           .fr-table__container
             .fr-table__content style="overflow-x: hidden;"
@@ -65,7 +65,7 @@
           - else
             = fg.button 'Signer',
                         type: 'submit',
-                        class: "fr-btn fr-mb-2w fr-px-4w",
+                        class: "fr-btn fr-mb-2w fr-px-4w fr-mx-n4w",
                         disabled: true,
                         'data-fr-opened': false,
                         'aria-controls': "fr-modal-signatures",

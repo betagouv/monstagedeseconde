@@ -21,12 +21,10 @@ module Dashboard
         # email is asynchronously sent when creating the signature
         assert_redirected_to dashboard_students_internship_applications_path(student_id: student.id)
         follow_redirect!
-        assert_select('.alert', text: 'Vous avez bien signé la convention de stage. Un email a été envoyé aux responsables légaux pour les inviter à signer la convention de stage. Fermer ×')
+        assert_select('.alert', text: 'Vous avez bien signé la convention de stage. Un email a été envoyé aux représentants légaux pour les inviter à signer la convention de stage. Fermer ×')
         assert_equal 1, internship_agreement.reload.signatures.count
         assert_equal 'student', internship_agreement.signatures.first.signatory_role
         assert_equal 'signatures_started', internship_agreement.aasm_state
-      rescue StandardError => e
-        flunk "Exception raised: #{e.message}\n#{e.backtrace.join("\n")}"
       end
 
       test 'student cannot sign twice the internship agreement' do
@@ -45,8 +43,6 @@ module Dashboard
         follow_redirect!
         assert_select('.alert', text: 'Vous avez déjà signé cette convention de stage Fermer ×')
         assert_equal 1, internship_agreement.reload.signatures.count
-      rescue StandardError => e
-        flunk "Exception raised: #{e.message}\n#{e.backtrace.join("\n")}"
       end
 
       test "legal representative can sign internship agreement" do
@@ -84,8 +80,6 @@ module Dashboard
         assert_equal last_signature.student_legal_representative_full_name, internship_agreement.student_legal_representative_full_name
         assert_equal last_signature.user_id, student.id
         assert_nil  internship_agreement.access_token
-      rescue StandardError => e
-        flunk "Exception raised: #{e.message}\n#{e.backtrace.join("\n")}"
       end
 
       test 'legal representative cannot sign twice the internship agreement' do
@@ -130,8 +124,6 @@ module Dashboard
         follow_redirect!
         assert_select('.alert', text: "Le représentant légal #{internship_agreement.student_legal_representative_full_name} a déjà signé cette convention de stage Fermer ×")
         assert_equal 1, internship_agreement.reload.signatures.count
-      rescue StandardError => e
-        flunk "Exception raised: #{e.message}\n#{e.backtrace.join("\n")}"
       end
 
       test 'legal representative cannot sign with invalid token' do
@@ -160,8 +152,6 @@ module Dashboard
         follow_redirect!
         assert_select('.alert', text: 'Convention introuvable Fermer ×')
         assert_equal 0, internship_agreement.reload.signatures.count
-      rescue StandardError => e
-        flunk "Exception raised: #{e.message}\n#{e.backtrace.join("\n")}"
       end
 
       test 'should handle RecordNotFound on sign action' do
@@ -177,8 +167,6 @@ module Dashboard
         assert_redirected_to root_path
         follow_redirect!
         assert_select('.alert', text: "Vous n'êtes pas autorisé à effectuer cette action. Fermer ×")
-      rescue StandardError => e
-        flunk "Exception raised: #{e.message}\n#{e.backtrace.join("\n")}"
       end
 
       test 'new' do
@@ -198,9 +186,7 @@ module Dashboard
                                                              access_token: internship_agreement.access_token,
                                                              student_id: student.id)
         assert_response :success
-        assert_select 'h1', text: "Espace de signature de la convention de stage destiné aux responsables légaux de #{student.presenter.full_name}"
-      rescue StandardError => e
-        flunk "Exception raised: #{e.message}\n#{e.backtrace.join("\n")}"
+        assert_select 'h1', text: "Espace de signature de la convention de stage destiné aux représentants légaux de #{student.presenter.full_name}"
       end
 
       test 'new with invalid token' do
@@ -222,8 +208,6 @@ module Dashboard
         assert_redirected_to root_path
         follow_redirect!
         assert_select('.alert', text: 'Convention introuvable Fermer ×')
-      rescue StandardError => e
-        flunk "Exception raised: #{e.message}\n#{e.backtrace.join("\n")}"
       end
 
       test 'new when already signed by legal representative' do
@@ -244,7 +228,7 @@ module Dashboard
                                                              access_token: internship_agreement.access_token,
                                                              student_id: student.id)
         assert_response :success
-        assert_select 'h1', text: "Espace de signature de la convention de stage destiné aux responsables légaux de #{student.presenter.full_name}"
+        assert_select 'h1', text: "Espace de signature de la convention de stage destiné aux représentants légaux de #{student.presenter.full_name}"
         assert_select '.fr-alert', text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}"
       end
     end
