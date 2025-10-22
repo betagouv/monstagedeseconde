@@ -41,7 +41,7 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
     .actions.d-flex.d-sm-block
       = render(InternshipAgreements::SignatureStatusComponent.new( internship_agreement: internship_agreement))
 
-  td.col.d-sm-flex.align-items-center.justify-content-center.actions
+  td.col.d-sm-flex.align-items-center.justify-content-center.actions.flex-column
     / - if current_user.school_management? && can?(:sign_internship_agreements, internship_agreement)
     /     = link_to school_management_signature_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
     /               class: 'fr-link',

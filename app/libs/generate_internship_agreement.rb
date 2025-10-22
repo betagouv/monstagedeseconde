@@ -434,7 +434,7 @@ class GenerateInternshipAgreement < Prawn::Document
   #     "Le chef d'établissement - #{school_manager.try(:presenter).try(:formal_name)}",
   #     "Le responsable de l'organisme d'accueil - #{employer.presenter.formal_name}",
   #     "L'élève",
-  #     'Parents ou responsables légaux',
+  #     'Parents ou représentants légaux',
   #     'Le professeur référent',
   #     "Le référent en charge de l'élève à sein de l'organisme d'accueil"
   #   ]],
