@@ -30,7 +30,7 @@ module Api
 
       def new
         # return new internship application form
-        render_error(code: 'FORBIDDEN', error: 'Only students can apply for internship offers', status: :forbidden) unless @current_api_user.is_a?(Users::Student)
+        render_error(code: 'FORBIDDEN', error: 'Only students can apply for internship offers', status: :forbidden) unless @current_api_user.student?
 
         render json: {
           student_phone: @current_api_user.phone,
@@ -65,13 +65,12 @@ module Api
 
       def find_student
         @student = Users::Student.where(id: params[:user_id]).first
-        unless @student
-          render_error(
-            code: 'FORBIDDEN',
-            error: 'Only students can apply for internship offers',
-            status: :forbidden
-          )
-        end
+      rescue ActiveRecord::RecordNotFound
+        render_error(
+          code: 'FORBIDDEN',
+          error: 'Only students can apply for internship offers',
+          status: :forbidden
+        )
       end
 
       def check_required_params
@@ -109,7 +108,7 @@ module Api
         
         # Sanitize phone number
         if sanitized_params['student_phone']
-          sanitized_params['student_phone'] = sanitized_params['student_phone'].gsub(/\s+/, '')
+          sanitized_params['student_phone'] = User.sanitize_mobile_phone_number(sanitized_params['student_phone'], '+33')
         end
 
         # Format week_ids
