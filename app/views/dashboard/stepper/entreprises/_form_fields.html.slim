@@ -81,7 +81,7 @@
                 = "Type d’employeur public *"
 
               = form.select :group_id,
-                            options_for_select(options_for_public_groups, resource.group.try(:id)),
+                            options_for_select(options_for_public_groups, @duplication ? InternshipOffer.find(params[:duplicate_id]).group.try(:id) : resource.group.try(:id) ),
                             { prompt: 'Sélectionnez un employeur public' },
                             class: "fr-select",
                             id: "group-choice",
