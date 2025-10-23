@@ -109,10 +109,10 @@ class InternshipAgreement < ApplicationRecord
     end
 
     # helper
-    # event :back_to_started_by_school_manager do
-    #   transitions from: %i[signatures_started validated],
-    #               to: :started_by_school_manager
-    # end
+    event :back_to_started_by_school_manager do
+      transitions from: %i[signatures_started validated],
+                  to: :started_by_school_manager
+    end
 
     event :sign do # sign after signature creation !
       transitions from: %i[validated signatures_started],
