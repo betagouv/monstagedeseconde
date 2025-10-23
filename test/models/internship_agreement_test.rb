@@ -2,6 +2,10 @@ require 'test_helper'
 require 'pretty_console'
 
 class InternshipAgreementTest < ActiveSupport::TestCase
+  setup do
+    Flipper.enable :student_signature
+  end
+
   test 'factory is valid' do
     assert build(:internship_agreement).valid?
   end

@@ -3,6 +3,10 @@ require 'test_helper'
 class GodMailerTest < ActionMailer::TestCase
   include EmailSpamEuristicsAssertions
 
+  setup do
+    Flipper.enable :student_signature
+  end
+
   test '.weekly_kpis_email sends email to recipient' do
     email = GodMailer.weekly_kpis_email
     email.deliver_now

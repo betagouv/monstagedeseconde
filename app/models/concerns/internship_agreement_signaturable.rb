@@ -3,7 +3,9 @@ module InternshipAgreementSignaturable
 
   included do
     def roles_not_signed_yet
-      [school_management_representative.role, 'employer', 'student', 'student_legal_representative'] - roles_already_signed
+      roles = [school_management_representative.role, 'employer'] 
+      roles += ['student', 'student_legal_representative'] if Flipper.enabled?(:student_signature)
+      roles - roles_already_signed
     end
 
     def signature_by_role(signatory_role:)
@@ -32,11 +34,13 @@ module InternshipAgreementSignaturable
       if roles_not_signed_yet.include?('employer')
         recipients << employer.email if employer
       end
-      if (roles_not_signed_yet & Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE).any?
-        recipients << school_management_representative.email if school_management_representative
-      end
-      if roles_not_signed_yet.include?('student')
-        recipients << student.email if student
+      if Flipper.enabled?(:student_signature)
+        if (roles_not_signed_yet & Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE).any?
+          recipients << school_management_representative.email if school_management_representative
+        end
+        if roles_not_signed_yet.include?('student')
+          recipients << student.email if student
+        end
       end
       recipients
     end

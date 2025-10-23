@@ -32,8 +32,7 @@ class Signature < ApplicationRecord
     teacher
   ].freeze
 
-  # REQUESTED_SIGNATURES_COUNT = 4
-  REQUESTED_SIGNATURES_COUNT = 3
+  REQUESTED_SIGNATURES_COUNT = 4
 
   belongs_to :internship_agreement
   belongs_to :signator, class_name: 'User', foreign_key: 'user_id'
@@ -70,7 +69,11 @@ class Signature < ApplicationRecord
   end
 
   def all_signed?
-    signatures_count == REQUESTED_SIGNATURES_COUNT && internship_agreement.signed_by_employer?
+    if Flipper.enabled?(:student_signature)
+      signatures_count == REQUESTED_SIGNATURES_COUNT
+    else
+      signatures_count == REQUESTED_SIGNATURES_COUNT - 2
+    end && internship_agreement.signed_by_employer?
   end
 
   def attach_signature!(io:, filename:, content_type:)
