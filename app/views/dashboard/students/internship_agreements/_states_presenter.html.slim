@@ -37,7 +37,7 @@
 - if !@internship_agreement.signed_by_legal_representative? && @prez.signed_by_student?
   .row.fr-my-4w
     .fr-callout
-      h3.fr-callout__title Signature des représentants légaux
+      h3.fr-callout__title Signature des responsables légaux
       p.fr-callout__text
         |>
           La demande va être envoyée aux adresses mails de votre ou vos responsable(s) légal(aux).
@@ -45,7 +45,7 @@
         = link_to " cette page", "https://docs.numerique.gouv.fr/docs/45c0457b-c846-416d-94dc-83f76b8407b8/",  class: "fr-link", target: "_blank"
         |< pour consulter la marche à suivre pour la mettre à jour.
 
-  h2.h3 Liste des emails des représentants légaux
+  h2.h3 Liste des emails des responsables légaux
   - if @internship_agreement.legal_representative_emails?
     ul
       - if @internship_agreement.student_legal_representative_email.present?
