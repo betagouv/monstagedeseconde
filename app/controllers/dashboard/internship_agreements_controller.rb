@@ -1,9 +1,8 @@
 module Dashboard
-  # WIP, not yet implemented, will host agreement signing
   class InternshipAgreementsController < ApplicationController
     before_action :authenticate_user!
     before_action :set_internship_agreement,
-                  only: %i[edit update show school_management_signature school_management_sign upload]
+                  only: %i[edit update show school_management_signature school_management_sign]
 
     def new
       @internship_agreement = internship_agreement_builder.new_from_application(
@@ -40,24 +39,6 @@ module Dashboard
 
     def show
       authorize! :show, @internship_agreement
-      respond_to do |format|
-        format.html
-        format.pdf do
-          ext_file_name = @internship_agreement.internship_application
-                                               .student
-                                               .presenter
-                                               .full_name_camel_case
-          send_data(
-            GenerateInternshipAgreement.new(@internship_agreement.id).call.render,
-            filename: "Convention_de_stage_#{ext_file_name}.pdf",
-            type: 'application/pdf',
-            disposition: 'inline'
-          )
-        end
-      end
-    end
-
-    def upload
       respond_to do |format|
         format.html
         format.pdf do
