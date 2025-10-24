@@ -21,7 +21,7 @@ module Dashboard
         # email is asynchronously sent when creating the signature
         assert_redirected_to dashboard_students_internship_applications_path(student_id: student.id)
         follow_redirect!
-        assert_select('.alert', text: 'Vous avez bien signé la convention de stage. Un email a été envoyé aux représentants légaux pour les inviter à signer la convention de stage. Fermer ×')
+        assert_select('.alert', text: 'Vous avez bien signé la convention de stage. Un email a été envoyé aux responsables légaux pour les inviter à signer la convention de stage. Fermer ×')
         assert_equal 1, internship_agreement.reload.signatures.count
         assert_equal 'student', internship_agreement.signatures.first.signatory_role
         assert_equal 'signatures_started', internship_agreement.aasm_state
@@ -73,7 +73,7 @@ module Dashboard
         # email is asynchronously sent when creating the signature
         assert_redirected_to new_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id)
         follow_redirect!
-        assert_select('.fr-alert', text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}")
+        assert_select('.fr-alert', text: "Consultez la convention de stage signée par #{internship_agreement.student_legal_representative_full_name} ci-dessous")
         assert_equal 1, internship_agreement.reload.signatures.count
         assert_equal 'student_legal_representative', internship_agreement.signatures.first.signatory_role
         assert_equal 'signatures_started', internship_agreement.aasm_state
@@ -108,7 +108,7 @@ module Dashboard
              }
         assert_redirected_to new_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id)
         follow_redirect!
-        assert_select('.fr-alert', text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}")
+        assert_select('.fr-alert', text: "Consultez la convention de stage signée par #{internship_agreement.student_legal_representative_full_name} ci-dessous")
         assert_equal 1, internship_agreement.reload.signatures.count
         assert_equal 'student_legal_representative', internship_agreement.signatures.first.signatory_role
         assert_equal 'signatures_started', internship_agreement.aasm_state
@@ -188,7 +188,7 @@ module Dashboard
                                                              access_token: internship_agreement.access_token,
                                                              student_id: student.id)
         assert_response :success
-        assert_select 'h1', text: "Espace de signature de la convention de stage destiné aux représentants légaux de #{student.presenter.full_name}"
+        assert_select 'h1', text: "Espace de signature de la convention de stage destiné aux responsables légaux de #{student.presenter.full_name}"
       end
 
       test 'new with invalid token' do
@@ -230,8 +230,8 @@ module Dashboard
                                                              access_token: internship_agreement.access_token,
                                                              student_id: student.id)
         assert_response :success
-        assert_select 'h1', text: "Espace de signature de la convention de stage destiné aux représentants légaux de #{student.presenter.full_name}"
-        assert_select '.fr-alert', text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}"
+        assert_select 'h1', text: "Espace de signature de la convention de stage destiné aux responsables légaux de #{student.presenter.full_name}"
+        assert_select '.fr-alert', text: "Consultez la convention de stage signée par #{internship_agreement.student_legal_representative_full_name} ci-dessous"
       end
     end
   end

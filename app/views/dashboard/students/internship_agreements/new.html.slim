@@ -1,5 +1,5 @@
 h1.fr-my-4w
-  = "Espace de signature de la convention de stage destiné aux représentants légaux de" \
+  = "Espace de signature de la convention de stage destiné aux responsables légaux de" \
     " #{@internship_agreement.student.presenter.full_name}"
 - if @internship_agreement.signed_by_legal_representative?
   = render "dashboard/students/internship_agreements/agreement_already_signed",

@@ -44,7 +44,7 @@ module Dashboard::Students
                           signature_date: Time.now)
         @internship_agreement.sign!
         redirect_to dashboard_students_internship_applications_path(student_id: current_user.id),
-                    notice: 'Vous avez bien signé la convention de stage. Un email a été envoyé aux représentants légaux pour les inviter à signer la convention de stage.' and return
+                    notice: 'Vous avez bien signé la convention de stage. Un email a été envoyé aux responsables légaux pour les inviter à signer la convention de stage.' and return
       else
         redirect_to dashboard_students_internship_applications_path(student_id: current_user.id),
                     notice: 'La signature de la convention de stage n\'a pas pu être effectuée.' and return
