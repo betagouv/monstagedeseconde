@@ -87,6 +87,7 @@ fr:
       team_member_invitation:
         one: Membre de l'équipe
         other: Membres de l'équipe
+      student legal representative: "Représentant légal"
       student:
         one: Élève
         other: Élèves
