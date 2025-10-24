@@ -238,7 +238,7 @@ Rails.application.routes.draw do
         resources :internship_agreements, path: 'conventions-de-stage', only: %i[new], param: :uuid do
           member do
             get :sign
-            post :legal_representative_sign
+            
           end
         end
       end
@@ -255,6 +255,15 @@ Rails.application.routes.draw do
     get 'internship_offers', to: 'internship_offers#index'
     get 'operators', to: 'operators#index'
     put 'operators', to: 'operators#update'
+  end
+
+  namespace :public do
+    resources :internship_agreements, only: [:show], param: :uuid do
+      member do
+        get :upload, to: 'internship_agreements#upload', defaults: { format: :pdf }
+        post :legal_representative_sign, to: 'internship_agreements#legal_representative_sign'
+      end
+    end
   end
 
   get 'api_address_proxy/search', to: 'api_address_proxy#search', as: :api_address_proxy_search
