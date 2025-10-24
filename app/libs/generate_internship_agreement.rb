@@ -173,7 +173,7 @@ class GenerateInternshipAgreement < Prawn::Document
       'd’observation, soit au domicile.'
     )
     paraphing(
-      'L’élève (et en cas de minorité ses représentants légaux) doit souscrire et produire une '\
+      'L’élève (et en cas de minorité ses responsables légaux) doit souscrire et produire une '\
       'attestation d’assurance couvrant sa responsabilité civile pour les dommages qu’il pourrait '\
       'causer ou qui pourraient lui advenir en milieu professionnel.'
     )
@@ -238,7 +238,7 @@ class GenerateInternshipAgreement < Prawn::Document
         "#{@internship_agreement.pai_trousse_family ? 'De la famille' : 'De l\'établissement'}")
     end
 
-    @pdf.text 'Prénom, nom et coordonnées électronique et téléphonique des représentants légaux :'
+    @pdf.text 'Prénom, nom et coordonnées électronique et téléphonique des responsables légaux :'
     @pdf.text "#{@internship_agreement.student_legal_representative_full_name}, " \
       "#{@internship_agreement.student_legal_representative_email}, " \
       "#{@internship_agreement.student_legal_representative_phone}"
@@ -434,7 +434,7 @@ class GenerateInternshipAgreement < Prawn::Document
   #     "Le chef d'établissement - #{school_manager.try(:presenter).try(:formal_name)}",
   #     "Le responsable de l'organisme d'accueil - #{employer.presenter.formal_name}",
   #     "L'élève",
-  #     'Parents ou représentants légaux',
+  #     'Parents ou responsables légaux',
   #     'Le professeur référent',
   #     "Le référent en charge de l'élève à sein de l'organisme d'accueil"
   #   ]],
