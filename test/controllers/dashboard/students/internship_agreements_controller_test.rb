@@ -73,7 +73,8 @@ module Dashboard
         # email is asynchronously sent when creating the signature
         assert_redirected_to new_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id)
         follow_redirect!
-        assert_select('.fr-alert', text: "Consultez la convention de stage signée par #{internship_agreement.student_legal_representative_full_name} ci-dessous")
+        assert_select '.fr-alert', text: "Signature déjà complétée."
+        assert_select '.fr-callout__title', text: "La convention de stage a déjà été signée par #{internship_agreement.student.presenter.full_name}."
         assert_equal 1, internship_agreement.reload.signatures.count
         assert_equal 'student_legal_representative', internship_agreement.signatures.first.signatory_role
         assert_equal 'signatures_started', internship_agreement.aasm_state
@@ -108,7 +109,8 @@ module Dashboard
              }
         assert_redirected_to new_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id)
         follow_redirect!
-        assert_select('.fr-alert', text: "Consultez la convention de stage signée par #{internship_agreement.student_legal_representative_full_name} ci-dessous")
+        assert_select('.fr-alert', text: "Signature déjà complétée.")
+        assert_select '.fr-callout__title', text: "La convention de stage a déjà été signée par #{internship_agreement.student.presenter.full_name}."
         assert_equal 1, internship_agreement.reload.signatures.count
         assert_equal 'student_legal_representative', internship_agreement.signatures.first.signatory_role
         assert_equal 'signatures_started', internship_agreement.aasm_state
@@ -230,8 +232,10 @@ module Dashboard
                                                              access_token: internship_agreement.access_token,
                                                              student_id: student.id)
         assert_response :success
+
         assert_select 'h1', text: "Espace de signature de la convention de stage destiné aux responsables légaux de #{student.presenter.full_name}"
-        assert_select '.fr-alert', text: "Consultez la convention de stage signée par #{internship_agreement.student_legal_representative_full_name} ci-dessous"
+        assert_select '.fr-alert', text: "Signature déjà complétée."
+        assert_select '.fr-callout__title', text: "La convention de stage a déjà été signée par #{internship_agreement.student.presenter.full_name}."
       end
     end
   end

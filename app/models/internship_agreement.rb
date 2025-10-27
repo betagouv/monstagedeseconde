@@ -316,6 +316,10 @@ class InternshipAgreement < ApplicationRecord
      end
     hash
   end
+
+  def legal_representative_count
+    legal_representative_data.size
+  end
   
   private
 
