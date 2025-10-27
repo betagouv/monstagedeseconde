@@ -23,17 +23,18 @@
                     dashboard_internship_agreement_path(uuid: @internship_agreement.uuid, format: :pdf),
                     class: "fr-btn fr-btn--sm fr-btn--secondary",
                     target: "_blank"
-          - if @prez.signed_by_student?
-            = link_to "Vous avez déjà signé la convention",
-                      '#',
-                      class: "fr-btn fr-btn--tertiary fr-btn--sm fr-ml-2w fr-btn--icon-left fr-icon-check-line green-box",
-                      disabled: true
-          - else
-             = button_to "Signer la convention de stage",
-                         sign_dashboard_students_internship_agreement_path(uuid: @internship_agreement.uuid, student_id: current_user.id),
-                         method: :get,
-                         data: { turbo: false },
-                         class: "fr-btn fr-btn--sm fr-ml-2w"
+          - if Flipper.enabled?(:student_signature, @internship_agreement.internship_application.student)
+            - if @prez.signed_by_student?
+              = link_to "Vous avez déjà signé la convention",
+                        '#',
+                        class: "fr-btn fr-btn--tertiary fr-btn--sm fr-ml-2w fr-btn--icon-left fr-icon-check-line green-box",
+                        disabled: true
+            - else
+              = button_to "Signer la convention de stage",
+                          sign_dashboard_students_internship_agreement_path(uuid: @internship_agreement.uuid, student_id: current_user.id),
+                          method: :get,
+                          data: { turbo: false },
+                          class: "fr-btn fr-btn--sm fr-ml-2w"
 - if !@internship_agreement.signed_by_legal_representative? && @prez.signed_by_student?
   .row.fr-my-4w
     .fr-callout

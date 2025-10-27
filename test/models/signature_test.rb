@@ -1,6 +1,10 @@
 require 'test_helper'
 
 class SignatureTest < ActiveSupport::TestCase
+  setup do
+    Flipper.enable :student_signature
+  end
+
   test 'factory' do
     signature = build(:signature, :employer)
     puts signature.inspect unless signature.valid?
@@ -25,6 +29,8 @@ class SignatureTest < ActiveSupport::TestCase
     refute signature.all_signed?
     create(:signature, :school_manager, internship_agreement_id: signature.internship_agreement_id)
     create(:signature, :student, internship_agreement_id: signature.internship_agreement_id)
+    refute signature.all_signed?
+    create(:signature, :student_legal_representative, internship_agreement_id: signature.internship_agreement_id)
     assert signature.all_signed?
   end
 
