@@ -6,11 +6,14 @@ p style=p_styles
 
 p style=p_styles
   = "La convention de stage de #{@prez_stud.full_name}, pour le stage " \
-    "#{@internship_offer.title} a été complétée et validée " \
+    "#{@internship_offer.title} a été complétée " \
     "par le chef d’établissement. Elle est désormais prête pour la signature des <strong>responsables légaux</strong>.".html_safe
 
 p style=p_styles
-  | Pour signifier votre accord, prière de signer la convention de stage en pièce jointe avec le bouton ci-dessous..
+  |
+    Une seule signature des responsables légaux est requise. Pour signifier
+    votre accord, prière de signer la convention de stage en pièce jointe
+    avec le bouton ci-dessous.
 
 = render partial: "mailers/blue_call_to_action",
         locals: { href: @url,
