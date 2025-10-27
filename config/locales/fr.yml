@@ -33,6 +33,7 @@ fr:
       employer:
         one: Employeur
         other: Employeurs
+      school manager: "Chef d'établissement"
       entreprise:
         one: Entreprise ou administration
         other: Entreprises ou administrations
