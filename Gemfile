@@ -63,6 +63,7 @@ gem "sentry-sidekiq"
 gem "bitly"
 gem "mime-types"
 gem "prismic.io", require: "prismic"
+gem "scalar_ruby"
 
 # acl
 gem "cancancan"
