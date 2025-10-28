@@ -1,0 +1,20 @@
+{
+  "pagination": {
+    "current_page": 1,
+    "next_page": null,
+    "prev_page": null,
+    "total_pages": 1,
+    "total_count": 1,
+    "per_page": 20
+  },
+  "internshipApplications": [
+    {
+      "id": 1095,
+      "user_id": 6387,
+      "internship_offer_id": 2396,
+      "status": "submitted",
+      "createdAt": "2025-10-28T18:04:11.745+01:00",
+      "updatedAt": "2025-10-28T18:04:11.745+01:00"
+    }
+  ]
+}

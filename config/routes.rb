@@ -149,6 +149,10 @@ Rails.application.routes.draw do
         resources :coded_crafts, only: [] do
           get :search, on: :collection
         end
+        namespace :students, path: '/:student_id/' do
+          resources :internship_applications, only: %i[index] do
+          end
+        end
         resources :sectors, only: :index
       end
     end
@@ -238,7 +242,6 @@ Rails.application.routes.draw do
         resources :internship_agreements, path: 'conventions-de-stage', only: %i[new], param: :uuid do
           member do
             get :sign
-            
           end
         end
       end
