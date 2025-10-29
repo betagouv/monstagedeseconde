@@ -399,4 +399,19 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :bad_request
   end
+
+  test 'info modal dismissal' do
+    student = create(:student)
+    sign_in student
+
+    get account_path(section: 'password')
+    assert_select('div[data-open-modal-dsfr-is-open-value="true"]', {}, 'missing info modal rendering')
+
+    post dismiss_modal_info_path(params: { show_modal_info: false })
+    assert_response :success
+    refute student.reload.show_modal_info
+
+    get account_path(section: 'password')
+    assert_select('div[data-open-modal-dsfr-is-open-value="false"]', {}, 'info modal should be dismissed')
+  end
 end

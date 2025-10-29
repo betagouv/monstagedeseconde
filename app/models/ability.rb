@@ -77,11 +77,10 @@ class Ability
   end
 
   def student_abilities(user:)
-    can :look_for_offers, User
+    can %i[show_modal_info look_for_offers sign_with_sms], User
     can :resend_confirmation_phone_token, User do |user|
       user.phone.present? && user.student?
     end
-    can :sign_with_sms, User
     can :show, :account
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
@@ -456,7 +455,8 @@ class Ability
     can %i[
       choose_statistician_type
       supply_offers
-      subscribe_to_webinar
+      subscribe_to_webinar,
+      show_modal_info
     ], User
 
     can %i[see_reporting_dashboard
@@ -464,6 +464,7 @@ class Ability
   end
 
   def common_school_management_abilities(user:)
+    can :show_modal_info, User
     can %i[list_invitations
            destroy_invitation], Invitation do |invitation|
       invitation.school.id == user.school_id

@@ -130,6 +130,13 @@ class UsersController < ApplicationController
     end
   end
 
+  def dismiss_modal_info
+    authorize! :show_modal_info, current_user
+    show_modal = params[:show_modal_info] && !params[:show_modal_info] == "false"
+    current_user.update(show_modal_info: show_modal)
+    head :ok
+  end
+
   helper_method :current_section
 
   private
