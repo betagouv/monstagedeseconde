@@ -1,0 +1,7 @@
+{
+  "error": "VALIDATION_ERROR",
+  "message": "The internship application could not be created",
+  "details": [
+    "Contact email n'est pas valide"
+  ]
+}

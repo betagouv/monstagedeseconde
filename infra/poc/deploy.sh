@@ -19,11 +19,7 @@ if [ ! -f "$SSH_PRIV" ]; then
   exit 1;
 fi;
 
-git checkout master
-if [ ! $? -eq 0 ]; then
-  echo 'Wrong branch; you should be on master branch'
-  exit 1;
-fi;
+git push $target poc:master
 
 git pull origin poc
 git push $target poc:master

@@ -139,6 +139,7 @@ Rails.application.routes.draw do
         post 'auth/login', to: 'auth#login'
         resources :internship_offers, only: %i[create update destroy index] do
           get :search, on: :collection
+          resources :internship_applications, only: [:create, :new, :index]
         end
         resources :schools, only: [] do
           collection do
