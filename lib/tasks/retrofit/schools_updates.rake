@@ -82,4 +82,32 @@ namespace :retrofit do
       PrettyConsole.print_in_cyan 'Done with migrating school_id to reserved_schools'
     end
   end
+
+  desc 'create class_room names when missing'
+  task create_class_room_names: :environment do
+    PrettyConsole.announce_task 'Creating class_room names' do
+      counter = 0
+      Users::Student.joins(:class_room).kept.where(class_room: {name: nil}).find_each do |student|
+        next if student.class_room.nil?
+
+        new_name = case student.grade.short_name
+                   when 'seconde'
+                     '2de'
+                   when 'troisieme'
+                     '3ème'
+                   when 'quatrieme'
+                     '4ème'
+                   end
+
+        new_name = "#{new_name} indeterminée"
+        next unless student.class_room.name != new_name
+
+        student.class_room.update(name: new_name)
+        counter += 1
+        PrettyConsole.print_in_green '.'
+      end
+      puts ''
+      PrettyConsole.print_in_cyan "Done with creating #{counter} class_room names"
+    end
+  end
 end

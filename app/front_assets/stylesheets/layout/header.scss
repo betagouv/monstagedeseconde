@@ -19,13 +19,13 @@
   .fr-link, .nav-link{
     text-decoration: none;
       border-bottom: 2px solid transparent;
-    
+
       &:hover,
       &:active,
       &.active {
         color: $blue;
       }
-    
+
       &:active,
       &.active {
         border-bottom-color: $blue;
@@ -145,13 +145,13 @@
   }
 }
 
-.fr-tile.fr-enlarge-button .fr-tile__title a:after, 
-.fr-tile.fr-enlarge-button .fr-tile__title a:before, 
-.fr-tile.fr-enlarge-button .fr-tile__title button:after, 
-.fr-tile.fr-enlarge-button .fr-tile__title button:before, 
-.fr-tile.fr-enlarge-link .fr-tile__title a:after, 
-.fr-tile.fr-enlarge-link .fr-tile__title a:before, 
-.fr-tile.fr-enlarge-link .fr-tile__title button:after, 
+.fr-tile.fr-enlarge-button .fr-tile__title a:after,
+.fr-tile.fr-enlarge-button .fr-tile__title a:before,
+.fr-tile.fr-enlarge-button .fr-tile__title button:after,
+.fr-tile.fr-enlarge-button .fr-tile__title button:before,
+.fr-tile.fr-enlarge-link .fr-tile__title a:after,
+.fr-tile.fr-enlarge-link .fr-tile__title a:before,
+.fr-tile.fr-enlarge-link .fr-tile__title button:after,
 .fr-tile.fr-enlarge-link .fr-tile__title button:before {
     --icon-size: 1.5rem;
     bottom: 2.25rem;
@@ -205,5 +205,9 @@
 .fr-tile--horizontal .fr-tile__content {
   min-width: 0 !important;
   flex: 1 !important;
+}
+.fr-ms2e-wrapper{
+  white-space: normal;
+  word-break: break-word;
 }
 

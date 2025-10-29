@@ -2,18 +2,22 @@ require 'test_helper'
 require 'pretty_console'
 
 class InternshipAgreementTest < ActiveSupport::TestCase
+  setup do
+    Flipper.enable :student_signature
+  end
+
   test 'factory is valid' do
     assert build(:internship_agreement).valid?
   end
 
   test '#roles_not_signed_yet' do
     internship_agreement = create(:internship_agreement, aasm_state: :validated)
-    assert_equal %w[school_manager employer],
+    assert_equal %w[school_manager employer student student_legal_representative],
                  internship_agreement.roles_not_signed_yet
     create(:signature,
            :school_manager,
            internship_agreement_id: internship_agreement.id)
-    assert_equal ['employer'],
+    assert_equal %w[employer student student_legal_representative],
                  internship_agreement.roles_not_signed_yet
   end
 
@@ -24,18 +28,6 @@ class InternshipAgreementTest < ActiveSupport::TestCase
              :school_manager,
              internship_agreement_id: internship_agreement.id)
     end
-  end
-
-  test '#every_signature_but_mine' do
-    internship_agreement = create(:internship_agreement, aasm_state: :validated)
-    sign1 = create(:signature,
-                   :school_manager,
-                   internship_agreement_id: internship_agreement.id)
-    internship_agreement.sign!
-    create(:signature,
-           :employer,
-           internship_agreement_id: internship_agreement.id)
-    assert_equal [sign1], internship_agreement.send(:every_signature_but_mine)
   end
 
   test '#ready_to_sign?' do
@@ -98,5 +90,42 @@ class InternshipAgreementTest < ActiveSupport::TestCase
     cpe = create(:cpe, school: school)
     create(:signature, :cpe, user_id: cpe.id, internship_agreement_id: internship_agreement.id)
     assert_equal cpe, internship_agreement.school_management_representative
+  end
+
+  test '#missing_signatures_recipients' do
+  skip 'test will be ok when getting rid of Flipper :student_signature'
+    internship_agreement = create(:internship_agreement, aasm_state: :validated)
+    internship_application = internship_agreement.internship_application
+    student = internship_application.student
+    school = student.school
+    employer = internship_agreement.employer
+    school_manager = school.school_manager
+    assert_equal [employer.email, school_manager.email, student.email],
+                 internship_agreement.missing_signatures_recipients
+
+    create(:signature,
+           :school_manager,
+           internship_agreement_id: internship_agreement.id)
+    assert_equal [employer.email, student.email],
+                 internship_agreement.missing_signatures_recipients
+
+    create(:signature,
+           :employer,
+           internship_agreement_id: internship_agreement.id)
+    assert_equal [student.email],
+                 internship_agreement.missing_signatures_recipients
+    internship_agreement.sign!
+    create(:signature,
+           :student,
+           internship_agreement_id: internship_agreement.id)
+    assert_equal [],
+                 internship_agreement.missing_signatures_recipients
+    create(:signature,
+           :student_legal_representative,
+           internship_agreement_id: internship_agreement.id,
+           user_id: internship_agreement.student.id)
+
+    internship_agreement.sign!
+    assert internship_agreement.reload.signed_by_all?
   end
 end

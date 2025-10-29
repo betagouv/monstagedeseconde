@@ -56,7 +56,7 @@ module ReviewRebuild
 
       students_data << { school_number: '1', email: 'eugenie.grandet@yahoo.com', gender: 'f', first_name: 'Eugénie',
                          last_name: 'Grandet', seconde: false }
-      students_data << { school_number: '1', email: 'prince.lepetit@la_poste.fr', gender: 'np', first_name: 'Prince',
+      students_data << { school_number: '1', email: 'prince.lepetit@laposte.net', gender: 'np', first_name: 'Prince',
                          last_name: 'Lepetit', seconde: false }
       students_data << { school_number: '1', email: 'fabrice.deldongo@train-italia.it', gender: 'm',
                          first_name: 'Fabrice', last_name: 'DelDongo', seconde: false }

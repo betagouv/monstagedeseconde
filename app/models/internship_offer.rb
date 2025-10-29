@@ -278,6 +278,7 @@ class InternshipOffer < ApplicationRecord
   }
   scope :filtered_by_qpv_and_rep, ->(user:) { filtered_with_qpv(user:).filtered_with_rep(user:) }
   scope :open_data, -> { where(open_data: true) }
+  scope :ignore_qpv_and_rep, -> { where(qpv: false, rep: false) }
 
   # -------------------------
   # States

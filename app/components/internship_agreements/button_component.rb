@@ -41,7 +41,7 @@ module InternshipAgreements
         when 'started_by_employer' then
           {status: 'cta', text: 'Valider ma convention'}
         when 'completed_by_employer', 'started_by_school_manager', 'validated', 'signatures_started', 'signed_by_all' then
-          {status: 'secondary_cta', text: 'Imprimer'}
+          {status: 'secondary_cta', text: 'Télécharger'}
         end
       else # school_manager
         case @internship_agreement.aasm_state
@@ -52,7 +52,7 @@ module InternshipAgreements
         when 'started_by_school_manager' then
           {status: 'cta', text: 'Valider ma convention'}
         when 'validated', 'signatures_started', 'signed_by_all' then
-          {status: 'secondary_cta', text: 'Imprimer'}
+          {status: 'secondary_cta', text: 'Télécharger'}
         end
       end
     end
@@ -65,7 +65,7 @@ module InternshipAgreements
         if user_signed_condition?
           {status: 'disabled', text: 'Déjà signée'}
         elsif current_user.can_sign?(@internship_agreement)
-          {status: 'enabled', text: 'Ajouter aux signatures'}
+          {status: 'enabled', text: 'Signer'}
         else
           {status: 'hidden', text: ''}
         end

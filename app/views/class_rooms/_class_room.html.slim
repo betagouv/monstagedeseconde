@@ -27,7 +27,10 @@ tr class="test-class-room-#{class_room.id}"
         = link_to 'Voir le détail',
                   dashboard_school_class_room_students_path(school, class_room),
                   class: 'small fr-raw-link'
-  
+
+  td.align-middle.text-sm-center data-head="#{cols[1]}"
+    span class='total_student_with_zero_application'
+      = class_room.students.count
   td.align-middle.text-sm-center data-head="#{cols[2]}"
     span class='total_student_with_zero_application'
       / |0

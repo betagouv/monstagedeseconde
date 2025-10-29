@@ -1,0 +1,53 @@
+doctype html
+html lang="fr"
+  head
+    meta charset="utf-8"
+    meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    meta name="description" content="1élève1stage permet aux éléves de seconde générale et technologique et de troisième de trouver des stages près de chez eux."
+    meta name="author" content="1élève1stage"
+    meta name="turbo-visit-control" content="reload"
+    link rel='canonical' href=ENV.fetch('MGF_SITE_URL')
+    = csrf_meta_tags
+    = csp_meta_tag
+    = action_cable_meta_tag
+    title
+      = page_title
+    = favicon_link_tag asset_pack_path('media/images/favicon.png') if Rails.env.production?
+    = favicon_link_tag asset_pack_path('media/images/favicons/favicon-staging.png') if Rails.env.staging?
+    = favicon_link_tag asset_pack_path('media/images/favicons/favicon-development.png') if Rails.env.development?
+    = favicon_link_tag asset_pack_path('media/images/favicons/favicon-heroku.png') if Rails.env.review?
+    = stylesheet_pack_tag "application.css", 'data-turbo-track': "reload", media: "all"
+    = javascript_pack_tag "application.js", 'data-turbo-track': "reload", defer: true
+    = render partial: "layouts/analytics"
+
+  body class=(env_class_name + " " + body_class_name)
+    .container-homepage
+      - holidays_maintenance ||= false
+    header.fr-header role="banner"
+      .fr-header__body
+        .fr-container
+          .fr-header__body-row.fr-mx-1v
+            = render partial: 'layouts/navbar/french_republic'
+      - unless holidays_maintenance
+        #modal-833.fr-header__menu.fr-modal aria-labelledby="fr-btn-menu-mobile"
+          .fr-container
+            button.fr-btn--close.fr-btn aria-controls="modal-833"  Fermer
+            .fr-header__menu-links
+            nav#navigation-832.fr-nav aria-label="Menu principal" role="navigation"
+              ul.fr-nav__list
+    .fr-container
+      main role="main"
+        = yield
+
+    .container-homepage
+      .container-monstage.homepage
+        div
+          = render 'layouts/footer'
+
+
+
+
+
+
+
+

@@ -129,11 +129,7 @@ module Builders
 
     def agreement_sign(signature)
       internship_agreement = signature.internship_agreement
-      if signature.all_signed?
-        internship_agreement.signatures_finalize!
-      else
-        internship_agreement.sign!
-      end
+      internship_agreement.sign!
       true
     end
 
