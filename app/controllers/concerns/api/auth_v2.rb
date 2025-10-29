@@ -1,6 +1,7 @@
 module Api
   module AuthV2
     extend ActiveSupport::Concern
+    include Api::Authentication
 
     included do
       private
