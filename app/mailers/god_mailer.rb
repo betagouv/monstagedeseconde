@@ -208,12 +208,9 @@ class GodMailer < ApplicationMailer
     internship_application = internship_agreement.internship_application
     student                = internship_application.student
     recipients_email       = internship_application.employers_filtered_by_notifications_emails
-    if Flipper.enabled?(:student_signature, student)
-      recipients_email << student.email
-      recipients_email += legal_representatives_emails(internship_agreement) if with_legal_representatives
-    else
-      recipients_email << internship_agreement.school_management_representative.email
-    end
+    recipients_email << student.email
+    recipients_email += legal_representatives_emails(internship_agreement) if with_legal_representatives
+    recipients_email << internship_agreement.school_management_representative.email
 
     recipients_email.compact.uniq
   end

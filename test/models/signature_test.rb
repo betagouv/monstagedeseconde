@@ -1,10 +1,6 @@
 require 'test_helper'
 
 class SignatureTest < ActiveSupport::TestCase
-  setup do
-    Flipper.enable :student_signature
-  end
-
   test 'factory' do
     signature = build(:signature, :employer)
     puts signature.inspect unless signature.valid?

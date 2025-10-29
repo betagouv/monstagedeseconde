@@ -327,13 +327,11 @@ class InternshipAgreement < ApplicationRecord
     GodMailer.notify_signatures_can_start_email(
       internship_agreement: self
     ).deliver_later
-    if Flipper.enabled?(:student_signature, student)
-      legal_representative_data.values.each do |representative|
-        GodMailer.notify_student_legal_representatives_can_sign_email(
-          internship_agreement: self,
-          representative: representative
-        ).deliver_later
-      end
+    legal_representative_data.values.each do |representative|
+      GodMailer.notify_student_legal_representatives_can_sign_email(
+        internship_agreement: self,
+        representative: representative
+      ).deliver_later
     end
   end
 

@@ -4,10 +4,9 @@ div style="color: #{employer_info[:color]}"
 div style="color: #{school_manager_info[:color]}"
   span class="#{school_manager_info[:icon]}"
   span Établissement
-- if Flipper.enabled?(:student_signature, @internship_agreement.internship_application.student) && !@internship_agreement.signed_by_student?
-  div style="color: #{student_info[:color]}"
-    span class="#{student_info[:icon]}"
-    span Élève
-  div style="color: #{legal_representative_info[:color]}"
-    span class="#{legal_representative_info[:icon]}"
-    span Responsable légal
+div style="color: #{student_info[:color]}"
+  span class="#{student_info[:icon]}"
+  span Élève
+div style="color: #{legal_representative_info[:color]}"
+  span class="#{legal_representative_info[:icon]}"
+  span Responsable légal
