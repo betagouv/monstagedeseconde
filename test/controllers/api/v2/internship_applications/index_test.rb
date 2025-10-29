@@ -38,16 +38,24 @@ module Api
         end
 
         test "GET #index with token returns student's applications" do
-          create(:weekly_internship_application, :both_june_weeks, internship_offer: @internship_offer)
-          create(:weekly_internship_application, :both_june_weeks)
-          get api_v2_students_internship_applications_path(student_id: @student.id, token: "Bearer #{@token}")
-          documents_as(endpoint: :'v2/internship_applications/index', state: :ok) do
-            assert_response :ok
-            assert_response :success
-            assert_equal 1, json_response['internshipApplications'].count
-            assert_equal @internship_application.user_id, json_response['internshipApplications'][0]['user_id']
-            assert_equal @internship_application.id, json_response['internshipApplications'][0]['id']
-            assert_equal @internship_application.internship_offer_id, json_response['internshipApplications'][0]['internship_offer_id']
+          travel_to Time.zone.local(2025,3, 1) do
+            create(:weekly_internship_application, :both_june_weeks, internship_offer: @internship_offer)
+            create(:weekly_internship_application, :both_june_weeks)
+            get api_v2_students_internship_applications_path(student_id: @student.id, token: "Bearer #{@token}")
+            documents_as(endpoint: :'v2/internship_applications/index', state: :ok) do
+              assert_response :ok
+              assert_response :success
+              assert_equal 1, json_response['internshipApplications'].count
+              assert_equal @internship_application.user_id, json_response['internshipApplications'][0]['user_id']
+              assert_equal @internship_application.id, json_response['internshipApplications'][0]['id']
+              assert_equal @internship_application.internship_offer_id, json_response['internshipApplications'][0]['internship_offer_id']
+              assert_equal @internship_application.student_phone, json_response['internshipApplications'][0]['student_phone']
+              assert_equal @internship_application.student_email, json_response['internshipApplications'][0]['student_email']
+              assert_equal @internship_application.student_legal_representative_email, json_response['internshipApplications'][0]['student_legal_representative_email']
+              assert_equal @internship_application.student_legal_representative_phone, json_response['internshipApplications'][0]['student_legal_representative_phone']
+              assert_equal @internship_application.student_legal_representative_full_name, json_response['internshipApplications'][0]['student_legal_representative_full_name']
+              assert_equal ["2026-W25", "2026-W26"], json_response['internshipApplications'][0]['weeks']
+            end
           end
         end
 
