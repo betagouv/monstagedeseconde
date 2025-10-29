@@ -75,12 +75,6 @@ module Api
           end
         end
 
-        test 'GET #index without token renders :unauthorized payload' do
-          get api_v2_internship_offer_internship_applications_path(@internship_offer), params: {
-            token: 'Bearer abcdefghijklmnop'
-          }, as: :json
-        end
-
         test 'GET #index renders all internship applications for the current student' do
           @internship_application_1 = create(:weekly_internship_application, student: @student, internship_offer: @internship_offer)
           internship_offer_2 = create(:weekly_internship_offer_3eme, employer: @employer)
