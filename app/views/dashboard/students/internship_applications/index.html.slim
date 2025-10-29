@@ -43,7 +43,7 @@
             li
               button id="approved-internship-applications" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="#{!agreement_first}" aria-controls="approved-internship-applications-panel"
                 | Votre stage validé
-            - if @internship_agreement.present?
+            - if @internship_agreement.present? && @internship_agreement.aasm_state.to_sym.in?(InternshipAgreement::PENDING_SIGNATURES_STATES)
               li
                 button id="internship-agreement" class="fr-tabs__tab" tabindex="0" role="tab" aria-controls="internship-agreement-panel" aria-selected="#{agreement_first}" 
                   | Votre convention de stage
