@@ -176,8 +176,8 @@ module Dashboard
         anchor = 'weeks_container'
         warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des semaines de stage"
       end
-      redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor:),
-                  flash: { warning: }
+      redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor: anchor),
+                  flash: { warning: warning }
     end
 
     # duplicate form
@@ -193,13 +193,6 @@ module Dashboard
     def valid_order_column?
       VALID_ORDER_COLUMNS.include?(params[:order])
     end
-
-    # def offer_contains_stepper_informations?
-    #   !!(@internship_offer.practical_info_id &&
-    #     @internship_offer.hosting_info_id &&
-    #     @internship_offer.internship_offer_info_id &&
-    #     @internship_offer.organisation_id)
-    # end
 
     def finder
       @finder ||= Finders::InternshipOfferPublisher.new(

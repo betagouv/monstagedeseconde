@@ -2,6 +2,18 @@ fr:
   dashboard:
     stepper:
       entreprise:
+        new:
+          page_title: "Déposer une offre de stage : Ajouter les informations sur l'entreprise"
+        edit:
+          page_title: "Déposer une offre de stage : Modifier les informations de l'entreprise"
+      internship_occupation:
+        new:
+          page_title: "Déposer une offre de stage : Ajouter les informations sur l'offre"
+        edit:
+          page_title: "Déposer une offre de stage : Modifier les informations de l'offre"
+      planning:
+        new:
+          page_title: "Déposer une offre de stage : Ajouter les informations sur le planning"
         page_title: "Entreprise"
     internship_offers:
       create:

@@ -69,7 +69,7 @@ module Dashboard
                                              { internship_application: [
                                                { student: :school },
                                                { internship_offer: [:employer, :sector, :stats, :weeks,
-                                                                    { school: :school_managers }] }
+                                                                   { school: :school_managers }] }
                                              ] }
                                            )
       #  .reject { |a| a.student.school.school_manager.nil? }
@@ -124,8 +124,6 @@ module Dashboard
               :legal_status,
               :student_full_name,
               :student_class_room,
-              :organisation_representative_full_name,
-              :organisation_representative_role,
               :date_range,
               :activity_scope,
               :activity_preparation,
@@ -136,6 +134,8 @@ module Dashboard
               :skills_understand,
               :skilles_motivation,
               :legal_terms_rich_text,
+              :organisation_representative_full_name,
+              :organisation_representative_role,
               :school_manager_accept_terms,
               :employer_accept_terms,
               :employer_event,

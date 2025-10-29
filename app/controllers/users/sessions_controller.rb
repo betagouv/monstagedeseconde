@@ -3,7 +3,6 @@
 module Users
   class SessionsController < Devise::SessionsController
     include Phonable
-    include EduconnectLogout
 
     before_action :configure_sign_in_params, only: %i[new create]
     before_action :verify_test_access_code, only: :choose_connection_test

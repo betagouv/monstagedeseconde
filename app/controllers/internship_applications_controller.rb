@@ -128,24 +128,25 @@ class InternshipApplicationsController < ApplicationController
     @internship_offer = InternshipOffer.find(params[:internship_offer_id])
   end
 
-  def update_internship_application_params
-    params.require(:internship_application)
-          .permit(
-            :motivation,
-            :student_phone,
-            :student_email,
-            :student_legal_representative_full_name,
-            :student_legal_representative_email,
-            :student_legal_representative_phone,
-            week_ids: [],
-            student_attributes: %i[
-              email
-              phone
-              resume_other
-              resume_languages
-            ]
-          )
-  end
+  # not used
+  # def update_internship_application_params
+  #   params.require(:internship_application)
+  #         .permit(
+  #           :motivation,
+  #           :student_phone,
+  #           :student_email,
+  #           :student_legal_representative_full_name,
+  #           :student_legal_representative_email,
+  #           :student_legal_representative_phone,
+  #           week_ids: [],
+  #           student_attributes: %i[
+  #             email
+  #             phone
+  #             resume_other
+  #             resume_languages
+  #           ]
+  #         )
+  # end
 
   def sanitizing_params(appli_params)
     phone = appli_params['student_phone']&.gsub(/\s+/, '')

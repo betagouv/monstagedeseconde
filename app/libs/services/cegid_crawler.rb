@@ -114,11 +114,12 @@ module Services
       ActionController::Base.helpers.sanitize(html, tags: %w[p b i u li ul ol br])
     end
 
-    def parse_datetime(datetime_str)
-      DateTime.parse(datetime_str)
-    rescue StandardError
-      nil
-    end
+    # not used
+    # def parse_datetime(datetime_str)
+    #   DateTime.parse(datetime_str)
+    # rescue StandardError
+    #   nil
+    # end
 
     def coordinates_from_position
       lat = @data.dig('address', 'position', 'lat')
@@ -150,9 +151,10 @@ module Services
       RGeo::Geographic.spherical_factory(srid: 4326).point(lon.to_f, lat.to_f)
     end
 
-    def format_employer_name
-      [@data.dig('entity', 'public_name'), @data.dig('brand', 'name')].compact.first
-    end
+    # not used
+    # def format_employer_name
+    #   [@data.dig('entity', 'public_name'), @data.dig('brand', 'name')].compact.first
+    # end
 
     def get_token_from_operator(operator_name)
       operator = Operator.find_by(name: operator_name)

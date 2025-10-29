@@ -90,9 +90,10 @@ module Finders
     end
 
     # overall
-    def overall_total
-      (operator_total || 0) + (platform_total_count || 0)
-    end
+    # TODO check if still used
+    # def overall_total
+    #   (operator_total || 0) + (platform_total_count || 0)
+    # end
 
     # SELECT months.date AS date, count(internship_applications.id) AS COUNT FROM "months"
     #   LEFT OUTER JOIN (
