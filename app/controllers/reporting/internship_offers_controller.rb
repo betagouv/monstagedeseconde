@@ -14,6 +14,7 @@ module Reporting
       end
 
       @offers = current_offers
+      @offers = @offers.where.not(published_at: nil) if current_user.education_statistician?
       @no_offers = no_current_offers
       return if offers_hash[:school_year].blank?
 
