@@ -8,8 +8,21 @@ class Signature < ApplicationRecord
     cpe: 'cpe',
     admin_officer: 'admin_officer',
     other: 'other',
-    teacher: 'teacher'
+    teacher: 'teacher',
+    student: 'student',
+    student_legal_representative: 'student_legal_representative'
   }
+
+  FR_SIGNATORY_ROLE = {
+    school_manager: "Responsable de l'établissement",
+    employer: "Représentant de l'entreprise",
+    cpe: 'CPE',
+    admin_officer: 'Gestionnaire',
+    other: 'Autre',
+    teacher: 'Enseignant',
+    student: 'Élève',
+    student_legal_representative: 'Représentant légal'
+  }.freeze
 
   SCHOOL_MANAGEMENT_SIGNATORY_ROLE = %w[
     school_manager
@@ -19,7 +32,7 @@ class Signature < ApplicationRecord
     teacher
   ].freeze
 
-  REQUESTED_SIGNATURES_COUNT = 2
+  REQUESTED_SIGNATURES_COUNT = 4
 
   belongs_to :internship_agreement
   belongs_to :signator, class_name: 'User', foreign_key: 'user_id'
@@ -56,7 +69,11 @@ class Signature < ApplicationRecord
   end
 
   def all_signed?
-    signatures_count == REQUESTED_SIGNATURES_COUNT && employer_signed?
+    if Flipper.enabled?(:student_signature, internship_agreement.student)
+      signatures_count == REQUESTED_SIGNATURES_COUNT
+    else
+      signatures_count == REQUESTED_SIGNATURES_COUNT - 2
+    end && internship_agreement.signed_by_employer?
   end
 
   def attach_signature!(io:, filename:, content_type:)
@@ -83,17 +100,10 @@ class Signature < ApplicationRecord
                             .pluck(:signatory_role)
     return unless signed_roles.include?(signatory_role)
 
-    errors.add(:signatory_role, "#{I18n.t signatory_role} a déjà signé")
+    errors.add(:signatory_role, "#{FR_SIGNATORY_ROLE[signatory_role.to_sym]} a déjà signé")
   end
 
   def employer_signatory_role?
     signatory_role == 'employer'
-  end
-
-  def employer_signed?
-    return false if internship_agreement.discarded?
-    return false unless internship_agreement.signatures.any?
-
-    internship_agreement.signatures.pluck(:signatory_role).include?('employer')
   end
 end

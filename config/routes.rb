@@ -153,6 +153,10 @@ Rails.application.routes.draw do
         resources :coded_crafts, only: [] do
           get :search, on: :collection
         end
+        namespace :students, path: '/:student_id/' do
+          resources :internship_applications, only: %i[index] do
+          end
+        end
         resources :sectors, only: :index
       end
     end
@@ -168,9 +172,13 @@ Rails.application.routes.draw do
                                                       as: :update_multiple_internship_applications
 
       resources :internship_agreements, path: 'conventions-de-stage', except: %i[destroy], param: :uuid do
-        get 'school_management_signature', on: :member
-        post 'school_management_sign', on: :member
+        member do
+          get 'school_management_signature'
+          post 'school_management_sign'
+          get 'upload'
+        end
       end
+
       resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
         member do
           post 'start_signing'
@@ -235,6 +243,11 @@ Rails.application.routes.draw do
         resources :internship_applications, path: 'candidatures', only: %i[index show edit update], param: :uuid do
           post :resend_application, on: :member
         end
+        resources :internship_agreements, path: 'conventions-de-stage', only: %i[new], param: :uuid do
+          member do
+            get :sign
+          end
+        end
       end
       get 'candidatures', to: 'internship_offers/internship_applications#user_internship_applications'
     end
@@ -249,6 +262,15 @@ Rails.application.routes.draw do
     get 'internship_offers', to: 'internship_offers#index'
     get 'operators', to: 'operators#index'
     put 'operators', to: 'operators#update'
+  end
+
+  namespace :public do
+    resources :internship_agreements, only: [:show], param: :uuid do
+      member do
+        get :upload, to: 'internship_agreements#upload', defaults: { format: :pdf }
+        post :legal_representative_sign, to: 'internship_agreements#legal_representative_sign'
+      end
+    end
   end
 
   get 'api_address_proxy/search', to: 'api_address_proxy#search', as: :api_address_proxy_search

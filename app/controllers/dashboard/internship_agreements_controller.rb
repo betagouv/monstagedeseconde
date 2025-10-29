@@ -1,5 +1,4 @@
 module Dashboard
-  # WIP, not yet implemented, will host agreement signing
   class InternshipAgreementsController < ApplicationController
     before_action :authenticate_user!
     before_action :set_internship_agreement,
@@ -39,7 +38,7 @@ module Dashboard
     end
 
     def show
-      authorize! :update, @internship_agreement
+      authorize! :show, @internship_agreement
       respond_to do |format|
         format.html
         format.pdf do
@@ -53,9 +52,6 @@ module Dashboard
             type: 'application/pdf',
             disposition: 'inline'
           )
-          # && @internship_agreement.signatures.each do |signature|
-          #  signature.config_clean_local_signature_file
-          #  end
         end
       end
     end
@@ -106,11 +102,7 @@ module Dashboard
                         signatory_ip: request.remote_ip,
                         signature_date: Time.now,
                         signature_phone_number: current_user.try(:phone))
-      if @internship_agreement.signatures_started?
-        @internship_agreement.signatures_finalize!
-      else
-        @internship_agreement.sign!
-      end
+      @internship_agreement.sign!
 
       redirect_to dashboard_internship_agreements_path,
                   flash: { success: 'La convention a été signée.' }
@@ -187,7 +179,7 @@ module Dashboard
       when 'started_by_employer' then 'La convention a été enregistrée.'
       when 'completed_by_employer' then "La convention a été envoyée au chef d'établissement."
       when 'started_by_school_manager' then 'La convention a été enregistrée.'
-      when 'validated' then 'La convention est validée, le fichier pdf de la convention est maintenant disponible.'
+      when 'validated' then "La convention est validée, le fichier pdf de la convention est maintenant disponible. Un mail a été envoyé à l'offreur, à l'élève et à ses responsables légaux."
       else
         'La convention a été enregistrée.'
       end

@@ -85,6 +85,10 @@ class Week < ApplicationRecord
                                                  .or(where('number <= ?', first_day_of_july_week).where(year: school_year + 1))
   }
 
+  def to_s_in_api
+    "#{year}-W#{number.to_s.rjust(2, '0')}"
+  end
+
   def self.current_year_start_week
     current_school_year.offers_beginning_of_period_week
   end

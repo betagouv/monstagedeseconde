@@ -205,4 +205,48 @@ namespace :schools do
     end
     PrettyConsole.say_in_yellow 'Done with creating class_rooms'
   end
+
+  desc 'create missing schools from csv file'
+  task create_missing_schools: :environment do
+    file_name = 'colleges_to_create_valides.csv'
+    file_location = Rails.root.join('db/data_imports/sources_EN', file_name)
+    counter = 1
+    error_lines = []
+    CSV.foreach(file_location, 'r', headers: true, header_converters: :symbol, col_sep: ';').each do |row|
+      counter += 1
+      code_uai = row[:code_uai]
+      School.find_by(code_uai: code_uai).present? && next
+
+      name = row[:nom_etablissement]&.strip
+      next if name.nil?
+      adresse = row[:street]&.strip
+      commune = row[:city]&.strip
+
+      code_postal = row[:zipcode]&.to_s&.strip
+      code_postal = "0#{code_postal}" if code_postal.size == 4
+
+      school_type = 'college'
+
+      school_params = {
+        code_uai: code_uai,
+        name: name,
+        street: adresse,
+        zipcode: code_postal,
+        city: commune,
+        school_type: school_type
+      }
+
+      school = School.new(**school_params)
+      school.coordinates = { longitude: row[:longitude].to_f, latitude: row[:latitude].to_f }
+      if school.valid?
+        school.save
+        print '.'
+      else
+        error = "Ligne #{counter}, #{school.name}, #{school.errors.full_messages.join(', ')}"
+        puts error
+        error_lines << error
+        puts '---'
+      end
+    end
+  end
 end

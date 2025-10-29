@@ -36,9 +36,9 @@ module Presenters
       end
 
       def class_room_students_ids
-        Rails.cache.fetch("class_room_students_ids_#{class_room.id}") do
+        # Rails.cache.fetch("class_room_students_ids_#{class_room.id}") do
           class_room.students.kept.ids
-        end
+        # end
       end
 
       def track_student_with_listed_status(listed_status: [])
