@@ -43,24 +43,24 @@ module Api
     end
 
     def self.fetch_new_token
-      uri = URI.parse("#{API_SIRENE_URL}/token")
-      request = Net::HTTP::Post.new(uri, {})
-      request['Authorization'] = "Basic #{ENV['API_SIRENE_TOKEN']}"
-      request.set_form_data(
-        'grant_type' => 'client_credentials'
-      )
+      # uri = URI.parse("#{API_SIRENE_URL}/token")
+      # request = Net::HTTP::Post.new(uri, {})
+      # request['Authorization'] = "Basic #{ENV['API_SIRENE_TOKEN']}"
+      # request.set_form_data(
+      #   'grant_type' => 'client_credentials'
+      # )
 
-      req_options = {
-        use_ssl: uri.scheme == 'https',
-        verify_mode: OpenSSL::SSL::VERIFY_NONE
-      }
+      # req_options = {
+      #   use_ssl: uri.scheme == 'https',
+      #   verify_mode: OpenSSL::SSL::VERIFY_NONE
+      # }
 
-      response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-        http.request(request)
-      end
+      # response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+      #   http.request(request)
+      # end
 
-      @token = JSON.parse(response.body)['access_token']
-      Rails.cache.write('sirene_token', @token)
+      # @token = JSON.parse(response.body)['access_token']
+      # Rails.cache.write('sirene_token', @token)
     end
   end
 end
