@@ -3,7 +3,7 @@
 require 'sti_preload'
 class InternshipOffer < ApplicationRecord
   GUARD_PERIOD = 5.days
-  PAGE_SIZE = 30
+  PAGE_SIZE = 10
   # TODO : most probably to be the same field.
   DESCRIPTION_MAX_CHAR_COUNT = 1500
   MAX_CANDIDATES_HIGHEST = 6_000
