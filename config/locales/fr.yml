@@ -33,6 +33,7 @@ fr:
       employer:
         one: Employeur
         other: Employeurs
+      school manager: "Chef d'établissement"
       entreprise:
         one: Entreprise ou administration
         other: Entreprises ou administrations
@@ -68,7 +69,7 @@ fr:
         other: Candidatures
       student_legal_representative:
         one: Représentant légal
-        other: Représentants légaux
+        other: Responsables légaux
       operator:
         one: Association
         other: Associations
@@ -87,6 +88,7 @@ fr:
       team_member_invitation:
         one: Membre de l'équipe
         other: Membres de l'équipe
+      student legal representative: "Représentant légal"
       student:
         one: Élève
         other: Élèves

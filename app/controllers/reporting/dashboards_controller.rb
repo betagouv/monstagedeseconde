@@ -46,6 +46,15 @@ module Reporting
           },
           exp: Time.now.to_i + (60 * 10) # 10 minute expiration
         }
+      elsif can?(:see_ministry_dashboard, current_user)
+        payload = {
+          resource: { dashboard: eval("#{current_user.class.to_s}::METABASE_DASHBOARD_ID") },
+          params: {
+            "groupe": current_user.ministries.map(&:name),
+            "ann%C3%A9e_scolaire": "#{year}/#{year+1}"
+          },
+          exp: Time.now.to_i + (60 * 10) # 10 minute expiration
+        }
       else
         payload = {
           resource: { dashboard: eval("#{current_user.class.to_s}::METABASE_DASHBOARD_ID") },
@@ -57,7 +66,7 @@ module Reporting
         }
       end
 
-      payload[:params][:groupe] = current_user.ministries.map(&:name) if can?(:see_ministry_dashboard, current_user)
+      # payload[:params][:groupe] = current_user.ministries.map(&:name) if can?(:see_ministry_dashboard, current_user)
 
       token = JWT.encode payload, ENV['METABASE_SECRET_KEY']
       iframe_url = ENV['METABASE_SITE_URL'] + "/embed/dashboard/" + token + "#bordered=true&titled=true"

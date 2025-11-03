@@ -109,10 +109,10 @@ class InternshipAgreement < ApplicationRecord
     end
 
     # helper
-    # event :back_to_started_by_school_manager do
-    #   transitions from: %i[signatures_started validated],
-    #               to: :started_by_school_manager
-    # end
+    event :back_to_started_by_school_manager do
+      transitions from: %i[signatures_started validated],
+                  to: :started_by_school_manager
+    end
 
     event :sign do # sign after signature creation !
       transitions from: %i[validated signatures_started],
@@ -316,6 +316,10 @@ class InternshipAgreement < ApplicationRecord
      end
     hash
   end
+
+  def legal_representative_count
+    legal_representative_data.size
+  end
   
   private
 
@@ -323,11 +327,13 @@ class InternshipAgreement < ApplicationRecord
     GodMailer.notify_signatures_can_start_email(
       internship_agreement: self
     ).deliver_later
-    legal_representative_data.values.each do |representative|
-      GodMailer.notify_student_legal_representatives_can_sign_email(
-        internship_agreement: self,
-        representative: representative
-      ).deliver_later
+    if Flipper.enabled?(:student_signature, student)
+      legal_representative_data.values.each do |representative|
+        GodMailer.notify_student_legal_representatives_can_sign_email(
+          internship_agreement: self,
+          representative: representative
+        ).deliver_later
+      end
     end
   end
 
