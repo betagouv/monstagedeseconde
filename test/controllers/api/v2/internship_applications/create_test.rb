@@ -69,12 +69,12 @@ module Api
           assert_equal @student.id, response_data['student_id']
           assert_equal 'submitted', response_data['aasm_state']
           assert_equal 'Je suis très motivé pour ce stage', response_data['motivation']
-          assert_equal '0611223344', response_data['student_phone']
+          assert_equal '+33611223344', response_data['student_phone']
           assert_equal 'student@example.com', response_data['student_email']
           assert_equal '123 rue de la République, 75001 Paris', response_data['student_address']
           assert_equal 'Jean Dupont', response_data['student_legal_representative_full_name']
           assert_equal 'parent@example.com', response_data['student_legal_representative_email']
-          assert_equal '0612345678', response_data['student_legal_representative_phone']
+          assert_equal '+33612345678', response_data['student_legal_representative_phone']
           assert_equal 2, response_data['weeks'].size
           assert_includes response_data['weeks'], '2025-W20'
           assert_includes response_data['weeks'], '2025-W21'
@@ -86,11 +86,13 @@ module Api
           operator = create(:user_operator, email: 'operator@example.com', password: 'Password123!')
           post api_v2_auth_login_path(email: operator.email, password: operator.password)
           operator_token = json_response['token']
+          student = create(:student)
 
           application_params = {
             internship_application: {
+              user_id: student.id,
               student_phone: '0611223344',
-              student_email: 'student@example.com',
+              student_email: student.email,
               week_ids: [@week_1.id],
               motivation: 'Je suis très motivé pour ce stage',
               student_address: '123 rue de la République, 75001 Paris',
@@ -280,7 +282,7 @@ module Api
 
           assert_response :created
           created_application = InternshipApplication.last
-          assert_equal '0611223344', created_application.student_phone
+          assert_equal '+33611223344', created_application.student_phone
         end
       end
     end
