@@ -588,4 +588,58 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 - 404, Not Found. L'offre de stage n'existe pas
 - 422, Unprocessable Entity. Les données de la candidature ne sont pas valides (ex: email invalide, numéro de téléphone incorrect, semaines non disponibles)
 
+### <a name="ref-student-internship-applications"></a>
+## Lister les candidatures d'un élève
+
+**url** : ```#{baseURL}/students/:student_id/internship_applications```
+
+**method** : GET
+
+*Paramètres d'url* :
+
+* **student_id** *(integer, required)* : L'identifiant de l'élève
+
+**Note** : Cette API nécessite une authentification en tant qu'élève (Users::Student) ou en tant qu'offreur. Les opérateurs et autres types d'utilisateurs ne peuvent pas créer de candidatures via l'API.
+
+### Exemple curl
+
+``` bash
+curl -H "Authorization: Bearer $API_TOKEN" \
+     -H "Accept: application/json" \
+     -H "Content-type: application/json" \
+     -X GET \
+     -vvv \
+     $ENV/api/v2/students/123/internship_applications
+```
+
+### Réponse en cas de succès (200 OK)
+
+``` json
+[{
+  "id": 456,
+  "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "internship_offer_id": 789,
+  "student_id": 123,
+  "aasm_state": "submitted",
+  "submitted_at": "2025-10-16T12:00:00Z",
+  "motivation": "Je suis très motivé pour ce stage...",
+  "student_phone": "0611223344",
+  "student_email": "eleve@example.com",
+  "student_address": "123 rue de la République, 75001 Paris",
+  "student_legal_representative_full_name": "Jean Dupont",
+  "student_legal_representative_email": "parent@example.com",
+  "student_legal_representative_phone": "0612345678",
+  "weeks": ["2025-W20", "2025-W21", "2025-W22"],
+  "created_at": "2025-10-16T12:00:00Z",
+  "updated_at": "2025-10-16T12:00:00Z"
+},
+...
+]
+```
+
+### Erreurs
+
+- 404 NOT_FOUND. Paramètre manquant ou invalide - student_id n'existe pas
+- 403 FORBIDDEN. Authentification en erreur.
+
 
