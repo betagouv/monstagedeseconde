@@ -10,7 +10,6 @@ export default class extends Controller {
   }
 
   closeModal() {
-    console.log("closing modal");
     dsfr(this.modalRootTarget).modal.conceal();
     fetch("/utilisateurs/info-modale-vue", {
       method: "POST",
