@@ -42,7 +42,7 @@ class AnonymisationTest < ActiveSupport::TestCase
       # classes anonymized
       class_room.reload
       assert_equal class_room.name, 'NA'
-      assert_equal class_room.school_id, nil
+      assert_nil class_room.school_id
 
       # internship agreements anonymized
       internship_agreement.reload
