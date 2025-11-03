@@ -93,7 +93,7 @@
                id="#{resource.class.name.split('::').first.gsub(/s\Z/, '').underscore}_sector_id-block" ]
             .col-12
               = form.label :sector_id , class: 'fr-label' do
-                = "Indiquez le secteur d'activité de votre structure * #{resource.sector&.name} #{form.object.persisted? && !form.object.is_public}"
+                = "Indiquez le secteur d'activité de votre structure *"
               = form.select :sector_id,
                             options_from_collection_for_select(Sector.all.order(:name).where.not(name: 'Fonction publique'), :id, :name, resource&.sector&.id),
                             { prompt: sectors_options_for_default },
