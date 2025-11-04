@@ -108,9 +108,9 @@ module Api
                  as: :json
           end
 
-          assert_response :forbidden
-          assert_equal 'FORBIDDEN', json_response['error']
-          assert_equal 'Only students can apply for internship offers', json_response['message']
+          assert_response :unprocessable_entity
+          assert_equal 'VALIDATION_ERROR', json_response['error']
+          assert_equal 'The internship application could not be created', json_response['message']
         end
 
         test 'POST #create with missing internship_offer_id renders :not_found' do
