@@ -86,11 +86,13 @@ module Api
           operator = create(:user_operator, email: 'operator@example.com', password: 'Password123!')
           post api_v2_auth_login_path(email: operator.email, password: operator.password)
           operator_token = json_response['token']
+          student = create(:student)
 
           application_params = {
             internship_application: {
+              user_id: student.id,
               student_phone: '0611223344',
-              student_email: 'student@example.com',
+              student_email: student.email,
               week_ids: [@week_1.id],
               motivation: 'Je suis très motivé pour ce stage',
               student_address: '123 rue de la République, 75001 Paris',

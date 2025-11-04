@@ -8,7 +8,7 @@ module Api
           student = Users::Student.find_by(id: params[:student_id])
 
           render_error(
-            code: 'BAD_PAYLOAD',
+            code: 'NOT_FOUND',
             error: 'missing or invalid student_id',
             status: :unprocessable_entity
           ) and return unless student

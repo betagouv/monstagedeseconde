@@ -51,6 +51,10 @@ module Api
               assert_equal @internship_application.internship_offer_id, json_response['internshipApplications'][0]['internship_offer_id']
               assert_equal @internship_application.student_phone, json_response['internshipApplications'][0]['student_phone']
               assert_equal @internship_application.student_email, json_response['internshipApplications'][0]['student_email']
+              assert_equal @internship_application.student_address, json_response['internshipApplications'][0]['student_address']
+              assert_equal @internship_application.aasm_state, json_response['internshipApplications'][0]['aasm_state']
+              assert_equal @internship_application.submitted_at.utc.iso8601, json_response['internshipApplications'][0]['submitted_at']
+              assert_equal @internship_application.motivation, json_response['internshipApplications'][0]['motivation']
               assert_equal @internship_application.student_legal_representative_email, json_response['internshipApplications'][0]['student_legal_representative_email']
               assert_equal @internship_application.student_legal_representative_phone, json_response['internshipApplications'][0]['student_legal_representative_phone']
               assert_equal @internship_application.student_legal_representative_full_name, json_response['internshipApplications'][0]['student_legal_representative_full_name']
@@ -70,14 +74,13 @@ module Api
               )
             end
             assert_response :unprocessable_entity
-            assert_equal 'BAD_PAYLOAD', json_response['code']
+            assert_equal 'NOT_FOUND', json_response['code']
             assert_equal 'missing or invalid student_id', json_error
           end
         end
 
         test 'GET #index renders all internship applications for the current student' do
-          @internship_application_1 = create(:weekly_internship_application, student: @student, internship_offer: @internship_offer)
-          internship_offer_2 = create(:weekly_internship_offer_3eme, employer: @employer)
+          internship_offer_2 = create(:weekly_internship_offer_3eme, employer: @internship_application.internship_offer.employer)
           @internship_application_2 = create(:weekly_internship_application, student: @student, internship_offer: internship_offer_2)
 
           get api_v2_internship_offer_internship_applications_path(@internship_offer), params: {
@@ -85,7 +88,7 @@ module Api
           }, as: :json
 
           assert_response :success
-          assert_equal @internship_application_1.id, json_response['internship_applications'][0]['id']
+          assert_equal @internship_application.id, json_response['internship_applications'][0]['id']
           assert_equal @internship_application_2.id, json_response['internship_applications'][1]['id']
           assert_equal 2, json_response['internship_applications'].count
           assert_equal @internship_application_2.aasm_state, json_response['internship_applications'][1]['state']
@@ -96,6 +99,7 @@ module Api
         end
 
         test 'GET #index when no application renders no applications for the current student' do
+        InternshipApplication.destroy_all
           get api_v2_internship_offer_internship_applications_path(@internship_offer), params: {
             token: "Bearer #{@token}",
           }, as: :json

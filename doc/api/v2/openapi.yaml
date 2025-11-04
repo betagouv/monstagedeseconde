@@ -314,6 +314,35 @@ paths:
       security:
       - bearerAuth: []
       x-swagger-router-controller: Developers
+  /students/{student_id}/internship_applications:
+    get:
+      tags:
+      - developers
+      summary: Récupère les candidatures d'un élève
+      description: Récupère les candidatures d'un élève identifié par son UUID
+      operationId: get_internship_applications_for_student
+      parameters:
+      - name: student_id
+        in: path
+        description: id de l'élève
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: Liste des candidatures de l'élève
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternshipApplication'
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Developers
 components:
   schemas:
     InternshipApplication:
@@ -322,9 +351,34 @@ components:
         id:
           type: integer
           example: 1
-        student_id:
+        uuid:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        user_id:
           type: integer
           example: 1
+        aasm_state:
+          type: string
+          example: "submitted"
+          maxLength: 100
+        submitted_at:
+          type: string
+          format: date-time
+          example: "2023-03-15T10:00:00Z"
+        student_email:
+          type: string
+          format: email
+          maxLength: 100
+          example: jean.dupont@example.com
+        student_address:
+          type: string
+          maxLength: 300
+          example: 12 rue de la paix, 75001 Paris
+        student_phone:
+          type: string
+          maxLength: 20
+          example: "+330612345678"
         internship_offer_id:
           type: integer
           example: 1
