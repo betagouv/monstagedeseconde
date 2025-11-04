@@ -153,8 +153,8 @@ Rails.application.routes.draw do
         resources :coded_crafts, only: [] do
           get :search, on: :collection
         end
-        namespace :students, path: '/:student_id/' do
-          resources :internship_applications, only: %i[index] do
+        resources :students,  only: [] do
+          resources :internship_applications, only: %i[index], module: :student do
           end
         end
         resources :sectors, only: :index

@@ -18,7 +18,7 @@ module Api
 
         # before each test
         test 'GET #index without token renders :unauthorized payload' do
-          get api_v2_students_internship_applications_path(student_id: @student.id)
+          get api_v2_student_internship_applications_path(student_id: @student.id)
           documents_as(endpoint: :'v2/internship_applications/index', state: :unauthorized) do
             assert_response :unauthorized
             assert_equal 'UNAUTHORIZED', json_code
@@ -27,7 +27,7 @@ module Api
         end
 
         test 'GET #index with wrong token renders :unauthorized payload' do
-          get api_v2_students_internship_applications_path(student_id: @student.id, params: {
+          get api_v2_student_internship_applications_path(student_id: @student.id, params: {
               token: 'Bearer abcdefghijklmnop'
             })
           documents_as(endpoint: :'v2/internship_applications/index', state: :unauthorized) do
@@ -41,7 +41,7 @@ module Api
           travel_to Time.zone.local(2025,3, 1) do
             create(:weekly_internship_application, :both_june_weeks, internship_offer: @internship_offer)
             create(:weekly_internship_application, :both_june_weeks)
-            get api_v2_students_internship_applications_path(student_id: @student.id, token: "Bearer #{@token}")
+            get api_v2_student_internship_applications_path(student_id: @student.id, token: "Bearer #{@token}")
             documents_as(endpoint: :'v2/internship_applications/index', state: :ok) do
               assert_response :ok
               assert_response :success
@@ -66,7 +66,7 @@ module Api
         test 'PATCH #update as operator fails with invalid payload respond with :unprocessable_entity_bad_payload' do
           travel_to Time.zone.local(2025, 5, 11) do
             documents_as(endpoint: :'v2/internship_applications/index', state: :unprocessable_entity_bad_payload) do
-              get api_v2_students_internship_applications_path(
+              get api_v2_student_internship_applications_path(
                 student_id: 'test',
                 params: {
                   token: "Bearer #{@token}"
