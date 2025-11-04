@@ -55,13 +55,11 @@ export default class extends Controller {
   }
 
   selectPrivateSectorAndShow() {
-    console.log('selectPrivateSectorAndShow');
     // set public state
     this.isEntreprisePublicValue = false;
     // set ministry group to '', required to false and hide
     const ministrySelect = document.querySelector("#group-choice");
     const ministryBlock = document.querySelector("#ministry-block");
-    console.log('MINISTRY Select not visible');
     ministrySelect.value = "";
     ministrySelect.required = false;
     ministryBlock.classList.add("fr-hidden");
