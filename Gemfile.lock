@@ -562,6 +562,7 @@ GEM
     sanitize (7.0.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
+    scalar_ruby (1.1.0)
     securerandom (0.4.1)
     selenium-webdriver (4.10.0)
       rexml (~> 3.2, >= 3.2.5)
@@ -737,6 +738,7 @@ DEPENDENCIES
   redis (~> 4.0)
   rest-client
   rubocop
+  scalar_ruby
   selenium-webdriver (>= 4.8)
   sentry-rails
   sentry-ruby
