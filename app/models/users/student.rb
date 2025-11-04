@@ -43,9 +43,7 @@ module Users
     def student? = true
 
     def channel
-      return :email if email.present?
-
-      :phone
+      :email
     end
 
     def has_zero_internship_application?

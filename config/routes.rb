@@ -49,8 +49,6 @@ Rails.application.routes.draw do
                                                             as: 'statistician_standby'
       get '/utilisateurs/inscriptions/en-attente-telephone', to: 'users/registrations#confirmation_phone_standby',
                                                              as: 'users_registrations_phone_standby'
-      get '/utilisateurs/mot-de-passe/modification-par-telephone', to: 'users/passwords#edit_by_phone',
-                                                                   as: 'phone_edit_password'
       get '/utilisateurs/mot-de-passe/initialisation', to: 'users/passwords#set_up',
                                                        as: 'set_up_password'
       post '/utilisateurs/renvoyer-le-code-de-confirmation', to: 'users/registrations#resend_confirmation_phone_token',
