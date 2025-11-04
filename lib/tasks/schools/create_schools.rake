@@ -219,7 +219,6 @@ namespace :schools do
 
       name = row[:nom_etablissement]&.strip
       next if name.nil?
-      
       adresse = row[:street]&.strip
       commune = row[:city]&.strip
 

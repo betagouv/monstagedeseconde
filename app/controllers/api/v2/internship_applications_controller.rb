@@ -8,7 +8,7 @@ module Api
       before_action :authenticate_api_user!, only: [:create, :new, :index]
       before_action :find_internship_offer, only: [:create, :new]
       before_action :find_student, only: [:create]
-      
+
       def create
         check_required_params
 
@@ -43,7 +43,7 @@ module Api
         }
       end
 
-      def index 
+      def index
         # return all internship applications for the current user with short format
         internship_applications = @current_api_user.internship_applications
         render json: {
@@ -105,7 +105,7 @@ module Api
 
       def build_application_params
         sanitized_params = internship_application_params.to_h
-        
+
         # Sanitize phone number
         if sanitized_params['student_phone']
           sanitized_params['student_phone'] = User.sanitize_mobile_phone_number(sanitized_params['student_phone'], '+33')
@@ -195,7 +195,7 @@ module Api
       def available_weeks_for_form
         # For 3e student
         if @current_api_user.troisieme_ou_quatrieme?
-          
+
           internship_application = InternshipApplication.new(
             internship_offer_id: @internship_offer.id,
             internship_offer_type: 'InternshipOffer',
@@ -203,7 +203,7 @@ module Api
           )
 
           available_weeks = internship_application.selectable_weeks
-        else 
+        else
           # For seconde student
           available_weeks = SchoolTrack::Seconde.both_weeks
         end
@@ -212,7 +212,7 @@ module Api
           {
             id: week.id,
             label: week.human_select_text_method,
-            selected: @current_api_user.troisieme_ou_quatrieme? ? internship_application.week_ids&.include?(week.id) : false  
+            selected: @current_api_user.troisieme_ou_quatrieme? ? internship_application.week_ids&.include?(week.id) : false
           }
         end
       end
