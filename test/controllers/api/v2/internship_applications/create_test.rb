@@ -69,7 +69,7 @@ module Api
           assert_equal @student.id, response_data['student_id']
           assert_equal 'submitted', response_data['aasm_state']
           assert_equal 'Je suis très motivé pour ce stage', response_data['motivation']
-          assert_equal '0611223344', response_data['student_phone']
+          assert_equal '+33611223344', response_data['student_phone']
           assert_equal 'student@example.com', response_data['student_email']
           assert_equal '123 rue de la République, 75001 Paris', response_data['student_address']
           assert_equal 'Jean Dupont', response_data['student_legal_representative_full_name']
@@ -106,9 +106,9 @@ module Api
                  as: :json
           end
 
-          assert_response :forbidden
-          assert_equal 'FORBIDDEN', json_response['error']
-          assert_equal 'Only students can apply for internship offers', json_response['message']
+          assert_response :unprocessable_entity
+          assert_equal 'VALIDATION_ERROR', json_response['error']
+          assert_equal 'The internship application could not be created', json_response['message']
         end
 
         test 'POST #create with missing internship_offer_id renders :not_found' do
@@ -280,7 +280,7 @@ module Api
 
           assert_response :created
           created_application = InternshipApplication.last
-          assert_equal '0611223344', created_application.student_phone
+          assert_equal '+33611223344', created_application.student_phone
         end
       end
     end
