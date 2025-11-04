@@ -74,7 +74,7 @@ module Api
           assert_equal '123 rue de la République, 75001 Paris', response_data['student_address']
           assert_equal 'Jean Dupont', response_data['student_legal_representative_full_name']
           assert_equal 'parent@example.com', response_data['student_legal_representative_email']
-          assert_equal '+33612345678', response_data['student_legal_representative_phone']
+          assert_equal '0612345678', response_data['student_legal_representative_phone']
           assert_equal 2, response_data['weeks'].size
           assert_includes response_data['weeks'], '2025-W20'
           assert_includes response_data['weeks'], '2025-W21'
