@@ -62,15 +62,16 @@ module Presenters
       siret.gsub(/(\d{3})(\d{3})(\d{3})(\d{5})/, '\1 \2 \3 \4')
     end
 
-    def weeks_description
-      dates = "du #{first_monday} au #{last_friday}"
-      case internship_offer.internship_weeks_number
-      when 1
-        "1 semaine #{dates}"
-      when 2
-        "2 semaines #{dates}"
-      end
-    end
+    # not used
+    #  def weeks_description
+    #   dates = "du #{first_monday} au #{last_friday}"
+    #   case internship_offer.internship_weeks_number
+    #   when 1
+    #     "1 semaine #{dates}"
+    #   when 2
+    #     "2 semaines #{dates}"
+    #   end
+    # end
 
     def available_weeks_count
       count = internship_offer.weeks.count

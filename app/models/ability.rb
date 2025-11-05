@@ -41,7 +41,6 @@ class Ability
     can :manage, Sector
     can :manage, Academy
     can :manage, AcademyRegion
-    can %i[destroy see_tutor], InternshipOffer
     can %i[read update export unpublish publish], InternshipOffer
     can %i[read update destroy export], InternshipApplication
     can :manage, InternshipOfferKeyword
@@ -272,7 +271,6 @@ class Ability
       edit
       show
       update
-      edit_organisation_representative_role
       edit_employer_name
       edit_employer_address
       edit_employer_contact_email
