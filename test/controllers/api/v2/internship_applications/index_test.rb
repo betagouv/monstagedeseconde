@@ -45,20 +45,25 @@ module Api
             documents_as(endpoint: :'v2/internship_applications/index', state: :ok) do
               assert_response :ok
               assert_response :success
-              assert_equal 1, json_response['internshipApplications'].count
-              assert_equal @internship_application.user_id, json_response['internshipApplications'][0]['user_id']
-              assert_equal @internship_application.id, json_response['internshipApplications'][0]['id']
-              assert_equal @internship_application.internship_offer_id, json_response['internshipApplications'][0]['internship_offer_id']
-              assert_equal @internship_application.student_phone, json_response['internshipApplications'][0]['student_phone']
-              assert_equal @internship_application.student_email, json_response['internshipApplications'][0]['student_email']
-              assert_equal @internship_application.student_address, json_response['internshipApplications'][0]['student_address']
-              assert_equal @internship_application.aasm_state, json_response['internshipApplications'][0]['aasm_state']
-              assert_equal @internship_application.submitted_at.utc.iso8601, json_response['internshipApplications'][0]['submitted_at']
-              assert_equal @internship_application.motivation, json_response['internshipApplications'][0]['motivation']
-              assert_equal @internship_application.student_legal_representative_email, json_response['internshipApplications'][0]['student_legal_representative_email']
-              assert_equal @internship_application.student_legal_representative_phone, json_response['internshipApplications'][0]['student_legal_representative_phone']
-              assert_equal @internship_application.student_legal_representative_full_name, json_response['internshipApplications'][0]['student_legal_representative_full_name']
-              assert_equal ["2026-W25", "2026-W26"], json_response['internshipApplications'][0]['weeks']
+              assert_equal 1, json_response.count
+              puts '================================'
+              puts "json_response : #{json_response}"
+              puts '================================'
+              puts ''
+              assert_equal @internship_application.user_id, json_response[0]['student_id']
+              assert_equal @internship_application.uuid, json_response[0]['uuid']
+              assert_equal @internship_application.id, json_response[0]['id']
+              assert_equal @internship_application.internship_offer_id, json_response[0]['internship_offer_id']
+              assert_equal @internship_application.student_phone, json_response[0]['student_phone']
+              assert_equal @internship_application.student_email, json_response[0]['student_email']
+              assert_equal @internship_application.student_address, json_response[0]['student_address']
+              assert_equal @internship_application.aasm_state, json_response[0]['aasm_state']
+              assert_equal @internship_application.submitted_at.utc.iso8601, json_response[0]['submitted_at']
+              assert_equal @internship_application.motivation, json_response[0]['motivation']
+              assert_equal @internship_application.student_legal_representative_email, json_response[0]['student_legal_representative_email']
+              assert_equal @internship_application.student_legal_representative_phone, json_response[0]['student_legal_representative_phone']
+              assert_equal @internship_application.student_legal_representative_full_name, json_response[0]['student_legal_representative_full_name']
+              assert_equal ["2026-W25", "2026-W26"], json_response[0]['weeks']
             end
           end
         end
