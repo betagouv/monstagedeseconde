@@ -17,7 +17,7 @@ tags:
     peut être fournie sur demande à l'adresse email contact @ 1eleve1stage.education.gouv.fr
 paths:
   /internship_offers/{id}/internship_applications:
-    get:
+    post:
       tags:
       - developers
       summary: Permet à un élève de postuler à une offre de stage
