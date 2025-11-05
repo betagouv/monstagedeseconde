@@ -10,7 +10,6 @@ module Reporting
     self.inheritance_column = nil
 
     belongs_to :sector
-    # belongs_to :organisation
     belongs_to :group, optional: true
     belongs_to :school, optional: true
     belongs_to :employer, polymorphic: true, optional: true
