@@ -73,6 +73,7 @@ end
 
 desc 'Import new offers'
 task :import_weekly_framed_offers_with_employers_already_created, [:csv_uri] => :environment do |t, args|
+  # TODO: hosting_info no longer exists, this script will fail
   created_count = 0
   errors_count = 0
 
@@ -143,6 +144,7 @@ end
 
 desc 'Import new offers 3 steps september 2025'
 task :import_offers_in_4_steps, [:csv_uri] => :environment do |t, args|
+  # TODO: hosting_info no longer exists, this script will fail
   puts '---------'
   puts args[:csv_uri]
   puts '---------'
