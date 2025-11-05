@@ -17,6 +17,34 @@ tags:
     peut être fournie sur demande à l'adresse email contact @ 1eleve1stage.education.gouv.fr
 paths:
   /internship_offers/{id}/internship_applications:
+    get:
+      tags:
+      - developers
+      summary: Récupère les candidatures pour une offre de stage donnée
+      description: Récupère les candidatures pour une offre de stage identifiée par son ID
+      operationId: get_internship_applications_for_internship_offer
+      parameters:
+      - name: id
+        in: path
+        description: Identifiant de l'offre de stage
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: Liste des candidatures pour l'offre de stage
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternshipApplication'
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Developers
     post:
       tags:
       - developers
