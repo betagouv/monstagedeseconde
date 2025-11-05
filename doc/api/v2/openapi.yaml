@@ -349,29 +349,29 @@ paths:
       description: Récupère les candidatures d'un élève identifié par son UUID
       operationId: get_internship_applications_for_student
       parameters:
-      - name: student_id
-      in: path
-      description: id de l'élève
-      required: true
-      style: simple
-      explode: false
-      schema:
-        type: integer
-        example: 1
-      responses:
-      "200":
-        description: Liste des candidatures de l'élève
-        content:
-        application/json:
+        - name: student_id
+          in: path
+          description: id de l'élève
+          required: true
+          style: simple
+          explode: false
           schema:
-          type: object
-          properties:
-            internshipApplications:
-            type: array
-            items:
-              $ref: '#/components/schemas/InternshipApplication'
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: Liste des candidatures de l'élève
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  internshipApplications:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InternshipApplication'
       security:
-      - bearerAuth: []
+        - bearerAuth: []
       x-swagger-router-controller: Developers
 components:
   schemas:
