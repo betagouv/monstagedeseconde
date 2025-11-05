@@ -195,8 +195,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/inline_response_401'
         "403":
-          description: L'utilisateur n'est pas autorisé à supprimer cette offre de
-            stage
+          description: L'utilisateur n'est pas autorisé à supprimer cette offre de stage
           content:
             application/json:
               schema:
@@ -223,7 +222,7 @@ paths:
         en propre par les équipes 1élève1stage
       description: |
         Mise à jour des offres . Possibilité de désactiver son offre en passant le paramètre published_at à null
-      operationId: internship_offers_updatte
+      operationId: internship_offers_update
       parameters:
       - name: remote_id
         in: path
@@ -351,28 +350,35 @@ paths:
       operationId: get_internship_applications_for_student
       parameters:
       - name: student_id
-        in: path
-        description: id de l'élève
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-          example: 1
+      in: path
+      description: id de l'élève
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        example: 1
       responses:
-        "200":
-          description: Liste des candidatures de l'élève
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/InternshipApplication'
+      "200":
+        description: Liste des candidatures de l'élève
+        content:
+        application/json:
+          schema:
+          type: object
+          properties:
+            internshipApplications:
+            type: array
+            items:
+              $ref: '#/components/schemas/InternshipApplication'
       security:
       - bearerAuth: []
       x-swagger-router-controller: Developers
 components:
   schemas:
+    InternshipApplications:
+      type: array
+      items:
+        $ref: '#/components/schemas/InternshipApplication'
     InternshipApplication:
       type: object
       properties:
@@ -791,12 +797,9 @@ components:
             type: string
       description: Horaires quotidiens de stage
     Week:
-      properties:
-        type: string
-        format: <annee_scolaire>-W<no_de_semaine>
-        example: 2023-W12
-      items:
-        type: string
+      type: string
+      format: <annee_scolaire>-W<no_de_semaine>
+      example: 2023-W12
       description: Semaine pendant laquelle l'offre de stage est disponible
   responses:
     Unauthorized:
@@ -811,6 +814,11 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/InternshipOffer'
+    InternshipApplication:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternshipApplication'
     InternshipOfferPatch:
       content:
         application/json:
