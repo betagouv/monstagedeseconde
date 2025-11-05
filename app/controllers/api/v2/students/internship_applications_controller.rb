@@ -1,6 +1,6 @@
 module Api
   module V2
-    module Student
+    module Students
       class InternshipApplicationsController < Api::Shared::InternshipApplicationsController
         include Api::AuthV2
 

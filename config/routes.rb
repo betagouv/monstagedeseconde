@@ -154,7 +154,7 @@ Rails.application.routes.draw do
           get :search, on: :collection
         end
         resources :students,  only: [] do
-          resources :internship_applications, only: %i[index], module: :student do
+          resources :internship_applications, only: %i[index], module: :students do
           end
         end
         resources :sectors, only: :index
