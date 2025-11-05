@@ -616,6 +616,10 @@ class InternshipOffer < ApplicationRecord
     Presenters::WeekList.new(weeks: weeks).to_api_formatted
   end
 
+  def rep_or_qpv?
+    rep || qpv
+  end
+
   protected
 
   def make_sure_area_is_set

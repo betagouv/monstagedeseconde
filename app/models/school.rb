@@ -243,6 +243,10 @@ class School < ApplicationRecord
 
   def qpv? = qpv
 
+  def rep_or_qpv?
+    rep_or_rep_plus? || qpv
+  end
+
   private
 
   def contract_label
