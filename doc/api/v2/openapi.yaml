@@ -364,12 +364,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  internshipApplications:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/InternshipApplication'
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternshipApplication'
       security:
         - bearerAuth: []
       x-swagger-router-controller: Developers
@@ -389,7 +386,7 @@ components:
           type: string
           format: uuid
           example: "550e8400-e29b-41d4-a716-446655440000"
-        user_id:
+        student_id:
           type: integer
           example: 1
         aasm_state:

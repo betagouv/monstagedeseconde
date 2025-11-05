@@ -13,7 +13,8 @@ module Api::V2
     def format(application)
       {
         id: application.id,
-        user_id: application.user_id,
+        uuid: application.uuid,
+        student_id: application.user_id,
         internship_offer_id: application.internship_offer_id,
         aasm_state: application.aasm_state,
         submitted_at: application.submitted_at.utc.iso8601,

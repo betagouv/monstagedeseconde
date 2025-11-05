@@ -22,11 +22,11 @@ module Api
             internship_applications: internship_applications.to_a
           ).format_all
 
-          data = {
-            pagination: page_links,
-            internshipApplications: formatted_internship_applications
-          }
-          render json: data, status: 200
+          # data = {
+          #   pagination: page_links,
+          #   internshipApplications: formatted_internship_applications
+          # }
+          render json: formatted_internship_applications, status: 200
         end
       end
     end

@@ -400,3 +400,57 @@ curl -H "Authorization: Bearer foobarbaz" \
 ### Errors
 
 - 404, Not Found. No offer was found with the specified ```remote_id```
+
+### <a name="ref-student-internship-applications"></a>
+## List a Student's Internship Applications
+
+**url**: ```#{baseURL}/students/:student_id/internship_applications```
+
+**method**: GET
+
+*URL parameters*:
+
+* **student_id** *(integer, required)*: The student's identifier
+
+**Note**: This API requires authentication as a student (Users::Student) or as an internship offerer. Operators and other user types cannot create applications via the API.
+
+### Curl example
+
+``` bash
+curl -H "Authorization: Bearer $API_TOKEN" \
+     -H "Accept: application/json" \
+     -H "Content-type: application/json" \
+     -X GET \
+     -vvv \
+     $ENV/api/v2/students/123/internship_applications
+```
+
+### Successful response (200 OK)
+
+``` json
+[{
+  "id": 456,
+  "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "internship_offer_id": 789,
+  "student_id": 123,
+  "aasm_state": "submitted",
+  "submitted_at": "2025-10-16T12:00:00Z",
+  "motivation": "I am very motivated for this internship...",
+  "student_phone": "0611223344",
+  "student_email": "student@example.com",
+  "student_address": "123 rue de la République, 75001 Paris",
+  "student_legal_representative_full_name": "Jean Dupont",
+  "student_legal_representative_email": "parent@example.com",
+  "student_legal_representative_phone": "0612345678",
+  "weeks": ["2025-W20", "2025-W21", "2025-W22"],
+  "created_at": "2025-10-16T12:00:00Z",
+  "updated_at": "2025-10-16T12:00:00Z"
+},
+...
+]
+```
+
+### Errors
+
+- 404 NOT_FOUND. Missing or invalid parameter - student_id does not exist
+- 403 FORBIDDEN. Authentication error.
