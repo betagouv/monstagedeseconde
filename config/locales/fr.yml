@@ -137,8 +137,6 @@ fr:
       week:
         one: Semaine
         other: Semaines
-
-
     attributes:
       area_notification:
         area: Espace
@@ -281,7 +279,7 @@ fr:
             validated: En attentes de signatures
             signatures_started: Partiellement signée
             signed_by_all: Signée par toutes les parties.
-          admin_officer:
+          ministry_statistician: &ministry_statistician_status
             draft: En attente de l'offreur.
             started_by_employer: En attente de l'offreur.
             completed_by_employer: Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.
@@ -291,6 +289,8 @@ fr:
               already_signed: Le chef d'établissement a déjà signé. En attente de la signature de l’employeur.
               not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
+          admin_officer:
+            <<: *ministry_statistician_status
           cpe:
             draft: En attente de l'offreur.
             started_by_employer: En attente de l'offreur.
