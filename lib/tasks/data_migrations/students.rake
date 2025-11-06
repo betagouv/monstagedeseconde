@@ -98,12 +98,17 @@ namespace :data_migrations do
   end
 
   desc 'get students of France from omogen and sygne'
-  task import_students_data: :environment do |task|
-    School.all.find_each(batch_size: 5) do |school|
-      next if school.full_imported
+  task :import_students_data, [:forced] => :environment do |task, args|
+    # invoke as : rake "data_migrations:import_students_data[true|false]"
+    forced = args.forced == 'true'
+    PrettyConsole.announce_task 'Importing students from all schools of France' do
+      School.all.update_all(full_imported: false) if forced
+      School.all.find_each(batch_size: 5) do |school|
+        next if school.full_imported
 
-      ImportDataFromSygneJob.perform_later(school)
-      sleep 0.3
+        # ImportDataFromSygneJob.perform_later(school)
+        sleep 0.3
+      end
     end
   end
 
