@@ -106,7 +106,7 @@ namespace :data_migrations do
       School.all.find_each(batch_size: 5) do |school|
         next if school.full_imported
 
-        # ImportDataFromSygneJob.perform_later(school)
+        ImportDataFromSygneJob.perform_later(school)
         sleep 0.3
       end
     end
