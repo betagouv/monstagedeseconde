@@ -295,7 +295,7 @@ class InternshipAgreement < ApplicationRecord
     GodMailer.notify_others_signatures_started_email(
       internship_agreement: self,
       missing_signatures_recipients: missing_signatures_recipients,
-      last_signature: signatures.last
+      last_signature: signatures&.last
     ).deliver_later
   end
 
@@ -340,7 +340,7 @@ class InternshipAgreement < ApplicationRecord
   def notify_others_signatures_finished(agreement)
     GodMailer.notify_others_signatures_finished_email(
       internship_agreement: agreement,
-      last_signature: signatures.order(created_at: :asc).last
+      last_signature: signatures.order(created_at: :asc)&.last
     ).deliver_later
   end
 
