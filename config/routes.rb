@@ -125,16 +125,16 @@ Rails.application.routes.draw do
         post 'auth/login', to: 'auth#login'
         resources :internship_offers, only: %i[create update destroy index] do
           get :search, on: :collection
-          resources :internship_applications, only: [:create, :new, :index]
+          resources :internship_applications, only: [:index], module: :internship_offers
         end
+        resources :users,  only: [] do
+          resources :internship_applications, only: %i[index], module: :users
+        end
+        resources :internship_applications, only: [:create, :new, :index] # related to current user
         resources :schools, only: [] do
           collection do
             post :nearby
             post :search
-          end
-        end
-        resources :students,  only: [] do
-          resources :internship_applications, only: %i[index], module: :students do
           end
         end
         resources :sectors, only: :index

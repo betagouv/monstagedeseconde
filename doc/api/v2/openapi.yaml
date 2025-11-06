@@ -341,7 +341,7 @@ paths:
       security:
       - bearerAuth: []
       x-swagger-router-controller: Developers
-  /students/{student_id}/internship_applications:
+  /users/{user_id}/internship_applications:
     get:
       tags:
       - developers
@@ -370,6 +370,50 @@ paths:
       security:
         - bearerAuth: []
       x-swagger-router-controller: Developers
+  /internship_applications:
+    get:
+      summary: Liste les candidatures de l'utilisateur courant
+      tags:
+        - InternshipApplications
+      responses:
+        '200':
+          description: Liste des candidatures de l'utilisateur courant
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternshipApplication'
+    post:
+      summary: Crée une candidature à une offre de stage pour l'utilisateur courant
+      tags:
+        - InternshipApplications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InternshipApplicationCreate'
+      responses:
+        '201':
+          description: Internship application created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternshipApplication'
+
+  /internship_applications/new:
+    get:
+      summary: Récupère le formulaire de création d'une nouvelle candidature pour l'utilisateur courant
+      tags:
+        - InternshipApplications
+      responses:
+        '200':
+          description: Formulaire de nouvelle candidature à une offre de stage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternshipApplicationForm'
 components:
   schemas:
     InternshipApplications:
@@ -648,6 +692,33 @@ components:
         sector_uuid: s20
         name: Mode
         id: 1
+    InternshipApplicationCreate:
+      type: object
+      properties:
+        InternshipApplication:
+            allOf:
+            - $ref: '#/components/schemas/InternshipApplicationForm'
+      description: Candidature à une offre de stage (création)
+    InternshipApplicationForm:
+      type: object
+      properties:
+        InternshipApplication:
+            allOf:
+            - $ref: '#/components/schemas/InternshipApplication'
+            - type: object
+              properties:
+              created_at:
+                type: null
+              updated_at:
+                type: null
+              id:
+                type: null
+              uuid:
+                type: null
+              aasm_state:
+                type: null
+              submitted_at:
+                type: null
     inline_response_401:
       type: object
       properties:

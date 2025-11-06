@@ -34,6 +34,7 @@ Il s'agit d'une API REST qui permet les opérations suivantes :
   - [Formulaire nouvelle candidature](#ref-new-internhsip-offer)
   - [Créer une candidature](#ref-create-internship-application)
   - [Récupérer des candidatures](#ref-create-internship-application)
+  - [Lister les candidatures d'un élève par son id](#ref-student-internship-applications)
 - [Premiers pas et exemples](#premiers-pas-et-exemples)
 
 
@@ -591,7 +592,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 ### <a name="ref-student-internship-applications"></a>
 ## Lister les candidatures d'un élève
 
-**url** : ```#{baseURL}/students/:student_id/internship_applications```
+**url** : ```#{baseURL}/users/:user_id/internship_applications```
 
 **method** : GET
 
@@ -599,7 +600,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 
 * **student_id** *(integer, required)* : L'identifiant de l'élève
 
-**Note** : Cette API nécessite une authentification en tant qu'élève (Users::Student) ou en tant qu'offreur. Les opérateurs et autres types d'utilisateurs ne peuvent pas créer de candidatures via l'API.
+**Note** : Cette API nécessite une authentification en tant qu'élève (Users::Student)
 
 ### Exemple curl
 
@@ -609,7 +610,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
      -H "Content-type: application/json" \
      -X GET \
      -vvv \
-     $ENV/api/v2/students/123/internship_applications
+     $ENV/api/v2/users/123/internship_applications
 ```
 
 ### Réponse en cas de succès (200 OK)
@@ -639,7 +640,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 
 ### Erreurs
 
-- 404 NOT_FOUND. Paramètre manquant ou invalide - student_id n'existe pas
+- 404 NOT_FOUND. Paramètre manquant ou invalide - user_id n'existe pas ou user_id n'est pas un élève
 - 403 FORBIDDEN. Authentification en erreur.
 
 
