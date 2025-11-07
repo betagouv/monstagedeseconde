@@ -30,6 +30,7 @@ module Api
         end
 
         private
+
         def find_user
           @user = ::User.find_by(id: params[:user_id])
           render_error(
