@@ -1,0 +1,28 @@
+- content_for :title, "Votre offre a été masquée de la plateforme 1élève1stage"
+
+p style=p_styles
+  | Bonjour,
+
+p style=p_styles
+  | Votre offre intitulée « #{@internship_offer.title} » a été signalée par un utilisateur et a fait l’objet d’un examen par notre équipe de modération.
+
+p style=p_styles
+  | Après analyse, elle a été temporairement masquée afin de permettre une vérification ou une éventuelle mise à jour.
+
+- if @inappropriate_offer.message_to_offerer.present?
+  p style=p_styles
+    | Voici le message d’explication transmis par notre équipe :
+  p style=p_styles
+    = safe_join(@inappropriate_offer.message_to_offerer.to_s.split(/\r?\n/), tag.br)
+
+p style=p_styles
+  | ⚠️ Si vous souhaitez mettre à jour votre offre ou apporter des précisions, vous pouvez le faire directement via votre espace offreur. Une fois les modifications apportées, nous pourrons réévaluer sa republication.
+
+p style=p_styles
+  | Nous vous remercions pour votre engagement en faveur des élèves et restons à votre disposition pour toute question.
+
+p style=p_styles
+  | Bien cordialement,
+
+p style=p_styles
+  | L’équipe 1élève1stage

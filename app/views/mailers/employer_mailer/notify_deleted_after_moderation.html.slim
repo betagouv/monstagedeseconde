@@ -1,0 +1,30 @@
+- content_for :title, "Votre offre a été retirée de la plateforme 1élève1stage"
+
+p style=p_styles
+  | Bonjour,
+
+p style=p_styles
+  | Votre offre intitulée « #{@internship_offer.title} » a été signalée par un utilisateur et a fait l’objet d’un examen par notre équipe de modération.
+
+p style=p_styles
+  | Suite à cette analyse, nous avons pris la décision de retirer cette offre de la plateforme.
+
+- if @inappropriate_offer.message_to_offerer.present?
+  p style=p_styles
+    | Voici le message d’explication transmis par notre équipe :
+  p style=p_styles
+    = safe_join(@inappropriate_offer.message_to_offerer.to_s.split(/\r?\n/), tag.br)
+
+p style=p_styles
+  | Si vous estimez que cette décision est injustifiée ou si vous souhaitez nous fournir des éléments complémentaires, vous pouvez demander une révision en envoyant un message à 
+  = mail_to 'contact@1eleve1stage.gouv.fr', 'contact@1eleve1stage.gouv.fr'
+  | .
+
+p style=p_styles
+  | Nous vous remercions pour votre engagement en faveur des élèves et restons à votre disposition pour toute question.
+
+p style=p_styles
+  | Bien cordialement,
+
+p style=p_styles
+  | L’équipe 1élève1stage
