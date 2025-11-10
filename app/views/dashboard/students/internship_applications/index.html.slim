@@ -38,7 +38,7 @@
               p L’entreprise a validé votre stage, c’est à vous de confirmer que vous choisissez ce stage et que vous allez y aller.
       - if (current_user.student? || current_user.is_a?(Users::SchoolManagement)) && current_user.internship_applications.approved.count.positive?
         .fr-tabs.fr-tabs--centered.fr-tabs--secondary.fr-mb-2w
-          - agreement_first = @internship_agreement.present? && Flipper.enabled?(:student_signature, @internship_agreement.internship_application.student) && @internship_agreement.aasm_state.to_sym.in?(InternshipAgreement::PENDING_SIGNATURES_STATES)
+          - agreement_first = @internship_agreement.present? && Flipper.enabled?(:student_signature) && @internship_agreement.aasm_state.to_sym.in?(InternshipAgreement::PENDING_SIGNATURES_STATES)
           ul.fr-tabs__list aria-label=("Candidatures") role="tablist"
             li
               button id="approved-internship-applications" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="#{!agreement_first}" aria-controls="approved-internship-applications-panel"
