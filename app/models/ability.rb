@@ -55,7 +55,8 @@ class Ability
     end
     can %i[index_and_filter], Reporting::InternshipOffer
     can :manage, InternshipAgreement
-    can %i[ switch_user
+    can %i[ show_modal_info
+            switch_user
             read
             update
             destroy
@@ -211,11 +212,10 @@ class Ability
     can :subscribe_to_webinar, User do
       ENV.fetch('WEBINAR_URL', nil).present?
     end
-    can :edit_password, User
+    can %i[edit_password show_modal_info supply_offers], User
     can_manage_teams(user:)
     can_manage_areas(user:)
     can %i[index], Acl::InternshipOfferDashboard
-    can :supply_offers, User
     can :renew, InternshipOffer do |internship_offer|
       renewable?(internship_offer:, user:)
     end

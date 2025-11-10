@@ -132,8 +132,9 @@ class UsersController < ApplicationController
 
   def dismiss_modal_info
     authorize! :show_modal_info, current_user
-    show_modal = params[:show_modal_info] && !params[:show_modal_info] == "false"
-    current_user.update(show_modal_info: show_modal)
+    if user_params.has_key?(:show_modal_info)
+      current_user.update(show_modal_info: user_params[:show_modal_info])
+    end
     head :ok
   end
 
@@ -179,7 +180,8 @@ class UsersController < ApplicationController
                                  :academy_region_id,
                                  :employer_role,
                                  :phone_or_email,
-                                 :anonymize_with_email)
+                                 :anonymize_with_email,
+                                 :show_modal_info)
   end
 
   def current_section
