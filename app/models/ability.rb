@@ -77,7 +77,7 @@ class Ability
   end
 
   def student_abilities(user:)
-    can %i[show_modal_info look_for_offers sign_with_sms], User
+    can %i[look_for_offers sign_with_sms], User
     can :resend_confirmation_phone_token, User do |user|
       user.phone.present? && user.student?
     end
