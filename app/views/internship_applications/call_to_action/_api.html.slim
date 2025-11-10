@@ -13,7 +13,7 @@
                 class: 'fr-btn',
                 target: "_blank",
                 rel: "external noopener noreferrer",
-                title: "Je postufffle sur #{operator_name(internship_offer)} (nouvelle fenêtre)",
+                title: "Je postule sur #{operator_name(internship_offer)} (nouvelle fenêtre)",
                  data: { action: 'click->internship-offer#applyCount', target: 'internship-offer.applyButton', internshipOfferId: internship_offer.id, userId: current_user.id, turbo: false } do
           = "Postuler sur #{operator_name(internship_offer)}"
       - else
