@@ -404,6 +404,7 @@ fr:
         # last_monday: Dernier lundi de stage
         first_date: Premier jour
         last_date: Dernier jour
+        grades_as_string: Classes ciblées
         daterange: Plage de disponibilité
         submitted_application_count: Nbr. de candidatures soumises
         rejected_application_count: Nbr. de candidatures refusées
