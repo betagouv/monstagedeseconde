@@ -1,5 +1,11 @@
-div data-controller="open-modal-dsfr" data-open-modal-dsfr-is-open-value="#{ENV.fetch("SIGNATURE_INFO", false) && current_user_or_visitor&.show_modal_info}"
-  dialog#modal-action-signature-info.fr-modal aria-labelledby="modal-action-signature-info-title" data-open-modal-dsfr-target="modalRoot" role="dialog" aria-modal="true" data-fr-modal="true" data-fr-concealing-backdrop="true"
+- show_dialog = current_user.try(:presenter).try(:show_signature_info_modal?)
+div data-controller="open-modal-dsfr" data-open-modal-dsfr-is-open-value="#{show_dialog}"
+  dialog#modal-action-signature-info.fr-modal [aria-labelledby="modal-action-signature-info-title"
+                                               data-open-modal-dsfr-target="modalRoot"
+                                               role="dialog"
+                                               aria-modal="true"
+                                               data-fr-modal="true"
+                                               data-fr-concealing-backdrop="true"]
     .fr-container.fr-container--fluid.fr-container-lg
       .fr-grid-row.fr-grid-row--center
         .fr-col-12.fr-col-md-10.fr-col-lg-8

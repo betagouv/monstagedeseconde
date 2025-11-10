@@ -163,6 +163,12 @@ module Presenters
       end
     end
 
+    def show_signature_info_modal?
+      return false unless user
+
+      user.show_modal_info && ENV.fetch("SIGNATURE_INFO", false)
+    end
+
     protected
 
     attr_reader :user

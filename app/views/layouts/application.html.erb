@@ -48,7 +48,7 @@
         </div>
       <% end %>
     </div>
-    <% if ENV.fetch("SIGNATURE_INFO", false) == "true"  && current_user.try(:show_modal_info) %>
+    <% if current_user.try(:presenter).try(:show_signature_info_modal?) %>
       <%= render 'layouts/signature_info' %>
     <% end %>
 

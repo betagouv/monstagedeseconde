@@ -133,7 +133,8 @@ class UsersController < ApplicationController
   def dismiss_modal_info
     authorize! :show_modal_info, current_user
     if user_params.has_key?(:show_modal_info)
-      current_user.update(show_modal_info: user_params[:show_modal_info])
+      update_value = user_params[:show_modal_info] || user_params[:show_modal_info] != false
+      current_user.update(show_modal_info: update_value)
     end
     head :ok
   end
