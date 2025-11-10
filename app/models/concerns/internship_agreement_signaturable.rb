@@ -32,7 +32,7 @@ module InternshipAgreementSignaturable
     def missing_signatures_recipients
       recipients = []
       
-      if Flipper.enabled?(:student_signature, student)
+      if Flipper.enabled?(:student_signature)
         if roles_not_signed_yet.include?('student')
           recipients << student.email if student
         end

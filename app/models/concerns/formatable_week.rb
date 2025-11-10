@@ -30,19 +30,19 @@ module FormatableWeek
         .join(' ')
     end
 
-    def very_long_select_text_method
-      ['du', beginning_of_week_with_year_long, 'au', end_of_week_with_years_long]
-        .map(&:to_s)
-        .map(&:strip)
-        .join(' ')
-    end
+    # def very_long_select_text_method
+    #   ['du', beginning_of_week_with_year_long, 'au', end_of_week_with_years_long]
+    #     .map(&:to_s)
+    #     .map(&:strip)
+    #     .join(' ')
+    # end
 
-    def very_long_working_week_select_text_method
-      ['du', beginning_of_week_with_year_long, 'au', end_of_working_week_with_year]
-        .map(&:to_s)
-        .map(&:strip)
-        .join(' ')
-    end
+    # def very_long_working_week_select_text_method
+    #   ['du', beginning_of_week_with_year_long, 'au', end_of_working_week_with_year]
+    #     .map(&:to_s)
+    #     .map(&:strip)
+    #     .join(' ')
+    # end
 
     def human_select_text_method
       ['Semaine du', beginning_of_week, 'au', end_of_week]
@@ -90,9 +90,9 @@ module FormatableWeek
       I18n.localize(week_date.beginning_of_week, format:).strip
     end
 
-    def beginning_of_week_short(format: :human_mm_dd)
-      I18n.localize(week_date.beginning_of_week, format: :human_mm_dd).strip
-    end
+    # def beginning_of_week_short(format: :human_mm_dd)
+    #   I18n.localize(week_date.beginning_of_week, format: :human_mm_dd).strip
+    # end
 
     def beginning_of_week_with_year
       I18n.localize(week_date.beginning_of_week, format: :default).strip
@@ -137,9 +137,9 @@ module FormatableWeek
       I18n.localize(end_of_week_friday, format: :human_mm_dd_yyyy).strip
     end
 
-    def friday_of_week_with_years_long
-      I18n.localize(friday, format: :human_mm_dd_yyyy).strip
-    end
+    # def friday_of_week_with_years_long
+    #   I18n.localize(friday, format: :human_mm_dd_yyyy).strip
+    # end
 
     def end_of_week_with_short_month_years_long
       I18n.localize(end_of_week_friday, format: :human_dd_short_mm_yyyy).strip

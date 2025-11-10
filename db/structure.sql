@@ -2177,7 +2177,8 @@ CREATE TABLE public.users (
     school_ids text[] DEFAULT '{}'::text[],
     user_info jsonb DEFAULT '{}'::jsonb,
     fim_user_info jsonb,
-    created_by_system boolean DEFAULT false NOT NULL
+    created_by_system boolean DEFAULT false NOT NULL,
+    show_modal_info boolean DEFAULT true NOT NULL
 );
 
 
@@ -4603,6 +4604,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251029152954'),
 ('20251001162458'),
 ('20251001145652'),
 ('20250930160935'),

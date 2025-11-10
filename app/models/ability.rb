@@ -41,7 +41,6 @@ class Ability
     can :manage, Sector
     can :manage, Academy
     can :manage, AcademyRegion
-    can %i[destroy see_tutor], InternshipOffer
     can %i[read update export unpublish publish], InternshipOffer
     can %i[read update destroy export], InternshipApplication
     can :manage, InternshipOfferKeyword
@@ -55,7 +54,8 @@ class Ability
     end
     can %i[index_and_filter], Reporting::InternshipOffer
     can :manage, InternshipAgreement
-    can %i[ switch_user
+    can %i[ show_modal_info
+            switch_user
             read
             update
             destroy
@@ -77,11 +77,10 @@ class Ability
   end
 
   def student_abilities(user:)
-    can :look_for_offers, User
+    can %i[show_modal_info look_for_offers sign_with_sms], User
     can :resend_confirmation_phone_token, User do |user|
       user.phone.present? && user.student?
     end
-    can :sign_with_sms, User
     can :show, :account
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
@@ -212,11 +211,10 @@ class Ability
     can :subscribe_to_webinar, User do
       ENV.fetch('WEBINAR_URL', nil).present?
     end
-    can :edit_password, User
+    can %i[edit_password show_modal_info supply_offers], User
     can_manage_teams(user:)
     can_manage_areas(user:)
     can %i[index], Acl::InternshipOfferDashboard
-    can :supply_offers, User
     can :renew, InternshipOffer do |internship_offer|
       renewable?(internship_offer:, user:)
     end
@@ -272,7 +270,6 @@ class Ability
       edit
       show
       update
-      edit_organisation_representative_role
       edit_employer_name
       edit_employer_address
       edit_employer_contact_email
@@ -456,7 +453,8 @@ class Ability
     can %i[
       choose_statistician_type
       supply_offers
-      subscribe_to_webinar
+      subscribe_to_webinar,
+      show_modal_info
     ], User
 
     can %i[see_reporting_dashboard
@@ -464,6 +462,7 @@ class Ability
   end
 
   def common_school_management_abilities(user:)
+    can :show_modal_info, User
     can %i[list_invitations
            destroy_invitation], Invitation do |invitation|
       invitation.school.id == user.school_id

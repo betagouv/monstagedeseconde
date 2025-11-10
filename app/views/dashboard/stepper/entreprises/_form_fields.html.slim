@@ -76,7 +76,7 @@
                                    data: { action: 'ministry-fields#handleClickIsPublic' }
 
                   .fr-messages-group#radio-hint-messages aria-live="assertive"
-          #ministry-choice.row.fr-mt-3w.bloc-tooggle[data-ministry-fields-target="groupNamePublic"]
+          #ministry-block.row.fr-mt-3w.bloc-tooggle[data-ministry-fields-target="groupNamePublic"]
             .col-12
               = form.label :group_id, class: 'fr-label' do
                 = "Type d’employeur public *"
@@ -93,7 +93,7 @@
                id="#{resource.class.name.split('::').first.gsub(/s\Z/, '').underscore}_sector_id-block" ]
             .col-12
               = form.label :sector_id , class: 'fr-label' do
-                = "Indiquez le secteur d'activité de votre structure * #{resource.sector&.name} #{form.object.persisted? && !form.object.is_public}"
+                = "Indiquez le secteur d'activité de votre structure *"
               = form.select :sector_id,
                             options_from_collection_for_select(Sector.all.order(:name).where.not(name: 'Fonction publique'), :id, :name, resource&.sector&.id),
                             { prompt: sectors_options_for_default },
