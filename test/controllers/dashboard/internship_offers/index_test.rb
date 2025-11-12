@@ -181,7 +181,7 @@ module Dashboard::InternshipOffers
 
     test 'GET #index with order & direction works' do
       employer = create(:employer)
-      travel_to(Date.new(2024, 9, 1)) do
+      travel_to(Date.new(2025, 9, 1)) do
         internship_offer_1 = create(:weekly_internship_offer_3eme,
                                     max_candidates: 2,
                                     internship_offer_area_id: employer.current_area_id,
