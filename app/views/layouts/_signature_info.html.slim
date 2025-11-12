@@ -1,4 +1,4 @@
-- show_dialog = current_user.try(:presenter).try(:show_signature_info_modal?)
+- show_dialog = can?(:show_modal_info, current_user)
 div data-controller="open-modal-dsfr" data-open-modal-dsfr-is-open-value="#{show_dialog}"
   dialog#modal-action-signature-info.fr-modal [aria-labelledby="modal-action-signature-info-title"
                                                data-open-modal-dsfr-target="modalRoot"
