@@ -178,10 +178,6 @@ class RebuildReviewJob < ApplicationJob
     @message_box ||= MessageBox.new(job_id: @job_id)
   end
 
-  # Finalization step method to avoid undefined method error
-  def create_finalization
-    # No operation needed, just a placeholder for the finalization step
-  end
 
   # other common methods
   def add_mandatory_attributes(hash)

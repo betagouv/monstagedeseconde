@@ -55,12 +55,13 @@ module Finders
       params[param_key].presence
     end
 
-    def check_param?(param_key)
-      return nil unless params.key?(param_key)
-      return nil if params.dig(param_key).blank?
+    # not used
+    # def check_param?(param_key)
+    #   return nil unless params.key?(param_key)
+    #   return nil if params.dig(param_key).blank?
 
-      true
-    end
+    #   true
+    # end
 
     def common_field_filter(with_distance_order: true)
       query ||= yield

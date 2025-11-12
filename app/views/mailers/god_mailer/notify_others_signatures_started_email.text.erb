@@ -1,0 +1,13 @@
+<%= "Convention de stage de #{@prez_stud.full_name}" %>
+
+Bonjour,
+
+<%= "Bonne nouvelle, la convention de #{@prez_stud.full_name}, pour l'offre de stage '" \
+    "#{@internship_offer.title}' vient d'être signée par '#{Signature::FR_SIGNATORY_ROLE[@last_signature_role.to_sym]}'." %>
+
+Il ne manque désormais que votre signature. A votre tour de signer !
+Pour ce faire, veuillez suivre le lien suivant
+<%= @url %>
+
+Excellente journée,
+L'équipe 1élève1stage

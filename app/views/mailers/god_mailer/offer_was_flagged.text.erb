@@ -1,0 +1,20 @@
+Une offre a été signalée comme inapppropriée
+--------------------------------------------
+
+Bonjour,
+Voici les détails du signalement
+
+- Motif: <%= @fr_ground %>
+- Détails du signalement: <%= @inappropriate_offer.details %>
+<%- if @user.present? %>
+  - Utilisateur ayant signalé l'offre: <%= @user.email %> (##{ @user.id })
+<% else %>
+  - Utilisateur ayant signalé l'offre: Anonyme
+<% end %>
+- Offre concernée: <%= @internship_offer.title %> (##{ @internship_offer.id })
+- URL de l'offre: <%= internship_offer_url(@internship_offer) %>
+- Description de l'offre: <%= @internship_offer.description %>
+
+--------------------------------------------
+Cordialement,
+L'équipe 1élève1stage

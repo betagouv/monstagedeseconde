@@ -32,15 +32,15 @@ class Ability
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)
     end
+    can :share, InternshipOffer
   end
 
   def god_abilities
-    can :show, :account
+    can :show, :account, :rebuild_review_job
     can :manage, School
     can :manage, Sector
     can :manage, Academy
     can :manage, AcademyRegion
-    can %i[destroy see_tutor], InternshipOffer
     can %i[read update export unpublish publish], InternshipOffer
     can %i[read update destroy export], InternshipApplication
     can :manage, InternshipOfferKeyword
@@ -54,7 +54,8 @@ class Ability
     end
     can %i[index_and_filter], Reporting::InternshipOffer
     can :manage, InternshipAgreement
-    can %i[ switch_user
+    can %i[ show_modal_info
+            switch_user
             read
             update
             destroy
@@ -72,17 +73,18 @@ class Ability
             transform_user], User
     can :manage, Operator
     can :read_employer_name, InternshipOffer
+    can :manage, InappropriateOffer
   end
 
   def student_abilities(user:)
-    can :look_for_offers, User
+    can %i[look_for_offers sign_with_sms], User
     can :resend_confirmation_phone_token, User do |user|
       user.phone.present? && user.student?
     end
-    can :sign_with_sms, User
     can :show, :account
     can %i[read], InternshipOffer
     can %i[create delete], Favorite
+    can :share, InternshipOffer
     can :apply, InternshipOffer do |internship_offer|
       ## can apply if ##
       # - user has the right grade
@@ -134,6 +136,10 @@ class Ability
         internship_application.aasm_state.in?(InternshipApplication::RESTORABLE_STATES) &&
         internship_application.restored_at.nil?
     end
+
+    can %i[read show update sign student_sign legal_representative_sign], InternshipAgreement do |internship_agreement|
+      internship_agreement.student.id == user.id
+    end
   end
 
   def school_manager_abilities(user:)
@@ -177,6 +183,7 @@ class Ability
       edit_pai_project
       edit_pai_trousse_family
       see_intro
+      show
       update
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id
@@ -204,11 +211,10 @@ class Ability
     can :subscribe_to_webinar, User do
       ENV.fetch('WEBINAR_URL', nil).present?
     end
-    can :edit_password, User
+    can %i[edit_password show_modal_info supply_offers], User
     can_manage_teams(user:)
     can_manage_areas(user:)
     can %i[index], Acl::InternshipOfferDashboard
-    can :supply_offers, User
     can :renew, InternshipOffer do |internship_offer|
       renewable?(internship_offer:, user:)
     end
@@ -262,8 +268,8 @@ class Ability
       read
       index
       edit
+      show
       update
-      edit_organisation_representative_role
       edit_employer_name
       edit_employer_address
       edit_employer_contact_email
@@ -279,6 +285,7 @@ class Ability
       edit_activity_learnings
       edit_date_range
       edit_organisation_representative_full_name
+      edit_organisation_representative_role
       edit_siret
       edit_tutor_full_name
       edit_weekly_hours
@@ -447,7 +454,8 @@ class Ability
     can %i[
       choose_statistician_type
       supply_offers
-      subscribe_to_webinar
+      subscribe_to_webinar,
+      show_modal_info
     ], User
 
     can %i[see_reporting_dashboard
@@ -455,6 +463,7 @@ class Ability
   end
 
   def common_school_management_abilities(user:)
+    can :show_modal_info, User
     can %i[list_invitations
            destroy_invitation], Invitation do |invitation|
       invitation.school.id == user.school_id
@@ -528,6 +537,7 @@ class Ability
       edit_student_legal_representative_2_phone
       edit_student_school
       see_intro
+      show
       update
     ], InternshipAgreement do |agreement|
       agreement.internship_application.student.school_id == user.school_id

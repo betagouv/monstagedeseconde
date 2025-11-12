@@ -130,6 +130,15 @@ class UsersController < ApplicationController
     end
   end
 
+  def dismiss_modal_info
+    authorize! :show_modal_info, current_user
+    if user_params.has_key?(:show_modal_info)
+      update_value = user_params[:show_modal_info] || user_params[:show_modal_info] != false
+      current_user.update(show_modal_info: update_value)
+    end
+    head :ok
+  end
+
   helper_method :current_section
 
   private
@@ -172,7 +181,8 @@ class UsersController < ApplicationController
                                  :academy_region_id,
                                  :employer_role,
                                  :phone_or_email,
-                                 :anonymize_with_email)
+                                 :anonymize_with_email,
+                                 :show_modal_info)
   end
 
   def current_section

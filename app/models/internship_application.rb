@@ -7,6 +7,7 @@ class InternshipApplication < ApplicationRecord
   include StiPreload
   include AASM
   include Rails.application.routes.url_helpers
+  include Tokenable
   PAGE_SIZE = 10
   EXPIRATION_DURATION = 15.days
   EXTENDED_DURATION = 15.days
@@ -101,7 +102,7 @@ class InternshipApplication < ApplicationRecord
             }
   validates :student_email,
             format: { with: Devise.email_regexp }
-  validates :weeks, presence: true
+  validates :weeks, presence: true, on: :create
 
   # Callbacks
   after_save :update_all_counters
@@ -482,13 +483,6 @@ class InternshipApplication < ApplicationRecord
     weeks
   end
 
-  def generate_token
-    return if access_token.present?
-
-    self.access_token = SecureRandom.hex(10)
-    save
-  end
-
   def create_agreement
     return unless internship_agreement_creation_allowed?
 
@@ -601,7 +595,7 @@ class InternshipApplication < ApplicationRecord
     end
   end
 
-  def filtered_notification_emails
+  def employers_filtered_by_notifications_emails
     original_employer = internship_offer.employer
     return [original_employer.email] unless original_employer.employer_like?
     return [original_employer.email] if original_employer.team.not_exists?

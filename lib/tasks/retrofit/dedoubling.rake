@@ -1,10 +1,10 @@
-require 'pretty_console.rb'
+require 'pretty_console'
 # usage : rake retrofit:internship_agreements_creations
 
 include PrettyConsole
 namespace :retrofit do
   desc 'Retrofit du doublon de whitelist in ministry'
-  task :whitelist_dedoubling, [:email, :type, :id_to_remove] => :environment do |t, args|
+  task :whitelist_dedoubling, %i[email type id_to_remove] => :environment do |t, args|
     # use with rake "retrofit:whitelist_dedoubling[email@domain.fr, Ministry, id_to_remove]"
     email        = args.email
     type         = args.type
@@ -31,7 +31,7 @@ namespace :retrofit do
   end
 
   desc 'Retrofit du doublon d\'établissement'
-  task :school_dedoubling, [:old_school_id, :new_school_id] => :environment do |t, args|
+  task :school_dedoubling, %i[old_school_id new_school_id] => :environment do |t, args|
     # use with ```rake "retrofit:school_dedoubling[old_school_id, new_school_id]"``` in console
 
     old_school_id = args.old_school_id
@@ -45,10 +45,8 @@ namespace :retrofit do
 
       if old_school && new_school
         ClassRoom.where(school_id: old_school_id).update_all(school_id: new_school_id)
-        HostingInfo.where(school_id: old_school_id).update_all(school_id: new_school_id)
         Identity.where(school_id: old_school_id).update_all(school_id: new_school_id)
         InternshipAgreementPreset.where(school_id: old_school_id).update_all(school_id: new_school_id)
-        InternshipOfferInfo.where(school_id: old_school_id).update_all(school_id: new_school_id)
         # InternshipOfferStudentInfo.where(school_id: old_school_id).update_all(school_id: new_school_id)
         InternshipOffer.where(school_id: old_school_id).update_all(school_id: new_school_id)
         SchoolInternshipWeek.where(school_id: old_school_id).update_all(school_id: new_school_id)
@@ -79,7 +77,7 @@ namespace :retrofit do
       new_school_id = schools.last
       next if old_school_id == new_school_id
 
-      PrettyConsole.puts_in_green "bundle exec rake \"retrofit:school_dedoubling[#{old_school_id}, #{new_school_id}]\"" 
+      PrettyConsole.puts_in_green "bundle exec rake \"retrofit:school_dedoubling[#{old_school_id}, #{new_school_id}]\""
     end
   end
 end

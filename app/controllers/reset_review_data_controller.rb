@@ -8,7 +8,7 @@ class ResetReviewDataController < ApplicationController
 
   def create
     job_id = params[:job_id]
-    redirect_to root_path unless ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true' || Rails.env.production?
+    redirect_to root_path unless ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true' || Rails.env.production? || !current_user.god?
 
     RebuildReviewJob.perform_later(job_id)
     head :no_content

@@ -32,10 +32,16 @@ export default class extends Controller {
 
     // set required to true to the entreprise_group_id
     const entrepriseGroup = document.querySelector("#group-choice");
+    const ministry = document.querySelector("#ministry-block");
     const ministryVisible = !['d-none', 'hidden', 'fr-hidden'].some(className => ministry.classList.contains(className));
     if (entrepriseGroup && ministryVisible) {
+
       entrepriseGroup.required = true;
+      ministry.classList.remove("fr-hidden");
     }
+
+    ministry.classList.remove("fr-hidden");
+    entrepriseGroup.setAttribute("required", "true");
 
     // SECTOR
     // set required to false to the sector_id
@@ -51,12 +57,13 @@ export default class extends Controller {
   selectPrivateSectorAndShow() {
     // set public state
     this.isEntreprisePublicValue = false;
-    // set ministry group to '' and required to false
-    const ministryGroup = document.querySelector("#group-choice");
-    if (ministryGroup) {
-      ministryGroup.value = "";
-      ministryGroup.required = false;
-    }
+    // set ministry group to '', required to false and hide
+    const ministrySelect = document.querySelector("#group-choice");
+    const ministryBlock = document.querySelector("#ministry-block");
+    ministrySelect.value = "";
+    ministrySelect.required = false;
+    ministryBlock.classList.add("fr-hidden");
+
 
     // show the sector choice block
     this.sectorBlockTarget.classList.remove("fr-hidden");

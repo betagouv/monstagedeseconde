@@ -6,11 +6,6 @@ body {
     border: 2px solid $blue;
 }
 
-.no-visible-focus {
-    &:focus-visible {
-        border: none;
-    }
-}
 .fr-raw-link:hover {
     text-decoration: none;
 }
@@ -36,6 +31,9 @@ a:hover {
 
 .homepage {
     overflow-x: hidden;
+}
+.overflow-x-visible{
+    overflow-x: visible;
 }
 
 .fr-card__title.title-cards-in-a-row.home {
@@ -404,29 +402,6 @@ img.covering {
     }
 }
 
-.video-shadow {
-    //is used in video iframe do not remove
-    background-color: $blue;
-    margin: 25px 0 0 25px;
-    z-index: 2;
-    width: 450px;
-    height: 450px;
-}
-
-.video-responsive {
-    position: relative;
-    display: block;
-    width: 100%;
-    overflow: hidden;
-}
-
-.video-responsive::before {
-    display: block;
-    content: "";
-    padding-top: 100%;
-    margin: auto;
-}
-
 @include media-breakpoint-up(md) {
     .sticky-top-customed {
         @supports (position: sticky) {
@@ -447,9 +422,6 @@ img.covering {
     }
     .flex-md-reverse-column {
         flex-direction: column-reverse !important;
-    }
-    .video-responsive {
-        box-shadow: 25px 25px 0 $blue-france;
     }
     .visible-smaller-md {
         display: none;

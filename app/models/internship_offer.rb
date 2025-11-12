@@ -84,6 +84,7 @@ class InternshipOffer < ApplicationRecord
   has_many :schools, through: :reserved_schools
 
   has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy
+  has_one :inappropriate_offer, dependent: :destroy
 
   # accepts_nested_attributes_for :organisation, allow_destroy: true
 
@@ -273,6 +274,7 @@ class InternshipOffer < ApplicationRecord
   }
   scope :filtered_by_qpv_and_rep, ->(user:) { filtered_with_qpv(user:).filtered_with_rep(user:) }
   scope :open_data, -> { where(open_data: true) }
+  scope :ignore_qpv_and_rep, -> { where(qpv: false, rep: false) }
 
   # -------------------------
   # States
@@ -453,28 +455,12 @@ class InternshipOffer < ApplicationRecord
   def update_from_internship_occupation
     return unless internship_occupation
 
-    # self.employer_name = organisation.employer_name
-    # self.employer_website = organisation.employer_website
     self.description = internship_occupation.description
-    # self.siret = organisation.siret
-    # self.group_id = organisation.group_id
-    # self.is_public = organisation.is_public
     # self.internship_street = internship_occupation.street
     # self.internship_zipcode = internship_occupation.zipcode
     # self.internship_city = internship_occupation.city
     # self.internship_coordinates = internship_occupation.coordinates
     # self.internship_offer_area_id = internship_occupation.internship_offer_area_id
-  end
-
-  def update_from_organisation
-    nil unless organisation
-
-    #   self.employer_name = organisation.employer_name
-    #   self.employer_website = organisation.employer_website
-    #   self.employer_description = organisation.employer_description
-    #   self.siret = organisation.siret
-    #   self.group_id = organisation.group_id
-    #   self.is_public = organisation.is_public
   end
 
   def generate_offer_from_attributes(white_list)
@@ -603,6 +589,10 @@ class InternshipOffer < ApplicationRecord
 
   def weeks_api_formatted
     Presenters::WeekList.new(weeks: weeks).to_api_formatted
+  end
+
+  def created_during_former_year?
+    last_date < Week.current_year_start_week.monday
   end
 
   protected

@@ -360,11 +360,6 @@ table.employer tbody tr td.title {
     }
   }
 }
-  
-.search-offers {
-  background-color: #fff;
-  width: 100%;
-}
 
 .fr-text--grey-425 {
   color: $grey-425;
@@ -392,4 +387,8 @@ table.employer tbody tr td.title {
 
 .immersion-facilitee-card.fr-callout:hover a.fr-link {
   color: #fff !important;
+}
+
+.copied-success {
+  color: #009099;
 }

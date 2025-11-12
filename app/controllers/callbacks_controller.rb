@@ -77,7 +77,7 @@ class CallbacksController < ApplicationController
 
     educonnect = Services::EduconnectConnection.new(code, state, nonce)
 
-    session[:id_token] = educonnect.id_token
+    # session[:id_token] = educonnect.id_token
     session[:state] = state
 
     # Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
@@ -180,7 +180,7 @@ class CallbacksController < ApplicationController
   rescue StandardError => e
     Rails.logger.error("Failed to logout from Educonnect: #{e.message}")
   ensure
-    session.delete(:id_token)
+    # session.delete(:id_token)
     session.delete(:state)
   end
 

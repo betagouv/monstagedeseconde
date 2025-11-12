@@ -12,8 +12,10 @@ module Presenters
                  discarded_at
                  department
                  academy
+                 grades
                  permalink].freeze
       METHODS = %i[group_name
+                   grades_as_string
                    human_is_public
                    sector_name
                    contact_name
@@ -91,6 +93,14 @@ module Presenters
         return 'Dépubliée' if instance.published_at.nil?
 
         instance.published_at
+      end
+
+      def grades_as_string
+        str_arr = []
+        str_arr << "2de"  if instance.grades.include?(Grade.seconde)
+        str_arr << "3eme" if instance.grades.include?(Grade.troisieme)
+        str_arr << "4eme" if instance.grades.include?(Grade.quatrieme)
+        str_arr.join(' - ')
       end
 
       # def weeks_list

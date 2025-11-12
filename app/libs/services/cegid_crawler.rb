@@ -12,7 +12,14 @@ module Services
 
     def fetch_data
       uri = URI(ENV['CEGID_DECATHLON_URL'])
-      response = Net::HTTP.get_response(uri)
+      http = Net::HTTP.new(uri.host, uri.port)
+      
+      if uri.scheme == 'https'
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
+      
+      response = http.get(uri.path)
       return unless response.is_a?(Net::HTTPSuccess)
 
       JSON.parse(response.body)
@@ -55,7 +62,11 @@ module Services
 
       uri = URI("#{ENV['HOST']}/api/v2/internship_offers")
       http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = uri.scheme == 'https'
+      
+      if uri.scheme == 'https'
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE # Désactiver la vérification SSL pour les certificats auto-signés
+      end
 
       request = Net::HTTP::Post.new(uri.path)
       request['Authorization'] = "Bearer #{@token}"
@@ -103,11 +114,12 @@ module Services
       ActionController::Base.helpers.sanitize(html, tags: %w[p b i u li ul ol br])
     end
 
-    def parse_datetime(datetime_str)
-      DateTime.parse(datetime_str)
-    rescue StandardError
-      nil
-    end
+    # not used
+    # def parse_datetime(datetime_str)
+    #   DateTime.parse(datetime_str)
+    # rescue StandardError
+    #   nil
+    # end
 
     def coordinates_from_position
       lat = @data.dig('address', 'position', 'lat')
@@ -139,9 +151,10 @@ module Services
       RGeo::Geographic.spherical_factory(srid: 4326).point(lon.to_f, lat.to_f)
     end
 
-    def format_employer_name
-      [@data.dig('entity', 'public_name'), @data.dig('brand', 'name')].compact.first
-    end
+    # not used
+    # def format_employer_name
+    #   [@data.dig('entity', 'public_name'), @data.dig('brand', 'name')].compact.first
+    # end
 
     def get_token_from_operator(operator_name)
       operator = Operator.find_by(name: operator_name)
@@ -157,6 +170,7 @@ module Services
 
       offers.each do |offer|
         unless remote_ids.include?(offer.remote_id)
+          offer.internship_applications.destroy_all
           offer.destroy
           puts "Offer #{offer.remote_id} removed"
         end

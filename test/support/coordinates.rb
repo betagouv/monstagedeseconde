@@ -17,6 +17,10 @@ class Coordinates
     { latitude: 48.799421040, longitude: 2.2811114 }
   end
 
+  def self.versailles
+    { latitude: 48.8011, longitude: 2.1246 }
+  end
+
   def self.pithiviers
     { latitude: 48.1748942, longitude: 2.2528844 }
   end

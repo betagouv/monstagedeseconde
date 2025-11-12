@@ -272,6 +272,31 @@ namespace :schools do
     end
     PrettyConsole.say_in_green("Done")
   end
+
+  desc 'update schools with new fields'
+  task :update_schools_with_new_fields => :environment do
+    PrettyConsole.announce_task 'updating schools with new fields' do
+      file_name = 'lycees_colleges.csv'
+      file_name = Rails.root.join('db','data_imports','sources_EN', file_name)
+      CSV.foreach(file_name, headers: true, col_sep: ';') do |row|
+        print '.'
+        school = School.find_by(code_uai: row['Identifiant_de_l_etablissement'])
+        next if school.nil?
+        school.update(
+          contact_phone: row['Telephone'],
+          contact_email: row['Mail'],
+          web: row['Web'],
+          segpa: row['SEGPA'] == '0' ? false : true,
+          lycee_agricole: row['Lycee_agricole'] == '0' ? false : true,
+          lycee_militaire: row['Lycee_militaire'] == '0' ? false : true,
+          lycee_des_metiers: row['Lycee_des_metiers'] == '0' ? false : true,
+          ministere_tutelle: row['Ministere_tutelle'],
+          code_type_contrat_prive: row['Type_contrat_prive'],
+          code_nature: row['code_nature']
+        )
+      end
+    end
+  end
 end
 
 
