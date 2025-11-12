@@ -52,7 +52,7 @@ class InappropriateOffersControllerTest < ActionDispatch::IntegrationTest
       patch update_moderation_inappropriate_offer_path(inappropriate_offer), params: {
         inappropriate_offer: {
           moderation_action: 'masquer',
-          message_to_offerer: 'Merci de compléter la description.',
+          message_to_employer: 'Merci de compléter la description.',
           internal_comment: 'Offre masquée pour vérification'
         }
       }
@@ -82,7 +82,7 @@ class InappropriateOffersControllerTest < ActionDispatch::IntegrationTest
       patch update_moderation_inappropriate_offer_path(inappropriate_offer), params: {
         inappropriate_offer: {
           moderation_action: 'supprimer',
-          message_to_offerer: 'Offre supprimée suite à signalement.',
+          message_to_employer: 'Offre supprimée suite à signalement.',
           internal_comment: 'Suppression validée'
         }
       }

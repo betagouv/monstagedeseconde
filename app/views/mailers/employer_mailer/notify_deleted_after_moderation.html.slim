@@ -9,11 +9,11 @@ p style=p_styles
 p style=p_styles
   | Suite à cette analyse, nous avons pris la décision de retirer cette offre de la plateforme.
 
-- if @inappropriate_offer.message_to_offerer.present?
+- if @inappropriate_offer.message_to_employer.present?
   p style=p_styles
     | Voici le message d’explication transmis par notre équipe :
   p style=p_styles
-    = safe_join(@inappropriate_offer.message_to_offerer.to_s.split(/\r?\n/), tag.br)
+    = safe_join(@inappropriate_offer.message_to_employer.to_s.split(/\r?\n/), tag.br)
 
 p style=p_styles
   | Si vous estimez que cette décision est injustifiée ou si vous souhaitez nous fournir des éléments complémentaires, vous pouvez demander une révision en envoyant un message à 

@@ -143,12 +143,10 @@ module AdminInappropriateOfferable
 
         field :decision_date do
           label { 'Date de décision' }
-          # date_format 'KO'
-          # strftime_format '%d/%m/%Y à %H:%M'
         end
 
-        field :message_to_offerer do
-          label { 'Message à l\'annonceur' }
+        field :message_to_employer do
+          label { 'Message à l\'employeur' }
         end
 
         field :internal_comment do

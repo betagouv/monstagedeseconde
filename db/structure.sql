@@ -801,7 +801,7 @@ CREATE TABLE public.inappropriate_offers (
     updated_at timestamp(6) without time zone NOT NULL,
     ground public.inappropriate_ground NOT NULL,
     moderation_action character varying,
-    message_to_offerer text,
+    message_to_employer text,
     decision_date timestamp(6) without time zone,
     internal_comment text,
     moderator_id bigint
@@ -2182,7 +2182,8 @@ CREATE TABLE public.users (
     school_ids text[] DEFAULT '{}'::text[],
     user_info jsonb DEFAULT '{}'::jsonb,
     fim_user_info jsonb,
-    created_by_system boolean DEFAULT false NOT NULL
+    created_by_system boolean DEFAULT false NOT NULL,
+    show_modal_info boolean DEFAULT true NOT NULL
 );
 
 
@@ -4624,6 +4625,7 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20251105120000'),
+('20251029152954'),
 ('20251001162458'),
 ('20251001145652'),
 ('20250930160935'),

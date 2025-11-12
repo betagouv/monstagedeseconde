@@ -9,11 +9,11 @@ p style=p_styles
 p style=p_styles
   | Après analyse, elle a été temporairement masquée afin de permettre une vérification ou une éventuelle mise à jour.
 
-- if @inappropriate_offer.message_to_offerer.present?
+- if @inappropriate_offer.message_to_employer.present?
   p style=p_styles
     | Voici le message d’explication transmis par notre équipe :
   p style=p_styles
-    = safe_join(@inappropriate_offer.message_to_offerer.to_s.split(/\r?\n/), tag.br)
+    = safe_join(@inappropriate_offer.message_to_employer.to_s.split(/\r?\n/), tag.br)
 
 p style=p_styles
   | ⚠️ Si vous souhaitez mettre à jour votre offre ou apporter des précisions, vous pouvez le faire directement via votre espace offreur. Une fois les modifications apportées, nous pourrons réévaluer sa republication.

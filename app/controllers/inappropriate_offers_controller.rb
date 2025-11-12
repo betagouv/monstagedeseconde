@@ -2,13 +2,14 @@
 
 class InappropriateOffersController < ApplicationController
   before_action :authenticate_user!
-  before_action :ensure_admin!
   before_action :set_inappropriate_offer, only: [:manage, :update_moderation]
 
   def manage
+    authorize! :manage, @inappropriate_offer
   end
 
   def update_moderation
+    authorize! :update, @inappropriate_offer
     if @inappropriate_offer.update(moderation_params)
       handle_moderation_action
       flash[:notice] = 'La modération a été enregistrée avec succès.'
@@ -29,17 +30,10 @@ class InappropriateOffersController < ApplicationController
     redirect_to rails_admin.index_path(model_name: 'inappropriate_offer')
   end
 
-  def ensure_admin!
-    unless current_user.is_a?(Users::God)
-      flash[:alert] = 'Accès non autorisé.'
-      redirect_to root_path
-    end
-  end
-
   def moderation_params
     params.require(:inappropriate_offer).permit(
       :moderation_action,
-      :message_to_offerer,
+      :message_to_employer,
       :internal_comment
     ).merge(
       decision_date: Time.current,
@@ -54,11 +48,11 @@ class InappropriateOffersController < ApplicationController
     when 'masquer'
       # Temporary masked
       @internship_offer.update(published_at: nil) if @internship_offer.published?
-      send_notification_masked_employer if @inappropriate_offer.message_to_offerer.present?
+      send_notification_masked_employer if @inappropriate_offer.message_to_employer.present?
     when 'supprimer'
       # Completely removed (soft delete)
       @internship_offer.discard if @internship_offer.kept?
-      send_notification_deleted_employer if @inappropriate_offer.message_to_offerer.present?
+      send_notification_deleted_employer if @inappropriate_offer.message_to_employer.present?
     end
   end
 
