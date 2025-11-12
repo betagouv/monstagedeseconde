@@ -173,7 +173,7 @@ class GenerateInternshipAgreement < Prawn::Document
       'd’observation, soit au domicile.'
     )
     paraphing(
-      'L’élève (et en cas de minorité ses représentants légaux) doit souscrire et produire une '\
+      'L’élève (et en cas de minorité ses responsables légaux) doit souscrire et produire une '\
       'attestation d’assurance couvrant sa responsabilité civile pour les dommages qu’il pourrait '\
       'causer ou qui pourraient lui advenir en milieu professionnel.'
     )
@@ -238,7 +238,7 @@ class GenerateInternshipAgreement < Prawn::Document
         "#{@internship_agreement.pai_trousse_family ? 'De la famille' : 'De l\'établissement'}")
     end
 
-    @pdf.text 'Prénom, nom et coordonnées électronique et téléphonique des représentants légaux :'
+    @pdf.text 'Prénom, nom et coordonnées électronique et téléphonique des responsables légaux :'
     @pdf.text "#{@internship_agreement.student_legal_representative_full_name}, " \
       "#{@internship_agreement.student_legal_representative_email}, " \
       "#{@internship_agreement.student_legal_representative_phone}"
@@ -381,22 +381,53 @@ class GenerateInternshipAgreement < Prawn::Document
     column_widths = [@pdf.bounds.width / headers.size] * headers.size
     @pdf.table([headers],
                cell_style: { border_width: 0 },
-               column_widths: column_widths)
+               column_widths: column_widths) do |t|
+      t.cells.align = :left
+      t.cells.font_style = :bold
+    end
 
     employer_signature_img = image_from(signature: download_image_and_signature(signatory_role: 'employer'))
     school_manager_signature_img = image_from(signature: school_manager_signature)
-    @pdf.table([[employer_signature_img, school_manager_signature_img]], cell_style: { border_width: 0, height: 80 },
-                                                                         column_widths: column_widths)
+    signatures_array = [employer_signature_img, school_manager_signature_img]
 
-    @pdf.move_down 10
-    @pdf.text 'Vu et pris connaissance,'
-    @pdf.move_down 10
+    @pdf.table([signatures_array], cell_style: { border_width: 0, height: 80 }, column_widths: column_widths)
+
+    # @pdf.move_down 10
+    # @pdf.text 'Vu et pris connaissance,'
+    # @pdf.move_down 10
     @pdf.table([['Les parents ou les responsables légaux', 'L’enseignant (ou les enseignants) éventuellement']],
                cell_style: { border_width: 0 },
-               column_widths: column_widths)
-    @pdf.move_down 50
-    @pdf.text 'Le responsable de l’accueil en milieu professionnel'
+               column_widths: column_widths) do |t|
+      t.cells.align = :left
+      t.cells.font_style = :bold
+    end
+    if @internship_agreement.signed_by_legal_representative?
+      signator_full_name = @internship_agreement.signature_by_role(signatory_role: 'student_legal_representative').try(:student_legal_representative_full_name)
+      student_legal_representative_signature_txt = signator_full_name
+      signatures_txt = [student_legal_representative_signature_txt, '']
+      student_legal_representative_signature_timing = "a signé électroniquement le : #{@internship_agreement.student_legal_representative_signature.signature_date.strftime('%d/%m/%Y à %Hh%M')}"
+      signatures_timing_txt = [student_legal_representative_signature_timing]
+      @pdf.table([signatures_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
+      @pdf.table([signatures_timing_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
+    end
+    @pdf.table([['L\'élève', '']],
+               cell_style: { border_width: 0 },
+               column_widths: column_widths) do |t|
+      t.cells.align = :left
+      t.cells.font_style = :bold
+    end
+    # @pdf.move_down 10
+    if @internship_agreement.signed_by_student?
+      student_signature_txt = "#{@internship_agreement.student.presenter.full_name} "
+      signatures_txt = [student_signature_txt]
+      student_signature_timing = "a signé électroniquement le : #{@internship_agreement.student_signature.signature_date.strftime('%d/%m/%Y à %Hh%M')}"
+      signatures_timing_txt = [student_signature_timing]
+      @pdf.table([signatures_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
+      @pdf.table([signatures_timing_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
+    end
+    # @pdf.text 'Le responsable de l’accueil en milieu professionnel'
   end
+
 
   # def signature_data
   #   { header: [[
@@ -477,17 +508,18 @@ class GenerateInternshipAgreement < Prawn::Document
   #   end
   # end
 
-  def signature_table_footer
-    @pdf.table(
-      [[''] * 2],
-      row_colors: ['FFFFFF'],
-      column_widths: [PAGE_WIDTH / 2] * 2,
-      cell_style: { size: 8, color: '555555' }
-    ) do |t|
-      t.cells.borders = %i[left right bottom]
-      t.cells.border_color = 'cccccc'
-    end
-  end
+  # not used
+  # def signature_table_footer
+  #   @pdf.table(
+  #     [[''] * 2],
+  #     row_colors: ['FFFFFF'],
+  #     column_widths: [PAGE_WIDTH / 2] * 2,
+  #     cell_style: { size: 8, color: '555555' }
+  #   ) do |t|
+  #     t.cells.borders = %i[left right bottom]
+  #     t.cells.border_color = 'cccccc'
+  #   end
+  # end
 
   def page_number
     string = '<page> / <total>'
@@ -592,15 +624,16 @@ class GenerateInternshipAgreement < Prawn::Document
     end
   end
 
-  def process_signature_image(image_data)
-    image = MiniMagick::Image.read(image_data) do |img|
-      img.format 'png'
-      img.interlace 'none'
-    end
-    OpenStruct.new(
-      signature_image_file_path: StringIO.new(image.to_blob)
-    )
-  end
+  # not used
+  # def process_signature_image(image_data)
+  #   image = MiniMagick::Image.read(image_data) do |img|
+  #     img.format 'png'
+  #     img.interlace 'none'
+  #   end
+  #   OpenStruct.new(
+  #     signature_image_file_path: StringIO.new(image.to_blob)
+  #   )
+  # end
 
   def signature_date_str(signatory_role:)
     if @internship_agreement.signature_image_attached?(signatory_role:)

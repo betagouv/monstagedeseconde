@@ -2,7 +2,8 @@ import React from 'react';
 
 function Paginator({ paginateLinks }) {
   function pageUrl(pageId) {
-    return paginateLinks.pageUrlBase + '&page=' + pageId
+    const separator = paginateLinks.pageUrlBase.includes('?') ? '&' : '?';
+    return paginateLinks.pageUrlBase + separator + 'page=' + pageId
   };
 
   return (

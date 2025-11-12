@@ -1,0 +1,20 @@
+.fr-alert.fr-alert--success.fr-mb-4w role="alert"
+  span aria-hidden="true" class="fr-icon-check-line" alt=""
+  | Signature déjà complétée.
+.fr-callout.fr-mt-2w
+  h3.fr-callout__title = "La convention de stage a déjà été signée par #{@internship_agreement.try(:student_legal_representative_signature).try(:student_legal_representative_full_name)}."
+  - if @internship_agreement.legal_representative_count > 1
+    p.fr-callout__text Une seule signature des responsables légaux est requise, vous n’avez donc pas besoin de la signer à nouveau.
+  - else
+    p.fr-callout__text Vous n’avez pas besoin de la signer à nouveau.
+  p.fr-callout__text  Vous trouverez ci-dessous le lien de téléchargement de la convention de stage de l'élève dont vous êtes responsable.
+
+.fr-mb-4w.d-flex.justify-content-between.fr-mb-16w
+  .fr-mt-2w
+    = link_to "Télécharger la convention de stage (PDF)",
+              upload_public_internship_agreement_path(uuid: internship_agreement.uuid, format: :pdf),
+              class: "fr-btn fr-btn--sm fr-mt-2w",
+              target: "_blank"
+    = link_to "Retour à l'accueil",
+              root_path,
+              class: "fr-btn fr-btn--sm fr-btn--secondary fr-ml-2w"
