@@ -10,6 +10,12 @@ module Dashboard
 
     DEFAULT_RADIUS_TO_SCHOOLS_IN_KM = 60
 
+    # Define allowed stats columns for ordering: update with correct column names
+    ALLOWED_STATS_COLUMNS = %w[
+      submitted_applications_count
+      viewed_count
+      # add other allowed statistics columns here
+    ].freeze
     def index
       @internship_offer_areas = current_user.internship_offer_areas if current_user.employer_like?
       authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
@@ -19,10 +25,13 @@ module Dashboard
       @internship_offers = finder.all
       
       if order_column_from_stats?
+        # Only allow ordering by whitelisted columns/directions (defended in order_column/order_direction)
+        stats_column = order_column
+        direction = order_direction&.upcase == 'ASC' ? 'ASC' : 'DESC'
         @internship_offers = @internship_offers.joins(:stats)
         # Add the column to the GROUP BY to avoid the PostgreSQL error
-        @internship_offers = @internship_offers.group("internship_offers.id, internship_offer_stats.#{order_column}")
-        order_sql = "internship_offer_stats.#{order_column} #{order_direction || 'DESC'}"
+        @internship_offers = @internship_offers.group("internship_offers.id, internship_offer_stats.#{stats_column}")
+        order_sql = "internship_offer_stats.#{stats_column} #{direction}"
         @internship_offers = @internship_offers.order(Arel.sql(order_sql))
       else
         order_param = order_direction.nil? ? :published_at : { order_column => order_direction }
@@ -241,15 +250,17 @@ module Dashboard
     end
 
     def order_column
-      return params[:order] if params[:order] && valid_order_column?
-
-      :submitted_applications_count
+      if params[:order] && ALLOWED_STATS_COLUMNS.include?(params[:order])
+        params[:order]
+      else
+        'submitted_applications_count'
+      end
     end
 
     def order_direction
       return nil unless params[:direction]
 
-      params[:direction] if %w[asc desc].include?(params[:direction])
+      params[:direction].downcase if %w[asc desc].include?(params[:direction].downcase)
     end
 
     def internship_offer_builder
