@@ -209,9 +209,9 @@ module Dashboard::InternshipOffers
                       dashboard_internship_offers_path(order: :remaining_seats_count, direction: :desc), count: 1
         assert_select 'a.currently-sorting[href=?]',
                       dashboard_internship_offers_path(order: :remaining_seats_count, direction: :asc), count: 0
-        assert_select 'table tbody tr:last .internship-item-title',
-                      text: "#{internship_offer_1.title}#{internship_offer_1.city}"
         assert_select 'table tbody tr:first .internship-item-title',
+                      text: "#{internship_offer_1.title}#{internship_offer_1.city}"
+        assert_select 'table tbody tr:last .internship-item-title',
                       text: "#{internship_offer_2.title}#{internship_offer_2.city}"
       end
     end
