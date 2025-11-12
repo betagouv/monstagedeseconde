@@ -267,9 +267,11 @@ export default function SirenInput({
       toggleHideContainerById("public-private-radio-buttons", false);
       if(is_public){
         document.getElementById("entreprise_is_public_true").checked = true;
+        // show ministry bloc
         ministry.removeAttribute("style");
         ministryClassList.remove("fr-hidden");
         ministry.removeAttribute("hidden");
+        ministry.hidden = false;
 
         // For public establishments
 
@@ -285,6 +287,9 @@ export default function SirenInput({
         }
         // remove required attribute from sector input
         sector.removeAttribute("required");
+
+        // hide sector bloc
+        sectorBloc.hidden = true;
       } else {
         // For private companies
         document.getElementById(`${resourceName}_is_public_false`).checked = true;
