@@ -35,31 +35,6 @@ module Presenters
                      @student_stats.internship_locations
       end
 
-      test '.internship_tutors' do
-        tutor_kwargs = {
-          tutor_name: 'Martin Fourcade',
-          tutor_phone: '0669696969',
-          tutor_email: 'kikoolol@gmail.com'
-        }
-        StudentStats::Tutor.new(**tutor_kwargs)
-        internship_offer = create(
-          :weekly_internship_offer_2nde,
-          **tutor_kwargs
-        )
-        weekly_internship_application = create(
-          :weekly_internship_application,
-          :approved,
-          student: @student,
-          internship_offer:
-        )
-        weekly_internship_application.save
-
-        tutor = @student_stats.internship_tutors.first
-        assert_equal tutor.tutor_name, internship_offer.tutor_name
-        assert_equal tutor.tutor_phone, internship_offer.tutor_phone
-        assert_equal tutor.tutor_email, internship_offer.tutor_email
-      end
-
       test '.applications_best_status' do
         student = create(:student)
         assert_equal({ color: 'warning', label: 'doit faire des candidatures' },

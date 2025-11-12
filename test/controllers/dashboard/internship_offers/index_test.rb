@@ -181,17 +181,17 @@ module Dashboard::InternshipOffers
 
     test 'GET #index with order & direction works' do
       employer = create(:employer)
-      travel_to(Date.new(2024, 9, 1)) do
+      travel_to(Date.new(2025, 9, 1)) do
         internship_offer_1 = create(:weekly_internship_offer_3eme,
                                     max_candidates: 2,
-                                    remaining_seats_count: 2,
                                     internship_offer_area_id: employer.current_area_id,
                                     employer:)
+        internship_offer_1.stats.update(remaining_seats_count: 2)
         internship_offer_2 = create(:weekly_internship_offer_3eme,
                                     max_candidates: 1,
-                                    remaining_seats_count: 1,
                                     internship_offer_area_id: employer.current_area_id,
                                     employer:)
+        internship_offer_2.stats.update(remaining_seats_count: 1)
         sign_in(employer)
         get dashboard_internship_offers_path(order: :remaining_seats_count, direction: :desc)
         assert_select 'a[href=?]',
@@ -209,19 +209,19 @@ module Dashboard::InternshipOffers
                       dashboard_internship_offers_path(order: :remaining_seats_count, direction: :desc), count: 1
         assert_select 'a.currently-sorting[href=?]',
                       dashboard_internship_offers_path(order: :remaining_seats_count, direction: :asc), count: 0
-        assert_select 'table tbody tr:last .internship-item-title',
-                      text: "#{internship_offer_1.title}#{internship_offer_1.city}"
         assert_select 'table tbody tr:first .internship-item-title',
+                      text: "#{internship_offer_1.title}#{internship_offer_1.city}"
+        assert_select 'table tbody tr:last .internship-item-title',
                       text: "#{internship_offer_2.title}#{internship_offer_2.city}"
       end
     end
 
     test 'GET #index with order success with all valid column' do
       employer = create(:employer)
-      internship_offer_1 = create(:weekly_internship_offer_2nde, view_count: 2,
-                                                                 employer:)
-      internship_offer_2 = create(:weekly_internship_offer_2nde, view_count: 1,
-                                                                 employer:)
+      internship_offer_1 = create(:weekly_internship_offer_2nde, employer:)
+      internship_offer_1.stats.update(view_count: 2)
+      internship_offer_2 = create(:weekly_internship_offer_2nde, employer:)
+      internship_offer_2.stats.update(view_count: 1)
       sign_in(employer)
       Dashboard::InternshipOffersController::VALID_ORDER_COLUMNS.map do |column|
         get dashboard_internship_offers_path(order: column, direction: :desc)
