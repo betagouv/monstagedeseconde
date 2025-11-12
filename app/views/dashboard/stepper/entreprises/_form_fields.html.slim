@@ -46,43 +46,42 @@
           div class= "row fr-mt-3w bloc-tooggle #{edition_mode ? '' : 'fr-hidden'})"
             #public-private-radio-buttons.bloc-tooggle.col-12
               div class=('fr-hidden' if request.fullpath.include?('entreprises/nouveau'))
-              - if current_user.ministry_statistician?
-                = form.hidden_field :is_public, value: true
-              - else
-                fieldset.fr-fieldset#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
-                  legend.label
-                    | Vous êtes une structure publique ? *
-                  .fr-fieldset__element
-                    .fr-radio-group
-                      = form.radio_button :is_public,
-                                          true,
-                                          class: 'public-radio-button-true',
-                                          required: true,
-                                          data: { action: 'ministry-fields#handleClickIsPublic' }
-                      = form.label :is_public_true,
-                                   'Oui',
-                                   class: 'fr-label',
-                                   data: { action: 'ministry-fields#handleClickIsPublic' }
-                  .fr-fieldset__element
-                    .fr-radio-group
-                      = form.radio_button :is_public,
-                                          false,
-                                          class: '',
-                                          required: true,
-                                          data: { action: 'ministry-fields#handleClickIsPublic' }
-                      = form.label :is_public_false,
-                                   'Non',
-                                   class: 'fr-label',
-                                   data: { action: 'ministry-fields#handleClickIsPublic' }
-
-                  .fr-messages-group#radio-hint-messages aria-live="assertive"
+              / - if current_user.ministry_statistician?
+              /   = form.hidden_field :is_public, value: true
+              / - else
+              fieldset.fr-fieldset#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
+                legend.label
+                  | Vous êtes une structure publique ? *
+                .fr-fieldset__element
+                  .fr-radio-group
+                    = form.radio_button :is_public,
+                                        true,
+                                        class: 'public-radio-button-true',
+                                        required: true,
+                                        data: { action: 'ministry-fields#handleClickIsPublic' }
+                    = form.label :is_public_true,
+                                 'Oui',
+                                 class: 'fr-label',
+                                 data: { action: 'ministry-fields#handleClickIsPublic' }
+                .fr-fieldset__element
+                  .fr-radio-group
+                    = form.radio_button :is_public,
+                                        false,
+                                        class: '',
+                                        required: true,
+                                        data: { action: 'ministry-fields#handleClickIsPublic' }
+                    = form.label :is_public_false,
+                                 'Non',
+                                 class: 'fr-label',
+                                 data: { action: 'ministry-fields#handleClickIsPublic' }
+                .fr-messages-group#radio-hint-messages aria-live="assertive"
           #ministry-block.row.fr-mt-3w.bloc-tooggle[data-ministry-fields-target="groupNamePublic"]
             .col-12
               = form.label :group_id, class: 'fr-label' do
                 = "Type d’employeur public *"
 
               = form.select :group_id,
-                            options_for_select(options_for_public_groups, resource.group.try(:id)),
+                            options_for_select(options_for_public_groups, @duplication ? InternshipOffer.find(params[:duplicate_id]).group.try(:id) : resource.group.try(:id) ),
                             { prompt: 'Sélectionnez un employeur public' },
                             class: "fr-select",
                             id: "group-choice",

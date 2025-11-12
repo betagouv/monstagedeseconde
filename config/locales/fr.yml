@@ -327,8 +327,18 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée.
             signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature du chef d’établissement.
-              not_signed_yet: Le chef d'établissement a déjà signé. En attente de votre signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
+            signed_by_all: Signée par toutes les parties.
+          student:
+            draft: À remplir par les deux parties.
+            started_by_employer: Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.
+            completed_by_employer: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
+            started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
+            validated: Votre convention est prête à être signée.
+            signatures_started:
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           education_statistician:
             draft: À remplir par les deux parties.
@@ -337,8 +347,8 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature du chef d’établissement.
-              not_signed_yet: Le chef d'établissement a déjà signé. En attente de votre signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           prefecture_statistician:
             draft: À remplir par les deux parties.
@@ -347,8 +357,8 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature du chef d’établissement.
-              not_signed_yet: Le chef d'établissement a déjà signé. En attente de votre signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           academy_region_statistician:
             draft: À remplir par les deux parties.
@@ -357,8 +367,8 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature du chef d’établissement.
-              not_signed_yet: Le chef d'établissement a déjà signé. En attente de votre signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           school_manager:
             draft: En attente de l'offreur.
