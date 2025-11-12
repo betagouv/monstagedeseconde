@@ -71,13 +71,11 @@ RailsAdmin.config do |config|
     bulk_delete
     show
     edit do
-      except %w[School
-                InternshipOfferKeyword
+      except %w[InternshipOfferKeyword
                 Users::SchoolManagement]
     end
     delete do
-      except %w[School
-                InternshipOfferKeyword
+      except %w[InternshipOfferKeyword
                 Users::SchoolManagement]
     end
 

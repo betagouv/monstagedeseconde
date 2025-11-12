@@ -8,6 +8,8 @@ Rails.application.configure do
     "https://#{ENV.fetch('HEROKU_APP_NAME')}.herokuapp.com"
   end
 
+  Rails.application.routes.default_url_options = { host: HOST }
+
   # Verifies that versions and hashed value of the package contents in the project's package.json
   config.webpacker.check_yarn_integrity = false
   # Settings specified here will take precedence over those in config/application.rb.

@@ -1,4 +1,8 @@
 .d-flex.align-items-center.fr-px-1w data-controller="internship-offer"
+  - if can?(:share, internship_offer)
+    .fr-mx-1w data-controller="share-button"
+      = link_to '#', '', class: 'fr-btn fr-btn--icon fr-btn--secondary test-share-button fr-icon-share-line',
+                    data: { action: 'click->share-button#copyUrl', 'share-button-target' => 'button' }
   - if internship_offer.from_api?
     = render "internship_applications/call_to_action/api", internship_offer: internship_offer
   - elsif user_signed_in?

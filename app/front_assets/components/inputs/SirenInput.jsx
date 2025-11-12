@@ -11,6 +11,20 @@ import {
   toggleHideContainerById,
 } from "../../utils/dom";
 
+const setTallyModalSeen = () => {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 jours
+  document.cookie = `tally_modal_seen=true;expires=${expires.toUTCString()};path=/`;
+};
+
+const isTallyModalSeen = () => {
+  return document.cookie.includes('tally_modal_seen=true');
+};
+
+const resetTallyModalSeen = () => {
+  document.cookie = 'tally_modal_seen=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
+};
+
 // see: https://geo.api.gouv.fr/adresse
 export default function SirenInput({
   resourceName,
@@ -80,9 +94,78 @@ export default function SirenInput({
       });
   };
 
+  const closeModal = () => {
+    const modalElement = document.getElementById('manual-input-modal');
+    if (modalElement) {
+      modalElement.setAttribute('data-fr-opened', 'false');
+      modalElement.setAttribute('aria-hidden', 'true');
+      modalElement.classList.remove('fr-modal--opened');
+      
+      // After closing the modal, open the manual input
+      setOpenManual();
+    }
+  };
+
+  // Function to reset the cookie (for tests)
+  const resetModalCookie = () => {
+    resetTallyModalSeen();
+  };
+
+  // Function to handle the Tally form messages
+  const handleTallyMessage = (event) => {
+    if (event.origin !== 'https://tally.so') return;
+    
+    if (event.data.type === 'tally.formSubmitted') {
+      // The form has been submitted, close the modal
+      closeModal();
+    }
+  };
+
+  // Add the event listener for the Tally messages
+  useEffect(() => {
+    window.addEventListener('message', handleTallyMessage);
+    return () => {
+      window.removeEventListener('message', handleTallyMessage);
+    };
+  }, []);
+
   const openManual = (event) => {
     event.preventDefault();
-    setOpenManual();
+    
+    // Check if the modal has already been viewed by this visitor
+    if (isTallyModalSeen()) {
+      // If the modal has already been viewed, open the manual input
+      setOpenManual();
+      return;
+    }
+    
+    // Open the DSFR modal
+    const modalElement = document.getElementById('manual-input-modal');
+    if (modalElement) {
+      // Use the DSFR method to open the modal
+      modalElement.setAttribute('data-fr-opened', 'true');
+      modalElement.setAttribute('aria-hidden', 'false');
+      modalElement.classList.add('fr-modal--opened');
+      
+      // Set the cookie to indicate that the modal has been viewed
+      setTallyModalSeen();
+      
+      // Add an event listener to close the modal
+      const closeButton = modalElement.querySelector('.fr-link--close');
+      if (closeButton) {
+        closeButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeModal();
+        });
+      }
+      
+      // Close the modal by clicking on the overlay
+      modalElement.addEventListener('click', (e) => {
+        if (e.target === modalElement) {
+          closeModal();
+        }
+      });
+    }
   };
 
   const setOpenManual = () => {
@@ -99,12 +182,19 @@ export default function SirenInput({
     inputEntrepriseName.required = true;
     inputEntrepriseName.removeAttribute("readonly");
     // hide the ministry choice block only if not public
-    const ministry = document.getElementById("ministry-choice");
+    const ministrySelect = document.getElementById("group-choice");
+    const ministryBlock = document.getElementById("ministry-block");
+    // Private
     if (!lastPublicValue) {
-      ministry.hidden = true;
+      ministryBlock.classList.add("fr-hidden");
+      ministrySelect.required = false;
+
       sectorBloc.hidden = false;
-    } else {
-      ministry.removeAttribute("hidden");
+    } else { // Public company
+      ministryBlock.classList.remove("fr-hidden");
+      ministrySelect.setAttribute("required", "true");
+      ministrySelect.required = true;
+
       sectorBloc.hidden = true;
     }
     
@@ -164,7 +254,7 @@ export default function SirenInput({
 
     broadcast(employerNameChanged({ employerName }));
 
-    const ministry = document.getElementById("ministry-choice");
+    const ministry = document.getElementById("ministry-block");
     const ministryClassList = ministry.classList;
     const sectorBloc = document.getElementById(`${resourceName}_sector_id-block`);
     const sectorBlocClassList = sectorBloc.classList;
@@ -332,6 +422,16 @@ export default function SirenInput({
                 >
                   Ajouter votre structure manuellement
                 </a>
+                {railsEnv === "development" && (
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-secondary ml-2"
+                    onClick={resetModalCookie}
+                    title="Réinitialiser le cookie de la modal (dev only)"
+                  >
+                    Reset Modal
+                  </button>
+                )}
               </div>
               <div
                 className="alerte alert-danger siren-error p-2 mt-2 fr-hidden"

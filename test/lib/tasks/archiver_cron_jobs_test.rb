@@ -31,7 +31,6 @@ class ArchiverCronJobsTest < ActiveSupport::TestCase
       assert_equal 1, InternshipOffer.count
       refute_nil offer.last_date
       assert offer.last_date < Date.today - 2.years + 2.weeks
-      puts offer.inspect
       assert_emails 1 do
         assert_equal 1, InternshipOffer.kept.count
         puts "tested InternshipOffer.count : #{InternshipOffer.count}"

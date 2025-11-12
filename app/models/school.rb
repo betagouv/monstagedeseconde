@@ -126,6 +126,7 @@ class School < ApplicationRecord
       field :name
       field :visible
       field :rep_kind
+      field :qpv
       field :street
       field :zipcode
       field :city
@@ -146,6 +147,19 @@ class School < ApplicationRecord
           bindings[:object].school_manager.try(:name)
         end
       end
+    end
+
+    edit do
+      field :code_uai
+      field :name
+      field :visible
+      field :rep_kind
+      field :qpv
+      field :street
+      field :zipcode
+      field :city
+      field :department
+      field :is_public
     end
   end
 
@@ -224,7 +238,7 @@ class School < ApplicationRecord
   end
 
   def rep_or_rep_plus?
-    !rep_kind.nil?
+    rep_kind.in?(%w[rep rep_plus])
   end
 
   def qpv? = qpv

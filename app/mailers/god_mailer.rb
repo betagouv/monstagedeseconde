@@ -123,6 +123,103 @@ class GodMailer < ApplicationMailer
     )
   end
 
+  def notify_others_signatures_started_email(internship_agreement:, missing_signatures_recipients:, last_signature: )
+    @internship_agreement  = internship_agreement
+    internship_application = internship_agreement.internship_application
+    @internship_offer      = internship_application.internship_offer
+    student                = internship_application.student
+    @prez_stud             = student.presenter
+    @employer              = internship_agreement.employer
+    @school_manager        = internship_agreement.school_management_representative
+    @last_signature        = last_signature
+    @last_signature_role   = I18n.t("active_record.models.#{last_signature.signatory_role.humanize.downcase}")
+    @url = dashboard_internship_agreements_url(
+      uuid: internship_agreement.uuid,
+    ).html_safe
+
+    send_email(
+      to: missing_signatures_recipients,
+      subject: 'Une convention de stage attend votre signature'
+    )
+  end
+
+  def notify_others_signatures_finished_email(internship_agreement:)
+    internship_application = internship_agreement.internship_application
+    student  = internship_application.student
+    @internship_offer      = internship_application.internship_offer
+    @prez_stud             = student.presenter
+    @employer              = @internship_offer.employer
+    @school_manager        = internship_agreement.school_manager
+    recipients_email       = recipients_email_for_signature(internship_agreement: internship_agreement)
+    @internship_agreement  = internship_agreement
+    @url = dashboard_internship_agreements_url(
+      uuid: internship_agreement.uuid,
+    ).html_safe
+
+    send_email(
+      to: recipients_email,
+      subject: 'Une convention de stage est signée par tous'
+    )
+  end
+
+  def notify_signatures_can_start_email(internship_agreement:)
+    internship_application = internship_agreement.internship_application
+    recipients_email       = recipients_email_for_signature(internship_agreement: internship_agreement, with_legal_representatives: false)
+    @internship_offer      = internship_application.internship_offer
+    student                = internship_application.student
+    @prez_stud             = student.presenter
+    @employer              = @internship_offer.employer
+    @school_manager        = internship_agreement.school_manager
+    @url = dashboard_internship_agreements_url(
+      uuid: internship_agreement.uuid
+    ).html_safe
+
+    send_email(
+      to: recipients_email,
+      subject: 'Imprimez et signez la convention de stage.'
+    )
+  end
+
+  def notify_student_legal_representatives_can_sign_email(internship_agreement:, representative: )
+    internship_application = internship_agreement.internship_application
+    recipients_email       = legal_representatives_emails(internship_agreement)
+    @internship_offer      = internship_application.internship_offer
+    student                = internship_application.student
+    @prez_stud             = student.presenter
+    @employer              = @internship_offer.employer
+    @school_manager        = internship_agreement.school_manager
+
+    Rails.logger.info("no representatives found for notify_student_legal_representatives_can_sign_email") if recipients_email.empty?
+
+    @url = new_dashboard_students_internship_agreement_url(
+      access_token: internship_agreement.access_token || '' ,
+      uuid: internship_agreement.uuid,
+      student_id: student.id,
+      signator_email: representative[:email],
+      student_legal_representative_nr: representative[:nr]
+    ).html_safe
+    send_email(
+      to: representative[:email],
+      subject: 'Imprimez et signez la convention de stage.'
+    )
+  end
+
+  def recipients_email_for_signature(internship_agreement:, with_legal_representatives: true)
+    internship_application = internship_agreement.internship_application
+    student                = internship_application.student
+    recipients_email       = internship_application.employers_filtered_by_notifications_emails
+    if Flipper.enabled?(:student_signature)
+      recipients_email << student.email
+      recipients_email += legal_representatives_emails(internship_agreement) if with_legal_representatives
+    end
+
+    recipients_email.compact.uniq
+  end
+
+  def legal_representatives_emails(internship_agreement)
+    internship_agreement.legal_representative_data.values.map { |rep| rep[:email] }.compact.uniq
+  end
+
   def offer_was_flagged(inappropriate_offer)
     @inappropriate_offer = inappropriate_offer
     @internship_offer = inappropriate_offer.internship_offer

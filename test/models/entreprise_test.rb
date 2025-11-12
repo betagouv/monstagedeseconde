@@ -33,7 +33,7 @@ class EntrepriseTest < ActiveSupport::TestCase
     assert entreprise.contact_phone.gsub(' ', '').match?(/0\d{9}/)
   end
 
-  test 'tutor partially filled form fails gracefully' do
+  test 'entreprise_full_address partially filled form fails gracefully' do
     entreprise = build(:entreprise, entreprise_full_address: '')
     refute entreprise.valid?
     assert_equal "Adresse de l'entreprise est trop court (au moins 8 caractères)",

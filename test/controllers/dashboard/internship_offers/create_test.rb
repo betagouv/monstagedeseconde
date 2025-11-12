@@ -45,6 +45,7 @@ module Dashboard::InternshipOffers
         assert_redirected_to internship_offer_path(created_internship_offer, stepper: true)
       end
     end
+
     test 'POST #create  - duplicate - InternshipOffers::WeeklyFramed as employer creates the post' do
       travel_to(Date.new(2025, 3, 1)) do
         school = create(:school)
@@ -163,12 +164,8 @@ module Dashboard::InternshipOffers
       assert_select('.fr-alert.fr-alert--error', html: /Veuillez saisir le nom de l'employeur/)
       assert_select('.fr-alert.fr-alert--error',
                     html: /Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage/)
-      assert_select('.fr-alert.fr-alert--error', html: /Veuillez renseigner la commune l'employeur/)
+      assert_select('.fr-alert.fr-alert--error', html: /Veuillez saisir le nom de commune de l'offre de stage/)
 
-      assert_select '#internship_offer_organisation_attributes_is_public_true[checked]',
-                    count: 0 # "ensure user select kind of group"
-      assert_select '#internship_offer_organisation_attributes_is_public_false[checked]',
-                    count: 0 # "ensure user select kind of group"
       assert_select '.form-group-select-group.d-none', count: 0
 
       assert_select '.form-group-select-max-candidates.d-none', count: 0

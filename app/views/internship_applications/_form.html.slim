@@ -65,7 +65,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                   class: 'fr-label',
                   for: 'internship_application_motivation'
           | Pourquoi ce stage me motive ?
-          small.form-text.text-muted Relisez-vous pour éviter les fautes.
+          small.form-text.text-muted Relisez-vous pour éviter les fautes (maximum 1500 caractères).
         = f.text_area :motivation,
                       class: "fr-input col-12",
                       required: true,
@@ -136,10 +136,11 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     value: f.object.student_address ||f.object.student.address,
                     label: "Votre adresse postale complète",
                     options: { required: true,
-                               maxlength: 300 },
-                    title: 'Adresse',
-                    data: {:'mandatory-fields-target' => "mandatoryField",
-                             action: "input->mandatory-fields#fieldChange"}
+                               maxlength: 300,
+                               data: {:'mandatory-fields-target' => "mandatoryField",
+                                      action: "input->mandatory-fields#fieldChange"} },
+                    required: true,
+                    title: 'Adresse'
       .row.fr-m-n2w.fr-mb-3w
         .col-12
           .form-group.phone
@@ -151,10 +152,10 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     value: f.object.student_legal_representative_full_name ||f.object.student.legal_representative_full_name,
                     label: "Nom et prénom de votre représentant légal",
                     options: { required: true,
-                               maxlength: 100 },
-                    title: 'Représentant légal',
-                    data: {:'mandatory-fields-target' => "mandatoryField",
-                             action: "input->mandatory-fields#fieldChange"}
+                               maxlength: 100,
+                               data: {:'mandatory-fields-target' => "mandatoryField",
+                                      action: "input->mandatory-fields#fieldChange"} },
+                    title: 'Représentant légal'
       .row.fr-m-n2w.fr-mb-3w
         .col-12
           .form-group.phone
@@ -167,10 +168,10 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     label: "Adresse électronique de votre représentant légal",
                     pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
                     options: { required: true,
-                               maxlength: 100 },
-                    title: 'Adresse électronique',
-                    data: {:'mandatory-fields-target' => "mandatoryField",
-                             action: "input->mandatory-fields#fieldChange"}
+                               maxlength: 100,
+                               data: {:'mandatory-fields-target' => "mandatoryField",
+                                      action: "input->mandatory-fields#fieldChange"}},
+                    title: 'Adresse électronique'
       .row.fr-m-n2w.fr-mb-3w
         .col-12
           .form-group.phone
@@ -182,12 +183,11 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     value: f.object.student_legal_representative_phone ||f.object.student.legal_representative_phone,
                     label: "Numéro de téléphone de votre représentant légal",
                     options: { required: true,
-                               maxlength: 20 },
+                               maxlength: 20,
+                               data: {:'mandatory-fields-target' => "mandatoryField",
+                                      action: "input->mandatory-fields#fieldChange"} },
                     title: 'Téléphone',
-                    pattern: phone_pattern,
-                    data: {:'mandatory-fields-target' => "mandatoryField",
-                           action: "input->mandatory-fields#fieldChange"}
-
+                    pattern: phone_pattern
 
       .actions.d-flex.justify-content-between.flex-row.fr-mt-2w
         .d-inline-flex= link_to internship_offer_path(@internship_offer), class: 'fr-btn fr-btn--secondary' do
