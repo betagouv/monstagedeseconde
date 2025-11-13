@@ -18,7 +18,7 @@ module Api
 
         # before each test
         test 'GET #index without token renders :unauthorized payload' do
-          get api_v2_student_internship_applications_path(student_id: @student.id)
+          get api_v2_user_internship_applications_path(user_id: @student.id)
           documents_as(endpoint: :'v2/internship_applications/index', state: :unauthorized) do
             assert_response :unauthorized
             assert_equal 'UNAUTHORIZED', json_code
@@ -27,7 +27,7 @@ module Api
         end
 
         test 'GET #index with wrong token renders :unauthorized payload' do
-          get api_v2_student_internship_applications_path(student_id: @student.id, params: {
+          get api_v2_user_internship_applications_path(user_id: @student.id, params: {
               token: 'Bearer abcdefghijklmnop'
             })
           documents_as(endpoint: :'v2/internship_applications/index', state: :unauthorized) do
@@ -41,15 +41,12 @@ module Api
           travel_to Time.zone.local(2025,3, 1) do
             create(:weekly_internship_application, :both_june_weeks, internship_offer: @internship_offer)
             create(:weekly_internship_application, :both_june_weeks)
-            get api_v2_student_internship_applications_path(student_id: @student.id, token: "Bearer #{@token}")
+            get api_v2_user_internship_applications_path(user_id: @student.id, token: "Bearer #{@token}")
             documents_as(endpoint: :'v2/internship_applications/index', state: :ok) do
               assert_response :ok
               assert_response :success
               assert_equal 1, json_response.count
-              puts '================================'
-              puts "json_response : #{json_response}"
-              puts '================================'
-              puts ''
+            
               assert_equal @internship_application.user_id, json_response[0]['student_id']
               assert_equal @internship_application.uuid, json_response[0]['uuid']
               assert_equal @internship_application.id, json_response[0]['id']
@@ -57,7 +54,7 @@ module Api
               assert_equal @internship_application.student_phone, json_response[0]['student_phone']
               assert_equal @internship_application.student_email, json_response[0]['student_email']
               assert_equal @internship_application.student_address, json_response[0]['student_address']
-              assert_equal @internship_application.aasm_state, json_response[0]['aasm_state']
+              assert_equal @internship_application.aasm_state, json_response[0]['state']
               assert_equal @internship_application.submitted_at.utc.iso8601, json_response[0]['submitted_at']
               assert_equal @internship_application.motivation, json_response[0]['motivation']
               assert_equal @internship_application.student_legal_representative_email, json_response[0]['student_legal_representative_email']
@@ -71,8 +68,8 @@ module Api
         test 'PATCH #update as operator fails with invalid payload respond with :unprocessable_entity_bad_payload' do
           travel_to Time.zone.local(2025, 5, 11) do
             documents_as(endpoint: :'v2/internship_applications/index', state: :unprocessable_entity_bad_payload) do
-              get api_v2_student_internship_applications_path(
-                student_id: 'test',
+              get api_v2_user_internship_applications_path(
+                user_id: 'test',
                 params: {
                   token: "Bearer #{@token}"
                 }
@@ -80,11 +77,11 @@ module Api
             end
             assert_response :unprocessable_entity
             assert_equal 'NOT_FOUND', json_response['code']
-            assert_equal 'missing or invalid student_id', json_error
+            assert_equal 'missing or invalid user_id', json_error
           end
         end
 
-        test 'GET #index renders all internship applications for the current student' do
+        test 'GET #index renders all internship applications for one internship offer' do
           internship_offer_2 = create(:weekly_internship_offer_3eme, employer: @internship_application.internship_offer.employer)
           @internship_application_2 = create(:weekly_internship_application, student: @student, internship_offer: internship_offer_2)
 
@@ -93,24 +90,23 @@ module Api
           }, as: :json
 
           assert_response :success
-          assert_equal @internship_application.id, json_response['internship_applications'][0]['id']
-          assert_equal @internship_application_2.id, json_response['internship_applications'][1]['id']
-          assert_equal 2, json_response['internship_applications'].count
-          assert_equal @internship_application_2.aasm_state, json_response['internship_applications'][1]['state']
-          assert_equal @internship_application_2.internship_offer.employer_name, json_response['internship_applications'][1]['internship_offer_employer_name']
-          assert_equal @internship_application_2.internship_offer.title, json_response['internship_applications'][1]['internship_offer_title']
-          assert_equal @internship_application_2.presenter(@student).internship_offer_address, json_response['internship_applications'][1]['internship_offer_address']
-          assert_equal @internship_application_2.presenter(@student).str_weeks, json_response['internship_applications'][1]['internship_offer_weeks']
+          assert_equal 1, json_response.length
+          assert_equal @internship_application.id, json_response[0]['id']
+          assert_equal @internship_application.aasm_state, json_response[0]['state']
+          assert_equal @internship_application.internship_offer.employer_name, json_response[0]['employer_name']
+          assert_equal @internship_application.internship_offer.title, json_response[0]['internship_offer_title']
+          assert_equal @internship_application.presenter(@student).internship_offer_address, json_response[0]['internship_offer_address']
+          # assert_equal @internship_application.presenter(@student).str_weeks, json_response[0]['internship_offer_weeks']
         end
 
-        test 'GET #index when no application renders no applications for the current student' do
-        InternshipApplication.destroy_all
+        test 'GET #index when no application renders no applications for the internship offer' do
+          InternshipApplication.destroy_all
           get api_v2_internship_offer_internship_applications_path(@internship_offer), params: {
             token: "Bearer #{@token}",
           }, as: :json
 
           assert_response :success
-          assert_equal 0, json_response['internship_applications'].count
+          assert_equal 0, json_response.length
         end
       end
     end

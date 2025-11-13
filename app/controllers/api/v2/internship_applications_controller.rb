@@ -64,6 +64,7 @@ module Api
       end
 
       def find_student
+        puts 'in find_student'
         @student = Users::Student.where(id: params[:user_id]).first
       rescue ActiveRecord::RecordNotFound
         render_error(

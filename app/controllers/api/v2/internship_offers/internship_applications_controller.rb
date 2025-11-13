@@ -6,7 +6,7 @@ module Api
 
         before_action :authenticate_api_user!, only: %i[ index new create]
         before_action :find_internship_offer, only: %i[ index new create]
-        before_action :find_user, only: %i[index new create]
+        # before_action :find_user, only: %i[new create]
 
 
         def index
@@ -68,12 +68,12 @@ module Api
         end
 
         def find_user
-          @student = @current_api_user
+          @current_api_user
           render_error(
             code: 'FORBIDDEN',
             error: 'Only students can apply for internship offers',
             status: :forbidden
-          ) unless @student.student?
+          ) unless @current_api_user
         end
 
         def check_required_params
