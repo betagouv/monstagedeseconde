@@ -58,22 +58,6 @@ module Presenters
         end
       end
 
-      Tutor = Struct.new(:tutor_name,
-                         :tutor_phone,
-                         :tutor_email,
-                         :tutor_role,
-                         keyword_init: true)
-      def internship_tutors
-        student.internship_applications
-               .select(&:approved?)
-               .map(&:internship_offer)
-               .map do |internship_offer|
-          Tutor.new(tutor_name: internship_offer.tutor_name,
-                    tutor_phone: internship_offer.tutor_phone,
-                    tutor_email: internship_offer.tutor_email,
-                    tutor_role: internship_offer.tutor_role)
-        end
-      end
 
       private
 

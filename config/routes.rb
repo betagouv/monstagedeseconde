@@ -58,6 +58,7 @@ Rails.application.routes.draw do
                                                        as: 'set_up_password'
       post '/utilisateurs/renvoyer-le-code-de-confirmation', to: 'users/registrations#resend_confirmation_phone_token',
                                                              as: 'resend_confirmation_phone_token'
+      post '/utilisateurs/info-modale-vue', to: 'users#dismiss_modal_info', as: 'dismiss_modal_info'
     end
 
     resources :url_shrinkers, path: 'c', only: %i[] do

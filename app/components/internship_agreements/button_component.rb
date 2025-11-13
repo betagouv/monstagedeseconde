@@ -43,7 +43,7 @@ module InternshipAgreements
         when 'completed_by_employer', 'started_by_school_manager', 'validated', 'signatures_started', 'signed_by_all' then
           {status: 'secondary_cta', text: 'Télécharger'}
         end
-      else # school_manager
+      elsif user.in_school_management_team?
         case @internship_agreement.aasm_state
         when 'draft', 'started_by_employer' then
           {status: 'disabled', text: 'En attente'}

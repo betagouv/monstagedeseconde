@@ -42,7 +42,7 @@ module Finders
 
     ### platform queries, data owned by ourself. this is our "analytics"
     def platform_count_by_private_sector
-      platform_base_query.select('sum(max_candidates) as total_count, sum(approved_applications_count) as approved_applications_count')
+      platform_base_query.select('sum(max_candidates) as total_count')
                          .where(permalink: nil)
                          .where(is_public: false)
                          .map(&:attributes)
@@ -50,7 +50,7 @@ module Finders
     end
 
     def platform_count_by_private_sector_paqte
-      platform_base_query.select('sum(max_candidates) as total_count, sum(approved_applications_count) as approved_applications_count')
+      platform_base_query.select('sum(max_candidates) as total_count')
                          .where(permalink: nil)
                          .joins(:group)
                          .where(group: { is_paqte: true })
@@ -59,7 +59,7 @@ module Finders
     end
 
     def platform_count_by_public_sector
-      platform_base_query.select('sum(max_candidates) as total_count, sum(approved_applications_count) as approved_applications_count')
+      platform_base_query.select('sum(max_candidates) as total_count')
                          .where(permalink: nil)
                          .where(is_public: true)
                          .map(&:attributes)
@@ -67,7 +67,7 @@ module Finders
     end
 
     def platform_count_by_association
-      platform_base_query.select('sum(max_candidates) as total_count, sum(approved_applications_count) as approved_applications_count')
+      platform_base_query.select('sum(max_candidates) as total_count')
                          .merge(InternshipOffer.from_api)
                          .map(&:attributes)
                          .first
