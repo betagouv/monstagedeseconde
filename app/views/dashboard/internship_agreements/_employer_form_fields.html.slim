@@ -53,7 +53,7 @@ tbody.internship-agreement
         - filled_by = ["l'entreprise"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
                  locals: { field: :siret, limit: 14, form: form, text_label: label, content: content, title: title, filled_by: filled_by, disabled: disabled, pattern: "[0-9]{14}" }
-    
+
       .row.mt-0
         - label = "Nom et prénom du tuteur ou du responsable de l’accueil en milieu professionnel "
         - title = "Note au chef d'entreprise"
@@ -76,7 +76,7 @@ tbody.internship-agreement
         - filled_by = ["l'entreprise"]
         = render partial: 'dashboard/internship_agreements/text_field_element',
                  locals: { field: :internship_address, form: form, text_label: label, content: content, title: title , filled_by: filled_by, disabled: disabled }
-     
+
       .row.mt-0
         - label = "Dates de la séquence d’observation en milieu professionnel"
         - title = "Note au chef d'entreprise"
@@ -111,85 +111,6 @@ tbody.internship-agreement
                            limit: 1_000,
                            rows: 4 }
 
-      / .row.mt-0
-      /   .fr-text-md.fr-my-2w.h4 Compétences visées
-      /   .fr-highlight.fr-my-2w
-      /     | L'entreprise, l'association ou le service public peut préciser ci-dessous en quoi les activités proposées permettent de développer la compétence indiquée.
-      / .row.mt-0
-      /   - label = "Observer"
-      /   - title = "Observer"
-      /   - hint = "Capacité de l’élève à décrire l’environnement professionnel qui l’accueille"
-      /   - content = "Vous pouvez préciser en quoi les activités proposées permettent de développer la compétence indiquée."
-      /   - filled_by = ["l'entreprise"]
-      /   = render partial: 'dashboard/internship_agreements/text_field_element',
-      /            locals: { field: :skills_observe,
-      /                      input_type: :text_area,
-      /                      limit: 1_000,
-      /                      rows: 5,
-      /                      form: form,
-      /                      text_label: label,
-      /                      title: title,
-      /                      content: content,
-      /                      filled_by: filled_by,
-      /                      disabled: disabled,
-      /                      hint: hint,
-      /                      required: false }
-      / .row.mt-0
-      /   - label = "Communiquer"
-      /   - title = "Communiquer"
-      /   - hint = "Savoir-être, posture de l’élève lorsqu’il s’adresse à ses interlocuteurs, les interroge ou leur fait des propositions"
-      /   - content = "Vous pouvez préciser en quoi les activités proposées permettent de développer la compétence indiquée."
-      /   - filled_by = ["l'entreprise"]
-      /   = render partial: 'dashboard/internship_agreements/text_field_element',
-      /            locals: { field: :skills_communicate,
-      /                      input_type: :text_area,
-      /                      limit: 1_000,
-      /                      rows: 5,
-      /                      form: form,
-      /                      text_label: label,
-      /                      title: title,
-      /                      content: content,
-      /                      filled_by: filled_by,
-      /                      disabled: disabled,
-      /                      hint: hint,
-      /                      required: false }
-      / .row.mt-0
-      /   - label = "Comprendre"
-      /   - title = "Comprendre"
-      /   - hint = "Esprit de curiosité manifesté par l’élève, capacité à analyser les enjeux du métiers, les relations entre les acteurs, les différentes phases de production, etc."
-      /   - content = "Vous pouvez préciser en quoi les activités proposées permettent de développer la compétence indiquée."
-      /   - filled_by = ["l'entreprise"]
-      /   = render partial: 'dashboard/internship_agreements/text_field_element',
-      /            locals: { field: :skills_understand,
-      /                      input_type: :text_area,
-      /                      limit: 1_000,
-      /                      rows: 5,form: form,
-      /                      text_label: label,
-      /                      title: title,
-      /                      content: content,
-      /                      filled_by: filled_by,
-      /                      disabled: disabled,
-      /                      hint: hint,
-      /                      required: false }
-      / .row.mt-0
-      /   - label = "S’impliquer"
-      /   - title = "S’impliquer"
-      /   - hint = "Faire preuve de motivation, se proposer pour participer à certaines démarches"
-      /   - content = "Vous pouvez préciser en quoi les activités proposées permettent de développer la compétence indiquée."
-      /   - filled_by = ["l'entreprise"]
-      /   = render partial: 'dashboard/internship_agreements/text_field_element',
-      /            locals: { field: :skills_motivation,
-      /                      form: form,
-      /                      input_type: :text_area,
-      /                      limit: 1_500,
-      /                      rows: 7,
-      /                      text_label: label,
-      /                      title: title,
-      /                      content: content,
-      /                      filled_by: filled_by,
-      /                      disabled: disabled,
-      /                      hint: hint,
-      /                      required: false }
 
       = form.submit 'Submit', class: 'd-none', id: 'employer-submit'
 
