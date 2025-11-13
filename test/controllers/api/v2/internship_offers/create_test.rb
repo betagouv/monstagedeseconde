@@ -76,7 +76,7 @@ module Api
                                                            .merge(sector_uuid: sector.uuid,
                                                                   coordinates: { latitude: 1, longitude: 1 },
                                                                   grades: ['seconde'],
-                                                                  weeks: InternshipOffers::Api.mandatory_seconde_weeks)
+                                                                  weeks: ::InternshipOffers::Api.mandatory_seconde_weeks)
 
         geocoder_response = {
           status: 200,
@@ -116,7 +116,7 @@ module Api
         remote_id = 'test'
         permalink = 'http://monsite.com'
         grades = %w[seconde troisieme]
-        weeks = InternshipOffers::Api.mandatory_seconde_weeks
+        weeks = ::InternshipOffers::Api.mandatory_seconde_weeks
         daily_hours = { "lundi": ['9:00', '17:00'], "mardi": ['9:00', '17:00'], "mercredi": ['9:00', '17:00'],
                         "jeudi": ['9:00', '17:00'], "vendredi": ['9:00', '17:00'] }
         assert_difference('InternshipOffer.count', 1) do
@@ -151,7 +151,7 @@ module Api
           assert_response :created
         end
 
-        internship_offer = InternshipOffers::Api.first
+        internship_offer = ::InternshipOffers::Api.first
         assert_equal title, internship_offer.title
         assert_equal description, internship_offer.description
         assert_equal employer_name, internship_offer.employer_name
@@ -254,7 +254,7 @@ module Api
             assert_response :created
           end
 
-          internship_offer = InternshipOffers::Api.first
+          internship_offer = ::InternshipOffers::Api.first
           assert_equal title, internship_offer.title
           assert_equal false, internship_offer.is_public
           assert_equal coordinates[:latitude], internship_offer.coordinates.latitude
@@ -382,7 +382,7 @@ module Api
           assert_response :created
         end
 
-        internship_offer = InternshipOffers::Api.first
+        internship_offer = ::InternshipOffers::Api.first
         assert_equal 1, internship_offer.max_candidates
         assert_equal 1, internship_offer.remaining_seats_count
       end
@@ -426,7 +426,7 @@ module Api
             end
             assert_response :created
           end
-          internship_offer = InternshipOffers::Api.first
+          internship_offer = ::InternshipOffers::Api.first
           assert_equal 'Rue de Grenelle', internship_offer.street
         end
       end
@@ -471,7 +471,7 @@ module Api
             end
             assert_response :created
           end
-          internship_offer = InternshipOffers::Api.first
+          internship_offer = ::InternshipOffers::Api.first
           assert_equal 'Rue de Grenelle', internship_offer.street
         end
       end
@@ -518,7 +518,7 @@ module Api
             end
             assert_response :created
           end
-          internship_offer = InternshipOffers::Api.first
+          internship_offer = ::InternshipOffers::Api.first
           assert_equal 'Rue de Grenelle', internship_offer.street
         end
       end
@@ -559,7 +559,7 @@ module Api
             end
             assert_response :created
           end
-          internship_offer = InternshipOffers::Api.first
+          internship_offer = ::InternshipOffers::Api.first
           assert_equal 'N/A', internship_offer.street
         end
       end
@@ -582,7 +582,7 @@ module Api
         remote_id = 'test'
         permalink = 'http://monsite.com'
         grades = %w[seconde troisieme]
-        weeks = InternshipOffers::Api.mandatory_seconde_weeks
+        weeks = ::InternshipOffers::Api.mandatory_seconde_weeks
         daily_hours = { "lundi": ['9:00', '17:00'], "mardi": ['9:00', '17:00'], "mercredi": ['9:00', '17:00'],
                         "jeudi": ['9:00', '17:00'], "vendredi": ['9:00', '17:00'] }
         assert_difference('InternshipOffer.count', 1) do
@@ -616,7 +616,7 @@ module Api
           end
           assert_response :created
 
-          internship_offer = InternshipOffers::Api.first
+          internship_offer = ::InternshipOffers::Api.first
           assert_equal false, internship_offer.open_data
         end
       end
