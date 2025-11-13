@@ -212,6 +212,7 @@ class GodMailer < ApplicationMailer
       recipients_email << student.email
       recipients_email += legal_representatives_emails(internship_agreement) if with_legal_representatives
     end
+    recipients_email << internship_agreement.school_management_representative.email
 
     recipients_email.compact.uniq
   end
