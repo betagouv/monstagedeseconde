@@ -48,7 +48,7 @@
         </div>
       <% end %>
     </div>
-    <% if current_user.try(:presenter).try(:show_signature_info_modal?) %>
+    <% if current_user.try(:presenter).try(:show_signature_info_modal?) != "false"%>
       <%= render 'layouts/signature_info' %>
     <% end %>
 
