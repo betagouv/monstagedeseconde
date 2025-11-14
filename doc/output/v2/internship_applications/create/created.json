@@ -1,21 +1,26 @@
 {
-  "id": 7,
-  "uuid": "74b91db5-3b6b-4aaf-8a75-2d2f5aa04cf6",
-  "internship_offer_id": 94,
-  "student_id": 179,
-  "aasm_state": "submitted",
-  "submitted_at": "2025-11-13T17:26:46+01:00",
-  "motivation": "Je suis très motivé pour ce stage",
-  "student_phone": "+33611223344",
-  "student_email": "student@example.com",
-  "student_address": "123 rue de la République, 75001 Paris",
-  "student_legal_representative_full_name": "Jean Dupont",
-  "student_legal_representative_email": "parent@example.com",
-  "student_legal_representative_phone": "0612345678",
-  "weeks": [
-    "2025-W20",
-    "2025-W21"
-  ],
-  "created_at": "2025-11-13T17:26:46+01:00",
-  "updated_at": "2025-11-13T17:26:46+01:00"
+  "data": {
+    "type": "internship-application",
+    "id": "279",
+    "attributes": {
+      "uuid": "826521e3-6801-49f7-9907-2eeb0838ee64",
+      "internship_offer_id": 374,
+      "student_id": 1450,
+      "state": "submitted",
+      "submitted_at": "2025-11-14T14:23:25+01:00",
+      "motivation": "Je suis très motivé pour ce stage",
+      "student_phone": "+33611223344",
+      "student_email": "student@example.com",
+      "student_address": "123 rue de la République, 75001 Paris",
+      "student_legal_representative_full_name": "Jean Dupont",
+      "student_legal_representative_email": "parent@example.com",
+      "student_legal_representative_phone": "0612345678",
+      "weeks": [
+        "2025-W20",
+        "2025-W21"
+      ],
+      "created_at": "2025-11-14T14:23:25+01:00",
+      "updated_at": "2025-11-14T14:23:25+01:00"
+    }
+  }
 }

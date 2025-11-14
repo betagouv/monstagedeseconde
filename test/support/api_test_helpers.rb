@@ -17,11 +17,40 @@ module ApiTestHelpers
   end
 
   def json_code
-    json_response['code']
+    json_response['code'] || json_response.dig('errors', 0, 'code')
   end
 
   def json_error
-    json_response['error']
+    json_response['error'] || json_response.dig('errors', 0, 'detail')
+  end
+
+  def json_errors
+    Array(json_response['errors'])
+  end
+
+  def json_error_details
+    json_errors.filter_map { |error| error['detail'] }
+  end
+
+  def json_data(index = nil)
+    data = json_response['data']
+    return data if index.nil?
+
+    data.is_a?(Array) ? data[index] : data
+  end
+
+  def json_attributes(index = nil)
+    data = json_data(index)
+    return unless data.is_a?(Hash)
+
+    data['attributes']
+  end
+
+  def json_id(index = nil)
+    data = json_data(index)
+    return unless data.is_a?(Hash)
+
+    data['id']
   end
 
   def pretty_json_response

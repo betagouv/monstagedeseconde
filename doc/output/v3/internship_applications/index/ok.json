@@ -1,26 +1,41 @@
-[
-  {
-    "id": 227,
-    "uuid": "8a37544a-6bb8-472c-8a88-758a83fd8a5c",
-    "student_id": 873,
-    "internship_offer_id": 251,
-    "employer_name": "Octo",
-    "internship_offer_title": "Stage de 2de - 3",
-    "internship_offer_address": "1 rue du poulet, 75001 Paris",
-    "state": "submitted",
-    "submitted_at": "2025-11-13T16:51:59Z",
-    "motivation": "Suis hyper motivé",
-    "student_phone": "+330673501082",
-    "student_email": "everette_littel@zieme.us",
-    "student_address": "3-58 T, rue Virginie Le 2A063 Cambrai",
-    "student_legal_representative_email": "alfreda.labadie@tillmanklocko.co.uk",
-    "student_legal_representative_phone": "+330703019885",
-    "student_legal_representative_full_name": "Alexandrie du Noel",
-    "weeks": [
-      "2026-W25",
-      "2026-W26"
-    ],
-    "createdAt": "2025-11-13T17:51:59.542+01:00",
-    "updatedAt": "2025-11-13T17:51:59.542+01:00"
+{
+  "data": [
+    {
+      "type": "internship-application",
+      "id": "284",
+      "attributes": {
+        "uuid": "2548b7bc-04c5-4781-a7d2-1984a2e84103",
+        "student_id": 1505,
+        "internship_offer_id": 388,
+        "employer_name": "Octo",
+        "internship_offer_title": "Stage de 2de - 4",
+        "internship_offer_address": "1 rue du poulet, 75001 Paris",
+        "state": "submitted",
+        "submitted_at": "2025-11-14T13:23:28Z",
+        "motivation": "Suis hyper motivé",
+        "student_phone": "+330665622144",
+        "student_email": "steven_bahringer@ohara.biz",
+        "student_address": "8773 BIS impasse Nicole Valette 97850 Belfort",
+        "student_legal_representative_email": "leisa.lebsack@keeling.com",
+        "student_legal_representative_phone": "+330786427893",
+        "student_legal_representative_full_name": "Françoise Marie",
+        "weeks": [
+          "2026-W25",
+          "2026-W26"
+        ],
+        "createdAt": "2025-11-14T14:23:28.820+01:00",
+        "updatedAt": "2025-11-14T14:23:28.820+01:00"
+      }
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "current_page": 1,
+      "next_page": null,
+      "prev_page": null,
+      "total_pages": 1,
+      "total_count": 1,
+      "per_page": 20
+    }
   }
-]
+}

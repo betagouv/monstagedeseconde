@@ -1,7 +1,12 @@
 {
-  "error": "VALIDATION_ERROR",
-  "message": "The internship application could not be created",
-  "details": [
-    "Contact email n'est pas valide"
+  "errors": [
+    {
+      "status": "unprocessable_entity",
+      "detail": "Contact email n'est pas valide",
+      "code": "VALIDATION_ERROR",
+      "source": {
+        "pointer": "/data/attributes/student_email"
+      }
+    }
   ]
 }

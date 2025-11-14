@@ -4,6 +4,7 @@ module Api
   module V3
     class InternshipOffersController < Api::Shared::InternshipOffersController
       include Api::AuthV2
+      include Api::JsonApiRenderable
 
       def search
         render_not_authorized and return unless current_api_user.operator.api_full_access
@@ -18,11 +19,11 @@ module Api
         end
 
         formatted_internship_offers = format_internship_offers(@internship_offers)
-        data = {
-          pagination: page_links,
-          internshipOffers: formatted_internship_offers
-        }
-        render json: data, status: 200
+        render_jsonapi_collection(
+          type: 'internship-offer',
+          records: formatted_internship_offers,
+          meta: { pagination: page_links }
+        )
       end
 
       def create
@@ -32,7 +33,13 @@ module Api
         format_params
 
         internship_offer_builder.create(params: create_internship_offer_params) do |on|
-          on.success(&method(:render_created))
+          on.success do |offer|
+            render_jsonapi_resource(
+              type: 'internship-offer',
+              record: format_internship_offers([offer]).first,
+              status: :created
+            )
+          end
           on.failure(&method(:render_validation_error))
           on.duplicate(&method(:render_duplicate))
           on.argument_error(&method(:render_argument_error))
@@ -46,11 +53,31 @@ module Api
         end
 
         check_params_validity if params[:internship_offer] && params[:internship_offer][:weeks] && params[:internship_offer][:grades]
-        internship_offer_builder.update(instance: InternshipOffer.find_by!(remote_id: params[:id]),
+        internship_offer = InternshipOffer.find_by!(remote_id: params[:id])
+        internship_offer_builder.update(instance: internship_offer,
                                         params: update_internship_offer_params) do |on|
-          on.success(&method(:render_ok))
+          on.success do |offer|
+            render_jsonapi_resource(
+              type: 'internship-offer',
+              record: format_internship_offers([offer]).first,
+              status: :ok
+            )
+          end
           on.failure(&method(:render_validation_error))
           on.argument_error(&method(:render_argument_error))
+        end
+      end
+
+      def destroy
+        internship_offer_builder.discard(instance: InternshipOffer.find_by!(remote_id: params[:id])) do |on|
+          on.success do |offer|
+            render_jsonapi_resource(
+              type: 'internship-offer',
+              record: format_internship_offers([offer]).first,
+              status: :ok
+            )
+          end
+          on.failure(&method(:render_discard_error))
         end
       end
 
@@ -192,9 +219,9 @@ module Api
 
         return unless is_seconde && !has_all_mandatory_weeks
 
-        render_error(
+        render_jsonapi_error(
           code: 'WRONG_PARAMS',
-          error: 'All mandatory weeks must be included for seconde grade',
+          detail: 'All mandatory weeks must be included for seconde grade',
           status: :unprocessable_entity
         )
       end

@@ -8,7 +8,7 @@ module Api
       setup do
         @operator = create(:user_operator, api_token: SecureRandom.uuid)
         post api_v3_auth_login_path(email: @operator.email, password: @operator.password)
-        @token = json_response['token']
+        @token = json_response.dig('data', 'attributes', 'token')
       end
       test 'GET #index without token is to render :unauthorized payload' do
         get api_v3_sectors_path
@@ -28,7 +28,7 @@ module Api
             }
           )
           assert_response :success
-          assert_equal 51, json_response['sectors'].count
+          assert_equal 51, json_response['data'].count
         end
       end
 

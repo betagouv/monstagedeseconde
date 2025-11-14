@@ -1,4 +1,9 @@
 {
-  "error": "NOT_FOUND",
-  "message": "Internship offer not found"
+  "errors": [
+    {
+      "status": "404",
+      "detail": "Internship offer not found",
+      "code": "NOT_FOUND"
+    }
+  ]
 }

@@ -1,4 +1,9 @@
 {
-  "code": "UNAUTHORIZED",
-  "error": "wrong api token"
+  "errors": [
+    {
+      "status": "401",
+      "detail": "wrong api token",
+      "code": "UNAUTHORIZED"
+    }
+  ]
 }

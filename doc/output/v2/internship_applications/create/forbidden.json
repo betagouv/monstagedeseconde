@@ -1,7 +1,12 @@
 {
-  "error": "VALIDATION_ERROR",
-  "message": "The internship application could not be created",
-  "details": [
-    "Élève doit exister"
+  "errors": [
+    {
+      "status": "unprocessable_entity",
+      "detail": "Élève doit exister",
+      "code": "VALIDATION_ERROR",
+      "source": {
+        "pointer": "/data/attributes/student"
+      }
+    }
   ]
 }

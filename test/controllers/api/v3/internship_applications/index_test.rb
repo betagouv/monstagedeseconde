@@ -9,11 +9,11 @@ module Api
         setup do
           @employer = create(:employer)
           post api_v3_auth_login_path(email: @employer.email, password: @employer.password)
-          @employer_token = json_response['token']
+          @employer_token = json_response.dig('data', 'attributes', 'token')
 
           @student = create(:student, :seconde)
           post api_v3_auth_login_path(email: @student.email, password: @student.password)
-          @student_token = json_response['token']
+          @student_token = json_response.dig('data', 'attributes', 'token')
 
           @internship_offer = create(:weekly_internship_offer, :both_weeks, employer: @employer, grades: [Grade.seconde])
           @internship_application = create(:weekly_internship_application, :both_june_weeks, internship_offer: @internship_offer, student: @student)
@@ -46,45 +46,47 @@ module Api
             create(:weekly_internship_application, :both_june_weeks)
             get api_v3_internship_applications_path(token: "Bearer #{@student_token}")
             documents_as(endpoint: :'v3/internship_applications/index', state: :ok) do
-              assert_response :ok
-              assert_response :success
-              assert_equal 1, json_response.count
-            
-              assert_equal @internship_application.user_id, json_response[0]['student_id']
-              assert_equal @internship_application.uuid, json_response[0]['uuid']
-              assert_equal @internship_application.id, json_response[0]['id']
-              assert_equal @internship_application.internship_offer_id, json_response[0]['internship_offer_id']
-              assert_equal @internship_application.student_phone, json_response[0]['student_phone']
-              assert_equal @internship_application.student_email, json_response[0]['student_email']
-              assert_equal @internship_application.student_address, json_response[0]['student_address']
-              assert_equal @internship_application.aasm_state, json_response[0]['state']
-              assert_equal @internship_application.submitted_at.utc.iso8601, json_response[0]['submitted_at']
-              assert_equal @internship_application.motivation, json_response[0]['motivation']
-              assert_equal @internship_application.student_legal_representative_email, json_response[0]['student_legal_representative_email']
-              assert_equal @internship_application.student_legal_representative_phone, json_response[0]['student_legal_representative_phone']
-              assert_equal @internship_application.student_legal_representative_full_name, json_response[0]['student_legal_representative_full_name']
-              assert_equal ["2026-W25", "2026-W26"], json_response[0]['weeks']
+            assert_response :ok
+            assert_response :success
+            assert_equal 1, json_response['data'].count
+
+            attributes = json_response.dig('data', 0, 'attributes')
+            assert_equal @internship_application.user_id, attributes['student_id']
+            assert_equal @internship_application.uuid, attributes['uuid']
+            assert_equal @internship_application.id, json_response.dig('data', 0, 'id').to_i
+            assert_equal @internship_application.internship_offer_id, attributes['internship_offer_id']
+            assert_equal @internship_application.student_phone, attributes['student_phone']
+            assert_equal @internship_application.student_email, attributes['student_email']
+            assert_equal @internship_application.student_address, attributes['student_address']
+            assert_equal @internship_application.aasm_state, attributes['state']
+            assert_equal @internship_application.submitted_at.utc.iso8601, attributes['submitted_at']
+            assert_equal @internship_application.motivation, attributes['motivation']
+            assert_equal @internship_application.student_legal_representative_email, attributes['student_legal_representative_email']
+            assert_equal @internship_application.student_legal_representative_phone, attributes['student_legal_representative_phone']
+            assert_equal @internship_application.student_legal_representative_full_name, attributes['student_legal_representative_full_name']
+            assert_equal ["2026-W25", "2026-W26"], attributes['weeks']
             end
           end
         end
 
        
 
-        test 'GET #index renders all internship applications for one internship offer' do
+        test 'GET #index as student renders all internship applications for one internship offer' do
           internship_offer_2 = create(:weekly_internship_offer_3eme, employer: @internship_application.internship_offer.employer)
           @internship_application_2 = create(:weekly_internship_application, student: @student, internship_offer: internship_offer_2)
 
           get api_v3_internship_offer_internship_applications_path(@internship_offer), params: {
-            token: "Bearer #{@token}",
+            token: "Bearer #{@student_token}",
           }, as: :json
 
           assert_response :success
-          assert_equal 1, json_response.length
-          assert_equal @internship_application.id, json_response[0]['id']
-          assert_equal @internship_application.aasm_state, json_response[0]['state']
-          assert_equal @internship_application.internship_offer.employer_name, json_response[0]['employer_name']
-          assert_equal @internship_application.internship_offer.title, json_response[0]['internship_offer_title']
-          assert_equal @internship_application.presenter(@student).internship_offer_address, json_response[0]['internship_offer_address']
+          assert_equal 1, json_response['data'].length
+          attributes = json_response.dig('data', 0, 'attributes')
+          assert_equal @internship_application.id, json_response.dig('data', 0, 'id').to_i
+          assert_equal @internship_application.aasm_state, attributes['state']
+          assert_equal @internship_application.internship_offer.employer_name, attributes['employer_name']
+          assert_equal @internship_application.internship_offer.title, attributes['internship_offer_title']
+          assert_equal @internship_application.presenter(@student).internship_offer_address, attributes['internship_offer_address']
           # assert_equal @internship_application.presenter(@student).str_weeks, json_response[0]['internship_offer_weeks']
         end
 
@@ -95,7 +97,7 @@ module Api
           }, as: :json
 
           assert_response :success
-          assert_equal 0, json_response.length
+          assert_equal 0, json_response['data'].length
         end
       end
     end

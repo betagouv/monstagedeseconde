@@ -11,7 +11,7 @@ module Api
         setup do
           @student = create(:student_with_class_room_3e)
           post api_v3_auth_login_path(email: @student.email, password: @student.password)
-          @token = json_response['token']
+          @token = json_response.dig('data', 'attributes', 'token')
           
           @employer = create(:employer)
           @sector = create(:sector)
@@ -63,29 +63,28 @@ module Api
           end
 
           assert_response :created
-          response_data = json_response
-          
-          assert_equal @internship_offer.id, response_data['internship_offer_id']
-          assert_equal @student.id, response_data['student_id']
-          assert_equal 'submitted', response_data['aasm_state']
-          assert_equal 'Je suis très motivé pour ce stage', response_data['motivation']
-          assert_equal '+33611223344', response_data['student_phone']
-          assert_equal 'student@example.com', response_data['student_email']
-          assert_equal '123 rue de la République, 75001 Paris', response_data['student_address']
-          assert_equal 'Jean Dupont', response_data['student_legal_representative_full_name']
-          assert_equal 'parent@example.com', response_data['student_legal_representative_email']
-          assert_equal '0612345678', response_data['student_legal_representative_phone']
-          assert_equal 2, response_data['weeks'].size
-          assert_includes response_data['weeks'], '2025-W20'
-          assert_includes response_data['weeks'], '2025-W21'
-          assert response_data['uuid'].present?
-          assert response_data['submitted_at'].present?
+          assert_equal 'internship-application', json_response.dig('data', 'type')
+          assert_equal @internship_offer.id, json_response.dig('data', 'attributes', 'internship_offer_id')
+          assert_equal @student.id, json_response.dig('data', 'attributes', 'student_id')
+          assert_equal 'submitted', json_response.dig('data', 'attributes', 'state')
+          assert_equal 'Je suis très motivé pour ce stage', json_response.dig('data', 'attributes', 'motivation')
+          assert_equal '+33611223344', json_response.dig('data', 'attributes', 'student_phone')
+          assert_equal 'student@example.com', json_response.dig('data', 'attributes', 'student_email')
+          assert_equal '123 rue de la République, 75001 Paris', json_response.dig('data', 'attributes', 'student_address')
+          assert_equal 'Jean Dupont', json_response.dig('data', 'attributes', 'student_legal_representative_full_name')
+          assert_equal 'parent@example.com', json_response.dig('data', 'attributes', 'student_legal_representative_email')
+          assert_equal '0612345678', json_response.dig('data', 'attributes', 'student_legal_representative_phone')
+          assert_equal 2, json_response.dig('data', 'attributes', 'weeks').size
+          assert_includes json_response.dig('data', 'attributes', 'weeks'), '2025-W20'
+          assert_includes json_response.dig('data', 'attributes', 'weeks'), '2025-W21'
+          assert json_response.dig('data', 'attributes', 'uuid').present?
+          assert json_response.dig('data', 'attributes', 'submitted_at').present?
         end
 
         test 'POST #create as operator (not student) renders :forbidden' do
           operator = create(:user_operator, email: 'operator@example.com', password: 'Password123!')
           post api_v3_auth_login_path(email: operator.email, password: operator.password)
-          operator_token = json_response['token']
+          operator_token = json_response.dig('data', 'attributes', 'token')
           student = create(:student)
 
           application_params = {
@@ -109,8 +108,8 @@ module Api
           end
 
           assert_response :unprocessable_entity
-          assert_equal 'VALIDATION_ERROR', json_response['error']
-          assert_equal 'The internship application could not be created', json_response['message']
+          assert_equal 'VALIDATION_ERROR', json_code
+          assert json_response['errors'].present?
         end
 
         test 'POST #create with missing internship_offer_id renders :not_found' do
@@ -135,8 +134,8 @@ module Api
           end
 
           assert_response :not_found
-          assert_equal 'NOT_FOUND', json_response['error']
-          assert_equal 'Internship offer not found', json_response['message']
+          assert_equal 'NOT_FOUND', json_code
+          assert_equal 'Internship offer not found', json_error
         end
 
         test 'POST #create without required params renders :bad_request' do
@@ -154,8 +153,8 @@ module Api
           end
 
           assert_response :bad_request
-          assert_equal 'MISSING_PARAMETER', json_response['error']
-          assert json_response['message'].include?('Missing required parameter')
+          assert_equal 'MISSING_PARAMETER', json_code
+          assert_includes json_error, 'Missing required parameter'
         end
 
         test 'POST #create with invalid email renders :unprocessable_entity' do
@@ -180,9 +179,8 @@ module Api
           end
 
           assert_response :unprocessable_entity
-          assert_equal 'VALIDATION_ERROR', json_response['error']
-          assert_equal 'The internship application could not be created', json_response['message']
-          assert json_response['details'].present?
+          assert_equal 'VALIDATION_ERROR', json_code
+          assert json_response['errors'].present?
         end
 
         test 'POST #create with invalid phone number renders :unprocessable_entity' do
@@ -205,8 +203,8 @@ module Api
                as: :json
 
           assert_response :unprocessable_entity
-          assert_equal 'VALIDATION_ERROR', json_response['error']
-          assert json_response['details'].any? { |msg| msg.include?('téléphone') }
+          assert_equal 'VALIDATION_ERROR', json_code
+          assert json_error_details.any? { |detail| detail.include?('téléphone') }
         end
 
         test 'POST #create with empty week_ids renders :unprocessable_entity' do
@@ -229,8 +227,8 @@ module Api
                as: :json
 
           assert_response :bad_request
-          assert_equal 'MISSING_PARAMETER', json_response['error']
-          assert json_response['message'].include?('Missing required parameter')
+          assert_equal 'MISSING_PARAMETER', json_code
+          assert_includes json_error, 'Missing required parameter'
         end
 
         test 'POST #create formats week_ids correctly when passed as string' do

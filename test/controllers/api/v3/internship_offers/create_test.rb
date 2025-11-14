@@ -10,7 +10,7 @@ module Api
       setup do
         @operator = create(:user_operator, api_token: SecureRandom.uuid)
         post api_v3_auth_login_path(email: @operator.email, password: @operator.password)
-        @token = json_response['token']
+        @token = json_attributes['token']
       end
 
       # before each test
@@ -191,7 +191,7 @@ module Api
       test 'POST #create when missing coordinates works to create internship_offers' do
         travel_to(Date.new(2025, 3, 1)) do
           post api_v3_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_attributes['token']
 
           sector = create(:sector, uuid: SecureRandom.uuid)
           title = 'title'
@@ -271,7 +271,7 @@ module Api
       test 'POST #create when wrong weeks for seconde offer returns 422' do
         travel_to(Date.new(2025, 3, 1)) do
           post api_v3_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_attributes['token']
 
           operator = create(:user_operator, api_token: SecureRandom.uuid)
           sector = create(:sector, uuid: SecureRandom.uuid)
@@ -489,7 +489,7 @@ module Api
 
         travel_to(Date.new(2025, 3, 1)) do
           post api_v3_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_attributes['token']
 
           assert_difference('InternshipOffer.count', 1) do
             documents_as(endpoint: :'v2/internship_offers/create', state: :unprocessable_entity_bad_data) do

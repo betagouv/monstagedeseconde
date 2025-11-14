@@ -10,7 +10,7 @@ module Api
       setup do
         @operator = create(:user_operator)
         post api_v3_auth_login_path(email: @operator.email, password: @operator.password)
-        @token = json_response['token']
+        @token = json_attributes['token']
         @internship_offer = create(:api_internship_offer_2nde, employer: @operator)
       end
 
@@ -19,14 +19,14 @@ module Api
           delete api_v3_internship_offer_path(id: @internship_offer.remote_id)
         end
         assert_response :unauthorized
-        assert_equal 'UNAUTHORIZED', json_response['code']
+        assert_equal 'UNAUTHORIZED', json_code
         assert_equal 'wrong api token', json_error
       end
 
       test 'DELETE #destroy an internship_offer which does not belongs to current auth operator' do
         bad_operator = create(:user_operator)
         post api_v3_auth_login_path(email: bad_operator.email, password: bad_operator.password)
-        bad_operator_token = json_response['token']
+        bad_operator_token = json_attributes['token']
 
         documents_as(endpoint: :'v2/internship_offers/destroy', state: :forbidden) do
           delete api_v2_internship_offer_path(
@@ -37,7 +37,7 @@ module Api
           )
         end
         assert_response :forbidden
-        assert_equal 'FORBIDDEN', json_response['code']
+        assert_equal 'FORBIDDEN', json_code
         assert_equal 'You are not authorized to access this page.', json_error
       end
 
@@ -51,7 +51,7 @@ module Api
           )
         end
         assert_response :not_found
-        assert_equal 'NOT_FOUND', json_response['code']
+        assert_equal 'NOT_FOUND', json_code
         assert_equal "can't find internship_offer with this remote_id", json_error
       end
 

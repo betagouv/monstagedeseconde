@@ -3,15 +3,20 @@ module Api
     module Users
       class InternshipApplicationsController < Api::Shared::InternshipApplicationsController
         include Api::AuthV2
-        before_action :authenticate_api_user!, only: %i[ index]
-        before_action :find_user, only: %i[index]
+        include Api::JsonApiRenderable
+
+        before_action :authenticate_api_user!, only: [:index]
+        before_action :find_user, only: [:index]
 
         def index
-          render_error(
-            code: 'FORBIDDEN',
-            error: 'Only students can apply for internship offers',
-            status: :forbidden
-          ) and return unless @user.student?
+          unless @user.student?
+            render_jsonapi_error(
+              code: 'FORBIDDEN',
+              detail: 'Only students can apply for internship offers',
+              status: :forbidden
+            )
+            return
+          end
 
           Api::V2::StudentInternshipApplicationsFinder.new(
             student: @user,
@@ -22,22 +27,25 @@ module Api
             internship_applications: internship_applications.to_a
           ).format_all
 
-          # data = {
-          #   pagination: page_links,
-          #   internshipApplications: formatted_internship_applications
-          # }
-          render json: formatted_internship_applications, status: 200
+          render_jsonapi_collection(
+            type: 'internship-application',
+            records: formatted_internship_applications,
+            meta: { pagination: page_links }
+          )
         end
 
         private
 
         def find_user
           @user = ::User.find_by(id: params[:user_id])
-          render_error(
+          return if @user
+
+          render_jsonapi_error(
             code: 'NOT_FOUND',
-            error: 'missing or invalid user_id',
+            detail: 'missing or invalid user_id',
             status: :unprocessable_entity
-          ) and return if @user.nil?
+          )
+          false
         end
       end
     end

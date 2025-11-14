@@ -11,7 +11,7 @@ module Api
         travel_to Date.new(2025, 5, 11) do
           @operator = create(:user_operator)
           post api_v3_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_attributes['token']
           @internship_offer = create(:api_internship_offer_3eme, employer: @operator, is_public: false)
         end
       end
@@ -21,7 +21,7 @@ module Api
           patch api_v3_internship_offer_path(id: @internship_offer.remote_id)
         end
         assert_response :unauthorized
-        assert_equal 'UNAUTHORIZED', json_response['code']
+        assert_equal 'UNAUTHORIZED', json_code
         assert_equal 'wrong api token', json_error
       end
 
@@ -36,7 +36,7 @@ module Api
             )
           end
           assert_response :unprocessable_entity
-          assert_equal 'BAD_PAYLOAD', json_response['code']
+          assert_equal 'BAD_PAYLOAD', json_code
           assert_equal 'param is missing or the value is empty: internship_offer', json_error
         end
       end
@@ -44,7 +44,7 @@ module Api
       test 'PATCH #update an internship_offer which does not belongs to current auth operator' do
         bad_operator = create(:user_operator)
         post api_v3_auth_login_path(email: bad_operator.email, password: bad_operator.password)
-        bad_operator_token = json_response['token']
+        bad_operator_token = json_attributes['token']
 
         documents_as(endpoint: :'v2/internship_offers/update', state: :forbidden) do
           patch api_v2_internship_offer_path(
@@ -58,7 +58,7 @@ module Api
           )
         end
         assert_response :forbidden
-        assert_equal 'FORBIDDEN', json_response['code']
+        assert_equal 'FORBIDDEN', json_code
         assert_equal 'You are not authorized to access this page.', json_error
       end
 
@@ -77,7 +77,7 @@ module Api
             )
           end
           assert_response :not_found
-          assert_equal 'NOT_FOUND', json_response['code']
+          assert_equal 'NOT_FOUND', json_code
           assert_equal "can't find internship_offer with this remote_id", json_error
         end
       end
@@ -96,10 +96,10 @@ module Api
             )
           end
           assert_response :bad_request
-          assert_equal 'VALIDATION_ERROR', json_response['code']
-          assert_equal ['Description too long, allowed up 500 chars'],
-                       json_error['description'],
-                       'bad description error '
+          assert_equal 'VALIDATION_ERROR', json_code
+          assert json_response['errors'].any? do |error|
+            error['detail'].include?('Description too long')
+          end
         end
       end
 
@@ -128,11 +128,16 @@ module Api
           assert_response :success
           assert_equal new_title, @internship_offer.reload.title
           assert_equal 2, @internship_offer.max_candidates
-          assert_equal JSON.parse(@internship_offer.to_json), json_response
           assert @internship_offer.reload.is_public
           assert @internship_offer.reload.handicap_accessible
-          assert_equal true, @internship_offer.rep
-          assert_equal true, @internship_offer.qpv
+          assert_equal 'internship-offer', json_data['type']
+          assert_equal @internship_offer.id.to_s, json_data['id']
+          assert_equal new_title, json_attributes['title']
+          assert_equal 2, json_attributes['max_candidates']
+          assert json_attributes['is_public']
+          assert json_attributes['handicap_accessible']
+          assert_equal true, @internship_offer.reload.rep
+          assert_equal true, @internship_offer.reload.qpv
         end
       end
 

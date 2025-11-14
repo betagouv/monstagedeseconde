@@ -10,7 +10,7 @@ module Api
       setup do
         @operator = create(:user_operator)
         post api_v3_auth_login_path(email: @operator.email, password: @operator.password)
-        @token = json_response['token']
+        @token = json_attributes['token']
       end
 
       test 'GET #index without token renders :unauthorized payload' do
@@ -56,10 +56,10 @@ module Api
             )
 
             assert_response :success
-            assert_equal 2, json_response['internshipOffers'].count
-            assert_equal 2, json_response['pagination']['totalInternshipOffers']
-            assert_equal 1, json_response['pagination']['totalPages']
-            assert_equal true, json_response['pagination']['isFirstPage']
+            assert_equal 2, json_data.count
+            assert_equal 2, json_response.dig('meta', 'pagination', 'totalInternshipOffers')
+            assert_equal 1, json_response.dig('meta', 'pagination', 'totalPages')
+            assert json_response.dig('meta', 'pagination', 'isFirstPage')
           end
         end
       end
@@ -90,10 +90,10 @@ module Api
             )
 
             assert_response :success
-            assert_equal 1, json_response['internshipOffers'].count
-            assert_equal 1, json_response['pagination']['totalInternshipOffers']
-            assert_equal 1, json_response['pagination']['totalPages']
-            assert_equal true, json_response['pagination']['isFirstPage']
+          assert_equal 1, json_data.count
+          assert_equal 1, json_response.dig('meta', 'pagination', 'totalInternshipOffers')
+          assert_equal 1, json_response.dig('meta', 'pagination', 'totalPages')
+          assert json_response.dig('meta', 'pagination', 'isFirstPage')
           end
         end
       end
