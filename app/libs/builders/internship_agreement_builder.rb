@@ -83,7 +83,8 @@ module Builders
         employer_name: internship_offer.employer_name,
         employer_contact_email: internship_offer.employer.email,
         internship_address: "#{internship_offer.street}, #{internship_offer.zipcode} #{internship_offer.city}",
-        entreprise_address: internship_offer.entreprise_full_address
+        entreprise_address: internship_offer.entreprise_full_address,
+        activity_scope: internship_offer.description
       }
     end
 
