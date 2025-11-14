@@ -139,6 +139,7 @@ Rails.application.routes.draw do
 
       namespace :v3 do
         post 'auth/login', to: 'auth#login'
+        get 'me', to: 'me#show'
         resources :internship_offers, only: %i[create update destroy index] do
           get :search, on: :collection
           resources :internship_applications, only: %i[index new create], module: :internship_offers # related to current user
