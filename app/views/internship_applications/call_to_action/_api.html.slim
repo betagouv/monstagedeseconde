@@ -1,6 +1,28 @@
 .actions.d-flex.d-sm-block.mb-0.justify-content-center data-controller="internship-offer"
   .actions.d-flex.text-center
-    - if current_user.nil? && Flipper.enabled?(:application_inhibited)
+    / rep or qpv offers
+    - if internship_offer.rep_or_qpv?
+      - if current_user.nil? #&& Flipper.enabled?(:application_inhibited)
+        = link_to new_internship_offer_internship_application_path(internship_offer_id: internship_offer.id),
+          class: 'fr-btn' do
+          | Postuler
+      - elsif current_user.student? && current_user.school.rep_or_qpv? # && Flipper.enabled?(:application_inhibited)
+        = link_to internship_offer.permalink,
+                class: 'fr-btn',
+                target: "_blank",
+                rel: "external noopener noreferrer",
+                title: "Je postule sur #{operator_name(internship_offer)} (nouvelle fenêtre)",
+                 data: { action: 'click->internship-offer#applyCount', target: 'internship-offer.applyButton', internshipOfferId: internship_offer.id, userId: current_user.id, turbo: false } do
+          = "Postuler sur #{operator_name(internship_offer)}"
+      - else
+        = link_to '#',
+          tabindex: -1,
+          aria: { disabled: true },
+          class: 'fr-btn disabled',
+          onclick: "return false;" do
+          | Postuler
+    / other offers
+    - elsif current_user.nil? && Flipper.enabled?(:application_inhibited)
       = link_to internship_offer.permalink,
             class: 'fr-btn disabled',
             target: "_blank",
