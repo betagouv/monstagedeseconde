@@ -179,7 +179,84 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 | 404  | Offre introuvable                              | ```{"errors": [{ "status": "404", "code": "NOT_FOUND", "detail": "Internship offer not found" }]}```        |
 
 
+### <a name="ref-create-internship-application"></a>
+## Créer une candidature
 
+**url** : `#{baseURL}/internship_offers/:internship_offer_id/internship_applications`
+
+**method** : POST
+
+*Paramètres d'url* :
+
+* **internship_offer_id** *(integer, required)* : L'identifiant de l'offre de stage
+
+**Payload JSON** (`internship_application`):
+
+| Champ                                   | Type     | Obligatoire | Description                                                        |
+|-----------------------------------------|----------|-------------|--------------------------------------------------------------------|
+| `student_phone`                         | string   | oui         | Numéro de l'élève (format international accepté)                   |
+| `student_email`                         | string   | oui         | Email de l'élève                                                   |
+| `week_ids`                              | array    | oui         | Tableau d'identifiants de semaines sélectionnées                  |
+| `motivation`                            | string   | oui         | Lettre de motivation                                               |
+| `student_address`                       | string   | oui         | Adresse postale de l'élève                                         |
+| `student_legal_representative_full_name`| string   | oui         | Nom complet du représentant légal                                  |
+| `student_legal_representative_email`    | string   | oui         | Email du représentant légal                                        |
+| `student_legal_representative_phone`    | string   | oui         | Téléphone du représentant légal                                    |
+
+Exemple :
+
+```json
+{
+  "internship_application": {
+    "student_phone": "06 11 22 33 44",
+    "student_email": "eleve@example.com",
+    "week_ids": [168, 169],
+    "motivation": "Je suis très motivé pour ce stage.",
+    "student_address": "10 rue de Paris, 91000 Évry",
+    "student_legal_representative_full_name": "Jean Dupont",
+    "student_legal_representative_email": "parent@example.com",
+    "student_legal_representative_phone": "06 12 34 56 78"
+  }
+}
+```
+
+### Réponse en cas de succès (201 Created)
+
+```json
+{
+  "data": {
+    "type": "internship-application",
+    "id": "987",
+    "attributes": {
+      "uuid": "6b56c...",
+      "internship_offer_id": 123,
+      "student_id": 42,
+      "state": "submitted",
+      "submitted_at": "2025-03-04T10:15:00Z",
+      "motivation": "Je suis très motivé pour ce stage.",
+      "student_phone": "+33611223344",
+      "student_email": "eleve@example.com",
+      "student_address": "10 rue de Paris, 91000 Évry",
+      "student_legal_representative_full_name": "Jean Dupont",
+      "student_legal_representative_email": "parent@example.com",
+      "student_legal_representative_phone": "+33612345678",
+      "weeks": ["2025-W12", "2025-W13"],
+      "created_at": "2025-03-04T10:15:00Z",
+      "updated_at": "2025-03-04T10:15:00Z"
+    }
+  }
+}
+```
+
+#### Gestion des erreurs
+
+| Code | Description                                              | Exemple                                                                                                  |
+|------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| 400  | Paramètre requis manquant                                | ```{"errors":[{"status":"400","code":"MISSING_PARAMETER","detail":"Missing required parameter: week_ids"}]}``` |
+| 401  | Jeton manquant ou invalide                               | ```{"errors":[{"status":"401","code":"UNAUTHORIZED","detail":"wrong api token"}]}```                     |
+| 403  | L'utilisateur authentifié n'est pas un élève             | ```{"errors":[{"status":"403","code":"FORBIDDEN","detail":"Only students can apply for internship offers"}]}``` |
+| 404  | Offre introuvable                                        | ```{"errors":[{"status":"404","code":"NOT_FOUND","detail":"Internship offer not found"}]}```             |
+| 422  | Erreur de validation (format de téléphone, email, …)     | ```{"errors":[{"status":"422","code":"VALIDATION_ERROR","detail":"Student phone is invalid"}]}```        |
 
 
 

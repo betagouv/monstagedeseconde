@@ -39,9 +39,21 @@ module Api
           end
         end
 
+        test 'POST #create as employer it renders :unauthorized payload' do
+          @employer = create(:employer)
+          post api_v3_auth_login_path(email: @employer.email, password: @employer.password)
+          @token = json_response.dig('data', 'attributes', 'token')
+
+          post api_v3_internship_offer_internship_applications_path(@internship_offer), params: {
+            token: "Bearer #{@token}"
+          }, as: :json
+          assert_response :forbidden
+          assert_equal 'FORBIDDEN', json_code
+          assert_equal 'Only students can apply for internship offers', json_error
+        end
+
         test 'POST #create as student with valid params creates internship application' do
           application_params = {
-            user_id: @student.id,
             internship_application: {
               student_phone: '0611223344',
               student_email: 'student@example.com',
@@ -89,7 +101,6 @@ module Api
 
           application_params = {
             internship_application: {
-              user_id: student.id,
               student_phone: '0611223344',
               student_email: student.email,
               week_ids: [@week_1.id],
@@ -107,14 +118,14 @@ module Api
                  as: :json
           end
 
-          assert_response :unprocessable_entity
-          assert_equal 'VALIDATION_ERROR', json_code
+          assert_response :forbidden
+          assert_equal 'FORBIDDEN', json_code
+          assert_equal 'Only students can apply for internship offers', json_error
           assert json_response['errors'].present?
         end
 
         test 'POST #create with missing internship_offer_id renders :not_found' do
           application_params = {
-            user_id: @student.id,
             internship_application: {
               student_phone: '0611223344',
               student_email: 'student@example.com',
@@ -140,7 +151,6 @@ module Api
 
         test 'POST #create without required params renders :bad_request' do
           application_params = {
-            user_id: @student.id,
             internship_application: {
               motivation: 'Je suis très motivé',
             }
@@ -159,7 +169,6 @@ module Api
 
         test 'POST #create with invalid email renders :unprocessable_entity' do
           application_params = {
-            user_id: @student.id,
             internship_application: {
               student_phone: '0611223344',
               student_email: 'invalid-email',
@@ -185,7 +194,6 @@ module Api
 
         test 'POST #create with invalid phone number renders :unprocessable_entity' do
           application_params = {
-            user_id: @student.id,
             internship_application: {
               student_phone: '123',
               student_email: 'student@example.com',
@@ -209,7 +217,6 @@ module Api
 
         test 'POST #create with empty week_ids renders :unprocessable_entity' do
           application_params = {
-            user_id: @student.id,
             internship_application: {
               student_phone: '0611223344',
               student_email: 'student@example.com',
@@ -233,7 +240,6 @@ module Api
 
         test 'POST #create formats week_ids correctly when passed as string' do
           application_params = {
-            user_id: @student.id,
             internship_application: {
               student_phone: '0611223344',
               student_email: 'student@example.com',
@@ -259,7 +265,6 @@ module Api
 
         test 'POST #create sanitizes phone number by removing spaces' do
           application_params = {
-            user_id: @student.id,
             internship_application: {
               student_phone: '06 11 22 33 44',
               student_email: 'student@example.com',

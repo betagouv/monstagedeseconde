@@ -10,17 +10,23 @@ module Api
         before_action :find_internship_offer, only: %i[index new create]
 
         def index
-          formatted_internship_applications = Api::V2::StudentInternshipApplicationsFormatter.new(
-            internship_applications: @internship_offer.internship_applications.to_a
-          ).format_all
+          
+          # return if performed?
 
-          render_jsonapi_collection(
-            type: 'internship-application',
-            records: formatted_internship_applications
-          )
+          # formatted_internship_applications = Api::V2::StudentInternshipApplicationsFormatter.new(
+          #   internship_applications: @internship_offer.internship_applications.to_a
+          # ).format_all
+
+          # render_jsonapi_collection(
+          #   type: 'internship-application',
+          #   records: formatted_internship_applications
+          # )
         end
 
         def create
+          check_user_is_student
+          return if performed?
+
           check_required_params
           return if performed?
 
@@ -38,6 +44,8 @@ module Api
         end
 
         def new
+          return if performed?
+
           unless @current_api_user.student?
             render_jsonapi_error(
               code: 'FORBIDDEN',
@@ -89,6 +97,17 @@ module Api
               code: 'MISSING_PARAMETER',
               detail: "Missing required parameter: #{param}",
               status: :bad_request
+            )
+            return
+          end
+        end
+
+        def check_user_is_student
+          unless @current_api_user.student?
+            render_jsonapi_error(
+              code: 'FORBIDDEN',
+              detail: 'Only students can apply for internship offers',
+              status: :forbidden
             )
             return
           end
