@@ -37,6 +37,16 @@ module Api
           return
         end
 
+        # TODO check if the student can apply for this internship offer
+        # if @current_api_user.other_approved_applications_compatible?(internship_offer: @internship_offer)
+        #   render_jsonapi_error(
+        #     code: 'UNPROCESSABLE_ENTITY',
+        #     detail: 'You have already approved an application for this internship offer',
+        #     status: :unprocessable_entity
+        #   )
+        #   return
+        # end
+
         render_jsonapi_resource(
           type: 'internship-application-form',
           record: internship_application_form_payload(
