@@ -1,0 +1,4 @@
+{
+  "error": "UNAUTHORIZED",
+  "message": "wrong api token"
+}

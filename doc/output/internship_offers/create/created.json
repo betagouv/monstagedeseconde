@@ -11,13 +11,13 @@
   "employer_description": "employer_description",
   "remote_id": "test",
   "permalink": "http://monsite.com",
-  "published_at": "2025-07-02T09:45:17.726+02:00",
+  "published_at": "2025-11-13T14:47:27.150+01:00",
   "formatted_coordinates": {
     "latitude": 1.0,
     "longitude": 1.0
   },
   "weeks": [
-    "2025-W26"
+    "2026-W26"
   ],
   "grades": [
     "seconde"

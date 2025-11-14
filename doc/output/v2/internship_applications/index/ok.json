@@ -1,29 +1,26 @@
-{
-  "pagination": {
-    "current_page": 1,
-    "next_page": null,
-    "prev_page": null,
-    "total_pages": 1,
-    "total_count": 1,
-    "per_page": 20
-  },
-  "internshipApplications": [
-    {
-      "id": 1098,
-      "user_id": 6397,
-      "internship_offer_id": 2398,
-      "status": "submitted",
-      "student_phone": "+330648419615",
-      "student_email": "jetta@rippinlittel.ca",
-      "student_legal_representative_email": "bianca@schulist.com",
-      "student_legal_representative_phone": "+330645245570",
-      "student_legal_representative_full_name": "David Pierre",
-      "weeks": [
-        "2026-W25",
-        "2026-W26"
-      ],
-      "createdAt": "2025-10-29T10:21:42.165+01:00",
-      "updatedAt": "2025-10-29T10:21:42.165+01:00"
-    }
-  ]
-}
+[
+  {
+    "id": 7,
+    "uuid": "e98d07c2-b95b-48b5-9fd8-b8b110cb9c38",
+    "student_id": 104,
+    "internship_offer_id": 59,
+    "employer_name": "Octo",
+    "internship_offer_title": "Stage de 2de - 1",
+    "internship_offer_address": "1 rue du poulet, 75001 Paris",
+    "state": "submitted",
+    "submitted_at": "2025-11-13T15:40:03Z",
+    "motivation": "Suis hyper motivé",
+    "student_phone": "+330711913584",
+    "student_email": "sol@powlowski.co.uk",
+    "student_address": "829 TER, impasse Juliette du Nguyen, 2B912 Asnières-sur-Seine",
+    "student_legal_representative_email": "aleta_deckow@rippin.co.uk",
+    "student_legal_representative_phone": "+330765579991",
+    "student_legal_representative_full_name": "Margaux Evrard",
+    "weeks": [
+      "2026-W25",
+      "2026-W26"
+    ],
+    "createdAt": "2025-11-13T16:40:03.369+01:00",
+    "updatedAt": "2025-11-13T16:40:03.369+01:00"
+  }
+]

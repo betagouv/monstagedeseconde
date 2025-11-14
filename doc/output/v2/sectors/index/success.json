@@ -1,22 +1,310 @@
 {
   "sectors": [
     {
-      "id": 149,
+      "id": 864762879,
+      "name": "Agroéquipement",
+      "external_url": "",
+      "uuid": "s1"
+    },
+    {
+      "id": 76286826,
+      "name": "Architecture, urbanisme et paysage",
+      "external_url": "",
+      "uuid": "s2"
+    },
+    {
+      "id": 495278806,
+      "name": "Armée - Défense",
+      "external_url": "",
+      "uuid": "s3"
+    },
+    {
+      "id": 713189959,
+      "name": "Art et design",
+      "external_url": "",
+      "uuid": "s4"
+    },
+    {
+      "id": 887554022,
+      "name": "Artisanat d'art",
+      "external_url": "",
+      "uuid": "s5"
+    },
+    {
+      "id": 65130353,
+      "name": "Arts du spectacle",
+      "external_url": "",
+      "uuid": "s6"
+    },
+    {
+      "id": 451452621,
+      "name": "Audiovisuel",
+      "external_url": "",
+      "uuid": "s7"
+    },
+    {
+      "id": 770682462,
+      "name": "Automobile",
+      "external_url": "",
+      "uuid": "s8"
+    },
+    {
+      "id": 1028699085,
+      "name": "Banque et assurance",
+      "external_url": "",
+      "uuid": "s9"
+    },
+    {
+      "id": 173507420,
+      "name": "Bâtiment et travaux publics (BTP)",
+      "external_url": "",
+      "uuid": "s10"
+    },
+    {
+      "id": 15829721,
+      "name": "Bien-être",
+      "external_url": "",
+      "uuid": "s11"
+    },
+    {
+      "id": 938916418,
+      "name": "Commerce et distribution",
+      "external_url": "",
+      "uuid": "s12"
+    },
+    {
+      "id": 788524026,
+      "name": "Communication",
+      "external_url": "",
+      "uuid": "s13"
+    },
+    {
+      "id": 435739501,
+      "name": "Comptabilité, gestion, ressources humaines",
+      "external_url": "",
+      "uuid": "s14"
+    },
+    {
+      "id": 127684306,
+      "name": "Conseil et audit",
+      "external_url": "",
+      "uuid": "s15"
+    },
+    {
+      "id": 815496795,
+      "name": "Construction aéronautique, ferroviaire et navale",
+      "external_url": "",
+      "uuid": "s16"
+    },
+    {
+      "id": 697446371,
+      "name": "Culture et patrimoine",
+      "external_url": "",
+      "uuid": "s17"
+    },
+    {
+      "id": 513089398,
+      "name": "Droit et justice",
+      "external_url": "",
+      "uuid": "s18"
+    },
+    {
+      "id": 237634279,
+      "name": "Édition, librairie, bibliothèque",
+      "external_url": "",
+      "uuid": "s19"
+    },
+    {
+      "id": 959263348,
+      "name": "Électronique",
+      "external_url": "",
+      "uuid": "s20"
+    },
+    {
+      "id": 735893784,
+      "name": "Énergie",
+      "external_url": "",
+      "uuid": "s21"
+    },
+    {
+      "id": 484174213,
+      "name": "Enseignement",
+      "external_url": "",
+      "uuid": "s22"
+    },
+    {
+      "id": 97695801,
+      "name": "Environnement",
+      "external_url": "",
+      "uuid": "s23"
+    },
+    {
+      "id": 852854960,
+      "name": "Filiere bois",
+      "external_url": "",
+      "uuid": "s24"
+    },
+    {
+      "id": 749804815,
+      "name": "Fonction publique",
+      "external_url": "",
+      "uuid": "s25"
+    },
+    {
+      "id": 464924060,
+      "name": "Hôtellerie, restauration",
+      "external_url": "",
+      "uuid": "s26"
+    },
+    {
+      "id": 46103584,
+      "name": "Immobilier, transactions immobilières",
+      "external_url": "",
+      "uuid": "s27"
+    },
+    {
+      "id": 901270711,
+      "name": "Industrie alimentaire",
+      "external_url": "",
+      "uuid": "s28"
+    },
+    {
+      "id": 621236522,
+      "name": "Industrie chimique",
+      "external_url": "",
+      "uuid": "s29"
+    },
+    {
+      "id": 302014899,
+      "name": "Industrie, ingénierie industrielle",
+      "external_url": "",
+      "uuid": "s30"
+    },
+    {
+      "id": 851961943,
+      "name": "Informatique et réseaux",
+      "external_url": "",
+      "uuid": "s31"
+    },
+    {
+      "id": 96524484,
+      "name": "Jeu vidéo",
+      "external_url": "",
+      "uuid": "s32"
+    },
+    {
+      "id": 482969976,
+      "name": "Journalisme",
+      "external_url": "",
+      "uuid": "s33"
+    },
+    {
+      "id": 734968303,
+      "name": "Logistique et transport",
+      "external_url": "",
+      "uuid": "s34"
+    },
+    {
+      "id": 900344912,
+      "name": "Maintenance",
+      "external_url": "",
+      "uuid": "s35"
+    },
+    {
+      "id": 44899549,
+      "name": "Marketing, publicité",
+      "external_url": "",
+      "uuid": "s36"
+    },
+    {
+      "id": 463752545,
+      "name": "Mécanique",
+      "external_url": "",
+      "uuid": "s37"
+    },
+    {
+      "id": 748912120,
+      "name": "Métiers d'art",
+      "external_url": "",
+      "uuid": "s38"
+    },
+    {
+      "id": 1008492649,
+      "name": "Mode",
+      "external_url": "",
+      "uuid": "s39"
+    },
+    {
+      "id": 186339570,
+      "name": "Papiers Cartons",
+      "external_url": "",
+      "uuid": "s40"
+    },
+    {
+      "id": 1032224405,
+      "name": "Paramédical",
+      "external_url": "",
+      "uuid": "s41"
+    },
+    {
+      "id": 176246280,
+      "name": "Recherche",
+      "external_url": "",
+      "uuid": "s42"
+    },
+    {
+      "id": 327688128,
+      "name": "Santé",
+      "external_url": "",
+      "uuid": "s43"
+    },
+    {
+      "id": 613363497,
+      "name": "Sécurité",
+      "external_url": "",
+      "uuid": "s44"
+    },
+    {
+      "id": 988527244,
+      "name": "Services postaux",
+      "external_url": "",
+      "uuid": "s45"
+    },
+    {
+      "id": 233605663,
+      "name": "Social",
+      "external_url": "",
+      "uuid": "s46"
+    },
+    {
+      "id": 350608295,
+      "name": "Sport",
+      "external_url": "",
+      "uuid": "s47"
+    },
+    {
+      "id": 602073904,
+      "name": "Tourisme",
+      "external_url": "",
+      "uuid": "s48"
+    },
+    {
+      "id": 861796003,
+      "name": "Traduction, interprétation",
+      "external_url": "",
+      "uuid": "s49"
+    },
+    {
+      "id": 73057850,
+      "name": "Verre, béton, céramique",
+      "external_url": "",
+      "uuid": "s50"
+    },
+    {
+      "id": 614289364,
       "name": "Agriculture",
       "external_url": "",
-      "uuid": "d5d3d03c-4652-422d-9e51-a21753eac710"
-    },
-    {
-      "id": 150,
-      "name": "Agroalimentaire",
-      "external_url": "",
-      "uuid": "fc72b05f-88f3-418a-b9e1-76cff1821c4f"
-    },
-    {
-      "id": 151,
-      "name": "Architecture",
-      "external_url": "",
-      "uuid": "3093e7c7-8303-4a79-82d5-51f69bac3869"
+      "uuid": "s51"
     }
   ]
 }

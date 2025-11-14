@@ -1,4 +1,4 @@
 {
-  "code": "BAD_PAYLOAD",
-  "error": "missing or invalid student_id"
+  "code": "NOT_FOUND",
+  "error": "missing or invalid user_id"
 }
