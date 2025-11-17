@@ -115,6 +115,7 @@ module Api
       payload[:meta] = meta if meta.present?
       payload[:links] = links if links.present?
       payload
+      data
     end
 
     def jsonapi_resource_from(record, type:)

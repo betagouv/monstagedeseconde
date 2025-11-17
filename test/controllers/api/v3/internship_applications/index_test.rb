@@ -9,11 +9,12 @@ module Api
         setup do
           @employer = create(:employer)
           post api_v3_auth_login_path(email: @employer.email, password: @employer.password)
-          @employer_token = json_response.dig('data', 'attributes', 'token')
+          
+          @employer_token = json_response.dig('id')
 
           @student = create(:student, :seconde)
           post api_v3_auth_login_path(email: @student.email, password: @student.password)
-          @student_token = json_response.dig('data', 'attributes', 'token')
+          @student_token = json_response.dig('id')
 
           @internship_offer = create(:weekly_internship_offer, :both_weeks, employer: @employer, grades: [Grade.seconde])
           @internship_application = create(:weekly_internship_application, :both_june_weeks, internship_offer: @internship_offer, student: @student)
@@ -49,12 +50,12 @@ module Api
             assert_response :ok
             assert_response :success
             assert_response :success
-            assert_equal 1, json_response['data'].count
+            assert_equal 1, json_response.count
 
-            attributes = json_response.dig('data', 0, 'attributes')
+            attributes = json_response.dig(0, 'attributes')
             assert_equal @internship_application.user_id, attributes['student_id']
             assert_equal @internship_application.uuid, attributes['uuid']
-            assert_equal @internship_application.id, json_response.dig('data', 0, 'id').to_i
+            assert_equal @internship_application.id, json_response.dig(0, 'id').to_i
             assert_equal @internship_application.internship_offer_id, attributes['internship_offer_id']
             assert_equal @internship_application.student_phone, attributes['student_phone']
             assert_equal @internship_application.student_email, attributes['student_email']
@@ -82,17 +83,17 @@ module Api
 
           assert_response :success
         
-          assert_equal 2, json_response['data'].length
-          attributes = json_response.dig('data', 0, 'attributes')
-          attributes_2 = json_response.dig('data', 1, 'attributes')
+          assert_equal 2, json_response.length
+          attributes = json_response.dig(0, 'attributes')
+          attributes_2 = json_response.dig(1, 'attributes')
 
-          assert_equal @internship_application_2.id, json_response.dig('data', 0, 'id').to_i
+          assert_equal @internship_application_2.id, json_response.dig(0, 'id').to_i
           assert_equal @internship_application_2.aasm_state, attributes_2['state']
           assert_equal @internship_application_2.internship_offer.employer_name, attributes_2['employer_name']
           assert_equal @internship_application_2.internship_offer.title, attributes['internship_offer_title']
           assert_equal @internship_application_2.presenter(@student).internship_offer_address, attributes_2['internship_offer_address']
           
-          assert_equal @internship_application.id, json_response.dig('data', 1, 'id').to_i
+          assert_equal @internship_application.id, json_response.dig(1, 'id').to_i
           assert_equal @internship_application.aasm_state, attributes['state']
           assert_equal @internship_application.internship_offer.employer_name, attributes['employer_name']
           assert_equal @internship_application.internship_offer.title, attributes_2['internship_offer_title']
@@ -108,7 +109,7 @@ module Api
           }, as: :json
 
           assert_response :success
-          assert_equal 0, json_response['data'].length
+          assert_equal 0, json_response.length
         end
       end
     end

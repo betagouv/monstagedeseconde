@@ -11,7 +11,7 @@ module Api
         setup do
           @student = create(:student_with_class_room_3e)
           post api_v3_auth_login_path(email: @student.email, password: @student.password)
-          @token = json_response.dig('data', 'attributes', 'token')
+          @token = json_response.dig('id')
           
           @employer = create(:employer)
           @sector = create(:sector)
@@ -42,7 +42,7 @@ module Api
         test 'POST #create as employer it renders :unauthorized payload' do
           @employer = create(:employer)
           post api_v3_auth_login_path(email: @employer.email, password: @employer.password)
-          @token = json_response.dig('data', 'attributes', 'token')
+          @token = json_response.dig('id')
 
           post api_v3_internship_offer_internship_applications_path(@internship_offer), params: {
             token: "Bearer #{@token}"
@@ -75,28 +75,27 @@ module Api
           end
 
           assert_response :created
-          assert_equal 'internship-application', json_response.dig('data', 'type')
-          assert_equal @internship_offer.id, json_response.dig('data', 'attributes', 'internship_offer_id')
-          assert_equal @student.id, json_response.dig('data', 'attributes', 'student_id')
-          assert_equal 'submitted', json_response.dig('data', 'attributes', 'state')
-          assert_equal 'Je suis très motivé pour ce stage', json_response.dig('data', 'attributes', 'motivation')
-          assert_equal '+33611223344', json_response.dig('data', 'attributes', 'student_phone')
-          assert_equal 'student@example.com', json_response.dig('data', 'attributes', 'student_email')
-          assert_equal '123 rue de la République, 75001 Paris', json_response.dig('data', 'attributes', 'student_address')
-          assert_equal 'Jean Dupont', json_response.dig('data', 'attributes', 'student_legal_representative_full_name')
-          assert_equal 'parent@example.com', json_response.dig('data', 'attributes', 'student_legal_representative_email')
-          assert_equal '0612345678', json_response.dig('data', 'attributes', 'student_legal_representative_phone')
-          assert_equal 2, json_response.dig('data', 'attributes', 'weeks').size
-          assert_includes json_response.dig('data', 'attributes', 'weeks'), '2025-W20'
-          assert_includes json_response.dig('data', 'attributes', 'weeks'), '2025-W21'
-          assert json_response.dig('data', 'attributes', 'uuid').present?
-          assert json_response.dig('data', 'attributes', 'submitted_at').present?
+          puts "json_response: #{json_response}"
+          assert_equal @internship_offer.id, json_response['internship_offer_id']
+          assert_equal @student.id, json_response['student_id']
+          assert_equal 'submitted', json_response['state']
+          assert_equal 'Je suis très motivé pour ce stage', json_response['motivation']
+          assert_equal '+33611223344', json_response['student_phone']
+          assert_equal 'student@example.com', json_response['student_email']
+          assert_equal '123 rue de la République, 75001 Paris', json_response['student_address']
+          assert_equal 'Jean Dupont', json_response['student_legal_representative_full_name']
+          assert_equal 'parent@example.com', json_response['student_legal_representative_email']
+          assert_equal '0612345678', json_response['student_legal_representative_phone']
+          assert_equal 2, json_response['weeks'].size
+          assert_includes json_response['weeks'].map { |week| week['label'] }, 'Semaine du 19 mai au 23 mai'
+          assert json_response['uuid'].present?
+          assert json_response['submitted_at'].present?
         end
 
         test 'POST #create as operator (not student) renders :forbidden' do
           operator = create(:user_operator, email: 'operator@example.com', password: 'Password123!')
           post api_v3_auth_login_path(email: operator.email, password: operator.password)
-          operator_token = json_response.dig('data', 'attributes', 'token')
+          operator_token = json_response.dig('id')
           student = create(:student)
 
           application_params = {

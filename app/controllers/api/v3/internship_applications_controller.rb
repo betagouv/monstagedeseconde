@@ -10,6 +10,7 @@ module Api
       before_action :authenticate_api_user!
 
       def index
+        puts "index internship applications"
         internship_applications = InternshipApplication.where(user_id: @current_api_user.id)
                                                        .order(id: :desc)
                                                        .includes(:weeks, internship_offer: :employer)

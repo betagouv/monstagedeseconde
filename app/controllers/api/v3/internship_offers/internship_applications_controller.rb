@@ -6,8 +6,8 @@ module Api
         include Api::JsonApiRenderable
         include Api::V3::InternshipApplicationPresenter
 
-        before_action :authenticate_api_user!, only: %i[index new create]
-        before_action :find_internship_offer, only: %i[index new create]
+        before_action :authenticate_api_user!, only: %i[new create]
+        before_action :find_internship_offer, only: %i[new create]
 
         def index
           
@@ -33,11 +33,7 @@ module Api
           internship_application = ::InternshipApplication.new(build_application_params)
 
           if internship_application.save
-            render_jsonapi_resource(
-              type: 'internship-application',
-              record: internship_application_payload(internship_application),
-              status: :created
-            )
+            render json: internship_application_payload(internship_application), status: :created
           else
             render_validation_error(internship_application)
           end
@@ -55,13 +51,10 @@ module Api
             return
           end
 
-          render_jsonapi_resource(
-            type: 'internship-application-form',
-            record: internship_application_form_payload(
-              user: @current_api_user,
-              weeks: available_weeks_for_form
-            )
-          )
+          render json: internship_application_form_payload(
+            user: @current_api_user,
+            weeks: available_weeks_for_form
+          ), status: :ok
         end
 
         private

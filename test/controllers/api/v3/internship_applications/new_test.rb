@@ -10,7 +10,7 @@ module Api
         setup do
           @student = create(:student_with_class_room_3e)
           post api_v3_auth_login_path(email: @student.email, password: @student.password)
-          @token = json_response.dig('data', 'attributes', 'token')
+          @token = json_response.dig('id')
 
           @employer = create(:employer)
           @internship_offer = create(:weekly_internship_offer_3eme, employer: @employer)
@@ -27,7 +27,7 @@ module Api
         test 'GET #new as employer without token renders :unauthorized payload' do
           @employer = create(:employer)
           post api_v3_auth_login_path(email: @employer.email, password: @employer.password)
-          @token = json_response.dig('data', 'attributes', 'token')
+          @token = json_response.dig('id')
         
           get new_api_v3_internship_offer_internship_application_path(internship_offer_id: @internship_offer.id), params: {
             token: "Bearer #{@token}"
@@ -51,14 +51,13 @@ module Api
             token: "Bearer #{@token}"
           }, as: :json
           assert_response :success
-          attributes = json_response.dig('data', 'attributes')
-          assert_equal @student.phone, attributes['student_phone']
-          assert_equal @student.email, attributes['student_email']
-          assert_equal @student.legal_representative_full_name, attributes['representative_full_name']
-          assert_equal @student.legal_representative_email, attributes['representative_email']
-          assert_equal @student.legal_representative_phone, attributes['representative_phone']
-          assert attributes['weeks'].present?
-          assert_equal '', attributes['motivation']
+          assert_equal @student.phone, json_response['student_phone']
+          assert_equal @student.email, json_response['student_email']
+          assert_equal @student.legal_representative_full_name, json_response['representative_full_name']
+          assert_equal @student.legal_representative_email, json_response['representative_email']
+          assert_equal @student.legal_representative_phone, json_response['representative_phone']
+          assert json_response['weeks'].present?
+          assert_equal '', json_response['motivation']
         end
 
         test 'GET new application page for 3e student with one week school, it should return the week' do
@@ -73,15 +72,15 @@ module Api
           }, as: :json
 
           assert_response :success
-          attributes = json_response.dig('data', 'attributes')
-          assert_equal @student.phone, attributes['student_phone']
-          assert_equal @student.email, attributes['student_email']
-          assert_equal @student.legal_representative_full_name, attributes['representative_full_name']
-          assert_equal @student.legal_representative_email, attributes['representative_email']
-          assert_equal @student.legal_representative_phone, attributes['representative_phone']
-          assert_equal week.human_select_text_method, attributes['weeks'][0]['label']
-          assert_equal false, attributes['weeks'][0]['selected']
-          assert_equal '', attributes['motivation']
+          puts "json_response: #{json_response}"
+          assert_equal @student.phone, json_response['student_phone']
+          assert_equal @student.email, json_response['student_email']
+          assert_equal @student.legal_representative_full_name, json_response['representative_full_name']
+          assert_equal @student.legal_representative_email, json_response['representative_email']
+          assert_equal @student.legal_representative_phone, json_response['representative_phone']
+          assert_equal week.human_select_text_method, json_response['weeks'][0]['label']
+          assert_equal false, json_response['weeks'][0]['selected']
+          assert_equal '', json_response['motivation']
         end
 
         test 'GET new application page for 3e student with no school weeks, it should return all the offer s weeks' do
@@ -96,14 +95,13 @@ module Api
 
           assert_response :success
 
-          attributes = json_response.dig('data', 'attributes')
-          assert_equal @student.phone, attributes['student_phone']
-          assert_equal @student.email, attributes['student_email']
-          assert_equal @student.legal_representative_full_name, attributes['representative_full_name']
-          assert_equal @student.legal_representative_email, attributes['representative_email']
-          assert_equal @student.legal_representative_phone, attributes['representative_phone']
-          assert_equal @internship_offer.weeks.count, attributes['weeks'].count
-          assert_equal '', attributes['motivation']
+          assert_equal @student.phone, json_response['student_phone']
+          assert_equal @student.email, json_response['student_email']
+          assert_equal @student.legal_representative_full_name, json_response['representative_full_name']
+          assert_equal @student.legal_representative_email, json_response['representative_email']
+          assert_equal @student.legal_representative_phone, json_response['representative_phone']
+          assert_equal @internship_offer.weeks.count, json_response['weeks'].count
+          assert_equal '', json_response['motivation']
         end
 
         test 'GET new application page for 2nde student without other approved applications, it should return all seconde selectable weeks' do
@@ -117,14 +115,14 @@ module Api
 
           assert_response :success
 
-          attributes = json_response.dig('data', 'attributes')
-          assert_equal @student.phone, attributes['student_phone']
-          assert_equal @student.email, attributes['student_email']
-          assert_equal @student.legal_representative_full_name, attributes['representative_full_name']
-          assert_equal @student.legal_representative_email, attributes['representative_email']
-          assert_equal @student.legal_representative_phone, attributes['representative_phone']
-          assert_equal @internship_offer.weeks.count, attributes['weeks'].count
-          assert_equal '', attributes['motivation']
+          attributes = json_response
+          assert_equal @student.phone, json_response['student_phone']
+          assert_equal @student.email, json_response['student_email']
+          assert_equal @student.legal_representative_full_name, json_response['representative_full_name']
+          assert_equal @student.legal_representative_email, json_response['representative_email']
+          assert_equal @student.legal_representative_phone, json_response['representative_phone']
+          assert_equal @internship_offer.weeks.count, json_response['weeks'].count
+          assert_equal '', json_response['motivation']
         end
 
         test 'GET new application page for 3e student with already approved application, it should return the error message' do
