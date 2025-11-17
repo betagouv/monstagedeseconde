@@ -1,14 +1,4 @@
-# frozen_string_literal: true
-require "committee"
-# require "committee/rails/test"
 module ApiTestHelpers
-  include Committee::Rails::Test::Methods
-  def committee_options
-    {
-      schema_path: Rails.root.join("doc", "api", "v3", "openapi.yaml").to_s,
-      parse_response_by_content_type: true
-    }
-  end
 
   def documents_as(endpoint:, state:)
     yield
