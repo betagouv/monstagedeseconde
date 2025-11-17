@@ -15,15 +15,78 @@ tags:
   description: Operations accessibles aux développeurs disposant d'une clé API. Celle-ci
     peut être fournie sur demande à l'adresse email contact @ 1eleve1stage.education.gouv.fr
 paths:
-  /internship_offers/{id}/internship_applications:
+  /auth/login:
+    post:
+      tags:
+      - developers
+      summary: Authentifie un utilisateur et retourne un ten JWT
+      description: Authentifie un utilisateur avec son email et son mot de passe, et retourne un ten JWT pour les requêtes futures
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: yourpassword
+      responses:
+        "200":
+          description: Authentification réussie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ten:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5ciOiJKV1QiLCJ9...
+        "401":
+          description: Échec de l'authentification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+      x-swagger-router-controller: Developers
+  /me:
     get:
       tags:
       - developers
-      summary: Récupère les candidatures pour une offre de stage donnée
-      description: Récupère les candidatures pour une offre de stage identifiée par son ID
-      operationId: get_internship_applications_for_internship_offer
+      summary: Récupère les informations de l'utilisateur courant
+      description: Récupère les informations de l'utilisateur courant identifié par sa clé API
+      operationId: current_api_user
+      responses:
+        "200":
+          description: Informations de l'utilisateur courant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "401":
+          description: l'authentification a échoué
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+
+      security:
+      - bearerAuth: []
+      x-swagger-router-controller: Developers
+  /internship_offers/{internship_offer_id}/internship_applications/nouveau:
+    get:
+      tags:
+      - developers
+      summary: Récupère le formulaire de création d'une nouvelle candidature pour une offre de stage donnée
+      description: Récupère le formulaire de création d'une nouvelle candidature pour une offre de stage identifiée par son ID
+      operationId: new_internship_application_for_internship_offer
       parameters:
-      - name: id
+      - name: internship_offer_id
         in: path
         description: Identifiant de l'offre de stage
         required: true
@@ -34,16 +97,27 @@ paths:
           example: 1
       responses:
         "200":
-          description: Liste des candidatures pour l'offre de stage
+          description: Formulaire de nouvelle candidature à une offre de stage
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/InternshipApplication'
+                $ref: '#/components/schemas/InternshipApplicationForm'
+        "401":
+          description: l'authentification a échoué
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+        "404":
+          description: L'offre de stage spécifiée est introuvable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
       security:
       - bearerAuth: []
       x-swagger-router-controller: Developers
+  /internship_offers/{internship_offer_id}/internship_applications:
     post:
       tags:
         - developers
@@ -52,7 +126,7 @@ paths:
         Permet à un élève de postuler à une offre de stage en fournissant les informations nécessaires.
       operationId: create_internship_application
       parameters:
-        - name: id
+        - name: internship_offer_id
           in: path
           description: Identifiant de l'offre de stage
           required: true
@@ -73,59 +147,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternshipApplication'
-      security:
-        - bearerAuth: []
-      x-swagger-router-controller: Developers
-  /internship_offers:
-    get:
-      tags:
-      - developers
-      summary: liste (index) les offres déposées
-      description: |
-        Les offres retournées représentent l'ensemble des offres du site https://1eleve1stage.education.gouv.fr/ .
-      operationId: internship_offers_index
-      responses:
-        "200":
-          description: Offre de stage créée
+        "400":
+          description: Requête invalide
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternshipOffers'
-        "401":
-          description: l'authentification a échoué
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_401'
-        "404":
-          description: Un argument de la requête fait échouer la requête.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404_1'
-      security:
-      - bearerAuth: []
-      x-swagger-router-controller: Developers
-    post:
-      tags:
-      - developers
-      summary: ajoute une offre de stage d'un partenaire aux offres proposées en propre
-        par les équipes 1élève1stage
-      description: |
-        Les offres de stages décrits ci-dessous décrivent les offres réservées aux classes de **seconde générale et technologique**
-      operationId: internship_offers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/requestBodies/InternshipOffer'
-      responses:
-        "201":
-          description: Offre de stage créée
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InternshipOffer'
+                $ref: '#/components/schemas/inline_response_422'
         "401":
           description: l'authentification a échoué
           content:
@@ -133,30 +160,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/inline_response_401'
         "403":
-          description: L'utilisateur n'est pas autorisé à supprimer cette offre de
-            stage
+          description: L'utilisateur n'est pas autorisé à postuler à cette offre de stage ou ce n'est pas un élève
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_403'
         "404":
-          description: Un argument de la requête fait échouer la requête.
+          description: L'offre de stage spécifiée est introuvable
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_404'
-        "406":
-          description: Un ou plusieurs paramètres de requête sont invalides
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_406'
-        "409":
-          description: Conflit. Une offre de stage avec le même remote_id existe déjà
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_409'
         "422":
           description: Un argument au moins de la requête fait échouer la requête
           content:
@@ -165,187 +179,6 @@ paths:
                 $ref: '#/components/schemas/inline_response_422'
       security:
         - bearerAuth: []
-      x-swagger-router-controller: Developers
-  /internship_offers/{remote_id}:
-    delete:
-      tags:
-      - developers
-      summary: Supprime une offre de stage d'un partenaire des offres proposées sur
-        le site https://1eleve1stage.education.gouv.fr/
-      description: |
-        Suppression des offres
-      operationId: internship_offers_delete
-      parameters:
-      - name: remote_id
-        in: path
-        description: id de l'offre de stage
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: remote-123
-      responses:
-        "200":
-          description: Offre de stage supprimée
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InternshipOffer'
-        "401":
-          description: l'authentification a échoué
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_401'
-        "403":
-          description: L'utilisateur n'est pas autorisé à supprimer cette offre de stage
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_403'
-        "404":
-          description: Un argument de la requête fait échouer la requête.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404'
-        "422":
-          description: Un argument de la requête fait échouer la requête.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_422'
-      security:
-      - bearerAuth: []
-      x-swagger-router-controller: Developers
-    patch:
-      tags:
-      - developers
-      summary: met à jour une offre de stage d'un partenaire aux offres proposées
-        en propre par les équipes 1élève1stage
-      description: |
-        Mise à jour des offres . Possibilité de désactiver son offre en passant le paramètre published_at à null
-      operationId: internship_offers_update
-      parameters:
-        - name: remote_id
-          in: path
-          description: "clé étrangère unique , id de l'offre de stage chez le partenaire"
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-            example: remote-123
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/requestBodies/InternshipOfferPatch'
-      responses:
-        "200":
-          description: Offre de stage mise à jour
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InternshipOffer'
-        "401":
-          description: l'authentification a échoué
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_401'
-        "403":
-          description: L'utilisateur n'est pas autorisé à supprimer cette offre de
-            stage
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_403'
-        "404":
-          description: Un argument de la requête fait échouer la requête.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_404'
-        "406":
-          description: Un ou plusieurs paramètres de requête sont invalides
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_406'
-        "422":
-          description: Un argument au moins de la requête fait échouer la requête
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_422'
-      security:
-      - bearerAuth: []
-      x-swagger-router-controller: Developers
-  /internship_offers/search:
-    get:
-      tags:
-        - developers
-      summary: Recherche des offres de stage
-      description: Recherche des offres de stage déposées par le partenaire.
-
-      parameters:
-        - in: query
-          name: latitude
-          schema:
-            type: number
-          required: false
-          example: 48.8566
-        - in: query
-          name: longitude
-          schema:
-            type: number
-          required: false
-          example: 2.3522
-        - in: query
-          name: radius
-          schema:
-            type: integer
-          required: false
-          example: 40000
-        - in: query
-          name: keyword
-          schema:
-            type: string
-          required: false
-          example: "Game designer"
-
-      responses:
-        '200':
-          description: Offres de stages du partenaire
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InternshipOffers'
-      security:
-      - bearerAuth: []
-      x-swagger-router-controller: Developers
-  /sectors:
-    get:
-      tags:
-      - developers
-      summary: Récupère la liste des secteurs économiques
-      description: "Secteur économique. Voir la liste complète ici : [https://github.com/betagouv/monstagedeseconde/blob/staging/doc/README.md#secteurs-dactivité\
-        ](https://github.com/betagouv/monstagedeseconde/blob/staging/doc/README.md#secteurs-dactivité\
-        )"
-      operationId: sectors
-      responses:
-        "200":
-          description: Liste des secteurs économiques
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Sector'
-      security:
-      - bearerAuth: []
       x-swagger-router-controller: Developers
   /users/{user_id}/internship_applications:
     get:
@@ -380,7 +213,7 @@ paths:
     get:
       summary: Liste les candidatures de l'utilisateur courant
       tags:
-        - InternshipApplications
+        - developpers
       responses:
         '200':
           description: Liste des candidatures de l'utilisateur courant
@@ -390,36 +223,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/InternshipApplication'
-    post:
-      summary: Crée une candidature à une offre de stage pour l'utilisateur courant
-      tags:
-        - InternshipApplications
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InternshipApplicationCreate'
-      responses:
-        '201':
-          description: Internship application created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InternshipApplication'
 
-  /internship_applications/new:
-    get:
-      summary: Récupère le formulaire de création d'une nouvelle candidature pour l'utilisateur courant
-      tags:
-        - InternshipApplications
-      responses:
-        '200':
-          description: Formulaire de nouvelle candidature à une offre de stage
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InternshipApplicationForm'
 components:
   schemas:
     InternshipApplications:
@@ -467,16 +271,16 @@ components:
           type: string
           maxLength: 1500
           example: Je souhaite faire ce stage pour découvrir le métier de développeur
-        student_legal_representative_full_name:
+        legal_representative_full_name:
           type: string
           maxLength: 150
           example: Jean Dupont
-        student_legal_representative_email:
+        legal_representative_email:
           type: string
           format: email
           maxLength: 109
           example: jean.dupont@example.com
-        student_legal_representative_phone:
+        legal_representative_phone:
           type: string
           maxLength: 50
           example: "+330612345678"
@@ -488,7 +292,16 @@ components:
           example:
             - 217
             - 218
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-03-04T10:15:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-03-04T10:15:00Z"
       description: Candidature à une offre de stage
+
     InternshipOffers:
       type: array
       items:
@@ -703,21 +516,54 @@ components:
         - $ref: '#/components/schemas/InternshipApplication'
         - type: object
           properties:
-            created_at:
-              nullable: true
-            updated_at:
+            internship_offer_id:
               nullable: true
             id:
               nullable: true
             uuid:
               nullable: true
+            createdAt:
+              nullable: true
+            updatedAt:
+              nullable: true
+            student_address:
+              nullable: true
             aasm_state:
               nullable: true
             submitted_at:
               nullable: true
+    User:
+      description: Utilisateur de l'API - données élémentaires
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        first name:
+          type: string
+          example: John
+        last name:
+          type: string
+          example: Doe
+        role:
+          type: string
+          example: Employer
+        phone:
+          type: string
+          example: "+330612345678"
+        school_id:
+          type: integer
+          example: 123
+        operator_id:
+          type: integer
+          example: 456
     inline_response_401:
       type: string
-      example: This resource requires authentication.
+      example: Wrong api ten.
     inline_response_403:
       type: string
       example: The client does not have access rights to the content
@@ -732,7 +578,7 @@ components:
       example: This request raises a conflicts with the current state of the server
     inline_response_422:
       type: string
-      example: The request was directed at a server that is not able to produce a response. 
+      example: The request was directed at a server that is not able to produce a response.
     inline_response_404_1:
       type: string
       example: Can't find internship_offer with this remote_id
@@ -789,9 +635,18 @@ components:
             type: string
       description: Horaires quotidiens de stage
     Week:
-      type: integer
-      example: 218
+      type: object
       description: Semaine pendant laquelle l'offre de stage est disponible
+      properties:
+        id:
+          type: integer
+          example: 218
+        label:
+          type: string
+          example: Semaine du 4 juin 2024 au 10 juin 2024
+        selected:
+          type: boolean
+          example: false
   responses:
     Unauthorized:
       description: l'authentification a échoué
