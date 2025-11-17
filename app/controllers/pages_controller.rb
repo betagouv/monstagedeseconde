@@ -88,6 +88,9 @@ class PagesController < ApplicationController
     redirect_to '/maintenance_estivale.html', notice: message
   end
 
+  def doc_api
+  end
+
   def maintenance_messaging
     hash = {
       subject: "Message de la page de maintenance de #{user_params[:name]}",

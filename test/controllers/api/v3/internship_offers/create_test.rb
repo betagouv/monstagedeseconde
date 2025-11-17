@@ -185,7 +185,7 @@ module Api
 
         assert_equal permalink, internship_offer.permalink
 
-        assert_equal JSON.parse(internship_offer.to_json), json_response
+        assert_equal JSON.parse(internship_offer.to_json), json_response['data']['attributes']
       end
 
       test 'POST #create when missing coordinates works to create internship_offers' do
@@ -255,19 +255,24 @@ module Api
           end
 
           internship_offer = ::InternshipOffers::Api.first
+          data_attributes  = json_response['data']['attributes']
+          
           assert_equal title, internship_offer.title
           assert_equal false, internship_offer.is_public
           assert_equal coordinates[:latitude], internship_offer.coordinates.latitude
           assert_equal coordinates[:longitude], internship_offer.coordinates.longitude
-          assert_equal JSON.parse(internship_offer.to_json), json_response
           assert_equal true, internship_offer.handicap_accessible
-          assert_equal ['troisieme'], json_response['grades']
+          assert_equal ['troisieme'], data_attributes['grades']
           assert_equal 2, internship_offer.weeks.count
           assert_equal true, internship_offer.open_data
           assert_equal true, internship_offer.rep
           assert_equal true, internship_offer.qpv
+          assert_equal "19 mai 2025", data_attributes['date_start']
+          assert_equal "30 mai 2025", data_attributes['date_end']
+          assert_equal "du 19/05/2025 au 23/05/2025, du 26/05/2025 au 30/05/2025", data_attributes['weeks']
         end
       end
+
       test 'POST #create when wrong weeks for seconde offer returns 422' do
         travel_to(Date.new(2025, 3, 1)) do
           post api_v3_auth_login_path(email: @operator.email, password: @operator.password)

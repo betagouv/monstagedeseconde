@@ -34,6 +34,7 @@ module Api
           post api_v3_internship_offer_internship_applications_path(@internship_offer), params: {
             token: 'Bearer abcdefghijklmnop'
           }, as: :json do
+            # assert_response_schema confirm: true  
             assert_response :unauthorized
             assert_equal 'UNAUTHORIZED', json_code
           end

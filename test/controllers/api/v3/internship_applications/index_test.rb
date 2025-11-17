@@ -70,8 +70,6 @@ module Api
           end
         end
 
-       
-
         test 'GET #index as student renders all internship applications' do
           internship_offer_2 = create(:weekly_internship_offer_3eme, employer: @internship_application.internship_offer.employer)
           @internship_application_2 = create(:weekly_internship_application, student: @student, internship_offer: internship_offer_2)
@@ -81,7 +79,7 @@ module Api
           }, as: :json
 
           assert_response :success
-        
+
           assert_equal 2, json_response['data'].length
           attributes = json_response.dig('data', 0, 'attributes')
           attributes_2 = json_response.dig('data', 1, 'attributes')
@@ -91,7 +89,7 @@ module Api
           assert_equal @internship_application_2.internship_offer.employer_name, attributes_2['employer_name']
           assert_equal @internship_application_2.internship_offer.title, attributes['internship_offer_title']
           assert_equal @internship_application_2.presenter(@student).internship_offer_address, attributes_2['internship_offer_address']
-          
+
           assert_equal @internship_application.id, json_response.dig('data', 1, 'id').to_i
           assert_equal @internship_application.aasm_state, attributes['state']
           assert_equal @internship_application.internship_offer.employer_name, attributes['employer_name']
@@ -123,7 +121,7 @@ end
 #           @internship_offer = create(:weekly_internship_offer_3eme, employer: @employer)
 #         end
 
-        
+
 #       end
 #     end
 #   end
