@@ -58,18 +58,14 @@ Accept: application/vnd.api+json
 
 ```json
 {
-  "data": {
-    "type": "user",
-    "id": "123",
-    "attributes": {
-      "email": "student@example.com",
-      "first_name": "Camille",
-      "last_name": "Martin",
-      "role": "student",
-      "phone": "+33601020304",
-      "school_id": 87
-    }
-  }
+  "type": "user",
+  "id": "123",
+  "email": "student@example.com",
+  "first_name": "Camille",
+  "last_name": "Martin",
+  "role": "student",
+  "phone": "+33601020304",
+  "school_id": 87
 }
 ```
 
@@ -197,16 +193,14 @@ Exemple :
 
 ```json
 {
-  "internship_application": {
-    "student_phone": "06 11 22 33 44",
-    "student_email": "eleve@example.com",
-    "week_ids": [168, 169],
-    "motivation": "Je suis très motivé pour ce stage.",
-    "student_address": "10 rue de Paris, 91000 Évry",
-    "student_legal_representative_full_name": "Jean Dupont",
-    "student_legal_representative_email": "parent@example.com",
-    "student_legal_representative_phone": "06 12 34 56 78"
-  }
+  "student_phone": "06 11 22 33 44",
+  "student_email": "eleve@example.com",
+  "week_ids": [168, 169],
+  "motivation": "Je suis très motivé pour ce stage.",
+  "student_address": "10 rue de Paris, 91000 Évry",
+  "student_legal_representative_full_name": "Jean Dupont",
+  "student_legal_representative_email": "parent@example.com",
+  "student_legal_representative_phone": "06 12 34 56 78"
 }
 ```
 
@@ -238,8 +232,8 @@ Exemple :
       "selected": true
     }
   ],
-  "created_at": "2025-03-04T10:15:00Z",
-  "updated_at": "2025-03-04T10:15:00Z"
+  "createdAt": "2025-03-04T10:15:00Z",
+  "updatedAt": "2025-03-04T10:15:00Z"
   }
 }
 ```
