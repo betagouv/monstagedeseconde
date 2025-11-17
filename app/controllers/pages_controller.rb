@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PagesController < ApplicationController
+  before_action :set_no_cache_headers, only: %i[doc_api]
+
   WEBINAR_URL = ENV.fetch('WEBINAR_URL').freeze
   layout 'homepage', only: %i[home
                               pro_landing
@@ -141,6 +143,12 @@ class PagesController < ApplicationController
   end
 
   private
+
+  def set_no_cache_headers
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+  end
 
   def link_resolver
     @link_resolver ||= Prismic::LinkResolver.new(nil) do |link|
