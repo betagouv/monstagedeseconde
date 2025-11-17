@@ -71,8 +71,6 @@ module Api
           end
         end
 
-       
-
         test 'GET #index as student renders all internship applications' do
           internship_offer_2 = create(:weekly_internship_offer_3eme, employer: @internship_application.internship_offer.employer)
           @internship_application_2 = create(:weekly_internship_application, student: @student, internship_offer: internship_offer_2)
@@ -124,7 +122,7 @@ end
 #           @internship_offer = create(:weekly_internship_offer_3eme, employer: @employer)
 #         end
 
-        
+
 #       end
 #     end
 #   end

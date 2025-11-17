@@ -1,8 +1,7 @@
 openapi: 3.0.0
 info:
   title: API pour la création d'offres de stage sur https://1eleve1stage.education.gouv.fr/
-  description: API pour la création d'offres de stages à destination des élèves de
-    seconde générale et technologique
+  description: API pour la création d'offres de stages à destination des élèves de seconde générale et technologique
   contact:
     email: etienne.weil@monstagedetroisieme.fr
   version: 1.0.0
@@ -47,24 +46,26 @@ paths:
       x-swagger-router-controller: Developers
     post:
       tags:
-      - developers
+        - developers
       summary: Permet à un élève de postuler à une offre de stage
       description: |
-        Permet à un élève de postuler à une offre de stage en fournissant les informations
-        nécessaires.
+        Permet à un élève de postuler à une offre de stage en fournissant les informations nécessaires.
       operationId: create_internship_application
       parameters:
-      - name: id
-        in: path
-        description: Identifiant de l'offre de stage
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: Identifiant de l'offre de stage
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+            example: 1
       requestBody:
-        $ref: '#/components/requestBodies/InternshipApplication'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InternshipApplication'
       responses:
         "201":
           description: Candidature créée avec succès
@@ -114,7 +115,10 @@ paths:
         Les offres de stages décrits ci-dessous décrivent les offres réservées aux classes de **seconde générale et technologique**
       operationId: internship_offers
       requestBody:
-        $ref: '#/components/requestBodies/InternshipOffer'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/InternshipOffer'
       responses:
         "201":
           description: Offre de stage créée
@@ -224,17 +228,20 @@ paths:
         Mise à jour des offres . Possibilité de désactiver son offre en passant le paramètre published_at à null
       operationId: internship_offers_update
       parameters:
-      - name: remote_id
-        in: path
-        description: "clé étrangère unique , id de l'offre de stage chez le partenaire"
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: remote-123
+        - name: remote_id
+          in: path
+          description: "clé étrangère unique , id de l'offre de stage chez le partenaire"
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: remote-123
       requestBody:
-        $ref: '#/components/requestBodies/InternshipOfferPatch'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/InternshipOfferPatch'
       responses:
         "200":
           description: Offre de stage mise à jour
@@ -337,7 +344,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Sector'
-                x-content-type: application/json
       security:
       - bearerAuth: []
       x-swagger-router-controller: Developers
@@ -349,7 +355,7 @@ paths:
       description: Récupère les candidatures d'un élève identifié par son UUID
       operationId: get_internship_applications_for_student
       parameters:
-        - name: student_id
+        - name: user_id
           in: path
           description: id de l'élève
           required: true
@@ -480,8 +486,8 @@ components:
             $ref: '#/components/schemas/Week'
           description: Liste des identifiants des semaines pour lesquelles l'élève postule
           example:
-            - 2023-W9
-            - 2023-W10
+            - 217
+            - 218
       description: Candidature à une offre de stage
     InternshipOffers:
       type: array
@@ -489,20 +495,19 @@ components:
         $ref: '#/components/schemas/InternshipOffer'
     InternshipOffer:
       required:
-      - city
-      - coordinates
-      - employer_name
-      - is_public
-      - max_candidates
-      - period
-      - remote_id
-      - sector_uuid
-      - street
-      - title
-      - grades
-      - weeks
-      - qpv
-      - rep
+        - city
+        - coordinates
+        - employer_name
+        - is_public
+        - max_candidates
+        - remote_id
+        - sector_uuid
+        - street
+        - title
+        - grades
+        - weeks
+        - qpv
+        - rep
       type: object
       properties:
         remote_id:
@@ -555,6 +560,7 @@ components:
           type: array
           description: Liste des classes dont les élèves peuvent postuler à l'offre de stage
           items:
+            type: string
             $ref: '#/components/schemas/Grade'
         permalink:
           type: string
@@ -585,15 +591,14 @@ components:
           type: array
           items:
             type: string
-            format: <annee_scolaire>-W<no_de_semaine>
           description: Liste des semaines pendant lesquelles l'offre de stage est disponible
           example:
-            - 2023-W12
-            - 2023-W13
+            - 222
+            - 223
       description: offre de stage
       example:
         remote_id: A123-12
-        grade: ['seconde', 'troisieme']
+        grades: ['seconde', 'troisieme']
         city: Paris
         coordinates:
           latitude: 48.866667
@@ -616,8 +621,8 @@ components:
         rep: false
         qpv: true
         weeks:
-          - 2023-W12
-          - 2023-W13
+          - 311
+          - 312
         permalink: http://www.stagechezemployeur.fr
         daily_hours:
           type: object
@@ -670,11 +675,10 @@ components:
     Grade:
       type: string
       enum:
-        - seconde
-        - troisieme
-        - quatrieme
-      example:
-        - seconde
+        - "seconde"
+        - "troisieme"
+        - "quatrieme"
+      example: "seconde"
     Sector:
       type: object
       properties:
@@ -683,7 +687,6 @@ components:
           example: 1
         sector_uuid:
           type: string
-          format: uuid
         name:
           type: string
           example: Mode
@@ -693,128 +696,50 @@ components:
         name: Mode
         id: 1
     InternshipApplicationCreate:
-      type: object
-      properties:
-        InternshipApplication:
-            allOf:
-            - $ref: '#/components/schemas/InternshipApplicationForm'
+      allOf:
+        - $ref: '#/components/schemas/InternshipApplicationForm'
       description: Candidature à une offre de stage (création)
     InternshipApplicationForm:
-      type: object
-      properties:
-        InternshipApplication:
-            allOf:
-            - $ref: '#/components/schemas/InternshipApplication'
-            - type: object
-              properties:
-              created_at:
-                type: null
-              updated_at:
-                type: null
-              id:
-                type: null
-              uuid:
-                type: null
-              aasm_state:
-                type: null
-              submitted_at:
-                type: null
+      allOf:
+        - $ref: '#/components/schemas/InternshipApplication'
+        - type: object
+          properties:
+            created_at:
+              nullable: true
+            updated_at:
+              nullable: true
+            id:
+              nullable: true
+            uuid:
+              nullable: true
+            aasm_state:
+              nullable: true
+            submitted_at:
+              nullable: true
     inline_response_401:
-      type: object
-      properties:
-        code:
-          type: string
-          example: UNAUTHORIZED
-        error:
-          type: string
-          example: access denied
-        status:
-          type: string
-          example: unauthorized
+      type: string
+      example: This resource requires authentication.
     inline_response_403:
-      type: object
-      properties:
-        code:
-          type: string
-          example: FORBIDDEN
-        error:
-          type: string
-          example: access denied
-        status:
-          type: string
-          example: forbidden
+      type: string
+      example: The client does not have access rights to the content
     inline_response_404:
-      type: object
-      properties:
-        code:
-          type: string
-          example: NOT_FOUND
-        error:
-          type: string
-          example: can't find internship_offer with this remote_id
-        status:
-          type: string
-          example: not_found
+      type: string
+      example: The server cannot find the requested resource
     inline_response_406:
-      type: object
-      properties:
-        code:
-          type: string
-          example: VALIDATION_ERROR
-        error:
-          type: string
-          example: Erreur de validation sur l'objet
-        status:
-          type: string
-          example: conflict
+      type: string
+      example: WebBrowser doesn't find any content that conforms to the criteria given by the user agent.
     inline_response_409:
-      type: object
-      properties:
-        code:
-          type: string
-          example: DUPLICATE_WEEKY_FRAMED
-        error:
-          type: string
-          example: period with this remote_id ("A123-2") already exists.
-        status:
-          type: string
-          example: conflict
+      type: string
+      example: This request raises a conflicts with the current state of the server
     inline_response_422:
-      type: object
-      properties:
-        code:
-          type: string
-          example: BAD_ARGUMENT
-        error:
-          type: string
-          example: Erreur sur la requête due à un un paramètre invalide
-        status:
-          type: string
-          example: unprocessable_entity
+      type: string
+      example: The request was directed at a server that is not able to produce a response. 
     inline_response_404_1:
-      type: object
-      properties:
-        code:
-          type: string
-          example: NOT_FOUND
-        error:
-          type: string
-          example: can't find internship_offer with this remote_id
-        status:
-          type: string
-          example: not_found
+      type: string
+      example: Can't find internship_offer with this remote_id
     inline_response_429:
-      type: object
-      properties:
-        code:
-          type: string
-          example: TOO_MANY_REQUESTS
-        error:
-          type: string
-          example: request limit exceeded (100 per minutes)
-        status:
-          type: string
-          example: too_many_requests
+      type: string
+      example: Too many requests in a given amount of time.
     InternshipOffer_coordinates:
       type: object
       properties:
@@ -865,9 +790,8 @@ components:
             type: string
       description: Horaires quotidiens de stage
     Week:
-      type: string
-      format: <annee_scolaire>-W<no_de_semaine>
-      example: 2023-W12
+      type: integer
+      example: 218
       description: Semaine pendant laquelle l'offre de stage est disponible
   responses:
     Unauthorized:
