@@ -22,7 +22,16 @@ module Api
           student_legal_representative_full_name: internship_application.student_legal_representative_full_name,
           student_legal_representative_email: internship_application.student_legal_representative_email,
           student_legal_representative_phone: internship_application.student_legal_representative_phone,
-          weeks: internship_application.weeks.map { |week| "#{week.year}-W#{week.number.to_s.rjust(2, '0')}" },
+          employer_name: internship_application.internship_offer.employer_name,
+          internship_offer_title: internship_application.internship_offer.title,
+          internship_offer_address: internship_application.presenter(internship_application.student).internship_offer_address,
+          weeks: internship_application.weeks.map do |week|
+            {
+              id: week.id,
+              label: week.human_select_text_method,
+              selected: internship_application.week_ids&.include?(week.id)
+            }
+          end,
           created_at: internship_application.created_at.iso8601,
           updated_at: internship_application.updated_at.iso8601
         }

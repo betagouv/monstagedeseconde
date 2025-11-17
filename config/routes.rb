@@ -145,8 +145,6 @@ Rails.application.routes.draw do
           resources :internship_applications, only: %i[index new create], module: :internship_offers # related to current user
         end
         
-        resources :internship_applications, only: %i[index]
-        
         resources :internship_applications, only: %i[index] # related to current user
         resources :schools, only: [] do
           collection do

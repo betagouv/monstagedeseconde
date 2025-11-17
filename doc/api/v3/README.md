@@ -11,7 +11,11 @@ L'authentification reste basée sur un JWT obtenu via `POST /api/v3/auth/login` 
 
 - [Authentification](#authentification)
 - [Endpoints](#endpoints)
-  - [/me – profil de l'utilisateur courant](#ref-me)
+  - [/me – Profil de l'utilisateur courant](#ref-me)
+  - [/internship_offers/:id/internship_applications/new - Formulaire de création de candidture](#ref-new-internship-application)
+  - [/internship_offers/:id/internship_applications/create - Création de candidature ](#ref-create-internship-application)
+  - [/internship_applications/index - Toutes les candidatures](#ref-index-internship-applications)
+  
 
 ## Authentification
 
@@ -257,6 +261,118 @@ Exemple :
 | 403  | L'utilisateur authentifié n'est pas un élève             | ```{"errors":[{"status":"403","code":"FORBIDDEN","detail":"Only students can apply for internship offers"}]}``` |
 | 404  | Offre introuvable                                        | ```{"errors":[{"status":"404","code":"NOT_FOUND","detail":"Internship offer not found"}]}```             |
 | 422  | Erreur de validation (format de téléphone, email, …)     | ```{"errors":[{"status":"422","code":"VALIDATION_ERROR","detail":"Student phone is invalid"}]}```        |
+
+
+
+### <a name="ref-index-internship-applications"></a>
+## Récupérer les candidatures d'un élève
+
+**url** : ```#{baseURL}/internship_applications```
+
+**method** : GET
+
+**Note** : Cette API nécessite une authentification en tant qu'élève (Users::Student). Retourne uniquement les candidatures de l'élève authentifié.
+
+### Exemple curl
+
+``` bash
+curl -H "Authorization: Bearer $API_TOKEN" \
+     -H "Accept: application/json" \
+     -H "Content-type: application/json" \
+     -X GET \
+     -vvv \
+     $ENV/api/v3/internship_applications
+```
+
+### Réponse en cas de succès (200 OK)
+
+``` json
+{
+  "data": [
+    {
+      "type": "internship-application",
+      "id": "123",
+      "attributes": {
+        "uuid": "550e8400-e29b-41d4-a716-446655440000",
+        "student_id": 456,
+        "internship_offer_id": 789,
+        "employer_name": "Ministère de l'Éducation Nationale",
+        "internship_offer_title": "Stage en communication",
+        "internship_offer_address": "110 rue de Grenelle, 75007 Paris",
+        "state": "submitted",
+        "submitted_at": "2025-03-15T10:30:00Z",
+        "motivation": "Je suis très motivé pour ce stage...",
+        "student_phone": "+33601020304",
+        "student_email": "student@example.com",
+        "student_address": "123 rue de la République, 75001 Paris",
+        "student_legal_representative_full_name": "Jean Dupont",
+        "student_legal_representative_email": "parent@example.com",
+        "student_legal_representative_phone": "0612345678",
+        "weeks": [
+          {
+            "id": 168,
+            "label": "Semaine du 16 juin au 20 juin",
+            "selected": true
+          },
+          {
+            "id": 169,
+            "label": "Semaine du 23 juin au 27 juin",
+            "selected": true
+          }
+        ],
+        "createdAt": "2025-03-15T10:30:00Z",
+        "updatedAt": "2025-03-15T10:30:00Z"
+      }
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "totalInternshipApplications": 1,
+      "internshipApplicationsPerPage": 20,
+      "totalPages": 1,
+      "currentPage": 1,
+      "nextPage": null,
+      "prevPage": null,
+      "isFirstPage": true,
+      "isLastPage": true
+    }
+  }
+}
+```
+
+#### Attributs retournés
+
+| Champ                                    | Description                                                      |
+|------------------------------------------|------------------------------------------------------------------|
+| `uuid`                                   | Identifiant unique universel de la candidature                  |
+| `student_id`                            | Identifiant de l'élève candidat                                |
+| `internship_offer_id`                   | Identifiant de l'offre de stage                                |
+| `employer_name`                         | Nom de l'employeur proposant le stage                          |
+| `internship_offer_title`                | Titre de l'offre de stage                                      |
+| `internship_offer_address`              | Adresse complète du lieu de stage                              |
+| `state`                                 | État de la candidature (`submitted`, `approved`, `rejected`, etc.) |
+| `submitted_at`                          | Date de soumission au format ISO 8601                         |
+| `motivation`                            | Lettre de motivation de l'élève                               |
+| `student_phone`                         | Téléphone de l'élève                                           |
+| `student_email`                         | Email de l'élève                                               |
+| `student_address`                       | Adresse de l'élève                                             |
+| `student_legal_representative_full_name`| Nom complet du représentant légal                              |
+| `student_legal_representative_email`    | Email du représentant légal                                   |
+| `student_legal_representative_phone`    | Téléphone du représentant légal                               |
+| `weeks`                                 | Tableau d'objets représentant les semaines sélectionnées. Chaque objet contient `id` (identifiant interne), `label` (libellé lisible, ex. "Semaine du 16 juin au 20 juin"), et `selected` (booléen indiquant si la semaine est sélectionnée) |
+| `createdAt`                             | Date de création de la candidature                            |
+| `updatedAt`                             | Date de dernière modification                                 |
+
+#### Gestion des erreurs
+
+| Code | Description                    | Exemple                                                                                                                          |
+|------|--------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| 401  | Jeton manquant ou invalide     | ```{"errors":[{"status":"401","code":"UNAUTHORIZED","detail":"wrong api token"}]}```                                           |
+
+
+
+
+
 
 
 

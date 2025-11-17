@@ -48,6 +48,7 @@ module Api
             documents_as(endpoint: :'v3/internship_applications/index', state: :ok) do
             assert_response :ok
             assert_response :success
+            assert_response :success
             assert_equal 1, json_response['data'].count
 
             attributes = json_response.dig('data', 0, 'attributes')
@@ -59,40 +60,50 @@ module Api
             assert_equal @internship_application.student_email, attributes['student_email']
             assert_equal @internship_application.student_address, attributes['student_address']
             assert_equal @internship_application.aasm_state, attributes['state']
-            assert_equal @internship_application.submitted_at.utc.iso8601, attributes['submitted_at']
+            assert_equal @internship_application.submitted_at.iso8601, attributes['submitted_at']
             assert_equal @internship_application.motivation, attributes['motivation']
             assert_equal @internship_application.student_legal_representative_email, attributes['student_legal_representative_email']
             assert_equal @internship_application.student_legal_representative_phone, attributes['student_legal_representative_phone']
             assert_equal @internship_application.student_legal_representative_full_name, attributes['student_legal_representative_full_name']
-            assert_equal ["2026-W25", "2026-W26"], attributes['weeks']
+            assert_equal [{"id"=>181, "label"=>"Semaine du 15 juin au 19 juin", "selected"=>true}, {"id"=>182, "label"=>"Semaine du 22 juin au 26 juin", "selected"=>true}], attributes['weeks']
             end
           end
         end
 
        
 
-        test 'GET #index as student renders all internship applications for one internship offer' do
+        test 'GET #index as student renders all internship applications' do
           internship_offer_2 = create(:weekly_internship_offer_3eme, employer: @internship_application.internship_offer.employer)
           @internship_application_2 = create(:weekly_internship_application, student: @student, internship_offer: internship_offer_2)
 
-          get api_v3_internship_offer_internship_applications_path(@internship_offer), params: {
+          get api_v3_internship_applications_path, params: {
             token: "Bearer #{@student_token}",
           }, as: :json
 
           assert_response :success
-          assert_equal 1, json_response['data'].length
+        
+          assert_equal 2, json_response['data'].length
           attributes = json_response.dig('data', 0, 'attributes')
-          assert_equal @internship_application.id, json_response.dig('data', 0, 'id').to_i
+          attributes_2 = json_response.dig('data', 1, 'attributes')
+
+          assert_equal @internship_application_2.id, json_response.dig('data', 0, 'id').to_i
+          assert_equal @internship_application_2.aasm_state, attributes_2['state']
+          assert_equal @internship_application_2.internship_offer.employer_name, attributes_2['employer_name']
+          assert_equal @internship_application_2.internship_offer.title, attributes['internship_offer_title']
+          assert_equal @internship_application_2.presenter(@student).internship_offer_address, attributes_2['internship_offer_address']
+          
+          assert_equal @internship_application.id, json_response.dig('data', 1, 'id').to_i
           assert_equal @internship_application.aasm_state, attributes['state']
           assert_equal @internship_application.internship_offer.employer_name, attributes['employer_name']
-          assert_equal @internship_application.internship_offer.title, attributes['internship_offer_title']
+          assert_equal @internship_application.internship_offer.title, attributes_2['internship_offer_title']
           assert_equal @internship_application.presenter(@student).internship_offer_address, attributes['internship_offer_address']
           # assert_equal @internship_application.presenter(@student).str_weeks, json_response[0]['internship_offer_weeks']
+          # assert_equal @internship_application_2.presenter(@student).str_weeks, json_response[1]['internship_offer_weeks']
         end
 
         test 'GET #index as employer when no application renders no applications for the internship offer' do
           InternshipApplication.destroy_all
-          get api_v3_internship_offer_internship_applications_path(@internship_offer), params: {
+          get api_v3_internship_applications_path, params: {
             token: "Bearer #{@employer_token}",
           }, as: :json
 
