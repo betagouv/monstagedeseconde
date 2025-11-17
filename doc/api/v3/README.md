@@ -11,10 +11,10 @@ L'authentification reste basée sur un JWT obtenu via `POST /api/v3/auth/login` 
 
 - [Authentification](#authentification)
 - [Endpoints](#endpoints)
-  - [/me – Profil de l'utilisateur courant](#ref-me)
-  - [/internship_offers/:id/internship_applications/new - Formulaire de création de candidture](#ref-new-internship-application)
-  - [/internship_offers/:id/internship_applications/create - Création de candidature ](#ref-create-internship-application)
-  - [/internship_applications/index - Toutes les candidatures](#ref-index-internship-applications)
+  - [GET /me – Profil de l'utilisateur courant](#ref-me)
+  - [GET /internship_offers/:id/internship_applications/new – Formulaire de candidature](#ref-new-internship-application)
+  - [POST /internship_offers/:id/internship_applications – Création de candidature](#ref-create-internship-application)
+  - [GET /internship_applications – Toutes les candidatures](#ref-index-internship-applications)
   
 
 ## Authentification
@@ -49,7 +49,7 @@ Utilisez la valeur `attributes.token` dans l'en-tête `Authorization`.
 
 ## Endpoints
 
-### <a name="ref-me"></a> GET `/me` – Profil de l'utilisateur
+### GET `/me` – Profil de l'utilisateur {#ref-me}
 
 Retourne les informations de l'utilisateur authentifié.  
 Disponible pour toutes les classes d'utilisateurs (élève, employeur, opérateur…).
@@ -105,8 +105,7 @@ En cas d'absence ou d'invalidité de token, l'API renvoie :
 }
 ```
 
-### <a name="ref-new-internship-application"></a>
-## Formulaire de candidature
+## Formulaire de candidature {#ref-new-internship-application}
 
 **url** : ```#{baseURL}/internship_offers/:internship_offer_id/internship_applications/nouveau```
 
@@ -133,30 +132,24 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 
 ``` json
 {
-  "data": {
-    "type": "internship-application-form",
-    "id": "new",
-    "attributes": {
-      "student_phone": null,
-      "student_email": "yvan@email.fr",
-      "representative_full_name": null,
-      "representative_email": null,
-      "representative_phone": null,
-      "motivation": "",
-      "weeks": [
-        {
-            "id": 168,
-            "label": "Semaine du 16 mars au 20 mars",
-            "selected": false
-        },
-        {
-            "id": 169,
-            "label": "Semaine du 23 mars au 27 mars",
-            "selected": false
-        }
-      ]
+  "student_phone": null,
+  "student_email": "yvan@email.fr",
+  "representative_full_name": null,
+  "representative_email": null,
+  "representative_phone": null,
+  "motivation": "",
+  "weeks": [
+    {
+        "id": 168,
+        "label": "Semaine du 16 mars au 20 mars",
+        "selected": false
+    },
+    {
+        "id": 169,
+        "label": "Semaine du 23 mars au 27 mars",
+        "selected": false
     }
-  }
+  ]
 }
 ```
 
@@ -183,8 +176,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 | 404  | Offre introuvable                              | ```{"errors": [{ "status": "404", "code": "NOT_FOUND", "detail": "Internship offer not found" }]}```        |
 
 
-### <a name="ref-create-internship-application"></a>
-## Créer une candidature
+## Créer une candidature {#ref-create-internship-application}
 
 **url** : `#{baseURL}/internship_offers/:internship_offer_id/internship_applications`
 
@@ -228,26 +220,32 @@ Exemple :
 
 ```json
 {
-  "data": {
-    "type": "internship-application",
-    "id": "987",
-    "attributes": {
-      "uuid": "6b56c...",
-      "internship_offer_id": 123,
-      "student_id": 42,
-      "state": "submitted",
-      "submitted_at": "2025-03-04T10:15:00Z",
-      "motivation": "Je suis très motivé pour ce stage.",
-      "student_phone": "+33611223344",
-      "student_email": "eleve@example.com",
-      "student_address": "10 rue de Paris, 91000 Évry",
-      "student_legal_representative_full_name": "Jean Dupont",
-      "student_legal_representative_email": "parent@example.com",
-      "student_legal_representative_phone": "+33612345678",
-      "weeks": ["2025-W12", "2025-W13"],
-      "created_at": "2025-03-04T10:15:00Z",
-      "updated_at": "2025-03-04T10:15:00Z"
+  "uuid": "6b56c...",
+  "internship_offer_id": 123,
+  "student_id": 42,
+  "state": "submitted",
+  "submitted_at": "2025-03-04T10:15:00Z",
+  "motivation": "Je suis très motivé pour ce stage.",
+  "student_phone": "+33611223344",
+  "student_email": "eleve@example.com",
+  "student_address": "10 rue de Paris, 91000 Évry",
+  "student_legal_representative_full_name": "Jean Dupont",
+  "student_legal_representative_email": "parent@example.com",
+  "student_legal_representative_phone": "+33612345678",
+  "weeks": [
+    {
+      "id": 168,
+      "label": "Semaine du 16 juin au 20 juin",
+      "selected": true
+    },
+    {
+      "id": 169,
+      "label": "Semaine du 23 juin au 27 juin",
+      "selected": true
     }
+  ],
+  "created_at": "2025-03-04T10:15:00Z",
+  "updated_at": "2025-03-04T10:15:00Z"
   }
 }
 ```
@@ -264,14 +262,13 @@ Exemple :
 
 
 
-### <a name="ref-index-internship-applications"></a>
-## Récupérer les candidatures d'un élève
+## Récupérer les candidatures d'un élève {#ref-index-internship-applications}
 
 **url** : ```#{baseURL}/internship_applications```
 
 **method** : GET
 
-**Note** : Cette API nécessite une authentification en tant qu'élève (Users::Student). Retourne uniquement les candidatures de l'élève authentifié.
+**Note** : Cette API nécessite une authentification en tant qu'élève (Users::Student). Retourne uniquement les candidatures de l'élève authentifié sans pagination.
 
 ### Exemple curl
 
@@ -288,56 +285,38 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 
 ``` json
 {
-  "data": [
+
+  "uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "student_id": 456,
+  "internship_offer_id": 789,
+  "employer_name": "Ministère de l'Éducation Nationale",
+  "internship_offer_title": "Stage en communication",
+  "internship_offer_address": "110 rue de Grenelle, 75007 Paris",
+  "state": "submitted",
+  "submitted_at": "2025-03-15T10:30:00Z",
+  "motivation": "Je suis très motivé pour ce stage...",
+  "student_phone": "+33601020304",
+  "student_email": "student@example.com",
+  "student_address": "123 rue de la République, 75001 Paris",
+  "student_legal_representative_full_name": "Jean Dupont",
+  "student_legal_representative_email": "parent@example.com",
+  "student_legal_representative_phone": "0612345678",
+  "weeks": [
     {
-      "type": "internship-application",
-      "id": "123",
-      "attributes": {
-        "uuid": "550e8400-e29b-41d4-a716-446655440000",
-        "student_id": 456,
-        "internship_offer_id": 789,
-        "employer_name": "Ministère de l'Éducation Nationale",
-        "internship_offer_title": "Stage en communication",
-        "internship_offer_address": "110 rue de Grenelle, 75007 Paris",
-        "state": "submitted",
-        "submitted_at": "2025-03-15T10:30:00Z",
-        "motivation": "Je suis très motivé pour ce stage...",
-        "student_phone": "+33601020304",
-        "student_email": "student@example.com",
-        "student_address": "123 rue de la République, 75001 Paris",
-        "student_legal_representative_full_name": "Jean Dupont",
-        "student_legal_representative_email": "parent@example.com",
-        "student_legal_representative_phone": "0612345678",
-        "weeks": [
-          {
-            "id": 168,
-            "label": "Semaine du 16 juin au 20 juin",
-            "selected": true
-          },
-          {
-            "id": 169,
-            "label": "Semaine du 23 juin au 27 juin",
-            "selected": true
-          }
-        ],
-        "createdAt": "2025-03-15T10:30:00Z",
-        "updatedAt": "2025-03-15T10:30:00Z"
-      }
+      "id": 168,
+      "label": "Semaine du 16 juin au 20 juin",
+      "selected": true
+    },
+    {
+      "id": 169,
+      "label": "Semaine du 23 juin au 27 juin",
+      "selected": true
     }
   ],
-  "meta": {
-    "pagination": {
-      "totalInternshipApplications": 1,
-      "internshipApplicationsPerPage": 20,
-      "totalPages": 1,
-      "currentPage": 1,
-      "nextPage": null,
-      "prevPage": null,
-      "isFirstPage": true,
-      "isLastPage": true
-    }
-  }
+  "createdAt": "2025-03-15T10:30:00Z",
+  "updatedAt": "2025-03-15T10:30:00Z"
 }
+
 ```
 
 #### Attributs retournés
