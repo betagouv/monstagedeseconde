@@ -63,7 +63,6 @@ gem "sentry-sidekiq"
 gem "bitly"
 gem "mime-types"
 gem "prismic.io", require: "prismic"
-gem "scalar_ruby"
 
 # acl
 gem "cancancan"
@@ -113,6 +112,8 @@ group :development do
   gem "jupyter_on_rails"
   gem "letter_opener_web"
   gem "spring", "3.0.0"
+
+  gem "openapi3_parser"
 end
 
 group :test do
