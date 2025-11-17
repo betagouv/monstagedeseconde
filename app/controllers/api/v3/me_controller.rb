@@ -23,7 +23,7 @@ module Api
           email: user.email,
           first_name: user.first_name,
           last_name: user.last_name,
-          role: user.class.name.demodulize.underscore,
+          role: user.class.name.demodulize.underscore.downcase,
           phone: user.try(:phone),
           school_id: user.try(:school_id),
           operator_id: user.try(:operator_id)
