@@ -560,7 +560,6 @@ components:
           type: array
           description: Liste des classes dont les élèves peuvent postuler à l'offre de stage
           items:
-            type: string
             $ref: '#/components/schemas/Grade'
         permalink:
           type: string
