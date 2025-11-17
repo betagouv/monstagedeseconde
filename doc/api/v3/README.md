@@ -33,15 +33,9 @@ Réponse :
 
 ```json
 {
-  "data": {
-    "type": "auth-token",
-    "id": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "attributes": {
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-      "user_id": 123,
-      "issued_at": "2025-03-01T09:30:00Z"
-    }
-  }
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user_id": 123,
+  "issued_at": "2025-03-01T09:30:00Z"
 }
 ```
 

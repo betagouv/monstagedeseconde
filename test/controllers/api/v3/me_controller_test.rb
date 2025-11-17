@@ -21,7 +21,7 @@ module Api
 
       test 'GET #show as student returns current user data' do
         post api_v3_auth_login_path(email: @student.email, password: @student.password)
-        token = json_response['id']
+        token = json_response['token']
 
         get api_v3_me_path(token: "Bearer #{token}")
 
@@ -35,7 +35,7 @@ module Api
       test 'GET #show as employer returns current user data' do
         @employer = create(:employer)
         post api_v3_auth_login_path(email: @employer.email, password: @employer.password)
-        token = json_response['id']
+        token = json_response['token']
 
         get api_v3_me_path(token: "Bearer #{token}")
 
@@ -49,7 +49,7 @@ module Api
       test 'GET #show as operator returns current user data' do
         @operator = create(:user_operator)
         post api_v3_auth_login_path(email: @operator.email, password: @operator.password)
-        token = json_response['id']
+        token = json_response['token']
 
         get api_v3_me_path(token: "Bearer #{token}")
 

@@ -10,7 +10,7 @@ module Api
         setup do
           @student = create(:student_with_class_room_3e)
           post api_v3_auth_login_path(email: @student.email, password: @student.password)
-          @token = json_response.dig('id')
+          @token = json_response['token']
 
           @employer = create(:employer)
           @internship_offer = create(:weekly_internship_offer_3eme, employer: @employer)
@@ -27,7 +27,7 @@ module Api
         test 'GET #new as employer without token renders :unauthorized payload' do
           @employer = create(:employer)
           post api_v3_auth_login_path(email: @employer.email, password: @employer.password)
-          @token = json_response.dig('id')
+          @token = json_response['token']
         
           get new_api_v3_internship_offer_internship_application_path(internship_offer_id: @internship_offer.id), params: {
             token: "Bearer #{@token}"
@@ -115,7 +115,6 @@ module Api
 
           assert_response :success
 
-          attributes = json_response
           assert_equal @student.phone, json_response['student_phone']
           assert_equal @student.email, json_response['student_email']
           assert_equal @student.legal_representative_full_name, json_response['representative_full_name']

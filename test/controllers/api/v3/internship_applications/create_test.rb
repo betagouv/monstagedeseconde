@@ -11,7 +11,7 @@ module Api
         setup do
           @student = create(:student_with_class_room_3e)
           post api_v3_auth_login_path(email: @student.email, password: @student.password)
-          @token = json_response.dig('id')
+          @token = json_response['token']
           
           @employer = create(:employer)
           @sector = create(:sector)
@@ -43,7 +43,7 @@ module Api
         test 'POST #create as employer it renders :unauthorized payload' do
           @employer = create(:employer)
           post api_v3_auth_login_path(email: @employer.email, password: @employer.password)
-          @token = json_response.dig('id')
+          @token = json_response['token']
 
           post api_v3_internship_offer_internship_applications_path(@internship_offer), params: {
             token: "Bearer #{@token}"
@@ -96,7 +96,7 @@ module Api
         test 'POST #create as operator (not student) renders :forbidden' do
           operator = create(:user_operator, email: 'operator@example.com', password: 'Password123!')
           post api_v3_auth_login_path(email: operator.email, password: operator.password)
-          operator_token = json_response.dig('id')
+          operator_token = json_response['token']
           student = create(:student)
 
           application_params = {

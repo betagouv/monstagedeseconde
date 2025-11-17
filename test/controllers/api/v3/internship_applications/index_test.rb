@@ -10,11 +10,11 @@ module Api
           @employer = create(:employer)
           post api_v3_auth_login_path(email: @employer.email, password: @employer.password)
           
-          @employer_token = json_response.dig('id')
+          @employer_token = json_response['token']
 
           @student = create(:student, :seconde)
           post api_v3_auth_login_path(email: @student.email, password: @student.password)
-          @student_token = json_response.dig('id')
+          @student_token = json_response['token']
 
           @internship_offer = create(:weekly_internship_offer, :both_weeks, employer: @employer, grades: [Grade.seconde])
           @internship_application = create(:weekly_internship_application, :both_june_weeks, internship_offer: @internship_offer, student: @student)

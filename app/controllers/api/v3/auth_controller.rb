@@ -9,15 +9,10 @@ module Api
 
         if user&.valid_password?(params[:password])
           token = JwtAuth.encode(user_id: user.id)
-          render_jsonapi_resource(
-            type: 'auth-token',
-            record: {
-              id: token,
+          render json: {
               token: token,
               user_id: user.id,
-              issued_at: Time.current.iso8601
-            }
-          )
+              issued_at: Time.current.iso8601}, status: :ok
         else
           render_jsonapi_error(
             code: 'UNAUTHORIZED',
