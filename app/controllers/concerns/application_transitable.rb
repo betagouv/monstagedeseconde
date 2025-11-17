@@ -6,7 +6,7 @@ module ApplicationTransitable
     # params[:sgid] is used in short-living links for students when choosing to accept or reject an offer
     def update
       authenticate_user! unless params[:sgid].present? || params[:token].present?
-      authorize_through_sgid? || (@internship_application.present? && (authorize_through_token? || authorize!(:update, @internship_application)))
+      authorize_through_sgid? || (@internship_application.present? && authorize_through_token?) || authorize!(:update, @internship_application)
       transition_valid = if current_user
                            current_user.valid_transition?(params[:transition])
                          else
