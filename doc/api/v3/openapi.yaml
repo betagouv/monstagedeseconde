@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: API pour la création d'offres de stage sur https://1eleve1stage.education.gouv.fr/
-  description: API pour la création d'offres de stages à destination des élèves de seconde générale et technologique
+  description: API pour la création d'offres de stages à destination des élèves de seconde générale et technologiques
   contact:
     email: etienne.weil@monstagedetroisieme.fr
   version: 1.0.0
