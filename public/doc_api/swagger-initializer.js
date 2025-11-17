@@ -6,11 +6,10 @@ window.onload = function () {
     url: "openapi.yaml",
     dom_id: "#swagger-ui",
     deepLinking: true,
-    displayRequestDuration: false,
-    showExtensions: false,
-    showCommonExtensions: false,
-    tryItOutEnabled: false,
-    requestInterceptor: () => false, // Bloque toutes les requêtes
+    validatorUrl: null, // Désactive validation externe
+    showMutatedRequest: false, // Désactive la validation des requêtes
+    supportedSubmitMethods: [], // Désactive les tests d'API
+    tryItOutEnabled: false, // Désactive "Try it out"
     deepLinking: true,
     presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
     plugins: [SwaggerUIBundle.plugins.DownloadUrl],
