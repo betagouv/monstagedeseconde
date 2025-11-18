@@ -270,7 +270,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 ### Réponse en cas de succès (200 OK)
 
 ``` json
-{
+[{
 
   "uuid": "550e8400-e29b-41d4-a716-446655440000",
   "student_id": 456,
@@ -301,7 +301,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
   ],
   "createdAt": "2025-03-15T10:30:00Z",
   "updatedAt": "2025-03-15T10:30:00Z"
-}
+}]
 
 ```
 
