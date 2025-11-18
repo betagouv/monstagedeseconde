@@ -652,15 +652,15 @@ components:
           type: string
           example: not_found
         detail:
-        type: string
-        example: Can't find internship_offer with this remote_id
+          type: string
+          example: Can't find internship_offer with this remote_id
     inline_response_429:
       type: object
       properties:
-        status: 
+        status:
           type: string
           example: "429"
-        code: 
+        code:
           type: string
           example: too_many_requests
         detail:
