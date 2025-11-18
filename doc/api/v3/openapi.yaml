@@ -11,16 +11,16 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: developers
+- name: developpers
   description: Operations accessibles aux développeurs disposant d'une clé API. Celle-ci
     peut être fournie sur demande à l'adresse email contact @ 1eleve1stage.education.gouv.fr
 paths:
   /auth/login:
     post:
       tags:
-      - developers
-      summary: Authentifie un utilisateur et retourne un ten JWT
-      description: Authentifie un utilisateur avec son email et son mot de passe, et retourne un ten JWT pour les requêtes futures
+      - developpers
+      summary: Authentifie un utilisateur et retourne un token JWT
+      description: Authentifie un utilisateur avec son email et son mot de passe, et retourne un token JWT pour les requêtes futures
       operationId: login
       requestBody:
         content:
@@ -44,7 +44,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  ten:
+                  token:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5ciOiJKV1QiLCJ9...
         "401":
@@ -53,11 +53,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_401'
-      x-swagger-router-controller: Developers
+      x-swagger-router-controller: developpers
   /me:
     get:
       tags:
-      - developers
+      - developpers
       summary: Récupère les informations de l'utilisateur courant
       description: Récupère les informations de l'utilisateur courant identifié par sa clé API
       operationId: current_api_user
@@ -77,11 +77,11 @@ paths:
 
       security:
       - bearerAuth: []
-      x-swagger-router-controller: Developers
+      x-swagger-router-controller: developpers
   /internship_offers/{internship_offer_id}/internship_applications/nouveau:
     get:
       tags:
-      - developers
+      - developpers
       summary: Récupère le formulaire de création d'une nouvelle candidature pour une offre de stage donnée
       description: Récupère le formulaire de création d'une nouvelle candidature pour une offre de stage identifiée par son ID
       operationId: new_internship_application_for_internship_offer
@@ -116,11 +116,11 @@ paths:
                 $ref: '#/components/schemas/inline_response_404'
       security:
       - bearerAuth: []
-      x-swagger-router-controller: Developers
+      x-swagger-router-controller: developpers
   /internship_offers/{internship_offer_id}/internship_applications:
     post:
       tags:
-        - developers
+        - developpers
       summary: Permet à un élève de postuler à une offre de stage
       description: |
         Permet à un élève de postuler à une offre de stage en fournissant les informations nécessaires.
@@ -179,11 +179,11 @@ paths:
                 $ref: '#/components/schemas/inline_response_422'
       security:
         - bearerAuth: []
-      x-swagger-router-controller: Developers
+      x-swagger-router-controller: developpers
   /users/{user_id}/internship_applications:
     get:
       tags:
-      - developers
+      - developpers
       summary: Récupère les candidatures d'un élève
       description: Récupère les candidatures d'un élève identifié par son UUID
       operationId: get_internship_applications_for_student
@@ -208,7 +208,7 @@ paths:
                   $ref: '#/components/schemas/InternshipApplication'
       security:
         - bearerAuth: []
-      x-swagger-router-controller: Developers
+      x-swagger-router-controller: developpers
   /internship_applications:
     get:
       summary: Liste les candidatures de l'utilisateur courant
@@ -563,7 +563,7 @@ components:
           example: 456
     inline_response_401:
       type: string
-      example: Wrong api ten.
+      example: Wrong api key or invalid token
     inline_response_403:
       type: string
       example: The client does not have access rights to the content

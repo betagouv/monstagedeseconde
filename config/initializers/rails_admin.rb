@@ -123,7 +123,7 @@ RailsAdmin.config do |config|
     'Sidekiq' => '/sidekiq',
     'Feature flip' => '/admin/flipper/',
     'AB Testing' => '/split',
-    'swagger' => '/doc_api'
+    'swagger' => '/doc_api/'
   }
   if ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true' && !Rails.env.production?
     config.navigation_static_links.merge!(
