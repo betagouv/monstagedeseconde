@@ -19,10 +19,7 @@ module Api
           internship_application_payload(application)
         end
 
-        render_jsonapi_collection(
-          type: 'internship-application',
-          records: formatted_applications
-        )
+        render json: formatted_applications
       end
     end
   end

@@ -25,7 +25,6 @@ module Api
           get api_v3_internship_applications_path(params: {})
           documents_as(endpoint: :'v3/internship_applications/index', state: :unauthorized) do
             assert_response :unauthorized
-            puts json_response.inspect
             assert_equal 'UNAUTHORIZED', json_response[0]['code']
             assert_equal 'wrong api token', json_response[0]['detail']
           end
@@ -53,21 +52,20 @@ module Api
             assert_response :success
             assert_equal 1, json_response.count
 
-            attributes = json_response.dig(0, 'attributes')
-            assert_equal @internship_application.user_id, attributes['student_id']
-            assert_equal @internship_application.uuid, attributes['uuid']
-            assert_equal @internship_application.id, json_response.dig(0, 'id').to_i
-            assert_equal @internship_application.internship_offer_id, attributes['internship_offer_id']
-            assert_equal @internship_application.student_phone, attributes['student_phone']
-            assert_equal @internship_application.student_email, attributes['student_email']
-            assert_equal @internship_application.student_address, attributes['student_address']
-            assert_equal @internship_application.aasm_state, attributes['state']
-            assert_equal @internship_application.submitted_at.iso8601, attributes['submitted_at']
-            assert_equal @internship_application.motivation, attributes['motivation']
-            assert_equal @internship_application.student_legal_representative_email, attributes['student_legal_representative_email']
-            assert_equal @internship_application.student_legal_representative_phone, attributes['student_legal_representative_phone']
-            assert_equal @internship_application.student_legal_representative_full_name, attributes['student_legal_representative_full_name']
-            assert_equal [{"id"=>181, "label"=>"Semaine du 15 juin au 19 juin", "selected"=>true}, {"id"=>182, "label"=>"Semaine du 22 juin au 26 juin", "selected"=>true}], attributes['weeks']
+            assert_equal @internship_application.user_id, json_response[0]['student_id']
+            assert_equal @internship_application.uuid, json_response[0]['uuid']
+            assert_equal @internship_application.id, json_response[0]['id']
+            assert_equal @internship_application.internship_offer_id, json_response[0]['internship_offer_id']
+            assert_equal @internship_application.student_phone, json_response[0]['student_phone']
+            assert_equal @internship_application.student_email, json_response[0]['student_email']
+            assert_equal @internship_application.student_address, json_response[0]['student_address']
+            assert_equal @internship_application.aasm_state, json_response[0]['state']
+            assert_equal @internship_application.submitted_at.iso8601, json_response[0]['submitted_at']
+            assert_equal @internship_application.motivation, json_response[0]['motivation']
+            assert_equal @internship_application.student_legal_representative_email, json_response[0]['student_legal_representative_email']
+            assert_equal @internship_application.student_legal_representative_phone, json_response[0]['student_legal_representative_phone']
+            assert_equal @internship_application.student_legal_representative_full_name, json_response[0]['student_legal_representative_full_name']
+            assert_equal [{"id"=>181, "label"=>"Semaine du 15 juin au 19 juin", "selected"=>true}, {"id"=>182, "label"=>"Semaine du 22 juin au 26 juin", "selected"=>true}], json_response[0]['weeks']
             end
           end
         end
@@ -83,20 +81,18 @@ module Api
           assert_response :success
         
           assert_equal 2, json_response.length
-          attributes = json_response.dig(0, 'attributes')
-          attributes_2 = json_response.dig(1, 'attributes')
 
-          assert_equal @internship_application_2.id, json_response.dig(0, 'id').to_i
-          assert_equal @internship_application_2.aasm_state, attributes_2['state']
-          assert_equal @internship_application_2.internship_offer.employer_name, attributes_2['employer_name']
-          assert_equal @internship_application_2.internship_offer.title, attributes['internship_offer_title']
-          assert_equal @internship_application_2.presenter(@student).internship_offer_address, attributes_2['internship_offer_address']
+          assert_equal @internship_application_2.id, json_response[0]['id']
+          assert_equal @internship_application_2.aasm_state, json_response[0]['state']
+          assert_equal @internship_application_2.internship_offer.employer_name, json_response[0]['employer_name']
+          assert_equal @internship_application_2.internship_offer.title, json_response[0]['internship_offer_title']
+          assert_equal @internship_application_2.presenter(@student).internship_offer_address, json_response[0]['internship_offer_address']
           
-          assert_equal @internship_application.id, json_response.dig(1, 'id').to_i
-          assert_equal @internship_application.aasm_state, attributes['state']
-          assert_equal @internship_application.internship_offer.employer_name, attributes['employer_name']
-          assert_equal @internship_application.internship_offer.title, attributes_2['internship_offer_title']
-          assert_equal @internship_application.presenter(@student).internship_offer_address, attributes['internship_offer_address']
+          assert_equal @internship_application.id, json_response[1]['id']
+          assert_equal @internship_application.aasm_state, json_response[1]['state']
+          assert_equal @internship_application.internship_offer.employer_name, json_response[1]['employer_name']
+          assert_equal @internship_application.internship_offer.title, json_response[1]['internship_offer_title']
+          assert_equal @internship_application.presenter(@student).internship_offer_address, json_response[1]['internship_offer_address']
           # assert_equal @internship_application.presenter(@student).str_weeks, json_response[0]['internship_offer_weeks']
           # assert_equal @internship_application_2.presenter(@student).str_weeks, json_response[1]['internship_offer_weeks']
         end
