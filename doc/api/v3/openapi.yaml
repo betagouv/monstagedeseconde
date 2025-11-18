@@ -19,8 +19,8 @@ paths:
     post:
       tags:
       - developpers
-      summary: Authentifie un utilisateur et retourne un ten JWT
-      description: Authentifie un utilisateur avec son email et son mot de passe, et retourne un ten JWT pour les requêtes futures
+      summary: Authentifie un utilisateur et retourne un token JWT
+      description: Authentifie un utilisateur avec son email et son mot de passe, et retourne un token JWT pour les requêtes futures
       operationId: login
       requestBody:
         content:
@@ -44,7 +44,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  ten:
+                  token:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5ciOiJKV1QiLCJ9...
         "401":
