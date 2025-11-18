@@ -84,13 +84,11 @@ Attributs retournés :
 En cas d'absence ou d'invalidité de token, l'API renvoie :
 
 ```json
-{
-  "errors": [
-    {
-      "status": "401",
-      "code": "UNAUTHORIZED",
-      "detail": "wrong api token"
-    }
+{ 
+  [
+    "status": "401",
+    "code": "UNAUTHORIZED",
+    "detail": "wrong api token"
   ]
 }
 ```
@@ -161,9 +159,9 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 
 | Code | Description                                    | Exemple                                                                                                                                          |
 |------|------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| 401  | Jeton manquant ou invalide                     | ```{"errors": [{ "status": "401", "code": "UNAUTHORIZED", "detail": "wrong api token" }]}```                 |
-| 403  | L'utilisateur authentifié n'est pas un élève   | ```{"errors": [{ "status": "403", "code": "FORBIDDEN", "detail": "Only students can apply for internship offers" }]}``` |
-| 404  | Offre introuvable                              | ```{"errors": [{ "status": "404", "code": "NOT_FOUND", "detail": "Internship offer not found" }]}```        |
+| 401  | Jeton manquant ou invalide                     | ```{["status": "401", "code": "UNAUTHORIZED", "detail": "wrong api token"}]```                 |
+| 403  | L'utilisateur authentifié n'est pas un élève   | ```{["status": "403", "code": "FORBIDDEN", "detail": "Only students can apply for internship offers"}]``` |
+| 404  | Offre introuvable                              | ```{["status": "404", "code": "NOT_FOUND", "detail": "Internship offer not found"}]```        |
 
 
 ## Créer une candidature {#ref-create-internship-application}
@@ -242,11 +240,11 @@ Exemple :
 
 | Code | Description                                              | Exemple                                                                                                  |
 |------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| 400  | Paramètre requis manquant                                | ```{"errors":[{"status":"400","code":"MISSING_PARAMETER","detail":"Missing required parameter: week_ids"}]}``` |
-| 401  | Jeton manquant ou invalide                               | ```{"errors":[{"status":"401","code":"UNAUTHORIZED","detail":"wrong api token"}]}```                     |
-| 403  | L'utilisateur authentifié n'est pas un élève             | ```{"errors":[{"status":"403","code":"FORBIDDEN","detail":"Only students can apply for internship offers"}]}``` |
-| 404  | Offre introuvable                                        | ```{"errors":[{"status":"404","code":"NOT_FOUND","detail":"Internship offer not found"}]}```             |
-| 422  | Erreur de validation (format de téléphone, email, …)     | ```{"errors":[{"status":"422","code":"VALIDATION_ERROR","detail":"Student phone is invalid"}]}```        |
+| 400  | Paramètre requis manquant                                | ```[{"status":"400","code":"MISSING_PARAMETER","detail":"Missing required parameter: week_ids"}]``` |
+| 401  | Jeton manquant ou invalide                               | ```[{"status":"401","code":"UNAUTHORIZED","detail":"wrong api token"}]```                     |
+| 403  | L'utilisateur authentifié n'est pas un élève             | ```[{"status":"403","code":"FORBIDDEN","detail":"Only students can apply for internship offers"}]``` |
+| 404  | Offre introuvable                                        | ```[{"status":"404","code":"NOT_FOUND","detail":"Internship offer not found"}]```             |
+| 422  | Erreur de validation (format de téléphone, email, …)     | ```[{"status":"422","code":"VALIDATION_ERROR","detail":"Student phone is invalid"}]```        |
 
 
 
@@ -334,7 +332,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 
 | Code | Description                    | Exemple                                                                                                                          |
 |------|--------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| 401  | Jeton manquant ou invalide     | ```{"errors":[{"status":"401","code":"UNAUTHORIZED","detail":"wrong api token"}]}```                                           |
+| 401  | Jeton manquant ou invalide     | ```{["status":"401","code":"UNAUTHORIZED","detail":"wrong api token"]}```                                           |
 
 
 

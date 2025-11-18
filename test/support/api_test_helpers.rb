@@ -16,11 +16,11 @@ module ApiTestHelpers
   end
 
   def json_code
-    json_response['code'] || json_response.dig('errors', 0, 'code')
+    json_response[0]['code']
   end
 
   def json_error
-    json_response['error'] || json_response.dig('errors', 0, 'detail')
+    json_response[0]['detail']
   end
 
   def json_errors

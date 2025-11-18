@@ -25,8 +25,9 @@ module Api
           get api_v3_internship_applications_path(params: {})
           documents_as(endpoint: :'v3/internship_applications/index', state: :unauthorized) do
             assert_response :unauthorized
-            assert_equal 'UNAUTHORIZED', json_code
-            assert_equal 'wrong api token', json_error
+            puts json_response.inspect
+            assert_equal 'UNAUTHORIZED', json_response[0]['code']
+            assert_equal 'wrong api token', json_response[0]['detail']
           end
         end
 
@@ -36,8 +37,8 @@ module Api
             })
           documents_as(endpoint: :'v3/internship_applications/index', state: :unauthorized) do
             assert_response :unauthorized
-            assert_equal 'UNAUTHORIZED', json_code
-            assert_equal 'wrong api token', json_error
+            assert_equal 'UNAUTHORIZED', json_response[0]['code']
+            assert_equal 'wrong api token', json_response[0]['detail']
           end
         end
 

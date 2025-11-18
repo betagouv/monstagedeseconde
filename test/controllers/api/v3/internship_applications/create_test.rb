@@ -121,7 +121,6 @@ module Api
           assert_response :forbidden
           assert_equal 'FORBIDDEN', json_code
           assert_equal 'Only students can apply for internship offers', json_error
-          assert json_response['errors'].present?
         end
 
         test 'POST #create with missing internship_offer_id renders :not_found' do
@@ -189,7 +188,6 @@ module Api
 
           assert_response :unprocessable_entity
           assert_equal 'VALIDATION_ERROR', json_code
-          assert json_response['errors'].present?
         end
 
         test 'POST #create with invalid phone number renders :unprocessable_entity' do
@@ -212,7 +210,7 @@ module Api
 
           assert_response :unprocessable_entity
           assert_equal 'VALIDATION_ERROR', json_code
-          assert json_error_details.any? { |detail| detail.include?('téléphone') }
+          assert json_response[0]['detail'].include?('téléphone')
         end
 
         test 'POST #create with empty week_ids renders :unprocessable_entity' do

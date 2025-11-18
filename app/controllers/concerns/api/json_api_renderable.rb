@@ -37,7 +37,7 @@ module Api
         normalize_jsonapi_error(error, default_status: status)
       end
 
-      render json: { errors: normalized_errors }, status: status
+      render json: normalized_errors, status: status
     end
 
     def render_error(code:, error:, status:)
