@@ -294,8 +294,7 @@ components:
         week_ids:
           type: array
           items:
-            $ref: '#/components/schemas/Week'
-          description: Liste des identifiants des semaines pour lesquelles l'élève postule
+            type: integer
           example:
             - 217
             - 218
@@ -444,44 +443,21 @@ components:
           - 312
         permalink: http://www.stagechezemployeur.fr
         daily_hours:
-          type: object
-          description: Horaires de stage
-          properties:
-            lundi:
-              type: array
-              items:
-                type: string
-              example:
-              - "9:00"
-              - "18:00"
-            mardi:
-              type: array
-              items:
-                type: string
-              example:
-              - "9:00"
-              - "18:00"
-            mercredi:
-              type: array
-              items:
-                type: string
-              example:
-              - "9:00"
-              - "18:00"
-            jeudi:
-              type: array
-              items:
-                type: string
-              example:
-              - "9:00"
-              - "18:00"
-            vendredi:
-              type: array
-              items:
-                type: string
-              example:
-              - "9:00"
-              - "18:00"
+          - lundi:
+            - "9:00"
+            - "18:00"
+          - mardi:
+            - "9:00"
+            - "18:00"
+          - mercredi:
+            - "9:00"
+            - "18:00"
+          - jeudi:
+            - "9:00"
+            - "18:00"
+          - vendredi:
+            - "9:00"
+            - "18:00"
     InternshipOfferPatch:
       allOf:
       - type: object
@@ -550,10 +526,10 @@ components:
           type: string
           format: email
           example: user@example.com
-        first name:
+        first_name:
           type: string
           example: John
-        last name:
+        last_name:
           type: string
           example: Doe
         role:
