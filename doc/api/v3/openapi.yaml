@@ -108,7 +108,40 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternshipApplicationForm'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: new
+                  student_phone:
+                    type: string
+                    example: "+330606068178"
+                  student_email:
+                    type: string
+                    example: "student@ms2e.fr"
+                  representative_full_name:
+                    type: string
+                    example: "Martin Laroche"
+                  representative_email:
+                    type: string
+                    example: "martin@gmail.com"
+                  representative_phone:
+                    type: string
+                    example: "0600223344"
+                  motivation:
+                    type: string
+                    example: ""
+                  weeks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Week'
+                    example:
+                      - id: 755
+                        label: "Semaine du 15 juin au 19 juin"
+                        selected: false
+                      - id: 756
+                        label: "Semaine du 22 juin au 26 juin"
+                        selected: false
         "401":
           description: l'authentification a échoué
           content:
