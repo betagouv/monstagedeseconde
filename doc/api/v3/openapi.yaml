@@ -373,13 +373,17 @@ components:
           type: string
           maxLength: 50
           example: "+330612345678"
-        week_ids:
+        weeks:
           type: array
           items:
-            type: integer
+            $ref: '#/components/schemas/Week'
           example:
-            - 217
-            - 218
+            - id: 755
+              label: "Semaine du 15 juin au 19 juin"
+              selected: false
+            - id: 756
+              label: "Semaine du 22 juin au 26 juin"
+              selected: false
         createdAt:
           type: string
           format: date-time
