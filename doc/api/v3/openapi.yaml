@@ -563,7 +563,7 @@ components:
           example: 456
     inline_response_401:
       type: string
-      example: Wrong api ten.
+      example: Wrong api key or invalid token
     inline_response_403:
       type: string
       example: The client does not have access rights to the content
