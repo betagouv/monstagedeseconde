@@ -47,6 +47,13 @@ paths:
                   token:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5ciOiJKV1QiLCJ9...
+                  user_id:
+                    type: integer
+                    example: 123
+                  issued_at:
+                    type: string
+                    format: date-time
+                    example: "2023-10-01T12:00:00Z"
         "401":
           description: Échec de l'authentification
           content:
@@ -562,29 +569,103 @@ components:
           type: integer
           example: 456
     inline_response_401:
-      type: string
-      example: Wrong api key or invalid token
+      type: object
+      properties:
+        status:
+          type: string
+          example: "401"
+        code:
+          type: string
+          example: unauthorized
+        detail:
+          type: string
+          example: Wrong api key or invalid token
     inline_response_403:
-      type: string
-      example: The client does not have access rights to the content
+      type: object
+      properties:
+        status:
+          type: string
+          example: "403"
+        code:
+          type: string
+          example: forbidden
+        detail:
+          type: string
+          example: The client does not have access rights to the content
     inline_response_404:
-      type: string
-      example: The server cannot find the requested resource
+      description: The server cannot find the requested resource
+      type: object
+      properties:
+        status:
+          type: string
+          example: "404"
+        code:
+          type: string
+          example: not_found
+        detail:
+          type: string
+          example: The server cannot find the requested resource
     inline_response_406:
-      type: string
-      example: WebBrowser doesn't find any content that conforms to the criteria given by the user agent.
+      description: WebBrowser doesn't find any content that conforms to the criteria given by the user agent.
+      type: object
+      properties:
+        status:
+          type: string
+          example: "406"
+        code:
+          type: string
+          example: not_acceptable
+        detail:
+          type: string
+          example: WebBrowser doesn't find any content that conforms to the criteria given by the user agent.
     inline_response_409:
-      type: string
-      example: This request raises a conflicts with the current state of the server
+      type: object
+      properties:
+        status:
+          type: string
+          example: "409"
+        code:
+          type: string
+          example: conflict
+        detail:
+          type: string
+          example: This request raises a conflicts with the current state of the server
     inline_response_422:
-      type: string
-      example: The request was directed at a server that is not able to produce a response.
+      type: object
+      properties:
+        status:
+          type: string
+          example: "422"
+        code:
+          type: string
+          example: unprocessable_entity
+        detail:
+          type: string
+          example: The request was directed at a server that is not able to produce a response.
     inline_response_404_1:
-      type: string
-      example: Can't find internship_offer with this remote_id
+      type: object
+      properties:
+        status:
+          type: string
+          example: "404"
+        code:
+          type: string
+          example: not_found
+        detail:
+        type: string
+        example: Can't find internship_offer with this remote_id
     inline_response_429:
-      type: string
-      example: Too many requests in a given amount of time.
+      type: object
+      properties:
+        status: 
+          type: string
+          example: "429"
+        code: 
+          type: string
+          example: too_many_requests
+        detail:
+          type: string
+          example: Too many requests in a given amount of time.
     InternshipOffer_coordinates:
       type: object
       properties:
