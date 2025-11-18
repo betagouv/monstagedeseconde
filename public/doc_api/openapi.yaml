@@ -264,25 +264,15 @@ paths:
                 items:
                   type: object
                   properties:
-                    id:
-                      type: integer
-                      example: 1
-                    internship_offer_id:
-                      type: integer
-                      example: 1
-                    state:
-                      type: string
-                      example: submitted
-                    submitted_at:
-                      type: string
-                      format: date-time
-                      example: "2023-03-15T10:00:00Z"
                     uuid:
                       type: string
                       example: "550e8400-e29b-41d4-a716-446655440000"
                     student_id:
                       type: integer
                       example:  456
+                    internship_offer_id:
+                      type: integer
+                      example: 1
                     employer_name:
                       type: string
                       example:  Ministère de l'Éducation Nationale
@@ -292,6 +282,13 @@ paths:
                     internship_offer_address:
                       type: string
                       example:  110 rue de Grenelle, 75007 Paris
+                    state:
+                      type: string
+                      example: submitted
+                    submitted_at:
+                      type: string
+                      format: date-time
+                      example: "2023-03-15T10:00:00Z"
                     motivation:
                       type: string
                       example:  Je suis très motivé pour ce stage...
@@ -313,6 +310,34 @@ paths:
                     student_legal_representative_phone:
                       type: string
                       example:  '+33605060708'
+                    weeks:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Week'
+                      example:
+                        - id: 755
+                          label: "Semaine du 15 juin au 19 juin"
+                          selected: false
+                        - id: 756
+                          label: "Semaine du 22 juin au 26 juin"
+                          selected: false
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: "2025-03-04T10:15:00Z"
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: "2025-03-04T10:15:00Z"
+        '401':
+          description: l'authentification a échoué
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+      security:
+        - bearerAuth: []
+
 components:
   schemas:
     InternshipApplications:
