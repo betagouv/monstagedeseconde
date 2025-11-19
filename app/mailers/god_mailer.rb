@@ -144,14 +144,14 @@ class GodMailer < ApplicationMailer
   end
 
   def notify_others_signatures_finished_email(internship_agreement:)
+    @internship_agreement  = internship_agreement
+    @school_manager        = internship_agreement.school_manager
     internship_application = internship_agreement.internship_application
-    student  = internship_application.student
+    student                = internship_application.student
     @internship_offer      = internship_application.internship_offer
     @prez_stud             = student.presenter
     @employer              = @internship_offer.employer
-    @school_manager        = internship_agreement.school_manager
     recipients_email       = recipients_email_for_signature(internship_agreement: internship_agreement)
-    @internship_agreement  = internship_agreement
     @url = dashboard_internship_agreements_url(
       uuid: internship_agreement.uuid,
     ).html_safe
@@ -208,12 +208,11 @@ class GodMailer < ApplicationMailer
     internship_application = internship_agreement.internship_application
     student                = internship_application.student
     recipients_email       = internship_application.employers_filtered_by_notifications_emails
-    if Flipper.enabled?(:student_signature, student)
+    if Flipper.enabled?(:student_signature)
       recipients_email << student.email
       recipients_email += legal_representatives_emails(internship_agreement) if with_legal_representatives
-    else
-      recipients_email << internship_agreement.school_management_representative.email
     end
+    recipients_email << internship_agreement.school_management_representative.email
 
     recipients_email.compact.uniq
   end

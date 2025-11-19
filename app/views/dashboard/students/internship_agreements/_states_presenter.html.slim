@@ -23,7 +23,7 @@
                     dashboard_internship_agreement_path(uuid: @internship_agreement.uuid, format: :pdf),
                     class: "fr-btn fr-btn--sm fr-btn--secondary",
                     target: "_blank"
-          - if Flipper.enabled?(:student_signature, @internship_agreement.internship_application.student)
+          - if Flipper.enabled?(:student_signature)
             - if @prez.signed_by_student?
               = link_to "Vous avez déjà signé la convention",
                         '#',

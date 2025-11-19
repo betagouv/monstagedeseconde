@@ -137,8 +137,6 @@ fr:
       week:
         one: Semaine
         other: Semaines
-
-
     attributes:
       area_notification:
         area: Espace
@@ -219,7 +217,6 @@ fr:
         lunch_break: Pause déjeuner
         weekly_lunch_break: Pause déjeuner
         weekly_hours: Horaires
-        max_students_per_group: Nbr. max d'élèves par groupe
         grades: Niveaux ciblés
       operator: &operator_fields
         name: Nom
@@ -236,7 +233,7 @@ fr:
           pending_invitation: Invitation en attente de réponse
           accepted_invitation: Invitation acceptée
           refused_invitation: Invitation refusée
-          read_by_employer: Lu par l'employeur
+          read_by_employer: Lue par l'employeur
       internship_agreement: &internship_agreement_fields
         internship_application: Candidature
         school_manager_accept_terms: Validée par CE
@@ -275,13 +272,13 @@ fr:
           started_by_school_manager: À remplir par le chef d'établissement
           validated: Validée
           signed: Signée
-          read_by_employer: Lu par l'employeur
+          read_by_employer: Lue par l'employeur
         status:
           student:
             validated: En attentes de signatures
             signatures_started: Partiellement signée
             signed_by_all: Signée par toutes les parties.
-          admin_officer:
+          ministry_statistician: &ministry_statistician_status
             draft: En attente de l'offreur.
             started_by_employer: En attente de l'offreur.
             completed_by_employer: Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.
@@ -291,6 +288,8 @@ fr:
               already_signed: Le chef d'établissement a déjà signé. En attente de la signature de l’employeur.
               not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
+          admin_officer:
+            <<: *ministry_statistician_status
           cpe:
             draft: En attente de l'offreur.
             started_by_employer: En attente de l'offreur.
@@ -328,8 +327,18 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée.
             signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature du chef d’établissement.
-              not_signed_yet: Le chef d'établissement a déjà signé. En attente de votre signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
+            signed_by_all: Signée par toutes les parties.
+          student:
+            draft: À remplir par les deux parties.
+            started_by_employer: Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.
+            completed_by_employer: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
+            started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
+            validated: Votre convention est prête à être signée.
+            signatures_started:
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           education_statistician:
             draft: À remplir par les deux parties.
@@ -338,8 +347,8 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature du chef d’établissement.
-              not_signed_yet: Le chef d'établissement a déjà signé. En attente de votre signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           prefecture_statistician:
             draft: À remplir par les deux parties.
@@ -348,8 +357,8 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature du chef d’établissement.
-              not_signed_yet: Le chef d'établissement a déjà signé. En attente de votre signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           academy_region_statistician:
             draft: À remplir par les deux parties.
@@ -358,8 +367,8 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature du chef d’établissement.
-              not_signed_yet: Le chef d'établissement a déjà signé. En attente de votre signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           school_manager:
             draft: En attente de l'offreur.
@@ -404,6 +413,7 @@ fr:
         # last_monday: Dernier lundi de stage
         first_date: Premier jour
         last_date: Dernier jour
+        grades_as_string: Classes ciblées
         daterange: Plage de disponibilité
         submitted_application_count: Nbr. de candidatures soumises
         rejected_application_count: Nbr. de candidatures refusées
@@ -472,7 +482,7 @@ fr:
           canceled_by_student: annulée par l'élève
           canceled_by_student_confirmation: L'élève a choisi un autre stage
           convention_signed: convention signée
-          read_by_employer: lu par l'employeur
+          read_by_employer: lue par l'employeur
           restored: restaurée
         student_phone: Contact téléphone
         student_email: Contact email

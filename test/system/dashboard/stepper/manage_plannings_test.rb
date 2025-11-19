@@ -51,7 +51,6 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_equal planning.id, internship_offer.planning_id
       assert_equal employer.id, internship_offer.employer_id
       assert_equal 10, internship_offer.max_candidates
-      assert_equal 10, internship_offer.max_students_per_group
       assert_equal 'test de lunch break', internship_offer.lunch_break
       assert_equal Coordinates.paris[:latitude], internship_offer.coordinates.latitude
       assert_equal Coordinates.paris[:longitude], internship_offer.coordinates.longitude
@@ -105,7 +104,6 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_equal planning.id, internship_offer.planning_id
       assert_equal employer.id, internship_offer.employer_id
       assert_equal 1, internship_offer.max_candidates
-      assert_equal 1, internship_offer.max_students_per_group
       assert_equal 'test de lunch break', internship_offer.lunch_break
       assert_equal Coordinates.paris[:latitude], internship_offer.coordinates.latitude
       assert_equal Coordinates.paris[:longitude], internship_offer.coordinates.longitude
@@ -171,7 +169,6 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_equal planning.id, internship_offer.planning_id
       assert_equal employer.id, internship_offer.employer_id
       assert_equal 4, internship_offer.max_candidates
-      assert_equal 4, internship_offer.max_students_per_group
       assert_equal 'test de lunch break', internship_offer.lunch_break
       assert_equal Coordinates.paris[:latitude], internship_offer.coordinates.latitude
       assert_equal Coordinates.paris[:longitude], internship_offer.coordinates.longitude

@@ -270,7 +270,6 @@ class IndexTest < ActionDispatch::IntegrationTest
       internship_offer_with_application = create(
         :weekly_internship_offer_2nde,
         max_candidates: 2,
-        max_students_per_group: 2,
         title: 'offer with_application'
       )
 

@@ -62,7 +62,6 @@ module StepperProxy
 
       def set_default_values
         self.max_candidates ||= 1
-        self.max_students_per_group = max_candidates
       end
 
       def at_least_one_grade

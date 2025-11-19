@@ -69,7 +69,7 @@ class Signature < ApplicationRecord
   end
 
   def all_signed?
-    if Flipper.enabled?(:student_signature, internship_agreement.student)
+    if Flipper.enabled?(:student_signature)
       signatures_count == REQUESTED_SIGNATURES_COUNT
     else
       signatures_count == REQUESTED_SIGNATURES_COUNT - 2

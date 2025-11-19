@@ -14,6 +14,10 @@ module Reporting
     belongs_to :school, optional: true
     belongs_to :employer, polymorphic: true, optional: true
     has_many :internship_applications
+    has_many :internship_offer_grades,
+             foreign_key: :internship_offer_id,
+             inverse_of: :internship_offer
+    has_many :grades, through: :internship_offer_grades
     has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy
     has_one :internship_offer_stats, dependent: :destroy
 
