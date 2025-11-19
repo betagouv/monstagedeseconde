@@ -191,14 +191,16 @@ Exemple :
 
 ```json
 {
-  "student_phone": "06 11 22 33 44",
-  "student_email": "eleve@example.com",
-  "week_ids": [168, 169],
-  "motivation": "Je suis très motivé pour ce stage.",
-  "student_address": "10 rue de Paris, 91000 Évry",
-  "student_legal_representative_full_name": "Jean Dupont",
-  "student_legal_representative_email": "parent@example.com",
-  "student_legal_representative_phone": "06 12 34 56 78"
+  "internship_application": {
+    "student_phone": "06 11 22 33 44",
+    "student_email": "eleve@example.com",
+    "week_ids": [168, 169],
+    "motivation": "Je suis très motivé pour ce stage.",
+    "student_address": "10 rue de Paris, 91000 Évry",
+    "student_legal_representative_full_name": "Jean Dupont",
+    "student_legal_representative_email": "parent@example.com",
+    "student_legal_representative_phone": "06 12 34 56 78"
+  }
 }
 ```
 
