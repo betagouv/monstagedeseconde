@@ -9,10 +9,8 @@ module Presenters
                  human_max_candidates
                  human_max_candidates_string
                  published_at
-                 discarded_at
                  department
                  academy
-                 grades
                  permalink].freeze
       METHODS = %i[group_name
                    grades_as_string
@@ -40,7 +38,8 @@ module Presenters
       end
 
       def period
-        ::InternshipOffer.current_period_labels.values[instance.period]
+        internship_offer = ::InternshipOffer.find(instance.id)
+        Presenters::WeekList.new(weeks: internship_offer.weeks).str_weeks_display.map(&:strip).join("\n")
       end
 
       def human_max_candidates_string
@@ -90,7 +89,7 @@ module Presenters
       end
 
       def published_at
-        return 'Dépubliée' if instance.published_at.nil?
+        return 'Masquée ou expirée' if instance.published_at.nil?
 
         instance.published_at
       end

@@ -47,7 +47,7 @@ module Finders
     end
 
     def base_query
-      query = Reporting::InternshipOffer.all
+      query = Reporting::InternshipOffer.kept.all
       query = query.during_year(school_year: school_year) if school_year_param?
       query = query.by_department(department: params[:department]) if department_param?
       query = query.by_group(group_id: params[:group]) if group_param?
