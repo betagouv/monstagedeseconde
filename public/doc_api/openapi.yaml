@@ -603,63 +603,68 @@ components:
     InternshipApplicationPayload:
       description: Candidature à une offre de stage (création)
       type: object
-      required:
-        - student_phone
-        - student_email
-        - week_ids
-        - motivation
-        - student_address
-        - student_legal_representative_full_name
-        - student_legal_representative_email
-        - student_legal_representative_phone
       properties:
-        student_phone:
-          type: string
-          maxLength: 20
-          example: "+330612345678"
-        student_email:
-          type: string
-          format: email
-          maxLength: 100
-          example: "eleve@example.com"
-        week_ids:
-          type: array
-          items:
-            type: integer
-          example:
-            - 168
-            - 169
-        motivation:
-          type: string
-          maxLength: 1500
-          example: Je suis très motivé pour ce stage.
-        student_address:
-          type: string
-          maxLength: 300
-          example: 10 rue de Paris, 91000 Évry
-        student_legal_representative_full_name:
-          type: string
-          maxLength: 150
-          example: Jean Dupont
-        student_legal_representative_email:
-          type: string
-          format: email
-          maxLength: 109
-          example: "parent@example.com"
-        student_legal_representative_phone:
-          type: string
-          maxLength: 20
-          example: "+330612345678"
+        internship_application:
+          type: object
+          required:
+            - student_phone
+            - student_email
+            - week_ids
+            - motivation
+            - student_address
+            - student_legal_representative_full_name
+            - student_legal_representative_email
+            - student_legal_representative_phone
+          properties:
+            student_phone:
+              type: string
+              maxLength: 20
+              example: "+330612345678"
+            student_email:
+              type: string
+              format: email
+              maxLength: 100
+              example: "eleve@example.com"
+            week_ids:
+              type: array
+              items:
+                type: integer
+              example:
+                - 168
+                - 169
+            motivation:
+              type: string
+              maxLength: 1500
+              example: Je suis très motivé pour ce stage.
+            student_address:
+              type: string
+              maxLength: 300
+              example: 10 rue de Paris, 91000 Évry
+            student_legal_representative_full_name:
+              type: string
+              maxLength: 150
+              example: Jean Dupont
+            student_legal_representative_email:
+              type: string
+              format: email
+              maxLength: 109
+              example: "parent@example.com"
+            student_legal_representative_phone:
+              type: string
+              maxLength: 20
+              example: "+330612345678"
       example:
-        {
-          "student_phone": "06 11 22 33 44",
-          "student_email": "eleve@example.com",
-          "week_ids": [168, 169],
-          "motivation": "Je suis très motivé pour ce stage.",
-          "student_address": "10 rue de Paris, 91000 Évry",
-          "student_legal_representative_full_name": "Jean Dupont",
-          "student_legal_representative_email": "parent@example.com",
-          "student_legal_representative_phone": "06 12 34 56 78"
+        {internship_application:
+          {
+            "student_phone": "06 11 22 33 44",
+            "student_email": "eleve@example.com",
+            "week_ids": [168, 169],
+            "motivation": "Je suis très motivé pour ce stage.",
+            "student_address": "10 rue de Paris, 91000 Évry",
+            "student_legal_representative_full_name": "Jean Dupont",
+            "student_legal_representative_email": "parent@example.com",
+            "student_legal_representative_phone": "06 12 34 56 78"
+          }
         }
     InternshipApplicationForm:
       allOf:
