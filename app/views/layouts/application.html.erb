@@ -48,6 +48,9 @@
         </div>
       <% end %>
     </div>
+    <% if current_user.try(:presenter).try(:show_signature_info_modal?)%>
+      <%= render 'layouts/signature_info' %>
+    <% end %>
 
     <div class="<%= agreement_form? ? "d-none" : "" %>"  >
       <%= render 'layouts/footer' %>

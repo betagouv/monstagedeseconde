@@ -2,7 +2,6 @@ FactoryBot.define do
   factory :planning do
     entreprise
     max_candidates { 1 }
-    max_students_per_group { 1 }
     weekly_hours { ['08:00', '15:00'] }
     daily_hours do
       { 'jeudi' => ['08:00', '15:00'],

@@ -144,7 +144,6 @@ class InternshipApplication < ApplicationRecord
   #
   # Ordering scopes (used for ordering in ui)
   #
-  # TODO remove column convention_signed_at
   scope :order_by_aasm_state, lambda {
     select("#{table_name}.*")
       .select(%(

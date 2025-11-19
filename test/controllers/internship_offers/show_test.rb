@@ -377,6 +377,8 @@ module InternshipOffers
 
     test 'GET #flag an offer as a visitor' do
       travel_to(Date.new(2024, 3, 1)) do
+        Flipper.enable(:flag_internship_offer)
+        ENV['SIGNATURE_INFO'] = 'false'
         offer = create(:weekly_internship_offer_2nde)
         post flag_internship_offer_path(offer),
             params: {
@@ -395,6 +397,8 @@ module InternshipOffers
 
     test 'GET #flag an offer as a student' do
       travel_to(Date.new(2024, 3, 1)) do
+        ENV['SIGNATURE_INFO'] = 'false'
+        Flipper.enable(:flag_internship_offer)
         offer = create(:weekly_internship_offer_2nde)
         student = create(:student)
         sign_in(student)
@@ -415,7 +419,7 @@ module InternshipOffers
         assert_equal student.id, last_flag.user_id
       end
     end
-    
+
     test 'student of a qpv school can apply to a qpv reserved offer' do
       travel_to Date.new(2023, 10, 1) do
         student = create(:student, :seconde, school: create(:school, qpv: true))

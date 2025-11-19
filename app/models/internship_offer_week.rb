@@ -11,8 +11,6 @@ class InternshipOfferWeek < ApplicationRecord
 
   has_many :internship_applications, dependent: :destroy
 
-  delegate :max_students_per_group, to: :internship_offer
-
   # responsability by the week , check student_max_group_size
   # scope :applicable, lambda { |school:, internship_offer:|
   #   by_weeks(weeks: school.weeks)

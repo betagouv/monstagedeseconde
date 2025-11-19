@@ -98,6 +98,8 @@ module Users
       try(:school).try(:school_manager)
     end
 
+    def in_school_management_team? = true
+
     def valid_academy_email_address?
       return false if school.blank?
 
