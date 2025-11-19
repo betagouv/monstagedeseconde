@@ -10,7 +10,6 @@ FactoryBot.define do
     description { 'Lorem ipsum dolor' }
     contact_phone { '+330612345678' }
     max_candidates { 1 }
-    blocked_weeks_count { 0 }
     school_year { SchoolYear::Current.year_in_june }
     is_public { true }
     sector { is_public ? Sector.find_by(name: 'Fonction publique') : create(:sector, name: FFaker::Lorem.word) }
@@ -28,7 +27,6 @@ FactoryBot.define do
     weeks { Week.both_school_tracks_weeks }
     siret { '11122233300000' }
     aasm_state { 'published' }
-    hidden_duplicate { false }
     handicap_accessible { false }
     workspace_conditions { FFaker::Lorem.paragraph }
     workspace_accessibility { FFaker::Lorem.paragraph }
@@ -112,7 +110,6 @@ FactoryBot.define do
 
     trait :weekly_internship_offer do
       description { 'Lorem ipsum dolor weekly_internship_offer' }
-      remaining_seats_count { max_candidates }
     end
 
     trait :api_internship_offer do

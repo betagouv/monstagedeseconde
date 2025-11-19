@@ -50,7 +50,6 @@ namespace :migrations do
         Planning.create!(
           weeks_count: internship_offer.internship_offer_weeks_count,
           max_candidates: internship_offer.max_candidates,
-          max_students_per_group: internship_offer.max_students_per_group,
           remaining_seats_count: internship_offer.remaining_seats_count,
           weekly_lunch_break: internship_offer.weekly_lunch_break,
           weekly_hours: internship_offer.weekly_hours,

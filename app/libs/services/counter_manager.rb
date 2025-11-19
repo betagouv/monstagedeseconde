@@ -5,7 +5,9 @@
 module Services
   class CounterManager
     def self.reset_internship_offer_counters
-      InternshipOffer.kept.update_all(
+      stats = InternshipOfferStats.joins(:internship_offer)
+                                  .where(internship_offer:  { discarded_at: nil })
+      stats.update_all(
         total_applications_count: 0,
         total_male_applications_count: 0,
         total_female_applications_count: 0,
@@ -23,7 +25,7 @@ module Services
       return ok if internship_offer.is_a?(InternshipOffers::Api)
 
       ActiveRecord::Base.transaction do
-        res = internship_offer.update(
+        res = internship_offer.stats.update(
           total_applications_count: 0,
           total_male_applications_count: 0,
           total_female_applications_count: 0,

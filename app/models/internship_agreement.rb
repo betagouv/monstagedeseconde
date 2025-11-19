@@ -338,10 +338,8 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def notify_others_signatures_finished(agreement)
-    GodMailer.notify_others_signatures_finished_email(
-      internship_agreement: agreement,
-      last_signature: signatures.order(created_at: :asc)&.last
-    ).deliver_later
+    GodMailer.notify_others_signatures_finished_email(internship_agreement: agreement)
+             .deliver_later
   end
 
   def notify_school_management_of_employer_completion(agreement)

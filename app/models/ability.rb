@@ -77,7 +77,7 @@ class Ability
   end
 
   def student_abilities(user:)
-    can %i[show_modal_info look_for_offers sign_with_sms], User
+    can %i[look_for_offers sign_with_sms], User
     can :resend_confirmation_phone_token, User do |user|
       user.phone.present? && user.student?
     end
@@ -140,6 +140,7 @@ class Ability
     can %i[read show update sign student_sign legal_representative_sign], InternshipAgreement do |internship_agreement|
       internship_agreement.student.id == user.id
     end
+    can %i[manage, update], InappropriateOffer
   end
 
   def school_manager_abilities(user:)
@@ -285,6 +286,7 @@ class Ability
       edit_activity_learnings
       edit_date_range
       edit_organisation_representative_full_name
+      edit_organisation_representative_role
       edit_siret
       edit_tutor_full_name
       edit_weekly_hours
