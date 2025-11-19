@@ -82,7 +82,7 @@ Rails.application.routes.draw do
         end
       end
       member do
-        post :flag
+        post :flag if Flipper.enabled?(:enable_offer_flagging)
         post :apply_count
       end
     end

@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'flipper'
+require_relative '../../support/feature_flipping_test_helper'
 
 module InternshipOffers
   class ShowTest < ActionDispatch::IntegrationTest
     include Devise::Test::IntegrationHelpers
+    include FeatureFlippingTestHelper
 
     #
     # School Manager
@@ -211,27 +214,30 @@ module InternshipOffers
 
     test 'GET #show as Student with forwards latitude, longitude & radius in params to next/prev ' do
       travel_to(Date.new(2024, 3, 1)) do
-        previous_in_page = create(:weekly_internship_offer_2nde, title: 'previous')
-        current = create(:weekly_internship_offer_2nde, title: 'current')
-        next_in_page = create(:weekly_internship_offer_2nde, title: 'next')
-        student = create(:student, :seconde, school: create(:school))
+        with_feature_flag(:enable_offer_flagging, enabled: false) do
+          refute Flipper.enabled?(:enable_offer_flagging)
+          previous_in_page = create(:weekly_internship_offer_2nde, title: 'previous')
+          current = create(:weekly_internship_offer_2nde, title: 'current')
+          next_in_page = create(:weekly_internship_offer_2nde, title: 'next')
+          student = create(:student, :seconde, school: create(:school))
 
-        InternshipOffer.stub :nearby, InternshipOffer.all do
-          InternshipOffer.stub :by_weeks, InternshipOffer.all do
-            sign_in(student)
-            get internship_offer_path(id: current, radius: 1_000, latitude: 1, longitude: 2)
+          InternshipOffer.stub :nearby, InternshipOffer.all do
+            InternshipOffer.stub :by_weeks, InternshipOffer.all do
+              sign_in(student)
+              get internship_offer_path(id: current, radius: 1_000, latitude: 1, longitude: 2)
 
-            assert_response :success
-            assert_select 'a[href=?]',
-                          internship_offer_path(id: previous_in_page.id,
-                                                latitude: 1,
-                                                longitude: 2,
-                                                radius: 1_000)
-            assert_select 'a[href=?]',
-                          internship_offer_path(id: next_in_page.id,
-                                                latitude: 1,
-                                                longitude: 2,
-                                                radius: 1_000)
+              assert_response :success
+              assert_select 'a[href=?]',
+                            internship_offer_path(id: previous_in_page.id,
+                                                  latitude: 1,
+                                                  longitude: 2,
+                                                  radius: 1_000)
+              assert_select 'a[href=?]',
+                            internship_offer_path(id: next_in_page.id,
+                                                  latitude: 1,
+                                                  longitude: 2,
+                                                  radius: 1_000)
+            end
           end
         end
       end
@@ -376,47 +382,52 @@ module InternshipOffers
     end
 
     test 'GET #flag an offer as a visitor' do
-      travel_to(Date.new(2024, 3, 1)) do
-        Flipper.enable(:flag_internship_offer)
-        ENV['SIGNATURE_INFO'] = 'false'
-        offer = create(:weekly_internship_offer_2nde)
-        post flag_internship_offer_path(offer),
-            params: {
-              inappropriate_offer: {
-                ground: 'inappropriate_content',
-                details: 'Ce stage est inapproprié'
+      with_feature_flag(:enable_offer_flagging, enabled: true) do
+        travel_to(Date.new(2024, 3, 1)) do
+          Flipper.enable(:flag_internship_offer)
+          ENV['SIGNATURE_INFO'] = 'false'
+          offer = create(:weekly_internship_offer_2nde)
+          post flag_internship_offer_path(offer),
+              params: {
+                inappropriate_offer: {
+                  ground: 'inappropriate_content',
+                  details: 'Ce stage est inapproprié'
+                }
               }
-            }
-        follow_redirect!
-        last_flag = InappropriateOffer.last
-        assert_equal 'inappropriate_content', last_flag.ground
-        assert_equal 'Ce stage est inapproprié', last_flag.details
-        assert_nil last_flag.user
+          follow_redirect!
+          last_flag = InappropriateOffer.last
+          assert_equal 'inappropriate_content', last_flag.ground
+          assert_equal 'Ce stage est inapproprié', last_flag.details
+          assert_nil last_flag.user
+        end
       end
     end
 
     test 'GET #flag an offer as a student' do
       travel_to(Date.new(2024, 3, 1)) do
-        ENV['SIGNATURE_INFO'] = 'false'
-        Flipper.enable(:flag_internship_offer)
-        offer = create(:weekly_internship_offer_2nde)
-        student = create(:student)
-        sign_in(student)
-        post flag_internship_offer_path(offer),
-            params: {
-              inappropriate_offer: {
-                ground: 'inappropriate_content',
-                details: 'Ce stage est inapproprié',
-                user_id: student.id
+        with_feature_flag(:enable_offer_flagging, enabled: true) do
+          assert Flipper.enabled?(:enable_offer_flagging)
+          ENV['SIGNATURE_INFO'] = 'false'
+          Flipper.enable(:flag_internship_offer)
+          offer = create(:weekly_internship_offer_2nde)
+          student = create(:student)
+          sign_in(student)
+          post flag_internship_offer_path(offer),
+              params: {
+                inappropriate_offer: {
+                  ground: 'inappropriate_content',
+                  details: 'Ce stage est inapproprié',
+                  user_id: student.id
+                }
               }
-            }
-        follow_redirect!
-        success_message = "Merci, votre signalement a bien été pris en compte. Notre équipe l’examinera sous 48h."
-        assert_select '#alert-text', text: success_message
-        last_flag = InappropriateOffer.last
-        assert_equal 'inappropriate_content', last_flag.ground
-        assert_equal 'Ce stage est inapproprié', last_flag.details
-        assert_equal student.id, last_flag.user_id
+          follow_redirect!
+          success_message = "Merci, votre signalement a bien été pris en compte. Notre équipe l’examinera sous 48h."
+          assert_select '#alert-text', text: success_message
+          last_flag = InappropriateOffer.last
+          assert_equal 'inappropriate_content', last_flag.ground
+          assert_equal 'Ce stage est inapproprié', last_flag.details
+          assert_equal student.id, last_flag.user_id
+        end
       end
     end
 
