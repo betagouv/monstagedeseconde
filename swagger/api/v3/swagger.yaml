@@ -1,0 +1,680 @@
+---
+openapi: 3.0.0
+info:
+  title: API V3
+  version: 1.0.0
+  description: API de backend pour https://1eleve1stage.education.gouv.fr/
+paths:
+  "/api/v3/auth/login":
+    post:
+      summary: Authentifie un utilisateur et retourne un token JWT
+      tags:
+      - developpers
+      parameters: []
+      responses:
+        '200':
+          description: 'success: token returned'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5ciOiJKV1QiLCJ9...
+                  user_id:
+                    type: integer
+                    example: 1
+                  issued_at:
+                    type: string
+                    format: date-time
+                    example: '2024-06-10T12:34:56Z'
+                example:
+                  token: eyJhbGciOiJIUzI1NiIsInR5ciOiJKV1QiLCJ9...
+        '401':
+          description: unauthorized request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_401"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                  maxLength: 70
+                password:
+                  type: string
+                  example: password123
+                  minLength: 12
+              required:
+              - email
+              - password
+  "/api/v3/me":
+    get:
+      summary: Get current user info
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  email:
+                    type: string
+                    format: email
+                    example: user@example.com
+                  first_name:
+                    type: string
+                    example: John
+                  last_name:
+                    type: string
+                    example: Doe
+                  role:
+                    type: string
+                    example: employer
+                  phone:
+                    type: string
+                    example: "+330612345678"
+                  school_id:
+                    type: integer
+                    example: 123
+                  operator_id:
+                    type: integer
+                    example: 456
+        '401':
+          description: unauthorized request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_401"
+servers:
+- url: http://localhost:3000/api/v3
+  description: Development server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    InternshipApplications:
+      type: array
+      items:
+        "$ref": "#/components/schemas/InternshipApplication"
+    InternshipApplication:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        uuid:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        student_id:
+          type: integer
+          example: 1
+        aasm_state:
+          type: string
+          example: submitted
+          maxLength: 100
+        submitted_at:
+          type: string
+          format: date-time
+          example: '2023-03-15T10:00:00Z'
+        student_email:
+          type: string
+          format: email
+          maxLength: 100
+          example: jean.dupont@example.com
+        student_address:
+          type: string
+          maxLength: 300
+          example: 12 rue de la paix, 75001 Paris
+        student_phone:
+          type: string
+          maxLength: 20
+          example: "+330612345678"
+        internship_offer_id:
+          type: integer
+          example: 1
+        motivation:
+          type: string
+          maxLength: 1500
+          example: Je souhaite faire ce stage pour découvrir le métier de développeur
+        legal_representative_full_name:
+          type: string
+          maxLength: 150
+          example: Jean Dupont
+        legal_representative_email:
+          type: string
+          format: email
+          maxLength: 109
+          example: jean.dupont@example.com
+        legal_representative_phone:
+          type: string
+          maxLength: 50
+          example: "+330612345678"
+        weeks:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Week"
+          example:
+          - id: 755
+            label: Semaine du 15 juin au 19 juin
+            selected: false
+          - id: 756
+            label: Semaine du 22 juin au 26 juin
+            selected: false
+        createdAt:
+          type: string
+          format: date-time
+          example: '2025-03-04T10:15:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2025-03-04T10:15:00Z'
+      description: Candidature à une offre de stage
+    InternshipOffers:
+      type: array
+      items:
+        "$ref": "#/components/schemas/InternshipOffer"
+    InternshipOffer:
+      required:
+      - city
+      - coordinates
+      - employer_name
+      - is_public
+      - max_candidates
+      - remote_id
+      - sector_uuid
+      - street
+      - title
+      - grades
+      - weeks
+      - qpv
+      - rep
+      type: object
+      properties:
+        remote_id:
+          type: string
+          maxLength: 60
+          description: Identifiant de l'offre de stage chez le partenaire
+          example: A156548-H
+        description:
+          maxLength: 500
+          type: string
+          description: Description de l'offre de stage
+        title:
+          type: string
+          maxLength: 150
+          example: Stage d'observation du métier de chef de service
+        employer_name:
+          type: string
+          maxLength: 150
+          example: BNP Paribas
+        employer_description:
+          maxLength: 275
+          type: string
+          example: Créateur de lotions, de parfums et de produits cosmétiques, embaumeur
+        street:
+          type: string
+          maxLength: 500
+          example: 16 rue de la paix
+        city:
+          type: string
+          maxLength: 50
+          example: Paris
+        zipcode:
+          type: string
+          maxLength: 5
+          example: '75001'
+        employer_website:
+          type: string
+          maxLength: 560
+          example: http://www.acnee-corporation.fr
+        lunch_break:
+          type: string
+          maxLength: 500
+          description: Horaires de pause déjeuner
+          example: 12h-14h
+        daily_hours:
+          "$ref": "#/components/schemas/InternshipOffer_daily_hours"
+        coordinates:
+          "$ref": "#/components/schemas/InternshipOffer_coordinates"
+        grades:
+          type: array
+          description: Liste des classes dont les élèves peuvent postuler à l'offre
+            de stage
+          items:
+            "$ref": "#/components/schemas/Grade"
+        permalink:
+          type: string
+          description: Site de l'employeur
+          maxLength: 200
+          example: http://www.stagechezemployeur.fr
+        max_candidates:
+          type: integer
+          description: Nombre maximum de candidats pouvant postuler à cette offre
+            de stage sur l'ensemble des semaines proposées
+          example: 1
+        is_public:
+          type: boolean
+          description: true si l'offre de stage est issue d'une administration publique,
+            false si elle est issue d'une entreprise privée
+          example: true
+        sector_uuid:
+          "$ref": "#/components/schemas/Sector"
+        rep:
+          type: boolean
+          description: true si l'offre de stage est réservée à des collèges en rep
+            ou rep plus
+          example: true
+        qpv:
+          type: boolean
+          description: true si l'offre de stage est réservée à des établissements
+            en qpv
+          example: true
+        weeks:
+          type: array
+          items:
+            type: string
+          description: Liste des semaines pendant lesquelles l'offre de stage est
+            disponible
+          example:
+          - '222'
+          - '223'
+      description: offre de stage
+      example:
+        remote_id: A123-12
+        grades:
+        - seconde
+        - troisieme
+        city: Paris
+        coordinates:
+          latitude: 48.866667
+          longitude: 2.333333
+        description: Stage sur le thème de la logistique et de la supply chain
+        employer_description: Créateur de lotions, de parfums et de produits cosmétiques,
+          embaumeur
+        employer_name: BNP Paribas
+        title: Stage d'observation du métier de chef de service
+        lunch_break: 12h-14h
+        zipcode: '75001'
+        max_candidates: 1
+        employer_website: http://www.acnee-corporation.fr
+        sector_uuid:
+          sector_uuid: s20
+          name: Mode
+          id: 1
+        street: 16 rue de la paix
+        is_public: true
+        rep: false
+        qpv: true
+        weeks:
+        - '311'
+        - '312'
+        permalink: http://www.stagechezemployeur.fr
+        daily_hours:
+        - lundi:
+          - '9:00'
+          - '18:00'
+        - mardi:
+          - '9:00'
+          - '18:00'
+        - mercredi:
+          - '9:00'
+          - '18:00'
+        - jeudi:
+          - '9:00'
+          - '18:00'
+        - vendredi:
+          - '9:00'
+          - '18:00'
+    InternshipOfferPatch:
+      allOf:
+      - type: object
+        properties:
+          published_at:
+            type: string
+            format: date-time
+      - "$ref": "#/components/schemas/InternshipOffer"
+      description: Offre de stage à mettre à jour. Pour désactiver une offre, passer
+        le paramètre published_at à null
+    Grade:
+      type: string
+      enum:
+      - seconde
+      - troisieme
+      - quatrieme
+      example: seconde
+    Sector:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        sector_uuid:
+          type: string
+        name:
+          type: string
+          example: Mode
+      description: Secteur économique.
+      example:
+        sector_uuid: s20
+        name: Mode
+        id: 1
+    InternshipApplicationPayload:
+      description: Candidature à une offre de stage (création)
+      type: object
+      properties:
+        internship_application:
+          type: object
+          required:
+          - student_phone
+          - student_email
+          - week_ids
+          - motivation
+          - student_address
+          - student_legal_representative_full_name
+          - student_legal_representative_email
+          - student_legal_representative_phone
+          properties:
+            student_phone:
+              type: string
+              maxLength: 20
+              example: "+330612345678"
+            student_email:
+              type: string
+              format: email
+              maxLength: 100
+              example: eleve@example.com
+            week_ids:
+              type: array
+              items:
+                type: integer
+              example:
+              - 168
+              - 169
+            motivation:
+              type: string
+              maxLength: 1500
+              example: Je suis très motivé pour ce stage.
+            student_address:
+              type: string
+              maxLength: 300
+              example: 10 rue de Paris, 91000 Évry
+            student_legal_representative_full_name:
+              type: string
+              maxLength: 150
+              example: Jean Dupont
+            student_legal_representative_email:
+              type: string
+              format: email
+              maxLength: 109
+              example: parent@example.com
+            student_legal_representative_phone:
+              type: string
+              maxLength: 20
+              example: "+330612345678"
+      example:
+        internship_application:
+          student_phone: 06 11 22 33 44
+          student_email: eleve@example.com
+          week_ids:
+          - 168
+          - 169
+          motivation: Je suis très motivé pour ce stage.
+          student_address: 10 rue de Paris, 91000 Évry
+          student_legal_representative_full_name: Jean Dupont
+          student_legal_representative_email: parent@example.com
+          student_legal_representative_phone: 06 12 34 56 78
+    InternshipApplicationForm:
+      allOf:
+      - "$ref": "#/components/schemas/InternshipApplication"
+      - type: object
+        properties:
+          internship_offer_id:
+            nullable: true
+          id:
+            nullable: true
+          uuid:
+            nullable: true
+          createdAt:
+            nullable: true
+          updatedAt:
+            nullable: true
+          student_address:
+            nullable: true
+          aasm_state:
+            nullable: true
+          submitted_at:
+            nullable: true
+    User:
+      description: Utilisateur de l'API - données élémentaires
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+        role:
+          type: string
+          example: Employer
+        phone:
+          type: string
+          example: "+330612345678"
+        school_id:
+          type: integer
+          example: 123
+        operator_id:
+          type: integer
+          example: 456
+    inline_response_401:
+      type: object
+      properties:
+        status:
+          type: string
+          example: '401'
+        code:
+          type: string
+          example: unauthorized
+        detail:
+          type: string
+          example: Wrong api key or invalid token
+    inline_response_403:
+      type: object
+      properties:
+        status:
+          type: string
+          example: '403'
+        code:
+          type: string
+          example: forbidden
+        detail:
+          type: string
+          example: The client does not have access rights to the content
+    inline_response_404:
+      description: The server cannot find the requested resource
+      type: object
+      properties:
+        status:
+          type: string
+          example: '404'
+        code:
+          type: string
+          example: not_found
+        detail:
+          type: string
+          example: The server cannot find the requested resource
+    inline_response_406:
+      description: WebBrowser doesn't find any content that conforms to the criteria
+        given by the user agent.
+      type: object
+      properties:
+        status:
+          type: string
+          example: '406'
+        code:
+          type: string
+          example: not_acceptable
+        detail:
+          type: string
+          example: WebBrowser doesn't find any content that conforms to the criteria
+            given by the user agent.
+    inline_response_409:
+      type: object
+      properties:
+        status:
+          type: string
+          example: '409'
+        code:
+          type: string
+          example: conflict
+        detail:
+          type: string
+          example: This request raises a conflicts with the current state of the server
+    inline_response_422:
+      type: object
+      properties:
+        status:
+          type: string
+          example: '422'
+        code:
+          type: string
+          example: unprocessable_entity
+        detail:
+          type: string
+          example: The request was directed at a server that is not able to produce
+            a response.
+    inline_response_404_1:
+      type: object
+      properties:
+        status:
+          type: string
+          example: '404'
+        code:
+          type: string
+          example: not_found
+        detail:
+          type: string
+          example: Can't find internship_offer with this remote_id
+    inline_response_429:
+      type: object
+      properties:
+        status:
+          type: string
+          example: '429'
+        code:
+          type: string
+          example: too_many_requests
+        detail:
+          type: string
+          example: Too many requests in a given amount of time.
+    InternshipOffer_coordinates:
+      type: object
+      properties:
+        latitude:
+          type: number
+          example: 48.866667
+        longitude:
+          type: number
+          example: 2.333333
+      description: Coordonnées géographiques du lieu de stage
+    InternshipOffer_daily_hours:
+      type: object
+      properties:
+        lundi:
+          type: array
+          example:
+          - '9:00'
+          - '18:00'
+          items:
+            type: string
+        mardi:
+          type: array
+          example:
+          - '9:00'
+          - '18:00'
+          items:
+            type: string
+        mercredi:
+          type: array
+          example:
+          - '9:00'
+          - '18:00'
+          items:
+            type: string
+        jeudi:
+          type: array
+          example:
+          - '9:00'
+          - '18:00'
+          items:
+            type: string
+        vendredi:
+          type: array
+          example:
+          - '9:00'
+          - '18:00'
+          items:
+            type: string
+      description: Horaires quotidiens de stage
+    Week:
+      type: object
+      description: Semaine pendant laquelle l'offre de stage est disponible
+      properties:
+        id:
+          type: integer
+          example: 218
+        label:
+          type: string
+          example: Semaine du 4 juin 2024 au 10 juin 2024
+        selected:
+          type: boolean
+          example: false
+  responses:
+    Unauthorized:
+      description: l'authentification a échoué
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_401"
+  requestBodies:
+    InternshipOffer:
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/InternshipOffer"
+    InternshipApplication:
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/InternshipApplication"
+    InternshipOfferPatch:
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/InternshipOfferPatch"
