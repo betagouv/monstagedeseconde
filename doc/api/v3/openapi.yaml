@@ -179,7 +179,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InternshipApplication'
+              $ref: '#/components/schemas/InternshipApplicationPayload'
       responses:
         "201":
           description: Candidature créée avec succès
@@ -264,25 +264,15 @@ paths:
                 items:
                   type: object
                   properties:
-                    id:
-                      type: integer
-                      example: 1
-                    internship_offer_id:
-                      type: integer
-                      example: 1
-                    state:
-                      type: string
-                      example: submitted
-                    submitted_at:
-                      type: string
-                      format: date-time
-                      example: "2023-03-15T10:00:00Z"
                     uuid:
                       type: string
                       example: "550e8400-e29b-41d4-a716-446655440000"
                     student_id:
                       type: integer
                       example:  456
+                    internship_offer_id:
+                      type: integer
+                      example: 1
                     employer_name:
                       type: string
                       example:  Ministère de l'Éducation Nationale
@@ -292,6 +282,13 @@ paths:
                     internship_offer_address:
                       type: string
                       example:  110 rue de Grenelle, 75007 Paris
+                    state:
+                      type: string
+                      example: submitted
+                    submitted_at:
+                      type: string
+                      format: date-time
+                      example: "2023-03-15T10:00:00Z"
                     motivation:
                       type: string
                       example:  Je suis très motivé pour ce stage...
@@ -313,6 +310,34 @@ paths:
                     student_legal_representative_phone:
                       type: string
                       example:  '+33605060708'
+                    weeks:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Week'
+                      example:
+                        - id: 755
+                          label: "Semaine du 15 juin au 19 juin"
+                          selected: false
+                        - id: 756
+                          label: "Semaine du 22 juin au 26 juin"
+                          selected: false
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: "2025-03-04T10:15:00Z"
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: "2025-03-04T10:15:00Z"
+        '401':
+          description: l'authentification a échoué
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+      security:
+        - bearerAuth: []
+
 components:
   schemas:
     InternshipApplications:
@@ -373,13 +398,17 @@ components:
           type: string
           maxLength: 50
           example: "+330612345678"
-        week_ids:
+        weeks:
           type: array
           items:
-            type: integer
+            $ref: '#/components/schemas/Week'
           example:
-            - 217
-            - 218
+            - id: 755
+              label: "Semaine du 15 juin au 19 juin"
+              selected: false
+            - id: 756
+              label: "Semaine du 22 juin au 26 juin"
+              selected: false
         createdAt:
           type: string
           format: date-time
@@ -504,8 +533,7 @@ components:
           latitude: 48.866667
           longitude: 2.333333
         description: Stage sur le thème de la logistique et de la supply chain
-        employer_description: "Créateur de lotions, de parfums et de produits cosmé\
-          tiques, embaumeur"
+        employer_description: "Créateur de lotions, de parfums et de produits cosmétiques, embaumeur"
         employer_name: BNP Paribas
         title: Stage d'observation du métier de chef de service
         lunch_break: 12h-14h
@@ -572,10 +600,67 @@ components:
         sector_uuid: s20
         name: Mode
         id: 1
-    InternshipApplicationCreate:
-      allOf:
-        - $ref: '#/components/schemas/InternshipApplicationForm'
+    InternshipApplicationPayload:
       description: Candidature à une offre de stage (création)
+      type: object
+      required:
+        - student_phone
+        - student_email
+        - week_ids
+        - motivation
+        - student_address
+        - student_legal_representative_full_name
+        - student_legal_representative_email
+        - student_legal_representative_phone
+      properties:
+        student_phone:
+          type: string
+          maxLength: 20
+          example: "+330612345678"
+        student_email:
+          type: string
+          format: email
+          maxLength: 100
+          example: "eleve@example.com"
+        week_ids:
+          type: array
+          items:
+            type: integer
+          example:
+            - 168
+            - 169
+        motivation:
+          type: string
+          maxLength: 1500
+          example: Je suis très motivé pour ce stage.
+        student_address:
+          type: string
+          maxLength: 300
+          example: 10 rue de Paris, 91000 Évry
+        student_legal_representative_full_name:
+          type: string
+          maxLength: 150
+          example: Jean Dupont
+        student_legal_representative_email:
+          type: string
+          format: email
+          maxLength: 109
+          example: "parent@example.com"
+        student_legal_representative_phone:
+          type: string
+          maxLength: 20
+          example: "+330612345678"
+      example:
+        {
+          "student_phone": "06 11 22 33 44",
+          "student_email": "eleve@example.com",
+          "week_ids": [168, 169],
+          "motivation": "Je suis très motivé pour ce stage.",
+          "student_address": "10 rue de Paris, 91000 Évry",
+          "student_legal_representative_full_name": "Jean Dupont",
+          "student_legal_representative_email": "parent@example.com",
+          "student_legal_representative_phone": "06 12 34 56 78"
+        }
     InternshipApplicationForm:
       allOf:
         - $ref: '#/components/schemas/InternshipApplication'
