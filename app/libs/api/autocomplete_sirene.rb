@@ -1,15 +1,17 @@
 module Api
   class AutocompleteSirene
     # see: https://geo.api.gouv.fr/adresse
-    API_ENDPOINT = 'https://api.insee.fr/entreprises/sirene/siret'
+    API_BASE = 'https://api.insee.fr/api-sirene/3.11'
+    API_SIRET_ENDPOINT = "#{API_BASE}/siret"
     API_ENTREPRISE_ENDPOINT = 'https://recherche-entreprises.api.gouv.fr/search'
 
     def self.search_by_siret(siret:)
-      check_token
-      uri = URI("#{API_ENDPOINT}/#{siret}")
-      token = ENV['API_SIRENE_TOKEN']
+      # check_token
+      uri = URI("#{API_SIRET_ENDPOINT}/#{siret}")
+
+      token = 
       headers = {
-        'Authorization': "Bearer #{token}",
+        'X-INSEE-Api-Key-Integration': ENV['API_SIRENE_TOKEN'],
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       }
@@ -41,24 +43,24 @@ module Api
     end
 
     def self.fetch_new_token
-      uri = URI.parse('https://api.insee.fr/token')
-      request = Net::HTTP::Post.new(uri, {})
-      request['Authorization'] = "Basic #{ENV['API_SIRENE_SECRET']}"
-      request.set_form_data(
-        'grant_type' => 'client_credentials'
-      )
+      # uri = URI.parse("#{API_SIRENE_URL}/token")
+      # request = Net::HTTP::Post.new(uri, {})
+      # request['Authorization'] = "Basic #{ENV['API_SIRENE_TOKEN']}"
+      # request.set_form_data(
+      #   'grant_type' => 'client_credentials'
+      # )
 
-      req_options = {
-        use_ssl: uri.scheme == 'https',
-        verify_mode: OpenSSL::SSL::VERIFY_NONE
-      }
+      # req_options = {
+      #   use_ssl: uri.scheme == 'https',
+      #   verify_mode: OpenSSL::SSL::VERIFY_NONE
+      # }
 
-      response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-        http.request(request)
-      end
+      # response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+      #   http.request(request)
+      # end
 
-      @token = JSON.parse(response.body)['access_token']
-      Rails.cache.write('sirene_token', @token)
+      # @token = JSON.parse(response.body)['access_token']
+      # Rails.cache.write('sirene_token', @token)
     end
   end
 end

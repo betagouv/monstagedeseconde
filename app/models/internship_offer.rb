@@ -17,7 +17,7 @@ class InternshipOffer < ApplicationRecord
                             entreprise_full_address internship_offer_area_id contact_phone
                             is_public group school_id coordinates first_date last_date
                             siret internship_address_manual_enter lunch_break daily_hours
-                            max_candidates max_students_per_group weekly_hours rep qpv
+                            max_candidates weekly_hours rep qpv
                             workspace_conditions workspace_accessibility].freeze
 
   include StiPreload
@@ -236,10 +236,6 @@ class InternshipOffer < ApplicationRecord
     where(school_year:)
   }
 
-  scope :shown_to_employer, lambda {
-    where(hidden_duplicate: false)
-  }
-
   scope :with_weeks_next_year, lambda {
     next_year = SchoolYear::Current.new
                                    .next_year
@@ -435,10 +431,6 @@ class InternshipOffer < ApplicationRecord
 
   def anonymize
     fields_to_reset = {
-      tutor_name: 'NA',
-      tutor_phone: 'NA',
-      tutor_email: 'NA',
-      tutor_role: 'NA',
       title: 'NA',
       description: 'NA',
       employer_website: 'NA',
@@ -463,28 +455,12 @@ class InternshipOffer < ApplicationRecord
   def update_from_internship_occupation
     return unless internship_occupation
 
-    # self.employer_name = organisation.employer_name
-    # self.employer_website = organisation.employer_website
     self.description = internship_occupation.description
-    # self.siret = organisation.siret
-    # self.group_id = organisation.group_id
-    # self.is_public = organisation.is_public
     # self.internship_street = internship_occupation.street
     # self.internship_zipcode = internship_occupation.zipcode
     # self.internship_city = internship_occupation.city
     # self.internship_coordinates = internship_occupation.coordinates
     # self.internship_offer_area_id = internship_occupation.internship_offer_area_id
-  end
-
-  def update_from_organisation
-    nil unless organisation
-
-    #   self.employer_name = organisation.employer_name
-    #   self.employer_website = organisation.employer_website
-    #   self.employer_description = organisation.employer_description
-    #   self.siret = organisation.siret
-    #   self.group_id = organisation.group_id
-    #   self.is_public = organisation.is_public
   end
 
   def generate_offer_from_attributes(white_list)
@@ -602,7 +578,6 @@ class InternshipOffer < ApplicationRecord
   end
 
   def maintenance_conditions?
-    return true if hidden_duplicate
     return true if published_at.nil?
 
     false
@@ -614,6 +589,10 @@ class InternshipOffer < ApplicationRecord
 
   def weeks_api_formatted
     Presenters::WeekList.new(weeks: weeks).to_api_formatted
+  end
+
+  def created_during_former_year?
+    last_date < Week.current_year_start_week.monday
   end
 
   protected

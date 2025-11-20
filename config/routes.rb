@@ -55,19 +55,14 @@ Rails.application.routes.draw do
                                                        as: 'set_up_password'
       post '/utilisateurs/renvoyer-le-code-de-confirmation', to: 'users/registrations#resend_confirmation_phone_token',
                                                              as: 'resend_confirmation_phone_token'
+      post '/utilisateurs/info-modale-vue', to: 'users#dismiss_modal_info', as: 'dismiss_modal_info'
     end
 
     resources :url_shrinkers, path: 'c', only: %i[] do
       get :o, on: :member
     end
 
-    resources :coded_crafts, only: [] do
-      collection do
-        post :search
-      end
-    end
-
-    resources :schools, path: 'ecoles', only: %i[new create]
+    resources :schools, path: "ecoles", only: %i[new create]
 
     resources :internship_offer_keywords, only: [] do
       collection do
@@ -92,14 +87,6 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :companies, path: 'organisations', only: %i[index show] do
-      member do
-        post :contact
-      end
-      collection do
-        get :search, path: 'recherche'
-      end
-    end
     resources :favorites, only: %i[create destroy index]
 
     get '/utilisateurs/transform_input', to: 'users#transform_input' # display
@@ -129,9 +116,6 @@ Rails.application.routes.draw do
             post :search
           end
         end
-        resources :coded_crafts, only: [] do
-          get :search, on: :collection
-        end
         resources :sectors, only: :index
       end
 
@@ -145,9 +129,6 @@ Rails.application.routes.draw do
             post :nearby
             post :search
           end
-        end
-        resources :coded_crafts, only: [] do
-          get :search, on: :collection
         end
         resources :sectors, only: :index
       end
@@ -219,13 +200,7 @@ Rails.application.routes.draw do
       end
 
       namespace :stepper, path: 'etapes' do
-        # legacy stepper routes
-        resources :organisations, only: %i[create new edit update]
-        resources :internship_offer_infos, path: 'offre-de-stage-infos', only: %i[create new edit update]
-        resources :hosting_infos, path: 'accueil-infos', only: %i[create new edit update]
-        resources :practical_infos, path: 'infos-pratiques', only: %i[create new edit update]
-        resources :tutors, path: 'tuteurs', only: %i[create new]
-        # new stepper path
+
         resources :internship_occupations, path: 'metiers_et_localisation', only: %i[create new edit update]
         resources :entreprises, path: 'entreprise', only: %i[create new edit update]
         resources :plannings, path: 'planning', only: %i[create new edit update]
@@ -308,6 +283,12 @@ Rails.application.routes.draw do
 
   authenticate :user, ->(u) { u.god? } do
     resources :reset_review_data, only: %i[new create] if ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true'
+    resources :inappropriate_offers, path: 'signalements', only: [] do
+      member do
+        get :manage, path: 'moderer'
+        patch :update_moderation, path: 'moderer'
+      end
+    end
   end
   # Redirects
   # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)

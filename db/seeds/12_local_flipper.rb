@@ -8,6 +8,10 @@ def import_flipper_local_file
   seed.disable(:application_inhibited)
   seed.disable(:disable_students_connexion_button)
   seed.disable(:enable_offer_flagging)
+  seed.enable(:student_signature)
+  seed.enable(:show_modal_info)
+
+
   # keep following lines commented out, they are for future use
   # seed.enable_percentage_of_time(:verbose_logging, 5)
   # seed.enable_percentage_of_actors(:new_feature, 5)

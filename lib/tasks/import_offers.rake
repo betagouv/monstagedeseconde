@@ -20,9 +20,6 @@ task :import_weekly_framed_offers, %i[employer_id csv_uri] => :environment do |t
     description = row[6]
     sector = row[7]
     max_candidates = row[10]
-    tutor_name = row[13]
-    tutor_email = row[14]
-    tutor_phone = row[15]
 
     address = "#{street} #{zipcode} #{city}"
     coordinates = Geocoder.search(address).first.try(:coordinates)
@@ -40,9 +37,6 @@ task :import_weekly_framed_offers, %i[employer_id csv_uri] => :environment do |t
         sector_id: sector,
         description: "<div>#{description}</div>",
         max_candidates:,
-        tutor_name:,
-        tutor_email:,
-        tutor_phone:,
         week_ids: weeks,
         weekly_hours: ['9:00', '17:00'],
         coordinates: { latitude: coordinates[0], longitude: coordinates[1] },
@@ -73,6 +67,7 @@ end
 
 desc 'Import new offers'
 task :import_weekly_framed_offers_with_employers_already_created, [:csv_uri] => :environment do |t, args|
+  # TODO: hosting_info no longer exists, this script will fail
   created_count = 0
   errors_count = 0
 
@@ -88,9 +83,6 @@ task :import_weekly_framed_offers_with_employers_already_created, [:csv_uri] => 
     sector = row[7]
     max_candidates = row[10]
     weeks = row[11].split('-').map { |w| Week.find_by(number: w.to_i, year: Date.current.year).id }
-    tutor_name = row[13]
-    tutor_email = row[14]
-    tutor_phone = row[15]
 
     address = "#{street} #{zipcode} #{city}"
     coordinates = Geocoder.search(address).first.try(:coordinates)
@@ -110,9 +102,6 @@ task :import_weekly_framed_offers_with_employers_already_created, [:csv_uri] => 
         sector_id: sector,
         description: "<div>#{description}</div>",
         max_candidates:,
-        tutor_name:,
-        tutor_email:,
-        tutor_phone:,
         week_ids: weeks,
         weekly_hours: ['9:00', '17:00'],
         coordinates: { latitude: coordinates[0], longitude: coordinates[1] },
@@ -143,6 +132,7 @@ end
 
 desc 'Import new offers 3 steps september 2025'
 task :import_offers_in_4_steps, [:csv_uri] => :environment do |t, args|
+  # TODO: hosting_info no longer exists, this script will fail
   puts '---------'
   puts args[:csv_uri]
   puts '---------'

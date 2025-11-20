@@ -6,7 +6,18 @@ module InternshipApplications
     before_validation :at_most_one_application_per_student?, on: :create
     before_validation :internship_offer_has_spots_left?, on: :create
 
-    validates :student, uniqueness: { scope: %i[internship_offer_id week_id] }
+    validate :unique_student_application_per_week, on: :create
+
+    def unique_student_application_per_week
+      return if weeks.blank? || student.blank? || internship_offer.blank?
+
+      duplicate = InternshipApplication.joins(:weeks)
+                                      .where(internship_offer_id: internship_offer_id,
+                                              user_id: user_id,
+                                              weeks: { id: weeks.ids })
+                                      .exists?
+      errors.add(:base, :duplicate) if duplicate
+    end
 
     def approvable?
       return false unless internship_offer.has_spots_left?

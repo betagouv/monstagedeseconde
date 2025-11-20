@@ -295,7 +295,7 @@ class InternshipAgreement < ApplicationRecord
     GodMailer.notify_others_signatures_started_email(
       internship_agreement: self,
       missing_signatures_recipients: missing_signatures_recipients,
-      last_signature: signatures.last
+      last_signature: signatures&.last
     ).deliver_later
   end
 
@@ -327,7 +327,7 @@ class InternshipAgreement < ApplicationRecord
     GodMailer.notify_signatures_can_start_email(
       internship_agreement: self
     ).deliver_later
-    if Flipper.enabled?(:student_signature, student)
+    if Flipper.enabled?(:student_signature)
       legal_representative_data.values.each do |representative|
         GodMailer.notify_student_legal_representatives_can_sign_email(
           internship_agreement: self,
@@ -338,10 +338,8 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def notify_others_signatures_finished(agreement)
-    GodMailer.notify_others_signatures_finished_email(
-      internship_agreement: agreement,
-      last_signature: signatures.order(created_at: :asc).last
-    ).deliver_later
+    GodMailer.notify_others_signatures_finished_email(internship_agreement: agreement)
+             .deliver_later
   end
 
   def notify_school_management_of_employer_completion(agreement)

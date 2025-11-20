@@ -88,10 +88,11 @@ class InternshipOffersController < ApplicationController
     }
     parameters =  flag_params.merge(offer_and_userid_parameters)
     existing_report = InappropriateOffer.find_by(offer_and_userid_parameters)
+    
     if current_user.present? && existing_report
       alert = "Vous avez déjà signalé cette offre comme inappropriée."
       return redirect_to internship_offer_path(@internship_offer), alert: alert
-    else
+    elsif Flipper.enabled?(:flag_internship_offer)
       new_report = InappropriateOffer.new(parameters)
       if new_report.valid?
         new_report.save
@@ -102,6 +103,9 @@ class InternshipOffersController < ApplicationController
         @inappropriate_offer = new_report
         return render :show
       end
+    else
+      flash[:alert] = "Le signalement des offres n'est pas disponible pour le moment."
+      redirect_to internship_offer_path(@internship_offer)
     end
   end
 

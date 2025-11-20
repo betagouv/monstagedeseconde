@@ -137,8 +137,6 @@ fr:
       week:
         one: Semaine
         other: Semaines
-
-
     attributes:
       area_notification:
         area: Espace
@@ -154,8 +152,6 @@ fr:
         activity_scope: Objectifs du stage
         weekly_planning: Planning hebdomadaire
         same_daily_planning: Horaires quotidiens
-      practical_info:
-        contact_phone: Votre numéro de téléphone de correspondance
       school:
         name: Nom
         kind: Type
@@ -221,38 +217,12 @@ fr:
         lunch_break: Pause déjeuner
         weekly_lunch_break: Pause déjeuner
         weekly_hours: Horaires
-        max_students_per_group: Nbr. max d'élèves par groupe
         grades: Niveaux ciblés
-      organisation: &organisation_fields
-        employer_name: Employeur
-        employer_description: Description de l'employeur
-        employer_website: Site web de l'employeur
-        is_public: Secteur public
-        group: Groupe ou institution
-        street: Adresse du lieu de stage
-        zipcode: Code postal
-        city: Commune
-        coordinates: Coordonnées GPS
-        siren: Code Siren
-      hosting_info:
-        period: Période de stage
       operator: &operator_fields
         name: Nom
         target_count: Objectif annuel
-      internship_offer_info: &internship_offer_info_fields
-        title: Intitulé
-        description: Description
-        sector: Secteur
-        max_candidates: Nbr. max de candidats accueillis sur le stage
-        sector_id: Secteurs professionnels
-        daily_hours: Horaires journaliers
-        daily_lunch_break: Pause déjeuner par jour
-        weekly_lunch_break: Pause déjeuner
-      tutor: &tutor_fields
-        tutor_name: Nom du tuteur
-        tutor_phone: Téléphone du tuteur
-        tutor_email: Email du tuteur
-        tutor_role: Fonction du tuteur
+
+
       internship_offer_area:
         name : Nom d'espace
       team_member_invitation:
@@ -263,7 +233,7 @@ fr:
           pending_invitation: Invitation en attente de réponse
           accepted_invitation: Invitation acceptée
           refused_invitation: Invitation refusée
-          read_by_employer: Lu par l'employeur
+          read_by_employer: Lue par l'employeur
       internship_agreement: &internship_agreement_fields
         internship_application: Candidature
         school_manager_accept_terms: Validée par CE
@@ -302,13 +272,13 @@ fr:
           started_by_school_manager: À remplir par le chef d'établissement
           validated: Validée
           signed: Signée
-          read_by_employer: Lu par l'employeur
+          read_by_employer: Lue par l'employeur
         status:
           student:
             validated: En attentes de signatures
             signatures_started: Partiellement signée
             signed_by_all: Signée par toutes les parties.
-          admin_officer:
+          ministry_statistician: &ministry_statistician_status
             draft: En attente de l'offreur.
             started_by_employer: En attente de l'offreur.
             completed_by_employer: Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.
@@ -318,6 +288,8 @@ fr:
               already_signed: Le chef d'établissement a déjà signé. En attente de la signature de l’employeur.
               not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
+          admin_officer:
+            <<: *ministry_statistician_status
           cpe:
             draft: En attente de l'offreur.
             started_by_employer: En attente de l'offreur.
@@ -355,8 +327,18 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée.
             signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature du chef d’établissement.
-              not_signed_yet: Le chef d'établissement a déjà signé. En attente de votre signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
+            signed_by_all: Signée par toutes les parties.
+          student:
+            draft: À remplir par les deux parties.
+            started_by_employer: Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.
+            completed_by_employer: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
+            started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
+            validated: Votre convention est prête à être signée.
+            signatures_started:
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           education_statistician:
             draft: À remplir par les deux parties.
@@ -365,8 +347,8 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature du chef d’établissement.
-              not_signed_yet: Le chef d'établissement a déjà signé. En attente de votre signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           prefecture_statistician:
             draft: À remplir par les deux parties.
@@ -375,8 +357,8 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature du chef d’établissement.
-              not_signed_yet: Le chef d'établissement a déjà signé. En attente de votre signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           academy_region_statistician:
             draft: À remplir par les deux parties.
@@ -385,8 +367,8 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature du chef d’établissement.
-              not_signed_yet: Le chef d'établissement a déjà signé. En attente de votre signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           school_manager:
             draft: En attente de l'offreur.
@@ -404,14 +386,13 @@ fr:
         signatory_role: signataire
 
       internship_offer:
-        <<: *organisation_fields
-        <<: *internship_offer_info_fields
-        <<: *tutor_fields
         <<: *internship_occupations_fields
         <<: *entreprises_fields
         <<: *planning_fields
 
         id: Identifiant unique de l'offre
+        sector: Secteur
+        zipcode: Code postal
         internship_offer_weeks: Semaines ouvertes aux stages
         human_is_public: Public/Privé
         human_max_candidates: Nombre max d'élèves accueillis sur l'année
@@ -432,6 +413,7 @@ fr:
         # last_monday: Dernier lundi de stage
         first_date: Premier jour
         last_date: Dernier jour
+        grades_as_string: Classes ciblées
         daterange: Plage de disponibilité
         submitted_application_count: Nbr. de candidatures soumises
         rejected_application_count: Nbr. de candidatures refusées
@@ -471,8 +453,6 @@ fr:
         period: Période de stage
         group_id: type d'employeur
         group: Ministère
-        organisation:
-          group: Groupe ou institution de tutelle
 
         internship_occupation: Métiers observés et localisation du stage
           # title: Intitulé
@@ -502,7 +482,7 @@ fr:
           canceled_by_student: annulée par l'élève
           canceled_by_student_confirmation: L'élève a choisi un autre stage
           convention_signed: convention signée
-          read_by_employer: lu par l'employeur
+          read_by_employer: lue par l'employeur
           restored: restaurée
         student_phone: Contact téléphone
         student_email: Contact email
@@ -590,29 +570,73 @@ fr:
               blank: "Veuillez saisir la fonction du représentant de l'établissement scolaire"
             student_class_room:
               blank: "Veuillez saisir la classe de l'élève"
-        organisation:
-          attributes: &organisation_errors
-            employer_name:
-              blank: "Veuillez saisir le nom de l'employeur"
-            employer_description:
-              too_long: La description doit faire au maximum 250 caractères
-            coordinates:
-              blank: "Veuillez saisir et sélectionner une adresse avec l'outil de complétion automatique"
-            zipcode:
-              blank: "Veuillez renseigner le code postal de l'employeur"
-            street:
-              blank: "Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage"
-            city:
-              blank: "Veuillez renseigner la commune l'employeur"
-            public:
-              inclusion: "Veuillez choisir une institution de tutelle pour cette offre de stage"
         partner:
           attributes: &partner_errors
             target_count: Objectif annuel
 
-        internship_offer_info:
-          attributes: &internship_offer_info_errors
+        internship_offer_area:
+          attributes:
+            base:
+              only_one_left: "Une personne au moins doit être notifiée des candidatures"
+            name:
+              blank: "Veuillez saisir un nom d'espace"
+              invalid: "Ce nom d'espace est incorrect"
+              taken: "Ce nom d'espace est déjà utilisé"
+
+
+        internship_occupation:
+          attributes: &internship_occupation_errors
             title:
+              blank: "Veuillez saisir le titre de l'offre de stage"
+            description:
+              blank: "Veuillez saisir une description pour cette offre de stage"
+            street:
+              blank: "Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage"
+            city:
+              blank: "Veuillez saisir le nom de commune de l'offre de stage"
+            zipcode:
+              blank: "Veuillez saisir le code postal de l'offre de stage"
+              invalid: "Le code postal semble incorrect"
+
+        entreprise:
+          attributes: &entreprise_errors
+            max_candidates:
+              not_a_number: "Veuillez saisir un nombre de candidats par stage"
+            is_public:
+              blank: "Le stage doit être soit public ou privé"
+            sector:
+              required: "Veuillez choisir un secteur pour l'offre de stage"
+            siret:
+              blank: "Veuillez saisir le SIRET de l'entreprise"
+              invalid: "Le SIRET doit contenir 14 chiffres"
+            is_public:
+              blank: "Veuillez choisir le secteur de l'entreprise"
+
+        planning:
+          attributes: &planning_errors
+            max_candidates:
+              not_a_number: "Veuillez saisir un nombre de candidats par stage"
+            daily_hours:
+              blank: "Veuillez saisir les horaires journaliers"
+            daily_lunch_break:
+              blank: "Veuillez saisir la pause déjeuner journalière"
+            weekly_lunch_break:
+              blank: "Veuillez saisir la pause déjeuner hebdomadaire"
+            weekly_hours:
+              blank: "Veuillez saisir les horaires hebdomadaires"
+            grades:
+              required: "Veuillez choisir au moins un niveau d'études"
+            weeks:
+              blank: Veuillez saisir des semaines de stage
+
+        internship_offer:
+          attributes:
+            <<: *internship_occupation_errors
+            <<: *entreprise_errors
+            <<: *planning_errors
+            employer:
+              required: Veuillez choisir un compte responsable de l'offre
+              title:
               blank: "Veuillez saisir le titre de l'offre de stage"
             max_candidates:
               not_a_number: "Veuillez saisir un nombre de candidats par stage"
@@ -625,33 +649,13 @@ fr:
               required: "Veuillez choisir un secteur pour l'offre de stage"
             weeks:
               blank: Veuillez saisir des semaines de stage
-        internship_offer_area:
-          attributes:
-            base:
-              only_one_left: "Une personne au moins doit être notifiée des candidatures"
-            name:
-              blank: "Veuillez saisir un nom d'espace"
-              invalid: "Ce nom d'espace est incorrect"
-              taken: "Ce nom d'espace est déjà utilisé"
+            zipcode:
+              blank: "Veuillez renseigner le code postal de l'employeur"
+            employer_name:
+              blank: "Veuillez saisir le nom de l'employeur"
+            entreprise_full_address:
+              blank: "Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage"
 
-
-        tutor:
-          attributes: &tutor_errors
-            tutor_name:
-              blank: "Veuillez saisir un tuteur pour l'offre de stage"
-            tutor_phone:
-              blank: "Veuillez saisir le numéro de téléphone du tuteur de l'offre de stage"
-            tutor_email:
-              blank: "Veuillez saisir l'adresse électronique du tuteur de l'offre de stage"
-
-        internship_offer:
-          attributes:
-            <<: *organisation_errors
-            <<: *internship_offer_info_errors
-            <<: *tutor_errors
-
-            employer:
-              required: Veuillez choisir un compte responsable de l'offre
         internship_offers/weekly_framed:
           attributes:
             contact_phone:

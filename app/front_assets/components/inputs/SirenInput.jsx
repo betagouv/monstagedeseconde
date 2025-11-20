@@ -182,12 +182,19 @@ export default function SirenInput({
     inputEntrepriseName.required = true;
     inputEntrepriseName.removeAttribute("readonly");
     // hide the ministry choice block only if not public
-    const ministry = document.getElementById("ministry-choice");
+    const ministrySelect = document.getElementById("group-choice");
+    const ministryBlock = document.getElementById("ministry-block");
+    // Private
     if (!lastPublicValue) {
-      ministry.hidden = true;
+      ministryBlock.classList.add("fr-hidden");
+      ministrySelect.required = false;
+
       sectorBloc.hidden = false;
-    } else {
-      ministry.removeAttribute("hidden");
+    } else { // Public company
+      ministryBlock.classList.remove("fr-hidden");
+      ministrySelect.setAttribute("required", "true");
+      ministrySelect.required = true;
+
       sectorBloc.hidden = true;
     }
     
@@ -247,7 +254,7 @@ export default function SirenInput({
 
     broadcast(employerNameChanged({ employerName }));
 
-    const ministry = document.getElementById("ministry-choice");
+    const ministry = document.getElementById("ministry-block");
     const ministryClassList = ministry.classList;
     const sectorBloc = document.getElementById(`${resourceName}_sector_id-block`);
     const sectorBlocClassList = sectorBloc.classList;
@@ -260,9 +267,11 @@ export default function SirenInput({
       toggleHideContainerById("public-private-radio-buttons", false);
       if(is_public){
         document.getElementById("entreprise_is_public_true").checked = true;
+        // show ministry bloc
         ministry.removeAttribute("style");
         ministryClassList.remove("fr-hidden");
         ministry.removeAttribute("hidden");
+        ministry.hidden = false;
 
         // For public establishments
 
@@ -278,6 +287,9 @@ export default function SirenInput({
         }
         // remove required attribute from sector input
         sector.removeAttribute("required");
+
+        // hide sector bloc
+        sectorBloc.hidden = true;
       } else {
         // For private companies
         document.getElementById(`${resourceName}_is_public_false`).checked = true;
