@@ -1,7 +1,26 @@
 require 'rails_helper'
+require_relative  'requests/api/helpers/internship_applications_helper'
+include InternshipApplicationsHelper
 
 RSpec.configure do |config|
   config.swagger_root = Rails.root.join('swagger').to_s
+
+  definitions = {
+    parameters: {
+      internship_offer_query_params: {
+        type: :object,
+        properties: {
+          page: { type: :integer, example: 1 },
+          latitude: { type: :number, format: :float, example: 48.8566 },
+          longitude: { type: :number, format: :float, example: 2.3522 },
+          radius: { type: :integer, example: 10 },
+          sector_ids: { type: :array, items: { type: :integer},  example: [21, 23] },
+          week_ids: { type: :array, items: { type: :integer }, example: [101, 102] },
+          grades: { type: :array, items: { type: :integer, enum: [1,2,3] }, example: [ 2, 3] }
+        }
+      }
+    }
+  }
 
   config.swagger_docs = {
     'api/v3/swagger.yaml' => {  
@@ -18,6 +37,7 @@ RSpec.configure do |config|
           description: 'Development server'
         }
       ],
+      definitions: definitions,
       components: {
         securitySchemes: {
           bearerAuth: {
@@ -33,104 +53,7 @@ RSpec.configure do |config|
               '$ref': '#/components/schemas/InternshipApplication'
             }
           },
-          InternshipApplication: {
-            type: :object,
-            properties: {
-              id: {
-                type: :integer,
-                example: 1
-              },
-              uuid: {
-                type: :string,
-                format: :uuid,
-                example: "550e8400-e29b-41d4-a716-446655440000"
-              },
-              student_id: {
-                type: :integer,
-                example: 1
-              },
-              aasm_state: {
-                type: :string,
-                example: "submitted",
-                maxLength: 100
-              },
-              submitted_at: {
-                type: :string,
-                format: :'date-time',
-                example: "2023-03-15T10:00:00Z"
-              },
-              student_email: {
-                type: :string,
-                format: :email,
-                maxLength: 100,
-                example: "jean.dupont@example.com"
-              },
-              student_address: {
-                type: :string,
-                maxLength: 300,
-                example: "12 rue de la paix, 75001 Paris"
-              },
-              student_phone: {
-                type: :string,
-                maxLength: 20,
-                example: "+330612345678"
-              },
-              internship_offer_id: {
-                type: :integer,
-                example: 1
-              },
-              motivation: {
-                type: :string,
-                maxLength: 1500,
-                example: "Je souhaite faire ce stage pour découvrir le métier de développeur"
-              },
-              legal_representative_full_name: {
-                type: :string,
-                maxLength: 150,
-                example: "Jean Dupont"
-              },
-              legal_representative_email: {
-                type: :string,
-                format: :email,
-                maxLength: 109,
-                example: "jean.dupont@example.com"
-              },
-              legal_representative_phone: {
-                type: :string,
-                maxLength: 50,
-                example: "+330612345678"
-              },
-              weeks: {
-                type: :array,
-                items: {
-                  '$ref': '#/components/schemas/Week'
-                },
-                example: [
-                  {
-                    id: 755,
-                    label: "Semaine du 15 juin au 19 juin",
-                    selected: false
-                  },
-                  {
-                    id: 756,
-                    label: "Semaine du 22 juin au 26 juin",
-                    selected: false
-                  }
-                ]
-              },
-              createdAt: {
-                type: :string,
-                format: :'date-time',
-                example: "2025-03-04T10:15:00Z"
-              },
-              updatedAt: {
-                type: :string,
-                format: :'date-time',
-                example: "2025-03-04T10:15:00Z"
-              }
-            },
-            description: "Candidature à une offre de stage"
-          },
+          InternshipApplication: internship_application_schema,
           InternshipOffers: {
             type: :array,
             items: {

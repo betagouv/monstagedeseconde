@@ -3,7 +3,7 @@ require 'swagger_helper'
 RSpec.describe 'api/v3/auth/login', type: :request do
   path '/api/v3/auth/login' do
     post 'Authentifie un utilisateur et retourne un token JWT' do
-      tags 'developpers'
+      tags 'current user'
       consumes 'application/json'
       # parameter schema: {
       parameter name: 'login', in: :body, schema: {

@@ -9,7 +9,7 @@ paths:
     post:
       summary: Authentifie un utilisateur et retourne un token JWT
       tags:
-      - developpers
+      - current user
       parameters: []
       responses:
         '200':
@@ -54,11 +54,24 @@ paths:
               required:
               - email
               - password
+  "/api/v3/internship_offers/search":
+    get:
+      summary: search internship_offer
+      tags:
+      - internship_offers
+      parameters:
+      - name: jfmldsqjfmqsd
+        in: query
+        schema:
+          "$ref": "#/definitions/parameters/internship_offer_query_params"
+      responses:
+        '200':
+          description: successful
   "/api/v3/me":
     get:
       summary: Get current user info
       tags:
-      - Users
+      - current user
       security:
       - bearerAuth: []
       responses:
@@ -103,6 +116,50 @@ paths:
 servers:
 - url: http://localhost:3000/api/v3
   description: Development server
+definitions:
+  parameters:
+    internship_offer_query_params:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        latitude:
+          type: number
+          format: float
+          example: 48.8566
+        longitude:
+          type: number
+          format: float
+          example: 2.3522
+        radius:
+          type: integer
+          example: 10
+        sector_ids:
+          type: array
+          items:
+            type: integer
+          example:
+          - 21
+          - 23
+        week_ids:
+          type: array
+          items:
+            type: integer
+          example:
+          - 101
+          - 102
+        grades:
+          type: array
+          items:
+            type: integer
+            enum:
+            - 1
+            - 2
+            - 3
+          example:
+          - 2
+          - 3
 components:
   securitySchemes:
     bearerAuth:

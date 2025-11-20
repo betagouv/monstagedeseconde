@@ -4,7 +4,7 @@ require 'swagger_helper'
 RSpec.describe 'api/v3/me', type: :request do
   path '/api/v3/me' do
     get 'Get current user info' do
-      tags 'Users'
+      tags 'current user'
       security [bearerAuth: []]
       produces 'application/json'
 
