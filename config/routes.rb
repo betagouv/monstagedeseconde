@@ -261,7 +261,7 @@ Rails.application.routes.draw do
   get '/mentions-legales', to: 'pages#mentions_legales'
   get '/operators', to: 'pages#operators'
   get '/politique-de-confidentialite', to: 'pages#politique_de_confidentialite'
-  post '/newsletter', to: 'newsletter#subscribe'
+  # post '/newsletter', to: 'newsletter#subscribe'
   get '/recherche-entreprises', to: 'pages#search_companies'
   post '/visitor_apply', to: 'pages#visitor_apply'
   get '/educonnect_deconnexion_responsable', to: 'pages#educonnect_logout_responsible',

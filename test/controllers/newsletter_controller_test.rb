@@ -2,6 +2,7 @@ require 'test_helper'
 
 class NewsletterControllerTest < ActionDispatch::IntegrationTest
   test 'post should not subscribe when email is faulty' do
+    skip 'TODO: routes removed'
     invalid_email = 'test@free@.fr'
 
     post newsletter_path, params: { email: invalid_email }
@@ -10,6 +11,7 @@ class NewsletterControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'post should subscribe' do
+    skip 'TODO: routes removed'
     test_email = 'test@free.fr'
     expected_result = ['S9Dm', '2022-04-17T14:57:56Z', '2022-04-17T14:57:56Z', test_email, '']
 
@@ -22,6 +24,7 @@ class NewsletterControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'post should not subscribe when already subcribed' do
+    skip 'TODO: routes removed'
     test_email = 'test@free.fr'
     expected_result = :previously_existing_email
 
@@ -33,6 +36,7 @@ class NewsletterControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'post should not subscribe when api is faulty' do
+    skip 'TODO: routes removed'
     test_email = 'test@free.fr'
     expected_result = 'not expected'
 
@@ -46,6 +50,7 @@ class NewsletterControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'post should not subscribe when confirmation is sent' do
+    skip 'TODO: routes removed'
     test_email = 'test@free.fr'
     raises_exception = -> { raise ArgumentError.new('This is a test') }
     Services::SyncEmailCampaigns.stub_any_instance(:add_contact, raises_exception) do
