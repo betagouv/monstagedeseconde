@@ -156,4 +156,25 @@ class EmployerMailer < ApplicationMailer
       subject: 'Une candidature été restaurée par un élève'
     )
   end
+
+  def notify_masked_after_moderation(internship_offer:, inappropriate_offer:)
+    @internship_offer = internship_offer
+    @inappropriate_offer = inappropriate_offer
+    recipients_emails = [@internship_offer.employer.email]
+    send_email(
+      to: recipients_emails,
+      subject: 'Votre offre a été temporairement masquée sur 1ÉLÈVE1STAGE'
+    )
+  end
+
+  def notify_deleted_after_moderation(internship_offer:, inappropriate_offer:)
+    @internship_offer = internship_offer
+    @inappropriate_offer = inappropriate_offer
+    recipients_emails = [@internship_offer.employer.email]
+    send_email(
+      to: recipients_emails,
+      subject: 'Votre offre a été retirée de la plateforme 1ÉLÈVE1STAGE'
+    )
+  end
+
 end

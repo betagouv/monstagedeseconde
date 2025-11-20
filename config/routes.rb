@@ -303,6 +303,12 @@ Rails.application.routes.draw do
 
   authenticate :user, ->(u) { u.god? } do
     resources :reset_review_data, only: %i[new create] if ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true'
+    resources :inappropriate_offers, path: 'signalements', only: [] do
+      member do
+        get :manage, path: 'moderer'
+        patch :update_moderation, path: 'moderer'
+      end
+    end
   end
   # Redirects
   # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
