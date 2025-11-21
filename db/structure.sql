@@ -1003,7 +1003,12 @@ CREATE TABLE public.inappropriate_offers (
     details text,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    ground public.inappropriate_ground NOT NULL
+    ground public.inappropriate_ground NOT NULL,
+    moderation_action character varying,
+    message_to_employer text,
+    decision_date timestamp(6) without time zone,
+    internal_comment text,
+    moderator_id bigint
 );
 
 
@@ -3836,6 +3841,13 @@ CREATE INDEX index_inappropriate_offers_on_internship_offer_id ON public.inappro
 
 
 --
+-- Name: index_inappropriate_offers_on_moderator_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_inappropriate_offers_on_moderator_id ON public.inappropriate_offers USING btree (moderator_id);
+
+
+--
 -- Name: index_inappropriate_offers_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5115,6 +5127,14 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: inappropriate_offers fk_rails_d5f24bcfb1; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.inappropriate_offers
+    ADD CONSTRAINT fk_rails_d5f24bcfb1 FOREIGN KEY (moderator_id) REFERENCES public.users(id);
+
+
+--
 -- Name: planning_reserved_schools fk_rails_d6800a0532; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5225,6 +5245,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251105120000'),
 ('20251029152954'),
 ('20251001162458'),
 ('20251001145652'),

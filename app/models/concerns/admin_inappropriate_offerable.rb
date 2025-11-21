@@ -44,6 +44,36 @@ module AdminInappropriateOfferable
         field :user do
           label {'Levé par'}
         end
+
+        field :moderation_action do
+          label { 'Statut' }
+          pretty_value do
+            if value.present?
+              InappropriateOffer.options_for_moderation_action[value] || value
+            else
+              bindings[:view].content_tag(:span, 'En attente', class: 'fr-badge fr-badge-warning')
+            end
+          end
+        end
+
+        field :actions do
+          label { 'Actions' }
+          sortable false
+          searchable false
+          
+          formatted_value do
+            bindings[:view].link_to(
+              Rails.application.routes.url_helpers.manage_inappropriate_offer_path(
+                bindings[:object].id
+              ),
+              class: 'btn btn-sm btn-primary',
+              title: 'Modérer ce signalement'
+            ) do
+              bindings[:view].content_tag(:i, '', class: 'fa fa-gavel') +
+              ' Modérer'
+            end
+          end
+        end
       end
 
       show do
@@ -87,6 +117,40 @@ module AdminInappropriateOfferable
 
         field :user do
           label {'Levé par'}
+        end
+
+        field :moderation_action do
+          label { 'Action de modération' }
+          pretty_value do
+            if value.present?
+              InappropriateOffer.options_for_moderation_action[value] || value
+            else
+              'Non modéré'
+            end
+          end
+        end
+
+        field :moderator do
+          label { 'Modéré par' }
+          pretty_value do
+            if bindings[:object].moderator.present?
+              bindings[:object].moderator.email
+            else
+              'Non assigné'
+            end
+          end
+        end
+
+        field :decision_date do
+          label { 'Date de décision' }
+        end
+
+        field :message_to_employer do
+          label { 'Message à l\'employeur' }
+        end
+
+        field :internal_comment do
+          label { 'Commentaire interne' }
         end
       end
     end

@@ -409,6 +409,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'info modal dismissal with employer' do
+    ENV['SIGNATURE_INFO'] = 'true'
     employer = create(:employer)
     sign_in employer
 
@@ -421,5 +422,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     
     get account_path(section: 'password')
     refute_select('div[data-open-modal-dsfr-is-open-value="true"]', {}, 'info modal should be dismissed')
+    ENV['SIGNATURE_INFO'] = 'false'
   end
 end
