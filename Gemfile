@@ -82,7 +82,7 @@ gem "validates_zipcode"
 gem "bootsnap", require: false
 gem "dalli"
 gem "dotenv-rails", require: "dotenv/load"
-gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
+gem "tzinfo-data", platforms: %i[ windows  jruby]
 
 # Active Storage validations
 gem "active_storage_validations"
@@ -95,7 +95,7 @@ group :development, :test do
   gem "debug"
   gem "stringio", "3.1.7"
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem "byebug", platforms: %i[mri mingw x64_mingw]
+  gem "byebug", platforms: %i[ windows  jruby]
   gem "pry-byebug"
   gem 'rspec-rails'  # Required by rswag even if you use minitest for other tests
   gem 'rswag'
