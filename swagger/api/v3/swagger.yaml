@@ -60,10 +60,46 @@ paths:
       tags:
       - internship_offers
       parameters:
-      - name: jfmldsqjfmqsd
+      - name: params
         in: query
         schema:
           "$ref": "#/definitions/parameters/internship_offer_query_params"
+      responses:
+        '200':
+          description: successful
+  "/api/v3/internship_offers":
+    get:
+      summary: list internship_offers
+      tags:
+      - internship_offers
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create internship_offer
+      responses:
+        '200':
+          description: successful
+  "/api/v3/internship_offers/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    patch:
+      summary: update internship_offer
+      responses:
+        '200':
+          description: successful
+    put:
+      summary: update internship_offer
+      responses:
+        '200':
+          description: successful
+    delete:
+      summary: delete internship_offer
       responses:
         '200':
           description: successful
@@ -124,29 +160,37 @@ definitions:
         page:
           type: integer
           example: 1
+          nullable: true
         latitude:
           type: number
           format: float
+          nullable: true
           example: 48.8566
         longitude:
           type: number
           format: float
+          nullable: true
           example: 2.3522
         radius:
           type: integer
           example: 10
+          nullable: true
         sector_ids:
           type: array
+          nullable: true
           items:
             type: integer
           example:
+          -
           - 21
           - 23
         week_ids:
           type: array
           items:
             type: integer
+          nullable: true
           example:
+          -
           - 101
           - 102
         grades:
@@ -157,7 +201,9 @@ definitions:
             - 1
             - 2
             - 3
+          nullable: true
           example:
+          -
           - 2
           - 3
 components:

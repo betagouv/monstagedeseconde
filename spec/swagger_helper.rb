@@ -1,28 +1,30 @@
 require 'rails_helper'
 require_relative  'requests/api/helpers/internship_applications_helper'
 include InternshipApplicationsHelper
+require_relative  'requests/api/helpers/internship_offers_helper'
+include InternshipOffersHelper
 
 RSpec.configure do |config|
-  config.swagger_root = Rails.root.join('swagger').to_s
+  config.openapi_root = Rails.root.join('swagger').to_s
 
   definitions = {
     parameters: {
       internship_offer_query_params: {
         type: :object,
         properties: {
-          page: { type: :integer, example: 1 },
-          latitude: { type: :number, format: :float, example: 48.8566 },
-          longitude: { type: :number, format: :float, example: 2.3522 },
-          radius: { type: :integer, example: 10 },
-          sector_ids: { type: :array, items: { type: :integer},  example: [21, 23] },
-          week_ids: { type: :array, items: { type: :integer }, example: [101, 102] },
-          grades: { type: :array, items: { type: :integer, enum: [1,2,3] }, example: [ 2, 3] }
+          page: { type: :integer, example: 1 , nullable: true},
+          latitude: { type: :number, format: :float, nullable: true,example: 48.8566 },
+          longitude: { type: :number, format: :float, nullable: true, example: 2.3522 },
+          radius: { type: :integer, example: 10, nullable: true },
+          sector_ids: { type: :array, nullable: true, items: { type: :integer},  example: [nil,21, 23] },
+          week_ids: { type: :array, items: { type: :integer }, nullable: true, example: [nil, 101, 102] },
+          grades: { type: :array, items: { type: :integer, enum: [1,2,3] }, nullable: true, example: [nil,  2, 3] }
         }
       }
     }
   }
 
-  config.swagger_docs = {
+  config.openapi_specs = {
     'api/v3/swagger.yaml' => {  
       openapi: '3.0.0',
       info: {
@@ -60,174 +62,7 @@ RSpec.configure do |config|
               '$ref': '#/components/schemas/InternshipOffer'
             }
           },
-          InternshipOffer: {
-            required: [
-              :city,
-              :coordinates,
-              :employer_name,
-              :is_public,
-              :max_candidates,
-              :remote_id,
-              :sector_uuid,
-              :street,
-              :title,
-              :grades,
-              :weeks,
-              :qpv,
-              :rep
-            ],
-            type: :object,
-            properties: {
-              remote_id: {
-                type: :string,
-                maxLength: 60,
-                description: "Identifiant de l'offre de stage chez le partenaire",
-                example: "A156548-H"
-              },
-              description: {
-                maxLength: 500,
-                type: :string,
-                description: "Description de l'offre de stage"
-              },
-              title: {
-                type: :string,
-                maxLength: 150,
-                example: "Stage d'observation du métier de chef de service"
-              },
-              employer_name: {
-                type: :string,
-                maxLength: 150,
-                example: "BNP Paribas"
-              },
-              employer_description: {
-                maxLength: 275,
-                type: :string,
-                example: "Créateur de lotions, de parfums et de produits cosmétiques, embaumeur"
-              },
-              street: {
-                type: :string,
-                maxLength: 500,
-                example: "16 rue de la paix"
-              },
-              city: {
-                type: :string,
-                maxLength: 50,
-                example: "Paris"
-              },
-              zipcode: {
-                type: :string,
-                maxLength: 5,
-                example: "75001"
-              },
-              employer_website: {
-                type: :string,
-                maxLength: 560,
-                example: "http://www.acnee-corporation.fr"
-              },
-              lunch_break: {
-                type: :string,
-                maxLength: 500,
-                description: "Horaires de pause déjeuner",
-                example: "12h-14h"
-              },
-              daily_hours: {
-                '$ref': '#/components/schemas/InternshipOffer_daily_hours'
-              },
-              coordinates: {
-                '$ref': '#/components/schemas/InternshipOffer_coordinates'
-              },
-              grades: {
-                type: :array,
-                description: "Liste des classes dont les élèves peuvent postuler à l'offre de stage",
-                items: {
-                  '$ref': '#/components/schemas/Grade'
-                }
-              },
-              permalink: {
-                type: :string,
-                description: "Site de l'employeur",
-                maxLength: 200,
-                example: "http://www.stagechezemployeur.fr"
-              },
-              max_candidates: {
-                type: :integer,
-                description: "Nombre maximum de candidats pouvant postuler à cette offre de stage sur l'ensemble des semaines proposées",
-                example: 1
-              },
-              is_public: {
-                type: :boolean,
-                description: "true si l'offre de stage est issue d'une administration publique, false si elle est issue d'une entreprise privée",
-                example: true
-              },
-              sector_uuid: {
-                '$ref': '#/components/schemas/Sector'
-              },
-              rep: {
-                type: :boolean,
-                description: "true si l'offre de stage est réservée à des collèges en rep ou rep plus",
-                example: true
-              },
-              qpv: {
-                type: :boolean,
-                description: "true si l'offre de stage est réservée à des établissements en qpv",
-                example: true
-              },
-              weeks: {
-                type: :array,
-                items: {
-                  type: :string
-                },
-                description: "Liste des semaines pendant lesquelles l'offre de stage est disponible",
-                example: ["222", "223"]
-              }
-            },
-            description: "offre de stage",
-            example: {
-              remote_id: "A123-12",
-              grades: ['seconde', 'troisieme'],
-              city: "Paris",
-              coordinates: {
-                latitude: 48.866667,
-                longitude: 2.333333
-              },
-              description: "Stage sur le thème de la logistique et de la supply chain",
-              employer_description: "Créateur de lotions, de parfums et de produits cosmétiques, embaumeur",
-              employer_name: "BNP Paribas",
-              title: "Stage d'observation du métier de chef de service",
-              lunch_break: "12h-14h",
-              zipcode: "75001",
-              max_candidates: 1,
-              employer_website: "http://www.acnee-corporation.fr",
-              sector_uuid: {
-                sector_uuid: "s20",
-                name: "Mode",
-                id: 1
-              },
-              street: "16 rue de la paix",
-              is_public: true,
-              rep: false,
-              qpv: true,
-              weeks: ["311", "312"],
-              permalink: "http://www.stagechezemployeur.fr",
-              daily_hours: [
-                {
-                  lundi: ["9:00", "18:00"]
-                },
-                {
-                  mardi: ["9:00", "18:00"]
-                },
-                {
-                  mercredi: ["9:00", "18:00"]
-                },
-                {
-                  jeudi: ["9:00", "18:00"]
-                },
-                {
-                  vendredi: ["9:00", "18:00"]
-                }
-              ]
-            }
-          },
+          InternshipOffer: internship_offer_schema,
           InternshipOfferPatch: {
             allOf: [
               {
@@ -680,7 +515,7 @@ RSpec.configure do |config|
       }
     }
   }
-  config.swagger_format = :yaml
+  config.openapi_format = :yaml
 end
 
 # Set format to YAML
