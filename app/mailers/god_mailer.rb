@@ -144,14 +144,14 @@ class GodMailer < ApplicationMailer
   end
 
   def notify_others_signatures_finished_email(internship_agreement:)
+    @internship_agreement  = internship_agreement
+    @school_manager        = internship_agreement.school_manager
     internship_application = internship_agreement.internship_application
-    student  = internship_application.student
+    student                = internship_application.student
     @internship_offer      = internship_application.internship_offer
     @prez_stud             = student.presenter
     @employer              = @internship_offer.employer
-    @school_manager        = internship_agreement.school_manager
     recipients_email       = recipients_email_for_signature(internship_agreement: internship_agreement)
-    @internship_agreement  = internship_agreement
     @url = dashboard_internship_agreements_url(
       uuid: internship_agreement.uuid,
     ).html_safe
@@ -212,6 +212,7 @@ class GodMailer < ApplicationMailer
       recipients_email << student.email
       recipients_email += legal_representatives_emails(internship_agreement) if with_legal_representatives
     end
+    recipients_email << internship_agreement.school_management_representative.email
 
     recipients_email.compact.uniq
   end
@@ -225,9 +226,21 @@ class GodMailer < ApplicationMailer
     @internship_offer = inappropriate_offer.internship_offer
     @fr_ground = InappropriateOffer.options_for_ground[@inappropriate_offer.ground.to_s]
     @user = inappropriate_offer.user
+    moderation_emails = parse_email_list(ENV['MODERATION_TEAM_EMAIL'])
     send_email(
-      to: ENV['TEAM_EMAIL'],
+      to: moderation_emails,
       subject: "Offre signalée : [#{@fr_ground}] - #{@internship_offer.title} (##{@inappropriate_offer.id})"
     )
+  end
+
+  private
+
+  def parse_email_list(email_string)
+    return [] if email_string.blank?
+
+    email_string.split(/[,;\s\n]+/)
+                .map(&:strip)
+                .reject(&:blank?)
+                .uniq
   end
 end

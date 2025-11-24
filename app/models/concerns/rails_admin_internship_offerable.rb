@@ -77,10 +77,6 @@ module RailsAdminInternshipOfferable
         field :max_candidates
         field :total_applications_count
         field :employer_name
-        field :tutor_name
-        field :tutor_phone
-        field :tutor_email
-        field :tutor_role
         field :street
         field :zipcode
         field :departement

@@ -189,7 +189,8 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :ignore_internship_restricted_to_other_schools, lambda { |school_id:|
-    where(school_id: [nil, school_id])
+    left_joins(:reserved_schools).where(school_id: school_id)
+                                 .or(where(reserved_schools: { id: nil }))
   }
 
   scope :in_the_future, lambda {

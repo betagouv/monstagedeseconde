@@ -162,7 +162,7 @@ module Presenters
     def show_signature_info_modal?
       return false unless user
 
-      user.show_modal_info && ENV.fetch("SIGNATURE_INFO", false)
+      user.show_modal_info && ENV.fetch("SIGNATURE_INFO", false) &&  ENV.fetch("SIGNATURE_INFO", false).to_s.downcase == "true"
     end
 
     protected
