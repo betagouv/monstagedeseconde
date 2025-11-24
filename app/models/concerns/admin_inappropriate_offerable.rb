@@ -42,16 +42,30 @@ module AdminInappropriateOfferable
         end
 
         field :user do
-          label {'Levé par'}
+          label {'Traité par'}
         end
 
         field :moderation_action do
-          label { 'Statut' }
+          label { 'Signalement' }
           pretty_value do
             if value.present?
               InappropriateOffer.options_for_moderation_action[value] || value
             else
-              bindings[:view].content_tag(:span, 'En attente', class: 'fr-badge fr-badge-warning')
+              bindings[:view].content_tag(:span, 'En attente', class: 'badge bg-warning text-white')
+            end
+          end
+        end
+
+          # add status internship offer
+        field :status_internship_offer do
+          label { 'Offre de stage' }
+          pretty_value do
+            if bindings[:object].internship_offer.discarded?
+              bindings[:view].content_tag(:span, 'Supprimée', class: 'badge bg-danger text-white')
+            elsif bindings[:object].internship_offer.published_at.blank?
+              bindings[:view].content_tag(:span, 'Masquée', class: 'badge bg-secondary text-white')
+            else
+              bindings[:view].content_tag(:span, 'Publiée', class: 'badge bg-success text-white')
             end
           end
         end

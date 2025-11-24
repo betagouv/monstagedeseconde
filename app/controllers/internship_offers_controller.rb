@@ -96,6 +96,7 @@ class InternshipOffersController < ApplicationController
       new_report = InappropriateOffer.new(parameters)
       if new_report.valid?
         new_report.save
+        @internship_offer.unpublish!
         GodMailer.offer_was_flagged(new_report).deliver_later
         notice = "Merci, votre signalement a bien été pris en compte. Notre équipe l’examinera sous 48h."
         redirect_to internship_offer_path(@internship_offer, sans_signalement: true), notice: notice
