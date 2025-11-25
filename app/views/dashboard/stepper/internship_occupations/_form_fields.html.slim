@@ -110,75 +110,14 @@
                                   isDuplication: @duplication,
                                   editMode: @edit_mode})
 
-  - if submit_button
-    .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
-      .col-6
-        .fr-alert.fr-alert--info
-          h3.fr-alert__title Les bonnes pratiques du descriptif de stage
-          p
-            |
-              Décrivez précisément les activités que vous proposerez aux élèves. Ces activités permettent
-              aux élèves d’observer, de découvrir vos métiers, votre structure et ne doivent
-              pas être un travail en autonomie qu’un salarié pourrait réaliser. Évitez
-              les acronymes, les sigles et les termes techniques.
-              Soyez attentif à l'orthographe et à la grammaire.
-          h3.fr-alert__title Ce que la loi stipule
-          p
-            |
-              Les élèves ne peuvent accéder aux machines, appareils ou
-              produits dont l'usage est proscrit aux mineurs par les articles D. 4153-15 à
-              D. 4153-37 du code du travail. Ils ne peuvent ni procéder à des manœuvres ou
-              manipulations sur d'autres machines, produits ou appareils de production
-              ni effectuer des travaux légers autorisés aux mineurs par ce même code.
-    .row.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
-      .col-6
-        .fr-alert.fr-alert--info
-          h3.fr-alert__title La prévention des risques professionnels
-          p
-            |
-              Le responsable de la structure d’accueil s’engage à prendre toutes les mesures nécessaires pour assurer la sécurité des élèves qui lui sont confiés.
-              La prévention des risques professionnels comprend certaines transmissions de règles de sécurité qu’il convient d’observer pendant la période en milieu professionnel.
-              En amont, les activités auxquelles l’élève participera doivent être formalisées dans le cadre de la convention de stage. Pour faciliter les échanges, notamment, en cas de survenue d’un accident, le nom du référent ainsi que les coordonnées de contact de l’établissement scolaire y sont indiqués.
-              L’organisme d’accueil doit sensibiliser le jeune aux risques professionnels dès le démarrage du stage et présenter à l’élève les règles de sécurité, les moyens pour les prévenir, et le règlement intérieur, préalablement au début du stage.
-          p Les élèves doivent :
-          ul
-            li respecter toutes les consignes de sécurité instaurées ;
-            li utiliser les équipements de protection collective et porter les équipements de protection individuelle qui sont fournis ;
-            li solliciter le tuteur ou ses collègues en cas de difficultés ;
-            li signaler les éventuelles situations à risque auprès du tuteur ;
-            li rester concentrés et attentifs lors de la réalisation des activités auxquelles ils participent ;
-            li ne jamais rester seuls sur un chantier, ni circuler, ni manipuler des machines ou engins dangereux.
-          p Le rappel de ces différents points de vigilance est organisé au sein de chaque organisme avant le début du stage.
-    .row.fr-mt-2w
-    .row.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
-      .col-6
-        fieldset aria-labelledby="presentation"
-          legend.fr-h6 Le lieu où se déroulera le stage :
-        - currentLatitude     = resource.coordinates.try(:lat).try(:to_f)
-        - currentLongitude    = resource.coordinates.try(:lng).try(:to_f)
-        - currentLatitude   ||= resource.coordinates.try(:latitude).try(:to_f)
-        - currentLongitude  ||= resource.coordinates.try(:longitude).try(:to_f)
-
-        = react_component("AddressInput",
-                          props: { resourceName: form.object_name,
-                                   currentStreet: resource.street,
-                                   currentCity: resource.city,
-                                   currentZipcode: resource.zipcode,
-                                   currentLatitude: ,
-                                   currentLongitude: ,
-                                   currentFullAddress: resource.formatted_autocomplete_address,
-                                   addressFieldsVisible: !resource.id.nil?,
-                                   isDuplication: @duplication,
-                                   editMode: @edit_mode})
-
-    - if submit_button
-      .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
-        .col-12
-          .fr-mt-3w
-            = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
-            = button_tag :submit,
-                        class: 'fr-btn',
-                        data: { :'mandatory-fields-with-coordinates-target' => "disabledField",
-                                :'internship_occupation-form-target' => "submitButton"} do
-              = "Suivant "
+      - if submit_button
+        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+          .col-12
+            .fr-mt-3w
+              = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
+              = button_tag :submit,
+                          class: 'fr-btn',
+                          data: { :'mandatory-fields-with-coordinates-target' => "disabledField",
+                                  :'internship_occupation-form-target' => "submitButton"} do
+                = "Suivant "
 
