@@ -44,8 +44,7 @@ class InappropriateOffersController < ApplicationController
   def handle_moderation_action
     case @inappropriate_offer.moderation_action
     when 'rejeter'
-      # The report is rejected, the offer is back to published
-      @internship_offer.publish! unless @internship_offer.published?
+      # The report is rejected
     when 'masquer'
       # Temporary masked
       @internship_offer.unpublish! if @internship_offer.published?

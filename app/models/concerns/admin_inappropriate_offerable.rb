@@ -41,12 +41,12 @@ module AdminInappropriateOfferable
           end
         end
 
-        field :user do
+        field :moderator do
           label {'Traité par'}
         end
 
         field :moderation_action do
-          label { 'Signalement' }
+          label { 'Action choisie' }
           pretty_value do
             if value.present?
               InappropriateOffer.options_for_moderation_action[value] || value
