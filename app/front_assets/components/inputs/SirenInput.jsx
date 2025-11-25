@@ -363,9 +363,8 @@ export default function SirenInput({
     <div className="fr-highlight" role="note">
       <ul className="fr-mb-2w">
         <li>
-          <strong>Pourquoi nous demandons votre SIRET ? </strong>
-            <strong>Pourquoi nous demandons votre SIRET ?</strong>
-          pour mieux vous identifier et améliorer la qualité des stages proposés.
+          <strong>Pourquoi nous demandons votre SIRET ? </strong> 
+          Pour mieux vous identifier et améliorer la qualité des stages proposés.
         </li>
         <li>
           <strong>Si vous êtes une école maternelle, élémentaire ou primaire publique, </strong>
