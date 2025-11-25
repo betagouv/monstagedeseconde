@@ -96,8 +96,8 @@ GEM
       mutex_m
       securerandom (>= 0.3)
       tzinfo (~> 2.0)
-    addressable (2.8.7)
-      public_suffix (>= 2.0.2, < 7.0)
+    addressable (2.8.8)
+      public_suffix (>= 2.0.2, < 8.0)
     ansi (1.5.0)
     ast (2.4.3)
     aws-eventstream (1.4.0)
@@ -733,7 +733,7 @@ DEPENDENCIES
   rails_admin-i18n
   rails_admin_aasm
   rake
-  react_on_rails
+  react_on_rails (= 14.2.1)
   redis (~> 4.0)
   rest-client
   rubocop
