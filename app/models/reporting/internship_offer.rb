@@ -68,8 +68,12 @@ module Reporting
 
     # year parameter is the first year from a school year.
     # For example, year would be 2019 for school year 2019/2020
+    # scope :during_year, lambda { |school_year:|
+    #   where(Reporting::InternshipOffer.during_year_predicate(school_year:))
+    # }
+
     scope :during_year, lambda { |school_year:|
-      where(Reporting::InternshipOffer.during_year_predicate(school_year:))
+      where(first_date: school_year.offers_beginning_of_period..school_year.next_year.offers_beginning_of_period)
     }
 
     scope :by_department, lambda { |department:|
