@@ -410,6 +410,23 @@ export default function SirenInput({
                   </button>
                 </div>
               </div>
+              <div class="fr-highlight fr-mt-2w" role="note">
+                <p>
+                <ul>
+                  <li>
+                    <strong>Pourquoi nous demandons votre SIRET ? </strong> 
+                    Pour vous aider à préremplir certains champs et à des fins statistiques et
+                    pour mieux vous identifier et améliorer la qualité des stages proposés.
+                  </li>
+                  <li>
+                    <strong>Si vous êtes une école maternelle, élémentaire ou primaire publique, </strong>
+                    vous trouverez le numéro de SIRET de votre école dans votre application ONDE,
+                    dans l’onglet « École », dans l’écran « Carte d’identité »,
+                    dans la rubrique « Identification ».
+                  </li>
+                </ul>
+                </p>
+              </div>
               <div className="mt-2 d-flex align-items-center">
                 <small>
                   <span
