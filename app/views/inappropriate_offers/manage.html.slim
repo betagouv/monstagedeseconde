@@ -69,7 +69,7 @@
           p
             | Cette décision sera enregistrée sous votre nom :
             strong
-              = " #{current_user.email}"
+              = " #{current_user.first_name} #{current_user.last_name}"
 
         / Action de modération
         .fr-fieldset__element.fr-mb-4w

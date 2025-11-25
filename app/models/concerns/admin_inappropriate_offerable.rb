@@ -13,19 +13,19 @@ module AdminInappropriateOfferable
           label { 'Date du signalement' }
         end
 
-        field :ground do
-          label { 'Motif' }
+        # field :ground do
+        #   label { 'Motif' }
 
-          pretty_value do
-            InappropriateOffer.options_for_ground[value] || value
-          end
+        #   pretty_value do
+        #     InappropriateOffer.options_for_ground[value] || value
+        #   end
 
-          register_instance_option :filter_operators do
-            %w[_discard] +
-            InappropriateOffer.options_for_ground.map { |key, french_label| { label: french_label, value: key } } +
-            (required? ? [] : %w[_separator _present _blank])
-          end
-        end
+        #   register_instance_option :filter_operators do
+        #     %w[_discard] +
+        #     InappropriateOffer.options_for_ground.map { |key, french_label| { label: french_label, value: key } } +
+        #     (required? ? [] : %w[_separator _present _blank])
+        #   end
+        # end
 
         field :internship_offer do
           label { 'Offre de stage' }
