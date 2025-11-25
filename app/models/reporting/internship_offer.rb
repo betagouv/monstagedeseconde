@@ -90,6 +90,10 @@ module Reporting
       where(academy:)
     }
 
+    scope :kept, lambda {
+      where(discarded_at: nil)
+    }
+
     scope :dimension_offer, lambda {
       select('internship_offers.*')
         .joins('INNER JOIN internship_offer_stats ON internship_offer_stats.internship_offer_id = internship_offers.id')
