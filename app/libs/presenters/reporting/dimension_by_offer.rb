@@ -89,7 +89,7 @@ module Presenters
       end
 
       def published_at
-        return 'Masquée ou expirée' if instance.published_at.nil?
+        return 'Masquée ou expirée ' if instance.published_at.nil?
 
         instance.published_at
       end
