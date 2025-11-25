@@ -7,15 +7,13 @@ class InappropriateOffer < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :moderator, class_name: 'User', optional: true
 
-  validates :ground, :details, presence: true
+  validates :details, presence: true
   validates :details, length: { minimum: MIN_DETAILS_LENGTH, maximum: MAX_DETAILS_LENGTH }
   
-  # Validations pour la modération
   validates :moderation_action, 
             inclusion: { in: %w[rejeter masquer supprimer] },
             allow_blank: true
 
-  # Validation conditionnelle : si une action de modération est définie, un modérateur est obligatoire
   validates :moderator, presence: true, if: :moderation_action?
 
   def self.options_for_ground

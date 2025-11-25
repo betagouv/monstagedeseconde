@@ -13,19 +13,19 @@ module AdminInappropriateOfferable
           label { 'Date du signalement' }
         end
 
-        field :ground do
-          label { 'Motif' }
+        # field :ground do
+        #   label { 'Motif' }
 
-          pretty_value do
-            InappropriateOffer.options_for_ground[value] || value
-          end
+        #   pretty_value do
+        #     InappropriateOffer.options_for_ground[value] || value
+        #   end
 
-          register_instance_option :filter_operators do
-            %w[_discard] +
-            InappropriateOffer.options_for_ground.map { |key, french_label| { label: french_label, value: key } } +
-            (required? ? [] : %w[_separator _present _blank])
-          end
-        end
+        #   register_instance_option :filter_operators do
+        #     %w[_discard] +
+        #     InappropriateOffer.options_for_ground.map { |key, french_label| { label: french_label, value: key } } +
+        #     (required? ? [] : %w[_separator _present _blank])
+        #   end
+        # end
 
         field :internship_offer do
           label { 'Offre de stage' }
@@ -41,17 +41,31 @@ module AdminInappropriateOfferable
           end
         end
 
-        field :user do
-          label {'Levé par'}
+        field :moderator do
+          label {'Traité par'}
         end
 
         field :moderation_action do
-          label { 'Statut' }
+          label { 'Action choisie' }
           pretty_value do
             if value.present?
               InappropriateOffer.options_for_moderation_action[value] || value
             else
-              bindings[:view].content_tag(:span, 'En attente', class: 'fr-badge fr-badge-warning')
+              bindings[:view].content_tag(:span, 'En attente', class: 'badge bg-warning text-white')
+            end
+          end
+        end
+
+          # add status internship offer
+        field :status_internship_offer do
+          label { 'Offre de stage' }
+          pretty_value do
+            if bindings[:object].internship_offer.discarded?
+              bindings[:view].content_tag(:span, 'Supprimée', class: 'badge bg-danger text-white')
+            elsif bindings[:object].internship_offer.published_at.blank?
+              bindings[:view].content_tag(:span, 'Masquée', class: 'badge bg-secondary text-white')
+            else
+              bindings[:view].content_tag(:span, 'Publiée', class: 'badge bg-success text-white')
             end
           end
         end

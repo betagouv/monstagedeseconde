@@ -15,17 +15,17 @@ dialog id="modal-inappropriate-offer" class="fr-modal" aria-labelledby="modal-in
                         method: :post,
                         data: { turbo: false } do |f|
               .fr-mb-2w
-                = f.label :ground,
-                          'Motif du signalement',
+                / = f.label :ground,
+                          / 'Motif du signalement',
                           class: 'fr-label'
-                = f.select :ground,
+                / = f.select :ground,
                   options_for_select(InappropriateOffer.options_for_select),
                       {},
                       class: 'fr-select'
               .fr-mb-2w [data-controller="char-counter"
                          data-char-counter-max-length-value="350" ]
                 = f.label :details,
-                          "Détails <span class=\"fr-hint fr-text--sm\">(#{InappropriateOffer::MIN_DETAILS_LENGTH} caractères minimum)</span>".html_safe,
+                          "Motif du signalement <span class=\"fr-hint fr-text--sm\">(#{InappropriateOffer::MIN_DETAILS_LENGTH} caractères minimum)</span>".html_safe,
                           class: 'fr-label fr-mt-2v'
                 .fr-hint.fr-text--sm.fr-mt-1v
                   =""

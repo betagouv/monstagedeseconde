@@ -57,9 +57,6 @@ div.fr-my-2w data-controller="daily-hours"
                          disabled: disabled,
                          data: { :'daily-hours-target' => "dailyHoursEnd", i: i, action: "change->daily-hours#dailyHoursEndChange" },
                          aria: { label:"Selectionner une heure de debut de fin pour le #{weekday.capitalize}" }, id: "#{form.object_name}_daily_hours_#{weekday}_end"}
-    / .fr-message.fr-message--info.d-none data-daily-hours-target="presenceHint" class=""
-      .fr-mt-2w
-        | Jours de stage : 4 jours de présence sont nécessaires au minimum
 
   .row
     .col-12.mt-2.fr-my-2w

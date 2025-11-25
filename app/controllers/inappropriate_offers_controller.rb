@@ -44,10 +44,10 @@ class InappropriateOffersController < ApplicationController
   def handle_moderation_action
     case @inappropriate_offer.moderation_action
     when 'rejeter'
-      # The report is rejected, the offer remains visible
+      # The report is rejected
     when 'masquer'
       # Temporary masked
-      @internship_offer.update(published_at: nil) if @internship_offer.published?
+      @internship_offer.unpublish! if @internship_offer.published?
       send_notification_masked_employer if @inappropriate_offer.message_to_employer.present?
     when 'supprimer'
       # Completely removed (soft delete)
