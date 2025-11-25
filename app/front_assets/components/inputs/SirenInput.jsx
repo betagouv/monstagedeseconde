@@ -100,7 +100,7 @@ export default function SirenInput({
       modalElement.setAttribute('data-fr-opened', 'false');
       modalElement.setAttribute('aria-hidden', 'true');
       modalElement.classList.remove('fr-modal--opened');
-      
+
       // After closing the modal, open the manual input
       setOpenManual();
     }
@@ -114,7 +114,7 @@ export default function SirenInput({
   // Function to handle the Tally form messages
   const handleTallyMessage = (event) => {
     if (event.origin !== 'https://tally.so') return;
-    
+
     if (event.data.type === 'tally.formSubmitted') {
       // The form has been submitted, close the modal
       closeModal();
@@ -131,14 +131,14 @@ export default function SirenInput({
 
   const openManual = (event) => {
     event.preventDefault();
-    
+
     // Check if the modal has already been viewed by this visitor
     if (isTallyModalSeen()) {
       // If the modal has already been viewed, open the manual input
       setOpenManual();
       return;
     }
-    
+
     // Open the DSFR modal
     const modalElement = document.getElementById('manual-input-modal');
     if (modalElement) {
@@ -146,10 +146,10 @@ export default function SirenInput({
       modalElement.setAttribute('data-fr-opened', 'true');
       modalElement.setAttribute('aria-hidden', 'false');
       modalElement.classList.add('fr-modal--opened');
-      
+
       // Set the cookie to indicate that the modal has been viewed
       setTallyModalSeen();
-      
+
       // Add an event listener to close the modal
       const closeButton = modalElement.querySelector('.fr-link--close');
       if (closeButton) {
@@ -158,7 +158,7 @@ export default function SirenInput({
           closeModal();
         });
       }
-      
+
       // Close the modal by clicking on the overlay
       modalElement.addEventListener('click', (e) => {
         if (e.target === modalElement) {
@@ -197,7 +197,7 @@ export default function SirenInput({
 
       sectorBloc.hidden = true;
     }
-    
+
     const labelEntrepriseAddress = document.querySelector( `label[for='${resourceName}_entreprise_chosen_full_address']` );
     labelEntrepriseAddress.innerHTML = "Saisissez l'adresse du siège de votre établissement *";
     const inputEntrepriseAddress = document.getElementById( `${resourceName}_entreprise_chosen_full_address` );
@@ -244,7 +244,7 @@ export default function SirenInput({
     setValueById( `${resourceName}_siret`, selection.siret);
     setValueById( `${resourceName}_presentation_siret`, siretPresentation(selection.siret) );
     setValueById( `${resourceName}_employer_name`, employerName);
-    
+
     // Set the code APE if available in the selection
     if (selection.codeApe) {
       setCodeApe(selection.codeApe);
@@ -359,8 +359,29 @@ export default function SirenInput({
     if (internshipAddressManualEnter || !newRecord) { setOpenManual(); }
   }, []);
 
+  const siretNote = (
+    <div class="fr-highlight fr-mt-2w" role="note">
+      <p>
+        <ul>
+          <li>
+            <strong>Pourquoi nous demandons votre SIRET ? </strong>
+            Pour vous aider à préremplir certains champs et à des fins statistiques et
+            pour mieux vous identifier et améliorer la qualité des stages proposés.
+          </li>
+          <li>
+            <strong>Si vous êtes une école maternelle, élémentaire ou primaire publique, </strong>
+            vous trouverez le numéro de SIRET de votre école dans votre application ONDE,
+            dans l’onglet « École », dans l’écran « Carte d’identité »,
+            dans la rubrique « Identification ».
+          </li>
+        </ul>
+      </p>
+    </div>
+  );
+
   return (
     <div className="form-group" id="input-siren">
+      {siretNote}
       <div className="container-downshift">
         <Downshift
           onChange={onChange}
@@ -409,23 +430,6 @@ export default function SirenInput({
                           onClick={clearImmediate}>
                   </button>
                 </div>
-              </div>
-              <div class="fr-highlight fr-mt-2w" role="note">
-                <p>
-                <ul>
-                  <li>
-                    <strong>Pourquoi nous demandons votre SIRET ? </strong> 
-                    Pour vous aider à préremplir certains champs et à des fins statistiques et
-                    pour mieux vous identifier et améliorer la qualité des stages proposés.
-                  </li>
-                  <li>
-                    <strong>Si vous êtes une école maternelle, élémentaire ou primaire publique, </strong>
-                    vous trouverez le numéro de SIRET de votre école dans votre application ONDE,
-                    dans l’onglet « École », dans l’écran « Carte d’identité »,
-                    dans la rubrique « Identification ».
-                  </li>
-                </ul>
-                </p>
               </div>
               <div className="mt-2 d-flex align-items-center">
                 <small>
