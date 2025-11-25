@@ -226,9 +226,21 @@ class GodMailer < ApplicationMailer
     @internship_offer = inappropriate_offer.internship_offer
     @fr_ground = InappropriateOffer.options_for_ground[@inappropriate_offer.ground.to_s]
     @user = inappropriate_offer.user
+    moderation_emails = parse_email_list(ENV['MODERATION_TEAM_EMAIL'])
     send_email(
-      to: ENV['TEAM_EMAIL'],
+      to: moderation_emails,
       subject: "Offre signalée : [#{@fr_ground}] - #{@internship_offer.title} (##{@inappropriate_offer.id})"
     )
+  end
+
+  private
+
+  def parse_email_list(email_string)
+    return [] if email_string.blank?
+
+    email_string.split(/[,;\s\n]+/)
+                .map(&:strip)
+                .reject(&:blank?)
+                .uniq
   end
 end

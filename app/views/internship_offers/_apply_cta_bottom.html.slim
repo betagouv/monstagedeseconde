@@ -43,7 +43,7 @@
                         props: { internshipOffer: { id: internship_offer.id,
                                                     is_favorite: is_favorite,
                                                     isDisabled: !can?(:create, Favorite) }})
-  - if Flipper.enabled?(:enable_offer_flagging)
+  - if Flipper.enabled?(:flag_internship_offer)
     .ml-auto.fr-mb-1v = render('internship_offers/sig_link')
 
 

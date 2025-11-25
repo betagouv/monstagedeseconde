@@ -27,7 +27,8 @@ def populate_internship_offers
     weeks: all_weeks,
     grades: Grade.all,
     entreprise_full_address: '56 rue d\'Entraigues , Tours',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: ["09:00", "17:00"]
   )
 
   # 2
@@ -52,7 +53,8 @@ def populate_internship_offers
     weeks: all_weeks,
     grades: Grade.all,
     entreprise_full_address: '2 Allée de la Garenne, 78480 Verneuil-sur-Seine',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: ["09:00", "17:00"]
   )
 
   # 3
@@ -77,7 +79,8 @@ def populate_internship_offers
     weeks: all_weeks.last(10),
     grades: Grade.all,
     entreprise_full_address: '18 rue Damiens, 75012 Paris',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: ["09:00", "17:00"]
   )
 
   # 4
@@ -102,7 +105,8 @@ def populate_internship_offers
     weeks: troisieme_weeks,
     grades: [Grade.troisieme],
     entreprise_full_address: '128 rue brancion, 75015 paris',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: ["09:00", "17:00"]
   )
   # dépubliée
   # 5
@@ -128,7 +132,8 @@ def populate_internship_offers
     weeks: seconde_weeks,
     grades: [Grade.seconde],
     entreprise_full_address: '128 rue brancion, 75015 paris',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: ["09:00", "17:00"]
   )
 
   # 6
@@ -152,7 +157,8 @@ def populate_internship_offers
     weeks: seconde_weeks,
     grades: [Grade.seconde],
     entreprise_full_address: '129 rue brancion, 75015 paris',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: ["09:00", "17:00"]
   )
   # 7
   InternshipOffers::WeeklyFramed.create!(
@@ -176,7 +182,8 @@ def populate_internship_offers
     weeks: troisieme_weeks,
     grades: [Grade.troisieme],
     entreprise_full_address: '56 rue d\'Entraigues , 37000 Tours',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: ["09:00", "17:00"]
   )
 
   area_id = Users::Operator.first.reload.internship_offer_areas.first.id
@@ -202,7 +209,8 @@ def populate_internship_offers
     weeks: seconde_weeks,
     grades: [Grade.seconde],
     entreprise_full_address: '128 rue brancion, 75015 paris',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: ["09:00", "17:00"]
   )
 
   # 9 api - 2
@@ -228,7 +236,8 @@ def populate_internship_offers
     weeks: all_weeks,
     grades: Grade.all,
     entreprise_full_address: '128 rue brancion, 75015 paris',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: ["09:00", "17:00"]
   )
 
   # 10
@@ -253,7 +262,8 @@ def populate_internship_offers
     weeks: all_weeks,
     grades: Grade.all,
     entreprise_full_address: '2 rue jean moulin, 95160 Montmorency',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: ["09:00", "17:00"]
   )
 
   # 11
@@ -277,7 +287,8 @@ def populate_internship_offers
     weeks: troisieme_weeks,
     grades: [Grade.troisieme],
     entreprise_full_address: '2 Allée de la Garenne, 78480 Verneuil-sur-Seine',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: ["09:00", "17:00"]
   )
 
   InternshipOffers::WeeklyFramed.all.each { |o| o.publish! if o.may_publish? }
@@ -316,7 +327,8 @@ def populate_internship_offers
     weeks: troisieme_weeks,
     grades: [Grade.troisieme],
     entreprise_full_address: '128 rue brancion, 75015 paris',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    daily_hours: { "lundi": ["8:30","17:00"], "mardi": ["8:30","17:00"], "mercredi": ["8:30","17:00"], "jeudi": ["8:30","17:00"], "vendredi": ["8:30","17:00"]}
   )
 
   # 12
@@ -341,7 +353,8 @@ def populate_internship_offers
     weeks: seconde_weeks,
     grades: [Grade.seconde],
     entreprise_full_address: '30 rue Jean Soula, 33000 Bordeaux',
-    lunch_break: "L'élève doit prévoir son repas de midi"
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    daily_hours: { "lundi": ["8:30","17:00"], "mardi": ["8:30","17:00"], "mercredi": ["8:30","17:00"], "jeudi": ["8:30","17:00"], "vendredi": ["8:30","17:00"]}
   )
 
   # 13
@@ -369,7 +382,8 @@ def populate_internship_offers
     weeks: weeks,
     lunch_break: "L'élève doit prévoir son repas de midi",
     entreprise_full_address: '12, rue de la Serpe, 37000 Tours',
-    grades: [Grade.seconde]
+    grades: [Grade.seconde],
+    daily_hours: { "lundi": ["8:30","17:00"], "mardi": ["8:30","17:00"], "mercredi": ["8:30","17:00"], "jeudi": ["8:30","17:00"], "vendredi": ["8:30","17:00"]}
   )
 
   # 14
@@ -393,7 +407,8 @@ def populate_internship_offers
     internship_offer_area_id: area_id,
     weeks: troisieme_weeks,
     lunch_break: "L'élève doit prévoir son repas de midi",
-    grades: [Grade.troisieme]
+    grades: [Grade.troisieme],
+    daily_hours: { "lundi": ["8:30","17:00"], "mardi": ["8:30","17:00"], "mercredi": ["8:30","17:00"], "jeudi": ["8:30","17:00"], "vendredi": ["8:30","17:00"]}
   )
 
   # 15 older school year
@@ -420,7 +435,8 @@ def populate_internship_offers
     period: 1,
     weeks: weeks,
     lunch_break: "L'élève doit prévoir son repas de midi",
-    grades: Grade.all
+    grades: Grade.all,
+    daily_hours: { "lundi": ["8:30","17:00"], "mardi": ["8:30","17:00"], "mercredi": ["8:30","17:00"], "jeudi": ["8:30","17:00"], "vendredi": ["8:30","17:00"]}
   )
 end
 

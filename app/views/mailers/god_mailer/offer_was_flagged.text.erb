@@ -4,8 +4,7 @@ Une offre a été signalée comme inapppropriée
 Bonjour,
 Voici les détails du signalement
 
-- Motif: <%= @fr_ground %>
-- Détails du signalement: <%= @inappropriate_offer.details %>
+- Motif: <%= @inappropriate_offer.details %>
 <%- if @user.present? %>
   - Utilisateur ayant signalé l'offre: <%= @user.email %> (##{ @user.id })
 <% else %>

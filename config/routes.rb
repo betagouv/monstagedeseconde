@@ -49,8 +49,6 @@ Rails.application.routes.draw do
                                                             as: 'statistician_standby'
       get '/utilisateurs/inscriptions/en-attente-telephone', to: 'users/registrations#confirmation_phone_standby',
                                                              as: 'users_registrations_phone_standby'
-      get '/utilisateurs/mot-de-passe/modification-par-telephone', to: 'users/passwords#edit_by_phone',
-                                                                   as: 'phone_edit_password'
       get '/utilisateurs/mot-de-passe/initialisation', to: 'users/passwords#set_up',
                                                        as: 'set_up_password'
       post '/utilisateurs/renvoyer-le-code-de-confirmation', to: 'users/registrations#resend_confirmation_phone_token',
@@ -261,7 +259,7 @@ Rails.application.routes.draw do
   get '/mentions-legales', to: 'pages#mentions_legales'
   get '/operators', to: 'pages#operators'
   get '/politique-de-confidentialite', to: 'pages#politique_de_confidentialite'
-  post '/newsletter', to: 'newsletter#subscribe'
+  # post '/newsletter', to: 'newsletter#subscribe'
   get '/recherche-entreprises', to: 'pages#search_companies'
   post '/visitor_apply', to: 'pages#visitor_apply'
   get '/educonnect_deconnexion_responsable', to: 'pages#educonnect_logout_responsible',
@@ -283,6 +281,12 @@ Rails.application.routes.draw do
 
   authenticate :user, ->(u) { u.god? } do
     resources :reset_review_data, only: %i[new create] if ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true'
+    resources :inappropriate_offers, path: 'signalements', only: [] do
+      member do
+        get :manage, path: 'moderer'
+        patch :update_moderation, path: 'moderer'
+      end
+    end
   end
   # Redirects
   # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
