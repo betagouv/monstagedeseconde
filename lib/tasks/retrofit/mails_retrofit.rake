@@ -8,12 +8,15 @@ namespace :retrofit do
       date_mep = DateTime.new(2025,11,18,10,00,00)
       date_token_fix = DateTime.new(2025,11,24,18,28,00)
       sigs = Signature.where('created_at > ?', date_mep).where('created_at < ?', date_token_fix)
+                      .where.not(internship_agreement_id: 48095) # exclude the one already fixed manually
       internship_agreements = sigs.map(&:internship_agreement).uniq
       PrettyConsole.say_in_yellow("Found #{internship_agreements.count} internship agreements to process")
       selected_internship_agreements = internship_agreements.select do |iag|
         iag.internship_application.approved_at < date_mep
       end
       PrettyConsole.say_in_cyan("Found #{selected_internship_agreements.count} internship agreements to update")
+
+      next if selected_internship_agreements.empty?
 
       selected_internship_agreements= [selected_internship_agreements.first]
 
