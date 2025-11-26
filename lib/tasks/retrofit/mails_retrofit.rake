@@ -20,9 +20,8 @@ namespace :retrofit do
       selected_internship_agreements.each_with_index do |iag, index|
         PrettyConsole.say_in_blue("Processing #{index + 1}/#{selected_internship_agreements.count} - InternshipAgreement ID: #{iag.id}")
         legal_reps = iag.legal_representative_data.values
-        legal_reps.each do |nr, rep|
+        legal_reps.each do |rep|
           if rep.present? && rep[:email].present? && rep[:email].strip.present?
-            puts iag.updated_at
             GodMailer.special_notify_student_legal_representatives_can_sign_email(
               internship_agreement: iag,
               representative: rep
@@ -37,7 +36,7 @@ namespace :retrofit do
   end
 
   # remove me after 2026/1/1
-  desc 'staging onlyupdating empty strings from students_emails to nil'
+  desc 'staging only updating empty strings from students_emails to nil'
   task staging_parents_signing_updated_email: :environment do |task|
     unless Rails.env.staging?
       puts 'This task can only be run in the staging environment'
@@ -59,9 +58,8 @@ namespace :retrofit do
       selected_internship_agreements.each_with_index do |iag, index|
         PrettyConsole.say_in_blue("Processing #{index + 1}/#{selected_internship_agreements.count} - InternshipAgreement ID: #{iag.id}")
         legal_reps = iag.legal_representative_data.values
-        legal_reps.each do |nr, rep|
+        legal_reps.each do |rep|
           if rep.present? && rep[:email].present? && rep[:email].strip.present?
-            puts iag.updated_at
             GodMailer.special_notify_student_legal_representatives_can_sign_email(
               internship_agreement: iag,
               representative: rep
