@@ -12,8 +12,8 @@
       .col-md-6
         .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
           .col-12
-            fieldset aria-labelledby="presentation"
-              legend.fr-h6 Le ou les métiers que vous proposez d'observer :
+            / fieldset aria-labelledby="presentation"
+            /   legend.fr-h6 Indiquez le ou les métiers qui seront observables par l'élève :
             .form-group.fr-my-2w
               = render 'inputs/dsfr_input_field',
                         f: form,
@@ -29,17 +29,11 @@
                                   data: { action: "input->mandatory-fields-with-coordinates#fieldChange input->fill-card#offerTitleChanged",
                                           :'mandatory-fields-with-coordinates-target' => "mandatoryField",
                                           :'fill-card-target' => "offerTitleInput"} }
-            .fr-alert.fr-alert--info
-              h3.fr-alert__title Conseil
-              p
-                |
-                  Nommez le(s) métiers qui sont concernés par le stage, cela
-                  facilitera la recherche des élèves. Attention à l'utilisation
-                  des acronymes.
-              p
-                |
-                  Les 50 premiers caractères de cette zone de texte apparaîtront
-                  comme titre de votre offre : soyez explicite et concis !
+            - content = "Conseil : nommez le(s) métiers qui sont concernés par le stage, cela facilitera la recherche des élèves." \
+                        " Attention à l'utilisation des acronymes. Les 50 premiers caractères de cette zone" \
+                        " de texte apparaîtront comme titre de votre offre : soyez explicite et concis !"
+            .fr-mb-2w = render partial: 'inputs/small_info', locals: { content: content }
+
       .col-md-6
         - if resource.new_record? && show_resume
           = render 'dashboard/stepper/summary_card', form: form
@@ -70,23 +64,47 @@
 
   .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
     .col-6
-      .fr-alert.fr-alert--info
-        h3.fr-alert__title Les bonnes pratiques du descriptif de stage
-        p
-          |
-            Décrivez précisément les activités que vous proposerez aux élèves. Ces activités permettent
-            aux élèves d’observer, de découvrir vos métiers, votre structure et ne doivent
-            pas être un travail en autonomie qu’un salarié pourrait réaliser. Évitez
-            les acronymes, les sigles et les termes techniques.
-            Soyez attentif à l'orthographe et à la grammaire.
-        h3.fr-alert__title Ce que la loi stipule
-        p
-          |
-            Les élèves ne peuvent accéder aux machines, appareils ou
-            produits dont l'usage est proscrit aux mineurs par les articles D. 4153-15 à
-            D. 4153-37 du code du travail. Ils ne peuvent ni procéder à des manœuvres ou
-            manipulations sur d'autres machines, produits ou appareils de production
-            ni effectuer des travaux légers autorisés aux mineurs par ce même code.
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-expanded="false" aria-controls="accordion-good-practices"
+            | Les bonnes pratiques du descriptif de stage
+        .fr-collapse#accordion-good-practices
+            p
+              |
+                Décrivez précisément les activités que vous proposerez aux élèves. Ces activités permettent
+                aux élèves d’observer, de découvrir vos métiers, votre structure et ne doivent
+                pas être un travail en autonomie qu’un salarié pourrait réaliser. Évitez
+                les acronymes, les sigles et les termes techniques.
+                Soyez attentif à l'orthographe et à la grammaire.
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-expanded="false" aria-controls="accordion-law-good-practices"
+            | Ce que la loi stipule
+        .fr-collapse#accordion-law-good-practices
+            p
+              |
+                Les élèves ne peuvent accéder aux machines, appareils ou
+                produits dont l'usage est proscrit aux mineurs par les articles D. 4153-15 à
+                D. 4153-37 du code du travail. Ils ne peuvent ni procéder à des manœuvres ou
+                manipulations sur d'autres machines, produits ou appareils de production
+                ni effectuer des travaux légers autorisés aux mineurs par ce même code.
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-expanded="false" aria-controls="accordion-prevention-risks"
+            | La prévention des risques professionnels
+        .fr-collapse#accordion-prevention-risks
+            p
+              |
+                Ce paragraphe est très important car il va permettre à l'élève
+                de se projeter dans son futur stage. Il est important d'utiliser
+                des mots simples. N'hésitez pas à ajouter des détails.
+            p
+              |
+                Les élèves ne peuvent accéder aux machines, appareils ou produits dont
+                l'usage est proscrit aux mineurs par les articles D. 4153-15 à D. 4153-37
+                du code du travail. Ils ne peuvent ni procéder à des manœuvres ou manipulations
+                sur d'autres machines, produits ou appareils de production ni
+                effectuer des travaux légers autorisés aux mineurs par ce même code.
 
   .row.fr-mt-2w
   .row.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
