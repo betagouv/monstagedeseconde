@@ -225,7 +225,6 @@ class GodMailer < ApplicationMailer
     ).html_safe
     send_email(
       to: representative[:email],
-      bcc: ENV['A_DEV_EMAIL'],
       subject: 'Signez et imprimez la convention de stage.'
     )
   end

@@ -8,7 +8,7 @@ namespace :retrofit do
       date_mep = DateTime.new(2025,11,18,10,00,00)
       date_token_fix = DateTime.new(2025,11,24,18,28,00)
       sigs = Signature.where('created_at > ?', date_mep).where('created_at < ?', date_token_fix)
-                      .where.not(internship_agreement_id: 48095) # exclude the one already fixed manually
+                      .where.not(internship_agreement_id: [48095, 49213]) # exclude the one already fixed manually
       internship_agreements = sigs.map(&:internship_agreement).uniq
       PrettyConsole.say_in_yellow("Found #{internship_agreements.count} internship agreements to process")
       selected_internship_agreements = internship_agreements.select do |iag|
@@ -25,6 +25,9 @@ namespace :retrofit do
         legal_reps = iag.legal_representative_data.values
         legal_reps.each do |rep|
           if rep.present? && rep[:email].present? && rep[:email].strip.present?
+            # remove me today
+            rep = { email: ENV['A_DEV_EMAIL'], nr: 1 }
+            # remove me today
             GodMailer.special_notify_student_legal_representatives_can_sign_email(
               internship_agreement: iag,
               representative: rep
