@@ -15,6 +15,7 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def send_email(to:, subject:, cc: nil, bcc: nil, specific_layout: nil, reply_to: nil)
+    to = to.strip! if to.respond_to?(:strip!)
     Rails.logger.error("mail without recipient sending attempt. " \
                        "Subject: #{subject}") and return if to.blank?
 
