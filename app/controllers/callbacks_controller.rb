@@ -83,9 +83,9 @@ class CallbacksController < ApplicationController
     # Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
 
     user_info = educonnect.get_user_info
-    # Rails.logger.info('--------------')
-    # Rails.logger.info("Educonnect User info: #{user_info.inspect}")
-    # Rails.logger.info('--------------')
+    Rails.logger.info('--------------')
+    Rails.logger.info("Educonnect User info: #{user_info.inspect}")
+    Rails.logger.info('--------------')
 
     redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
 

@@ -110,14 +110,14 @@
                                   isDuplication: @duplication,
                                   editMode: @edit_mode})
 
-  - if submit_button
-    .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
-      .col-12
-        .fr-mt-3w
-          = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
-          = button_tag :submit,
-                      class: 'fr-btn',
-                      data: { :'mandatory-fields-with-coordinates-target' => "disabledField",
-                              :'internship_occupation-form-target' => "submitButton"} do
-            = "Suivant "
+      - if submit_button
+        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+          .col-12
+            .fr-mt-3w
+              = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
+              = button_tag :submit,
+                          class: 'fr-btn',
+                          data: { :'mandatory-fields-with-coordinates-target' => "disabledField",
+                                  :'internship_occupation-form-target' => "submitButton"} do
+                = "Suivant "
 
