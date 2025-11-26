@@ -204,6 +204,32 @@ class GodMailer < ApplicationMailer
     )
   end
 
+  # kill me on january first 2026 please
+  def special_notify_student_legal_representatives_can_sign_email(internship_agreement:, representative: )
+    internship_application = internship_agreement.internship_application
+    recipients_email       = legal_representatives_emails(internship_agreement)
+    @internship_offer      = internship_application.internship_offer
+    student                = internship_application.student
+    @prez_stud             = student.presenter
+    @employer              = @internship_offer.employer
+    @school_manager        = internship_agreement.school_manager
+
+    Rails.logger.info("no representatives found for notify_student_legal_representatives_can_sign_email") if recipients_email.empty?
+
+    @url = new_dashboard_students_internship_agreement_url(
+      access_token: internship_agreement.access_token || '' ,
+      uuid: internship_agreement.uuid,
+      student_id: student.id,
+      signator_email: representative[:email],
+      student_legal_representative_nr: representative[:nr]
+    ).html_safe
+    send_email(
+      to: representative[:email],
+      bcc: ENV['TEAM_EMAIL'],
+      subject: 'Signez et imprimez la convention de stage.'
+    )
+  end
+
   def recipients_email_for_signature(internship_agreement:, with_legal_representatives: true)
     internship_application = internship_agreement.internship_application
     student                = internship_application.student
