@@ -18,8 +18,6 @@ namespace :retrofit do
 
       next if selected_internship_agreements.empty?
 
-      selected_internship_agreements= [selected_internship_agreements.first]
-
       selected_internship_agreements.each_with_index do |iag, index|
         PrettyConsole.say_in_blue("Processing #{index + 1}/#{selected_internship_agreements.count} - InternshipAgreement ID: #{iag.id}")
         legal_reps = iag.legal_representative_data.values
