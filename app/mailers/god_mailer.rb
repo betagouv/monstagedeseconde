@@ -223,14 +223,8 @@ class GodMailer < ApplicationMailer
       signator_email: representative[:email],
       student_legal_representative_nr: representative[:nr]
     ).html_safe
-    Rails.logger.info '================================'
-    Rails.logger.info "representative[:email] : #{representative[:email]}"
-    Rails.logger.info "representative[:email].strip! : #{representative[:email].strip!}"
-    Rails.logger.info '================================'
-    Rails.logger.info ''
     send_email(
       to: representative[:email],
-      bcc: ENV['TEAM_EMAIL'],
       subject: 'Signez et imprimez la convention de stage.'
     )
   end
