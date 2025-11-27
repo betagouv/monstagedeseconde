@@ -1,0 +1,32 @@
+p style=head_styles
+  | La convention du stagiaire est prête pour la signature !
+
+p style=p_styles
+  | Bonjour,
+
+p style=p_styles
+  |
+    Vous avez probablement remarqué un dysfonctionnement du lien de signature en
+    ligne rencontré précédemment. Veuillez nous en excuser,
+    le problème est désormais corrigé
+
+p style=p_styles
+  = "La convention de stage de #{@prez_stud.full_name}, pour le stage " \
+    "#{@internship_offer.title} a été complétée " \
+    "par le chef d’établissement. Elle est désormais prête pour la signature des <strong>responsables légaux</strong>.".html_safe
+
+p style=p_styles
+  |
+    Une seule signature des responsables légaux est requise. Pour signifier
+    votre accord, prière de signer la convention de stage en pièce jointe
+    avec le bouton ci-dessous.
+
+= render partial: "mailers/blue_call_to_action",
+        locals: { href: @url,
+                  label: "Signer la convention de stage" }
+p style=p_styles
+  | En cas de désaccord, contactez le chef d'établissement
+p style=p_styles
+  | Excellente journée,
+p style=p_styles
+  | L'équipe 1élève1stage
