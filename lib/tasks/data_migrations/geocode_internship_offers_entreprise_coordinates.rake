@@ -66,13 +66,38 @@ namespace :data_migrations do
           print 'E'
         end
       else
-        # Coordinates not found
-        failed_offers << {
-          id: offer.id,
-          reason: 'Coordinates not found by Geocoder',
-          address: offer.entreprise_full_address
-        }
-        print 'X'
+        # Coordinates not found by Geocoder, try to copy from coordinates field
+        if offer.coordinates.present?
+          begin
+            offer.entreprise_coordinates = offer.coordinates
+            if offer.save
+              success_count += 1
+              print 'C' # C for copied
+            else
+              failed_offers << {
+                id: offer.id,
+                reason: "Validation failed when copying coordinates: #{offer.errors.full_messages.join(', ')}",
+                address: offer.entreprise_full_address
+              }
+              print 'F'
+            end
+          rescue StandardError => e
+            failed_offers << {
+              id: offer.id,
+              reason: "Exception when copying coordinates: #{e.message}",
+              address: offer.entreprise_full_address
+            }
+            print 'E'
+          end
+        else
+          # No coordinates available to copy
+          failed_offers << {
+            id: offer.id,
+            reason: 'Coordinates not found by Geocoder and no coordinates field to copy',
+            address: offer.entreprise_full_address
+          }
+          print 'X'
+        end
       end
 
       # Small pause to avoid overloading the Geocoder API

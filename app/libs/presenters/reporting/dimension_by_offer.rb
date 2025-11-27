@@ -38,8 +38,22 @@ module Presenters
       end
 
       def period
-        internship_offer = ::InternshipOffer.find(instance.id)
-        Presenters::WeekList.new(weeks: internship_offer.weeks).str_weeks_display.map(&:strip).join("\n")
+        internship_offer = ::InternshipOffer.find_by(id: instance.id)
+        return '' if internship_offer.blank? || internship_offer.weeks.blank?
+
+        # Use ripping_off_the_past: false to include past weeks in exports
+        week_list = Presenters::WeekList.new(weeks: internship_offer.weeks)
+        display_result = week_list.str_weeks_display(ripping_off_the_past: false)
+        
+        # If str_weeks_display returns empty (weeks don't match criteria), fallback to to_range_as_str
+        if display_result.present?
+          display_result.map(&:strip).join("\n")
+        else
+          week_list.to_range_as_str.presence || ''
+        end
+      rescue StandardError => e
+        Rails.logger.error("Error in period for offer #{instance.id}: #{e.message}")
+        ''
       end
 
       def human_max_candidates_string
