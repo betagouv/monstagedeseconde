@@ -393,7 +393,6 @@ namespace :data_migrations do
 
         offers = employer.internship_offers
                          .kept
-                         .where(hidden_duplicate: false)
         offers = offers.where(school_id: nil) if Rails.env.development?
 
         offers.find_each do |offer|
@@ -416,7 +415,6 @@ namespace :data_migrations do
           new_internship_offer.save
           new_internship_offer.publish!
 
-          offer.hidden_duplicate = true
           offer.weeks = offer.weeks & Week.of_past_school_years
           if offer.weeks.empty? || !offer.valid?
             print 'x'

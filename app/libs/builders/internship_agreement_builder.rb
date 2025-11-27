@@ -72,9 +72,9 @@ module Builders
         organisation_representative_full_name: internship_offer.employer.presenter.full_name,
         organisation_representative_role: internship_offer.employer.employer_role,
         siret: internship_offer.try(:siret),
-        tutor_full_name: internship_offer.tutor_name,
-        tutor_role: internship_offer.try(:tutor_role),
-        tutor_email: internship_offer.try(:tutor_email),
+        tutor_full_name: nil,
+        tutor_role: nil,
+        tutor_email: nil,
         activity_preparation: internship_offer.description,
         daily_hours: internship_offer.daily_hours,
         weekly_hours: internship_offer.weekly_hours,
@@ -83,7 +83,8 @@ module Builders
         employer_name: internship_offer.employer_name,
         employer_contact_email: internship_offer.employer.email,
         internship_address: "#{internship_offer.street}, #{internship_offer.zipcode} #{internship_offer.city}",
-        entreprise_address: internship_offer.entreprise_full_address
+        entreprise_address: internship_offer.entreprise_full_address,
+        activity_scope: internship_offer.description
       }
     end
 

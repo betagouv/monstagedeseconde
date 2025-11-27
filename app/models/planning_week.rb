@@ -6,5 +6,4 @@ class PlanningWeek < ApplicationRecord
   belongs_to :planning
 
   delegate :max_candidates, to: :planning
-  delegate :max_students_per_group, to: :planning
 end

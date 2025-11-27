@@ -2,6 +2,8 @@
 - content_for(:canonical_url, internship_offer_url(@internship_offer))
 
 - return_link = current_user.try(:employer?) ? [dashboard_internship_offers_path, 'Dashboard'] : [internship_offers_path, "Recherche d'une offre de stage"]
+- hide_data_for_non_rep_or_qpv_students = hide_data_for_non_rep_or_qpv_students(@internship_offer, current_user)
+
 = render 'layouts/breadcrumb',
          links: [return_link, [internship_offer_path(@internship_offer), @internship_offer.title]]
 
@@ -14,11 +16,13 @@ div.fr-container
       .fr-px-1w
         = render "internship_offers/show_details",
                  internship_offer: @internship_offer,
-                 hidden_parts: false
+                 hidden_parts: false,
+                 hide_data_for_non_rep_or_qpv_students: hide_data_for_non_rep_or_qpv_students
     .col-sm-4.col-12.mb-4.d-none.d-sm-block
       .sticky-top.fr-px-1w.fr-py-2w.internship-offer-side-description
         = render "internship_offers/show_side_details",
-                 internship_offer: @internship_offer
+                 internship_offer: @internship_offer,
+                 hide_data_for_non_rep_or_qpv_students: hide_data_for_non_rep_or_qpv_students
 .d-flex.actions.d-flex.d-block.d-sm-none.d-xs-stick.fr-py-2w.align-items-center.justify-content-center
   = render "internship_offers/apply_cta",
            internship_offer: @internship_offer

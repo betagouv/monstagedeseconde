@@ -1,0 +1,130 @@
+- content_for(:page_title, "Modération du signalement | 1élève1stage")
+
+.fr-container.fr-py-6w
+  .row
+    .col-12
+      nav.fr-breadcrumb aria-label="breadcrumb"
+        button.fr-breadcrumb__button[aria-expanded="false" aria-controls="breadcrumb-1"]
+          | Voir le fil d'Ariane
+        .fr-collapse#breadcrumb-1
+          ol.fr-breadcrumb__list
+            li
+              = link_to 'Admin', rails_admin.dashboard_path, class: 'fr-breadcrumb__link'
+            li
+              = link_to 'Signalements', rails_admin.index_path(model_name: 'inappropriate_offer'), class: 'fr-breadcrumb__link'
+            li
+              a.fr-breadcrumb__link[aria-current="page"]
+                | Modération
+
+  .row.fr-mt-4w
+    .col-lg-8.col-12
+      h1.fr-h2 Modération du signalement
+
+      / Informations sur le signalement
+      .fr-callout.fr-mb-4w
+        h2.fr-callout__title.fr-h5 Détails du signalement
+        p.fr-callout__text
+          strong Motif :
+          = " #{InappropriateOffer.options_for_ground[@inappropriate_offer.ground]}"
+        p.fr-callout__text
+          strong Détails fournis par le signaleur :
+          br
+          = @inappropriate_offer.details
+        - if @inappropriate_offer.user
+          p.fr-callout__text
+            strong Signalé par :
+            = " #{@inappropriate_offer.user.email}"
+        p.fr-callout__text
+          strong Date du signalement :
+          = " #{l(@inappropriate_offer.created_at, format: :long)}"
+
+      / Informations sur l'offre
+      .fr-callout.fr-callout--brown-caramel.fr-mb-4w
+        h2.fr-callout__title.fr-h5 Offre concernée
+        p.fr-callout__text
+          strong Titre :
+          = " #{@internship_offer.title}"
+        p.fr-callout__text
+          strong Employeur :
+          = " #{@internship_offer.employer_name}"
+        p.fr-callout__text
+          strong Localisation :
+          = " #{@internship_offer.city} (#{@internship_offer.zipcode})"
+        p.fr-callout__text
+          = link_to 'Voir l\'offre complète', 
+                    internship_offer_path(@internship_offer), 
+                    target: '_blank',
+                    class: 'fr-link fr-icon-external-link-line fr-link--icon-right',
+                    rel: 'noopener noreferrer'
+
+      / Formulaire de modération
+      = form_with model: @inappropriate_offer,
+                  url: update_moderation_inappropriate_offer_path(@inappropriate_offer),
+                  method: :patch,
+                  data: { turbo: false } do |form|
+
+        / Information sur le modérateur
+        .fr-alert.fr-alert--info.fr-mb-4w
+          p.fr-alert__title Modérateur
+          p
+            | Cette décision sera enregistrée sous votre nom :
+            strong
+              = " #{current_user.first_name} #{current_user.last_name}"
+
+        / Action de modération
+        .fr-fieldset__element.fr-mb-4w
+          fieldset.fr-fieldset[aria-labelledby="moderation-action-legend"]
+            legend#moderation-action-legend.fr-fieldset__legend.fr-text--regular
+              | Action de modération
+              span.fr-hint-text Choisissez l'action à entreprendre
+            
+            .fr-fieldset__content
+              .fr-radio-group
+                = form.radio_button :moderation_action, 'rejeter', class: 'fr-radio-button', id: 'action-rejeter'
+                label.fr-label[for="action-rejeter"]
+                  | Rejeter le signalement
+                  span.fr-hint-text Le signalement est infondé, l'offre reste visible
+
+              .fr-radio-group
+                = form.radio_button :moderation_action, 'masquer', class: 'fr-radio-button', id: 'action-masquer'
+                label.fr-label[for="action-masquer"]
+                  | Masquer temporairement l'offre
+                  span.fr-hint-text L'offre est dépubliée en attendant correction
+
+              .fr-radio-group
+                = form.radio_button :moderation_action, 'supprimer', class: 'fr-radio-button', id: 'action-supprimer'
+                label.fr-label[for="action-supprimer"]
+                  | Supprimer définitivement l'offre
+                  span.fr-hint-text L'offre est définitivement retirée (soft delete)
+
+        / Message à l'annonceur
+        .fr-input-group.fr-mb-4w
+          label.fr-label[for="message-to-offerer"]
+            | Message à l'annonceur
+            span.fr-hint-text Optionnel - Utilisé uniquement si l'offre est masquée ou supprimée
+          = form.text_area :message_to_employer,
+                           class: 'fr-input',
+                           id: 'message-to-offerer',
+                           rows: 6,
+                           placeholder: "Votre offre a été signalée pour le motif suivant..."
+
+        / Commentaire interne
+        .fr-input-group.fr-mb-4w
+          label.fr-label[for="internal-comment"]
+            | Commentaire interne
+            span.fr-hint-text Optionnel - Note interne non transmise à l'annonceur
+          = form.text_area :internal_comment,
+                           class: 'fr-input',
+                           id: 'internal-comment',
+                           rows: 4,
+                           placeholder: "Contexte, justification de la décision..."
+
+        / Actions
+        .fr-btns-group.fr-btns-group--inline-sm.fr-mt-6w
+          = link_to 'Annuler',
+                    rails_admin.index_path(model_name: 'inappropriate_offer'),
+                    class: 'fr-btn fr-btn--secondary'
+          = form.submit 'Enregistrer la modération',
+                        class: 'fr-btn',
+                        data: { confirm: 'Confirmer cette action de modération ?' }
+

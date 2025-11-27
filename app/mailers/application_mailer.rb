@@ -14,12 +14,14 @@ class ApplicationMailer < ActionMailer::Base
     @site_url ||= root_url.html_safe
   end
 
-  def send_email(to:, subject:, cc: nil, specific_layout: nil, reply_to: nil)
+  def send_email(to:, subject:, cc: nil, bcc: nil, specific_layout: nil, reply_to: nil)
+    to = to.strip if to.respond_to?(:strip)
     Rails.logger.error("mail without recipient sending attempt. " \
                        "Subject: #{subject}") and return if to.blank?
 
     params = { to:, subject: }
     params.merge!(cc:) unless cc.nil?
+    params.merge!(bcc:) unless bcc.nil?
     params.merge!(reply_to:) unless reply_to.nil?
     mail(**params) and return if specific_layout.nil?
 

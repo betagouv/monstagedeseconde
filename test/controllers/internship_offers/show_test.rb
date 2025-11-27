@@ -7,11 +7,6 @@ module InternshipOffers
     include Devise::Test::IntegrationHelpers
 
     #
-    # School Manager
-    #
-    # end
-
-    #
     # Student
     #
     test 'GET #show as Student does increments view_count' do
@@ -237,10 +232,29 @@ module InternshipOffers
       end
     end
 
+    test 'GET #show as non rep or qpv Student cannot see protected data from api qpv offers' do
+      internship_offer = create(:weekly_internship_offer_2nde, :api_internship_offer, qpv: true)
+      student = create(:student, :seconde, school: create(:school, rep_kind: nil, qpv: false))
+      sign_in(student)
+      get internship_offer_path(internship_offer)
+      assert_response :success
+      assert_select 'h1', text: internship_offer.title
+      assert_select '.employer-name-test', count: 0
+    end
+
+    test 'GET #show as rep or qpv Student can see protected data from api rep or qpv offers' do
+      internship_offer = create(:weekly_internship_offer_2nde, :api_internship_offer, qpv: true)
+      student = create(:student, :seconde, school: create(:school, rep_kind: 'rep', qpv: true))
+      sign_in(student)
+      get internship_offer_path(internship_offer)
+      assert_response :success
+      assert_select 'h1', text: internship_offer.title
+      assert_select '.employer-name-test', count: 1
+    end
+
     #
     # Visitor
     #
-
     test 'GET #show as Visitor - canonical links works' do
       internship_offer = create(:weekly_internship_offer_2nde)
       regexp = Regexp.new("<link rel='canonical' href='http:\/\/www.example.com\/offres-de-stage\/(.*)' \/>")
@@ -286,6 +300,23 @@ module InternshipOffers
 
       assert_response :success
       assert_select 'a.test-employer-website[href=?]', internship_offer.employer_website
+    end
+
+    
+    test 'GET #show as Visitor an API rep or qpv Offer cannot see protected data' do
+      internship_offer = create(:weekly_internship_offer_2nde,  :api_internship_offer, rep: true, qpv: true)
+      get internship_offer_path(internship_offer)
+      assert_response :success
+      assert_select 'h1', text: internship_offer.title
+      assert_select '.employer-name-test', count: 0
+    end
+
+    test 'GET #show as Visitor an API classical Offer can see all data' do
+      internship_offer = create(:weekly_internship_offer_2nde,  :api_internship_offer)
+      get internship_offer_path(internship_offer)
+      assert_response :success
+      assert_select 'h1', text: internship_offer.title
+      assert_select '.employer-name-test', count: 1
     end
 
     #
@@ -377,6 +408,8 @@ module InternshipOffers
 
     test 'GET #flag an offer as a visitor' do
       travel_to(Date.new(2024, 3, 1)) do
+        Flipper.enable(:flag_internship_offer)
+        ENV['SIGNATURE_INFO'] = 'false'
         offer = create(:weekly_internship_offer_2nde)
         post flag_internship_offer_path(offer),
             params: {
@@ -395,6 +428,8 @@ module InternshipOffers
 
     test 'GET #flag an offer as a student' do
       travel_to(Date.new(2024, 3, 1)) do
+        ENV['SIGNATURE_INFO'] = 'false'
+        Flipper.enable(:flag_internship_offer)
         offer = create(:weekly_internship_offer_2nde)
         student = create(:student)
         sign_in(student)
@@ -415,7 +450,7 @@ module InternshipOffers
         assert_equal student.id, last_flag.user_id
       end
     end
-    
+
     test 'student of a qpv school can apply to a qpv reserved offer' do
       travel_to Date.new(2023, 10, 1) do
         student = create(:student, :seconde, school: create(:school, qpv: true))

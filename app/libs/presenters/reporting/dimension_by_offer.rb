@@ -9,10 +9,8 @@ module Presenters
                  human_max_candidates
                  human_max_candidates_string
                  published_at
-                 discarded_at
                  department
                  academy
-                 grades
                  permalink].freeze
       METHODS = %i[group_name
                    grades_as_string
@@ -23,11 +21,7 @@ module Presenters
                    full_employer
                    full_address
                    full_school
-                   full_year
-                   submitted_applications_count
-                   rejected_applications_count
-                   approved_applications_count
-                   view_count].freeze
+                   full_year].freeze
 
       def self.metrics
         [].concat(ATTRS, METHODS)
@@ -44,7 +38,22 @@ module Presenters
       end
 
       def period
-        ::InternshipOffer.current_period_labels.values[instance.period]
+        internship_offer = ::InternshipOffer.find_by(id: instance.id)
+        return '' if internship_offer.blank? || internship_offer.weeks.blank?
+
+        # Use ripping_off_the_past: false to include past weeks in exports
+        week_list = Presenters::WeekList.new(weeks: internship_offer.weeks)
+        display_result = week_list.str_weeks_display(ripping_off_the_past: false)
+        
+        # If str_weeks_display returns empty (weeks don't match criteria), fallback to to_range_as_str
+        if display_result.present?
+          display_result.map(&:strip).join("\n")
+        else
+          week_list.to_range_as_str.presence || ''
+        end
+      rescue StandardError => e
+        Rails.logger.error("Error in period for offer #{instance.id}: #{e.message}")
+        ''
       end
 
       def human_max_candidates_string
@@ -94,7 +103,7 @@ module Presenters
       end
 
       def published_at
-        return 'Dépubliée' if instance.published_at.nil?
+        return 'Masquée ou expirée ' if instance.published_at.nil?
 
         instance.published_at
       end

@@ -5,8 +5,7 @@ p Voici les détails du signalement
 
 p 
   ul
-    li Motif: #{@fr_ground}
-    li Détails du signalement: #{@inappropriate_offer.details}
+    li Motif: #{@inappropriate_offer.details}
     - if @user.present?
       li Utilisateur ayant signalé l'offre: #{@user.presenter.full_name} - #{@user.email} (##{@user.id})
     - else

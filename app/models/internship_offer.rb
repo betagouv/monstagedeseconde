@@ -17,7 +17,7 @@ class InternshipOffer < ApplicationRecord
                             entreprise_full_address internship_offer_area_id contact_phone
                             is_public group school_id coordinates first_date last_date
                             siret internship_address_manual_enter lunch_break daily_hours
-                            max_candidates max_students_per_group weekly_hours rep qpv
+                            max_candidates weekly_hours rep qpv
                             workspace_conditions workspace_accessibility].freeze
 
   include StiPreload
@@ -189,7 +189,8 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :ignore_internship_restricted_to_other_schools, lambda { |school_id:|
-    where(school_id: [nil, school_id])
+    left_joins(:reserved_schools).where(school_id: school_id)
+                                 .or(where(reserved_schools: { id: nil }))
   }
 
   scope :in_the_future, lambda {
@@ -234,10 +235,6 @@ class InternshipOffer < ApplicationRecord
 
   scope :with_school_year, lambda { |school_year:|
     where(school_year:)
-  }
-
-  scope :shown_to_employer, lambda {
-    where(hidden_duplicate: false)
   }
 
   scope :with_weeks_next_year, lambda {
@@ -435,10 +432,6 @@ class InternshipOffer < ApplicationRecord
 
   def anonymize
     fields_to_reset = {
-      tutor_name: 'NA',
-      tutor_phone: 'NA',
-      tutor_email: 'NA',
-      tutor_role: 'NA',
       title: 'NA',
       description: 'NA',
       employer_website: 'NA',
@@ -586,7 +579,6 @@ class InternshipOffer < ApplicationRecord
   end
 
   def maintenance_conditions?
-    return true if hidden_duplicate
     return true if published_at.nil?
 
     false
@@ -600,6 +592,10 @@ class InternshipOffer < ApplicationRecord
     Presenters::WeekList.new(weeks: weeks).to_api_formatted
   end
 
+  def rep_or_qpv?
+    rep || qpv
+  end
+  
   def created_during_former_year?
     last_date < Week.current_year_start_week.monday
   end

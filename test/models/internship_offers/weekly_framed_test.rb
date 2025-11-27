@@ -138,15 +138,11 @@ module InternshipsOffers
     end
 
     test 'RGPD' do
-      internship_offer = create(:weekly_internship_offer_2nde, tutor_name: 'Eric', tutor_phone: '0123456789',
-                                                               tutor_email: 'eric@octo.com', title: 'Test', description: 'Test', employer_website: 'Test',
+      internship_offer = create(:weekly_internship_offer_2nde, title: 'Test', description: 'Test', employer_website: 'Test',
                                                                street: 'rue', employer_name: 'Octo', employer_description: 'Test')
 
       internship_offer.anonymize
 
-      assert_not_equal 'Eric', internship_offer.tutor_name
-      assert_not_equal '0123456789', internship_offer.tutor_phone
-      assert_not_equal 'eric@octo.com', internship_offer.tutor_email
       assert_not_equal 'Test', internship_offer.title
       assert_not_equal 'Test', internship_offer.description
       assert_not_equal 'Test', internship_offer.employer_website
@@ -162,8 +158,7 @@ module InternshipsOffers
                                   employer_description: 'def',
                                   weeks: SchoolTrack::Seconde.both_weeks(year: 2023),
                                   published_at: nil,
-                                  max_candidates: 7,
-                                  max_students_per_group: 7)
+                                  max_candidates: 7)
         assert_equal 7, internship_offer.remaining_seats_count
         application = create(:weekly_internship_application, :submitted, internship_offer: internship_offer)
         application.employer_validate!
@@ -177,7 +172,6 @@ module InternshipsOffers
         assert_equal internship_offer.internship_offer_area_id, duplicated_internship_offer.internship_offer_area_id
         assert_equal duplicated_internship_offer.mother_id, internship_offer.id
         assert_equal duplicated_internship_offer.max_candidates, internship_offer.max_candidates
-        assert_equal duplicated_internship_offer.max_students_per_group, internship_offer.max_students_per_group
         assert_equal 6, internship_offer.remaining_seats_count
         # assert_equal 7, duplicated_internship_offer.remaining_seats_count not working since it's a new record
         assert_equal [], duplicated_internship_offer.internship_applications

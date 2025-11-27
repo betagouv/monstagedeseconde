@@ -39,7 +39,6 @@ module Users
       end
     end
 
-    def edit_by_phone; end
 
     def set_up
     end
