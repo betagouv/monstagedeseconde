@@ -14,7 +14,7 @@ namespace :data_migrations do
     # Find all offers where entreprise_coordinates is empty/nil or at (0, 0)
     # and where entreprise_full_address is present
     # Use SQL query to check for NULL geographic fields or coordinates at (0, 0)
-    offers_to_geocode = InternshipOffer.kept.where('created_at > ?', 3.month.ago).where(
+    offers_to_geocode = InternshipOffer.kept.where('created_at > ?', 9.month.ago).where(
       'entreprise_coordinates IS NULL OR (ST_X(entreprise_coordinates::geometry) = 0 AND ST_Y(entreprise_coordinates::geometry) = 0)'
     ).where.not(entreprise_full_address: [nil, ''])
 
