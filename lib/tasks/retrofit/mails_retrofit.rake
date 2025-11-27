@@ -18,16 +18,11 @@ namespace :retrofit do
 
       next if selected_internship_agreements.empty?
 
-      selected_internship_agreements= [selected_internship_agreements.first]
-
       selected_internship_agreements.each_with_index do |iag, index|
         PrettyConsole.say_in_blue("Processing #{index + 1}/#{selected_internship_agreements.count} - InternshipAgreement ID: #{iag.id}")
         legal_reps = iag.legal_representative_data.values
         legal_reps.each do |rep|
           if rep.present? && rep[:email].present? && rep[:email].strip.present?
-            # remove me today
-            rep = { email: ENV['A_DEV_EMAIL'], nr: 1 }
-            # remove me today
             GodMailer.special_notify_student_legal_representatives_can_sign_email(
               internship_agreement: iag,
               representative: rep
