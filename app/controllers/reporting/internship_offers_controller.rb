@@ -20,7 +20,7 @@ module Reporting
       respond_to do |format|
         format.xlsx do
           # SchoolYear::Floating.new_by_year expects the end year (2025 for 2024/2025)
-          # but the form sends the start year (2024 for 2024/2025), so we add 1
+          # but the form sends the start year (2024 for 2024/2025), so we add 1 
           export_params = offers_hash.merge(school_year: params[:school_year].to_i + 1)
           if dimension_is?('offers', params[:dimension])
             SendExportOffersJob.perform_later(current_user, export_params)
