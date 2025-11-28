@@ -3,8 +3,22 @@
 .row
   .col-12
     .internship-application-status.d-flex.flex-column.align-items-start
-      div class="fr-badge fr-badge--#{status_hash[:badge]} fr-badge--no-icon"
-        = status_hash[:label]
+      .d-flex.flex-row
+        div class="fr-badge fr-badge--#{status_hash[:badge]} fr-badge--no-icon"
+          = status_hash[:label]
+        - if internship_application.expired_by_student?
+          button.fr-ml-2w.fr-btn.fr-btn--tooltip[aria-describedby="tooltip" type="button"]
+            | infobulle
+          span.fr-tooltip.fr-placement[id="tooltip" role="tooltip"]
+            | Votre candidature a expiré.
+            = link_to "Comprendre pourquoi",
+                      "https://docs.numerique.gouv.fr/docs/45c0457b-c846-416d-94dc-83f76b8407b8/",
+                      class: 'fr-link fr-text--xs'
+        - if internship_application.validated_by_employer?
+          .fr-ml-2w.fr-mt-1v
+            = " [Il vous reste <strong> " \
+              "#{distance_of_time_in_words(Time.current, internship_application.validated_by_employer_at + 15.days)}" \
+              " </strong> pour confirmer ce choix.]".html_safe
       .h5.internship-offer-title.fr-mt-2w.text-dark
         = @prez.internship_offer_title
       .fr-mt-3v

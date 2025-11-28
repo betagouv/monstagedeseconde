@@ -40,7 +40,7 @@ def populate_applications
     aasm_state: :approved,
     submitted_at: 10.days.ago,
     approved_at: 3.days.ago,
-    canceled_at: 1.day.ago,
+    validated_by_employer_at: 1.day.ago,
     student: students.second,
     motivation: 'Parce que ma société n\'a pas d\'encadrant cette semaine là',
     internship_offer: this_offer,
@@ -57,6 +57,7 @@ def populate_applications
   applications = InternshipApplications::WeeklyFramed.new(
     aasm_state: :approved,
     submitted_at: 10.days.ago,
+    validated_by_employer_at: 3.days.ago,
     approved_at: 2.days.ago,
     student: students.third,
     motivation: 'Au taquet',
@@ -90,7 +91,7 @@ def populate_applications
   application = InternshipApplications::WeeklyFramed.new(
     aasm_state: :validated_by_employer,
     submitted_at: 10.days.ago,
-    approved_at: 2.days.ago,
+    validated_by_employer_at: 2.days.ago,
     student: students.fourth,
     motivation: 'Au taquet',
     internship_offer: this_offer,
@@ -129,6 +130,7 @@ def populate_applications
   application = InternshipApplications::WeeklyFramed.new(
   aasm_state: :validated_by_employer,
   submitted_at: 29.days.ago,
+  validated_by_employer_at: 10.days.ago,
   student: students.fourth,
   motivation: 'motivé moyennement pour ce stage, je vous préviens',
   student_phone: "060606#{(1000..9999).to_a.sample}",
@@ -163,6 +165,7 @@ def populate_applications
   application = InternshipApplications::WeeklyFramed.new(
     aasm_state: :approved,
     submitted_at: 23.days.ago,
+    validated_by_employer_at: 20.days.ago,
     approved_at: 18.days.ago,
     student: students[6],
     motivation: 'Très motivé pour ce stage, je vous préviens',
@@ -178,6 +181,7 @@ def populate_applications
   application = InternshipApplications::WeeklyFramed.new(
     aasm_state: :approved,
     submitted_at: 23.days.ago,
+    validated_by_employer_at: 20.days.ago,
     approved_at: 18.days.ago,
     student: students[7],
     motivation: 'Très motivé pour ce stage, je vous préviens',
