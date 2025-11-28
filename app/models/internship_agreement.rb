@@ -80,11 +80,13 @@ class InternshipAgreement < ApplicationRecord
           :signatures_started,
           :signed_by_all
 
+    # employer starts filling the agreement saves but may not have completed it
     event :start_by_employer do
       transitions from: :draft,
                   to: :started_by_employer
     end
 
+    # employer has completed filling the agreement
     event :complete do
       transitions from: %i[draft started_by_employer],
                   to: :completed_by_employer,
@@ -93,13 +95,14 @@ class InternshipAgreement < ApplicationRecord
                          }
     end
 
+    # school_manager starts filling in but may not finish at once. He may save his progress
     event :start_by_school_manager do
       transitions from: :completed_by_employer,
                   to: :started_by_school_manager
     end
 
     # validate is a reserved keyword and finalize is used instead.
-    # Means the agreement is ready to be signed by one of the parties
+    # It means the agreement is ready to be signed by any of the parties
     event :finalize do
       transitions from: %i[completed_by_employer started_by_school_manager],
                   to: :validated,
@@ -189,7 +192,6 @@ class InternshipAgreement < ApplicationRecord
 
   def confirmed_by?(user:)
     return school_manager_accept_terms? if user.school_manager?
-    return teacher_accept_terms? if user.teacher?
     return employer_accept_terms? if user.employer?
 
     raise ArgumentError, "#{user.type} does not support accept terms yet "
