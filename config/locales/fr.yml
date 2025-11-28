@@ -249,10 +249,7 @@ fr:
         daily_hours: Horaires journaliers
         weekly_hours: Horaires
         weekly_lunch_break: Horaires pause déjeuner
-        activity_rating: Modalités d'évaluation
         activity_scope: Objectifs du stage
-        activity_preparation: Modalités de concertation
-        activity_learnings_rich_text: Compétences visées
         legal_terms_rich_text: Conditions complémentaires
         student_school: Établissement de l'élève
         weekly_planning: Planning hebdomadaire

@@ -867,7 +867,6 @@ CREATE TABLE public.internship_agreements (
     school_representative_email character varying(100),
     discarded_at timestamp(6) without time zone,
     lunch_break text,
-    organisation_representative_email character varying(70),
     legal_status character varying(20),
     delegation_date date,
     internship_address character varying(500),
@@ -875,13 +874,6 @@ CREATE TABLE public.internship_agreements (
     employer_contact_email character varying(71),
     uuid uuid DEFAULT gen_random_uuid() NOT NULL,
     activity_scope text,
-    activity_preparation text,
-    activity_learnings text,
-    activity_rating text,
-    skills_observe text,
-    skills_communicate text,
-    skills_understand text,
-    skills_motivation text,
     entreprise_address character varying,
     student_birth_date date,
     pai_project boolean,
@@ -4575,6 +4567,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251128131203'),
 ('20251128112314'),
 ('20251128111843'),
 ('20251124150000'),
