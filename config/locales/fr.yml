@@ -2,9 +2,6 @@ fr:
   errors:
     messages:
       accept_terms: "Veuillez accepter les conditions d'utilisation"
-      teacher_accept_terms: "Veuillez accepter les conditions d'utilisation de la signature"
-      school_manager_accept_terms: "Veuillez accepter les conditions d'utilisation de la signature"
-      employer_accept_terms: "Veuillez accepter les conditions d'utilisation de la signature"
       not_saved:
         one: "Une erreur à corriger :"
         other: "%{count} erreurs à corriger :"
@@ -236,10 +233,7 @@ fr:
           read_by_employer: Lue par l'employeur
       internship_agreement: &internship_agreement_fields
         internship_application: Candidature
-        school_manager_accept_terms: Validée par CE
         entreprise_address: Adresse de l'entreprise
-        employer_accept_terms: Validée par l'employeur
-        teacher_accept_terms: Validée par le professeur principal
         date_range: Dates du stage
         organisation_representative_full_name: Nom de l'employeur
         organisation_representative_role: Fonction de l'employeur
@@ -546,8 +540,6 @@ fr:
               taken: "Cette adresse email est déjà utilisée"
         internship_agreement:
           attributes:
-            school_manager_accept_terms: "conditions d'utilisation de la signature"
-            employer_accept_terms: "conditions d'utilisation de la signature"
             student_full_name:
               blank: "Veuillez saisir le nom de l'élève"
             organisation_representative_full_name:
