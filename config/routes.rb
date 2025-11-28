@@ -204,6 +204,10 @@ Rails.application.routes.draw do
         resources :plannings, path: 'planning', only: %i[create new edit update]
       end
 
+      namespace :multi, path: 'multi' do
+        resources :multi_activities, path: 'activites', only: %i[create new edit update]
+      end
+
       namespace :students, path: '/:student_id/' do
         resources :internship_applications, path: 'candidatures', only: %i[index show edit update], param: :uuid do
           post :resend_application, on: :member

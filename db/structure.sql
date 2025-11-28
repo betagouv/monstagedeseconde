@@ -1541,6 +1541,39 @@ CREATE TABLE public.months (
 
 
 --
+-- Name: multi_activities; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.multi_activities (
+    id bigint NOT NULL,
+    title character varying(120) NOT NULL,
+    description text NOT NULL,
+    employer_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: multi_activities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.multi_activities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: multi_activities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.multi_activities_id_seq OWNED BY public.multi_activities.id;
+
+
+--
 -- Name: operators; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2544,6 +2577,13 @@ ALTER TABLE ONLY public.ministry_groups ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
+-- Name: multi_activities id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_activities ALTER COLUMN id SET DEFAULT nextval('public.multi_activities_id_seq'::regclass);
+
+
+--
 -- Name: operators id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2945,6 +2985,14 @@ ALTER TABLE ONLY public.invitations
 
 ALTER TABLE ONLY public.ministry_groups
     ADD CONSTRAINT ministry_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: multi_activities multi_activities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_activities
+    ADD CONSTRAINT multi_activities_pkey PRIMARY KEY (id);
 
 
 --
@@ -3683,6 +3731,13 @@ CREATE INDEX index_ministry_groups_on_group_id ON public.ministry_groups USING b
 
 
 --
+-- Name: index_multi_activities_on_employer_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_activities_on_employer_id ON public.multi_activities USING btree (employer_id);
+
+
+--
 -- Name: index_planning_grades_on_grade_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4351,6 +4406,14 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: multi_activities fk_rails_82f0da9a10; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_activities
+    ADD CONSTRAINT fk_rails_82f0da9a10 FOREIGN KEY (employer_id) REFERENCES public.users(id);
+
+
+--
 -- Name: internship_application_state_changes fk_rails_8ab7e06756; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4639,6 +4702,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20250107105855'),
 ('20250107100940'),
 ('20250106175910'),
+('20250101000000'),
 ('20241223095629'),
 ('20241220134854'),
 ('20241217104101'),
