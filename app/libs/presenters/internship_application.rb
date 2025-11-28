@@ -124,6 +124,11 @@ module Presenters
           badge: 'error',
           tab: 'Expirées',
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
+      when 'expired_by_student'
+        { label: 'expirée par l\'élève',
+          badge: 'error',
+          tab: 'Expirées',
+          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
       when 'canceled_by_student_confirmation'
         { label: reader.student? ? 'Vous avez choisi un autre stage' : "L'élève a choisi un autre stage",
           badge: 'purple-glycine',
