@@ -93,6 +93,9 @@ fr:
         page_title: "Destinataire des notifications"
       index:
         page_title: Liste de mes espaces
+    offer_types_switchings:
+      new:
+        page_title: "Choix du type d'offre à déposer"
   internship_applications:
     show:
       page_title: "Ma candidature"

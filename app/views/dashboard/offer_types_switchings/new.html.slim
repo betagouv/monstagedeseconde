@@ -1,0 +1,81 @@
+- content_for(:page_title, "#{t(".page_title")} | 1élève1stage")
+- model = @internship_occupation
+- links = generate_breadcrumb_links( 'Déposer une offre de stage')
+
+= render 'layouts/breadcrumb',
+          links: links
+
+= form_with url: dashboard_validation_choix_type_offre_path,
+            method: :post,
+            data: {turbo: false} do |f|
+  .row.fr-my-3w
+    .col
+      h1.h2 Déposer une offre de stage
+  .row.fr-mb-5w
+    = csrf_meta_tags
+    .fr-col-md-5
+      .fr-fieldset
+        .fr-fieldset__element
+          .fr-radio-group.fr-radio-rich
+            = f.radio_button :choice,
+                             "for_my_company",
+                             id: "radio-rich-0",
+                             name: "offer_type_choice"
+            label.fr-label for="radio-rich-0"
+              | Une offre pour ma structure
+            .fr-radio-rich__pictogram
+              = image_tag asset_pack_path('media/digital/avatar.svg'),
+                          viewBox:"0 0 80 80",
+                          width: "80px",
+                          height: "80px",
+                          :"aria-hidden" => "true",
+                          class: "fr-artwork"
+        .fr-fieldset__element
+          .fr-radio-group.fr-radio-rich
+            = f.radio_button :choice,
+                             "for_another_company",
+                             id: "radio-rich-1",
+                             name: "offer_type_choice"
+            label.fr-label.heigher-label for="radio-rich-1"
+              | Une offre pour une autre structure
+            .fr-radio-rich__pictogram
+              = image_tag asset_pack_path('media/digital/self-training.svg'),
+                          viewBox:"0 0 80 80",
+                          width: "80px",
+                          height: "80px",
+                          :"aria-hidden" => "true",
+                          class: "fr-artwork"
+        .fr-fieldset__element
+          .fr-radio-group.fr-radio-rich
+            = f.radio_button :choice,
+                             "for_multiple_companies",
+                              id: "radio-rich-2",
+                              name: "offer_type_choice"
+            label.fr-label for="radio-rich-2"
+              | Une offre pour une ou plusieurs structures
+            .fr-radio-rich__pictogram
+              = image_tag asset_pack_path('media/digital/ecosystem.svg'),
+                          viewBox:"0 0 80 80",
+                          width: "80px",
+                          height: "80px",
+                          :"aria-hidden" => "true",
+                          class: "fr-artwork"
+      .fr-mt-4w
+        = link_to 'Annuler',
+                  dashboard_internship_offers_path,
+                  class: 'fr-btn fr-btn--secondary fr-mr-2w'
+        = button_tag 'Commencer',
+            class: 'fr-btn fr-btn--primary',
+            type: 'submit',
+            data: { turbo: false }
+
+    .fr-col-md-7
+      .fr-alert.fr-alert--info.fr-ml-4w role="alert"
+        h3.fr-alert__title Conseil
+        p
+          |
+            Lorem ipsum dolor sit amet consectetur. Purus magna a bibendum ipsum nibh mauris.
+            Montes sagittis sed lectus eget sit convallis aenean ullamcorper dolor.
+            Fusce erat aliquam nullam eget lorem. Enim est amet platea risus est bibendum elementum
+            faucibus justo. Facilisi in a arcu aliquam hendrerit arcu id eget.
+            Sollicitudin integer arcu est fermentum. Ipsum elementum enim pretium pellentesque in. At diam nisl.
