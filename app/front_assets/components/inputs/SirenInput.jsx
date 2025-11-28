@@ -13,16 +13,17 @@ import {
 
 const setTallyModalSeen = () => {
   const expires = new Date();
-  expires.setTime(expires.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 jours
+  expires.setTime(expires.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 jours
   document.cookie = `tally_modal_seen=true;expires=${expires.toUTCString()};path=/`;
 };
 
 const isTallyModalSeen = () => {
-  return document.cookie.includes('tally_modal_seen=true');
+  return document.cookie.includes("tally_modal_seen=true");
 };
 
 const resetTallyModalSeen = () => {
-  document.cookie = 'tally_modal_seen=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
+  document.cookie =
+    "tally_modal_seen=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
 };
 
 // see: https://geo.api.gouv.fr/adresse
@@ -33,7 +34,7 @@ export default function SirenInput({
   newRecord,
   currentManualEnter,
   onSubmitError,
-  lastPublicValue
+  lastPublicValue,
 }) {
   const [siret, setSiret] = useState(currentSiret || "");
   const [searchResults, setSearchResults] = useState([]);
@@ -42,7 +43,9 @@ export default function SirenInput({
   const [internshipAddressManualEnter, setInternshipAddressManualEnter] =
     useState(currentManualEnter || false);
   const [isFaulty, setFaulty] = useState(onSubmitError || false);
-  const [formerPublicValue, setFormerPublicValue] = useState(lastPublicValue || false);
+  const [formerPublicValue, setFormerPublicValue] = useState(
+    lastPublicValue || false
+  );
 
   const inputChange = (event) => {
     setSiret(event.target.value);
@@ -95,12 +98,12 @@ export default function SirenInput({
   };
 
   const closeModal = () => {
-    const modalElement = document.getElementById('manual-input-modal');
+    const modalElement = document.getElementById("manual-input-modal");
     if (modalElement) {
-      modalElement.setAttribute('data-fr-opened', 'false');
-      modalElement.setAttribute('aria-hidden', 'true');
-      modalElement.classList.remove('fr-modal--opened');
-      
+      modalElement.setAttribute("data-fr-opened", "false");
+      modalElement.setAttribute("aria-hidden", "true");
+      modalElement.classList.remove("fr-modal--opened");
+
       // After closing the modal, open the manual input
       setOpenManual();
     }
@@ -113,9 +116,9 @@ export default function SirenInput({
 
   // Function to handle the Tally form messages
   const handleTallyMessage = (event) => {
-    if (event.origin !== 'https://tally.so') return;
-    
-    if (event.data.type === 'tally.formSubmitted') {
+    if (event.origin !== "https://tally.so") return;
+
+    if (event.data.type === "tally.formSubmitted") {
       // The form has been submitted, close the modal
       closeModal();
     }
@@ -123,44 +126,44 @@ export default function SirenInput({
 
   // Add the event listener for the Tally messages
   useEffect(() => {
-    window.addEventListener('message', handleTallyMessage);
+    window.addEventListener("message", handleTallyMessage);
     return () => {
-      window.removeEventListener('message', handleTallyMessage);
+      window.removeEventListener("message", handleTallyMessage);
     };
   }, []);
 
   const openManual = (event) => {
     event.preventDefault();
-    
+
     // Check if the modal has already been viewed by this visitor
     if (isTallyModalSeen()) {
       // If the modal has already been viewed, open the manual input
       setOpenManual();
       return;
     }
-    
+
     // Open the DSFR modal
-    const modalElement = document.getElementById('manual-input-modal');
+    const modalElement = document.getElementById("manual-input-modal");
     if (modalElement) {
       // Use the DSFR method to open the modal
-      modalElement.setAttribute('data-fr-opened', 'true');
-      modalElement.setAttribute('aria-hidden', 'false');
-      modalElement.classList.add('fr-modal--opened');
-      
+      modalElement.setAttribute("data-fr-opened", "true");
+      modalElement.setAttribute("aria-hidden", "false");
+      modalElement.classList.add("fr-modal--opened");
+
       // Set the cookie to indicate that the modal has been viewed
       setTallyModalSeen();
-      
+
       // Add an event listener to close the modal
-      const closeButton = modalElement.querySelector('.fr-link--close');
+      const closeButton = modalElement.querySelector(".fr-link--close");
       if (closeButton) {
-        closeButton.addEventListener('click', (e) => {
+        closeButton.addEventListener("click", (e) => {
           e.preventDefault();
           closeModal();
         });
       }
-      
+
       // Close the modal by clicking on the overlay
-      modalElement.addEventListener('click', (e) => {
+      modalElement.addEventListener("click", (e) => {
         if (e.target === modalElement) {
           closeModal();
         }
@@ -175,10 +178,17 @@ export default function SirenInput({
     toggleHideContainers(document.querySelectorAll(".show-when-manual"), true);
     toggleHideContainers(document.querySelectorAll(".hide-when-manual"), false);
 
-    const labelEntrepriseName = document.querySelector( `label[for='${resourceName}_employer_name']` );
-    labelEntrepriseName.innerHTML = "Saisissez le nom (raison sociale) de votre établissement *";
-    const inputEntrepriseName = document.getElementById( `${resourceName}_employer_name` );
-    const sectorBloc = document.getElementById(`${resourceName}_sector_id-block`);
+    const labelEntrepriseName = document.querySelector(
+      `label[for='${resourceName}_employer_name']`
+    );
+    labelEntrepriseName.innerHTML =
+      "Saisissez le nom (raison sociale) de votre établissement *";
+    const inputEntrepriseName = document.getElementById(
+      `${resourceName}_employer_name`
+    );
+    const sectorBloc = document.getElementById(
+      `${resourceName}_sector_id-block`
+    );
     inputEntrepriseName.required = true;
     inputEntrepriseName.removeAttribute("readonly");
     // hide the ministry choice block only if not public
@@ -190,23 +200,29 @@ export default function SirenInput({
       ministrySelect.required = false;
 
       sectorBloc.hidden = false;
-    } else { // Public company
+    } else {
+      // Public company
       ministryBlock.classList.remove("fr-hidden");
       ministrySelect.setAttribute("required", "true");
       ministrySelect.required = true;
 
       sectorBloc.hidden = true;
     }
-    
-    const labelEntrepriseAddress = document.querySelector( `label[for='${resourceName}_entreprise_chosen_full_address']` );
-    labelEntrepriseAddress.innerHTML = "Saisissez l'adresse du siège de votre établissement *";
-    const inputEntrepriseAddress = document.getElementById( `${resourceName}_entreprise_chosen_full_address` );
+
+    const labelEntrepriseAddress = document.querySelector(
+      `label[for='${resourceName}_entreprise_chosen_full_address']`
+    );
+    labelEntrepriseAddress.innerHTML =
+      "Saisissez l'adresse du siège de votre établissement *";
+    const inputEntrepriseAddress = document.getElementById(
+      `${resourceName}_entreprise_chosen_full_address`
+    );
     inputEntrepriseAddress.required = true;
     inputEntrepriseAddress.removeAttribute("readonly");
-    inputEntrepriseName.addEventListener('keyup', (event) => {
+    inputEntrepriseName.addEventListener("keyup", (event) => {
       broadcast(employerNameChanged({ employerName: event.target.value }));
     });
-  }
+  };
 
   const isAValidSiret = (siret) => {
     if (siret.length != 14 || isNaN(siret)) {
@@ -239,24 +255,35 @@ export default function SirenInput({
     const employerName = selection.uniteLegale.denominationUniteLegale;
     setEmployerNameStr(employerName);
 
-    setValueById( `${resourceName}_entreprise_full_address`, addressConcatenated );
-    setValueById( `${resourceName}_entreprise_chosen_full_address`, addressConcatenated );
-    setValueById( `${resourceName}_siret`, selection.siret);
-    setValueById( `${resourceName}_presentation_siret`, siretPresentation(selection.siret) );
-    setValueById( `${resourceName}_employer_name`, employerName);
-    
+    setValueById(
+      `${resourceName}_entreprise_full_address`,
+      addressConcatenated
+    );
+    setValueById(
+      `${resourceName}_entreprise_chosen_full_address`,
+      addressConcatenated
+    );
+    setValueById(`${resourceName}_siret`, selection.siret);
+    setValueById(
+      `${resourceName}_presentation_siret`,
+      siretPresentation(selection.siret)
+    );
+    setValueById(`${resourceName}_employer_name`, employerName);
+
     // Set the code APE if available in the selection
     if (selection.codeApe) {
       setCodeApe(selection.codeApe);
     } else {
-      console.log('no code APE found');
+      console.log("no code APE found");
     }
 
     broadcast(employerNameChanged({ employerName }));
 
     const ministry = document.getElementById("ministry-block");
     const ministryClassList = ministry.classList;
-    const sectorBloc = document.getElementById(`${resourceName}_sector_id-block`);
+    const sectorBloc = document.getElementById(
+      `${resourceName}_sector_id-block`
+    );
     const sectorBlocClassList = sectorBloc.classList;
     const sector = document.getElementById(`${resourceName}_sector_id`);
     // TODO pub/sub with broadcasting would be better
@@ -265,7 +292,7 @@ export default function SirenInput({
 
     if (is_public != undefined) {
       toggleHideContainerById("public-private-radio-buttons", false);
-      if(is_public){
+      if (is_public) {
         document.getElementById("entreprise_is_public_true").checked = true;
         // show ministry bloc
         ministry.removeAttribute("style");
@@ -279,7 +306,9 @@ export default function SirenInput({
         // Safely check and select "Fonction publique" option
         if (sector && sector.options) {
           for (let i = 0; i < sector.options.length; i++) {
-            if (sector.options[i].text.toLowerCase().includes('fonction publique')) {
+            if (
+              sector.options[i].text.toLowerCase().includes("fonction publique")
+            ) {
               sector.value = sector.options[i].value;
               break;
             }
@@ -292,19 +321,21 @@ export default function SirenInput({
         sectorBloc.hidden = true;
       } else {
         // For private companies
-        document.getElementById(`${resourceName}_is_public_false`).checked = true;
+        document.getElementById(
+          `${resourceName}_is_public_false`
+        ).checked = true;
         sectorBlocClassList.remove("fr-hidden");
         sector.value = "";
       }
     }
-    if (isFaulty && formerPublicValue){
+    if (isFaulty && formerPublicValue) {
       ministry.removeAttribute("style");
       ministryClassList.remove("fr-hidden");
     }
   };
 
   const clearImmediate = () => {
-    setEmployerNameStr('');
+    setEmployerNameStr("");
     setSiret("");
     setSearchResults([]);
     setValueById(`${resourceName}_siret`, "");
@@ -320,14 +351,14 @@ export default function SirenInput({
   };
 
   const show_form = (show) => {
-    toggleHideContainers(document.querySelectorAll(".bloc-tooggle"), show)
+    toggleHideContainers(document.querySelectorAll(".bloc-tooggle"), show);
     // hide Siren helper
     // toggleHideContainerById("input-siren", show && !newRecord);
   };
 
   const setCodeApe = (codeApe) => {
     setValueById(`${resourceName}_code_ape`, codeApe);
-  }
+  };
 
   useEffect(() => {
     const timerId = setTimeout(() => {
@@ -356,8 +387,79 @@ export default function SirenInput({
   // initialization
   useEffect(() => {
     show_form(!newRecord);
-    if (internshipAddressManualEnter || !newRecord) { setOpenManual(); }
+    if (internshipAddressManualEnter || !newRecord) {
+      setOpenManual();
+    }
   }, []);
+
+  const kinderGartenNote = (
+    <div className="mt-2 d-flex ">
+      <small>
+        <span
+          className="fr-icon-info-fill text-blue-info"
+          aria-hidden="true"
+        ></span>
+      </small>
+      <small className="text-blue-info fr-mx-1w align-items-center">
+        <strong>
+          Si vous êtes une école maternelle, élémentaire ou primaire publique,{" "}
+        </strong>
+        vous trouverez le numéro de SIRET de votre école dans votre application
+        ONDE, dans l’onglet « École », dans l’écran « Carte d’identité », dans
+        la rubrique « Identification ».
+      </small>
+    </div>
+  );
+
+  const siretTooltip = (
+    <span>
+      <button
+        className="fr-btn fr-btn--tooltip"
+        aria-describedby="tooltip"
+        type="button"
+      >
+        infobulle
+      </button>
+      <span className="fr-tooltip fr-placement" id="tooltip" role="tooltip">
+        Cette information nous aide à préremplir certains champs et sont utiles
+        à des fins statistiques
+      </span>
+    </span>
+  );
+
+  const siretIndications = (
+    <div>
+      {kinderGartenNote}
+      <div className="mt-2 d-flex align-items-center">
+        <small>
+          <span
+            className="fr-icon-info-fill text-blue-info"
+            aria-hidden="true"
+          ></span>
+        </small>
+        <small className="text-blue-info fr-mx-1w">
+          Structure introuvable ?
+        </small>
+        <a
+          href="#manual-input"
+          className="small text-blue-info"
+          onClick={openManual}
+        >
+          Ajouter votre structure manuellement
+        </a>
+        {railsEnv === "development" && (
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-secondary ml-2"
+            onClick={resetModalCookie}
+            title="Réinitialiser le cookie de la modal (dev only)"
+          >
+            Reset Modal
+          </button>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <div className="form-group" id="input-siren">
@@ -384,10 +486,11 @@ export default function SirenInput({
                   htmlFor: `${resourceName}_siren`,
                 })}
               >
-                Indiquez le nom ou le SIRET de la structure d'accueil *
-                { railsEnv === "development"
+                Indiquez le nom ou le SIRET de la structure d'accueil *{" "}
+                {siretTooltip}
+                {railsEnv === "development"
                   ? " (dev only : 21950572400209)"
-                  : "" }
+                  : ""}
               </label>
               <div className="d-flex flew-row">
                 <div className="input-group input-siren">
@@ -404,39 +507,13 @@ export default function SirenInput({
                     })}
                   />
                 </div>
+
                 <div>
-                  <button className="fr-btn fr-btn--secondary fr-icon-delete-line"
-                          onClick={clearImmediate}>
-                  </button>
-                </div>
-              </div>
-              <div className="mt-2 d-flex align-items-center">
-                <small>
-                  <span
-                    className="fr-icon-info-fill text-blue-info"
-                    aria-hidden="true"
-                  ></span>
-                </small>
-                <small className="text-blue-info fr-mx-1w">
-                  Structure introuvable ?
-                </small>
-                <a
-                  href="#manual-input"
-                  className="small text-blue-info"
-                  onClick={openManual}
-                >
-                  Ajouter votre structure manuellement
-                </a>
-                {railsEnv === "development" && (
                   <button
-                    type="button"
-                    className="btn btn-sm btn-outline-secondary ml-2"
-                    onClick={resetModalCookie}
-                    title="Réinitialiser le cookie de la modal (dev only)"
-                  >
-                    Reset Modal
-                  </button>
-                )}
+                    className="fr-btn fr-btn--secondary fr-icon-delete-line"
+                    onClick={clearImmediate}
+                  ></button>
+                </div>
               </div>
               <div
                 className="alerte alert-danger siren-error p-2 mt-2 fr-hidden"
@@ -445,50 +522,47 @@ export default function SirenInput({
               >
                 <small>Aucune réponse trouvée, essayez avec le SIRET.</small>
               </div>
-              <div>
-                <div className="search-in-sirene bg-white shadow">
-                  <ul
-                    {...getMenuProps({
-                      className: "p-0 m-0",
-                    })}
-                  >
-                    {isOpen
-                      ? searchResults.map((item, index) => (
-                          <li
-                            {...getItemProps({
-                              className: `fr-px-2w fr-py-2w listview-item ${
-                                highlightedIndex === index
-                                  ? "highlighted-listview-item"
-                                  : ""
-                              }`,
-                              key: index,
-                              index,
-                              item,
-                              style: {
-                                fontWeight:
-                                  highlightedIndex === index
-                                    ? "bold"
-                                    : "normal",
-                              },
-                            })}
-                          >
-                            <p className="fr-my-0 text-dark font-weight-bold">
-                              {item.uniteLegale.denominationUniteLegale}
-                            </p>
-                            <p className="fr-my-0 fr-text--sm text-dark">
-                              {item.activite}
-                            </p>
-                            <p className="fr-my-0 fr-text--sm text-dark">
-                              {
-                                item.adresseEtablissement
-                                  .adresseCompleteEtablissement
-                              }
-                            </p>
-                          </li>
-                        ))
-                      : null}
-                  </ul>
-                </div>
+              {!isOpen && siretIndications}
+              <div className="search-in-sirene bg-white shadow">
+                <ul
+                  {...getMenuProps({
+                    className: "p-0 m-0",
+                  })}
+                >
+                  {isOpen
+                    ? searchResults.map((item, index) => (
+                        <li
+                          {...getItemProps({
+                            className: `fr-px-2w fr-py-2w listview-item ${
+                              highlightedIndex === index
+                                ? "highlighted-listview-item"
+                                : ""
+                            }`,
+                            key: index,
+                            index,
+                            item,
+                            style: {
+                              fontWeight:
+                                highlightedIndex === index ? "bold" : "normal",
+                            },
+                          })}
+                        >
+                          <p className="fr-my-0 text-dark font-weight-bold">
+                            {item.uniteLegale.denominationUniteLegale}
+                          </p>
+                          <p className="fr-my-0 fr-text--sm text-dark">
+                            {item.activite}
+                          </p>
+                          <p className="fr-my-0 fr-text--sm text-dark">
+                            {
+                              item.adresseEtablissement
+                                .adresseCompleteEtablissement
+                            }
+                          </p>
+                        </li>
+                      ))
+                    : null}
+                </ul>
               </div>
             </div>
           )}
