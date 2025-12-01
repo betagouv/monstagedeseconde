@@ -1,10 +1,5 @@
 module InternshipAgreementsHelper
-  def current_user_agreement_terms(user)
-    return :school_manager_accept_terms if user.school_management?
 
-    return :employer_accept_terms if user.employer_like?
-    raise ArgumentError, "#{user.type} does not support accept terms yet "
-  end
 
   def agreement_form?
     return false unless controller.controller_name == 'internship_agreements'
