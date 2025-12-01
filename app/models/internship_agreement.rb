@@ -66,8 +66,6 @@ class InternshipAgreement < ApplicationRecord
     validate :valid_working_hours_fields
   end
 
-  # validate :at_least_one_validated_terms
-
   # Callbacks
   after_save :save_delegation_date
 
@@ -80,11 +78,13 @@ class InternshipAgreement < ApplicationRecord
           :signatures_started,
           :signed_by_all
 
+    # employer starts filling the agreement saves but may not have completed it
     event :start_by_employer do
       transitions from: :draft,
                   to: :started_by_employer
     end
 
+    # employer has completed filling the agreement
     event :complete do
       transitions from: %i[draft started_by_employer],
                   to: :completed_by_employer,
@@ -93,13 +93,14 @@ class InternshipAgreement < ApplicationRecord
                          }
     end
 
+    # school_manager starts filling in but may not finish at once. He may save his progress
     event :start_by_school_manager do
       transitions from: :completed_by_employer,
                   to: :started_by_school_manager
     end
 
     # validate is a reserved keyword and finalize is used instead.
-    # Means the agreement is ready to be signed by one of the parties
+    # It means the agreement is ready to be signed by any of the parties
     event :finalize do
       transitions from: %i[completed_by_employer started_by_school_manager],
                   to: :validated,
@@ -158,23 +159,6 @@ class InternshipAgreement < ApplicationRecord
       .where(grades: { id: Grade.seconde.id })
   }
 
-  def at_least_one_validated_terms
-    return true if skip_validations_for_system
-    return true if [school_manager_accept_terms, employer_accept_terms, teacher_accept_terms].any?
-
-    if [enforce_employer_validations?,
-        enforce_teacher_validations?,
-        enforce_school_manager_validations?].none?
-      %i[
-        teacher_accept_terms
-        school_manager_accept_terms
-        employer_accept_terms
-      ].each do |term|
-        errors.add(term, term)
-      end
-    end
-  end
-
   def enforce_teacher_validations?
     enforce_teacher_validations == true
   end
@@ -185,14 +169,6 @@ class InternshipAgreement < ApplicationRecord
 
   def enforce_employer_validations?
     enforce_employer_validations == true
-  end
-
-  def confirmed_by?(user:)
-    return school_manager_accept_terms? if user.school_manager?
-    return teacher_accept_terms? if user.teacher?
-    return employer_accept_terms? if user.employer?
-
-    raise ArgumentError, "#{user.type} does not support accept terms yet "
   end
 
   def valid_trix_employer_fields
@@ -356,8 +332,6 @@ class InternshipAgreement < ApplicationRecord
       field :id
       field :internship_application
       field :aasm_state
-      field :school_manager_accept_terms
-      field :employer_accept_terms
     end
   end
 

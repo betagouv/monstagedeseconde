@@ -173,7 +173,7 @@ class InternshipOffersController < ApplicationController
         id: internship_offer.id,
         title: internship_offer.title.truncate(44),
         description: internship_offer.description.to_s,
-        employer_name: internship_offer.employer_name,
+        employer_name: employer_name_presentation(internship_offer, current_user),
         link: internship_offer_path(internship_offer, search_query_params),
         city: internship_offer.city.capitalize,
         date_start: I18n.localize(internship_offer.first_date, format: :human_mm_dd_yyyy),
@@ -213,5 +213,16 @@ class InternshipOffersController < ApplicationController
   def flag_params
     params.require(:inappropriate_offer)
           .permit(:id, :ground, :details)
+  end
+
+  def employer_name_presentation(internship_offer, current_user)
+    return 'Offreur masqué - connectez-vous' if hide_data_for_non_rep_or_qpv_students?(internship_offer, current_user)
+    internship_offer.employer_name
+  end
+
+  def hide_data_for_non_rep_or_qpv_students?(internship_offer, current_user)
+    internship_offer.from_api? && 
+      internship_offer.rep_or_qpv? && 
+      (!current_user&.try(:student?) || !current_user&.school&.rep_or_qpv?)
   end
 end

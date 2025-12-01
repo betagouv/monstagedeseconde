@@ -52,7 +52,6 @@ class AddStepperTables < ActiveRecord::Migration[7.1]
       t.string :weekly_hours, array: true, default: [], limit: 400
 
       t.jsonb :daily_hours, default: {}
-      t.jsonb :daily_lunch_break, default: {}
 
       t.belongs_to :entreprise, foreign_key: true
       t.belongs_to :internship_applications, foreign_key: true
