@@ -26,8 +26,8 @@ module Dashboard::Multi
       @multi_activity.employer_id = current_user.id
 
       if @multi_activity.save
-        redirect_to new_dashboard_multi_multi_activity_path(id: @multi_activity.id,
-                                                            submit_button: true),
+        redirect_to new_dashboard_multi_multi_coordinator_path(multi_activity_id: @multi_activity.id,
+                                                         submit_button: true),
                     notice: 'Les informations ont bien été enregistrées'
       else
         log_error(object: @multi_activity)

@@ -1,7 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -21,7 +21,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -35,7 +35,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -49,7 +49,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -1574,6 +1574,47 @@ ALTER SEQUENCE public.multi_activities_id_seq OWNED BY public.multi_activities.i
 
 
 --
+-- Name: multi_coordinators; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.multi_coordinators (
+    id bigint NOT NULL,
+    siret character varying(14),
+    sector_id integer,
+    employer_name character varying(120),
+    employer_chosen_name character varying(120) NOT NULL,
+    employer_address character varying(250),
+    employer_chosen_address character varying(250) NOT NULL,
+    city character varying(60) NOT NULL,
+    zipcode character varying(6) NOT NULL,
+    street character varying(300) NOT NULL,
+    phone character varying(20) NOT NULL,
+    multi_activity_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: multi_coordinators_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.multi_coordinators_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: multi_coordinators_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.multi_coordinators_id_seq OWNED BY public.multi_coordinators.id;
+
+
+--
 -- Name: operators; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2584,6 +2625,13 @@ ALTER TABLE ONLY public.multi_activities ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
+-- Name: multi_coordinators id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_coordinators ALTER COLUMN id SET DEFAULT nextval('public.multi_coordinators_id_seq'::regclass);
+
+
+--
 -- Name: operators id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2993,6 +3041,14 @@ ALTER TABLE ONLY public.ministry_groups
 
 ALTER TABLE ONLY public.multi_activities
     ADD CONSTRAINT multi_activities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: multi_coordinators multi_coordinators_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_coordinators
+    ADD CONSTRAINT multi_coordinators_pkey PRIMARY KEY (id);
 
 
 --
@@ -3738,6 +3794,20 @@ CREATE INDEX index_multi_activities_on_employer_id ON public.multi_activities US
 
 
 --
+-- Name: index_multi_coordinators_on_multi_activity_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_coordinators_on_multi_activity_id ON public.multi_coordinators USING btree (multi_activity_id);
+
+
+--
+-- Name: index_multi_coordinators_on_sector_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_coordinators_on_sector_id ON public.multi_coordinators USING btree (sector_id);
+
+
+--
 -- Name: index_planning_grades_on_grade_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4262,6 +4332,14 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
+-- Name: multi_coordinators fk_rails_3ab8f79e0f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_coordinators
+    ADD CONSTRAINT fk_rails_3ab8f79e0f FOREIGN KEY (multi_activity_id) REFERENCES public.multi_activities(id);
+
+
+--
 -- Name: internship_offers fk_rails_3cef9bdd89; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4702,6 +4780,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20250107105855'),
 ('20250107100940'),
 ('20250106175910'),
+('20250101000001'),
 ('20250101000000'),
 ('20241223095629'),
 ('20241220134854'),
@@ -5114,3 +5193,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
+

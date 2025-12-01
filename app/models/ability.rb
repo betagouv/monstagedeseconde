@@ -237,6 +237,9 @@ class Ability
     end
     can %i[create], InternshipOccupation
     can %i[create], MultiActivity
+    can %i[create], MultiCoordinator do |coordinator|
+      coordinator.multi_activity.employer_id == user.id
+    end
     can %i[create], Entreprise do |entreprise|
       entreprise.internship_occupation.employer_id == user.id
     end
@@ -245,6 +248,9 @@ class Ability
     end
     can %i[update edit renew], InternshipOccupation, employer_id: user.team_members_ids
     can %i[update edit], MultiActivity, employer_id: user.team_members_ids
+    can %i[update edit], MultiCoordinator do |coordinator|
+      coordinator.multi_activity.employer_id.in?(user.team_members_ids)
+    end
     can %i[update edit renew], Entreprise do |entreprise|
       entreprise.internship_occupation.employer_id.in?(user.team_members_ids)
     end

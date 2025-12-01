@@ -51,12 +51,12 @@ module Dashboard::Multi
       assert_equal employer.id, created_multi_activity.employer_id
       assert created_multi_activity.description.present?
 
-      assert_redirected_to new_dashboard_multi_multi_activity_path(
-        id: created_multi_activity.id, submit_button: true
+      assert_redirected_to new_dashboard_multi_multi_coordinator_path(
+        multi_activity_id: created_multi_activity.id, submit_button: true
       )
       follow_redirect!
       assert_select 'span#alert-text', text: 'Les informations ont bien été enregistrées'
-      assert_select('h2 > span.fr-stepper__state', 'Étape 1 sur 4')
+      assert_select('h2 > span.fr-stepper__state', 'Étape 2 sur 4')
     end
 
     test 'POST create render new when missing title' do

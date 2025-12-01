@@ -1,0 +1,125 @@
+- edition_mode = form.object.persisted?
+- resource_name = form.object_name
+- phone_pattern = ApplicationController.helpers.field_phone_pattern
+
+= form.hidden_field :multi_activity_id, value: @multi_activity.id
+- if resource.id
+  = form.hidden_field :id, value: resource.id
+
+div [data-controller="mandatory-fields"
+     data-mandatory-fields-minimum-length-value="2"]
+  .row
+    .col-12= form.rg2a_explain_required_asterisk(p_class_name: "mb-0")
+    .col-md-6
+      fieldset aria-labelledby="coordinator-info-legend"
+        legend.fr-h6 Les informations liées au coordinateur
+        .row
+          .col-12
+            - unless resource.persisted?
+              = react_component("SirenInputMulti",
+                                props: { resourceName: resource_name,
+                                        currentSiret: resource.siret,
+                                        railsEnv: Rails.env,
+                                        newRecord: resource.new_record? })
+
+        div class="row fr-mt-3w bloc-tooggle hide-when-manual #{form.object.persisted? ? '' : 'fr-hidden'}"
+          .col-12
+            = render 'inputs/dsfr_input_field',
+                      field: :siret,
+                      f: form,
+                      label: "SIRET *",
+                      required: true,
+                      readonly: true,
+                      title: 'SIRET (14 chiffres sans espace)',
+                      object: form.object,
+                      value: resource.siret,
+                      pattern: '^(\d{14})$'
+
+        div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
+          .col-12
+            = form.label :sector_id, class: 'fr-label' do
+              = "Indiquez le secteur d'activité de l'offre de stage *"
+            = form.select :sector_id,
+                          options_from_collection_for_select(Sector.all.order(:name).where.not(name: 'Fonction publique'), :id, :name, resource&.sector&.id),
+                          { prompt: sectors_options_for_default },
+                          class: "fr-select sector_list",
+                          required: true,
+                          data: { action: "change->mandatory-fields#fieldChange",
+                                  'mandatory-fields-target' => "mandatoryField" }
+        
+        div class="row fr-mt-3w hide-when-manual bloc-tooggle fr-hidden"
+          .col-12
+            = render 'inputs/dsfr_input_field',
+                      field: :presentation_siret,
+                      f: form,
+                      label: "SIRET *",
+                      required: true,
+                      readonly: true,
+                      title: 'SIRET',
+                      object: form.object,
+                      value: resource&.siret.present? ? resource.presenter.formal_siret : nil
+                      
+        div class="row fr-mt-3w bloc-tooggle hide-when-manual #{form.object.persisted? ? '' : 'fr-hidden'}"
+          .col-12
+            - label = "Vérifiez le nom (raison sociale) de votre établissement *"
+            = render 'inputs/dsfr_input_field',
+                      field: :employer_chosen_name,
+                      f: form,
+                      label: label,
+                      required: true,
+                      title: label,
+                      object: form.object,
+                      value: resource&.employer_chosen_name,
+                      options: { maxlength: MultiCoordinator::EMPLOYER_NAME_MAX_LENGTH,
+                                data: { action: "input->mandatory-fields#fieldChange",
+                                        'mandatory-fields-target' => "mandatoryField" } }
+
+        div class="row fr-mt-3w bloc-tooggle hide-when-manual #{form.object.persisted? ? '' : 'fr-hidden'}"
+          .col-12
+            = form.hidden_field :employer_address, value: resource&.employer_address
+            / city, zipcode, street are hidden fields populated by SirenInputMulti
+            = form.hidden_field :city, value: resource&.city
+            = form.hidden_field :zipcode, value: resource&.zipcode
+            = form.hidden_field :street, value: resource&.street
+            - label = "Vérifiez l'adresse du siège de votre établissement *"
+            = render 'inputs/dsfr_input_field',
+                      field: :employer_chosen_address,
+                      f: form,
+                      label: label,
+                      required: true,
+                      title: label,
+                      object: form.object,
+                      options: { maxlength: MultiCoordinator::EMPLOYER_ADDRESS_MAX_LENGTH,
+                                data: { action: "input->mandatory-fields#fieldChange",
+                                        'mandatory-fields-target' => "mandatoryField" } },
+                      value: resource&.employer_chosen_address
+        
+
+        div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
+          .col-12
+            - label = "Numéro de téléphone du coordinateur *"
+            - hint = "Ce numéro ne sera pas communiqué aux candidats."
+            = render 'inputs/dsfr_input_field',
+                      field: :phone,
+                      f: form,
+                      label: label,
+                      required: true,
+                      title: label,
+                      object: form.object,
+                      hint: hint,
+                      pattern: phone_pattern,
+                      value: resource.try(:phone),
+                      options: { maxlength: MultiCoordinator::PHONE_MAX_LENGTH,
+                                data: { action: "input->mandatory-fields#fieldChange",
+                                        'mandatory-fields-target' => "mandatoryField" } }
+
+  - if submit_button
+    .fr-mt-6w.bloc-tooggle
+      = link_to 'Précédent',
+                new_dashboard_multi_multi_activity_path(id: @multi_activity.id),
+                class: 'fr-btn fr-btn--secondary fr-mr-3w'
+      = button_tag :submit,
+                   class: 'fr-btn',
+                   :'data-mandatory-fields-target' => "disabledField" do
+        = "Suivant"
+
