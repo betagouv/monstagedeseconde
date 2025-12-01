@@ -1,6 +1,6 @@
 - classes = 'd-flex justify-content-center fr-btn fr-high-buttons text-center fr-btn--sm'
-
 - primary_button_classes = "fr-btn text-center fr-mr-1w  fr-btn--sm  fr-mb-2w"
+
 - if second_label[:status] == 'disabled'
   = link_to second_label[:text], '', class: "#{primary_button_classes} disabled"
 - elsif second_label[:status] != 'hidden' && (internship_agreement.validated? || internship_agreement.signatures_started?)

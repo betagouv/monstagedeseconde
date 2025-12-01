@@ -54,7 +54,6 @@ namespace :migrations do
           weekly_lunch_break: internship_offer.weekly_lunch_break,
           weekly_hours: internship_offer.weekly_hours,
           daily_hours: internship_offer.daily_hours,
-          daily_lunch_break: internship_offer.daily_lunch_break,
           school_id: internship_offer.school_id
         )
       end

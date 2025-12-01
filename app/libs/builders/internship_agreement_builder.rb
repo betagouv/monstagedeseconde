@@ -75,7 +75,6 @@ module Builders
         tutor_full_name: nil,
         tutor_role: nil,
         tutor_email: nil,
-        activity_preparation: internship_offer.description,
         daily_hours: internship_offer.daily_hours,
         weekly_hours: internship_offer.weekly_hours,
         lunch_break: internship_offer.lunch_break,
