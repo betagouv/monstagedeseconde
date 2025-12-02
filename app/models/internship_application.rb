@@ -94,6 +94,8 @@ class InternshipApplication < ApplicationRecord
 
   paginates_per PAGE_SIZE
 
+  delegate :from_multi?, to: :internship_offer, allow_nil: true
+
   # Validations
   validates :student_phone,
             format: {
@@ -407,6 +409,10 @@ class InternshipApplication < ApplicationRecord
 
     Triggered::SingleApplicationReminderJob.set(wait: 2.days).perform_later(student.id)
     Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
+  end
+
+  def multi?
+    internship_offer.from_multi?
   end
 
   def state_index

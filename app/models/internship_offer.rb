@@ -328,7 +328,7 @@ class InternshipOffer < ApplicationRecord
   # -------------------------
   # Methods
   # -------------------------
-
+  def from_multi? = false
   def still_unpublished?
     unpublished? || need_to_be_updated? || splitted?
   end

@@ -149,6 +149,17 @@ FactoryBot.define do
       qpv { true }
     end
 
+    trait :multi do
+      # coordinator { create(:employer) }
+      after(:create) do |offer|
+        create(:corporation, multi_corporation_id: offer.id, employer_name: 'Darty lux')
+        create(:corporation, multi_corporation_id: offer.id, employer_name: 'Radio Electroménager')
+        create(:corporation, multi_corporation_id: offer.id, employer_name: 'Brain Dry Pump')
+        create(:corporation, multi_corporation_id: offer.id, employer_name: 'Leaders Connect')
+        create(:corporation, multi_corporation_id: offer.id, employer_name: 'Auto Plus Services')
+      end
+    end
+
     # Seconde :
     factory :api_internship_offer_2nde, traits: %i[api_internship_offer week_1],
                                         class: 'InternshipOffers::Api',
@@ -180,6 +191,10 @@ FactoryBot.define do
 
     factory :weekly_internship_offer, traits: %i[weekly_internship_offer published both_school_tracks_internship_offer],
                                       class: 'InternshipOffers::WeeklyFramed',
+                                      parent: :internship_offer
+
+    factory :multi_internship_offer, traits: %i[weekly_internship_offer published both_school_tracks_internship_offer multi],
+                                      class: 'InternshipOffers::Multi',
                                       parent: :internship_offer
 
     factory :weekly_internship_offer_by_statistician, traits: %i[weekly_internship_offer_by_statistician both_school_tracks_internship_offer],
