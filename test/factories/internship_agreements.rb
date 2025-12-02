@@ -33,6 +33,7 @@ FactoryBot.define do
     weekly_hours { ['9:00', '17:00'] }
     weekly_lunch_break { '1h dans la cantine. Repas fourni.' }
     uuid { SecureRandom.uuid }
+    access_token { SecureRandom.hex(10) } # 20 characters
 
     before(:create) do |ia|
       academy_region = AcademyRegion.find_or_create_by(name: 'Ile-de-France')
@@ -44,7 +45,7 @@ FactoryBot.define do
     end
 
     trait :multi do
-      coordinator { create(:employer) }
+      coordinator { internship_application.internship_offer.employer }
     end
 
     trait :created_by_system do

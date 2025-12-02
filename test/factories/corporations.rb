@@ -2,9 +2,12 @@
 
 FactoryBot.define do
   factory :corporation do
+    # not good !
     multi_corporation_id { rand(1..10000)}
+    # sector { is_public ? Sector.find_by(name: 'Fonction publique') : create(:sector, name: FFaker::Lorem.word) }
+    sector { create(:sector, name: FFaker::Lorem.word) }
+    # not good !
     siret { '11122233300000' }
-    sector { is_public ? Sector.find_by(name: 'Fonction publique') : create(:sector, name: FFaker::Lorem.word) }
     employer_name { 'Octave ACME' }
     employer_address { '18 rue du poulet, 75001 Paris' }
     city { 'Paris' }
@@ -19,5 +22,11 @@ FactoryBot.define do
     tutor_role_in_company { 'Manager' }
     tutor_email { 'john.doe@example.com' }
     tutor_phone { '+330612345111' }
+  end
+end
+
+FactoryBot.define do
+  factory :multi_corporation do
+    association :multi_coordinator
   end
 end
