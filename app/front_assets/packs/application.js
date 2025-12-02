@@ -29,11 +29,16 @@ import '@gouvfr/dsfr/dist/utility/icons/icons-media/icons-media.css';
 import '@gouvfr/dsfr/dist/utility/icons/icons-design/icons-design.css';
 // import '@gouvfr/dsfr/dist/utility/icons/icons-map';
 import '@gouvfr/dsfr/dist/utility/icons/icons-others/icons-others.css';
-import '@gouvfr/dsfr/dist/utility/colors/colors.css';
 import '@gouvfr/dsfr/dist/utility/icons/icons-map/icons-map.css';
 import '@gouvfr/dsfr/dist/utility/colors/colors.css';
+import '@gouvfr/dsfr/dist/core/core.min.css';
+import '@gouvfr/dsfr/dist/component/radio/radio.min.css';
 
-import '@gouvfr/dsfr/dist/dsfr.module.js';
+import '@gouvfr/dsfr/dist/artwork/pictograms/digital/avatar.svg';
+import '@gouvfr/dsfr/dist/artwork/pictograms/digital/self-training.svg';
+import '@gouvfr/dsfr/dist/artwork/pictograms/digital/ecosystem.svg';
+
+import '@gouvfr/dsfr/dist/dsfr.module';
 
 import '../stylesheets/screen.scss';
 import '../stylesheets/print.scss';
@@ -42,16 +47,14 @@ import '@popperjs/core';
 
 import '@hotwired/turbo-rails';
 
-import Alert from 'bootstrap'
-import Dropdown from 'bootstrap'
-import Modal from 'bootstrap'
-import Tooltip from 'bootstrap'
+// import Alert from 'bootstrap'
+// import Dropdown from 'bootstrap'
+// import Modal from 'bootstrap'
+// import Tooltip from 'bootstrap'
 
 import 'url-search-params-polyfill';
 
 import '../bootapp';
 import '../leaflet-providers';
-
-import '../utils/zammad_form';
 
 import '../utils/confirm';
