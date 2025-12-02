@@ -207,6 +207,9 @@ Rails.application.routes.draw do
       namespace :multi, path: 'multi' do
         resources :multi_activities, path: 'activites', only: %i[create new edit update]
         resources :multi_coordinators, path: 'coordinateurs', only: %i[create new edit update]
+        resources :multi_corporations, path: 'structures', only: %i[create new edit update] do
+          resources :corporations, only: %i[create update destroy edit], module: :multi_corporations
+        end
       end
 
       namespace :students, path: '/:student_id/' do

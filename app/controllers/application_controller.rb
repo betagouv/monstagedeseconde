@@ -117,9 +117,9 @@ class ApplicationController < ActionController::Base
   private
 
   def message_from_prismic
-    # api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
-    # response = api.query([Prismic::Predicates.at('document.type', 'top_banner')])
-    'response.results.first'
+    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
+    response = api.query([Prismic::Predicates.at('document.type', 'top_banner')])
+    response.results.first
   end
 
   def check_school_requested

@@ -240,6 +240,12 @@ class Ability
     can %i[create], MultiCoordinator do |coordinator|
       coordinator.multi_activity.employer_id == user.id
     end
+    can %i[create update edit], MultiCorporation do |multi_corporation|
+      multi_corporation.multi_coordinator.multi_activity.employer_id == user.id
+    end
+    can %i[create update edit destroy], Corporation do |corporation|
+      corporation.multi_corporation.multi_coordinator.multi_activity.employer_id == user.id
+    end
     can %i[create], Entreprise do |entreprise|
       entreprise.internship_occupation.employer_id == user.id
     end

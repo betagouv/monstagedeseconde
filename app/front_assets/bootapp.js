@@ -39,6 +39,7 @@ import CountryPhoneSelect from "components/inputs/CountryPhoneSelect";
 import FullAddressInput from "components/inputs/FullAddressInput";
 import SirenInput from "components/inputs/SirenInput";
 import SirenInputMulti from "components/inputs/SirenInputMulti";
+import SireneCorporation from "components/inputs/SireneCorporation";
 
 ReactOnRails.register({
   AddressInput,
@@ -61,6 +62,7 @@ ReactOnRails.register({
   SearchSchoolByName,
   SirenInput,
   SirenInputMulti,
+  SireneCorporation,
   WeekInput,
   SearchBar
 });

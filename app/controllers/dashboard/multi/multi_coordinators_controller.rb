@@ -22,9 +22,8 @@ module Dashboard::Multi
 
       if @multi_coordinator.save
         notice = "Les informations du coordinateur ont bien été enregistrées"
-        redirect_to new_dashboard_multi_multi_coordinator_path(multi_activity_id: @multi_activity.id,
-                                                         submit_button: true),
-                    notice: notice
+        multi_corporation = MultiCorporation.find_or_create_by!(multi_coordinator: @multi_coordinator)
+        redirect_to edit_dashboard_multi_multi_corporation_path(multi_corporation), notice: notice
       else
         log_error(object: @multi_coordinator)
         render :new, status: :bad_request
@@ -42,7 +41,8 @@ module Dashboard::Multi
       set_computed_params
 
       if @multi_coordinator.update(multi_coordinator_params)
-        redirect_to new_dashboard_multi_multi_coordinator_path(multi_activity_id: @multi_activity.id)
+        multi_corporation = MultiCorporation.find_or_create_by!(multi_coordinator: @multi_coordinator)
+        redirect_to edit_dashboard_multi_multi_corporation_path(multi_corporation)
       else
         log_error(object: @multi_coordinator)
         render :new, status: :bad_request
