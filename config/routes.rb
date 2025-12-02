@@ -198,10 +198,20 @@ Rails.application.routes.draw do
       end
 
       namespace :stepper, path: 'etapes' do
-
         resources :internship_occupations, path: 'metiers_et_localisation', only: %i[create new edit update]
         resources :entreprises, path: 'entreprise', only: %i[create new edit update]
         resources :plannings, path: 'planning', only: %i[create new edit update]
+      end
+
+      namespace :multi_stepper, path: 'multi_etapes' do
+        get  'choix-type-offre', to: 'offer_types_switchings#new', as: 'choix_type_offre'
+        post 'choix-type-offre', to: 'offer_types_switchings#create', as: 'validation_choix_type_offre'
+        resources :multi_activities, path: 'multi-activites', only: %i[create new edit update]
+        resources :multi_corporations, path: 'multi-structures', only: %i[create new edit update] do
+          resources :multi_coordinators, path: 'multi-coordinateurs', only: %i[create new edit update]
+          resources :corporations, only: %i[create update destroy edit], module: :multi_corporations
+        end
+        resources :multi_plannings, path: 'multi-planning', only: %i[create new edit update]
       end
 
       namespace :students, path: '/:student_id/' do
@@ -211,7 +221,6 @@ Rails.application.routes.draw do
         resources :internship_agreements, path: 'conventions-de-stage', only: %i[new], param: :uuid do
           member do
             get :sign
-            
           end
         end
       end

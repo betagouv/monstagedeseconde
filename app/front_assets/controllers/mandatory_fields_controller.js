@@ -32,7 +32,15 @@ export default class extends Controller {
   }
 
   checkFields() {
-    const allFieldsFilled = this.mandatoryFieldTargets.every(field => field.value.length >= this.minimumLengthValue)
+    const allFieldsFilled = this.mandatoryFieldTargets.every(field => {
+      // For select elements, check if a value is selected (not empty)
+      // For other inputs, check if length meets minimum requirement
+      if (field.tagName === 'SELECT') {
+        return field.value && field.value !== '';
+      } else {
+        return field.value.length >= this.minimumLengthValue;
+      }
+    });
     this.disabledFieldTarget.disabled = !allFieldsFilled
   }
 
@@ -47,8 +55,16 @@ export default class extends Controller {
   areAllMandatoryFieldsFilled(){
     let allMandatoryFieldsAreFilled = true;
     this.mandatoryFieldTargets.forEach((field) => {
-      if (field.value.length <= this.minimumLengthValue) {
-        allMandatoryFieldsAreFilled = false;
+      // For select elements, check if a value is selected (not empty)
+      // For other inputs, check if length meets minimum requirement
+      if (field.tagName === 'SELECT') {
+        if (!field.value || field.value === '') {
+          allMandatoryFieldsAreFilled = false;
+        }
+      } else {
+        if (field.value.length <= this.minimumLengthValue) {
+          allMandatoryFieldsAreFilled = false;
+        }
       }
     });
     return allMandatoryFieldsAreFilled;
@@ -60,11 +76,6 @@ export default class extends Controller {
     disabledFields.forEach((field) => {
       field.disabled =  (status === 'disabled') ;
     });
-  }
-
-  checkFields() {
-    const allFieldsFilled = this.mandatoryFieldTargets.every(field => field.value.length >= this.minimumLengthValue)
-    this.disabledFieldTarget.disabled = !allFieldsFilled
   }
 
   checkValidation(){

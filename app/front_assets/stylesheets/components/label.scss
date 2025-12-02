@@ -72,3 +72,14 @@
 .registration label.fr-label{
   font-weight: 400;
 }
+
+.fr-radio-group.fr-radio-rich{
+  label{
+    font-weight: 400;
+    min-height: 5.5rem;
+  }
+}
+.fr-radio-group.fr-radio-rich .fr-radio-rich__pictogram{
+  margin: 0;
+  height: 5.5rem;
+}

@@ -1,0 +1,17 @@
+= form_with model: model, url: url, method: method, data: { turbo: false } do |form|
+  = render "dashboard/stepper/steps",
+            current_step_number: 1,
+            total_steps: 4,
+            current_step_title: "Le ou les métiers que vous proposez d'observer",
+            next_step_title: "Le coordinateur"
+
+  = render "layouts/form_errors",
+           resource: @multi_activity,
+           resource_name: :multi_activity
+
+  = render 'dashboard/multi/multi_activities/form_fields',
+            resource: @multi_activity,
+            form: form,
+            submit_button: submit_button,
+            show_resume: show_resume
+
