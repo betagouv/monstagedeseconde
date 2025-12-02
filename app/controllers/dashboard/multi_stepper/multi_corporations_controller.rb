@@ -1,4 +1,4 @@
-module Dashboard::Multi
+module Dashboard::MultiStepper
   class MultiCorporationsController < ApplicationController
     before_action :authenticate_user!
     before_action :fetch_multi_corporation, only: %i[edit update]
@@ -15,7 +15,7 @@ module Dashboard::Multi
       @multi_corporation = MultiCorporation.new(multi_corporation_params)
       
       if @multi_corporation.save
-        redirect_to edit_dashboard_multi_multi_corporation_path(@multi_corporation)
+        redirect_to edit_dashboard_multi_stepper_multi_corporation_path(@multi_corporation)
       else
         render :new, status: :bad_request
       end
