@@ -4,28 +4,18 @@ module Finders
     def pending_class_rooms_actions_count
       school.nil? ? 0 : school.students.without_class_room.count
     end
-    
+
     def pending_agreements_count
       # internship_agreement approved with internship_agreement without terms_accepted
+      states_with_actions = %i[completed_by_employer started_by_school_manager validated]
       @pending_internship_agreement_count ||= InternshipApplication
                                                     .through_teacher(teacher: teacher)
                                                     .approved
                                                     .joins(:internship_agreement)
-                                                    .where(internship_agreement: {teacher_accept_terms: false})
+                                                    .where(internship_agreement: { aasm_state: states_with_actions })
                                                     .count
-
-      # internship_applications approved without internship_agreement
-      @to_be_created_internnship_agreement ||= InternshipApplication
-                                                     .through_teacher(teacher: teacher)
-                                                     .approved
-                                                     .left_outer_joins(:internship_agreement)
-                                                     .where(internship_agreement: {internship_application_id: nil})
-                                                     .count
-      [
-        @pending_internship_agreement_count,
-        @to_be_created_internnship_agreement
-      ].sum
     end
+
 
     private
     attr_reader :teacher, :school

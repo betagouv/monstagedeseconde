@@ -1,7 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -21,7 +21,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+-- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -35,7 +35,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+-- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -49,7 +49,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+-- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -891,12 +891,8 @@ CREATE TABLE public.internship_agreements (
     student_class_room character varying(50),
     student_school character varying(150),
     tutor_full_name character varying(275),
-    school_manager_accept_terms boolean DEFAULT false,
-    employer_accept_terms boolean DEFAULT false,
     weekly_hours text[] DEFAULT '{}'::text[],
     daily_hours jsonb DEFAULT '{}'::jsonb,
-    teacher_accept_terms boolean DEFAULT false,
-    daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     weekly_lunch_break text,
     siret character varying(14),
     tutor_role character varying(150),
@@ -918,7 +914,6 @@ CREATE TABLE public.internship_agreements (
     school_representative_email character varying(100),
     discarded_at timestamp(6) without time zone,
     lunch_break text,
-    organisation_representative_email character varying(70),
     legal_status character varying(20),
     delegation_date date,
     internship_address character varying(500),
@@ -926,13 +921,6 @@ CREATE TABLE public.internship_agreements (
     employer_contact_email character varying(71),
     uuid uuid DEFAULT gen_random_uuid() NOT NULL,
     activity_scope text,
-    activity_preparation text,
-    activity_learnings text,
-    activity_rating text,
-    skills_observe text,
-    skills_communicate text,
-    skills_understand text,
-    skills_motivation text,
     entreprise_address character varying,
     student_birth_date date,
     pai_project boolean,
@@ -1464,7 +1452,6 @@ CREATE TABLE public.internship_offers (
     new_daily_hours jsonb DEFAULT '{}'::jsonb,
     daterange daterange GENERATED ALWAYS AS (daterange(first_date, last_date)) STORED,
     siret character varying(14),
-    daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     internship_address_manual_enter boolean DEFAULT false,
     daily_hours jsonb,
     internship_offer_area_id bigint,
@@ -1876,7 +1863,6 @@ CREATE TABLE public.plannings (
     remaining_seats_count integer DEFAULT 0,
     weekly_hours character varying(400)[] DEFAULT '{}'::character varying[],
     daily_hours jsonb DEFAULT '{}'::jsonb,
-    daily_lunch_break jsonb DEFAULT '{}'::jsonb,
     entreprise_id bigint,
     school_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
@@ -4963,6 +4949,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20251202080000'),
 ('20251201221838'),
 ('20251201152332'),
+('20251128131203'),
+('20251128112314'),
+('20251128111843'),
 ('20251124150000'),
 ('20251105120000'),
 ('20251029152954'),
