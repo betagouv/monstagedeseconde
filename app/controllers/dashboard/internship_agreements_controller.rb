@@ -12,8 +12,6 @@ module Dashboard
 
     def edit
       authorize! :update, @internship_agreement
-      @mono_internship_agreement = @internship_agreement.from_multi? ? nil : @internship_agreement
-      @multi_internship_agreement = @internship_agreement.from_multi? ? @internship_agreement : nil
     end
 
     def update
@@ -64,7 +62,7 @@ module Dashboard
         @internship_offers = current_user.internship_offers
                                          .includes([:weeks, { school: :school_managers }])
       end
-      @mono_internship_agreements = filtering_query current_user.mono_internship_agreements
+      @mono_internship_agreements  = filtering_query current_user.mono_internship_agreements
       @multi_internship_agreements = filtering_query current_user.multi_internship_agreements
 
       #  .reject { |a| a.student.school.school_manager.nil? }
@@ -201,6 +199,8 @@ module Dashboard
 
     def set_internship_agreement
       @internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
+      @mono_internship_agreement = @internship_agreement.from_multi? ? nil : @internship_agreement
+      @multi_internship_agreement = @internship_agreement.from_multi? ? @internship_agreement : nil
     end
 
     def update_school_signature

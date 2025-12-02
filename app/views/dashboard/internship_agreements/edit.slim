@@ -1,6 +1,8 @@
-- content_for(:page_title, "#{t('.page_title')} | 1élève1stage")
 = render 'layouts/breadcrumb',
           links: [ [current_user.presenter.dashboard_name_link, current_user.dashboard_name],
                    ['', "Edition de la convention : #{@internship_agreement.internship_offer.title}"] ]
-= render current_user.school_management? || current_user.admin_officer? ? 'school_management_form' : 'employer_form'
+- if @internship_agreement.from_multi?
+  = render current_user.school_management? ? 'dashboard/multi_internship_agreements/school_management_form' : 'dashboard/multi_internship_agreements/employer_form'
+- else
+  = render current_user.school_management? ? 'school_management_form' : 'employer_form'
 
