@@ -7,7 +7,7 @@ module Dashboard::InternshipOffers
     include Devise::Test::IntegrationHelpers
 
     test 'GET #internship_agreements/edit as visitor redirects to user_session_path' do
-      get edit_dashboard_internship_agreement_path(create(:internship_agreement).to_param)
+      get edit_dashboard_internship_agreement_path(create(:mono_internship_agreement).to_param)
       assert_redirected_to new_user_session_path
     end
 
@@ -18,7 +18,7 @@ module Dashboard::InternshipOffers
         internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
         class_room = create(:class_room, school: school)
         teacher = create(:teacher, school: school, class_room: class_room)
-        internship_agreement = create(:internship_agreement, internship_application: internship_application)
+        internship_agreement = create(:mono_internship_agreement, internship_application: internship_application)
         sign_in(teacher)
 
         get edit_dashboard_internship_agreement_path(internship_agreement.id)
@@ -34,7 +34,7 @@ module Dashboard::InternshipOffers
         internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
         class_room = create(:class_room, school: another_school)
         internship_application.student.update(class_room_id: class_room.id, school_id: another_school.id)
-        internship_agreement = create(:internship_agreement, internship_application: internship_application)
+        internship_agreement = create(:mono_internship_agreement, internship_application: internship_application)
         sign_in(school.school_manager)
 
         get edit_dashboard_internship_agreement_path(uuid: internship_agreement.uuid)
@@ -46,7 +46,7 @@ module Dashboard::InternshipOffers
       school = create(:school, :with_school_manager)
       internship_application = create(:weekly_internship_application, :approved)
       internship_application.student.update(school_id: school.id)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application)
+      internship_agreement = create(:mono_internship_agreement, internship_application: internship_application)
       sign_in(school.school_manager)
 
       get edit_dashboard_internship_agreement_path(uuid: internship_agreement.uuid)
@@ -55,7 +55,7 @@ module Dashboard::InternshipOffers
 
     # As Teacher
     test 'GET #edit as teacher if belong to school' do
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       sign_in(create(:teacher, school: internship_agreement.internship_application.student.school))
       get edit_dashboard_internship_agreement_path(uuid: internship_agreement.uuid)
       assert_response :success
@@ -63,7 +63,7 @@ module Dashboard::InternshipOffers
 
     # As Other
     test 'GET #edit as other if belong to school' do
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       sign_in(create(:other, school: internship_agreement.internship_application.student.school))
       get edit_dashboard_internship_agreement_path(uuid: internship_agreement.uuid)
       assert_response :success
@@ -71,7 +71,7 @@ module Dashboard::InternshipOffers
 
     # As Admin officer
     test 'GET #edit as admin officer if belong to school' do
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       sign_in(create(:admin_officer, school: internship_agreement.internship_application.student.school))
       get edit_dashboard_internship_agreement_path(uuid: internship_agreement.uuid)
       assert_response :success

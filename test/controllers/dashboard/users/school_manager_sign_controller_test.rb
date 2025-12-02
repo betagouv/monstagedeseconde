@@ -5,7 +5,7 @@ module Dashboard::Users
     include Devise::Test::IntegrationHelpers
 
     test 'admin_officer signs when school signature already exists' do
-      internship_agreement = create(:internship_agreement, :validated)
+      internship_agreement = create(:mono_internship_agreement, :validated)
       school = internship_agreement.school
       assert school.signature.attached?
       admin_officer = create(:admin_officer, school: )
@@ -20,7 +20,7 @@ module Dashboard::Users
     end
 
     test 'admin_officer signs when no school signature already exists' do
-      internship_agreement = create(:internship_agreement, :validated)
+      internship_agreement = create(:mono_internship_agreement, :validated)
       school = internship_agreement.school
       school.signature.purge
       refute school.signature.attached?

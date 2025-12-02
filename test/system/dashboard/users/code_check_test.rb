@@ -15,7 +15,7 @@ module Dashboard::Users
     test 'employer signs and everything is ok' do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
-      internship_agreement = create(:internship_agreement, internship_application:,
+      internship_agreement = create(:mono_internship_agreement, internship_application:,
                                                            aasm_state: :validated)
       sign_in(employer)
 
@@ -42,7 +42,7 @@ module Dashboard::Users
     end
 
     test 'employer signs and code is wrong' do
-      internship_agreement = create(:internship_agreement, :validated)
+      internship_agreement = create(:mono_internship_agreement, :validated)
       school_manager = internship_agreement.school_manager
       sign_in(school_manager)
 

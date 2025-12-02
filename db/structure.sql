@@ -878,7 +878,9 @@ CREATE TABLE public.internship_agreements (
     student_birth_date date,
     pai_project boolean,
     pai_trousse_family boolean,
-    access_token character varying
+    access_token character varying,
+    coordinator_id bigint,
+    type character varying DEFAULT 'InternshipAgreements::MonoInternshipAgreement'::character varying NOT NULL
 );
 
 
@@ -1525,64 +1527,6 @@ CREATE TABLE public.months (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
-
-
---
--- Name: multi_internship_agreements; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.multi_internship_agreements (
-    id bigint NOT NULL,
-    uuid uuid DEFAULT gen_random_uuid() NOT NULL,
-    internship_application_id bigint NOT NULL,
-    weekly_hours character varying(200),
-    daily_hours jsonb,
-    siret character varying(14),
-    organisation_representative_role character varying(150) NOT NULL,
-    student_address character varying(170) NOT NULL,
-    student_phone character varying(20),
-    school_representative_phone character varying(20) NOT NULL,
-    student_legal_representative_email character varying(100) NOT NULL,
-    student_refering_teacher_email character varying(100),
-    student_legal_representative_full_name character varying(100) NOT NULL,
-    student_refering_teacher_full_name character varying(100),
-    student_legal_representative_phone character varying(20) NOT NULL,
-    student_legal_representative_2_full_name character varying(100),
-    student_legal_representative_2_email character varying(100),
-    student_legal_representative_2_phone character varying(20),
-    school_representative_email character varying(100) NOT NULL,
-    discarded_at timestamp(6) without time zone DEFAULT NULL::timestamp without time zone,
-    lunch_break text,
-    legal_status character varying(50),
-    student_birth_date date NOT NULL,
-    pai_project boolean DEFAULT false,
-    pai_trousse_family boolean DEFAULT false,
-    access_token character varying(16) NOT NULL,
-    student_full_name character varying(100) NOT NULL,
-    activity_scope character varying(1500) NOT NULL,
-    coordinator_id bigint NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: multi_internship_agreements_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.multi_internship_agreements_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: multi_internship_agreements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.multi_internship_agreements_id_seq OWNED BY public.multi_internship_agreements.id;
 
 
 --
@@ -2588,13 +2532,6 @@ ALTER TABLE ONLY public.ministry_groups ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
--- Name: multi_internship_agreements id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.multi_internship_agreements ALTER COLUMN id SET DEFAULT nextval('public.multi_internship_agreements_id_seq'::regclass);
-
-
---
 -- Name: operators id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2999,14 +2936,6 @@ ALTER TABLE ONLY public.ministry_groups
 
 
 --
--- Name: multi_internship_agreements multi_internship_agreements_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.multi_internship_agreements
-    ADD CONSTRAINT multi_internship_agreements_pkey PRIMARY KEY (id);
-
-
---
 -- Name: operators operators_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3392,6 +3321,13 @@ CREATE UNIQUE INDEX index_internship_agreements_on_access_token ON public.intern
 
 
 --
+-- Name: index_internship_agreements_on_coordinator_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_agreements_on_coordinator_id ON public.internship_agreements USING btree (coordinator_id);
+
+
+--
 -- Name: index_internship_agreements_on_discarded_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3739,20 +3675,6 @@ CREATE INDEX index_ministry_groups_on_email_whitelist_id ON public.ministry_grou
 --
 
 CREATE INDEX index_ministry_groups_on_group_id ON public.ministry_groups USING btree (group_id);
-
-
---
--- Name: index_multi_internship_agreements_on_coordinator_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_multi_internship_agreements_on_coordinator_id ON public.multi_internship_agreements USING btree (coordinator_id);
-
-
---
--- Name: index_multi_internship_agreements_on_internship_application_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_multi_internship_agreements_on_internship_application_id ON public.multi_internship_agreements USING btree (internship_application_id);
 
 
 --
@@ -4312,6 +4234,14 @@ ALTER TABLE ONLY public.class_rooms
 
 
 --
+-- Name: internship_agreements fk_rails_5121ada054; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_agreements
+    ADD CONSTRAINT fk_rails_5121ada054 FOREIGN KEY (coordinator_id) REFERENCES public.users(id);
+
+
+--
 -- Name: users fk_rails_535539e4e8; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4520,14 +4450,6 @@ ALTER TABLE ONLY public.plannings
 
 
 --
--- Name: multi_internship_agreements fk_rails_c01e0ce381; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.multi_internship_agreements
-    ADD CONSTRAINT fk_rails_c01e0ce381 FOREIGN KEY (coordinator_id) REFERENCES public.users(id);
-
-
---
 -- Name: user_groups fk_rails_c298be7f8b; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4656,20 +4578,13 @@ ALTER TABLE ONLY public.class_rooms
 
 
 --
--- Name: multi_internship_agreements fk_rails_fa3fc53a74; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.multi_internship_agreements
-    ADD CONSTRAINT fk_rails_fa3fc53a74 FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
-
-
---
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251201111242'),
 ('20251128142939'),
 ('20251128131203'),
 ('20251128112314'),

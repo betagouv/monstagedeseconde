@@ -1,10 +1,32 @@
 .employer.fr-mt-8w [data-controller='group-signing'
-           data-group-signing-counter-value='0'
-           data-group-signing-max-counter-value='0']
+                    data-group-signing-counter-value='0'
+                    data-group-signing-max-counter-value='0']
   .row.no-gutters
     .col-12
-      h1.h4.fr-mb-8w.text-dark Editer, imprimer et signer les conventions dématérialisées
-  .fr-tabs data-fr-js-tabs-group="true"
-    = render partial: 'dashboard/internship_agreements/internship_agreements_list',
-              locals: {internship_agreements: @internship_agreements}
+      h1.h4.fr-mb-4w.text-dark Editer, imprimer et signer les conventions dématérialisées
+  .row.no-gutters
+    .col-12
+      .fr-tabs data-fr-js-tabs-group="true"
+        ul.fr-tabs__list role="tablist" aria-label="Gestion des conventions de stage"
+          li role="presentation"
+            button.fr-tabs__tab#agreement-button [type="button"
+                                                  role="tab"
+                                                  tabindex="0"
+                                                  aria-controls="agreement-button-panel"
+                                                  aria-selected="true"]
+              | Convention de stages
+          li role="presentation"
+            button.fr-tabs__tab#multi-agreements-button [type="button"
+                                                          role="tab"
+                                                          tabindex="-1"
+                                                          aria-controls="multi-agreements-button-panel"
+                                                          aria-selected="false"]
+              | Convention de stages multi sites
+        = render partial: 'dashboard/internship_agreements/internship_agreements_list',
+                 internship_agreements: @mono_internship_agreements,
+                 notification: current_user.team_pending_agreements_actions_count
+
+        / = render partial: 'dashboard/multi_internship_agreements/multi_internship_agreements_list',
+        /          internship_agreements: @multi_internship_agreements,
+        /          notification: current_user.team_pending_multi_agreements_actions_count
   = render partial: 'dashboard/internship_agreements/signature/modal_dialog'

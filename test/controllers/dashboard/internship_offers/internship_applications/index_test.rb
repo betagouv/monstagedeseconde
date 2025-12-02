@@ -106,7 +106,7 @@ module InternshipApplications
 
     test 'GET #index as Employer with approved internship_application, shows cancel_by_employer! & signed! links' do
       internship_application = create(:weekly_internship_application, :validated_by_employer)
-      internship_agreement = create(:internship_agreement, internship_application:)
+      internship_agreement = create(:mono_internship_agreement, internship_application:)
       sign_in(internship_application.internship_offer.employer)
       get dashboard_internship_offer_internship_applications_path(internship_application.internship_offer)
       assert_response :success

@@ -18,7 +18,7 @@ class GodMailerTest < ActionMailer::TestCase
 
   test 'notify_others_signatures_started_email sends email to recipient' do
     skip 'test will be ok when getting rid of Flipper :student_signature'
-    internship_agreement = create(:internship_agreement)
+    internship_agreement = create(:mono_internship_agreement)
     signature = create(:signature, :school_manager, internship_agreement: internship_agreement)
     email = GodMailer.notify_others_signatures_started_email(
       internship_agreement: internship_agreement,
@@ -35,7 +35,7 @@ class GodMailerTest < ActionMailer::TestCase
 
   test 'notify_others_signatures_finished_email sends email to recipient' do
     skip 'test will be ok when getting rid of Flipper :student_signature'
-    internship_agreement = create(:internship_agreement)
+    internship_agreement = create(:mono_internship_agreement)
     create(:signature, :school_manager, internship_agreement: internship_agreement)
     create(:signature, :employer, internship_agreement: internship_agreement)
     create(:signature, :student, internship_agreement: internship_agreement)
@@ -54,7 +54,7 @@ class GodMailerTest < ActionMailer::TestCase
 
   test 'notify_signatures_enabled launches two emails' do
     skip 'test will be ok when getting rid of Flipper :student_signature'
-    internship_agreement = create(:internship_agreement, :started_by_school_manager)
+    internship_agreement = create(:mono_internship_agreement, :started_by_school_manager)
 
     assert_emails 3 do
       internship_agreement.finalize!
@@ -86,7 +86,7 @@ class GodMailerTest < ActionMailer::TestCase
 
   test 'notify legal representatives if needed when signatures enabled' do
     skip 'test will be ok when getting rid of Flipper :student_signature'
-    internship_agreement = create(:internship_agreement, :started_by_school_manager)
+    internship_agreement = create(:mono_internship_agreement, :started_by_school_manager)
 
     assert_emails 3 do
       internship_agreement.finalize!

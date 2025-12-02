@@ -5,7 +5,7 @@ module Dashboard::Users
     include Devise::Test::IntegrationHelpers
 
     test 'when employer request for a sms code resend succeeds' do
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       assert_enqueued_jobs 1, only: SendSmsJob do
         employer = internship_agreement.employer
         employer.update(phone: '+330602030405')
@@ -22,7 +22,7 @@ module Dashboard::Users
     end
 
     test 'when employer requests for a sms code resend fails' do
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       employer = internship_agreement.employer
       assert_enqueued_jobs 0, only: SendSmsJob do
         sign_in(employer)
@@ -41,7 +41,7 @@ module Dashboard::Users
     end
 
     test 'school manager requests for a sms code resend succeeds' do
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       school_manager = internship_agreement.school_manager
       school_manager.update(phone: '+330602030405')
       sign_in(school_manager)
@@ -57,7 +57,7 @@ module Dashboard::Users
     end
 
     test 'when school manager requests for a sms code resend fails' do
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       school_manager = internship_agreement.school_manager
       raises_exception = -> { raise ArgumentError.new }
       assert_enqueued_jobs 0, only: SendSmsJob do

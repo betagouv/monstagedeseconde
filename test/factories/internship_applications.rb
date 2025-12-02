@@ -111,7 +111,7 @@ FactoryBot.define do
                from_state: 'validated_by_employer',
                to_state: 'approved',
                author: application.internship_offer.employer)
-        create(:internship_agreement, internship_application: application)
+        create(:mono_internship_agreement, internship_application: application)
       end
     end
 

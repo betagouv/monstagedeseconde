@@ -191,6 +191,23 @@ class InternshipApplication < ApplicationRecord
     where(created_at: SchoolYear::Current.new.offers_beginning_of_period..SchoolYear::Current.new.offers_end_of_period)
   }
 
+  scope :seconde, lambda {
+    joins(student: :grade)
+      .where(grades: { id: Grade.seconde.id })
+      .where.not(grades: { id: [Grade.troisieme.id, Grade.quatrieme.id] })
+  }
+  scope :troisieme_or_quatrieme, lambda {
+    joins(student: :grade)
+      .where(grades: { id: [Grade.troisieme.id, Grade.quatrieme.id] })
+      .where.not(grades: { id: Grade.seconde.id })
+  }
+  scope :troisieme, lambda {
+    joins(student: :grade)
+      .where(grades: { id: Grade.troisieme.id })
+      .where.not(grades: { id: [Grade.seconde.id, Grade.quatrieme.id] })
+  }
+
+
   #
   # Other stuffs
   #

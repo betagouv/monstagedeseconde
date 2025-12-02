@@ -40,6 +40,13 @@ FactoryBot.define do
       department = Department.create(code: '75', name: 'Paris', academy:)
     end
 
+    trait :mono do
+    end
+
+    trait :multi do
+      coordinator { create(:employer) }
+    end
+
     trait :created_by_system do
       skip_validations_for_system { true }
     end
@@ -106,5 +113,15 @@ FactoryBot.define do
                user_id: ia.school_manager.id)
       end
     end
+
+    factory :mono_internship_agreement,
+            class: 'InternshipAgreements::MonoInternshipAgreement',
+            traits: [:mono],
+            parent: :internship_agreement
+
+    factory :multi_internship_agreement,
+            class: 'InternshipAgreements::MultiInternshipAgreement',
+            traits: [:multi],
+            parent: :internship_agreement
   end
 end
