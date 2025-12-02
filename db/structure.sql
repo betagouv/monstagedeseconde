@@ -1475,7 +1475,8 @@ CREATE TABLE public.internship_offers (
     mother_id bigint,
     targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades,
     open_data boolean DEFAULT true,
-    code_ape character varying
+    code_ape character varying,
+    multi_corporation_id bigint
 );
 
 
@@ -3881,6 +3882,13 @@ CREATE INDEX index_internship_offers_on_mother_id ON public.internship_offers US
 
 
 --
+-- Name: index_internship_offers_on_multi_corporation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offers_on_multi_corporation_id ON public.internship_offers USING btree (multi_corporation_id);
+
+
+--
 -- Name: index_internship_offers_on_planning_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4948,6 +4956,14 @@ ALTER TABLE ONLY public.internship_offer_weeks
 
 
 --
+-- Name: internship_offers fk_rails_f4e858a18d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offers
+    ADD CONSTRAINT fk_rails_f4e858a18d FOREIGN KEY (multi_corporation_id) REFERENCES public.multi_corporations(id);
+
+
+--
 -- Name: class_rooms fk_rails_f67c7bff3c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4962,6 +4978,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251203090001'),
 ('20251203090000'),
 ('20251202080000'),
 ('20251201221838'),
