@@ -12,6 +12,8 @@ module Dashboard
 
     def edit
       authorize! :update, @internship_agreement
+      @mono_internship_agreement = @internship_agreement.from_multi? ? nil : @internship_agreement
+      @multi_internship_agreement = @internship_agreement.from_multi? ? @internship_agreement : nil
     end
 
     def update

@@ -283,7 +283,14 @@ class InternshipApplication < ApplicationRecord
                   to: :approved,
                   after: proc { |user, *_args|
                     update!("approved_at": Time.now.utc)
-                    student_approval_notifications unless skip_callback_with_review_rebuild
+                    unless skip_callback_with_review_rebuild
+                      student_approval_notifications
+                      if internship_offer.respond_to?(:coordinator) && internship_offer.coordinator.present?
+                        create_multi_agreement
+                      elsif employer.agreement_signatorable?
+                        create_agreement
+                      end
+                    end
                     cancel_all_pending_applications
                     record_state_change user
                   }
@@ -440,7 +447,7 @@ class InternshipApplication < ApplicationRecord
       teacher: teacher,
     }
 
-    create_agreement if employer.agreement_signatorable?
+
     return unless teacher.present?
 
     deliver_later_with_additional_delay do
@@ -513,6 +520,19 @@ class InternshipApplication < ApplicationRecord
     agreement.skip_validations_for_system = true
     agreement.save!
 
+    EmployerMailer.internship_application_approved_with_agreement_email(
+      internship_agreement:,
+    ).deliver_later
+  end
+
+  def create_multi_agreement
+    return unless internship_agreement_creation_allowed?
+
+    agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
+                                                    .new_from_application(self, multi_agreements: true)
+    agreement.skip_validations_for_system = true
+    agreement.save!
+    # TODO notify coordinator and employers
     EmployerMailer.internship_application_approved_with_agreement_email(
       internship_agreement:,
     ).deliver_later

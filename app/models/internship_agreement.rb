@@ -140,6 +140,7 @@ class InternshipAgreement < ApplicationRecord
   delegate :school,                to: :student
   delegate :school_manager,        to: :school
   delegate :internship_offer_area, to: :internship_offer
+  delegate :from_multi?,           to: :internship_offer
 
   scope :having_school_manager, lambda {
     kept.joins(internship_application: { student: :school })

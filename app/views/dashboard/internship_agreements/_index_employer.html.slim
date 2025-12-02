@@ -21,12 +21,10 @@
                                                           tabindex="-1"
                                                           aria-controls="multi-agreements-button-panel"
                                                           aria-selected="false"]
-              | Convention de stages multi sites
+              | Conventions multi-offreurs
         = render partial: 'dashboard/internship_agreements/internship_agreements_list',
-                 internship_agreements: @mono_internship_agreements,
                  notification: current_user.team_pending_agreements_actions_count
 
-        / = render partial: 'dashboard/multi_internship_agreements/multi_internship_agreements_list',
-        /          internship_agreements: @multi_internship_agreements,
-        /          notification: current_user.team_pending_multi_agreements_actions_count
+        = render partial: 'dashboard/multi_internship_agreements/multi_internship_agreements_list',
+                 notification: current_user.team_pending_multi_agreements_actions_count
   = render partial: 'dashboard/internship_agreements/signature/modal_dialog'
