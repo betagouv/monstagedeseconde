@@ -1,7 +1,7 @@
 = turbo_frame_tag "corporation_form_frame" do
   .fr-fieldset.fr-my-3w
     = form_with model: corporation, 
-                url: corporation.new_record? ? dashboard_multi_multi_corporation_corporations_path(multi_corporation) : dashboard_multi_multi_corporation_corporation_path(multi_corporation, corporation),
+                url: corporation.new_record? ? dashboard_multi_stepper_multi_corporation_corporations_path(multi_corporation) : dashboard_multi_stepper_multi_corporation_corporation_path(multi_corporation, corporation),
                 data: { controller: "multi-corporation-form", action: "turbo:submit-end->multi-corporation-form#reset" } do |f|
       
       = f.hidden_field :multi_multi_corporation_id, value: multi_corporation.id
@@ -107,4 +107,4 @@
       .fr-mt-2w.fr-grid-row.fr-grid-row--right.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
         = f.submit corporation.new_record? ? "Ajouter cette structure" : "Mettre à jour cette structure", class: "fr-btn"
         - unless corporation.new_record?
-           = link_to "Annuler", edit_dashboard_multi_multi_corporation_path(multi_corporation), class: "fr-btn fr-btn--secondary fr-ml-2w"
+           = link_to "Annuler", edit_dashboard_multi_stepper_multi_corporation_path(multi_corporation), class: "fr-btn fr-btn--secondary fr-ml-2w"

@@ -14,12 +14,12 @@ turbo-frame id="#{dom_id(corporation)}"
           = corporation.tutor_phone
         
         .fr-grid-row.fr-grid-row--right
-          = link_to edit_dashboard_multi_multi_corporation_corporation_path(multi_corporation, corporation), 
+          = link_to edit_dashboard_multi_stepper_multi_corporation_corporation_path(multi_corporation, corporation), 
                     class: "fr-btn fr-btn--tertiary-no-outline fr-icon-edit-line fr-btn--icon-left",
                     data: { turbo_frame: "corporation_form_frame" } do
             | Modifier
           
-          = link_to dashboard_multi_multi_corporation_corporation_path(multi_corporation, corporation),
+          = link_to dashboard_multi_stepper_multi_corporation_corporation_path(multi_corporation, corporation),
                     method: :delete,
                     class: "fr-btn fr-btn--tertiary-no-outline fr-icon-delete-line fr-btn--icon-left text-danger",
                     data: { turbo_method: :delete, turbo_confirm: "Êtes-vous sûr ?" } do

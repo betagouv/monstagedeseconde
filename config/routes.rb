@@ -203,12 +203,13 @@ Rails.application.routes.draw do
         resources :plannings, path: 'planning', only: %i[create new edit update]
       end
 
+      get  'choix-type-offre', to: 'offer_types_switchings#new', as: 'choix_type_offre'
+      post 'choix-type-offre', to: 'offer_types_switchings#create', as: 'validation_choix_type_offre'
+      
       namespace :multi_stepper, path: 'multi_etapes' do
-        get  'choix-type-offre', to: 'offer_types_switchings#new', as: 'choix_type_offre'
-        post 'choix-type-offre', to: 'offer_types_switchings#create', as: 'validation_choix_type_offre'
         resources :multi_activities, path: 'multi-activites', only: %i[create new edit update]
+        resources :multi_coordinators, path: 'multi-coordinateurs', only: %i[create new edit update]
         resources :multi_corporations, path: 'multi-structures', only: %i[create new edit update] do
-          resources :multi_coordinators, path: 'multi-coordinateurs', only: %i[create new edit update]
           resources :corporations, only: %i[create update destroy edit], module: :multi_corporations
         end
         resources :multi_plannings, path: 'multi-planning', only: %i[create new edit update]

@@ -1,4 +1,4 @@
-module Dashboard::Multi
+module Dashboard::MultiStepper
   module MultiCorporations
     class CorporationsController < ApplicationController
       before_action :authenticate_user!
@@ -12,7 +12,7 @@ module Dashboard::Multi
         if @corporation.save
           respond_to do |format|
             format.turbo_stream
-            format.html { redirect_to edit_dashboard_multi_multi_corporation_path(@multi_corporation), notice: 'Structure ajoutée' }
+            format.html { redirect_to edit_dashboard_multi_stepper_multi_corporation_path(@multi_corporation), notice: 'Structure ajoutée' }
           end
         else
           render :new, status: :bad_request
@@ -31,7 +31,7 @@ module Dashboard::Multi
         if @corporation.update(corporation_params)
           respond_to do |format|
             format.turbo_stream
-            format.html { redirect_to edit_dashboard_multi_multi_corporation_path(@multi_corporation), notice: 'Structure mise à jour' }
+            format.html { redirect_to edit_dashboard_multi_stepper_multi_corporation_path(@multi_corporation), notice: 'Structure mise à jour' }
           end
         else
           render :edit, status: :bad_request
@@ -43,7 +43,7 @@ module Dashboard::Multi
         @corporation.destroy
         respond_to do |format|
           format.turbo_stream
-          format.html { redirect_to edit_dashboard_multi_multi_corporation_path(@multi_corporation), notice: 'Structure supprimée' }
+          format.html { redirect_to edit_dashboard_multi_stepper_multi_corporation_path(@multi_corporation), notice: 'Structure supprimée' }
         end
       end
 
@@ -68,4 +68,3 @@ module Dashboard::Multi
     end
   end
 end
-

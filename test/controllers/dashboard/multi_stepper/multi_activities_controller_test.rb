@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-module Dashboard::Multi
+module Dashboard::MultiStepper
   class MultiActivitiesControllerTest < ActionDispatch::IntegrationTest
     include Devise::Test::IntegrationHelpers
 
@@ -10,7 +10,7 @@ module Dashboard::Multi
     # New MultiActivity
     #
     test 'GET new not logged redirects to sign in' do
-      get new_dashboard_multi_multi_activity_path
+      get new_dashboard_multi_stepper_multi_activity_path
       assert_redirected_to user_session_path
     end
 
@@ -18,7 +18,7 @@ module Dashboard::Multi
       employer = create(:employer)
       sign_in(employer)
 
-      get new_dashboard_multi_multi_activity_path
+      get new_dashboard_multi_stepper_multi_activity_path
       assert_response :success
       assert_select 'h1.h2', text: "Déposer une offre de stage pour plusieurs structures"
       assert_select 'form'
@@ -35,7 +35,7 @@ module Dashboard::Multi
 
       assert_changes 'MultiActivity.count', 1 do
         post(
-          dashboard_multi_multi_activities_path,
+          dashboard_multi_stepper_multi_activities_path,
           params: {
             multi_activity: {
               title: 'Observation de différents métiers',
@@ -51,7 +51,7 @@ module Dashboard::Multi
       assert_equal employer.id, created_multi_activity.employer_id
       assert created_multi_activity.description.present?
 
-      assert_redirected_to new_dashboard_multi_multi_coordinator_path(
+      assert_redirected_to new_dashboard_multi_stepper_multi_coordinator_path(
         multi_activity_id: created_multi_activity.id, submit_button: true
       )
       follow_redirect!
@@ -63,7 +63,7 @@ module Dashboard::Multi
       sign_in(create(:employer))
 
       post(
-        dashboard_multi_multi_activities_path,
+        dashboard_multi_stepper_multi_activities_path,
         params: {
           multi_activity: {
             description: 'Description du stage'
@@ -79,7 +79,7 @@ module Dashboard::Multi
       sign_in(create(:employer))
 
       post(
-        dashboard_multi_multi_activities_path,
+        dashboard_multi_stepper_multi_activities_path,
         params: {
           multi_activity: {
             title: 'Titre du stage'
@@ -95,7 +95,7 @@ module Dashboard::Multi
       sign_in(create(:employer))
 
       post(
-        dashboard_multi_multi_activities_path,
+        dashboard_multi_stepper_multi_activities_path,
         params: {
           multi_activity: {
             title: 'a' * 121, # exceeds 120 characters
@@ -111,7 +111,7 @@ module Dashboard::Multi
       sign_in(create(:employer))
 
       post(
-        dashboard_multi_multi_activities_path,
+        dashboard_multi_stepper_multi_activities_path,
         params: {
           multi_activity: {
             title: 'Titre du stage',
@@ -131,7 +131,7 @@ module Dashboard::Multi
       multi_activity = create(:multi_activity, employer: employer)
       sign_in(employer)
 
-      get edit_dashboard_multi_multi_activity_path(multi_activity)
+      get edit_dashboard_multi_stepper_multi_activity_path(multi_activity)
       assert_response :success
       assert_select 'form'
       assert_select 'input[name="multi_activity[title]"][value=?]', multi_activity.title
@@ -147,7 +147,7 @@ module Dashboard::Multi
       sign_in(employer)
 
       patch(
-        dashboard_multi_multi_activity_path(multi_activity),
+        dashboard_multi_stepper_multi_activity_path(multi_activity),
         params: {
           multi_activity: {
             title: 'Nouveau titre',
@@ -160,7 +160,7 @@ module Dashboard::Multi
       assert_equal 'Nouveau titre', multi_activity.title
       assert_equal 'Nouvelle description', multi_activity.description
 
-      assert_redirected_to new_dashboard_multi_multi_activity_path(id: multi_activity.id)
+      assert_redirected_to new_dashboard_multi_stepper_multi_activity_path(id: multi_activity.id)
     end
 
     test 'PATCH update render new when invalid' do
@@ -169,7 +169,7 @@ module Dashboard::Multi
       sign_in(employer)
 
       patch(
-        dashboard_multi_multi_activity_path(multi_activity),
+        dashboard_multi_stepper_multi_activity_path(multi_activity),
         params: {
           multi_activity: {
             title: '', # invalid
@@ -183,4 +183,3 @@ module Dashboard::Multi
     end
   end
 end
-
