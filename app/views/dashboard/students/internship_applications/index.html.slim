@@ -37,12 +37,12 @@
               h3.fr-alert__title Candidature acceptée
               - if current_user.internship_applications.validated_by_employer.count > 1
                 p
-                 |
+                  |
                     Certaines de vos candidatures ont été acceptées par les entreprises,
                     c’est à vous de confirmer que vous choisissez ce stage et
                     que vous allez y aller
-                    strong
-                      |< dans un délai de 15 jours à compter de la validation de l’entreprise.
+                  strong
+                    |< dans un délai de 15 jours à compter de la validation de l’entreprise.
               - else
                 p
                   |
