@@ -7,6 +7,7 @@ FactoryBot.define do
     # sector { is_public ? Sector.find_by(name: 'Fonction publique') : create(:sector, name: FFaker::Lorem.word) }
     sector { create(:sector, name: FFaker::Lorem.word) }
     # not good !
+    
     siret { '11122233300000' }
     employer_name { 'Octave ACME' }
     employer_address { '18 rue du poulet, 75001 Paris' }

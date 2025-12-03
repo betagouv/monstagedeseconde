@@ -3,8 +3,20 @@ require "test_helper"
 class MultiInternshipAgreementTest < ActiveSupport::TestCase
 
   test 'factory is valid' do
-    multi_internship_agreement = build(:multi_internship_agreement)
-    assert multi_internship_agreement.valid?
+    multi_internship_agreement = build(
+      :multi_internship_agreement,
+      enforce_school_manager_validations: true
+      )
+    
+      multi_internship_agreement.valid?
+      puts ''
+      require 'pretty_console'
+      PrettyConsole.puts_in_yellow_loudly('==+==+==+==+' *4)
+      PrettyConsole.puts_in_cyan_loudly "multi_internship_agreement.errors.full_messages : #{multi_internship_agreement.errors.full_messages}"
+      PrettyConsole.puts_in_yellow_loudly('==+==+==+==+' *4)
+      puts ''
+      assert multi_internship_agreement.valid?
+    
   end
 
   test 'should belong to internship_application' do

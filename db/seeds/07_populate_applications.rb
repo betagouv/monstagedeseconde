@@ -112,6 +112,7 @@ def populate_applications
     student_email: 'paul@gmail.com',
     weeks: [this_offer.weeks.first] )
   application.save!
+
   this_offer = offers[6]
   application = InternshipApplications::WeeklyFramed.new(
     aasm_state: :validated_by_employer,
@@ -153,6 +154,18 @@ def populate_applications
   #-----------------
   # 5th student [offers.third approved]
   #-----------------
+  this_offer = offer[5]
+  application = InternshipApplications::WeeklyFramed.new(
+    aasm_state: :approved,
+    submitted_at: 29.days.ago,
+    validated_by_employer_at: 20.days.ago,
+    student: students.troisieme.first,
+    motivation: 'Très motivé pour ce stage, je vous préviens',
+    student_phone: "060606#{(1000..9999).to_a.sample}",
+    student_email: 'paul@gmail.com',
+    internship_offer: this_offer,
+    weeks: [this_offer.weeks.first] )
+  application.save! if application.valid?
   #-----------------
   # 6th student [offers.seventh approved]
   #-----------------
@@ -172,9 +185,9 @@ def populate_applications
   application.save! if application.valid?
 
   #-----------------
-  # 8th student [offers[5] approved]
+  # 8th student [Multi[0] approved]
   #-----------------
-  this_offer = offers[5]
+  this_offer = InternshipOffers::Multi.first
   application = InternshipApplications::WeeklyFramed.new(
     aasm_state: :approved,
     submitted_at: 23.days.ago,
@@ -185,6 +198,10 @@ def populate_applications
     weeks: [this_offer.weeks.first]
   )
   application.save! if application.valid?
+
+  #-----------------
+  #  student [offers[5] approved]
+  #-----------------
 end
 
 call_method_with_metrics_tracking(%i[ populate_applications ])

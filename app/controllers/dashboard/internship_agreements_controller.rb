@@ -199,8 +199,10 @@ module Dashboard
 
     def set_internship_agreement
       @internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
-      @mono_internship_agreement = @internship_agreement.from_multi? ? nil : @internship_agreement
-      @multi_internship_agreement = @internship_agreement.from_multi? ? @internship_agreement : nil
+      unless @internship_agreement.nil?
+        @mono_internship_agreement = @internship_agreement.from_multi? ? nil : @internship_agreement
+        @multi_internship_agreement = @internship_agreement.from_multi? ? @internship_agreement : nil
+      end
     end
 
     def update_school_signature
