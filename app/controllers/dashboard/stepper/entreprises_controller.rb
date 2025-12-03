@@ -109,13 +109,41 @@ module Dashboard::Stepper
       final_latitude = entreprise_params[:entreprise_coordinates_latitude]
       
       unless coordinates_valid
-        coordinates = Geofinder.coordinates(entreprise_params[:entreprise_full_address].blank? ? entreprise_params[:entreprise_chosen_full_address] : entreprise_params[:entreprise_full_address])
-        if coordinates.present?
-          final_longitude = coordinates[1]
-          final_latitude = coordinates[0]
-          coordinates_valid = true
+        puts 'Coordinates not valid, trying to geocode'
+        full_address = entreprise_params[:entreprise_full_address].blank? ? entreprise_params[:entreprise_chosen_full_address] : entreprise_params[:entreprise_full_address]
+        
+        # Address to geocode contains a valid zipcode ? 
+        if full_address.to_s.match?(/\d{5}/)
+          puts "-----Code postal valid------->"
+          # find city via Geocoder with zipcode
+          zipcode = full_address.to_s[/\d{5}/]
+          city = Geocoder.search("#{zipcode}, France").first.city
+          puts "City found: #{city}"
+
+          # find coordinates via Geocoder with city and zipcode
+          coordinates = Geofinder.coordinates("#{full_address}, #{city}, #{zipcode}, France")
+          puts "Coordinates found: #{coordinates}"
+          
+          if coordinates.present?
+            final_longitude = coordinates[1]
+            final_latitude = coordinates[0]
+            coordinates_valid = true
+          else
+            puts "-----Coordinates not found------->"
+            # take coordinates from Geocoder with city zipcode only
+            coordinates = Geocoder.search("#{city}, #{zipcode}, France").first.coordinates
+            if coordinates.present?
+              final_longitude = coordinates[1]
+              final_latitude = coordinates[0]
+              coordinates_valid = true
+            else
+              coordinates_valid = false
+              @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée")
+            end
+          end
         else
-          @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée")
+          coordinates_valid = false
+          @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée, code postal invalide")
         end
       end
       
