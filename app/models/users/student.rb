@@ -21,6 +21,14 @@ module Users
     has_many :favorites, foreign_key: "user_id", dependent: :destroy
     has_many :internship_offers, through: :favorites
 
+    scope :with_mono_internship_agreements, -> {
+      joins(:internship_agreements)
+        .merge(InternshipAgreements::MonoInternshipAgreement.all)
+    }
+    scope :with_multi_internship_agreements, -> {
+      joins(:internship_agreements)
+        .merge(InternshipAgreements::MultiInternshipAgreement.all)
+    }
     scope :without_class_room, -> { where(class_room_id: nil, anonymized: false) }
 
     delegate :school_manager,
@@ -51,6 +59,14 @@ module Users
     #                          .size
     #                          .zero?
     # end
+
+    def mono_internship_agreements
+      internship_agreements.merge(InternshipAgreements::MonoInternshipAgreement.all)
+    end
+
+    def multi_internship_agreements
+      internship_agreements.merge(InternshipAgreements::MultiInternshipAgreement.all)
+    end
 
     def age
       ((Time.zone.now - birth_date.to_time) / 1.year.seconds).floor

@@ -62,16 +62,9 @@ module Dashboard
         @internship_offers = current_user.internship_offers
                                          .includes([:weeks, { school: :school_managers }])
       end
-      @internship_agreements = current_user.internship_agreements
-                                           .filtering_discarded_students
-                                           .kept
-                                           .includes(
-                                             { internship_application: [
-                                               { student: :school },
-                                               { internship_offer: [:employer, :sector, :stats, :weeks,
-                                                                   { school: :school_managers }] }
-                                             ] }
-                                           )
+      @mono_internship_agreements  = filtering_query current_user.mono_internship_agreements
+      @multi_internship_agreements = filtering_query current_user.multi_internship_agreements
+
       #  .reject { |a| a.student.school.school_manager.nil? }
       @school = current_user.school if current_user.school_management?
       @no_agreement_internship_application_list = []
@@ -160,6 +153,18 @@ module Dashboard
       # :schedule_rich_text,
     end
 
+    def filtering_query(query)
+      query.filtering_discarded_students
+           .kept
+           .includes(
+             { internship_application: [
+               { student: :school },
+               { internship_offer: [:employer, :sector, :stats, :weeks,
+                                   { school: :school_managers }] }
+             ] }
+           )
+    end
+
     def internship_agreement_builder
       @builder ||= Builders::InternshipAgreementBuilder.new(user: current_user)
     end
@@ -194,6 +199,10 @@ module Dashboard
 
     def set_internship_agreement
       @internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
+      unless @internship_agreement.nil?
+        @mono_internship_agreement = @internship_agreement.from_multi? ? nil : @internship_agreement
+        @multi_internship_agreement = @internship_agreement.from_multi? ? @internship_agreement : nil
+      end
     end
 
     def update_school_signature

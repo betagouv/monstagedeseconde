@@ -1,0 +1,37 @@
+- content_for(:page_title, "Structures accueillantes")
+
+= render 'layouts/breadcrumb', links: [ \
+  [dashboard_internship_offers_path, 'Mes offres'], \
+  ['', 'Déposer une offre de stage'] \
+]
+
+.fr-grid-row
+  .fr-col-12
+    h1.fr-h3.fr-mb-1w Déposer une offre de stage pour plusieurs entreprises
+    
+    .fr-stepper
+      h2.fr-stepper__title
+        span.fr-stepper__state Étape 3 sur 4
+        | Les structures accueillantes
+      .fr-stepper__steps data-fr-current-step="3" data-fr-steps="4"
+      p.fr-stepper__details
+        span.fr-text--bold Étape suivante :
+        |  Planning
+
+.fr-grid-row.fr-grid-row--gutters
+  .fr-col-md-7
+    turbo-frame id="corporation_form_frame"
+      = render 'dashboard/multi_stepper/multi_corporations/corporations/form', 
+               multi_corporation: @multi_corporation, 
+               corporation: @corporation || Corporation.new(multi_corporation_id: @multi_corporation.id)
+
+  .fr-col-md-5
+    turbo-frame id="corporations_list"
+      = render 'dashboard/multi_stepper/multi_corporations/corporations/list', multi_corporation: @multi_corporation
+
+.fr-grid-row.fr-mt-4w
+  .fr-col-12
+    = form_with model: @multi_corporation, url: dashboard_multi_stepper_multi_corporation_path(@multi_corporation), method: :patch do |f|
+      .fr-btns-group.fr-btns-group--right.fr-btns-group--inline-lg.fr-btns-group--icon-left
+        = link_to "Précédent", edit_dashboard_multi_stepper_multi_coordinator_path(@multi_corporation.multi_coordinator), class: 'fr-btn fr-btn--secondary fr-icon-arrow-left-line fr-btn--icon-left'
+        = f.submit "Suivant", class: 'fr-btn fr-icon-arrow-right-line fr-btn--icon-right'

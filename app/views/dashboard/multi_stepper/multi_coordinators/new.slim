@@ -1,0 +1,15 @@
+- model = @multi_coordinator
+- method = :post
+- url = dashboard_multi_stepper_multi_coordinators_path
+- links = generate_breadcrumb_links([dashboard_internship_offers_path, 'Mes offres de stage'], 'Déposer une offre de stage pour plusieurs structures')
+
+= render 'layouts/breadcrumb', links: links
+.row.fr-my-3w
+  .col
+    h1.h2 Déposer une offre de stage pour plusieurs structures
+
+= render "form",
+         show_resume: false,
+         submit_button: true,
+         model: model, method: method, url: url
+

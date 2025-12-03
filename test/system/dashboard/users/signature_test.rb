@@ -19,7 +19,7 @@ module Dashboard
     test 'employer multiple signs and everything is ok' do
       # Brittle because of CI but shoud be working allright localy
       if ENV['RUN_BRITTLE_TEST']
-        internship_agreement = create(:internship_agreement, :validated)
+        internship_agreement = create(:mono_internship_agreement, :validated)
         employer = internship_agreement.employer
         internship_offer = create(:weekly_internship_offer_2nde, employer:)
         create(:school_manager, school: student.school)
@@ -181,7 +181,7 @@ module Dashboard
     test 'school_manager multiple signs and everything is ok' do
       # Brittle because of CI but shoud be working allright localy
       if ENV['RUN_BRITTLE_TEST']
-        internship_agreement = create(:internship_agreement, :validated)
+        internship_agreement = create(:mono_internship_agreement, :validated)
         school_manager = internship_agreement.school_manager
         weeks = [Week.find_by(number: 5, year: 2020), Week.find_by(number: 6, year: 2020)]
         internship_offer = create(:weekly_internship_offer_2nde, weeks:)
@@ -261,7 +261,7 @@ module Dashboard
     end
 
     test 'school_manager multiple clicks on interface' do
-      internship_agreement = create(:internship_agreement, :validated)
+      internship_agreement = create(:mono_internship_agreement, :validated)
       student1 = internship_agreement.student
 
       school_manager = internship_agreement.school_manager
@@ -326,7 +326,7 @@ module Dashboard
     end
 
     test 'admin_officer signs when no school signature formerly exists and employer has signed already' do
-      internship_agreement = create(:internship_agreement, :signatures_started)
+      internship_agreement = create(:mono_internship_agreement, :signatures_started)
       create(:signature, :employer, internship_agreement:)
       school = internship_agreement.school
       school.signature.purge
@@ -352,7 +352,7 @@ module Dashboard
     end
 
     test 'teacher signs when school no signature formerly exists and employer has signed already' do
-      internship_agreement = create(:internship_agreement, :signatures_started)
+      internship_agreement = create(:mono_internship_agreement, :signatures_started)
       create(:signature, :employer, internship_agreement:)
       school = internship_agreement.school
       class_room = internship_agreement.student.class_room
@@ -378,7 +378,7 @@ module Dashboard
     end
 
     test 'teacher signs when school signature formerly exists and employer has signed already' do
-      internship_agreement = create(:internship_agreement, :signatures_started)
+      internship_agreement = create(:mono_internship_agreement, :signatures_started)
       create(:signature, :employer, internship_agreement:)
       school = internship_agreement.school
       class_room = internship_agreement.student.class_room
@@ -394,7 +394,7 @@ module Dashboard
     end
 
     test 'teacher signs when school signature formerly exists and employer has NOT signed already' do
-      internship_agreement = create(:internship_agreement, :validated)
+      internship_agreement = create(:mono_internship_agreement, :validated)
       school = internship_agreement.school
       class_room = internship_agreement.student.class_room
       teacher = create(:teacher, school:, class_room:)

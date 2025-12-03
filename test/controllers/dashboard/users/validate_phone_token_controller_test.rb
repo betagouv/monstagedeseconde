@@ -5,7 +5,7 @@ module Dashboard::Users
     include Devise::Test::IntegrationHelpers
 
     test 'employer signing fails when using wrong_code' do
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       employer = internship_agreement.employer
       employer.update(phone: '+330623456789')
       employer.create_signature_phone_token
@@ -33,7 +33,7 @@ module Dashboard::Users
     end
 
     test 'employer signing fails when using too old a code params ' do
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       employer = internship_agreement.employer
       employer.update(phone: '+330623456789')
       employer.create_signature_phone_token
@@ -64,7 +64,7 @@ module Dashboard::Users
     end
 
     test 'employer creates token succeeds with every params ok' do
-      internship_agreement = create(:internship_agreement, aasm_state: :validated)
+      internship_agreement = create(:mono_internship_agreement, aasm_state: :validated)
       employer = internship_agreement.employer
       employer.update(phone: '+330612345678')
       employer.create_signature_phone_token
@@ -95,7 +95,7 @@ module Dashboard::Users
     end
 
     test 'school_manager signing fails when using wrong_code' do
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       school_manager = internship_agreement.school_manager
       school_manager.update(phone: '+330612345678')
       school_manager.create_signature_phone_token
@@ -125,7 +125,7 @@ module Dashboard::Users
     end
 
     test 'school_manager signing fails when using too old a code params ' do
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       school_manager = internship_agreement.school_manager
       school_manager.update(phone: '+330612345678')
       school_manager.create_signature_phone_token
@@ -157,7 +157,7 @@ module Dashboard::Users
     end
 
     test 'school_manager creates succeeds with every params ok' do
-      internship_agreement = create(:internship_agreement, aasm_state: :validated)
+      internship_agreement = create(:mono_internship_agreement, aasm_state: :validated)
       school_manager = internship_agreement.school_manager
       school_manager.update(phone: '+330612345678')
       sign_in(school_manager)

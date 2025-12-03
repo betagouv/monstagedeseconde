@@ -3,6 +3,15 @@ module Signatorable
   included do
     SIGNATURE_PHONE_TOKEN_LIFETIME ||= 5 # minutes
 
+
+    def mono_internship_agreements
+      internship_agreements.merge(InternshipAgreements::MonoInternshipAgreement.all)
+    end
+
+    def multi_internship_agreements
+      internship_agreements.merge(InternshipAgreements::MultiInternshipAgreement.all)
+    end
+
     def create_signature_phone_token
       return false if school_management? && !school_manager?
 

@@ -13,7 +13,7 @@
   /       Vous préférez la signature traditionnelle en version papier ?
   /       Optez pour l’impression.
 
-  - if @internship_agreements.empty? && current_user.employer_like? && @no_agreement_internship_application_list.empty?
+  - if @mono_internship_agreements.empty? && current_user.employer_like? && @no_agreement_internship_application_list.empty?
     = render partial: 'empty_agreement_list'
 
   - else
@@ -21,14 +21,14 @@
                 url: start_signing_dashboard_user_path(id: current_user.id),
                 method: :post)  do |fg|
 
-      .fr-table.fr-table--bordered.fr-mb-4w.fr-mx-n4w
+      .fr-table.fr-table--multiline.fr-table--bordered.fr-mb-4w.fr-mx-n4w
         .fr-table__wrapper
           .fr-table__container
             .fr-table__content style="overflow-x: hidden;"
               table.fr-internship-agreements-list
                 thead
                   tr.d-flex
-                    th style='vertical-align: middle; text-align: center;'
+                    th.col-xs style='vertical-align: middle; text-align: center;'
                        .fr-checkbox-group style='display: flex; align-items: center; justify-content: center; height: 100%;'
                          input.select-general-internship-agreements [
                              type='checkbox'
@@ -45,7 +45,7 @@
                     th.col style='background-color: #f5f5f5; min-height: 70px; min-width: 200px;'
 
                 tbody
-                  - @internship_agreements.each do |internship_agreement|
+                  - @mono_internship_agreements.each do |internship_agreement|
                     = render partial: 'dashboard/internship_agreements/internship_agreement',
                               locals: { internship_agreement: internship_agreement, fg: fg }
                   - @no_agreement_internship_application_list.each do |internship_application|

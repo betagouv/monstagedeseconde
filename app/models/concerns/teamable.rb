@@ -34,10 +34,19 @@ module Teamable
              -> { merge(InternshipOffers::WeeklyFramed.kept) },
              class_name: 'InternshipOffers::WeeklyFramed',
              foreign_key: 'employer_id'
-             
+
 
     has_many :internship_applications, through: :kept_internship_offers
     has_many :internship_agreements, through: :internship_applications
+
+    scope :with_mono_internship_agreements, -> {
+      joins(:internship_agreements)
+        .merge(InternshipAgreements::MonoInternshipAgreement.all)
+    }
+    scope :with_multi_internship_agreements, -> {
+      joins(:internship_agreements)
+        .merge(InternshipAgreements::MultiInternshipAgreement.all)
+    }
 
     def valid_transition?(transition)
       %w[read! read employer_validate! employer_validate transfer! transfer reject! reject cancel_by_employer!
@@ -54,6 +63,14 @@ module Teamable
 
     def internship_offers
       team_internship_offers.where(internship_offer_area_id: fetch_current_area_id)
+    end
+
+    def mono_internship_agreements
+      internship_agreements.merge(InternshipAgreements::MonoInternshipAgreement.all)
+    end
+
+    def multi_internship_agreements
+      internship_agreements.merge(InternshipAgreements::MultiInternshipAgreement.all)
     end
 
     def anonymize(send_email: true)
@@ -92,6 +109,20 @@ module Teamable
     def pending_agreements_actions_count
       part1 = internship_agreements.kept.where(aasm_state: InternshipAgreement::EMPLOYERS_PENDING_STATES)
       part2 = internship_agreements.kept.signatures_started.joins(:signatures).where.not(signatures: { signatory_role: :employer })
+      [part1, part2].compact.map(&:count).sum
+    end
+
+    def team_pending_multi_agreements_actions_count
+      return pending_multi_agreements_actions_count if team.not_exists?
+
+      team.db_members.inject(0) do |sum, member|
+        sum + member.pending_multi_agreements_actions_count
+      end
+    end
+
+    def pending_multi_agreements_actions_count
+      part1 = multi_internship_agreements.kept.where(aasm_state: InternshipAgreement::EMPLOYERS_PENDING_STATES)
+      part2 = multi_internship_agreements.kept.signatures_started.joins(:signatures).where.not(signatures: { signatory_role: :employer })
       [part1, part2].compact.map(&:count).sum
     end
 

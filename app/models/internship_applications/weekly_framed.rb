@@ -6,6 +6,10 @@ module InternshipApplications
     before_validation :at_most_one_application_per_student?, on: :create
     before_validation :internship_offer_has_spots_left?, on: :create
 
+    belongs_to :weekly_internship_offer,
+               class_name: "InternshipOffers::WeeklyFramed",
+               foreign_key: "internship_offer_id"
+
     validate :unique_student_application_per_week, on: :create
 
     def unique_student_application_per_week

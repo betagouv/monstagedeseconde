@@ -10,7 +10,7 @@ module Dashboard::Users
 
     test 'employer handwrite_sign_dashboard_internship_agreement_user_path with success' do
       if ENV['RUN_BRITTLE_TEST']
-        internship_agreement = create(:internship_agreement, aasm_state: :validated)
+        internship_agreement = create(:mono_internship_agreement, aasm_state: :validated)
         employer = internship_agreement.employer
         employer.update(phone: '+330623456789')
         employer.create_signature_phone_token
@@ -37,7 +37,7 @@ module Dashboard::Users
     test 'when employer handwrite_sign_dashboard_internship_agreement_user_path fails with missing handwrite' do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application,
+      internship_agreement = create(:mono_internship_agreement, internship_application: internship_application,
                                                            aasm_state: :validated)
       employer.update(phone: '+330623456789')
       employer.create_signature_phone_token
@@ -60,7 +60,7 @@ module Dashboard::Users
 
     test 'when employer handwrite_sign_dashboard_internship_agreement_user_path fails with unchecked token' do
       if ENV['RUN_BRITTLE_TEST']
-        internship_agreement = create(:internship_agreement, aasm_state: :validated)
+        internship_agreement = create(:mono_internship_agreement, aasm_state: :validated)
         employer = internship_agreement.employer
         employer.update(phone: '+330623456789')
         employer.create_signature_phone_token

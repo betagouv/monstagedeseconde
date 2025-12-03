@@ -1,7 +1,7 @@
-= form_with model: @internship_agreement,
-            url: dashboard_internship_agreement_path(uuid: @internship_agreement.uuid),
+= form_with model: @mono_internship_agreement,
+            url: dashboard_internship_agreement_path(uuid: @mono_internship_agreement.uuid),
             class: 'form-offset-header',
-            method: (@internship_agreement.persisted? ? :patch : :post),
+            method: (@mono_internship_agreement.persisted? ? :patch : :post),
             data: { controller: 'internship-agreement-form', turbo: false} do |form|
   - employer_like = current_user.employer_like?
   .row
@@ -27,19 +27,24 @@
         #nav-employer.tab-pane.fade.active role="tabpanel" aria-labelledby="nav-employer-tab"
           table.table-sticky-thead
             = render partial: 'dashboard/internship_agreements/form_header',
-                      locals: { internship_application: @internship_agreement.internship_application,
+                      locals: { internship_application: @mono_internship_agreement.internship_application,
                                 internship_agreement: form.object }
-            = render 'employer_form_fields',
-                      form: form,
-                      resource: @internship_agreement,
-                      disabled: false
-
+            - if @mono_internship_agreement.from_multi?
+              = render 'dashboard/multi_internship_agreements/employer_form_fields',
+                        form: form,
+                        resource: @mono_internship_agreement,
+                        disabled: false
+            - else
+              = render 'employer_form_fields',
+                        form: form,
+                        resource: @mono_internship_agreement,
+                        disabled: false
         #nav-school-management.tab-pane.fade role="tabpanel" aria-labelledby="nav-school-management-tab"
           table.table-sticky-thead
             = render partial: 'dashboard/internship_agreements/form_header',
-                      locals: { internship_application: @internship_agreement.internship_application,
+                      locals: { internship_application: @mono_internship_agreement.internship_application,
                                 internship_agreement: form.object }
             = render 'school_management_form_fields',
                       form: form,
-                      resource: @internship_agreement,
+                      resource: @mono_internship_agreement,
                       disabled: true

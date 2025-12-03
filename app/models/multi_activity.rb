@@ -5,6 +5,7 @@ class MultiActivity < ApplicationRecord
   DESCRIPTION_MAX_LENGTH = 1500
 
   belongs_to :employer, class_name: 'User'
+  has_one :multi_coordinator, dependent: :destroy
 
   validates :title, presence: true, length: { maximum: TITLE_MAX_LENGTH }
   validates :description, presence: true, length: { maximum: DESCRIPTION_MAX_LENGTH }

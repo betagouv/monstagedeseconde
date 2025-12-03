@@ -539,6 +539,53 @@ ALTER SEQUENCE public.class_rooms_id_seq OWNED BY public.class_rooms.id;
 
 
 --
+-- Name: corporations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.corporations (
+    id bigint NOT NULL,
+    multi_corporation_id bigint NOT NULL,
+    siret character varying(14),
+    sector_id bigint,
+    employer_name character varying(120),
+    employer_address character varying(250),
+    phone character varying(20),
+    city character varying(60),
+    zipcode character varying(6),
+    street character varying(300),
+    internship_city character varying(60),
+    internship_zipcode character varying(6),
+    internship_street character varying(300),
+    internship_phone character varying(20),
+    tutor_name character varying(150),
+    tutor_role_in_company character varying(250),
+    tutor_email character varying(120),
+    tutor_phone character varying(20),
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: corporations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.corporations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: corporations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.corporations_id_seq OWNED BY public.corporations.id;
+
+
+--
 -- Name: departments; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -878,7 +925,9 @@ CREATE TABLE public.internship_agreements (
     student_birth_date date,
     pai_project boolean,
     pai_trousse_family boolean,
-    access_token character varying
+    access_token character varying,
+    coordinator_id bigint,
+    type character varying DEFAULT 'InternshipAgreements::MonoInternshipAgreement'::character varying NOT NULL
 );
 
 
@@ -1426,7 +1475,8 @@ CREATE TABLE public.internship_offers (
     mother_id bigint,
     targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades,
     open_data boolean DEFAULT true,
-    code_ape character varying
+    code_ape character varying,
+    multi_corporation_id bigint
 );
 
 
@@ -1558,6 +1608,117 @@ CREATE SEQUENCE public.multi_activities_id_seq
 --
 
 ALTER SEQUENCE public.multi_activities_id_seq OWNED BY public.multi_activities.id;
+
+
+--
+-- Name: multi_coordinators; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.multi_coordinators (
+    id bigint NOT NULL,
+    siret character varying(14),
+    sector_id integer,
+    employer_name character varying(120),
+    employer_chosen_name character varying(120) NOT NULL,
+    employer_address character varying(250),
+    employer_chosen_address character varying(250) NOT NULL,
+    city character varying(60) NOT NULL,
+    zipcode character varying(6) NOT NULL,
+    street character varying(300) NOT NULL,
+    phone character varying(20) NOT NULL,
+    multi_activity_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: multi_coordinators_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.multi_coordinators_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: multi_coordinators_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.multi_coordinators_id_seq OWNED BY public.multi_coordinators.id;
+
+
+--
+-- Name: multi_corporations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.multi_corporations (
+    id bigint NOT NULL,
+    multi_coordinator_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: multi_corporations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.multi_corporations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: multi_corporations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.multi_corporations_id_seq OWNED BY public.multi_corporations.id;
+
+
+--
+-- Name: multi_plannings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.multi_plannings (
+    id bigint NOT NULL,
+    max_candidates integer NOT NULL,
+    remaining_seats_count integer,
+    weekly_hours character varying(400) NOT NULL,
+    daily_hours jsonb,
+    lunch_break character varying(250) NOT NULL,
+    multi_coordinator_id bigint NOT NULL,
+    school_id bigint,
+    rep boolean DEFAULT false NOT NULL,
+    qpv boolean DEFAULT false NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: multi_plannings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.multi_plannings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: multi_plannings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.multi_plannings_id_seq OWNED BY public.multi_plannings.id;
 
 
 --
@@ -2181,7 +2342,8 @@ CREATE TABLE public.users (
     user_info jsonb DEFAULT '{}'::jsonb,
     fim_user_info jsonb,
     created_by_system boolean DEFAULT false NOT NULL,
-    show_modal_info boolean DEFAULT true NOT NULL
+    show_modal_info boolean DEFAULT true NOT NULL,
+    multi_activity_id bigint
 );
 
 
@@ -2395,6 +2557,13 @@ ALTER TABLE ONLY public.class_rooms ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: corporations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.corporations ALTER COLUMN id SET DEFAULT nextval('public.corporations_id_seq'::regclass);
+
+
+--
 -- Name: departments id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2567,6 +2736,27 @@ ALTER TABLE ONLY public.ministry_groups ALTER COLUMN id SET DEFAULT nextval('pub
 --
 
 ALTER TABLE ONLY public.multi_activities ALTER COLUMN id SET DEFAULT nextval('public.multi_activities_id_seq'::regclass);
+
+
+--
+-- Name: multi_coordinators id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_coordinators ALTER COLUMN id SET DEFAULT nextval('public.multi_coordinators_id_seq'::regclass);
+
+
+--
+-- Name: multi_corporations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_corporations ALTER COLUMN id SET DEFAULT nextval('public.multi_corporations_id_seq'::regclass);
+
+
+--
+-- Name: multi_plannings id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_plannings ALTER COLUMN id SET DEFAULT nextval('public.multi_plannings_id_seq'::regclass);
 
 
 --
@@ -2782,6 +2972,14 @@ ALTER TABLE ONLY public.class_rooms
 
 
 --
+-- Name: corporations corporations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.corporations
+    ADD CONSTRAINT corporations_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: departments departments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2979,6 +3177,30 @@ ALTER TABLE ONLY public.ministry_groups
 
 ALTER TABLE ONLY public.multi_activities
     ADD CONSTRAINT multi_activities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: multi_coordinators multi_coordinators_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_coordinators
+    ADD CONSTRAINT multi_coordinators_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: multi_corporations multi_corporations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_corporations
+    ADD CONSTRAINT multi_corporations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: multi_plannings multi_plannings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_plannings
+    ADD CONSTRAINT multi_plannings_pkey PRIMARY KEY (id);
 
 
 --
@@ -3241,6 +3463,20 @@ CREATE INDEX index_class_rooms_on_school_id ON public.class_rooms USING btree (s
 
 
 --
+-- Name: index_corporations_on_multi_corporation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_corporations_on_multi_corporation_id ON public.corporations USING btree (multi_corporation_id);
+
+
+--
+-- Name: index_corporations_on_sector_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_corporations_on_sector_id ON public.corporations USING btree (sector_id);
+
+
+--
 -- Name: index_departments_on_academy_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3364,6 +3600,13 @@ CREATE INDEX index_inappropriate_offers_on_user_id ON public.inappropriate_offer
 --
 
 CREATE UNIQUE INDEX index_internship_agreements_on_access_token ON public.internship_agreements USING btree (access_token);
+
+
+--
+-- Name: index_internship_agreements_on_coordinator_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_agreements_on_coordinator_id ON public.internship_agreements USING btree (coordinator_id);
 
 
 --
@@ -3640,6 +3883,13 @@ CREATE INDEX index_internship_offers_on_mother_id ON public.internship_offers US
 
 
 --
+-- Name: index_internship_offers_on_multi_corporation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_internship_offers_on_multi_corporation_id ON public.internship_offers USING btree (multi_corporation_id);
+
+
+--
 -- Name: index_internship_offers_on_planning_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3721,6 +3971,41 @@ CREATE INDEX index_ministry_groups_on_group_id ON public.ministry_groups USING b
 --
 
 CREATE INDEX index_multi_activities_on_employer_id ON public.multi_activities USING btree (employer_id);
+
+
+--
+-- Name: index_multi_coordinators_on_multi_activity_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_coordinators_on_multi_activity_id ON public.multi_coordinators USING btree (multi_activity_id);
+
+
+--
+-- Name: index_multi_coordinators_on_sector_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_coordinators_on_sector_id ON public.multi_coordinators USING btree (sector_id);
+
+
+--
+-- Name: index_multi_corporations_on_multi_coordinator_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_corporations_on_multi_coordinator_id ON public.multi_corporations USING btree (multi_coordinator_id);
+
+
+--
+-- Name: index_multi_plannings_on_multi_coordinator_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_plannings_on_multi_coordinator_id ON public.multi_plannings USING btree (multi_coordinator_id);
+
+
+--
+-- Name: index_multi_plannings_on_school_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_plannings_on_school_id ON public.multi_plannings USING btree (school_id);
 
 
 --
@@ -3997,6 +4282,13 @@ CREATE UNIQUE INDEX index_users_on_ine ON public.users USING btree (ine);
 
 
 --
+-- Name: index_users_on_multi_activity_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_multi_activity_id ON public.users USING btree (multi_activity_id);
+
+
+--
 -- Name: index_users_on_phone; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4120,6 +4412,14 @@ ALTER TABLE ONLY public.entreprises
 
 
 --
+-- Name: users fk_rails_0f9012243c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_0f9012243c FOREIGN KEY (multi_activity_id) REFERENCES public.multi_activities(id);
+
+
+--
 -- Name: url_shrinkers fk_rails_15905c8f80; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4168,6 +4468,14 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
+-- Name: multi_plannings fk_rails_1d774f0874; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_plannings
+    ADD CONSTRAINT fk_rails_1d774f0874 FOREIGN KEY (school_id) REFERENCES public.schools(id);
+
+
+--
 -- Name: area_notifications fk_rails_2194cad748; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4189,6 +4497,14 @@ ALTER TABLE ONLY public.team_member_invitations
 
 ALTER TABLE ONLY public.users_internship_offers_histories
     ADD CONSTRAINT fk_rails_24c68739d8 FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+
+
+--
+-- Name: multi_plannings fk_rails_26d7b78f80; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_plannings
+    ADD CONSTRAINT fk_rails_26d7b78f80 FOREIGN KEY (multi_coordinator_id) REFERENCES public.multi_coordinators(id);
 
 
 --
@@ -4248,6 +4564,14 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
+-- Name: multi_coordinators fk_rails_3ab8f79e0f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_coordinators
+    ADD CONSTRAINT fk_rails_3ab8f79e0f FOREIGN KEY (multi_activity_id) REFERENCES public.multi_activities(id);
+
+
+--
 -- Name: internship_offers fk_rails_3cef9bdd89; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4277,6 +4601,14 @@ ALTER TABLE ONLY public.departments
 
 ALTER TABLE ONLY public.class_rooms
     ADD CONSTRAINT fk_rails_49ae717ca2 FOREIGN KEY (school_id) REFERENCES public.schools(id);
+
+
+--
+-- Name: internship_agreements fk_rails_5121ada054; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_agreements
+    ADD CONSTRAINT fk_rails_5121ada054 FOREIGN KEY (coordinator_id) REFERENCES public.users(id);
 
 
 --
@@ -4416,11 +4748,27 @@ ALTER TABLE ONLY public.reserved_schools
 
 
 --
+-- Name: multi_corporations fk_rails_900c2d9679; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_corporations
+    ADD CONSTRAINT fk_rails_900c2d9679 FOREIGN KEY (multi_coordinator_id) REFERENCES public.multi_coordinators(id);
+
+
+--
 -- Name: plannings fk_rails_91fffc9efc; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.plannings
     ADD CONSTRAINT fk_rails_91fffc9efc FOREIGN KEY (school_id) REFERENCES public.schools(id);
+
+
+--
+-- Name: corporations fk_rails_92760ce437; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.corporations
+    ADD CONSTRAINT fk_rails_92760ce437 FOREIGN KEY (sector_id) REFERENCES public.sectors(id);
 
 
 --
@@ -4437,6 +4785,14 @@ ALTER TABLE ONLY public.users_search_histories
 
 ALTER TABLE ONLY public.internship_applications
     ADD CONSTRAINT fk_rails_93579c3ede FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: corporations fk_rails_95bf53c901; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.corporations
+    ADD CONSTRAINT fk_rails_95bf53c901 FOREIGN KEY (multi_corporation_id) REFERENCES public.multi_corporations(id);
 
 
 --
@@ -4616,6 +4972,14 @@ ALTER TABLE ONLY public.internship_offer_weeks
 
 
 --
+-- Name: internship_offers fk_rails_f4e858a18d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_offers
+    ADD CONSTRAINT fk_rails_f4e858a18d FOREIGN KEY (multi_corporation_id) REFERENCES public.multi_corporations(id);
+
+
+--
 -- Name: class_rooms fk_rails_f67c7bff3c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4630,6 +4994,14 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251203091954'),
+('20251203090001'),
+('20251203090000'),
+('20251202080000'),
+('20251201221838'),
+('20251201152332'),
+('20251201111242'),
+('20251128142939'),
 ('20251128131203'),
 ('20251128112314'),
 ('20251128111843'),
@@ -4691,6 +5063,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20250107105855'),
 ('20250107100940'),
 ('20250106175910'),
+('20250101000002'),
+('20250101000001'),
 ('20250101000000'),
 ('20241223095629'),
 ('20241220134854'),

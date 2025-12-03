@@ -33,11 +33,21 @@ FactoryBot.define do
     weekly_hours { ['9:00', '17:00'] }
     weekly_lunch_break { '1h dans la cantine. Repas fourni.' }
     uuid { SecureRandom.uuid }
+    access_token { SecureRandom.hex(10) } # 20 characters
 
     before(:create) do |ia|
       academy_region = AcademyRegion.find_or_create_by(name: 'Ile-de-France')
       academy = Academy.find_or_create_by(name: 'Paris', email_domain: 'ac-paris.fr', academy_region:)
       department = Department.create(code: '75', name: 'Paris', academy:)
+    end
+
+    trait :mono do
+    end
+
+    trait :multi do
+      coordinator { internship_application.internship_offer.employer }
+      student_birth_date { Date.new(2010, 5, 15) }
+      organisation_representative_role { 'Représentant légal de l\'organisation' }
     end
 
     trait :created_by_system do
@@ -106,5 +116,15 @@ FactoryBot.define do
                user_id: ia.school_manager.id)
       end
     end
+
+    factory :mono_internship_agreement,
+            class: 'InternshipAgreements::MonoInternshipAgreement',
+            traits: [:mono],
+            parent: :internship_agreement
+
+    factory :multi_internship_agreement,
+            class: 'InternshipAgreements::MultiInternshipAgreement',
+            traits: [:multi],
+            parent: :internship_agreement
   end
 end

@@ -80,11 +80,6 @@ module Public
       end
     end
 
-    def legal_representative_sign_internship_agreement_params
-      params.require(:signature)
-            .permit(:uuid, :access_token, :student_id, :student_legal_representative_nr)
-    end
-
     def render_not_found
       render file: "#{Rails.root}/public/404.html", status: :not_found
     end

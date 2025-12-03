@@ -4,7 +4,7 @@ FactoryBot.define do
     signatory_ip { FFaker::Internet.ip_v4_address }
     signature_phone_number { "+3306#{FFaker::PhoneNumberFR.mobile_phone_number[4..-1].gsub(' ', '')}" }
     signature_date { 25.days.ago }
-    internship_agreement { create(:internship_agreement) }
+    internship_agreement { create(:mono_internship_agreement) }
     signature_image { Rack::Test::UploadedFile.new('test/fixtures/files/signature.png', 'image/png') }
 
     trait :school_manager do

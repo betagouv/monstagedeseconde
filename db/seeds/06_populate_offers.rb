@@ -137,11 +137,33 @@ def populate_internship_offers
   )
 
   # 6
-  InternshipOffers::WeeklyFramed.create!(
+  coordinator = MultiCoordinator.first
+  multi_corporation = MultiCorporation.create!( multi_coordinator: coordinator )
+  5.times do |n|
+    Corporation.create!(
+      multi_corporation: multi_corporation,
+      sector: Sector.all[n],
+      siret: "1112223330000#{n}",
+      employer_name: "Corporation #{n}",
+      employer_address: "#{n} rue du Poulet, 75018 Paris",
+      city: 'Paris',
+      zipcode: '75018',
+      street: "#{n} rue du Poulet",
+      phone: "+33061234567#{n}",
+      internship_city: 'Paris',
+      internship_zipcode: '75018',
+      internship_street: "#{n} rue Lamarck",
+      internship_phone: "+33061234567#{n}",
+      tutor_name: "Tutor #{n}",
+      tutor_role_in_company: 'Manager',
+      tutor_email: "tutor#{n}@example.com",
+      tutor_phone: "+33061234511#{n}"
+      )
+  end
+  InternshipOffers::Multi.create!(
     employer: Users::Employer.first,
     contact_phone: '+33637607756',
     siret:,
-    period: [0, 1, 2].sample,
     sector: Sector.first,
     is_public: false,
     title: '(2de) Stage editeur - A la recherche du temps passé par les collaborateurs',
@@ -155,10 +177,11 @@ def populate_internship_offers
     employer_name: 'Editegis',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: seconde_weeks,
-    grades: [Grade.seconde],
+    grades: [Grade.seconde, Grade.troisieme],
     entreprise_full_address: '129 rue brancion, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi",
-    weekly_hours: ["09:00", "17:00"]
+    weekly_hours: ["09:00", "17:00"],
+    multi_corporation_id: multi_corporation.id
   )
   # 7
   InternshipOffers::WeeklyFramed.create!(

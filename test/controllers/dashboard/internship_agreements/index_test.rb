@@ -33,7 +33,7 @@ module Dashboard::InternshipOffers
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
       internship_application.student.update(school_id: school.id)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application)
+      internship_agreement = create(:mono_internship_agreement, internship_application: internship_application)
       sign_in(employer)
 
       get dashboard_internship_agreements_path
@@ -120,7 +120,7 @@ module Dashboard::InternshipOffers
       internship_offer = create(:weekly_internship_offer_2nde, employer: create(:employer))
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
       internship_application.student.update(school_id: school.id)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application)
+      internship_agreement = create(:mono_internship_agreement, internship_application: internship_application)
 
       sign_in(teacher)
 
@@ -134,7 +134,7 @@ module Dashboard::InternshipOffers
       teacher = create(:admin_officer, school: school)
       internship_application = create(:weekly_internship_application, :approved)
       internship_application.student.update(school_id: school.id)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application)
+      internship_agreement = create(:mono_internship_agreement, internship_application: internship_application)
 
       sign_in(teacher)
 
@@ -148,7 +148,7 @@ module Dashboard::InternshipOffers
       cpe = create(:cpe, school: school)
       internship_application = create(:weekly_internship_application, :approved)
       internship_application.student.update(school_id: school.id)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application)
+      internship_agreement = create(:mono_internship_agreement, internship_application: internship_application)
 
       sign_in(cpe)
 
