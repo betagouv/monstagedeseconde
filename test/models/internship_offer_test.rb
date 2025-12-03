@@ -128,6 +128,14 @@ class InternshipOfferTest < ActiveSupport::TestCase
     refute internship_offer.two_weeks_long?
   end
 
+  test "factory 'multi'" do
+    internship_offer = build(:multi_internship_offer)
+    assert internship_offer.valid?
+    refute_nil internship_offer.multi_corporation
+    internship_offer.save!
+    assert_equal 5, internship_offer.corporations.count
+  end
+
   # test '.period_labels' do
   #   assert_equal '2 semaines (du 17 au 28 juin 2024)',
   #                InternshipOffer.period_labels(school_year: 2024)[:full_time]
