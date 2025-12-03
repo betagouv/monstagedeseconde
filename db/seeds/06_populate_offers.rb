@@ -137,10 +137,8 @@ def populate_internship_offers
   )
 
   # 6
-  coordinator = Users::Coordinator.first
-  multi_corporation = MultiCorporation.create!(
-    multi_coordinator: Users::Coordinator.first,
-  )
+  coordinator = MultiCoordinator.first
+  multi_corporation = MultiCorporation.create!( multi_coordinator: coordinator )
   5.times do |n|
     Corporation.create!(
       multi_corporation: multi_corporation,
@@ -183,7 +181,7 @@ def populate_internship_offers
     entreprise_full_address: '129 rue brancion, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi",
     weekly_hours: ["09:00", "17:00"],
-    multi_corporation: multi_corporation
+    multi_corporation_id: multi_corporation.id
   )
   # 7
   InternshipOffers::WeeklyFramed.create!(

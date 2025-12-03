@@ -1,9 +1,9 @@
 
     # frozen_string_literal: true
 
-module Users
-  class MultiCoordinator < User
-    belongs_to :multi_activity, optional: false
+  class MultiCoordinator < ApplicationRecord
+    belongs_to :sector
+    belongs_to :multi_activity
 
     # siret character varying(14),
     # sector_id integer,
@@ -16,5 +16,4 @@ module Users
     # street character varying(300) NOT NULL,
     # phone character varying(20) NOT NULL,
     # multi_activity_id bigint NOT NULL,
-  end
 end

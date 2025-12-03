@@ -39,8 +39,7 @@ end
 
 def populate_users
   # --- God ---
-  random_extra_attributes(Users::God.new(email: 'god@ms2e.fr',
-  password: password_value)).save!
+  random_extra_attributes(Users::God.new(email: 'god@ms2e.fr', password: password_value)).save!
 
   # --- Employers ---
   random_extra_attributes(
@@ -65,7 +64,7 @@ def populate_users
   # --- Coordinators ---
   # obligation to set an activity first :/
   multi_activity = MultiActivity.find_or_create_by!(title: 'Menuiserie', description: 'Travail du bois', employer: Users::Employer.first)
-  Users::MultiCoordinator.create!(
+  MultiCoordinator.create!(
      multi_activity_id: multi_activity.id,
      siret: '12345678998765',
      sector_id: Sector.all[0..10].sample.id,

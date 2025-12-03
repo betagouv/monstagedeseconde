@@ -2342,7 +2342,8 @@ CREATE TABLE public.users (
     user_info jsonb DEFAULT '{}'::jsonb,
     fim_user_info jsonb,
     created_by_system boolean DEFAULT false NOT NULL,
-    show_modal_info boolean DEFAULT true NOT NULL
+    show_modal_info boolean DEFAULT true NOT NULL,
+    multi_activity_id bigint
 );
 
 
@@ -4281,6 +4282,13 @@ CREATE UNIQUE INDEX index_users_on_ine ON public.users USING btree (ine);
 
 
 --
+-- Name: index_users_on_multi_activity_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_multi_activity_id ON public.users USING btree (multi_activity_id);
+
+
+--
 -- Name: index_users_on_phone; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4401,6 +4409,14 @@ ALTER TABLE ONLY public.school_internship_weeks
 
 ALTER TABLE ONLY public.entreprises
     ADD CONSTRAINT fk_rails_0c4a513d70 FOREIGN KEY (internship_occupation_id) REFERENCES public.internship_occupations(id);
+
+
+--
+-- Name: users fk_rails_0f9012243c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_0f9012243c FOREIGN KEY (multi_activity_id) REFERENCES public.multi_activities(id);
 
 
 --
@@ -4978,6 +4994,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251203091954'),
 ('20251203090001'),
 ('20251203090000'),
 ('20251202080000'),
@@ -5460,4 +5477,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
-

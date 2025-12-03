@@ -1,14 +1,15 @@
 module InternshipApplications
   # wraps weekly logic
-  class WeeklyFramed < InternshipApplication
+  class Multi < InternshipApplication
+    belongs_to :multi_internship_offer,
+               class_name: "InternshipOffers::Multi",
+               foreign_key: "internship_offer_id"
+
+
     after_save :update_all_counters
 
     before_validation :at_most_one_application_per_student?, on: :create
     before_validation :internship_offer_has_spots_left?, on: :create
-
-    belongs_to :weekly_internship_offer,
-               class_name: "InternshipOffers::WeeklyFramed",
-               foreign_key: "internship_offer_id"
 
     validate :unique_student_application_per_week, on: :create
 

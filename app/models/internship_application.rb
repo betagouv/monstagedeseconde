@@ -67,30 +67,23 @@ class InternshipApplication < ApplicationRecord
 
   attr_accessor :sgid, :skip_callback_with_review_rebuild
 
-  belongs_to :weekly_internship_offer,
-             class_name: "InternshipOffers::WeeklyFramed",
-             foreign_key: "internship_offer_id"
+
+  # Associations
   belongs_to :internship_offer, polymorphic: true
   belongs_to :student, class_name: "Users::Student",
                        foreign_key: "user_id"
   has_one :internship_agreement, dependent: :destroy
-  has_many :state_changes, class_name: "InternshipApplicationStateChange", dependent: :destroy
+  has_many :state_changes, class_name: "InternshipApplicationStateChange",
+                           dependent: :destroy
   has_many :internship_application_weeks, dependent: :destroy
   has_many :weeks, through: :internship_application_weeks
-
+  # Delegations
   delegate :update_all_counters, to: :internship_application_counter_hook
   delegate :name, to: :student, prefix: true
   delegate :employer, to: :internship_offer
   delegate :remaining_seats_count, to: :internship_offer
 
   accepts_nested_attributes_for :student, update_only: true
-
-  # has_rich_text :approved_message
-  # has_rich_text :rejected_message
-  # has_rich_text :canceled_by_employer_message
-  # has_rich_text :canceled_by_student_message
-  # has_rich_text :restored_message
-  # has_rich_text :motivation
 
   paginates_per PAGE_SIZE
 
@@ -542,6 +535,8 @@ class InternshipApplication < ApplicationRecord
     case self
     when InternshipApplications::WeeklyFramed
       InternshipApplicationCountersHooks::WeeklyFramed.new(internship_application: self)
+    when InternshipApplications::Multi
+      InternshipApplicationCountersHooks::Multi.new(internship_application: self)
     else
       raise "can not process stats for this kind of internship_application"
     end
@@ -551,6 +546,8 @@ class InternshipApplication < ApplicationRecord
     case self
     when InternshipApplications::WeeklyFramed
       InternshipApplicationAasmMessageBuilders::WeeklyFramed.new(internship_application: self, aasm_target:)
+    when InternshipApplications::Multi
+      InternshipApplicationAasmMessageBuilders::Multi.new(internship_application: self, aasm_target:)
     else
       raise "can not build aasm message for this kind of internship_application"
     end
