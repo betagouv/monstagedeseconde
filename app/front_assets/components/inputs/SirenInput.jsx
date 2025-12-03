@@ -421,7 +421,7 @@ export default function SirenInput({
         infobulle
       </button>
       <span className="fr-tooltip fr-placement" id="tooltip" role="tooltip">
-        Cette information nous aide à préremplir certains champs et sont utiles
+        Cette information nous aide à préremplir certains champs et est utile
         à des fins statistiques
       </span>
     </span>
