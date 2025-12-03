@@ -94,14 +94,7 @@ namespace :data_migrations do
     end
     # ===================
     fields = [
-      [InternshipAgreement, %i[activity_scope
-                               activity_preparation
-                               activity_learnings
-                               activity_rating
-                               skills_observe
-                               skills_communicate
-                               skills_understand
-                               skills_motivation]],
+      [InternshipAgreement, %i[activity_scope]],
       # legal_terms_rich_text
       [School, %i[agreement_conditions]],
       [InternshipOfferInfo, %i[description]]

@@ -29,14 +29,9 @@ FactoryBot.define do
     tutor_email { FFaker::Internet.email }
     date_range { 'du 10/10/2020 au 15/10/2020' }
     activity_scope { 'Accueil clients' }
-    activity_preparation { 'Appel téléphonique' }
     aasm_state { 'draft' }
     weekly_hours { ['9:00', '17:00'] }
     weekly_lunch_break { '1h dans la cantine. Repas fourni.' }
-    activity_rating do
-      "Après concertation, le tuteur appelera le professeur principal vers 17h le lundi et au moins un autre jour de la semaine choisi ensemble. L'élève n'est pas convié à cet échange.<br/>A ceci se rajoute le rapport de stage"
-    end
-    activity_learnings { 'Communication orale' }
     uuid { SecureRandom.uuid }
 
     before(:create) do |ia|

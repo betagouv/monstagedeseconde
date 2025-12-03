@@ -127,8 +127,6 @@ class AbilityTest < ActiveSupport::TestCase
         edit_tutor_email
         edit_tutor_role
         edit_activity_scope
-        edit_activity_preparation
-        edit_activity_learnings
         edit_date_range
         edit_organisation_representative_full_name
         edit_siret
@@ -368,7 +366,6 @@ class AbilityTest < ActiveSupport::TestCase
     assert(ability.can?(:create, InternshipAgreement))
     %i[create
        edit
-       edit_activity_rating
        edit_financial_conditions_rich_text
        edit_legal_terms_rich_text
        edit_school_representative_full_name

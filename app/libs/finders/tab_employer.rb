@@ -3,7 +3,7 @@ module Finders
     def pending_agreements_count
       # internship_agreement draft
       user.internship_agreements
-          .draft
+          .where(aasm_state: [:draft, :started_by_employer])
           .count
     end
 
