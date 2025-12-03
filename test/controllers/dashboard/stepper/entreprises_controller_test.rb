@@ -85,6 +85,8 @@ module Dashboard::Stepper
         }.to_json
       }
       stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=en&addressdetails=1&format=json&q=75001%20Paris').to_return(geocoder_response)
+      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=en&addressdetails=1&format=json&q=75001,%20France').to_return(geocoder_response)
+      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=en&addressdetails=1&format=json&q=75001%20Paris,%20,%2075001,%20France').to_return(geocoder_response)
 
       assert_difference('Entreprise.count') do
         post(
