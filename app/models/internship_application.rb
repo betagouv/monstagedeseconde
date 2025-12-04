@@ -69,6 +69,9 @@ class InternshipApplication < ApplicationRecord
 
 
   # Associations
+  belongs_to :weekly_internship_offer,
+             class_name: "InternshipOffer",
+             foreign_key: "internship_offer_id"
   belongs_to :internship_offer, polymorphic: true
   belongs_to :student, class_name: "Users::Student",
                        foreign_key: "user_id"

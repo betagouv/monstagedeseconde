@@ -4,7 +4,7 @@ module InternshipAgreements
 
     # Associations
 
-    belongs_to :internship_application, class_name: 'InternshipApplications::Multi'
+    
 
     # Validations
     validate :at_least_daily_hours_or_weekly_hours

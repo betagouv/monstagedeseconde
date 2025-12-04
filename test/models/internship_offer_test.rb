@@ -5,7 +5,7 @@ require 'test_helper'
 class InternshipOfferTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
-  test 'factory is valid' do
+  test 'weekly_internship_offer_2nde factory is valid' do
     weekly_internship_offer = build(:weekly_internship_offer_2nde)
     validity = weekly_internship_offer.valid?
     puts weekly_internship_offer.errors.full_messages unless validity
@@ -14,6 +14,10 @@ class InternshipOfferTest < ActiveSupport::TestCase
 
   test 'api factory is valid' do
     assert build(:api_internship_offer_2nde).valid?
+  end
+
+  test 'multi_internship_offer factory is valid' do
+    assert build(:multi_internship_offer).valid?
   end
 
   test 'create enqueue SyncInternshipOfferKeywordsJob' do

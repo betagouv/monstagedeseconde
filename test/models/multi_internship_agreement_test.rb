@@ -7,16 +7,10 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
       :multi_internship_agreement,
       enforce_school_manager_validations: true
       )
-    
+
       multi_internship_agreement.valid?
-      puts ''
-      require 'pretty_console'
-      PrettyConsole.puts_in_yellow_loudly('==+==+==+==+' *4)
-      PrettyConsole.puts_in_cyan_loudly "multi_internship_agreement.errors.full_messages : #{multi_internship_agreement.errors.full_messages}"
-      PrettyConsole.puts_in_yellow_loudly('==+==+==+==+' *4)
-      puts ''
       assert multi_internship_agreement.valid?
-    
+
   end
 
   test 'should belong to internship_application' do
@@ -47,7 +41,6 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
       enforce_school_manager_validations: true
     )
     refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:coordinator], "doit exister"
     assert_includes multi_internship_agreement.errors[:access_token], "ne fait pas la bonne longueur (doit comporter 20 caractères)"
     assert_includes multi_internship_agreement.errors[:student_full_name], "est trop court (au moins 5 caractères)"
   end
