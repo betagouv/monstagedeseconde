@@ -31,8 +31,8 @@ module Teamable
              foreign_key: 'employer_id'
 
     has_many :kept_internship_offers,
-             -> { merge(InternshipOffers::WeeklyFramed.kept) },
-             class_name: 'InternshipOffers::WeeklyFramed',
+             -> { merge(InternshipOffer.kept.where.not(type: 'InternshipOffers::Api')) },
+             class_name: 'InternshipOffer',
              foreign_key: 'employer_id'
 
 
@@ -99,7 +99,9 @@ module Teamable
     end
 
     def team_pending_agreements_actions_count
-      return pending_agreements_actions_count if team.not_exists?
+      if team.not_exists?
+        return pending_agreements_actions_count
+      end
 
       team.db_members.inject(0) do |sum, member|
         sum + member.pending_agreements_actions_count
@@ -107,7 +109,7 @@ module Teamable
     end
 
     def pending_agreements_actions_count
-      part1 = internship_agreements.kept.where(aasm_state: InternshipAgreement::EMPLOYERS_PENDING_STATES)
+      part1 = internship_agreements.kept.where(aasm_state: InternshipAgreement::EXPECTED_ACTION_FROM_EMPLOYER_STATES)
       part2 = internship_agreements.kept.signatures_started.joins(:signatures).where.not(signatures: { signatory_role: :employer })
       [part1, part2].compact.map(&:count).sum
     end
@@ -123,7 +125,14 @@ module Teamable
     def pending_multi_agreements_actions_count
       part1 = multi_internship_agreements.kept.where(aasm_state: InternshipAgreement::EMPLOYERS_PENDING_STATES)
       part2 = multi_internship_agreements.kept.signatures_started.joins(:signatures).where.not(signatures: { signatory_role: :employer })
-      [part1, part2].compact.map(&:count).sum
+      count = [part1, part2].compact.map(&:count).sum
+      puts '================================'
+      puts "part1 : #{part1.count}"
+      # puts "part2 : #{part2.count}"
+      puts "count : #{count}"
+      puts '================================'
+      puts ''
+      count
     end
 
     def internship_offer_ids_by_area(area_id:)

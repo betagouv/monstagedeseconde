@@ -10,9 +10,9 @@ module InternshipAgreements
     validate :at_least_daily_hours_or_weekly_hours
 
     validates :activity_scope, presence: true, length: { maximum: 1500 }
-    validates :uuid, presence: true, uniqueness: true
     
     with_options if: :enforce_school_manager_validations? do
+      validates :uuid, presence: true, uniqueness: true
       validates :access_token, presence: true, length: { is: 20 }
       validates :organisation_representative_role, presence: true, length: { maximum: 150 }
       validates :student_address, presence: true, length: { maximum: 170 }

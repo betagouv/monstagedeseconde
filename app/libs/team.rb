@@ -165,7 +165,7 @@ class Team
   end
 
   def initialize(user_or_team_member)
-    if user_or_team_member.is_a?(User) && user_or_team_member.employer_like?
+    if user_or_team_member.try(:employer_like?)
       @user = user_or_team_member
       @team_member = TeamMemberInvitation.find_by(member_id: user.id)
       @team_member = nil if @team_member&.refused_invitation?
