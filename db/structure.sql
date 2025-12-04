@@ -926,7 +926,6 @@ CREATE TABLE public.internship_agreements (
     pai_project boolean,
     pai_trousse_family boolean,
     access_token character varying,
-    coordinator_id bigint,
     type character varying DEFAULT 'InternshipAgreements::MonoInternshipAgreement'::character varying NOT NULL
 );
 
@@ -3603,13 +3602,6 @@ CREATE UNIQUE INDEX index_internship_agreements_on_access_token ON public.intern
 
 
 --
--- Name: index_internship_agreements_on_coordinator_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internship_agreements_on_coordinator_id ON public.internship_agreements USING btree (coordinator_id);
-
-
---
 -- Name: index_internship_agreements_on_discarded_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4604,14 +4596,6 @@ ALTER TABLE ONLY public.class_rooms
 
 
 --
--- Name: internship_agreements fk_rails_5121ada054; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.internship_agreements
-    ADD CONSTRAINT fk_rails_5121ada054 FOREIGN KEY (coordinator_id) REFERENCES public.users(id);
-
-
---
 -- Name: users fk_rails_535539e4e8; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4994,6 +4978,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251203153952'),
 ('20251203091954'),
 ('20251203090001'),
 ('20251203090000'),

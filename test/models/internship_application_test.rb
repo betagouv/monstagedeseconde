@@ -9,6 +9,13 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   test 'factory' do
     assert build(:weekly_internship_application).valid?
   end
+
+  test 'factory multi' do
+    application =  build(:multi_internship_application)
+    assert application.valid?
+    assert_equal 'InternshipOffers::Multi', application.internship_offer.class.name
+  end
+
   test 'scope remindable' do
     create(:weekly_internship_application, :submitted,
            submitted_at: 5.days.ago,
