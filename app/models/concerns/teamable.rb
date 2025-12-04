@@ -125,14 +125,7 @@ module Teamable
     def pending_multi_agreements_actions_count
       part1 = multi_internship_agreements.kept.where(aasm_state: InternshipAgreement::EMPLOYERS_PENDING_STATES)
       part2 = multi_internship_agreements.kept.signatures_started.joins(:signatures).where.not(signatures: { signatory_role: :employer })
-      count = [part1, part2].compact.map(&:count).sum
-      puts '================================'
-      puts "part1 : #{part1.count}"
-      # puts "part2 : #{part2.count}"
-      puts "count : #{count}"
-      puts '================================'
-      puts ''
-      count
+      [part1, part2].compact.map(&:count).sum
     end
 
     def internship_offer_ids_by_area(area_id:)
