@@ -20,9 +20,13 @@ def populate_agreements
   agreement_2.save!
 
   agreement_3 = Builders::InternshipAgreementBuilder.new(user: employer)
-                                                    .new_from_application(seconde_multi_applications[0])
-  agreement_3.aasm_state = :started_by_employer
-  agreement_3.save!
+                                                    .new_from_application(seconde_multi_applications[0], multi_agreements: true)
+  if agreement_3.valid?
+    agreement_3.aasm_state = :started_by_employer
+    agreement_3.save!
+  else
+    puts "Agreement 3 is invalid: #{agreement_3.errors.full_messages.join(', ')}"
+  end
 end
 
 call_method_with_metrics_tracking(%i[ populate_agreements ])

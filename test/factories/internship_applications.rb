@@ -183,10 +183,16 @@ FactoryBot.define do
 
     transient do
       weekly_internship_offer_helper { create(:weekly_internship_offer_2nde) }
+      multi_internship_offer_helper { create(:multi_internship_offer_2nde) }
     end
 
     trait :weekly do
       internship_offer { weekly_internship_offer_helper }
+      weeks { [internship_offer.weeks.to_a.sample] }
+    end
+
+    trait :multi do
+      internship_offer { multi_internship_offer_helper }
       weeks { [internship_offer.weeks.to_a.sample] }
     end
 
@@ -211,5 +217,8 @@ FactoryBot.define do
     factory :weekly_internship_application, traits: [:weekly],
                                             parent: :internship_application,
                                             class: 'InternshipApplications::WeeklyFramed'
+    factory :multi_internship_application, traits: [:multi],
+                                            parent: :internship_application,
+                                            class: 'InternshipApplications::Multi'
   end
 end
