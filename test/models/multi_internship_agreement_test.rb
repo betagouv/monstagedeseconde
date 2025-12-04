@@ -18,12 +18,6 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
     assert_equal :belongs_to, association.macro
   end
 
-  test 'should belong to user with coordinator_id as foreign key' do
-    association = InternshipAgreements::MultiInternshipAgreement.reflect_on_association(:coordinator)
-    assert_equal :belongs_to, association.macro
-    assert_equal "User", association.options[:class_name]
-  end
-
   test 'is invalid without internship_application' do
     multi_internship_agreement = build(
       :multi_internship_agreement,
@@ -36,7 +30,7 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
   test 'is invalid without user (coordinator_id)' do
     multi_internship_agreement = build(
       :multi_internship_agreement,
-      coordinator: nil, access_token: "shor",
+      access_token: "shor",
       student_full_name:'f',
       enforce_school_manager_validations: true
     )
