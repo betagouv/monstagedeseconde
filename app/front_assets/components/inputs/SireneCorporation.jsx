@@ -95,9 +95,9 @@ export default function SireneCorporation({
     const setValues = (retries = 10) => {
       const fields = [
         { id: `${resourceName}_siret`, value: selection.siret },
-        { id: `${resourceName}_employer_name`, value: employerName },
+        { id: `${resourceName}_corporation_name`, value: employerName },
         // Adresse du siège
-        { id: `${resourceName}_employer_address`, value: addressConcatenated },
+        { id: `${resourceName}_corporation_address`, value: addressConcatenated },
         // Adresse du signataire (souvent la même)
         { id: `${resourceName}_street`, value: street },
         { id: `${resourceName}_zipcode`, value: zipcode },
@@ -120,15 +120,15 @@ export default function SireneCorporation({
     setTimeout(() => setValues(), 100);
   };
 
-  const clearImmediate = () => {
+    const clearImmediate = () => {
     setEmployerNameStr('');
     setSiret("");
     setSearchResults([]);
     // Clear fields
     const fields = [
       `${resourceName}_siret`,
-      `${resourceName}_employer_name`,
-      `${resourceName}_employer_address`,
+      `${resourceName}_corporation_name`,
+      `${resourceName}_corporation_address`,
       `${resourceName}_street`,
       `${resourceName}_zipcode`,
       `${resourceName}_city`

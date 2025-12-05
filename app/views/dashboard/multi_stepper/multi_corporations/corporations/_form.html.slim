@@ -1,10 +1,10 @@
 = turbo_frame_tag "corporation_form_frame" do
-  .fr-fieldset.fr-my-3w
+  .fr-mb-3w
     = form_with model: corporation, 
                 url: corporation.new_record? ? dashboard_multi_stepper_multi_corporation_corporations_path(multi_corporation) : dashboard_multi_stepper_multi_corporation_corporation_path(multi_corporation, corporation),
                 data: { controller: "multi-corporation-form", action: "turbo:submit-end->multi-corporation-form#reset" } do |f|
       
-      = f.hidden_field :multi_multi_corporation_id, value: multi_corporation.id
+      = f.hidden_field :multi_corporation_id, value: multi_corporation.id
 
       / Bloc 1: Structure (Accordion Style)
       section.fr-accordion
@@ -42,6 +42,11 @@
                   = f.label :employer_address, "Indiquez l'adresse du siège social", class: "fr-label"
                   = f.text_field :employer_address, class: "fr-input"
 
+                  / Hidden fields for structure address details populated by JS
+                  = f.hidden_field :street
+                  = f.hidden_field :zipcode
+                  = f.hidden_field :city
+
       / Bloc 2: Adresse du stage
       section.fr-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
         h3.fr-accordion__title
@@ -72,17 +77,22 @@
           .fr-p-2w
             .fr-grid-row.fr-grid-row--gutters
               .fr-col-12
-                = f.label :street, "Rue", class: "fr-label"
-                = f.text_field :street, class: "fr-input"
-              .fr-col-6
-                = f.label :zipcode, "Code postal", class: "fr-label"
-                = f.text_field :zipcode, class: "fr-input"
-              .fr-col-6
-                = f.label :city, "Ville", class: "fr-label"
-                = f.text_field :city, class: "fr-input"
+                = f.label :employer_name, "Nom prénom du représentant de la structure", class: "fr-label"
+                = f.text_field :employer_name, class: "fr-input"
               .fr-col-12
-                = f.label :phone, "Téléphone du représentant", class: "fr-label"
-                = f.text_field :phone, class: "fr-input"
+                = f.label :employer_role, "Fonction du représentant de la structure", class: "fr-label"
+                = f.text_field :employer_role, class: "fr-input"
+              .fr-col-12
+                = f.label :employer_email, "Adresse email du représentant de la structure", class: "fr-label"
+                = f.email_field :employer_email, class: "fr-input"
+              .fr-col-12
+                = f.label :employer_phone, "Téléphone du représentant de la structure", class: "fr-label"
+                = f.text_field :employer_phone, class: "fr-input"
+              
+              .fr-col-12.fr-mt-1w
+                p.fr-text--sm.text-blue-info.fr-mb-0
+                  span.fr-icon-info-fill.fr-mr-1v aria-hidden="true"
+                  | Conseil : Renseignez ici les coordonnées de la personne qui signera la convention de stage.
 
       / Bloc 4: Tuteur
       section.fr-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
@@ -92,16 +102,16 @@
           .fr-p-2w
             .fr-grid-row.fr-grid-row--gutters
               .fr-col-12
-                = f.label :tutor_name, "Nom et Prénom", class: "fr-label"
+                = f.label :tutor_name, "Nom prénom du tuteur", class: "fr-label"
                 = f.text_field :tutor_name, class: "fr-input"
               .fr-col-12
-                = f.label :tutor_role_in_company, "Fonction", class: "fr-label"
+                = f.label :tutor_role_in_company, "Fonction du tuteur", class: "fr-label"
                 = f.text_field :tutor_role_in_company, class: "fr-input"
               .fr-col-12
-                = f.label :tutor_email, "Adresse email", class: "fr-label"
+                = f.label :tutor_email, "Adresse email du tuteur", class: "fr-label"
                 = f.email_field :tutor_email, class: "fr-input"
               .fr-col-12
-                = f.label :tutor_phone, "Téléphone", class: "fr-label"
+                = f.label :tutor_phone, "Téléphone du tuteur", class: "fr-label"
                 = f.text_field :tutor_phone, class: "fr-input"
 
       .fr-mt-2w.fr-grid-row.fr-grid-row--right.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"

@@ -49,7 +49,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+--COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -549,7 +549,7 @@ CREATE TABLE public.corporations (
     sector_id bigint,
     employer_name character varying(120),
     employer_address character varying(250),
-    phone character varying(20),
+    employer_phone character varying(20),
     city character varying(60),
     zipcode character varying(6),
     street character varying(300),
@@ -562,7 +562,9 @@ CREATE TABLE public.corporations (
     tutor_email character varying(120),
     tutor_phone character varying(20),
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    employer_email character varying,
+    employer_role character varying
 );
 
 
@@ -4994,6 +4996,8 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251205000001'),
+('20251204130000'),
 ('20251203091954'),
 ('20251203090001'),
 ('20251203090000'),
