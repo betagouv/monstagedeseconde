@@ -10,6 +10,10 @@ class InternshipAgreementTest < ActiveSupport::TestCase
     assert build(:mono_internship_agreement).valid?
   end
 
+  test 'factory multi is valid' do
+    assert build(:multi_internship_agreement).valid?
+  end
+
   test '#roles_not_signed_yet' do
     internship_agreement = create(:mono_internship_agreement, aasm_state: :validated)
     assert_equal %w[school_manager employer student student_legal_representative],

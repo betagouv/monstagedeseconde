@@ -45,7 +45,7 @@ FactoryBot.define do
     end
 
     trait :multi do
-      coordinator { internship_application.internship_offer.employer }
+      internship_application { create(:multi_internship_application) }
       student_birth_date { Date.new(2010, 5, 15) }
       organisation_representative_role { 'Représentant légal de l\'organisation' }
     end

@@ -3,17 +3,17 @@ module InternshipAgreements
     # Includes
 
     # Associations
-    belongs_to :coordinator, class_name: 'User'
+
+    
 
     # Validations
     validate :at_least_daily_hours_or_weekly_hours
 
-    validates :coordinator, presence: true
-    validates :access_token, presence: true, length: { is: 20 }
     validates :activity_scope, presence: true, length: { maximum: 1500 }
-    validates :uuid, presence: true, uniqueness: true
     
     with_options if: :enforce_school_manager_validations? do
+      validates :uuid, presence: true, uniqueness: true
+      validates :access_token, presence: true, length: { is: 20 }
       validates :organisation_representative_role, presence: true, length: { maximum: 150 }
       validates :student_address, presence: true, length: { maximum: 170 }
       validates :school_representative_phone, presence: true, length: { maximum: 20 }
@@ -27,11 +27,15 @@ module InternshipAgreements
     end
 
     # Callbacks
+    # Delegations
+
+    delegate :student, to: :internship_application
+    delegate :internship_offer, to: :internship_application
+    # delegate :employer, to: :internship_offer
 
     # Scopes
     # (scopes can be added here as needed)
 
-    
 
     # Methods
     # (custom methods can be added here as needed)

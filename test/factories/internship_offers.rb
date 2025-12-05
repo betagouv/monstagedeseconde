@@ -150,14 +150,7 @@ FactoryBot.define do
     end
 
     trait :multi do
-      # coordinator { create(:employer) }
-      after(:create) do |offer|
-        create(:corporation, multi_corporation_id: offer.id, employer_name: 'Darty lux')
-        create(:corporation, multi_corporation_id: offer.id, employer_name: 'Radio Electroménager')
-        create(:corporation, multi_corporation_id: offer.id, employer_name: 'Brain Dry Pump')
-        create(:corporation, multi_corporation_id: offer.id, employer_name: 'Leaders Connect')
-        create(:corporation, multi_corporation_id: offer.id, employer_name: 'Auto Plus Services')
-      end
+      multi_corporation { create(:multi_corporation) }
     end
 
     # Seconde :

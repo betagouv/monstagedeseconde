@@ -5,12 +5,12 @@ module Builders
   class InternshipAgreementBuilder < BuilderBase
     def new_from_application(internship_application, multi_agreements: false)
       authorize :new, InternshipAgreement
-      klass = multi_agreements ? InternshipAgreements::MultiInternshipAgreement : InternshipAgreements::MonoInternshipAgreement
-      internship_agreement = klass.new(
-        {}.merge(preprocess_student_to_params(internship_application.student))
+      internship_agreement = nil
+      params = {}.merge(preprocess_student_to_params(internship_application.student))
           .merge(preprocess_internship_offer_params(internship_application.internship_offer))
           .merge(preprocess_internship_application_params(internship_application))
-      )
+      klass = multi_agreements ? InternshipAgreements::MultiInternshipAgreement : InternshipAgreements::MonoInternshipAgreement
+      internship_agreement = klass.new(**params)
       internship_agreement.internship_application = internship_application
       internship_agreement
     end

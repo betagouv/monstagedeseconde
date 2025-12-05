@@ -7,27 +7,15 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
       :multi_internship_agreement,
       enforce_school_manager_validations: true
       )
-    
+
       multi_internship_agreement.valid?
-      puts ''
-      require 'pretty_console'
-      PrettyConsole.puts_in_yellow_loudly('==+==+==+==+' *4)
-      PrettyConsole.puts_in_cyan_loudly "multi_internship_agreement.errors.full_messages : #{multi_internship_agreement.errors.full_messages}"
-      PrettyConsole.puts_in_yellow_loudly('==+==+==+==+' *4)
-      puts ''
       assert multi_internship_agreement.valid?
-    
+
   end
 
   test 'should belong to internship_application' do
     association = InternshipAgreements::MultiInternshipAgreement.reflect_on_association(:internship_application)
     assert_equal :belongs_to, association.macro
-  end
-
-  test 'should belong to user with coordinator_id as foreign key' do
-    association = InternshipAgreements::MultiInternshipAgreement.reflect_on_association(:coordinator)
-    assert_equal :belongs_to, association.macro
-    assert_equal "User", association.options[:class_name]
   end
 
   test 'is invalid without internship_application' do
@@ -42,12 +30,11 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
   test 'is invalid without user (coordinator_id)' do
     multi_internship_agreement = build(
       :multi_internship_agreement,
-      coordinator: nil, access_token: "shor",
+      access_token: "shor",
       student_full_name:'f',
       enforce_school_manager_validations: true
     )
     refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:coordinator], "doit exister"
     assert_includes multi_internship_agreement.errors[:access_token], "ne fait pas la bonne longueur (doit comporter 20 caractères)"
     assert_includes multi_internship_agreement.errors[:student_full_name], "est trop court (au moins 5 caractères)"
   end

@@ -13,9 +13,10 @@ class InternshipAgreement < ApplicationRecord
   MIN_PRESENCE_DAYS = 4
   EMPLOYERS_PENDING_STATES  = %i[draft started_by_employer signed_by_employer validated].freeze
   PENDING_SIGNATURES_STATES = %i[validated signatures_started signed_by_all].freeze
+  EXPECTED_ACTION_FROM_EMPLOYER_STATES = %i[draft started_by_employer completed_by_employer].freeze
 
-  belongs_to :internship_application
   has_many :signatures, dependent: :destroy
+  belongs_to :internship_application, optional: false
 
   after_create :generate_token, unless: :access_token?
 
