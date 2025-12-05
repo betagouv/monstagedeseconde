@@ -98,10 +98,10 @@ export default function SireneCorporation({
         { id: `${resourceName}_corporation_name`, value: employerName },
         // Adresse du siège
         { id: `${resourceName}_corporation_address`, value: addressConcatenated },
-        // Adresse du signataire (souvent la même)
-        { id: `${resourceName}_street`, value: street },
-        { id: `${resourceName}_zipcode`, value: zipcode },
-        { id: `${resourceName}_city`, value: city }
+        // Adresse détaillée (nouveaux champs)
+        { id: `${resourceName}_corporation_street`, value: street },
+        { id: `${resourceName}_corporation_zipcode`, value: zipcode },
+        { id: `${resourceName}_corporation_city`, value: city }
       ];
 
       const results = fields.map(field => ({
@@ -129,9 +129,9 @@ export default function SireneCorporation({
       `${resourceName}_siret`,
       `${resourceName}_corporation_name`,
       `${resourceName}_corporation_address`,
-      `${resourceName}_street`,
-      `${resourceName}_zipcode`,
-      `${resourceName}_city`
+      `${resourceName}_corporation_street`,
+      `${resourceName}_corporation_zipcode`,
+      `${resourceName}_corporation_city`
     ];
     
     fields.forEach(id => {

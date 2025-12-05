@@ -4,9 +4,9 @@ export default class extends Controller {
   static targets = [
     "form", 
     "submitButton",
-    // Signatory fields
-    "signatoryName", "signatoryRole", "signatoryEmail", "signatoryPhone",
-    // Tutor fields
+    // Signatory fields (Source)
+    "employerName", "employerRole", "employerEmail", "employerPhone",
+    // Tutor fields (Destination)
     "tutorName", "tutorRole", "tutorEmail", "tutorPhone"
   ];
 
@@ -32,13 +32,27 @@ export default class extends Controller {
     // Uncheck copy checkbox
     const checkbox = document.getElementById('copy-rep-infos');
     if (checkbox) checkbox.checked = false;
-
-    // Reset React component state via DOM event or direct access if possible
-    // Since we can't easily access React state from here, we rely on the "reset" button in React or just hiding the form
   }
 
   copyRepresentative(event) {
-    if (event.target.checked) { 
+    if (event.target.checked) {
+      if (this.hasEmployerNameTarget && this.hasTutorNameTarget) {
+        this.tutorNameTarget.value = this.employerNameTarget.value;
+      }
+      if (this.hasEmployerRoleTarget && this.hasTutorRoleTarget) {
+        this.tutorRoleTarget.value = this.employerRoleTarget.value;
+      }
+      if (this.hasEmployerEmailTarget && this.hasTutorEmailTarget) {
+        this.tutorEmailTarget.value = this.employerEmailTarget.value;
+      }
+      if (this.hasEmployerPhoneTarget && this.hasTutorPhoneTarget) {
+        this.tutorPhoneTarget.value = this.employerPhoneTarget.value;
+      }
+    } else {
+      this.tutorNameTarget.value = "";
+      this.tutorRoleTarget.value = "";
+      this.tutorEmailTarget.value = "";
+      this.tutorPhoneTarget.value = "";
     }
   }
 }

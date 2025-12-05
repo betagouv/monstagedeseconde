@@ -2,7 +2,7 @@
   .fr-mb-3w
     = form_with model: corporation, 
                 url: corporation.new_record? ? dashboard_multi_stepper_multi_corporation_corporations_path(multi_corporation) : dashboard_multi_stepper_multi_corporation_corporation_path(multi_corporation, corporation),
-                data: { controller: "multi-corporation-form", action: "turbo:submit-end->multi-corporation-form#reset" } do |f|
+                data: { controller: "multi-corporation-form", action: "turbo:submit-end->multi-corporation-form#reset", multi_corporation_form_target: "form" } do |f|
       
       = f.hidden_field :multi_corporation_id, value: multi_corporation.id
 
@@ -27,8 +27,8 @@
             div class="bloc-tooggle #{corporation.persisted? ? '' : 'fr-hidden'}"
               .fr-grid-row.fr-grid-row--gutters
                 .fr-col-12
-                  = f.label :employer_name, "Nom de la structure ou Raison sociale", class: "fr-label"
-                  = f.text_field :employer_name, class: "fr-input"
+                  = f.label :corporation_name, "Nom de la structure ou Raison sociale", class: "fr-label"
+                  = f.text_field :corporation_name, class: "fr-input"
                 
                 .fr-col-12
                   = f.label :sector_id, "Indiquez le secteur d'activité de la structure", class: "fr-label"
@@ -39,13 +39,13 @@
                   = f.text_field :siret, class: "fr-input", readonly: true
 
                 .fr-col-12
-                  = f.label :employer_address, "Indiquez l'adresse du siège social", class: "fr-label"
-                  = f.text_field :employer_address, class: "fr-input"
+                  = f.label :corporation_address, "Indiquez l'adresse du siège social", class: "fr-label"
+                  = f.text_field :corporation_address, class: "fr-input"
 
                   / Hidden fields for structure address details populated by JS
-                  = f.hidden_field :street
-                  = f.hidden_field :zipcode
-                  = f.hidden_field :city
+                  = f.hidden_field :corporation_street
+                  = f.hidden_field :corporation_zipcode
+                  = f.hidden_field :corporation_city
 
       / Bloc 2: Adresse du stage
       section.fr-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
@@ -78,16 +78,16 @@
             .fr-grid-row.fr-grid-row--gutters
               .fr-col-12
                 = f.label :employer_name, "Nom prénom du représentant de la structure", class: "fr-label"
-                = f.text_field :employer_name, class: "fr-input"
+                = f.text_field :employer_name, class: "fr-input", data: { multi_corporation_form_target: "employerName" }
               .fr-col-12
                 = f.label :employer_role, "Fonction du représentant de la structure", class: "fr-label"
-                = f.text_field :employer_role, class: "fr-input"
+                = f.text_field :employer_role, class: "fr-input", data: { multi_corporation_form_target: "employerRole" }
               .fr-col-12
                 = f.label :employer_email, "Adresse email du représentant de la structure", class: "fr-label"
-                = f.email_field :employer_email, class: "fr-input"
+                = f.email_field :employer_email, class: "fr-input", data: { multi_corporation_form_target: "employerEmail" }
               .fr-col-12
                 = f.label :employer_phone, "Téléphone du représentant de la structure", class: "fr-label"
-                = f.text_field :employer_phone, class: "fr-input"
+                = f.text_field :employer_phone, class: "fr-input", data: { multi_corporation_form_target: "employerPhone" }
               
               .fr-col-12.fr-mt-1w
                 p.fr-text--sm.text-blue-info.fr-mb-0
@@ -100,19 +100,23 @@
           button.fr-accordion__btn aria-expanded="true" aria-controls="accordion-tutor" Coordonnées du tuteur
         #accordion-tutor.fr-collapse
           .fr-p-2w
+            .fr-checkbox-group.fr-mb-2w
+              input type="checkbox" id="copy-rep-infos" data-action="change->multi-corporation-form#copyRepresentative"
+              label.fr-label for="copy-rep-infos" Reprendre les informations du représentant de la structure
+
             .fr-grid-row.fr-grid-row--gutters
               .fr-col-12
                 = f.label :tutor_name, "Nom prénom du tuteur", class: "fr-label"
-                = f.text_field :tutor_name, class: "fr-input"
+                = f.text_field :tutor_name, class: "fr-input", data: { multi_corporation_form_target: "tutorName" }
               .fr-col-12
                 = f.label :tutor_role_in_company, "Fonction du tuteur", class: "fr-label"
-                = f.text_field :tutor_role_in_company, class: "fr-input"
+                = f.text_field :tutor_role_in_company, class: "fr-input", data: { multi_corporation_form_target: "tutorRole" }
               .fr-col-12
                 = f.label :tutor_email, "Adresse email du tuteur", class: "fr-label"
-                = f.email_field :tutor_email, class: "fr-input"
+                = f.email_field :tutor_email, class: "fr-input", data: { multi_corporation_form_target: "tutorEmail" }
               .fr-col-12
                 = f.label :tutor_phone, "Téléphone du tuteur", class: "fr-label"
-                = f.text_field :tutor_phone, class: "fr-input"
+                = f.text_field :tutor_phone, class: "fr-input", data: { multi_corporation_form_target: "tutorPhone" }
 
       .fr-mt-2w.fr-grid-row.fr-grid-row--right.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
         = f.submit corporation.new_record? ? "Ajouter cette structure" : "Mettre à jour cette structure", class: "fr-btn"

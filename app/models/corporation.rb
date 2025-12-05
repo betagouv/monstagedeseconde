@@ -4,17 +4,24 @@ class Corporation < ApplicationRecord
 
   # Validations
   validates :siret, presence: true, length: { is: 14 }
-  validates :city, presence: true, length: { maximum: 60 }
-  validates :zipcode, presence: true, length: { maximum: 6 }
-  validates :street, presence: true, length: { maximum: 300 }
+  
+  # Structure Accueillante
+  validates :corporation_name, presence: true, length: { maximum: 120 }
+  validates :corporation_address, presence: true, length: { maximum: 250 }
+  validates :corporation_city, presence: true, length: { maximum: 60 }
+  validates :corporation_zipcode, presence: true, length: { maximum: 6 }
+  validates :corporation_street, presence: true, length: { maximum: 300 }
 
   # Internship Address
   validates :internship_city, presence: true, length: { maximum: 60 }
   validates :internship_zipcode, presence: true, length: { maximum: 6 }
   validates :internship_street, presence: true, length: { maximum: 300 }
   validates :internship_phone, presence: true, length: { maximum: 20 }
+  # internship_coordinates is optional? Usually mandatory if address is there. 
+  
+  
 
-  # Employer / Signatory
+  # Employer / Signatory (Representative)
   validates :employer_name, presence: true, length: { maximum: 150 }
   validates :employer_role, presence: true, length: { maximum: 250 }
   validates :employer_email, presence: true, length: { maximum: 120 }, format: { with: Devise.email_regexp }

@@ -59,11 +59,11 @@ module Dashboard::MultiStepper
 
       def corporation_params
         params.require(:corporation).permit(
-          :siret, :sector_id, :employer_phone,
+          :siret, :sector_id, 
+          :corporation_name, :corporation_address, :corporation_city, :corporation_zipcode, :corporation_street,
           :internship_street, :internship_zipcode, :internship_city, :internship_phone,
-          :city, :zipcode, :street,
           :tutor_name, :tutor_role_in_company, :tutor_email, :tutor_phone,
-          :employer_name, :employer_role, :employer_email
+          :employer_name, :employer_role, :employer_email, :employer_phone
         )
       end
     end
