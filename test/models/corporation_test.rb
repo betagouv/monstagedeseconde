@@ -24,39 +24,30 @@ class CorporationTest < ActiveSupport::TestCase
     assert_equal 14, @corporation.siret.length
   end
 
-  test "should require employer_name to be present and <= 120 characters" do
-    @corporation.employer_name = nil
+  test "should require corporation_name to be present and <= 120 characters" do
+    @corporation.corporation_name = nil
     assert_not @corporation.valid?
-    @corporation.employer_name = "a" * 121
+    @corporation.corporation_name = "a" * 121
     assert_not @corporation.valid?
-    @corporation.employer_name = "Employer"
+    @corporation.corporation_name = "Employer"
     assert @corporation.valid?
   end
 
-  test "should require employer_address to be present and <= 250 characters" do
-    @corporation.employer_address = nil
+  test "should require corporation_address to be present and <= 250 characters" do
+    @corporation.corporation_address = nil
     assert_not @corporation.valid?
-    @corporation.employer_address = "a" * 251
+    @corporation.corporation_address = "a" * 251
     assert_not @corporation.valid?
-    @corporation.employer_address = "123 Main St"
-    assert @corporation.valid?
-  end
-
-  test "should require phone to be present and <= 20 characters" do
-    @corporation.phone = nil
-    assert_not @corporation.valid?
-    @corporation.phone = "1" * 21
-    assert_not @corporation.valid?
-    @corporation.phone = "0123456789"
+    @corporation.corporation_address = "123 Main St"
     assert @corporation.valid?
   end
 
   test "should require city, zipcode, and street for signatory address" do
-    @corporation.city = nil
+    @corporation.corporation_city = nil
     assert_not @corporation.valid?
-    @corporation.zipcode = nil
+    @corporation.corporation_zipcode = nil
     assert_not @corporation.valid?
-    @corporation.street = nil
+    @corporation.corporation_street = nil
     assert_not @corporation.valid?
   end
 

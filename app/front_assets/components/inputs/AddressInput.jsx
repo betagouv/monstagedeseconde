@@ -472,7 +472,7 @@ export default function AddressInput({
           { (addressFieldsVisibility || isDuplication || editMode) && (
             <div className="form-row">
               <div className="col-sm-12 fr-mt-1w">
-                <label htmlFor={`${resourceName}_street`} className="fr-label">
+                <label htmlFor={`${resourceName}_internship_street`} className="fr-label">
                   Voie publique ou privée
                 </label>
                 <input
@@ -480,13 +480,13 @@ export default function AddressInput({
                   value={street}
                   type="text"
                   maxLength="200"
-                  name={`${resourceName}[street]`}
-                  id={`${resourceName}_street`}
+                  name={`${resourceName}[internship_street]`}
+                  id={`${resourceName}_internship_street`}
                   readOnly
                 />
               </div>
               <div className="col-sm-12 fr-mt-1w">
-                <label htmlFor={`${resourceName}_city`} className="fr-label">
+                <label htmlFor={`${resourceName}_internship_city`} className="fr-label">
                   Commune
                 </label>
                 <input
@@ -495,13 +495,13 @@ export default function AddressInput({
                   value={city}
                   maxLength="50"
                   type="text"
-                  name={`${resourceName}[city]`}
-                  id={`${resourceName}[city]`}
+                  name={`${resourceName}[internship_city]`}
+                  id={`${resourceName}_internship_city`}
                   readOnly
                 />
               </div>
               <div className="col-sm-12 fr-mt-1w">
-                <label htmlFor={`${resourceName}_zipcode`} className="fr-label">
+                <label htmlFor={`${resourceName}_internship_zipcode`} className="fr-label">
                   Code postal
                 </label>
                 <input
@@ -510,8 +510,8 @@ export default function AddressInput({
                   value={zipcode}
                   maxLength="5"
                   type="text"
-                  name={`${resourceName}[zipcode]`}
-                  id={`${resourceName}[zipcode]`}
+                  name={`${resourceName}[internship_zipcode]`}
+                  id={`${resourceName}_internship_zipcode`}
                   data-mandatory-fields-target="mandatoryField"
                   data-action="input->mandatory-fields#fieldChange"
                   readOnly

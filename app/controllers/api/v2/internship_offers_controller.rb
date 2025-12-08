@@ -127,6 +127,12 @@ module Api
         )
       end
 
+      def resolve_sector_image(cover)
+        view_context.asset_pack_url("media/images/sectors/#{cover}")
+      rescue JSON::ParserError
+        "media/images/sectors/#{cover}"
+      end
+
       def format_internship_offers(internship_offers)
         internship_offers.map do |internship_offer|
           {
@@ -143,7 +149,7 @@ module Api
             date_end: I18n.localize(internship_offer.last_date, format: :human_mm_dd_yyyy),
             latitude: internship_offer.coordinates.latitude,
             longitude: internship_offer.coordinates.longitude,
-            image: view_context.asset_pack_url("media/images/sectors/#{internship_offer.sector.cover}"),
+            image: resolve_sector_image(internship_offer.sector.cover),
             sector: internship_offer.sector.name,
             handicap_accessible: internship_offer.handicap_accessible,
             period: internship_offer.period,

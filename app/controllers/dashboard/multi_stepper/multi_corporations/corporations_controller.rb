@@ -6,15 +6,25 @@ module Dashboard::MultiStepper
       before_action :fetch_corporation, only: %i[edit update destroy]
 
       def create
+        puts "🔹 [CorporationsController] START create"
+        puts "🔹 [CorporationsController] Params received: #{params.inspect}"
+        puts "🔹 [CorporationsController] Corporation params: #{corporation_params.inspect}"
+        
         @corporation = @multi_corporation.corporations.build(corporation_params)
         authorize! :create, @corporation
+        
+        puts "🔹 [CorporationsController] Corporation built: #{@corporation.inspect}"
+        puts "🔹 [CorporationsController] Valid? #{@corporation.valid?}"
 
         if @corporation.save
+          puts "✅ [CorporationsController] Corporation saved successfully"
           respond_to do |format|
             format.turbo_stream
-            format.html { redirect_to edit_dashboard_multi_stepper_multi_corporation_path(@multi_corporation), notice: 'Structure ajoutée' }
+            format.html { redirect_to new_dashboard_multi_stepper_multi_corporation_path(multi_coordinator_id: @multi_corporation.multi_coordinator_id), notice: 'Structure ajoutée' }
           end
         else
+          puts "❌ [CorporationsController] Corporation save FAILED"
+          puts "❌ [CorporationsController] Errors: #{@corporation.errors.full_messages}"
           render :new, status: :bad_request
         end
       end

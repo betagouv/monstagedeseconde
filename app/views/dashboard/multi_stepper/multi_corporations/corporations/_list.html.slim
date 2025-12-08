@@ -7,5 +7,5 @@
   
   .fr-grid-row
     - multi_corporation.corporations.each do |corporation|
-      .fr-col-12
-        = render 'dashboard/multi_stepper/multi_corporations/corporations/corporation', corporation: corporation, multi_corporation: multi_corporation
+      .fr-col-12.fr-mb-2w
+        = render 'dashboard/multi_stepper/multi_corporations/corporations/corporation_card', corporation: corporation, multi_corporation: multi_corporation

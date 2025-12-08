@@ -2,12 +2,12 @@
   .fr-mb-3w
     = form_with model: corporation, 
                 url: corporation.new_record? ? dashboard_multi_stepper_multi_corporation_corporations_path(multi_corporation) : dashboard_multi_stepper_multi_corporation_corporation_path(multi_corporation, corporation),
-                data: { controller: "multi-corporation-form", action: "turbo:submit-end->multi-corporation-form#reset", multi_corporation_form_target: "form" } do |f|
+                data: { turbo: false, controller: "multi-corporation-form", action: "turbo:submit-end->multi-corporation-form#reset", multi_corporation_form_target: "form" } do |f|
       
       = f.hidden_field :multi_corporation_id, value: multi_corporation.id
 
       / Bloc 1: Structure (Accordion Style)
-      section.fr-accordion
+      section.fr-accordion.corporation-accordion
         h3.fr-accordion__title
           button.fr-accordion__btn aria-expanded="true" aria-controls="accordion-structure" La structure accueillante
         #accordion-structure.fr-collapse
@@ -31,8 +31,14 @@
                   = f.text_field :corporation_name, class: "fr-input"
                 
                 .fr-col-12
-                  = f.label :sector_id, "Indiquez le secteur d'activité de la structure", class: "fr-label"
-                  = f.select :sector_id, Sector.all.map { |s| [s.name, s.id] }, { prompt: "Veuillez sélectionner un domaine" }, class: "fr-select"
+                  = f.label :sector_id, "Indiquez le secteur d'activité de la structure *", class: "fr-label"
+                  = f.select :sector_id,
+                          options_from_collection_for_select(Sector.all.order(:name).where.not(name: 'Fonction publique'), :id, :name, corporation&.sector&.id),
+                          { prompt: sectors_options_for_default },
+                          class: "fr-select sector_list",
+                          required: true,
+                          data: { action: "change->mandatory-fields#fieldChange",
+                                  'mandatory-fields-target' => "mandatoryField" }
 
                 .fr-col-12
                   = f.label :siret, "SIRET *", class: "fr-label"
@@ -48,7 +54,7 @@
                   = f.hidden_field :corporation_city
 
       / Bloc 2: Adresse du stage
-      section.fr-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
+      section.fr-accordion.corporation-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
         h3.fr-accordion__title
           button.fr-accordion__btn aria-expanded="true" aria-controls="accordion-address" Adresse du lieu du stage
         #accordion-address.fr-collapse
@@ -65,12 +71,39 @@
                                            isDuplication: false,
                                            editMode: true,
                                            fieldLabel: "Rechercher une adresse postale *" })
-              .fr-col-12
-                = f.label :internship_phone, "Téléphone sur lieu de stage", class: "fr-label"
-                = f.text_field :internship_phone, class: "fr-input"
+                / Ces champs sont générés par AddressInput mais on les garde pour éviter les erreurs de soumission si AddressInput ne génère pas les champs avec les bons IDs pour Rails
+                / AddressInput va générer ses propres inputs, donc on ne doit pas les dupliquer ici sinon Rails recevra des arrays
+                / En fait, AddressInput génère des inputs avec les names corrects maintenant (voir le fix précédent), 
+                / donc on peut supprimer ces hidden_fields s'ils font doublon, OU AddressInput remplit ces hidden fields s'ils existent ?
+                / Dans AddressInput.jsx, il génère des <input name="..."> directement.
+                / Donc il faut SUPPRIMER ces f.hidden_field pour éviter les doublons ou conflits.
+                
+                / = f.hidden_field :internship_street
+                / = f.hidden_field :internship_zipcode
+                / = f.hidden_field :internship_city
+                
+                / Ces champs doivent être présents pour que le composant React puisse les remplir s'il n'injecte pas lui-même des inputs
+                / Après vérification du AddressInput.jsx, il crée bien ses inputs mais il est possible que Rails ne les voit pas s'ils ne sont pas dans le bon scope du formulaire
+                / ou si le composant React est monté en dehors du formulaire (ce qui n'est pas le cas ici).
+                / Si l'erreur persiste, c'est peut-être que AddressInput attend des valeurs initiales qu'il ne reçoit pas
+                / ou que le nommage des champs dans AddressInput est correct mais que la valeur n'est pas transmise.
+                
+                / On remet les hidden fields MAIS avec des IDs spécifiques que AddressInput ne va PAS écraser, 
+                / et on s'assure que AddressInput remplit bien CES champs là via un callback ou autre.
+                / MAIS ATTENTION : AddressInput crée des inputs avec name="resourceName[internship_street]".
+                / Si on ajoute f.hidden_field :internship_street, Rails génère <input type="hidden" name="corporation[internship_street]">.
+                / On se retrouve avec 2 inputs de même nom. Le dernier l'emporte.
+                / AddressInput est rendu AVANT les hidden fields commentés.
+                / Donc si on décommente, les hidden fields (vides) écrasent les valeurs de React.
+                
+                / Donc il faut bien supprimer/commenter les f.hidden_field.
+                
+                / L'erreur "Internship phone doit être rempli(e)" indique que le téléphone est vide.
+                / Dans les logs : "internship_phone"=>""
+                / Regardons le champ phone dans le formulaire.
 
       / Bloc 3: Signataire
-      section.fr-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
+      section.fr-accordion.corporation-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
         h3.fr-accordion__title
           button.fr-accordion__btn aria-expanded="true" aria-controls="accordion-signatory" Coordonnées du représentant de la structure (signataire)
         #accordion-signatory.fr-collapse
@@ -95,7 +128,7 @@
                   | Conseil : Renseignez ici les coordonnées de la personne qui signera la convention de stage.
 
       / Bloc 4: Tuteur
-      section.fr-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
+      section.fr-accordion.corporation-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
         h3.fr-accordion__title
           button.fr-accordion__btn aria-expanded="true" aria-controls="accordion-tutor" Coordonnées du tuteur
         #accordion-tutor.fr-collapse

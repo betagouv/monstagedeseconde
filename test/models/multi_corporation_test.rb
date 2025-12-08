@@ -10,7 +10,7 @@ class MultiCorporationTest < ActiveSupport::TestCase
   test 'has many corporations' do
     multi_corporation = create(:multi_corporation)
     assert_equal 5, multi_corporation.corporations.count
-    employer_names = multi_corporation.corporations.pluck(:employer_name)
+    employer_names = multi_corporation.corporations.pluck(:corporation_name)
     expected_names = [
       'Darty lux',
       'Radio Electroménager',
