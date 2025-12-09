@@ -2,3 +2,117 @@
   border-left: 1px solid $grey-925;
   border-right: 1px solid $grey-925;
 }
+
+.multi-step-0 {
+  .fr-radio-group.fr-radio-rich {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    border: 1px solid var(--border-default-grey);
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    min-height: 120px;
+    transition: background-color 0.2s ease;
+
+    // Hover state for the whole card
+    &:hover {
+      background-color: #f6f6f6;
+    }
+
+    input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    label.fr-label {
+      flex: 1;
+      margin: 0 !important;
+      padding: 1rem 1rem 1rem 3.5rem !important; 
+      width: auto !important;
+      min-height: auto !important;
+      border: none !important; // Ensure no borders on label, handled by parent
+      background: none !important;
+      display: flex;
+      flex-direction: column;
+      justify-content: center; // Vertically center content
+      position: relative;
+      cursor: pointer;
+      text-align: left;
+
+      // Radio button circle
+      &::before {
+        content: "" !important;
+        display: block !important;
+        position: absolute !important;
+        top: 50% !important;
+        left: 1.5rem !important;
+        transform: translateY(-50%) !important;
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+        border-radius: 50% !important;
+        border: 1px solid #161616 !important;
+        background-color: #fff !important;
+        margin: 0 !important;
+        z-index: 1;
+      }
+
+      // Content wrapper
+      > span {
+        display: inline-block;
+        width: 100%;
+        
+        .fr-badge {
+          display: inline-flex;
+          vertical-align: text-bottom;
+          margin-right: 0.5rem;
+        }
+      }
+    }
+
+    // Checked state: Inner dot
+    input:checked + label.fr-label::before {
+      border-color: #000091 !important;
+      background: radial-gradient(circle, #000091 40%, transparent 45%) !important;
+    }
+
+    // Checked state: Parent border and background
+    &:has(input:checked) {
+      border: 1px solid #000091;
+      background-color: #f5f5fe;
+      
+      &:hover {
+        background-color: #ececfa;
+      }
+
+      .fr-radio-rich__pictogram {
+        border-left: 1px solid #000091;
+      }
+    }
+
+    // Fallback for :has support
+    &:focus-within {
+       border-color: #000091;
+    }
+
+    .fr-radio-rich__pictogram {
+      width: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid var(--border-default-grey);
+      background-color: transparent !important;
+      margin: 0 !important;
+      position: static !important;
+      height: auto !important;
+      flex-shrink: 0;
+
+      .fr-artwork {
+        width: 80px;
+        height: 80px;
+      }
+    }
+  }
+}

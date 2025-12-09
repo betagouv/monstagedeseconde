@@ -11,9 +11,9 @@
   .row.fr-my-3w
     .col
       h1.h2 Déposer une offre de stage
-  .row.fr-mb-5w
+  .row.fr-mb-2w.multi-step-0
     = csrf_meta_tags
-    .fr-col-md-5
+    .fr-col-md-6
       .fr-fieldset
         .fr-fieldset__element
           .fr-radio-group.fr-radio-rich
@@ -22,24 +22,9 @@
                              id: "radio-rich-0",
                              name: "offer_type_choice"
             label.fr-label for="radio-rich-0"
-              | Une offre pour ma structure
+              span Je propose un stage au nom d’une seule structure
             .fr-radio-rich__pictogram
               = image_tag asset_pack_path('media/digital/avatar.svg'),
-                          viewBox:"0 0 80 80",
-                          width: "80px",
-                          height: "80px",
-                          :"aria-hidden" => "true",
-                          class: "fr-artwork"
-        .fr-fieldset__element
-          .fr-radio-group.fr-radio-rich
-            = f.radio_button :choice,
-                             "for_another_company",
-                             id: "radio-rich-1",
-                             name: "offer_type_choice"
-            label.fr-label.heigher-label for="radio-rich-1"
-              | Une offre pour une autre structure
-            .fr-radio-rich__pictogram
-              = image_tag asset_pack_path('media/digital/self-training.svg'),
                           viewBox:"0 0 80 80",
                           width: "80px",
                           height: "80px",
@@ -52,7 +37,9 @@
                               id: "radio-rich-2",
                               name: "offer_type_choice"
             label.fr-label for="radio-rich-2"
-              | Une offre pour une ou plusieurs structures
+              span
+                span.fr-badge.fr-badge--new.fr-badge--no-icon.fr-badge--sm.fr-mr-1v> Nouveau
+                | Je coordonne un stage impliquant plusieurs structures (toutes signataires de la convention)
             .fr-radio-rich__pictogram
               = image_tag asset_pack_path('media/digital/ecosystem.svg'),
                           viewBox:"0 0 80 80",
@@ -60,6 +47,26 @@
                           height: "80px",
                           :"aria-hidden" => "true",
                           class: "fr-artwork"
+  .row.fr-mb-3w.multi-step-0
+    .fr-col-md-12
+      .fr-alert.fr-alert--info role="alert"
+        h3.fr-alert__title Stage impliquant plusieurs structures
+        p
+          |
+            Le nouveau parcours permet de déposer une offre de stage partagée entre plusieurs structures, 
+            chacune signataire de la convention.
+        p
+          |
+            Avant de commencer, veillez à avoir toutes les informations nécessaires : le planning détaillé 
+            avec les structures impliquées chaque jour, les horaires de début, fin et pause déjeuner, le 
+            nombre de places et les établissements scolaires auxquels le stage est réservé, le cas échéant. 
+            Pour chaque structure, vous devrez indiquer son nom ou SIRET, l’adresse du lieu d’accueil, ainsi 
+            que les coordonnées du représentant signataire et du tuteur le cas échéant : nom, prénom, 
+            fonction, téléphone et e-mail. Attention : vous ne pourrez ni enregistrer un brouillon, ni modifier 
+            l’offre une fois publiée.
+  
+  .row.fr-mb-5w.multi-step-0
+    .fr-col-md-12
       .fr-mt-4w
         = link_to 'Annuler',
                   dashboard_internship_offers_path,
@@ -68,14 +75,4 @@
             class: 'fr-btn fr-btn--primary',
             type: 'submit',
             data: { turbo: false }
-
-    .fr-col-md-7
-      .fr-alert.fr-alert--info.fr-ml-4w role="alert"
-        h3.fr-alert__title Conseil
-        p
-          |
-            Lorem ipsum dolor sit amet consectetur. Purus magna a bibendum ipsum nibh mauris.
-            Montes sagittis sed lectus eget sit convallis aenean ullamcorper dolor.
-            Fusce erat aliquam nullam eget lorem. Enim est amet platea risus est bibendum elementum
-            faucibus justo. Facilisi in a arcu aliquam hendrerit arcu id eget.
-            Sollicitudin integer arcu est fermentum. Ipsum elementum enim pretium pellentesque in. At diam nisl.
+  
