@@ -1,7 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -21,7 +21,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -35,7 +35,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -49,7 +49,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -547,12 +547,12 @@ CREATE TABLE public.corporations (
     multi_corporation_id bigint NOT NULL,
     siret character varying(14),
     sector_id bigint,
-    employer_name character varying(120),
-    employer_address character varying(250),
-    phone character varying(20),
-    city character varying(60),
-    zipcode character varying(6),
-    street character varying(300),
+    corporation_name character varying(120),
+    corporation_address character varying(250),
+    employer_phone character varying(20),
+    corporation_city character varying(60),
+    corporation_zipcode character varying(6),
+    corporation_street character varying(300),
     internship_city character varying(60),
     internship_zipcode character varying(6),
     internship_street character varying(300),
@@ -562,7 +562,11 @@ CREATE TABLE public.corporations (
     tutor_email character varying(120),
     tutor_phone character varying(20),
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    employer_email character varying,
+    employer_role character varying,
+    internship_coordinates public.geometry(Point,4326),
+    employer_name character varying
 );
 
 
@@ -4978,6 +4982,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251204130000'),
 ('20251203153952'),
 ('20251203091954'),
 ('20251203090001'),
@@ -5462,3 +5467,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
+

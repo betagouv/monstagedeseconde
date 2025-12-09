@@ -95,13 +95,13 @@ export default function SireneCorporation({
     const setValues = (retries = 10) => {
       const fields = [
         { id: `${resourceName}_siret`, value: selection.siret },
-        { id: `${resourceName}_employer_name`, value: employerName },
+        { id: `${resourceName}_corporation_name`, value: employerName },
         // Adresse du siège
-        { id: `${resourceName}_employer_address`, value: addressConcatenated },
-        // Adresse du signataire (souvent la même)
-        { id: `${resourceName}_street`, value: street },
-        { id: `${resourceName}_zipcode`, value: zipcode },
-        { id: `${resourceName}_city`, value: city }
+        { id: `${resourceName}_corporation_address`, value: addressConcatenated },
+        // Adresse détaillée (nouveaux champs)
+        { id: `${resourceName}_corporation_street`, value: street },
+        { id: `${resourceName}_corporation_zipcode`, value: zipcode },
+        { id: `${resourceName}_corporation_city`, value: city }
       ];
 
       const results = fields.map(field => ({
@@ -120,18 +120,18 @@ export default function SireneCorporation({
     setTimeout(() => setValues(), 100);
   };
 
-  const clearImmediate = () => {
+    const clearImmediate = () => {
     setEmployerNameStr('');
     setSiret("");
     setSearchResults([]);
     // Clear fields
     const fields = [
       `${resourceName}_siret`,
-      `${resourceName}_employer_name`,
-      `${resourceName}_employer_address`,
-      `${resourceName}_street`,
-      `${resourceName}_zipcode`,
-      `${resourceName}_city`
+      `${resourceName}_corporation_name`,
+      `${resourceName}_corporation_address`,
+      `${resourceName}_corporation_street`,
+      `${resourceName}_corporation_zipcode`,
+      `${resourceName}_corporation_city`
     ];
     
     fields.forEach(id => {

@@ -6,15 +6,25 @@ module Dashboard::MultiStepper
       before_action :fetch_corporation, only: %i[edit update destroy]
 
       def create
+        puts "🔹 [CorporationsController] START create"
+        puts "🔹 [CorporationsController] Params received: #{params.inspect}"
+        puts "🔹 [CorporationsController] Corporation params: #{corporation_params.inspect}"
+        
         @corporation = @multi_corporation.corporations.build(corporation_params)
         authorize! :create, @corporation
+        
+        puts "🔹 [CorporationsController] Corporation built: #{@corporation.inspect}"
+        puts "🔹 [CorporationsController] Valid? #{@corporation.valid?}"
 
         if @corporation.save
+          puts "✅ [CorporationsController] Corporation saved successfully"
           respond_to do |format|
             format.turbo_stream
-            format.html { redirect_to edit_dashboard_multi_stepper_multi_corporation_path(@multi_corporation), notice: 'Structure ajoutée' }
+            format.html { redirect_to new_dashboard_multi_stepper_multi_corporation_path(multi_coordinator_id: @multi_corporation.multi_coordinator_id), notice: 'Structure ajoutée' }
           end
         else
+          puts "❌ [CorporationsController] Corporation save FAILED"
+          puts "❌ [CorporationsController] Errors: #{@corporation.errors.full_messages}"
           render :new, status: :bad_request
         end
       end
@@ -59,10 +69,11 @@ module Dashboard::MultiStepper
 
       def corporation_params
         params.require(:corporation).permit(
-          :siret, :sector_id, :employer_name, :employer_address, :phone,
+          :siret, :sector_id, 
+          :corporation_name, :corporation_address, :corporation_city, :corporation_zipcode, :corporation_street,
           :internship_street, :internship_zipcode, :internship_city, :internship_phone,
-          :city, :zipcode, :street,
-          :tutor_name, :tutor_role_in_company, :tutor_email, :tutor_phone
+          :tutor_name, :tutor_role_in_company, :tutor_email, :tutor_phone,
+          :employer_name, :employer_role, :employer_email, :employer_phone
         )
       end
     end
