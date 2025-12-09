@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :internship_agreement do
     internship_application { create(:weekly_internship_application) }
 
+    delegation_date { 5.years.ago.to_date }
     school_representative_full_name { internship_application.student.school.school_manager&.presenter&.full_name }
     school_representative_phone { FFaker::PhoneNumberFR.mobile_phone_number }
     school_representative_email { FFaker::Internet.email }
@@ -10,11 +11,13 @@ FactoryBot.define do
     student_address do
       "#{FFaker::Address.street_address} #{internship_application.student.school.zipcode} #{internship_application.student.school.city}"
     end
+    organisation_representative_role { 'Représentant légal de l\'organisation' }
     student_refering_teacher_full_name { FFaker::NameFR.name }
     student_refering_teacher_email { FFaker::Internet.email }
     student_refering_teacher_phone { FFaker::PhoneNumberFR.mobile_phone_number }
     student_phone { '+330325254575' }
     siret { FFaker::CompanyFR.siret }
+    student_birth_date { 15.years.ago.to_date + rand(10).days }
     student_full_name { internship_application.student.presenter.full_name }
     student_legal_representative_full_name { FFaker::NameFR.name }
     student_legal_representative_phone { FFaker::PhoneNumberFR.mobile_phone_number }
@@ -23,7 +26,7 @@ FactoryBot.define do
     student_legal_representative_2_phone { FFaker::PhoneNumberFR.mobile_phone_number }
     student_legal_representative_2_email { FFaker::Internet.email }
     student_class_room { '2de A' }
-    organisation_representative_full_name { 'DGSE' }
+    organisation_representative_full_name { FFaker::NameFR.name }
     tutor_role { 'Responsable financier' }
     tutor_full_name { FFaker::NameFR.name }
     tutor_email { FFaker::Internet.email }
@@ -46,8 +49,7 @@ FactoryBot.define do
 
     trait :multi do
       internship_application { create(:multi_internship_application) }
-      student_birth_date { Date.new(2010, 5, 15) }
-      organisation_representative_role { 'Représentant légal de l\'organisation' }
+      
     end
 
     trait :created_by_system do

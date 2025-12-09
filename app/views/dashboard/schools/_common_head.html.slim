@@ -55,6 +55,18 @@ h1.h2.mb-4
             - todos = badge_counter.pending_agreements_count
             - if todos.positive?
               span.badge-pill.badge-danger.small= todos
+      li
+        - path = dashboard_internship_agreements_path
+        = link_to path do
+          button#multi-internship-agreements.fr-tabs__tab [
+            aria-controls="multi-internship-agreements-panel"
+            aria-selected="#{current_page?(path)}"
+            role="tab"
+            tabindex="3"]
+            | Mes conventions de stage multi-offreurs &nbsp;
+            / - todos = badge_counter.pending_multi_agreements_count
+            / - if todos.positive?
+            /   span.badge-pill.badge-danger.small= todos
 
   = yield
 = render partial: 'dashboard/internship_agreements/signature/modal_dialog'

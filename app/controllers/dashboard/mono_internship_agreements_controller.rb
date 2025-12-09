@@ -1,5 +1,5 @@
 module Dashboard
-  class InternshipAgreementsController < ApplicationController
+  class MonoInternshipAgreementsController < ApplicationController
     before_action :authenticate_user!
     before_action :set_internship_agreement,
                   only: %i[edit update show school_management_signature school_management_sign]
@@ -17,7 +17,7 @@ module Dashboard
     def update
       authorize! :update, @internship_agreement
       internship_agreement_builder.update(instance: @internship_agreement,
-                                          params: internship_agreement_params) do |on|
+                                          params: bare_internship_agreement_params) do |on|
         on.success do |updated_internship_agreement|
           updated_internship_agreement = process_state_update(
             agreement: updated_internship_agreement,
@@ -148,7 +148,6 @@ module Dashboard
               weekly_hours: [],
               daily_hours: {}]
     end
-
     def internship_agreement_params
       requirement = if @internship_agreement.from_multi?
                       :internship_agreements_multi_internship_agreement
@@ -190,10 +189,8 @@ module Dashboard
     end
 
     def process_state_update(agreement:, params:)
-      params_internship_agreement = agreement.from_multi? ? params[:internship_agreements_multi_internship_agreement] : params[:internship_agreements_mono_internship_agreement]
-
-      employer_event       = params_internship_agreement[:employer_event]
-      school_manager_event = params_internship_agreement[:school_manager_event]
+      employer_event       = params[:internship_agreement][:employer_event]
+      school_manager_event = params[:internship_agreement][:school_manager_event]
       return agreement if employer_event.blank? && school_manager_event.blank?
 
       agreement = transit_when_allowed(agreement:, event: employer_event)

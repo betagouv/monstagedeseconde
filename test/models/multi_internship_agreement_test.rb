@@ -65,7 +65,7 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
       student_address: nil
       )
     refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:student_address], "doit être rempli(e)"
+    assert_includes multi_internship_agreement.errors[:student_address], "est trop court (au moins 5 caractères)"
   end
 
   test 'is invalid if student_address is too long' do
@@ -85,7 +85,7 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
       school_representative_phone: nil
       )
     refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:school_representative_phone], "Veuillez saisir le numéro de téléphone du représentant de l'établissement scolaire"
+    assert_includes multi_internship_agreement.errors[:school_representative_phone], "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'"
   end
 
   test 'is invalid if school_representative_phone is too long' do
@@ -94,7 +94,7 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
       school_representative_phone: '1' * 21,
       enforce_school_manager_validations: true)
     refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:school_representative_phone], "est trop long (pas plus de 20 caractères)"
+    assert_includes multi_internship_agreement.errors[:school_representative_phone], "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'"
   end
 
   test 'is invalid if student_full_name is too short or too long' do
@@ -160,7 +160,7 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
       enforce_school_manager_validations: true,
       student_legal_representative_phone: nil)
     refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:student_legal_representative_phone], "doit être rempli(e)"
+    assert_includes multi_internship_agreement.errors[:student_legal_representative_phone], "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'"
   end
 
   test 'is invalid if student_legal_representative_phone is too long' do
@@ -169,7 +169,7 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
       enforce_school_manager_validations: true,
       student_legal_representative_phone: '1' * 41)
     refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:student_legal_representative_phone], "est trop long (pas plus de 20 caractères)"
+    assert_includes multi_internship_agreement.errors[:student_legal_representative_phone], "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'"
   end
 
   test 'is invalid without school_representative_email' do
@@ -207,10 +207,10 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
       enforce_school_manager_validations: true,
       access_token: nil)
     refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:access_token], "doit être rempli(e)"
+    assert_includes multi_internship_agreement.errors[:access_token], "ne fait pas la bonne longueur (doit comporter 20 caractères)"
   end
 
-  test 'is invalid if access_token is not 16 chars' do
+  test 'is invalid if access_token is not 20 chars' do
     multi_internship_agreement = build(
       :multi_internship_agreement,
       enforce_school_manager_validations: true,
@@ -222,7 +222,7 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
   test 'is invalid without activity_scope' do
     multi_internship_agreement = build(
       :multi_internship_agreement,
-      enforce_school_manager_validations: true,
+      enforce_employer_validations: true,
       activity_scope: nil)
     refute multi_internship_agreement.valid?
     assert_includes multi_internship_agreement.errors[:activity_scope], "doit être rempli(e)"
@@ -231,8 +231,8 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
   test 'is invalid if activity_scope is too long' do
     multi_internship_agreement = build(
       :multi_internship_agreement,
-      enforce_school_manager_validations: true,
-      activity_scope: 'a' * 1501)
+      enforce_employer_validations: true,
+      activity_scope: 'redrum ' * 220)
     refute multi_internship_agreement.valid?
     assert_includes multi_internship_agreement.errors[:activity_scope], "est trop long (pas plus de 1500 caractères)"
   end
@@ -240,7 +240,7 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
   test 'is invalid if both daily_hours and weekly_hours are blank' do
     multi_internship_agreement = build(
       :multi_internship_agreement,
-      enforce_school_manager_validations: true,
+      enforce_employer_validations: true,
       daily_hours: nil, weekly_hours: nil)
     refute multi_internship_agreement.valid?
     assert_includes multi_internship_agreement.errors[:base], "Vous devez fournir soit les heures hebdomadaires, soit les heures journalières."

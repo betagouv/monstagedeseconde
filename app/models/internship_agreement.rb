@@ -29,43 +29,44 @@ class InternshipAgreement < ApplicationRecord
                 :skip_validations_for_system,
                 :skip_notifications_when_system_creation
 
+  # Validations
+  with_options if: :enforce_employer_validations? do
+    validates :activity_scope, presence: true, length: { maximum: 1500 }
+    validate :valid_working_hours_fields
+    validate :at_least_daily_hours_or_weekly_hours
+  end
+
   with_options if: :enforce_teacher_validations? do
     validates :student_class_room, presence: true
   end
 
+  # Validations for school_managers are common to all agreements
   with_options if: :enforce_school_manager_validations? do
     validates :school_representative_full_name,
               :school_representative_role,
               :student_school,
+              :student_birth_date,
               presence: true
     validates :school_representative_email,
-              :student_refering_teacher_full_name,
               :student_legal_representative_full_name,
               :student_refering_teacher_email,
               :student_legal_representative_email,
               :student_full_name,
               presence: true,
               length: { minimum: 5, maximum: 100 }
+    validates :organisation_representative_role,
+              presence: true,
+              length: { minimum: 5, maximum: 150 }
+    validates :student_refering_teacher_full_name,
+              presence: true,
+              length: { minimum: 3, maximum: 100 } # includes "N/A"
     validates :student_address, length: { minimum: 5, maximum: 170 }
+    validates :access_token, length: { is: 20 }
     validates :student_phone,
+              :school_representative_phone,
               :student_legal_representative_phone,
               format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
                         message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
-  end
-
-  with_options if: :enforce_employer_validations? do
-    validates :organisation_representative_full_name,
-              :organisation_representative_role,
-              :date_range,
-              :tutor_role,
-              :entreprise_address,
-              presence: true
-    validates :organisation_representative_full_name,
-              :tutor_full_name,
-              presence: true,
-              length: { minimum: 5, maximum: 100 }
-    validates :siret, presence: true, length: { is: 14 }
-    validate :valid_working_hours_fields
   end
 
   # Callbacks
@@ -191,7 +192,7 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def weekly_planning?
-    weekly_hours.any?(&:present?)
+    weekly_hours&.any?(&:present?)
   end
   alias_method :valid_weekly_planning?, :weekly_planning?
 

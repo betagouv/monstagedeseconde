@@ -55,5 +55,18 @@ module PhoneComputation
       self.phone = phone.delete(' ') unless phone.nil?
       self.phone = nil if phone == '+33'
     end
+
+    def light_phone_presentation(given_phone_number = nil)
+      str = given_phone_number.to_s.strip || phone.strip
+
+      str.gsub(/\A\+330/, '0').gsub(/\A\+33/, '0')
+    end
+
+    def phone_presentation_grouped_by_twos(given_phone_number = nil)
+      str = given_phone_number.to_s.strip || phone.strip
+      return '' if phone.blank?
+
+      str.scan(/\d{2}/).join(' ')
+    end
   end
 end

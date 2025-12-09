@@ -139,12 +139,22 @@ def populate_internship_offers
   # 6
   coordinator = MultiCoordinator.first
   multi_corporation = MultiCorporation.create!( multi_coordinator: coordinator )
+  corporation_names = [
+    "La Française de jeux", "Electrolux",
+    "Larfarge Corporation Limited", "Veolia Environnement", "Accor Hotels"
+  ]
+  tutor_names = [
+    "Alice Martin", "Bob Dupont",
+   "Caroline Durand", "David Bernard", "Eva Moreau"]
+  tutor_role_in_companies = [
+    "Responsable RH", "Directeur des opérations", "Chef de projet", "Manager", "Consultant"
+  ]
   5.times do |n|
     Corporation.create!(
       multi_corporation: multi_corporation,
       sector: Sector.all[n],
       siret: "1112223330000#{n}",
-      employer_name: "Corporation #{n}",
+      employer_name: corporation_names[n],
       employer_address: "#{n} rue du Poulet, 75018 Paris",
       city: 'Paris',
       zipcode: '75018',
@@ -154,8 +164,8 @@ def populate_internship_offers
       internship_zipcode: '75018',
       internship_street: "#{n} rue Lamarck",
       internship_phone: "+33061234567#{n}",
-      tutor_name: "Tutor #{n}",
-      tutor_role_in_company: 'Manager',
+      tutor_name: tutor_names[n],
+      tutor_role_in_company: tutor_role_in_companies[n],
       tutor_email: "tutor#{n}@example.com",
       tutor_phone: "+33061234511#{n}"
       )
