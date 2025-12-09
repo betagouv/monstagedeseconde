@@ -20,7 +20,7 @@ class Corporation < ApplicationRecord
   
   # Employer / Signatory (Representative)
   validates :employer_name, presence: true, length: { maximum: 150 }
-  validates :employer_role, presence: true, length: { maximum: 250 }
+  validates :employer_role, presence: true, length: { maximum: 120 }
   validates :employer_email, presence: true, length: { maximum: 120 }, format: { with: Devise.email_regexp }
   # validates :employer_phone, presence: true, length: { maximum: 20 }
 
