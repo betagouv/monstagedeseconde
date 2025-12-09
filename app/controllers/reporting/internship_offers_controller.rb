@@ -17,11 +17,13 @@ module Reporting
       @offers = @offers.where.not(published_at: nil) if current_user.education_statistician?
       @no_offers = no_current_offers
       return if offers_hash[:school_year].blank?
-
       respond_to do |format|
         format.xlsx do
+          # SchoolYear::Floating.new_by_year expects the end year (2025 for 2024/2025)
+          # but the form sends the start year (2024 for 2024/2025), so we add 1 
+          export_params = offers_hash.merge(school_year: params[:school_year].to_i + 1)
           if dimension_is?('offers', params[:dimension])
-            SendExportOffersJob.perform_later(current_user, offers_hash)
+            SendExportOffersJob.perform_later(current_user, export_params)
             redirect_back fallback_location: reporting_dashboards_path(offers_hash),
                           flash: { success: 'Votre fichier va vous être envoyé ' \
                                             "à l'adresse email : #{current_user.email}" }

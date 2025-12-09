@@ -48,14 +48,7 @@ namespace :year_end do
         # rich_text_resume_other
         # rich_text_resume_languages
         [InternshipOfferInfo, [:description_rich_text]],
-        [InternshipAgreement, %i[ activity_scope_rich_text
-                                  activity_preparation_rich_text
-                                  activity_learnings_rich_text
-                                  activity_rating_rich_text
-                                  skills_observe_rich_text
-                                  skills_communicate_rich_text
-                                  skills_understand_rich_text
-                                  skills_motivation_rich_text ]],
+        [InternshipAgreement, %i[ activity_scope_rich_text]],
         # legal_terms_rich_text
         [InternshipOffer, [:description_rich_text]],
         [School, [:agreement_conditions_rich_text]],

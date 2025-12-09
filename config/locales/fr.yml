@@ -2,9 +2,6 @@ fr:
   errors:
     messages:
       accept_terms: "Veuillez accepter les conditions d'utilisation"
-      teacher_accept_terms: "Veuillez accepter les conditions d'utilisation de la signature"
-      school_manager_accept_terms: "Veuillez accepter les conditions d'utilisation de la signature"
-      employer_accept_terms: "Veuillez accepter les conditions d'utilisation de la signature"
       not_saved:
         one: "Une erreur à corriger :"
         other: "%{count} erreurs à corriger :"
@@ -204,6 +201,7 @@ fr:
         employer_chosen_name: Nom de l'employeur
         entreprise_coordinates: Coordonnées GPS de l'entreprise
         entreprise_full_address: Adresse de l'entreprise
+        entreprise_chosen_full_address: Adresse de l'entreprise
         tutor_first_name: Prénom du tuteur
         tutor_last_name: Nom du tuteur
         tutor_email: Email du tuteur
@@ -213,7 +211,6 @@ fr:
       planning: &planning_fields
         max_candidates: Nbr. max de candidats accueillis sur le stage
         daily_hours: Horaires journaliers
-        daily_lunch_break: Pause déjeuner par jour
         lunch_break: Pause déjeuner
         weekly_lunch_break: Pause déjeuner
         weekly_hours: Horaires
@@ -236,10 +233,7 @@ fr:
           read_by_employer: Lue par l'employeur
       internship_agreement: &internship_agreement_fields
         internship_application: Candidature
-        school_manager_accept_terms: Validée par CE
         entreprise_address: Adresse de l'entreprise
-        employer_accept_terms: Validée par l'employeur
-        teacher_accept_terms: Validée par le professeur principal
         date_range: Dates du stage
         organisation_representative_full_name: Nom de l'employeur
         organisation_representative_role: Fonction de l'employeur
@@ -255,12 +249,8 @@ fr:
         tutor_email: Email du tuteur
         daily_hours: Horaires journaliers
         weekly_hours: Horaires
-        daily_lunch_break: Horaires journaliers pause déjeuner
         weekly_lunch_break: Horaires pause déjeuner
-        activity_rating: Modalités d'évaluation
         activity_scope: Objectifs du stage
-        activity_preparation: Modalités de concertation
-        activity_learnings_rich_text: Compétences visées
         legal_terms_rich_text: Conditions complémentaires
         student_school: Établissement de l'élève
         weekly_planning: Planning hebdomadaire
@@ -440,6 +430,7 @@ fr:
         full_year: Disponible toute l'année
         full_employer: Employeur
         full_address: Adresse de l'employeur
+        entreprise_chosen_full_address: Adresse de l'employeur
         coordinates: Coordonnées GPS
         group_name: Groupe ou institution
         school: Établissement réservé
@@ -546,8 +537,6 @@ fr:
               taken: "Cette adresse email est déjà utilisée"
         internship_agreement:
           attributes:
-            school_manager_accept_terms: "conditions d'utilisation de la signature"
-            employer_accept_terms: "conditions d'utilisation de la signature"
             student_full_name:
               blank: "Veuillez saisir le nom de l'élève"
             organisation_representative_full_name:
@@ -600,6 +589,8 @@ fr:
 
         entreprise:
           attributes: &entreprise_errors
+            entreprise_chosen_full_address: 
+              blank: "Veuillez saisir l'adresse de l'entreprise"
             max_candidates:
               not_a_number: "Veuillez saisir un nombre de candidats par stage"
             is_public:
@@ -618,8 +609,6 @@ fr:
               not_a_number: "Veuillez saisir un nombre de candidats par stage"
             daily_hours:
               blank: "Veuillez saisir les horaires journaliers"
-            daily_lunch_break:
-              blank: "Veuillez saisir la pause déjeuner journalière"
             weekly_lunch_break:
               blank: "Veuillez saisir la pause déjeuner hebdomadaire"
             weekly_hours:
@@ -655,6 +644,8 @@ fr:
               blank: "Veuillez saisir le nom de l'employeur"
             entreprise_full_address:
               blank: "Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage"
+            entreprise_chosen_full_address:
+              blank: "Veuillez saisir l'adresse de l'entreprise"
 
         internship_offers/weekly_framed:
           attributes:

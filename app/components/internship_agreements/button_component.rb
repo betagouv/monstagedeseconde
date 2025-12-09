@@ -35,7 +35,7 @@ module InternshipAgreements
 
     def button_label(user:)
       if user.employer_like?
-        case @internship_agreement.aasm_state
+        case internship_agreement.aasm_state
         when 'draft' then
           {status: 'cta', text: 'Remplir ma convention'}
         when 'started_by_employer' then
@@ -44,7 +44,7 @@ module InternshipAgreements
           {status: 'secondary_cta', text: 'Télécharger'}
         end
       elsif user.in_school_management_team?
-        case @internship_agreement.aasm_state
+        case internship_agreement.aasm_state
         when 'draft', 'started_by_employer' then
           {status: 'disabled', text: 'En attente'}
         when 'completed_by_employer' then
