@@ -31,4 +31,8 @@ class Corporation < ApplicationRecord
   # validates :tutor_phone, presence: true, length: { maximum: 20 }
   
   validates :sector_id, presence: true
+
+  def presenter
+    @presenter ||= Presenters::Corporation.new(self)
+  end
 end

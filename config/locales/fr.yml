@@ -145,10 +145,7 @@ fr:
         is_paqte: Paqte
         name: Nom
         updated_at: Mis à jour le
-      convention:
-        activity_scope: Objectifs du stage
-        weekly_planning: Planning hebdomadaire
-        same_daily_planning: Horaires quotidiens
+
       school:
         name: Nom
         kind: Type
@@ -217,7 +214,6 @@ fr:
       operator: &operator_fields
         name: Nom
         target_count: Objectif annuel
-
 
       internship_offer_area:
         name : Nom d'espace
@@ -371,6 +367,10 @@ fr:
             signed_by_all: Signée par toutes les parties.
       convention:
         <<: *internship_agreement_fields
+        activity_scope: Objectifs du stage
+        weekly_planning: Planning hebdomadaire
+        same_daily_planning: Horaires quotidiens
+        student_refering_teacher_full_name: Professeur référent
       signature:
         signatory_role: signataire
 

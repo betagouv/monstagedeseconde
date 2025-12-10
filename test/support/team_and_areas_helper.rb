@@ -50,6 +50,24 @@ module TeamAndAreasHelper
     [employer, offer]
   end
 
+  def create_employer_and_multi_offer_3eme
+    employer = create(:employer)
+    offer = create(:multi_internship_offer,
+                   :troisieme_generale_internship_offer,
+                   employer: employer,
+                   internship_offer_area_id: employer.current_area_id)
+    [employer, offer]
+  end
+
+  def create_employer_and_multi_offer_2de
+    employer = create(:employer)
+    offer = create(:multi_internship_offer,
+                   :both_weeks,
+                   employer: employer,
+                   internship_offer_area_id: employer.current_area_id)
+    [employer, offer]
+  end
+
   def create_user_operator_and_api_offer(operator_id)
     user_operator = create(:user_operator, operator_id: operator_id)
     offer = create(:api_internship_offer_2nde,
