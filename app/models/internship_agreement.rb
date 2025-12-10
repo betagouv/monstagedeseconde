@@ -56,7 +56,7 @@ class InternshipAgreement < ApplicationRecord
               length: { minimum: 5, maximum: 100 }
     validates :organisation_representative_role,
               presence: true,
-              length: { minimum: 5, maximum: 150 }
+              length: { minimum: 2, maximum: 150 }
     validates :student_refering_teacher_full_name,
               presence: true,
               length: { minimum: 3, maximum: 100 } # includes "N/A"
