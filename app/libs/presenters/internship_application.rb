@@ -125,7 +125,7 @@ module Presenters
           tab: 'Expirées',
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
       when 'expired_by_student'
-        { label: 'expirée par l\'élève',
+        { label: 'Vous n’avez pas répondu dans les délais',
           badge: 'error',
           tab: 'Expirées',
           actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
