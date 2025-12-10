@@ -49,8 +49,8 @@
                     Votre candidature a été acceptée par l’entreprise,
                     c’est à vous de confirmer que vous choisissez ce stage et
                     que vous allez y aller
-                    strong
-                      |< dans un délai de 15 jours à compter de la validation de l’entreprise.
+                  strong
+                    |< dans un délai de 15 jours à compter de la validation de l’entreprise.
 
       - if (current_user.student? || current_user.is_a?(Users::SchoolManagement)) && current_user.internship_applications.approved.count.positive?
         .fr-tabs.fr-tabs--centered.fr-tabs--secondary.fr-mb-2w
