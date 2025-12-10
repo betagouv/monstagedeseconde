@@ -39,7 +39,7 @@ module Presenters
     def employer_name
       if internship_offer.from_multi?
         internship_offer.corporations
-                        .pluck(:employer_name)
+                        .pluck(:corporation_name)
                         .map { |name| name.truncate(20) }
                         .join(' | ')
                         .truncate(100)

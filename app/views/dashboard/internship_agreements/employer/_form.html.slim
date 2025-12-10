@@ -26,25 +26,25 @@
       #nav-tabContent.tab-content
         #nav-employer.tab-pane.fade.active role="tabpanel" aria-labelledby="nav-employer-tab"
           table.table-sticky-thead
-            = render partial: 'dashboard/internship_agreements/form_header',
+            = render partial: 'dashboard/internship_agreements/shared/form_header',
                       locals: { internship_application: @mono_internship_agreement.internship_application,
                                 internship_agreement: form.object }
             - if @mono_internship_agreement.from_multi?
-              = render 'dashboard/multi_internship_agreements/employer_form_fields',
+              = render 'dashboard/internship_agreements/multi/form_fields',
                         form: form,
                         resource: @mono_internship_agreement,
                         disabled: false
             - else
-              = render 'employer_form_fields',
+              = render 'dashboard/internship_agreements/employer/form_fields',
                         form: form,
                         resource: @mono_internship_agreement,
                         disabled: false
         #nav-school-management.tab-pane.fade role="tabpanel" aria-labelledby="nav-school-management-tab"
           table.table-sticky-thead
-            = render partial: 'dashboard/internship_agreements/form_header',
+            = render partial: 'dashboard/internship_agreements/shared/form_header',
                       locals: { internship_application: @mono_internship_agreement.internship_application,
                                 internship_agreement: form.object }
-            = render 'school_management_form_fields',
+            = render 'dashboard/internship_agreements/shared/school_management_form_fields',
                       form: form,
                       resource: @mono_internship_agreement,
                       disabled: true

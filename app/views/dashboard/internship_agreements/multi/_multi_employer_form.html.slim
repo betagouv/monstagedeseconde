@@ -7,10 +7,10 @@
   .row
     .col-12
       table.table-sticky-thead
-        = render partial: 'dashboard/internship_agreements/form_header',
+        = render partial: 'dashboard/internship_agreements/shared/form_header',
                   locals: { internship_application: @multi_internship_agreement.internship_application,
                             internship_agreement: form.object }
-        = render 'dashboard/multi_internship_agreements/multi_employer_form_fields',
+        = render 'dashboard/internship_agreements/multi/multi_employer_form_fields',
                  form: form,
                  resource: @multi_internship_agreement,
                  disabled: false

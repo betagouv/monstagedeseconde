@@ -63,10 +63,9 @@ module PhoneComputation
     end
 
     def phone_presentation_grouped_by_twos(given_phone_number = nil)
-      str = given_phone_number.to_s.strip || phone.strip
-      return '' if phone.blank?
+      return '' if given_phone_number.blank?
 
-      str.scan(/\d{2}/).join(' ')
+      given_phone_number.to_s.strip.scan(/\d{2}/).join(' ')
     end
   end
 end

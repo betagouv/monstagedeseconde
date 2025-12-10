@@ -6,8 +6,7 @@ module Presenters
     attr_reader :corporation
     delegate :employer_name, to: :corporation
     delegate :siret, to: :corporation
-    delegate :employer_address, to: :corporation
-    delegate :phone, to: :corporation
+    delegate :corporation_address, to: :corporation
     delegate :city, to: :corporation
     delegate :zipcode, to: :corporation
     delegate :street, to: :corporation

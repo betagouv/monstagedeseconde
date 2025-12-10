@@ -1,4 +1,4 @@
-.employer.fr-mt-8w [data-controller='group-signing'
+.employer.fr-mt-4w [data-controller='group-signing'
                     data-group-signing-counter-value='0'
                     data-group-signing-max-counter-value='0']
   .row.no-gutters
@@ -22,9 +22,17 @@
                                                           aria-controls="multi-agreements-button-panel"
                                                           aria-selected="false"]
               | Conventions multi-offreurs
-        = render partial: 'dashboard/internship_agreements/internship_agreements_list',
-                 notification: current_user.team_pending_agreements_actions_count
-
-        = render partial: 'dashboard/multi_internship_agreements/multi_internship_agreements_list',
-                 notification: current_user.team_pending_multi_agreements_actions_count
+        #agreement-button-panel [
+              class="#{(current_user.employer_like?) ? 'fr-tabs__panel fr-tabs__panel--selected' : ''} "
+              aria-labelled-by="agreement-button"
+              role="tabpanel"
+              tabindex="0"]
+          = render partial: 'dashboard/internship_agreements/internship_agreements_list',
+                  notification: current_user.team_pending_agreements_actions_count
+        #multi-agreements-button-panel [class="fr-tabs__panel"
+                                aria-labelledBy="multi-agreements-button"
+                                role="tabpanel"
+                                tabindex="0"]
+          = render partial: 'dashboard/internship_agreements/multi/multi_internship_agreements_list',
+                  notification: current_user.team_pending_multi_agreements_actions_count
   = render partial: 'dashboard/internship_agreements/signature/modal_dialog'
