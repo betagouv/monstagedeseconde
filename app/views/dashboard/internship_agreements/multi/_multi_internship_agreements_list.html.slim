@@ -1,7 +1,4 @@
-#multi-agreements-button-panel [class="fr-tabs__panel"
-                                aria-labelledBy="multi-agreements-button"
-                                role="tabpanel"
-                                tabindex="0"]
+
 
   / .fr-callout.fr-fi-information-line
   /   p.fr-callout__title Signez votre convention en ligne !
@@ -14,7 +11,8 @@
 
   - if @multi_internship_agreements.empty? && current_user.employer_like? && @no_agreement_internship_application_list.empty?
     = render partial: 'empty_agreement_list'
-
+  - elsif @multi_internship_agreements.empty? && current_user.school_management? && @no_agreement_internship_application_list.empty?
+    = render partial: 'empty_agreement_list'
   - else
     = form_with(model: User,
                 url: start_signing_dashboard_user_path(id: current_user.id),
@@ -45,7 +43,7 @@
 
                 tbody
                   - @multi_internship_agreements.each do |internship_agreement|
-                    = render partial: 'dashboard/multi_internship_agreements/multi_internship_agreement',
+                    = render partial: 'dashboard/internship_agreements/multi/multi_internship_agreement',
                               locals: { internship_agreement: internship_agreement, fg: fg }
                   - @no_agreement_internship_application_list.each do |internship_application|
                     = render partial: 'dashboard/internship_agreements/internship_application_in_agreement_list',

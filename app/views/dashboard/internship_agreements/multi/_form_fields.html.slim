@@ -26,7 +26,7 @@ tbody.internship-agreement
         - title = "Note au chef d'entreprise"
         - content = "Date de début et fin du stage"
         - filled_by = ["l'entreprise"]
-        = render partial: 'dashboard/internship_agreements/text_field_element',
+        = render partial: 'dashboard/internship_agreements/shared/text_field_element',
                  locals: { field: :date_range, limit: 70, form: form, text_label: label, content: content, title: title , filled_by: filled_by, disabled: disabled }
 
       .row.mt-0.backwards
@@ -43,7 +43,7 @@ tbody.internship-agreement
         - title = "Activités prévues"
         - content = "Activités prévues"
         - filled_by = ["l'entreprise"]
-        = render partial: 'dashboard/internship_agreements/text_field_element',
+        = render partial: 'dashboard/internship_agreements/shared/text_field_element',
                  locals: { field: :activity_scope,
                            form: form,
                            text_label: label,
@@ -67,5 +67,5 @@ tbody.internship-agreement
           .col-8= render "layouts/form_errors", resource: resource
 
         .row.mt-0.fr-mb-10w
-          = render partial: 'dashboard/internship_agreements/employer_form_footer',
+          = render partial: 'dashboard/internship_agreements/employer/form_footer',
                             locals: { form: form, internship_agreement: @internship_agreement }
