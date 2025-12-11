@@ -269,11 +269,9 @@ class InternshipOffer < ApplicationRecord
 
   scope :without_qpv, -> { where(qpv: false) }
   scope :without_rep, -> { where(rep: false) }
-  scope :filtered_with_qpv, ->(user:) { user.student? && user.belongs_to_qpv_school? ? all : where(qpv: false) }
-  scope :filtered_with_rep, lambda { |user:|
-    user.student? && user.belongs_to_rep_or_rep_plus_school? ? all : where(rep: false)
-  }
-  scope :filtered_by_qpv_and_rep, ->(user:) { filtered_with_qpv(user:).filtered_with_rep(user:) }
+  scope :filtered_with_qpv, lambda { |user:| user.student? && user.belongs_to_qpv_school? ? all : where(qpv: false) }
+  scope :filtered_with_rep, lambda { |user:| user.student? && user.belongs_to_rep_or_rep_plus_school? ? all : where(rep: false) }
+  scope :filtered_by_qpv_and_rep, lambda { |user:| filtered_with_qpv(user:).filtered_with_rep(user:) }
   scope :open_data, -> { where(open_data: true) }
   scope :ignore_qpv_and_rep, -> { where(qpv: false, rep: false) }
 
