@@ -166,4 +166,51 @@ class InternshipOfferTest < ActiveSupport::TestCase
   #     assert_equal '1 semaine - du 16 au 20 juin 2025', internship_offer.current_period_label
   #   end
   # end
+
+  test 'scope ignore_internship_restricted_to_other_schools' do
+    school1 = create(:school) #school that will be reserved
+    school2 = create(:school)
+    school3 = create(:school)
+    school4 = create(:school)
+    employer1 = create(:employer)
+    student1 = create(:student, school: school1)
+    student2 = create(:student, school: school2)
+    student3 = create(:student, school: school3)
+    student4 = create(:student, school: school4)
+
+    internship_offer1 = create(:weekly_internship_offer_2nde, employer: employer1)
+    internship_offer1.schools << school1
+    internship_offer1.schools << school3
+
+    internship_offer2 = create(:weekly_internship_offer_2nde, employer: employer1)
+    internship_offer2.schools << school2
+    internship_offer2.schools << school3
+
+    internship_offer3 = create(:weekly_internship_offer_2nde, employer: employer1)
+    internship_offer4 = create(:weekly_internship_offer_2nde, employer: employer1)
+
+    offers = InternshipOffer.ignore_internship_restricted_to_other_schools(school_id: student1.school.id)
+    assert offers.include?(internship_offer1)
+    refute offers.include?(internship_offer2)
+    assert offers.include?(internship_offer3)
+    assert offers.include?(internship_offer4)
+
+    offers = InternshipOffer.ignore_internship_restricted_to_other_schools(school_id: student2.school.id)
+    assert offers.include?(internship_offer2)
+    refute offers.include?(internship_offer1)
+    assert offers.include?(internship_offer3)
+    assert offers.include?(internship_offer4)
+
+    offers = InternshipOffer.ignore_internship_restricted_to_other_schools(school_id: student3.school.id)
+    assert offers.include?(internship_offer1)
+    assert offers.include?(internship_offer2)
+    assert offers.include?(internship_offer3)
+    assert offers.include?(internship_offer4)
+
+    offers = InternshipOffer.ignore_internship_restricted_to_other_schools(school_id: student4.school.id)
+    refute offers.include?(internship_offer1)
+    refute offers.include?(internship_offer2)
+    assert offers.include?(internship_offer3)
+    assert offers.include?(internship_offer4)
+  end
 end
