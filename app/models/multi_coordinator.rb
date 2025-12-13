@@ -11,6 +11,8 @@ class MultiCoordinator < ApplicationRecord
 
   belongs_to :multi_activity
   belongs_to :sector, optional: true
+  has_one :multi_corporation, dependent: :destroy
+  has_one :multi_planning, dependent: :destroy
 
   attr_accessor :presentation_siret
 

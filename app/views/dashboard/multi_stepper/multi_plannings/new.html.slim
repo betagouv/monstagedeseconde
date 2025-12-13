@@ -1,0 +1,25 @@
+- content_for(:page_title, "Déposer une offre de stage - Planning | 1élève1stage")
+
+.fr-container
+  .fr-grid-row
+    .fr-col-12
+      h1.fr-h2.fr-mb-2w Déposer une offre de stage pour plusieurs entreprises
+      
+      .fr-stepper
+        h2.fr-stepper__title
+          span.fr-stepper__state Étape 4 sur 4
+          | Le planning
+        .fr-stepper__steps data-fr-current-step="4" data-fr-steps="4"
+        p.fr-stepper__details
+          span.fr-text--bold Étape suivante : 
+          | Récapitulatif
+
+  .fr-grid-row.fr-grid-row--gutters
+    .fr-col-12.fr-col-md-8
+      = render 'form', multi_planning: @multi_planning, multi_coordinator: @multi_coordinator
+
+    .fr-col-12.fr-col-md-4
+      - if @multi_corporation
+        = render 'dashboard/multi_stepper/multi_corporations/corporations/list', multi_corporation: @multi_corporation
+
+

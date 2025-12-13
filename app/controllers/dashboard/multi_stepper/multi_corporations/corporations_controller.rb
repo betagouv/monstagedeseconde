@@ -9,7 +9,7 @@ module Dashboard::MultiStepper
         puts "🔹 [CorporationsController] START create"
         puts "🔹 [CorporationsController] Params received: #{params.inspect}"
         puts "🔹 [CorporationsController] Corporation params: #{corporation_params.inspect}"
-        
+        process_corporation_params
         @corporation = @multi_corporation.corporations.build(corporation_params)
         authorize! :create, @corporation
         
@@ -65,6 +65,12 @@ module Dashboard::MultiStepper
 
       def fetch_corporation
         @corporation = @multi_corporation.corporations.find(params[:id])
+      end
+
+      def process_corporation_params
+        params[:corporation][:internship_street] = params[:corporation][:street]
+        params[:corporation][:internship_zipcode] = params[:corporation][:zipcode]
+        params[:corporation][:internship_city] = params[:corporation][:city]
       end
 
       def corporation_params

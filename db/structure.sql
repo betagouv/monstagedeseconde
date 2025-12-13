@@ -1686,6 +1686,102 @@ ALTER SEQUENCE public.multi_corporations_id_seq OWNED BY public.multi_corporatio
 
 
 --
+-- Name: multi_planning_grades; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.multi_planning_grades (
+    id bigint NOT NULL,
+    multi_planning_id bigint NOT NULL,
+    grade_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: multi_planning_grades_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.multi_planning_grades_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: multi_planning_grades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.multi_planning_grades_id_seq OWNED BY public.multi_planning_grades.id;
+
+
+--
+-- Name: multi_planning_reserved_schools; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.multi_planning_reserved_schools (
+    id bigint NOT NULL,
+    multi_planning_id bigint NOT NULL,
+    school_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: multi_planning_reserved_schools_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.multi_planning_reserved_schools_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: multi_planning_reserved_schools_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.multi_planning_reserved_schools_id_seq OWNED BY public.multi_planning_reserved_schools.id;
+
+
+--
+-- Name: multi_planning_weeks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.multi_planning_weeks (
+    id bigint NOT NULL,
+    multi_planning_id bigint NOT NULL,
+    week_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: multi_planning_weeks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.multi_planning_weeks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: multi_planning_weeks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.multi_planning_weeks_id_seq OWNED BY public.multi_planning_weeks.id;
+
+
+--
 -- Name: multi_plannings; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1693,7 +1789,6 @@ CREATE TABLE public.multi_plannings (
     id bigint NOT NULL,
     max_candidates integer NOT NULL,
     remaining_seats_count integer,
-    weekly_hours character varying(400) NOT NULL,
     daily_hours jsonb,
     lunch_break character varying(250) NOT NULL,
     multi_coordinator_id bigint NOT NULL,
@@ -1701,7 +1796,8 @@ CREATE TABLE public.multi_plannings (
     rep boolean DEFAULT false NOT NULL,
     qpv boolean DEFAULT false NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    weekly_hours text[] DEFAULT '{}'::text[]
 );
 
 
@@ -2756,6 +2852,27 @@ ALTER TABLE ONLY public.multi_corporations ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
+-- Name: multi_planning_grades id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_planning_grades ALTER COLUMN id SET DEFAULT nextval('public.multi_planning_grades_id_seq'::regclass);
+
+
+--
+-- Name: multi_planning_reserved_schools id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_planning_reserved_schools ALTER COLUMN id SET DEFAULT nextval('public.multi_planning_reserved_schools_id_seq'::regclass);
+
+
+--
+-- Name: multi_planning_weeks id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_planning_weeks ALTER COLUMN id SET DEFAULT nextval('public.multi_planning_weeks_id_seq'::regclass);
+
+
+--
 -- Name: multi_plannings id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3196,6 +3313,30 @@ ALTER TABLE ONLY public.multi_coordinators
 
 ALTER TABLE ONLY public.multi_corporations
     ADD CONSTRAINT multi_corporations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: multi_planning_grades multi_planning_grades_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_planning_grades
+    ADD CONSTRAINT multi_planning_grades_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: multi_planning_reserved_schools multi_planning_reserved_schools_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_planning_reserved_schools
+    ADD CONSTRAINT multi_planning_reserved_schools_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: multi_planning_weeks multi_planning_weeks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_planning_weeks
+    ADD CONSTRAINT multi_planning_weeks_pkey PRIMARY KEY (id);
 
 
 --
@@ -3991,6 +4132,48 @@ CREATE INDEX index_multi_corporations_on_multi_coordinator_id ON public.multi_co
 
 
 --
+-- Name: index_multi_planning_grades_on_grade_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_planning_grades_on_grade_id ON public.multi_planning_grades USING btree (grade_id);
+
+
+--
+-- Name: index_multi_planning_grades_on_multi_planning_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_planning_grades_on_multi_planning_id ON public.multi_planning_grades USING btree (multi_planning_id);
+
+
+--
+-- Name: index_multi_planning_reserved_schools_on_multi_planning_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_planning_reserved_schools_on_multi_planning_id ON public.multi_planning_reserved_schools USING btree (multi_planning_id);
+
+
+--
+-- Name: index_multi_planning_reserved_schools_on_school_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_planning_reserved_schools_on_school_id ON public.multi_planning_reserved_schools USING btree (school_id);
+
+
+--
+-- Name: index_multi_planning_weeks_on_multi_planning_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_planning_weeks_on_multi_planning_id ON public.multi_planning_weeks USING btree (multi_planning_id);
+
+
+--
+-- Name: index_multi_planning_weeks_on_week_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_planning_weeks_on_week_id ON public.multi_planning_weeks USING btree (week_id);
+
+
+--
 -- Name: index_multi_plannings_on_multi_coordinator_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4504,6 +4687,14 @@ ALTER TABLE ONLY public.multi_plannings
 
 
 --
+-- Name: multi_planning_weeks fk_rails_29de64063a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_planning_weeks
+    ADD CONSTRAINT fk_rails_29de64063a FOREIGN KEY (week_id) REFERENCES public.weeks(id);
+
+
+--
 -- Name: user_schools fk_rails_2a059e4b44; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4560,6 +4751,14 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
+-- Name: multi_planning_weeks fk_rails_35f5e237c1; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_planning_weeks
+    ADD CONSTRAINT fk_rails_35f5e237c1 FOREIGN KEY (multi_planning_id) REFERENCES public.multi_plannings(id);
+
+
+--
 -- Name: multi_coordinators fk_rails_3ab8f79e0f; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4589,6 +4788,14 @@ ALTER TABLE ONLY public.internship_application_weeks
 
 ALTER TABLE ONLY public.departments
     ADD CONSTRAINT fk_rails_3f7cf55cd4 FOREIGN KEY (academy_id) REFERENCES public.academies(id);
+
+
+--
+-- Name: multi_planning_grades fk_rails_471245cb57; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_planning_grades
+    ADD CONSTRAINT fk_rails_471245cb57 FOREIGN KEY (grade_id) REFERENCES public.grades(id);
 
 
 --
@@ -4776,6 +4983,14 @@ ALTER TABLE ONLY public.internship_applications
 
 
 --
+-- Name: multi_planning_grades fk_rails_9532d78cc9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_planning_grades
+    ADD CONSTRAINT fk_rails_9532d78cc9 FOREIGN KEY (multi_planning_id) REFERENCES public.multi_plannings(id);
+
+
+--
 -- Name: corporations fk_rails_95bf53c901; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4848,6 +5063,14 @@ ALTER TABLE ONLY public.user_groups
 
 
 --
+-- Name: multi_planning_reserved_schools fk_rails_c2fb10b23a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_planning_reserved_schools
+    ADD CONSTRAINT fk_rails_c2fb10b23a FOREIGN KEY (school_id) REFERENCES public.schools(id);
+
+
+--
 -- Name: active_storage_attachments fk_rails_c3b3935057; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4893,6 +5116,14 @@ ALTER TABLE ONLY public.inappropriate_offers
 
 ALTER TABLE ONLY public.planning_reserved_schools
     ADD CONSTRAINT fk_rails_d6800a0532 FOREIGN KEY (school_id) REFERENCES public.schools(id);
+
+
+--
+-- Name: multi_planning_reserved_schools fk_rails_d8ebd96d18; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_planning_reserved_schools
+    ADD CONSTRAINT fk_rails_d8ebd96d18 FOREIGN KEY (multi_planning_id) REFERENCES public.multi_plannings(id);
 
 
 --
@@ -4982,6 +5213,9 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251211100406'),
+('20251210163350'),
+('20251209223741'),
 ('20251209140000'),
 ('20251204130000'),
 ('20251203153952'),

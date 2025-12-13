@@ -32,6 +32,8 @@ export default class extends Controller {
   }
 
   connect() {
+    console.log('initialGradesValue', this.initialGradesValue);
+    
     this.initialGradesValue.split(",").forEach((grade) => {
       if (grade === "troisieme" || grade === "quatrieme") {
         this.gradeCollegeTarget.checked = true;

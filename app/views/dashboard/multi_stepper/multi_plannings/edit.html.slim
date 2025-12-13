@@ -1,0 +1,16 @@
+- content_for(:page_title, "Modifier une offre de stage - Planning | 1élève1stage")
+
+.fr-container
+  .fr-grid-row
+    .fr-col-12
+      h1.fr-h2.fr-mb-2w Modifier le planning
+      
+  .fr-grid-row.fr-grid-row--gutters
+    .fr-col-12.fr-col-md-8
+      = render 'form', multi_planning: @multi_planning, multi_coordinator: @multi_planning.multi_coordinator
+
+    .fr-col-12.fr-col-md-4
+      - if @multi_corporation
+        = render 'dashboard/multi_stepper/multi_corporations/corporations/list', multi_corporation: @multi_corporation
+
+
