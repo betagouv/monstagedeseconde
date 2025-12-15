@@ -48,10 +48,6 @@ module Presenters
       end
     end
 
-    def employer_name
-      internship_offer.employer_name
-    end
-
     def role
       return 'employer' if current_user.employer_like?
       return 'school_manager' if current_user.school_management?

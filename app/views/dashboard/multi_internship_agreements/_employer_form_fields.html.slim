@@ -1,0 +1,71 @@
+- disabled = disabled || resource.completed_by_employer?
+
+tbody.internship-agreement
+  tr
+    td
+      = form.hidden_field :internship_application_id,
+                          id: "employer-internship_application-#{resource.internship_application_id}",
+                          value: resource.internship_application_id
+      = form.hidden_field :employer_event, value: '', data: { :'internship-agreement-form-target' => 'employerEvent' }
+
+      .row.mt-4.align-items-center
+        .col-12= form.rg2a_explain_required_asterisk(p_class_name: "mb-0")
+
+      .row
+        .col-8= render "layouts/form_errors", resource: resource
+      .row
+        .col
+          .d-flex.flex-wrap
+            - resource.internship_offer.corporations.each do |corporation|
+              = render 'dashboard/multi_stepper/summary_card',
+                       corporation: corporation,
+                       resource: resource
+
+      .row.mt-0
+        - label = "Dates de la séquence d’observation en milieu professionnel"
+        - title = "Note au chef d'entreprise"
+        - content = "Date de début et fin du stage"
+        - filled_by = ["l'entreprise"]
+        = render partial: 'dashboard/internship_agreements/text_field_element',
+                 locals: { field: :date_range, limit: 70, form: form, text_label: label, content: content, title: title , filled_by: filled_by, disabled: disabled }
+
+      .row.mt-0.backwards
+        .col-12
+          .form-group.schedules.mt-3
+            = form.label "same_daily_hours" do
+              span.mb-2.fr-label = "Horaires"
+              = form.rg2a_required_content_tag
+            = render partial: "dashboard/stepper/plannings/daily_hours",
+                     locals: { form: form, disabled: disabled }
+
+      .row.mt-0
+        - label = "Activités prévues durant la séquence d’observation en milieu professionnel"
+        - title = "Activités prévues"
+        - content = "Activités prévues"
+        - filled_by = ["l'entreprise"]
+        = render partial: 'dashboard/internship_agreements/text_field_element',
+                 locals: { field: :activity_scope,
+                           form: form,
+                           text_label: label,
+                           title: title,
+                           content: content,
+                           filled_by: filled_by,
+                           disabled: disabled,
+                           input_type: :text_area,
+                           limit: 1_000,
+                           rows: 4 }
+
+
+      = form.submit 'Submit', class: 'd-none', id: 'employer-submit'
+
+      - unless disabled
+        .row.fr-my-2w
+          .col-7
+            p= "Fait à #{resource.internship_application.student.school.city.capitalize}, le #{(Date.current).strftime('%d/%m/%Y')}."
+
+        .row
+          .col-8= render "layouts/form_errors", resource: resource
+
+        .row.mt-0.fr-mb-10w
+          = render partial: 'dashboard/internship_agreements/employer_form_footer',
+                            locals: { form: form, internship_agreement: @internship_agreement }
