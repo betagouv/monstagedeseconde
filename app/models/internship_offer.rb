@@ -130,7 +130,6 @@ class InternshipOffer < ApplicationRecord
                                              less_than_or_equal_to: InternshipOffer::MAX_CANDIDATES_HIGHEST }
   validates :street, :city, presence: true, length: { maximum: STREET_MAX_CHAR_COUNT }
   validates :zipcode, presence: true, length: { maximum: ZIPCODE_SIZE }
-  validates :coordinates, presence: true
   validate :check_missing_seats, if: :user_update?, on: :update
 
   # TODO : remove this validation when we will have a better way to manage it

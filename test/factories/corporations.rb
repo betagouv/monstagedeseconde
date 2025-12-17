@@ -24,5 +24,7 @@ FactoryBot.define do
     tutor_role_in_company { 'Manager' }
     tutor_email { 'john.doe@example.com' }
     tutor_phone { '+330612345111' }
+
+    internship_coordinates { RGeo::Geographic.spherical_factory(srid: 4326).point(2.3488, 48.8534) }
   end
 end

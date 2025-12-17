@@ -69,6 +69,7 @@ module InternshipOffers
     validates :permalink, presence: true,
                           format: { without: /.*(test|staging).*/i, message: 'Le lien ne doit pas renvoyer vers un environnement de test.' }
     validates :employer_description, presence: true, length: { maximum: EMPLOYER_DESCRIPTION_MAX_SIZE }
+    validates :coordinates, presence: true
 
     scope :uncompleted_with_max_candidates, lambda {
       where('1=1')

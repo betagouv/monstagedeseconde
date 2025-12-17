@@ -6,5 +6,12 @@ FactoryBot.define do
     lunch_break { "12h-13h" }
     rep { false }
     qpv { false }
+    
+    after(:build) do |multi_planning|
+      if multi_planning.weeks.empty?
+        week = Week.selectable_from_now_until_end_of_school_year.first || Week.current
+        multi_planning.weeks << week
+      end
+    end
   end
 end

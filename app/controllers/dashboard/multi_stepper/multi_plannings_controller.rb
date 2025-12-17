@@ -23,9 +23,25 @@ module Dashboard::MultiStepper
       @multi_planning = MultiPlanning.new(multi_planning_params)
       @multi_planning.multi_coordinator = @multi_coordinator
 
+      @multi_planning = Dto::MultiPlanningAdapter.new(instance: @multi_planning, 
+                                                      params: multi_planning_params, 
+                                                      current_user: current_user)
+                                                 .manage_planning_associations
+                                                 .instance
+
       if @multi_planning.save
-        # TODO: Redirect to recap or next step
-        redirect_to dashboard_multi_stepper_multi_coordinator_path(@multi_coordinator), notice: 'Planning créé avec succès'
+        builder = Builders::MultiInternshipOfferBuilder.new(user: current_user, context: :web)
+        builder.create_from_stepper(user: current_user, multi_planning: @multi_planning) do |on|
+          on.success do |created_internship_offer|
+            redirect_to(internship_offer_path(created_internship_offer, origine: 'dashboard', stepper: true),
+                        notice: 'Les informations de planning ont bien été enregistrées. Votre offre est publiée')
+          end
+          on.failure do |failed_internship_offer|
+            flash.now[:alert] = "Erreur lors de la création de l'offre: #{failed_internship_offer.errors.full_messages.join(', ')}"
+            set_weeks_variables
+            render :new, status: :bad_request
+          end
+        end
       else
         set_weeks_variables
         render :new, status: :bad_request
