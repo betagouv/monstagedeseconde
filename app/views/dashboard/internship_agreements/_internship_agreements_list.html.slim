@@ -1,68 +1,71 @@
+.employer.fr-mt-4w [data-controller='group-signing'
+                    data-group-signing-counter-value='0'
+                    data-group-signing-multi-value='false'
+                    data-group-signing-max-counter-value='0']
 
+  / .fr-callout.fr-fi-information-line
+  /   p.fr-callout__title Signez votre convention en ligne !
+  /   p.fr-callout__text
+  /     |
+  /       La signature de la convention de stage peut s’effectuer en
+  /       ligne, de manière totalement dématérialisée et sécurisée.
+  /       Vous préférez la signature traditionnelle en version papier ?
+  /       Optez pour l’impression.
 
-/ .fr-callout.fr-fi-information-line
-/   p.fr-callout__title Signez votre convention en ligne !
-/   p.fr-callout__text
-/     |
-/       La signature de la convention de stage peut s’effectuer en
-/       ligne, de manière totalement dématérialisée et sécurisée.
-/       Vous préférez la signature traditionnelle en version papier ?
-/       Optez pour l’impression.
+  - if @mono_internship_agreements.empty? && current_user.employer_like? && @no_agreement_internship_application_list.empty?
+    = render partial: 'empty_agreement_list'
 
-- if @mono_internship_agreements.empty? && current_user.employer_like? && @no_agreement_internship_application_list.empty?
-  = render partial: 'empty_agreement_list'
+  - else
+    = form_with(model: User,
+                url: start_signing_dashboard_user_path(id: current_user.id),
+                method: :post)  do |fg|
 
-- else
-  = form_with(model: User,
-              url: start_signing_dashboard_user_path(id: current_user.id),
-              method: :post)  do |fg|
+      .fr-table.fr-table--multiline.fr-table--bordered.fr-mb-4w.fr-mx-n4w
+        .fr-table__wrapper
+          .fr-table__container
+            .fr-table__content style="overflow-x: hidden;"
+              table.fr-internship-agreements-list
+                thead
+                  tr.d-flex
+                    th.col-xs style='vertical-align: middle; text-align: center;'
+                        .fr-checkbox-group style='display: flex; align-items: center; justify-content: center; height: 100%;'
+                          input.select-general-internship-agreements [
+                              type='checkbox'
+                              name='select-general-internship-agreements'
+                              id='select-general-internship-agreements'
+                              data-action="group-signing#toggleSignThemAll"
+                              data-group-signing-target="generalCtaSelectBox"]
+                          label.fr-mt-1w for='select-general-internship-agreements'
+                            span style='color: #f5f5f5;' .
+                    th.col-sm-2.fr-pl-3w.d-flex.align-items-center Elève
+                    th.col-sm-2.fr-pl-3w.d-flex.align-items-center Offre de stage
+                    th.col-sm-2.d-flex.align-items-center Statut
+                    th.col-sm-2.d-flex.align-items-center Signature en ligne
+                    th.col style='background-color: #f5f5f5; min-height: 70px; min-width: 200px;'
 
-    .fr-table.fr-table--multiline.fr-table--bordered.fr-mb-4w.fr-mx-n4w
-      .fr-table__wrapper
-        .fr-table__container
-          .fr-table__content style="overflow-x: hidden;"
-            table.fr-internship-agreements-list
-              thead
-                tr.d-flex
-                  th.col-xs style='vertical-align: middle; text-align: center;'
-                      .fr-checkbox-group style='display: flex; align-items: center; justify-content: center; height: 100%;'
-                        input.select-general-internship-agreements [
-                            type='checkbox'
-                            name='select-general-internship-agreements'
-                            id='select-general-internship-agreements'
-                            data-action="group-signing#toggleSignThemAll"
-                            data-group-signing-target="generalCtaSelectBox"]
-                        label.fr-mt-1w for='select-general-internship-agreements'
-                          span style='color: #f5f5f5;' .
-                  th.col-sm-2.fr-pl-3w.d-flex.align-items-center Elève
-                  th.col-sm-2.fr-pl-3w.d-flex.align-items-center Offre de stage
-                  th.col-sm-2.d-flex.align-items-center Statut
-                  th.col-sm-2.d-flex.align-items-center Signature en ligne
-                  th.col style='background-color: #f5f5f5; min-height: 70px; min-width: 200px;'
+                tbody
+                  - @mono_internship_agreements.each do |internship_agreement|
+                    = render partial: 'dashboard/internship_agreements/internship_agreement',
+                              locals: { internship_agreement: internship_agreement, fg: fg }
+                  - @no_agreement_internship_application_list.each do |internship_application|
+                    = render partial: 'dashboard/internship_agreements/internship_application_in_agreement_list',
+                              locals: { internship_application: internship_application }
 
-              tbody
-                - @mono_internship_agreements.each do |internship_agreement|
-                  = render partial: 'dashboard/internship_agreements/internship_agreement',
-                            locals: { internship_agreement: internship_agreement, fg: fg }
-                - @no_agreement_internship_application_list.each do |internship_application|
-                  = render partial: 'dashboard/internship_agreements/internship_application_in_agreement_list',
-                            locals: { internship_application: internship_application }
-
-    .row
-      .col-12.text-right
-        - if current_user.school_management?
-          / add hidden input with ids
-          = hidden_field_tag 'agreement_ids'
-          = button_to 'Signer en groupe', school_management_group_signature_dashboard_user_path(current_user),
-                      class: "fr-btn fr-mb-2w fr-px-4w",
-                      disabled: true,
-                      'data-group-signing-target': "generalCta",
-                      data: { turbo: true }
-        - else
-          = fg.button 'Signer',
-                      type: 'submit',
-                      class: "fr-btn fr-mb-2w fr-px-4w fr-mx-n4w",
-                      disabled: true,
-                      'data-fr-opened': false,
-                      'aria-controls': "fr-modal-signatures",
-                      'data-group-signing-target': "generalCta"
+      .row
+        .col-12.text-right
+          - if current_user.school_management?
+            / add hidden input with ids
+            = hidden_field_tag 'agreement_ids'
+            = button_to 'Signer en groupe', school_management_group_signature_dashboard_user_path(current_user),
+                        class: "fr-btn fr-mb-2w fr-px-4w",
+                        disabled: true,
+                        'data-group-signing-target': "generalCta",
+                        data: { turbo: true }
+          - else
+            = fg.button 'Signer',
+                        type: 'submit',
+                        class: "fr-btn fr-mb-2w fr-px-4w fr-mx-n4w",
+                        disabled: true,
+                        'data-fr-opened': false,
+                        'aria-controls': "fr-modal-signatures",
+                        'data-group-signing-target': "generalCta"

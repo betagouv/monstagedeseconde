@@ -10,7 +10,8 @@ export default class extends Controller {
 
   static values = {
     counter: Number,
-    maxCounter: Number
+    maxCounter: Number,
+    multi: Boolean,
   };
 
   connect() {
@@ -33,16 +34,16 @@ export default class extends Controller {
   }
 
   toggleSignThemAll(event) {
-    const target = event.target;
+    const {target} = event;
     if (target.checked) {
-      this.addCheckBoxTargets.forEach(element => {
+      this.addCheckBoxTargets.forEach((element) => {
         if (this.isReadyToSign(element) && (!element.checked)) {
           element.checked = true;
           this.addToList(element.getAttribute('data-group-signing-id-param'));
         }
       });
     } else {
-      this.addCheckBoxTargets.forEach(element => {
+      this.addCheckBoxTargets.forEach((element) => {
         if (this.isReadyToSign(element) && (element.checked)) {
           element.checked = false;
           this.removeFromList(element.getAttribute('data-group-signing-id-param'));
@@ -56,7 +57,7 @@ export default class extends Controller {
 
   commonToggle(event, fnRef) {
     const agreementId = event.params.id;
-    this.addCheckBoxTargets.forEach(element => {
+    this.addCheckBoxTargets.forEach((element) => {
       if (element.getAttribute('data-group-signing-id-param') == agreementId) {
         fnRef(element, agreementId);
       }
@@ -93,16 +94,23 @@ export default class extends Controller {
 
   // function to check all the checkboxes checked and add to the general cta a array of ids to the url
   updateParamsSignaturesUrl() {
-    const ids = this.addCheckBoxTargets.filter(element => element.checked)
-                    .map(element => element.getAttribute('data-group-signing-id-param'));
+    const ids = this.addCheckBoxTargets
+      .filter((element) => element.checked)
+      .map((element) => element.getAttribute('data-group-signing-id-param'));
     const form = this.generalCtaTarget.closest('form');
     const baseUrl = form.getAttribute('action');
     const newUrl = baseUrl.split('?')[0] + '?ids=' + ids.join(',');
     form.setAttribute('action', newUrl);
+    // multi broadcasts event to update its cta url
+    if (this.multiValue) {
+      const payload = { detail: { url: newUrl, counter: this.counterValue } };
+      const customEvent = new CustomEvent('ids-to-sign', payload);
+      document.dispatchEvent(customEvent);
+    }
   }
 
   checkAllCheckboxes() {
-    this.addCheckBoxTargets.forEach(element => {
+    this.addCheckBoxTargets.forEach((element) => {
       if (element.checked) {
         this.addToList(element.getAttribute('data-group-signing-id-param'));
       }
@@ -110,7 +118,7 @@ export default class extends Controller {
   }
 
   signingButtonsAction(agreementId, fn) {
-    this.signingButtonTargets.forEach(element => {
+    this.signingButtonTargets.forEach((element) => {
       if (element.getAttribute('data-group-signing-id-param') == agreementId) {
         fn(element);
       }

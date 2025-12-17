@@ -7,5 +7,7 @@ class MultiPlanning < ApplicationRecord
   validates :lunch_break, presence: true, length: { maximum: 250 }
   validates :rep, inclusion: { in: [true, false] }
   validates :qpv, inclusion: { in: [true, false] }
+
+  delegate :employer, to: :multi_coordinator
 end
 

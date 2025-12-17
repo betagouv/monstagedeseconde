@@ -9,6 +9,7 @@ class InternshipAgreement < ApplicationRecord
   include Discard::Model
   include InternshipAgreementSignaturable
   include Tokenable
+  include Api::AuthV2
 
   MIN_PRESENCE_DAYS = 4
   EMPLOYERS_PENDING_STATES  = %i[draft started_by_employer signed_by_employer validated].freeze
@@ -68,7 +69,9 @@ class InternshipAgreement < ApplicationRecord
               format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
                         message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
   end
-
+  #Delegations
+  delegate :employer, to: :internship_application
+  
   # Callbacks
   after_save :save_delegation_date
 

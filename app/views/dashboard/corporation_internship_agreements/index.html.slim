@@ -1,0 +1,16 @@
+h1.fr-h1.fr-my-4w
+  = "Bonjour #{@coporation_prez.employer_name}, vous avez #{pluralize(@to_be_signed_metadata[:count], 'convention de stage')} à signer."
+fr-table
+  .fr-table__wrapper
+    .fr-table__container
+      .fr-table__content
+          table
+            thead
+              tr
+                th
+                th Élève
+                th Offre de stage
+                th.fr-table--multiline Statut de la convention
+                th Actions
+            tbody
+              = render 'dashboard/corporation_internship_agreements/signature_table_line'

@@ -13,15 +13,25 @@ module Public
                                                .student
                                                .presenter
                                                .full_name_camel_case
-          send_data(
-            GenerateInternshipAgreement.new(@internship_agreement.id).call.render,
-            filename: "Convention_de_stage_#{ext_file_name}.pdf",
-            type: 'application/pdf',
-            disposition: 'inline'
-          )
+          if params[:multi].present? && params[:multi] == 'true'
+            send_data(
+              GenerateMultiInternshipAgreement.new(@internship_agreement.id).call.render,
+              filename: "Convention_de_stage_#{ext_file_name}.pdf",
+              type: 'application/pdf',
+              disposition: 'inline'
+            )
+          else
+            send_data(
+              GenerateInternshipAgreement.new(@internship_agreement.id).call.render,
+              filename: "Convention_de_stage_#{ext_file_name}.pdf",
+              type: 'application/pdf',
+              disposition: 'inline'
+            )
+          end
         end
       end
     end
+
 
     def legal_representative_sign
       access_token = legal_representative_sign_internship_agreement_params[:access_token]

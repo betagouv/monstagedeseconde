@@ -26,6 +26,8 @@ class MultiCoordinator < ApplicationRecord
 
   validate :phone_format
 
+  delegate :employer, to: :multi_activity
+
   def is_fully_editable?
     true
   end
