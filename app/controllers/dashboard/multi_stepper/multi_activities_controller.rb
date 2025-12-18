@@ -64,10 +64,10 @@ module Dashboard::MultiStepper
     end
 
     def sanitize_content
-      return unless multi_activity_params[:description].present?
+      return unless params.dig(:multi_activity, :description).present?
 
-      multi_activity_params[:description] =
-        strip_content(multi_activity_params[:description])
+      params[:multi_activity][:description] =
+        strip_content(params[:multi_activity][:description])
     end
   end
 end

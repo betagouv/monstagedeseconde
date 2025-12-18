@@ -48,7 +48,9 @@
                     required: true,
                     title: 'Activités prévues au cours du stage',
                     object: form.object,
-                    options: { rows: 10 },
+                    options: { rows: 10,
+                                  data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
+                                          :'mandatory-fields-with-coordinates-target' => "mandatoryField"}},
                     field_type: :text_area
           .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
             |La description est trop longue

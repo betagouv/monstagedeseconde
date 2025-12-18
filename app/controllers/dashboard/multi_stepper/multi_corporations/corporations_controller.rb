@@ -76,12 +76,9 @@ module Dashboard::MultiStepper
           longitude: params[:corporation][:coordinates][:longitude] 
         }
         
-        params[:corporation].delete(:latitude)
-        params[:corporation].delete(:longitude)
-        params[:corporation].delete(:coordinates)
-        params[:corporation].delete(:street)
-        params[:corporation].delete(:zipcode)
-        params[:corporation].delete(:city)
+        %i[latitude longitude coordinates street zipcode city].each do |field|
+          params[:corporation].delete(field)
+        end
       end
 
       def corporation_params

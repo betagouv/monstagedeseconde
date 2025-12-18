@@ -67,30 +67,14 @@ class MultiPlanning < ApplicationRecord
   end
 
   def coordinates
-    # Dummy coordinates for now as MultiCoordinator doesn't store them
-    # OpenStruct.new(latitude: 0, longitude: 0)
-    
-    # We need to find coordinates from multi_coordinator -> multi_corporation -> corporations.first
-    # or fallback to Paris
-    
-    # But MultiPlanning doesn't have direct access to MultiCorporation in its association chain easily
-    # It has multi_coordinator
-    
-    # Let's try to get coordinates from the first corporation of the multi_coordinator
     first_corp = multi_coordinator&.multi_corporation&.corporations&.first
     coords = first_corp&.internship_coordinates
-
-    if coords.present?
-      # If it's a Hash (legacy or wrong save), convert to RGeo
-      if coords.is_a?(Hash)
-        lat = coords['latitude'] || coords[:latitude]
-        lon = coords['longitude'] || coords[:longitude]
-        return RGeo::Geographic.spherical_factory(srid: 4326).point(lon.to_f, lat.to_f)
-      end
-      coords
-    else
-      # Default to Paris
-      RGeo::Geographic.spherical_factory(srid: 4326).point(2.3522, 48.8566)
+    
+    if coords.is_a?(Hash)
+      lat = coords['latitude'] || coords[:latitude]
+      lon = coords['longitude'] || coords[:longitude]
+      return RGeo::Geographic.spherical_factory(srid: 4326).point(lon.to_f, lat.to_f)
     end
+    coords
   end
 end
