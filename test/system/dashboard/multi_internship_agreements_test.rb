@@ -123,42 +123,80 @@ module Dashboard
       assert_equal expected_days_hours, internship_agreement.reload.daily_hours
     end
 
-    # test 'employer reads multi internship agreement table with missing indications / daily hours - status: started_by_employer' do
-    #   employer, internship_offer = create_employer_and_offer_2nde
-    #   internship_application = create(:weekly_internship_application, internship_offer:)
-    #   internship_agreement = create(:multi_internship_agreement, internship_application:,
-    #                                                        aasm_state: :started_by_employer, weekly_hours: [])
-    #   sign_in(employer)
-    #   visit_index_and_go_to_multi_internship_agreements
-    #   within('td[data-head="Statut"]') do
-    #     find('div.actions', text: "Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.")
-    #   end
-    #   find('a.button-component-cta-button', text: 'Valider ma convention').click
-    #   find("input[name='internship_agreement[organisation_representative_full_name]']")
-    #   within('.test-employer-role') do
-    #     fill_in 'En qualité de', with: 'CEO'
-    #   end
-    #   fill_in "Nom de l'entreprise", with: 'Corporation'
-    #   fill_in 'Adresse complète du lieu du stage', with: '1 rue de la paix'
-    #   execute_script("document.getElementById('weekly_planning').checked = false;")
-    #   execute_script("document.getElementById('daily-planning-container').classList.remove('d-none');")
-    #   select('08:00', from: 'internship_agreement_daily_hours_lundi_start')
-    #   select('16:00', from: 'internship_agreement_daily_hours_lundi_end')
-    #   select('08:00', from: 'internship_agreement_daily_hours_mardi_start')
-    #   select('16:00', from: 'internship_agreement_daily_hours_mardi_end')
-    #   select('08:00', from: 'internship_agreement_daily_hours_mercredi_start')
-    #   select('16:00', from: 'internship_agreement_daily_hours_mercredi_end')
-    #   text_area = first(:css,
-    #                     "textarea[name='internship_agreement[lunch_break]']").native.send_keys('un repas à la cantine bien chaud')
-    #   # Missing lunch break indications on thursday and friday
-    #   # samedi is avoided on purpose
-    #   click_button('Valider la convention')
-    #   find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: 'Valider la convention')
-    #   find("button[data-action='click->internship-agreement-form#completeByEmployer']",
-    #        text: 'Valider la convention').click
-    #   alert_text = all('.fr-alert.fr-alert--error').first.text
-    #   assert_equal alert_text, 'Planning hebdomadaire : Veuillez compléter les horaires et repas de la semaine de stage'
-    # end
+    # -- Helper methods for tests with multiple agreements
+
+    def make_an_agreement
+      internship_agreement = create(:multi_internship_agreement)
+      corporation = internship_agreement.internship_offer.corporations.first
+      corporation_sgid = corporation.to_sgid.to_s
+      [internship_agreement, corporation, corporation_sgid]
+    end
+
+    def create_agreement_on_same_corporation(internship_agreement:)
+      internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_agreement.internship_offer)
+      internship_agreement2 = internship_application.internship_agreement
+    end
+
+    def agreement_checkbox_id(internship_agreement)
+      "corporation_internship_agreement_internship_agreement_id_#{internship_agreement.id}_checkbox"
+    end
+
+    def add_button(internship_agreement)
+      find("button[data-group-signing-id-param='#{internship_agreement.id}']")
+    end
+
+    def general_cta_button
+      find("button[data-group-signing-target='generalCta']")
+    end
+
+    def general_checkbox
+      find("input[data-group-signing-target='generalCtaSelectBox']", visible: false)
+    end
+
+    # -- end of helper methods
+
+    test 'signator responsible multi validates internship agreement' do
+      internship_agreement, corporation, corporation_sgid = make_an_agreement
+      internship_agreement2 = create_agreement_on_same_corporation(internship_agreement: internship_agreement)
+
+      visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
+
+      assert_text "vous avez 2 conventions de stage à signer"
+
+      assert general_cta_button.disabled?
+      add_button(internship_agreement).click
+      refute general_cta_button.disabled?
+
+      general_checkbox
+      refute general_checkbox.checked?
+
+      add_button(internship_agreement2).click
+      assert general_checkbox.checked?
+
+      general_cta_button.click
+
+      assert_text "vous n'avez aucune convention de stage à signer"
+    end
+
+    test 'signator responsible multi validates one internship agreement' do
+      internship_agreement, corporation, corporation_sgid = make_an_agreement
+      internship_agreement2 = create_agreement_on_same_corporation(internship_agreement: internship_agreement)
+
+      visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
+
+      assert_text "vous avez 2 conventions de stage à signer"
+
+      add_button(internship_agreement).click
+      refute general_cta_button.disabled?
+
+      general_cta_button.click
+
+      assert_text "vous avez une convention de stage à signer"
+      assert_equal 1, CorporationInternshipAgreement.signed.count
+
+      add_button(internship_agreement2).click
+      assert general_checkbox.checked?
+    end
 
     test 'employer reads multi internship agreement table with correct indications - status: completed_by_employer /' do
       employer, internship_offer = create_employer_and_multi_offer_2de

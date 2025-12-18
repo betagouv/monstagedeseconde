@@ -13,45 +13,71 @@ module Dashboard
       @coporation_prez = @corporation.presenter
       @internship_agreements = InternshipAgreement.where(uuid: @internship_agreement_uuids)
 
-      @to_be_signed_metadata = {
-        count: corporation_internship_agreements.where(signed: false).count,
-      }
+      @to_be_signed_metadata = { count: corporation_internship_agreements.where(signed: false).count }
+
+      @conventions_text = conventions_text(corporation_internship_agreements.where(signed: false).count)
     end
 
-    # ok for one at a time
-    def update
+    # def update
+    #   @corporation_sgid = corporation_internship_agreement_params[:corporation_sgid]
+    #   @corporation = fetch_corporation_from_sgid
+    #   return head :not_found unless @corporation.present?
+
+    #   @internship_agreement_uuid = corporation_internship_agreement_params[:internship_agreement_uuid]
+    #   internship_agreement = InternshipAgreement.find_by(uuid: @internship_agreement_uuid)
+
+    #   signed = corporation_internship_agreement_params[:signed] == '1'
+
+    #   corporation_intership_agreement = CorporationInternshipAgreement.find_by(
+    #       corporation_id: @corporation.id,
+    #       internship_agreement_id: internship_agreement.id
+    #   )
+
+    #   if corporation_intership_agreement && corporation_intership_agreement.update(signed: signed)
+    #     target_path =  dashboard_corporation_internship_agreements_path(corporation_sgid: @corporation_sgid)
+    #     redirect_to target_path, notice: 'La convention a été mise à jour avec succès.'
+    #   else
+    #     @internship_agreements = InternshipAgreement.where(uuid: @internship_agreement_uuids)
+    #     render :index, status: :unprocessable_entity
+    #   end
+    # rescue ActiveRecord::RecordNotFound
+    #   render :index, status: :unprocessable_entity
+    # end
+
+    def multi_sign
       @corporation_sgid = corporation_internship_agreement_params[:corporation_sgid]
       @corporation = fetch_corporation_from_sgid
       return head :not_found unless @corporation.present?
 
-      @internship_agreement_uuid = corporation_internship_agreement_params[:internship_agreement_uuid]
-      internship_agreement = InternshipAgreement.find_by(uuid: @internship_agreement_uuid)
-      # @internship_agreement_uuids = corporation_internship_agreement_params[:internship_agreement_uuids]
-      # if @internship_agreement_uuids.is_a?(Array)
-      #   @internship_agreement_uuids = @internship_agreement_uuids.reject(&:blank?)
-      # elsif @internship_agreement_uuids.is_a?(String)
-      #   @internship_agreement_uuids = [@internship_agreement_uuids]
-      # else
-      #   @internship_agreement_uuids = []
-      # end
-      signed = corporation_internship_agreement_params[:signed] == '1'
+      puts params
 
-      corporation_intership_agreement = CorporationInternshipAgreement.find_by(
-          corporation_id: @corporation.id,
-          internship_agreement_id: internship_agreement.id
-      )
+      sanitize(params[:corporation_internship_agreement][:internship_agreement_uuids])
 
-      if corporation_intership_agreement && corporation_intership_agreement.update(signed: signed)
-        target_path =  dashboard_corporation_internship_agreements_path(
-          corporation_sgid: @corporation_sgid,
-          )
-        redirect_to target_path,
-                    notice: 'La convention a été mise à jour avec succès.'
+      if @internship_agreement_uuids.empty?
+        internship_agreements = @corporation.internship_agreements
+        @internship_agreement_uuids = internship_agreements.map(&:uuid)
+        notice = "Aucune convention n'a été sélectionnée."
       else
-        @internship_agreements = InternshipAgreement.where(uuid: @internship_agreement_uuids)
-        render :index, status: :unprocessable_entity
+        internship_agreements = InternshipAgreement.where(uuid: @internship_agreement_uuids)
+        corporation_internship_agreements = CorporationInternshipAgreement.where(
+          corporation_id: @corporation.id,
+          internship_agreement_id: internship_agreements.pluck(:id)
+        )
+        CorporationInternshipAgreement.transaction do
+          corporation_internship_agreements.each do |cia|
+            cia.update!(signed: true)
+          end
+        end
+        notice = 'Les conventions ont été mises à jour avec succès.'
       end
-    rescue ActiveRecord::RecordNotFound
+      target_path = dashboard_corporation_internship_agreements_path(
+        corporation_sgid: @corporation_sgid,
+        internship_agreement_uuids: @internship_agreement_uuids
+        )
+      redirect_to target_path, notice: notice
+
+    rescue ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid
+      @internship_agreements = InternshipAgreement.where(uuid: @internship_agreement_uuids)
       render :index, status: :unprocessable_entity
     end
 
@@ -65,13 +91,39 @@ module Dashboard
       params.require(:corporation_internship_agreement)
             .permit(
               :corporation_sgid,
-              :internship_agreement_uuid,
               :signed,
-              :internship_agreement_uuids => [])
-    end
+              ids: [],
+              internship_agreement_uuids: [])
+            end
 
     def fetch_corporation_from_sgid
       GlobalID::Locator.locate_signed(@corporation_sgid )
     end
+
+    def sanitize(uuids_param)
+      puts uuids_param
+      sanitized_uuids = if uuids_param.is_a?(Array)
+                          uuids_param.reject(&:blank?)
+                        elsif uuids_param.is_a?(String)
+                          uuids_param.split(' ')
+                        else
+                          []
+                        end
+
+      internship_agreements = InternshipAgreement.where(uuid: sanitized_uuids)
+      @internship_agreement_uuids = internship_agreements.map(&:uuid) # to reflect only valid ones
+    end
+
+    def conventions_text(count)
+      case count
+      when 0
+        "n'avez aucune convention de stage"
+      when 1
+        'avez une convention de stage'
+      else
+        "avez #{count} conventions de stage"
+      end
+    end
+
   end
 end
