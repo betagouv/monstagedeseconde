@@ -46,7 +46,7 @@ module Dashboard::MultiStepper
 
     test 'POST #create with invalid params renders new' do
       assert_no_difference('MultiPlanning.count') do
-        post dashboard_multi_stepper_multi_plannings_path(multi_coordinator_id: @multi_coordinator.id), params: {
+        post dashboard_multi_stepper_multi_plannings_path(multi_coordinator_id: @multi_coordinator.id, multi_corporation_id: @multi_corporation.id), params: {
           multi_planning: {
             max_candidates: nil, # Invalid
             lunch_break: ''
@@ -58,7 +58,7 @@ module Dashboard::MultiStepper
     end
 
     test 'GET #edit returns success' do
-      get edit_dashboard_multi_stepper_multi_planning_path(@multi_planning)
+      get edit_dashboard_multi_stepper_multi_planning_path(@multi_planning, multi_corporation_id: @multi_corporation.id)
       assert_response :success
     end
 
@@ -75,7 +75,7 @@ module Dashboard::MultiStepper
     end
 
     test 'PATCH #update with invalid params renders edit' do
-      patch dashboard_multi_stepper_multi_planning_path(@multi_planning), params: {
+      patch dashboard_multi_stepper_multi_planning_path(@multi_planning, multi_corporation_id: @multi_corporation.id), params: {
         multi_planning: {
           max_candidates: -1 # Invalid
         }

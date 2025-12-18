@@ -3,6 +3,7 @@ module Dashboard::MultiStepper
     before_action :authenticate_user!
     before_action :fetch_multi_coordinator, only: %i[new create]
     before_action :fetch_multi_planning, only: %i[edit update]
+    before_action :fetch_multi_corporation, only: %i[new create edit update]
 
     def new
       @multi_planning = MultiPlanning.new(
@@ -12,10 +13,6 @@ module Dashboard::MultiStepper
         grade_college: '1',
         grade_2e: '1',
       )
-      # Force reload to ensure we have latest data
-      @multi_corporation = MultiCorporation.find_by(id: params[:multi_corporation_id])
-      puts "🔹 [MultiPlanningsController] MultiCorporation: #{@multi_corporation.inspect}"
-      puts "🔹 [MultiPlanningsController] Corporations count: #{@multi_corporation&.corporations&.count}"
       set_weeks_variables
     end
 
@@ -71,6 +68,10 @@ module Dashboard::MultiStepper
       @multi_planning = MultiPlanning.find(params[:id])
     end
 
+    def fetch_multi_corporation
+      @multi_corporation = MultiCorporation.find_by(id: params[:multi_corporation_id])
+    end
+
     def multi_planning_params
       params.require(:multi_planning).permit(
         :max_candidates,
@@ -94,8 +95,8 @@ module Dashboard::MultiStepper
     
     def set_weeks_variables
       @available_weeks = Week.selectable_from_now_until_end_of_school_year
-      
-      first_corp = @multi_coordinator.multi_corporation.corporations.first
+
+      first_corp = @multi_corporation.corporations.first
       coordinates = first_corp.internship_coordinates
 
       @school_weeks = School.nearby_school_weeks(
