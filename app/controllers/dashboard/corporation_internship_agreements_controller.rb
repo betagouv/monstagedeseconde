@@ -65,7 +65,7 @@ module Dashboard
         )
         CorporationInternshipAgreement.transaction do
           corporation_internship_agreements.each do |cia|
-            cia.update!(signed: true)
+            cia.update!(signed: true, signed_at: Time.current)
           end
         end
         notice = 'Les conventions ont été mises à jour avec succès.'

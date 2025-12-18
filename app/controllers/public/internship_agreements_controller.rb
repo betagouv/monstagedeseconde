@@ -15,7 +15,7 @@ module Public
                                                .full_name_camel_case
           if params[:multi].present? && params[:multi] == 'true'
             send_data(
-              GenerateMultiInternshipAgreement.new(@internship_agreement.id).call.render,
+              GenerateMultiInternshipAgreement.new(@internship_agreement.uuid).call.render,
               filename: "Convention_de_stage_#{ext_file_name}.pdf",
               type: 'application/pdf',
               disposition: 'inline'

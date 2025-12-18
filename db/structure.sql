@@ -548,7 +548,8 @@ CREATE TABLE public.corporation_internship_agreements (
     internship_agreement_id bigint NOT NULL,
     signed boolean DEFAULT false NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    signed_at timestamp(6) without time zone
 );
 
 
@@ -5068,6 +5069,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251218130433'),
 ('20251215093256'),
 ('20251215092017'),
 ('20251204130000'),

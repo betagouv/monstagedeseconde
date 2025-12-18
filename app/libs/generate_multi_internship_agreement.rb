@@ -4,11 +4,9 @@ require 'mini_magick'
 include ApplicationHelper
 
 class GenerateMultiInternshipAgreement < Prawn::Document
-  def initialize(internship_agreement_id)
-    @internship_agreement = InternshipAgreement.find(internship_agreement_id)
-    @corporation_internship_agreement = CorporationInternshipAgreement.where(internship_agreement_id: internship_agreement_id)
-                                                                      .first
-    @corporations = @corporation_internship_agreement.fetch_corporations
+  def initialize(internship_agreement_uuid)
+    @internship_agreement = InternshipAgreement.find_by(uuid: internship_agreement_uuid)
+    @corporations = @internship_agreement.internship_offer.corporations
     @pdf = Prawn::Document.new(margin: [40, 40, 90, 40])
     @pdf.font_families.update('Arial' => {
                                 normal: Rails.root.join('public/assets/fonts/arial.ttf').to_s,
@@ -46,7 +44,6 @@ class GenerateMultiInternshipAgreement < Prawn::Document
     article_7
     article_8
     article_9
-    article_10
     # article_bonus
 
     annexe_a
@@ -66,7 +63,7 @@ class GenerateMultiInternshipAgreement < Prawn::Document
   def title
     title = "Convention relative à l'organisation de la séquence d'observation en milieu "\
             'professionnel pour les élèves de collège (quatrième et troisième) et de lycée '\
-            '(seconde générale et technologique) testée'
+            '(seconde générale et technologique)'
     @pdf.text title, size: 16, align: :left, color: '10008F'
     @pdf.move_down 15
   end
@@ -150,10 +147,7 @@ class GenerateMultiInternshipAgreement < Prawn::Document
       'de leur classe, sous le contrôle des personnels responsables de leur encadrement en milieu professionnel.')
 
     paraphing(
-      "Les élèves ne peuvent accéder aux machines, appareils ou produits dont l'usage est proscrit aux mineurs " \
-      "par les articles D. 4153-15 à D. 4153-37 du Code du travail. Ils ne peuvent ni procéder à des manœuvres ou" \
-      " manipulations sur d'autres machines, produits ou appareils de production, ni effectuer des travaux légers "
-
+      "Les élèves ne peuvent accéder aux machines, appareils ou produits dont l'usage est proscrit aux mineurs par les articles D. 4153-15 à D. 4153-37 du Code du travail. Ils ne peuvent ni procéder à des manœuvres ou manipulations sur d'autres machines, produits ou appareils de production, ni effectuer des travaux légers autorisés aux mineurs par ce même code."
     )
     paraphing(
       "Si l'état de santé de l'élève nécessite d'avoir une trousse d'urgence dans le cadre d'un Projet d'Accueil Individualisé (PAI), la famille s'assure que son enfant emporte la trousse pendant la durée de la séquence d'observation."
@@ -220,17 +214,7 @@ class GenerateMultiInternshipAgreement < Prawn::Document
   end
 
   def article_9
-    article_9 = "Article 9 - La/le chef(fe) d'établissement d'enseignement et la/le responsable de l'organisme d'accueil de l'élève se tiendront "\
-    "mutuellement informés des difficultés qui pourraient naître de l'application de la présente convention et prendront, d'un commun "\
-    "accord et en liaison avec l'équipe pédagogique, les dispositions propres à les résoudre notamment en cas de manquement à la "\
-    "discipline. Les difficultés qui pourraient être rencontrées lors de toute période en milieu professionnel, et notamment toute "\
-    "absence d'un élève, seront aussitôt portées à la connaissance du chef(fe) d'établissement."
-
-    paraphing(article_9)
-  end
-
-  def article_10
-    paraphing("Article 10 - La présente convention est signée pour la durée d'une séquence d'observation en milieu professionnel, fixée à :")
+    paraphing("Article 9 - La présente convention est signée pour la durée d'une séquence d'observation en milieu professionnel, fixée à :")
     @pdf.move_up 10
     html_formating "<div style='margin-left: 25'>-  5 jours consécutifs ou non, pour les élèves scolarisés en collège (facultatif en quatrième, obligatoire en troisième) ;</div>"
     html_formating "<div style='margin-left: 25'>-  une (si deux lieux différents) ou deux semaines consécutives, pour les élèves scolarisés en seconde générale ou technologique durant le dernier mois de l'année scolaire.</div>"
@@ -274,21 +258,20 @@ class GenerateMultiInternshipAgreement < Prawn::Document
     @pdf.move_down 5
     @pdf.text "Statut de l'établissement scolaire : #{@internship_agreement.legal_status.try(:capitalize)}"
     @pdf.move_down 5
-    @pdf.text "Prénom, nom du tuteur ou du responsable de l'accueil en milieu professionnel et sa qualité :"
-
-
-    # THERE !
-
-
-    @pdf.text "#{@internship_agreement.tutor_full_name}, " \
-      "#{@internship_agreement.tutor_role}, " \
-      "#{@internship_agreement.tutor_email}"
+    @pdf.text "Prénom, nom des tuteurs ou du responsables de l'accueil en milieu professionnel et sa qualité :"
     @pdf.move_down 5
+    @corporations.each do |corporation|
+       @pdf.text "Pour la société #{corporation.presenter.corporation_name} : #{corporation.presenter.tutor_name}, "
+       @pdf.move_down 3
+    end
+    @pdf.move_down 5
+    
     @pdf.text 'Prénom et nom et coordonnées de l\'enseignant '\
-      "référent chargé du suivi de la séquence d'observation en milieu professionnel :"
+    "référent chargé du suivi de la séquence d'observation en milieu professionnel :"
+    @pdf.move_down 5
     @pdf.text "#{@internship_agreement.student_refering_teacher_full_name}, " \
-      "#{@internship_agreement.student_refering_teacher_email}, " \
-      "#{@internship_agreement.student_refering_teacher_phone}"
+              "#{@internship_agreement.student_refering_teacher_email}, " \
+              "#{@internship_agreement.student_refering_teacher_phone}"
     @pdf.move_down 5
     paraphing_bold("Dates de la séquence d'observation en milieu professionnel :")
     @pdf.move_up 10
@@ -398,6 +381,20 @@ class GenerateMultiInternshipAgreement < Prawn::Document
   end
 
   def signatures
+    @corporations.each do |corporation|
+      corporation_internship_agreement = CorporationInternshipAgreement.find_by(
+        corporation_id: corporation.id,
+        internship_agreement_id: @internship_agreement.id
+      )
+      txt = "Pour le le responsable de l'organisme d'accueil : #{corporation.presenter.employer_name}"
+      if corporation_internship_agreement.signed
+        txt = "Signé électroniquement par le responsable de l'organisme d'accueil : " \
+        "#{corporation.presenter.employer_name} le #{corporation_internship_agreement.signed_at.strftime('%d/%m/%Y à %Hh%M')}"
+      end
+      @pdf.text txt
+    end
+    @pdf.move_down 10
+
     if @internship_agreement.school_manager.present?
       @pdf.text "A #{@internship_agreement.school_manager.school.city.capitalize}, le #{Date.current.strftime('%d/%m/%Y')}."
     else
@@ -420,9 +417,6 @@ class GenerateMultiInternshipAgreement < Prawn::Document
 
     @pdf.table([signatures_array], cell_style: { border_width: 0, height: 80 }, column_widths: column_widths)
 
-    # @pdf.move_down 10
-    # @pdf.text 'Vu et pris connaissance,'
-    # @pdf.move_down 10
     @pdf.table([['Les parents ou les responsables légaux', 'L’enseignant (ou les enseignants) éventuellement']],
                cell_style: { border_width: 0 },
                column_widths: column_widths) do |t|

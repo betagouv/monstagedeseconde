@@ -31,9 +31,19 @@ module InternshipAgreementSignaturable
       false
     end
 
+    def corporations_signed_count
+      CorporationInternshipAgreement.where(internship_agreement_id: id, signed: true)
+                                    .count
+    end
+
+    def corporations_count
+      CorporationInternshipAgreement.where(internship_agreement_id: id)
+                                    .count
+    end
+
     def missing_signatures_recipients
       recipients = []
-      
+
       if Flipper.enabled?(:student_signature)
         if roles_not_signed_yet.include?('student')
           recipients << student.email if student
@@ -42,8 +52,23 @@ module InternshipAgreementSignaturable
         if (roles_not_signed_yet & Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE).any?
           recipients << school_management_representative.email if school_management_representative
         end
-        if roles_not_signed_yet.include?('employer')
-          recipients << employer.email if employer
+        if from_multi?
+          corporations_all_signed = true
+          internship_offer.corporations.each do |corporation|
+            corporation_internship_agreement = CorporationInternshipAgreement.find_by(
+              corporation_id: corporation.id,
+              internship_agreement_id: id
+            )
+            if corporation_internship_agreement.signed == false
+              corporations_all_signed = false
+              break
+            end
+          end
+          corporations_all_signed
+        else
+          if roles_not_signed_yet.include?('employer')
+            recipients << employer.email if employer
+          end
         end
       end
       recipients
