@@ -8,8 +8,8 @@ class Corporation < ApplicationRecord
   #Associations
   belongs_to :multi_corporation
   belongs_to :sector, optional: true
-  has_many :internship_agreements, through: :corporation_internship_agreements
   has_many :corporation_internship_agreements, dependent: :destroy
+  has_many :internship_agreements, through: :corporation_internship_agreements
 
   # Delegations
   delegate :coordinator, to: :multi_corporation

@@ -1,6 +1,11 @@
-div style="color: #{employer_info[:color]}"
-  span class="#{employer_info[:icon]}"
-  span Offreur
+- if from_multi?
+  div style="color: #{corporations_info[:color]}"
+    span class="#{corporations_info[:icon]}"
+    span Offreurs (#{corporations_info[:signed_count]}/#{corporations_info[:total_count]})
+- else
+  div style="color: #{employer_info[:color]}"
+    span class="#{employer_info[:icon]}"
+    span Employeur
 div style="color: #{school_manager_info[:color]}"
   span class="#{school_manager_info[:icon]}"
   span Établissement

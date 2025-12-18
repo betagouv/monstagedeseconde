@@ -7,6 +7,10 @@ class CorporationInternshipAgreement < ApplicationRecord
   validates :internship_agreement, presence: true
   validates :signed, inclusion: { in: [true, false] }
 
+  #scopes
+  scope :signed, -> { where(signed: true) }
+  scope :unsigned, -> { where(signed: false) }
+
   # methods
   def fetch_corporations
     Corporation.joins(:corporation_internship_agreements)
@@ -17,4 +21,5 @@ class CorporationInternshipAgreement < ApplicationRecord
     InternshipAgreement.joins(:corporation_internship_agreements)
                        .where(corporation_internship_agreements: { corporation_id: corporation_id })
   end
+
 end
