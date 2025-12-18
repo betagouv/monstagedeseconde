@@ -132,6 +132,13 @@ module Dashboard
       [internship_agreement, corporation, corporation_sgid]
     end
 
+    def make_a_validated_agreement
+      internship_agreement = create(:multi_internship_agreement, :validated)
+      corporation = internship_agreement.internship_offer.corporations.first
+      corporation_sgid = corporation.to_sgid.to_s
+      [internship_agreement, corporation, corporation_sgid]
+    end
+
     def create_agreement_on_same_corporation(internship_agreement:)
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_agreement.internship_offer)
       internship_agreement2 = internship_application.internship_agreement
@@ -156,8 +163,15 @@ module Dashboard
     # -- end of helper methods
 
     test 'signator responsible multi validates internship agreement' do
-      internship_agreement, corporation, corporation_sgid = make_an_agreement
+      internship_agreement, corporation, corporation_sgid = make_a_validated_agreement
       internship_agreement2 = create_agreement_on_same_corporation(internship_agreement: internship_agreement)
+
+      sign_in(internship_agreement.employer)
+      visit_index_and_go_to_multi_internship_agreements
+      assert_text "Offreurs (0/5)"
+      sign_out(internship_agreement.employer)
+
+      # mails are sent when clicking on GeneralCta button, but this is not in the test 
 
       visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
 
@@ -176,6 +190,10 @@ module Dashboard
       general_cta_button.click
 
       assert_text "vous n'avez aucune convention de stage à signer"
+
+      sign_in(internship_agreement.employer)
+      visit_index_and_go_to_multi_internship_agreements
+      assert_text "Offreurs (1/5)"
     end
 
     test 'signator responsible multi validates one internship agreement' do
