@@ -28,20 +28,20 @@
 
         #nav-school-management.tab-pane.fade.active role="tabpanel" aria-labelledby="nav-school-management-tab"
           table.table-sticky-thead
-            = render partial: 'dashboard/internship_agreements/form_header',
+            = render partial: 'dashboard/internship_agreements/shared/form_header',
                 locals: { internship_application: @internship_agreement.internship_application,
                           internship_agreement: form.object }
-            = render 'school_management_form_fields',
+            = render 'dashboard/internship_agreements/shared/school_management_form_fields',
                             form: form,
                             resource: @internship_agreement,
                             disabled: false
 
         #nav-employer.tab-pane.fade.show role="tabpanel" aria-labelledby="nav-employer-tab"
           table.table-sticky-thead
-            = render partial: 'dashboard/internship_agreements/form_header',
+            = render partial: 'dashboard/internship_agreements/shared/form_header',
                 locals: { internship_application: @internship_agreement.internship_application,
                           internship_agreement: form.object }
-            = render 'employer_form_fields',
+            = render 'dashboard/internship_agreements/employer/form_fields',
                       form: form,
                       resource: @internship_agreement,
                       disabled: true

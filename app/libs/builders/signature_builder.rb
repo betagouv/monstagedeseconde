@@ -82,6 +82,41 @@ module Builders
       callback.on_argument_error.try(:call, e)
     end
 
+    def dispatch_multi_agreements_signature(internship_agreement_ids:)
+      authorize :create, Signature
+      yield callback if block_given?
+      if internship_agreement_ids.is_a?(String)
+        internship_agreement_ids = internship_agreement_ids.split(',')
+      end
+
+      internship_agreements = internship_agreement_ids.map { |id| InternshipAgreement.find(id.to_i) }
+
+      if internship_agreements.empty? || internship_agreements.any? { |ia| ia.from_multi? == false }
+        raise ArgumentError, 'Invalid internship agreement type'
+      end
+
+      corporations = []
+      internship_agreements.each do |internship_agreement|
+        internship_agreement.internship_offer.multi_corporation.corporations.each do |corporation|
+          corporations << corporation
+          CorporationInternshipAgreement.find_or_create_by!(
+            corporation_id: corporation.id,
+            internship_agreement_id: internship_agreement.id
+          )
+        end
+      end
+      corporations = corporations.to_a.uniq
+      corporations.each do |corporation|
+        # the internship_agreement_ids may be related to different internship_offers
+        corporation.send_multi_agreement_signature_invitation(internship_agreement_ids: internship_agreement_ids)
+      end
+      callback.on_success.try(:call, internship_agreements)
+    rescue ActiveRecord::RecordInvalid => e
+      callback.on_failure.try(:call, e.record)
+    rescue ArgumentError => e
+      callback.on_failure.try(:call, e)
+    end
+
     def prepare_attributes(internship_agreement_id)
       make_image(params: params,
                  internship_agreement_id: internship_agreement_id,

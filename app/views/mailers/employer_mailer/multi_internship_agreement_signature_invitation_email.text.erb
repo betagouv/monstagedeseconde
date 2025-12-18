@@ -1,0 +1,15 @@
+
+<%= "Bonjour #{@corporation_prez.employer_name},"%>
+
+<%= "Vous a avez été désigné comme signataire des conventions pour les élèves pour le(s) stage(s) : #{@internship_offer_titles.join(', ')} "%>
+
+<%= "#{@employer_prez.full_name} vous invite à les signer en ligne".html_safe%>
+
+Pour voir et signer les conventions de stage, cliquez sur le lien ci-dessous :
+<%=  @url %>%,
+
+Merci pour votre engagement.
+
+À bientôt,
+
+L'équipe 1élève1stage

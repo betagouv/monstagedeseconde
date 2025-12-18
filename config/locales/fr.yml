@@ -198,6 +198,7 @@ fr:
         employer_chosen_name: Nom de l'employeur
         entreprise_coordinates: Coordonnées GPS de l'entreprise
         entreprise_full_address: Adresse de l'entreprise
+        entreprise_chosen_full_address: Adresse de l'entreprise
         tutor_first_name: Prénom du tuteur
         tutor_last_name: Nom du tuteur
         tutor_email: Email du tuteur
@@ -429,6 +430,7 @@ fr:
         full_year: Disponible toute l'année
         full_employer: Employeur
         full_address: Adresse de l'employeur
+        entreprise_chosen_full_address: Adresse de l'employeur
         coordinates: Coordonnées GPS
         group_name: Groupe ou institution
         school: Établissement réservé
@@ -587,6 +589,8 @@ fr:
 
         entreprise:
           attributes: &entreprise_errors
+            entreprise_chosen_full_address: 
+              blank: "Veuillez saisir l'adresse de l'entreprise"
             max_candidates:
               not_a_number: "Veuillez saisir un nombre de candidats par stage"
             is_public:
@@ -640,6 +644,8 @@ fr:
               blank: "Veuillez saisir le nom de l'employeur"
             entreprise_full_address:
               blank: "Veuillez renseigner la rue ou compléments d'adresse de l'offre de stage"
+            entreprise_chosen_full_address:
+              blank: "Veuillez saisir l'adresse de l'entreprise"
 
         internship_offers/weekly_framed:
           attributes:

@@ -63,6 +63,36 @@ class EmployerMailer < ApplicationMailer
     )
   end
 
+  def multi_internship_agreement_signature_invitation_email(internship_agreement_ids:, corporation_id:)
+    corporation = Corporation.find(corporation_id)
+    @internship_offer_titles = []
+    internship_agreements = []
+    internship_agreement_ids.each do |ia_id|
+      internship_agreement = InternshipAgreement.find(ia_id)
+      internship_agreement_corporations = internship_agreement.internship_offer.corporations
+      if internship_agreement_corporations.include?(corporation)
+        internship_agreements << internship_agreement
+        @internship_offer_titles << internship_agreement.internship_offer.title.capitalize
+      end
+    end
+    return if internship_agreements.empty?
+
+    @corporation_prez = corporation.presenter
+    @employer_prez = internship_agreements.first.internship_offer.employer.presenter
+
+    internship_agreement_uuids = internship_agreements.map(&:uuid)
+    corporation_sgid = corporation.to_sgid.to_s
+    @url = dashboard_corporation_internship_agreements_url(
+      corporation_sgid: corporation_sgid,
+      internship_agreement_uuids: internship_agreement_uuids
+    ).html_safe
+
+    send_email(
+      to: corporation.employer_email,
+      subject: 'Signature de conventions de stage'
+    )
+  end
+
   def resend_internship_application_submitted_email(internship_application:)
     @internship_application = internship_application
     recipients_email        = internship_application.employers_filtered_by_notifications_emails

@@ -39,7 +39,7 @@ module Presenters
     def employer_name
       if internship_offer.from_multi?
         internship_offer.corporations
-                        .pluck(:employer_name)
+                        .pluck(:corporation_name)
                         .map { |name| name.truncate(20) }
                         .join(' | ')
                         .truncate(100)
@@ -99,6 +99,23 @@ module Presenters
           actions: []}
       else
         {}
+      end
+    end
+
+    def human_multi_state(corporation_id:)
+      corporation_internship_agreement = CorporationInternshipAgreement.find_by(
+        internship_agreement_id: internship_agreement.id,
+        corporation_id: corporation_id
+      )
+      if corporation_internship_agreement.nil?
+        {status: "N/A",
+        to_be_signed: false}
+      elsif corporation_internship_agreement.signed
+        { status: "Signée",
+          to_be_signed: false}
+      else
+        { status: "En attente de signature",
+         to_be_signed: true}
       end
     end
 

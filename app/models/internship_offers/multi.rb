@@ -5,6 +5,5 @@ module InternshipOffers
     has_one :multi_coordinator
 
     def from_multi? = true
-    
   end
 end

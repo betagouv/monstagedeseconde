@@ -10,6 +10,7 @@ root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
                    end
 
 Rails.application.routes.draw do
+
   mount LetterOpenerWeb::Engine, at: '/letter_opener', as: 'letter_opener' if Rails.env.development?
   # ------------------ SCOPE START ------------------
   scope(path_names: { new: 'nouveau', edit: 'modification' }) do
@@ -159,6 +160,7 @@ Rails.application.routes.draw do
           post 'handwrite_sign'
           post 'school_management_group_signature'
           post 'school_management_group_sign'
+          post 'dispatch_multi_agreements_signature'
         end
       end
 
@@ -205,7 +207,7 @@ Rails.application.routes.draw do
 
       get  'choix-type-offre', to: 'offer_types_switchings#new', as: 'choix_type_offre'
       post 'choix-type-offre', to: 'offer_types_switchings#create', as: 'validation_choix_type_offre'
-      
+
       namespace :multi_stepper, path: 'multi_etapes' do
         resources :multi_activities, path: 'multi-activites', only: %i[create new edit update]
         resources :multi_coordinators, path: 'multi-coordinateurs', only: %i[create new edit update]
@@ -226,6 +228,8 @@ Rails.application.routes.draw do
         end
       end
       get 'candidatures', to: 'internship_offers/internship_applications#user_internship_applications'
+      get 'corporation_internship_agreement/index', to: 'dashboard/corporation_internship_agreement#index'
+      resources :corporation_internship_agreements, path: 'conventions-multi-employeurs', only: %i[index update]
     end
     # ------------------ DASHBOARD END ------------------
   end
