@@ -13,7 +13,7 @@ module Dashboard::Users
       assert_changes -> {internship_agreement.signatures.count}, from: 0, to: 1 do
         post school_management_sign_dashboard_internship_agreement_path(uuid: internship_agreement.uuid)
       end
-      assert_redirected_to dashboard_internship_agreements_path
+      assert_redirected_to dashboard_internship_agreements_path(multi: false)
       assert_equal 1, Signature.count
       assert_equal Signature.last.signatory_role, 'admin_officer'
       assert_equal Signature.last.internship_agreement, internship_agreement

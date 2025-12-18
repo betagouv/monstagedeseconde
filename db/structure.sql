@@ -539,6 +539,39 @@ ALTER SEQUENCE public.class_rooms_id_seq OWNED BY public.class_rooms.id;
 
 
 --
+-- Name: corporation_internship_agreements; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.corporation_internship_agreements (
+    id bigint NOT NULL,
+    corporation_id bigint NOT NULL,
+    internship_agreement_id bigint NOT NULL,
+    signed boolean DEFAULT false NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: corporation_internship_agreements_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.corporation_internship_agreements_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: corporation_internship_agreements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.corporation_internship_agreements_id_seq OWNED BY public.corporation_internship_agreements.id;
+
+
+--
 -- Name: corporations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -566,7 +599,8 @@ CREATE TABLE public.corporations (
     employer_email character varying(120),
     employer_role character varying(120),
     internship_coordinates public.geometry(Point,4326),
-    employer_name character varying
+    employer_name character varying,
+    uuid character varying(40)
 );
 
 
@@ -2656,6 +2690,13 @@ ALTER TABLE ONLY public.class_rooms ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: corporation_internship_agreements id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.corporation_internship_agreements ALTER COLUMN id SET DEFAULT nextval('public.corporation_internship_agreements_id_seq'::regclass);
+
+
+--
 -- Name: corporations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3092,6 +3133,14 @@ ALTER TABLE ONLY public.class_rooms
 
 
 --
+-- Name: corporation_internship_agreements corporation_internship_agreements_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.corporation_internship_agreements
+    ADD CONSTRAINT corporation_internship_agreements_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: corporations corporations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3516,6 +3565,13 @@ ALTER TABLE ONLY public.weeks
 
 
 --
+-- Name: idx_on_internship_agreement_id_88fb7e63d4; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_on_internship_agreement_id_88fb7e63d4 ON public.corporation_internship_agreements USING btree (internship_agreement_id);
+
+
+--
 -- Name: idx_on_internship_application_id_085823fd89; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3607,6 +3663,13 @@ CREATE INDEX index_class_rooms_on_school_id ON public.class_rooms USING btree (s
 
 
 --
+-- Name: index_corporation_internship_agreements_on_corporation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_corporation_internship_agreements_on_corporation_id ON public.corporation_internship_agreements USING btree (corporation_id);
+
+
+--
 -- Name: index_corporations_on_multi_corporation_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3618,6 +3681,13 @@ CREATE INDEX index_corporations_on_multi_corporation_id ON public.corporations U
 --
 
 CREATE INDEX index_corporations_on_sector_id ON public.corporations USING btree (sector_id);
+
+
+--
+-- Name: index_corporations_on_uuid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_corporations_on_uuid ON public.corporations USING btree (uuid);
 
 
 --
@@ -4591,6 +4661,14 @@ ALTER TABLE ONLY public.entreprises
 
 
 --
+-- Name: corporation_internship_agreements fk_rails_0c9c1b8241; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.corporation_internship_agreements
+    ADD CONSTRAINT fk_rails_0c9c1b8241 FOREIGN KEY (internship_agreement_id) REFERENCES public.internship_agreements(id);
+
+
+--
 -- Name: users fk_rails_0f9012243c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5015,6 +5093,14 @@ ALTER TABLE ONLY public.active_storage_variant_records
 
 
 --
+-- Name: corporation_internship_agreements fk_rails_99be3feb1d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.corporation_internship_agreements
+    ADD CONSTRAINT fk_rails_99be3feb1d FOREIGN KEY (corporation_id) REFERENCES public.corporations(id);
+
+
+--
 -- Name: internship_offers fk_rails_9bcd71f8ef; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5213,6 +5299,8 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251215093256'),
+('20251215092017'),
 ('20251211100406'),
 ('20251210163350'),
 ('20251209223741'),

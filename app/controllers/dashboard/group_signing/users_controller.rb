@@ -172,12 +172,14 @@ module Dashboard
       end
 
       def school_management_group_sign
+        multi = false
         redirect_to dashboard_internship_agreements_path and return unless params[:ids].present?
 
         update_school_signature if params[:internship_agreement]&.[](:signature).present?
 
         params[:ids].split(',').each do |id|
           internship_agreement = current_user.internship_agreements.find(id)
+          multi = true if internship_agreement.from_multi?
           authorize! :sign_internship_agreements, internship_agreement
           if internship_agreement.school.signature.blank?
             redirect_to dashboard_internship_agreements_path,
@@ -196,8 +198,30 @@ module Dashboard
           internship_agreement.sign!
         end
 
-        redirect_to dashboard_internship_agreements_path,
+        redirect_to dashboard_internship_agreements_path(multi: multi),
                     flash: { success: 'Les conventions ont été signées.' }
+      end
+
+      def dispatch_multi_agreements_signature
+        authorize! :sign_internship_agreements, InternshipAgreement
+        @agreement_ids = user_params[:internship_agreement_ids]
+        return_path = dashboard_internship_agreements_path(multi: true)
+        agreements_counted = @agreement_ids.size
+        if agreements_counted == 0
+          redirect_to return_path,
+                      alert: "Aucune convention n'a été sélectionnée pour l'envoi des invitations à la signature." and return
+        else
+          signature_builder.dispatch_multi_agreements_signature(internship_agreement_ids: @agreement_ids) do |on|
+            on.success do
+              redirect_to return_path,
+                          notice: 'Les emails de signature ont été envoyés aux employeurs.'
+            end
+            on.failure do |error|
+              redirect_to return_path ,
+                          alert: 'Une erreur est survenue et les emails n\'ont pas été envoyés.'
+            end
+          end
+        end
       end
 
       private
@@ -223,6 +247,7 @@ module Dashboard
           phone_prefix
           signature_image
           agreement_ids
+          internship_agreement_ids
         ].concat((0..5).map { |index| "digit-code-target-#{index}".to_sym })
           .concat([internship_agreement_ids: []])
       end

@@ -1,8 +1,7 @@
-#agreement-button-panel [
-  class="#{(current_user.employer_like?) ? 'fr-tabs__panel fr-tabs__panel--selected' : ''} "
-  aria-labelled-by="agreement-button"
-  role="tabpanel"
-  tabindex="0"]
+.employer.fr-mt-4w [data-controller='group-signing'
+                    data-group-signing-counter-value='0'
+                    data-group-signing-multi-value='false'
+                    data-group-signing-max-counter-value='0']
 
   / .fr-callout.fr-fi-information-line
   /   p.fr-callout__title Signez votre convention en ligne !
@@ -29,15 +28,15 @@
                 thead
                   tr.d-flex
                     th.col-xs style='vertical-align: middle; text-align: center;'
-                       .fr-checkbox-group style='display: flex; align-items: center; justify-content: center; height: 100%;'
-                         input.select-general-internship-agreements [
-                             type='checkbox'
-                             name='select-general-internship-agreements'
-                             id='select-general-internship-agreements'
-                             data-action="group-signing#toggleSignThemAll"
-                             data-group-signing-target="generalCtaSelectBox"]
-                         label.fr-mt-1w for='select-general-internship-agreements'
-                           span style='color: #f5f5f5;' .
+                        .fr-checkbox-group style='display: flex; align-items: center; justify-content: center; height: 100%;'
+                          input.select-general-internship-agreements [
+                              type='checkbox'
+                              name='select-general-internship-agreements'
+                              id='select-general-internship-agreements'
+                              data-action="group-signing#toggleSignThemAll"
+                              data-group-signing-target="generalCtaSelectBox"]
+                          label.fr-mt-1w for='select-general-internship-agreements'
+                            span style='color: #f5f5f5;' .
                     th.col-sm-2.fr-pl-3w.d-flex.align-items-center Elève
                     th.col-sm-2.fr-pl-3w.d-flex.align-items-center Offre de stage
                     th.col-sm-2.d-flex.align-items-center Statut

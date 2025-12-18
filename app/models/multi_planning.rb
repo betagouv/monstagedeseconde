@@ -21,6 +21,9 @@ class MultiPlanning < ApplicationRecord
   validates :qpv, inclusion: { in: [true, false] }
   validates :weeks, presence: true
 
+  delegate :employer, to: :multi_coordinator
+end
+
   
   # Helper to determine if we are offering to college or lycee
   def grade_college

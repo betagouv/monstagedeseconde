@@ -24,7 +24,7 @@ module Dashboard
             params:
           )
           updated_internship_agreement.save
-          redirect_to dashboard_internship_agreements_path,
+          redirect_to dashboard_internship_agreements_path(multi: updated_internship_agreement.from_multi?),
                       flash: { success: update_success_message(updated_internship_agreement) }
         end
         on.failure do |failed_internship_agreement|
@@ -65,13 +65,8 @@ module Dashboard
       @mono_internship_agreements  = filtering_query current_user.mono_internship_agreements
       @multi_internship_agreements = filtering_query current_user.multi_internship_agreements
 
-      #  .reject { |a| a.student.school.school_manager.nil? }
       @school = current_user.school if current_user.school_management?
       @no_agreement_internship_application_list = []
-      # current_user.internship_applications
-      #           .filtering_discarded_students
-      #           .approved
-      #           .select { |ia| ia.student.school.school_manager.nil? }
     end
 
     def school_management_signature
@@ -97,7 +92,7 @@ module Dashboard
                         signature_phone_number: current_user.try(:phone))
       @internship_agreement.sign!
 
-      redirect_to dashboard_internship_agreements_path,
+      redirect_to dashboard_internship_agreements_path(multi: @internship_agreement.from_multi?),
                   flash: { success: 'La convention a été signée.' }
     end
 

@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class CorporationTest < ActiveSupport::TestCase
+  include ActionMailer::TestHelper
   def setup
     @corporation = build(:corporation)
   end
@@ -94,5 +95,27 @@ class CorporationTest < ActiveSupport::TestCase
     assoc = Corporation.reflect_on_association(:sector)
     assert_equal :belongs_to, assoc.macro
     assert assoc.options[:optional]
+  end
+
+  test "#send_multi_agreement_signature_invitation" do
+    internship_agreement = create(:multi_internship_agreement)
+    corporation = internship_agreement.internship_offer.corporations.first
+
+    assert_emails 1 do
+      corporation.send_multi_agreement_signature_invitation(
+        internship_agreement_ids: [internship_agreement.id]
+      )
+    end
+  end
+
+  test "#send_multi_agreement_signature_invitation but corporation does not match with internship agreement" do
+    corporation = create(:corporation)
+    internship_agreement = create(:multi_internship_agreement)
+
+    assert_emails 0 do
+      corporation.send_multi_agreement_signature_invitation(
+        internship_agreement_ids: [internship_agreement.id]
+      )
+    end
   end
 end

@@ -1,0 +1,37 @@
+- @internship_agreements.each do |internship_agreement|
+  - corporation_internship_agreement = CorporationInternshipAgreement.find_by(corporation_id: @corporation.id, internship_agreement_id: internship_agreement.id)
+  - metadata = internship_agreement.presenter(user: internship_agreement.employer).human_multi_state(corporation_id: @corporation.id)
+  = form_with model: corporation_internship_agreement,
+              url: dashboard_corporation_internship_agreement_path(id: internship_agreement.id),
+              scope: :corporation_internship_agreement,
+              method: :patch,
+              data: { turbo: false } do |f|
+    = f.hidden_field :corporation_sgid, value: @corporation_sgid
+    = f.hidden_field :internship_agreement_uuids, value: @internship_agreement_uuids
+    = f.hidden_field :internship_agreement_uuid, value: internship_agreement.uuid
+    tr
+      td
+        - if metadata[:to_be_signed]
+          = render 'inputs/dsfr_checkbox_field',
+                    form: f,
+                    field: :signed,
+                    title: '',
+                    label: '',
+                    options: { class: 'fr-checkbox-group--inline' }
+      
+
+      td= internship_agreement.student.presenter.full_name
+      td.fr-table--multiline= internship_agreement.internship_application.internship_offer.title
+      td= metadata[:status]
+      td.d-flex.flex-column.gap-2
+        div
+          - if metadata[:to_be_signed]
+            = f.submit "Signer la convention", class: "fr-btn fr-btn--sm"
+          - else
+            button class="fr-btn fr-btn--sm fr-btn--disabled" disabled="disabled"
+              = "Signée"
+        div
+          = link_to "Télécharger la convention (PDF)",
+                    upload_public_internship_agreement_path(uuid: internship_agreement.uuid, multi: true, format: :pdf),
+                    class: "fr-btn fr-btn--sm fr-btn--secondary fr-mt-2w",
+                    target: "_blank"

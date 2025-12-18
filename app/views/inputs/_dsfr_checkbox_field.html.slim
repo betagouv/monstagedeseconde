@@ -2,7 +2,7 @@
 - id = "#{klass}_#{field}"
 - name = "#{klass}[#{field}]"
 - extra_header_classes = extra_header_classes || ''
-- error = form.object.errors[field].any?
+- error = form.object&.errors[field].any?
 - options = {:'aria-describedby' => "#{id}-messages"}.merge(options)
 fieldset#checkboxes class="fr-fieldset #{error ? 'fr-fieldset--error' : ''}" aria-labelledby="checkboxes-legend checkboxes-messages"
   legend#checkboxes-legend class="fr-fieldset__legend--regular fr-fieldset__legend #{extra_header_classes}"

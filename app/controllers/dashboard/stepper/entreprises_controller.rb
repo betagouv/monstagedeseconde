@@ -17,6 +17,12 @@ module Dashboard::Stepper
       @entreprise = Entreprise.new(entreprise_params)
       authorize! :create, @entreprise
       set_computed_params
+      
+      if @entreprise.errors.any?
+        log_error(object: @entreprise)
+        render :new, status: :bad_request
+        return
+      end
 
       if @entreprise.save
         notice = "Les informations de l'entreprise ont bien été enregistrées"
@@ -38,6 +44,12 @@ module Dashboard::Stepper
     def update
       authorize! :update, @entreprise
       set_computed_params
+      
+      if @entreprise.errors.any?
+        log_error(object: @entreprise)
+        render :new, status: :bad_request
+        return
+      end
       if @entreprise.update(entreprise_params)
         if params[:planning_id].present? && Planning.find_by(id: params[:planning_id])
           redirect_to edit_dashboard_stepper_planning_path(
@@ -86,8 +98,60 @@ module Dashboard::Stepper
     def set_computed_params
       @entreprise = set_updated_address_flag
       @entreprise.is_public ||= entreprise_params[:is_public] == 'true'
-      @entreprise.entreprise_coordinates = { longitude: entreprise_params[:entreprise_coordinates_longitude],
-                                             latitude: entreprise_params[:entreprise_coordinates_latitude] }
+      # Use geoocder if coordinates are not present
+      longitude = entreprise_params[:entreprise_coordinates_longitude].to_f
+      latitude = entreprise_params[:entreprise_coordinates_latitude].to_f
+      coordinates_valid = longitude.zero? == false && latitude.zero? == false && 
+                          entreprise_params[:entreprise_coordinates_longitude].present? && 
+                          entreprise_params[:entreprise_coordinates_latitude].present?
+      
+      final_longitude = entreprise_params[:entreprise_coordinates_longitude]
+      final_latitude = entreprise_params[:entreprise_coordinates_latitude]
+      
+      unless coordinates_valid
+        puts 'Coordinates not valid, trying to geocode'
+        full_address = entreprise_params[:entreprise_full_address].blank? ? entreprise_params[:entreprise_chosen_full_address] : entreprise_params[:entreprise_full_address]
+        
+        # Address to geocode contains a valid zipcode ? 
+        if full_address.to_s.match?(/\d{5}/)
+          puts "-----Code postal valid------->"
+          # find city via Geocoder with zipcode
+          zipcode = full_address.to_s[/\d{5}/]
+          city = Geocoder.search("#{zipcode}, France").first.city
+          puts "City found: #{city}"
+
+          # find coordinates via Geocoder with city and zipcode
+          coordinates = Geofinder.coordinates("#{full_address}, #{city}, #{zipcode}, France")
+          puts "Coordinates found: #{coordinates}"
+          
+          if coordinates.present?
+            final_longitude = coordinates[1]
+            final_latitude = coordinates[0]
+            coordinates_valid = true
+          else
+            puts "-----Coordinates not found------->"
+            # take coordinates from Geocoder with city zipcode only
+            coordinates = Geocoder.search("#{city}, #{zipcode}, France").first.coordinates
+            if coordinates.present?
+              final_longitude = coordinates[1]
+              final_latitude = coordinates[0]
+              coordinates_valid = true
+            else
+              coordinates_valid = false
+              @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée")
+            end
+          end
+        else
+          coordinates_valid = false
+          @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée, code postal invalide")
+        end
+      end
+      
+      # Assign coordinates only if they are valid
+      if coordinates_valid
+        @entreprise.entreprise_coordinates = { longitude: final_longitude,
+                                               latitude: final_latitude }
+      end
       @entreprise.entreprise_full_address = entreprise_params[:entreprise_chosen_full_address]
       if entreprise_params[:is_public] == 'true'
         @entreprise.sector_id = Sector.find_by(name: 'Fonction publique').try(:id)
