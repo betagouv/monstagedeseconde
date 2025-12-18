@@ -22,7 +22,6 @@ class MultiPlanning < ApplicationRecord
   validates :weeks, presence: true
 
   delegate :employer, to: :multi_coordinator
-end
 
   
   # Helper to determine if we are offering to college or lycee
@@ -78,6 +77,7 @@ end
       lon = coords['longitude'] || coords[:longitude]
       return RGeo::Geographic.spherical_factory(srid: 4326).point(lon.to_f, lat.to_f)
     end
+
     coords
-  end
+  end 
 end
