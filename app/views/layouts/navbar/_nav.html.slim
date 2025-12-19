@@ -64,7 +64,7 @@
           li
             = link_to 'Statistiques', current_user.custom_dashboard_path, class: 'fr-link text-decoration-none mr-4'
           li
-            = link_to 'Mes offres', dashboard_choix_type_offre_path, class: 'fr-link text-decoration-none mr-4'
+            = link_to 'Mes offres', dashboard_internship_offers_path, class: 'fr-link text-decoration-none mr-4'
           li.dropdown.position-relative data-controller="dropdown"
             = link_to '#', class: 'fr-btn fr-btn--tertiary fr-icon-account-line fr-btn--icon-left', aria_haspopup: 'true', aria_expanded: 'false', data: { action: 'click->dropdown#toggle' } do
               | Mon espace
@@ -82,7 +82,7 @@
           li
             - active = current_page?(dashboard_choix_type_offre_path) || request.url.include?('origine=dashboard') ? 'active' : ''
             = link_to 'Mes offres',
-                      dashboard_choix_type_offre_path,
+                      dashboard_internship_offers_path,
                       class: "fr-link text-decoration-none mr-4 #{active}"
           li
             = link_to 'Candidatures', dashboard_candidatures_path, class: 'fr-link text-decoration-none mr-4'
