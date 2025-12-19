@@ -148,6 +148,7 @@ Rails.application.routes.draw do
           get 'school_management_signature'
           post 'school_management_sign'
           get 'upload'
+          get 'multi_reminder_email'
         end
       end
 

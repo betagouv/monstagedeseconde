@@ -1,0 +1,43 @@
+- prez = internship_agreement.presenter(user: current_user)
+- corporations_info = prez.corporations_info
+dialog id="coporations-signatures-status" class="fr-modal fr-modal--lg" aria-labelledby="coporations-signatures-status-title"
+  .fr-container.fr-container--fluid.fr-container-md
+    .fr-grid-row.fr-grid-row--center
+      .fr-col-12.fr-col-md-9.fr-col-lg-8
+        .fr-modal__body
+          .fr-modal__header
+            button aria-controls="coporations-signatures-status" title="Fermer" type="button" class="fr-btn--close fr-btn" Fermer
+
+          .fr-modal__content
+            h2 id="coporations-signatures-status-title" class="fr-modal__title"
+              span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true"
+              | Statuts des signatures entreprises
+            .small-card-container
+              .d-flex.justify-content-between
+                - corporations_info[:corporations][0..2].each do |corporation|
+                  = render 'dashboard/internship_agreements/multi/small_card_content',
+                            corporation: corporation
+
+              .d-flex.justify-content-start
+                - if corporations_info[:corporations].size >= 4
+                  = render 'dashboard/internship_agreements/multi/small_card_content',
+                              corporation: corporations_info[:corporations][3]
+                - if corporations_info[:corporations].size > 4
+                    = render 'dashboard/internship_agreements/multi/small_card_content',
+                              corporation: corporations_info[:corporations][4]
+
+          / Zone d'action de la modale
+          .fr-modal__footer
+            ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left"
+              li
+                =button_to multi_reminder_email_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
+                           method: :get,
+                           class: "fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left ",
+                           data: { turbo: true } do
+                  | Envoyer un rappel
+              li
+                button [aria-controls="coporations-signatures-status"
+                        title="Fermer"
+                        type="button"
+                        class="fr-btn fr-btn--secondary fr-btn--close"]
+                  | Fermer

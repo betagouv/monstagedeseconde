@@ -90,5 +90,22 @@ module Dashboard::CorporationInternshipAgreements
       # assert_redirected_to dashboard_corporation_internship_agreement_path(corporation_sgid: @corporation_sgid)
       assert_equal "Aucune convention n'a été sélectionnée.", flash[:notice]
     end
+
+    test "#multi_reminder_email" do
+      employer = @corporation.multi_corporation.internship_offer.employer
+      sign_in employer
+
+      corporation_internship_agreements = CorporationInternshipAgreement.where(
+        corporation: @corporation,
+        internship_agreement_id: @internship_agreement1.id
+      )
+      corporation_internship_agreements.update_all(signed: false)
+
+      get multi_reminder_email_dashboard_internship_agreement_path(uuid: @internship_agreement1.uuid)
+
+      assert_redirected_to dashboard_internship_agreements_path(multi: true)
+      assert_equal 'Les emails de rappel ont été envoyés aux responsables de stage.', flash[:notice]
+    end
+
   end
 end

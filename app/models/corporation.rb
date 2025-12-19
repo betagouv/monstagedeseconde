@@ -47,6 +47,10 @@ class Corporation < ApplicationRecord
     @presenter ||= Presenters::Corporation.new(self)
   end
 
+  def corporation_internship_agreement_for(internship_agreement)
+    corporation_internship_agreements.find_by(internship_agreement_id: internship_agreement.id)
+  end
+
   def send_multi_agreement_signature_invitation(internship_agreement_ids: [])
     # return if internship_agreement_ids.empty? Should Never Occur
 
