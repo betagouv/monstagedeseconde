@@ -30,9 +30,9 @@ module Dashboard::MultiStepper
       authorize! :update, @multi_corporation
       
       if @multi_corporation.multi_coordinator.multi_planning
-        redirect_to edit_dashboard_multi_stepper_multi_planning_path(@multi_corporation.multi_coordinator.multi_planning)
+        redirect_to edit_dashboard_multi_stepper_multi_planning_path(@multi_corporation.multi_coordinator.multi_planning, multi_corporation_id: @multi_corporation.id)
       else
-        redirect_to new_dashboard_multi_stepper_multi_planning_path(multi_coordinator_id: @multi_corporation.multi_coordinator_id)
+        redirect_to new_dashboard_multi_stepper_multi_planning_path(multi_coordinator_id: @multi_corporation.multi_coordinator_id, multi_corporation_id: @multi_corporation.id)
       end
     end
 
