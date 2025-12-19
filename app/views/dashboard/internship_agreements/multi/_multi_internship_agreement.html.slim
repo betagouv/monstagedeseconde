@@ -1,0 +1,60 @@
+- prez = internship_agreement.presenter(user: current_user)
+tr class="d-sm-flex internship-application-row student-application-#{internship_agreement.id} internship-agreement-to-sign"
+  td.col-xs.pt-3.pb-0.py-sm-2.rg2a-width-100.d-sm-flex.align-items-center data-head="Élève"
+    .fr-form-group
+      .fr-fieldset.fr-fieldset--inline
+        .fr-fieldset__content
+          .fr-checkbox-group
+            - id = "#{fg.object_name}_internship_agreement_id_#{internship_agreement.id}_checkbox"
+            = fg.check_box :internship_agreement_ids,
+                            { id: id,
+                              class: 'check-agreement-sign fr-mt-4w fr-pl-1w',
+                              multiple: true,
+                              data: { action: "group-signing#toggle",
+                                      :'group-signing-id-param' => internship_agreement.id,
+                                      :'group-signing-signed-param' => "#{internship_agreement.ready_to_sign?(user: current_user) ? 'readyToSign' : 'notReadyToSign'}",
+                                      :'group-signing-target' => 'addCheckBox' },
+                              :'aria-label' => 'cliquez pour signer' },
+                             internship_agreement.id,
+                             false
+
+
+            label.fr-label.align-self-center for="#{id}" data-action="group-signing#toggle"
+              span style='color: white;' .
+  td.pt-0.pb-3.py-sm-2.rg2a-width-100.col-sm-2.d-flex.flex-column.justify-content-center.align-items-start data-head="#{internship_agreement.internship_application.student.name}"
+    = prez.student_name
+  td.pt-0.pb-3.py-sm-2.rg2a-width-100.col-sm-2.d-flex.flex-column.justify-content-center.align-items-start data-head="#{internship_agreement.internship_application.internship_offer.title}"
+    div = link_to '#',
+                  class: 'overflow-x-visible text-wrap fr-raw-link fr-ms2e-wrapper',
+                  data: { toggle: 'modal',
+                          target: "##{show_application_modal_id(internship_agreement.internship_application)}",
+                          turbo: false },
+                  target: '_blank' do
+      span = prez.internship_offer_title.truncate(38)
+    .fr-mt-2w.fr-ms2e-wrapper
+      = prez.employer_name
+
+  td.rg2a-width-100.col-sm-2.d-sm-flex.align-items-center.text-left data-head="Statut" style='word-wrap: break-word; white-space: normal;'
+    .actions.d-flex.d-sm-block
+      = prez.inline_status_label
+
+  td.rg2a-width-100.col-sm-2.d-sm-flex.align-items-center.text-left.fr-py-2w data-head="Signature en ligne"
+    .actions.d-flex.d-sm-block
+      = render(InternshipAgreements::SignatureStatusComponent.new( internship_agreement: internship_agreement))
+
+  td.col.d-sm-flex.align-items-center.justify-content-center.actions.flex-column
+    / - if current_user.school_management? && can?(:sign_internship_agreements, internship_agreement)
+    /     = link_to school_management_signature_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
+    /               class: 'fr-link',
+    /               data: { turbo_frame: "modal" } do
+    /       | Signer en ligne
+    /       span.fr-fi-arrow-right-line
+    / - if current_user.school_management? && internship_agreement.signed_by_all?
+    /   = link_to 'Télécharger le PDF', dashboard_internship_agreement_path(uuid: internship_agreement.uuid, format: :pdf)
+    / - else
+    = render(InternshipAgreements::ButtonComponent.new( internship_agreement: internship_agreement,
+                                                        current_user: current_user) )
+tr
+  td.col-12.p-0 colspan=5
+    = render partial: "dashboard/internship_offers/internship_applications/show_modal",
+             locals: {application: internship_agreement.internship_application}

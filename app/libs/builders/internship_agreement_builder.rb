@@ -3,13 +3,14 @@
 module Builders
   # wrap internship offer creation logic / failure for API/web usage
   class InternshipAgreementBuilder < BuilderBase
-    def new_from_application(internship_application)
+    def new_from_application(internship_application, multi_agreements: false)
       authorize :new, InternshipAgreement
-      internship_agreement = InternshipAgreement.new(
-        {}.merge(preprocess_student_to_params(internship_application.student))
-          .merge(preprocess_internship_offer_params(internship_application.internship_offer))
-          .merge(preprocess_internship_application_params(internship_application))
-      )
+      internship_agreement = nil
+      params = {}.merge(preprocess_student_to_params(internship_application.student))
+                 .merge(preprocess_internship_offer_params(internship_application.internship_offer))
+                 .merge(preprocess_internship_application_params(internship_application))
+      klass = multi_agreements ? InternshipAgreements::MultiInternshipAgreement : InternshipAgreements::MonoInternshipAgreement
+      internship_agreement = klass.new(**params)
       internship_agreement.internship_application = internship_application
       internship_agreement
     end
@@ -68,7 +69,8 @@ module Builders
     end
 
     def preprocess_internship_offer_params(internship_offer)
-      {
+      if internship_offer.from_multi?
+        {
         organisation_representative_full_name: internship_offer.employer.presenter.full_name,
         organisation_representative_role: internship_offer.employer.employer_role,
         siret: internship_offer.try(:siret),
@@ -84,7 +86,23 @@ module Builders
         internship_address: "#{internship_offer.street}, #{internship_offer.zipcode} #{internship_offer.city}",
         entreprise_address: internship_offer.entreprise_full_address,
         activity_scope: internship_offer.description
-      }
+        }
+      else
+        {
+        organisation_representative_full_name: internship_offer.employer.presenter.full_name,
+        organisation_representative_role: internship_offer.employer.employer_role,
+        siret: internship_offer.try(:siret),
+        daily_hours: internship_offer.daily_hours,
+        weekly_hours: internship_offer.weekly_hours,
+        lunch_break: internship_offer.lunch_break,
+        weekly_lunch_break: internship_offer&.lunch_break,
+        employer_name: internship_offer.employer_name,
+        employer_contact_email: internship_offer.employer.email,
+        internship_address: "#{internship_offer.street}, #{internship_offer.zipcode} #{internship_offer.city}",
+        entreprise_address: internship_offer.entreprise_full_address,
+        activity_scope: internship_offer.description
+       }
+      end
     end
 
     def preprocess_student_to_params(student)

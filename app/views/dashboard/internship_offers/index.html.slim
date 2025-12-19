@@ -10,7 +10,7 @@
 
       - if can?(:create, InternshipOffer)
         .mt-auto.text-right
-          = link_to new_dashboard_stepper_internship_occupation_path,
+          = link_to dashboard_choix_type_offre_path,
                     id: 'test-create-offer' do
             button.fr-icon-add-line.fr-btn.fr-btn--icon-left
               |Publier une offre

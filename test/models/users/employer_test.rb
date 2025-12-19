@@ -44,8 +44,8 @@ module Users
     end
 
     test '#already_signed?' do
-      internship_agreement_1 = create(:internship_agreement)
-      internship_agreement_2 = create(:internship_agreement)
+      internship_agreement_1 = create(:mono_internship_agreement)
+      internship_agreement_2 = create(:mono_internship_agreement)
       employer = internship_agreement_1.employer
       refute employer.already_signed?(internship_agreement_id: internship_agreement_1.id)
       refute employer.already_signed?(internship_agreement_id: internship_agreement_2.id)

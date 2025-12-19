@@ -1,0 +1,28 @@
+.multi-summary-cards
+  .fr-card.fr-enlarge-link.fr-card--horizontal.preview-card
+    .fr-card__body
+      .fr-card__content
+        h3.fr-card__title
+          a href="#" disabled=true
+            span
+              = corporation.employer_name
+        .fr-card__desc
+          .fr-text--lg style="color: var(--grey-main-525);"
+            = corporation.corporation_address
+        .fr-card__start
+          .text-muted = corporation.sector.name
+
+
+          p.fr-card__detail
+            = resource.try(:sector).try(:name)
+
+        .fr-card__end
+          p.fr-card__detail
+            .fr-row style="color: var(--grey-850);"
+              .fr-col-12
+                .fr-text--lg
+                = "#{corporation.tutor_name} - #{corporation.tutor_role_in_company}"
+            .fr-row.fr-mt-n1v style="color: var(--grey-850);"
+              .fr-col-12
+                .fr-text--lg
+                = "#{corporation.tutor_email} - #{corporation.presenter.tutor_phone}"

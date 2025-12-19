@@ -496,7 +496,7 @@ export default function AddressInput({
                   maxLength="50"
                   type="text"
                   name={`${resourceName}[city]`}
-                  id={`${resourceName}[city]`}
+                  id={`${resourceName}_city`}
                   readOnly
                 />
               </div>
@@ -511,7 +511,7 @@ export default function AddressInput({
                   maxLength="5"
                   type="text"
                   name={`${resourceName}[zipcode]`}
-                  id={`${resourceName}[zipcode]`}
+                  id={`${resourceName}_zipcode`}
                   data-mandatory-fields-target="mandatoryField"
                   data-action="input->mandatory-fields#fieldChange"
                   readOnly

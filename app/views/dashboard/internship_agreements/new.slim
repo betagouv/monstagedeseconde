@@ -5,7 +5,7 @@
             class: 'form-offset-header',
             data: {controller: 'internship-agreement-form', turbo: false } do |form|
   table.table-sticky-thead
-    = render partial: 'dashboard/internship_agreements/form_header',
+    = render partial: 'dashboard/internship_agreements/shared/form_header',
              locals: { internship_application: @internship_agreement.internship_application,
                        internship_agreement: form.object }
     = render "form",

@@ -8,7 +8,7 @@ module Dashboard::Users
     test 'employer resets his phone_number' do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application)
+      internship_agreement = create(:mono_internship_agreement, internship_application: internship_application)
       employer.update(phone: '+330602030405')
       sign_in(employer)
 
@@ -22,7 +22,7 @@ module Dashboard::Users
     end
 
     test 'school_manager resets his phone_number' do
-      internship_agreement = create(:internship_agreement, :validated)
+      internship_agreement = create(:mono_internship_agreement, :validated)
       school_manager = internship_agreement.school_manager
       school_manager.update(phone: '+330602030405')
       sign_in(school_manager)
@@ -38,7 +38,7 @@ module Dashboard::Users
     test 'employer is redirected to dashboard_internship_agreements_path when resetting his phone number fails' do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application)
+      internship_agreement = create(:mono_internship_agreement, internship_application: internship_application)
       employer.update(phone: '+330602030405')
       klass = Users::Employer
       sign_in(employer)
@@ -54,7 +54,7 @@ module Dashboard::Users
     end
 
     test 'school_manager is redirected to dashboard_internship_agreements_path when resetting his phone number fails' do
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       school_manager = internship_agreement.school_manager
       school_manager.update(phone: '+330602030405')
       klass = Users::SchoolManagement

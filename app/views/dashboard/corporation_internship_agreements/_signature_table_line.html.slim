@@ -1,0 +1,44 @@
+- @internship_agreements.each do |internship_agreement|
+  - corporation_internship_agreement = CorporationInternshipAgreement.find_by(corporation_id: @corporation.id, internship_agreement_id: internship_agreement.id)
+  - metadata = internship_agreement.presenter(user: internship_agreement.employer).human_multi_state(corporation_id: @corporation.id)
+  = f.hidden_field :corporation_sgid, value: @corporation_sgid
+  tr
+    td
+      .fr-fieldset__element
+        / - value = form.object.send(field) || value
+        / 1 for true, 0 for false
+        - id = "#{f.object_name}_internship_agreement_uuids_#{internship_agreement.uuid}_checkbox"
+        - options = { id: id,
+                      class: 'check-agreement-sign fr-mt-4w fr-pl-1w',
+                      name: "#{f.object_name}[internship_agreement_uuids][]",
+                      multiple: true,
+                      data: { action: "group-signing#toggle",
+                              :'group-signing-id-param' => internship_agreement.id,
+                              :'group-signing-signed-param' => "#{metadata[:to_be_signed] ? 'readyToSign' : 'notReadyToSign'}",
+                              :'group-signing-target' => 'addCheckBox' },
+                      'aria-label' => 'cliquez pour signer' }
+        .fr-checkbox-group
+          = f.check_box :internship_agreement_ids, options, internship_agreement.uuid, false
+
+          label.fr-label for="#{id}" data-action="click->group-signing#toggle"
+            = ''
+
+    td= internship_agreement.student.presenter.full_name
+    td.fr-table--multiline= internship_agreement.internship_application.internship_offer.title
+    td= metadata[:status]
+    td.d-flex.flex-column.gap-2
+      div
+        - if metadata[:to_be_signed]
+          button [class="fr-btn fr-btn--sm"
+                  data-action="group-signing#toggleFromButton"
+                  data-group-signing-id-param="#{internship_agreement.id}"
+                  data-group-signing-target="signingButton"]
+            ="Signer la convention"
+        - else
+          button class="fr-btn fr-btn--sm fr-btn--disabled" disabled="disabled"
+            = "Signée"
+      div
+        = link_to "Télécharger la convention (PDF)",
+                  upload_public_internship_agreement_path(uuid: internship_agreement.uuid, multi: true, format: :pdf),
+                  class: "fr-btn fr-btn--sm fr-btn--secondary fr-mt-2w",
+                  target: "_blank"

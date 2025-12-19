@@ -11,7 +11,7 @@ module Dashboard::Users
     test 'employer with phone number starts the signing process' do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application,
+      internship_agreement = create(:mono_internship_agreement, internship_application: internship_application,
                                                            aasm_state: :validated)
       employer.update(phone: '+330622554411')
       sign_in(employer)

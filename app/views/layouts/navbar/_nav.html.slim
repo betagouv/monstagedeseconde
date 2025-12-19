@@ -5,7 +5,7 @@
       li
         = render partial: 'layouts/extra_for_devs'
       - if user_signed_in?
-        
+
         / God User
         - if current_user.is_a?(Users::God)  #|| cookies.signed[Rails.application.credentials.dig(:cookie_switch_back)].present?
           li
@@ -21,7 +21,7 @@
                 = link_to 'Mon profil', account_path, class: 'dropdown-item d-flex align-items-center'
               li.text-center.fr-px-2w.fr-mt-1w
                 = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--tertiary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
-         
+
         / Student
         - if current_user.is_a?(Users::Student)
           li
@@ -41,8 +41,8 @@
                 = link_to 'Mon profil', account_path, class: 'dropdown-item d-flex align-items-center'
               li.text-center.fr-px-2w.fr-mt-2w
                 = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--tertiary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
-         
-        
+
+
         / School management
         - if current_user.is_a?(Users::SchoolManagement)
           li
@@ -58,13 +58,13 @@
                 = link_to 'Mon profil', account_path, class: "dropdown-item d-flex align-items-center"
               li.text-center.fr-px-2w.fr-mt-2w
                 = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--tertiary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
-        
+
         / Statistician
         - if current_user.is_a?(Users::Statistician)
           li
             = link_to 'Statistiques', current_user.custom_dashboard_path, class: 'fr-link text-decoration-none mr-4'
           li
-            = link_to 'Mes offres', dashboard_internship_offers_path, class: 'fr-link text-decoration-none mr-4'
+            = link_to 'Mes offres', dashboard_choix_type_offre_path, class: 'fr-link text-decoration-none mr-4'
           li.dropdown.position-relative data-controller="dropdown"
             = link_to '#', class: 'fr-btn fr-btn--tertiary fr-icon-account-line fr-btn--icon-left', aria_haspopup: 'true', aria_expanded: 'false', data: { action: 'click->dropdown#toggle' } do
               | Mon espace
@@ -76,13 +76,13 @@
                 = link_to 'Mon profil', account_path, class: "dropdown-item d-flex align-items-center"
               li.text-center.fr-px-2w.fr-mt-2w
                 = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--tertiary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
-        
+
         / Employer
         - if current_user.is_a?(Users::Employer)
           li
-            - active = current_page?(dashboard_internship_offers_path) || request.url.include?('origine=dashboard') ? 'active' : ''
+            - active = current_page?(dashboard_choix_type_offre_path) || request.url.include?('origine=dashboard') ? 'active' : ''
             = link_to 'Mes offres',
-                      dashboard_internship_offers_path,
+                      dashboard_choix_type_offre_path,
                       class: "fr-link text-decoration-none mr-4 #{active}"
           li
             = link_to 'Candidatures', dashboard_candidatures_path, class: 'fr-link text-decoration-none mr-4'
@@ -117,4 +117,3 @@
                 = link_to 'Je suis un établissement', school_management_login_path, class: 'dropdown-item d-flex align-items-center gap-2'
               li
                 = link_to 'Je suis un référent', statistician_login_path, class: 'dropdown-item d-flex align-items-center gap-2'
-          

@@ -1,0 +1,10 @@
+.fr
+  h2.fr-h6.fr-mb-2w
+    span.fr-badge.fr-badge--purple-glycine.fr-mr-1w LISTE DES STRUCTURES ACCUEILLANTES
+  - if multi_corporation.corporations.empty?
+    p.fr-text--sm.fr-text--regular.fr-hint-text Aucune structure ajoutée pour le moment.
+  
+  .fr-grid-row
+    - multi_corporation.corporations.each do |corporation|
+      .fr-col-12.fr-mb-2w
+        = render 'dashboard/multi_stepper/multi_corporations/corporations/corporation_card', corporation: corporation, multi_corporation: multi_corporation

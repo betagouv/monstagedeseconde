@@ -7,7 +7,7 @@ module Dashboard::Users
     test 'employer requests a new code and everything is ok' do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application,
+      internship_agreement = create(:mono_internship_agreement, internship_application: internship_application,
                                                            aasm_state: :validated)
       sign_in(employer)
       visit dashboard_internship_agreements_path
@@ -29,7 +29,7 @@ module Dashboard::Users
     test 'employer requests a new code and it fails for almost no reason' do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-      internship_agreement = create(:internship_agreement, internship_application: internship_application,
+      internship_agreement = create(:mono_internship_agreement, internship_application: internship_application,
                                                            aasm_state: :validated)
       sign_in(employer)
       visit dashboard_internship_agreements_path

@@ -20,7 +20,7 @@ div.fr-my-2w data-controller="daily-hours"
                       data: { :'daily-hours-target' => "weeklyHoursStart", action: "change->daily-hours#weeklyStartChange" },
                       aria: { label: "Selectionner une heure de debut de stage pour tous les jours de la période de stage" }, id: "#{form.object_name}_weekly_hours_start" }
 
-      .col-1 style="display: flex;align-items: center;justify-content: center;"
+      .col-2 style="display: flex;align-items: center;justify-content: center;"
         | à
       .col-5
         = select_tag :"#{form.object_name}[weekly_hours][]",

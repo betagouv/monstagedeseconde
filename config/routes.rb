@@ -10,6 +10,7 @@ root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
                    end
 
 Rails.application.routes.draw do
+
   mount LetterOpenerWeb::Engine, at: '/letter_opener', as: 'letter_opener' if Rails.env.development?
   # ------------------ SCOPE START ------------------
   scope(path_names: { new: 'nouveau', edit: 'modification' }) do
@@ -159,6 +160,7 @@ Rails.application.routes.draw do
           post 'handwrite_sign'
           post 'school_management_group_signature'
           post 'school_management_group_sign'
+          post 'dispatch_multi_agreements_signature'
         end
       end
 
@@ -198,10 +200,21 @@ Rails.application.routes.draw do
       end
 
       namespace :stepper, path: 'etapes' do
-
         resources :internship_occupations, path: 'metiers_et_localisation', only: %i[create new edit update]
         resources :entreprises, path: 'entreprise', only: %i[create new edit update]
         resources :plannings, path: 'planning', only: %i[create new edit update]
+      end
+
+      get  'choix-type-offre', to: 'offer_types_switchings#new', as: 'choix_type_offre'
+      post 'choix-type-offre', to: 'offer_types_switchings#create', as: 'validation_choix_type_offre'
+
+      namespace :multi_stepper, path: 'multi_etapes' do
+        resources :multi_activities, path: 'multi-activites', only: %i[create new edit update]
+        resources :multi_coordinators, path: 'multi-coordinateurs', only: %i[create new edit update]
+        resources :multi_corporations, path: 'multi-structures', only: %i[create new edit update] do
+          resources :corporations, only: %i[create update destroy edit], module: :multi_corporations
+        end
+        resources :multi_plannings, path: 'multi-planning', only: %i[create new edit update]
       end
 
       namespace :students, path: '/:student_id/' do
@@ -211,11 +224,16 @@ Rails.application.routes.draw do
         resources :internship_agreements, path: 'conventions-de-stage', only: %i[new], param: :uuid do
           member do
             get :sign
-            
           end
         end
       end
       get 'candidatures', to: 'internship_offers/internship_applications#user_internship_applications'
+      get 'corporation_internship_agreement/index', to: 'dashboard/corporation_internship_agreement#index'
+      resources :corporation_internship_agreements, path: 'conventions-multi-employeurs', only: %i[index update] do
+        member do
+          patch :multi_sign
+        end
+      end
     end
     # ------------------ DASHBOARD END ------------------
   end

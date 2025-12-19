@@ -11,11 +11,15 @@ module Presenters
     end
 
     def full_address
-      [
-        instance.street,
-        instance.zipcode,
-        instance.city
-      ].compact.join(" ")
+      if instance.from_multi?
+        instance.corporations.first.corporation_address
+      else
+        [
+          instance.street,
+          instance.zipcode,
+          instance.city
+        ].compact.join(" ")
+      end
     end
 
     private

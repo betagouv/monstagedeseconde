@@ -3,6 +3,10 @@
 
 .row.fr-py-3w.thin-line-below
   .col-12
+    .fr-mb-1w
+      - if internship_offer.from_multi?
+        .fr-badge.fr-badge--new
+          = "Offre multi-entreprises"
     .fr-text--lg.fr-mb-1w
       = internship_offer.sector.name unless need_to_hide_data_for_non_rep_or_qpv_students
   .col-12
@@ -62,7 +66,10 @@
       .row
         .col-12
           .h4.fr-mb-2w.employer-name-test
-            = internship_offer.employer_name
+            - if internship_offer.from_multi?
+              = internship_offer.corporations.map(&:corporation_name).join(', ')
+            - else
+              = internship_offer.employer_name
       .row
         .col-12
           .fr-pl-1w.blue-france
@@ -84,10 +91,13 @@
     - if can?(:read_employer_name, internship_offer) 
       .row
         .col-12
-          - work_location = internship_offer&.internship_occupation.presence
-          - internship_work_place_coordinates = work_location && work_location.coordinates ? work_location.coordinates : internship_offer.coordinates
-          = react_component("Map",
-                      props: { internshipOffer: { id: internship_offer.id, lat: internship_work_place_coordinates.latitude, lon: internship_work_place_coordinates.longitude } })
+          - if internship_offer.respond_to?(:from_multi?) && internship_offer.from_multi?
+            = react_component("MultiMap", props: { corporations: internship_offer.corporations.map { |c| { id: c.id, lat: c.internship_coordinates.latitude, lon: c.internship_coordinates.longitude, name: c.corporation_name, address: c.corporation_address } } })
+          - else
+            - work_location = internship_offer&.internship_occupation.presence
+            - internship_work_place_coordinates = work_location && work_location.coordinates ? work_location.coordinates : internship_offer.coordinates
+            = react_component("Map",
+                        props: { internshipOffer: { id: internship_offer.id, lat: internship_work_place_coordinates.latitude, lon: internship_work_place_coordinates.longitude } })
 - unless hidden_parts
   .row
     .col-12

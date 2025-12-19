@@ -67,17 +67,20 @@ class InternshipApplication < ApplicationRecord
 
   attr_accessor :sgid, :skip_callback_with_review_rebuild
 
+
+  # Associations
   belongs_to :weekly_internship_offer,
-             class_name: "InternshipOffers::WeeklyFramed",
+             class_name: "InternshipOffer",
              foreign_key: "internship_offer_id"
   belongs_to :internship_offer, polymorphic: true
   belongs_to :student, class_name: "Users::Student",
                        foreign_key: "user_id"
   has_one :internship_agreement, dependent: :destroy
-  has_many :state_changes, class_name: "InternshipApplicationStateChange", dependent: :destroy
+  has_many :state_changes, class_name: "InternshipApplicationStateChange",
+                           dependent: :destroy
   has_many :internship_application_weeks, dependent: :destroy
   has_many :weeks, through: :internship_application_weeks
-
+  # Delegations
   delegate :update_all_counters, to: :internship_application_counter_hook
   delegate :name, to: :student, prefix: true
   delegate :employer, to: :internship_offer
@@ -85,14 +88,9 @@ class InternshipApplication < ApplicationRecord
 
   accepts_nested_attributes_for :student, update_only: true
 
-  # has_rich_text :approved_message
-  # has_rich_text :rejected_message
-  # has_rich_text :canceled_by_employer_message
-  # has_rich_text :canceled_by_student_message
-  # has_rich_text :restored_message
-  # has_rich_text :motivation
-
   paginates_per PAGE_SIZE
+
+  delegate :from_multi?, to: :internship_offer, allow_nil: true
 
   # Validations
   validates :student_phone,
@@ -191,6 +189,23 @@ class InternshipApplication < ApplicationRecord
     where(created_at: SchoolYear::Current.new.offers_beginning_of_period..SchoolYear::Current.new.offers_end_of_period)
   }
 
+  scope :seconde, lambda {
+    joins(student: :grade)
+      .where(grades: { id: Grade.seconde.id })
+      .where.not(grades: { id: [Grade.troisieme.id, Grade.quatrieme.id] })
+  }
+  scope :troisieme_or_quatrieme, lambda {
+    joins(student: :grade)
+      .where(grades: { id: [Grade.troisieme.id, Grade.quatrieme.id] })
+      .where.not(grades: { id: Grade.seconde.id })
+  }
+  scope :troisieme, lambda {
+    joins(student: :grade)
+      .where(grades: { id: Grade.troisieme.id })
+      .where.not(grades: { id: [Grade.seconde.id, Grade.quatrieme.id] })
+  }
+
+
   #
   # Other stuffs
   #
@@ -264,7 +279,14 @@ class InternshipApplication < ApplicationRecord
                   to: :approved,
                   after: proc { |user, *_args|
                     update!("approved_at": Time.now.utc)
-                    student_approval_notifications unless skip_callback_with_review_rebuild
+                    unless skip_callback_with_review_rebuild
+                      student_approval_notifications
+                      if internship_offer.respond_to?(:coordinator) && internship_offer.coordinator.present?
+                        create_multi_agreement
+                      elsif employer.agreement_signatorable?
+                        create_agreement
+                      end
+                    end
                     cancel_all_pending_applications
                     record_state_change user
                   }
@@ -392,6 +414,10 @@ class InternshipApplication < ApplicationRecord
     Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
   end
 
+  def multi?
+    internship_offer.from_multi?
+  end
+
   def state_index
     ORDERED_STATES_INDEX.index(aasm_state)
   end
@@ -417,7 +443,7 @@ class InternshipApplication < ApplicationRecord
       teacher: teacher,
     }
 
-    create_agreement if employer.agreement_signatorable?
+
     return unless teacher.present?
 
     deliver_later_with_additional_delay do
@@ -495,10 +521,25 @@ class InternshipApplication < ApplicationRecord
     ).deliver_later
   end
 
+  def create_multi_agreement
+    return unless internship_agreement_creation_allowed?
+
+    agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
+                                                    .new_from_application(self, multi_agreements: true)
+    agreement.skip_validations_for_system = true
+    agreement.save!
+    # TODO notify coordinator and employers
+    EmployerMailer.internship_application_approved_with_agreement_email(
+      internship_agreement:,
+    ).deliver_later
+  end
+
   def internship_application_counter_hook
     case self
     when InternshipApplications::WeeklyFramed
       InternshipApplicationCountersHooks::WeeklyFramed.new(internship_application: self)
+    when InternshipApplications::Multi
+      InternshipApplicationCountersHooks::Multi.new(internship_application: self)
     else
       raise "can not process stats for this kind of internship_application"
     end
@@ -508,6 +549,8 @@ class InternshipApplication < ApplicationRecord
     case self
     when InternshipApplications::WeeklyFramed
       InternshipApplicationAasmMessageBuilders::WeeklyFramed.new(internship_application: self, aasm_target:)
+    when InternshipApplications::Multi
+      InternshipApplicationAasmMessageBuilders::Multi.new(internship_application: self, aasm_target:)
     else
       raise "can not build aasm message for this kind of internship_application"
     end

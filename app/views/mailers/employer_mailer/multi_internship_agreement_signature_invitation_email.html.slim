@@ -1,0 +1,18 @@
+- content_for :title, "Validez les conventions de stage pour les élèves de votre entreprise"
+
+p style=p_styles
+  = "Bonjour #{@corporation_prez.employer_name},"
+
+p style=p_styles
+  = "Vous a avez été désigné comme signataire des conventions pour les élèves pour le(s) stage(s) : #{@internship_offer_titles.join(', ')} "
+p style=p_styles
+  = "#{@employer_prez.full_name} vous invite à les signer en ligne".html_safe
+= render partial: "mailers/call_to_action",
+          locals: { href: @url,
+                    label: "Voir et signer les conventions de stage" }
+p style=p_styles
+  | Merci pour votre engagement.
+p style=p_styles
+  | À bientôt,
+p style=p_styles
+  | L'équipe 1élève1stage

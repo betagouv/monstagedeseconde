@@ -11,7 +11,7 @@ class AnonymisationTest < ActiveSupport::TestCase
       student_email = student.email
       school = internship_application.student.school
       class_room = create(:class_room, school:, name: 'Victor Hugo')
-      internship_agreement = create(:internship_agreement)
+      internship_agreement = create(:mono_internship_agreement)
       student.update(class_room:)
       employer = internship_offer.employer
 

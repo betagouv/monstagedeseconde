@@ -1,0 +1,7 @@
+= turbo_stream.replace "corporations_list" do
+  = render "dashboard/multi_stepper/multi_corporations/corporations/list", multi_corporation: @multi_corporation
+
+= turbo_stream.replace "corporation_form_frame" do
+  = render "dashboard/multi_stepper/multi_corporations/corporations/form", multi_corporation: @multi_corporation, corporation: Corporation.new(multi_corporation: @multi_corporation)
+
+
