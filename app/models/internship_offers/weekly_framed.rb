@@ -26,6 +26,7 @@ module InternshipOffers
                               less_than_or_equal_to: MAX_CANDIDATES_HIGHEST }
     validates :lunch_break, length: { minimum: 8, maximum: 250 }
     validate :schedules_check
+    validates :coordinates, presence: true
 
     #---------------------
     # mother comes from duplication

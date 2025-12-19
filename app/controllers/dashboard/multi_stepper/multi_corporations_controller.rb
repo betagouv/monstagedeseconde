@@ -28,8 +28,12 @@ module Dashboard::MultiStepper
 
     def update
       authorize! :update, @multi_corporation
-      # Logic for moving to next step (Step 4) would go here
-      # redirect_to next_step_path
+      
+      if @multi_corporation.multi_coordinator.multi_planning
+        redirect_to edit_dashboard_multi_stepper_multi_planning_path(@multi_corporation.multi_coordinator.multi_planning)
+      else
+        redirect_to new_dashboard_multi_stepper_multi_planning_path(multi_coordinator_id: @multi_corporation.multi_coordinator_id)
+      end
     end
 
     private

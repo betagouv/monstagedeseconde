@@ -47,6 +47,21 @@ class Corporation < ApplicationRecord
     @presenter ||= Presenters::Corporation.new(self)
   end
 
+  def internship_coordinates=(coordinates)
+    case coordinates
+    when Hash
+      if coordinates[:latitude]
+        super(RGeo::Geographic.spherical_factory(srid: 4326).point(coordinates[:longitude].to_f, coordinates[:latitude].to_f))
+      else
+        super(RGeo::Geographic.spherical_factory(srid: 4326).point(coordinates['longitude'].to_f, coordinates['latitude'].to_f))
+      end
+    when RGeo::Geographic::SphericalPointImpl
+      super(coordinates)
+    else
+      super
+    end
+  end
+  
   def send_multi_agreement_signature_invitation(internship_agreement_ids: [])
     # return if internship_agreement_ids.empty? Should Never Occur
 

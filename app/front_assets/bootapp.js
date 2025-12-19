@@ -23,6 +23,7 @@ import FlashMessage from "components/FlashMessage";
 import SearchSchool from "components/SearchSchool";
 import SearchSchoolByName from "components/SearchSchoolByName";
 import Map from "components/Map";
+import MultiMap from "components/MultiMap";
 import SchoolList from "components/SchoolList";
 
 import CityInput from "components/search_internship_offer/CityInput";
@@ -56,6 +57,7 @@ ReactOnRails.register({
   InternshipOfferResults,
   KeywordInput,
   Map,
+  MultiMap,
   ReservedSchoolInput,
   SchoolList,
   SearchSchool,
