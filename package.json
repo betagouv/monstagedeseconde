@@ -13,7 +13,7 @@
     "@hotwired/stimulus": "^3.0.1",
     "@hotwired/turbo-rails": "^7.1.1",
     "@popperjs/core": "^2.11.2",
-    "@rails/actiontext": "^6.0.3-3",
+    "@rails/actiontext": "^8.1.100",
     "@rails/webpacker": "5.4.3",
     "@stimulus/polyfills": "^1.1.1",
     "actioncable": "^5.2.3",
