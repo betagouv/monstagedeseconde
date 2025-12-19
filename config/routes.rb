@@ -228,8 +228,7 @@ Rails.application.routes.draw do
         end
       end
       get 'candidatures', to: 'internship_offers/internship_applications#user_internship_applications'
-      get 'corporation_internship_agreement/index', to: 'dashboard/corporation_internship_agreement#index'
-      resources :corporation_internship_agreements, path: 'conventions-multi-employeurs', only: %i[index update] do
+      resources :corporation_internship_agreements, path: 'conventions-multi-employeurs', only: %i[index] do
         member do
           patch :multi_sign
         end
