@@ -40,6 +40,9 @@ module Dashboard::MultiStepper
       end
       
       created_offer = InternshipOffer.last
+      assert_equal true, created_offer.from_multi?
+      assert_equal @multi_coordinator.sector_id, created_offer.sector_id
+      
       assert_redirected_to internship_offer_path(created_offer, origine: 'dashboard', stepper: true)
       assert_equal 'Les informations de planning ont bien été enregistrées. Votre offre est publiée', flash[:notice]
     end
