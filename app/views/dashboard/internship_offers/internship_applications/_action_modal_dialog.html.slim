@@ -19,7 +19,8 @@
         .fr-col-12.fr-col-md-8.fr-col-lg-6
           .fr-modal__body
             .fr-modal__header
-              button.fr-btn--close.fr-btn data-dismiss="modal"  Fermer
+              button.fr-btn--close.fr-btn aria-controls="#{modal_id}" type="button"
+                |Fermer
             .fr-modal__content
               h1#fr-modal-2-title.fr-modal__title
                 span aria-hidden="true" Confirmation
@@ -51,7 +52,4 @@
                              disabled: !!rich_text,
                              value: modal_opener_label || "Confirmer",
                              id: "#{modal_opener_label.downcase}-button",
-                             data: {  "mandatory-fields-target": modal_opener_label != 'Accepter' ? 'disabledField' : '' }
-                li
-                  button.fr-btn.fr-btn--secondary data-dismiss="modal"
-                    |Annuler
+                             data: { "mandatory-fields-target": modal_opener_label != 'Accepter' ? 'disabledField' : '' }
