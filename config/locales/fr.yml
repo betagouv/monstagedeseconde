@@ -145,7 +145,12 @@ fr:
         is_paqte: Paqte
         name: Nom
         updated_at: Mis à jour le
-
+      multi_coordinator:
+        siret: Siret
+        street: Adresse
+        zipcode: Code postal
+        city: Commune
+        phone: Téléphone
       school:
         name: Nom
         kind: Type
