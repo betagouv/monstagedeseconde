@@ -18,32 +18,6 @@ module Dashboard
       @conventions_text = conventions_text(corporation_internship_agreements.where(signed: false).count)
     end
 
-    # def update
-    #   @corporation_sgid = corporation_internship_agreement_params[:corporation_sgid]
-    #   @corporation = fetch_corporation_from_sgid
-    #   return head :not_found unless @corporation.present?
-
-    #   @internship_agreement_uuid = corporation_internship_agreement_params[:internship_agreement_uuid]
-    #   internship_agreement = InternshipAgreement.find_by(uuid: @internship_agreement_uuid)
-
-    #   signed = corporation_internship_agreement_params[:signed] == '1'
-
-    #   corporation_intership_agreement = CorporationInternshipAgreement.find_by(
-    #       corporation_id: @corporation.id,
-    #       internship_agreement_id: internship_agreement.id
-    #   )
-
-    #   if corporation_intership_agreement && corporation_intership_agreement.update(signed: signed)
-    #     target_path =  dashboard_corporation_internship_agreements_path(corporation_sgid: @corporation_sgid)
-    #     redirect_to target_path, notice: 'La convention a été mise à jour avec succès.'
-    #   else
-    #     @internship_agreements = InternshipAgreement.where(uuid: @internship_agreement_uuids)
-    #     render :index, status: :unprocessable_entity
-    #   end
-    # rescue ActiveRecord::RecordNotFound
-    #   render :index, status: :unprocessable_entity
-    # end
-
     def multi_sign
       @corporation_sgid = corporation_internship_agreement_params[:corporation_sgid]
       @corporation = fetch_corporation_from_sgid
@@ -67,6 +41,8 @@ module Dashboard
           corporation_internship_agreements.each do |cia|
             cia.update!(signed: true, signed_at: Time.current)
           end
+          multi_corporation = internship_agreements.first.internship_offer.multi_corporation
+          multi_corporation.update!(signatures_launched_at: Time.current)
         end
         notice = 'Les conventions ont été mises à jour avec succès.'
       end
