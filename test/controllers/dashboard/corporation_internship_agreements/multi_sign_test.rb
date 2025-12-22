@@ -41,6 +41,7 @@ module Dashboard::CorporationInternshipAgreements
       # )
       assert_equal 'Les conventions ont été mises à jour avec succès.', flash[:notice]
       assert corporation_internship_agreements.reload.all?(&:signed)
+      assert @corporation.reload.multi_corporation.signatures_launched_at.present?
     end
 
     test "should handle blank uuids in multi_sign" do

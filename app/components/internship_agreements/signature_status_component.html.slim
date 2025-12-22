@@ -1,7 +1,7 @@
 - if from_multi?
   div style="color: #{corporations_info[:color]}"
     span class="#{corporations_info[:icon]}"
-    span.text-decoration-underline aria-controls="coporations-signatures-status" data-fr-opened="false" 
+    span.text-decoration-underline
       ="Offreurs (#{corporations_info[:signed_count]}/#{corporations_info[:total_count]})"
 - else
   div style="color: #{employer_info[:color]}"

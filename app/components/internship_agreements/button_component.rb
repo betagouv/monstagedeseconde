@@ -64,8 +64,10 @@ module InternshipAgreements
       when 'validated', 'signatures_started' then
         if user_signed_condition?
           {status: 'disabled', text: 'Déjà signée'}
-        elsif current_user.can_sign?(@internship_agreement)
+        elsif current_user.can_sign?(@internship_agreement) && !@internship_agreement.from_multi?
           {status: 'enabled', text: 'Signer'}
+        elsif current_user.can_sign?(@internship_agreement) && @internship_agreement.from_multi? && !@internship_agreement.multi_corporation.signatures_launched_at.present?
+          {status: 'enabled', text: 'Envoyer en signature'}
         else
           {status: 'hidden', text: ''}
         end

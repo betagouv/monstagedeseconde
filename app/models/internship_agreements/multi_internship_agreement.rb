@@ -12,6 +12,7 @@ module InternshipAgreements
     # Delegations
     delegate :student, to: :internship_application
     delegate :internship_offer, to: :internship_application
+    delegate :multi_corporation, to: :internship_offer
 
     # Scopes
     # (scopes can be added here as needed)
