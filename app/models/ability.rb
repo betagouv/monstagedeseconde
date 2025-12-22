@@ -221,7 +221,7 @@ class Ability
       renewable?(internship_offer:, user:)
     end
     can :duplicate, InternshipOffer do |internship_offer|
-      duplicable?(internship_offer:, user:)
+      duplicable?(internship_offer:, user:) && !internship_offer.from_multi?
     end
     can :publish, InternshipOffer do |internship_offer|
       internship_offer.employer_id == user.id &&
