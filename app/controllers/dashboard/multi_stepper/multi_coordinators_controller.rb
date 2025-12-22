@@ -74,17 +74,16 @@ module Dashboard::MultiStepper
     def set_computed_params
       @multi_coordinator.employer_chosen_name ||= multi_coordinator_params[:employer_name]
       @multi_coordinator.employer_chosen_address ||= multi_coordinator_params[:employer_address]
+      @multi_coordinator.employer_address ||= multi_coordinator_params[:employer_chosen_address]
   
      
-      # get city from employer_chosen_address
-      if @multi_coordinator.employer_chosen_address.present?
-        results = Geocoder.search(@multi_coordinator.employer_chosen_address)
+      if multi_coordinator_params[:employer_chosen_address].present?
+        results = Geocoder.search(multi_coordinator_params[:employer_chosen_address])
         if results.present?
           result = results.first
-          puts "result: #{result.inspect}"
           @multi_coordinator.city = result.city
           @multi_coordinator.zipcode = result.postal_code
-          @multi_coordinator.street = result.street_address || result.address
+          @multi_coordinator.street = [result.try(:house_number), result.try(:street)].compact.join(' ').presence || result.address
         end
       end
     end
