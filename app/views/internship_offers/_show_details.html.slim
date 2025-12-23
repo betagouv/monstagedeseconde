@@ -58,7 +58,7 @@
         .fr-my-2w
           - internship_offer.workspace_accessibility.split('\n').each do |accessibility|
             p.text-wrap.text-break = strip_tags accessibility
-            
+
 
 .row.fr-pt-3w
   .col-12
@@ -88,11 +88,12 @@
                       class: 'test-employer-website',
                       title: "#{internship_offer.employer_website} (nouvelle fenêtre)",
                       rel: "external noopener noreferrer"
-    - if can?(:read_employer_name, internship_offer) 
+    - if can?(:read_employer_name, internship_offer)
       .row
         .col-12
           - if internship_offer.respond_to?(:from_multi?) && internship_offer.from_multi?
-            = react_component("MultiMap", props: { corporations: internship_offer.corporations.map { |c| { id: c.id, lat: c.internship_coordinates.latitude, lon: c.internship_coordinates.longitude, name: c.corporation_name, address: c.corporation_address } } })
+            = react_component( "MultiMap",
+                               props: { corporations: internship_offer.corporations.map { |c| { id: c.id, lat: c.internship_offer.entreprise_coordinates.latitude, lon: c.internship_offer.entreprise_coordinates.longitude, name: c.corporation_name, address: c.corporation_address } } } )
           - else
             - work_location = internship_offer&.internship_occupation.presence
             - internship_work_place_coordinates = work_location && work_location.coordinates ? work_location.coordinates : internship_offer.coordinates
