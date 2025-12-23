@@ -54,6 +54,8 @@
                   - @multi_internship_agreements.each do |internship_agreement|
                     = render partial: 'dashboard/internship_agreements/multi/multi_internship_agreement',
                               locals: { internship_agreement: internship_agreement, fg: fg }
+                    = render partial: "dashboard/internship_agreements/multi/corporations_signature_status_modal",
+                             locals: {internship_agreement: internship_agreement}
                   - @no_agreement_internship_application_list.each do |internship_application|
                     = render partial: 'dashboard/internship_agreements/internship_application_in_agreement_list',
                               locals: { internship_application: internship_application }
