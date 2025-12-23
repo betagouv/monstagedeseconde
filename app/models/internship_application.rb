@@ -281,11 +281,7 @@ class InternshipApplication < ApplicationRecord
                     update!("approved_at": Time.now.utc)
                     unless skip_callback_with_review_rebuild
                       student_approval_notifications
-                      if internship_offer.respond_to?(:coordinator) && internship_offer.coordinator.present?
-                        create_multi_agreement
-                      elsif employer.agreement_signatorable?
-                        create_agreement
-                      end
+                      create_agreement
                     end
                     cancel_all_pending_applications
                     record_state_change user
@@ -525,7 +521,7 @@ class InternshipApplication < ApplicationRecord
     return unless internship_agreement_creation_allowed?
 
     agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
-                                                    .new_from_application(self, multi_agreements: true)
+                                                    .new_from_application(self)
     agreement.skip_validations_for_system = true
     agreement.save!
     # TODO notify coordinator and employers

@@ -21,7 +21,7 @@ def populate_agreements
   agreement_2.save!
 
   agreement_3 = Builders::InternshipAgreementBuilder.new(user: employer)
-                                                    .new_from_application(seconde_multi_applications[0], multi_agreements: true)
+                                                    .new_from_application(seconde_multi_applications[0])
   if agreement_3.valid?
     agreement_3.save! #draft state by default
   else
