@@ -13,6 +13,7 @@ class Corporation < ApplicationRecord
 
   # Delegations
   delegate :coordinator, to: :multi_corporation
+  delegate :internship_offer, to: :multi_corporation
   # Validations
   validates :siret, presence: true, length: { is: 14 }
 

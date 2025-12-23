@@ -48,7 +48,7 @@ module Dashboard
                                                .full_name_camel_case
           if @internship_agreement.from_multi?
             send_data(
-              GenerateMultiInternshipAgreement.new(@internship_agreement.id).call.render,
+              GenerateMultiInternshipAgreement.new(@internship_agreement.uuid).call.render,
               filename: "Convention_de_stage_#{ext_file_name}.pdf",
               type: 'application/pdf',
               disposition: 'inline'
