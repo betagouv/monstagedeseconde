@@ -64,7 +64,6 @@ class InternshipAgreement < ApplicationRecord
     validates :student_address, length: { minimum: 5, maximum: 170 }
     validates :access_token, length: { is: 20 }
     validates :student_phone,
-              :school_representative_phone,
               :student_legal_representative_phone,
               format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
                         message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
