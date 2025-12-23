@@ -165,8 +165,6 @@ export default function SirenInputMulti({
   };
 
   const hide_siret_input = () => {
-    // toggleHideContainerById("multi_coordinator_siret_block", true);
-    // hide with class fr-hidden
     const element = document.querySelector(".multi_coordinator_siret_block");
     if (element) {
       element.classList.add("fr-hidden");

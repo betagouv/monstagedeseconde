@@ -225,18 +225,6 @@ export default function SireneCorporation({
                   </button>
                 </div>
               </div>
-              
-              <div className="mt-2 d-flex align-items-center">
-                <small><span className="fr-icon-info-fill text-blue-info" aria-hidden="true"></span></small>
-                <small className="text-blue-info fr-mx-1w">Structure introuvable ?</small>
-                <a
-                  href="#manual-input"
-                  className="small text-blue-info"
-                  onClick={(e) => { e.preventDefault(); show_form(true); }}
-                >
-                  Ajouter votre structure manuellement
-                </a>
-              </div>
 
               <div className="alerte alert-danger siren-error p-2 mt-2 fr-hidden" id="siren-error" role="alert">
                 <small>Aucune réponse trouvée, essayez avec le SIRET.</small>

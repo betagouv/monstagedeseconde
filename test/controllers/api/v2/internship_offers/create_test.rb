@@ -87,7 +87,7 @@ module Api
             "lon": 1
           }].to_json
         }
-        stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=en&addressdetails=1&format=json&q=75001,%20France').to_return(geocoder_response)
+        stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=75001,%20France').to_return(geocoder_response)
 
         documents_as(endpoint: :'v2/internship_offers/create', state: :conflict) do
           post api_v2_internship_offers_path(
@@ -221,7 +221,7 @@ module Api
               "lon": coordinates[:longitude]
             }].to_json
           }
-          stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=en&addressdetails=1&format=json&q=75002,%20France').to_return(geocoder_response)
+          stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=75002,%20France').to_return(geocoder_response)
 
           assert_difference('InternshipOffer.count', 1) do
             documents_as(endpoint: :'v2/internship_offers/create', state: :created) do
@@ -300,7 +300,7 @@ module Api
               "lon": coordinates[:longitude]
             }].to_json
           }
-          stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=en&addressdetails=1&format=json&q=75002,%20France').to_return(geocoder_response)
+          stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=75002,%20France').to_return(geocoder_response)
 
           assert_difference('InternshipOffer.count', 0) do
             documents_as(endpoint: :'v2/internship_offers/create', state: :created) do
@@ -396,7 +396,7 @@ module Api
                          "suburb": '7th Arrondissement', "city_district": '7th Arrondissement', "city": 'Paris', "municipality": 'Paris', "county": 'Paris', "country": 'France', "postcode": '75007', "country_code": 'fr' }
           }].to_json
         }
-        stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761').to_return(geocoder_response)
+        stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=fr&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761').to_return(geocoder_response)
 
         travel_to(Date.new(2024, 3, 1)) do
           assert_difference('InternshipOffer.count', 1) do
@@ -440,7 +440,7 @@ module Api
                          "suburb": '7th Arrondissement', "city_district": '7th Arrondissement', "city": 'Paris', "municipality": 'Paris', "county": 'Paris', "country": 'France', "postcode": '75007', "country_code": 'fr' }
           }].to_json
         }
-        stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761').to_return(geocoder_response)
+        stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=fr&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761').to_return(geocoder_response)
 
         travel_to(Date.new(2024, 3, 1)) do
           assert_difference('InternshipOffer.count', 1) do
@@ -485,7 +485,7 @@ module Api
                          "suburb": '7th Arrondissement', "city_district": '7th Arrondissement', "city": 'Paris', "municipality": 'Paris', "county": 'Paris', "country": 'France', "postcode": '75007', "country_code": 'fr' }
           }].to_json
         }
-        stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761').to_return(geocoder_response)
+        stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=fr&addressdetails=1&format=json&lat=48.8566383&lon=2.3211761').to_return(geocoder_response)
 
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
@@ -529,7 +529,7 @@ module Api
           status: 200,
           body: [{ "error": 'wrong address' }].to_json
         }
-        stub_request(:get, 'https://nominatim.openstreetmap.org/reverse?accept-language=en&addressdetails=1&format=json&lat=148&lon=14').to_return(geocoder_response)
+        stub_request(:get, "https://nominatim.openstreetmap.org/reverse?accept-language=fr&addressdetails=1&format=json&lat=148&lon=14").to_return(geocoder_response)
 
         travel_to(Date.new(2024, 3, 1)) do
           assert_difference('InternshipOffer.count', 1) do

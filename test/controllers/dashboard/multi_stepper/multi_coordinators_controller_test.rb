@@ -35,6 +35,24 @@ module Dashboard::MultiStepper
 
     test 'POST #create should create a new coordinator with valid params' do
       sign_in @employer
+      
+      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=16%20BOULEVARD%20DES%20ITALIENS%2075009%20PARIS')
+        .to_return(
+          status: 200,
+          body: [{
+            address: {
+              road: 'BOULEVARD DES ITALIENS',
+              postcode: '75009',
+              city: 'PARIS',
+              country: 'France'
+            },
+            lat: '48.8718',
+            lon: '2.3399',
+            name: 'PARIS'
+          }].to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+
       assert_difference('MultiCoordinator.count', 1) do
         post dashboard_multi_stepper_multi_coordinators_path,
              params: {
@@ -99,6 +117,24 @@ module Dashboard::MultiStepper
 
     test 'PATCH #update should update coordinator with valid params' do
       sign_in @employer
+      
+      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=Updated%20Address')
+        .to_return(
+          status: 200,
+          body: [{
+            address: {
+              road: 'Rue de la République',
+              postcode: '69001',
+              city: 'Lyon',
+              country: 'France'
+            },
+            lat: '45.764043',
+            lon: '4.835659',
+            name: 'Lyon'
+          }].to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+
       patch dashboard_multi_stepper_multi_coordinator_path(@multi_coordinator),
             params: {
               multi_coordinator: {
@@ -161,6 +197,24 @@ module Dashboard::MultiStepper
 
     test 'POST #create should set employer_chosen_name from employer_name if not provided' do
       sign_in @employer
+      
+      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=16%20BOULEVARD%20DES%20ITALIENS%2075009%20PARIS')
+        .to_return(
+          status: 200,
+          body: [{
+            address: {
+              road: 'BOULEVARD DES ITALIENS',
+              postcode: '75009',
+              city: 'PARIS',
+              country: 'France'
+            },
+            lat: '48.8718',
+            lon: '2.3399',
+            name: 'PARIS'
+          }].to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+
       post dashboard_multi_stepper_multi_coordinators_path,
            params: {
              multi_coordinator: {
@@ -182,6 +236,14 @@ module Dashboard::MultiStepper
 
     test 'POST #create should validate phone format' do
       sign_in @employer
+      
+      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=Test%20Address')
+        .to_return(
+          status: 200,
+          body: [].to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+
       assert_no_difference('MultiCoordinator.count') do
         post dashboard_multi_stepper_multi_coordinators_path,
              params: {
@@ -201,6 +263,14 @@ module Dashboard::MultiStepper
 
     test 'POST #create should validate siret length' do
       sign_in @employer
+      
+      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=Test%20Address')
+        .to_return(
+          status: 200,
+          body: [].to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+
       assert_no_difference('MultiCoordinator.count') do
         post dashboard_multi_stepper_multi_coordinators_path,
              params: {
