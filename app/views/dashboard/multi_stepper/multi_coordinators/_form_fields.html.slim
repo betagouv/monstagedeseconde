@@ -22,7 +22,7 @@ div [data-controller="mandatory-fields"
                                         railsEnv: Rails.env,
                                         newRecord: resource.new_record? })
 
-        div class="row fr-mt-3w bloc-tooggle hide-when-manual #{form.object.persisted? ? '' : 'fr-hidden'}"
+        div class="row fr-mt-3w bloc-tooggle multi_coordinator_siret_block #{form.object.persisted? ? '' : 'fr-hidden'}"
           .col-12
             = render 'inputs/dsfr_input_field',
                       field: :siret,
