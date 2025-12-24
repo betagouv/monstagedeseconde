@@ -89,7 +89,8 @@ module Dashboard::MultiStepper
         daily_hours: {},
         week_ids: [],
         grade_ids: [],
-        weekly_hours: []
+        weekly_hours: [],
+        school_ids: []
       )
     end
     

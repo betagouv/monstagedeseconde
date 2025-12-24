@@ -36,7 +36,7 @@ module Builders
         multi_corporation_id: multi_corporation.id,
         weeks: multi_planning.weeks,
         grades: multi_planning.grades,
-        school_id: multi_planning.school_id,
+        schools: multi_planning.schools,
         internship_offer_area_id: user.current_area_id,
         is_public: sector.name == 'Fonction publique',
         coordinates: coordinates,

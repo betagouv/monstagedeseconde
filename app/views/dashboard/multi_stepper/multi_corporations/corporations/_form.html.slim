@@ -89,7 +89,7 @@
                 = f.text_field :employer_name, class: "fr-input", data: { multi_corporation_form_target: "employerName" }
               .fr-col-12
                 = f.label :employer_role, "Fonction du représentant de la structure", class: "fr-label"
-                = f.text_field :employer_role, class: "fr-input", data: { multi_corporation_form_target: "employerRole" }
+                = f.text_field :employer_role, class: "fr-input", minlength: 3, data: { multi_corporation_form_target: "employerRole" }
               .fr-col-12
                 = f.label :employer_email, "Adresse email du représentant de la structure", class: "fr-label"
                 = f.email_field :employer_email, class: "fr-input", data: { multi_corporation_form_target: "employerEmail" }
@@ -115,16 +115,16 @@
             .fr-grid-row.fr-grid-row--gutters
               .fr-col-12
                 = f.label :tutor_name, "Nom prénom du tuteur", class: "fr-label"
-                = f.text_field :tutor_name, class: "fr-input", data: { multi_corporation_form_target: "tutorName" }
+                = f.text_field :tutor_name, class: "fr-input", required: true, data: { multi_corporation_form_target: "tutorName" }
               .fr-col-12
                 = f.label :tutor_role_in_company, "Fonction du tuteur", class: "fr-label"
-                = f.text_field :tutor_role_in_company, class: "fr-input", data: { multi_corporation_form_target: "tutorRole" }
+                = f.text_field :tutor_role_in_company, class: "fr-input", minlength: 3, required: true, data: { multi_corporation_form_target: "tutorRole" }
               .fr-col-12
                 = f.label :tutor_email, "Adresse email du tuteur", class: "fr-label"
-                = f.email_field :tutor_email, class: "fr-input", data: { multi_corporation_form_target: "tutorEmail" }
+                = f.email_field :tutor_email, class: "fr-input", required: true, data: { multi_corporation_form_target: "tutorEmail" }
               .fr-col-12
                 = f.label :tutor_phone, "Téléphone du tuteur", class: "fr-label"
-                = f.text_field :tutor_phone, class: "fr-input", data: { multi_corporation_form_target: "tutorPhone" }
+                = f.text_field :tutor_phone, class: "fr-input", required: true, data: { multi_corporation_form_target: "tutorPhone" }
 
       .fr-mt-2w.fr-grid-row.fr-grid-row--right.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
         = f.submit corporation.new_record? ? "Ajouter cette structure" : "Mettre à jour cette structure", class: "fr-btn"

@@ -6,7 +6,11 @@ class MultiPlanning < ApplicationRecord
   has_many :multi_planning_grades, dependent: :destroy
   has_many :grades, through: :multi_planning_grades
 
-  has_many :multi_planning_reserved_schools, dependent: :destroy
+  has_many :multi_planning_reserved_schools,
+  dependent: :destroy,
+  foreign_key: :multi_planning_id,
+  inverse_of: :multi_planning
+
   has_many :schools, through: :multi_planning_reserved_schools
 
   has_many :multi_planning_weeks, dependent: :destroy

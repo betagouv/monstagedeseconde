@@ -15,7 +15,7 @@ module Dashboard::MultiStepper
             format.html { redirect_to new_dashboard_multi_stepper_multi_corporation_path(multi_coordinator_id: @multi_corporation.multi_coordinator_id), notice: 'Structure ajoutée' }
           end
         else
-          render :new, status: :bad_request
+          redirect_to new_dashboard_multi_stepper_multi_corporation_path(multi_coordinator_id: @multi_corporation.multi_coordinator_id), alert: @corporation.errors.full_messages.join(', ')
         end
       end
 
