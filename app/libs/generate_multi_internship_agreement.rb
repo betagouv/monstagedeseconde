@@ -94,7 +94,7 @@ class GenerateMultiInternshipAgreement < Prawn::Document
     @corporations.each_with_index do |corporation, index|
       prez = corporation.presenter
 
-      text = 
+      text =
         "#{"ET\n" unless index.zero?}L'entreprise ou l'organisme d'accueil "\
         "#{prez.corporation_name}, représentée par M/Mme "\
         "#{prez.employer_name} , en qualité "\
@@ -265,7 +265,7 @@ class GenerateMultiInternshipAgreement < Prawn::Document
        @pdf.move_down 3
     end
     @pdf.move_down 5
-    
+
     @pdf.text 'Prénom et nom et coordonnées de l\'enseignant '\
     "référent chargé du suivi de la séquence d'observation en milieu professionnel :"
     @pdf.move_down 5
@@ -381,41 +381,51 @@ class GenerateMultiInternshipAgreement < Prawn::Document
   end
 
   def signatures
+    headers = ["", ""]
+    column_widths = [@pdf.bounds.width / headers.size] * headers.size
+    signatures_array = ['', '']
+
+    @pdf.text "Le #{I18n.l(@internship_agreement.created_at, format:('%d %B %Y'))},"
+    @pdf.move_down 15
+
+    corporations_signatures
+    print_school_manager_signature
+    parents_and_student_representatives_signatures(column_widths)
+    student_signature(column_widths)
+  end
+
+  # signatures methods
+  # -------------------------
+  def corporations_signatures
+    just_bold_text "Les responsables des organismes d'accueil"
+    @pdf.move_down 15
     @corporations.each do |corporation|
       corporation_internship_agreement = CorporationInternshipAgreement.find_by(
         corporation_id: corporation.id,
         internship_agreement_id: @internship_agreement.id
       )
-      txt = "Pour le le responsable de l'organisme d'accueil : #{corporation.presenter.employer_name}"
       if corporation_internship_agreement.signed
-        txt = "Signé électroniquement par le responsable de l'organisme d'accueil : " \
-        "#{corporation.presenter.employer_name} le #{corporation_internship_agreement.signed_at.strftime('%d/%m/%Y à %Hh%M')}"
+        txt = "- Signé électroniquement par #{corporation.presenter.corporation_name} " \
+              "le #{corporation_internship_agreement.signed_at.strftime('%d/%m/%Y à %Hh%M')}" \
+              " pour #{corporation.presenter.corporation_name}"
+        @pdf.text txt
       end
-      @pdf.text txt
-    end
-    @pdf.move_down 10
-
-    if @internship_agreement.school_manager.present?
-      @pdf.text "A #{@internship_agreement.school_manager.school.city.capitalize}, le #{Date.current.strftime('%d/%m/%Y')}."
-    else
-      @pdf.text "A #{@internship_agreement.internship_application.student.school.city.capitalize}, le #{Date.current.strftime('%d/%m/%Y')}."
     end
     @pdf.move_down 15
+  end
 
-    headers = ["La/le responsable de l'organisme d'accueil", "La/le chef(fe) d'établissement"]
-    column_widths = [@pdf.bounds.width / headers.size] * headers.size
-    @pdf.table([headers],
-               cell_style: { border_width: 0 },
-               column_widths: column_widths) do |t|
-      t.cells.align = :left
-      t.cells.font_style = :bold
-    end
-
-    employer_signature_img = image_from(signature: download_image_and_signature(signatory_role: 'employer'))
+  def print_school_manager_signature
+    just_bold_text "Pour le/la chef(fe) d’établissement, #{@internship_agreement.school_representative_full_name}"
+    @pdf.move_down 15
     school_manager_signature_img = image_from(signature: school_manager_signature)
-    signatures_array = [employer_signature_img, school_manager_signature_img]
+    unless school_manager_signature_img.blank?
+      @pdf.image school_manager_signature_img[:image],fit: [60, 60]
+    end
+    @pdf.move_down 15
+  end
 
-    @pdf.table([signatures_array], cell_style: { border_width: 0, height: 80 }, column_widths: column_widths)
+  def parents_and_student_representatives_signatures(column_widths)
+    @pdf.move_down 15
 
     @pdf.table([['Les parents ou les responsables légaux', 'L’enseignant (ou les enseignants) éventuellement']],
                cell_style: { border_width: 0 },
@@ -432,6 +442,9 @@ class GenerateMultiInternshipAgreement < Prawn::Document
       @pdf.table([signatures_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
       @pdf.table([signatures_timing_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
     end
+  end
+
+  def student_signature(column_widths)
     @pdf.table([['L\'élève', '']],
                cell_style: { border_width: 0 },
                column_widths: column_widths) do |t|
@@ -447,101 +460,10 @@ class GenerateMultiInternshipAgreement < Prawn::Document
       @pdf.table([signatures_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
       @pdf.table([signatures_timing_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
     end
-    # @pdf.text 'Le responsable de l’accueil en milieu professionnel'
   end
 
-
-  # def signature_data
-  #   { header: [[
-  #     "Le chef d'établissement - #{school_manager.try(:presenter).try(:formal_name)}",
-  #     "Le responsable de l'organisme d'accueil - #{employer.presenter.formal_name}",
-  #     "L'élève",
-  #     'Parents ou responsables légaux',
-  #     'Le professeur référent',
-  #     "Le référent en charge de l'élève à sein de l'organisme d'accueil"
-  #   ]],
-  #     body: [
-  #       [''] * 6,
-  #       [
-  #         "Nom et prénom : #{school_manager.try(:presenter).try(:formal_name)}",
-  #         "Nom et prénom : #{employer.presenter.formal_name}",
-  #         "Nom et prénom : #{student.presenter.formal_name}",
-  #         "Nom et prénom : #{dotting(@internship_agreement.student_legal_representative_full_name)}",
-  #         "Nom et prénom : #{dotting(@internship_agreement.student_refering_teacher_full_name)}",
-  #         "Nom et prénom : #{'.' * 58}"
-  #       ],
-  #       [
-  #         signature_date_str(signatory_role: 'school_manager'),
-  #         signature_date_str(signatory_role: 'employer'),
-  #         "Signé le : #{'.' * 70}",
-  #         "Signé le : #{'.' * 70}",
-  #         "Signé le : #{'.' * 70}",
-  #         "Signé le : #{'.' * 70}"
-  #       ]
-  # ],
-  # signature_part: [
-  #   [image_from(signature: download_image_and_signature(signatory_role: 'school_manager')),
-  #    '@internship_agreement.school.try(:signature).try(:url)',
-  #    '',
-  #    '',
-  #    '',
-  #    '']
-  # ]
-  # ]}
-  # end
-
-  # def signature_table_header(slice:)
-  #   table_data = split_in_two(signature_data[:header], slice:)
-  #   @pdf.table(
-  #     table_data,
-  #     row_colors: ['F0F0F0'],
-  #     column_widths: [PAGE_WIDTH / 2] * 2,
-  #     cell_style: { size: 10 }
-  #   ) do |t|
-  #     t.cells.border_color = 'cccccc'
-  #     t.cells.align = :center
-  #   end
-  # end
-
-  # def signature_table_body(slice:)
-  #   table_data = split_in_two(signature_data[:body], slice:)
-
-  #   @pdf.table(
-  #     table_data,
-  #     row_colors: ['FFFFFF'],
-  #     column_widths: [PAGE_WIDTH / 2] * 2
-  #   ) do |t|
-  #     t.cells.borders = %i[left right]
-  #     t.cells.border_color = 'cccccc'
-  #     t.cells.height = 20
-  #   end
-  # end
-
-  # def signature_table_signature(slice:)
-  #   table_data = split_in_two(signature_data[:signature_part], slice:)
-  #   @pdf.table(
-  #     table_data,
-  #     row_colors: ['FFFFFF'],
-  #     column_widths: [PAGE_WIDTH / 2] * 2
-  #   ) do |t|
-  #     t.cells.borders = %i[left right]
-  #     t.cells.border_color = 'cccccc'
-  #     t.cells.height = 100
-  #   end
-  # end
-
-  # not used
-  # def signature_table_footer
-  #   @pdf.table(
-  #     [[''] * 2],
-  #     row_colors: ['FFFFFF'],
-  #     column_widths: [PAGE_WIDTH / 2] * 2,
-  #     cell_style: { size: 8, color: '555555' }
-  #   ) do |t|
-  #     t.cells.borders = %i[left right bottom]
-  #     t.cells.border_color = 'cccccc'
-  #   end
-  # end
+  # end signatures
+  # # -------------------------
 
   def page_number
     string = '<page> / <total>'
@@ -673,6 +595,10 @@ class GenerateMultiInternshipAgreement < Prawn::Document
   def label_form(string)
     @pdf.text string, style: :bold, size: 10
     @pdf.move_down 5
+  end
+
+  def just_bold_text(string)
+    @pdf.text string, style: :bold, size: 8
   end
 
   # def field_form(string, html: false)
