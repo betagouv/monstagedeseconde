@@ -171,6 +171,7 @@ def populate_internship_offers
       internship_zipcode: '75018',
       internship_street: "#{n} rue Lamarck",
       internship_phone: "+33061234567#{n}",
+      internship_coordinates: { latitude: Coordinates.chatillon[:latitude], longitude: Coordinates.chatillon[:longitude] },
 
       tutor_name: tutor_names[n],
       tutor_role_in_company: tutor_role_in_companies[n],
