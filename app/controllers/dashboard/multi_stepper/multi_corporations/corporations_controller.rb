@@ -71,11 +71,6 @@ module Dashboard::MultiStepper
              }
         end
         
-        params[:corporation][:internship_coordinates] = { 
-          latitude: params[:corporation][:coordinates][:latitude], 
-          longitude: params[:corporation][:coordinates][:longitude] 
-        }
-        
         %i[latitude longitude coordinates street zipcode city].each do |field|
           params[:corporation].delete(field)
         end

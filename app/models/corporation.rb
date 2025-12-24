@@ -44,6 +44,19 @@ class Corporation < ApplicationRecord
 
   validates :sector_id, presence: true
 
+  # check before_save if the internship_coordinates are present, if not use Geocoder to get the coordinates
+  before_save :set_internship_coordinates
+  
+  def set_internship_coordinates
+    if internship_coordinates.blank? || (internship_coordinates.latitude == 0 && internship_coordinates.longitude == 0)
+      self.internship_coordinates = Geocoder.search(internship_full_address).first.coordinates
+    end
+  end
+
+  def internship_full_address
+    "#{internship_street} #{internship_zipcode} #{internship_city}"
+  end
+
   def presenter
     @presenter ||= Presenters::Corporation.new(self)
   end
@@ -58,6 +71,8 @@ class Corporation < ApplicationRecord
       end
     when RGeo::Geographic::SphericalPointImpl
       super(coordinates)
+    when Array
+      super(RGeo::Geographic.spherical_factory(srid: 4326).point(coordinates.last, coordinates.first))
     else
       super
     end
