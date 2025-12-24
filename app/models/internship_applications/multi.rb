@@ -1,5 +1,6 @@
 module InternshipApplications
   # wraps weekly logic
+  # TODO : remove me!
   class Multi < InternshipApplication
     # associations
     belongs_to :multi_internship_offer,
