@@ -52,6 +52,10 @@
                   = f.hidden_field :corporation_street
                   = f.hidden_field :corporation_zipcode
                   = f.hidden_field :corporation_city
+                  
+                  / Hidden fields for internship coordinates
+                  / = f.hidden_field :internship_coordinates, value: corporation.internship_coordinates
+                  / = f.hidden_field :coordinates, value: corporation.internship_coordinates
 
       / Bloc 2: Adresse du stage
       section.fr-accordion.corporation-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
@@ -71,36 +75,7 @@
                                            isDuplication: false,
                                            editMode: true,
                                            fieldLabel: "Rechercher une adresse postale *" })
-                / Ces champs sont générés par AddressInput mais on les garde pour éviter les erreurs de soumission si AddressInput ne génère pas les champs avec les bons IDs pour Rails
-                / AddressInput va générer ses propres inputs, donc on ne doit pas les dupliquer ici sinon Rails recevra des arrays
-                / En fait, AddressInput génère des inputs avec les names corrects maintenant (voir le fix précédent), 
-                / donc on peut supprimer ces hidden_fields s'ils font doublon, OU AddressInput remplit ces hidden fields s'ils existent ?
-                / Dans AddressInput.jsx, il génère des <input name="..."> directement.
-                / Donc il faut SUPPRIMER ces f.hidden_field pour éviter les doublons ou conflits.
-                
-                / = f.hidden_field :internship_street
-                / = f.hidden_field :internship_zipcode
-                / = f.hidden_field :internship_city
-                
-                / Ces champs doivent être présents pour que le composant React puisse les remplir s'il n'injecte pas lui-même des inputs
-                / Après vérification du AddressInput.jsx, il crée bien ses inputs mais il est possible que Rails ne les voit pas s'ils ne sont pas dans le bon scope du formulaire
-                / ou si le composant React est monté en dehors du formulaire (ce qui n'est pas le cas ici).
-                / Si l'erreur persiste, c'est peut-être que AddressInput attend des valeurs initiales qu'il ne reçoit pas
-                / ou que le nommage des champs dans AddressInput est correct mais que la valeur n'est pas transmise.
-                
-                / On remet les hidden fields MAIS avec des IDs spécifiques que AddressInput ne va PAS écraser, 
-                / et on s'assure que AddressInput remplit bien CES champs là via un callback ou autre.
-                / MAIS ATTENTION : AddressInput crée des inputs avec name="resourceName[internship_street]".
-                / Si on ajoute f.hidden_field :internship_street, Rails génère <input type="hidden" name="corporation[internship_street]">.
-                / On se retrouve avec 2 inputs de même nom. Le dernier l'emporte.
-                / AddressInput est rendu AVANT les hidden fields commentés.
-                / Donc si on décommente, les hidden fields (vides) écrasent les valeurs de React.
-                
-                / Donc il faut bien supprimer/commenter les f.hidden_field.
-                
-                / L'erreur "Internship phone doit être rempli(e)" indique que le téléphone est vide.
-                / Dans les logs : "internship_phone"=>""
-                / Regardons le champ phone dans le formulaire.
+                = f.hidden_field :internship_coordinates, value: corporation.internship_coordinates
 
       / Bloc 3: Signataire
       section.fr-accordion.corporation-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
@@ -114,7 +89,7 @@
                 = f.text_field :employer_name, class: "fr-input", data: { multi_corporation_form_target: "employerName" }
               .fr-col-12
                 = f.label :employer_role, "Fonction du représentant de la structure", class: "fr-label"
-                = f.text_field :employer_role, class: "fr-input", data: { multi_corporation_form_target: "employerRole" }
+                = f.text_field :employer_role, class: "fr-input", minlength: 3, data: { multi_corporation_form_target: "employerRole" }
               .fr-col-12
                 = f.label :employer_email, "Adresse email du représentant de la structure", class: "fr-label"
                 = f.email_field :employer_email, class: "fr-input", data: { multi_corporation_form_target: "employerEmail" }
@@ -140,16 +115,16 @@
             .fr-grid-row.fr-grid-row--gutters
               .fr-col-12
                 = f.label :tutor_name, "Nom prénom du tuteur", class: "fr-label"
-                = f.text_field :tutor_name, class: "fr-input", data: { multi_corporation_form_target: "tutorName" }
+                = f.text_field :tutor_name, class: "fr-input", required: true, data: { multi_corporation_form_target: "tutorName" }
               .fr-col-12
                 = f.label :tutor_role_in_company, "Fonction du tuteur", class: "fr-label"
-                = f.text_field :tutor_role_in_company, class: "fr-input", data: { multi_corporation_form_target: "tutorRole" }
+                = f.text_field :tutor_role_in_company, class: "fr-input", minlength: 3, required: true, data: { multi_corporation_form_target: "tutorRole" }
               .fr-col-12
                 = f.label :tutor_email, "Adresse email du tuteur", class: "fr-label"
-                = f.email_field :tutor_email, class: "fr-input", data: { multi_corporation_form_target: "tutorEmail" }
+                = f.email_field :tutor_email, class: "fr-input", required: true, data: { multi_corporation_form_target: "tutorEmail" }
               .fr-col-12
                 = f.label :tutor_phone, "Téléphone du tuteur", class: "fr-label"
-                = f.text_field :tutor_phone, class: "fr-input", data: { multi_corporation_form_target: "tutorPhone" }
+                = f.text_field :tutor_phone, class: "fr-input", required: true, data: { multi_corporation_form_target: "tutorPhone" }
 
       .fr-mt-2w.fr-grid-row.fr-grid-row--right.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
         = f.submit corporation.new_record? ? "Ajouter cette structure" : "Mettre à jour cette structure", class: "fr-btn"

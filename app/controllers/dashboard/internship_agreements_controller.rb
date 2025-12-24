@@ -51,12 +51,21 @@ module Dashboard
                                                .student
                                                .presenter
                                                .full_name_camel_case
-          send_data(
-            GenerateInternshipAgreement.new(@internship_agreement.id).call.render,
-            filename: "Convention_de_stage_#{ext_file_name}.pdf",
-            type: 'application/pdf',
-            disposition: 'inline'
-          )
+          if @internship_agreement.from_multi?
+            send_data(
+              GenerateMultiInternshipAgreement.new(@internship_agreement.uuid).call.render,
+              filename: "Convention_de_stage_#{ext_file_name}.pdf",
+              type: 'application/pdf',
+              disposition: 'inline'
+            )
+          else
+            send_data(
+              GenerateInternshipAgreement.new(@internship_agreement.id).call.render,
+              filename: "Convention_de_stage_#{ext_file_name}.pdf",
+              type: 'application/pdf',
+              disposition: 'inline'
+            )
+          end
         end
       end
     end

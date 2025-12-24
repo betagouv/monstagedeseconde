@@ -164,6 +164,13 @@ export default function SirenInputMulti({
     toggleHideContainers(document.querySelectorAll(".bloc-tooggle"), show);
   };
 
+  const hide_siret_input = () => {
+    const element = document.querySelector(".multi_coordinator_siret_block");
+    if (element) {
+      element.classList.add("fr-hidden");
+    }
+  };
+
   useEffect(() => {
     const timerId = setTimeout(() => {
       setDebouncedSiret(siret);
@@ -265,6 +272,7 @@ export default function SirenInputMulti({
                   onClick={(e) => {
                     e.preventDefault();
                     show_form(true);
+                    hide_siret_input();
                   }}
                 >
                   Ajouter votre structure manuellement

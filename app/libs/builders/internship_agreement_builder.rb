@@ -3,8 +3,9 @@
 module Builders
   # wrap internship offer creation logic / failure for API/web usage
   class InternshipAgreementBuilder < BuilderBase
-    def new_from_application(internship_application, multi_agreements: false)
+    def new_from_application(internship_application)
       authorize :new, InternshipAgreement
+      multi_agreements = internship_application.internship_offer.from_multi?
       internship_agreement = nil
       params = {}.merge(preprocess_student_to_params(internship_application.student))
                  .merge(preprocess_internship_offer_params(internship_application.internship_offer))

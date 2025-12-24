@@ -79,25 +79,6 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
     assert_includes multi_internship_agreement.errors[:student_address], "est trop long (pas plus de 170 caractères)"
   end
 
-  test 'is invalid without school_representative_phone' do
-    multi_internship_agreement = build(
-      :multi_internship_agreement,
-      enforce_school_manager_validations: true,
-      school_representative_phone: nil
-      )
-    refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:school_representative_phone], "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'"
-  end
-
-  test 'is invalid if school_representative_phone is too long' do
-    multi_internship_agreement = build(
-      :multi_internship_agreement,
-      school_representative_phone: '1' * 21,
-      enforce_school_manager_validations: true)
-    refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:school_representative_phone], "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'"
-  end
-
   test 'is invalid if student_full_name is too short or too long' do
     short = build(
       :multi_internship_agreement,

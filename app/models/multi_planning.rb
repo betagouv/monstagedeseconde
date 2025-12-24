@@ -6,7 +6,11 @@ class MultiPlanning < ApplicationRecord
   has_many :multi_planning_grades, dependent: :destroy
   has_many :grades, through: :multi_planning_grades
 
-  has_many :multi_planning_reserved_schools, dependent: :destroy
+  has_many :multi_planning_reserved_schools,
+  dependent: :destroy,
+  foreign_key: :multi_planning_id,
+  inverse_of: :multi_planning
+
   has_many :schools, through: :multi_planning_reserved_schools
 
   has_many :multi_planning_weeks, dependent: :destroy
@@ -19,9 +23,9 @@ class MultiPlanning < ApplicationRecord
   validates :lunch_break, length: { maximum: 250 }, presence: true
   validates :rep, inclusion: { in: [true, false] }
   validates :qpv, inclusion: { in: [true, false] }
+  validates :weeks, presence: true
 
   delegate :employer, to: :multi_coordinator
-end
 
   
   # Helper to determine if we are offering to college or lycee
@@ -64,8 +68,20 @@ end
     true
   end
   
-  def coordinates
-    # Dummy coordinates for now as MultiCoordinator doesn't store them
-    OpenStruct.new(latitude: 0, longitude: 0)
+  def weeks_count
+    multi_planning_weeks.count
   end
+
+  def coordinates
+    first_corp = multi_coordinator&.multi_corporation&.corporations&.first
+    coords = first_corp&.internship_coordinates
+    
+    if coords.is_a?(Hash)
+      lat = coords['latitude'] || coords[:latitude]
+      lon = coords['longitude'] || coords[:longitude]
+      return RGeo::Geographic.spherical_factory(srid: 4326).point(lon.to_f, lat.to_f)
+    end
+
+    coords
+  end 
 end

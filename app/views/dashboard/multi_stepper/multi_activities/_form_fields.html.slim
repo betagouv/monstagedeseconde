@@ -37,7 +37,8 @@
         - max_length = MultiActivity::DESCRIPTION_MAX_LENGTH
         .form-group.fr-my-2w [data-controller='max-length-input'
                               data-max-length-input-target="group"
-                              data-max-length-input-limit-value="#{max_length}"]
+                              data-max-length-input-limit-value="#{max_length}"
+                              data-max-length-input-min-length-value="6"]
           = render 'inputs/dsfr_input_field',
                     f: form,
                     field: :description,
@@ -48,7 +49,8 @@
                     title: 'Activités prévues au cours du stage',
                     object: form.object,
                     options: { rows: 10,
-                              data: { action: "input->max-length-input#updateCharCount"}},
+                                  data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
+                                          :'mandatory-fields-with-coordinates-target' => "mandatoryField"}},
                     field_type: :text_area
           .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
             |La description est trop longue

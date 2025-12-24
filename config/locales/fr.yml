@@ -145,7 +145,12 @@ fr:
         is_paqte: Paqte
         name: Nom
         updated_at: Mis à jour le
-
+      multi_coordinator:
+        siret: Siret
+        street: Adresse
+        zipcode: Code postal
+        city: Commune
+        phone: Téléphone
       school:
         name: Nom
         kind: Type
@@ -173,6 +178,23 @@ fr:
         full_address: "Adresse de l'établissement"
         full_weeks: Semaines
         signature: Signature de l'établissement
+      corporation:
+        siret: Siret
+        sector: Secteur
+        corporation_name: Nom de la structure
+        corporation_address: Adresse de la structure
+        corporation_city: Commune
+        corporation_zipcode: Code postal
+        corporation_street: Rue
+        internship_street: Rue du stage
+        internship_zipcode: Code postal
+        internship_city: Commune
+        internship_phone: Téléphone
+        tutor_name: Nom du tuteur
+        tutor_role_in_company: Fonction du tuteur
+        tutor_email: Email du tuteur
+        tutor_phone: Téléphone du tuteur
+        employer_name: Nom de l'employeur
       inappropriate_offer:
         internship_offer: Offre de stage
         details: Détails
