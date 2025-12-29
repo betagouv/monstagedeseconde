@@ -29,6 +29,8 @@ module Dashboard::Users
       assert corporation_internship_agreements.all? { |cia| cia.signed == false }
       assert_equal 5, corporation_internship_agreements.where(internship_agreement_id: internship_agreement_1.id).count
       assert_equal 5, corporation_internship_agreements.where(internship_agreement_id: internship_agreement_2.id).count
+      assert internship_agreement_1.reload.multi_corporation.signatures_launched_at.present?
+      assert internship_agreement_2.reload.multi_corporation.signatures_launched_at.present?
 
     end
   end

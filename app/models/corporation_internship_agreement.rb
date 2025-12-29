@@ -22,4 +22,5 @@ class CorporationInternshipAgreement < ApplicationRecord
                        .where(corporation_internship_agreements: { corporation_id: corporation_id })
   end
 
+
 end

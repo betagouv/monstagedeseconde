@@ -1,0 +1,7 @@
+div class="small-card fr-mr-3v corporation-#{corporation[:id]}"
+  .d-flex.flex-column
+    p.fr-h4.title = corporation[:corporation_name]
+    p.fr-text =corporation[:employer_name]
+    p.fr-text =corporation[:employer_email]
+    p class="fr-badge #{corporation[:icon]}"
+      = corporation[:label]
