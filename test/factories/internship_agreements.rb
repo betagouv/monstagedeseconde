@@ -49,7 +49,6 @@ FactoryBot.define do
 
     trait :multi do
       internship_application { create(:multi_internship_application) }
-      
     end
 
     trait :created_by_system do

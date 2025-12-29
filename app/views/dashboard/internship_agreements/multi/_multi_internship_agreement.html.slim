@@ -8,7 +8,7 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
             - id = "#{fg.object_name}_internship_agreement_id_#{internship_agreement.id}_checkbox"
             = fg.check_box :internship_agreement_ids,
                             { id: id,
-                              class: 'check-agreement-sign fr-mt-4w fr-pl-1w',
+                              class: 'check-agreement-sign',
                               multiple: true,
                               data: { action: "group-signing#toggle",
                                       :'group-signing-id-param' => internship_agreement.id,
@@ -19,7 +19,7 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
                              false
 
 
-            label.fr-label.align-self-center for="#{id}" data-action="group-signing#toggle"
+            label.fr-label.align-self-center for="#{id}"
               span style='color: white;' .
   td.pt-0.pb-3.py-sm-2.rg2a-width-100.col-sm-2.d-flex.flex-column.justify-content-center.align-items-start data-head="#{internship_agreement.internship_application.student.name}"
     = prez.student_name

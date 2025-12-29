@@ -18,3 +18,29 @@
 .alert.alert-sticky.alert-danger{
   background-color: $red-marianne;
 }
+.small-card-container{
+  display: block;
+  margin-top: 30px;
+  width: 750px;
+  gap: 10px;
+  .small-card{
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #e1e1e1;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: grey-800;
+    width: 240px;
+    .title{
+      display: block;
+      height: 60px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      color: $blue-france;
+    }
+    p {
+      line-height: 0.8rem;
+    }
+  }
+}
