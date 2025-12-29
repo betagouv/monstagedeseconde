@@ -1,13 +1,12 @@
 - prez = internship_agreement.presenter(user: current_user)
 - corporations_info = prez.corporations_info
-dialog id="coporations-signatures-status" class="fr-modal fr-modal--lg" aria-labelledby="coporations-signatures-status-title"
+dialog id="corporations-signatures-status-#{internship_agreement.id}" class="fr-modal fr-modal--lg" aria-labelledby="corporations-signatures-status-#{internship_agreement.id}-title"
   .fr-container.fr-container--fluid.fr-container-md
     .fr-grid-row.fr-grid-row--center
       .fr-col-12.fr-col-md-9.fr-col-lg-8
         .fr-modal__body
           .fr-modal__header
-            button aria-controls="coporations-signatures-status" title="Fermer" type="button" class="fr-btn--close fr-btn" Fermer
-
+            button [aria-controls="corporations-signatures-status-#{internship_agreement.id}"
           .fr-modal__content
             h2 id="coporations-signatures-status-title" class="fr-modal__title"
               span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true"

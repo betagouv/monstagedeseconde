@@ -140,7 +140,7 @@ def populate_internship_offers
   coordinator = MultiCoordinator.first
   multi_corporation = MultiCorporation.create!( multi_coordinator: coordinator )
   corporation_names = [
-    "La Française de jeux", "Electrolux",
+    "La Française des jeux", "Electrolux",
     "Larfarge Corporation Limited", "Veolia Environnement", "Accor Hotels"
   ]
   tutor_names = [
