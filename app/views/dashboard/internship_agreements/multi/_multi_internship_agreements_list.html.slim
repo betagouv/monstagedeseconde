@@ -54,8 +54,6 @@
                   - @multi_internship_agreements.each do |internship_agreement|
                     = render partial: 'dashboard/internship_agreements/multi/multi_internship_agreement',
                               locals: { internship_agreement: internship_agreement, fg: fg }
-                    = render partial: "dashboard/internship_agreements/multi/corporations_signature_status_modal",
-                             locals: {internship_agreement: internship_agreement}
                   - @no_agreement_internship_application_list.each do |internship_application|
                     = render partial: 'dashboard/internship_agreements/internship_application_in_agreement_list',
                               locals: { internship_application: internship_application }
@@ -71,12 +69,11 @@
                         'data-group-signing-target': "generalCta",
                         data: { turbo: true }
           - else
-            = fg.button 'Signer',
-                        type: 'submit',
-                        class: "fr-btn fr-mb-2w fr-px-4w fr-mx-n4w",
-                        disabled: true,
-                        'data-fr-opened': false,
-                        'aria-controls': "fr-modal-multi-signatures",
-                        data: { 'group-signing-target': "generalCta", action: "click->group-signing#updateCtaUrl" }
-        
+            button.fr-btn.fr-mb-2w.fr-px-4w.fr-mx-n4w[type="button"
+              disabled="disabled"
+              data-fr-opened="false"
+              aria-controls="fr-modal-multi-signatures"
+              data-group-signing-target="generalCta"]
+              | Signer
+
       = render partial: 'dashboard/internship_agreements/signature/modal_dialog_multi'

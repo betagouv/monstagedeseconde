@@ -111,12 +111,17 @@ module Dashboard
     end
 
     def multi_reminder_email
-      authorize! :sign, @internship_agreement
-      @internship_agreement.send_multi_signature_reminder_emails!
-      redirect_to dashboard_internship_agreements_path(multi: @internship_agreement.from_multi?),
-                  notice: 'Les emails de rappel ont été envoyés aux responsables de stage.' and return
+      authorize! :multi_sign, @internship_agreement
+      if @internship_agreement.multi_corporation.signatures_launched_at.nil?
+        redirect_to dashboard_internship_agreements_path(multi: true),
+                    alert: "Aucun email n'a encore été envoyé jusqu'ici aux responsables de stage." and return
+      else
+        @internship_agreement.send_multi_signature_reminder_emails!
+        redirect_to dashboard_internship_agreements_path(multi: true),
+                    notice: 'Les emails de rappel ont été envoyés aux responsables de stage.' and return
+      end
     rescue ActiveRecord::RecordNotFound
-      redirect_to dashboard_internship_agreements_path(multi: @internship_agreement.from_multi?),
+      redirect_to dashboard_internship_agreements_path(multi: true),
                   alert: 'Convention introuvable'
     end
 

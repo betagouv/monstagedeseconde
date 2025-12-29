@@ -7,8 +7,13 @@ dialog id="corporations-signatures-status-#{internship_agreement.id}" class="fr-
         .fr-modal__body
           .fr-modal__header
             button [aria-controls="corporations-signatures-status-#{internship_agreement.id}"
+                    title="Fermer"
+                    type="button"
+                    data-fr-open="close"
+                    class="fr-btn--close fr-btn" ]
+              | Fermer
           .fr-modal__content
-            h2 id="coporations-signatures-status-title" class="fr-modal__title"
+            h2 id="corporations-signatures-status-#{internship_agreement.id}-title" class="fr-modal__title"
               span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true"
               | Statuts des signatures entreprises
             .small-card-container
@@ -29,14 +34,7 @@ dialog id="corporations-signatures-status-#{internship_agreement.id}" class="fr-
           .fr-modal__footer
             ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left"
               li
-                =button_to multi_reminder_email_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
-                           method: :get,
-                           class: "fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left ",
-                           data: { turbo: true } do
-                  | Envoyer un rappel
-              li
-                button [aria-controls="coporations-signatures-status"
-                        title="Fermer"
-                        type="button"
-                        class="fr-btn fr-btn--secondary fr-btn--close"]
-                  | Fermer
+                = link_to multi_reminder_email_dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
+                          class: "fr-btn raw-link fr-btn--icon-left fr-icon-checkbox-circle-line fr-btn--icon-left",
+                          data: { turbo: false  } do
+                  |Envoyer un rappel

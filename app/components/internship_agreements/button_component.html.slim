@@ -1,20 +1,46 @@
 - classes = 'd-flex justify-content-center fr-btn fr-high-buttons text-center fr-btn--sm button-component-cta-button'
 - primary_button_classes = "fr-btn text-center fr-mr-1w  fr-btn--sm  fr-mb-2w "
 
+/ First button
 - if second_label[:status] == 'disabled'
   = link_to second_label[:text], '', class: "#{primary_button_classes} disabled"
 - elsif second_label[:status] != 'hidden' && (internship_agreement.validated? || internship_agreement.signatures_started?)
-  button [class="#{primary_button_classes}"
-          data-group-signing-target="signingButton"
-          data-group-signing-id-param="#{internship_agreement.id}"
-          data-action="group-signing#toggleFromButton"]
-    = second_label[:text]
+  - if second_label[:action] && second_label[:action] == 'modal_opening'
+    button [ type="button"
+            class="#{primary_button_classes}  fr-mb-2w"
+            aria-controls="corporations-signatures-status-#{internship_agreement.id}"
+            data-fr-opened="false"]
+      = second_label[:text]
+    = render partial: "dashboard/internship_agreements/multi/corporations_signature_status_modal",
+              locals: {internship_agreement: internship_agreement}
+  - else
+    button [class="#{primary_button_classes}"
+            data-group-signing-target="signingButton"
+            data-group-signing-id-param="#{internship_agreement.id}"
+            data-action="group-signing#toggleFromButton"]
+      = second_label[:text]
 
+
+/ Second button
 - if label[:status] == 'disabled'
   = link_to label[:text],
             '',
             class: "#{classes} disabled"
 - elsif started_or_signed?
+  - if internship_agreement.from_multi? && false
+    - if internship_agreement.multi_corporation.signatures_launched_at.present? && current_user.employer_like?
+
+      button [class="#{classes} fr-btn fr-mb-2w"
+              aria-controls="corporations-signatures-status"
+              data-fr-opened="false"
+              type="button"]
+        | Statut des signatures
+      = render partial: "dashboard/internship_agreements/multi/corporations_signature_status_modal",
+                locals: {internship_agreement: internship_agreement}
+    - if !internship_agreement.multi_corporation.signatures_launched_at.present?
+      button [class="#{classes} fr-btn fr-mb-2w" disabled="disabled" type="button"]
+        | Statut des signatures
+
   = link_to dashboard_internship_agreement_path(uuid: internship_agreement.uuid, format: :pdf),
             target: "_blank",
             class: "#{classes} fr-btn--secondary",

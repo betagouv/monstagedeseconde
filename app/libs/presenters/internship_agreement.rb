@@ -144,7 +144,8 @@ module Presenters
         employer_name: corporation.employer_name,
         employer_email: corporation.employer_email,
         icon: cia.signed ? 'fr-badge--success' : 'fr-badge--warning',
-        label: cia.signed ? 'Signée' : 'En attente'
+        label: cia.signed ? 'Signée' : 'En attente',
+        id: corporation.id
       }
     end
 
