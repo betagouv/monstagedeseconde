@@ -8,7 +8,7 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
             - id = "#{fg.object_name}_internship_agreement_id_#{internship_agreement.id}_checkbox"
             = fg.check_box :internship_agreement_ids,
                             { id: id,
-                              class: 'check-agreement-signfr-pl-1w',
+                              class: 'check-agreement-sign',
                               multiple: true,
                               data: { action: "group-signing#toggle",
                                       :'group-signing-id-param' => internship_agreement.id,
