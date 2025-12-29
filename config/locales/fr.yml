@@ -295,6 +295,7 @@ fr:
             signatures_started:
               already_signed: Le chef d'établissement a déjà signé. En attente de la signature de l’employeur.
               not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
+              multi_employer: En cours de signature.
             signed_by_all: Signée par toutes les parties.
           admin_officer:
             <<: *ministry_statistician_status
@@ -335,6 +336,7 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée.
             signatures_started:
+              multi_employer: En cours de signature.
               already_signed: Vous avez déjà signé.
               not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
@@ -355,6 +357,7 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
+              multi_employer: En cours de signature.
               already_signed: Vous avez déjà signé.
               not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
@@ -365,6 +368,7 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
+              multi_employer: En cours de signature.
               already_signed: Vous avez déjà signé.
               not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
@@ -375,6 +379,7 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
+              multi_employer: En cours de signature.
               already_signed: Vous avez déjà signé.
               not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
@@ -388,6 +393,14 @@ fr:
               already_signed: Vous avez déjà signé. En attente de la signature de l’employeur.
               not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
+      internship_agreements/multi_internship_agreement:
+        status:
+          employer:
+            validated: En attente de signatures
+            not_signed_yet:  En cours de signature
+            signatures_started: En cours de signature
+            signed_by_all: Signée par toutes les parties.
+          <<: *internship_agreement_fields
       convention:
         <<: *internship_agreement_fields
         activity_scope: Objectifs du stage
