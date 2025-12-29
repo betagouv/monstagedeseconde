@@ -41,7 +41,6 @@ module Dashboard::CorporationInternshipAgreements
       # )
       assert_equal 'Les conventions ont été mises à jour avec succès.', flash[:notice]
       assert corporation_internship_agreements.reload.all?(&:signed)
-      assert @corporation.reload.multi_corporation.signatures_launched_at.present?
     end
 
     test "should handle blank uuids in multi_sign" do
@@ -97,13 +96,18 @@ module Dashboard::CorporationInternshipAgreements
       sign_in employer
 
       corporation_internship_agreements = CorporationInternshipAgreement.where(
-        corporation: @corporation,
         internship_agreement_id: @internship_agreement1.id
       )
-      corporation_internship_agreements.update_all(signed: false)
 
       get multi_reminder_email_dashboard_internship_agreement_path(uuid: @internship_agreement1.uuid)
 
+      assert_redirected_to dashboard_internship_agreements_path(multi: true)
+      assert_equal "Aucun email n'a encore été envoyé jusqu'ici aux responsables de stage.", flash[:alert]
+      
+      @internship_agreement1.multi_corporation.update!(signatures_launched_at: Time.now - 1.day)
+      
+      get multi_reminder_email_dashboard_internship_agreement_path(uuid: @internship_agreement1.uuid)
+      
       assert_redirected_to dashboard_internship_agreements_path(multi: true)
       assert_equal 'Les emails de rappel ont été envoyés aux responsables de stage.', flash[:notice]
     end

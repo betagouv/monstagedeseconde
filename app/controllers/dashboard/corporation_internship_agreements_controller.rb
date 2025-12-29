@@ -41,8 +41,6 @@ module Dashboard
           corporation_internship_agreements.each do |cia|
             cia.update!(signed: true, signed_at: Time.current)
           end
-          multi_corporation = internship_agreements.first.multi_corporation
-          multi_corporation.update!(signatures_launched_at: Time.current)
         end
         notice = 'Les conventions ont été mises à jour avec succès.'
       end
