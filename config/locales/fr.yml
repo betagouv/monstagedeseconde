@@ -21,7 +21,7 @@ fr:
       welcome_student: "Bienvenue sur 1élève1stage. Commencez votre recherche ici : %{shrinked_url}"
   activerecord:
     models:
-      sudent_legal_representative:  Représentant légal
+      student_legal_representative:  Représentant légal
       school_manager: Chef d'établissement
       employer: Employeur
       area_notification:
