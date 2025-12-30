@@ -250,6 +250,7 @@ class User < ApplicationRecord
   def available_offers = InternshipOffer.none
   def team_members = User.none
   def custom_dashboard_path = Rails.application.routes.url_helpers.root_path
+  def multi_internship_agreements = InternshipAgreement.none
 
   def compute_weeks_lists = [Week.both_school_track_selectable_weeks, Week.both_school_track_selectable_weeks]
 

@@ -12,7 +12,9 @@
                                                 tabindex="0"
                                                 aria-controls="agreement-button-panel"
                                                 aria-selected="true"]
-            | Convention de stages
+            | Conventions de stage
+            span.fr-badge.fr-badge--new.fr-badge--no-icon.fr-ml-1w
+              = current_user.team_pending_agreements_actions_count
         li role="presentation"
           button.fr-tabs__tab#multi-agreements-button [type="button"
                                                         role="tab"
@@ -20,6 +22,8 @@
                                                         aria-controls="multi-agreements-button-panel"
                                                         aria-selected="false"]
             | Conventions multi-offreurs
+            span.fr-badge.fr-badge--new.fr-badge--no-icon.fr-ml-1w
+              = current_user.team_pending_multi_agreements_actions_count
       #agreement-button-panel [
             class="#{(current_user.employer_like?) ? 'fr-tabs__panel fr-tabs__panel--selected' : ''} "
             aria-labelled-by="agreement-button"

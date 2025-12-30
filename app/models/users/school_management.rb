@@ -44,9 +44,6 @@ module Users
       internship_agreements.merge(InternshipAgreements::MonoInternshipAgreement.all)
     end
 
-    def multi_internship_agreements
-      internship_agreements.merge(InternshipAgreements::MultiInternshipAgreement.all)
-    end
 
     def custom_dashboard_path
       return url_helpers.dashboard_school_path(current_school) if school.present?

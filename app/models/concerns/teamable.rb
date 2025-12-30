@@ -69,10 +69,6 @@ module Teamable
       internship_agreements.merge(InternshipAgreements::MonoInternshipAgreement.all)
     end
 
-    def multi_internship_agreements
-      internship_agreements.merge(InternshipAgreements::MultiInternshipAgreement.all)
-    end
-
     def anonymize(send_email: true)
       InternshipOffer.where(employer_id: id).each do |offer|
         offer.anonymize
@@ -99,33 +95,35 @@ module Teamable
     end
 
     def team_pending_agreements_actions_count
-      if team.not_exists?
-        return pending_agreements_actions_count
-      end
+      common_team_action_count(:pending_agreements_actions_count)
+    end
 
-      team.db_members.inject(0) do |sum, member|
-        sum + member.pending_agreements_actions_count
-      end
+
+    def team_pending_multi_agreements_actions_count
+      common_team_action_count(:pending_multi_agreements_actions_count)
     end
 
     def pending_agreements_actions_count
-      part1 = internship_agreements.kept.where(aasm_state: InternshipAgreement::EXPECTED_ACTION_FROM_EMPLOYER_STATES)
-      part2 = internship_agreements.kept.signatures_started.joins(:signatures).where.not(signatures: { signatory_role: :employer })
-      [part1, part2].compact.map(&:count).sum
-    end
-
-    def team_pending_multi_agreements_actions_count
-      return pending_multi_agreements_actions_count if team.not_exists?
-
-      team.db_members.inject(0) do |sum, member|
-        sum + member.pending_multi_agreements_actions_count
-      end
+      common_action_count(internship_agreements.mono.kept)
     end
 
     def pending_multi_agreements_actions_count
-      part1 = multi_internship_agreements.kept.where(aasm_state: InternshipAgreement::EMPLOYERS_PENDING_STATES)
-      part2 = multi_internship_agreements.kept.signatures_started.joins(:signatures).where.not(signatures: { signatory_role: :employer })
-      [part1, part2].compact.map(&:count).sum
+      common_action_count(internship_agreements.multi.kept)
+    end
+
+    def common_team_action_count(method)
+      return send(method) if team.not_exists?
+
+      team.db_members.inject(0) do |sum, member|
+        sum + member.send(method)
+      end
+    end
+
+    def common_action_count(agreements)
+      part1 = agreements.where(aasm_state: InternshipAgreement::EXPECTED_ACTION_FROM_EMPLOYER_STATES).count
+      agreements_to_be_signed = agreements.where(aasm_state: %i[signatures_started validated])
+      signed_count = agreements_to_be_signed.select {|agreement| agreement.signature_signed_by_role?("employer")}.count
+      part1 + (agreements_to_be_signed.count - signed_count)
     end
 
     def internship_offer_ids_by_area(area_id:)
