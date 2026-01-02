@@ -2,9 +2,14 @@ module ThirdPartyTestHelpers
   def bitly_stub
     stub_request(:post, 'https://api-ssl.bitly.com/v4/shorten')
       .with(
-        body: '{"long_url":"http://example.com/dashboard/248/internship_applications/1520"}',
-        headers: bitly_headers.merge({ 'Accept' => 'application/json' })
-      ).to_return(default_response)
+        body: '{"long_url":"http://example.com/c"}',
+        headers: {
+          'Accept' => 'application/json',
+          'Authorization' => 'Bearer 123456',
+          'Content-Type' => 'application/json'
+        }
+      )
+      .to_return(status: 200, body: '{"link": "http://bit.ly/000000"}', headers: {})
   end
 
   def sms_stub
@@ -39,6 +44,42 @@ module ThirdPartyTestHelpers
                                       })
       )
       .to_return(default_response)
+  end
+
+  def nominatim_stub
+    stub_request(:get, %r{https://nominatim.openstreetmap.org/search.*})
+      .to_return(
+        status: 200,
+        body: [{
+          address: {
+            road: 'Rue de Rivoli',
+            postcode: '75001',
+            city: 'Paris',
+            country: 'France'
+          },
+          lat: '48.8588443',
+          lon: '2.2943506',
+          name: 'Paris'
+        }].to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+
+    stub_request(:get, %r{https://nominatim.openstreetmap.org/reverse.*})
+      .to_return(
+        status: 200,
+        body: {
+          address: {
+            road: 'Rue de Rivoli',
+            postcode: '75001',
+            city: 'Paris',
+            country: 'France'
+          },
+          lat: '48.8588443',
+          lon: '2.2943506',
+          name: 'Paris'
+        }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
   end
 
   def fim_token_stub
@@ -118,6 +159,27 @@ module ThirdPartyTestHelpers
                                                           }).to_json, headers: {})
   end
 
+  def common_headers
+    {
+      'Accept' => '*/*',
+      'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+      'User-Agent' => 'Ruby'
+    }
+  end
+
+  def headers_with_token(token:, uri:)
+    common_headers.merge({
+                           'Authorization' => "Bearer #{token}",
+                           'Host' => uri.host
+                         })
+  end
+
+  def headers_with_host(uri:)
+    common_headers.merge({
+                           'Host' => uri.host
+                         })
+  end
+
   def prismic_stub(body_content)
     headers = {
       'Accept': 'application/json',
@@ -158,13 +220,23 @@ module ThirdPartyTestHelpers
 
   def educonnect_userinfo_stub
     stub_request(:get, ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/userinfo')
-      .with(educonnect_header)
+      .with(
+        headers: {
+          'Authorization' => 'Bearer token_educonnect',
+          'Content-Type' => 'application/json'
+        }
+      )
       .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_userinfo.json'), headers: {})
   end
 
   def educonnect_userinfo_unknown_stub
     stub_request(:get, ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/userinfo')
-      .with(educonnect_header)
+      .with(
+        headers: {
+          'Authorization' => 'Bearer token_educonnect',
+          'Content-Type' => 'application/json'
+        }
+      )
       .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_userinfo_unknown.json'), headers: {})
   end
 
@@ -197,7 +269,7 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: File.read('test/fixtures/files/signe_responsible.json'), headers: {})
   end
 
-  def stub_sygne_eleves(code_uai:, token:, code_mef: '10310019110', ine: '001291528AA')
+  def stub_sygne_eleves(code_uai:, token:, code_mef: '10310019110', ine: '001291528AA', niveau: '2212')
     Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
       expected_response = [{
         'ine' => ine,

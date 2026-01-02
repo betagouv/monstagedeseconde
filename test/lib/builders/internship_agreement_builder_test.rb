@@ -31,7 +31,7 @@ module Builders
                                       internship_offer: internship_offer)
 
       builder = Builders::InternshipAgreementBuilder.new(user: internship_offer.employer)
-      internship_agreement = builder.new_from_application(internship_application, multi_agreements: true)
+      internship_agreement = builder.new_from_application(internship_application)
 
       assert_instance_of(InternshipAgreements::MultiInternshipAgreement, internship_agreement)
       assert_equal(internship_application, internship_agreement.internship_application)

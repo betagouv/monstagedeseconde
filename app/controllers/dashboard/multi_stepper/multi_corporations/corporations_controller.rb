@@ -15,7 +15,7 @@ module Dashboard::MultiStepper
             format.html { redirect_to new_dashboard_multi_stepper_multi_corporation_path(multi_coordinator_id: @multi_corporation.multi_coordinator_id), notice: 'Structure ajoutée' }
           end
         else
-          render :new, status: :bad_request
+          redirect_to new_dashboard_multi_stepper_multi_corporation_path(multi_coordinator_id: @multi_corporation.multi_coordinator_id), alert: @corporation.errors.full_messages.join(', ')
         end
       end
 
@@ -70,11 +70,6 @@ module Dashboard::MultiStepper
                longitude: params[:corporation][:coordinates][:longitude].to_f 
              }
         end
-        
-        params[:corporation][:internship_coordinates] = { 
-          latitude: params[:corporation][:coordinates][:latitude], 
-          longitude: params[:corporation][:coordinates][:longitude] 
-        }
         
         %i[latitude longitude coordinates street zipcode city].each do |field|
           params[:corporation].delete(field)

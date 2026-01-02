@@ -3,22 +3,24 @@
              url: dashboard_internship_offer_internship_application_path(internship_application.internship_offer, uuid: internship_application.uuid, token: defined?(token) ? token : nil),
              scope: :internship_application,
              data: {turbo: false},
-             html: {method: 'patch', class:'modal', id: modal_id, tabindex: "-1", role: "dialog"}) do |f|
+             method: 'patch') do |f|
   = hidden_field_tag :transition, aasm_target
   = hidden_field_tag :sgid, sgid
-  dialog.fr-modal [id="#{modal_id}"
-                   aria-labelledby="fr-modal-2-title"
-                   role="dialog"
-                   data-modal-opener-target="dialog"
-                   data-controller="mandatory-fields"
-                   data-mandatory-fields-minimum-length-value="2"]
+  dialog.fr-modal[id="#{modal_id}"
+    aria-labelledby="fr-modal-2-title"
+    aria-modal="true"
+    role="dialog"
+    data-modal-opener-target="dialog"
+    data-controller="mandatory-fields"
+    data-mandatory-fields-minimum-length-value="2"]
 
-   .fr-container.fr-container--fluid.fr-container-md
+    .fr-container.fr-container--fluid.fr-container-md
       .fr-grid-row.fr-grid-row--center
         .fr-col-12.fr-col-md-8.fr-col-lg-6
           .fr-modal__body
             .fr-modal__header
-              button.fr-btn--close.fr-btn data-dismiss="modal"  Fermer
+              button.fr-btn--close.fr-btn aria-controls="#{modal_id}" type="button"
+                |Fermer
             .fr-modal__content
               h1#fr-modal-2-title.fr-modal__title
                 span aria-hidden="true" Confirmation
@@ -50,7 +52,4 @@
                              disabled: !!rich_text,
                              value: modal_opener_label || "Confirmer",
                              id: "#{modal_opener_label.downcase}-button",
-                             data: {  "mandatory-fields-target": modal_opener_label != 'Accepter' ? 'disabledField' : '' }
-                li
-                  button.fr-btn.fr-btn--secondary data-dismiss="modal"
-                    |Annuler
+                             data: { "mandatory-fields-target": modal_opener_label != 'Accepter' ? 'disabledField' : '' }

@@ -13,6 +13,7 @@ module Builders
       # Use coordinates from first corporation
       first_corporation = multi_corporation.corporations.first
       coordinates = first_corporation&.internship_coordinates || RGeo::Geographic.spherical_factory(srid: 4326).point(0, 0)
+      sector = multi_coordinator.sector
 
       internship_attributes = {
         employer_id: user.id,
@@ -24,7 +25,7 @@ module Builders
         street: multi_coordinator.street,
         zipcode: multi_coordinator.zipcode,
         city: multi_coordinator.city,
-        sector_id: multi_coordinator.sector_id,
+        sector_id: sector.id,
         contact_phone: multi_coordinator.phone,
         max_candidates: multi_planning.max_candidates,
         weekly_hours: multi_planning.weekly_hours,
@@ -35,9 +36,9 @@ module Builders
         multi_corporation_id: multi_corporation.id,
         weeks: multi_planning.weeks,
         grades: multi_planning.grades,
-        school_id: multi_planning.school_id,
+        schools: multi_planning.schools,
         internship_offer_area_id: user.current_area_id,
-        is_public: true,
+        is_public: sector.name == 'Fonction publique',
         coordinates: coordinates,
         entreprise_coordinates: coordinates,
         entreprise_full_address: "#{multi_coordinator.street} #{multi_coordinator.zipcode} #{multi_coordinator.city}",
@@ -48,6 +49,7 @@ module Builders
       
       internship_offer = InternshipOffers::Multi.new(internship_attributes)
       internship_offer.save!
+
       callback.on_success.try(:call, internship_offer)
     rescue ActiveRecord::RecordInvalid => e
       callback.on_failure.try(:call, e.record)

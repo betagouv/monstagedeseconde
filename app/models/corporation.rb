@@ -13,6 +13,7 @@ class Corporation < ApplicationRecord
 
   # Delegations
   delegate :coordinator, to: :multi_corporation
+  delegate :internship_offer, to: :multi_corporation
   # Validations
   validates :siret, presence: true, length: { is: 14 }
 
@@ -31,17 +32,30 @@ class Corporation < ApplicationRecord
 
   # Employer / Signatory (Representative)
   validates :employer_name, presence: true, length: { maximum: 150 }
-  validates :employer_role, presence: true, length: { maximum: 120 }
+  validates :employer_role, presence: true, length: { minimum: 3, maximum: 120 }
   validates :employer_email, presence: true, length: { maximum: 120 }, format: { with: Devise.email_regexp }
   # validates :employer_phone, presence: true, length: { maximum: 20 }
 
   # Tutor
   validates :tutor_name, presence: true, length: { maximum: 150 }
-  validates :tutor_role_in_company, presence: true, length: { maximum: 250 }
+  validates :tutor_role_in_company, presence: true, length: { minimum: 3, maximum: 250 }
   validates :tutor_email, presence: true, length: { maximum: 120 }, format: { with: Devise.email_regexp }
   # validates :tutor_phone, presence: true, length: { maximum: 20 }
 
   validates :sector_id, presence: true
+
+  # check before_save if the internship_coordinates are present, if not use Geocoder to get the coordinates
+  before_save :set_internship_coordinates
+  
+  def set_internship_coordinates
+    if internship_coordinates.blank? || (internship_coordinates.latitude == 0 && internship_coordinates.longitude == 0)
+      self.internship_coordinates = Geocoder.search(internship_full_address).first.coordinates
+    end
+  end
+
+  def internship_full_address
+    "#{internship_street} #{internship_zipcode} #{internship_city}"
+  end
 
   def presenter
     @presenter ||= Presenters::Corporation.new(self)
@@ -57,6 +71,8 @@ class Corporation < ApplicationRecord
       end
     when RGeo::Geographic::SphericalPointImpl
       super(coordinates)
+    when Array
+      super(RGeo::Geographic.spherical_factory(srid: 4326).point(coordinates.last, coordinates.first))
     else
       super
     end

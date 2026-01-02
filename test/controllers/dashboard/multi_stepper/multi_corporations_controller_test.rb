@@ -42,7 +42,7 @@ module Dashboard::MultiStepper
         }
       }
       
-      assert_redirected_to new_dashboard_multi_stepper_multi_planning_path(multi_coordinator_id: @multi_coordinator.id)
+      assert_redirected_to new_dashboard_multi_stepper_multi_planning_path(multi_coordinator_id: @multi_coordinator.id, multi_corporation_id: @multi_corporation.id)
     end
 
     test 'PATCH #update redirects to edit planning when planning exists' do
@@ -54,7 +54,7 @@ module Dashboard::MultiStepper
         }
       }
       
-      assert_redirected_to edit_dashboard_multi_stepper_multi_planning_path(multi_planning)
+      assert_redirected_to edit_dashboard_multi_stepper_multi_planning_path(multi_planning, multi_corporation_id: @multi_corporation.id)
     end
   end
 end

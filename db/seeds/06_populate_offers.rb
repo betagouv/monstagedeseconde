@@ -171,6 +171,7 @@ def populate_internship_offers
       internship_zipcode: '75018',
       internship_street: "#{n} rue Lamarck",
       internship_phone: "+33061234567#{n}",
+      internship_coordinates: { latitude: Coordinates.chatillon[:latitude], longitude: Coordinates.chatillon[:longitude] },
 
       tutor_name: tutor_names[n],
       tutor_role_in_company: tutor_role_in_companies[n],
@@ -198,6 +199,7 @@ def populate_internship_offers
     zipcode: '75015',
     city: 'paris',
     coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
+    entreprise_coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: 'Editegis',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: seconde_weeks,

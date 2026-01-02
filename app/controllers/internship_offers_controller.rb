@@ -173,7 +173,7 @@ class InternshipOffersController < ApplicationController
         id: internship_offer.id,
         title: internship_offer.title.truncate(44),
         description: internship_offer.description.to_s,
-        employer_name: employer_name_presentation(internship_offer, current_user),
+        employer_name: internship_offer_employer_name(internship_offer),
         link: internship_offer_path(internship_offer, search_query_params),
         city: internship_offer.city.capitalize,
         date_start: I18n.localize(internship_offer.first_date, format: :human_mm_dd_yyyy),
@@ -224,5 +224,13 @@ class InternshipOffersController < ApplicationController
     internship_offer.from_api? && 
       internship_offer.rep_or_qpv? && 
       (!current_user&.try(:student?) || !current_user&.school&.rep_or_qpv?)
+  end
+
+  def internship_offer_employer_name(internship_offer)
+    if internship_offer.from_multi?
+      internship_offer.corporations.pluck(:corporation_name).join(', ')
+    else
+      employer_name_presentation(internship_offer, current_user)
+    end
   end
 end

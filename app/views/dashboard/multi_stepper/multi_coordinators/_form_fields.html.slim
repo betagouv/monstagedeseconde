@@ -22,7 +22,7 @@ div [data-controller="mandatory-fields"
                                         railsEnv: Rails.env,
                                         newRecord: resource.new_record? })
 
-        div class="row fr-mt-3w bloc-tooggle hide-when-manual #{form.object.persisted? ? '' : 'fr-hidden'}"
+        div class="row fr-mt-3w bloc-tooggle multi_coordinator_siret_block #{form.object.persisted? ? '' : 'fr-hidden'}"
           .col-12
             = render 'inputs/dsfr_input_field',
                       field: :siret,
@@ -32,7 +32,7 @@ div [data-controller="mandatory-fields"
                       readonly: true,
                       title: 'SIRET (14 chiffres sans espace)',
                       object: form.object,
-                      value: resource.siret,
+                      value: resource&.siret.present? ? resource.presenter.formal_siret : nil,
                       pattern: '^(\d{14})$'
 
         div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
@@ -46,18 +46,6 @@ div [data-controller="mandatory-fields"
                           required: true,
                           data: { action: "change->mandatory-fields#fieldChange",
                                   'mandatory-fields-target' => "mandatoryField" }
-        
-        div class="row fr-mt-3w hide-when-manual bloc-tooggle fr-hidden"
-          .col-12
-            = render 'inputs/dsfr_input_field',
-                      field: :presentation_siret,
-                      f: form,
-                      label: "SIRET *",
-                      required: true,
-                      readonly: true,
-                      title: 'SIRET',
-                      object: form.object,
-                      value: resource&.siret.present? ? resource.presenter.formal_siret : nil
                       
         div class="row fr-mt-3w bloc-tooggle hide-when-manual #{form.object.persisted? ? '' : 'fr-hidden'}"
           .col-12
@@ -95,7 +83,7 @@ div [data-controller="mandatory-fields"
                       value: resource&.employer_chosen_address
         
 
-        div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
+        div class="row fr-mt-3w bloc-tooggle hide-when-manual #{form.object.persisted? ? '' : 'fr-hidden'}"
           .col-12
             - label = "Numéro de téléphone du coordinateur *"
             - hint = "Ce numéro ne sera pas communiqué aux candidats."

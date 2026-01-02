@@ -12,6 +12,7 @@ module Services
                                       student:)
       internship_application.employer_validate!
       internship_application.approve!
+      internship_application.internship_agreement&.destroy # ensure no agreement exists
 
       Services::AgreementsAPosteriori.new(employer_id: ministry_statistician.id).perform
 
@@ -29,6 +30,7 @@ module Services
                                         student:)
         internship_application.employer_validate!
         internship_application.approve!
+        internship_application.internship_agreement&.destroy # ensure no agreement exists
 
         Services::AgreementsAPosteriori.new(employer_id: ministry_statistician.id).perform
 
