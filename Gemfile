@@ -91,6 +91,10 @@ gem "active_storage_validations"
 gem "image_processing", "~> 1.2"
 gem "mini_magick"
 
+# temporary
+gem "fiddle"
+gem "ostruct"
+
 group :development, :test do
   gem "debug"
   gem "stringio", "3.1.7"
