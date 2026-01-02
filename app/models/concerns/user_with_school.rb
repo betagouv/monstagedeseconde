@@ -12,12 +12,12 @@ module UserWithSchool
     end
 
     def determine_school_weeks(weeks_chosen_by_school)
-      school_weeks = try(:school).try(:off_constraint_school_weeks, try(:grade))
+      school_weeks = try(:school).try(:off_constraint_school_weeks, try(:grade)).try(:in_the_future)
 
       if weeks_chosen_by_school.empty? && school_weeks.nil?
         Week.both_school_track_selectable_weeks
       else
-        weeks_chosen_by_school || school_weeks
+        weeks_chosen_by_school.try(:in_the_future) || school_weeks.try(:in_the_future)
       end
     end
 
