@@ -79,7 +79,7 @@ module WeekHelpers
     }
 
     scope :from_now, lambda {
-      in_the_future
+      after(date: Date.current)
     }
 
     scope :in_the_future, lambda {

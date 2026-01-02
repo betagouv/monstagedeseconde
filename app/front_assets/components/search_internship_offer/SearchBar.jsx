@@ -70,14 +70,15 @@ const SearchBar = ({
   };
 
   const weekIdsFromUrl = () => {
-    return sanitizeWeekIds(parseArrayValueFromUrl("week_ids[]"));
+    const parsedWeekIds = parseArrayValueFromUrl("week_ids[]");
+    return sanitizeWeekIds(parsedWeekIds);
   };
 
-  const updateWeekIdsFromUrl = (aGradeId) => {
+  const updateWeekIdsFromUrl = (gradeId) => {
     let WeekIdsGrandContainer;
-    if (aGradeId === undefined) {
+    if (gradeId === undefined) {
       WeekIdsGrandContainer = [...secondeWeekIds, ...troisiemeWeekIds];
-    } else if (aGradeId === gradeIdSeconde) {
+    } else if (gradeId === gradeIdSeconde) {
       WeekIdsGrandContainer = secondeWeekIds;
     } else {
       WeekIdsGrandContainer = troisiemeWeekIds;
