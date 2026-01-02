@@ -213,8 +213,7 @@ class InternshipAgreement < ApplicationRecord
       count
     end
 
-    valid_presence_days_count >= MIN_PRESENCE_DAYS &&
-      (weekly_lunch_break.present? || lunch_break.present?)
+    valid_presence_days_count >= MIN_PRESENCE_DAYS && lunch_break.present?
   end
 
   def presenter(user:)
