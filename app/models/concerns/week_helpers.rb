@@ -79,18 +79,7 @@ module WeekHelpers
     }
 
     scope :from_now, lambda {
-      current_date = Date.current
-      after(date: current_date)
-      # # before 31st of December
-      # if end_of_year_week?(current_date)
-      #   where('number = ?', 53).where('year = ?', current_date.year).or(where('year > ?', current_date.year))
-
-      # elsif current_date.cweek == 53 && current_date.month == 1 #  after 1st of January
-      #   where('year >= ?', current_date.year)
-      # else
-      #   after(date: current_date)
-      # end
-      # in_the_future
+      in_the_future
     }
 
     scope :in_the_future, lambda {

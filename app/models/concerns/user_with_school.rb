@@ -22,9 +22,9 @@ module UserWithSchool
     end
 
     def determine_preselected_weeks(weeks_chosen_by_school)
-      return Week.both_school_track_selectable_weeks if weeks_chosen_by_school.empty?
+      return weeks_chosen_by_school.in_the_future if weeks_chosen_by_school.present?
 
-      weeks_chosen_by_school
+      Week.both_school_track_selectable_weeks
     end
 
     def in_a_school? = school.present?

@@ -50,7 +50,6 @@ function WeekInput({
       />
 
       <div className="weeks-search-panel fr-hidden" id="weeks-search-panel">
-
         <div className='fr-mr-1w text-right'>
           <button
             className='fr-btn fr-btn--sm fr-btn--tertiary'
@@ -74,7 +73,6 @@ function WeekInput({
                 handleWeekCheck={handleWeekCheck}
                 weekIds={weekIds}
                 gradeId={gradeId}
-                studentGradeId={studentGradeId}
                 uncheckAllWeeks={uncheckAllWeeks}
               />
             </div>

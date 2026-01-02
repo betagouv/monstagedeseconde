@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Turbo } from '@hotwired/turbo-rails';
 import CityInput from './CityInput';
 import GradeInput from './GradeInput';
 import WeekInput from './WeekInput';
@@ -95,26 +96,36 @@ const SearchBar = ({
     switch (gradeId) {
       case gradeIdSeconde:
         // filter schoolWeeksList with secondeWeekIds
-        setWeeksToParse(
-          schoolWeeksList.filter((week) => secondeWeekIds.includes(week.id))
-        );
+        setWeeksToParse(schoolWeeksList.filter((week) => secondeWeekIds.includes(week.id)));
         break;
       case gradeIdTroisieme:
         // filter schoolWeeksList with troisiemeWeekIds
-        setWeeksToParse(
-          schoolWeeksList.filter((week) => troisiemeWeekIds.includes(week.id))
-        );
+        setWeeksToParse(schoolWeeksList.filter((week) => troisiemeWeekIds.includes(week.id)));
         break;
       case gradeIdQuatrieme:
         // filter schoolWeeksList with troisiemeWeekIds
-        setWeeksToParse(
-          schoolWeeksList.filter((week) => troisiemeWeekIds.includes(week.id))
-        );
+        setWeeksToParse(schoolWeeksList.filter((week) => troisiemeWeekIds.includes(week.id)));
         break;
       default:
         setWeeksToParse(schoolWeeksList);
         break;
     }
+  };
+
+  const updateToggleButtonText = () => {
+    let text = '-';
+    const weeksCount = weekIdsFromUrl().length;
+
+    if (weeksCount === 0 || weeksCount === undefined) {
+      text = 'Choisissez une semaine';
+    } else if (weeksCount === 1) {
+      text = '1 semaine';
+    } else if (weeksCount > 1) {
+      text = `${weeksCount} semaines`;
+    } else {
+      text = '? semaines';
+    }
+    setWeekPlaceholder(text);
   };
 
   const setMonthScoreFromUrl = () => {
@@ -141,24 +152,8 @@ const SearchBar = ({
     updateToggleButtonText();
   };
 
-  const updateToggleButtonText = () => {
-    let text = '-';
-    const weeksCount = weekIdsFromUrl().length;
-
-    if (weeksCount === 0 || weeksCount === undefined) {
-      text = 'Choisissez une semaine';
-    } else if (weeksCount === 1) {
-      text = '1 semaine';
-    } else if (weeksCount > 1) {
-      text = `${weeksCount} semaines`;
-    } else {
-      text = '? semaines';
-    }
-    setWeekPlaceholder(text);
-  };
-
   const monthDetailedList = () => {
-    let monthList = [];
+    const monthList = [];
     const seenMonths = new Set();
     weeksToParse.forEach((week) => {
       const key = `${week.monthName}-${week.year}`;
@@ -178,7 +173,7 @@ const SearchBar = ({
   // ------- action handlers
   const handleWeekCheck = (week) => {
     if (!week || !week.id) {
-      console.warn("Week id is not defined");
+      // console.warn('Week id is not defined');
       return;
     }
     // update weekIds and monthScore based on the week being in the former list of weekIds or not
@@ -192,8 +187,8 @@ const SearchBar = ({
   };
 
   const handleSubmit = () => {
-    if (origin == 'homeStudent') {
-      Turbo.visit(`${ window.location.origin }${"/offres-de-stage"}?${fetchSearchParamsFromUrl()}`);
+    if (origin === 'homeStudent') {
+      Turbo.visit(`${window.location.origin}/offres-de-stage?${fetchSearchParamsFromUrl()}`);
     } else if (origin === 'search') {
       turboVisitsWithSearchParams(fetchSearchParamsFromUrl());
     }
