@@ -14,12 +14,16 @@ class InternshipOffersController < ApplicationController
   def index
     @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
     @preselected_weeks_list = @preselected_weeks_list.where(id: params[:week_ids]) if params[:week_ids].present?
-    @school_weeks_list ||= Week.none
+
+    @school_weeks_list      ||= Week.none
     @preselected_weeks_list ||= Week.none
-    @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
+
+    @school_weeks_list_array      = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
     @preselected_weeks_list_array = Presenters::WeekList.new(weeks: @preselected_weeks_list.to_a).detailed_attributes
-    @seconde_week_ids = Week.seconde_weeks.map(&:id)
+
+    @seconde_week_ids   = Week.seconde_weeks.map(&:id)
     @troisieme_week_ids = Week.troisieme_selectable_weeks.map(&:id)
+
     @student_grade_id = current_user&.student? ? current_user.grade_id : nil
 
     respond_to do |format|
@@ -28,19 +32,18 @@ class InternshipOffersController < ApplicationController
       end
       format.json do
         @internship_offers_seats = 0
-        @internship_offers = finder.all
-                                   .includes(:sector, :employer)
+        @internship_offers = finder.all.includes(:sector, :employer)
 
         # QPV order destroys the former internship offers distance order from school
         if current_user&.student?
           if current_user&.school&.try(:qpv)
             @internship_offers = @internship_offers.reorder("qpv DESC NULLS LAST")
           elsif current_user&.school&.try(:rep_kind).present?
-            # get rep offers (sans pagination)
-            rep_offers = finder.all_without_page.includes(:sector, :employer).where(rep: true)
-            # get non rep offers (sans pagination)
-            non_rep_offers = finder.all_without_page.includes(:sector, :employer).where(rep: false)
-
+            # without pagination
+            offer_finder = finder.all_without_page.includes(:sector, :employer)
+            rep_offers     = offer_finder.where(rep: true)
+            non_rep_offers = offer_finder.where(rep: false)
+            # rep offers first
             combined_offers = rep_offers.to_a + non_rep_offers.to_a
             # Paginate the combined array
             @internship_offers = Kaminari.paginate_array(combined_offers).page(params[:page]).per(InternshipOffer::PAGE_SIZE)
@@ -88,7 +91,7 @@ class InternshipOffersController < ApplicationController
     }
     parameters =  flag_params.merge(offer_and_userid_parameters)
     existing_report = InappropriateOffer.find_by(offer_and_userid_parameters)
-    
+
     if current_user.present? && existing_report
       alert = "Vous avez déjà signalé cette offre comme inappropriée."
       return redirect_to internship_offer_path(@internship_offer), alert: alert
@@ -221,8 +224,8 @@ class InternshipOffersController < ApplicationController
   end
 
   def hide_data_for_non_rep_or_qpv_students?(internship_offer, current_user)
-    internship_offer.from_api? && 
-      internship_offer.rep_or_qpv? && 
+    internship_offer.from_api? &&
+      internship_offer.rep_or_qpv? &&
       (!current_user&.try(:student?) || !current_user&.school&.rep_or_qpv?)
   end
 

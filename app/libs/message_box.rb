@@ -13,7 +13,7 @@ class MessageBox
     else
       @messages = clear_temporaries
     end
-    append(message_content: message_content, time_value: time_value, type: type)
+    @messages << { message_content: message_content, time_value: time_value, type: type }
   end
 
   def new_header(message_content)
@@ -54,12 +54,12 @@ class MessageBox
 
   def check_values(message_content:, time_value:, type:)
     raise ArgumentError, 'message_content must be a String' unless message_content.is_a?(String)
+    raise ArgumentError, "Type must be 'info', 'error', 'temporaire', or 'clear'" unless type.in?(TYPES)
 
     unless time_value.is_a?(Numeric) && time_value >= 0 && time_value <= 100
       raise ArgumentError,
             'Time value must be a Numeric'
     end
-    raise ArgumentError, "Type must be 'info', 'error', 'temporaire', or 'clear'" unless type.in?(TYPES)
   end
 
   def clear_infos
@@ -72,10 +72,6 @@ class MessageBox
 
   def keep_error_and_show_errors
     @messages # = @messages.select { |msg| msg[:type] == 'error' }
-  end
-
-  def append(hash)
-    @messages << hash
   end
 
   def initialize(job_id:)
