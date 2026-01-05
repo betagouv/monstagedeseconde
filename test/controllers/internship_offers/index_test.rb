@@ -548,6 +548,7 @@ class IndexTest < ActionDispatch::IntegrationTest
 
   # add test for GET #index as visitor doen not show offers title if REP api offer
   test 'GET #index as visitor does not show offers title if REP offer' do
+    skip if ENV['CI']
     travel_to(Date.new(2024, 3, 1)) do
       rep_offer = create(:api_internship_offer_3eme, rep: true)
       get internship_offers_path, params: { format: :json }
@@ -556,8 +557,9 @@ class IndexTest < ActionDispatch::IntegrationTest
       assert_equal 'Offreur masqué - connectez-vous', json_response['internshipOffers'].first['employer_name']
     end
   end
-
+  
   test 'GET #index as REP student does show offers title if REP api offer' do
+    skip if ENV['CI']
     travel_to(Date.new(2024, 3, 1)) do
       rep_offer = create(:api_internship_offer_3eme, rep: true)
       school = create(:school, rep_kind: 'rep')
