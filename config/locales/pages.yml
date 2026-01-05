@@ -1,5 +1,19 @@
 fr:
   dashboard:
+    multi_stepper:
+      multi_activities:
+        new:
+          page_title: "Déposer une offre de stage : Ajouter les informations sur l'activité"
+        edit:
+          page_title: "Déposer une offre de stage : Modifier les informations de l'activité"
+      multi_plannings:
+        new:
+          page_title: "Déposer une offre de stage : Ajouter les informations sur le planning"
+      multi_corporations:
+        new:
+          page_title: "Déposer une offre de stage : Ajouter les informations sur les structures accueillantes"
+        edit:
+          page_title: "Déposer une offre de stage : Modifier les informations sur les structures accueillantes"
     stepper:
       entreprise:
         new:
@@ -93,6 +107,9 @@ fr:
         page_title: "Destinataire des notifications"
       index:
         page_title: Liste de mes espaces
+    offer_types_switchings:
+      new:
+        page_title: "Choix du type d'offre à déposer"
   internship_applications:
     show:
       page_title: "Ma candidature"

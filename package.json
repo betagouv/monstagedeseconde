@@ -30,15 +30,16 @@
     "lodash.debounce": "^4.0.8",
     "npm": "^8.11.0",
     "popper.js": "^1.15.0",
+    "prop-types": "^15.8.1",
     "raf": "^3.4.1",
-    "rails-ujs": "^5.2.2",
     "rails_admin": "3.3.0",
+    "rails-ujs": "^5.2.2",
     "react": "^18.2.0",
     "react-content-loader": "^6.2.0",
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.0.0",
     "react-leaflet-cluster": "^2.0.0",
-    "react-on-rails": "12.0.5-beta.0",
+    "react-on-rails": "14.2.1",
     "react-phone-input-2": "2.15.1",
     "regenerator-runtime": "^0.13.3",
     "signature_pad": "^4.0.5",
@@ -66,7 +67,7 @@
     "vnu-jar": "^20.3.16",
     "webpack": "^4.46.0",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.3"
+    "webpack-dev-server": "^5.2.2"
   },
   "engines": {
     "node": ">=22.x"

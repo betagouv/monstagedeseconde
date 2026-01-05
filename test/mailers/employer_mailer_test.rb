@@ -17,7 +17,7 @@ class EmployerMailerTest < ActionMailer::TestCase
   end
 
   test '.internship_application_approved_with_agreement_email delivers as expected' do
-    internship_agreement = create(:internship_agreement)
+    internship_agreement = create(:mono_internship_agreement)
     employer = internship_agreement.internship_application.internship_offer.employer
     email = EmployerMailer.internship_application_approved_with_agreement_email(
       internship_agreement: internship_agreement
@@ -30,7 +30,7 @@ class EmployerMailerTest < ActionMailer::TestCase
   end
 
   test '.internship_application_approved_with_agreement_email does not deliver when notifications are off' do
-    internship_agreement = create(:internship_agreement)
+    internship_agreement = create(:mono_internship_agreement)
     employer_1 = internship_agreement.internship_application.internship_offer.employer
     employer_2 = create(:employer)
     create_team(employer_1, employer_2)
@@ -53,7 +53,7 @@ class EmployerMailerTest < ActionMailer::TestCase
     user_operator          = create(:user_operator, operator: operator)
     internship_offer       = create(:weekly_internship_offer_2nde, employer: user_operator)
     internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-    internship_agreement   = create(:internship_agreement, internship_application: internship_application)
+    internship_agreement   = create(:mono_internship_agreement, internship_application: internship_application)
     create_team(user_operator, create(:user_operator, operator: operator))
 
     internship_agreement.internship_offer_area
@@ -72,7 +72,7 @@ class EmployerMailerTest < ActionMailer::TestCase
     statistician           = create(:statistician, agreement_signatorable: true)
     internship_offer       = create(:weekly_internship_offer_2nde, employer: statistician)
     internship_application = create(:weekly_internship_application, internship_offer: internship_offer)
-    internship_agreement   = create(:internship_agreement, internship_application: internship_application)
+    internship_agreement   = create(:mono_internship_agreement, internship_application: internship_application)
     create_team(statistician, create(:statistician, agreement_signatorable: true, email: 'statistician@free.fr'))
 
     internship_agreement.internship_offer_area
@@ -102,7 +102,7 @@ class EmployerMailerTest < ActionMailer::TestCase
   end
 
   # test '.school_manager_finished_notice_email delivers as expected' do
-  #   internship_agreement = create(:internship_agreement)
+  #   internship_agreement = create(:mono_internship_agreement)
   #   employer = internship_agreement.internship_application.internship_offer.employer
   #   email = EmployerMailer.school_manager_finished_notice_email(
   #     internship_agreement: internship_agreement

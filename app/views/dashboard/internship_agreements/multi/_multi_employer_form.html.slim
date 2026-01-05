@@ -1,0 +1,16 @@
+= form_with model: @multi_internship_agreement,
+            url: dashboard_internship_agreement_path(uuid: @multi_internship_agreement.uuid),
+            class: 'form-offset-header',
+            method: (@multi_internship_agreement.persisted? ? :patch : :post),
+            data: { controller: 'internship-agreement-form', turbo: false} do |form|
+  - employer_like = current_user.employer_like?
+  .row
+    .col-12
+      table.table-sticky-thead
+        = render partial: 'dashboard/internship_agreements/shared/form_header',
+                  locals: { internship_application: @multi_internship_agreement.internship_application,
+                            internship_agreement: form.object }
+        = render 'dashboard/internship_agreements/multi/multi_employer_form_fields',
+                 form: form,
+                 resource: @multi_internship_agreement,
+                 disabled: false

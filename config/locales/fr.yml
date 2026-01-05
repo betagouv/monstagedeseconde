@@ -21,7 +21,7 @@ fr:
       welcome_student: "Bienvenue sur 1élève1stage. Commencez votre recherche ici : %{shrinked_url}"
   activerecord:
     models:
-      sudent_legal_representative:  Représentant légal
+      student_legal_representative:  Représentant légal
       school_manager: Chef d'établissement
       employer: Employeur
       area_notification:
@@ -145,10 +145,12 @@ fr:
         is_paqte: Paqte
         name: Nom
         updated_at: Mis à jour le
-      convention:
-        activity_scope: Objectifs du stage
-        weekly_planning: Planning hebdomadaire
-        same_daily_planning: Horaires quotidiens
+      multi_coordinator:
+        siret: Siret
+        street: Adresse
+        zipcode: Code postal
+        city: Commune
+        phone: Téléphone
       school:
         name: Nom
         kind: Type
@@ -176,6 +178,23 @@ fr:
         full_address: "Adresse de l'établissement"
         full_weeks: Semaines
         signature: Signature de l'établissement
+      corporation:
+        siret: Siret
+        sector: Secteur
+        corporation_name: Nom de la structure
+        corporation_address: Adresse de la structure
+        corporation_city: Commune
+        corporation_zipcode: Code postal
+        corporation_street: Rue
+        internship_street: Rue du stage
+        internship_zipcode: Code postal
+        internship_city: Commune
+        internship_phone: Téléphone
+        tutor_name: Nom du tuteur
+        tutor_role_in_company: Fonction du tuteur
+        tutor_email: Email du tuteur
+        tutor_phone: Téléphone du tuteur
+        employer_name: Nom de l'employeur
       inappropriate_offer:
         internship_offer: Offre de stage
         details: Détails
@@ -218,7 +237,6 @@ fr:
       operator: &operator_fields
         name: Nom
         target_count: Objectif annuel
-
 
       internship_offer_area:
         name : Nom d'espace
@@ -277,6 +295,7 @@ fr:
             signatures_started:
               already_signed: Le chef d'établissement a déjà signé. En attente de la signature de l’employeur.
               not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
+              multi_employer: En cours de signature.
             signed_by_all: Signée par toutes les parties.
           admin_officer:
             <<: *ministry_statistician_status
@@ -317,6 +336,7 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée.
             signatures_started:
+              multi_employer: En cours de signature.
               already_signed: Vous avez déjà signé.
               not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
@@ -337,6 +357,7 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
+              multi_employer: En cours de signature.
               already_signed: Vous avez déjà signé.
               not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
@@ -347,6 +368,7 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
+              multi_employer: En cours de signature.
               already_signed: Vous avez déjà signé.
               not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
@@ -357,6 +379,7 @@ fr:
             started_by_school_manager: La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.
             validated: Votre convention est prête à être signée
             signatures_started:
+              multi_employer: En cours de signature.
               already_signed: Vous avez déjà signé.
               not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
@@ -370,8 +393,20 @@ fr:
               already_signed: Vous avez déjà signé. En attente de la signature de l’employeur.
               not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
+      internship_agreements/multi_internship_agreement:
+        status:
+          employer:
+            validated: En attente de signatures
+            not_signed_yet:  En cours de signature
+            signatures_started: En cours de signature
+            signed_by_all: Signée par toutes les parties.
+          <<: *internship_agreement_fields
       convention:
         <<: *internship_agreement_fields
+        activity_scope: Objectifs du stage
+        weekly_planning: Planning hebdomadaire
+        same_daily_planning: Horaires quotidiens
+        student_refering_teacher_full_name: Professeur référent
       signature:
         signatory_role: signataire
 

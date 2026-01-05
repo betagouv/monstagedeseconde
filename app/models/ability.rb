@@ -94,6 +94,7 @@ class Ability
       # - offer is published
       # - offer is reserved to a rep school and user is from a rep school
       # - offer is reserved to a qpv school and user is from a qpv school
+      # - offer is not an api offer (only for weekly offers and mu)
 
       internship_offer.grades.include?(user.grade) &&
         !user.internship_applications.exists?(internship_offer_id: internship_offer.id) && # user has not already applied
@@ -101,7 +102,8 @@ class Ability
         internship_offer.published? &&
         (!internship_offer.reserved_to_schools? || user.school_id.in?(internship_offer.schools.pluck(:id))) &&
         (!internship_offer.rep  || user.school.rep_or_rep_plus?) &&
-        (!internship_offer.qpv || user.school.qpv?)
+        (!internship_offer.qpv || user.school.qpv?) &&
+        !internship_offer.is_a?(InternshipOffers::Api)
     end
 
     can %i[submit_internship_application update show internship_application_edit],
@@ -235,6 +237,16 @@ class Ability
         internship_offer.has_weeks_after_school_year_start?
     end
     can %i[create], InternshipOccupation
+    can %i[create], MultiActivity
+    can %i[create], MultiCoordinator do |coordinator|
+      coordinator.multi_activity.employer_id == user.id
+    end
+    can %i[create update edit], MultiCorporation do |multi_corporation|
+      multi_corporation.multi_coordinator.multi_activity.employer_id == user.id
+    end
+    can %i[create update edit destroy], Corporation do |corporation|
+      corporation.multi_corporation.multi_coordinator.multi_activity.employer_id == user.id
+    end
     can %i[create], Entreprise do |entreprise|
       entreprise.internship_occupation.employer_id == user.id
     end
@@ -242,6 +254,10 @@ class Ability
       planning.entreprise.internship_occupation.employer_id == user.id
     end
     can %i[update edit renew], InternshipOccupation, employer_id: user.team_members_ids
+    can %i[update edit], MultiActivity, employer_id: user.team_members_ids
+    can %i[update edit], MultiCoordinator do |coordinator|
+      coordinator.multi_activity.employer_id.in?(user.team_members_ids)
+    end
     can %i[update edit renew], Entreprise do |entreprise|
       entreprise.internship_occupation.employer_id.in?(user.team_members_ids)
     end
@@ -291,6 +307,9 @@ class Ability
     end
     can :create, Signature do |signature|
       signature.internship_agreement.internship_offer.internship_offer_area.employer_id.in?(user.team_members_ids)
+    end
+    can :multi_sign, InternshipAgreement do |agreement|
+      agreement.employer.id.in?(user.team_members_ids) && agreement.from_multi?
     end
   end
 
@@ -374,6 +393,7 @@ class Ability
     can :show, :api_token
 
     can %i[create], InternshipOccupation
+    can %i[create], MultiActivity
 
     can %i[index], Acl::Reporting, &:allowed?
 
@@ -390,6 +410,7 @@ class Ability
   def education_statistician_abilities(user:)
     common_to_all_statisticians(user:)
     can %i[create], InternshipOccupation
+    can %i[create], MultiActivity
     can %i[index], Acl::Reporting, &:allowed?
 
     can %i[index_and_filter], Reporting::InternshipOffer
@@ -407,6 +428,7 @@ class Ability
     can %i[create], InternshipOccupation do |internship_occupation|
       internship_occupation.group.in?(user.ministries) && internship_occupation.is_public
     end
+    can %i[create], MultiActivity
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can :read, Group

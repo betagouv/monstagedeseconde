@@ -1,0 +1,132 @@
+= turbo_frame_tag "corporation_form_frame" do
+  .fr-mb-3w
+    = form_with model: corporation, 
+                url: corporation.new_record? ? dashboard_multi_stepper_multi_corporation_corporations_path(multi_corporation) : dashboard_multi_stepper_multi_corporation_corporation_path(multi_corporation, corporation),
+                data: { turbo: false, controller: "multi-corporation-form", action: "turbo:submit-end->multi-corporation-form#reset", multi_corporation_form_target: "form" } do |f|
+      
+      = f.hidden_field :multi_corporation_id, value: multi_corporation.id
+
+      / Bloc 1: Structure (Accordion Style)
+      section.fr-accordion.corporation-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn aria-expanded="true" aria-controls="accordion-structure" La structure accueillante
+        #accordion-structure.fr-collapse
+          .fr-p-2w
+            - resource_name = f.object_name
+            
+            / Search Input
+            - unless corporation.persisted?
+              .fr-mb-2w
+                = react_component("SireneCorporation",
+                                  props: { resourceName: resource_name,
+                                           currentSiret: corporation.siret,
+                                           railsEnv: Rails.env,
+                                           newRecord: corporation.new_record? })
+
+            / Fields populated by search
+            div class="bloc-tooggle #{corporation.persisted? ? '' : 'fr-hidden'}"
+              .fr-grid-row.fr-grid-row--gutters
+                .fr-col-12
+                  = f.label :corporation_name, "Nom de la structure ou Raison sociale", class: "fr-label"
+                  = f.text_field :corporation_name, class: "fr-input"
+                
+                .fr-col-12
+                  = f.label :sector_id, "Indiquez le secteur d'activité de la structure *", class: "fr-label"
+                  = f.select :sector_id,
+                          options_from_collection_for_select(Sector.all.order(:name).where.not(name: 'Fonction publique'), :id, :name, corporation&.sector&.id),
+                          { prompt: sectors_options_for_default },
+                          class: "fr-select sector_list",
+                          required: true,
+                          data: { action: "change->mandatory-fields#fieldChange",
+                                  'mandatory-fields-target' => "mandatoryField" }
+
+                .fr-col-12
+                  = f.label :siret, "SIRET *", class: "fr-label"
+                  = f.text_field :siret, class: "fr-input", readonly: true
+
+                .fr-col-12
+                  = f.label :corporation_address, "Indiquez l'adresse du siège social", class: "fr-label"
+                  = f.text_field :corporation_address, class: "fr-input"
+
+                  / Hidden fields for structure address details populated by JS
+                  = f.hidden_field :corporation_street
+                  = f.hidden_field :corporation_zipcode
+                  = f.hidden_field :corporation_city
+                  
+                  / Hidden fields for internship coordinates
+                  / = f.hidden_field :internship_coordinates, value: corporation.internship_coordinates
+                  / = f.hidden_field :coordinates, value: corporation.internship_coordinates
+
+      / Bloc 2: Adresse du stage
+      section.fr-accordion.corporation-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
+        h3.fr-accordion__title
+          button.fr-accordion__btn aria-expanded="true" aria-controls="accordion-address" Adresse du lieu du stage
+        #accordion-address.fr-collapse
+          .fr-p-2w
+            .fr-grid-row.fr-grid-row--gutters
+              .fr-col-12
+                = react_component("AddressInput",
+                                  props: { resourceName: resource_name,
+                                           currentStreet: corporation.internship_street,
+                                           currentCity: corporation.internship_city,
+                                           currentZipcode: corporation.internship_zipcode,
+                                           currentFullAddress: "#{corporation.internship_street} #{corporation.internship_zipcode} #{corporation.internship_city}".strip,
+                                           addressFieldsVisible: true,
+                                           isDuplication: false,
+                                           editMode: true,
+                                           fieldLabel: "Rechercher une adresse postale *" })
+                = f.hidden_field :internship_coordinates, value: corporation.internship_coordinates
+
+      / Bloc 3: Signataire
+      section.fr-accordion.corporation-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
+        h3.fr-accordion__title
+          button.fr-accordion__btn aria-expanded="true" aria-controls="accordion-signatory" Coordonnées du représentant de la structure (signataire)
+        #accordion-signatory.fr-collapse
+          .fr-p-2w
+            .fr-grid-row.fr-grid-row--gutters
+              .fr-col-12
+                = f.label :employer_name, "Nom prénom du représentant de la structure", class: "fr-label"
+                = f.text_field :employer_name, class: "fr-input", data: { multi_corporation_form_target: "employerName" }
+              .fr-col-12
+                = f.label :employer_role, "Fonction du représentant de la structure", class: "fr-label"
+                = f.text_field :employer_role, class: "fr-input", minlength: 3, data: { multi_corporation_form_target: "employerRole" }
+              .fr-col-12
+                = f.label :employer_email, "Adresse email du représentant de la structure", class: "fr-label"
+                = f.email_field :employer_email, class: "fr-input", data: { multi_corporation_form_target: "employerEmail" }
+              .fr-col-12
+                = f.label :employer_phone, "Téléphone du représentant de la structure", class: "fr-label"
+                = f.text_field :employer_phone, class: "fr-input", data: { multi_corporation_form_target: "employerPhone" }
+              
+              .fr-col-12.fr-mt-1w
+                p.fr-text--sm.text-blue-info.fr-mb-0
+                  span.fr-icon-info-fill.fr-mr-1v aria-hidden="true"
+                  | Conseil : Renseignez ici les coordonnées de la personne qui signera la convention de stage.
+
+      / Bloc 4: Tuteur
+      section.fr-accordion.corporation-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
+        h3.fr-accordion__title
+          button.fr-accordion__btn aria-expanded="true" aria-controls="accordion-tutor" Coordonnées du tuteur
+        #accordion-tutor.fr-collapse
+          .fr-p-2w
+            .fr-checkbox-group.fr-mb-2w
+              input type="checkbox" id="copy-rep-infos" data-action="change->multi-corporation-form#copyRepresentative"
+              label.fr-label for="copy-rep-infos" Reprendre les informations du représentant de la structure
+
+            .fr-grid-row.fr-grid-row--gutters
+              .fr-col-12
+                = f.label :tutor_name, "Nom prénom du tuteur", class: "fr-label"
+                = f.text_field :tutor_name, class: "fr-input", required: true, data: { multi_corporation_form_target: "tutorName" }
+              .fr-col-12
+                = f.label :tutor_role_in_company, "Fonction du tuteur", class: "fr-label"
+                = f.text_field :tutor_role_in_company, class: "fr-input", minlength: 3, required: true, data: { multi_corporation_form_target: "tutorRole" }
+              .fr-col-12
+                = f.label :tutor_email, "Adresse email du tuteur", class: "fr-label"
+                = f.email_field :tutor_email, class: "fr-input", required: true, data: { multi_corporation_form_target: "tutorEmail" }
+              .fr-col-12
+                = f.label :tutor_phone, "Téléphone du tuteur", class: "fr-label"
+                = f.text_field :tutor_phone, class: "fr-input", required: true, data: { multi_corporation_form_target: "tutorPhone" }
+
+      .fr-mt-2w.fr-grid-row.fr-grid-row--right.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
+        = f.submit corporation.new_record? ? "Ajouter cette structure" : "Mettre à jour cette structure", class: "fr-btn"
+        - unless corporation.new_record?
+           = link_to "Annuler", edit_dashboard_multi_stepper_multi_corporation_path(multi_corporation), class: "fr-btn fr-btn--secondary fr-ml-2w"

@@ -17,7 +17,7 @@ module Dashboard::Stepper
       @entreprise = Entreprise.new(entreprise_params)
       authorize! :create, @entreprise
       set_computed_params
-      
+
       if @entreprise.errors.any?
         log_error(object: @entreprise)
         render :new, status: :bad_request
@@ -44,7 +44,7 @@ module Dashboard::Stepper
     def update
       authorize! :update, @entreprise
       set_computed_params
-      
+
       if @entreprise.errors.any?
         log_error(object: @entreprise)
         render :new, status: :bad_request
@@ -101,18 +101,18 @@ module Dashboard::Stepper
       # Use geoocder if coordinates are not present
       longitude = entreprise_params[:entreprise_coordinates_longitude].to_f
       latitude = entreprise_params[:entreprise_coordinates_latitude].to_f
-      coordinates_valid = longitude.zero? == false && latitude.zero? == false && 
-                          entreprise_params[:entreprise_coordinates_longitude].present? && 
+      coordinates_valid = longitude.zero? == false && latitude.zero? == false &&
+                          entreprise_params[:entreprise_coordinates_longitude].present? &&
                           entreprise_params[:entreprise_coordinates_latitude].present?
-      
+
       final_longitude = entreprise_params[:entreprise_coordinates_longitude]
       final_latitude = entreprise_params[:entreprise_coordinates_latitude]
-      
+
       unless coordinates_valid
         puts 'Coordinates not valid, trying to geocode'
         full_address = entreprise_params[:entreprise_full_address].blank? ? entreprise_params[:entreprise_chosen_full_address] : entreprise_params[:entreprise_full_address]
-        
-        # Address to geocode contains a valid zipcode ? 
+
+        # Address to geocode contains a valid zipcode ?
         if full_address.to_s.match?(/\d{5}/)
           puts "-----Code postal valid------->"
           # find city via Geocoder with zipcode
@@ -123,7 +123,7 @@ module Dashboard::Stepper
           # find coordinates via Geocoder with city and zipcode
           coordinates = Geofinder.coordinates("#{full_address}, #{city}, #{zipcode}, France")
           puts "Coordinates found: #{coordinates}"
-          
+
           if coordinates.present?
             final_longitude = coordinates[1]
             final_latitude = coordinates[0]
@@ -146,7 +146,7 @@ module Dashboard::Stepper
           @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée, code postal invalide")
         end
       end
-      
+
       # Assign coordinates only if they are valid
       if coordinates_valid
         @entreprise.entreprise_coordinates = { longitude: final_longitude,

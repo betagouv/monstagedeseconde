@@ -2,7 +2,12 @@ module Dashboard
   class InternshipAgreementsController < ApplicationController
     before_action :authenticate_user!
     before_action :set_internship_agreement,
-                  only: %i[edit update show school_management_signature school_management_sign]
+                  only: %i[edit
+                           update
+                           show
+                           school_management_signature
+                           school_management_sign
+                           multi_reminder_email]
 
     def new
       @internship_agreement = internship_agreement_builder.new_from_application(
@@ -24,16 +29,16 @@ module Dashboard
             params:
           )
           updated_internship_agreement.save
-          redirect_to dashboard_internship_agreements_path,
+          redirect_to dashboard_internship_agreements_path(multi: updated_internship_agreement.from_multi?),
                       flash: { success: update_success_message(updated_internship_agreement) }
         end
         on.failure do |failed_internship_agreement|
-          @internship_agreement = failed_internship_agreement || InternshipAgreement.find(params[:id])
+          @internship_agreement = failed_internship_agreement || InternshipAgreement.find_by(uuid: params[:uuid])
           render :edit
         end
       end
     rescue ActionController::ParameterMissing => e
-      @internship_agreement = InternshipAgreement.find(params[:id])
+      @internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
       render :edit
     end
 
@@ -46,12 +51,21 @@ module Dashboard
                                                .student
                                                .presenter
                                                .full_name_camel_case
-          send_data(
-            GenerateInternshipAgreement.new(@internship_agreement.id).call.render,
-            filename: "Convention_de_stage_#{ext_file_name}.pdf",
-            type: 'application/pdf',
-            disposition: 'inline'
-          )
+          if @internship_agreement.from_multi?
+            send_data(
+              GenerateMultiInternshipAgreement.new(@internship_agreement.uuid).call.render,
+              filename: "Convention_de_stage_#{ext_file_name}.pdf",
+              type: 'application/pdf',
+              disposition: 'inline'
+            )
+          else
+            send_data(
+              GenerateInternshipAgreement.new(@internship_agreement.id).call.render,
+              filename: "Convention_de_stage_#{ext_file_name}.pdf",
+              type: 'application/pdf',
+              disposition: 'inline'
+            )
+          end
         end
       end
     end
@@ -62,23 +76,11 @@ module Dashboard
         @internship_offers = current_user.internship_offers
                                          .includes([:weeks, { school: :school_managers }])
       end
-      @internship_agreements = current_user.internship_agreements
-                                           .filtering_discarded_students
-                                           .kept
-                                           .includes(
-                                             { internship_application: [
-                                               { student: :school },
-                                               { internship_offer: [:employer, :sector, :stats, :weeks,
-                                                                   { school: :school_managers }] }
-                                             ] }
-                                           )
-      #  .reject { |a| a.student.school.school_manager.nil? }
+      @mono_internship_agreements  = filtering_query current_user.mono_internship_agreements
+      @multi_internship_agreements = filtering_query current_user.multi_internship_agreements
+
       @school = current_user.school if current_user.school_management?
       @no_agreement_internship_application_list = []
-      # current_user.internship_applications
-      #           .filtering_discarded_students
-      #           .approved
-      #           .select { |ia| ia.student.school.school_manager.nil? }
     end
 
     def school_management_signature
@@ -104,16 +106,29 @@ module Dashboard
                         signature_phone_number: current_user.try(:phone))
       @internship_agreement.sign!
 
-      redirect_to dashboard_internship_agreements_path,
+      redirect_to dashboard_internship_agreements_path(multi: @internship_agreement.from_multi?),
                   flash: { success: 'La convention a été signée.' }
+    end
+
+    def multi_reminder_email
+      authorize! :multi_sign, @internship_agreement
+      if @internship_agreement.multi_corporation.signatures_launched_at.nil?
+        redirect_to dashboard_internship_agreements_path(multi: true),
+                    alert: "Aucun email n'a encore été envoyé jusqu'ici aux responsables de stage." and return
+      else
+        @internship_agreement.send_multi_signature_reminder_emails!
+        redirect_to dashboard_internship_agreements_path(multi: true),
+                    notice: 'Les emails de rappel ont été envoyés aux responsables de stage.' and return
+      end
+    rescue ActiveRecord::RecordNotFound
+      redirect_to dashboard_internship_agreements_path(multi: true),
+                  alert: 'Convention introuvable'
     end
 
     private
 
-    def internship_agreement_params
-      params.require(:internship_agreement)
-            .permit(
-              :internship_application_id,
+    def fields
+      [:internship_application_id,
               :student_school,
               :school_representative_email,
               :school_representative_full_name,
@@ -155,9 +170,32 @@ module Dashboard
               :lunch_break,
               :weekly_lunch_break,
               weekly_hours: [],
-              daily_hours: {}
-            )
-      # :schedule_rich_text,
+              daily_hours: {}]
+    end
+
+    def internship_agreement_params
+      requirement = if @internship_agreement.from_multi?
+                      :internship_agreements_multi_internship_agreement
+                    else
+                      :internship_agreements_mono_internship_agreement
+                    end
+      params.require(requirement).permit(*fields)
+    end
+
+    def bare_internship_agreement_params
+      params.require(:internship_agreement).permit(*fields)
+    end
+
+    def filtering_query(query)
+      query.filtering_discarded_students
+           .kept
+           .includes(
+             { internship_application: [
+               { student: :school },
+               { internship_offer: [:employer, :sector, :stats, :weeks,
+                                   { school: :school_managers }] }
+             ] }
+           )
     end
 
     def internship_agreement_builder
@@ -176,8 +214,10 @@ module Dashboard
     end
 
     def process_state_update(agreement:, params:)
-      employer_event       = params[:internship_agreement][:employer_event]
-      school_manager_event = params[:internship_agreement][:school_manager_event]
+      params_internship_agreement = agreement.from_multi? ? params[:internship_agreements_multi_internship_agreement] : params[:internship_agreements_mono_internship_agreement]
+
+      employer_event       = params_internship_agreement[:employer_event]
+      school_manager_event = params_internship_agreement[:school_manager_event]
       return agreement if employer_event.blank? && school_manager_event.blank?
 
       agreement = transit_when_allowed(agreement:, event: employer_event)
@@ -194,6 +234,10 @@ module Dashboard
 
     def set_internship_agreement
       @internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
+      unless @internship_agreement.nil?
+        @mono_internship_agreement = @internship_agreement.from_multi? ? nil : @internship_agreement
+        @multi_internship_agreement = @internship_agreement.from_multi? ? @internship_agreement : nil
+      end
     end
 
     def update_school_signature

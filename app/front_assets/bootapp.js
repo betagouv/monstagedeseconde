@@ -23,6 +23,7 @@ import FlashMessage from "components/FlashMessage";
 import SearchSchool from "components/SearchSchool";
 import SearchSchoolByName from "components/SearchSchoolByName";
 import Map from "components/Map";
+import MultiMap from "components/MultiMap";
 import SchoolList from "components/SchoolList";
 
 import CityInput from "components/search_internship_offer/CityInput";
@@ -38,6 +39,8 @@ import AddressInput from "components/inputs/AddressInput";
 import CountryPhoneSelect from "components/inputs/CountryPhoneSelect";
 import FullAddressInput from "components/inputs/FullAddressInput";
 import SirenInput from "components/inputs/SirenInput";
+import SirenInputMulti from "components/inputs/SirenInputMulti";
+import SireneCorporation from "components/inputs/SireneCorporation";
 
 ReactOnRails.register({
   AddressInput,
@@ -54,11 +57,14 @@ ReactOnRails.register({
   InternshipOfferResults,
   KeywordInput,
   Map,
+  MultiMap,
   ReservedSchoolInput,
   SchoolList,
   SearchSchool,
   SearchSchoolByName,
   SirenInput,
+  SirenInputMulti,
+  SireneCorporation,
   WeekInput,
   SearchBar
 });

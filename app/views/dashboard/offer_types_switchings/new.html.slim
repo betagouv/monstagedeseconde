@@ -1,0 +1,80 @@
+- content_for(:page_title, "#{t(".page_title")} | 1élève1stage")
+- model = @internship_occupation
+- links = generate_breadcrumb_links( 'Déposer une offre de stage')
+
+= render 'layouts/breadcrumb',
+          links: links
+
+= form_with url: dashboard_validation_choix_type_offre_path,
+            method: :post,
+            data: {turbo: false} do |f|
+  .row.fr-my-3w
+    .col
+      h1.h2 Déposer une offre de stage
+  .row.fr-mb-2w.multi-step-0
+    = csrf_meta_tags
+    .fr-col-md-6
+      .fr-fieldset
+        .fr-fieldset__element
+          .fr-radio-group.fr-radio-rich
+            = f.radio_button :choice,
+                             "for_my_company",
+                             id: "radio-rich-0",
+                             name: "offer_type_choice"
+            label.fr-label for="radio-rich-0"
+              span Je propose un stage au nom d’une seule structure
+            .fr-radio-rich__pictogram
+              = image_tag asset_pack_path('media/digital/avatar.svg'),
+                          viewBox:"0 0 80 80",
+                          width: "80px",
+                          height: "80px",
+                          :"aria-hidden" => "true",
+                          class: "fr-artwork"
+      - if Flipper.enabled?(:multi_offer, current_user)
+        .fr-fieldset__element.fr-px-0
+          .fr-radio-group.fr-radio-rich
+            = f.radio_button :choice,
+                             "for_multiple_companies",
+                              id: "radio-rich-2",
+                              name: "offer_type_choice"
+            label.fr-label for="radio-rich-2"
+              span
+                span.fr-badge.fr-badge--new.fr-badge--no-icon.fr-badge--sm.fr-mr-1v> Nouveau
+                | Je coordonne un stage impliquant plusieurs structures (toutes signataires de la convention)
+            .fr-radio-rich__pictogram
+              = image_tag asset_pack_path('media/digital/ecosystem.svg'),
+                          viewBox:"0 0 80 80",
+                          width: "80px",
+                          height: "80px",
+                          :"aria-hidden" => "true",
+                          class: "fr-artwork"
+  - if Flipper.enabled?(:multi_offer, current_user)
+    .row.fr-mb-3w.multi-step-0
+      .fr-col-md-12
+        .fr-alert.fr-alert--info role="alert"
+          h3.fr-alert__title Stage impliquant plusieurs structures
+          p
+            |
+              Le nouveau parcours permet de déposer une offre de stage partagée entre plusieurs structures, 
+              chacune signataire de la convention.
+          p
+            |
+              Avant de commencer, veillez à avoir toutes les informations nécessaires : le planning détaillé 
+              avec les structures impliquées chaque jour, les horaires de début, fin et pause déjeuner, le 
+              nombre de places et les établissements scolaires auxquels le stage est réservé, le cas échéant. 
+              Pour chaque structure, vous devrez indiquer son nom ou SIRET, l’adresse du lieu d’accueil, ainsi 
+              que les coordonnées du représentant signataire et du tuteur le cas échéant : nom, prénom, 
+              fonction, téléphone et e-mail. Attention : vous ne pourrez ni enregistrer un brouillon, ni modifier 
+              l’offre une fois publiée.
+    
+  .row.fr-mb-5w.multi-step-0
+    .fr-col-md-12
+      .fr-mt-4w
+        = link_to 'Annuler',
+                  dashboard_internship_offers_path,
+                  class: 'fr-btn fr-btn--secondary fr-mr-2w'
+        = button_tag 'Commencer',
+            class: 'fr-btn fr-btn--primary',
+            type: 'submit',
+            data: { turbo: false }
+  

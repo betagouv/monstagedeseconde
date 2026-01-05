@@ -1,13 +1,13 @@
 - prez = internship_agreement.presenter(user: current_user)
 tr class="d-sm-flex internship-application-row student-application-#{internship_agreement.id} internship-agreement-to-sign"
-  td.pt-3.pb-0.py-sm-2.rg2a-width-100.d-sm-flex.align-items-center data-head="Élève"
+  td.col-xs.pt-3.pb-0.py-sm-2.rg2a-width-100.d-sm-flex.align-items-center data-head="Élève"
     .fr-form-group
       .fr-fieldset.fr-fieldset--inline
         .fr-fieldset__content
-          .fr-checkbox-group
+          .fr-checkbox-group.fr-mt-3w
             - id = "#{fg.object_name}_internship_agreement_id_#{internship_agreement.id}_checkbox"
             = fg.check_box :internship_agreement_ids,{ id: id,
-                                                      class: 'check-agreement-sign fr-mt-4w fr-pl-1w',
+                                                      class: 'check-agreement-sign fr-pl-1w',
                                                       multiple: true,
                                                       data: { action: "group-signing#toggle",
                                                               :'group-signing-id-param' => internship_agreement.id,

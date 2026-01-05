@@ -32,6 +32,26 @@ module InternshipAgreements
       user_info(signatory_role: 'student_legal_representative')
     end
 
+    def from_multi?
+      @internship_agreement.from_multi?
+    end
+
+    def corporations_info
+      raise "Not a multi-corporation internship agreement" unless @internship_agreement.from_multi?
+
+      corporations_signed_count = @internship_agreement.corporations_signed_count
+      corporation_total_count = @internship_agreement.corporations_count
+      all_signed = corporations_signed_count == corporation_total_count && corporation_total_count.positive?
+      color = all_signed ? 'green' : 'grey'
+      icon = all_signed ? 'fr-icon-check-line' : 'fr-icon-close-line'
+      {
+        signed_count: @internship_agreement.corporations_signed_count,
+        total_count: @internship_agreement.corporations_count,
+        icon: icon,
+        color: color
+      }
+    end
+
     def user_info(signatory_role:)
       actor_signed = @internship_agreement.signatures.pluck(:signatory_role).include?(signatory_role)
       color = actor_signed ? 'green' : 'grey'

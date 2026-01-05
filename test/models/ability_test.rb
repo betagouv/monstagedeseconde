@@ -87,7 +87,7 @@ class AbilityTest < ActiveSupport::TestCase
       internship_offer_api = create(:api_internship_offer_3eme, employer:)
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_application_other = create(:weekly_internship_application, internship_offer: alt_internship_offer)
-      internship_agreement = create(:internship_agreement, :created_by_system,
+      internship_agreement = create(:mono_internship_agreement, :created_by_system,
                                     internship_application:)
       ability = Ability.new(employer)
 
@@ -324,7 +324,7 @@ class AbilityTest < ActiveSupport::TestCase
     internship_application  = create(:weekly_internship_application, student:)
     invitation              = create(:invitation, user_id: school_manager.id)
     invitation_other_school = create(:invitation, user_id: another_school_manager.id)
-    internship_agreement    = create(:internship_agreement, :created_by_system,
+    internship_agreement    = create(:mono_internship_agreement, :created_by_system,
                                      internship_application:)
     ability = Ability.new(school_manager)
 
@@ -401,7 +401,7 @@ class AbilityTest < ActiveSupport::TestCase
     class_room = create(:class_room, school:)
     teacher = create(:teacher, school:, class_room:)
     internship_application = create(:weekly_internship_application, student:)
-    internship_agreement   = create(:internship_agreement, :created_by_system,
+    internship_agreement   = create(:mono_internship_agreement, :created_by_system,
                                     internship_application:)
     ability = Ability.new(teacher)
 
@@ -460,7 +460,7 @@ class AbilityTest < ActiveSupport::TestCase
     another_school = create(:school)
     student = create(:student, school:)
     internship_application = create(:weekly_internship_application, student:)
-    internship_agreement = create(:internship_agreement, internship_application:)
+    internship_agreement = create(:mono_internship_agreement, internship_application:)
     admin_officer = create(:admin_officer, school:)
     ability = Ability.new(admin_officer)
 

@@ -1,0 +1,122 @@
+= form_with model: multi_planning, url: multi_planning.new_record? ? dashboard_multi_stepper_multi_plannings_path(multi_coordinator_id: multi_coordinator.id) : dashboard_multi_stepper_multi_planning_path(multi_planning), data: { turbo: false } do |form|
+  div [data-controller='mandatory-fields grade select-weeks'
+     data-mandatory-fields-minimum-length-value="8"
+     data-grade-initial-grades-value="#{multi_planning.grades.compact&.map(&:short_name).join(',')}"]
+    = form.hidden_field :multi_coordinator_id, value: multi_coordinator.id
+    / Hidden field for type if needed by JS
+    = form.hidden_field :type, value: 'MultiPlanning', data: { "planning-candidates-target" => "type" }
+    = form.hidden_field :school_id, value: form.object.school_id
+
+    - if multi_planning.errors.any?
+      .fr-alert.fr-alert--error.fr-mb-4w
+        ul
+          - multi_planning.errors.full_messages.each do |message|
+            li = message
+
+    / Grades and Weeks
+    .row.fr-my-2w
+      .col-12
+        h3.fr-h6
+          | Votre offre sera proposée aux élèves des niveaux suivants :
+      .col-12= form.rg2a_explain_required_asterisk(p_class_name: "mb-0")
+      
+      .col-md-12.order-md-1.order-2
+        / Secondes
+        .row
+          .col-12
+            .d-none.fr-alert.fr-alert--error.fr-alert--sm data-grade-target="alertContainer"
+              p Vous devez sélectionner au moins un public parmi les lycéens et les collégiens
+            = render 'inputs/dsfr_checkbox_field',
+              form: form,
+              field: :grade_2e,
+              title: '',
+              label: 'Lycéens de 2de générale et technologique',
+              options: { data: {:'grade-target' => 'grade2e',
+                                action: 'grade#onClick click->select-weeks#onGrade2ndeClick' ,
+                                :'select-weeks-target' => 'grade2e' } }
+        .row data-grade-target="secondeContainer"
+          .col-12
+            = render '/dashboard/stepper/plannings/seconde_period_radio_buttons_fields',
+                    form: form,
+                    resource: form.object
+    .row
+      .col-12
+        hr
+    / Troisiemes
+    .row
+      .col-12
+        = render 'inputs/dsfr_checkbox_field',
+          form: form,
+          field: :grade_college,
+          title: '',
+          label: 'Collégiens (4ème et 3ème)',
+          extra_header_classes: 'fr-h6',
+          options: { data: {:'grade-target' => 'gradeCollege',
+                            action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick' ,
+                            :'select-weeks-target' => 'gradeCollege'  } }
+
+    .row data-grade-target="troisiemeContainer"
+      .col-12
+        = render partial: "weeks/checkbox_inputs",
+                          locals: { current_weeks: @available_weeks,
+                                    form: form,
+                                    render_employer_components: true }
+    .row
+      .col-12
+        hr
+
+    / Stage individuel / collectif
+    .fr-my-2w
+      .fr-grid-row.fr-grid-row--gutters
+        .fr-col-6
+          .fr-radio-group.fr-radio-rich
+            = form.radio_button :internship_type, 'individual', id: "internship_type_individual", checked: multi_planning.max_candidates.to_i == 1
+            = form.label :internship_type, for: "internship_type_individual", class: "fr-label" do
+              | Stage individuel
+              span.fr-hint-text Un seul élève par semaine.
+              
+        .fr-col-6
+          .fr-radio-group.fr-radio-rich
+            = form.radio_button :internship_type, 'collective', id: "internship_type_collective", checked: multi_planning.max_candidates.to_i > 1
+            = form.label :internship_type, for: "internship_type_collective", class: "fr-label" do
+              | Stage collectif
+              span.fr-hint-text Plusieurs élèves par semaine.
+
+    / Candidates count
+    .fr-input-group.fr-mb-4w
+      = form.label :max_candidates, "Nombre total d'élèves que vous souhaitez accueillir sur la période de stage *", class: "fr-label"
+      = form.number_field :max_candidates, class: "fr-input", min: 1, value: multi_planning.max_candidates || 1
+
+    / Hours (using partial)
+    .fr-input-group.fr-mb-2w
+      = render 'dashboard/stepper/plannings/daily_hours', form: form, resource: form.object
+
+    .row.fr-mt-2w
+      .col-12
+        #reserved-school-component
+          = react_component("ReservedSchoolInput",
+                            props: { label: "Saisissez la ou les communes ou noms des établissements pour lequel le stage est reservé",
+                                    required: false,
+                                    resourceName: form.object_name,
+                                    selectClassRoom: false,
+                                    existingSchools: form.object&.schools&.as_json})
+    .row.fr-mt-2w
+      .col-12
+        = render 'inputs/dsfr_checkbox_field',
+          form: form,
+          field: :rep,
+          title: nil,
+          label: 'Ce stage est réservé aux collèges classés en éducation prioritaire (REP et REP+) ?',
+          options: {}
+      .col-12
+        = render 'inputs/dsfr_checkbox_field',
+          form: form,
+          field: :qpv,
+          title: nil,
+          label: 'Ce stage est réservé aux lycées en quartiers prioritaires de la ville (QPV) ?',
+          options: {}
+
+    .fr-mt-4w.fr-grid-row
+      - prev_link = multi_coordinator.multi_corporation ? edit_dashboard_multi_stepper_multi_corporation_path(multi_coordinator.multi_corporation) : '#'
+      = link_to "Précédent", prev_link, class: "fr-btn fr-btn--secondary fr-mr-2w"
+      = form.submit "Suivant", class: "fr-btn"

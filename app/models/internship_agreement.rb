@@ -9,13 +9,15 @@ class InternshipAgreement < ApplicationRecord
   include Discard::Model
   include InternshipAgreementSignaturable
   include Tokenable
+  include Api::AuthV2
 
   MIN_PRESENCE_DAYS = 4
-  EMPLOYERS_PENDING_STATES = %i[draft started_by_employer signed_by_employer validated].freeze
+  EMPLOYERS_PENDING_STATES  = %i[draft started_by_employer signed_by_employer validated].freeze
   PENDING_SIGNATURES_STATES = %i[validated signatures_started signed_by_all].freeze
+  EXPECTED_ACTION_FROM_EMPLOYER_STATES = %i[draft started_by_employer completed_by_employer].freeze
 
-  belongs_to :internship_application
   has_many :signatures, dependent: :destroy
+  belongs_to :internship_application, optional: false
 
   after_create :generate_token, unless: :access_token?
 
@@ -28,44 +30,47 @@ class InternshipAgreement < ApplicationRecord
                 :skip_validations_for_system,
                 :skip_notifications_when_system_creation
 
+  # Validations
+  with_options if: :enforce_employer_validations? do
+    validates :activity_scope, presence: true, length: { maximum: 1500 }
+    validate :valid_working_hours_fields
+    validate :at_least_daily_hours_or_weekly_hours
+  end
+
   with_options if: :enforce_teacher_validations? do
     validates :student_class_room, presence: true
   end
 
+  # Validations for school_managers are common to all agreements
   with_options if: :enforce_school_manager_validations? do
     validates :school_representative_full_name,
               :school_representative_role,
-              :school_representative_email,
-              :student_full_name,
               :student_school,
-              :student_refering_teacher_full_name,
-              :student_refering_teacher_email,
-              :student_address,
-              :student_phone,
-              :student_legal_representative_full_name,
-              :student_legal_representative_email,
-              :student_legal_representative_phone,
+              :student_birth_date,
               presence: true
-    validate :valid_trix_school_manager_fields
+    validates :school_representative_email,
+              :student_legal_representative_full_name,
+              :student_refering_teacher_email,
+              :student_legal_representative_email,
+              :student_full_name,
+              presence: true,
+              length: { minimum: 5, maximum: 100 }
+    validates :organisation_representative_role,
+              presence: true,
+              length: { minimum: 2, maximum: 150 }
+    validates :student_refering_teacher_full_name,
+              presence: true,
+              length: { minimum: 3, maximum: 100 } # includes "N/A"
+    validates :student_address, length: { minimum: 5, maximum: 170 }
+    validates :access_token, length: { is: 20 }
     validates :student_phone,
               :student_legal_representative_phone,
               format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
                         message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
   end
-
-  with_options if: :enforce_employer_validations? do
-    validates :organisation_representative_full_name,
-              :organisation_representative_role,
-              :date_range,
-              :siret,
-              :tutor_full_name,
-              :tutor_role,
-              :entreprise_address,
-              presence: true
-    validate :valid_trix_employer_fields
-    validate :valid_working_hours_fields
-  end
-
+  #Delegations
+  delegate :employer, to: :internship_application
+  
   # Callbacks
   after_save :save_delegation_date
 
@@ -139,6 +144,7 @@ class InternshipAgreement < ApplicationRecord
   delegate :school,                to: :student
   delegate :school_manager,        to: :school
   delegate :internship_offer_area, to: :internship_offer
+  delegate :from_multi?,           to: :internship_offer
 
   scope :having_school_manager, lambda {
     kept.joins(internship_application: { student: :school })
@@ -171,16 +177,6 @@ class InternshipAgreement < ApplicationRecord
     enforce_employer_validations == true
   end
 
-  def valid_trix_employer_fields
-    return unless activity_scope.blank?
-
-    errors.add(:activity_scope,
-               'Veuillez compléter les objectifs du stage')
-  end
-
-  def valid_trix_school_manager_fields
-  end
-
   def valid_working_hours_fields
     if weekly_planning?
       unless valid_weekly_planning?
@@ -198,12 +194,9 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def weekly_planning?
-    weekly_hours.any?(&:present?)
+    weekly_hours&.any?(&:present?)
   end
-
-  def valid_weekly_planning?
-    weekly_hours.any?(&:present?)
-  end
+  alias_method :valid_weekly_planning?, :weekly_planning?
 
   def daily_planning?
     return false if daily_hours.blank?
@@ -296,7 +289,7 @@ class InternshipAgreement < ApplicationRecord
   def legal_representative_count
     legal_representative_data.size
   end
-  
+
   private
 
   def notify_signatures_enabled
@@ -339,5 +332,11 @@ class InternshipAgreement < ApplicationRecord
     return unless student.school.delegation_date.blank?
 
     student.school.reload.update(delegation_date: delegation_date)
+  end
+
+  def at_least_daily_hours_or_weekly_hours
+    if daily_hours.blank? && weekly_hours.blank?
+      errors.add(:base, "Vous devez fournir soit les heures hebdomadaires, soit les heures journalières.")
+    end
   end
 end

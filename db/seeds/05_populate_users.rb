@@ -39,8 +39,7 @@ end
 
 def populate_users
   # --- God ---
-  random_extra_attributes(Users::God.new(email: 'god@ms2e.fr',
-  password: password_value)).save!
+  random_extra_attributes(Users::God.new(email: 'god@ms2e.fr', password: password_value)).save!
 
   # --- Employers ---
   random_extra_attributes(
@@ -58,8 +57,26 @@ def populate_users
       password: password_value,
       employer_role: 'PDG',
       phone: '+330622554145'
-      )
-      ).save!
+    )).save!
+
+  raise "boom" if Users::Employer.first.nil?
+
+  # --- Coordinators ---
+  # obligation to set an activity first :/
+  multi_activity = MultiActivity.find_or_create_by!(title: 'Menuiserie', description: 'Travail du bois', employer: Users::Employer.first)
+  MultiCoordinator.create!(
+     multi_activity_id: multi_activity.id,
+     siret: '12345678998765',
+     sector_id: Sector.all[0..10].sample.id,
+     employer_name: 'Some Employer Name',
+     employer_chosen_name: 'Some Employer Chosen Name',
+     employer_address: 'Some Employer Address',
+     employer_chosen_address: 'Some Employer Chosen Address',
+     city: 'Langeais',
+     zipcode: '37130',
+     street: '3, rue du Château',
+     phone: '+330622554147'
+  )
 
   # --- SchoolManagement ---
   # --- SchoolManager ---

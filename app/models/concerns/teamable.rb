@@ -31,13 +31,22 @@ module Teamable
              foreign_key: 'employer_id'
 
     has_many :kept_internship_offers,
-             -> { merge(InternshipOffers::WeeklyFramed.kept) },
-             class_name: 'InternshipOffers::WeeklyFramed',
+             -> { merge(InternshipOffer.kept.where.not(type: 'InternshipOffers::Api')) },
+             class_name: 'InternshipOffer',
              foreign_key: 'employer_id'
-             
+
 
     has_many :internship_applications, through: :kept_internship_offers
     has_many :internship_agreements, through: :internship_applications
+
+    scope :with_mono_internship_agreements, -> {
+      joins(:internship_agreements)
+        .merge(InternshipAgreements::MonoInternshipAgreement.all)
+    }
+    scope :with_multi_internship_agreements, -> {
+      joins(:internship_agreements)
+        .merge(InternshipAgreements::MultiInternshipAgreement.all)
+    }
 
     def valid_transition?(transition)
       %w[read! read employer_validate! employer_validate transfer! transfer reject! reject cancel_by_employer!
@@ -54,6 +63,14 @@ module Teamable
 
     def internship_offers
       team_internship_offers.where(internship_offer_area_id: fetch_current_area_id)
+    end
+
+    def mono_internship_agreements
+      internship_agreements.merge(InternshipAgreements::MonoInternshipAgreement.all)
+    end
+
+    def multi_internship_agreements
+      internship_agreements.merge(InternshipAgreements::MultiInternshipAgreement.all)
     end
 
     def anonymize(send_email: true)
@@ -82,7 +99,9 @@ module Teamable
     end
 
     def team_pending_agreements_actions_count
-      return pending_agreements_actions_count if team.not_exists?
+      if team.not_exists?
+        return pending_agreements_actions_count
+      end
 
       team.db_members.inject(0) do |sum, member|
         sum + member.pending_agreements_actions_count
@@ -90,8 +109,22 @@ module Teamable
     end
 
     def pending_agreements_actions_count
-      part1 = internship_agreements.kept.where(aasm_state: InternshipAgreement::EMPLOYERS_PENDING_STATES)
+      part1 = internship_agreements.kept.where(aasm_state: InternshipAgreement::EXPECTED_ACTION_FROM_EMPLOYER_STATES)
       part2 = internship_agreements.kept.signatures_started.joins(:signatures).where.not(signatures: { signatory_role: :employer })
+      [part1, part2].compact.map(&:count).sum
+    end
+
+    def team_pending_multi_agreements_actions_count
+      return pending_multi_agreements_actions_count if team.not_exists?
+
+      team.db_members.inject(0) do |sum, member|
+        sum + member.pending_multi_agreements_actions_count
+      end
+    end
+
+    def pending_multi_agreements_actions_count
+      part1 = multi_internship_agreements.kept.where(aasm_state: InternshipAgreement::EMPLOYERS_PENDING_STATES)
+      part2 = multi_internship_agreements.kept.signatures_started.joins(:signatures).where.not(signatures: { signatory_role: :employer })
       [part1, part2].compact.map(&:count).sum
     end
 
