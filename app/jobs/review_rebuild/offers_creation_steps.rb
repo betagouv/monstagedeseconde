@@ -302,7 +302,7 @@ module ReviewRebuild
         max_candidates: 7,
         internship_offer_area_id: fourth_employer_area_id,
         weeks: seconde_weeks,
-        grades: [Grade.troisieme],
+        grades: [Grade.seconde],
         entreprise_full_address: '111 rue Cardinet, 75017 Paris',
         lunch_break: "L'élève doit prévoir son repas de midi",
         published_at: nil
