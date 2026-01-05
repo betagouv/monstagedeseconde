@@ -23,7 +23,7 @@ module Presenters
     def internship_agreement
       @internship_agreement
     end
-    
+
     def internship_offer_title
       internship_offer.title
     end
@@ -119,6 +119,35 @@ module Presenters
       end
     end
 
+    def corporations_info
+      internship_offer.corporations.tap do |corporations|
+        corporations_signed_ids = corporations.map{|c| c.corporation_internship_agreement_for(internship_agreement)}
+                                              .select(&:signed)
+                                              .map(&:corporation_id)
+        signed_count = corporations_signed_ids.count
+        total_count = corporations.count
+
+        return {
+          signed_count: signed_count,
+          total_count: total_count,
+          signed_corporations_ids: corporations_signed_ids,
+          corporations: corporations.map { |corporation| corporation_info(corporation) }
+        }
+      end
+    end
+
+    def corporation_info(corporation)
+      cia = corporation.corporation_internship_agreement_for(internship_agreement)
+      {
+        corporation_name: corporation.corporation_name,
+        signed: cia.signed,
+        employer_name: corporation.employer_name,
+        employer_email: corporation.employer_email,
+        icon: cia.signed ? 'fr-badge--success' : 'fr-badge--warning',
+        label: cia.signed ? 'Signée' : 'En attente',
+        id: corporation.id
+      }
+    end
 
     attr_reader :internship_agreement,
                 :internship_application,
