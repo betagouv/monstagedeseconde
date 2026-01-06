@@ -2,7 +2,12 @@ module Dashboard
   class InternshipAgreementsController < ApplicationController
     before_action :authenticate_user!
     before_action :set_internship_agreement,
-                  only: %i[edit update show school_management_signature school_management_sign]
+                  only: %i[edit
+                           update
+                           show
+                           school_management_signature
+                           school_management_sign
+                           multi_reminder_email]
 
     def new
       @internship_agreement = internship_agreement_builder.new_from_application(
@@ -103,6 +108,21 @@ module Dashboard
 
       redirect_to dashboard_internship_agreements_path(multi: @internship_agreement.from_multi?),
                   flash: { success: 'La convention a été signée.' }
+    end
+
+    def multi_reminder_email
+      authorize! :multi_sign, @internship_agreement
+      if @internship_agreement.multi_corporation.signatures_launched_at.nil?
+        redirect_to dashboard_internship_agreements_path(multi: true),
+                    alert: "Aucun email n'a encore été envoyé jusqu'ici aux responsables de stage." and return
+      else
+        @internship_agreement.send_multi_signature_reminder_emails!
+        redirect_to dashboard_internship_agreements_path(multi: true),
+                    notice: 'Les emails de rappel ont été envoyés aux responsables de stage.' and return
+      end
+    rescue ActiveRecord::RecordNotFound
+      redirect_to dashboard_internship_agreements_path(multi: true),
+                  alert: 'Convention introuvable'
     end
 
     private

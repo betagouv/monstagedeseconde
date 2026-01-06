@@ -30,8 +30,5 @@ div [data-controller="group-signing "
                 tbody
                   = render 'dashboard/corporation_internship_agreements/signature_table_line', f:f
     .text-right.fr-mb-10w.fr-mt-2w
-      button[type="submit"
-            class="fr-btn fr-btn--primary text-right"
-            data-action="group-signing#submitAll"
-            data-group-signing-target="generalCta"]
+      button.fr-btn.fr-btn--primary.text-right data-group-signing-target="generalCta"
 

@@ -308,6 +308,9 @@ class Ability
     can :create, Signature do |signature|
       signature.internship_agreement.internship_offer.internship_offer_area.employer_id.in?(user.team_members_ids)
     end
+    can :multi_sign, InternshipAgreement do |agreement|
+      agreement.employer.id.in?(user.team_members_ids) && agreement.from_multi?
+    end
   end
 
   def can_manage_teams(user:)

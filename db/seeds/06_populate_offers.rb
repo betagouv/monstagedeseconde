@@ -140,7 +140,7 @@ def populate_internship_offers
   coordinator = MultiCoordinator.first
   multi_corporation = MultiCorporation.create!( multi_coordinator: coordinator )
   corporation_names = [
-    "La Française de jeux", "Electrolux",
+    "La Française des jeux", "Electrolux",
     "Larfarge Corporation Limited", "Veolia Environnement", "Accor Hotels"
   ]
   tutor_names = [
@@ -192,7 +192,7 @@ def populate_internship_offers
     sector: Sector.first,
     is_public: false,
     title: '(2de) Stage editeur - A la recherche du temps passé par les collaborateurs',
-    description: 'Vous assistez la responsable de secteur dans la gestion des projets internes touchant à la gestion des contrats.',
+    description: "Stage organisé par la DRAFPIC - HDF, avec le lycée Pasteur\n\nLundi:\nLycée Pasteur, Hénin-Beaumont: matin accueil du stage, après midi: visite des plateaux techniques\n\nMardi :\nmatin: intervention FRTP et CMQ TP au Lycée Pasteur, après-midi: visite Centrale thermique CCG - EDF Bouchain\n\nMercredi:\nmatin: visite chantier TP entreprise Ramery, hôpital de Lens\n\nJeudi:\nLycée Pasteur, Hénin-Beaumont: camp Innovation Dreamakers\n\nVendredi:\nLycée Pasteur, Hénin-Beaumont, avec Dreamakers qui prend en mains:  matin: préparation de la restitution, après midi: restitution orale devant les familles et les partenaires",
     employer_description: "Du Temps pour moi est une agence mandataire de garde d'enfants à domicile. Notre activité consister à aider les familles de la métropole lilloise à trouver leur intervenant(e) à domicile pour la garde de leurs enfants de 0 à 16 ans.",
     employer_website: 'http://www.dtpm.fr/',
     street: '129 rue brancion',

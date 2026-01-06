@@ -30,11 +30,11 @@
             role="tabpanel"
             tabindex="0"]
         = render partial: 'dashboard/internship_agreements/internship_agreements_list',
-                notification: current_user.team_pending_agreements_actions_count
+                 notification: current_user.team_pending_agreements_actions_count
       #multi-agreements-button-panel [class="fr-tabs__panel"
                               aria-labelledBy="multi-agreements-button"
                               role="tabpanel"
                               tabindex="0"]
         = render partial: 'dashboard/internship_agreements/multi/multi_internship_agreements_list',
-                notification: current_user.team_pending_multi_agreements_actions_count
+                 notification: current_user.team_pending_multi_agreements_actions_count
 = render partial: 'dashboard/internship_agreements/signature/modal_dialog'
