@@ -89,7 +89,7 @@
                 = f.text_field :employer_name, class: "fr-input", data: { multi_corporation_form_target: "employerName" }
               .fr-col-12
                 = f.label :employer_role, "Fonction du représentant de la structure", class: "fr-label"
-                = f.text_field :employer_role, class: "fr-input", minlength: 3, data: { multi_corporation_form_target: "employerRole" }
+                = f.text_field :employer_role, class: "fr-input", minlength: 3, required: true, data: { multi_corporation_form_target: "employerRole" }
               .fr-col-12
                 = f.label :employer_email, "Adresse email du représentant de la structure", class: "fr-label"
                 = f.email_field :employer_email, class: "fr-input", data: { multi_corporation_form_target: "employerEmail" }

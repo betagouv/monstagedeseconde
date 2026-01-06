@@ -1,6 +1,5 @@
 - aasm_notifier = internship_application.internship_application_aasm_message_builder(aasm_target: aasm_target)
-/ data: { toggle: 'modal', target: "##{modal_id}", 'fr-opened': opened_modal },
-div data-controller="modal-opener" data-modal-opener-initial-state-value='#{opened_modal}'
+div 
   = button_tag type: "button",
               data: { toggle: 'modal', target: "##{modal_id}", 'fr-opened': false , 'modal-opener-target': 'button'},
               aria: { controls: "#{modal_id}" },
