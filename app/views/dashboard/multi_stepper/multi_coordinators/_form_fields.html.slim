@@ -15,6 +15,11 @@ div [data-controller="mandatory-fields"
         legend.fr-h6 Les informations liées au coordinateur
         .row
           .col-12
+            - content = "Vous êtes coordinateur de cette offre multi-structures. Merci de renseigner vos \
+            informations personnelles ici, même si vous n’êtes pas signataire de la convention. \
+            Si votre structure accueille aussi des élèves, ajoutez-la aussi comme structure accueillante à l'étape suivante."
+            .fr-mb-2w = render partial: 'inputs/small_info', locals: { content: content }
+          .col-12
             - unless resource.persisted?
               = react_component("SirenInputMulti",
                                 props: { resourceName: resource_name,
