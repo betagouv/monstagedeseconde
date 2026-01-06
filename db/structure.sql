@@ -611,10 +611,10 @@ CREATE TABLE public.corporations (
     tutor_phone character varying(20),
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    employer_email character varying(120),
-    employer_role character varying(120),
     internship_coordinates public.geometry(Point,4326),
     employer_name character varying,
+    employer_role character varying(120),
+    employer_email character varying(120),
     uuid uuid DEFAULT gen_random_uuid() NOT NULL
 );
 
@@ -1710,7 +1710,8 @@ CREATE TABLE public.multi_corporations (
     id bigint NOT NULL,
     multi_coordinator_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    signatures_launched_at timestamp(6) without time zone
 );
 
 
@@ -5314,6 +5315,7 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20260102092331'),
+('20251222092900'),
 ('20251219100000'),
 ('20251218130433'),
 ('20251215093256'),

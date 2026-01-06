@@ -19,6 +19,9 @@ export default class extends Controller {
   }
 
   updateCtaUrl(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
     const { url, counter } = event.detail;
     // eslint-disable-next-line prefer-destructuring
     this.idsTarget.value = url.split('ids=')[1];

@@ -33,7 +33,35 @@ module InternshipAgreements
       internship_agreement.aasm_state.in?(states)
     end
 
-    def button_label(user:)
+    def second_button_label
+      case @internship_agreement.aasm_state
+      when 'draft', 'started_by_employer' ,'completed_by_employer', 'started_by_school_manager' then
+        {status: 'hidden', text: ''}
+      when 'validated', 'signatures_started' then
+        if @internship_agreement.from_multi?
+          if current_user.employer_like?
+            if @internship_agreement.multi_corporation.signatures_launched_at.present?
+              {status: 'enabled', text: 'Statut des signatures', action: 'modal_opening'}
+            else
+              {status: 'enabled', text: 'Envoyer en signature'}
+            end
+          elsif current_user.school_management?
+            {status: 'enabled', text: 'Statut des signatures', action: 'modal_opening'}
+          end
+        else
+          if user_signed_condition?
+            {status: 'disabled', text: 'Déjà signée'}
+          elsif current_user.can_sign?(@internship_agreement)
+            {status: 'enabled', text: 'Signer'}
+          else
+            {status: 'hidden', text: ''}
+          end
+        end
+      when 'signed_by_all' then {status: 'disabled', text: 'Signée de tous'}
+      end
+    end
+
+    def button_label(user:) # label in view
       if user.employer_like?
         case internship_agreement.aasm_state
         when 'draft' then
@@ -54,22 +82,6 @@ module InternshipAgreements
         when 'validated', 'signatures_started', 'signed_by_all' then
           {status: 'secondary_cta', text: 'Télécharger'}
         end
-      end
-    end
-
-    def second_button_label
-      case @internship_agreement.aasm_state
-      when 'draft', 'started_by_employer' ,'completed_by_employer', 'started_by_school_manager' then
-        {status: 'hidden', text: ''}
-      when 'validated', 'signatures_started' then
-        if user_signed_condition?
-          {status: 'disabled', text: 'Déjà signée'}
-        elsif current_user.can_sign?(@internship_agreement)
-          {status: 'enabled', text: 'Signer'}
-        else
-          {status: 'hidden', text: ''}
-        end
-      when 'signed_by_all' then {status: 'disabled', text: 'Signée de tous'}
       end
     end
 

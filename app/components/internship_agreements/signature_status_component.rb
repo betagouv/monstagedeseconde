@@ -37,6 +37,8 @@ module InternshipAgreements
     end
 
     def corporations_info
+      raise "Not a multi-corporation internship agreement" unless @internship_agreement.from_multi?
+
       corporations_signed_count = @internship_agreement.corporations_signed_count
       corporation_total_count = @internship_agreement.corporations_count
       all_signed = corporations_signed_count == corporation_total_count && corporation_total_count.positive?
