@@ -1,6 +1,7 @@
 require "test_helper"
 
 class MultiInternshipAgreementTest < ActiveSupport::TestCase
+  include ActionMailer::TestHelper
 
   test 'factory is valid' do
     multi_internship_agreement = build(
@@ -37,25 +38,6 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
     refute multi_internship_agreement.valid?
     assert_includes multi_internship_agreement.errors[:access_token], "ne fait pas la bonne longueur (doit comporter 20 caractères)"
     assert_includes multi_internship_agreement.errors[:student_full_name], "est trop court (au moins 5 caractères)"
-  end
-
-  test 'is invalid without organisation_representative_role' do
-    multi_internship_agreement = build(
-      :multi_internship_agreement,
-      enforce_school_manager_validations: true,
-      organisation_representative_role: nil
-      )
-    refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:organisation_representative_role], "doit être rempli(e)"
-  end
-
-  test 'is invalid if organisation_representative_role is too long' do
-    multi_internship_agreement = build(
-      :multi_internship_agreement,
-      organisation_representative_role: 'a' * 151,
-      enforce_school_manager_validations: true)
-    refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:organisation_representative_role], "est trop long (pas plus de 150 caractères)"
   end
 
   test 'is invalid without student_address' do
@@ -240,5 +222,25 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
       :multi_internship_agreement,
       daily_hours: nil, weekly_hours: ["35"])
     assert multi_internship_agreement.valid?
+  end
+
+  test "#send_multi_signature_reminder_emails!" do
+    multi_internship_agreement = create(:multi_internship_agreement)
+    multi_corporation = multi_internship_agreement.internship_offer.multi_corporation
+    corporation_1 =multi_corporation.corporations.first
+    corporation_internship_agreement_1 = CorporationInternshipAgreement.find_by(
+      internship_agreement: multi_internship_agreement,
+      corporation: corporation_1
+    )
+
+    assert_emails 5 do
+      multi_internship_agreement.send_multi_signature_reminder_emails!
+    end
+
+    corporation_internship_agreement_1.update(signed: true)
+
+    assert_emails 4 do
+      multi_internship_agreement.send_multi_signature_reminder_emails!
+    end
   end
 end

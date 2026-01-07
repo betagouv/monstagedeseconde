@@ -104,6 +104,8 @@ module Builders
             internship_agreement_id: internship_agreement.id
           )
         end
+        multi_corporation = internship_agreement.multi_corporation
+        multi_corporation.update!(signatures_launched_at: Time.current) if multi_corporation.signatures_launched_at.nil?
       end
       corporations = corporations.to_a.uniq
       corporations.each do |corporation|

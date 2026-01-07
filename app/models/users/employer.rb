@@ -8,6 +8,10 @@ module Users
 
     GRACE_PERIOD = 2.years
 
+    validates :employer_role,
+              presence: true,
+              length: { minimum: 3, maximum: 150 }
+
     def custom_dashboard_path
       return custom_candidatures_path if internship_applications.submitted.any?
 

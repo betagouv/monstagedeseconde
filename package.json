@@ -13,7 +13,7 @@
     "@hotwired/stimulus": "^3.0.1",
     "@hotwired/turbo-rails": "^7.1.1",
     "@popperjs/core": "^2.11.2",
-    "@rails/actiontext": "^6.0.3-3",
+    "@rails/actiontext": "^8.1.100",
     "@rails/webpacker": "5.4.3",
     "@stimulus/polyfills": "^1.1.1",
     "actioncable": "^5.2.3",
@@ -67,7 +67,7 @@
     "vnu-jar": "^20.3.16",
     "webpack": "^4.46.0",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^5.2.2"
+    "webpack-dev-server": "3.11.3"
   },
   "engines": {
     "node": ">=22.x"

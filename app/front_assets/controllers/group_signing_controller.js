@@ -131,7 +131,8 @@ export default class extends Controller {
 
     //paintButtonLabel
     const extraHTML = (this.counterValue > 1) ? " en groupe (" + this.counterValue + ")" : '';
-    this.generalCtaTarget.innerHTML = "Signer" + extraHTML;
+
+    this.generalCtaTarget.innerHTML = `${this.multiValue ? "Faire signer" : "Signer"}${extraHTML}`;
 
     const allChecked = (this.counterValue === this.maxCounterValue) && (this.counterValue > 0);
     this.generalCtaSelectBoxTarget.checked = allChecked;
