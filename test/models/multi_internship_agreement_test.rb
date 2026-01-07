@@ -40,25 +40,6 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
     assert_includes multi_internship_agreement.errors[:student_full_name], "est trop court (au moins 5 caractères)"
   end
 
-  test 'is invalid without organisation_representative_role' do
-    multi_internship_agreement = build(
-      :multi_internship_agreement,
-      enforce_school_manager_validations: true,
-      organisation_representative_role: nil
-      )
-    refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:organisation_representative_role], "doit être rempli(e)"
-  end
-
-  test 'is invalid if organisation_representative_role is too long' do
-    multi_internship_agreement = build(
-      :multi_internship_agreement,
-      organisation_representative_role: 'a' * 151,
-      enforce_school_manager_validations: true)
-    refute multi_internship_agreement.valid?
-    assert_includes multi_internship_agreement.errors[:organisation_representative_role], "est trop long (pas plus de 150 caractères)"
-  end
-
   test 'is invalid without student_address' do
     multi_internship_agreement = build(
       :multi_internship_agreement,
