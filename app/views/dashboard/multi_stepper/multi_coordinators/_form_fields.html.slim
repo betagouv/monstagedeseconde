@@ -39,18 +39,6 @@ div [data-controller="mandatory-fields"
                       object: form.object,
                       value: resource&.siret.present? ? resource.presenter.formal_siret : nil,
                       pattern: '^(\d{14})$'
-
-        div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
-          .col-12
-            = form.label :sector_id, class: 'fr-label' do
-              = "Indiquez le secteur d'activité de l'offre de stage *"
-            = form.select :sector_id,
-                          options_from_collection_for_select(Sector.all.order(:name).where.not(name: 'Fonction publique'), :id, :name, resource&.sector&.id),
-                          { prompt: sectors_options_for_default },
-                          class: "fr-select sector_list",
-                          required: true,
-                          data: { action: "change->mandatory-fields#fieldChange",
-                                  'mandatory-fields-target' => "mandatoryField" }
                       
         div class="row fr-mt-3w bloc-tooggle hide-when-manual #{form.object.persisted? ? '' : 'fr-hidden'}"
           .col-12
@@ -105,6 +93,21 @@ div [data-controller="mandatory-fields"
                       options: { maxlength: MultiCoordinator::PHONE_MAX_LENGTH,
                                 data: { action: "input->mandatory-fields#fieldChange",
                                         'mandatory-fields-target' => "mandatoryField" } }
+
+        div class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
+          .col-12
+            = form.label :sector_id, class: 'fr-label' do
+              = "Indiquez le secteur d'activité "
+              strong = "de l'offre de stage *"
+            = form.select :sector_id,
+                          options_from_collection_for_select(Sector.all.order(:name).where.not(name: 'Fonction publique'), :id, :name, resource&.sector&.id),
+                          { prompt: sectors_options_for_default },
+                          class: "fr-select sector_list",
+                          required: true,
+                          data: { action: "change->mandatory-fields#fieldChange",
+                                  'mandatory-fields-target' => "mandatoryField" }
+            - content = "Il s’agit du secteur qui sera affiché pour l’offre de stage. Attention ce n’est pas nécessairement le secteur d’activité de votre structure"
+            .fr-my-2w. = render partial: 'inputs/small_info', locals: { content: content }
 
   - if submit_button
     .fr-mt-6w.bloc-tooggle
