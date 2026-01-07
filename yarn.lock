@@ -1396,19 +1396,19 @@
   resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.2.300.tgz#5bf24ffded6dd659d8b42cc67fb68fb51767b989"
   integrity sha512-bmrp+HgCPd2BlhDfJ81hJ6Nvd6yh0B2hIW8ThOmUdOr3L+sFjU1glpBmn+MoQF2K0HLvnWCGqF3TxT/S0jj3QA==
 
-"@rails/actiontext@^6.0.3-3":
-  version "6.1.710"
-  resolved "https://registry.yarnpkg.com/@rails/actiontext/-/actiontext-6.1.710.tgz#484abaaacc22369bb1b422b58b37dadcec2b1fe5"
-  integrity sha512-j1BhLadXPJ3g4cG/5xRKvdfofYeBdTK75MjBJSMHL3gCTpOqwvdPavDj7eZTnpzLo6/sfMAo0GbB1JK61JZYCg==
+"@rails/actiontext@^8.1.100":
+  version "8.1.100"
+  resolved "https://registry.yarnpkg.com/@rails/actiontext/-/actiontext-8.1.100.tgz#206688f9989c57afa5908e6d1b09302fe00fdfde"
+  integrity sha512-gnLK1HgGCmmVGY40hCiAJ4RwGALwRmiRzqyht6fiM/hrQnul278CqCg9jwV2IQOo7+jMbktGx2O9luGUzayQIA==
   dependencies:
-    "@rails/activestorage" "^6.0.0"
+    "@rails/activestorage" ">= 8.1.0-alpha"
 
-"@rails/activestorage@^6.0.0":
-  version "6.1.710"
-  resolved "https://registry.yarnpkg.com/@rails/activestorage/-/activestorage-6.1.710.tgz#bc914716f642ba233f033b7765a44dc3bfb626f5"
-  integrity sha512-hLXxAtn7hSWXkTzMGOmQmjuzJ0FzVw8j/Zi8DGS+DG9x4uPQjl+ZEVdty7pFcsBCjkpejtk0TChcBQlLW8sgOg==
+"@rails/activestorage@>= 8.1.0-alpha":
+  version "8.1.100"
+  resolved "https://registry.yarnpkg.com/@rails/activestorage/-/activestorage-8.1.100.tgz#8814545349eaf824ea7a528b33f7bae0867584c9"
+  integrity sha512-rlZg23KYT7JFYXl1tj1WD9nm/yvtUvZT6pzNMVX+HaOjPyGq8xpEv1ADrrhawkbMktKxRj3xDVZ3d/qy0akHvw==
   dependencies:
-    spark-md5 "^3.0.0"
+    spark-md5 "^3.0.1"
 
 "@rails/ujs@^6.1.4-1":
   version "6.1.710"
@@ -10257,7 +10257,7 @@ source-map@^0.6.0, source-map@^0.6.1, source-map@~0.6.1:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
-spark-md5@^3.0.0:
+spark-md5@^3.0.1:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/spark-md5/-/spark-md5-3.0.2.tgz#7952c4a30784347abcee73268e473b9c0167e3fc"
   integrity sha512-wcFzz9cDfbuqe0FZzfi2or1sgyIrsDwmPwfZC4hiNidPdPINjeUwNfv5kldczoEAcjl9Y1L3SM7Uz2PUEQzxQw==
