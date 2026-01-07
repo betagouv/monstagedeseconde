@@ -33,6 +33,7 @@ class InternshipAgreement < ApplicationRecord
   # Validations
   with_options if: :enforce_employer_validations? do
     validates :activity_scope, presence: true, length: { maximum: 1500 }
+
     validate :valid_working_hours_fields
     validate :at_least_daily_hours_or_weekly_hours
   end
@@ -55,9 +56,7 @@ class InternshipAgreement < ApplicationRecord
               :student_full_name,
               presence: true,
               length: { minimum: 5, maximum: 100 }
-    validates :organisation_representative_role,
-              presence: true,
-              length: { minimum: 2, maximum: 150 }
+
     validates :student_refering_teacher_full_name,
               presence: true,
               length: { minimum: 3, maximum: 100 } # includes "N/A"
