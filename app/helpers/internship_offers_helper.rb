@@ -116,8 +116,6 @@ module InternshipOffersHelper
   end
 
   def hide_data_for_non_rep_or_qpv_students(internship_offer, current_user)
-    internship_offer.from_api? && 
-      internship_offer.rep_or_qpv? && 
-      (!current_user&.try(:student?) || !current_user&.school&.rep_or_qpv?)
+    internship_offer.rep_or_qpv? && !current_user.try(:student_rep_or_qpv?)
   end
 end
