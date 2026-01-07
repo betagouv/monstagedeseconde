@@ -5,9 +5,7 @@ module InternshipAgreements
 
 
     with_options if: :enforce_employer_validations? do
-      validates :organisation_representative_full_name,
-                :organisation_representative_role,
-                :date_range,
+      validates :date_range,
                 :tutor_role,
                 :entreprise_address,
                 presence: true
@@ -19,6 +17,10 @@ module InternshipAgreements
       validates :activity_scope, presence: true, length: { maximum: 1500 }
       validate :valid_working_hours_fields
       validate :at_least_daily_hours_or_weekly_hours
+
+      validates :organisation_representative_role,
+                presence: true,
+                length: { minimum: 3, maximum: 150 }
     end
   end
 end

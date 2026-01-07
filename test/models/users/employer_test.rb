@@ -178,5 +178,30 @@ module Users
       # 1 for :validated
       # 1 for :signatures_started
     end
+
+    test 'is invalid without employer_role' do
+      employer = build(:employer, employer_role: nil)
+      refute employer.valid?
+      assert_includes employer.errors[:employer_role], "doit être rempli(e)"
+      assert_includes employer.errors[:employer_role], "est trop court (au moins 3 caractères)"
+    end
+
+    test 'is invalid if employer_role is too short' do
+      employer = build(:employer, employer_role: 'ab')
+      refute employer.valid?
+      assert_includes employer.errors[:employer_role], "est trop court (au moins 3 caractères)"
+    end
+
+    test 'is invalid if employer_role is too long' do
+      long_role = 'a' * 151
+      employer = build(:employer, employer_role: long_role)
+      refute employer.valid?
+      assert_includes employer.errors[:employer_role], "est trop long (pas plus de 150 caractères)"
+    end
+
+    test 'is valid with employer_role of acceptable length' do
+      employer = build(:employer, employer_role: 'Manager')
+      assert employer.valid?
+    end
   end
 end
