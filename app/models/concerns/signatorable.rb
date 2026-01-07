@@ -26,7 +26,6 @@ module Signatorable
       message = "Votre code de signature : #{show_code} " \
                 "- Validité : #{SIGNATURE_PHONE_TOKEN_LIFETIME} minutes"
       token_created && SendSmsJob.perform_later(user: self, message: message) && true
-      # true
     end
 
     def nullify_phone_number!
