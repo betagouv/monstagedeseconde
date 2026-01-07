@@ -154,7 +154,7 @@ main#content role="main" data-controller="signup"
                                       { class: "fr-select", required: false, data: { "signup-target": 'ministrySelect' } }
 
               - if user_presenter.show_when_subscribe?(as: as, field: :role)
-                .fr-fieldset__element
+                .fr-fieldset__element.fr-mb-1w
                   - error_tag  = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :role) if errors.present?
                   div class="fr-input-group fr-mb-2v #{error_tag.present? ? 'fr-input-group--error' : ''}"
                     label.fr-label for="user_role" class="#{error_tag.present? ? 'fr-label--error' : ''}"
@@ -182,10 +182,12 @@ main#content role="main" data-controller="signup"
                                   field: :employer_role,
                                   resource: resource,
                                   resource_name: resource_name,
-                                  option: {required: true, maxlength: 150},
+                                  option: {required: true, minlength: 3, maxlength: 150},
                                   errors: errors }
-
-              .fr-fieldset__element
+                fr-message.fr-message--info.fr-ml-1w.fr-text--sm
+                  span
+                    | 3 caractères minimum.
+              .fr-fieldset__element.fr-mt-2w
                 - error_tag = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :email) if errors.present?
                 div class="fr-input-group #{error_tag.present? ? 'fr-input-group--error' : ''}"
                   label.fr-label [for="user_email" data-signup-target="emailLabel"]

@@ -14,10 +14,10 @@ turbo-frame id="#{dom_id(corporation)}"
               = [corporation.internship_street, "#{corporation.internship_zipcode} #{corporation.internship_city}"].reject(&:blank?).join(' ')
             
             p.fr-text--xs.fr-text-mention--grey.fr-mb-0
-              = corporation.tutor_email
-              - if corporation.tutor_phone.present?
+              = corporation.employer_email
+              - if corporation.employer_phone.present?
                 |  &middot; 
-                = corporation.tutor_phone
+                = corporation.employer_phone
 
           .fr-col-2.fr-grid-row.fr-grid-row--right.fr-grid-row--bottom            
             = button_to dashboard_multi_stepper_multi_corporation_corporation_path(multi_corporation, corporation),

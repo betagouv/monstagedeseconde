@@ -4,6 +4,7 @@ module Dashboard
   class MultiInternshipAgreementTest < ApplicationSystemTestCase
     include Devise::Test::IntegrationHelpers
     include TeamAndAreasHelper
+    include ActionMailer::TestHelper
 
     def visit_index_and_go_to_multi_internship_agreements
       visit dashboard_internship_agreements_path
@@ -171,7 +172,7 @@ module Dashboard
       assert_text "Offreurs (0/5)"
       sign_out(internship_agreement.employer)
 
-      # mails are sent when clicking on GeneralCta button, but this is not in the test 
+      # mails are sent when clicking on GeneralCta button, but this is not in the test
 
       visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
 
@@ -258,24 +259,6 @@ module Dashboard
       # find('button[data-action=\'group-signing#toggleFromButton\']', text: 'Ajouter aux signatures')
     end
 
-    test 'employer reads multi internship agreement table with correct indications - status: signatures_started with employer' do
-      employer, internship_offer = create_employer_and_multi_offer_2de
-      internship_application = create(:weekly_internship_application, internship_offer:)
-      internship_agreement = create(:multi_internship_agreement, internship_application:,
-                                                           aasm_state: :signatures_started)
-      create(:signature,
-             :employer,
-             internship_agreement:,
-             user_id: internship_agreement.employer.id)
-      sign_in(employer)
-      visit_index_and_go_to_multi_internship_agreements
-      within('td[data-head="Statut"]') do
-        find('.actions.d-flex', text: 'Vous avez déjà signé.')
-      end
-      find('a.button-component-cta-button', text: 'Télécharger')
-      find('a.fr-btn', text: 'Déjà signé')
-    end
-
     test 'employer reads multi internship agreement table with correct indications - status: signatures_started with school_manager' do
       employer, internship_offer = create_employer_and_multi_offer_2de
       internship_application = create(:weekly_internship_application, internship_offer:)
@@ -310,6 +293,27 @@ module Dashboard
       end
       find('a.button-component-cta-button', text: 'Télécharger')
       find('a.fr-btn', text: 'Signée de tous')
+    end
+
+    test 'multi internship_agreements employer checks the corporation signature status modal' do
+      internship_agreement = create(:multi_internship_agreement, aasm_state: :validated)
+      employer = internship_agreement.employer
+      first_corporation = internship_agreement.internship_offer.corporations.first
+      multi_corporation = internship_agreement.multi_corporation
+      corporation_internship_agreement = internship_agreement.corporation_internship_agreements.find_by(corporation: first_corporation, internship_agreement: internship_agreement)
+      corporation_internship_agreement.update( signed: true )
+      multi_corporation.update!(signatures_launched_at: Time.current)
+      assert internship_agreement.internship_offer.multi_corporation.corporations.ids.include?(first_corporation.id)
+      refute_nil first_corporation.multi_corporation.signatures_launched_at
+
+      sign_in(employer)
+      visit_index_and_go_to_multi_internship_agreements
+      click_on 'Statut des signatures'
+      assert_emails 4 do
+        click_on "Envoyer un rappel"
+      end
+      click_on "Conventions multi-offreurs"
+      assert_text "Offreurs (1/5)"
     end
 
     # =================== School Manager ===================
@@ -422,7 +426,7 @@ module Dashboard
         find('.actions.d-flex', text: 'Vous avez déjà signé. En attente de la signature de l’employeur.')
       end
       find('a.button-component-cta-button', text: 'Télécharger')
-      find('a.fr-btn', text: 'Déjà signé')
+      find('div[style="color: green"] span', text: 'établissement'.capitalize)
     end
 
     test 'school_manager reads internship agreement table with correct indications - status: signed_by_all' do

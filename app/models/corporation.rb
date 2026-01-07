@@ -61,6 +61,10 @@ class Corporation < ApplicationRecord
     @presenter ||= Presenters::Corporation.new(self)
   end
 
+  def corporation_internship_agreement_for(internship_agreement)
+    corporation_internship_agreements.find_by(internship_agreement_id: internship_agreement.id)
+  end
+
   def internship_coordinates=(coordinates)
     case coordinates
     when Hash
