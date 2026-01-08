@@ -14,7 +14,8 @@ class InternshipAgreement < ApplicationRecord
   MIN_PRESENCE_DAYS = 4
   EMPLOYERS_PENDING_STATES  = %i[draft started_by_employer signed_by_employer validated].freeze
   PENDING_SIGNATURES_STATES = %i[validated signatures_started signed_by_all].freeze
-  EXPECTED_ACTION_FROM_EMPLOYER_STATES = %i[draft started_by_employer completed_by_employer].freeze
+  EXPECTED_ACTION_FROM_EMPLOYER_STATES = %i[draft started_by_employer].freeze
+  EXPECTED_ACTION_FROM_SCHOOL_MANAGER_STATES = %i[completed_by_employer started_by_school_manager].freeze
 
   has_many :signatures, dependent: :destroy
   belongs_to :internship_application, optional: false
@@ -144,6 +145,14 @@ class InternshipAgreement < ApplicationRecord
   delegate :school_manager,        to: :school
   delegate :internship_offer_area, to: :internship_offer
   delegate :from_multi?,           to: :internship_offer
+
+  scope :mono, -> {
+    where(type: 'InternshipAgreements::MonoInternshipAgreement')
+  }
+
+  scope :multi, -> {
+    where(type: 'InternshipAgreements::MultiInternshipAgreement')
+  }
 
   scope :having_school_manager, lambda {
     kept.joins(internship_application: { student: :school })
@@ -287,6 +296,10 @@ class InternshipAgreement < ApplicationRecord
 
   def legal_representative_count
     legal_representative_data.size
+  end
+
+  def signature_signed_by_role?(role)
+    signatures.exists?(signatory_role: role)
   end
 
   private
