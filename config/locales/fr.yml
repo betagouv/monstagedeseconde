@@ -231,7 +231,6 @@ fr:
         max_candidates: Nbr. max de candidats accueillis sur le stage
         daily_hours: Horaires journaliers
         lunch_break: Pause déjeuner
-        weekly_lunch_break: Pause déjeuner
         weekly_hours: Horaires
         grades: Niveaux ciblés
       operator: &operator_fields
@@ -267,7 +266,6 @@ fr:
         tutor_email: Email du tuteur
         daily_hours: Horaires journaliers
         weekly_hours: Horaires
-        weekly_lunch_break: Horaires pause déjeuner
         activity_scope: Objectifs du stage
         legal_terms_rich_text: Conditions complémentaires
         student_school: Établissement de l'élève
@@ -644,7 +642,7 @@ fr:
               not_a_number: "Veuillez saisir un nombre de candidats par stage"
             daily_hours:
               blank: "Veuillez saisir les horaires journaliers"
-            weekly_lunch_break:
+            lunch_break:
               blank: "Veuillez saisir la pause déjeuner hebdomadaire"
             weekly_hours:
               blank: "Veuillez saisir les horaires hebdomadaires"
