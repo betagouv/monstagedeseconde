@@ -139,7 +139,7 @@ export default class extends Controller {
       buttonLabel = `Faire signer${extraHTML}`;
     }
     this.generalCtaTarget.innerHTML = buttonLabel;
-    const allChecked = (this.counterValue === this.maxCounterValue) && (this.counterValue > 0);
+    const allChecked = this.counterValue === this.maxCounterValue && this.counterValue > 0
     this.generalCtaSelectBoxTarget.checked = allChecked;
   }
 
