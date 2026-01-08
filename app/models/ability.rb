@@ -234,7 +234,8 @@ class Ability
     can %i[read discard], InternshipOffer, employer_id: user.team_members_ids
     can %i[update], InternshipOffer do |internship_offer|
       internship_offer.employer_id.in?(user.team_members_ids) &&
-        internship_offer.has_weeks_after_school_year_start?
+        internship_offer.has_weeks_after_school_year_start? &&
+        !internship_offer.is_a?(InternshipOffers::Multi)
     end
     can %i[create], InternshipOccupation
     can %i[create], MultiActivity

@@ -40,6 +40,8 @@ class RebuildReviewJob < ApplicationJob
     [:employers_removal, 'Suppression des employeurs et de leurs offres', 1, 'removal'],
     [:users_operator_removal, 'Suppression des opérateurs', 1, 'removal'],
     [:users_school_management_removal, 'Suppression des équipes pédagogiques', 1, 'removal'],
+    [:multi_corporation_removal, 'Suppression des multi-entreprises', 1, 'removal'],
+    [:multi_activity_removal, 'Suppression des multi-activités', 1, 'removal'],
 
     # creation steps
     [:employers, 'Création des employeurs', 8, 'addition'],
@@ -102,6 +104,12 @@ class RebuildReviewJob < ApplicationJob
 
     broadcast_info(:student_removal)
     Users::Student.destroy_all
+
+    broadcast_info(:multi_activity_removal)
+    MultiActivity.destroy_all
+
+    broadcast_info(:multi_corporation_removal)
+    MultiCorporation.destroy_all
 
     broadcast_info(:api_offers_removal)
     InternshipOffers::Api.destroy_all

@@ -221,8 +221,7 @@ class InternshipAgreement < ApplicationRecord
       count
     end
 
-    valid_presence_days_count >= MIN_PRESENCE_DAYS &&
-      (weekly_lunch_break.present? || lunch_break.present?)
+    valid_presence_days_count >= MIN_PRESENCE_DAYS && lunch_break.present?
   end
 
   def presenter(user:)
@@ -308,13 +307,11 @@ class InternshipAgreement < ApplicationRecord
     GodMailer.notify_signatures_can_start_email(
       internship_agreement: self
     ).deliver_later
-    if Flipper.enabled?(:student_signature)
-      legal_representative_data.values.each do |representative|
-        GodMailer.notify_student_legal_representatives_can_sign_email(
-          internship_agreement: self,
-          representative: representative
-        ).deliver_later
-      end
+    legal_representative_data.values.each do |representative|
+      GodMailer.notify_student_legal_representatives_can_sign_email(
+        internship_agreement: self,
+        representative: representative
+      ).deliver_later
     end
   end
 
