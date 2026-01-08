@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :corporation do
     multi_corporation { association :multi_corporation }
-    sector { create(:sector, name: FFaker::Lorem.word) }
+    # sector { create(:sector, name: FFaker::Lorem.word) }
 
     siret { '11122233300000' }
     corporation_name { 'Octave ACME' }

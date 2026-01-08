@@ -15,48 +15,49 @@ module ReviewRebuild
         iag.save! if iag.valid?
       end
       internship_agreements = InternshipAgreement.all.to_a
-      internship_agreements[0..-2].each do |iag|
+      internship_agreements.select{ |iag| iag.validated? }[0..-2].each do |iag|
         iag.complete!
         iag.start_by_school_manager!
         iag.finalize!
       end
 
-      agreement = InternshipAgreement.troisieme_grades.first
+      agreement = InternshipAgreement.validated.troisieme_grades.first
       Signature.new(common_attributes(agreement, 'school_manager'))
                .save!
       agreement.sign!
 
-      agreement = InternshipAgreement.troisieme_grades.second
-      Signature.new(common_attributes(agreement, 'employer'))
-               .save!
-      agreement.sign!
+      # agreement = InternshipAgreement.validated.troisieme_grades.second
+      # Signature.new(common_attributes(agreement, 'employer'))
+      #          .save!
+      # agreement.sign!
 
-      agreement = InternshipAgreement.seconde_grades.first
+      agreement = InternshipAgreement.validated.seconde_grades.first
       Signature.new(common_attributes(agreement, 'school_manager'))
                .save!
       agreement.sign!
 
-      agreement = InternshipAgreement.seconde_grades.second
-      Signature.new(common_attributes(agreement, 'employer'))
-               .save!
-      agreement.sign!
+      # agreement = InternshipAgreement.validated.seconde_grades.second
+      # Signature.new(common_attributes(agreement, 'employer'))
+      #          .save!
+      # agreement.sign!
+      
       Signature.new(common_attributes(agreement, 'student_legal_representative'))
                .save!
       agreement.sign!
 
       # --- pair signing
-      agreement = InternshipAgreement.seconde_grades.third
-      Signature.new(common_attributes(agreement, 'school_manager'))
-               .save!
-      agreement.sign!
+      # agreement = InternshipAgreement.validated.seconde_grades.third
+      # Signature.new(common_attributes(agreement, 'school_manager'))
+      #          .save!
+      # agreement.sign!
 
-      Signature.new(common_attributes(agreement, 'employer'))
-               .save!
-      agreement.sign!
+      # Signature.new(common_attributes(agreement, 'employer'))
+      #          .save!
+      # agreement.sign!
 
-      Signature.new(common_attributes(agreement, 'student'))
-               .save!
-      agreement.sign!
+      # Signature.new(common_attributes(agreement, 'student'))
+      #          .save!
+      # agreement.sign!
     end
 
     def common_attributes(agreement, signatory_role)
