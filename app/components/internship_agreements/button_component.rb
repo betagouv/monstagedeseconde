@@ -45,8 +45,8 @@ module InternshipAgreements
             else
               {status: 'enabled', text: 'Envoyer en signature'}
             end
-          elsif current_user.school_management?
-            {status: 'enabled', text: 'Statut des signatures', action: 'modal_opening'}
+          elsif current_user.school_management? && current_user.can_sign?(@internship_agreement)
+             {status: 'enabled', text: 'Signer'}
           end
         else
           if user_signed_condition?
