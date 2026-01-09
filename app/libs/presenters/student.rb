@@ -72,6 +72,9 @@ module Presenters
       if student.internship_applications.exists?(internship_offer_id: internship_offer.id)
         return 'Vous avez déjà postulé à cette offre'
       end
+      return 'Offre incompatible avec votre établissement' if internship_offer.schools.present? && !student.school_id.in?(internship_offer.schools.pluck(:id))
+      return 'Offre incompatible avec votre établissement' if internship_offer.rep_or_qpv? && !student.school.rep_or_qpv?
+
       return 'Offre incompatible avec votre classe' unless student.grade.id.in?(internship_offer.grades.ids)
 
       if student.with_2_weeks_internships_approved?

@@ -1,5 +1,6 @@
 .custom-navbar {
   position: relative;
+  z-index: 1001;
 }
 @include media-breakpoint-up(sm) {
   .homepage .custom-navbar {
@@ -43,6 +44,7 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   min-width: 220px;
   padding: 0.25rem 0;
+  z-index: 1000;
 }
 
 .dropdown-menu li:not(:last-child) {
