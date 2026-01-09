@@ -34,7 +34,7 @@ FactoryBot.define do
     activity_scope { 'Accueil clients' }
     aasm_state { 'draft' }
     weekly_hours { ['9:00', '17:00'] }
-    weekly_lunch_break { '1h dans la cantine. Repas fourni.' }
+    lunch_break { '1h dans la cantine. Repas fourni.' }
     uuid { SecureRandom.uuid }
     access_token { SecureRandom.hex(10) } # 20 characters
 

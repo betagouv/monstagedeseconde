@@ -14,7 +14,8 @@ class InternshipAgreement < ApplicationRecord
   MIN_PRESENCE_DAYS = 4
   EMPLOYERS_PENDING_STATES  = %i[draft started_by_employer signed_by_employer validated].freeze
   PENDING_SIGNATURES_STATES = %i[validated signatures_started signed_by_all].freeze
-  EXPECTED_ACTION_FROM_EMPLOYER_STATES = %i[draft started_by_employer completed_by_employer].freeze
+  EXPECTED_ACTION_FROM_EMPLOYER_STATES = %i[draft started_by_employer].freeze
+  EXPECTED_ACTION_FROM_SCHOOL_MANAGER_STATES = %i[completed_by_employer started_by_school_manager].freeze
 
   has_many :signatures, dependent: :destroy
   belongs_to :internship_application, optional: false
@@ -145,6 +146,14 @@ class InternshipAgreement < ApplicationRecord
   delegate :internship_offer_area, to: :internship_offer
   delegate :from_multi?,           to: :internship_offer
 
+  scope :mono, -> {
+    where(type: 'InternshipAgreements::MonoInternshipAgreement')
+  }
+
+  scope :multi, -> {
+    where(type: 'InternshipAgreements::MultiInternshipAgreement')
+  }
+
   scope :having_school_manager, lambda {
     kept.joins(internship_application: { student: :school })
         .merge(School.with_school_manager)
@@ -212,8 +221,7 @@ class InternshipAgreement < ApplicationRecord
       count
     end
 
-    valid_presence_days_count >= MIN_PRESENCE_DAYS &&
-      (weekly_lunch_break.present? || lunch_break.present?)
+    valid_presence_days_count >= MIN_PRESENCE_DAYS && lunch_break.present?
   end
 
   def presenter(user:)
@@ -289,19 +297,21 @@ class InternshipAgreement < ApplicationRecord
     legal_representative_data.size
   end
 
+  def signature_signed_by_role?(role)
+    signatures.exists?(signatory_role: role)
+  end
+
   private
 
   def notify_signatures_enabled
     GodMailer.notify_signatures_can_start_email(
       internship_agreement: self
     ).deliver_later
-    if Flipper.enabled?(:student_signature)
-      legal_representative_data.values.each do |representative|
-        GodMailer.notify_student_legal_representatives_can_sign_email(
-          internship_agreement: self,
-          representative: representative
-        ).deliver_later
-      end
+    legal_representative_data.values.each do |representative|
+      GodMailer.notify_student_legal_representatives_can_sign_email(
+        internship_agreement: self,
+        representative: representative
+      ).deliver_later
     end
   end
 

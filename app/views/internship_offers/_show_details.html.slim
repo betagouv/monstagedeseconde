@@ -26,7 +26,8 @@
     h2.h4.fr-mb-2w Informations sur le stage
   .col-12.pb-2w
     - unless need_to_hide_data_for_non_rep_or_qpv_students
-      - internship_offer.description.split('\n').each do |description_line|
+      - descriptions = internship_offer.description.split("\n")
+      - descriptions.each do |description_line|
         p.text-wrap.text-break
           = strip_tags description_line
 

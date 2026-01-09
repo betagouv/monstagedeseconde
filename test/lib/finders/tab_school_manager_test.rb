@@ -28,16 +28,14 @@ module Finders
       status_count.times do
         student = create(:student, school: school)
         wio = create(:weekly_internship_offer_2nde)
-        create(
-          :weekly_internship_application,
+        create(:weekly_internship_application,
           :submitted,
           internship_offer: wio,
           student: student
         )
       end
       InternshipAgreement.aasm.states.each_with_index do |state, index|
-        create(
-          :internship_agreement,
+        create(:internship_agreement,
           aasm_state: state.name.to_sym,
           internship_application: InternshipApplication.all.to_a[index]
         )
@@ -46,8 +44,7 @@ module Finders
         :school_manager, # test specfic case
         internship_agreement_id: InternshipAgreement.find_by(aasm_state: :signatures_started).id
       )
-      tab_value = TabSchoolManager.new(school: school).pending_agreements_count
-      assert_equal 3, tab_value
+      assert_equal 3, TabSchoolManager.new(school: school).pending_agreements_count
       # 1 for :draft
       # 1 for :started_by_employer
       # 1 for :validated

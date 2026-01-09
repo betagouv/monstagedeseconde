@@ -168,7 +168,6 @@ module Dashboard
               :tutor_role,
               :entreprise_address,
               :lunch_break,
-              :weekly_lunch_break,
               weekly_hours: [],
               daily_hours: {}]
     end
