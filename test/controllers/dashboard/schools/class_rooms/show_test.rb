@@ -33,8 +33,7 @@ module Dashboard
         assert_response :success
         assert_select 'li a[href=?]', dashboard_school_class_rooms_path(school), count: 1
         assert_select 'li a[href=?]', dashboard_school_users_path(school), count: 1
-        assert_select 'li a[href=?]', dashboard_internship_agreements_path(multi: false), count: 1
-        assert_select 'li a[href=?]', dashboard_internship_agreements_path(multi: true), count: 1
+        assert_select 'li a[href=?]', dashboard_internship_agreements_path, count: 1
       end
 
       test 'GET class_rooms#show as SchoolManagement with no weeks declared contains key navigations links' do
