@@ -101,14 +101,14 @@ module Dashboard::CorporationInternshipAgreements
 
       get multi_reminder_email_dashboard_internship_agreement_path(uuid: @internship_agreement1.uuid)
 
-      assert_redirected_to dashboard_internship_agreements_path(multi: true)
+      assert_redirected_to dashboard_internship_agreements_path
       assert_equal "Aucun email n'a encore été envoyé jusqu'ici aux responsables de stage.", flash[:alert]
       
       @internship_agreement1.multi_corporation.update!(signatures_launched_at: Time.now - 1.day)
       
       get multi_reminder_email_dashboard_internship_agreement_path(uuid: @internship_agreement1.uuid)
       
-      assert_redirected_to dashboard_internship_agreements_path(multi: true)
+      assert_redirected_to dashboard_internship_agreements_path
       assert_equal 'Les emails de rappel ont été envoyés aux responsables de stage.', flash[:notice]
     end
 

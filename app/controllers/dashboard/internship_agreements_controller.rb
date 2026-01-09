@@ -29,7 +29,7 @@ module Dashboard
             params:
           )
           updated_internship_agreement.save
-          redirect_to dashboard_internship_agreements_path(multi: updated_internship_agreement.from_multi?),
+          redirect_to dashboard_internship_agreements_path,
                       flash: { success: update_success_message(updated_internship_agreement) }
         end
         on.failure do |failed_internship_agreement|
@@ -78,6 +78,7 @@ module Dashboard
       end
       @mono_internship_agreements  = filtering_query current_user.mono_internship_agreements
       @multi_internship_agreements = filtering_query current_user.multi_internship_agreements
+      @internship_agreements = current_user.internship_agreements
 
       @school = current_user.school if current_user.school_management?
       @no_agreement_internship_application_list = []
@@ -106,22 +107,22 @@ module Dashboard
                         signature_phone_number: current_user.try(:phone))
       @internship_agreement.sign!
 
-      redirect_to dashboard_internship_agreements_path(multi: @internship_agreement.from_multi?),
+      redirect_to dashboard_internship_agreements_path,
                   flash: { success: 'La convention a été signée.' }
     end
 
     def multi_reminder_email
       authorize! :multi_sign, @internship_agreement
       if @internship_agreement.multi_corporation.signatures_launched_at.nil?
-        redirect_to dashboard_internship_agreements_path(multi: true),
+        redirect_to dashboard_internship_agreements_path,
                     alert: "Aucun email n'a encore été envoyé jusqu'ici aux responsables de stage." and return
       else
         @internship_agreement.send_multi_signature_reminder_emails!
-        redirect_to dashboard_internship_agreements_path(multi: true),
+        redirect_to dashboard_internship_agreements_path,
                     notice: 'Les emails de rappel ont été envoyés aux responsables de stage.' and return
       end
     rescue ActiveRecord::RecordNotFound
-      redirect_to dashboard_internship_agreements_path(multi: true),
+      redirect_to dashboard_internship_agreements_path,
                   alert: 'Convention introuvable'
     end
 

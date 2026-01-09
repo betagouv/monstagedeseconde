@@ -43,7 +43,7 @@ h1.h2.mb-4
               | Semaines de stage
 
     - if current_user.respond_to?(:school) && can?(:read, InternshipAgreement)
-      - path = dashboard_internship_agreements_path(multi: false)
+      - path = dashboard_internship_agreements_path
       - todos = badge_counter.pending_agreements_count
       li
         = link_to path do
@@ -55,18 +55,6 @@ h1.h2.mb-4
             | Mes conventions de stage
             - if todos.positive?
               span.fr-badge.fr-badge--new.fr-badge--no-icon.fr-ml-1w= todos
-      - path = dashboard_internship_agreements_path(multi: true)
-      - todos = badge_counter.pending_multi_agreements_count
-      li
-        = link_to path do
-          button#multi-internship-agreements.fr-tabs__tab [
-            aria-controls="multi-internship-agreements-panel"
-            aria-selected="#{current_page?(path)}"
-            role="tab"
-            tabindex="4"]
-            | Mes conventions de stage multi-offreurs
-            - if todos.positive?
-              span.fr-badge.fr-badge--new.fr-badge--no-icon.fr-ml-1w=todos
 
   = yield
 = render partial: 'dashboard/internship_agreements/signature/modal_dialog'
