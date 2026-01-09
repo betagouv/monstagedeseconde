@@ -81,20 +81,9 @@ class CorporationTest < ActiveSupport::TestCase
     assert @corporation.valid?
   end
 
-  test "should require sector_id" do
-    @corporation.sector_id = nil
-    assert_not @corporation.valid?
-  end
-
   test "should belong to multi_corporation" do
     assoc = Corporation.reflect_on_association(:multi_corporation)
     assert_equal :belongs_to, assoc.macro
-  end
-
-  test "should belong to sector (optional)" do
-    assoc = Corporation.reflect_on_association(:sector)
-    assert_equal :belongs_to, assoc.macro
-    assert assoc.options[:optional]
   end
 
   test "#send_multi_agreement_signature_invitation" do
