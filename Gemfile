@@ -120,6 +120,7 @@ group :test do
   gem "webmock"
   # Adds support for Capybara system testing and selenium driver
   gem "capybara"
+  gem "minitest", "< 6.0"
   gem "minitest-fail-fast"
   gem "minitest-reporters"
   gem "minitest-retry"
