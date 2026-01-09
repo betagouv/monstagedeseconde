@@ -1,6 +1,6 @@
 require 'application_system_test_case'
 
-module Dashboard
+module Dashboard::InternshipAgreements
   class MultiInternshipAgreementTest < ApplicationSystemTestCase
     include Devise::Test::IntegrationHelpers
     include TeamAndAreasHelper
@@ -203,6 +203,13 @@ module Dashboard
 
       visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
 
+      assert_text "vous n'avez aucune convention de stage à signer"
+
+      internship_agreement.update_columns(aasm_state: :validated)
+      internship_agreement2.update_columns(aasm_state: :validated)
+
+      visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
+      
       assert_text "vous avez 2 conventions de stage à signer"
 
       add_button(internship_agreement).click

@@ -1,6 +1,6 @@
 require 'application_system_test_case'
 
-module Dashboard
+module Dashboard::InternshipAgreements
   class MonoInternshipAgreementTest < ApplicationSystemTestCase
     include Devise::Test::IntegrationHelpers
     include TeamAndAreasHelper

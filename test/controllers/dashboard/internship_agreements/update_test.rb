@@ -28,7 +28,7 @@ module Dashboard::InternshipAgreements
       sign_in teacher
       patch dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
             params: { internship_agreements_mono_internship_agreement: { student_class_room: 'a' , } }
-      assert_redirected_to dashboard_internship_agreements_path(multi: false)
+      assert_redirected_to dashboard_internship_agreements_path
     end
 
     # As Employer
@@ -64,7 +64,7 @@ module Dashboard::InternshipAgreements
 
       patch dashboard_internship_agreement_path(params)
 
-      assert_redirected_to(dashboard_internship_agreements_path(multi: false),
+      assert_redirected_to(dashboard_internship_agreements_path,
                            'redirection should point to updated agreement')
       assert_equal(new_organisation_representative_full_name,
                    internship_agreement.reload.organisation_representative_full_name,
@@ -128,7 +128,7 @@ module Dashboard::InternshipAgreements
       sign_in(school_manager)
       patch dashboard_internship_agreement_path(params)
 
-      assert_redirected_to(dashboard_internship_agreements_path(multi: false),
+      assert_redirected_to(dashboard_internship_agreements_path,
                            'redirection should point to updated agreement')
       assert_equal(new_school_representative_full_name,
                    internship_agreement.reload.school_representative_full_name,
@@ -179,7 +179,7 @@ module Dashboard::InternshipAgreements
       sign_in(school_manager)
       patch dashboard_internship_agreement_path(params)
 
-      assert_redirected_to(dashboard_internship_agreements_path(multi: false),
+      assert_redirected_to(dashboard_internship_agreements_path,
                            'redirection should point to updated agreement')
       assert_equal(new_school_representative_full_name,
                    internship_agreement.reload.school_representative_full_name,
@@ -207,7 +207,7 @@ module Dashboard::InternshipAgreements
           entreprise_address: '123 rue de la paix 75000 Paris'
         } }
         patch(patch_url, params: params)
-        assert_redirected_to dashboard_internship_agreements_path(multi: false)
+        assert_redirected_to dashboard_internship_agreements_path
       end
       # follow_redirect!
       assert_equal 'completed_by_employer', internship_agreement.reload.aasm_state

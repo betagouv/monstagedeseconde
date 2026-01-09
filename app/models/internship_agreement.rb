@@ -13,7 +13,8 @@ class InternshipAgreement < ApplicationRecord
 
   MIN_PRESENCE_DAYS = 4
   EMPLOYERS_PENDING_STATES  = %i[draft started_by_employer signed_by_employer validated].freeze
-  PENDING_SIGNATURES_STATES = %i[validated signatures_started signed_by_all].freeze
+  SIGNATURES_STATES = %i[validated signatures_started signed_by_all].freeze
+  TO_BE_SIGNED_STATES = %i[validated signatures_started].freeze
   EXPECTED_ACTION_FROM_EMPLOYER_STATES = %i[draft started_by_employer].freeze
   EXPECTED_ACTION_FROM_SCHOOL_MANAGER_STATES = %i[completed_by_employer started_by_school_manager].freeze
 

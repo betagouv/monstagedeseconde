@@ -9,9 +9,6 @@
         .fr-card__desc
           .fr-text--lg style="color: var(--grey-main-525);"
             = corporation.corporation_address
-        .fr-card__start
-          .text-muted = corporation.sector.name
-
 
           p.fr-card__detail
             = resource.try(:sector).try(:name)
