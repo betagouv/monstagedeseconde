@@ -7,7 +7,6 @@ class Corporation < ApplicationRecord
 
   #Associations
   belongs_to :multi_corporation
-  belongs_to :sector, optional: true
   has_many :corporation_internship_agreements, dependent: :destroy
   has_many :internship_agreements, through: :corporation_internship_agreements
 
@@ -42,8 +41,6 @@ class Corporation < ApplicationRecord
   validates :tutor_email, presence: true, length: { maximum: 120 }, format: { with: Devise.email_regexp }
   # validates :tutor_phone, presence: true, length: { maximum: 20 }
 
-  validates :sector_id, presence: true
-
   # check before_save if the internship_coordinates are present, if not use Geocoder to get the coordinates
   before_save :set_internship_coordinates
   
@@ -59,6 +56,10 @@ class Corporation < ApplicationRecord
 
   def presenter
     @presenter ||= Presenters::Corporation.new(self)
+  end
+
+  def corporation_internship_agreement_for(internship_agreement)
+    corporation_internship_agreements.find_by(internship_agreement_id: internship_agreement.id)
   end
 
   def internship_coordinates=(coordinates)

@@ -9,5 +9,8 @@ module Finders
       0
     end
 
+    def pending_multi_agreements_count
+      0
+    end
   end
 end

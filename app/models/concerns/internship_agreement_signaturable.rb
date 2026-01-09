@@ -6,7 +6,7 @@ module InternshipAgreementSignaturable
       in_school_management = school_management_representative&.role
       school_role = in_school_management.nil? ? 'school_manager' : in_school_management
       roles = [school_role, 'employer']
-      roles += ['student', 'student_legal_representative'] if Flipper.enabled?(:student_signature)
+      roles += ['student', 'student_legal_representative']
       roles - roles_already_signed
     end
 
@@ -44,40 +44,38 @@ module InternshipAgreementSignaturable
     def missing_signatures_recipients
       recipients = []
 
-      if Flipper.enabled?(:student_signature)
-        if roles_not_signed_yet.include?('student')
-          recipients << student.email if student
+      if roles_not_signed_yet.include?('student')
+        recipients << student.email if student
+      end
+      if (roles_not_signed_yet & Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE).any?
+        recipients << school_management_representative.email if school_management_representative
+      end
+      if from_multi?
+        corporations_all_signed = true
+        internship_offer.corporations.each do |corporation|
+          corporation_internship_agreement = CorporationInternshipAgreement.find_by(
+            corporation_id: corporation.id,
+            internship_agreement_id: id
+          )
+          if corporation_internship_agreement.signed == false
+            corporations_all_signed = false
+            break
+          end
         end
+        corporations_all_signed
       else
-        if (roles_not_signed_yet & Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE).any?
-          recipients << school_management_representative.email if school_management_representative
-        end
-        if from_multi?
-          corporations_all_signed = true
-          internship_offer.corporations.each do |corporation|
-            corporation_internship_agreement = CorporationInternshipAgreement.find_by(
-              corporation_id: corporation.id,
-              internship_agreement_id: id
-            )
-            if corporation_internship_agreement.signed == false
-              corporations_all_signed = false
-              break
-            end
-          end
-          corporations_all_signed
-        else
-          if roles_not_signed_yet.include?('employer')
-            recipients << employer.email if employer
-          end
+        if roles_not_signed_yet.include?('employer')
+          recipients << employer.email if employer
         end
       end
       recipients
     end
 
     def ready_to_sign?(user:)
-      aasm_state.to_s.in?(%w[validated signatures_started]) && \
-        !signed_by?(user:) && \
-        user.can_sign?(self)
+      return false if signed_by?(user:) || !user.can_sign?(self)
+      return false unless aasm_state.to_s.in?(%w[validated signatures_started])
+      return false if user.employer_like? && from_multi? && multi_corporation.signatures_launched_at.present?
+      true
     end
 
     def signed_by?(user:)

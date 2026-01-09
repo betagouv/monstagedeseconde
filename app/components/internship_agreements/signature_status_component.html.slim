@@ -1,7 +1,8 @@
 - if from_multi?
   div style="color: #{corporations_info[:color]}"
     span class="#{corporations_info[:icon]}"
-    span Offreurs (#{corporations_info[:signed_count]}/#{corporations_info[:total_count]})
+    span.text-decoration-underline
+      ="Offreurs (#{corporations_info[:signed_count]}/#{corporations_info[:total_count]})"
 - else
   div style="color: #{employer_info[:color]}"
     span class="#{employer_info[:icon]}"
@@ -9,10 +10,9 @@
 div style="color: #{school_manager_info[:color]}"
   span class="#{school_manager_info[:icon]}"
   span Établissement
-- if Flipper.enabled?(:student_signature)
-  div style="color: #{student_info[:color]}"
-    span class="#{student_info[:icon]}"
-    span Élève
-  div style="color: #{legal_representative_info[:color]}"
-    span class="#{legal_representative_info[:icon]}"
-    span Responsable légal
+div style="color: #{student_info[:color]}"
+  span class="#{student_info[:icon]}"
+  span Élève
+div style="color: #{legal_representative_info[:color]}"
+  span class="#{legal_representative_info[:icon]}"
+  span Responsable légal

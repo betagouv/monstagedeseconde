@@ -1,6 +1,7 @@
 .employer.fr-mt-4w [data-controller='group-signing'
                     data-group-signing-counter-value='0'
                     data-group-signing-multi-value='true'
+                    data-group-signing-user-type-param="#{current_user.type}"
                     data-group-signing-max-counter-value='0']
 
   / .fr-callout.fr-fi-information-line
@@ -69,12 +70,11 @@
                         'data-group-signing-target': "generalCta",
                         data: { turbo: true }
           - else
-            = fg.button 'Signer',
-                        type: 'submit',
-                        class: "fr-btn fr-mb-2w fr-px-4w fr-mx-n4w",
-                        disabled: true,
-                        'data-fr-opened': false,
-                        'aria-controls': "fr-modal-multi-signatures",
-                        data: { 'group-signing-target': "generalCta", action: "click->group-signing#updateCtaUrl" }
-        
+            button.fr-btn.fr-mb-2w.fr-px-4w.fr-mx-n4w[type="button"
+              disabled="disabled"
+              data-fr-opened="false"
+              aria-controls="fr-modal-multi-signatures"
+              data-group-signing-target="generalCta"]
+              | Signer
+
       = render partial: 'dashboard/internship_agreements/signature/modal_dialog_multi'

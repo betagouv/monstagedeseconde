@@ -9,6 +9,7 @@ export default class extends Controller {
   ];
 
   static values = {
+    userType: String,
     counter: Number,
     maxCounter: Number,
     multi: Boolean,
@@ -131,9 +132,14 @@ export default class extends Controller {
 
     //paintButtonLabel
     const extraHTML = (this.counterValue > 1) ? " en groupe (" + this.counterValue + ")" : '';
-    this.generalCtaTarget.innerHTML = "Signer" + extraHTML;
 
-    const allChecked = (this.counterValue === this.maxCounterValue) && (this.counterValue > 0);
+
+    let buttonLabel = `Signer${extraHTML}`;
+    if (this.userTypeValue !== 'Users::SchoolManagement' && this.multiValue) {
+      buttonLabel = `Faire signer${extraHTML}`;
+    }
+    this.generalCtaTarget.innerHTML = buttonLabel;
+    const allChecked = this.counterValue === this.maxCounterValue && this.counterValue > 0
     this.generalCtaSelectBoxTarget.checked = allChecked;
   }
 

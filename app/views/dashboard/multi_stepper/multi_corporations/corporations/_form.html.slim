@@ -30,15 +30,15 @@
                   = f.label :corporation_name, "Nom de la structure ou Raison sociale", class: "fr-label"
                   = f.text_field :corporation_name, class: "fr-input"
                 
-                .fr-col-12
-                  = f.label :sector_id, "Indiquez le secteur d'activité de la structure *", class: "fr-label"
-                  = f.select :sector_id,
-                          options_from_collection_for_select(Sector.all.order(:name).where.not(name: 'Fonction publique'), :id, :name, corporation&.sector&.id),
-                          { prompt: sectors_options_for_default },
-                          class: "fr-select sector_list",
-                          required: true,
-                          data: { action: "change->mandatory-fields#fieldChange",
-                                  'mandatory-fields-target' => "mandatoryField" }
+                / .fr-col-12
+                /   = f.label :sector_id, "Indiquez le secteur d'activité de la structure *", class: "fr-label"
+                /   = f.select :sector_id,
+                /           options_from_collection_for_select(Sector.all.order(:name).where.not(name: 'Fonction publique'), :id, :name, corporation&.sector&.id),
+                /           { prompt: sectors_options_for_default },
+                /           class: "fr-select sector_list",
+                /           required: true,
+                /           data: { action: "change->mandatory-fields#fieldChange",
+                /                   'mandatory-fields-target' => "mandatoryField" }
 
                 .fr-col-12
                   = f.label :siret, "SIRET *", class: "fr-label"
@@ -89,7 +89,7 @@
                 = f.text_field :employer_name, class: "fr-input", data: { multi_corporation_form_target: "employerName" }
               .fr-col-12
                 = f.label :employer_role, "Fonction du représentant de la structure", class: "fr-label"
-                = f.text_field :employer_role, class: "fr-input", minlength: 3, data: { multi_corporation_form_target: "employerRole" }
+                = f.text_field :employer_role, class: "fr-input", minlength: 3, required: true, data: { multi_corporation_form_target: "employerRole" }
               .fr-col-12
                 = f.label :employer_email, "Adresse email du représentant de la structure", class: "fr-label"
                 = f.email_field :employer_email, class: "fr-input", data: { multi_corporation_form_target: "employerEmail" }
