@@ -202,14 +202,15 @@ module Dashboard::InternshipAgreements
       internship_agreement2 = create_agreement_on_same_corporation(internship_agreement: internship_agreement)
 
       visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
-      assert false
 
-      assert_text "vous n'avez pas de convention à signer"
+      assert_text "vous n'avez aucune convention de stage à signer"
 
-      internship_agreement.update_column(aasm_state: :validated)
-      internship_agreement2.update_column(aasm_state: :validated)
+      internship_agreement.update_columns(aasm_state: :validated)
+      internship_agreement2.update_columns(aasm_state: :validated)
+
+      visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
       
-      assert_text "vous n'avez pas de convention à 2 conventions de stage à signer"
+      assert_text "vous avez 2 conventions de stage à signer"
 
       add_button(internship_agreement).click
       refute general_cta_button.disabled?

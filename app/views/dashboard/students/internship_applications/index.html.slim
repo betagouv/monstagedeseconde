@@ -54,12 +54,12 @@
 
       - if (current_user.student? || current_user.is_a?(Users::SchoolManagement)) && current_user.internship_applications.approved.count.positive?
         .fr-tabs.fr-tabs--centered.fr-tabs--secondary.fr-mb-2w
-          - agreement_first = @internship_agreement.present? && @internship_agreement.aasm_state.to_sym.in?(InternshipAgreement::PENDING_SIGNATURES_STATES)
+          - agreement_first = @internship_agreement.present? && @internship_agreement.aasm_state.to_sym.in?(InternshipAgreement::SIGNATURES_STATES)
           ul.fr-tabs__list aria-label=("Candidatures") role="tablist"
             li
               button id="approved-internship-applications" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="#{!agreement_first}" aria-controls="approved-internship-applications-panel"
                 | Votre stage validé
-            - if @internship_agreement.present? && @internship_agreement.aasm_state.to_sym.in?(InternshipAgreement::PENDING_SIGNATURES_STATES)
+            - if @internship_agreement.present? && @internship_agreement.aasm_state.to_sym.in?(InternshipAgreement::SIGNATURES_STATES)
               li
                 button id="internship-agreement" class="fr-tabs__tab" tabindex="0" role="tab" aria-controls="internship-agreement-panel" aria-selected="#{agreement_first}"
                   | Votre convention de stage
