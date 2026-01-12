@@ -14,6 +14,8 @@ class InternshipOffersController < ApplicationController
   def index
     @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
     @preselected_weeks_list = @preselected_weeks_list.where(id: params[:week_ids]) if params[:week_ids].present?
+    @sectors = Sector.all.order(:name)
+    params[:grade_id] = 1 if params[:grade_id].blank?
     @school_weeks_list ||= Week.none
     @preselected_weeks_list ||= Week.none
     @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
@@ -28,6 +30,7 @@ class InternshipOffersController < ApplicationController
       end
       format.json do
         @internship_offers_seats = 0
+        params[:grade_id] = 1 if params[:grade_id].blank?
         @internship_offers = finder.all
                                    .includes(:sector, :employer)
 
@@ -116,9 +119,9 @@ class InternshipOffersController < ApplicationController
   end
 
   def search_query_params
-    common_query_params = %i[city grade_id latitude longitude page radius]
+    common_query_params = %i[city grade_id latitude longitude page radius keyword]
     common_query_params += [:school_year] if current_user_or_visitor.god? || current_user_or_visitor.statistician?
-    params.permit(*common_query_params, week_ids: [])
+    params.permit(*common_query_params, week_ids: [], sector_ids: [])
   end
 
   def check_internship_offer_is_not_discarded_or_redirect

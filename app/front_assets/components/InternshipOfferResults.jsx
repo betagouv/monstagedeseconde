@@ -37,7 +37,8 @@ const InternshipOfferResults = ({
     schoolWeeksList,
     secondeWeekIds,
     troisiemeWeekIds,
-    studentGradeId
+    studentGradeId,
+    sectors
   }) => {
   // const [map, setMap] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
@@ -166,6 +167,7 @@ const InternshipOfferResults = ({
                 troisiemeWeekIds={troisiemeWeekIds}
                 origin='search'
                 studentGradeId={studentGradeId}
+                sectors={sectors}
               />
             </div>
           </div>

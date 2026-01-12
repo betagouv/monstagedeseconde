@@ -7,7 +7,7 @@ import { isMobile } from '../../utils/responsive';
 
 const COMPONENT_FOCUS_LABEL = 'keyword';
 
-function KeywordInput({ existingKeyword, whiteBg }) {
+function KeywordInput({ existingKeyword, whiteBg, onChange }) {
   const searchParams = new URLSearchParams(window.location.search);
 
   const [keyword, setKeyword] = useState(existingKeyword || searchParams.get('keyword') || '');
@@ -15,11 +15,17 @@ function KeywordInput({ existingKeyword, whiteBg }) {
   const [keywordDebounced] = useDebounce(keyword, 200);
   const inputChange = (event) => {
     setKeyword(event.target.value);
+    if (onChange) {
+      onChange(event.target.value);
+    }
   };
 
   const safeSetKeyword = (item) => {
     if (item) {
       setKeyword(item.word);
+      if (onChange) {
+        onChange(item.word);
+      }
     }
   };
 
@@ -52,8 +58,8 @@ function KeywordInput({ existingKeyword, whiteBg }) {
         highlightedIndex,
         selectedItem,
       }) => (
-        <div>
-          <label {...getLabelProps({ className: `fr-label ${(whiteBg == true) ? '' : 'font-weight-lighter'}`, htmlFor: "input-search-by-keyword" })}>
+        <div className='fr-input-group mb-md-0 col-md '>
+          <label {...getLabelProps({ className: `fr-label`, htmlFor: "input-search-by-keyword" })}>
             Métiers, mots-clés, ...
           </label>
           <div
@@ -64,7 +70,7 @@ function KeywordInput({ existingKeyword, whiteBg }) {
               {...getInputProps({
                 onChange: inputChange,
                 value: inputValue,
-                className: `fr-input ${(isMobile) ? 'almost-fitting' : 'almost-fitting-even-more'}`,
+                className: `fr-input`,
                 id: 'input-search-by-keyword',
                 name: 'keyword',
                 placeholder: '',
