@@ -40,7 +40,7 @@ gem "prawn-table"
 
 # background jobs
 gem "sidekiq", "< 8"
-# gem "connection_pool" , "< 3.0"
+gem "connection_pool" , "< 3.0"
 # Use Redis for Action Cable
 gem "aws-sdk-s3", require: false
 gem "redis", "~> 4.0"
