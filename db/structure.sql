@@ -946,7 +946,6 @@ CREATE TABLE public.internship_agreements (
     tutor_full_name character varying(275),
     weekly_hours text[] DEFAULT '{}'::text[],
     daily_hours jsonb DEFAULT '{}'::jsonb,
-    weekly_lunch_break text,
     siret character varying(14),
     tutor_role character varying(150),
     tutor_email character varying(85),
@@ -5315,6 +5314,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260102092331'),
 ('20251222092900'),
 ('20251219100000'),
 ('20251218130433'),

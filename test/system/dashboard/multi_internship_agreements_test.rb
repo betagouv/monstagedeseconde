@@ -271,7 +271,7 @@ module Dashboard
       sign_in(employer)
       visit_index_and_go_to_multi_internship_agreements
       within('td[data-head="Statut"]') do
-        find('.actions.d-flex', text: "En attente de votre signature.")
+        find('.actions.d-flex', text: "En cours de signature.")
       end
       find('a.button-component-cta-button', text: 'Télécharger')
       # find('button[data-action=\'group-signing#toggleFromButton\']', text: 'Ajouter aux signatures')

@@ -2,10 +2,6 @@ require 'test_helper'
 require 'pretty_console'
 
 class InternshipAgreementTest < ActiveSupport::TestCase
-  setup do
-    Flipper.enable :student_signature
-  end
-
   test 'factory is valid' do
     assert build(:mono_internship_agreement).valid?
   end
@@ -104,14 +100,14 @@ class InternshipAgreementTest < ActiveSupport::TestCase
     school = student.school
     employer = internship_agreement.employer
     school_manager = school.school_manager
-    assert_equal [employer.email, school_manager.email, student.email],
-                 internship_agreement.missing_signatures_recipients
+    assert_equal [employer.email, school_manager.email, student.email].sort,
+                 internship_agreement.missing_signatures_recipients.sort
 
     create(:signature,
            :school_manager,
            internship_agreement_id: internship_agreement.id)
-    assert_equal [employer.email, student.email],
-                 internship_agreement.missing_signatures_recipients
+    assert_equal [employer.email, student.email].sort,
+                 internship_agreement.missing_signatures_recipients.sort
 
     create(:signature,
            :employer,
