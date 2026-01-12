@@ -8,7 +8,8 @@ ruby File.read(".ruby-version").strip
 # fwk/server
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
-gem "rails", "~> 7.1.3"
+gem "rails", "~> 7.2"
+gem "mutex_m"
 # db
 gem "pg"
 gem "rack", ">= 3.0"
@@ -40,6 +41,7 @@ gem "prawn-table"
 
 # background jobs
 gem "sidekiq", "< 8"
+gem "connection_pool" , "< 3.0"
 # Use Redis for Action Cable
 gem "aws-sdk-s3", require: false
 gem "redis", "~> 4.0"
