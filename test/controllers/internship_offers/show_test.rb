@@ -304,7 +304,7 @@ module InternshipOffers
 
     
     test 'GET #show as Visitor an API rep or qpv Offer cannot see protected data' do
-      internship_offer = create(:weekly_internship_offer_2nde,  :api_internship_offer, rep: true, qpv: true)
+      internship_offer = create(:weekly_internship_offer_2nde, :api_internship_offer, rep: true, qpv: true)
       get internship_offer_path(internship_offer)
       assert_response :success
       assert_select 'h1', text: internship_offer.title
