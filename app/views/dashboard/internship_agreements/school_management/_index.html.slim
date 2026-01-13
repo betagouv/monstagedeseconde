@@ -3,30 +3,16 @@
       tabindex="0"]
   - if internship_agreements.empty? && @no_agreement_internship_application_list.empty?
     = render partial: 'empty_agreement_list'
-  - else
-      / p.h5 Conventions de stages chez de nombreux employeurs
-      div[ data-controller='group-signing'
-      data-group-signing-counter-value='0'
-      data-group-signing-max-counter-value='0']
-      
 
-      = render 'dashboard/internship_agreements/shared/school_signature'
-      - if @mono_internship_agreements.any?
-        p.h5 Stages avec une seule structure accueillante
-        = render partial: 'dashboard/internship_agreements/internship_agreements_list',
-                 locals: {internship_agreements: @mono_internship_agreements}
 
-      - if @multi_internship_agreements.any?
-        p.h5 Stages avec plusieurs structures accueillantes
-        = render partial: 'dashboard/internship_agreements/multi/multi_internship_agreements_list',
-                locals: {internship_agreements: @multi_internship_agreements}
+    = render 'dashboard/internship_agreements/shared/school_signature'
+    - if @mono_internship_agreements.any?
+      p.h5 Stages avec une seule structure accueillante
+      = render partial: 'dashboard/internship_agreements/internship_agreements_list',
+                locals: {internship_agreements: @mono_internship_agreements}
 
-  / div  [
-  /   data-controller='group-signing'
-  /   data-group-signing-counter-value='0'
-  /   data-group-signing-max-counter-value='0'
-  /   aria-labelledby="tabpanel-405"
-  /   role="tabpanel"
-  /   tabindex="0"]
+    - if @multi_internship_agreements.any?
+      p.h5 Stages avec plusieurs structures accueillantes
+      = render partial: 'dashboard/internship_agreements/multi/multi_internship_agreements_list',
+              locals: {internship_agreements: @multi_internship_agreements}
 
-  /   = render 'dashboard/internship_agreements/shared/school_signature'
