@@ -1,17 +1,8 @@
 .employer-non-sticky.fr-mt-4w [data-controller='group-signing'
   data-group-signing-counter-value='0'
   data-group-signing-multi-value='true'
-  data-group-signing-user-type-param="#{current_user.type}"
+  data-group-signing-user-type-value="#{current_user.type}"
   data-group-signing-max-counter-value='0']
-
-  / .fr-callout.fr-fi-information-line
-  /   p.fr-callout__title Signez votre convention en ligne !
-  /   p.fr-callout__text
-  /     |
-  /       La signature de la convention de stage peut s’effectuer en
-  /       ligne, de manière totalement dématérialisée et sécurisée.
-  /       Vous préférez la signature traditionnelle en version papier ?
-  /       Optez pour l’impression.
 
   - if current_user.school_management?
     - url = start_signing_dashboard_user_path(id: current_user.id)
