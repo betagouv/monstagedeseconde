@@ -4,7 +4,7 @@ module Dashboard::CorporationInternshipAgreements
     include Devise::Test::IntegrationHelpers
 
     setup do
-      @internship_agreement1 = create(:multi_internship_agreement)
+      @internship_agreement1 = create(:multi_internship_agreement, :validated)
       @corporation = @internship_agreement1.internship_offer.corporations.first
       @corporation_sgid = @corporation.to_sgid.to_s
     end
@@ -12,6 +12,7 @@ module Dashboard::CorporationInternshipAgreements
     def create_agreement_on_same_corporation
       internship_application = create(:weekly_internship_application, :approved, internship_offer: @internship_agreement1.internship_offer)
       @internship_agreement2 = internship_application.internship_agreement
+      @internship_agreement2.update!(aasm_state: :validated)
     end
 
     test 'second internhip_agreement on same corporation' do
