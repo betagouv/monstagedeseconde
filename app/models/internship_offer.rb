@@ -561,7 +561,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def update_stats
-    stats.nil? ? create_stats:  stats.recalculate
+    stats.nil? ? create_stats : stats.recalculate
   end
 
   def from_doubling_task_save!
