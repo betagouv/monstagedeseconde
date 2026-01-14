@@ -39,7 +39,7 @@ tbody.internship-agreement
                      locals: { form: form, disabled: disabled }
 
       .row.mt-0
-        - label = "Activités prévues et planning",
+        - label = "Activités prévues et planning"
         - title = "Activités prévues"
         - content = "Activités prévues"
         - filled_by = ["l'entreprise"]
@@ -54,8 +54,8 @@ tbody.internship-agreement
                            input_type: :text_area,
                            limit: 1_000,
                            rows: 4 }
-
       = render 'dashboard/internship_agreements/shared/detailed_planning_alert'
+
       = form.submit 'Submit', class: 'd-none', id: 'employer-submit'
 
       - unless disabled
