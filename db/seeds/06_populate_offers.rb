@@ -158,7 +158,6 @@ def populate_internship_offers
   5.times do |n|
     Corporation.create!(
       multi_corporation: multi_corporation,
-      sector: Sector.all[n],
       siret: "1112223330000#{n}",
 
       corporation_name: corporation_names[n],
