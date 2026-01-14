@@ -8,7 +8,8 @@ ruby File.read(".ruby-version").strip
 # fwk/server
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
-gem "rails", "~> 7.1.3"
+gem "rails", "~> 7.2"
+gem "mutex_m"
 # db
 gem "pg"
 gem "rack", ">= 3.0"
@@ -91,6 +92,10 @@ gem "active_storage_validations"
 # Pour le traitement des images
 gem "image_processing", "~> 1.2"
 gem "mini_magick"
+
+# temporary
+gem "fiddle"
+gem "ostruct"
 
 group :development, :test do
   gem "debug"

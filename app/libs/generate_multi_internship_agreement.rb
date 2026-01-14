@@ -405,9 +405,9 @@ class GenerateMultiInternshipAgreement < Prawn::Document
         internship_agreement_id: @internship_agreement.id
       )
       if corporation_internship_agreement.signed
-        txt = "- Signé électroniquement par #{corporation.presenter.corporation_name} " \
+        txt = "- Signé électroniquement par #{corporation.employer_name} " \
               "le #{corporation_internship_agreement.signed_at.strftime('%d/%m/%Y à %Hh%M')}" \
-              " pour #{corporation.presenter.corporation_name}"
+              " pour #{corporation.corporation_name}"
         @pdf.text txt
       end
     end
