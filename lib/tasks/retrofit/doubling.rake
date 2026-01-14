@@ -64,7 +64,8 @@ namespace :retrofit do
           if new_offer.valid? && new_offer.from_doubling_task_save!
             PrettyConsole.say_in_green("Created new InternshipOffer ID: #{new_offer.id} for grade: #{new_offer.grades.map(&:name).join(', ')}")
           else
-            PrettyConsole.say_in_red("Failed to create new InternshipOffer for grade: #{new_offer.grades.map(&:name).join(', ')}. Errors: #{new_offer.errors.full_messages.join(', ')}")
+            error_message = "Failed to create new InternshipOffer for grade: #{new_offer.grades.map(&:name).join(', ')}. Errors: #{new_offer.errors.full_messages.join(', ')}"
+            PrettyConsole.say_in_red(error_message)
           end
 
           # reassign favorites
