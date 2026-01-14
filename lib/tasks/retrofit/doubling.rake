@@ -1,16 +1,5 @@
 require 'pretty_console'
 
-# def stats_restriction(stats, grade)
-#   new_stats = InternshipOfferStats.new
-#   new_stats.total_applications_count = stats.total_applications_count
-#   new_stats.total_male_applications_count = stats.total_male_applications_count
-#   new_stats.total_female_applications_count = stats.total_female_applications_count
-#   new_stats.approved_applications_count = stats.approved_applications_count if grade == Grade.seconde
-#   # new_stats.total_applications_count = stats.total_applications_count
-#   new_stats.remaining_seats_count = stats.remaining_seats_count
-#   new_stats
-# end
-
 namespace :retrofit do
   desc 'doubling offer when associated to several grades'
   task doubling_offers: :environment do |task|
@@ -23,10 +12,25 @@ namespace :retrofit do
 
         if grades.include?(Grade.seconde)
           weeks_troisieme_quatrieme = offer.weeks & Week.troisieme_weeks
+          
+          message = "Unexpected error: No weeks for troisieme/quatrieme found in ##{offer.id}"
+          if weeks_troisieme_quatrieme.nil?
+            PrettyConsole.say_in_red(message)
+            raise message
+          end
+          next if weeks_troisieme_quatrieme.empty?
+
           weeks_seconde = offer.weeks & Week.seconde_weeks
-          seconde_favorites   = Favorite.joins(:user)
-                                        .where(internship_offer_id: offer.id)
-                                        .where(user: { grade_id: Grade.seconde.id })
+          message = "Unexpected error: No weeks for seconde found in ##{offer.id}"
+          if weeks_seconde.nil?
+            PrettyConsole.say_in_red(message)
+            raise message
+          end
+          next if weeks_seconde.empty?
+
+          seconde_favorites = Favorite.joins(:user)
+                                      .where(internship_offer_id: offer.id)
+                                      .where(user: { grade_id: Grade.seconde.id })
           troisieme_favorites_user_ids = Favorite.joins(:user)
                                                  .where(internship_offer_id: offer.id)
                                                  .where(user: { grade_id: Grade.troisieme_et_quatrieme.ids })
@@ -45,7 +49,7 @@ namespace :retrofit do
           new_offer = offer.dup
           seconde_offer = offer
 
-                                        # some restrictions
+          # some restrictions
           seconde_offer.grades = [Grade.seconde]
           seconde_offer.weeks = weeks_seconde
           seconde_offer.mother_id = nil
