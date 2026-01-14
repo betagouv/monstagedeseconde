@@ -2,6 +2,7 @@
 
 require 'sti_preload'
 class InternshipOffer < ApplicationRecord
+  # Constants
   GUARD_PERIOD = 5.days
   PAGE_SIZE = 30
   # TODO : most probably to be the same field.
@@ -43,7 +44,8 @@ class InternshipOffer < ApplicationRecord
                 :all_year_long,
                 :period_field,
                 :internship_type,
-                :shall_publish
+                :shall_publish,
+                :from_doubling_task
 
   # Other associations not defined in StepperProxy
   has_many :internship_applications, as: :internship_offer,
@@ -101,6 +103,9 @@ class InternshipOffer < ApplicationRecord
   after_commit :sync_internship_offer_keywords
   after_create :create_stats
   after_update :update_stats
+  after_update :update_all_favorites
+
+  # Pagination
 
   paginates_per PAGE_SIZE
 
@@ -325,6 +330,7 @@ class InternshipOffer < ApplicationRecord
   # -------------------------
   # Methods
   # -------------------------
+  def from_doubling_task? = !!from_doubling_task || false
   def from_multi? = false
   def still_unpublished?
     unpublished? || need_to_be_updated? || splitted?
@@ -398,7 +404,7 @@ class InternshipOffer < ApplicationRecord
   def sync_first_and_last_date
     ordered_weeks = weeks.to_a.sort_by(&:id)
     self.first_date = ordered_weeks.first&.week_date
-    self.last_date = ordered_weeks.last&.week_date&.+ 4.days
+    self.last_date  = ordered_weeks.last&.week_date&.+ 4.days
   end
 
   def departement
@@ -551,11 +557,17 @@ class InternshipOffer < ApplicationRecord
 
   def create_stats
     stats = InternshipOfferStats.create(internship_offer: self)
-    stats.recalculate
+    stats.recalculate unless from_doubling_task?
   end
 
   def update_stats
-    stats.nil? ? create_stats : stats.recalculate
+    stats.nil? ? create_stats:  stats.recalculate
+  end
+
+  def from_doubling_task_save!
+    self.from_doubling_task = true
+    self.stats = nil
+    save
   end
 
   def check_for_missing_seats

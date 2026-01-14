@@ -6,8 +6,11 @@ class InternshipOfferStats < ApplicationRecord
   # Validations
   validates :internship_offer, presence: true, uniqueness: true
 
+  #delegations
+  delegate :from_doubling_task?, to: :internship_offer
+
   # Callbacks
-  after_create :recalculate
+  after_create :recalculate, unless: :from_doubling_task?
   after_update :check_update_needed?
 
   def recalculate

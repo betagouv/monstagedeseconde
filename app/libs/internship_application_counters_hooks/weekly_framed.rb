@@ -18,7 +18,10 @@ module InternshipApplicationCountersHooks
     end
 
     def update_internship_offer_stats
-      internship_offer.stats.recalculate
+      # internship_offer.stats is nil only when task retrofit:doubling_offers is running
+      # consequently when doubling is finished the unless statement shall be removed
+      # TODO: review this comment later
+      internship_offer.stats.recalculate unless internship_offer.stats.nil?
     end
 
     # PERF: can be optimized with one query
