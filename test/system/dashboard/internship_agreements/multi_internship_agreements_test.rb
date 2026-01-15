@@ -128,16 +128,24 @@ module Dashboard::InternshipAgreements
       [internship_agreement, corporation, corporation_sgid]
     end
 
-    def make_a_validated_agreement
-      internship_agreement = create(:multi_internship_agreement, :validated)
+    def make_a_validated_agreement(internship_agreement: nil, pre_selected_for_signature: false)
+      if internship_agreement.nil?
+        internship_agreement = create(:multi_internship_agreement, :validated)
+      else
+        internship_agreement.update(aasm_state: :validated)
+      end
+      internship_agreement.update(pre_selected_for_signature: true) if pre_selected_for_signature
       corporation = internship_agreement.internship_offer.corporations.first
       corporation_sgid = corporation.to_sgid.to_s
       [internship_agreement, corporation, corporation_sgid]
     end
 
-    def create_agreement_on_same_corporation(internship_agreement:)
+    def create_agreement_on_same_corporation(internship_agreement: , validated: false, pre_selected_for_signature: false)
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_agreement.internship_offer)
       internship_agreement2 = internship_application.internship_agreement
+      internship_agreement2.update(aasm_state: :validated) if validated
+      internship_agreement2.update(pre_selected_for_signature: true) if pre_selected_for_signature
+      internship_agreement2
     end
 
     def agreement_checkbox_id(internship_agreement)
@@ -159,8 +167,13 @@ module Dashboard::InternshipAgreements
     # -- end of helper methods
 
     test 'signator responsible multi validates internship agreement' do
-      internship_agreement, corporation, corporation_sgid = make_a_validated_agreement
-      internship_agreement2 = create_agreement_on_same_corporation(internship_agreement: internship_agreement)
+      internship_agreement, corporation, corporation_sgid = make_a_validated_agreement(pre_selected_for_signature: true)
+      internship_agreement2 = create_agreement_on_same_corporation(
+        internship_agreement: internship_agreement,
+        validated: true,
+        pre_selected_for_signature: true)
+      assert internship_agreement2.internship_offer.multi_corporation.corporations.include?(corporation)
+      # these upper two agreements share the same internship offer and corporations consequently
 
       sign_in(internship_agreement.employer)
       visit dashboard_internship_agreements_path
@@ -193,8 +206,13 @@ module Dashboard::InternshipAgreements
     end
 
     test 'signator responsible multi validates one internship agreement' do
-      internship_agreement, corporation, corporation_sgid = make_an_agreement
-      internship_agreement2 = create_agreement_on_same_corporation(internship_agreement: internship_agreement)
+      internship_agreement, _corporation, corporation_sgid = make_an_agreement
+      internship_agreement2 = create_agreement_on_same_corporation(
+        internship_agreement: internship_agreement,
+        pre_selected_for_signature: true
+        )
+      # these upper two agreements share the same internship offer and corporations consequently
+      internship_agreement.update_columns(pre_selected_for_signature: true)
 
       visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
 
@@ -204,7 +222,7 @@ module Dashboard::InternshipAgreements
       internship_agreement2.update_columns(aasm_state: :validated)
 
       visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
-      
+
       assert_text "vous avez 2 conventions de stage à signer"
 
       add_button(internship_agreement).click
@@ -217,6 +235,29 @@ module Dashboard::InternshipAgreements
 
       add_button(internship_agreement2).click
       assert general_checkbox.checked?
+    end
+
+    test 'coordinator sends some agreements to sign, and not all students are involved' do
+      internship_agreement, corporation, corporation_sgid = make_a_validated_agreement
+      internship_agreement2 = create_agreement_on_same_corporation(internship_agreement: internship_agreement, validated: true)
+      refute internship_agreement.pre_selected_for_signature?
+      refute internship_agreement2.pre_selected_for_signature?
+      assert internship_agreement.validated?
+      assert internship_agreement2.validated?
+      employer1 = internship_agreement.employer
+      employer2 = internship_agreement2.employer
+      assert_equal employer1, employer2
+      coordinator_user = employer1
+      sign_in(coordinator_user)
+
+      visit dashboard_internship_agreements_path
+      all('button[data-action="group-signing#toggleFromButton"]').first.click
+      click_button('Faire signer')
+      within('dialog[aria-labelledby="multi-modal-title"]') do
+        click_button('Envoyer en signature')
+      end
+      assert_text 'Envoyer en signature'
+      assert false
     end
 
     test 'employer reads multi internship agreement table with correct indications - status: completed_by_employer /' do
@@ -298,7 +339,7 @@ module Dashboard::InternshipAgreements
     end
 
     test 'multi internship_agreements employer checks the corporation signature status modal' do
-      internship_agreement = create(:multi_internship_agreement, aasm_state: :validated)
+      internship_agreement = create(:multi_internship_agreement, aasm_state: :validated, pre_selected_for_signature: true)
       employer = internship_agreement.employer
       first_corporation = internship_agreement.internship_offer.corporations.first
       multi_corporation = internship_agreement.multi_corporation

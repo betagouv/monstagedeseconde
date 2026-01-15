@@ -225,6 +225,8 @@ class InternshipAgreement < ApplicationRecord
     valid_presence_days_count >= MIN_PRESENCE_DAYS && lunch_break.present?
   end
 
+  def pre_selected_for_signature? = false
+
   def presenter(user:)
     Presenters::InternshipAgreement.new(self, user)
   end
