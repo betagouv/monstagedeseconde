@@ -10,14 +10,12 @@ module Dashboard
       corporation_internship_agreements = CorporationInternshipAgreement.joins(:internship_agreement)
                                                                         .where(corporation_id: @corporation.id)
                                                                         .where(internship_agreement: { aasm_state: InternshipAgreement::TO_BE_SIGNED_STATES })
-      @internship_agreement_uuids = corporation_internship_agreements.map(&:internship_agreement).map(&:uuid) #corporation_internship_agreement_params[:internship_agreement_uuids].to_a
+      @internship_agreements = corporation_internship_agreements.map(&:internship_agreement)
+                                                                .select { |ia| ia.pre_selected_for_signature? }
 
+      @internship_agreement_uuids = @internship_agreements.map(&:uuid) #corporation_internship_agreement_params[:internship_agreement_uuids].to_a
       @coporation_prez = @corporation.presenter
-      @internship_agreements = InternshipAgreement.where(uuid: @internship_agreement_uuids)
-                                                  # .where(aasm_state: InternshipAgreement::TO_BE_SIGNED_STATES)
-
       @to_be_signed_metadata = { count: corporation_internship_agreements.where(signed: false).count }
-
       @conventions_text = conventions_text(corporation_internship_agreements.where(signed: false).count)
     end
 
@@ -60,7 +58,7 @@ module Dashboard
     private
 
     def index_corporation_internship_agreement_params
-      params.permit(:corporation_sgid, internship_agreement_uuids: [])
+      params.permit(:corporation_sgid)
     end
 
     def corporation_internship_agreement_params

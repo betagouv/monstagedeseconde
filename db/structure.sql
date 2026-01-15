@@ -978,7 +978,8 @@ CREATE TABLE public.internship_agreements (
     pai_project boolean,
     pai_trousse_family boolean,
     access_token character varying,
-    type character varying DEFAULT 'InternshipAgreements::MonoInternshipAgreement'::character varying NOT NULL
+    type character varying DEFAULT 'InternshipAgreements::MonoInternshipAgreement'::character varying NOT NULL,
+    pre_selected_for_signature boolean DEFAULT false NOT NULL
 );
 
 
@@ -5314,6 +5315,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260115112842'),
 ('20260102092331'),
 ('20251222092900'),
 ('20251219100000'),
