@@ -257,7 +257,6 @@ module Dashboard::InternshipAgreements
         click_button('Envoyer en signature')
       end
       assert_text 'Envoyer en signature'
-      assert false
     end
 
     test 'employer reads multi internship agreement table with correct indications - status: completed_by_employer /' do
