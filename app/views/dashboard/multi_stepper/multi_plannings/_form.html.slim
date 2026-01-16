@@ -119,4 +119,8 @@
     .fr-mt-4w.fr-grid-row
       - prev_link = multi_coordinator.multi_corporation ? edit_dashboard_multi_stepper_multi_corporation_path(multi_coordinator.multi_corporation) : '#'
       = link_to "Précédent", prev_link, class: "fr-btn fr-btn--secondary fr-mr-2w"
-      = form.submit "Suivant", class: "fr-btn"
+      = button_tag :submit,
+                    class: 'fr-btn',
+                    data: { :'mandatory-fields-target' => "disabledField"}  do
+          = "Suivant"
+

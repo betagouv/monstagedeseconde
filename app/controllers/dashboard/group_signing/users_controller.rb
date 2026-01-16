@@ -233,7 +233,7 @@ module Dashboard
       end
 
       def signature_builder
-        @signature_buider = Builders::SignatureBuilder.new(
+        @signature_builder = Builders::SignatureBuilder.new(
           user: current_user,
           context: :web,
           params: user_params
