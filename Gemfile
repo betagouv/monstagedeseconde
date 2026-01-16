@@ -99,7 +99,7 @@ gem "ostruct"
 
 group :development, :test do
   gem "debug"
-  gem "stringio", "3.1.7"
+  # stringio is a default gem in Ruby 3.4+, no need to specify it
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: %i[windows jruby]
   gem "pry-byebug"
