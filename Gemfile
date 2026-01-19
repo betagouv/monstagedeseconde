@@ -93,13 +93,13 @@ gem "active_storage_validations"
 gem "image_processing", "~> 1.2"
 gem "mini_magick"
 
-# temporary
+# temporary - default gems extracted in Ruby 3.4+
 gem "fiddle"
 gem "ostruct"
+gem "stringio"
 
 group :development, :test do
   gem "debug"
-  gem "stringio", "3.1.7"
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: %i[windows jruby]
   gem "pry-byebug"
