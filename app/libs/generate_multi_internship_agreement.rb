@@ -287,7 +287,7 @@ class GenerateMultiInternshipAgreement < Prawn::Document
     end
     if addresses.any?
       paraphing(
-        "La séquence d'observation en milieu professionnel se déroule aux adresses suivantes : " \
+        "La séquence d'observation en milieu professionnel se déroule aux adresses suivantes : \n" \
         "#{addresses.join("\n")}."
       )
     else
