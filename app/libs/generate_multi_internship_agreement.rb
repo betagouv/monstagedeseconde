@@ -279,7 +279,20 @@ class GenerateMultiInternshipAgreement < Prawn::Document
     @pdf.move_down 10
     paraphing_bold("Lieu de la séquence d'observation en milieu professionnel :")
     @pdf.move_up 10
-    paraphing("La séquence d'observation en milieu professionnel se déroule à l'adresse suivante : #{@internship_agreement.internship_address}.")
+    addresses = @corporations.filter_map do |corporation|
+      presenter = corporation.presenter
+      next if presenter.internship_full_address.blank?
+
+      "#{presenter.corporation_name} : #{presenter.internship_full_address}"
+    end
+    if addresses.any?
+      paraphing(
+        "La séquence d'observation en milieu professionnel se déroule aux adresses suivantes : " \
+        "#{addresses.join("\n")}."
+      )
+    else
+      paraphing("La séquence d'observation en milieu professionnel se déroule à l'adresse suivante : #{@internship_agreement.internship_address}.")
+    end
 
     # paraphing("Lieu de la séquence d'observation en milieu professionnel :")
     # paraphing(@internship_agreement.internship_address)
