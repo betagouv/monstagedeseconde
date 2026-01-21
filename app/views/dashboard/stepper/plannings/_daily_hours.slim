@@ -74,7 +74,9 @@ div.fr-my-2w data-controller="daily-hours"
         = form.label :lunch_break, class: 'fr-label'  do
           | Pause déjeuner *
         .text-muted
-          | Saisissez au moins 8 caractères pour décrire la pause déjeuner
+          | Décrivez la pause déjeuner pour chacune des structures accueillantes.
+        .text-muted
+          | Saisissez au moins 8 caractères pour décrire la pause déjeuner.
         = form.text_area :lunch_break,
                          value: form.object.lunch_break,
                          class: "fr-input",

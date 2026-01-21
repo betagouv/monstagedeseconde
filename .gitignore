@@ -45,6 +45,7 @@ yarn-debug.log*
 .old_env
 .cursorrules
 /infra/commit.sh
+CLAUDE.md
 
 /doc/env.sh
 /doc/output/internship_offers/create/*
