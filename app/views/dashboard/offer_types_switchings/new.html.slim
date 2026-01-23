@@ -7,7 +7,7 @@
 
 = form_with url: dashboard_validation_choix_type_offre_path,
             method: :post,
-            data: {turbo: false} do |f|
+            data: {turbo: false, controller: "offer-type-choice"} do |f|
   .row.fr-my-3w
     .col
       h1.h2 Déposer une offre de stage
@@ -20,7 +20,8 @@
             = f.radio_button :choice,
                              "for_my_company",
                              id: "radio-rich-0",
-                             name: "offer_type_choice"
+                             name: "offer_type_choice",
+                             data: { action: "offer-type-choice#toggleAlert" }
             label.fr-label for="radio-rich-0"
               span Je propose un stage au nom d’une seule structure
             .fr-radio-rich__pictogram
@@ -36,7 +37,8 @@
             = f.radio_button :choice,
                              "for_multiple_companies",
                               id: "radio-rich-2",
-                              name: "offer_type_choice"
+                              name: "offer_type_choice",
+                              data: { action: "offer-type-choice#toggleAlert" }
             label.fr-label for="radio-rich-2"
               span
                 span.fr-badge.fr-badge--new.fr-badge--no-icon.fr-badge--sm.fr-mr-1v> Nouveau
@@ -48,6 +50,18 @@
                           height: "80px",
                           :"aria-hidden" => "true",
                           class: "fr-artwork"
+    .fr-col-md-6.fr-pl-2w.fr-hidden data-offer-type-choice-target="alert"
+      .fr-alert.fr-alert--info role="alert"
+
+        p
+          |
+            Dès le début du processus de dépôt d'offre, si la case « offre multi entreprises » est cochée : « Les stages « multi-entreprises »
+            permettent à un ou plusieurs élèves de découvrir un ou plusieurs métiers dans plusieurs entreprises/structures engagées d'un même
+            territoire, afin de diversifier leur expérience et leur découverte du monde professionnel. Cette modalité, facultative, doit rester
+            compatible avec les objectifs d'apprentissage des élèves, il convient donc de limiter le nombre d'entreprises/structures d'accueil
+            pour permettre une véritable découverte et observation du ou des métiers présentés », et cet avertissement serait répété/affiché à
+            nouveau à la phase de saisie des « Structures accueillantes
+    
   - if Flipper.enabled?(:multi_offer, current_user)
     .row.fr-mb-3w.multi-step-0
       .fr-col-md-12

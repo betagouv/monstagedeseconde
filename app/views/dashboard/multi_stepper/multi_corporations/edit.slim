@@ -16,8 +16,6 @@
         span.fr-text--bold Étape suivante :
         |  Planning
 
-= render 'bubble_info'
-
 .fr-grid-row.fr-grid-row--gutters
   .fr-col-md-7
     turbo-frame id="corporation_form_frame"
@@ -28,6 +26,7 @@
   .fr-col-md-5
     turbo-frame id="corporations_list"
       = render 'dashboard/multi_stepper/multi_corporations/corporations/list', multi_corporation: @multi_corporation
+    = render 'bubble_info'
 
 .fr-grid-row.fr-mt-4w
   .fr-col-12
