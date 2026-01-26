@@ -1587,6 +1587,47 @@ ALTER SEQUENCE public.invitations_id_seq OWNED BY public.invitations.id;
 
 
 --
+-- Name: letter_thief_email_messages; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.letter_thief_email_messages (
+    id bigint NOT NULL,
+    "to" text,
+    "from" text,
+    sender text,
+    cc text,
+    bcc text,
+    subject character varying,
+    body_text text,
+    body_html text,
+    headers text,
+    content_type character varying,
+    intercepted_at timestamp(6) without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: letter_thief_email_messages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.letter_thief_email_messages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: letter_thief_email_messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.letter_thief_email_messages_id_seq OWNED BY public.letter_thief_email_messages.id;
+
+
+--
 -- Name: ministry_groups; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2881,6 +2922,13 @@ ALTER TABLE ONLY public.invitations ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: letter_thief_email_messages id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.letter_thief_email_messages ALTER COLUMN id SET DEFAULT nextval('public.letter_thief_email_messages_id_seq'::regclass);
+
+
+--
 -- Name: ministry_groups id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3346,6 +3394,14 @@ ALTER TABLE ONLY public.internship_offers
 
 ALTER TABLE ONLY public.invitations
     ADD CONSTRAINT invitations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: letter_thief_email_messages letter_thief_email_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.letter_thief_email_messages
+    ADD CONSTRAINT letter_thief_email_messages_pkey PRIMARY KEY (id);
 
 
 --
@@ -4173,6 +4229,13 @@ CREATE INDEX index_internship_offers_on_type ON public.internship_offers USING b
 --
 
 CREATE INDEX index_invitations_on_user_id ON public.invitations USING btree (user_id);
+
+
+--
+-- Name: index_letter_thief_email_messages_on_intercepted_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_letter_thief_email_messages_on_intercepted_at ON public.letter_thief_email_messages USING btree (intercepted_at);
 
 
 --
@@ -5315,6 +5378,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260126172713'),
 ('20260115112842'),
 ('20260102092331'),
 ('20251222092900'),
