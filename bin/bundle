@@ -1,5 +1,16 @@
-#!/usr/bin/env ruby
-# frozen_string_literal: true
+mkdir -p bin
+cat > bin/bundle <<'EOF'
+#!/usr/bin/env bash
+set -e
 
-ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
-load Gem.bin_path('bundler', 'bundle')
+BUNDLER_VERSION="2.5.23"
+
+if ! gem list bundler -i -v "$BUNDLER_VERSION" > /dev/null; then
+  echo "Installing bundler $BUNDLER_VERSION..."
+  gem install bundler -v "$BUNDLER_VERSION" --no-document
+fi
+
+exec bundle _${BUNDLER_VERSION}_ "$@"
+EOF
+
+chmod +x bin/bundle
