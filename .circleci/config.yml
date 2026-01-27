@@ -53,9 +53,9 @@ jobs: # a collection of steps
             google-chrome --version
             node -v
             ruby -v
-      - run:
-          name: Install Bundler 4.0.4
-          command: gem install bundler -v 4.0.4
+            yarn -v
+            bundle -v
+
       # Restore bundle cache
       # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
       - restore_cache:
@@ -65,6 +65,10 @@ jobs: # a collection of steps
       - run: # Install Ruby dependencies
           name: Bundle Install
           command: bundle check || bundle install
+
+      - run:
+          name: Update Bundler
+          command: gem update bundler
 
       # Store bundle cache for Ruby dependencies
       - save_cache:
