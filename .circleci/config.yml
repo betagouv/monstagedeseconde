@@ -28,6 +28,7 @@ jobs: # a collection of steps
           PGUSER: monstage_test
           RAILS_ENV: test
           HOST: https://www.example.fr
+
       # - image: cimg/postgres:16.2-postgis # database image with support of current dir
       - image: cimg/postgres:15.6-postgis # database image with support of current dir
         environment: # environment variables for database
@@ -53,13 +54,13 @@ jobs: # a collection of steps
           keys:
             - monstage-bundle-cachebust{{ checksum "Gemfile.lock" }}
 
-      - run: # Install Ruby dependencies
-          name: Bundle Install
-          command: bundle check || bundle install
+      - run:
+          name: Install Bundler
+          command: gem install bundler -v "~> 2.5"
 
       - run:
-          name: Update Bundler
-          command: gem install bundler -v "~> 2.5"
+          name: Bundle Install
+          command: bundle install
 
       - run:
           name: versions
