@@ -89,6 +89,8 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: ENV.fetch("HOST") }
   config.action_mailer.preview_paths << "#{Rails.root}/lib/mailer_previews"
 
+  LetterThief.observer_enabled = false if defined?(LetterThief)
+
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
     user_name: ENV['SMTP_USERNAME'],
