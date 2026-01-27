@@ -97,7 +97,7 @@ gem "mini_magick"
 # temporary - default gems extracted in Ruby 3.4+
 gem "fiddle"
 gem "ostruct"
-gem "stringio"
+gem "stringio", "~> 3.2.0"
 
 group :development, :test do
   gem "debug"
