@@ -87,7 +87,7 @@ jobs: # a collection of steps
 
       - run:
           name: Assets precompile
-          command: bundle exec rake webpacker:compile
+          command: bundle _2.5.23_ exec rake webpacker:compile
 
       - save_cache:
           name: Store yarn cache
@@ -113,7 +113,8 @@ jobs: # a collection of steps
 
       - run:
           name: Run TestUnit
-          command: PARALLEL_WORKERS=4 bundle exec rails test
+          command: PARALLEL_WORKERS=4 bundle _2.5.23_ exec rails test
+
       # beware, system tests on CI with more than 1 PARALLEL_WORKERS leads to OOM errors
       # - run:
       #     name: Run Desktop TestSystem with headless_chrome
