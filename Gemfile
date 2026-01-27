@@ -14,6 +14,7 @@ gem "mutex_m"
 gem "pg"
 gem "rack", ">= 3.0"
 gem "rake"
+# gem 'openssl'
 
 # pg extension for geo queries
 # wait for : https://github.com/rgeo/activerecord-postgis-adapter/tree/ar61 to be merge into master
@@ -70,7 +71,6 @@ gem "prismic.io", require: "prismic"
 gem "cancancan"
 gem "devise"
 gem "devise-i18n"
-# gem 'openssl'
 
 # model/utils
 gem "aasm"
@@ -97,7 +97,7 @@ gem "mini_magick"
 # temporary - default gems extracted in Ruby 3.4+
 gem "fiddle"
 gem "ostruct"
-gem "stringio", "~> 3.2"
+gem "stringio"
 
 group :development, :test do
   gem "debug"
@@ -117,9 +117,9 @@ group :development do
   gem "activerecord-explain-analyze"
   gem "ffi-rzmq"
   gem "jupyter_on_rails"
+  gem "launchy"
   gem "letter_thief"
   gem "spring", "3.0.0"
-  gem "launchy"
 end
 
 group :test do
