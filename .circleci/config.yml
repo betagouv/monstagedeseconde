@@ -47,15 +47,6 @@ jobs: # a collection of steps
           install-yarn: true
           node-version: '22.14'
 
-      - run:
-          name: versions
-          command: |
-            google-chrome --version
-            node -v
-            ruby -v
-            yarn -v
-            bundle -v
-
       # Restore bundle cache
       # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
       - restore_cache:
@@ -68,7 +59,17 @@ jobs: # a collection of steps
 
       - run:
           name: Update Bundler
-          command: gem update bundler
+          command: gem install bundler -v "~> 2.5"
+
+      - run:
+          name: versions
+          command: |
+            google-chrome --version
+            node -v
+            ruby -v
+            yarn -v
+            bundle -v
+            gem list stringio
 
       # Store bundle cache for Ruby dependencies
       - save_cache:
@@ -114,7 +115,7 @@ jobs: # a collection of steps
 
       - run:
           name: Run TestUnit
-          command: PARALLEL_WORKERS=4 bundle exec rake test
+          command: PARALLEL_WORKERS=4 bundle exec rails test
       # beware, system tests on CI with more than 1 PARALLEL_WORKERS leads to OOM errors
       # - run:
       #     name: Run Desktop TestSystem with headless_chrome
