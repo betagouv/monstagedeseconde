@@ -1,5 +1,3 @@
-mkdir -p bin
-cat > bin/bundle <<'EOF'
 #!/usr/bin/env bash
 set -e
 
@@ -11,6 +9,3 @@ if ! gem list bundler -i -v "$BUNDLER_VERSION" > /dev/null; then
 fi
 
 exec bundle _${BUNDLER_VERSION}_ "$@"
-EOF
-
-chmod +x bin/bundle
