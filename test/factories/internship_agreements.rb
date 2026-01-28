@@ -37,6 +37,7 @@ FactoryBot.define do
     lunch_break { '1h dans la cantine. Repas fourni.' }
     uuid { SecureRandom.uuid }
     access_token { SecureRandom.hex(10) } # 20 characters
+    pre_selected_for_signature { false }
 
     before(:create) do |ia|
       academy_region = AcademyRegion.find_or_create_by(name: 'Ile-de-France')

@@ -14,6 +14,7 @@ gem "mutex_m"
 gem "pg"
 gem "rack", ">= 3.0"
 gem "rake"
+# gem 'openssl'
 
 # pg extension for geo queries
 # wait for : https://github.com/rgeo/activerecord-postgis-adapter/tree/ar61 to be merge into master
@@ -70,6 +71,7 @@ gem "prismic.io", require: "prismic"
 gem "cancancan"
 gem "devise"
 gem "devise-i18n"
+gem 'openssl'
 
 # model/utils
 gem "aasm"
@@ -93,13 +95,12 @@ gem "active_storage_validations"
 gem "image_processing", "~> 1.2"
 gem "mini_magick"
 
-# temporary
+# temporary - default gems extracted in Ruby 3.4+
 gem "fiddle"
 gem "ostruct"
 
 group :development, :test do
   gem "debug"
-  gem "stringio", "3.1.7"
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: %i[windows jruby]
   gem "pry-byebug"

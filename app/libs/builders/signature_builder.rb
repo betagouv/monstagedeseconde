@@ -90,12 +90,15 @@ module Builders
       end
 
       internship_agreements = internship_agreement_ids.map { |id| InternshipAgreement.find(id.to_i) }
+      internship_agreements.each { |ia| ia.update(pre_selected_for_signature: true) }
 
       if internship_agreements.empty? || internship_agreements.any? { |ia| ia.from_multi? == false }
         raise ArgumentError, 'Invalid internship agreement type'
       end
 
       corporations = []
+      # the internship_agreements may be related to different internship_offers 
+      # and consequently to different corporations
       internship_agreements.each do |internship_agreement|
         internship_agreement.internship_offer.multi_corporation.corporations.each do |corporation|
           corporations << corporation
