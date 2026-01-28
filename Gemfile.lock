@@ -594,7 +594,7 @@ GEM
       rubystats (>= 0.3.0)
       sinatra (>= 1.2.6)
     spring (3.0.0)
-    stringio (3.1.2)
+    stringio (3.2.0)
     temple (0.10.4)
     thor (1.5.0)
     tilt (2.7.0)
@@ -737,7 +737,6 @@ DEPENDENCIES
   slim-rails
   split
   spring (= 3.0.0)
-  stringio (= 3.1.2)
   tzinfo-data
   uglifier
   validates_zipcode
@@ -750,4 +749,4 @@ RUBY VERSION
    ruby 3.3.6p108
 
 BUNDLED WITH
-   2.7.2
+   2.6.9

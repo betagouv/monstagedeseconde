@@ -54,9 +54,9 @@ jobs: # a collection of steps
           keys:
             - monstage-bundle-cachebust{{ checksum "Gemfile.lock" }}
       - run:
-          name: Install and Use Bundler 2.5
+          name: Install and Use Bundler 2.7.2
           command: |
-            gem install bundler -v 2.5.23 --no-document
+            gem install bundler -v 2.7.2 --no-document
             unset BUNDLER_VERSION
             bundle install
 
