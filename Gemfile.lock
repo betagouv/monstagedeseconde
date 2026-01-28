@@ -216,7 +216,7 @@ GEM
     ffi (1.17.3-x86_64-darwin)
     ffi (1.17.3-x86_64-linux-gnu)
     ffi (1.17.3-x86_64-linux-musl)
-    fiddle (1.1.8)
+    fiddle (1.1.6)
     flipper (1.3.6)
       concurrent-ruby (< 2)
     flipper-active_record (1.3.6)
@@ -684,7 +684,7 @@ DEPENDENCIES
   email_inquire
   factory_bot_rails
   ffaker
-  fiddle
+  fiddle (= 1.1.6)
   flipper
   flipper-active_record
   flipper-active_support_cache_store

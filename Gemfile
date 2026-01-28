@@ -95,9 +95,9 @@ gem "image_processing", "~> 1.2"
 gem "mini_magick"
 
 # temporary - default gems extracted in Ruby 3.4+
-gem "fiddle"
 gem "ostruct"
 gem "stringio", "3.1.2"
+gem "fiddle", "1.1.6"
 
 group :development, :test do
   gem "debug"
