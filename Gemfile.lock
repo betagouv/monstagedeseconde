@@ -97,7 +97,7 @@ GEM
     ansi (1.5.0)
     ast (2.4.3)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1209.0)
+    aws-partitions (1.1210.0)
     aws-sdk-core (3.241.4)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
@@ -165,9 +165,6 @@ GEM
     dalli (4.2.0)
       logger
     damerau-levenshtein (1.3.3)
-    daru (0.3)
-      packable (~> 1.3.13)
-    data_uri (0.1.0)
     date (3.5.1)
     debug (1.11.1)
       irb (~> 1.10)
@@ -219,10 +216,6 @@ GEM
     ffi (1.17.3-x86_64-darwin)
     ffi (1.17.3-x86_64-linux-gnu)
     ffi (1.17.3-x86_64-linux-musl)
-    ffi-rzmq (2.0.7)
-      ffi-rzmq-core (>= 1.0.7)
-    ffi-rzmq-core (1.0.7)
-      ffi
     fiddle (1.1.8)
     flipper (1.3.6)
       concurrent-ruby (< 2)
@@ -269,19 +262,8 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    iruby (0.8.2)
-      data_uri (~> 0.1)
-      ffi-rzmq
-      irb
-      logger
-      mime-types (>= 3.3.1)
-      multi_json (~> 1.11)
     jmespath (1.6.2)
     json (2.18.0)
-    jupyter_on_rails (0.13.0)
-      daru
-      iruby
-      railties
     jwt (3.1.2)
       base64
     kaminari (1.2.2)
@@ -329,7 +311,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0113)
+    mime-types-data (3.2026.0127)
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
@@ -346,7 +328,6 @@ GEM
     minitest-stub-const (0.6)
     minitest-stub_any_instance (1.0.3)
     msgpack (1.8.0)
-    multi_json (1.19.1)
     multi_xml (0.8.1)
       bigdecimal (>= 3.1, < 5)
     mustermann (3.0.4)
@@ -396,7 +377,6 @@ GEM
     orm_adapter (0.5.0)
     ostruct (0.6.3)
     ovh-rest (0.0.5)
-    packable (1.3.18)
     parallel (1.27.0)
     parser (3.3.10.1)
       ast (~> 2.4.1)
@@ -424,7 +404,7 @@ GEM
     prawn-table (0.2.2)
       prawn (>= 1.3.0, < 3.0.0)
     prettyprint (0.2.0)
-    prism (1.8.0)
+    prism (1.9.0)
     prismic.io (1.8.2)
       hashery (~> 2.1.1)
     pry (0.16.0)
@@ -704,7 +684,6 @@ DEPENDENCIES
   email_inquire
   factory_bot_rails
   ffaker
-  ffi-rzmq
   fiddle
   flipper
   flipper-active_record
@@ -714,7 +693,6 @@ DEPENDENCIES
   geocoder
   image_processing (~> 1.2)
   inline_svg
-  jupyter_on_rails
   jwt
   kaminari
   launchy
@@ -771,4 +749,4 @@ RUBY VERSION
    ruby 3.4.7p58
 
 BUNDLED WITH
-   2.5.23
+   2.6.9

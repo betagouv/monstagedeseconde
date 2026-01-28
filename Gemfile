@@ -114,8 +114,8 @@ group :development do
   # Spring speeds up development by keeping your application running in the
   # background. Read more: https://github.com/rails/spring
   gem "activerecord-explain-analyze"
-  gem "ffi-rzmq"
-  gem "jupyter_on_rails"
+  # gem "ffi-rzmq"
+  # gem "jupyter_on_rails"
   gem "launchy"
   gem "letter_thief"
   gem "spring", "3.0.0"
