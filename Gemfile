@@ -95,7 +95,6 @@ gem "mini_magick"
 
 # temporary - default gems extracted in Ruby 3.4+
 gem "ostruct"
-# gem "fiddle", "1.1.6"
 
 group :development, :test do
   gem "debug"
