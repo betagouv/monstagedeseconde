@@ -9,7 +9,6 @@ ruby File.read(".ruby-version").strip
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
 gem "rails", "7.1.4"
-gem "mutex_m"
 # db
 gem "pg"
 gem "rack", ">= 3.0"
@@ -96,7 +95,7 @@ gem "mini_magick"
 
 # temporary - default gems extracted in Ruby 3.4+
 gem "ostruct"
-gem "fiddle", "1.1.6"
+# gem "fiddle", "1.1.6"
 
 group :development, :test do
   gem "debug"

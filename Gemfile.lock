@@ -216,7 +216,6 @@ GEM
     ffi (1.17.3-x86_64-darwin)
     ffi (1.17.3-x86_64-linux-gnu)
     ffi (1.17.3-x86_64-linux-musl)
-    fiddle (1.1.6)
     flipper (1.3.6)
       concurrent-ruby (< 2)
     flipper-active_record (1.3.6)
@@ -680,7 +679,6 @@ DEPENDENCIES
   email_inquire
   factory_bot_rails
   ffaker
-  fiddle (= 1.1.6)
   flipper
   flipper-active_record
   flipper-active_support_cache_store
@@ -703,7 +701,6 @@ DEPENDENCIES
   minitest-retry
   minitest-stub-const
   minitest-stub_any_instance
-  mutex_m
   ostruct
   ovh-rest
   pg
@@ -742,7 +739,7 @@ DEPENDENCIES
   webpacker
 
 RUBY VERSION
-   ruby 3.3.6p108
+   ruby 3.4.7p58
 
 BUNDLED WITH
    2.5.23

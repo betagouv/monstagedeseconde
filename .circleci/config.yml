@@ -18,7 +18,7 @@ jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
     working_directory: ~/project
     docker: # run the steps with Docker
-      - image: cimg/ruby:3.3.6-browsers # ...with this image as the primary container; this is where all `steps` will run
+      - image: cimg/ruby:3.4.7-browsers # ...with this image as the primary container; this is where all `steps` will run
         environment: # environment variables for primary container
           BUNDLE_JOBS: 3
           BUNDLE_RETRY: 3
@@ -71,10 +71,10 @@ jobs: # a collection of steps
             gem list stringio
 
       # Store bundle cache for Ruby dependencies
-      - save_cache:
-          key: monstage-bundle-cachebust{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
+      # - save_cache:
+      #     key: monstage-bundle-cachebust{{ checksum "Gemfile.lock" }}
+      #     paths:
+      #       - vendor/bundle
 
       - restore_cache:
           name: Restore yarn cache
@@ -88,7 +88,7 @@ jobs: # a collection of steps
 
       - run:
           name: Assets precompile
-          command: bundle exec rake webpacker:compile
+          command: bundle _2.5.23_ exec rake webpacker:compile
 
       - save_cache:
           name: Store yarn cache
@@ -110,11 +110,11 @@ jobs: # a collection of steps
             DATABASE_URL: "postgis://monstage_test:monstage_test@localhost:5432/monstage_test"
           command: |
             sudo apt-get update --allow-releaseinfo-change && sudo apt install postgresql-client
-            bundle exec bin/rails db:create db:schema:load --trace
+            bundle _2.5.23_ exec bin/rails db:create db:schema:load --trace
 
       - run:
           name: Run TestUnit
-          command: PARALLEL_WORKERS=4 bundle exec rails test
+          command: PARALLEL_WORKERS=4 bundle _2.5.23_ exec rails test
 
       # beware, system tests on CI with more than 1 PARALLEL_WORKERS leads to OOM errors
       # - run:
