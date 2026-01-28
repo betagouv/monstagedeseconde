@@ -736,4 +736,148 @@ class IndexTest < ActionDispatch::IntegrationTest
   # test 'GET #index as visitor filters by weeks' do
   #   assert false
   # end
+
+  #
+  # Fallback search tests
+  #
+  test 'GET #index with keyword that matches returns offers without fallback' do
+    travel_to(Date.new(2024, 3, 1)) do
+      sector = create(:sector)
+      offer = create(:weekly_internship_offer_2nde,
+                     title: 'Developpeur web',
+                     sector: sector,
+                     coordinates: Coordinates.paris)
+
+      dictionnary_api_call_stub
+      SyncInternshipOfferKeywordsJob.perform_now
+
+      get internship_offers_path(
+        keyword: 'Developpeur',
+        latitude: Coordinates.paris[:latitude],
+        longitude: Coordinates.paris[:longitude],
+        format: :json
+      )
+
+      assert_response :success
+      assert_json_presence_of(json_response, offer)
+      assert_equal false, json_response['isFallbackSearch']
+    end
+  end
+
+  test 'GET #index with keyword that does not match triggers fallback and returns offers' do
+    travel_to(Date.new(2024, 3, 1)) do
+      sector = create(:sector)
+      offer = create(:weekly_internship_offer_2nde,
+                     title: 'Comptable',
+                     sector: sector,
+                     coordinates: Coordinates.paris)
+
+      get internship_offers_path(
+        keyword: 'motcleinexistant123xyz',
+        latitude: Coordinates.paris[:latitude],
+        longitude: Coordinates.paris[:longitude],
+        format: :json
+      )
+
+      assert_response :success
+      assert_json_presence_of(json_response, offer)
+      assert_equal true, json_response['isFallbackSearch']
+    end
+  end
+
+  test 'GET #index with sector_ids that do not match triggers fallback and returns offers' do
+    travel_to(Date.new(2024, 3, 1)) do
+      sector_with_offer = create(:sector, name: 'Informatique')
+      sector_without_offer = create(:sector, name: 'Agriculture')
+      offer = create(:weekly_internship_offer_2nde,
+                     title: 'Stage informatique',
+                     sector: sector_with_offer,
+                     coordinates: Coordinates.paris)
+
+      get internship_offers_path(
+        sector_ids: [sector_without_offer.id],
+        latitude: Coordinates.paris[:latitude],
+        longitude: Coordinates.paris[:longitude],
+        format: :json
+      )
+
+      assert_response :success
+      assert_json_presence_of(json_response, offer)
+      assert_equal true, json_response['isFallbackSearch']
+    end
+  end
+
+  test 'GET #index with sector_ids that match returns offers without fallback' do
+    travel_to(Date.new(2024, 3, 1)) do
+      sector = create(:sector, name: 'Informatique')
+      offer = create(:weekly_internship_offer_2nde,
+                     title: 'Stage informatique',
+                     sector: sector,
+                     coordinates: Coordinates.paris)
+
+      get internship_offers_path(
+        sector_ids: [sector.id],
+        latitude: Coordinates.paris[:latitude],
+        longitude: Coordinates.paris[:longitude],
+        format: :json
+      )
+
+      assert_response :success
+      assert_json_presence_of(json_response, offer)
+      assert_equal false, json_response['isFallbackSearch']
+    end
+  end
+
+  test 'GET #index without optional filters does not trigger fallback' do
+    travel_to(Date.new(2024, 3, 1)) do
+      offer = create(:weekly_internship_offer_2nde,
+                     coordinates: Coordinates.paris)
+
+      get internship_offers_path(
+        latitude: Coordinates.paris[:latitude],
+        longitude: Coordinates.paris[:longitude],
+        format: :json
+      )
+
+      assert_response :success
+      assert_json_presence_of(json_response, offer)
+      assert_equal false, json_response['isFallbackSearch']
+    end
+  end
+
+  test 'GET #index with no results even after fallback returns empty with fallback flag' do
+    travel_to(Date.new(2024, 3, 1)) do
+      # No offers created - search should return empty even with fallback
+      get internship_offers_path(
+        keyword: 'inexistant',
+        latitude: Coordinates.bordeaux[:latitude],
+        longitude: Coordinates.bordeaux[:longitude],
+        format: :json
+      )
+
+      assert_response :success
+      assert_empty json_response['internshipOffers']
+      # Fallback was attempted but no results
+      assert_equal true, json_response['isFallbackSearch']
+    end
+  end
+
+  test 'GET #index fallback returns correct seats count' do
+    travel_to(Date.new(2024, 3, 1)) do
+      offer = create(:weekly_internship_offer_2nde,
+                     max_candidates: 5,
+                     coordinates: Coordinates.paris)
+
+      get internship_offers_path(
+        keyword: 'motcleinexistant',
+        latitude: Coordinates.paris[:latitude],
+        longitude: Coordinates.paris[:longitude],
+        format: :json
+      )
+
+      assert_response :success
+      assert_equal true, json_response['isFallbackSearch']
+      assert_equal 5, json_response['seats']
+    end
+  end
 end
