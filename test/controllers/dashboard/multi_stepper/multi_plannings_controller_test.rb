@@ -114,7 +114,7 @@ module Dashboard::MultiStepper
       created_offer = InternshipOffer.last
       assert_equal true, created_offer.from_multi?
       assert_equal @multi_coordinator.sector_id, created_offer.sector_id
-      assert_equal [school_1.id, school_2.id], created_offer.schools.pluck(:id)
+      assert_equal [school_1.id, school_2.id].sort, created_offer.schools.pluck(:id).sort
     end
   end
 end
