@@ -32,19 +32,27 @@ export default class extends Controller {
   }
 
   checkFields() {
-    const allFieldsFilled = this.mandatoryFieldTargets.every(field => {
+    const allFieldsFilled = this.mandatoryFieldTargets.every((field) => {
+      // Skip fields that are hidden (in containers with d-none class or display: none)
+      const isVisible = field.offsetParent !== null &&
+        !field.closest('.d-none') &&
+        !field.closest('[style*="display: none"]');
+
+      if (!isVisible) {
+        return true; // Skip hidden fields - consider them as "filled"
+      }
+
       // For select elements, check if a value is selected (not empty)
       // For other inputs, check if length meets minimum requirement
       if (field.tagName === 'SELECT') {
         return field.value && field.value !== '';
-      } else {
-        return field.value.length >= this.minimumLengthValue;
       }
+      return field.value.length >= this.minimumLengthValue;
     });
-    this.disabledFieldTarget.disabled = !allFieldsFilled
+    this.disabledFieldTarget.disabled = !allFieldsFilled;
   }
 
-  fieldChange(event){
+  fieldChange(event) {
     this.checkValidation();
   }
 
@@ -52,19 +60,26 @@ export default class extends Controller {
     alert('Hello');
   }
 
-  areAllMandatoryFieldsFilled(){
+  areAllMandatoryFieldsFilled() {
     let allMandatoryFieldsAreFilled = true;
     this.mandatoryFieldTargets.forEach((field) => {
+      // Skip fields that are hidden (in containers with d-none class or display: none)
+      const isVisible = field.offsetParent !== null &&
+        !field.closest('.d-none') &&
+        !field.closest('[style*="display: none"]');
+
+      if (!isVisible) {
+        return; // Skip hidden fields
+      }
+
       // For select elements, check if a value is selected (not empty)
       // For other inputs, check if length meets minimum requirement
       if (field.tagName === 'SELECT') {
         if (!field.value || field.value === '') {
           allMandatoryFieldsAreFilled = false;
         }
-      } else {
-        if (field.value.length <= this.minimumLengthValue) {
-          allMandatoryFieldsAreFilled = false;
-        }
+      } else if (field.value.length < this.minimumLengthValue) {
+        allMandatoryFieldsAreFilled = false;
       }
     });
     return allMandatoryFieldsAreFilled;
@@ -78,8 +93,9 @@ export default class extends Controller {
     });
   }
 
-  checkValidation(){
-    if(this.areAllMandatoryFieldsFilled()){
+  checkValidation() {
+    const allFilled = this.areAllMandatoryFieldsFilled();
+    if (allFilled) {
       this.setDisabledFieldsTo('enabled');
     } else {
       this.setDisabledFieldsTo('disabled');
