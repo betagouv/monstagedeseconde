@@ -2,6 +2,7 @@ version: 2.1
 orbs:
   # node: circleci/node@6.1.0
   node: circleci/node@5.1.0
+  ruby: circleci/ruby@2.1.0
   browser-tools: circleci/browser-tools@1.5.3
 jobs: # a collection of steps
   test:
@@ -23,12 +24,10 @@ jobs: # a collection of steps
           BUNDLE_JOBS: 3
           BUNDLE_RETRY: 3
           BUNDLE_PATH: vendor/bundle
-          BUNDLER_VERSION: 2.6.9
           PGHOST: 127.0.0.1
           PGUSER: monstage_test
           RAILS_ENV: test
           HOST: https://www.example.fr
-
       # - image: cimg/postgres:16.2-postgis # database image with support of current dir
       - image: cimg/postgres:15.6-postgis # database image with support of current dir
         environment: # environment variables for database
@@ -48,27 +47,12 @@ jobs: # a collection of steps
           install-yarn: true
           node-version: '22.14'
 
-      # Restore bundle cache
-      # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-      - restore_cache:
-          keys:
-            - monstage-bundle-cachebust{{ checksum "Gemfile.lock" }}
-      - run:
-          name: Install and Use Bundler 2.5.23
-          command: |
-            gem install bundler -v 2.5.23 --no-document
-            unset BUNDLER_VERSION
-            bundle install
-
       - run:
           name: versions
           command: |
             google-chrome --version
             node -v
             ruby -v
-            yarn -v
-            bundle -v
-            gem list stringio
 
       # Restore bundle cache
       # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
@@ -83,6 +67,11 @@ jobs: # a collection of steps
             gem install fiddle -v 1.1.8
             bundle check || bundle install
 
+      # Store bundle cache for Ruby dependencies
+      - save_cache:
+          key: monstage-bundle-cachebust{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
 
       - restore_cache:
           name: Restore yarn cache
@@ -96,7 +85,7 @@ jobs: # a collection of steps
 
       - run:
           name: Assets precompile
-          command: bundle _2.5.23_ exec rake webpacker:compile
+          command: bundle exec rake webpacker:compile
 
       - save_cache:
           name: Store yarn cache
@@ -118,12 +107,11 @@ jobs: # a collection of steps
             DATABASE_URL: "postgis://monstage_test:monstage_test@localhost:5432/monstage_test"
           command: |
             sudo apt-get update --allow-releaseinfo-change && sudo apt install postgresql-client
-            bundle _2.5.23_ exec bin/rails db:create db:schema:load --trace
+            bundle exec bin/rails db:create db:schema:load --trace
 
       - run:
           name: Run TestUnit
-          command: PARALLEL_WORKERS=4 bundle _2.5.23_ exec rails test
-
+          command: PARALLEL_WORKERS=4 bundle exec rake test
       # beware, system tests on CI with more than 1 PARALLEL_WORKERS leads to OOM errors
       # - run:
       #     name: Run Desktop TestSystem with headless_chrome
@@ -178,4 +166,3 @@ workflows:
             branches:
               only:
                 - review
-
