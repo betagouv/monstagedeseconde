@@ -71,7 +71,6 @@ gem "prismic.io", require: "prismic"
 gem "cancancan"
 gem "devise"
 gem "devise-i18n"
-gem 'openssl'
 
 # model/utils
 gem "aasm"

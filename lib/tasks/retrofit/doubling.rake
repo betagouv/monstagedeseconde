@@ -52,9 +52,10 @@ namespace :retrofit do
         offer_year = offer.weeks.last.year
         weeks_seconde = offer.weeks.select { |week| week.year == offer_year && week.number > 24 && week.number < 27}
         weeks_troisieme_quatrieme = offer.weeks.reject { |week| week.year == offer_year && week.number > 24 && week.number < 27}
-        seconde_favorites = Favorite.joins(:user)
+        seconde_favorites_user_ids = Favorite.joins(:user)
                                     .where(internship_offer_id: offer.id)
                                     .where(user: { grade_id: Grade.seconde.id, discarded_at: nil })
+                                    .pluck(:user_id)
         troisieme_favorites_user_ids = Favorite.joins(:user)
                                                .where(internship_offer_id: offer.id)
                                                .where(user: { grade_id: Grade.troisieme_et_quatrieme.ids, discarded_at: nil })
@@ -66,7 +67,7 @@ namespace :retrofit do
           # No change on internship applications as from_api offers don't have any
           # no change on history, just keep it as is
           offer.schools = res_schools[:schools_seconde]
-          offer.favorites = seconde_favorites
+          offer.favorites = Favorite.where(user_id: seconde_favorites_user_ids, internship_offer_id: offer.id)
           offer.weeks = weeks_seconde
           offer.save!
         else # weekly framed , multi offers
@@ -96,9 +97,12 @@ namespace :retrofit do
             seconde_offer.grades = [Grade.seconde]
             seconde_offer.weeks = weeks_seconde
             seconde_offer.mother_id = nil
-            seconde_offer.favorites = seconde_favorites
+            Favorite.where(user_id: seconde_favorites_user_ids, internship_offer_id: offer.id)
+                    .update_all(internship_offer_id: seconde_offer.id)
+            # seconde_offer.favorites = Favorite.where(user_id: seconde_favorites_user_ids, internship_offer_id: offer.id)
+            seconde_offer.favorites.reload
             seconde_offer.schools = res_schools[:schools_seconde]
-            seconde_offer.save!
+            seconde_offer.reload.save!
 
             next if weeks_troisieme_quatrieme.empty?
 
@@ -116,12 +120,12 @@ namespace :retrofit do
               PrettyConsole.say_in_red(error_message)
             end
 
-            # reassign favorites
-            unless troisieme_favorites_user_ids.empty? 
-              troisieme_favorites_user_ids.each do |user_id|
-                Favorite.create(internship_offer: new_offer, user_id: user_id)
-              end
+            # reassign favorites when students exist or when offer still is valid 
+            unless troisieme_favorites_user_ids.empty? || new_offer.last_date < Date.today
+              Favorite.where(user_id: troisieme_favorites_user_ids, internship_offer_id: offer.id)
+                      .update_all(internship_offer_id: new_offer.id)
             end
+            new_offer.save!
 
             # reassign applications
             every_applications = seconde_offer.internship_applications.to_a
@@ -146,7 +150,9 @@ namespace :retrofit do
 
             # reassign reserved_schools
             new_offer.schools = res_schools[:schools_troisieme_quatrieme]
-            # new_offer.save!
+            # save the associations
+            new_offer.save!
+            seconde_offer.save!
           end
         end
       end
