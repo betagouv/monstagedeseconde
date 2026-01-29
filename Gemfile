@@ -115,7 +115,6 @@ group :development do
   # gem "ffi-rzmq"
   # gem "jupyter_on_rails"
   gem "launchy"
-  gem "letter_thief"
   gem "spring", "3.0.0"
 end
 
@@ -144,4 +143,8 @@ end
 group :test, :development, :review do
   gem "factory_bot_rails"
   gem "ffaker"
+end
+
+group :review, :development do
+  gem "letter_thief"
 end
