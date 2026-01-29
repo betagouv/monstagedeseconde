@@ -46,7 +46,13 @@ module InternshipAgreements
               {status: 'enabled', text: 'Envoyer en signature'}
             end
           elsif current_user.school_management? && current_user.can_sign?(@internship_agreement)
-             {status: 'enabled', text: 'Signer'}
+            if @internship_agreement.signed_by_school_management?
+              {status: 'disabled', text: 'Signer'}
+            else
+              {status: 'enabled', text: 'Signer'}
+            end
+          else
+            {status: 'hidden', text: ''}
           end
         else
           if user_signed_condition?
