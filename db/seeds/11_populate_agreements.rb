@@ -1,6 +1,7 @@
 
 def populate_agreements
   troisieme_applications_offers = InternshipApplications::WeeklyFramed.troisieme.approved
+  troisieme_multi_applications = troisieme_applications_offers.select { |ia| ia.internship_offer.from_multi? }
   agreement_0 = Builders::InternshipAgreementBuilder.new(user: troisieme_applications_offers[0].employer)
                                                     .new_from_application(troisieme_applications_offers[0])
   agreement_0.aasm_state = :draft
@@ -26,6 +27,14 @@ def populate_agreements
     agreement_3.save! #draft state by default
   else
     puts "Agreement 3 is invalid: #{agreement_3.errors.full_messages.join(', ')}"
+  end
+
+  agreement_4 = Builders::InternshipAgreementBuilder.new(user: employer)
+                                                    .new_from_application(InternshipApplications::Multi.approved.last)
+  if agreement_4.valid?
+    agreement_4.save! #draft state by default
+  else
+    puts "Agreement 4 is invalid: #{agreement_4.errors.full_messages.join(', ')}"
   end
 end
 

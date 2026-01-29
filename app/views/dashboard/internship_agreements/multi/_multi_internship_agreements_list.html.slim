@@ -1,17 +1,8 @@
 .employer-non-sticky.fr-mt-4w [data-controller='group-signing'
   data-group-signing-counter-value='0'
   data-group-signing-multi-value='true'
-  data-group-signing-user-type-param="#{current_user.type}"
+  data-group-signing-user-type-value="#{current_user.type}"
   data-group-signing-max-counter-value='0']
-
-  / .fr-callout.fr-fi-information-line
-  /   p.fr-callout__title Signez votre convention en ligne !
-  /   p.fr-callout__text
-  /     |
-  /       La signature de la convention de stage peut s’effectuer en
-  /       ligne, de manière totalement dématérialisée et sécurisée.
-  /       Vous préférez la signature traditionnelle en version papier ?
-  /       Optez pour l’impression.
 
   - if current_user.school_management?
     - url = start_signing_dashboard_user_path(id: current_user.id)
@@ -35,10 +26,10 @@
                       input.select-general-internship-agreements [
                           type='checkbox'
                           name='select-general-internship-agreements'
-                          id='select-general-internship-agreements'
+                          id='select-general-internship-agreements-multi'
                           data-action="group-signing#toggleSignThemAll"
                           data-group-signing-target="generalCtaSelectBox"]
-                      label.fr-mt-1w for='select-general-internship-agreements'
+                      label.fr-mt-1w for='select-general-internship-agreements-multi'
                         span style='color: #f5f5f5;' .
                   th.col-sm-2.fr-pl-3w.d-flex.align-items-center Elève
                   th.col-sm-2.fr-pl-3w.d-flex.align-items-center Offre de stage
