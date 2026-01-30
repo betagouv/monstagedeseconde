@@ -17,14 +17,14 @@ module UserWithSchool
       if weeks_chosen_by_school.empty? && school_weeks.nil?
         Week.both_school_track_selectable_weeks
       else
-        weeks_chosen_by_school || school_weeks
+        (weeks_chosen_by_school.presence || school_weeks).try(:in_the_future)
       end
     end
 
     def determine_preselected_weeks(weeks_chosen_by_school)
-      return Week.both_school_track_selectable_weeks if weeks_chosen_by_school.empty?
+      return weeks_chosen_by_school.in_the_future if weeks_chosen_by_school.present?
 
-      weeks_chosen_by_school
+      Week.both_school_track_selectable_weeks
     end
 
     def in_a_school? = school.present?
