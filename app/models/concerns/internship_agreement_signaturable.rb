@@ -74,7 +74,7 @@ module InternshipAgreementSignaturable
     def ready_to_sign?(user:)
       return false if signed_by?(user:) || !user.can_sign?(self)
       return false unless aasm_state.to_s.in?(%w[validated signatures_started])
-      return false if user.employer_like? && from_multi? && multi_corporation.signatures_launched_at.present?
+      return false if user.employer_like? && from_multi? && pre_selected_for_signature
       true
     end
 

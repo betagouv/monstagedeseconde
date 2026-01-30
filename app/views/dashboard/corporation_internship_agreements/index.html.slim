@@ -1,7 +1,7 @@
 div [data-controller="group-signing"
     data-group-signing-counter-value="0"
     data-group-signing-max-counter-value="0"
-    data-group-signing-user-type-value="#{current_user.type}"]
+    data-group-signing-user-type-value="#{current_user&.type}"]
   = form_with url: multi_sign_dashboard_corporation_internship_agreement_path(id: @corporation.id),
               scope: :corporation_internship_agreement,
               data: { turbo: false },

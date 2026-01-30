@@ -4,7 +4,7 @@
   - if internship_agreements.empty? && @no_agreement_internship_application_list.empty?
     = render partial: 'empty_agreement_list'
 
-
+  - else
     = render 'dashboard/internship_agreements/shared/school_signature'
     - if @mono_internship_agreements.any?
       p.h5 Stages avec une seule structure accueillante

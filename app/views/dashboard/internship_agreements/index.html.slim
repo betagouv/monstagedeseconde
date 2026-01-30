@@ -8,5 +8,5 @@
 - if current_user.employer_like?
   = render layout: 'layouts/dashboards_with_menu' do
     = render partial: 'dashboard/internship_agreements/employer/index',
-            locals: { school: @school,
-                      internship_agreements: @internship_agreements}
+             locals: { school: @school,
+                       internship_agreements: @internship_agreements}

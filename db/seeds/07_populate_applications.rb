@@ -1,5 +1,6 @@
 def populate_applications
   students = Users::Student.all
+  troisieme_students = students.select { |s| s.grade_id == Grade.troisieme.id }
   offers = InternshipOffers::WeeklyFramed.all
   puts 'every offers receives an application from first stud'
   offers.first(4).each do |offer|
@@ -235,9 +236,30 @@ if application.valid?
     puts "------------------"
   end
 
+#-----------------
+  # 3rd troisieme student [Multi[1] approved]
   #-----------------
-  #  student [offers[5] approved]
-  #-----------------
+  this_offer = InternshipOffers::Multi.second
+  application = InternshipApplications::Multi.new(
+    aasm_state: :approved,
+    submitted_at: 23.days.ago,
+    validated_by_employer_at: 20.days.ago,
+    approved_at: 18.days.ago,
+    student: troisieme_students.third,
+    student_email: 'paulago@gmail.com',
+    student_phone: "060606#{(1000..9999).to_a.sample}",
+    motivation: 'Très motivé pour ce stage, je vous préviens',
+    internship_offer: this_offer,
+    weeks: [this_offer.weeks.first]
+  )
+  if application.valid?
+    application.save! 
+  else
+    puts "------ 5 ------------"
+    puts application.errors.full_messages
+    puts this_offer.id
+    puts "------------------"
+  end
 end
 
 call_method_with_metrics_tracking(%i[ populate_applications ])
