@@ -44,8 +44,10 @@ namespace :retrofit do
   task doubling_offers: :environment do |task|
     PrettyConsole.announce_task(task) do
       InternshipOffer.find_each do |offer|
+        print "."
         grades = offer.grades.to_a.dup
         next if grades.size <= 1
+        print "-"
 
         # split logic starts here
         stats = offer.stats
@@ -60,6 +62,12 @@ namespace :retrofit do
                                                .where(internship_offer_id: offer.id)
                                                .where(user: { grade_id: Grade.troisieme_et_quatrieme.ids, discarded_at: nil })
                                                .pluck(:user_id)
+        applications_for_troisieme_quatrieme = InternshipApplication.joins(:student)
+                                                                    .where(internship_offer_id: offer.id)
+                                                                    .where(student: { grade_id: Grade.troisieme_et_quatrieme.ids, discarded_at: nil })
+        applications_for_seconde = InternshipApplication.joins(:student)
+                                                        .where(internship_offer_id: offer.id)
+                                                        .where(student: { grade_id: Grade.seconde.id, discarded_at: nil })
         res_schools = reserved_schools(offer)
         if offer.from_api?
           PrettyConsole.say_in_yellow("InternshipOffer ID: #{offer.id} is from API it reduces grades to \"seconde\" only.")
@@ -109,12 +117,11 @@ namespace :retrofit do
             new_offer.grades = grades.to_a - [Grade.seconde]
             new_offer.weeks = weeks_troisieme_quatrieme
             new_offer.mother_id = offer.id
-            new_offer.internship_applications = offer.internship_applications
             new_offer.created_at = offer.created_at
             new_offer.updated_at = offer.updated_at
             new_offer.from_doubling_task = true
             if new_offer.valid? && new_offer.from_doubling_task_save!
-              PrettyConsole.say_in_green("Created new InternshipOffer ID: #{new_offer.id} for grade: #{new_offer.grades.map(&:name).join(', ')}")
+              print "-"
             else
               error_message = "Failed to create new InternshipOffer for grade: #{new_offer.grades.map(&:name).join(', ')}. Errors: #{new_offer.errors.full_messages.join(', ')}"
               PrettyConsole.say_in_red(error_message)
@@ -127,18 +134,16 @@ namespace :retrofit do
             end
             new_offer.save!
 
-            # reassign applications
-            every_applications = seconde_offer.internship_applications.to_a
-            unless every_applications.empty?
-              applications_for_seconde = every_applications.select { |application| application.student.grade == Grade.seconde }.to_a
-              applications_for_troisieme_quatrieme = every_applications - applications_for_seconde
-
-              applications_for_seconde.each do |application|
-                application.update!(internship_offer_id: seconde_offer.id)
-              end
+            # reassign applications - order matters here
+            unless applications_for_seconde.empty? && applications_for_troisieme_quatrieme.empty?
               unless applications_for_troisieme_quatrieme.empty?
                 applications_for_troisieme_quatrieme.each do |application|
                   application.update!(internship_offer_id: new_offer.id)
+                end
+              end
+              unless applications_for_seconde.empty?
+                applications_for_seconde.each do |application|
+                  application.update!(internship_offer_id: seconde_offer.id)
                 end
               end
             end

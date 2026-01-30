@@ -43,6 +43,94 @@ class DoublingOffersTest < ActiveSupport::TestCase
 
 
       internship_offer.reload
+      assert_equal "2024/06/17", internship_offer.first_date.strftime("%Y/%m/%d")
+      assert_equal "2024/06/21", internship_offer.last_date.strftime("%Y/%m/%d")
+      assert_equal [Grade.seconde.id], internship_offer.grades.ids
+      assert_equal [application_seconde.id], internship_offer.internship_applications.to_a.map(&:id)
+      assert_equal [Week.seconde_weeks.first.id], internship_offer.weeks.ids
+      assert_equal 1, internship_offer.favorites.count
+      assert_equal student_seconde.id, internship_offer.favorites.first.user.id
+      assert_equal 3, internship_offer.stats.remaining_seats_count
+      assert_equal 1, internship_offer.stats.total_applications_count
+      assert_equal 0, internship_offer.stats.approved_applications_count
+      assert_equal 1, internship_offer.stats.submitted_applications_count
+      assert_equal 0, internship_offer.stats.total_male_applications_count
+      assert_equal 1, internship_offer.stats.total_female_applications_count
+      assert_equal 0, internship_offer.stats.total_male_approved_applications_count
+      assert_equal 0, internship_offer.stats.total_female_approved_applications_count
+
+      assert_equal 1, internship_offer.schools.count
+      assert_equal internship_offer.schools.first.id, lycee_school.id
+
+      assert_equal original_created_at, internship_offer.created_at
+      assert_equal original_updated_at, internship_offer.updated_at
+
+      new_offer = InternshipOffer.find_by(mother_id: internship_offer.id)
+      assert_not_nil new_offer
+      assert_equal "2024/01/01", new_offer.first_date.strftime("%Y/%m/%d")
+      assert_equal "2024/01/12", new_offer.last_date.strftime("%Y/%m/%d")
+      assert_equal Grade.troisieme_et_quatrieme.ids, new_offer.grades.map(&:id)
+      assert_equal [application_troisieme.id], new_offer.internship_applications.to_a.map(&:id)
+      assert_equal Week.where(year: 2024, number: [1,2]).to_a.map(&:id), new_offer.weeks.ids
+      assert_equal 1, new_offer.favorites.count
+      assert_equal student_troisieme.id, new_offer.favorites.first.user.id
+      assert_equal 3, new_offer.stats.remaining_seats_count
+      assert_equal 1, new_offer.stats.total_applications_count
+      assert_equal 0, new_offer.stats.approved_applications_count
+      assert_equal 1, new_offer.stats.submitted_applications_count
+      assert_equal 1, new_offer.stats.total_male_applications_count
+      assert_equal 0, new_offer.stats.total_female_applications_count
+      assert_equal 0, new_offer.stats.total_male_approved_applications_count
+      assert_equal 0, new_offer.stats.total_female_approved_applications_count
+
+      assert_equal 1, new_offer.schools.count
+      assert_equal new_offer.schools.first.id, college_school.id
+
+      assert_equal original_created_at, new_offer.created_at
+      assert_equal original_updated_at, new_offer.updated_at
+    end
+  end
+
+  test 'retrofit:doubling_offers with multiple grades and applications of both grades when offer is multi' do
+    travel_to Date.new(2023, 10, 1) do
+      #setup
+      internship_offer = create(:multi_internship_offer,
+                                :both_school_tracks_internship_offer,
+                                max_candidates: 3,
+                                grades: [Grade.seconde] + Grade.troisieme_et_quatrieme,
+                                weeks: [Week.seconde_weeks.first] + Week.where(year: 2024, number: [1,2]).to_a
+                                )
+      original_created_at = internship_offer.created_at
+      original_updated_at = internship_offer.updated_at
+      lycee_school         = create(:school, :lycee, :at_paris)
+      college_school       = create(:school, :college, :at_bordeaux)
+      internship_offer.schools = [lycee_school, college_school]
+      student_seconde       = create(:student, :female, grade: Grade.seconde)
+      student_troisieme     = create(:student, :male, grade: Grade.troisieme)
+      application_seconde   = create(:weekly_internship_application, internship_offer: internship_offer, student: student_seconde)
+      application_troisieme = create(:weekly_internship_application, internship_offer: internship_offer, student: student_troisieme)
+      create(:favorite, internship_offer: internship_offer, user: student_troisieme)
+      create(:favorite, internship_offer: internship_offer, user: student_seconde)
+      internship_offer.reload.update_stats
+
+      assert_equal 3, internship_offer.stats.remaining_seats_count
+      assert_equal 2, internship_offer.stats.total_applications_count
+      assert_equal 0, internship_offer.stats.approved_applications_count
+      assert_equal 2, internship_offer.stats.submitted_applications_count
+      assert_equal 1, internship_offer.stats.total_male_applications_count
+      assert_equal 1, internship_offer.stats.total_female_applications_count
+      assert_equal 0, internship_offer.stats.total_male_approved_applications_count
+      assert_equal 0, internship_offer.stats.total_female_approved_applications_count
+
+      assert_equal 2, internship_offer.schools.count
+      assert_equal "2024/01/01", internship_offer.first_date.strftime("%Y/%m/%d")
+      assert_equal "2024/06/21", internship_offer.last_date.strftime("%Y/%m/%d")
+
+
+      Rake::Task['retrofit:doubling_offers'].invoke
+
+
+      internship_offer.reload
 
       assert_equal "2024/06/17", internship_offer.first_date.strftime("%Y/%m/%d")
       assert_equal "2024/06/21", internship_offer.last_date.strftime("%Y/%m/%d")
@@ -75,14 +163,14 @@ class DoublingOffersTest < ActiveSupport::TestCase
       assert_equal Week.where(year: 2024, number: [1,2]).to_a.map(&:id), new_offer.weeks.ids
       assert_equal 1, new_offer.favorites.count
       assert_equal student_troisieme.id, new_offer.favorites.first.user.id
-      assert_equal 3, internship_offer.stats.remaining_seats_count
-      assert_equal 1, internship_offer.stats.total_applications_count
-      assert_equal 0, internship_offer.stats.approved_applications_count
-      assert_equal 1, internship_offer.stats.submitted_applications_count
-      assert_equal 0, internship_offer.stats.total_male_applications_count
-      assert_equal 1, internship_offer.stats.total_female_applications_count
-      assert_equal 0, internship_offer.stats.total_male_approved_applications_count
-      assert_equal 0, internship_offer.stats.total_female_approved_applications_count
+      assert_equal 3, new_offer.stats.remaining_seats_count
+      assert_equal 1, new_offer.stats.total_applications_count
+      assert_equal 0, new_offer.stats.approved_applications_count
+      assert_equal 1, new_offer.stats.submitted_applications_count
+      assert_equal 1, new_offer.stats.total_male_applications_count
+      assert_equal 0, new_offer.stats.total_female_applications_count
+      assert_equal 0, new_offer.stats.total_male_approved_applications_count
+      assert_equal 0, new_offer.stats.total_female_approved_applications_count
 
       assert_equal 1, new_offer.schools.count
       assert_equal new_offer.schools.first.id, college_school.id
@@ -163,14 +251,14 @@ class DoublingOffersTest < ActiveSupport::TestCase
       assert_equal [application_troisieme.id], new_offer.internship_applications.to_a.map(&:id)
       assert_equal weeks2.map(&:id).sort, new_offer.weeks.ids.sort
       assert_equal 0, new_offer.favorites.count
-      assert_equal 3, internship_offer.stats.remaining_seats_count
-      assert_equal 1, internship_offer.stats.total_applications_count
-      assert_equal 0, internship_offer.stats.approved_applications_count
-      assert_equal 1, internship_offer.stats.submitted_applications_count
-      assert_equal 0, internship_offer.stats.total_male_applications_count
-      assert_equal 1, internship_offer.stats.total_female_applications_count
-      assert_equal 0, internship_offer.stats.total_male_approved_applications_count
-      assert_equal 0, internship_offer.stats.total_female_approved_applications_count
+      assert_equal 3, new_offer.stats.remaining_seats_count
+      assert_equal 1, new_offer.stats.total_applications_count
+      assert_equal 0, new_offer.stats.approved_applications_count
+      assert_equal 1, new_offer.stats.submitted_applications_count
+      assert_equal 1, new_offer.stats.total_male_applications_count
+      assert_equal 0, new_offer.stats.total_female_applications_count
+      assert_equal 0, new_offer.stats.total_male_approved_applications_count
+      assert_equal 0, new_offer.stats.total_female_approved_applications_count
 
       assert_equal 1, new_offer.schools.count
       assert_equal new_offer.schools.first.id, college_school.id
@@ -241,9 +329,9 @@ class DoublingOffersTest < ActiveSupport::TestCase
       assert_equal 0, internship_offer.stats.total_male_approved_applications_count
       assert_equal 0, internship_offer.stats.total_female_approved_applications_count
 
-      Rake::Task['retrofit:doubling_offers'].invoke
-
-      assert_equal 1, InternshipOffer.all.count
+      assert_no_changes -> { UsersInternshipOffersHistory.count } do
+        Rake::Task['retrofit:doubling_offers'].invoke
+      end
 
       internship_offer.reload
       assert_equal [Grade.seconde.id], internship_offer.grades.ids

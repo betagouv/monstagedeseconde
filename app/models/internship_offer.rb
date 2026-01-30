@@ -216,7 +216,6 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :fulfilled, lambda {
-    # max_candidates == approved_applications_count
     at_stats = InternshipOfferStats.arel_table
     joins(:stats).where(at_stats[:remaining_seats_count].eq(0))
   }
@@ -556,17 +555,16 @@ class InternshipOffer < ApplicationRecord
   end
 
   def create_stats
-    stats = InternshipOfferStats.create(internship_offer: self)
-    stats.recalculate unless from_doubling_task?
+    InternshipOfferStats.create(internship_offer: self) unless stats.present?
   end
 
   def update_stats
-    stats.nil? ? create_stats : stats.recalculate
+    create_stats if stats.nil?
+    stats.recalculate
   end
 
   def from_doubling_task_save!
     self.from_doubling_task = true
-    self.stats = nil
     save
   end
 
@@ -604,7 +602,7 @@ class InternshipOffer < ApplicationRecord
   def rep_or_qpv?
     rep || qpv
   end
-  
+
   def created_during_former_year?
     last_date < Week.current_year_start_week.monday
   end

@@ -2,7 +2,7 @@ def populate_internship_offers
   current_school_year = SchoolYear::Current.new.offers_beginning_of_period
   seconde_weeks = SchoolTrack::Seconde.both_weeks
   troisieme_weeks = Week.troisieme_weeks.to_a
-  all_weeks = seconde_weeks + troisieme_weeks
+  all_weeks = troisieme_weeks + seconde_weeks # order matters here
   # TODO: period is ignored for InternshipOffers::WeeklyFramed
   # public sector
   # 1
