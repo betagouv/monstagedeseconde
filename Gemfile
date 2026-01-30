@@ -8,8 +8,7 @@ ruby File.read(".ruby-version").strip
 # fwk/server
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
-gem "rails", "~> 7.2"
-gem "mutex_m"
+gem "rails", "7.1.4"
 # db
 gem "pg"
 gem "rack", ">= 3.0"
@@ -71,7 +70,6 @@ gem "prismic.io", require: "prismic"
 gem "cancancan"
 gem "devise"
 gem "devise-i18n"
-gem 'openssl'
 
 # model/utils
 gem "aasm"
@@ -96,7 +94,6 @@ gem "image_processing", "~> 1.2"
 gem "mini_magick"
 
 # temporary - default gems extracted in Ruby 3.4+
-gem "fiddle"
 gem "ostruct"
 
 group :development, :test do
@@ -115,9 +112,9 @@ group :development do
   # Spring speeds up development by keeping your application running in the
   # background. Read more: https://github.com/rails/spring
   gem "activerecord-explain-analyze"
-  gem "ffi-rzmq"
-  gem "jupyter_on_rails"
-  gem "letter_opener_web"
+  # gem "ffi-rzmq"
+  # gem "jupyter_on_rails"
+  gem "launchy"
   gem "spring", "3.0.0"
 end
 
@@ -146,4 +143,8 @@ end
 group :test, :development, :review do
   gem "factory_bot_rails"
   gem "ffaker"
+end
+
+group :review, :development do
+  gem "letter_thief"
 end
