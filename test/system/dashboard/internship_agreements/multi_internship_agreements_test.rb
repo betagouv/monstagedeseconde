@@ -257,7 +257,9 @@ module Dashboard::InternshipAgreements
         click_button('Envoyer en signature')
       end
       assert_text 'Envoyer en signature'
-      assert false
+      assert_text 'Statut des signatures'
+      find("input[type=\'checkbox\'][id=\'user_internship_agreement_id_#{internship_agreement.id}_checkbox'][disabled=\"disabled\"]", visible: false)
+      find("input[type=\'checkbox\'][id=\'user_internship_agreement_id_#{internship_agreement2.id}_checkbox']", visible: false)
     end
 
     test 'employer reads multi internship agreement table with correct indications - status: completed_by_employer /' do
