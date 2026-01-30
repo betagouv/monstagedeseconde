@@ -8,7 +8,7 @@ ruby File.read(".ruby-version").strip
 # fwk/server
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
-gem "rails", "~> 7.2"
+gem "rails", "< 8.0"
 gem "mutex_m"
 # db
 gem "pg"
@@ -29,7 +29,6 @@ gem "caxlsx_rails"
 gem "dsfr-view-components"
 gem "inline_svg"
 gem "react_on_rails", "14.2.1"
-gem "connection_pool", "< 3.0"
 gem "slim-rails"
 gem "split", require: "split/dashboard"
 gem "uglifier"
@@ -42,12 +41,13 @@ gem "prawn-table"
 
 # background jobs
 gem "sidekiq", "< 8"
+gem "connection_pool" , "< 3.0"
 # Use Redis for Action Cable
 gem "aws-sdk-s3", require: false
 gem "redis", "~> 4.0"
 
 # admin
-gem "rails_admin", "~> 3.0"
+gem "rails_admin"
 gem "rails_admin_aasm"
 gem "rails_admin-i18n"
 
@@ -71,7 +71,6 @@ gem "prismic.io", require: "prismic"
 gem "cancancan"
 gem "devise"
 gem "devise-i18n"
-gem 'openssl'
 
 # model/utils
 gem "aasm"
