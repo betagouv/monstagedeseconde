@@ -377,6 +377,7 @@ GEM
     oga (2.15)
       ast
       ruby-ll (~> 2.1)
+    openssl (4.0.0)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
     ovh-rest (0.0.5)
@@ -701,6 +702,7 @@ DEPENDENCIES
   minitest-stub-const
   minitest-stub_any_instance
   mutex_m
+  openssl
   ostruct
   ovh-rest
   pg
@@ -730,7 +732,6 @@ DEPENDENCIES
   slim-rails
   split
   spring (= 3.0.0)
-  stringio
   tzinfo-data
   uglifier
   validates_zipcode
