@@ -153,10 +153,14 @@ module Dashboard::Stepper
                                                latitude: final_latitude }
       end
       @entreprise.entreprise_full_address = entreprise_params[:entreprise_chosen_full_address]
-      if entreprise_params[:is_public] == 'true'
-        @entreprise.sector_id = Sector.find_by(name: 'Fonction publique').try(:id)
-      else
-        params[:entreprise][:group_id] = nil
+      
+      if entreprise_params.key?(:is_public)
+        is_public_value = ActiveModel::Type::Boolean.new.cast(entreprise_params[:is_public])
+        if is_public_value
+          @entreprise.sector_id = Sector.find_by(name: 'Fonction publique').try(:id)
+        else
+          params[:entreprise][:group_id] = nil
+        end
       end
     end
 
