@@ -742,10 +742,11 @@ class GenerateInternshipAgreement < Prawn::Document
 
     begin
       signature_data = @internship_agreement.school.signature.download
-      image = MiniMagick::Image.read(signature_data) do |img|
-        img.format 'png'
-        img.interlace 'none'
-      end
+
+      # Convert to non-interlaced PNG to avoid Prawn::Errors::UnsupportedImageType
+      image = MiniMagick::Image.read(signature_data)
+      image.format 'png'
+      image.interlace 'none'
 
       OpenStruct.new(
         signature_image_file_path: StringIO.new(image.to_blob)
