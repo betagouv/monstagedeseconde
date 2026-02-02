@@ -39,7 +39,7 @@ module StepperProxy
       end
 
       validate :sector_consistency_with_is_public
-      after_validation :report_group_id_consistency_errors
+      after_validation :report_suspicious_data_inconsistency
 
       def entreprise_coordinates=(coordinates)
         case coordinates
@@ -76,26 +76,41 @@ module StepperProxy
         return if fonction_publique_sector.nil?
 
         if is_public && sector_id != fonction_publique_sector.id
-          report_public_private_consistency_error("Offre publique avec secteur différent de 'Fonction publique'")
           errors.add(:sector_id, "Le secteur doit être 'Fonction publique' pour une offre publique")
         elsif !is_public && sector_id == fonction_publique_sector.id
-          report_public_private_consistency_error("Offre privée avec secteur 'Fonction publique'")
           errors.add(:sector_id, "Le secteur 'Fonction publique' n'est pas autorisé pour une offre privée")
         end
       end
 
-      def report_group_id_consistency_errors
-        return unless errors[:group_id].any?
+      # Report les incohérences is_public/sector/group_id UNIQUEMENT si :
+      # - Il y a des erreurs de validation sur group_id OU sector_id
+      # - ET ces erreurs correspondent à une incohérence is_public/sector/group_id
+      def report_suspicious_data_inconsistency
+        # Ne reporter que s'il y a des erreurs spécifiques sur group_id ou sector_id
+        has_group_id_error = errors[:group_id].any?
+        has_sector_id_error = errors[:sector_id].any?
+        return unless has_group_id_error || has_sector_id_error
 
-        message = if is_public
-                    "Offre publique sans group_id (ministère manquant)"
-                  else
-                    "Offre privée avec group_id (ministère non autorisé)"
-                  end
-        report_public_private_consistency_error(message)
-      end
+        fonction_publique_sector = Sector.find_by(name: 'Fonction publique')
+        should_report = false
+        message = nil
 
-      def report_public_private_consistency_error(message)
+        # Cas : offre publique sans group_id (erreur sur group_id)
+        if has_group_id_error && is_public && group_id.blank?
+          should_report = true
+          message = "Offre publique sans group_id (ministère manquant)"
+        # Cas : offre privée avec group_id (erreur sur group_id)
+        elsif has_group_id_error && !is_public && group_id.present?
+          should_report = true
+          message = "Offre privée avec group_id (ministère non autorisé)"
+        # Cas : offre privée avec secteur "Fonction publique" (erreur sur sector_id)
+        elsif has_sector_id_error && !is_public && fonction_publique_sector && sector_id == fonction_publique_sector.id
+          should_report = true
+          message = "Offre privée avec secteur 'Fonction publique'"
+        end
+
+        return unless should_report
+
         Sentry.capture_message(
           "Incohérence is_public/sector/group_id: #{message}",
           level: :warning,
@@ -107,6 +122,7 @@ module StepperProxy
             sector_name: sector&.name,
             group_id: group_id,
             group_name: group&.name,
+            validation_errors: errors.to_hash,
             user_id: Current.user&.id,
             user_type: Current.user&.type,
             request_url: Current.request_url,
