@@ -198,14 +198,14 @@ module Dashboard
           internship_agreement.sign!
         end
 
-        redirect_to dashboard_internship_agreements_path(multi: multi),
+        redirect_to dashboard_internship_agreements_path,
                     flash: { success: 'Les conventions ont été signées.' }
       end
 
       def dispatch_multi_agreements_signature
         authorize! :sign_internship_agreements, InternshipAgreement
         @agreement_ids = user_params[:internship_agreement_ids]
-        return_path = dashboard_internship_agreements_path(multi: true)
+        return_path = dashboard_internship_agreements_path
         agreements_counted = @agreement_ids.size
         if agreements_counted == 0
           redirect_to return_path,
@@ -233,7 +233,7 @@ module Dashboard
       end
 
       def signature_builder
-        @signature_buider = Builders::SignatureBuilder.new(
+        @signature_builder = Builders::SignatureBuilder.new(
           user: current_user,
           context: :web,
           params: user_params

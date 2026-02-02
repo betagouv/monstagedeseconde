@@ -158,7 +158,6 @@ def populate_internship_offers
   5.times do |n|
     Corporation.create!(
       multi_corporation: multi_corporation,
-      sector: Sector.all[n],
       siret: "1112223330000#{n}",
 
       corporation_name: corporation_names[n],
@@ -203,8 +202,33 @@ def populate_internship_offers
     employer_name: 'Editegis',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
     weeks: seconde_weeks,
-    grades: [Grade.seconde, Grade.troisieme],
+    grades: [Grade.seconde],
     entreprise_full_address: '129 rue brancion, 75015 paris',
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: ["09:00", "17:00"],
+    multi_corporation_id: multi_corporation.id
+  )
+
+  InternshipOffers::Multi.create!(
+    employer: Users::Employer.first,
+    contact_phone: '+33637607756',
+    siret:,
+    sector: Sector.first,
+    is_public: false,
+    title: '3e | Les métiers du meuble',
+    description: "Stage organisé par les coopératives du bois de Charente - HDF, avec le lycée Pasteur\n\nLundi:\nLycée Pasteur, Hénin-Beaumont: matin accueil du stage, après midi: visite des plateaux techniques\n\nMardi :\nmatin: intervention FRTP et CMQ TP au Lycée Pasteur, après-midi: visite Centrale thermique CCG - EDF Bouchain\n\nMercredi:\nmatin: visite chantier TP entreprise Ramery, hôpital de Lens\n\nJeudi:\nLycée Pasteur, Hénin-Beaumont: camp Innovation Dreamakers\n\nVendredi:\nLycée Pasteur, Hénin-Beaumont, avec Dreamakers qui prend en mains:  matin: préparation de la restitution, après midi: restitution orale devant les familles et les partenaires",
+    employer_description: "Du Temps pour moi est une agence mandataire de garde d'enfants à domicile. Notre activité consister à aider les familles de la métropole lilloise à trouver leur intervenant(e) à domicile pour la garde de leurs enfants de 0 à 16 ans.",
+    employer_website: 'http://www.dtpm.fr/',
+    street: '13 rue de la croix nivert',
+    zipcode: '75015',
+    city: 'paris',
+    coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
+    entreprise_coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
+    employer_name: 'Editegis',
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: troisieme_weeks,
+    grades: [Grade.troisieme],
+    entreprise_full_address: '13 rue de la croix nivert, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi",
     weekly_hours: ["09:00", "17:00"],
     multi_corporation_id: multi_corporation.id

@@ -28,7 +28,7 @@ module InternshipOfferAreable
     end
 
     def current_area_id_memorize(id)
-      update(current_area_id:  id)
+      update!(current_area_id: id)
     end
 
     def fetch_current_area_id

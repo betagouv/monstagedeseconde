@@ -19,7 +19,7 @@ jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
     working_directory: ~/project
     docker: # run the steps with Docker
-      - image: cimg/ruby:3.3.6-browsers # ...with this image as the primary container; this is where all `steps` will run
+      - image: cimg/ruby:3.4.7-browsers # ...with this image as the primary container; this is where all `steps` will run
         environment: # environment variables for primary container
           BUNDLE_JOBS: 3
           BUNDLE_RETRY: 3
@@ -62,7 +62,10 @@ jobs: # a collection of steps
 
       - run: # Install Ruby dependencies
           name: Bundle Install
-          command: bundle check || bundle install
+          command: |
+            gem install stringio -v 3.2.0
+            gem install fiddle -v 1.1.8
+            bundle check || bundle install
 
       # Store bundle cache for Ruby dependencies
       - save_cache:

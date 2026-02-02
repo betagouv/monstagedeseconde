@@ -40,7 +40,7 @@ module InternshipAgreements
       when 'validated', 'signatures_started' then
         if @internship_agreement.from_multi?
           if current_user.employer_like?
-            if @internship_agreement.multi_corporation.signatures_launched_at.present?
+            if @internship_agreement.multi_corporation.signatures_launched_at.present? && @internship_agreement.pre_selected_for_signature?
               {status: 'enabled', text: 'Statut des signatures', action: 'modal_opening'}
             else
               {status: 'enabled', text: 'Envoyer en signature'}

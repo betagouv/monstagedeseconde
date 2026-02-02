@@ -12,11 +12,6 @@
   z-index: 100;
 }
 
-.employer {
-  .fr-tabs{
-    min-height: 3.1rem;
-  }
-}
 
 tr.even-odd:nth-child(even) {
   background-color: $grey-975;
@@ -54,11 +49,23 @@ a.heavy-blue-link {
   border-bottom: 4px solid #F9F8F6
 }
 
+.employer-non-sticky {
+  top: 20px;
+  z-index: 3;
+  background-color: white;
+  .fr-tabs{
+    min-height: 3.1rem;
+  }
+}
+
 .employer {
   position: sticky;
   top: 20px;
   z-index: 3;
   background-color: white;
+  .fr-tabs{
+    min-height: 3.1rem;
+  }
 }
 
 .red-up {

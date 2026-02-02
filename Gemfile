@@ -8,11 +8,13 @@ ruby File.read(".ruby-version").strip
 # fwk/server
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
-gem "rails", "~> 7.1.3"
+gem "rails", "~> 7.2"
+gem "mutex_m"
 # db
 gem "pg"
 gem "rack", ">= 3.0"
 gem "rake"
+# gem 'openssl'
 
 # pg extension for geo queries
 # wait for : https://github.com/rgeo/activerecord-postgis-adapter/tree/ar61 to be merge into master
@@ -69,6 +71,7 @@ gem "prismic.io", require: "prismic"
 gem "cancancan"
 gem "devise"
 gem "devise-i18n"
+gem 'openssl'
 
 # model/utils
 gem "aasm"
@@ -92,9 +95,12 @@ gem "active_storage_validations"
 gem "image_processing", "~> 1.2"
 gem "mini_magick"
 
+# temporary - default gems extracted in Ruby 3.4+
+gem "fiddle"
+gem "ostruct"
+
 group :development, :test do
   gem "debug"
-  gem "stringio", "3.1.7"
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: %i[windows jruby]
   gem "pry-byebug"
@@ -121,6 +127,7 @@ group :test do
   gem "webmock"
   # Adds support for Capybara system testing and selenium driver
   gem "capybara"
+  gem "minitest", "< 6.0"
   gem "minitest-fail-fast"
   gem "minitest-reporters"
   gem "minitest-retry"

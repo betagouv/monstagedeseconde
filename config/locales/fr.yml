@@ -605,7 +605,6 @@ fr:
               invalid: "Ce nom d'espace est incorrect"
               taken: "Ce nom d'espace est déjà utilisé"
 
-
         internship_occupation:
           attributes: &internship_occupation_errors
             title:
@@ -764,6 +763,9 @@ fr:
               blank: Veuillez renseigner vos motivations
             student:
               taken: 'Vous ne pouvez pas postuler deux fois à la même offre'
+        internship_applications/weekly_framed:
+          attributes:
+            duplicate: Duplicat internship_address_manual_enter
         signature:
   student: "Élève"
   student legal representative: "Représentant légal"

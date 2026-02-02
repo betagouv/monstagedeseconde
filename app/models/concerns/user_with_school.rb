@@ -28,5 +28,6 @@ module UserWithSchool
     end
 
     def in_a_school? = school.present?
+    def student_rep_or_qpv? = school.rep_or_qpv?
   end
 end

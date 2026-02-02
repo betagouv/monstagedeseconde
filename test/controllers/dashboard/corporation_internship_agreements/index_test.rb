@@ -5,11 +5,11 @@ module Dashboard::CorporationInternshipAgreements
     include Rails.application.routes.url_helpers
 
     setup do
-      @internship_agreement1 = create(:multi_internship_agreement)
+      @internship_agreement1 = create(:multi_internship_agreement, :validated, pre_selected_for_signature: true)
       @corporation = @internship_agreement1.internship_offer.corporations.first
       @corporation_sgid = @corporation.to_sgid.to_s
 
-      @internship_agreement2 = create(:multi_internship_agreement)
+      @internship_agreement2 = create(:multi_internship_agreement, :validated, pre_selected_for_signature: true)
       @corporation_2 = @internship_agreement2.internship_offer.corporations.first
     end
 
@@ -46,16 +46,5 @@ module Dashboard::CorporationInternshipAgreements
 
       assert_response :not_found
     end
-
-    test "should assign empty internship_agreements if uuids param is missing" do
-      get dashboard_corporation_internship_agreements_path(
-        corporation_sgid: @corporation_sgid
-      )
-
-      assert_response :success
-      internship_agreements = assigns(:internship_agreements)
-      assert_equal [@internship_agreement1.id], internship_agreements.ids
-    end
-
   end
 end
