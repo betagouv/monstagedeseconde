@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class InternshipOffersController < ApplicationController
+  OPTIONAL_SEARCH_PARAMS = %i[keyword sector_ids].freeze
+
   layout "search", only: :index
 
   with_options only: [:show] do
@@ -14,6 +16,8 @@ class InternshipOffersController < ApplicationController
   def index
     @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
     @preselected_weeks_list = @preselected_weeks_list.where(id: params[:week_ids]) if params[:week_ids].present?
+    @sectors = Sector.all.order(:name)
+    params[:grade_id] = Grade.seconde.id if params[:grade_id].blank?
     @school_weeks_list ||= Week.none
     @preselected_weeks_list ||= Week.none
     @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
@@ -28,8 +32,9 @@ class InternshipOffersController < ApplicationController
       end
       format.json do
         @internship_offers_seats = 0
-        @internship_offers = finder.all
-                                   .includes(:sector, :employer)
+        params[:grade_id] = Grade.seconde.id if params[:grade_id].blank?
+
+        @internship_offers, is_fallback, effective_seats_finder = search_with_fallback
 
         # QPV order destroys the former internship offers distance order from school
         if current_user&.student?
@@ -37,9 +42,11 @@ class InternshipOffersController < ApplicationController
             @internship_offers = @internship_offers.reorder("qpv DESC NULLS LAST")
           elsif current_user&.school&.try(:rep_kind).present?
             # get rep offers (sans pagination)
-            rep_offers = finder.all_without_page.includes(:sector, :employer).where(rep: true)
+            relaxed_params = is_fallback ? search_query_params.except(*OPTIONAL_SEARCH_PARAMS) : search_query_params
+            rep_finder = Finders::InternshipOfferConsumer.new(params: relaxed_params, user: current_user_or_visitor)
+            rep_offers = rep_finder.all_without_page.includes(:sector, :employer).where(rep: true)
             # get non rep offers (sans pagination)
-            non_rep_offers = finder.all_without_page.includes(:sector, :employer).where(rep: false)
+            non_rep_offers = rep_finder.all_without_page.includes(:sector, :employer).where(rep: false)
 
             combined_offers = rep_offers.to_a + non_rep_offers.to_a
             # Paginate the combined array
@@ -49,11 +56,12 @@ class InternshipOffersController < ApplicationController
 
         @params = search_query_params
 
-        @internship_offers_seats_count = @internship_offers.empty? ? 0 : seats_finder.all_without_page.pluck(:max_candidates).sum
+        @internship_offers_seats_count = @internship_offers.empty? ? 0 : effective_seats_finder.all_without_page.pluck(:max_candidates).sum
         data = {
           internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
           seats: @internship_offers_seats_count,
+          isFallbackSearch: is_fallback
         }
         current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
         render json: data, status: 200
@@ -116,9 +124,9 @@ class InternshipOffersController < ApplicationController
   end
 
   def search_query_params
-    common_query_params = %i[city grade_id latitude longitude page radius]
+    common_query_params = %i[city grade_id latitude longitude page radius keyword]
     common_query_params += [:school_year] if current_user_or_visitor.god? || current_user_or_visitor.statistician?
-    params.permit(*common_query_params, week_ids: [])
+    params.permit(*common_query_params, week_ids: [], sector_ids: [])
   end
 
   def check_internship_offer_is_not_discarded_or_redirect
@@ -161,6 +169,28 @@ class InternshipOffersController < ApplicationController
       user: current_user_or_visitor,
       seats_search: true,
     )
+  end
+
+  def search_with_fallback
+    primary_results = finder.all.includes(:sector, :employer)
+
+    has_optional_filters = OPTIONAL_SEARCH_PARAMS.any? { |param| search_query_params[param].present? }
+
+    if primary_results.empty? && has_optional_filters
+      relaxed_params = search_query_params.except(*OPTIONAL_SEARCH_PARAMS)
+      relaxed_finder = Finders::InternshipOfferConsumer.new(
+        params: relaxed_params,
+        user: current_user_or_visitor
+      )
+      relaxed_seats_finder = Finders::InternshipOfferConsumer.new(
+        params: relaxed_params,
+        user: current_user_or_visitor,
+        seats_search: true
+      )
+      [relaxed_finder.all.includes(:sector, :employer), true, relaxed_seats_finder]
+    else
+      [primary_results, false, seats_finder]
+    end
   end
 
   def increment_internship_offer_view_count

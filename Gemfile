@@ -119,6 +119,7 @@ group :development do
   gem "jupyter_on_rails"
   gem "letter_opener_web"
   gem "spring", "3.0.0"
+  gem "openssl"
 end
 
 group :test do

@@ -56,6 +56,7 @@ header.container-xl.px-0
                 .fr-tabs__content-item.active#offers-search-tab
                   .row
                     .col-12
+                      = @sectors.inspect
                       = react_component("SearchBar",
                                           props: { searchParams: @params,
                                                   preselectedWeeksList: @preselected_weeks_list_array,
@@ -63,6 +64,7 @@ header.container-xl.px-0
                                                   secondeWeekIds: @seconde_week_ids,
                                                   troisiemeWeekIds: @troisieme_week_ids,
                                                   studentGradeId: @student_grade_id,
+                                                  sectors: @sectors,
                                                   origin: 'homeStudent'})
         .actions.d-stick.d-md-none.p-2.fitting
           = link_to internship_offers_path(current_user_or_visitor.default_search_options),
