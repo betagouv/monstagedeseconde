@@ -17,7 +17,7 @@ class InternshipOffersController < ApplicationController
     @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
     @preselected_weeks_list = @preselected_weeks_list.where(id: params[:week_ids]) if params[:week_ids].present?
     @sectors = Sector.all.order(:name)
-    params[:grade_id] = 1 if params[:grade_id].blank?
+    params[:grade_id] = Grade.seconde.id if params[:grade_id].blank?
     @school_weeks_list ||= Week.none
     @preselected_weeks_list ||= Week.none
     @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
@@ -32,7 +32,7 @@ class InternshipOffersController < ApplicationController
       end
       format.json do
         @internship_offers_seats = 0
-        params[:grade_id] = 1 if params[:grade_id].blank?
+        params[:grade_id] = Grade.seconde.id if params[:grade_id].blank?
 
         @internship_offers, is_fallback, effective_seats_finder = search_with_fallback
 

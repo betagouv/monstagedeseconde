@@ -813,6 +813,7 @@ class IndexTest < ActionDispatch::IntegrationTest
       offer = create(:weekly_internship_offer_2nde,
                      title: 'Stage informatique',
                      sector: sector,
+                     is_public: false,
                      coordinates: Coordinates.paris)
 
       get internship_offers_path(
