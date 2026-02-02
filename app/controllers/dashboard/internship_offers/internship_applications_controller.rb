@@ -95,9 +95,8 @@ module Dashboard
       private
 
       def fetch_user_internship_applications
-        InternshipApplications::WeeklyFramed.where(
-          internship_offer_id: current_user.internship_offers.ids
-        )
+        InternshipApplication.where.not(type: 'InternshipApplications::Api')
+                             .where( internship_offer_id: current_user.internship_offers.ids )
       end
 
       def fetch_internship_application

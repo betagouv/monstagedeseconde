@@ -16,9 +16,9 @@ dialog#fr-modal-multi-signatures.fr-modal [
             .fr-modal__content
               h2#multi-modal-title.fr-modal__title
                 span.fr-icon-arrow-right-line.fr-icon--lg aria-hidden="true"
-                | Vous vous apprêtez à envoyer en signature la convention de stage 
+                | Vous vous apprêtez à envoyer en signature la convention de stage
                 span data-multi-signing-target="counter"
-                
+
               p
                 |Un email sera envoyé à tous les référents d’entreprise pour signer la convention en ligne.
             = form.hidden_field :internship_agreement_ids, data: { multi_signing_target: "ids" }
@@ -33,6 +33,6 @@ dialog#fr-modal-multi-signatures.fr-modal [
                 li
                   = form.submit 'Envoyer en signature',
                               data: { turbo: false },
-                              class: "fr-btn fr-btn--icon-left fr-btn--primary",
+                              class: "fr-btn fr-btn--icon-left fr-btn--primary test-send-multi-agreements-to-signature",
                               aria: { label: "Envoyer les conventions en signature" }
-                
+

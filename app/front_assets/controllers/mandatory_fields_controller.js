@@ -89,7 +89,7 @@ export default class extends Controller {
   setDisabledFieldsTo(status){
     const disabledFields = this.disabledFieldTargets;
     disabledFields.forEach((field) => {
-      field.disabled =  (status === 'disabled') ;
+      field.disabled = (status === 'disabled');
     });
   }
 
