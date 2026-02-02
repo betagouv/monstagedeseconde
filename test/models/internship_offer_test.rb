@@ -213,4 +213,46 @@ class InternshipOfferTest < ActiveSupport::TestCase
     assert offers.include?(internship_offer3)
     assert offers.include?(internship_offer4)
   end
+
+  # Tests de cohérence is_public / sector / group_id
+  test 'public offer requires group_id' do
+    internship_offer = build(:weekly_internship_offer_2nde, is_public: true, group: nil)
+    refute internship_offer.valid?
+    assert_includes internship_offer.errors[:group_id], 'Un ministère est requis pour une offre publique'
+  end
+
+  test 'public offer must have sector Fonction publique' do
+    group = create(:group, is_public: true)
+    other_sector = create(:sector, name: 'Autre secteur')
+    internship_offer = build(:weekly_internship_offer_2nde, is_public: true, group: group, sector: other_sector)
+    assert internship_offer.valid?, internship_offer.errors.full_messages.join(', ')
+    assert_equal 'Fonction publique', internship_offer.sector.name
+  end
+
+  test 'public offer with group_id is valid' do
+    group = create(:group, is_public: true)
+    internship_offer = build(:weekly_internship_offer_2nde, is_public: true, group: group)
+    assert internship_offer.valid?, internship_offer.errors.full_messages.join(', ')
+  end
+
+  test 'private offer must not have group_id' do
+    group = create(:group, is_public: true)
+    sector = create(:sector, name: 'Secteur privé test')
+    internship_offer = build(:weekly_internship_offer_2nde, is_public: false, group: group, sector: sector)
+    refute internship_offer.valid?
+    assert_includes internship_offer.errors[:group_id], "Il n'y a pas de ministère à associer à une entreprise privée"
+  end
+
+  test 'private offer must not have sector Fonction publique' do
+    fonction_publique_sector = Sector.find_or_create_by!(name: 'Fonction publique')
+    internship_offer = build(:weekly_internship_offer_2nde, is_public: false, group: nil, sector: fonction_publique_sector)
+    refute internship_offer.valid?
+    assert_includes internship_offer.errors[:sector_id], "Le secteur 'Fonction publique' n'est pas autorisé pour une offre privée"
+  end
+
+  test 'private offer without group_id and with valid sector is valid' do
+    sector = create(:sector, name: 'Secteur privé valide')
+    internship_offer = build(:weekly_internship_offer_2nde, is_public: false, group: nil, sector: sector)
+    assert internship_offer.valid?, internship_offer.errors.full_messages.join(', ')
+  end
 end
