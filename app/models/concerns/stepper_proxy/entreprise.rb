@@ -10,7 +10,7 @@ module StepperProxy
       belongs_to :sector
 
       before_validation :clean_siret, unless: -> { internship_address_manual_enter }
-      before_validation :public_entreprise_sector_settings, if: -> { is_public }
+      before_validation :public_entreprise_sector_settings, if: -> { is_public && !from_api? }
       before_save :entreprise_used_name
 
       attr_accessor :entreprise_chosen_full_address,
@@ -29,17 +29,17 @@ module StepperProxy
       validates :is_public, inclusion: [true, false]
 
       # Offre publique : group_id requis et secteur "Fonction publique"
-      with_options if: :is_public do
+      with_options if: :is_public, unless: :from_api? do
         validates :group_id, presence: { message: "Un ministère est requis pour une offre publique" }
       end
 
       # Offre privée : group_id interdit et secteur différent de "Fonction publique"
-      with_options unless: :is_public do
+      with_options unless: -> { is_public || from_api? } do
         validates :group_id, absence: { message: "Il n'y a pas de ministère à associer à une entreprise privée" }
       end
 
-      validate :sector_consistency_with_is_public
-      after_validation :report_suspicious_data_inconsistency
+      validate :sector_consistency_with_is_public, unless: :from_api?
+      after_validation :report_suspicious_data_inconsistency, unless: :from_api?
 
       def entreprise_coordinates=(coordinates)
         case coordinates
@@ -55,6 +55,11 @@ module StepperProxy
         else
           super
         end
+      end
+
+
+      def from_api?
+        respond_to?(:permalink) && permalink.present?
       end
 
       private
