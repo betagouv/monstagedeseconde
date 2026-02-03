@@ -317,7 +317,22 @@ const SearchBar = ({
 
       <div className="fr-grid-row fr-grid-row--gutters fr-mt-2w">
         <div className="fr-col-sm-12 w-100 fr-col-lg-4 fr-px-2w">
-          <p className="fr-text-title fr-px-2w text-blue-france">Recherche avancée</p>
+          <p className="fr-text-title fr-px-2w text-blue-france">
+            Recherche avancée
+            <button
+              aria-describedby="tooltip-recherche-avancee"
+              type="button"
+              className="fr-btn fr-btn--tertiary-no-outline fr-icon-information-line fr-btn--sm fr-ml-1w"
+              aria-label="Information sur la recherche avancée"
+            />
+            <span
+              className="fr-tooltip fr-placement"
+              id="tooltip-recherche-avancee"
+              role="tooltip"
+            >
+              Seules les offres correspondant aux critères "commune", "niveau de classe" et "dates de stage" sélectionnés seront affichées. Vous pouvez cependant utiliser les champs de recherche avancée pour mettre en avant les offres qui contiennent le ou les mots-clés renseignés et/ou qui correspondent au secteur d'activité sélectionné.
+            </span>
+          </p>
         </div>
       </div>
 

@@ -172,25 +172,42 @@ class InternshipOffersController < ApplicationController
   end
 
   def search_with_fallback
-    primary_results = finder.all.includes(:sector, :employer)
-
     has_optional_filters = OPTIONAL_SEARCH_PARAMS.any? { |param| search_query_params[param].present? }
 
-    if primary_results.empty? && has_optional_filters
-      relaxed_params = search_query_params.except(*OPTIONAL_SEARCH_PARAMS)
-      relaxed_finder = Finders::InternshipOfferConsumer.new(
-        params: relaxed_params,
-        user: current_user_or_visitor
-      )
-      relaxed_seats_finder = Finders::InternshipOfferConsumer.new(
-        params: relaxed_params,
-        user: current_user_or_visitor,
-        seats_search: true
-      )
-      [relaxed_finder.all.includes(:sector, :employer), true, relaxed_seats_finder]
-    else
-      [primary_results, false, seats_finder]
+    unless has_optional_filters
+      # Pas de filtres optionnels, recherche simple avec les 3 paramètres de base
+      return [finder.all.includes(:sector), false, seats_finder]
     end
+
+    # Recherche avec les 5 paramètres (incluant mot-clé et secteur)
+    primary_results = finder.all_without_page.includes(:sector).to_a
+    primary_ids = primary_results.map(&:id)
+
+    # Recherche avec les 3 paramètres de base (sans mot-clé ni secteur)
+    relaxed_params = search_query_params.except(*OPTIONAL_SEARCH_PARAMS)
+    relaxed_finder = Finders::InternshipOfferConsumer.new(
+      params: relaxed_params,
+      user: current_user_or_visitor
+    )
+    relaxed_results = relaxed_finder.all_without_page.includes(:sector).to_a
+
+    # Exclure les offres déjà présentes dans les résultats primaires
+    secondary_results = relaxed_results.reject { |offer| primary_ids.include?(offer.id) }
+
+    # Combiner : d'abord les résultats avec 5 paramètres, puis ceux avec 3 paramètres
+    combined_offers = primary_results + secondary_results
+
+    # Paginer le résultat combiné
+    paginated_results = Kaminari.paginate_array(combined_offers).page(params[:page]).per(InternshipOffer::PAGE_SIZE)
+
+    # Calculer le nombre total de places pour le finder combiné
+    combined_seats_finder = Finders::InternshipOfferConsumer.new(
+      params: relaxed_params,
+      user: current_user_or_visitor,
+      seats_search: true
+    )
+
+    [paginated_results, false, combined_seats_finder]
   end
 
   def increment_internship_offer_view_count
