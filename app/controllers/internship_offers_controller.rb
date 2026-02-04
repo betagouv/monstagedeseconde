@@ -39,17 +39,45 @@ class InternshipOffersController < ApplicationController
         # QPV order destroys the former internship offers distance order from school
         if current_user&.student?
           if current_user&.school&.try(:qpv)
-            @internship_offers = @internship_offers.reorder("qpv DESC NULLS LAST")
+            # Si c'est un PaginatableArray, on trie manuellement; sinon on utilise reorder
+            if @internship_offers.respond_to?(:reorder)
+              @internship_offers = @internship_offers.reorder("qpv DESC NULLS LAST")
+            else
+              sorted = @internship_offers.to_a.sort_by { |offer| offer.qpv ? 0 : 1 }
+              @internship_offers = Kaminari.paginate_array(sorted).page(params[:page]).per(InternshipOffer::PAGE_SIZE)
+            end
           elsif current_user&.school&.try(:rep_kind).present?
-            # get rep offers (sans pagination)
-            relaxed_params = is_fallback ? search_query_params.except(*OPTIONAL_SEARCH_PARAMS) : search_query_params
-            rep_finder = Finders::InternshipOfferConsumer.new(params: relaxed_params, user: current_user_or_visitor)
-            rep_offers = rep_finder.all_without_page.includes(:sector, :employer).where(rep: true)
-            # get non rep offers (sans pagination)
-            non_rep_offers = rep_finder.all_without_page.includes(:sector, :employer).where(rep: false)
+            # Pour les étudiants REP, on veut montrer toutes les offres (primaires + secondaires)
+            # avec les offres REP en premier
+            has_optional_filters = OPTIONAL_SEARCH_PARAMS.any? { |param| search_query_params[param].present? }
 
-            combined_offers = rep_offers.to_a + non_rep_offers.to_a
-            # Paginate the combined array
+            if has_optional_filters
+              # Recherche avec filtres optionnels : combiner primaires (5 critères) et secondaires (3 critères)
+              # en gardant les offres REP en premier dans chaque groupe
+              primary_finder = Finders::InternshipOfferConsumer.new(params: search_query_params, user: current_user_or_visitor)
+              primary_results = primary_finder.all_without_page.includes(:sector, :employer).to_a
+              primary_ids = primary_results.map(&:id)
+
+              relaxed_params = search_query_params.except(*OPTIONAL_SEARCH_PARAMS)
+              relaxed_finder = Finders::InternshipOfferConsumer.new(params: relaxed_params, user: current_user_or_visitor)
+              relaxed_results = relaxed_finder.all_without_page.includes(:sector, :employer).to_a
+              secondary_results = relaxed_results.reject { |offer| primary_ids.include?(offer.id) }
+
+              # Trier : REP primaires, puis non-REP primaires, puis REP secondaires, puis non-REP secondaires
+              rep_primary = primary_results.select(&:rep)
+              non_rep_primary = primary_results.reject(&:rep)
+              rep_secondary = secondary_results.select(&:rep)
+              non_rep_secondary = secondary_results.reject(&:rep)
+
+              combined_offers = rep_primary + non_rep_primary + rep_secondary + non_rep_secondary
+            else
+              # Pas de filtres optionnels : recherche simple avec priorité REP
+              rep_finder = Finders::InternshipOfferConsumer.new(params: search_query_params, user: current_user_or_visitor)
+              rep_offers = rep_finder.all_without_page.includes(:sector, :employer).where(rep: true)
+              non_rep_offers = rep_finder.all_without_page.includes(:sector, :employer).where(rep: false)
+              combined_offers = rep_offers.to_a + non_rep_offers.to_a
+            end
+
             @internship_offers = Kaminari.paginate_array(combined_offers).page(params[:page]).per(InternshipOffer::PAGE_SIZE)
           end
         end
@@ -207,7 +235,11 @@ class InternshipOffersController < ApplicationController
       seats_search: true
     )
 
-    [paginated_results, false, combined_seats_finder]
+    # is_fallback est true si la recherche primaire n'a pas de résultats
+    # (le fallback a été tenté, qu'il ait trouvé des résultats ou non)
+    is_fallback = primary_results.empty?
+
+    [paginated_results, is_fallback, combined_seats_finder]
   end
 
   def increment_internship_offer_view_count
