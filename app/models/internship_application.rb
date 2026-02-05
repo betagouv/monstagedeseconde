@@ -400,6 +400,10 @@ class InternshipApplication < ApplicationRecord
     self.submitted_at = Time.now.utc if submitted_at.nil?
   end
 
+  def from_doubling_task?
+    internship_offer.from_doubling_task?
+  end
+
   def notify_users
     EmployerMailer.internship_application_submitted_email(internship_application: self).deliver_later(wait: 1.second)
     Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
