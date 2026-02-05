@@ -104,7 +104,7 @@ class School < ApplicationRecord
       field :address do
         pretty_value do
           school = bindings[:object]
-          "#{school.city} – CP #{school.zipcode} (#{school.department.name})"
+          "#{school.city} – CP #{school.zipcode} (#{school.department&.name})"
         end
       end
       field :school_manager do
