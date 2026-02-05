@@ -73,6 +73,8 @@ class School < ApplicationRecord
     left_joins(class_rooms: :students).where(students: { id: nil }).distinct
   }
 
+  scope :with_preloads, -> { includes(:department, :school_managers) }
+
   def self.nearby_school_weeks(latitude:, longitude:, radius:)
     internship_weeks_nearby(latitude:, longitude:, radius:)
       .pluck(:week_id)
@@ -94,6 +96,7 @@ class School < ApplicationRecord
 
   rails_admin do
     list do
+      scopes [:with_preloads]
       field :id
       field :name
       field :visible
