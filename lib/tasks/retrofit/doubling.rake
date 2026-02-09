@@ -22,4 +22,19 @@ namespace :retrofit do
       end
     end
   end
+
+  desc 'doubling offer test when associated to several grades'
+  task doubling_offers_test: :environment do |task|
+    PrettyConsole.announce_task(task) do
+      counter = 0
+      InternshipOffer.kept.seconde_and_troisieme.find_each do |offer|
+        weeks_seconde = offer.weeks.select { |week| week.number >= 24 && week.number <= 27}
+        weeks_troisieme_quatrieme = offer.weeks.to_a - weeks_seconde.to_a
+        if weeks_seconde.empty? || weeks_troisieme_quatrieme.empty?
+          counter += 1
+        end
+      end
+      PrettyConsole.say_in_green("Tested #{counter} offers cannot be split")
+    end
+  end
 end

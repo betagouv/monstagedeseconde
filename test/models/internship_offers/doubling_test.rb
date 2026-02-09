@@ -385,7 +385,7 @@ class DoublingOffersTest < ActiveSupport::TestCase
       internship_offer = create(:weekly_internship_offer,
                                 :week_1,
                                 max_candidates: 3,
-                                grades: [Grade.troisieme, Grade.seconde],
+                                grades: [Grade.quatrieme, Grade.troisieme, Grade.seconde],
                                 weeks: Week.where(year: 2025, number: [1,2])
                                 )
       student_seconde_f = create(:student, :female, grade: Grade.seconde)
@@ -406,8 +406,13 @@ class DoublingOffersTest < ActiveSupport::TestCase
       assert_equal 0, internship_offer.stats.total_female_approved_applications_count
 
       assert_no_changes -> { UsersInternshipOffersHistory.count } do
-        internship_offer.split_offer
+        assert_no_changes -> { InternshipOffer.count } do
+          internship_offer.split_offer
+        end
       end
+      internship_offer.reload
+      assert_equal [Grade.troisieme.id, Grade.quatrieme.id].sort, internship_offer.grades.ids.sort
+      assert_equal [application_seconde_f.id, application_seconde_m.id].sort, internship_offer.internship_applications.to_a.map(&:id).sort
     end
   end
 end
