@@ -8,9 +8,11 @@ module SplittableOffer
 
       stats = self.stats
       create_troisieme_offer = true
-      offer_year = self.weeks.order(:year,:number).last.year #since secnde offer has weeks in june
-      weeks_seconde = self.weeks.select { |week| week.year == offer_year && week.number >= 24 && week.number <= 27}
+      weeks_seconde = self.weeks.select { |week| week.number >= 24 && week.number <= 27}
+      # offer_year = self.weeks.order(:year,:number).last.year #since secnde offer has weeks in june
+      # weeks_seconde = self.weeks.select { |week| week.year == offer_year && week.number >= 24 && week.number <= 27}
       weeks_troisieme_quatrieme = self.weeks.to_a - weeks_seconde.to_a
+
       seconde_favorites_user_ids = Favorite.joins(:user)
                                            .where(internship_offer_id: id)
                                            .where(user: { grade_id: Grade.seconde.id, discarded_at: nil })
