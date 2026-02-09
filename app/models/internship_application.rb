@@ -100,6 +100,7 @@ class InternshipApplication < ApplicationRecord
             }
   validates :student_email,
             format: { with: Devise.email_regexp }
+  validate :student_email_not_taken
   validates :weeks, presence: true, on: :create
 
   # Callbacks
@@ -684,6 +685,14 @@ class InternshipApplication < ApplicationRecord
   protected
 
   private
+
+  def student_email_not_taken
+    return if student_email.blank?
+
+    if User.where.not(id: user_id).where("LOWER(email) = ?", student_email.downcase.strip).exists?
+      errors.add(:student_email, "est déjà utilisée par un autre compte. Merci de choisir une autre adresse email")
+    end
+  end
 
   def internship_agreement_creation_allowed?
     # return false unless student.school&.school_manager&.email

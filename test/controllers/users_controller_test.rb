@@ -166,6 +166,45 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
   end
 
+  test 'PATCH edit as student with fake email cannot use an email already taken by another user' do
+    school = create(:school)
+    student = create(:student, school:, email: "test@#{school.code_uai}.fr")
+    assert student.fake_email?
+    other_user = create(:employer, email: 'taken@example.com')
+    sign_in(student)
+
+    patch(account_path, params: { user: { email: 'taken@example.com' } })
+
+    assert_response :bad_request
+    student.reload
+    assert_equal "test@#{school.code_uai}.fr", student.email
+  end
+
+  test 'PATCH edit as student with fake email can update to a unique email' do
+    school = create(:school)
+    student = create(:student, school:, email: "test@#{school.code_uai}.fr")
+    assert student.fake_email?
+    sign_in(student)
+
+    patch(account_path, params: { user: { email: 'new-unique@example.com' } })
+
+    assert_redirected_to account_path
+    student.reload
+    assert_equal 'new-unique@example.com', student.email
+  end
+
+  test 'PATCH edit as student cannot update email to one already taken by another user' do
+    student = create(:student, email: 'original@example.com')
+    other_user = create(:employer, email: 'taken@example.com')
+    sign_in(student)
+
+    patch(account_path, params: { user: { email: 'taken@example.com' } })
+
+    assert_response :bad_request
+    student.reload
+    assert_equal 'original@example.com', student.email
+  end
+
   test 'PATCH edit as school_manager, can change school' do
     original_school = create(:school)
     school_manager = create(:school_manager, school: original_school)
