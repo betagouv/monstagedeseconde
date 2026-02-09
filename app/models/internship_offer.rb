@@ -29,6 +29,10 @@ class InternshipOffer < ApplicationRecord
   include FindableWeek
   include Zipcodable
 
+  # temporary
+  include SplittableOffer
+
+
   # New stepper models
   include StepperProxy::InternshipOccupation
   include StepperProxy::Entreprise
@@ -252,21 +256,45 @@ class InternshipOffer < ApplicationRecord
     joins(:grades).where(grades: { id: Grade.troisieme_et_quatrieme.ids })
   }
 
-  scope :troisieme_or_quatrieme_only, lambda {
-    troisieme_or_quatrieme.where.not(grades: { id: Grade.seconde.id })
-  }
-
   scope :seconde, lambda {
     joins(:grades).where(grades: { id: Grade.seconde.id })
-  }
-
-  scope :seconde_only, lambda {
-    seconde.where.not(grades: { id: Grade.troisieme_et_quatrieme.ids })
   }
 
   scope :with_grade, lambda { |user|
     joins(:grades).where(grades: { id: user.try(:grade_id) || Grade.all.ids })
   }
+
+  scope :seconde_and_troisieme, lambda {
+    joins(:grades,:internship_offer_grades)
+      .where(grades: { id: [Grade.seconde.id, Grade.troisieme.id, Grade.quatrieme.id] })
+      .group('internship_offers.id')
+      .having('COUNT(DISTINCT internship_offer_grades.grade_id) > 2')
+  }
+
+  scope :seconde_and_troisieme_only, lambda {
+    joins(:grades, :internship_offer_grades)
+      .where(grades: { id: [Grade.seconde.id, Grade.troisieme.id] })
+      .group('internship_offers.id')
+      .having('COUNT(DISTINCT internship_offer_grades.grade_id) = 2')
+      .having('SUM(CASE WHEN internship_offer_grades.grade_id = ? THEN 0 ELSE 1 END) = 0', Grade.quatrieme.id)
+  }
+  # In production there's no offer that would match (seconde and troisieme) only without quatrieme
+
+  scope :troisieme_or_quatrieme_only, lambda {
+    joins(:grades,:internship_offer_grades)
+    .where(grades: { id: [Grade.troisieme.id, Grade.quatrieme.id] })
+    .group('internship_offers.id')
+    .having('COUNT(DISTINCT internship_offer_grades.grade_id) = ?', Grade.troisieme_et_quatrieme.size)
+  }
+  # In production there's no offer that would match one grade only (troisieme or quatrieme)
+
+  scope :seconde_only, lambda {
+    joins(:grades,:internship_offer_grades)
+    .where(grades: { id: Grade.seconde.id })
+    .group('internship_offers.id')
+    .having('COUNT(DISTINCT internship_offer_grades.grade_id) = 1')
+  }
+
 
   scope :by_department, ->(departments) { where(department: departments) }
 

@@ -213,4 +213,13 @@ class InternshipOfferTest < ActiveSupport::TestCase
     assert offers.include?(internship_offer3)
     assert offers.include?(internship_offer4)
   end
+
+  test 'scope seconde_and_troisieme' do
+    create(:weekly_internship_offer_2nde)
+    assert_equal 0, InternshipOffer.seconde_and_troisieme.ids.count
+    create(:weekly_internship_offer_2nde, grades: [Grade.seconde, Grade.troisieme, Grade.quatrieme])
+    assert_equal 1, InternshipOffer.seconde_and_troisieme.ids.count
+    create(:weekly_internship_offer_2nde, grades: [Grade.troisieme, Grade.quatrieme])
+    assert_equal 1, InternshipOffer.seconde_and_troisieme.ids.count
+  end
 end

@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class DoublingOffersTest < ActiveSupport::TestCase
-  Monstage::Application.load_tasks
 
   test 'retrofit:doubling_offers with multiple grades and applications of both grades' do
     travel_to Date.new(2023, 10, 1) do
@@ -39,7 +38,7 @@ class DoublingOffersTest < ActiveSupport::TestCase
       assert_equal "2024/06/21", internship_offer.last_date.strftime("%Y/%m/%d")
 
 
-      Rake::Task['retrofit:doubling_offers'].invoke
+      internship_offer.split_offer
 
 
       internship_offer.reload
@@ -127,9 +126,7 @@ class DoublingOffersTest < ActiveSupport::TestCase
       assert_equal "2024/06/21", internship_offer.last_date.strftime("%Y/%m/%d")
 
 
-      Rake::Task['retrofit:doubling_offers'].invoke
-
-
+      internship_offer.split_offer
       internship_offer.reload
 
       assert_equal "2024/06/17", internship_offer.first_date.strftime("%Y/%m/%d")
@@ -218,7 +215,7 @@ class DoublingOffersTest < ActiveSupport::TestCase
       assert_equal "2024/06/21", internship_offer.last_date.strftime("%Y/%m/%d")
 
 
-      Rake::Task['retrofit:doubling_offers'].invoke
+      internship_offer.split_offer
 
 
       internship_offer.reload
@@ -275,7 +272,7 @@ class DoublingOffersTest < ActiveSupport::TestCase
                                 :both_school_tracks_internship_offer,
                                 max_candidates: 3,
                                 grades: [Grade.seconde] + Grade.troisieme_et_quatrieme,
-                                weeks: [Week.seconde_weeks.first] + Week.where(year: 2024, number: [1,2]).to_a
+                                weeks: [Week.seconde_weeks.first] + Week.where(year: 2025, number: [1,2]).to_a
                                 )
       lycee_school         = create(:school, :lycee, :at_paris)
       college_school       = create(:school, :college, :at_bordeaux)
@@ -288,11 +285,11 @@ class DoublingOffersTest < ActiveSupport::TestCase
       assert_equal 2, internship_offer.schools.count
 
       assert_no_changes -> { UsersInternshipOffersHistory.count } do
-        Rake::Task['retrofit:doubling_offers'].invoke
+        internship_offer.split_offer
       end
 
-
       internship_offer.reload
+
       assert_equal [Grade.seconde.id], internship_offer.grades.ids
       assert_equal [Week.seconde_weeks.first.id], internship_offer.weeks.ids
       assert_equal 1, internship_offer.favorites.count
@@ -330,7 +327,7 @@ class DoublingOffersTest < ActiveSupport::TestCase
       assert_equal 0, internship_offer.stats.total_female_approved_applications_count
 
       assert_no_changes -> { UsersInternshipOffersHistory.count } do
-        Rake::Task['retrofit:doubling_offers'].invoke
+        internship_offer.split_offer
       end
 
       internship_offer.reload
@@ -347,6 +344,70 @@ class DoublingOffersTest < ActiveSupport::TestCase
       assert_equal 0, internship_offer.stats.total_male_approved_applications_count
       assert_equal 0, internship_offer.stats.total_female_approved_applications_count
 
+    end
+  end
+
+  test 'retrofit:doubling_offers fails gracefully when weeks are missing in 3eme grade' do
+    travel_to Date.new(2024, 10, 1) do
+      #setup
+      internship_offer = create(:weekly_internship_offer,
+                                :week_1,
+                                max_candidates: 3,
+                                grades: [Grade.troisieme, Grade.seconde],
+                                weeks: [Week.seconde_weeks.first]
+                                )
+      student_seconde_f = create(:student, :female, grade: Grade.seconde)
+      student_seconde_m = create(:student, :male, grade: Grade.seconde)
+      application_seconde_f = create(:weekly_internship_application, internship_offer: internship_offer, student: student_seconde_f)
+      application_seconde_m = create(:weekly_internship_application, internship_offer: internship_offer, student: student_seconde_m)
+      create(:favorite, internship_offer: internship_offer, user: student_seconde_f)
+      create(:favorite, internship_offer: internship_offer, user: student_seconde_m)
+      internship_offer.reload.update_stats
+
+      assert_equal 3, internship_offer.stats.remaining_seats_count
+      assert_equal 2, internship_offer.stats.total_applications_count
+      assert_equal 0, internship_offer.stats.approved_applications_count
+      assert_equal 2, internship_offer.stats.submitted_applications_count
+      assert_equal 1, internship_offer.stats.total_male_applications_count
+      assert_equal 1, internship_offer.stats.total_female_applications_count
+      assert_equal 0, internship_offer.stats.total_male_approved_applications_count
+      assert_equal 0, internship_offer.stats.total_female_approved_applications_count
+
+      assert_no_changes -> { UsersInternshipOffersHistory.count } do
+        internship_offer.split_offer
+      end
+    end
+  end
+
+  test 'retrofit:doubling_offers fails gracefully when weeks are missing in 2nde grade' do
+    travel_to Date.new(2024, 10, 1) do
+      #setup
+      internship_offer = create(:weekly_internship_offer,
+                                :week_1,
+                                max_candidates: 3,
+                                grades: [Grade.troisieme, Grade.seconde],
+                                weeks: Week.where(year: 2025, number: [1,2])
+                                )
+      student_seconde_f = create(:student, :female, grade: Grade.seconde)
+      student_seconde_m = create(:student, :male, grade: Grade.seconde)
+      application_seconde_f = create(:weekly_internship_application, internship_offer: internship_offer, student: student_seconde_f)
+      application_seconde_m = create(:weekly_internship_application, internship_offer: internship_offer, student: student_seconde_m)
+      create(:favorite, internship_offer: internship_offer, user: student_seconde_f)
+      create(:favorite, internship_offer: internship_offer, user: student_seconde_m)
+      internship_offer.reload.update_stats
+
+      assert_equal 3, internship_offer.stats.remaining_seats_count
+      assert_equal 2, internship_offer.stats.total_applications_count
+      assert_equal 0, internship_offer.stats.approved_applications_count
+      assert_equal 2, internship_offer.stats.submitted_applications_count
+      assert_equal 1, internship_offer.stats.total_male_applications_count
+      assert_equal 1, internship_offer.stats.total_female_applications_count
+      assert_equal 0, internship_offer.stats.total_male_approved_applications_count
+      assert_equal 0, internship_offer.stats.total_female_approved_applications_count
+
+      assert_no_changes -> { UsersInternshipOffersHistory.count } do
+        internship_offer.split_offer
+      end
     end
   end
 end
