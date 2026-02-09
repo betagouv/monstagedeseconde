@@ -22,7 +22,16 @@
 }
 
 .multi-summary-cards {
-  max-width: 500px;
+  width: 370px;
   margin-left: 12px;
   margin-bottom: 12px;
+
+  .fr-card__title {
+    height: 3rem;
+  }
+  .fr-card__detail{
+    .fr-row {
+    height: 100px
+    }
+  }
 }

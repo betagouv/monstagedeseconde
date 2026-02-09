@@ -35,6 +35,7 @@ class PagesController < ApplicationController
     @seconde_week_ids = Week.seconde_weeks.map(&:id)
     @troisieme_week_ids = Week.troisieme_selectable_weeks.map(&:id)
     @student_grade_id = current_user&.student? ? current_user.grade_id : nil
+    @sectors = Sector.all.order(:name)
     @educonnect_url = build_educonnect_url
     if employers_only?
       redirect_to root_path

@@ -37,7 +37,8 @@ const InternshipOfferResults = ({
     schoolWeeksList,
     secondeWeekIds,
     troisiemeWeekIds,
-    studentGradeId
+    studentGradeId,
+    sectors
   }) => {
   // const [map, setMap] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
@@ -49,6 +50,7 @@ const InternshipOfferResults = ({
   const [newDataFetched, setNewDataFetched] = useState(false);
   // const [selectedSectors, setSelectedSectors] = useState(searchParams['sector_ids'] || []);
   const [internshipOffersSeats, setInternshipOffersSeats] = useState(0);
+  const [isFallbackSearch, setIsFallbackSearch] = useState(false);
   const [notify, setNotify] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [params, setParams] = useState(searchParams);
@@ -115,15 +117,11 @@ const InternshipOfferResults = ({
     setInternshipOffers(result['internshipOffers']);
     setPaginateLinks(result['pageLinks']);
     setInternshipOffersSeats(result['seats']);
-
-    // setIsSuggestion(result['isSuggestion']);
+    setIsFallbackSearch(result['isFallbackSearch'] || false);
 
     setIsLoading(false);
     setNewDataFetched(true);
 
-    // if (internshipOffers.length) {
-    //   resizingMap
-    // }
     return true
   };
 
@@ -166,6 +164,7 @@ const InternshipOfferResults = ({
                 troisiemeWeekIds={troisiemeWeekIds}
                 origin='search'
                 studentGradeId={studentGradeId}
+                sectors={sectors}
               />
             </div>
           </div>
@@ -194,6 +193,11 @@ const InternshipOfferResults = ({
                         </>
                       )
                   }
+                  { !isLoading && isFallbackSearch && internshipOffersSeats > 0 && (
+                    <div className="fr-alert fr-alert--info fr-my-2w">
+                      <p>Aucune offre ne correspond exactement à vos critères. Voici des suggestions proches de votre recherche.</p>
+                    </div>
+                  )}
                   { !isLoading && (internshipOffersSeats == 0) &&
                     (<p>Aucune offre répondant à vos critères n'est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
                   }

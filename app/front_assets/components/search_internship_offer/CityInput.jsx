@@ -63,7 +63,27 @@ function CityInput({
 
   const manageResults = (results) => {
     setSearchResults(results);
-    setLocation(results[0]);
+    // Pré-sélectionner le premier résultat pour que la recherche fonctionne
+    // même si l'utilisateur ne clique pas explicitement sur un élément du dropdown
+    if (results.length > 0) {
+      const firstResult = results[0];
+      const lat = firstResult.centre.coordinates[1];
+      const lon = firstResult.centre.coordinates[0];
+
+      // Mettre à jour l'état React
+      setLatitude(lat);
+      setLongitude(lon);
+
+      // Mettre à jour les paramètres URL pour que la recherche fonctionne
+      const cityParams = addParamToSearchParams('city', firstResult.nom);
+      updateURLWithParam(cityParams);
+      const latitudeParams = addParamToSearchParams('latitude', lat);
+      updateURLWithParam(latitudeParams);
+      const longitudeParams = addParamToSearchParams('longitude', lon);
+      updateURLWithParam(longitudeParams);
+      const radiusParams = addParamToSearchParams('radius', radius);
+      updateURLWithParam(radiusParams);
+    }
   };
 
   const searchCityByName = () => {
@@ -84,31 +104,38 @@ function CityInput({
     const searchParams = new URLSearchParams();
 
     searchParams.append('codePostal', zipcode);
+    searchParams.append('fields', ['nom', 'centre', 'departement', 'codesPostaux', 'code'].join(','));
     endpoint.search = searchParams.toString();
 
     fetch(endpoint)
       .then((response) => response.json())
-      .then((jsonResponse) => searchByCode(jsonResponse[0]))
-  };
+      .then((jsonResponse) => {
+        if (jsonResponse.length === 0) {
+          setCity(cityOrZipcode + " : code postal invalide");
+        } else {
+          // Afficher toutes les communes du code postal
+          setSearchResults(jsonResponse);
 
-  const searchByCode = (responseWithCode) => {
-    if (responseWithCode == undefined || responseWithCode.code == undefined) {
-      setCity(cityOrZipcode + " : code postal invalide")
-    } else {
-      const code = responseWithCode.code
-      const searchParams = new URLSearchParams();
+          // Pré-sélectionner la première commune
+          const firstResult = jsonResponse[0];
+          const lat = firstResult.centre.coordinates[1];
+          const lon = firstResult.centre.coordinates[0];
 
-      searchParams.append('code', code);
-      searchParams.append('nom', responseWithCode.nom);
-      searchParams.append('fields', ['nom', 'centre', 'departement', 'codesPostaux', 'code'].join(','));
-      searchParams.append('limit', 10);
-      searchParams.append('boost', 'population');
-      endpoint.search = searchParams.toString();
+          // Mettre à jour l'état React
+          setLatitude(lat);
+          setLongitude(lon);
 
-      fetch(endpoint)
-        .then((response) => response.json())
-        .then(manageResults);
-    }
+          // Mettre à jour les paramètres URL pour que la recherche fonctionne
+          const cityParams = addParamToSearchParams('city', firstResult.nom);
+          updateURLWithParam(cityParams);
+          const latitudeParams = addParamToSearchParams('latitude', lat);
+          updateURLWithParam(latitudeParams);
+          const longitudeParams = addParamToSearchParams('longitude', lon);
+          updateURLWithParam(longitudeParams);
+          const radiusParams = addParamToSearchParams('radius', radius);
+          updateURLWithParam(radiusParams);
+        }
+      });
   };
 
   const codePostauxSample = (codes) => {

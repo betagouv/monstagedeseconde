@@ -1,7 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -21,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -35,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 -- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
@@ -49,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -63,7 +62,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -611,10 +610,10 @@ CREATE TABLE public.corporations (
     tutor_phone character varying(20),
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
+    employer_email character varying(120),
+    employer_role character varying(120),
     internship_coordinates public.geometry(Point,4326),
     employer_name character varying,
-    employer_role character varying(120),
-    employer_email character varying(120),
     uuid uuid DEFAULT gen_random_uuid() NOT NULL
 );
 
@@ -978,7 +977,8 @@ CREATE TABLE public.internship_agreements (
     pai_project boolean,
     pai_trousse_family boolean,
     access_token character varying,
-    type character varying DEFAULT 'InternshipAgreements::MonoInternshipAgreement'::character varying NOT NULL
+    type character varying DEFAULT 'InternshipAgreements::MonoInternshipAgreement'::character varying NOT NULL,
+    pre_selected_for_signature boolean DEFAULT false NOT NULL
 );
 
 
@@ -1234,86 +1234,6 @@ CREATE SEQUENCE public.internship_offer_grades_id_seq
 --
 
 ALTER SEQUENCE public.internship_offer_grades_id_seq OWNED BY public.internship_offer_grades.id;
-
-
---
--- Name: internship_offer_info_weeks; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.internship_offer_info_weeks (
-    id bigint NOT NULL,
-    internship_offer_info_id bigint,
-    week_id bigint,
-    total_applications_count integer DEFAULT 0 NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: internship_offer_info_weeks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.internship_offer_info_weeks_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: internship_offer_info_weeks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.internship_offer_info_weeks_id_seq OWNED BY public.internship_offer_info_weeks.id;
-
-
---
--- Name: internship_offer_infos; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.internship_offer_infos (
-    id bigint NOT NULL,
-    title character varying(150),
-    description text,
-    max_candidates integer,
-    school_id integer,
-    employer_id bigint NOT NULL,
-    type character varying(50),
-    sector_id bigint,
-    last_date date,
-    weeks_count integer DEFAULT 0 NOT NULL,
-    internship_offer_info_weeks_count integer DEFAULT 0 NOT NULL,
-    weekly_hours text[] DEFAULT '{}'::text[],
-    daily_hours text[] DEFAULT '{}'::text[],
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    new_daily_hours jsonb DEFAULT '{}'::jsonb,
-    daily_lunch_break jsonb DEFAULT '{}'::jsonb,
-    weekly_lunch_break text,
-    max_students_per_group integer DEFAULT 1 NOT NULL,
-    remaining_seats_count integer DEFAULT 0
-);
-
-
---
--- Name: internship_offer_infos_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.internship_offer_infos_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: internship_offer_infos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.internship_offer_infos_id_seq OWNED BY public.internship_offer_infos.id;
 
 
 --
@@ -2824,20 +2744,6 @@ ALTER TABLE ONLY public.internship_offer_grades ALTER COLUMN id SET DEFAULT next
 
 
 --
--- Name: internship_offer_info_weeks id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.internship_offer_info_weeks ALTER COLUMN id SET DEFAULT nextval('public.internship_offer_info_weeks_id_seq'::regclass);
-
-
---
--- Name: internship_offer_infos id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.internship_offer_infos ALTER COLUMN id SET DEFAULT nextval('public.internship_offer_infos_id_seq'::regclass);
-
-
---
 -- Name: internship_offer_keywords id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3281,22 +3187,6 @@ ALTER TABLE ONLY public.internship_offer_areas
 
 ALTER TABLE ONLY public.internship_offer_grades
     ADD CONSTRAINT internship_offer_grades_pkey PRIMARY KEY (id);
-
-
---
--- Name: internship_offer_info_weeks internship_offer_info_weeks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.internship_offer_info_weeks
-    ADD CONSTRAINT internship_offer_info_weeks_pkey PRIMARY KEY (id);
-
-
---
--- Name: internship_offer_infos internship_offer_infos_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.internship_offer_infos
-    ADD CONSTRAINT internship_offer_infos_pkey PRIMARY KEY (id);
 
 
 --
@@ -3934,27 +3824,6 @@ CREATE INDEX index_internship_offer_grades_on_grade_id ON public.internship_offe
 --
 
 CREATE INDEX index_internship_offer_grades_on_internship_offer_id ON public.internship_offer_grades USING btree (internship_offer_id);
-
-
---
--- Name: index_internship_offer_info_weeks_on_internship_offer_info_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internship_offer_info_weeks_on_internship_offer_info_id ON public.internship_offer_info_weeks USING btree (internship_offer_info_id);
-
-
---
--- Name: index_internship_offer_info_weeks_on_week_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internship_offer_info_weeks_on_week_id ON public.internship_offer_info_weeks USING btree (week_id);
-
-
---
--- Name: index_internship_offer_infos_on_sector_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internship_offer_infos_on_sector_id ON public.internship_offer_infos USING btree (sector_id);
 
 
 --
@@ -4924,14 +4793,6 @@ ALTER TABLE ONLY public.school_internship_weeks
 
 
 --
--- Name: internship_offer_infos fk_rails_65006c3093; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.internship_offer_infos
-    ADD CONSTRAINT fk_rails_65006c3093 FOREIGN KEY (employer_id) REFERENCES public.users(id);
-
-
---
 -- Name: reserved_schools fk_rails_654a23d8dc; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5124,14 +4985,6 @@ ALTER TABLE ONLY public.internship_offers
 
 
 --
--- Name: internship_offer_info_weeks fk_rails_9d43a53fc8; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.internship_offer_info_weeks
-    ADD CONSTRAINT fk_rails_9d43a53fc8 FOREIGN KEY (internship_offer_info_id) REFERENCES public.internship_offer_infos(id);
-
-
---
 -- Name: internship_offers fk_rails_aaa97f3a41; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5260,14 +5113,6 @@ ALTER TABLE ONLY public.schools
 
 
 --
--- Name: internship_offer_info_weeks fk_rails_e9c5c89c26; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.internship_offer_info_weeks
-    ADD CONSTRAINT fk_rails_e9c5c89c26 FOREIGN KEY (week_id) REFERENCES public.weeks(id);
-
-
---
 -- Name: planning_grades fk_rails_eae037a466; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5314,6 +5159,8 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260203214306'),
+('20260115112842'),
 ('20260102092331'),
 ('20251222092900'),
 ('20251219100000'),
@@ -5809,3 +5656,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
+

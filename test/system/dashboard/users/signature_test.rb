@@ -341,7 +341,7 @@ module Dashboard
       travel_to(weeks[0].week_date - 1.week) do
         sign_in(school_manager)
 
-        visit dashboard_internship_agreements_path(multi: true)
+        visit dashboard_internship_agreements_path
 
         find("button[data-group-signing-id-param='#{internship_agreement.id}']").click
         find("button[data-group-signing-id-param='#{internship_agreement_2.id}']").click

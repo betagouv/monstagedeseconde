@@ -8,12 +8,13 @@ ruby File.read(".ruby-version").strip
 # fwk/server
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
-gem "rails", "~> 7.2"
+gem "rails", "< 8.0"
 gem "mutex_m"
 # db
 gem "pg"
 gem "rack", ">= 3.0"
 gem "rake"
+# gem 'openssl'
 
 # pg extension for geo queries
 # wait for : https://github.com/rgeo/activerecord-postgis-adapter/tree/ar61 to be merge into master
@@ -46,7 +47,7 @@ gem "aws-sdk-s3", require: false
 gem "redis", "~> 4.0"
 
 # admin
-gem "rails_admin", "~> 3.0"
+gem "rails_admin"
 gem "rails_admin_aasm"
 gem "rails_admin-i18n"
 
@@ -93,13 +94,12 @@ gem "active_storage_validations"
 gem "image_processing", "~> 1.2"
 gem "mini_magick"
 
-# temporary
+# temporary - default gems extracted in Ruby 3.4+
 gem "fiddle"
 gem "ostruct"
 
 group :development, :test do
   gem "debug"
-  gem "stringio", "3.1.7"
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: %i[windows jruby]
   gem "pry-byebug"
@@ -118,6 +118,7 @@ group :development do
   gem "jupyter_on_rails"
   gem "letter_opener_web"
   gem "spring", "3.0.0"
+  gem "openssl"
 end
 
 group :test do

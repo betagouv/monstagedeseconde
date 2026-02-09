@@ -1,20 +1,10 @@
 require 'application_system_test_case'
 
-module Dashboard
+module Dashboard::InternshipAgreements
   class MultiInternshipAgreementTest < ApplicationSystemTestCase
     include Devise::Test::IntegrationHelpers
     include TeamAndAreasHelper
     include ActionMailer::TestHelper
-
-    def visit_index_and_go_to_multi_internship_agreements
-      visit dashboard_internship_agreements_path
-      click_on 'Conventions multi-offreurs'
-    end
-
-    def school_manager_visits_index_and_go_to_multi_internship_agreements
-      visit dashboard_internship_agreements_path
-      click_button 'Mes conventions de stage multi-offreurs'
-    end
 
     def double_agreement_validation
       find("#send_agreement").click
@@ -54,7 +44,7 @@ module Dashboard
       internship_agreement = create(:multi_internship_agreement, internship_application:,
                                                            aasm_state: :draft)
       sign_in(employer)
-      visit_index_and_go_to_multi_internship_agreements
+      visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
         find('div.actions', text: 'À remplir par les deux parties.')
       end
@@ -67,7 +57,7 @@ module Dashboard
       internship_agreement = create(:multi_internship_agreement, internship_application:,
                                                            aasm_state: :started_by_employer)
       sign_in(employer)
-      visit_index_and_go_to_multi_internship_agreements
+      visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
         find('div.actions', text: "Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.")
       end
@@ -85,7 +75,7 @@ module Dashboard
       internship_agreement = create(:multi_internship_agreement, internship_application:,
                                                            aasm_state: :started_by_employer)
       sign_in(employer)
-      visit_index_and_go_to_multi_internship_agreements
+      visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
         find('div.actions', text: "Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.")
       end
@@ -126,6 +116,11 @@ module Dashboard
 
     # -- Helper methods for tests with multiple agreements
 
+    def school_manager_visits_index_and_go_to_multi_internship_agreements
+      visit dashboard_internship_agreements_path
+      click_button 'Mes conventions'
+    end
+
     def make_an_agreement
       internship_agreement = create(:multi_internship_agreement)
       corporation = internship_agreement.internship_offer.corporations.first
@@ -133,16 +128,24 @@ module Dashboard
       [internship_agreement, corporation, corporation_sgid]
     end
 
-    def make_a_validated_agreement
-      internship_agreement = create(:multi_internship_agreement, :validated)
+    def make_a_validated_agreement(internship_agreement: nil, pre_selected_for_signature: false)
+      if internship_agreement.nil?
+        internship_agreement = create(:multi_internship_agreement, :validated)
+      else
+        internship_agreement.update(aasm_state: :validated)
+      end
+      internship_agreement.update(pre_selected_for_signature: true) if pre_selected_for_signature
       corporation = internship_agreement.internship_offer.corporations.first
       corporation_sgid = corporation.to_sgid.to_s
       [internship_agreement, corporation, corporation_sgid]
     end
 
-    def create_agreement_on_same_corporation(internship_agreement:)
+    def create_agreement_on_same_corporation(internship_agreement: , validated: false, pre_selected_for_signature: false)
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_agreement.internship_offer)
       internship_agreement2 = internship_application.internship_agreement
+      internship_agreement2.update(aasm_state: :validated) if validated
+      internship_agreement2.update(pre_selected_for_signature: true) if pre_selected_for_signature
+      internship_agreement2
     end
 
     def agreement_checkbox_id(internship_agreement)
@@ -164,11 +167,16 @@ module Dashboard
     # -- end of helper methods
 
     test 'signator responsible multi validates internship agreement' do
-      internship_agreement, corporation, corporation_sgid = make_a_validated_agreement
-      internship_agreement2 = create_agreement_on_same_corporation(internship_agreement: internship_agreement)
+      internship_agreement, corporation, corporation_sgid = make_a_validated_agreement(pre_selected_for_signature: true)
+      internship_agreement2 = create_agreement_on_same_corporation(
+        internship_agreement: internship_agreement,
+        validated: true,
+        pre_selected_for_signature: true)
+      assert internship_agreement2.internship_offer.multi_corporation.corporations.include?(corporation)
+      # these upper two agreements share the same internship offer and corporations consequently
 
       sign_in(internship_agreement.employer)
-      visit_index_and_go_to_multi_internship_agreements
+      visit dashboard_internship_agreements_path
       assert_text "Offreurs (0/5)"
       sign_out(internship_agreement.employer)
 
@@ -193,13 +201,25 @@ module Dashboard
       assert_text "vous n'avez aucune convention de stage à signer"
 
       sign_in(internship_agreement.employer)
-      visit_index_and_go_to_multi_internship_agreements
+      visit dashboard_internship_agreements_path
       assert_text "Offreurs (1/5)"
     end
 
     test 'signator responsible multi validates one internship agreement' do
-      internship_agreement, corporation, corporation_sgid = make_an_agreement
-      internship_agreement2 = create_agreement_on_same_corporation(internship_agreement: internship_agreement)
+      internship_agreement, _corporation, corporation_sgid = make_an_agreement
+      internship_agreement2 = create_agreement_on_same_corporation(
+        internship_agreement: internship_agreement,
+        pre_selected_for_signature: true
+        )
+      # these upper two agreements share the same internship offer and corporations consequently
+      internship_agreement.update_columns(pre_selected_for_signature: true)
+
+      visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
+
+      assert_text "vous n'avez aucune convention de stage à signer"
+
+      internship_agreement.update_columns(aasm_state: :validated)
+      internship_agreement2.update_columns(aasm_state: :validated)
 
       visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
 
@@ -217,13 +237,38 @@ module Dashboard
       assert general_checkbox.checked?
     end
 
+    test 'coordinator sends some agreements to sign, and not all students are involved' do
+      internship_agreement, corporation, corporation_sgid = make_a_validated_agreement
+      internship_agreement2 = create_agreement_on_same_corporation(internship_agreement: internship_agreement, validated: true)
+      refute internship_agreement.pre_selected_for_signature?
+      refute internship_agreement2.pre_selected_for_signature?
+      assert internship_agreement.validated?
+      assert internship_agreement2.validated?
+      employer1 = internship_agreement.employer
+      employer2 = internship_agreement2.employer
+      assert_equal employer1, employer2
+      coordinator_user = employer1
+      sign_in(coordinator_user)
+
+      visit dashboard_internship_agreements_path
+      all('button[data-action="group-signing#toggleFromButton"]').first.click
+      click_button('Faire signer')
+      within('dialog[aria-labelledby="multi-modal-title"]') do
+        click_button('Envoyer en signature')
+      end
+      assert_text 'Envoyer en signature'
+      assert_text 'Statut des signatures'
+      find("input[type=\'checkbox\'][id=\'user_internship_agreement_id_#{internship_agreement.id}_checkbox'][disabled=\"disabled\"]", visible: false)
+      find("input[type=\'checkbox\'][id=\'user_internship_agreement_id_#{internship_agreement2.id}_checkbox']", visible: false)
+    end
+
     test 'employer reads multi internship agreement table with correct indications - status: completed_by_employer /' do
       employer, internship_offer = create_employer_and_multi_offer_2de
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:multi_internship_agreement, internship_application:,
                                                            aasm_state: :completed_by_employer)
       sign_in(employer)
-      visit_index_and_go_to_multi_internship_agreements
+      visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
         find('div.actions',
              text: "La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.")
@@ -237,7 +282,7 @@ module Dashboard
       internship_agreement = create(:multi_internship_agreement, internship_application:,
                                                            aasm_state: :started_by_school_manager)
       sign_in(internship_offer.employer)
-      visit_index_and_go_to_multi_internship_agreements
+      visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
         find('div.actions',
              text: "La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.")
@@ -251,7 +296,7 @@ module Dashboard
       internship_agreement = create(:multi_internship_agreement, internship_application:,
                                                            aasm_state: :validated)
       sign_in(employer)
-      visit_index_and_go_to_multi_internship_agreements
+      visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
         find('div.actions', text: 'Votre convention est prête à être signée.')
       end
@@ -269,7 +314,7 @@ module Dashboard
              internship_agreement:,
              user_id: internship_agreement.school_manager.id)
       sign_in(employer)
-      visit_index_and_go_to_multi_internship_agreements
+      visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
         find('.actions.d-flex', text: "En cours de signature.")
       end
@@ -287,7 +332,7 @@ module Dashboard
              internship_agreement:,
              user_id: internship_agreement.school_manager.id)
       sign_in(employer)
-      visit_index_and_go_to_multi_internship_agreements
+      visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
         find('.actions.d-flex', text: 'Signée par toutes les parties.')
       end
@@ -296,7 +341,7 @@ module Dashboard
     end
 
     test 'multi internship_agreements employer checks the corporation signature status modal' do
-      internship_agreement = create(:multi_internship_agreement, aasm_state: :validated)
+      internship_agreement = create(:multi_internship_agreement, aasm_state: :validated, pre_selected_for_signature: true)
       employer = internship_agreement.employer
       first_corporation = internship_agreement.internship_offer.corporations.first
       multi_corporation = internship_agreement.multi_corporation
@@ -307,12 +352,11 @@ module Dashboard
       refute_nil first_corporation.multi_corporation.signatures_launched_at
 
       sign_in(employer)
-      visit_index_and_go_to_multi_internship_agreements
+      visit dashboard_internship_agreements_path
       click_on 'Statut des signatures'
       assert_emails 4 do
         click_on "Envoyer un rappel"
       end
-      click_on "Conventions multi-offreurs"
       assert_text "Offreurs (1/5)"
     end
 
@@ -446,7 +490,7 @@ module Dashboard
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :draft)
     #   admin_officer = create(:admin_officer, school: internship_agreement.school)
     #   sign_in(admin_officer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     find('div.actions', text: 'En attente de l\'offreur.')
     #   end
@@ -457,7 +501,7 @@ module Dashboard
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :started_by_employer)
     #   admin_officer = create(:admin_officer, school: internship_agreement.school)
     #   sign_in(admin_officer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     find('div.actions', text: 'En attente de l\'offreur.')
     #   end
@@ -468,7 +512,7 @@ module Dashboard
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :completed_by_employer)
     #   admin_officer = create(:admin_officer, school: internship_agreement.school)
     #   sign_in(admin_officer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   find('a.button-component-cta-button', text: 'Remplir ma convention').click
     #   within('td[data-head="Statut"]') do
     #     find('div.actions', text: "Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.")
@@ -486,7 +530,7 @@ module Dashboard
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :started_by_school_manager)
     #   admin_officer = create(:admin_officer, school: internship_agreement.school)
     #   sign_in(admin_officer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     find('div.actions', text: 'Votre convention est remplie, mais pas validée.')
     #   end
@@ -497,7 +541,7 @@ module Dashboard
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :validated)
     #   admin_officer = create(:admin_officer, school: internship_agreement.school)
     #   sign_in(admin_officer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     find('div.actions', text: 'Votre convention est prête.')
     #   end
@@ -512,7 +556,7 @@ module Dashboard
     #          user_id: internship_agreement.employer.id)
     #   admin_officer = create(:admin_officer, school: internship_agreement.school)
     #   sign_in(admin_officer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     find('.actions.d-flex', text: "L'employeur a déjà signé. En attente de votre signature.")
     #   end
@@ -528,7 +572,7 @@ module Dashboard
     #   admin_officer = create(:admin_officer, school: internship_agreement.school)
     #   assert Signature.first.signatory_role == 'school_manager'
     #   sign_in(admin_officer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     find('.actions.d-flex',
     #          text: "Le chef d'établissement a déjà signé. En attente de la signature de l’employeur.")
@@ -540,7 +584,7 @@ module Dashboard
     # test 'admin_officer reads multi internship agreement table with correct indications - status: signed_by_all' do
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :signed_by_all)
     #   sign_in(internship_agreement.school_manager)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     find('.actions.d-flex', text: 'Signée par toutes les parties.')
     #   end
@@ -556,7 +600,7 @@ module Dashboard
     #   internship_application = create(:weekly_internship_application, internship_offer:)
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :draft)
     #   sign_in(internship_offer.employer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   find('span#alert-text', text: "Vous n'êtes pas autorisé à effectuer cette action.")
     # end
 
@@ -567,7 +611,7 @@ module Dashboard
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :draft,
     #                                                        internship_application:)
     #   sign_in(internship_offer.employer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     # find('div.actions', text: 'À remplir par les deux parties.')
     #   end
@@ -581,7 +625,7 @@ module Dashboard
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :started_by_employer,
     #                                                        internship_application:)
     #   sign_in(internship_offer.employer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     # find('div.actions', text: "Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.")
     #   end
@@ -595,7 +639,7 @@ module Dashboard
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :completed_by_employer,
     #                                                        internship_application:)
     #   sign_in(internship_offer.employer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     # find('div.actions', text: "La convention est dans les mains du chef d'établissement.")
     #   end
@@ -609,7 +653,7 @@ module Dashboard
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :started_by_school_manager,
     #                                                        internship_application:)
     #   sign_in(internship_offer.employer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     # find('div.actions', text: "La convention est dans les mains du chef d'établissement.")
     #   end
@@ -623,7 +667,7 @@ module Dashboard
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :validated,
     #                                                        internship_application:)
     #   sign_in(internship_offer.employer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     # find('div.actions', text: "Votre convention est prête à être signée.")
     #   end
@@ -643,7 +687,7 @@ module Dashboard
     #          internship_agreement:,
     #          user_id: internship_agreement.employer.id)
     #   sign_in(employer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     # find('.actions.d-flex', text: "Vous avez déjà signé. En attente de la signature du chef d’établissement.")
     #   end
@@ -664,7 +708,7 @@ module Dashboard
     #          internship_agreement:,
     #          user_id: school_manager.id)
     #   sign_in(employer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     # find('.actions.d-flex', text: "Le chef d'établissement a déjà signé. En attente de votre signature.")
     #   end
@@ -682,7 +726,7 @@ module Dashboard
     #   internship_agreement = create(:multi_internship_agreement, aasm_state: :signed_by_all,
     #                                                        internship_application:)
     #   sign_in(internship_agreement.employer)
-    #   visit_index_and_go_to_multi_internship_agreements
+    #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
     #     # find('.actions.d-flex', text: "Signée par toutes les parties.")
     #   end
