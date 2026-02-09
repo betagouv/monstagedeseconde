@@ -46,6 +46,9 @@ yarn-debug.log*
 .cursorrules
 /infra/commit.sh
 CLAUDE.md
+#mise files
+mise.toml
+.tool-versions
 
 /doc/env.sh
 /doc/output/internship_offers/create/*
