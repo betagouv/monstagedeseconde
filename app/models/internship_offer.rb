@@ -29,7 +29,7 @@ class InternshipOffer < ApplicationRecord
   include FindableWeek
   include Zipcodable
 
-  # temporary
+  # splitting
   include SplittableOffer
 
 
@@ -398,6 +398,19 @@ class InternshipOffer < ApplicationRecord
   def has_spots_left?
     max_candidates > internship_applications.approved.count
   end
+
+  def has_sibling_offer?
+    return true if mother_id.present?
+
+    InternshipOffer.where(mother_id: id).exists?
+  end
+
+  # def sibling
+  #   return nil unless has_sibling_offer?
+
+  #   query = mother_id.present? ? {id: mother_id} :  {mother_id: id}
+  #   InternshipOffer.find_by query
+  # end
 
   def is_fully_editable?
     internship_applications.empty?

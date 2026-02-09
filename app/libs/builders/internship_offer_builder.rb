@@ -23,6 +23,9 @@ module Builders
                                 )
       internship_offer = model.new(**internship_attributes)
       internship_offer.save!
+      if %w[seconde troisieme].all? { |grade| internship_offer.grades.map(&:short_name).include?(grade) }
+        internship_offer.split_offer
+      end
       callback.on_success.try(:call, internship_offer)
     rescue ArgumentError => e
       Rails.logger.error "Impossible de créer cette offre. offreur: #{user.id} | #{e&.message}"
