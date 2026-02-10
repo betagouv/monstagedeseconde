@@ -96,8 +96,7 @@ namespace :data_migrations do
     fields = [
       [InternshipAgreement, %i[activity_scope]],
       # legal_terms_rich_text
-      [School, %i[agreement_conditions]],
-      [InternshipOfferInfo, %i[description]]
+      [School, %i[agreement_conditions]]
     ]
 
     fields.each do |model, attrs|

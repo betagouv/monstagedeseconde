@@ -25,40 +25,44 @@
                     " Attention à l'utilisation des acronymes. Les 50 premiers caractères de cette zone" \
                     " de texte apparaîtront comme titre de votre offre : soyez explicite et concis !"
         .fr-mb-2w = render partial: 'inputs/small_info', locals: { content: content }
+      
+    
+    .row
+      .col-md-12
+        .row.bloc-tooggle.fr-mb-4w
+          .col-12
+            - max_length = MultiActivity::DESCRIPTION_MAX_LENGTH
+            .form-group.fr-my-2w [data-controller='max-length-input'
+                                  data-max-length-input-target="group"
+                                  data-max-length-input-limit-value="#{max_length}"
+                                  data-max-length-input-min-length-value="6"]
+              = render 'inputs/dsfr_input_field',
+                        f: form,
+                        field: :description,
+                        label: "Décrivez les activités qui seront proposées à l'élève ainsi que le <strong>planning prévu en nommant les entreprises accueillantes</strong>. *".html_safe,
+                        placeholder: "Nous proposons un stage d'une semaine pour les élèves de 3ème, qui se déroulera du lundi au vendredi. Voici le planning prévu :\n\nLundi : Découverte de Bouygues, où les stagiaires apprendront les bases de la construction et des projets d'infrastructure.\n\nMardi : Visite chez Darty, avec une immersion dans le service client et la vente de produits électroniques.",
+                        aria: {labelledby: 'label_multi_activity_description'},
+                        required: true,
+                        title: 'Activités prévues au cours du stage',
+                        object: form.object,
+                        options: { rows: 10,
+                                      data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
+                                              :'mandatory-fields-with-coordinates-target' => "mandatoryField"}},
+                        field_type: :text_area
+              .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
+                |La description est trop longue
 
-.row
-  .col-md-6
-    .row.bloc-tooggle.fr-mb-4w
-      .col-12
-        - max_length = MultiActivity::DESCRIPTION_MAX_LENGTH
-        .form-group.fr-my-2w [data-controller='max-length-input'
-                              data-max-length-input-target="group"
-                              data-max-length-input-limit-value="#{max_length}"
-                              data-max-length-input-min-length-value="6"]
-          = render 'inputs/dsfr_input_field',
-                    f: form,
-                    field: :description,
-                    label: "Décrivez les activités qui seront proposées à l'élève ainsi que le <strong>planning prévu en nommant les entreprises accueillantes</strong>. *".html_safe,
-                    placeholder: "Nous proposons un stage d'une semaine pour les élèves de 3ème, qui se déroulera du lundi au vendredi. Voici le planning prévu :\n\nLundi : Découverte de Bouygues, où les stagiaires apprendront les bases de la construction et des projets d'infrastructure.\n\nMardi : Visite chez Darty, avec une immersion dans le service client et la vente de produits électroniques.",
-                    aria: {labelledby: 'label_multi_activity_description'},
-                    required: true,
-                    title: 'Activités prévues au cours du stage',
-                    object: form.object,
-                    options: { rows: 10,
-                                  data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
-                                          :'mandatory-fields-with-coordinates-target' => "mandatoryField"}},
-                    field_type: :text_area
-          .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
-            |La description est trop longue
+            = render "dashboard/stepper/internship_occupations/good_practice_accordions"
 
-  = render "dashboard/stepper/internship_occupations/good_practice_accordions"
+    - if submit_button
+      .row.bloc-tooggle
+        .col-md-12
+          .fr-mt-3w
+            = link_to 'Précédent', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
+            = button_tag :submit,
+                        class: 'fr-btn' do
+              = "Suivant"
+  .col-6
+    = render "dashboard/stepper/internship_occupations/risks_alert"
 
-- if submit_button
-  .row.bloc-tooggle
-    .col-md-6
-      .fr-mt-3w
-        = link_to 'Précédent', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
-        = button_tag :submit,
-                    class: 'fr-btn' do
-          = "Suivant"
 

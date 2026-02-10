@@ -4,7 +4,6 @@ namespace :year_end do
   desc "describe column size after exploitation"
   task :column_size, [] => :environment do |args|
     tables = [InternshipOffer,
-              InternshipOfferInfo,
               InternshipApplication,
               InternshipAgreement,
               User,
@@ -47,7 +46,6 @@ namespace :year_end do
                                     rich_text_canceled_by_employer_message ]],
         # rich_text_resume_other
         # rich_text_resume_languages
-        [InternshipOfferInfo, [:description_rich_text]],
         [InternshipAgreement, %i[ activity_scope_rich_text]],
         # legal_terms_rich_text
         [InternshipOffer, [:description_rich_text]],

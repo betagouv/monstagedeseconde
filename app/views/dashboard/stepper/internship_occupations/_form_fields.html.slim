@@ -9,6 +9,7 @@
         data-mandatory-fields-with-coordinates-no-event-check-value="#{resource.id.present?}"]
     .row
       .col-12= form.rg2a_explain_required_asterisk(p_class_name: "mb-0")
+      / Left column
       .col-md-6
         .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
           .col-12
@@ -33,12 +34,7 @@
                         " Attention à l'utilisation des acronymes. Les 50 premiers caractères de cette zone" \
                         " de texte apparaîtront comme titre de votre offre : soyez explicite et concis !"
             .fr-mb-2w = render partial: 'inputs/small_info', locals: { content: content }
-
-      .col-md-6
-        - if resource.new_record? && show_resume
-          = render 'dashboard/stepper/summary_card', form: form
-    .row
-      .col-6
+        
         .row.bloc-tooggle class="fr-mb-4w ('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))"
           .col-12
             - max_length = InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT
@@ -61,39 +57,56 @@
               .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
                 |La description est trop longue
               small.form-text data-max-length-input-target="charCount"
+      
+      
+        = render "dashboard/stepper/internship_occupations/good_practice_accordions", css_classes: ('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
 
-  = render "dashboard/stepper/internship_occupations/good_practice_accordions", css_classes: ('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
-
-  .row.fr-mt-2w
-  .row.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
-    .col-6
-      fieldset aria-labelledby="presentation"
-        legend.fr-h6 Le lieu où se déroulera le stage :
-      - currentLatitude     = resource.coordinates.try(:lat).try(:to_f)
-      - currentLongitude    = resource.coordinates.try(:lng).try(:to_f)
-      - currentLatitude   ||= resource.coordinates.try(:latitude).try(:to_f)
-      - currentLongitude  ||= resource.coordinates.try(:longitude).try(:to_f)
-
-      = react_component("AddressInput",
-                        props: { resourceName: form.object_name,
-                                  currentStreet: resource.street,
-                                  currentCity: resource.city,
-                                  currentZipcode: resource.zipcode,
-                                  currentLatitude: ,
-                                  currentLongitude: ,
-                                  currentFullAddress: resource.formatted_autocomplete_address,
-                                  addressFieldsVisible: !resource.id.nil?,
-                                  isDuplication: @duplication,
-                                  editMode: @edit_mode})
-
-      - if submit_button
-        .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+        .row.fr-mt-2w.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
           .col-12
-            .fr-mt-3w
-              = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
-              = button_tag :submit,
-                          class: 'fr-btn',
-                          data: { :'mandatory-fields-with-coordinates-target' => "disabledField",
-                                  :'internship_occupation-form-target' => "submitButton"} do
-                = "Suivant "
+            fieldset aria-labelledby="presentation"
+              legend.fr-h6 Le lieu où se déroulera le stage :
+            - currentLatitude     = resource.coordinates.try(:lat).try(:to_f)
+            - currentLongitude    = resource.coordinates.try(:lng).try(:to_f)
+            - currentLatitude   ||= resource.coordinates.try(:latitude).try(:to_f)
+            - currentLongitude  ||= resource.coordinates.try(:longitude).try(:to_f)
 
+            = react_component("AddressInput",
+                              props: { resourceName: form.object_name,
+                                        currentStreet: resource.street,
+                                        currentCity: resource.city,
+                                        currentZipcode: resource.zipcode,
+                                        currentLatitude: ,
+                                        currentLongitude: ,
+                                        currentFullAddress: resource.formatted_autocomplete_address,
+                                        addressFieldsVisible: !resource.id.nil?,
+                                        isDuplication: @duplication,
+                                        editMode: @edit_mode})
+
+            - if submit_button
+              .row.bloc-tooggle class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
+                .col-12
+                  .fr-mt-3w
+                    = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
+                    = button_tag :submit,
+                                class: 'fr-btn',
+                                data: { :'mandatory-fields-with-coordinates-target' => "disabledField",
+                                        :'internship_occupation-form-target' => "submitButton"} do
+                      = "Suivant "
+
+      
+      
+      
+      
+      
+      
+      
+      
+      / Right column
+      .col-md-6
+        - if resource.new_record? && show_resume
+          = render 'dashboard/stepper/summary_card', form: form
+
+        = render "dashboard/stepper/internship_occupations/risks_alert"
+    
+
+  

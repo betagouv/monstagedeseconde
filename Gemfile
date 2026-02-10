@@ -13,7 +13,7 @@ gem "rails", "7.1.4"
 gem "pg"
 gem "rack", ">= 3.0"
 gem "rake"
-# gem 'openssl'
+gem 'openssl'
 
 # pg extension for geo queries
 # wait for : https://github.com/rgeo/activerecord-postgis-adapter/tree/ar61 to be merge into master
