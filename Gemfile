@@ -9,6 +9,9 @@ ruby File.read(".ruby-version").strip
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
 gem "rails", "~> 7.2"
+gem "abbrev"
+gem "mutex_m"
+gem "ostruct"
 # db
 gem "pg"
 gem "rack", ">= 3.0"
