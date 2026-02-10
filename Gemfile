@@ -142,7 +142,6 @@ end
 
 group :review do
   gem "rest-client" # used by mailtrap for review apps
-  gem "letter_thief"
 end
 
 group :test, :development, :review do
