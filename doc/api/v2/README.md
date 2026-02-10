@@ -200,9 +200,16 @@ Voici les identifiants uniques associés à chaque niveau :
 * troisième : **troisieme**
 * seconde : **seconde**
 
-Exemple de ce que nous attendons dans nos API :
+
+ATTENTION : il est  **impossible** d'associer **seconde avec troisieme ou quatrieme**
+
+Exemple de ce que nous attendons dans nos appels API:
 ```
-internship_offer.grades: ['troisieme', 'seconde']
+internship_offer.grades: ['troisieme', 'quatrieme']
+```
+ou
+```
+internship_offer.grades: ['seconde']
 ```
 
 

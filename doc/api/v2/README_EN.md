@@ -198,9 +198,15 @@ Here are the unique identifiers associated with each grade:
 * 9th grade: **troisieme**
 * 10th grade: **seconde**
 
+PAY ATTENTION TO THE FOLLLOWING: it is **impossible** to pair **seconde with any of troisieme or quatrieme**
+
 Example of what we expect in our API:
 ```
-internship_offer.grades: ['troisieme', 'seconde']
+internship_offer.grades: ['troisieme', 'quatrieme']
+```
+or
+```
+internship_offer.grades: ['seconde']
 ```
 
 ### <a name="ref-daily-hours"></a>
