@@ -330,7 +330,7 @@ const SearchBar = ({
               id="tooltip-recherche-avancee"
               role="tooltip"
             >
-              Seules les offres correspondant aux critères "commune", "niveau de classe" et "dates de stage" sélectionnés seront affichées. Vous pouvez cependant utiliser les champs de recherche avancée pour mettre en avant les offres qui contiennent le ou les mots-clés renseignés et qui correspondent au secteur d'activité sélectionné.
+              Seules les stages correspondant aux critères "commune", "niveau de classe" et "dates de stage" sélectionnés seront affichées. Vous pouvez cependant utiliser les champs de recherche avancée pour mettre en avant les stages qui contiennent le ou les mots-clés renseignés et qui correspondent au secteur d'activité sélectionné.
             </span>
           </p>
         </div>
