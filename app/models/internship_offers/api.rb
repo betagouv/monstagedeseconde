@@ -2,6 +2,7 @@
 
 module InternshipOffers
   class Api < InternshipOffer
+    include ApiAdminable
     MAX_CALLS_PER_MINUTE = 100
     EMPLOYER_DESCRIPTION_MAX_SIZE = 275
 
@@ -11,65 +12,15 @@ module InternshipOffers
       end
     end
 
-    rails_admin do
-      weight 13
-      navigation_label 'Offres'
-
-      configure :created_at, :datetime do
-        date_format 'BUGGY'
-      end
-
-      list do
-        scopes %i[kept discarded]
-
-        field :title
-        field :department
-        field :zipcode
-        field :employer_name
-        field :is_public
-        field :created_at
-      end
-
-      edit do
-        field :title
-        field :description
-        field :employer_name
-        field :employer_description
-        field :employer_website
-        field :street
-        field :zipcode
-        field :city
-        field :sector
-        field :remote_id
-        field :permalink
-        field :max_candidates
-        field :is_public
-      end
-
-      export do
-        field :title
-        field :employer_name
-        field :zipcode
-        field :city
-        field :max_candidates
-        field :total_applications_count
-        field :approved_applications_count
-        field :rejected_applications_count
-        field :is_public
-      end
-
-      show do
-      end
-    end
-
     validates :remote_id, presence: true
-
     validates :zipcode, zipcode: { country_code: :fr }
     validates :remote_id, uniqueness: { scope: :employer_id }
     validates :permalink, presence: true,
                           format: { without: /.*(test|staging).*/i, message: 'Le lien ne doit pas renvoyer vers un environnement de test.' }
     validates :employer_description, presence: true, length: { maximum: EMPLOYER_DESCRIPTION_MAX_SIZE }
     validates :coordinates, presence: true
+
+    validate :college_xor_lycee
 
     scope :uncompleted_with_max_candidates, lambda {
       where('1=1')
@@ -153,6 +104,14 @@ module InternshipOffers
         weeks: formatted_weeks,
         grades: formatted_grades
       )
+    end
+
+    private
+
+    def college_xor_lycee
+      return if (grades & Grade.college).empty? || (grades & Grade.lycee).empty?
+
+      errors.add(:grades, 'Une offre ne peut pas être à la fois destinée à des collèges et aux lycées')
     end
   end
 end
