@@ -8,7 +8,7 @@ ruby File.read(".ruby-version").strip
 # fwk/server
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
-gem "rails", "7.1.4"
+gem "rails", "~> 7.2"
 # db
 gem "pg"
 gem "rack", ">= 3.0"
@@ -114,6 +114,7 @@ group :development do
   gem "activerecord-explain-analyze"
   # gem "ffi-rzmq"
   # gem "jupyter_on_rails"
+  gem "letter_thief"
   gem "launchy"
   gem "spring", "3.0.0"
 end
@@ -138,13 +139,10 @@ end
 
 group :review do
   gem "rest-client" # used by mailtrap for review apps
+  gem "letter_thief"
 end
 
 group :test, :development, :review do
   gem "factory_bot_rails"
   gem "ffaker"
-end
-
-group :review, :development do
-  gem "letter_thief"
 end
