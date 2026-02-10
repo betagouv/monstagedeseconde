@@ -199,7 +199,8 @@ module Api
           assert_equal ['seconde'], @internship_offer.reload.grades.map(&:short_name)
         end
       end
-      test 'PATCH #update as operator can modify internship_offer grades from 3eme to seconde + 3eme' do
+
+      test 'PATCH #update as operator cannot modify internship_offer grades from 3eme to seconde + 3eme' do
         travel_to Time.zone.local(2025, 3, 1) do
           patch api_v2_internship_offer_path(
             id: @internship_offer.remote_id,
@@ -210,8 +211,11 @@ module Api
               }
             }
           )
-          assert_response :success
-          assert_equal %w[troisieme seconde], @internship_offer.reload.grades.map(&:short_name)
+          assert_response :bad_request
+          assert_equal 'VALIDATION_ERROR', json_response['code']
+          assert_equal ['Une offre ne peut pas être à la fois destinée à des collèges et aux lycées'],
+                       json_error['grades'],
+                       'bad grades error '
         end
       end
     end

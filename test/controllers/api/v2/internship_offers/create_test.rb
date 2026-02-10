@@ -115,7 +115,7 @@ module Api
         sector_uuid = sector.uuid
         remote_id = 'test'
         permalink = 'http://monsite.com'
-        grades = %w[seconde troisieme]
+        grades = %w[seconde]
         weeks = InternshipOffers::Api.mandatory_seconde_weeks
         daily_hours = { "lundi": ['9:00', '17:00'], "mardi": ['9:00', '17:00'], "mercredi": ['9:00', '17:00'],
                         "jeudi": ['9:00', '17:00'], "vendredi": ['9:00', '17:00'] }
@@ -178,7 +178,7 @@ module Api
         assert_equal daily_hours[:vendredi], internship_offer.daily_hours['vendredi']
         assert_equal 'Repas sur place', internship_offer.lunch_break
         assert_equal 0, internship_offer.period # default value 2 weeks
-        assert_equal 2, internship_offer.grades.count
+        assert_equal 1, internship_offer.grades.count
         assert_equal 2, internship_offer.weeks.count
         assert_equal false, internship_offer.rep
         assert_equal false, internship_offer.qpv
@@ -587,7 +587,7 @@ module Api
                 max_candidates: 2,
                 is_public: true,
                 permalink: 'http://monentreprise.fr/stages',
-                grades: %w[seconde troisieme],
+                grades: %w[seconde],
                 weeks: InternshipOffers::Api.mandatory_seconde_weeks
               }
             }
@@ -618,7 +618,7 @@ module Api
         sector_uuid = sector.uuid
         remote_id = 'test'
         permalink = 'http://monsite.com'
-        grades = %w[seconde troisieme]
+        grades = %w[troisieme]
         weeks = InternshipOffers::Api.mandatory_seconde_weeks
         daily_hours = { "lundi": ['9:00', '17:00'], "mardi": ['9:00', '17:00'], "mercredi": ['9:00', '17:00'],
                         "jeudi": ['9:00', '17:00'], "vendredi": ['9:00', '17:00'] }
