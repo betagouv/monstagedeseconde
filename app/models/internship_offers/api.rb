@@ -109,7 +109,9 @@ module InternshipOffers
     private
 
     def college_xor_lycee
-      return if (grades & Grade.college).empty? || (grades & Grade.lycee).empty?
+      college_grades_exist = grades.where(id: Grade.college.select(:id)).exists?
+      lycee_grades_exist   = grades.where(id: Grade.lycee.select(:id)).exists?
+      return unless college_grades_exist && lycee_grades_exist
 
       errors.add(:grades, 'Une offre ne peut pas être à la fois destinée à des collèges et aux lycées')
     end

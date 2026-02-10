@@ -215,7 +215,7 @@ module Api
           assert_equal 'VALIDATION_ERROR', json_response['code']
           assert_equal ['Une offre ne peut pas être à la fois destinée à des collèges et aux lycées'],
                        json_error['grades'],
-                       'bad grades error '
+                       'bad grades error'
         end
       end
     end

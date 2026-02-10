@@ -198,7 +198,7 @@ Here are the unique identifiers associated with each grade:
 * 9th grade: **troisieme**
 * 10th grade: **seconde**
 
-PAY ATTENTION TO THE FOLLLOWING: it is **impossible** to pair **seconde with any of troisieme or quatrieme**
+Please note: it is **impossible** to pair **seconde** with either **troisieme** or **quatrieme**.
 
 Example of what we expect in our API:
 ```
