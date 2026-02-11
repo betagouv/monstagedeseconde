@@ -29,6 +29,10 @@ module InternshipAgreements
       end
     end
 
+    def pre_selected_for_signature?
+      !!pre_selected_for_signature
+    end
+
     private
 
     def create_unsigned_corporation_internship_agreements

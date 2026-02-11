@@ -206,6 +206,7 @@ class User < ApplicationRecord
   def academy_region_statistician? = false
   def education_statistician? = false
   def student? = false
+  def student_rep_or_qpv? = false
   def employer? = false
   def operator? = false
   def school_management? = false

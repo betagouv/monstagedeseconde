@@ -17,7 +17,9 @@ div.fr-my-2w data-controller="daily-hours"
                       { :include_blank => '--',
                       class: "fr-select",
                       disabled: disabled,
-                      data: { :'daily-hours-target' => "weeklyHoursStart", action: "change->daily-hours#weeklyStartChange" },
+                      data: { :'daily-hours-target' => "weeklyHoursStart", 
+                              action: "change->daily-hours#weeklyStartChange change->mandatory-fields#fieldChange",
+                              :'mandatory-fields-target' => "mandatoryField" },
                       aria: { label: "Selectionner une heure de debut de stage pour tous les jours de la période de stage" }, id: "#{form.object_name}_weekly_hours_start" }
 
       .col-2 style="display: flex;align-items: center;justify-content: center;"
@@ -28,8 +30,10 @@ div.fr-my-2w data-controller="daily-hours"
                       { :include_blank => '--',
                       class: "fr-select",
                       disabled: disabled || !select_weekly_end(form.object),
-                      data: { :'daily-hours-target' => "weeklyHoursEnd", action: "change->daily-hours#weeklyEndChange" },
-                      aria: { label: "Selectionner une heure de debut de stage pour tous les jours de la période de stage" }, id: "#{form.object_name}_weekly_hours_end" }
+                      data: { :'daily-hours-target' => "weeklyHoursEnd", 
+                              action: "change->daily-hours#weeklyEndChange change->mandatory-fields#fieldChange",
+                              :'mandatory-fields-target' => "mandatoryField" },
+                      aria: { label: "Selectionner une heure de fin de stage pour tous les jours de la période de stage" }, id: "#{form.object_name}_weekly_hours_end" }
 
   #daily-planning-container[class="mt-3 fr-my-2w #{'d-none' unless form.object.daily_planning?}"]
     - %w(lundi mardi mercredi jeudi vendredi samedi).each_with_index do |weekday, i|
@@ -44,7 +48,10 @@ div.fr-my-2w data-controller="daily-hours"
                         {:include_blank => '--',
                          class: "fr-select daily-hours-start",
                          disabled: disabled,
-                         data: { :'daily-hours-target' => "dailyHoursStart", i: i, action: "change->daily-hours#dailyHoursStartChange" },
+                         data: { :'daily-hours-target' => "dailyHoursStart", 
+                                 i: i, 
+                                 action: "change->daily-hours#dailyHoursStartChange change->mandatory-fields#fieldChange",
+                                 :'mandatory-fields-target' => "mandatoryField" },
                          aria: { label: "Selectionner une heure de debut de stage pour le #{weekday.capitalize}" }, id: "#{form.object_name}_daily_hours_#{weekday}_start"}
 
         .col-1 style="display: flex;align-items: center;justify-content: center;"
@@ -55,8 +62,11 @@ div.fr-my-2w data-controller="daily-hours"
                         {:include_blank => '--',
                          class: "fr-select daily-hours-end",
                          disabled: disabled,
-                         data: { :'daily-hours-target' => "dailyHoursEnd", i: i, action: "change->daily-hours#dailyHoursEndChange" },
-                         aria: { label:"Selectionner une heure de debut de fin pour le #{weekday.capitalize}" }, id: "#{form.object_name}_daily_hours_#{weekday}_end"}
+                         data: { :'daily-hours-target' => "dailyHoursEnd", 
+                                 i: i, 
+                                 action: "change->daily-hours#dailyHoursEndChange change->mandatory-fields#fieldChange",
+                                 :'mandatory-fields-target' => "mandatoryField" },
+                         aria: { label:"Selectionner une heure de fin de stage pour le #{weekday.capitalize}" }, id: "#{form.object_name}_daily_hours_#{weekday}_end"}
 
   .row
     .col-12.mt-2.fr-my-2w
@@ -64,7 +74,9 @@ div.fr-my-2w data-controller="daily-hours"
         = form.label :lunch_break, class: 'fr-label'  do
           | Pause déjeuner *
         .text-muted
-          | Saisissez au moins 8 caractères pour décrire la pause déjeuner
+          | Décrivez la pause déjeuner pour chacune des structures accueillantes.
+        .text-muted
+          | Saisissez au moins 8 caractères pour décrire la pause déjeuner.
         = form.text_area :lunch_break,
                          value: form.object.lunch_break,
                          class: "fr-input",

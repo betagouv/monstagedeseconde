@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class InternshipOffersController < ApplicationController
+  OPTIONAL_SEARCH_PARAMS = %i[keyword sector_ids].freeze
+
   layout "search", only: :index
 
   with_options only: [:show] do
@@ -14,6 +16,8 @@ class InternshipOffersController < ApplicationController
   def index
     @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
     @preselected_weeks_list = @preselected_weeks_list.where(id: params[:week_ids]) if params[:week_ids].present?
+    @sectors = Sector.all.order(:name)
+    params[:grade_id] = Grade.seconde.id if params[:grade_id].blank?
     @school_weeks_list ||= Week.none
     @preselected_weeks_list ||= Week.none
     @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
@@ -28,32 +32,64 @@ class InternshipOffersController < ApplicationController
       end
       format.json do
         @internship_offers_seats = 0
-        @internship_offers = finder.all
-                                   .includes(:sector, :employer)
+        params[:grade_id] = Grade.seconde.id if params[:grade_id].blank?
+
+        @internship_offers, is_fallback, effective_seats_finder = search_with_fallback
 
         # QPV order destroys the former internship offers distance order from school
         if current_user&.student?
           if current_user&.school&.try(:qpv)
-            @internship_offers = @internship_offers.reorder("qpv DESC NULLS LAST")
+            # Si c'est un PaginatableArray, on trie manuellement; sinon on utilise reorder
+            if @internship_offers.respond_to?(:reorder)
+              @internship_offers = @internship_offers.reorder("qpv DESC NULLS LAST")
+            else
+              sorted = @internship_offers.to_a.sort_by { |offer| offer.qpv ? 0 : 1 }
+              @internship_offers = Kaminari.paginate_array(sorted).page(params[:page]).per(InternshipOffer::PAGE_SIZE)
+            end
           elsif current_user&.school&.try(:rep_kind).present?
-            # get rep offers (sans pagination)
-            rep_offers = finder.all_without_page.includes(:sector, :employer).where(rep: true)
-            # get non rep offers (sans pagination)
-            non_rep_offers = finder.all_without_page.includes(:sector, :employer).where(rep: false)
+            # Pour les étudiants REP, on veut montrer toutes les offres (primaires + secondaires)
+            # avec les offres REP en premier
+            has_optional_filters = OPTIONAL_SEARCH_PARAMS.any? { |param| search_query_params[param].present? }
 
-            combined_offers = rep_offers.to_a + non_rep_offers.to_a
-            # Paginate the combined array
+            if has_optional_filters
+              # Recherche avec filtres optionnels : combiner primaires (5 critères) et secondaires (3 critères)
+              # en gardant les offres REP en premier dans chaque groupe
+              primary_finder = Finders::InternshipOfferConsumer.new(params: search_query_params, user: current_user_or_visitor)
+              primary_results = primary_finder.all_without_page.includes(:sector, :employer).to_a
+              primary_ids = primary_results.map(&:id)
+
+              relaxed_params = search_query_params.except(*OPTIONAL_SEARCH_PARAMS)
+              relaxed_finder = Finders::InternshipOfferConsumer.new(params: relaxed_params, user: current_user_or_visitor)
+              relaxed_results = relaxed_finder.all_without_page.includes(:sector, :employer).to_a
+              secondary_results = relaxed_results.reject { |offer| primary_ids.include?(offer.id) }
+
+              # Trier : REP primaires, puis non-REP primaires, puis REP secondaires, puis non-REP secondaires
+              rep_primary = primary_results.select(&:rep)
+              non_rep_primary = primary_results.reject(&:rep)
+              rep_secondary = secondary_results.select(&:rep)
+              non_rep_secondary = secondary_results.reject(&:rep)
+
+              combined_offers = rep_primary + non_rep_primary + rep_secondary + non_rep_secondary
+            else
+              # Pas de filtres optionnels : recherche simple avec priorité REP
+              rep_finder = Finders::InternshipOfferConsumer.new(params: search_query_params, user: current_user_or_visitor)
+              rep_offers = rep_finder.all_without_page.includes(:sector, :employer).where(rep: true)
+              non_rep_offers = rep_finder.all_without_page.includes(:sector, :employer).where(rep: false)
+              combined_offers = rep_offers.to_a + non_rep_offers.to_a
+            end
+
             @internship_offers = Kaminari.paginate_array(combined_offers).page(params[:page]).per(InternshipOffer::PAGE_SIZE)
           end
         end
 
         @params = search_query_params
 
-        @internship_offers_seats_count = @internship_offers.empty? ? 0 : seats_finder.all_without_page.pluck(:max_candidates).sum
+        @internship_offers_seats_count = @internship_offers.empty? ? 0 : effective_seats_finder.all_without_page.pluck(:max_candidates).sum
         data = {
           internshipOffers: format_internship_offers(@internship_offers),
           pageLinks: page_links,
           seats: @internship_offers_seats_count,
+          isFallbackSearch: is_fallback
         }
         current_user.log_search_history @params.merge({ results_count: data[:seats] }) if current_user&.student?
         render json: data, status: 200
@@ -116,9 +152,9 @@ class InternshipOffersController < ApplicationController
   end
 
   def search_query_params
-    common_query_params = %i[city grade_id latitude longitude page radius]
+    common_query_params = %i[city grade_id latitude longitude page radius keyword]
     common_query_params += [:school_year] if current_user_or_visitor.god? || current_user_or_visitor.statistician?
-    params.permit(*common_query_params, week_ids: [])
+    params.permit(*common_query_params, week_ids: [], sector_ids: [])
   end
 
   def check_internship_offer_is_not_discarded_or_redirect
@@ -161,6 +197,49 @@ class InternshipOffersController < ApplicationController
       user: current_user_or_visitor,
       seats_search: true,
     )
+  end
+
+  def search_with_fallback
+    has_optional_filters = OPTIONAL_SEARCH_PARAMS.any? { |param| search_query_params[param].present? }
+
+    unless has_optional_filters
+      # Pas de filtres optionnels, recherche simple avec les 3 paramètres de base
+      return [finder.all.includes(:sector), false, seats_finder]
+    end
+
+    # Recherche avec les 5 paramètres (incluant mot-clé et secteur)
+    primary_results = finder.all_without_page.includes(:sector).to_a
+    primary_ids = primary_results.map(&:id)
+
+    # Recherche avec les 3 paramètres de base (sans mot-clé ni secteur)
+    relaxed_params = search_query_params.except(*OPTIONAL_SEARCH_PARAMS)
+    relaxed_finder = Finders::InternshipOfferConsumer.new(
+      params: relaxed_params,
+      user: current_user_or_visitor
+    )
+    relaxed_results = relaxed_finder.all_without_page.includes(:sector).to_a
+
+    # Exclure les offres déjà présentes dans les résultats primaires
+    secondary_results = relaxed_results.reject { |offer| primary_ids.include?(offer.id) }
+
+    # Combiner : d'abord les résultats avec 5 paramètres, puis ceux avec 3 paramètres
+    combined_offers = primary_results + secondary_results
+
+    # Paginer le résultat combiné
+    paginated_results = Kaminari.paginate_array(combined_offers).page(params[:page]).per(InternshipOffer::PAGE_SIZE)
+
+    # Calculer le nombre total de places pour le finder combiné
+    combined_seats_finder = Finders::InternshipOfferConsumer.new(
+      params: relaxed_params,
+      user: current_user_or_visitor,
+      seats_search: true
+    )
+
+    # is_fallback est true si la recherche primaire n'a pas de résultats
+    # (le fallback a été tenté, qu'il ait trouvé des résultats ou non)
+    is_fallback = primary_results.empty?
+
+    [paginated_results, is_fallback, combined_seats_finder]
   end
 
   def increment_internship_offer_view_count

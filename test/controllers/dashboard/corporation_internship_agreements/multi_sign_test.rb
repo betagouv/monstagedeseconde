@@ -4,7 +4,7 @@ module Dashboard::CorporationInternshipAgreements
     include Devise::Test::IntegrationHelpers
 
     setup do
-      @internship_agreement1 = create(:multi_internship_agreement)
+      @internship_agreement1 = create(:multi_internship_agreement, :validated)
       @corporation = @internship_agreement1.internship_offer.corporations.first
       @corporation_sgid = @corporation.to_sgid.to_s
     end
@@ -12,6 +12,7 @@ module Dashboard::CorporationInternshipAgreements
     def create_agreement_on_same_corporation
       internship_application = create(:weekly_internship_application, :approved, internship_offer: @internship_agreement1.internship_offer)
       @internship_agreement2 = internship_application.internship_agreement
+      @internship_agreement2.update!(aasm_state: :validated)
     end
 
     test 'second internhip_agreement on same corporation' do
@@ -101,14 +102,14 @@ module Dashboard::CorporationInternshipAgreements
 
       get multi_reminder_email_dashboard_internship_agreement_path(uuid: @internship_agreement1.uuid)
 
-      assert_redirected_to dashboard_internship_agreements_path(multi: true)
+      assert_redirected_to dashboard_internship_agreements_path
       assert_equal "Aucun email n'a encore été envoyé jusqu'ici aux responsables de stage.", flash[:alert]
       
       @internship_agreement1.multi_corporation.update!(signatures_launched_at: Time.now - 1.day)
       
       get multi_reminder_email_dashboard_internship_agreement_path(uuid: @internship_agreement1.uuid)
       
-      assert_redirected_to dashboard_internship_agreements_path(multi: true)
+      assert_redirected_to dashboard_internship_agreements_path
       assert_equal 'Les emails de rappel ont été envoyés aux responsables de stage.', flash[:notice]
     end
 

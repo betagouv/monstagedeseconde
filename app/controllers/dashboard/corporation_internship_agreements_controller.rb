@@ -7,14 +7,15 @@ module Dashboard
       @corporation = fetch_corporation_from_sgid
       return head :not_found unless @corporation.present?
 
-      corporation_internship_agreements = CorporationInternshipAgreement.where(corporation_id: @corporation.id)
-      @internship_agreement_uuids = corporation_internship_agreements.map(&:internship_agreement).map(&:uuid) #corporation_internship_agreement_params[:internship_agreement_uuids].to_a
+      corporation_internship_agreements = CorporationInternshipAgreement.joins(:internship_agreement)
+                                                                        .where(corporation_id: @corporation.id)
+                                                                        .where(internship_agreement: { aasm_state: InternshipAgreement::TO_BE_SIGNED_STATES })
+      @internship_agreements = corporation_internship_agreements.map(&:internship_agreement)
+                                                                .select { |ia| ia.pre_selected_for_signature? }
 
+      @internship_agreement_uuids = @internship_agreements.map(&:uuid) #corporation_internship_agreement_params[:internship_agreement_uuids].to_a
       @coporation_prez = @corporation.presenter
-      @internship_agreements = InternshipAgreement.where(uuid: @internship_agreement_uuids)
-
       @to_be_signed_metadata = { count: corporation_internship_agreements.where(signed: false).count }
-
       @conventions_text = conventions_text(corporation_internship_agreements.where(signed: false).count)
     end
 
@@ -22,8 +23,6 @@ module Dashboard
       @corporation_sgid = corporation_internship_agreement_params[:corporation_sgid]
       @corporation = fetch_corporation_from_sgid
       return head :not_found unless @corporation.present?
-
-      puts params
 
       sanitize(params[:corporation_internship_agreement][:internship_agreement_uuids])
 
@@ -33,6 +32,7 @@ module Dashboard
         notice = "Aucune convention n'a été sélectionnée."
       else
         internship_agreements = InternshipAgreement.where(uuid: @internship_agreement_uuids)
+                                                   .where(aasm_state: InternshipAgreement::TO_BE_SIGNED_STATES)
         corporation_internship_agreements = CorporationInternshipAgreement.where(
           corporation_id: @corporation.id,
           internship_agreement_id: internship_agreements.pluck(:id)
@@ -58,7 +58,7 @@ module Dashboard
     private
 
     def index_corporation_internship_agreement_params
-      params.permit(:corporation_sgid, internship_agreement_uuids: [])
+      params.permit(:corporation_sgid)
     end
 
     def corporation_internship_agreement_params
@@ -85,6 +85,7 @@ module Dashboard
                         end
 
       internship_agreements = InternshipAgreement.where(uuid: sanitized_uuids)
+                                                 .where(aasm_state: InternshipAgreement::TO_BE_SIGNED_STATES)
       @internship_agreement_uuids = internship_agreements.map(&:uuid) # to reflect only valid ones
     end
 

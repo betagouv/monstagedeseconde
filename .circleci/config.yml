@@ -62,7 +62,10 @@ jobs: # a collection of steps
 
       - run: # Install Ruby dependencies
           name: Bundle Install
-          command: bundle check || bundle install
+          command: |
+            gem install stringio -v 3.2.0
+            gem install fiddle -v 1.1.8
+            bundle check || bundle install
 
       # Store bundle cache for Ruby dependencies
       - save_cache:
@@ -163,4 +166,3 @@ workflows:
             branches:
               only:
                 - review
-

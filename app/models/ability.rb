@@ -102,8 +102,7 @@ class Ability
         internship_offer.published? &&
         (!internship_offer.reserved_to_schools? || user.school_id.in?(internship_offer.schools.pluck(:id))) &&
         (!internship_offer.rep  || user.school.rep_or_rep_plus?) &&
-        (!internship_offer.qpv || user.school.qpv?) &&
-        !internship_offer.is_a?(InternshipOffers::Api)
+        (!internship_offer.qpv || user.school.qpv?)
     end
 
     can %i[submit_internship_application update show internship_application_edit],

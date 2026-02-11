@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import CityInput from "./CityInput";
 import GradeInput from "./GradeInput";
 import WeekInput from "./WeekInput";
+import KeywordInput from "./KeywordInput";
+import SectorInput from "./SectorInput";
 import {
   path,
   fetchSearchParamsFromUrl,
@@ -20,6 +22,7 @@ const SearchBar = ({
   secondeWeekIds,
   troisiemeWeekIds,
   studentGradeId,
+  sectors,
   origin,
 }) => {
   const gradeIdSeconde = "1";
@@ -33,6 +36,7 @@ const SearchBar = ({
     "Choisissez une option"
   );
   const [weeksToParse, setWeeksToParse] = useState(schoolWeeksList);
+  const [selectedSectorIds, setSelectedSectorIds] = useState([]);
 
   // helpers
 
@@ -41,8 +45,25 @@ const SearchBar = ({
     updateURLWithParam(searchParams);
   };
 
+  const updateKeywordInUrl = (value) => {
+    const searchParams = addParamToSearchParams("keyword", value);
+    updateURLWithParam(searchParams);
+  };
+
+  const updateSectorsInUrl = (ids) => {
+    const searchParams = addParamToSearchParams("sector_ids[]", ids);
+    updateURLWithParam(searchParams);
+  };
+
   const weekIdsFromUrl = () => {
     return sanitizeWeekIds(parseArrayValueFromUrl("week_ids[]"));
+  };
+
+  const sectorIdsFromUrl = () => {
+      // parseArrayValueFromUrl parses integers, but sector ids might be integers.
+      // let's assume parseArrayValueFromUrl works for sector_ids if they are integers.
+      // But parseArrayValueFromUrl forces parseInt.
+      return parseArrayValueFromUrl("sector_ids[]");
   };
 
   const updateWeekIdsFromUrl = (gradeId) => {
@@ -194,6 +215,12 @@ const SearchBar = ({
     setMonthScoreFromUrl();
   };
 
+  const handleSectorChange = (event) => {
+      const selectedOptions = Array.from(event.target.selectedOptions, option => parseInt(option.value, 10));
+      setSelectedSectorIds(selectedOptions);
+      updateSectorsInUrl(selectedOptions);
+  };
+
   const handleSubmit = () => {
     if(origin == 'homeStudent'){
       Turbo.visit( `${window.location.origin}${'/offres-de-stage'}?${fetchSearchParamsFromUrl()}`)
@@ -219,6 +246,9 @@ const SearchBar = ({
     const urlGradeId = getParamValueFromUrl("grade_id");
     setGradeId(urlGradeId);
     onGradeChangeAndInitialization(urlGradeId);
+
+    const urlSectorIds = sectorIdsFromUrl();
+    setSelectedSectorIds(urlSectorIds);
   }, []);
 
   // common part
@@ -242,8 +272,8 @@ const SearchBar = ({
           Recherche de stage
         </h1>
       </div>
-      <div className="fr-grid-row fr-sm-mt-n2w">
-        <div className="fr-col-sm-12 w-100 fr-col-lg-4 fr-sm-mt-n2w fr-mt-2w" >
+      <div className="fr-grid-row fr-grid-row--gutters fr-sm-mt-n2w">
+        <div className="fr-col-sm-12 w-100 fr-col-lg-4" >
           <CityInput
             city={searchParams.city}
             latitude={searchParams.latitude}
@@ -252,7 +282,7 @@ const SearchBar = ({
             whiteBg="false"
           />
         </div>
-        <div className="fr-col-sm-12 w-100 fr-col-lg-3 fr-sm-mt-n2w fr-mt-2w" >
+        <div className="fr-col-sm-12 w-100 fr-col-lg-3" >
           <GradeInput
             gradeId={gradeId}
             whiteBackground="true"
@@ -260,7 +290,7 @@ const SearchBar = ({
             studentGradeId={studentGradeId}
           />
         </div>
-        <div className="fr-col-sm-12 w-100 fr-col-lg-3 fr-sm-mt-n2w fr-mt-2w" >
+        <div className="fr-col-sm-12 w-100 fr-col-lg-3" >
           <WeekInput
             monthDetailedList={monthDetailedList}
             monthScore={monthScore}
@@ -277,10 +307,52 @@ const SearchBar = ({
         <div className="fr-col-sm-12 w-100 fr-col-lg-2 fr-hidden fr-unhidden-md">
           <button
             onClick={handleSubmit}
-            className="fr-btn fr-btn--icon-left fr-icon-search-line fr-mt-6w fr-mr-1w"
+            className="fr-btn fr-btn--icon-left fr-icon-search-line fr-mt-4w"
+            
           >
             Rechercher
           </button>
+        </div>
+      </div>
+
+      <div className="fr-grid-row fr-grid-row--gutters fr-mt-2w">
+        <div className="fr-col-sm-12 w-100 fr-col-lg-4 fr-px-2w">
+          <p className="fr-text-title fr-px-2w text-blue-france">
+            Recherche avancée
+            <button
+              aria-describedby="tooltip-recherche-avancee"
+              type="button"
+              className="fr-btn fr-btn--tertiary-no-outline fr-icon-information-line fr-btn--sm fr-ml-1w"
+              aria-label="Information sur la recherche avancée"
+            />
+            <span
+              className="fr-tooltip fr-placement"
+              id="tooltip-recherche-avancee"
+              role="tooltip"
+            >
+              Seules les stages correspondant aux critères "commune", "niveau de classe" et "dates de stage" sélectionnés seront affichées. Vous pouvez cependant utiliser les champs de recherche avancée pour mettre en avant les stages qui contiennent le ou les mots-clés renseignés et qui correspondent au secteur d'activité sélectionné.
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <div className="fr-grid-row fr-grid-row--gutters">
+        <div className="fr-col-sm-12 w-100 fr-col-lg-4">
+          <KeywordInput
+            existingKeyword={searchParams.keyword}
+            onChange={updateKeywordInUrl}
+            whiteBg={false}
+          />
+        </div>
+        <div className="fr-col-sm-12 w-100 fr-col-lg-3">
+          <SectorInput
+            sectors={sectors}
+            selectedSectorIds={selectedSectorIds}
+            onChange={(ids) => {
+              setSelectedSectorIds(ids);
+              updateSectorsInUrl(ids);
+            }}
+          />
         </div>
       </div>
     </>
