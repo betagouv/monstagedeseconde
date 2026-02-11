@@ -69,30 +69,29 @@ module Dashboard::Stepper
     private
 
     def entreprise_params
-      params.require(:entreprise)
-            .permit(
-              :siret,
-              :is_public,
-              :group_id,
-              :sector_id,
-              :employer_name,
-              :entreprise_street,
-              :entreprise_zipcode,
-              :entreprise_city,
-              :employer_chosen_name,
-              :entreprise_full_address,
-              :entreprise_chosen_full_address,
-              :entreprise_coordinates_longitude,
-              :entreprise_coordinates_latitude,
-              :contact_phone,
-              :entreprise_coordinates,
-              :internship_occupation_id,
-              :internship_address_manual_enter,
-              :workspace_conditions,
-              :workspace_accessibility,
-              :internship_address_manual_enter,
-              :code_ape
-            )
+      params.expect(entreprise: [
+        :siret,
+        :is_public,
+        :group_id,
+        :sector_id,
+        :employer_name,
+        :entreprise_street,
+        :entreprise_zipcode,
+        :entreprise_city,
+        :employer_chosen_name,
+        :entreprise_full_address,
+        :entreprise_chosen_full_address,
+        :entreprise_coordinates_longitude,
+        :entreprise_coordinates_latitude,
+        :contact_phone,
+        :entreprise_coordinates,
+        :internship_occupation_id,
+        :internship_address_manual_enter,
+        :workspace_conditions,
+        :workspace_accessibility,
+        :internship_address_manual_enter,
+        :code_ape
+      ])
     end
 
     def set_computed_params

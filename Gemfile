@@ -8,7 +8,7 @@ ruby File.read(".ruby-version").strip
 # fwk/server
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
-gem "rails", "~> 7.2"
+gem "rails", "~> 8.1"
 # temporary - default gems extracted in Ruby 3.4+
 gem "ostruct"
 gem "abbrev"

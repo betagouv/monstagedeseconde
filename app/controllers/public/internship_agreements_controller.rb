@@ -67,8 +67,14 @@ module Public
     private
 
     def legal_representative_sign_internship_agreement_params
-      params.require(:signature)
-            .permit(:uuid, :access_token, :student_id, :student_legal_representative_nr)
+      params.expect(
+        signature: [
+          :uuid,
+          :access_token,
+          :student_id,
+          :student_legal_representative_nr
+        ]
+      )
     end
 
     def representative_full_name(nr)

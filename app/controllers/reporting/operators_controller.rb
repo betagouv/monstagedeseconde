@@ -31,7 +31,10 @@ module Reporting
     private
 
     def operator_params
-      params.require(:operator).permit(:id, :target_count, realized_count: {})
+      params.expect(
+        :operator: [
+          :id, :target_count, realized_count: {}]
+      )
     end
 
     def realized_count_hash

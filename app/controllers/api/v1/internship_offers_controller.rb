@@ -43,8 +43,8 @@ module Api
       private
 
       def create_internship_offer_params
-        params.require(:internship_offer)
-              .permit(
+        params.expect(
+          internship_offer:[
                 :title,
                 :description,
                 :employer_name,
@@ -64,12 +64,12 @@ module Api
                 :lunch_break,
                 daily_hours: {},
                 coordinates: {}
-              )
+              ])
       end
 
       def update_internship_offer_params
-        params.require(:internship_offer)
-              .permit(
+        params.require(
+          internship_offer: [
                 :title,
                 :description,
                 :employer_name,
@@ -88,7 +88,8 @@ module Api
                 :handicap_accessible,
                 daily_hours: {},
                 coordinates: {}
-              )
+              ]
+        )
       end
 
       def query_params

@@ -183,7 +183,7 @@ module Dashboard
     end
 
     def bare_internship_agreement_params
-      params.require(:internship_agreement).permit(*fields)
+      params.expect(internship_agreement: *fields)
     end
 
     def filtering_query(query)

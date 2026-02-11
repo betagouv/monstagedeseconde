@@ -57,18 +57,20 @@ module Dashboard::MultiStepper
     end
 
     def multi_coordinator_params
-      params.require(:multi_coordinator)
-            .permit(:siret,
-                    :sector_id,
-                    :employer_name,
-                    :employer_chosen_name,
-                    :employer_address,
-                    :employer_chosen_address,
-                    :city,
-                    :zipcode,
-                    :street,
-                    :phone,
-                    :multi_activity_id)
+      params.expect(
+        multi_coordinator: [
+          :siret,
+          :sector_id,
+          :employer_name,
+          :employer_chosen_name,
+          :employer_address,
+          :employer_chosen_address,
+          :city,
+          :zipcode,
+          :street,
+          :phone,
+          :multi_activity_id
+      ])
     end
 
     def set_computed_params

@@ -17,7 +17,7 @@ module Dashboard
       private
 
       def student_params
-        params.require(:user).permit(
+        params.expect(user: [
           :first_name,
           :last_name,
           :email,
@@ -27,7 +27,7 @@ module Dashboard
           :class_room_id,
           :school_id,
           :grade
-        )
+        ])
       end
 
       def formatted_student_params

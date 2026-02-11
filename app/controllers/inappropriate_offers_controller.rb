@@ -31,11 +31,11 @@ class InappropriateOffersController < ApplicationController
   end
 
   def moderation_params
-    params.require(:inappropriate_offer).permit(
+    params.expect(inappropriate_offer: [
       :moderation_action,
       :message_to_employer,
       :internal_comment
-    ).merge(
+    ]).merge(
       decision_date: Time.current,
       moderator_id: current_user.id
     )
