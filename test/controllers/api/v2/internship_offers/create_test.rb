@@ -564,6 +564,43 @@ module Api
         end
       end
 
+      test 'POST #create as operator with is_public true and no group_id succeeds (API offers have different rules)' do
+    
+        sector = create(:sector, name: 'Informatique', uuid: SecureRandom.uuid)
+
+        assert_difference('InternshipOffer.count', 1) do
+          post api_v2_internship_offers_path(
+            params: {
+              token: "Bearer #{@token}",
+              internship_offer: {
+                title: 'Offre publique API sans ministère',
+                description: 'Description de test',
+                employer_name: 'Entreprise Tech',
+                employer_description: 'Une entreprise tech',
+                employer_website: 'http://tech.fr',
+                coordinates: { latitude: 48.8566, longitude: 2.3522 },
+                street: 'Rue de Test',
+                zipcode: '75001',
+                city: 'Paris',
+                sector_uuid: sector.uuid,
+                remote_id: 'test_public_no_group',
+                max_candidates: 2,
+                is_public: true,
+                permalink: 'http://monentreprise.fr/stages',
+                grades: %w[seconde troisieme],
+                weeks: InternshipOffers::Api.mandatory_seconde_weeks
+              }
+            }
+          )
+          assert_response :created
+        end
+
+        internship_offer = InternshipOffers::Api.last
+        assert internship_offer.is_public
+        assert_nil internship_offer.group_id
+        assert_equal 'Informatique', internship_offer.sector.name
+      end
+
       test 'POST #create as operator with open_data false creates the internship offer with open_data false' do
         @operator.operator.update(open_data: false)
 

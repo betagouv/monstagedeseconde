@@ -1,6 +1,6 @@
 //
 
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 import MonthColumn from "./weekInput/MonthColumn";
 import CheckBoxColumn from "./weekInput/CheckBoxColumn";
@@ -17,21 +17,36 @@ function WeekInput({
   uncheckAllWeeks,
   studentGradeId = null
 }) {
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const containerRef = useRef(null);
+
+  // Close the panel when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsPanelOpen(false);
+      }
+    };
+
+    if (isPanelOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isPanelOpen]);
 
   const toggleSearchPanel = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    const panel = document.getElementById("weeks-search-panel");
-    if (panel.classList) {
-      panel.classList.toggle("fr-hidden");
-    } else {
-      console.warn("Weeks search panel not found");
-    }
+    setIsPanelOpen(!isPanelOpen);
   };
 
   // HTML
   return (
     <div
+      ref={containerRef}
       className={`fr-input-group mb-md-0 col-md ${
         whiteBg ? "bg-white" : ""
       }`}
@@ -49,7 +64,7 @@ function WeekInput({
         onClick={toggleSearchPanel}
       />
 
-      <div className="weeks-search-panel fr-hidden" id="weeks-search-panel">
+      <div className={`weeks-search-panel ${isPanelOpen ? "" : "fr-hidden"}`} id="weeks-search-panel">
 
         <div className='fr-mr-1w text-right'>
           <button
