@@ -2,7 +2,7 @@ class Signature < ApplicationRecord
   has_one_attached :signature_image
   SIGNATURE_STORAGE_DIR = 'signature_storage'
 
-  enum signatory_role: {
+  enum :signatory_role, {
     school_manager: 'school_manager',
     employer: 'employer',
     cpe: 'cpe',

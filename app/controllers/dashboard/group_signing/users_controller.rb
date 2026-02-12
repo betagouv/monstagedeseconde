@@ -253,7 +253,7 @@ module Dashboard
       end
 
       def user_params
-        params.expect(:user: [*allowed_params])
+        params.expect(user: allowed_params)
       end
 
       def update_school_signature

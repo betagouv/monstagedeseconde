@@ -2,7 +2,7 @@
 
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
-require 'minitest/reporters'
+# require 'minitest/reporters'
 require 'minitest/autorun'
 require 'rails/test_help'
 require 'capybara-screenshot/minitest'
@@ -46,7 +46,7 @@ Minitest::Retry.use!(
     PG::InternalError # sometimes postgis ref system is not yet ready
   ]
 )
-Minitest::Reporters.use!
+# Minitest::Reporters.use!
 
 WebMock.disable_net_connect!(
   allow: [

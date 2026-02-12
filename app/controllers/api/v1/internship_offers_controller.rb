@@ -45,50 +45,49 @@ module Api
       def create_internship_offer_params
         params.expect(
           internship_offer:[
-                :title,
-                :description,
-                :employer_name,
-                :employer_description,
-                :employer_website,
-                :street,
-                :zipcode,
-                :city,
-                :remote_id,
-                :permalink,
-                :sector_uuid,
-                :type,
-                :max_candidates,
-                :is_public,
-                :period,
-                :handicap_accessible,
-                :lunch_break,
-                daily_hours: {},
-                coordinates: {}
-              ])
+            :title,
+            :description,
+            :employer_name,
+            :employer_description,
+            :employer_website,
+            :street,
+            :zipcode,
+            :city,
+            :remote_id,
+            :permalink,
+            :sector_uuid,
+            :type,
+            :max_candidates,
+            :is_public,
+            :period,
+            :handicap_accessible,
+            :lunch_break,
+            daily_hours: {},
+            coordinates: {} ])
       end
 
       def update_internship_offer_params
-        params.require(
+        params.expect(
           internship_offer: [
-                :title,
-                :description,
-                :employer_name,
-                :employer_description,
-                :employer_website,
-                :street,
-                :zipcode,
-                :city,
-                :permalink,
-                :sector_uuid,
-                :max_candidates,
-                :published_at,
-                :is_public,
-                :period,
-                :lunch_break,
-                :handicap_accessible,
-                daily_hours: {},
-                coordinates: {}
-              ]
+            :title,
+            :description,
+            :employer_name,
+            :employer_description,
+            :employer_website,
+            :street,
+            :zipcode,
+            :city,
+            :permalink,
+            :sector_uuid,
+            :max_candidates,
+            :published_at,
+            :is_public,
+            :period,
+            :lunch_break,
+            :handicap_accessible,
+            daily_hours: {},
+            coordinates: {}
+          ]
         )
       end
 

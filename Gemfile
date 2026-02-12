@@ -45,7 +45,6 @@ gem "prawn-table"
 
 # background jobs
 gem "sidekiq", "< 8"
-gem "connection_pool" , "< 3.0"
 # Use Redis for Action Cable
 gem "aws-sdk-s3", require: false
 gem "redis", "~> 4.0"
@@ -128,9 +127,10 @@ group :test do
   gem "webmock"
   # Adds support for Capybara system testing and selenium driver
   gem "capybara"
-  gem "minitest", "< 6.0"
+  gem "minitest"#, "< 6.0"
   gem "minitest-fail-fast"
-  gem "minitest-reporters"
+  # gem "minitest-reporters"
+  gem "minitest-rails"
   gem "minitest-retry"
   gem "selenium-webdriver", ">= 4.8"
   # Easy installation and use of chromedriver to run system tests with Chrome
