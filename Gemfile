@@ -32,7 +32,6 @@ gem "caxlsx_rails"
 gem "dsfr-view-components"
 gem "inline_svg"
 gem "react_on_rails", "14.2.1"
-gem "connection_pool", "< 3.0"
 gem "slim-rails"
 gem "split", require: "split/dashboard"
 gem "uglifier"
@@ -45,12 +44,13 @@ gem "prawn-table"
 
 # background jobs
 gem "sidekiq", "< 8"
+gem "connection_pool" , "< 3.0"
 # Use Redis for Action Cable
 gem "aws-sdk-s3", require: false
 gem "redis", "~> 4.0"
 
 # admin
-gem "rails_admin", "~> 3.0"
+gem "rails_admin"
 gem "rails_admin_aasm"
 gem "rails_admin-i18n"
 

@@ -17,3 +17,6 @@ export const toggleHideContainerById = (id, on) => toggleHideContainer(document.
 export const toggleHideContainer = (el, on) =>{ (on) ? el.classList.remove('fr-hidden') : el.classList.add('fr-hidden')};
 export const toggleHideContainers = (els, on) => {els.forEach(el => toggleHideContainer(el, on))};
 
+export const openDsfrModal = (el) => { dsfr(el).modal.disclose(); };
+export const closeDsfrModal = (el) => { dsfr(el).modal.close(); }
+
