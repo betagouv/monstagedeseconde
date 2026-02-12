@@ -4,7 +4,8 @@ tr class="test-internship-offer test-internship-offer-#{employer_internship_offe
               data: { "test-id": "#{employer_internship_offer.id}" },
               class: 'text-dark' do
       p.internship-item-title.fr-pl-1v.mb-0
-        = employer_internship_offer.title
+        - badge = employer_internship_offer.presenter.title_badge
+        = "#{badge} #{employer_internship_offer.title}".strip.html_safe
         br
         = employer_internship_offer.city.capitalize
 

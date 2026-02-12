@@ -128,12 +128,15 @@
                 peuvent candidater à votre offre
 
     - if submit_button
+      = render 'dashboard/stepper_multi_or_single/double_grades_dialog'
+
       .fr-mt-6w
         = link_to 'Précédent',
                   edit_dashboard_stepper_entreprise_path(resource.entreprise, show_resume: show_resume, entreprise_id: resource.entreprise.id),
                   class: 'fr-btn fr-btn--secondary fr-mr-3w'
         = button_tag :submit,
                     class: 'fr-btn',
-                    data: { :'mandatory-fields-target' => "disabledField"}  do
+                    data: { :'mandatory-fields-target' => "disabledField",
+                            action: "grade#onValidate"}  do
           = "Publier l'offre"
 
