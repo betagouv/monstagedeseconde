@@ -9,5 +9,6 @@
                       required: true,
                       pattern: "[0-9]{1,5}",
                       inputmode: "numeric",
-                      min: resource.is_a?(InternshipOffer) ? (resource.internship_applications.try(:approved).try(:count) || 0) : 0
+                      min: resource.is_a?(InternshipOffer) ? (resource.internship_applications.try(:approved).try(:count) || 0) : 0,
+                      data: { :'grade-target' => "maxCandidatesSource" }
 

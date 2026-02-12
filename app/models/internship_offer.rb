@@ -2,6 +2,7 @@
 
 require 'sti_preload'
 class InternshipOffer < ApplicationRecord
+  # Constants
   GUARD_PERIOD = 5.days
   PAGE_SIZE = 30
   # TODO : most probably to be the same field.
@@ -28,6 +29,10 @@ class InternshipOffer < ApplicationRecord
   include FindableWeek
   include Zipcodable
 
+  # splitting
+  include SplittableOffer
+
+
   # New stepper models
   include StepperProxy::InternshipOccupation
   include StepperProxy::Entreprise
@@ -43,7 +48,8 @@ class InternshipOffer < ApplicationRecord
                 :all_year_long,
                 :period_field,
                 :internship_type,
-                :shall_publish
+                :shall_publish,
+                :from_doubling_task
 
   # Other associations not defined in StepperProxy
   has_many :internship_applications, as: :internship_offer,
@@ -101,6 +107,9 @@ class InternshipOffer < ApplicationRecord
   after_commit :sync_internship_offer_keywords
   after_create :create_stats
   after_update :update_stats
+  after_update :update_all_favorites
+
+  # Pagination
 
   paginates_per PAGE_SIZE
 
@@ -211,7 +220,6 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :fulfilled, lambda {
-    # max_candidates == approved_applications_count
     at_stats = InternshipOfferStats.arel_table
     joins(:stats).where(at_stats[:remaining_seats_count].eq(0))
   }
@@ -248,21 +256,45 @@ class InternshipOffer < ApplicationRecord
     joins(:grades).where(grades: { id: Grade.troisieme_et_quatrieme.ids })
   }
 
-  scope :troisieme_or_quatrieme_only, lambda {
-    troisieme_or_quatrieme.where.not(grades: { id: Grade.seconde.id })
-  }
-
   scope :seconde, lambda {
     joins(:grades).where(grades: { id: Grade.seconde.id })
-  }
-
-  scope :seconde_only, lambda {
-    seconde.where.not(grades: { id: Grade.troisieme_et_quatrieme.ids })
   }
 
   scope :with_grade, lambda { |user|
     joins(:grades).where(grades: { id: user.try(:grade_id) || Grade.all.ids })
   }
+
+  scope :seconde_and_troisieme, lambda {
+    joins(:grades,:internship_offer_grades)
+      .where(grades: { id: [Grade.seconde.id, Grade.troisieme.id, Grade.quatrieme.id] })
+      .group('internship_offers.id')
+      .having('COUNT(DISTINCT internship_offer_grades.grade_id) > 2')
+  }
+
+  scope :seconde_and_troisieme_only, lambda {
+    joins(:grades, :internship_offer_grades)
+      .where(grades: { id: [Grade.seconde.id, Grade.troisieme.id] })
+      .group('internship_offers.id')
+      .having('COUNT(DISTINCT internship_offer_grades.grade_id) = 2')
+      .having('SUM(CASE WHEN internship_offer_grades.grade_id = ? THEN 0 ELSE 1 END) = 0', Grade.quatrieme.id)
+  }
+  # In production there's no offer that would match (seconde and troisieme) only without quatrieme
+
+  scope :troisieme_or_quatrieme_only, lambda {
+    joins(:grades,:internship_offer_grades)
+    .where(grades: { id: [Grade.troisieme.id, Grade.quatrieme.id] })
+    .group('internship_offers.id')
+    .having('COUNT(DISTINCT internship_offer_grades.grade_id) = ?', Grade.troisieme_et_quatrieme.size)
+  }
+  # In production there's no offer that would match one grade only (troisieme or quatrieme)
+
+  scope :seconde_only, lambda {
+    joins(:grades,:internship_offer_grades)
+    .where(grades: { id: Grade.seconde.id })
+    .group('internship_offers.id')
+    .having('COUNT(DISTINCT internship_offer_grades.grade_id) = 1')
+  }
+
 
   scope :by_department, ->(departments) { where(department: departments) }
 
@@ -325,6 +357,7 @@ class InternshipOffer < ApplicationRecord
   # -------------------------
   # Methods
   # -------------------------
+  def from_doubling_task? = !!from_doubling_task || false
   def from_multi? = false
   def still_unpublished?
     unpublished? || need_to_be_updated? || splitted?
@@ -366,6 +399,19 @@ class InternshipOffer < ApplicationRecord
     max_candidates > internship_applications.approved.count
   end
 
+  def has_sibling_offer?
+    return true if mother_id.present?
+
+    InternshipOffer.where(mother_id: id).exists?
+  end
+
+  # def sibling
+  #   return nil unless has_sibling_offer?
+
+  #   query = mother_id.present? ? {id: mother_id} :  {mother_id: id}
+  #   InternshipOffer.find_by query
+  # end
+
   def is_fully_editable?
     internship_applications.empty?
   end
@@ -398,7 +444,7 @@ class InternshipOffer < ApplicationRecord
   def sync_first_and_last_date
     ordered_weeks = weeks.to_a.sort_by(&:id)
     self.first_date = ordered_weeks.first&.week_date
-    self.last_date = ordered_weeks.last&.week_date&.+ 4.days
+    self.last_date  = ordered_weeks.last&.week_date&.+ 4.days
   end
 
   def departement
@@ -550,12 +596,17 @@ class InternshipOffer < ApplicationRecord
   end
 
   def create_stats
-    stats = InternshipOfferStats.create(internship_offer: self)
-    stats.recalculate
+    InternshipOfferStats.create(internship_offer: self) unless stats.present?
   end
 
   def update_stats
-    stats.nil? ? create_stats : stats.recalculate
+    create_stats if stats.nil?
+    stats.recalculate
+  end
+
+  def from_doubling_task_save!
+    self.from_doubling_task = true
+    save
   end
 
   def check_for_missing_seats
@@ -592,7 +643,7 @@ class InternshipOffer < ApplicationRecord
   def rep_or_qpv?
     rep || qpv
   end
-  
+
   def created_during_former_year?
     last_date < Week.current_year_start_week.monday
   end
