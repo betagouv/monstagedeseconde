@@ -6,13 +6,13 @@ export default class extends Controller {
   connect() {
     this.isStepperNewPage = window.location.pathname.includes('/etapes/entreprise/nouveau');
 
-    if (this.isStepperNewPage) {
-      this.form = this.element.closest('form');
-      if (this.form) {
-        this.boundValidate = this.validateBeforeSubmit.bind(this);
-        this.form.addEventListener('submit', this.boundValidate);
-      }
-    }
+    if (!this.isStepperNewPage) return;
+
+    this.form = this.element.closest('form');
+    if (!this.form) return;
+
+    this.boundValidate = this.validateBeforeSubmit.bind(this);
+    this.form.addEventListener('submit', this.boundValidate);
   }
 
   disconnect() {
