@@ -247,6 +247,7 @@ module ReviewRebuild
         period: 2,
         sector: education_sector,
         is_public: true,
+        group: Group.is_public.first,
         title: '(3e) Observation du métier d\'enseignant de mathématique - Lycée Jean Moulin',
         description: 'Vous assistez au cours de mathématiques de 2de générale du lycée Jean Moulin',
         employer_description: 'Le métier de professeur de mathématiques consiste à enseigner les mathématiques aux élèves de lycée. Il peut également enseigner dans le supérieur. Il peut être amené à participer à des projets pédagogiques et à encadrer des élèves.',
