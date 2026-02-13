@@ -62,13 +62,13 @@ module Dashboard
     end
 
     def corporation_internship_agreement_params
-      params.require(:corporation_internship_agreement)
-            .permit(
+      params.expect(corporation_internship_agreement: [
               :corporation_sgid,
               :signed,
               ids: [],
-              internship_agreement_uuids: [])
-            end
+              internship_agreement_uuids: []
+      ])
+    end
 
     def fetch_corporation_from_sgid
       GlobalID::Locator.locate_signed(@corporation_sgid )

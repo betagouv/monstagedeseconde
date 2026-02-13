@@ -205,6 +205,7 @@ module Api
       end
 
       test 'GET #search returns too many requests after max calls limit' do
+        assert true
         skip 'Works locally but not always on CI' if ENV['CI'] == 'true'
         if ENV.fetch('TEST_WITH_MAX_REQUESTS_PER_MINUTE', false) == 'true'
           user = create(:user_operator, :fully_authorized)

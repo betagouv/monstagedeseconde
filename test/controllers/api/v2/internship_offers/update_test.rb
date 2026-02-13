@@ -37,7 +37,7 @@ module Api
           end
           assert_response :unprocessable_entity
           assert_equal 'BAD_PAYLOAD', json_response['code']
-          assert_equal 'param is missing or the value is empty: internship_offer', json_error
+          assert_equal 'param is missing or the value is empty or invalid: internship_offer', json_error
         end
       end
 

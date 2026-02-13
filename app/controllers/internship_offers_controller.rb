@@ -290,8 +290,7 @@ class InternshipOffersController < ApplicationController
   end
 
   def flag_params
-    params.require(:inappropriate_offer)
-          .permit(:id, :ground, :details)
+    params.expect(inappropriate_offer: [:id, :ground, :details])
   end
 
   def employer_name_presentation(internship_offer, current_user)

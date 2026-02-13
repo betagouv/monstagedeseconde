@@ -43,7 +43,7 @@ module Dashboard::MultiStepper
     end
 
     def multi_corporation_params
-      params.require(:multi_corporation).permit(:multi_coordinator_id)
+      params.expect(multi_corporation: [:multi_coordinator_id])
     end
   end
 end

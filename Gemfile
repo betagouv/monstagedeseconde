@@ -8,7 +8,7 @@ ruby File.read(".ruby-version").strip
 # fwk/server
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
-gem "rails", "~> 7.2"
+gem "rails", "~> 8.1"
 # temporary - default gems extracted in Ruby 3.4+
 gem "ostruct"
 gem "abbrev"
@@ -127,9 +127,10 @@ group :test do
   gem "webmock"
   # Adds support for Capybara system testing and selenium driver
   gem "capybara"
-  gem "minitest", "< 6.0"
+  gem "minitest"#, "< 6.0"
   gem "minitest-fail-fast"
-  gem "minitest-reporters"
+  # gem "minitest-reporters"
+  gem "minitest-rails"
   gem "minitest-retry"
   gem "selenium-webdriver", ">= 4.8"
   # Easy installation and use of chromedriver to run system tests with Chrome
