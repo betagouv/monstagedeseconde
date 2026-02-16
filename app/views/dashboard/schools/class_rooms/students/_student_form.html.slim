@@ -30,7 +30,7 @@
                      type: :email,
                      maxlength: "100",
                      name: "user[email]",
-                     pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
+                     pattern: js_email_pattern,
                      autofocus: true,
                      placeholder:"ex: nom@domaine.fr",
                      id: 'user_email'

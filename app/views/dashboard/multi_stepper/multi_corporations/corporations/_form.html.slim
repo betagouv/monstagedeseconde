@@ -90,9 +90,9 @@
               .fr-col-12
                 = f.label :employer_role, "Fonction du représentant de la structure", class: "fr-label"
                 = f.text_field :employer_role, class: "fr-input", minlength: 3, required: true, data: { multi_corporation_form_target: "employerRole" }
-              .fr-col-12
+              .fr-col-12 data-controller="downcase"
                 = f.label :employer_email, "Adresse email du représentant de la structure", class: "fr-label"
-                = f.email_field :employer_email, class: "fr-input", data: { multi_corporation_form_target: "employerEmail" }
+                = f.email_field :employer_email, class: "fr-input", data: { multi_corporation_form_target: "employerEmail", downcase_target: 'emailField', action: 'change->downcase#change' }, pattern: js_email_pattern
               .fr-col-12
                 = f.label :employer_phone, "Téléphone du représentant de la structure", class: "fr-label"
                 = f.text_field :employer_phone, class: "fr-input", data: { multi_corporation_form_target: "employerPhone" }
@@ -119,9 +119,16 @@
               .fr-col-12
                 = f.label :tutor_role_in_company, "Fonction du tuteur", class: "fr-label"
                 = f.text_field :tutor_role_in_company, class: "fr-input", minlength: 3, required: true, data: { multi_corporation_form_target: "tutorRole" }
-              .fr-col-12
+              .fr-col-12 data-controller="downcase"
                 = f.label :tutor_email, "Adresse email du tuteur", class: "fr-label"
-                = f.email_field :tutor_email, class: "fr-input", required: true, data: { multi_corporation_form_target: "tutorEmail" }
+                = f.email_field :tutor_email,
+                                class: "fr-input",
+                                required: true,
+                                data: { multi_corporation_form_target: "tutorEmail",
+                                  downcase_target: 'emailField',
+                                  action: 'change->downcase#change' },
+                                pattern: js_email_pattern
+                span.validity
               .fr-col-12
                 = f.label :tutor_phone, "Téléphone du tuteur", class: "fr-label"
                 = f.text_field :tutor_phone, class: "fr-input", required: true, data: { multi_corporation_form_target: "tutorPhone" }

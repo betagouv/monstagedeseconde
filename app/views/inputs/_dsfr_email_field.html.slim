@@ -1,0 +1,85 @@
+- hint ||= ''
+- placeholder ||= ''
+- required ||= false
+- id = "#{f.object_name}_#{field}"
+- field_type ||= :text_field
+- type = 'email'
+- title ||= ''
+- disabled ||= false
+- readonly ||= false
+- name ||= "#{f.object_name}[#{field}]"
+- value = value || (object.send(field) if object)
+- options ||= {}
+- if object&.errors.blank?
+  .fr-input-group data-controller="downcase"
+    = f.label field,
+              class: "fr-label",
+              for: id
+      = label
+    - unless hint.blank?
+      .text-muted.fr-mb-4v = hint
+    = f.send(field_type,
+             field,
+             class: "fr-input #{ hint.blank? ? "" : 'fr-mt-n2v'}",
+             :'aria-describedby' => "text-input-valid-desc-valid",
+             id: id,
+             value: value,
+             placeholder: placeholder,
+             required: required,
+             disabled: disabled,
+             readonly: readonly,
+             data: { downcase_target: 'emailField', action: 'change->downcase#change' },
+             type: type,
+             name: name,
+             title: title,
+             pattern: js_email_pattern,
+             **options)
+- elsif object.errors[field].present?
+  .fr-input-group.fr-input-group--error data-controller="downcase"
+    = f.label field,
+              class: 'fr-label',
+              for: id
+      = label
+      = f.rg2a_required_content_tag if required
+    - unless hint.blank?
+      .text-muted = hint
+    = f.send(field_type,
+             field,
+             class: "fr-input fr-input--error",
+             :'aria-describedby' => "text-input-error-desc-error",
+             id: id,
+             value: value,
+             required: required,
+             disabled: disabled,
+             readonly: readonly,
+             type: type,
+             name: name,
+             title: title,
+             pattern: js_email_pattern,
+             data: { downcase_target: 'emailField', action: 'change->downcase#change' },
+             **options)
+    p.fr-error-text id="text-input-error-desc-error-#{field}"
+      - field_name = t("activerecord.attributes.#{object.class.name.underscore}.#{field}")
+      = "#{field_name} : #{object.errors[field].map(&:downcase).join(', ').html_safe}"
+- else
+  .fr-input-group.fr-input-group--valid data-controller="downcase"
+    = f.label field,
+              class:"fr-label",
+              for: id
+      = label
+      = f.rg2a_required_content_tag if required
+    - unless hint.blank?
+      .text-muted = hint
+    = f.send(field_type, field,
+                   class: 'fr-input fr-input--valid',
+                   :'aria-describedby' => "text-input-valid-desc-valid",
+                   id: id,
+                   value: value,
+                   type: type,
+                   name: name,
+                   required: required,
+                   disabled: disabled,
+                   readonly: readonly,
+                   pattern: js_email_pattern,
+                   data: { downcase_target: 'emailField', action: 'change->downcase#change' },
+                   **options)

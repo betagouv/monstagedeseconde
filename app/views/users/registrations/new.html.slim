@@ -187,7 +187,7 @@ main#content role="main" data-controller="signup"
                 fr-message.fr-message--info.fr-ml-1w.fr-text--sm
                   span
                     | 3 caractères minimum.
-              .fr-fieldset__element.fr-mt-2w
+              .fr-fieldset__element.fr-mt-2w data-controller="downcase"
                 - error_tag = errors.field_error_tag(resource_name: resource_name, resource: resource, field: :email) if errors.present?
                 div class="fr-input-group #{error_tag.present? ? 'fr-input-group--error' : ''}"
                   label.fr-label [for="user_email" data-signup-target="emailLabel"]
@@ -202,9 +202,9 @@ main#content role="main" data-controller="signup"
                         :'aria-describedby' => "user_email",
                         type: "email",
                         maxlength: 100,
-                        pattern: Devise.email_regexp,
+                        pattern: js_email_pattern,
                         autocomplete: "on",
-                        data: {action: 'change->signup#onBlurEmailInput', :"signup-target" => 'emailInput'}
+                        data: {action: 'change->signup#onBlurEmailInput', :"signup-target" => 'emailInput', downcase_target: 'emailField', action: 'change->downcase#change' }
                   p.fr-message.fr-message--error.d-none[data-signup-target="emailHint"]
               - # <% following avoids javascript errors
               span[data-signup-target="emailBloc"]
