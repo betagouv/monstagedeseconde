@@ -39,8 +39,10 @@ module Dashboard::Stepper
       if @planning.save
         internship_offer_builder.create_from_stepper(**builder_params) do |on|
           on.success do |created_internship_offer|
+            notice_start = 'Les informations de planning ont bien été enregistrées.'
+            notice_end   = created_internship_offer.has_sibling_offer? ? 'Vos deux offres sont publiées' : 'Votre offre est publiée'
             redirect_to(internship_offer_path(created_internship_offer, origine: 'dashboard', stepper: true),
-                        notice: 'Les informations de planning ont bien été enregistrées. Votre offre est publiée')
+                        notice: "#{notice_start} #{notice_end}.")
           end
           on.failure do |failed_internship_offer|
             render :edit, status: :bad_request

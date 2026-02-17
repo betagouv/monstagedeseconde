@@ -27,13 +27,13 @@ class User < ApplicationRecord
   # Everyone should register with ac-xxx.fr email
   # 1. should register with ce.UAI@ email
   # 2.3.4. can register without
-  enum :role, {
-    school_manager: 'school_manager',
-    teacher: 'teacher',
-    cpe: 'cpe',
-    admin_officer: 'admin_officer',
-    other: 'other'
-  }
+  enum :role, 
+       school_manager: 'school_manager',
+       teacher: 'teacher',
+       cpe: 'cpe',
+       admin_officer: 'admin_officer',
+       other: 'other'
+  
 
   validates :first_name, :last_name,
             presence: true

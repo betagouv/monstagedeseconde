@@ -22,9 +22,11 @@ module ReviewRebuild
       end
 
       agreement = InternshipAgreement.validated.troisieme_grades.first
-      Signature.new(common_attributes(agreement, 'school_manager'))
-               .save!
-      agreement.sign!
+      if agreement.present?
+        Signature.new(common_attributes(agreement, 'school_manager'))
+                  .save!
+        agreement.sign!
+      end
 
       # agreement = InternshipAgreement.validated.troisieme_grades.second
       # Signature.new(common_attributes(agreement, 'employer'))
@@ -32,18 +34,22 @@ module ReviewRebuild
       # agreement.sign!
 
       agreement = InternshipAgreement.validated.seconde_grades.first
-      Signature.new(common_attributes(agreement, 'school_manager'))
-               .save!
-      agreement.sign!
+      if agreement.present?
+        Signature.new(common_attributes(agreement, 'school_manager'))
+                 .save!
+        agreement.sign!
+      end
 
       # agreement = InternshipAgreement.validated.seconde_grades.second
       # Signature.new(common_attributes(agreement, 'employer'))
       #          .save!
       # agreement.sign!
-      
-      Signature.new(common_attributes(agreement, 'student_legal_representative'))
-               .save!
-      agreement.sign!
+
+      if agreement.present?
+        Signature.new(common_attributes(agreement, 'student_legal_representative'))
+                 .save!
+        agreement.sign!
+      end
 
       # --- pair signing
       # agreement = InternshipAgreement.validated.seconde_grades.third

@@ -34,13 +34,15 @@ class RebuildReviewJob < ApplicationJob
     [:stepper_classes_removal, 'Suppression du contenu des tables du stepper', 1, 'removal'],
     [:api_offers_removal, 'Suppression des offres api', 1, 'removal'],
     [:local_offers_removal, 'Suppression des offres locales 1E1S', 1, 'removal'],
-    [:areas_removal, 'Suppression des espaces', 1, 'removal'],
+    [:areas_removal, 'Suppression des espaces et des offres', 1, 'removal'],
     [:notifications_removal, 'Suppression des notifications', 1, 'removal'],
     [:user_area_removal, 'Suppression des espaces utilisateur', 1, 'removal'],
     [:employers_removal, 'Suppression des employeurs et de leurs offres', 1, 'removal'],
     [:users_operator_removal, 'Suppression des opérateurs', 1, 'removal'],
     [:users_school_management_removal, 'Suppression des équipes pédagogiques', 1, 'removal'],
+    [:corporation_removal, 'Suppression des entreprises du multi-entreprise', 1, 'removal'],
     [:multi_corporation_removal, 'Suppression des multi-entreprises', 1, 'removal'],
+    [:multi_coordinator_removal, 'Suppression des multi-coordinateurs', 1, 'removal'],
     [:multi_activity_removal, 'Suppression des multi-activités', 1, 'removal'],
 
     # creation steps
@@ -104,12 +106,21 @@ class RebuildReviewJob < ApplicationJob
 
     broadcast_info(:student_removal)
     Users::Student.destroy_all
+    # InternshipApplication.destroy_all unless InternshipApplication.all.count.zero?
+    # InternshipAgreement.destroy_all unless InternshipAgreement.all.count.zero?
+    # Signature.destroy_all unless Signature.all.count.zero?
 
-    broadcast_info(:multi_activity_removal)
-    MultiActivity.destroy_all
+    broadcast_info(:corporation_removal)
+    Corporation.destroy_all
 
     broadcast_info(:multi_corporation_removal)
     MultiCorporation.destroy_all
+
+    broadcast_info(:multi_coordinator_removal)
+    MultiCoordinator.destroy_all
+
+    broadcast_info(:multi_activity_removal)
+    MultiActivity.destroy_all
 
     broadcast_info(:api_offers_removal)
     InternshipOffers::Api.destroy_all
@@ -144,7 +155,7 @@ class RebuildReviewJob < ApplicationJob
       # show_time do
       broadcast_temporary_info(step[0])
       send("create_#{step[0]}".to_sym)
-      broadcast_info(step[0])
+      broadcast_info(step[0].to_sym)
       # end
     end
   end
@@ -155,6 +166,11 @@ class RebuildReviewJob < ApplicationJob
   def broadcast_info(sym)
     text = steps_input_text(sym)
     time_value = @rebuilt_steps_hash[sym].values.first
+    puts '================================'
+    puts "text : #{text}"
+    puts "time_value : #{time_value}"
+    puts '================================'
+    puts ''
     message_box.broadcast_info(message_content: text, time_value: time_value)
   end
 
