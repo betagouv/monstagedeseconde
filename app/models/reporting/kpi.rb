@@ -35,20 +35,29 @@ module Reporting
     private
 
     def recent_subscriptions
-      translator = Presenters::UserManagementRole
-      subscriptions = User.select('type, count(type)')
-                          .where('created_at >= ? ',last_monday)
-                          .where('created_at <= ?', last_sunday)
-                          .where.not(type: 'Users::SchoolManagement')
-                          .group(:type)
-                          .inject({}) { |hash, rec| hash[translator.human_types_and_roles(rec.type.to_sym)]= rec.count; hash}
-      Users::SchoolManagement.select('role, count(role)')
+      user_query = User.select('type, count(type)').group(:type)
+      subscriptions =user_query.where('created_at >= ? ',last_monday)
+                               .where('created_at <= ?', last_sunday)
+                               .where.not(type: 'Users::SchoolManagement')
+      subscriptions = summin_up subscriptions
+      subscriptions_by_update = user_query.where('updated_at >= ? ',last_monday)
+                                          .where('updated_at <= ?', last_sunday)
+                                          .where(type: 'Users::Student')
+
+      subscriptions_by_update = summin_up subscriptions_by_update
+
+      subscriptions["Élève"] = subscriptions_by_update["Élève"] || 0
+
+      query = Users::SchoolManagement.select('role, count(role)')
                              .where('created_at >= ? ', last_monday)
                              .where('created_at <= ?', last_sunday)
                              .group(:role)
-                             .inject(subscriptions) do |hash, rec|
-                               hash[translator.human_types_and_roles(rec.role.to_sym)]= rec.count; hash
-                             end
+      summin_up(query, subscriptions)
+    end
+
+    def summin_up(query, subscriptions = {})
+      translator = Presenters::UserManagementRole
+      query.inject(subscriptions) { |hash, rec| hash[translator.human_types_and_roles(rec.type.to_sym)]= rec.count; hash}
     end
 
     def recent_applications

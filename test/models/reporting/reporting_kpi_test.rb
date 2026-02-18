@@ -2,7 +2,7 @@ require 'test_helper'
 
 class ReportingKpiTest < ActiveSupport::TestCase
   test 'last_week_kpis' do
-    travel_to Date.new(2024, 0o1, 25) do
+    travel_to Date.new(2025, 01, 25) do
       school_manager = create(:school_manager, school: create(:school))
 
       # internship_offer_unpublished should not be taken into account
@@ -27,7 +27,7 @@ class ReportingKpiTest < ActiveSupport::TestCase
       )
 
       expected = {
-        subscriptions: {},
+        subscriptions: { 'Élève' => 0 },
         applications_count: 0,
         student_applyers_count: 0,
         offers_count: 2,
@@ -43,29 +43,28 @@ class ReportingKpiTest < ActiveSupport::TestCase
         updated_at: Date.today - 7.days,
         created_at: Date.today - 7.days
       )
-      updated_expected = {
-        subscriptions: { 'Elève' => 1 },
-        applications_count: 0,
-        student_applyers_count: 0,
-        offers_count: 2,
-        public_offers_count: 1,
-        seats_count: 5,
-        public_seats_count: 2
-      }
-      assert_equal updated_expected, Reporting::Kpi.new.last_week_kpis
+      expected[:subscriptions].merge!({ 'Élève' => 1 })
+      assert_equal expected, Reporting::Kpi.new.last_week_kpis
       internship_application = create(
         :weekly_internship_application,
         :approved,
         student:,
         internship_offer:
       )
-      assert_equal updated_expected, Reporting::Kpi.new.last_week_kpis
+
+      student.update_columns(
+        updated_at: Date.today - 7.days,
+        created_at: Date.today - 7.days
+      )
+
+      assert_equal expected, Reporting::Kpi.new.last_week_kpis
       internship_application.update_columns(
         updated_at: Date.today - 7.days,
         created_at: Date.today - 7.days
       )
+
       new_updated_expected = {
-        subscriptions: { 'Elève' => 1 },
+        subscriptions: { 'Élève' => 1 },
         applications_count: 1,
         student_applyers_count: 1,
         offers_count: 2,
