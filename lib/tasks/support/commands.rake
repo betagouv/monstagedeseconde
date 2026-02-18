@@ -2,8 +2,8 @@ require 'pretty_console'
 namespace :support do
   desc "relancer la signature des conventions de stage en attente de signature du chef d'établissement"
   task :agreement_signature_email,  [:uuid, :role] => :environment do |t, args|
-    #usage : bundle exec rake support:agreement_signature_email['87089d99-9a30-4044-b20f-72686ddb51ec','student_legal_representative']
-    #role doit être dans ['school_manager', 'employer', 'cpe', 'admin_officer', 'other', 'teacher', 'student', 'student_legal_representative']
+    #usage : bundle exec rake support:agreement_signature_email[87089d99-9a30-4044-b20f-72686ddb51ec,student_legal_representative]
+    #role doit être pris dans [school_manager, employer, cpe, admin_officer, other, teacher, student, student_legal_representative]
     uuid = args[:uuid]
     role = args[:role]
     if uuid.present? && role.present?
