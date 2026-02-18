@@ -35,8 +35,7 @@ module Reporting
     private
 
     def recent_subscriptions
-      translator = Presenters::UserManagementRole
-      user_query = User.User.select('type, count(type)').group(:type)
+      user_query = User.select('type, count(type)').group(:type)
       subscriptions =user_query.where('created_at >= ? ',last_monday)
                                .where('created_at <= ?', last_sunday)
                                .where.not(type: 'Users::SchoolManagement')
@@ -44,8 +43,10 @@ module Reporting
       subscriptions_by_update = user_query.where('updated_at >= ? ',last_monday)
                                           .where('updated_at <= ?', last_sunday)
                                           .where(type: 'Users::Student')
+
       subscriptions_by_update = summin_up subscriptions_by_update
-      subscriptions[:'Users::Student'] = subscriptions_by_update[:'Users::Student'] || 0
+
+      subscriptions["Élève"] = subscriptions_by_update["Élève"] || 0
 
       query = Users::SchoolManagement.select('role, count(role)')
                              .where('created_at >= ? ', last_monday)
@@ -55,6 +56,7 @@ module Reporting
     end
 
     def summin_up(query, subscriptions = {})
+      translator = Presenters::UserManagementRole
       query.inject(subscriptions) { |hash, rec| hash[translator.human_types_and_roles(rec.type.to_sym)]= rec.count; hash}
     end
 
