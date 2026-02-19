@@ -26,6 +26,11 @@ class UsersController < ApplicationController
 
     user_params[:email] = user_params[:email].downcase if user_params[:email].present?
 
+    if user_params[:email].present? && User.where.not(id: current_user.id).where("LOWER(email) = ?", user_params[:email].downcase.strip).exists?
+      current_user.errors.add(:email, "est déjà utilisée par un autre compte. Merci de choisir une autre adresse email")
+      return render :edit, status: :bad_request
+    end
+
     if current_user.fake_email? && user_params[:email].present?
       current_user.update_column(:email, user_params[:email])
       current_user.update!(user_params.except(:email))
