@@ -87,13 +87,13 @@
     .fr-ml-11w.rg2a-width-100.w-100
       .fr-card.fr-px-2w
         .fr-card-body
-          - presenter = @internship_application.presenter(current_user)
-          .fr-badge.fr-badge--no-icon.fr-my-2w class="fr-badge--#{presenter.human_state[:badge]}" = @internship_application.aasm.human_state
+          - human_state = @internship_application.presenter(current_user).human_state
+          .fr-badge.fr-badge--no-icon.fr-my-2w class="fr-badge--#{human_state[:badge]}" = human_state[:label]
           h3.h5.fr-mb-2w.fr-mt-2w
             - if @internship_application.state_changes.last.present?
-              = "Candidature #{@internship_application.aasm.human_state} le #{l(@internship_application.state_changes.last.try(:created_at), format: :long_with_time)}"
+              = "Candidature #{human_state[:label]} le #{l(@internship_application.state_changes.last.try(:created_at), format: :long_with_time)}"
             - else
-              = "Candidature #{@internship_application.aasm.human_state}"
+              = "Candidature #{human_state[:label]}"
           p.fr-mb-2w
             - if @internship_application.state_changes.last.present?
               - author = @internship_application.state_changes&.last&.author
@@ -104,7 +104,7 @@
               .col-1
                 span.fr-icon-arrow-right-line.fr-icon--sm
               .col-11
-                span.font-weight-bold  Motif 
+                span.font-weight-bold  Motif
                 p.small=  @internship_application.response_message
 
         - if @internship_application.is_re_approvable? || @internship_application.is_modifiable? || @internship_application.cancelable?
@@ -151,7 +151,7 @@
                 fa_icon: "fr-icon-close-line",
                 token: nil,
                 opened_modal: defined?(opened_modal) ? opened_modal == 'cancel' : false
-            
+
 - else
   .row
     .col-12
