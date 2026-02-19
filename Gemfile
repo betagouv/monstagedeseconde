@@ -9,10 +9,13 @@ ruby File.read(".ruby-version").strip
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
 gem "rails", "~> 8.1"
+gem "solid_cache"
+gem "sqlite3", "~> 2.9"
 # temporary - default gems extracted in Ruby 3.4+
 gem "ostruct"
 gem "abbrev"
 gem "mutex_m"
+gem "fiddle"
 # db
 gem "pg"
 gem "rack", ">= 3.0"
