@@ -13,7 +13,6 @@ class GodMailerTest < ActionMailer::TestCase
   end
 
   test 'notify_others_signatures_started_email sends email to recipient' do
-    skip 'test will be ok when getting rid of Flipper :student_signature'
     internship_agreement = create(:mono_internship_agreement)
     signature = create(:signature, :school_manager, internship_agreement: internship_agreement)
     email = GodMailer.notify_others_signatures_started_email(
