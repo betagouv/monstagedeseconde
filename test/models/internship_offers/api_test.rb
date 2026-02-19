@@ -19,7 +19,7 @@ module InternshipOffers
           city: 'Coye la foret',
           sector: create(:sector),
           permalink: 'https://google.fr',
-          grades: Grade.all,
+          grades: [Grade.seconde],
           weeks: Week.selectable_from_now_until_end_of_school_year
         }
       end
