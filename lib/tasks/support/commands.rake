@@ -7,25 +7,26 @@ namespace :support do
     uuid = args[:uuid]
     role = args[:role]
     if uuid.present? && role.present?
-      if ['school_manager', 'employer', 'cpe', 'admin_officer', 'other', 'teacher', 'student', 'student_legal_representative'].include?(role)
+      if %w[school_manager employer cpe admin_officer other teacher student student_legal_representative].include?(role)
         internship_agreement = InternshipAgreement.find_by(uuid: uuid)
         if internship_agreement.nil?
           PrettyConsole.say_in_red "Convention avec uuid #{uuid} non trouvée, email de relance non envoyé"
         else
-          last_signature = Signature.where(internship_agreement_id: internship_agreement.id).last
-          signature_recipients = case role
-                                when 'student'
-                                  [internship_agreement.student.email]
-                                when 'school_manager', 'cpe', 'admin_officer', 'other', 'teacher'
-                                  [internship_agreement.school_management_representative.email]
-                                when 'student_legal_representative'
-                                  [internship_agreement.student_legal_representative_email]
-                                when 'employer'
-                                  [internship_agreement.employer.email]
-                                else
-                                  nil
-                                end
-          if internship_agreement.present? && signature_recipients.present?
+          last_signature = internship_agreement.signatures.last
+          email = case role
+                  when 'student'
+                    internship_agreement.student&.email
+                  when 'school_manager', 'cpe', 'admin_officer', 'other', 'teacher'
+                    internship_agreement.school_management_representative&.email
+                  when 'student_legal_representative'
+                    internship_agreement.student_legal_representative_email
+                  when 'employer'
+                    internship_agreement.employer.email
+                  else
+                    nil
+                  end
+          signature_recipients = [email].compact.presence
+          if signature_recipients.present?
             GodMailer.notify_others_signatures_started_email(
             internship_agreement: internship_agreement,
             missing_signatures_recipients: signature_recipients,
