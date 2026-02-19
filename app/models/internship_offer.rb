@@ -359,6 +359,7 @@ class InternshipOffer < ApplicationRecord
   # -------------------------
   def from_doubling_task? = !!from_doubling_task || false
   def from_multi? = false
+  def display_city = city
   def still_unpublished?
     unpublished? || need_to_be_updated? || splitted?
   end
