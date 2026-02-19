@@ -34,6 +34,7 @@ if ENV['TEST_WITH_MAX_REQUESTS_PER_MINUTE'] == 'true'
 end
 
 Sidekiq::Testing.fake!
+Flipper.disable :multi_offer
 
 Capybara.save_path = Rails.root.join('tmp/screenshots')
 
