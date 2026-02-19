@@ -4,14 +4,14 @@
 # Setup
 Things you may want to cover:
 
-* Ruby version: 2.7.2
-* Database postgresql 12
+* Ruby version: 3.4.7
+* Database postgresql 16
   - On Linux :
-    - sudo apt-get install postgresql-12 libpq-dev
- - Initialize with : `initdb /usr/local/var/postgres -E utf8`
- - Create local db : `createdb monstage`
- - Start with : `pg_ctl -D /usr/local/var/postgres start`
- - Stop with : `pg_ctl -D /usr/local/var/postgres stop`
+    - sudo apt-get install postgresql-16 libpq-dev
+    - Initialize with : `sudo -u postgres initdb /var/lib/postgresql/16/main -E utf8`
+    - Create local db : `sudo -u postgres createdb monstage`
+    - Start with : `sudo systemctl start postgresql`
+    - Stop with : `sudo systemctl stop postgresql`
 * Install html5validator : `pip install html5validator`
 * Install postgis :
   - On Mac :

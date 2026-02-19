@@ -25,6 +25,7 @@
   .row.fr-mt-4w
     .col-12
       = render partial: 'dashboard/internship_offers/internship_applications/internship_application',
-                collection: @internship_applications
+                collection: @internship_applications,
+                cached: true
 
     = paginate(@internship_applications)
