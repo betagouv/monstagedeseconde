@@ -61,13 +61,6 @@ features = [
   :maintenance_mode,
 ]
 
-def database_exists?
-  ActiveRecord::Base.connection
-  true
-rescue ActiveRecord::ConnectionNotEstablished, ActiveRecord::NoDatabaseError, PG::ConnectionBad
-  false
-end
-
 Flipper.configure do |config|
   config.adapter do
     Flipper::Adapters::ActiveSupportCacheStore.new(
@@ -79,8 +72,11 @@ Flipper.configure do |config|
 end
 
 ActiveSupport.on_load(:active_record) do
-  if database_exists? && ActiveRecord::Base.connection.data_source_exists?('flipper_features')
-    setup_features(features)
+  begin
+    connection = ActiveRecord::Base.connection
+    setup_features(features) if connection.data_source_exists?('flipper_features')
+  rescue ActiveRecord::ConnectionNotEstablished, ActiveRecord::NoDatabaseError, PG::ConnectionBad
+    nil
   end
 end
 
