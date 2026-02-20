@@ -14,7 +14,6 @@ production:
 
 development:
   <<: *default
-  default: &default
   database: cache
   store_options:
     # Cap age of oldest cache entry to fulfill retention policies
