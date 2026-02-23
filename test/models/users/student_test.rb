@@ -200,6 +200,58 @@ module Users
       assert student.has_found_her_internships?
     end
 
+    # --- compute_weeks_lists ---
+
+    test '#compute_weeks_lists seconde student without school weeks falls back to Week.seconde_weeks' do
+      student = create(:student, :seconde)
+      school_weeks_list, preselected_weeks_list = student.compute_weeks_lists
+      assert_equal Week.seconde_weeks.pluck(:id).sort, school_weeks_list.pluck(:id).sort
+      assert_equal school_weeks_list.pluck(:id).sort, preselected_weeks_list.pluck(:id).sort
+    end
+
+    test '#compute_weeks_lists seconde student with future school weeks uses school weeks' do
+      travel_to Date.new(2025, 9, 1) do
+        student = create(:student, :seconde)
+        future_weeks = Week.seconde_weeks
+        future_weeks.each do |week|
+          create(:school_internship_week, school: student.school, week: week)
+        end
+        school_weeks_list, preselected_weeks_list = student.compute_weeks_lists
+        assert_equal future_weeks.pluck(:id).sort, school_weeks_list.pluck(:id).sort
+        assert_equal school_weeks_list.pluck(:id).sort, preselected_weeks_list.pluck(:id).sort
+      end
+    end
+
+    test '#compute_weeks_lists seconde student with expired school weeks falls back to default' do
+      travel_to Date.new(2025, 9, 1) do
+        student = create(:student, :seconde)
+        past_weeks = Week.where(year: 2024, number: [25, 26])
+        past_weeks.each do |week|
+          create(:school_internship_week, school: student.school, week: week)
+        end
+        school_weeks_list, _preselected_weeks_list = student.compute_weeks_lists
+        assert_equal Week.seconde_weeks.pluck(:id).sort, school_weeks_list.pluck(:id).sort,
+                     'should fallback to default seconde weeks when school weeks are expired'
+      end
+    end
+
+    test '#compute_weeks_lists seconde student does not filter preselected weeks with in_the_future' do
+      student = create(:student, :seconde)
+      _school_weeks_list, preselected_weeks_list = student.compute_weeks_lists
+      assert preselected_weeks_list.any?, 'seconde student should always have preselected weeks'
+    end
+
+    test '#compute_weeks_lists troisieme student filters preselected weeks with in_the_future' do
+      travel_to Date.new(2025, 1, 15) do
+        student = create(:student, :troisieme)
+        school_weeks_list, preselected_weeks_list = student.compute_weeks_lists
+        assert school_weeks_list.count >= preselected_weeks_list.count
+        preselected_weeks_list.each do |week|
+          assert week.id >= Week.current.id, 'preselected weeks should be in the future for troisieme'
+        end
+      end
+    end
+
     test '#has_found_her_internships? when student troisieme' do
       travel_to Date.new(2023, 10, 1) do
         student = create(:student, grade: Grade.troisieme)
