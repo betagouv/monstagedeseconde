@@ -1,77 +1,49 @@
 header.container-xl.px-0
-  - if browser.device.mobile?
-    / smart phone display
-    .container-monstage.container-xl.homepage.px-0
-      .row.fr-mt-4w.mx-0
-        .col-lg-12.col-md-12
-          .fr-h3.py-lg-3.py-md-2.py-sm-2.pt-xs-1.blue-france
-            |Pour les élèves de 2de générale et technologique, trouvez ici un stage de qualité
+  .container-monstage.container-xl.homepage.visible
+    .row.fr-px-2w.fr-pt-4w.fr-pt-md-6w.fr-mb-2w
+      .col-lg-6.col-md-12.px-0
+        h1.fr-h3.blue-france
+          | Des stages d’observation dédiés aux élèves
+          br
+          | de 4
+          sup e
+          | , 3
+          sup e
+          | , et 2
+          sup de
+          |  générale et technologique.
+        .fr-text.blue-france.d-none.d-md-block
+          .row
+            .col-12
+              span.font-weight-bold
+                | 1élève1stage
+              | offre aux élèves la possibilité de réaliser des stages d’observation de qualité. Elle facilite les interactions entre les écoles et les entreprises, permettant une première expérience dans le monde professionnel.
+      .col-lg-6.col-md-12.px-0.d-none.d-md-flex.align-items-center
+        = image_tag(asset_pack_path("media/images/homepage/1eleve1stage_tag.png"), alt: "Illustration élèves", class: "img-fluid")
 
-      .search-bar.fr-mx-2w
-        .white-search-frame.mt-3.fr-mb-4w.mobile
-          = render partial: "internship_offers/search/form",
-                  locals: { render_as_partial: false,
-                            url: internship_offers_path,
-                            default_values: params,
-                            form_id: :mobile_internship_offers_index_search_form }
-  - else
-    / desktop display
-    .container-monstage.container-xl.homepage.visible
-      .row.fr-px-2w.fr-pt-6w.fr-mb-2w
-        .col-lg-6.col-md-12.px-0
-          h1.fr-h3.blue-france
-            | Des stages d'observation dédiés aux élèves
-            br
-            | de 4
-            sup e
-            | , 3
-            sup e
-            | , et 2
-            sup de
-            |  générale et technologique.
-          .fr-text.blue-france
-            .row
-              .col-12
-                span.font-weight-bold
-                  | 1élève1stage
-                | offre aux élèves la possibilité de réaliser des stages d’observation de qualité. Elle facilite les interactions entre les écoles et les entreprises, permettant une première expérience dans le monde professionnel.
-        .col-lg-6.col-md-12.px-0.d-flex.align-items-center
-          = image_tag asset_pack_path('media/images/homepage/1eleve1stage_tag.png'),
-                      alt: 'Illustration élèves',
-                      class: 'img-fluid'
+    .row.no-gutters.fr-py-2w.fr-mb-4w.search-tabs-offers.fr-px-0
+      .col-12
+        .fr-tabs.visible
+          ul.fr-tabs__list role="tablist" aria-label="Rechercher"
+            li role="presentation"
+              button#offers.fr-tabs__tab aria-controls="offers-panel" aria-selected="true" role="tab" tabindex="0"  Rechercher une offre de stage
 
-      .row.no-gutters.fr-py-2w.fr-mb-4w.d-none.d-sm-block.search-tabs-offers.fr-px-0
-        .col-12
-          / internship_offers/search/form
-          .fr-tabs.visible
-            ul.fr-tabs__list role="tablist" aria-label="Rechercher"
-              li role="presentation"
-                button#offers.fr-tabs__tab aria-controls="offers-panel" aria-selected="true" role="tab" tabindex="0"  Rechercher une offre de stage
-              / li role="presentation"
-                = link_to recherche_entreprises_path, class: "fr-tabs__tab", tabindex: "0", role: "tab", aria_controls: "enterprises-panel" do
-                  | Rechercher une entreprise
-
-            #offers-panel.fr-tabs__panel.fr-tabs__panel--selected role="tabpanel" aria-labelledby="offers-panel" tabindex="0"
-              .fr-tabs__content
-                .fr-tabs__content-item.active#offers-search-tab
-                  .row
-                    .col-12
-                      = react_component("SearchBar",
-                                          props: { searchParams: @params,
-                                                  preselectedWeeksList: @preselected_weeks_list_array,
-                                                  schoolWeeksList: @school_weeks_list_array,
-                                                  secondeWeekIds: @seconde_week_ids,
-                                                  troisiemeWeekIds: @troisieme_week_ids,
-                                                  studentGradeId: @student_grade_id,
-                                                  sectors: @sectors,
-                                                  origin: 'homeStudent'})
-        .actions.d-stick.d-md-none.p-2.fitting
-          = link_to internship_offers_path(current_user_or_visitor.default_search_options),
-                    class: 'fr-btn fr-icon-search-line fr-btn--icon-right fr-px-11w',
-                    data: { :"test-id" => 'mobile-search-button' }
-            = "Rechercher un stage"
-      .row
-        .col-12.fr-mt-2w
+          #offers-panel.fr-tabs__panel.fr-tabs__panel--selected role="tabpanel" aria-labelledby="offers-panel" tabindex="0"
+            .fr-tabs__content
+              .fr-tabs__content-item.active#offers-search-tab
+                .row
+                  .col-12
+                    = react_component("SearchBar",
+                                        props: { searchParams: @params,
+                                                preselectedWeeksList: @preselected_weeks_list_array,
+                                                schoolWeeksList: @school_weeks_list_array,
+                                                secondeWeekIds: @seconde_week_ids,
+                                                troisiemeWeekIds: @troisieme_week_ids,
+                                                studentGradeId: @student_grade_id,
+                                                sectors: @sectors,
+                                                origin: "homeStudent"})
+    .row
+      .col-12.fr-mt-2w
 
 
 

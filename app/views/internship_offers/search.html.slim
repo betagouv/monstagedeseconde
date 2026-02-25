@@ -13,9 +13,13 @@
           span aria-hidden="true" &times;
 
 
-      .modal-body.mt-3
-        = render partial: "internship_offers/search/form",
-                 locals: { render_as_partial: false,
-                           url: internship_offers_path,
-                           default_values: params,
-                           form_id: :mobile_internship_offers_index_search_form }
+      .modal-body.mt-3.fr-px-2w
+        = react_component("SearchBar",
+                            props: { searchParams: @params,
+                                    preselectedWeeksList: @preselected_weeks_list_array,
+                                    schoolWeeksList: @school_weeks_list_array,
+                                    secondeWeekIds: @seconde_week_ids,
+                                    troisiemeWeekIds: @troisieme_week_ids,
+                                    studentGradeId: @student_grade_id,
+                                    sectors: @sectors,
+                                    origin: "search"})
