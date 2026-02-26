@@ -269,7 +269,7 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: File.read('test/fixtures/files/signe_responsible.json'), headers: {})
   end
 
-  def stub_sygne_eleves(code_uai:, token:, code_mef: '10310019110', ine: '001291528AA', niveau: '2212')
+  def stub_sygne_eleves(code_uai:, token:, code_mef: '10310019110', ine: '001291528AA', niveau: '2212', classe: '3E4')
     Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
       expected_response = [{
         'ine' => ine,
@@ -284,7 +284,7 @@ module ThirdPartyTestHelpers
         'codeMef' => code_mef,
         'libelleLongMef' => 'PREMIERE GENERALE',
         'codeMefRatt' => code_mef,
-        'classe' => '3E4',
+        'classe' => classe,
         'codeRegime' => '2',
         'libelleRegime' => 'DP DAN',
         'codeStatut' => 'ST',

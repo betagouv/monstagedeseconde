@@ -28,6 +28,24 @@ class SygneImportTest < ActiveSupport::TestCase
     end
   end
 
+  test 'student import updates class_room when student already exists' do
+    school = School.find_by(code_uai: @code_uai)
+    grade = Grade.find_by(short_name: 'troisieme')
+    old_class_room = create(:class_room, name: '3E1', school: school, grade: grade)
+    student = create(:student, ine: '001291528AA', school: school, class_room: old_class_room, grade: grade)
+
+    omogen = Services::Omogen::Sygne.new
+    stub_sygne_eleves(code_uai: @code_uai, token: omogen.token, classe: '3E4')
+
+    assert_no_difference 'Users::Student.count' do
+      omogen.sygne_import_by_schools(@code_uai)
+    end
+
+    student.reload
+    assert_equal '3E4', student.class_room.name
+    assert_not_equal old_class_room.id, student.class_room_id
+  end
+
   test 'student import is ok with correct codeMef' do
     ine = '001291528AA'
 
