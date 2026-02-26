@@ -163,6 +163,18 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     assert_nil @student.fim_user_info
   end
 
+  test 'should redirect with explicit message when parent connects with educonnect and UAI is blank' do
+    educonnect_token_stub
+    educonnect_userinfo_responsible_stub
+    educonnect_logout_stub
+
+    get educonnect_callback_path, params: { code: @code, state: @state, nonce: @nonce }
+
+    assert_response :redirect
+    assert_redirected_to root_path
+    assert_match 'réservée aux élèves', flash[:alert]
+  end
+
   test 'should get educonnect token and does not logged in user if student is unknown' do
     educonnect_token_stub
     educonnect_userinfo_unknown_stub

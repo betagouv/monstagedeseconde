@@ -240,6 +240,17 @@ module ThirdPartyTestHelpers
       .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_userinfo_unknown.json'), headers: {})
   end
 
+  def educonnect_userinfo_responsible_stub
+    stub_request(:get, ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/userinfo')
+      .with(
+        headers: {
+          'Authorization' => 'Bearer token_educonnect',
+          'Content-Type' => 'application/json'
+        }
+      )
+      .to_return(status: 200, body: File.read('test/fixtures/files/educonnect_userinfo_responsible.json'), headers: {})
+  end
+
   def educonnect_logout_stub
     stub_request(:get, "#{ENV['EDUCONNECT_URL']}/idp/profile/oidc/logout")
       .with(
