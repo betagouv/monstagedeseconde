@@ -102,6 +102,28 @@
               li.text-center.fr-px-2w.fr-mt-2w
                 = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--tertiary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
 
+        / Operator
+        - if current_user.is_a?(Users::Operator)
+          li
+            = link_to 'Mes offres', dashboard_internship_offers_path, class: 'fr-link text-decoration-none mr-4'
+          li
+            = link_to 'Candidatures', dashboard_candidatures_path, class: 'fr-link text-decoration-none mr-4'
+          li.dropdown.position-relative data-controller="dropdown"
+            = link_to '#', class: 'fr-btn fr-btn--tertiary fr-icon-account-line fr-btn--icon-left', aria_haspopup: 'true', aria_expanded: 'false', data: { action: 'click->dropdown#toggle' } do
+              | Mon espace
+            ul.dropdown-menu.shadow.rounded-3.mt-0.position-absolute.start-0 data-dropdown-target="menu" style="display: none; min-width: 280px;"
+              li.fr-px-2w.fr-py-2w
+                .fw-bold = current_user.presenter.full_name
+                .text-muted.small = current_user.email
+              li
+                = link_to 'Espaces', dashboard_internship_offer_areas_path, class: "dropdown-item d-flex align-items-center"
+              li
+                = link_to 'Equipe', dashboard_team_member_invitations_path, class: "dropdown-item d-flex align-items-center"
+              li.no-border-bottom
+                = link_to 'Mon profil', account_path, class: "dropdown-item d-flex align-items-center"
+              li.text-center.fr-px-2w.fr-mt-2w
+                = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--tertiary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'
+
       - else
         li.dropdown.position-relative data-controller="dropdown"
           = link_to '#', class: 'fr-btn fr-btn--tertiary fr-icon-account-line fr-btn--icon-left', aria_haspopup: 'true', aria_expanded: 'false', data: { action: 'click->dropdown#toggle' } do
