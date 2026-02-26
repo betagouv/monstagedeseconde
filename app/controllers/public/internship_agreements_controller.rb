@@ -1,6 +1,25 @@
 module Public
   class InternshipAgreementsController < ApplicationController
     # No authentication required
+    layout 'no_link_layout', only: %i[show]
+
+    def show
+      access_token = params[:access_token]
+      @internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
+
+      if @internship_agreement.nil?
+        redirect_to root_path, alert: 'Convention introuvable' and return
+      end
+
+      if @internship_agreement.signed_by_legal_representative?
+        render :show and return
+      end
+
+      @internship_agreement = InternshipAgreement.find_by(access_token: access_token)
+      if @internship_agreement.nil?
+        redirect_to root_path, alert: 'Convention introuvable' and return
+      end
+    end
 
     def upload
       @internship_agreement = find_internship_agreement
@@ -57,7 +76,7 @@ module Public
         @internship_agreement.access_token = nil
         @internship_agreement.save
         sign_out(current_user)
-        redirect_to new_dashboard_students_internship_agreement_path(uuid: @internship_agreement.uuid, student_id: @internship_agreement.student.id),
+        redirect_to public_internship_agreement_path(uuid: @internship_agreement.uuid),
                     notice: 'Vous avez bien signé la convention de stage' and return
       end
     rescue ActiveRecord::RecordNotFound
