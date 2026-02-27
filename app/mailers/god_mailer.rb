@@ -191,11 +191,9 @@ class GodMailer < ApplicationMailer
 
     Rails.logger.info("no representatives found for notify_student_legal_representatives_can_sign_email") if recipients_email.empty?
 
-    @url = new_dashboard_students_internship_agreement_url(
-      access_token: internship_agreement.access_token || '' ,
+    @url = public_internship_agreement_url(
       uuid: internship_agreement.uuid,
-      student_id: student.id,
-      signator_email: representative[:email],
+      access_token: internship_agreement.access_token || '',
       student_legal_representative_nr: representative[:nr]
     ).html_safe
     send_email(
@@ -216,11 +214,9 @@ class GodMailer < ApplicationMailer
 
     Rails.logger.info("no representatives found for notify_student_legal_representatives_can_sign_email") if recipients_email.empty?
 
-    @url = new_dashboard_students_internship_agreement_url(
-      access_token: internship_agreement.access_token || '' ,
+    @url = public_internship_agreement_url(
       uuid: internship_agreement.uuid,
-      student_id: student.id,
-      signator_email: representative[:email],
+      access_token: internship_agreement.access_token || '',
       student_legal_representative_nr: representative[:nr]
     ).html_safe
     send_email(
