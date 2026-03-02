@@ -36,11 +36,11 @@ module Reporting
 
     def recent_subscriptions
       user_query = User.select('type, count(type)').group(:type)
-      subscriptions =user_query.where('created_at >= ? ',last_monday)
+      subscriptions =user_query.where('created_at >= ?', last_monday)
                                .where('created_at <= ?', last_sunday)
                                .where.not(type: 'Users::SchoolManagement')
       subscriptions = summin_up subscriptions
-      subscriptions_by_update = user_query.where('updated_at >= ? ',last_monday)
+      subscriptions_by_update = user_query.where('updated_at >= ?', last_monday)
                                           .where('updated_at <= ?', last_sunday)
                                           .where(type: 'Users::Student')
 
@@ -48,16 +48,16 @@ module Reporting
 
       subscriptions["Élève"] = subscriptions_by_update["Élève"] || 0
 
-      query = Users::SchoolManagement.select('role, count(role)')
-                             .where('created_at >= ? ', last_monday)
+      query = Users::SchoolManagement.select('role, type, count(role)')
+                             .where('created_at >= ?', last_monday)
                              .where('created_at <= ?', last_sunday)
-                             .group(:role)
+                             .group(:role, :type)
       summin_up(query, subscriptions)
     end
 
-    def summin_up(query, subscriptions = {})
+    def summin_up(query, starting_hash = {})
       translator = Presenters::UserManagementRole
-      query.inject(subscriptions) { |hash, rec| hash[translator.human_types_and_roles(rec.type.to_sym)]= rec.count; hash}
+      query.inject(starting_hash) { |hash, rec| hash[translator.human_types_and_roles(rec.type.to_sym)]= rec.count; hash}
     end
 
     def recent_applications
