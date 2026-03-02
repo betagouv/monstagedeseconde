@@ -82,7 +82,19 @@ namespace :sys do
     end
   end
 
-  desc 'uplaod a local production database copy to CleverCloud with sql format'
+  desc 'upload a local production database dump to review on CleverCloud'
+  task :upl_prod_to_review, [] => :environment do
+    PrettyConsole.announce_task 'Uploading production database dump for review platform' do
+      system("pg_restore",
+             "-h", ENV['CLEVER_REVIEW_HOST'],
+             "-p", ENV['CLEVER_REVIEW_DB_PORT'],
+             "-U", ENV['CLEVER_REVIEW_DB_USER'],
+             "-d", ENV['CLEVER_REVIEW_DB_NAME'],
+             "storage/current_production.dump")
+    end
+  end
+
+  desc 'upload a local production database copy to CleverCloud with sql format'
   task :upl_prod_sql, [] => :environment do
     PrettyConsole.announce_task 'Downloading production database' do
       system("PGPASSWORD=#{ENV['CLEVER_PRODUCTION_COPY_DB_PASSWORD']} psql " \
