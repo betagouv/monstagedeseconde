@@ -4,8 +4,9 @@ module Public
     layout 'no_link_layout', only: %i[show]
 
     def show
-      access_token = params[:access_token]
-      @internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
+      @internship_agreement = find_internship_agreement
+      # access_token = params[:access_token]
+      # @internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
 
       if @internship_agreement.nil?
         redirect_to root_path, alert: 'Convention introuvable' and return
@@ -15,10 +16,10 @@ module Public
         render :show and return
       end
 
-      @internship_agreement = InternshipAgreement.find_by(access_token: access_token)
-      if @internship_agreement.nil?
-        redirect_to root_path, alert: 'Convention introuvable' and return
-      end
+      # @internship_agreement = InternshipAgreement.find_by(access_token: access_token)
+      # if @internship_agreement.nil?
+      #   redirect_to root_path, alert: 'Convention introuvable' and return
+      # end
     end
 
     def upload
