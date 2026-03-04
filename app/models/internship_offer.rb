@@ -295,6 +295,14 @@ class InternshipOffer < ApplicationRecord
     .having('COUNT(DISTINCT internship_offer_grades.grade_id) = 1')
   }
 
+  scope :public_kept_for_doubling, lambda {
+    where(is_public: true).where.not(group_id: nil)
+  }
+
+  scope :private_kept_for_doubling, lambda {
+    fonction_publique_sector = Sector.find_by(name: 'Fonction publique')
+    where(is_public: false).where.not(sector_id: fonction_publique_sector.id)
+  }
 
   scope :by_department, ->(departments) { where(department: departments) }
 

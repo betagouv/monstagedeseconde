@@ -21,7 +21,7 @@ fr:
       welcome_student: "Bienvenue sur 1élève1stage. Commencez votre recherche ici : %{shrinked_url}"
   activerecord:
     models:
-      student_legal_representative:  Représentant légal
+      student_legal_representative: Représentant légal
       school_manager: Chef d'établissement
       employer: Employeur
       area_notification:
@@ -30,7 +30,6 @@ fr:
       employer:
         one: Employeur
         other: Employeurs
-      school manager: "Chef d'établissement"
       entreprise:
         one: Entreprise ou administration
         other: Entreprises ou administrations
@@ -82,10 +81,12 @@ fr:
       school_manager:
         one: Chef d'établissement
         other: Chefs d'établissement
+      signature:
+        one: Signature
+        other: Signatures
       team_member_invitation:
         one: Membre de l'équipe
         other: Membres de l'équipe
-      student legal representative: "Représentant légal"
       student:
         one: Élève
         other: Élèves
@@ -405,8 +406,6 @@ fr:
         weekly_planning: Planning hebdomadaire
         same_daily_planning: Horaires quotidiens
         student_refering_teacher_full_name: Professeur référent
-      signature:
-        signatory_role: signataire
 
       internship_offer:
         <<: *internship_occupations_fields
@@ -524,6 +523,23 @@ fr:
           school_manager: Chef d'établissement
           other: Autre
 
+      signature:
+        user: Signataire
+        internship_agreement: Convention signée
+        signed_at: Signé le
+        signatory_role: Rôle du signataire
+        signatory_role:
+          student: Élève
+          student_legal_representative: Représentant légal de l'élève
+          tutor: Tuteur
+          school_manager: Chef d'établissement
+          employer: Employeur
+          other: Autre
+          signatory_ip: IP du signataire
+          signature_date: Date de signature
+          signature_phone_number: Numéro de téléphone du signataire
+          user_id: ID de l'utilisateur
+          student_legal_representative_full_name: Nom complet du représentant légal de l'élève
       user:
         accept_terms: "Conditions d'utilisation"
         anonymized: Anonymisé
@@ -621,7 +637,7 @@ fr:
 
         entreprise:
           attributes: &entreprise_errors
-            entreprise_chosen_full_address: 
+            entreprise_chosen_full_address:
               blank: "Veuillez saisir l'adresse de l'entreprise"
             max_candidates:
               not_a_number: "Veuillez saisir un nombre de candidats par stage"
@@ -766,7 +782,6 @@ fr:
         internship_applications/weekly_framed:
           attributes:
             duplicate: Duplicat internship_address_manual_enter
-        signature:
   student: "Élève"
   student legal representative: "Représentant légal"
   admin:

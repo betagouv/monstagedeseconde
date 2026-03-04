@@ -5,6 +5,8 @@ class InternshipOffersController < ApplicationController
 
   layout "search", only: :index
 
+  before_action :prepare_search_data, only: %i[index search]
+
   with_options only: [:show] do
     before_action :set_internship_offer,
                   :check_internship_offer_is_not_discarded_or_redirect,
@@ -14,18 +16,6 @@ class InternshipOffersController < ApplicationController
   end
 
   def index
-    @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
-    @preselected_weeks_list = @preselected_weeks_list.where(id: params[:week_ids]) if params[:week_ids].present?
-    @sectors = Sector.all.order(:name)
-    params[:grade_id] = Grade.seconde.id if params[:grade_id].blank?
-    @school_weeks_list ||= Week.none
-    @preselected_weeks_list ||= Week.none
-    @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
-    @preselected_weeks_list_array = Presenters::WeekList.new(weeks: @preselected_weeks_list.to_a).detailed_attributes
-    @seconde_week_ids = Week.seconde_weeks.map(&:id)
-    @troisieme_week_ids = Week.troisieme_selectable_weeks.map(&:id)
-    @student_grade_id = current_user&.student? ? current_user.grade_id : nil
-
     respond_to do |format|
       format.html do
         @params = search_query_params.merge(week_ids: params[:week_ids])
@@ -97,6 +87,10 @@ class InternshipOffersController < ApplicationController
     end
   end
 
+  def search
+    @params = search_query_params
+  end
+
   def show
     @previous_internship_offer = finder.next_from(from: @internship_offer)
     @next_internship_offer = finder.previous_from(from: @internship_offer)
@@ -146,6 +140,20 @@ class InternshipOffersController < ApplicationController
   end
 
   private
+
+  def prepare_search_data
+    @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    @preselected_weeks_list = @preselected_weeks_list.where(id: params[:week_ids]) if params[:week_ids].present?
+    @sectors = Sector.all.order(:name)
+    params[:grade_id] = Grade.seconde.id if params[:grade_id].blank?
+    @school_weeks_list ||= Week.none
+    @preselected_weeks_list ||= Week.none
+    @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
+    @preselected_weeks_list_array = Presenters::WeekList.new(weeks: @preselected_weeks_list.to_a).detailed_attributes
+    @seconde_week_ids = Week.seconde_weeks.map(&:id)
+    @troisieme_week_ids = Week.troisieme_selectable_weeks.map(&:id)
+    @student_grade_id = current_user&.student? ? current_user.grade_id : nil
+  end
 
   def set_internship_offer
     @internship_offer = InternshipOffer.find(params[:id])

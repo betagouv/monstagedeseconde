@@ -28,6 +28,15 @@ class RailsAdmin::Config::Fields::Types::Json
     value
   end
 end
+# Fix Devise 5.0+ compatibility: password length validators use Procs
+# which RailsAdmin's String field tries to compare with Integers
+class RailsAdmin::Config::Fields::Base
+  register_instance_option :valid_length do
+    opts = abstract_model.model.validators_on(name).detect { |v| v.kind == :length }.try(&:options) || {}
+    opts.transform_values { |v| v.is_a?(Proc) ? v.call : v }
+  end
+end
+
 %w[kpi.rb switch_user.rb publish.rb].each do |action|
   require Rails.root.join('lib', 'rails_admin', 'config', 'actions', action)
 end

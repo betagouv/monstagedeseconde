@@ -1,10 +1,10 @@
 module Presenters
   class UserManagementRole < User
     TYPE_TRANSLATOR = {
-      'Users::Student': 'Elève',
+      'Users::Student': 'Élève',
       'Users::Employer': 'Offreur',
       'Users::God': 'Administrateur',
-      'Users::Operator': 'Operateur',
+      'Users::Operator': 'Opérateur',
       'Users::PrefectureStatistician': 'Référent départemental',
       'Users::MinistryStatistician': 'Référent central',
       'Users::EducationStatistician': 'Référent éduc. nat.',

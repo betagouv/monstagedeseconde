@@ -15,8 +15,15 @@ require 'pretty_console'
 namespace :retrofit do
   desc 'doubling offer when associated to several grades'
   task doubling_offers: :environment do |task|
+    # Note : the two scopes private_kept_for_doubling and public_kept_for_doubling are here to exclude
+    # offers that cannot be split because of passed records defaults according to new
+    # validation criteria.
+    # These scopes should be withdrawn when all offers of the passed can be validated "as is"
     PrettyConsole.announce_task(task) do
-      InternshipOffer.kept.seconde_and_troisieme.find_each do |offer|
+      InternshipOffer.kept
+                     .seconde_and_troisieme
+                     .merge(InternshipOffer.private_kept_for_doubling.or(InternshipOffer.public_kept_for_doubling))
+                     .find_each do |offer|
         SplitOfferJob.perform_now(internship_offer_id: offer.id)
         print "-"
       end
@@ -27,14 +34,19 @@ namespace :retrofit do
   task doubling_offers_test: :environment do |task|
     PrettyConsole.announce_task(task) do
       counter = 0
-      InternshipOffer.kept.seconde_and_troisieme.find_each do |offer|
+      total_offer_counted = 0
+      InternshipOffer.kept
+                     .seconde_and_troisieme
+                     .merge(InternshipOffer.private_kept_for_doubling.or(InternshipOffer.public_kept_for_doubling))
+                     .find_each do |offer|
+        total_offer_counted += 1
         weeks_seconde = offer.weeks.select { |week| week.number >= 24 && week.number <= 27}
         weeks_troisieme_quatrieme = offer.weeks.to_a - weeks_seconde.to_a
         if weeks_seconde.empty? || weeks_troisieme_quatrieme.empty?
           counter += 1
         end
       end
-      PrettyConsole.say_in_green("Tested #{counter} offers cannot be split")
+      PrettyConsole.say_in_green("Tested #{counter} offers cannot be split out of #{total_offer_counted} offers counted")
     end
   end
 end
