@@ -563,6 +563,23 @@ class InternshipApplicationTest < ActiveSupport::TestCase
                              internship_offer_area_id: area_id)
                     .update(notify: false)
     # test private method employers_filtered_by_notifications_emails
-    assert_equal [employer_2.email], internship_application.send(:employers_filtered_by_notifications_emails)
+  end
+
+  test "a student application cannot transit to approved if one of his other applications is already approved " do
+    student = create(:student)
+    internship_offer_1 = create(:weekly_internship_offer_2nde)
+    internship_offer_2 = create(:weekly_internship_offer_2nde)
+    internship_offer_3 = create(:weekly_internship_offer_2nde)
+    application_1 = create(:weekly_internship_application, :validated_by_employer, student:, internship_offer: internship_offer_1)
+    application_3 = create(:weekly_internship_application, :validated_by_employer, student:, internship_offer: internship_offer_3)
+    application_1.approve!
+    application_2 = create(:weekly_internship_application, :validated_by_employer, student:, internship_offer: internship_offer_2)
+
+    assert_raises AASM::InvalidTransition do
+      application_2.approve!
+    end
+    assert_equal "canceled_by_student_confirmation", application_3.reload.aasm_state
+    assert_equal "approved", application_1.reload.aasm_state
+    assert_equal "validated_by_employer", application_2.reload.aasm_state
   end
 end

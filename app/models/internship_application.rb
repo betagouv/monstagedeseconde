@@ -278,6 +278,7 @@ class InternshipApplication < ApplicationRecord
     event :approve do
       transitions from: %i[validated_by_employer],
                   to: :approved,
+                  guard: :no_other_approved_application?,
                   after: proc { |user, *_args|
                     update!("approved_at": Time.now.utc)
                     unless skip_callback_with_review_rebuild
@@ -737,5 +738,9 @@ class InternshipApplication < ApplicationRecord
                     .where(user_id: employer.id)
                     .where(internship_offer_area_id: internship_offer.internship_offer_area.id)
                     .exists?
+  end
+
+  def no_other_approved_application?
+    student.internship_applications.approved.empty?
   end
 end
