@@ -21,11 +21,24 @@ default: &default
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
+sqlite: &sqlite
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
 development:
-  <<: *default
-  database: monstage
-  read_timeout: 1
-  write_timeout: 1
+  primary:
+    <<: *default
+    host: localhost
+    username: postgres
+    database: monstage
+    read_timeout: 1
+    write_timeout: 1
+  cache:
+    <<: *sqlite
+    database: solid/cache_dev.sqlite3
+    migrations_paths: db/cache_migrate
+
   # url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI') { ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI', '') }.sub(/^postgres(ql)?/, "postgis") %>
 
   # The specified database role being used to connect to postgres.
@@ -60,6 +73,8 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
+  host: localhost
+  username: postgres
   database: monstage_test
 
 review:

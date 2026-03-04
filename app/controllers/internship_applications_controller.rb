@@ -163,34 +163,34 @@ class InternshipApplicationsController < ApplicationController
   end
 
   def transfer_params
-    params.require(:application_transfer)
-          .permit(:comment,
-                  :destinations,
-                  :destination,
-                  :destinataires)
+    params.expect(application_transfer: [
+      :comment,
+      :destinations,
+      :destination,
+      :destinataires
+    ])
   end
 
   def create_internship_application_params
-    params.require(:internship_application)
-          .permit(
-            :type,
-            :internship_offer_id,
-            :internship_offer_type,
-            :motivation,
-            :student_phone,
-            :student_email,
-            :student_address,
-            :student_legal_representative_full_name,
-            :student_legal_representative_email,
-            :student_legal_representative_phone,
-            week_ids: [],
-            student_attributes: %i[
-              email
-              phone
-              resume_other
-              resume_languages
-            ]
-          )
+    params.expect(internship_application: [
+      :type,
+      :internship_offer_id,
+      :internship_offer_type,
+      :motivation,
+      :student_phone,
+      :student_email,
+      :student_address,
+      :student_legal_representative_full_name,
+      :student_legal_representative_email,
+      :student_legal_representative_phone,
+      week_ids: [],
+      student_attributes: %i[
+        email
+        phone
+        resume_other
+        resume_languages
+      ]
+   ])
   end
 
   def persist_login_param

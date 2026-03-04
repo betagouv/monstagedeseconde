@@ -127,10 +127,12 @@ module Teamable
     end
 
     def internship_offer_ids_by_area(area_id:)
-      InternshipOffer.kept
-                     .where(employer_id: team_members_ids)
-                     .where(internship_offer_area_id: area_id || fetch_current_area_id)
-                     .pluck(:id)
+      Rails.cache.fetch("offer_ids_by_area_#{area_id}-#{team_member_ids.join('-')}", expires_in: 12.hours) do
+        InternshipOffer.kept
+                      .where(employer_id: team_members_ids)
+                      .where(internship_offer_area_id: area_id || fetch_current_area_id)
+                      .pluck(:id)
+      end
     end
 
     def internship_applications_by_area(area_id:)

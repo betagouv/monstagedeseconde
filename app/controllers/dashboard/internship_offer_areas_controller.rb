@@ -208,7 +208,7 @@ module Dashboard
     end
 
     def internship_offer_area_params
-      params.require(:internship_offer_area).permit(:area_id, :name)
+      params.expect(internship_offer_area: [:area_id, :name])
     end
 
     def set_internship_offer_area
