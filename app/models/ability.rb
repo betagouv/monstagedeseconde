@@ -88,12 +88,7 @@ class Ability
     can :apply, InternshipOffer do |internship_offer|
       ## can apply if ##
       # - user has the right grade
-      # - user has no approved internship application on any offer
-      # - user has not already applied to the same offer or if he did, its status is now
-      #   rejected_by_student_confirmation and corresponding application
-      #   history lists states as one of these:
-      #   - validated_by_employer or
-      #   - approved
+      # - user has not already applied to the same offer
       # - user has not already approved applications for the same offer's weeks
       # - offer is not reserved to an other school
       # - offer is published
@@ -102,19 +97,12 @@ class Ability
       # - offer is not an api offer (only for weekly offers and mu)
 
       internship_offer.grades.include?(user.grade) &&
-        !user.internship_applications.exists?(aasm_state: "approved") &&
-        (!user.internship_applications.exists?(internship_offer_id: internship_offer.id) ||
-         existing_application(internship_offer, user)&.canceled_with_passed_approved_application?) && # user has not already applied
+        !user.internship_applications.exists?(internship_offer_id: internship_offer.id) && # user has not already applied
         user.other_approved_applications_compatible?(internship_offer:) &&
         internship_offer.published? &&
-        !internship_offer.from_api? &&
         (!internship_offer.reserved_to_schools? || user.school_id.in?(internship_offer.schools.pluck(:id))) &&
         (!internship_offer.rep  || user.school.rep_or_rep_plus?) &&
         (!internship_offer.qpv || user.school.qpv?)
-    end
-
-    def existing_application(internship_offer, user)
-      user.internship_applications.find_by(internship_offer_id: internship_offer.id)
     end
 
     can %i[submit_internship_application update show internship_application_edit],

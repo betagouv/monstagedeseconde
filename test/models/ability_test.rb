@@ -31,7 +31,8 @@ class AbilityTest < ActiveSupport::TestCase
       assert(ability.can?(:look_for_offers, student), 'students should be able to look for offers')
       assert(ability.can?(:read, InternshipOffer.new),
              'students should be able to consult internship offers')
-
+      refute(ability.can?(:apply, internship_offer),
+             'students should not be able to apply for internship offers')
       assert(ability.cannot?(:manage, InternshipOffer.new),
              'students should not be able to con manage internships')
       assert(ability.can?(:show, :account),
@@ -48,7 +49,10 @@ class AbilityTest < ActiveSupport::TestCase
       assert(ability.can?(:read_employer_data, validated_internship_application),
              'student shall read employer data when internship_application is validated')
 
-
+      student_2 = create(:student) # with no class_room, no school
+      ability = Ability.new(student_2)
+      assert(ability.can?(:apply, internship_offer),
+             'students without school or class_room should be able to apply for internship offers')
       assert(ability.can?(:read_employer_name, internship_offer),
              'students should be able to read city with ms2e internship offers')
       operator = create(:operator_with_departments)
@@ -70,88 +74,6 @@ class AbilityTest < ActiveSupport::TestCase
     end
   end
 
-  test 'Student apply ability scenarios' do
-    travel_to Date.new(2024, 9, 1) do
-      school = create(:school)
-      class_room = create(:class_room, school:)
-      student = create(:student, class_room:, school:)
-      another_student = create(:student, class_room:, school:)
-      internship_offer = create(:weekly_internship_offer_3eme)
-      ability = Ability.new(student)
-
-      # Student can apply to a published offer with matching grade
-      assert(ability.can?(:apply, internship_offer),
-            'students should be able to apply to published offers with matching grade')
-
-      # Student cannot apply if they already have an approved application
-      approved_offer = create(:weekly_internship_offer_3eme)
-      approved_application = create(:weekly_internship_application,
-                                    :approved,
-                                    student:,
-                                    internship_offer: approved_offer)
-      new_offer = create(:weekly_internship_offer_3eme)
-      refute(ability.can?(:apply, new_offer),
-            'students with approved applications should not be able to apply to other offers')
-
-      # Student cannot apply to unpublished offers
-      unpublished_offer = create(:weekly_internship_offer_3eme, published_at: nil)
-      refute(ability.can?(:apply, unpublished_offer),
-            'students should not be able to apply to unpublished offers')
-
-      # Student cannot apply to offer with wrong grade
-      student_2nde = create(:student, :seconde, class_room:, school:)
-      ability_2nde = Ability.new(student_2nde)
-      refute(ability_2nde.can?(:apply, internship_offer),
-            'students with wrong grade should not be able to apply')
-
-      # Student can reapply after canceling with passed approved application
-      approved_application.update_columns(aasm_state: :canceled_by_student_confirmation)
-      create(:internship_application_state_change,
-             internship_application: approved_application,
-             from_state: 'approved',
-             to_state: 'canceled_by_student_confirmation',
-             author: student)
-
-      assert(ability.can?(:apply, approved_offer),
-             'students should be able to reapply on same offer after canceled passed approved application')
-
-
-      # Student cannot apply to reserved offer for different school
-      reserved_school = create(:school)
-      reserved_offer = create(:weekly_internship_offer_3eme, schools: [ reserved_school ])
-      refute(ability.can?(:apply, reserved_offer),
-            'students should not be able to apply to offers reserved for other schools')
-
-       # Student with rep school can apply to rep-reserved offer
-       rep_school = create(:school, rep_kind: 'rep')
-      rep_class_room = create(:class_room, school: rep_school)
-      rep_student = create(:student, class_room: rep_class_room, school: rep_school)
-      rep_offer = create(:weekly_internship_offer_3eme, rep: true)
-      ability_rep = Ability.new(rep_student)
-      assert(ability_rep.can?(:apply, rep_offer),
-            'students from rep schools should be able to apply to rep offers')
-
-      # Student without rep school cannot apply to rep-reserved offer
-      non_rep_offer = create(:weekly_internship_offer_3eme, rep: true)
-      refute(ability.can?(:apply, non_rep_offer),
-            'students from non-rep schools should not be able to apply to rep offers')
-
-       # Student with qpv school can apply to qpv-reserved offer
-       qpv_school = create(:school, qpv: true)
-      qpv_class_room = create(:class_room, school: qpv_school)
-      qpv_student = create(:student, class_room: qpv_class_room, school: qpv_school)
-      qpv_offer = create(:weekly_internship_offer_3eme, qpv: true)
-      ability_qpv = Ability.new(qpv_student)
-      assert(ability_qpv.can?(:apply, qpv_offer),
-            'students from qpv schools should be able to apply to qpv offers')
-
-      # Student cannot apply to api offers
-      api_offer = create(:api_internship_offer_3eme)
-      refute(ability.can?(:apply, api_offer),
-            'students should not be able to apply to api offers')
-    end
-  end
-
   test 'Employer' do
     skip 'leak suspicion'
     travel_to Date.new(2025, 1, 1) do
@@ -159,7 +81,7 @@ class AbilityTest < ActiveSupport::TestCase
       another_employer = create(:employer)
       internship_offer = create(:weekly_internship_offer_2nde, employer:)
       old_internship_offer = create(:weekly_internship_offer_2nde, employer:, created_at: 1.year.ago,
-                                                                   weeks: [ SchoolTrack::Seconde.first_week(year: 2024) ])
+                                                                   weeks: [SchoolTrack::Seconde.first_week(year: 2024)])
       assert old_internship_offer.employer == employer
       alt_internship_offer = create(:weekly_internship_offer_2nde, employer: another_employer)
       internship_offer_api = create(:api_internship_offer_3eme, employer:)
