@@ -295,7 +295,7 @@ def populate_internship_offers
     school_year: 2024,
     sector: Sector.first,
     is_public: false,
-    title: "API - (2et3) Découverte des métiers administratifs de l'Education nationale",
+    title: "API - (4et3) Découverte des métiers administratifs de l'Education nationale",
     description: "La Direction des Services de l'Education Nationale de Seine-et-Marne (DSDEN) se compose de plusieurs services répartis sur 11 étages. Ses 240 agents  ...",
     employer_description: "Le centre de service IBM de Lille délivre des services d'infrastructure informatique.",
     street: '128 rue brancion',
@@ -307,7 +307,7 @@ def populate_internship_offers
     employer_name: 'Ministère de l\'Education Nationale',
     internship_offer_area_id: area_id,
     weeks: all_weeks,
-    grades: Grade.all,
+    grades: Grade.college,
     entreprise_full_address: '128 rue brancion, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi",
     weekly_hours: ["09:00", "17:00"]
@@ -493,7 +493,7 @@ def populate_internship_offers
     siret:,
     sector: Sector.first,
     is_public: false,
-    title: "API - (2et3) 2024 : Découverte des métiers administratifs de l'Education nationale ",
+    title: "API - (4et3) 2024 : Découverte des métiers administratifs de l'Education nationale ",
     description: "La Direction des Services de l'Education Nationale de Seine-et-Marne (DSDEN) se compose de plusieurs services répartis sur 11 étages. Ses 240 agents  ...",
     employer_description: "Le centre de service IBM de Lille délivre des services d'infrastructure informatique.",
     street: '128 rue brancion',
@@ -507,8 +507,8 @@ def populate_internship_offers
     school_year: 2024,
     period: 1,
     weeks: weeks,
+    grades: Grade.college,
     lunch_break: "L'élève doit prévoir son repas de midi",
-    grades: Grade.all,
     daily_hours: { "lundi": ["8:30","17:00"], "mardi": ["8:30","17:00"], "mercredi": ["8:30","17:00"], "jeudi": ["8:30","17:00"], "vendredi": ["8:30","17:00"]}
   )
 end
