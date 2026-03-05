@@ -381,9 +381,9 @@ module Api
                 }
               )
             end
-            assert_response :bad_request
-            assert_equal 'VALIDATION_ERROR', json_code
-            assert_equal [ 'Une offre ne peut pas être à la fois destinée à des collèges et aux lycées' ], json_error['grades']
+            assert_response :unprocessable_entity
+            assert_equal 'WRONG_PARAMS', json_code
+            assert_equal 'Grades must be either college or lycee, not both', json_error
           end
         end
       end

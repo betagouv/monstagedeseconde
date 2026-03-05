@@ -12,13 +12,14 @@ module InternshipOffers
       end
     end
 
-    validates :remote_id, presence: true
+    validates :remote_id,
+              :coordinates,
+              presence: true
     validates :zipcode, zipcode: { country_code: :fr }
     validates :remote_id, uniqueness: { scope: :employer_id }
     validates :permalink, presence: true,
                           format: { without: /.*(test|staging).*/i, message: 'Le lien ne doit pas renvoyer vers un environnement de test.' }
     validates :employer_description, presence: true, length: { maximum: EMPLOYER_DESCRIPTION_MAX_SIZE }
-    validates :coordinates, presence: true
 
     validate :college_xor_lycee
 
@@ -66,9 +67,9 @@ module InternshipOffers
 
     def period
       case weeks
-      when [SchoolTrack::Seconde.first_week]
+      when [ SchoolTrack::Seconde.first_week ]
         1
-      when [SchoolTrack::Seconde.second_week]
+      when [ SchoolTrack::Seconde.second_week ]
         2
       else
         0
@@ -99,14 +100,12 @@ module InternshipOffers
                  max_candidates
                  published_at
                  is_public],
-        methods: [:formatted_coordinates]
+        methods: [ :formatted_coordinates ]
       )).merge(
         weeks: formatted_weeks,
         grades: formatted_grades
       )
     end
-
-    private
 
     def college_xor_lycee
       college_grades_exist = grades.ids.any? { |id| Grade.college.ids.include?(id) }
