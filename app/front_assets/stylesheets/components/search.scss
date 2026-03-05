@@ -185,3 +185,13 @@ a.leaflet-control-zoom-out {
     height: 110px;
   }
 }
+
+.search-submit-btn {
+  width: 100%;
+}
+
+@include media-breakpoint-up(md) {
+  .search-submit-btn {
+    width: auto;
+  }
+}

@@ -9,6 +9,9 @@ ruby File.read(".ruby-version").strip
 gem "actionpack", ">= 6.1.3.2"
 gem "puma"
 gem "rails", "~> 7.2"
+# temporary - default gems extracted in Ruby 3.4+
+gem "ostruct"
+gem "abbrev"
 gem "mutex_m"
 # db
 gem "pg"
@@ -29,7 +32,6 @@ gem "caxlsx_rails"
 gem "dsfr-view-components"
 gem "inline_svg"
 gem "react_on_rails", "14.2.1"
-gem "connection_pool", "< 3.0"
 gem "slim-rails"
 gem "split", require: "split/dashboard"
 gem "uglifier"
@@ -42,12 +44,13 @@ gem "prawn-table"
 
 # background jobs
 gem "sidekiq", "< 8"
+gem "connection_pool" , "< 3.0"
 # Use Redis for Action Cable
 gem "aws-sdk-s3", require: false
 gem "redis", "~> 4.0"
 
 # admin
-gem "rails_admin", "~> 3.0"
+gem "rails_admin"
 gem "rails_admin_aasm"
 gem "rails_admin-i18n"
 
@@ -94,15 +97,14 @@ gem "active_storage_validations"
 gem "image_processing", "~> 1.2"
 gem "mini_magick"
 
-# temporary - default gems extracted in Ruby 3.4+
-gem "fiddle"
-gem "ostruct"
+
 
 group :development, :test do
   gem "debug"
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: %i[windows jruby]
   gem "pry-byebug"
+  gem "ruby-lsp"
 end
 
 group :development do
@@ -114,9 +116,10 @@ group :development do
   # Spring speeds up development by keeping your application running in the
   # background. Read more: https://github.com/rails/spring
   gem "activerecord-explain-analyze"
-  gem "ffi-rzmq"
-  gem "jupyter_on_rails"
-  gem "letter_opener_web"
+  # gem "ffi-rzmq"
+  # gem "jupyter_on_rails"
+  gem "letter_thief"
+  gem "launchy"
   gem "spring", "3.0.0"
 end
 

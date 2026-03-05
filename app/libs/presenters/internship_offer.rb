@@ -3,6 +3,12 @@ include ActionView::Context
 module Presenters
   class InternshipOffer
     delegate :siret, to: :internship_offer
+    delegate :grades, to: :internship_offer
+    BADGE_MAPPING= {
+      seconde: {label: '2de', klass: 'fr-badge--info'},
+      troisieme: {label: '3ème', klass: 'fr-badge--green-menthe'},
+      quatrieme: {label: '4ème', klass: 'fr-badge--warning'}
+    }
     def weeks_boundaries
       "Du #{first_monday} au #{last_friday}"
     end
@@ -62,6 +68,28 @@ module Presenters
       siret.gsub(/(\d{3})(\d{3})(\d{3})(\d{5})/, '\1 \2 \3 \4')
     end
 
+    def title_badge
+      return '' unless internship_offer.has_sibling_offer?
+
+      last_grade = internship_offer.grades.sort_by(&:short_name).last
+      return '' unless last_grade
+
+      grade_badge = BADGE_MAPPING[last_grade.short_name.to_sym][:label]
+      return '' unless grade_badge
+
+      content_tag(:span,
+                  grade_badge,
+                  class: "fr-badge fr-badge--no-icon fr-badge--sm #{BADGE_MAPPING[last_grade.short_name.to_sym][:klass]} fr-mr-1w")
+    end
+
+    # reference
+    # content_tag(
+    #       :p,
+    #       error_message,
+    #       id: "p#text-#{field}-input-error-desc-error",
+    #       class: 'fr-error-text fr-mb-3w'
+    #     )
+
     # not used
     #  def weeks_description
     #   dates = "du #{first_monday} au #{last_friday}"
@@ -78,12 +106,13 @@ module Presenters
       "#{count} #{'semaine'.pluralize(count)} #{'disponible'.pluralize(count)}"
     end
 
-    private
-
     attr_reader :internship_offer
 
     def initialize(internship_offer)
       @internship_offer = internship_offer
     end
+
+    private
+
   end
 end

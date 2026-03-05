@@ -9,7 +9,7 @@ module Builders
       multi_coordinator = multi_planning.multi_coordinator
       multi_activity = multi_coordinator.multi_activity
       multi_corporation = multi_coordinator.multi_corporation
-      
+
       # Use coordinates from first corporation
       first_corporation = multi_corporation.corporations.first
       coordinates = first_corporation&.internship_coordinates || RGeo::Geographic.spherical_factory(srid: 4326).point(0, 0)
@@ -46,17 +46,20 @@ module Builders
         first_date: multi_planning.weeks.min_by(&:beginning_of_week)&.beginning_of_week,
         last_date: multi_planning.weeks.max_by(&:beginning_of_week)&.end_of_week
       }
-      
+
       internship_offer = InternshipOffers::Multi.new(internship_attributes)
       internship_offer.save!
+      if %w[seconde troisieme].all? { |grade| internship_offer.grades.map(&:short_name).include?(grade) }
+        internship_offer.split_offer
+      end
 
       callback.on_success.try(:call, internship_offer)
     rescue ActiveRecord::RecordInvalid => e
       callback.on_failure.try(:call, e.record)
     end
-    
+
     private
-    
+
     attr_reader :callback, :user, :ability, :context
 
     def initialize(user:, context:)

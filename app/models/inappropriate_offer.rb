@@ -7,7 +7,7 @@ class InappropriateOffer < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :moderator, class_name: 'User', optional: true
 
-  validates :details, :ground, presence: true
+  validates :details, presence: true
   validates :details, length: { minimum: MIN_DETAILS_LENGTH, maximum: MAX_DETAILS_LENGTH }
   
   validates :moderation_action, 

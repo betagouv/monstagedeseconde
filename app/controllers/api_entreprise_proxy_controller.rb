@@ -4,7 +4,7 @@
 # not the neciest solution, but safest
 class ApiEntrepriseProxyController < ApplicationController
   include Siretable
-  
+
   def search
     return render json: { error: 'missing name param' }, status: 400 unless params[:name]
 
@@ -14,7 +14,9 @@ class ApiEntrepriseProxyController < ApplicationController
 
   def clean_response(body)
     etablissements = []
-    if JSON.parse(body)['results']
+    return { etablissements: etablissements } unless body
+
+    if JSON.parse(body).present? && JSON.parse(body)['results']
       JSON.parse(body)['results'].each do |etablissement|
         siege = etablissement['siege']
         etablissements << {
@@ -36,5 +38,8 @@ class ApiEntrepriseProxyController < ApplicationController
       end
     end
     { etablissements: etablissements }
+  rescue JSON::ParserError
+    Rails.logger.error "Failed to parse API response: #{body} in ApiEntrepriseProxyController#search"
+    { etablissements: [] }
   end
 end
