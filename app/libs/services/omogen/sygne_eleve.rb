@@ -28,7 +28,11 @@ module Services::Omogen
                 :date_deb_sco, :adhesion_transport, :grade, :school, :responsible
 
     def make_student
-      return if Users::Student.find_by(ine: ine)
+      existing_student = Users::Student.find_by(ine: ine)
+      if existing_student
+        existing_student.update(class_room_id: class_room.id)
+        return true
+      end
 
       scrambled_ine = Digest::SHA1.hexdigest(ine)
       student = ::Users::Student.new(

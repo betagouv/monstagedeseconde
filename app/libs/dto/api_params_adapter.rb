@@ -58,11 +58,10 @@ module Dto
     end
 
     def check_grades
-      params[:grades] = if params[:grades]
-                          params[:grades].map { |grade| Grade.find_by(short_name: grade) }
-                        else
-                          [Grade.seconde] # api v1 default grade
-                        end
+      if params[:grades]
+        params[:grades] = params[:grades].map { |grade| Grade.find_by(short_name: grade) }.compact
+      end
+      params[:grades] = [Grade.seconde] if params[:grades].blank? # api v1 default grade
       params
     end
   end
