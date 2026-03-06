@@ -9,9 +9,10 @@ ruby File.read('.ruby-version').strip
 gem 'actionpack', '>= 6.1.3.2'
 gem 'puma'
 gem 'rails', '~> 8.1'
-gem 'sprockets-rails'
 gem 'solid_cache'
 gem 'solid_queue'
+gem 'sprockets-rails'
+gem 'solid_cable'
 gem 'mission_control-jobs'
 gem 'sqlite3', '~> 2.9'
 # temporary - default gems extracted in Ruby 3.4+

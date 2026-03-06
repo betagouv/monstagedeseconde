@@ -18,12 +18,12 @@ default: &default
   adapter: postgis
   encoding: unicode
   # For details on connection pooling, see Rails configuration guide
-  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  # http://guides.rubyonrails.org/configuring.html#database-poolingc
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 sqlite: &sqlite
   adapter: sqlite3
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5} %>
   timeout: 5000
 
 development:
@@ -48,6 +48,7 @@ development:
     migrations_paths: db/queue_migrate
     schema_format: ruby
     schema_dump: queue_schema.rb
+    pool: 7
 
   # url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI') { ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI', '') }.sub(/^postgres(ql)?/, "postgis") %>
 
