@@ -34,10 +34,20 @@ development:
     database: monstage
     read_timeout: 1
     write_timeout: 1
+  cable:
+    <<: *sqlite
+    database: solid/cable_dev.sqlite3
+    migrations_paths: cable_migrate
   cache:
     <<: *sqlite
     database: solid/cache_dev.sqlite3
     migrations_paths: db/cache_migrate
+  queue:
+    <<: *sqlite
+    database: solid/queue_dev.sqlite3
+    migrations_paths: db/queue_migrate
+    schema_format: ruby
+    schema_dump: queue_schema.rb
 
   # url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI') { ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI', '') }.sub(/^postgres(ql)?/, "postgis") %>
 

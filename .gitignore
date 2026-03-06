@@ -25,6 +25,8 @@
 # Ignore uploaded files in development
 /storage/*
 !/storage/.keep
+# solid bases with sqlite3 db for development
+/solid/*
 
 /node_modules
 /yarn-error.log

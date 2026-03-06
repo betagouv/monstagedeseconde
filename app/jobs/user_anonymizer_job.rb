@@ -1,4 +1,5 @@
-class UserAnonymizerJob < ActiveJob::Base
+class UserAnonymizerJob < ApplicationJob
+  self.queue_adapter = :solid_queue
   queue_as :default
 
   def perform(user_id:)

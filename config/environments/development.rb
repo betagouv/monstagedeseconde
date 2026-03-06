@@ -67,6 +67,9 @@ Rails.application.configure do
   config.active_record.verbose_query_logs = true
 
   # Highlight code that enqueued background job in logs.
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
+  config.solid_queue.logger = ActiveSupport::Logger.new(STDOUT)
   config.active_job.verbose_enqueue_logs = true
 
   # Raises error for missing translations.
@@ -84,7 +87,7 @@ Rails.application.configure do
 
   config.action_cable.mount_path = '/action_cable'
   config.action_cable.url = "wss://#{host_uri.host}"
-  config.action_cable.allowed_request_origins = [host_uri.to_s]
+  config.action_cable.allowed_request_origins = [ host_uri.to_s ]
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true

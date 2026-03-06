@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
 class SolidCache::InstallGenerator < Rails::Generators::Base
-  source_root File.join(Gem.loaded_specs.fetch("solid_cache").full_gem_path, "lib/generators/solid_cache/install/templates")
+  source_root File.join(Gem.loaded_specs.fetch('solid_cache').full_gem_path, 'lib/generators/solid_cache/install/templates')
 
   def copy_files
-    template "config/cache.yml"
+    template 'config/cache.yml'
 
     if Rails.application.config.active_record.schema_format == :sql
       copy_sql_schema_for_adapter
     else
-      template "db/cache_schema.rb"
+      template 'db/cache_schema.rb'
     end
   end
 
   def configure_cache_store_adapter
-    gsub_file Pathname.new(destination_root).join("config/environments/production.rb"),
-      /(# )?config\.cache_store = (:.*)/, "config.cache_store = :solid_cache_store"
+    gsub_file Pathname.new(destination_root).join('config/environments/production.rb'),
+      /(# )?config\.cache_store = (:.*)/, 'config.cache_store = :solid_cache_store'
   end
 
   private
@@ -23,7 +23,7 @@ class SolidCache::InstallGenerator < Rails::Generators::Base
       sql_file = sql_schema_file_for_adapter
 
       if sql_file
-        copy_file sql_file, "db/cache_structure.sql"
+        copy_file sql_file, 'db/cache_structure.sql'
       else
         raise_unsupported_adapter_error
       end
@@ -31,12 +31,12 @@ class SolidCache::InstallGenerator < Rails::Generators::Base
 
     def sql_schema_file_for_adapter
       case current_adapter
-      when "postgresql", "postgis"
-        "db/cache_structure.postgresql.sql"
-      when "mysql2", "trilogy"
-        "db/cache_structure.mysql.sql"
-      when "sqlite3"
-        "db/cache_structure.sqlite3.sql"
+      when 'postgresql', 'postgis'
+        'db/cache_structure.postgresql.sql'
+      when 'mysql2', 'trilogy'
+        'db/cache_structure.mysql.sql'
+      when 'sqlite3'
+        'db/cache_structure.sqlite3.sql'
       else
         nil
       end

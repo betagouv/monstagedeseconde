@@ -1,4 +1,5 @@
 web: bundle exec puma -C config/puma.rb -p 3000 -e development
 webpack: bundle exec bin/webpack-dev-server
 sidekiq: bundle exec sidekiq -c 2
+jobs: bin/jobs
 logs: tail -f log/development.log
