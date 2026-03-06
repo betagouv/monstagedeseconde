@@ -59,7 +59,7 @@ class InternshipOfferTest < ActiveSupport::TestCase
     internship_offer.update_columns(zipcode: 'xy752')
 
     refute internship_offer.valid?
-    assert_equal ['Code postal le code postal ne permet pas de déduire le département'],
+    assert_equal [ 'Code postal le code postal ne permet pas de déduire le département' ],
                  internship_offer.errors.full_messages
   end
 
@@ -105,14 +105,14 @@ class InternshipOfferTest < ActiveSupport::TestCase
       internship_offer = create(:weekly_internship_offer_3eme)
       internship_offer.save
       assert_equal 'troisieme_or_quatrieme', internship_offer.targeted_grades
-      internship_offer.grades << [Grade.seconde, Grade.quatrieme]
+      internship_offer.grades << [ Grade.seconde, Grade.quatrieme ]
       internship_offer.save
       assert_equal 'seconde_troisieme_or_quatrieme', internship_offer.targeted_grades
 
       internship_offer = create(:weekly_internship_offer_3eme)
       internship_offer.save
       assert_equal 'troisieme_or_quatrieme', internship_offer.targeted_grades
-      internship_offer.grades << [Grade.seconde]
+      internship_offer.grades << [ Grade.seconde ]
       internship_offer.save
       assert_equal 'seconde_troisieme_or_quatrieme', internship_offer.targeted_grades
     end
@@ -168,7 +168,7 @@ class InternshipOfferTest < ActiveSupport::TestCase
   # end
 
   test 'scope ignore_internship_restricted_to_other_schools' do
-    school1 = create(:school) #school that will be reserved
+    school1 = create(:school) # school that will be reserved
     school2 = create(:school)
     school3 = create(:school)
     school4 = create(:school)
@@ -215,12 +215,20 @@ class InternshipOfferTest < ActiveSupport::TestCase
   end
 
   test 'scope seconde_and_troisieme' do
-    create(:weekly_internship_offer_2nde)
-    assert_equal 0, InternshipOffer.seconde_and_troisieme.ids.count
-    create(:weekly_internship_offer_2nde, grades: [Grade.seconde, Grade.troisieme, Grade.quatrieme])
-    assert_equal 1, InternshipOffer.seconde_and_troisieme.ids.count
-    create(:weekly_internship_offer_2nde, grades: [Grade.troisieme, Grade.quatrieme])
-    assert_equal 1, InternshipOffer.seconde_and_troisieme.ids.count
+    seconde_only_offer = create(:weekly_internship_offer_2nde)
+    seconde_troisieme_offer = create(:weekly_internship_offer_2nde,
+                                     grades: [ Grade.seconde, Grade.troisieme ])
+    seconde_quatrieme_offer = create(:weekly_internship_offer_2nde,
+                                     grades: [ Grade.seconde, Grade.quatrieme ])
+    troisieme_quatrieme_offer = create(:weekly_internship_offer_2nde,
+                                       grades: [ Grade.troisieme, Grade.quatrieme ])
+
+    result_ids = InternshipOffer.seconde_and_troisieme.ids
+
+    assert_includes result_ids, seconde_troisieme_offer.id
+    assert_includes result_ids, seconde_quatrieme_offer.id
+    refute_includes result_ids, seconde_only_offer.id
+    refute_includes result_ids, troisieme_quatrieme_offer.id
   end
 
   # Tests de cohérence is_public / sector / group_id

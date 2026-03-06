@@ -25,7 +25,7 @@ namespace :retrofit do
                      .merge(InternshipOffer.private_kept_for_doubling.or(InternshipOffer.public_kept_for_doubling))
                      .find_each do |offer|
         SplitOfferJob.perform_now(internship_offer_id: offer.id)
-        print "-"
+        print '-'
       end
     end
   end
@@ -40,7 +40,7 @@ namespace :retrofit do
                      .merge(InternshipOffer.private_kept_for_doubling.or(InternshipOffer.public_kept_for_doubling))
                      .find_each do |offer|
         total_offer_counted += 1
-        weeks_seconde = offer.weeks.select { |week| week.number >= 24 && week.number <= 27}
+        weeks_seconde = offer.weeks.select { |week| week.number >= 24 && week.number <= 27 }
         weeks_troisieme_quatrieme = offer.weeks.to_a - weeks_seconde.to_a
         if weeks_seconde.empty? || weeks_troisieme_quatrieme.empty?
           counter += 1
