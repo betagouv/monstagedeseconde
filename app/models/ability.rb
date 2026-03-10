@@ -448,7 +448,8 @@ class Ability
             see_dashboard_administrations_summary
             see_dashboard_department_summary
             export_reporting_dashboard_data
-            see_dashboard_associations_summary ], User
+            see_dashboard_associations_summary
+            manage_boarding_houses ], User
   end
 
   def academy_region_statistician_abilities(user:)
