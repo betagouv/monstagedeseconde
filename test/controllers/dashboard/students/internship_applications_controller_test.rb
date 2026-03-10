@@ -188,6 +188,30 @@ module Dashboard
         end
       end
 
+      test 'GET internship_applications#index displays all conventions when student has multiple approved applications' do
+        student = create(:student)
+        # Create two approved applications (each creates an agreement via factory)
+        internship_application_1 = create(:weekly_internship_application, :approved, student:)
+        internship_application_2 = create(:weekly_internship_application, :approved, student:)
+
+        # Move both agreements to a signable state
+        agreement_1 = internship_application_1.internship_agreement
+        agreement_2 = internship_application_2.internship_agreement
+        agreement_1.update_columns(aasm_state: 'validated')
+        agreement_2.update_columns(aasm_state: 'signatures_started')
+
+        sign_in(student)
+        get dashboard_students_internship_applications_path(student)
+        assert_response :success
+
+        # Both conventions should be rendered
+        assert_select '#internship-agreement-panel' do
+          assert_select '.internship-offer-title', count: 2
+          assert_select '.internship-offer-title', text: internship_application_1.internship_offer.title
+          assert_select '.internship-offer-title', text: internship_application_2.internship_offer.title
+        end
+      end
+
       test 'student cannot validate his own application' do
         internship_application = create(:weekly_internship_application, :submitted, student: create(:student))
         sign_in(internship_application.student)
