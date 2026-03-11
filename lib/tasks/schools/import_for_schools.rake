@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 require 'pretty_console.rb'
 namespace :schools do
   desc 'Import new cité éducative'
-  task :import_cites_educatives => :environment do
+  task import_cites_educatives: :environment do
     CSV.foreach(Rails.root.join('cites_educatives.csv'), headers: { col_sep: ';' }).each do |row|
       name = row[0]
       street = row[1]
@@ -20,29 +21,29 @@ namespace :schools do
           zipcode: zipcode,
           city: city,
           code_uai: row[4],
-          coordinates: {latitude: coordinates[0], longitude: coordinates[1]}
+          coordinates: { latitude: coordinates[0], longitude: coordinates[1] }
         )
 
         puts "OK #{school.id} - #{school.name}"
       else
-        p "ERROR : " + address
+        p 'ERROR : ' + address
       end
     end
   end
 
   desc 'Fix missing school street in production data'
-  task :fix_missing_school_street => :environment do
-    def after_search(places: , school: , search_method:'file')
+  task fix_missing_school_street: :environment do
+    def after_search(places:, school:, search_method: 'file')
       counter_ok = 1
-      street = ""
+      street = ''
       if places.empty? || "#{places&.first&.address["house_number"]} #{places.first.address["road"]}".blank?
         if places&.first&.address&.present?
-          street = places.first.address.split(",")[1].strip
+          street = places.first.address.split(',')[1].strip
           puts ''
-          PrettyConsole.puts_in_green( "hope it's ok : #{street} for school ##{school.id} - #{school.code_uai} - #{school.name}")
+          PrettyConsole.puts_in_green("hope it's ok : #{street} for school ##{school.id} - #{school.code_uai} - #{school.name}")
         else
           counter_ok = 0
-          puts''
+          puts ''
           PrettyConsole.puts_in_purple("KO | #{search_method} : #{school.code_uai} : #{school.name} | #{school.city} - #{school.zipcode}")
         end
       else
@@ -97,7 +98,7 @@ namespace :schools do
           print 'o'
           latitude  = listed_schools[school.code_uai][:coordinates][:latitude]
           longitude = listed_schools[school.code_uai][:coordinates][:longitude]
-          print "x" && next unless latitude.to_f.is_a?(Float) && longitude.to_f.is_a?(Float)
+          print 'x' && next unless latitude.to_f.is_a?(Float) && longitude.to_f.is_a?(Float)
           places = Geocoder.search("#{latitude}, #{longitude}")
           search_result = after_search(places: places, school: school, search_method: 'search by coordinates in file failed ')
           search_street_by_name_school = search_result[:counter_ok].zero? ? school : ''
@@ -121,7 +122,7 @@ namespace :schools do
       street = search_result[:street]
       unless street.blank?
         print('.')
-        school.update(street:street)
+        school.update(street: street)
       end
     end
 
@@ -150,7 +151,7 @@ namespace :schools do
   end
 
   desc 'Fix missing zipcode street in staging data'
-  task :fix_missing_zipcodes => :environment do
+  task fix_missing_zipcodes: :environment do
     data_file_path = Rails.root.join('db/data_imports/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre.csv')
     listed_schools = {}
 
@@ -172,13 +173,13 @@ namespace :schools do
     end
 
     puts ''
-    PrettyConsole.say_in_green("Done")
+    PrettyConsole.say_in_green('Done')
     remaing_schools_count = School.where(zipcode: nil).count
     PrettyConsole.puts_in_red("Remaining schools count: #{remaing_schools_count}") unless remaing_schools_count.zero?
   end
 
   desc 'Import missing schools from csv file'
-  task :import_last_export => :environment do
+  task import_last_export: :environment do
     # 0 ACADEMIE
     # 1 N°Département
     # 2 DEPARTEMENT
@@ -198,10 +199,10 @@ namespace :schools do
     CSV.open(data_file_path, headers: { col_sep: ';' }).each do |row|
       fields = row.to_s.split(';')
       type = fields[7]
-      next unless type.in?(['COLLÈGE','COLLEGE'])
-      
+      next unless type.in?([ 'COLLÈGE', 'COLLEGE' ])
+
       rep = fields[8]
-      next unless rep.in?(['REP','REP+'])
+      next unless rep.in?([ 'REP', 'REP+' ])
 
       code_uai = fields[5]
       zipcode = fields[1]
@@ -217,7 +218,7 @@ namespace :schools do
       }
     end
 
-    PrettyConsole.say_in_green("Start")
+    PrettyConsole.say_in_green('Start')
 
     listed_schools.each do |code_uai, school|
       if School.find_by(code_uai: code_uai).nil?
@@ -270,14 +271,14 @@ namespace :schools do
       puts '===== + = + = + ========='
       puts ''
     end
-    PrettyConsole.say_in_green("Done")
+    PrettyConsole.say_in_green('Done')
   end
 
   desc 'update schools with new fields'
-  task :update_schools_with_new_fields => :environment do
+  task update_schools_with_new_fields: :environment do
     PrettyConsole.announce_task 'updating schools with new fields' do
       file_name = 'lycees_colleges.csv'
-      file_name = Rails.root.join('db','data_imports','sources_EN', file_name)
+      file_name = Rails.root.join('db', 'data_imports', 'sources_EN', file_name)
       CSV.foreach(file_name, headers: true, col_sep: ';') do |row|
         print '.'
         school = School.find_by(code_uai: row['Identifiant_de_l_etablissement'])
@@ -297,8 +298,25 @@ namespace :schools do
       end
     end
   end
+
+  desc 'update schools with missing departments from zipcode'
+  task update_schools_with_missing_departments: :environment do
+    PrettyConsole.announce_task 'updating schools with missing departments from zipcode' do
+      errors = []
+      School.where(department: nil).find_each do |school|
+        print '.'
+        next if school.zipcode.nil? || school.zipcode.length < 5
+        # get departement_name (string) from zipcode
+        department = Department.fetch_by_zipcode(zipcode: school.zipcode)
+
+        if department.nil?
+          errors << "No department found for school ##{school.id} - #{school.name} with zipcode #{school.zipcode}"
+          PrettyConsole.say_in_red(errors.last)
+          next
+        end
+        school.update(department: department)
+      end
+      errors.each { |error| Rails.logger.error(error) ; puts error }
+    end
+  end
 end
-
-
-
-

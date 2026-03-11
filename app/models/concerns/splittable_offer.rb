@@ -37,6 +37,7 @@ module SplittableOffer
         self.favorites = Favorite.where(user_id: seconde_favorites_user_ids, internship_offer_id: id)
         self.weeks = weeks_seconde
         self.employer_description = "Descriptif à fournir par l'employeur" if self.employer_description.blank?
+        self.employer_description = self.employer_description.truncate(275) if self.employer_description.length > 275
         Rails.logger.error("InternshipOffer ID: #{id} ##{errors.full_messages.join(', ')}") unless valid?
         save!
       else # weekly framed , multi offers
