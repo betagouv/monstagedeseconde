@@ -99,12 +99,16 @@
               - author = @internship_application.state_changes&.last&.author
               - if author.present?
                 = "Par #{author.try(:presenter).try(:full_name)}"
-          - if @internship_application.response_message.present?
+          - if @internship_application.response_message&.strip&.present?
             .row.fr-mb-2w.small.fr-px-2w
               .col-1
                 span.fr-icon-arrow-right-line.fr-icon--sm
               .col-11
-                span.font-weight-bold  Motif 
+                span.font-weight-bold
+                  - if @internship_application.validated_by_employer?
+                    = "Historique : motif du refus avant restauration de la candidature"
+                  - else
+                    = "Motif"
                 p.small=  @internship_application.response_message
 
         - if @internship_application.is_re_approvable? || @internship_application.is_modifiable? || @internship_application.cancelable?
@@ -151,7 +155,7 @@
                 fa_icon: "fr-icon-close-line",
                 token: nil,
                 opened_modal: defined?(opened_modal) ? opened_modal == 'cancel' : false
-            
+
 - else
   .row
     .col-12
