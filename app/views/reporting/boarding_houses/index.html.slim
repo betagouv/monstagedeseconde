@@ -9,7 +9,11 @@
 
           .row.fr-mb-3w
             .col-12.d-flex.justify-content-between.align-items-center
-              h3 Internats référencés dans l'académie de #{current_user.academy.name}
+              h3
+                - if current_user.god?
+                  | Internats référencés (toutes académies)
+                - else
+                  | Internats référencés dans l'académie de #{current_user.academy.name}
               .d-flex.gap-2
                 = link_to new_reporting_boarding_house_path, class: 'fr-btn fr-icon-add-line fr-btn--icon-left' do
                   | Ajouter un internat
@@ -67,7 +71,10 @@
                               td
                                 strong Code postal
                               td Oui
-                              td Code postal (doit correspondre à un département de votre académie)
+                              - if current_user.god?
+                                td Code postal
+                              - else
+                                td Code postal (doit correspondre à un département de votre académie)
                             tr
                               td
                                 strong Ville
@@ -105,6 +112,8 @@
                     th Nom
                     th Ville
                     th Département
+                    - if current_user.god?
+                      th Académie
                     th Places disponibles
                     th Date de référence
                     th Actions
@@ -114,10 +123,12 @@
                       td = boarding_house.name
                       td = boarding_house.city
                       td = boarding_house.department
+                      - if current_user.god?
+                        td = boarding_house.academy&.name
                       td = boarding_house.available_places
                       td = boarding_house.reference_date ? l(boarding_house.reference_date, format: :long) : '-'
-                      td
-                        = link_to edit_reporting_boarding_house_path(boarding_house), class: 'fr-btn fr-btn--sm fr-btn--secondary fr-icon-edit-line fr-btn--icon-left fr-mr-1w' do
+                      td style="white-space: nowrap;"
+                        = link_to edit_reporting_boarding_house_path(boarding_house), class: 'fr-btn fr-btn--sm fr-icon-edit-line fr-btn--icon-left', style: 'margin-right: 0.5rem;' do
                           | Modifier
                         = link_to reporting_boarding_house_path(boarding_house), method: :delete, data: { confirm: 'Supprimer cet internat ?' }, class: 'fr-btn fr-btn--sm fr-btn--tertiary fr-icon-delete-line fr-btn--icon-left' do
                           | Supprimer

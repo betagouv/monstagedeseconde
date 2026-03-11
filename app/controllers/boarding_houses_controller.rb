@@ -10,7 +10,8 @@ class BoardingHousesController < ApplicationController
                         BoardingHouse.nearby(latitude: latitude, longitude: longitude, radius: radius)
                                      .where('available_places > 0')
                       else
-                        BoardingHouse.none
+                        BoardingHouse.where('available_places > 0')
+                                     .where.not(coordinates: nil)
                       end
 
     render json: {

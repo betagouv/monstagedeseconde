@@ -37,9 +37,14 @@ module Services
           next
         end
 
-        bh = @academy.boarding_houses.new(row_data)
+        bh = if @academy
+              @academy.boarding_houses.new(row_data)
+            else
+              BoardingHouse.new(row_data)
+            end
         bh.available_places = bh.available_places.to_i
         bh.reference_date = parse_date(bh.reference_date) unless bh.reference_date.is_a?(Date)
+        assign_academy_from_zipcode(bh) if @academy.nil?
 
         geocode(bh)
 
@@ -75,6 +80,13 @@ module Services
       Date.parse(value.to_s)
     rescue Date::Error
       nil
+    end
+
+    def assign_academy_from_zipcode(boarding_house)
+      return if boarding_house.zipcode.blank?
+
+      dept = Department.fetch_by_zipcode(zipcode: boarding_house.zipcode)
+      boarding_house.academy = dept.academy if dept
     end
 
     def geocode(boarding_house)

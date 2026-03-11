@@ -109,16 +109,17 @@ const InternshipOfferResults = ({
   };
 
   const fetchBoardingHouses = () => {
-    if (!params.latitude || !params.longitude) return;
+    const data = {};
+    if (params.latitude && params.longitude) {
+      data.latitude = params.latitude;
+      data.longitude = params.longitude;
+      data.radius = params.radius || 60000;
+    }
 
     $.ajax({
       type: 'GET',
       url: endpoints['searchBoardingHouses'](),
-      data: {
-        latitude: params.latitude,
-        longitude: params.longitude,
-        radius: params.radius || 60000
-      }
+      data: data
     }).done((result) => {
       setBoardingHouses(result.boardingHouses || []);
     });

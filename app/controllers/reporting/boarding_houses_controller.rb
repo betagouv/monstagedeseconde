@@ -7,22 +7,20 @@ module Reporting
 
     def index
       authorize! :manage_boarding_houses, current_user
-      @boarding_houses = current_user.academy
-                                     .boarding_houses
-                                     .order(:name)
-                                     .page(params[:page])
+      @boarding_houses = boarding_houses_scope.order(:name)
+                                             .page(params[:page])
     end
 
     def new
       authorize! :manage_boarding_houses, current_user
-      @boarding_house = BoardingHouse.new(academy: current_user.academy)
+      @boarding_house = BoardingHouse.new(academy: current_user_academy)
     end
 
     def create
       authorize! :manage_boarding_houses, current_user
-      @boarding_house = BoardingHouse.new(
-        boarding_house_params.merge(academy: current_user.academy)
-      )
+      @boarding_house = BoardingHouse.new(boarding_house_params)
+      assign_academy_from_zipcode if god_user?
+      @boarding_house.academy ||= current_user_academy
       geocode_boarding_house
       if @boarding_house.save
         redirect_to reporting_boarding_houses_path, notice: 'Internat créé avec succès.'
@@ -38,6 +36,7 @@ module Reporting
     def update
       authorize! :manage_boarding_houses, current_user
       @boarding_house.assign_attributes(boarding_house_params)
+      assign_academy_from_zipcode if god_user?
       geocode_boarding_house
       if @boarding_house.save
         redirect_to reporting_boarding_houses_path, notice: 'Internat mis à jour.'
@@ -59,7 +58,8 @@ module Reporting
         redirect_to reporting_boarding_houses_path, alert: 'Veuillez sélectionner un fichier.'
         return
       end
-      result = Services::BoardingHouseImporter.new(file: file, academy: current_user.academy).call
+      academy = god_user? ? nil : current_user.academy
+      result = Services::BoardingHouseImporter.new(file: file, academy: academy).call
       expected_headers = Services::BoardingHouseImporter::COLUMN_MAPPING.keys
       matched_headers = result[:headers] & expected_headers
 
@@ -87,8 +87,24 @@ module Reporting
 
     private
 
+    def god_user?
+      current_user.is_a?(Users::God)
+    end
+
+    def current_user_academy
+      god_user? ? nil : current_user.academy
+    end
+
+    def boarding_houses_scope
+      if god_user?
+        BoardingHouse.all
+      else
+        current_user.academy.boarding_houses
+      end
+    end
+
     def set_boarding_house
-      @boarding_house = current_user.academy.boarding_houses.find(params[:id])
+      @boarding_house = boarding_houses_scope.find(params[:id])
     end
 
     def boarding_house_params
@@ -97,6 +113,13 @@ module Reporting
         :contact_phone, :contact_email,
         :available_places, :reference_date
       )
+    end
+
+    def assign_academy_from_zipcode
+      return if @boarding_house.zipcode.blank?
+
+      dept = Department.fetch_by_zipcode(zipcode: @boarding_house.zipcode)
+      @boarding_house.academy = dept.academy if dept
     end
 
     def geocode_boarding_house

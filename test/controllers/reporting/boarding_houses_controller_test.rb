@@ -117,5 +117,63 @@ module Reporting
       get edit_reporting_boarding_house_path(other_bh)
       assert_response :not_found
     end
+
+    # -- God user --
+
+    test 'GET index as god succeeds and shows all boarding houses' do
+      god = create(:god)
+      bordeaux_dept = Department.fetch_by_zipcode(zipcode: '33000')
+      other_bh = create(:boarding_house, academy: bordeaux_dept.academy,
+                                         zipcode: '33000', city: 'Bordeaux')
+      sign_in(god)
+      get reporting_boarding_houses_path
+      assert_response :success
+      assert_includes response.body, @boarding_house.name
+      assert_includes response.body, other_bh.name
+    end
+
+    test 'POST create as god with any zipcode succeeds' do
+      god = create(:god)
+      sign_in(god)
+      Geocoder.stub(:coordinates, [44.8378, -0.5792]) do
+        assert_difference('BoardingHouse.count', 1) do
+          post reporting_boarding_houses_path, params: {
+            boarding_house: {
+              name: 'Internat Bordeaux',
+              street: '1 rue de Test',
+              zipcode: '33000',
+              city: 'Bordeaux',
+              available_places: 5
+            }
+          }
+        end
+      end
+      assert_redirected_to reporting_boarding_houses_path
+      bh = BoardingHouse.last
+      bordeaux_dept = Department.fetch_by_zipcode(zipcode: '33000')
+      assert_equal bordeaux_dept.academy, bh.academy
+    end
+
+    test 'god can edit boarding house from any academy' do
+      god = create(:god)
+      bordeaux_dept = Department.fetch_by_zipcode(zipcode: '33000')
+      other_bh = create(:boarding_house, academy: bordeaux_dept.academy,
+                                         zipcode: '33000', city: 'Bordeaux')
+      sign_in(god)
+      get edit_reporting_boarding_house_path(other_bh)
+      assert_response :success
+    end
+
+    test 'god can destroy boarding house from any academy' do
+      god = create(:god)
+      bordeaux_dept = Department.fetch_by_zipcode(zipcode: '33000')
+      other_bh = create(:boarding_house, academy: bordeaux_dept.academy,
+                                         zipcode: '33000', city: 'Bordeaux')
+      sign_in(god)
+      assert_difference('BoardingHouse.count', -1) do
+        delete reporting_boarding_house_path(other_bh)
+      end
+      assert_redirected_to reporting_boarding_houses_path
+    end
   end
 end
