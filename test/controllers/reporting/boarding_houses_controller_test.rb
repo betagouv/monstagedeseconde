@@ -29,59 +29,24 @@ module Reporting
 
     # -- CRUD --
 
-    test 'GET new as academy_statistician succeeds' do
+    test 'GET new as academy_statistician is redirected' do
       sign_in(@academy_statistician)
       get new_reporting_boarding_house_path
-      assert_response :success
-    end
-
-    test 'POST create as academy_statistician creates boarding house' do
-      sign_in(@academy_statistician)
-      Geocoder.stub(:coordinates, [48.8566, 2.3522]) do
-        assert_difference('BoardingHouse.count', 1) do
-          post reporting_boarding_houses_path, params: {
-            boarding_house: {
-              name: 'Internat Test',
-              street: '1 rue de Test',
-              zipcode: '75001',
-              city: 'Paris',
-              contact_phone: '0100000000',
-              contact_email: 'test@example.com',
-              available_places: 10,
-              reference_date: '2026-06-15'
-            }
-          }
-        end
-      end
       assert_redirected_to reporting_boarding_houses_path
     end
 
-    test 'POST create with invalid params renders new' do
+    test 'POST create as academy_statistician is redirected' do
       sign_in(@academy_statistician)
       assert_no_difference('BoardingHouse.count') do
         post reporting_boarding_houses_path, params: {
-          boarding_house: { name: '', zipcode: '', city: '' }
+          boarding_house: {
+            name: 'Internat Test',
+            zipcode: '75001',
+            city: 'Paris'
+          }
         }
       end
-      assert_response :unprocessable_entity
-    end
-
-    test 'POST create with zipcode outside academy is rejected' do
-      sign_in(@academy_statistician)
-      Geocoder.stub(:coordinates, [44.8378, -0.5792]) do
-        assert_no_difference('BoardingHouse.count') do
-          post reporting_boarding_houses_path, params: {
-            boarding_house: {
-              name: 'Internat Bordeaux',
-              street: '1 rue de Test',
-              zipcode: '33000',
-              city: 'Bordeaux',
-              available_places: 5
-            }
-          }
-        end
-      end
-      assert_response :unprocessable_entity
+      assert_redirected_to reporting_boarding_houses_path
     end
 
     test 'GET edit as academy_statistician succeeds' do
@@ -116,6 +81,18 @@ module Reporting
       sign_in(@academy_statistician)
       get edit_reporting_boarding_house_path(other_bh)
       assert_response :not_found
+    end
+
+    test 'index only shows boarding houses from own academy' do
+      bordeaux_dept = Department.fetch_by_zipcode(zipcode: '33000')
+      other_bh = create(:boarding_house, name: 'Internat Bordeaux Unique',
+                                         academy: bordeaux_dept.academy,
+                                         zipcode: '33000', city: 'Bordeaux')
+      sign_in(@academy_statistician)
+      get reporting_boarding_houses_path
+      assert_response :success
+      assert_includes response.body, @boarding_house.name
+      assert_not_includes response.body, 'Internat Bordeaux Unique'
     end
 
     # -- God user --

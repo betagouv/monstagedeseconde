@@ -4,6 +4,7 @@ module Reporting
   class BoardingHousesController < BaseReportingController
     before_action :authenticate_user!
     before_action :set_boarding_house, only: %i[edit update destroy]
+    before_action :ensure_god_user!, only: %i[new create import]
 
     def index
       authorize! :manage_boarding_houses, current_user
@@ -89,6 +90,10 @@ module Reporting
 
     def god_user?
       current_user.is_a?(Users::God)
+    end
+
+    def ensure_god_user!
+      redirect_to reporting_boarding_houses_path, alert: 'Action non autorisée.' unless god_user?
     end
 
     def current_user_academy

@@ -14,9 +14,10 @@
                   | Internats référencés (toutes académies)
                 - else
                   | Internats référencés dans l'académie de #{current_user.academy.name}
-              .d-flex.gap-2
-                = link_to new_reporting_boarding_house_path, class: 'fr-btn fr-icon-add-line fr-btn--icon-left' do
-                  | Ajouter un internat
+              - if current_user.god?
+                .d-flex.gap-2
+                  = link_to new_reporting_boarding_house_path, class: 'fr-btn fr-icon-add-line fr-btn--icon-left' do
+                    | Ajouter un internat
 
           - if flash[:notice]
             .fr-alert.fr-alert--success.fr-mb-3w
@@ -25,84 +26,82 @@
             .fr-alert.fr-alert--error.fr-mb-3w
               p = flash[:alert]
 
-          .fr-mb-3w
-            = form_tag import_reporting_boarding_houses_path, multipart: true, class: 'd-flex align-items-end gap-2', data: { turbo: false } do
-              .fr-upload-group
-                label.fr-label for="file"
-                  | Importer un fichier Excel
-                  span.fr-hint-text Formats acceptés : .xlsx, .xls, .csv
-                = file_field_tag :file, accept: '.xlsx,.xls,.csv', class: 'fr-upload'
-              = submit_tag 'Importer', class: 'fr-btn fr-btn--secondary fr-icon-upload-line fr-btn--icon-left'
-            .fr-mt-1w
-              a.fr-link.fr-icon-information-line.fr-link--icon-left.fr-link--sm href="#" aria-controls="modal-import-format" data-fr-opened="false"
-                | Voir le format attendu du fichier
+          - if current_user.god?
+            .fr-mb-3w
+              = form_tag import_reporting_boarding_houses_path, multipart: true, class: 'd-flex align-items-end gap-2', data: { turbo: false } do
+                .fr-upload-group
+                  label.fr-label for="file"
+                    | Importer un fichier Excel
+                    span.fr-hint-text Formats acceptés : .xlsx, .xls, .csv
+                  = file_field_tag :file, accept: '.xlsx,.xls,.csv', class: 'fr-upload'
+                = submit_tag 'Importer', class: 'fr-btn fr-btn--secondary fr-icon-upload-line fr-btn--icon-left'
+              .fr-mt-1w
+                a.fr-link.fr-icon-information-line.fr-link--icon-left.fr-link--sm href="#" aria-controls="modal-import-format" data-fr-opened="false"
+                  | Voir le format attendu du fichier
 
-          dialog#modal-import-format.fr-modal aria-labelledby="modal-import-format-title" aria-modal="true"
-            .fr-container.fr-container--fluid.fr-container-md
-              .fr-grid-row.fr-grid-row--center
-                .fr-col-12.fr-col-md-10.fr-col-lg-8
-                  .fr-modal__body
-                    .fr-modal__header
-                      button.fr-btn--close.fr-btn aria-controls="modal-import-format" title="Fermer" type="button" Fermer
-                    .fr-modal__content
-                      h2#modal-import-format-title.fr-modal__title
-                        span.fr-icon-file-line.fr-icon--lg aria-hidden="true"
-                        |  Format du fichier d'import
-                      p.fr-mb-2w Le fichier doit être au format Excel (.xlsx, .xls) ou CSV (.csv). La première ligne doit contenir les en-têtes de colonnes.
-                      .fr-table.fr-table--bordered.fr-mb-2w
-                        table
-                          thead
-                            tr
-                              th Colonne
-                              th Obligatoire
-                              th Description
-                          tbody
-                            tr
-                              td
-                                strong Nom
-                              td Oui
-                              td Nom de l'établissement
-                            tr
-                              td
-                                strong Adresse
-                              td Non
-                              td Numéro et rue
-                            tr
-                              td
-                                strong Code postal
-                              td Oui
-                              - if current_user.god?
+            dialog#modal-import-format.fr-modal aria-labelledby="modal-import-format-title" aria-modal="true"
+              .fr-container.fr-container--fluid.fr-container-md
+                .fr-grid-row.fr-grid-row--center
+                  .fr-col-12.fr-col-md-10.fr-col-lg-8
+                    .fr-modal__body
+                      .fr-modal__header
+                        button.fr-btn--close.fr-btn aria-controls="modal-import-format" title="Fermer" type="button" Fermer
+                      .fr-modal__content
+                        h2#modal-import-format-title.fr-modal__title
+                          span.fr-icon-file-line.fr-icon--lg aria-hidden="true"
+                          |  Format du fichier d'import
+                        p.fr-mb-2w Le fichier doit être au format Excel (.xlsx, .xls) ou CSV (.csv). La première ligne doit contenir les en-têtes de colonnes.
+                        .fr-table.fr-table--bordered.fr-mb-2w
+                          table
+                            thead
+                              tr
+                                th Colonne
+                                th Obligatoire
+                                th Description
+                            tbody
+                              tr
+                                td
+                                  strong Nom
+                                td Oui
+                                td Nom de l'établissement
+                              tr
+                                td
+                                  strong Adresse
+                                td Non
+                                td Numéro et rue
+                              tr
+                                td
+                                  strong Code postal
+                                td Oui
                                 td Code postal
-                              - else
-                                td Code postal (doit correspondre à un département de votre académie)
-                            tr
-                              td
-                                strong Ville
-                              td Oui
-                              td Nom de la commune
-                            tr
-                              td
-                                strong Téléphone
-                              td Non
-                              td Numéro de téléphone de contact
-                            tr
-                              td
-                                strong Email
-                              td Non
-                              td Adresse email de contact
-                            tr
-                              td
-                                strong Places disponibles
-                              td Non
-                              td Nombre de places libres (nombre entier)
-                            tr
-                              td
-                                strong Date de référence
-                              td Non
-                              td Date au format JJ/MM/AAAA
-                      p.fr-text--sm.fr-mb-1w
-                        strong Exemple de première ligne :
-                      p.fr-text--sm.fr-mb-0 Nom | Adresse | Code postal | Ville | Téléphone | Email | Places disponibles | Date de référence
+                              tr
+                                td
+                                  strong Ville
+                                td Oui
+                                td Nom de la commune
+                              tr
+                                td
+                                  strong Téléphone
+                                td Non
+                                td Numéro de téléphone de contact
+                              tr
+                                td
+                                  strong Email
+                                td Non
+                                td Adresse email de contact
+                              tr
+                                td
+                                  strong Places disponibles
+                                td Non
+                                td Nombre de places libres (nombre entier)
+                              tr
+                                td
+                                  strong Date de référence
+                                td Non
+                                td Date au format JJ/MM/AAAA
+                        p.fr-text--sm.fr-mb-1w
+                          strong Exemple de première ligne :
+                        p.fr-text--sm.fr-mb-0 Nom | Adresse | Code postal | Ville | Téléphone | Email | Places disponibles | Date de référence
 
           .row
             .col-12.fr-table.fr-table--bordered
