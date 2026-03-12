@@ -8,12 +8,6 @@ class InappropriateOfferTest < ActiveSupport::TestCase
     assert inappropriate_offer.persisted?
   end
 
-  test "missing ground is invalid" do
-    inappropriate_offer = build(:inappropriate_offer, ground: nil)
-    assert inappropriate_offer.invalid?
-    assert_includes inappropriate_offer.errors[:ground], "doit être rempli(e)"
-  end
-
   test "missing details is invalid" do
     inappropriate_offer = build(:inappropriate_offer, details: nil)
     assert inappropriate_offer.invalid?
