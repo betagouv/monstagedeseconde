@@ -32,7 +32,7 @@ module Triggered
 
     def notify(student:, application_id:, url:, phone:)
       message = 'Vous êtes accepté à un stage. Confirmez votre présence :' \
-                "#{url}. L'équipe mon stage à l'école."
+                "#{url}. L'équipe 1 élève 1 stage."
       SendSmsJob.new.perform_later(user: student, message:, phone:)
       info = 'StudentSmsInternshipApplicationReminderJob: SMS ' \
              "sent to #{student.id} with response #{response}"
