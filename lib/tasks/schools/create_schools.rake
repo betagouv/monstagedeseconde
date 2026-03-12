@@ -61,26 +61,26 @@ namespace :schools do
   end
 
   desc 'create "collèges" and "lycees" from csv file'
-  task create_colleges_lycees: :environment do
-    file_location = Rails.root.join('db/data_imports/sources_EN/Liste_etablissements.csv')
+  task :create_colleges_lycees, %i[file_name] => :environment do |t, args|
+    file_location = Rails.root.join("db/data_imports/sources_EN/#{args[:file_name]}")
     # uai;type_etab;nom_etablissement;adresse;code_postal;commune;voie_generale;voie_techno;nbeleves;zone_ep
     counter = 1
     error_lines = []
     CSV.foreach(file_location, 'r', headers: true, header_converters: :symbol, col_sep: ';').each do |row|
       counter += 1
       code_uai = row[:uai]
-      School.find_by(code_uai: code_uai).present? && next
+      next if  School.find_by(code_uai: code_uai).present?
 
       name = row[:nom_etablissement]&.strip
       next if name.nil?
 
-      adresse = row[:adresse]&.strip
-      commune = row[:commune]&.strip
+      adresse = row[:adresse_1]&.strip
+      commune = row[:nom_commune]&.strip
 
       code_postal = row[:code_postal]&.to_s&.strip
       code_postal = "0#{code_postal}" if code_postal.size == 4
 
-      school_type = case row[:type_etab]
+      school_type = case row[:type_etablissement]
                     when 'Collège'
                       'college'
                     when 'Lycée'
@@ -89,16 +89,18 @@ namespace :schools do
                       print 'x'
                       'college_lycee'
                     end
-      kind = case row[:zone_ep]
-             when 'REP', 'rep'
-               'rep'
-             when 'REP+', 'rep+'
-               'rep_plus'
-             when 'QPV', 'qpv'
-               'qpv'
-             else
-               ''
-             end
+      if row[:zone_ep].present? && !%w[REP rep REP+ rep+ QPV qpv].include?(row[:zone_ep])
+        kind = case row[:zone_ep]
+              when 'REP', 'rep'
+                'rep'
+              when 'REP+', 'rep+'
+                'rep_plus'
+              when 'QPV', 'qpv'
+                'qpv'
+              else
+                ''
+              end
+      end
 
       school_params = {
         code_uai: code_uai,
@@ -107,8 +109,8 @@ namespace :schools do
         zipcode: code_postal,
         city: commune,
         school_type: school_type,
-        kind: kind
       }
+      school_params.merge!(kind: kind) if defined?(kind) && kind.present?
       # searching for complementary data
       #
       ressource_file_location = Rails.root.join('db/data_imports/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre.csv')
@@ -219,7 +221,7 @@ namespace :schools do
 
       name = row[:nom_etablissement]&.strip
       next if name.nil?
-      
+
       adresse = row[:street]&.strip
       commune = row[:city]&.strip
 
