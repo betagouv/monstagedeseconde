@@ -26,7 +26,9 @@ class Department < ApplicationRecord
   end
 
   def self.key_for_lookup(zipcode:)
-    if corsica?(zipcode: zipcode)
+    if la_reunion?(zipcode: zipcode)
+      '974'
+    elsif corsica?(zipcode: zipcode)
       if zipcode.starts_with?('200') || zipcode.starts_with?('201')
         '2A'
       else
@@ -42,14 +44,19 @@ class Department < ApplicationRecord
   def self.to_select(only: nil)
     list = if only
              Department.find_by code: only
-           else
+    else
              Department.all.map
-           end
-    list.map { |d| ["#{d.code} - #{d.name}", d.name] }.sort
+    end
+    list.map { |d| [ "#{d.code} - #{d.name}", d.name ] }.sort
   end
 
   def self.corsica?(zipcode:)
     zipcode.starts_with?('20')
+  end
+
+  # These are cedex zipcode but we want to consider them as La Réunion
+  def self.la_reunion?(zipcode:)
+    zipcode.starts_with?('978') || zipcode.starts_with?('977')
   end
 
   # edge case for [971->978]

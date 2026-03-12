@@ -94,11 +94,15 @@ class CallbacksController < ApplicationController
                   alert: 'Seuls les élèves de 4e, 3e et 2de peuvent se connecter.' and return
     end
 
+    if user_info['FrEduCtEleveUAI'].blank?
+      handle_educonnect_logout(educonnect)
+      redirect_to root_path,
+                  alert: 'La connexion à la plateforme est réservée aux élèves à partir ' \
+                         'de leurs propres identifiants Éduconnect.' and return
+    end
+
     student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
     school = School.find_by(code_uai: user_info['FrEduCtEleveUAI'])
-
-    # Rails.logger.info("School: #{school.inspect}")
-    # Rails.logger.info("Student: #{student.inspect}")
 
     unless school.present?
       handle_educonnect_logout(educonnect)

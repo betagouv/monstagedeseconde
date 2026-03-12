@@ -426,6 +426,26 @@ module InternshipOffers
       end
     end
 
+    test 'GET #flag an offer as a student fails gracefully with inappropriate parameters' do
+      travel_to(Date.new(2024, 3, 1)) do
+        ENV['SIGNATURE_INFO'] = 'false'
+        Flipper.enable(:flag_internship_offer)
+        offer = create(:weekly_internship_offer_2nde)
+        student = create(:student)
+        sign_in(student)
+        assert_no_changes 'InappropriateOffer.count' do
+          # it misses details field
+          post flag_internship_offer_path(offer),
+            params: {
+              inappropriate_offer: {
+                ground: 'inappropriate_content',
+                user_id: student.id
+              }
+            }
+          end
+      end
+    end
+
     test 'GET #flag an offer as a student' do
       travel_to(Date.new(2024, 3, 1)) do
         ENV['SIGNATURE_INFO'] = 'false'
