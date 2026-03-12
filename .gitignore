@@ -8,6 +8,9 @@
 /.bundle
 /.clever.json
 
+/bin/ruby_env_json
+/infra/dev/monstage_backup
+
 # Ignore the default SQLite database.
 /db/*.sqlite3
 /db/*.sqlite3-journal
@@ -46,6 +49,9 @@ yarn-debug.log*
 .cursorrules
 /infra/commit.sh
 CLAUDE.md
+#mise files
+mise.toml
+.tool-versions
 
 /doc/env.sh
 /doc/output/internship_offers/create/*

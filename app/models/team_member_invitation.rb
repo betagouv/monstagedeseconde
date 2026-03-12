@@ -123,7 +123,7 @@ class TeamMemberInvitation < ApplicationRecord
 
   def destroy_member_offer_area(member)
     area = InternshipOfferArea.where(employer_id: member.id).first
-    return if area.internship_offers.any?
+    return if area.nil? || area.internship_offers.any?
 
     if area
       Rails.logger.info "Users avec cette zone: #{User.where(current_area_id: area.id).count}"

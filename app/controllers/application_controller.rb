@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   helper Turbo::FramesHelper if Rails.env.test?
   helper Turbo::StreamsHelper if Rails.env.test?
 
+  before_action :set_current_request_context
   before_action :check_host_for_redirection
   before_action :check_for_holidays_maintenance_page
   before_action :check_school_requested
@@ -115,6 +116,13 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def set_current_request_context
+    Current.user = current_user
+    Current.request_url = request.original_url
+    Current.request_params = request.filtered_parameters
+    Current.request_id = request.request_id
+  end
 
   def message_from_prismic
     api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])

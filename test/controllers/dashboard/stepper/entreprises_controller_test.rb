@@ -190,5 +190,218 @@ module Dashboard::Stepper
         assert_response :bad_request
       end
     end
+
+    # Tests de cohérence is_public / sector / group_id
+
+    test 'POST create public entreprise without group_id fails' do
+      employer = create(:employer)
+      internship_occupation = create(:internship_occupation, employer:)
+      sign_in(employer)
+
+      assert_no_difference('Entreprise.count') do
+        post(
+          dashboard_stepper_entreprises_path(internship_occupation_id: internship_occupation.id),
+          params: {
+            entreprise: {
+              internship_occupation_id: internship_occupation.id,
+              siret: '12345678901234',
+              employer_name: 'Ministère Test',
+              entreprise_full_address: '1 rue de Paris 75001 Paris',
+              entreprise_chosen_full_address: '1 rue de Paris 75001 Paris',
+              entreprise_coordinates_longitude: '2.35',
+              entreprise_coordinates_latitude: '48.85',
+              contact_phone: '0123456789',
+              is_public: true,
+              group_id: nil,
+              workspace_conditions: 'Environnement de travail',
+              workspace_accessibility: 'Accessibilité du poste'
+            }
+          }
+        )
+        assert_response :bad_request
+      end
+    end
+
+    test 'POST create public entreprise with group_id succeeds' do
+      employer = create(:employer)
+      internship_occupation = create(:internship_occupation, employer:)
+      group = create(:group, is_public: true)
+      sign_in(employer)
+
+      assert_difference('Entreprise.count', 1) do
+        post(
+          dashboard_stepper_entreprises_path(internship_occupation_id: internship_occupation.id),
+          params: {
+            entreprise: {
+              internship_occupation_id: internship_occupation.id,
+              siret: '12345678901234',
+              employer_name: 'Ministère Test',
+              entreprise_full_address: '1 rue de Paris 75001 Paris',
+              entreprise_chosen_full_address: '1 rue de Paris 75001 Paris',
+              entreprise_coordinates_longitude: '2.35',
+              entreprise_coordinates_latitude: '48.85',
+              contact_phone: '0123456789',
+              is_public: true,
+              group_id: group.id,
+              workspace_conditions: 'Environnement de travail',
+              workspace_accessibility: 'Accessibilité du poste'
+            }
+          }
+        )
+        assert_redirected_to new_dashboard_stepper_planning_path(entreprise_id: Entreprise.last.id)
+      end
+
+      entreprise = Entreprise.last
+      assert entreprise.is_public
+      assert_equal group.id, entreprise.group_id
+      assert_equal 'Fonction publique', entreprise.sector.name
+    end
+
+    test 'POST create private entreprise with group_id fails' do
+      employer = create(:employer)
+      internship_occupation = create(:internship_occupation, employer:)
+      sector = create(:sector, name: 'Secteur privé')
+      group = create(:group, is_public: true)
+      sign_in(employer)
+
+      assert_no_difference('Entreprise.count') do
+        post(
+          dashboard_stepper_entreprises_path(internship_occupation_id: internship_occupation.id),
+          params: {
+            entreprise: {
+              internship_occupation_id: internship_occupation.id,
+              siret: '12345678901234',
+              employer_name: 'Entreprise Privée',
+              entreprise_full_address: '1 rue de Paris 75001 Paris',
+              entreprise_chosen_full_address: '1 rue de Paris 75001 Paris',
+              entreprise_coordinates_longitude: '2.35',
+              entreprise_coordinates_latitude: '48.85',
+              contact_phone: '0123456789',
+              is_public: false,
+              group_id: group.id,
+              sector_id: sector.id,
+              workspace_conditions: 'Environnement de travail',
+              workspace_accessibility: 'Accessibilité du poste'
+            }
+          }
+        )
+        assert_response :bad_request
+      end
+    end
+
+    test 'POST create private entreprise with sector Fonction publique fails' do
+      employer = create(:employer)
+      internship_occupation = create(:internship_occupation, employer:)
+      fonction_publique_sector = Sector.find_or_create_by!(name: 'Fonction publique')
+      sign_in(employer)
+
+      assert_no_difference('Entreprise.count') do
+        post(
+          dashboard_stepper_entreprises_path(internship_occupation_id: internship_occupation.id),
+          params: {
+            entreprise: {
+              internship_occupation_id: internship_occupation.id,
+              siret: '12345678901234',
+              employer_name: 'Entreprise Privée',
+              entreprise_full_address: '1 rue de Paris 75001 Paris',
+              entreprise_chosen_full_address: '1 rue de Paris 75001 Paris',
+              entreprise_coordinates_longitude: '2.35',
+              entreprise_coordinates_latitude: '48.85',
+              contact_phone: '0123456789',
+              is_public: false,
+              group_id: nil,
+              sector_id: fonction_publique_sector.id,
+              workspace_conditions: 'Environnement de travail',
+              workspace_accessibility: 'Accessibilité du poste'
+            }
+          }
+        )
+        assert_response :bad_request
+      end
+    end
+
+    test 'POST create private entreprise without group_id and valid sector succeeds' do
+      employer = create(:employer)
+      internship_occupation = create(:internship_occupation, employer:)
+      sector = create(:sector, name: 'Informatique')
+      sign_in(employer)
+
+      assert_difference('Entreprise.count', 1) do
+        post(
+          dashboard_stepper_entreprises_path(internship_occupation_id: internship_occupation.id),
+          params: {
+            entreprise: {
+              internship_occupation_id: internship_occupation.id,
+              siret: '12345678901234',
+              employer_name: 'Entreprise Privée',
+              entreprise_full_address: '1 rue de Paris 75001 Paris',
+              entreprise_chosen_full_address: '1 rue de Paris 75001 Paris',
+              entreprise_coordinates_longitude: '2.35',
+              entreprise_coordinates_latitude: '48.85',
+              contact_phone: '0123456789',
+              is_public: false,
+              group_id: nil,
+              sector_id: sector.id,
+              workspace_conditions: 'Environnement de travail',
+              workspace_accessibility: 'Accessibilité du poste'
+            }
+          }
+        )
+        assert_redirected_to new_dashboard_stepper_planning_path(entreprise_id: Entreprise.last.id)
+      end
+
+      entreprise = Entreprise.last
+      refute entreprise.is_public
+      assert_nil entreprise.group_id
+      assert_equal sector.id, entreprise.sector_id
+    end
+
+    test 'PATCH update from private to public without group_id fails' do
+      employer = create(:employer)
+      internship_occupation = create(:internship_occupation, employer:)
+      sector = create(:sector, name: 'Informatique')
+      entreprise = create(:entreprise, internship_occupation:, is_public: false, group: nil, sector:)
+      sign_in(employer)
+
+      patch(
+        dashboard_stepper_entreprise_path(entreprise),
+        params: {
+          entreprise: {
+            is_public: true,
+            group_id: nil
+          }
+        }
+      )
+      assert_response :bad_request
+      entreprise.reload
+      refute entreprise.is_public
+    end
+
+    test 'PATCH update from private to public with group_id succeeds' do
+      employer = create(:employer)
+      internship_occupation = create(:internship_occupation, employer:)
+      sector = create(:sector, name: 'Informatique')
+      group = create(:group, is_public: true)
+      entreprise = create(:entreprise, internship_occupation:, is_public: false, group: nil, sector:)
+      sign_in(employer)
+
+      patch(
+        dashboard_stepper_entreprise_path(entreprise),
+        params: {
+          entreprise: {
+            is_public: true,
+            group_id: group.id,
+            entreprise_chosen_full_address: entreprise.entreprise_full_address,
+            entreprise_coordinates_longitude: entreprise.entreprise_coordinates.longitude,
+            entreprise_coordinates_latitude: entreprise.entreprise_coordinates.latitude
+          }
+        }
+      )
+      assert_response :redirect
+      entreprise.reload
+      assert entreprise.is_public
+      assert_equal group.id, entreprise.group_id
+      assert_equal 'Fonction publique', entreprise.sector.name
+    end
   end
 end
