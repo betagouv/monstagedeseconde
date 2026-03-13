@@ -104,5 +104,11 @@ export const endpoints = {
   searchCitiesByNameOrZipcode: () => {
     const endpoint = new URL(`${host}/api_city_proxy/search`);
     return endpoint;
+  },
+
+  // @get
+  searchBoardingHouses: () => {
+    const endpoint = new URL(`${host}/boarding_houses/search.json`);
+    return endpoint;
   }
 };

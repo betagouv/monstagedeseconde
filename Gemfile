@@ -29,6 +29,7 @@ gem "pg_search", "2.3.2" # pg search for autocomplete
 # front end
 gem "browser"
 gem "caxlsx_rails"
+gem "roo" # Excel file parsing for imports
 gem "dsfr-view-components"
 gem "inline_svg"
 gem "react_on_rails", "14.2.1"

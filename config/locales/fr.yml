@@ -136,6 +136,17 @@ fr:
         one: Semaine
         other: Semaines
     attributes:
+      boarding_house:
+        name: Nom
+        street: Adresse
+        zipcode: Code postal
+        city: Ville
+        department: Département
+        contact_phone: Téléphone de contact
+        contact_email: Email de contact
+        available_places: Places disponibles
+        reference_date: Date de référence
+        coordinates: Coordonnées GPS
       area_notification:
         area: Espace
         email: Courriel
