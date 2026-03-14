@@ -45,7 +45,7 @@ module Triggers
       internship_application = create(
         :weekly_internship_application,
         :validated_by_employer,
-        validated_by_employer_at: 2.day.ago + 2.hours,
+        validated_by_employer_at: 2.days.ago,
         student: @student)
       assert_enqueued_jobs 1 do
         @reminder_service.enqueue_all
