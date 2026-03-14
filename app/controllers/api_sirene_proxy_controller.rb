@@ -20,10 +20,13 @@ class ApiSireneProxyController < ApplicationController
   def clean_response(body)
     if JSON.parse(body)['etablissement']
       etablissement_json = JSON.parse(body)['etablissement']
+      code_ape = etablissement_json['uniteLegale']['activitePrincipaleUniteLegale']
+      sector = NafSectorMapping.find_sector_by_code_naf(code_ape)
       etablissement = {
         siret: etablissement_json['siret'],
         is_public: etablissement_json['uniteLegale']['categorieJuridiqueUniteLegale'].first == '7',
-        codeApe: etablissement_json['uniteLegale']['activitePrincipaleUniteLegale'],
+        codeApe: code_ape,
+        sectorId: sector&.id,
         uniteLegale: {
           denominationUniteLegale: etablissement_json['uniteLegale']['denominationUniteLegale']
         },

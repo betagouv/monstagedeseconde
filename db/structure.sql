@@ -20,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -34,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 -- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
@@ -48,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -62,7 +62,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
+COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -1831,6 +1831,40 @@ ALTER SEQUENCE public.multi_plannings_id_seq OWNED BY public.multi_plannings.id;
 
 
 --
+-- Name: naf_sector_mappings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.naf_sector_mappings (
+    id bigint NOT NULL,
+    code_naf character varying,
+    sector_id bigint NOT NULL,
+    date_start date,
+    date_end date,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: naf_sector_mappings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.naf_sector_mappings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: naf_sector_mappings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.naf_sector_mappings_id_seq OWNED BY public.naf_sector_mappings.id;
+
+
+--
 -- Name: operators; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2890,6 +2924,13 @@ ALTER TABLE ONLY public.multi_plannings ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
+-- Name: naf_sector_mappings id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.naf_sector_mappings ALTER COLUMN id SET DEFAULT nextval('public.naf_sector_mappings_id_seq'::regclass);
+
+
+--
 -- Name: operators id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3355,6 +3396,14 @@ ALTER TABLE ONLY public.multi_planning_weeks
 
 ALTER TABLE ONLY public.multi_plannings
     ADD CONSTRAINT multi_plannings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: naf_sector_mappings naf_sector_mappings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.naf_sector_mappings
+    ADD CONSTRAINT naf_sector_mappings_pkey PRIMARY KEY (id);
 
 
 --
@@ -4205,6 +4254,20 @@ CREATE INDEX index_multi_plannings_on_school_id ON public.multi_plannings USING 
 
 
 --
+-- Name: index_naf_sector_mappings_on_code_naf; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_naf_sector_mappings_on_code_naf ON public.naf_sector_mappings USING btree (code_naf);
+
+
+--
+-- Name: index_naf_sector_mappings_on_sector_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_naf_sector_mappings_on_sector_id ON public.naf_sector_mappings USING btree (sector_id);
+
+
+--
 -- Name: index_planning_grades_on_grade_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4701,6 +4764,14 @@ ALTER TABLE ONLY public.team_member_invitations
 
 ALTER TABLE ONLY public.users_internship_offers_histories
     ADD CONSTRAINT fk_rails_24c68739d8 FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+
+
+--
+-- Name: naf_sector_mappings fk_rails_25e11ff27d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.naf_sector_mappings
+    ADD CONSTRAINT fk_rails_25e11ff27d FOREIGN KEY (sector_id) REFERENCES public.sectors(id);
 
 
 --
@@ -5222,6 +5293,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260306100239'),
 ('20260203214306'),
 ('20260126172713'),
 ('20260115112842'),
@@ -5720,3 +5792,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
+
