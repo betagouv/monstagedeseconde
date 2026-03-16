@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "monstage": {
+      "command": "bundle",
+      "args": ["exec", "ruby", "lib/mcp/stdio_server.rb"],
+      "env": {
+        "RAILS_ENV": "development"
+      }
+    }
+  }
+}

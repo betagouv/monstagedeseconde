@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'sidekiq/web'
+require_relative '../lib/mcp/http_app'
 root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
                      'maintenance_estivale'
                    elsif ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
@@ -10,6 +11,26 @@ root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
                    end
 
 Rails.application.routes.draw do
+
+  # ------------------ MCP SERVER ------------------
+  mount Mcp::HttpApp.new => '/mcp'
+
+  # MCP discovery endpoints - required by Mistral Le Chat
+  mcp_server_card = proc { |_env|
+    body = {
+      name: "1eleve1stage",
+      version: "1.0.0",
+      description: "Serveur MCP pour interroger les offres de stage de 1eleve1stage",
+      url: "#{ENV.fetch('HOST_URL', 'https://staging-1e1s.cleverapps.io')}/mcp",
+      transport: "streamable-http",
+      authentication: nil
+    }.to_json
+    [200, { 'Content-Type' => 'application/json', 'Access-Control-Allow-Origin' => '*' }, [body]]
+  }
+  match '/.well-known/mcp/server-card/mcp', to: mcp_server_card, via: :get
+  match '/.well-known/mcp/server-card', to: mcp_server_card, via: :get
+  match '/.well-known/oauth-protected-resource/mcp', to: mcp_server_card, via: :get
+  match '/.well-known/oauth-protected-resource', to: mcp_server_card, via: :get
 
   # ------------------ SCOPE START ------------------
   mount LetterThief::Engine => "/letter_thief" if Rails.env.development?
