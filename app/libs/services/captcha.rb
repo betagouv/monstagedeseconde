@@ -50,7 +50,13 @@ module Services
           scope: 'piste.captchetat'
         }
       )
-      JSON.parse(response.body)['access_token']
+      case response
+      when Net::HTTPSuccess
+        JSON.parse(response.body)['access_token']
+      else
+        Rails.logger.error "Failed to get captcha OAuth token: #{response.code} - #{response.message}"
+        nil
+      end
     end
   end
 end
