@@ -102,6 +102,7 @@ RailsAdmin.config do |config|
 
   config.included_models = %w[School
                               Sector
+                              NafSectorMapping
                               Academy
                               AcademyRegion
                               Group
