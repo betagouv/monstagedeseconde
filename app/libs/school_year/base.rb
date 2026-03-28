@@ -73,6 +73,10 @@ module SchoolYear
       { from: from, to: to }
     end
 
+    def range
+      offers_beginning_of_period..deposit_end_of_period
+    end
+
     def next_year
       SchoolYear::Floating.new_by_year(year: current_year + 1)
     end

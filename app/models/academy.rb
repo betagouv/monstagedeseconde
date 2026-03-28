@@ -2,6 +2,7 @@ class Academy < ApplicationRecord
   belongs_to :academy_region
   has_many :departments
   has_many :statisticians, class_name: 'Users::AcademyStatistician'
+  has_many :boarding_houses, dependent: :destroy
 
   def self.to_select(only: nil)
     Academy.all.map(&:name).sort
