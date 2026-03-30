@@ -7,6 +7,9 @@
 # Ignore bundler config.
 /.bundle
 /.clever.json
+.github/*
+bin/ai-commit
+script/*
 
 /bin/ruby_env_json
 /infra/dev/monstage_backup
