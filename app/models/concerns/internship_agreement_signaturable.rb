@@ -48,7 +48,7 @@ module InternshipAgreementSignaturable
         recipients << student.email if student
       end
       if (roles_not_signed_yet & Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE).any?
-        recipients << school_management_representative.email if school_management_representative
+        recipients += school_management_signature_emails
       end
       if from_multi?
         corporations_all_signed = true

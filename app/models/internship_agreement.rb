@@ -270,6 +270,24 @@ class InternshipAgreement < ApplicationRecord
     nil
   end
 
+  def school_management_signature_emails
+    teachers_emails = []
+    if student&.class_room
+      teachers_emails = student.class_room
+                               .school_managements
+                               .teachers
+                               .kept
+                               .pluck(:email)
+    end
+
+    school_management_emails = school.school_managements
+                                     .kept
+                                     .where(role: %w[admin_officer school_manager])
+                                     .pluck(:email)
+
+    (teachers_emails + school_management_emails).compact.uniq
+  end
+
   def notify_others_signatures_started
     GodMailer.notify_others_signatures_started_email(
       internship_agreement: self,

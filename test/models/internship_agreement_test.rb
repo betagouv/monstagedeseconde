@@ -92,6 +92,37 @@ class InternshipAgreementTest < ActiveSupport::TestCase
     assert_equal cpe, internship_agreement.school_management_representative
   end
 
+  test '#school_management_signature_emails includes teachers of class and school management' do
+    internship_agreement = create(:mono_internship_agreement, aasm_state: :validated)
+    student = internship_agreement.student
+    school = student.school
+
+    class_room = create(:class_room, school: school)
+    student.update!(class_room: class_room)
+
+    teacher_1 = create(:teacher, school: school, class_room: class_room)
+    teacher_2 = create(:teacher, school: school, class_room: class_room)
+    other_class_room = create(:class_room, school: school)
+    ignored_teacher = create(:teacher, school: school, class_room: other_class_room)
+    admin_officer = create(:admin_officer, school: school)
+    second_school_manager = create(:school_manager, school: school)
+
+    recipients = internship_agreement.school_management_signature_emails
+
+    assert_includes recipients, school.school_manager.email
+    assert_includes recipients, second_school_manager.email
+    assert_includes recipients, admin_officer.email
+    assert_includes recipients, teacher_1.email
+    assert_includes recipients, teacher_2.email
+    refute_includes recipients, ignored_teacher.email
+
+    missing_signatures_recipients = internship_agreement.missing_signatures_recipients
+    assert_includes missing_signatures_recipients, school.school_manager.email
+    assert_includes missing_signatures_recipients, second_school_manager.email
+    assert_includes missing_signatures_recipients, admin_officer.email
+    assert_includes missing_signatures_recipients, teacher_1.email
+  end
+
   test '#missing_signatures_recipients' do
   skip 'test will be ok when getting rid of Flipper :student_signature'
     internship_agreement = create(:mono_internship_agreement, aasm_state: :validated)

@@ -108,4 +108,25 @@ class GodMailerTest < ActionMailer::TestCase
     assert_equal 'Imprimez et signez la convention de stage.', email.subject
     refute_email_spammyness(email)
   end
+
+  test 'notify_signatures_can_start_email includes school_management team recipients' do
+    internship_agreement = create(:mono_internship_agreement)
+    school = internship_agreement.student.school
+    class_room = create(:class_room, school: school)
+    internship_agreement.student.update!(class_room: class_room)
+
+    teacher = create(:teacher, school: school, class_room: class_room)
+    admin_officer = create(:admin_officer, school: school)
+    second_school_manager = create(:school_manager, school: school)
+
+    email = GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement)
+    email.deliver_now
+
+    assert_includes email.to, teacher.email
+    assert_includes email.to, admin_officer.email
+    assert_includes email.to, second_school_manager.email
+    assert_includes email.to, school.school_manager.email
+    assert_equal 'Imprimez et signez la convention de stage.', email.subject
+    refute_email_spammyness(email)
+  end
 end
