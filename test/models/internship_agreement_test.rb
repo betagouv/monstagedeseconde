@@ -100,19 +100,19 @@ class InternshipAgreementTest < ActiveSupport::TestCase
     school = student.school
     employer = internship_agreement.employer
     school_manager = school.school_manager
-    assert_equal [employer.email, school_manager.email, student.email].sort,
+    assert_equal [ employer.email, school_manager.email, student.email ].sort,
                  internship_agreement.missing_signatures_recipients.sort
 
     create(:signature,
            :school_manager,
            internship_agreement_id: internship_agreement.id)
-    assert_equal [employer.email, student.email].sort,
+    assert_equal [ employer.email, student.email ].sort,
                  internship_agreement.missing_signatures_recipients.sort
 
     create(:signature,
            :employer,
            internship_agreement_id: internship_agreement.id)
-    assert_equal [student.email],
+    assert_equal [ student.email ],
                  internship_agreement.missing_signatures_recipients
     internship_agreement.sign!
     create(:signature,

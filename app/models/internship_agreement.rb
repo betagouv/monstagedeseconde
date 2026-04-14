@@ -69,9 +69,9 @@ class InternshipAgreement < ApplicationRecord
               format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
                         message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
   end
-  #Delegations
+  # Delegations
   delegate :employer, to: :internship_application
-  
+
   # Callbacks
   after_save :save_delegation_date
 
@@ -130,7 +130,7 @@ class InternshipAgreement < ApplicationRecord
                       !skip_notifications_when_system_creation &&
                       notify_others_signatures_started
                   }
-      transitions from: [:signatures_started],
+      transitions from: [ :signatures_started ],
                   to: :signed_by_all,
                   guard: :roles_not_signed_yet_blank?,
                   after: proc { |*_args|
@@ -286,12 +286,12 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def legal_representative_data
-    hash = { }
+    hash = {}
      if student_legal_representative_email.present? && student_legal_representative_full_name.present?
-       hash[:student_legal_representative] = {email: student_legal_representative_email, nr: 1}
+       hash[:student_legal_representative] = { email: student_legal_representative_email, nr: 1 }
      end
      if student_legal_representative_2_email.present? && student_legal_representative_2_full_name.present?
-       hash[:student_legal_representative_2] = {email: student_legal_representative_2_email, nr: 2}
+       hash[:student_legal_representative_2] = { email: student_legal_representative_2_email, nr: 2 }
      end
     hash
   end
@@ -348,7 +348,7 @@ class InternshipAgreement < ApplicationRecord
 
   def at_least_daily_hours_or_weekly_hours
     if daily_hours.blank? && weekly_hours.blank?
-      errors.add(:base, "Vous devez fournir soit les heures hebdomadaires, soit les heures journalières.")
+      errors.add(:base, 'Vous devez fournir soit les heures hebdomadaires, soit les heures journalières.')
     end
   end
 end

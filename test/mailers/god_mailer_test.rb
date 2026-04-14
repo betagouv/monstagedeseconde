@@ -7,8 +7,8 @@ class GodMailerTest < ActionMailer::TestCase
     email = GodMailer.weekly_kpis_email
     email.deliver_now
     assert_emails 1
-    assert_equal [EmailUtils.from], email.from
-    assert_equal [ENV['TEAM_EMAIL']], email.to
+    assert_equal [ EmailUtils.from ], email.from
+    assert_equal [ ENV['TEAM_EMAIL'] ], email.to
     refute_email_spammyness(email)
   end
 
@@ -22,8 +22,8 @@ class GodMailerTest < ActionMailer::TestCase
       )
     email.deliver_now
     assert_emails 1
-    assert_equal [EmailUtils.from], email.from
-    expected_recipients = internship_agreement.internship_application.employers_filtered_by_notifications_emails + [ internship_agreement.internship_application.student.email]
+    assert_equal [ EmailUtils.from ], email.from
+    expected_recipients = internship_agreement.internship_application.employers_filtered_by_notifications_emails + [ internship_agreement.internship_application.student.email ]
     assert_equal expected_recipients.sort, email.to.sort
     refute_email_spammyness(email)
   end
@@ -38,10 +38,10 @@ class GodMailerTest < ActionMailer::TestCase
     email = GodMailer.notify_others_signatures_finished_email(internship_agreement: internship_agreement)
     email.deliver_now
     assert_emails 1
-    assert_equal [EmailUtils.from], email.from
+    assert_equal [ EmailUtils.from ], email.from
     expected_recipients = internship_agreement.internship_application.employers_filtered_by_notifications_emails + [
       internship_agreement.school_management_representative.email,
-      internship_agreement.internship_application.student.email] +
+      internship_agreement.internship_application.student.email ] +
       GodMailer.new.legal_representatives_emails(internship_agreement)
     assert_equal expected_recipients.sort, email.to.sort
     refute_email_spammyness(email)
@@ -56,24 +56,24 @@ class GodMailerTest < ActionMailer::TestCase
     end
     # First email to all parties except legal representatives
     email1 = ActionMailer::Base.deliveries[-1]
-    assert_equal [EmailUtils.from], email1.from
-    expected_recipients1 = [internship_agreement.student_legal_representative_2_email]
+    assert_equal [ EmailUtils.from ], email1.from
+    expected_recipients1 = [ internship_agreement.student_legal_representative_2_email ]
     assert_equal expected_recipients1.sort, email1.to.sort
     assert_equal 'Imprimez et signez la convention de stage.', email1.subject
     refute_email_spammyness(email1)
     # Second email to all parties except legal representatives
     email2 = ActionMailer::Base.deliveries[-2]
-    assert_equal [EmailUtils.from], email2.from
-    expected_recipients2 = [internship_agreement.student_legal_representative_email]
+    assert_equal [ EmailUtils.from ], email2.from
+    expected_recipients2 = [ internship_agreement.student_legal_representative_email ]
     assert_equal expected_recipients2.sort, email2.to.sort
     assert_equal 'Imprimez et signez la convention de stage.', email2.subject
     refute_email_spammyness(email2)
     # third email
     email3 = ActionMailer::Base.deliveries[-3]
-    assert_equal [EmailUtils.from], email3.from
+    assert_equal [ EmailUtils.from ], email3.from
     expected_recipients3 = internship_agreement.internship_application.employers_filtered_by_notifications_emails + [
       internship_agreement.school_management_representative.email,
-      internship_agreement.internship_application.student.email]
+      internship_agreement.internship_application.student.email ]
     assert_equal expected_recipients3.sort, email3.to.sort
     assert_equal 'Imprimez et signez la convention de stage.', email3.subject
     refute_email_spammyness(email3)
@@ -88,22 +88,22 @@ class GodMailerTest < ActionMailer::TestCase
     end
     # First email to legal representatives if any
     email = ActionMailer::Base.deliveries[-1]
-    assert_equal [EmailUtils.from], email.from
-    expected_recipients2 = [internship_agreement.student_legal_representative_2_email]
+    assert_equal [ EmailUtils.from ], email.from
+    expected_recipients2 = [ internship_agreement.student_legal_representative_2_email ]
     assert_equal expected_recipients2.sort, email.to.sort
     assert_equal 'Imprimez et signez la convention de stage.', email.subject
     refute_email_spammyness(email)
 
     email = ActionMailer::Base.deliveries[-2]
-    assert_equal [EmailUtils.from], email.from
-    expected_recipients2 = [internship_agreement.student_legal_representative_email]
+    assert_equal [ EmailUtils.from ], email.from
+    expected_recipients2 = [ internship_agreement.student_legal_representative_email ]
     assert_equal expected_recipients2.sort, email.to.sort
     assert_equal 'Imprimez et signez la convention de stage.', email.subject
     refute_email_spammyness(email)
 
     email = ActionMailer::Base.deliveries[-3]
-    assert_equal [EmailUtils.from], email.from
-    expected_recipients2 = [internship_agreement.school_manager.email, internship_agreement.employer.email, internship_agreement.student.email]
+    assert_equal [ EmailUtils.from ], email.from
+    expected_recipients2 = [ internship_agreement.school_manager.email, internship_agreement.employer.email, internship_agreement.student.email ]
     assert_equal expected_recipients2.sort, email.to.sort
     assert_equal 'Imprimez et signez la convention de stage.', email.subject
     refute_email_spammyness(email)

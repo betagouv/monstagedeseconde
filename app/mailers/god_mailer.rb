@@ -29,8 +29,8 @@ class GodMailer < ApplicationMailer
 
     attachment_name = 'export_candidatures_non_repondues.xlsx'
     xlsx = render_to_string layout: false,
-                            handlers: [:axlsx],
-                            formats: [:xlsx],
+                            handlers: [ :axlsx ],
+                            formats: [ :xlsx ],
                             template: 'reporting/internship_applications/pending_internship_applications',
                             locals: { internship_applications: internship_applications,
                                       presenter_for_dimension: Presenters::Reporting::DimensionByOffer }
@@ -49,8 +49,8 @@ class GodMailer < ApplicationMailer
 
     attachment_name = 'export_candidatures_expirees_depuis_15_jours.xlsx'
     xlsx = render_to_string layout: false,
-                            handlers: [:axlsx],
-                            formats: [:xlsx],
+                            handlers: [ :axlsx ],
+                            formats: [ :xlsx ],
                             template: 'reporting/internship_applications/expired',
                             locals: { internship_applications: internship_applications,
                                       presenter_for_dimension: Presenters::Reporting::DimensionByOffer }
@@ -123,7 +123,7 @@ class GodMailer < ApplicationMailer
     )
   end
 
-  def notify_others_signatures_started_email(internship_agreement:, missing_signatures_recipients:, last_signature: )
+  def notify_others_signatures_started_email(internship_agreement:, missing_signatures_recipients:, last_signature:)
     @internship_agreement  = internship_agreement
     internship_application = internship_agreement.internship_application
     @internship_offer      = internship_application.internship_offer
@@ -180,7 +180,7 @@ class GodMailer < ApplicationMailer
     )
   end
 
-  def notify_student_legal_representatives_can_sign_email(internship_agreement:, representative: )
+  def notify_student_legal_representatives_can_sign_email(internship_agreement:, representative:)
     internship_application = internship_agreement.internship_application
     recipients_email       = legal_representatives_emails(internship_agreement)
     @internship_offer      = internship_application.internship_offer
@@ -189,10 +189,10 @@ class GodMailer < ApplicationMailer
     @employer              = @internship_offer.employer
     @school_manager        = internship_agreement.school_manager
 
-    Rails.logger.info("no representatives found for notify_student_legal_representatives_can_sign_email") if recipients_email.empty?
+    Rails.logger.info('no representatives found for notify_student_legal_representatives_can_sign_email') if recipients_email.empty?
 
     @url = new_dashboard_students_internship_agreement_url(
-      access_token: internship_agreement.access_token || '' ,
+      access_token: internship_agreement.access_token || '',
       uuid: internship_agreement.uuid,
       student_id: student.id,
       signator_email: representative[:email],
@@ -205,7 +205,7 @@ class GodMailer < ApplicationMailer
   end
 
   # kill me on january first 2026 please
-  def special_notify_student_legal_representatives_can_sign_email(internship_agreement:, representative: )
+  def special_notify_student_legal_representatives_can_sign_email(internship_agreement:, representative:)
     internship_application = internship_agreement.internship_application
     recipients_email       = legal_representatives_emails(internship_agreement)
     @internship_offer      = internship_application.internship_offer
@@ -214,10 +214,10 @@ class GodMailer < ApplicationMailer
     @employer              = @internship_offer.employer
     @school_manager        = internship_agreement.school_manager
 
-    Rails.logger.info("no representatives found for notify_student_legal_representatives_can_sign_email") if recipients_email.empty?
+    Rails.logger.info('no representatives found for notify_student_legal_representatives_can_sign_email') if recipients_email.empty?
 
     @url = new_dashboard_students_internship_agreement_url(
-      access_token: internship_agreement.access_token || '' ,
+      access_token: internship_agreement.access_token || '',
       uuid: internship_agreement.uuid,
       student_id: student.id,
       signator_email: representative[:email],

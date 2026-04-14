@@ -5,8 +5,8 @@ module InternshipAgreementSignaturable
     def roles_not_signed_yet
       in_school_management = school_management_representative&.role
       school_role = in_school_management.nil? ? 'school_manager' : in_school_management
-      roles = [school_role, 'employer']
-      roles += ['student', 'student_legal_representative']
+      roles = [ school_role, 'employer' ]
+      roles += [ 'student', 'student_legal_representative' ]
       roles - roles_already_signed
     end
 
