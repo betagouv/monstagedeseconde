@@ -7,8 +7,10 @@
 # Ignore bundler config.
 /.bundle
 /.clever.json
-.github/*
 bin/ai-commit
+.codex
+.playwright-mcp
+.github/workflows
 script/*
 
 /bin/ruby_env_json
