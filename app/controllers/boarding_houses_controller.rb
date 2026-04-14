@@ -28,9 +28,10 @@ class BoardingHousesController < ApplicationController
       lat: bh.coordinates.latitude,
       lon: bh.coordinates.longitude,
       available_places: bh.available_places,
-      reference_date: bh.reference_date ? I18n.l(bh.reference_date, format: :long) : nil,
       contact_phone: bh.contact_phone,
       contact_email: bh.contact_email,
+      street: bh.street,
+      zipcode: bh.zipcode,
       city: bh.city
     }
   end
