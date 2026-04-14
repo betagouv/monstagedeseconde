@@ -1,0 +1,11 @@
+.container-monstage.my-3
+  = render partial: 'reporting/navigation'
+  .row
+    .col-12
+      .fr-tabs
+        = render partial: 'reporting/tabs'
+
+        #boarding-houses-panel.fr-tabs__panel.fr-tabs__panel--selected aria-labelledby="boarding-houses" role="tabpanel" tabindex="0"
+          h3.fr-mb-3w Ajouter un internat
+
+          = render partial: 'form', locals: { boarding_house: @boarding_house }
