@@ -220,7 +220,10 @@ Rails.application.routes.draw do
 
       namespace :students, path: '/:student_id/' do
         resources :internship_applications, path: 'candidatures', only: %i[index show edit update], param: :uuid do
-          post :resend_application, on: :member
+          member do
+            post :resend_application
+            post :relauch_legal_representative_sign_email
+          end
         end
         resources :internship_agreements, path: 'conventions-de-stage', only: %i[new], param: :uuid do
           member do
