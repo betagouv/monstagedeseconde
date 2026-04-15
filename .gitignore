@@ -17,6 +17,8 @@ script/*
 /infra/dev/monstage_backup
 
 # Ignore the default SQLite database.
+/lib/mcp
+.mcp.json
 /db/*.sqlite3
 /db/*.sqlite3-journal
 /db/data_imports/flipper_files/*
