@@ -67,6 +67,36 @@ module Dashboard
         end
       end
 
+      def relauch_legal_representative_sign_email
+        internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
+        legal_representative_data = internship_agreement&.legal_representative_data
+        @internship_application = internship_agreement.internship_application
+        if internship_agreement.nil? || legal_representative_data.nil?
+          redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
+                      alert: 'Données du représentant légal manquantes'
+        elsif internship_agreement.signed_by_legal_representative?
+          redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
+                      alert: 'La convention a déjà été signée par le représentant légal'
+        else
+          representative_count = legal_representative_data.keys.count
+          if representative_count.zero?
+            redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
+                        alert: 'Aucun représentant légal trouvé pour cette convention'
+          else
+            legal_representative_data.values.each do |rep|
+              if rep.present? && rep[:email].present? && rep[:email].strip.present?
+                GodMailer.notify_student_legal_representatives_can_sign_email(
+                  internship_agreement: internship_agreement,
+                  representative: rep
+                ).deliver_now
+              end
+            end
+            redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
+                        notice: 'Les emails de relance ont bien été envoyés'
+          end
+        end
+      end
+
       private
 
       def magic_fetch_student
