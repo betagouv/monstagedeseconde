@@ -302,22 +302,9 @@ class InternshipOffersController < ApplicationController
           .permit(:id, :ground, :details)
   end
 
-  def employer_name_presentation(internship_offer, current_user)
-    return 'Offreur masqué - connectez-vous' if hide_data_for_non_rep_or_qpv_students?(internship_offer, current_user)
-    internship_offer.employer_name
-  end
-
-  def hide_data_for_non_rep_or_qpv_students?(internship_offer, current_user)
-    internship_offer.from_api? && 
-      internship_offer.rep_or_qpv? && 
-      (!current_user&.try(:student?) || !current_user&.school&.rep_or_qpv?)
-  end
-
   def internship_offer_employer_name(internship_offer)
-    if internship_offer.from_multi?
-      internship_offer.corporations.pluck(:corporation_name).join(', ')
-    else
-      employer_name_presentation(internship_offer, current_user)
-    end
+    return internship_offer.employer_name unless internship_offer.from_multi?
+
+    internship_offer.corporations.pluck(:corporation_name).join(', ')
   end
 end
