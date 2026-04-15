@@ -194,7 +194,7 @@
           = f.submit 'Enregistrer mes informations',
                       class: 'fr-btn btn-block'
 
-    - if current_user.currently_signing_internship_agreement?
+    - if current_user.student? && current_user.currently_signing_internship_agreement?
       hr
       .row
         .col-12
