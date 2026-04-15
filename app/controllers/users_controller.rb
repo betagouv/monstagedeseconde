@@ -41,6 +41,13 @@ class UsersController < ApplicationController
     render :edit, status: :bad_request
   end
 
+  def internship_agreement
+    authorize! :show_internship_agreement, current_user
+
+    @internship_agreement = current_user.internship_agreements.kept.first
+    render 'users/internship_agreement'
+  end
+
   def update_password
     authorize! :update, current_user
     if password_change_allowed?
@@ -146,9 +153,9 @@ class UsersController < ApplicationController
   def current_flash_message
     message = if params.dig(:user, :missing_weeks_school_id).present?
               then "Nous allons prévenir votre chef d'établissement pour que vous puissiez postuler"
-              else
+    else
                 'Compte mis à jour avec succès.'
-              end
+    end
 
     if current_user.unconfirmed_email
       message += " Pour confirmer le changement d’adresse électronique, \
@@ -182,6 +189,7 @@ class UsersController < ApplicationController
                                  :employer_role,
                                  :phone_or_email,
                                  :anonymize_with_email,
+                                 :legal_representative_email,
                                  :show_modal_info)
   end
 

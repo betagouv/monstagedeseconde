@@ -143,6 +143,9 @@ class Ability
       internship_agreement.student.id == user.id
     end
     can %i[manage, update], InappropriateOffer
+    can :show_internship_agreement, User do |user|
+      user.currently_signing_internship_agreement?
+    end
   end
 
   def school_manager_abilities(user:)
@@ -152,7 +155,7 @@ class Ability
     end
 
     can_manage_school(user:) do
-      can [:delete], User do |managed_user_from_school|
+      can [ :delete ], User do |managed_user_from_school|
         managed_user_from_school.school_id == user.school_id
       end
     end
@@ -319,9 +322,9 @@ class Ability
     can %i[destroy], TeamMemberInvitation do |team_member_invitation|
       condition = if user.team.alive?
                     user.team.id_in_team?(team_member_invitation.member_id)
-                  else
+      else
                     user.id == team_member_invitation.inviter_id
-                  end
+      end
       team_member_invitation.member_id != user.id && condition
     end
   end
@@ -340,9 +343,9 @@ class Ability
     can %i[destroy], InternshipOfferArea do |area|
       condition = if user.team.alive?
                     user.team.id_in_team?(area.employer_id)
-                  else
+      else
                     user.id == area.employer_id
-                  end
+      end
       user.team_areas.count > 1 && condition
     end
 
@@ -497,7 +500,7 @@ class Ability
     ], User
     can :choose_role, User unless user.school_manager?
     can_create_and_manage_account(user:) do
-      can [:choose_class_room], User
+      can [ :choose_class_room ], User
     end
     can_read_dashboard_students_internship_applications(user:)
 
@@ -570,11 +573,11 @@ class Ability
   private
 
   def can_read_dashboard_students_internship_applications(user:)
-    can [:dashboard_index], Users::Student do |student|
+    can [ :dashboard_index ], Users::Student do |student|
       student.id == user.id || student_managed_by?(student:, user:)
     end
 
-    can [:dashboard_show], InternshipApplication do |internship_application|
+    can [ :dashboard_show ], InternshipApplication do |internship_application|
       internship_application.student.id == user.id ||
         student_managed_by?(student: internship_application.student, user:)
     end
@@ -607,7 +610,7 @@ class Ability
       class_room.school_id == user.school_id && !user.school_manager?
     end
 
-    can [:show_user_in_school], User do |user|
+    can [ :show_user_in_school ], User do |user|
       user.school
           .users
           .map(&:id)
