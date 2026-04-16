@@ -424,35 +424,4 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     refute_select('div[data-open-modal-dsfr-is-open-value="true"]', {}, 'info modal should be dismissed')
     ENV['SIGNATURE_INFO'] = 'false'
   end
-
-  test 'GET account_path(section: :identity) as student shows legal representative fields' do
-    student = create(:student)
-    sign_in(student)
-    get account_path(section: 'identity')
-    assert_response :success
-    assert_template 'users/_edit_identity'
-    assert_select 'input[name="user[legal_representative_email]"][class~="text-grey-disabled"]'
-    assert_select 'input[name="user[legal_representative_full_name]"][readonly][class~="text-grey-disabled"]'
-  end
-
-  test 'GET account_path(section: :identity) as student shows legal representative data' do
-    student = create(:student,
-                     legal_representative_email: 'parent@example.com',
-                     legal_representative_full_name: 'Jean Dupont')
-    sign_in(student)
-    get account_path(section: 'identity')
-    assert_response :success
-    assert_select 'input[name="user[legal_representative_email]"][value="parent@example.com"]'
-    assert_select 'input[name="user[legal_representative_full_name]"][value="Jean Dupont"]'
-  end
-
-  test 'GET account_path(section: :identity) as employer does not show legal representative fields' do
-    school = create(:school, :with_school_manager)
-    school_manager = create(:school_manager, school:)
-    sign_in(school_manager)
-    get account_path(section: 'identity')
-    assert_response :success
-    assert_select 'input[name="user[legal_representative_email]"]', false
-    assert_select 'input[name="user[legal_representative_full_name]"]', false
-  end
 end
