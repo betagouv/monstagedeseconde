@@ -8,7 +8,7 @@ module SplittableOffer
 
       stats = self.stats
       create_troisieme_offer = true
-      weeks_seconde = self.weeks.select { |week| week.number >= 24 && week.number <= 27}
+      weeks_seconde = self.weeks.select { |week| week.number >= 24 && week.number <= 27 }
       # offer_year = self.weeks.order(:year,:number).last.year #since secnde offer has weeks in june
       # weeks_seconde = self.weeks.select { |week| week.year == offer_year && week.number >= 24 && week.number <= 27}
       weeks_troisieme_quatrieme = self.weeks.to_a - weeks_seconde.to_a
@@ -30,12 +30,15 @@ module SplittableOffer
       res_schools = split_reserved_schools
       if from_api?
         PrettyConsole.say_in_yellow("InternshipOffer ID: #{id} is from API it reduces grades to \"seconde\" only.")
-        self.grades = [Grade.seconde]
+        self.grades = [ Grade.seconde ]
         # No change on internship applications as from_api offers don't have any
         # no change on history, just keep it as is
         self.schools = res_schools[:schools_seconde]
         self.favorites = Favorite.where(user_id: seconde_favorites_user_ids, internship_offer_id: id)
         self.weeks = weeks_seconde
+        self.employer_description = "Descriptif à fournir par l'employeur" if self.employer_description.blank?
+        self.employer_description = self.employer_description.truncate(275) if self.employer_description.length > 275
+        Rails.logger.error("InternshipOffer ID: #{id} ##{errors.full_messages.join(', ')}") unless valid?
         save!
       else # weekly framed , multi offers
         PrettyConsole.say_in_yellow("InternshipOffer ID: #{id} is associated to multiple grades: #{grades.map(&:name).join(', ')}")
@@ -53,7 +56,7 @@ module SplittableOffer
           PrettyConsole.say_in_red(message)
           Rails.logger.error(message)
           # in this case we cannot split the offer seconde offer is troisieme offer
-          self.grades = grades - [Grade.seconde]
+          self.grades = grades - [ Grade.seconde ]
           save!
           return
         end
@@ -64,7 +67,7 @@ module SplittableOffer
         seconde_offer = self
 
         # some restrictions on original offer
-        seconde_offer.grades = [Grade.seconde]
+        seconde_offer.grades = [ Grade.seconde ]
         seconde_offer.weeks = weeks_seconde
         seconde_offer.mother_id = nil
         Favorite.where(user_id: seconde_favorites_user_ids, internship_offer_id: id)
@@ -75,14 +78,14 @@ module SplittableOffer
         seconde_offer.reload.save!
 
         if create_troisieme_offer
-          new_offer.grades = grades.to_a - [Grade.seconde]
+          new_offer.grades = grades.to_a - [ Grade.seconde ]
           new_offer.weeks = weeks_troisieme_quatrieme
           new_offer.mother_id = id
           new_offer.created_at = created_at
           new_offer.updated_at = updated_at
           new_offer.from_doubling_task = true
           if new_offer.valid? && new_offer.from_doubling_task_save!
-            print "-"
+            print '-'
           else
             error_message = "Failed to create new InternshipOffer for grade: #{new_offer.grades.map(&:name).join(', ')}. Errors: #{new_offer.errors.full_messages.join(', ')}"
             PrettyConsole.say_in_red(error_message)
@@ -131,7 +134,7 @@ module SplittableOffer
       schools_troisieme_quatrieme = schools.select do |school|
         school.school_type == 'college' || school.school_type == 'college_lycee'
       end
-      {schools_seconde:, schools_troisieme_quatrieme:}
+      { schools_seconde:, schools_troisieme_quatrieme: }
     end
 
     def duplicate_history(new_offer)

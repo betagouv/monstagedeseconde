@@ -241,6 +241,30 @@ p.fr-card__desc.std-height {
         }
     }
 }
+
+@media (max-width: 767px) {
+    .container-monstage-fluid-hero {
+        .search-tabs-offers {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+
+            .fr-tabs {
+                overflow: visible;
+            }
+
+            .fr-tabs__panel {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+        }
+
+        .container-monstage.homepage {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+}
+
 @media (768px <=width <=1138px) {
     .fr-tile-left-top-img .fr-tile__img {
         display: block;

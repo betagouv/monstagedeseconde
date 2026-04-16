@@ -9,7 +9,7 @@ module Api
       # check_token
       uri = URI("#{API_SIRET_ENDPOINT}/#{siret}")
 
-      token = 
+      # token = 
       headers = {
         'X-INSEE-Api-Key-Integration': ENV['API_SIRENE_TOKEN'],
         'Content-Type': 'application/json',

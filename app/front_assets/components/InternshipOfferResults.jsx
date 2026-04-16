@@ -4,6 +4,7 @@ import MarkerClusterGroup from 'react-leaflet-cluster';
 
 import activeMarker from '../images/active_pin.svg';
 import defaultMarker from '../images/default_pin.svg';
+import boardingHouseMarker from '../images/icons/boarding_house_pin.svg';
 import InternshipOfferCard from './InternshipOfferCard';
 import CardLoader from './CardLoader';
 import Paginator from './search_internship_offer/Paginator';
@@ -31,6 +32,13 @@ const defaultPointerIcon = new L.Icon({
   popupAnchor: [0, -60], // changed popup position
 });
 
+const boardingHouseIcon = new L.Icon({
+  iconUrl: boardingHouseMarker,
+  iconSize: [38, 51],
+  iconAnchor: [19, 51],
+  popupAnchor: [0, -51],
+});
+
 const InternshipOfferResults = ({
     searchParams,
     preselectedWeeksList,
@@ -54,13 +62,34 @@ const InternshipOfferResults = ({
   const [notify, setNotify] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [params, setParams] = useState(searchParams);
+  const [boardingHouses, setBoardingHouses] = useState([]);
+  const [showBoardingHouses, setShowBoardingHouses] = useState(true);
+  const [showBoardingHouseAnnouncement, setShowBoardingHouseAnnouncement] = useState(false);
 
 
   useEffect(() => {
     fetchInternshipOffers();
+    fetchBoardingHouses();
   }, [params]);
 
-  const ClickMap = ({ internshipOffers, recenterMap }) => {
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem('boardingHouseAnnouncementDismissed')) {
+        setShowBoardingHouseAnnouncement(true);
+      }
+    } catch (e) {
+      setShowBoardingHouseAnnouncement(true);
+    }
+  }, []);
+
+  const dismissBoardingHouseAnnouncement = () => {
+    setShowBoardingHouseAnnouncement(false);
+    try {
+      localStorage.setItem('boardingHouseAnnouncementDismissed', '1');
+    } catch (e) { /* ignore */ }
+  };
+
+  const ClickMap = ({ internshipOffers, boardingHouses, showBoardingHouses, recenterMap }) => {
     if (isMobile()) {return null };
 
     if (internshipOffers.length && recenterMap) {
@@ -69,6 +98,11 @@ const InternshipOfferResults = ({
         internshipOffer.lat,
         internshipOffer.lon,
       ]);
+      if (showBoardingHouses && boardingHouses.length) {
+        boardingHouses.forEach((bh) => {
+          bounds.push([bh.lat, bh.lon]);
+        });
+      }
       map.fitBounds(bounds);
       // L.tileLayer.provider('CartoDB.Positron').addTo(map); MAP STYLE
     }
@@ -85,18 +119,6 @@ const InternshipOfferResults = ({
     // setSelectedOffer(null);
   };
 
-  // const getSectorsSelected = () => {
-  //   const sectors = [];
-  //   var clist = document.getElementsByClassName("checkbox-sector");
-  //   for (var i = 0; i < clist.length; ++i) {
-  //     if (clist[i].checked) {
-  //       sectors.push(clist[i].getAttribute('data-sector-id'));
-  //     };
-  //   };
-  //   setSelectedSectors(sectors);
-  //   return sectors;
-  // }
-
   const fetchInternshipOffers = () => {
     setIsLoading(true);
     $.ajax({ type: 'GET', url: endpoints['searchInternshipOffers'](), data: params })
@@ -104,14 +126,22 @@ const InternshipOfferResults = ({
      .fail(fetchFail);
   };
 
-  // const updateSectors = () => {
-  //   if (!isMobile()) {
-  //     document.getElementById("fr-modal-filter").classList.remove("fr-modal--opened");
-  //     document.getElementById("filter-sectors-button").setAttribute('data-fr-opened', false);
-  //   }
-  //   const newParams = { ...params, page: 1, sector_ids: getSectorsSelected() };
-  //   setParams(newParams);
-  // };
+  const fetchBoardingHouses = () => {
+    const data = {};
+    if (params.latitude && params.longitude) {
+      data.latitude = params.latitude;
+      data.longitude = params.longitude;
+      data.radius = params.radius || 60000;
+    }
+
+    $.ajax({
+      type: 'GET',
+      url: endpoints['searchBoardingHouses'](),
+      data: data
+    }).done((result) => {
+      setBoardingHouses(result.boardingHouses || []);
+    });
+  };
 
   const fetchDone = (result) => {
     setInternshipOffers(result['internshipOffers']);
@@ -132,14 +162,6 @@ const InternshipOfferResults = ({
     // setRequestError('Une erreur est survenue, veuillez ré-essayer plus tard.');
   };
 
-  // const clearSectors = () => {
-  //   setShowSectors(false);
-  //   var checkboxes = document.getElementsByClassName("checkbox-sector");
-  //   for (var checkbox of checkboxes) {
-  //     checkbox.checked = false;
-  //   }
-  // };
-
   const sendNotification = (message) => {
     setNotify(true);
     setNotificationMessage(message);
@@ -151,6 +173,76 @@ const InternshipOfferResults = ({
 
   return (
     <div className="">
+      {showBoardingHouseAnnouncement && (
+        <>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="boarding-house-announcement-title"
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 1750,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem',
+            }}
+          >
+            <div
+              aria-hidden="true"
+              onClick={dismissBoardingHouseAnnouncement}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'rgba(22, 22, 22, 0.64)',
+              }}
+            />
+            <div
+              style={{
+                position: 'relative',
+                background: '#fff',
+                maxWidth: '32rem',
+                width: '100%',
+                borderRadius: '0.25rem',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.24)',
+              }}
+            >
+              <div className="fr-modal__header">
+                <button
+                  type="button"
+                  className="fr-btn--close fr-btn"
+                  title="Fermer la fenêtre"
+                  onClick={dismissBoardingHouseAnnouncement}
+                >
+                  Fermer
+                </button>
+              </div>
+              <div className="fr-modal__content fr-px-4w">
+                <h1 id="boarding-house-announcement-title" className="fr-modal__title">
+                  Nouveau&nbsp;!
+                </h1>
+                <p>
+                  Les internats pouvant proposer des places sont désormais consultables avec le résultat de vos recherches&nbsp;!
+                </p>
+              </div>
+              <div className="fr-modal__footer fr-px-4w fr-pb-4w">
+                <ul className="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg">
+                  <li>
+                    <button
+                      type="button"
+                      className="fr-btn"
+                      onClick={dismissBoardingHouseAnnouncement}
+                    >
+                      OK
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
       {/* SEARCH FORM */}
       <div className="fr-container">
         <div id="desktop_internship_offers_index_search_form">
@@ -202,21 +294,7 @@ const InternshipOfferResults = ({
                     (<p>Aucune offre répondant à vos critères n'est disponible.<br/>Vous pouvez modifier vos filtres et relancer votre recherche.</p>)
                   }
                 </div>
-                  {/* {
-                    !isMobile() && (
-                    <div className="col-4 text-right px-0">
-                      <button className="fr-btn fr-btn--secondary fr-icon-filter-line fr-btn--icon-left" data-fr-opened="false" aria-controls="fr-modal-filter" id="filter-sectors-button">
-                        Secteur d'activité
-                        {
-                          selectedSectors.length > 0 ? (
-                            <p className="fr-badge fr-badge--success fr-badge--no-icon fr-m-1w">{selectedSectors.length}</p>
-                          ) : ''
-                        }
-                      </button>
-                    </div>
-                    )
-                  } */}
-                </div>
+                  </div>
 
                 <div> {/* Cards */}
                   {
@@ -262,6 +340,22 @@ const InternshipOfferResults = ({
           {!isMobile() && (
             <div className="col-5 map-wrapper fr-mx-0 fr-px-0">
               <div className="map-sticky-container">
+                {/* Légende */}
+                <div className="fr-p-1w" style={{ background: '#fff', borderBottom: '1px solid #ddd', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.875rem' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <img src={defaultMarker} alt="" style={{ width: 20, height: 20 }} />
+                    Offres de stage
+                  </span>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'pointer', margin: 0 }}>
+                    <input
+                      type="checkbox"
+                      checked={showBoardingHouses}
+                      onChange={() => setShowBoardingHouses(!showBoardingHouses)}
+                    />
+                    <img src={boardingHouseMarker} alt="" style={{ width: 20, height: 20 }} />
+                    Internats
+                  </label>
+                </div>
                 <MapContainer
                   center={center}
                   zoom={6}
@@ -300,24 +394,44 @@ const InternshipOfferResults = ({
                       ) : ('')
                     }
                   </MarkerClusterGroup>
-                  <ClickMap internshipOffers={internshipOffers} recenterMap={newDataFetched} />
+                  {/* Boarding house markers - outside cluster group */}
+                  {showBoardingHouses && boardingHouses.map((bh) => (
+                    <Marker
+                      icon={boardingHouseIcon}
+                      position={[bh.lat, bh.lon]}
+                      key={`bh-${bh.id}`}
+                    >
+                      <Popup className='popup-custom'>
+                        <div className="content fr-p-2w">
+                          <p className="fr-card__detail">Internat</p>
+                          <h5 className="title" style={{fontSize: '1.375rem', lineHeight: '1.75rem', marginBottom: '0.25rem'}}>{bh.name}</h5>
+                          <p className="fr-card__detail fr-mt-1w">
+                            {[bh.street, [bh.zipcode, bh.city].filter(Boolean).join(' ')].filter(Boolean).join(', ')}
+                          </p>
+                          <p className="fr-card__detail fr-mt-1w">
+                            Peut proposer jusqu'à {bh.available_places} place{bh.available_places > 1 ? 's' : ''}
+                          </p>
+                          {bh.contact_phone && (
+                            <p className="fr-card__detail">Tél : {bh.contact_phone}</p>
+                          )}
+                          {bh.contact_email && (
+                            <p className="fr-card__detail">Email : {bh.contact_email}</p>
+                          )}
+                        </div>
+                      </Popup>
+                    </Marker>
+                  ))}
+                  <ClickMap
+                    internshipOffers={internshipOffers}
+                    boardingHouses={boardingHouses}
+                    showBoardingHouses={showBoardingHouses}
+                    recenterMap={newDataFetched}
+                  />
                 </MapContainer>
               </div>
             </div>
           )}
         </div>
-
-        {/* {
-          !isMobile() &&
-          (
-            <FilterModal
-            sectors={sectors}
-            updateSectors={updateSectors}
-            clearSectors={clearSectors}
-            selectedSectors={selectedSectors}
-            />
-          )
-        } */}
       </div>
     </div>
   );
