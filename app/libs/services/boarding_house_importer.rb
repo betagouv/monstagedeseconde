@@ -46,8 +46,6 @@ module Services
         bh.reference_date = parse_date(bh.reference_date) unless bh.reference_date.is_a?(Date)
         assign_academy_from_zipcode(bh) if @academy.nil?
 
-        geocode(bh)
-
         if bh.save
           created += 1
         else
@@ -87,16 +85,6 @@ module Services
 
       dept = Department.fetch_by_zipcode(zipcode: boarding_house.zipcode)
       boarding_house.academy = dept.academy if dept
-    end
-
-    def geocode(boarding_house)
-      address = [boarding_house.street, boarding_house.zipcode, boarding_house.city].compact.join(' ')
-      return if address.blank?
-
-      coords = Geocoder.coordinates(address)
-      boarding_house.coordinates = { latitude: coords[0], longitude: coords[1] } if coords
-    rescue StandardError => e
-      Rails.logger.warn("Geocoding failed during import: #{e.message}")
     end
   end
 end
