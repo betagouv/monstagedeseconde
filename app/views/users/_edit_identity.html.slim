@@ -177,11 +177,4 @@
           = f.submit 'Enregistrer mes informations',
                       class: 'fr-btn btn-block'
 
-    - if current_user.currently_signing_internship_agreement?
-      hr
-      .row
-        .col-12
-          = link_to "Voir et suivre ma convention de stage",
-                    dashboard_students_internship_applications_path(student_id: current_user.id),
-                    class: "fr-btn fr-btn--sm fr-btn--secondary"
 
