@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
 class BoardingHousesController < ApplicationController
+  # Returns every boarding house matching the current offer search location
+  # (no pagination): within the given radius if lat/long are provided,
+  # otherwise every boarding house with valid coordinates.
   def search
     latitude = params[:latitude].to_f
     longitude = params[:longitude].to_f
-    radius = (params[:radius].presence || 60_000).to_i
+    radius = (params[:radius].presence || Nearbyable::DEFAULT_NEARBY_RADIUS_IN_METER).to_i
 
-    boarding_houses = if latitude.nonzero? && longitude.nonzero?
-                        BoardingHouse.nearby(latitude: latitude, longitude: longitude, radius: radius)
-                                     .where('available_places > 0')
-                      else
-                        BoardingHouse.where('available_places > 0')
-                                     .where.not(coordinates: nil)
-                      end
+    scope = BoardingHouse.where('available_places > 0').where.not(coordinates: nil)
+    if latitude.nonzero? && longitude.nonzero?
+      scope = scope.nearby(latitude: latitude, longitude: longitude, radius: radius)
+    end
 
     render json: {
-      boardingHouses: boarding_houses.map { |bh| format_boarding_house(bh) }
+      boardingHouses: scope.map { |bh| format_boarding_house(bh) }
     }
   end
 
