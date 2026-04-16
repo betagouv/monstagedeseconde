@@ -17,7 +17,7 @@
       .fr-mt-0
         p.fr-tag.fr-tag--sm
           = @prez.str_weeks
-      .action.fr-mt-4w.w-100
+      .action.fr-mt-4w
         .d-flex
           = link_to "Voir la convention (PDF)",
                     dashboard_internship_agreement_path(uuid: internship_agreement.uuid, format: :pdf),
@@ -34,13 +34,6 @@
                         method: :get,
                         data: { turbo: false },
                         class: "fr-btn fr-btn--sm fr-ml-2w"
-          .flex-grow-1
-          - unless internship_agreement.signed_by_legal_representative?
-            = button_to "Relancer la signature de la convention par les responsables légaux",
-                         relauch_legal_representative_sign_email_dashboard_students_internship_application_path(uuid: internship_agreement.uuid, student_id: current_user.id),
-                         method: :post,
-                         data: { turbo: false },
-                         class: "fr-btn fr-btn--sm fr-btn--tertiary fr-ml-2w"
 - if !internship_agreement.signed_by_legal_representative? && @prez.signed_by_student?
   .row.fr-my-4w
     .fr-callout

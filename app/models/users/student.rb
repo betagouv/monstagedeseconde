@@ -5,20 +5,20 @@ module Users
     include StudentAdmin
     include UserWithSchool
 
-    BITLY_STUDENT_WELCOME_URL = 'https://bit.ly/4athP2e' # internship_offers_url in production
+    BITLY_STUDENT_WELCOME_URL = "https://bit.ly/4athP2e" # internship_offers_url in production
 
     belongs_to :school, optional: true
     belongs_to :class_room, optional: true
     belongs_to :grade, optional: true
 
     has_many :internship_applications, dependent: :destroy,
-                                       foreign_key: 'user_id' do
+                                       foreign_key: "user_id" do
       def weekly_framed
         where(type: InternshipApplications::WeeklyFramed.name)
       end
     end
     has_many :internship_agreements, through: :internship_applications
-    has_many :favorites, foreign_key: 'user_id', dependent: :destroy
+    has_many :favorites, foreign_key: "user_id", dependent: :destroy
     has_many :internship_offers, through: :favorites
 
     scope :with_mono_internship_agreements, -> {
@@ -68,13 +68,6 @@ module Users
       internship_agreements.merge(InternshipAgreements::MultiInternshipAgreement.all)
     end
 
-    def currently_signing_internship_agreement?
-      return false unless mono_internship_agreements.any? || multi_internship_agreements.any?
-
-      agreement = mono_internship_agreements.any? ? mono_internship_agreements.first : multi_internship_agreements.first
-      agreement.aasm_state.in?(%w[validated signatures_started])
-    end
-
     def age
       ((Time.zone.now - birth_date.to_time) / 1.year.seconds).floor
     end
@@ -100,11 +93,11 @@ module Users
     end
 
     def dashboard_name
-      'Candidatures'
+      "Candidatures"
     end
 
     def default_account_section
-      'resume'
+      "resume"
     end
 
     def school_manager_email
@@ -126,8 +119,8 @@ module Users
     alias troisieme_or_quatrieme? troisieme_ou_quatrieme?
 
     def belongs_to_qpv_school? = school.qpv?
-    def belongs_to_rep_school? = school.rep_kind == 'rep'
-    def belongs_to_rep_plus_school? = school.rep_kind == 'rep_plus'
+    def belongs_to_rep_school? = school.rep_kind == "rep"
+    def belongs_to_rep_plus_school? = school.rep_kind == "rep_plus"
     def belongs_to_rep_or_rep_plus_school? = school.rep_kind&.in?(%w[rep rep_plus])
 
     def teacher
@@ -173,7 +166,7 @@ module Users
                      legal_representative_full_name: nil,
                      legal_representative_phone: nil,
                      legal_representative_email: nil)
-      update_columns(phone: 'NA') unless phone.nil?
+      update_columns(phone: "NA") unless phone.nil?
       internship_applications.map(&:anonymize)
     end
 
@@ -207,7 +200,7 @@ module Users
       school_weeks_list = school&.weeks.presence
       school_weeks_list ||= (grade == Grade.seconde) ? Week.seconde_weeks : Week.troisieme_weeks
       preselected_weeks_list = school_weeks_list.in_the_future
-      [ school_weeks_list, preselected_weeks_list ]
+      [school_weeks_list, preselected_weeks_list]
     end
 
     def presenter
@@ -282,7 +275,7 @@ module Users
     end
 
     def fake_email?
-      email.present? && email.split('@').last.downcase == "#{school.code_uai}.fr".downcase
+      email.present? && email.split("@").last.downcase == "#{school.code_uai}.fr".downcase
     end
 
     rails_admin do
