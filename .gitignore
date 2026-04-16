@@ -10,7 +10,7 @@
 bin/ai-commit
 .codex
 .playwright-mcp
-.github/workflows
+.github/workflows/copilot-setup-steps.yml
 script/*
 
 /bin/ruby_env_json
