@@ -74,7 +74,8 @@ class InternshipApplication < ApplicationRecord
              foreign_key: "internship_offer_id"
   belongs_to :internship_offer, polymorphic: true
   belongs_to :student, class_name: "Users::Student",
-                       foreign_key: "user_id"
+                       foreign_key: "user_id",
+                       touch: false
   has_one :internship_agreement, dependent: :destroy
   has_many :state_changes, class_name: "InternshipApplicationStateChange",
                            dependent: :destroy
@@ -398,6 +399,10 @@ class InternshipApplication < ApplicationRecord
 
   def set_submitted_at
     self.submitted_at = Time.now.utc if submitted_at.nil?
+  end
+
+  def from_doubling_task?
+    internship_offer.from_doubling_task?
   end
 
   def notify_users

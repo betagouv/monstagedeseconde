@@ -17,24 +17,10 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
-
-
---
 -- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
 --
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
@@ -45,24 +31,10 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
-
-
---
 -- Name: unaccent; Type: EXTENSION; Schema: -; Owner: -
 --
 
 CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
-
-
---
--- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -515,6 +487,47 @@ CREATE SEQUENCE public.area_notifications_id_seq
 --
 
 ALTER SEQUENCE public.area_notifications_id_seq OWNED BY public.area_notifications.id;
+
+
+--
+-- Name: boarding_houses; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.boarding_houses (
+    id bigint NOT NULL,
+    name character varying NOT NULL,
+    street character varying,
+    zipcode character varying NOT NULL,
+    city character varying NOT NULL,
+    department character varying NOT NULL,
+    contact_phone character varying,
+    contact_email character varying,
+    coordinates public.geography(Point,4326),
+    available_places integer DEFAULT 0,
+    reference_date date,
+    academy_id bigint,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: boarding_houses_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.boarding_houses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: boarding_houses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.boarding_houses_id_seq OWNED BY public.boarding_houses.id;
 
 
 --
@@ -1506,6 +1519,47 @@ ALTER SEQUENCE public.invitations_id_seq OWNED BY public.invitations.id;
 
 
 --
+-- Name: letter_thief_email_messages; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.letter_thief_email_messages (
+    id bigint NOT NULL,
+    "to" text,
+    "from" text,
+    sender text,
+    cc text,
+    bcc text,
+    subject character varying,
+    body_text text,
+    body_html text,
+    headers text,
+    content_type character varying,
+    intercepted_at timestamp(6) without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: letter_thief_email_messages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.letter_thief_email_messages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: letter_thief_email_messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.letter_thief_email_messages_id_seq OWNED BY public.letter_thief_email_messages.id;
+
+
+--
 -- Name: ministry_groups; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1787,6 +1841,40 @@ CREATE SEQUENCE public.multi_plannings_id_seq
 --
 
 ALTER SEQUENCE public.multi_plannings_id_seq OWNED BY public.multi_plannings.id;
+
+
+--
+-- Name: naf_sector_mappings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.naf_sector_mappings (
+    id bigint NOT NULL,
+    code_naf character varying,
+    sector_id bigint NOT NULL,
+    date_start date,
+    date_end date,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: naf_sector_mappings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.naf_sector_mappings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: naf_sector_mappings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.naf_sector_mappings_id_seq OWNED BY public.naf_sector_mappings.id;
 
 
 --
@@ -2618,6 +2706,13 @@ ALTER TABLE ONLY public.area_notifications ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
+-- Name: boarding_houses id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.boarding_houses ALTER COLUMN id SET DEFAULT nextval('public.boarding_houses_id_seq'::regclass);
+
+
+--
 -- Name: class_rooms id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2786,6 +2881,13 @@ ALTER TABLE ONLY public.invitations ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: letter_thief_email_messages id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.letter_thief_email_messages ALTER COLUMN id SET DEFAULT nextval('public.letter_thief_email_messages_id_seq'::regclass);
+
+
+--
 -- Name: ministry_groups id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2839,6 +2941,13 @@ ALTER TABLE ONLY public.multi_planning_weeks ALTER COLUMN id SET DEFAULT nextval
 --
 
 ALTER TABLE ONLY public.multi_plannings ALTER COLUMN id SET DEFAULT nextval('public.multi_plannings_id_seq'::regclass);
+
+
+--
+-- Name: naf_sector_mappings id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.naf_sector_mappings ALTER COLUMN id SET DEFAULT nextval('public.naf_sector_mappings_id_seq'::regclass);
 
 
 --
@@ -3046,6 +3155,14 @@ ALTER TABLE ONLY public.area_notifications
 
 
 --
+-- Name: boarding_houses boarding_houses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.boarding_houses
+    ADD CONSTRAINT boarding_houses_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: class_rooms class_rooms_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3238,6 +3355,14 @@ ALTER TABLE ONLY public.invitations
 
 
 --
+-- Name: letter_thief_email_messages letter_thief_email_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.letter_thief_email_messages
+    ADD CONSTRAINT letter_thief_email_messages_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: ministry_groups ministry_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3299,6 +3424,14 @@ ALTER TABLE ONLY public.multi_planning_weeks
 
 ALTER TABLE ONLY public.multi_plannings
     ADD CONSTRAINT multi_plannings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: naf_sector_mappings naf_sector_mappings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.naf_sector_mappings
+    ADD CONSTRAINT naf_sector_mappings_pkey PRIMARY KEY (id);
 
 
 --
@@ -3551,6 +3684,20 @@ CREATE UNIQUE INDEX index_area_notifications_on_user_and_area ON public.area_not
 --
 
 CREATE INDEX index_area_notifications_on_user_id ON public.area_notifications USING btree (user_id);
+
+
+--
+-- Name: index_boarding_houses_on_academy_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_boarding_houses_on_academy_id ON public.boarding_houses USING btree (academy_id);
+
+
+--
+-- Name: index_boarding_houses_on_coordinates; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_boarding_houses_on_coordinates ON public.boarding_houses USING gist (coordinates);
 
 
 --
@@ -4044,6 +4191,13 @@ CREATE INDEX index_invitations_on_user_id ON public.invitations USING btree (use
 
 
 --
+-- Name: index_letter_thief_email_messages_on_intercepted_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_letter_thief_email_messages_on_intercepted_at ON public.letter_thief_email_messages USING btree (intercepted_at);
+
+
+--
 -- Name: index_ministry_groups_on_email_whitelist_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4139,6 +4293,20 @@ CREATE INDEX index_multi_plannings_on_multi_coordinator_id ON public.multi_plann
 --
 
 CREATE INDEX index_multi_plannings_on_school_id ON public.multi_plannings USING btree (school_id);
+
+
+--
+-- Name: index_naf_sector_mappings_on_code_naf; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_naf_sector_mappings_on_code_naf ON public.naf_sector_mappings USING btree (code_naf);
+
+
+--
+-- Name: index_naf_sector_mappings_on_sector_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_naf_sector_mappings_on_sector_id ON public.naf_sector_mappings USING btree (sector_id);
 
 
 --
@@ -4569,6 +4737,14 @@ ALTER TABLE ONLY public.url_shrinkers
 
 
 --
+-- Name: boarding_houses fk_rails_1651afe968; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.boarding_houses
+    ADD CONSTRAINT fk_rails_1651afe968 FOREIGN KEY (academy_id) REFERENCES public.academies(id);
+
+
+--
 -- Name: team_member_invitations fk_rails_16e04ba94e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4638,6 +4814,14 @@ ALTER TABLE ONLY public.team_member_invitations
 
 ALTER TABLE ONLY public.users_internship_offers_histories
     ADD CONSTRAINT fk_rails_24c68739d8 FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
+
+
+--
+-- Name: naf_sector_mappings fk_rails_25e11ff27d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.naf_sector_mappings
+    ADD CONSTRAINT fk_rails_25e11ff27d FOREIGN KEY (sector_id) REFERENCES public.sectors(id);
 
 
 --
@@ -5159,7 +5343,10 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260309162833'),
+('20260306100239'),
 ('20260203214306'),
+('20260126172713'),
 ('20260115112842'),
 ('20260102092331'),
 ('20251222092900'),
@@ -5656,3 +5843,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
+

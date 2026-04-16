@@ -11,8 +11,8 @@ root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
 
 Rails.application.routes.draw do
 
-  mount LetterOpenerWeb::Engine, at: '/letter_opener', as: 'letter_opener' if Rails.env.development?
   # ------------------ SCOPE START ------------------
+  mount LetterThief::Engine => "/letter_thief" if Rails.env.development?
   scope(path_names: { new: 'nouveau', edit: 'modification' }) do
     authenticate :user, ->(u) { u.god? } do
       # sidekiq
@@ -246,6 +246,12 @@ Rails.application.routes.draw do
     get 'internship_offers', to: 'internship_offers#index'
     get 'operators', to: 'operators#index'
     put 'operators', to: 'operators#update'
+
+    resources :boarding_houses, path: 'internats', except: [:show] do
+      collection do
+        post :import
+      end
+    end
   end
 
   namespace :public do
@@ -256,6 +262,8 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  get 'boarding_houses/search', to: 'boarding_houses#search', as: :boarding_houses_search
 
   get 'api_address_proxy/search', to: 'api_address_proxy#search', as: :api_address_proxy_search
   get 'api_sirene_proxy/search', to: 'api_sirene_proxy#search', as: :api_sirene_proxy_search

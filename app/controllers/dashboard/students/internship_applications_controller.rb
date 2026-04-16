@@ -22,8 +22,8 @@ module Dashboard
         @canceled_internship_applications  = @internship_applications.where(aasm_state: InternshipApplication::CANCELED_STATES)
         @rejected_internship_applications  = @internship_applications.rejected
         @expired_internship_applications   = @internship_applications.where(aasm_state: InternshipApplication::EXPIRED_STATES)
-        approved_apps = @internship_applications.approved
-        @internship_agreement = @internship_applications.approved.first.internship_agreement if @internship_applications.approved.any?
+        @internship_agreements = @approved_internship_applications.includes(:internship_agreement)
+                                                                  .filter_map(&:internship_agreement)
       end
 
       # 0: no magic magic_link_tracker - status quo - default value is 0
