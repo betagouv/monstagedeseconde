@@ -37,9 +37,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test 'GET account_path(section: :school) as SchoolManagement' do
     school = create(:school, :with_school_manager)
-    [school.school_manager,
+    [ school.school_manager,
      create(:teacher, school:),
-     create(:other, school:)].each do |role|
+     create(:other, school:) ].each do |role|
       sign_in(role)
       get account_path(section: 'school')
     end
@@ -419,9 +419,18 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     post dismiss_modal_info_path(params: { user: { show_modal_info: false } })
     assert_response :success
     refute employer.reload.show_modal_info
-    
+
     get account_path(section: 'password')
     refute_select('div[data-open-modal-dsfr-is-open-value="true"]', {}, 'info modal should be dismissed')
     ENV['SIGNATURE_INFO'] = 'false'
+  end
+
+  test 'GET account_path(section: :identity) as employer does not show legal representative fields' do
+    employer = create(:employer)
+    sign_in(employer)
+    get account_path(section: 'identity')
+    assert_response :success
+    assert_select 'input[name="user[legal_representative_email]"]', false
+    assert_select 'input[name="user[legal_representative_full_name]"]', false
   end
 end
