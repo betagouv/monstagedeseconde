@@ -130,6 +130,7 @@ RailsAdmin.config do |config|
     'Supprimer un étudiant, un employeur' => '/utilisateurs/anonymiseur',
     'Tranformer un compte' => '/utilisateurs/transform_input',
     'Stats' => stats_path,
+    'Internats' => '/reporting/internats',
     'Sidekiq' => '/sidekiq',
     'Feature flip' => '/admin/flipper/',
     'AB Testing' => '/split'

@@ -136,6 +136,17 @@ fr:
         one: Semaine
         other: Semaines
     attributes:
+      boarding_house:
+        name: Nom
+        street: Adresse
+        zipcode: Code postal
+        city: Ville
+        department: Département
+        contact_phone: Téléphone de contact
+        contact_email: Email de contact
+        available_places: Places disponibles
+        reference_date: Date de référence
+        coordinates: Coordonnées GPS
       area_notification:
         area: Espace
         email: Courriel
@@ -535,11 +546,12 @@ fr:
           school_manager: Chef d'établissement
           employer: Employeur
           other: Autre
-          signatory_ip: IP du signataire
-          signature_date: Date de signature
-          signature_phone_number: Numéro de téléphone du signataire
-          user_id: ID de l'utilisateur
           student_legal_representative_full_name: Nom complet du représentant légal de l'élève
+        signatory_ip: IP du signataire
+        signature_date: Date de signature
+        signature_phone_number: Numéro de téléphone du signataire
+        user_id: ID de l'utilisateur
+        student_legal_representative_full_name: Nom complet du représentant légal de l'élève
       user:
         accept_terms: "Conditions d'utilisation"
         anonymized: Anonymisé

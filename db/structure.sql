@@ -17,24 +17,10 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
-
-
---
 -- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
 --
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
@@ -45,24 +31,10 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
-
-
---
 -- Name: unaccent; Type: EXTENSION; Schema: -; Owner: -
 --
 
 CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
-
-
---
--- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
---
-
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -515,6 +487,47 @@ CREATE SEQUENCE public.area_notifications_id_seq
 --
 
 ALTER SEQUENCE public.area_notifications_id_seq OWNED BY public.area_notifications.id;
+
+
+--
+-- Name: boarding_houses; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.boarding_houses (
+    id bigint NOT NULL,
+    name character varying NOT NULL,
+    street character varying,
+    zipcode character varying NOT NULL,
+    city character varying NOT NULL,
+    department character varying NOT NULL,
+    contact_phone character varying,
+    contact_email character varying,
+    coordinates public.geography(Point,4326),
+    available_places integer DEFAULT 0,
+    reference_date date,
+    academy_id bigint,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: boarding_houses_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.boarding_houses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: boarding_houses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.boarding_houses_id_seq OWNED BY public.boarding_houses.id;
 
 
 --
@@ -2693,6 +2706,13 @@ ALTER TABLE ONLY public.area_notifications ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
+-- Name: boarding_houses id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.boarding_houses ALTER COLUMN id SET DEFAULT nextval('public.boarding_houses_id_seq'::regclass);
+
+
+--
 -- Name: class_rooms id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3132,6 +3152,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 ALTER TABLE ONLY public.area_notifications
     ADD CONSTRAINT area_notifications_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: boarding_houses boarding_houses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.boarding_houses
+    ADD CONSTRAINT boarding_houses_pkey PRIMARY KEY (id);
 
 
 --
@@ -3656,6 +3684,20 @@ CREATE UNIQUE INDEX index_area_notifications_on_user_and_area ON public.area_not
 --
 
 CREATE INDEX index_area_notifications_on_user_id ON public.area_notifications USING btree (user_id);
+
+
+--
+-- Name: index_boarding_houses_on_academy_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_boarding_houses_on_academy_id ON public.boarding_houses USING btree (academy_id);
+
+
+--
+-- Name: index_boarding_houses_on_coordinates; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_boarding_houses_on_coordinates ON public.boarding_houses USING gist (coordinates);
 
 
 --
@@ -4695,6 +4737,14 @@ ALTER TABLE ONLY public.url_shrinkers
 
 
 --
+-- Name: boarding_houses fk_rails_1651afe968; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.boarding_houses
+    ADD CONSTRAINT fk_rails_1651afe968 FOREIGN KEY (academy_id) REFERENCES public.academies(id);
+
+
+--
 -- Name: team_member_invitations fk_rails_16e04ba94e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5293,6 +5343,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260309162833'),
 ('20260306100239'),
 ('20260203214306'),
 ('20260126172713'),
