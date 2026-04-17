@@ -77,39 +77,33 @@ module Dashboard::Stepper
       sector = create(:sector)
       sign_in(employer)
 
-         geocoder_response = {
-        status: 200,
-        body:{
-          "lat": 48,
-          "lon": 2
-        }.to_json
-      }
-      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=75001%20Paris').to_return(geocoder_response)
-      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=75001,%20France').to_return(geocoder_response)
-      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=75001%20Paris,%20,%2075001,%20France').to_return(geocoder_response)
-
-      assert_difference('Entreprise.count') do
-        post(
-          dashboard_stepper_entreprises_path(internship_occupation_id: internship_occupation.id),
-          params: {
-            entreprise: {
-              internship_occupation_id: internship_occupation.id,
-              siret: '12345678901234',
-              employer_name: 'Test',
-              entreprise_chosen_full_address: '75001 Paris',
-              contact_phone: '0123456789',
-              is_public: false,
-              sector_id: sector.id,
-              workspace_conditions: 'Environnement de travail',
-              workspace_accessibility: 'Accessibilité du poste',
-              code_ape: '99.XXX'
-            }
-          }
-        )
-        assert_redirected_to new_dashboard_stepper_planning_path(
-          entreprise_id: Entreprise.last.id
-        )
-        assert_equal "Les informations de l'entreprise ont bien été enregistrées", flash[:notice]
+      geocoder_result = Struct.new(:city).new('Paris')
+      Geocoder.stub(:search, [ geocoder_result ]) do
+        Geofinder.stub(:coordinates, [ 48, 2 ]) do
+          assert_difference('Entreprise.count') do
+            post(
+              dashboard_stepper_entreprises_path(internship_occupation_id: internship_occupation.id),
+              params: {
+                entreprise: {
+                  internship_occupation_id: internship_occupation.id,
+                  siret: '12345678901234',
+                  employer_name: 'Test',
+                  entreprise_chosen_full_address: '75001 Paris',
+                  contact_phone: '0123456789',
+                  is_public: false,
+                  sector_id: sector.id,
+                  workspace_conditions: 'Environnement de travail',
+                  workspace_accessibility: 'Accessibilité du poste',
+                  code_ape: '99.XXX'
+                }
+              }
+            )
+            assert_redirected_to new_dashboard_stepper_planning_path(
+              entreprise_id: Entreprise.last.id
+            )
+            assert_equal "Les informations de l'entreprise ont bien été enregistrées", flash[:notice]
+          end
+        end
       end
 
       entreprise = Entreprise.last
@@ -135,8 +129,8 @@ module Dashboard::Stepper
 
       geocoder_response = {
         status: 200,
-        body:{
-          "error": "wrong address"
+        body: {
+          "error": 'wrong address'
         }.to_json
       }
       stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=xxxx').to_return(geocoder_response)
