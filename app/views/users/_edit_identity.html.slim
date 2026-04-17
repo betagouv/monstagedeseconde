@@ -180,13 +180,12 @@
                             required: true
         .col-md-6.col-xs-12
           .fr-input-group.fr-mb-1w
-            = f.label :legal_representative_full_name, class: 'fr-label', for: 'legal_representative_full_name' do
+            = f.label :legal_representative_full_name, class: 'fr-label', for: 'user_legal_representative_full_name' do
               = 'Nom du représentant légal *'
-            = f.text_field :legal_representative_full_name,
-                           readonly: true,
-                           class: 'fr-input text-grey-disabled',
-                           required: true
-
+            - options = { class: 'fr-input', required: true, class: 'fr-input text-grey-disabled' }
+            - if current_user.student? && current_user.legal_representative_full_name.present?
+              - options.merge!(readonly: true)
+            = f.text_field :legal_representative_full_name, options
     .row.fr-mt-5w
       .col-md-6.col-xs-12
         .actions.d-flex.d-sm-block
