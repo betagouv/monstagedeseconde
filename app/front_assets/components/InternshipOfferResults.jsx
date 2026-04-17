@@ -91,20 +91,22 @@ const InternshipOfferResults = ({
 
   const ClickMap = ({ internshipOffers, boardingHouses, showBoardingHouses, recenterMap }) => {
     if (isMobile()) {return null };
+    if (!recenterMap) return null;
 
-    if (internshipOffers.length && recenterMap) {
-      const map = useMap();
-      const bounds = internshipOffers.map((internshipOffer) => [
-        internshipOffer.lat,
-        internshipOffer.lon,
-      ]);
+    const map = useMap();
+    const hasSearchLocation = Number(params.latitude) && Number(params.longitude);
+
+    if (hasSearchLocation && internshipOffers.length) {
+      // Zoom to fit the search area — offers + nearby boarding houses (already radius-filtered server-side)
+      const bounds = internshipOffers.map((o) => [o.lat, o.lon]);
       if (showBoardingHouses && boardingHouses.length) {
-        boardingHouses.forEach((bh) => {
-          bounds.push([bh.lat, bh.lon]);
-        });
+        boardingHouses.forEach((bh) => bounds.push([bh.lat, bh.lon]));
       }
       map.fitBounds(bounds);
-      // L.tileLayer.provider('CartoDB.Positron').addTo(map); MAP STYLE
+    } else {
+      // No search location: stay centered on metropolitan France instead of
+      // stretching bounds to include DOM-TOM boarding houses.
+      map.setView(center, 6);
     }
 
     setTimeout(() => setNewDataFetched(false), 100);

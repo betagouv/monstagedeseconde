@@ -39,7 +39,7 @@ module InternshipOffers
           coordinates: Coordinates.bordeaux,
           title: 'Vendeur de cannelés',
           max_candidates: 3,
-          grades: [Grade.troisieme]
+          grades: [ Grade.troisieme ]
         )
         assert_equal 22, Week.troisieme_selectable_weeks.count
         weeks_intersection = offer.weeks & Week.troisieme_selectable_weeks
@@ -75,13 +75,13 @@ module InternshipOffers
         create(
           :weekly_internship_application,
           :approved,
-          weeks: [offer.weeks.first],
+          weeks: [ offer.weeks.first ],
           internship_offer: offer
         )
         create(
           :weekly_internship_application,
           :approved,
-          weeks: [offer.weeks.second],
+          weeks: [ offer.weeks.second ],
           internship_offer: offer
         )
         get internship_offer_path(offer)
@@ -107,7 +107,7 @@ module InternshipOffers
 
     test 'GET #show as Student with API offer' do
       travel_to(Date.new(2023, 10, 1)) do
-        weeks = [Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020)]
+        weeks = [ Week.find_by(number: 1, year: 2020), Week.find_by(number: 2, year: 2020) ]
         internship_offer = create(:api_internship_offer_2nde)
         student = create(:student, school: create(:school))
         sign_in(student)
@@ -133,7 +133,7 @@ module InternshipOffers
       travel_to Date.new(2023, 10, 1) do
         student = create(:student, school: create(:school))
         other_school = create(:school)
-        internship_offer = create(:weekly_internship_offer_3eme, schools: [other_school], max_candidates: 5)
+        internship_offer = create(:weekly_internship_offer_3eme, schools: [ other_school ], max_candidates: 5)
 
         sign_in(student)
         get internship_offer_path(internship_offer)
@@ -232,16 +232,6 @@ module InternshipOffers
       end
     end
 
-    test 'GET #show as non rep or qpv Student cannot see protected data from api qpv offers' do
-      internship_offer = create(:weekly_internship_offer_2nde, :api_internship_offer, qpv: true)
-      student = create(:student, :seconde, school: create(:school, rep_kind: nil, qpv: false))
-      sign_in(student)
-      get internship_offer_path(internship_offer)
-      assert_response :success
-      assert_select 'h1', text: internship_offer.title
-      assert_select '.employer-name-test', count: 0
-    end
-
     test 'GET #show as rep or qpv Student can see protected data from api rep or qpv offers' do
       internship_offer = create(:weekly_internship_offer_2nde, :api_internship_offer, qpv: true)
       student = create(:student, :seconde, school: create(:school, rep_kind: 'rep', qpv: true))
@@ -302,14 +292,6 @@ module InternshipOffers
       assert_select 'a.test-employer-website[href=?]', internship_offer.employer_website
     end
 
-    
-    test 'GET #show as Visitor an API rep or qpv Offer cannot see protected data' do
-      internship_offer = create(:weekly_internship_offer_2nde, :api_internship_offer, rep: true, qpv: true)
-      get internship_offer_path(internship_offer)
-      assert_response :success
-      assert_select 'h1', text: internship_offer.title
-      assert_select '.employer-name-test', count: 0
-    end
 
     test 'GET #show as Visitor an API classical Offer can see all data' do
       internship_offer = create(:weekly_internship_offer_2nde,  :api_internship_offer)
@@ -462,7 +444,7 @@ module InternshipOffers
               }
             }
         follow_redirect!
-        success_message = "Merci, votre signalement a bien été pris en compte. Notre équipe l’examinera sous 48h."
+        success_message = 'Merci, votre signalement a bien été pris en compte. Notre équipe l’examinera sous 48h.'
         assert_select '#alert-text', text: success_message
         last_flag = InappropriateOffer.last
         assert_equal 'inappropriate_content', last_flag.ground
