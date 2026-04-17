@@ -7,7 +7,7 @@ tr class="test-internship-offer test-internship-offer-#{employer_internship_offe
         - badge = employer_internship_offer.presenter.title_badge
         = "#{badge} #{employer_internship_offer.title}".strip.html_safe
         br
-        = employer_internship_offer.city.capitalize
+        = employer_internship_offer.display_city.capitalize
 
 
   - ok_applications_count = cols[:approved_applications_count].gsub('&nbsp;', ' ').gsub('<br />', ' ')

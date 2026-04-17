@@ -114,8 +114,4 @@ module InternshipOffersHelper
   def select_weekly_end(internship_offer)
     internship_offer.weekly_planning? ? internship_offer.weekly_hours.try(:last) || '17:00' : '--'
   end
-
-  def hide_data_for_non_rep_or_qpv_students(internship_offer, current_user)
-    internship_offer.rep_or_qpv? && !current_user.try(:student_rep_or_qpv?)
-  end
 end
