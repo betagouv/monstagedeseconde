@@ -2,7 +2,7 @@ def populate_internship_offers
   current_school_year = SchoolYear::Current.new.offers_beginning_of_period
   seconde_weeks = SchoolTrack::Seconde.both_weeks
   troisieme_weeks = Week.troisieme_weeks.to_a
-  all_weeks = seconde_weeks + troisieme_weeks
+  all_weeks = troisieme_weeks + seconde_weeks # order matters here
   # TODO: period is ignored for InternshipOffers::WeeklyFramed
   # public sector
   # 1
@@ -190,7 +190,7 @@ def populate_internship_offers
     siret:,
     sector: Sector.first,
     is_public: false,
-    title: '(2de) Stage editeur - A la recherche du temps passé par les collaborateurs',
+    title: '(2de 3e) Stage editeur - A la recherche du temps passé par les collaborateurs',
     description: "Stage organisé par la DRAFPIC - HDF, avec le lycée Pasteur\n\nLundi:\nLycée Pasteur, Hénin-Beaumont: matin accueil du stage, après midi: visite des plateaux techniques\n\nMardi :\nmatin: intervention FRTP et CMQ TP au Lycée Pasteur, après-midi: visite Centrale thermique CCG - EDF Bouchain\n\nMercredi:\nmatin: visite chantier TP entreprise Ramery, hôpital de Lens\n\nJeudi:\nLycée Pasteur, Hénin-Beaumont: camp Innovation Dreamakers\n\nVendredi:\nLycée Pasteur, Hénin-Beaumont, avec Dreamakers qui prend en mains:  matin: préparation de la restitution, après midi: restitution orale devant les familles et les partenaires",
     employer_description: "Du Temps pour moi est une agence mandataire de garde d'enfants à domicile. Notre activité consister à aider les familles de la métropole lilloise à trouver leur intervenant(e) à domicile pour la garde de leurs enfants de 0 à 16 ans.",
     employer_website: 'http://www.dtpm.fr/',
@@ -201,8 +201,8 @@ def populate_internship_offers
     entreprise_coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
     employer_name: 'Editegis',
     internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
-    weeks: seconde_weeks,
-    grades: [Grade.seconde],
+    weeks: all_weeks.last(15),
+    grades: [Grade.seconde, Grade.troisieme],
     entreprise_full_address: '129 rue brancion, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi",
     weekly_hours: ["09:00", "17:00"],
@@ -295,7 +295,7 @@ def populate_internship_offers
     school_year: 2024,
     sector: Sector.first,
     is_public: false,
-    title: "API - (2et3) Découverte des métiers administratifs de l'Education nationale",
+    title: "API - (4et3) Découverte des métiers administratifs de l'Education nationale",
     description: "La Direction des Services de l'Education Nationale de Seine-et-Marne (DSDEN) se compose de plusieurs services répartis sur 11 étages. Ses 240 agents  ...",
     employer_description: "Le centre de service IBM de Lille délivre des services d'infrastructure informatique.",
     street: '128 rue brancion',
@@ -307,7 +307,7 @@ def populate_internship_offers
     employer_name: 'Ministère de l\'Education Nationale',
     internship_offer_area_id: area_id,
     weeks: all_weeks,
-    grades: Grade.all,
+    grades: Grade.college,
     entreprise_full_address: '128 rue brancion, 75015 paris',
     lunch_break: "L'élève doit prévoir son repas de midi",
     weekly_hours: ["09:00", "17:00"]
@@ -493,7 +493,7 @@ def populate_internship_offers
     siret:,
     sector: Sector.first,
     is_public: false,
-    title: "API - (2et3) 2024 : Découverte des métiers administratifs de l'Education nationale ",
+    title: "API - (4et3) 2024 : Découverte des métiers administratifs de l'Education nationale ",
     description: "La Direction des Services de l'Education Nationale de Seine-et-Marne (DSDEN) se compose de plusieurs services répartis sur 11 étages. Ses 240 agents  ...",
     employer_description: "Le centre de service IBM de Lille délivre des services d'infrastructure informatique.",
     street: '128 rue brancion',
@@ -507,8 +507,8 @@ def populate_internship_offers
     school_year: 2024,
     period: 1,
     weeks: weeks,
+    grades: Grade.college,
     lunch_break: "L'élève doit prévoir son repas de midi",
-    grades: Grade.all,
     daily_hours: { "lundi": ["8:30","17:00"], "mardi": ["8:30","17:00"], "mercredi": ["8:30","17:00"], "jeudi": ["8:30","17:00"], "vendredi": ["8:30","17:00"]}
   )
 end

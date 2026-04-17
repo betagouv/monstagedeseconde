@@ -185,16 +185,26 @@ module Api
 
       def check_params_validity
         check_presence_of_params
+        check_college_xor_lycee
         check_grades_and_weeks_validity
       end
 
+      def check_college_xor_lycee
+        return unless grade_seconde? && grade_troisieme_or_quatrieme?
+
+        render_error(
+          code: 'WRONG_PARAMS',
+          error: 'Grades must be either college or lycee, not both',
+          status: :unprocessable_entity
+        )
+      end
+
       def check_grades_and_weeks_validity
-        is_seconde = params[:internship_offer][:grades].include?('seconde')
         has_all_mandatory_weeks = InternshipOffers::Api.mandatory_seconde_weeks.all? do |week|
           params[:internship_offer][:weeks].include?(week)
         end
 
-        return unless is_seconde && !has_all_mandatory_weeks
+        return unless grade_seconde? && !has_all_mandatory_weeks
 
         render_error(
           code: 'WRONG_PARAMS',
@@ -214,6 +224,16 @@ module Api
         required_params.each do |param|
           raise ActionController::ParameterMissing, param unless params[:internship_offer][param]
         end
+      end
+
+      private
+
+      def grade_seconde?
+        params[:internship_offer][:grades].include?('seconde')
+      end
+
+      def grade_troisieme_or_quatrieme?
+        params[:internship_offer][:grades].any? { |grade| %w[troisieme quatrieme].include?(grade) }
       end
     end
   end

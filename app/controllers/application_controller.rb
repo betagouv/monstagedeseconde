@@ -110,9 +110,9 @@ class ApplicationController < ActionController::Base
   def get_banner_message
     @banner_message = if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
                         nil
-                      else
+    else
                         message_from_prismic
-                      end
+    end
   end
 
   private
@@ -125,9 +125,9 @@ class ApplicationController < ActionController::Base
   end
 
   def message_from_prismic
-    # api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
-    # response = api.query([Prismic::Predicates.at('document.type', 'top_banner')])
-    # response.results.first
+    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
+    response = api.query([ Prismic::Predicates.at('document.type', 'top_banner') ])
+    response.results.first
   end
 
   def check_school_requested
@@ -159,13 +159,13 @@ class ApplicationController < ActionController::Base
     return unless current_user
 
     cookies[:user_type] = case current_user
-                          when Users::Student
+    when Users::Student
                             'student'
-                          when Users::SchoolManagement
+    when Users::SchoolManagement
                             'school_management'
-                          else
+    else
                             'other'
-                          end
+    end
     Rails.logger.info("User type stored before logout: #{cookies[:user_type]}")
   end
 

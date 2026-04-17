@@ -70,7 +70,8 @@ class Ability
             see_dashboard_administrations_summary
             see_dashboard_associations_summary
             anonymize_user
-            transform_user], User
+            transform_user
+            manage_boarding_houses], User
     can :manage, Operator
     can :read_employer_name, InternshipOffer
     can :manage, InappropriateOffer

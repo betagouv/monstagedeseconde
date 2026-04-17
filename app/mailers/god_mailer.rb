@@ -132,7 +132,7 @@ class GodMailer < ApplicationMailer
     @employer              = internship_agreement.employer
     @school_manager        = internship_agreement.school_management_representative
     @last_signature        = last_signature
-    @last_signature_role   = last_signature.nil? ? nil : I18n.t("active_record.models.#{last_signature.signatory_role.humanize.downcase}")
+    @last_signature_role   = last_signature.nil? ? nil : I18n.t("activerecord.attributes.signature.signatory_role.#{last_signature.signatory_role.downcase}")
     @url = dashboard_internship_agreements_url(
       uuid: internship_agreement.uuid,
     ).html_safe
@@ -191,11 +191,9 @@ class GodMailer < ApplicationMailer
 
     Rails.logger.info("no representatives found for notify_student_legal_representatives_can_sign_email") if recipients_email.empty?
 
-    @url = new_dashboard_students_internship_agreement_url(
-      access_token: internship_agreement.access_token || '' ,
+    @url = public_internship_agreement_url(
       uuid: internship_agreement.uuid,
-      student_id: student.id,
-      signator_email: representative[:email],
+      access_token: internship_agreement.access_token || '',
       student_legal_representative_nr: representative[:nr]
     ).html_safe
     send_email(
@@ -216,11 +214,9 @@ class GodMailer < ApplicationMailer
 
     Rails.logger.info("no representatives found for notify_student_legal_representatives_can_sign_email") if recipients_email.empty?
 
-    @url = new_dashboard_students_internship_agreement_url(
-      access_token: internship_agreement.access_token || '' ,
+    @url = public_internship_agreement_url(
       uuid: internship_agreement.uuid,
-      student_id: student.id,
-      signator_email: representative[:email],
+      access_token: internship_agreement.access_token || '',
       student_legal_representative_nr: representative[:nr]
     ).html_safe
     send_email(

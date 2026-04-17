@@ -5,6 +5,7 @@ module InternshipOffers
     has_one :multi_coordinator
 
     def from_multi? = true
+    def display_city = corporations.first&.corporation_city || city
     
     # Validations to satisfy InternshipOffer requirements
     validates :coordinates, presence: true

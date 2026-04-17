@@ -3,9 +3,11 @@
 class InternshipOffersController < ApplicationController
   OPTIONAL_SEARCH_PARAMS = %i[keyword sector_ids].freeze
 
-  layout "search", only: :index
+  layout 'search', only: :index
 
-  with_options only: [:show] do
+  before_action :prepare_search_data, only: %i[index search]
+
+  with_options only: [ :show ] do
     before_action :set_internship_offer,
                   :check_internship_offer_is_not_discarded_or_redirect,
                   :check_internship_offer_is_published_or_redirect
@@ -14,18 +16,6 @@ class InternshipOffersController < ApplicationController
   end
 
   def index
-    @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
-    @preselected_weeks_list = @preselected_weeks_list.where(id: params[:week_ids]) if params[:week_ids].present?
-    @sectors = Sector.all.order(:name)
-    params[:grade_id] = Grade.seconde.id if params[:grade_id].blank?
-    @school_weeks_list ||= Week.none
-    @preselected_weeks_list ||= Week.none
-    @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
-    @preselected_weeks_list_array = Presenters::WeekList.new(weeks: @preselected_weeks_list.to_a).detailed_attributes
-    @seconde_week_ids = Week.seconde_weeks.map(&:id)
-    @troisieme_week_ids = Week.troisieme_selectable_weeks.map(&:id)
-    @student_grade_id = current_user&.student? ? current_user.grade_id : nil
-
     respond_to do |format|
       format.html do
         @params = search_query_params.merge(week_ids: params[:week_ids])
@@ -41,7 +31,7 @@ class InternshipOffersController < ApplicationController
           if current_user&.school&.try(:qpv)
             # Si c'est un PaginatableArray, on trie manuellement; sinon on utilise reorder
             if @internship_offers.respond_to?(:reorder)
-              @internship_offers = @internship_offers.reorder("qpv DESC NULLS LAST")
+              @internship_offers = @internship_offers.reorder('qpv DESC NULLS LAST')
             else
               sorted = @internship_offers.to_a.sort_by { |offer| offer.qpv ? 0 : 1 }
               @internship_offers = Kaminari.paginate_array(sorted).page(params[:page]).per(InternshipOffer::PAGE_SIZE)
@@ -97,6 +87,10 @@ class InternshipOffersController < ApplicationController
     end
   end
 
+  def search
+    @params = search_query_params
+  end
+
   def show
     @previous_internship_offer = finder.next_from(from: @internship_offer)
     @next_internship_offer = finder.previous_from(from: @internship_offer)
@@ -124,20 +118,20 @@ class InternshipOffersController < ApplicationController
     }
     parameters =  flag_params.merge(offer_and_userid_parameters)
     existing_report = InappropriateOffer.find_by(offer_and_userid_parameters)
-    
+
     if current_user.present? && existing_report
-      alert = "Vous avez déjà signalé cette offre comme inappropriée."
-      return redirect_to internship_offer_path(@internship_offer), alert: alert
+      alert = 'Vous avez déjà signalé cette offre comme inappropriée.'
+      redirect_to internship_offer_path(@internship_offer), alert: alert
     elsif Flipper.enabled?(:flag_internship_offer)
       new_report = InappropriateOffer.new(parameters)
       if new_report.valid?
         new_report.save
         GodMailer.offer_was_flagged(new_report).deliver_later
-        notice = "Merci, votre signalement a bien été pris en compte. Notre équipe l’examinera sous 48h."
+        notice = 'Merci, votre signalement a bien été pris en compte. Notre équipe l’examinera sous 48h.'
         redirect_to internship_offer_path(@internship_offer, sans_signalement: true), notice: notice
       else
         @inappropriate_offer = new_report
-        return render :show
+        render :show
       end
     else
       flash[:alert] = "Le signalement des offres n'est pas disponible pour le moment."
@@ -147,13 +141,27 @@ class InternshipOffersController < ApplicationController
 
   private
 
+  def prepare_search_data
+    @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
+    @preselected_weeks_list = @preselected_weeks_list.where(id: params[:week_ids]) if params[:week_ids].present?
+    @sectors = Sector.all.order(:name)
+    params[:grade_id] = Grade.seconde.id if params[:grade_id].blank?
+    @school_weeks_list ||= Week.none
+    @preselected_weeks_list ||= Week.none
+    @school_weeks_list_array = Presenters::WeekList.new(weeks: @school_weeks_list.to_a).detailed_attributes
+    @preselected_weeks_list_array = Presenters::WeekList.new(weeks: @preselected_weeks_list.to_a).detailed_attributes
+    @seconde_week_ids = Week.seconde_weeks.map(&:id)
+    @troisieme_week_ids = Week.troisieme_selectable_weeks.map(&:id)
+    @student_grade_id = current_user&.student? ? current_user.grade_id : nil
+  end
+
   def set_internship_offer
     @internship_offer = InternshipOffer.find(params[:id])
   end
 
   def search_query_params
     common_query_params = %i[city grade_id latitude longitude page radius keyword]
-    common_query_params += [:school_year] if current_user_or_visitor.god? || current_user_or_visitor.statistician?
+    common_query_params += [ :school_year ] if current_user_or_visitor.god? || current_user_or_visitor.statistician?
     params.permit(*common_query_params, week_ids: [], sector_ids: [])
   end
 
@@ -163,13 +171,13 @@ class InternshipOffersController < ApplicationController
     redirect_to(
       user_presenter.default_internship_offers_path,
       flash: {
-        warning: "Cette offre a été supprimée et n'est donc plus accessible",
+        warning: "Cette offre a été supprimée et n'est donc plus accessible"
       },
     )
   end
 
   def check_internship_offer_is_published_or_redirect
-    from_email = [params[:origin], params[:origine]].include?("email")
+    from_email = [ params[:origin], params[:origine] ].include?('email')
     authenticate_user! if current_user.nil? && from_email
     return if can?(:create, @internship_offer)
     return if @internship_offer.published?
@@ -204,7 +212,7 @@ class InternshipOffersController < ApplicationController
 
     unless has_optional_filters
       # Pas de filtres optionnels, recherche simple avec les 3 paramètres de base
-      return [finder.all.includes(:sector), false, seats_finder]
+      return [ finder.all.includes(:sector), false, seats_finder ]
     end
 
     # Recherche avec les 5 paramètres (incluant mot-clé et secteur)
@@ -239,7 +247,7 @@ class InternshipOffersController < ApplicationController
     # (le fallback a été tenté, qu'il ait trouvé des résultats ou non)
     is_fallback = primary_results.empty?
 
-    [paginated_results, is_fallback, combined_seats_finder]
+    [ paginated_results, is_fallback, combined_seats_finder ]
   end
 
   def increment_internship_offer_view_count
@@ -271,7 +279,7 @@ class InternshipOffersController < ApplicationController
         qpv: internship_offer.qpv,
         rep: internship_offer.rep,
         is_authenticated: !!current_user,
-        is_student: current_user&.student?,
+        is_student: current_user&.student?
       }
     end
   end
@@ -285,7 +293,7 @@ class InternshipOffersController < ApplicationController
       prevPage: offers.present? ? offers.prev_page : nil,
       isFirstPage: offers.present? ? offers.first_page? : false,
       isLastPage: offers.present? ? offers.last_page? : false,
-      pageUrlBase: url_for(search_query_params.except("page")),
+      pageUrlBase: url_for(search_query_params.except('page'))
     }
   end
 
@@ -293,22 +301,9 @@ class InternshipOffersController < ApplicationController
     params.expect(inappropriate_offer: [:id, :ground, :details])
   end
 
-  def employer_name_presentation(internship_offer, current_user)
-    return 'Offreur masqué - connectez-vous' if hide_data_for_non_rep_or_qpv_students?(internship_offer, current_user)
-    internship_offer.employer_name
-  end
-
-  def hide_data_for_non_rep_or_qpv_students?(internship_offer, current_user)
-    internship_offer.from_api? && 
-      internship_offer.rep_or_qpv? && 
-      (!current_user&.try(:student?) || !current_user&.school&.rep_or_qpv?)
-  end
-
   def internship_offer_employer_name(internship_offer)
-    if internship_offer.from_multi?
-      internship_offer.corporations.pluck(:corporation_name).join(', ')
-    else
-      employer_name_presentation(internship_offer, current_user)
-    end
+    return internship_offer.employer_name unless internship_offer.from_multi?
+
+    internship_offer.corporations.pluck(:corporation_name).join(', ')
   end
 end

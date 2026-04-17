@@ -222,10 +222,8 @@ const SearchBar = ({
   };
 
   const handleSubmit = () => {
-    if(origin == 'homeStudent'){
+    if(origin == 'homeStudent' || origin === 'search'){
       Turbo.visit( `${window.location.origin}${'/offres-de-stage'}?${fetchSearchParamsFromUrl()}`)
-    } else if(origin === 'search'){
-      turboVisitsWithSearchParams(fetchSearchParamsFromUrl());
     }
   };
 
@@ -304,11 +302,11 @@ const SearchBar = ({
             uncheckAllWeeks={uncheckAllWeeks}
           />
         </div>
-        <div className="fr-col-sm-12 w-100 fr-col-lg-2 fr-hidden fr-unhidden-md">
+        <div className="fr-col-lg-2 fr-hidden fr-unhidden-md">
           <button
             onClick={handleSubmit}
             className="fr-btn fr-btn--icon-left fr-icon-search-line fr-mt-4w"
-            
+            id="test-mobile-submit-search"
           >
             Rechercher
           </button>
@@ -353,6 +351,18 @@ const SearchBar = ({
               updateSectorsInUrl(ids);
             }}
           />
+        </div>
+      </div>
+
+      <div className="fr-grid-row fr-grid-row--gutters fr-mt-2w fr-hidden-md fr-px-1w">
+        <div className="fr-col-12">
+          <button
+            onClick={handleSubmit}
+            className="fr-btn fr-btn--icon-left fr-icon-search-line search-submit-btn"
+            id="test-mobile-submit-search-bottom"
+          >
+            Rechercher
+          </button>
         </div>
       </div>
     </>
