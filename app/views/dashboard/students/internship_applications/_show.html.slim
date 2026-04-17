@@ -30,14 +30,14 @@
            sgid: sgid
   = render 'dashboard/internship_offers/internship_applications/action_modal_dialog',
            internship_application: internship_application,
-           aasm_target: :approve!,
-           aasm_notifier: aasm_notifier,
-           modal_id: "approve-internship-application-#{internship_application.id}",
-           modal_opener_label: "Confirmer",
-           message: "En choisissant ce stage, <strong>toutes vos autres candidatures seront annulées et vous ne pourrez pas revenir en arrière.</strong>".html_safe,
-           rich_text: false,
-           subtitle: "",
-           sgid: sgid
+	           aasm_target: :approve!,
+	           aasm_notifier: aasm_notifier,
+	           modal_id: "approve-internship-application-#{internship_application.id}",
+	           modal_opener_label: "Confirmer",
+	           message: current_user.validation_message_for_internship_application(internship_application).html_safe,
+	           rich_text: false,
+	           subtitle: "",
+	           sgid: sgid
 - elsif current_user.employer_like?
   .fr-mb-5w
       = link_to dashboard_candidatures_path,
