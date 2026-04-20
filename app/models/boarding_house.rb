@@ -13,7 +13,6 @@ class BoardingHouse < ApplicationRecord
   validates :city, presence: true
   validates :department, presence: true
   validates :available_places, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
-  validates :contact_email, format: { with: Devise.email_regexp }, allow_blank: true
   validate :department_belongs_to_academy
   validate :coordinates_must_be_present
 
@@ -51,16 +50,46 @@ class BoardingHouse < ApplicationRecord
     return if coordinates_present? && (new_record? || !address_changed?)
     return if full_address.blank?
 
-    coords = lookup_coordinates(full_address)
+    coords = lookup_coordinates
     self.coordinates = { latitude: coords[0], longitude: coords[1] } if coords
   end
 
-  def lookup_coordinates(address)
-    Geocoder.coordinates(address, lookup: :ban_data_gouv_fr) ||
-      Geocoder.coordinates(address)
+  # BAN's scoring ignores zipcode/city when they appear as free text,
+  # so a street name that happens to exist in another commune can hijack
+  # the result. We rely on the `postcode` filter to constrain BAN, and
+  # cascade down to commune-level lookups when the precise address can't
+  # be resolved (bad/CEDEX zipcode, CEDEX city suffix, etc.).
+  def lookup_coordinates
+    clean_city = city_without_cedex
+    zip = zipcode.to_s.strip
+    street_str = street.to_s.strip
+
+    if street_str.present?
+      street_query = [street_str, clean_city].reject(&:blank?).join(' ')
+      postcode_variants(zip).each do |pc|
+        coords = Geocoder.coordinates(street_query, lookup: :ban_data_gouv_fr, params: { postcode: pc })
+        return coords if coords
+      end
+    end
+
+    commune_query = clean_city.presence || zip.presence
+    Geocoder.coordinates(commune_query, lookup: :ban_data_gouv_fr) if commune_query
   rescue StandardError => e
-    Rails.logger.warn("[BoardingHouse#geocode] failed for #{address.inspect}: #{e.message}")
+    Rails.logger.warn("[BoardingHouse#geocode] failed for #{full_address.inspect}: #{e.message}")
     nil
+  end
+
+  def city_without_cedex
+    city.to_s.sub(/\s+CEDEX(\s*\d*)?\s*\z/i, '').strip
+  end
+
+  def postcode_variants(zip)
+    return [] if zip.blank?
+
+    variants = [zip]
+    base = zip.sub(/\d{2}\z/, '00')
+    variants << base if base.match?(/\A\d{5}\z/) && base != zip
+    variants
   end
 
   def coordinates_present?
