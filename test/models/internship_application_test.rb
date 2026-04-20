@@ -547,6 +547,35 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
   end
 
+  test 'student_email_not_taken validation rejects email already used by another user' do
+    existing_user = create(:employer, email: 'taken@example.com')
+    application = build(:weekly_internship_application, student_email: 'taken@example.com')
+
+    assert_not application.valid?
+    assert_includes application.errors[:student_email].join, 'déjà utilisée par un autre compte'
+  end
+
+  test 'student_email_not_taken validation rejects email case-insensitively' do
+    existing_user = create(:employer, email: 'Taken@Example.com')
+    application = build(:weekly_internship_application, student_email: 'taken@example.com')
+
+    assert_not application.valid?
+    assert_includes application.errors[:student_email].join, 'déjà utilisée par un autre compte'
+  end
+
+  test 'student_email_not_taken validation allows email used by the student themselves' do
+    student = create(:student_with_class_room_3e, email: 'myself@example.com')
+    application = build(:weekly_internship_application, student: student, student_email: 'myself@example.com')
+
+    assert application.valid?
+  end
+
+  test 'student_email_not_taken validation allows unique email' do
+    application = build(:weekly_internship_application, student_email: 'unique-new-email@example.com')
+
+    assert application.valid?
+  end
+
   test 'as a team member, with notifications off, I should not receive any ' \
        'email when the internship application is restored' do
     employer_1 = create(:employer)
