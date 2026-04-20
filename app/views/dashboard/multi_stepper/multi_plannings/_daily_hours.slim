@@ -36,6 +36,15 @@ div.fr-my-2w data-controller="daily-hours"
                       aria: { label: "Selectionner une heure de fin de stage pour tous les jours de la période de stage" }, id: "#{form.object_name}_weekly_hours_end" }
 
   #daily-planning-container[class="mt-3 fr-my-2w #{'d-none' unless form.object.daily_planning?}"]
+    = text_field_tag :daily_hours_validator,
+                     '',
+                     style: 'position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0;',
+                     tabindex: '-1',
+                     readonly: true,
+                     aria: { hidden: true },
+                     data: { :'daily-hours-target' => 'validator',
+                             :'mandatory-fields-target' => 'mandatoryField',
+                             action: 'change->mandatory-fields#fieldChange' }
     - %w(lundi mardi mercredi jeudi vendredi samedi).each_with_index do |weekday, i|
       .row.mt-3
         .col-3 style="display: flex;align-items: center;justify-content: start;"
@@ -50,8 +59,7 @@ div.fr-my-2w data-controller="daily-hours"
                          disabled: disabled,
                          data: { :'daily-hours-target' => "dailyHoursStart",
                                  i: i,
-                                 action: "change->daily-hours#dailyHoursStartChange change->mandatory-fields#fieldChange",
-                                 :'mandatory-fields-target' => "mandatoryField" },
+                                 action: "change->daily-hours#dailyHoursStartChange" },
                          aria: { label: "Selectionner une heure de debut de stage pour le #{weekday.capitalize}" }, id: "#{form.object_name}_daily_hours_#{weekday}_start"}
 
         .col-1 style="display: flex;align-items: center;justify-content: center;"
@@ -64,8 +72,7 @@ div.fr-my-2w data-controller="daily-hours"
                          disabled: disabled,
                          data: { :'daily-hours-target' => "dailyHoursEnd",
                                  i: i,
-                                 action: "change->daily-hours#dailyHoursEndChange change->mandatory-fields#fieldChange",
-                                 :'mandatory-fields-target' => "mandatoryField" },
+                                 action: "change->daily-hours#dailyHoursEndChange" },
                          aria: { label:"Selectionner une heure de fin de stage pour le #{weekday.capitalize}" }, id: "#{form.object_name}_daily_hours_#{weekday}_end"}
 
   .row
