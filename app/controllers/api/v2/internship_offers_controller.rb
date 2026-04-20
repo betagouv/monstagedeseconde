@@ -5,6 +5,8 @@ module Api
     class InternshipOffersController < Api::Shared::InternshipOffersController
       include Api::AuthV2
 
+      rescue_from Api::ValidationError, with: :render_validation_error_from_exception
+
       def search
         render_not_authorized and return unless current_api_user.operator.api_full_access
 
@@ -191,30 +193,6 @@ module Api
         check_grades_and_weeks_validity
       end
 
-      def check_college_xor_lycee
-        return unless grade_seconde? && grade_troisieme_or_quatrieme?
-
-        render_error(
-          code: 'WRONG_PARAMS',
-          error: 'Grades must be either college or lycee, not both',
-          status: :unprocessable_entity
-        )
-      end
-
-      def check_grades_and_weeks_validity
-        has_all_mandatory_weeks = InternshipOffers::Api.mandatory_seconde_weeks.all? do |week|
-          params[:internship_offer][:weeks].include?(week)
-        end
-
-        return unless grade_seconde? && !has_all_mandatory_weeks
-
-        render_error(
-          code: 'WRONG_PARAMS',
-          error: 'All mandatory weeks must be included for seconde grade',
-          status: :unprocessable_entity
-        )
-      end
-
       def check_presence_of_params
         required_params = %i[
           grades
@@ -228,6 +206,30 @@ module Api
         end
       end
 
+      def check_college_xor_lycee
+        return true unless grade_seconde? && grade_troisieme_or_quatrieme?
+
+        raise Api::ValidationError.new(
+          code: 'WRONG_PARAMS',
+          error: 'Grades must be either college or lycee, not both',
+          status: :unprocessable_entity
+        )
+      end
+
+      def check_grades_and_weeks_validity
+        has_all_mandatory_weeks = InternshipOffers::Api.mandatory_seconde_weeks.all? do |week|
+          params[:internship_offer][:weeks].include?(week)
+        end
+
+        return true unless grade_seconde? && !has_all_mandatory_weeks
+
+        raise Api::ValidationError.new(
+          code: 'WRONG_PARAMS',
+          error: 'All mandatory weeks must be included for seconde grade',
+          status: :unprocessable_entity
+        )
+      end
+
       private
 
       def grade_seconde?
@@ -236,6 +238,14 @@ module Api
 
       def grade_troisieme_or_quatrieme?
         params[:internship_offer][:grades].any? { |grade| %w[troisieme quatrieme].include?(grade) }
+      end
+
+      def render_validation_error_from_exception(exception)
+        render_error(
+          code: exception.code,
+          error: exception.error_message,
+          status: exception.status
+        )
       end
     end
   end
