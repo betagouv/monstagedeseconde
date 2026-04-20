@@ -107,6 +107,7 @@ group :development, :test do
   gem "byebug", platforms: %i[windows jruby]
   gem "pry-byebug"
   gem "ruby-lsp"
+  gem "rubocop-rails-omakase"
 end
 
 group :development do
