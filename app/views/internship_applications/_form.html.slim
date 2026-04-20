@@ -136,7 +136,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     value: f.object.student_address ||f.object.student.address,
                     label: "Votre adresse postale complète",
                     options: { required: true,
-                               maxlength: 300,
+                               maxlength: 170,
                                data: {:'mandatory-fields-target' => "mandatoryField",
                                       action: "input->mandatory-fields#fieldChange"} },
                     required: true,
