@@ -147,6 +147,10 @@ group :review do
   gem 'rest-client' # used by mailtrap for review apps
 end
 
+group :staging do
+  gem 'rest-client' # not sure still in use?
+end
+
 group :test, :development, :review do
   gem 'factory_bot_rails'
   gem 'ffaker'
