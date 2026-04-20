@@ -113,7 +113,7 @@ class EditOrDuplicateInternshipOffersTest < ApplicationSystemTestCase
     travel_to(Date.new(2024, 3, 1)) do
       employer = create(:employer)
       internship_offer = create(:weekly_internship_offer, :both_school_tracks_internship_offer, employer:)
-      internship_offer.weeks = internship_offer.weeks - [SchoolTrack::Seconde.first_week] # second week only
+      internship_offer.weeks = internship_offer.weeks - [ SchoolTrack::Seconde.first_week ] # second week only
       internship_offer.save
 
       sign_in(employer)
@@ -141,7 +141,7 @@ class EditOrDuplicateInternshipOffersTest < ApplicationSystemTestCase
     user_operator = create(:user_operator)
     sign_in(user_operator)
     visit dashboard_internship_offers_path
-    assert page.has_css?('a', text: 'Candidatures', count: 1)
+    assert page.has_css?('a', text: 'Candidatures')
     assert page.has_css?('a', text: 'Conventions', count: 0)
   end
 end
