@@ -1,0 +1,58 @@
+= form_with model: boarding_house, url: boarding_house.persisted? ? reporting_boarding_house_path(boarding_house) : reporting_boarding_houses_path, method: boarding_house.persisted? ? :patch : :post, data: { turbo: false } do |f|
+
+  - if boarding_house.errors.any?
+    .fr-alert.fr-alert--error.fr-mb-3w
+      h3.fr-alert__title
+        | Impossible d'enregistrer l'internat
+      - boarding_house.errors.full_messages.each do |msg|
+        p = msg
+
+  .fr-input-group.fr-mb-3w class=("#{'fr-input-group--error' if boarding_house.errors[:name].any?}")
+    = f.label :name, 'Nom de l\'établissement', class: 'fr-label'
+    = f.text_field :name, class: "fr-input #{'fr-input--error' if boarding_house.errors[:name].any?}"
+    - if boarding_house.errors[:name].any?
+      p.fr-error-text = boarding_house.errors[:name].first
+
+  .fr-input-group.fr-mb-3w class=("#{'fr-input-group--error' if boarding_house.errors[:street].any?}")
+    = f.label :street, 'Adresse', class: 'fr-label'
+    = f.text_field :street, class: "fr-input #{'fr-input--error' if boarding_house.errors[:street].any?}"
+
+  .row
+    .col-4
+      .fr-input-group.fr-mb-3w class=("#{'fr-input-group--error' if boarding_house.errors[:zipcode].any?}")
+        = f.label :zipcode, 'Code postal', class: 'fr-label'
+        = f.text_field :zipcode, class: "fr-input #{'fr-input--error' if boarding_house.errors[:zipcode].any?}"
+        - if boarding_house.errors[:zipcode].any?
+          p.fr-error-text = boarding_house.errors[:zipcode].first
+    .col-8
+      .fr-input-group.fr-mb-3w class=("#{'fr-input-group--error' if boarding_house.errors[:city].any?}")
+        = f.label :city, 'Ville', class: 'fr-label'
+        = f.text_field :city, class: "fr-input #{'fr-input--error' if boarding_house.errors[:city].any?}"
+        - if boarding_house.errors[:city].any?
+          p.fr-error-text = boarding_house.errors[:city].first
+
+  .row
+    .col-6
+      .fr-input-group.fr-mb-3w
+        = f.label :contact_phone, 'Téléphone de contact', class: 'fr-label'
+        = f.telephone_field :contact_phone, class: 'fr-input'
+    .col-6
+      .fr-input-group.fr-mb-3w class=("#{'fr-input-group--error' if boarding_house.errors[:contact_email].any?}")
+        = f.label :contact_email, 'Email de contact', class: 'fr-label'
+        = f.email_field :contact_email, class: "fr-input #{'fr-input--error' if boarding_house.errors[:contact_email].any?}"
+        - if boarding_house.errors[:contact_email].any?
+          p.fr-error-text = boarding_house.errors[:contact_email].first
+
+  .row
+    .col-6
+      .fr-input-group.fr-mb-3w
+        = f.label :available_places, 'Nombre de places disponibles', class: 'fr-label'
+        = f.number_field :available_places, class: 'fr-input', min: 0
+    .col-6
+      .fr-input-group.fr-mb-3w
+        = f.label :reference_date, 'Date de référence', class: 'fr-label'
+        = f.date_field :reference_date, class: 'fr-input'
+
+  .fr-mb-3w
+    = f.submit boarding_house.persisted? ? 'Mettre à jour' : 'Créer l\'internat', class: 'fr-btn'
+    = link_to 'Annuler', reporting_boarding_houses_path, class: 'fr-btn fr-btn--secondary fr-ml-2w'

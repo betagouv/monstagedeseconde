@@ -211,8 +211,8 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :weekly_framed, lambda {
-    where(type: [InternshipOffers::WeeklyFramed.name,
-                 InternshipOffers::Api.name])
+    where(type: [ InternshipOffers::WeeklyFramed.name,
+                 InternshipOffers::Api.name ])
   }
 
   scope :ignore_already_applied, lambda { |user:|
@@ -265,15 +265,12 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :seconde_and_troisieme, lambda {
-    joins(:grades,:internship_offer_grades)
-      .where(grades: { id: [Grade.seconde.id, Grade.troisieme.id, Grade.quatrieme.id] })
-      .group('internship_offers.id')
-      .having('COUNT(DISTINCT internship_offer_grades.grade_id) > 2')
+    seconde.where(id: InternshipOffer.troisieme_or_quatrieme.select(:id))
   }
 
   scope :seconde_and_troisieme_only, lambda {
     joins(:grades, :internship_offer_grades)
-      .where(grades: { id: [Grade.seconde.id, Grade.troisieme.id] })
+      .where(grades: { id: [ Grade.seconde.id, Grade.troisieme.id ] })
       .group('internship_offers.id')
       .having('COUNT(DISTINCT internship_offer_grades.grade_id) = 2')
       .having('SUM(CASE WHEN internship_offer_grades.grade_id = ? THEN 0 ELSE 1 END) = 0', Grade.quatrieme.id)
@@ -281,15 +278,15 @@ class InternshipOffer < ApplicationRecord
   # In production there's no offer that would match (seconde and troisieme) only without quatrieme
 
   scope :troisieme_or_quatrieme_only, lambda {
-    joins(:grades,:internship_offer_grades)
-    .where(grades: { id: [Grade.troisieme.id, Grade.quatrieme.id] })
+    joins(:grades, :internship_offer_grades)
+    .where(grades: { id: [ Grade.troisieme.id, Grade.quatrieme.id ] })
     .group('internship_offers.id')
     .having('COUNT(DISTINCT internship_offer_grades.grade_id) = ?', Grade.troisieme_et_quatrieme.size)
   }
   # In production there's no offer that would match one grade only (troisieme or quatrieme)
 
   scope :seconde_only, lambda {
-    joins(:grades,:internship_offer_grades)
+    joins(:grades, :internship_offer_grades)
     .where(grades: { id: Grade.seconde.id })
     .group('internship_offers.id')
     .having('COUNT(DISTINCT internship_offer_grades.grade_id) = 1')
@@ -367,6 +364,7 @@ class InternshipOffer < ApplicationRecord
   # -------------------------
   def from_doubling_task? = !!from_doubling_task || false
   def from_multi? = false
+  def display_city = city
   def still_unpublished?
     unpublished? || need_to_be_updated? || splitted?
   end
@@ -429,11 +427,11 @@ class InternshipOffer < ApplicationRecord
   end
 
   def seconde_school_track_week_1?
-    weeks & SchoolTrack::Seconde.both_weeks == [SchoolTrack::Seconde.first_week]
+    weeks & SchoolTrack::Seconde.both_weeks == [ SchoolTrack::Seconde.first_week ]
   end
 
   def seconde_school_track_week_2?
-    weeks & SchoolTrack::Seconde.both_weeks == [SchoolTrack::Seconde.second_week]
+    weeks & SchoolTrack::Seconde.both_weeks == [ SchoolTrack::Seconde.second_week ]
   end
 
   def fits_for_seconde?
@@ -540,9 +538,9 @@ class InternshipOffer < ApplicationRecord
     previous_description, new_description = description_previous_change
     previous_employer_description, new_employer_description = employer_description_previous_change
 
-    if [previous_title != new_title,
+    if [ previous_title != new_title,
         previous_description != new_description,
-        previous_employer_description != new_employer_description].any?
+        previous_employer_description != new_employer_description ].any?
       SyncInternshipOfferKeywordsJob.perform_later
     end
   end
@@ -681,11 +679,11 @@ class InternshipOffer < ApplicationRecord
 
     if sorted_grade_ids == Grade.all.ids.sort
       self.targeted_grades = 'seconde_troisieme_or_quatrieme'
-    elsif sorted_grade_ids == [Grade.troisieme.id, Grade.seconde.id].sort
+    elsif sorted_grade_ids == [ Grade.troisieme.id, Grade.seconde.id ].sort
       self.targeted_grades = 'seconde_troisieme_or_quatrieme'
     elsif sorted_grade_ids == Grade.troisieme_et_quatrieme.map(&:id).sort
       self.targeted_grades = 'troisieme_or_quatrieme'
-    elsif sorted_grade_ids == [Grade.seconde.id]
+    elsif sorted_grade_ids == [ Grade.seconde.id ]
       self.targeted_grades = 'seconde_only'
     else
       Rails.logger.error("Unknown grade_ids: #{grade_ids} for ##{id}")

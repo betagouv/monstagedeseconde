@@ -7,7 +7,7 @@ h1.fr-h3.text-dark = @internship_offer_area.name
               height: '255px',
               class: ''
   - if can?(:update, @internship_offer_area)
-    .fr-ml-6w.notifications data-controller="toggle-control"
+    .fr-ml-6w data-controller="toggle-control"
       h2.fr-h3.fr-mt-11w Qui va recevoir les notifications des <br/>candidatures pour cet espace ?
       - @internship_offer_area.area_notifications.each do |area_notification|
         = render 'dashboard/internship_offer_areas/area_notifications/toggle',

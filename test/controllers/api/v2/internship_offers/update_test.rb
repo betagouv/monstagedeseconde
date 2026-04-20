@@ -97,7 +97,7 @@ module Api
           end
           assert_response :bad_request
           assert_equal 'VALIDATION_ERROR', json_response['code']
-          assert_equal ['Description too long, allowed up 500 chars'],
+          assert_equal [ 'Description too long, allowed up 500 chars' ],
                        json_error['description'],
                        'bad description error '
         end
@@ -169,7 +169,6 @@ module Api
 
       test 'PATCH #update as operator can modify internship_offer sector' do
         travel_to Time.zone.local(2025, 3, 1) do
-
           patch api_v2_internship_offer_path(
             id: @internship_offer.remote_id,
             params: {
@@ -191,15 +190,16 @@ module Api
             params: {
               token: "Bearer #{@token}",
               internship_offer: {
-                grades: [Grade.find_by(short_name: 'seconde').short_name]
+                grades: [ Grade.find_by(short_name: 'seconde').short_name ]
               }
             }
           )
           assert_response :success
-          assert_equal ['seconde'], @internship_offer.reload.grades.map(&:short_name)
+          assert_equal [ 'seconde' ], @internship_offer.reload.grades.map(&:short_name)
         end
       end
-      test 'PATCH #update as operator can modify internship_offer grades from 3eme to seconde + 3eme' do
+
+      test 'PATCH #update as operator cannot modify internship_offer grades from 3eme to seconde + 3eme' do
         travel_to Time.zone.local(2025, 3, 1) do
           patch api_v2_internship_offer_path(
             id: @internship_offer.remote_id,
@@ -210,8 +210,47 @@ module Api
               }
             }
           )
-          assert_response :success
-          assert_equal %w[troisieme seconde], @internship_offer.reload.grades.map(&:short_name)
+          assert_response :bad_request
+          assert_equal 'VALIDATION_ERROR', json_response['code']
+          assert_equal [ 'Une offre ne peut pas être à la fois destinée à des collèges et aux lycées' ],
+                       json_error['grades'],
+                       'bad grades error'
+        end
+      end
+
+      test 'PATCH #update as operator with seconde grade and invalid weeks returns 422' do
+        travel_to Time.zone.local(2025, 3, 1) do
+          patch api_v2_internship_offer_path(
+            id: @internship_offer.remote_id,
+            params: {
+              token: "Bearer #{@token}",
+              internship_offer: {
+                grades: [ 'seconde' ],
+                weeks: [ '2025-W20' ] # Not all mandatory weeks
+              }
+            }
+          )
+          assert_response :unprocessable_entity
+          assert_equal 'WRONG_PARAMS', json_response['code']
+          assert_equal 'All mandatory weeks must be included for seconde grade', json_error
+        end
+      end
+
+      test 'PATCH #update as operator with mixed grades raises validation error' do
+        travel_to Time.zone.local(2025, 3, 1) do
+          patch api_v2_internship_offer_path(
+            id: @internship_offer.remote_id,
+            params: {
+              token: "Bearer #{@token}",
+              internship_offer: {
+                grades: %w[quatrieme seconde],
+                weeks: InternshipOffers::Api.mandatory_seconde_weeks
+              }
+            }
+          )
+          assert_response :unprocessable_entity
+          assert_equal 'WRONG_PARAMS', json_response['code']
+          assert_equal 'Grades must be either college or lycee, not both', json_error
         end
       end
     end

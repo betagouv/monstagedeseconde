@@ -70,6 +70,7 @@ import './icons/full_heart.svg';
 import './icons/empty_heart.svg';
 import './icons/disabled_heart.svg';
 import './icons/file_copy_line.svg';
+import './icons/boarding_house_pin.svg';
 
 import './onboarding/inbox-mail.svg';
 

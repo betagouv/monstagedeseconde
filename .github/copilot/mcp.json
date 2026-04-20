@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "rails": {
+      "type": "local",
+      "command": "rails-mcp-server",
+      "args": ["--single-project"],
+      "tools": ["switch_project", "search_tools", "execute_tool", "execute_ruby"]
+    }
+  }
+}
