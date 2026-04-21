@@ -19,10 +19,13 @@ class ApiEntrepriseProxyController < ApplicationController
     if JSON.parse(body).present? && JSON.parse(body)['results']
       JSON.parse(body)['results'].each do |etablissement|
         siege = etablissement['siege']
+        code_ape = siege['activite_principale']
+        sector = NafSectorMapping.find_sector_by_code_naf(code_ape)
         etablissements << {
           siret: siege['siret'],
           is_public: etablissement['complements']['est_service_public'] == true,
-          codeApe: siege['activite_principale'],
+          codeApe: code_ape,
+          sectorId: sector&.id,
           uniteLegale: {
             denominationUniteLegale: etablissement['nom_complet']
           },

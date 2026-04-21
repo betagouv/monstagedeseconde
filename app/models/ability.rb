@@ -39,6 +39,7 @@ class Ability
     can :show, :account, :rebuild_review_job
     can :manage, School
     can :manage, Sector
+    can :manage, NafSectorMapping
     can :manage, Academy
     can :manage, AcademyRegion
     can %i[read update export unpublish publish], InternshipOffer
