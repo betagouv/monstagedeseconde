@@ -60,7 +60,7 @@ module Dashboard
       authorize! :index, InternshipAgreement
       if current_user.employer_like?
         @internship_offers = current_user.internship_offers
-                                         .includes([:weeks, { school: :school_managers }])
+                                         .includes([ :weeks, { school: :school_managers } ])
       end
       @mono_internship_agreements  = filtering_query current_user.mono_internship_agreements
       @multi_internship_agreements = filtering_query current_user.multi_internship_agreements
@@ -104,55 +104,56 @@ module Dashboard
     private
 
     def fields
-      [:internship_application_id,
-              :student_school,
-              :school_representative_email,
-              :school_representative_full_name,
-              :school_representative_function,
-              :school_representative_phone,
-              :school_representative_role,
-              :delegation_date,
-              :legal_status,
-              :student_full_name,
-              :student_class_room,
-              :date_range,
-              :activity_scope,
-              :legal_terms_rich_text,
-              :organisation_representative_full_name,
-              :organisation_representative_role,
-              :employer_event,
-              :employer_name,
-              :internship_address,
-              :employer_contact_email,
-              :school_manager_event,
-              :student_refering_teacher_full_name,
-              :student_refering_teacher_email,
-              :student_refering_teacher_phone,
-              :student_address,
-              :student_phone,
-              :student_legal_representative_full_name,
-              :student_legal_representative_email,
-              :student_legal_representative_phone,
-              :student_legal_representative_2_full_name,
-              :student_legal_representative_2_email,
-              :student_legal_representative_2_phone,
-              :siret,
-              :student_birth_date,
-              :pai_project,
-              :pai_trousse_family,
-              :tutor_full_name,
-              :tutor_role,
-              :entreprise_address,
-              :lunch_break,
-              weekly_hours: [],
-              daily_hours: {}]
+      [ :internship_application_id,
+        :student_school,
+        :school_representative_email,
+        :school_representative_full_name,
+        :school_representative_function,
+        :school_representative_phone,
+        :school_representative_role,
+        :delegation_date,
+        :legal_status,
+        :student_full_name,
+        :student_class_room,
+        :date_range,
+        :activity_scope,
+        :legal_terms_rich_text,
+        :organisation_representative_full_name,
+        :organisation_representative_role,
+        :employer_event,
+        :employer_name,
+        :internship_address,
+        :employer_contact_email,
+        :school_manager_event,
+        :student_refering_teacher_full_name,
+        :student_refering_teacher_email,
+        :student_refering_teacher_phone,
+        :student_address,
+        :student_phone,
+        :student_legal_representative_full_name,
+        :student_legal_representative_email,
+        :student_legal_representative_phone,
+        :student_legal_representative_2_full_name,
+        :student_legal_representative_2_email,
+        :student_legal_representative_2_phone,
+        :siret,
+        :student_birth_date,
+        :pai_project,
+        :pai_trousse_family,
+        :tutor_full_name,
+        :tutor_role,
+        :entreprise_address,
+        :lunch_break,
+        weekly_hours: [],
+        daily_hours: {} ]
     end
+
     def internship_agreement_params
       requirement = if @internship_agreement.from_multi?
                       :internship_agreements_multi_internship_agreement
-                    else
+      else
                       :internship_agreements_mono_internship_agreement
-                    end
+      end
       params.require(requirement).permit(*fields)
     end
 
@@ -166,8 +167,8 @@ module Dashboard
            .includes(
              { internship_application: [
                { student: :school },
-               { internship_offer: [:employer, :sector, :stats, :weeks,
-                                   { school: :school_managers }] }
+               { internship_offer: [ :employer, :sector, :stats, :weeks,
+                                   { school: :school_managers } ] }
              ] }
            )
     end
