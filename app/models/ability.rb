@@ -294,7 +294,6 @@ class Ability
       edit_tutor_email
       edit_tutor_role
       edit_activity_scope
-      edit_date_range
       edit_organisation_representative_full_name
       edit_organisation_representative_role
       edit_siret
