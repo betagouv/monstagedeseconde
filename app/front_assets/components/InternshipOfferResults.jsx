@@ -34,9 +34,9 @@ const defaultPointerIcon = new L.Icon({
 
 const boardingHouseIcon = new L.Icon({
   iconUrl: boardingHouseMarker,
-  iconSize: [52, 70],
-  iconAnchor: [26, 70],
-  popupAnchor: [0, -70],
+  iconSize: [38, 51],
+  iconAnchor: [19, 51],
+  popupAnchor: [0, -51],
 });
 
 const InternshipOfferResults = ({
@@ -64,6 +64,7 @@ const InternshipOfferResults = ({
   const [params, setParams] = useState(searchParams);
   const [boardingHouses, setBoardingHouses] = useState([]);
   const [showBoardingHouses, setShowBoardingHouses] = useState(true);
+  const [showBoardingHouseAnnouncement, setShowBoardingHouseAnnouncement] = useState(false);
 
 
   useEffect(() => {
@@ -71,22 +72,41 @@ const InternshipOfferResults = ({
     fetchBoardingHouses();
   }, [params]);
 
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem('boardingHouseAnnouncementDismissed')) {
+        setShowBoardingHouseAnnouncement(true);
+      }
+    } catch (e) {
+      setShowBoardingHouseAnnouncement(true);
+    }
+  }, []);
+
+  const dismissBoardingHouseAnnouncement = () => {
+    setShowBoardingHouseAnnouncement(false);
+    try {
+      localStorage.setItem('boardingHouseAnnouncementDismissed', '1');
+    } catch (e) { /* ignore */ }
+  };
+
   const ClickMap = ({ internshipOffers, boardingHouses, showBoardingHouses, recenterMap }) => {
     if (isMobile()) {return null };
+    if (!recenterMap) return null;
 
-    if (internshipOffers.length && recenterMap) {
-      const map = useMap();
-      const bounds = internshipOffers.map((internshipOffer) => [
-        internshipOffer.lat,
-        internshipOffer.lon,
-      ]);
+    const map = useMap();
+    const hasSearchLocation = Number(params.latitude) && Number(params.longitude);
+
+    if (hasSearchLocation && internshipOffers.length) {
+      // Zoom to fit the search area — offers + nearby boarding houses (already radius-filtered server-side)
+      const bounds = internshipOffers.map((o) => [o.lat, o.lon]);
       if (showBoardingHouses && boardingHouses.length) {
-        boardingHouses.forEach((bh) => {
-          bounds.push([bh.lat, bh.lon]);
-        });
+        boardingHouses.forEach((bh) => bounds.push([bh.lat, bh.lon]));
       }
       map.fitBounds(bounds);
-      // L.tileLayer.provider('CartoDB.Positron').addTo(map); MAP STYLE
+    } else {
+      // No search location: stay centered on metropolitan France instead of
+      // stretching bounds to include DOM-TOM boarding houses.
+      map.setView(center, 6);
     }
 
     setTimeout(() => setNewDataFetched(false), 100);
@@ -155,6 +175,76 @@ const InternshipOfferResults = ({
 
   return (
     <div className="">
+      {showBoardingHouseAnnouncement && (
+        <>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="boarding-house-announcement-title"
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 1750,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem',
+            }}
+          >
+            <div
+              aria-hidden="true"
+              onClick={dismissBoardingHouseAnnouncement}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'rgba(22, 22, 22, 0.64)',
+              }}
+            />
+            <div
+              style={{
+                position: 'relative',
+                background: '#fff',
+                maxWidth: '32rem',
+                width: '100%',
+                borderRadius: '0.25rem',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.24)',
+              }}
+            >
+              <div className="fr-modal__header">
+                <button
+                  type="button"
+                  className="fr-btn--close fr-btn"
+                  title="Fermer la fenêtre"
+                  onClick={dismissBoardingHouseAnnouncement}
+                >
+                  Fermer
+                </button>
+              </div>
+              <div className="fr-modal__content fr-px-4w">
+                <h1 id="boarding-house-announcement-title" className="fr-modal__title">
+                  Nouveau&nbsp;!
+                </h1>
+                <p>
+                  Les internats pouvant proposer des places sont désormais consultables avec le résultat de vos recherches&nbsp;!
+                </p>
+              </div>
+              <div className="fr-modal__footer fr-px-4w fr-pb-4w">
+                <ul className="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg">
+                  <li>
+                    <button
+                      type="button"
+                      className="fr-btn"
+                      onClick={dismissBoardingHouseAnnouncement}
+                    >
+                      OK
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
       {/* SEARCH FORM */}
       <div className="fr-container">
         <div id="desktop_internship_offers_index_search_form">
@@ -318,7 +408,10 @@ const InternshipOfferResults = ({
                           <p className="fr-card__detail">Internat</p>
                           <h5 className="title" style={{fontSize: '1.375rem', lineHeight: '1.75rem', marginBottom: '0.25rem'}}>{bh.name}</h5>
                           <p className="fr-card__detail fr-mt-1w">
-                            Peut proposer jusqu'à {bh.available_places} place{bh.available_places > 1 ? 's' : ''} {bh.reference_date ? `au ${bh.reference_date}` : ''}
+                            {[bh.street, [bh.zipcode, bh.city].filter(Boolean).join(' ')].filter(Boolean).join(', ')}
+                          </p>
+                          <p className="fr-card__detail fr-mt-1w">
+                            Peut proposer jusqu'à {bh.available_places} place{bh.available_places > 1 ? 's' : ''}
                           </p>
                           {bh.contact_phone && (
                             <p className="fr-card__detail">Tél : {bh.contact_phone}</p>

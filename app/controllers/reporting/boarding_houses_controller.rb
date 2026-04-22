@@ -22,7 +22,6 @@ module Reporting
       @boarding_house = BoardingHouse.new(boarding_house_params)
       assign_academy_from_zipcode if god_user?
       @boarding_house.academy ||= current_user_academy
-      geocode_boarding_house
       if @boarding_house.save
         redirect_to reporting_boarding_houses_path, notice: 'Internat créé avec succès.'
       else
@@ -38,7 +37,6 @@ module Reporting
       authorize! :manage_boarding_houses, current_user
       @boarding_house.assign_attributes(boarding_house_params)
       assign_academy_from_zipcode if god_user?
-      geocode_boarding_house
       if @boarding_house.save
         redirect_to reporting_boarding_houses_path, notice: 'Internat mis à jour.'
       else
@@ -59,28 +57,18 @@ module Reporting
         redirect_to reporting_boarding_houses_path, alert: 'Veuillez sélectionner un fichier.'
         return
       end
-      academy = god_user? ? nil : current_user.academy
-      result = Services::BoardingHouseImporter.new(file: file, academy: academy).call
-      expected_headers = Services::BoardingHouseImporter::COLUMN_MAPPING.keys
-      matched_headers = result[:headers] & expected_headers
 
-      if matched_headers.empty?
-        redirect_to reporting_boarding_houses_path,
-                    alert: "Aucune colonne reconnue dans le fichier. " \
-                           "Les en-têtes attendus sont : #{expected_headers.join(', ')}. " \
-                           "En-têtes trouvés : #{result[:headers].join(', ')}."
-      elsif result[:created] == 0 && result[:errors].empty?
-        redirect_to reporting_boarding_houses_path,
-                    alert: "Aucun internat importé. #{result[:skipped]} ligne(s) ignorée(s) (nom manquant). " \
-                           "Vérifiez que votre fichier contient une colonne « Nom » renseignée."
-      elsif result[:errors].any?
-        error_details = result[:errors].map { |e| "Ligne #{e[:row]} : #{e[:errors].join(', ')}" }.join(' | ')
-        redirect_to reporting_boarding_houses_path,
-                    alert: "#{result[:created]} créé(s), #{result[:errors].count} erreur(s) sur #{result[:total]} ligne(s). #{error_details}"
-      else
-        redirect_to reporting_boarding_houses_path,
-                    notice: "#{result[:created]} internat(s) importé(s) avec succès."
-      end
+      blob = ActiveStorage::Blob.create_and_upload!(
+        io: file.tempfile,
+        filename: file.original_filename,
+        content_type: file.content_type
+      )
+      academy_id = god_user? ? nil : current_user.academy&.id
+      ImportBoardingHousesJob.perform_later(blob.signed_id, academy_id)
+
+      redirect_to reporting_boarding_houses_path,
+                  notice: "Import en cours. Les internats apparaîtront dans la liste au fur et à mesure. " \
+                          "Vous pouvez rafraîchir la page dans quelques instants."
     rescue StandardError => e
       redirect_to reporting_boarding_houses_path,
                   alert: "Erreur lors de l'import : #{e.message}"
@@ -125,18 +113,6 @@ module Reporting
 
       dept = Department.fetch_by_zipcode(zipcode: @boarding_house.zipcode)
       @boarding_house.academy = dept.academy if dept
-    end
-
-    def geocode_boarding_house
-      return if @boarding_house.coordinates.present? &&
-                @boarding_house.coordinates.latitude != 0 &&
-                @boarding_house.coordinates.longitude != 0
-
-      address = [@boarding_house.street, @boarding_house.zipcode, @boarding_house.city].compact.join(' ')
-      coords = Geocoder.coordinates(address)
-      @boarding_house.coordinates = { latitude: coords[0], longitude: coords[1] } if coords
-    rescue StandardError => e
-      Rails.logger.warn("Geocoding failed for boarding house: #{e.message}")
     end
   end
 end
