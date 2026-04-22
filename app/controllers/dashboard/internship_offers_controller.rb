@@ -228,7 +228,7 @@ module Dashboard
     end
     
     def order_column_from_stats?
-      STATS_ORDER_COLUMNS.include?(order_column.to_s)
+      params[:order].present? && STATS_ORDER_COLUMNS.include?(order_column.to_s)
     end
 
     def finder
