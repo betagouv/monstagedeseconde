@@ -6,7 +6,7 @@ include ApplicationHelper
 class GenerateInternshipAgreement < Prawn::Document
   def initialize(internship_agreement_id)
     @internship_agreement = InternshipAgreement.find(internship_agreement_id)
-    @pdf = Prawn::Document.new(margin: [40, 40, 90, 40])
+    @pdf = Prawn::Document.new(margin: [ 40, 40, 90, 40 ])
     @pdf.font_families.update('Arial' => {
                                 normal: Rails.root.join('public/assets/fonts/arial.ttf').to_s,
                                 bold: Rails.root.join('public/assets/fonts/arial_bold.ttf').to_s,
@@ -19,13 +19,13 @@ class GenerateInternshipAgreement < Prawn::Document
   SIGNATURE_OPTIONS = {
     position: :center,
     vposition: :center,
-    fit: [PAGE_WIDTH / 4, PAGE_WIDTH / 4]
+    fit: [ PAGE_WIDTH / 4, PAGE_WIDTH / 4 ]
   }
 
   SCHOOL_SIGNATURE_OPTIONS = {
     position: :center,
     vposition: :center,
-    fit: [60, 60]
+    fit: [ 60, 60 ]
   }
 
   def call
@@ -246,7 +246,7 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.text "Prénom, nom du chef(fe) d'établissement, adresse postale et électronique du lieu de scolarisation dont relève l'élève :"
     @pdf.text "#{@internship_agreement.school_representative_full_name}, " \
       "#{@internship_agreement.school_representative_role}, " \
-      "#{@internship_agreement.school_manager.try(:email)}, " \
+      "#{@internship_agreement.school_representative_email}, " \
       "#{@internship_agreement.school_representative_phone}"
     @pdf.move_down 5
     @pdf.text "Statut de l'établissement scolaire : #{@internship_agreement.legal_status.try(:capitalize)}"
@@ -294,15 +294,15 @@ class GenerateInternshipAgreement < Prawn::Document
         end_hours   = weekday == 'samedi' ? '' : @internship_agreement.weekly_hours&.last
       end
       internship_offer_hours << if start_hours.blank? || end_hours.blank?
-                                  [weekday.capitalize, '', '']
-                                else
-                                  [weekday.capitalize, "De #{start_hours.gsub(':', 'h')}",
-                                   "A #{end_hours.gsub(':', 'h')}"]
-                                end
+                                  [ weekday.capitalize, '', '' ]
+      else
+                                  [ weekday.capitalize, "De #{start_hours.gsub(':', 'h')}",
+                                   "A #{end_hours.gsub(':', 'h')}" ]
+      end
     end
     @pdf.table(internship_offer_hours,
-               column_widths: [@pdf.bounds.width / 3, @pdf.bounds.width / 3, @pdf.bounds.width / 3]) do |t|
-      t.cells.padding = [5, 5, 5, 5]
+               column_widths: [ @pdf.bounds.width / 3, @pdf.bounds.width / 3, @pdf.bounds.width / 3 ]) do |t|
+      t.cells.padding = [ 5, 5, 5, 5 ]
     end
 
     # Objectifs assignés à la séquence d'observation en milieu professionnel
@@ -377,9 +377,9 @@ class GenerateInternshipAgreement < Prawn::Document
     end
     @pdf.move_down 15
 
-    headers = ["La/le responsable de l'organisme d'accueil", "La/le chef(fe) d'établissement"]
-    column_widths = [@pdf.bounds.width / headers.size] * headers.size
-    @pdf.table([headers],
+    headers = [ "La/le responsable de l'organisme d'accueil", "La/le chef(fe) d'établissement" ]
+    column_widths = [ @pdf.bounds.width / headers.size ] * headers.size
+    @pdf.table([ headers ],
                cell_style: { border_width: 0 },
                column_widths: column_widths) do |t|
       t.cells.align = :left
@@ -388,14 +388,14 @@ class GenerateInternshipAgreement < Prawn::Document
 
     employer_signature_img = image_from(signature: download_image_and_signature(signatory_role: 'employer'))
     school_manager_signature_img = image_from(signature: school_manager_signature)
-    signatures_array = [employer_signature_img, school_manager_signature_img]
+    signatures_array = [ employer_signature_img, school_manager_signature_img ]
 
-    @pdf.table([signatures_array], cell_style: { border_width: 0, height: 80 }, column_widths: column_widths)
+    @pdf.table([ signatures_array ], cell_style: { border_width: 0, height: 80 }, column_widths: column_widths)
 
     # @pdf.move_down 10
     # @pdf.text 'Vu et pris connaissance,'
     # @pdf.move_down 10
-    @pdf.table([['Les parents ou les responsables légaux', 'L’enseignant (ou les enseignants) éventuellement']],
+    @pdf.table([ [ 'Les parents ou les responsables légaux', 'L’enseignant (ou les enseignants) éventuellement' ] ],
                cell_style: { border_width: 0 },
                column_widths: column_widths) do |t|
       t.cells.align = :left
@@ -404,13 +404,13 @@ class GenerateInternshipAgreement < Prawn::Document
     if @internship_agreement.signed_by_legal_representative?
       signator_full_name = @internship_agreement.signature_by_role(signatory_role: 'student_legal_representative').try(:student_legal_representative_full_name)
       student_legal_representative_signature_txt = signator_full_name
-      signatures_txt = [student_legal_representative_signature_txt, '']
+      signatures_txt = [ student_legal_representative_signature_txt, '' ]
       student_legal_representative_signature_timing = "a signé électroniquement le : #{@internship_agreement.student_legal_representative_signature.signature_date.strftime('%d/%m/%Y à %Hh%M')}"
-      signatures_timing_txt = [student_legal_representative_signature_timing]
-      @pdf.table([signatures_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
-      @pdf.table([signatures_timing_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
+      signatures_timing_txt = [ student_legal_representative_signature_timing ]
+      @pdf.table([ signatures_txt ], cell_style: { border_width: 0, height: 20 }, column_widths: column_widths)
+      @pdf.table([ signatures_timing_txt ], cell_style: { border_width: 0, height: 20 }, column_widths: column_widths)
     end
-    @pdf.table([['L\'élève', '']],
+    @pdf.table([ [ 'L\'élève', '' ] ],
                cell_style: { border_width: 0 },
                column_widths: column_widths) do |t|
       t.cells.align = :left
@@ -419,11 +419,11 @@ class GenerateInternshipAgreement < Prawn::Document
     # @pdf.move_down 10
     if @internship_agreement.signed_by_student?
       student_signature_txt = "#{@internship_agreement.student.presenter.full_name} "
-      signatures_txt = [student_signature_txt]
+      signatures_txt = [ student_signature_txt ]
       student_signature_timing = "a signé électroniquement le : #{@internship_agreement.student_signature.signature_date.strftime('%d/%m/%Y à %Hh%M')}"
-      signatures_timing_txt = [student_signature_timing]
-      @pdf.table([signatures_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
-      @pdf.table([signatures_timing_txt], cell_style: { border_width: 0, height: 20}, column_widths: column_widths)
+      signatures_timing_txt = [ student_signature_timing ]
+      @pdf.table([ signatures_txt ], cell_style: { border_width: 0, height: 20 }, column_widths: column_widths)
+      @pdf.table([ signatures_timing_txt ], cell_style: { border_width: 0, height: 20 }, column_widths: column_widths)
     end
     # @pdf.text 'Le responsable de l’accueil en milieu professionnel'
   end
@@ -523,7 +523,7 @@ class GenerateInternshipAgreement < Prawn::Document
 
   def page_number
     string = '<page> / <total>'
-    options = { at: [@pdf.bounds.right - 150, -40],
+    options = { at: [ @pdf.bounds.right - 150, -40 ],
                 width: 150,
                 align: :right,
                 page_filter: (1..7),
@@ -540,7 +540,7 @@ class GenerateInternshipAgreement < Prawn::Document
       end
       @pdf.text_box(internship_application.student.school.presenter.agreement_address,
                     align: :center,
-                    at: [@pdf.bounds.left, @pdf.bounds.bottom - 35],
+                    at: [ @pdf.bounds.left, @pdf.bounds.bottom - 35 ],
                     height: 20,
                     width: @pdf.bounds.width,
                     color: 'cccccc')
