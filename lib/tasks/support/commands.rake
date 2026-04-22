@@ -79,4 +79,45 @@ namespace :support do
       PrettyConsole.say_in_cyan 'Email, nom complet, code UAI de l\'école ou date de début manquants, aucune convention mise à jour'
     end
   end
+
+  desc 'update school_representative_email and school_representative_full_name internship_agreements fields with data from a user'
+  task :update_internship_agreements_school_representative_with_user_data,  [ :user_id, :school_uai_code, :from_date ] => :environment do |t, args|
+    # usage : bundle exec "rake support:update_internship_agreements_school_representative_with_user_data [user_id,0371417P,12/2/2026]"
+    user = User.find_by(id: args[:user_id])
+    if user.nil?
+      PrettyConsole.say_in_red "Aucun utilisateur trouvé avec l'ID #{args[:user_id]}, aucune convention mise à jour"
+      next
+    end
+    email = user.email
+    full_name = user.presenter.full_name
+    school_uai_code = args[:school_uai_code].strip
+    from_date = args[:from_date].strip
+    date = Date.strptime(from_date, '%d/%m/%Y') rescue nil
+    puts '-'*60
+    puts "email: #{email}, full_name: #{full_name}, school_uai_code: #{school_uai_code}, from_date: #{date}"
+    puts '-'*60
+    if date.nil?
+      PrettyConsole.say_in_cyan "Date de début #{from_date} invalide, format attendu : dd/mm/yyyy, aucune convention mise à jour"
+      next
+    end
+    if email.split('@').size != 2 || email.split('@').last.split('.').size < 2
+      PrettyConsole.say_in_cyan "Email #{email} invalide, format attendu : xxx@xxx.xxx, aucune convention mise à jour"
+      next
+    end
+
+    if email.present? && full_name.present? && school_uai_code.present? && date.present?
+      school = School.find_by(code_uai: school_uai_code)
+      if school.nil?
+        PrettyConsole.say_in_red "Aucune école trouvée avec le code UAI #{school_uai_code}, aucune convention mise à jour"
+      else
+        updated_count = InternshipAgreement.joins(internship_application: :student)
+                                           .where(student: { school_id: school.id })
+                                           .where('internship_agreements.created_at >= ?', date)
+                                           .update_all(school_representative_email: email, school_representative_full_name: full_name)
+        PrettyConsole.say_in_green "#{updated_count} conventions mises à jour pour l'école #{school.name} (UAI #{school_uai_code}) avec le représentant scolaire #{full_name} (#{email})"
+      end
+    else
+      PrettyConsole.say_in_cyan 'Email, nom complet, code UAI de l\'école ou date de début manquants, aucune convention mise à jour'
+    end
+  end
 end
