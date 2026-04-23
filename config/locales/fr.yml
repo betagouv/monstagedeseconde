@@ -438,9 +438,7 @@ fr:
         discarded_at: Dépubliée le
         view_count: Nombre de vues
         published_at: Publiée le
-        weeks:
-          one: Semaine de stage
-          other: Semaines de stage
+        weeks: Semaines de stage
         weeks_count: Nbr. de semaines proposées
         # first_monday: Premier lundi de stage
         # last_monday: Dernier lundi de stage

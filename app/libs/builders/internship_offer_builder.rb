@@ -13,7 +13,7 @@ module Builders
       internship_attributes = {}.merge(preprocess_internship_occupation_to_params(internship_occupation))
                                 .merge(preprocess_entreprise_to_params(entreprise))
                                 .merge(preprocess_planning_to_params(planning))
-                                .merge(employer_id: user.id, employer_type: 'User')
+                                .merge(employer_id: user.id, employer_type: "User")
                                 .merge(
                                   internship_occupation_id: internship_occupation.id,
                                   entreprise_id: entreprise.id,
@@ -49,7 +49,7 @@ module Builders
                                                .instance
       end
       internship_offer.internship_offer_area_id ||= user.current_area_id
-      internship_offer.aasm_state = 'published' if internship_offer.may_publish?
+      internship_offer.aasm_state = "published" if internship_offer.may_publish?
       internship_offer.open_data = user.operator.open_data if from_api?
       internship_offer.save!
       callback.on_success.try(:call, internship_offer)
@@ -69,6 +69,7 @@ module Builders
       if from_api?
         instance.attributes = preprocess_api_params(params)
       else
+        instance = deal_with_weeks_change(params:, instance:)
         instance.assign_attributes(params)
         instance = Dto::PlanningAdapter.new(instance:, params:, current_user: user)
                                        .manage_planning_associations
@@ -177,17 +178,40 @@ module Builders
 
       approved_applications_count = instance.internship_applications.approved.count
       next_max_candidates = params[:max_candidates].to_i
+      return instance unless next_max_candidates < approved_applications_count
 
-      if next_max_candidates < approved_applications_count
-        error_message = 'Impossible de réduire le nombre de places ' \
-                        'de cette offre de stage car ' \
-                        'vous avez déjà accepté plus de candidats que ' \
-                        'vous n\'allez leur offrir de places.'
-        instance.errors.add(:max_candidates, error_message)
-        raise ActiveRecord::RecordInvalid, instance
+      error_message = "Impossible de réduire le nombre de places " \
+                      "de cette offre de stage car " \
+                      "vous avez déjà accepté plus de candidats que " \
+                      "vous n'allez leur offrir de places."
+      instance.errors.add(:max_candidates, error_message)
+      raise ActiveRecord::RecordInvalid, instance
+    end
+
+    def deal_with_weeks_change(params:, instance:)
+      params = period_to_weeks(params)
+      return instance unless params[:week_ids].present?
+      return instance if instance.weeks.map(&:id).sort == params[:week_ids].map(&:to_i).sort
+      return instance if instance.internship_applications.approved.empty?
+
+      error_message = "Impossible de changer les semaines de cette offre de stage car" \
+                      " vous avez déjà accepté des candidats pour cette offre."
+      instance.errors.add(:weeks, error_message)
+      raise ActiveRecord::RecordInvalid, instance
+    end
+
+    def period_to_weeks(params)
+      if params[:period_field].present?
+        params[:week_ids] = case params[:period_field]
+        when "11"
+          [ SchoolTrack::Seconde.first_week.id ]
+        when "12"
+          [ SchoolTrack::Seconde.second_week.id ]
+        else
+          SchoolTrack::Seconde.both_weeks.pluck(:id)
+        end
       end
-
-      instance
+      params
     end
 
     def max_candidates_will_change?(params:, instance:)
