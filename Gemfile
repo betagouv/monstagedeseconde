@@ -144,12 +144,8 @@ group :test do
   gem "webdrivers"
 end
 
-group :review do
+group :review, :staging do
   gem "rest-client" # used by mailtrap for review apps
-end
-
-group :staging do
-  gem 'rest-client' # not sure still in use?
 end
 
 group :test, :development, :review do
