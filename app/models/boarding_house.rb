@@ -84,7 +84,10 @@ class BoardingHouse < ApplicationRecord
   # so a street name that happens to exist in another commune can hijack
   # the result. We rely on the `postcode` filter to constrain BAN, and
   # cascade down to commune-level lookups when the precise address can't
-  # be resolved (bad/CEDEX zipcode, CEDEX city suffix, etc.).
+  # be resolved (bad/CEDEX zipcode, CEDEX city suffix, etc.). As a last
+  # resort we drop the postcode filter but verify the returned commune,
+  # which catches cases where the saved zipcode doesn't match the actual
+  # postcode of the street (e.g. 97400 vs 97490 in Saint-Denis).
   def lookup_coordinates
     clean_city = expand_saint_abbreviation(city_without_cedex)
     zip = zipcode.to_s.strip
@@ -100,16 +103,46 @@ class BoardingHouse < ApplicationRecord
     end
 
     commune_query = clean_city.presence || zip.presence
-    return nil if commune_query.blank?
-
-    variants.each do |pc|
-      coords = Geocoder.coordinates(commune_query, lookup: :ban_data_gouv_fr, params: { postcode: pc })
-      return coords if coords
+    if commune_query.present?
+      variants.each do |pc|
+        coords = Geocoder.coordinates(commune_query, lookup: :ban_data_gouv_fr, params: { postcode: pc })
+        return coords if coords
+      end
     end
-    nil
+
+    lookup_without_postcode(street_str, clean_city)
   rescue StandardError => e
     Rails.logger.warn("[BoardingHouse#geocode] failed for #{full_address.inspect}: #{e.message}")
     nil
+  end
+
+  def lookup_without_postcode(street_str, clean_city)
+    return nil if clean_city.blank?
+
+    query = [street_str, clean_city].reject(&:blank?).join(' ')
+    # The BAN result wraps the whole FeatureCollection — we walk
+    # `features` ourselves to inspect candidates beyond the top match.
+    results = Geocoder.search(query, lookup: :ban_data_gouv_fr, params: { limit: 10 })
+    return nil if results.empty?
+
+    Array(results.first.features).each do |feature|
+      props = feature['properties'] || {}
+      next unless commune_matches?(props['city'], clean_city)
+
+      lon, lat = feature.dig('geometry', 'coordinates')
+      return [lat, lon] if lat && lon
+    end
+    nil
+  end
+
+  def commune_matches?(banned_city, expected_city)
+    return false if banned_city.blank? || expected_city.blank?
+
+    normalize_commune(banned_city) == normalize_commune(expected_city)
+  end
+
+  def normalize_commune(value)
+    I18n.transliterate(value.to_s).downcase.gsub(/[^a-z0-9]+/, ' ').strip
   end
 
   def city_without_cedex
