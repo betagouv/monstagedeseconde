@@ -3,9 +3,12 @@
 class BoardingHouse < ApplicationRecord
   include Nearbyable
 
+  attr_writer :latitude, :longitude
+
   belongs_to :academy
 
   before_validation :set_department_from_zipcode
+  before_validation :apply_manual_coordinates
   before_validation :geocode_from_address
 
   validates :name, presence: true
@@ -26,7 +29,29 @@ class BoardingHouse < ApplicationRecord
     [street, zipcode, city].map { |part| part.to_s.strip.presence }.compact.join(' ')
   end
 
+  def latitude
+    return @latitude if defined?(@latitude)
+
+    coordinates&.lat
+  end
+
+  def longitude
+    return @longitude if defined?(@longitude)
+
+    coordinates&.lon
+  end
+
   private
+
+  def manual_coordinates_provided?
+    defined?(@latitude) && defined?(@longitude) && @latitude.present? && @longitude.present?
+  end
+
+  def apply_manual_coordinates
+    return unless manual_coordinates_provided?
+
+    self.coordinates = { latitude: @latitude.to_f, longitude: @longitude.to_f }
+  end
 
   def set_department_from_zipcode
     return if zipcode.blank?
@@ -47,6 +72,7 @@ class BoardingHouse < ApplicationRecord
   end
 
   def geocode_from_address
+    return if manual_coordinates_provided?
     return if coordinates_present? && (new_record? || !address_changed?)
     return if full_address.blank?
 
@@ -60,20 +86,27 @@ class BoardingHouse < ApplicationRecord
   # cascade down to commune-level lookups when the precise address can't
   # be resolved (bad/CEDEX zipcode, CEDEX city suffix, etc.).
   def lookup_coordinates
-    clean_city = city_without_cedex
+    clean_city = expand_saint_abbreviation(city_without_cedex)
     zip = zipcode.to_s.strip
-    street_str = street.to_s.strip
+    street_str = expand_saint_abbreviation(street.to_s.strip)
+    variants = postcode_variants(zip)
 
     if street_str.present?
       street_query = [street_str, clean_city].reject(&:blank?).join(' ')
-      postcode_variants(zip).each do |pc|
+      variants.each do |pc|
         coords = Geocoder.coordinates(street_query, lookup: :ban_data_gouv_fr, params: { postcode: pc })
         return coords if coords
       end
     end
 
     commune_query = clean_city.presence || zip.presence
-    Geocoder.coordinates(commune_query, lookup: :ban_data_gouv_fr) if commune_query
+    return nil if commune_query.blank?
+
+    variants.each do |pc|
+      coords = Geocoder.coordinates(commune_query, lookup: :ban_data_gouv_fr, params: { postcode: pc })
+      return coords if coords
+    end
+    nil
   rescue StandardError => e
     Rails.logger.warn("[BoardingHouse#geocode] failed for #{full_address.inspect}: #{e.message}")
     nil
@@ -81,6 +114,12 @@ class BoardingHouse < ApplicationRecord
 
   def city_without_cedex
     city.to_s.sub(/\s+CEDEX(\s*\d*)?\s*\z/i, '').strip
+  end
+
+  def expand_saint_abbreviation(value)
+    return value if value.blank?
+
+    value.gsub(/\bSTE\b/i, 'Sainte').gsub(/\bST\b/i, 'Saint')
   end
 
   def postcode_variants(zip)
