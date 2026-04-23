@@ -27,7 +27,7 @@ module Dashboard
       if order_column_from_stats?
         # Only allow ordering by whitelisted columns/directions (defended in order_column/order_direction)
         stats_column = order_column
-        direction = order_direction&.upcase == 'ASC' ? 'ASC' : 'DESC'
+        direction = order_direction&.upcase == "ASC" ? "ASC" : "DESC"
         @internship_offers = @internship_offers.joins(:stats)
         # Add the column to the GROUP BY to avoid the PostgreSQL error
         @internship_offers = @internship_offers.group("internship_offers.id, internship_offer_stats.#{stats_column}")
@@ -41,7 +41,7 @@ module Dashboard
       return unless params[:search].present?
 
       @internship_offers = @internship_offers.where(
-        'title ILIKE :search OR employer_name ILIKE :search OR city ILIKE :search',
+        "title ILIKE :search OR employer_name ILIKE :search OR city ILIKE :search",
         search: "%#{params[:search]}%"
       )
     end
@@ -76,11 +76,11 @@ module Dashboard
                                                   .manage_planning_associations
                                                   .instance
           @available_weeks = Week.troisieme_weeks
-          success_message = if params[:commit] == 'Renouveler l\'offre'
-                              'Votre offre de stage a été renouvelée pour cette année scolaire.'
+          success_message = if params[:commit] == "Renouveler l'offre"
+                              "Votre offre de stage a été renouvelée pour cette année scolaire."
           else
                               "L'offre de stage a été dupliquée en tenant compte" \
-                              ' de vos éventuelles modifications.'
+                              " de vos éventuelles modifications."
           end
           redirect_to(internship_offer_path(created_internship_offer, stepper: true),
                       flash: { success: success_message })
@@ -119,7 +119,7 @@ module Dashboard
       if params[:internship_offer].key?(:is_public)
         is_public_value = ActiveModel::Type::Boolean.new.cast(internship_offer_params[:is_public])
         if is_public_value
-          params[:internship_offer][:sector_id] = Sector.find_by(name: 'Fonction publique').try(:id)
+          params[:internship_offer][:sector_id] = Sector.find_by(name: "Fonction publique").try(:id)
         else
           params[:internship_offer][:group_id] = nil
         end
@@ -130,8 +130,8 @@ module Dashboard
           respond_to do |format|
             format.turbo_stream
             format.html do
-              redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
-                          flash: { success: 'Votre annonce a bien été modifiée' }
+              redirect_to dashboard_internship_offers_path(origine: "dashboard"),
+                          flash: { success: "Votre annonce a bien été modifiée" }
             end
           end
         end
@@ -157,7 +157,7 @@ module Dashboard
       internship_offer_builder.discard(instance: @internship_offer) do |on|
         on.success do
           redirect_to(dashboard_internship_offers_path,
-                      flash: { success: 'Votre annonce a bien été supprimée' })
+                      flash: { success: "Votre annonce a bien été supprimée" })
         end
         on.failure do |_failed_internship_offer|
           redirect_to(dashboard_internship_offers_path,
@@ -173,8 +173,8 @@ module Dashboard
         republish
       else
         @internship_offer.publish! unless @internship_offer.published?
-        redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
-                    flash: { success: 'Votre annonce a bien été publiée' }
+        redirect_to dashboard_internship_offers_path(origine: "dashboard"),
+                    flash: { success: "Votre annonce a bien été publiée" }
       end
     end
 
@@ -183,22 +183,22 @@ module Dashboard
       authorize! :update, @internship_offer
       if @internship_offer.may_unpublish?
         @internship_offer.unpublish!
-        redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
-                    flash: { success: 'Votre annonce a bien été dépubliée' }
+        redirect_to dashboard_internship_offers_path(origine: "dashboard"),
+                    flash: { success: "Votre annonce a bien été dépubliée" }
       else
-        redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
-                    flash: { warning: 'Votre annonce n\'a pas pu être dépubliée' }
+        redirect_to dashboard_internship_offers_path(origine: "dashboard"),
+                    flash: { warning: "Votre annonce n'a pas pu être dépubliée" }
       end
     end
 
     def republish
-      anchor = 'max_candidates_fields'
+      anchor = "max_candidates_fields"
       warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places et des semaines de stage"
 
       if @internship_offer.remaining_seats_count.zero?
         warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places de stage"
       elsif @internship_offer.remaining_seats_count > 0
-        anchor = 'weeks_container'
+        anchor = "weeks_container"
         warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des semaines de stage"
       end
       redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor: anchor),
@@ -249,7 +249,7 @@ module Dashboard
       if params[:order] && ALLOWED_STATS_COLUMNS.include?(params[:order])
         params[:order]
       else
-        'submitted_applications_count'
+        "submitted_applications_count"
       end
     end
 
@@ -287,8 +287,8 @@ module Dashboard
     end
 
     def set_internship_offer_attributes(internship_offer)
-      @internship_offer.grade_college = internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
-      @internship_offer.grade_2e = internship_offer.fits_for_seconde? ? '1' : '0'
+      @internship_offer.grade_college = internship_offer.fits_for_troisieme_or_quatrieme? ? "1" : "0"
+      @internship_offer.grade_2e = internship_offer.fits_for_seconde? ? "1" : "0"
       @internship_offer.all_year_long = internship_offer.all_year_long?
       @internship_offer.entreprise_chosen_full_address = internship_offer.entreprise_full_address
     end
