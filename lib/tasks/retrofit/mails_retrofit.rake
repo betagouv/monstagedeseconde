@@ -23,10 +23,10 @@ namespace :retrofit do
         legal_reps = iag.legal_representative_data.values
         legal_reps.each do |rep|
           if rep.present? && rep[:email].present? && rep[:email].strip.present?
-            GodMailer.special_notify_student_legal_representatives_can_sign_email(
-              internship_agreement: iag,
-              representative: rep
-            ).deliver_now
+            # GodMailer.special_notify_student_legal_representatives_can_sign_email(
+            #   internship_agreement: iag,
+            #   representative: rep
+            # ).deliver_now
             PrettyConsole.say_in_green("Sent email to legal representative #{rep[:email]} for InternshipAgreement ID: #{iag .id}")
           else
             print 'x'
@@ -61,10 +61,10 @@ namespace :retrofit do
         legal_reps = iag.legal_representative_data.values
         legal_reps.each do |rep|
           if rep.present? && rep[:email].present? && rep[:email].strip.present?
-            GodMailer.special_notify_student_legal_representatives_can_sign_email(
-              internship_agreement: iag,
-              representative: rep
-            ).deliver_now
+            # GodMailer.special_notify_student_legal_representatives_can_sign_email(
+            #   internship_agreement: iag,
+            #   representative: rep
+            # ).deliver_now
             PrettyConsole.say_in_green("Sent email to legal representative #{rep[:email]} for InternshipAgreement ID: #{iag .id}")
           else
             print 'x'
