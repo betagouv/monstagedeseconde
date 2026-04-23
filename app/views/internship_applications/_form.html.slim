@@ -85,13 +85,12 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
       .row.fr-mt-2w.fr-mb-3w
         .col-12
           - student_email = f.object.student.fake_email? ? '' : f.object.student_email || f.object.previous_student_email || (current_user.student? && current_user.email)
-          = render '/inputs/dsfr_input_field',
+          = render '/inputs/dsfr_email_field',
                     field: :student_email,
                     f: f,
                     object: f.object,
                     value:  student_email,
                     label: "Adresse électronique (email)",
-                    pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
                     hint: "Veuillez saisir une adresse email valide, sans espace ni majuscule.",
                     title: 'Adresse électronique',
                     options: { required: true , maxlength: 100},
@@ -160,13 +159,12 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
         .col-12
           .form-group.phone
             = label_tag 'Adresse email de votre représentant légal', '', class: 'fr-label'
-            = render '/inputs/dsfr_input_field',
+            = render '/inputs/dsfr_email_field',
                     field: :student_legal_representative_email,
                     f: f,
                     object: f.object,
                     value: f.object.student_legal_representative_email ||f.object.student.legal_representative_email,
                     label: "Adresse électronique de votre représentant légal",
-                    pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
                     options: { required: true,
                                maxlength: 100,
                                data: {:'mandatory-fields-target' => "mandatoryField",

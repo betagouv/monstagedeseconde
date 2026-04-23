@@ -89,7 +89,12 @@ class Ability
     can :apply, InternshipOffer do |internship_offer|
       ## can apply if ##
       # - user has the right grade
-      # - user has not already applied to the same offer
+      # - user has no approved internship application on any offer
+      # - user has not already applied to the same offer or if he did, its status is now
+      #   rejected_by_student_confirmation and corresponding application
+      #   history lists states as one of these:
+      #   - validated_by_employer or
+      #   - approved
       # - user has not already approved applications for the same offer's weeks
       # - offer is not reserved to an other school
       # - offer is published
@@ -98,12 +103,19 @@ class Ability
       # - offer is not an api offer (only for weekly offers and mu)
 
       internship_offer.grades.include?(user.grade) &&
-        !user.internship_applications.exists?(internship_offer_id: internship_offer.id) && # user has not already applied
+        !user.internship_applications.exists?(aasm_state: "approved") &&
+        (!user.internship_applications.exists?(internship_offer_id: internship_offer.id) ||
+         existing_application(internship_offer, user)&.canceled_with_passed_approved_application?) && # user has not already applied
         user.other_approved_applications_compatible?(internship_offer:) &&
         internship_offer.published? &&
+        !internship_offer.from_api? &&
         (!internship_offer.reserved_to_schools? || user.school_id.in?(internship_offer.schools.pluck(:id))) &&
         (!internship_offer.rep  || user.school.rep_or_rep_plus?) &&
         (!internship_offer.qpv || user.school.qpv?)
+    end
+
+    def existing_application(internship_offer, user)
+      user.internship_applications.find_by(internship_offer_id: internship_offer.id)
     end
 
     can %i[submit_internship_application update show internship_application_edit],
@@ -152,7 +164,7 @@ class Ability
     end
 
     can_manage_school(user:) do
-      can [:delete], User do |managed_user_from_school|
+      can [ :delete ], User do |managed_user_from_school|
         managed_user_from_school.school_id == user.school_id
       end
     end
@@ -319,9 +331,9 @@ class Ability
     can %i[destroy], TeamMemberInvitation do |team_member_invitation|
       condition = if user.team.alive?
                     user.team.id_in_team?(team_member_invitation.member_id)
-                  else
+      else
                     user.id == team_member_invitation.inviter_id
-                  end
+      end
       team_member_invitation.member_id != user.id && condition
     end
   end
@@ -340,9 +352,9 @@ class Ability
     can %i[destroy], InternshipOfferArea do |area|
       condition = if user.team.alive?
                     user.team.id_in_team?(area.employer_id)
-                  else
+      else
                     user.id == area.employer_id
-                  end
+      end
       user.team_areas.count > 1 && condition
     end
 
@@ -350,9 +362,10 @@ class Ability
 
     can :flip_notification, AreaNotification do |_area_notif|
       many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
-      current_area_notifications_are_off = !user.fetch_current_area_notification.notify
+      current_area_notifiable = !!user.fetch_current_area_notification
+      current_area_notifications_are_off = !current_area_notifiable&.notify
 
-      user.team.alive? &&
+      user.team.alive? && current_area_notifiable &&
         (many_people_in_charge_of_area || current_area_notifications_are_off)
     end
 
@@ -497,7 +510,7 @@ class Ability
     ], User
     can :choose_role, User unless user.school_manager?
     can_create_and_manage_account(user:) do
-      can [:choose_class_room], User
+      can [ :choose_class_room ], User
     end
     can_read_dashboard_students_internship_applications(user:)
 
@@ -570,11 +583,11 @@ class Ability
   private
 
   def can_read_dashboard_students_internship_applications(user:)
-    can [:dashboard_index], Users::Student do |student|
+    can [ :dashboard_index ], Users::Student do |student|
       student.id == user.id || student_managed_by?(student:, user:)
     end
 
-    can [:dashboard_show], InternshipApplication do |internship_application|
+    can [ :dashboard_show ], InternshipApplication do |internship_application|
       internship_application.student.id == user.id ||
         student_managed_by?(student: internship_application.student, user:)
     end
@@ -607,7 +620,7 @@ class Ability
       class_room.school_id == user.school_id && !user.school_manager?
     end
 
-    can [:show_user_in_school], User do |user|
+    can [ :show_user_in_school ], User do |user|
       user.school
           .users
           .map(&:id)

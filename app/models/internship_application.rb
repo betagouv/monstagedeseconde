@@ -97,10 +97,11 @@ class InternshipApplication < ApplicationRecord
   validates :student_phone,
             format: {
               with: /\A\+?(33|262|594|596|687|689)?\s?0?(6|7)\s?(\d{2,3}\s?){1,3}\d{2,3}\z/,
-              message: "Veuillez modifier le numéro de téléphone mobile",
+              message: "Veuillez modifier le numéro de téléphone mobile"
             }
   validates :student_email,
             format: { with: Devise.email_regexp }
+  validate :student_email_not_taken
   validates :weeks, presence: true, on: :create
 
   # Callbacks
@@ -193,17 +194,17 @@ class InternshipApplication < ApplicationRecord
   scope :seconde, lambda {
     joins(student: :grade)
       .where(grades: { id: Grade.seconde.id })
-      .where.not(grades: { id: [Grade.troisieme.id, Grade.quatrieme.id] })
+      .where.not(grades: { id: [ Grade.troisieme.id, Grade.quatrieme.id ] })
   }
   scope :troisieme_or_quatrieme, lambda {
     joins(student: :grade)
-      .where(grades: { id: [Grade.troisieme.id, Grade.quatrieme.id] })
+      .where(grades: { id: [ Grade.troisieme.id, Grade.quatrieme.id ] })
       .where.not(grades: { id: Grade.seconde.id })
   }
   scope :troisieme, lambda {
     joins(student: :grade)
       .where(grades: { id: Grade.troisieme.id })
-      .where.not(grades: { id: [Grade.seconde.id, Grade.quatrieme.id] })
+      .where.not(grades: { id: [ Grade.seconde.id, Grade.quatrieme.id ] })
   }
 
 
@@ -278,6 +279,7 @@ class InternshipApplication < ApplicationRecord
     event :approve do
       transitions from: %i[validated_by_employer],
                   to: :approved,
+                  guard: :no_other_approved_application?,
                   after: proc { |user, *_args|
                     update!("approved_at": Time.now.utc)
                     unless skip_callback_with_review_rebuild
@@ -441,7 +443,7 @@ class InternshipApplication < ApplicationRecord
     teacher = student.teacher
     arg_hash = {
       internship_application: self,
-      teacher: teacher,
+      teacher: teacher
     }
 
 
@@ -640,8 +642,8 @@ class InternshipApplication < ApplicationRecord
 
   def employers_filtered_by_notifications_emails
     original_employer = internship_offer.employer
-    return [original_employer.email] unless original_employer.employer_like?
-    return [original_employer.email] if original_employer.team.not_exists?
+    return [ original_employer.email ] unless original_employer.employer_like?
+    return [ original_employer.email ] if original_employer.team.not_exists?
 
     potential_employers = original_employer.team.db_members
     emails = potential_employers.map do |potential_employer|
@@ -686,9 +688,23 @@ class InternshipApplication < ApplicationRecord
     end
   end
 
+  def canceled_with_passed_approved_application?
+    return false unless canceled_by_student_confirmation?
+
+    has_ever_been?(%w[approved validated_by_employer])
+  end
+
   protected
 
   private
+
+  def student_email_not_taken
+    return if student_email.blank?
+
+    if User.where.not(id: user_id).where("LOWER(email) = ?", student_email.downcase.strip).exists?
+      errors.add(:student_email, "est déjà utilisée par un autre compte. Merci de choisir une autre adresse email")
+    end
+  end
 
   def internship_agreement_creation_allowed?
     # return false unless student.school&.school_manager&.email
@@ -705,7 +721,7 @@ class InternshipApplication < ApplicationRecord
     # return '' if student.phone.blank? # TODO Check if this is necessary why removing prefix if phone is blank but will be updated
 
     prefix = "+33"
-    ["+262", "+594", "+596", "+687", "+689"].each do |p|
+    [ "+262", "+594", "+596", "+687", "+689" ].each do |p|
       prefix = p if student.phone&.start_with?(p)
     end
     "#{prefix}0"
@@ -737,5 +753,9 @@ class InternshipApplication < ApplicationRecord
                     .where(user_id: employer.id)
                     .where(internship_offer_area_id: internship_offer.internship_offer_area.id)
                     .exists?
+  end
+
+  def no_other_approved_application?
+    student.internship_applications.approved.empty?
   end
 end
