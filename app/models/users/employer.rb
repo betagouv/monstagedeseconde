@@ -12,8 +12,6 @@ module Users
               presence: true,
               length: { minimum: 3, maximum: 150 }
 
-    validate :email_not_used_by_student, on: :create
-
     def custom_dashboard_path
       return custom_candidatures_path if internship_applications.submitted.any?
 
@@ -55,19 +53,6 @@ module Users
       return if persisted? && created_at < Date.new(2024, 8, 1)
 
       super
-    end
-
-    private
-
-    def email_not_used_by_student
-      return if email.blank?
-      return unless Users::Student.where(email: email.downcase).exists?
-
-      errors.add(
-        :email,
-        'Cette adresse email est déjà associée à un compte élève. ' \
-        'Veuillez utiliser une autre adresse email pour créer un compte employeur.'
-      )
     end
   end
 end

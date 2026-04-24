@@ -209,15 +209,7 @@ module Users
       employer = build(:employer, email: student.email)
       refute employer.valid?
       assert_includes employer.errors[:email].join,
-                      'déjà associée à un compte élève'
-    end
-
-    test 'matches student email case-insensitively' do
-      create(:student, email: 'mix@example.com')
-      employer = build(:employer, email: 'MIX@example.com')
-      refute employer.valid?
-      assert_includes employer.errors[:email].join,
-                      'déjà associée à un compte élève'
+                      'Un compte est déjà associé à cet email'
     end
 
     test 'is valid when no student uses the email' do
