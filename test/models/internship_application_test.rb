@@ -50,9 +50,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
         mock_mail.expect(:deliver_later, true, [], wait: 1.second)
 
         EmployerMailer.stub :internship_application_submitted_email, mock_mail do
-          StudentMailer.stub :internship_application_submitted_email, mock_mail do
-            internship_application = create(:weekly_internship_application)
-          end
+          internship_application = create(:weekly_internship_application)
         end
 
         assert_equal Time.now.utc, InternshipApplication.last.submitted_at

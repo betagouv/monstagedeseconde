@@ -409,7 +409,6 @@ class InternshipApplication < ApplicationRecord
 
   def notify_users
     EmployerMailer.internship_application_submitted_email(internship_application: self).deliver_later(wait: 1.second)
-    Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
 
     return if student.internship_applications.count == 0
 
