@@ -205,7 +205,6 @@ class AbilityTest < ActiveSupport::TestCase
         edit_tutor_email
         edit_tutor_role
         edit_activity_scope
-        edit_date_range
         edit_organisation_representative_full_name
         edit_siret
         edit_tutor_full_name
@@ -214,6 +213,8 @@ class AbilityTest < ActiveSupport::TestCase
       ].each do |meth|
         assert(ability.can?(meth, internship_agreement), "Employer fail: #{meth}")
       end
+      refute(ability.can?(:edit_date_range, internship_agreement),
+             'Employer should not be able to edit internship agreement dates')
       internship_agreement.update_columns(aasm_state: :started_to_sign)
       assert(ability.can?(:sign_with_sms, User))
       assert(ability.can?(:sign_internship_agreements, internship_agreement.reload), 'Signature fails')
