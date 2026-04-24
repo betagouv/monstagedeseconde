@@ -103,15 +103,16 @@ class Ability
       # - offer is not an api offer (only for weekly offers and mu)
 
       internship_offer.grades.include?(user.grade) &&
-        !user.internship_applications.exists?(aasm_state: "approved") &&
+        !(user.grade == Grade.troisieme && user.internship_applications.exists?(aasm_state: "approved")) &&
         (!user.internship_applications.exists?(internship_offer_id: internship_offer.id) ||
-         existing_application(internship_offer, user)&.canceled_with_passed_approved_application?) && # user has not already applied
+        existing_application(internship_offer, user)&.canceled_with_passed_approved_application?) && # user has not already applied
         user.other_approved_applications_compatible?(internship_offer:) &&
         internship_offer.published? &&
         !internship_offer.from_api? &&
         (!internship_offer.reserved_to_schools? || user.school_id.in?(internship_offer.schools.pluck(:id))) &&
         (!internship_offer.rep  || user.school.rep_or_rep_plus?) &&
-        (!internship_offer.qpv || user.school.qpv?)
+        (!internship_offer.qpv || user.school.qpv?) &&
+        true
     end
 
     def existing_application(internship_offer, user)
