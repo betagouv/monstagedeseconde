@@ -7,16 +7,16 @@ class Ability
   def initialize(user = nil)
     if user.present?
       case user.type
-      when 'Users::Student' then student_abilities(user:)
-      when 'Users::Employer' then employer_abilities(user:)
-      when 'Users::God' then god_abilities
-      when 'Users::Operator' then operator_abilities(user:)
-      when 'Users::PrefectureStatistician' then statistician_abilities(user:)
-      when 'Users::EducationStatistician' then education_statistician_abilities(user:)
-      when 'Users::MinistryStatistician' then ministry_statistician_abilities(user:)
-      when 'Users::AcademyStatistician' then academy_statistician_abilities(user:)
-      when 'Users::AcademyRegionStatistician' then academy_region_statistician_abilities(user:)
-      when 'Users::SchoolManagement'
+      when "Users::Student" then student_abilities(user:)
+      when "Users::Employer" then employer_abilities(user:)
+      when "Users::God" then god_abilities
+      when "Users::Operator" then operator_abilities(user:)
+      when "Users::PrefectureStatistician" then statistician_abilities(user:)
+      when "Users::EducationStatistician" then education_statistician_abilities(user:)
+      when "Users::MinistryStatistician" then ministry_statistician_abilities(user:)
+      when "Users::AcademyStatistician" then academy_statistician_abilities(user:)
+      when "Users::AcademyRegionStatistician" then academy_region_statistician_abilities(user:)
+      when "Users::SchoolManagement"
         common_school_management_abilities(user:)
         school_manager_abilities(user:) if user.school_manager?
       end
@@ -148,7 +148,8 @@ class Ability
       internship_application.student.id == user.id &&
         !internship_application.student.has_found_her_internships? &&
         internship_application.aasm_state.in?(InternshipApplication::RESTORABLE_STATES) &&
-        internship_application.restored_at.nil?
+        internship_application.restored_at.nil? &&
+        internship_application.no_weeks_overlap?
     end
 
     can %i[read show update sign student_sign legal_representative_sign], InternshipAgreement do |internship_agreement|
@@ -223,7 +224,7 @@ class Ability
 
   def as_employers_like(user:)
     can :subscribe_to_webinar, User do
-      ENV.fetch('WEBINAR_URL', nil).present?
+      ENV.fetch("WEBINAR_URL", nil).present?
     end
     can %i[edit_password show_modal_info supply_offers], User
     can_manage_teams(user:)
@@ -657,7 +658,7 @@ class Ability
 
   def read_employer_name?(internship_offer:)
     # this avoids the N+1 query issue
-    if internship_offer.employer.type == 'Users::Operator'
+    if internship_offer.employer.type == "Users::Operator"
       operator = internship_offer.employer.try(:operator)
       if operator.present? && operator.masked_data
         false
@@ -672,6 +673,6 @@ class Ability
   end
 
   def employers_only?
-    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
+    ENV.fetch("EMPLOYERS_ONLY", false) == "true"
   end
 end
