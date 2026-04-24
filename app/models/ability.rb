@@ -7,16 +7,16 @@ class Ability
   def initialize(user = nil)
     if user.present?
       case user.type
-      when 'Users::Student' then student_abilities(user:)
-      when 'Users::Employer' then employer_abilities(user:)
-      when 'Users::God' then god_abilities
-      when 'Users::Operator' then operator_abilities(user:)
-      when 'Users::PrefectureStatistician' then statistician_abilities(user:)
-      when 'Users::EducationStatistician' then education_statistician_abilities(user:)
-      when 'Users::MinistryStatistician' then ministry_statistician_abilities(user:)
-      when 'Users::AcademyStatistician' then academy_statistician_abilities(user:)
-      when 'Users::AcademyRegionStatistician' then academy_region_statistician_abilities(user:)
-      when 'Users::SchoolManagement'
+      when "Users::Student" then student_abilities(user:)
+      when "Users::Employer" then employer_abilities(user:)
+      when "Users::God" then god_abilities
+      when "Users::Operator" then operator_abilities(user:)
+      when "Users::PrefectureStatistician" then statistician_abilities(user:)
+      when "Users::EducationStatistician" then education_statistician_abilities(user:)
+      when "Users::MinistryStatistician" then ministry_statistician_abilities(user:)
+      when "Users::AcademyStatistician" then academy_statistician_abilities(user:)
+      when "Users::AcademyRegionStatistician" then academy_region_statistician_abilities(user:)
+      when "Users::SchoolManagement"
         common_school_management_abilities(user:)
         school_manager_abilities(user:) if user.school_manager?
       end
@@ -223,7 +223,7 @@ class Ability
 
   def as_employers_like(user:)
     can :subscribe_to_webinar, User do
-      ENV.fetch('WEBINAR_URL', nil).present?
+      ENV.fetch("WEBINAR_URL", nil).present?
     end
     can %i[edit_password show_modal_info supply_offers], User
     can_manage_teams(user:)
@@ -362,10 +362,9 @@ class Ability
 
     can :flip_notification, AreaNotification do |_area_notif|
       many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
-      current_area_notifiable = !!user.fetch_current_area_notification
-      current_area_notifications_are_off = !current_area_notifiable&.notify
+      current_area_notifications_are_off = !user.fetch_current_area_notification.notify
 
-      user.team.alive? && current_area_notifiable &&
+      user.team.alive? &&
         (many_people_in_charge_of_area || current_area_notifications_are_off)
     end
 
@@ -657,7 +656,7 @@ class Ability
 
   def read_employer_name?(internship_offer:)
     # this avoids the N+1 query issue
-    if internship_offer.employer.type == 'Users::Operator'
+    if internship_offer.employer.type == "Users::Operator"
       operator = internship_offer.employer.try(:operator)
       if operator.present? && operator.masked_data
         false
@@ -672,6 +671,6 @@ class Ability
   end
 
   def employers_only?
-    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
+    ENV.fetch("EMPLOYERS_ONLY", false) == "true"
   end
 end
