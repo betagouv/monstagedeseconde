@@ -96,70 +96,89 @@ module Dashboard::Stepper
 
     def set_computed_params
       @entreprise = set_updated_address_flag
+      set_is_public_flag
+      assign_coordinates
+      set_full_address
+      sync_sector_or_group_when_is_public_explicit
+    end
+
+    def set_is_public_flag
       @entreprise.is_public ||= entreprise_params[:is_public] == 'true'
-      # Use geoocder if coordinates are not present
-      longitude = entreprise_params[:entreprise_coordinates_longitude].to_f
-      latitude = entreprise_params[:entreprise_coordinates_latitude].to_f
-      coordinates_valid = longitude.zero? == false && latitude.zero? == false &&
-                          entreprise_params[:entreprise_coordinates_longitude].present? &&
-                          entreprise_params[:entreprise_coordinates_latitude].present?
+    end
 
-      final_longitude = entreprise_params[:entreprise_coordinates_longitude]
-      final_latitude = entreprise_params[:entreprise_coordinates_latitude]
+    def assign_coordinates
+      coordinates = coordinates_from_params
+      coordinates ||= geocoded_coordinates
 
-      unless coordinates_valid
-        puts 'Coordinates not valid, trying to geocode'
-        full_address = entreprise_params[:entreprise_full_address].blank? ? entreprise_params[:entreprise_chosen_full_address] : entreprise_params[:entreprise_full_address]
+      return if coordinates.blank?
 
-        # Address to geocode contains a valid zipcode ?
-        if full_address.to_s.match?(/\d{5}/)
-          puts "-----Code postal valid------->"
-          # find city via Geocoder with zipcode
-          zipcode = full_address.to_s[/\d{5}/]
-          city = Geocoder.search("#{zipcode}, France").first.city
-          puts "City found: #{city}"
+      @entreprise.entreprise_coordinates = { longitude: coordinates[:longitude], latitude: coordinates[:latitude] }
+    end
 
-          # find coordinates via Geocoder with city and zipcode
-          coordinates = Geofinder.coordinates("#{full_address}, #{city}, #{zipcode}, France")
-          puts "Coordinates found: #{coordinates}"
+    def coordinates_from_params
+      longitude_str = entreprise_params[:entreprise_coordinates_longitude]
+      latitude_str = entreprise_params[:entreprise_coordinates_latitude]
 
-          if coordinates.present?
-            final_longitude = coordinates[1]
-            final_latitude = coordinates[0]
-            coordinates_valid = true
-          else
-            puts "-----Coordinates not found------->"
-            # take coordinates from Geocoder with city zipcode only
-            coordinates = Geocoder.search("#{city}, #{zipcode}, France").first.coordinates
-            if coordinates.present?
-              final_longitude = coordinates[1]
-              final_latitude = coordinates[0]
-              coordinates_valid = true
-            else
-              coordinates_valid = false
-              @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée")
-            end
-          end
-        else
-          coordinates_valid = false
-          @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée, code postal invalide")
-        end
+      return if longitude_str.blank? || latitude_str.blank?
+
+      longitude = longitude_str.to_f
+      latitude = latitude_str.to_f
+      return if longitude.zero? || latitude.zero?
+
+      { longitude:, latitude: }
+    end
+
+    def geocoded_coordinates
+      full_address = address_for_geocode
+      return invalid_address('Adresse non trouvée, code postal invalide') unless full_address.to_s.match?(/\d{5}/)
+
+      zipcode = full_address.to_s[/\d{5}/]
+      city = geocode_city_from_zipcode(zipcode)
+      return invalid_address('Adresse non trouvée') if city.blank?
+
+      coordinates = Geofinder.coordinates("#{full_address}, #{city}, #{zipcode}, France")
+      return coordinates_hash(coordinates) if coordinates.present?
+
+      fallback_coordinates = Geocoder.search("#{city}, #{zipcode}, France")&.first&.coordinates
+      if fallback_coordinates.nil?
+        chosen_address = entreprise_params[:entreprise_chosen_full_address]
+        fallback_coordinates = Geocoder.search("#{chosen_address}, France")&.first&.coordinates
       end
 
-      # Assign coordinates only if they are valid
-      if coordinates_valid
-        @entreprise.entreprise_coordinates = { longitude: final_longitude,
-                                               latitude: final_latitude }
-      end
+      return invalid_address('Adresse non trouvée') if fallback_coordinates.blank?
+
+      coordinates_hash(fallback_coordinates)
+    end
+
+    def geocode_city_from_zipcode(zipcode)
+      Geocoder.search("#{zipcode}, France")&.first&.city
+    end
+
+    def coordinates_hash(coordinates)
+      { longitude: coordinates[1], latitude: coordinates[0] }
+    end
+
+    def address_for_geocode
+      entreprise_params[:entreprise_full_address].blank? ? entreprise_params[:entreprise_chosen_full_address] : entreprise_params[:entreprise_full_address]
+    end
+
+    def invalid_address(message)
+      @entreprise.errors.add(:entreprise_chosen_full_address, message)
+      nil
+    end
+
+    def set_full_address
       @entreprise.entreprise_full_address = entreprise_params[:entreprise_chosen_full_address]
-      
-      if entreprise_params.key?(:is_public)
-        is_public_value = ActiveModel::Type::Boolean.new.cast(entreprise_params[:is_public])
-        if is_public_value
-          @entreprise.sector_id = Sector.find_by(name: 'Fonction publique').try(:id)
-        else
-          params[:entreprise][:group_id] = nil
-        end
+    end
+
+    def sync_sector_or_group_when_is_public_explicit
+      return unless entreprise_params.key?(:is_public)
+
+      is_public_value = ActiveModel::Type::Boolean.new.cast(entreprise_params[:is_public])
+      if is_public_value
+        @entreprise.sector_id = Sector.find_by(name: 'Fonction publique').try(:id)
+      else
+        params[:entreprise][:group_id] = nil
       end
     end
 

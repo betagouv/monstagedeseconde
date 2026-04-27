@@ -74,3 +74,4 @@ signature_storage
 megalinter-reports/
 venv
 copier.yml
+solid/
