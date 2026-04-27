@@ -1,42 +1,42 @@
 # frozen_string_literal: true
 
-ENV['RAILS_ENV'] ||= 'test'
-require_relative '../config/environment'
+ENV["RAILS_ENV"] ||= "test"
+require_relative "../config/environment"
 # require 'minitest/reporters'
-require 'minitest/autorun'
-require 'rails/test_help'
-require 'capybara-screenshot/minitest'
-require 'view_component/test_case'
-require 'support/api_test_helpers'
-require 'support/third_party_test_helpers'
-require 'support/search_internship_offer_helpers'
-require 'support/email_spam_euristics_assertions'
-require 'support/internship_occupation_form_filler'
-require 'support/entreprise_form_filler'
-require 'support/planning_form_filler'
-require 'support/school_form_filler'
-require 'support/turbo_assertions_helper'
-require 'support/team_and_areas_helper'
-require 'minitest/retry'
-require 'webmock/minitest'
-require 'sidekiq/testing'
-if ENV.fetch('FAIL_FAST', false) == 'true'
-  require 'minitest/fail_fast'
+require "minitest/autorun"
+require "rails/test_help"
+require "capybara-screenshot/minitest"
+require "view_component/test_case"
+require "support/api_test_helpers"
+require "support/third_party_test_helpers"
+require "support/search_internship_offer_helpers"
+require "support/email_spam_euristics_assertions"
+require "support/internship_occupation_form_filler"
+require "support/entreprise_form_filler"
+require "support/planning_form_filler"
+require "support/school_form_filler"
+require "support/turbo_assertions_helper"
+require "support/team_and_areas_helper"
+require "minitest/retry"
+require "webmock/minitest"
+require "sidekiq/testing"
+if ENV.fetch("FAIL_FAST", false) == "true"
+  require "minitest/fail_fast"
 end
 
 # these two lines should be withdrawn whenever the ChromeDriver is ok
 # https://stackoverflow.com/questions/70967207/selenium-chromedriver-cannot-construct-keyevent-from-non-typeable-key/70971698#70971698
-require 'webdrivers/chromedriver'
+require "webdrivers/chromedriver"
 
-if ENV['TEST_WITH_MAX_REQUESTS_PER_MINUTE'] == 'true'
-  ApplicationController.const_set('MAX_REQUESTS_PER_MINUTE', 10_000)
-  InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 1_000)
+if ENV["TEST_WITH_MAX_REQUESTS_PER_MINUTE"] == "true"
+  ApplicationController.const_set("MAX_REQUESTS_PER_MINUTE", 10_000)
+  InternshipOffers::Api.const_set("MAX_CALLS_PER_MINUTE", 1_000)
 end
 
 Sidekiq::Testing.fake!
 Flipper.disable :multi_offer
 
-Capybara.save_path = Rails.root.join('tmp/screenshots')
+Capybara.save_path = Rails.root.join("tmp/screenshots")
 
 Minitest::Retry.use!(
   retry_count: 3,
@@ -67,8 +67,18 @@ WebMock.disable_net_connect!(
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 
-  # Run tests in parallel with specified workers
-  parallelize(workers: ENV.fetch('PARALLEL_WORKERS') { :number_of_processors })
+  # Cap workers by default to keep DB setup stable on local machines.
+  requested_parallel_workers = ENV["PARALLEL_WORKERS"]&.to_i
+  max_parallel_workers = ENV.fetch("MAX_PARALLEL_WORKERS", 12).to_i
+  effective_parallel_workers = requested_parallel_workers ?
+    [ requested_parallel_workers, max_parallel_workers ].min :
+    max_parallel_workers
+
+  # Rails reads this env var internally when bootstrapping parallelization.
+  ENV["PARALLEL_WORKERS"] = effective_parallel_workers.to_s
+
+  # Run tests in parallel with a safe effective worker count.
+  parallelize(workers: effective_parallel_workers)
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
@@ -84,9 +94,9 @@ end
 class ActionDispatch::IntegrationTest
   def after_teardown
     super
-    puts "Cleaning up storage at: #{ActiveStorage::Blob.service.root}" if ENV.fetch('VERBOSE', false) == 'true'
+    puts "Cleaning up storage at: #{ActiveStorage::Blob.service.root}" if ENV.fetch("VERBOSE", false) == "true"
     FileUtils.rm_rf(ActiveStorage::Blob.service.root)
-    puts 'Flushing Sidekiq Redis' if ENV.fetch('VERBOSE', false) == 'true'
+    puts "Flushing Sidekiq Redis" if ENV.fetch("VERBOSE", false) == "true"
     Sidekiq.redis(&:flushdb)
   end
 

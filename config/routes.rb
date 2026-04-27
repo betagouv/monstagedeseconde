@@ -3,16 +3,15 @@
 require 'sidekiq/web'
 root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
                      'maintenance_estivale'
-                   elsif ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
+elsif ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
                      'pro_landing'
-                   else
+else
                      'home'
-                   end
+end
 
 Rails.application.routes.draw do
-
   # ------------------ SCOPE START ------------------
-  mount LetterThief::Engine => "/letter_thief" if Rails.env.development?
+  mount LetterThief::Engine => '/letter_thief' if Rails.env.development?
   scope(path_names: { new: 'nouveau', edit: 'modification' }) do
     authenticate :user, ->(u) { u.god? } do
       # sidekiq
@@ -61,7 +60,7 @@ Rails.application.routes.draw do
       get :o, on: :member
     end
 
-    resources :schools, path: "ecoles", only: %i[new create]
+    resources :schools, path: 'ecoles', only: %i[new create]
 
     resources :internship_offer_keywords, only: [] do
       collection do
@@ -190,7 +189,6 @@ Rails.application.routes.draw do
         resources :internship_applications, path: 'candidatures', only: %i[update index show],
                                             module: 'internship_offers', param: :uuid do
           patch :set_to_read, on: :member
-          get :school_details, on: :member
         end
         member do
           post :publish
@@ -247,7 +245,7 @@ Rails.application.routes.draw do
     get 'operators', to: 'operators#index'
     put 'operators', to: 'operators#update'
 
-    resources :boarding_houses, path: 'internats', except: [:show] do
+    resources :boarding_houses, path: 'internats', except: [ :show ] do
       collection do
         post :import
       end
@@ -255,7 +253,7 @@ Rails.application.routes.draw do
   end
 
   namespace :public do
-    resources :internship_agreements, only: [:show], param: :uuid do
+    resources :internship_agreements, only: [ :show ], param: :uuid do
       member do
         get :upload, to: 'internship_agreements#upload', defaults: { format: :pdf }
         post :legal_representative_sign, to: 'internship_agreements#legal_representative_sign'
@@ -318,7 +316,7 @@ Rails.application.routes.draw do
   # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
   get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/#{id}', status: 302)
 
-  resources :school_switches, only: [:create]
+  resources :school_switches, only: [ :create ]
 
   root to: "pages##{root_destination}"
 

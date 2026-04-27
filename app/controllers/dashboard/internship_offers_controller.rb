@@ -19,11 +19,11 @@ module Dashboard
     def index
       @internship_offer_areas = current_user.internship_offer_areas if current_user.employer_like?
       authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
-      
+
       return if params[:order] && !valid_order_column? && (redirect_to(dashboard_internship_offers_path, flash: { danger: "Impossible de trier par #{params[:order]}" }); true)
-      
+
       @internship_offers = finder.all
-      
+
       if order_column_from_stats?
         # Only allow ordering by whitelisted columns/directions (defended in order_column/order_direction)
         stats_column = order_column
@@ -34,10 +34,10 @@ module Dashboard
         order_sql = "internship_offer_stats.#{stats_column} #{direction}"
         @internship_offers = @internship_offers.order(Arel.sql(order_sql))
       else
-        order_param = order_direction.nil? ? :published_at : { order_column => order_direction }
+        order_param = order_direction.nil? ? { created_at: :desc } : { order_column => order_direction }
         @internship_offers = @internship_offers.order(order_param)
       end
-      
+
       return unless params[:search].present?
 
       @internship_offers = @internship_offers.where(
@@ -53,13 +53,12 @@ module Dashboard
       authorize! :create, InternshipOffer
       internship_offer = current_user.internship_offers
                                      .find(params[:duplicate_id])
-                                     .duplicate # A revoir TODO
 
       @internship_offer = if params[:without_location].present?
                             internship_offer.duplicate_without_location
-                          else
+      else
                             internship_offer.duplicate
-                          end
+      end
 
       @available_weeks = Week.both_school_track_selectable_weeks
       set_internship_offer_attributes(@internship_offer)
@@ -79,10 +78,10 @@ module Dashboard
           @available_weeks = Week.troisieme_weeks
           success_message = if params[:commit] == 'Renouveler l\'offre'
                               'Votre offre de stage a été renouvelée pour cette année scolaire.'
-                            else
+          else
                               "L'offre de stage a été dupliquée en tenant compte" \
                               ' de vos éventuelles modifications.'
-                            end
+          end
           redirect_to(internship_offer_path(created_internship_offer, stepper: true),
                       flash: { success: success_message })
         end
@@ -98,7 +97,7 @@ module Dashboard
 
     def edit
       authorize! :update, @internship_offer
-      @available_weeks = Week.selectable_from_now_until_next_school_year # Week.both_school_track_selectable_weeks TODO: remove this in july 2025
+      @available_weeks = Week.selectable_from_now_until_next_school_year
       set_internship_offer_attributes(@internship_offer)
       @school_weeks = {}
       if @internship_offer.internship_occupation.present?
@@ -116,7 +115,7 @@ module Dashboard
     def update
       authorize! :update, @internship_offer
       @available_weeks = Week.selectable_on_school_year
-      
+
       if params[:internship_offer].key?(:is_public)
         is_public_value = ActiveModel::Type::Boolean.new.cast(internship_offer_params[:is_public])
         if is_public_value
@@ -215,7 +214,7 @@ module Dashboard
       approved_applications_count
       remaining_seats_count
     ].freeze
-    
+
     STATS_ORDER_COLUMNS = %w[
       approved_applications_count
       remaining_seats_count
@@ -226,9 +225,9 @@ module Dashboard
     def valid_order_column?
       VALID_ORDER_COLUMNS.include?(params[:order])
     end
-    
+
     def order_column_from_stats?
-      STATS_ORDER_COLUMNS.include?(order_column.to_s)
+      params[:order].present? && STATS_ORDER_COLUMNS.include?(order_column.to_s)
     end
 
     def finder

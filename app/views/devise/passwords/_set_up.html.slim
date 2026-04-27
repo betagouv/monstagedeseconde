@@ -29,7 +29,7 @@ hr
                        disabled: true
 
     - else 
-      .form-group.custom-label-container
+      .form-group.custom-label-container data-controller="downcase"
         = f.label :email, class: "fr-label" do
           span
             | Adresse email indiquée par votre professeur
@@ -37,8 +37,10 @@ hr
             | Cette adresse sera utilisée uniquement pour communiquer avec vous. Elle vous servira également d’identifiant pour vous connecter.
         = f.text_field :email,
                        class: "fr-input",
+                       pattern: js_email_pattern,
                        maxlength: 100,
                        value: current_user.try(:email),
+                       data: { downcase_target: 'emailField', action: 'change->downcase#change' },
                        disabled: true
     
     .row

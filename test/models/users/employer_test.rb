@@ -203,5 +203,19 @@ module Users
       employer = build(:employer, employer_role: 'Manager')
       assert employer.valid?
     end
+
+    test 'is invalid when email is already used by a student account' do
+      student = create(:student, email: 'duplicate@example.com')
+      employer = build(:employer, email: student.email)
+      refute employer.valid?
+      assert_includes employer.errors[:email].join,
+                      'Un compte est déjà associé à cet email'
+    end
+
+    test 'is valid when no student uses the email' do
+      create(:student, email: 'student@example.com')
+      employer = build(:employer, email: 'employer@example.com')
+      assert employer.valid?
+    end
   end
 end
