@@ -156,7 +156,7 @@ module Users
 
       case internship_application.internship_offer.weeks.count
       when 1
-        school_track_data = SchoolTrack::Seconde.period_collection(school_year: SchoolYear.current_year)
+        school_track_data = SchoolTrack::Seconde.period_collection(school_year: SchoolYear::Current.new)
         data = internship_application.internship_offer.weeks.first.id == SchoolTrack::Seconde.first_week.id ? school_track_data[:week_1] : school_track_data[:week_2]
         specific_week_part = "les dates allant du #{data[:start]} au #{data[:end]} #{data[:month]} #{data[:year]}"
 
