@@ -246,10 +246,10 @@ module Users
 
     def log_search_history(search_params)
       search_history = UsersSearchHistory.new(
-        keywords: search_params[:keyword],
+        keywords: search_params[:keyword]&.to_s&.truncate(255),
         latitude: search_params[:latitude],
         longitude: search_params[:longitude],
-        city: search_params[:city],
+        city: search_params[:city]&.to_s&.truncate(165),
         radius: search_params[:radius],
         results_count: search_params[:results_count]&.to_i || 0,
         user: self,
