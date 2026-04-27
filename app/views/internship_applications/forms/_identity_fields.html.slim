@@ -17,14 +17,15 @@
                       required: true
 
 .row.mt-3
-  .col-6
+  .col-6 data-controller="downcase"
     = form.label :email, class: 'fr-label' do
       span data-profile-target="label"= current_user.school_manager? ? 'Adresse électronique académique' : 'Adresse électronique (e-mail)'
       = form.rg2a_required_content_tag
-    - form_data = { action: 'change->profile#onBlurEmailInput', :"profile-target" => 'emailInput'}
+    - form_data = { action: 'change->profile#onBlurEmailInput', :"profile-target" => 'emailInput', downcase_target: 'emailField', action: 'change->downcase#change' }
     - form_data.merge!({ readonly: true } ) if current_user.is_a?(Users::PrefectureStatistician)
     = form.text_field :email, { class: 'fr-input',
                                 maxlength: 100,
+                                pattern: js_email_pattern,
                                 required: true,
                                 data: form_data }
     small.d-none data-profile-target="emailHint"

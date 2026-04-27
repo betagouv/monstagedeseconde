@@ -1,8 +1,8 @@
-require 'pretty_console'
+require "pretty_console"
 
 namespace :sys do
   def timestamp
-    DateTime.now.to_s.gsub(/:/, '_').split(/\+/).first
+    DateTime.now.to_s.gsub(/:/, "_").split(/\+/).first
   end
 
   def db_file_name
@@ -14,94 +14,112 @@ namespace :sys do
   end
 
   def reset_file_name
-    'storage/tmp/reset_1E1S_prod_copy.sql'
+    "storage/tmp/reset_1E1S_prod_copy.sql"
   end
 
-  desc 'which db is in use ?'
+  desc "which db is in use ?"
   task :db_in_use, [] => :environment do
-    file = Rails.root.join('config/database.yml')
+    file = Rails.root.join("config/database.yml")
     text = File.read(file)
-    content_to_search = '# url: <%= ENV.fetch(\'CLEVER_PRODUCTION_COPY_CONNEXION_URI\')'
+    content_to_search = "# url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI')"
     if text.include?(content_to_search)
-      PrettyConsole.puts_in_green 'Database in use is local'
+      PrettyConsole.puts_in_green "Database in use is local"
     else
-      PrettyConsole.puts_in_red 'Database in use is production copy'
+      PrettyConsole.puts_in_red "Database in use is production copy"
     end
   end
 
-  desc 'uncomment url in database.yml to switch database from local to production copy'
+  desc "uncomment url in database.yml to switch database from local to production copy"
   task :db_prod, [] => :environment do
-    file = Rails.root.join('config/database.yml')
+    file = Rails.root.join("config/database.yml")
     text = File.read(file)
-    text = text.gsub(/#(?: #)*/, '#')
+    text = text.gsub(/#(?: #)*/, "#")
     new_contents = text.gsub(/# url: <%= ENV.fetch\('CLEVER_PRODUCTION_COPY_CONNEXION_URI'\)/,
                              "url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI')")
-    File.open(file, 'w') { |f| f.puts new_contents }
+    File.open(file, "w") { |f| f.puts new_contents }
   end
 
-  desc 'comment url in database.yml to switch database from production copy to local'
+  desc "comment url in database.yml to switch database from production copy to local"
   task :db_local, [] => :environment do
-    file = Rails.root.join('config/database.yml')
+    file = Rails.root.join("config/database.yml")
     text = File.read(file)
     new_contents = text.gsub(/url: <%= ENV.fetch\('CLEVER_PRODUCTION_COPY_CONNEXION_URI'\)/,
                              "# url: <%= ENV.fetch('CLEVER_PRODUCTION_COPY_CONNEXION_URI')")
-    File.open(file, 'w') { |f| f.puts new_contents }
+    File.open(file, "w") { |f| f.puts new_contents }
   end
 
-  desc 'download a production database copy to filesystem'
+  desc "download a production database copy to filesystem"
   task :dl_prod, [] => :environment do
     if File.exist?(db_file_name)
-      PrettyConsole.puts_in_cyan 'File already exists'
+      PrettyConsole.puts_in_cyan "File already exists"
     else
-      PrettyConsole.announce_task 'Downloading production database' do
-        system('pg_dump -c --clean --if-exists -Fc --encoding=UTF-8 --no-owner --no-password  ' \
+      PrettyConsole.announce_task "Downloading production database" do
+        system("pg_dump -c --clean --if-exists -Fc --encoding=UTF-8 --no-owner --no-password  " \
         "-d #{ENV['PRODUCTION_DATABASE_URI']} > #{db_file_name}")
       end
     end
   end
 
-  desc 'download a production database copy to filesystem with sql format'
+  desc "download a production database copy to filesystem with sql format"
   task :dl_prod_sql, [] => :environment do
     if File.exist?(db_file_name_sql)
-      PrettyConsole.puts_in_cyan 'File already exists'
+      PrettyConsole.puts_in_cyan "File already exists"
     else
-      PrettyConsole.announce_task 'Downloading production database' do
-        system('pg_dump -c --clean --if-exists -Fp --encoding=UTF-8 --no-owner --no-password  ' \
+      PrettyConsole.announce_task "Downloading production database" do
+        system("pg_dump -c --clean --if-exists -Fp --encoding=UTF-8 --no-owner --no-password  " \
         "-d #{ENV['PRODUCTION_DATABASE_URI']} > #{db_file_name_sql}")
       end
     end
   end
 
-  desc 'upload a local production database copy to CleverCloud'
+  desc "upload a local production database copy to CleverCloud"
   task :upl_prod, [] => :environment do
-    PrettyConsole.announce_task 'Uploading production database dump' do
+    PrettyConsole.announce_task "Uploading production database dump" do
       system("pg_restore -h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
               "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
+              "--no-owner --no-privileges " \
               "-U #{ENV['CLEVER_PRODUCTION_COPY_DB_USER']} " \
               "-f #{db_file_name}")
     end
   end
 
-  desc 'upload a local production database dump to review on CleverCloud'
+  desc "upload a local production database dump to review on CleverCloud"
   task :upl_prod_to_review, [] => :environment do
-    PrettyConsole.announce_task 'Uploading production database dump for review platform' do
-      system({ 'PGPASSWORD' => ENV['CLEVER_REVIEW_DB_PASSWORD'] },
-             'pg_restore',
-             '--clean',
-             '--if-exists',
-             '--no-owner',
-             '--no-privileges',
-             '-h', ENV['CLEVER_REVIEW_HOST'],
-             '-p', ENV['CLEVER_REVIEW_DB_PORT'],
-             '-U', ENV['CLEVER_REVIEW_DB_USER'],
-             '-d', ENV['CLEVER_REVIEW_DB_NAME'],
-             'storage/current_production.dump')
+    PrettyConsole.announce_task "Uploading production database dump for review platform" do
+      system({ "PGPASSWORD" => ENV["CLEVER_REVIEW_DB_PASSWORD"] },
+             "pg_restore",
+             "--clean",
+             "--if-exists",
+             "--no-owner",
+             "--no-privileges",
+             "-h", ENV["CLEVER_REVIEW_HOST"],
+             "-p", ENV["CLEVER_REVIEW_DB_PORT"],
+             "-U", ENV["CLEVER_REVIEW_DB_USER"],
+             "-d", ENV["CLEVER_REVIEW_DB_NAME"],
+             "storage/current_production.dump")
     end
   end
 
-  desc 'upload a local production database copy to CleverCloud with sql format'
+  desc "upload a local production database copy to CleverCloud with a specified filename (should be a dump file)"
+  task :upl_filename_to_local_db, [ :filename ] => :environment do |t, args|
+    next unless File.exist?(args[:filename])
+    puts "ok file exists, dump testing"
+    next unless args[:filename].end_with?(".dump")
+    puts "ok file is a dump, rails env testing"
+    next unless Rails.env.development?
+    puts "ok environment is development"
+    PrettyConsole.announce_task "Uploading production database dump" do
+      system("pg_restore -h localhost " \
+             "-d monstage " \
+             "--no-owner --no-privileges " \
+             "#{args[:filename]}")
+    end
+  end
+
+
+  desc "upload a local production database copy to CleverCloud with sql format"
   task :upl_prod_sql, [] => :environment do
-    PrettyConsole.announce_task 'Downloading production database' do
+    PrettyConsole.announce_task "Downloading production database" do
       system("PGPASSWORD=#{ENV['CLEVER_PRODUCTION_COPY_DB_PASSWORD']} psql " \
               "-h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
               "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
@@ -123,69 +141,69 @@ namespace :sys do
   # end
   #
 
-  desc 'kill all sidekiq processes from their task name on Scheduled queue'
-  task :kill_scheduled_sidekiq, [:task_name] => :environment do |t, args|
+  desc "kill all sidekiq processes from their task name on Scheduled queue"
+  task :kill_scheduled_sidekiq, [ :task_name ] => :environment do |t, args|
     PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
       counter = 0
       not_treated = 0
       Sidekiq::ScheduledSet.new.each do |job|
         puts job.args.first
-        if job.args.first['job_class'] == args.task_name
+        if job.args.first["job_class"] == args.task_name
           counter += 1
           job.delete
-          print '.'
+          print "."
           PrettyConsole.puts_in_green " #{counter} |" if counter % 100 == 0
         else
           not_treated += 1
-          print ' 100 |' if not_treated % 100 == 0
+          print " 100 |" if not_treated % 100 == 0
         end
       end
       PrettyConsole.say_in_yellow "#{counter} jobs deleted | #{not_treated} jobs not treated"
     end
   end
 
-  desc 'kill all sidekiq processes from their task name on Retries queue'
-  task :kill_retries_sidekiq, [:task_name] => :environment do |t, args|
+  desc "kill all sidekiq processes from their task name on Retries queue"
+  task :kill_retries_sidekiq, [ :task_name ] => :environment do |t, args|
     PrettyConsole.announce_task "Killing sidekiq processes with #{args.task_name}" do
       counter = 0
       not_treated = 0
       Sidekiq::RetrySet.new.each do |job|
         puts job.args.first
-        if job.args.first['job_class'] == args.task_name
+        if job.args.first["job_class"] == args.task_name
           counter += 1
           job.delete
-          print '.'
+          print "."
           PrettyConsole.puts_in_green " #{counter} |" if counter % 100 == 0
         else
           not_treated += 1
-          print ' 100 |' if not_treated % 100 == 0
+          print " 100 |" if not_treated % 100 == 0
         end
       end
       PrettyConsole.say_in_yellow "#{counter} jobs deleted | #{not_treated} jobs not treated"
     end
   end
 
-  desc 'download an upload a sql copy of the production database'
+  desc "download an upload a sql copy of the production database"
   task :dl_upl_prod_sql, [] => :environment do
     if Rails.env.staging? || Rails.env.development?
       chosen_db_name = db_file_name_sql
-      PrettyConsole.announce_task 'Downloading production database' do
-        unless Dir.exist?('storage/tmp')
-          PrettyConsole.announce_task 'Creating directory' do
-            system('mkdir -p storage/tmp')
-            system('chmod 777 storage/tmp')
+      PrettyConsole.announce_task "Downloading production database" do
+        unless Dir.exist?("storage/tmp")
+          PrettyConsole.announce_task "Creating directory" do
+            system("mkdir -p storage/tmp")
+            system("chmod 777 storage/tmp")
             system("chmod +R #{chosen_db_name}")
           end
         end
-        puts '================================'
+        puts "================================"
         PrettyConsole.puts_in_cyan "producing chosen_db_name : #{chosen_db_name}"
-        puts '================================'
-        puts ''
-        system('pg_dump -c --clean --if-exists -Fp --encoding=UTF-8 --no-owner --no-password  ' \
+        puts "================================"
+        puts ""
+        system("pg_dump -c --clean --if-exists -Fp --encoding=UTF-8 --no-owner --no-password  " \
         "-d #{ENV['PRODUCTION_DATABASE_URI']} > #{chosen_db_name}")
       end
 
-      PrettyConsole.announce_task 'Uploading production database' do
+      PrettyConsole.announce_task "Uploading production database" do
         system("PGPASSWORD=#{ENV['CLEVER_PRODUCTION_COPY_DB_PASSWORD']} psql " \
                 "-h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
                 "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
@@ -198,32 +216,32 @@ namespace :sys do
         system("rm  #{chosen_db_name}")
       end
     else
-      PrettyConsole.puts_in_red 'You cannot run this task only with dev or staging environment'
+      PrettyConsole.puts_in_red "You cannot run this task only with dev or staging environment"
     end
   end
 
-  desc 'download an upload a production database dump'
+  desc "download an upload a production database dump"
   task :dl_upl_prod, [] => :environment do
     if Rails.env.development?
       chosen_db_name = db_file_name
 
-      PrettyConsole.announce_task 'Downloading production database' do
-        unless Dir.exist?('storage/tmp')
-          PrettyConsole.announce_task 'Creating directory' do
-            system('mkdir -p storage/tmp')
-            system('chmod 777 storage/tmp')
+      PrettyConsole.announce_task "Downloading production database" do
+        unless Dir.exist?("storage/tmp")
+          PrettyConsole.announce_task "Creating directory" do
+            system("mkdir -p storage/tmp")
+            system("chmod 777 storage/tmp")
             system("chmod +R #{chosen_db_name}")
           end
         end
-        puts '================================'
+        puts "================================"
         PrettyConsole.puts_in_cyan "producing chosen_db_name (dump): #{chosen_db_name}"
-        puts '================================'
-        puts ''
-        system('pg_dump -c --clean --if-exists -Fc --encoding=UTF-8 --no-owner --no-password  ' \
+        puts "================================"
+        puts ""
+        system("pg_dump -c --clean --if-exists -Fc --encoding=UTF-8 --no-owner --no-password  " \
         "-d #{ENV['PRODUCTION_DATABASE_URI']} > #{db_file_name}")
       end
 
-      PrettyConsole.announce_task 'Uploading production database' do
+      PrettyConsole.announce_task "Uploading production database" do
         system("PGPASSWORD=#{ENV['CLEVER_PRODUCTION_COPY_DB_PASSWORD']} pg_restore " \
                "-h #{ENV['CLEVER_PRODUCTION_COPY_HOST']} " \
                "-p #{ENV['CLEVER_PRODUCTION_COPY_DB_PORT']} " \
@@ -235,7 +253,17 @@ namespace :sys do
         system("rm  #{chosen_db_name}")
       end
     else
-      PrettyConsole.puts_in_red 'You cannot run this task only with dev or environment'
+      PrettyConsole.puts_in_red "You can run this task only with dev environment"
+    end
+  end
+
+  desc "download a production database copy to filesystem and upload it to CleverCloud production copy"
+  task :dl_upl_prod, [] => :environment do
+    if Rails.env.development?
+      Rake::Task["sys:dl_prod"].invoke
+      Rake::Task["sys:upl_prod"].invoke
+    else
+      PrettyConsole.puts_in_red "You cannot run this task anywhere else than dev environment"
     end
   end
 end

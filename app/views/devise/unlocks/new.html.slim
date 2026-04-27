@@ -10,7 +10,7 @@
     = render "layouts/form_errors", resource: resource, resource_name: :user
     .row.fr-my-4w
       .col-lg-4.col-md-6.col-sm-12
-        .form-group
+        .form-group data-controller="downcase"
           = f.label :email, class: "fr-label" do
             |Adresse électronique (e-mail)
             = f.rg2a_required_content_tag
@@ -20,8 +20,9 @@
                           class: "fr-input",
                           required: true,
                           maxlength: 100,
-                          pattern: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                          maxlength: 70
+                          pattern: js_email_pattern,
+                          maxlength: 70,
+                          data: { downcase_target: 'emailField', action: 'change->downcase#change' }
 
     .row.fr-mt-4w.fr-mb-10w
       .col-lg-3.col-md-6.col-sm-12

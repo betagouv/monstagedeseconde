@@ -1,0 +1,6 @@
+.fr-input:invalid {
+  &:not(:placeholder-shown) {
+    border-color: $red;
+  }
+
+}

@@ -7,6 +7,7 @@ class InternshipOffer < ApplicationRecord
   PAGE_SIZE = 30
   # TODO : most probably to be the same field.
   DESCRIPTION_MAX_CHAR_COUNT = 1500
+  DESCRIPTION_MIN_CHAR_COUNT = 10
   MAX_CANDIDATES_HIGHEST = 6_000
   TITLE_MAX_CHAR_COUNT = 150
   EMPLOYER_NAME_MAX_CHAR_COUNT = 150
@@ -364,6 +365,7 @@ class InternshipOffer < ApplicationRecord
   # -------------------------
   def from_doubling_task? = !!from_doubling_task || false
   def from_multi? = false
+  def display_city = city
   def still_unpublished?
     unpublished? || need_to_be_updated? || splitted?
   end

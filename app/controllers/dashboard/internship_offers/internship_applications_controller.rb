@@ -85,18 +85,12 @@ module Dashboard
         end
       end
 
-      def school_details
-        # TODO
-        authorize! :index, InternshipApplication
-        @school = @internship_application.student.school
-        @school_presenter = @school.presenter
-      end
 
       private
 
       def fetch_user_internship_applications
         InternshipApplication.where.not(type: 'InternshipApplications::Api')
-                             .where( internship_offer_id: current_user.internship_offers.ids )
+                             .where(internship_offer_id: current_user.internship_offers.ids)
       end
 
       def fetch_internship_application
@@ -108,7 +102,7 @@ module Dashboard
                          internship_agreement]
         student_includings = %i[school]
         internship_applications = InternshipApplications::WeeklyFramed.includes(*includings)
-                                                                      .includes(student: [*student_includings])
+                                                                      .includes(student: [ *student_includings ])
                                                                       .where(internship_offer:)
         if params_order == ORDER_WITH_INTERNSHIP_DATE
           internship_applications.order(
