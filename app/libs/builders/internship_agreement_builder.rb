@@ -54,7 +54,7 @@ module Builders
       return { enforce_school_manager_validations: !soft_saving } if user.school_management?
       return { enforce_teacher_validations: !soft_saving } if user.teacher?
       return { enforce_employer_validations: !soft_saving } if user.employer_like?
-      return { skip_validations_for_system: true } if user.is_a?(Users::God)
+      return { skip_validations_for_system: true } if user.god?
 
       raise ArgumentError, "#{user.type} can not create agreement yet"
     end
@@ -109,9 +109,9 @@ module Builders
       school_manager = student.school_manager
       student_class_room = if student.class_room
                              student&.class_room&.name
-                           else
+      else
                              ''
-                           end
+      end
       {
         student_school: student.presenter.formal_school_name,
         school_representative_full_name: school_manager&.presenter&.full_name,

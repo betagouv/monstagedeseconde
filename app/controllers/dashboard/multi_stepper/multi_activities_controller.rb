@@ -59,8 +59,7 @@ module Dashboard::MultiStepper
     end
 
     def multi_activity_params
-      params.require(:multi_activity)
-            .permit(:title, :description)
+      params.expect(multi_activity: [:title, :description])
     end
 
     def sanitize_content

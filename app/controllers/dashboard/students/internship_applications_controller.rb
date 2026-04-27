@@ -78,7 +78,7 @@ module Dashboard
       end
 
       def set_internship_application
-        @internship_application = @current_student.internship_applications.find_by(uuid: params[:uuid])
+        @internship_application = @current_student.internship_applications.find_by!(uuid: params[:uuid])
       end
 
       def increase_dunning_letter_count

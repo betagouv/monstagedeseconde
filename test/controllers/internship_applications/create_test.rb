@@ -416,7 +416,7 @@ module InternshipApplications
       end
     end
 
-    test 'POST #create internship application as student with duplicate contact email is tolerated' do
+    test 'POST #create internship application as student with duplicate contact email is rejected' do
       travel_to Date.new(2023, 10, 1) do
         internship_offer = create(:weekly_internship_offer_3eme)
         school = create(:school)
@@ -436,9 +436,9 @@ module InternshipApplications
           }
         }
 
-        assert_difference('InternshipApplications::WeeklyFramed.count', 1) do
+        assert_no_difference('InternshipApplications::WeeklyFramed.count') do
           post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
-          assert_response :redirect
+          assert_response :bad_request
         end
       end
     end

@@ -61,31 +61,31 @@ module Dashboard::MultiStepper
         params[:corporation][:internship_street] = params[:corporation][:street]
         params[:corporation][:internship_zipcode] = params[:corporation][:zipcode]
         params[:corporation][:internship_city] = params[:corporation][:city]
-        
+
         if params[:corporation][:latitude].present? && params[:corporation][:longitude].present?
           params[:corporation][:internship_coordinates] = { latitude: params[:corporation][:latitude].to_f, longitude: params[:corporation][:longitude].to_f }
         elsif params[:corporation][:coordinates].present? && params[:corporation][:coordinates].is_a?(ActionController::Parameters)
-             params[:corporation][:internship_coordinates] = { 
-               latitude: params[:corporation][:coordinates][:latitude].to_f, 
-               longitude: params[:corporation][:coordinates][:longitude].to_f 
+             params[:corporation][:internship_coordinates] = {
+               latitude: params[:corporation][:coordinates][:latitude].to_f,
+               longitude: params[:corporation][:coordinates][:longitude].to_f
              }
         end
-        
+
         %i[latitude longitude coordinates street zipcode city].each do |field|
           params[:corporation].delete(field)
         end
       end
 
       def corporation_params
-        params.require(:corporation).permit(
-          :siret, :sector_id, 
+        params.expect(corporation: [
+          :siret, :sector_id,
           :corporation_name, :corporation_address, :corporation_city, :corporation_zipcode, :corporation_street,
-          :internship_street, :internship_zipcode, :internship_city, :internship_phone, 
+          :internship_street, :internship_zipcode, :internship_city, :internship_phone,
           :tutor_name, :tutor_role_in_company, :tutor_email, :tutor_phone,
           :employer_name, :employer_role, :employer_email, :employer_phone,
           :latitude, :longitude, # Allow these temporary params
           internship_coordinates: [:latitude, :longitude] # Allow nested attributes for coordinates
-        )
+        ])
       end
     end
   end

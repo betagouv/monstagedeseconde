@@ -84,26 +84,32 @@ module Dashboard
     end
 
     def god_internship_weeks_params
-      params.require(:school)
-            .permit(:zipcode,
-                    :city,
-                    :street,
-                    :name,
-                    :visible,
-                    :rep_kind,
-                    :qpv,
-                    :signature,
-                    :agreement_conditions_rich_text,
-                    coordinates: {},
-                    week_ids: [])
+      params.expect(
+        school: [
+          :zipcode,
+          :city,
+          :street,
+          :name,
+          :visible,
+          :rep_kind,
+          :qpv,
+          :signature,
+          :agreement_conditions_rich_text,
+          coordinates: {},
+          week_ids: []
+      ])
     end
 
     def school_manager_internship_weeks_params
-      params.require(:school).permit(:agreement_conditions_rich_text, :signature, week_ids: [])
+      params.expect(
+        school: [
+          :agreement_conditions_rich_text, :signature, week_ids: []
+        ]
+      )
     end
 
     def signature_params
-      params.require(:school).permit(:signature)
+      params.expect(school: [:signature])
     end
   end
 end

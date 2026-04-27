@@ -98,8 +98,11 @@ module Dashboard
     end
 
     def team_member_invitation_params
-      params.require(:team_member_invitation)
-            .permit(:invitation_email)
+      params.expect(
+        team_member_invitation: [
+          :invitation_email
+        ]
+      )
     end
 
     def set_valid_current_area

@@ -27,13 +27,13 @@ wb.add_worksheet(name: "Candidatures - #{@current_area&.name&.truncate(15) || 't
   # raws
   @internship_applications.each do |application|
     sheet.add_row([
-      application.student.first_name,
-      application.student.last_name,
-      application.student.gender.upcase,
-      application.student.grade.name,
-      application.student.school.name,
-      application.student.school.city,
-      application.student.school.department.code,
+      application.student&.first_name,
+      application.student&.last_name,
+      application.student&.gender&.upcase,
+      application.student&.grade&.name,
+      application.student&.school&.name,
+      application.student&.school&.city,
+      application.student&.school&.department&.code,
       application.internship_offer.title,
       localize(application.created_at, format: "%d %B %Y"),
       t("activerecord.attributes.internship_application.aasm_state.#{application.aasm_state}").capitalize,

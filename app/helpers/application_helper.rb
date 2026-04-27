@@ -146,6 +146,8 @@ module ApplicationHelper
     html_parts.join("\n").html_safe
   end
 
+  def js_email_pattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$'
+
   private
 
   def process_text_with_spans(text, spans)

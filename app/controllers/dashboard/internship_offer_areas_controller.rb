@@ -124,7 +124,7 @@ module Dashboard
 
         ActiveRecord::Base.transaction do
           @internship_offer_area.internship_offers.each do |offer|
-            offer.internship_applications.map(&:soft_destroy)
+            offer.internship_applications.each(&:anonymize)
             offer.anonymize
           end
           # update all users with the area in current_area_id, to the user current_area_id
@@ -208,7 +208,7 @@ module Dashboard
     end
 
     def internship_offer_area_params
-      params.require(:internship_offer_area).permit(:area_id, :name)
+      params.expect(internship_offer_area: [:area_id, :name])
     end
 
     def set_internship_offer_area

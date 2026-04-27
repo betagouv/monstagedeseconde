@@ -1,1 +1,2 @@
-RUBY_DEBUG_OPEN=true foreman start -f Procfile.dev
+#!/usr/bin/env ruby
+exec "./bin/rails", "server", *ARGV

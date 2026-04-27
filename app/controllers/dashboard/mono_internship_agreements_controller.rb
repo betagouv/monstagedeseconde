@@ -49,8 +49,8 @@ module Dashboard
           send_data(
             GenerateInternshipAgreement.new(@internship_agreement.id).call.render,
             filename: "Convention_de_stage_#{ext_file_name}.pdf",
-            type: 'application/pdf',
-            disposition: 'inline'
+            type: "application/pdf",
+            disposition: "inline"
           )
         end
       end
@@ -60,7 +60,7 @@ module Dashboard
       authorize! :index, InternshipAgreement
       if current_user.employer_like?
         @internship_offers = current_user.internship_offers
-                                         .includes([:weeks, { school: :school_managers }])
+                                         .includes([ :weeks, { school: :school_managers } ])
       end
       @mono_internship_agreements  = filtering_query current_user.mono_internship_agreements
       @multi_internship_agreements = filtering_query current_user.multi_internship_agreements
@@ -84,7 +84,7 @@ module Dashboard
         :internship_agreement, :signature
       ).blank? && @internship_agreement.school.signature.blank?
         redirect_to dashboard_internship_agreements_path,
-                    flash: { danger: 'Vous devez d\'abord importer la signature du chef d\'établissement. Avant de signer la convention.' } and return
+                    flash: { danger: "Vous devez d'abord importer la signature du chef d'établissement. Avant de signer la convention." } and return
       end
 
       update_school_signature if params.dig(:internship_agreement, :signature).present?
@@ -98,66 +98,67 @@ module Dashboard
       @internship_agreement.sign!
 
       redirect_to dashboard_internship_agreements_path,
-                  flash: { success: 'La convention a été signée.' }
+                  flash: { success: "La convention a été signée." }
     end
 
     private
 
     def fields
-      [:internship_application_id,
-              :student_school,
-              :school_representative_email,
-              :school_representative_full_name,
-              :school_representative_function,
-              :school_representative_phone,
-              :school_representative_role,
-              :delegation_date,
-              :legal_status,
-              :student_full_name,
-              :student_class_room,
-              :date_range,
-              :activity_scope,
-              :legal_terms_rich_text,
-              :organisation_representative_full_name,
-              :organisation_representative_role,
-              :employer_event,
-              :employer_name,
-              :internship_address,
-              :employer_contact_email,
-              :school_manager_event,
-              :student_refering_teacher_full_name,
-              :student_refering_teacher_email,
-              :student_refering_teacher_phone,
-              :student_address,
-              :student_phone,
-              :student_legal_representative_full_name,
-              :student_legal_representative_email,
-              :student_legal_representative_phone,
-              :student_legal_representative_2_full_name,
-              :student_legal_representative_2_email,
-              :student_legal_representative_2_phone,
-              :siret,
-              :student_birth_date,
-              :pai_project,
-              :pai_trousse_family,
-              :tutor_full_name,
-              :tutor_role,
-              :entreprise_address,
-              :lunch_break,
-              weekly_hours: [],
-              daily_hours: {}]
+      [ :internship_application_id,
+        :student_school,
+        :school_representative_email,
+        :school_representative_full_name,
+        :school_representative_function,
+        :school_representative_phone,
+        :school_representative_role,
+        :delegation_date,
+        :legal_status,
+        :student_full_name,
+        :student_class_room,
+        :date_range,
+        :activity_scope,
+        :legal_terms_rich_text,
+        :organisation_representative_full_name,
+        :organisation_representative_role,
+        :employer_event,
+        :employer_name,
+        :internship_address,
+        :employer_contact_email,
+        :school_manager_event,
+        :student_refering_teacher_full_name,
+        :student_refering_teacher_email,
+        :student_refering_teacher_phone,
+        :student_address,
+        :student_phone,
+        :student_legal_representative_full_name,
+        :student_legal_representative_email,
+        :student_legal_representative_phone,
+        :student_legal_representative_2_full_name,
+        :student_legal_representative_2_email,
+        :student_legal_representative_2_phone,
+        :siret,
+        :student_birth_date,
+        :pai_project,
+        :pai_trousse_family,
+        :tutor_full_name,
+        :tutor_role,
+        :entreprise_address,
+        :lunch_break,
+        weekly_hours: [],
+        daily_hours: {} ]
     end
+
     def internship_agreement_params
       requirement = if @internship_agreement.from_multi?
                       :internship_agreements_multi_internship_agreement
-                    else
+      else
                       :internship_agreements_mono_internship_agreement
-                    end
+      end
       params.require(requirement).permit(*fields)
     end
 
     def bare_internship_agreement_params
-      params.require(:internship_agreement).permit(*fields)
+      params.expect(internship_agreement: fields)
     end
 
     def filtering_query(query)
@@ -166,8 +167,8 @@ module Dashboard
            .includes(
              { internship_application: [
                { student: :school },
-               { internship_offer: [:employer, :sector, :stats, :weeks,
-                                   { school: :school_managers }] }
+               { internship_offer: [ :employer, :sector, :stats, :weeks,
+                                   { school: :school_managers } ] }
              ] }
            )
     end
@@ -178,12 +179,12 @@ module Dashboard
 
     def update_success_message(internship_agreement)
       case internship_agreement.aasm_state
-      when 'started_by_employer' then 'La convention a été enregistrée.'
-      when 'completed_by_employer' then "La convention a été envoyée au chef d'établissement."
-      when 'started_by_school_manager' then 'La convention a été enregistrée.'
-      when 'validated' then "La convention est validée, le fichier pdf de la convention est maintenant disponible. Un mail a été envoyé à l'offreur, à l'élève et à ses responsables légaux."
+      when "started_by_employer" then "La convention a été enregistrée."
+      when "completed_by_employer" then "La convention a été envoyée au chef d'établissement."
+      when "started_by_school_manager" then "La convention a été enregistrée."
+      when "validated" then "La convention est validée, le fichier pdf de la convention est maintenant disponible. Un mail a été envoyé à l'offreur, à l'élève et à ses responsables légaux."
       else
-        'La convention a été enregistrée.'
+        "La convention a été enregistrée."
       end
     end
 
