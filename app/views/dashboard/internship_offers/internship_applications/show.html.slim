@@ -1,4 +1,4 @@
-
+- content_for :page_title, "#{t(".page_title", name: @internship_application.internship_offer.title.truncate(20))} | 1Élève1Stage"
 - if current_user
   - presenter = @internship_application.presenter(current_user)
 

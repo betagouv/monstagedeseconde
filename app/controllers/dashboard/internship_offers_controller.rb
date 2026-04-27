@@ -34,7 +34,7 @@ module Dashboard
         order_sql = "internship_offer_stats.#{stats_column} #{direction}"
         @internship_offers = @internship_offers.order(Arel.sql(order_sql))
       else
-        order_param = order_direction.nil? ? :published_at : { order_column => order_direction }
+        order_param = order_direction.nil? ? { created_at: :desc } : { order_column => order_direction }
         @internship_offers = @internship_offers.order(order_param)
       end
 
@@ -227,7 +227,7 @@ module Dashboard
     end
 
     def order_column_from_stats?
-      STATS_ORDER_COLUMNS.include?(order_column.to_s)
+      params[:order].present? && STATS_ORDER_COLUMNS.include?(order_column.to_s)
     end
 
     def finder

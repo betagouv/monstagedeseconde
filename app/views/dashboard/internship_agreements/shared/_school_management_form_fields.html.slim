@@ -65,7 +65,7 @@ tbody.internship-agreement
         - title = "Note au chef d'établissement :"
         - content = "Courriel du chef d'établissement ou de son représentant"
         - filled_by = ["le chef d'établissement"]
-        = render partial: 'dashboard/internship_agreements/shared/text_field_element',
+        = render partial: 'dashboard/internship_agreements/shared/email_field_element',
                  locals: { field: :school_representative_email,
                            limit: 100,
                            form: form,
@@ -110,7 +110,7 @@ tbody.internship-agreement
         - title = "Note au chef d'établissement :"
         - content = "Le champ est prérempli avec l'email du professeur principal s'il s'est inscrit. Ce champ obligatoire peut être modifié."
         - filled_by = ["le chef d'établissement"]
-        = render partial: 'dashboard/internship_agreements/shared/text_field_element',
+        = render partial: 'dashboard/internship_agreements/shared/email_field_element',
                  locals: { field: :student_refering_teacher_email,
                            form: form,
                            text_label: label,
@@ -173,6 +173,7 @@ tbody.internship-agreement
                            text_label: label,
                            content: content,
                            title: title,
+                           limit: 170,
                            filled_by: filled_by,
                            disabled: disabled }
 
@@ -211,7 +212,7 @@ tbody.internship-agreement
         - title = "Note au chef d'établissement :"
         - content = "Email du représentant légal (ou personne responsable) n°1"
         - filled_by = ["le chef d'établissement"]
-        = render partial: 'dashboard/internship_agreements/shared/text_field_element',
+        = render partial: 'dashboard/internship_agreements/shared/email_field_element',
                  locals: { field: :student_legal_representative_email,
                            form: form,
                            text_label: label,
@@ -257,7 +258,7 @@ tbody.internship-agreement
         - title = "Note au chef d'établissement :"
         - content = "Email du représentant légal (ou personne responsable) n°2"
         - filled_by = ["le chef d'établissement"]
-        = render partial: 'dashboard/internship_agreements/shared/text_field_element',
+        = render partial: 'dashboard/internship_agreements/shared/email_field_element',
                  locals: { field: :student_legal_representative_2_email,
                            form: form,
                            text_label: label,
