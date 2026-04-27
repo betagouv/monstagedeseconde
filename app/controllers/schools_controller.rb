@@ -26,22 +26,22 @@ class SchoolsController < ApplicationController
   private
 
   def school_params
-    params.require(:school)
-          .permit(
-            :zipcode,
-            :code_uai,
-            :city,
-            :street,
-            :name,
-            :visible,
-            :contract_code,
-            :is_public,
-            :school_type,
-            :rep_kind,
-            :qpv,
-            :voie_generale,
-            :voie_techno,
-            coordinates: {}
-          )
+    params.expect(
+      school: [
+        :zipcode,
+        :code_uai,
+        :city,
+        :street,
+        :name,
+        :visible,
+        :contract_code,
+        :is_public,
+        :school_type,
+        :rep_kind,
+        :qpv,
+        :voie_generale,
+        :voie_techno,
+        coordinates: {}
+      ])
   end
 end

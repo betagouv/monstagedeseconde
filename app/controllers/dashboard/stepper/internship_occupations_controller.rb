@@ -72,18 +72,17 @@ module Dashboard::Stepper
     end
 
     def internship_occupation_params
-      params.require(:internship_occupation)
-            .permit(
-              :title,
-              :description,
-              :street,
-              :street_complement,
-              :zipcode,
-              :city,
-              :internship_address_manual_enter,
-              :autocomplete,
-              coordinates: %i[latitude longitude]
-            )
+      params.expect(internship_occupation: [
+        :title,
+        :description,
+        :street,
+        :street_complement,
+        :zipcode,
+        :city,
+        :internship_address_manual_enter,
+        :autocomplete,
+        coordinates: %i[latitude longitude]
+      ])
     end
 
     def clean_params
