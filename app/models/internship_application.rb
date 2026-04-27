@@ -756,6 +756,21 @@ class InternshipApplication < ApplicationRecord
   end
 
   def no_other_approved_application?
-    student.internship_applications.approved.empty?
+    others = student.internship_applications.approved.where.not(id: id)
+    return others.empty? unless student.seconde_gt?
+
+    others.none? { |other| weekly_conflict_with?(other.internship_offer) }
+  end
+
+  def weekly_conflict_with?(other_offer)
+    return true if internship_offer.two_weeks_long? || other_offer.two_weeks_long?
+
+    if internship_offer.seconde_school_track_week_1?
+      other_offer.seconde_school_track_week_1?
+    elsif internship_offer.seconde_school_track_week_2?
+      other_offer.seconde_school_track_week_2?
+    else
+      true
+    end
   end
 end

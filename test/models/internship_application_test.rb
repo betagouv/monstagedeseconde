@@ -611,4 +611,79 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert_equal "approved", application_1.reload.aasm_state
     assert_equal "validated_by_employer", application_2.reload.aasm_state
   end
+
+  test "a seconde gt student can approve a week_2 offer when a week_1 offer is already approved" do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: 'lycee')
+      student = create(:student, :seconde, school:)
+      offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
+      offer_week_2 = create(:weekly_internship_offer_2nde, :week_2)
+      application_week_1 = create(:weekly_internship_application, :validated_by_employer,
+                                  student:, internship_offer: offer_week_1)
+      application_week_2 = create(:weekly_internship_application, :validated_by_employer,
+                                  student:, internship_offer: offer_week_2)
+      application_week_1.approve!
+
+      assert_nothing_raised { application_week_2.approve! }
+      assert_equal "approved", application_week_1.reload.aasm_state
+      assert_equal "approved", application_week_2.reload.aasm_state
+    end
+  end
+
+  test "a seconde gt student cannot approve a second week_1 offer when a week_1 offer is already approved" do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: 'lycee')
+      student = create(:student, :seconde, school:)
+      offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
+      offer_week_1_bis = create(:weekly_internship_offer_2nde, :week_1)
+      application_1 = create(:weekly_internship_application, :validated_by_employer,
+                             student:, internship_offer: offer_week_1)
+      application_1.approve!
+      application_2 = create(:weekly_internship_application, :validated_by_employer,
+                             student:, internship_offer: offer_week_1_bis)
+
+      assert_raises AASM::InvalidTransition do
+        application_2.approve!
+      end
+      assert_equal "validated_by_employer", application_2.reload.aasm_state
+    end
+  end
+
+  test "a seconde gt student cannot approve a week_1 offer when a two_weeks_long offer is already approved" do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: 'lycee')
+      student = create(:student, :seconde, school:)
+      offer_full = create(:weekly_internship_offer_2nde, :both_weeks)
+      offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
+      application_full = create(:weekly_internship_application, :validated_by_employer,
+                                student:, internship_offer: offer_full)
+      application_full.approve!
+      application_week_1 = create(:weekly_internship_application, :validated_by_employer,
+                                  student:, internship_offer: offer_week_1)
+
+      assert_raises AASM::InvalidTransition do
+        application_week_1.approve!
+      end
+      assert_equal "validated_by_employer", application_week_1.reload.aasm_state
+    end
+  end
+
+  test "a seconde gt student cannot approve a two_weeks_long offer when a week_1 offer is already approved" do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: 'lycee')
+      student = create(:student, :seconde, school:)
+      offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
+      offer_full = create(:weekly_internship_offer_2nde, :both_weeks)
+      application_week_1 = create(:weekly_internship_application, :validated_by_employer,
+                                  student:, internship_offer: offer_week_1)
+      application_week_1.approve!
+      application_full = create(:weekly_internship_application, :validated_by_employer,
+                                student:, internship_offer: offer_full)
+
+      assert_raises AASM::InvalidTransition do
+        application_full.approve!
+      end
+      assert_equal "validated_by_employer", application_full.reload.aasm_state
+    end
+  end
 end
