@@ -102,11 +102,11 @@ class PagesController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :message)
+    params.expect(user: [:name, :email, :message])
   end
 
   def waiting_list_params
-    params.require(:waiting_list_entry).permit(:email)
+    params.expect(waiting_list_entry: [:email])
   end
 
   def educonnect_logout_responsible

@@ -49,8 +49,8 @@ module Dashboard
           send_data(
             GenerateInternshipAgreement.new(@internship_agreement.id).call.render,
             filename: "Convention_de_stage_#{ext_file_name}.pdf",
-            type: 'application/pdf',
-            disposition: 'inline'
+            type: "application/pdf",
+            disposition: "inline"
           )
         end
       end
@@ -84,7 +84,7 @@ module Dashboard
         :internship_agreement, :signature
       ).blank? && @internship_agreement.school.signature.blank?
         redirect_to dashboard_internship_agreements_path,
-                    flash: { danger: 'Vous devez d\'abord importer la signature du chef d\'établissement. Avant de signer la convention.' } and return
+                    flash: { danger: "Vous devez d'abord importer la signature du chef d'établissement. Avant de signer la convention." } and return
       end
 
       update_school_signature if params.dig(:internship_agreement, :signature).present?
@@ -98,7 +98,7 @@ module Dashboard
       @internship_agreement.sign!
 
       redirect_to dashboard_internship_agreements_path,
-                  flash: { success: 'La convention a été signée.' }
+                  flash: { success: "La convention a été signée." }
     end
 
     private
@@ -158,7 +158,7 @@ module Dashboard
     end
 
     def bare_internship_agreement_params
-      params.require(:internship_agreement).permit(*fields)
+      params.expect(internship_agreement: fields)
     end
 
     def filtering_query(query)
@@ -179,12 +179,12 @@ module Dashboard
 
     def update_success_message(internship_agreement)
       case internship_agreement.aasm_state
-      when 'started_by_employer' then 'La convention a été enregistrée.'
-      when 'completed_by_employer' then "La convention a été envoyée au chef d'établissement."
-      when 'started_by_school_manager' then 'La convention a été enregistrée.'
-      when 'validated' then "La convention est validée, le fichier pdf de la convention est maintenant disponible. Un mail a été envoyé à l'offreur, à l'élève et à ses responsables légaux."
+      when "started_by_employer" then "La convention a été enregistrée."
+      when "completed_by_employer" then "La convention a été envoyée au chef d'établissement."
+      when "started_by_school_manager" then "La convention a été enregistrée."
+      when "validated" then "La convention est validée, le fichier pdf de la convention est maintenant disponible. Un mail a été envoyé à l'offreur, à l'élève et à ses responsables légaux."
       else
-        'La convention a été enregistrée.'
+        "La convention a été enregistrée."
       end
     end
 
