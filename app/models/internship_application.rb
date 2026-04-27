@@ -101,7 +101,7 @@ class InternshipApplication < ApplicationRecord
             }
   validates :student_email,
             format: { with: Devise.email_regexp }
-  validate :student_email_not_taken
+  validate :student_email_not_taken, on: :create
   validates :weeks, presence: true, on: :create
 
   # Callbacks
