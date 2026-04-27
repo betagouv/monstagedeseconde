@@ -151,6 +151,28 @@ module Users
       self
     end
 
+    def validation_message_for_internship_application(internship_application)
+      return "" unless internship_application.validated_by_employer? && seconde_gt?
+
+      case internship_application.internship_offer.weeks.count
+      when 1
+        school_track_data = SchoolTrack::Seconde.period_collection(school_year: SchoolYear.current_year)
+        data = internship_application.internship_offer.weeks.first.id == SchoolTrack::Seconde.first_week.id ? school_track_data[:week_1] : school_track_data[:week_2]
+        specific_week_part = "les dates allant du #{data[:start]} au #{data[:end]} #{data[:month]} #{data[:year]}"
+
+        "En choisissant ce stage, <strong>toutes vos autres candidatures qui incluent " \
+        "#{specific_week_part} seront annulées et vous ne pourrez pas revenir " \
+        "en arrière</strong>. Les stages d'une semaine dont les dates correspondent à " \
+        "l'autre semaine seront conservés."
+      when 2
+        "En choisissant ce stage, <strong>toutes vos autres candidatures seront annulées " \
+        "et vous ne pourrez pas revenir en arrière</strong>."
+      else
+        "En choisissant ce stage, <strong>toutes vos autres candidatures seront annulées " \
+        "et vous ne pourrez pas revenir en arrière</strong>."
+      end
+    end
+
     def anonymize(send_email: true)
       super(send_email:)
 
@@ -200,7 +222,7 @@ module Users
       default_weeks = (grade == Grade.seconde) ? Week.seconde_weeks : Week.troisieme_weeks
       school_weeks_list = school&.weeks&.in_the_future.presence || default_weeks
       preselected_weeks_list = (grade == Grade.seconde) ? school_weeks_list : school_weeks_list.in_the_future
-      [school_weeks_list, preselected_weeks_list]
+      [ school_weeks_list, preselected_weeks_list ]
     end
 
     def presenter
