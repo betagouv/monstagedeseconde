@@ -2,16 +2,15 @@
 # not the neciest solution, but safest
 class ApiCityProxyController < ApplicationController
   def search
-    cache = Rails.cache
-    cache_key = { autocomplete_city: permitted_params }
-    cache.fetch(cache_key) do
-      api_request
-    end
-    returned_value = cache.fetch(cache_key)
+    returned_value = Rails.cache.fetch(cache_key) { api_request }
     render json: returned_value[:json], status: returned_value[:code]
   end
 
   private
+
+  def cache_key
+    "autocomplete_city/#{permitted_params.to_unsafe_h.to_param}"
+  end
 
   def api_request
     response = Api::AutocompleteCity.search(permitted_params)
