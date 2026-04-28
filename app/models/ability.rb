@@ -111,8 +111,7 @@ class Ability
         !internship_offer.from_api? &&
         (!internship_offer.reserved_to_schools? || user.school_id.in?(internship_offer.schools.pluck(:id))) &&
         (!internship_offer.rep  || user.school.rep_or_rep_plus?) &&
-        (!internship_offer.qpv || user.school.qpv?) &&
-        true
+        (!internship_offer.qpv || user.school.qpv?)
     end
 
     def existing_application(internship_offer, user)
