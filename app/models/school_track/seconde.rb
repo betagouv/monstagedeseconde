@@ -50,16 +50,19 @@ module SchoolTrack
       last_june_friday(year:).days_ago(11)
     end
 
+    # school_year is an integer corresponding to the year in june of
+    # the school year (ex: 2025 for the 2024/2025 school year)
     def self.period_collection(school_year:)
       hash = {
         full_time: { start_day: first_monday, end_day: last_friday },
         week_1: { start_day: first_monday, end_day: first_friday },
         week_2: { start_day: last_monday, end_day: last_friday }
       }
+
       hash.each_value do |value|
         value.merge!(
           month: "juin",
-          year: school_year.year_in_june,
+          year: school_year,
           start: value[:start_day].mday,
           end: value[:end_day].mday
         )
