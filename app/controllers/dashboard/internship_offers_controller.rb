@@ -10,12 +10,6 @@ module Dashboard
 
     DEFAULT_RADIUS_TO_SCHOOLS_IN_KM = 60
 
-    # Define allowed stats columns for ordering: update with correct column names
-    ALLOWED_STATS_COLUMNS = %w[
-      submitted_applications_count
-      viewed_count
-      # add other allowed statistics columns here
-    ].freeze
     def index
       @internship_offer_areas = current_user.internship_offer_areas if current_user.employer_like?
       authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
@@ -247,7 +241,7 @@ module Dashboard
     end
 
     def order_column
-      if params[:order] && ALLOWED_STATS_COLUMNS.include?(params[:order])
+      if params[:order] && VALID_ORDER_COLUMNS.include?(params[:order])
         params[:order]
       else
         'submitted_applications_count'
