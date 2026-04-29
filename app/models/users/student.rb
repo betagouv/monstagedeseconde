@@ -141,7 +141,12 @@ module Users
     end
 
     def add_responsible_data
-      responsible = Services::Omogen::Sygne.new.try(:sygne_responsable, ine)
+      responsible = begin
+        Services::Omogen::Sygne.new.sygne_responsable(ine)
+      rescue RuntimeError => e
+        Rails.logger.warn("Skipping Sygne responsible enrichment for student #{id}: #{e.message}")
+        nil
+      end
       return self if responsible.blank?
 
       self.legal_representative_full_name = "#{responsible.civility} #{responsible.first_name} #{responsible.last_name}"
