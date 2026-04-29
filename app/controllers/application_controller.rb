@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'uri'
+require "uri"
 class ApplicationController < ActionController::Base
   include Turbo::Redirection
 
   # max requests per minute
-  MAX_REQUESTS_PER_MINUTE = ENV['MAX_REQUESTS_PER_MINUTE'].to_i
+  MAX_REQUESTS_PER_MINUTE = ENV["MAX_REQUESTS_PER_MINUTE"].to_i
 
   helper Turbo::FramesHelper if Rails.env.test?
   helper Turbo::StreamsHelper if Rails.env.test?
@@ -19,6 +19,8 @@ class ApplicationController < ActionController::Base
   before_action :throttle_ip_requests
   before_action :store_user_type_before_logout
   before_action :get_banner_message
+
+  Rails.event.subscribe(Events::EduconnectFailureSubscriber.new)
 
   # TODO: Remove following line
   default_form_builder Rg2aFormBuilder
@@ -40,12 +42,12 @@ class ApplicationController < ActionController::Base
     Rails.logger.info("----- Signout path for: #{resource_or_scope.inspect} -----")
     Rails.logger.info("----- User type was : #{cookies[:user_type]} -----")
 
-    if cookies[:user_type] == 'student'
-      Rails.logger.info('----- Logout educonnect -----')
+    if cookies[:user_type] == "student"
+      Rails.logger.info("----- Logout educonnect -----")
       cookies.delete(:user_type)
       root_path(logout: :educonnect)
-    elsif cookies[:user_type] == 'school_management'
-      Rails.logger.info('----- Logout fim -----')
+    elsif cookies[:user_type] == "school_management"
+      Rails.logger.info("----- Logout fim -----")
       cookies.delete(:user_type)
       root_path(logout: :fim)
     else
@@ -58,7 +60,7 @@ class ApplicationController < ActionController::Base
   end
 
   def employers_only?
-    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
+    ENV.fetch("EMPLOYERS_ONLY", false) == "true"
   end
 
   def user_presenter
@@ -67,17 +69,17 @@ class ApplicationController < ActionController::Base
   helper_method :user_presenter, :current_user_or_visitor, :employers_only?
 
   def check_for_maintenance
-    redirect_to '/maintenance.html' if Flipper.enabled?(:maintenance_mode)
+    redirect_to "/maintenance.html" if Flipper.enabled?(:maintenance_mode)
   end
 
   def employers_only_redirect
-    return unless employers_only? && request.path == '/'
+    return unless employers_only? && request.path == "/"
 
     redirect_to professionnels_path
   end
 
   def throttle_ip_requests
-    return if Rails.env.test? && ENV.fetch('TEST_WITH_MAX_REQUESTS_PER_MINUTE', false) != 'true'
+    return if Rails.env.test? && ENV.fetch("TEST_WITH_MAX_REQUESTS_PER_MINUTE", false) != "true"
 
     ip_address = request.remote_ip
     key = "ip:#{ip_address}:#{Time.now.to_i / 60}"
@@ -108,7 +110,7 @@ class ApplicationController < ActionController::Base
   end
 
   def get_banner_message
-    @banner_message = if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
+    @banner_message = if ENV["PRISMIC_URL"].blank? || ENV["PRISMIC_API_KEY"].blank? || Rails.env.test?
                         nil
     else
                         message_from_prismic
@@ -125,33 +127,33 @@ class ApplicationController < ActionController::Base
   end
 
   def message_from_prismic
-    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
-    response = api.query([ Prismic::Predicates.at('document.type', 'top_banner') ])
+    api = Prismic.api(ENV["PRISMIC_URL"], ENV["PRISMIC_API_KEY"])
+    response = api.query([ Prismic::Predicates.at("document.type", "top_banner") ])
     response.results.first
   end
 
   def check_school_requested
     return unless current_user && current_user.missing_school?
 
-    redirect_to account_path(:school), flash: { warning: 'Veuillez choisir un établissement scolaire' }
+    redirect_to account_path(:school), flash: { warning: "Veuillez choisir un établissement scolaire" }
   end
 
   def check_for_holidays_maintenance_page
     return unless Flipper.enabled?(:holidays_maintenance) && !holidays_maintenance_redirection_exception?
 
-    redirect_to '/maintenance_estivale.html' and return
+    redirect_to "/maintenance_estivale.html" and return
   end
 
   def holidays_maintenance_redirection_exception?
     allowed_paths = %w[/maintenance_estivale.html /contact.html /waiting_list]
     request.path.in?(allowed_paths) ||
-      (request.path == '/waiting_list' && request.post?)
+      (request.path == "/waiting_list" && request.post?)
   end
 
   def check_host_for_redirection
-    return unless request.host == '1eleve1stage.education.gouv.fr/'
+    return unless request.host == "1eleve1stage.education.gouv.fr/"
 
-    redirect_to 'https://1eleve1stage.education.gouv.fr', status: :moved_permanently,
+    redirect_to "https://1eleve1stage.education.gouv.fr", status: :moved_permanently,
                                                           allow_other_host: true
   end
 
@@ -160,19 +162,19 @@ class ApplicationController < ActionController::Base
 
     cookies[:user_type] = case current_user
     when Users::Student
-                            'student'
+                            "student"
     when Users::SchoolManagement
-                            'school_management'
+                            "school_management"
     else
-                            'other'
+                            "other"
     end
     Rails.logger.info("User type stored before logout: #{cookies[:user_type]}")
   end
 
   def build_list_html(list_items, ordered)
-    return '' if list_items.empty?
+    return "" if list_items.empty?
 
-    tag = ordered ? 'ol' : 'ul'
+    tag = ordered ? "ol" : "ul"
     items_html = list_items.map { |item| "<li>#{item}</li>" }.join("\n")
 
     "<#{tag}>\n#{items_html}\n</#{tag}>"

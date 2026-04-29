@@ -75,6 +75,7 @@ class Ability
     can :manage, Operator
     can :read_employer_name, InternshipOffer
     can :manage, InappropriateOffer
+    can :see_educonnect_failures, EventReport
   end
 
   def student_abilities(user:)
