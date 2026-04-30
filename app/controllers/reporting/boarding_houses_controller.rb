@@ -104,7 +104,8 @@ module Reporting
       params.require(:boarding_house).permit(
         :name, :street, :zipcode, :city,
         :contact_phone, :contact_email,
-        :available_places, :reference_date
+        :available_places, :reference_date,
+        :latitude, :longitude
       )
     end
 

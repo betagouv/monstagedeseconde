@@ -175,7 +175,7 @@ module Users
     end
 
     def users_params
-      params.require(:user).permit(:id)
+      params.expect(user: [:id])
     end
 
     # If you have extra params to permit, append them to the sanitizer.

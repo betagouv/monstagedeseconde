@@ -14,7 +14,14 @@ module Services
       'email' => :contact_email,
       'places disponibles' => :available_places,
       'date de référence' => :reference_date,
-      'date de reference' => :reference_date
+      'date de reference' => :reference_date,
+      'latitude' => :latitude,
+      'lat' => :latitude,
+      'y' => :latitude,
+      'longitude' => :longitude,
+      'lon' => :longitude,
+      'lng' => :longitude,
+      'x' => :longitude
     }.freeze
 
     def initialize(file:, academy:)

@@ -1,0 +1,4 @@
+{
+  "code": "WRONG_PARAMS",
+  "error": "Grades must be either college or lycee, not both"
+}

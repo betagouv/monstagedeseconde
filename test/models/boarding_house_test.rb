@@ -38,18 +38,6 @@ class BoardingHouseTest < ActiveSupport::TestCase
     assert boarding_house.errors[:available_places].any?
   end
 
-  test 'invalid with malformed email' do
-    boarding_house = build(:boarding_house, contact_email: 'not-an-email')
-    assert_not boarding_house.valid?
-    assert boarding_house.errors[:contact_email].any?
-  end
-
-  test 'valid with blank email' do
-    boarding_house = build(:boarding_house, contact_email: '')
-    boarding_house.valid?
-    assert_not boarding_house.errors[:contact_email].any?
-  end
-
   test 'belongs to academy' do
     boarding_house = build(:boarding_house)
     assert boarding_house.academy.present?

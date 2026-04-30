@@ -8,10 +8,11 @@ export default class extends Controller {
     'dailyHoursStart',
     'dailyHoursEnd',
     'presenceHint',
+    'validator',
     'submitButton'
   ];
 
-  minimumPresence = 4; // 4 days of presence required
+  minimumPresence = 1; // at least 1 day of presence required
 
   setValidateButton(stateOn = true) {
     // const validateButton = document.getElementById('practicalInfoSubmitButton');
@@ -33,6 +34,7 @@ export default class extends Controller {
       $("#daily-planning-container").removeClass('d-none')
       $("#daily-planning-container").slideDown()
     }
+    this.checkEnoughPresence();
     this.setValidateButton(false);
   }
 
@@ -114,18 +116,26 @@ export default class extends Controller {
   }
 
   checkEnoughPresence() {
-    let enoughPresence = false;
     let daysCounter = 0;
     this.dailyHoursStartTargets.forEach((dailyHoursStartTarget, i) => {
       if (dailyHoursStartTarget.value !== '' && this.dailyHoursEndTargets[i].value !== '') {
         daysCounter += 1;
       }
     });
-    if (daysCounter >= this.minimumPresence) {
-      enoughPresence = true;
-      this.presenceHintTarget.classList.add('d-none');
-    } else {
-      this.presenceHintTarget.classList.remove('d-none');
+    const enoughPresence = daysCounter >= this.minimumPresence;
+    if (this.hasPresenceHintTarget) {
+      if (enoughPresence) {
+        this.presenceHintTarget.classList.add('d-none');
+      } else {
+        this.presenceHintTarget.classList.remove('d-none');
+      }
+    }
+    if (this.hasValidatorTarget) {
+      const newValue = enoughPresence ? 'day_selected' : '';
+      if (this.validatorTarget.value !== newValue) {
+        this.validatorTarget.value = newValue;
+        this.validatorTarget.dispatchEvent(new Event('change', { bubbles: true }));
+      }
     }
     this.setValidateButton(enoughPresence);
   }
@@ -198,5 +208,6 @@ export default class extends Controller {
   }
 
   connect() {
+    this.checkEnoughPresence();
   }
 }
