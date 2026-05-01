@@ -69,9 +69,9 @@ class InternshipAgreement < ApplicationRecord
               format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
                         message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
   end
-  #Delegations
+  # Delegations
   delegate :employer, to: :internship_application
-  
+
   # Callbacks
   after_save :save_delegation_date
 
@@ -130,7 +130,7 @@ class InternshipAgreement < ApplicationRecord
                       !skip_notifications_when_system_creation &&
                       notify_others_signatures_started
                   }
-      transitions from: [:signatures_started],
+      transitions from: [ :signatures_started ],
                   to: :signed_by_all,
                   guard: :roles_not_signed_yet_blank?,
                   after: proc { |*_args|
@@ -148,11 +148,11 @@ class InternshipAgreement < ApplicationRecord
   delegate :from_multi?,           to: :internship_offer
 
   scope :mono, -> {
-    where(type: 'InternshipAgreements::MonoInternshipAgreement')
+    where(type: "InternshipAgreements::MonoInternshipAgreement")
   }
 
   scope :multi, -> {
-    where(type: 'InternshipAgreements::MultiInternshipAgreement')
+    where(type: "InternshipAgreements::MultiInternshipAgreement")
   }
 
   scope :having_school_manager, lambda {
@@ -190,15 +190,15 @@ class InternshipAgreement < ApplicationRecord
     if weekly_planning?
       unless valid_weekly_planning?
         errors.add(:same_daily_planning,
-                   'Veuillez compléter les horaires et repas de la journée de stage')
+                   "Veuillez compléter les horaires et repas de la journée de stage")
       end
     elsif daily_planning?
       unless valid_daily_planning?
         errors.add(:weekly_planning,
-                   'Veuillez compléter les horaires et repas de la semaine de stage')
+                   "Veuillez compléter les horaires et repas de la semaine de stage")
       end
     else
-      errors.add(:weekly_planning, 'Veuillez compléter les horaires du stage')
+      errors.add(:weekly_planning, "Veuillez compléter les horaires du stage")
     end
   end
 
@@ -233,30 +233,30 @@ class InternshipAgreement < ApplicationRecord
 
   def archive
     fields_to_reset = {
-      organisation_representative_full_name: 'NA',
-      school_representative_full_name: 'NA',
-      student_full_name: 'NA',
-      student_class_room: 'NA',
-      student_school: 'NA',
-      tutor_full_name: 'NA',
-      siret: 'NA',
-      tutor_role: 'NA',
-      tutor_email: 'NA',
-      organisation_representative_role: 'NA',
-      student_address: 'NA',
-      student_phone: 'NA',
-      school_representative_phone: 'NA',
-      student_refering_teacher_phone: 'NA',
-      student_legal_representative_email: 'NA',
-      student_refering_teacher_email: 'NA',
-      student_legal_representative_full_name: 'NA',
-      student_refering_teacher_full_name: 'NA',
-      student_legal_representative_2_full_name: 'NA',
-      student_legal_representative_2_email: 'NA',
-      student_legal_representative_2_phone: 'NA',
-      school_representative_role: 'NA',
-      school_representative_email: 'NA',
-      student_legal_representative_phone: 'NA'
+      organisation_representative_full_name: "NA",
+      school_representative_full_name: "NA",
+      student_full_name: "NA",
+      student_class_room: "NA",
+      student_school: "NA",
+      tutor_full_name: "NA",
+      siret: "NA",
+      tutor_role: "NA",
+      tutor_email: "NA",
+      organisation_representative_role: "NA",
+      student_address: "NA",
+      student_phone: "NA",
+      school_representative_phone: "NA",
+      student_refering_teacher_phone: "NA",
+      student_legal_representative_email: "NA",
+      student_refering_teacher_email: "NA",
+      student_legal_representative_full_name: "NA",
+      student_refering_teacher_full_name: "NA",
+      student_legal_representative_2_full_name: "NA",
+      student_legal_representative_2_email: "NA",
+      student_legal_representative_2_phone: "NA",
+      school_representative_role: "NA",
+      school_representative_email: "NA",
+      student_legal_representative_phone: "NA"
     }
     update_columns(fields_to_reset)
     discard! unless discarded?
@@ -286,12 +286,20 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def legal_representative_data
-    hash = { }
+    hash = {}
      if student_legal_representative_email.present? && student_legal_representative_full_name.present?
-       hash[:student_legal_representative] = {email: student_legal_representative_email, nr: 1}
+       hash[:student_legal_representative] = {
+        email: student_legal_representative_email,
+        nr: 1,
+        full_name: student_legal_representative_full_name
+      }
      end
      if student_legal_representative_2_email.present? && student_legal_representative_2_full_name.present?
-       hash[:student_legal_representative_2] = {email: student_legal_representative_2_email, nr: 2}
+       hash[:student_legal_representative_2] = {
+        email: student_legal_representative_2_email,
+        nr: 2,
+        full_name: student_legal_representative_2_full_name
+      }
      end
     hash
   end
@@ -331,7 +339,7 @@ class InternshipAgreement < ApplicationRecord
 
   rails_admin do
     weight 14
-    navigation_label 'Offres'
+    navigation_label "Offres"
 
     list do
       field :id

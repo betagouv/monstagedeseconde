@@ -69,9 +69,12 @@ module Dashboard
 
       def relaunch_legal_representative_sign_email
         internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
-        legal_representative_data = internship_agreement&.legal_representative_data
+        authorize :relaunch_legal_representative_sign_email, internship_agreement
+
+        legal_representative_data = synchronize_legal_representative_data(internship_agreement, current_user)
         @internship_application = internship_agreement.internship_application
-        if internship_agreement.nil? || legal_representative_data.nil?
+
+        if internship_agreement.nil? || legal_representative_data.blank? || legal_representative_data.values.all? { |rep| rep[:email].blank? }
           redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
                       alert: "Données du représentant légal manquantes"
         elsif internship_agreement.signed_by_legal_representative?
@@ -81,7 +84,7 @@ module Dashboard
           representative_count = legal_representative_data.keys.count
           if representative_count.zero?
             redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
-                        alert: "Aucun représentant légal trouvé pour cette convention"
+                        alert: "Aucun représentant légal trouvé pour cette convention. Rendez-vous dans 'mon compte'"
           else
             legal_representative_data.values.each do |rep|
               if rep.present? && rep[:email].present? && rep[:email].strip.present?
@@ -98,6 +101,32 @@ module Dashboard
       end
 
       private
+
+      def synchronize_legal_representative_data(internship_agreement, current_user)
+        legal_representative_data = internship_agreement&.legal_representative_data || {}
+
+        current_email = current_user.legal_representative_email
+        return legal_representative_data if current_email.in?(
+          legal_representative_data.values.map { |rep| rep[:email] }
+        )
+
+        representative = {
+          full_name: current_user.legal_representative_full_name,
+          email: current_email
+        }
+
+        primary_representative = legal_representative_data[:student_legal_representative]
+
+        if primary_representative.blank? || primary_representative[:full_name].blank?
+          legal_representative_data[:student_legal_representative] = representative.merge(nr: 1)
+        elsif primary_representative[:full_name] == current_user.legal_representative_full_name
+          primary_representative[:email] = current_email
+        else
+          legal_representative_data[:student_legal_representative_2] = representative.merge(nr: 2)
+        end
+
+        legal_representative_data
+      end
 
       def magic_fetch_student
         GlobalID::Locator.locate_signed(params[:sgid])

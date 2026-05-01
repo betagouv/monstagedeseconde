@@ -40,6 +40,10 @@ class UsersController < ApplicationController
       current_user.update!(user_params.except(:email))
     end
 
+    if current_user.student? && user_params[:legal_representative_email].present?
+      synchronize_agreements_with(current_user:, legal_representative_email: user_params[:legal_representative_email])
+    end
+
     redirect_back fallback_location: account_path,
                   flash: { success: current_flash_message }
   rescue ActiveRecord::RecordInvalid
@@ -229,5 +233,27 @@ class UsersController < ApplicationController
       !@user.employer? ||
       @user.discarded? ||
       @user.internship_offers.present?
+  end
+
+  def synchronize_agreements_with(current_user:, legal_representative_email: nil)
+    return if legal_representative_email&.strip&.empty?
+    return if current_user.internship_agreements.empty?
+
+    current_user.internship_agreements.kept.each do |agreement|
+      next if agreement.legal_representative_email == legal_representative_email
+      next if agreement.signed_by_legal_representative_at.present?
+
+      current_representative_full_name = current_user.legal_representative_full_name
+      if current_representative_full_name == agreement.legal_representative_full_name
+        agreement.update!(legal_representative_email: legal_representative_email)
+      elsif current_representative_full_name == agreement.legal_representative_2_full_name
+        agreement.update!(legal_representative_2_email: legal_representative_email)
+      else
+        agreement.update!(
+          legal_representative_full_name: current_representative_full_name,
+          legal_representative_email: legal_representative_email
+        )
+      end
+    end
   end
 end
