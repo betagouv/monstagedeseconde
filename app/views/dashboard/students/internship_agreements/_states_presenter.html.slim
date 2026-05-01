@@ -37,7 +37,7 @@
           .flex-grow-1
           - unless internship_agreement.signed_by_legal_representative?
             = button_to "Relancer la signature de la convention par les responsables légaux",
-                         relauch_legal_representative_sign_email_dashboard_students_internship_application_path(uuid: internship_agreement.uuid, student_id: current_user.id),
+                         relaunch_legal_representative_sign_email_dashboard_students_internship_application_path(uuid: internship_agreement.uuid, student_id: current_user.id),
                          method: :post,
                          data: { turbo: false },
                          class: "fr-btn fr-btn--sm fr-btn--tertiary fr-ml-2w"

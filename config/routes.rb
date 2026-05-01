@@ -1,66 +1,66 @@
 # frozen_string_literal: true
 
-require 'sidekiq/web'
-root_destination = if ENV.fetch('HOLIDAYS_MAINTENANCE', false) == 'true'
-                     'maintenance_estivale'
-elsif ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
-                     'pro_landing'
+require "sidekiq/web"
+root_destination = if ENV.fetch("HOLIDAYS_MAINTENANCE", false) == "true"
+                     "maintenance_estivale"
+elsif ENV.fetch("EMPLOYERS_ONLY", false) == "true"
+                     "pro_landing"
 else
-                     'home'
+                     "home"
 end
 
 Rails.application.routes.draw do
   # ------------------ SCOPE START ------------------
-  mount LetterThief::Engine => '/letter_thief' if Rails.env.development?
-  scope(path_names: { new: 'nouveau', edit: 'modification' }) do
+  mount LetterThief::Engine => "/letter_thief" if Rails.env.development?
+  scope(path_names: { new: "nouveau", edit: "modification" }) do
     authenticate :user, ->(u) { u.god? } do
       # sidekiq
-      mount Sidekiq::Web => '/sidekiq'
-      match '/split' => Split::Dashboard,
+      mount Sidekiq::Web => "/sidekiq"
+      match "/split" => Split::Dashboard,
             anchor: false,
             via: %i[get post delete]
 
       # flipper
-      mount Flipper::UI.app(Flipper) => '/admin/flipper'
+      mount Flipper::UI.app(Flipper) => "/admin/flipper"
     end
 
-    mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
-    mount ActionCable.server => '/cable'
+    mount RailsAdmin::Engine => "/admin", as: "rails_admin"
+    mount ActionCable.server => "/cable"
 
-    devise_for :users, path: 'utilisateurs', path_names: {
-      sign_in: 'connexion',
-      sign_out: 'deconnexion',
-      sign_up: 'inscription',
-      password: 'mot-de-passe'
+    devise_for :users, path: "utilisateurs", path_names: {
+      sign_in: "connexion",
+      sign_out: "deconnexion",
+      sign_up: "inscription",
+      password: "mot-de-passe"
     }, controllers: {
-      confirmations: 'users/confirmations',
-      registrations: 'users/registrations',
-      sessions: 'users/sessions',
-      passwords: 'users/passwords'
+      confirmations: "users/confirmations",
+      registrations: "users/registrations",
+      sessions: "users/sessions",
+      passwords: "users/passwords"
     }
 
     devise_scope :user do
-      get '/auth/fim/callback', to: 'callbacks#fim', as: 'fim_callback'
-      get '/auth/educonnect/callback', to: 'callbacks#educonnect', as: 'educonnect_callback'
-      get '/auth/failure', to: 'sessions#failure'
-      get '/utilisateurs/inscriptions/en-attente', to: 'users/registrations#confirmation_standby',
-                                                   as: 'users_registrations_standby'
-      get '/utilisateurs/inscriptions/referent-en-attente', to: 'users/registrations#statistician_standby',
-                                                            as: 'statistician_standby'
-      get '/utilisateurs/inscriptions/en-attente-telephone', to: 'users/registrations#confirmation_phone_standby',
-                                                             as: 'users_registrations_phone_standby'
-      get '/utilisateurs/mot-de-passe/initialisation', to: 'users/passwords#set_up',
-                                                       as: 'set_up_password'
-      post '/utilisateurs/renvoyer-le-code-de-confirmation', to: 'users/registrations#resend_confirmation_phone_token',
-                                                             as: 'resend_confirmation_phone_token'
-      post '/utilisateurs/info-modale-vue', to: 'users#dismiss_modal_info', as: 'dismiss_modal_info'
+      get "/auth/fim/callback", to: "callbacks#fim", as: "fim_callback"
+      get "/auth/educonnect/callback", to: "callbacks#educonnect", as: "educonnect_callback"
+      get "/auth/failure", to: "sessions#failure"
+      get "/utilisateurs/inscriptions/en-attente", to: "users/registrations#confirmation_standby",
+                                                   as: "users_registrations_standby"
+      get "/utilisateurs/inscriptions/referent-en-attente", to: "users/registrations#statistician_standby",
+                                                            as: "statistician_standby"
+      get "/utilisateurs/inscriptions/en-attente-telephone", to: "users/registrations#confirmation_phone_standby",
+                                                             as: "users_registrations_phone_standby"
+      get "/utilisateurs/mot-de-passe/initialisation", to: "users/passwords#set_up",
+                                                       as: "set_up_password"
+      post "/utilisateurs/renvoyer-le-code-de-confirmation", to: "users/registrations#resend_confirmation_phone_token",
+                                                             as: "resend_confirmation_phone_token"
+      post "/utilisateurs/info-modale-vue", to: "users#dismiss_modal_info", as: "dismiss_modal_info"
     end
 
-    resources :url_shrinkers, path: 'c', only: %i[] do
+    resources :url_shrinkers, path: "c", only: %i[] do
       get :o, on: :member
     end
 
-    resources :schools, path: 'ecoles', only: %i[new create]
+    resources :schools, path: "ecoles", only: %i[new create]
 
     resources :internship_offer_keywords, only: [] do
       collection do
@@ -68,11 +68,11 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :internship_offers, path: 'offres-de-stage', only: %i[index show] do
+    resources :internship_offers, path: "offres-de-stage", only: %i[index show] do
       collection do
-        get :search, path: 'recherche'
+        get :search, path: "recherche"
       end
-      resources :internship_applications, path: 'candidatures', only: %i[new create index show update], param: :uuid do
+      resources :internship_applications, path: "candidatures", only: %i[new create index show update], param: :uuid do
         member do
           get :edit_transfer
           post :transfer
@@ -87,15 +87,15 @@ Rails.application.routes.draw do
 
     resources :favorites, only: %i[create destroy index]
 
-    get '/utilisateurs/transform_input', to: 'users#transform_input' # display
-    get '/utilisateurs/transform', to: 'users#transform_form' # identify and show parameters
-    post '/utilisateurs/transform', to: 'users#transform_user' # transform
+    get "/utilisateurs/transform_input", to: "users#transform_input" # display
+    get "/utilisateurs/transform", to: "users#transform_form" # identify and show parameters
+    post "/utilisateurs/transform", to: "users#transform_user" # transform
 
-    get '/utilisateurs/anonymiseur', to: 'users#anonymize_form'
-    get '/utilisateurs/identifier', to: 'users#identify_user'
-    post '/utilisateurs/anonymiser', to: 'users#anonymize_user'
+    get "/utilisateurs/anonymiseur", to: "users#anonymize_form"
+    get "/utilisateurs/identifier", to: "users#identify_user"
+    post "/utilisateurs/anonymiser", to: "users#anonymize_user"
 
-    namespace :api, path: 'api' do
+    namespace :api, path: "api" do
       # TO DO : fix this redirect
       # match '/*path', via: %i[get post put delete], to: redirect { |path_params, _req|
       #   path = path_params[:path]
@@ -118,7 +118,7 @@ Rails.application.routes.draw do
       end
 
       namespace :v2 do
-        post 'auth/login', to: 'auth#login'
+        post "auth/login", to: "auth#login"
         resources :internship_offers, only: %i[create update destroy index] do
           get :search, on: :collection
         end
@@ -133,104 +133,104 @@ Rails.application.routes.draw do
     end
 
     # ------------------ DASHBOARD START ------------------
-    namespace :dashboard, path: 'tableau-de-bord' do
-      resources :team_member_invitations, path: 'invitation-equipes', only: %i[create index new destroy] do
-        patch :join, to: 'team_member_invitations#join', on: :member
-        post :resend_invitation, to: 'team_member_invitations#resend_invitation', on: :member
+    namespace :dashboard, path: "tableau-de-bord" do
+      resources :team_member_invitations, path: "invitation-equipes", only: %i[create index new destroy] do
+        patch :join, to: "team_member_invitations#join", on: :member
+        post :resend_invitation, to: "team_member_invitations#resend_invitation", on: :member
       end
 
-      post 'internship_applications/update_multiple', to: 'internship_applications#update_multiple',
+      post "internship_applications/update_multiple", to: "internship_applications#update_multiple",
                                                       as: :update_multiple_internship_applications
 
-      resources :internship_agreements, path: 'conventions-de-stage', except: %i[destroy], param: :uuid do
+      resources :internship_agreements, path: "conventions-de-stage", except: %i[destroy], param: :uuid do
         member do
-          get 'school_management_signature'
-          post 'school_management_sign'
-          get 'upload'
-          get 'multi_reminder_email'
+          get "school_management_signature"
+          post "school_management_sign"
+          get "upload"
+          get "multi_reminder_email"
         end
       end
 
-      resources :users, path: 'signatures', only: %i[update], module: 'group_signing' do
+      resources :users, path: "signatures", only: %i[update], module: "group_signing" do
         member do
-          post 'start_signing'
-          post 'reset_phone_number'
-          post 'resend_sms_code'
-          post 'signature_code_validate'
-          post 'handwrite_sign'
-          post 'school_management_group_signature'
-          post 'school_management_group_sign'
-          post 'dispatch_multi_agreements_signature'
+          post "start_signing"
+          post "reset_phone_number"
+          post "resend_sms_code"
+          post "signature_code_validate"
+          post "handwrite_sign"
+          post "school_management_group_signature"
+          post "school_management_group_sign"
+          post "dispatch_multi_agreements_signature"
         end
       end
 
-      resources :schools, path: 'ecoles', only: %i[index edit update show] do
+      resources :schools, path: "ecoles", only: %i[index edit update show] do
         patch :update_signature, on: :member
-        resources :invitations, only: %i[new create index destroy], module: 'schools'
-        get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
-        resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
+        resources :invitations, only: %i[new create index destroy], module: "schools"
+        get "/resend_invitation", to: "schools/invitations#resend_invitation", module: "schools"
+        resources :users, path: "utilisateurs", only: %i[destroy update index], module: "schools"
 
-        resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy],
-                                module: 'schools' do
-          resources :students, path: 'eleves', only: %i[update index new create], module: 'class_rooms'
+        resources :class_rooms, path: "classes", only: %i[index new create edit update show destroy],
+                                module: "schools" do
+          resources :students, path: "eleves", only: %i[update index new create], module: "class_rooms"
         end
-        put '/update_students_by_group', to: 'schools/students#update_by_group', module: 'schools'
+        put "/update_students_by_group", to: "schools/students#update_by_group", module: "schools"
       end
 
-      resources :internship_offer_areas, path: 'espaces', except: %i[show] do
+      resources :internship_offer_areas, path: "espaces", except: %i[show] do
         get :filter_by_area, on: :member
-        resources :area_notifications, path: 'notifications-d-espace', only: %i[edit update index],
-                                       module: 'internship_offer_areas' do
+        resources :area_notifications, path: "notifications-d-espace", only: %i[edit update index],
+                                       module: "internship_offer_areas" do
           patch :flip, on: :member
         end
       end
 
-      resources :internship_offers, path: 'offres-de-stage', except: %i[show] do
-        resources :internship_applications, path: 'candidatures', only: %i[update index show],
-                                            module: 'internship_offers', param: :uuid do
+      resources :internship_offers, path: "offres-de-stage", except: %i[show] do
+        resources :internship_applications, path: "candidatures", only: %i[update index show],
+                                            module: "internship_offers", param: :uuid do
           patch :set_to_read, on: :member
         end
         member do
           post :publish
           post :unpublish
           post :remove
-          patch :republish, to: 'internship_offers#republish'
+          patch :republish, to: "internship_offers#republish"
         end
       end
 
-      namespace :stepper, path: 'etapes' do
-        resources :internship_occupations, path: 'metiers_et_localisation', only: %i[create new edit update]
-        resources :entreprises, path: 'entreprise', only: %i[create new edit update]
-        resources :plannings, path: 'planning', only: %i[create new edit update]
+      namespace :stepper, path: "etapes" do
+        resources :internship_occupations, path: "metiers_et_localisation", only: %i[create new edit update]
+        resources :entreprises, path: "entreprise", only: %i[create new edit update]
+        resources :plannings, path: "planning", only: %i[create new edit update]
       end
 
-      get  'choix-type-offre', to: 'offer_types_switchings#new', as: 'choix_type_offre'
-      post 'choix-type-offre', to: 'offer_types_switchings#create', as: 'validation_choix_type_offre'
+      get  "choix-type-offre", to: "offer_types_switchings#new", as: "choix_type_offre"
+      post "choix-type-offre", to: "offer_types_switchings#create", as: "validation_choix_type_offre"
 
-      namespace :multi_stepper, path: 'multi_etapes' do
-        resources :multi_activities, path: 'multi-activites', only: %i[create new edit update]
-        resources :multi_coordinators, path: 'multi-coordinateurs', only: %i[create new edit update]
-        resources :multi_corporations, path: 'multi-structures', only: %i[create new edit update] do
+      namespace :multi_stepper, path: "multi_etapes" do
+        resources :multi_activities, path: "multi-activites", only: %i[create new edit update]
+        resources :multi_coordinators, path: "multi-coordinateurs", only: %i[create new edit update]
+        resources :multi_corporations, path: "multi-structures", only: %i[create new edit update] do
           resources :corporations, only: %i[create update destroy edit], module: :multi_corporations
         end
-        resources :multi_plannings, path: 'multi-planning', only: %i[create new edit update]
+        resources :multi_plannings, path: "multi-planning", only: %i[create new edit update]
       end
 
-      namespace :students, path: '/:student_id/' do
-        resources :internship_applications, path: 'candidatures', only: %i[index show edit update], param: :uuid do
+      namespace :students, path: "/:student_id/" do
+        resources :internship_applications, path: "candidatures", only: %i[index show edit update], param: :uuid do
           member do
             post :resend_application
-            post :relauch_legal_representative_sign_email
+            post :relaunch_legal_representative_sign_email
           end
         end
-        resources :internship_agreements, path: 'conventions-de-stage', only: %i[new], param: :uuid do
+        resources :internship_agreements, path: "conventions-de-stage", only: %i[new], param: :uuid do
           member do
             get :sign
           end
         end
       end
-      get 'candidatures', to: 'internship_offers/internship_applications#user_internship_applications'
-      resources :corporation_internship_agreements, path: 'conventions-multi-employeurs', only: %i[index] do
+      get "candidatures", to: "internship_offers/internship_applications#user_internship_applications"
+      resources :corporation_internship_agreements, path: "conventions-multi-employeurs", only: %i[index] do
         member do
           patch :multi_sign
         end
@@ -239,16 +239,16 @@ Rails.application.routes.draw do
     # ------------------ DASHBOARD END ------------------
   end
   # ------------------ SCOPE END ------------------
-  namespace :reporting, path: 'reporting' do
-    get '/dashboards', to: 'dashboards#index'
+  namespace :reporting, path: "reporting" do
+    get "/dashboards", to: "dashboards#index"
 
-    get '/schools', to: 'schools#index'
-    get '/employers_internship_offers', to: 'internship_offers#employers_offers'
-    get 'internship_offers', to: 'internship_offers#index'
-    get 'operators', to: 'operators#index'
-    put 'operators', to: 'operators#update'
+    get "/schools", to: "schools#index"
+    get "/employers_internship_offers", to: "internship_offers#employers_offers"
+    get "internship_offers", to: "internship_offers#index"
+    get "operators", to: "operators#index"
+    put "operators", to: "operators#update"
 
-    resources :boarding_houses, path: 'internats', except: [ :show ] do
+    resources :boarding_houses, path: "internats", except: [ :show ] do
       collection do
         post :import
       end
@@ -258,75 +258,75 @@ Rails.application.routes.draw do
   namespace :public do
     resources :internship_agreements, only: [ :show ], param: :uuid do
       member do
-        get :upload, to: 'internship_agreements#upload', defaults: { format: :pdf }
-        post :legal_representative_sign, to: 'internship_agreements#legal_representative_sign'
+        get :upload, to: "internship_agreements#upload", defaults: { format: :pdf }
+        post :legal_representative_sign, to: "internship_agreements#legal_representative_sign"
       end
     end
   end
 
-  get 'boarding_houses/search', to: 'boarding_houses#search', as: :boarding_houses_search
+  get "boarding_houses/search", to: "boarding_houses#search", as: :boarding_houses_search
 
-  get 'api_address_proxy/search', to: 'api_address_proxy#search', as: :api_address_proxy_search
-  get 'api_sirene_proxy/search', to: 'api_sirene_proxy#search', as: :api_sirene_proxy_search
-  get 'api_entreprise_proxy/search', to: 'api_entreprise_proxy#search', as: :api_entreprise_proxy_search
-  get 'api_city_proxy/search', to: 'api_city_proxy#search', as: :api_city_proxy_search
+  get "api_address_proxy/search", to: "api_address_proxy#search", as: :api_address_proxy_search
+  get "api_sirene_proxy/search", to: "api_sirene_proxy#search", as: :api_sirene_proxy_search
+  get "api_entreprise_proxy/search", to: "api_entreprise_proxy#search", as: :api_entreprise_proxy_search
+  get "api_city_proxy/search", to: "api_city_proxy#search", as: :api_city_proxy_search
 
-  get 'mon-compte(/:section)', to: 'users#edit', as: 'account'
-  patch 'mon-compte', to: 'users#update'
-  patch 'account_password', to: 'users#update_password'
-  get '/magic_link', to: 'magic_links#show', as: :magic_link
+  get "mon-compte(/:section)", to: "users#edit", as: "account"
+  patch "mon-compte", to: "users#update"
+  patch "account_password", to: "users#update_password"
+  get "/magic_link", to: "magic_links#show", as: :magic_link
 
-  get '/accessibilite', to: 'pages#accessibilite'
-  get '/conditions-d-utilisation', to: 'pages#conditions_d_utilisation'
+  get "/accessibilite", to: "pages#accessibilite"
+  get "/conditions-d-utilisation", to: "pages#conditions_d_utilisation"
   # TODO
   # get '/conditions-d-utilisation-service-signature', to: 'pages#conditions_utilisation_service_signature',
-  get '/contact', to: 'pages#contact', as: 'contact'
-  get '/documents-utiles', to: 'pages#documents_utiles'
-  get '/javascript-required', to: 'pages#javascript_required'
-  get '/mentions-legales', to: 'pages#mentions_legales'
-  get '/operators', to: 'pages#operators'
-  get '/politique-de-confidentialite', to: 'pages#politique_de_confidentialite'
+  get "/contact", to: "pages#contact", as: "contact"
+  get "/documents-utiles", to: "pages#documents_utiles"
+  get "/javascript-required", to: "pages#javascript_required"
+  get "/mentions-legales", to: "pages#mentions_legales"
+  get "/operators", to: "pages#operators"
+  get "/politique-de-confidentialite", to: "pages#politique_de_confidentialite"
   # post '/newsletter', to: 'newsletter#subscribe'
-  get '/recherche-entreprises', to: 'pages#search_companies'
-  post '/visitor_apply', to: 'pages#visitor_apply'
-  get '/educonnect_deconnexion_responsable', to: 'pages#educonnect_logout_responsible',
+  get "/recherche-entreprises", to: "pages#search_companies"
+  post "/visitor_apply", to: "pages#visitor_apply"
+  get "/educonnect_deconnexion_responsable", to: "pages#educonnect_logout_responsible",
                                              as: :educonnect_logout_responsible
-  get '/eleves', to: 'pages#student_landing'
-  get '/eleves/connexion', to: 'pages#student_login', as: :student_login
-  get '/professionnels', to: 'pages#pro_landing'
-  get '/professionnels/connexion', to: 'pages#pro_login', as: :pro_login
-  get '/partenaires', to: 'pages#regional_partners_index', as: :partners
-  get '/equipe-pedagogique', to: 'pages#school_management_landing'
-  get '/equipe-pedagogique/connexion', to: 'pages#school_management_login', as: :school_management_login
-  get '/referents', to: 'pages#statistician_landing'
-  get '/referents/connexion', to: 'pages#statistician_login', as: :statistician_login
-  get '/maintenance_estivale', to: 'pages#maintenance_estivale'
-  post '/maintenance_messaging', to: 'pages#maintenance_messaging'
-  post '/waiting_list', to: 'pages#waiting_list'
-  get '/utilisateurs/choisir_profil', to: redirect('/professionnels/connexion')
-  get '/utilisateurs/choisir_connexion', to: redirect('/professionnels/connexion')
+  get "/eleves", to: "pages#student_landing"
+  get "/eleves/connexion", to: "pages#student_login", as: :student_login
+  get "/professionnels", to: "pages#pro_landing"
+  get "/professionnels/connexion", to: "pages#pro_login", as: :pro_login
+  get "/partenaires", to: "pages#regional_partners_index", as: :partners
+  get "/equipe-pedagogique", to: "pages#school_management_landing"
+  get "/equipe-pedagogique/connexion", to: "pages#school_management_login", as: :school_management_login
+  get "/referents", to: "pages#statistician_landing"
+  get "/referents/connexion", to: "pages#statistician_login", as: :statistician_login
+  get "/maintenance_estivale", to: "pages#maintenance_estivale"
+  post "/maintenance_messaging", to: "pages#maintenance_messaging"
+  post "/waiting_list", to: "pages#waiting_list"
+  get "/utilisateurs/choisir_profil", to: redirect("/professionnels/connexion")
+  get "/utilisateurs/choisir_connexion", to: redirect("/professionnels/connexion")
 
   authenticate :user, ->(u) { u.god? } do
-    resources :reset_review_data, only: %i[new create] if ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true'
-    resources :inappropriate_offers, path: 'signalements', only: [] do
+    resources :reset_review_data, only: %i[new create] if ENV.fetch("ENABLE_REVIEW_DATA_RESET", "false") == "true"
+    resources :inappropriate_offers, path: "signalements", only: [] do
       member do
-        get :manage, path: 'moderer'
-        patch :update_moderation, path: 'moderer'
+        get :manage, path: "moderer"
+        patch :update_moderation, path: "moderer"
       end
     end
   end
   # Redirects
   # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
-  get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/#{id}', status: 302)
+  get "/dashboard/internship_offers/:id", to: redirect('/internship_offers/#{id}', status: 302)
 
   resources :school_switches, only: [ :create ]
 
   root to: "pages##{root_destination}"
 
-  get '/400', to: 'errors#bad_request'
-  get '/404', to: 'errors#not_found'
-  get '/406', to: 'errors#not_acceptable'
-  get '/422', to: 'errors#unacceptable'
-  get '/429', to: 'errors#not_found'
-  get '/500', to: 'errors#internal_error'
+  get "/400", to: "errors#bad_request"
+  get "/404", to: "errors#not_found"
+  get "/406", to: "errors#not_acceptable"
+  get "/422", to: "errors#unacceptable"
+  get "/429", to: "errors#not_found"
+  get "/500", to: "errors#internal_error"
 end
