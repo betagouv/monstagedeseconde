@@ -1,0 +1,5 @@
+p = @urgency_level
+p = @user.first_name
+p = @user.last_name
+p = @actions.first.first
+p = @actions.first.second.map(&:internship_application).map(&:student).map(&:presenter).map(&:full_name)

@@ -66,6 +66,17 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 
 
 --
+-- Name: action_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.action_type AS ENUM (
+    'pending_application',
+    'agreement_to_complete',
+    'agreement_to_sign'
+);
+
+
+--
 -- Name: agreement_signatory_role; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -116,6 +127,18 @@ CREATE TYPE public.targeted_grades AS ENUM (
     'quatrieme_only',
     'troisieme_or_quatrieme',
     'seconde_troisieme_or_quatrieme'
+);
+
+
+--
+-- Name: urgency_level; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.urgency_level AS ENUM (
+    'critical',
+    'high',
+    'medium',
+    'low'
 );
 
 
@@ -1588,6 +1611,47 @@ ALTER SEQUENCE public.letter_thief_email_messages_id_seq OWNED BY public.letter_
 
 
 --
+-- Name: mail_action_items; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.mail_action_items (
+    id bigint NOT NULL,
+    action_name character varying,
+    user_id bigint NOT NULL,
+    first_seen_at timestamp(6) without time zone,
+    stale_at timestamp(6) without time zone,
+    last_notified_at timestamp(6) without time zone,
+    resolved_at timestamp(6) without time zone,
+    deliveries_count integer DEFAULT 0,
+    max_deliveries_count integer DEFAULT 1,
+    payload jsonb,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    action_type public.action_type,
+    urgency_level public.urgency_level
+);
+
+
+--
+-- Name: mail_action_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.mail_action_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: mail_action_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.mail_action_items_id_seq OWNED BY public.mail_action_items.id;
+
+
+--
 -- Name: ministry_groups; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2916,6 +2980,13 @@ ALTER TABLE ONLY public.letter_thief_email_messages ALTER COLUMN id SET DEFAULT 
 
 
 --
+-- Name: mail_action_items id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_items ALTER COLUMN id SET DEFAULT nextval('public.mail_action_items_id_seq'::regclass);
+
+
+--
 -- Name: ministry_groups id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3388,6 +3459,14 @@ ALTER TABLE ONLY public.invitations
 
 ALTER TABLE ONLY public.letter_thief_email_messages
     ADD CONSTRAINT letter_thief_email_messages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: mail_action_items mail_action_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_items
+    ADD CONSTRAINT mail_action_items_pkey PRIMARY KEY (id);
 
 
 --
@@ -4226,6 +4305,20 @@ CREATE INDEX index_letter_thief_email_messages_on_intercepted_at ON public.lette
 
 
 --
+-- Name: index_mail_action_items_on_user_and_action_urgency_resolved; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_mail_action_items_on_user_and_action_urgency_resolved ON public.mail_action_items USING btree (user_id, action_type, urgency_level, resolved_at);
+
+
+--
+-- Name: index_mail_action_items_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_mail_action_items_on_user_id ON public.mail_action_items USING btree (user_id);
+
+
+--
 -- Name: index_ministry_groups_on_email_whitelist_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5021,6 +5114,14 @@ ALTER TABLE ONLY public.internship_application_weeks
 
 
 --
+-- Name: mail_action_items fk_rails_6b318b418e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_items
+    ADD CONSTRAINT fk_rails_6b318b418e FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: users fk_rails_6bdbc6c887; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5371,6 +5472,8 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260430092540'),
+('20260430085934'),
 ('20260420123136'),
 ('20260309162833'),
 ('20260306100239'),
