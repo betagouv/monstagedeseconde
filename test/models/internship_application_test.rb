@@ -43,20 +43,15 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert_equal 3, InternshipApplication.remindable.count
   end
 
-  test 'creating a new internship application sets submitted_at and sends email to employer' do
+  test 'creating a new internship application sets submitted_at and creates a mail action item for employer' do
     freeze_time do
       assert_changes -> { InternshipApplication.count }, from: 0, to: 1 do
-        mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-
-        EmployerMailer.stub :internship_application_submitted_email, mock_mail do
-          StudentMailer.stub :internship_application_submitted_email, mock_mail do
-            internship_application = create(:weekly_internship_application)
-          end
+        assert_changes -> { MailActionItem.count }, from: 0, to: 1 do
+          create(:weekly_internship_application)
         end
 
         assert_equal Time.now.utc, InternshipApplication.last.submitted_at
-        mock_mail.verify
+        assert_equal :pending_application.to_s, MailActionItem.last.action_type
       end
     end
   end

@@ -7,7 +7,7 @@ module Services::EmployerActions
     end
 
     def by_levels
-      @by_level ||= MailActionItem.urgency_levels.each_key_with_object({}) do |level, hash|
+      @by_level ||= MailActionItem.urgency_levels.keys.each_with_object({}) do |level, hash|
         level_actions = pending_actions.with_urgency_level(level)
         next if level_actions.empty?
 

@@ -1,0 +1,33 @@
+Bonjour <%= @user.presenter.formal_name %>,
+
+Voici les candidatures a traiter (niveau d'urgence : <%= @urgency_level %>).
+
+<% if @pending_application_rows.any? %>
+<% @pending_application_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_full_name] %>
+- Age : <%= row[:age] %>
+- Semaine(s) : <%= row[:weeks] %>
+- Etablissement : <%= row[:school_name] %> (<%= row[:school_city] %>)
+- Contact : <%= row[:student_email] %> / <%= row[:student_phone] %>
+- La candidature expire le : <%= row[:expiry_date] %>
+<% if row[:motivation].present? %>- Motivation : <%= row[:motivation] %>
+<% end %>- Ouvrir la candidature : <%= row[:application_url] %>
+
+<% end %>
+<% else %>
+Aucune candidature en attente pour ce niveau d'urgence.
+<% end %>
+
+<% if @agreement_signed_by_all_rows&.any? %>
+Conventions signées par toutes les parties :
+
+<% @agreement_signed_by_all_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_full_name] %>
+- Etablissement : <%= row[:school_name] %>
+- Voir la convention : <%= row[:agreement_url] %>
+
+<% end %>
+<% end %>
+
+A bientot,
+L'equipe 1eleve1stage

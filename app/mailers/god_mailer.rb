@@ -157,8 +157,8 @@ class GodMailer < ApplicationMailer
     ).html_safe
 
     send_email(
-      to: recipients_email,
-      subject: 'Une convention de stage est signée par tous'
+      to: recipients_email - [ @internship_offer.employer.email ], # the employer has already been notified when the last signature was done
+      subject: "Une convention de stage est signée par tous"
     )
   end
 

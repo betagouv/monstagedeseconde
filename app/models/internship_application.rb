@@ -413,10 +413,10 @@ class InternshipApplication < ApplicationRecord
       action_name: "new_internship_application",
       user_id: internship_offer.employer.id,
       action_type: :pending_application,
+      internship_application_id: id,
       max_deliveries_count: MailActionItem::DEFAULT_NEW_INTERNSHIPS_APPLICATIONS_MAX_DELIVERIES_COUNT,
       urgency_level: MailActionItem::DEFAULT_NEW_INTERNSHIPS_APPLICATIONS_URGENCY_LEVEL,
-      stale_at: weeks.last.monday - 2.days,
-      payload: { internship_application_id: id }
+      stale_at: weeks.last.monday - 2.days
     )
 
     # EmployerMailer.internship_application_submitted_email(internship_application: self).deliver_later(wait: 1.second)

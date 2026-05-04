@@ -1,5 +1,76 @@
-p = @urgency_level
-p = @user.first_name
-p = @user.last_name
-p = @actions.first.first
-p = @actions.first.second.map(&:internship_application).map(&:student).map(&:presenter).map(&:full_name)
+p style=head_styles
+	| Candidatures en attente
+
+p style=p_cyclop_styles({color: '#000000'})
+	= "Bonjour #{@user.presenter.formal_name},"
+
+- if @pending_application_rows.any?
+	p style=p_cyclop_styles
+		= "Voici les candidatures a traiter :"
+
+	- @pending_application_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #000091;"
+					td colspan="2" style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:student_full_name]}"
+				tr style="background-color: #f6f6f6;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px; width: 50%; vertical-align: top;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Age :
+							= " #{row[:age]}"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Semaine(s) :
+							= " #{row[:weeks]}"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Expire le :
+							= " #{row[:expiry_date] || 'N/A'}"
+						- if row[:motivation].present?
+							p style="margin: 0; color: #444444; font-size: 13px;"
+								strong
+									| Motivation :
+								= " #{row[:motivation]&.truncate(70)}"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px; width: 50%; vertical-align: top;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Etablissement :
+							= " #{row[:school_name]} (#{row[:school_city]})"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Email :
+							= " #{row[:student_email]}"
+						p style="margin: 0;"
+							strong
+								| Telephone :
+							= " #{row[:student_phone]}"
+				tr style="background-color: #ffffff;"
+					td colspan="2" style="padding: 10px 12px; text-align: right;"
+						a href=row[:application_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Ouvrir la candidature
+- else
+	p style=p_cyclop_styles
+		| Aucune candidature en attente
+
+- if @agreement_signed_by_all_rows&.any?
+	p style=p_cyclop_styles
+		= "Conventions signées par toutes les parties :"
+
+	- @agreement_signed_by_all_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #000091;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:student_full_name]}"
+				tr style="background-color: #f6f6f6;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Etablissement :
+							= " #{row[:school_name]}"
+				tr style="background-color: #ffffff;"
+					td style="padding: 10px 12px; text-align: right;"
+						a href=row[:agreement_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Voir la convention
