@@ -26,9 +26,10 @@ class MailActionItem < ApplicationRecord
                         :action_type
   # enums
   enum :action_type, {
-    pending_application: "pending_application",
-    agreement_to_complete: "agreement_to_complete",
-    agreement_to_sign: "agreement_to_sign"
+    pending_application:     "pending_application",
+    agreement_to_complete:   "agreement_to_complete",
+    agreement_to_sign:       "agreement_to_sign",
+    agreement_signed_by_all: "agreement_signed_by_all"
   }, validate: true
   enum :urgency_level, {
     low: "low",

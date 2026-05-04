@@ -72,7 +72,8 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 CREATE TYPE public.action_type AS ENUM (
     'pending_application',
     'agreement_to_complete',
-    'agreement_to_sign'
+    'agreement_to_sign',
+    'agreement_signed_by_all'
 );
 
 
@@ -5520,6 +5521,7 @@ ALTER TABLE ONLY public.mail_action_items
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260504130000'),
 ('20260504120000'),
 ('20260430092540'),
 ('20260430085934'),
