@@ -18,6 +18,9 @@ class MailActionItem < ApplicationRecord
 
   # Associations
   belongs_to :user
+  belongs_to :internship_offer, optional: true
+  belongs_to :internship_application, optional: true
+  belongs_to :internship_agreement, optional: true
   # validations
   validates_presence_of :user_id,
                         :action_type

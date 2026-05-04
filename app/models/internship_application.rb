@@ -81,6 +81,7 @@ class InternshipApplication < ApplicationRecord
                            dependent: :destroy
   has_many :internship_application_weeks, dependent: :destroy
   has_many :weeks, through: :internship_application_weeks
+  has_many :mail_action_items, dependent: :nullify
   # Delegations
   delegate :update_all_counters, to: :internship_application_counter_hook
   delegate :name, to: :student, prefix: true
@@ -242,7 +243,6 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |user, *_args|
                     update!("read_at": Time.now.utc)
                     record_state_change user
-                    resolve_pending_email_action_item
                   }
     end
 
@@ -252,7 +252,6 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |user, *_args|
                     update!("transfered_at": Time.now.utc)
                     record_state_change user
-                    resolve_pending_email_action_item
                   }
     end
 
@@ -275,7 +274,6 @@ class InternshipApplication < ApplicationRecord
                       CancelValidatedInternshipApplicationJob.set(wait: 15.days).perform_later(internship_application_id: id)
                     end
                     record_state_change user
-                    resolve_pending_email_action_item
                   }
     end
 
@@ -308,7 +306,6 @@ class InternshipApplication < ApplicationRecord
                       EmployerMailer.internship_application_approved_for_an_other_internship_offer_email(internship_application: self).deliver_later
                     end
                     record_state_change user
-                    resolve_pending_email_action_item
                   }
     end
 
@@ -326,7 +323,6 @@ class InternshipApplication < ApplicationRecord
                       end
                     end
                     record_state_change user
-                    resolve_pending_email_action_item
                   }
     end
 
@@ -345,7 +341,6 @@ class InternshipApplication < ApplicationRecord
                     end
                     internship_agreement&.destroy
                     record_state_change user
-                    resolve_pending_email_action_item
                   }
     end
 
@@ -366,7 +361,6 @@ class InternshipApplication < ApplicationRecord
                     end
                     internship_agreement&.destroy
                     record_state_change user
-                    resolve_pending_email_action_item
                   }
     end
 
@@ -393,7 +387,6 @@ class InternshipApplication < ApplicationRecord
                     # notitify_student
                     Triggered::StudentExpiredInternshipApplicationsNotificationJob.perform_later(self)
                     record_state_change user
-                    resolve_pending_email_action_item
                   }
     end
 
@@ -403,7 +396,6 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |user, *_args|
                     update!(expired_at: Time.now.utc)
                     record_state_change user
-                    resolve_pending_email_action_item
                   }
     end
   end
@@ -791,12 +783,5 @@ class InternshipApplication < ApplicationRecord
     else
       true
     end
-  end
-
-  def resolve_pending_email_action_item
-    Rails.events.notify(
-      "internship_application.state_changed",
-      { internship_application_id: id }
-    )
   end
 end

@@ -1628,7 +1628,10 @@ CREATE TABLE public.mail_action_items (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     action_type public.action_type,
-    urgency_level public.urgency_level
+    urgency_level public.urgency_level,
+    internship_offer_id bigint,
+    internship_application_id bigint,
+    internship_agreement_id bigint
 );
 
 
@@ -4305,6 +4308,27 @@ CREATE INDEX index_letter_thief_email_messages_on_intercepted_at ON public.lette
 
 
 --
+-- Name: index_mail_action_items_on_internship_agreement_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_mail_action_items_on_internship_agreement_id ON public.mail_action_items USING btree (internship_agreement_id);
+
+
+--
+-- Name: index_mail_action_items_on_internship_application_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_mail_action_items_on_internship_application_id ON public.mail_action_items USING btree (internship_application_id);
+
+
+--
+-- Name: index_mail_action_items_on_internship_offer_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_mail_action_items_on_internship_offer_id ON public.mail_action_items USING btree (internship_offer_id);
+
+
+--
 -- Name: index_mail_action_items_on_user_and_action_urgency_resolved; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5090,6 +5114,14 @@ ALTER TABLE ONLY public.internship_offer_weeks
 
 
 --
+-- Name: mail_action_items fk_rails_5d8ff7dc27; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_items
+    ADD CONSTRAINT fk_rails_5d8ff7dc27 FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
+
+
+--
 -- Name: school_internship_weeks fk_rails_61db9e054c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5199,6 +5231,14 @@ ALTER TABLE ONLY public.multi_activities
 
 ALTER TABLE ONLY public.internship_application_state_changes
     ADD CONSTRAINT fk_rails_8ab7e06756 FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
+
+
+--
+-- Name: mail_action_items fk_rails_8c811b267e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_items
+    ADD CONSTRAINT fk_rails_8c811b267e FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
 
 
 --
@@ -5466,12 +5506,21 @@ ALTER TABLE ONLY public.class_rooms
 
 
 --
+-- Name: mail_action_items fk_rails_fa7c89927e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_items
+    ADD CONSTRAINT fk_rails_fa7c89927e FOREIGN KEY (internship_agreement_id) REFERENCES public.internship_agreements(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260504120000'),
 ('20260430092540'),
 ('20260430085934'),
 ('20260420123136'),
