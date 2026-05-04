@@ -18,8 +18,8 @@ module Users
         check_confirmation: true,
         id: params[:id]
       )
-      flash_message = 'Vous trouverez parmi vos emails le message' \
-                      ' permettant l\'activation de votre compte'
+      flash_message = "Vous trouverez parmi vos emails le message" \
+                      " permettant l'activation de votre compte"
       redirect_to(redirect_to_path, flash: { warning: flash_message }) and return
     end
 
@@ -31,7 +31,7 @@ module Users
       if employers_only? && !allowed_profiles_when_employers_only
         sign_out current_user if user_signed_in?
         redirect_to root_path,
-                    notice: 'Vous n\'avez pas les permissions nécessaires pour accéder à cette page' and return
+                    notice: "Vous n'avez pas les permissions nécessaires pour accéder à cette page" and return
       end
 
       # 2FA Magic link pour les admins
@@ -40,7 +40,7 @@ module Users
         sign_out user if user_signed_in?
         token = JwtAuth.encode({ user_id: user.id }, 15.minutes.from_now)
         GodMailer.magic_link_login(user, token).deliver_now
-        redirect_to root_path, notice: 'Un lien de connexion a été envoyé à votre adresse email.' and return
+        redirect_to root_path, notice: "Un lien de connexion a été envoyé à votre adresse email." and return
       end
 
       if by_phone? && fetch_user_by_phone.try(:valid_password?, params[:user][:password])
@@ -87,7 +87,7 @@ module Users
     def store_targeted_offer_id(user:)
       if params[:user].nil?
         Rails.logger.error("--------------\n#{params}\n--------------\n")
-        raise 'params[:user] is nil'
+        raise "params[:user] is nil"
       end
       return unless user && params[:user][:targeted_offer_id].present?
 
@@ -97,7 +97,7 @@ module Users
     def fetch_user_by_email
       if params[:user].nil?
         Rails.logger.error("--------------\n#{params}\n--------------\n")
-        raise 'params[:user] is nil'
+        raise "params[:user] is nil"
       end
       param_email = params[:user][:email]
       User.find_by(email: param_email) if param_email.present?
@@ -147,39 +147,39 @@ module Users
 
     def build_fim_url
       oauth_params = {
-        redirect_uri: ENV['FIM_REDIRECT_URI'],
-        client_id: ENV['FIM_CLIENT_ID'],
-        scope: 'openid profile email stage',
-        response_type: 'code',
+        redirect_uri: ENV["FIM_REDIRECT_URI"],
+        client_id: ENV["FIM_CLIENT_ID"],
+        scope: "openid profile email stage",
+        response_type: "code",
         state: @state,
         nonce: SecureRandom.uuid
       }
 
       cookies[:state] = oauth_params[:state]
 
-      ENV['FIM_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
+      ENV["FIM_URL"] + "/idp/profile/oidc/authorize?" + oauth_params.to_query
     end
 
     def build_educonnect_url
       oauth_params = {
-        redirect_uri: ENV['EDUCONNECT_REDIRECT_URI'],
-        client_id: ENV['EDUCONNECT_CLIENT_ID'],
-        scope: 'openid profile ect.scope.cnx ect.scope.stage',
-        response_type: 'code',
+        redirect_uri: ENV["EDUCONNECT_REDIRECT_URI"],
+        client_id: ENV["EDUCONNECT_CLIENT_ID"],
+        scope: "openid profile ect.scope.cnx ect.scope.stage",
+        response_type: "code",
         state: @state,
         nonce: SecureRandom.uuid,
-        acr_values: 'eleve'
+        acr_values: "eleve"
       }
 
       cookies[:state] = oauth_params[:state]
 
-      ENV['EDUCONNECT_URL'] + '/idp/profile/oidc/authorize?' + oauth_params.to_query
+      ENV["EDUCONNECT_URL"] + "/idp/profile/oidc/authorize?" + oauth_params.to_query
     end
 
     def verify_test_access_code
-      return if params[:access_code] == ENV['TEST_ACCESS_CODE']
+      return if params[:access_code] == ENV["TEST_ACCESS_CODE"]
 
-      redirect_to root_path, alert: 'Accès non autorisé'
+      redirect_to root_path, alert: "Accès non autorisé"
     end
 
     def generate_state

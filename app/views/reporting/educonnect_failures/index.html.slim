@@ -1,0 +1,32 @@
+.container
+  .row.fr-mt-2w
+    .col-md-12
+      .d-flex.justify-content-between
+        h1 Educonnect Failures Report
+        = link_to "Retour à l'admin", rails_admin_path, class: "fr-btn fr-btn--tertiary fr-mb-3w"
+  .row.fr-mt-2w
+    .col-md-12
+      - if @educonnect_failures.any?
+        table.table.table-striped
+          thead
+            tr
+              th ID
+              th Etape
+              th INE élève
+              th UAI
+              th Statut
+              th Message d'erreur
+              th Créé le
+          tbody
+            - @educonnect_failures.each do |failure|
+              tr
+                td = failure.id
+                td = failure.stage
+                td = failure.student_ine.presence || "-"
+                td = failure.json_payload&.dig("school_uai") || "-"
+                td = failure.json_payload&.dig("status") || failure.json_payload&.dig("response_code") || "-"
+                td = failure.json_payload&.dig("message") || "-"
+                td = l(failure.created_at, format: :short)
+      - else
+        .fr-alert.fr-alert--info
+          p Aucune erreur Educonnect à afficher.
