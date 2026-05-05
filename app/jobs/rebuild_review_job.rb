@@ -24,36 +24,36 @@ class RebuildReviewJob < ApplicationJob
   #
   STEPS = [
     # removal steps
-    [:invitation_removal, 'Suppression des invitations de personnels pédagogiques', 1, 'removal'],
-    [:favorites_removal, 'Suppression des favoris des élèves', 1, 'removal'],
-    [:student_removal, 'Suppression des élèves, de leurs candidatures, de leurs conventions, des signatures', 5,
-     'removal'],
-    [:student_search_history_removal, 'Suppression des historiques de recherche des élèves', 2, 'removal'],
-    [:waiting_list_entries_removal, 'Suppression des listes d\'attente[waiting_list_entries]', 1, 'removal'],
-    [:team_removal, 'Suppression des équipes', 1, 'removal'],
-    [:stepper_classes_removal, 'Suppression du contenu des tables du stepper', 1, 'removal'],
-    [:api_offers_removal, 'Suppression des offres api', 1, 'removal'],
-    [:local_offers_removal, 'Suppression des offres locales 1E1S', 1, 'removal'],
-    [:areas_removal, 'Suppression des espaces et des offres', 1, 'removal'],
-    [:notifications_removal, 'Suppression des notifications', 1, 'removal'],
-    [:user_area_removal, 'Suppression des espaces utilisateur', 1, 'removal'],
-    [:employers_removal, 'Suppression des employeurs et de leurs offres', 1, 'removal'],
-    [:users_operator_removal, 'Suppression des opérateurs', 1, 'removal'],
-    [:users_school_management_removal, 'Suppression des équipes pédagogiques', 1, 'removal'],
-    [:corporation_removal, 'Suppression des entreprises du multi-entreprise', 1, 'removal'],
-    [:multi_corporation_removal, 'Suppression des multi-entreprises', 1, 'removal'],
-    [:multi_coordinator_removal, 'Suppression des multi-coordinateurs', 1, 'removal'],
-    [:multi_activity_removal, 'Suppression des multi-activités', 1, 'removal'],
+    [ :invitation_removal, "Suppression des invitations de personnels pédagogiques", 1, "removal" ],
+    [ :favorites_removal, "Suppression des favoris des élèves", 1, "removal" ],
+    [ :student_removal, "Suppression des élèves, de leurs candidatures, de leurs conventions, des signatures", 5,
+     "removal" ],
+    [ :student_search_history_removal, "Suppression des historiques de recherche des élèves", 2, "removal" ],
+    [ :waiting_list_entries_removal, "Suppression des listes d'attente[waiting_list_entries]", 1, "removal" ],
+    [ :team_removal, "Suppression des équipes", 1, "removal" ],
+    [ :stepper_classes_removal, "Suppression du contenu des tables du stepper", 1, "removal" ],
+    [ :api_offers_removal, "Suppression des offres api", 1, "removal" ],
+    [ :local_offers_removal, "Suppression des offres locales 1E1S", 1, "removal" ],
+    [ :areas_removal, "Suppression des espaces et des offres", 1, "removal" ],
+    [ :notifications_removal, "Suppression des notifications", 1, "removal" ],
+    [ :user_area_removal, "Suppression des espaces utilisateur", 1, "removal" ],
+    [ :employers_removal, "Suppression des employeurs et de leurs offres", 1, "removal" ],
+    [ :users_operator_removal, "Suppression des opérateurs", 1, "removal" ],
+    [ :users_school_management_removal, "Suppression des équipes pédagogiques", 1, "removal" ],
+    [ :corporation_removal, "Suppression des entreprises du multi-entreprise", 1, "removal" ],
+    [ :multi_corporation_removal, "Suppression des multi-entreprises", 1, "removal" ],
+    [ :multi_coordinator_removal, "Suppression des multi-coordinateurs", 1, "removal" ],
+    [ :multi_activity_removal, "Suppression des multi-activités", 1, "removal" ],
 
     # creation steps
-    [:employers, 'Création des employeurs', 8, 'addition'],
-    [:users_operators, 'Création des opérateurs', 6, 'addition'],
-    [:students, 'Création des élèves', 157, 'addition'],
-    [:users_school_management, 'Création des équipes pédagogiques', 42, 'addition'],
-    [:api_offers, 'Création des offres API', 10, 'addition'],
-    [:offers, 'Création des offres', 30, 'addition'],
-    [:applications, 'Création des candidatures', 69, 'addition'],
-    [:agreements, 'Création des conventions', 15, 'addition']
+    [ :employers, "Création des employeurs", 8, "addition" ],
+    [ :users_operators, "Création des opérateurs", 6, "addition" ],
+    [ :students, "Création des élèves", 157, "addition" ],
+    [ :users_school_management, "Création des équipes pédagogiques", 42, "addition" ],
+    [ :api_offers, "Création des offres API", 10, "addition" ],
+    [ :offers, "Création des offres", 30, "addition" ],
+    [ :applications, "Création des candidatures", 69, "addition" ],
+    [ :agreements, "Création des conventions", 15, "addition" ]
   ].freeze
   # [:extra_areas, 'Création des espaces supplémentaires - non fait', 0, 'addition'],
   # [:invitation, "Création d'une invitation", 1, 'addition'],
@@ -77,10 +77,10 @@ class RebuildReviewJob < ApplicationJob
   # ------------
   def launch_rebuild_process
     catch(:abort) do
-      broadcast_header('Suppression des données')
+      broadcast_header("Suppression des données")
       remove_steps
 
-      broadcast_header('Création des données')
+      broadcast_header("Création des données")
       creation_steps
 
       broadcast_header("✅ THAT'S ALL FOLKS")
@@ -150,7 +150,7 @@ class RebuildReviewJob < ApplicationJob
   end
 
   def creation_steps
-    addition_steps = STEPS.select { |step| step[3] == 'addition' }
+    addition_steps = STEPS.select { |step| step[3] == "addition" }
     addition_steps.each do |step|
       # show_time do
       broadcast_temporary_info(step[0])
@@ -158,6 +158,7 @@ class RebuildReviewJob < ApplicationJob
       broadcast_info(step[0].to_sym)
       # end
     end
+    MailActionItem.delete_all
   end
 
   # ------------
@@ -166,11 +167,11 @@ class RebuildReviewJob < ApplicationJob
   def broadcast_info(sym)
     text = steps_input_text(sym)
     time_value = @rebuilt_steps_hash[sym].values.first
-    puts '================================'
+    puts "================================"
     puts "text : #{text}"
     puts "time_value : #{time_value}"
-    puts '================================'
-    puts ''
+    puts "================================"
+    puts ""
     message_box.broadcast_info(message_content: text, time_value: time_value)
   end
 
@@ -180,7 +181,7 @@ class RebuildReviewJob < ApplicationJob
   end
 
   def steps_input_text(sym)
-    raise ArgumentError, 'Invalid step symbol' unless @rebuilt_steps_hash.key?(sym)
+    raise ArgumentError, "Invalid step symbol" unless @rebuilt_steps_hash.key?(sym)
 
     @rebuilt_steps_hash[sym].keys.first
   end
@@ -213,7 +214,7 @@ class RebuildReviewJob < ApplicationJob
   end
 
   def default_password
-    ENV.fetch('DEFAULT_PASSWORD', 'password123!!')
+    ENV.fetch("DEFAULT_PASSWORD", "password123!!")
   end
 
   def show_time
