@@ -1,4 +1,5 @@
-- invitation = current_user&.pending_invitation_to_a_team 
+- invitation = current_user&.pending_invitation_to_a_team
+- return if invitation.blank?
 span[data-fr-opened="true" aria-controls="fr-modal-team-invitation"]
 dialog#fr-modal-team-invitation.fr-modal[aria-labelledby="fr-modal-team-invitation-title" role="dialog"]
   = form_with model: @team_member_invitation,
