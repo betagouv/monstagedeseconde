@@ -315,8 +315,6 @@ GEM
       logger
     mini_mime (1.1.5)
     minitest (5.27.0)
-    minitest-fail-fast (0.2.0)
-      minitest (>= 5.0, < 7)
     minitest-rails (8.1.0)
       minitest (~> 5.20)
       railties (>= 8.1.0, < 8.2.0)
@@ -696,7 +694,6 @@ DEPENDENCIES
   mime-types
   mini_magick
   minitest
-  minitest-fail-fast
   minitest-rails
   minitest-retry
   minitest-stub-const

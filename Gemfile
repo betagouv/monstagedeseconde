@@ -132,8 +132,6 @@ group :test do
   # Adds support for Capybara system testing and selenium driver
   gem "capybara"
   gem "minitest"# , "< 6.0"
-  gem "minitest-fail-fast"
-  # gem "minitest-reporters"
   gem "minitest-rails"
   gem "minitest-retry"
   gem "selenium-webdriver", ">= 4.8"
