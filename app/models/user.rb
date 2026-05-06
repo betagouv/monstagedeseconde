@@ -27,13 +27,13 @@ class User < ApplicationRecord
   # Everyone should register with ac-xxx.fr email
   # 1. should register with ce.UAI@ email
   # 2.3.4. can register without
-  enum :role, 
-       school_manager: 'school_manager',
-       teacher: 'teacher',
-       cpe: 'cpe',
-       admin_officer: 'admin_officer',
-       other: 'other'
-  
+  enum :role, {
+    school_manager: 'school_manager',
+    teacher: 'teacher',
+    cpe: 'cpe',
+    admin_officer: 'admin_officer',
+    other: 'other'
+  }
 
   validates :first_name, :last_name,
             presence: true
@@ -241,7 +241,7 @@ class User < ApplicationRecord
   def already_signed?(internship_agreement_id:) = true
 
   def team_id = id
-  def team_members_ids = [id]
+  def team_members_ids = [ id ]
   def agreement_signatorable? = agreement_signatorable
   def anonymized? = anonymized
   def pending_invitation_to_a_team = []
@@ -254,7 +254,7 @@ class User < ApplicationRecord
   def multi_internship_agreements = InternshipAgreement.none
   def mono_internship_agreements = InternshipAgreement.none
 
-  def compute_weeks_lists = [Week.both_school_track_selectable_weeks, Week.both_school_track_selectable_weeks]
+  def compute_weeks_lists = [ Week.both_school_track_selectable_weeks, Week.both_school_track_selectable_weeks ]
 
   def just_created?
     created_at < Time.now + 3.seconds

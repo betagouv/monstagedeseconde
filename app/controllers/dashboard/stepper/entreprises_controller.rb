@@ -69,30 +69,29 @@ module Dashboard::Stepper
     private
 
     def entreprise_params
-      params.require(:entreprise)
-            .permit(
-              :siret,
-              :is_public,
-              :group_id,
-              :sector_id,
-              :employer_name,
-              :entreprise_street,
-              :entreprise_zipcode,
-              :entreprise_city,
-              :employer_chosen_name,
-              :entreprise_full_address,
-              :entreprise_chosen_full_address,
-              :entreprise_coordinates_longitude,
-              :entreprise_coordinates_latitude,
-              :contact_phone,
-              :entreprise_coordinates,
-              :internship_occupation_id,
-              :internship_address_manual_enter,
-              :workspace_conditions,
-              :workspace_accessibility,
-              :internship_address_manual_enter,
-              :code_ape
-            )
+      params.expect(entreprise: [
+        :siret,
+        :is_public,
+        :group_id,
+        :sector_id,
+        :employer_name,
+        :entreprise_street,
+        :entreprise_zipcode,
+        :entreprise_city,
+        :employer_chosen_name,
+        :entreprise_full_address,
+        :entreprise_chosen_full_address,
+        :entreprise_coordinates_longitude,
+        :entreprise_coordinates_latitude,
+        :contact_phone,
+        :entreprise_coordinates,
+        :internship_occupation_id,
+        :internship_address_manual_enter,
+        :workspace_conditions,
+        :workspace_accessibility,
+        :internship_address_manual_enter,
+        :code_ape
+      ])
     end
 
     def set_computed_params
@@ -114,31 +113,30 @@ module Dashboard::Stepper
 
         # Address to geocode contains a valid zipcode ?
         if full_address.to_s.match?(/\d{5}/)
-          puts "-----Code postal valid------->"
-          # find city via Geocoder with zipcode
           zipcode = full_address.to_s[/\d{5}/]
-          city = Geocoder.search("#{zipcode}, France").first.city
-          puts "City found: #{city}"
+          zipcode_lookup = Geocoder.search("#{zipcode}, France").first
 
-          # find coordinates via Geocoder with city and zipcode
-          coordinates = Geofinder.coordinates("#{full_address}, #{city}, #{zipcode}, France")
-          puts "Coordinates found: #{coordinates}"
-
-          if coordinates.present?
-            final_longitude = coordinates[1]
-            final_latitude = coordinates[0]
-            coordinates_valid = true
+          if zipcode_lookup.nil?
+            coordinates_valid = false
+            @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée")
           else
-            puts "-----Coordinates not found------->"
-            # take coordinates from Geocoder with city zipcode only
-            coordinates = Geocoder.search("#{city}, #{zipcode}, France").first.coordinates
+            city = zipcode_lookup.city
+            coordinates = Geofinder.coordinates("#{full_address}, #{city}, #{zipcode}, France")
+
             if coordinates.present?
               final_longitude = coordinates[1]
               final_latitude = coordinates[0]
               coordinates_valid = true
             else
-              coordinates_valid = false
-              @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée")
+              fallback_coordinates = Geocoder.search("#{city}, #{zipcode}, France").first&.coordinates
+              if fallback_coordinates.present?
+                final_longitude = fallback_coordinates[1]
+                final_latitude = fallback_coordinates[0]
+                coordinates_valid = true
+              else
+                coordinates_valid = false
+                @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée")
+              end
             end
           end
         else

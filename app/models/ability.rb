@@ -103,9 +103,9 @@ class Ability
       # - offer is not an api offer (only for weekly offers and mu)
 
       internship_offer.grades.include?(user.grade) &&
-        !user.internship_applications.exists?(aasm_state: "approved") &&
+        !(user.grade == Grade.troisieme && user.internship_applications.exists?(aasm_state: "approved")) &&
         (!user.internship_applications.exists?(internship_offer_id: internship_offer.id) ||
-         existing_application(internship_offer, user)&.canceled_with_passed_approved_application?) && # user has not already applied
+        existing_application(internship_offer, user)&.canceled_with_passed_approved_application?) && # user has not already applied
         user.other_approved_applications_compatible?(internship_offer:) &&
         internship_offer.published? &&
         !internship_offer.from_api? &&
@@ -363,10 +363,9 @@ class Ability
 
     can :flip_notification, AreaNotification do |_area_notif|
       many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
-      current_area_notifiable = !!user.fetch_current_area_notification
-      current_area_notifications_are_off = !current_area_notifiable&.notify
+      current_area_notifications_are_off = !user.fetch_current_area_notification.notify
 
-      user.team.alive? && current_area_notifiable &&
+      user.team.alive? &&
         (many_people_in_charge_of_area || current_area_notifications_are_off)
     end
 

@@ -2,7 +2,7 @@
 
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
-require "minitest/reporters"
+# require 'minitest/reporters'
 require "minitest/autorun"
 require "rails/test_help"
 require "capybara-screenshot/minitest"
@@ -20,9 +20,6 @@ require "support/team_and_areas_helper"
 require "minitest/retry"
 require "webmock/minitest"
 require "sidekiq/testing"
-if ENV.fetch("FAIL_FAST", false) == "true"
-  require "minitest/fail_fast"
-end
 
 # these two lines should be withdrawn whenever the ChromeDriver is ok
 # https://stackoverflow.com/questions/70967207/selenium-chromedriver-cannot-construct-keyevent-from-non-typeable-key/70971698#70971698
@@ -47,7 +44,7 @@ Minitest::Retry.use!(
     PG::InternalError # sometimes postgis ref system is not yet ready
   ]
 )
-Minitest::Reporters.use!
+# Minitest::Reporters.use!
 
 WebMock.disable_net_connect!(
   allow: [

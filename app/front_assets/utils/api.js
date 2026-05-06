@@ -110,5 +110,11 @@ export const endpoints = {
   searchBoardingHouses: () => {
     const endpoint = new URL(`${host}/boarding_houses/search.json`);
     return endpoint;
+  },
+
+  // @post
+  trackBoardingHouseView: ({ id }) => {
+    const endpoint = new URL(`${host}/boarding_houses/${id}/track_view`);
+    return endpoint;
   }
 };

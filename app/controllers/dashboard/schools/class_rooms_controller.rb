@@ -62,8 +62,7 @@ module Dashboard
       private
 
       def class_rooms_params
-        params.require(:class_room)
-              .permit(:name)
+        params.expect(class_room: [:name])
       end
 
     end
