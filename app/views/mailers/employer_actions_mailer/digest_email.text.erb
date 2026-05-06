@@ -1,8 +1,8 @@
 Bonjour <%= @user.presenter.formal_name %>,
 
-Voici les candidatures a traiter (niveau d'urgence : <%= @urgency_level %>).
-
 <% if @pending_application_rows.any? %>
+Nouvelles candidatures à traiter :
+
 <% @pending_application_rows.each_with_index do |row, index| %>
 <%= index + 1 %>. <%= row[:student_full_name] %>
 - Age : <%= row[:age] %>
@@ -14,8 +14,61 @@ Voici les candidatures a traiter (niveau d'urgence : <%= @urgency_level %>).
 <% end %>- Ouvrir la candidature : <%= row[:application_url] %>
 
 <% end %>
-<% else %>
-Aucune candidature en attente pour ce niveau d'urgence.
+<% end %>
+
+<% if @canceled_by_student_rows&.any? %>
+Candidatures annulées par l'élève :
+
+<% @canceled_by_student_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_formal_name] %>
+- Stage : <%= row[:offer_title] %>
+<% if row[:cancellation_message].present? %>- Motif : <%= row[:cancellation_message] %>
+<% end %>
+<% end %>
+<% end %>
+
+<% if @restored_application_rows&.any? %>
+Candidatures restaurées :
+
+<% @restored_application_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_formal_name] %>
+- Stage : <%= row[:offer_title] %>
+<% if row[:restoration_message].present? %>- Motif : <%= row[:restoration_message] %>
+<% end %>- Voir la candidature : <%= row[:application_url] %>
+
+<% end %>
+<% end %>
+
+<% if @chose_another_internship_rows&.any? %>
+Élèves ayant choisi un autre stage :
+
+<% @chose_another_internship_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_full_name] %> a confirmé sa présence pour un autre stage (<%= row[:offer_title] %>).
+- Gérer mes candidatures : <%= row[:manage_url] %>
+
+<% end %>
+<% end %>
+
+<% if @internship_application_transfered_rows&.any? %>
+Candidatures transférées :
+
+<% @internship_application_transfered_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_full_name] %>
+- Stage : <%= row[:offer_title] %>
+- Voir la candidature : <%= row[:application_url] %>
+
+<% end %>
+<% end %>
+
+<% if @agreement_to_sign_rows&.any? %>
+Conventions de stage à compléter :
+
+<% @agreement_to_sign_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_full_name] %>
+- Stage : <%= row[:offer_title] %>
+- Remplir la convention : <%= row[:agreement_url] %>
+
+<% end %>
 <% end %>
 
 <% if @agreement_signed_by_all_rows&.any? %>
@@ -26,6 +79,33 @@ Conventions signées par toutes les parties :
 - Etablissement : <%= row[:school_name] %>
 - Voir la convention : <%= row[:agreement_url] %>
 
+<% end %>
+<% end %>
+
+<% if @agreement_signed_by_another_rows&.any? %>
+Conventions signées par un autre élève :
+
+<% @agreement_signed_by_another_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_full_name] %>
+- Stage : <%= row[:offer_title] %>
+- Etablissement : <%= row[:school_name] %>
+
+<% end %>
+<% end %>
+
+<% if @internship_offer_unpublished_rows&.any? %>
+Offres dépubliées :
+
+<% @internship_offer_unpublished_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:offer_title] %>
+<% end %>
+<% end %>
+
+<% if @internship_offer_removed_rows&.any? %>
+Offres supprimées :
+
+<% @internship_offer_removed_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:offer_title] %>
 <% end %>
 <% end %>
 

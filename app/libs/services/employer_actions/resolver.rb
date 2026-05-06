@@ -15,7 +15,7 @@ module Services::EmployerActions
       new_applications_mail_action_items = pending_application_mail_action_items.where(action_name: "new_internship_application")
       new_applications_mail_action_items.each do |mail_action_item|
         internship_application = mail_action_item.internship_application
-        unless internship_application.submitted?
+        if internship_application.nil? || !internship_application.submitted?
           mail_action_item.update!(resolved_at: Time.current)
         end
       end

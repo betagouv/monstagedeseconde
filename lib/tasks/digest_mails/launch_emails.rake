@@ -11,7 +11,9 @@ namespace :digest_mailers do
         ::Services::EmployerActions::DigestMailer.perform_for_low_level(user_id: user_id)
       end
     else
+      Rails.logger.info "=" * 50
       Rails.logger.info "No low urgency emails to send"
+      Rails.logger.info "=" * 50
     end
   end
 
@@ -27,7 +29,9 @@ namespace :digest_mailers do
         ::Services::EmployerActions::DigestMailer.perform_for_medium_level(user_id: user_id)
       end
     else
+      Rails.logger.info "=" * 50
       Rails.logger.info "No medium urgency emails to send"
+      Rails.logger.info "=" * 50
     end
   end
 end

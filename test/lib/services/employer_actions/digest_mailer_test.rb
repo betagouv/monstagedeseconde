@@ -8,8 +8,8 @@ module Services
 
         kept = MailActionItem.create!(
           user: employer,
-          action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_name: "internship_offer_removed",
+          action_type: :internship_offer_removed,
           urgency_level: :medium,
           stale_at: 2.days.from_now,
           resolved_at: nil,
@@ -19,8 +19,8 @@ module Services
 
         MailActionItem.create!(
           user: employer,
-          action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_name: "internship_offer_removed",
+          action_type: :internship_offer_removed,
           urgency_level: :medium,
           stale_at: 2.days.from_now,
           resolved_at: Time.current,
@@ -30,8 +30,8 @@ module Services
 
         MailActionItem.create!(
           user: employer,
-          action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_name: "internship_offer_removed",
+          action_type: :internship_offer_removed,
           urgency_level: :medium,
           stale_at: 1.day.ago,
           resolved_at: nil,
@@ -41,8 +41,8 @@ module Services
 
         MailActionItem.create!(
           user: employer,
-          action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_name: "internship_offer_removed",
+          action_type: :internship_offer_removed,
           urgency_level: :medium,
           stale_at: 2.days.from_now,
           resolved_at: nil,
@@ -73,7 +73,7 @@ module Services
         ) do
           result = Services::EmployerActions::DigestMailer.find_actions(
             user_id: 1,
-            urgency_level: "medium"
+            urgency_levels: [ "medium" ]
           )
           assert_equal [ "pending_application" ], result.keys
         end
@@ -87,7 +87,7 @@ module Services
           assert_equal [],
                        Services::EmployerActions::DigestMailer.find_actions(
                          user_id: 1,
-                         urgency_level: "medium"
+                         urgency_levels: [ "medium" ]
                        )
         end
       end

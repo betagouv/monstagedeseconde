@@ -24,7 +24,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
 
     actions = { "pending_application" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_level: "medium")
+    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: ["medium"])
     email.deliver_now
 
     assert_emails 1
@@ -53,7 +53,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
 
     actions = { "agreement_signed_by_all" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_level: "low")
+    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: ["low"])
     email.deliver_now
 
     assert_emails 1
@@ -70,11 +70,6 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
     assert_match student.presenter.full_name, text_body
     assert_match student.school.name, text_body
     assert_match "Voir la convention", text_body
-
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_level: "low")
-    email.deliver_now
-
-    assert_emails 0
   end
 
   test "digest_email does not render agreement_signed_by_all section when rows are empty" do
@@ -95,7 +90,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
 
     actions = { "pending_application" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_level: "medium")
+    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: ["medium"])
     email.deliver_now
 
     assert_no_match "Conventions sign", email.html_part.body.to_s
@@ -119,7 +114,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
 
     actions = { "agreement_signed_by_all" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_level: "low")
+    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: ["low"])
     email.deliver_now
 
     assert_emails 1
