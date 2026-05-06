@@ -207,8 +207,14 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :within_current_year, lambda {
-    last_date = SchoolYear::Current.new.offers_end_of_period
-    in_the_future.where('last_date <= :last_date', last_date:)
+    in_the_future.joins(:internship_offer_weeks)
+                 .where(internship_offer_weeks: {
+                   week_id: Week.where(
+                     "year <= ? and number <= ?",
+                     SchoolYear::Current.new.offers_end_of_period.year,
+                     SchoolYear::Current.new.offers_end_of_period_week.number
+                   ).select(:id)
+                 })
   }
 
   scope :weekly_framed, lambda {
