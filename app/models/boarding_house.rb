@@ -6,6 +6,7 @@ class BoardingHouse < ApplicationRecord
   attr_writer :latitude, :longitude
 
   belongs_to :academy
+  has_many :boarding_house_views, dependent: :destroy
 
   before_validation :set_department_from_zipcode
   before_validation :apply_manual_coordinates
