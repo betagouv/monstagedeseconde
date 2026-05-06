@@ -520,8 +520,7 @@ class InternshipOffer < ApplicationRecord
     offer.grades = grades
     offer.mother_id = id
     offer.week_ids = week_ids
-    # if not from api and has weeks before school year start and published_at is present
-    unpublish! if !from_api? && has_weeks_before_school_year_start? && published_at.present?
+    unpublish! if !from_api? && has_weeks_before_school_year_start? && may_unpublish?
     offer.published_at = nil
     offer
   end
