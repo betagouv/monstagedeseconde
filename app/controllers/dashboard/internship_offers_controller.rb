@@ -12,9 +12,11 @@ module Dashboard
 
     # Define allowed stats columns for ordering: update with correct column names
     ALLOWED_STATS_COLUMNS = %w[
+      approved_applications_count
+      remaining_seats_count
       submitted_applications_count
+      total_applications_count
       viewed_count
-      # add other allowed statistics columns here
     ].freeze
     def index
       @internship_offer_areas = current_user.internship_offer_areas if current_user.employer_like?
