@@ -5,6 +5,8 @@ module Api
     class InternshipOffersController < Api::Shared::InternshipOffersController
       include Api::AuthV2
 
+      before_action :restrict_to_operators!
+
       rescue_from Api::ValidationError, with: :render_validation_error_from_exception
 
       def search
@@ -57,6 +59,10 @@ module Api
       end
 
       private
+
+      def restrict_to_operators!
+        render_not_authorized and return unless current_api_user&.operator?
+      end
 
       def create_internship_offer_params
         params.expect(internship_offer: [
@@ -134,15 +140,14 @@ module Api
       end
 
       def format_internship_offers(internship_offers)
-        operator_name = current_api_user.try(:operator)&.name
-        url_query = operator_name ? query_params.merge(utm_source: operator_name) : query_params
         internship_offers.map do |internship_offer|
           {
             id: internship_offer.id,
             title: internship_offer.title,
             description: internship_offer.description.to_s,
             employer_name: internship_offer.employer_name,
-            url: internship_offer_url(internship_offer, url_query),
+            url: internship_offer_url(internship_offer,
+                                      query_params.merge({ utm_source: current_api_user.operator.name })),
             city: internship_offer.city.capitalize,
             zipcode: internship_offer.zipcode,
             street: internship_offer.street,
