@@ -33,6 +33,16 @@ class InternshipAgreement < ApplicationRecord
                 :skip_validations_for_system,
                 :skip_notifications_when_system_creation
 
+  # Delegations
+  delegate :employer,              to: :internship_application
+  delegate :student,               to: :internship_application
+  delegate :internship_offer,      to: :internship_application
+  delegate :employer,              to: :internship_offer
+  delegate :school,                to: :student
+  delegate :school_manager,        to: :school
+  delegate :internship_offer_area, to: :internship_offer
+  delegate :from_multi?,           to: :internship_offer
+
   # Validations
   with_options if: :enforce_employer_validations? do
     validates :activity_scope, presence: true, length: { maximum: 1500 }
@@ -70,8 +80,7 @@ class InternshipAgreement < ApplicationRecord
               format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
                         message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
   end
-  # Delegations
-  delegate :employer, to: :internship_application
+
 
   # Callbacks
   after_save :save_delegation_date
@@ -140,14 +149,6 @@ class InternshipAgreement < ApplicationRecord
                          }
     end
   end
-
-  delegate :student,               to: :internship_application
-  delegate :internship_offer,      to: :internship_application
-  delegate :employer,              to: :internship_offer
-  delegate :school,                to: :student
-  delegate :school_manager,        to: :school
-  delegate :internship_offer_area, to: :internship_offer
-  delegate :from_multi?,           to: :internship_offer
 
   scope :mono, -> {
     where(type: "InternshipAgreements::MonoInternshipAgreement")

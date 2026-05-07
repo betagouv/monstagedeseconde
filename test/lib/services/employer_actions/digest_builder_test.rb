@@ -21,7 +21,7 @@ module Services
         digest = Services::EmployerActions::DigestBuilder
                  .build_digest_by_user_and_urgency_level(
                    user_id: employer.id,
-                   urgency_level: "medium"
+                   urgency_levels: [ "medium" ]
                  )
 
         assert_equal [ item.id ], digest["pending_application"].map(&:id)
@@ -33,7 +33,7 @@ module Services
         digest = Services::EmployerActions::DigestBuilder
                  .build_digest_by_user_and_urgency_level(
                    user_id: employer.id,
-                   urgency_level: "high"
+                   urgency_levels: [ "high" ]
                  )
 
         assert_equal({}, digest)
