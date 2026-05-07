@@ -423,6 +423,7 @@ class InternshipApplication < ApplicationRecord
   def notify_digest_email_by_name(name, **kwargs)
     kwargs[:user_id] ||= internship_offer.employer_id
     kwargs[:internship_application_id] ||= id
+    kwargs[:action_type] ||= :pending_internship_application
     kwargs[:stale_at] ||= weeks.order(:year, :number).last.monday - 2.days
     MailActionItem.create_by_name!(name, **kwargs)
   end

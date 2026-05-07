@@ -70,17 +70,9 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 --
 
 CREATE TYPE public.action_type AS ENUM (
-    'pending_application',
-    'agreement_to_complete',
-    'agreement_to_sign',
-    'agreement_signed_by_all',
-    'candidate_chose_another_internship',
-    'candidate_restored_by_student',
-    'canceled_internship_application',
-    'agreement_signed_by_another',
-    'internship_application_transfered',
-    'internship_offer_unpublished',
-    'internship_offer_removed'
+    'pending_internship_offer',
+    'pending_internship_application',
+    'pending_internship_agreement'
 );
 
 
@@ -5615,6 +5607,7 @@ ALTER TABLE ONLY public.mail_action_items
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260507100000'),
 ('20260505040224'),
 ('20260504130000'),
 ('20260504120000'),

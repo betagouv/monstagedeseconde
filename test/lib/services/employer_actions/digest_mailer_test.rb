@@ -9,7 +9,7 @@ module Services
         kept = MailActionItem.create!(
           user: employer,
           action_name: "internship_offer_removed",
-          action_type: :internship_offer_removed,
+          action_type: :pending_internship_offer,
           urgency_level: :medium,
           stale_at: 2.days.from_now,
           resolved_at: nil,
@@ -20,7 +20,7 @@ module Services
         MailActionItem.create!(
           user: employer,
           action_name: "internship_offer_removed",
-          action_type: :internship_offer_removed,
+          action_type: :pending_internship_offer,
           urgency_level: :medium,
           stale_at: 2.days.from_now,
           resolved_at: Time.current,
@@ -31,7 +31,7 @@ module Services
         MailActionItem.create!(
           user: employer,
           action_name: "internship_offer_removed",
-          action_type: :internship_offer_removed,
+          action_type: :pending_internship_offer,
           urgency_level: :medium,
           stale_at: 1.day.ago,
           resolved_at: nil,
@@ -42,7 +42,7 @@ module Services
         MailActionItem.create!(
           user: employer,
           action_name: "internship_offer_removed",
-          action_type: :internship_offer_removed,
+          action_type: :pending_internship_offer,
           urgency_level: :medium,
           stale_at: 2.days.from_now,
           resolved_at: nil,
@@ -63,7 +63,7 @@ module Services
         item = Struct.new(:id).new(123)
 
         fake_actions = {
-          "pending_application" => [ item ],
+          "pending_internship_application" => [ item ],
           "agreement_to_sign" => []
         }
 
@@ -75,7 +75,7 @@ module Services
             user_id: 1,
             urgency_levels: [ "medium" ]
           )
-          assert_equal [ "pending_application" ], result.keys
+          assert_equal [ "pending_internship_application" ], result.keys
         end
       end
 
@@ -98,7 +98,7 @@ module Services
         valid_medium = MailActionItem.create!(
           user: employer,
           action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_type: :pending_internship_application,
           urgency_level: :medium,
           stale_at: 4.days.from_now,
           resolved_at: nil,

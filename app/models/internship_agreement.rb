@@ -145,7 +145,7 @@ class InternshipAgreement < ApplicationRecord
                   guard: :roles_not_signed_yet_blank?,
                   after: proc { |*_args|
                            notify_others_signatures_finished(self) unless skip_notifications_when_system_creation
-                           notify_employer_agreement_signed_by_all unless skip_notifications_when_system_creation
+                           notify_digest_email_by_name("agreement_signed_by_all") unless skip_notifications_when_system_creation
                          }
     end
   end
@@ -312,6 +312,7 @@ class InternshipAgreement < ApplicationRecord
   def notify_digest_email_by_name(name, **kwargs)
     kwargs[:user_id] ||= internship_application.internship_offer.employer_id
     kwargs[:internship_agreement_id] ||= id
+    kwargs[:action_type] ||= :pending_internship_agreement
     kwargs[:stale_at] ||= internship_application.weeks&.order(:year, :number)&.last&.monday || 30.days.from_now
     MailActionItem.create_by_name!(name, **kwargs)
   end
@@ -331,18 +332,6 @@ class InternshipAgreement < ApplicationRecord
   def notify_others_signatures_finished(agreement)
     GodMailer.notify_others_signatures_finished_email(internship_agreement: agreement)
              .deliver_later
-  end
-
-  def notify_employer_agreement_signed_by_all
-    MailActionItem.create!(
-      action_name:             "agreement_signed_by_all",
-      user_id:                 employer.id,
-      action_type:             :agreement_signed_by_all,
-      internship_agreement_id: id,
-      urgency_level:           "low",
-      max_deliveries_count:    1,
-      stale_at:                30.days.from_now
-    )
   end
 
   def notify_school_management_of_employer_completion(agreement)

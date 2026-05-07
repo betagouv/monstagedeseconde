@@ -11,17 +11,9 @@ class MailActionItem < ApplicationRecord
                         :action_type
   # enums
   enum :action_type, {
-    pending_application:                   "pending_application",
-    agreement_to_complete:                 "agreement_to_complete",
-    agreement_to_sign:                     "agreement_to_sign",
-    agreement_signed_by_all:               "agreement_signed_by_all",
-    candidate_chose_another_internship:    "candidate_chose_another_internship",
-    candidate_restored_by_student:         "candidate_restored_by_student",
-    canceled_internship_application:       "canceled_internship_application",
-    agreement_signed_by_another:           "agreement_signed_by_another",
-    internship_application_transfered:     "internship_application_transfered",
-    internship_offer_unpublished:          "internship_offer_unpublished",
-    internship_offer_removed:              "internship_offer_removed"
+    pending_internship_offer:       "pending_internship_offer",
+    pending_internship_application: "pending_internship_application",
+    pending_internship_agreement:   "pending_internship_agreement"
   }, validate: true
   enum :urgency_level, {
     low: "low",

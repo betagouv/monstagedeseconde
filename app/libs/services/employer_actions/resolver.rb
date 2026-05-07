@@ -11,7 +11,7 @@ module Services::EmployerActions
           pending_application_mail_action_items = MailActionItem.where(
             user_id:,
             urgency_level:,
-            action_type: :pending_application
+            action_type: :pending_internship_application
             )
           # application which aasm_state is not :submitted are to be set as resolved
           new_applications_mail_action_items = pending_application_mail_action_items.where(action_name: "new_internship_application")
@@ -28,7 +28,7 @@ module Services::EmployerActions
         agreement_signed_by_all_items = MailActionItem.where(
           user_id:,
           urgency_level:,
-          action_type: :agreement_signed_by_all
+          action_type: :pending_internship_agreement
         )
         agreement_signed_by_all_items.each do |item|
           agreement = item.internship_agreement

@@ -9,7 +9,7 @@ module Services
         valid_medium = MailActionItem.create!(
           user: employer,
           action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_type: :pending_internship_application,
           urgency_level: :medium,
           stale_at: 2.days.from_now,
           resolved_at: nil,
@@ -21,7 +21,7 @@ module Services
         MailActionItem.create!(
           user: employer,
           action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_type: :pending_internship_application,
           urgency_level: :medium,
           stale_at: 1.day.ago,
           resolved_at: nil,
@@ -33,7 +33,7 @@ module Services
         MailActionItem.create!(
           user: employer,
           action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_type: :pending_internship_application,
           urgency_level: :medium,
           stale_at: 2.days.from_now,
           resolved_at: Time.current,
@@ -45,7 +45,7 @@ module Services
         valid_low = MailActionItem.create!(
           user: employer,
           action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_type: :pending_internship_application,
           urgency_level: :low,
           stale_at: 2.days.from_now,
           resolved_at: nil,
@@ -59,9 +59,9 @@ module Services
         by_levels = list.by_levels
 
         assert_equal [ valid_medium.id ],
-                     by_levels["medium"]["pending_application"].map(&:id)
+                     by_levels["medium"]["pending_internship_application"].map(&:id)
         assert_equal [ valid_low.id ],
-                     by_levels["low"]["pending_application"].map(&:id)
+                     by_levels["low"]["pending_internship_application"].map(&:id)
       end
 
       test "#by_urgency_level returns empty hash when no actions exist for levels" do
@@ -77,7 +77,7 @@ module Services
         medium_item = MailActionItem.create!(
           user: employer,
           action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_type: :pending_internship_application,
           urgency_level: :medium,
           stale_at: 2.days.from_now,
           resolved_at: nil,
@@ -89,7 +89,7 @@ module Services
         low_item = MailActionItem.create!(
           user: employer,
           action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_type: :pending_internship_application,
           urgency_level: :low,
           stale_at: 2.days.from_now,
           resolved_at: nil,
@@ -103,7 +103,7 @@ module Services
         by_urgency = list.by_urgency_level(urgency_levels: [ "medium", "low" ])
 
         assert_equal [ medium_item.id, low_item.id ].sort,
-                     by_urgency["pending_application"].map(&:id).sort
+                     by_urgency["pending_internship_application"].map(&:id).sort
       end
     end
   end

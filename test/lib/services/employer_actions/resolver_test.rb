@@ -13,7 +13,7 @@ module Services
         item = MailActionItem.create!(
           user: employer,
           action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_type: :pending_internship_application,
           urgency_level: :medium,
           stale_at: 5.days.from_now,
           resolved_at: nil,
@@ -34,7 +34,7 @@ module Services
         item = MailActionItem.create!(
           user: employer,
           action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_type: :pending_internship_application,
           urgency_level: :medium,
           stale_at: 5.days.from_now,
           resolved_at: nil,
@@ -59,7 +59,7 @@ module Services
         item = MailActionItem.create!(
           user: employer,
           action_name: "agreement_signed_by_all",
-          action_type: :agreement_signed_by_all,
+          action_type: :pending_internship_agreement,
           urgency_level: :medium,
           stale_at: 30.days.from_now,
           resolved_at: nil,
@@ -79,7 +79,7 @@ module Services
         item = MailActionItem.create!(
           user: employer,
           action_name: "agreement_signed_by_all",
-          action_type: :agreement_signed_by_all,
+          action_type: :pending_internship_agreement,
           urgency_level: :medium,
           stale_at: 30.days.from_now,
           resolved_at: nil,
@@ -100,7 +100,7 @@ module Services
         item = MailActionItem.create!(
           user: employer,
           action_name: "agreement_signed_by_all",
-          action_type: :agreement_signed_by_all,
+          action_type: :pending_internship_agreement,
           urgency_level: :medium,
           stale_at: 30.days.from_now,
           resolved_at: nil,

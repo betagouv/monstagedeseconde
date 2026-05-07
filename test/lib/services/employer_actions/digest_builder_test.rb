@@ -9,7 +9,7 @@ module Services
         item = MailActionItem.create!(
           user: employer,
           action_name: "new_internship_application",
-          action_type: :pending_application,
+          action_type: :pending_internship_application,
           urgency_level: :medium,
           stale_at: 2.days.from_now,
           resolved_at: nil,
@@ -24,7 +24,7 @@ module Services
                    urgency_levels: [ "medium" ]
                  )
 
-        assert_equal [ item.id ], digest["pending_application"].map(&:id)
+        assert_equal [ item.id ], digest["pending_internship_application"].map(&:id)
       end
 
       test ".build_digest_by_user_and_urgency_level returns empty hash" do
