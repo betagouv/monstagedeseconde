@@ -115,6 +115,29 @@ module Services
                      MailActionItem.where(user: employer, deliveries_count: 1).pluck(:id)
       end
 
+      test ".perform_for_medium_level delivers for restored_internship_application" do
+        internship_application = create(:weekly_internship_application, :restored)
+        employer = internship_application.internship_offer.employer
+        MailActionItem.delete_all
+
+        item = MailActionItem.create!(
+          user: employer,
+          action_name: "restored_internship_application",
+          action_type: :pending_internship_application,
+          internship_application:,
+          urgency_level: :medium,
+          stale_at: 30.days.from_now,
+          resolved_at: nil,
+          deliveries_count: 0,
+          max_deliveries_count: 1
+        )
+
+        Services::EmployerActions::DigestMailer.perform_for_medium_level(user_id: employer.id)
+
+        assert_equal [ item.id ],
+                     MailActionItem.where(user: employer, deliveries_count: 1).pluck(:id)
+      end
+
       test "#perform_for_low_level performs expected operations" do
         internship_application = create(:weekly_internship_application)
         employer = internship_application.internship_offer.employer

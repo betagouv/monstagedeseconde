@@ -45,6 +45,19 @@ module Services::EmployerActions
         application_resolve(item.internship_application, extra_condition)
       end
 
+      # ------------------------
+      # restored_internship_application case
+      # ------------------------
+      actions = MailActionItem.where(
+        user_id:,
+        urgency_level:,
+        action_name: "restored_internship_application"
+      )
+      actions.present? && actions.each do |item|
+        extra_condition = item&.internship_application&.aasm_state != "restored"
+        application_resolve(item.internship_application, extra_condition)
+      end
+
       # =======================================================
       # ------------------- AGREEMENTS ------------------------
       # =======================================================
