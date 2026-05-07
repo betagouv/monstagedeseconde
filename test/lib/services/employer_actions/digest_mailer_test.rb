@@ -50,9 +50,9 @@ module Services
           max_deliveries_count: 1
         )
 
-        Services::EmployerActions::DigestMailer.manage_actions_before_delivery(
+        Services::EmployerActions::Resolver.call(
           user_id: employer.id,
-          urgency_level: "medium"
+          urgency_levels: %w[low medium]
         )
 
         assert_equal [ kept.id ],
@@ -93,12 +93,15 @@ module Services
       end
 
       test "#perform_for_low_level performs expected operations" do
-        employer = create(:employer)
+        internship_application = create(:weekly_internship_application)
+        employer = internship_application.internship_offer.employer
+        MailActionItem.delete_all
 
         valid_medium = MailActionItem.create!(
           user: employer,
           action_name: "new_internship_application",
           action_type: :pending_internship_application,
+          internship_application:,
           urgency_level: :medium,
           stale_at: 4.days.from_now,
           resolved_at: nil,

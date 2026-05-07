@@ -22,9 +22,9 @@ module Services
           internship_application: internship_application
         )
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels:  %w[medium low])
+        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium])
 
-        assert_not_nil item.reload.resolved_at
+        assert_raises(ActiveRecord::RecordNotFound) { item.reload }
       end
 
       test ".call does not resolve pending_application items whose application is still submitted" do
@@ -43,7 +43,7 @@ module Services
           internship_application: internship_application
         )
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels:  %w[medium low])
+        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels:  %w[low medium])
 
         assert_nil item.reload.resolved_at
       end
@@ -70,7 +70,7 @@ module Services
 
         Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels:  %w[medium low])
 
-        assert_not_nil item.reload.resolved_at
+        assert_raises(ActiveRecord::RecordNotFound) { item.reload }
       end
 
       test ".call resolves agreement_signed_by_all items whose agreement is nil" do
@@ -90,7 +90,7 @@ module Services
 
         Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels:  %w[medium low])
 
-        assert_not_nil item.reload.resolved_at
+        assert_raises(ActiveRecord::RecordNotFound) { item.reload }
       end
 
       test ".call does not resolve agreement_signed_by_all items whose agreement is present and not discarded" do

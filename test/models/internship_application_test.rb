@@ -51,7 +51,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
         end
 
         assert_equal Time.now.utc, InternshipApplication.last.submitted_at
-        assert_equal :pending_application.to_s, MailActionItem.last.action_type
+        assert_equal :pending_internship_application.to_s, MailActionItem.last.action_type
       end
     end
   end

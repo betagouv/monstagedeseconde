@@ -3,9 +3,10 @@ module Services::EmployerActions
     MailActionItem.urgency_levels.each_key do |urgency_level|
       # define "perform_for_low_level", "perform_for_medium_level", "perform_for_high_level" and "perform_for_critical_level" class methods
       define_singleton_method :"perform_for_#{urgency_level}_level" do |user_id:|
-        manage_actions_before_delivery(user_id: user_id, urgency_level: urgency_level)
-
         urgency_levels = urgency_levels_sum_up(urgency_level)
+
+        Resolver.call(user_id:, urgency_levels: urgency_levels)
+
         actions = find_actions(user_id: user_id, urgency_levels: urgency_levels)
         if actions.empty?
           Rails.logger.info "--------------------------------"
@@ -21,18 +22,6 @@ module Services::EmployerActions
         ).deliver_later
         manage_actions_post_delivery(actions)
       end
-    end
-
-    def self.manage_actions_before_delivery(user_id:, urgency_level:)
-      Resolver.call(user_id:, urgency_levels: urgency_levels_sum_up(urgency_level))
-      mail_action_items_base = MailActionItem.where(user_id:)
-                                              .where(urgency_level: urgency_level)
-      mail_action_items_base.where.not(resolved_at: nil)
-                            .delete_all
-      mail_action_items_base.where("stale_at < ?", Time.current)
-                            .delete_all
-      mail_action_items_base.where("deliveries_count >= max_deliveries_count")
-                            .delete_all
     end
 
     def self.manage_actions_post_delivery(actions)

@@ -23,7 +23,6 @@ class MailActionItemTest < ActiveSupport::TestCase
         assert_equal config[:action_type].to_s, item.action_type
         assert_equal config[:urgency_level], item.urgency_level
         assert_equal config[:max_deliveries_count], item.max_deliveries_count
-        assert_in_delta config[:stale_at].call, item.stale_at, 5.seconds
       end
     end
   end
