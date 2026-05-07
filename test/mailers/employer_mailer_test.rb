@@ -137,15 +137,17 @@ class EmployerMailerTest < ActionMailer::TestCase
                              internship_offer_area_id: area_id)
                     .update(notify: false)
 
-    assert_emails 1 do
-      internship_application.restore!
-    end
+    internship_application.restore!
+    assert MailActionItem.where(user: employer,
+                                action_name: "restored_internship_application",
+                                internship_application: internship_application)
+                         .exists?
   end
-  test 'as a team member, with notifications on, it should send not send any email when never been approved in the past' do
+  test "as a team member, with notifications on, it should send not send any email when never been approved in the past" do
     internship_offer_2nde = create_internship_offer_visible_by_two(create(:employer), create(:employer))
     internship_application = create(:weekly_internship_application, :canceled_by_student,
                                     internship_offer: internship_offer_2nde)
-    internship_application.restored_message = ''
+    internship_application.restored_message = ""
 
     assert_emails 0 do
       internship_application.restore!

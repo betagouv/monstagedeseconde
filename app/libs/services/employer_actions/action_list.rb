@@ -15,8 +15,16 @@ module Services::EmployerActions
       end
     end
 
-    def by_urgency_level(urgency_level:)
-      by_levels[urgency_level]
+    def by_urgency_level(urgency_levels:)
+      Array(urgency_levels).each_with_object({}) do |urgency_level, hash|
+        grouped_actions = by_levels[urgency_level.to_s]
+        next if grouped_actions.blank?
+
+        grouped_actions.each do |action_type, items|
+          hash[action_type] ||= []
+          hash[action_type].concat(items)
+        end
+      end
     end
 
     def to_h

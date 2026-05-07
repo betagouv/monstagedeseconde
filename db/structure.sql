@@ -73,7 +73,14 @@ CREATE TYPE public.action_type AS ENUM (
     'pending_application',
     'agreement_to_complete',
     'agreement_to_sign',
-    'agreement_signed_by_all'
+    'agreement_signed_by_all',
+    'candidate_chose_another_internship',
+    'candidate_restored_by_student',
+    'canceled_internship_application',
+    'agreement_signed_by_another',
+    'internship_application_transfered',
+    'internship_offer_unpublished',
+    'internship_offer_removed'
 );
 
 
@@ -5521,6 +5528,7 @@ ALTER TABLE ONLY public.mail_action_items
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260505040224'),
 ('20260504130000'),
 ('20260504120000'),
 ('20260430092540'),

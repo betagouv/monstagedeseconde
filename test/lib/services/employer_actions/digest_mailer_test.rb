@@ -79,17 +79,37 @@ module Services
         end
       end
 
-      test "#find_actions returns empty array when digest is empty" do
+      test "#find_actions returns empty hash when digest is empty" do
         Services::EmployerActions::DigestBuilder.stub(
           :build_digest_by_user_and_urgency_level,
           {}
         ) do
-          assert_equal [],
+          assert_equal({},
                        Services::EmployerActions::DigestMailer.find_actions(
                          user_id: 1,
                          urgency_levels: [ "medium" ]
-                       )
+                       ))
         end
+      end
+
+      test "#perform_for_low_level performs expected operations" do
+        employer = create(:employer)
+
+        valid_medium = MailActionItem.create!(
+          user: employer,
+          action_name: "new_internship_application",
+          action_type: :pending_application,
+          urgency_level: :medium,
+          stale_at: 4.days.from_now,
+          resolved_at: nil,
+          deliveries_count: 0,
+          max_deliveries_count: 1
+        )
+
+        Services::EmployerActions::DigestMailer.perform_for_low_level(user_id: employer.id)
+
+        assert_equal [ valid_medium.id ],
+                     MailActionItem.where(user: employer, deliveries_count: 1).pluck(:id)
       end
     end
   end

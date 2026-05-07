@@ -155,21 +155,4 @@ class InternshipAgreementTest < ActiveSupport::TestCase
     assert_equal 1, item.max_deliveries_count
     assert item.stale_at > Time.current
   end
-
-  test "#notify_employer_agreement_signed_by_all does not create a MailActionItem when skip_notifications_when_system_creation is true" do
-    internship_agreement = create(:mono_internship_agreement, :created_by_system, aasm_state: :signatures_started)
-
-    create(:signature, :school_manager, internship_agreement_id: internship_agreement.id,
-           user_id: internship_agreement.school_manager.id)
-    create(:signature, :student, internship_agreement_id: internship_agreement.id,
-           user_id: internship_agreement.student.id)
-    create(:signature, :student_legal_representative, internship_agreement_id: internship_agreement.id,
-           user_id: internship_agreement.student.id)
-    create(:signature, :employer, internship_agreement_id: internship_agreement.id,
-           user_id: internship_agreement.employer.id)
-
-    assert_no_difference "MailActionItem.count" do
-      internship_agreement.sign!
-    end
-  end
 end

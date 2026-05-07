@@ -22,7 +22,7 @@ module Services
           internship_application: internship_application
         )
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_level: "medium")
+        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels:  %w[medium low])
 
         assert_not_nil item.reload.resolved_at
       end
@@ -43,7 +43,7 @@ module Services
           internship_application: internship_application
         )
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_level: "medium")
+        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels:  %w[medium low])
 
         assert_nil item.reload.resolved_at
       end
@@ -68,7 +68,7 @@ module Services
           internship_agreement: internship_agreement
         )
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_level: "medium")
+        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels:  %w[medium low])
 
         assert_not_nil item.reload.resolved_at
       end
@@ -88,7 +88,7 @@ module Services
           internship_agreement_id: nil
         )
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_level: "medium")
+        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels:  %w[medium low])
 
         assert_not_nil item.reload.resolved_at
       end
@@ -109,7 +109,7 @@ module Services
           internship_agreement: internship_agreement
         )
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_level: "medium")
+        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[medium low])
 
         assert_nil item.reload.resolved_at
       end

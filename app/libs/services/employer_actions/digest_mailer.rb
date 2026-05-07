@@ -1,12 +1,18 @@
 module Services::EmployerActions
   class DigestMailer
     MailActionItem.urgency_levels.each_key do |urgency_level|
+      # define "perform_for_low_level", "perform_for_medium_level", "perform_for_high_level" and "perform_for_critical_level" class methods
       define_singleton_method :"perform_for_#{urgency_level}_level" do |user_id:|
         manage_actions_before_delivery(user_id: user_id, urgency_level: urgency_level)
 
         urgency_levels = urgency_levels_sum_up(urgency_level)
         actions = find_actions(user_id: user_id, urgency_levels: urgency_levels)
-        return if actions.empty?
+        if actions.empty?
+          Rails.logger.info "--------------------------------"
+          Rails.logger.info "No pending and not overdue actions to notify for user #{user_id} at #{urgency_level} urgency level"
+          Rails.logger.info "--------------------------------"
+          return
+        end
 
         EmployerActionsMailer.digest_email(
           user_id:,
@@ -18,9 +24,9 @@ module Services::EmployerActions
     end
 
     def self.manage_actions_before_delivery(user_id:, urgency_level:)
-      Resolver.call(user_id:, urgency_level: urgency_level)
+      Resolver.call(user_id:, urgency_levels: urgency_levels_sum_up(urgency_level))
       mail_action_items_base = MailActionItem.where(user_id:)
-                                             .where(urgency_level: urgency_level)
+                                              .where(urgency_level: urgency_level)
       mail_action_items_base.where.not(resolved_at: nil)
                             .delete_all
       mail_action_items_base.where("stale_at < ?", Time.current)
@@ -32,22 +38,24 @@ module Services::EmployerActions
     def self.manage_actions_post_delivery(actions)
       actions.each do |action_type, items|
         items.each do |item|
-          item.deliveries_count = item.deliveries_count + 1
-          item.last_notified_at = Time.current
-          item.save!
+          # association with user is the reason why we don't use update_all here
+          item.update_columns(
+            deliveries_count: item.deliveries_count + 1,
+            last_notified_at: Time.current
+          )
         end
       end
     end
 
     def self.find_actions(user_id:, urgency_levels:)
       actions = DigestBuilder.build_digest_by_user_and_urgency_level(
-          user_id: user_id,
-          urgency_levels: urgency_levels
-        )
-      return [] if actions.empty?
+        user_id: user_id,
+        urgency_levels: urgency_levels
+      )
+      return {} if actions.empty?
 
       actions = actions.select { |_action_type, items| items.any? }
-      return [] if actions.empty?
+      return {} if actions.empty?
 
       actions
     end
@@ -57,7 +65,7 @@ module Services::EmployerActions
       idx = levels.index(level)
       return [] if idx.nil?
 
-      levels[0..idx].reverse
+      levels[idx..]
     end
   end
 end

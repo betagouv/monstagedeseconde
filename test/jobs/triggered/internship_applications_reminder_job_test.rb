@@ -43,7 +43,7 @@ module Triggered
 
     test "perform expire! when internship_applications is pending for more than EXPIRATION_DURATION" do
       internship_application = nil
-      assert_enqueued_emails 1 do # one for student internship_application_expired_email
+      assert_enqueued_emails 0 do # no internship_application_expired_email anymore, only pending_reminder_sent_email
         internship_application = create(:weekly_internship_application, :submitted,
                                         submitted_at: (InternshipApplication::EXPIRATION_DURATION + 1.day).ago,
                                         pending_reminder_sent_at: 7.days.ago,

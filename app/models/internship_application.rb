@@ -303,7 +303,8 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |user, *_args|
                     if employer_aware_states.include?(aasm_state)
                       # Employer need to be notified
-                      EmployerMailer.internship_application_approved_for_an_other_internship_offer_email(internship_application: self).deliver_later
+                      notify_digest_email_by_name("cancel_by_student_confirmation", user_id: user&.id)
+                      # EmployerMailer.internship_application_approved_for_an_other_internship_offer_email(internship_application: self).deliver_later
                     end
                     record_state_change user
                   }
@@ -354,11 +355,7 @@ class InternshipApplication < ApplicationRecord
                   to: :canceled_by_student,
                   after: proc { |user, *_args|
                     update!("canceled_at": Time.now.utc)
-                    deliver_later_with_additional_delay do
-                      EmployerMailer.internship_application_canceled_by_student_email(
-                        internship_application: self,
-                      )
-                    end
+                    notify_digest_email_by_name("canceled_internship_application_by_student")
                     internship_agreement&.destroy
                     record_state_change user
                   }
@@ -370,9 +367,7 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |user, *_args|
                     update!(restored_at: Time.now.utc)
                     if has_ever_been?(%w[approved read_by_employer validated_by_employer])
-                      deliver_later_with_additional_delay do
-                        EmployerMailer.internship_application_restored_email(internship_application: self)
-                      end
+                      notify_digest_email_by_name("restored_internship_application")
                     end
                     record_state_change user
                   }
@@ -384,8 +379,7 @@ class InternshipApplication < ApplicationRecord
                   to: :expired,
                   after: proc { |user, *_args|
                     update!(expired_at: Time.now.utc)
-                    # notitify_student
-                    Triggered::StudentExpiredInternshipApplicationsNotificationJob.perform_later(self)
+                    StudentMailer.internship_application_expired_email(internship_application: self).deliver_later
                     record_state_change user
                   }
     end
@@ -409,23 +403,20 @@ class InternshipApplication < ApplicationRecord
   end
 
   def notify_users
-    MailActionItem.create!(
-      action_name: "new_internship_application",
-      user_id: internship_offer.employer.id,
-      action_type: :pending_application,
-      internship_application_id: id,
-      max_deliveries_count: MailActionItem::DEFAULT_NEW_INTERNSHIPS_APPLICATIONS_MAX_DELIVERIES_COUNT,
-      urgency_level: MailActionItem::DEFAULT_NEW_INTERNSHIPS_APPLICATIONS_URGENCY_LEVEL,
-      stale_at: weeks.last.monday - 2.days
-    )
-
-    # EmployerMailer.internship_application_submitted_email(internship_application: self).deliver_later(wait: 1.second)
+    notify_digest_email_by_name("new_internship_application", stale_at: weeks.last.monday - 2.days)
     Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
 
     return if student.internship_applications.count == 0
 
     Triggered::SingleApplicationReminderJob.set(wait: 2.days).perform_later(student.id)
     Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
+  end
+
+  def notify_digest_email_by_name(name, **kwargs)
+    kwargs[:user_id] ||= internship_offer.employer_id
+    kwargs[:internship_application_id] ||= id
+    kwargs[:stale_at] ||= weeks.order(:year, :number).last.monday - 2.days
+    MailActionItem.create_by_name!(name, **kwargs)
   end
 
   def multi?
@@ -530,9 +521,7 @@ class InternshipApplication < ApplicationRecord
     agreement.skip_validations_for_system = true
     agreement.save!
 
-    EmployerMailer.internship_application_approved_with_agreement_email(
-      internship_agreement:,
-    ).deliver_later
+    notify_digest_email_by_name("agreement_to_sign")
   end
 
   def create_multi_agreement

@@ -309,6 +309,13 @@ class InternshipAgreement < ApplicationRecord
 
   private
 
+  def notify_digest_email_by_name(name, **kwargs)
+    kwargs[:user_id] ||= internship_application.internship_offer.employer_id
+    kwargs[:internship_agreement_id] ||= id
+    kwargs[:stale_at] ||= internship_application.weeks&.order(:year, :number)&.last&.monday || 30.days.from_now
+    MailActionItem.create_by_name!(name, **kwargs)
+  end
+
   def notify_signatures_enabled
     GodMailer.notify_signatures_can_start_email(
       internship_agreement: self

@@ -64,11 +64,46 @@ module Services
                      by_levels["low"]["pending_application"].map(&:id)
       end
 
-      test "#by_urgency_level returns nil when no actions exist for level" do
+      test "#by_urgency_level returns empty hash when no actions exist for levels" do
         employer = create(:employer)
         list = Services::EmployerActions::ActionList.new(user_id: employer.id)
 
-        assert_nil list.by_urgency_level(urgency_level: "critical")
+        assert_equal({}, list.by_urgency_level(urgency_levels: [ "critical" ]))
+      end
+
+      test "#by_urgency_level merges actions for multiple urgency levels" do
+        employer = create(:employer)
+
+        medium_item = MailActionItem.create!(
+          user: employer,
+          action_name: "new_internship_application",
+          action_type: :pending_application,
+          urgency_level: :medium,
+          stale_at: 2.days.from_now,
+          resolved_at: nil,
+          payload: {},
+          deliveries_count: 0,
+          max_deliveries_count: 1
+        )
+
+        low_item = MailActionItem.create!(
+          user: employer,
+          action_name: "new_internship_application",
+          action_type: :pending_application,
+          urgency_level: :low,
+          stale_at: 2.days.from_now,
+          resolved_at: nil,
+          payload: {},
+          deliveries_count: 0,
+          max_deliveries_count: 1
+        )
+
+        list = Services::EmployerActions::ActionList.new(user_id: employer.id)
+
+        by_urgency = list.by_urgency_level(urgency_levels: [ "medium", "low" ])
+
+        assert_equal [ medium_item.id, low_item.id ].sort,
+                     by_urgency["pending_application"].map(&:id).sort
       end
     end
   end
