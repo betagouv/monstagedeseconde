@@ -5,7 +5,9 @@ class EmployerActionsMailer < ApplicationMailer
     @actions = actions
     @urgency_levels = urgency_levels
 
-    all_pending = Array(@actions["pending_application"])
+    all_pending  = Array(@actions["pending_internship_application"])
+    all_agreements = Array(@actions["pending_internship_agreement"])
+    all_offers     = Array(@actions["pending_internship_offer"])
 
     # --- New applications (accept / refuse) ---
     @pending_application_rows = all_pending
@@ -41,10 +43,9 @@ class EmployerActionsMailer < ApplicationMailer
       end
 
     # --- Student canceled their application ---
-    @canceled_by_student_rows = (
-      all_pending.select { |item| item.action_name == "canceled_internship_application_by_student" } +
-      Array(@actions["canceled_internship_application"])
-    ).filter_map do |item|
+    @canceled_by_student_rows = all_pending
+      .select { |item| item.action_name == "canceled_internship_application_by_student" }
+      .filter_map do |item|
       internship_application = item.internship_application
       next if internship_application.nil?
 
@@ -56,10 +57,9 @@ class EmployerActionsMailer < ApplicationMailer
     end
 
     # --- Student restored their application ---
-    @restored_application_rows = (
-      all_pending.select { |item| item.action_name == "restored_internship_application" } +
-      Array(@actions["candidate_restored_by_student"])
-    ).filter_map do |item|
+    @restored_application_rows = all_pending
+      .select { |item| item.action_name == "restored_internship_application" }
+      .filter_map do |item|
       internship_application = item.internship_application
       next if internship_application.nil?
 
@@ -75,10 +75,9 @@ class EmployerActionsMailer < ApplicationMailer
     end
 
     # --- Student chose another internship ---
-    @chose_another_internship_rows = (
-      all_pending.select { |item| item.action_name == "cancel_by_student_confirmation" } +
-      Array(@actions["candidate_chose_another_internship"])
-    ).filter_map do |item|
+    @chose_another_internship_rows = all_pending
+      .select { |item| item.action_name == "cancel_by_student_confirmation" }
+      .filter_map do |item|
       internship_application = item.internship_application
       next if internship_application.nil?
 
@@ -90,7 +89,9 @@ class EmployerActionsMailer < ApplicationMailer
     end
 
     # --- Application transferred to another employer ---
-    @internship_application_transfered_rows = Array(@actions["internship_application_transfered"]).filter_map do |item|
+    @internship_application_transfered_rows = all_pending
+      .select { |item| item.action_name == "internship_application_transfered" }
+      .filter_map do |item|
       internship_application = item.internship_application
       next if internship_application.nil?
 
@@ -105,7 +106,9 @@ class EmployerActionsMailer < ApplicationMailer
     end
 
     # --- Agreement to sign / fill ---
-    @agreement_to_sign_rows = Array(@actions["agreement_to_sign"]).filter_map do |item|
+    @agreement_to_sign_rows = all_agreements
+      .select { |item| item.action_name == "agreement_to_sign" }
+      .filter_map do |item|
       internship_application = item.internship_application
       next if internship_application.nil?
 
@@ -118,7 +121,9 @@ class EmployerActionsMailer < ApplicationMailer
     end
 
     # --- Agreement signed by all parties ---
-    @agreement_signed_by_all_rows = Array(@actions["agreement_signed_by_all"]).filter_map do |item|
+    @agreement_signed_by_all_rows = all_agreements
+      .select { |item| item.action_name == "agreement_signed_by_all" }
+      .filter_map do |item|
       agreement = item.internship_agreement
       next if agreement.nil?
 
@@ -133,7 +138,9 @@ class EmployerActionsMailer < ApplicationMailer
     end
 
     # --- Another student's agreement was signed by all (seat taken) ---
-    @agreement_signed_by_another_rows = Array(@actions["agreement_signed_by_another"]).filter_map do |item|
+    @agreement_signed_by_another_rows = all_agreements
+      .select { |item| item.action_name == "agreement_signed_by_another" }
+      .filter_map do |item|
       internship_application = item.internship_application
       next if internship_application.nil?
 
@@ -146,7 +153,9 @@ class EmployerActionsMailer < ApplicationMailer
     end
 
     # --- Internship offer unpublished ---
-    @internship_offer_unpublished_rows = Array(@actions["internship_offer_unpublished"]).filter_map do |item|
+    @internship_offer_unpublished_rows = all_offers
+      .select { |item| item.action_name == "internship_offer_unpublished" }
+      .filter_map do |item|
       offer = item.internship_offer || item.internship_application&.internship_offer
       next if offer.nil?
 
@@ -154,7 +163,9 @@ class EmployerActionsMailer < ApplicationMailer
     end
 
     # --- Internship offer removed ---
-    @internship_offer_removed_rows = Array(@actions["internship_offer_removed"]).filter_map do |item|
+    @internship_offer_removed_rows = all_offers
+      .select { |item| item.action_name == "internship_offer_removed" }
+      .filter_map do |item|
       offer = item.internship_offer || item.internship_application&.internship_offer
       next if offer.nil?
 
