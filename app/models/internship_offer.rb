@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'sti_preload'
+require "sti_preload"
 class InternshipOffer < ApplicationRecord
   # Constants
   GUARD_PERIOD = 5.days
@@ -54,14 +54,14 @@ class InternshipOffer < ApplicationRecord
 
   # Other associations not defined in StepperProxy
   has_many :internship_applications, as: :internship_offer,
-                                     foreign_key: 'internship_offer_id'
+                                     foreign_key: "internship_offer_id"
 
   belongs_to :internship_occupation, optional: true
   belongs_to :entreprise, optional: true
   belongs_to :planning, optional: true
   belongs_to :employer, polymorphic: true, optional: true
   belongs_to :internship_offer_area, optional: true, touch: true, inverse_of: :internship_offers
-  belongs_to :internship_offer, optional: true, foreign_key: 'mother_id'
+  belongs_to :internship_offer, optional: true, foreign_key: "mother_id"
 
   # TODO : why, the 2 next lines ?
   has_many :favorites
@@ -84,13 +84,13 @@ class InternshipOffer < ApplicationRecord
 
   has_many :reserved_schools,
             dependent: :destroy,
-            class_name: 'ReservedSchool',
+            class_name: "ReservedSchool",
             foreign_key: :internship_offer_id,
             inverse_of: :internship_offer
 
   has_many :schools, through: :reserved_schools
 
-  has_one :stats, class_name: 'InternshipOfferStats', dependent: :destroy
+  has_one :stats, class_name: "InternshipOfferStats", dependent: :destroy
   has_one :inappropriate_offer, dependent: :destroy
 
   # accepts_nested_attributes_for :organisation, allow_destroy: true
@@ -157,15 +157,15 @@ class InternshipOffer < ApplicationRecord
   #   email, url, host, file, uint, url_path, sfloat, float, numword, numhword, version;
   pg_search_scope :search_by_keyword,
                   against: {
-                    title: 'A',
-                    description: 'B',
-                    employer_description: 'C'
+                    title: "A",
+                    description: "B",
+                    employer_description: "C"
                   },
                   ignoring: :accents,
                   using: {
                     tsearch: {
-                      dictionary: 'public.config_search_keyword',
-                      tsvector_column: 'search_tsv',
+                      dictionary: "public.config_search_keyword",
+                      tsvector_column: "search_tsv",
                       prefix: true
                     }
                   }
@@ -176,7 +176,7 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :with_seats, lambda {
-    joins(:stats).where('internship_offer_stats.remaining_seats_count > 0')
+    joins(:stats).where("internship_offer_stats.remaining_seats_count > 0")
   }
 
   scope :limited_to_department, lambda { |user:|
@@ -203,12 +203,19 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :in_the_future, lambda {
-    where('last_date > :now', now: Time.now)
+    where("last_date > :now", now: Time.now)
   }
 
   scope :within_current_year, lambda {
-    last_date = SchoolYear::Current.new.offers_end_of_period
-    in_the_future.where('last_date <= :last_date', last_date:)
+    in_the_future.where(
+      id: InternshipOfferWeek.where(
+        week_id: Week.where(
+          "year <= ? and number <= ?",
+          SchoolYear::Current.new.offers_end_of_period.year,
+          SchoolYear::Current.new.offers_end_of_period_week.number
+        ).select(:id)
+      ).select(:internship_offer_id)
+    )
   }
 
   scope :weekly_framed, lambda {
@@ -272,25 +279,25 @@ class InternshipOffer < ApplicationRecord
   scope :seconde_and_troisieme_only, lambda {
     joins(:grades, :internship_offer_grades)
       .where(grades: { id: [ Grade.seconde.id, Grade.troisieme.id ] })
-      .group('internship_offers.id')
-      .having('COUNT(DISTINCT internship_offer_grades.grade_id) = 2')
-      .having('SUM(CASE WHEN internship_offer_grades.grade_id = ? THEN 0 ELSE 1 END) = 0', Grade.quatrieme.id)
+      .group("internship_offers.id")
+      .having("COUNT(DISTINCT internship_offer_grades.grade_id) = 2")
+      .having("SUM(CASE WHEN internship_offer_grades.grade_id = ? THEN 0 ELSE 1 END) = 0", Grade.quatrieme.id)
   }
   # In production there's no offer that would match (seconde and troisieme) only without quatrieme
 
   scope :troisieme_or_quatrieme_only, lambda {
     joins(:grades, :internship_offer_grades)
     .where(grades: { id: [ Grade.troisieme.id, Grade.quatrieme.id ] })
-    .group('internship_offers.id')
-    .having('COUNT(DISTINCT internship_offer_grades.grade_id) = ?', Grade.troisieme_et_quatrieme.size)
+    .group("internship_offers.id")
+    .having("COUNT(DISTINCT internship_offer_grades.grade_id) = ?", Grade.troisieme_et_quatrieme.size)
   }
   # In production there's no offer that would match one grade only (troisieme or quatrieme)
 
   scope :seconde_only, lambda {
     joins(:grades, :internship_offer_grades)
     .where(grades: { id: Grade.seconde.id })
-    .group('internship_offers.id')
-    .having('COUNT(DISTINCT internship_offer_grades.grade_id) = 1')
+    .group("internship_offers.id")
+    .having("COUNT(DISTINCT internship_offer_grades.grade_id) = 1")
   }
 
   scope :public_kept_for_doubling, lambda {
@@ -298,7 +305,7 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :private_kept_for_doubling, lambda {
-    fonction_publique_sector = Sector.find_by(name: 'Fonction publique')
+    fonction_publique_sector = Sector.find_by(name: "Fonction publique")
     where(is_public: false).where.not(sector_id: fonction_publique_sector.id)
   }
 
@@ -482,12 +489,12 @@ class InternshipOffer < ApplicationRecord
 
   def anonymize
     fields_to_reset = {
-      title: 'NA',
-      description: 'NA',
-      employer_website: 'NA',
-      street: 'NA',
-      employer_name: 'NA',
-      employer_description: 'NA'
+      title: "NA",
+      description: "NA",
+      employer_website: "NA",
+      street: "NA",
+      employer_name: "NA",
+      employer_description: "NA"
     }
     update(fields_to_reset)
     discard
@@ -553,7 +560,7 @@ class InternshipOffer < ApplicationRecord
   def daily_planning?
     return false if daily_hours.blank?
 
-    daily_hours.except('samedi').values.flatten.any? { |v| !v.blank? }
+    daily_hours.except("samedi").values.flatten.any? { |v| !v.blank? }
   end
 
   def presenter
@@ -619,7 +626,7 @@ class InternshipOffer < ApplicationRecord
   def check_for_missing_seats
     return unless no_remaining_seat_anymore?
 
-    errors.add(:max_candidates, 'Augmentez Le nombre de places disponibles pour accueillir des élèves')
+    errors.add(:max_candidates, "Augmentez Le nombre de places disponibles pour accueillir des élèves")
   end
 
   def check_missing_seats
@@ -661,12 +668,12 @@ class InternshipOffer < ApplicationRecord
     return if internship_offer_area_id.present?
 
     if employer&.current_area_id.nil?
-      Rails.logger.error('no internship_offer_area with ' \
+      Rails.logger.error("no internship_offer_area with " \
                          "internship_offer_id: #{id} and " \
                          "employer_id: #{employer_id}")
     end
     self.internship_offer_area_id = employer.current_area_id
-    Rails.logger.warn('default internship_offer_area with ' \
+    Rails.logger.warn("default internship_offer_area with " \
                          "internship_offer_id: #{id} and " \
                          "employer_id: #{employer_id}")
   end
@@ -679,13 +686,13 @@ class InternshipOffer < ApplicationRecord
     sorted_grade_ids = grades.ids.sort
 
     if sorted_grade_ids == Grade.all.ids.sort
-      self.targeted_grades = 'seconde_troisieme_or_quatrieme'
+      self.targeted_grades = "seconde_troisieme_or_quatrieme"
     elsif sorted_grade_ids == [ Grade.troisieme.id, Grade.seconde.id ].sort
-      self.targeted_grades = 'seconde_troisieme_or_quatrieme'
+      self.targeted_grades = "seconde_troisieme_or_quatrieme"
     elsif sorted_grade_ids == Grade.troisieme_et_quatrieme.map(&:id).sort
-      self.targeted_grades = 'troisieme_or_quatrieme'
+      self.targeted_grades = "troisieme_or_quatrieme"
     elsif sorted_grade_ids == [ Grade.seconde.id ]
-      self.targeted_grades = 'seconde_only'
+      self.targeted_grades = "seconde_only"
     else
       Rails.logger.error("Unknown grade_ids: #{grade_ids} for ##{id}")
     end
