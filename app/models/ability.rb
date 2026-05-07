@@ -148,7 +148,8 @@ class Ability
       internship_application.student.id == user.id &&
         !internship_application.student.has_found_her_internships? &&
         internship_application.aasm_state.in?(InternshipApplication::RESTORABLE_STATES) &&
-        internship_application.restored_at.nil?
+        internship_application.restored_at.nil? &&
+        internship_application.no_weeks_overlap?
     end
 
     can %i[read show update sign student_sign legal_representative_sign], InternshipAgreement do |internship_agreement|

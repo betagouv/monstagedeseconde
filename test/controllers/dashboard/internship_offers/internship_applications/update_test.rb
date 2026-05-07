@@ -619,5 +619,40 @@ module InternshipOffers::InternshipApplications
       assert internship_application.restored?
       assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
     end
+
+    test "PATCH when 2 2nde applications are validated by employer, with week1 for the first and both weeks with the second," \
+         "student, approve the one with week1, and the restore the second validated by employer offer, which should be impossible" do
+      school = create(:school, :with_school_manager)
+      class_room = create(:class_room, school:)
+      student = create(:student, school:, class_room:)
+      internship_offer_1 = create(:weekly_internship_offer_2nde, :week_1, employer: create(:employer))
+      internship_offer_2 = create(:weekly_internship_offer_2nde, :both_weeks, employer: create(:employer))
+      internship_application_1 = create(
+        :weekly_internship_application,
+        :validated_by_employer,
+        internship_offer: internship_offer_1,
+        user_id: student.id
+      )
+      internship_application_2 = create(
+        :weekly_internship_application,
+        :validated_by_employer,
+        internship_offer: internship_offer_2,
+        user_id: student.id
+      )
+
+      sign_in(student)
+
+      patch(
+        dashboard_internship_offer_internship_application_path(internship_offer_1, uuid: internship_application_1.uuid),
+        params: { transition: :approve! }
+      )
+      assert_equal true, internship_application_1.reload.approved?
+
+      patch(
+        dashboard_internship_offer_internship_application_path(internship_offer_2, uuid: internship_application_2.uuid),
+        params: { transition: :restore! }
+      )
+      assert_equal "canceled_by_student_confirmation", internship_application_2.reload.aasm_state
+    end
   end
 end

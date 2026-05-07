@@ -15,6 +15,7 @@
           |< avez postulé. Les offres qui nécessitent une action de votre part apparaissent en premier.
         - if params[:notice_banner]
           = render 'notice_banner'
+          = render 'submitted_confirmation_modal'
       - else
         h1.h2.mb-3
           = @current_student.presenter.full_name

@@ -603,6 +603,58 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert_equal "validated_by_employer", application_2.reload.aasm_state
   end
 
+  test "#no_weeks_overlap? returns true when student has no approved applications" do
+    student = create(:student)
+    application = build(:weekly_internship_application, student:)
+
+    assert application.no_weeks_overlap?
+  end
+
+  test "#no_weeks_overlap? returns true when approved applications have no weeks in common" do
+    student = create(:student)
+    week_1 = SchoolTrack::Seconde.both_weeks.first
+    week_2 = SchoolTrack::Seconde.both_weeks.second
+    offer_1 = create(:weekly_internship_offer_2nde, :week_1)
+    offer_2 = create(:weekly_internship_offer_2nde, :week_2)
+    create(
+      :weekly_internship_application,
+      :approved,
+      student:,
+      internship_offer: offer_1,
+      weeks: [ week_1 ]
+    )
+    application = build(
+      :weekly_internship_application,
+      student:,
+      internship_offer: offer_2,
+      weeks: [ week_2 ]
+    )
+
+    assert application.no_weeks_overlap?
+  end
+
+  test "#no_weeks_overlap? returns false when an approved application shares a week" do
+    student = create(:student)
+    week = SchoolTrack::Seconde.both_weeks.first
+    offer_1 = create(:weekly_internship_offer_2nde, :both_weeks)
+    offer_2 = create(:weekly_internship_offer_2nde, :week_1)
+    create(
+      :weekly_internship_application,
+      :approved,
+      student:,
+      internship_offer: offer_1,
+      weeks: [ week ]
+    )
+    application = build(
+      :weekly_internship_application,
+      student:,
+      internship_offer: offer_2,
+      weeks: [ week ]
+    )
+
+    refute application.no_weeks_overlap?
+  end
+
   test "a seconde gt student can approve a week_2 offer when a week_1 offer is already approved" do
     travel_to Time.zone.local(2025, 3, 1) do
       school = create(:school, school_type: "lycee")
