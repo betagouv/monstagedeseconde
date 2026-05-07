@@ -413,7 +413,6 @@ class InternshipApplication < ApplicationRecord
 
   def notify_users
     notify_digest_email_by_name("new_internship_application", stale_at: weeks.last.monday - 2.days)
-    Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
 
     return if student.internship_applications.count == 0
 
