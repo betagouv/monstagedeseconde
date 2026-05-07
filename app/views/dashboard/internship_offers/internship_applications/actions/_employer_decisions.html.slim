@@ -1,6 +1,14 @@
+- with_options = !defined?(opened_modal)
+- prez = @internship_application.presenter(current_user)
+- offer = @internship_application.internship_offer
+- if prez.ok_for_employer_validation? && !offer.has_spots_left?
+  .fr-alert.fr-alert--warning.fr-mb-3w
+    p.fr-alert__title Cette offre n'a plus de places disponibles.
+    p
+      = link_to 'Augmentez le nombre de places',
+                edit_dashboard_internship_offer_path(offer, anchor: 'max_candidates_fields')
+      |  pour pouvoir retenir cette candidature.
 .d-flex.flex-row
-  - with_options = !defined?(opened_modal)
-  - prez = @internship_application.presenter(current_user)
   - if prez.ok_for_reject?
     = render "dashboard/internship_offers/internship_applications/actions/reject",
               internship_application: @internship_application,

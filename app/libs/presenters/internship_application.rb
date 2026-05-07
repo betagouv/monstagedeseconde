@@ -200,6 +200,8 @@ module Presenters
     end
 
     def ok_for_transfer?
+      return false if internship_offer.remaining_seats_count.to_i.zero?
+
       current_state_in_list?(ok_for_transfer_states)
     end
 
