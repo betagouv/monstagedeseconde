@@ -53,6 +53,20 @@
         = f.label :reference_date, 'Date de référence', class: 'fr-label'
         = f.date_field :reference_date, class: 'fr-input'
 
+  .row
+    .col-6
+      .fr-input-group.fr-mb-3w
+        = f.label :latitude, class: 'fr-label' do
+          | Latitude (Y)
+          span.fr-hint-text Laisser vide pour géocoder automatiquement depuis l'adresse
+        = f.text_field :latitude, class: 'fr-input', inputmode: 'decimal'
+    .col-6
+      .fr-input-group.fr-mb-3w
+        = f.label :longitude, class: 'fr-label' do
+          | Longitude (X)
+          span.fr-hint-text Laisser vide pour géocoder automatiquement depuis l'adresse
+        = f.text_field :longitude, class: 'fr-input', inputmode: 'decimal'
+
   .fr-mb-3w
     = f.submit boarding_house.persisted? ? 'Mettre à jour' : 'Créer l\'internat', class: 'fr-btn'
     = link_to 'Annuler', reporting_boarding_houses_path, class: 'fr-btn fr-btn--secondary fr-ml-2w'

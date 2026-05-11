@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 module Api
   module V2
@@ -10,19 +10,19 @@ module Api
       setup do
         @operator = create(:user_operator, :fully_authorized)
         post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-        @token = json_response['token']
+        @token = json_response["token"]
       end
 
-      test 'GET #search without token renders :unauthorized payload' do
+      test "GET #search without token renders :unauthorized payload" do
         get search_api_v2_internship_offers_path(params: {})
         documents_as(endpoint: :'internship_offers/search', state: :unauthorized) do
           assert_response :unauthorized
-          assert_equal 'UNAUTHORIZED', json_code
-          assert_equal 'wrong api token', json_error
+          assert_equal "UNAUTHORIZED", json_code
+          assert_equal "wrong api token", json_error
         end
       end
 
-      test 'GET #search without api_full_access renders :unauthorized payload' do
+      test "GET #search without api_full_access renders :unauthorized payload" do
         @operator.operator.update(api_full_access: false)
 
         documents_as(endpoint: :'v2/internship_offers/search', state: :unauthorized) do
@@ -33,22 +33,22 @@ module Api
           )
 
           assert_response :unauthorized
-          assert_equal 'UNAUTHORIZED', json_code
-          assert_equal 'access denied', json_error
+          assert_equal "UNAUTHORIZED", json_code
+          assert_equal "access denied", json_error
         end
       end
 
-      test 'GET #search without params returns all internship_offers available' do
+      test "GET #search without params returns all internship_offers available" do
         travel_to(Date.new(2025, 3, 1)) do
           # new token
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
 
-          offer_1 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.tours, city: 'Tours')
-          offer_2 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.paris, city: 'Paris',
-                                                          remote_id: 'paris_id')
+          offer_1 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.tours, city: "Tours")
+          offer_2 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.paris, city: "Paris",
+                                                          remote_id: "paris_id")
           offer_3 = create(:weekly_internship_offer_2nde, :unpublished, coordinates: Coordinates.bordeaux,
-                                                                        city: 'Bordeaux')
+                                                                        city: "Bordeaux")
 
           documents_as(endpoint: :'v2/internship_offers/search', state: :success) do
             get search_api_v2_internship_offers_path(
@@ -58,27 +58,27 @@ module Api
             )
 
             assert_response :success
-            assert_equal 2, json_response['internshipOffers'].count
-            assert_equal 2, json_response['pagination']['totalInternshipOffers']
-            assert_equal 1, json_response['pagination']['totalPages']
-            assert_equal true, json_response['pagination']['isFirstPage']
+            assert_equal 2, json_response["internshipOffers"].count
+            assert_equal 2, json_response["pagination"]["totalInternshipOffers"]
+            assert_equal 1, json_response["pagination"]["totalPages"]
+            assert_equal true, json_response["pagination"]["isFirstPage"]
             # since api order is id: :desc
-            assert_equal 'Paris', json_response['internshipOffers'][0]['city']
-            assert_equal 'Tours', json_response['internshipOffers'][1]['city']
-            assert_equal 'paris_id', json_response['internshipOffers'][0]['remote_id']
+            assert_equal "Paris", json_response["internshipOffers"][0]["city"]
+            assert_equal "Tours", json_response["internshipOffers"][1]["city"]
+            assert_equal "paris_id", json_response["internshipOffers"][0]["remote_id"]
           end
         end
       end
 
-      test 'GET #search with weeks params returns all internship_offers available on the given weeks' do
-        skip 'leak suspicion'
+      test "GET #search with weeks params returns all internship_offers available on the given weeks" do
+        skip "leak suspicion"
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
 
-          offer_3_1 = create(:weekly_internship_offer_3eme, coordinates: Coordinates.tours, city: 'Tours')
-          offer_3_2 = create(:weekly_internship_offer_3eme, coordinates: Coordinates.paris, city: 'Paris')
-          offer_2_1 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.bordeaux, city: 'Bordeaux') # not available on the given weeks
+          offer_3_1 = create(:weekly_internship_offer_3eme, coordinates: Coordinates.tours, city: "Tours")
+          offer_3_2 = create(:weekly_internship_offer_3eme, coordinates: Coordinates.paris, city: "Paris")
+          offer_2_1 = create(:weekly_internship_offer_2nde, coordinates: Coordinates.bordeaux, city: "Bordeaux") # not available on the given weeks
 
           documents_as(endpoint: :'v2/internship_offers/search', state: :success) do
             get search_api_v2_internship_offers_path(
@@ -90,34 +90,34 @@ module Api
 
             assert_response :success
 
-            assert_equal 2, json_response['internshipOffers'].count
-            assert_equal 2, json_response['pagination']['totalInternshipOffers']
-            assert_equal 1, json_response['pagination']['totalPages']
-            assert_equal true, json_response['pagination']['isFirstPage']
+            assert_equal 2, json_response["internshipOffers"].count
+            assert_equal 2, json_response["pagination"]["totalInternshipOffers"]
+            assert_equal 1, json_response["pagination"]["totalPages"]
+            assert_equal true, json_response["pagination"]["isFirstPage"]
             # since api order is id: :desc
-            assert_equal 'Paris', json_response['internshipOffers'][0]['city']
-            assert_equal 'Tours', json_response['internshipOffers'][1]['city']
+            assert_equal "Paris", json_response["internshipOffers"][0]["city"]
+            assert_equal "Tours", json_response["internshipOffers"][1]["city"]
           end
         end
       end
 
-      test 'GET #search with june weeks params returns all internship_offers available on the given weeks' do
+      test "GET #search with june weeks params returns all internship_offers available on the given weeks" do
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
 
           offer_3_1 = create(:weekly_internship_offer_3eme,
                              weeks: Week.troisieme_selectable_weeks,
                              coordinates: Coordinates.tours,
-                             city: 'Tours') # not available on the given weeks
+                             city: "Tours") # not available on the given weeks
           # 2025-W25 is week from 2025-06-15 to 2025-06-21
           offer_3_2 = create(:weekly_internship_offer_3eme,
                              weeks: Week.troisieme_selectable_weeks,
                              coordinates: Coordinates.paris,
-                             city: 'Paris') # not available on the given weeks
+                             city: "Paris") # not available on the given weeks
           offer_2_1 = create(:weekly_internship_offer_2nde,
                              coordinates: Coordinates.bordeaux,
-                             city: 'Bordeaux')
+                             city: "Bordeaux")
 
           documents_as(endpoint: :'v2/internship_offers/search', state: :success) do
             get search_api_v2_internship_offers_path(
@@ -128,59 +128,59 @@ module Api
             )
 
             assert_response :success
-            assert_equal 1, json_response['internshipOffers'].count
-            assert_equal 1, json_response['pagination']['totalInternshipOffers']
-            assert_equal 1, json_response['pagination']['totalPages']
-            assert_equal true, json_response['pagination']['isFirstPage']
+            assert_equal 1, json_response["internshipOffers"].count
+            assert_equal 1, json_response["pagination"]["totalInternshipOffers"]
+            assert_equal 1, json_response["pagination"]["totalPages"]
+            assert_equal true, json_response["pagination"]["isFirstPage"]
             # since api order is id: :desc
-            assert_equal 'Bordeaux', json_response['internshipOffers'][0]['city']
+            assert_equal "Bordeaux", json_response["internshipOffers"][0]["city"]
           end
         end
       end
-      test 'GET #search with keyword params returns all internship_offers available' do
-        skip 'leak suspicion'
+      test "GET #search with keyword params returns all internship_offers available" do
+        skip "leak suspicion"
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
 
-          offer_3_1 = create(:weekly_internship_offer_3eme, title: 'Avocat', coordinates: Coordinates.tours,
-                                                            city: 'Tours')
-          offer_3_2 = create(:weekly_internship_offer_3eme, title: 'Menuisier', coordinates: Coordinates.paris, city: 'Paris') # not displayed
-          offer_2_1 = create(:weekly_internship_offer_2nde, title: 'Pharmacienne', coordinates: Coordinates.bordeaux, city: 'Bordeaux') # not displayed
+          offer_3_1 = create(:weekly_internship_offer_3eme, title: "Avocat", coordinates: Coordinates.tours,
+                                                            city: "Tours")
+          offer_3_2 = create(:weekly_internship_offer_3eme, title: "Menuisier", coordinates: Coordinates.paris, city: "Paris") # not displayed
+          offer_2_1 = create(:weekly_internship_offer_2nde, title: "Pharmacienne", coordinates: Coordinates.bordeaux, city: "Bordeaux") # not displayed
 
           documents_as(endpoint: :'v2/internship_offers/search', state: :success) do
             get search_api_v2_internship_offers_path(
               params: {
                 token: "Bearer #{@token}",
-                keyword: 'Avocat'
+                keyword: "Avocat"
               }
             )
 
             assert_response :success
-            assert_equal 1, json_response['internshipOffers'].count
-            assert_equal 1, json_response['pagination']['totalInternshipOffers']
-            assert_equal 1, json_response['pagination']['totalPages']
-            assert_equal true, json_response['pagination']['isFirstPage']
+            assert_equal 1, json_response["internshipOffers"].count
+            assert_equal 1, json_response["pagination"]["totalInternshipOffers"]
+            assert_equal 1, json_response["pagination"]["totalPages"]
+            assert_equal true, json_response["pagination"]["isFirstPage"]
             # since api order is id: :desc
-            assert_equal 'Tours', json_response['internshipOffers'][0]['city']
+            assert_equal "Tours", json_response["internshipOffers"][0]["city"]
           end
         end
       end
-      test 'GET #search with Paris geo params returns all internship_offers available' do
-        skip 'leak suspicion'
+      test "GET #search with Paris geo params returns all internship_offers available" do
+        skip "leak suspicion"
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
 
           offer_3_1 = create(:weekly_internship_offer_3eme,
                              coordinates: Coordinates.tours,
-                             city: 'Tours') # not displayed
+                             city: "Tours") # not displayed
           offer_3_2 = create(:weekly_internship_offer_3eme,
                              coordinates: Coordinates.paris,
-                             city: 'Paris')
+                             city: "Paris")
           offer_2_1 = create(:weekly_internship_offer_2nde,
                              coordinates: Coordinates.bordeaux,
-                             city: 'Bordeaux') # not displayed
+                             city: "Bordeaux") # not displayed
 
           documents_as(endpoint: :'internship_offers/search', state: :success) do
             get search_api_v2_internship_offers_path(
@@ -192,53 +192,53 @@ module Api
             )
 
             assert_response :success
-            assert_equal 1, json_response['internshipOffers'].count
-            assert_equal 1, json_response['pagination']['totalInternshipOffers']
-            assert_equal 1, json_response['pagination']['totalPages']
-            assert_equal true, json_response['pagination']['isFirstPage']
+            assert_equal 1, json_response["internshipOffers"].count
+            assert_equal 1, json_response["pagination"]["totalInternshipOffers"]
+            assert_equal 1, json_response["pagination"]["totalPages"]
+            assert_equal true, json_response["pagination"]["isFirstPage"]
             # since api order is id: :desc
-            assert_equal 'Paris', json_response['internshipOffers'][0]['city']
+            assert_equal "Paris", json_response["internshipOffers"][0]["city"]
           end
         end
       end
-      test 'GET #search with sector_ids params returns all internship_offers available' do
-        skip 'leak suspicion'
+      test "GET #search with sector_ids params returns all internship_offers available" do
+        skip "leak suspicion"
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
 
-          s1 = create(:sector, name: 'Hôtellerie')
-          s2 = create(:sector, name: 'Restauration')
-          s3 = create(:sector, name: 'Administration publique')
+          s1 = create(:sector, name: "Hôtellerie")
+          s2 = create(:sector, name: "Restauration")
+          s3 = create(:sector, name: "Administration publique")
 
-          offer_3_1 = create(:weekly_internship_offer_3eme, sector: s1, coordinates: Coordinates.tours, weeks: Week.troisieme_selectable_weeks, city: 'Tours') # not displayed
+          offer_3_1 = create(:weekly_internship_offer_3eme, sector: s1, coordinates: Coordinates.tours, weeks: Week.troisieme_selectable_weeks, city: "Tours") # not displayed
           offer_3_2 = create(:weekly_internship_offer_3eme, sector: s2, coordinates: Coordinates.paris,
-                                                            weeks: Week.troisieme_selectable_weeks, city: 'Paris')
-          offer_2_1 = create(:weekly_internship_offer_2nde, sector: s3, coordinates: Coordinates.bordeaux, city: 'Bordeaux') # not displayed
+                                                            weeks: Week.troisieme_selectable_weeks, city: "Paris")
+          offer_2_1 = create(:weekly_internship_offer_2nde, sector: s3, coordinates: Coordinates.bordeaux, city: "Bordeaux") # not displayed
 
           documents_as(endpoint: :'v2/internship_offers/search', state: :success) do
             get search_api_v2_internship_offers_path(
               params: {
                 token: "Bearer #{@token}",
-                sectors: [s2.uuid]
+                sectors: [ s2.uuid ]
               }
             )
 
             assert_response :success
-            assert_equal 1, json_response['internshipOffers'].count
-            assert_equal 1, json_response['pagination']['totalInternshipOffers']
-            assert_equal 1, json_response['pagination']['totalPages']
-            assert_equal true, json_response['pagination']['isFirstPage']
+            assert_equal 1, json_response["internshipOffers"].count
+            assert_equal 1, json_response["pagination"]["totalInternshipOffers"]
+            assert_equal 1, json_response["pagination"]["totalPages"]
+            assert_equal true, json_response["pagination"]["isFirstPage"]
             # since api order is id: :desc
-            assert_equal 'Paris', json_response['internshipOffers'][0]['city']
+            assert_equal "Paris", json_response["internshipOffers"][0]["city"]
           end
         end
       end
 
-      test 'GET #search with page params returns the page results' do
+      test "GET #search with page params returns the page results" do
         travel_to Date.new(2025, 3, 1) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
           (InternshipOffer::PAGE_SIZE + 1).times { create(:weekly_internship_offer_2nde) }
 
           documents_as(endpoint: :'v2/internship_offers/search', state: :success) do
@@ -250,17 +250,17 @@ module Api
             )
 
             assert_response :success
-            assert_equal 1, json_response['internshipOffers'].count
-            assert_equal InternshipOffer::PAGE_SIZE + 1, json_response['pagination']['totalInternshipOffers']
-            assert_equal 2, json_response['pagination']['totalPages']
+            assert_equal 1, json_response["internshipOffers"].count
+            assert_equal InternshipOffer::PAGE_SIZE + 1, json_response["pagination"]["totalInternshipOffers"]
+            assert_equal 2, json_response["pagination"]["totalPages"]
           end
         end
       end
 
-      test 'GET #search with big page number params returns empty results' do
+      test "GET #search with big page number params returns empty results" do
         travel_to Date.new(2025, 3, 1) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
 
           (InternshipOffer::PAGE_SIZE + 1).times { create(:weekly_internship_offer_2nde) }
 
@@ -273,19 +273,19 @@ module Api
             )
 
             assert_response :success
-            assert_equal 0, json_response['internshipOffers'].count
-            assert_equal InternshipOffer::PAGE_SIZE + 1, json_response['pagination']['totalInternshipOffers']
-            assert_equal 2, json_response['pagination']['totalPages']
+            assert_equal 0, json_response["internshipOffers"].count
+            assert_equal InternshipOffer::PAGE_SIZE + 1, json_response["pagination"]["totalInternshipOffers"]
+            assert_equal 2, json_response["pagination"]["totalPages"]
           end
         end
       end
 
-      test 'GET #search with coordinates params returns all internship_offers available in the city' do
+      test "GET #search with coordinates params returns all internship_offers available in the city" do
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
 
-          offer_1 = create(:weekly_internship_offer_2nde, city: 'Bordeaux',
+          offer_1 = create(:weekly_internship_offer_2nde, city: "Bordeaux",
                                                           coordinates: { latitude: 44.8624, longitude: -0.5848 })
           offer_2 = create(:weekly_internship_offer_2nde)
           offer_3 = create(:weekly_internship_offer_2nde, :unpublished)
@@ -300,23 +300,23 @@ module Api
             )
 
             assert_response :success
-            assert_equal 1, json_response['internshipOffers'].count
-            assert_equal 1, json_response['pagination']['totalInternshipOffers']
-            assert_equal 1, json_response['pagination']['totalPages']
-            assert_equal true, json_response['pagination']['isFirstPage']
-            assert_equal offer_1.id, json_response['internshipOffers'][0]['id']
+            assert_equal 1, json_response["internshipOffers"].count
+            assert_equal 1, json_response["pagination"]["totalInternshipOffers"]
+            assert_equal 1, json_response["pagination"]["totalPages"]
+            assert_equal true, json_response["pagination"]["isFirstPage"]
+            assert_equal offer_1.id, json_response["internshipOffers"][0]["id"]
           end
         end
       end
 
-      test 'GET #search with coordinates and radius params returns all internship_offers available in the radius' do
+      test "GET #search with coordinates and radius params returns all internship_offers available in the radius" do
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
 
-          offer_1 = create(:weekly_internship_offer_2nde, city: 'Bordeaux',
+          offer_1 = create(:weekly_internship_offer_2nde, city: "Bordeaux",
                                                           coordinates: { latitude: 44.8624, longitude: -0.5848 })
-          offer_2 = create(:weekly_internship_offer_2nde, city: 'Le Bouscat',
+          offer_2 = create(:weekly_internship_offer_2nde, city: "Le Bouscat",
                                                           coordinates: { latitude: 44.865, longitude: -0.6033 })
           offer_3 = create(:weekly_internship_offer_2nde, :unpublished)
 
@@ -331,24 +331,24 @@ module Api
             )
 
             assert_response :success
-            assert_equal 2, json_response['internshipOffers'].count
-            assert_equal 'Bordeaux', json_response['internshipOffers'][0]['city']
-            assert_equal 'Le bouscat', json_response['internshipOffers'][1]['city']
+            assert_equal 2, json_response["internshipOffers"].count
+            assert_equal "Bordeaux", json_response["internshipOffers"][0]["city"]
+            assert_equal "Le bouscat", json_response["internshipOffers"][1]["city"]
           end
         end
       end
 
-      test 'GET #search with coordinates and radius params returns all internship_offers available and open_data true in the radius' do
+      test "GET #search with coordinates and radius params returns all internship_offers available and open_data true in the radius" do
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
 
-          offer_1 = create(:weekly_internship_offer_2nde, city: 'Bordeaux',
+          offer_1 = create(:weekly_internship_offer_2nde, city: "Bordeaux",
                                                           coordinates: { latitude: 44.8624, longitude: -0.5848 })
-          offer_2 = create(:weekly_internship_offer_2nde, city: 'Le Bouscat',
+          offer_2 = create(:weekly_internship_offer_2nde, city: "Le Bouscat",
                                                           coordinates: { latitude: 44.865, longitude: -0.6033 })
           offer_3 = create(:weekly_internship_offer_2nde, :unpublished)
-          offer_4 = create(:weekly_internship_offer_2nde, city: 'Bordeaux',
+          offer_4 = create(:weekly_internship_offer_2nde, city: "Bordeaux",
                                                           coordinates: { latitude: 44.8624, longitude: -0.5848 }, open_data: false)
 
           documents_as(endpoint: :'v2/internship_offers/search', state: :success) do
@@ -362,43 +362,43 @@ module Api
             )
 
             assert_response :success
-            assert_equal 1, json_response['internshipOffers'].count
-            assert_equal offer_1.id, json_response['internshipOffers'][0]['id']
+            assert_equal 1, json_response["internshipOffers"].count
+            assert_equal offer_1.id, json_response["internshipOffers"][0]["id"]
           end
         end
       end
 
-      test 'GET #search with keyword params returns all internship_offers available in the radis' do
+      test "GET #search with keyword params returns all internship_offers available in the radis" do
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
 
-          offer_1 = create(:weekly_internship_offer_2nde, title: 'Chef de chantier')
-          offer_2 = create(:weekly_internship_offer_2nde, title: 'Avocat')
-          offer_3 = create(:weekly_internship_offer_2nde, title: 'Cheffe de cuisine')
+          offer_1 = create(:weekly_internship_offer_2nde, title: "Chef de chantier")
+          offer_2 = create(:weekly_internship_offer_2nde, title: "Avocat")
+          offer_3 = create(:weekly_internship_offer_2nde, title: "Cheffe de cuisine")
 
           documents_as(endpoint: :'v2/internship_offers/search', state: :success) do
             get search_api_v2_internship_offers_path(
               params: {
                 token: "Bearer #{@token}",
-                keyword: 'cuisine'
+                keyword: "cuisine"
               }
             )
 
             assert_response :success
-            assert_equal 1, json_response['internshipOffers'].count
-            assert_equal offer_3.id, json_response['internshipOffers'][0]['id']
+            assert_equal 1, json_response["internshipOffers"].count
+            assert_equal offer_3.id, json_response["internshipOffers"][0]["id"]
           end
         end
       end
 
-      test 'GET #search returns too many requests after max calls limit' do
-        if ENV['RUN_BRITTLE_TEST']
+      test "GET #search returns too many requests after max calls limit" do
+        if ENV["RUN_BRITTLE_TEST"]
           # TODO: does not work locally
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
-          @token = json_response['token']
+          @token = json_response["token"]
 
-          InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 5)
+          InternshipOffers::Api.const_set("MAX_CALLS_PER_MINUTE", 5)
           (InternshipOffers::Api::MAX_CALLS_PER_MINUTE + 1).times do
             get search_api_v2_internship_offers_path(
               params: {
@@ -411,11 +411,36 @@ module Api
               token: "Bearer #{@token}"
             }
           )
-          InternshipOffers::Api.const_set('MAX_CALLS_PER_MINUTE', 1_000)
+          InternshipOffers::Api.const_set("MAX_CALLS_PER_MINUTE", 1_000)
 
           documents_as(endpoint: :'v2/internship_offers/search', state: :too_many_requests) do
             assert_response :too_many_requests
-            assert_equal 'Trop de requêtes - Limite d\'utilisation de l\'API dépassée.', json_error
+            assert_equal "Trop de requêtes - Limite d'utilisation de l'API dépassée.", json_error
+          end
+        end
+      end
+
+      test "GET #search with page params returns an api offer even when associated weeks
+      are set to reach the current and next school_year" do
+        travel_to Date.new(2025, 3, 1) do
+          post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
+          @token = json_response["token"]
+
+          offer_1 = create(:weekly_internship_offer_2nde, city: "Bordeaux",
+                                                          coordinates: { latitude: 44.8624, longitude: -0.5848 },
+                                                          weeks: Week.where(year: [ 2025, 2026 ], number: [ 1, 2, 23, 24 ]))
+
+          documents_as(endpoint: :'v2/internship_offers/search', state: :success) do
+            get search_api_v2_internship_offers_path(
+              params: {
+                token: "Bearer #{@token}",
+                page: 1
+              }
+            )
+
+            assert_response :success
+            assert_equal 1, json_response["internshipOffers"].count
+            assert_equal offer_1.id, json_response["internshipOffers"][0]["id"]
           end
         end
       end

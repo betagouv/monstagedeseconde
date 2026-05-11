@@ -69,30 +69,29 @@ module Dashboard::Stepper
     private
 
     def entreprise_params
-      params.require(:entreprise)
-            .permit(
-              :siret,
-              :is_public,
-              :group_id,
-              :sector_id,
-              :employer_name,
-              :entreprise_street,
-              :entreprise_zipcode,
-              :entreprise_city,
-              :employer_chosen_name,
-              :entreprise_full_address,
-              :entreprise_chosen_full_address,
-              :entreprise_coordinates_longitude,
-              :entreprise_coordinates_latitude,
-              :contact_phone,
-              :entreprise_coordinates,
-              :internship_occupation_id,
-              :internship_address_manual_enter,
-              :workspace_conditions,
-              :workspace_accessibility,
-              :internship_address_manual_enter,
-              :code_ape
-            )
+      params.expect(entreprise: [
+        :siret,
+        :is_public,
+        :group_id,
+        :sector_id,
+        :employer_name,
+        :entreprise_street,
+        :entreprise_zipcode,
+        :entreprise_city,
+        :employer_chosen_name,
+        :entreprise_full_address,
+        :entreprise_chosen_full_address,
+        :entreprise_coordinates_longitude,
+        :entreprise_coordinates_latitude,
+        :contact_phone,
+        :entreprise_coordinates,
+        :internship_occupation_id,
+        :internship_address_manual_enter,
+        :workspace_conditions,
+        :workspace_accessibility,
+        :internship_address_manual_enter,
+        :code_ape
+      ])
     end
 
     def set_computed_params
@@ -104,7 +103,7 @@ module Dashboard::Stepper
     end
 
     def set_is_public_flag
-      @entreprise.is_public ||= entreprise_params[:is_public] == 'true'
+      @entreprise.is_public ||= entreprise_params[:is_public] == "true"
     end
 
     def assign_coordinates
@@ -131,11 +130,11 @@ module Dashboard::Stepper
 
     def geocoded_coordinates
       full_address = address_for_geocode
-      return invalid_address('Adresse non trouvée, code postal invalide') unless full_address.to_s.match?(/\d{5}/)
+      return invalid_address("Adresse non trouvée, code postal invalide") unless full_address.to_s.match?(/\d{5}/)
 
       zipcode = full_address.to_s[/\d{5}/]
       city = geocode_city_from_zipcode(zipcode)
-      return invalid_address('Adresse non trouvée') if city.blank?
+      return invalid_address("Adresse non trouvée") if city.blank?
 
       coordinates = Geofinder.coordinates("#{full_address}, #{city}, #{zipcode}, France")
       return coordinates_hash(coordinates) if coordinates.present?
@@ -146,13 +145,56 @@ module Dashboard::Stepper
         fallback_coordinates = Geocoder.search("#{chosen_address}, France")&.first&.coordinates
       end
 
-      return invalid_address('Adresse non trouvée') if fallback_coordinates.blank?
+      # Address to geocode contains a valid zipcode ?
+      if full_address.to_s.match?(/\d{5}/)
+        zipcode = full_address.to_s[/\d{5}/]
+        zipcode_lookup = Geocoder.search("#{zipcode}, France").first
+
+        if zipcode_lookup.nil?
+          coordinates_valid = false
+          @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée")
+        else
+          city = zipcode_lookup.city
+          coordinates = Geofinder.coordinates("#{full_address}, #{city}, #{zipcode}, France")
+
+          if coordinates.present?
+            final_longitude = coordinates[1]
+            final_latitude = coordinates[0]
+            coordinates_valid = true
+          else
+            fallback_coordinates = Geocoder.search("#{city}, #{zipcode}, France").first&.coordinates
+            if fallback_coordinates.present?
+              final_longitude = fallback_coordinates[1]
+              final_latitude = fallback_coordinates[0]
+              coordinates_valid = true
+            else
+              coordinates_valid = false
+              @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée")
+            end
+          end
+        end
+      else
+        coordinates_valid = false
+        @entreprise.errors.add(:entreprise_chosen_full_address, "Adresse non trouvée, code postal invalide")
+      end
+
+      return invalid_address("Adresse non trouvée") if fallback_coordinates.blank?
 
       coordinates_hash(fallback_coordinates)
     end
 
+
+
+    def get_geocoder_result(address)
+      Geocoder.search("#{address}, France")
+    end
+
+    def get_geocoder_coordinates(address)
+      get_geocoder_result(address)&.first
+    end
+
     def geocode_city_from_zipcode(zipcode)
-      Geocoder.search("#{zipcode}, France")&.first&.city
+      get_geocoder_coordinates(zipcode)&.city
     end
 
     def coordinates_hash(coordinates)
@@ -177,7 +219,7 @@ module Dashboard::Stepper
 
       is_public_value = ActiveModel::Type::Boolean.new.cast(entreprise_params[:is_public])
       if is_public_value
-        @entreprise.sector_id = Sector.find_by(name: 'Fonction publique').try(:id)
+        @entreprise.sector_id = Sector.find_by(name: "Fonction publique").try(:id)
       else
         params[:entreprise][:group_id] = nil
       end

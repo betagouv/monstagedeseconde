@@ -24,7 +24,6 @@ module Users
     end
 
     def create
-      # TODO : withdraw next line after employers_only function removal
       allowed_profiles_when_employers_only = current_user.try(:employer?) ||
                                              current_user.try(:operator?) ||
                                              current_user.try(:god?)

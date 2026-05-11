@@ -19,6 +19,20 @@ class BoardingHousesController < ApplicationController
     }
   end
 
+  def track_view
+    boarding_house = BoardingHouse.find(params[:id])
+    BoardingHouseView.create!(
+      boarding_house: boarding_house,
+      user_id: current_user&.id,
+      latitude: params[:latitude].presence&.to_f,
+      longitude: params[:longitude].presence&.to_f,
+      radius: params[:radius].presence&.to_i
+    )
+    head :no_content
+  rescue ActiveRecord::RecordNotFound
+    head :not_found
+  end
+
   private
 
   def format_boarding_house(bh)

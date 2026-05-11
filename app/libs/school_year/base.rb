@@ -51,7 +51,7 @@ module SchoolYear
     end
 
     def from_now_to_end_of_current_troisieme_year_limits
-      from = [first_monday_after(date), first_monday_after(offers_beginning_of_period)].max
+      from = [ first_monday_after(date), first_monday_after(offers_beginning_of_period) ].max
       to   = last_friday_before(troisieme_end_of_period)
 
       { from: from, to: to }
@@ -67,7 +67,7 @@ module SchoolYear
     end
 
     def from_now_to_end_of_current_year_deposit_limits
-      from = [date, deposit_beginning_of_period].max
+      from = [ date, deposit_beginning_of_period ].max
       to = deposit_end_of_period
 
       { from: from, to: to }
@@ -142,8 +142,6 @@ module SchoolYear
 
     attr_reader :date
 
-    protected
-
     def current_month
       date.month
     end
@@ -157,5 +155,6 @@ module SchoolYear
         year + 1
       end
     end
+    alias year_in_june current_year
   end
 end

@@ -12,6 +12,7 @@ bin/ai-commit
 .playwright-mcp
 .github/workflows/copilot-setup-steps.yml
 script/*
+solid/
 
 /bin/ruby_env_json
 /infra/dev/monstage_backup

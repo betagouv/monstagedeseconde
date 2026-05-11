@@ -88,11 +88,7 @@ module Dashboard
       end
 
       def invitation_params
-        params.require(:invitation)
-              .permit(:first_name,
-                      :last_name,
-                      :email,
-                      :role)
+        params.expect(invitation: [:first_name, :last_name, :email, :role])
       end
 
       def fetch_school_id

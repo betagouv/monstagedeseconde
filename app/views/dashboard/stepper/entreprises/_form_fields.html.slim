@@ -1,6 +1,6 @@
 - edition_mode = form.object.persisted?
 - if can?(:supply_offers, current_user)
-  div [data-controller='fill-card ministry-fields'
+  div [data-controller='fill-card ministry-fields entreprise-form'
        data-action="input->entreprise-form#checkForm"
        data-mandatory-fields-minimum-length-value="2"
        data-ministry-fields-new-record-value="#{resource.new_record?}"
@@ -86,7 +86,8 @@
                             class: "fr-select",
                             id: "group-choice",
                             required: false,
-                            :'data-ministry-fields-target' => 'selectGroupName'
+                            :'data-ministry-fields-target' => 'selectGroupName',
+                            :'data-action' => 'change->entreprise-form#checkForm'
           div [class="row fr-mt-3w bloc-tooggle #{(form.object.persisted? && !form.object.is_public) ? '' : 'fr-hidden'}"
                data-ministry-fields-target="sectorBlock"
                id="#{resource.class.name.split('::').first.gsub(/s\Z/, '').underscore}_sector_id-block" ]

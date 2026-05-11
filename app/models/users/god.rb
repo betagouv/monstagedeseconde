@@ -10,7 +10,7 @@ module Users
       'Admin'
     end
 
-    def god?; true end
+    def god? = true
 
     def presenter
       Presenters::God.new(self)

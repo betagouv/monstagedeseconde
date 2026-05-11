@@ -304,7 +304,7 @@ module Dashboard
         click_link 'Candidatures'
         click_link 'Rechercher un autre stage'
         click_link internship_offer_2.title
-        all('p.fr-badge.fr-badge--warning', text: 'Stage déjà validé sur cette semaine'.upcase, count: 2)
+        all('p.fr-badge.fr-badge--warning', text: 'Stage déjà validé sur cette période'.upcase, count: 2)
       end
     end
   end
