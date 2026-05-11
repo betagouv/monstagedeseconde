@@ -208,8 +208,15 @@ class InternshipOffer < ApplicationRecord
   }
 
   scope :within_current_year, lambda {
-    last_date = SchoolYear::Current.new.offers_end_of_period
-    in_the_future.where("last_date <= :last_date", last_date:)
+    in_the_future.where(
+      id: InternshipOfferWeek.where(
+        week_id: Week.where(
+          "year <= ? and number <= ?",
+          SchoolYear::Current.new.offers_end_of_period.year,
+          SchoolYear::Current.new.offers_end_of_period_week.number
+        ).select(:id)
+      ).select(:internship_offer_id)
+    )
   }
 
   scope :weekly_framed, lambda {
@@ -521,8 +528,7 @@ class InternshipOffer < ApplicationRecord
     offer.grades = grades
     offer.mother_id = id
     offer.week_ids = week_ids
-    # if not from api and has weeks before school year start and published_at is present
-    unpublish! if !from_api? && has_weeks_before_school_year_start? && published_at.present?
+    unpublish! if !from_api? && has_weeks_before_school_year_start? && may_unpublish?
     offer.published_at = nil
     offer
   end
