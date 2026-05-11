@@ -73,7 +73,7 @@ module Services
         assert_raises(ActiveRecord::RecordNotFound) { item.reload }
       end
 
-      test ".call resolves agreement_signed_by_all items whose agreement is nil" do
+      test ".call does not resolve agreement_signed_by_all items whose agreement is nil" do
         employer = create(:employer)
 
         item = MailActionItem.create!(
@@ -90,10 +90,10 @@ module Services
 
         Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels:  %w[medium low])
 
-        assert_raises(ActiveRecord::RecordNotFound) { item.reload }
+        assert_nil item.reload.resolved_at
       end
 
-      test ".call does not resolve agreement_signed_by_all items whose agreement is present and not discarded" do
+      test ".call resolves agreement_signed_by_all items whose agreement is present and not discarded" do
         employer = create(:employer)
         internship_agreement = create(:mono_internship_agreement, :signed_by_all)
 
@@ -111,7 +111,7 @@ module Services
 
         Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[medium low])
 
-        assert_nil item.reload.resolved_at
+        assert_raises(ActiveRecord::RecordNotFound) { item.reload }
       end
     end
   end

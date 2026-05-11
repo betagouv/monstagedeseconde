@@ -379,11 +379,13 @@ module InternshipOffers::InternshipApplications
       )
       internship_offer = internship_application.internship_offer
 
+      MailActionItem.all.delete_all
+
       sign_in(student)
 
       assert_mail_action_item_no_direct_email(user: internship_offer.employer,
-                         action_name: "agreement_to_sign",
-                         internship_application: internship_application) do
+                                              action_name: "agreement_to_sign",
+                                              internship_application: internship_application) do
         assert_changes -> { MailActionItem.all.count },
                        from: 0,
                        to: 4 do
@@ -620,8 +622,9 @@ module InternshipOffers::InternshipApplications
       assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
     end
 
-    test "PATCH when 2 2nde applications are validated by employer, with week1 for the first and both weeks with the second," \
-         "student, approve the one with week1, and the restore the second validated by employer offer, which should be impossible" do
+    test "PATCH when 2 2nde applications are validated by employer, with week1 for the " \
+         "first and both weeks with the second, and student approve the one with week1, and " \
+         " then try to restore the second validated by employer offer, it fails" do
       school = create(:school, :with_school_manager)
       class_room = create(:class_room, school:)
       student = create(:student, school:, class_room:)
@@ -637,8 +640,10 @@ module InternshipOffers::InternshipApplications
         :weekly_internship_application,
         :validated_by_employer,
         internship_offer: internship_offer_2,
+        weeks: internship_offer_2.weeks,
         user_id: student.id
       )
+      assert_equal 2, internship_application_2.weeks.count
 
       sign_in(student)
 

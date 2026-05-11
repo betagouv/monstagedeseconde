@@ -29,6 +29,7 @@ class MailActionItem < ApplicationRecord
   scope :not_overdue, -> { pending.where("stale_at >= ?", Time.current) }
   scope :with_action_type, ->(type) { where(action_type: type) }
   scope :with_urgency_level, ->(level) { where(urgency_level: level) }
+  scope :with_urgency_levels, ->(levels) { where(urgency_level: levels) }
   scope :for_user, ->(user_id) { where(user_id: user_id) }
 
   def self.create_by_name!(name, **kwargs)

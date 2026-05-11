@@ -10,84 +10,64 @@ module MailActionConfigurable
     # To add a new action: add one entry here + the value to the enum in MailActionItem.
     PENDING_APPLICATION_CONFIGS = {
       "new_internship_application" => {
-        action_type:          :pending_internship_application,
-        urgency_level:        "low",
-        max_deliveries_count: 3,
-        stale_at:             -> { 7.days.from_now }
+        urgency_level: "medium",
+        max_deliveries_count: 2
       },
       "canceled_internship_application_by_student" => {
-        action_type:          :pending_internship_application,
-        urgency_level:        "medium",
-        max_deliveries_count: 1,
-        stale_at:             -> { 30.days.from_now }
+        urgency_level: "medium",
+        max_deliveries_count: 1
       },
       "restored_internship_application" => {
-        action_type:          :pending_internship_application,
-        urgency_level:        "medium",
-        max_deliveries_count: 1,
-        stale_at:             -> { 30.days.from_now }
+        urgency_level: "medium",
+        max_deliveries_count: 1
       },
       "cancel_by_student_confirmation" => {
-        action_type:          :pending_internship_application,
-        urgency_level:        "high",
-        max_deliveries_count: 1,
-        stale_at:             -> { 30.days.from_now }
+        urgency_level: "high",
+        max_deliveries_count: 1
       },
       "candidate_chose_another_internship" => {
-        action_type:          :pending_internship_application,
-        urgency_level:        "high",
-        max_deliveries_count: 1,
-        stale_at:             -> { 7.days.from_now }
+        urgency_level: "high",
+        max_deliveries_count: 1
       },
       "candidate_restored_by_student" => {
-        action_type:          :pending_internship_application,
-        urgency_level:        "medium",
-        max_deliveries_count: 1,
-        stale_at:             -> { 7.days.from_now }
+        urgency_level: "medium",
+          max_deliveries_count: 1
       },
       "canceled_internship_application" => {
-        action_type:          :pending_internship_application,
-        urgency_level:        "low",
-        max_deliveries_count: 1,
-        stale_at:             -> { 7.days.from_now }
+        urgency_level: "low",
+        max_deliveries_count: 1
       },
       "internship_application_transfered" => {
-        action_type:          :pending_internship_application,
-        urgency_level:        "medium",
-        max_deliveries_count: 1,
-        stale_at:             -> { 7.days.from_now }
+        urgency_level: "medium",
+        max_deliveries_count: 1
       }
-    }.freeze
+    }.transform_values { |v| v.merge(action_type: :pending_internship_application) }.freeze
 
     PENDING_AGREEMENT_CONFIGS = {
       "agreement_signed_by_another" => {
-        action_type:          :pending_internship_agreement,
-        urgency_level:        "low",
-        max_deliveries_count: 1,
-        stale_at:             -> { 7.days.from_now }
+        urgency_level: "low",
+        max_deliveries_count: 1
       },
       "agreement_to_sign" => {
-        action_type:          :pending_internship_agreement,
-        urgency_level:        "medium",
-        max_deliveries_count: 2,
-        stale_at:             -> { 7.days.from_now }
+        urgency_level: "medium",
+          max_deliveries_count: 2
+      },
+      "agreement_signed_by_all" => {
+        urgency_level: "medium",
+        max_deliveries_count: 1
       }
-    }.freeze
+    }.transform_values { |v| v.merge(action_type: :pending_internship_agreement) }.freeze
 
     PENDING_INTERNSHIP_OFFER_CONFIGS = {
       "internship_offer_unpublished" => {
-        action_type:          :pending_internship_offer,
-        urgency_level:        "low",
-        max_deliveries_count: 1,
-        stale_at:             -> { 7.days.from_now }
+        urgency_level: "low",
+        max_deliveries_count: 1
       },
       "internship_offer_removed" => {
-        action_type:          :pending_internship_offer,
-        urgency_level:        "high",
-        max_deliveries_count: 1,
-        stale_at:             -> { 7.days.from_now }
+        urgency_level: "high",
+        max_deliveries_count: 1
       }
-    }.freeze
+    }.transform_values { |v| v.merge(action_type: :pending_internship_offer) }.freeze
 
     ACTION_CONFIGS = PENDING_APPLICATION_CONFIGS
                        .merge(PENDING_AGREEMENT_CONFIGS)

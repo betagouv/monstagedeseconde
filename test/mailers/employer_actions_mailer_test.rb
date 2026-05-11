@@ -13,7 +13,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
     item = MailActionItem.create!(
       user: employer,
       action_name: "new_internship_application",
-      action_type: :pending_application,
+      action_type: :pending_internship_application,
       urgency_level: :medium,
       stale_at: 5.days.from_now,
       resolved_at: nil,
@@ -22,9 +22,12 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
       internship_application: internship_application
     )
 
-    actions = { "pending_application" => [ item ] }
+    actions = { "pending_internship_application" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: ["medium"])
+    email = EmployerActionsMailer.digest_email(
+      user_id: employer.id,
+      actions: actions,
+      urgency_levels: %w[ low medium ])
     email.deliver_now
 
     assert_emails 1
@@ -42,7 +45,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
     item = MailActionItem.create!(
       user: employer,
       action_name: "agreement_signed_by_all",
-      action_type: :agreement_signed_by_all,
+      action_type: :pending_internship_agreement,
       urgency_level: :low,
       stale_at: 30.days.from_now,
       resolved_at: nil,
@@ -51,9 +54,9 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
       internship_agreement: internship_agreement
     )
 
-    actions = { "agreement_signed_by_all" => [ item ] }
+    actions = { "pending_internship_agreement" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: ["low"])
+    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "low" ])
     email.deliver_now
 
     assert_emails 1
@@ -79,7 +82,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
     item = MailActionItem.create!(
       user: employer,
       action_name: "new_internship_application",
-      action_type: :pending_application,
+      action_type: :pending_internship_application,
       urgency_level: :medium,
       stale_at: 5.days.from_now,
       resolved_at: nil,
@@ -88,9 +91,9 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
       internship_application: internship_application
     )
 
-    actions = { "pending_application" => [ item ] }
+    actions = { "pending_internship_application" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: ["medium"])
+    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "medium" ])
     email.deliver_now
 
     assert_no_match "Conventions sign", email.html_part.body.to_s
@@ -103,7 +106,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
     item = MailActionItem.create!(
       user: employer,
       action_name: "agreement_signed_by_all",
-      action_type: :agreement_signed_by_all,
+      action_type: :pending_internship_agreement,
       urgency_level: :low,
       stale_at: 30.days.from_now,
       resolved_at: nil,
@@ -112,9 +115,9 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
       internship_agreement_id: nil
     )
 
-    actions = { "agreement_signed_by_all" => [ item ] }
+    actions = { "pending_internship_agreement" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: ["low"])
+    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "low" ])
     email.deliver_now
 
     assert_emails 1

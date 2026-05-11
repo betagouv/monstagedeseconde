@@ -148,10 +148,10 @@ class InternshipAgreementTest < ActiveSupport::TestCase
 
     item = MailActionItem.last
     assert_equal "agreement_signed_by_all", item.action_name
-    assert_equal "agreement_signed_by_all", item.action_type
+    assert_equal "pending_internship_agreement", item.action_type
     assert_equal employer.id, item.user_id
     assert_equal internship_agreement.id, item.internship_agreement_id
-    assert_equal "low", item.urgency_level
+    assert_equal "medium", item.urgency_level
     assert_equal 1, item.max_deliveries_count
     assert item.stale_at > Time.current
   end

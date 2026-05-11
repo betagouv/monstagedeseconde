@@ -38,7 +38,7 @@ class DigestMailslowTest < ActiveSupport::TestCase
     MailActionItem.create!(
       user: employer,
       action_name: "new_internship_application",
-      action_type: :pending_application,
+      action_type: :pending_internship_application,
       urgency_level: :low,
       stale_at: 2.days.from_now,
       resolved_at: nil,
@@ -50,7 +50,7 @@ class DigestMailslowTest < ActiveSupport::TestCase
     MailActionItem.create!(
       user: employer,
       action_name: "new_internship_application",
-      action_type: :pending_application,
+      action_type: :pending_internship_application,
       urgency_level: :low,
       stale_at: 1.day.ago,
       resolved_at: nil,

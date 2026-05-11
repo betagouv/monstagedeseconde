@@ -8,6 +8,7 @@ module Services::EmployerActions
         extra_resolver(user_id:, urgency_level:)
         standard_resolver(user_id:, urgency_level:)
       end
+
       MailActionItem.where(user_id:)
                     .resolved
                     .delete_all
@@ -27,8 +28,9 @@ module Services::EmployerActions
       )
       if actions.present?
         actions.each do |mail_action_item|
-          extra_condition = mail_action_item&.internship_application&.aasm_state != "submitted"
-          application_resolve(mail_action_item.internship_application, extra_condition)
+          if mail_action_item&.internship_application&.aasm_state != "submitted"
+            application_resolve(mail_action_item.internship_application)
+          end
         end
       end
 
@@ -41,8 +43,9 @@ module Services::EmployerActions
         action_name: "canceled_internship_application_by_student"
       )
       actions.present? && actions.each do |item|
-        extra_condition = item&.internship_application&.canceled_by_student_confirmation?
-        application_resolve(item.internship_application, extra_condition)
+        if item&.internship_application&.canceled_by_student_confirmation?
+          application_resolve(item.internship_application)
+        end
       end
 
       # ------------------------
@@ -54,8 +57,23 @@ module Services::EmployerActions
         action_name: "restored_internship_application"
       )
       actions.present? && actions.each do |item|
-        extra_condition = item&.internship_application&.aasm_state != "restored"
-        application_resolve(item.internship_application, extra_condition)
+        if item&.internship_application&.aasm_state != "restored"
+          application_resolve(item.internship_application)
+        end
+      end
+
+      # ------------------------
+      # cancel_by_student_confirmation case
+      # ------------------------
+      actions = MailActionItem.where(
+        user_id:,
+        urgency_level:,
+        action_name: "cancel_by_student_confirmation"
+      )
+      actions.present? && actions.each do |item|
+        if item&.internship_application&.canceled_by_student_confirmation?
+          application_resolve(item.internship_application)
+        end
       end
 
       # =======================================================
@@ -73,6 +91,20 @@ module Services::EmployerActions
       agreement_signed_by_all_items.present? && agreement_signed_by_all_items.each do |item|
         agreement_resolve(item.internship_agreement)
       end
+
+      # ------------------------
+      # agreement_to_sign case
+      # ------------------------
+      agreement_to_sign_items = MailActionItem.where(
+        user_id:,
+        urgency_level:,
+        action_name: "agreement_to_sign"
+      )
+      agreement_to_sign_items.present? && agreement_to_sign_items.each do |item|
+        if item&.internship_agreement&.roles_not_signed_yet&.exclude?("employer")
+          agreement_resolve(item.internship_agreement)
+        end
+      end
     end
 
     def self.standard_resolver(user_id:, urgency_level:)
@@ -85,37 +117,25 @@ module Services::EmployerActions
                             .delete_all
     end
 
-    def self.application_resolve(application, extra_condition = false)
-      if application.nil?
-        MailActionItem.where(
-          action_type: :pending_internship_application,
-        ).each do |item|
-          item.update_columns(resolved_at: Time.current)
-        end
-      elsif extra_condition
-        MailActionItem.where(
-          action_type: :pending_internship_application,
-          internship_application_id: application.id,
-        ).each do |item|
-          item.update_columns(resolved_at: Time.current)
-        end
+    def self.application_resolve(application)
+      return unless application.present? && application.persisted?
+
+      MailActionItem.where(
+        action_type: :pending_internship_application,
+        internship_application_id: application.id,
+      ).each do |item|
+        item.update_columns(resolved_at: Time.current)
       end
     end
 
-    def self.agreement_resolve(agreement, extra_condition = false)
-      if agreement.nil?
-        MailActionItem.where(
-          action_type: :pending_internship_agreement,
-        ).each do |item|
-          item.update_columns(resolved_at: Time.current)
-        end
-      elsif agreement.discarded? || extra_condition
-        MailActionItem.where(
-          action_type: :pending_internship_agreement,
-          internship_agreement_id: agreement.id
-        ).each do |item|
-          item.update_columns(resolved_at: Time.current)
-        end
+    def self.agreement_resolve(agreement)
+      return unless agreement.present? && agreement.persisted?
+
+      MailActionItem.where(
+        action_type: :pending_internship_agreement,
+        internship_agreement_id: agreement.id
+      ).each do |item|
+        item.update_columns(resolved_at: Time.current)
       end
     end
   end

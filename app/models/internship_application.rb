@@ -304,7 +304,6 @@ class InternshipApplication < ApplicationRecord
                     if employer_aware_states.include?(aasm_state)
                       # Employer need to be notified
                       notify_digest_email_by_name("cancel_by_student_confirmation", user_id: user&.id)
-                      # EmployerMailer.internship_application_approved_for_an_other_internship_offer_email(internship_application: self).deliver_later
                     end
                     record_state_change user
                   }
@@ -423,6 +422,7 @@ class InternshipApplication < ApplicationRecord
   def notify_digest_email_by_name(name, **kwargs)
     kwargs[:user_id] ||= internship_offer.employer_id
     kwargs[:internship_application_id] ||= id
+    kwargs[:internship_agreement_id] ||= internship_agreement.id if internship_agreement&.persisted?
     kwargs[:action_type] ||= :pending_internship_application
     kwargs[:stale_at] ||= weeks.order(:year, :number).last.monday - 2.days
     MailActionItem.create_by_name!(name, **kwargs)

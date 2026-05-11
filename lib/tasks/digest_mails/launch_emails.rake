@@ -1,7 +1,7 @@
 namespace :digest_mailers do
   desc "send digest mails for low urgency level"
   task send_low_urgency_emails: :environment do
-    user_ids = MailActionItem.with_urgency_level("low")
+    user_ids = MailActionItem.with_urgency_levels(%w[low medium high critical])
                              .not_overdue
                              .pending
                              .pluck(:user_id)
@@ -19,7 +19,7 @@ namespace :digest_mailers do
 
   desc "send digest mails for medium urgency level"
   task send_medium_urgency_emails: :environment do
-    user_ids = MailActionItem.with_urgency_level("medium")
+    user_ids = MailActionItem.with_urgency_levels(%w[medium high critical])
                              .not_overdue
                              .pending
                              .pluck(:user_id)
@@ -37,7 +37,7 @@ namespace :digest_mailers do
 
   desc "send digest mails for high urgency level"
   task send_high_urgency_emails: :environment do
-    user_ids = MailActionItem.with_urgency_level("high")
+    user_ids = MailActionItem.with_urgency_levels(%w[high critical])
                              .not_overdue
                              .pending
                              .pluck(:user_id)
