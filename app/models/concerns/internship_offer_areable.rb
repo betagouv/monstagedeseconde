@@ -50,7 +50,11 @@ module InternshipOfferAreable
         employer_id: id
       )
       self.current_area_id = area.id
-      save if confirmed?
+      save(validate: false) if persisted?
+    end
+
+    def fetch_current_area
+      current_area || internship_offer_areas.order(updated_at: :desc).first
     end
 
     # ------------  private ------------
