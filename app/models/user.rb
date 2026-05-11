@@ -39,7 +39,7 @@ class User < ApplicationRecord
             presence: true
   validates :phone, uniqueness: { allow_blank: true },
                     format: {
-                      with: /\A\+(33|262|594|596|687|689)0(6|7)\d{8}\z/,
+                      with: /\A\+(33|262|590|594|596|687|689)0(6|7)\d{8}\z/,
                       message: 'Veuillez modifier le numéro de téléphone mobile'
                     },
                     allow_blank: true
