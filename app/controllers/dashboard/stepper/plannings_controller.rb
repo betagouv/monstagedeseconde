@@ -130,9 +130,6 @@ module Dashboard::Stepper
     def sanitize_content
       return unless planning_params[:lunch_break].present?
 
-      # Mutate the underlying params: planning_params returns a fresh
-      # ActionController::Parameters via params.expect, so writing through
-      # it would not persist for the next planning_params call.
       params[:planning][:lunch_break] =
         strip_content(planning_params[:lunch_break])
     end
