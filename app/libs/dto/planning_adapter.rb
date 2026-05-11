@@ -53,15 +53,28 @@ module Dto
     def remove_troisieme_weeks = reject_weeks(Week.troisieme_weeks)
 
     def keep_weeks(kept_type)
+      seconde_ids = Week.seconde_weeks.map(&:id)
       case kept_type
       when :seconde_only
-        instance.weeks = instance.weeks.reject do |week|
-          !week.id.in?(Week.seconde_weeks.map(&:id))
-        end
+        filter_internship_offer_weeks { |iow| iow.week_id.in?(seconde_ids) }
       when :troisieme_only
-        instance.weeks = instance.weeks.reject do |week|
-          week.id.in?(Week.seconde_weeks.map(&:id))
-        end
+        filter_internship_offer_weeks { |iow| !iow.week_id.in?(seconde_ids) }
+      end
+    end
+
+    # Removing through records via `instance.weeks=` on a new (unsaved) owner
+    # triggers HasManyThroughAssociation#delete_records, which calls
+    # owner.increment!(:internship_offer_weeks_count, ...) and raises
+    # "cannot update a new record". Mutate the in-memory target instead.
+    def filter_internship_offer_weeks(&pred)
+      kept = instance.internship_offer_weeks.select(&pred)
+      return if kept.size == instance.internship_offer_weeks.size
+
+      if instance.new_record?
+        instance.association(:internship_offer_weeks).target = kept.to_a
+        instance.association(:weeks).reset
+      else
+        instance.internship_offer_weeks = kept
       end
     end
 
