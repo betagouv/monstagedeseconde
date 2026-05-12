@@ -143,7 +143,7 @@ class RebuildReviewJob < ApplicationJob
     # Supprimer les écoles réservées (FK vers internship_offers)
     ReservedSchool.delete_all
     # Supprimer les stats associées aux offres (FK vers internship_offers)
-    InternshipOfferStat.delete_all
+    InternshipOfferStats.delete_all
     # Supprimer les notes associées aux offres (FK vers internship_offers)
     InternshipOfferGrade.delete_all
     # Supprimer les semaines associées aux offres (FK vers internship_offers)
