@@ -122,6 +122,8 @@ class RebuildReviewJob < ApplicationJob
     CorporationInternshipAgreement.where(internship_agreement_id: agreement_ids).delete_all
     # Supprimer les internship_application_weeks (FK vers internship_applications)
     InternshipApplicationWeek.where(internship_application_id: app_ids).delete_all
+    # Supprimer les changements d'etat des candidatures (FK vers internship_applications)
+    InternshipApplicationStateChange.where(internship_application_id: app_ids).delete_all
     # Supprimer les conventions (FK vers internship_applications)
     InternshipAgreement.where(internship_application_id: app_ids).delete_all
     # Supprimer les candidatures (FK vers users)
@@ -137,15 +139,27 @@ class RebuildReviewJob < ApplicationJob
     broadcast_info(:team_removal)
     TeamMemberInvitation.delete_all
 
-    broadcast_info(:stepper_classes_removal)
-    Entreprise.destroy_all
-    InternshipOccupation.destroy_all
+
+    # Supprimer les écoles réservées (FK vers internship_offers)
+    ReservedSchool.delete_all
+    # Supprimer les stats associées aux offres (FK vers internship_offers)
+    InternshipOfferStat.delete_all
+    # Supprimer les notes associées aux offres (FK vers internship_offers)
+    InternshipOfferGrade.delete_all
+    # Supprimer les semaines associées aux offres (FK vers internship_offers)
+    InternshipOfferWeek.delete_all
 
     broadcast_info(:api_offers_removal)
-    InternshipOffers::Api.destroy_all
+    InternshipOffers::Api.delete_all
 
     broadcast_info(:local_offers_removal)
-    InternshipOffer.where.not(type: InternshipOffers::Api.name).destroy_all
+
+    InternshipOffer.where.not(type: InternshipOffers::Api.name).delete_all
+
+    broadcast_info(:stepper_classes_removal)
+    Planning.destroy_all
+    Entreprise.delete_all
+    InternshipOccupation.delete_all
 
     broadcast_info(:notifications_removal)
     AreaNotification.delete_all
