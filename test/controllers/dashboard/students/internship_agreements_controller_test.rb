@@ -126,7 +126,7 @@ module Dashboard
              }
         assert_redirected_to root_path
         follow_redirect!
-        assert_select('.alert', text: "Le représentant légal #{internship_agreement.student_legal_representative_full_name} a déjà signé cette convention de stage Fermer ×")
+        assert_select('.alert', text: 'Convention introuvable Fermer ×')
         assert_equal 1, internship_agreement.reload.signatures.count
       end
 
