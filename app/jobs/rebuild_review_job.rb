@@ -107,15 +107,15 @@ class RebuildReviewJob < ApplicationJob
     broadcast_info(:favorites_removal)
     Favorite.destroy_all
 
+    broadcast_info(:student_search_history_removal)
+    UsersSearchHistory.destroy_all
+    UsersInternshipOffersHistory.destroy_all
+
     broadcast_info(:student_removal)
     Users::Student.destroy_all
     # InternshipApplication.destroy_all unless InternshipApplication.all.count.zero?
     # InternshipAgreement.destroy_all unless InternshipAgreement.all.count.zero?
     # Signature.destroy_all unless Signature.all.count.zero?
-
-    broadcast_info(:student_search_history_removal)
-    UsersSearchHistory.destroy_all
-    UsersInternshipOffersHistory.destroy_all
 
     broadcast_info(:waiting_list_entries_removal)
     WaitingListEntry.destroy_all
