@@ -96,32 +96,46 @@ class RebuildReviewJob < ApplicationJob
 
   def remove_steps
     broadcast_info(:boarding_house_views_removal)
-    BoardingHouseView.destroy_all if defined?(BoardingHouseView)
+    BoardingHouseView.delete_all if defined?(BoardingHouseView)
 
     broadcast_info(:mail_action_item_removal)
-    MailActionItem.destroy_all if defined?(MailActionItem)
+    MailActionItem.delete_all if defined?(MailActionItem)
 
     broadcast_info(:invitation_removal)
-    Invitation.where.not(sent_at: nil).destroy_all
+    Invitation.where.not(sent_at: nil).delete_all
 
     broadcast_info(:favorites_removal)
-    Favorite.destroy_all
+    Favorite.delete_all
 
     broadcast_info(:student_search_history_removal)
-    UsersSearchHistory.destroy_all
-    UsersInternshipOffersHistory.destroy_all
+    UsersSearchHistory.delete_all
+    UsersInternshipOffersHistory.delete_all
 
     broadcast_info(:student_removal)
-    Users::Student.destroy_all
-    # InternshipApplication.destroy_all unless InternshipApplication.all.count.zero?
-    # InternshipAgreement.destroy_all unless InternshipAgreement.all.count.zero?
-    # Signature.destroy_all unless Signature.all.count.zero?
+    student_ids = Users::Student.select(:id)
+    app_ids = InternshipApplication.where(user_id: student_ids).select(:id)
+    agreement_ids = InternshipAgreement.where(internship_application_id: app_ids).select(:id)
+
+    # Supprimer les signatures d'abord (FK vers internship_agreements)
+    Signature.where(internship_agreement_id: agreement_ids).delete_all
+    # Supprimer les corporation_internship_agreements (FK vers internship_agreements)
+    CorporationInternshipAgreement.where(internship_agreement_id: agreement_ids).delete_all
+    # Supprimer les internship_application_weeks (FK vers internship_applications)
+    InternshipApplicationWeek.where(internship_application_id: app_ids).delete_all
+    # Supprimer les conventions (FK vers internship_applications)
+    InternshipAgreement.where(internship_application_id: app_ids).delete_all
+    # Supprimer les candidatures (FK vers users)
+    InternshipApplication.where(user_id: student_ids).delete_all
+    # Supprimer les url_shrinkers des étudiants
+    UrlShrinker.where(user_id: student_ids).delete_all
+    # Supprimer les étudiants
+    Users::Student.delete_all
 
     broadcast_info(:waiting_list_entries_removal)
-    WaitingListEntry.destroy_all
+    WaitingListEntry.delete_all
 
     broadcast_info(:team_removal)
-    TeamMemberInvitation.destroy_all
+    TeamMemberInvitation.delete_all
 
     broadcast_info(:stepper_classes_removal)
     Entreprise.destroy_all
@@ -134,7 +148,7 @@ class RebuildReviewJob < ApplicationJob
     InternshipOffer.where.not(type: InternshipOffers::Api.name).destroy_all
 
     broadcast_info(:notifications_removal)
-    AreaNotification.destroy_all
+    AreaNotification.delete_all
 
     broadcast_info(:user_area_removal)
     User.where.not(current_area_id: nil).update_all(current_area_id: nil)
@@ -157,7 +171,9 @@ class RebuildReviewJob < ApplicationJob
     MultiActivity.destroy_all
 
     broadcast_info(:employers_removal)
-    Users::Employer.destroy_all
+    employer_ids = Users::Employer.select(:id)
+    UrlShrinker.where(user_id: employer_ids).delete_all
+    Users::Employer.delete_all
 
     broadcast_info(:users_operator_removal)
     Users::Operator.destroy_all
