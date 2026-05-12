@@ -158,7 +158,6 @@ class RebuildReviewJob < ApplicationJob
       broadcast_info(step[0].to_sym)
       # end
     end
-    MailActionItem.delete_all
   end
 
   # ------------
