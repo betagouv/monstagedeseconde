@@ -91,14 +91,17 @@ class RebuildReviewJob < ApplicationJob
   end
 
   def remove_steps
+    broadcast_info(:boarding_house_views_removal)
+    BoardingHouseView.destroy_all if defined?(BoardingHouseView)
+
+    broadcast_info(:mail_action_item_removal)
+    MailActionItem.destroy_all if defined?(MailActionItem)
+
     broadcast_info(:invitation_removal)
     Invitation.where.not(sent_at: nil).destroy_all
 
-    broadcast_info(:team_removal)
-    TeamMemberInvitation.destroy_all
-
-    broadcast_info(:waiting_list_entries_removal)
-    WaitingListEntry.destroy_all
+    broadcast_info(:favorites_removal)
+    Favorite.destroy_all
 
     broadcast_info(:student_search_history_removal)
     UsersSearchHistory.destroy_all
@@ -109,6 +112,12 @@ class RebuildReviewJob < ApplicationJob
     # InternshipApplication.destroy_all unless InternshipApplication.all.count.zero?
     # InternshipAgreement.destroy_all unless InternshipAgreement.all.count.zero?
     # Signature.destroy_all unless Signature.all.count.zero?
+
+    broadcast_info(:waiting_list_entries_removal)
+    WaitingListEntry.destroy_all
+
+    broadcast_info(:team_removal)
+    TeamMemberInvitation.destroy_all
 
     broadcast_info(:stepper_classes_removal)
     Entreprise.destroy_all
@@ -141,19 +150,6 @@ class RebuildReviewJob < ApplicationJob
 
     broadcast_info(:multi_activity_removal)
     MultiActivity.destroy_all
-
-    broadcast_info(:api_offers_removal)
-    InternshipOffers::Api.destroy_all
-
-    broadcast_info(:notifications_removal)
-    AreaNotification.destroy_all
-
-    broadcast_info(:user_area_removal)
-    User.where.not(current_area_id: nil).update_all(current_area_id: nil)
-
-    broadcast_info(:areas_removal)
-    InternshipOffer.destroy_all
-    InternshipOfferArea.delete_all
 
     broadcast_info(:employers_removal)
     Users::Employer.destroy_all
