@@ -110,6 +110,26 @@ class RebuildReviewJob < ApplicationJob
     # InternshipAgreement.destroy_all unless InternshipAgreement.all.count.zero?
     # Signature.destroy_all unless Signature.all.count.zero?
 
+    broadcast_info(:stepper_classes_removal)
+    Entreprise.destroy_all
+    InternshipOccupation.destroy_all
+
+    broadcast_info(:api_offers_removal)
+    InternshipOffers::Api.destroy_all
+
+    broadcast_info(:local_offers_removal)
+    InternshipOffer.where.not(type: InternshipOffers::Api.name).destroy_all
+
+    broadcast_info(:notifications_removal)
+    AreaNotification.destroy_all
+
+    broadcast_info(:user_area_removal)
+    User.where.not(current_area_id: nil).update_all(current_area_id: nil)
+
+    broadcast_info(:areas_removal)
+    InternshipOffer.destroy_all
+    InternshipOfferArea.delete_all
+
     broadcast_info(:corporation_removal)
     Corporation.destroy_all
 
@@ -134,10 +154,6 @@ class RebuildReviewJob < ApplicationJob
     broadcast_info(:areas_removal)
     InternshipOffer.destroy_all
     InternshipOfferArea.delete_all
-
-    broadcast_info(:stepper_classes_removal)
-    Entreprise.destroy_all
-    InternshipOccupation.destroy_all
 
     broadcast_info(:employers_removal)
     Users::Employer.destroy_all
