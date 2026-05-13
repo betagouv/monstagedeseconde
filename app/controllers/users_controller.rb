@@ -201,6 +201,7 @@ class UsersController < ApplicationController
         :phone_or_email,
         :anonymize_with_email,
         :legal_representative_email,
+        :legal_representative_full_name,
         :show_modal_info
     ])
   end

@@ -69,7 +69,7 @@ module Dashboard
 
       def relaunch_legal_representative_sign_email
         internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
-        authorize :relaunch_legal_representative_sign_email, internship_agreement
+        authorize! :relaunch_legal_representative_sign_email, internship_agreement
 
         legal_representative_data = synchronize_legal_representative_data(internship_agreement, current_user)
         @internship_application = internship_agreement.internship_application
@@ -137,7 +137,13 @@ module Dashboard
       end
 
       def set_internship_application
-        @internship_application = @current_student.internship_applications.find_by!(uuid: params[:uuid])
+        internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
+        if internship_agreement.present?
+          @internship_application = internship_agreement.internship_application
+        else
+          @internship_application = @current_student.internship_applications.find_by(uuid: params[:uuid])
+        end
+        raise ActiveRecord::RecordNotFound if @internship_application.nil?
       end
 
       def increase_dunning_letter_count
