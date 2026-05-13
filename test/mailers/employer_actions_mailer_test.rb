@@ -24,7 +24,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
 
     actions = { "pending_internship_application" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(
+    email = EmployerActionsMailer.employer_digest_email(
       user_id: employer.id,
       actions: actions,
       urgency_levels: %w[ low medium ])
@@ -56,7 +56,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
 
     actions = { "pending_internship_agreement" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "low" ])
+    email = EmployerActionsMailer.employer_digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "low" ])
     email.deliver_now
 
     assert_emails 1
@@ -93,7 +93,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
 
     actions = { "pending_internship_application" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "medium" ])
+    email = EmployerActionsMailer.employer_digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "medium" ])
     email.deliver_now
 
     assert_no_match "Conventions sign", email.html_part.body.to_s
@@ -117,7 +117,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
 
     actions = { "pending_internship_agreement" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "low" ])
+    email = EmployerActionsMailer.employer_digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "low" ])
     email.deliver_now
 
     assert_emails 1
@@ -142,7 +142,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
 
     actions = { "pending_internship_agreement" => [ item ] }
 
-    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "medium" ])
+    email = EmployerActionsMailer.employer_digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "medium" ])
     email.deliver_now
 
     assert_emails 1

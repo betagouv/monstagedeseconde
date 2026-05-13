@@ -1,6 +1,6 @@
 class EmployerActionsMailer < ApplicationMailer
   include Phonable
-  def digest_email(user_id:, actions:, urgency_levels:)
+  def employer_digest_email(user_id:, actions:, urgency_levels:)
     @user = User.find(user_id)
     @actions = actions
     @urgency_levels = urgency_levels

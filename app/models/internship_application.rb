@@ -303,7 +303,7 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |user, *_args|
                     if employer_aware_states.include?(aasm_state)
                       # Employer need to be notified
-                      notify_digest_email_by_name("cancel_by_student_confirmation", user_id: user&.id)
+                      notify_employer_with_digest_email("cancel_by_student_confirmation", user_id: user&.id)
                     end
                     record_state_change user
                   }
@@ -354,7 +354,7 @@ class InternshipApplication < ApplicationRecord
                   to: :canceled_by_student,
                   after: proc { |user, *_args|
                     update!("canceled_at": Time.now.utc)
-                    notify_digest_email_by_name("canceled_internship_application_by_student")
+                    notify_employer_with_digest_email("canceled_internship_application_by_student")
                     internship_agreement&.destroy
                     record_state_change user
                   }
@@ -367,7 +367,7 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |user, *_args|
                     update!(restored_at: Time.now.utc)
                     if has_ever_been?(%w[approved read_by_employer validated_by_employer])
-                      notify_digest_email_by_name("restored_internship_application")
+                      notify_employer_with_digest_email("restored_internship_application")
                     end
                     record_state_change user
                   }
@@ -411,7 +411,7 @@ class InternshipApplication < ApplicationRecord
   end
 
   def notify_users
-    notify_digest_email_by_name("new_internship_application", stale_at: weeks.last.monday - 2.days)
+    notify_employer_with_digest_email("new_internship_application", stale_at: weeks.last.monday - 2.days)
 
     return if student.internship_applications.count == 0
 
@@ -419,7 +419,7 @@ class InternshipApplication < ApplicationRecord
     Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
   end
 
-  def notify_digest_email_by_name(name, **kwargs)
+  def notify_employer_with_digest_email(name, **kwargs)
     kwargs[:user_id] ||= internship_offer.employer_id
     kwargs[:internship_application_id] ||= id
     kwargs[:internship_agreement_id] ||= internship_agreement.id if internship_agreement&.persisted?
@@ -530,7 +530,7 @@ class InternshipApplication < ApplicationRecord
     agreement.skip_validations_for_system = true
     agreement.save!
 
-    notify_digest_email_by_name(
+    notify_employer_with_digest_email(
       "agreement_to_sign",
       internship_agreement_id: agreement.id,
       action_type: :pending_internship_agreement

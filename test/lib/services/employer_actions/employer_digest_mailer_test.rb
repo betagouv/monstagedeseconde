@@ -132,7 +132,7 @@ module Services
           max_deliveries_count: 1
         )
 
-        Services::EmployerActions::DigestMailer.perform_for_medium_level(user_id: employer.id)
+        Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: employer.id)
 
         assert_equal [ item.id ],
                      MailActionItem.where(user: employer, deliveries_count: 1).pluck(:id)

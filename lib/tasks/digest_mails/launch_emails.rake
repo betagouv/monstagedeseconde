@@ -8,7 +8,7 @@ namespace :digest_mailers do
                              .uniq
     if user_ids.any?
       user_ids.each do |user_id|
-        ::Services::EmployerActions::DigestMailer.perform_for_low_level(user_id: user_id)
+        ::Services::EmployerActions::EmployerDigestMailer.perform_for_low_level(user_id: user_id)
       end
     else
       Rails.logger.info "=" * 50
@@ -26,7 +26,7 @@ namespace :digest_mailers do
                              .uniq
     if user_ids.any?
       user_ids.each do |user_id|
-        ::Services::EmployerActions::DigestMailer.perform_for_medium_level(user_id: user_id)
+        ::Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: user_id)
       end
     else
       Rails.logger.info "=" * 50
@@ -44,7 +44,7 @@ namespace :digest_mailers do
                              .uniq
     if user_ids.any?
       user_ids.each do |user_id|
-        ::Services::EmployerActions::DigestMailer.perform_for_high_level(user_id: user_id)
+        ::Services::EmployerActions::EmployerDigestMailer.perform_for_high_level(user_id: user_id)
       end
     else
       Rails.logger.info "=" * 50
@@ -62,7 +62,7 @@ namespace :digest_mailers do
                              .uniq
     if user_ids.any?
       user_ids.each do |user_id|
-        ::Services::EmployerActions::DigestMailer.perform_for_critical_level(user_id: user_id)
+        ::Services::EmployerActions::EmployerDigestMailer.perform_for_critical_level(user_id: user_id)
       end
     else
       Rails.logger.info "=" * 50

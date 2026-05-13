@@ -145,7 +145,7 @@ class InternshipAgreement < ApplicationRecord
                   guard: :roles_not_signed_yet_blank?,
                   after: proc { |*_args|
                            notify_others_signatures_finished(self) unless skip_notifications_when_system_creation
-                           notify_digest_email_by_name("agreement_signed_by_all") unless skip_notifications_when_system_creation
+                           notify_employer_with_digest_email("agreement_signed_by_all") unless skip_notifications_when_system_creation
                          }
     end
   end
@@ -309,7 +309,7 @@ class InternshipAgreement < ApplicationRecord
 
   private
 
-  def notify_digest_email_by_name(name, **kwargs)
+  def notify_employer_with_digest_email(name, **kwargs)
     kwargs[:user_id] ||= internship_application.internship_offer.employer_id
     kwargs[:internship_agreement_id] ||= id
     kwargs[:action_type] ||= :pending_internship_agreement
@@ -318,7 +318,7 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def notify_signatures_enabled
-    notify_digest_email_by_name("signatures_enabled")
+    notify_employer_with_digest_email("signatures_enabled")
     GodMailer.notify_signatures_can_start_email(
       internship_agreement: self
     ).deliver_later
