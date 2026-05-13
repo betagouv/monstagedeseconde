@@ -97,6 +97,7 @@ class RebuildReviewJob < ApplicationJob
   def remove_steps
     broadcast_info(:boarding_house_views_removal)
     BoardingHouseView.delete_all if defined?(BoardingHouseView)
+    # BoardingHouse themselves are not deleted, just like schools are not neither.
 
     broadcast_info(:mail_action_item_removal)
     MailActionItem.delete_all if defined?(MailActionItem)
