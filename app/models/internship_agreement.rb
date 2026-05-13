@@ -318,6 +318,7 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def notify_signatures_enabled
+    notify_digest_email_by_name("signatures_enabled")
     GodMailer.notify_signatures_can_start_email(
       internship_agreement: self
     ).deliver_later

@@ -29,7 +29,7 @@ class EmployerActionsMailer < ApplicationMailer
                         &.strftime("%d/%m/%Y")
 
         {
-          student_full_name: student_presenter.full_name,
+          student_full_name: student_presenter.formal_name,
           age:               student_presenter.age,
           weeks:             application_presenter.date_range,
           student_email:     internship_application.student_email.presence || "Non communiqué",
@@ -117,6 +117,24 @@ class EmployerActionsMailer < ApplicationMailer
         student_full_name: internship_application.student.presenter.full_name,
         offer_title:       internship_application.internship_offer.title,
         agreement_url:     agreement ? edit_dashboard_internship_agreement_url(uuid: agreement.uuid) : dashboard_internship_offers_url
+      }
+    end
+
+    # --- Signatures can start ---
+    @signatures_enabled_rows = all_agreements
+      .select { |item| item.action_name == "signatures_enabled" }
+      .filter_map do |item|
+      agreement = item.internship_agreement
+      next if agreement.nil?
+
+      internship_application = agreement.internship_application
+      next if internship_application.nil?
+
+      student = internship_application.student
+      {
+        student_full_name: student.presenter.full_name,
+        school_name:       student.school.name,
+        agreement_url:     edit_dashboard_internship_agreement_url(uuid: agreement.uuid)
       }
     end
 

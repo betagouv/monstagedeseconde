@@ -50,7 +50,11 @@ module MailActionConfigurable
       },
       "agreement_to_sign" => {
         urgency_level: "medium",
-          max_deliveries_count: 2
+        max_deliveries_count: 1
+      },
+      "signatures_enabled" => {
+        urgency_level: "medium",
+        max_deliveries_count: 2
       },
       "agreement_signed_by_all" => {
         urgency_level: "medium",

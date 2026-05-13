@@ -530,7 +530,11 @@ class InternshipApplication < ApplicationRecord
     agreement.skip_validations_for_system = true
     agreement.save!
 
-    notify_digest_email_by_name("agreement_to_sign")
+    notify_digest_email_by_name(
+      "agreement_to_sign",
+      internship_agreement_id: agreement.id,
+      action_type: :pending_internship_agreement
+    )
   end
 
   def create_multi_agreement

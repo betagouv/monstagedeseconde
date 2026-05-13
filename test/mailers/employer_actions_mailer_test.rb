@@ -123,4 +123,43 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
     assert_emails 1
     assert_no_match "Voir la convention", email.html_part.body.to_s
   end
+
+  test "digest_email renders signatures_enabled rows when present" do
+    employer = create(:employer)
+    internship_agreement = create(:mono_internship_agreement, :validated)
+
+    item = MailActionItem.create!(
+      user: employer,
+      action_name: "signatures_enabled",
+      action_type: :pending_internship_agreement,
+      urgency_level: :medium,
+      stale_at: 30.days.from_now,
+      resolved_at: nil,
+      deliveries_count: 0,
+      max_deliveries_count: 2,
+      internship_agreement: internship_agreement
+    )
+
+    actions = { "pending_internship_agreement" => [ item ] }
+
+    email = EmployerActionsMailer.digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "medium" ])
+    email.deliver_now
+
+    assert_emails 1
+    assert_includes email.to, employer.email
+
+    html_body = email.html_part.body.to_s
+    text_body = email.text_part.body.to_s
+
+    student = internship_agreement.internship_application.student
+    assert_match "Conventions prêtes à être signées", html_body
+    assert_match student.presenter.full_name, html_body
+    assert_match student.school.name, html_body
+    assert_match "Voir la convention", html_body
+
+    assert_match "Conventions prêtes à être signées", text_body
+    assert_match student.presenter.full_name, text_body
+    assert_match student.school.name, text_body
+    assert_match "Voir la convention", text_body
+  end
 end

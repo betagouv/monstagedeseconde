@@ -71,6 +71,17 @@ Conventions de stage à compléter :
 <% end %>
 <% end %>
 
+<% if @signatures_enabled_rows&.any? %>
+Conventions prêtes à être signées :
+
+<% @signatures_enabled_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_full_name] %>
+- Etablissement : <%= row[:school_name] %>
+- Voir la convention : <%= row[:agreement_url] %>
+
+<% end %>
+<% end %>
+
 <% if @agreement_signed_by_all_rows&.any? %>
 Conventions signées par toutes les parties :
 
