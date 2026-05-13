@@ -30,15 +30,17 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                               action: "change->internship-application-form#updateWeekId"},
                         required: true }
       - elsif current_user.seconde_gt?
-        - if @internship_application.internship_offer.two_weeks_long? || ((@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks).map(&:id) == SchoolTrack::Seconde.both_weeks.map(&:id))
+        - intersection_ids = (@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks).map(&:id).sort
+        - both_ids         = SchoolTrack::Seconde.both_weeks.map(&:id).sort
+        - if intersection_ids == both_ids
           - period_text = Presenters::WeekList.new(weeks: SchoolTrack::Seconde.both_weeks).to_range_as_str
           - period_value = SchoolTrack::Seconde.both_weeks.map(&:id).join(',')
           - period_options = [[period_text, period_value]]
-        - elsif (@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks) == [SchoolTrack::Seconde.first_week]
+        - elsif intersection_ids == [SchoolTrack::Seconde.first_week.id]
           - period_text = Presenters::WeekList.new(weeks: [SchoolTrack::Seconde.first_week]).to_range_as_str
           - period_value = SchoolTrack::Seconde.first_week.id
           - period_options = [[period_text, period_value]]
-        - elsif (@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks) == [SchoolTrack::Seconde.second_week]
+        - elsif intersection_ids == [SchoolTrack::Seconde.second_week.id]
           - period_text = Presenters::WeekList.new(weeks: [SchoolTrack::Seconde.second_week]).to_range_as_str
           - period_value = SchoolTrack::Seconde.second_week.id
           - period_options = [[period_text, period_value]]
@@ -85,13 +87,12 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
       .row.fr-mt-2w.fr-mb-3w
         .col-12
           - student_email = f.object.student.fake_email? ? '' : f.object.student_email || f.object.previous_student_email || (current_user.student? && current_user.email)
-          = render '/inputs/dsfr_input_field',
+          = render '/inputs/dsfr_email_field',
                     field: :student_email,
                     f: f,
                     object: f.object,
                     value:  student_email,
                     label: "Adresse électronique (email)",
-                    pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
                     hint: "Veuillez saisir une adresse email valide, sans espace ni majuscule.",
                     title: 'Adresse électronique',
                     options: { required: true , maxlength: 100},
@@ -136,7 +137,7 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                     value: f.object.student_address ||f.object.student.address,
                     label: "Votre adresse postale complète",
                     options: { required: true,
-                               maxlength: 300,
+                               maxlength: 170,
                                data: {:'mandatory-fields-target' => "mandatoryField",
                                       action: "input->mandatory-fields#fieldChange"} },
                     required: true,
@@ -160,13 +161,12 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
         .col-12
           .form-group.phone
             = label_tag 'Adresse email de votre représentant légal', '', class: 'fr-label'
-            = render '/inputs/dsfr_input_field',
+            = render '/inputs/dsfr_email_field',
                     field: :student_legal_representative_email,
                     f: f,
                     object: f.object,
                     value: f.object.student_legal_representative_email ||f.object.student.legal_representative_email,
                     label: "Adresse électronique de votre représentant légal",
-                    pattern: "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\.[a-z]{2,}$",
                     options: { required: true,
                                maxlength: 100,
                                data: {:'mandatory-fields-target' => "mandatoryField",

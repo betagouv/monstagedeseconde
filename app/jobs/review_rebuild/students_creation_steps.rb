@@ -2,10 +2,10 @@ module ReviewRebuild
   module StudentsCreationSteps
     extend ActiveSupport::Concern
 
-    def colleges = [college_qpv, college_standard, college_rep]
+    def colleges = [ college_qpv, college_standard, college_rep ]
 
     def choose_school(seconde, number)
-      schools = [lycee_qpv, college_qpv, lycee_standard, college_standard, lycee_rep, college_rep]
+      schools = [ lycee_qpv, college_qpv, lycee_standard, college_standard, lycee_rep, college_rep ]
       add_class_rooms_when_missing(schools)
       add_internship_weeks_when_missing
       school = nil
@@ -17,7 +17,7 @@ module ReviewRebuild
       when 3 # REP
         school = seconde ? lycee_rep : college_rep
       else
-        raise StandardError, 'Unknown school type'
+        raise StandardError, "Unknown school type"
       end
       raise StandardError, "School not found with uai_code: #{seconde}/#{number}" unless school
 
@@ -29,12 +29,12 @@ module ReviewRebuild
         next if school.class_rooms.any?
 
         school_type = school.school_type
-        if school_type == 'lycee'
-          ClassRoom.find_or_create_by(school: school, name: '2de A', grade: Grade.seconde)
-          ClassRoom.find_or_create_by(school: school, name: '2de B', grade: Grade.seconde)
+        if school_type == "lycee"
+          ClassRoom.find_or_create_by(school: school, name: "2de A", grade: Grade.seconde)
+          ClassRoom.find_or_create_by(school: school, name: "2de B", grade: Grade.seconde)
         else
-          ClassRoom.find_or_create_by(school: school, name: '3eme A', grade: Grade.troisieme)
-          ClassRoom.find_or_create_by(school: school, name: '3eme B', grade: Grade.troisieme)
+          ClassRoom.find_or_create_by(school: school, name: "3eme A", grade: Grade.troisieme)
+          ClassRoom.find_or_create_by(school: school, name: "3eme B", grade: Grade.troisieme)
         end
       end
     end
@@ -54,114 +54,114 @@ module ReviewRebuild
       # ---------------
       students_data = []
 
-      students_data << { school_number: '1', email: 'eugenie.grandet@yahoo.com', gender: 'f', first_name: 'Eugénie',
-                         last_name: 'Grandet', seconde: false }
-      students_data << { school_number: '1', email: 'prince.lepetit@laposte.net', gender: 'np', first_name: 'Prince',
-                         last_name: 'Lepetit', seconde: false }
-      students_data << { school_number: '1', email: 'fabrice.deldongo@train-italia.it', gender: 'm',
-                         first_name: 'Fabrice', last_name: 'DelDongo', seconde: false }
-      students_data << { school_number: '1', email: 'sheherazade.shariar@alibaba.ir', gender: 'f',
-                         first_name: 'Sheherazade', last_name: 'Shariar', seconde: false }
-      students_data << { school_number: '1', email: 'edmond.dantes@france-plot.fr', gender: 'm', first_name: 'Edmond',
-                         last_name: 'Dantès', seconde: false }
-      students_data << { school_number: '1', email: 'marguerite.gauthier@interflora.fr', gender: 'f',
-                         first_name: 'Marguerite', last_name: 'Gauthier', seconde: false }
-      students_data << { school_number: '1', email: 'gilgamesh.uruk@transage.ir', gender: 'm',
-                         first_name: 'Gilgamesh', last_name: 'Uruk', seconde: false }
-      students_data << { school_number: '1', email: 'oliver.twist@educ.gov.uk', gender: 'm', first_name: 'Oliver',
-                         last_name: 'Twist', seconde: false }
-      students_data << { school_number: '1', email: 'jane.eyre@blind-light.com', gender: 'f', first_name: 'Jane',
-                         last_name: 'Eyre', seconde: false }
+      students_data << { school_number: "1", email: "eugenie.grandet@yahoo.com", gender: "f", first_name: "Eugénie",
+                         last_name: "Grandet", seconde: false }
+      students_data << { school_number: "1", email: "prince.lepetit@laposte.net", gender: "np", first_name: "Prince",
+                         last_name: "Lepetit", seconde: false }
+      students_data << { school_number: "1", email: "fabrice.deldongo@train-italia.it", gender: "m",
+                         first_name: "Fabrice", last_name: "DelDongo", seconde: false }
+      students_data << { school_number: "1", email: "sheherazade.shariar@alibaba.ir", gender: "f",
+                         first_name: "Sheherazade", last_name: "Shariar", seconde: false }
+      students_data << { school_number: "1", email: "edmond.dantes@france-plot.fr", gender: "m", first_name: "Edmond",
+                         last_name: "Dantès", seconde: false }
+      students_data << { school_number: "1", email: "marguerite.gauthier@interflora.fr", gender: "f",
+                         first_name: "Marguerite", last_name: "Gauthier", seconde: false }
+      students_data << { school_number: "1", email: "gilgamesh.uruk@transage.ir", gender: "m",
+                         first_name: "Gilgamesh", last_name: "Uruk", seconde: false }
+      students_data << { school_number: "1", email: "oliver.twist@educ.gov.uk", gender: "m", first_name: "Oliver",
+                         last_name: "Twist", seconde: false }
+      students_data << { school_number: "1", email: "jane.eyre@blind-light.com", gender: "f", first_name: "Jane",
+                         last_name: "Eyre", seconde: false }
 
       gmail_students_data_troisieme = []
-      gmail_students_data_troisieme << { school_number: '1', first_name: 'Fabrice', last_name: 'Peutiot', gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Amina', last_name: 'Souali', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '1', first_name: 'Theo', last_name: 'Caprizzi', gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Sarah', last_name: 'Block', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '1', first_name: 'Hans', last_name: 'Schneider', gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Benedicte', last_name: 'Luanco', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '1', first_name: 'Moussa', last_name: 'Diop', gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Alissa', last_name: 'Diallo', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '1', first_name: 'Virgile', last_name: 'Racco', gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Aïcha', last_name: 'Diago', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Edmond', last_name: 'Fabrice', gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Louisa', last_name: 'Martin', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Khalil', last_name: 'Karoui', gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Alice', last_name: 'Godichon', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Marius', last_name: 'Trevor', gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Chloe', last_name: 'Mignon', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Valentin', last_name: 'Marcelin',
-                                         gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Alissa', last_name: 'Karmina', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Isidore', last_name: 'Dupret', gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Irma', last_name: 'Doucet', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '2', first_name: 'Patrice', last_name: 'Lemoine', gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Veronique', last_name: 'Aldrich',
-                                         gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Ursule', last_name: 'Tremoneau', gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Ilam', last_name: 'Massima', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Mohsen', last_name: 'Mohammed', gender: 'm' }
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Lea', last_name: 'Vassoliakov', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Karl', last_name: 'Treventin', gender: 'm' }
+      gmail_students_data_troisieme << { school_number: "1", first_name: "Fabrice", last_name: "Peutiot", gender: "m" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Amina", last_name: "Souali", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "1", first_name: "Theo", last_name: "Caprizzi", gender: "m" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Sarah", last_name: "Block", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "1", first_name: "Hans", last_name: "Schneider", gender: "m" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Benedicte", last_name: "Luanco", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "1", first_name: "Moussa", last_name: "Diop", gender: "m" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Alissa", last_name: "Diallo", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "1", first_name: "Virgile", last_name: "Racco", gender: "m" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Aïcha", last_name: "Diago", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Edmond", last_name: "Fabrice", gender: "m" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Louisa", last_name: "Martin", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Khalil", last_name: "Karoui", gender: "m" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Alice", last_name: "Godichon", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Marius", last_name: "Trevor", gender: "m" }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Chloe", last_name: "Mignon", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Valentin", last_name: "Marcelin",
+                                         gender: "m" }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Alissa", last_name: "Karmina", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Isidore", last_name: "Dupret", gender: "m" }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Irma", last_name: "Doucet", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "2", first_name: "Patrice", last_name: "Lemoine", gender: "m" }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Veronique", last_name: "Aldrich",
+                                         gender: "f" }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Ursule", last_name: "Tremoneau", gender: "m" }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Ilam", last_name: "Massima", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Mohsen", last_name: "Mohammed", gender: "m" }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Lea", last_name: "Vassoliakov", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Karl", last_name: "Treventin", gender: "m" }
 
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Ali', last_name: 'Tordjman', gender: 'np' }
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Elsa', last_name: 'Duchemin', gender: 'np' }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Ali", last_name: "Tordjman", gender: "np" }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Elsa", last_name: "Duchemin", gender: "np" }
       # to be anonymized
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Leax', last_name: 'Dridix', gender: 'f' }
-      gmail_students_data_troisieme << { school_number: '3', first_name: 'Karlx', last_name: 'Treventinx', gender: 'm' }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Leax", last_name: "Dridix", gender: "f" }
+      gmail_students_data_troisieme << { school_number: "3", first_name: "Karlx", last_name: "Treventinx", gender: "m" }
       # ---------------
       # 2de
       # ---------------
-      students_data << { school_number: '1', email: 'willy.wonka@haribo.com', gender: 'm', first_name: 'Willy',
-                         last_name: 'Wonka', seconde: true }
-      students_data << { school_number: '1', email: 'causette.tenardier@chanel.fr', gender: 'f', first_name: 'Causette',
-                         last_name: 'Tenardier', seconde: true }
-      students_data << { school_number: '1', email: 'harry.potter@paraquantique.org', gender: 'm', first_name: 'Harry',
-                         last_name: 'Potter', seconde: true }
-      students_data << { school_number: '1', email: 'anna.karenine@meetic.fr', gender: 'f', first_name: 'Anna',
-                         last_name: 'Karenine', seconde: true }
-      students_data << { school_number: '1', email: 'vernon.subutex@europhonics.uk', gender: 'm', first_name: 'Vernon',
-                         last_name: 'Subutex', seconde: true }
-      students_data << { school_number: '1', email: 'manon.lescaut@discover.fr', gender: 'f', first_name: 'Manon',
-                         last_name: 'Lescaut', seconde: true }
-      students_data << { school_number: '1', email: 'elisabeth.bennet@austin.eu', gender: 'f', first_name: 'Elizabeth',
-                         last_name: 'Bennet', seconde: true }
-      students_data << { school_number: '1', email: 'robinson.crusoe@lonely-planet.com', gender: 'm', first_name: 'Robinson',
-                         last_name: 'Crusoe', seconde: true }
+      students_data << { school_number: "1", email: "willy.wonka@haribo.com", gender: "m", first_name: "Willy",
+                         last_name: "Wonka", seconde: true }
+      students_data << { school_number: "1", email: "causette.tenardier@chanel.fr", gender: "f", first_name: "Causette",
+                         last_name: "Tenardier", seconde: true }
+      students_data << { school_number: "1", email: "harry.potter@paraquantique.org", gender: "m", first_name: "Harry",
+                         last_name: "Potter", seconde: true }
+      students_data << { school_number: "1", email: "anna.karenine@meetic.fr", gender: "f", first_name: "Anna",
+                         last_name: "Karenine", seconde: true }
+      students_data << { school_number: "1", email: "vernon.subutex@europhonics.uk", gender: "m", first_name: "Vernon",
+                         last_name: "Subutex", seconde: true }
+      students_data << { school_number: "1", email: "manon.lescaut@discover.fr", gender: "f", first_name: "Manon",
+                         last_name: "Lescaut", seconde: true }
+      students_data << { school_number: "1", email: "elisabeth.bennet@austin.eu", gender: "f", first_name: "Elizabeth",
+                         last_name: "Bennet", seconde: true }
+      students_data << { school_number: "1", email: "robinson.crusoe@lonely-planet.com", gender: "m", first_name: "Robinson",
+                         last_name: "Crusoe", seconde: true }
 
       gmail_students_data_seconde = []
-      gmail_students_data_seconde << { school_number: '3', first_name: 'Nathalie', last_name: 'Sauvage', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Amhmed', last_name: 'Moussa', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Brigitte', last_name: 'Renaud', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Paul', last_name: 'Beauvois', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Celina', last_name: 'Alves', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Michel', last_name: 'Palandin', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Alizee', last_name: 'Martin', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Patrick', last_name: 'Vasseur', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Aline', last_name: 'Mazzeri', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '1', first_name: 'Emile', last_name: 'Grondin', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '2', first_name: 'Elvira', last_name: 'Gracheva', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '2', first_name: 'Maurice', last_name: 'Clement', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '2', first_name: 'Marthe', last_name: 'Humbert', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '2', first_name: 'Michel', last_name: 'Blin', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '2', first_name: 'Sylvie', last_name: 'Vallee', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '2', first_name: 'Hugues', last_name: 'Caron', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '2', first_name: 'Emmanuelle', last_name: 'Roche', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '2', first_name: 'David', last_name: 'Becker', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '2', first_name: 'Jeanne', last_name: 'Lopes', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '3', first_name: 'Olivier', last_name: 'Riviere', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '3', first_name: 'Elise', last_name: 'Michaud', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '3', first_name: 'Elie', last_name: 'Alves', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '3', first_name: 'Lorraine', last_name: 'Cordier', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '3', first_name: 'Charles', last_name: 'Regnier', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '3', first_name: 'Suzanne', last_name: 'Chretien', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '3', first_name: 'Leo', last_name: 'Deschamps', gender: 'm' }
-      gmail_students_data_seconde << { school_number: '3',  first_name: 'Isabelle', last_name: 'Faure', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '3',  first_name: 'Edith', last_name: 'Fernandez', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '3',  first_name: 'Inès', last_name: 'Gomez', gender: 'f' }
+      gmail_students_data_seconde << { school_number: "3", first_name: "Nathalie", last_name: "Sauvage", gender: "f" }
+      gmail_students_data_seconde << { school_number: "1", first_name: "Amhmed", last_name: "Moussa", gender: "m" }
+      gmail_students_data_seconde << { school_number: "1", first_name: "Brigitte", last_name: "Renaud", gender: "f" }
+      gmail_students_data_seconde << { school_number: "1", first_name: "Paul", last_name: "Beauvois", gender: "m" }
+      gmail_students_data_seconde << { school_number: "1", first_name: "Celina", last_name: "Alves", gender: "f" }
+      gmail_students_data_seconde << { school_number: "1", first_name: "Michel", last_name: "Palandin", gender: "m" }
+      gmail_students_data_seconde << { school_number: "1", first_name: "Alizee", last_name: "Martin", gender: "f" }
+      gmail_students_data_seconde << { school_number: "1", first_name: "Patrick", last_name: "Vasseur", gender: "m" }
+      gmail_students_data_seconde << { school_number: "1", first_name: "Aline", last_name: "Mazzeri", gender: "f" }
+      gmail_students_data_seconde << { school_number: "1", first_name: "Emile", last_name: "Grondin", gender: "m" }
+      gmail_students_data_seconde << { school_number: "2", first_name: "Elvira", last_name: "Gracheva", gender: "f" }
+      gmail_students_data_seconde << { school_number: "2", first_name: "Maurice", last_name: "Clement", gender: "m" }
+      gmail_students_data_seconde << { school_number: "2", first_name: "Marthe", last_name: "Humbert", gender: "f" }
+      gmail_students_data_seconde << { school_number: "2", first_name: "Michel", last_name: "Blin", gender: "m" }
+      gmail_students_data_seconde << { school_number: "2", first_name: "Sylvie", last_name: "Vallee", gender: "f" }
+      gmail_students_data_seconde << { school_number: "2", first_name: "Hugues", last_name: "Caron", gender: "m" }
+      gmail_students_data_seconde << { school_number: "2", first_name: "Emmanuelle", last_name: "Roche", gender: "f" }
+      gmail_students_data_seconde << { school_number: "2", first_name: "David", last_name: "Becker", gender: "m" }
+      gmail_students_data_seconde << { school_number: "2", first_name: "Jeanne", last_name: "Lopes", gender: "f" }
+      gmail_students_data_seconde << { school_number: "3", first_name: "Olivier", last_name: "Riviere", gender: "m" }
+      gmail_students_data_seconde << { school_number: "3", first_name: "Elise", last_name: "Michaud", gender: "f" }
+      gmail_students_data_seconde << { school_number: "3", first_name: "Elie", last_name: "Alves", gender: "m" }
+      gmail_students_data_seconde << { school_number: "3", first_name: "Lorraine", last_name: "Cordier", gender: "f" }
+      gmail_students_data_seconde << { school_number: "3", first_name: "Charles", last_name: "Regnier", gender: "m" }
+      gmail_students_data_seconde << { school_number: "3", first_name: "Suzanne", last_name: "Chretien", gender: "f" }
+      gmail_students_data_seconde << { school_number: "3", first_name: "Leo", last_name: "Deschamps", gender: "m" }
+      gmail_students_data_seconde << { school_number: "3",  first_name: "Isabelle", last_name: "Faure", gender: "f" }
+      gmail_students_data_seconde << { school_number: "3",  first_name: "Edith", last_name: "Fernandez", gender: "f" }
+      gmail_students_data_seconde << { school_number: "3",  first_name: "Inès", last_name: "Gomez", gender: "f" }
       # to be anonymized
-      gmail_students_data_seconde << { school_number: '3',  first_name: 'Inèsx', last_name: 'Gomezx', gender: 'f' }
-      gmail_students_data_seconde << { school_number: '3', first_name: 'Leox', last_name: 'Deschampsx', gender: 'm' }
+      gmail_students_data_seconde << { school_number: "3",  first_name: "Inèsx", last_name: "Gomezx", gender: "f" }
+      gmail_students_data_seconde << { school_number: "3", first_name: "Leox", last_name: "Deschampsx", gender: "m" }
 
       students_data.each do |data|
         student = student_maker(**data)
@@ -190,68 +190,68 @@ module ReviewRebuild
 
     def create_users_school_management
       school_management_data = []
-      school_management_data << { school: lycee_qpv, first_name: 'Jean', last_name: 'Rossano',
-                                  email: "ce.#{lycee_qpv.code_uai}@ac-paris.fr", role: 'school_manager' }
-      school_management_data << { school: college_qpv, first_name: 'Bernard', last_name: 'Lacorre',
-                                  email: "ce.#{college_qpv.code_uai}@ac-paris.fr", role: 'school_manager' }
-      school_management_data << { school: lycee_standard, first_name: 'Wladimira', last_name: 'Koliakov',
-                                  email: "ce.#{lycee_standard.code_uai}@ac-paris.fr", role: 'school_manager' }
-      school_management_data << { school: college_standard, first_name: 'Jean', last_name: 'Bonnie',
-                                  email: "ce.#{college_standard.code_uai}@ac-paris.fr", role: 'school_manager' }
-      school_management_data << { school: lycee_rep, first_name: 'Simone', last_name: 'Clairoin',
-                                  email: "ce.#{lycee_rep.code_uai}@ac-orleans-tours.fr", role: 'school_manager' }
-      school_management_data << { school: college_rep, first_name: 'Philippe', last_name: 'Rapidel',
-                                  email: "ce.#{college_rep.code_uai}@ac-orleans-tours.fr", role: 'school_manager' }
+      school_management_data << { school: lycee_qpv, first_name: "Jean", last_name: "Rossano",
+                                  email: "ce.#{lycee_qpv.code_uai}@ac-paris.fr", role: "school_manager" }
+      school_management_data << { school: college_qpv, first_name: "Bernard", last_name: "Lacorre",
+                                  email: "ce.#{college_qpv.code_uai}@ac-paris.fr", role: "school_manager" }
+      school_management_data << { school: lycee_standard, first_name: "Wladimira", last_name: "Koliakov",
+                                  email: "ce.#{lycee_standard.code_uai}@ac-paris.fr", role: "school_manager" }
+      school_management_data << { school: college_standard, first_name: "Jean", last_name: "Bonnie",
+                                  email: "ce.#{college_standard.code_uai}@ac-paris.fr", role: "school_manager" }
+      school_management_data << { school: lycee_rep, first_name: "Simone", last_name: "Clairoin",
+                                  email: "ce.#{lycee_rep.code_uai}@ac-orleans-tours.fr", role: "school_manager" }
+      school_management_data << { school: college_rep, first_name: "Philippe", last_name: "Rapidel",
+                                  email: "ce.#{college_rep.code_uai}@ac-orleans-tours.fr", role: "school_manager" }
       # ---
       # roles.each { |role| schools.each { |school| puts "school_management_data << {school: #{school}, first_name: '#{FFaker::NameFR.first_name}', last_name:'#{FFaker::NameFR.last_name}', email: '#{FFaker::Internet.email}', role: '#{role}'}"}}
-      school_management_data << { school: lycee_qpv, first_name: 'Cécile', last_name: 'Lagarde',
-                                  email: 'rochel_hermiston@beatty.name', role: 'teacher' }
-      school_management_data << { school: college_qpv, first_name: 'Jérôme', last_name: 'Gay', email: 'micah@daniel.ca',
-                                  role: 'teacher' }
-      school_management_data << { school: lycee_standard, first_name: 'Bertrand', last_name: 'Lemaire',
-                                  email: 'leia_rolfson@gaylord.us', role: 'teacher' }
-      school_management_data << { school: college_standard, first_name: 'Laure', last_name: 'Dupont',
-                                  email: 'kourtney_vonrueden@blanda.us', role: 'teacher' }
-      school_management_data << { school: lycee_rep, first_name: 'Océane', last_name: 'Denis',
-                                  email: 'august.pfannerstill@hackett.ca', role: 'teacher' }
-      school_management_data << { school: college_rep, first_name: 'Andrée', last_name: 'Faivre', email: 'emmie@moen.name',
-                                  role: 'teacher' }
-      school_management_data << { school: lycee_qpv, first_name: 'Thérèse', last_name: 'Clerc', email: 'carmelita@morar.com',
-                                  role: 'cpe' }
-      school_management_data << { school: college_qpv, first_name: 'Véronique', last_name: 'Rodriguez',
-                                  email: 'shawnta@cremin.co.uk', role: 'cpe' }
-      school_management_data << { school: lycee_standard, first_name: 'Jacques', last_name: 'Langlois',
-                                  email: 'lan@treutel.biz', role: 'cpe' }
-      school_management_data << { school: college_standard, first_name: 'daisy', last_name: 'Hamon',
-                                  email: 'carroll.flatley@predovic.ca', role: 'cpe' }
-      school_management_data << { school: lycee_rep, first_name: 'Thibaut', last_name: 'Gros',
-                                  email: 'ned.rowe@dubuquebruen.us', role: 'cpe' }
-      school_management_data << { school: college_rep, first_name: 'Benoît', last_name: 'Neveu', email: 'patience@sauer.biz',
-                                  role: 'cpe' }
-      school_management_data << { school: lycee_qpv, first_name: 'Olivier', last_name: 'Tessier', email: 'fredia@bernier.name',
-                                  role: 'other' }
-      school_management_data << { school: college_qpv, first_name: 'Valérie', last_name: 'Lemaitre',
-                                  email: 'travis_kris@feil.biz', role: 'other' }
-      school_management_data << { school: lycee_standard, first_name: 'Martin', last_name: 'Riviere',
-                                  email: 'margene_murphy@kessler.com', role: 'other' }
-      school_management_data << { school: college_standard, first_name: 'Véronique', last_name: 'Bourdon',
-                                  email: 'theresa.olson@cremin.us', role: 'other' }
-      school_management_data << { school: lycee_rep, first_name: 'Stéphanie', last_name: 'Lecomte',
-                                  email: 'giselle.mclaughlin@durgan.us', role: 'other' }
-      school_management_data << { school: college_rep, first_name: 'Nath', last_name: 'Costa', email: 'nickolas@bayer.name',
-                                  role: 'other' }
-      school_management_data << { school: lycee_qpv, first_name: 'Frédéric', last_name: 'Gall',
-                                  email: 'roderick@reingermann.ca', role: 'admin_officer' }
-      school_management_data << { school: college_qpv, first_name: 'Claire', last_name: 'Leblanc',
-                                  email: 'annmarie@ortizlind.us', role: 'admin_officer' }
-      school_management_data << { school: lycee_standard, first_name: 'Christophe', last_name: 'De',
-                                  email: 'kendall@murazikeffertz.us', role: 'admin_officer' }
-      school_management_data << { school: college_standard, first_name: 'Roland', last_name: 'Dijoux',
-                                  email: 'hilaria.kovacek@emmerich.ca', role: 'admin_officer' }
-      school_management_data << { school: lycee_rep, first_name: 'Clémence', last_name: 'Roussel',
-                                  email: 'humberto@schimmelmohr.biz', role: 'admin_officer' }
-      school_management_data << { school: college_rep, first_name: 'Marc', last_name: 'Guillaume',
-                                  email: 'lionel_murphy@damore.info', role: 'admin_officer' }
+      school_management_data << { school: lycee_qpv, first_name: "Cécile", last_name: "Lagarde",
+                                  email: "rochel_hermiston@beatty.name", role: "teacher" }
+      school_management_data << { school: college_qpv, first_name: "Jérôme", last_name: "Gay", email: "micah@daniel.ca",
+                                  role: "teacher" }
+      school_management_data << { school: lycee_standard, first_name: "Bertrand", last_name: "Lemaire",
+                                  email: "leia_rolfson@gaylord.us", role: "teacher" }
+      school_management_data << { school: college_standard, first_name: "Laure", last_name: "Dupont",
+                                  email: "kourtney_vonrueden@blanda.us", role: "teacher" }
+      school_management_data << { school: lycee_rep, first_name: "Océane", last_name: "Denis",
+                                  email: "august.pfannerstill@hackett.ca", role: "teacher" }
+      school_management_data << { school: college_rep, first_name: "Andrée", last_name: "Faivre", email: "emmie@moen.name",
+                                  role: "teacher" }
+      school_management_data << { school: lycee_qpv, first_name: "Thérèse", last_name: "Clerc", email: "carmelita@morar.com",
+                                  role: "cpe" }
+      school_management_data << { school: college_qpv, first_name: "Véronique", last_name: "Rodriguez",
+                                  email: "shawnta@cremin.co.uk", role: "cpe" }
+      school_management_data << { school: lycee_standard, first_name: "Jacques", last_name: "Langlois",
+                                  email: "lan@treutel.biz", role: "cpe" }
+      school_management_data << { school: college_standard, first_name: "daisy", last_name: "Hamon",
+                                  email: "carroll.flatley@predovic.ca", role: "cpe" }
+      school_management_data << { school: lycee_rep, first_name: "Thibaut", last_name: "Gros",
+                                  email: "ned.rowe@dubuquebruen.us", role: "cpe" }
+      school_management_data << { school: college_rep, first_name: "Benoît", last_name: "Neveu", email: "patience@sauer.biz",
+                                  role: "cpe" }
+      school_management_data << { school: lycee_qpv, first_name: "Olivier", last_name: "Tessier", email: "fredia@bernier.name",
+                                  role: "other" }
+      school_management_data << { school: college_qpv, first_name: "Valérie", last_name: "Lemaitre",
+                                  email: "travis_kris@feil.biz", role: "other" }
+      school_management_data << { school: lycee_standard, first_name: "Martin", last_name: "Riviere",
+                                  email: "margene_murphy@kessler.com", role: "other" }
+      school_management_data << { school: college_standard, first_name: "Véronique", last_name: "Bourdon",
+                                  email: "theresa.olson@cremin.us", role: "other" }
+      school_management_data << { school: lycee_rep, first_name: "Stéphanie", last_name: "Lecomte",
+                                  email: "giselle.mclaughlin@durgan.us", role: "other" }
+      school_management_data << { school: college_rep, first_name: "Nath", last_name: "Costa", email: "nickolas@bayer.name",
+                                  role: "other" }
+      school_management_data << { school: lycee_qpv, first_name: "Frédéric", last_name: "Gall",
+                                  email: "roderick@reingermann.ca", role: "admin_officer" }
+      school_management_data << { school: college_qpv, first_name: "Claire", last_name: "Leblanc",
+                                  email: "annmarie@ortizlind.us", role: "admin_officer" }
+      school_management_data << { school: lycee_standard, first_name: "Christophe", last_name: "De",
+                                  email: "kendall@murazikeffertz.us", role: "admin_officer" }
+      school_management_data << { school: college_standard, first_name: "Roland", last_name: "Dijoux",
+                                  email: "hilaria.kovacek@emmerich.ca", role: "admin_officer" }
+      school_management_data << { school: lycee_rep, first_name: "Clémence", last_name: "Roussel",
+                                  email: "humberto@schimmelmohr.biz", role: "admin_officer" }
+      school_management_data << { school: college_rep, first_name: "Marc", last_name: "Guillaume",
+                                  email: "lionel_murphy@damore.info", role: "admin_officer" }
       school_management_data.each do |data|
         school_management_user = Users::SchoolManagement.new(**data)
         school_management_user.accept_terms = true
@@ -271,7 +271,7 @@ module ReviewRebuild
       Users::Student.new.tap do |student|
         student.first_name = first_name
         student.last_name = last_name
-        emails_part = email.split('@')
+        emails_part = email.split("@")
         student.email = "#{emails_part[0]}_#{seconde ? '2e' : '3e'}@#{emails_part[1]}"
         student.gender = gender
         student.ine = ine[current_count]
@@ -293,7 +293,9 @@ module ReviewRebuild
     end
 
     def gmail_student_maker(first_name:, last_name:, gender:, school_number:, seconde: true, confirmed: true)
-      email = "#{first_name.downcase.strip}.#{last_name.downcase.strip}@gmail.com"
+      email = "#{first_name.downcase.strip}.#{last_name.downcase.strip}@gmail.com".gsub(/\s+/, "")
+                                                                                  .gsub(/éèê/, "e")
+                                                                                  .gsub(/ï/, "i")
       student_maker(email: email, gender: gender, first_name: first_name, last_name: last_name,
                     school_number: school_number, seconde: seconde)
     end
@@ -325,12 +327,12 @@ module ReviewRebuild
     #   factory.point(*coordinates_as_array)
     # end
 
-    def uai_code_lycee_qpv        = '0754030Y'
-    def uai_code_college_qpv      = '0752694W'
-    def uai_code_lycee_standard   = '0371418R'
-    def uai_code_college_standard = '0370764E'
-    def uai_code_lycee_rep        = '0755709Y'
-    def uai_code_college_rep      = '0370791J'
+    def uai_code_lycee_qpv        = "0754030Y"
+    def uai_code_college_qpv      = "0752694W"
+    def uai_code_lycee_standard   = "0371418R"
+    def uai_code_college_standard = "0370764E"
+    def uai_code_lycee_rep        = "0755709Y"
+    def uai_code_college_rep      = "0370791J"
 
     def lycee_qpv        = School.find_by(code_uai: uai_code_lycee_qpv)
     def college_qpv      = School.find_by(code_uai: uai_code_college_qpv)

@@ -121,7 +121,11 @@ class Team
 
   def harmonize(area_array, name)
     area_array.each do |area|
-      area.update!(name: "#{name}-#{area.employer.presenter.initials}")
+      suffix = area.employer.presenter.initials
+      if area_array.any? { |other| other.id != area.id && other.employer.presenter.initials == suffix }
+        suffix = "#{suffix}-#{area.id}"
+      end
+      area.update!(name: "#{name}-#{suffix}")
     end
   end
 

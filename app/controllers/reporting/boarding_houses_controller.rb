@@ -10,6 +10,12 @@ module Reporting
       authorize! :manage_boarding_houses, current_user
       @boarding_houses = boarding_houses_scope.order(:name)
                                              .page(params[:page])
+      ids = @boarding_houses.map(&:id)
+      @views_count = BoardingHouseView.where(boarding_house_id: ids)
+                                      .group(:boarding_house_id).count
+      @recent_views_count = BoardingHouseView.where(boarding_house_id: ids)
+                                             .where('created_at >= ?', 30.days.ago)
+                                             .group(:boarding_house_id).count
     end
 
     def new
@@ -104,7 +110,8 @@ module Reporting
       params.require(:boarding_house).permit(
         :name, :street, :zipcode, :city,
         :contact_phone, :contact_email,
-        :available_places, :reference_date
+        :available_places, :reference_date,
+        :latitude, :longitude
       )
     end
 

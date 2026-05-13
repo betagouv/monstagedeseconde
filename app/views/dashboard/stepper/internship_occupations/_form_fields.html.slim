@@ -34,13 +34,13 @@
                         " Attention à l'utilisation des acronymes. Les 50 premiers caractères de cette zone" \
                         " de texte apparaîtront comme titre de votre offre : soyez explicite et concis !"
             .fr-mb-2w = render partial: 'inputs/small_info', locals: { content: content }
-        
+
         .row.bloc-tooggle class="fr-mb-4w ('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))"
           .col-12
-            - max_length = InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT
             .form-group.fr-my-2w [data-controller='max-length-input'
                                   data-max-length-input-target="group"
-                                  data-max-length-input-limit-value="#{max_length}"]
+                                  data-max-length-input-limit-value="#{InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT}"
+                                  data-max-length-input-min-length-value="#{InternshipOffer::DESCRIPTION_MIN_CHAR_COUNT}" ]
               = render 'inputs/dsfr_input_field',
                         f: form,
                         field: :description,
@@ -56,9 +56,11 @@
                         field_type: :text_area
               .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
                 |La description est trop longue
+              .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="minLengthMessage"
+                |La description est trop courte
               small.form-text data-max-length-input-target="charCount"
-      
-      
+
+
         = render "dashboard/stepper/internship_occupations/good_practice_accordions", css_classes: ('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
 
         .row.fr-mt-2w.bloc-tooggle.fr-my-3w class=('d-old-none' if request.fullpath.include?('internship_occupations/nouveau'))
@@ -93,20 +95,20 @@
                                         :'internship_occupation-form-target' => "submitButton"} do
                       = "Suivant "
 
-      
-      
-      
-      
-      
-      
-      
-      
+
+
+
+
+
+
+
+
       / Right column
       .col-md-6
         - if resource.new_record? && show_resume
           = render 'dashboard/stepper/summary_card', form: form
 
         = render "dashboard/stepper/internship_occupations/risks_alert"
-    
 
-  
+
+

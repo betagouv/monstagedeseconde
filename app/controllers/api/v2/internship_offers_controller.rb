@@ -5,6 +5,8 @@ module Api
     class InternshipOffersController < Api::Shared::InternshipOffersController
       include Api::AuthV2
 
+      before_action :restrict_to_operators!
+
       rescue_from Api::ValidationError, with: :render_validation_error_from_exception
 
       def search
@@ -58,9 +60,12 @@ module Api
 
       private
 
+      def restrict_to_operators!
+        render_not_authorized and return unless current_api_user&.operator?
+      end
+
       def create_internship_offer_params
-        params.require(:internship_offer)
-              .permit(
+        params.expect(internship_offer: [
                 :title,
                 :description,
                 :employer_name,
@@ -84,13 +89,12 @@ module Api
                 grades: [],
                 week_ids: [],
                 daily_hours: {},
-                coordinates: {}
-              )
+                coordinates: {}]
+      )
       end
 
       def update_internship_offer_params
-        params.require(:internship_offer)
-              .permit(
+        params.expect(internship_offer: [
                 :title,
                 :description,
                 :employer_name,
@@ -114,7 +118,7 @@ module Api
                 week_ids: [],
                 daily_hours: {},
                 coordinates: {}
-              )
+              ])
       end
 
       def query_params

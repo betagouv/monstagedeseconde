@@ -20,8 +20,8 @@ module Dashboard::MultiStepper
       @multi_planning = MultiPlanning.new(multi_planning_params)
       @multi_planning.multi_coordinator = @multi_coordinator
 
-      @multi_planning = Dto::MultiPlanningAdapter.new(instance: @multi_planning, 
-                                                      params: multi_planning_params, 
+      @multi_planning = Dto::MultiPlanningAdapter.new(instance: @multi_planning,
+                                                      params: multi_planning_params,
                                                       current_user: current_user)
                                                  .manage_planning_associations
                                                  .instance
@@ -73,27 +73,28 @@ module Dashboard::MultiStepper
     end
 
     def multi_planning_params
-      params.require(:multi_planning).permit(
-        :max_candidates,
-        :remaining_seats_count,
-        :lunch_break,
-        :multi_coordinator_id,
-        :school_id,
-        :rep,
-        :qpv,
-        :all_year_long,
-        :grade_college,
-        :grade_2e,
-        :period_field,
-        :internship_type,
-        daily_hours: {},
-        week_ids: [],
-        grade_ids: [],
-        weekly_hours: [],
-        school_ids: []
-      )
+      params.expect(
+        multi_planning: [
+          :max_candidates,
+          :remaining_seats_count,
+          :lunch_break,
+          :multi_coordinator_id,
+          :school_id,
+          :rep,
+          :qpv,
+          :all_year_long,
+          :grade_college,
+          :grade_2e,
+          :period_field,
+          :internship_type,
+          daily_hours: {},
+          week_ids: [],
+          grade_ids: [],
+          weekly_hours: [],
+          school_ids: []
+      ])
     end
-    
+
     def set_weeks_variables
       @available_weeks = Week.selectable_from_now_until_end_of_school_year
 
