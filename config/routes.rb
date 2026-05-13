@@ -265,6 +265,7 @@ Rails.application.routes.draw do
   end
 
   get "boarding_houses/search", to: "boarding_houses#search", as: :boarding_houses_search
+  post "boarding_houses/:id/track_view", to: "boarding_houses#track_view", as: :boarding_house_track_view
 
   get "api_address_proxy/search", to: "api_address_proxy#search", as: :api_address_proxy_search
   get "api_sirene_proxy/search", to: "api_sirene_proxy#search", as: :api_sirene_proxy_search

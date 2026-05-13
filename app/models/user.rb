@@ -44,7 +44,7 @@ class User < ApplicationRecord
                     },
                     allow_blank: true
 
-  validates :email, uniqueness: { allow_blank: true },
+  validates :email, uniqueness: { allow_blank: true, case_sensitive: false },
                     format: { with: Devise.email_regexp },
                     allow_blank: true
 

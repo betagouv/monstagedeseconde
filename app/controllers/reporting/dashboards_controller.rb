@@ -35,31 +35,26 @@ module Reporting
     end
 
     def metabase_iframe
-      if current_user.is_a?(Users::AcademyStatistician) || current_user.is_a?(Users::AcademyRegionStatistician)
-        # TODO : add a method in users models to get the dashboard id '+' refactos
-        payload = resource_metabase_dashboard_hash.merge(
-          params: { "d%C3%A9partement": current_user.departments.map(&:name) },
-        )
-      elsif can?(:see_ministry_dashboard, current_user)
-        payload = resource_metabase_dashboard_hash.merge(
-          params: { "groupe": current_user.ministries.map(&:name) }
-        )
-      else
-        payload = resource_metabase_dashboard_hash.merge(
-          params: { "d%C3%A9partement": [ params[:department] ] }
-        )
-      end
-
-      # payload[:params][:groupe] = current_user.ministries.map(&:name) if can?(:see_ministry_dashboard, current_user)
-
+      payload = resource_metabase_dashboard_hash.deep_merge(params: metabase_role_params)
       token = JWT.encode payload, ENV['METABASE_SECRET_KEY']
-      iframe_url = ENV['METABASE_SITE_URL'] + '/embed/dashboard/' + token + '#bordered=true&titled=true'
+      ENV['METABASE_SITE_URL'] + '/embed/dashboard/' + token + '#bordered=true&titled=true'
+    end
+
+    def metabase_role_params
+      if current_user.is_a?(Users::AcademyStatistician) || current_user.is_a?(Users::AcademyRegionStatistician)
+        { "d%C3%A9partement": current_user.departments.map(&:name) }
+      elsif can?(:see_ministry_dashboard, current_user)
+        { "groupe": current_user.ministries.map(&:name) }
+      else
+        { "d%C3%A9partement": [ params[:department] ] }
+      end
     end
 
     def resource_metabase_dashboard_hash
       year = params[:school_year].to_i
-      { resource: { dashboard: eval("#{current_user.class}::METABASE_DASHBOARD_ID") },
-        "ann%C3%A9e_scolaire": "#{year}/#{year+1}",
+      {
+        resource: { dashboard: eval("#{current_user.class}::METABASE_DASHBOARD_ID") },
+        params: { "ann%C3%A9e_scolaire": "#{year}/#{year+1}" },
         exp: Time.now.to_i + (60 * 10) # 10 minute expiration
       }
     end

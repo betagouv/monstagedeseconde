@@ -148,7 +148,8 @@ class Ability
       internship_application.student.id == user.id &&
         !internship_application.student.has_found_her_internships? &&
         internship_application.aasm_state.in?(InternshipApplication::RESTORABLE_STATES) &&
-        internship_application.restored_at.nil?
+        internship_application.restored_at.nil? &&
+        internship_application.no_weeks_overlap?
     end
 
     can %i[read
@@ -316,7 +317,6 @@ class Ability
       edit_tutor_email
       edit_tutor_role
       edit_activity_scope
-      edit_date_range
       edit_organisation_representative_full_name
       edit_organisation_representative_role
       edit_siret

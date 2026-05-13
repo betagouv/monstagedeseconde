@@ -30,15 +30,17 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                               action: "change->internship-application-form#updateWeekId"},
                         required: true }
       - elsif current_user.seconde_gt?
-        - if @internship_application.internship_offer.two_weeks_long? || ((@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks).map(&:id) == SchoolTrack::Seconde.both_weeks.map(&:id))
+        - intersection_ids = (@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks).map(&:id).sort
+        - both_ids         = SchoolTrack::Seconde.both_weeks.map(&:id).sort
+        - if intersection_ids == both_ids
           - period_text = Presenters::WeekList.new(weeks: SchoolTrack::Seconde.both_weeks).to_range_as_str
           - period_value = SchoolTrack::Seconde.both_weeks.map(&:id).join(',')
           - period_options = [[period_text, period_value]]
-        - elsif (@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks) == [SchoolTrack::Seconde.first_week]
+        - elsif intersection_ids == [SchoolTrack::Seconde.first_week.id]
           - period_text = Presenters::WeekList.new(weeks: [SchoolTrack::Seconde.first_week]).to_range_as_str
           - period_value = SchoolTrack::Seconde.first_week.id
           - period_options = [[period_text, period_value]]
-        - elsif (@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks) == [SchoolTrack::Seconde.second_week]
+        - elsif intersection_ids == [SchoolTrack::Seconde.second_week.id]
           - period_text = Presenters::WeekList.new(weeks: [SchoolTrack::Seconde.second_week]).to_range_as_str
           - period_value = SchoolTrack::Seconde.second_week.id
           - period_options = [[period_text, period_value]]

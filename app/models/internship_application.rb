@@ -366,6 +366,7 @@ class InternshipApplication < ApplicationRecord
     event :restore do
       transitions from: RESTORABLE_STATES.map(&:to_sym),
                   to: :restored,
+                  guard: :no_weeks_overlap?,
                   after: proc { |user, *_args|
                     update!(restored_at: Time.now.utc)
                     if has_ever_been?(%w[approved read_by_employer validated_by_employer])
@@ -399,6 +400,14 @@ class InternshipApplication < ApplicationRecord
     end
   end
 
+  def no_weeks_overlap?
+    return true if student.internship_applications.approved.empty?
+
+    approved_weeks = student.internship_applications.approved.map(&:weeks).flatten
+    weeks_overlap = approved_weeks.any? { |approved_week| weeks.include?(approved_week) }
+    !weeks_overlap
+  end
+
   def set_submitted_at
     self.submitted_at = Time.now.utc if submitted_at.nil?
   end
@@ -409,7 +418,6 @@ class InternshipApplication < ApplicationRecord
 
   def notify_users
     EmployerMailer.internship_application_submitted_email(internship_application: self).deliver_later(wait: 1.second)
-    Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
 
     return if student.internship_applications.count == 0
 

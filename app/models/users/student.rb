@@ -148,7 +148,12 @@ module Users
     end
 
     def add_responsible_data
-      responsible = Services::Omogen::Sygne.new.try(:sygne_responsable, ine)
+      responsible = begin
+        Services::Omogen::Sygne.new.sygne_responsable(ine)
+      rescue RuntimeError => e
+        Rails.logger.warn("Skipping Sygne responsible enrichment for student #{id}: #{e.message}")
+        nil
+      end
       return self if responsible.blank?
 
       self.legal_representative_full_name = "#{responsible.civility} #{responsible.first_name} #{responsible.last_name}"
@@ -156,6 +161,28 @@ module Users
       self.legal_representative_phone = responsible.phone
       save
       self
+    end
+
+    def validation_message_for_internship_application(internship_application)
+      return "" unless internship_application.validated_by_employer? && seconde_gt?
+
+      case internship_application.internship_offer.weeks.count
+      when 1
+        school_track_data = SchoolTrack::Seconde.period_collection(school_year: SchoolYear::Current.new)
+        data = internship_application.internship_offer.weeks.first.id == SchoolTrack::Seconde.first_week.id ? school_track_data[:week_1] : school_track_data[:week_2]
+        specific_week_part = "les dates allant du #{data[:start]} au #{data[:end]} #{data[:month]} #{data[:year]}"
+
+        "En choisissant ce stage, <strong>toutes vos autres candidatures qui incluent " \
+        "#{specific_week_part} seront annulées et vous ne pourrez pas revenir " \
+        "en arrière</strong>. Les stages d'une semaine dont les dates correspondent à " \
+        "l'autre semaine seront conservés."
+      when 2
+        "En choisissant ce stage, <strong>toutes vos autres candidatures seront annulées " \
+        "et vous ne pourrez pas revenir en arrière</strong>."
+      else
+        "En choisissant ce stage, <strong>toutes vos autres candidatures seront annulées " \
+        "et vous ne pourrez pas revenir en arrière</strong>."
+      end
     end
 
     def anonymize(send_email: true)

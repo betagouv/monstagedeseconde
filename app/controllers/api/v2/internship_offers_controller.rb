@@ -5,6 +5,8 @@ module Api
     class InternshipOffersController < Api::Shared::InternshipOffersController
       include Api::AuthV2
 
+      before_action :restrict_to_operators!
+
       rescue_from Api::ValidationError, with: :render_validation_error_from_exception
 
       def search
@@ -57,6 +59,10 @@ module Api
       end
 
       private
+
+      def restrict_to_operators!
+        render_not_authorized and return unless current_api_user&.operator?
+      end
 
       def create_internship_offer_params
         params.expect(internship_offer: [
