@@ -23,7 +23,7 @@ module InternshipOffers::InternshipApplications
       sign_in(student)
 
       assert_mail_action_item_no_direct_email(recipient: internship_offer.employer,
-                         action_name: "agreement_to_sign",
+                         action_name: "new_agreement_to_fill_in",
                          internship_application: internship_application) do
         patch(
           dashboard_internship_offer_internship_application_path(
@@ -384,7 +384,7 @@ module InternshipOffers::InternshipApplications
       sign_in(student)
 
       assert_mail_action_item_no_direct_email(recipient: internship_offer.employer,
-                                              action_name: "agreement_to_sign",
+                                              action_name: "new_agreement_to_fill_in",
                                               internship_application: internship_application) do
         assert_changes -> { MailActionItem.all.count },
                        from: 0,

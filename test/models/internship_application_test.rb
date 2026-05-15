@@ -200,7 +200,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert_difference "MailActionItem.count", 1 do
       internship_application.approve!
     end
-    assert_equal "agreement_to_sign", MailActionItem.last.action_name
+    assert_equal "new_agreement_to_fill_in", MailActionItem.last.action_name
   end
 
   test "transition from submited to approved sends an email to school_manager when no agreement is possible" do

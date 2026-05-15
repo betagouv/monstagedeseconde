@@ -162,4 +162,42 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
     assert_match student.school.name, text_body
     assert_match "Voir la convention", text_body
   end
+
+  test "digest_email renders new_agreement_to_fill_in rows in agreement section" do
+    employer = create(:employer)
+    internship_agreement = create(:mono_internship_agreement, :draft)
+    internship_application = internship_agreement.internship_application
+
+    item = MailActionItem.create!(
+      recipient: employer,
+      action_name: "new_agreement_to_fill_in",
+      action_type: :pending_internship_agreement,
+      urgency_level: :medium,
+      stale_at: 30.days.from_now,
+      resolved_at: nil,
+      deliveries_count: 0,
+      max_deliveries_count: 2,
+      internship_application: internship_application,
+      internship_agreement: internship_agreement
+    )
+
+    actions = { "pending_internship_agreement" => [ item ] }
+
+    email = EmployerActionsMailer.employer_digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "medium" ])
+    email.deliver_now
+
+    assert_emails 1
+    assert_includes email.to, employer.email
+
+    html_body = email.html_part.body.to_s
+    text_body = email.text_part.body.to_s
+
+    assert_match "Conventions de stage à compléter", html_body
+    assert_match internship_application.student.presenter.full_name, html_body
+    assert_match "Remplir la convention", html_body
+
+    assert_match "Conventions de stage à compléter", text_body
+    assert_match internship_application.student.presenter.full_name, text_body
+    assert_match "Remplir la convention", text_body
+  end
 end

@@ -7,7 +7,8 @@ class MailActionItem < ApplicationRecord
   belongs_to :internship_application, optional: true
   belongs_to :internship_agreement, optional: true
   # validations
-  validates_presence_of :recipient_id, :recipient_type,
+  validates_presence_of :recipient_id,
+                        :recipient_type,
                         :action_type
   # enums
   enum :action_type, {
@@ -32,7 +33,17 @@ class MailActionItem < ApplicationRecord
   scope :with_urgency_levels, ->(levels) { where(urgency_level: levels) }
   scope :for_recipient, ->(recipient) { where(recipient: recipient) }
   scope :for_users, -> { where(recipient_type: "User") }
-  scope :for_user, ->(user_id) { where(recipient_type: "User", recipient_id: user_id) }
+  scope :for_user, ->(user_id) { where(recipient_id: user_id) }
+  scope :for_employers, -> { where(recipient_type: "Users::Employer") }
+  scope :for_employer, ->(employer_id) { where(recipient_type: "Users::Employer", recipient_id: employer_id) }
+  scope :for_school_management_team, -> { where(recipient_type: "Users::SchoolManagement") }
+  scope :for_school_management, ->(school_management_id) {
+    where(recipient_type: "Users::SchoolManagement", recipient_id: school_management_id)
+  }
+  scope :for_school_managers, -> do
+    where(recipient_type: "Users::SchoolManagement")
+    .where(recipient_id: Users::SchoolManagement.where(role: :school_manager).pluck(:id))
+  end
 
   def self.create_by_name!(name, **kwargs)
     config = ACTION_CONFIGS.fetch(name) { raise ArgumentError, "Unknown MailActionItem name: #{name}" }

@@ -60,10 +60,10 @@ Candidatures transférées :
 <% end %>
 <% end %>
 
-<% if @agreement_to_sign_rows&.any? %>
+<% if @agreement_to_fill_in_rows&.any? %>
 Conventions de stage à compléter :
 
-<% @agreement_to_sign_rows.each_with_index do |row, index| %>
+<% @agreement_to_fill_in_rows.each_with_index do |row, index| %>
 <%= index + 1 %>. <%= row[:student_full_name] %>
 - Stage : <%= row[:offer_title] %>
 - Remplir la convention : <%= row[:agreement_url] %>

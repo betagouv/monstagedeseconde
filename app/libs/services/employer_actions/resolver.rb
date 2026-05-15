@@ -74,6 +74,18 @@ module Services::EmployerActions
       # =======================================================
 
       # ------------------------
+      # new_agreement_to_fill_in case
+      # ------------------------
+      new_agreement_to_fill_in_items = MailActionItem.for_user(user_id)
+                                                     .where(urgency_level:)
+                                                     .where(action_name: "new_agreement_to_fill_in")
+      new_agreement_to_fill_in_items.present? && new_agreement_to_fill_in_items.each do |item|
+        do_not_resolve_conditions = item&.internship_agreement&.kept? &&
+                                    item.internship_agreement&.draft?
+        agreement_resolve(item.internship_agreement) unless do_not_resolve_conditions
+      end
+
+      # ------------------------
       # agreement_signed_by_all case
       # ------------------------
       agreement_signed_by_all_items = MailActionItem.for_user(user_id)

@@ -428,6 +428,20 @@ class InternshipApplication < ApplicationRecord
     MailActionItem.create_by_name!(name, **kwargs)
   end
 
+  def notify_school_management_with_digest_email(name, **kwargs)
+    school_representative = student.school.management_representative
+    if school_representative.nil?
+      Rails.logger.error("No management representative found for school ##{student.school.id}")
+      return
+    end
+    kwargs[:recipient] ||= school_representative
+    kwargs[:internship_application_id] ||= id
+    kwargs[:internship_agreement_id] ||= internship_agreement.id if internship_agreement&.persisted?
+    kwargs[:action_type] ||= :pending_internship_application
+    kwargs[:stale_at] ||= weeks.order(:year, :number).last.monday - 2.days
+    MailActionItem.create_by_name!(name, **kwargs)
+  end
+
   def multi?
     internship_offer.from_multi?
   end
@@ -531,9 +545,9 @@ class InternshipApplication < ApplicationRecord
     agreement.save!
 
     notify_employer_with_digest_email(
-      "agreement_to_sign",
+      "new_agreement_to_fill_in",
       internship_agreement_id: agreement.id,
-      action_type: :pending_internship_agreement
+      action_type: :agreement_to_complete
     )
   end
 
@@ -545,9 +559,11 @@ class InternshipApplication < ApplicationRecord
     agreement.skip_validations_for_system = true
     agreement.save!
     # TODO notify coordinator and employers
-    EmployerMailer.internship_application_approved_with_agreement_email(
-      internship_agreement:,
-    ).deliver_later
+    notify_employer_with_digest_email(
+      "new_agreement_to_fill_in",
+      internship_agreement_id: agreement.id,
+      action_type: :agreement_to_complete
+    )
   end
 
   def internship_application_counter_hook

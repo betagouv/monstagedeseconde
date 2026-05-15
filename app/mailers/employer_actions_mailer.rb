@@ -105,9 +105,23 @@ class EmployerActionsMailer < ApplicationMailer
       }
     end
 
-    # --- Agreement to sign / fill ---
-    @agreement_to_sign_rows = all_agreements
-      .select { |item| item.action_name == "agreement_to_sign" }
+    # --- Agreement to sign ---
+    @agreement_to_fill_in_rows = all_agreements.select { |item| %w[agreement_to_sign].include?(item.action_name) }
+                                               .filter_map do |item|
+      internship_application = item.internship_application
+      next if internship_application.nil?
+
+      agreement = internship_application.internship_agreement
+      {
+        student_full_name: internship_application.student.presenter.full_name,
+        offer_title:       internship_application.internship_offer.title,
+        agreement_url:     agreement ? edit_dashboard_internship_agreement_url(uuid: agreement.uuid) : dashboard_internship_offers_url
+      }
+    end
+
+    # --- Agreement to fill in ---
+    @agreement_to_fill_in_rows = all_agreements
+      .select { |item| %w[ new_agreement_to_fill_in].include?(item.action_name) }
       .filter_map do |item|
       internship_application = item.internship_application
       next if internship_application.nil?

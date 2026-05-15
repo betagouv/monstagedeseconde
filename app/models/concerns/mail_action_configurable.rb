@@ -44,6 +44,10 @@ module MailActionConfigurable
     }.transform_values { |v| v.merge(action_type: :pending_internship_application) }.freeze
 
     PENDING_AGREEMENT_CONFIGS = {
+      "new_agreement_to_fill_in" => {
+        urgency_level: "medium",
+        max_deliveries_count: 2
+      },
       "agreement_signed_by_another" => {
         urgency_level: "low",
         max_deliveries_count: 1
