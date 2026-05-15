@@ -36,7 +36,7 @@ class DigestMailslowTest < ActiveSupport::TestCase
     MailActionItem.delete_all
 
     MailActionItem.create!(
-      user: employer,
+      recipient: employer,
       action_name: "new_internship_application",
       action_type: :pending_internship_application,
       urgency_level: :low,
@@ -48,7 +48,7 @@ class DigestMailslowTest < ActiveSupport::TestCase
     )
 
     MailActionItem.create!(
-      user: employer,
+      recipient: employer,
       action_name: "new_internship_application",
       action_type: :pending_internship_application,
       urgency_level: :low,

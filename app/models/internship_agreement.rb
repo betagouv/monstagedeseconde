@@ -310,7 +310,7 @@ class InternshipAgreement < ApplicationRecord
   private
 
   def notify_employer_with_digest_email(name, **kwargs)
-    kwargs[:user_id] ||= internship_application.internship_offer.employer_id
+    kwargs[:recipient] ||= internship_application.internship_offer.employer
     kwargs[:internship_agreement_id] ||= id
     kwargs[:action_type] ||= :pending_internship_agreement
     kwargs[:stale_at] ||= internship_application.weeks&.order(:year, :number)&.last&.monday || 30.days.from_now

@@ -1,10 +1,11 @@
 namespace :digest_mailers do
   desc "send digest mails for low urgency level"
   task send_low_urgency_emails: :environment do
-    user_ids = MailActionItem.with_urgency_levels(%w[low medium high critical])
+    user_ids = MailActionItem.for_users
+                             .with_urgency_levels(%w[low medium high critical])
                              .not_overdue
                              .pending
-                             .pluck(:user_id)
+                             .pluck(:recipient_id)
                              .uniq
     if user_ids.any?
       user_ids.each do |user_id|
@@ -19,10 +20,11 @@ namespace :digest_mailers do
 
   desc "send digest mails for medium urgency level"
   task send_medium_urgency_emails: :environment do
-    user_ids = MailActionItem.with_urgency_levels(%w[medium high critical])
+    user_ids = MailActionItem.for_users
+                             .with_urgency_levels(%w[medium high critical])
                              .not_overdue
                              .pending
-                             .pluck(:user_id)
+                             .pluck(:recipient_id)
                              .uniq
     if user_ids.any?
       user_ids.each do |user_id|
@@ -37,10 +39,11 @@ namespace :digest_mailers do
 
   desc "send digest mails for high urgency level"
   task send_high_urgency_emails: :environment do
-    user_ids = MailActionItem.with_urgency_levels(%w[high critical])
+    user_ids = MailActionItem.for_users
+                             .with_urgency_levels(%w[high critical])
                              .not_overdue
                              .pending
-                             .pluck(:user_id)
+                             .pluck(:recipient_id)
                              .uniq
     if user_ids.any?
       user_ids.each do |user_id|
@@ -55,10 +58,11 @@ namespace :digest_mailers do
 
   desc "send digest mails for critical urgency level"
   task send_critical_urgency_emails: :environment do
-    user_ids = MailActionItem.with_urgency_level("critical")
+    user_ids = MailActionItem.for_users
+                             .with_urgency_levels(%w[critical])
                              .not_overdue
                              .pending
-                             .pluck(:user_id)
+                             .pluck(:recipient_id)
                              .uniq
     if user_ids.any?
       user_ids.each do |user_id|

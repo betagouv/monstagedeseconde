@@ -9,7 +9,7 @@ module Services::EmployerActions
         standard_resolver(user_id:, urgency_level:)
       end
 
-      MailActionItem.where(user_id:)
+      MailActionItem.for_user(user_id)
                     .resolved
                     .delete_all
     end
@@ -21,11 +21,9 @@ module Services::EmployerActions
       # new_internship_application case
       # ------------------------
       # application which aasm_state is not :submitted are to be set as resolved
-      actions = MailActionItem.where(
-        user_id:,
-        urgency_level:,
-        action_name: "new_internship_application"
-      )
+      actions = MailActionItem.for_user(user_id)
+                              .where(urgency_level:)
+                              .where(action_name: "new_internship_application")
       if actions.present?
         actions.each do |mail_action_item|
           if mail_action_item&.internship_application&.aasm_state != "submitted"
@@ -37,11 +35,9 @@ module Services::EmployerActions
       # ------------------------
       # canceled_internship_application_by_student case
       # ------------------------
-      actions = MailActionItem.where(
-        user_id:,
-        urgency_level:,
-        action_name: "canceled_internship_application_by_student"
-      )
+      actions = MailActionItem.for_user(user_id)
+                              .where(urgency_level:)
+                              .where(action_name: "canceled_internship_application_by_student")
       actions.present? && actions.each do |item|
         if item&.internship_application&.canceled_by_student_confirmation?
           application_resolve(item.internship_application)
@@ -51,11 +47,9 @@ module Services::EmployerActions
       # ------------------------
       # restored_internship_application case
       # ------------------------
-      actions = MailActionItem.where(
-        user_id:,
-        urgency_level:,
-        action_name: "restored_internship_application"
-      )
+      actions = MailActionItem.for_user(user_id)
+                              .where(urgency_level:)
+                              .where(action_name: "restored_internship_application")
       actions.present? && actions.each do |item|
         if item&.internship_application&.aasm_state != "restored"
           application_resolve(item.internship_application)
@@ -65,8 +59,7 @@ module Services::EmployerActions
       # ------------------------
       # cancel_by_student_confirmation case
       # ------------------------
-      actions = MailActionItem.where(
-        user_id:,
+      actions = MailActionItem.for_user(user_id).where(
         urgency_level:,
         action_name: "cancel_by_student_confirmation"
       )
@@ -83,11 +76,9 @@ module Services::EmployerActions
       # ------------------------
       # agreement_signed_by_all case
       # ------------------------
-      agreement_signed_by_all_items = MailActionItem.where(
-        user_id:,
-        urgency_level:,
-        action_name: "agreement_signed_by_all"
-      )
+      agreement_signed_by_all_items = MailActionItem.for_user(user_id)
+                                                    .where(urgency_level:)
+                                                    .where(action_name: "agreement_signed_by_all")
       agreement_signed_by_all_items.present? && agreement_signed_by_all_items.each do |item|
         agreement_resolve(item.internship_agreement)
       end
@@ -95,11 +86,9 @@ module Services::EmployerActions
       # ------------------------
       # agreement_to_sign case
       # ------------------------
-      agreement_to_sign_items = MailActionItem.where(
-        user_id:,
-        urgency_level:,
-        action_name: "agreement_to_sign"
-      )
+      agreement_to_sign_items = MailActionItem.for_user(user_id)
+                                              .where(urgency_level:)
+                                              .where(action_name: "agreement_to_sign")
       agreement_to_sign_items.present? && agreement_to_sign_items.each do |item|
         if item&.internship_agreement&.roles_not_signed_yet&.exclude?("employer")
           agreement_resolve(item.internship_agreement)
@@ -108,7 +97,7 @@ module Services::EmployerActions
     end
 
     def self.standard_resolver(user_id:, urgency_level:)
-      mail_action_items_base = MailActionItem.where(user_id:)
+      mail_action_items_base = MailActionItem.for_user(user_id)
                                              .where(urgency_level: urgency_level)
       # Only delete stale or over-delivered items, not items just resolved
       mail_action_items_base.where("stale_at < ?", Time.current)

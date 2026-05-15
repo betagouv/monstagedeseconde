@@ -138,7 +138,7 @@ class EmployerMailerTest < ActionMailer::TestCase
                     .update(notify: false)
 
     internship_application.restore!
-    assert MailActionItem.where(user: employer,
+    assert MailActionItem.where(recipient: employer,
                                 action_name: "restored_internship_application",
                                 internship_application: internship_application)
                          .exists?

@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :mail_action_item do
     internship_application { nil }
     internship_agreement { nil }
-    user { internship_application&.internship_offer&.employer || create(:employer) }
+    recipient { internship_application&.internship_offer&.employer || create(:employer) }
     action_name { "default_action" }
     action_type { :pending_internship_application }
     urgency_level { :medium }

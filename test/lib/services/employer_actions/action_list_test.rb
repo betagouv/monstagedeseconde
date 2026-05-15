@@ -7,7 +7,7 @@ module Services
         employer = create(:employer)
 
         valid_medium = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "new_internship_application",
           action_type: :pending_internship_application,
           urgency_level: :medium,
@@ -19,7 +19,7 @@ module Services
         )
 
         MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "new_internship_application",
           action_type: :pending_internship_application,
           urgency_level: :medium,
@@ -31,7 +31,7 @@ module Services
         )
 
         MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "new_internship_application",
           action_type: :pending_internship_application,
           urgency_level: :medium,
@@ -43,7 +43,7 @@ module Services
         )
 
         valid_low = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "new_internship_application",
           action_type: :pending_internship_application,
           urgency_level: :low,
@@ -75,7 +75,7 @@ module Services
         employer = create(:employer)
 
         medium_item = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "new_internship_application",
           action_type: :pending_internship_application,
           urgency_level: :medium,
@@ -87,7 +87,7 @@ module Services
         )
 
         low_item = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "new_internship_application",
           action_type: :pending_internship_application,
           urgency_level: :low,

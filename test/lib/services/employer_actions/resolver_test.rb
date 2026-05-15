@@ -11,7 +11,7 @@ module Services
         internship_application = create(:weekly_internship_application, :approved)
 
         item = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "new_internship_application",
           action_type: :pending_internship_application,
           urgency_level: :medium,
@@ -32,7 +32,7 @@ module Services
         internship_application = create(:weekly_internship_application)
 
         item = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "new_internship_application",
           action_type: :pending_internship_application,
           urgency_level: :medium,
@@ -57,7 +57,7 @@ module Services
         internship_agreement.discard!
 
         item = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "agreement_signed_by_all",
           action_type: :pending_internship_agreement,
           urgency_level: :medium,
@@ -77,7 +77,7 @@ module Services
         employer = create(:employer)
 
         item = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "agreement_signed_by_all",
           action_type: :pending_internship_agreement,
           urgency_level: :medium,
@@ -98,7 +98,7 @@ module Services
         internship_agreement = create(:mono_internship_agreement, :signed_by_all)
 
         item = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "agreement_signed_by_all",
           action_type: :pending_internship_agreement,
           urgency_level: :medium,

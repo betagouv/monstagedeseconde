@@ -22,7 +22,7 @@ module InternshipOffers::InternshipApplications
       assert school.school_manager.present?
       sign_in(student)
 
-      assert_mail_action_item_no_direct_email(user: internship_offer.employer,
+      assert_mail_action_item_no_direct_email(recipient: internship_offer.employer,
                          action_name: "agreement_to_sign",
                          internship_application: internship_application) do
         patch(
@@ -383,7 +383,7 @@ module InternshipOffers::InternshipApplications
 
       sign_in(student)
 
-      assert_mail_action_item_no_direct_email(user: internship_offer.employer,
+      assert_mail_action_item_no_direct_email(recipient: internship_offer.employer,
                                               action_name: "agreement_to_sign",
                                               internship_application: internship_application) do
         assert_changes -> { MailActionItem.all.count },
@@ -500,7 +500,7 @@ module InternshipOffers::InternshipApplications
       assert_equal "OK", internship_application.canceled_by_student_message
       assert internship_application.canceled_by_student?
       assert_mail_action_item_created_for(
-        user: internship_application.internship_offer.employer,
+        recipient: internship_application.internship_offer.employer,
         action_name: "canceled_internship_application_by_student",
         internship_application: internship_application
       )
@@ -541,7 +541,7 @@ module InternshipOffers::InternshipApplications
 
       sign_in(internship_application.student)
 
-      assert_mail_action_item_no_direct_email(user: internship_application.internship_offer.employer,
+      assert_mail_action_item_no_direct_email(recipient: internship_application.internship_offer.employer,
                          action_name: "restored_internship_application",
                          internship_application: internship_application) do
         patch(

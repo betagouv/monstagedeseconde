@@ -1652,7 +1652,6 @@ ALTER SEQUENCE public.letter_thief_email_messages_id_seq OWNED BY public.letter_
 CREATE TABLE public.mail_action_items (
     id bigint NOT NULL,
     action_name character varying,
-    user_id bigint NOT NULL,
     first_seen_at timestamp(6) without time zone,
     stale_at timestamp(6) without time zone,
     last_notified_at timestamp(6) without time zone,
@@ -1666,7 +1665,9 @@ CREATE TABLE public.mail_action_items (
     urgency_level public.urgency_level,
     internship_offer_id bigint,
     internship_application_id bigint,
-    internship_agreement_id bigint
+    internship_agreement_id bigint,
+    recipient_type character varying NOT NULL,
+    recipient_id bigint NOT NULL
 );
 
 
@@ -4400,17 +4401,17 @@ CREATE INDEX index_mail_action_items_on_internship_offer_id ON public.mail_actio
 
 
 --
--- Name: index_mail_action_items_on_user_and_action_urgency_resolved; Type: INDEX; Schema: public; Owner: -
+-- Name: index_mail_action_items_on_recipient_pl_action_urgency_resolved; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_mail_action_items_on_user_and_action_urgency_resolved ON public.mail_action_items USING btree (user_id, action_type, urgency_level, resolved_at);
+CREATE INDEX index_mail_action_items_on_recipient_pl_action_urgency_resolved ON public.mail_action_items USING btree (recipient_type, recipient_id, action_type, urgency_level, resolved_at);
 
 
 --
--- Name: index_mail_action_items_on_user_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_mail_action_items_on_recipient_type_and_recipient_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_mail_action_items_on_user_id ON public.mail_action_items USING btree (user_id);
+CREATE INDEX index_mail_action_items_on_recipient_type_and_recipient_id ON public.mail_action_items USING btree (recipient_type, recipient_id);
 
 
 --
@@ -5225,14 +5226,6 @@ ALTER TABLE ONLY public.internship_application_weeks
 
 
 --
--- Name: mail_action_items fk_rails_6b318b418e; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.mail_action_items
-    ADD CONSTRAINT fk_rails_6b318b418e FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
 -- Name: users fk_rails_6bdbc6c887; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5607,6 +5600,7 @@ ALTER TABLE ONLY public.mail_action_items
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260515100000'),
 ('20260507100000'),
 ('20260505040224'),
 ('20260504130000'),

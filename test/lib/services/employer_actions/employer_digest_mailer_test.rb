@@ -7,7 +7,7 @@ module Services
         employer = create(:employer)
 
         kept = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "internship_offer_removed",
           action_type: :pending_internship_offer,
           urgency_level: :medium,
@@ -18,7 +18,7 @@ module Services
         )
 
         MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "internship_offer_removed",
           action_type: :pending_internship_offer,
           urgency_level: :medium,
@@ -29,7 +29,7 @@ module Services
         )
 
         MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "internship_offer_removed",
           action_type: :pending_internship_offer,
           urgency_level: :medium,
@@ -40,7 +40,7 @@ module Services
         )
 
         MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "internship_offer_removed",
           action_type: :pending_internship_offer,
           urgency_level: :medium,
@@ -56,7 +56,7 @@ module Services
         )
 
         assert_equal [ kept.id ],
-                     MailActionItem.where(user: employer).pluck(:id)
+                     MailActionItem.where(recipient: employer).pluck(:id)
       end
 
       test "#find_actions filters out empty action groups" do
@@ -98,7 +98,7 @@ module Services
         MailActionItem.delete_all
 
         item = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "canceled_internship_application_by_student",
           action_type: :pending_internship_application,
           internship_application:,
@@ -112,7 +112,7 @@ module Services
         Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: employer.id)
 
         assert_equal [ item.id ],
-                     MailActionItem.where(user: employer, deliveries_count: 1).pluck(:id)
+                     MailActionItem.where(recipient: employer, deliveries_count: 1).pluck(:id)
       end
 
       test ".perform_for_medium_level delivers for restored_internship_application" do
@@ -121,7 +121,7 @@ module Services
         MailActionItem.delete_all
 
         item = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "restored_internship_application",
           action_type: :pending_internship_application,
           internship_application:,
@@ -135,7 +135,7 @@ module Services
         Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: employer.id)
 
         assert_equal [ item.id ],
-                     MailActionItem.where(user: employer, deliveries_count: 1).pluck(:id)
+                     MailActionItem.where(recipient: employer, deliveries_count: 1).pluck(:id)
       end
 
       test ".perform_for_high_level delivers for cancel_by_student_confirmation" do
@@ -144,7 +144,7 @@ module Services
         MailActionItem.delete_all
 
         item = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "cancel_by_student_confirmation",
           action_type: :pending_internship_application,
           internship_application:,
@@ -158,7 +158,7 @@ module Services
         Services::EmployerActions::EmployerDigestMailer.perform_for_high_level(user_id: employer.id)
 
         assert_equal [ item.id ],
-                     MailActionItem.where(user: employer, deliveries_count: 1).pluck(:id)
+                     MailActionItem.where(recipient: employer, deliveries_count: 1).pluck(:id)
       end
 
       test "#perform_for_low_level performs expected operations" do
@@ -167,7 +167,7 @@ module Services
         MailActionItem.delete_all
 
         valid_medium = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "new_internship_application",
           action_type: :pending_internship_application,
           internship_application:,
@@ -181,7 +181,7 @@ module Services
         Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: employer.id)
 
         assert_equal [ valid_medium.id ],
-                     MailActionItem.where(user: employer, deliveries_count: 1).pluck(:id)
+                     MailActionItem.where(recipient: employer, deliveries_count: 1).pluck(:id)
       end
     end
   end

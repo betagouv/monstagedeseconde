@@ -7,7 +7,7 @@ module Services
         employer = create(:employer)
 
         item = MailActionItem.create!(
-          user: employer,
+          recipient: employer,
           action_name: "new_internship_application",
           action_type: :pending_internship_application,
           urgency_level: :medium,

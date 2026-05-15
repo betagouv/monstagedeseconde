@@ -24,7 +24,7 @@ FactoryBot.define do
                to_state: "submitted",
                author: application.student)
         create(:mail_action_item,
-               user: application.internship_offer.employer,
+               recipient: application.internship_offer.employer,
                action_name: "new_internship_application",
                action_type: :pending_internship_application,
                urgency_level: :medium,
@@ -52,7 +52,7 @@ FactoryBot.define do
                to_state: "restored",
                author: application.student)
         create(:mail_action_item,
-               user: application.internship_offer.employer,
+               recipient: application.internship_offer.employer,
                action_name: "restored_internship_application",
                action_type: :pending_internship_application,
                urgency_level: :medium,
@@ -129,7 +129,7 @@ FactoryBot.define do
           create(:mono_internship_agreement, internship_application: application)
         end
         create(:mail_action_item,
-          user: application.internship_offer.employer,
+          recipient: application.internship_offer.employer,
           action_name: "agreement_to_sign",
           action_type: :pending_internship_agreement,
           urgency_level: :medium,
