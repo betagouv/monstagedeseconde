@@ -1,5 +1,5 @@
-module Services::EmployerActions
-  class EmployerDigestMailer
+module Services::SchoolManagementActions
+  class SchoolManagementDigestMailer
     MailActionItem.urgency_levels.each_key do |urgency_level|
       # define "perform_for_low_level", "perform_for_medium_level", "perform_for_high_level" and "perform_for_critical_level" class methods
       define_singleton_method :"perform_for_#{urgency_level}_level" do |user_id:|

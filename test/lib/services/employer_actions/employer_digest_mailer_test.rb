@@ -67,7 +67,7 @@ module Services
           "agreement_to_sign" => []
         }
 
-        Services::EmployerActions::DigestBuilder.stub(
+        Services::CommonActions::DigestBuilder.stub(
           :build_digest_by_user_and_urgency_level,
           fake_actions
         ) do
@@ -80,7 +80,7 @@ module Services
       end
 
       test "#find_actions returns empty hash when digest is empty" do
-        Services::EmployerActions::DigestBuilder.stub(
+        Services::CommonActions::DigestBuilder.stub(
           :build_digest_by_user_and_urgency_level,
           {}
         ) do
