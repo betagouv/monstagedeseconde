@@ -547,7 +547,7 @@ class InternshipApplication < ApplicationRecord
     notify_employer_with_digest_email(
       "new_agreement_to_fill_in",
       internship_agreement_id: agreement.id,
-      action_type: :agreement_to_complete
+      action_type: :pending_internship_agreement
     )
   end
 
@@ -562,7 +562,7 @@ class InternshipApplication < ApplicationRecord
     notify_employer_with_digest_email(
       "new_agreement_to_fill_in",
       internship_agreement_id: agreement.id,
-      action_type: :agreement_to_complete
+      action_type: :pending_internship_agreement
     )
   end
 

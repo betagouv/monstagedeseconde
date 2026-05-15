@@ -95,6 +95,7 @@ module Services
       test ".perform_for_medium_level delivers for canceled_internship_application_by_student" do
         internship_application = create(:weekly_internship_application)
         employer = internship_application.internship_offer.employer
+        internship_application.update_columns(aasm_state: "canceled_by_student")
         MailActionItem.delete_all
 
         item = MailActionItem.create!(
@@ -141,6 +142,7 @@ module Services
       test ".perform_for_high_level delivers for cancel_by_student_confirmation" do
         internship_application = create(:weekly_internship_application, :submitted)
         employer = internship_application.internship_offer.employer
+        internship_application.update_columns(aasm_state: "canceled_by_student_confirmation")
         MailActionItem.delete_all
 
         item = MailActionItem.create!(

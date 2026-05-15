@@ -8,7 +8,6 @@ module Services::EmployerActions
         extra_resolver(user_id:, urgency_level:)
         standard_resolver(user_id:, urgency_level:)
       end
-
       MailActionItem.for_user(user_id)
                     .resolved
                     .delete_all
@@ -39,7 +38,7 @@ module Services::EmployerActions
                               .where(urgency_level:)
                               .where(action_name: "canceled_internship_application_by_student")
       actions.present? && actions.each do |item|
-        if item&.internship_application&.canceled_by_student_confirmation?
+        unless item&.internship_application&.canceled_by_student?
           application_resolve(item.internship_application)
         end
       end
@@ -64,7 +63,7 @@ module Services::EmployerActions
         action_name: "cancel_by_student_confirmation"
       )
       actions.present? && actions.each do |item|
-        if item&.internship_application&.canceled_by_student_confirmation?
+        if !item&.internship_application&.canceled_by_student_confirmation?
           application_resolve(item.internship_application)
         end
       end
