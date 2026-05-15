@@ -7,6 +7,7 @@ class User < ApplicationRecord
   include UserAdmin
   include ActiveModel::Dirty
   include PhoneComputation
+  include TwoFactorAuthenticatable
 
   # TODO: move the following to student or just remove
   has_many :favorites
