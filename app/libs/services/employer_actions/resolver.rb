@@ -25,7 +25,7 @@ module Services::EmployerActions
                               .where(action_name: "new_internship_application")
       if actions.present?
         actions.each do |mail_action_item|
-          if mail_action_item&.internship_application&.aasm_state != "submitted"
+          unless mail_action_item&.internship_application&.submitted?
             application_resolve(mail_action_item.internship_application)
           end
         end
@@ -63,7 +63,7 @@ module Services::EmployerActions
         action_name: "cancel_by_student_confirmation"
       )
       actions.present? && actions.each do |item|
-        if !item&.internship_application&.canceled_by_student_confirmation?
+        unless item&.internship_application&.canceled_by_student_confirmation?
           application_resolve(item.internship_application)
         end
       end
@@ -87,12 +87,6 @@ module Services::EmployerActions
       # ------------------------
       # agreement_signed_by_all case
       # ------------------------
-      agreement_signed_by_all_items = MailActionItem.for_user(user_id)
-                                                    .where(urgency_level:)
-                                                    .where(action_name: "agreement_signed_by_all")
-      agreement_signed_by_all_items.present? && agreement_signed_by_all_items.each do |item|
-        agreement_resolve(item.internship_agreement)
-      end
 
       # ------------------------
       # agreement_to_sign case
@@ -101,7 +95,7 @@ module Services::EmployerActions
                                               .where(urgency_level:)
                                               .where(action_name: "agreement_to_sign")
       agreement_to_sign_items.present? && agreement_to_sign_items.each do |item|
-        if item&.internship_agreement&.roles_not_signed_yet&.exclude?("employer")
+        unless item&.internship_agreement&.roles_not_signed_yet&.include?("employer")
           agreement_resolve(item.internship_agreement)
         end
       end
