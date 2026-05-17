@@ -9,9 +9,9 @@ module ApplicationTransitable
       authorize_through_sgid? || (@internship_application.present? && authorize_through_token?) || authorize!(:update, @internship_application)
       transition_valid = if current_user
                            current_user.valid_transition?(params[:transition])
-                         else
+      else
                            InternshipApplication::VALID_TRANSITIONS.include?(params[:transition])
-                         end
+      end
       if transition_valid
         # action happens here
         @internship_application.send(params[:transition].to_sym, current_user)
@@ -27,16 +27,16 @@ module ApplicationTransitable
         end
       elsif current_user
         redirect_back fallback_location: current_user.custom_dashboard_path,
-                      flash: { notice: 'Impossible de traiter votre requête, veuillez contacter notre support' }
+                      flash: { notice: "Impossible de traiter votre requête, veuillez contacter notre support" }
       else
         redirect_back fallback_location: root_path,
-                      flash: { notice: 'Impossible de traiter votre requête, veuillez contacter notre support' }
+                      flash: { notice: "Impossible de traiter votre requête, veuillez contacter notre support" }
       end
     rescue AASM::InvalidTransition => e
       redirect_back fallback_location: current_user ? current_user.custom_dashboard_path || root_path : root_path,
-                    flash: { warning: 'Cette candidature a déjà été traitée' }
+                    flash: { warning: "Cette candidature a déjà été traitée" }
     rescue ActiveRecord::RecordInvalid => e
-      alert = @internship_application.nil? ? e.message : @internship_application.errors.messages.first.join(' : ')
+      alert = @internship_application.nil? ? e.message : @internship_application.errors.messages.first.join(" : ")
       redirect_back fallback_location: current_user ? current_user.custom_dashboard_path : root_path,
                     alert:
     end
@@ -50,6 +50,7 @@ module ApplicationTransitable
 
     def authorize_through_token?
       return false unless params[:token].present?
+      return false unless @internship_application.present?
 
       @internship_application.access_token == params[:token]
     end
@@ -65,13 +66,13 @@ module ApplicationTransitable
     def update_flash_message
       current_user = authorize_through_sgid? ? @internship_application.student : @current_user
       if @internship_application.reload.read_by_employer?
-        'Candidature mise à jour.'
+        "Candidature mise à jour."
       elsif @internship_application.rejected?
-        'Candidature non retenue.'
+        "Candidature non retenue."
       elsif @internship_application.approved?
-        current_user.employer? ? "Candidature mise à jour avec succès. #{extra_message}" : 'Candidature acceptée !'
+        current_user.employer? ? "Candidature mise à jour avec succès. #{extra_message}" : "Candidature acceptée !"
       else
-        'Candidature mise à jour avec succès.'
+        "Candidature mise à jour avec succès."
       end
     end
 
