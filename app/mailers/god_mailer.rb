@@ -13,10 +13,11 @@ class GodMailer < ApplicationMailer
     @human_date        = I18n.l Date.today,   format: "%d %B %Y"
     @human_last_monday = I18n.l @last_monday, format: "%d %B %Y"
     @human_last_sunday = I18n.l @last_sunday, format: "%d %B %Y"
+    @recipient_email = ENV.fetch("TEAM_DSI_EMAIL", "1e1s_team@free.fr")
 
     mail(
-      to: ENV["TEAM_EMAIL"],
-      subject: "Monitoring MS2GT : kpi du #{@human_date}"
+      to: @recipient_email,
+      subject: "Monitoring 1E1S : kpi du #{@human_date}"
     )
   end
 
