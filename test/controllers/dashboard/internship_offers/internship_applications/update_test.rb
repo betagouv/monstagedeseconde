@@ -6,6 +6,7 @@ module InternshipOffers::InternshipApplications
   class UpdateTest < ActionDispatch::IntegrationTest
     include Devise::Test::IntegrationHelpers
     include ActionMailer::TestHelper
+    include MailActionItemHelpers
 
     test "PATCH #update with approve! any no custom message transition sends email" do
       school = create(:school, :with_school_manager)
@@ -21,8 +22,9 @@ module InternshipOffers::InternshipApplications
       assert school.school_manager.present?
       sign_in(student)
 
-      # since no teacher and mails to school_manager and employer are delivered later(they are queued)
-      assert_enqueued_emails 1 do
+      assert_mail_action_item_no_direct_email(recipient: internship_offer.employer,
+                         action_name: "new_agreement_to_fill_in",
+                         internship_application: internship_application) do
         patch(
           dashboard_internship_offer_internship_application_path(
             internship_offer,
@@ -43,6 +45,7 @@ module InternshipOffers::InternshipApplications
       assert_equal true, InternshipApplication.last.approved?
       assert_equal 1, InternshipAgreement.count
     end
+
     test "PATCH #update with approve! any no custom message transition sends email when no school_manager" do
       school = create(:school)
       class_room = create(:class_room, school:)
@@ -124,7 +127,7 @@ module InternshipOffers::InternshipApplications
 
       sign_in(student)
 
-      assert_enqueued_emails 1 do
+      assert_enqueued_emails 0 do
         patch(
           dashboard_internship_offer_internship_application_path(internship_application.internship_offer,
                                                                  uuid: internship_application.uuid),
@@ -233,7 +236,7 @@ module InternshipOffers::InternshipApplications
       )
       sign_in(student)
 
-      assert_enqueued_emails 1 do
+      assert_enqueued_emails 0 do
         patch(
           dashboard_internship_offer_internship_application_path(
             internship_application.internship_offer,
@@ -376,12 +379,16 @@ module InternshipOffers::InternshipApplications
       )
       internship_offer = internship_application.internship_offer
 
+      MailActionItem.all.delete_all
+
       sign_in(student)
 
-      assert_enqueued_emails 4 do # 3 others applications emails + 1 for new agreement
-        assert_changes -> { InternshipAgreement.all.count },
+      assert_mail_action_item_no_direct_email(recipient: internship_offer.employer,
+                                              action_name: "new_agreement_to_fill_in",
+                                              internship_application: internship_application) do
+        assert_changes -> { MailActionItem.all.count },
                        from: 0,
-                       to: 1 do
+                       to: 4 do
           update_url = dashboard_internship_offer_internship_application_path(
             internship_offer,
             uuid: internship_application.uuid
@@ -478,7 +485,7 @@ module InternshipOffers::InternshipApplications
 
       sign_in(internship_application.student)
 
-      assert_enqueued_emails 1 do
+      assert_enqueued_emails 0 do
         patch(
           dashboard_internship_offer_internship_application_path(
             internship_application.internship_offer, uuid: internship_application.uuid
@@ -492,6 +499,11 @@ module InternshipOffers::InternshipApplications
 
       assert_equal "OK", internship_application.canceled_by_student_message
       assert internship_application.canceled_by_student?
+      assert_mail_action_item_created_for(
+        recipient: internship_application.internship_offer.employer,
+        action_name: "canceled_internship_application_by_student",
+        internship_application: internship_application
+      )
 
       follow_redirect!
       assert_select("#alert-text", text: "Candidature mise à jour avec succès.")
@@ -529,7 +541,9 @@ module InternshipOffers::InternshipApplications
 
       sign_in(internship_application.student)
 
-      assert_enqueued_emails 1 do
+      assert_mail_action_item_no_direct_email(recipient: internship_application.internship_offer.employer,
+                         action_name: "restored_internship_application",
+                         internship_application: internship_application) do
         patch(
           dashboard_internship_offer_internship_application_path(
             internship_application.internship_offer, uuid: internship_application.uuid
@@ -608,8 +622,9 @@ module InternshipOffers::InternshipApplications
       assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
     end
 
-    test "PATCH when 2 2nde applications are validated by employer, with week1 for the first and both weeks with the second," \
-         "student, approve the one with week1, and the restore the second validated by employer offer, which should be impossible" do
+    test "PATCH when 2 2nde applications are validated by employer, with week1 for the " \
+         "first and both weeks with the second, and student approve the one with week1, and " \
+         " then try to restore the second validated by employer offer, it fails" do
       school = create(:school, :with_school_manager)
       class_room = create(:class_room, school:)
       student = create(:student, school:, class_room:)
@@ -625,8 +640,10 @@ module InternshipOffers::InternshipApplications
         :weekly_internship_application,
         :validated_by_employer,
         internship_offer: internship_offer_2,
+        weeks: internship_offer_2.weeks,
         user_id: student.id
       )
+      assert_equal 2, internship_application_2.weeks.count
 
       sign_in(student)
 

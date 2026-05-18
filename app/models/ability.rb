@@ -152,7 +152,7 @@ class Ability
         internship_application.no_weeks_overlap?
     end
 
-    can %i[read show update sign student_sign legal_representative_sign], InternshipAgreement do |internship_agreement|
+    can %i[read show sign student_sign legal_representative_sign], InternshipAgreement do |internship_agreement|
       internship_agreement.student.id == user.id
     end
     can %i[manage, update], InappropriateOffer
