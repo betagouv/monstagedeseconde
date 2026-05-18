@@ -2,6 +2,74 @@ require "test_helper"
 
 module Services::SchoolManagementActions
   class SchoolManagementDigestMailerTest < ActiveSupport::TestCase
+    test ".perform_for_medium_level calls school_management_digest_email" do
+      school_manager = create(:school_manager)
+      actions = {
+        "pending_internship_agreement" => [ MailActionItem.new(action_name: "agreement_signed_by_all") ]
+      }
+      delivered_mail = Minitest::Mock.new
+      delivered_mail.expect(:deliver_later, true)
+
+      captured_kwargs = nil
+      mailer_stub = lambda do |**kwargs|
+        captured_kwargs = kwargs
+        delivered_mail
+      end
+
+      Services::SchoolManagementActions::Resolver.stub(:call, nil) do
+        Services::SchoolManagementActions::SchoolManagementDigestMailer.stub(:urgency_levels_sum_up, [ "medium" ]) do
+          Services::SchoolManagementActions::SchoolManagementDigestMailer.stub(:find_actions, actions) do
+            Services::SchoolManagementActions::SchoolManagementDigestMailer.stub(:manage_actions_post_delivery, nil) do
+              SchoolManagementActionsMailer.stub(:school_management_digest_email, mailer_stub) do
+                Services::SchoolManagementActions::SchoolManagementDigestMailer.perform_for_medium_level(user_id: school_manager.id)
+              end
+            end
+          end
+        end
+      end
+
+      assert_equal school_manager.id, captured_kwargs[:user_id]
+      assert_equal actions, captured_kwargs[:actions]
+      assert_equal [ "medium" ], captured_kwargs[:urgency_levels]
+      delivered_mail.verify
+    end
+
+    test ".perform_for_medium_level does not call employer_digest_email" do
+      school_manager = create(:school_manager)
+      actions = {
+        "pending_internship_agreement" => [ MailActionItem.new(action_name: "agreement_signed_by_all") ]
+      }
+      delivered_mail = Minitest::Mock.new
+      delivered_mail.expect(:deliver_later, true)
+      school_mailer_called = false
+
+      school_mailer_stub = lambda do |**_kwargs|
+        school_mailer_called = true
+        delivered_mail
+      end
+
+      legacy_mailer_stub = lambda do |**_kwargs|
+        raise "employer_digest_email should not be called for school management digest"
+      end
+
+      Services::SchoolManagementActions::Resolver.stub(:call, nil) do
+        Services::SchoolManagementActions::SchoolManagementDigestMailer.stub(:urgency_levels_sum_up, [ "medium" ]) do
+          Services::SchoolManagementActions::SchoolManagementDigestMailer.stub(:find_actions, actions) do
+            Services::SchoolManagementActions::SchoolManagementDigestMailer.stub(:manage_actions_post_delivery, nil) do
+              SchoolManagementActionsMailer.stub(:employer_digest_email, legacy_mailer_stub) do
+                SchoolManagementActionsMailer.stub(:school_management_digest_email, school_mailer_stub) do
+                  Services::SchoolManagementActions::SchoolManagementDigestMailer.perform_for_medium_level(user_id: school_manager.id)
+                end
+              end
+            end
+          end
+        end
+      end
+
+      assert school_mailer_called
+      delivered_mail.verify
+    end
+
     #   test ".purge_actions_for_user_and_level removes stale resolved and maxed" do
     #     employer = create(:employer)
 

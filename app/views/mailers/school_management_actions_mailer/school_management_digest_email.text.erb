@@ -1,0 +1,41 @@
+Bonjour <%= @recipient_name || @user.try(:name) %>,
+
+<% if @agreement_completed_by_employer_rows&.any? %>
+Conventions à compléter :
+
+<% @agreement_completed_by_employer_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_full_name] %>
+- <%= row[:employer_name] %> a accepté l'élève <%= row[:student_full_name] %>
+- Stage : <%= row[:offer_title] %>
+<% if row[:weeks].present? %>- Période : <%= row[:weeks] %>
+<% end %>- Editer la convention : <%= row[:agreement_url] %>
+
+<% end %>
+<% end %>
+
+<% if @signatures_enabled_rows&.any? %>
+Conventions prêtes à être signées :
+
+<% @signatures_enabled_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_full_name] %>
+- La convention pour l'offre '<%= row[:offer_title] %>' chez <%= row[:employer_name] %> est prête à être signée.
+- Il manque encore votre signature.
+- Signer la convention de stage : <%= row[:agreement_url] %>
+
+<% end %>
+<% end %>
+
+<% if @agreement_signed_by_all_rows&.any? %>
+Conventions signées par toutes les parties :
+
+<% @agreement_signed_by_all_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_full_name] %>
+- Stage : <%= row[:offer_title] %>
+- La convention est signée et disponible à la lecture ou à l'impression.
+- Voir la convention signée : <%= row[:agreement_url] %>
+
+<% end %>
+<% end %>
+
+À bientôt,
+L'équipe 1élève1stage

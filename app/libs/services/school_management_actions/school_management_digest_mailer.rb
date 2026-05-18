@@ -15,7 +15,7 @@ module Services::SchoolManagementActions
           return
         end
 
-        EmployerActionsMailer.employer_digest_email(
+        SchoolManagementActionsMailer.school_management_digest_email(
           user_id:,
           actions:,
           urgency_levels: urgency_levels

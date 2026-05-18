@@ -19,19 +19,14 @@ class SchoolManagerMailerPreview < ActionMailer::Preview
   #   )
   # end
 
-  def notify_school_management_of_employer_completion_email
-    SchoolManagerMailer.internship_agreement_completed_by_employer_email(
-      internship_agreement: InternshipAgreement.first
-    )
-  end
 
   private
 
   def school_manager
-    Users::SchoolManagement.find_by(role: 'school_manager')
+    Users::SchoolManagement.find_by(role: "school_manager")
   end
 
   def fetch_teacher
-    Users::SchoolManagement.find_by(role: 'teacher')
+    Users::SchoolManagement.find_by(role: "teacher")
   end
 end

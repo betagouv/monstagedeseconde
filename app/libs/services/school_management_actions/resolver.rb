@@ -16,65 +16,14 @@ module Services::SchoolManagementActions
     # Helpers
 
     def self.extra_resolver(user_id:, urgency_level:)
-      # ------------------------
-      # new_internship_application case
-      # ------------------------
-      # application which aasm_state is not :submitted are to be set as resolved
-      actions = MailActionItem.for_user(user_id)
-                              .where(urgency_level:)
-                              .where(action_name: "new_internship_application")
-      if actions.present?
-        actions.each do |mail_action_item|
-          unless mail_action_item&.internship_application&.submitted?
-            application_resolve(mail_action_item.internship_application)
-          end
-        end
-      end
-
-      # ------------------------
-      # canceled_internship_application_by_student case
-      # ------------------------
-      actions = MailActionItem.for_user(user_id)
-                              .where(urgency_level:)
-                              .where(action_name: "canceled_internship_application_by_student")
-      actions.present? && actions.each do |item|
-        unless item&.internship_application&.canceled_by_student?
-          application_resolve(item.internship_application)
-        end
-      end
-
-      # ------------------------
-      # restored_internship_application case
-      # ------------------------
-      actions = MailActionItem.for_user(user_id)
-                              .where(urgency_level:)
-                              .where(action_name: "restored_internship_application")
-      actions.present? && actions.each do |item|
-        if item&.internship_application&.aasm_state != "restored"
-          application_resolve(item.internship_application)
-        end
-      end
-
-      # ------------------------
-      # cancel_by_student_confirmation case
-      # ------------------------
-      actions = MailActionItem.for_user(user_id).where(
-        urgency_level:,
-        action_name: "cancel_by_student_confirmation"
-      )
-      actions.present? && actions.each do |item|
-        unless item&.internship_application&.canceled_by_student_confirmation?
-          application_resolve(item.internship_application)
-        end
-      end
-
+      # School managers only manage internship agreements, not applications.
       # =======================================================
       # ------------------- AGREEMENTS ------------------------
       # =======================================================
 
       # ------------------------
       # new_agreement_to_fill_in case
-      # ------------------------
+      # -------------------------------------------------------
       new_agreement_to_fill_in_items = MailActionItem.for_user(user_id)
                                                      .where(urgency_level:)
                                                      .where(action_name: "new_agreement_to_fill_in")
@@ -83,10 +32,6 @@ module Services::SchoolManagementActions
                                     item.internship_agreement&.draft?
         agreement_resolve(item.internship_agreement) unless do_not_resolve_conditions
       end
-
-      # ------------------------
-      # agreement_signed_by_all case
-      # ------------------------
 
       # ------------------------
       # agreement_to_sign case
@@ -109,17 +54,6 @@ module Services::SchoolManagementActions
                             .delete_all
       mail_action_items_base.where("deliveries_count >= max_deliveries_count")
                             .delete_all
-    end
-
-    def self.application_resolve(application)
-      return unless application.present? && application.persisted?
-
-      MailActionItem.where(
-        action_type: :pending_internship_application,
-        internship_application_id: application.id,
-      ).each do |item|
-        item.update_columns(resolved_at: Time.current)
-      end
     end
 
     def self.agreement_resolve(agreement)
