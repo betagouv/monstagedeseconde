@@ -29,6 +29,26 @@ class SchoolManagementActionsMailer < ApplicationMailer
       }
     end
 
+    @agreement_to_sign_rows = all_agreements
+      .select { |item| item.action_name == "agreement_to_sign" }
+      .filter_map do |item|
+      agreement = item.internship_agreement || item.internship_application&.internship_agreement
+      next if agreement.nil?
+
+      internship_application = agreement.internship_application
+      next if internship_application.nil?
+
+      student = internship_application.student
+      internship_offer = internship_application.internship_offer
+
+      {
+        student_full_name: student.presenter.full_name,
+        employer_name: internship_offer.employer_name,
+        offer_title: internship_offer.title,
+        agreement_url: edit_dashboard_internship_agreement_url(uuid: agreement.uuid)
+      }
+    end
+
     @signatures_enabled_rows = all_agreements
       .select { |item| item.action_name == "signatures_enabled" }
       .filter_map do |item|

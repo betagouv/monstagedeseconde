@@ -13,6 +13,19 @@ Conventions à compléter :
 <% end %>
 <% end %>
 
+<% if @agreement_to_sign_rows&.any? %>
+Conventions en attente de votre signature :
+
+<% @agreement_to_sign_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:student_full_name] %>
+- Stage : <%= row[:offer_title] %>
+- Employeur : <%= row[:employer_name] %>
+- La convention est prête et attend votre signature.
+- Signer la convention de stage : <%= row[:agreement_url] %>
+
+<% end %>
+<% end %>
+
 <% if @signatures_enabled_rows&.any? %>
 Conventions prêtes à être signées :
 
