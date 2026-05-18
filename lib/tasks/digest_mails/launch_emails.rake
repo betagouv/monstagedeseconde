@@ -16,6 +16,22 @@ namespace :digest_mailers do
       Rails.logger.info "No low urgency emails to send"
       Rails.logger.info "=" * 50
     end
+
+    school_management_ids = MailActionItem.for_school_management_team
+                                          .with_urgency_levels(%w[low medium high critical])
+                                          .not_overdue
+                                          .pending
+                                          .pluck(:recipient_id)
+                                          .uniq
+    if school_management_ids.any?
+      school_management_ids.each do |user_id|
+        ::Services::SchoolManagementActions::SchoolManagementDigestMailer.perform_for_low_level(user_id: user_id)
+      end
+    else
+      Rails.logger.info "=" * 50
+      Rails.logger.info "No low urgency school management emails to send"
+      Rails.logger.info "=" * 50
+    end
   end
 
   desc "send digest mails for medium urgency level"
@@ -33,6 +49,22 @@ namespace :digest_mailers do
     else
       Rails.logger.info "=" * 50
       Rails.logger.info "No medium urgency emails to send"
+      Rails.logger.info "=" * 50
+    end
+
+    school_management_ids = MailActionItem.for_school_management_team
+                                          .with_urgency_levels(%w[medium high critical])
+                                          .not_overdue
+                                          .pending
+                                          .pluck(:recipient_id)
+                                          .uniq
+    if school_management_ids.any?
+      school_management_ids.each do |user_id|
+        ::Services::SchoolManagementActions::SchoolManagementDigestMailer.perform_for_medium_level(user_id: user_id)
+      end
+    else
+      Rails.logger.info "=" * 50
+      Rails.logger.info "No medium urgency school management emails to send"
       Rails.logger.info "=" * 50
     end
   end
@@ -54,6 +86,22 @@ namespace :digest_mailers do
       Rails.logger.info "No high urgency emails to send"
       Rails.logger.info "=" * 50
     end
+
+    school_management_ids = MailActionItem.for_school_management_team
+                                          .with_urgency_levels(%w[high critical])
+                                          .not_overdue
+                                          .pending
+                                          .pluck(:recipient_id)
+                                          .uniq
+    if school_management_ids.any?
+      school_management_ids.each do |user_id|
+        ::Services::SchoolManagementActions::SchoolManagementDigestMailer.perform_for_high_level(user_id: user_id)
+      end
+    else
+      Rails.logger.info "=" * 50
+      Rails.logger.info "No high urgency school management emails to send"
+      Rails.logger.info "=" * 50
+    end
   end
 
   desc "send digest mails for critical urgency level"
@@ -71,6 +119,22 @@ namespace :digest_mailers do
     else
       Rails.logger.info "=" * 50
       Rails.logger.info "No critical urgency emails to send"
+      Rails.logger.info "=" * 50
+    end
+
+    school_management_ids = MailActionItem.for_school_management_team
+                                          .with_urgency_levels(%w[critical])
+                                          .not_overdue
+                                          .pending
+                                          .pluck(:recipient_id)
+                                          .uniq
+    if school_management_ids.any?
+      school_management_ids.each do |user_id|
+        ::Services::SchoolManagementActions::SchoolManagementDigestMailer.perform_for_critical_level(user_id: user_id)
+      end
+    else
+      Rails.logger.info "=" * 50
+      Rails.logger.info "No critical urgency school management emails to send"
       Rails.logger.info "=" * 50
     end
   end
