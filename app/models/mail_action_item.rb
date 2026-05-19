@@ -44,6 +44,8 @@ class MailActionItem < ApplicationRecord
     where(recipient_type: "Users::SchoolManagement")
     .where(recipient_id: Users::SchoolManagement.where(role: :school_manager).pluck(:id))
   end
+  scope :for_students, -> { where(recipient_type: "Users::Student") }
+  scope :for_student, ->(student_id) { where(recipient_type: "Users::Student", recipient_id: student_id) }
 
   def self.create_by_name!(name, **kwargs)
     config = ACTION_CONFIGS.fetch(name) { raise ArgumentError, "Unknown MailActionItem name: #{name}" }

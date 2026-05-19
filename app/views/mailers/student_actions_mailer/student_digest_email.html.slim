@@ -1,0 +1,106 @@
+p style=head_styles
+	| Résumé de vos candidatures
+
+p style=p_cyclop_styles({color: '#000000'})
+	= "Bonjour #{@user.try(:presenter).try(:formal_name).presence || @user.try(:name)},"
+
+/ ─── Candidature validée, en attente de confirmation ───────────────────────
+- if @validated_rows&.any?
+	p style=p_cyclop_styles
+		| Candidatures validées par l'employeur, en attente de votre confirmation :
+
+	- @validated_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #000091;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:offer_title]}"
+				tr style="background-color: #f6f6f6;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Employeur :
+							= " #{row[:employer_name]}"
+						p style="margin: 0;"
+							| L'employeur a validé votre candidature. Confirmez-la pour continuer le processus.
+				tr style="background-color: #ffffff;"
+					td style="padding: 10px 12px; text-align: right;"
+						a href=row[:application_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Confirmer ma candidature
+
+/ ─── Convention à signer ────────────────────────────────────────────────────
+- if @agreement_to_sign_rows&.any?
+	p style=p_cyclop_styles
+		| Conventions en attente de votre signature :
+
+	- @agreement_to_sign_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #000091;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:offer_title]}"
+				tr style="background-color: #f6f6f6;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Employeur :
+							= " #{row[:employer_name]}"
+						p style="margin: 0;"
+							| La convention de stage est prête. Imprimez-la et signez-la.
+				tr style="background-color: #ffffff;"
+					td style="padding: 10px 12px; text-align: right;"
+						a href=row[:agreement_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Voir la convention
+
+/ ─── Candidature rejetée ───────────────────────────────────────────────────
+- if @rejected_rows&.any?
+	p style=p_cyclop_styles
+		| Candidatures refusées :
+
+	- @rejected_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #6a6af4;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:offer_title]}"
+				tr style="background-color: #f6f6f6;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Employeur :
+							= " #{row[:employer_name]}"
+						p style="margin: 0;"
+							| L'employeur n'a pas retenu votre candidature. N'hésitez pas à postuler à d'autres offres.
+				tr style="background-color: #ffffff;"
+					td style="padding: 10px 12px; text-align: right;"
+						a href=row[:search_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Trouver d'autres offres
+
+/ ─── Candidature expirée ───────────────────────────────────────────────────
+- if @expired_rows&.any?
+	p style=p_cyclop_styles
+		| Candidatures expirées :
+
+	- @expired_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #6a6af4;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:offer_title]}"
+				tr style="background-color: #f6f6f6;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Employeur :
+							= " #{row[:employer_name]}"
+						p style="margin: 0;"
+							| Votre candidature n'a pas reçu de réponse dans les délais. Pensez à postuler à de nouvelles offres.
+				tr style="background-color: #ffffff;"
+					td style="padding: 10px 12px; text-align: right;"
+						a href=row[:search_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Trouver d'autres offres
+
+p style=p_cyclop_styles
+	| À bientôt,
+p style=p_cyclop_styles
+	| L'équipe 1élève1stage

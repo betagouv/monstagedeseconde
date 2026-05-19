@@ -318,9 +318,7 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |user, *_args|
                     update!("rejected_at": Time.now.utc)
                     if student.email.present?
-                      deliver_later_with_additional_delay do
-                        StudentMailer.internship_application_rejected_email(internship_application: self)
-                      end
+                      notify_student_with_digest_email("internship_application_rejected")
                     end
                     record_state_change user
                   }
@@ -379,7 +377,7 @@ class InternshipApplication < ApplicationRecord
                   to: :expired,
                   after: proc { |user, *_args|
                     update!(expired_at: Time.now.utc)
-                    StudentMailer.internship_application_expired_email(internship_application: self).deliver_later
+                    notify_student_with_digest_email("internship_application_expired")
                     record_state_change user
                   }
     end
@@ -424,7 +422,7 @@ class InternshipApplication < ApplicationRecord
     kwargs[:internship_application_id] ||= id
     kwargs[:internship_agreement_id] ||= internship_agreement.id if internship_agreement&.persisted?
     kwargs[:action_type] ||= :pending_internship_application
-    kwargs[:stale_at] ||= weeks.order(:year, :number).last.monday - 2.days
+    kwargs[:stale_at] ||= weeks.order(:year, :number).last&.monday&.-(2.days) || 30.days.from_now
     MailActionItem.create_by_name!(name, **kwargs)
   end
 
@@ -438,7 +436,17 @@ class InternshipApplication < ApplicationRecord
     kwargs[:internship_application_id] ||= id
     kwargs[:internship_agreement_id] ||= internship_agreement.id if internship_agreement&.persisted?
     kwargs[:action_type] ||= :pending_internship_application
-    kwargs[:stale_at] ||= weeks.order(:year, :number).last.monday - 2.days
+    kwargs[:stale_at] ||= weeks.order(:year, :number).last&.monday&.-(2.days) || 30.days.from_now
+    MailActionItem.create_by_name!(name, **kwargs)
+  end
+
+  def notify_student_with_digest_email(name, **kwargs)
+    return if student.email.blank?
+
+    kwargs[:recipient] ||= student
+    kwargs[:internship_application_id] ||= id
+    kwargs[:internship_agreement_id] ||= internship_agreement.id if internship_agreement&.persisted?
+    kwargs[:stale_at] ||= weeks.order(:year, :number).last&.monday&.-(2.days) || 30.days.from_now
     MailActionItem.create_by_name!(name, **kwargs)
   end
 
@@ -519,9 +527,7 @@ class InternshipApplication < ApplicationRecord
       end
     end
     if student.email.present?
-      deliver_later_with_additional_delay do
-        StudentMailer.internship_application_validated_by_employer_email(internship_application: self)
-      end
+      notify_student_with_digest_email("internship_application_validated_by_employer")
     end
     SendSmsStudentValidatedApplicationJob.perform_later(internship_application_id: id)
   end

@@ -1,0 +1,52 @@
+Bonjour <%= @user.try(:presenter).try(:formal_name).presence || @user.try(:name) %>,
+
+<% if @validated_rows&.any? %>
+Candidatures validées par l'employeur, en attente de votre confirmation :
+
+<% @validated_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:offer_title] %>
+- Employeur : <%= row[:employer_name] %>
+- L'employeur a validé votre candidature. Confirmez-la pour continuer le processus.
+- Confirmer ma candidature : <%= row[:application_url] %>
+
+<% end %>
+<% end %>
+
+<% if @agreement_to_sign_rows&.any? %>
+Conventions en attente de votre signature :
+
+<% @agreement_to_sign_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:offer_title] %>
+- Employeur : <%= row[:employer_name] %>
+- La convention de stage est prête. Imprimez-la et signez-la.
+- Voir la convention : <%= row[:agreement_url] %>
+
+<% end %>
+<% end %>
+
+<% if @rejected_rows&.any? %>
+Candidatures refusées :
+
+<% @rejected_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:offer_title] %>
+- Employeur : <%= row[:employer_name] %>
+- L'employeur n'a pas retenu votre candidature. N'hésitez pas à postuler à d'autres offres.
+- Trouver d'autres offres : <%= row[:search_url] %>
+
+<% end %>
+<% end %>
+
+<% if @expired_rows&.any? %>
+Candidatures expirées :
+
+<% @expired_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:offer_title] %>
+- Employeur : <%= row[:employer_name] %>
+- Votre candidature n'a pas reçu de réponse dans les délais. Pensez à postuler à de nouvelles offres.
+- Trouver d'autres offres : <%= row[:search_url] %>
+
+<% end %>
+<% end %>
+
+À bientôt,
+L'équipe 1élève1stage

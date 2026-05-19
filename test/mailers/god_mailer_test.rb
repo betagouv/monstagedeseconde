@@ -160,7 +160,7 @@ class GodMailerTest < ActionMailer::TestCase
   test "notify_signatures_can_start_email creates MailActionItem when school_manager not signed" do
     internship_agreement = create(:mono_internship_agreement)
 
-    assert_difference "MailActionItem.count", 1 do
+    assert_difference "MailActionItem.count", 2 do
       email = GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement)
       email.deliver_now
     end
@@ -171,9 +171,14 @@ class GodMailerTest < ActionMailer::TestCase
       internship_agreement.school_management_representative.email
     )
 
-    mail_action_item = MailActionItem.last
-    assert_equal "signatures_enabled", mail_action_item.action_name
-    assert_equal internship_agreement.school_management_representative, mail_action_item.recipient
-    assert_equal internship_agreement, mail_action_item.internship_agreement
+    school_manager_item = MailActionItem.find_by(action_name: "signatures_enabled")
+    assert_not_nil school_manager_item
+    assert_equal internship_agreement.school_management_representative, school_manager_item.recipient
+    assert_equal internship_agreement, school_manager_item.internship_agreement
+
+    student_item = MailActionItem.find_by(action_name: "agreement_to_sign",
+                                          recipient: internship_agreement.internship_application.student)
+    assert_not_nil student_item
+    assert_equal internship_agreement, student_item.internship_agreement
   end
 end

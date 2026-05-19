@@ -13,6 +13,18 @@ module MailActionConfigurable
         urgency_level: "medium",
         max_deliveries_count: 2
       },
+      "internship_application_rejected" => {
+        urgency_level: "high",
+        max_deliveries_count: 1
+      },
+      "internship_application_validated_by_employer" => {
+        urgency_level: "high",
+        max_deliveries_count: 1
+      },
+      "internship_application_expired" => {
+        urgency_level: "medium",
+        max_deliveries_count: 1
+      },
       "canceled_internship_application_by_student" => {
         urgency_level: "medium",
         max_deliveries_count: 1

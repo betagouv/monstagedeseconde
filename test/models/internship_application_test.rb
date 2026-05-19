@@ -79,14 +79,11 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     )
     mock_mail_to_teacher = Minitest::Mock.new
     mock_mail_to_teacher.expect(:deliver_later, true, [], wait: 1.second)
-    mock_mail_to_student = Minitest::Mock.new
-    mock_mail_to_student.expect(:deliver_later, true, [], wait: 1.second)
 
     TeacherMailer.stub :internship_application_validated_by_employer_email, mock_mail_to_teacher do
-      StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail_to_student do
+      assert_difference "MailActionItem.count", 1 do
         internship_application.employer_validate!
       end
-      mock_mail_to_student.verify
     end
     mock_mail_to_teacher.verify
   end
@@ -248,12 +245,9 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       assert_changes -> { internship_application.reload.rejected_at },
                      from: nil,
                      to: Time.now.utc do
-        mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-        StudentMailer.stub :internship_application_rejected_email, mock_mail do
+        assert_difference "MailActionItem.count", 1 do
           internship_application.reject!
         end
-        mock_mail.verify
       end
     end
   end
@@ -264,12 +258,9 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       assert_changes -> { internship_application.reload.validated_by_employer_at },
                      from: nil,
                      to: Time.now.utc do
-        mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-        StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail do
+        assert_difference "MailActionItem.count", 1 do
           internship_application.employer_validate!
         end
-        mock_mail.verify
       end
     end
   end
@@ -348,13 +339,9 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     student = create(:student)
     internship_application = create(:weekly_internship_application, student:)
 
-    mock_mail = Minitest::Mock.new
-    mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-
-    StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail do
+    assert_difference "MailActionItem.count", 1 do
       internship_application.after_employer_validation_notifications
     end
-    mock_mail.verify
   end
 
   test "#should_notify_employer_like?" do

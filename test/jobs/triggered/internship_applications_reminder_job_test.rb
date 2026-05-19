@@ -54,8 +54,9 @@ module Triggered
         assert_changes -> { internship_application.reload.expired? },
                        from: false,
                        to: true do
-          InternshipApplicationsExpirerJob.perform_now(@internship_offer.employer)
-          assert_enqueued_emails 1 # for student
+          assert_difference "MailActionItem.count", 1 do # digest email for student
+            InternshipApplicationsExpirerJob.perform_now(@internship_offer.employer)
+          end
         end
         internship_application.reload
         assert_equal Time.now.utc, internship_application.expired_at, "expired_at not updated"

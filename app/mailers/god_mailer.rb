@@ -209,6 +209,12 @@ class GodMailer < ApplicationMailer
       school_manager: @school_manager
     )
 
+    handle_student_mail_action(
+      internship_agreement: internship_agreement,
+      student: student,
+      email_recipients: recipients_email
+    )
+
     send_email(
       to: recipients_email,
       subject: "Imprimez et signez la convention de stage."
@@ -292,6 +298,24 @@ class GodMailer < ApplicationMailer
     end
 
     email_recipients
+  end
+
+  def handle_student_mail_action(internship_agreement:, student:, email_recipients:)
+    return if student.email.blank?
+
+    stale_at = internship_agreement.internship_application
+                                   .weeks
+                                   &.order(:year, :number)
+                                   &.last
+                                   &.monday || 30.days.from_now
+    MailActionItem.create_by_name!(
+      "agreement_to_sign",
+      recipient: student,
+      internship_agreement_id: internship_agreement.id,
+      internship_application_id: internship_agreement.internship_application.id,
+      stale_at: stale_at
+    )
+    email_recipients - [ student.email ]
   end
 
   def parse_email_list(email_string)

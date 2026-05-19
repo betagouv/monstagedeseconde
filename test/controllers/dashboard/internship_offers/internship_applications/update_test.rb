@@ -262,7 +262,7 @@ module InternshipOffers::InternshipApplications
 
       sign_in(internship_offer.employer)
 
-      assert_enqueued_emails 1 do
+      assert_no_enqueued_emails do
         update_url = dashboard_internship_offer_internship_application_path(
           internship_offer,
           uuid: internship_application.uuid
@@ -292,7 +292,7 @@ module InternshipOffers::InternshipApplications
       sign_in(internship_offer.employer)
 
       assert_enqueued_jobs 1, only: CancelValidatedInternshipApplicationJob do
-        assert_enqueued_emails 1 do
+        assert_no_enqueued_emails do
           update_url = dashboard_internship_offer_internship_application_path(
             internship_offer,
             uuid: internship_application.uuid
@@ -418,7 +418,7 @@ module InternshipOffers::InternshipApplications
 
       sign_in(internship_application.internship_offer.employer)
 
-      assert_enqueued_emails 1 do
+      assert_no_enqueued_emails do
         patch(dashboard_internship_offer_internship_application_path(internship_application.internship_offer, uuid: internship_application.uuid),
               params: { transition: :reject! })
         assert_redirected_to internship_application.internship_offer.employer.custom_candidatures_path(tab: :reject!)
