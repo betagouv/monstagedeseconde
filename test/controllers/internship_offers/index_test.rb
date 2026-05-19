@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class IndexTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
@@ -15,33 +15,33 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   def assert_json_presence_of(json_response, internship_offer)
-    assert(json_response['internshipOffers'].any? { |o| o['id'] == internship_offer.id })
+    assert(json_response["internshipOffers"].any? { |o| o["id"] == internship_offer.id })
   end
 
   def assert_json_absence_of(json_response, internship_offer)
-    assert(json_response['internshipOffers'].none? { |o| o['id'] == internship_offer.id })
+    assert(json_response["internshipOffers"].none? { |o| o["id"] == internship_offer.id })
   end
 
   def create_offers
     offer_paris_1 = create(
       :weekly_internship_offer_3eme,
-      title: 'Vendeur',
+      title: "Vendeur",
       coordinates: Coordinates.paris
     )
     offer_paris_2 = create(
       :weekly_internship_offer_3eme,
-      title: 'Comptable',
+      title: "Comptable",
       coordinates: Coordinates.paris
     )
     offer_paris_3 = create(
       :weekly_internship_offer_3eme,
-      title: 'Infirmier',
+      title: "Infirmier",
       coordinates: Coordinates.paris
     )
     offer_bordeaux_1 = create(
       :weekly_internship_offer_3eme,
-      title: 'Infirmier',
-      city: 'Bordeaux',
+      title: "Infirmier",
+      city: "Bordeaux",
       coordinates: Coordinates.bordeaux
     )
   end
@@ -49,7 +49,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   test 'GET #index as "Users::Visitor" works and has a page title' do
     get internship_offers_path
     assert_response :success
-    assert_select 'title', 'Recherche de stages | 1Élève1Stage'
+    assert_select "title", "Recherche de stages | 1Élève1Stage"
   end
 
   test 'GET #index with coordinates as "Users::Visitor" works' do
@@ -57,26 +57,26 @@ class IndexTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'GET #index with no params as Student returns all offers' do
-    skip 'leak suspicion'
+  test "GET #index with no params as Student returns all offers" do
+    skip "leak suspicion"
     travel_to Date.new(2023, 10, 1) do
       create_offers
-      student = create(:student, school: create(:school, city: 'Paris', coordinates: Coordinates.paris))
+      student = create(:student, school: create(:school, city: "Paris", coordinates: Coordinates.paris))
       sign_in(student)
       get internship_offers_path(format: :json)
       assert_response :success
-      refute_empty json_response['internshipOffers']
+      refute_empty json_response["internshipOffers"]
       assert_equal 1, UsersSearchHistory.count
       assert_equal 4, UsersSearchHistory.last.results_count
     end
   end
 
-  test 'GET #index with wrong coordinates as Visitor returns nothing' do
+  test "GET #index with wrong coordinates as Visitor returns nothing" do
     travel_to Date.new(2023, 10, 1) do
       create_offers
       get internship_offers_path(latitude: 4.8378, longitude: -0.579512, format: :json)
       assert_response :success
-      assert_empty json_response['internshipOffers']
+      assert_empty json_response["internshipOffers"]
     end
   end
 
@@ -103,33 +103,33 @@ class IndexTest < ActionDispatch::IntegrationTest
   #   refute json_response['internshipOffers']
   # end
 
-  test 'GET #index withParis location as Visitor returns 3 offers' do
-    skip 'leak suspicion'
+  test "GET #index withParis location as Visitor returns 3 offers" do
+    skip "leak suspicion"
     travel_to Date.new(2023, 10, 1) do
       offer_paris_1 = create(
         :weekly_internship_offer_3eme,
-        title: 'Vendeur'
+        title: "Vendeur"
       )
       offer_paris_2 = create(
         :weekly_internship_offer_3eme,
-        title: 'Comptable'
+        title: "Comptable"
       )
       offer_paris_3 = create(
         :weekly_internship_offer_3eme,
-        title: 'Infirmier'
+        title: "Infirmier"
       )
       # not displayed
       offer_bordeaux_1 = create(
         :weekly_internship_offer_3eme,
-        title: 'Infirmier',
-        city: 'Bordeaux',
+        title: "Infirmier",
+        city: "Bordeaux",
         coordinates: Coordinates.bordeaux
       )
       # not displayed
       offer_bordeaux_2 = create(
         :weekly_internship_offer_3eme,
-        title: 'Infirmier',
-        city: 'Bordeaux',
+        title: "Infirmier",
+        city: "Bordeaux",
         coordinates: Coordinates.bordeaux
       )
 
@@ -183,7 +183,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   #     assert json_response['isSuggestion']
   # end
 
-  test 'GET #index canonical links works' do
+  test "GET #index canonical links works" do
     get internship_offers_path(latitude: 44.8378, longitude: -0.579512)
     assert_match(
       %r{<link href="http://www.example.com/offres-de-stage" rel="canonical" />}, response.body
@@ -195,8 +195,8 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   # test REP offers are displayed when user not authenticated
-  test 'GET #index as visitor displays REP offers' do
-    skip 'works locally but not on CI'
+  test "GET #index as visitor displays REP offers" do
+    skip "works locally but not on CI"
     travel_to(Date.new(2024, 3, 1)) do
       rep_offer = create(:weekly_internship_offer_3eme, rep: true)
       get internship_offers_path, params: { format: :json }
@@ -205,15 +205,15 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index as REP student displays REP offers first ordered by distance then all other offers ordered by distance' do
-    skip 'works locally but not on CI'
+  test "GET #index as REP student displays REP offers first ordered by distance then all other offers ordered by distance" do
+    skip "works locally but not on CI"
     travel_to(Date.new(2024, 3, 1)) do
       offer_2 = create(:weekly_internship_offer_3eme, coordinates: Coordinates.chatillon)
       offer_1 = create(:weekly_internship_offer_3eme, coordinates: Coordinates.paris)
       rep_offer_1 = create(:weekly_internship_offer_3eme, rep: true, coordinates: Coordinates.paris)
       rep_offer_2 = create(:weekly_internship_offer_3eme, rep: true, coordinates: Coordinates.chatillon)
       rep_offer_3 = create(:weekly_internship_offer_3eme, rep: true, coordinates: Coordinates.versailles)
-      school = create(:school, rep_kind: 'rep', coordinates: Coordinates.paris)
+      school = create(:school, rep_kind: "rep", coordinates: Coordinates.paris)
       student = create(:student, :troisieme, school:)
 
       sign_in(student)
@@ -221,45 +221,45 @@ class IndexTest < ActionDispatch::IntegrationTest
       get internship_offers_path, params: params
 
       assert_response :success
-      assert_equal rep_offer_1.id, json_response['internshipOffers'].first['id']
-      assert_equal rep_offer_2.id, json_response['internshipOffers'].second['id']
-      assert_equal rep_offer_3.id, json_response['internshipOffers'].third['id']
-      assert_equal offer_1.id, json_response['internshipOffers'].fourth['id']
-      assert_equal offer_2.id, json_response['internshipOffers'].fifth['id']
+      assert_equal rep_offer_1.id, json_response["internshipOffers"].first["id"]
+      assert_equal rep_offer_2.id, json_response["internshipOffers"].second["id"]
+      assert_equal rep_offer_3.id, json_response["internshipOffers"].third["id"]
+      assert_equal offer_1.id, json_response["internshipOffers"].fourth["id"]
+      assert_equal offer_2.id, json_response["internshipOffers"].fifth["id"]
     end
   end
 
-#   # test QPV offers are displayed when user not authenticated
-#   test 'GET #index as visitor displays QPV offers' do
-#    travel_to(Date.new(2024, 3, 1)) do
-#      qpv_offer = create(:weekly_internship_offer_2nde, qpv: true)
-#      get internship_offers_path, params: { format: :json }
-#      assert_response :success
-#      assert_json_presence_of(json_response, qpv_offer)
-#    end
-#  end
+  #   # test QPV offers are displayed when user not authenticated
+  #   test 'GET #index as visitor displays QPV offers' do
+  #    travel_to(Date.new(2024, 3, 1)) do
+  #      qpv_offer = create(:weekly_internship_offer_2nde, qpv: true)
+  #      get internship_offers_path, params: { format: :json }
+  #      assert_response :success
+  #      assert_json_presence_of(json_response, qpv_offer)
+  #    end
+  #  end
 
-#   test 'GET #index as QPV student displays QPV offers first' do
-#     travel_to(Date.new(2024, 3, 1)) do
-#       qpv_offer = create(:weekly_internship_offer_2nde, qpv: true)
-#       offer_1 = create(:weekly_internship_offer_2nde)
-#       offer_2 = create(:weekly_internship_offer_2nde)
-#       school = create(:school, qpv: true)
-#       student = create(:student, :seconde, school:)
-#       sign_in(student)
-#       get internship_offers_path, params: { format: :json }
-#       assert_response :success
-#       assert_equal qpv_offer.id, json_response['internshipOffers'].first['id']
-#       assert_equal offer_1.id, json_response['internshipOffers'].second['id']
-#       assert_equal offer_2.id, json_response['internshipOffers'].third['id']
-#     end
-#   end
+  #   test 'GET #index as QPV student displays QPV offers first' do
+  #     travel_to(Date.new(2024, 3, 1)) do
+  #       qpv_offer = create(:weekly_internship_offer_2nde, qpv: true)
+  #       offer_1 = create(:weekly_internship_offer_2nde)
+  #       offer_2 = create(:weekly_internship_offer_2nde)
+  #       school = create(:school, qpv: true)
+  #       student = create(:student, :seconde, school:)
+  #       sign_in(student)
+  #       get internship_offers_path, params: { format: :json }
+  #       assert_response :success
+  #       assert_equal qpv_offer.id, json_response['internshipOffers'].first['id']
+  #       assert_equal offer_1.id, json_response['internshipOffers'].second['id']
+  #       assert_equal offer_2.id, json_response['internshipOffers'].third['id']
+  #     end
+  #   end
 
-  test 'GET #index as student ignores internship_offers with existing application' do
+  test "GET #index as student ignores internship_offers with existing application" do
     travel_to(Date.new(2024, 3, 1)) do
       internship_offer_without_application = create(
         :weekly_internship_offer_2nde,
-        title: 'offer without_application'
+        title: "offer without_application"
       )
 
       assert_equal 1, InternshipOffers::WeeklyFramed.count
@@ -270,13 +270,13 @@ class IndexTest < ActionDispatch::IntegrationTest
       internship_offer_with_application = create(
         :weekly_internship_offer_2nde,
         max_candidates: 2,
-        title: 'offer with_application'
+        title: "offer with_application"
       )
 
       create(:internship_application,
              weeks: internship_offer_with_application.weeks,
              internship_offer: internship_offer_with_application,
-             aasm_state: 'approved',
+             aasm_state: "approved",
              student:)
 
       assert_equal 2, InternshipOffers::WeeklyFramed.count
@@ -290,22 +290,22 @@ class IndexTest < ActionDispatch::IntegrationTest
           assert_equal 2, InternshipOffers::WeeklyFramed.uncompleted_with_max_candidates.count
           get internship_offers_path, params: { format: :json }
           assert_response :success
-          assert_equal 1, json_response['internshipOffers'].count
+          assert_equal 1, json_response["internshipOffers"].count
           assert_json_presence_of(json_response, internship_offer_without_application)
         end
       end
     end
   end
 
-  test 'GET #index as statistician works' do
+  test "GET #index as statistician works" do
     statistician = create(:statistician)
     sign_in(statistician)
     get internship_offers_path
     assert_response :success
   end
 
-  test 'GET #index as student. ignores internship offers not published' do
-    skip 'leak suspicion'
+  test "GET #index as student. ignores internship offers not published" do
+    skip "leak suspicion"
     travel_to(Date.new(2024, 3, 1)) do
       api_internship_offer         = create(:api_internship_offer_3eme)
       internship_offer_published   = create(:weekly_internship_offer_3eme)
@@ -315,7 +315,7 @@ class IndexTest < ActionDispatch::IntegrationTest
       InternshipOffer.stub :nearby, InternshipOffer.all do
         InternshipOffer.stub :by_weeks, InternshipOffer.all do
           get internship_offers_path, params: { format: :json }
-          assert_equal 2, json_response['internshipOffers'].count
+          assert_equal 2, json_response["internshipOffers"].count
           assert_json_absence_of(json_response, internship_offer_unpublished)
           assert_json_presence_of(json_response, api_internship_offer)
           assert_json_presence_of(json_response, internship_offer_published)
@@ -324,7 +324,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index as visitor does not show discarded offers' do
+  test "GET #index as visitor does not show discarded offers" do
     travel_to(Date.new(2024, 3, 1)) do
       discarded_internship_offer = create(:weekly_internship_offer_2nde,
                                           discarded_at: 2.days.ago)
@@ -336,10 +336,10 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index as visitor does not show unpublished offers' do
+  test "GET #index as visitor does not show unpublished offers" do
     travel_to(Date.new(2024, 3, 1)) do
       published_internship_offer = create(:weekly_internship_offer_2nde,
-                                          aasm_state: 'published',
+                                          aasm_state: "published",
                                           published_at: 2.days.ago)
       not_published_internship_offer = create(:weekly_internship_offer_2nde, :unpublished)
       get internship_offers_path, params: { format: :json }
@@ -348,19 +348,19 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index as visitor does not show fulfilled offers' do
+  test "GET #index as visitor does not show fulfilled offers" do
     travel_to(Date.new(2024, 9, 1)) do
       internship_application = create(:weekly_internship_application, :submitted)
       internship_offer = internship_application.internship_offer
       get internship_offers_path, params: { format: :json }
       assert_json_presence_of(json_response, internship_offer)
-      internship_application.update!(aasm_state: 'approved')
+      internship_application.update!(aasm_state: "approved")
       get internship_offers_path, params: { format: :json }
       assert_json_absence_of(json_response, internship_offer)
     end
   end
 
-  test 'GET #index as visitor or student default shows both middle school and high school offers' do
+  test "GET #index as visitor or student default shows both middle school and high school offers" do
     travel_to Date.new(2023, 10, 1) do
       internship_offer_weekly = create(:weekly_internship_offer_3eme)
       # Visitor
@@ -373,8 +373,8 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index as student ignores internship_offers having ' \
-       'as much internship_application as max_candidates number' do
+  test "GET #index as student ignores internship_offers having " \
+       "as much internship_application as max_candidates number" do
     travel_to Time.zone.local(2025, 3, 1) do
       max_candidates = 1
       week = Week.first
@@ -387,7 +387,7 @@ class IndexTest < ActionDispatch::IntegrationTest
       create(:internship_application,
              weeks: internship_offer.weeks.last(2),
              student:,
-             internship_offer:, aasm_state: 'approved')
+             internship_offer:, aasm_state: "approved")
 
       sign_in(student)
       InternshipOffer.stub :nearby, InternshipOffer.all do
@@ -397,8 +397,8 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index as student keeps internship_offers having as less than blocked_applications_count as max_candidates number' do
-    skip 'leak suspicion'
+  test "GET #index as student keeps internship_offers having as less than blocked_applications_count as max_candidates number" do
+    skip "leak suspicion"
     travel_to Time.zone.local(2025, 3, 1) do
       max_candidates = 2
       internship_offer = create(:weekly_internship_offer_3eme,
@@ -413,13 +413,13 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index as student with page, returns paginated content' do
+  test "GET #index as student with page, returns paginated content" do
     # Api offers are ordered by creation date, so we can't test pagination with cities
     travel_to(Date.new(2024, 3, 1)) do
       # Student school is in Paris
       sign_in(create(:student, :seconde))
       internship_offers = InternshipOffer::PAGE_SIZE.times.map do
-        create(:api_internship_offer_2nde, coordinates: Coordinates.bordeaux, city: 'Bordeaux')
+        create(:api_internship_offer_2nde, coordinates: Coordinates.bordeaux, city: "Bordeaux")
       end
       # this one is in Paris, but it's the last one
       create(:api_internship_offer_2nde)
@@ -427,44 +427,44 @@ class IndexTest < ActionDispatch::IntegrationTest
         InternshipOffer.stub :in_the_future, InternshipOffer.all do
           get internship_offers_path, params: { format: :json }
           json_response.first[1].each do |internship_offer|
-            assert_equal 'Bordeaux', internship_offer['city']
+            assert_equal "Bordeaux", internship_offer["city"]
           end
           assert_equal InternshipOffer::PAGE_SIZE, json_response.first[1].count
 
           get internship_offers_path(page: 2, format: :json)
           assert_equal 1, json_response.first[1].count
-          assert_equal 'Paris', json_response.first[1][0]['city']
+          assert_equal "Paris", json_response.first[1][0]["city"]
         end
       end
     end
   end
 
-  test 'GET #index as student with InternshipOffers::Api, returns paginated content' do
-    skip 'leak suspicion'
+  test "GET #index as student with InternshipOffers::Api, returns paginated content" do
+    skip "leak suspicion"
     travel_to(Date.new(2025, 3, 1)) do
       internship_offers = InternshipOffer::PAGE_SIZE.times.map do
         create(:api_internship_offer_3eme)
       end
-      create(:api_internship_offer_3eme, coordinates: Coordinates.bordeaux, city: 'Bordeaux')
+      create(:api_internship_offer_3eme, coordinates: Coordinates.bordeaux, city: "Bordeaux")
       sign_in(create(:student))
 
       InternshipOffer.stub :in_the_future, InternshipOffer.all do
         get internship_offers_path, params: { format: :json }
         json_response.first[1].each do |internship_offer|
-          assert_equal 'Paris', internship_offer['city']
+          assert_equal "Paris", internship_offer["city"]
         end
         assert_equal InternshipOffer::PAGE_SIZE, json_response.first[1].count
 
         get internship_offers_path(page: 2, format: :json)
 
         assert_equal 1, json_response.first[1].count
-        assert_equal 'Bordeaux', json_response.first[1][0]['city']
+        assert_equal "Bordeaux", json_response.first[1][0]["city"]
       end
     end
   end
 
-  test 'search by location (radius# ) works' do
-    skip 'leak suspicion'
+  test "search by location (radius# ) works" do
+    skip "leak suspicion"
     travel_to(Date.new(2024, 3, 1)) do
       internship_offer_at_paris = create(:api_internship_offer_3eme,
                                          coordinates: Coordinates.paris)
@@ -487,7 +487,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index?latitude=?&longitude=? as student returns internship_offer 60km around this location' do
+  test "GET #index?latitude=?&longitude=? as student returns internship_offer 60km around this location" do
     travel_to(Date.new(2024, 3, 1)) do
       week = Week.find_by(year: 2019, number: 10)
       school_at_paris = create(:school, :at_paris)
@@ -510,8 +510,8 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index as student ignores internship_offer farther than 60 km nearby school coordinates' do
-    skip 'leak suspicion'
+  test "GET #index as student ignores internship_offer farther than 60 km nearby school coordinates" do
+    skip "leak suspicion"
     travel_to(Date.new(2024, 3, 1)) do
       week = Week.find_by(year: 2019, number: 10)
       school_at_bordeaux = create(:school, :at_bordeaux)
@@ -523,13 +523,13 @@ class IndexTest < ActionDispatch::IntegrationTest
         get internship_offers_path, params: { format: :json }
 
         assert_response :success
-        assert_select '.offer-row', 0
+        assert_select ".offer-row", 0
       end
     end
   end
 
-  test 'GET #index as student not filtering by weeks shows all offers' do
-    skip 'leak suspicion'
+  test "GET #index as student not filtering by weeks shows all offers" do
+    skip "leak suspicion"
     travel_to(Date.new(2024, 3, 1)) do
       week = Week.find_by(year: 2019, number: 10)
       school = create(:school)
@@ -547,44 +547,44 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   # add test for GET #index as visitor doen not show offers title if REP api offer
-  test 'GET #index as visitor does not show offers title if REP offer' do
-    skip if ENV['CI']
+  test "GET #index as visitor does not show offers title if REP offer" do
+    skip if ENV["CI"]
     travel_to(Date.new(2024, 3, 1)) do
-      skip 'TODO fix this test'
+      skip "TODO fix this test"
       rep_offer = create(:api_internship_offer_3eme, rep: true)
       get internship_offers_path, params: { format: :json }
       assert_response :success
       assert_json_presence_of(json_response, rep_offer)
-      assert_equal 'Offreur masqué - connectez-vous', json_response['internshipOffers'].first['employer_name']
+      assert_equal "Offreur masqué - connectez-vous", json_response["internshipOffers"].first["employer_name"]
     end
   end
-  
-  test 'GET #index as REP student does show offers title if REP api offer' do
-    skip if ENV['CI']
+
+  test "GET #index as REP student does show offers title if REP api offer" do
+    skip if ENV["CI"]
     travel_to(Date.new(2024, 3, 1)) do
-      skip 'TODO fix this test'
+      skip "TODO fix this test"
       rep_offer = create(:api_internship_offer_3eme, rep: true)
-      school = create(:school, rep_kind: 'rep')
+      school = create(:school, rep_kind: "rep")
       student = create(:student, :troisieme, school:)
       sign_in(student)
       get internship_offers_path, params: { format: :json }
       assert_response :success
       assert_json_presence_of(json_response, rep_offer)
-      assert_equal rep_offer.title, json_response['internshipOffers'].first['title']
+      assert_equal rep_offer.title, json_response["internshipOffers"].first["title"]
     end
   end
 
   #
   # Employer
   #
-  test 'GET #index as employer returns all internship offers' do
-    skip 'leak suspicion'
+  test "GET #index as employer returns all internship offers" do
+    skip "leak suspicion"
     travel_to Date.new(2023, 10, 1) do
       employer = create(:employer)
       included_internship_offer = create(:weekly_internship_offer_3eme,
-                                         employer:, title: 'Hellow-me')
+                                         employer:, title: "Hellow-me")
       excluded_internship_offer = create(:weekly_internship_offer_3eme,
-                                         title: 'Not hellow-me')
+                                         title: "Not hellow-me")
       sign_in(employer)
       get internship_offers_path, params: { format: :json }
       assert_response :success
@@ -593,13 +593,13 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index as god returns all internship_offers' do
-    skip 'leak suspicion'
+  test "GET #index as god returns all internship_offers" do
+    skip "leak suspicion"
     travel_to Date.new(2023, 10, 1) do
       sign_in(create(:god))
-      internship_offer_1 = create(:weekly_internship_offer_3eme, title: 'Hellow-me')
+      internship_offer_1 = create(:weekly_internship_offer_3eme, title: "Hellow-me")
       internship_offer_2 = create(:weekly_internship_offer_3eme,
-                                  title: 'Not hellow-me')
+                                  title: "Not hellow-me")
       get internship_offers_path, params: { format: :json }
       assert_response :success
       assert_json_presence_of(json_response, internship_offer_1)
@@ -607,7 +607,7 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'GET #index as god. does not return discarded offers' do
+  test "GET #index as god. does not return discarded offers" do
     travel_to Date.new(2023, 10, 1) do
       discarded_internship_offer = create(:weekly_internship_offer_3eme)
       discarded_internship_offer.discard
@@ -617,7 +617,7 @@ class IndexTest < ActionDispatch::IntegrationTest
       get internship_offers_path, params: { format: :json }
 
       assert_response :success
-      assert_select 'a[href=?]',
+      assert_select "a[href=?]",
                     internship_offer_url(discarded_internship_offer), 0
     end
   end
@@ -662,7 +662,7 @@ class IndexTest < ActionDispatch::IntegrationTest
   #     assert_json_absence_of(json_response, ignored_internship_offer)
   #   end
   # end
-  test 'search with school years works' do
+  test "search with school years works" do
     employer = create(:employer)
     sign_in(employer)
     offer_1 = nil
@@ -710,8 +710,8 @@ class IndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'method determine_school_weeks' do
-    skip 'leak suspicion'
+  test "method determine_school_weeks" do
+    skip "leak suspicion"
     travel_to(Date.new(2025, 3, 1)) do
       school = create(:school)
       student = create(:student, :troisieme, school: school)
@@ -723,8 +723,8 @@ class IndexTest < ActionDispatch::IntegrationTest
       assert_json_presence_of(json_response, foundable_internship_offer)
     end
   end
-  test 'method determine_school_weeks for visitor' do
-    skip 'leak suspicion'
+  test "method determine_school_weeks for visitor" do
+    skip "leak suspicion"
     travel_to(Date.new(2025, 3, 1)) do
       foundable_internship_offer = create(:weekly_internship_offer_3eme)
       get internship_offers_path(school_year: 2025, format: :json)
@@ -740,11 +740,11 @@ class IndexTest < ActionDispatch::IntegrationTest
   #
   # Fallback search tests
   #
-  test 'GET #index with keyword that matches returns offers without fallback' do
+  test "GET #index with keyword that matches returns offers without fallback" do
     travel_to(Date.new(2024, 3, 1)) do
       sector = create(:sector)
       offer = create(:weekly_internship_offer_2nde,
-                     title: 'Developpeur web',
+                     title: "Developpeur web",
                      sector: sector,
                      coordinates: Coordinates.paris)
 
@@ -752,7 +752,7 @@ class IndexTest < ActionDispatch::IntegrationTest
       SyncInternshipOfferKeywordsJob.perform_now
 
       get internship_offers_path(
-        keyword: 'Developpeur',
+        keyword: "Developpeur",
         latitude: Coordinates.paris[:latitude],
         longitude: Coordinates.paris[:longitude],
         format: :json
@@ -760,20 +760,20 @@ class IndexTest < ActionDispatch::IntegrationTest
 
       assert_response :success
       assert_json_presence_of(json_response, offer)
-      assert_equal false, json_response['isFallbackSearch']
+      assert_equal false, json_response["isFallbackSearch"]
     end
   end
 
-  test 'GET #index with keyword that does not match triggers fallback and returns offers' do
+  test "GET #index with keyword that does not match triggers fallback and returns offers" do
     travel_to(Date.new(2024, 3, 1)) do
       sector = create(:sector)
       offer = create(:weekly_internship_offer_2nde,
-                     title: 'Comptable',
+                     title: "Comptable",
                      sector: sector,
                      coordinates: Coordinates.paris)
 
       get internship_offers_path(
-        keyword: 'motcleinexistant123xyz',
+        keyword: "motcleinexistant123xyz",
         latitude: Coordinates.paris[:latitude],
         longitude: Coordinates.paris[:longitude],
         format: :json
@@ -781,21 +781,21 @@ class IndexTest < ActionDispatch::IntegrationTest
 
       assert_response :success
       assert_json_presence_of(json_response, offer)
-      assert_equal true, json_response['isFallbackSearch']
+      assert_equal true, json_response["isFallbackSearch"]
     end
   end
 
-  test 'GET #index with sector_ids that do not match triggers fallback and returns offers' do
+  test "GET #index with sector_ids that do not match triggers fallback and returns offers" do
     travel_to(Date.new(2024, 3, 1)) do
-      sector_with_offer = create(:sector, name: 'Informatique')
-      sector_without_offer = create(:sector, name: 'Agriculture')
+      sector_with_offer = create(:sector, name: "Informatique")
+      sector_without_offer = create(:sector, name: "Agriculture")
       offer = create(:weekly_internship_offer_2nde,
-                     title: 'Stage informatique',
+                     title: "Stage informatique",
                      sector: sector_with_offer,
                      coordinates: Coordinates.paris)
 
       get internship_offers_path(
-        sector_ids: [sector_without_offer.id],
+        sector_ids: [ sector_without_offer.id ],
         latitude: Coordinates.paris[:latitude],
         longitude: Coordinates.paris[:longitude],
         format: :json
@@ -803,21 +803,21 @@ class IndexTest < ActionDispatch::IntegrationTest
 
       assert_response :success
       assert_json_presence_of(json_response, offer)
-      assert_equal true, json_response['isFallbackSearch']
+      assert_equal true, json_response["isFallbackSearch"]
     end
   end
 
-  test 'GET #index with sector_ids that match returns offers without fallback' do
+  test "GET #index with sector_ids that match returns offers without fallback" do
     travel_to(Date.new(2024, 3, 1)) do
-      sector = create(:sector, name: 'Informatique')
+      sector = create(:sector, name: "Informatique")
       offer = create(:weekly_internship_offer_2nde,
-                     title: 'Stage informatique',
+                     title: "Stage informatique",
                      sector: sector,
                      is_public: false,
                      coordinates: Coordinates.paris)
 
       get internship_offers_path(
-        sector_ids: [sector.id],
+        sector_ids: [ sector.id ],
         latitude: Coordinates.paris[:latitude],
         longitude: Coordinates.paris[:longitude],
         format: :json
@@ -825,11 +825,11 @@ class IndexTest < ActionDispatch::IntegrationTest
 
       assert_response :success
       assert_json_presence_of(json_response, offer)
-      assert_equal false, json_response['isFallbackSearch']
+      assert_equal false, json_response["isFallbackSearch"]
     end
   end
 
-  test 'GET #index without optional filters does not trigger fallback' do
+  test "GET #index without optional filters does not trigger fallback" do
     travel_to(Date.new(2024, 3, 1)) do
       offer = create(:weekly_internship_offer_2nde,
                      coordinates: Coordinates.paris)
@@ -842,43 +842,43 @@ class IndexTest < ActionDispatch::IntegrationTest
 
       assert_response :success
       assert_json_presence_of(json_response, offer)
-      assert_equal false, json_response['isFallbackSearch']
+      assert_equal false, json_response["isFallbackSearch"]
     end
   end
 
-  test 'GET #index with no results even after fallback returns empty with fallback flag' do
+  test "GET #index with no results even after fallback returns empty with fallback flag" do
     travel_to(Date.new(2024, 3, 1)) do
       # No offers created - search should return empty even with fallback
       get internship_offers_path(
-        keyword: 'inexistant',
+        keyword: "inexistant",
         latitude: Coordinates.bordeaux[:latitude],
         longitude: Coordinates.bordeaux[:longitude],
         format: :json
       )
 
       assert_response :success
-      assert_empty json_response['internshipOffers']
+      assert_empty json_response["internshipOffers"]
       # Fallback was attempted but no results
-      assert_equal true, json_response['isFallbackSearch']
+      assert_equal true, json_response["isFallbackSearch"]
     end
   end
 
-  test 'GET #index fallback returns correct seats count' do
+  test "GET #index fallback returns correct seats count" do
     travel_to(Date.new(2024, 3, 1)) do
       offer = create(:weekly_internship_offer_2nde,
                      max_candidates: 5,
                      coordinates: Coordinates.paris)
 
       get internship_offers_path(
-        keyword: 'motcleinexistant',
+        keyword: "motcleinexistant",
         latitude: Coordinates.paris[:latitude],
         longitude: Coordinates.paris[:longitude],
         format: :json
       )
 
       assert_response :success
-      assert_equal true, json_response['isFallbackSearch']
-      assert_equal 5, json_response['seats']
+      assert_equal true, json_response["isFallbackSearch"]
+      assert_equal 5, json_response["seats"]
     end
   end
 end

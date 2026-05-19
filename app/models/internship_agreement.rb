@@ -19,6 +19,7 @@ class InternshipAgreement < ApplicationRecord
   EXPECTED_ACTION_FROM_SCHOOL_MANAGER_STATES = %i[completed_by_employer started_by_school_manager].freeze
 
   has_many :signatures, dependent: :destroy
+  has_many :mail_action_items, dependent: :nullify
   belongs_to :internship_application, optional: false
 
   after_create :generate_token, unless: :access_token?
@@ -31,6 +32,16 @@ class InternshipAgreement < ApplicationRecord
                 :enforce_teacher_validations,
                 :skip_validations_for_system,
                 :skip_notifications_when_system_creation
+
+  # Delegations
+  delegate :employer,              to: :internship_application
+  delegate :student,               to: :internship_application
+  delegate :internship_offer,      to: :internship_application
+  delegate :employer,              to: :internship_offer
+  delegate :school,                to: :student
+  delegate :school_manager,        to: :school
+  delegate :internship_offer_area, to: :internship_offer
+  delegate :from_multi?,           to: :internship_offer
 
   # Validations
   with_options if: :enforce_employer_validations? do
@@ -69,9 +80,8 @@ class InternshipAgreement < ApplicationRecord
               format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
                         message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
   end
-  #Delegations
-  delegate :employer, to: :internship_application
-  
+
+
   # Callbacks
   after_save :save_delegation_date
 
@@ -95,7 +105,8 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[draft started_by_employer],
                   to: :completed_by_employer,
                   after: proc { |*_args|
-                           notify_school_management_of_employer_completion(self)
+                           notify_school_management_with_digest_email(
+                            "internship_agreement_completed_by_employer")
                          }
     end
 
@@ -130,29 +141,23 @@ class InternshipAgreement < ApplicationRecord
                       !skip_notifications_when_system_creation &&
                       notify_others_signatures_started
                   }
-      transitions from: [:signatures_started],
+      transitions from: [ :signatures_started ],
                   to: :signed_by_all,
                   guard: :roles_not_signed_yet_blank?,
                   after: proc { |*_args|
                            notify_others_signatures_finished(self) unless skip_notifications_when_system_creation
+                           notify_employer_with_digest_email("agreement_signed_by_all") unless skip_notifications_when_system_creation
+                           notify_school_management_with_digest_email("agreement_signed_by_all") unless skip_notifications_when_system_creation
                          }
     end
   end
 
-  delegate :student,               to: :internship_application
-  delegate :internship_offer,      to: :internship_application
-  delegate :employer,              to: :internship_offer
-  delegate :school,                to: :student
-  delegate :school_manager,        to: :school
-  delegate :internship_offer_area, to: :internship_offer
-  delegate :from_multi?,           to: :internship_offer
-
   scope :mono, -> {
-    where(type: 'InternshipAgreements::MonoInternshipAgreement')
+    where(type: "InternshipAgreements::MonoInternshipAgreement")
   }
 
   scope :multi, -> {
-    where(type: 'InternshipAgreements::MultiInternshipAgreement')
+    where(type: "InternshipAgreements::MultiInternshipAgreement")
   }
 
   scope :having_school_manager, lambda {
@@ -190,15 +195,15 @@ class InternshipAgreement < ApplicationRecord
     if weekly_planning?
       unless valid_weekly_planning?
         errors.add(:same_daily_planning,
-                   'Veuillez compléter les horaires et repas de la journée de stage')
+                   "Veuillez compléter les horaires et repas de la journée de stage")
       end
     elsif daily_planning?
       unless valid_daily_planning?
         errors.add(:weekly_planning,
-                   'Veuillez compléter les horaires et repas de la semaine de stage')
+                   "Veuillez compléter les horaires et repas de la semaine de stage")
       end
     else
-      errors.add(:weekly_planning, 'Veuillez compléter les horaires du stage')
+      errors.add(:weekly_planning, "Veuillez compléter les horaires du stage")
     end
   end
 
@@ -233,30 +238,30 @@ class InternshipAgreement < ApplicationRecord
 
   def archive
     fields_to_reset = {
-      organisation_representative_full_name: 'NA',
-      school_representative_full_name: 'NA',
-      student_full_name: 'NA',
-      student_class_room: 'NA',
-      student_school: 'NA',
-      tutor_full_name: 'NA',
-      siret: 'NA',
-      tutor_role: 'NA',
-      tutor_email: 'NA',
-      organisation_representative_role: 'NA',
-      student_address: 'NA',
-      student_phone: 'NA',
-      school_representative_phone: 'NA',
-      student_refering_teacher_phone: 'NA',
-      student_legal_representative_email: 'NA',
-      student_refering_teacher_email: 'NA',
-      student_legal_representative_full_name: 'NA',
-      student_refering_teacher_full_name: 'NA',
-      student_legal_representative_2_full_name: 'NA',
-      student_legal_representative_2_email: 'NA',
-      student_legal_representative_2_phone: 'NA',
-      school_representative_role: 'NA',
-      school_representative_email: 'NA',
-      student_legal_representative_phone: 'NA'
+      organisation_representative_full_name: "NA",
+      school_representative_full_name: "NA",
+      student_full_name: "NA",
+      student_class_room: "NA",
+      student_school: "NA",
+      tutor_full_name: "NA",
+      siret: "NA",
+      tutor_role: "NA",
+      tutor_email: "NA",
+      organisation_representative_role: "NA",
+      student_address: "NA",
+      student_phone: "NA",
+      school_representative_phone: "NA",
+      student_refering_teacher_phone: "NA",
+      student_legal_representative_email: "NA",
+      student_refering_teacher_email: "NA",
+      student_legal_representative_full_name: "NA",
+      student_refering_teacher_full_name: "NA",
+      student_legal_representative_2_full_name: "NA",
+      student_legal_representative_2_email: "NA",
+      student_legal_representative_2_phone: "NA",
+      school_representative_role: "NA",
+      school_representative_email: "NA",
+      student_legal_representative_phone: "NA"
     }
     update_columns(fields_to_reset)
     discard! unless discarded?
@@ -286,12 +291,12 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def legal_representative_data
-    hash = { }
+    hash = {}
      if student_legal_representative_email.present? && student_legal_representative_full_name.present?
-       hash[:student_legal_representative] = {email: student_legal_representative_email, nr: 1}
+       hash[:student_legal_representative] = { email: student_legal_representative_email, nr: 1 }
      end
      if student_legal_representative_2_email.present? && student_legal_representative_2_full_name.present?
-       hash[:student_legal_representative_2] = {email: student_legal_representative_2_email, nr: 2}
+       hash[:student_legal_representative_2] = { email: student_legal_representative_2_email, nr: 2 }
      end
     hash
   end
@@ -306,7 +311,33 @@ class InternshipAgreement < ApplicationRecord
 
   private
 
+  def common_kwargs_for_digest_email(name, **kwargs)
+    kwargs[:internship_agreement_id] ||= id
+    kwargs[:action_type] ||= name
+    kwargs[:stale_at] ||= internship_application.weeks&.order(:year, :number)&.last&.monday || 30.days.from_now
+    kwargs
+  end
+
+  def notify_employer_with_digest_email(name, **kwargs)
+    kwargs[:recipient] ||= internship_application.internship_offer.employer
+    kwargs = common_kwargs_for_digest_email(name, **kwargs)
+    MailActionItem.create_by_name!(name, **kwargs)
+  end
+
+  def notify_school_management_with_digest_email(name, **kwargs)
+    kwargs[:recipient] ||= school&.management_representative
+    if kwargs[:recipient].nil?
+      Rails.logger.warn "-------------------"
+      Rails.logger.warn "No recipient found for school management digest email for agreement #{id}"
+      Rails.logger.warn "-------------------"
+      return
+    end
+    kwargs = common_kwargs_for_digest_email(name, **kwargs)
+    MailActionItem.create_by_name!(name, **kwargs)
+  end
+
   def notify_signatures_enabled
+    notify_employer_with_digest_email("signatures_enabled")
     GodMailer.notify_signatures_can_start_email(
       internship_agreement: self
     ).deliver_later
@@ -323,15 +354,9 @@ class InternshipAgreement < ApplicationRecord
              .deliver_later
   end
 
-  def notify_school_management_of_employer_completion(agreement)
-    SchoolManagerMailer.internship_agreement_completed_by_employer_email(
-      internship_agreement: agreement
-    ).deliver_later
-  end
-
   rails_admin do
     weight 14
-    navigation_label 'Offres'
+    navigation_label "Offres"
 
     list do
       field :id
