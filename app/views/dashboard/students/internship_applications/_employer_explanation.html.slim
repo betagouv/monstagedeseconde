@@ -10,4 +10,7 @@
         .grey-container-application.with-grey-background.fr-mb-2w
           .row
             .col-sm-8.col-lg-12
-              = explanation.html_safe
+              p
+                strong = explanation[:label]
+                | &nbsp;:
+              = simple_format(explanation[:text])

@@ -236,7 +236,7 @@ module Presenters
 
       motives.map do |motive|
         text = internship_application.send(motive[:meth].to_s)
-        text.blank? ? nil : "<p><strong>#{motive[:label]}</strong> : </br>#{text}"
+        text.blank? ? nil : { label: motive[:label], text: text }
       end.compact
     end
 
