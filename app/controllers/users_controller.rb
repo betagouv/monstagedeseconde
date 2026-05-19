@@ -241,18 +241,18 @@ class UsersController < ApplicationController
     return if current_user.internship_agreements.empty?
 
     current_user.internship_agreements.kept.each do |agreement|
-      next if agreement.legal_representative_email == legal_representative_email
-      next if agreement.signed_by_legal_representative_at.present?
+      next if agreement.student_legal_representative_email == legal_representative_email
+      next if agreement.signed_by_legal_representative?
 
       current_representative_full_name = current_user.legal_representative_full_name
-      if current_representative_full_name == agreement.legal_representative_full_name
-        agreement.update!(legal_representative_email: legal_representative_email)
-      elsif current_representative_full_name == agreement.legal_representative_2_full_name
-        agreement.update!(legal_representative_2_email: legal_representative_email)
+      if current_representative_full_name == agreement.student_legal_representative_full_name
+        agreement.update!(student_legal_representative_email: legal_representative_email)
+      elsif current_representative_full_name == agreement.student_legal_representative_2_full_name
+        agreement.update!(student_legal_representative_2_email: legal_representative_email)
       else
         agreement.update!(
-          legal_representative_full_name: current_representative_full_name,
-          legal_representative_email: legal_representative_email
+          student_legal_representative_full_name: current_representative_full_name,
+          student_legal_representative_email: legal_representative_email
         )
       end
     end

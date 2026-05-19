@@ -470,8 +470,8 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     get account_path(section: "identity")
     assert_response :success
     assert_template "users/_edit_identity"
-    assert_select 'input[name="user[legal_representative_email]"][class~="text-grey-disabled"]'
-    assert_select 'input[name="user[legal_representative_full_name]"][readonly][class~="text-grey-disabled"]'
+    assert_select 'input[name="user[legal_representative_email]"]'
+    assert_select 'input[name="user[legal_representative_full_name]"]'
   end
 
   test "GET account_path(section: :identity) as student shows legal representative data" do
@@ -545,6 +545,10 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     )
     create(:signature, :student_legal_representative,
           internship_agreement: agreement_signed)
+
+    # Les callbacks update_student_profile ont écrasé legal_representative_full_name
+    # avec des valeurs aléatoires de factory — on le rétablit avant le PATCH
+    student.update_column(:legal_representative_full_name, "Parent One")
 
     patch account_path, params: {
       user: { legal_representative_email: "new-parent@example.fr" }

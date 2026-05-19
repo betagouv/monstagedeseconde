@@ -233,49 +233,51 @@ module Dashboard
       end
 
       test "#relaunch_legal_representative_sign_email redirects with alert when agreement already signed by legal representative" do
-        student = create(:student)
-        sign_in(student)
-        internship_application = create(:weekly_internship_application, :approved, student:)
-        internship_agreement = internship_application.internship_agreement
-        internship_agreement.update_columns(aasm_state: "signatures_started")
-        create(:signature, :student_legal_representative, internship_agreement:)
+        travel_to Date.new(2024, 2, 1) do
+          student = create(:student)
+          sign_in(student)
+          internship_application = create(:weekly_internship_application, :approved, student:)
+          internship_agreement = internship_application.internship_agreement
+          internship_agreement.update_columns(aasm_state: "signatures_started")
+          create(:signature, :student_legal_representative, internship_agreement:)
 
-        assert_no_emails do
-          post relaunch_legal_representative_sign_email_dashboard_students_internship_application_path(
+          assert_no_emails do
+            post relaunch_legal_representative_sign_email_dashboard_students_internship_application_path(
+              student_id: student.id,
+              uuid: internship_agreement.uuid
+            )
+          end
+          assert_redirected_to dashboard_students_internship_application_path(
             student_id: student.id,
-            uuid: internship_agreement.uuid
+            uuid: internship_application.uuid
           )
+          assert_equal flash[:alert], "La convention a déjà été signée par le représentant légal"
         end
-        assert_redirected_to dashboard_students_internship_application_path(
-          student_id: student.id,
-          uuid: internship_application.uuid
-        )
-        assert_equal flash[:alert], "La convention a déjà été signée par le représentant légal"
       end
 
-      test "#relaunch_legal_representative_sign_email redirects with alert when no legal representative email" do
-        student = create(:student)
-        sign_in(student)
-        internship_application = create(:weekly_internship_application, :approved, student:)
-        internship_agreement = internship_application.internship_agreement
-        internship_agreement.update_columns(
-          aasm_state: "signatures_started",
-          student_legal_representative_email: nil,
-          student_legal_representative_2_email: nil
-        )
+	      test "#relaunch_legal_representative_sign_email redirects with alert when no legal representative email" do
+	        student = create(:student)
+	        sign_in(student)
+	        internship_application = create(:weekly_internship_application, :approved, student:)
+	        internship_agreement = internship_application.internship_agreement
+	        internship_agreement.update_columns(
+	          aasm_state: "signatures_started",
+	          student_legal_representative_email: nil,
+	          student_legal_representative_2_email: nil
+	        )
 
-        assert_no_emails do
-          post relaunch_legal_representative_sign_email_dashboard_students_internship_application_path(
-            student_id: student.id,
-            uuid: internship_agreement.uuid
-          )
-        end
-        assert_redirected_to dashboard_students_internship_application_path(
-          student_id: student.id,
-          uuid: internship_application.uuid
-        )
-        assert_equal flash[:alert], "Aucun représentant légal trouvé pour cette convention"
-      end
+	        assert_no_emails do
+	          post relaunch_legal_representative_sign_email_dashboard_students_internship_application_path(
+	            student_id: student.id,
+	            uuid: internship_agreement.uuid
+	          )
+	        end
+	        assert_redirected_to dashboard_students_internship_application_path(
+	          student_id: student.id,
+	          uuid: internship_application.uuid
+	        )
+	        assert_equal flash[:alert], "Aucun représentant légal trouvé pour cette convention"
+	      end
 
       test "#relaunch_legal_representative_sign_email is not accessible when not signed in" do
         student = create(:student)

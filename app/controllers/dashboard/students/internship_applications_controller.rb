@@ -76,7 +76,7 @@ module Dashboard
 
         if internship_agreement.nil? || legal_representative_data.blank? || legal_representative_data.values.all? { |rep| rep[:email].blank? }
           redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
-                      alert: "Données du représentant légal manquantes"
+                      alert: "Aucun représentant légal trouvé pour cette convention"
         elsif internship_agreement.signed_by_legal_representative?
           redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
                       alert: "La convention a déjà été signée par le représentant légal"
@@ -104,8 +104,10 @@ module Dashboard
 
       def synchronize_legal_representative_data(internship_agreement, current_user)
         legal_representative_data = internship_agreement&.legal_representative_data || {}
+        return legal_representative_data if legal_representative_data.blank?
 
         current_email = current_user.legal_representative_email
+        return legal_representative_data if current_email.blank?
         return legal_representative_data if current_email.in?(
           legal_representative_data.values.map { |rep| rep[:email] }
         )
