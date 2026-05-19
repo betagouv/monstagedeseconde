@@ -17,12 +17,12 @@ module Dashboard
     end
 
     def edit
-      authorize! :edit, School
+      authorize! :edit, @school
       @available_weeks = Week.selectable_on_school_year
     end
 
     def update
-      authorize! :update, School
+      authorize! :update, @school
       @school.update!(internship_weeks_params)
       if current_user.god?
         redirect_to(dashboard_schools_path(anchor: "school_#{@school.id}"),
@@ -42,8 +42,8 @@ module Dashboard
     def update_signature
       redirect_to dashboard_internship_agreements_path and return unless params.dig(:school, :signature).present?
 
-      authorize! :update_signature, School
       @school = School.find(params.require(:id))
+      authorize! :update_signature, @school
       if @school.update(signature_params)
         redirect_to dashboard_internship_agreements_path, flash: { success: 'Signature mise à jour avec succès' }
       else
@@ -52,7 +52,7 @@ module Dashboard
     end
 
     def show
-      authorize! :edit, School
+      authorize! :edit, @school
       @available_weeks = Week.selectable_on_school_year
       redirect_to dashboard_school_class_rooms_path(@school)
     end

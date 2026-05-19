@@ -625,6 +625,7 @@ module InternshipOffers::InternshipApplications
         :weekly_internship_application,
         :validated_by_employer,
         internship_offer: internship_offer_2,
+        weeks: SchoolTrack::Seconde.both_weeks,
         user_id: student.id
       )
 
