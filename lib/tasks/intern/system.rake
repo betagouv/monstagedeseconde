@@ -60,6 +60,14 @@ namespace :sys do
     end
   end
 
+  desc "download a local database copy to filesystem"
+  task :save_local, [] => :environment do
+    PrettyConsole.announce_task "Downloading local database" do
+      system("pg_dump -c --clean --if-exists -Fc --encoding=UTF-8 --no-owner --no-password  " \
+        "-d monstage > storage/monstage_backup.dump")
+    end
+  end
+
   desc "download a production database copy to filesystem with sql format"
   task :dl_prod_sql, [] => :environment do
     if File.exist?(db_file_name_sql)
