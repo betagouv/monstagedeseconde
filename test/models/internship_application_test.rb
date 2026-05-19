@@ -43,18 +43,15 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert_equal 3, InternshipApplication.remindable.count
   end
 
-  test "creating a new internship application sets submitted_at and sends email to employer" do
+  test "creating a new internship application sets submitted_at and creates a mail action item for employer" do
     freeze_time do
       assert_changes -> { InternshipApplication.count }, from: 0, to: 1 do
-        mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-
-        EmployerMailer.stub :internship_application_submitted_email, mock_mail do
-          internship_application = create(:weekly_internship_application)
+        assert_changes -> { MailActionItem.count }, from: 0, to: 1 do
+          create(:weekly_internship_application)
         end
 
         assert_equal Time.now.utc, InternshipApplication.last.submitted_at
-        mock_mail.verify
+        assert_equal :pending_internship_application.to_s, MailActionItem.last.action_type
       end
     end
   end
@@ -200,14 +197,10 @@ class InternshipApplicationTest < ActiveSupport::TestCase
 
     internship_application = create(:weekly_internship_application, :validated_by_employer, student:)
 
-    mock_mail_to_employer = Minitest::Mock.new
-    mock_mail_to_employer.expect(:deliver_later, true)
-
-    EmployerMailer.stub(:internship_application_approved_with_agreement_email,
-                        mock_mail_to_employer) do
+    assert_difference "MailActionItem.count", 1 do
       internship_application.approve!
     end
-    mock_mail_to_employer.verify
+    assert_equal "new_agreement_to_fill_in", MailActionItem.last.action_name
   end
 
   test "transition from submited to approved sends an email to school_manager when no agreement is possible" do

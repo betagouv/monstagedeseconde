@@ -34,7 +34,7 @@ module Dashboard
         if params[:sgid].present? && magic_fetch_student&.student? && magic_fetch_student.id == @current_student.id
           @internship_application.update(magic_link_tracker: 1)
           @internship_application_sgid = @internship_application.to_sgid(expires_in: MAGIC_EXPIRATION_TIME).to_s
-          render 'dashboard/students/internship_applications/making_decisions' and return
+          render "dashboard/students/internship_applications/making_decisions" and return
         elsif params[:sgid].present?
           @internship_application.update(magic_link_tracker: 2)
           redirect_to(
@@ -58,12 +58,12 @@ module Dashboard
       def resend_application
         if @internship_application.max_dunning_letter_count_reached?
           redirect_to dashboard_students_internship_applications_path(@current_student),
-                      alert: 'Vous avez atteint le nombre maximum de relances pour cette candidature'
+                      alert: "Vous avez atteint le nombre maximum de relances pour cette candidature"
         else
           increase_dunning_letter_count
           EmployerMailer.resend_internship_application_submitted_email(internship_application: @internship_application).deliver_now
           redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
-                      notice: 'Votre candidature a bien été renvoyée'
+                      notice: "Votre candidature a bien été renvoyée"
         end
       end
 

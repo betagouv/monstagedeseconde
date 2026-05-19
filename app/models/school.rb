@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'mini_magick'
-require 'tempfile'
+require "mini_magick"
+require "tempfile"
 
 class School < ApplicationRecord
   include Nearbyable
@@ -13,7 +13,7 @@ class School < ApplicationRecord
   has_many :internship_applications, through: :students
   has_many :internship_agreements, through: :internship_applications
   has_many :plannings, dependent: :destroy
-  has_many :dedicated_internship_offers, foreign_key: :school_id, dependent: :nullify, class_name: 'InternshipOffer'
+  has_many :dedicated_internship_offers, foreign_key: :school_id, dependent: :nullify, class_name: "InternshipOffer"
   has_many :school_internship_weeks, dependent: :destroy
   has_many :weeks, through: :school_internship_weeks
   has_many :reserved_schools
@@ -24,18 +24,18 @@ class School < ApplicationRecord
   # has_rich_text :agreement_conditions_rich_text
 
   validates :city, :name, :code_uai, presence: true
-  validates :code_uai, uniqueness: { message: 'Ce code UAI est déjà utilisé, le lycée est déjà enregistré' }
+  validates :code_uai, uniqueness: { message: "Ce code UAI est déjà utilisé, le lycée est déjà enregistré" }
   validates :zipcode, zipcode: { country_code: :fr }
   validates :signature,
             content_type: {
-              in: ['image/jpeg', 'image/png', 'application/pdf'],
-              message: 'doit être au format JPEG, PNG ou PDF'
+              in: [ "image/jpeg", "image/png", "application/pdf" ],
+              message: "doit être au format JPEG, PNG ou PDF"
             },
             if: -> { signature.attached? }
   validates :signature,
             size: {
               less_than: 5.megabytes,
-              message: 'doit être inférieure à 5 Mo'
+              message: "doit être inférieure à 5 Mo"
             },
             if: -> { signature.attached? }
 
@@ -44,23 +44,23 @@ class School < ApplicationRecord
   after_commit :convert_pdf_to_png, if: :needs_pdf_conversion?
 
   CONTRACT_CODES = {
-    '10' => 'HORS CONTRAT',
-    '30' => "CONTRAT D'ASSOCIATION TOUTES CLASSES",
-    '31' => 'CONTRAT ASSOCIATION PARTIE DES CLASSES',
-    '99' => 'SANS OBJET'
+    "10" => "HORS CONTRAT",
+    "30" => "CONTRAT D'ASSOCIATION TOUTES CLASSES",
+    "31" => "CONTRAT ASSOCIATION PARTIE DES CLASSES",
+    "99" => "SANS OBJET"
   }
   VALID_TYPE_PARAMS = %w[rep rep_plus].freeze
   SCHOOL_TYPES = %w[college lycee].freeze
 
   scope :with_manager, lambda {
                          left_joins(:school_manager)
-                           .group('schools.id')
-                           .having('count(users.id) > 0')
+                           .group("schools.id")
+                           .having("count(users.id) > 0")
                        }
 
   scope :with_school_manager, lambda {
     School.where(id: Users::SchoolManagement.kept
-                                            .where(role: 'school_manager')
+                                            .where(role: "school_manager")
                                             .pluck(:school_id))
   }
 
@@ -96,7 +96,7 @@ class School < ApplicationRecord
 
   rails_admin do
     list do
-      scopes [:with_preloads]
+      scopes [ :with_preloads ]
       field :id
       field :name
       field :visible
@@ -167,7 +167,7 @@ class School < ApplicationRecord
   end
 
   def college?
-    school_type == 'college'
+    school_type == "college"
   end
 
   def management_representative
@@ -213,9 +213,9 @@ class School < ApplicationRecord
     return Week.both_school_track_selectable_weeks if grade.nil?
 
     case grade.short_name
-    when 'troisieme', 'quatrieme'
+    when "troisieme", "quatrieme"
       SchoolTrack::Troisieme
-    when 'seconde'
+    when "seconde"
       SchoolTrack::Seconde
     end.selectable_from_now_until_end_of_school_year
   end
@@ -253,10 +253,10 @@ class School < ApplicationRecord
   private
 
   def contract_label
-    return 'Public' if is_public?
-    return 'Privé sous contrat' if contract_code.in?(%w[30 31])
+    return "Public" if is_public?
+    return "Privé sous contrat" if contract_code.in?(%w[30 31])
 
-    'Privé hors contrat'
+    "Privé hors contrat"
   end
 
   def contract_code_label
@@ -268,27 +268,27 @@ class School < ApplicationRecord
   end
 
   def needs_pdf_conversion?
-    signature.attached? && signature.content_type == 'application/pdf'
+    signature.attached? && signature.content_type == "application/pdf"
   end
 
   def convert_pdf_to_png
-    return unless signature.attached? && signature.content_type == 'application/pdf'
+    return unless signature.attached? && signature.content_type == "application/pdf"
 
     begin
-      temp_pdf = Tempfile.new(['signature', '.pdf'])
+      temp_pdf = Tempfile.new([ "signature", ".pdf" ])
       temp_pdf.binmode
       temp_pdf.write(signature.download)
       temp_pdf.close
 
       # Convert to PNG
       image = MiniMagick::Image.new(temp_pdf.path)
-      image.format 'png'
+      image.format "png"
 
       # Reattach as PNG
       signature.attach(
         io: StringIO.new(image.to_blob),
-        filename: signature.filename.to_s.sub('.pdf', '.png'),
-        content_type: 'image/png'
+        filename: signature.filename.to_s.sub(".pdf", ".png"),
+        content_type: "image/png"
       )
     rescue StandardError => e
       Rails.logger.error "Erreur lors de la conversion PDF->PNG: #{e.message}"

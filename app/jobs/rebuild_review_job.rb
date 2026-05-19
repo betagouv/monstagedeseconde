@@ -10,7 +10,6 @@ class RebuildReviewJob < ApplicationJob
   include ReviewRebuild::AgreementsCreationSteps
   include ReviewRebuild::InvitationsCreationSteps
   include ReviewRebuild::TeamsCreationSteps
-  include ReviewRebuild::BoardingHousesCreationSteps
   queue_as :default
   sidekiq_options retry: false
 
@@ -25,8 +24,6 @@ class RebuildReviewJob < ApplicationJob
   #
   STEPS = [
     # removal steps
-    [ :boarding_house_views_removal, "Suppression des vues de l'internat", 1, "removal" ],
-    [ :mail_action_item_removal, "Suppression des MailActionItems", 1, "removal" ],
     [ :invitation_removal, "Suppression des invitations de personnels pédagogiques", 1, "removal" ],
     [ :favorites_removal, "Suppression des favoris des élèves", 1, "removal" ],
     [ :student_removal, "Suppression des élèves, de leurs candidatures, de leurs conventions, des signatures", 5,
@@ -56,8 +53,7 @@ class RebuildReviewJob < ApplicationJob
     [ :api_offers, "Création des offres API", 10, "addition" ],
     [ :offers, "Création des offres", 30, "addition" ],
     [ :applications, "Création des candidatures", 69, "addition" ],
-    [ :agreements, "Création des conventions", 15, "addition" ],
-    [ :boarding_houses, "Création des internats", 200, "addition" ]
+    [ :agreements, "Création des conventions", 15, "addition" ]
   ].freeze
   # [:extra_areas, 'Création des espaces supplémentaires - non fait', 0, 'addition'],
   # [:invitation, "Création d'une invitation", 1, 'addition'],
@@ -171,7 +167,6 @@ class RebuildReviewJob < ApplicationJob
     broadcast_info(:areas_removal)
     InternshipOffer.destroy_all
     InternshipOfferArea.delete_all
-
 
     broadcast_info(:corporation_removal)
     Corporation.destroy_all
