@@ -14,6 +14,13 @@ Rails.application.routes.draw do
   mount LetterThief::Engine => '/letter_thief' if Rails.env.development?
   scope(path_names: { new: 'nouveau', edit: 'modification' }) do
     authenticate :user, ->(u) { u.god? } do
+      namespace :admin do
+        resources :school_managements, only: %i[index show] do
+          resources :user_schools, only: %i[create destroy]
+        end
+        resources :schools, only: %i[index]
+      end
+
       # sidekiq
       mount Sidekiq::Web => '/sidekiq'
       match '/split' => Split::Dashboard,

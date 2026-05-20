@@ -38,6 +38,7 @@ class Ability
   def god_abilities
     can :show, :account, :rebuild_review_job
     can :manage, School
+    can :manage, UserSchool
     can :manage, Sector
     can :manage, Academy
     can :manage, AcademyRegion

@@ -40,6 +40,16 @@ module Users
 
     delegate :code_uai, to: :school, prefix: true, allow_nil: true
 
+    scope :search_by_query, lambda { |query|
+      term = "%#{query.strip}%"
+      joins("LEFT JOIN schools ON schools.id = users.school_id")
+        .where(
+          "users.first_name ILIKE :term OR users.last_name ILIKE :term " \
+          "OR users.email ILIKE :term OR schools.code_uai ILIKE :term",
+          term: term
+        )
+    }
+
     def mono_internship_agreements
       internship_agreements.merge(InternshipAgreements::MonoInternshipAgreement.all)
     end
