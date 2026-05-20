@@ -608,6 +608,91 @@ module InternshipOffers::InternshipApplications
       assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
     end
 
+    test "PATCH #update ignores mass-assigned aasm_state - student cannot self-approve via params injection" do
+      student = create(:student)
+      internship_application = create(:weekly_internship_application, :submitted, student:)
+      sign_in(student)
+
+      patch(
+        dashboard_internship_offer_internship_application_path(
+          internship_application.internship_offer,
+          uuid: internship_application.uuid
+        ),
+        params: {
+          transition: :cancel_by_student!,
+          internship_application: {
+            aasm_state: "approved",
+            canceled_by_student_message: "OK"
+          }
+        }
+      )
+
+      internship_application.reload
+      refute internship_application.approved?, "aasm_state must not be settable via mass-assignment"
+      assert internship_application.canceled_by_student?
+      assert_equal "OK", internship_application.canceled_by_student_message
+    end
+
+    test "PATCH #update ignores mass-assigned aasm_state - employer cannot skip validation chain" do
+      internship_application = create(:weekly_internship_application, :submitted)
+      sign_in(internship_application.internship_offer.employer)
+
+      patch(
+        dashboard_internship_offer_internship_application_path(
+          internship_application.internship_offer,
+          uuid: internship_application.uuid
+        ),
+        params: {
+          transition: :read!,
+          internship_application: { aasm_state: "approved" }
+        }
+      )
+
+      internship_application.reload
+      refute internship_application.approved?, "aasm_state must not be settable via mass-assignment"
+      assert internship_application.read_by_employer?
+    end
+
+    test "PATCH #update ignores mass-assigned type to prevent STI class hijack" do
+      internship_application = create(:weekly_internship_application, :submitted)
+      original_type = internship_application.type
+      sign_in(internship_application.internship_offer.employer)
+
+      patch(
+        dashboard_internship_offer_internship_application_path(
+          internship_application.internship_offer,
+          uuid: internship_application.uuid
+        ),
+        params: {
+          transition: :read!,
+          internship_application: { type: "InternshipApplications::Api" }
+        }
+      )
+
+      internship_application.reload
+      assert_equal original_type, internship_application.type, "type must not be settable via mass-assignment"
+      assert internship_application.read_by_employer?
+    end
+
+    test "PATCH #update ignores mass-assigned sgid in body" do
+      internship_application = create(:weekly_internship_application, :submitted)
+      sign_in(internship_application.internship_offer.employer)
+
+      patch(
+        dashboard_internship_offer_internship_application_path(
+          internship_application.internship_offer,
+          uuid: internship_application.uuid
+        ),
+        params: {
+          transition: :read!,
+          internship_application: { sgid: "forged-sgid" }
+        }
+      )
+
+      internship_application.reload
+      assert internship_application.read_by_employer?
+    end
+
     test "PATCH when 2 2nde applications are validated by employer, with week1 for the first and both weeks with the second," \
          "student, approve the one with week1, and the restore the second validated by employer offer, which should be impossible" do
       school = create(:school, :with_school_manager)
