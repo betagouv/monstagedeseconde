@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SchoolsController < ApplicationController
+class SchoolsController < Admin::BaseController
   before_action :authenticate_user!
 
   def new
@@ -16,7 +16,7 @@ class SchoolsController < ApplicationController
     @school.department = department
     if @school.save
       ImportDataFromSygneJob.perform_later(@school) if Rails.env.production? || Rails.env.test?
-      redirect_to rails_admin_path, flash: { success: 'Etablissement créé !' }
+      redirect_to rails_admin_path, flash: { success: "Etablissement créé !" }
     else
       flash[:error] = "Erreur lors de la validation des informations : #{@school.errors.full_messages}"
       render :new
