@@ -10,6 +10,7 @@ class RebuildReviewJob < ApplicationJob
   include ReviewRebuild::AgreementsCreationSteps
   include ReviewRebuild::InvitationsCreationSteps
   include ReviewRebuild::TeamsCreationSteps
+  include ReviewRebuild::BoardingHousesCreationSteps
   queue_as :default
   sidekiq_options retry: false
 
@@ -24,36 +25,39 @@ class RebuildReviewJob < ApplicationJob
   #
   STEPS = [
     # removal steps
-    [:invitation_removal, 'Suppression des invitations de personnels pédagogiques', 1, 'removal'],
-    [:favorites_removal, 'Suppression des favoris des élèves', 1, 'removal'],
-    [:student_removal, 'Suppression des élèves, de leurs candidatures, de leurs conventions, des signatures', 5,
-     'removal'],
-    [:student_search_history_removal, 'Suppression des historiques de recherche des élèves', 2, 'removal'],
-    [:waiting_list_entries_removal, 'Suppression des listes d\'attente[waiting_list_entries]', 1, 'removal'],
-    [:team_removal, 'Suppression des équipes', 1, 'removal'],
-    [:stepper_classes_removal, 'Suppression du contenu des tables du stepper', 1, 'removal'],
-    [:api_offers_removal, 'Suppression des offres api', 1, 'removal'],
-    [:local_offers_removal, 'Suppression des offres locales 1E1S', 1, 'removal'],
-    [:areas_removal, 'Suppression des espaces et des offres', 1, 'removal'],
-    [:notifications_removal, 'Suppression des notifications', 1, 'removal'],
-    [:user_area_removal, 'Suppression des espaces utilisateur', 1, 'removal'],
-    [:employers_removal, 'Suppression des employeurs et de leurs offres', 1, 'removal'],
-    [:users_operator_removal, 'Suppression des opérateurs', 1, 'removal'],
-    [:users_school_management_removal, 'Suppression des équipes pédagogiques', 1, 'removal'],
-    [:corporation_removal, 'Suppression des entreprises du multi-entreprise', 1, 'removal'],
-    [:multi_corporation_removal, 'Suppression des multi-entreprises', 1, 'removal'],
-    [:multi_coordinator_removal, 'Suppression des multi-coordinateurs', 1, 'removal'],
-    [:multi_activity_removal, 'Suppression des multi-activités', 1, 'removal'],
+    [ :boarding_house_views_removal, "Suppression des vues de l'internat", 1, "removal" ],
+    [ :mail_action_item_removal, "Suppression des MailActionItems", 1, "removal" ],
+    [ :invitation_removal, "Suppression des invitations de personnels pédagogiques", 1, "removal" ],
+    [ :favorites_removal, "Suppression des favoris des élèves", 1, "removal" ],
+    [ :student_removal, "Suppression des élèves, de leurs candidatures, de leurs conventions, des signatures", 5,
+     "removal" ],
+    [ :student_search_history_removal, "Suppression des historiques de recherche des élèves", 2, "removal" ],
+    [ :waiting_list_entries_removal, "Suppression des listes d'attente[waiting_list_entries]", 1, "removal" ],
+    [ :team_removal, "Suppression des équipes", 1, "removal" ],
+    [ :stepper_classes_removal, "Suppression du contenu des tables du stepper", 1, "removal" ],
+    [ :api_offers_removal, "Suppression des offres api", 1, "removal" ],
+    [ :local_offers_removal, "Suppression des offres locales 1E1S", 1, "removal" ],
+    [ :areas_removal, "Suppression des espaces et des offres", 1, "removal" ],
+    [ :notifications_removal, "Suppression des notifications", 1, "removal" ],
+    [ :user_area_removal, "Suppression des espaces utilisateur", 1, "removal" ],
+    [ :employers_removal, "Suppression des employeurs et de leurs offres", 1, "removal" ],
+    [ :users_operator_removal, "Suppression des opérateurs", 1, "removal" ],
+    [ :users_school_management_removal, "Suppression des équipes pédagogiques", 1, "removal" ],
+    [ :corporation_removal, "Suppression des entreprises du multi-entreprise", 1, "removal" ],
+    [ :multi_corporation_removal, "Suppression des multi-entreprises", 1, "removal" ],
+    [ :multi_coordinator_removal, "Suppression des multi-coordinateurs", 1, "removal" ],
+    [ :multi_activity_removal, "Suppression des multi-activités", 1, "removal" ],
 
     # creation steps
-    [:employers, 'Création des employeurs', 8, 'addition'],
-    [:users_operators, 'Création des opérateurs', 6, 'addition'],
-    [:students, 'Création des élèves', 157, 'addition'],
-    [:users_school_management, 'Création des équipes pédagogiques', 42, 'addition'],
-    [:api_offers, 'Création des offres API', 10, 'addition'],
-    [:offers, 'Création des offres', 30, 'addition'],
-    [:applications, 'Création des candidatures', 69, 'addition'],
-    [:agreements, 'Création des conventions', 15, 'addition']
+    [ :employers, "Création des employeurs", 8, "addition" ],
+    [ :users_operators, "Création des opérateurs", 6, "addition" ],
+    [ :students, "Création des élèves", 157, "addition" ],
+    [ :users_school_management, "Création des équipes pédagogiques", 42, "addition" ],
+    [ :api_offers, "Création des offres API", 10, "addition" ],
+    [ :offers, "Création des offres", 30, "addition" ],
+    [ :applications, "Création des candidatures", 69, "addition" ],
+    [ :agreements, "Création des conventions", 15, "addition" ],
+    [ :boarding_houses, "Création des internats", 200, "addition" ]
   ].freeze
   # [:extra_areas, 'Création des espaces supplémentaires - non fait', 0, 'addition'],
   # [:invitation, "Création d'une invitation", 1, 'addition'],
@@ -77,10 +81,10 @@ class RebuildReviewJob < ApplicationJob
   # ------------
   def launch_rebuild_process
     catch(:abort) do
-      broadcast_header('Suppression des données')
+      broadcast_header("Suppression des données")
       remove_steps
 
-      broadcast_header('Création des données')
+      broadcast_header("Création des données")
       creation_steps
 
       broadcast_header("✅ THAT'S ALL FOLKS")
@@ -91,24 +95,83 @@ class RebuildReviewJob < ApplicationJob
   end
 
   def remove_steps
+    broadcast_info(:boarding_house_views_removal)
+    BoardingHouseView.delete_all if defined?(BoardingHouseView)
+    # BoardingHouse themselves are not deleted, just like schools are not neither.
+
+    broadcast_info(:mail_action_item_removal)
+    MailActionItem.delete_all if defined?(MailActionItem)
+
     broadcast_info(:invitation_removal)
-    Invitation.where.not(sent_at: nil).destroy_all
+    Invitation.where.not(sent_at: nil).delete_all
 
-    broadcast_info(:team_removal)
-    TeamMemberInvitation.destroy_all
-
-    broadcast_info(:waiting_list_entries_removal)
-    WaitingListEntry.destroy_all
+    broadcast_info(:favorites_removal)
+    Favorite.delete_all
 
     broadcast_info(:student_search_history_removal)
-    UsersSearchHistory.destroy_all
-    UsersInternshipOffersHistory.destroy_all
+    UsersSearchHistory.delete_all
+    UsersInternshipOffersHistory.delete_all
 
     broadcast_info(:student_removal)
-    Users::Student.destroy_all
-    # InternshipApplication.destroy_all unless InternshipApplication.all.count.zero?
-    # InternshipAgreement.destroy_all unless InternshipAgreement.all.count.zero?
-    # Signature.destroy_all unless Signature.all.count.zero?
+    student_ids = Users::Student.select(:id)
+    app_ids = InternshipApplication.where(user_id: student_ids).select(:id)
+    agreement_ids = InternshipAgreement.where(internship_application_id: app_ids).select(:id)
+
+    # Supprimer les signatures d'abord (FK vers internship_agreements)
+    Signature.where(internship_agreement_id: agreement_ids).delete_all
+    # Supprimer les corporation_internship_agreements (FK vers internship_agreements)
+    CorporationInternshipAgreement.where(internship_agreement_id: agreement_ids).delete_all
+    # Supprimer les internship_application_weeks (FK vers internship_applications)
+    InternshipApplicationWeek.where(internship_application_id: app_ids).delete_all
+    # Supprimer les changements d'etat des candidatures (FK vers internship_applications)
+    InternshipApplicationStateChange.where(internship_application_id: app_ids).delete_all
+    # Supprimer les conventions (FK vers internship_applications)
+    InternshipAgreement.where(internship_application_id: app_ids).delete_all
+    # Supprimer les candidatures (FK vers users)
+    InternshipApplication.where(user_id: student_ids).delete_all
+    # Supprimer les url_shrinkers des étudiants
+    UrlShrinker.where(user_id: student_ids).delete_all
+    # Supprimer les étudiants
+    Users::Student.delete_all
+
+    broadcast_info(:waiting_list_entries_removal)
+    WaitingListEntry.delete_all
+
+    broadcast_info(:team_removal)
+    TeamMemberInvitation.delete_all
+
+
+    # Supprimer les écoles réservées (FK vers internship_offers)
+    ReservedSchool.delete_all
+    # Supprimer les stats associées aux offres (FK vers internship_offers)
+    InternshipOfferStats.delete_all
+    # Supprimer les notes associées aux offres (FK vers internship_offers)
+    InternshipOfferGrade.delete_all
+    # Supprimer les semaines associées aux offres (FK vers internship_offers)
+    InternshipOfferWeek.delete_all
+
+    broadcast_info(:api_offers_removal)
+    InternshipOffers::Api.delete_all
+
+    broadcast_info(:local_offers_removal)
+
+    InternshipOffer.where.not(type: InternshipOffers::Api.name).delete_all
+
+    broadcast_info(:stepper_classes_removal)
+    Planning.destroy_all
+    Entreprise.delete_all
+    InternshipOccupation.delete_all
+
+    broadcast_info(:notifications_removal)
+    AreaNotification.delete_all
+
+    broadcast_info(:user_area_removal)
+    User.where.not(current_area_id: nil).update_all(current_area_id: nil)
+
+    broadcast_info(:areas_removal)
+    InternshipOffer.destroy_all
+    InternshipOfferArea.delete_all
+
 
     broadcast_info(:corporation_removal)
     Corporation.destroy_all
@@ -122,25 +185,10 @@ class RebuildReviewJob < ApplicationJob
     broadcast_info(:multi_activity_removal)
     MultiActivity.destroy_all
 
-    broadcast_info(:api_offers_removal)
-    InternshipOffers::Api.destroy_all
-
-    broadcast_info(:notifications_removal)
-    AreaNotification.destroy_all
-
-    broadcast_info(:user_area_removal)
-    User.where.not(current_area_id: nil).update_all(current_area_id: nil)
-
-    broadcast_info(:areas_removal)
-    InternshipOffer.destroy_all
-    InternshipOfferArea.delete_all
-
-    broadcast_info(:stepper_classes_removal)
-    Entreprise.destroy_all
-    InternshipOccupation.destroy_all
-
     broadcast_info(:employers_removal)
-    Users::Employer.destroy_all
+    employer_ids = Users::Employer.select(:id)
+    UrlShrinker.where(user_id: employer_ids).delete_all
+    Users::Employer.delete_all
 
     broadcast_info(:users_operator_removal)
     Users::Operator.destroy_all
@@ -150,7 +198,7 @@ class RebuildReviewJob < ApplicationJob
   end
 
   def creation_steps
-    addition_steps = STEPS.select { |step| step[3] == 'addition' }
+    addition_steps = STEPS.select { |step| step[3] == "addition" }
     addition_steps.each do |step|
       # show_time do
       broadcast_temporary_info(step[0])
@@ -166,11 +214,11 @@ class RebuildReviewJob < ApplicationJob
   def broadcast_info(sym)
     text = steps_input_text(sym)
     time_value = @rebuilt_steps_hash[sym].values.first
-    puts '================================'
+    puts "================================"
     puts "text : #{text}"
     puts "time_value : #{time_value}"
-    puts '================================'
-    puts ''
+    puts "================================"
+    puts ""
     message_box.broadcast_info(message_content: text, time_value: time_value)
   end
 
@@ -180,7 +228,7 @@ class RebuildReviewJob < ApplicationJob
   end
 
   def steps_input_text(sym)
-    raise ArgumentError, 'Invalid step symbol' unless @rebuilt_steps_hash.key?(sym)
+    raise ArgumentError, "Invalid step symbol" unless @rebuilt_steps_hash.key?(sym)
 
     @rebuilt_steps_hash[sym].keys.first
   end
@@ -213,7 +261,7 @@ class RebuildReviewJob < ApplicationJob
   end
 
   def default_password
-    ENV.fetch('DEFAULT_PASSWORD', 'password123!!')
+    ENV.fetch("DEFAULT_PASSWORD", "password123!!")
   end
 
   def show_time
