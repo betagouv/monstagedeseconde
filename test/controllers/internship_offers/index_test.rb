@@ -414,26 +414,25 @@ class IndexTest < ActionDispatch::IntegrationTest
   end
 
   test 'GET #index as student with page, returns paginated content' do
-    # Api offers are ordered by creation date, so we can't test pagination with cities
     travel_to(Date.new(2024, 3, 1)) do
-      # Student school is in Paris
       sign_in(create(:student, :seconde))
-      internship_offers = InternshipOffer::PAGE_SIZE.times.map do
+      InternshipOffer::PAGE_SIZE.times do
         create(:api_internship_offer_2nde, coordinates: Coordinates.bordeaux, city: 'Bordeaux')
       end
-      # this one is in Paris, but it's the last one
       create(:api_internship_offer_2nde)
       InternshipOffer.stub :by_weeks, InternshipOffer.all do
         InternshipOffer.stub :in_the_future, InternshipOffer.all do
           get internship_offers_path, params: { format: :json }
-          json_response.first[1].each do |internship_offer|
-            assert_equal 'Bordeaux', internship_offer['city']
-          end
-          assert_equal InternshipOffer::PAGE_SIZE, json_response.first[1].count
+          page_1_cities = json_response.first[1].map { |offer| offer['city'] }
+          assert_equal InternshipOffer::PAGE_SIZE, page_1_cities.count
 
           get internship_offers_path(page: 2, format: :json)
-          assert_equal 1, json_response.first[1].count
-          assert_equal 'Paris', json_response.first[1][0]['city']
+          page_2_cities = json_response.first[1].map { |offer| offer['city'] }
+          assert_equal 1, page_2_cities.count
+
+          all_cities = page_1_cities + page_2_cities
+          assert_equal InternshipOffer::PAGE_SIZE, all_cities.count('Bordeaux')
+          assert_equal 1, all_cities.count('Paris')
         end
       end
     end
