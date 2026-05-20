@@ -86,7 +86,7 @@ module InternshipOffers::InternshipApplications
         :validated_by_employer,
         user_id: student.id
       )
-      internship_application.internship_offer.employer.update(type: "Users::PrefectureStatistician")
+      internship_application.internship_offer.employer.update_columns(type: "Users::PrefectureStatistician")
 
       sign_in(internship_application.internship_offer.employer)
 
@@ -206,7 +206,7 @@ module InternshipOffers::InternshipApplications
         user_id: student.id
       )
       employer = internship_application.internship_offer.employer
-      employer.update(type: "Users::Operator", operator_id: create(:operator).id)
+      employer.update_columns(type: "Users::Operator", operator_id: create(:operator).id)
       operator = Users::Operator.find_by(id: employer.id)
 
       sign_in(operator)
