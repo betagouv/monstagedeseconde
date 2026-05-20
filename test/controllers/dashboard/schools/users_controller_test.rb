@@ -98,6 +98,22 @@ module Dashboard
         assert_response :success
         assert_select 'tbody tr', count: school_employees.length + 1 # school manager
       end
+
+      #
+      # update — route removed (was vulnerable to mass-assignment / privilege escalation)
+      #
+      test 'PATCH #update route no longer exists' do
+        school = create(:school, :with_school_manager)
+        school_manager = school.school_manager
+        sign_in(school_manager)
+
+        patch "/tableau-de-bord/ecoles/#{school.id}/utilisateurs/#{school_manager.id}",
+              params: { user: { type: 'Users::God' } }
+
+        assert_response :not_found
+        school_manager.reload
+        assert_equal 'Users::SchoolManagement', school_manager.type
+      end
     end
   end
 end

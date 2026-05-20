@@ -18,14 +18,15 @@ Rails.application.configure do
     policy.font_src    :self, :https, :data
     policy.img_src     :self, :https, :data
     policy.object_src  :none
-    policy.script_src :self, :https, "'unsafe-inline'", lambda {
+    policy.script_src :self, :https, "'unsafe-inline'", 'https://*.crisp.chat', lambda {
       ENV.fetch('MATOMO_URL', '').gsub(%r{/js/.*}, '')
     }
-    policy.connect_src :self, :https
+    policy.connect_src :self, :https, 'https://*.crisp.chat', 'wss://*.relay.crisp.chat', 'wss://*.relay.rescue.crisp.chat'
     policy.style_src   :self, :https, "'unsafe-inline'"
-    policy.frame_src   'https://plugins.crisp.chat', 'https://uneleveunstage.crisp.help', 'https://tally.so', ENV['METABASE_SITE_URL']
+    policy.frame_src   'https://*.crisp.chat', 'https://tally.so', ENV['METABASE_SITE_URL']
+    policy.worker_src  :self, :blob, 'https://*.crisp.chat'
     if Rails.env.development?
-      policy.frame_src :self, 'http://localhost:3000', 'https://plugins.crisp.chat', 'https://uneleveunstage.crisp.help', 'https://tally.so', ENV['METABASE_SITE_URL']
+      policy.frame_src :self, 'http://localhost:3000', 'https://*.crisp.chat', 'https://tally.so', ENV['METABASE_SITE_URL']
     end
     # Specify URI for violation reports
     # policy.report_uri "/csp-violation-report-endpoint"
