@@ -1,18 +1,18 @@
-require 'test_helper'
+require "test_helper"
 
 class GodMailerTest < ActionMailer::TestCase
   include EmailSpamEuristicsAssertions
 
-  test '.weekly_kpis_email sends email to recipient' do
+  test ".weekly_kpis_email sends email to recipient" do
     email = GodMailer.weekly_kpis_email
     email.deliver_now
     assert_emails 1
     assert_equal [ EmailUtils.from ], email.from
-    assert_equal [ ENV['TEAM_EMAIL'] ], email.to
+    assert_equal [ ENV["TEAM_DSI_EMAIL"] ], email.to
     refute_email_spammyness(email)
   end
 
-  test 'notify_others_signatures_started_email sends email to recipient' do
+  test "notify_others_signatures_started_email sends email to recipient" do
     internship_agreement = create(:mono_internship_agreement)
     signature = create(:signature, :school_manager, internship_agreement: internship_agreement)
     email = GodMailer.notify_others_signatures_started_email(
@@ -28,8 +28,8 @@ class GodMailerTest < ActionMailer::TestCase
     refute_email_spammyness(email)
   end
 
-  test 'notify_others_signatures_finished_email sends email to recipient' do
-    skip 'test will be ok when getting rid of Flipper :student_signature'
+  test "notify_others_signatures_finished_email sends email to recipient" do
+    skip "test will be ok when getting rid of Flipper :student_signature"
     internship_agreement = create(:mono_internship_agreement)
     create(:signature, :school_manager, internship_agreement: internship_agreement)
     create(:signature, :employer, internship_agreement: internship_agreement)
@@ -47,8 +47,8 @@ class GodMailerTest < ActionMailer::TestCase
     refute_email_spammyness(email)
   end
 
-  test 'notify_signatures_enabled launches two emails' do
-    skip 'test will be ok when getting rid of Flipper :student_signature'
+  test "notify_signatures_enabled launches two emails" do
+    skip "test will be ok when getting rid of Flipper :student_signature"
     internship_agreement = create(:mono_internship_agreement, :started_by_school_manager)
 
     assert_emails 3 do
@@ -59,14 +59,14 @@ class GodMailerTest < ActionMailer::TestCase
     assert_equal [ EmailUtils.from ], email1.from
     expected_recipients1 = [ internship_agreement.student_legal_representative_2_email ]
     assert_equal expected_recipients1.sort, email1.to.sort
-    assert_equal 'Imprimez et signez la convention de stage.', email1.subject
+    assert_equal "Imprimez et signez la convention de stage.", email1.subject
     refute_email_spammyness(email1)
     # Second email to all parties except legal representatives
     email2 = ActionMailer::Base.deliveries[-2]
     assert_equal [ EmailUtils.from ], email2.from
     expected_recipients2 = [ internship_agreement.student_legal_representative_email ]
     assert_equal expected_recipients2.sort, email2.to.sort
-    assert_equal 'Imprimez et signez la convention de stage.', email2.subject
+    assert_equal "Imprimez et signez la convention de stage.", email2.subject
     refute_email_spammyness(email2)
     # third email
     email3 = ActionMailer::Base.deliveries[-3]
@@ -75,12 +75,12 @@ class GodMailerTest < ActionMailer::TestCase
       internship_agreement.school_management_representative.email,
       internship_agreement.internship_application.student.email ]
     assert_equal expected_recipients3.sort, email3.to.sort
-    assert_equal 'Imprimez et signez la convention de stage.', email3.subject
+    assert_equal "Imprimez et signez la convention de stage.", email3.subject
     refute_email_spammyness(email3)
   end
 
-  test 'notify legal representatives if needed when signatures enabled' do
-    skip 'test will be ok when getting rid of Flipper :student_signature'
+  test "notify legal representatives if needed when signatures enabled" do
+    skip "test will be ok when getting rid of Flipper :student_signature"
     internship_agreement = create(:mono_internship_agreement, :started_by_school_manager)
 
     assert_emails 3 do
@@ -91,25 +91,25 @@ class GodMailerTest < ActionMailer::TestCase
     assert_equal [ EmailUtils.from ], email.from
     expected_recipients2 = [ internship_agreement.student_legal_representative_2_email ]
     assert_equal expected_recipients2.sort, email.to.sort
-    assert_equal 'Imprimez et signez la convention de stage.', email.subject
+    assert_equal "Imprimez et signez la convention de stage.", email.subject
     refute_email_spammyness(email)
 
     email = ActionMailer::Base.deliveries[-2]
     assert_equal [ EmailUtils.from ], email.from
     expected_recipients2 = [ internship_agreement.student_legal_representative_email ]
     assert_equal expected_recipients2.sort, email.to.sort
-    assert_equal 'Imprimez et signez la convention de stage.', email.subject
+    assert_equal "Imprimez et signez la convention de stage.", email.subject
     refute_email_spammyness(email)
 
     email = ActionMailer::Base.deliveries[-3]
     assert_equal [ EmailUtils.from ], email.from
     expected_recipients2 = [ internship_agreement.school_manager.email, internship_agreement.employer.email, internship_agreement.student.email ]
     assert_equal expected_recipients2.sort, email.to.sort
-    assert_equal 'Imprimez et signez la convention de stage.', email.subject
+    assert_equal "Imprimez et signez la convention de stage.", email.subject
     refute_email_spammyness(email)
   end
 
-  test 'notify_signatures_can_start_email includes school_management team recipients' do
+  test "notify_signatures_can_start_email includes school_management team recipients" do
     internship_agreement = create(:mono_internship_agreement)
     school = internship_agreement.student.school
     class_room = create(:class_room, school: school)
@@ -126,7 +126,7 @@ class GodMailerTest < ActionMailer::TestCase
     assert_includes email.to, admin_officer.email
     assert_includes email.to, second_school_manager.email
     assert_includes email.to, school.school_manager.email
-    assert_equal 'Imprimez et signez la convention de stage.', email.subject
+    assert_equal "Imprimez et signez la convention de stage.", email.subject
     refute_email_spammyness(email)
   end
 end

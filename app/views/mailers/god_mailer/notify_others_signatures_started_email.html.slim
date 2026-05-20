@@ -8,7 +8,7 @@ p style=p_styles
   - if @last_signature_role.present?
     = "Bonne nouvelle, la convention de #{@prez_stud.full_name}, pour l'offre de stage '" \
       "#{@internship_offer.title }' chez #{@internship_offer.employer_name} vient" \
-      " d'être signée par '#{Signature::FR_SIGNATORY_ROLE[@last_signature_role.to_sym]}'."
+      " d'être signée par '#{@last_signature_role || ' un signataire de la convention'}'."
   - else
     = "Bonne nouvelle, la convention de #{@prez_stud.full_name}, pour l'offre de stage '" \
       "#{@internship_offer.title }' chez #{@internship_offer.employer_name} est prête à être signée."

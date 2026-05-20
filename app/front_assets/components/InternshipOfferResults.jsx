@@ -91,20 +91,22 @@ const InternshipOfferResults = ({
 
   const ClickMap = ({ internshipOffers, boardingHouses, showBoardingHouses, recenterMap }) => {
     if (isMobile()) {return null };
+    if (!recenterMap) return null;
 
-    if (internshipOffers.length && recenterMap) {
-      const map = useMap();
-      const bounds = internshipOffers.map((internshipOffer) => [
-        internshipOffer.lat,
-        internshipOffer.lon,
-      ]);
+    const map = useMap();
+    const hasSearchLocation = Number(params.latitude) && Number(params.longitude);
+
+    if (hasSearchLocation && internshipOffers.length) {
+      // Zoom to fit the search area — offers + nearby boarding houses (already radius-filtered server-side)
+      const bounds = internshipOffers.map((o) => [o.lat, o.lon]);
       if (showBoardingHouses && boardingHouses.length) {
-        boardingHouses.forEach((bh) => {
-          bounds.push([bh.lat, bh.lon]);
-        });
+        boardingHouses.forEach((bh) => bounds.push([bh.lat, bh.lon]));
       }
       map.fitBounds(bounds);
-      // L.tileLayer.provider('CartoDB.Positron').addTo(map); MAP STYLE
+    } else {
+      // No search location: stay centered on metropolitan France instead of
+      // stretching bounds to include DOM-TOM boarding houses.
+      map.setView(center, 6);
     }
 
     setTimeout(() => setNewDataFetched(false), 100);
@@ -124,6 +126,16 @@ const InternshipOfferResults = ({
     $.ajax({ type: 'GET', url: endpoints['searchInternshipOffers'](), data: params })
      .done(fetchDone)
      .fail(fetchFail);
+  };
+
+  const trackBoardingHouseView = (id) => {
+    const data = {};
+    if (params.latitude && params.longitude) {
+      data.latitude = params.latitude;
+      data.longitude = params.longitude;
+      data.radius = params.radius || 60000;
+    }
+    $.ajax({ type: 'POST', url: endpoints['trackBoardingHouseView']({ id }), data });
   };
 
   const fetchBoardingHouses = () => {
@@ -223,7 +235,7 @@ const InternshipOfferResults = ({
                   Nouveau&nbsp;!
                 </h1>
                 <p>
-                  Les internats pouvant proposer des places sont désormais consultables avec le résultat de vos recherches&nbsp;!
+                  Vous habitez loin de votre lieu de stage&nbsp;? Les internats pouvant proposer des places d’hébergement sont désormais consultables avec les résultats de vos recherches.
                 </p>
               </div>
               <div className="fr-modal__footer fr-px-4w fr-pb-4w">
@@ -400,6 +412,7 @@ const InternshipOfferResults = ({
                       icon={boardingHouseIcon}
                       position={[bh.lat, bh.lon]}
                       key={`bh-${bh.id}`}
+                      eventHandlers={{ click: () => trackBoardingHouseView(bh.id) }}
                     >
                       <Popup className='popup-custom'>
                         <div className="content fr-p-2w">
@@ -409,7 +422,7 @@ const InternshipOfferResults = ({
                             {[bh.street, [bh.zipcode, bh.city].filter(Boolean).join(' ')].filter(Boolean).join(', ')}
                           </p>
                           <p className="fr-card__detail fr-mt-1w">
-                            Peut proposer jusqu'à {bh.available_places} place{bh.available_places > 1 ? 's' : ''}
+                            Peut proposer jusqu'à {bh.available_places} place{bh.available_places > 1 ? 's' : ''} d’hébergement
                           </p>
                           {bh.contact_phone && (
                             <p className="fr-card__detail">Tél : {bh.contact_phone}</p>

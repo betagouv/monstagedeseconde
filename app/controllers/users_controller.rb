@@ -26,6 +26,11 @@ class UsersController < ApplicationController
 
     user_params[:email] = user_params[:email].downcase if user_params[:email].present?
 
+    if user_params[:email].present? && User.where.not(id: current_user.id).where("LOWER(email) = ?", user_params[:email].downcase.strip).exists?
+      current_user.errors.add(:email, "est déjà utilisée par un autre compte. Merci de choisir une autre adresse email")
+      return render :edit, status: :bad_request
+    end
+
     if current_user.fake_email? && user_params[:email].present?
       current_user.update_column(:email, user_params[:email])
       current_user.update!(user_params.except(:email))
@@ -88,8 +93,9 @@ class UsersController < ApplicationController
     elsif user_params[:role].present? && user_params[:school_id].present?
       user_to_transform.update_columns(role: user_params[:role],
                                        school_id: user_params[:school_id])
-      user_to_transform.becomes!(Users::SchoolManagement)
-                       .save!
+      transformed = user_to_transform.becomes!(Users::SchoolManagement)
+      transformed.authorize_type_change = true
+      transformed.save!
       redirect_to '/admin', flash: { success: 'Utilisateur transformé avec succès.' }
     else
       @error_message = 'Impossible de transformer cet utilisateur à qui il manque une fonction ou une école.'
@@ -160,29 +166,32 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:id,
-                                 :school_id,
-                                 :missing_weeks_school_id,
-                                 :agreement_signatorable,
-                                 :first_name,
-                                 :last_name,
-                                 :email,
-                                 :phone,
-                                 :phone_prefix,
-                                 :phone_suffix,
-                                 :department,
-                                 :class_room_id,
-                                 :resume_other,
-                                 :resume_languages,
-                                 :password,
-                                 :role,
-                                 :birth_date,
-                                 :academy_id,
-                                 :academy_region_id,
-                                 :employer_role,
-                                 :phone_or_email,
-                                 :anonymize_with_email,
-                                 :show_modal_info)
+    params.expect(
+      user: [
+        :id,
+        :school_id,
+        :missing_weeks_school_id,
+        :agreement_signatorable,
+        :first_name,
+        :last_name,
+        :email,
+        :phone,
+        :phone_prefix,
+        :phone_suffix,
+        :department,
+        :class_room_id,
+        :resume_other,
+        :resume_languages,
+        :password,
+        :role,
+        :birth_date,
+        :academy_id,
+        :academy_region_id,
+        :employer_role,
+        :phone_or_email,
+        :anonymize_with_email,
+        :show_modal_info
+    ])
   end
 
   def current_section
