@@ -276,6 +276,8 @@ Rails.application.routes.draw do
   patch "mon-compte", to: "users#update"
   patch "account_password", to: "users#update_password"
   get "/magic_link", to: "magic_links#show", as: :magic_link
+  get  "/double-authentification", to: "two_factor_challenges#new",    as: :two_factor_challenge
+  post "/double-authentification", to: "two_factor_challenges#create"
 
   get "/accessibilite", to: "pages#accessibilite"
   get "/conditions-d-utilisation", to: "pages#conditions_d_utilisation"

@@ -104,8 +104,9 @@ class UsersController < ApplicationController
     elsif user_params[:role].present? && user_params[:school_id].present?
       user_to_transform.update_columns(role: user_params[:role],
                                        school_id: user_params[:school_id])
-      user_to_transform.becomes!(Users::SchoolManagement)
-                       .save!
+      transformed = user_to_transform.becomes!(Users::SchoolManagement)
+      transformed.authorize_type_change = true
+      transformed.save!
       redirect_to "/admin", flash: { success: "Utilisateur transformé avec succès." }
     else
       @error_message = "Impossible de transformer cet utilisateur à qui il manque une fonction ou une école."
