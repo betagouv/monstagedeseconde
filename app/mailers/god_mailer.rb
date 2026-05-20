@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class GodMailer < ApplicationMailer
-  require_relative '../libs/email_utils'
+  require_relative "../libs/email_utils"
 
   default from: proc { EmailUtils.formatted_from }
 
@@ -10,74 +10,75 @@ class GodMailer < ApplicationMailer
     @last_monday = kpi_reporting_service.send(:last_monday)
     @last_sunday = kpi_reporting_service.send(:last_sunday)
     @kpis = kpi_reporting_service.last_week_kpis
-    @human_date        = I18n.l Date.today,   format: '%d %B %Y'
-    @human_last_monday = I18n.l @last_monday, format: '%d %B %Y'
-    @human_last_sunday = I18n.l @last_sunday, format: '%d %B %Y'
+    @human_date        = I18n.l Date.today,   format: "%d %B %Y"
+    @human_last_monday = I18n.l @last_monday, format: "%d %B %Y"
+    @human_last_sunday = I18n.l @last_sunday, format: "%d %B %Y"
+    @recipient_email = ENV.fetch("TEAM_DSI_EMAIL", "1e1s_team@free.fr")
 
     mail(
-      to: ENV['TEAM_EMAIL'],
-      subject: "Monitoring MS2GT : kpi du #{@human_date}"
+      to: @recipient_email,
+      subject: "Monitoring 1E1S : kpi du #{@human_date}"
     )
   end
 
   def weekly_pending_applications_email
     internship_applications = InternshipApplication.submitted
-                                                   .where('submitted_at > :date', date: InternshipApplication::EXPIRATION_DURATION.ago)
+                                                   .where("submitted_at > :date", date: InternshipApplication::EXPIRATION_DURATION.ago)
                                                    .where(canceled_at: nil)
 
-    @human_date = I18n.l Date.today, format: '%d %B %Y'
+    @human_date = I18n.l Date.today, format: "%d %B %Y"
 
-    attachment_name = 'export_candidatures_non_repondues.xlsx'
+    attachment_name = "export_candidatures_non_repondues.xlsx"
     xlsx = render_to_string layout: false,
-                            handlers: [:axlsx],
-                            formats: [:xlsx],
-                            template: 'reporting/internship_applications/pending_internship_applications',
+                            handlers: [ :axlsx ],
+                            formats: [ :xlsx ],
+                            template: "reporting/internship_applications/pending_internship_applications",
                             locals: { internship_applications: internship_applications,
                                       presenter_for_dimension: Presenters::Reporting::DimensionByOffer }
     attachments[attachment_name] = { mime_type: Mime[:xlsx], content: xlsx }
 
     mail(
-      to: ENV['TEAM_EMAIL'],
+      to: ENV["TEAM_EMAIL"],
       subject: "Monitoring MS2GT : Candidatures non répondues au #{@human_date}"
     )
   end
 
   def weekly_expired_applications_email
-    internship_applications = InternshipApplication.expired.where('expired_at > :date', date: 15.days.ago)
+    internship_applications = InternshipApplication.expired.where("expired_at > :date", date: 15.days.ago)
 
-    @human_date = I18n.l Date.today, format: '%d %B %Y'
+    @human_date = I18n.l Date.today, format: "%d %B %Y"
 
-    attachment_name = 'export_candidatures_expirees_depuis_15_jours.xlsx'
+    attachment_name = "export_candidatures_expirees_depuis_15_jours.xlsx"
     xlsx = render_to_string layout: false,
-                            handlers: [:axlsx],
-                            formats: [:xlsx],
-                            template: 'reporting/internship_applications/expired',
+                            handlers: [ :axlsx ],
+                            formats: [ :xlsx ],
+                            template: "reporting/internship_applications/expired",
                             locals: { internship_applications: internship_applications,
                                       presenter_for_dimension: Presenters::Reporting::DimensionByOffer }
     attachments[attachment_name] = { mime_type: Mime[:xlsx], content: xlsx }
 
     mail(
-      to: ENV['TEAM_EMAIL'],
+      to: ENV["TEAM_EMAIL"],
       subject: "Monitoring MS2GT : Candidatures expirées depuis 15 jours au #{@human_date}"
     )
   end
 
   def employer_global_applications_reminder(employers_count)
-    @human_date = I18n.l Date.today, format: '%d %B %Y'
+    @human_date = I18n.l Date.today, format: "%d %B %Y"
     @employers_count = employers_count
 
     mail(
-      to: ENV['TEAM_EMAIL'],
+      to: ENV["TEAM_EMAIL"],
       subject: "#{@employers_count} employeurs relancés au #{@human_date}"
     )
   end
 
   def students_global_applications_reminder(students_count)
-    @human_date = I18n.l Date.today, format: '%d %B %Y'
+    @human_date = I18n.l Date.today, format: "%d %B %Y"
     @students_count = students_count
 
     mail(
-      to: ENV['TEAM_EMAIL'],
+      to: ENV["TEAM_EMAIL"],
       subject: "#{@students_count} élèves relancés par sms au #{@human_date}"
     )
   end
@@ -87,7 +88,7 @@ class GodMailer < ApplicationMailer
     @statistician = statistician.presenter
     @url = root_url
     mail(
-      to: ENV['MANAGER_EMAIL'],
+      to: ENV["MANAGER_EMAIL"],
       subject: "Inscription référent à valider : #{@statistician.full_name}"
     )
   end
@@ -96,7 +97,7 @@ class GodMailer < ApplicationMailer
     @name = hash[:name]
     @subject = hash[:subject]
     @reply_to = hash[:email]
-    @to = 'contact@1eleve1stage.education.gouv.fr'
+    @to = "contact@1eleve1stage.education.gouv.fr"
     @message = hash[:message]
 
     send_email(to: @to,
@@ -107,7 +108,7 @@ class GodMailer < ApplicationMailer
   def magic_link_login(user, token)
     @user = user
     @magic_link = magic_link_url(token: token)
-    send_email(to: @user.email, subject: 'Votre lien de connexion sécurisé')
+    send_email(to: @user.email, subject: "Votre lien de connexion sécurisé")
   end
 
   def export_offers_department(department_code:, offers_count:, csv_data:, filename:)
@@ -115,15 +116,15 @@ class GodMailer < ApplicationMailer
     @offers_count = offers_count
     @filename = filename
 
-    attachments[filename] = { mime_type: 'text/csv', content: csv_data }
+    attachments[filename] = { mime_type: "text/csv", content: csv_data }
 
     send_email(
-      to: ENV['TEAM_EMAIL'],
+      to: ENV["TEAM_EMAIL"],
       subject: "Export offres préfixe postal #{department_code} - #{Date.current.strftime('%d/%m/%Y')}"
     )
   end
 
-  def notify_others_signatures_started_email(internship_agreement:, missing_signatures_recipients:, last_signature: )
+  def notify_others_signatures_started_email(internship_agreement:, missing_signatures_recipients:, last_signature:)
     @internship_agreement  = internship_agreement
     internship_application = internship_agreement.internship_application
     @internship_offer      = internship_application.internship_offer
@@ -139,7 +140,7 @@ class GodMailer < ApplicationMailer
 
     send_email(
       to: missing_signatures_recipients,
-      subject: 'Une convention de stage attend votre signature'
+      subject: "Une convention de stage attend votre signature"
     )
   end
 
@@ -158,7 +159,7 @@ class GodMailer < ApplicationMailer
 
     send_email(
       to: recipients_email,
-      subject: 'Une convention de stage est signée par tous'
+      subject: "Une convention de stage est signée par tous"
     )
   end
 
@@ -176,11 +177,11 @@ class GodMailer < ApplicationMailer
 
     send_email(
       to: recipients_email,
-      subject: 'Imprimez et signez la convention de stage.'
+      subject: "Imprimez et signez la convention de stage."
     )
   end
 
-  def notify_student_legal_representatives_can_sign_email(internship_agreement:, representative: )
+  def notify_student_legal_representatives_can_sign_email(internship_agreement:, representative:)
     internship_application = internship_agreement.internship_application
     recipients_email       = legal_representatives_emails(internship_agreement)
     @internship_offer      = internship_application.internship_offer
@@ -193,12 +194,12 @@ class GodMailer < ApplicationMailer
 
     @url = public_internship_agreement_url(
       uuid: internship_agreement.uuid,
-      access_token: internship_agreement.access_token || '',
+      access_token: internship_agreement.access_token || "",
       student_legal_representative_nr: representative[:nr]
     ).html_safe
     send_email(
       to: representative[:email],
-      subject: 'Imprimez et signez la convention de stage.'
+      subject: "Imprimez et signez la convention de stage."
     )
   end
 
@@ -222,7 +223,7 @@ class GodMailer < ApplicationMailer
     @internship_offer = inappropriate_offer.internship_offer
     @fr_ground = InappropriateOffer.options_for_ground[@inappropriate_offer.ground.to_s]
     @user = inappropriate_offer.user
-    moderation_emails = parse_email_list(ENV['MODERATION_TEAM_EMAIL'])
+    moderation_emails = parse_email_list(ENV["MODERATION_TEAM_EMAIL"])
     send_email(
       to: moderation_emails,
       subject: "Offre signalée : [#{@fr_ground}] - #{@internship_offer.title} (##{@inappropriate_offer.id})"
