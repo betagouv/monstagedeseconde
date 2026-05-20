@@ -168,7 +168,7 @@ Rails.application.routes.draw do
         patch :update_signature, on: :member
         resources :invitations, only: %i[new create index destroy], module: 'schools'
         get '/resend_invitation', to: 'schools/invitations#resend_invitation', module: 'schools'
-        resources :users, path: 'utilisateurs', only: %i[destroy update index], module: 'schools'
+        resources :users, path: 'utilisateurs', only: %i[destroy index], module: 'schools'
 
         resources :class_rooms, path: 'classes', only: %i[index new create edit update show destroy],
                                 module: 'schools' do
