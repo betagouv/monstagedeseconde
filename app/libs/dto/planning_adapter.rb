@@ -62,19 +62,22 @@ module Dto
       end
     end
 
+    def join_association_name = :internship_offer_weeks
+
     # Removing through records via `instance.weeks=` on a new (unsaved) owner
     # triggers HasManyThroughAssociation#delete_records, which calls
     # owner.increment!(:internship_offer_weeks_count, ...) and raises
     # "cannot update a new record". Mutate the in-memory target instead.
     def filter_internship_offer_weeks(&pred)
-      kept = instance.internship_offer_weeks.select(&pred)
-      return if kept.size == instance.internship_offer_weeks.size
+      join_records = instance.public_send(join_association_name)
+      kept = join_records.select(&pred)
+      return if kept.size == join_records.size
 
       if instance.new_record?
-        instance.association(:internship_offer_weeks).target = kept.to_a
+        instance.association(join_association_name).target = kept.to_a
         instance.association(:weeks).reset
       else
-        instance.internship_offer_weeks = kept
+        instance.public_send(:"#{join_association_name}=", kept)
       end
     end
 
