@@ -151,6 +151,13 @@ class UserTest < ActiveSupport::TestCase
     assert_equal ['Le format de votre email semble incorrect'], user.errors.messages[:email]
   end
 
+  test 'email uniqueness is case-insensitive across user types' do
+    create(:user_operator, email: 'shared@example.com')
+    employer = build(:employer, email: 'SHARED@example.com')
+    refute employer.valid?
+    assert employer.errors.messages[:email].present?
+  end
+
   test "when updating one's email both removing and adding contact jobs are enqueued" do
     student = create(:student)
 

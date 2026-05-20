@@ -130,7 +130,7 @@ module Dashboard::Stepper
     def sanitize_content
       return unless planning_params[:lunch_break].present?
 
-      planning_params[:lunch_break] =
+      params[:planning][:lunch_break] =
         strip_content(planning_params[:lunch_break])
     end
   end

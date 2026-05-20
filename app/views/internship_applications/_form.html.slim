@@ -1,5 +1,5 @@
 - is_creating = @internship_application.try(:new_record?)
-- phone_pattern = '^\+?(33|262|594|596|687|689)?\s?0?(6|7)\s?(\d{2,3}\s?){1,3}\d{2,3}$'
+- phone_pattern = '^\+?(33|262|590|594|596|687|689)?\s?0?(6|7)\s?(\d{2,3}\s?){1,3}\d{2,3}$'
 div data-controller="mandatory-fields internship-application-form" data-mandatory-fields-minimum-length-value="3"
 
   = form_with(model: @internship_application,
@@ -30,15 +30,17 @@ div data-controller="mandatory-fields internship-application-form" data-mandator
                               action: "change->internship-application-form#updateWeekId"},
                         required: true }
       - elsif current_user.seconde_gt?
-        - if @internship_application.internship_offer.two_weeks_long? || ((@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks).map(&:id) == SchoolTrack::Seconde.both_weeks.map(&:id))
+        - intersection_ids = (@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks).map(&:id).sort
+        - both_ids         = SchoolTrack::Seconde.both_weeks.map(&:id).sort
+        - if intersection_ids == both_ids
           - period_text = Presenters::WeekList.new(weeks: SchoolTrack::Seconde.both_weeks).to_range_as_str
           - period_value = SchoolTrack::Seconde.both_weeks.map(&:id).join(',')
           - period_options = [[period_text, period_value]]
-        - elsif (@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks) == [SchoolTrack::Seconde.first_week]
+        - elsif intersection_ids == [SchoolTrack::Seconde.first_week.id]
           - period_text = Presenters::WeekList.new(weeks: [SchoolTrack::Seconde.first_week]).to_range_as_str
           - period_value = SchoolTrack::Seconde.first_week.id
           - period_options = [[period_text, period_value]]
-        - elsif (@internship_application.internship_offer.weeks & SchoolTrack::Seconde.both_weeks) == [SchoolTrack::Seconde.second_week]
+        - elsif intersection_ids == [SchoolTrack::Seconde.second_week.id]
           - period_text = Presenters::WeekList.new(weeks: [SchoolTrack::Seconde.second_week]).to_range_as_str
           - period_value = SchoolTrack::Seconde.second_week.id
           - period_options = [[period_text, period_value]]
