@@ -25,6 +25,9 @@
     <%= javascript_pack_tag "application.js", defer: true, 'data-turbo-track': "reload" %>
     <%= javascript_include_tag "https://unpkg.com/leaflet@1.8.0/dist/leaflet.js", integrity: "sha384-4Dmmo81xejNChaqLOci80VhUcuEAD5pXpCtqtizmdgWEzdETh3zrJvzOhU4T79cN", crossorigin: "anonymous" %>
     <%= render partial: "layouts/analytics" %>
+    <% if current_user&.god? && request.path.start_with?('/admin') %>
+      <%= render partial: "layouts/crisp" %>
+    <% end %>
     <%= turbo_frame_tag "modal" %>
   </head>
 
