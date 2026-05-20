@@ -17,7 +17,8 @@ module Api
       end
 
       def destroy
-        internship_offer_builder.discard(instance: InternshipOffer.find_by!(remote_id: params[:id])) do |on|
+        instance = current_api_user.personal_internship_offers.find_by!(remote_id: params[:id])
+        internship_offer_builder.discard(instance: instance) do |on|
           on.success(&method(:render_ok))
           on.failure(&method(:render_discard_error))
         end
