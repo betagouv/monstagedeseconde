@@ -125,6 +125,35 @@ class EmployerMailerTest < ActionMailer::TestCase
     refute_email_spammyness(email)
   end
 
+  test "restored email neutralizes HTML in restored_message (XSS regression)" do
+    internship_application = create(
+      :weekly_internship_application,
+      :restored,
+      restored_message: %(<script>alert("xss")</script>)
+    )
+
+    email = EmployerMailer.internship_application_restored_email(internship_application: internship_application)
+    html_body = email.html_part.body.to_s
+
+    refute_includes html_body, "<script"
+    refute_includes html_body, 'alert("xss")</script>'
+  end
+
+  test "canceled_by_student email neutralizes HTML in canceled_by_student_message (XSS regression)" do
+    internship_application = create(
+      :weekly_internship_application,
+      canceled_by_student_message: %(<script>alert("xss")</script>)
+    )
+
+    email = EmployerMailer.internship_application_canceled_by_student_email(
+      internship_application: internship_application
+    )
+    html_body = email.html_part.body.to_s
+
+    refute_includes html_body, "<script"
+    refute_includes html_body, 'alert("xss")</script>'
+  end
+
   test "as a team member, with notifications off, it should send an email" do
     internship_offer_2nde = create_internship_offer_visible_by_two(create(:employer), create(:employer))
     internship_application = create(:weekly_internship_application, :approved,

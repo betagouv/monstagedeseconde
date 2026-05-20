@@ -33,6 +33,7 @@ namespace :migrations do
       ActiveRecord::Base.transaction do
         # email sending is avoided from user existence test
         user.becomes!(Users::EducationStatistician)
+        user.authorize_type_change = true
         user.school_id = nil
         user.role = :other
         user.department = short_zipcode
@@ -70,6 +71,7 @@ namespace :migrations do
       ActiveRecord::Base.transaction do
         # skip emails sending from user existence test
         user = user.becomes!(Users::EducationStatistician)
+        user.authorize_type_change = true
         user.department = short_zipcode
         unless user.valid?
           puts '================================'
@@ -127,6 +129,7 @@ namespace :migrations do
       ActiveRecord::Base.transaction do
         # skip emails sending from user existence test
         user.becomes!(Users::PrefectureStatistician)
+        user.authorize_type_change = true
         user.save!
         message = "User email: #{user.email} is now an departmental statistician " \
                   "in #{short_zipcode} department"
@@ -164,6 +167,7 @@ namespace :migrations do
           # skip emails sending from user existence test
           user.academy_region = academy_region
           user.becomes!(Users::AcademyRegionStatistician)
+          user.authorize_type_change = true
           user.save!
           message = "User email: #{user.email} is now an academy_region statistician " \
                     "in #{academy_region.name}"

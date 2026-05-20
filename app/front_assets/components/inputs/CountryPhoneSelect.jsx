@@ -29,7 +29,7 @@ class CountryPhoneSelect extends React.Component {
           return (cond_1 || cond_2);
         }}
         country="fr"
-        onlyCountries={['fr', 'gf', 'mq', 'nc', 'pf', 're']}
+        onlyCountries={['fr', 'gp', 'gf', 'mq', 'nc', 'pf', 're']}
         countryCodeEditable={false}
         value={this.props.value || ''}
         disabled={this.props.disabled || false}
