@@ -4,6 +4,6 @@ class SendWeeklyKpiEmail < ApplicationJob
   queue_as :default
 
   def perform
-    GodMailer.weekly_kpis_email.deliver_later
+    GodMailer.weekly_kpis_email.deliver_now
   end
 end
