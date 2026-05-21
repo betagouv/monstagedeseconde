@@ -10,7 +10,7 @@ module Dashboard::Students
       # but only with a valid access_token and if not already signed by legal representative
       access_token = params[:access_token]
       student_legal_representative_nr = params[:student_legal_representative_nr]
-      if @internship_agreement.signed_by_legal_representative?
+      if @internship_agreement&.signed_by_legal_representative?
         render :new,
                params: {
                  student_id: @internship_agreement.student.id,

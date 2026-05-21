@@ -125,6 +125,8 @@
                       th Académie
                     th Places disponibles
                     th Date de référence
+                    th title="Nombre de fois où l'internat a été consulté depuis la carte des résultats de recherche" Vues (total)
+                    th title="Vues comptabilisées sur les 30 derniers jours" Vues (30 j)
                     th Actions
                 tbody
                   - @boarding_houses.each do |boarding_house|
@@ -136,6 +138,8 @@
                         td = boarding_house.academy&.name
                       td = boarding_house.available_places
                       td = boarding_house.reference_date ? l(boarding_house.reference_date, format: :long) : '-'
+                      td = @views_count[boarding_house.id] || 0
+                      td = @recent_views_count[boarding_house.id] || 0
                       td style="white-space: nowrap;"
                         = link_to edit_reporting_boarding_house_path(boarding_house), class: 'fr-btn fr-btn--sm fr-icon-edit-line fr-btn--icon-left', style: 'margin-right: 0.5rem;' do
                           | Modifier

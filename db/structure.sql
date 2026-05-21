@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -515,6 +516,41 @@ CREATE SEQUENCE public.area_notifications_id_seq
 --
 
 ALTER SEQUENCE public.area_notifications_id_seq OWNED BY public.area_notifications.id;
+
+
+--
+-- Name: boarding_house_views; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.boarding_house_views (
+    id bigint NOT NULL,
+    boarding_house_id bigint NOT NULL,
+    user_id bigint,
+    latitude double precision,
+    longitude double precision,
+    radius integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: boarding_house_views_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.boarding_house_views_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: boarding_house_views_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.boarding_house_views_id_seq OWNED BY public.boarding_house_views.id;
 
 
 --
@@ -2530,7 +2566,10 @@ CREATE TABLE public.users (
     fim_user_info jsonb,
     created_by_system boolean DEFAULT false NOT NULL,
     show_modal_info boolean DEFAULT true NOT NULL,
-    multi_activity_id bigint
+    multi_activity_id bigint,
+    otp_secret character varying,
+    otp_required_for_login boolean DEFAULT false NOT NULL,
+    otp_last_used_at timestamp(6) without time zone
 );
 
 
@@ -2734,6 +2773,13 @@ ALTER TABLE ONLY public.active_storage_variant_records ALTER COLUMN id SET DEFAU
 --
 
 ALTER TABLE ONLY public.area_notifications ALTER COLUMN id SET DEFAULT nextval('public.area_notifications_id_seq'::regclass);
+
+
+--
+-- Name: boarding_house_views id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.boarding_house_views ALTER COLUMN id SET DEFAULT nextval('public.boarding_house_views_id_seq'::regclass);
 
 
 --
@@ -3183,6 +3229,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 ALTER TABLE ONLY public.area_notifications
     ADD CONSTRAINT area_notifications_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: boarding_house_views boarding_house_views_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.boarding_house_views
+    ADD CONSTRAINT boarding_house_views_pkey PRIMARY KEY (id);
 
 
 --
@@ -3715,6 +3769,27 @@ CREATE UNIQUE INDEX index_area_notifications_on_user_and_area ON public.area_not
 --
 
 CREATE INDEX index_area_notifications_on_user_id ON public.area_notifications USING btree (user_id);
+
+
+--
+-- Name: index_boarding_house_views_on_boarding_house_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_boarding_house_views_on_boarding_house_id ON public.boarding_house_views USING btree (boarding_house_id);
+
+
+--
+-- Name: index_boarding_house_views_on_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_boarding_house_views_on_created_at ON public.boarding_house_views USING btree (created_at);
+
+
+--
+-- Name: index_boarding_house_views_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_boarding_house_views_on_user_id ON public.boarding_house_views USING btree (user_id);
 
 
 --
@@ -4914,6 +4989,14 @@ ALTER TABLE ONLY public.multi_planning_weeks
 
 
 --
+-- Name: boarding_house_views fk_rails_3aa0548a42; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.boarding_house_views
+    ADD CONSTRAINT fk_rails_3aa0548a42 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: multi_coordinators fk_rails_3ab8f79e0f; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5226,6 +5309,14 @@ ALTER TABLE ONLY public.active_storage_attachments
 
 
 --
+-- Name: boarding_house_views fk_rails_c41ff1d7da; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.boarding_house_views
+    ADD CONSTRAINT fk_rails_c41ff1d7da FOREIGN KEY (boarding_house_id) REFERENCES public.boarding_houses(id);
+
+
+--
 -- Name: users fk_rails_d23d91f0e6; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5352,6 +5443,8 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260515090000'),
+('20260430082727'),
 ('20260429091409'),
 ('20260420123136'),
 ('20260309162833'),

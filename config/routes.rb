@@ -168,7 +168,7 @@ Rails.application.routes.draw do
         patch :update_signature, on: :member
         resources :invitations, only: %i[new create index destroy], module: "schools"
         get "/resend_invitation", to: "schools/invitations#resend_invitation", module: "schools"
-        resources :users, path: "utilisateurs", only: %i[destroy update index], module: "schools"
+        resources :users, path: "utilisateurs", only: %i[destroy index], module: "schools"
 
         resources :class_rooms, path: "classes", only: %i[index new create edit update show destroy],
                                 module: "schools" do
@@ -264,6 +264,7 @@ Rails.application.routes.draw do
   end
 
   get "boarding_houses/search", to: "boarding_houses#search", as: :boarding_houses_search
+  post "boarding_houses/:id/track_view", to: "boarding_houses#track_view", as: :boarding_house_track_view
 
   get "api_address_proxy/search", to: "api_address_proxy#search", as: :api_address_proxy_search
   get "api_sirene_proxy/search", to: "api_sirene_proxy#search", as: :api_sirene_proxy_search
@@ -274,6 +275,8 @@ Rails.application.routes.draw do
   patch "mon-compte", to: "users#update"
   patch "account_password", to: "users#update_password"
   get "/magic_link", to: "magic_links#show", as: :magic_link
+  get  "/double-authentification", to: "two_factor_challenges#new",    as: :two_factor_challenge
+  post "/double-authentification", to: "two_factor_challenges#create"
 
   get "/accessibilite", to: "pages#accessibilite"
   get "/conditions-d-utilisation", to: "pages#conditions_d_utilisation"

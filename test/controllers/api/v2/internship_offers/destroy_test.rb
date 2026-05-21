@@ -28,7 +28,7 @@ module Api
         post api_v2_auth_login_path(email: bad_operator.email, password: bad_operator.password)
         bad_operator_token = json_response['token']
 
-        documents_as(endpoint: :'v2/internship_offers/destroy', state: :forbidden) do
+        documents_as(endpoint: :'v2/internship_offers/destroy', state: :not_found) do
           delete api_v2_internship_offer_path(
             id: @internship_offer.remote_id,
             params: {
@@ -36,9 +36,10 @@ module Api
             }
           )
         end
-        assert_response :forbidden
-        assert_equal 'FORBIDDEN', json_response['code']
-        assert_equal 'You are not authorized to access this page.', json_error
+        assert_response :not_found
+        assert_equal 'NOT_FOUND', json_response['code']
+        assert_equal "can't find internship_offer with this remote_id", json_error
+        assert_not @internship_offer.reload.discarded?
       end
 
       test 'DELETE #destroy as operator fails with invalid remote_id' do
