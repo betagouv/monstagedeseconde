@@ -99,5 +99,8 @@ class ActionDispatch::IntegrationTest
 
   parallelize_setup do |i|
     ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"
+    # Isolate $redis per worker so cross-worker flushdb (after_teardown below)
+    # cannot wipe in-flight magic-link jti keys.
+    $redis = Redis.new(url: ENV["REDIS_URL"], db: i + 1)
   end
 end

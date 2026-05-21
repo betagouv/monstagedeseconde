@@ -12,6 +12,7 @@ module SchoolYear
       execution_date   = Date.new(2025, 8, 15)
 
       travel_to preparation_date do
+        Week.instance_variable_set(:@current_school_year, nil)
         next_week = Week.next
         final_week_id = next_week.id + 52
         internship_offer = create(:weekly_internship_offer_3eme,
@@ -21,6 +22,7 @@ module SchoolYear
                                   ])
       end
       travel_to execution_date do
+        Week.instance_variable_set(:@current_school_year, nil)
         school = create(:school, :college)
         student = create(:student, :troisieme,
                          school_id: school.id,

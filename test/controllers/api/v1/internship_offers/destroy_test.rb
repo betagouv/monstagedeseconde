@@ -23,7 +23,7 @@ module Api
 
       test 'DELETE #destroy an internship_offer which does not belongs to current auth operator' do
         bad_operator = create(:user_operator)
-        documents_as(endpoint: :'internship_offers/destroy', state: :forbidden) do
+        documents_as(endpoint: :'internship_offers/destroy', state: :not_found) do
           delete api_v1_internship_offer_path(
             id: @internship_offer.remote_id,
             params: {
@@ -31,9 +31,10 @@ module Api
             }
           )
         end
-        assert_response :forbidden
-        assert_equal 'FORBIDDEN', json_response['code']
-        assert_equal 'You are not authorized to access this page.', json_error
+        assert_response :not_found
+        assert_equal 'NOT_FOUND', json_response['code']
+        assert_equal "can't find internship_offer with this remote_id", json_error
+        assert_not @internship_offer.reload.discarded?
       end
 
       test 'DELETE #destroy as operator fails with invalid remote_id' do

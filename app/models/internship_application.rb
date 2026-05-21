@@ -96,7 +96,7 @@ class InternshipApplication < ApplicationRecord
   # Validations
   validates :student_phone,
             format: {
-              with: /\A\+?(33|262|594|596|687|689)?\s?0?(6|7)\s?(\d{2,3}\s?){1,3}\d{2,3}\z/,
+              with: /\A\+?(33|262|590|594|596|687|689)?\s?0?(6|7)\s?(\d{2,3}\s?){1,3}\d{2,3}\z/,
               message: "Veuillez modifier le numéro de téléphone mobile"
             }
   validates :student_email,
@@ -729,7 +729,7 @@ class InternshipApplication < ApplicationRecord
     # return '' if student.phone.blank? # TODO Check if this is necessary why removing prefix if phone is blank but will be updated
 
     prefix = "+33"
-    [ "+262", "+594", "+596", "+687", "+689" ].each do |p|
+    [ "+262", "+590", "+594", "+596", "+687", "+689" ].each do |p|
       prefix = p if student.phone&.start_with?(p)
     end
     "#{prefix}0"
