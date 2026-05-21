@@ -15,6 +15,18 @@ module Admin
       end
     end
 
+    def switch_school
+      @school_management = Users::SchoolManagement.kept.find(params[:id])
+      if @school_management.switch_school(params[:school_id])
+        @extra_schools = @school_management.schools
+                                           .where.not(id: @school_management.school_id)
+                                           .order(:name)
+      else
+        @error = "Établissement non autorisé pour ce personnel."
+        render :switch_school, status: :unprocessable_entity
+      end
+    end
+
     def show
       @school_management = Users::SchoolManagement.kept.find(params[:id])
       @primary_school    = @school_management.current_school

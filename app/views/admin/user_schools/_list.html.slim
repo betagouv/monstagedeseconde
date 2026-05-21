@@ -1,5 +1,8 @@
 - if extra_schools.empty?
-  p.fr-text--sm.fr-text--mention-grey Aucune association supplémentaire.
+  p.fr-text--sm.fr-text--mention-grey
+    | Aucune association supplémentaire.
+    br
+    | Pour changer l'établissement principal, associez d'abord un établissement via la section "Associer un établissement".
 - else
   - extra_schools.each do |school|
     - user_school = UserSchool.find_by(user: school_management, school: school)
@@ -9,8 +12,15 @@
         p.fr-text--md.fr-mb-0
           strong = school.name
         p.fr-text--sm.fr-text--mention-grey.fr-mb-0 = "#{school.city} — #{school.code_uai}"
-      = button_to "Retirer",
-                  admin_school_management_user_school_path(school_management, user_school),
-                  method: :delete,
-                  class: "fr-btn fr-btn--sm fr-btn--tertiary-no-outline fr-ml-2w",
-                  data: { turbo_confirm: "Retirer l'association avec #{school.name} ?" }
+      .d-flex
+        = button_to "Définir comme principale",
+                    switch_school_admin_school_management_path(school_management),
+                    method: :patch,
+                    params: { school_id: school.id },
+                    class: "fr-btn fr-btn--sm fr-btn--secondary fr-mr-1w",
+                    data: { turbo_stream: true }
+        = button_to "Retirer",
+                    admin_school_management_user_school_path(school_management, user_school),
+                    method: :delete,
+                    class: "fr-btn fr-btn--sm fr-btn--tertiary-no-outline",
+                    data: { turbo_confirm: "Retirer l'association avec #{school.name} ?" }

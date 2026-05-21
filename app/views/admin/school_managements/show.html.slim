@@ -12,11 +12,12 @@ p.fr-text--sm.fr-mb-4w = @school_management.email
   .fr-col-12.fr-col-md-6
     h2.fr-h5 Établissements associés
 
-    - if @primary_school
-      .fr-callout.fr-mb-3w
-        p.fr-callout__title Établissement principal (immuable)
-        p.fr-mb-0 = @primary_school.name
-        p.fr-text--sm.fr-mb-0 = "Code UAI : #{@primary_school.code_uai}"
+    #primary-school
+      - if @primary_school
+        .fr-callout.fr-mb-3w
+          p.fr-callout__title Établissement principal
+          p.fr-mb-0 = @primary_school.name
+          p.fr-text--sm.fr-mb-0 = "Code UAI : #{@primary_school.code_uai}"
 
     #extra-schools
       = render "admin/user_schools/list",

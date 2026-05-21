@@ -103,5 +103,55 @@ module Admin
           params: { school_query: "associé" }
       assert_not_includes assigns(:schools), associated_school
     end
+    # --- switch_school ---
+
+    test "PATCH switch_school cannot target a Student" do
+      student = create(:student, school: @school)
+      other_school = create(:school)
+      UserSchool.create!(user: student, school: other_school)
+
+      sign_in @god
+      patch switch_school_admin_school_management_path(student),
+            params: { school_id: other_school.id },
+            as: :turbo_stream
+
+      assert_response :not_found
+    end
+
+    test "PATCH switch_school is not accessible for non-god" do
+      other_school = create(:school)
+      UserSchool.create!(user: @school_management, school: other_school)
+
+      sign_in @school_management
+      patch switch_school_admin_school_management_path(@school_management),
+            params: { school_id: other_school.id }
+
+      assert_response :not_found
+    end
+
+    test "PATCH switch_school refuses school not in user_schools" do
+      unrelated_school = create(:school)
+
+      sign_in @god
+      patch switch_school_admin_school_management_path(@school_management),
+            params: { school_id: unrelated_school.id },
+            as: :turbo_stream
+
+      assert_response :unprocessable_entity
+      assert_not_equal unrelated_school, @school_management.reload.current_school
+    end
+
+    test "PATCH switch_school changes current school for god" do
+      other_school = create(:school)
+      UserSchool.create!(user: @school_management, school: other_school)
+
+      sign_in @god
+      patch switch_school_admin_school_management_path(@school_management),
+            params: { school_id: other_school.id },
+            as: :turbo_stream
+
+      assert_response :success
+      assert_equal other_school, @school_management.reload.current_school
+    end
   end
 end
