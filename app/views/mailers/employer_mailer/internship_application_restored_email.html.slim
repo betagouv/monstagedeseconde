@@ -10,7 +10,7 @@ p style=p_styles
   - if @internship_application.restored_message.present?
     | Voici le motif de la restauration :
     br
-    => simple_format(@internship_application.restored_message.to_s, {}, wrapper_tag: 'span')
+    => simple_format(@internship_application.restored_message, {}, wrapper_tag: "div")
   - else
     | La candidature a été restaurée.
 
