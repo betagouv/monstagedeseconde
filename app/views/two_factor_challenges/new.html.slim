@@ -1,0 +1,36 @@
+main#content role="main"
+  .fr-container.fr-container--fluid
+    .fr-grid-row.fr-grid-row-gutters.fr-grid-row--center
+      .fr-col-12.fr-col-md-8.fr-col-lg-6
+        .fr-container.fr-background-alt--grey.fr-px-md-0.fr-py-10v.fr-py-md-14v
+          .fr-grid-row.fr-grid-row-gutters.fr-grid-row--center
+            .fr-col-12.fr-col-md-9.fr-col-lg-8
+              - if @enrolling
+                h1.fr-h4 Activation de la double authentification
+                p
+                  | Scannez ce QR code avec votre application d'authentification
+                  |  (Google Authenticator, 1Password, Authy, etc.) puis saisissez le code à 6 chiffres généré.
+                .fr-mb-3w = @qr_svg
+                details.fr-mb-3w
+                  summary Saisie manuelle du secret
+                  code = @pending_user.otp_secret
+              - else
+                h1.fr-h4 Double authentification
+                p Saisissez le code à 6 chiffres affiché par votre application d'authentification.
+
+              - if flash[:alert]
+                p.fr-error-text = flash[:alert]
+
+              = form_with url: two_factor_challenge_path, method: :post, local: true, data: { turbo: false } do |f|
+                .fr-input-group
+                  = f.label :otp_code, 'Code à 6 chiffres', class: 'fr-label'
+                  = f.text_field :otp_code,
+                                  class: 'fr-input',
+                                  autocomplete: 'one-time-code',
+                                  inputmode: 'numeric',
+                                  pattern: '[0-9]{6}',
+                                  maxlength: 6,
+                                  required: true,
+                                  autofocus: true
+                .fr-mt-2w
+                  = f.submit 'Valider', class: 'fr-btn'
