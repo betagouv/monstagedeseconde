@@ -6,6 +6,7 @@ module Presenters
     delegate :signature_started?,  to: :internship_agreement
     delegate :signed_by?,  to: :internship_agreement
     delegate :signed_by_team_member?,  to: :internship_agreement
+    delegate :roles_not_signed_yet, to: :internship_agreement
     delegate :internship_application, to: :internship_agreement
 
     delegate :student, to: :internship_application
@@ -180,14 +181,26 @@ module Presenters
       if internship_agreement.from_multi? && current_user.employer_like? && internship_agreement.signatures_started?
         I18n.t("#{translation_path}.multi_employer")
       elsif internship_agreement.signatures_started? &&
+          current_user.school_management? &&
+          roles_not_signed_yet == ['employer'] &&
+          internship_agreement.signed_by_team_member?(user: current_user)
+        "Vous avez déjà signé. En attente de la signature du représentant de l'entreprise."
+      elsif internship_agreement.signatures_started? &&
           (internship_agreement.signed_by_team_member?(user: current_user) ||
             internship_agreement.signed_by?(user: current_user.try(:school).try(:school_manager)))
         I18n.t("#{translation_path}.already_signed")
       elsif internship_agreement.signatures_started?
-        I18n.t("#{translation_path}.not_signed_yet")
+        signature_started_not_signed_yet_label(translation_path)
       else
         I18n.t(translation_path)
       end
+    end
+
+    def signature_started_not_signed_yet_label(translation_path)
+      return I18n.t("#{translation_path}.not_signed_yet") unless current_user.school_management?
+      return I18n.t("#{translation_path}.not_signed_yet") if internship_agreement.signed_by_employer?
+
+      'Convention partiellement signee. En attente de votre signature.'
     end
 
     def internship_agreement_path
