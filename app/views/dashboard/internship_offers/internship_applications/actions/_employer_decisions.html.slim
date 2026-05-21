@@ -8,6 +8,14 @@
       = link_to 'Augmentez le nombre de places',
                 edit_dashboard_internship_offer_path(offer, anchor: 'max_candidates_fields')
       |  pour pouvoir retenir cette candidature.
+- if prez.ok_for_restore? && !offer.has_spots_left?
+  .fr-alert.fr-alert--warning.fr-mb-3w
+    p.fr-alert__title Cette offre n'a plus de places disponibles.
+    p
+      | Vous pourrez restaurer cette candidature après avoir
+      = link_to ' augmenté le nombre de places',
+                edit_dashboard_internship_offer_path(offer, anchor: 'max_candidates_fields')
+      |  disponibles pour ce stage.
 .d-flex.flex-row
   - if prez.ok_for_reject?
     = render "dashboard/internship_offers/internship_applications/actions/reject",
@@ -23,4 +31,7 @@
               internship_application: @internship_application,
               token: params[:token],
               opened_modal: params[:opened_modal]
+  - if prez.ok_for_restore? && offer.has_spots_left?
+    = render "dashboard/internship_offers/internship_applications/actions/restore",
+              internship_application: @internship_application
 

@@ -63,7 +63,7 @@ class InternshipApplication < ApplicationRecord
     restore!
   ]
 
-  RESTORABLE_STATES = %w[canceled_by_student canceled_by_student_confirmation]
+  RESTORABLE_STATES = %w[canceled_by_student canceled_by_student_confirmation rejected]
 
   attr_accessor :sgid, :skip_callback_with_review_rebuild
 

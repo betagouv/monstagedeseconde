@@ -212,6 +212,12 @@ module Presenters
       internship_application.rejectable?
     end
 
+    def ok_for_restore?
+      internship_application.aasm_state.in?(
+        ::InternshipApplication::RESTORABLE_STATES
+      )
+    end
+
     def ok_for_employer_validation?
       current_state_in_list?(SUBMITTED_LIKE_STATES)
     end
