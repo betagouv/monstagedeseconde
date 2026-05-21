@@ -42,7 +42,7 @@ class InternshipApplication < ApplicationRecord
   RE_APPROVABLE_BLOCKED_REASONS = {
     anonymized: "Le compte de cet élève n'existe plus.",
     conflicting: "L'élève a déjà accepté un stage sur cette période.",
-    no_seats_left: "Le nombre de places maximum pour ce stage à déjà été atteint."
+    no_seats_left: "Le nombre de places maximum pour ce stage a déjà été atteint."
   }.freeze
   REJECTABLE_STATES = %w[submitted read_by_employer transfered]
   CANCELABLE_STATES = %w[restored validated_by_employer approved]
