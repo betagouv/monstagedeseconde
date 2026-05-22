@@ -1,6 +1,4 @@
 module Services::Omogen
-  class SygneApiError < StandardError; end
-
   class Sygne
     include ::Services::ApiRequestsHelper
     # 2434 : 3E SEGPA
@@ -11,14 +9,14 @@ module Services::Omogen
 
     MEFSTAT4_CODES = %w[2115 2116 2211 2434 2433]
     def net_synchro
-      uri = URI(ENV['NET_SYNCHRO_URL'])
+      uri = URI(ENV["NET_SYNCHRO_URL"])
 
       response = perform_http_request(uri, {
-                                        'Code-Application' => 'FRE',
-                                        'Code-RNE' => '0595121W',
-                                        'Compression-Zip' => 'non',
-                                        'Contexte-Annee-Scolaire' => '2021',
-                                        'Perimetre-Applicatif' => 'A09'
+                                        "Code-Application" => "FRE",
+                                        "Code-RNE" => "0595121W",
+                                        "Compression-Zip" => "non",
+                                        "Contexte-Annee-Scolaire" => "2021",
+                                        "Perimetre-Applicatif" => "A09"
                                       })
 
       case response
@@ -30,20 +28,20 @@ module Services::Omogen
     end
 
     def sygne
-      uri = URI(ENV['SYGNE_URL'])
+      uri = URI(ENV["SYGNE_URL"])
 
       http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if uri.scheme == 'https'
+      http.use_ssl = true if uri.scheme == "https"
 
       request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{token}"
-      request['Code-Application'] = 'FRE'
-      request['Code-RNE'] = '0595121W'
-      request['Compression-Zip'] = 'non'
+      request["Authorization"] = "Bearer #{token}"
+      request["Code-Application"] = "FRE"
+      request["Code-RNE"] = "0595121W"
+      request["Compression-Zip"] = "non"
     end
 
     def sygne_status
-      uri = URI(ENV['SYGNE_URL'] + '/version')
+      uri = URI(ENV["SYGNE_URL"] + "/version")
       response = perform_http_request(uri)
 
       case response
@@ -86,7 +84,7 @@ module Services::Omogen
       process_mefstat4_codes(code_uai)
     end
 
-    def sygne_schools(code_uai = '0590116F')
+    def sygne_schools(code_uai = "0590116F")
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves)")
       schools_in_data = []
       response = get_request(uri, get_default_headers)
@@ -97,15 +95,15 @@ module Services::Omogen
         puts response.body
         Rails.logger.error "Failed to get sygne eleves : #{response.message}"
       end
-      print 'x'
+      print "x"
       schools_in_data
     end
 
-    def sygne_responsables(ine = '001291528AA')
+    def sygne_responsables(ine = "001291528AA")
       # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
 
       uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
-      response = perform_http_request(uri, { 'Compression-Zip' => 'non' })
+      response = perform_http_request(uri, { "Compression-Zip" => "non" })
 
       # [{ 'email' => 't-t@hotmail.fr',
       #    'nomFamille' => 't PPPEPF',
@@ -148,13 +146,13 @@ module Services::Omogen
       when Net::HTTPSuccess
         JSON.parse(response.body).map do |responsable|
           {
-            name: responsable['nomFamille'],
-            first_name: responsable['prenom'],
-            email: responsable['email'],
-            phone: responsable['telephonePersonnel'],
-            address: format_address(responsable['adrResidenceResp']),
-            level: responsable['codeNiveauResponsabilite'],
-            sexe: responsable['codeCivilite'] == '1' ? 'M' : 'F'
+            name: responsable["nomFamille"],
+            first_name: responsable["prenom"],
+            email: responsable["email"],
+            phone: responsable["telephonePersonnel"],
+            address: format_address(responsable["adrResidenceResp"]),
+            level: responsable["codeNiveauResponsabilite"],
+            sexe: responsable["codeCivilite"] == "1" ? "M" : "F"
           }
         end
       end
@@ -228,7 +226,7 @@ module Services::Omogen
     end
 
     def default_headers
-      { 'Authorization': "Bearer #{token}", 'Compression-Zip': 'non' }
+      { 'Authorization': "Bearer #{token}", 'Compression-Zip': "non" }
     end
 
     def process_mefstat4_codes(code_uai, limit: nil)
@@ -247,15 +245,15 @@ module Services::Omogen
     end
 
     def fetch_oauth_token
-      response = post_form_request(url: ENV['OMOGEN_OAUTH_URL'],
+      response = post_form_request(url: ENV["OMOGEN_OAUTH_URL"],
                                    params: {
-                                     grant_type: 'client_credentials',
-                                     client_id: ENV['OMOGEN_CLIENT_ID'],
-                                     client_secret: ENV['OMOGEN_CLIENT_SECRET']
+                                     grant_type: "client_credentials",
+                                     client_id: ENV["OMOGEN_CLIENT_ID"],
+                                     client_secret: ENV["OMOGEN_CLIENT_SECRET"]
                                    })
       case response
       when Net::HTTPSuccess
-        JSON.parse(response.body)['access_token']
+        JSON.parse(response.body)["access_token"]
       else
         raise "Failed to get OAuth token: #{response.message}"
       end
