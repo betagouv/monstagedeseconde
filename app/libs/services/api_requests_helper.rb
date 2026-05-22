@@ -3,6 +3,8 @@ module Services
     def get_request(uri, default_headers = {})
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
+      http.open_timeout = 10
+      http.read_timeout = 30
       request = Net::HTTP::Get.new(uri, default_headers)
       http.request(request)
     end
