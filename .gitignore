@@ -57,6 +57,7 @@ yarn-debug.log*
 .cursorrules
 /infra/commit.sh
 CLAUDE.md
+.claude/system-prompt.md
 #mise files
 mise.toml
 .tool-versions
