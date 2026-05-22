@@ -18,7 +18,7 @@ module Dashboard
     ].freeze
     def index
       @internship_offer_areas = current_user.internship_offer_areas if current_user.employer_like?
-      authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
+      authorize! :index, :internship_offer_dashboard
 
       return if params[:order] && !valid_order_column? && (redirect_to(dashboard_internship_offers_path, flash: { danger: "Impossible de trier par #{params[:order]}" }); true)
 
