@@ -7,7 +7,7 @@ module InternshipApplicationCountersHooks
     delegate :stats, to: :internship_offer
 
     # BEWARE: order matters
-    def update_all_counters
+    def recompute_offer_stats
       update_internship_offer_stats
       update_favorites
       true

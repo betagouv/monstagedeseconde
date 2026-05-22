@@ -1,8 +1,6 @@
 module InternshipApplications
   # wraps weekly logic
   class WeeklyFramed < InternshipApplication
-    after_save :update_all_counters
-
     before_validation :at_most_one_application_per_student?, on: :create
     before_validation :internship_offer_has_spots_left?, on: :create
 

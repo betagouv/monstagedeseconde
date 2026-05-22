@@ -82,7 +82,7 @@ class InternshipApplication < ApplicationRecord
   has_many :internship_application_weeks, dependent: :destroy
   has_many :weeks, through: :internship_application_weeks
   # Delegations
-  delegate :update_all_counters, to: :internship_application_counter_hook
+  delegate :recompute_offer_stats, to: :internship_application_counter_hook
   delegate :name, to: :student, prefix: true
   delegate :employer, to: :internship_offer
   delegate :remaining_seats_count, to: :internship_offer
@@ -105,7 +105,7 @@ class InternshipApplication < ApplicationRecord
   validates :weeks, presence: true, on: :create
 
   # Callbacks
-  after_save :update_all_counters
+  after_commit :recompute_offer_stats
   before_create :set_submitted_at
   after_create :notify_users, unless: :skip_callback_with_review_rebuild
   after_save :update_student_profile
