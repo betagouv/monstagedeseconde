@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SchoolsController < Admin::BaseController
+class SchoolsController < ApplicationController
   before_action :authenticate_user!
 
   def new
