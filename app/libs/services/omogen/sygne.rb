@@ -1,4 +1,6 @@
 module Services::Omogen
+  class SygneApiError < StandardError; end
+
   class Sygne
     include ::Services::ApiRequestsHelper
     # 2434 : 3E SEGPA
@@ -164,8 +166,6 @@ module Services::Omogen
       response = get_request(uri, default_headers)
       case response
       when Net::HTTPSuccess
-        # puts response.body
-        # puts JSON.parse(response.body)
         data_students = JSON.parse(response.body, symbolize_names: true)
         data_students.each do |data_student|
           if data_student.fetch(:codeMef, false) && Grade.code_mef_ok?(code_mef: data_student[:codeMef])
@@ -173,21 +173,23 @@ module Services::Omogen
           end
         end
       when Net::HTTPNotFound
-        puts response.body
-        error_message = "Failed to get sygne eleves  - HTTPNotFound - #{response.message}"
-        Rails.logger.error error_message
-        raise error_message
+        raise SygneApiError, "sygne_eleves 404 | uai=#{code_uai} niveau=#{niveau}"
       when Net::HTTPForbidden
-        error_message = "Failed to get sygne eleves - 403 - Forbidden Access | #{response.try(:message)}"
-        Rails.logger.error error_message
-        raise error_message
+        raise SygneApiError, "sygne_eleves 403 | uai=#{code_uai} niveau=#{niveau}"
+      when Net::HTTPUnauthorized
+        raise SygneApiError, "sygne_eleves 401 token expired | uai=#{code_uai} niveau=#{niveau}"
+      when Net::HTTPServerError
+        raise SygneApiError, "sygne_eleves #{response.code} | uai=#{code_uai} niveau=#{niveau}"
       else
-        puts response
-        error_message = "Failed to get sygne eleves | #{response.try(:message)}"
-        Rails.logger.error error_message
-        raise error_message
+        raise SygneApiError, "sygne_eleves unexpected HTTP #{response.code} | uai=#{code_uai} niveau=#{niveau}"
       end
       students
+    rescue JSON::ParserError => e
+      raise SygneApiError, "sygne_eleves JSON invalide | uai=#{code_uai} niveau=#{niveau} | #{e.message.truncate(120)}"
+    rescue Net::OpenTimeout, Net::ReadTimeout => e
+      raise SygneApiError, "sygne_eleves timeout | uai=#{code_uai} niveau=#{niveau} | #{e.class}"
+    rescue SocketError => e
+      raise SygneApiError, "sygne_eleves réseau | uai=#{code_uai} niveau=#{niveau} | #{e.message.truncate(120)}"
     end
 
     def sygne_responsable(ine)
@@ -200,10 +202,17 @@ module Services::Omogen
 
         responsibles.sort_by! { |responsible| responsible[:codeNiveauResponsabilite] }
         Services::Omogen::SygneResponsible.new(responsibles.first)
+      when Net::HTTPNotFound
+        nil
       else
-        puts response
-        raise "Failed to get sygne eleves : #{response.message}"
+        raise SygneApiError, "sygne_responsable #{response.code} | ine=#{ine}"
       end
+    rescue JSON::ParserError => e
+      raise SygneApiError, "sygne_responsable JSON invalide | ine=#{ine} | #{e.message.truncate(120)}"
+    rescue Net::OpenTimeout, Net::ReadTimeout => e
+      raise SygneApiError, "sygne_responsable timeout | ine=#{ine} | #{e.class}"
+    rescue SocketError => e
+      raise SygneApiError, "sygne_responsable réseau | ine=#{ine} | #{e.message.truncate(120)}"
     end
 
     def initialize
