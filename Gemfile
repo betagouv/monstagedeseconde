@@ -84,6 +84,8 @@ gem "kaminari"
 # model/validators
 gem "email_inquire"
 gem "jwt"
+gem "rotp"
+gem "rqrcode"
 gem "validates_zipcode"
 
 # dev utils
