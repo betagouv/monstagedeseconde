@@ -262,8 +262,9 @@ module Dashboard::InternshipOffers
       # purpose of test is to check the weeks are updated
       travel_to Date.new(2024, 9, 1) do
         employer = create(:employer)
+        troisieme_weeks = Week.troisieme_selectable_weeks.presence || SchoolTrack::Troisieme.selectable_on_school_year_weeks
         internship_offer = create(:weekly_internship_offer_3eme,
-                                  weeks: Week.troisieme_selectable_weeks,
+                                  weeks: troisieme_weeks,
                                   employer:,
                                   max_candidates: 1)
         create(:sector, name: 'Fonction publique')
@@ -287,8 +288,9 @@ module Dashboard::InternshipOffers
     test 'POST #unpublished as employer owning internship_offer' do
       travel_to Date.new(2024, 9, 1) do
         employer = create(:employer)
+        troisieme_weeks = Week.troisieme_selectable_weeks.presence || SchoolTrack::Troisieme.selectable_on_school_year_weeks
         internship_offer = create(:weekly_internship_offer_3eme,
-                                  weeks: Week.troisieme_selectable_weeks,
+                                  weeks: troisieme_weeks,
                                   employer:,
                                   max_candidates: 1)
         sign_in(employer)

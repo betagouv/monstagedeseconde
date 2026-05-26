@@ -42,28 +42,28 @@ module Triggered
     end
 
     test "perform expire! when internship_applications is pending for more than EXPIRATION_DURATION" do
-      internship_application = nil
-      assert_enqueued_emails 0 do # no internship_application_expired_email anymore, only pending_reminder_sent_email
-        internship_application = create(:weekly_internship_application, :submitted,
-                                        submitted_at: (InternshipApplication::EXPIRATION_DURATION + 1.day).ago,
-                                        pending_reminder_sent_at: 7.days.ago,
-                                        internship_offer: @internship_offer)
-      end
+      travel_to Time.zone.local(2024, 1, 1) do
+        internship_application = nil
+        assert_enqueued_emails 1 do # creation still enqueues the employer notification email
+          internship_application = create(:weekly_internship_application, :submitted,
+                                          submitted_at: (InternshipApplication::EXPIRATION_DURATION + 1.day).ago,
+                                          pending_reminder_sent_at: 7.days.ago,
+                                          internship_offer: @internship_offer)
+        end
 
-      freeze_time do
         assert_changes -> { internship_application.reload.expired? },
-                       from: false,
-                       to: true do
+                      from: false,
+                      to: true do
           assert_difference "MailActionItem.count", 1 do # digest email for student
             InternshipApplicationsExpirerJob.perform_now(@internship_offer.employer)
           end
         end
         internship_application.reload
-        assert_equal Time.now.utc, internship_application.expired_at, "expired_at not updated"
-        refute_equal DateTime.now, internship_application.pending_reminder_sent_at
-      end
-      assert_no_emails do # ensure re-entrance does not send emails
-        InternshipApplicationsExpirerJob.perform_now(@internship_offer.employer)
+        assert_equal Time.current.utc, internship_application.expired_at, "expired_at not updated"
+        refute_equal Time.current, internship_application.pending_reminder_sent_at
+        assert_no_emails do # ensure re-entrance does not send emails
+          InternshipApplicationsExpirerJob.perform_now(@internship_offer.employer)
+        end
       end
     end
   end

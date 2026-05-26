@@ -105,14 +105,15 @@ module Api
         travel_to(Date.new(2025, 3, 1)) do
           post api_v2_auth_login_path(email: @operator.email, password: @operator.password)
           @token = json_response["token"]
+          troisieme_weeks = Week.troisieme_selectable_weeks.presence || SchoolTrack::Troisieme.selectable_on_school_year_weeks
 
           offer_3_1 = create(:weekly_internship_offer_3eme,
-                             weeks: Week.troisieme_selectable_weeks,
+                             weeks: troisieme_weeks,
                              coordinates: Coordinates.tours,
                              city: "Tours") # not available on the given weeks
           # 2025-W25 is week from 2025-06-15 to 2025-06-21
           offer_3_2 = create(:weekly_internship_offer_3eme,
-                             weeks: Week.troisieme_selectable_weeks,
+                             weeks: troisieme_weeks,
                              coordinates: Coordinates.paris,
                              city: "Paris") # not available on the given weeks
           offer_2_1 = create(:weekly_internship_offer_2nde,

@@ -250,62 +250,66 @@ module InternshipOffers::InternshipApplications
     end
 
     test "PATCH #update with employer_validate and a custom message transition sends email" do
-      school = create(:school, :with_school_manager)
-      class_room = create(:class_room, school:)
-      student = create(:student, school:, class_room:)
-      internship_application = create(
-        :weekly_internship_application,
-        :read_by_employer,
-        user_id: student.id
-      )
-      internship_offer = internship_application.internship_offer
-
-      sign_in(internship_offer.employer)
-
-      assert_no_enqueued_emails do
-        update_url = dashboard_internship_offer_internship_application_path(
-          internship_offer,
-          uuid: internship_application.uuid
+      travel_to Time.zone.local(2024, 1, 1) do
+        school = create(:school, :with_school_manager)
+        class_room = create(:class_room, school:)
+        student = create(:student, school:, class_room:)
+        internship_application = create(
+          :weekly_internship_application,
+          :read_by_employer,
+          user_id: student.id
         )
-        patch(update_url, params: {
-                transition: :employer_validate!
-              })
-        assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :employer_validate!)
-      end
+        internship_offer = internship_application.internship_offer
 
-      internship_application.reload
+        sign_in(internship_offer.employer)
 
-      assert InternshipApplication.last.validated_by_employer?
-    end
-
-    test "PATCH #update with employer_validate! sends email and job" do
-      school = create(:school, :with_school_manager)
-      class_room = create(:class_room, school:)
-      student = create(:student, school:, class_room:)
-      internship_application = create(
-        :weekly_internship_application,
-        :submitted,
-        user_id: student.id
-      )
-      internship_offer = internship_application.internship_offer
-
-      sign_in(internship_offer.employer)
-
-      assert_enqueued_jobs 1, only: CancelValidatedInternshipApplicationJob do
         assert_no_enqueued_emails do
           update_url = dashboard_internship_offer_internship_application_path(
             internship_offer,
             uuid: internship_application.uuid
           )
           patch(update_url, params: {
-                  transition: :employer_validate!,
-                  internship_application: { approved_message: "OK" }
+                  transition: :employer_validate!
                 })
           assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :employer_validate!)
         end
+
+        internship_application.reload
+
+        assert InternshipApplication.last.validated_by_employer?
       end
-      internship_application.reload
-      assert InternshipApplication.last.validated_by_employer?
+    end
+
+    test "PATCH #update with employer_validate! sends email and job" do
+      travel_to Time.zone.local(2024, 1, 1) do
+        school = create(:school, :with_school_manager)
+        class_room = create(:class_room, school:)
+        student = create(:student, school:, class_room:)
+        internship_application = create(
+          :weekly_internship_application,
+          :submitted,
+          user_id: student.id
+        )
+        internship_offer = internship_application.internship_offer
+
+        sign_in(internship_offer.employer)
+
+        assert_enqueued_jobs 1, only: CancelValidatedInternshipApplicationJob do
+          assert_no_enqueued_emails do
+            update_url = dashboard_internship_offer_internship_application_path(
+              internship_offer,
+              uuid: internship_application.uuid
+            )
+            patch(update_url, params: {
+                    transition: :employer_validate!,
+                    internship_application: { approved_message: "OK" }
+                  })
+            assert_redirected_to internship_offer.employer.custom_candidatures_path(tab: :employer_validate!)
+          end
+        end
+        internship_application.reload
+        assert InternshipApplication.last.validated_by_employer?
+      end
     end
 
     test "PATCH #update with approve! and update all other student internship_application" do

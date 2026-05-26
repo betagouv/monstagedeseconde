@@ -707,20 +707,6 @@ class InternshipApplication < ApplicationRecord
     end
   end
 
-  def after_employer_validation_notifications
-    if type == "InternshipApplications::WeeklyFramed" && student.teacher.present?
-      deliver_later_with_additional_delay do
-        TeacherMailer.internship_application_validated_by_employer_email(self)
-      end
-    end
-    if student.email.present?
-      deliver_later_with_additional_delay do
-        StudentMailer.internship_application_validated_by_employer_email(internship_application: self)
-      end
-    end
-    SendSmsStudentValidatedApplicationJob.perform_later(internship_application_id: id)
-  end
-
   def create_multi_agreement
     return unless internship_agreement_creation_allowed?
 

@@ -10,7 +10,8 @@ module InternshipApplications
 
     test 'GET #new internship application as student with no former responsible details' do
       travel_to Time.zone.local(2025, 3, 1) do
-        internship_offer = create(:weekly_internship_offer_3eme)
+        troisieme_weeks = Week.troisieme_selectable_weeks.presence || SchoolTrack::Troisieme.selectable_on_school_year_weeks
+        internship_offer = create(:weekly_internship_offer_3eme, weeks: troisieme_weeks)
         school = create(:school)
         student = create(:student,
                          :with_phone,
@@ -54,7 +55,8 @@ module InternshipApplications
 
     test 'GET #new internship application as student with no weeks set by the school works' do
       travel_to Time.zone.local(2025, 3, 1) do
-        internship_offer = create(:weekly_internship_offer_3eme)
+        troisieme_weeks = Week.troisieme_selectable_weeks.presence || SchoolTrack::Troisieme.selectable_on_school_year_weeks
+        internship_offer = create(:weekly_internship_offer_3eme, weeks: troisieme_weeks)
         school = create(:school, school_type: 'college')
         school.weeks = []
         student = create(:student, school:, class_room: create(:class_room, school:))
