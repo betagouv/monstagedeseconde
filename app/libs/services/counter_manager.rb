@@ -17,7 +17,7 @@ module Services
         total_female_approved_applications_count: 0,
         rejected_applications_count: 0
       )
-      InternshipApplication.all.map(&:update_all_counters)
+      InternshipApplication.all.map(&:recompute_offer_stats)
     end
 
     def self.reset_one_internship_offer_counter(internship_offer: )
@@ -38,7 +38,7 @@ module Services
 
         internship_offer.internship_applications
                         .each do |internship_application|
-          res &&= internship_application.update_all_counters
+          res &&= internship_application.recompute_offer_stats
         end
 
         unless !!res

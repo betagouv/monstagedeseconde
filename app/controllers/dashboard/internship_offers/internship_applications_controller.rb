@@ -35,7 +35,7 @@ module Dashboard
       end
 
       def user_internship_applications
-        authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
+        authorize! :index, :internship_offer_dashboard
         @internship_offers = current_user.internship_offers
         to_be_loaded = %i[student internship_agreement]
         @internship_applications = fetch_user_internship_applications.filtering_discarded_students
