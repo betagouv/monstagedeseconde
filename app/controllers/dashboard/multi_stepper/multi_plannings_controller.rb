@@ -98,8 +98,10 @@ module Dashboard::MultiStepper
     def set_weeks_variables
       @available_weeks = Week.selectable_from_now_until_end_of_school_year
 
-      first_corp = @multi_corporation.corporations.first
-      coordinates = first_corp.internship_coordinates
+      first_corp = @multi_corporation&.corporations&.first || @multi_coordinator&.multi_corporation&.corporations&.first
+      coordinates = first_corp&.internship_coordinates
+
+      return @school_weeks = School.none if coordinates.blank?
 
       @school_weeks = School.nearby_school_weeks(
         latitude: coordinates.latitude,

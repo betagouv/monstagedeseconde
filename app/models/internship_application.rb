@@ -81,6 +81,7 @@ class InternshipApplication < ApplicationRecord
                            dependent: :destroy
   has_many :internship_application_weeks, dependent: :destroy
   has_many :weeks, through: :internship_application_weeks
+  has_many :mail_action_items, dependent: :nullify
   # Delegations
   delegate :update_all_counters, to: :internship_application_counter_hook
   delegate :name, to: :student, prefix: true
@@ -296,7 +297,7 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |user, *_args|
                     if employer_aware_states.include?(aasm_state)
                       # Employer need to be notified
-                      EmployerMailer.internship_application_approved_for_an_other_internship_offer_email(internship_application: self).deliver_later
+                      notify_employer_with_digest_email("cancel_by_student_confirmation", user_id: user&.id)
                     end
                     record_state_change user
                   }
@@ -311,9 +312,7 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |user, *_args|
                     update!("rejected_at": Time.now.utc)
                     if student.email.present?
-                      deliver_later_with_additional_delay do
-                        StudentMailer.internship_application_rejected_email(internship_application: self)
-                      end
+                      notify_student_with_digest_email("internship_application_rejected")
                     end
                     record_state_change user
                   }
@@ -347,11 +346,7 @@ class InternshipApplication < ApplicationRecord
                   to: :canceled_by_student,
                   after: proc { |user, *_args|
                     update!("canceled_at": Time.now.utc)
-                    deliver_later_with_additional_delay do
-                      EmployerMailer.internship_application_canceled_by_student_email(
-                        internship_application: self,
-                      )
-                    end
+                    notify_employer_with_digest_email("canceled_internship_application_by_student")
                     internship_agreement&.destroy
                     record_state_change user
                   }
@@ -364,9 +359,7 @@ class InternshipApplication < ApplicationRecord
                   after: proc { |user, *_args|
                     update!(restored_at: Time.now.utc)
                     if has_ever_been?(%w[approved read_by_employer validated_by_employer])
-                      deliver_later_with_additional_delay do
-                        EmployerMailer.internship_application_restored_email(internship_application: self)
-                      end
+                      notify_employer_with_digest_email("restored_internship_application")
                     end
                     record_state_change user
                   }
@@ -378,8 +371,7 @@ class InternshipApplication < ApplicationRecord
                   to: :expired,
                   after: proc { |user, *_args|
                     update!(expired_at: Time.now.utc)
-                    # notitify_student
-                    Triggered::StudentExpiredInternshipApplicationsNotificationJob.perform_later(self)
+                    notify_student_with_digest_email("internship_application_expired")
                     record_state_change user
                   }
     end
@@ -406,6 +398,15 @@ class InternshipApplication < ApplicationRecord
     internship_offer.from_doubling_task?
   end
 
+  def notify_users
+    notify_employer_with_digest_email("new_internship_application", stale_at: weeks.last.monday - 2.days)
+
+    return if student.internship_applications.count == 0
+
+    Triggered::SingleApplicationReminderJob.set(wait: 2.days).perform_later(student.id)
+    Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
+  end
+
   def internship_application_aasm_message_builder(aasm_target:)
     case self
     when InternshipApplications::WeeklyFramed
@@ -415,6 +416,39 @@ class InternshipApplication < ApplicationRecord
     else
       raise "can not build aasm message for this kind of internship_application"
     end
+  end
+
+  def notify_employer_with_digest_email(name, **kwargs)
+    kwargs[:recipient] ||= internship_offer.employer
+    kwargs[:internship_application_id] ||= id
+    kwargs[:internship_agreement_id] ||= internship_agreement.id if internship_agreement&.persisted?
+    kwargs[:action_type] ||= :pending_internship_application
+    kwargs[:stale_at] ||= weeks.order(:year, :number).last&.monday&.-(2.days) || 30.days.from_now
+    MailActionItem.create_by_name!(name, **kwargs)
+  end
+
+  def notify_school_management_with_digest_email(name, **kwargs)
+    school_representative = student.school.management_representative
+    if school_representative.nil?
+      Rails.logger.error("No management representative found for school ##{student.school.id}")
+      return
+    end
+    kwargs[:recipient] ||= school_representative
+    kwargs[:internship_application_id] ||= id
+    kwargs[:internship_agreement_id] ||= internship_agreement.id if internship_agreement&.persisted?
+    kwargs[:action_type] ||= :pending_internship_application
+    kwargs[:stale_at] ||= weeks.order(:year, :number).last&.monday&.-(2.days) || 30.days.from_now
+    MailActionItem.create_by_name!(name, **kwargs)
+  end
+
+  def notify_student_with_digest_email(name, **kwargs)
+    return if student.email.blank?
+
+    kwargs[:recipient] ||= student
+    kwargs[:internship_application_id] ||= id
+    kwargs[:internship_agreement_id] ||= internship_agreement.id if internship_agreement&.persisted?
+    kwargs[:stale_at] ||= weeks.order(:year, :number).last&.monday&.-(2.days) || 30.days.from_now
+    MailActionItem.create_by_name!(name, **kwargs)
   end
 
   def multi?
@@ -472,6 +506,18 @@ class InternshipApplication < ApplicationRecord
     %w[rejected canceled_by_employer]
   end
 
+  def after_employer_validation_notifications
+    if type == "InternshipApplications::WeeklyFramed" && student.teacher.present?
+      deliver_later_with_additional_delay do
+        TeacherMailer.internship_application_validated_by_employer_email(self)
+      end
+    end
+    if student.email.present?
+      notify_student_with_digest_email("internship_application_validated_by_employer")
+    end
+    SendSmsStudentValidatedApplicationJob.perform_later(internship_application_id: id)
+  end
+
   def selectable_weeks
     weeks = internship_offer.weeks
     if student.troisieme_or_quatrieme?
@@ -490,9 +536,26 @@ class InternshipApplication < ApplicationRecord
     agreement.skip_validations_for_system = true
     agreement.save!
 
-    EmployerMailer.internship_application_approved_with_agreement_email(
-      internship_agreement:,
-    ).deliver_later
+    notify_employer_with_digest_email(
+      "new_agreement_to_fill_in",
+      internship_agreement_id: agreement.id,
+      action_type: :pending_internship_agreement
+    )
+  end
+
+  def create_multi_agreement
+    return unless internship_agreement_creation_allowed?
+
+    agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
+                                                    .new_from_application(self)
+    agreement.skip_validations_for_system = true
+    agreement.save!
+    # TODO notify coordinator and employers
+    notify_employer_with_digest_email(
+      "new_agreement_to_fill_in",
+      internship_agreement_id: agreement.id,
+      action_type: :pending_internship_agreement
+    )
   end
 
   def student_is_male?
@@ -642,20 +705,6 @@ class InternshipApplication < ApplicationRecord
     deliver_later_with_additional_delay do
       TeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
     end
-  end
-
-  def after_employer_validation_notifications
-    if type == "InternshipApplications::WeeklyFramed" && student.teacher.present?
-      deliver_later_with_additional_delay do
-        TeacherMailer.internship_application_validated_by_employer_email(self)
-      end
-    end
-    if student.email.present?
-      deliver_later_with_additional_delay do
-        StudentMailer.internship_application_validated_by_employer_email(internship_application: self)
-      end
-    end
-    SendSmsStudentValidatedApplicationJob.perform_later(internship_application_id: id)
   end
 
   def create_multi_agreement

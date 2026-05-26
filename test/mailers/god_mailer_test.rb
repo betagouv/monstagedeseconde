@@ -28,6 +28,32 @@ class GodMailerTest < ActionMailer::TestCase
     refute_email_spammyness(email)
   end
 
+  test "notify_others_signatures_started_email creates MailActionItem when school_manager not signed" do
+    internship_agreement = create(:mono_internship_agreement)
+    signature = create(:signature, :employer, internship_agreement: internship_agreement)
+
+    assert_difference "MailActionItem.count", 1 do
+      email = GodMailer.notify_others_signatures_started_email(
+        internship_agreement: internship_agreement,
+        missing_signatures_recipients: internship_agreement.missing_signatures_recipients,
+        last_signature: signature
+      )
+      email.deliver_now
+    end
+
+    assert_emails 1
+    assert_not_includes(
+      ActionMailer::Base.deliveries.last.to,
+      internship_agreement.school_management_representative.email
+    )
+    assert_includes ActionMailer::Base.deliveries.last.to, internship_agreement.internship_application.student.email
+
+    mail_action_item = MailActionItem.last
+    assert_equal "agreement_to_sign", mail_action_item.action_name
+    assert_equal internship_agreement.school_management_representative, mail_action_item.recipient
+    assert_equal internship_agreement, mail_action_item.internship_agreement
+  end
+
   test "notify_others_signatures_finished_email sends email to recipient" do
     skip "test will be ok when getting rid of Flipper :student_signature"
     internship_agreement = create(:mono_internship_agreement)
@@ -45,6 +71,28 @@ class GodMailerTest < ActionMailer::TestCase
       GodMailer.new.legal_representatives_emails(internship_agreement)
     assert_equal expected_recipients.sort, email.to.sort
     refute_email_spammyness(email)
+  end
+
+  test "notify_others_signatures_finished_email creates MailActionItem when school_manager not signed" do
+    internship_agreement = create(:mono_internship_agreement)
+    create(:signature, :employer, internship_agreement: internship_agreement)
+    create(:signature, :student, internship_agreement: internship_agreement)
+
+    assert_difference "MailActionItem.count", 1 do
+      email = GodMailer.notify_others_signatures_finished_email(internship_agreement: internship_agreement)
+      email.deliver_now
+    end
+
+    assert_emails 1
+    assert_not_includes(
+      ActionMailer::Base.deliveries.last.to,
+      internship_agreement.school_management_representative.email
+    )
+
+    mail_action_item = MailActionItem.last
+    assert_equal "agreement_signed_by_all", mail_action_item.action_name
+    assert_equal internship_agreement.school_management_representative, mail_action_item.recipient
+    assert_equal internship_agreement, mail_action_item.internship_agreement
   end
 
   test "notify_signatures_enabled launches two emails" do
@@ -107,5 +155,30 @@ class GodMailerTest < ActionMailer::TestCase
     assert_equal expected_recipients2.sort, email.to.sort
     assert_equal "Imprimez et signez la convention de stage.", email.subject
     refute_email_spammyness(email)
+  end
+
+  test "notify_signatures_can_start_email creates MailActionItem when school_manager not signed" do
+    internship_agreement = create(:mono_internship_agreement)
+
+    assert_difference "MailActionItem.count", 2 do
+      email = GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement)
+      email.deliver_now
+    end
+
+    assert_emails 1
+    assert_not_includes(
+      ActionMailer::Base.deliveries.last.to,
+      internship_agreement.school_management_representative.email
+    )
+
+    school_manager_item = MailActionItem.find_by(action_name: "signatures_enabled")
+    assert_not_nil school_manager_item
+    assert_equal internship_agreement.school_management_representative, school_manager_item.recipient
+    assert_equal internship_agreement, school_manager_item.internship_agreement
+
+    student_item = MailActionItem.find_by(action_name: "agreement_to_sign",
+                                          recipient: internship_agreement.internship_application.student)
+    assert_not_nil student_item
+    assert_equal internship_agreement, student_item.internship_agreement
   end
 end

@@ -17,55 +17,51 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test "scope remindable" do
-    create(:weekly_internship_application, :submitted,
-           submitted_at: 5.days.ago,
-           pending_reminder_sent_at: 5.days.ago)
-    create(:weekly_internship_application, :submitted,
-           submitted_at: 10.days.ago,
-           pending_reminder_sent_at: 10.days.ago) # +1
-    create(:weekly_internship_application, :submitted,
-           submitted_at: 18.days.ago,
-           pending_reminder_sent_at: 18.days.ago)
-    create(:weekly_internship_application, :submitted,
-           submitted_at: 3.days.ago,
-           pending_reminder_sent_at: nil)
-    create(:weekly_internship_application, :submitted,
-           submitted_at: 8.days.ago,
-           pending_reminder_sent_at: 2.days.ago)
-    create(:weekly_internship_application, :submitted,
-           submitted_at: 8.days.ago,
-           pending_reminder_sent_at: nil) # +1
-    create(:weekly_internship_application, submitted_at: 15.days.ago,
-                                           pending_reminder_sent_at: nil) # +1
-    create(:weekly_internship_application, :approved,
-           approved_at: 10.days.ago,
-           pending_reminder_sent_at: 10.days.ago)
-    assert_equal 3, InternshipApplication.remindable.count
+    travel_to Time.zone.local(2024, 1, 1) do
+      create(:weekly_internship_application, :submitted,
+            submitted_at: 5.days.ago,
+            pending_reminder_sent_at: 5.days.ago)
+      create(:weekly_internship_application, :submitted,
+            submitted_at: 10.days.ago,
+            pending_reminder_sent_at: 10.days.ago) # +1
+      create(:weekly_internship_application, :submitted,
+            submitted_at: 18.days.ago,
+            pending_reminder_sent_at: 18.days.ago)
+      create(:weekly_internship_application, :submitted,
+            submitted_at: 3.days.ago,
+            pending_reminder_sent_at: nil)
+      create(:weekly_internship_application, :submitted,
+            submitted_at: 8.days.ago,
+            pending_reminder_sent_at: 2.days.ago)
+      create(:weekly_internship_application, :submitted,
+            submitted_at: 8.days.ago,
+            pending_reminder_sent_at: nil) # +1
+      create(:weekly_internship_application, submitted_at: 15.days.ago,
+                                            pending_reminder_sent_at: nil) # +1
+      create(:weekly_internship_application, :approved,
+            approved_at: 10.days.ago,
+            pending_reminder_sent_at: 10.days.ago)
+      assert_equal 3, InternshipApplication.remindable.count
+    end
   end
 
-  test "creating a new internship application sets submitted_at and sends email to employer" do
-    freeze_time do
+  test "creating a new internship application sets submitted_at" do
+    travel_to Time.zone.local(2024, 1, 1) do
       assert_changes -> { InternshipApplication.count }, from: 0, to: 1 do
-        mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true, [], wait: 1.second)
+        create(:weekly_internship_application)
 
-        EmployerMailer.stub :internship_application_submitted_email, mock_mail do
-          internship_application = create(:weekly_internship_application)
-        end
-
-        assert_equal Time.now.utc, InternshipApplication.last.submitted_at
-        mock_mail.verify
+        assert_equal Time.current.utc, InternshipApplication.last.submitted_at
       end
     end
   end
 
   test "transition from submited to validated_by_employer updates its flag" do
-    internship_application = create(:weekly_internship_application, :submitted)
+    travel_to Time.zone.local(2024, 1, 1) do
+      internship_application = create(:weekly_internship_application, :submitted)
 
-    freeze_time do
       assert_changes -> { internship_application.reload.validated_by_employer_at },
-                     from: nil,
-                     to: Time.now.utc do
+                    from: nil,
+                    to: Time.current.utc do
         internship_application.stub :after_employer_validation_notifications, nil do
           internship_application.employer_validate!
         end
@@ -74,24 +70,23 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test "transition from submited to validated_by_employer sends email to teacher and student" do
-    internship_application = create(:weekly_internship_application, :submitted)
-    create(
-      :teacher,
-      class_room: internship_application.student.class_room,
-      school: internship_application.student.school
-    )
-    mock_mail_to_teacher = Minitest::Mock.new
-    mock_mail_to_teacher.expect(:deliver_later, true, [], wait: 1.second)
-    mock_mail_to_student = Minitest::Mock.new
-    mock_mail_to_student.expect(:deliver_later, true, [], wait: 1.second)
+    travel_to Time.zone.local(2024, 1, 1) do
+      internship_application = create(:weekly_internship_application, :submitted)
+      create(
+        :teacher,
+        class_room: internship_application.student.class_room,
+        school: internship_application.student.school
+      )
+      mock_mail_to_teacher = Minitest::Mock.new
+      mock_mail_to_teacher.expect(:deliver_later, true, [], wait: 1.second)
 
-    TeacherMailer.stub :internship_application_validated_by_employer_email, mock_mail_to_teacher do
-      StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail_to_student do
-        internship_application.employer_validate!
+      TeacherMailer.stub :internship_application_validated_by_employer_email, mock_mail_to_teacher do
+        assert_difference "MailActionItem.count", 1 do
+          internship_application.employer_validate!
+        end
       end
-      mock_mail_to_student.verify
+      mock_mail_to_teacher.verify
     end
-    mock_mail_to_teacher.verify
   end
 
   test "transition from validated_by_employer to approved updates its flag" do
@@ -200,14 +195,10 @@ class InternshipApplicationTest < ActiveSupport::TestCase
 
     internship_application = create(:weekly_internship_application, :validated_by_employer, student:)
 
-    mock_mail_to_employer = Minitest::Mock.new
-    mock_mail_to_employer.expect(:deliver_later, true)
-
-    EmployerMailer.stub(:internship_application_approved_with_agreement_email,
-                        mock_mail_to_employer) do
+    assert_difference "MailActionItem.count", 1 do
       internship_application.approve!
     end
-    mock_mail_to_employer.verify
+    assert_equal "new_agreement_to_fill_in", MailActionItem.last.action_name
   end
 
   test "transition from submited to approved sends an email to school_manager when no agreement is possible" do
@@ -250,17 +241,14 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test "transition from submited to rejected send rejected email to student" do
-    internship_application = create(:weekly_internship_application, :submitted)
-    freeze_time do
+    travel_to Time.zone.local(2024, 1, 1) do
+      internship_application = create(:weekly_internship_application, :submitted)
       assert_changes -> { internship_application.reload.rejected_at },
-                     from: nil,
-                     to: Time.now.utc do
-        mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-        StudentMailer.stub :internship_application_rejected_email, mock_mail do
+                    from: nil,
+                    to: Time.current.utc do
+        assert_difference "MailActionItem.count", 1 do
           internship_application.reject!
         end
-        mock_mail.verify
       end
     end
   end
@@ -271,12 +259,9 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       assert_changes -> { internship_application.reload.validated_by_employer_at },
                      from: nil,
                      to: Time.now.utc do
-        mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-        StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail do
+        assert_difference "MailActionItem.count", 1 do
           internship_application.employer_validate!
         end
-        mock_mail.verify
       end
     end
   end
@@ -352,16 +337,14 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test "#after_employer_validation_notifications when student registered by email" do
-    student = create(:student)
-    internship_application = create(:weekly_internship_application, student:)
+    travel_to Time.zone.local(2024, 1, 1) do
+      student = create(:student)
+      internship_application = create(:weekly_internship_application, student:)
 
-    mock_mail = Minitest::Mock.new
-    mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-
-    StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail do
-      internship_application.send(:after_employer_validation_notifications)
+      assert_difference "MailActionItem.count", 1 do
+        internship_application.after_employer_validation_notifications
+      end
     end
-    mock_mail.verify
   end
 
   test "#should_notify_employer_like?" do
