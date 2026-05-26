@@ -332,7 +332,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   test "#after_employer_validation_notifications when student registered by phone" do
     student = create(:student, :registered_with_phone)
     internship_application = create(:weekly_internship_application, student:)
-    assert internship_application.after_employer_validation_notifications.is_a?(SendSmsStudentValidatedApplicationJob)
+    assert internship_application.send(:after_employer_validation_notifications).is_a?(SendSmsStudentValidatedApplicationJob)
   end
 
   test "#after_employer_validation_notifications when student registered by email" do

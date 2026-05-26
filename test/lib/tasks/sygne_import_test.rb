@@ -19,6 +19,62 @@ class SygneImportTest < ActiveSupport::TestCase
     }
   end
 
+  test 'sygne_eleves raises SygneApiError on HTTP 500' do
+    stub_omogen_auth
+    omogen = Services::Omogen::Sygne.new
+    Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
+      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves?niveau=#{niveau}")
+      stub_request(:get, uri)
+        .with(headers: headers_with_token(token: omogen.token, uri: uri))
+        .to_return(status: 500, body: 'Internal Server Error', headers: {})
+    end
+    assert_raises(Services::Omogen::SygneApiError) do
+      omogen.sygne_import_by_schools(@code_uai)
+    end
+  end
+
+  test 'sygne_eleves raises SygneApiError on HTTP 401' do
+    stub_omogen_auth
+    omogen = Services::Omogen::Sygne.new
+    Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
+      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves?niveau=#{niveau}")
+      stub_request(:get, uri)
+        .with(headers: headers_with_token(token: omogen.token, uri: uri))
+        .to_return(status: 401, body: 'Unauthorized', headers: {})
+    end
+    assert_raises(Services::Omogen::SygneApiError) do
+      omogen.sygne_import_by_schools(@code_uai)
+    end
+  end
+
+  test 'sygne_eleves raises SygneApiError on network timeout' do
+    stub_omogen_auth
+    omogen = Services::Omogen::Sygne.new
+    Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
+      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves?niveau=#{niveau}")
+      stub_request(:get, uri)
+        .with(headers: headers_with_token(token: omogen.token, uri: uri))
+        .to_raise(Net::ReadTimeout)
+    end
+    assert_raises(Services::Omogen::SygneApiError) do
+      omogen.sygne_import_by_schools(@code_uai)
+    end
+  end
+
+  test 'sygne_eleves raises SygneApiError on JSON parse error' do
+    stub_omogen_auth
+    omogen = Services::Omogen::Sygne.new
+    Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
+      uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{@code_uai}/eleves?niveau=#{niveau}")
+      stub_request(:get, uri)
+        .with(headers: headers_with_token(token: omogen.token, uri: uri))
+        .to_return(status: 200, body: '<html>Service indisponible</html>', headers: {})
+    end
+    assert_raises(Services::Omogen::SygneApiError) do
+      omogen.sygne_import_by_schools(@code_uai)
+    end
+  end
+
   test 'student import fails with wrong codeMef' do
     stub_omogen_auth
     omogen = Services::Omogen::Sygne.new

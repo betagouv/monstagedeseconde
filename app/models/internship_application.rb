@@ -218,12 +218,6 @@ class InternshipApplication < ApplicationRecord
 
   scope :weekly_framed, -> { where(type: InternshipApplications::WeeklyFramed.name) }
 
-  # add an additional delay when sending email using richtext
-  # sometimes email was sent before action_texts_rich_text was persisted
-  def deliver_later_with_additional_delay
-    yield.deliver_later(wait: 1.second)
-  end
-
   aasm do
     state :submitted, initial: true
     state :read_by_employer,
@@ -400,10 +394,6 @@ class InternshipApplication < ApplicationRecord
     !weeks_overlap
   end
 
-  def set_submitted_at
-    self.submitted_at = Time.now.utc if submitted_at.nil?
-  end
-
   def from_doubling_task?
     internship_offer.from_doubling_task?
   end
@@ -415,6 +405,17 @@ class InternshipApplication < ApplicationRecord
 
     Triggered::SingleApplicationReminderJob.set(wait: 2.days).perform_later(student.id)
     Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
+  end
+
+  def internship_application_aasm_message_builder(aasm_target:)
+    case self
+    when InternshipApplications::WeeklyFramed
+      InternshipApplicationAasmMessageBuilders::WeeklyFramed.new(internship_application: self, aasm_target:)
+    when InternshipApplications::Multi
+      InternshipApplicationAasmMessageBuilders::Multi.new(internship_application: self, aasm_target:)
+    else
+      raise "can not build aasm message for this kind of internship_application"
+    end
   end
 
   def notify_employer_with_digest_email(name, **kwargs)
@@ -470,21 +471,6 @@ class InternshipApplication < ApplicationRecord
 
     Triggered::SingleApplicationReminderJob.set(wait: 2.days).perform_later(student.id)
     Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
-  end
-
-  def student_approval_notifications
-    teacher = student.teacher
-    arg_hash = {
-      internship_application: self,
-      teacher: teacher
-    }
-
-
-    return unless teacher.present?
-
-    deliver_later_with_additional_delay do
-      TeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
-    end
   end
 
   def missing_school_manager?
@@ -572,28 +558,6 @@ class InternshipApplication < ApplicationRecord
     )
   end
 
-  def internship_application_counter_hook
-    case self
-    when InternshipApplications::WeeklyFramed
-      InternshipApplicationCountersHooks::WeeklyFramed.new(internship_application: self)
-    when InternshipApplications::Multi
-      InternshipApplicationCountersHooks::Multi.new(internship_application: self)
-    else
-      raise "can not process stats for this kind of internship_application"
-    end
-  end
-
-  def internship_application_aasm_message_builder(aasm_target:)
-    case self
-    when InternshipApplications::WeeklyFramed
-      InternshipApplicationAasmMessageBuilders::WeeklyFramed.new(internship_application: self, aasm_target:)
-    when InternshipApplications::Multi
-      InternshipApplicationAasmMessageBuilders::Multi.new(internship_application: self, aasm_target:)
-    else
-      raise "can not build aasm message for this kind of internship_application"
-    end
-  end
-
   def student_is_male?
     student.gender == "m"
   end
@@ -650,29 +614,6 @@ class InternshipApplication < ApplicationRecord
   # Used for prettier links in rails_admin
   def title
     "Candidature de " + student_name
-  end
-
-  def cancel_all_pending_applications
-    applications_to_cancel = student.internship_applications
-                                    .where(aasm_state: InternshipApplication::PENDING_STATES)
-                                    .where.not(id: id)
-    if student.seconde_gt?
-      if internship_offer.seconde_school_track_week_1?
-        applications_to_cancel = applications_to_cancel.select do |application|
-          offer = application.internship_offer
-          offer.seconde_school_track_week_1? || offer.two_weeks_long?
-        end
-      end
-      if internship_offer.seconde_school_track_week_2?
-        applications_to_cancel = applications_to_cancel.select do |application|
-          offer = application.internship_offer
-          offer.seconde_school_track_week_2? || offer.two_weeks_long?
-        end
-      end
-    end
-    applications_to_cancel.each do |application|
-      application.cancel_by_student_confirmation! unless application == self
-    end
   end
 
   def employers_filtered_by_notifications_emails
@@ -732,6 +673,100 @@ class InternshipApplication < ApplicationRecord
   protected
 
   private
+
+  # add an additional delay when sending email using richtext
+  # sometimes email was sent before action_texts_rich_text was persisted
+  def deliver_later_with_additional_delay
+    yield.deliver_later(wait: 1.second)
+  end
+
+  def set_submitted_at
+    self.submitted_at = Time.now.utc if submitted_at.nil?
+  end
+
+  def notify_users
+    EmployerMailer.internship_application_submitted_email(internship_application: self).deliver_later(wait: 1.second)
+
+    return if student.internship_applications.count == 0
+
+    Triggered::SingleApplicationReminderJob.set(wait: 2.days).perform_later(student.id)
+    Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
+  end
+
+  def student_approval_notifications
+    teacher = student.teacher
+    arg_hash = {
+      internship_application: self,
+      teacher: teacher
+    }
+
+    return unless teacher.present?
+
+    deliver_later_with_additional_delay do
+      TeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
+    end
+  end
+
+  def after_employer_validation_notifications
+    if type == "InternshipApplications::WeeklyFramed" && student.teacher.present?
+      deliver_later_with_additional_delay do
+        TeacherMailer.internship_application_validated_by_employer_email(self)
+      end
+    end
+    if student.email.present?
+      deliver_later_with_additional_delay do
+        StudentMailer.internship_application_validated_by_employer_email(internship_application: self)
+      end
+    end
+    SendSmsStudentValidatedApplicationJob.perform_later(internship_application_id: id)
+  end
+
+  def create_multi_agreement
+    return unless internship_agreement_creation_allowed?
+
+    agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
+                                                    .new_from_application(self)
+    agreement.skip_validations_for_system = true
+    agreement.save!
+    # TODO notify coordinator and employers
+    EmployerMailer.internship_application_approved_with_agreement_email(
+      internship_agreement:,
+    ).deliver_later
+  end
+
+  def internship_application_counter_hook
+    case self
+    when InternshipApplications::WeeklyFramed
+      InternshipApplicationCountersHooks::WeeklyFramed.new(internship_application: self)
+    when InternshipApplications::Multi
+      InternshipApplicationCountersHooks::Multi.new(internship_application: self)
+    else
+      raise "can not process stats for this kind of internship_application"
+    end
+  end
+
+  def cancel_all_pending_applications
+    applications_to_cancel = student.internship_applications
+                                    .where(aasm_state: InternshipApplication::PENDING_STATES)
+                                    .where.not(id: id)
+    if student.seconde_gt?
+      if internship_offer.seconde_school_track_week_1?
+        applications_to_cancel = applications_to_cancel.select do |application|
+          offer = application.internship_offer
+          offer.seconde_school_track_week_1? || offer.two_weeks_long?
+        end
+      end
+      if internship_offer.seconde_school_track_week_2?
+        applications_to_cancel = applications_to_cancel.select do |application|
+          offer = application.internship_offer
+          offer.seconde_school_track_week_2? || offer.two_weeks_long?
+        end
+      end
+    end
+    applications_to_cancel.each do |application|
+      application.cancel_by_student_confirmation! unless application == self
+    end
+  end
 
   def student_email_not_taken
     return if student_email.blank?
