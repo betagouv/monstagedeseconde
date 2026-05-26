@@ -1,6 +1,6 @@
 - if can?(:supply_offers, current_user)
   / = current_user.ministry_statistician? ? "Votre administration" : "L'entreprise"
-  = form.hidden_field :employer_id, value: current_user.id
+  = form.hidden_field :employer_id, value: current_user.id, id: false
   - if resource.id
     = form.hidden_field :id, value: resource.id
   div [data-controller='mandatory-fields-with-coordinates fill-card'
