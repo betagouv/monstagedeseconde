@@ -14,8 +14,10 @@ module ApplicationTransitable
                          end
       if transition_valid
         # action happens here
-        @internship_application.send(params[:transition].to_sym, current_user)
-        @internship_application.update!(optional_internship_application_params)
+        @internship_application.with_lock do
+          @internship_application.send(params[:transition].to_sym, current_user)
+          @internship_application.update!(optional_internship_application_params)
+        end
         # now exit if temporary authorization
         if authorize_through_sgid? || authorize_through_token?
           reset_session
