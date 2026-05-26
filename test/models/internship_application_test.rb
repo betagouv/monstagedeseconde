@@ -47,7 +47,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     freeze_time do
       assert_changes -> { InternshipApplication.count }, from: 0, to: 1 do
         assert_changes -> { MailActionItem.count }, from: 0, to: 1 do
-          create(:weekly_internship_application)
+          create(:weekly_internship_application, :submitted, submitted_at: nil)
         end
 
         assert_equal Time.now.utc, InternshipApplication.last.submitted_at

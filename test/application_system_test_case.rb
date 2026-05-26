@@ -33,6 +33,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   include Devise::Test::IntegrationHelpers
   include Html5Validator
+  include ThirdPartyTestHelpers
 
   def setup
     stub_request(:any, %r{data.geopf.fr/geocodage})
@@ -43,6 +44,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
     stub_request(:any, /recherche-entreprises.api.gouv.fr/)
       .to_return(status: 200, body: '')
+
+    captcha_stub
   end
 
   def after_teardown

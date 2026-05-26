@@ -49,7 +49,13 @@ module ThirdPartyTestHelpers
                                         'Host' => 'oauth.piste.gouv.fr'
                                       })
       )
-      .to_return(default_response)
+      .to_return(default_response.merge(body: { access_token: 'captcha_test_token' }.to_json,
+                                        headers: { 'Content-Type' => 'application/json' }))
+
+    stub_request(:get, "#{ENV.fetch('CAPTCHA_URL')}/simple-captcha-endpoint?c=alphanumerique4to6LightCaptchaFR&get=image")
+      .to_return(status: 200,
+                 body: { imageb64: 'ZmFrZV9jYXB0Y2hh', uuid: 'captcha-uuid-test' }.to_json,
+                 headers: { 'Content-Type' => 'application/json' })
   end
 
   def nominatim_stub

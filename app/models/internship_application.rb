@@ -400,6 +400,17 @@ class InternshipApplication < ApplicationRecord
     internship_offer.from_doubling_task?
   end
 
+  def internship_application_aasm_message_builder(aasm_target:)
+    case self
+    when InternshipApplications::WeeklyFramed
+      InternshipApplicationAasmMessageBuilders::WeeklyFramed.new(internship_application: self, aasm_target:)
+    when InternshipApplications::Multi
+      InternshipApplicationAasmMessageBuilders::Multi.new(internship_application: self, aasm_target:)
+    else
+      raise "can not build aasm message for this kind of internship_application"
+    end
+  end
+
   def notify_employer_with_digest_email(name, **kwargs)
     kwargs[:recipient] ||= internship_offer.employer
     kwargs[:internship_application_id] ||= id

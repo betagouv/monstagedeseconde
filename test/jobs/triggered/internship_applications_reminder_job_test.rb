@@ -42,13 +42,12 @@ module Triggered
     end
 
     test "perform expire! when internship_applications is pending for more than EXPIRATION_DURATION" do
-      internship_application = nil
-      assert_enqueued_emails 0 do # no internship_application_expired_email anymore, only pending_reminder_sent_email
-        internship_application = create(:weekly_internship_application, :submitted,
-                                        submitted_at: (InternshipApplication::EXPIRATION_DURATION + 1.day).ago,
-                                        pending_reminder_sent_at: 7.days.ago,
-                                        internship_offer: @internship_offer)
-      end
+      internship_application = create(:weekly_internship_application, :submitted,
+                                      submitted_at: (InternshipApplication::EXPIRATION_DURATION + 1.day).ago,
+                                      pending_reminder_sent_at: 7.days.ago,
+                                      internship_offer: @internship_offer)
+      ActionMailer::Base.deliveries = [] # reset emails from creation callbacks
+      clear_enqueued_jobs # reset enqueued jobs from creation callbacks
 
       freeze_time do
         assert_changes -> { internship_application.reload.expired? },
