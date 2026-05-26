@@ -27,7 +27,7 @@
               = form.hidden_field :siret, value: resource&.siret || '' unless resource.persisted?
               = form.hidden_field :code_ape, value: resource&.code_ape || ''
               - if resource.id
-                = form.hidden_field :id, value: resource.id, id: false
+                = form.hidden_field :id, value: resource.id
               - unless resource.persisted?
                 .hide-when-manual
                   / span = "#{resource.try(:errors).try(:any?)} [onSubmitError]"
