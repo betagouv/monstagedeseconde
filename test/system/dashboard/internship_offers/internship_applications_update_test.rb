@@ -48,6 +48,27 @@ module Dashboard::InternshipOffers
       find('td.text-center[colspan="6"]', text: 'Aucune candidature reçue')
     end
 
+    test 'employer cannot restore a rejected application once the student chose another internship' do
+      employer2, internship_offer2 = create_employer_and_offer_2nde
+      student = create(:student)
+      rejected_application = create(:weekly_internship_application, :rejected,
+                                    student:, internship_offer: internship_offer2)
+      approved_application = create(:weekly_internship_application, :approved, student:)
+
+      sign_in(employer2)
+      visit dashboard_internship_offer_internship_application_path(internship_offer2,
+                                                                   uuid: rejected_application.uuid)
+      assert_text "Vous ne pouvez pas restaurer cette candidature car l'élève a choisi un autre stage."
+      assert_no_text 'Retenir cette candidature'
+
+      approved_application.cancel_by_employer!
+
+      visit dashboard_internship_offer_internship_application_path(internship_offer2,
+                                                                   uuid: rejected_application.uuid)
+      assert_text 'Retenir cette candidature'
+      assert_no_text "Vous ne pouvez pas restaurer cette candidature car l'élève a choisi un autre stage."
+    end
+
     test 'employer can unpublish an internship_offer from index page' do
       employer, internship_offer = create_employer_and_offer_2nde
       assert internship_offer.published?

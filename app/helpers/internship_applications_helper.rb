@@ -25,6 +25,8 @@ module InternshipApplicationsHelper
   def callout_title(internship_application)
     if internship_application.is_re_approvable?
       'Vous souhaitez retenir cette candidature ?'
+    elsif internship_application.re_approval_blocked_by_student_choice?
+      "L'élève a choisi un autre stage"
     else
       'Vous ne souhaitez plus retenir cette candidature ?'
     end

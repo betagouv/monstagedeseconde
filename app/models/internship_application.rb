@@ -483,6 +483,13 @@ class InternshipApplication < ApplicationRecord
     RE_APPROVABLE_STATES.include?(aasm_state)
   end
 
+  def re_approval_blocked_by_student_choice?
+    return false unless RE_APPROVABLE_STATES.include?(aasm_state)
+    return false if student.anonymized? || internship_offer.remaining_seats_count.zero?
+
+    student.internship_applications.where(aasm_state: "approved").any?
+  end
+
   def cancelable?
     CANCELABLE_STATES.include?(aasm_state)
   end

@@ -736,4 +736,35 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       assert_equal "validated_by_employer", application_full.reload.aasm_state
     end
   end
+
+  test "#re_approval_blocked_by_student_choice? is true when student has chosen another internship" do
+    student = create(:student)
+    create(:weekly_internship_application, :approved, student:)
+    rejected_application = create(:weekly_internship_application, :rejected, student:)
+
+    assert rejected_application.re_approval_blocked_by_student_choice?
+  end
+
+  test "#re_approval_blocked_by_student_choice? is false when student has no approved internship" do
+    rejected_application = create(:weekly_internship_application, :rejected)
+
+    refute rejected_application.re_approval_blocked_by_student_choice?
+  end
+
+  test "#re_approval_blocked_by_student_choice? is false when student is anonymized" do
+    student = create(:student)
+    create(:weekly_internship_application, :approved, student:)
+    rejected_application = create(:weekly_internship_application, :rejected, student:)
+    student.update_column(:anonymized, true)
+
+    refute rejected_application.reload.re_approval_blocked_by_student_choice?
+  end
+
+  test "#re_approval_blocked_by_student_choice? is false for a non re-approvable state" do
+    student = create(:student)
+    create(:weekly_internship_application, :approved, student:)
+    submitted_application = create(:weekly_internship_application, :submitted, student:)
+
+    refute submitted_application.re_approval_blocked_by_student_choice?
+  end
 end
