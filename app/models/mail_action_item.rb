@@ -66,4 +66,79 @@ class MailActionItem < ApplicationRecord
   def presenter
     Presenters::MailActionItem.new(self)
   end
+
+  rails_admin do
+    weight 13
+    navigation_label "Divers"
+
+    list do
+      field :id
+      field :recipient
+      field :action_name
+      field :action_type
+      field :urgency_level
+      field :stale_at
+      field :resolved_at
+      field :deliveries_count
+      field :max_deliveries_count
+      field :created_at
+      field :updated_at
+    end
+
+    show do
+      field :id
+      field :recipient
+      field :action_name
+      field :action_type
+      field :urgency_level
+      field :stale_at
+      field :resolved_at
+      field :deliveries_count
+      field :max_deliveries_count
+      field :created_at
+      field :updated_at
+    end
+
+    edit do
+      field :recipient do
+        read_only true
+        help "The recipient of the action item (cannot be changed after creation)"
+      end
+
+      field :action_name do
+        read_only true
+        help "The name of the action (cannot be changed after creation)"
+      end
+
+      field :action_type do
+        read_only true
+        help "The type of the action (cannot be changed after creation)"
+      end
+
+      field :urgency_level, :enum do
+        enum do
+          MailActionItem.urgency_levels.keys.map { |level| [ level.humanize, level ] }.to_h
+        end
+
+        help "The urgency level of the action item"
+      end
+
+      field :stale_at do
+        help "The date and time when the action item becomes stale/overdue"
+      end
+
+      field :resolved_at do
+        help "The date and time when the action item was resolved (can be set manually for testing purposes)"
+      end
+
+      field :deliveries_count do
+        read_only true
+        help "The number of times this action item has been delivered (cannot be changed manually)"
+      end
+
+      field :max_deliveries_count do
+        help "The maximum number of times this action item can be delivered before it is automatically resolved"
+      end
+    end
+  end
 end

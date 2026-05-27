@@ -54,6 +54,7 @@ class Ability
     end
     can %i[index_and_filter], Reporting::InternshipOffer
     can :manage, InternshipAgreement
+    can :manage, MailActionItem
     can %i[ show_modal_info
             switch_user
             read
@@ -75,6 +76,7 @@ class Ability
     can :manage, Operator
     can :read_employer_name, InternshipOffer
     can :manage, InappropriateOffer
+    can :manage, MailActionItem
   end
 
   def student_abilities(user:)
