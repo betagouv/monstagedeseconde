@@ -6,9 +6,9 @@
     "0 8 * * 1 $ROOT/clevercloud/crons/kpi_mailing.sh",
     "0 5 31 7 * $ROOT/clevercloud/crons/year_end_cleaning.sh",
     "0 2 * * * $ROOT/clevercloud/crons/cegid_crawler.sh",
-    "3 */4 * * * $ROOT/clevercloud/crons/employer_critical_level_emails.sh",
-    "2 8,13 * * * $ROOT/clevercloud/crons/employer_high_level_emails.sh",
-    "1 8 * * * $ROOT/clevercloud/crons/employer_medium_level_emails.sh",
-    "0 8 * * 1,4 $ROOT/clevercloud/crons/employer_low_level_emails.sh"
+    "0 4,17,21 * * 1,2,3,4,5 $ROOT/clevercloud/crons/employer_critical_level_emails.sh",
+    "0 13 * * 1,2,3,4,5  $ROOT/clevercloud/crons/employer_high_level_emails.sh",
+    "0 9 * * 2,3,5 $ROOT/clevercloud/crons/employer_medium_level_emails.sh",
+    "0 9 * * 1,4 $ROOT/clevercloud/crons/employer_low_level_emails.sh"
   ]
 
