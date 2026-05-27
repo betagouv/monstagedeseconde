@@ -23,12 +23,6 @@ FactoryBot.define do
                from_state: "",
                to_state: "submitted",
                author: application.student)
-        create(:mail_action_item,
-               recipient: application.internship_offer.employer,
-               action_name: "new_internship_application",
-               action_type: :pending_internship_application,
-               urgency_level: :medium,
-               internship_application: application)
       end
     end
 
@@ -51,6 +45,8 @@ FactoryBot.define do
                from_state: "canceled_by_student",
                to_state: "restored",
                author: application.student)
+        application.reload
+        application.mail_action_items.each(&:destroy) # Destroy mail action items created by callbacks to avoid duplicates
         create(:mail_action_item,
                recipient: application.internship_offer.employer,
                action_name: "restored_internship_application",
@@ -128,6 +124,8 @@ FactoryBot.define do
         else
           create(:mono_internship_agreement, internship_application: application)
         end
+        application.reload
+        application.mail_action_items.each(&:destroy)
         create(:mail_action_item,
           recipient: application.internship_offer.employer,
           action_name: "agreement_to_sign",

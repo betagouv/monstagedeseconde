@@ -641,7 +641,7 @@ class InternshipApplication < ApplicationRecord
   end
 
   def notify_users
-    EmployerMailer.internship_application_submitted_email(internship_application: self).deliver_later(wait: 1.second)
+    notify_employer_with_digest_email("new_internship_application", stale_at: weeks.last.monday - 2.days)
 
     return if student.internship_applications.count == 0
 
