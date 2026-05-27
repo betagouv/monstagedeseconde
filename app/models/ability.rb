@@ -456,7 +456,7 @@ class Ability
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can :read, Group
-    can %i[index], Acl::Reporting # , &:allowed?
+    can %i[index], Acl::Reporting, &:allowed?
     can %i[ see_reporting_dashboard
             see_dashboard_administrations_summary
             see_dashboard_department_summary
@@ -469,7 +469,7 @@ class Ability
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can :read, Group
-    can %i[index], Acl::Reporting # , &:allowed?
+    can %i[index], Acl::Reporting, &:allowed?
     can %i[ export_reporting_dashboard_data
             see_dashboard_administrations_summary
             see_dashboard_department_summary
@@ -514,7 +514,9 @@ class Ability
     can_read_dashboard_students_internship_applications(user:)
 
     can_manage_school(user:) do
-      can %i[edit update], School
+      can %i[edit update], School do |school|
+        school.id == user.school_id
+      end
       can %i[manage_school_users
              manage_school_students
              manage_school_internship_agreements

@@ -141,6 +141,11 @@ module Users
 
     protected
 
+    def build_resource(hash = {})
+      super
+      resource.type = resource_class.name unless resource_class == User
+    end
+
     # If you have extra params to permit, append them to the sanitizer.
     def configure_sign_up_params
       devise_parameter_sanitizer.permit(
@@ -165,7 +170,6 @@ module Users
           school_id
           statistician_type
           targeted_offer_id
-          type
           department
           academy_id
           academy_region_id
