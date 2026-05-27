@@ -1,4 +1,6 @@
 module Services::Omogen
+  class SygneApiError < StandardError; end
+
   class Sygne
     include ::Services::ApiRequestsHelper
     # 2434 : 3E SEGPA
