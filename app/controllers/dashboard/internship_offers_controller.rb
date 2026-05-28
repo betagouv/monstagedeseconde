@@ -195,7 +195,7 @@ module Dashboard
       anchor = 'max_candidates_fields'
       warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places et des semaines de stage"
 
-      if @internship_offer.remaining_seats_count.zero?
+      if @internship_offer.remaining_seats_count <= 0
         warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places de stage"
       elsif @internship_offer.remaining_seats_count > 0
         anchor = 'weeks_container'

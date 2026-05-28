@@ -760,6 +760,14 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     refute application.is_re_approvable?
   end
 
+  test "#re_approval_blocked_reason is :no_seats_left when the offer is over capacity" do
+    application = create(:weekly_internship_application, :expired)
+    application.internship_offer.stats.update!(remaining_seats_count: -1)
+
+    assert_equal :no_seats_left, application.reload.re_approval_blocked_reason
+    refute application.is_re_approvable?
+  end
+
   test "#re_approval_blocked_reason is :conflicting when student already has a conflicting approved application" do
     travel_to Time.zone.local(2025, 3, 1) do
       school = create(:school, school_type: "lycee")

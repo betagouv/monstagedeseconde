@@ -486,7 +486,7 @@ class InternshipApplication < ApplicationRecord
   def re_approval_blocked_reason
     return :anonymized if student.anonymized?
     return :conflicting unless no_other_approved_application?
-    return :no_seats_left if internship_offer.remaining_seats_count.zero?
+    return :no_seats_left if internship_offer.remaining_seats_count <= 0
 
     nil
   end

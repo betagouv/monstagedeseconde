@@ -272,4 +272,17 @@ class InternshipOfferTest < ActiveSupport::TestCase
     internship_offer = build(:weekly_internship_offer_2nde, is_public: false, group: nil, sector: sector)
     assert internship_offer.valid?, internship_offer.errors.full_messages.join(', ')
   end
+
+  test '#no_remaining_seat_anymore? is true when remaining seats is zero or negative' do
+    internship_offer = create(:weekly_internship_offer_2nde)
+
+    internship_offer.stats.update!(remaining_seats_count: 1)
+    refute internship_offer.no_remaining_seat_anymore?
+
+    internship_offer.stats.update!(remaining_seats_count: 0)
+    assert internship_offer.no_remaining_seat_anymore?
+
+    internship_offer.stats.update!(remaining_seats_count: -1)
+    assert internship_offer.no_remaining_seat_anymore?
+  end
 end
