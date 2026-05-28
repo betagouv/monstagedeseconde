@@ -35,40 +35,44 @@ module Reporting
     private
 
     def recent_subscriptions
-      user_query = User.select('type, count(type)').group(:type)
-      subscriptions =user_query.where('created_at >= ?', last_monday)
-                               .where('created_at <= ?', last_sunday)
-                               .where.not(type: 'Users::SchoolManagement')
-      subscriptions = summin_up subscriptions
-      subscriptions_by_update = user_query.where('updated_at >= ?', last_monday)
-                                          .where('updated_at <= ?', last_sunday)
-                                          .where(type: 'Users::Student')
+      subscriptions = User.where(created_at: last_monday..last_sunday)
+                          .where.not(type: Users::SchoolManagement.name)
+                          .group(:type)
+                          .count
+      subscriptions = summin_up(subscriptions)
 
-      subscriptions_by_update = summin_up subscriptions_by_update
+      subscriptions_by_update = User.where(updated_at: last_monday..last_sunday)
+                                    .where(type: Users::Student.name)
+                                    .group(:type)
+                                    .count
+      subscriptions_by_update = summin_up(subscriptions_by_update)
 
       subscriptions["Élève"] = subscriptions_by_update["Élève"] || 0
 
-      query = Users::SchoolManagement.select('role, type, count(role)')
-                             .where('created_at >= ?', last_monday)
-                             .where('created_at <= ?', last_sunday)
-                             .group(:role, :type)
-      summin_up(query, subscriptions)
+      school_management_subscriptions = Users::SchoolManagement.where(created_at: last_monday..last_sunday)
+                                                                .group(:role)
+                                                                .count
+      summin_up(school_management_subscriptions, subscriptions)
     end
 
-    def summin_up(query, starting_hash = {})
+    def summin_up(grouped_counts, starting_hash = {})
       translator = Presenters::UserManagementRole
-      query.inject(starting_hash) { |hash, rec| hash[translator.human_types_and_roles(rec.type.to_sym)]= rec.count; hash}
+      grouped_counts.each_with_object(starting_hash) do |(key, value), hash|
+        next if key.nil?
+
+        hash[translator.human_types_and_roles(key.to_sym)] = value
+      end
     end
 
     def recent_applications
-      applications = InternshipApplication.where('created_at >= ? ', last_monday)
-                                          .where('created_at <= ?', last_sunday)
+      applications = InternshipApplication.where("created_at >= ? ", last_monday)
+                                          .where("created_at <= ?", last_sunday)
 
-      applications_students = applications.select('user_id, count(user_id)')
+      applications_students = applications.select("user_id, count(user_id)")
                                           .group(:user_id)
 
       [ applications.count,
-        applications_students.pluck(:user_id).count]
+        applications_students.pluck(:user_id).count ]
     end
 
     def internship_offers_count
