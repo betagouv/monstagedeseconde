@@ -531,6 +531,7 @@ fr:
           approved: acceptée
           rejected: refusée
           expired: expirée
+          expired_by_student: absence de réponse
           transfered: transférée
           canceled_by_employer: annulée par l'employeur
           validated_by_employer: validée par l'employeur

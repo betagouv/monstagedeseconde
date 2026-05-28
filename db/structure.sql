@@ -4888,6 +4888,13 @@ CREATE UNIQUE INDEX uniq_applications_per_internship_offer_week ON public.intern
 
 
 --
+-- Name: uniq_applications_per_user_offer; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX uniq_applications_per_user_offer ON public.internship_applications USING btree (user_id, internship_offer_id);
+
+
+--
 -- Name: internship_offers sync_internship_offers_tsv; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -5604,6 +5611,7 @@ ALTER TABLE ONLY public.mail_action_items
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260520214758'),
 ('20260515100000'),
 ('20260515090000'),
 ('20260507100000'),

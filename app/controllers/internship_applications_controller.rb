@@ -56,6 +56,9 @@ class InternshipApplicationsController < ApplicationController
       log_error(object: @internship_application)
       render "new", status: :bad_request
     end
+  rescue ActiveRecord::RecordNotUnique
+    redirect_to internship_offer_path(@internship_offer),
+                alert: 'Vous avez déjà postulé à cette offre.'
   end
 
   def completed
