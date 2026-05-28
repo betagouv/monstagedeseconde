@@ -373,7 +373,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   test "#after_employer_validation_notifications when student registered by phone" do
     student = create(:student, :registered_with_phone)
     internship_application = create(:weekly_internship_application, student:)
-    assert internship_application.after_employer_validation_notifications.is_a?(SendSmsStudentValidatedApplicationJob)
+    assert internship_application.send(:after_employer_validation_notifications).is_a?(SendSmsStudentValidatedApplicationJob)
   end
 
   test "#after_employer_validation_notifications when student registered by email" do
@@ -384,7 +384,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     mock_mail.expect(:deliver_later, true, [], wait: 1.second)
 
     StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail do
-      internship_application.after_employer_validation_notifications
+      internship_application.send(:after_employer_validation_notifications)
     end
     mock_mail.verify
   end
