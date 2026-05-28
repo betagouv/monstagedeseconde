@@ -15,11 +15,12 @@ module Services::EmployerActions
           return
         end
 
-        EmployerActionsMailer.employer_digest_email(
+        mail = EmployerActionsMailer.employer_digest_email(
           user_id:,
           actions:,
           urgency_levels: urgency_levels
-        ).deliver_later
+        )
+        Rails.env.review? && mail.deliver_now || mail.deliver_later
         manage_actions_post_delivery(actions)
       end
     end

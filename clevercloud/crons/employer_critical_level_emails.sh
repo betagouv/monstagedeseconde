@@ -8,4 +8,3 @@ fi
 cd "${APP_HOME}"
 
 bundle exec rake digest_mailers:send_critical_urgency_emails
-sleep 15m

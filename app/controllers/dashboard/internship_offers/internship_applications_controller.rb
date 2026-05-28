@@ -101,7 +101,7 @@ module Dashboard
         includings = %i[ internship_offer
                          internship_agreement]
         student_includings = %i[school]
-        internship_applications = InternshipApplications::WeeklyFramed.includes(*includings)
+        internship_applications = ::InternshipApplications::WeeklyFramed.includes(*includings)
                                                                       .includes(student: [ *student_includings ])
                                                                       .where(internship_offer:)
         if params_order == ORDER_WITH_INTERNSHIP_DATE

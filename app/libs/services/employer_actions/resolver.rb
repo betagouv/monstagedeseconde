@@ -1,10 +1,18 @@
 module Services::EmployerActions
+  # Resolver clears mail_action_items which are either stale (stale_at in the past)
+  # or over-delivered (deliveries_count >= max_deliveries_count)
   class Resolver
     # TODO maybe remove the action_type parameter and just resolve
-    #  all action types for the given user and urgency level
+    # Resolver.call is currently called in two different contexts: internship applications and agreements;
+    # the purpose is to resolve pending actions for a given user by checking the state of the related.
+    # When resolved pending actions are flagged as resolved by setting resolved_at, and then removed,
+    # just before proceeding to email sending.
     def self.call(user_id:, urgency_levels:)
+      #  standard and extra aim to set resolved_at for items, which flags them
+      #  as resoved and then removed from queue
       urgency_levels = Array(urgency_levels)
       urgency_levels.each do |urgency_level|
+        # order matters here as some actions require specific checks before being resolved
         extra_resolver(user_id:, urgency_level:)
         standard_resolver(user_id:, urgency_level:)
       end
@@ -110,6 +118,8 @@ module Services::EmployerActions
       mail_action_items_base.where("deliveries_count >= max_deliveries_count")
                             .delete_all
     end
+
+    private
 
     def self.application_resolve(application)
       return unless application.present? && application.persisted?
