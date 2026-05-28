@@ -137,7 +137,7 @@ module WeekHelpers
     end
 
     def current_school_year
-      @current_school_year ||= SchoolYear::Current.new
+      SchoolYear::Current.new
     end
 
     # LIMITS

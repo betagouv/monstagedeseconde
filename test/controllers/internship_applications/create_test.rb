@@ -9,7 +9,7 @@ module InternshipApplications
     include ThirdPartyTestHelpers
 
     test 'GET #new internship application as student with no former responsible details' do
-      travel_to Time.zone.local(2025, 3, 1) do
+      travel_to Time.zone.local(2025, 10, 1) do
         internship_offer = create(:weekly_internship_offer_3eme)
         school = create(:school)
         student = create(:student,
@@ -53,7 +53,7 @@ module InternshipApplications
     end
 
     test 'GET #new internship application as student with no weeks set by the school works' do
-      travel_to Time.zone.local(2025, 3, 1) do
+      travel_to Time.zone.local(2025, 10, 1) do
         internship_offer = create(:weekly_internship_offer_3eme)
         school = create(:school, school_type: 'college')
         school.weeks = []
